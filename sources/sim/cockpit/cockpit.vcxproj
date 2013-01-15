@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C008F3F5-C2A9-49C0-8798-30D3B83A6CC2}</ProjectGuid>
+    <SccProjectName />
+    <SccLocalPath>..\..</SccLocalPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../build/x86/debug_win32/sim/cockpit/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../build/x86/debug_win32/sim/cockpit/</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/sim/cockpit/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/sim/cockpit/</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cockpit</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cockpit</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\Sim\Include;..\..\Falclib\Include;..\..\Campaign\Include;..\..\Graphics/Include;..\..\Vu2\Include;..\..\Codelib\Include;..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_SMARTHEAP;_DEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>../../../build/x86/debug_win32/sim/cockpit/</AssemblerListingLocation>
+      <ObjectFileName>../../../build/x86/debug_win32/sim/cockpit/</ObjectFileName>
+      <ProgramDataBaseFileName>../../../build/x86/debug_win32/sim/cockpit/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../../../build/x86/debug_win32/sim/cockpit/cockpit.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4430 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\..\Sim\Include;..\..\Falclib\Include;..\..\Campaign\Include;..\..\Graphics/Include;..\..\Vu2\Include;..\..\Codelib\Include;..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerOutput>
+      </AssemblerOutput>
+      <AssemblerListingLocation>../../../build/x86/release_win32/sim/cockpit/</AssemblerListingLocation>
+      <ObjectFileName>../../../build/x86/release_win32/sim/cockpit/</ObjectFileName>
+      <ProgramDataBaseFileName>../../../build/x86/release_win32/sim/cockpit/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../../../build/x86/release_win32/sim/cockpit/cockpit.lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="cbbuttons.cpp" />
+    <ClCompile Include="cbdials.cpp" />
+    <ClCompile Include="cbdigits.cpp" />
+    <ClCompile Include="cbindicators.cpp" />
+    <ClCompile Include="cblights.cpp" />
+    <ClCompile Include="cbmachasi.cpp" />
+    <ClCompile Include="cbtext.cpp" />
+    <ClCompile Include="cpadi.cpp" />
+    <ClCompile Include="cpcb.cpp" />
+    <ClCompile Include="cpchev.cpp" />
+    <ClCompile Include="cpcursor.cpp" />
+    <ClCompile Include="cpded.cpp" />
+    <ClCompile Include="cpdial.cpp" />
+    <ClCompile Include="cpdigits.cpp" />
+    <ClCompile Include="cphsi.cpp" />
+    <ClCompile Include="cpindicator.cpp" />
+    <ClCompile Include="cpkneeview.cpp" />
+    <ClCompile Include="cplift.cpp" />
+    <ClCompile Include="cplight.cpp" />
+    <ClCompile Include="cpmachasi.cpp" />
+    <ClCompile Include="cpmanager.cpp" />
+    <ClCompile Include="cpmirror.cpp" />
+    <ClCompile Include="cpmisc.cpp" />
+    <ClCompile Include="cpobject.cpp" />
+    <ClCompile Include="cppanel.cpp" />
+    <ClCompile Include="cpsound.cpp" />
+    <ClCompile Include="cpsurface.cpp" />
+    <ClCompile Include="cptext.cpp" />
+    <ClCompile Include="cpvbounds.cpp" />
+    <ClCompile Include="KneeBoard.cpp" />
+    <ClCompile Include="popcb.cpp" />
+    <ClCompile Include="popmenu.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Include\button.h" />
+    <ClInclude Include="..\Include\cbackproto.h" />
+    <ClInclude Include="..\Include\cpadi.h" />
+    <ClInclude Include="..\Include\cpbutton.h" />
+    <ClInclude Include="..\include\cpcb.h" />
+    <ClInclude Include="..\Include\cpchev.h" />
+    <ClInclude Include="..\include\cpcursor.h" />
+    <ClInclude Include="..\Include\cpded.h" />
+    <ClInclude Include="..\Include\cpdial.h" />
+    <ClInclude Include="..\Include\cpdigits.h" />
+    <ClInclude Include="..\Include\cpgauge.h" />
+    <ClInclude Include="..\Include\cphsi.h" />
+    <ClInclude Include="..\Include\cpindicator.h" />
+    <ClInclude Include="..\Include\cpkneeview.h" />
+    <ClInclude Include="..\Include\cplift.h" />
+    <ClInclude Include="..\Include\cplight.h" />
+    <ClInclude Include="..\Include\cpmachasi.h" />
+    <ClInclude Include="..\include\cpmanager.h" />
+    <ClInclude Include="..\Include\cpmirror.h" />
+    <ClInclude Include="..\include\cpmisc.h" />
+    <ClInclude Include="..\include\cpobject.h" />
+    <ClInclude Include="..\include\cppanel.h" />
+    <ClInclude Include="..\Include\cpsound.h" />
+    <ClInclude Include="..\include\cpsurface.h" />
+    <ClInclude Include="..\Include\cpswitch.h" />
+    <ClInclude Include="..\Include\cptext.h" />
+    <ClInclude Include="..\include\cpvbounds.h" />
+    <ClInclude Include="..\Include\KneeBoard.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DevPartner_IsInstrumented="1" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

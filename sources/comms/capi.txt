@@ -1,0 +1,29 @@
+Compiling options for the COMMS API
+
+1. The default winsock level is now winsock 1.1
+   using WSOCK32.DLL. Link with WSOCK32.LIB
+
+2. #define USEWINSOCK2   in capiopt.h for WINSOCK2  use
+   of WS2_32.DLL. Link with WS2_32.LIB.
+
+3. #define CAPI_DEBUG in CAPIOPT.H for debugging output
+
+4. #define THREADED_GET in UDP.C for creating a read thread
+   This is the default. Comment this to get non-blocking
+   non-threaded udp reads.
+
+March 3 1998
+5. Check CAPI.H for new timestamp functions
+
+6. Check CAPI.H for new SetThreadPriority function for UDP readthread. Very Important.
+   Default is CAPI_THREAD_PRIORITY_NORMAL.
+   On most machines this is best.
+
+March 12, 1998
+
+7. #define CAPI_NET_DEBUG_FEATURES  in CAPIOPT.H 
+    to enable latency and echo APIs.
+
+
+
+   

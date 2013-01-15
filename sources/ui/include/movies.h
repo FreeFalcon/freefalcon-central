@@ -1,0 +1,20 @@
+enum
+{
+	MV_SeoulBeseiged         =100,
+	MV_SeoulFalls            =101,
+	MV_PyongyangBeseiged     =102,
+	MV_PyongyangFalls        =103,
+	MV_ThemPushedBack        =104,
+	MV_UsPushedBack          =105,
+	MV_UsOffends             =106,
+	MV_UsDefends             =107,
+	MV_ChinaJoins            =108,
+	MV_RussiaJoins           =109,
+	MV_UIFortress            =110,
+	MV_UIRollingFire         =111,
+	MV_UITigerSpirit         =112,
+	MV_ThemWins              =113,
+	MV_Stalemate             =114,
+	MV_TimesUp               =115,
+	MV_UsWins                =116,
+};

@@ -1,0 +1,1852 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "f4version.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BIGBMAP             BITMAP                  "BIGBMAP.BMP"
+IDB_RADAR               BITMAP                  "BITMAP1.BMP"
+IDB_FONT1               BITMAP                  "font1.bmp"
+MAINFNTBMP              BITMAP                  "mainfnt.bmp"
+MAINFNTONBMP            BITMAP                  "mainfnto.bmp"
+MIDFNTBMP               BITMAP                  "midfnt.bmp"
+MIDFNTONBMP             BITMAP                  "midfnton.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SHIFNT
+//
+
+MAINFNT                 SHIFNT                  "mainfnt.fnt"
+MIDFNT                  SHIFNT                  "midfnt.fnt"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR4             CURSOR                  "CURSOR4.CUR"
+IDC_CURSOR3             CURSOR                  "CURSOR3.CUR"
+IDC_CURSOR2             CURSOR                  "CURSOR2.CUR"
+IDC_CURSOR1             CURSOR                  "CURSOR1.CUR"
+IDC_CURSOR0             CURSOR                  "CURSOR5.CUR"
+IDC_CURSOR5             CURSOR                  "cursor.cur"
+IDC_DRAG_EW             CURSOR                  "cursor6.cur"
+IDC_CURSOR6             CURSOR                  "cur00001.cur"
+UI_VDRAG_ON             CURSOR                  "vdragon.cur"
+UI_F16                  CURSOR                  "f16.cur"
+UI_F16_ON               CURSOR                  "f16_on.cur"
+UI_F16_ON_RM            CURSOR                  "f16_on_r.cur"
+UI_F16_RM               CURSOR                  "f16_rm.cur"
+UI_HDRAG                CURSOR                  "hdrag_of.cur"
+UI_HDRAG_ON             CURSOR                  "HDRAGON.cur"
+UI_HDRAG_RM             CURSOR                  "HDRAGRM.cur"
+UI_LIST_F16             CURSOR                  "listf16.cur"
+UI_WAIT                 CURSOR                  "loading.cur"
+UI_MAP_ZOOM             CURSOR                  "mapzoom.cur"
+UI_NOT_ALLOWED          CURSOR                  "not.cur"
+UI_STEERPOINT           CURSOR                  "stpt.cur"
+UI_DRAG_STEERPOINT      CURSOR                  "stpt_dra.cur"
+UI_TARGET               CURSOR                  "target.cur"
+UI_VDRAG                CURSOR                  "vdrag.cur"
+UI_VDRAG_RM             CURSOR                  "vdrag_rm.cur"
+UI_DRAG_RM              CURSOR                  "drag_rm.cur"
+UI_DRAG                 CURSOR                  "ui_drag_.cur"
+UI_TEXT                 CURSOR                  "text.cur"
+UI_ADD_FLIGHT           CURSOR                  "ui_add_f.cur"
+UI_ADD_PACKAGE          CURSOR                  "ui_add_p.cur"
+UI_ADD_SQUADRON         CURSOR                  "ui_add_s.cur"
+UI_ADD_BATTALION        CURSOR                  "ui_add_b.cur"
+UI_ADD_TASKFORCE        CURSOR                  "ui_add_t.cur"
+UI_ERASE                CURSOR                  "ui_erase.cur"
+UI_PAINT                CURSOR                  "ui_paint.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_CAMPAIGN_MENU MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Theater",                ID_FILE_NEWTHEATER
+        MENUITEM "&Open Theater",               ID_FILE_OPENTHEATER
+        MENUITEM SEPARATOR
+        MENUITEM "&Save",                       ID_FILE_SAVETHEATER
+        MENUITEM "Save&As",                     ID_FILE_SAVEASTHEATER
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Cover",                      ID_EDIT_COVER
+        MENUITEM "&Relief",                     ID_EDIT_RELIEF
+        MENUITEM "R&oads",                      ID_EDIT_ROADS
+        MENUITEM "R&ails",                      ID_EDIT_RAILS
+        MENUITEM "&Objectives",                 ID_EDIT_OBJECTIVES
+        MENUITEM "&Units",                      ID_EDIT_UNITS
+        MENUITEM "&Weather",                    ID_EDIT_WEATHER
+        MENUITEM SEPARATOR
+        MENUITEM "Water",                       ID_EDIT_WATER
+        MENUITEM "Bog",                         ID_EDIT_BOG
+        MENUITEM "Barren",                      ID_EDIT_BARREN
+        MENUITEM "Plains",                      ID_EDIT_PLAINS
+        MENUITEM "Brush",                       ID_EDIT_BRUSH
+        MENUITEM "L Forest",                    ID_EDIT_LFOREST
+        MENUITEM "H Forest",                    ID_EDIT_HFOREST
+        MENUITEM "S Urban",                     ID_EDIT_SURBAN
+        MENUITEM "Urban",                       ID_EDIT_URBAN
+        MENUITEM SEPARATOR
+        MENUITEM "Flat",                        ID_EDIT_FLAT
+        MENUITEM "Rough",                       ID_EDIT_ROUGH
+        MENUITEM "Hilly",                       ID_EDIT_HILLY
+        MENUITEM "Mountain",                    ID_EDIT_MOUNTAIN
+        MENUITEM SEPARATOR
+        MENUITEM "Clear",                       ID_EDIT_CLEARCOV
+        MENUITEM "Haze",                        ID_EDIT_HAZE
+        MENUITEM "Fog",                         ID_EDIT_LOWFOG
+        MENUITEM "Scattered",                   ID_EDIT_SCATTERED
+        MENUITEM "Broken",                      ID_EDIT_BROKEN
+        MENUITEM "Overcast",                    ID_EDIT_OVERCAST
+        MENUITEM "Rain",                        ID_EDIT_RAIN
+    END
+    POPUP "Campaign"
+    BEGIN
+        MENUITEM "New",                         ID_CAMPAIGN_NEW
+        MENUITEM "&Make New",                   ID_CAMPAIGN_MAKENEW
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "Zoom &In",                    ID_VIEW_ZOOMIN
+        MENUITEM "Zoom &Out",                   ID_VIEW_ZOOMOUT
+        MENUITEM SEPARATOR
+        MENUITEM "&Ground Cover",               ID_VIEW_COVER, CHECKED
+        MENUITEM "Relie&f",                     ID_VIEW_RELIEF
+        MENUITEM "Cover and Relief",            ID_VIEW_BOTH
+        MENUITEM "Cloud &Cover",                ID_VIEW_CLOUDS
+        MENUITEM "Cloud &Levels",               ID_VIEW_LEVELS
+        MENUITEM SEPARATOR
+        MENUITEM "Roads",                       ID_VIEW_ROADS, CHECKED
+        MENUITEM "Rails",                       ID_VIEW_RAILS, CHECKED
+        MENUITEM "Emitters",                    ID_VIEW_EMITTERS
+        MENUITEM "SAMs",                        ID_VIEW_SAMS
+        MENUITEM "Player Bubble",               ID_VIEW_PLAYERBUBBLE
+        MENUITEM SEPARATOR
+        MENUITEM "Obj Owner",                   ID_VIEW_OBJOWNER, CHECKED
+        MENUITEM "Obj Priority",                ID_VIEW_OBJPRIORITY
+        MENUITEM "Obj Type",                    ID_VIEW_OBJTYPE
+        MENUITEM SEPARATOR
+        MENUITEM "Battalions/Flights",          ID_VIEW_REALUNITS, CHECKED
+        MENUITEM "Brigades/Packages",           ID_VIEW_PARENTUNITS
+        MENUITEM "Divisions",                   ID_VIEW_DIVISIONS
+        MENUITEM "Reinforcements",              ID_VIEW_REINFORCEMENTS
+        MENUITEM SEPARATOR
+        MENUITEM "Texture Codes",               ID_VIEW_TEXTURECODES
+        MENUITEM SEPARATOR
+        MENUITEM "&Refresh",                    ID_VIEW_REFRESH
+    END
+    POPUP "Tools"
+    BEGIN
+        MENUITEM "Recalulate Links",            ID_TOOLS_RECALULATELINKS
+        MENUITEM "Set Obj Types",               ID_TOOLS_SETOBJTYPES
+        MENUITEM "Output Obj Locations",        ID_TOOLS_OUTPUTOBJLOCATIONS
+        MENUITEM "Apply Force Ratios",          ID_TOOLS_APPLYFORCERATIOS
+        MENUITEM "Clip Campaign",               ID_TOOLS_CLIPCAMPAIGN
+        MENUITEM "Auto-Set SAM/Art Sites",      ID_TOOLS_AUTOSETSAMARTSITES
+        MENUITEM "Pre-Order SAM/Artillery",     ID_TOOLS_PREORDERSAMARTILLERY
+
+        MENUITEM "Output Unit Locations",       ID_TOOLS_OUTPUTUNITLOCATIONS
+        MENUITEM "Output Reinforcements",       ID_TOOLS_OUTPUTREINFORCEMENTS
+
+        MENUITEM "Calculate Radar Arcs",        ID_TOOLS_CALCULATERADARARCS
+        MENUITEM "Generate PAK Map",            ID_TOOLS_GENERATEPAKMAP
+    END
+    POPUP "PlayerBubble"
+    BEGIN
+        MENUITEM "Show Player Bubble",          ID_VIEW_PLAYERBUBBLE
+        MENUITEM "Center on Player Bubble",     ID_PB_CENTERONPLAYERBUBBLE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About CampTool",             ID_HELP_ABOUTCAMPTOOL
+    END
+    POPUP "", INACTIVE
+    BEGIN
+        MENUITEM "Refresh Player Bubble",       ID_CAMP_REFRESHPB
+    END
+END
+
+F4_DEMO_MENU MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&Sim"
+    BEGIN
+        MENUITEM "&Reset",                      ID_SIM_RESET
+        POPUP "R&adio"
+        BEGIN
+            MENUITEM "&All",                        ID_SIM_RADIO_ALL
+            MENUITEM "Team &1",                     ID_SIM_RADIO_TEAM1
+            MENUITEM "Team &2",                     ID_SIM_RADIO_TEAM2
+            MENUITEM "&Off",                        ID_SIM_RADIO_OFF
+        END
+        MENUITEM "&Calibrate Joystick",         ID_SIM_UNLIMITEDAMMO
+        MENUITEM "&Paused",                     ID_SIM_PAUSED, CHECKED
+        POPUP "&Instant"
+        BEGIN
+            MENUITEM "Level &1",                    ID_SIM_INSTANT_LEVEL1
+            MENUITEM "Level &2",                    ID_SIM_INSTANT_LEVEL2
+            MENUITEM "Level &3",                    ID_SIM_INSTANT_LEVEL3
+            MENUITEM "Level &4",                    ID_SIM_INSTANT_LEVEL4
+            MENUITEM "Level &5",                    ID_SIM_INSTANT_LEVEL5
+        END
+        MENUITEM "&Dogfight",                   ID_SIM_DOGFIGHT
+        MENUITEM SEPARATOR
+        MENUITEM "&Options",                    ID_SIM_OPTIONS
+        POPUP "&Compression"
+        BEGIN
+            MENUITEM "x&1",                         ID_SIM_COMPRESSION_X1
+            MENUITEM "x&2",                         ID_SIM_COMPRESSION_X2
+            MENUITEM "x&4",                         ID_SIM_COMPRESSION_X4
+            MENUITEM "x&8",                         ID_SIM_COMPRESSION_X8
+            MENUITEM "x&16",                        ID_SIM_COMPRESSION_X16
+        END
+        MENUITEM "E&xit",                       ID_SIM_EXIT
+    END
+    POPUP "&Campaign"
+    BEGIN
+        MENUITEM "&New",                        ID_CAMPAIGN_NEW
+        MENUITEM "&Load",                       ID_CAMPAIGN_LOAD
+        MENUITEM "&Join",                       ID_CAMPAIGN_JOIN, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Save",                       ID_CAMPAIGN_SAVE, GRAYED
+        MENUITEM "Save &As",                    ID_CAMPAIGN_SAVEAS, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Save As New",                 ID_CAMPAIGN_SAVEALLAS
+        , GRAYED
+        MENUITEM "Save As Instant",             ID_CAMPAIGN_SAVEINSTANTAS
+        , GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Display",                     ID_CAMPAIGN_DISPLAY, GRAYED
+        MENUITEM "&Paused",                     ID_CAMPAIGN_PAUSED
+        , CHECKED, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Pick Squadron",               ID_CAMPAIGN_SELECTSQUADRON
+        , GRAYED
+        MENUITEM "Fly Mission",                 ID_CAMPAIGN_FLYMISSION
+        , GRAYED
+        MENUITEM "Renaming On",                 ID_CAMPAIGN_RENAMINGON
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       ID_CAMPAIGN_EXIT, GRAYED
+    END
+    POPUP "&UI"
+    BEGIN
+        MENUITEM "&Splash Screen",              ID_UI_AIRBASE
+    END
+    POPUP "&Voices"
+    BEGIN
+        MENUITEM "Tool",                        ID_VOICES_TOOL
+    END
+END
+
+IDR_BRIEF_MENU MENU 
+BEGIN
+    POPUP "&Display"
+    BEGIN
+        MENUITEM "SAMs",                        ID_DISPLAY_SAMS
+        MENUITEM "AAA",                         ID_DISPLAY_AAA
+        MENUITEM "Radar",                       ID_DISPLAY_RADAR
+        MENUITEM "Ground Troops",               ID_DISPLAY_GROUNDTROOPS
+        MENUITEM "FLOT",                        ID_DISPLAY_FLOT
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "Fly",                         ID_OPTIONS_FLY
+        MENUITEM "Abort",                       ID_OPTIONS_ABORT
+    END
+    POPUP "&Window2"
+    BEGIN
+        MENUITEM "Briefing Text",               ID_WINDOW_BRIEFINGTEXT
+        MENUITEM "Flight Map",                  ID_WINDOW_FLIGHTMAP
+        MENUITEM "Lineup Card",                 ID_WINDOW_LINEUPCARD
+        MENUITEM "Weapon Loadout",              ID_WINDOW_WEAPONLOADOUT
+        MENUITEM "Satellite Photo",             ID_WINDOW_SATPHOTO
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Tile",                       IDM_WINDOW_TILE
+        MENUITEM SEPARATOR
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "Falcon4.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_UNITDIALOG DIALOGEX 10, 10, 207, 377
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,142,359,60,15
+    PUSHBUTTON      "&Plan",IDC_BUTTONPLAN,72,340,63,15
+    CONTROL         "Player Ok",IDC_CHECKPLAYEROK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,85,145,43,10
+    CONTROL         "Aggregate",IDC_CHECKAGGREGATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,150,145,49,10
+    LTEXT           "Type:",IDC_STATICTYPE,5,87,19,8
+    LTEXT           "Strength:",IDC_STATICCOMBATSTR,5,175,30,8
+    LTEXT           "Owner:",IDC_STATICOWNER,5,117,24,8
+    LTEXT           "Vehicle:",IDC_STATICVEHICLE,5,102,26,8
+    GROUPBOX        "",IDC_STATICSYMBOL,45,0,117,40
+    PUSHBUTTON      "&Delete",IDC_BUTTONDELETE,5,359,60,15
+    CONTROL         "",IDC_UNIT_0,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,5,
+                    210,95,8,WS_EX_TRANSPARENT
+    LTEXT           "88888",IDC_UNIT_STRVAL,40,175,21,8
+    LTEXT           "001",IDC_UNIT_NAMEIDVAL,51,15,20,10
+    RTEXT           "XX",IDC_UNIT_OWN2VAL,136,15,20,10
+    LTEXT           "Location:",IDC_STATIC,5,148,30,10
+    LTEXT           "888,888",IDC_UNIT_LOCVAL,40,148,27,8
+    PUSHBUTTON      "&Next Unit",IDC_BUTTONNEXTUNIT,142,340,60,15
+    PUSHBUTTON      "&Waypoints",IDC_BUTTONWAYPOINTS,72,359,63,15
+    PUSHBUTTON      "&Save",IDC_BUTTONSAVE,5,340,60,15
+    CONTROL         "Scripted",IDC_CHECKSCRIPTED,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,85,155,46,10
+    CONTROL         "Fixed",IDC_CHECKFIXED,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,85,175,47,10
+    CONTROL         "Broken",IDC_CHECKBROKEN,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,150,155,41,10
+    CONTROL         "Assigned",IDC_CHECKASSIGNED,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,150,165,45,10
+    LTEXT           "",IDC_UNIT_1,5,226,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_2,5,239,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_3,5,255,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_4,5,276,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_5,5,290,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_6,5,306,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_7,5,319,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_8,105,210,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_9,105,226,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_10,105,239,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_11,105,255,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_12,105,276,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_13,105,290,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_14,105,306,95,8,0,WS_EX_TRANSPARENT
+    LTEXT           "",IDC_UNIT_15,105,319,90,8,0,WS_EX_TRANSPARENT
+    LTEXT           "Mission:",IDC_STATIC_OPT1,105,57,30,8
+    LTEXT           "Loadout:",IDC_STATIC_OPT2,105,72,30,8
+    LTEXT           "Fuel:",IDC_STATIC_OPT3,105,87,30,8
+    LTEXT           "Target:",IDC_STATIC_OPT4,105,102,30,8
+    LTEXT           "Weapons:",IDC_STATIC_OPT5,105,117,35,8
+    GROUPBOX        "",IDC_STATIC_U0,7,206,35,25
+    GROUPBOX        "",IDC_STATIC_U1,7,231,35,25
+    GROUPBOX        "",IDC_STATIC_U2,7,255,35,25
+    GROUPBOX        "",IDC_STATIC_U3,7,279,35,26
+    GROUPBOX        "",IDC_STATIC_U4,7,304,35,25
+    GROUPBOX        "",IDC_STATIC_U00,50,210,20,15
+    GROUPBOX        "",IDC_STATIC_U01,82,210,19,15
+    GROUPBOX        "",IDC_STATIC_U02,115,210,20,15
+    GROUPBOX        "",IDC_STATIC_U03,148,210,19,15
+    GROUPBOX        "",IDC_STATIC_U04,180,210,20,15
+    GROUPBOX        "",IDC_STATIC_U10,50,236,20,15
+    GROUPBOX        "",IDC_STATIC_U11,82,236,19,15
+    GROUPBOX        "",IDC_STATIC_U12,115,236,20,15
+    GROUPBOX        "",IDC_STATIC_U13,148,236,19,15
+    GROUPBOX        "",IDC_STATIC_U14,180,236,20,15
+    GROUPBOX        "",IDC_STATIC_U20,50,260,20,15
+    GROUPBOX        "",IDC_STATIC_U21,82,260,19,15
+    GROUPBOX        "",IDC_STATIC_U22,115,260,20,15
+    GROUPBOX        "",IDC_STATIC_U23,148,260,19,15
+    GROUPBOX        "",IDC_STATIC_U24,180,260,20,15
+    GROUPBOX        "",IDC_STATIC_U30,50,284,20,15
+    GROUPBOX        "",IDC_STATIC_U31,82,284,19,15
+    GROUPBOX        "",IDC_STATIC_U32,115,284,20,15
+    GROUPBOX        "",IDC_STATIC_U33,148,284,19,15
+    GROUPBOX        "",IDC_STATIC_U34,180,284,20,15
+    GROUPBOX        "",IDC_STATIC_U40,50,309,20,15
+    GROUPBOX        "",IDC_STATIC_U41,82,309,19,15
+    GROUPBOX        "",IDC_STATIC_U42,115,309,20,15
+    GROUPBOX        "",IDC_STATIC_U43,148,309,19,15
+    GROUPBOX        "",IDC_STATIC_U44,180,309,20,15
+    GROUPBOX        "",IDC_UNIT_MAIN,82,8,45,30
+    COMBOBOX        IDC_UNIT_DOMAINCOMBO,40,55,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Domain:",IDC_STATICTYPE3,5,57,27,8
+    COMBOBOX        IDC_UNIT_SIZECOMBO,40,70,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Size:",IDC_STATICTYPE4,5,72,19,8
+    COMBOBOX        IDC_UNIT_TYPECOMBO,40,85,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_UNIT_VEHICLECOMBO,40,100,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_UNIT_OWNERCOMBO,40,115,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_UNIT_OPT1COMBO,140,55,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_UNIT_OPT2COMBO,140,70,60,110,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_UNIT_OPT3EDIT,140,85,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UNIT_OPT4EDIT,140,100,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UNIT_OPT5EDIT,140,115,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UNIT_OPT2EDIT,140,70,60,12,ES_AUTOHSCROLL | NOT 
+                    WS_VISIBLE
+    CTEXT           "Static",IDC_UNIT_NAMEVAL,0,43,205,8
+    EDITTEXT        IDC_UNIT_NAMEIDEDIT,185,4,20,12,ES_AUTOHSCROLL
+    LTEXT           "NID:",IDC_STATIC,165,7,16,8
+    LTEXT           "001",IDC_UNIT_IDVAL,7,7,26,10
+    LTEXT           "Arrival #:",IDC_STATICOWNER2,5,132,29,8
+    LTEXT           "Other:",IDC_STATIC_OPT6,105,132,35,8
+    EDITTEXT        IDC_UNIT_OPT6EDIT,140,130,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UNIT_REINFORCE_EDIT,40,130,60,12,ES_AUTOHSCROLL
+    CONTROL         "Commando",IDC_CHECKCOMMANDO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,85,165,47,10
+    CONTROL         "Engaged",IDC_CHECKEngaged,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,150,175,45,10
+    LTEXT           "Target:",IDC_STATICTARGET,5,161,24,8
+    LTEXT           "888,888",IDC_UNIT_STRTARGET,40,161,27,8
+    LTEXT           "0",IDC_UNIT_SPOTVAL,40,189,40,8
+    LTEXT           "SpotData:",IDC_UNIT_SPOTSTATIC,5,189,33,8
+    LTEXT           "Index",IDC_STATIC,135,190,19,10
+    EDITTEXT        IDC_INDEX,158,188,43,13,ES_AUTOHSCROLL
+END
+
+IDD_TEAMEDIT_DIALOG DIALOGEX 0, 0, 378, 356
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "TeamEdit"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,320,335,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,255,335,50,14
+    COMBOBOX        IDC_TEAM_COMBO,5,5,110,195,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    EDITTEXT        IDC_INITIATIVE,61,30,55,12,ES_AUTOHSCROLL
+    GROUPBOX        "",IDC_STATIC,5,20,365,305,0,WS_EX_CLIENTEDGE
+    LTEXT           "Initiative:",IDC_STATIC,15,32,29,8
+    LTEXT           "Air Exp:",IDC_STATIC,130,78,25,8
+    EDITTEXT        IDC_EXPERIENCE2,165,90,55,12,ES_AUTOHSCROLL
+    LTEXT           "Airdef Exp:",IDC_STATIC,130,92,35,8
+    EDITTEXT        IDC_EXPERIENCE1,165,75,55,12,ES_AUTOHSCROLL
+    LTEXT           "Reinforce #:",IDC_STATIC,15,47,40,8
+    EDITTEXT        IDC_REINFORCEMENTS,61,45,55,12,ES_AUTOHSCROLL
+    LTEXT           "First Colonel:",IDC_STATIC,255,32,41,8
+    EDITTEXT        IDC_PILOT0,305,30,55,12,ES_AUTOHSCROLL
+    LTEXT           "First Cmdr:",IDC_STATIC,255,47,34,8
+    EDITTEXT        IDC_PILOT1,305,45,55,12,ES_AUTOHSCROLL
+    LTEXT           "First Wingman:",IDC_STATIC,255,62,48,8
+    EDITTEXT        IDC_PILOT2,305,60,55,12,ES_AUTOHSCROLL
+    LTEXT           "Last Wingman:",IDC_STATIC,255,77,48,8
+    EDITTEXT        IDC_PILOT3,305,75,55,12,ES_AUTOHSCROLL
+    LTEXT           "Supply:",IDC_STATIC,130,32,24,8
+    EDITTEXT        IDC_SUPPLY,165,30,35,12,ES_AUTOHSCROLL
+    LTEXT           "Fuel:",IDC_STATIC,130,47,16,8
+    EDITTEXT        IDC_FUEL,165,45,35,12,ES_AUTOHSCROLL
+    LTEXT           "Attack Time:",IDC_STATIC,15,62,41,8
+    EDITTEXT        IDC_ATTACKTIME,61,60,55,12,ES_AUTOHSCROLL
+    LTEXT           "Offense Loss:",IDC_STATIC,15,77,44,8
+    EDITTEXT        IDC_OFFENSELOSS,61,75,55,12,ES_AUTOHSCROLL
+    LTEXT           "Flag ID:",IDC_STATIC,15,92,26,8
+    EDITTEXT        IDC_FLAGID,61,90,55,12,ES_AUTOHSCROLL
+    LTEXT           "Equipment:",IDC_STATIC,15,107,36,8
+    EDITTEXT        IDC_EQUIPMENT,61,105,55,12,ES_AUTOHSCROLL
+    CONTROL         "Active",IDC_ACTIVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,90,190,36,10
+    CONTROL         "Has Satelites",IDC_SATS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,90,200,57,10
+    LTEXT           "Relations:",IDC_STATIC,15,135,32,8
+    LTEXT           "Team 0:",IDC_STATIC,10,150,27,8
+    LTEXT           "Team 1:",IDC_STATIC,55,150,27,8
+    LTEXT           "Team 2:",IDC_STATIC,100,150,27,8
+    LTEXT           "Team 3:",IDC_STATIC,145,150,27,8
+    LTEXT           "Team 4:",IDC_STATIC,190,150,27,8
+    LTEXT           "Team 5:",IDC_STATIC,235,150,27,8
+    LTEXT           "Team 6:",IDC_STATIC,280,150,27,8
+    LTEXT           "Team 7:",IDC_STATIC,325,150,27,8
+    COMBOBOX        IDC_TEAM_REL_0,10,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_1,55,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_2,100,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_3,145,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_4,190,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_7,325,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_5,235,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM_REL_6,280,160,45,50,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Members:",IDC_STATIC,15,180,32,8
+    CONTROL         "Country 0",IDC_COUNTRY_MEM_0,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,190,46,10
+    CONTROL         "Country 1",IDC_COUNTRY_MEM_1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,200,46,10
+    CONTROL         "Country 2",IDC_COUNTRY_MEM_2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,209,46,10
+    CONTROL         "Country 3",IDC_COUNTRY_MEM_3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,220,46,10
+    CONTROL         "Country 4",IDC_COUNTRY_MEM_4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,230,46,10
+    CONTROL         "Country 5",IDC_COUNTRY_MEM_5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,240,46,10
+    CONTROL         "Country 6",IDC_COUNTRY_MEM_6,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,249,46,10
+    CONTROL         "Country 7",IDC_COUNTRY_MEM_7,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,260,46,10
+    LTEXT           "Name:",IDC_STATIC,225,7,22,8
+    EDITTEXT        IDC_TEAM_NAME,250,5,120,12,ES_AUTOHSCROLL
+    LTEXT           "Flags:",IDC_STATIC,90,180,20,8
+    LTEXT           "Objective Priorities:",IDC_STATIC,15,277,61,8
+    LTEXT           "Unit Priorities:",IDC_STATIC,15,292,44,8
+    LTEXT           "Mission Priorities:",IDC_STATIC,15,307,54,8
+    EDITTEXT        IDC_OBJPRI,80,220,280,12,ES_AUTOHSCROLL | NOT WS_VISIBLE | 
+                    WS_DISABLED
+    EDITTEXT        IDC_MISSPRI,80,249,280,12,ES_AUTOHSCROLL | NOT 
+                    WS_VISIBLE | WS_DISABLED
+    EDITTEXT        IDC_UNITPRI,80,235,280,12,ES_AUTOHSCROLL | NOT 
+                    WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Save",IDC_SAVE_TEAMS,190,335,50,14
+    COMBOBOX        IDC_OBJPRICOMBO,80,275,130,215,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    EDITTEXT        IDC_OBJPRIEDIT,265,275,40,12,ES_AUTOHSCROLL
+    LTEXT           "New Priority:",IDC_STATIC,220,277,40,8
+    COMBOBOX        IDC_UNITPRICOMBO,80,289,130,215,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_UNITPRIEDIT,265,289,40,12,ES_AUTOHSCROLL
+    LTEXT           "New Priority:",IDC_STATIC,220,292,40,8
+    COMBOBOX        IDC_MISSPRICOMBO,80,305,130,215,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_MISSPRIEDIT,265,305,40,12,ES_AUTOHSCROLL
+    LTEXT           "New Priority:",IDC_STATIC,220,307,40,8
+    LTEXT           "Gnd Exp:",IDC_STATIC,130,107,30,8
+    LTEXT           "Naval Exp:",IDC_STATIC,130,121,36,8
+    EDITTEXT        IDC_EXPERIENCE3,165,105,55,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EXPERIENCE4,165,120,55,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EQUIPMENT2,61,120,55,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FUEL_LEVEL,205,45,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SUPPLY_LEVEL,205,30,25,12,ES_AUTOHSCROLL
+END
+
+IDD_OBJECTIVEDIALOG DIALOG  5, 5, 262, 175
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Objective Editor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,205,155,50,15
+    PUSHBUTTON      "Add",IDC_ADD,71,155,50,15
+    LTEXT           "Type:",IDC_OBJ_TYPELABEL,130,2,19,8
+    LTEXT           "Owner:",IDC_OBJ_OWNLABEL,5,2,24,8
+    PUSHBUTTON      "Delete",IDC_BUTTONDELETE,5,155,50,15
+    LTEXT           "Priority:",IDC_OBJ_PRILABEL,5,32,24,8
+    LTEXT           "Control:",IDC_OBJ_OCCLABEL,5,17,25,8
+    LTEXT           "Status:",IDC_OBJ_STATLABEL,5,50,23,8
+    GROUPBOX        "",IDC_OBJ_OBJBOX,220,100,35,35
+    LTEXT           "ID:",IDC_OBJ_IDLABEL,5,62,10,8
+    LTEXT           "Offset:",IDC_OBJ_OFFLABEL,5,88,22,8
+    LTEXT           "Location:",IDC_OBJ_LOCLABEL,5,75,30,8
+    LTEXT           "0.00, 0.00, 0.00",IDC_OBJ_OFFVAL,40,88,50,10
+    LTEXT           "0",IDC_OBJ_IDVAL,40,62,50,10
+    LTEXT           "0,0",IDC_OBJ_LOCVAL,40,75,50,10
+    LTEXT           "00000000000000000000000000000000",IDC_OBJ_ROSTVAL,40,
+                    140,129,8
+    LTEXT           "Name:",IDC_OBJ_NAMELABEL,130,32,22,8
+    LTEXT           "Parent:",IDC_OBJ_PARENTLABEL,130,47,23,8
+    COMBOBOX        IDC_OBJ_TYPEVAL,160,0,95,110,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_OBJ_OWNVAL,40,0,80,110,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_OBJ_OCCVAL,40,15,80,110,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_OBJ_PRIVAL,40,30,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Name",IDC_OBJ_RENAME,130,65,35,10
+    PUSHBUTTON      "Inherit",IDC_OBJ_DEL,220,65,35,10
+    EDITTEXT        IDC_OBJ_PARENTVAL,160,45,95,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    COMBOBOX        IDC_OBJ_NAMECOMBO,160,30,95,230,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Features:",IDC_STATIC,5,140,30,8
+    PUSHBUTTON      "Remove",IDC_OBJ_REMOVE,175,65,35,10
+    EDITTEXT        IDC_OBJ_NAMEVAL,160,30,85,15,ES_AUTOHSCROLL | NOT 
+                    WS_VISIBLE | WS_DISABLED
+    CONTROL         "SAM",IDC_OBJ_SAM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    130,90,31,10
+    CONTROL         "Artillery",IDC_OBJ_ART,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,130,100,38,10
+    CONTROL         "Ambush",IDC_OBJ_AMBUSH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,90,41,10
+    LTEXT           "Special Sites:",IDC_STATIC,130,80,45,10
+    CONTROL         "Border",IDC_OBJ_BORDER,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,130,110,41,10
+    LTEXT           "0",IDC_OBJ_STATVAL,40,50,25,10
+    LTEXT           "Subtype:",IDC_OBJ_STYPELABEL,130,17,29,8
+    COMBOBOX        IDC_OBJ_STYPEVAL,160,15,95,110,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "SpotData:",IDC_OBJ_SPOTLAB,5,114,33,8
+    LTEXT           "00000000",IDC_OBJ_SPOTVAL,40,114,50,10
+    LTEXT           "Frontline:",IDC_OBJ_FRONTLABEL,5,101,30,8
+    LTEXT           "000",IDC_OBJ_FRONTVAL,40,101,50,10
+    PUSHBUTTON      "Repair",IDC_OBJ_REPAIR,95,50,25,10
+    CONTROL         "Mountain",IDC_OBJ_MOUNTAIN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,110,45,10
+    CONTROL         "Flat",IDC_OBJ_FLAT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,120,27,10
+    PUSHBUTTON      "Recalc Parent",IDC_OBJ_RECALC,139,155,50,15
+    LTEXT           "Flags:",IDC_STATIC,220,80,20,8
+    CONTROL         "Fixed",IDC_OBJ_MANUAL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,220,90,33,10
+    CONTROL         "Cmdo",IDC_OBJ_COMMANDO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,130,120,34,10
+    CONTROL         "Radar",IDC_OBJ_RADAR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,100,35,10
+    LTEXT           "Supply:",IDC_OBJ_SPOTLAB2,5,127,33,8
+    LTEXT           "00",IDC_OBJ_SUPPLY,40,127,15,10
+    LTEXT           "Fuel:",IDC_OBJ_SPOTLAB3,80,127,16,8
+    LTEXT           "00",IDC_OBJ_FUEL,105,127,15,10
+END
+
+IDD_ABOUTDIALOG DIALOG  0, 0, 186, 98
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,45,50,14
+    CTEXT           "Falcon 4.0 Campaign Tool ",IDC_STATIC,18,5,149,10
+    CTEXT           "Kevin Klemmick, 1995",IDC_STATIC,18,15,149,8
+    CTEXT           "Spectrum HoloByte",IDC_STATIC,18,25,149,10
+END
+
+IDD_MISSDIALOG DIALOG  5, 5, 382, 226
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Mission Selection"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "&Cancle",IDOK,325,205,50,14
+    PUSHBUTTON      "&Briefing",IDC_BRIEF,5,205,49,14
+    PUSHBUTTON      "&Debrief",IDC_DEBRIEF,85,205,49,14
+    LTEXT           "Strike",IDC_STATIC1,100,40,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC2,100,50,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC3,100,60,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC4,100,70,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC5,100,80,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC6,100,90,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC7,100,100,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC8,100,110,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC9,100,120,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC10,100,130,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC11,100,140,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC12,100,150,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC13,100,160,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC14,100,170,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC15,100,180,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC16,100,190,85,10,NOT WS_VISIBLE
+    LTEXT           "Squadron:",IDC_STATIC,5,8,34,8
+    COMBOBOX        IDC_SQUADRONCOMBO,45,5,100,205,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Based at:",IDC_STATIC,186,8,31,8
+    LTEXT           "0,0",IDC_BASESTATIC,226,8,43,8
+    LTEXT           "Specialty:",IDC_STATIC,285,8,35,8
+    LTEXT           "General",IDC_SPECIALSTATIC,325,8,35,8
+    LTEXT           "Missions Available:",IDC_MISS_HEADERSTATIC,5,25,65,10
+    CONTROL         "1",IDC_MISS_MISSION1,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE | WS_GROUP,5,40,40,10
+    CONTROL         "2",IDC_MISS_MISSION2,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,50,40,10
+    CONTROL         "3",IDC_MISS_MISSION3,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,60,40,10
+    CONTROL         "4",IDC_MISS_MISSION4,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,70,40,10
+    CONTROL         "5",IDC_MISS_MISSION5,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,80,40,10
+    CONTROL         "6",IDC_MISS_MISSION6,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,90,40,10
+    CONTROL         "7",IDC_MISS_MISSION7,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,100,40,10
+    CONTROL         "8",IDC_MISS_MISSION8,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,110,40,10
+    CONTROL         "9",IDC_MISS_MISSION9,"Button",BS_AUTORADIOBUTTON | NOT 
+                    WS_VISIBLE,5,120,40,10
+    CONTROL         "10",IDC_MISS_MISSION10,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,130,40,10
+    CONTROL         "11",IDC_MISS_MISSION11,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,140,40,10
+    CONTROL         "12",IDC_MISS_MISSION12,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,150,40,10
+    CONTROL         "13",IDC_MISS_MISSION13,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,160,40,10
+    CONTROL         "14",IDC_MISS_MISSION14,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,170,40,10
+    CONTROL         "15",IDC_MISS_MISSION15,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,5,180,40,10
+    CONTROL         "16",IDC_MISS_MISSION16,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE | WS_GROUP,5,190,40,10
+    PUSHBUTTON      "&Fly",IDC_MISS_FLY,166,205,49,14
+    PUSHBUTTON      "&Fist of God",IDC_MISS_FOG,245,205,49,14
+    LTEXT           "1:00.10",IDC_TOT1,185,40,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT2,185,50,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT3,185,60,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT4,185,70,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT6,185,90,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT5,185,80,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT7,185,100,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT8,185,110,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT9,185,120,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT10,185,130,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT11,185,140,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT12,185,150,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT13,185,160,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT14,185,170,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT15,185,180,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TOT16,185,190,85,10,NOT WS_VISIBLE
+    LTEXT           "Hwanju Airbase",IDC_TARGET1,285,40,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET2,285,50,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET3,283,61,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET4,285,70,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET5,285,80,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET6,285,90,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET7,285,100,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET8,285,110,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET9,285,120,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET10,285,130,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET11,285,140,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET12,285,150,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET13,285,160,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET14,285,170,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET15,285,180,85,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_TARGET16,285,190,85,10,NOT WS_VISIBLE
+    LTEXT           "Takeoff time:",IDC_TOT17,185,25,85,10
+    LTEXT           "Target:",IDC_TARGET18,285,25,85,10
+    LTEXT           "Viper1",IDC_CS_1,50,40,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_2,50,50,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_3,50,60,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_4,50,70,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_5,50,80,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_6,50,90,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_7,50,100,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_8,50,110,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_9,50,120,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_10,50,130,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_11,50,140,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_12,50,150,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_13,50,160,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_14,50,170,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_15,50,180,45,10,NOT WS_VISIBLE
+    LTEXT           "",IDC_CS_16,50,190,45,10,NOT WS_VISIBLE
+END
+
+IDD_SESSION_MANAGER DIALOG  0, 0, 313, 183
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Session Manager"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Create &Group",IDC_SESSION_CREATE_GROUP,133,49,46,12
+    PUSHBUTTON      "Change &Name",IDC_SESSION_CHANGE_NAME,131,67,50,14
+    PUSHBUTTON      "E&xit Group",IDC_SESSION_EXIT,131,87,49,14
+    CONTROL         "&Enable Session Manager",IDC_SESSION_ENABLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,185,140,104,13
+    DEFPUSHBUTTON   "OK",IDOK,184,161,50,14
+    LISTBOX         IDC_SESSION_GROUP_LIST,24,29,103,100,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_SESSION_MEMBER_LIST,184,29,103,100,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Groups Available",IDC_STATIC,25,18,103,8
+    LTEXT           "Members",IDC_STATIC,185,18,103,8
+    LTEXT           "Your Name :",IDC_STATIC,11,143,40,8
+    LTEXT           "Your Name Here",IDC_SESSION_NAME,53,143,67,8
+    LTEXT           "Your Group :",IDC_STATIC,11,155,40,8
+    LTEXT           "Your Name Here",IDC_SESSION_GROUP,53,155,67,8
+END
+
+IDD_SESSION_NEW DIALOG  0, 0, 186, 68
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "New Group"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_SESSION_NEW_NAME,56,18,108,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,38,46,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,98,46,50,14
+    LTEXT           "New Name",IDC_SESSION_NEW_PROMPT,8,18,45,11
+END
+
+IDD_SESSION_JOIN DIALOG  0, 0, 262, 183
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Join a Group"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,135,160,50,15
+    LISTBOX         IDC_SESSION_GROUP_LIST,10,26,103,100,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_SESSION_MEMBER_LIST,145,26,103,100,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Groups Available",IDC_STATIC,11,15,103,8
+    LTEXT           "Members",IDC_STATIC,147,15,103,8
+    LTEXT           "Your Name :",IDC_STATIC,11,143,40,8
+    LTEXT           "Your Name Here",IDC_SESSION_NAME,53,143,67,8
+    LTEXT           "Your Group :",IDC_STATIC,11,155,40,8
+    LTEXT           "Your Name Here",IDC_SESSION_GROUP,53,155,67,8
+    DEFPUSHBUTTON   "Cancle",IDCANCLE,200,160,50,15
+END
+
+IDD_WPDIALOG DIALOG  5, 5, 222, 122
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Waypoint Editor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,165,100,50,15
+    PUSHBUTTON      "Add After",IDC_ADD,86,100,50,15
+    LTEXT           "Action:",IDC_WP_ACTIONLABEL,5,22,23,8
+    LTEXT           "Location:",IDC_WP_LOCLABEL,5,5,30,8
+    PUSHBUTTON      "Delete",IDC_BUTTONDELETE,5,100,50,15
+    LTEXT           "Arrive at:",IDC_WP_ARRIVELABEL,5,85,29,8
+    LTEXT           "Formation:",IDC_WP_FORMLABEL,115,37,34,8
+    LTEXT           "Target:",IDC_WP_TARGETLABEL,5,37,32,8
+    LTEXT           "0,0",IDC_WP_LOCVAL,40,5,50,10
+    LTEXT           "0",IDC_WP_ARRIVEVAL,40,85,50,10
+    LTEXT           "Enroute:",IDC_WP_ENROUTELABEL,115,22,28,8
+    LTEXT           "TargetID:",IDC_WP_TARGIDLABEL,5,52,31,8
+    LTEXT           "Altitude:",IDC_WP_ALTLABEL,115,52,26,8
+    LTEXT           "Depart at:",IDC_WP_DEPARTLABEL,115,85,32,8
+    LTEXT           "0",IDC_WP_DEPARTVAL,150,85,50,10
+    EDITTEXT        IDC_WP_ALTEDIT,151,50,65,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_WP_ACTIONCOMBO,40,20,65,125,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_WP_ENROUTECOMBO,151,20,65,165,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_WP_FORMATIONCOMBO,151,35,65,80,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_WP_TARGETCOMBO,40,35,65,80,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    EDITTEXT        IDC_WP_TARGETIDEDIT,40,50,65,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    LTEXT           "Specific:",IDC_WP_SPECLABEL,5,67,28,8
+    EDITTEXT        IDC_WP_SPECIFICEDIT,40,65,65,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    LTEXT           "Station:",IDC_WP_STATION,115,67,26,8
+    EDITTEXT        IDC_WP_STATIONEDIT,151,65,65,12,ES_AUTOHSCROLL
+END
+
+IDD_MISSTRIGDIALOG DIALOG  0, 0, 187, 106
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Mission Trigger"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,125,85,55,14
+    PUSHBUTTON      "Cancel",IDCANCEL,5,85,55,14
+    EDITTEXT        IDC_TARGETX,145,5,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TARGETY,145,20,35,12,ES_AUTOHSCROLL
+    LTEXT           "Team:",IDC_STATIC,5,22,21,8
+    LTEXT           "Mission:",IDC_STATIC,5,7,26,8
+    LTEXT           "Target X:",IDC_STATIC,110,7,30,8
+    LTEXT           "Target Y:",IDC_STATIC,110,22,30,8
+    EDITTEXT        IDC_TOT,35,50,48,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PRIORITY,145,50,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FLAGS,145,65,35,12,ES_AUTOHSCROLL
+    LTEXT           "TOT:",IDC_STATIC,5,52,18,8
+    LTEXT           "Type:",IDC_STATIC,5,67,19,8
+    LTEXT           "Priority:",IDC_STATIC,110,52,24,8
+    LTEXT           "Flags:",IDC_STATIC,110,67,20,8
+    COMBOBOX        IDC_MT_MISSIONCOMBO,35,5,70,85,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_MT_TEAMCOMBO,35,20,70,70,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_MT_TYPECOMBO,35,65,48,40,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_MT_TARGETTYPECOMBO,35,35,70,40,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Target:",IDC_STATIC,5,39,24,8
+    EDITTEXT        IDC_TARGETID,145,35,35,12,ES_AUTOHSCROLL
+    LTEXT           "Target ID:",IDC_STATIC,110,39,33,8
+END
+
+IDD_TEAMDIALOG DIALOGEX 5, 5, 507, 130
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Team Editor"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,450,110,50,15
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL1,5,17,33,8
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL2,5,32,33,8
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL3,5,47,33,8
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL4,5,62,33,8
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL5,5,77,33,8
+    LTEXT           "Country 0:",IDC_COUNTRYLABEL6,5,92,33,8
+    LTEXT           "Team:",IDC_STATIC,45,5,21,8
+    LTEXT           "Team 1:",IDC_STATIC,105,17,27,8
+    LTEXT           "Team 2:",IDC_STATIC,105,32,27,8
+    LTEXT           "Team 3:",IDC_STATIC,105,47,27,8
+    LTEXT           "Team 4:",IDC_STATIC,105,62,27,8
+    LTEXT           "Team 5:",IDC_STATIC,105,77,27,8
+    LTEXT           "Team 1:",IDC_STATIC,135,5,27,8,0,WS_EX_RIGHT
+    LTEXT           "Team 2:",IDC_STATIC,180,5,27,8,0,WS_EX_RIGHT
+    LTEXT           "Team 3:",IDC_STATIC,225,5,27,8,0,WS_EX_RIGHT
+    LTEXT           "Team 4:",IDC_STATIC,270,5,27,8,0,WS_EX_RIGHT
+    LTEXT           "Team 5:",IDC_STATIC,315,5,27,8,0,WS_EX_RIGHT
+    LTEXT           "Note: Data will not update if Campaign is paused.",
+                    IDC_STATIC,5,110,156,8
+    COMBOBOX        IDC_TEAM0,135,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY1,45,15,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY2,45,30,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY4,45,60,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY5,45,75,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY6,45,90,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_COUNTRY3,45,45,48,50,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM3,270,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM4,315,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM5,360,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM6,135,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM7,180,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM8,225,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM9,270,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM1,180,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM2,225,15,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM10,315,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM11,360,30,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM12,135,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM13,180,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM14,225,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM15,270,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM16,315,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM17,360,45,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM18,135,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM19,180,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM20,225,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM21,270,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM23,360,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM22,315,60,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM24,135,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Team 6:",IDC_STATIC,360,5,27,8,0,WS_EX_RIGHT
+    COMBOBOX        IDC_TEAM25,180,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM26,225,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM27,270,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM28,315,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM29,360,75,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Team 6:",IDC_STATIC,106,92,27,8
+    COMBOBOX        IDC_TEAM30,135,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM31,180,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM32,225,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM33,270,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM34,315,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        IDC_TEAM35,360,90,40,81,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Satelites",IDC_STATIC,405,5,28,8
+    CONTROL         "Yes",IDC_TEAM_SAT1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,14,28,15
+    CONTROL         "Yes",IDC_TEAM_SAT2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,29,28,15
+    CONTROL         "Yes",IDC_TEAM_SAT3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,44,28,15
+    CONTROL         "Yes",IDC_TEAM_SAT4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,59,28,15
+    CONTROL         "Yes",IDC_TEAM_SAT5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,74,28,15
+    CONTROL         "Yes",IDC_TEAM_SAT6,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,405,89,28,15
+    LTEXT           "Active",IDC_STATIC,440,5,30,8
+    CONTROL         "Yes",IDC_TEAM_ACT1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,14,28,15
+    CONTROL         "Yes",IDC_TEAM_ACT2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,29,28,15
+    CONTROL         "Yes",IDC_TEAM_ACT3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,44,28,15
+    CONTROL         "Yes",IDC_TEAM_ACT4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,59,28,15
+    CONTROL         "Yes",IDC_TEAM_ACT5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,74,28,15
+    CONTROL         "Yes",IDC_TEAM_ACT6,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,440,89,28,15
+    EDITTEXT        IDC_TEAM_INIT1,475,15,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEAM_INIT2,475,30,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEAM_INIT3,475,45,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEAM_INIT4,475,60,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEAM_INIT5,475,75,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEAM_INIT6,475,90,25,12,ES_AUTOHSCROLL
+    LTEXT           "Initiative",IDC_STATIC,475,5,27,8
+END
+
+IDD_WEATHERDIALOG DIALOG  5, 5, 237, 106
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Weather Editor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,93,85,50,15
+    LTEXT           "Temperature:",IDC_WD_TEMPLABEL,5,5,43,8
+    LTEXT           "Speed:",IDC_WD_WSLABEL,25,35,24,8
+    LTEXT           "Heading:",IDC_WD_WDLABEL,25,20,30,8
+    LTEXT           "Wind:",IDC_WD_LABEL1,5,20,20,8
+    EDITTEXT        IDC_WD_TEMPVAL,55,3,45,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WD_WHVAL,55,18,45,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WD_WSVAL,55,33,45,12,ES_AUTOHSCROLL
+    LTEXT           "Cloud Cover:",IDC_WD_COVERLABEL,5,50,42,8
+    LTEXT           "Cloud Level",IDC_WD_LEVELLABEL,5,65,38,8
+    LTEXT           "deg C",IDC_STATIC,105,5,20,8
+    LTEXT           "deg",IDC_STATIC,105,20,13,8
+    LTEXT           "kph",IDC_STATIC,104,35,13,8
+    EDITTEXT        IDC_WD_COVEREDIT,55,48,45,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WD_LEVELEDIT,55,64,45,12,ES_AUTOHSCROLL
+    LTEXT           "Forcast:",IDC_STATIC,135,5,26,8
+    LTEXT           "Temperature:",IDC_STATIC,140,20,43,8
+    LTEXT           "Wind Speed:",IDC_STATIC,140,35,42,8
+    LTEXT           "Cloud Base:",IDC_STATIC,140,50,39,8
+    EDITTEXT        IDC_WD_FORCASTTEMP,185,19,45,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WD_FORCASTSPEED,185,34,45,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WD_FORCASTLEVEL,185,48,45,12,ES_AUTOHSCROLL
+END
+
+IDD_SQUADRONDIALOG DIALOG  100, 100, 172, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Squadron Selection"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Commit",IDOK,115,75,50,14
+    LTEXT           "Squadron:",IDC_STATIC,5,8,34,8
+    COMBOBOX        IDC_SQUADRONCOMBO,45,5,120,205,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Based at:",IDC_STATIC,5,25,31,8
+    LTEXT           "0,0",IDC_BASESTATIC,45,25,43,8
+    LTEXT           "Specialty:",IDC_STATIC,5,40,35,8
+    LTEXT           "General",IDC_SPECIALSTATIC,45,40,35,8
+    PUSHBUTTON      "Be Cowardly",IDCANCEL,5,75,49,14
+    LTEXT           "Aircraft:",IDC_STATIC,5,55,25,8
+    LTEXT           "24 F-16C",IDC_SQUAD_ACVAL,45,55,35,8
+END
+
+IDD_BRIEFDIALOG DIALOG  10, 10, 514, 351
+STYLE DS_ABSALIGN | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Mission Brief"
+FONT 9, "Courier New"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,459,330,50,14
+    LTEXT           "",IDC_BRIEF_TEXT,5,0,505,325
+END
+
+IDD_FISTOFGOD DIALOG  0, 0, 162, 121
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "The Fist of God!"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Go with this",IDOK,90,100,65,14
+    PUSHBUTTON      "Forget it",IDCANCEL,5,100,65,14
+    LTEXT           "Mission:",IDC_STATIC,5,5,26,8
+    LTEXT           "Pilot Rating:",IDC_STATIC,5,68,56,8
+    COMBOBOX        IDC_FIST_SUCCESS,65,65,90,125,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "BlowCAP",IDC_FIST_MISSION,35,5,120,8
+    LTEXT           "Target:",IDC_STATIC,5,20,24,8
+    LTEXT           "DoomTown",IDC_FIST_TARGET,35,20,125,10
+    LTEXT           "Feature:",IDC_STATIC,5,35,27,8
+    LTEXT           "Kevin's House",IDC_FIST_TARGET_FEATURE,35,35,125,10
+    LTEXT           "Player's Mission:",IDC_STATIC,5,83,56,8,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    COMBOBOX        IDC_FIST_SUCCESS2,65,80,90,125,CBS_DROPDOWN | NOT 
+                    WS_VISIBLE | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Click here to smash target",IDC_FIST_DESTROYED,5,46,150,
+                    15
+END
+
+IDD_MAPDIALOG DIALOG  0, 0, 132, 196
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Korea"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,75,175,50,14
+    GROUPBOX        "",IDC_MAP_STATIC,20,0,110,110,BS_BITMAP
+    CONTROL         "Ownership",IDC_MAP_OWNERSHIP,"Button",
+                    BS_AUTORADIOBUTTON,5,180,49,10
+    CONTROL         "Friendly Low",IDC_MAP_SAMS0,"Button",BS_AUTORADIOBUTTON,
+                    5,125,53,10
+    LTEXT           "Air Defense Maps:",IDC_STATIC,6,115,59,8
+    LTEXT           "Other Maps:",IDC_STATIC,7,170,40,8
+    CONTROL         "Friendly High",IDC_MAP_SAMS1,"Button",
+                    BS_AUTORADIOBUTTON,5,135,53,10
+    CONTROL         "Enemy Low",IDC_MAP_SAMS2,"Button",BS_AUTORADIOBUTTON,5,
+                    145,53,10
+    CONTROL         "Enemy High",IDC_MAP_SAMS3,"Button",BS_AUTORADIOBUTTON,5,
+                    155,53,10
+    CONTROL         "Friendly Low",IDC_MAP_RADAR0,"Button",
+                    BS_AUTORADIOBUTTON,70,125,53,10
+    LTEXT           "Radar Coverage:",IDC_STATIC,71,115,59,8
+    CONTROL         "Friendly High",IDC_MAP_RADAR1,"Button",
+                    BS_AUTORADIOBUTTON,70,135,53,10
+    CONTROL         "Enemy Low",IDC_MAP_RADAR2,"Button",BS_AUTORADIOBUTTON,
+                    70,145,53,10
+    CONTROL         "Enemy High",IDC_MAP_RADAR3,"Button",BS_AUTORADIOBUTTON,
+                    70,155,53,10
+END
+
+IDD_FORCERARIODIALOG DIALOG  0, 0, 152, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Force Ratio Tool"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,75,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,5,75,50,14
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,60,10,85,10
+    LTEXT           "Ground Forces:",IDC_STATIC,5,10,50,8
+    LTEXT           "Air Forces:",IDC_STATIC,5,25,34,8
+    LTEXT           "Naval Forces:",IDC_STATIC,5,40,45,8
+    LTEXT           "AirDefenses:",IDC_STATIC,5,55,41,8
+    CONTROL         "Slider1",IDC_SLIDER2,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,60,25,85,10
+    CONTROL         "Slider1",IDC_SLIDER3,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,60,55,85,10
+    CONTROL         "Slider1",IDC_SLIDER4,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,60,40,85,10
+END
+
+IDD_SIM_OPTIONS DIALOG  0, 0, 221, 210
+STYLE DS_SETFONT | DS_MODALFRAME | DS_NOIDLEMSG | DS_3DLOOK | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Sim Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,30,185,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,136,185,50,14
+    GROUPBOX        "Sim Flags",IDC_STATIC,9,14,100,111
+    CONTROL         "Auto Target",IDC_SIMOPTION_AUTOTARGET,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,23,71,11
+    CONTROL         "Blackout",IDC_SIMOPTION_BLACKOUT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,34,71,11
+    CONTROL         "Unlimited Fuel",IDC_SIMOPTION_FUEL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,45,71,11
+    CONTROL         "Unlimited Ammo",IDC_SIMOPTION_AMMO,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,56,71,11
+    CONTROL         "Unlimited Chaff/Flare",IDC_SIMOPTION_CHAFF,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,67,82,11
+    CONTROL         "Collisions",IDC_SIMOPTION_COLLISION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,78,71,11
+    CONTROL         "Nametags",IDC_SIMOPTION_NAMETAGS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,89,71,11
+    COMBOBOX        IDC_SIMOPTION_FLIGHTMODEL,131,18,68,45,CBS_DROPDOWNLIST | 
+                    CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_SIMOPTION_WEAPONEFFECT,131,50,68,101,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_SIMOPTION_RADARTYPE,131,81,68,43,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_SIMOPTION_AUTOPILOT,131,111,68,49,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Flight Model",IDC_STATIC,131,9,39,8
+    LTEXT           "Weapon Effect",IDC_STATIC,131,39,49,8
+    LTEXT           "Radar Type",IDC_STATIC,131,71,38,8
+    LTEXT           "Autopilot Type",IDC_STATIC,131,102,46,8
+    LTEXT           "Vehicle Detail:",IDC_STATIC,10,150,46,8
+    CONTROL         "Slider1",IDC_SIMOPTION_VEH_DETAIL,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,75,150,125,10
+    LTEXT           "Feature Detail:",IDC_STATIC,10,135,47,8
+    CONTROL         "Slider1",IDC_SIMOPTION_FEAT_DETAIL,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,75,135,125,10
+    LTEXT           "Magnification:",IDC_STATIC,10,165,45,8
+    CONTROL         "Slider1",IDC_SIMOPTION_MAGNIFICATION,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,75,165,125,10
+END
+
+IDD_CAMP_CLIPPER DIALOG  5, 5, 232, 122
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Campaign Clipper"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,175,100,50,15
+    PUSHBUTTON      "Cancel",IDCANCEL,5,100,50,15
+    EDITTEXT        IDC_CC_LEFT,35,18,60,12,ES_AUTOHSCROLL
+    LTEXT           "Left:",IDC_STATIC,5,20,15,8
+    LTEXT           "Right:",IDC_STATIC,5,35,20,8
+    LTEXT           "Bottom:",IDC_STATIC,5,50,25,8
+    LTEXT           "Top:",IDC_STATIC,5,65,16,8
+    LTEXT           "Clip region (Campaign Coords):",IDC_STATIC,5,5,97,8
+    EDITTEXT        IDC_CC_RIGHT,35,33,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CC_BOTTOM,35,48,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CC_TOP,35,63,60,12,ES_AUTOHSCROLL
+    LTEXT           "Output file name:",IDC_STATIC,5,80,54,8
+    EDITTEXT        IDC_CC_FILENAME,65,78,105,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CC_WIDTH,165,18,60,12,ES_AUTOHSCROLL
+    LTEXT           "New width:",IDC_STATIC,115,21,35,8
+    LTEXT           "New Height:",IDC_STATIC,115,37,42,8
+    EDITTEXT        IDC_CC_HEIGHT,165,34,60,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CC_LEFT2,165,48,60,12,ES_AUTOHSCROLL
+    LTEXT           "New Left",IDC_STATIC,115,52,35,8
+    LTEXT           "New Bottom:",IDC_STATIC,115,66,42,8
+    EDITTEXT        IDC_CC_BOTTOM2,165,64,60,12,ES_AUTOHSCROLL
+    LTEXT           "New theater parameters:",IDC_STATIC,115,5,78,8
+END
+
+IDD_PLAYVOICES DIALOG  0, 0, 454, 207
+STYLE DS_SETFONT | DS_MODALFRAME | DS_NOIDLEMSG | DS_3DLOOK | DS_CENTER | 
+    WS_POPUP | WS_CAPTION
+CAPTION "Play Voices"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_VOICE,39,8,51,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MESSAGE,39,25,51,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FRAG,39,45,51,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Play",IDC_PLAY,17,183,54,17
+    LTEXT           "Voice",IDC_STATIC,19,9,20,9
+    LTEXT           "Message",IDC_STATIC,9,27,30,9
+    LTEXT           "Frag",IDC_STATIC,23,46,16,10
+    GROUPBOX        "Choose One",IDC_STATIC,139,9,71,39,WS_GROUP
+    CONTROL         "Play Message",IDC_PLAY_MESSAGE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,147,19,56,8
+    CONTROL         "Play Frag",IDC_PLAY_FRAG,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,147,30,58,11
+    PUSHBUTTON      "Close",IDC_CLOSE,147,183,55,17
+    LTEXT           "0",IDC_STATIC,50,64,10,9
+    LTEXT           "1",IDC_STATIC,75,64,9,9
+    LTEXT           "2",IDC_STATIC,100,64,8,10
+    LTEXT           "3",IDC_STATIC,126,64,10,9
+    LTEXT           "4",IDC_STATIC,151,64,8,9
+    LTEXT           "5",IDC_STATIC,177,64,9,10
+    LTEXT           "6",IDC_STATIC,204,64,10,9
+    LTEXT           "9",IDC_STATIC,282,64,8,10
+    LTEXT           "7",IDC_STATIC,231,64,9,9
+    LTEXT           "10",IDC_STATIC,307,64,16,9
+    LTEXT           "11",IDC_STATIC,333,64,14,9
+    LTEXT           "12",IDC_STATIC,359,64,11,10
+    LTEXT           "13",IDC_STATIC,385,64,15,9
+    LTEXT           "8",IDC_STATIC,255,64,9,9
+    LTEXT           "14",IDC_STATIC,411,64,13,10
+    EDITTEXT        IDC_DATA0,41,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA1,67,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA2,93,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA3,119,74,22,12,ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_NUMBER
+    EDITTEXT        IDC_DATA4,145,74,22,12,ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_NUMBER
+    EDITTEXT        IDC_DATA5,171,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA6,197,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA7,223,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA9,275,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA10,301,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA11,327,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA12,353,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA13,379,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA14,405,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA8,249,74,22,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Update",IDC_UPDATE,84,183,52,17
+    EDITTEXT        IDC_DATA15,41,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA16,67,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA17,93,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA18,119,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA19,145,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA20,171,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA21,197,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA22,223,87,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA23,249,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA24,275,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA25,301,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA26,327,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA27,353,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA28,379,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA29,405,88,22,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "+",IDC_INC_VOICE,103,9,11,10
+    PUSHBUTTON      "--",IDC_DEC_VOICE,92,9,11,10
+    PUSHBUTTON      "+",IDC_INC_MESSAGE,103,27,11,10
+    PUSHBUTTON      "--",IDC_DEC_MESSAGE,92,27,11,10
+    PUSHBUTTON      "+",IDC_INC_FRAG,104,46,11,10
+    PUSHBUTTON      "--",IDC_DEC_FRAG,92,46,11,10
+    LTEXT           "Frag",IDC_STATIC,5,74,28,11
+    LTEXT           "Eval",IDC_STATIC,6,88,27,13
+    EDITTEXT        IDC_DATA30,41,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA31,67,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA32,93,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA33,119,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA34,145,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA35,171,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA36,197,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA37,223,101,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA38,249,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA39,275,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA40,301,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA41,327,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA42,353,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA43,379,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA44,405,102,22,12,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DATA45,40,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA46,66,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA47,92,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA48,118,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA49,144,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA50,170,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA51,196,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA52,222,115,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA53,248,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA54,274,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA55,300,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA56,326,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA57,352,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA58,378,116,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DATA59,404,116,22,12,ES_AUTOHSCROLL
+    LTEXT           "Index",IDC_STATIC,6,116,27,13
+    LTEXT           "Max Index",IDC_STATIC,6,101,36,13
+    PUSHBUTTON      "+",IDC_INC_INDEX1,51,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX1,39,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX2,78,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX2,66,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX3,103,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX3,91,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX4,129,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX4,117,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX5,155,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX5,143,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX6,181,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX6,169,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX7,207,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX7,195,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX8,233,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX8,221,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX9,260,130,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX9,248,130,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX10,286,130,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX10,274,130,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX11,311,130,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX11,299,130,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX12,338,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX12,326,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX13,363,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX13,351,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX14,389,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX14,377,129,11,10
+    PUSHBUTTON      "+",IDC_INC_INDEX15,415,129,11,10
+    PUSHBUTTON      "--",IDC_DEC_INDEX15,403,129,11,10
+    PUSHBUTTON      "Increment",IDC_INC_ALLINDEXES,281,184,56,16
+    PUSHBUTTON      "Decrement",IDC_DEC_ALLINDEXES,213,184,56,16
+    PUSHBUTTON      "Reset",IDC_RESET,351,185,62,15
+    PUSHBUTTON      "Save",IDC_SAVE,239,17,51,21
+    PUSHBUTTON      "Load",IDC_LOAD,309,17,52,21
+    PUSHBUTTON      "Calculate Combinations",IDC_COMBOS,81,152,93,20
+    EDITTEXT        IDC_COMBINATIONS,189,157,129,12,ES_AUTOHSCROLL
+END
+
+IDD_PLAYERCHEAT DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cheat Tool"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "It's cool",IDOK,130,75,50,14
+    PUSHBUTTON      "Forget this",IDCANCEL,5,75,50,14
+    LTEXT           "Frequency:",IDC_STATIC,10,27,36,8
+    LTEXT           "Result:",IDC_STATIC,10,58,23,8
+    EDITTEXT        IDC_FREQ_EDIT,50,25,60,12,ES_AUTOHSCROLL
+    LTEXT           "(Minutes)",IDC_STATIC,115,27,30,8
+    COMBOBOX        IDC_RESULT_COMBO,50,56,60,65,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Priority:",IDC_STATIC,10,43,24,8
+    COMBOBOX        IDC_PRIORITY_COMBO,50,41,60,55,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "To use, select how often and what priority of mission you want to ""fly"" and the result you want to generate.",
+                    IDC_STATIC,5,5,170,20
+    CONTROL         "Cheating OFF",IDC_CHEATONOFF,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,67,75,50,15
+END
+
+IDD_DIALOG3 DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+END
+
+IDD_DIALOG4 DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+END
+
+IDD_DIALOG5 DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""f4version.h""\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_UNITDIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 205
+        BOTTOMMARGIN, 366
+    END
+
+    IDD_OBJECTIVEDIALOG, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 160
+    END
+
+    IDD_MISSTRIGDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 99
+    END
+
+    IDD_WEATHERDIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 227
+    END
+
+    IDD_BRIEFDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 507
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 344
+    END
+
+    IDD_FISTOFGOD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 155
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 114
+    END
+
+    IDD_MAPDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 125
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 189
+    END
+
+    IDD_FORCERARIODIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 145
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_SIM_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 203
+    END
+
+    IDD_PLAYVOICES, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 448
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_PLAYERCHEAT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_DIALOG3, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_DIALOG4, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_DIALOG5, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_TEAMDIALOG DLGINIT
+BEGIN
+    IDC_TEAM0, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM3, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM4, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM5, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM6, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM7, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM8, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM9, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM1, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM2, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM10, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM11, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM12, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM13, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM14, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM15, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM16, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM17, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM18, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM19, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM20, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM21, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM23, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM22, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM24, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM25, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM26, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM27, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM28, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM29, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM30, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM31, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM32, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM33, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM34, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    IDC_TEAM35, 0x403, 36, 0
+0x6c41, 0x696c, 0x6465, 0x4620, 0x6972, 0x6e65, 0x6c64, 0x2079, 0x654e, 
+0x7475, 0x6172, 0x206c, 0x6f48, 0x7473, 0x6c69, 0x2065, 0x6157, 0x0072, 
+
+    0
+END
+
+IDD_FISTOFGOD DLGINIT
+BEGIN
+    IDC_FIST_SUCCESS, 0x403, 7, 0
+0x6146, 0x6c69, 0x6465, "\000" 
+    IDC_FIST_SUCCESS2, 0x403, 7, 0
+0x6146, 0x6c69, 0x6465, "\000" 
+    0
+END
+
+IDD_PLAYERCHEAT DLGINIT
+BEGIN
+    IDC_RESULT_COMBO, 0x403, 5, 0
+0x6554, 0x7473, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_FALCON4_ACC1 ACCELERATORS 
+BEGIN
+    "T",            ID_SHOW_VERSION,        VIRTKEY, CONTROL, ALT, NOINVERT
+    "V",            ID_SHOW_MAJOR_VERSION,  VIRTKEY, CONTROL, ALT, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,3,1,9
+ PRODUCTVERSION 2,3,1,9
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x21L
+#else
+ FILEFLAGS 0x20L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "FreeFalcon 6.1"
+            VALUE "CompanyName", "MicroProse (Atari)"
+            VALUE "FileDescription", "Falcon 6.1  FFViper (US)"
+            VALUE "FileVersion", "2, 3, 1, 9"
+            VALUE "InternalName", "1.08i"
+            VALUE "LegalCopyright", "Copyright © 1998 - 2012"
+            VALUE "OriginalFilename", "FFViper.exe"
+            VALUE "ProductName", "FreeFalcon 6.1"
+            VALUE "ProductVersion", "2, 3, 1, 9"
+            VALUE "SpecialBuild", "US Edition"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_EXIT            "Exit Sim"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BRIEF_SAMS           "Show SAMs"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,209 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_BSPVIEW_CONTROLS DIALOG DISCARDABLE  0, 0, 378, 292
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "BSPView Controls"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Orbit",IDC_CAM_ORBIT,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,18,15,31,10
+    CONTROL         "Pan",IDC_CAM_PAN,"Button",BS_AUTORADIOBUTTON,18,27,29,
+                    10
+    CONTROL         "Lock at Origin",IDC_CAM_ORIGIN,"Button",
+                    BS_AUTORADIOBUTTON,18,39,60,10
+    CONTROL         "Set SW Value",IDC_SW_ENABLE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,79,61,10
+    LISTBOX         IDC_SW_NUMBER,94,77,56,16,LBS_NOINTEGRALHEIGHT | 
+                    WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Set DOF Rotation",IDC_DOFROT_ENABLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,132,72,10
+    LISTBOX         IDC_DOFROT_NUMBER,94,130,56,16,LBS_NOINTEGRALHEIGHT | 
+                    WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_DOFROT_VALUE,161,130,39,16,ES_AUTOHSCROLL
+    CONTROL         "Set DOF Translation",IDC_DOFTRANS_ENABLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,175,80,10
+    LISTBOX         IDC_DOFTRANS_NUMBER,94,174,56,16,LBS_NOINTEGRALHEIGHT | 
+                    WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_DOFTRANS_VALUE,161,174,39,16,ES_AUTOHSCROLL
+    CONTROL         "Set Slot Child",IDC_SLOT_ENABLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,215,58,10
+    LISTBOX         IDC_SLOT_NUMBER,94,215,56,16,LBS_NOINTEGRALHEIGHT | 
+                    WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_SLOT_CHILD,161,215,39,16,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,73,271,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,131,271,50,14
+    PUSHBUTTON      "Quit",IDQUIT,191,271,50,14
+    CONTROL         "",IDC_SW_BIT0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,347,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,335,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,323,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,311,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,299,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,287,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,263,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,251,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,239,
+                    98,16,8
+    CONTROL         "",IDC_SW_BIT10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    227,98,16,8
+    CONTROL         "",IDC_SW_BIT11,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    215,98,16,8
+    CONTROL         "",IDC_SW_BIT12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    203,98,16,8
+    CONTROL         "",IDC_SW_BIT13,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    191,98,16,8
+    CONTROL         "",IDC_SW_BIT14,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    179,98,16,8
+    CONTROL         "",IDC_SW_BIT15,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    167,98,16,8
+    CONTROL         "",IDC_SW_BIT16,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    347,77,16,8
+    CONTROL         "",IDC_SW_BIT17,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    335,77,16,8
+    CONTROL         "",IDC_SW_BIT18,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    323,77,16,8
+    CONTROL         "",IDC_SW_BIT19,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    311,77,16,8
+    CONTROL         "",IDC_SW_BIT20,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    299,77,16,8
+    CONTROL         "",IDC_SW_BIT21,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    287,77,16,8
+    CONTROL         "",IDC_SW_BIT22,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    275,77,16,8
+    CONTROL         "",IDC_SW_BIT23,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    263,77,16,8
+    CONTROL         "",IDC_SW_BIT24,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    251,77,16,8
+    CONTROL         "",IDC_SW_BIT25,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    239,77,16,8
+    CONTROL         "",IDC_SW_BIT26,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    227,77,16,8
+    CONTROL         "",IDC_SW_BIT27,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    215,77,16,8
+    CONTROL         "",IDC_SW_BIT28,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    203,77,16,8
+    CONTROL         "",IDC_SW_BIT29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    191,77,16,8
+    CONTROL         "",IDC_SW_BIT30,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    179,77,16,8
+    CONTROL         "",IDC_SW_BIT31,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    167,77,16,8
+    GROUPBOX        "Camera Control",IDC_STATIC,7,7,78,51
+    LTEXT           "SW Number",IDC_STATIC,94,68,40,8
+    LTEXT           "15",IDC_STATIC,167,87,9,8
+    LTEXT           "0",IDC_STATIC,347,87,8,8
+    LTEXT           "31",IDC_STATIC,166,64,9,8
+    LTEXT           "16",IDC_STATIC,347,64,8,8
+    LTEXT           "DOF Number",IDC_STATIC,94,121,42,8
+    LTEXT           "DOF Number",IDC_STATIC,94,165,42,8
+    LTEXT           "Slot Number",IDC_STATIC,94,203,40,8
+    LTEXT           "DOF Translation (feet)",IDC_STATIC,161,165,70,8
+    LTEXT           "DOF Angle (degrees)",IDC_STATIC,161,121,67,8
+    LTEXT           "Slot Child ID",IDC_STATIC,161,203,40,8
+    LTEXT           "Background Color",IDC_STATIC,115,7,58,8
+    LTEXT           "R",IDC_STATIC,110,18,8,8
+    LTEXT           "G",IDC_STATIC,109,30,8,8
+    LTEXT           "B",IDC_STATIC,109,42,8,8
+    CONTROL         "Slider1",IDC_SLIDER_BG_R,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,121,17,111,9
+    CONTROL         "Slider1",IDC_SLIDER_BG_G,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,122,28,111,9
+    CONTROL         "Slider1",IDC_SLIDER_BG_B,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,122,41,111,9
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_BSPVIEW_CONTROLS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 374
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 285
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
