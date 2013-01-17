@@ -2484,8 +2484,8 @@ void HudClass::DrawRALT(void)
     {
         if (!((AircraftClass*)ownship)->OnGround())
         {
-            if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RaltStatus::ROFF ||
-                ((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RaltStatus::RSTANDBY)
+            if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF ||
+                ((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RSTANDBY)
                 DrawALString();
             else if (Warnflash)
                 DrawALString();
@@ -2598,7 +2598,7 @@ void HudClass::DrawALString(void)
     else
         display->TextLeft(0.45F, YALText, "AL");
 
-    if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RaltStatus::ROFF)
+    if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF)
         return;
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)

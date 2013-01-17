@@ -1090,7 +1090,7 @@ void MfdDrawable::DefaultLabel(int button)
     switch (button)
     {
         case 10:
-            if (mfd->mode == MFDClass::MfdMode::SMSMode)
+            if (mfd->mode == MFDClass::SMSMode)
             {
                 LabelButton(button, "S-J");
             }
