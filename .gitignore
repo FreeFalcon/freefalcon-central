@@ -2,6 +2,7 @@
 build/
 
 # Visual Studio files
+*.opensdf
 *.sdf
 *.pch
 *.ncb
