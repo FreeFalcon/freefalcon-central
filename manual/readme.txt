@@ -1,1 +1,0 @@
-All docs should be placed here.

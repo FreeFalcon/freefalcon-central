@@ -1,0 +1,8 @@
+# Build directories
+build/
+
+# Visual Studio files
+*.pch
+*.ncb
+*.suo
+*.bak
