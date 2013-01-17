@@ -522,7 +522,7 @@ void AirframeClass::Init(int idx)
             {
                 if (platform->IsPlayer())
                 {
-                    platform->RALTStatus = AircraftClass::RaltStatus::ROFF;
+                    platform->RALTStatus = AircraftClass::ROFF;
                 }
             }
 
@@ -614,7 +614,7 @@ void AirframeClass::Init(int idx)
                 if (platform->IsPlayer())
                 {
                     //Cobra TJL 11/17/04 Why reinit to OFF?  Changing to ON
-                    platform->RALTStatus = AircraftClass::RaltStatus::RON;
+                    platform->RALTStatus = AircraftClass::RON;
                 }
             }
 
