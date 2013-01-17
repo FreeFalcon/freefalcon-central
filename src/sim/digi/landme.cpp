@@ -4605,7 +4605,7 @@ int DigitalBrain::PreFlight()
             break;
 
         case PreflightActions::RALTON:
-            if (self->RALTStatus == AircraftClass::RaltStatus::ROFF)
+            if (self->RALTStatus == AircraftClass::ROFF)
             {
                 self->RaltOn();
                 mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;
@@ -4659,7 +4659,7 @@ int DigitalBrain::PreFlight()
 
         case PreflightActions::EWSPGM:
         {
-            self->SetPGM(AircraftClass::EWSPGMSwitch::Man);
+            self->SetPGM(AircraftClass::Man);
             mNextPreflightAction = SimLibElapsedTime + PreFlightTable[mActionIndex].timedelay * CampaignSeconds;
         }
         break;
