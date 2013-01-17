@@ -62,9 +62,9 @@ extern int gRenameIds;
 extern C_Map  	*gMapMgr;
 
 
-extern int MainLastGroup,TacLastGroup;
-extern void RebuildFLOTList (void);	// 2001-10-31 M.N.
-extern int RebuildFrontList (void); // 2001-10-31 M.N.
+extern int MainLastGroup, TacLastGroup;
+extern void RebuildFLOTList(void);	// 2001-10-31 M.N.
+extern int RebuildFrontList(void);  // 2001-10-31 M.N.
 extern _TCHAR gLastTEFile[MAX_PATH]; // 2002-03-12 MN
 extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 
@@ -73,53 +73,53 @@ extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SaveAFile(long TitleID,_TCHAR *filespec,_TCHAR *excludelist[],void (*YesCB)(long,short,C_Base*),void (*NoCB)(long,short,C_Base*), _TCHAR *filename);
-static void update_taceng_clock (void);
+void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR *filename);
+static void update_taceng_clock(void);
 
-static void TACNewCB (long ID, short hittype, C_Base *control);
-static void TACEditCB (long ID, short hittype, C_Base *control);
-static void TACAcceptCB (long ID, short hittype, C_Base *control);
-static void TACHostCB (long ID, short hittype, C_Base *control);
-static void TACInfoCB (long ID, short hittype, C_Base *control);
-static void TACExitCB (long ID, short hittype, C_Base *control);
-static void TACRevertCB (long ID, short hittype, C_Base *control);
-static void TACSaveAsCB (long ID, short hittype, C_Base *control);
+static void TACNewCB(long ID, short hittype, C_Base *control);
+static void TACEditCB(long ID, short hittype, C_Base *control);
+static void TACAcceptCB(long ID, short hittype, C_Base *control);
+static void TACHostCB(long ID, short hittype, C_Base *control);
+static void TACInfoCB(long ID, short hittype, C_Base *control);
+static void TACExitCB(long ID, short hittype, C_Base *control);
+static void TACRevertCB(long ID, short hittype, C_Base *control);
+static void TACSaveAsCB(long ID, short hittype, C_Base *control);
 
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
-void SetDeleteCallback(void (*cb)(long,short,C_Base*));
-void TacticalEngagementSetup (bool noawacsmap);
-void PauseTacticalEngagement (void);
-void MakeTacticalEdit (void);
-void RemoveTacticalEdit (void);
+void SetDeleteCallback(void (*cb)(long, short, C_Base*));
+void TacticalEngagementSetup(bool noawacsmap);
+void PauseTacticalEngagement(void);
+void MakeTacticalEdit(void);
+void RemoveTacticalEdit(void);
 void SetupMapMgr(bool noawacsmap);
 void LoadTacticalWindows(void);
 void LoadTacEngSelectWindows();
-void SetTimeCompression (int);
+void SetTimeCompression(int);
 void CleanupTacticalEngagementUI();
 void PickTeamColors();
 void InitTimeCompressionBox(long compression);
 void UpdateOwners();
 extern long OwnershipChanged;
-void tactical_edit_mission (tactical_mission *);
-static void tactical_revert_mission (void);
+void tactical_edit_mission(tactical_mission *);
+static void tactical_revert_mission(void);
 
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
-void SetupOccupationMap (void);
-void DelSTRFileCB(long ID,short hittype,C_Base *control);
-void DelDFSFileCB(long ID,short hittype,C_Base *control);
-void DelLSTFileCB(long ID,short hittype,C_Base *control);
-void DelCamFileCB(long ID,short hittype,C_Base *control);
-void DelTacFileCB(long ID,short hittype,C_Base *control);
-void DelTGAFileCB(long ID,short hittype,C_Base *control);
-void DelVHSFileCB(long ID,short hittype,C_Base *control);
-void DelKeyFileCB(long ID,short hittype,C_Base *control);
+void SetupOccupationMap(void);
+void DelSTRFileCB(long ID, short hittype, C_Base *control);
+void DelDFSFileCB(long ID, short hittype, C_Base *control);
+void DelLSTFileCB(long ID, short hittype, C_Base *control);
+void DelCamFileCB(long ID, short hittype, C_Base *control);
+void DelTacFileCB(long ID, short hittype, C_Base *control);
+void DelTGAFileCB(long ID, short hittype, C_Base *control);
+void DelVHSFileCB(long ID, short hittype, C_Base *control);
+void DelKeyFileCB(long ID, short hittype, C_Base *control);
 void SetupTeamData(void);
-void OpenBuilderWindowCB(long ID,short hittype,C_Base *base);
-void OpenMissionWindowCB(long ID,short hittype,C_Base *base);
-void AreYouSure(long TitleID,long MessageID,void (*OkCB)(long,short,C_Base*),void (*CancelCB)(long,short,C_Base*));
-void AreYouSure(long TitleID,_TCHAR *text,void (*OkCB)(long,short,C_Base*),void (*CancelCB)(long,short,C_Base*));
-BOOL CheckExclude(_TCHAR *filename,_TCHAR *directory,_TCHAR *ExcludeList[],_TCHAR *extension);
-void VerifyDelete(long TitleID, void (*YesCB)(long,short,C_Base*),void (*NoCB)(long,short,C_Base*));
+void OpenBuilderWindowCB(long ID, short hittype, C_Base *base);
+void OpenMissionWindowCB(long ID, short hittype, C_Base *base);
+void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
+void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
 void GetTacticalFileList();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -127,15 +127,15 @@ void GetTacticalFileList();
 ///////////////////////////////////////////////////////////////////////////////
 
 extern GlobalPositioningSystem
-	*gGps;
+*gGps;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 int
-	tactical_debriefing = FALSE,
-	tactical_mission_loaded = FALSE;
+tactical_debriefing = FALSE,
+tactical_mission_loaded = FALSE;
 
 extern _TCHAR *TEExcludeList[];
 extern uchar gSelectedTeam;
@@ -145,82 +145,82 @@ extern long OwnershipChanged;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void hookup_flow_buttons (C_Window *winme)
+void hookup_flow_buttons(C_Window *winme)
 {
-	C_Button
-		*ctrl;
+    C_Button
+    *ctrl;
 
-	// New Mission Button
-	ctrl = (C_Button *) winme->FindControl (TAC_NEW_MISSION);
+    // New Mission Button
+    ctrl = (C_Button *) winme->FindControl(TAC_NEW_MISSION);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback(TACNewCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACNewCB);
+    }
 
-	ctrl = (C_Button *) winme->FindControl (TAC_EDIT);
+    ctrl = (C_Button *) winme->FindControl(TAC_EDIT);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback(TACEditCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACEditCB);
+    }
 
-	// Accept Button
-	ctrl = (C_Button *) winme->FindControl (SINGLE_COMMIT_CTRL);
+    // Accept Button
+    ctrl = (C_Button *) winme->FindControl(SINGLE_COMMIT_CTRL);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback(TACAcceptCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACAcceptCB);
+    }
 
-	// Accept Button
-	ctrl = (C_Button *) winme->FindControl (COMMS_COMMIT_CTRL);
+    // Accept Button
+    ctrl = (C_Button *) winme->FindControl(COMMS_COMMIT_CTRL);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback(TACAcceptCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACAcceptCB);
+    }
 
-	// Host Button
-	ctrl = (C_Button *) winme->FindControl (TAC_HOST);
+    // Host Button
+    ctrl = (C_Button *) winme->FindControl(TAC_HOST);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (TACHostCB);
-		ctrl->SetFlagBitOn (C_BIT_INVISIBLE);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACHostCB);
+        ctrl->SetFlagBitOn(C_BIT_INVISIBLE);
+    }
 
-	// Info Button
-	ctrl = (C_Button *) winme->FindControl (TAC_INFO);
+    // Info Button
+    ctrl = (C_Button *) winme->FindControl(TAC_INFO);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback(TACInfoCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACInfoCB);
+    }
 
-	// Exit Button
-	ctrl = (C_Button *) winme->FindControl (TAC_EXIT);
+    // Exit Button
+    ctrl = (C_Button *) winme->FindControl(TAC_EXIT);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (TACExitCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACExitCB);
+    }
 
-	// Revert Button
-	ctrl = (C_Button *) winme->FindControl (TAC_RESTORE_CTRL);
+    // Revert Button
+    ctrl = (C_Button *) winme->FindControl(TAC_RESTORE_CTRL);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (TACRevertCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACRevertCB);
+    }
 
-	// SaveAS Button
-	ctrl = (C_Button *) winme->FindControl (TAC_SAVE_CTRL);
+    // SaveAS Button
+    ctrl = (C_Button *) winme->FindControl(TAC_SAVE_CTRL);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (TACSaveAsCB);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(TACSaveAsCB);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -229,111 +229,123 @@ void hookup_flow_buttons (C_Window *winme)
 
 void ActivateTacMissionSchedule()
 {
-	C_Window *win;
-	C_Button *btn;
+    C_Window *win;
+    C_Button *btn;
 
-	win=gMainHandler->FindWindow(TAC_PLAY_SCREEN);
-	if(win)
-	{
-		btn=(C_Button*)win->FindControl(TAC_MISS_MAIN_CTRL);
-		if(btn)
-			OpenMissionWindowCB(btn->GetID(),C_TYPE_LMOUSEUP,btn);
-		// Select 1st mission
-	}
-	SetupTeamData();
-	SetupOccupationMap ();
+    win = gMainHandler->FindWindow(TAC_PLAY_SCREEN);
+
+    if (win)
+    {
+        btn = (C_Button*)win->FindControl(TAC_MISS_MAIN_CTRL);
+
+        if (btn)
+            OpenMissionWindowCB(btn->GetID(), C_TYPE_LMOUSEUP, btn);
+
+        // Select 1st mission
+    }
+
+    SetupTeamData();
+    SetupOccupationMap();
 }
 
 void ActivateTacMissionBuilder()
 {
-	C_Window *win;
-	C_Button *btn;
+    C_Window *win;
+    C_Button *btn;
 
-	win=gMainHandler->FindWindow(TAC_EDIT_SCREEN);
-	if(win)
-	{
-		btn=(C_Button*)win->FindControl(BUILDER_MAIN_CTRL);
-		if(btn)
-			OpenBuilderWindowCB(btn->GetID(),C_TYPE_LMOUSEUP,btn);
-	}
-	SetupTeamData();
-	SetupOccupationMap ();
-// 2001-10-31 M.N. needed to calculate distance of target to FLOT
-	RebuildFrontList(TRUE,FALSE);
-	RebuildFLOTList();
+    win = gMainHandler->FindWindow(TAC_EDIT_SCREEN);
+
+    if (win)
+    {
+        btn = (C_Button*)win->FindControl(BUILDER_MAIN_CTRL);
+
+        if (btn)
+            OpenBuilderWindowCB(btn->GetID(), C_TYPE_LMOUSEUP, btn);
+    }
+
+    SetupTeamData();
+    SetupOccupationMap();
+    // 2001-10-31 M.N. needed to calculate distance of target to FLOT
+    RebuildFrontList(TRUE, FALSE);
+    RebuildFLOTList();
 }
 
-static void TACNewCB (long, short hittype, C_Base *control)
+static void TACNewCB(long, short hittype, C_Base *control)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	LoadTacticalWindows();
-	gMainHandler->EnterCritical();
-	gMainHandler->DisableWindowGroup(100);
-	gMainHandler->DisableSection(100);
-	gMainHandler->SetSection(200);
-	if (current_tactical_mission)
-	{
-		delete current_tactical_mission;
-	}
+    LoadTacticalWindows();
+    gMainHandler->EnterCritical();
+    gMainHandler->DisableWindowGroup(100);
+    gMainHandler->DisableSection(100);
+    gMainHandler->SetSection(200);
 
-	TheCampaign.EndCampaign();
+    if (current_tactical_mission)
+    {
+        delete current_tactical_mission;
+    }
 
-	char path[_MAX_PATH];
-	sprintf (path, "%s\\te_new.tac", FalconCampaignSaveDirectory);
+    TheCampaign.EndCampaign();
 
-	current_tactical_mission = new tactical_mission (path);
+    char path[_MAX_PATH];
+    sprintf(path, "%s\\te_new.tac", FalconCampaignSaveDirectory);
+
+    current_tactical_mission = new tactical_mission(path);
 
 #ifdef CAMPTOOL
-	if (gRenameIds)
-		SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
-	else
+
+    if (gRenameIds)
+        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    else
 #endif
-		tactical_edit_mission (current_tactical_mission);
-	gMainHandler->EnableWindowGroup(control->GetGroup());
-	ActivateTacMissionBuilder();
-	gSelectedTeam=1;
-	PickTeamColors();
-	gMainHandler->LeaveCritical();
+        tactical_edit_mission(current_tactical_mission);
+
+    gMainHandler->EnableWindowGroup(control->GetGroup());
+    ActivateTacMissionBuilder();
+    gSelectedTeam = 1;
+    PickTeamColors();
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACEditCB (long ID, short hittype, C_Base *control)
+static void TACEditCB(long ID, short hittype, C_Base *control)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	if (!current_tactical_mission)
-	{
-		TACNewCB (ID, hittype, control);
-		return;
-	}
+    if (!current_tactical_mission)
+    {
+        TACNewCB(ID, hittype, control);
+        return;
+    }
 
-	LoadTacticalWindows();
-	gMainHandler->EnterCritical();
-	gMainHandler->DisableWindowGroup(100);
-	gMainHandler->DisableSection(100);
-	gMainHandler->SetSection(200);
+    LoadTacticalWindows();
+    gMainHandler->EnterCritical();
+    gMainHandler->DisableWindowGroup(100);
+    gMainHandler->DisableSection(100);
+    gMainHandler->SetSection(200);
 
 #ifdef CAMPTOOL
-	if (gRenameIds)
-		SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
-	else
+
+    if (gRenameIds)
+        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    else
 #endif
-		tactical_edit_mission (current_tactical_mission);
-	gMainHandler->EnableWindowGroup(control->GetGroup());
-	ActivateTacMissionBuilder();
-	gSelectedTeam=1;
-	PickTeamColors();
-	gMainHandler->LeaveCritical();
+        tactical_edit_mission(current_tactical_mission);
+
+    gMainHandler->EnableWindowGroup(control->GetGroup());
+    ActivateTacMissionBuilder();
+    gSelectedTeam = 1;
+    PickTeamColors();
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -348,44 +360,44 @@ static void TACCancelJoinCB(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACReallyAcceptCB (void)
+static void TACReallyAcceptCB(void)
 {
-	if (!current_tactical_mission)
-	{
-		return;
-	}
+    if (!current_tactical_mission)
+    {
+        return;
+    }
 
-	SetCursor(gCursors[CRSR_WAIT]);
+    SetCursor(gCursors[CRSR_WAIT]);
 
-	LoadTacticalWindows();
+    LoadTacticalWindows();
 
-	gMainHandler->EnterCritical();
-	tactical_accept_mission ();
-	gMainHandler->LeaveCritical();
+    gMainHandler->EnterCritical();
+    tactical_accept_mission();
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACAcceptCB (long, short hittype, C_Base *)
+static void TACAcceptCB(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	SetCursor(gCursors[CRSR_WAIT]);
+    SetCursor(gCursors[CRSR_WAIT]);
 
-	if (!current_tactical_mission)
-	{
-		return;
-	}
+    if (!current_tactical_mission)
+    {
+        return;
+    }
 
-	if(gCommsMgr->Online())
-		SetupInfoWindow(TACReallyAcceptCB,TACCancelJoinCB);
-	else
-		TACReallyAcceptCB();
+    if (gCommsMgr->Online())
+        SetupInfoWindow(TACReallyAcceptCB, TACCancelJoinCB);
+    else
+        TACReallyAcceptCB();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -394,220 +406,229 @@ static void TACAcceptCB (long, short hittype, C_Base *)
 
 void UpdateVCs()
 {
-	victory_condition *vc;
+    victory_condition *vc;
 
-	if (current_tactical_mission && gMapMgr)
-	{
-		vc=current_tactical_mission->get_first_unfiltered_victory_condition();
-		while(vc)
-		{
-			gMapMgr->UpdateVC(vc);
-			vc=current_tactical_mission->get_next_unfiltered_victory_condition();
-		}
-	}
+    if (current_tactical_mission && gMapMgr)
+    {
+        vc = current_tactical_mission->get_first_unfiltered_victory_condition();
+
+        while (vc)
+        {
+            gMapMgr->UpdateVC(vc);
+            vc = current_tactical_mission->get_next_unfiltered_victory_condition();
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACExitCB (long, short hittype, C_Base *)
+static void TACExitCB(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP){
-		return;
-	}
-	
-	tactical_mission_loaded = FALSE;
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	RemoveTacticalEdit();
+    tactical_mission_loaded = FALSE;
 
-	gMainHandler->EnterCritical();
+    RemoveTacticalEdit();
 
-	TheCampaign.EndCampaign();
-	CleanupTacticalEngagementUI ();
-	TacLastGroup = 0;
+    gMainHandler->EnterCritical();
 
-	gMainHandler->DisableSection(200);
-	gMainHandler->SetSection(100);
-	gMainHandler->EnableWindowGroup(100);
-	gMainHandler->EnableWindowGroup(MainLastGroup);
-	gMainHandler->LeaveCritical();
+    TheCampaign.EndCampaign();
+    CleanupTacticalEngagementUI();
+    TacLastGroup = 0;
+
+    gMainHandler->DisableSection(200);
+    gMainHandler->SetSection(100);
+    gMainHandler->EnableWindowGroup(100);
+    gMainHandler->EnableWindowGroup(MainLastGroup);
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACInfoCB (long, short hittype, C_Base *)
+static void TACInfoCB(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	SetupInfoWindow(NULL, NULL);
-	// gMainHandler->EnableWindowGroup (control->GetGroup ());
+    SetupInfoWindow(NULL, NULL);
+    // gMainHandler->EnableWindowGroup (control->GetGroup ());
 
-	//MonoPrint ("Info\n");
+    //MonoPrint ("Info\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACHostCB (long, short hittype, C_Base *)
+static void TACHostCB(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	if (current_tactical_mission)
-	{
-		tactical_accept_mission ();
-	}
+    if (current_tactical_mission)
+    {
+        tactical_accept_mission();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACRevertCB (long, short hittype, C_Base *)
+static void TACRevertCB(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	tactical_revert_mission ();
+    tactical_revert_mission();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACSaveFileCB (long,short hittype,C_Base *control)
+static void TACSaveFileCB(long, short hittype, C_Base *control)
 {
-	C_EditBox *edit_box;
-	C_Window *win;
+    C_EditBox *edit_box;
+    C_Window *win;
 
-	char buffer[100];
+    char buffer[100];
 
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
 
-	win=gMainHandler->FindWindow(SAVE_WIN);
-	if(!win)
-		return;
+    win = gMainHandler->FindWindow(SAVE_WIN);
 
-	gMainHandler->HideWindow(win);
-	gMainHandler->HideWindow(control->Parent_);
+    if (!win)
+        return;
 
-	edit_box = (C_EditBox*) win->FindControl (FILE_NAME);
-	if (edit_box)
-	{
-		_tcscpy (buffer, edit_box->GetText ());
-	}
+    gMainHandler->HideWindow(win);
+    gMainHandler->HideWindow(control->Parent_);
 
-	current_tactical_mission->save (buffer);
-	GetTacticalFileList();
+    edit_box = (C_EditBox*) win->FindControl(FILE_NAME);
+
+    if (edit_box)
+    {
+        _tcscpy(buffer, edit_box->GetText());
+    }
+
+    current_tactical_mission->save(buffer);
+    GetTacticalFileList();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACVerifySaveFileCB (long ID,short hittype,C_Base *control)
+static void TACVerifySaveFileCB(long ID, short hittype, C_Base *control)
 {
-	C_EditBox *edit_box;
-	FILE *fp;
+    C_EditBox *edit_box;
+    FILE *fp;
 
-	char buffer[MAX_PATH];
+    char buffer[MAX_PATH];
 
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
 
-	edit_box = (C_EditBox*) control->Parent_->FindControl (FILE_NAME);
-	if (edit_box)
-	{
-		//dpc EmptyFilenameSaveFix, modified by MN - added a warning to enter a filename
-		if (g_bEmptyFilenameFix)
-		{
-			if (_tcslen(edit_box->GetText()) == 0)
-			{
-				AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME,CloseWindowCB,CloseWindowCB);
-				return;
-			}
-		}
-		//end EmptyFilenameSaveFix
-		_stprintf(buffer,"%s\\%s.tac",FalconCampUserSaveDirectory,edit_box->GetText ());
-		fp=fopen(buffer,"r");
-		if(fp)
-		{
-			fclose(fp);
-			if(CheckExclude(buffer,FalconCampUserSaveDirectory,TEExcludeList,"tac"))
-				AreYouSure(TXT_ERROR,TXT_CANT_OVERWRITE,CloseWindowCB,CloseWindowCB);
-			else
-				AreYouSure(TXT_SAVE_ENGAGEMENT,TXT_FILE_EXISTS,TACSaveFileCB,CloseWindowCB);
-		}
-		else
-		{
-			if(CheckExclude(buffer,FalconCampUserSaveDirectory,TEExcludeList,"tac"))
-				AreYouSure(TXT_ERROR,TXT_CANT_OVERWRITE,CloseWindowCB,CloseWindowCB);
-			else
-				TACSaveFileCB(ID,hittype,control);
-		}
-	}
+    edit_box = (C_EditBox*) control->Parent_->FindControl(FILE_NAME);
+
+    if (edit_box)
+    {
+        //dpc EmptyFilenameSaveFix, modified by MN - added a warning to enter a filename
+        if (g_bEmptyFilenameFix)
+        {
+            if (_tcslen(edit_box->GetText()) == 0)
+            {
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                return;
+            }
+        }
+
+        //end EmptyFilenameSaveFix
+        _stprintf(buffer, "%s\\%s.tac", FalconCampUserSaveDirectory, edit_box->GetText());
+        fp = fopen(buffer, "r");
+
+        if (fp)
+        {
+            fclose(fp);
+
+            if (CheckExclude(buffer, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
+                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB, CloseWindowCB);
+            else
+                AreYouSure(TXT_SAVE_ENGAGEMENT, TXT_FILE_EXISTS, TACSaveFileCB, CloseWindowCB);
+        }
+        else
+        {
+            if (CheckExclude(buffer, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
+                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB, CloseWindowCB);
+            else
+                TACSaveFileCB(ID, hittype, control);
+        }
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void LoadSaveSelectFileCB(long,short hittype,C_Base *control)
+void LoadSaveSelectFileCB(long, short hittype, C_Base *control)
 {
-	C_EditBox *ebox;
-	C_Button *btn;
+    C_EditBox *ebox;
+    C_Button *btn;
 
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
 
-	if(control)
-	{
-		btn=(C_Button*)control;
-		ebox=(C_EditBox*)btn->Parent_->FindControl(FILE_NAME);
-		if(ebox)
-		{
-			ebox->Refresh();
-			ebox->SetText(btn->GetText(C_STATE_0));
-			ebox->Refresh();
-		}
-	}
+    if (control)
+    {
+        btn = (C_Button*)control;
+        ebox = (C_EditBox*)btn->Parent_->FindControl(FILE_NAME);
+
+        if (ebox)
+        {
+            ebox->Refresh();
+            ebox->SetText(btn->GetText(C_STATE_0));
+            ebox->Refresh();
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void TACSaveAsCB (long, short hittype, C_Base *)
+static void TACSaveAsCB(long, short hittype, C_Base *)
 {
-	_TCHAR buffer[MAX_PATH];
-	_TCHAR filename [MAX_PATH];
+    _TCHAR buffer[MAX_PATH];
+    _TCHAR filename [MAX_PATH];
 
-	if (hittype != C_TYPE_LMOUSEUP)
-		return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
 
-	if(OwnershipChanged)
-		UpdateOwners();
+    if (OwnershipChanged)
+        UpdateOwners();
 
-	if (strlen(gLastTEFile) > 1) // a tac file has at least 1 char
-		sprintf(filename,"%s", gLastTEFile);
-	else
-		sprintf(filename,"");
+    if (strlen(gLastTEFile) > 1) // a tac file has at least 1 char
+        sprintf(filename, "%s", gLastTEFile);
+    else
+        sprintf(filename, "");
 
-	sprintf (buffer, "%s\\*.tac", FalconCampUserSaveDirectory);
+    sprintf(buffer, "%s\\*.tac", FalconCampUserSaveDirectory);
 
-	SetDeleteCallback(DelTacFileCB);
-	SaveAFile(TXT_SAVE_ENGAGEMENT,buffer,TEExcludeList,TACVerifySaveFileCB,CloseWindowCB,filename);
+    SetDeleteCallback(DelTacFileCB);
+    SaveAFile(TXT_SAVE_ENGAGEMENT, buffer, TEExcludeList, TACVerifySaveFileCB, CloseWindowCB, filename);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -616,206 +637,212 @@ static void TACSaveAsCB (long, short hittype, C_Base *)
 extern bool g_bServer;
 void tactical_play_setup()
 {
-	short i;
+    short i;
 
-	if (!gMainHandler)
-		return;
+    if (!gMainHandler)
+        return;
 
-//	MonoPrint ("Tactical Play Setup\n");
+    //	MonoPrint ("Tactical Play Setup\n");
 
-	gMainHandler->EnterCritical();
-	gMainHandler->DisableWindowGroup(100);
-	gMainHandler->DisableSection(100);
-	gMainHandler->SetSection(200);
-	gMainHandler->EnableWindowGroup(3025);
+    gMainHandler->EnterCritical();
+    gMainHandler->DisableWindowGroup(100);
+    gMainHandler->DisableSection(100);
+    gMainHandler->SetSection(200);
+    gMainHandler->EnableWindowGroup(3025);
 
-	tactical_update_campaign_entities ();
+    tactical_update_campaign_entities();
 
-	TheCampaign.Flags |= CAMP_TACTICAL;
+    TheCampaign.Flags |= CAMP_TACTICAL;
 
 
-	// MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
-	for(i=0;i<NUM_TEAMS;i++)
-	{
-		if(TeamInfo[i])
-		{
-			if(!TeamInfo[i]->GetFlag())
-				TeamInfo[i]->SetFlag(static_cast<uchar>(i));
-			if(!TeamInfo[i]->GetColor())
-				TeamInfo[i]->SetColor(static_cast<uchar>(i));
-			if(i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
-				TeamInfo[i]->flags |= TEAM_ACTIVE;
-		}
-	}
+    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    for (i = 0; i < NUM_TEAMS; i++)
+    {
+        if (TeamInfo[i])
+        {
+            if (!TeamInfo[i]->GetFlag())
+                TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-	update_taceng_clock ();
+            if (!TeamInfo[i]->GetColor())
+                TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-// 2002-03-06 MN added parameter
-	TacticalEngagementSetup (false);
+            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
+                TeamInfo[i]->flags |= TEAM_ACTIVE;
+        }
+    }
 
-	update_missions_details (TAC_AIRCRAFT);
+    update_taceng_clock();
 
-	gGps->SetAllowed(0xffffffff);
+    // 2002-03-06 MN added parameter
+    TacticalEngagementSetup(false);
 
-	if(!g_bServer && current_tactical_mission->get_type() == tt_engagement)
-	{
-		InitTimeCompressionBox(1);
-		SetTimeCompression (1);
-	}
-	else
-	{
-		//PauseTacticalEngagement();
-		InitTimeCompressionBox(0);
-		SetTimeCompression (0);
-	}
-	ActivateTacMissionSchedule();
-	gMainHandler->LeaveCritical();
+    update_missions_details(TAC_AIRCRAFT);
+
+    gGps->SetAllowed(0xffffffff);
+
+    if (!g_bServer && current_tactical_mission->get_type() == tt_engagement)
+    {
+        InitTimeCompressionBox(1);
+        SetTimeCompression(1);
+    }
+    else
+    {
+        //PauseTacticalEngagement();
+        InitTimeCompressionBox(0);
+        SetTimeCompression(0);
+    }
+
+    ActivateTacMissionSchedule();
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_accept_mission (void)
+void tactical_accept_mission(void)
 {
-	if (current_tactical_mission)
-	{
-		current_tactical_mission->load ();
-	}
-	else
-	{
-		// Cannot accept a new mission - sorry
-	}
+    if (current_tactical_mission)
+    {
+        current_tactical_mission->load();
+    }
+    else
+    {
+        // Cannot accept a new mission - sorry
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_restart_mission (void)
+void tactical_restart_mission(void)
 {
-	tactical_type
-		current_type;
+    tactical_type
+    current_type;
 
-	if (current_tactical_mission)
-	{
-		current_type = current_tactical_mission->get_type ();
+    if (current_tactical_mission)
+    {
+        current_type = current_tactical_mission->get_type();
 
-		current_tactical_mission->load ();
+        current_tactical_mission->load();
 
-		current_tactical_mission->set_type (current_type);
-	}
+        current_tactical_mission->set_type(current_type);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void restart_tactical_engagement (void)
+void restart_tactical_engagement(void)
 {
-	if(current_tactical_mission->get_type() != tt_engagement)
-	{
-		TheCampaign.Suspend();
-		InitTimeCompressionBox(0);
-		SetTimeCompression (0);
-	}
+    if (current_tactical_mission->get_type() != tt_engagement)
+    {
+        TheCampaign.Suspend();
+        InitTimeCompressionBox(0);
+        SetTimeCompression(0);
+    }
 
-	gMainHandler->SetSection(200);
+    gMainHandler->SetSection(200);
 
-	LoadTacEngSelectWindows();
-	LoadTacticalWindows ();
+    LoadTacEngSelectWindows();
+    LoadTacticalWindows();
 
-	tactical_play_setup ();
+    tactical_play_setup();
 
-	if(TacLastGroup)
-		gMainHandler->EnableWindowGroup (TacLastGroup);
-	else
-		ActivateTacMissionSchedule();
+    if (TacLastGroup)
+        gMainHandler->EnableWindowGroup(TacLastGroup);
+    else
+        ActivateTacMissionSchedule();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_edit_mission (tactical_mission *)
+void tactical_edit_mission(tactical_mission *)
 {
-	short i;
-	int
-		loop;
+    short i;
+    int
+    loop;
 
-	char
-		filename[MAX_PATH];
+    char
+    filename[MAX_PATH];
 
-	FILE
-		*fp;
+    FILE
+    *fp;
 
-	SetTimeCompression (0);
+    SetTimeCompression(0);
 
-	if (current_tactical_mission)
-	{
-		MakeTacticalEdit ();
+    if (current_tactical_mission)
+    {
+        MakeTacticalEdit();
 
-		current_tactical_mission->load ();
-	}
-	else
-	{
-		ShiAssert(!"This doesn't work, so should not be allowed");
+        current_tactical_mission->load();
+    }
+    else
+    {
+        ShiAssert(!"This doesn't work, so should not be allowed");
 
-		return;
-		// We are trying to edit a new mission
-		for (loop = 0; loop < 10000; loop ++)
-		{
-		    sprintf (filename, "%s\\mission%d.te", FalconCampaignSaveDirectory, loop);
+        return;
 
-			fp = fopen (filename, "r");
+        // We are trying to edit a new mission
+        for (loop = 0; loop < 10000; loop ++)
+        {
+            sprintf(filename, "%s\\mission%d.te", FalconCampaignSaveDirectory, loop);
 
-			if (fp)
-			{
-				fclose (fp);
-			}
-			else
-			{
-				current_tactical_mission = new tactical_mission (filename);
-				break;
-			}
-		}
+            fp = fopen(filename, "r");
 
-		F4Assert (current_tactical_mission);
+            if (fp)
+            {
+                fclose(fp);
+            }
+            else
+            {
+                current_tactical_mission = new tactical_mission(filename);
+                break;
+            }
+        }
 
-		current_tactical_mission->set_type (tt_engagement);
-	
-		MakeTacticalEdit ();
+        F4Assert(current_tactical_mission);
 
-		current_tactical_mission->new_setup ();
-	}
-	
-	tactical_mission_loaded = TRUE;
+        current_tactical_mission->set_type(tt_engagement);
 
-	// MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
-	for(i=0;i<NUM_TEAMS;i++)
-	{
-		if(TeamInfo[i])
-		{
-			if(!TeamInfo[i]->GetFlag())
-				TeamInfo[i]->SetFlag(static_cast<uchar>(i));
-			if(!TeamInfo[i]->GetColor())
-				TeamInfo[i]->SetColor(static_cast<uchar>(i));
-			if(i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
-				TeamInfo[i]->flags |= TEAM_ACTIVE;
-		}
-	}
+        MakeTacticalEdit();
 
-	update_taceng_clock ();
+        current_tactical_mission->new_setup();
+    }
 
-	tactical_update_campaign_entities ();
+    tactical_mission_loaded = TRUE;
 
-	TheCampaign.Flags |= CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
+    // MONUMENTOUS HACK to get team color & Flag initialized (If they aren't already)
+    for (i = 0; i < NUM_TEAMS; i++)
+    {
+        if (TeamInfo[i])
+        {
+            if (!TeamInfo[i]->GetFlag())
+                TeamInfo[i]->SetFlag(static_cast<uchar>(i));
 
-	TacticalEngagementSetup (true);
+            if (!TeamInfo[i]->GetColor())
+                TeamInfo[i]->SetColor(static_cast<uchar>(i));
 
-	PauseTacticalEngagement ();
+            if (i && !(TeamInfo[i]->flags & TEAM_ACTIVE))
+                TeamInfo[i]->flags |= TEAM_ACTIVE;
+        }
+    }
 
-	gGps->SetAllowed(0xffffffff);
+    update_taceng_clock();
+
+    tactical_update_campaign_entities();
+
+    TheCampaign.Flags |= CAMP_TACTICAL | CAMP_TACTICAL_EDIT;
+
+    TacticalEngagementSetup(true);
+
+    PauseTacticalEngagement();
+
+    gGps->SetAllowed(0xffffffff);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -823,66 +850,70 @@ void tactical_edit_mission (tactical_mission *)
 ///////////////////////////////////////////////////////////////////////////////
 
 // This basically Ends, then starts
-void tactical_revert_mission (void)
+void tactical_revert_mission(void)
 {
-	gMainHandler->EnterCritical();
-	tactical_mission_loaded = FALSE;
+    gMainHandler->EnterCritical();
+    tactical_mission_loaded = FALSE;
 
-	RemoveTacticalEdit();
+    RemoveTacticalEdit();
 
-	CleanupTacticalEngagementUI ();
-	TheCampaign.EndCampaign ();
+    CleanupTacticalEngagementUI();
+    TheCampaign.EndCampaign();
 
 #ifdef CAMPTOOL
-	if (gRenameIds)
-		SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
-	else
+
+    if (gRenameIds)
+        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    else
 #endif
-		tactical_edit_mission (current_tactical_mission);
-	ActivateTacMissionBuilder();
-	gSelectedTeam=1;
-	PickTeamColors();
-	gMainHandler->LeaveCritical();
+        tactical_edit_mission(current_tactical_mission);
+
+    ActivateTacMissionBuilder();
+    gSelectedTeam = 1;
+    PickTeamColors();
+    gMainHandler->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void update_taceng_clock (void)
+void update_taceng_clock(void)
 {
-	CampaignTime
-		time,
-		hrs,
-		min,
-		sec;
+    CampaignTime
+    time,
+    hrs,
+    min,
+    sec;
 
-	C_Window
-		*win;
+    C_Window
+    *win;
 
-	C_Clock
-		*clk;
+    C_Clock
+    *clk;
 
-	win = gMainHandler->FindWindow (TAC_TIME);
-	if (!win)
-	{
-		return;
-	}
+    win = gMainHandler->FindWindow(TAC_TIME);
 
-	clk = (C_Clock *) win->FindControl (TIME_ID);
-	if (clk)
-	{
-		time = TheCampaign.CurrentTime;
+    if (!win)
+    {
+        return;
+    }
 
-		hrs = (time / (1000 * 60 * 60)) % 24;
-		min = (time / (1000 * 60)) % 60;
-		sec = (time / 1000) % 60;
+    clk = (C_Clock *) win->FindControl(TIME_ID);
 
-		clk->SetHour (hrs);
-		clk->SetMinute (min);
-		clk->SetSecond (sec);
-		clk->Refresh ();
-	}
+    if (clk)
+    {
+        time = TheCampaign.CurrentTime;
+
+        hrs = (time / (1000 * 60 * 60)) % 24;
+        min = (time / (1000 * 60)) % 60;
+        sec = (time / 1000) % 60;
+
+        clk->SetHour(hrs);
+        clk->SetMinute(min);
+        clk->SetSecond(sec);
+        clk->Refresh();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

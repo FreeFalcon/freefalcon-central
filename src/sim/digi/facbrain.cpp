@@ -7,54 +7,56 @@
 #include "falcsess.h"
 #include "Aircrft.h"
 
-FACBrain::FACBrain (AircraftClass *myPlatform, AirframeClass* myAf) : DigitalBrain (myPlatform, myAf)
+FACBrain::FACBrain(AircraftClass *myPlatform, AirframeClass* myAf) : DigitalBrain(myPlatform, myAf)
 {
-   lastTarget = 0;
-   controlledFighter = NULL;
-   fighterQ = new TailInsertList;
-   fighterQ->Register();
-   flags = 0;
+    lastTarget = 0;
+    controlledFighter = NULL;
+    fighterQ = new TailInsertList;
+    fighterQ->Register();
+    flags = 0;
 
-   campaignTarget = ((UnitClass*)(self->GetCampaignObject()))->GetUnitMissionTarget();
+    campaignTarget = ((UnitClass*)(self->GetCampaignObject()))->GetUnitMissionTarget();
 }
 
-FACBrain::~FACBrain (void)
+FACBrain::~FACBrain(void)
 {
-   fighterQ->Unregister();
-   delete fighterQ;
+    fighterQ->Unregister();
+    delete fighterQ;
 }
 
-void FACBrain::PostInsert (void)
+void FACBrain::PostInsert(void)
 {
 }
 
-SimBaseClass* FACBrain::AssignTarget (void)
+SimBaseClass* FACBrain::AssignTarget(void)
 {
-SimBaseClass* retval = NULL;
+    SimBaseClass* retval = NULL;
 
-   if (campaignTarget)
-   {
-      retval = campaignTarget->GetComponentEntity(lastTarget);
-      if (retval)
-      {
-         lastTarget ++;
-         lastTarget %= campaignTarget->NumberOfComponents();
-      }
-      else
-      {
-         lastTarget = 0;
-         retval = campaignTarget->GetComponentEntity(lastTarget);
-         lastTarget ++;
-         lastTarget %= campaignTarget->NumberOfComponents();
-         if (retval == NULL)
-         {
+    if (campaignTarget)
+    {
+        retval = campaignTarget->GetComponentEntity(lastTarget);
+
+        if (retval)
+        {
+            lastTarget ++;
+            lastTarget %= campaignTarget->NumberOfComponents();
+        }
+        else
+        {
             lastTarget = 0;
-            campaignTarget = NULL;
-         }
-      }
-   }
+            retval = campaignTarget->GetComponentEntity(lastTarget);
+            lastTarget ++;
+            lastTarget %= campaignTarget->NumberOfComponents();
 
-   return retval;
+            if (retval == NULL)
+            {
+                lastTarget = 0;
+                campaignTarget = NULL;
+            }
+        }
+    }
+
+    return retval;
 }
 
 void FACBrain::RequestMark(void)
@@ -71,100 +73,113 @@ void FACBrain::RequestTACAN(void)
 
 void FACBrain::RequestBDA(SimVehicleClass* theFighter)
 {
-int numHit = numInTarget - campaignTarget->NumberOfComponents();
+    int numHit = numInTarget - campaignTarget->NumberOfComponents();
 
-   if (campaignTarget)
-   {
-      if (numHit > 0)
-      {
-         // Say hold message
-         FalconFACMessage* facMsg = new FalconFACMessage (theFighter->Id(), FalconLocalGame);
-         facMsg->dataBlock.caller = self->Id();
-         facMsg->dataBlock.type = FalconFACMessage::BDA;
-         facMsg->dataBlock.data1 = (float)numHit;
-         facMsg->dataBlock.data2 = 0;
-         FalconSendMessage (facMsg,FALSE);
-         numInTarget -= numHit;
-      }
-      else
-      {
-         // Say hold message
-         FalconFACMessage* facMsg = new FalconFACMessage (theFighter->Id(), FalconLocalGame);
-         facMsg->dataBlock.caller = self->Id();
-         facMsg->dataBlock.type = FalconFACMessage::NoBDA;
-         facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
-         FalconSendMessage (facMsg,FALSE);
-      }
-   }
+    if (campaignTarget)
+    {
+        if (numHit > 0)
+        {
+            // Say hold message
+            FalconFACMessage* facMsg = new FalconFACMessage(theFighter->Id(), FalconLocalGame);
+            facMsg->dataBlock.caller = self->Id();
+            facMsg->dataBlock.type = FalconFACMessage::BDA;
+            facMsg->dataBlock.data1 = (float)numHit;
+            facMsg->dataBlock.data2 = 0;
+            FalconSendMessage(facMsg, FALSE);
+            numInTarget -= numHit;
+        }
+        else
+        {
+            // Say hold message
+            FalconFACMessage* facMsg = new FalconFACMessage(theFighter->Id(), FalconLocalGame);
+            facMsg->dataBlock.caller = self->Id();
+            facMsg->dataBlock.type = FalconFACMessage::NoBDA;
+            facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
+            FalconSendMessage(facMsg, FALSE);
+        }
+    }
 }
 
 void FACBrain::RequestTarget(SimVehicleClass*)
 {
-SimBaseClass* newTarget;
+    SimBaseClass* newTarget;
 
-   newTarget = AssignTarget();
+    newTarget = AssignTarget();
 
-   FalconFACMessage* facMsg = new FalconFACMessage (controlledFighter->Id(), FalconLocalGame);
-   facMsg->dataBlock.caller = self->Id();
-   if (newTarget)
-   {
-      // Say situation report
-      facMsg->dataBlock.type = FalconFACMessage::FacSit;
-      facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = facMsg->dataBlock.data3 = 0;
-      facMsg->dataBlock.target = newTarget->Id();
-   }
-   else
-   {
-      // Say Hold message
-      facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
-      facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
-   }
-   FalconSendMessage (facMsg,FALSE);
+    FalconFACMessage* facMsg = new FalconFACMessage(controlledFighter->Id(), FalconLocalGame);
+    facMsg->dataBlock.caller = self->Id();
+
+    if (newTarget)
+    {
+        // Say situation report
+        facMsg->dataBlock.type = FalconFACMessage::FacSit;
+        facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = facMsg->dataBlock.data3 = 0;
+        facMsg->dataBlock.target = newTarget->Id();
+    }
+    else
+    {
+        // Say Hold message
+        facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
+        facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
+    }
+
+    FalconSendMessage(facMsg, FALSE);
 }
 
-void FACBrain::AddToQ (SimVehicleClass* theFighter)
+void FACBrain::AddToQ(SimVehicleClass* theFighter)
 {
-   fighterQ->ForcedInsert(theFighter);
-   if (flags & FlightInbound)
-   {
-      // Say hold message
-      FalconFACMessage* facMsg = new FalconFACMessage (theFighter->Id(), FalconLocalGame);
-      facMsg->dataBlock.caller = self->Id();
-      facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
-      facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
-      FalconSendMessage (facMsg,FALSE);
-   }
+    fighterQ->ForcedInsert(theFighter);
+
+    if (flags & FlightInbound)
+    {
+        // Say hold message
+        FalconFACMessage* facMsg = new FalconFACMessage(theFighter->Id(), FalconLocalGame);
+        facMsg->dataBlock.caller = self->Id();
+        facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
+        facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
+        FalconSendMessage(facMsg, FALSE);
+    }
 }
 
-void FACBrain::RemoveFromQ (SimVehicleClass* theFighter)
+void FACBrain::RemoveFromQ(SimVehicleClass* theFighter)
 {
-   fighterQ->Remove(theFighter);
+    fighterQ->Remove(theFighter);
 }
 
-void FACBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr){
-	SimBaseClass* newTarget;
-	if (!controlledFighter){
-		VuListIterator fighterWalker (fighterQ);
-		controlledFighter = (SimVehicleClass*)fighterWalker.GetFirst();
-		if (controlledFighter){
-			flags |= FlightInbound;
-			newTarget = AssignTarget();
+void FACBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
+{
+    SimBaseClass* newTarget;
 
-			FalconFACMessage* facMsg = new FalconFACMessage (controlledFighter->Id(), FalconLocalGame);
-			facMsg->dataBlock.caller = self->Id();
-			if (newTarget){
-				// Say situation report
-				facMsg->dataBlock.type = FalconFACMessage::FacSit;
-				facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = facMsg->dataBlock.data3 = 0;
-				facMsg->dataBlock.target = newTarget->Id();
-			}
-			else {
-				// Say Hold message
-				facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
-				facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
-			}
-			FalconSendMessage (facMsg,FALSE);
-		}
-	}
-	DigitalBrain::FrameExec(tList, tPtr);
+    if (!controlledFighter)
+    {
+        VuListIterator fighterWalker(fighterQ);
+        controlledFighter = (SimVehicleClass*)fighterWalker.GetFirst();
+
+        if (controlledFighter)
+        {
+            flags |= FlightInbound;
+            newTarget = AssignTarget();
+
+            FalconFACMessage* facMsg = new FalconFACMessage(controlledFighter->Id(), FalconLocalGame);
+            facMsg->dataBlock.caller = self->Id();
+
+            if (newTarget)
+            {
+                // Say situation report
+                facMsg->dataBlock.type = FalconFACMessage::FacSit;
+                facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = facMsg->dataBlock.data3 = 0;
+                facMsg->dataBlock.target = newTarget->Id();
+            }
+            else
+            {
+                // Say Hold message
+                facMsg->dataBlock.type = FalconFACMessage::HoldAtCP;
+                facMsg->dataBlock.data1 = facMsg->dataBlock.data2 = 0;
+            }
+
+            FalconSendMessage(facMsg, FALSE);
+        }
+    }
+
+    DigitalBrain::FrameExec(tList, tPtr);
 }

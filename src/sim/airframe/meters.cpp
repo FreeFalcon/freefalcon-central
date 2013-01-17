@@ -48,29 +48,31 @@
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-void AirframeClass::Accelerometers(){
-	oldnzcgs = nzcgs;
+void AirframeClass::Accelerometers()
+{
+    oldnzcgs = nzcgs;
 
-   /*--------------------------*/
-   /* body axis accelerometers */
-   /*--------------------------*/
-   nxcgb =  (xaero + xprop)/GRAVITY;
-   nycgb =  (yaero + yprop)/GRAVITY;
-   nzcgb = -(zaero + zprop)/GRAVITY;
-   if (platform->OnGround())
-       nzcgb = max(1, nzcgb);
+    /*--------------------------*/
+    /* body axis accelerometers */
+    /*--------------------------*/
+    nxcgb = (xaero + xprop) / GRAVITY;
+    nycgb = (yaero + yprop) / GRAVITY;
+    nzcgb = -(zaero + zprop) / GRAVITY;
 
-   /*-----------------------*/
-   /* stability axis accels */
-   /*-----------------------*/
-   nxcgs =  (xsaero + xsprop)/GRAVITY;
-   nycgs =  (ysaero + ysprop)/GRAVITY;
-   nzcgs = -(zsaero + zsprop)/GRAVITY;
+    if (platform->OnGround())
+        nzcgb = max(1, nzcgb);
 
-   /*------------------*/
-   /* wind axis accels */
-   /*------------------*/
-   nxcgw =  (xwaero + xwprop)/GRAVITY;
-   nycgw =  (ywaero + ywprop)/GRAVITY;
-   nzcgw = -(zwaero + zwprop)/GRAVITY;
+    /*-----------------------*/
+    /* stability axis accels */
+    /*-----------------------*/
+    nxcgs = (xsaero + xsprop) / GRAVITY;
+    nycgs = (ysaero + ysprop) / GRAVITY;
+    nzcgs = -(zsaero + zsprop) / GRAVITY;
+
+    /*------------------*/
+    /* wind axis accels */
+    /*------------------*/
+    nxcgw = (xwaero + xwprop) / GRAVITY;
+    nycgw = (ywaero + ywprop) / GRAVITY;
+    nzcgw = -(zwaero + zwprop) / GRAVITY;
 }

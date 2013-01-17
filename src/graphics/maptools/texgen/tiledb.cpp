@@ -1,6 +1,6 @@
 /*******************************************************************************\
 	TileDB.cpp
-	Provides an interface to the tile database written by the tile tool.  At 
+	Provides an interface to the tile database written by the tile tool.  At
 	present this is only used by the TexGen tool.
 
 	Scott Randolph
@@ -30,341 +30,392 @@ const int COVERAGE_RUNWAY		= 13;
 const int COVERAGE_STATION		= 14;
 
 
-void TileDatabase::Load( char *filename ) {
-	HANDLE		inputFile;
-	DWORD		bytes;
-	char		message[80];
-	int			tile;
+void TileDatabase::Load(char *filename)
+{
+    HANDLE		inputFile;
+    DWORD		bytes;
+    char		message[80];
+    int			tile;
 
 
-	// Open the texture tile database for reading
-	inputFile = CreateFile( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
-	if (inputFile == INVALID_HANDLE_VALUE) {
-		PutErrorString( message );
-		strcat( message, ":  Failed tile database open" );
-		ShiError( message );
-	}
+    // Open the texture tile database for reading
+    inputFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (inputFile == INVALID_HANDLE_VALUE)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed tile database open");
+        ShiError(message);
+    }
 
 
-	// Read the file header
-	ReadFile( inputFile, &header, 29, &bytes, NULL );
-	if ( bytes != 29 ) {
-		PutErrorString( message );
-		strcat( message, ":  Failed file header read" );
-		ShiError( message );
-	}
+    // Read the file header
+    ReadFile(inputFile, &header, 29, &bytes, NULL);
+
+    if (bytes != 29)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed file header read");
+        ShiError(message);
+    }
 
 
-	// Verify the file header
-	if ( strncmp( header.title, "TILE DATABASE O", sizeof(header.title) ) != 0 ) {
-		ShiError( "Unrecognized file header" );
-	}
-	if ( strncmp( header.version, "1.1     ", sizeof(header.version) ) != 0 ) {
-		ShiError( "Unrecognized file version" );
-	}
+    // Verify the file header
+    if (strncmp(header.title, "TILE DATABASE O", sizeof(header.title)) != 0)
+    {
+        ShiError("Unrecognized file header");
+    }
+
+    if (strncmp(header.version, "1.1     ", sizeof(header.version)) != 0)
+    {
+        ShiError("Unrecognized file version");
+    }
 
 
-	// Allocate memory for the tile list
-	header.tiles = (TileRecord*)malloc( header.numTiles * sizeof(*header.tiles) );
+    // Allocate memory for the tile list
+    header.tiles = (TileRecord*)malloc(header.numTiles * sizeof(*header.tiles));
 
 
-	// Loop for each tile
-	for (tile = 0; tile < header.numTiles; tile++ ) {
-		ReadTile( inputFile, &header.tiles[tile] );
-	}
+    // Loop for each tile
+    for (tile = 0; tile < header.numTiles; tile++)
+    {
+        ReadTile(inputFile, &header.tiles[tile]);
+    }
 
 
-	// Close the tile database
-	CloseHandle( inputFile );
+    // Close the tile database
+    CloseHandle(inputFile);
 }
 
 
-void TileDatabase::Free( void )
+void TileDatabase::Free(void)
 {
-	int tile, feature;
+    int tile, feature;
 
-	for ( tile = 0; tile < header.numTiles; tile++ ) {
-		for ( feature = 0; feature < header.tiles[tile].numFeatures; feature++ ) {
-			free ( header.tiles[tile].features[feature].points );
-			header.tiles[tile].features[feature].points = NULL;
-		}
-		free ( header.tiles[tile].colors );
-		free ( header.tiles[tile].elevations );
-		free ( header.tiles[tile].features );
-		free ( header.tiles[tile].paths );
-		free ( header.tiles[tile].areas );
-		header.tiles[tile].colors = NULL;
-		header.tiles[tile].elevations = NULL;
-		header.tiles[tile].features = NULL;
-		header.tiles[tile].areas = NULL;
-		header.tiles[tile].paths = NULL;
-	}
-	free ( header.tiles );
-	header.tiles = NULL;
+    for (tile = 0; tile < header.numTiles; tile++)
+    {
+        for (feature = 0; feature < header.tiles[tile].numFeatures; feature++)
+        {
+            free(header.tiles[tile].features[feature].points);
+            header.tiles[tile].features[feature].points = NULL;
+        }
 
-	memset ( &header, 0, sizeof(header) );
+        free(header.tiles[tile].colors);
+        free(header.tiles[tile].elevations);
+        free(header.tiles[tile].features);
+        free(header.tiles[tile].paths);
+        free(header.tiles[tile].areas);
+        header.tiles[tile].colors = NULL;
+        header.tiles[tile].elevations = NULL;
+        header.tiles[tile].features = NULL;
+        header.tiles[tile].areas = NULL;
+        header.tiles[tile].paths = NULL;
+    }
+
+    free(header.tiles);
+    header.tiles = NULL;
+
+    memset(&header, 0, sizeof(header));
 }
 
 
-void TileDatabase::ReadTile( HANDLE inputFile, TileRecord *tile )
+void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
 {
-	DWORD	bytes;
-	char	string[8];
-	char	message[80];
-	char	codeString[8];
-	int		feature;
-	DWORD	arraySize;
+    DWORD	bytes;
+    char	string[8];
+    char	message[80];
+    char	codeString[8];
+    int		feature;
+    DWORD	arraySize;
 
 
-	// Read the tile record header
-	ReadFile( inputFile, tile, 17, &bytes, NULL );
-	if ( bytes != 17 ) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the tile header read" );
-		ShiError( message );
-	}
+    // Read the tile record header
+    ReadFile(inputFile, tile, 17, &bytes, NULL);
+
+    if (bytes != 17)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the tile header read");
+        ShiError(message);
+    }
 
 
-	// Extract the original tile code from the file name
-	strcpy( codeString, "0x" );
-	strncpy( &codeString[2], &tile->basename[5], 3 );
-	sscanf( codeString, "%hx", &tile->code );
+    // Extract the original tile code from the file name
+    strcpy(codeString, "0x");
+    strncpy(&codeString[2], &tile->basename[5], 3);
+    sscanf(codeString, "%hx", &tile->code);
 
 
-	// Read and verify the color record header
-	ReadFile( inputFile, &string, 4, &bytes, NULL );
-	if (strncmp( string, "CLR ", 4 ) != 0) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the color tag read/verify" );
-		ShiError( message );
-	}
+    // Read and verify the color record header
+    ReadFile(inputFile, &string, 4, &bytes, NULL);
 
-	// Allocate the memory for the color array
-	arraySize = header.gridXsize * header.gridYsize * 4;
-	tile->colors = (colorRecord*)malloc( arraySize );
-	ShiAssert( tile->colors );
+    if (strncmp(string, "CLR ", 4) != 0)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the color tag read/verify");
+        ShiError(message);
+    }
 
-	// Read the color array
-	ReadFile( inputFile, tile->colors, arraySize, &bytes, NULL );
-	if ( bytes != arraySize ) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the color read" );
-		ShiError( message );
-	}
+    // Allocate the memory for the color array
+    arraySize = header.gridXsize * header.gridYsize * 4;
+    tile->colors = (colorRecord*)malloc(arraySize);
+    ShiAssert(tile->colors);
 
+    // Read the color array
+    ReadFile(inputFile, tile->colors, arraySize, &bytes, NULL);
 
-	// Read and verify the elevation record header
-	ReadFile( inputFile, &string, 4, &bytes, NULL );
-	if (strncmp( string, "ELEV", 4 ) != 0) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the color tag read/verify" );
-		ShiError( message );
-	}
-
-	// Allocate the memory for the elevation array
-	arraySize = header.gridXsize * header.gridYsize * 3;
-	tile->elevations = (elevationRecord*)malloc( arraySize );
-	ShiAssert( tile->elevations );
-
-	// Read the elevation array
-	ReadFile( inputFile, tile->elevations, arraySize, &bytes, NULL );
-	if ( bytes != arraySize ) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the elevation read" );
-		ShiError( message );
-	}
+    if (bytes != arraySize)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the color read");
+        ShiError(message);
+    }
 
 
-	// Read and verify the feature record header
-	ReadFile( inputFile, &string, 4, &bytes, NULL );
-	if (strncmp( string, "FEAT", 4 ) != 0) {
-		PutErrorString( message );
-		strcat( message, ":  Failed the feature group tag read/verify" );
-		ShiError( message );
-	}
+    // Read and verify the elevation record header
+    ReadFile(inputFile, &string, 4, &bytes, NULL);
+
+    if (strncmp(string, "ELEV", 4) != 0)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the color tag read/verify");
+        ShiError(message);
+    }
+
+    // Allocate the memory for the elevation array
+    arraySize = header.gridXsize * header.gridYsize * 3;
+    tile->elevations = (elevationRecord*)malloc(arraySize);
+    ShiAssert(tile->elevations);
+
+    // Read the elevation array
+    ReadFile(inputFile, tile->elevations, arraySize, &bytes, NULL);
+
+    if (bytes != arraySize)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the elevation read");
+        ShiError(message);
+    }
 
 
-	// Allocate memory for the features in this tile
-	tile->features = (FeatureRecord*)malloc( tile->numFeatures * sizeof( *tile->features ) );
-	tile->sortedFeatures = (FeatureRecord**)malloc( tile->numFeatures * sizeof(void*) );
-	tile->nareas = 0;
-	tile->npaths = 0;
+    // Read and verify the feature record header
+    ReadFile(inputFile, &string, 4, &bytes, NULL);
 
-	
-	// Read each feature description and count types
-	for( feature = 0; feature < tile->numFeatures; feature++ ) {
-		ReadFeature( inputFile, &tile->features[feature] );
-		tile->sortedFeatures[feature] = &tile->features[feature];
-
-		if ( typeIsPath( tile->features[feature].type ) ) {
-
-			// Make sure each path has at least two defining points
-			ShiAssert( tile->features[feature].numPoints >= 2 );
-			tile->npaths += tile->features[feature].numPoints - 1;
-
-		} else {
-
-			// Make sure each area has exactly one center point
-			ShiAssert( tile->features[feature].numPoints == 1 );
-			tile->nareas++;
-
-		}
-	}
-
-	
-	// Sort the feature descriptions by type
-	SortArray( tile->sortedFeatures, tile->numFeatures );
+    if (strncmp(string, "FEAT", 4) != 0)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed the feature group tag read/verify");
+        ShiError(message);
+    }
 
 
-	// Build the path and area records as appropriate for each feature
-	tile->areas = (AreaRecord*)malloc( tile->nareas * sizeof( AreaRecord ) );
-	tile->paths = (PathRecord*)malloc( tile->npaths * sizeof( PathRecord ) );
-	ShiAssert( tile->areas );
-	ShiAssert( tile->paths );
-	int areaIndex = 0;
-	int pathIndex = 0;
+    // Allocate memory for the features in this tile
+    tile->features = (FeatureRecord*)malloc(tile->numFeatures * sizeof(*tile->features));
+    tile->sortedFeatures = (FeatureRecord**)malloc(tile->numFeatures * sizeof(void*));
+    tile->nareas = 0;
+    tile->npaths = 0;
 
-	for( feature = 0; feature < tile->numFeatures; feature++ ) {
 
-		if ( typeIsPath( tile->features[feature].type ) ) {
-			int pntIndex = 1;
+    // Read each feature description and count types
+    for (feature = 0; feature < tile->numFeatures; feature++)
+    {
+        ReadFeature(inputFile, &tile->features[feature]);
+        tile->sortedFeatures[feature] = &tile->features[feature];
 
-			while ( pntIndex < tile->features[feature].numPoints ) {
-				ShiAssert( pathIndex < tile->npaths );
-				tile->paths[pathIndex].type = tile->features[feature].type;
-				tile->paths[pathIndex].size = tile->features[feature].size;
-				tile->paths[pathIndex].x1 = tile->features[feature].points[pntIndex-1].x;
-				tile->paths[pathIndex].y1 = tile->features[feature].points[pntIndex-1].y;
-				tile->paths[pathIndex].x2 = tile->features[feature].points[pntIndex].x;
-				tile->paths[pathIndex].y2 = tile->features[feature].points[pntIndex].y;
-				pathIndex++;
-				pntIndex++;
-			}
+        if (typeIsPath(tile->features[feature].type))
+        {
 
-		} else {
-			ShiAssert( areaIndex < tile->nareas );
-			tile->areas[areaIndex].type = tile->features[feature].type;
-			tile->areas[areaIndex].size = tile->features[feature].size;
-			tile->areas[areaIndex].x = tile->features[feature].points[0].x;
-			tile->areas[areaIndex].y = tile->features[feature].points[0].y;
-			areaIndex++;
-		}
-	}
+            // Make sure each path has at least two defining points
+            ShiAssert(tile->features[feature].numPoints >= 2);
+            tile->npaths += tile->features[feature].numPoints - 1;
+
+        }
+        else
+        {
+
+            // Make sure each area has exactly one center point
+            ShiAssert(tile->features[feature].numPoints == 1);
+            tile->nareas++;
+
+        }
+    }
+
+
+    // Sort the feature descriptions by type
+    SortArray(tile->sortedFeatures, tile->numFeatures);
+
+
+    // Build the path and area records as appropriate for each feature
+    tile->areas = (AreaRecord*)malloc(tile->nareas * sizeof(AreaRecord));
+    tile->paths = (PathRecord*)malloc(tile->npaths * sizeof(PathRecord));
+    ShiAssert(tile->areas);
+    ShiAssert(tile->paths);
+    int areaIndex = 0;
+    int pathIndex = 0;
+
+    for (feature = 0; feature < tile->numFeatures; feature++)
+    {
+
+        if (typeIsPath(tile->features[feature].type))
+        {
+            int pntIndex = 1;
+
+            while (pntIndex < tile->features[feature].numPoints)
+            {
+                ShiAssert(pathIndex < tile->npaths);
+                tile->paths[pathIndex].type = tile->features[feature].type;
+                tile->paths[pathIndex].size = tile->features[feature].size;
+                tile->paths[pathIndex].x1 = tile->features[feature].points[pntIndex - 1].x;
+                tile->paths[pathIndex].y1 = tile->features[feature].points[pntIndex - 1].y;
+                tile->paths[pathIndex].x2 = tile->features[feature].points[pntIndex].x;
+                tile->paths[pathIndex].y2 = tile->features[feature].points[pntIndex].y;
+                pathIndex++;
+                pntIndex++;
+            }
+
+        }
+        else
+        {
+            ShiAssert(areaIndex < tile->nareas);
+            tile->areas[areaIndex].type = tile->features[feature].type;
+            tile->areas[areaIndex].size = tile->features[feature].size;
+            tile->areas[areaIndex].x = tile->features[feature].points[0].x;
+            tile->areas[areaIndex].y = tile->features[feature].points[0].y;
+            areaIndex++;
+        }
+    }
 }
 
 
-void TileDatabase::ReadFeature( HANDLE inputFile, FeatureRecord *feature )
+void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
 {
-	DWORD	bytes;
-	char	message[80];
+    DWORD	bytes;
+    char	message[80];
 
 
-	// Read the feature record header
-	ReadFile( inputFile, feature, 13, &bytes, NULL );
-	if (bytes != 13) {
-		PutErrorString( message );
-		strcat( message, ":  Failed feature record read" );
-		ShiError( message );
-	}
+    // Read the feature record header
+    ReadFile(inputFile, feature, 13, &bytes, NULL);
 
-	// Verify the feature tag
-	if ( strncmp( feature->tag, "1FTR", 4 ) != 0 ) {
-		ShiError( "Failed feature tag check" );
-	}
+    if (bytes != 13)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed feature record read");
+        ShiError(message);
+    }
+
+    // Verify the feature tag
+    if (strncmp(feature->tag, "1FTR", 4) != 0)
+    {
+        ShiError("Failed feature tag check");
+    }
 
 
-	// Allocate memory for the list of points
-	feature->points = (PointRecord*)malloc( feature->numPoints * sizeof( *feature->points ) );
-	ShiAssert( feature->points );
+    // Allocate memory for the list of points
+    feature->points = (PointRecord*)malloc(feature->numPoints * sizeof(*feature->points));
+    ShiAssert(feature->points);
 
-	// Read the point records
-	ReadFile( inputFile, feature->points, 8*feature->numPoints, &bytes, NULL );
-	if (bytes != (DWORD)8*feature->numPoints) {
-		PutErrorString( message );
-		strcat( message, ":  Failed read of a point record" );
-		ShiError( message );
-	}
+    // Read the point records
+    ReadFile(inputFile, feature->points, 8 * feature->numPoints, &bytes, NULL);
+
+    if (bytes != (DWORD)8 * feature->numPoints)
+    {
+        PutErrorString(message);
+        strcat(message, ":  Failed read of a point record");
+        ShiError(message);
+    }
 }
 
 
-void TileDatabase::SortArray( FeatureRecord **array, int numElements )
+void TileDatabase::SortArray(FeatureRecord **array, int numElements)
 {
-	int				i, j, k;
-	FeatureRecord	*p;
+    int				i, j, k;
+    FeatureRecord	*p;
 
 
-	for (i=1; i<numElements; i++) {
+    for (i = 1; i < numElements; i++)
+    {
 
-		// Decide where to place this element in the list
-		j = i;
-		while ((j>0) && (array[j-1]->type > array[i]->type)) {
-			j--;
-		}
+        // Decide where to place this element in the list
+        j = i;
 
-		// Only adjust the list if we need to
-		if ( j != i ) {
+        while ((j > 0) && (array[j - 1]->type > array[i]->type))
+        {
+            j--;
+        }
 
-			// Remove the element under consideration (i) from its current location
-			p = array[i];
-			for (k=i; k<numElements-1; k++) {
-				array[k] = array[k+1];
-			}
+        // Only adjust the list if we need to
+        if (j != i)
+        {
 
-			// Insert the element under consideration in front of the identified element
-			for (k=numElements-1; k>j; k--) {
-				array[k] = array[k-1];
-			}
-			array[j] = p;
-		}
-	}
+            // Remove the element under consideration (i) from its current location
+            p = array[i];
+
+            for (k = i; k < numElements - 1; k++)
+            {
+                array[k] = array[k + 1];
+            }
+
+            // Insert the element under consideration in front of the identified element
+            for (k = numElements - 1; k > j; k--)
+            {
+                array[k] = array[k - 1];
+            }
+
+            array[j] = p;
+        }
+    }
 }
 
 
-TileRecord* TileDatabase::GetTileRecord( WORD code )
+TileRecord* TileDatabase::GetTileRecord(WORD code)
 {
-	int tile;
+    int tile;
 
-	for ( tile = 0; tile < header.numTiles; tile++ ) {
+    for (tile = 0; tile < header.numTiles; tile++)
+    {
 
-		if (header.tiles[tile].code == code) {
-			return &header.tiles[tile];
-		}
-	}
+        if (header.tiles[tile].code == code)
+        {
+            return &header.tiles[tile];
+        }
+    }
 
-	// We didn't find a match
-	return NULL;
+    // We didn't find a match
+    return NULL;
 }
 
 
-AreaRecord* TileDatabase::GetArea( TileRecord *pTile, int area )
+AreaRecord* TileDatabase::GetArea(TileRecord *pTile, int area)
 {
-	if (pTile == NULL) {
-		return NULL;
-	}
+    if (pTile == NULL)
+    {
+        return NULL;
+    }
 
-	ShiAssert( area < pTile->nareas );
+    ShiAssert(area < pTile->nareas);
 
-	return &pTile->areas[area];
+    return &pTile->areas[area];
 }
 
 
-PathRecord* TileDatabase::GetPath( TileRecord *pTile, int path )
+PathRecord* TileDatabase::GetPath(TileRecord *pTile, int path)
 {
-	if (pTile == NULL) {
-		return NULL;
-	}
+    if (pTile == NULL)
+    {
+        return NULL;
+    }
 
-	ShiAssert( path < pTile->npaths );
+    ShiAssert(path < pTile->npaths);
 
-	return &pTile->paths[path];
+    return &pTile->paths[path];
 }
 
 
-BOOL TileDatabase::typeIsPath( BYTE featureType )
+BOOL TileDatabase::typeIsPath(BYTE featureType)
 {
-	return ( (featureType == COVERAGE_RIVER) ||
-			 (featureType == COVERAGE_ROAD)  ||
-		     (featureType == COVERAGE_RAIL)  ||
-		     (featureType == COVERAGE_BRIDGE)||
-		     (featureType == COVERAGE_RUNWAY) );
+    return ((featureType == COVERAGE_RIVER) ||
+            (featureType == COVERAGE_ROAD)  ||
+            (featureType == COVERAGE_RAIL)  ||
+            (featureType == COVERAGE_BRIDGE) ||
+            (featureType == COVERAGE_RUNWAY));
 }

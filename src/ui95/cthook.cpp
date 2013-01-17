@@ -14,12 +14,12 @@
 
 C_TimerHook::C_TimerHook() : C_Base()
 {
-	UpdateCallback_=NULL;
-	RefreshCallback_=NULL;
-	DrawCallback_=NULL;
-	_SetCType_(_CNTL_TIMERHOOK_);
-	SetReady(0);
-	DefaultFlags_=C_BIT_ENABLED|C_BIT_TIMER|C_BIT_REMOVE;
+    UpdateCallback_ = NULL;
+    RefreshCallback_ = NULL;
+    DrawCallback_ = NULL;
+    _SetCType_(_CNTL_TIMERHOOK_);
+    SetReady(0);
+    DefaultFlags_ = C_BIT_ENABLED | C_BIT_TIMER | C_BIT_REMOVE;
 }
 
 C_TimerHook::C_TimerHook(char **stream) : C_Base(stream)
@@ -36,14 +36,14 @@ C_TimerHook::~C_TimerHook()
 
 long C_TimerHook::Size()
 {
-	return(0);
+    return(0);
 }
 
-void C_TimerHook::Setup(long ID,short Type)
+void C_TimerHook::Setup(long ID, short Type)
 {
-	SetFlags(DefaultFlags_);
-	SetID(ID);
-	SetType(Type);
+    SetFlags(DefaultFlags_);
+    SetID(ID);
+    SetType(Type);
 }
 
 void C_TimerHook::Cleanup()
@@ -52,38 +52,39 @@ void C_TimerHook::Cleanup()
 
 BOOL C_TimerHook::TimerUpdate()
 {
-	if(UpdateCallback_)
-		(*UpdateCallback_)(GetID(),C_TYPE_TIMER,this);
+    if (UpdateCallback_)
+        (*UpdateCallback_)(GetID(), C_TYPE_TIMER, this);
 
-	if(Ready())
-		return(TRUE);
+    if (Ready())
+        return(TRUE);
 
-	return(FALSE);
+    return(FALSE);
 }
 
 void C_TimerHook::Refresh()
 {
-	if(!Ready() || (GetFlags() & C_BIT_INVISIBLE))
-		return;
+    if (!Ready() || (GetFlags() & C_BIT_INVISIBLE))
+        return;
 
-	Parent_->SetUpdateRect(GetX(),GetY(),GetX()+GetW(),GetY()+GetH(),GetFlags(),GetClient());
-	if(RefreshCallback_)
-		(*RefreshCallback_)(GetID(),C_TYPE_TIMER,this);
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+
+    if (RefreshCallback_)
+        (*RefreshCallback_)(GetID(), C_TYPE_TIMER, this);
 }
 
 // This will ONLY Get Calle
-void C_TimerHook::Draw(SCREEN *,UI95_RECT *cliprect)
+void C_TimerHook::Draw(SCREEN *, UI95_RECT *cliprect)
 {
-	if(!Ready() || (GetFlags() & C_BIT_INVISIBLE))
-		return;
+    if (!Ready() || (GetFlags() & C_BIT_INVISIBLE))
+        return;
 
-	if(GetFlags() & C_BIT_TIMER)
-		SetReady(0);
+    if (GetFlags() & C_BIT_TIMER)
+        SetReady(0);
 
-	if(DrawCallback_)
-	{
-		if(!(cliprect->left > (GetX()+GetW()) || cliprect->top > (GetY()+GetH()) || cliprect->right < GetX() || cliprect->bottom < GetY()))
-			(*DrawCallback_)(GetID(),C_TYPE_TIMER,this);
-	}
+    if (DrawCallback_)
+    {
+        if (!(cliprect->left > (GetX() + GetW()) || cliprect->top > (GetY() + GetH()) || cliprect->right < GetX() || cliprect->bottom < GetY()))
+            (*DrawCallback_)(GetID(), C_TYPE_TIMER, this);
+    }
 }
 

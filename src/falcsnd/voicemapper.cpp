@@ -3,8 +3,8 @@
 #include "sim\include\stdhdr.h"
 #include "fakerand.h"
 
-extern FILE* OpenCampFile (char *filename, char *ext, char *mode);
-extern void CloseCampFile (FILE *fp);
+extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern void CloseCampFile(FILE *fp);
 
 // single instance of the voicemapper
 
@@ -15,7 +15,8 @@ VoiceMapper g_voicemap;
 // idea is to generalise the F4 thing, so certain voices
 // can stick to certain things.
 
-const unsigned int  VoiceMapper::default_voices[] = {
+const unsigned int  VoiceMapper::default_voices[] =
+{
     VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 0
     VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 1
     VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 2
@@ -34,12 +35,13 @@ const unsigned int  VoiceMapper::default_voices[] = {
 const int  VoiceMapper::max_default_voices = sizeof(default_voices) / sizeof(default_voices[0]);
 
 //JAM 19Sep03 - Fixes MSVC7 compile errors
-static VoiceMapper::namemap Names[] = {
-	{ "atc", VoiceMapper::VOICE_ATC},
+static VoiceMapper::namemap Names[] =
+{
+    { "atc", VoiceMapper::VOICE_ATC},
     { "awacs", VoiceMapper::VOICE_AWACS},
     { "fac", VoiceMapper::VOICE_FAC},
     { "pilot", VoiceMapper::VOICE_PILOT},
-    { "all", VoiceMapper::VOICE_PILOT|VoiceMapper::VOICE_ATC|VoiceMapper::VOICE_AWACS|VoiceMapper::VOICE_FAC},
+    { "all", VoiceMapper::VOICE_PILOT | VoiceMapper::VOICE_ATC | VoiceMapper::VOICE_AWACS | VoiceMapper::VOICE_FAC},
     { "any", VoiceMapper::VOICE_SIDE_ALL},
     { "1", VoiceMapper::VOICE_SIDE1},
     { "2", VoiceMapper::VOICE_SIDE2},
@@ -77,7 +79,7 @@ const struct VoiceMapper::namemap {
 VoiceMapper::~VoiceMapper()
 {
     if (voiceflags)
-	delete voiceflags;
+        delete voiceflags;
 }
 
 // read in the camp file definitions
@@ -85,29 +87,40 @@ void VoiceMapper::LoadVoices()
 {
     // default stuff
     FILE *fp = OpenCampFile("voicerange", "dat", "r");
-    if (fp == NULL) { // just load defaults
-	ShiAssert(totalvoices >= max_default_voices);
-	for (int i = 0; i < max_default_voices; i++)
-	    voiceflags[i] = default_voices[i];
-	return;
+
+    if (fp == NULL)   // just load defaults
+    {
+        ShiAssert(totalvoices >= max_default_voices);
+
+        for (int i = 0; i < max_default_voices; i++)
+            voiceflags[i] = default_voices[i];
+
+        return;
     }
-    memset (voiceflags, VOICE_NONE, sizeof *voiceflags * totalvoices);
+
+    memset(voiceflags, VOICE_NONE, sizeof * voiceflags * totalvoices);
 
     char buf[1024];
     char type[100];
     int voice;
     char side[100];
-    while(fgets (buf, sizeof buf, fp)) {
-	if (buf[0] == '\n' || buf[0] == '#' || buf[0] == ';')
-	    continue; // comment
-	if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) != 3)
-	    continue;
-	ShiAssert(voice < totalvoices);
-	if (voice >= totalvoices)
-	    continue;
-	int vtype = LookupName(type);
-	vtype |= LookupName(side);
-	voiceflags[voice] |= vtype;
+
+    while (fgets(buf, sizeof buf, fp))
+    {
+        if (buf[0] == '\n' || buf[0] == '#' || buf[0] == ';')
+            continue; // comment
+
+        if (sscanf(buf, "%d %99s %99s", &voice, &type, &side) != 3)
+            continue;
+
+        ShiAssert(voice < totalvoices);
+
+        if (voice >= totalvoices)
+            continue;
+
+        int vtype = LookupName(type);
+        vtype |= LookupName(side);
+        voiceflags[voice] |= vtype;
     }
 
     CloseCampFile(fp);
@@ -117,20 +130,24 @@ unsigned int VoiceMapper::LookupName(const char *name)
 {
     const struct namemap *mp;
 
-    for (mp = Names; mp->name != NULL; mp ++) {
-	if (stricmp(mp->name, name) == 0)
-	    return mp->id;
+    for (mp = Names; mp->name != NULL; mp ++)
+    {
+        if (stricmp(mp->name, name) == 0)
+            return mp->id;
     }
+
     return 0;
 }
 
 void VoiceMapper::SetVoiceCount(int n)
 {
     totalvoices = n;
+
     if (voiceflags)
-	delete []voiceflags;
+        delete []voiceflags;
+
     voiceflags = new unsigned int[n];
-    memset (voiceflags, VOICE_NONE, sizeof *voiceflags * n);
+    memset(voiceflags, VOICE_NONE, sizeof * voiceflags * n);
 }
 
 
@@ -146,19 +163,26 @@ int VoiceMapper::PickVoice(int type, int side)
     ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
     ShiAssert((side >= 0 && side <= 7) || side == VOICE_SIDE_UNK);
     unsigned int match = type;
+
     if (side != VOICE_SIDE_UNK)
-	match |= (VOICE_SIDE_BASE << side);
+        match |= (VOICE_SIDE_BASE << side);
+
     float chance;
     int selected = 0;
     int recno = 0;
-    for (int i = 0; i < totalvoices; i++) {
-	if ((voiceflags[i] & match) != match)
-	    continue;
-	recno ++;
-	chance = 1.0f / recno;
-	if (chance > PRANDFloatPos())
-	    selected = i;
+
+    for (int i = 0; i < totalvoices; i++)
+    {
+        if ((voiceflags[i] & match) != match)
+            continue;
+
+        recno ++;
+        chance = 1.0f / recno;
+
+        if (chance > PRANDFloatPos())
+            selected = i;
     }
+
     return selected;
 }
 
@@ -169,10 +193,14 @@ int VoiceMapper::GetNextVoice(int start, int type, int side)
     unsigned int match = type | (VOICE_SIDE_BASE << side);
     int selected = 0;
     int recno = 0;
-    for (int i = 0; i < totalvoices; i++) {
-	start = (start + 1) % totalvoices;
-	if ((voiceflags[start] & match) == match)
-	    return start;
+
+    for (int i = 0; i < totalvoices; i++)
+    {
+        start = (start + 1) % totalvoices;
+
+        if ((voiceflags[start] & match) == match)
+            return start;
     }
+
     return 0;
 }

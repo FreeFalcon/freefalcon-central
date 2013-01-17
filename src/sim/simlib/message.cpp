@@ -58,21 +58,21 @@ char debstr[10][120];
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_INT SimLibPrintError (char *fmt, ...)
+SIM_INT SimLibPrintError(char *fmt, ...)
 {
-va_list ap;
-char new_str[1023];
+    va_list ap;
+    char new_str[1023];
 
-        /* This comment is for LINT */
-        /*CONSTCOND*/
-        va_start (ap, fmt);
+    /* This comment is for LINT */
+    /*CONSTCOND*/
+    va_start(ap, fmt);
 
-        vsprintf (new_str, fmt, ap);
+    vsprintf(new_str, fmt, ap);
 
-        va_end (ap);
+    va_end(ap);
 
-        MessageBox (FalconDisplay.appWin, new_str, "ERROR", MB_OK | MB_ICONSTOP);
-        return (SIMLIB_OK);
+    MessageBox(FalconDisplay.appWin, new_str, "ERROR", MB_OK | MB_ICONSTOP);
+    return (SIMLIB_OK);
 }
 
 /********************************************************************/
@@ -95,19 +95,19 @@ char new_str[1023];
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_INT SimLibPrintMessage (char *fmt, ...)
+SIM_INT SimLibPrintMessage(char *fmt, ...)
 {
-va_list ap;
-char new_str[1023];
+    va_list ap;
+    char new_str[1023];
 
-        /* This comment is for LINT */
-        /*CONSTCOND*/
-        va_start (ap, fmt);
+    /* This comment is for LINT */
+    /*CONSTCOND*/
+    va_start(ap, fmt);
 
-        vsprintf (new_str, fmt, ap);
+    vsprintf(new_str, fmt, ap);
 
-        va_end (ap);
+    va_end(ap);
 
-        MessageBox (FalconDisplay.appWin, new_str, "Message", MB_OK);
-        return (SIMLIB_OK);
+    MessageBox(FalconDisplay.appWin, new_str, "Message", MB_OK);
+    return (SIMLIB_OK);
 }

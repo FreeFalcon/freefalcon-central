@@ -18,88 +18,96 @@
 #include "InvalidBufferException.h"
 
 extern C_Handler *gMainHandler;
-extern void CampaignJoinKeepAlive (void);
+extern void CampaignJoinKeepAlive(void);
 
-FalconSendPersistantList::FalconSendPersistantList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (SendPersistantList, FalconEvent::CampaignThread, entityId, target, loopback)
-	{
-	dataBlock.data = NULL;
-	dataBlock.size = -1;
-	}
+FalconSendPersistantList::FalconSendPersistantList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, entityId, target, loopback)
+{
+    dataBlock.data = NULL;
+    dataBlock.size = -1;
+}
 
-FalconSendPersistantList::FalconSendPersistantList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (SendPersistantList, FalconEvent::CampaignThread, senderid, target)
-	{
-	dataBlock.data = NULL;
-	dataBlock.size = -1;
-	type;
-	}
+FalconSendPersistantList::FalconSendPersistantList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, senderid, target)
+{
+    dataBlock.data = NULL;
+    dataBlock.size = -1;
+    type;
+}
 
 FalconSendPersistantList::~FalconSendPersistantList(void)
 {
-	if (dataBlock.data)
-		delete dataBlock.data;
-	dataBlock.data = NULL;
-}
-      
-int FalconSendPersistantList::Size() const { 
-	ShiAssert ( dataBlock.size  >= 0 );
+    if (dataBlock.data)
+        delete dataBlock.data;
 
-	return sizeof (short) + dataBlock.size + FalconEvent::Size();
+    dataBlock.data = NULL;
+}
+
+int FalconSendPersistantList::Size() const
+{
+    ShiAssert(dataBlock.size  >= 0);
+
+    return sizeof(short) + dataBlock.size + FalconEvent::Size();
 }
 
 //sfr: changed to long *
-int FalconSendPersistantList::Decode (VU_BYTE **buf, long *rem)
+int FalconSendPersistantList::Decode(VU_BYTE **buf, long *rem)
 {
-	long int init = *rem;
+    long int init = *rem;
 
-	memcpychk(&dataBlock.size, buf, sizeof (short), rem);
-	ShiAssert(dataBlock.size >= 0);
-	dataBlock.data = new VU_BYTE[dataBlock.size];
-	memcpychk(dataBlock.data, buf, dataBlock.size, rem);
-	FalconEvent::Decode (buf, rem);
+    memcpychk(&dataBlock.size, buf, sizeof(short), rem);
+    ShiAssert(dataBlock.size >= 0);
+    dataBlock.data = new VU_BYTE[dataBlock.size];
+    memcpychk(dataBlock.data, buf, dataBlock.size, rem);
+    FalconEvent::Decode(buf, rem);
 
-//	ShiAssert (size == Size());
+    //	ShiAssert (size == Size());
 
-	CampaignJoinKeepAlive();
+    CampaignJoinKeepAlive();
 
-	return init - *rem;
+    return init - *rem;
 }
 
-int FalconSendPersistantList::Encode (VU_BYTE **buf)
-	{
-	int size = 0;
+int FalconSendPersistantList::Encode(VU_BYTE **buf)
+{
+    int size = 0;
 
     ShiAssert(dataBlock.size >= 0);
-	memcpy (*buf, &dataBlock.size, sizeof (short));		*buf += sizeof (short);		size += sizeof (short);		
-	memcpy (*buf, dataBlock.data, dataBlock.size);		*buf += dataBlock.size;		size += dataBlock.size;		
-	size += FalconEvent::Encode (buf);
+    memcpy(*buf, &dataBlock.size, sizeof(short));
+    *buf += sizeof(short);
+    size += sizeof(short);
+    memcpy(*buf, dataBlock.data, dataBlock.size);
+    *buf += dataBlock.size;
+    size += dataBlock.size;
+    size += FalconEvent::Encode(buf);
 
-	ShiAssert (size == Size());
+    ShiAssert(size == Size());
 
-	return size;
-	}
+    return size;
+}
 
 //sfr: added rem
 int FalconSendPersistantList::Process(uchar autodisp)
 {
-	VU_BYTE*	buf;
-	long rem;
+    VU_BYTE*	buf;
+    long rem;
 
-	if (autodisp || !TheCampaign.IsPreLoaded())
-		return -1;
+    if (autodisp || !TheCampaign.IsPreLoaded())
+        return -1;
 
-	if (TheCampaign.Flags & CAMP_NEED_PERSIST)
-	{
-		CampaignJoinKeepAlive();
+    if (TheCampaign.Flags & CAMP_NEED_PERSIST)
+    {
+        CampaignJoinKeepAlive();
 
-		buf = (VU_BYTE*) dataBlock.data;
-		rem = dataBlock.size;
-		DecodePersistantList(&buf, &rem);
-		TheCampaign.Flags &= ~CAMP_NEED_PERSIST;
-		if(gMainHandler)
-			PostMessage(gMainHandler->GetAppWnd(),FM_GOT_CAMPAIGN_DATA,CAMP_NEED_PERSIST,0);
-		TheCampaign.GotJoinData();
-	}
+        buf = (VU_BYTE*) dataBlock.data;
+        rem = dataBlock.size;
+        DecodePersistantList(&buf, &rem);
+        TheCampaign.Flags &= ~CAMP_NEED_PERSIST;
 
-	return 0;
+        if (gMainHandler)
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PERSIST, 0);
+
+        TheCampaign.GotJoinData();
+    }
+
+    return 0;
 }
 

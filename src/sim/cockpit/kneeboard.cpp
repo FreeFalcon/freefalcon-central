@@ -34,38 +34,51 @@ static const char	THR_KNEEBOARD_MAP_NAME[]		= "KneeMap.gif";
 
 // sfr: removed jb voodoo checks
 
-KneeBoard::KneeBoard(){
-	mapImageFile.image.image = NULL;
-	mapImageFile.image.palette = NULL;
-	refCount = 0;
+KneeBoard::KneeBoard()
+{
+    mapImageFile.image.image = NULL;
+    mapImageFile.image.palette = NULL;
+    refCount = 0;
 }
 
-KneeBoard::~KneeBoard(){
+KneeBoard::~KneeBoard()
+{
 }
 
 // sfr: removed dest info
-void KneeBoard::Setup(){
-	if (refCount == 0){
-		page = BRIEF;
-		LoadKneeImage();
-	}
-	++refCount;
+void KneeBoard::Setup()
+{
+    if (refCount == 0)
+    {
+        page = BRIEF;
+        LoadKneeImage();
+    }
+
+    ++refCount;
 }
 
 
-void KneeBoard::Cleanup( void ){
-	--refCount;
-	if (refCount == 0){
-		if (imageLoaded){
-			if (mapImageFile.image.palette){
-				glReleaseMemory( (char*)mapImageFile.image.palette );
-			}
-			if (mapImageFile.image.image){
-				glReleaseMemory( (char*)mapImageFile.image.image );
-			}
-			imageLoaded = false;
-		}
-	}
+void KneeBoard::Cleanup(void)
+{
+    --refCount;
+
+    if (refCount == 0)
+    {
+        if (imageLoaded)
+        {
+            if (mapImageFile.image.palette)
+            {
+                glReleaseMemory((char*)mapImageFile.image.palette);
+            }
+
+            if (mapImageFile.image.image)
+            {
+                glReleaseMemory((char*)mapImageFile.image.image);
+            }
+
+            imageLoaded = false;
+        }
+    }
 }
 
 // JPO - load the actual image, try the campaign dir first.
@@ -75,30 +88,36 @@ void KneeBoard::LoadKneeImage()
     char pathname[MAX_PATH];
     int result;
 
-    sprintf (pathname, "%s\\%s", FalconCampaignSaveDirectory, THR_KNEEBOARD_MAP_NAME);
+    sprintf(pathname, "%s\\%s", FalconCampaignSaveDirectory, THR_KNEEBOARD_MAP_NAME);
     // Make sure we recognize this file type
-    mapImageFile.imageType = CheckImageType( pathname );
-    ShiAssert( mapImageFile.imageType != IMAGE_TYPE_UNKNOWN );
-    
+    mapImageFile.imageType = CheckImageType(pathname);
+    ShiAssert(mapImageFile.imageType != IMAGE_TYPE_UNKNOWN);
+
     // Open the input file
-    result = mapImageFile.glOpenFileMem( pathname );
-    if (result != 1) {
-		mapImageFile.imageType = CheckImageType( KNEEBOARD_MAP_NAME );
-		ShiAssert( mapImageFile.imageType != IMAGE_TYPE_UNKNOWN );
-	
-		// Open the input file
-		result = mapImageFile.glOpenFileMem( KNEEBOARD_MAP_NAME );
+    result = mapImageFile.glOpenFileMem(pathname);
+
+    if (result != 1)
+    {
+        mapImageFile.imageType = CheckImageType(KNEEBOARD_MAP_NAME);
+        ShiAssert(mapImageFile.imageType != IMAGE_TYPE_UNKNOWN);
+
+        // Open the input file
+        result = mapImageFile.glOpenFileMem(KNEEBOARD_MAP_NAME);
     }
-    ShiAssert( result == 1 );
-    
+
+    ShiAssert(result == 1);
+
     // Read the image data (note that ReadTextureImage will close texFile for us)
     mapImageFile.glReadFileMem();
-    result = ReadTextureImage( &mapImageFile );
-    if (result != GOOD_READ) {
-		//ShiError( "Failed to read kneeboard image." );
-		imageLoaded = false;
+    result = ReadTextureImage(&mapImageFile);
+
+    if (result != GOOD_READ)
+    {
+        //ShiError( "Failed to read kneeboard image." );
+        imageLoaded = false;
     }
-	else {
-		imageLoaded = true;
-	}
+    else
+    {
+        imageLoaded = true;
+    }
 }

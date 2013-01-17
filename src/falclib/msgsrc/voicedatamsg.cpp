@@ -6,26 +6,26 @@
 #include "falcsess.h"
 #include "InvalidBufferException.h"
 
-FalconVoiceDataMessage::FalconVoiceDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (VoiceDataMsg, FalconEvent::VuThread, entityId, target, loopback)
+FalconVoiceDataMessage::FalconVoiceDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(VoiceDataMsg, FalconEvent::VuThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-FalconVoiceDataMessage::FalconVoiceDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (VoiceDataMsg, FalconEvent::VuThread, senderid, target)
+FalconVoiceDataMessage::FalconVoiceDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(VoiceDataMsg, FalconEvent::VuThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconVoiceDataMessage::~FalconVoiceDataMessage(void)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconVoiceDataMessage::Process(uchar autodisp)
 {
-   // Your Code Goes Here
-   return 0;
-   autodisp;
+    // Your Code Goes Here
+    return 0;
+    autodisp;
 }
 

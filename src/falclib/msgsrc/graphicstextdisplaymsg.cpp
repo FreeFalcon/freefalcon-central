@@ -14,29 +14,29 @@
 #include "falcsess.h"
 #include "InvalidBufferException.h"
 
-GraphicsTextDisplay::GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (GraphicsTextDisplayMsg, FalconEvent::SimThread, entityId, target, loopback)
+GraphicsTextDisplay::GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-GraphicsTextDisplay::GraphicsTextDisplay(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (GraphicsTextDisplayMsg, FalconEvent::SimThread, senderid, target)
+GraphicsTextDisplay::GraphicsTextDisplay(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 GraphicsTextDisplay::~GraphicsTextDisplay(void)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int GraphicsTextDisplay::Process(uchar autodisp)
 {
-	if (autodisp)
-		return 0;
+    if (autodisp)
+        return 0;
 
-   OTWDriver.ShowMessage (dataBlock.msg);
+    OTWDriver.ShowMessage(dataBlock.msg);
 
-   return 1;
+    return 1;
 }
 

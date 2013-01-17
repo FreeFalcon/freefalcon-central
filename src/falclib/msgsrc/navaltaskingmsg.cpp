@@ -14,26 +14,26 @@
 #include "InvalidBufferException.h"
 
 
-FalconNavalTaskingMessage::FalconNavalTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (NavalTaskingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
-	{
-   // Your Code Goes Here
-	}
+FalconNavalTaskingMessage::FalconNavalTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(NavalTaskingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+{
+    // Your Code Goes Here
+}
 
-FalconNavalTaskingMessage::FalconNavalTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (NavalTaskingMsg, FalconEvent::CampaignThread, senderid, target)
-	{
-   // Your Code Goes Here
-	type;
-	}
+FalconNavalTaskingMessage::FalconNavalTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(NavalTaskingMsg, FalconEvent::CampaignThread, senderid, target)
+{
+    // Your Code Goes Here
+    type;
+}
 
 FalconNavalTaskingMessage::~FalconNavalTaskingMessage(void)
-	{
-   // Your Code Goes Here
-	}
+{
+    // Your Code Goes Here
+}
 
 int FalconNavalTaskingMessage::Process(uchar autodisp)
-	{
-	// Nothing here for now
-	return 0;
-	autodisp;
-	}
+{
+    // Nothing here for now
+    return 0;
+    autodisp;
+}
 

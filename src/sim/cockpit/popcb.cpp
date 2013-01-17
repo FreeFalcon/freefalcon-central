@@ -3,94 +3,105 @@
 #include "wingorder.h"
 #include "simdrive.h"
 
-MenuCallback MenuCallbackArray[TOTAL_POPCALLBACK_SLOTS] = {
-	CBPopTestFalse,
-	CBPopTestTrue,
-	CBTestForTarget,
-	CBCheckExtent,
-	CBTestTwoShip,
-	CBTestOnGround,
-	CBTestAWACS,
-	CBTestNotOnGround,
-	NULL,
-	NULL
+MenuCallback MenuCallbackArray[TOTAL_POPCALLBACK_SLOTS] =
+{
+    CBPopTestFalse,
+    CBPopTestTrue,
+    CBTestForTarget,
+    CBCheckExtent,
+    CBTestTwoShip,
+    CBTestOnGround,
+    CBTestAWACS,
+    CBTestNotOnGround,
+    NULL,
+    NULL
 };
 
 
 BOOL CBCheckExtent(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
 {
-	BOOL retVal = FALSE;
+    BOOL retVal = FALSE;
 
-	switch(callerIdx) {
-	case AiFlightLead:
+    switch (callerIdx)
+    {
+        case AiFlightLead:
 
-		if(numInFlight > 2 || (numInFlight == 2 && extent == AiWingman)) {
-			retVal = TRUE;
-		}
-		break;
+            if (numInFlight > 2 || (numInFlight == 2 && extent == AiWingman))
+            {
+                retVal = TRUE;
+            }
 
-	case AiElementLead:
-			
-		if(numInFlight == 4 && extent == AiWingman) {
-			retVal = TRUE;
-		}
-		break;
+            break;
 
-	default:
-		break;
-	}
+        case AiElementLead:
 
-	return retVal;
+            if (numInFlight == 4 && extent == AiWingman)
+            {
+                retVal = TRUE;
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    return retVal;
 }
 
 BOOL CBPopTestTrue(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
 {
-	return TRUE;
+    return TRUE;
 }
 
 BOOL CBPopTestFalse(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
 {
-	return FALSE;
+    return FALSE;
 }
 
 
 BOOL CBTestForTarget(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
 {
-	BOOL retVal = FALSE;
-	if(CBCheckExtent(callerIdx, numInFlight, extent, isPolling, tgtId)) {
-		if(tgtId != FalconNullId) {
-			retVal = TRUE;
-		}
-	}
-	
-	return retVal;
+    BOOL retVal = FALSE;
+
+    if (CBCheckExtent(callerIdx, numInFlight, extent, isPolling, tgtId))
+    {
+        if (tgtId != FalconNullId)
+        {
+            retVal = TRUE;
+        }
+    }
+
+    return retVal;
 }
 
 
 BOOL CBTestTwoShip(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
 {
-	BOOL retVal = FALSE;
+    BOOL retVal = FALSE;
 
-	if(CBCheckExtent(callerIdx, numInFlight, extent, isPolling, tgtId)) {
-		if(numInFlight > 2) {
-			retVal = TRUE;
-		}
-	}
-	
-	return retVal;
+    if (CBCheckExtent(callerIdx, numInFlight, extent, isPolling, tgtId))
+    {
+        if (numInFlight > 2)
+        {
+            retVal = TRUE;
+        }
+    }
+
+    return retVal;
 }
 
-BOOL CBTestOnGround(int,int,int,BOOL,VU_ID)
+BOOL CBTestOnGround(int, int, int, BOOL, VU_ID)
 {
-	return false;
+    return false;
 }
 
-BOOL CBTestAWACS(int,int,int,BOOL,VU_ID)
+BOOL CBTestAWACS(int, int, int, BOOL, VU_ID)
 {
-	return false;
+    return false;
 }
 
-BOOL CBTestNotOnGround(int,int,int,BOOL,VU_ID)
+BOOL CBTestNotOnGround(int, int, int, BOOL, VU_ID)
 {
-	return false;
+    return false;
 }

@@ -22,21 +22,21 @@ extern int sGreenMode, gameCompressionRatio;
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DXDrawableTracer::DXDrawableTracer( void ) : DrawableTracer()
+DXDrawableTracer::DXDrawableTracer(void) : DrawableTracer()
 {
 }
 
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DXDrawableTracer::DXDrawableTracer( float w ) : DrawableTracer(w)
+DXDrawableTracer::DXDrawableTracer(float w) : DrawableTracer(w)
 {
 }
 
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DXDrawableTracer::DXDrawableTracer( Tpoint *p, float w ) : DrawableTracer( p, w )
+DXDrawableTracer::DXDrawableTracer(Tpoint *p, float w) : DrawableTracer(p, w)
 {
 }
 
@@ -44,7 +44,7 @@ DXDrawableTracer::DXDrawableTracer( Tpoint *p, float w ) : DrawableTracer( p, w 
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
-DXDrawableTracer::~DXDrawableTracer( void )
+DXDrawableTracer::~DXDrawableTracer(void)
 {
 }
 
@@ -52,10 +52,10 @@ DXDrawableTracer::~DXDrawableTracer( void )
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
-void DXDrawableTracer::Update( Tpoint *head, Tpoint *tail )
+void DXDrawableTracer::Update(Tpoint *head, Tpoint *tail)
 {
-	position = *head;
-	tailEnd = *tail;
+    position = *head;
+    tailEnd = *tail;
 }
 
 
@@ -63,107 +63,125 @@ void DXDrawableTracer::Update( Tpoint *head, Tpoint *tail )
     Draw this segmented trail on the given renderer.
 \***************************************************************************/
 //void DrawableTracer::Draw( class RenderOTW *renderer, int LOD )
-void DXDrawableTracer::Draw( class RenderOTW *renderer, int)
+void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
 {
-	D3DVECTOR			v0, v1, v2, v3, v4, v5;
-	int					lineColor, LineEndColor;
-	float				DetailLevel;
-	D3DVECTOR			Vector;
+    D3DVECTOR			v0, v1, v2, v3, v4, v5;
+    int					lineColor, LineEndColor;
+    float				DetailLevel;
+    D3DVECTOR			Vector;
 
 
-	//COUNT_PROFILE("Tracers Nr");
-	//START_PROFILE("Tracers Time");
-	
-	
-	// COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
-	// if no more 'driven' by the gun EXEC... they appear stopped at midair
-	if(LastPos.x==position.x && LastPos.z==position.z && LastPos.y==position.y && gameCompressionRatio) { if(parentList) parentList->RemoveMe(); return; }
-	
-	// Get the last position for next comparison
-	LastPos=position;
-
-	// Get the Detail level of the drawable
-	DetailLevel=TheDXEngine.GetDetailLevel((D3DVECTOR*)&position, TRACER_VISIBLE_DISTANCE)/radius;
-
-	// Too much far to draw it...	
-	if (DetailLevel > 1.0f) {
-		//STOP_PROFILE("Tracers Time");
-		return;
-	}
-
-	// Alpha Check
-	if ( alpha > 1.0f )	alpha = 1.0f;
-
-	// now Alpha is proportional to distance
-	float LineAlpha=/*alpha * */(1 - DetailLevel * 0.2f);
+    //COUNT_PROFILE("Tracers Nr");
+    //START_PROFILE("Tracers Time");
 
 
-	// Set the Colour
-	lineColor =	((unsigned int)(LineAlpha*255.0f) << 24) 	     +	// alpha
-				((unsigned int)(r*255.0f) << 16) +	// blue
-				((unsigned int)(g*255.0f) << 8)  +	// green
-				((unsigned int)(b*255.0f));		 	// red
+    // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
+    // if no more 'driven' by the gun EXEC... they appear stopped at midair
+    if (LastPos.x == position.x && LastPos.z == position.z && LastPos.y == position.y && gameCompressionRatio)
+    {
+        if (parentList) parentList->RemoveMe();
 
-	LineEndColor =	((unsigned int)(LineAlpha*32.0f) << 24) 	     +	// alpha
-				((unsigned int)(r*255.0f) << 16) +	// blue
-				((unsigned int)(g*255.0f) << 8)  +	// green
-				((unsigned int)(b*255.0f));		 	// red
+        return;
+    }
 
-	if(DetailLevel>0.15f){
-		TheDXEngine.Draw3DPoint((D3DVECTOR*)&position, lineColor, EMISSIVE);
-		//STOP_PROFILE("Tracers Time");
-		return;
-	}
+    // Get the last position for next comparison
+    LastPos = position;
 
-	if(DetailLevel>0.03f){
-		TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
-		//STOP_PROFILE("Tracers Time");
-		return;
-	}
+    // Get the Detail level of the drawable
+    DetailLevel = TheDXEngine.GetDetailLevel((D3DVECTOR*)&position, TRACER_VISIBLE_DISTANCE) / radius;
 
-	// Get the direction vector
-	Vector.x=tailEnd.x-position.x;
-	Vector.y=tailEnd.y-position.y;
-	Vector.z=tailEnd.z-position.z;
-	
-	// Normalize the Direction vector
-	float	k=sqrtf(Vector.x*Vector.x+Vector.y*Vector.y+Vector.z*Vector.z);
-	Vector.x/=k;
-	Vector.y/=k;
-	Vector.z/=k;
+    // Too much far to draw it...
+    if (DetailLevel > 1.0f)
+    {
+        //STOP_PROFILE("Tracers Time");
+        return;
+    }
 
-	v0=*(D3DVECTOR*)&position;
-	v5=*(D3DVECTOR*)&tailEnd;
+    // Alpha Check
+    if (alpha > 1.0f)	alpha = 1.0f;
 
-	D3DVECTOR	mid(Vector);
-	mid.x*=0.2f*k; mid.y*=0.2f*k; mid.z*=0.2f*k;
-	v1.z=mid.z+radius/2*Vector.y;
-	v1.x=mid.x+radius/2*Vector.z;
-	v1.y=mid.y+radius/2*Vector.x;
+    // now Alpha is proportional to distance
+    float LineAlpha =/*alpha * */(1 - DetailLevel * 0.2f);
 
-	v2.z=mid.z-radius/2*Vector.y;
-	v2.x=mid.x-radius/2*Vector.z;
-	v2.y=mid.y-radius/2*Vector.x;
 
-	v3.z=mid.z+radius/2*Vector.x;
-	v3.y=mid.y+radius/2*Vector.z;
-	v3.x=mid.x+radius/2*Vector.y;
+    // Set the Colour
+    lineColor =	((unsigned int)(LineAlpha * 255.0f) << 24) 	     +	// alpha
+                ((unsigned int)(r * 255.0f) << 16) +	// blue
+                ((unsigned int)(g * 255.0f) << 8)  +	// green
+                ((unsigned int)(b * 255.0f));		 	// red
 
-	v4.z=mid.z-radius/2*Vector.x;
-	v4.y=mid.y-radius/2*Vector.z;
-	v4.x=mid.x-radius/2*Vector.y;
+    LineEndColor =	((unsigned int)(LineAlpha * 32.0f) << 24) 	     +	// alpha
+                    ((unsigned int)(r * 255.0f) << 16) +	// blue
+                    ((unsigned int)(g * 255.0f) << 8)  +	// green
+                    ((unsigned int)(b * 255.0f));		 	// red
 
-	v1.x+=position.x; v1.y+=position.y; v1.z+=position.z;
-	v2.x+=position.x; v2.y+=position.y; v2.z+=position.z;
-	v3.x+=position.x; v3.y+=position.y; v3.z+=position.z;
-	v4.x+=position.x; v4.y+=position.y; v4.z+=position.z;
+    if (DetailLevel > 0.15f)
+    {
+        TheDXEngine.Draw3DPoint((D3DVECTOR*)&position, lineColor, EMISSIVE);
+        //STOP_PROFILE("Tracers Time");
+        return;
+    }
 
-	TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v5, lineColor, LineEndColor, EMISSIVE);
-	TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v1, lineColor, LineEndColor, EMISSIVE);
-	TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v2, lineColor, LineEndColor, EMISSIVE);
-	TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v3, lineColor, LineEndColor, EMISSIVE);
-	TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v4, lineColor, LineEndColor, EMISSIVE);
-	//STOP_PROFILE("Tracers Time");
+    if (DetailLevel > 0.03f)
+    {
+        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
+        //STOP_PROFILE("Tracers Time");
+        return;
+    }
+
+    // Get the direction vector
+    Vector.x = tailEnd.x - position.x;
+    Vector.y = tailEnd.y - position.y;
+    Vector.z = tailEnd.z - position.z;
+
+    // Normalize the Direction vector
+    float	k = sqrtf(Vector.x * Vector.x + Vector.y * Vector.y + Vector.z * Vector.z);
+    Vector.x /= k;
+    Vector.y /= k;
+    Vector.z /= k;
+
+    v0 = *(D3DVECTOR*)&position;
+    v5 = *(D3DVECTOR*)&tailEnd;
+
+    D3DVECTOR	mid(Vector);
+    mid.x *= 0.2f * k;
+    mid.y *= 0.2f * k;
+    mid.z *= 0.2f * k;
+    v1.z = mid.z + radius / 2 * Vector.y;
+    v1.x = mid.x + radius / 2 * Vector.z;
+    v1.y = mid.y + radius / 2 * Vector.x;
+
+    v2.z = mid.z - radius / 2 * Vector.y;
+    v2.x = mid.x - radius / 2 * Vector.z;
+    v2.y = mid.y - radius / 2 * Vector.x;
+
+    v3.z = mid.z + radius / 2 * Vector.x;
+    v3.y = mid.y + radius / 2 * Vector.z;
+    v3.x = mid.x + radius / 2 * Vector.y;
+
+    v4.z = mid.z - radius / 2 * Vector.x;
+    v4.y = mid.y - radius / 2 * Vector.z;
+    v4.x = mid.x - radius / 2 * Vector.y;
+
+    v1.x += position.x;
+    v1.y += position.y;
+    v1.z += position.z;
+    v2.x += position.x;
+    v2.y += position.y;
+    v2.z += position.z;
+    v3.x += position.x;
+    v3.y += position.y;
+    v3.z += position.z;
+    v4.x += position.x;
+    v4.y += position.y;
+    v4.z += position.z;
+
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v5, lineColor, LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v1, lineColor, LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v2, lineColor, LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v3, lineColor, LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v4, lineColor, LineEndColor, EMISSIVE);
+    //STOP_PROFILE("Tracers Time");
 
 }
 

@@ -46,9 +46,9 @@ class UnitClass;
 class ObjectiveClass;
 class CampManagerClass;
 //sfr: added rem
-extern UnitClass* NewUnit (short tid, VU_BYTE **stream, long *rem);
-extern ObjectiveClass* NewObjective (short tid, VU_BYTE **stream, long *rem);
-extern VuEntity* NewManager (short tid, VU_BYTE **stream, long *rem);
+extern UnitClass* NewUnit(short tid, VU_BYTE **stream, long *rem);
+extern ObjectiveClass* NewObjective(short tid, VU_BYTE **stream, long *rem);
+extern VuEntity* NewManager(short tid, VU_BYTE **stream, long *rem);
 extern void TcpConnectCallback(ComAPIHandle ch, int ret);
 extern int MajorVersion;
 extern int MinorVersion;
@@ -78,7 +78,7 @@ VU_BYTE vuxLocalSession = 1;
 char *vuxWorldName = 0;
 VU_TIME vuxRealTime = 0;
 
-VuSessionEntity* vuxCreateSession (void);
+VuSessionEntity* vuxCreateSession(void);
 
 
 // =================================
@@ -104,19 +104,19 @@ FalconNothingFilterType	FalconNothingFilter;
 // ==================================
 extern char g_strWorldName[0x40];
 
-void InitVU (void)
+void InitVU(void)
 {
-	char tmpStr[256];
+    char tmpStr[256];
 
-	#ifdef USE_SH_POOLS
-	gVuMsgMemPool = MemPoolInit( 0 );
-	gVuFilterMemPool = MemPoolInit( 0 );
+#ifdef USE_SH_POOLS
+    gVuMsgMemPool = MemPoolInit(0);
+    gVuFilterMemPool = MemPoolInit(0);
 
-	VuLinkNode::InitializeStorage();
-	VuRBNode::InitializeStorage();
-	#endif
+    VuLinkNode::InitializeStorage();
+    VuRBNode::InitializeStorage();
+#endif
 
-   // Make sure we're using the right VU
+    // Make sure we're using the right VU
 #if (VU_VERSION_USED  != VU_VERSION)
 #error "Incorrect VU Version"
 #endif
@@ -130,55 +130,55 @@ void InitVU (void)
 #endif
 
 #ifdef NDEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
-   sprintf (tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+    sprintf(tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
 #else
-   sprintf (tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+    sprintf(tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
 #endif
 
-	MonoPrint ("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);
+    MonoPrint("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);
 
-	// Change this to stop different versions taking to each other
+    // Change this to stop different versions taking to each other
 
-	// OW FIXME
-	// strcpy (tmpStr, "F527");
-	//	strcpy(tmpStr, "F552");		//  according to REVISOR this will allow connections to 1.08 servers. we'll see
-	//strcpy(tmpStr, "E109newmp"); //me123 we are not interested in 108 conections anymore since they'll ctd us
-	strcpy(tmpStr, g_strWorldName);
+    // OW FIXME
+    // strcpy (tmpStr, "F527");
+    //	strcpy(tmpStr, "F552");		//  according to REVISOR this will allow connections to 1.08 servers. we'll see
+    //strcpy(tmpStr, "E109newmp"); //me123 we are not interested in 108 conections anymore since they'll ctd us
+    strcpy(tmpStr, g_strWorldName);
 
-	vuxWorldName = new char[strlen(tmpStr) + 1];
-	strcpy (vuxWorldName, tmpStr);
+    vuxWorldName = new char[strlen(tmpStr) + 1];
+    strcpy(vuxWorldName, tmpStr);
 #if VU_USE_ENUM_FOR_TYPES
-	FalconMessageFilter falconFilter(FalconEvent::SimThread, true);
+    FalconMessageFilter falconFilter(FalconEvent::SimThread, true);
 #else
-	FalconMessageFilter falconFilter(FalconEvent::SimThread, VU_VU_MESSAGE_BITS);
+    FalconMessageFilter falconFilter(FalconEvent::SimThread, VU_VU_MESSAGE_BITS);
 #endif
-	vuCritical = F4CreateCriticalSection("Vu");
-	//VU_ID_NUMBER low = FIRST_VOLATILE_VU_ID_NUMBER;
-	//VU_ID_NUMBER hi = LAST_VOLATILE_VU_ID_NUMBER;
-	gMainThread = new VuMainThread(
-		/*low, hi, */F4_ENTITY_TABLE_SIZE, &falconFilter, F4_EVENT_QUEUE_SIZE, vuxCreateSession
-	);
+    vuCritical = F4CreateCriticalSection("Vu");
+    //VU_ID_NUMBER low = FIRST_VOLATILE_VU_ID_NUMBER;
+    //VU_ID_NUMBER hi = LAST_VOLATILE_VU_ID_NUMBER;
+    gMainThread = new VuMainThread(
+        /*low, hi, */F4_ENTITY_TABLE_SIZE, &falconFilter, F4_EVENT_QUEUE_SIZE, vuxCreateSession
+    );
 
-	// Default VU namespace
-	/*vuAssignmentId = FIRST_VOLATILE_VU_ID_NUMBER;
-	vuLowWrapNumber = FIRST_VOLATILE_VU_ID_NUMBER;
-	vuHighWrapNumber = LAST_VOLATILE_VU_ID_NUMBER;*/
+    // Default VU namespace
+    /*vuAssignmentId = FIRST_VOLATILE_VU_ID_NUMBER;
+    vuLowWrapNumber = FIRST_VOLATILE_VU_ID_NUMBER;
+    vuHighWrapNumber = LAST_VOLATILE_VU_ID_NUMBER;*/
 }
- 
-void ExitVU (void)
-{
-   delete (gMainThread);
-   delete [] vuxWorldName;
-   gMainThread = NULL;
-   F4DestroyCriticalSection(vuCritical);
-   vuCritical = NULL;
 
-	#ifdef USE_SH_POOLS
-   VuLinkNode::ReleaseStorage();
-   VuRBNode::ReleaseStorage();
-   MemPoolFree( gVuMsgMemPool );
-   MemPoolFree( gVuFilterMemPool );
-	#endif
+void ExitVU(void)
+{
+    delete(gMainThread);
+    delete [] vuxWorldName;
+    gMainThread = NULL;
+    F4DestroyCriticalSection(vuCritical);
+    vuCritical = NULL;
+
+#ifdef USE_SH_POOLS
+    VuLinkNode::ReleaseStorage();
+    VuRBNode::ReleaseStorage();
+    MemPoolFree(gVuMsgMemPool);
+    MemPoolFree(gVuFilterMemPool);
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,155 +187,182 @@ void ExitVU (void)
 
 VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 {
-	VuEntity *retval = 0;
-	VuEntityType* classPtr = VuxType(type);
-	F4Assert(classPtr!= NULL);
+    VuEntity *retval = 0;
+    VuEntityType* classPtr = VuxType(type);
+    F4Assert(classPtr != NULL);
 
-	//sfr: rem for compatibility reasons
-	long rem = size;
+    //sfr: rem for compatibility reasons
+    long rem = size;
 
-	VU_BYTE **data = &dataPtr;
+    VU_BYTE **data = &dataPtr;
 
-	switch (classPtr->classInfo_[VU_CLASS]) {
-		case (CLASS_VEHICLE):{
-			retval =  SimVUCreateVehicle (type, size, dataPtr);
-			break;
-		}
-		case (TYPE_EJECT):{
-			retval = SimVUCreateVehicle (type, size, dataPtr); 
-			break;
-		}
-		case (CLASS_FEATURE):{
-			ShiWarning ("We shouldn't be creating features this way");
-			retval = NULL;			 
-			break;
-		}
-		case (CLASS_UNIT): {
-			retval = (VuEntity*) NewUnit(type, data, &rem);
-			// This is a valid creation call only if this entity is still owned by
-			// the owner of our game
-			if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-			{
-				VuReferenceEntity(retval);
-				VuDeReferenceEntity(retval);
-				retval = NULL;
-			}
-			break;
-		}
-		case (CLASS_MANAGER): {
-			retval = (VuEntity*) NewManager (type, data, &rem);
-			// This is a valid creation call only if this entity is still owned by
-			// the owner of our game
-			if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-			{
-				VuReferenceEntity(retval);
-				VuDeReferenceEntity(retval);
-				retval = NULL;
-			}
-			break;
-		}
-		case (CLASS_OBJECTIVE): {
-			retval = (VuEntity*) NewObjective (type, data, &rem);
-			// This is a valid creation call only if this entity is still owned by
-			// the owner of our game
-			if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-			{
-				VuReferenceEntity(retval);
-				VuDeReferenceEntity(retval);
-				retval = NULL;
-			}
-			break;
-		}
-		case (CLASS_SESSION): {
-			retval = (VuEntity*) new FalconSessionEntity(data, &rem);
-			((VuSessionEntity*)retval)->SetKeepaliveTime (vuxRealTime);
-			break;
-		}
-		case (CLASS_GROUP): {
-			retval = (VuEntity*) new FalconGameEntity(data, &rem);			// FalconGroupEntity at some point..
-			break;
-		}
-		case (CLASS_GAME): {
-			retval = (VuEntity*) new FalconGameEntity(data, &rem);
-			break;
-		}
-		default: {
-			// This is not a class table entry so to speak, but it is a ground spot
-			//retval = (VuEntity*) new GroundSpotEntity(type);
-			retval = (VuEntity*) new SpotEntity(data, &rem); // JB 010718
-		}
-	}
-	return retval;
+    switch (classPtr->classInfo_[VU_CLASS])
+    {
+        case (CLASS_VEHICLE):
+        {
+            retval =  SimVUCreateVehicle(type, size, dataPtr);
+            break;
+        }
 
-	/*if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
-	{
-		retval = SimVUCreateVehicle (type, size, data);
-	}
-	else if (classPtr->classInfo_[VU_TYPE] == TYPE_EJECT)
-	{
-		retval = SimVUCreateVehicle (type, size, data);
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
-	{
-		ShiWarning ("We shouldn't be creating features this way");
-		retval = NULL;
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_UNIT)
-	{
-		retval = (VuEntity*) NewUnit (type, &data);
-		// This is a valid creation call only if this entity is still owned by
-		// the owner of our game
-		if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-		{
-			VuReferenceEntity(retval);
-			VuDeReferenceEntity(retval);
-			retval = NULL;
-		}
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_MANAGER)
-	{
-		retval = (VuEntity*) NewManager (type, data);
-		// This is a valid creation call only if this entity is still owned by
-		// the owner of our game
-		if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-		{
-			VuReferenceEntity(retval);
-			VuDeReferenceEntity(retval);
-			retval = NULL;
-		}
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_OBJECTIVE)
-	{
-		retval = (VuEntity*) NewObjective (type, &data);
-		// This is a valid creation call only if this entity is still owned by
-		// the owner of our game
-		if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-		{
-			VuReferenceEntity(retval);
-			VuDeReferenceEntity(retval);
-			retval = NULL;
-		}
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_SESSION)
-	{
-		retval = (VuEntity*) new FalconSessionEntity(&data);
-		((VuSessionEntity*)retval)->SetKeepaliveTime (vuxRealTime);
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_GROUP)
-	{
-		retval = (VuEntity*) new FalconGameEntity(&data);			// FalconGroupEntity at some point..
-	}
-	else if (classPtr->classInfo_[VU_CLASS] == CLASS_GAME)
-	{
-		retval = (VuEntity*) new FalconGameEntity(&data);
-	}
-	else
-	{
-		// This is not a class table entry so to speak, but it is a ground spot
-		//retval = (VuEntity*) new GroundSpotEntity(type);
-		retval = (VuEntity*) new GroundSpotEntity(&data, &rem); // JB 010718
-	}
-	return retval;*/
+        case (TYPE_EJECT):
+        {
+            retval = SimVUCreateVehicle(type, size, dataPtr);
+            break;
+        }
+
+        case (CLASS_FEATURE):
+        {
+            ShiWarning("We shouldn't be creating features this way");
+            retval = NULL;
+            break;
+        }
+
+        case (CLASS_UNIT):
+        {
+            retval = (VuEntity*) NewUnit(type, data, &rem);
+
+            // This is a valid creation call only if this entity is still owned by
+            // the owner of our game
+            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            {
+                VuReferenceEntity(retval);
+                VuDeReferenceEntity(retval);
+                retval = NULL;
+            }
+
+            break;
+        }
+
+        case (CLASS_MANAGER):
+        {
+            retval = (VuEntity*) NewManager(type, data, &rem);
+
+            // This is a valid creation call only if this entity is still owned by
+            // the owner of our game
+            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            {
+                VuReferenceEntity(retval);
+                VuDeReferenceEntity(retval);
+                retval = NULL;
+            }
+
+            break;
+        }
+
+        case (CLASS_OBJECTIVE):
+        {
+            retval = (VuEntity*) NewObjective(type, data, &rem);
+
+            // This is a valid creation call only if this entity is still owned by
+            // the owner of our game
+            if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+            {
+                VuReferenceEntity(retval);
+                VuDeReferenceEntity(retval);
+                retval = NULL;
+            }
+
+            break;
+        }
+
+        case (CLASS_SESSION):
+        {
+            retval = (VuEntity*) new FalconSessionEntity(data, &rem);
+            ((VuSessionEntity*)retval)->SetKeepaliveTime(vuxRealTime);
+            break;
+        }
+
+        case (CLASS_GROUP):
+        {
+            retval = (VuEntity*) new FalconGameEntity(data, &rem);			// FalconGroupEntity at some point..
+            break;
+        }
+
+        case (CLASS_GAME):
+        {
+            retval = (VuEntity*) new FalconGameEntity(data, &rem);
+            break;
+        }
+
+        default:
+        {
+            // This is not a class table entry so to speak, but it is a ground spot
+            //retval = (VuEntity*) new GroundSpotEntity(type);
+            retval = (VuEntity*) new SpotEntity(data, &rem); // JB 010718
+        }
+    }
+
+    return retval;
+
+    /*if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
+    {
+    	retval = SimVUCreateVehicle (type, size, data);
+    }
+    else if (classPtr->classInfo_[VU_TYPE] == TYPE_EJECT)
+    {
+    	retval = SimVUCreateVehicle (type, size, data);
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
+    {
+    	ShiWarning ("We shouldn't be creating features this way");
+    	retval = NULL;
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_UNIT)
+    {
+    	retval = (VuEntity*) NewUnit (type, &data);
+    	// This is a valid creation call only if this entity is still owned by
+    	// the owner of our game
+    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+    	{
+    		VuReferenceEntity(retval);
+    		VuDeReferenceEntity(retval);
+    		retval = NULL;
+    	}
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_MANAGER)
+    {
+    	retval = (VuEntity*) NewManager (type, data);
+    	// This is a valid creation call only if this entity is still owned by
+    	// the owner of our game
+    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+    	{
+    		VuReferenceEntity(retval);
+    		VuDeReferenceEntity(retval);
+    		retval = NULL;
+    	}
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_OBJECTIVE)
+    {
+    	retval = (VuEntity*) NewObjective (type, &data);
+    	// This is a valid creation call only if this entity is still owned by
+    	// the owner of our game
+    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+    	{
+    		VuReferenceEntity(retval);
+    		VuDeReferenceEntity(retval);
+    		retval = NULL;
+    	}
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_SESSION)
+    {
+    	retval = (VuEntity*) new FalconSessionEntity(&data);
+    	((VuSessionEntity*)retval)->SetKeepaliveTime (vuxRealTime);
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_GROUP)
+    {
+    	retval = (VuEntity*) new FalconGameEntity(&data);			// FalconGroupEntity at some point..
+    }
+    else if (classPtr->classInfo_[VU_CLASS] == CLASS_GAME)
+    {
+    	retval = (VuEntity*) new FalconGameEntity(&data);
+    }
+    else
+    {
+    	// This is not a class table entry so to speak, but it is a ground spot
+    	//retval = (VuEntity*) new GroundSpotEntity(type);
+    	retval = (VuEntity*) new GroundSpotEntity(&data, &rem); // JB 010718
+    }
+    return retval;*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -344,51 +371,57 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
 VuEntityType* VuxType(ushort id)
 {
-VuEntityType *retval = 0;
+    VuEntityType *retval = 0;
 
     F4Assert(id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities);
-	if (id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities)
-		retval = (VuEntityType*)&(Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
-	
-	return retval;
+
+    if (id >= VU_LAST_ENTITY_TYPE && id - VU_LAST_ENTITY_TYPE < NumEntities)
+        retval = (VuEntityType*) & (Falcon4ClassTable[id - VU_LAST_ENTITY_TYPE]);
+
+    return retval;
 }
 
-void VuxRetireEntity (VuEntity* theEntity)
+void VuxRetireEntity(VuEntity* theEntity)
 {
-	F4Assert(theEntity);
-	MonoPrint ("You dropped an entity, better find it!!!\n");
+    F4Assert(theEntity);
+    MonoPrint("You dropped an entity, better find it!!!\n");
 }
 
-VuSessionEntity* vuxCreateSession (void)
+VuSessionEntity* vuxCreateSession(void)
 {
-	return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain,"Falcon 4.0");
+    return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain, "Falcon 4.0");
 }
 
 // ======================================
 // Functions
 // ======================================
 
-void VuxLockMutex(VuMutex m){
-	F4EnterCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
+void VuxLockMutex(VuMutex m)
+{
+    F4EnterCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
 }
 
-void VuxUnlockMutex(VuMutex m){
-	F4LeaveCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
+void VuxUnlockMutex(VuMutex m)
+{
+    F4LeaveCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
 }
 
-VuMutex VuxCreateMutex(const char *name){
-	return static_cast<VuMutex>(F4CreateCriticalSection(name));
+VuMutex VuxCreateMutex(const char *name)
+{
+    return static_cast<VuMutex>(F4CreateCriticalSection(name));
 }
 
-void VuxDestroyMutex(VuMutex m){
-	F4DestroyCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
+void VuxDestroyMutex(VuMutex m)
+{
+    F4DestroyCriticalSection(static_cast<F4CSECTIONHANDLE*>(m));
 }
 
 
 VuMutex idMutex = VuxCreateMutex("ids mutex");
 
-VU_ID_NUMBER VuxGetId(){
-	return GetIdFromNamespace(VolatileNS);
+VU_ID_NUMBER VuxGetId()
+{
+    return GetIdFromNamespace(VolatileNS);
 }
 
 /*
@@ -433,7 +466,7 @@ void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, V
 		else if (fe->IsTaskForce()){
 			idp = &++lastNonVolatileId;
 			low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
-			hi = LAST_NON_VOLATILE_VU_ID_NUMBER;	
+			hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
 			goto end;
 		}
 		else if (fe->IsObjective()){
@@ -460,16 +493,19 @@ end:
 
 
 
-void VuEnterCriticalSection(void){ 
-	F4EnterCriticalSection(vuCritical); 
+void VuEnterCriticalSection(void)
+{
+    F4EnterCriticalSection(vuCritical);
 }
 
-void VuExitCriticalSection(void){ 
-	F4LeaveCriticalSection(vuCritical);
+void VuExitCriticalSection(void)
+{
+    F4LeaveCriticalSection(vuCritical);
 }
 
-bool VuHasCriticalSection(){
-	return F4CheckHasCriticalSection(vuCritical) ? true : false;
+bool VuHasCriticalSection()
+{
+    return F4CheckHasCriticalSection(vuCritical) ? true : false;
 }
 
 #endif

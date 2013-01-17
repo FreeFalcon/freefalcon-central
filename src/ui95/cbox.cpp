@@ -5,26 +5,26 @@
 
 enum
 {
-	CBOX_NOTHING=0,
-	CBOX_SETUP,
-	CBOX_SETCOLOR,
+    CBOX_NOTHING = 0,
+    CBOX_SETUP,
+    CBOX_SETCOLOR,
 };
 
-char *C_Box_Tokens[]=
+char *C_Box_Tokens[] =
 {
-	"[NOTHING]",
-	"[SETUP]",
-	"[COLOR]",
-	0,
+    "[NOTHING]",
+    "[SETUP]",
+    "[COLOR]",
+    0,
 };
 
 #endif
 
 C_Box::C_Box() : C_Base()
 {
-	_SetCType_(_CNTL_BOX_);
-	Color_=0;
-	DefaultFlags_=C_BIT_ENABLED|C_BIT_REMOVE;
+    _SetCType_(_CNTL_BOX_);
+    Color_ = 0;
+    DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE;
 }
 
 C_Box::C_Box(char **stream) : C_Base(stream)
@@ -41,15 +41,15 @@ C_Box::~C_Box()
 
 long C_Box::Size()
 {
-	return(0);
+    return(0);
 }
 
-void C_Box::Setup(long ID,short Type)
+void C_Box::Setup(long ID, short Type)
 {
-	SetID(ID);
-	SetType(Type);
-	SetDefaultFlags();
-	SetReady(1);
+    SetID(ID);
+    SetType(Type);
+    SetDefaultFlags();
+    SetReady(1);
 }
 
 
@@ -59,52 +59,56 @@ void C_Box::Cleanup(void)
 
 void C_Box::SetColor(COLORREF color)
 {
-	Color_=color;
+    Color_ = color;
 }
 void C_Box::Refresh()
 {
-	if(Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
-		return;
+    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+        return;
 
-	Parent_->SetUpdateRect(GetX(),GetY(),GetX()+GetW()+1,GetY()+GetH()+1,GetFlags(),GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
 }
 
-void C_Box::Draw(SCREEN *surface,UI95_RECT *cliprect)
+void C_Box::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-	if(Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
-		return;
-	Parent_->DrawHLine(surface,Color_,GetX(),GetY(),GetW()+1,GetFlags(),GetClient(),cliprect);
-	Parent_->DrawHLine(surface,Color_,GetX(),GetY()+GetH(),GetW()+1,GetFlags(),GetClient(),cliprect);
-	Parent_->DrawVLine(surface,Color_,GetX(),GetY(),GetH()+1,GetFlags(),GetClient(),cliprect);
-	Parent_->DrawVLine(surface,Color_,GetX()+GetW(),GetY(),GetH()+1,GetFlags(),GetClient(),cliprect);
+    if (Flags_ & C_BIT_INVISIBLE || Parent_ == NULL)
+        return;
+
+    Parent_->DrawHLine(surface, Color_, GetX(), GetY(), GetW() + 1, GetFlags(), GetClient(), cliprect);
+    Parent_->DrawHLine(surface, Color_, GetX(), GetY() + GetH(), GetW() + 1, GetFlags(), GetClient(), cliprect);
+    Parent_->DrawVLine(surface, Color_, GetX(), GetY(), GetH() + 1, GetFlags(), GetClient(), cliprect);
+    Parent_->DrawVLine(surface, Color_, GetX() + GetW(), GetY(), GetH() + 1, GetFlags(), GetClient(), cliprect);
 }
 
 #ifdef _UI95_PARSER_
 
 short C_Box::LocalFind(char *token)
 {
-	short i=0;
+    short i = 0;
 
-	while(C_Box_Tokens[i])
-	{
-		if(strnicmp(token,C_Box_Tokens[i],strlen(C_Box_Tokens[i])) == 0)
-			return(i);
-		i++;
-	}
-	return(0);
+    while (C_Box_Tokens[i])
+    {
+        if (strnicmp(token, C_Box_Tokens[i], strlen(C_Box_Tokens[i])) == 0)
+            return(i);
+
+        i++;
+    }
+
+    return(0);
 }
 
-void C_Box::LocalFunction(short ID,long P[],_TCHAR *,C_Handler *)
+void C_Box::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
-	switch(ID)
-	{
-		case CBOX_SETUP:
-			Setup(P[0],(short)P[1]);
-			break;
-		case CBOX_SETCOLOR:
-			SetColor(P[0]|(P[1] << 8)|(P[2]<<16));
-			break;
-	}
+    switch (ID)
+    {
+        case CBOX_SETUP:
+            Setup(P[0], (short)P[1]);
+            break;
+
+        case CBOX_SETCOLOR:
+            SetColor(P[0] | (P[1] << 8) | (P[2] << 16));
+            break;
+    }
 }
 
 extern char ParseSave[];

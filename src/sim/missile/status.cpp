@@ -17,173 +17,206 @@ extern float g_fLethalRadiusModifier;
 // RV - Biker - New missile SetStatus...
 void MissileClass::SetStatus(void)
 {
-	SimBaseClass *hitObj;
-	float TToLive = 0.0f;
+    SimBaseClass *hitObj;
+    float TToLive = 0.0f;
     bool bombwarhead = false;
-	Falcon4EntityClassType* classPtr;
-	classPtr = (Falcon4EntityClassType*)EntityType();
-	WeaponClassDataType *wc = NULL;
+    Falcon4EntityClassType* classPtr;
+    classPtr = (Falcon4EntityClassType*)EntityType();
+    WeaponClassDataType *wc = NULL;
 
-	ShiAssert(classPtr);
+    ShiAssert(classPtr);
 
-	// this is important
-	if (classPtr)
-		wc = (WeaponClassDataType*)classPtr->dataPtr; 
+    // this is important
+    if (classPtr)
+        wc = (WeaponClassDataType*)classPtr->dataPtr;
 
-	ShiAssert(wc);
+    ShiAssert(wc);
 
-	if (wc && (wc->Flags & WEAP_BOMBWARHEAD) && (g_nMissileFix & 0x01)) {
-		bombwarhead = true;
-	}
+    if (wc && (wc->Flags & WEAP_BOMBWARHEAD) && (g_nMissileFix & 0x01))
+    {
+        bombwarhead = true;
+    }
 
-	ShiAssert(engineData);
-	ShiAssert(inputData);
+    ShiAssert(engineData);
+    ShiAssert(inputData);
 
-	// Check for min speed and max time for all missiles first
-	if ((inputData && engineData) && (mach < inputData->mslVmin) &&	
-		(runTime > engineData->times[engineData->numBreaks-1]))
-	{
-		done = FalconMissileEndMessage::MinSpeed;
-		return;
-	}
-   
-	if (inputData && runTime > inputData->maxTof) {
-		done = FalconMissileEndMessage::ExceedTime;
-		return;
-	}
+    // Check for min speed and max time for all missiles first
+    if ((inputData && engineData) && (mach < inputData->mslVmin) &&
+        (runTime > engineData->times[engineData->numBreaks - 1]))
+    {
+        done = FalconMissileEndMessage::MinSpeed;
+        return;
+    }
 
-	// Also return if we are just launching
-	if (launchState == Launching) {
-		done = FalconMissileEndMessage::NotDone; 
-		return;
-	}
+    if (inputData && runTime > inputData->maxTof)
+    {
+        done = FalconMissileEndMessage::ExceedTime;
+        return;
+    }
 
-	// Do ground impact check for all missiles here
-	if (z >= groundZ && !(this->GetSWD()->weaponType == wtSAM && runTime < 1.0f)) {
-		done = FalconMissileEndMessage::GroundImpact;
-		return;
-	}
+    // Also return if we are just launching
+    if (launchState == Launching)
+    {
+        done = FalconMissileEndMessage::NotDone;
+        return;
+    }
 
-	// RV - Biker - Check what kind of missile
-	switch (this->GetSWD()->weaponType)
-	{
-		case wtGuns:
-			break;
+    // Do ground impact check for all missiles here
+    if (z >= groundZ && !(this->GetSWD()->weaponType == wtSAM && runTime < 1.0f))
+    {
+        done = FalconMissileEndMessage::GroundImpact;
+        return;
+    }
 
-		case wtAim9:
-		case wtAim120:
-			if (ricept*ricept <= lethalRadiusSqrd) {
-				if (wc) {
-					TToLive = (float)((((unsigned char *)wc)[45]) & 7);
-					if (TToLive > 4.0)
-						TToLive = TToLive * (float)2.0;
-				}
-	      
-				// warhead didn't have time to fuse
-				if (inputData && runTime < inputData->guidanceDelay) {
-					done = FalconMissileEndMessage::MinTime;
-				}
+    // RV - Biker - Check what kind of missile
+    switch (this->GetSWD()->weaponType)
+    {
+        case wtGuns:
+            break;
 
-				// Marco Edit - Check for Time to Warhead Armed
-				else if (runTime < TToLive) {
-					if (g_nMissileFix & 0x04)
-						done = FalconMissileEndMessage::ArmingDelay;
-					else
-						done = FalconMissileEndMessage::MinTime;
-				}
-	      
-				// kill
-				else {
-					done = FalconMissileEndMessage::MissileKill;
-				}
-			}
-			break;
+        case wtAim9:
+        case wtAim120:
+            if (ricept * ricept <= lethalRadiusSqrd)
+            {
+                if (wc)
+                {
+                    TToLive = (float)((((unsigned char *)wc)[45]) & 7);
 
-		case wtAgm88:
-			hitObj = FeatureCollision(groundZ);
-				
-			// Check for features
-			if (hitObj) {
-				done = FalconMissileEndMessage::FeatureImpact;
-			}
-			// Check for vehicles
-			else {
-				if (targetPtr && ricept*ricept < min(lethalRadiusSqrd, 10000.0f)) {
-					done = FalconMissileEndMessage::MissileKill;
-				}
-			}
-			break;
+                    if (TToLive > 4.0)
+                        TToLive = TToLive * (float)2.0;
+                }
 
-		case wtAgm65:
-			// AGMs with large (bomb) warhead
-			if (bombwarhead) {
-				hitObj = FeatureCollision(groundZ);
-				
-				// Check for features
-				if (hitObj) {
-					done = FalconMissileEndMessage::BombImpact;
-				}
-				// Check for vehicles
-				else {
-					if (targetPtr && ricept*ricept < min(lethalRadiusSqrd, 10000.0f)) {
-						done = FalconMissileEndMessage::BombImpact;
-					}
-				}
-			}
-			// Standard AGMs
-			else {
-				hitObj = FeatureCollision(groundZ);
-				
-				// Check for features
-				if (hitObj) {
-					done = FalconMissileEndMessage::FeatureImpact;
-				}
-				// Check for vehicles
-				else {
-					if (targetPtr && ricept*ricept < min(lethalRadiusSqrd, 10000.0f)) {
-						done = FalconMissileEndMessage::MissileKill;
-					}
-				}
-			}
-			break;
+                // warhead didn't have time to fuse
+                if (inputData && runTime < inputData->guidanceDelay)
+                {
+                    done = FalconMissileEndMessage::MinTime;
+                }
 
-		case wtMk82:
-		case wtMk84:
-		case wtGBU:
-			break;
+                // Marco Edit - Check for Time to Warhead Armed
+                else if (runTime < TToLive)
+                {
+                    if (g_nMissileFix & 0x04)
+                        done = FalconMissileEndMessage::ArmingDelay;
+                    else
+                        done = FalconMissileEndMessage::MinTime;
+                }
 
-		case wtSAM:
-			if (ricept*ricept <= lethalRadiusSqrd) {
-				if (wc) {
-					TToLive = (float)((((unsigned char *)wc)[45]) & 7);
-					if (TToLive > 4.0)
-						TToLive = TToLive * (float)2.0;
-				}
-	      
-				// warhead didn't have time to fuse
-				if (inputData && runTime < inputData->guidanceDelay) {
-					done = FalconMissileEndMessage::MinTime;
-				}
+                // kill
+                else
+                {
+                    done = FalconMissileEndMessage::MissileKill;
+                }
+            }
 
-				// Marco Edit - Check for Time to Warhead Armed
-				else if (runTime < TToLive) {
-					if (g_nMissileFix & 0x04)
-						done = FalconMissileEndMessage::ArmingDelay;
-					else
-						done = FalconMissileEndMessage::MinTime;
-				}
-	      
-				// kill
-				else {
-					done = FalconMissileEndMessage::MissileKill;
-				}
-			}
-			break;
+            break;
 
-		default:
-			break;
-	}
-	return;
+        case wtAgm88:
+            hitObj = FeatureCollision(groundZ);
+
+            // Check for features
+            if (hitObj)
+            {
+                done = FalconMissileEndMessage::FeatureImpact;
+            }
+            // Check for vehicles
+            else
+            {
+                if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                {
+                    done = FalconMissileEndMessage::MissileKill;
+                }
+            }
+
+            break;
+
+        case wtAgm65:
+
+            // AGMs with large (bomb) warhead
+            if (bombwarhead)
+            {
+                hitObj = FeatureCollision(groundZ);
+
+                // Check for features
+                if (hitObj)
+                {
+                    done = FalconMissileEndMessage::BombImpact;
+                }
+                // Check for vehicles
+                else
+                {
+                    if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                    {
+                        done = FalconMissileEndMessage::BombImpact;
+                    }
+                }
+            }
+            // Standard AGMs
+            else
+            {
+                hitObj = FeatureCollision(groundZ);
+
+                // Check for features
+                if (hitObj)
+                {
+                    done = FalconMissileEndMessage::FeatureImpact;
+                }
+                // Check for vehicles
+                else
+                {
+                    if (targetPtr && ricept * ricept < min(lethalRadiusSqrd, 10000.0f))
+                    {
+                        done = FalconMissileEndMessage::MissileKill;
+                    }
+                }
+            }
+
+            break;
+
+        case wtMk82:
+        case wtMk84:
+        case wtGBU:
+            break;
+
+        case wtSAM:
+            if (ricept * ricept <= lethalRadiusSqrd)
+            {
+                if (wc)
+                {
+                    TToLive = (float)((((unsigned char *)wc)[45]) & 7);
+
+                    if (TToLive > 4.0)
+                        TToLive = TToLive * (float)2.0;
+                }
+
+                // warhead didn't have time to fuse
+                if (inputData && runTime < inputData->guidanceDelay)
+                {
+                    done = FalconMissileEndMessage::MinTime;
+                }
+
+                // Marco Edit - Check for Time to Warhead Armed
+                else if (runTime < TToLive)
+                {
+                    if (g_nMissileFix & 0x04)
+                        done = FalconMissileEndMessage::ArmingDelay;
+                    else
+                        done = FalconMissileEndMessage::MinTime;
+                }
+
+                // kill
+                else
+                {
+                    done = FalconMissileEndMessage::MissileKill;
+                }
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    return;
 }
 
 ////static int miscount = 0;
@@ -212,20 +245,20 @@ void MissileClass::SetStatus(void)
 //	ShiAssert(inputData);
 //
 //   /*--------------------------------------*/
-//   /* don't check status until off the rail*/  
+//   /* don't check status until off the rail*/
 //   /*--------------------------------------*/
 //   if (launchState == Launching)
 //   {
-//      done = FalconMissileEndMessage::NotDone; 
+//      done = FalconMissileEndMessage::NotDone;
 //   }
 //   /*----------------------*/
 //   /* within lethal radius */
 //   /*----------------------*/
-//// 2002-03-28 MN "Bomb" warheads on missiles with a big blast radius shall not 
+//// 2002-03-28 MN "Bomb" warheads on missiles with a big blast radius shall not
 //// detonate when the target is within blast range (like JSOW)....
 //   //Cobra test  since ricept might not get updated enough, lets add range as well
 //   // COBRA - RED - SARH BUG - removed, causing unklocked missiles to explode as 'range' is 0 for them
-//   else if ( (ricept*ricept <= lethalRadiusSqrd/* || range * range < lethalRadiusSqrd*/) && !bombwarhead) 
+//   else if ( (ricept*ricept <= lethalRadiusSqrd/* || range * range < lethalRadiusSqrd*/) && !bombwarhead)
 //   {
 //	  // Marco Edit - check for our missile arming delay
 //	  if (wc)
@@ -261,7 +294,7 @@ void MissileClass::SetStatus(void)
 //// target position is inside the lethal radius OR missile is higher than its maxalt,
 //// bring missile to an end. When we have missiles going high ballistic, intercept them at max altitude
 //// in case of lethalRadius, they might apply a bit of proximity damage to the target...
-//	else if (runTime > 1.50f && (flags & SensorLostLock) && !targetPtr && ((g_nMissileFix & 0x20) && 
+//	else if (runTime > 1.50f && (flags & SensorLostLock) && !targetPtr && ((g_nMissileFix & 0x20) &&
 //		range * range < lethalRadiusSqrd || (wc && wc->MaxAlt && (fabs(z) > fabsf(wc->MaxAlt*1000.0f))))) //JAM 27Sep03 - Should be fabsf
 //	{
 //		done = FalconMissileEndMessage::NotDone; //ExceedFOV;//Cobra we can't use Missed because it is out of range
@@ -270,7 +303,7 @@ void MissileClass::SetStatus(void)
 //// So when our last target lock was really close to lethalRadius - let's still do a MissileKill...
 //		if (range*range < lethalRadiusSqrd && ricept*ricept < lethalRadiusSqrd*g_fLethalRadiusModifier)
 //			done = FalconMissileEndMessage::MissileKill;
-//		else 
+//		else
 //			done = FalconMissileEndMessage::NotDone;
 //			//done = FalconMissileEndMessage::ExceedFOV;//Cobra we can't use Missed because it is out of range
 //	}
@@ -329,7 +362,7 @@ void MissileClass::SetStatus(void)
 //					      done = FalconMissileEndMessage::GroundImpact;
 //					}
 //				}
-//						
+//
 //				else // we're not a bombwarhead missile, do normal feature impact
 //				{
 //					done = FalconMissileEndMessage::FeatureImpact;
@@ -348,7 +381,7 @@ void MissileClass::SetStatus(void)
 //		} // JB 000819 //+
 //   }
 //#endif
-//// 2002-03-28 MN changed "else if" to plain "if" for the next two conditions. 
+//// 2002-03-28 MN changed "else if" to plain "if" for the next two conditions.
 //// Min velocity and max life time can happen in *each* situation, so always check for them
 //// If we should still have floating missiles on the ground, this will bring them to an end some time for sure...
 //   /*--------------------------------*/

@@ -21,7 +21,7 @@
 // =============================================
 // Campaign Terrain ADT - Private Implementation
 // =============================================
-                       
+
 CellDataType 	*TheaterCells = NULL;
 unsigned char	EastLongitude;
 unsigned char	SouthLatitude;
@@ -44,109 +44,118 @@ short			Map_Max_Y = 0;
 // Global Function (ADT) Definitions
 // =================================
 
-void InitTheaterTerrain (void)
-	{
-	if (TheaterCells)
-		FreeTheaterTerrain();
-	TheaterCells = new CellDataType[Map_Max_X*Map_Max_Y];
-	memset(TheaterCells,0,sizeof(CellDataType)*Map_Max_X*Map_Max_Y);
-	}
+void InitTheaterTerrain(void)
+{
+    if (TheaterCells)
+        FreeTheaterTerrain();
 
-void FreeTheaterTerrain (void)
-	{
-	if (TheaterCells)
-		delete [] TheaterCells;
-	TheaterCells = NULL;
-	}
+    TheaterCells = new CellDataType[Map_Max_X * Map_Max_Y];
+    memset(TheaterCells, 0, sizeof(CellDataType)*Map_Max_X * Map_Max_Y);
+}
 
-int LoadTheaterTerrain (char* name){
-	//char *data, *data_ptr;
-	
-	FreeTheaterTerrain();
+void FreeTheaterTerrain(void)
+{
+    if (TheaterCells)
+        delete [] TheaterCells;
 
-	CampaignData cd = ReadCampFile (name, "thr");
-	if (cd.dataSize == -1){
-		return 0;
-	}
+    TheaterCells = NULL;
+}
 
-	long rem = cd.dataSize;
-	VU_BYTE *data_ptr = (VU_BYTE*)cd.data;
-	
-	memcpychk(&Map_Max_X, &data_ptr, sizeof(short), &rem);
-	memcpychk(&Map_Max_Y, &data_ptr, sizeof(short), &rem);
-	
+int LoadTheaterTerrain(char* name)
+{
+    //char *data, *data_ptr;
+
+    FreeTheaterTerrain();
+
+    CampaignData cd = ReadCampFile(name, "thr");
+
+    if (cd.dataSize == -1)
+    {
+        return 0;
+    }
+
+    long rem = cd.dataSize;
+    VU_BYTE *data_ptr = (VU_BYTE*)cd.data;
+
+    memcpychk(&Map_Max_X, &data_ptr, sizeof(short), &rem);
+    memcpychk(&Map_Max_Y, &data_ptr, sizeof(short), &rem);
+
 #ifdef DEBUG
-	ShiAssert(Map_Max_X == TheCampaign.TheaterSizeX);
-	ShiAssert(Map_Max_Y == TheCampaign.TheaterSizeY);
+    ShiAssert(Map_Max_X == TheCampaign.TheaterSizeX);
+    ShiAssert(Map_Max_Y == TheCampaign.TheaterSizeY);
 #endif
 
-	InitTheaterTerrain();
-	
-	memcpychk(TheaterCells, &data_ptr, sizeof (CellDataType) * Map_Max_X * Map_Max_Y, &rem);
-	
-	delete cd.data;
-	
-	return 1;
+    InitTheaterTerrain();
+
+    memcpychk(TheaterCells, &data_ptr, sizeof(CellDataType) * Map_Max_X * Map_Max_Y, &rem);
+
+    delete cd.data;
+
+    return 1;
 }
 
-int LoadTheaterTerrainLight (char* name)
+int LoadTheaterTerrainLight(char* name)
 {
-	FILE	*fp;
+    FILE	*fp;
 
-	FreeTheaterTerrain();
-	if ((fp = OpenCampFile (name, "thr", "rb")) == NULL)
-		return 0;
-	fread(&Map_Max_X,sizeof(short),1,fp);
-	fread(&Map_Max_Y,sizeof(short),1,fp);
-	CloseCampFile (fp);
-	return 1;
+    FreeTheaterTerrain();
+
+    if ((fp = OpenCampFile(name, "thr", "rb")) == NULL)
+        return 0;
+
+    fread(&Map_Max_X, sizeof(short), 1, fp);
+    fread(&Map_Max_Y, sizeof(short), 1, fp);
+    CloseCampFile(fp);
+    return 1;
 }
 
-int SaveTheaterTerrain (char* name)
-	{
-	FILE		*fp;
+int SaveTheaterTerrain(char* name)
+{
+    FILE		*fp;
 
-	if (!TheaterCells)
-		return 0;
-	if ((fp = OpenCampFile (name, "thr", "wb")) == NULL)
-		return 0;
-	fwrite(&Map_Max_X,sizeof(short),1,fp);
-	fwrite(&Map_Max_Y,sizeof(short),1,fp);
-	fwrite(TheaterCells,sizeof(CellDataType),Map_Max_X*Map_Max_Y,fp);
-	CloseCampFile(fp);
-	return 1;
-	}
+    if (!TheaterCells)
+        return 0;
 
-CellData GetCell (GridIndex x, GridIndex y)
-	{
+    if ((fp = OpenCampFile(name, "thr", "wb")) == NULL)
+        return 0;
+
+    fwrite(&Map_Max_X, sizeof(short), 1, fp);
+    fwrite(&Map_Max_Y, sizeof(short), 1, fp);
+    fwrite(TheaterCells, sizeof(CellDataType), Map_Max_X * Map_Max_Y, fp);
+    CloseCampFile(fp);
+    return 1;
+}
+
+CellData GetCell(GridIndex x, GridIndex y)
+{
     ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-	return &TheaterCells[x*Map_Max_Y + y];
-	}
+    return &TheaterCells[x * Map_Max_Y + y];
+}
 
-ReliefType GetRelief (GridIndex x, GridIndex y)
-	{
+ReliefType GetRelief(GridIndex x, GridIndex y)
+{
     ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-	return (ReliefType)((TheaterCells[x*Map_Max_Y + y] & ReliefMask) >> ReliefShift);
-	}
+    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >> ReliefShift);
+}
 
-CoverType GetCover (GridIndex x, GridIndex y)
-	{
-	if ((x< 0) || (x >= Map_Max_X) || (y < 0) || (y >= Map_Max_Y))
-		return (CoverType) Water;
-	else
-		return (CoverType)((TheaterCells[x*Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);
-	}
+CoverType GetCover(GridIndex x, GridIndex y)
+{
+    if ((x < 0) || (x >= Map_Max_X) || (y < 0) || (y >= Map_Max_Y))
+        return (CoverType) Water;
+    else
+        return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);
+}
 
-char GetRoad (GridIndex x, GridIndex y)
-	{
+char GetRoad(GridIndex x, GridIndex y)
+{
     ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-	return (char)((TheaterCells[x*Map_Max_Y + y] & RoadMask) >> RoadShift);
-	}
+    return (char)((TheaterCells[x * Map_Max_Y + y] & RoadMask) >> RoadShift);
+}
 
-char GetRail (GridIndex x, GridIndex y)
-	{
+char GetRail(GridIndex x, GridIndex y)
+{
     ShiAssert(x >= 0 && x < Map_Max_X && y >= 0 && y < Map_Max_Y);
-	return (char)((TheaterCells[x*Map_Max_Y + y] & RailMask) >> RailShift);
-	}
+    return (char)((TheaterCells[x * Map_Max_Y + y] & RailMask) >> RailShift);
+}
 
 

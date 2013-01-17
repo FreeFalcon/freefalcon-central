@@ -6,16 +6,16 @@
 
 inline EP_MODEL_DATA::EP_MODEL_DATA
 (
-	int bsp_,
-	int creationStage_,
-	int chaseMode_,
-	const EP_VECTOR &focusOffset_
+    int bsp_,
+    int creationStage_,
+    int chaseMode_,
+    const EP_VECTOR &focusOffset_
 )
 {
-	bsp = bsp_;
-	creationStage = creationStage_;
-	chaseMode = chaseMode_;
-	focusOffset = focusOffset_;
+    bsp = bsp_;
+    creationStage = creationStage_;
+    chaseMode = chaseMode_;
+    focusOffset = focusOffset_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,16 +34,16 @@ inline EP_MODEL_DATA::~EP_MODEL_DATA()
 
 inline SIM_FLOAT EjectedPilotClass::StageEndTime(int stage) const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return 
-	(
-		stage <= PD_START ?
-		0.0F :
-		_pd->stageData[stage][SDPD_END_TIME_INDEX] + _endStageTimeAdjust
-	);
+    // Give us the data that we want.
+    return
+        (
+            stage <= PD_START ?
+            0.0F :
+            _pd->stageData[stage][SDPD_END_TIME_INDEX] + _endStageTimeAdjust
+        );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ inline SIM_FLOAT EjectedPilotClass::StageEndTime(int stage) const
 
 inline SIM_FLOAT EjectedPilotClass::StageEndTime() const
 {
-	return StageEndTime(_stage);
+    return StageEndTime(_stage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,11 +61,11 @@ inline SIM_FLOAT EjectedPilotClass::StageEndTime() const
 
 inline SIM_FLOAT	EjectedPilotClass::DragFactor() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->stageData[_stage][SDPD_DRAG_FACTOR_INDEX]);
+    // Give us the data that we want.
+    return (_pd->stageData[_stage][SDPD_DRAG_FACTOR_INDEX]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,11 +74,11 @@ inline SIM_FLOAT	EjectedPilotClass::DragFactor() const
 
 inline SIM_FLOAT	EjectedPilotClass::Mass() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
-	
-	// Give us the data that we want.
-	return (_pd->stageData[_stage][SDPD_MASS_INDEX]);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
+
+    // Give us the data that we want.
+    return (_pd->stageData[_stage][SDPD_MASS_INDEX]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,11 +87,11 @@ inline SIM_FLOAT	EjectedPilotClass::Mass() const
 
 inline SIM_FLOAT EjectedPilotClass::EjectSpeed() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->ejectSpeed);
+    // Give us the data that we want.
+    return (_pd->ejectSpeed);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,11 +100,11 @@ inline SIM_FLOAT EjectedPilotClass::EjectSpeed() const
 
 inline SIM_FLOAT EjectedPilotClass::SeatThrust() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->seatThrust);
+    // Give us the data that we want.
+    return (_pd->seatThrust);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,11 +113,11 @@ inline SIM_FLOAT EjectedPilotClass::SeatThrust() const
 
 inline SIM_FLOAT EjectedPilotClass::EjectAngle() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->ejectAngle);
+    // Give us the data that we want.
+    return (_pd->ejectAngle);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,11 +126,11 @@ inline SIM_FLOAT EjectedPilotClass::EjectAngle() const
 
 inline SIM_FLOAT EjectedPilotClass::StartPitch() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->startPitch);
+    // Give us the data that we want.
+    return (_pd->startPitch);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,11 +139,11 @@ inline SIM_FLOAT EjectedPilotClass::StartPitch() const
 
 inline SIM_FLOAT EjectedPilotClass::PitchDecay() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->pitchDecay);
+    // Give us the data that we want.
+    return (_pd->pitchDecay);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,11 +152,11 @@ inline SIM_FLOAT EjectedPilotClass::PitchDecay() const
 
 inline SIM_FLOAT	EjectedPilotClass::YawSpeed() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return (_pd->yawSpeed);
+    // Give us the data that we want.
+    return (_pd->yawSpeed);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,16 +165,16 @@ inline SIM_FLOAT	EjectedPilotClass::YawSpeed() const
 
 inline EP_VECTOR EjectedPilotClass::SeatOffset() const
 {
-	// Do some assertions.
-	F4Assert(_pd != NULL);
+    // Do some assertions.
+    F4Assert(_pd != NULL);
 
-	// Give us the data that we want.
-	return EP_VECTOR
-	(
-		_pd->seatXOffset,
-		_pd->seatYOffset,
-		_pd->seatZOffset
-	);
+    // Give us the data that we want.
+    return EP_VECTOR
+           (
+               _pd->seatXOffset,
+               _pd->seatYOffset,
+               _pd->seatZOffset
+           );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,17 +183,17 @@ inline EP_VECTOR EjectedPilotClass::SeatOffset() const
 
 inline SIM_FLOAT EjectedPilotClass::ModelCreateTime(int model) const
 {
-	int creationStage;
+    int creationStage;
 
-	F4Assert(_md != NULL);
+    F4Assert(_md != NULL);
 
-	creationStage = _md[model].creationStage;
-	return 
-	(
-		creationStage == PD_FREE_FALL_WITH_COLLAPSED_CHUTE ?
-		_chuteCollapsedTime : 
-		StageEndTime(creationStage - 1)
-	);
+    creationStage = _md[model].creationStage;
+    return
+        (
+            creationStage == PD_FREE_FALL_WITH_COLLAPSED_CHUTE ?
+            _chuteCollapsedTime :
+            StageEndTime(creationStage - 1)
+        );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ inline SIM_FLOAT EjectedPilotClass::ModelCreateTime(int model) const
 
 inline void EjectedPilotClass::SetStage(int stage)
 {
-	_stage = stage;
+    _stage = stage;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +211,8 @@ inline void EjectedPilotClass::SetStage(int stage)
 
 inline int EjectedPilotClass::AdvanceStage()
 {
-	SetStage(++_stage);
-	return _stage;
+    SetStage(++_stage);
+    return _stage;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,10 +233,10 @@ inline void EjectedPilotClass::ExecFromAircraft()
 
 inline BOOL EjectedPilotClass::IsPlayerPilot() const
 {
-	return
-	(
-		_isPlayer ? TRUE : FALSE
-	);
+    return
+        (
+            _isPlayer ? TRUE : FALSE
+        );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +245,10 @@ inline BOOL EjectedPilotClass::IsPlayerPilot() const
 
 inline BOOL EjectedPilotClass::IsDigiPilot() const
 {
-	return
-	(
-		_isDigital ? TRUE : FALSE
-	);
+    return
+        (
+            _isDigital ? TRUE : FALSE
+        );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

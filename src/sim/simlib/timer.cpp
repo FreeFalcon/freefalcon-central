@@ -79,21 +79,22 @@ SIMLIB_TIMER_CLASS Timer;
 /********************************************************************/
 SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::FindUnusedHandle(void)
 {
-	int 
-		i;
+    int
+    i;
 
-	i = 0;
-	while (_timer[i].id)
-	{
-		i++;
-	}
+    i = 0;
 
-	if (i == SIM_MAX_TIMERS)
-	{
-		return NULL;
-	}
+    while (_timer[i].id)
+    {
+        i++;
+    }
 
-	return IndexToHandle(i);
+    if (i == SIM_MAX_TIMERS)
+    {
+        return NULL;
+    }
+
+    return IndexToHandle(i);
 }
 
 /*------------------*/
@@ -122,20 +123,20 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::FindUnusedHandle(void)
 /************************************************************************/
 void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 {
-	int 
-		i;
+    int
+    i;
 
-	SIMLIB_TIMER_CLASS
-		*pt;
+    SIMLIB_TIMER_CLASS
+    *pt;
 
-	F4Assert(cleanupData != NULL);
-	F4Assert(cleanupData->_hTimer >= 0 && cleanupData->_hTimer < SIM_MAX_TIMERS);
-	F4Assert(cleanupData->_pTimer != NULL);
+    F4Assert(cleanupData != NULL);
+    F4Assert(cleanupData->_hTimer >= 0 && cleanupData->_hTimer < SIM_MAX_TIMERS);
+    F4Assert(cleanupData->_pTimer != NULL);
 
-	pt = cleanupData->_pTimer;
-	i = pt->HandleToIndex(cleanupData->_hTimer);
+    pt = cleanupData->_pTimer;
+    i = pt->HandleToIndex(cleanupData->_hTimer);
 
-	pt->Cleanup(i);
+    pt->Cleanup(i);
 }
 
 /********************************************************************/
@@ -160,15 +161,15 @@ void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 /*                                   handles	                       */
 /*                                                                  */
 /********************************************************************/
-SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS (void)
+SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS(void)
 {
-	int
-		i;
+    int
+    i;
 
-   for (i=0; i<SIM_MAX_TIMERS; i++)
-   {
-		Cleanup(i);
-   }
+    for (i = 0; i < SIM_MAX_TIMERS; i++)
+    {
+        Cleanup(i);
+    }
 }
 
 /********************************************************************/
@@ -194,13 +195,13 @@ SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS (void)
 /********************************************************************/
 SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
 {
-	int
-		i;
+    int
+    i;
 
-   for (i=0; i<SIM_MAX_TIMERS; i++)
-   {
-		StopTimer(IndexToHandle(i));
-   }
+    for (i = 0; i < SIM_MAX_TIMERS; i++)
+    {
+        StopTimer(IndexToHandle(i));
+    }
 }
 
 /********************************************************************/
@@ -227,39 +228,40 @@ SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
 /*                                   handles	                       */
 /*                                                                  */
 /********************************************************************/
-//SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer 
+//SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 //(
 //	SIM_INT period,
 //	SIM_INT res,
 //	LPTIMECALLBACK funcPtr,
 //	DWORD userData
 //)
-SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer 
+SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 (
-	SIM_INT period,
-	SIM_INT res,
-	LPTIMECALLBACK funcPtr,
-	DWORD userData
+    SIM_INT period,
+    SIM_INT res,
+    LPTIMECALLBACK funcPtr,
+    DWORD userData
 )
 {
-	SIM_TIMER_HANDLE
-		hTimer;
+    SIM_TIMER_HANDLE
+    hTimer;
 
-	int
-		i;
+    int
+    i;
 
-	hTimer = FindUnusedHandle();
-   if (hTimer != NULL && period >= res)
-   {
-		i = HandleToIndex(hTimer);
-		Cleanup(i);
+    hTimer = FindUnusedHandle();
 
-		return hTimer;
-	}
-	else
-	{
-		return NULL;
-	}
+    if (hTimer != NULL && period >= res)
+    {
+        i = HandleToIndex(hTimer);
+        Cleanup(i);
+
+        return hTimer;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 /********************************************************************/
@@ -283,56 +285,58 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 /*                                   handles	                       */
 /*                                                                  */
 /********************************************************************/
-SIM_INT SIMLIB_TIMER_CLASS::StopTimer (SIM_TIMER_HANDLE hTimer)
+SIM_INT SIMLIB_TIMER_CLASS::StopTimer(SIM_TIMER_HANDLE hTimer)
 {
-	SIM_INT
-		rVal = 0;
+    SIM_INT
+    rVal = 0;
 
-	int
-		i;
+    int
+    i;
 
-	if(hTimer != NULL)
-	{
-		i = HandleToIndex(hTimer);
-		
-		if (_timer[i].id != NULL)
-		{
+    if (hTimer != NULL)
+    {
+        i = HandleToIndex(hTimer);
+
+        if (_timer[i].id != NULL)
+        {
 #ifdef _WINDOWS
-	   	if (timeEndPeriod (_timer[i].resolution) == 0)
-			{
-	      	if (timeKillEvent (_timer[i].id) == 0)
-				{
-	         	rVal = SIMLIB_OK;
-				}
-				else
-				{
-					SimLibErrno = EACCESS;
-					rVal = SIMLIB_ERR;
-				}
-			}
-			else
-			{
-				SimLibErrno = EACCESS;
-				rVal = SIMLIB_ERR;
-			}
-	#endif
-		}
-	   else
-		{
-			
-			SimLibErrno = ENOTFOUND;
-			rVal = SIMLIB_ERR;
-		}
-		
-		Cleanup(i);
-	}
-	else
-	{
-		SimLibErrno = EACCESS;
-		rVal = SIMLIB_ERR;
-	}
 
-	return (rVal);
+            if (timeEndPeriod(_timer[i].resolution) == 0)
+            {
+                if (timeKillEvent(_timer[i].id) == 0)
+                {
+                    rVal = SIMLIB_OK;
+                }
+                else
+                {
+                    SimLibErrno = EACCESS;
+                    rVal = SIMLIB_ERR;
+                }
+            }
+            else
+            {
+                SimLibErrno = EACCESS;
+                rVal = SIMLIB_ERR;
+            }
+
+#endif
+        }
+        else
+        {
+
+            SimLibErrno = ENOTFOUND;
+            rVal = SIMLIB_ERR;
+        }
+
+        Cleanup(i);
+    }
+    else
+    {
+        SimLibErrno = EACCESS;
+        rVal = SIMLIB_ERR;
+    }
+
+    return (rVal);
 }
 
 /********************************************************************/
@@ -356,75 +360,78 @@ SIM_INT SIMLIB_TIMER_CLASS::StopTimer (SIM_TIMER_HANDLE hTimer)
 /*                                   handles	                       */
 /*                                                                  */
 /********************************************************************/
-//SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown 
+//SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
 //(
 //	SIM_INT delay,
 //	SIM_INT res,
 //	LPTIMECALLBACK funcPtr,
 //	DWORD userData
 //)
-SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown 
+SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
 (
-	SIM_INT delay,
-	SIM_INT res,
-	LPTIMECALLBACK funcPtr,
-	DWORD userData
+    SIM_INT delay,
+    SIM_INT res,
+    LPTIMECALLBACK funcPtr,
+    DWORD userData
 )
 {
-	SIM_TIMER_HANDLE 
-		hTimer;
+    SIM_TIMER_HANDLE
+    hTimer;
 
-	int
-		i;
+    int
+    i;
 
-	hTimer = FindUnusedHandle();
-   if (hTimer != NULL && delay > res)
-   {
-		i = HandleToIndex(hTimer);
-		Cleanup(i);
+    hTimer = FindUnusedHandle();
+
+    if (hTimer != NULL && delay > res)
+    {
+        i = HandleToIndex(hTimer);
+        Cleanup(i);
 
 #ifdef _WINDOWS
-      if (timeBeginPeriod (res) == 0)
-      {
-			_timer[i].inst._hTimer = hTimer;
-			_timer[i].inst._pTimer = this;
-			_timer[i].inst._userData = userData;
-			
-      	_timer[i].id =
-				timeSetEvent 
-				(
-					delay,
-					res,
-					funcPtr,
-					(DWORD)&_timer[i].inst,
-					TIME_ONESHOT
-				);
-        
-         if (_timer[i].id == NULL)
-         {
-				Cleanup(i);
-	         return NULL;
-	      }
-         else
-         {
-            _timer[i].period = delay;
-            _timer[i].resolution = res;
-            _timer[i].type = SIM_TIMER_ONESHOT;
-				return hTimer;
-         }
-      }
-      else
-      {
-         return NULL;
-      }
+
+        if (timeBeginPeriod(res) == 0)
+        {
+            _timer[i].inst._hTimer = hTimer;
+            _timer[i].inst._pTimer = this;
+            _timer[i].inst._userData = userData;
+
+            _timer[i].id =
+                timeSetEvent
+                (
+                    delay,
+                    res,
+                    funcPtr,
+                    (DWORD)&_timer[i].inst,
+                    TIME_ONESHOT
+                );
+
+            if (_timer[i].id == NULL)
+            {
+                Cleanup(i);
+                return NULL;
+            }
+            else
+            {
+                _timer[i].period = delay;
+                _timer[i].resolution = res;
+                _timer[i].type = SIM_TIMER_ONESHOT;
+                return hTimer;
+            }
+        }
+        else
+        {
+            return NULL;
+        }
+
 #else
-		return hTimer;
+        return hTimer;
 #endif
-   }
-   else
-	{
-		return NULL;
-	}
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 /********************************************************************/
@@ -446,9 +453,9 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_INT SIMLIB_TIMER_CLASS::Wait (SIM_INT delay)
+SIM_INT SIMLIB_TIMER_CLASS::Wait(SIM_INT delay)
 {
-    if (delay > 0)    
+    if (delay > 0)
         return (SIMLIB_OK);
     else
         return (SIMLIB_ERR);

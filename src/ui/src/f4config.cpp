@@ -8,11 +8,14 @@
 template<class T>
 class ConfigOption
 {
-	public:
-	char *Name;
-	T *Value;
+public:
+    char *Name;
+    T *Value;
 
-	bool CheckID(char *str) { return stricmp(&str[3], Name) == 0; }
+    bool CheckID(char *str)
+    {
+        return stricmp(&str[3], Name) == 0;
+    }
 };
 
 extern char FalconDataDirectory[];
@@ -23,9 +26,9 @@ extern "C" int g_nBWCheckDeltaTime;
 //bool g_bEnableCATIIIExtension = false;	//MI replaced with g_bRealisticAvionics
 bool g_bWakeTurbulence = true;
 bool g_bDrawWakeTurbulence = false;
-bool g_bWeaponLaunchUsesDrawPointerPos = false; // MLR 2/19/2004 - when weapons are launched, they are launched for 
-                                               // where thier 3d graphics were positioned, this will allow the F-111's 
-                                               // weapons to be launched from the right spot ** DOESN'T WORK!!!
+bool g_bWeaponLaunchUsesDrawPointerPos = false; // MLR 2/19/2004 - when weapons are launched, they are launched for
+// where thier 3d graphics were positioned, this will allow the F-111's
+// weapons to be launched from the right spot ** DOESN'T WORK!!!
 
 bool g_bExtViewOnGround = false;	// RAS -5Dec04- allow ext view if on ground
 bool g_bForceDXMultiThreadedCoopLevel = true; // JB 010401 Safer according to e
@@ -51,7 +54,7 @@ int g_nReagTimer = 0;
 bool g_bShowFlaps = false;
 bool g_bLowBwVoice = false;
 float clientbwforupdatesmodifyer = 0.7f;
-float hostbwforupdatesmodifyer = 0.7f;	 
+float hostbwforupdatesmodifyer = 0.7f;
 int g_nMaxUIRefresh = 16; // 2002-02-23 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
 int g_nUnidentifiedInUI = 1; // 2002-02-24 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
 float g_fIdentFactor = 0.75f; // 2002-03-07 S.G. So identification is not at full detect range but a factor of it
@@ -73,7 +76,7 @@ bool g_bFuelUseVtDot = true;	// 2002-03-14 S.G. For better fuel consomption twea
 float g_fFuelVtClip = 5.0f;	// 2002-03-14 S.G. For better fuel consomption tweaking
 float g_fFuelVtDotMult = 5.0f;	// 2002-03-14 S.G. For better fuel consomption tweaking
 bool g_bFuelLimitBecauseVtDot = true;	// 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fSearchSimTargetFromRangeSqr = (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT);	// 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
+float g_fSearchSimTargetFromRangeSqr = (20.0F * NM_TO_FT) * (20.0F * NM_TO_FT);	// 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
 bool g_bUseAggresiveIncompleteA2G = true; // 2002-03-22 S.G. If false, AI on incomplete A2G missions will be defensive
 float g_fHotNoseAngle = 50.0f;	 // 2002-03-22 S.G. Default angle (in degrees) before considering the target pointing at us
 float g_fMaxMARNoIdA = 10.0f;	 // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, fast
@@ -165,9 +168,9 @@ char g_strServerAdminEmail[0x40];
 
 char g_strVoiceHostIP[0x40];
 char g_strWorldName[0x40] = {"FFVIPER"};
-char g_strScrollUpFunction[0x40]="FOVDecrease";		//Wombat778 11-16-2003 swapped FOVIncrease and Decrese.  It was backwards 10-07-2003
-char g_strScrollDownFunction[0x40]="FOVIncrease";		//Wombat778 10-07-2003
-char g_strMiddleButtonFunction[0x40]="FOVDefault";		//Wombat778 10-07-2003
+char g_strScrollUpFunction[0x40] = "FOVDecrease";		//Wombat778 11-16-2003 swapped FOVIncrease and Decrese.  It was backwards 10-07-2003
+char g_strScrollDownFunction[0x40] = "FOVIncrease";		//Wombat778 10-07-2003
+char g_strMiddleButtonFunction[0x40] = "FOVDefault";		//Wombat778 10-07-2003
 
 
 // JB
@@ -202,7 +205,7 @@ bool g_bRealisticAttrition = false; // JB 010710
 bool g_bIFFRWR = false; // JB 010727
 int g_nRelocationWait = 3; // JB 010728
 int g_nLoadoutTimeLimit = 120; // JB 010729 Time limit in seconds before takeoff when you can change your loadout.
-float g_fLatitude = 38.0f; // JB 010804 now set up by the theater 
+float g_fLatitude = 38.0f; // JB 010804 now set up by the theater
 int g_nYear = 2004; // JB 010804;
 int g_nDay = 135; // JB 010804
 bool g_bSimpleFMUpdates = false; // JB 010805 // These update cause bad AI behaviour, see afsimple.cpp
@@ -336,7 +339,7 @@ bool g_bEcmOnHud = false;	// ASSO:
 bool g_bBrakeOnHud = false;	// ASSO:
 bool g_bGearOnHud = false;	// ASSO:
 
-bool g_bAddACSizeVisual = true;			// adds drawpointer radius value to eyeball GetSignature() 
+bool g_bAddACSizeVisual = true;			// adds drawpointer radius value to eyeball GetSignature()
 float g_fVisualNormalizeFactor = 40.0F;	// 40.0F = F-16 drawpointer radius
 //bool g_bShowFuelLabel = false;			// for debugging fuel consumption in 3D replaced by label debug stuff
 bool g_bHelosReloc = true;				// A.S. relocate helo squadrons faster
@@ -378,7 +381,7 @@ bool g_bAddIngressWP = true;			// add ingress waypoint if needed
 bool g_bTankerWaypoints = true;			// add tanker waypoints if needed
 bool g_bPutAIToBoom = true;				// hack: put AI sticking to the boom when close to it
 float g_fWaypointBurnerDelta = 700.0f;	// burnerdelta for WaypointMode and WingyMode
-int g_nSkipWaypointTime = 30000;		// time in milliseconds added to waypoint departure time at which flight switches to next waypoint 
+int g_nSkipWaypointTime = 30000;		// time in milliseconds added to waypoint departure time at which flight switches to next waypoint
 bool g_bLookCloserFix = true;			// fixes look closer view through the cockpit
 float g_fMavEXPLevel = 3.0f;			// Wombat778 9-28-03 Sets the Maverick EXP zoom level to 3 degrees
 float g_fMavFOVLevel = 6.0f;			// Wombat778 9-28-03 Sets the Maverick FOV Zoom level to 6 degrees
@@ -398,7 +401,7 @@ bool g_bRatioHack = true;				// Wombat778 11-4-03 Enables the 1.25 ratio black b
 bool g_bPrecisionWaypoints = false;		// Wombat778 11-5-03 Allow waypoints to be placed with greater precision.  Needs testing, so disabled by default.
 bool g_bSmallerBullseye = false;		// Wombat778 11-12-03 Enable a smaller, more realistic bullseye.  May be too small at 1024 resolution, so defaults to off
 bool g_bRealisticMavTime = false;		// JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
-bool g_bnewAMRAAMdlz = false;			// JPG 3 Apr 03 - Enables the new AMRAAM DLZ w/ Raero, Ropt, RPI, Fpole/Apole, etc 
+bool g_bnewAMRAAMdlz = false;			// JPG 3 Apr 03 - Enables the new AMRAAM DLZ w/ Raero, Ropt, RPI, Fpole/Apole, etc
 bool g_bMLUM2TAinHUD = false;			// JPG 4 Oct 04 - Enables the MLU M2 tape feature of showing the (valid Air-to-air) target's altitude in the HUD (in the previous ALOW field below the RALT box), moves the AL #### box up above the altitude scale
 float g_fHSDSymbolSize = 0.05f;			// Wombat778 11-13-03 Allows manual setting of the HSD Symbol size. Default is 0.05f
 bool g_bAutoScaleFonts = true;			// Wombat778 12-10-03 When set to true, cockpit fonts will be automatically increased one step at 1600.
@@ -410,7 +413,7 @@ float g_fMaximumFOV = 100.0f;			// Wombat778 1-15-03 changed from 80.0 to 100.0 
 float g_fDefaultFOV = 65.0f;			// Wombat778 10-31-03 Sets the default FOV to 60 degrees -- Cobra - Changed to 65 for 3D pit default
 float g_fFOVIncrement = 5.0f;			// Wombat778 9-27-03 Sets FOV increment to 5 degrees
 float g_fNarrowFOV = 20.0f;				// Wombat778 2-20-04 Sets the FOV of the "look closer" command
-float g_fWideviewFOV = 0.0f;			// Wombat778 2-20-04 Sets the FOV of the wide view cockpit.  When 0, auto switching is disabled. 
+float g_fWideviewFOV = 0.0f;			// Wombat778 2-20-04 Sets the FOV of the wide view cockpit.  When 0, auto switching is disabled.
 float g_fMeanTimeBetweenFailures = 0.0f;// Wombat778 2-24-04 Sets the MTBF. If nonzero, this will override the setting in the aircraft dat file.
 bool g_bEnableRandomFailures = false;	// Wombat778 2-24-04 Enables random failures.  If set to 1, the MeanTimeBetweenFailures value in either the ac.dat or g_fMeanTimeBetweenFailures will be used
 bool g_b2DPitWingFOVFix = true;			// Wombat778 2-25-04 Makes the 3d wings/ordinance in the 2d pit exempt from FOV changes. This prevents the wings from becoming "disembodied" from the plane
@@ -450,7 +453,7 @@ bool g_bEmergencyJettisonFix = true;	// just check not to drop AA weapons and EC
 float g_fDBS1ScanRateFactor = 0.25f;	//JAM 13Oct03
 float g_fDBS2ScanRateFactor = 0.05f;	//JAM 13Oct03
 bool g_bACMIRecordMsgOff = true;		// JPG 10 Jan 04 Turns off the "RECORDING: +++" stuff when ACMI is on
-bool g_bF4CommsMTU = false ;              // Unz MTU switch activation 
+bool g_bF4CommsMTU = false ;              // Unz MTU switch activation
 //extern "C" bool g_bF4CommsKillPL = false ; // Booster and Unz switch to Kill packet loss routine
 /* Retro TrackIR stuff.. */
 int g_nTrackIRSampleFreq = 0x200;		// Retro 02/10/03 - how fast a 2d screen can change using TIR
@@ -461,14 +464,14 @@ float g_fTIR2DYawPercentage = 0.7f;		// Retro 02/10/03
 /* Retro RadioSubTitle stuff */
 int g_nNumberOfSubTitles = 10;			// Retro 20Dec2003 - max number of simultaneously drawn messages
 int g_nSubTitleTTL = 10000;				// Retro 20Dec2003 - time a message will be displayed on the screen, in ms
-char g_strRadioflightCol[0x40]="";			// Retro 27Dec2003
-char g_strRadiotoPackageCol[0x40]="";		// Retro 27Dec2003
-char g_strRadioToFromPackageCol[0x40]="";	// Retro 27Dec2003
-char g_strRadioTeamCol[0x40]="";			// Retro 27Dec2003
-char g_strRadioProximityCol[0x40]="";		// Retro 27Dec2003
-char g_strRadioWorldCol[0x40]="";			// Retro 27Dec2003
-char g_strRadioTowerCol[0x40]="";			// Retro 27Dec2003
-char g_strRadioStandardCol[0x40]="";		// Retro 27Dec2003
+char g_strRadioflightCol[0x40] = "";			// Retro 27Dec2003
+char g_strRadiotoPackageCol[0x40] = "";		// Retro 27Dec2003
+char g_strRadioToFromPackageCol[0x40] = "";	// Retro 27Dec2003
+char g_strRadioTeamCol[0x40] = "";			// Retro 27Dec2003
+char g_strRadioProximityCol[0x40] = "";		// Retro 27Dec2003
+char g_strRadioWorldCol[0x40] = "";			// Retro 27Dec2003
+char g_strRadioTowerCol[0x40] = "";			// Retro 27Dec2003
+char g_strRadioStandardCol[0x40] = "";		// Retro 27Dec2003
 /* ..ends */
 
 // Retro 25Dec2003 for the DisplacementCam
@@ -493,7 +496,7 @@ int g_nKeyPOVSensMin = 30;			// 30 degrees per second
 // Retro 17Feb2004 end
 
 bool g_bUseNewSmoothing = false;		// Retro 20Feb2004 - if enabled uses a new smoothing algorithm that however does not work
-										//					 for bank/pitch/yaw/throttle(1+2) yet
+//					 for bank/pitch/yaw/throttle(1+2) yet
 bool g_bDisplayAxisValues = false;		// Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
 
 bool g_bPilotEntertainment = false;		// Retro 3Jan2004 - enable winamp interface
@@ -540,11 +543,11 @@ float g_fLethalRadiusModifier = 1.5f;	// used in 0x20 condition
 int g_nMissileFix = 0x7f;				// several missile fixes:
 /*
 
-		0x01	"Bomb missile" flag support -> do a ground/feature impact missile end instead 
+		0x01	"Bomb missile" flag support -> do a ground/feature impact missile end instead
 			    of lethalradius detonation
 		0x02	also check if range*range > lethalRadiusSqrd at "closestApprch" flag
-		0x04	Use ArmingDelay MissileEndMessage instead of MinTime if warhead is 
-			    not armed (fixes missiles being able to apply proximity damage while 
+		0x04	Use ArmingDelay MissileEndMessage instead of MinTime if warhead is
+			    not armed (fixes missiles being able to apply proximity damage while
 				warhead is unarmed)
 		0x08	Do Proximity damage to the missile's target if we didn't hit it directly
 			    (for example if missile lost seeker track and hits the dirt)
@@ -561,9 +564,9 @@ bool g_bDarkHudFix = true;				// fix for the host player getting a dark HUD in T
 
 float g_fBombMissileAltitude = 13000.0f;// altitude at which "bomb-like" missiles are being released
 int g_nFogRenderState = 0x01;			// 0x01 turn on the D3D call m_pD3DD->SetRenderState in context.cpp
-										// 0x02 turns on StateStack::SetFog call to context->SetState
-										//		which seems, according to comment, to be only some test code...
-bool g_bTankerFMFix = true;				// fix for tankers simple af flightmodel 
+// 0x02 turns on StateStack::SetFog call to context->SetState
+//		which seems, according to comment, to be only some test code...
+bool g_bTankerFMFix = true;				// fix for tankers simple af flightmodel
 //M.N.
 bool g_bAppendToBriefingFile = false;
 int g_nPrintToFile = 0x00; // MNLOOK set to 00 for release
@@ -574,7 +577,7 @@ int g_nPrintToFile = 0x00; // MNLOOK set to 00 for release
 int g_nGfxFix = 0x00;					// turn all fixes off by default
 
 
-/* 
+/*
 	0x01		activates 2D clipping fix
 	0x02		activates ScatterPlot clipping fix
 	0x04		activates 3D OTWSky clipping fix (sun, moon)
@@ -644,7 +647,7 @@ bool g_bMPFix2 = true;
 bool g_bMPFix3 = true;
 bool g_bMPFix4 = true;
 int  g_nMPPowerXmitThreshold = 1; // MLR 3/22/2004 - This is the threshold for sending the RPM value to other players, lower values are more fluid, but eat more bandwidth
-                                   
+
 
 float MinBwForOtherData = 1000.0f;
 float g_fclientbwforupdatesmodifyerMAX = 0.8f;
@@ -653,9 +656,9 @@ float g_fReliablemsgwaitMAX = 60000;
 
 bool g_bDisableMissleEngGlow = true;  // MLR 2003-10-11 disable craptastic engine glow.
 bool g_bSMSPylonLoadingFix   = false; // MLR 2003-10-16 enable the code that load 2 slot pylons CORRECTLY.
-                                      // disabled by default because it breaks existing models that work around the problem.
+// disabled by default because it breaks existing models that work around the problem.
 bool g_bWeaponStepToGun      = false;  // MLR 3/13/2004 - allow the gun to be removed from the normal weapon step
-bool g_bEnableDopplerSound   = false; // MLR 2003-10-17 
+bool g_bEnableDopplerSound   = false; // MLR 2003-10-17
 float g_fSoundDopplerFactor  = 1.0;   // MLR 2003-10-17
 float g_fSoundRolloffFactor  = 1.0;   // MLR affects how sounds are attenuated.
 //float g_fSoundDopplerBlend   = 30.0;  // MLR it's really dependent on framerate methinks // MLR 12/3/2003 - Obsolete
@@ -673,7 +676,7 @@ bool g_bHUDFix = true; //Smeghead 14-Oct-2003: HUD_Fixes.pdf changes on/off swit
 // TJL 10/24/03
 bool g_bLargeStrike = false; // TJL 10/24/03 Allows for campaign to generate > 4 ship strike packages
 bool g_bTakeoffSound = false; // TJL 10/26/03 Allows for removal of annoying takeoff.wav
-bool g_bTurb = true;//TJL 03/14/04 Turbulence Code 
+bool g_bTurb = true;//TJL 03/14/04 Turbulence Code
 
 // MLR 2/4/2004 - these are the defaults for when the ac.dat file does not contain the data
 float g_fA2GJDAMAlt = 20000.0f; //TJL 10/27/03 Sets AI JDAM attack altitude
@@ -694,7 +697,7 @@ bool g_bnoRadStutter = true; //TJL 11/25/03 Stops airplane 0.5 second stutter wh
 bool g_bRollInertia = true; //TJL 01/06/04 Do Roll Inertia code
 
 bool g_bLensFlare = true; // THW 2003-11-10 Disable Lens Flare
-bool g_bDisableHighFartiles = true; //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1) 
+bool g_bDisableHighFartiles = true; //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
 float g_fTexDetailFactor = 2.0f; //THW 2003-11-14 Use Higher-Res textures at higher altitudes (BMS default: 2 / Original MPS: 1)
 bool g_bBriefHTML = true; // THW 2003-12-07 Generate Briefing using HTML tags
 //int g_nSeason = 0; //THW 2004-01-02 Select Season (0=Summer/default, 1= Autumn, 2=Winter)
@@ -705,7 +708,7 @@ bool g_bAntElevKnobFix = true;
 // like the real jet for players that have actual throttles with an idle/cutoff gate
 bool g_bUseAnalogIdleCutoff = false;
 // MD -- 20040209: a pad value to make sure joystick jitter/repeatability problems don't shutoff your engine by accident
-int g_nIdleCutoffPad = 500; 
+int g_nIdleCutoffPad = 500;
 // MD -- 20040613: enable per weapon pickle hold to release timers
 bool g_bWeaponPickleDelays = true;
 // MD -- 20040727: enable HSD to always draw steerpoint course line regardless of NAV mode/submode
@@ -741,724 +744,735 @@ bool g_bUse_DX_Engine = true;
 
 static ConfigOption<bool> BoolOpts[] =
 {
-//	{ "EnableCATIIIExtension", &g_bEnableCATIIIExtension },	MI
-	{ "UseDxEngine", &g_bUse_DX_Engine },
-	{ "ForceDXMultiThreadedCoopLevel", &g_bForceDXMultiThreadedCoopLevel },
-	{ "EnableABRelocation", &g_bEnableABRelocation },
-	{ "EnableWeatherExtensions", &g_bEnableWeatherExtensions },
-	{ "EnableWindsAloft", &g_bEnableWindsAloft },	
-	{ "EnableNonPersistentTextures", &g_bEnableNonPersistentTextures },
-	{ "EnableStaticTerrainTextures", &g_bEnableStaticTerrainTextures },
-//	{ "EnableAircraftLimits", &g_bEnableAircraftLimits },	MI
-//	{ "EnableArmingDelay", &g_bArmingDelay },				MI
-//	{ "EnableHardCoreReal", &g_bHardCoreReal },				MI
-	{ "CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip },
-	{ "EnableUplink", &g_bEnableUplink },
-	{ "EnableColorMfd", &g_bEnableColorMfd },
-	{ "NewDamageEffects", &g_bNewDamageEffects },
-	{ "DisableFunkyChicken", &g_bDisableFunkyChicken },
-//JAM 01Dec03	{ "ForceSoftwareGUI", &g_bForceSoftwareGUI },
-	{ "SmartScaling", &g_bSmartScaling },
-	{ "FloatingBullseye", &g_bFloatingBullseye },
-	{ "DisableCrashEjectCourtMartials", &g_bDisableCrashEjectCourtMartials },
-//JAM 20Sep03 	{ "UseMipMaps", &g_bUseMipMaps },
-	{ "ShowMipUsage", &g_bShowMipUsage },
-	{ "SmartCombatAP", &g_bSmartCombatAP },
-	{ "NoRPMOnHUD", &g_bNoRPMOnHud },
-	{ "CATIIIDefault", &g_bCATIIIDefault }, 	
-//	{ "RealisticAvionics", &g_bRealisticAvionics },	
-	{ "EPAFRadarCues", &g_bEPAFRadarCues},
-	{ "RadarJamChevrons", &g_bRadarJamChevrons},
-	{ "AWACSSupport", &g_bAWACSSupport},
-//	{ "Voodoo12Compatible", &g_bVoodoo12Compatible},
-	{ "AWACSRequired", &g_bAWACSRequired},
-	{ "Use3dSound", &g_bUse3dSound}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
-	{ "OldSoundAlg", &g_bOldSoundAlg}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
-	{ "MultiEngineSound", &g_bMultiEngineSound}, // MLR 5/18/2004 - 
-	{ "MFDHighContrast", &g_bMFDHighContrast},
-	{ "IFlyMirage", &g_bIFlyMirage},
-	{ "PowerGrid", &g_bPowerGrid},
-	{ "UseMappedFiles", &g_bUseMappedFiles },
-//	{ "UserRadioVoice", &g_bUserRadioVoice },
-	{ "NewFm", &g_bNewFm },
-	{ "RealisticAttrition", &g_bRealisticAttrition },
-	{ "GreyScaleMFD", &g_bGreyScaleMFD },
-	{ "IFFRWR", &g_bIFFRWR },
-	{ "3dCockpit", &g_b3dCockpit },
-	{ "RWR", &g_bRWR },
-	{ "BrightHUD", &g_bBrightHUD },
-	
-#if 0 // JPO
-	{ "3dHUD", &g_b3dHUD },
-	{ "3dRWR", &g_b3dRWR },
-	{ "3dICP", &g_b3dICP },
-	{ "3dDials", &g_b3dDials },
-#endif
-	{ "3dMFDLeft", &g_b3dMFDLeft },
-	{ "3dMFDRight", &g_b3dMFDRight },
-	{ "3dDynamicPilotHead", &g_b3dDynamicPilotHead },
-	{ "SimpleFMUpdates", &g_bSimpleFMUpdates },
-	{ "NoMFDsIn1View", &g_bNoMFDsIn1View},
-	{ "Server", &g_bServer},
-	{ "ServerHostAll", &g_bServerHostAll},	
-	{ "LogEvents", &g_bLogEvents},
-	{ "VoiceCom", &g_bVoiceCom},
-//#if 0
-	{ "woeir", &g_bwoeir},	
-	{ "MLU", &g_bMLU},
-	{ "IFF", &g_bIFF},	//MI disabled until further notice
-//#endif
-	{ "INS", &g_bINS},
-	{ "RP5DataCompatiblity", &g_bRP5Comp },
-	{ "ModuleList", &g_bModuleList },
-	{ "HiResUI", &g_bHiResUI},	
-	{ "AWACSFuel", &g_bAWACSFuel},
-//	{ "ShowManeuverLabels", &g_bShowManeuverLabels},
-	{ "FullScreenNVG", &g_bFullScreenNVG},
-	{ "LogUiErrors", &g_bLogUiErrors},
-	{ "LoadoutSquadStoreResupply", &g_bLoadoutSquadStoreResupply},
-	{ "DisplayTrees", &g_bDisplayTrees},
-	{ "RequestHelp", &g_bRequestHelp},
-	{ "LightsKC135", &g_bLightsKC135},
-	{ "AddACSizeVisual", &g_bAddACSizeVisual},
-//	{ "ShowFuelLabel", &g_bShowFuelLabel},
-	{ "NewRackData", &g_bNewRackData},
-	{ "BMSRackData", &g_bBMSRackData},
-	{ "HelosReloc", &g_bHelosReloc},
-	{ "ShowFlaps", &g_bShowFlaps},
-	{ "SlowButSafe", &g_bSlowButSafe},
-	{ "NewPadlock", &g_bNewPadlock},
-	{ "NoPadlockBoxes", &g_bNoPadlockBoxes},
-	{ "PitchLimiterForAI", &g_bPitchLimiterForAI},
-	{ "MissionACIcons", &g_bMissionACIcons},
-	{ "EnableMfdColors", &g_bEnableMfdColors},	// a.s.
-	{ "EnableMfdSize", &g_bEnableMfdSize},		// a.s.
-	{ "AIRefuelInComplexAF", &g_bAIRefuelInComplexAF}, // 2002-02-20 S.G.
-	{ "NewAcmiHud", &g_bNewAcmiHud},
-	{ "AWACSBackground", &g_bAWACSBackground},
-	{ "MavFixes", &g_bMavFixes},  // a.s.
-	{ "LgbFixes", &g_bLgbFixes},  // a.s.
-	{ "FallingHeadingTape", &g_bFallingHeadingTape},
-	{ "NewRefuelHelp", &g_bNewRefuelHelp}, // MN
-	{ "OtherGroundCheck", &g_bOtherGroundCheck }, // MN
-	{ "Limit2DRadarFight", &g_bLimit2DRadarFight}, // 2002-03-07 S.G.
-	{ "AdvancedGroundChooseWeapon", &g_bAdvancedGroundChooseWeapon}, // 2002-03-09 S.G.
-	{ "TFRFixes", &g_bTFRFixes}, //MI TFR Fixes
-	{ "AIGloc", &g_bAIGloc }, // MN
-	{ "CalibrateTFR_PitchCtrl", &g_bCalibrateTFR_PitchCtrl},
-	{ "LantDebug", &g_bLantDebug},
-	{ "UseNewCanEnage", &g_bUseNewCanEnage}, // 2002-03-11 S.G.
-	{ "MPStartRestricted", &g_bMPStartRestricted},
-	{ "UseSkillForFlaks", &g_bUseSkillForFlaks}, // 2002-03-12 S.G.
-	{ "ToggleAAAGunFlag", &g_bToggleAAAGunFlag}, // 2002-03-12 S.G.
-	{ "UseTankerTrack", &g_bUseTankerTrack},// 2002-03-13 MN
-	{ "UseComplexBVRForPlayerAI", &g_bUseComplexBVRForPlayerAI}, // 2002-03-13 S.G.
-	{ "FuelUseVtDot", &g_bFuelUseVtDot },	// 2002-03-14 S.G.
-	{ "FuelLimitBecauseVtDot", &g_bFuelLimitBecauseVtDot },	// 2002-03-14 S.G.
-	{ "UseAggresiveIncompleteA2G", &g_bUseAggresiveIncompleteA2G }, // 2002-03-22 S.G.
-	{ "NewPitchLadder", &g_bNewPitchLadder},
-	{ "AddIngressWP", &g_bAddIngressWP}, // 2002-03-25 MN
-	{ "TankerWaypoints", &g_bTankerWaypoints}, // 2002-03-25 MN
-	{ "PutAIToBoom", &g_bPutAIToBoom}, // 2002-03-28 MN
-	{ "OldStackDump", &g_bOldStackDump}, // 2002-04-01 S.G.
-	{ "TankerFMFix", &g_bTankerFMFix}, // 2002-04-02 MN
-	{ "AGRadarFixes", &g_bAGRadarFixes},	//MI 2002-03-28
-	{ "LookCloserFix", &g_bLookCloserFix}, // 2002-04-05 MN by dpc
-	{ "AnyWaypointTask", &g_bAnyWaypointTask}, // Wombat778 09-27-2003 
-	{ "FFCenterFix", &g_bFFCenterFix}, // Wombat778 09-29-2003 
-	{ "CockpitAutoScale", &g_bCockpitAutoScale}, // Wombat778 10-06-2003 
-	{ "3DClickableCockpitDebug", &g_b3DClickableCockpitDebug}, // Wombat778 10-10-2003 
-	{ "3DRTTCockpitDebug", &g_b3DRTTCockpitDebug}, // Wombat778 10-10-2003 
-	{ "3DClickableCursorChange", &g_b3DClickableCursorChange}, // Wombat778 10-15-2003 
-	{ "DEDSpacingFix", &g_bDEDSpacingFix}, // Wombat778 10-17-2003 
-	{ "ReconLatLong", &g_bReconLatLong}, // Wombat778 11-3-2003 
-	{ "RatioHack", &g_bRatioHack}, // Wombat778 11-4-2003 
-	{ "PrecisionWaypoints", &g_bPrecisionWaypoints}, // Wombat778 11-5-2003 
-	{ "SmallerBullseye", &g_bSmallerBullseye}, // Wombat778 11-12-2003 
-	{ "AutoScaleFonts", &g_bAutoScaleFonts}, // Wombat778 12-11-2003 
-	{ "EnableRandomFailures", &g_bEnableRandomFailures}, // Wombat778 12-11-2003 
-	{ "2DPitWingFOVFix", &g_b2DPitWingFOVFix}, // Wombat778 2-25-2003 
-	{ "OldFontTexelFix", &g_bOldFontTexelFix}, // Wombat778 4-01-04	
-	{ "Filter2DPit", &g_bFilter2DPit}, // Wombat778 3-30-2004 	
-	{ "CrackFix", &g_bCrackFix}, // Wombat778 4-02-2004
-	{ "ResizeUsesResMgr", &g_bResizeUsesResMgr}, // Wombat778 4-14-2004
-	{ "PadlockHudColor", &g_bPadlockHudColor}, // Wombat778 4-28-2004	
-	{ "CheckFeatureIndex", &g_bCheckFeatureIndex}, // Wombat778 5-15-2004	
-	{ "MachAsiDial", &g_bMachAsiDial}, // Wombat778 7-9-2004	
-	{ "New2DTrackIR", &g_bNew2DTrackIR}, // Wombat778 11-15-2004	
-	{ "Sync2D3DPit", &g_bSync2D3DPit}, // Wombat778 11-17-2004	
-	{ "LowBwVoice", &g_bLowBwVoice},
-	{ "AGTargetWPFix", &g_bAGTargetWPFix}, // 2002-04-06 MN
-	{ "BombNumLoopOnly", &g_bBombNumLoopOnly},	//MI 2002-07-04 fix for missing bombs in CCIP
-	{ "AlwaysAnisotropic", &g_bAlwaysAnisotropic }, // 2002-04-07 MN
-	{ "NoAAAEventRecords", &g_bNoAAAEventRecords }, // 2002-04-07 MN
-	{ "ActivateDebugStuff", &g_bActivateDebugStuff }, // 2002-04-12 MN
-	{ "ActivateMissileDebug", &g_bActivateMissileDebug }, // FRB
-	{ "NewSensorPrecision", &g_bNewSensorPrecision },
-	{ "AGNoBVRWVR", &g_bAGNoBVRWVR },
-	{ "TO_LDG_LightFix", &g_bTO_LDG_LightFix},	//MI 2002-04-13
-	{ "AppendToBriefingFile", &g_bAppendToBriefingFile},
-	{ "DarkHudFix", &g_bDarkHudFix},
-	{ "RQDFix", &g_bRQDFix}, // MN 2002-04-13
-	{ "ACPlayerCTDFix", &g_bACPlayerCTDFix},
-	{ "CheckForMode", &g_bCheckForMode}, // MN 2002-04-14
-	{ "AllowOverload", &g_bAllowOverload},
-	{ "UseDefinedGunDomain", &g_bUseDefinedGunDomain}, // 2002-04-17 S.G.
-	{ "LabelRadialFix", &g_bLabelRadialFix},
-	{ "LabelShowDistance", &g_bLabelShowDistance},
-	{ "SetWaypointNumFix", &g_bSetWaypointNumFix}, // 2002-04-18 MN a fix from S.G. which he didn't put in because it was not really tested yet..
-	{ "EmptyFilenameFix", &g_bEmptyFilenameFix},
-	{ "RebuildbobbleFix", &g_brebuildbobbleFix},
-	{ "MPFix", &g_bMPFix},
-	{ "MPFix2", &g_bMPFix2},
-	{ "MPFix3", &g_bMPFix3},
-	{ "MPFix4", &g_bMPFix4},
-	{ "ExitCampSelectFix", &g_bExitCampSelectFix},
-	{ "CampSavedMenuHack", &g_bCampSavedMenuHack},
-	{ "EmergencyJettisonFix", &g_bEmergencyJettisonFix},
-	{ "OldSamActivity", &g_bOldSamActivity}, // no LOS check and stuff - just the old code
-	{ "FireOntheMove", &g_bFireOntheMove}, 
-	{ "SAM2D3DHandover", &g_bSAM2D3DHandover},
-	{ "MavFix2", &g_bMavFix2},
-	{ "DisableMissileEngGlow", &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star!
-	{ "HUDFix", &g_bHUDFix}, //Smeghead 14-Oct-2003
-	{ "SMSPylonLoadingFix", &g_bSMSPylonLoadingFix}, // MLR 2003/10/16 
-	
-	// MLR 12/14/2003 -  All these are control in the UI setup now 
-	//{ "EnableDopplerSound", &g_bEnableDopplerSound}, // MLR 2003/10/17
-	//{ "NewEngineSounds" , &g_bNewEngineSounds},	     // MLR 2003/11/21
-	//{ "SoundHearVMSExternal", &g_bSoundHearVMSExternal}, // MLR 2003/11/23
-	//{ "SoundDistanceEffect", &g_bSoundDistanceEffect}, // MLR 2003/11/02 
+    //	{ "EnableCATIIIExtension", &g_bEnableCATIIIExtension },	MI
+    { "UseDxEngine", &g_bUse_DX_Engine },
+    { "ForceDXMultiThreadedCoopLevel", &g_bForceDXMultiThreadedCoopLevel },
+    { "EnableABRelocation", &g_bEnableABRelocation },
+    { "EnableWeatherExtensions", &g_bEnableWeatherExtensions },
+    { "EnableWindsAloft", &g_bEnableWindsAloft },
+    { "EnableNonPersistentTextures", &g_bEnableNonPersistentTextures },
+    { "EnableStaticTerrainTextures", &g_bEnableStaticTerrainTextures },
+    //	{ "EnableAircraftLimits", &g_bEnableAircraftLimits },	MI
+    //	{ "EnableArmingDelay", &g_bArmingDelay },				MI
+    //	{ "EnableHardCoreReal", &g_bHardCoreReal },				MI
+    { "CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip },
+    { "EnableUplink", &g_bEnableUplink },
+    { "EnableColorMfd", &g_bEnableColorMfd },
+    { "NewDamageEffects", &g_bNewDamageEffects },
+    { "DisableFunkyChicken", &g_bDisableFunkyChicken },
+    //JAM 01Dec03	{ "ForceSoftwareGUI", &g_bForceSoftwareGUI },
+    { "SmartScaling", &g_bSmartScaling },
+    { "FloatingBullseye", &g_bFloatingBullseye },
+    { "DisableCrashEjectCourtMartials", &g_bDisableCrashEjectCourtMartials },
+    //JAM 20Sep03 	{ "UseMipMaps", &g_bUseMipMaps },
+    { "ShowMipUsage", &g_bShowMipUsage },
+    { "SmartCombatAP", &g_bSmartCombatAP },
+    { "NoRPMOnHUD", &g_bNoRPMOnHud },
+    { "CATIIIDefault", &g_bCATIIIDefault },
+    //	{ "RealisticAvionics", &g_bRealisticAvionics },
+    { "EPAFRadarCues", &g_bEPAFRadarCues},
+    { "RadarJamChevrons", &g_bRadarJamChevrons},
+    { "AWACSSupport", &g_bAWACSSupport},
+    //	{ "Voodoo12Compatible", &g_bVoodoo12Compatible},
+    { "AWACSRequired", &g_bAWACSRequired},
+    { "Use3dSound", &g_bUse3dSound}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
+    { "OldSoundAlg", &g_bOldSoundAlg}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
+    { "MultiEngineSound", &g_bMultiEngineSound}, // MLR 5/18/2004 -
+    { "MFDHighContrast", &g_bMFDHighContrast},
+    { "IFlyMirage", &g_bIFlyMirage},
+    { "PowerGrid", &g_bPowerGrid},
+    { "UseMappedFiles", &g_bUseMappedFiles },
+    //	{ "UserRadioVoice", &g_bUserRadioVoice },
+    { "NewFm", &g_bNewFm },
+    { "RealisticAttrition", &g_bRealisticAttrition },
+    { "GreyScaleMFD", &g_bGreyScaleMFD },
+    { "IFFRWR", &g_bIFFRWR },
+    { "3dCockpit", &g_b3dCockpit },
+    { "RWR", &g_bRWR },
+    { "BrightHUD", &g_bBrightHUD },
 
-	//	{ "SoundDynamicAllocate", &g_bSoundDynamicAllocate}, // MLR 11/30/2003 - Allocate DSOund buffers on the fly // MLR 12/3/2003 - Not implemented yet
-	{ "LargeStrike", &g_bLargeStrike}, //TJL 10/24/03 Enables Campaign to generate large strike packages >4 aircraft
-	{ "TakeoffSound", &g_bTakeoffSound}, // TJL 10/26/03 Enables Takeoff.wav in Camp UI. Defaults to off.
-	{ "Scramble", &g_bScramble}, //TJL 11/02/03 Enable Scramble missions
-	{ "hudAOA" , &g_bhudAOA}, //TJL 11/09/03 Enable HUD AOA indicator
-	{ "LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
-	{ "DisableHighFartiles", &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
-	{ "noRadStutter", &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
-	{ "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder },	// ASSOCIATOR 30/11/03 Controls wether the Rudder and NWS are linked to the roll input when on the ground
-	{ "EnableGRCursorBullseye", &g_bEnableGRCursorBullseye }, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
-	{ "BriefHTML", &g_bBriefHTML }, // THW 2003-12-07 Generate Briefing using HTML tags
-//	{ "EnableFCCSubNavCycle", &g_bEnableFCCSubNavCycle },  // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
-	{ "RealisticMavTime", &g_bRealisticMavTime }, // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
-	{ "newAMRAAMdlz", &g_bnewAMRAAMdlz }, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above 
-	{ "EnableDisplacementCam", &g_bEnableDisplacementCam },	// Retro 25Dec2003
-	{ "AntElevKnobFix", &g_bAntElevKnobFix }, // MD -- 20031231: see above
-	{ "PilotEntertainment", &g_bPilotEntertainment },// Retro 3Jan2004
-	{ "RollInertia", &g_bRollInertia }, //TJL 01/06/04 Roll Inertia 
-	{ "ACMIRecordMsgOff", &g_bACMIRecordMsgOff }, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
-	{ "UseAnalogIdleCutoff", &g_bUseAnalogIdleCutoff }, // MD -- 20040209: see above
-	{ "WeaponPickleDelays", &g_bWeaponPickleDelays}, // MD -- 20040613: see above
-	{ "HsdStptFix", &g_bHsdStptFix}, // MD -- 20040727: see above
-	{ "F4CommsMTU", &g_bF4CommsMTU },     //  Unz-- MTU swtich with Wombats help
-//	{ "F4CommsKillPL", &g_bF4CommsKillPL },     //  Booster and Unz to Kill packet loss
-	{ "UseNew3dpit", &g_bUseNew3dpit}, //ATARIBABY Use new 3dpit code - needs new 3d pit model
-	{ "StartIn3Dpit", &g_bStartIn3Dpit},  // Cobra - start in 3D cockpit
-	{ "UseNewSmoothing", &g_bUseNewSmoothing},		// Retro 21Feb2004, look above for expl.
-	{ "DisplayAxisValues",&g_bDisplayAxisValues},	// Retro 25Feb2004
-	{ "WeaponLaunchUsesDrawPointerPos", &g_bWeaponLaunchUsesDrawPointerPos},  // MLR 2/19/2004 - 
-	{ "UseNewSmoothing", &g_bUseNewSmoothing},		// Retro 21Feb2004, look above for expl.
-	{ "DisplayAxisValues",&g_bDisplayAxisValues},	// Retro 25Feb2004
-	{ "WeaponStepToGun", &g_bWeaponStepToGun},  // MLR 3/13/2004 - See above
-	{ "Turb", &g_bTurb}, //TJL 03/14/04 Turbulence Code
-	{ "SoundSonicBoom", &g_bSoundSonicBoom},
-	{ "DisableCommsBorder", &g_bDisableCommsBorder}, // ASSO: disable the radio comms menu border
-	{ "EcmOnHud", &g_bEcmOnHud},	// ASSO:
-	{ "BrakeOnHud", &g_bBrakeOnHud},	// ASSO:
-	{ "GearOnHud", &g_bGearOnHud},	// ASSO:
-	{ "WakeTurbulence", &g_bWakeTurbulence },
-	{ "DrawWakeTurbulence", &g_bDrawWakeTurbulence },
-	{ "OldDustTrail", &g_bOldDustTrail},	// Cobra - Use old dust trail sfx
-	{ "HearThunder", &g_bHearThunder},	// Cobra - Play thunder.wav
-	{ "HighSFX", &g_bHighSFX},	// Cobra - Switch internal PS effects levels
-	{ "AllHaveIFF", &g_bAllHaveIFF},	// Cobra - Give all a/c IFF interrogator
-	{ "UseRC135", &g_bUseRC135},	// Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
-	{ "FFDBC", &g_bFFDBC},
-	{ "ExtViewOnGround", &g_bExtViewOnGround },// RAS -5Dec04- allow ext view on ground
-	{ "UnlimitedAmmo", &g_bUnlimitedAmmo }, //Cobra
-	{ "AnimPilotHead", &g_bAnimPilotHead},	// Cobra - Animate the pilot's head
-	{ NULL, NULL }
+#if 0 // JPO
+    { "3dHUD", &g_b3dHUD },
+    { "3dRWR", &g_b3dRWR },
+    { "3dICP", &g_b3dICP },
+    { "3dDials", &g_b3dDials },
+#endif
+    { "3dMFDLeft", &g_b3dMFDLeft },
+    { "3dMFDRight", &g_b3dMFDRight },
+    { "3dDynamicPilotHead", &g_b3dDynamicPilotHead },
+    { "SimpleFMUpdates", &g_bSimpleFMUpdates },
+    { "NoMFDsIn1View", &g_bNoMFDsIn1View},
+    { "Server", &g_bServer},
+    { "ServerHostAll", &g_bServerHostAll},
+    { "LogEvents", &g_bLogEvents},
+    { "VoiceCom", &g_bVoiceCom},
+    //#if 0
+    { "woeir", &g_bwoeir},
+    { "MLU", &g_bMLU},
+    { "IFF", &g_bIFF},	//MI disabled until further notice
+    //#endif
+    { "INS", &g_bINS},
+    { "RP5DataCompatiblity", &g_bRP5Comp },
+    { "ModuleList", &g_bModuleList },
+    { "HiResUI", &g_bHiResUI},
+    { "AWACSFuel", &g_bAWACSFuel},
+    //	{ "ShowManeuverLabels", &g_bShowManeuverLabels},
+    { "FullScreenNVG", &g_bFullScreenNVG},
+    { "LogUiErrors", &g_bLogUiErrors},
+    { "LoadoutSquadStoreResupply", &g_bLoadoutSquadStoreResupply},
+    { "DisplayTrees", &g_bDisplayTrees},
+    { "RequestHelp", &g_bRequestHelp},
+    { "LightsKC135", &g_bLightsKC135},
+    { "AddACSizeVisual", &g_bAddACSizeVisual},
+    //	{ "ShowFuelLabel", &g_bShowFuelLabel},
+    { "NewRackData", &g_bNewRackData},
+    { "BMSRackData", &g_bBMSRackData},
+    { "HelosReloc", &g_bHelosReloc},
+    { "ShowFlaps", &g_bShowFlaps},
+    { "SlowButSafe", &g_bSlowButSafe},
+    { "NewPadlock", &g_bNewPadlock},
+    { "NoPadlockBoxes", &g_bNoPadlockBoxes},
+    { "PitchLimiterForAI", &g_bPitchLimiterForAI},
+    { "MissionACIcons", &g_bMissionACIcons},
+    { "EnableMfdColors", &g_bEnableMfdColors},	// a.s.
+    { "EnableMfdSize", &g_bEnableMfdSize},		// a.s.
+    { "AIRefuelInComplexAF", &g_bAIRefuelInComplexAF}, // 2002-02-20 S.G.
+    { "NewAcmiHud", &g_bNewAcmiHud},
+    { "AWACSBackground", &g_bAWACSBackground},
+    { "MavFixes", &g_bMavFixes},  // a.s.
+    { "LgbFixes", &g_bLgbFixes},  // a.s.
+    { "FallingHeadingTape", &g_bFallingHeadingTape},
+    { "NewRefuelHelp", &g_bNewRefuelHelp}, // MN
+    { "OtherGroundCheck", &g_bOtherGroundCheck }, // MN
+    { "Limit2DRadarFight", &g_bLimit2DRadarFight}, // 2002-03-07 S.G.
+    { "AdvancedGroundChooseWeapon", &g_bAdvancedGroundChooseWeapon}, // 2002-03-09 S.G.
+    { "TFRFixes", &g_bTFRFixes}, //MI TFR Fixes
+    { "AIGloc", &g_bAIGloc }, // MN
+    { "CalibrateTFR_PitchCtrl", &g_bCalibrateTFR_PitchCtrl},
+    { "LantDebug", &g_bLantDebug},
+    { "UseNewCanEnage", &g_bUseNewCanEnage}, // 2002-03-11 S.G.
+    { "MPStartRestricted", &g_bMPStartRestricted},
+    { "UseSkillForFlaks", &g_bUseSkillForFlaks}, // 2002-03-12 S.G.
+    { "ToggleAAAGunFlag", &g_bToggleAAAGunFlag}, // 2002-03-12 S.G.
+    { "UseTankerTrack", &g_bUseTankerTrack},// 2002-03-13 MN
+    { "UseComplexBVRForPlayerAI", &g_bUseComplexBVRForPlayerAI}, // 2002-03-13 S.G.
+    { "FuelUseVtDot", &g_bFuelUseVtDot },	// 2002-03-14 S.G.
+    { "FuelLimitBecauseVtDot", &g_bFuelLimitBecauseVtDot },	// 2002-03-14 S.G.
+    { "UseAggresiveIncompleteA2G", &g_bUseAggresiveIncompleteA2G }, // 2002-03-22 S.G.
+    { "NewPitchLadder", &g_bNewPitchLadder},
+    { "AddIngressWP", &g_bAddIngressWP}, // 2002-03-25 MN
+    { "TankerWaypoints", &g_bTankerWaypoints}, // 2002-03-25 MN
+    { "PutAIToBoom", &g_bPutAIToBoom}, // 2002-03-28 MN
+    { "OldStackDump", &g_bOldStackDump}, // 2002-04-01 S.G.
+    { "TankerFMFix", &g_bTankerFMFix}, // 2002-04-02 MN
+    { "AGRadarFixes", &g_bAGRadarFixes},	//MI 2002-03-28
+    { "LookCloserFix", &g_bLookCloserFix}, // 2002-04-05 MN by dpc
+    { "AnyWaypointTask", &g_bAnyWaypointTask}, // Wombat778 09-27-2003
+    { "FFCenterFix", &g_bFFCenterFix}, // Wombat778 09-29-2003
+    { "CockpitAutoScale", &g_bCockpitAutoScale}, // Wombat778 10-06-2003
+    { "3DClickableCockpitDebug", &g_b3DClickableCockpitDebug}, // Wombat778 10-10-2003
+    { "3DRTTCockpitDebug", &g_b3DRTTCockpitDebug}, // Wombat778 10-10-2003
+    { "3DClickableCursorChange", &g_b3DClickableCursorChange}, // Wombat778 10-15-2003
+    { "DEDSpacingFix", &g_bDEDSpacingFix}, // Wombat778 10-17-2003
+    { "ReconLatLong", &g_bReconLatLong}, // Wombat778 11-3-2003
+    { "RatioHack", &g_bRatioHack}, // Wombat778 11-4-2003
+    { "PrecisionWaypoints", &g_bPrecisionWaypoints}, // Wombat778 11-5-2003
+    { "SmallerBullseye", &g_bSmallerBullseye}, // Wombat778 11-12-2003
+    { "AutoScaleFonts", &g_bAutoScaleFonts}, // Wombat778 12-11-2003
+    { "EnableRandomFailures", &g_bEnableRandomFailures}, // Wombat778 12-11-2003
+    { "2DPitWingFOVFix", &g_b2DPitWingFOVFix}, // Wombat778 2-25-2003
+    { "OldFontTexelFix", &g_bOldFontTexelFix}, // Wombat778 4-01-04
+    { "Filter2DPit", &g_bFilter2DPit}, // Wombat778 3-30-2004
+    { "CrackFix", &g_bCrackFix}, // Wombat778 4-02-2004
+    { "ResizeUsesResMgr", &g_bResizeUsesResMgr}, // Wombat778 4-14-2004
+    { "PadlockHudColor", &g_bPadlockHudColor}, // Wombat778 4-28-2004
+    { "CheckFeatureIndex", &g_bCheckFeatureIndex}, // Wombat778 5-15-2004
+    { "MachAsiDial", &g_bMachAsiDial}, // Wombat778 7-9-2004
+    { "New2DTrackIR", &g_bNew2DTrackIR}, // Wombat778 11-15-2004
+    { "Sync2D3DPit", &g_bSync2D3DPit}, // Wombat778 11-17-2004
+    { "LowBwVoice", &g_bLowBwVoice},
+    { "AGTargetWPFix", &g_bAGTargetWPFix}, // 2002-04-06 MN
+    { "BombNumLoopOnly", &g_bBombNumLoopOnly},	//MI 2002-07-04 fix for missing bombs in CCIP
+    { "AlwaysAnisotropic", &g_bAlwaysAnisotropic }, // 2002-04-07 MN
+    { "NoAAAEventRecords", &g_bNoAAAEventRecords }, // 2002-04-07 MN
+    { "ActivateDebugStuff", &g_bActivateDebugStuff }, // 2002-04-12 MN
+    { "ActivateMissileDebug", &g_bActivateMissileDebug }, // FRB
+    { "NewSensorPrecision", &g_bNewSensorPrecision },
+    { "AGNoBVRWVR", &g_bAGNoBVRWVR },
+    { "TO_LDG_LightFix", &g_bTO_LDG_LightFix},	//MI 2002-04-13
+    { "AppendToBriefingFile", &g_bAppendToBriefingFile},
+    { "DarkHudFix", &g_bDarkHudFix},
+    { "RQDFix", &g_bRQDFix}, // MN 2002-04-13
+    { "ACPlayerCTDFix", &g_bACPlayerCTDFix},
+    { "CheckForMode", &g_bCheckForMode}, // MN 2002-04-14
+    { "AllowOverload", &g_bAllowOverload},
+    { "UseDefinedGunDomain", &g_bUseDefinedGunDomain}, // 2002-04-17 S.G.
+    { "LabelRadialFix", &g_bLabelRadialFix},
+    { "LabelShowDistance", &g_bLabelShowDistance},
+    { "SetWaypointNumFix", &g_bSetWaypointNumFix}, // 2002-04-18 MN a fix from S.G. which he didn't put in because it was not really tested yet..
+    { "EmptyFilenameFix", &g_bEmptyFilenameFix},
+    { "RebuildbobbleFix", &g_brebuildbobbleFix},
+    { "MPFix", &g_bMPFix},
+    { "MPFix2", &g_bMPFix2},
+    { "MPFix3", &g_bMPFix3},
+    { "MPFix4", &g_bMPFix4},
+    { "ExitCampSelectFix", &g_bExitCampSelectFix},
+    { "CampSavedMenuHack", &g_bCampSavedMenuHack},
+    { "EmergencyJettisonFix", &g_bEmergencyJettisonFix},
+    { "OldSamActivity", &g_bOldSamActivity}, // no LOS check and stuff - just the old code
+    { "FireOntheMove", &g_bFireOntheMove},
+    { "SAM2D3DHandover", &g_bSAM2D3DHandover},
+    { "MavFix2", &g_bMavFix2},
+    { "DisableMissileEngGlow", &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star!
+    { "HUDFix", &g_bHUDFix}, //Smeghead 14-Oct-2003
+    { "SMSPylonLoadingFix", &g_bSMSPylonLoadingFix}, // MLR 2003/10/16
+
+    // MLR 12/14/2003 -  All these are control in the UI setup now
+    //{ "EnableDopplerSound", &g_bEnableDopplerSound}, // MLR 2003/10/17
+    //{ "NewEngineSounds" , &g_bNewEngineSounds},	     // MLR 2003/11/21
+    //{ "SoundHearVMSExternal", &g_bSoundHearVMSExternal}, // MLR 2003/11/23
+    //{ "SoundDistanceEffect", &g_bSoundDistanceEffect}, // MLR 2003/11/02
+
+    //	{ "SoundDynamicAllocate", &g_bSoundDynamicAllocate}, // MLR 11/30/2003 - Allocate DSOund buffers on the fly // MLR 12/3/2003 - Not implemented yet
+    { "LargeStrike", &g_bLargeStrike}, //TJL 10/24/03 Enables Campaign to generate large strike packages >4 aircraft
+    { "TakeoffSound", &g_bTakeoffSound}, // TJL 10/26/03 Enables Takeoff.wav in Camp UI. Defaults to off.
+    { "Scramble", &g_bScramble}, //TJL 11/02/03 Enable Scramble missions
+    { "hudAOA" , &g_bhudAOA}, //TJL 11/09/03 Enable HUD AOA indicator
+    { "LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
+    { "DisableHighFartiles", &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
+    { "noRadStutter", &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
+    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder },	// ASSOCIATOR 30/11/03 Controls wether the Rudder and NWS are linked to the roll input when on the ground
+    { "EnableGRCursorBullseye", &g_bEnableGRCursorBullseye }, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
+    { "BriefHTML", &g_bBriefHTML }, // THW 2003-12-07 Generate Briefing using HTML tags
+    //	{ "EnableFCCSubNavCycle", &g_bEnableFCCSubNavCycle },  // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
+    { "RealisticMavTime", &g_bRealisticMavTime }, // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
+    { "newAMRAAMdlz", &g_bnewAMRAAMdlz }, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above
+    { "EnableDisplacementCam", &g_bEnableDisplacementCam },	// Retro 25Dec2003
+    { "AntElevKnobFix", &g_bAntElevKnobFix }, // MD -- 20031231: see above
+    { "PilotEntertainment", &g_bPilotEntertainment },// Retro 3Jan2004
+    { "RollInertia", &g_bRollInertia }, //TJL 01/06/04 Roll Inertia
+    { "ACMIRecordMsgOff", &g_bACMIRecordMsgOff }, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
+    { "UseAnalogIdleCutoff", &g_bUseAnalogIdleCutoff }, // MD -- 20040209: see above
+    { "WeaponPickleDelays", &g_bWeaponPickleDelays}, // MD -- 20040613: see above
+    { "HsdStptFix", &g_bHsdStptFix}, // MD -- 20040727: see above
+    { "F4CommsMTU", &g_bF4CommsMTU },     //  Unz-- MTU swtich with Wombats help
+    //	{ "F4CommsKillPL", &g_bF4CommsKillPL },     //  Booster and Unz to Kill packet loss
+    { "UseNew3dpit", &g_bUseNew3dpit}, //ATARIBABY Use new 3dpit code - needs new 3d pit model
+    { "StartIn3Dpit", &g_bStartIn3Dpit},  // Cobra - start in 3D cockpit
+    { "UseNewSmoothing", &g_bUseNewSmoothing},		// Retro 21Feb2004, look above for expl.
+    { "DisplayAxisValues", &g_bDisplayAxisValues},	// Retro 25Feb2004
+    { "WeaponLaunchUsesDrawPointerPos", &g_bWeaponLaunchUsesDrawPointerPos},  // MLR 2/19/2004 -
+    { "UseNewSmoothing", &g_bUseNewSmoothing},		// Retro 21Feb2004, look above for expl.
+    { "DisplayAxisValues", &g_bDisplayAxisValues},	// Retro 25Feb2004
+    { "WeaponStepToGun", &g_bWeaponStepToGun},  // MLR 3/13/2004 - See above
+    { "Turb", &g_bTurb}, //TJL 03/14/04 Turbulence Code
+    { "SoundSonicBoom", &g_bSoundSonicBoom},
+    { "DisableCommsBorder", &g_bDisableCommsBorder}, // ASSO: disable the radio comms menu border
+    { "EcmOnHud", &g_bEcmOnHud},	// ASSO:
+    { "BrakeOnHud", &g_bBrakeOnHud},	// ASSO:
+    { "GearOnHud", &g_bGearOnHud},	// ASSO:
+    { "WakeTurbulence", &g_bWakeTurbulence },
+    { "DrawWakeTurbulence", &g_bDrawWakeTurbulence },
+    { "OldDustTrail", &g_bOldDustTrail},	// Cobra - Use old dust trail sfx
+    { "HearThunder", &g_bHearThunder},	// Cobra - Play thunder.wav
+    { "HighSFX", &g_bHighSFX},	// Cobra - Switch internal PS effects levels
+    { "AllHaveIFF", &g_bAllHaveIFF},	// Cobra - Give all a/c IFF interrogator
+    { "UseRC135", &g_bUseRC135},	// Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
+    { "FFDBC", &g_bFFDBC},
+    { "ExtViewOnGround", &g_bExtViewOnGround },// RAS -5Dec04- allow ext view on ground
+    { "UnlimitedAmmo", &g_bUnlimitedAmmo }, //Cobra
+    { "AnimPilotHead", &g_bAnimPilotHead},	// Cobra - Animate the pilot's head
+    { NULL, NULL }
 };
 
 static ConfigOption<int> IntOpts[] =
 {
-	{ "ThrottleMode", &g_nThrottleMode },
-	{ "PadlockBoxSize", &g_nPadlockBoxSize },
-	{ "PadlockMode", &g_nPadlockMode },
-	{ "NumDefaultHatSwitches", &NumHats },
-	{ "NearLabelLimit", &g_nNearLabelLimit },
-	{ "percentage_available_aircraft", &g_npercentage_available_aircraft },
-	{ "minimum_available_aircraft", &g_nminimum_available_aircraft },
-	{ "MasterServerPort", &g_nMasterServerPort },
-	{ "MaxVertexSpace", &g_nMaxVertexSpace },
-//	{ "MinTacanChannel", &g_nMinTacanChannel}, -> Theater definition file
-	{ "FlightVisualBonus", &g_nFlightVisualBonus},
-	{ "RelocationWait", &g_nRelocationWait},
-	{ "LoadoutTimeLimit", &g_nLoadoutTimeLimit},
-	{ "Year", &g_nYear},
-	{ "Day", &g_nDay},
-	{ "AirbaseReloc", &g_nAirbaseReloc},
-	{ "NoPlayerPlay", &g_nNoPlayerPlay},
-	{ "DeagTimer", &g_nDeagTimer},
-	{ "ReagTimer", &g_nReagTimer},
-	{ "RNESpeed", &g_nRNESpeed},
-	{ "TargetSpotTimeout", &g_nTargetSpotTimeout},
-	{ "MaxUIRefresh", &g_nMaxUIRefresh}, // 2002-02-23 S.G.
-	{ "UnidentifiedInUI", &g_nUnidentifiedInUI}, // 2002-02-24 S.G.
-	{ "lookAroundWaterTiles", &g_nlookAroundWaterTiles},
-	{ "FFEffectAutoCenter", &g_nFFEffectAutoCenter},
-	{ "MPStartTime", &g_nMPStartTime},
-	{ "LowestSkillForGCI", &g_nLowestSkillForGCI}, // 2002-03-12 S.G.
-	{ "AIVisualRetentionTime", &g_nAIVisualRetentionTime}, // 2002-03-12 S.G.
-	{ "AIVisualRetentionSkill", &g_nAIVisualRetentionSkill}, // 2002-03-12 S.G.
-	{ "MaxSimTimeAcceleration", &g_nMaxSimTimeAcceleration},
-//	{ "ShowDebugLabels", &g_nShowDebugLabels},// only by .label chatline input
-	{ "LowDetailFactor", &g_nLowDetailFactor},
-	{ "NoWPRefuelNeeded", &g_nNoWPRefuelNeeded}, // 2002-03-25 MN
-	{ "AirbaseCheck", &g_nAirbaseCheck}, // 2002-03-11 MN
-	{ "FogRenderState", &g_nFogRenderState},
-	{ "MissileFix", &g_nMissileFix}, // 2002-03-28 MN
-	{ "SkipWaypointTime", &g_nSkipWaypointTime}, // 2002-04-05 MN
-	{ "GroundAttackTime", &g_nGroundAttackTime}, // Cobra
-	{ "SeadAttackTime", &g_nSeadAttackTime}, // Cobra
-	{ "StrikeAttackTime", &g_nStrikeAttackTime}, // Cobra
-	{ "CASAttackTime", &g_nCASAttackTime}, // Cobra
-	{ "AIshootLookShootTime", &g_nAIshootLookShootTime}, // Cobra
-	{ "GfxFix", &g_nGfxFix}, // 2002-04-06 MN
-	{ "ATCTaxiOrderFix", &g_nATCTaxiOrderFix},// 2002-04-08 MN
-	{ "DFRegenerateFix", &g_nDFRegenerateFix},// 2002-04-09 MN
-	{ "BWMaxDeltaTime", &g_nBWMaxDeltaTime}, // 2002-04-12 MN
-	{ "BWCheckDeltaTime", &g_nBWCheckDeltaTime}, // 2002-04-12 MN
-	{ "VUMaxDeltaTime", &g_nVUMaxDeltaTime}, // 2002-04-12 MN
-	{ "ACMIOptionsPopupHiResX", &g_nACMIOptionsPopupHiResX},
-	{ "ACMIOptionsPopupHiResY", &g_nACMIOptionsPopupHiResY},
-	{ "ACMIOptionsPopupLowResX", &g_nACMIOptionsPopupLowResX},
-	{ "ACMIOptionsPopupLowResY", &g_nACMIOptionsPopupLowResY},
-	{ "ChooseBullseyeFix", &g_nChooseBullseyeFix }, // 2002-04-12 MN
-	{ "SoundSwitchFix", &g_nSoundSwitchFix},
-	{ "PrintToFile", &g_nPrintToFile},
-	{ "SessionTimeout", &g_nSessionTimeout},
-	{ "SessionUpdateRate", &g_nSessionUpdateRate},
-	{ "MaxInterceptDistance", &g_nMaxInterceptDistance}, // 2002-04-14 MN
-	{ "TrackIRSampleFreq", &g_nTrackIRSampleFreq},		// Retro 02/10/03
-	{ "SoundUpdatems", &g_nSoundUpdateMS }, // MLR 03/11/03
-	{ "NumberOfSubTitles", &g_nNumberOfSubTitles },	// Retro 20Dec2003
-	{ "SubTitleTTL", &g_nSubTitleTTL },				// Retro 20Dec2003
-//	{ "Season", &g_nSeason}, //THW 2004-01-02 Select Season (0=Summer/default, 1= Autumn, 2=Winter)
-	{ "WinAmpInitVolume", &g_nWinAmpInitVolume },	// Retro 3Jan2004
-	{ "DynamicVoices", &g_nDynamicVoices},
-	{ "IdleCutoffPad", &g_nIdleCutoffPad }, // MD -- 20040209: see above
-	{ "SaturationSmall", &g_nSaturationSmall},		// Retro 17Feb2004
-	{ "SaturationMedium", &g_nSaturationMedium},	// Retro 17Feb2004
-	{ "SaturationLarge", &g_nSaturationLarge},		// Retro 17Feb2004
-	{ "DeadzoneSmall", &g_nDeadzoneSmall},			// Retro 17Feb2004
-	{ "DeadzoneMedium", &g_nDeadzoneMedium},		// Retro 17Feb2004
-	{ "DeadzoneLarge", &g_nDeadzoneLarge},			// Retro 17Feb2004
-	{ "DeadzoneHuge", &g_nDeadzoneHuge},			// Retro 17Feb2004
-	{ "MouseLookSensMax", &g_nMouseLookSensMax},	// Retro 17Feb2004
-	{ "MouseLookSensMin", &g_nMouseLookSensMin},	// Retro 17Feb2004
-	{ "MouseWheelSensMax", &g_nMouseWheelSensMax},	// Retro 17Feb2004
-	{ "MouseWheelSensMin", &g_nMouseWheelSensMin},	// Retro 17Feb2004
-	{ "KeyPOVSensMax", &g_nKeyPOVSensMax},			// Retro 17Feb2004
-	{ "KeyPOVSensMin", &g_nKeyPOVSensMin},			// Retro 17Feb2004
-	{ "3DHeadPanRange", &g_n3DHeadPanRange}, // Wombat778 10-23-2003 split expandedheadrange
-	{ "3DHeadTiltRange", &g_n3DHeadTiltRange}, // Wombat778 10-23-2003 split expandedheadrange
-	{ "6DOFTIR", &g_n6DOFTIR}, // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom 
-	{ "NewFPSCounter", &g_nNewFPSCounter}, // Wombat778 3-24-2004 
-	{ "ForceCockpitResolution", &g_nForceCockpitResolution}, // Wombat778 4-02-04
-	{ "Show2DPitErrors", &g_nShow2DPitErrors}, // Wombat778 3-22-2004
-	{ "MiniDump", &g_nMiniDump}, // Wombat778 5-01-2004
-	{ "HybridPitModeDelay", &g_nHybridPitModeDelay}, // Wombat778 5-01-2004
-	{ "MPPowerXmitThreshold", &g_nMPPowerXmitThreshold},  // MLR 3/22/2004 - see declaration
-	{ "TaxiLaunchTime", &g_nTaxiLaunchTime},	// Booster 2004/10/12 Taxi takeoff time option
-	{ "ChatterInterval", &g_nChatterInterval},	// FRB - chatter noise control
-	{ "SfxLODCutoff", &g_nSfxLODCutoff},	// Cobra - SFX display limits
-	{ "SfxLODDistCutoff", &g_nSfxLODDistCutoff},	// Cobra - SFX display limits
-	{ "SfxLODTotCutoff", &g_nSfxLODTotCutoff},	// Cobra - SFX display limits 
-	{ "PSPurgeInterval", &g_nPSPurgeInterval},	// Cobra - PS list purge interval
-	{ "PSKillFPS", &g_nPSKillFPS}, //Cobra
-	{ "CriticalPullup", &g_nCriticalPullup},	// Cobra - AI ground avoidance full pullup theshold
-	{ NULL, NULL }
+    { "ThrottleMode", &g_nThrottleMode },
+    { "PadlockBoxSize", &g_nPadlockBoxSize },
+    { "PadlockMode", &g_nPadlockMode },
+    { "NumDefaultHatSwitches", &NumHats },
+    { "NearLabelLimit", &g_nNearLabelLimit },
+    { "percentage_available_aircraft", &g_npercentage_available_aircraft },
+    { "minimum_available_aircraft", &g_nminimum_available_aircraft },
+    { "MasterServerPort", &g_nMasterServerPort },
+    { "MaxVertexSpace", &g_nMaxVertexSpace },
+    //	{ "MinTacanChannel", &g_nMinTacanChannel}, -> Theater definition file
+    { "FlightVisualBonus", &g_nFlightVisualBonus},
+    { "RelocationWait", &g_nRelocationWait},
+    { "LoadoutTimeLimit", &g_nLoadoutTimeLimit},
+    { "Year", &g_nYear},
+    { "Day", &g_nDay},
+    { "AirbaseReloc", &g_nAirbaseReloc},
+    { "NoPlayerPlay", &g_nNoPlayerPlay},
+    { "DeagTimer", &g_nDeagTimer},
+    { "ReagTimer", &g_nReagTimer},
+    { "RNESpeed", &g_nRNESpeed},
+    { "TargetSpotTimeout", &g_nTargetSpotTimeout},
+    { "MaxUIRefresh", &g_nMaxUIRefresh}, // 2002-02-23 S.G.
+    { "UnidentifiedInUI", &g_nUnidentifiedInUI}, // 2002-02-24 S.G.
+    { "lookAroundWaterTiles", &g_nlookAroundWaterTiles},
+    { "FFEffectAutoCenter", &g_nFFEffectAutoCenter},
+    { "MPStartTime", &g_nMPStartTime},
+    { "LowestSkillForGCI", &g_nLowestSkillForGCI}, // 2002-03-12 S.G.
+    { "AIVisualRetentionTime", &g_nAIVisualRetentionTime}, // 2002-03-12 S.G.
+    { "AIVisualRetentionSkill", &g_nAIVisualRetentionSkill}, // 2002-03-12 S.G.
+    { "MaxSimTimeAcceleration", &g_nMaxSimTimeAcceleration},
+    //	{ "ShowDebugLabels", &g_nShowDebugLabels},// only by .label chatline input
+    { "LowDetailFactor", &g_nLowDetailFactor},
+    { "NoWPRefuelNeeded", &g_nNoWPRefuelNeeded}, // 2002-03-25 MN
+    { "AirbaseCheck", &g_nAirbaseCheck}, // 2002-03-11 MN
+    { "FogRenderState", &g_nFogRenderState},
+    { "MissileFix", &g_nMissileFix}, // 2002-03-28 MN
+    { "SkipWaypointTime", &g_nSkipWaypointTime}, // 2002-04-05 MN
+    { "GroundAttackTime", &g_nGroundAttackTime}, // Cobra
+    { "SeadAttackTime", &g_nSeadAttackTime}, // Cobra
+    { "StrikeAttackTime", &g_nStrikeAttackTime}, // Cobra
+    { "CASAttackTime", &g_nCASAttackTime}, // Cobra
+    { "AIshootLookShootTime", &g_nAIshootLookShootTime}, // Cobra
+    { "GfxFix", &g_nGfxFix}, // 2002-04-06 MN
+    { "ATCTaxiOrderFix", &g_nATCTaxiOrderFix},// 2002-04-08 MN
+    { "DFRegenerateFix", &g_nDFRegenerateFix},// 2002-04-09 MN
+    { "BWMaxDeltaTime", &g_nBWMaxDeltaTime}, // 2002-04-12 MN
+    { "BWCheckDeltaTime", &g_nBWCheckDeltaTime}, // 2002-04-12 MN
+    { "VUMaxDeltaTime", &g_nVUMaxDeltaTime}, // 2002-04-12 MN
+    { "ACMIOptionsPopupHiResX", &g_nACMIOptionsPopupHiResX},
+    { "ACMIOptionsPopupHiResY", &g_nACMIOptionsPopupHiResY},
+    { "ACMIOptionsPopupLowResX", &g_nACMIOptionsPopupLowResX},
+    { "ACMIOptionsPopupLowResY", &g_nACMIOptionsPopupLowResY},
+    { "ChooseBullseyeFix", &g_nChooseBullseyeFix }, // 2002-04-12 MN
+    { "SoundSwitchFix", &g_nSoundSwitchFix},
+    { "PrintToFile", &g_nPrintToFile},
+    { "SessionTimeout", &g_nSessionTimeout},
+    { "SessionUpdateRate", &g_nSessionUpdateRate},
+    { "MaxInterceptDistance", &g_nMaxInterceptDistance}, // 2002-04-14 MN
+    { "TrackIRSampleFreq", &g_nTrackIRSampleFreq},		// Retro 02/10/03
+    { "SoundUpdatems", &g_nSoundUpdateMS }, // MLR 03/11/03
+    { "NumberOfSubTitles", &g_nNumberOfSubTitles },	// Retro 20Dec2003
+    { "SubTitleTTL", &g_nSubTitleTTL },				// Retro 20Dec2003
+    //	{ "Season", &g_nSeason}, //THW 2004-01-02 Select Season (0=Summer/default, 1= Autumn, 2=Winter)
+    { "WinAmpInitVolume", &g_nWinAmpInitVolume },	// Retro 3Jan2004
+    { "DynamicVoices", &g_nDynamicVoices},
+    { "IdleCutoffPad", &g_nIdleCutoffPad }, // MD -- 20040209: see above
+    { "SaturationSmall", &g_nSaturationSmall},		// Retro 17Feb2004
+    { "SaturationMedium", &g_nSaturationMedium},	// Retro 17Feb2004
+    { "SaturationLarge", &g_nSaturationLarge},		// Retro 17Feb2004
+    { "DeadzoneSmall", &g_nDeadzoneSmall},			// Retro 17Feb2004
+    { "DeadzoneMedium", &g_nDeadzoneMedium},		// Retro 17Feb2004
+    { "DeadzoneLarge", &g_nDeadzoneLarge},			// Retro 17Feb2004
+    { "DeadzoneHuge", &g_nDeadzoneHuge},			// Retro 17Feb2004
+    { "MouseLookSensMax", &g_nMouseLookSensMax},	// Retro 17Feb2004
+    { "MouseLookSensMin", &g_nMouseLookSensMin},	// Retro 17Feb2004
+    { "MouseWheelSensMax", &g_nMouseWheelSensMax},	// Retro 17Feb2004
+    { "MouseWheelSensMin", &g_nMouseWheelSensMin},	// Retro 17Feb2004
+    { "KeyPOVSensMax", &g_nKeyPOVSensMax},			// Retro 17Feb2004
+    { "KeyPOVSensMin", &g_nKeyPOVSensMin},			// Retro 17Feb2004
+    { "3DHeadPanRange", &g_n3DHeadPanRange}, // Wombat778 10-23-2003 split expandedheadrange
+    { "3DHeadTiltRange", &g_n3DHeadTiltRange}, // Wombat778 10-23-2003 split expandedheadrange
+    { "6DOFTIR", &g_n6DOFTIR}, // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom
+    { "NewFPSCounter", &g_nNewFPSCounter}, // Wombat778 3-24-2004
+    { "ForceCockpitResolution", &g_nForceCockpitResolution}, // Wombat778 4-02-04
+    { "Show2DPitErrors", &g_nShow2DPitErrors}, // Wombat778 3-22-2004
+    { "MiniDump", &g_nMiniDump}, // Wombat778 5-01-2004
+    { "HybridPitModeDelay", &g_nHybridPitModeDelay}, // Wombat778 5-01-2004
+    { "MPPowerXmitThreshold", &g_nMPPowerXmitThreshold},  // MLR 3/22/2004 - see declaration
+    { "TaxiLaunchTime", &g_nTaxiLaunchTime},	// Booster 2004/10/12 Taxi takeoff time option
+    { "ChatterInterval", &g_nChatterInterval},	// FRB - chatter noise control
+    { "SfxLODCutoff", &g_nSfxLODCutoff},	// Cobra - SFX display limits
+    { "SfxLODDistCutoff", &g_nSfxLODDistCutoff},	// Cobra - SFX display limits
+    { "SfxLODTotCutoff", &g_nSfxLODTotCutoff},	// Cobra - SFX display limits
+    { "PSPurgeInterval", &g_nPSPurgeInterval},	// Cobra - PS list purge interval
+    { "PSKillFPS", &g_nPSKillFPS}, //Cobra
+    { "CriticalPullup", &g_nCriticalPullup},	// Cobra - AI ground avoidance full pullup theshold
+    { NULL, NULL }
 };
 
 static ConfigOption<char> StringOpts[] =
 {
-	{ "MasterServerName", &g_strMasterServerName[0] },
-	{ "ServerName", &g_strServerName[0] },
-	{ "ServerLocation", &g_strServerLocation[0] },
-	{ "ServerAdmin", &g_strServerAdmin[0] },
-	{ "ServerAdminEmail", &g_strServerAdminEmail[0] },
-	{ "VoiceHostIP", &g_strVoiceHostIP[0] },
-	{ "WorldName", &g_strWorldName[0] },
-	{ "ScrollUpFunction", &g_strScrollUpFunction[0] },		//Wombat778 10-07-2003
-	{ "ScrollDownFunction", &g_strScrollDownFunction[0]},	//Wombat778	10-07-2003
-	{ "MiddleButtonFunction", &g_strMiddleButtonFunction[0] },		//Wombat778 10-07-2003
-	{ "RadioflightCol", &g_strRadioflightCol[0] },					// Retro 27Dec2003
-	{ "RadiotoPackageCol", &g_strRadiotoPackageCol[0] },			// Retro 27Dec2003
-	{ "RadioToFromPackageCol", &g_strRadioToFromPackageCol[0] },	// Retro 27Dec2003
-	{ "RadioTeamCol", &g_strRadioTeamCol[0] },						// Retro 27Dec2003
-	{ "RadioProximityCol", &g_strRadioProximityCol[0] },			// Retro 27Dec2003
-	{ "RadioWorldCol", &g_strRadioWorldCol[0] },					// Retro 27Dec2003
-	{ "RadioTowerCol", &g_strRadioTowerCol[0] },					// Retro 27Dec2003
-	{ "RadioStandardCol", &g_strRadioStandardCol[0] },				// Retro 27Dec2003
-	{ NULL, NULL }
+    { "MasterServerName", &g_strMasterServerName[0] },
+    { "ServerName", &g_strServerName[0] },
+    { "ServerLocation", &g_strServerLocation[0] },
+    { "ServerAdmin", &g_strServerAdmin[0] },
+    { "ServerAdminEmail", &g_strServerAdminEmail[0] },
+    { "VoiceHostIP", &g_strVoiceHostIP[0] },
+    { "WorldName", &g_strWorldName[0] },
+    { "ScrollUpFunction", &g_strScrollUpFunction[0] },		//Wombat778 10-07-2003
+    { "ScrollDownFunction", &g_strScrollDownFunction[0]},	//Wombat778	10-07-2003
+    { "MiddleButtonFunction", &g_strMiddleButtonFunction[0] },		//Wombat778 10-07-2003
+    { "RadioflightCol", &g_strRadioflightCol[0] },					// Retro 27Dec2003
+    { "RadiotoPackageCol", &g_strRadiotoPackageCol[0] },			// Retro 27Dec2003
+    { "RadioToFromPackageCol", &g_strRadioToFromPackageCol[0] },	// Retro 27Dec2003
+    { "RadioTeamCol", &g_strRadioTeamCol[0] },						// Retro 27Dec2003
+    { "RadioProximityCol", &g_strRadioProximityCol[0] },			// Retro 27Dec2003
+    { "RadioWorldCol", &g_strRadioWorldCol[0] },					// Retro 27Dec2003
+    { "RadioTowerCol", &g_strRadioTowerCol[0] },					// Retro 27Dec2003
+    { "RadioStandardCol", &g_strRadioStandardCol[0] },				// Retro 27Dec2003
+    { NULL, NULL }
 };
 
 static ConfigOption<float> FloatOpts[] =
 {
-	{ "MipLodBias", &g_fMipLodBias },
-	{ "CloudMinHeight", &g_fCloudMinHeight}, // JPO
-	{ "RadarScale", &g_fRadarScale}, // JPO
-	{ "CursorSpeed", &g_fCursorSpeed}, // JPO
-	{ "MinCloudWeather",  &g_fMinCloudWeather}, //JPO
-	{ "CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
-	{ "DragDilutionFactor", &g_fDragDilutionFactor},
-//	{ "Latitude", &g_fLatitude},	// is now set by the theater.map readout
-	{ "dwPorthost", &g_fdwPorthost},
-	{ "dwPortclient", &g_fdwPortclient},
+    { "MipLodBias", &g_fMipLodBias },
+    { "CloudMinHeight", &g_fCloudMinHeight}, // JPO
+    { "RadarScale", &g_fRadarScale}, // JPO
+    { "CursorSpeed", &g_fCursorSpeed}, // JPO
+    { "MinCloudWeather",  &g_fMinCloudWeather}, //JPO
+    { "CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
+    { "DragDilutionFactor", &g_fDragDilutionFactor},
+    //	{ "Latitude", &g_fLatitude},	// is now set by the theater.map readout
+    { "dwPorthost", &g_fdwPorthost},
+    { "dwPortclient", &g_fdwPortclient},
 #if 0
-	{"3dlMFDulx", &g_f3dlMFDulx},
-	{"3dlMFDuly", &g_f3dlMFDuly},
-	{"3dlMFDulz", &g_f3dlMFDulz},
-	{"3dlMFDurx", &g_f3dlMFDurx},
-	{"3dlMFDury", &g_f3dlMFDury},
-	{"3dlMFDurz", &g_f3dlMFDurz},
-	{"3dlMFDllx", &g_f3dlMFDllx},
-	{"3dlMFDlly", &g_f3dlMFDlly},
-	{"3dlMFDllz", &g_f3dlMFDllz},
-	{"3drMFDulx", &g_f3drMFDulx},
-	{"3drMFDuly", &g_f3drMFDuly},
-	{"3drMFDulz", &g_f3drMFDulz},
-	{"3drMFDurx", &g_f3drMFDurx},
-	{"3drMFDury", &g_f3drMFDury},
-	{"3drMFDurz", &g_f3drMFDurz},
-	{"3drMFDllx", &g_f3drMFDllx},
-	{"3drMFDlly", &g_f3drMFDlly},
-	{"3drMFDllz", &g_f3drMFDllz},
+    {"3dlMFDulx", &g_f3dlMFDulx},
+    {"3dlMFDuly", &g_f3dlMFDuly},
+    {"3dlMFDulz", &g_f3dlMFDulz},
+    {"3dlMFDurx", &g_f3dlMFDurx},
+    {"3dlMFDury", &g_f3dlMFDury},
+    {"3dlMFDurz", &g_f3dlMFDurz},
+    {"3dlMFDllx", &g_f3dlMFDllx},
+    {"3dlMFDlly", &g_f3dlMFDlly},
+    {"3dlMFDllz", &g_f3dlMFDllz},
+    {"3drMFDulx", &g_f3drMFDulx},
+    {"3drMFDuly", &g_f3drMFDuly},
+    {"3drMFDulz", &g_f3drMFDulz},
+    {"3drMFDurx", &g_f3drMFDurx},
+    {"3drMFDury", &g_f3drMFDury},
+    {"3drMFDurz", &g_f3drMFDurz},
+    {"3drMFDllx", &g_f3drMFDllx},
+    {"3drMFDlly", &g_f3drMFDlly},
+    {"3drMFDllz", &g_f3drMFDllz},
 #endif
-	{"FormationBurnerDistance" , &g_fFormationBurnerDistance},
-	{"PadlockBreakDistance", &g_fPadlockBreakDistance},
-	{"AFRudderRight", &g_fAFRudderRight},
-	{"AFRudderLeft", &g_fAFRudderLeft},
-	{"AFThrottleDown", &g_fAFThrottleDown},
-	{"AFThrottleUp", &g_fAFThrottleUp},
-	{"AFAileronLeft", &g_fAFAileronLeft},
-	{"AFAileronRight", &g_fAFAileronRight},
-	{"AFElevatorDown", &g_fAFElevatorDown},
-	{"AFElevatorUp", &g_fAFElevatorUp},
-	{"rollStickOffset", &g_frollStickOffset},
-	{"pitchStickOffset", &g_fpitchStickOffset},
-	{"rudderOffset", &g_frudderOffset},
-	{"VisualNormalizeFactor", &g_fVisualNormalizeFactor},
-	{"RecoveryAOA", &g_fRecoveryAOA},
-	{"clientbwforupdatesmodifyer", &clientbwforupdatesmodifyer},
-	{"hostbwforupdatesmodifyer", &hostbwforupdatesmodifyer},
-	{"MfdTransparency", &g_fMfdTransparency}, // a.s. begin
-	{"MfdRed", &g_fMfdRed},
-	{"MfdBlue", &g_fMfdBlue},
-	{"MfdGreen", &g_fMfdGreen},
-	{"Mfd_p_Size", &g_fMfd_p_Size},	// a.s. end
-	{"PullupTime", &g_fPullupTime},	// 2002-02-24 M.N.
-	{"GALookAheadTime", &g_fGALookAheadTime},	// Cobra
-	{"AIMinAlt", &g_fAIMinAlt},	// Cobra
-	{"AIMinWPAlt", &g_fAIMinWPAlt},	// Cobra
-	{"GApStickFac", &g_fGApStickFac},	// Cobra
-	{"AIHarmMaxRange", &g_fAIHarmMaxRange},	// Cobra
-	{"AIJSOWMaxRange", &g_fAIJSOWMaxRange},	// Cobra
-	{"AGFlyoutRange", &g_fAGFlyoutRange},	// Cobra
-	{"AGSlowFlyoutRange", &g_fAGSlowFlyoutRange},	// Cobra
-	{"AGSlowMoverSpeed", &g_fAGSlowMoverSpeed},	// Cobra
-	{"AIRefuelRange", &g_fAIRefuelRange}, // 2002-02-28 MN
-	{"IdentFactor", &g_fIdentFactor}, // 2002-03-07 S.G.
-	{"AIDropStoreLauncherRange", &g_fAIDropStoreLauncherRange}, // 2002-03-08 MN
-	{"BiasFactorForFlaks", &g_fBiasFactorForFlaks}, // 2002-03-12 S.G.
-	{ "TracerAccuracyFactor", &g_fTracerAccuracyFactor }, // 2002-03-12 S.G.
-	{ "TankerRStick", &g_fTankerRStick }, // 2003-03-13 MN
-	{ "TankerPStick", &g_fTankerPStick }, // 2003-03-13 MN
-	{ "TankerTrackFactor", &g_fTankerTrackFactor }, // 2003-03-13 MN
-	{ "TankerHeadsupDistance", &g_fTankerHeadsupDistance}, // 2003-04-07 MN
-	{ "TankerBackupDistance", &g_fTankerBackupDistance}, // 2003-04-07 MN
-	{ "HeadingStabilizeFactor", &g_fHeadingStabilizeFactor}, // 2003-04-07 MN
-	{ "RocketPitchFactor", &g_fRocketPitchFactor},	// Cobra
-	{ "RocketPitchCorr", &g_fRocketPitchCorr},	// Cobra
-	{ "FuelBaseProp", &g_fFuelBaseProp }, // 2002-03-14 S.G.
-	{ "FuelMultProp", &g_fFuelMultProp }, // 2002-03-14 S.G.
-	{ "FuelTimeStep", &g_fFuelTimeStep }, // 2002-03-14 S.G.
-	{ "FuelVtClip", &g_fFuelVtClip }, // 2002-03-14 S.G.
-	{ "FuelVtDotMult", &g_fFuelVtDotMult }, // 2002-03-14 S.G.
-	{ "AIRefuelSpeed", &g_fAIRefuelSpeed }, // 2002-03-15 MN
-	{ "SearchSimTargetFromRangeSqr", &g_fSearchSimTargetFromRangeSqr}, // 2002-03-15 S.G.
-	{ "NukeStrengthFactor", &g_fNukeStrengthFactor }, // 2002-03-22 MN
-	{ "NukeDamageMod", &g_fNukeDamageMod }, // 2002-03-25 MN
-	{ "NukeDamageRadius", &g_fNukeDamageRadius }, // 2002-03-25 MN
-	{ "ClimbRatio", &g_fClimbRatio }, // 2002-03-25 MN
-	{ "HotNoseAngle", &g_fHotNoseAngle }, // 2002-03-22 S.G.
-	{ "MaxMARNoIdA", &g_fMaxMARNoIdA}, // 2002-03-22 S.G.
-	{ "MinMARNoId5kA", &g_fMinMARNoId5kA }, // 2002-03-22 S.G.
-	{ "MinMARNoId18kA", &g_fMinMARNoId18kA }, // 2002-03-22 S.G.
-	{ "MinMARNoId28kA", &g_fMinMARNoId28kA }, // 2002-03-22 S.G.
-	{ "MaxMARNoIdB", &g_fMaxMARNoIdB}, // 2002-03-22 S.G.
-	{ "MinMARNoId5kB", &g_fMinMARNoId5kB }, // 2002-03-22 S.G.
-	{ "MinMARNoId18kB", &g_fMinMARNoId18kB }, // 2002-03-22 S.G.
-	{ "MinMARNoId28kB", &g_fMinMARNoId28kB }, // 2002-03-22 S.G.
-	{ "MinMARNoIdC", &g_fMinMARNoIdC }, // 2002-03-22 S.G.
-	{ "WaypointBurnerDelta", &g_fWaypointBurnerDelta }, // 2002-03-28 MN
-	{ "GroundImpactMod", &g_fGroundImpactMod},	//MI 2002-03-28
-	{ "BombMissileAltitude", &g_fBombMissileAltitude}, // 2002-03-28 MN
-	{ "GMTMaxSpeed", &g_fGMTMaxSpeed}, // 2002-04-03 MN
-	{ "GMTMinSpeed", &g_fGMTMinSpeed}, // 2002-04-03 MN
-	{ "ReconCameraHalfFOV", &g_fReconCameraHalfFOV},	//MI 2002-04-03 Recon camera stuff
-	{ "ReconCameraOffset", &g_fReconCameraOffset},	//MI 2002-04-03 Recon camera stuff
-	{ "EXPfactor", &g_fEXPfactor}, // 2002-04-05 MN cursor speed reduction in EXP
-	{ "DBS1factor", &g_fDBS1factor}, // 2002-04-05 MN cursor speed reduction in DBS1
-	{ "DBS2factor", &g_fDBS2factor}, // 2002-04-05 MN cursor speed reduction in DBS2
-	{ "HUDonlySize", &g_fHUDonlySize}, // FRB - % Size increase of HUD-Only view (% = decimal)
-	{ "ePropFactor", &g_fePropFactor}, // 2002-04-05 MN
-	{ "SunPadlockTimeout", &g_fSunPadlockTimeout}, // 2002-04-06 MN
-	{ "CarrierStartTolerance", &g_fCarrierStartTolerance},
-	{ "BombTimeStep", &g_fBombTimeStep},	//MI 2002-04-07 fix for missing bombs
-	{ "HighDragGravFactor", &g_fHighDragGravFactor}, //MI 2002-04-07 externalised var to allow tweaking afterwards
-	{ "TgtDZFactor", &g_fTgtDZFactor}, // MN 2002-04-07 fix for ballistic missiles
-	{ "SSoffsetManeuverPoints1a", &g_fSSoffsetManeuverPoints1a}, // 2002-04-07 S.G.
-	{ "SSoffsetManeuverPoints1b", &g_fSSoffsetManeuverPoints1b}, // 2002-04-07 S.G.
-	{ "SSoffsetManeuverPoints2a", &g_fSSoffsetManeuverPoints2a}, // 2002-04-07 S.G.
-	{ "SSoffsetManeuverPoints2b", &g_fSSoffsetManeuverPoints2b}, // 2002-04-07 S.G.
-	{ "PinceManeuverPoints1a", &g_fPinceManeuverPoints1a}, // 2002-04-07 S.G.
-	{ "PinceManeuverPoints1b", &g_fPinceManeuverPoints1b}, // 2002-04-07 S.G.
-	{ "PinceManeuverPoints2a", &g_fPinceManeuverPoints2a}, // 2002-04-07 S.G.
-	{ "PinceManeuverPoints2b", &g_fPinceManeuverPoints2b}, // 2002-04-07 S.G.
-	{ "LethalRadiusModifier", &g_fLethalRadiusModifier}, // 2002-04-14 MN
-	{ "RAPDistance", &g_fRAPDistance}, // 2002-04-18 MN RollAndPull triggering in MissileEngage
-	{ "MoverVrValue", &g_fMoverVrValue},
-	{ "MinBwForOtherData", &MinBwForOtherData},
-	{ "clientbwforupdatesmodifyerMIN", &g_fclientbwforupdatesmodifyerMIN},
-	{ "clientbwforupdatesmodifyerMAX", &g_fclientbwforupdatesmodifyerMAX},
-	{ "ReliablemsgwaitMAX", &g_fReliablemsgwaitMAX},
-	{ "FOVIncrement", &g_fFOVIncrement}, // Wombat778 09-27-2003 
-	{ "MavEXPLevel", &g_fMavEXPLevel}, // Wombat778 09-27-2003 
-	{ "MavFOVLevel", &g_fMavFOVLevel}, // Wombat778 09-27-2003
-	{ "MouseLookSensitivity", &g_fMouseLookSensitivity}, // Wombat778 10-08-2003	
-	{ "DefaultFOV", &g_fDefaultFOV}, // Wombat778 10-31-2003
-	{ "HSDSymbolSize", &g_fHSDSymbolSize}, // Wombat778 11-13-2003
-	{ "TIRMinimumFOV", &g_fTIRMinimumFOV}, // Cobra
-	{ "TIRMaximumFOV", &g_fTIRMaximumFOV}, // Cobra 
-	{ "MinimumFOV", &g_fMinimumFOV}, // Wombat778 1-15-2004
-	{ "MaximumFOV", &g_fMaximumFOV}, // Wombat778 10-11-2003 
-	{ "NarrowFOV", &g_fNarrowFOV}, // Wombat778 2-21-2004	
-	{ "WideviewFOV", &g_fWideviewFOV}, // Wombat778 2-21-2004	
-	{ "MeanTimeBetweenFailures", &g_fMeanTimeBetweenFailures}, // Wombat778 2-21-2004	
-	{ "JDAMLift", &g_fJDAMLift}, // Wombat778 2-21-2004	
-	{ "AIJSOWmaxRange", &g_fAIJSOWmaxRange}, // Cobra	
-	{ "ButtonScaler", &g_fButtonScaler},
-	{ "ButtonZScaler", &g_fButtonZScaler},
-	{ "HybridPitThreshold1", &g_fHybridPitThreshold1}, // Wombat778 11-19-2004		
-	{ "HybridPitThreshold2", &g_fHybridPitThreshold2}, // Wombat778 11-19-2004		
-	{ "TIR2DYawPercentage", &g_fTIR2DYawPercentage},			// Retro 02/10/03
-	{ "TIR2DPitchPercentage", &g_fTIR2DPitchPercentage},		// Retro 02/10/03
-	{ "DBS1ScanRateFactor", &g_fDBS1ScanRateFactor}, //JAM 13Oct03
-	{ "DBS2ScanRateFactor", &g_fDBS2ScanRateFactor}, //JAM 13Oct03
-	//{ "SoundDopplerFactor", &g_fSoundDopplerFactor }, // MLR 2003-10-17
-	//{ "SoundRolloffFactor", &g_fSoundRolloffFactor }, // MLR 2003-10-18
-//    { "SoundDopplerBlend", &g_fSoundDopplerBlend}, // MLR 12/3/2003 - OBSOLETE
+    {"FormationBurnerDistance" , &g_fFormationBurnerDistance},
+    {"PadlockBreakDistance", &g_fPadlockBreakDistance},
+    {"AFRudderRight", &g_fAFRudderRight},
+    {"AFRudderLeft", &g_fAFRudderLeft},
+    {"AFThrottleDown", &g_fAFThrottleDown},
+    {"AFThrottleUp", &g_fAFThrottleUp},
+    {"AFAileronLeft", &g_fAFAileronLeft},
+    {"AFAileronRight", &g_fAFAileronRight},
+    {"AFElevatorDown", &g_fAFElevatorDown},
+    {"AFElevatorUp", &g_fAFElevatorUp},
+    {"rollStickOffset", &g_frollStickOffset},
+    {"pitchStickOffset", &g_fpitchStickOffset},
+    {"rudderOffset", &g_frudderOffset},
+    {"VisualNormalizeFactor", &g_fVisualNormalizeFactor},
+    {"RecoveryAOA", &g_fRecoveryAOA},
+    {"clientbwforupdatesmodifyer", &clientbwforupdatesmodifyer},
+    {"hostbwforupdatesmodifyer", &hostbwforupdatesmodifyer},
+    {"MfdTransparency", &g_fMfdTransparency}, // a.s. begin
+    {"MfdRed", &g_fMfdRed},
+    {"MfdBlue", &g_fMfdBlue},
+    {"MfdGreen", &g_fMfdGreen},
+    {"Mfd_p_Size", &g_fMfd_p_Size},	// a.s. end
+    {"PullupTime", &g_fPullupTime},	// 2002-02-24 M.N.
+    {"GALookAheadTime", &g_fGALookAheadTime},	// Cobra
+    {"AIMinAlt", &g_fAIMinAlt},	// Cobra
+    {"AIMinWPAlt", &g_fAIMinWPAlt},	// Cobra
+    {"GApStickFac", &g_fGApStickFac},	// Cobra
+    {"AIHarmMaxRange", &g_fAIHarmMaxRange},	// Cobra
+    {"AIJSOWMaxRange", &g_fAIJSOWMaxRange},	// Cobra
+    {"AGFlyoutRange", &g_fAGFlyoutRange},	// Cobra
+    {"AGSlowFlyoutRange", &g_fAGSlowFlyoutRange},	// Cobra
+    {"AGSlowMoverSpeed", &g_fAGSlowMoverSpeed},	// Cobra
+    {"AIRefuelRange", &g_fAIRefuelRange}, // 2002-02-28 MN
+    {"IdentFactor", &g_fIdentFactor}, // 2002-03-07 S.G.
+    {"AIDropStoreLauncherRange", &g_fAIDropStoreLauncherRange}, // 2002-03-08 MN
+    {"BiasFactorForFlaks", &g_fBiasFactorForFlaks}, // 2002-03-12 S.G.
+    { "TracerAccuracyFactor", &g_fTracerAccuracyFactor }, // 2002-03-12 S.G.
+    { "TankerRStick", &g_fTankerRStick }, // 2003-03-13 MN
+    { "TankerPStick", &g_fTankerPStick }, // 2003-03-13 MN
+    { "TankerTrackFactor", &g_fTankerTrackFactor }, // 2003-03-13 MN
+    { "TankerHeadsupDistance", &g_fTankerHeadsupDistance}, // 2003-04-07 MN
+    { "TankerBackupDistance", &g_fTankerBackupDistance}, // 2003-04-07 MN
+    { "HeadingStabilizeFactor", &g_fHeadingStabilizeFactor}, // 2003-04-07 MN
+    { "RocketPitchFactor", &g_fRocketPitchFactor},	// Cobra
+    { "RocketPitchCorr", &g_fRocketPitchCorr},	// Cobra
+    { "FuelBaseProp", &g_fFuelBaseProp }, // 2002-03-14 S.G.
+    { "FuelMultProp", &g_fFuelMultProp }, // 2002-03-14 S.G.
+    { "FuelTimeStep", &g_fFuelTimeStep }, // 2002-03-14 S.G.
+    { "FuelVtClip", &g_fFuelVtClip }, // 2002-03-14 S.G.
+    { "FuelVtDotMult", &g_fFuelVtDotMult }, // 2002-03-14 S.G.
+    { "AIRefuelSpeed", &g_fAIRefuelSpeed }, // 2002-03-15 MN
+    { "SearchSimTargetFromRangeSqr", &g_fSearchSimTargetFromRangeSqr}, // 2002-03-15 S.G.
+    { "NukeStrengthFactor", &g_fNukeStrengthFactor }, // 2002-03-22 MN
+    { "NukeDamageMod", &g_fNukeDamageMod }, // 2002-03-25 MN
+    { "NukeDamageRadius", &g_fNukeDamageRadius }, // 2002-03-25 MN
+    { "ClimbRatio", &g_fClimbRatio }, // 2002-03-25 MN
+    { "HotNoseAngle", &g_fHotNoseAngle }, // 2002-03-22 S.G.
+    { "MaxMARNoIdA", &g_fMaxMARNoIdA}, // 2002-03-22 S.G.
+    { "MinMARNoId5kA", &g_fMinMARNoId5kA }, // 2002-03-22 S.G.
+    { "MinMARNoId18kA", &g_fMinMARNoId18kA }, // 2002-03-22 S.G.
+    { "MinMARNoId28kA", &g_fMinMARNoId28kA }, // 2002-03-22 S.G.
+    { "MaxMARNoIdB", &g_fMaxMARNoIdB}, // 2002-03-22 S.G.
+    { "MinMARNoId5kB", &g_fMinMARNoId5kB }, // 2002-03-22 S.G.
+    { "MinMARNoId18kB", &g_fMinMARNoId18kB }, // 2002-03-22 S.G.
+    { "MinMARNoId28kB", &g_fMinMARNoId28kB }, // 2002-03-22 S.G.
+    { "MinMARNoIdC", &g_fMinMARNoIdC }, // 2002-03-22 S.G.
+    { "WaypointBurnerDelta", &g_fWaypointBurnerDelta }, // 2002-03-28 MN
+    { "GroundImpactMod", &g_fGroundImpactMod},	//MI 2002-03-28
+    { "BombMissileAltitude", &g_fBombMissileAltitude}, // 2002-03-28 MN
+    { "GMTMaxSpeed", &g_fGMTMaxSpeed}, // 2002-04-03 MN
+    { "GMTMinSpeed", &g_fGMTMinSpeed}, // 2002-04-03 MN
+    { "ReconCameraHalfFOV", &g_fReconCameraHalfFOV},	//MI 2002-04-03 Recon camera stuff
+    { "ReconCameraOffset", &g_fReconCameraOffset},	//MI 2002-04-03 Recon camera stuff
+    { "EXPfactor", &g_fEXPfactor}, // 2002-04-05 MN cursor speed reduction in EXP
+    { "DBS1factor", &g_fDBS1factor}, // 2002-04-05 MN cursor speed reduction in DBS1
+    { "DBS2factor", &g_fDBS2factor}, // 2002-04-05 MN cursor speed reduction in DBS2
+    { "HUDonlySize", &g_fHUDonlySize}, // FRB - % Size increase of HUD-Only view (% = decimal)
+    { "ePropFactor", &g_fePropFactor}, // 2002-04-05 MN
+    { "SunPadlockTimeout", &g_fSunPadlockTimeout}, // 2002-04-06 MN
+    { "CarrierStartTolerance", &g_fCarrierStartTolerance},
+    { "BombTimeStep", &g_fBombTimeStep},	//MI 2002-04-07 fix for missing bombs
+    { "HighDragGravFactor", &g_fHighDragGravFactor}, //MI 2002-04-07 externalised var to allow tweaking afterwards
+    { "TgtDZFactor", &g_fTgtDZFactor}, // MN 2002-04-07 fix for ballistic missiles
+    { "SSoffsetManeuverPoints1a", &g_fSSoffsetManeuverPoints1a}, // 2002-04-07 S.G.
+    { "SSoffsetManeuverPoints1b", &g_fSSoffsetManeuverPoints1b}, // 2002-04-07 S.G.
+    { "SSoffsetManeuverPoints2a", &g_fSSoffsetManeuverPoints2a}, // 2002-04-07 S.G.
+    { "SSoffsetManeuverPoints2b", &g_fSSoffsetManeuverPoints2b}, // 2002-04-07 S.G.
+    { "PinceManeuverPoints1a", &g_fPinceManeuverPoints1a}, // 2002-04-07 S.G.
+    { "PinceManeuverPoints1b", &g_fPinceManeuverPoints1b}, // 2002-04-07 S.G.
+    { "PinceManeuverPoints2a", &g_fPinceManeuverPoints2a}, // 2002-04-07 S.G.
+    { "PinceManeuverPoints2b", &g_fPinceManeuverPoints2b}, // 2002-04-07 S.G.
+    { "LethalRadiusModifier", &g_fLethalRadiusModifier}, // 2002-04-14 MN
+    { "RAPDistance", &g_fRAPDistance}, // 2002-04-18 MN RollAndPull triggering in MissileEngage
+    { "MoverVrValue", &g_fMoverVrValue},
+    { "MinBwForOtherData", &MinBwForOtherData},
+    { "clientbwforupdatesmodifyerMIN", &g_fclientbwforupdatesmodifyerMIN},
+    { "clientbwforupdatesmodifyerMAX", &g_fclientbwforupdatesmodifyerMAX},
+    { "ReliablemsgwaitMAX", &g_fReliablemsgwaitMAX},
+    { "FOVIncrement", &g_fFOVIncrement}, // Wombat778 09-27-2003
+    { "MavEXPLevel", &g_fMavEXPLevel}, // Wombat778 09-27-2003
+    { "MavFOVLevel", &g_fMavFOVLevel}, // Wombat778 09-27-2003
+    { "MouseLookSensitivity", &g_fMouseLookSensitivity}, // Wombat778 10-08-2003
+    { "DefaultFOV", &g_fDefaultFOV}, // Wombat778 10-31-2003
+    { "HSDSymbolSize", &g_fHSDSymbolSize}, // Wombat778 11-13-2003
+    { "TIRMinimumFOV", &g_fTIRMinimumFOV}, // Cobra
+    { "TIRMaximumFOV", &g_fTIRMaximumFOV}, // Cobra
+    { "MinimumFOV", &g_fMinimumFOV}, // Wombat778 1-15-2004
+    { "MaximumFOV", &g_fMaximumFOV}, // Wombat778 10-11-2003
+    { "NarrowFOV", &g_fNarrowFOV}, // Wombat778 2-21-2004
+    { "WideviewFOV", &g_fWideviewFOV}, // Wombat778 2-21-2004
+    { "MeanTimeBetweenFailures", &g_fMeanTimeBetweenFailures}, // Wombat778 2-21-2004
+    { "JDAMLift", &g_fJDAMLift}, // Wombat778 2-21-2004
+    { "AIJSOWmaxRange", &g_fAIJSOWmaxRange}, // Cobra
+    { "ButtonScaler", &g_fButtonScaler},
+    { "ButtonZScaler", &g_fButtonZScaler},
+    { "HybridPitThreshold1", &g_fHybridPitThreshold1}, // Wombat778 11-19-2004
+    { "HybridPitThreshold2", &g_fHybridPitThreshold2}, // Wombat778 11-19-2004
+    { "TIR2DYawPercentage", &g_fTIR2DYawPercentage},			// Retro 02/10/03
+    { "TIR2DPitchPercentage", &g_fTIR2DPitchPercentage},		// Retro 02/10/03
+    { "DBS1ScanRateFactor", &g_fDBS1ScanRateFactor}, //JAM 13Oct03
+    { "DBS2ScanRateFactor", &g_fDBS2ScanRateFactor}, //JAM 13Oct03
+    //{ "SoundDopplerFactor", &g_fSoundDopplerFactor }, // MLR 2003-10-17
+    //{ "SoundRolloffFactor", &g_fSoundRolloffFactor }, // MLR 2003-10-18
+    //    { "SoundDopplerBlend", &g_fSoundDopplerBlend}, // MLR 12/3/2003 - OBSOLETE
 
-	{ "A2GJDAMAlt", &g_fA2GJDAMAlt}, //TJL 10/27/03 Sets AI JDAM attack altitude
-	{ "A2GJSOWAlt", &g_fA2GJSOWAlt}, //TJL 10/27/03 Sets AI JSOW attack altitude
-	{ "A2GHarmAlt", &g_fA2GHarmAlt}, //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
-	{ "A2GAGMAlt", &g_fA2GAGMAlt}, //TJL 10/27/03 Sets AI AGM attack altitude
-	{ "A2GGBUAlt", &g_fA2GGBUAlt}, //TJL 10/27/03 Sets AI GBU attack altitude
-	{ "A2GDumbHDAlt", &g_fA2GDumbHDAlt}, //TJL 10/27/03 Sets AI Durandal attack altitude
-	{ "A2GClusterAlt", &g_fA2GClusterAlt}, //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
-	{ "A2GDumbLDAlt", &g_fA2GDumbLDAlt}, //TJL 10/27/03 Sets AI Generic attack altitude
-	{ "A2GGenericBombAlt", &g_fA2GGenericBombAlt}, //TJL 10/27/03 Sets AI Generic Bomb attack altitude
-	{ "A2GGunRocketAlt", &g_fA2GGunRocketAlt}, //TJL 10/27/03 Sets AI Gun and Rocket altitude
-	{ "A2GCameraAlt", &g_fA2GCameraAlt}, //TJL 10/27/03 Sets AI BDA/Recon altitude
-	
-	{ "TexDetailFactor", &g_fTexDetailFactor}, ////THW 2003-11-14 Use Higher-Res textures at higher altitudes
+    { "A2GJDAMAlt", &g_fA2GJDAMAlt}, //TJL 10/27/03 Sets AI JDAM attack altitude
+    { "A2GJSOWAlt", &g_fA2GJSOWAlt}, //TJL 10/27/03 Sets AI JSOW attack altitude
+    { "A2GHarmAlt", &g_fA2GHarmAlt}, //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
+    { "A2GAGMAlt", &g_fA2GAGMAlt}, //TJL 10/27/03 Sets AI AGM attack altitude
+    { "A2GGBUAlt", &g_fA2GGBUAlt}, //TJL 10/27/03 Sets AI GBU attack altitude
+    { "A2GDumbHDAlt", &g_fA2GDumbHDAlt}, //TJL 10/27/03 Sets AI Durandal attack altitude
+    { "A2GClusterAlt", &g_fA2GClusterAlt}, //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
+    { "A2GDumbLDAlt", &g_fA2GDumbLDAlt}, //TJL 10/27/03 Sets AI Generic attack altitude
+    { "A2GGenericBombAlt", &g_fA2GGenericBombAlt}, //TJL 10/27/03 Sets AI Generic Bomb attack altitude
+    { "A2GGunRocketAlt", &g_fA2GGunRocketAlt}, //TJL 10/27/03 Sets AI Gun and Rocket altitude
+    { "A2GCameraAlt", &g_fA2GCameraAlt}, //TJL 10/27/03 Sets AI BDA/Recon altitude
 
-	{ "ACMIAnimRecordTimer", &g_fACMIAnimRecordTimer}, // MLR 3/2/2004 - seconds between recording a/c animation data 
-	{ "dpitStart", &g_fdpitStart}, //Cobra TJL 11/08/04 in 24 hr clock
-	{ "dpitStop", &g_fdpitStop}, //Cobra TJL 11/08/04 in 24 hr clock
-	{ "TaxiEarly", &g_fTaxiEarly}, //RAS Amount of seconds to taxi early
-	
-	{ "Dyn_Head_TiltMul", &g_fDyn_Head_TiltMul}, //ATARIBABY externalised 3d pit dynamic head params
-	{ "Dyn_Head_TiltRndGMul", &g_fDyn_Head_TiltRndGMul},
-	{ "Dyn_Head_RollMul", &g_fDyn_Head_RollMul},
-	{ "Dyn_Head_PanMul", &g_fDyn_Head_PanMul},
-	{ "Dyn_Head_TiltRateMul", &g_fDyn_Head_TiltRateMul},
-	{ "Dyn_Head_TiltGRateMul", &g_fDyn_Head_TiltGRateMul},
-	{ "Dyn_Head_RollRate", &g_fDyn_Head_RollRate},
-	{ "Dyn_Head_PanRate", &g_fDyn_Head_PanRate},
+    { "TexDetailFactor", &g_fTexDetailFactor}, ////THW 2003-11-14 Use Higher-Res textures at higher altitudes
 
-	{ "PilotActInterval", &g_fPilotActInterval}, //Cobra - Pilot animation act interval (minutes)
-	{ "PilotHeadMoveRate", &g_fPilotHeadMoveRate}, //Cobra - Pilot animation move rate (deg/sec)
-	{ "3DHeadTilt", &g_f3DHeadTilt}, //Cobra - Head tilt when entering the 3D cockpit
-	{ "3DPitFOV", &g_f3DPitFOV}, //Cobra - FOV when entering the 3D cockpit
-	{ NULL, NULL }
+    { "ACMIAnimRecordTimer", &g_fACMIAnimRecordTimer}, // MLR 3/2/2004 - seconds between recording a/c animation data
+    { "dpitStart", &g_fdpitStart}, //Cobra TJL 11/08/04 in 24 hr clock
+    { "dpitStop", &g_fdpitStop}, //Cobra TJL 11/08/04 in 24 hr clock
+    { "TaxiEarly", &g_fTaxiEarly}, //RAS Amount of seconds to taxi early
+
+    { "Dyn_Head_TiltMul", &g_fDyn_Head_TiltMul}, //ATARIBABY externalised 3d pit dynamic head params
+    { "Dyn_Head_TiltRndGMul", &g_fDyn_Head_TiltRndGMul},
+    { "Dyn_Head_RollMul", &g_fDyn_Head_RollMul},
+    { "Dyn_Head_PanMul", &g_fDyn_Head_PanMul},
+    { "Dyn_Head_TiltRateMul", &g_fDyn_Head_TiltRateMul},
+    { "Dyn_Head_TiltGRateMul", &g_fDyn_Head_TiltGRateMul},
+    { "Dyn_Head_RollRate", &g_fDyn_Head_RollRate},
+    { "Dyn_Head_PanRate", &g_fDyn_Head_PanRate},
+
+    { "PilotActInterval", &g_fPilotActInterval}, //Cobra - Pilot animation act interval (minutes)
+    { "PilotHeadMoveRate", &g_fPilotHeadMoveRate}, //Cobra - Pilot animation move rate (deg/sec)
+    { "3DHeadTilt", &g_f3DHeadTilt}, //Cobra - Head tilt when entering the 3D cockpit
+    { "3DPitFOV", &g_f3DPitFOV}, //Cobra - FOV when entering the 3D cockpit
+    { NULL, NULL }
 };
 
 void ParseFalcon4Config(FILE *file)
 {
-	char strLine[0x100];
-	char strID[0x100];
-	int nIntVal;
-	float fFloatVal;
-	char strVal[0x100];
-	// float nFloatVal;
+    char strLine[0x100];
+    char strID[0x100];
+    int nIntVal;
+    float fFloatVal;
+    char strVal[0x100];
+    // float nFloatVal;
 
-	NextLine:
-	while(fgets(strLine, sizeof(strLine) / sizeof(strLine[0]), file))
-	{
-		if((strlen(strLine) <= 1) || (strstr(strLine, "//") == strLine))
-			continue;
+NextLine:
 
-		if(sscanf(strLine, "set %s \"%s\"", strID, &strVal) == 2)
-		{
-			if(strstr(strID, "g_s") == strID)
-			{
-				// Integer value
-				ConfigOption<char> *pOpts = StringOpts;
+    while (fgets(strLine, sizeof(strLine) / sizeof(strLine[0]), file))
+    {
+        if ((strlen(strLine) <= 1) || (strstr(strLine, "//") == strLine))
+            continue;
 
-				while(pOpts->Name)
-				{
-					if(pOpts->CheckID(strID))
-					{
-						char *p = strstr(strLine, "\"") + 1;
-						char *p2 = strstr(p, "\"");
+        if (sscanf(strLine, "set %s \"%s\"", strID, &strVal) == 2)
+        {
+            if (strstr(strID, "g_s") == strID)
+            {
+                // Integer value
+                ConfigOption<char> *pOpts = StringOpts;
 
-						if(p2)
-							strncpy(pOpts->Value, p, p2 - p);
+                while (pOpts->Name)
+                {
+                    if (pOpts->CheckID(strID))
+                    {
+                        char *p = strstr(strLine, "\"") + 1;
+                        char *p2 = strstr(p, "\"");
 
-						goto NextLine;
-					}
+                        if (p2)
+                            strncpy(pOpts->Value, p, p2 - p);
 
-					pOpts++;
-				}
-			}
-		}
+                        goto NextLine;
+                    }
 
-		if(sscanf(strLine, "set %s %f", strID, &fFloatVal) == 2)
-		{
-			if(strstr(strID, "g_f") == strID)
-			{
-				// Boolean value
-				ConfigOption<float> *pOpts = FloatOpts;
+                    pOpts++;
+                }
+            }
+        }
 
-				while(pOpts->Name)
-				{
-					if(pOpts->CheckID(strID))
-					{
-						*pOpts->Value = fFloatVal;
-						goto NextLine;
-					}
+        if (sscanf(strLine, "set %s %f", strID, &fFloatVal) == 2)
+        {
+            if (strstr(strID, "g_f") == strID)
+            {
+                // Boolean value
+                ConfigOption<float> *pOpts = FloatOpts;
 
-					pOpts++;
-				}
-			}
-		}
+                while (pOpts->Name)
+                {
+                    if (pOpts->CheckID(strID))
+                    {
+                        *pOpts->Value = fFloatVal;
+                        goto NextLine;
+                    }
 
-		if(sscanf(strLine, "set %s %d", strID, &nIntVal) == 2)
-		{
-			if(strstr(strID, "g_b") == strID)
-			{
-				// Boolean value
-				ConfigOption<bool> *pOpts = BoolOpts;
+                    pOpts++;
+                }
+            }
+        }
 
-				while(pOpts->Name)
-				{
-					if(pOpts->CheckID(strID))
-					{
-						*pOpts->Value = nIntVal ? true : false;
-						goto NextLine;
-					}
+        if (sscanf(strLine, "set %s %d", strID, &nIntVal) == 2)
+        {
+            if (strstr(strID, "g_b") == strID)
+            {
+                // Boolean value
+                ConfigOption<bool> *pOpts = BoolOpts;
 
-					pOpts++;
-				}
-			}
+                while (pOpts->Name)
+                {
+                    if (pOpts->CheckID(strID))
+                    {
+                        *pOpts->Value = nIntVal ? true : false;
+                        goto NextLine;
+                    }
 
-			else if(strstr(strID, "g_n") == strID)
-			{
-				// Integer value
-				ConfigOption<int> *pOpts = IntOpts;
+                    pOpts++;
+                }
+            }
 
-				while(pOpts->Name)
-				{
-					if(pOpts->CheckID(strID))
-					{
-						*pOpts->Value = nIntVal;
-						goto NextLine;
-					}
+            else if (strstr(strID, "g_n") == strID)
+            {
+                // Integer value
+                ConfigOption<int> *pOpts = IntOpts;
 
-					pOpts++;
-				}
-			}
-		}
-	}
+                while (pOpts->Name)
+                {
+                    if (pOpts->CheckID(strID))
+                    {
+                        *pOpts->Value = nIntVal;
+                        goto NextLine;
+                    }
+
+                    pOpts++;
+                }
+            }
+        }
+    }
 }
 
 void ReadFalcon4Config()
 {
-	int nBufLen = 1024;
-	char *strAppPath = new char[nBufLen];
-	if(!strAppPath) return;
-	char *strDir = new char[nBufLen];
-	if(!strDir) return;
+    int nBufLen = 1024;
+    char *strAppPath = new char[nBufLen];
 
-//	sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
-//	sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
-	sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
-	FILE *file = fopen(strDir, "r");
-	if (!file)
-	{
-//		strcpy(strDir, "FalconBMS.cfg");
-//		strcpy(strDir, "Cobra.cfg");
-		strcpy(strDir, "FFViper.cfg");
-		file = fopen(strDir, "r");
-	}
-	if (!file)
-	{
-		// Investigate program directory
-		HMODULE Module = ::GetModuleHandle(NULL);
+    if (!strAppPath) return;
 
-		if(!::GetModuleFileName(Module, strAppPath, nBufLen)) return;
+    char *strDir = new char[nBufLen];
 
-		int nAppPathLen = strlen(strAppPath);
-		if(nAppPathLen < 2) return;
-		char *p = &strAppPath[nAppPathLen - 1];
-		while(p > strAppPath && *p != '\\') p--;
-		if(p == strAppPath) return;
+    if (!strDir) return;
 
-		p++;
-		int nDirLen = p - strAppPath;
-		memcpy(strDir, strAppPath, nDirLen);
-		strDir[nDirLen] = '\0';
-//		strcat(strDir, "FalconBMS.cfg");
-		strcat(strDir, "FFViper.cfg");
-		file = fopen(strDir, "r");
-	}
+    //	sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
+    //	sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
+    sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
+    FILE *file = fopen(strDir, "r");
 
-	if(file)
-	{
-		ParseFalcon4Config(file);
-		fclose(file);
-	}
+    if (!file)
+    {
+        //		strcpy(strDir, "FalconBMS.cfg");
+        //		strcpy(strDir, "Cobra.cfg");
+        strcpy(strDir, "FFViper.cfg");
+        file = fopen(strDir, "r");
+    }
 
-	// JB 010104 Second config file overrides the first and can be CRC checked by anti-cheat programs.
-//	strcat(strDir, "FalconBMSServer.cfg");
-	strcat(strDir, "FFViperServer.cfg");
-	file = fopen(strDir, "r");
+    if (!file)
+    {
+        // Investigate program directory
+        HMODULE Module = ::GetModuleHandle(NULL);
 
-	if(file)
-	{
-		ParseFalcon4Config(file);
-		fclose(file);
-	}
-	 //JB 010104 Cobra 11/20/04
-	/*if (!g_bwoeir)
-	{ g_bMLU = false;
-	  g_bIFF = false;}*/
+        if (!::GetModuleFileName(Module, strAppPath, nBufLen)) return;
 
-	delete[] strDir;
-	delete[] strAppPath;
+        int nAppPathLen = strlen(strAppPath);
+
+        if (nAppPathLen < 2) return;
+
+        char *p = &strAppPath[nAppPathLen - 1];
+
+        while (p > strAppPath && *p != '\\') p--;
+
+        if (p == strAppPath) return;
+
+        p++;
+        int nDirLen = p - strAppPath;
+        memcpy(strDir, strAppPath, nDirLen);
+        strDir[nDirLen] = '\0';
+        //		strcat(strDir, "FalconBMS.cfg");
+        strcat(strDir, "FFViper.cfg");
+        file = fopen(strDir, "r");
+    }
+
+    if (file)
+    {
+        ParseFalcon4Config(file);
+        fclose(file);
+    }
+
+    // JB 010104 Second config file overrides the first and can be CRC checked by anti-cheat programs.
+    //	strcat(strDir, "FalconBMSServer.cfg");
+    strcat(strDir, "FFViperServer.cfg");
+    file = fopen(strDir, "r");
+
+    if (file)
+    {
+        ParseFalcon4Config(file);
+        fclose(file);
+    }
+
+    //JB 010104 Cobra 11/20/04
+    /*if (!g_bwoeir)
+    { g_bMLU = false;
+      g_bIFF = false;}*/
+
+    delete[] strDir;
+    delete[] strAppPath;
 }

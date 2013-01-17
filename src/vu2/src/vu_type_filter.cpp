@@ -15,7 +15,7 @@
 
 VuTypeFilter::VuTypeFilter(ushort type) : VuFilter()
 {
-	type_ = type;
+    type_ = type;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ VuTypeFilter::VuTypeFilter(ushort type) : VuFilter()
 
 VuTypeFilter::VuTypeFilter(VuTypeFilter* other) : VuFilter(other)
 {
-	type_ = other->type_;
+    type_ = other->type_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ VuTypeFilter::VuTypeFilter(VuTypeFilter* other) : VuFilter(other)
 
 VuTypeFilter::~VuTypeFilter()
 {
-	// empty
+    // empty
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ VuTypeFilter::~VuTypeFilter()
 
 VU_BOOL VuTypeFilter::Test(VuEntity* ent)
 {
-	return static_cast<VU_BOOL>(ent->Type() == type_ ? TRUE : FALSE);
+    return static_cast<VU_BOOL>(ent->Type() == type_ ? TRUE : FALSE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,25 +51,25 @@ VU_BOOL VuTypeFilter::Test(VuEntity* ent)
 
 VU_BOOL VuTypeFilter::RemoveTest(VuEntity* ent)
 {
-	return static_cast<VU_BOOL>(ent->Type() == type_ ? TRUE : FALSE);
+    return static_cast<VU_BOOL>(ent->Type() == type_ ? TRUE : FALSE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int VuTypeFilter::Compare (VuEntity* ent1, VuEntity* ent2)
+int VuTypeFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
-	return (int)ent1->Id() - (int)ent2->Id();
+    return (int)ent1->Id() - (int)ent2->Id();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuFilter *VuTypeFilter::Copy ()
+VuFilter *VuTypeFilter::Copy()
 {
-	return new VuTypeFilter(this);
+    return new VuTypeFilter(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

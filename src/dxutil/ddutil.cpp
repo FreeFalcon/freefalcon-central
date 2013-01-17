@@ -32,7 +32,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmap(IDirectDraw *pdd, LPCSTR szBitmap, 
     hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, dx, dy, LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
-        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, dx, dy, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, dx, dy, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
         return NULL;
@@ -47,7 +47,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmap(IDirectDraw *pdd, LPCSTR szBitmap, 
     //
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
-    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT |DDSD_WIDTH;
+    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
     ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
     ddsd.dwWidth = bm.bmWidth;
     ddsd.dwHeight = bm.bmHeight;
@@ -63,7 +63,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmap(IDirectDraw *pdd, LPCSTR szBitmap, 
 }		/* end DDLoadBitmap */
 
 extern "C" IDirectDrawSurface * DDLoadBitmapEx(IDirectDraw *pdd,
-	 LPCSTR szBitmap, int wid, int ht, ST_RECT *bmRect)
+        LPCSTR szBitmap, int wid, int ht, ST_RECT *bmRect)
 {
     HBITMAP             hbm;
     BITMAP              bm;
@@ -76,7 +76,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmapEx(IDirectDraw *pdd,
     hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, wid, ht, LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
-        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, wid, ht, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, wid, ht, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
         return NULL;
@@ -91,7 +91,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmapEx(IDirectDraw *pdd,
     //
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
-    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT |DDSD_WIDTH;
+    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
     ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
     ddsd.dwWidth = bm.bmWidth;
     ddsd.dwHeight = bm.bmHeight;
@@ -124,7 +124,7 @@ HRESULT DDReLoadBitmap(IDirectDrawSurface *pdds, LPCSTR szBitmap)
     hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
-        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
     {
@@ -133,6 +133,7 @@ HRESULT DDReLoadBitmap(IDirectDrawSurface *pdds, LPCSTR szBitmap)
     }
 
     hr = DDCopyBitmap(pdds, hbm, 0, 0, 0, 0);
+
     if (hr != DD_OK)
     {
         OutputDebugString("ddcopybitmap failed\n");
@@ -144,7 +145,7 @@ HRESULT DDReLoadBitmap(IDirectDrawSurface *pdds, LPCSTR szBitmap)
 }		/* end DDReLoadBitmap */
 
 HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
-			 ST_RECT *bmRect)
+                         ST_RECT *bmRect)
 {
     HBITMAP             hbm;
     HRESULT             hr;
@@ -155,7 +156,7 @@ HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
-        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (hbm == NULL)
     {
@@ -164,6 +165,7 @@ HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     }
 
     hr = DDCopyBitmap(pdds, hbm, bmRect->x, bmRect->y, bmRect->wid, bmRect->ht);
+
     if (hr != DD_OK)
     {
         OutputDebugString("ddcopybitmap failed\n");
@@ -177,7 +179,7 @@ HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
 
 // also return HBITMAP and doesn't delete it
 HRESULT DDReLoadBitmap1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
-			HBITMAP *hbm)
+                        HBITMAP *hbm)
 {
     HRESULT             hr;
 
@@ -187,7 +189,7 @@ HRESULT DDReLoadBitmap1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     *hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
     if (*hbm == NULL)
-        *hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        *hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (*hbm == NULL)
     {
@@ -196,6 +198,7 @@ HRESULT DDReLoadBitmap1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     }
 
     hr = DDCopyBitmap(pdds, *hbm, 0, 0, 0, 0);
+
     if (hr != DD_OK)
     {
         OutputDebugString("ddcopybitmap failed\n");
@@ -206,7 +209,7 @@ HRESULT DDReLoadBitmap1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
 
 // also return HBITMAP and doesn't delete it
 HRESULT DDReLoadBitmapEx1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
-			 ST_RECT *bmRect, HBITMAP *hbm)
+                          ST_RECT *bmRect, HBITMAP *hbm)
 {
     HRESULT             hr;
 
@@ -216,7 +219,7 @@ HRESULT DDReLoadBitmapEx1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     *hbm = (HBITMAP)LoadImage(GetModuleHandle(NULL), szBitmap, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
     if (*hbm == NULL)
-        *hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+        *hbm = (HBITMAP)LoadImage(NULL, szBitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if (*hbm == NULL)
     {
@@ -225,6 +228,7 @@ HRESULT DDReLoadBitmapEx1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     }
 
     hr = DDCopyBitmap(pdds, *hbm, bmRect->x, bmRect->y, bmRect->wid, bmRect->ht);
+
     if (hr != DD_OK)
     {
         OutputDebugString("ddcopybitmap failed\n");
@@ -248,30 +252,32 @@ extern "C" HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, HBITMAP hbm, int x, in
     HRESULT             hr;
 
     if (hbm == NULL || pdds == NULL)
-	{
+    {
 #ifdef ST_DEBUG
         OutputDebugString("NULL input parameters\n");
 #endif
         return E_FAIL;
-	}
+    }
 
     //
     // make sure this surface is restored.
     //
     if (pdds->Restore() != DD_OK)
-	{
+    {
 #ifdef ST_DEBUG
         OutputDebugString("Surface restore failed\n");
         return E_FAIL;
 #endif
-	}
+    }
 
     //
     //  select bitmap into a memoryDC so we can use it.
     //
     hdcImage = CreateCompatibleDC(NULL);
+
     if (!hdcImage)
         OutputDebugString("createcompatible dc failed\n");
+
     SelectObject(hdcImage, hbm);
 
     //
@@ -291,15 +297,17 @@ extern "C" HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, HBITMAP hbm, int x, in
     if ((hr = pdds->GetDC(&hdc)) == DD_OK)
     {
 #ifdef ST_DEBUG
-       if (!StretchBlt(hdc, 0, 0, ddsd.dwWidth, ddsd.dwHeight, hdcImage, x, y,
-		 dx, dy, SRCCOPY))
-	  {
-          OutputDebugString("DDCopyBitmap:StretchBlt failed\n");
-          return E_FAIL;
-	  }
+
+        if (!StretchBlt(hdc, 0, 0, ddsd.dwWidth, ddsd.dwHeight, hdcImage, x, y,
+                        dx, dy, SRCCOPY))
+        {
+            OutputDebugString("DDCopyBitmap:StretchBlt failed\n");
+            return E_FAIL;
+        }
+
 #else
-       StretchBlt(hdc, 0, 0, ddsd.dwWidth, ddsd.dwHeight, hdcImage, x, y,
-		 dx, dy, SRCCOPY);
+        StretchBlt(hdc, 0, 0, ddsd.dwWidth, ddsd.dwHeight, hdcImage, x, y,
+                   dx, dy, SRCCOPY);
 
 #endif
         pdds->ReleaseDC(hdc);
@@ -332,7 +340,7 @@ extern "C" IDirectDrawPalette * DDLoadPalette(IDirectDraw *pdd, LPCSTR szBitmap)
     //
     // build a 332 palette as the default.
     //
-    for (i=0; i<256; i++)
+    for (i = 0; i < 256; i++)
     {
         ape[i].peRed   = (BYTE)(((i >> 5) & 0x07) * 255 / 7);
         ape[i].peGreen = (BYTE)(((i >> 2) & 0x07) * 255 / 7);
@@ -346,8 +354,10 @@ extern "C" IDirectDrawPalette * DDLoadPalette(IDirectDraw *pdd, LPCSTR szBitmap)
     if (szBitmap && (h = FindResource(NULL, szBitmap, RT_BITMAP)))
     {
         lpbi = (LPBITMAPINFOHEADER)LockResource(LoadResource(NULL, h));
+
         if (!lpbi)
             OutputDebugString("lock resource failed\n");
+
         prgb = (RGBQUAD*)((BYTE*)lpbi + lpbi->biSize);
 
         if (lpbi == NULL || lpbi->biSize < sizeof(BITMAPINFOHEADER))
@@ -363,7 +373,7 @@ extern "C" IDirectDrawPalette * DDLoadPalette(IDirectDraw *pdd, LPCSTR szBitmap)
         //  a DIB color table has its colors stored BGR not RGB
         //  so flip them around.
         //
-        for(i=0; i<n; i++ )
+        for (i = 0; i < n; i++)
         {
             ape[i].peRed   = prgb[i].rgbRed;
             ape[i].peGreen = prgb[i].rgbGreen;
@@ -394,7 +404,7 @@ extern "C" IDirectDrawPalette * DDLoadPalette(IDirectDraw *pdd, LPCSTR szBitmap)
         //  a DIB color table has its colors stored BGR not RGB
         //  so flip them around.
         //
-        for(i=0; i<n; i++ )
+        for (i = 0; i < n; i++)
         {
             BYTE r = ape[i].peRed;
             ape[i].peRed  = ape[i].peBlue;
@@ -437,13 +447,14 @@ extern "C" DWORD DDColorMatch(IDirectDrawSurface *pdds, COLORREF rgb)
     // now lock the surface so we can read back the converted color
     //
     ddsd.dwSize = sizeof(ddsd);
+
     while ((hres = pdds->Lock(NULL, &ddsd, 0, NULL)) == DDERR_WASSTILLDRAWING)
         ;
 
     if (hres == DD_OK)
     {
         dw  = *(DWORD *)ddsd.lpSurface;                     // get DWORD
-        dw &= (1 << ddsd.ddpfPixelFormat.dwRGBBitCount)-1;  // mask it to bpp
+        dw &= (1 << ddsd.ddpfPixelFormat.dwRGBBitCount) - 1; // mask it to bpp
         pdds->Unlock(NULL);
     }
 
@@ -486,8 +497,8 @@ extern "C" HRESULT DDSetColorKey(IDirectDrawSurface *pdds, COLORREF rgb)
  */
 // The src_y variable is because of a stupid thing Microsoft
 // does with their bitmaps.
-HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, char *image, 
-	BITMAPINFO *bmi, int x, int y, int dx, int dy, int src_y )
+HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, char *image,
+                     BITMAPINFO *bmi, int x, int y, int dx, int dy, int src_y)
 {
     HDC                 hdcImage;
     HDC                 hdc;
@@ -515,8 +526,8 @@ HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, char *image,
 
     if ((hr = pdds->GetDC(&hdc)) == DD_OK)
     {
-  		StretchDIBits( hdc, x, y, dx, dy, 0, src_y, dx, dy, 
-			image, bmi, DIB_RGB_COLORS, SRCCOPY );
+        StretchDIBits(hdc, x, y, dx, dy, 0, src_y, dx, dy,
+                      image, bmi, DIB_RGB_COLORS, SRCCOPY);
         pdds->ReleaseDC(hdc);
     }
 
@@ -535,8 +546,8 @@ HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, char *image,
  */
 // The src_y variable is because of a stupid thing Microsoft
 // does with their bitmaps.
-HRESULT DDStretchBitmap(IDirectDrawSurface *pdds, char *image, 
-	BITMAPINFO *bmi, int x, int y, int w, int h, int dest_w, int dest_h, int src_y )
+HRESULT DDStretchBitmap(IDirectDrawSurface *pdds, char *image,
+                        BITMAPINFO *bmi, int x, int y, int w, int h, int dest_w, int dest_h, int src_y)
 {
     HDC                 hdcImage;
     HDC                 hdc;
@@ -565,8 +576,8 @@ HRESULT DDStretchBitmap(IDirectDrawSurface *pdds, char *image,
 
     if ((hr = pdds->GetDC(&hdc)) == DD_OK)
     {
-  		StretchDIBits( hdc, x, y, dest_w, dest_h, 0, src_y, w, h, 
-			image, bmi, DIB_RGB_COLORS, SRCCOPY );
+        StretchDIBits(hdc, x, y, dest_w, dest_h, 0, src_y, w, h,
+                      image, bmi, DIB_RGB_COLORS, SRCCOPY);
         pdds->ReleaseDC(hdc);
     }
 

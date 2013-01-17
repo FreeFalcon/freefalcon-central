@@ -11,7 +11,7 @@
 #include "sfx.h"
 #include "otwdrive.h"
 
-void CalcTransformMatrix (SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass* theObject);
 
 #ifdef USE_SH_POOLS
 MEM_POOL	sfxRequest::pool;
@@ -26,16 +26,16 @@ extern DWORD gSimThreadID;
 //extern bool g_bNeedSimThreadToRemoveObject;
 
 // constructors/destructors for list classes
-sfxRequest::sfxRequest( void )
+sfxRequest::sfxRequest(void)
 {
 }
-sfxRequest::~sfxRequest( void )
+sfxRequest::~sfxRequest(void)
 {
 }
-displayList::displayList( void )
+displayList::displayList(void)
 {
 }
-displayList::~displayList( void )
+displayList::~displayList(void)
 {
 }
 
@@ -49,44 +49,45 @@ displayList::~displayList( void )
 **
 */
 void
-OTWDriverClass::AddSfxRequest ( SfxClass *sfxptr )
+OTWDriverClass::AddSfxRequest(SfxClass *sfxptr)
 {
-sfxRequest *tmpRequest;
+    sfxRequest *tmpRequest;
 
-	if (!IsActive())
-		return;
-	//DSP: with sim and graphics on same thread, the critical section is no longer needed
-	//F4EnterCriticalSection(objectCriticalSection);
+    if (!IsActive())
+        return;
+
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //F4EnterCriticalSection(objectCriticalSection);
 
 #if 1
 
-	// create request and chain it
-	tmpRequest = new sfxRequest;
-	tmpRequest->next = sfxRequestRoot;
-	sfxRequestRoot = tmpRequest;
+    // create request and chain it
+    tmpRequest = new sfxRequest;
+    tmpRequest->next = sfxRequestRoot;
+    sfxRequestRoot = tmpRequest;
 
-	tmpRequest->sfx = sfxptr;
+    tmpRequest->sfx = sfxptr;
 #else
-	// create request and chain it
+    // create request and chain it
 
-	// edg: if you want to test frame rate w/o any special effects running
-	// (except timers), uncomment out the following....
-	// if ( sfxptr->GetType() == SFX_TIMER )
-	// {
-	tmpRequest = new sfxRequest;
-	tmpRequest->next = sfxRequestRoot;
-	tmpRequest->sfx = sfxptr;
-	sfxRequestRoot = tmpRequest;
-	sfxRequestRoot->sfx->Start();
-	// }
-	// else
-	// {
-	// delete sfxptr;
-	// }
+    // edg: if you want to test frame rate w/o any special effects running
+    // (except timers), uncomment out the following....
+    // if ( sfxptr->GetType() == SFX_TIMER )
+    // {
+    tmpRequest = new sfxRequest;
+    tmpRequest->next = sfxRequestRoot;
+    tmpRequest->sfx = sfxptr;
+    sfxRequestRoot = tmpRequest;
+    sfxRequestRoot->sfx->Start();
+    // }
+    // else
+    // {
+    // delete sfxptr;
+    // }
 
 #endif
-//DSP: with sim and graphics on same thread, the critical section is no longer needed
-	//F4LeaveCriticalSection(objectCriticalSection);
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //F4LeaveCriticalSection(objectCriticalSection);
 
 }
 
@@ -97,67 +98,71 @@ sfxRequest *tmpRequest;
 **		some minor movements for the object
 */
 void
-OTWDriverClass::DoSfxActiveList (void)
+OTWDriverClass::DoSfxActiveList(void)
 {
-	sfxRequest **sfxptrptr = NULL;
-	sfxRequest *sfxptr = NULL;
-	DWORD thisTime;
+    sfxRequest **sfxptrptr = NULL;
+    sfxRequest *sfxptr = NULL;
+    DWORD thisTime;
 
-	// timer
-	thisTime = TheTimeManager.GetClockTime();
-	sfxFrameTime = SimLibMajorFrameTime;
-   lastViewTime = thisTime;
-//DSP: with sim and graphics on same thread, the critical section is no longer needed
-//   	F4EnterCriticalSection(objectCriticalSection);
+    // timer
+    thisTime = TheTimeManager.GetClockTime();
+    sfxFrameTime = SimLibMajorFrameTime;
+    lastViewTime = thisTime;
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //   	F4EnterCriticalSection(objectCriticalSection);
 
-	// first move over anything in the request list to the active list
-	// (if any)
+    // first move over anything in the request list to the active list
+    // (if any)
 
-	if ( sfxRequestRoot )
-	{
-		// find the last request
-		sfxptrptr = &sfxRequestRoot;
-		while (*sfxptrptr)
-		{
-			// save the current pointer
-			sfxptr = *sfxptrptr;
-			sfxptr->sfx->Start();
-	
-			sfxptrptr = &sfxptr->next;
-		}
-	
-		// we've got the last request, chain to active
-		if(sfxptr)
-			sfxptr->next = sfxActiveRoot;
-		sfxActiveRoot = sfxRequestRoot;
-		sfxRequestRoot = NULL;
-	}
-//DSP: with sim and graphics on same thread, the critical section is no longer needed
-//   	F4LeaveCriticalSection(objectCriticalSection);
+    if (sfxRequestRoot)
+    {
+        // find the last request
+        sfxptrptr = &sfxRequestRoot;
 
-   	sfxptrptr = &sfxActiveRoot;
-   	while (*sfxptrptr)
-   	{
-		// save the current pointer
-		sfxptr = *sfxptrptr;
+        while (*sfxptrptr)
+        {
+            // save the current pointer
+            sfxptr = *sfxptrptr;
+            sfxptr->sfx->Start();
 
-		// exec the request
-		if ( !sfxptr->sfx->Exec())
-		{
-			// effect finished
-			// skip to the next effect and remove from chain
-			(*sfxptrptr) = sfxptr->next;
+            sfxptrptr = &sfxptr->next;
+        }
 
-			// delete effect
-			delete sfxptr->sfx;
-			delete sfxptr;
-			continue;
-		}
+        // we've got the last request, chain to active
+        if (sfxptr)
+            sfxptr->next = sfxActiveRoot;
 
-		// next effect
-		sfxptrptr = &sfxptr->next;
+        sfxActiveRoot = sfxRequestRoot;
+        sfxRequestRoot = NULL;
+    }
 
-   	}
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //   	F4LeaveCriticalSection(objectCriticalSection);
+
+    sfxptrptr = &sfxActiveRoot;
+
+    while (*sfxptrptr)
+    {
+        // save the current pointer
+        sfxptr = *sfxptrptr;
+
+        // exec the request
+        if (!sfxptr->sfx->Exec())
+        {
+            // effect finished
+            // skip to the next effect and remove from chain
+            (*sfxptrptr) = sfxptr->next;
+
+            // delete effect
+            delete sfxptr->sfx;
+            delete sfxptr;
+            continue;
+        }
+
+        // next effect
+        sfxptrptr = &sfxptr->next;
+
+    }
 
 }
 
@@ -167,33 +172,33 @@ OTWDriverClass::DoSfxActiveList (void)
 **    Updates draw data for special effects
 */
 void
-OTWDriverClass::DoSfxDrawList (void)
+OTWDriverClass::DoSfxDrawList(void)
 {
-	/*
-	** edg: there's really no need for this function
-	** anymore (sim and graphics on same thread).  Draw()
-	** now called from sfx->Exec()
-	sfxRequest **sfxptrptr;
-	sfxRequest *sfxptr;
+    /*
+    ** edg: there's really no need for this function
+    ** anymore (sim and graphics on same thread).  Draw()
+    ** now called from sfx->Exec()
+    sfxRequest **sfxptrptr;
+    sfxRequest *sfxptr;
 
 
-//   	F4EnterCriticalSection(objectCriticalSection);
+    //   	F4EnterCriticalSection(objectCriticalSection);
 
-   	sfxptrptr = &sfxActiveRoot;
-   	while (*sfxptrptr)
-   	{
-		// save the current pointer
-		sfxptr = *sfxptrptr;
+    sfxptrptr = &sfxActiveRoot;
+    while (*sfxptrptr)
+    {
+    	// save the current pointer
+    	sfxptr = *sfxptrptr;
 
-		// exec the request
+    	// exec the request
       	sfxptr->sfx->Draw();
 
-		// next effect
-		sfxptrptr = &sfxptr->next;
-   	}
+    	// next effect
+    	sfxptrptr = &sfxptr->next;
+    }
 
-//   	F4LeaveCriticalSection(objectCriticalSection);
-	*/
+    //   	F4LeaveCriticalSection(objectCriticalSection);
+    */
 }
 
 /*
@@ -202,237 +207,262 @@ OTWDriverClass::DoSfxDrawList (void)
 **		Clears the active and request lists.  An exit call.
 */
 void
-OTWDriverClass::ClearSfxLists (void)
+OTWDriverClass::ClearSfxLists(void)
 {
-	sfxRequest **sfxptrptr;
-	sfxRequest *sfxptr;
+    sfxRequest **sfxptrptr;
+    sfxRequest *sfxptr;
 
-//DSP: with sim and graphics on same thread, the critical section is no longer needed
-//   	F4EnterCriticalSection(objectCriticalSection);
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //   	F4EnterCriticalSection(objectCriticalSection);
 
-   	sfxptrptr = &sfxActiveRoot;
-   	while (*sfxptrptr)
-   	{
-		// save the current pointer
-		sfxptr = *sfxptrptr;
+    sfxptrptr = &sfxActiveRoot;
 
-		// skip to the next effect and remove from chain
-		(*sfxptrptr) = sfxptr->next;
+    while (*sfxptrptr)
+    {
+        // save the current pointer
+        sfxptr = *sfxptrptr;
 
-		// delete the effect data
-		delete sfxptr->sfx;
-		delete sfxptr;
-   	}
+        // skip to the next effect and remove from chain
+        (*sfxptrptr) = sfxptr->next;
 
-   	sfxptrptr = &sfxRequestRoot;
-   	while (*sfxptrptr)
-   	{
-		// save the current pointer
-		sfxptr = *sfxptrptr;
+        // delete the effect data
+        delete sfxptr->sfx;
+        delete sfxptr;
+    }
 
-		// skip to the next effect and remove from chain
-		(*sfxptrptr) = sfxptr->next;
+    sfxptrptr = &sfxRequestRoot;
 
-		// delete the effect data
-		delete sfxptr->sfx;
-		delete sfxptr;
-   	}
+    while (*sfxptrptr)
+    {
+        // save the current pointer
+        sfxptr = *sfxptrptr;
 
-//DSP: with sim and graphics on same thread, the critical section is no longer needed
-//   	F4LeaveCriticalSection(objectCriticalSection);
+        // skip to the next effect and remove from chain
+        (*sfxptrptr) = sfxptr->next;
+
+        // delete the effect data
+        delete sfxptr->sfx;
+        delete sfxptr;
+    }
+
+    //DSP: with sim and graphics on same thread, the critical section is no longer needed
+    //   	F4LeaveCriticalSection(objectCriticalSection);
 }
 
 
 void OTWDriverClass::InsertObject(DrawableObject *dObj)
 {
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	ShiAssert( dObj );	// Could tolerate this by returning, but I don't think it happens.
+    ShiAssert(dObj);	// Could tolerate this by returning, but I don't think it happens.
 
-	if (viewPoint && viewPoint->IsReady())
-	{
-		viewPoint->InsertObject(dObj);
-	}
+    if (viewPoint && viewPoint->IsReady())
+    {
+        viewPoint->InsertObject(dObj);
+    }
 }
 
 void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 {
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-//	if (g_bNeedSimThreadToRemoveObject && GetCurrentThreadId() != gSimThreadID)
-//		return;
-	
-	//if (dObj) // JB 010221 CTD
-	if (dObj && !F4IsBadCodePtr((FARPROC) dObj)) // JB 010221 CTD
-	{
-		if (dObj->InDisplayList() && viewPoint)
-			viewPoint->RemoveObject(dObj); 
-		if (deleteObject && !F4IsBadWritePtr(dObj, sizeof(DrawableObject))) // JB 010221 CTD
-			delete dObj;
-	}
+    //	if (g_bNeedSimThreadToRemoveObject && GetCurrentThreadId() != gSimThreadID)
+    //		return;
+
+    //if (dObj) // JB 010221 CTD
+    if (dObj && !F4IsBadCodePtr((FARPROC) dObj)) // JB 010221 CTD
+    {
+        if (dObj->InDisplayList() && viewPoint)
+            viewPoint->RemoveObject(dObj);
+
+        if (deleteObject && !F4IsBadWritePtr(dObj, sizeof(DrawableObject))) // JB 010221 CTD
+            delete dObj;
+    }
 }
 
 void OTWDriverClass::AttachObject(DrawableBSP *dObj, DrawableBSP *atObj, int s)
-	{
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+{
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	dObj->AttachChild(atObj, s);
-	}
+    dObj->AttachChild(atObj, s);
+}
 
 void OTWDriverClass::DetachObject(DrawableBSP *dObj, DrawableBSP *deObj, int s)
-	{
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+{
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	dObj->DetachChild(deObj, s);
-	}
+    dObj->DetachChild(deObj, s);
+}
 
 void OTWDriverClass::TrimTrail(DrawableTrail *dTrail, int l)
-	{
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+{
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	dTrail->TrimTrail(l);
-	}
+    dTrail->TrimTrail(l);
+}
 
 void OTWDriverClass::AddTrailHead(DrawableTrail *dTrail, float x, float y, float z)
-	{
-	Tpoint newPoint;
+{
+    Tpoint newPoint;
 
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	newPoint.x = x;
-	newPoint.y = y;
-	newPoint.z = z;
-	dTrail->AddPointAtHead(&newPoint, vuxGameTime);
-	}
+    newPoint.x = x;
+    newPoint.y = y;
+    newPoint.z = z;
+    dTrail->AddPointAtHead(&newPoint, vuxGameTime);
+}
 
 //void OTWDriverClass::AddTrailTail(DrawableTrail *dTrail, float x, float y, float z)
 void OTWDriverClass::AddTrailTail(DrawableTrail *, float, float, float)
-	{
+{
 #if 0
-	Tpoint newPoint;
+    Tpoint newPoint;
 
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-	newPoint.x = x;
-	newPoint.y = y;
-	newPoint.z = z;
-//	dTrail->AddPointAtTail(&newPoint);
+    newPoint.x = x;
+    newPoint.y = y;
+    newPoint.z = z;
+    //	dTrail->AddPointAtTail(&newPoint);
 #endif
-	}
-
-
-void OTWDriverClass::AddToLitList( DrawableBSP* bsp )
-{
-	drawPtrList	*newEntry;
-
-	ShiAssert(GetCurrentThreadId() == gSimThreadID);
-
-#ifdef DEBUG
-	for (newEntry = litObjectRoot; newEntry; newEntry = newEntry->next)
-	{
-		// Make sure we don't already have this object being managed
-		ShiAssert( newEntry->drawPointer != bsp );
-	}
-#endif
-
-	// Get it into the list
-	newEntry = new drawPtrList;
-	newEntry->drawPointer = bsp;
-	newEntry->next = litObjectRoot;
-	newEntry->prev = NULL;
-	if (litObjectRoot) {
-		litObjectRoot->prev = newEntry;
-	}
-	litObjectRoot = newEntry;
-
-	// Do the intial set on the object
-	UpdateOneLitObject( newEntry, TheTimeOfDay.GetLightLevel() );
 }
 
 
-void OTWDriverClass::RemoveFromLitList( DrawableBSP* bsp )
+void OTWDriverClass::AddToLitList(DrawableBSP* bsp)
 {
-	drawPtrList	*entry;
+    drawPtrList	*newEntry;
 
-	for (entry = litObjectRoot; entry; entry = entry->next)
-	{
-		if (entry->drawPointer == bsp) {
-			// Match -- take it out
-			if (entry->prev) {
-				entry->prev->next = entry->next;
-			} else {
-				litObjectRoot = entry->next;
-			}
-			if (entry->next) {
-				entry->next->prev = entry->prev;
-			}
-			delete entry;
+    ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-			// Quit now that we've found our match
-			break;
-		}
-	}
+#ifdef DEBUG
+
+    for (newEntry = litObjectRoot; newEntry; newEntry = newEntry->next)
+    {
+        // Make sure we don't already have this object being managed
+        ShiAssert(newEntry->drawPointer != bsp);
+    }
+
+#endif
+
+    // Get it into the list
+    newEntry = new drawPtrList;
+    newEntry->drawPointer = bsp;
+    newEntry->next = litObjectRoot;
+    newEntry->prev = NULL;
+
+    if (litObjectRoot)
+    {
+        litObjectRoot->prev = newEntry;
+    }
+
+    litObjectRoot = newEntry;
+
+    // Do the intial set on the object
+    UpdateOneLitObject(newEntry, TheTimeOfDay.GetLightLevel());
 }
 
 
-void OTWDriverClass::AddToNearList( DrawableObject* drawPtr, float depth )
+void OTWDriverClass::RemoveFromLitList(DrawableBSP* bsp)
 {
-	drawPtrList	*after;
-	drawPtrList	*consider;
-	drawPtrList	*newEntry;
+    drawPtrList	*entry;
+
+    for (entry = litObjectRoot; entry; entry = entry->next)
+    {
+        if (entry->drawPointer == bsp)
+        {
+            // Match -- take it out
+            if (entry->prev)
+            {
+                entry->prev->next = entry->next;
+            }
+            else
+            {
+                litObjectRoot = entry->next;
+            }
+
+            if (entry->next)
+            {
+                entry->next->prev = entry->prev;
+            }
+
+            delete entry;
+
+            // Quit now that we've found our match
+            break;
+        }
+    }
+}
+
+
+void OTWDriverClass::AddToNearList(DrawableObject* drawPtr, float depth)
+{
+    drawPtrList	*after;
+    drawPtrList	*consider;
+    drawPtrList	*newEntry;
 
 #ifdef DEBUG
-	for (newEntry = nearObjectRoot; newEntry; newEntry = newEntry->next)
-	{
-		// Make sure we don't already have this object being managed
-		ShiAssert( newEntry->drawPointer != drawPtr );
-	}
+
+    for (newEntry = nearObjectRoot; newEntry; newEntry = newEntry->next)
+    {
+        // Make sure we don't already have this object being managed
+        ShiAssert(newEntry->drawPointer != drawPtr);
+    }
+
 #endif
 
-	// Inhibit the object's drawing since it will be handled specially
-	drawPtr->SetInhibitFlag( TRUE );
+    // Inhibit the object's drawing since it will be handled specially
+    drawPtr->SetInhibitFlag(TRUE);
 
-	// Find the record to insert after (the nearest one more distant than us)
-	after = NULL;
-	for (consider = nearObjectRoot; consider; consider = consider->next)
-	{
-		if (consider->value <= depth) {
-			break;
-		}
+    // Find the record to insert after (the nearest one more distant than us)
+    after = NULL;
 
-		after = consider;
-	}
+    for (consider = nearObjectRoot; consider; consider = consider->next)
+    {
+        if (consider->value <= depth)
+        {
+            break;
+        }
 
-	// Get it into the list
-	newEntry = new drawPtrList;
-	newEntry->drawPointer = drawPtr;
-	newEntry->value = depth;
-	newEntry->prev = after;
-	if (after) {
-		newEntry->next = after->next;
-		after->next = newEntry;
-	} else {
-		newEntry->next = nearObjectRoot;
-		nearObjectRoot = newEntry;
-	}
-	if (newEntry->next) {
-		newEntry->next->prev = newEntry;
-	}
+        after = consider;
+    }
+
+    // Get it into the list
+    newEntry = new drawPtrList;
+    newEntry->drawPointer = drawPtr;
+    newEntry->value = depth;
+    newEntry->prev = after;
+
+    if (after)
+    {
+        newEntry->next = after->next;
+        after->next = newEntry;
+    }
+    else
+    {
+        newEntry->next = nearObjectRoot;
+        nearObjectRoot = newEntry;
+    }
+
+    if (newEntry->next)
+    {
+        newEntry->next->prev = newEntry;
+    }
 }
 
 
 void OTWDriverClass::FlushNearList(void)
 {
-	drawPtrList	*entry, *next;
+    drawPtrList	*entry, *next;
 
-	for (entry = nearObjectRoot; entry; entry = next)
-	{
-		// Make sure the object is turned back on.
-		entry->drawPointer->SetInhibitFlag( FALSE );
+    for (entry = nearObjectRoot; entry; entry = next)
+    {
+        // Make sure the object is turned back on.
+        entry->drawPointer->SetInhibitFlag(FALSE);
 
-		next = entry->next;
-		delete entry;
-	}
+        next = entry->next;
+        delete entry;
+    }
 
-	nearObjectRoot = NULL;
+    nearObjectRoot = NULL;
 }

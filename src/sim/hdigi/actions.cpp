@@ -5,165 +5,168 @@
 
 void HeliBrain::Actions(void)
 {
-   /*-----------------------------------------------*/ 
-   /* stick/throttle commands based on current mode */
-   /*-----------------------------------------------*/
-   if ( lastMode != curMode )
-   		onStation = NotThereYet;
+    /*-----------------------------------------------*/
+    /* stick/throttle commands based on current mode */
+    /*-----------------------------------------------*/
+    if (lastMode != curMode)
+        onStation = NotThereYet;
 
-   if ( self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT ) )
-   {
-	   /*
-	   if ( modeStack.curMode == GunsEngageMode )
-	   		GunsEngage();
-	   else
-	   */
-	   FollowLead();
-   }
-   else switch (curMode)
-   {
-      /*----------------*/
-      /* return to base */
-      /*----------------*/
-      case RTBMode:
-//         GoHome();
-      break;
+    if (self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT))
+    {
+        /*
+        if ( modeStack.curMode == GunsEngageMode )
+        		GunsEngage();
+        else
+        */
+        FollowLead();
+    }
+    else switch (curMode)
+        {
+                /*----------------*/
+                /* return to base */
+                /*----------------*/
+            case RTBMode:
+                //         GoHome();
+                break;
 
-      /*-------------------*/
-      /* Do what your told */
-      /*-------------------*/
-      case FollowOrdersMode:
-         FollowOrders();
-      break;
+                /*-------------------*/
+                /* Do what your told */
+                /*-------------------*/
+            case FollowOrdersMode:
+                FollowOrders();
+                break;
 
-      /*---------------------*/
-      /* follow wingman lead */
-      /*---------------------*/
-      case WingyMode:
-         FollowLead();
-      break;
+                /*---------------------*/
+                /* follow wingman lead */
+                /*---------------------*/
+            case WingyMode:
+                FollowLead();
+                break;
 
-      /*------------------*/
-      /* follow waypoints */
-      /*------------------*/
-      case WaypointMode:      
-         FollowWaypoints();
-      break;
+                /*------------------*/
+                /* follow waypoints */
+                /*------------------*/
+            case WaypointMode:
+                FollowWaypoints();
+                break;
 
-      /*------------*/
-      /* BVR engage */
-      /*------------*/
-      case BVREngageMode:      
-         if (targetPtr == maxTargetPtr)
-                RollAndPull();
-      break;
+                /*------------*/
+                /* BVR engage */
+                /*------------*/
+            case BVREngageMode:
+                if (targetPtr == maxTargetPtr)
+                    RollAndPull();
 
-      /*------------*/
-      /* WVR engage */
-      /*------------*/
-      case WVREngageMode:
-         if (targetPtr == maxTargetPtr)
-                RollAndPull();
-      break;
+                break;
 
-      case GunsEngageMode:
-         if (targetPtr)
-            GunsEngage();
-      break;
+                /*------------*/
+                /* WVR engage */
+                /*------------*/
+            case WVREngageMode:
+                if (targetPtr == maxTargetPtr)
+                    RollAndPull();
 
-      /*-----------------------------------------*/
-      /* Inside missile range, try to line it up */
-      /*-----------------------------------------*/
-      case MissileEngageMode:
-         MissileEngage();
-      break;
+                break;
 
-      /*----------------*/
-      /* missile defeat */
-      /*----------------*/
-      case MissileDefeatMode:
-         MissileDefeat();
-      break;
+            case GunsEngageMode:
+                if (targetPtr)
+                    GunsEngage();
 
-      /*-----------*/
-      /* guns jink */
-      /*-----------*/
-      case GunsJinkMode:
-         GunsJink();
-      break;
+                break;
 
-      /*--------*/
-      /* loiter */
-      /*--------*/
-      case LoiterMode:
-         Loiter();
-      break;
+                /*-----------------------------------------*/
+                /* Inside missile range, try to line it up */
+                /*-----------------------------------------*/
+            case MissileEngageMode:
+                MissileEngage();
+                break;
 
-      /*----------*/
-      /* run away */
-      /*----------*/
-      case RunAwayMode:
-//         GoHome();
-      break;
+                /*----------------*/
+                /* missile defeat */
+                /*----------------*/
+            case MissileDefeatMode:
+                MissileDefeat();
+                break;
 
-      /*-----------------*/
-      /* collision avoid */
-      /*-----------------*/
-      case CollisionAvoidMode:
-         CollisionAvoid();
-      break;
+                /*-----------*/
+                /* guns jink */
+                /*-----------*/
+            case GunsJinkMode:
+                GunsJink();
+                break;
 
-      /*------------*/
-      /* accelerate */
-      /*------------*/
-      case AccelerateMode:
-//         Accelerate();
-      break;
+                /*--------*/
+                /* loiter */
+                /*--------*/
+            case LoiterMode:
+                Loiter();
+                break;
 
-      /*-----------*/
-      /* overshoot */
-      /*-----------*/
-      case OvershootMode:
-//         OverShoot();
-      break;
+                /*----------*/
+                /* run away */
+                /*----------*/
+            case RunAwayMode:
+                //         GoHome();
+                break;
 
-      /*----------*/
-      /* Separate */
-      /*----------*/
-      case SeparateMode:
-//         Separate();
-      break;
+                /*-----------------*/
+                /* collision avoid */
+                /*-----------------*/
+            case CollisionAvoidMode:
+                CollisionAvoid();
+                break;
 
-      /*-------------------*/
-      /* Roll Out of Plane */
-      /*-------------------*/
-      case RoopMode:
-         RollOutOfPlane();
-      break;
+                /*------------*/
+                /* accelerate */
+                /*------------*/
+            case AccelerateMode:
+                //         Accelerate();
+                break;
 
-      /*-----------*/
-      /* Over Bank */
-      /*-----------*/
-      case OverBMode:
-         OverBank(30.0F*DTR);
-      break;
+                /*-----------*/
+                /* overshoot */
+                /*-----------*/
+            case OvershootMode:
+                //         OverShoot();
+                break;
 
-      default:   
-         SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
-                 self->Id().num_, curMode);
-         FollowWaypoints();
-      break;
+                /*----------*/
+                /* Separate */
+                /*----------*/
+            case SeparateMode:
+                //         Separate();
+                break;
 
-   } /*switch*/
+                /*-------------------*/
+                /* Roll Out of Plane */
+                /*-------------------*/
+            case RoopMode:
+                RollOutOfPlane();
+                break;
 
-   /*-----------------------------------------------------------------*/
-   /* Ground avoid now runs concurrently with whatever mode has been  */
-   /* selected by the conflict resolver. Ground avoid modifies the    */
-   /* current Pstick and Rstick commands.                             */
-   /*-----------------------------------------------------------------*/
-   GroundCheck();
-   /*
-   if (groundAvoidNeeded)
-      PullUp();
-   */
+                /*-----------*/
+                /* Over Bank */
+                /*-----------*/
+            case OverBMode:
+                OverBank(30.0F * DTR);
+                break;
+
+            default:
+                SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
+                                 self->Id().num_, curMode);
+                FollowWaypoints();
+                break;
+
+        } /*switch*/
+
+    /*-----------------------------------------------------------------*/
+    /* Ground avoid now runs concurrently with whatever mode has been  */
+    /* selected by the conflict resolver. Ground avoid modifies the    */
+    /* current Pstick and Rstick commands.                             */
+    /*-----------------------------------------------------------------*/
+    GroundCheck();
+    /*
+    if (groundAvoidNeeded)
+       PullUp();
+    */
 }

@@ -59,28 +59,28 @@ static BOOL g_bSymEngInit = FALSE ;
                     File Scope Function Declarations
 //////////////////////////////////////////////////////////////////////*/
 // The exception handler.
-LONG __stdcall CrashHandlerExceptionFilter ( EXCEPTION_POINTERS *
-                                             pExPtrs              ) ;
+LONG __stdcall CrashHandlerExceptionFilter(EXCEPTION_POINTERS *
+        pExPtrs) ;
 
 // Converts a simple exception to a string value.
-LPCTSTR ConvertSimpleException ( DWORD dwExcept ) ;
+LPCTSTR ConvertSimpleException(DWORD dwExcept) ;
 
 // The internal function that does all the stack walking.
 LPCTSTR __stdcall
-            InternalGetStackTraceString ( DWORD                dwOpts  ,
-                                          EXCEPTION_POINTERS * pExPtrs);
+InternalGetStackTraceString(DWORD                dwOpts  ,
+                            EXCEPTION_POINTERS * pExPtrs);
 
 // The internal SymGetLineFromAddr function.
-BOOL InternalSymGetLineFromAddr ( IN  HANDLE          hProcess        ,
-                                  IN  DWORD           dwAddr          ,
-                                  OUT PDWORD          pdwDisplacement ,
-                                  OUT PIMAGEHLP_LINE  Line            );
+BOOL InternalSymGetLineFromAddr(IN  HANDLE          hProcess        ,
+                                IN  DWORD           dwAddr          ,
+                                OUT PDWORD          pdwDisplacement ,
+                                OUT PIMAGEHLP_LINE  Line);
 
 // Initializes the symbol engine if needed.
-void InitSymEng ( void ) ;
+void InitSymEng(void) ;
 
 // Cleans up the symbol engine if needed.
-void CleanupSymEng ( void ) ;
+void CleanupSymEng(void) ;
 
 /*//////////////////////////////////////////////////////////////////////
                             Destructor Class
@@ -91,23 +91,24 @@ void CleanupSymEng ( void ) ;
 class CleanUpCrashHandler
 {
 public  :
-    CleanUpCrashHandler ( void )
+    CleanUpCrashHandler(void)
     {
     }
-    ~CleanUpCrashHandler ( void )
+    ~CleanUpCrashHandler(void)
     {
         // Is there any outstanding memory allocations?
-        if ( NULL != g_ahMod )
+        if (NULL != g_ahMod)
         {
-            VERIFY ( HeapFree ( GetProcessHeap ( ) ,
-                                0                  ,
-                                g_ahMod             ) ) ;
+            VERIFY(HeapFree(GetProcessHeap() ,
+                            0                  ,
+                            g_ahMod)) ;
             g_ahMod = NULL ;
         }
-        if ( NULL != g_pfnOrigFilt )
+
+        if (NULL != g_pfnOrigFilt)
         {
             // Set the handler back to what it originally was.
-            SetUnhandledExceptionFilter ( g_pfnOrigFilt ) ;
+            SetUnhandledExceptionFilter(g_pfnOrigFilt) ;
         }
     }
 } ;
@@ -119,22 +120,24 @@ static CleanUpCrashHandler g_cBeforeAndAfter ;
                  Crash Handler Function Implementation
 //////////////////////////////////////////////////////////////////////*/
 
-BOOL __stdcall SetCrashHandlerFilter ( PFNCHFILTFN pFn )
+BOOL __stdcall SetCrashHandlerFilter(PFNCHFILTFN pFn)
 {
     // It's OK to have a NULL parameter because this will unhook the
     //  callback.
-    if ( NULL == pFn )
+    if (NULL == pFn)
     {
-        if ( NULL != g_pfnOrigFilt )
+        if (NULL != g_pfnOrigFilt)
         {
             // Put the original one back.
-            SetUnhandledExceptionFilter ( g_pfnOrigFilt ) ;
+            SetUnhandledExceptionFilter(g_pfnOrigFilt) ;
             g_pfnOrigFilt = NULL ;
-            if ( NULL != g_ahMod )
+
+            if (NULL != g_ahMod)
             {
-                free ( g_ahMod ) ;
+                free(g_ahMod) ;
                 g_ahMod = NULL ;
             }
+
             g_pfnCallBack = NULL ;
         }
     }
@@ -144,22 +147,24 @@ BOOL __stdcall SetCrashHandlerFilter ( PFNCHFILTFN pFn )
 
         // If this is the first time that CrashHandler has been called
         //  set the exception filter and save off the previous handler.
-        if ( NULL == g_pfnOrigFilt )
+        if (NULL == g_pfnOrigFilt)
         {
             g_pfnOrigFilt =
-               SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
+                SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
         }
     }
-    return ( TRUE ) ;
+
+    return (TRUE) ;
 }
 
-BOOL __stdcall AddCrashHandlerLimitModule ( HMODULE hMod )
+BOOL __stdcall AddCrashHandlerLimitModule(HMODULE hMod)
 {
     // Check the obvious cases.
-    ASSERT ( NULL != hMod ) ;
-    if ( NULL == hMod )
+    ASSERT(NULL != hMod) ;
+
+    if (NULL == hMod)
     {
-        return ( FALSE ) ;
+        return (FALSE) ;
     }
 
     // TODO TODO
@@ -170,18 +175,19 @@ BOOL __stdcall AddCrashHandlerLimitModule ( HMODULE hMod )
     //  This means the RTL heap is probably already gone so I do it out
     //  of the process heap.
     HMODULE * phTemp = (HMODULE*)
-                    HeapAlloc ( GetProcessHeap ( )                 ,
-                                HEAP_ZERO_MEMORY |
-                                   HEAP_GENERATE_EXCEPTIONS        ,
-                                (sizeof(HMODULE)*(g_uiModCount+1))  ) ;
-    ASSERT ( NULL != phTemp ) ;
-    if ( NULL == phTemp )
+                       HeapAlloc(GetProcessHeap()                 ,
+                                 HEAP_ZERO_MEMORY |
+                                 HEAP_GENERATE_EXCEPTIONS        ,
+                                 (sizeof(HMODULE) * (g_uiModCount + 1))) ;
+    ASSERT(NULL != phTemp) ;
+
+    if (NULL == phTemp)
     {
-        TRACE0 ( "Serious trouble in the house! - malloc failed!!!\n" );
-        return ( FALSE ) ;
+        TRACE0("Serious trouble in the house! - malloc failed!!!\n");
+        return (FALSE) ;
     }
 
-    if ( NULL == g_ahMod )
+    if (NULL == g_ahMod)
     {
         g_ahMod = phTemp ;
         g_ahMod[ 0 ] = hMod ;
@@ -190,89 +196,94 @@ BOOL __stdcall AddCrashHandlerLimitModule ( HMODULE hMod )
     else
     {
         // Copy the old values.
-        CopyMemory ( phTemp     ,
-                     g_ahMod    ,
-                     sizeof ( HMODULE ) * g_uiModCount ) ;
+        CopyMemory(phTemp     ,
+                   g_ahMod    ,
+                   sizeof(HMODULE) * g_uiModCount) ;
         g_ahMod = phTemp ;
         g_ahMod[ g_uiModCount ] = hMod ;
         g_uiModCount++ ;
     }
-    return ( TRUE ) ;
+
+    return (TRUE) ;
 }
 
-UINT __stdcall GetLimitModuleCount ( void )
+UINT __stdcall GetLimitModuleCount(void)
 {
-    return ( g_uiModCount ) ;
+    return (g_uiModCount) ;
 }
 
-int __stdcall GetLimitModulesArray ( HMODULE * pahMod , UINT uiSize )
+int __stdcall GetLimitModulesArray(HMODULE * pahMod , UINT uiSize)
 {
     int iRet ;
 
     __try
     {
-        ASSERT ( FALSE == IsBadWritePtr ( pahMod ,
-                                          uiSize * sizeof ( HMODULE ) ) ) ;
-        if ( TRUE == IsBadWritePtr ( pahMod ,
-                                     uiSize * sizeof ( HMODULE ) ) )
+        ASSERT(FALSE == IsBadWritePtr(pahMod ,
+                                      uiSize * sizeof(HMODULE))) ;
+
+        if (TRUE == IsBadWritePtr(pahMod ,
+                                  uiSize * sizeof(HMODULE)))
         {
             iRet = GLMA_BADPARAM ;
             __leave ;
         }
 
-        if ( uiSize < g_uiModCount )
+        if (uiSize < g_uiModCount)
         {
             iRet = GLMA_BUFFTOOSMALL ;
             __leave ;
         }
 
-        CopyMemory ( pahMod     ,
-                     g_ahMod    ,
-                     sizeof ( HMODULE ) * g_uiModCount ) ;
+        CopyMemory(pahMod     ,
+                   g_ahMod    ,
+                   sizeof(HMODULE) * g_uiModCount) ;
 
         iRet = GLMA_SUCCESS ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         iRet = GLMA_FAILURE ;
     }
-    return ( iRet ) ;
+
+    return (iRet) ;
 }
 
-LONG __stdcall CrashHandlerExceptionFilter (EXCEPTION_POINTERS* pExPtrs)
+LONG __stdcall CrashHandlerExceptionFilter(EXCEPTION_POINTERS* pExPtrs)
 {
     LONG lRet = EXCEPTION_CONTINUE_SEARCH ;
 
     __try
     {
 
-        if ( NULL != g_pfnCallBack )
+        if (NULL != g_pfnCallBack)
         {
 
             // The symbol engine has to be initialized here so that
             //  I can look up the base module information for the
             //  crash address as well as just get the symbol engine
             //  ready.
-            InitSymEng ( ) ;
+            InitSymEng() ;
 
             // Check the g_ahMod list.
             BOOL bCallIt = FALSE ;
-            if ( 0 == g_uiModCount )
+
+            if (0 == g_uiModCount)
             {
                 bCallIt = TRUE ;
             }
             else
             {
                 HINSTANCE hBaseAddr = (HINSTANCE)
-                      SymGetModuleBase((HANDLE)GetCurrentProcessId ( ) ,
-                                       (DWORD)pExPtrs->
-                                            ExceptionRecord->
-                                                      ExceptionAddress);
-                if ( NULL != hBaseAddr )
+                                      SymGetModuleBase((HANDLE)GetCurrentProcessId() ,
+                                                       (DWORD)pExPtrs->
+                                                       ExceptionRecord->
+                                                       ExceptionAddress);
+
+                if (NULL != hBaseAddr)
                 {
-                    for ( UINT i = 0 ; i < g_uiModCount ; i ++ )
+                    for (UINT i = 0 ; i < g_uiModCount ; i ++)
                     {
-                        if ( hBaseAddr == g_ahMod[ i ] )
+                        if (hBaseAddr == g_ahMod[ i ])
                         {
                             bCallIt = TRUE ;
                             break ;
@@ -280,7 +291,8 @@ LONG __stdcall CrashHandlerExceptionFilter (EXCEPTION_POINTERS* pExPtrs)
                     }
                 }
             }
-            if ( TRUE == bCallIt )
+
+            if (TRUE == bCallIt)
             {
                 // Check that the filter function still exists in memory
                 //  before I call it.  The user might have forgotten to
@@ -288,43 +300,46 @@ LONG __stdcall CrashHandlerExceptionFilter (EXCEPTION_POINTERS* pExPtrs)
                 //  because it got unloaded.  Of course, if something
                 //  loaded back into the same address, there is not much
                 //  I can do.
-                if ( FALSE == IsBadCodePtr ( (FARPROC)g_pfnCallBack ) )
+                if (FALSE == IsBadCodePtr((FARPROC)g_pfnCallBack))
                 {
-                    lRet = g_pfnCallBack ( pExPtrs ) ;
+                    lRet = g_pfnCallBack(pExPtrs) ;
                 }
             }
             else
             {
                 // Call the previous filter but only after it checks
                 //  out.  I am just being a little paranoid.
-                if ( FALSE == IsBadCodePtr ( (FARPROC)g_pfnOrigFilt ) )
+                if (FALSE == IsBadCodePtr((FARPROC)g_pfnOrigFilt))
                 {
-                    lRet = g_pfnOrigFilt ( pExPtrs ) ;
+                    lRet = g_pfnOrigFilt(pExPtrs) ;
                 }
             }
-            CleanupSymEng ( ) ;
+
+            CleanupSymEng() ;
         }
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         lRet = EXCEPTION_CONTINUE_SEARCH ;
     }
-    return ( lRet ) ;
+
+    return (lRet) ;
 }
 
 /*//////////////////////////////////////////////////////////////////////
          EXCEPTION_POINTER Translation Functions Implementation
 //////////////////////////////////////////////////////////////////////*/
 
-LPCTSTR __stdcall GetFaultReason ( EXCEPTION_POINTERS * pExPtrs )
+LPCTSTR __stdcall GetFaultReason(EXCEPTION_POINTERS * pExPtrs)
 {
-    ASSERT ( FALSE == IsBadReadPtr ( pExPtrs ,
-                                     sizeof(EXCEPTION_POINTERS ) ) ) ;
-    if ( TRUE == IsBadReadPtr ( pExPtrs ,
-                                sizeof ( EXCEPTION_POINTERS ) ) )
+    ASSERT(FALSE == IsBadReadPtr(pExPtrs ,
+                                 sizeof(EXCEPTION_POINTERS))) ;
+
+    if (TRUE == IsBadReadPtr(pExPtrs ,
+                             sizeof(EXCEPTION_POINTERS)))
     {
-        TRACE0 ( "Bad parameter to GetFaultReasonA\n" ) ;
-        return ( NULL ) ;
+        TRACE0("Bad parameter to GetFaultReasonA\n") ;
+        return (NULL) ;
     }
 
     // The value that holds the return.
@@ -334,7 +349,7 @@ LPCTSTR __stdcall GetFaultReason ( EXCEPTION_POINTERS * pExPtrs )
     {
 
         // Initialize the symbol engine in case it is not initialized.
-        InitSymEng ( ) ;
+        InitSymEng() ;
 
         // The current position in the buffer.
         int iCurr = 0 ;
@@ -342,115 +357,117 @@ LPCTSTR __stdcall GetFaultReason ( EXCEPTION_POINTERS * pExPtrs )
         //  minimum.
         DWORD dwTemp ;
 
-        iCurr += BSUGetModuleBaseName ( GetCurrentProcess ( ) ,
-                                        NULL                  ,
-                                        g_szBuff              ,
-                                        BUFF_SIZE              ) ;
+        iCurr += BSUGetModuleBaseName(GetCurrentProcess() ,
+                                      NULL                  ,
+                                      g_szBuff              ,
+                                      BUFF_SIZE) ;
 
-        iCurr += wsprintf ( g_szBuff + iCurr , _T ( " caused a " ) ) ;
+        iCurr += wsprintf(g_szBuff + iCurr , _T(" caused a ")) ;
 
         dwTemp = (DWORD)
-            ConvertSimpleException(pExPtrs->ExceptionRecord->
-                                                         ExceptionCode);
+                 ConvertSimpleException(pExPtrs->ExceptionRecord->
+                                        ExceptionCode);
 
-        if ( NULL != dwTemp )
+        if (NULL != dwTemp)
         {
-            iCurr += wsprintf ( g_szBuff + iCurr ,
-                                _T ( "%s" )      ,
-                                dwTemp            ) ;
+            iCurr += wsprintf(g_szBuff + iCurr ,
+                              _T("%s")      ,
+                              dwTemp) ;
         }
         else
         {
-            iCurr += (FormatMessage( FORMAT_MESSAGE_IGNORE_INSERTS |
-                                            FORMAT_MESSAGE_FROM_HMODULE,
-                                     GetModuleHandle (_T("NTDLL.DLL")) ,
-                                     pExPtrs->ExceptionRecord->
-                                                          ExceptionCode,
-                                     0                                 ,
-                                     g_szBuff + iCurr                  ,
-                                     BUFF_SIZE ,
-                                     0                                 )
-                      * sizeof ( TCHAR ) ) ;
+            iCurr += (FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS |
+                                    FORMAT_MESSAGE_FROM_HMODULE,
+                                    GetModuleHandle(_T("NTDLL.DLL")) ,
+                                    pExPtrs->ExceptionRecord->
+                                    ExceptionCode,
+                                    0                                 ,
+                                    g_szBuff + iCurr                  ,
+                                    BUFF_SIZE ,
+                                    0)
+                      * sizeof(TCHAR)) ;
         }
 
-        ASSERT ( iCurr < BUFF_SIZE ) ;
+        ASSERT(iCurr < BUFF_SIZE) ;
 
-        iCurr += wsprintf ( g_szBuff + iCurr , _T ( " in module " ) ) ;
+        iCurr += wsprintf(g_szBuff + iCurr , _T(" in module ")) ;
 
         dwTemp =
-            SymGetModuleBase ( (HANDLE)GetCurrentProcessId ( ) ,
-                               (DWORD)pExPtrs->ExceptionRecord->
-                                                    ExceptionAddress ) ;
-        ASSERT ( NULL != dwTemp ) ;
+            SymGetModuleBase((HANDLE)GetCurrentProcessId() ,
+                             (DWORD)pExPtrs->ExceptionRecord->
+                             ExceptionAddress) ;
+        ASSERT(NULL != dwTemp) ;
 
-        if ( NULL == dwTemp )
+        if (NULL == dwTemp)
         {
-            iCurr += wsprintf ( g_szBuff + iCurr , _T ( "<UNKNOWN>" ) );
+            iCurr += wsprintf(g_szBuff + iCurr , _T("<UNKNOWN>"));
         }
         else
         {
-            iCurr += BSUGetModuleBaseName ( GetCurrentProcess ( ) ,
-                                            (HINSTANCE)dwTemp     ,
-                                            g_szBuff + iCurr      ,
-                                            BUFF_SIZE - iCurr      ) ;
+            iCurr += BSUGetModuleBaseName(GetCurrentProcess() ,
+                                          (HINSTANCE)dwTemp     ,
+                                          g_szBuff + iCurr      ,
+                                          BUFF_SIZE - iCurr) ;
         }
 
-    #ifdef _ALPHA_
-        iCurr += wsprintf ( g_szBuff + iCurr    ,
-                            _T ( " at %08X" )   ,
-                            pExPtrs->ExceptionRecord->ExceptionAddress);
-    #else
-        iCurr += wsprintf ( g_szBuff + iCurr                ,
-                            _T ( " at %04X:%08X" )          ,
-                            pExPtrs->ContextRecord->SegCs   ,
-                            pExPtrs->ExceptionRecord->ExceptionAddress);
-    #endif
+#ifdef _ALPHA_
+        iCurr += wsprintf(g_szBuff + iCurr    ,
+                          _T(" at %08X")   ,
+                          pExPtrs->ExceptionRecord->ExceptionAddress);
+#else
+        iCurr += wsprintf(g_szBuff + iCurr                ,
+                          _T(" at %04X:%08X")          ,
+                          pExPtrs->ContextRecord->SegCs   ,
+                          pExPtrs->ExceptionRecord->ExceptionAddress);
+#endif
 
-        ASSERT ( iCurr < BUFF_SIZE ) ;
+        ASSERT(iCurr < BUFF_SIZE) ;
 
         // Start looking up the exception address.
         //lint -e545
         PIMAGEHLP_SYMBOL pSym = (PIMAGEHLP_SYMBOL)&g_stSymbol ;
         //lint +e545
-        FillMemory ( pSym , NULL , SYM_BUFF_SIZE ) ;
-        pSym->SizeOfStruct = sizeof ( IMAGEHLP_SYMBOL ) ;
-        pSym->MaxNameLength = SYM_BUFF_SIZE - sizeof ( IMAGEHLP_SYMBOL);
+        FillMemory(pSym , NULL , SYM_BUFF_SIZE) ;
+        pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL) ;
+        pSym->MaxNameLength = SYM_BUFF_SIZE - sizeof(IMAGEHLP_SYMBOL);
 
         DWORD dwDisp ;
-        if ( TRUE ==
-              SymGetSymFromAddr ( (HANDLE)GetCurrentProcessId ( )     ,
-                                  (DWORD)pExPtrs->ExceptionRecord->
-                                                     ExceptionAddress ,
-                                  &dwDisp                             ,
-                                  pSym                                ))
+
+        if (TRUE ==
+            SymGetSymFromAddr((HANDLE)GetCurrentProcessId()     ,
+                              (DWORD)pExPtrs->ExceptionRecord->
+                              ExceptionAddress ,
+                              &dwDisp                             ,
+                              pSym))
         {
-            iCurr += wsprintf ( g_szBuff + iCurr , _T ( ", " ) ) ;
+            iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
             // Copy no more than there is room for.
-            dwTemp = lstrlen ( pSym->Name ) ;
-            if ( (int)dwTemp > ( BUFF_SIZE - iCurr - 20 ) )
+            dwTemp = lstrlen(pSym->Name) ;
+
+            if ((int)dwTemp > (BUFF_SIZE - iCurr - 20))
             {
-                lstrcpyn ( g_szBuff + iCurr      ,
-                           pSym->Name            ,
-                           BUFF_SIZE - iCurr - 1  ) ;
+                lstrcpyn(g_szBuff + iCurr      ,
+                         pSym->Name            ,
+                         BUFF_SIZE - iCurr - 1) ;
                 // Gotta leave now.
                 szRet = g_szBuff ;
                 __leave ;
             }
             else
             {
-                if ( dwDisp > 0 )
+                if (dwDisp > 0)
                 {
-                    iCurr += wsprintf ( g_szBuff + iCurr         ,
-                                        _T ( "%s()+%d byte(s)" ) ,
-                                        pSym->Name               ,
-                                        dwDisp                    ) ;
+                    iCurr += wsprintf(g_szBuff + iCurr         ,
+                                      _T("%s()+%d byte(s)") ,
+                                      pSym->Name               ,
+                                      dwDisp) ;
                 }
                 else
                 {
-                    iCurr += wsprintf ( g_szBuff + iCurr ,
-                                        _T ( "%s " )     ,
-                                        pSym->Name        ) ;
+                    iCurr += wsprintf(g_szBuff + iCurr ,
+                                      _T("%s ")     ,
+                                      pSym->Name) ;
                 }
             }
         }
@@ -462,71 +479,75 @@ LPCTSTR __stdcall GetFaultReason ( EXCEPTION_POINTERS * pExPtrs )
             __leave ;
         }
 
-        ASSERT ( iCurr < BUFF_SIZE ) ;
+        ASSERT(iCurr < BUFF_SIZE) ;
 
         // Do the source and line lookup.
-        ZeroMemory ( &g_stLine , sizeof ( IMAGEHLP_LINE ) ) ;
-        g_stLine.SizeOfStruct = sizeof ( IMAGEHLP_LINE ) ;
+        ZeroMemory(&g_stLine , sizeof(IMAGEHLP_LINE)) ;
+        g_stLine.SizeOfStruct = sizeof(IMAGEHLP_LINE) ;
 
-        if ( TRUE ==
-              InternalSymGetLineFromAddr ((HANDLE)
-                                            GetCurrentProcessId ( )    ,
-                                          (DWORD)pExPtrs->
-                                                    ExceptionRecord->
-                                                      ExceptionAddress ,
-                                          &dwDisp                      ,
-                                          &g_stLine                   ))
+        if (TRUE ==
+            InternalSymGetLineFromAddr((HANDLE)
+                                       GetCurrentProcessId()    ,
+                                       (DWORD)pExPtrs->
+                                       ExceptionRecord->
+                                       ExceptionAddress ,
+                                       &dwDisp                      ,
+                                       &g_stLine))
         {
-            iCurr += wsprintf ( g_szBuff + iCurr , _T ( ", " ) ) ;
+            iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
             // Copy no more than there is room for.
-            dwTemp = lstrlen ( g_stLine.FileName ) ;
-            if ( (int)dwTemp > ( BUFF_SIZE - iCurr - 25 ) )
+            dwTemp = lstrlen(g_stLine.FileName) ;
+
+            if ((int)dwTemp > (BUFF_SIZE - iCurr - 25))
             {
-                lstrcpyn ( g_szBuff + iCurr      ,
-                           g_stLine.FileName     ,
-                           BUFF_SIZE - iCurr - 1  ) ;
+                lstrcpyn(g_szBuff + iCurr      ,
+                         g_stLine.FileName     ,
+                         BUFF_SIZE - iCurr - 1) ;
                 // Gotta leave now.
                 szRet = g_szBuff ;
                 __leave ;
             }
             else
             {
-                if ( dwDisp > 0 )
+                if (dwDisp > 0)
                 {
-                    iCurr += wsprintf ( g_szBuff + iCurr              ,
-                                        _T ( "%s, line %d+%d byte(s)"),
-                                        g_stLine.FileName             ,
-                                        g_stLine.LineNumber           ,
-                                        dwDisp                        );
+                    iCurr += wsprintf(g_szBuff + iCurr              ,
+                                      _T("%s, line %d+%d byte(s)"),
+                                      g_stLine.FileName             ,
+                                      g_stLine.LineNumber           ,
+                                      dwDisp);
                 }
                 else
                 {
-                    iCurr += wsprintf ( g_szBuff + iCurr     ,
-                                        _T ( "%s, line %d" ) ,
-                                        g_stLine.FileName    ,
-                                        g_stLine.LineNumber   ) ;
+                    iCurr += wsprintf(g_szBuff + iCurr     ,
+                                      _T("%s, line %d") ,
+                                      g_stLine.FileName    ,
+                                      g_stLine.LineNumber) ;
                 }
             }
         }
+
         szRet = g_szBuff ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ASSERT ( FALSE ) ;
+        ASSERT(FALSE) ;
         szRet = NULL ;
     }
-    return ( szRet ) ;
+
+    return (szRet) ;
 }
 
-BOOL __stdcall GetFaultReasonVB ( EXCEPTION_POINTERS * pExPtrs ,
-                                  LPTSTR               szBuff  ,
-                                  UINT                 uiSize   )
+BOOL __stdcall GetFaultReasonVB(EXCEPTION_POINTERS * pExPtrs ,
+                                LPTSTR               szBuff  ,
+                                UINT                 uiSize)
 {
-    ASSERT ( FALSE == IsBadWritePtr ( szBuff , uiSize ) ) ;
-    if ( TRUE == IsBadWritePtr ( szBuff , uiSize ) )
+    ASSERT(FALSE == IsBadWritePtr(szBuff , uiSize)) ;
+
+    if (TRUE == IsBadWritePtr(szBuff , uiSize))
     {
-        return ( FALSE ) ;
+        return (FALSE) ;
     }
 
     LPCTSTR szRet ;
@@ -534,95 +555,99 @@ BOOL __stdcall GetFaultReasonVB ( EXCEPTION_POINTERS * pExPtrs ,
     __try
     {
 
-        szRet = GetFaultReason ( pExPtrs ) ;
+        szRet = GetFaultReason(pExPtrs) ;
 
-        ASSERT ( NULL != szRet ) ;
-        if ( NULL == szRet )
+        ASSERT(NULL != szRet) ;
+
+        if (NULL == szRet)
         {
             __leave ;
         }
-        lstrcpyn ( szBuff   ,
-                   szRet    ,
-                   min ( (UINT)lstrlen ( szRet ) + 1, uiSize ) ) ;
+
+        lstrcpyn(szBuff   ,
+                 szRet    ,
+                 min((UINT)lstrlen(szRet) + 1, uiSize)) ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         szRet = NULL ;
     }
-    return ( NULL != szRet ) ;
+
+    return (NULL != szRet) ;
 }
 
 
 LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-             GetFirstStackTraceString ( DWORD                dwOpts  ,
-                                        EXCEPTION_POINTERS * pExPtrs  )
+GetFirstStackTraceString(DWORD                dwOpts  ,
+                         EXCEPTION_POINTERS * pExPtrs)
 {
     // All of the error checking is in the InternalGetStackTraceString
     //  function.
 
     // Initialize the STACKFRAME structure.
-    ZeroMemory ( &g_stFrame , sizeof ( STACKFRAME ) ) ;
+    ZeroMemory(&g_stFrame , sizeof(STACKFRAME)) ;
 
-    #ifdef _X86_
+#ifdef _X86_
     g_stFrame.AddrPC.Offset       = pExPtrs->ContextRecord->Eip ;
     g_stFrame.AddrPC.Mode         = AddrModeFlat                ;
     g_stFrame.AddrStack.Offset    = pExPtrs->ContextRecord->Esp ;
     g_stFrame.AddrStack.Mode      = AddrModeFlat                ;
     g_stFrame.AddrFrame.Offset    = pExPtrs->ContextRecord->Ebp ;
     g_stFrame.AddrFrame.Mode      = AddrModeFlat                ;
-    #else
+#else
     g_stFrame.AddrPC.Offset       = (DWORD)pExPtrs->ContextRecord->Fir ;
     g_stFrame.AddrPC.Mode         = AddrModeFlat ;
     g_stFrame.AddrReturn.Offset   =
-                                   (DWORD)pExPtrs->ContextRecord->IntRa;
+        (DWORD)pExPtrs->ContextRecord->IntRa;
     g_stFrame.AddrReturn.Mode     = AddrModeFlat ;
     g_stFrame.AddrStack.Offset    =
-                                   (DWORD)pExPtrs->ContextRecord->IntSp;
+        (DWORD)pExPtrs->ContextRecord->IntSp;
     g_stFrame.AddrStack.Mode      = AddrModeFlat ;
     g_stFrame.AddrFrame.Offset    =
-                                   (DWORD)pExPtrs->ContextRecord->IntFp;
+        (DWORD)pExPtrs->ContextRecord->IntFp;
     g_stFrame.AddrFrame.Mode      = AddrModeFlat ;
-    #endif
+#endif
 
-    return ( InternalGetStackTraceString ( dwOpts , pExPtrs ) ) ;
+    return (InternalGetStackTraceString(dwOpts , pExPtrs)) ;
 }
 
 LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-             GetNextStackTraceString ( DWORD                dwOpts  ,
-                                       EXCEPTION_POINTERS * pExPtrs  )
+GetNextStackTraceString(DWORD                dwOpts  ,
+                        EXCEPTION_POINTERS * pExPtrs)
 {
     // All error checking is in InternalGetStackTraceString.
     // Assume that GetFirstStackTraceString has already initialized the
     //  stack frame information.
-    return ( InternalGetStackTraceString ( dwOpts , pExPtrs ) ) ;
+    return (InternalGetStackTraceString(dwOpts , pExPtrs)) ;
 }
 
-BOOL __stdcall CH_ReadProcessMemory ( HANDLE                      ,
-                                      LPCVOID lpBaseAddress       ,
-                                      LPVOID  lpBuffer            ,
-                                      DWORD   nSize               ,
-                                      LPDWORD lpNumberOfBytesRead  )
+BOOL __stdcall CH_ReadProcessMemory(HANDLE                      ,
+                                    LPCVOID lpBaseAddress       ,
+                                    LPVOID  lpBuffer            ,
+                                    DWORD   nSize               ,
+                                    LPDWORD lpNumberOfBytesRead)
 {
-    return ( ReadProcessMemory ( GetCurrentProcess ( ) ,
-                                 lpBaseAddress         ,
-                                 lpBuffer              ,
-                                 nSize                 ,
-                                 lpNumberOfBytesRead    ) ) ;
+    return (ReadProcessMemory(GetCurrentProcess() ,
+                              lpBaseAddress         ,
+                              lpBuffer              ,
+                              nSize                 ,
+                              lpNumberOfBytesRead)) ;
 }
 
 // The internal function that does all the stack walking.
 LPCTSTR __stdcall
-          InternalGetStackTraceString ( DWORD                dwOpts  ,
-                                        EXCEPTION_POINTERS * pExPtrs  )
+InternalGetStackTraceString(DWORD                dwOpts  ,
+                            EXCEPTION_POINTERS * pExPtrs)
 {
 
-    ASSERT ( FALSE == IsBadReadPtr ( pExPtrs                      ,
-                                     sizeof (EXCEPTION_POINTERS )));
-    if ( TRUE == IsBadReadPtr ( pExPtrs                      ,
-                                sizeof ( EXCEPTION_POINTERS ) ) )
+    ASSERT(FALSE == IsBadReadPtr(pExPtrs                      ,
+                                 sizeof(EXCEPTION_POINTERS)));
+
+    if (TRUE == IsBadReadPtr(pExPtrs                      ,
+                             sizeof(EXCEPTION_POINTERS)))
     {
-        TRACE0 ( "GetStackTraceString - invalid pExPtrs!\n" ) ;
-        return ( NULL ) ;
+        TRACE0("GetStackTraceString - invalid pExPtrs!\n") ;
+        return (NULL) ;
     }
 
     // The value that is returned.
@@ -633,7 +658,7 @@ LPCTSTR __stdcall
     __try
     {
         // Initialize the symbol engine in case it is not initialized.
-        InitSymEng ( ) ;
+        InitSymEng() ;
 
 #ifdef _ALPHA_
 #define CH_MACHINE IMAGE_FILE_MACHINE_ALPHA
@@ -642,17 +667,18 @@ LPCTSTR __stdcall
 #endif
         // Note:  If the source and line functions are used, then
         //        StackWalk can access violate.
-        BOOL bSWRet = StackWalk ( CH_MACHINE                        ,
-                                  (HANDLE)GetCurrentProcessId ( )   ,
-                                  GetCurrentThread ( )              ,
-                                  &g_stFrame                        ,
-                                  pExPtrs->ContextRecord            ,
-                                  (PREAD_PROCESS_MEMORY_ROUTINE)
-                                               CH_ReadProcessMemory ,
-                                  SymFunctionTableAccess            ,
-                                  SymGetModuleBase                  ,
-                                  NULL                               ) ;
-        if ( ( FALSE == bSWRet ) || ( 0 == g_stFrame.AddrFrame.Offset ))
+        BOOL bSWRet = StackWalk(CH_MACHINE                        ,
+                                (HANDLE)GetCurrentProcessId()   ,
+                                GetCurrentThread()              ,
+                                &g_stFrame                        ,
+                                pExPtrs->ContextRecord            ,
+                                (PREAD_PROCESS_MEMORY_ROUTINE)
+                                CH_ReadProcessMemory ,
+                                SymFunctionTableAccess            ,
+                                SymGetModuleBase                  ,
+                                NULL) ;
+
+        if ((FALSE == bSWRet) || (0 == g_stFrame.AddrFrame.Offset))
         {
             szRet = NULL ;
             __leave ;
@@ -662,99 +688,100 @@ LPCTSTR __stdcall
 
         // At a minimum, put the address in.
 #ifdef _ALPHA_
-        iCurr += wsprintf ( g_szBuff + iCurr        ,
-                            _T ( "0x%08X" )         ,
-                            g_stFrame.AddrPC.Offset  ) ;
+        iCurr += wsprintf(g_szBuff + iCurr        ,
+                          _T("0x%08X")         ,
+                          g_stFrame.AddrPC.Offset) ;
 #else
-        iCurr += wsprintf ( g_szBuff + iCurr              ,
-                            _T ( "%04X:%08X" )            ,
-                            pExPtrs->ContextRecord->SegCs ,
-                            g_stFrame.AddrPC.Offset        ) ;
+        iCurr += wsprintf(g_szBuff + iCurr              ,
+                          _T("%04X:%08X")            ,
+                          pExPtrs->ContextRecord->SegCs ,
+                          g_stFrame.AddrPC.Offset) ;
 #endif
 
         // Do the parameters?
-        if ( GSTSO_PARAMS == ( dwOpts & GSTSO_PARAMS ) )
+        if (GSTSO_PARAMS == (dwOpts & GSTSO_PARAMS))
         {
-            iCurr += wsprintf ( g_szBuff + iCurr          ,
-                                _T ( " (0x%08X 0x%08X "\
-                                      "0x%08X 0x%08X)"  ) ,
-                                g_stFrame.Params[ 0 ]     ,
-                                g_stFrame.Params[ 1 ]     ,
-                                g_stFrame.Params[ 2 ]     ,
-                                g_stFrame.Params[ 3 ]      ) ;
+            iCurr += wsprintf(g_szBuff + iCurr          ,
+                              _T(" (0x%08X 0x%08X "\
+                                 "0x%08X 0x%08X)") ,
+                              g_stFrame.Params[ 0 ]     ,
+                              g_stFrame.Params[ 1 ]     ,
+                              g_stFrame.Params[ 2 ]     ,
+                              g_stFrame.Params[ 3 ]) ;
         }
 
-        if ( GSTSO_MODULE == ( dwOpts & GSTSO_MODULE ) )
+        if (GSTSO_MODULE == (dwOpts & GSTSO_MODULE))
         {
-            iCurr += wsprintf ( g_szBuff + iCurr  , _T ( " " ) ) ;
+            iCurr += wsprintf(g_szBuff + iCurr  , _T(" ")) ;
 
-            dwTemp = SymGetModuleBase ( (HANDLE)GetCurrentProcessId ( ),
-                                        g_stFrame.AddrPC.Offset       );
+            dwTemp = SymGetModuleBase((HANDLE)GetCurrentProcessId(),
+                                      g_stFrame.AddrPC.Offset);
 
-            ASSERT ( NULL != dwTemp ) ;
+            ASSERT(NULL != dwTemp) ;
 
-            if ( NULL == dwTemp )
+            if (NULL == dwTemp)
             {
-                iCurr += wsprintf ( g_szBuff + iCurr  ,
-                                    _T ( "<UNKNOWN>" ) ) ;
+                iCurr += wsprintf(g_szBuff + iCurr  ,
+                                  _T("<UNKNOWN>")) ;
             }
             else
             {
-                iCurr += BSUGetModuleBaseName ( GetCurrentProcess ( ) ,
-                                                (HINSTANCE)dwTemp     ,
-                                                g_szBuff + iCurr      ,
-                                                BUFF_SIZE - iCurr     );
+                iCurr += BSUGetModuleBaseName(GetCurrentProcess() ,
+                                              (HINSTANCE)dwTemp     ,
+                                              g_szBuff + iCurr      ,
+                                              BUFF_SIZE - iCurr);
             }
         }
 
-        ASSERT ( iCurr < BUFF_SIZE ) ;
+        ASSERT(iCurr < BUFF_SIZE) ;
         DWORD dwDisp ;
 
-        if ( GSTSO_SYMBOL == ( dwOpts & GSTSO_SYMBOL ) )
+        if (GSTSO_SYMBOL == (dwOpts & GSTSO_SYMBOL))
         {
 
             // Start looking up the exception address.
             //lint -e545
             PIMAGEHLP_SYMBOL pSym = (PIMAGEHLP_SYMBOL)&g_stSymbol ;
             //lint +e545
-            ZeroMemory ( pSym , SYM_BUFF_SIZE ) ;
-            pSym->SizeOfStruct = sizeof ( IMAGEHLP_SYMBOL ) ;
+            ZeroMemory(pSym , SYM_BUFF_SIZE) ;
+            pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL) ;
             pSym->MaxNameLength = SYM_BUFF_SIZE -
-                                  sizeof ( IMAGEHLP_SYMBOL ) ;
+                                  sizeof(IMAGEHLP_SYMBOL) ;
 
-            if ( TRUE ==
-                  SymGetSymFromAddr ( (HANDLE)GetCurrentProcessId ( ) ,
-                                      g_stFrame.AddrPC.Offset         ,
-                                      &dwDisp                         ,
-                                      pSym                            ))
+            if (TRUE ==
+                SymGetSymFromAddr((HANDLE)GetCurrentProcessId() ,
+                                  g_stFrame.AddrPC.Offset         ,
+                                  &dwDisp                         ,
+                                  pSym))
             {
-                iCurr += wsprintf ( g_szBuff + iCurr , _T ( ", " ) ) ;
+                iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
                 // Copy no more than there is room for.
-                dwTemp = lstrlen ( pSym->Name ) ;
-                if ( dwTemp > (DWORD)( BUFF_SIZE - iCurr - 20 ) )
+                dwTemp = lstrlen(pSym->Name) ;
+
+                if (dwTemp > (DWORD)(BUFF_SIZE - iCurr - 20))
                 {
-                    lstrcpyn ( g_szBuff + iCurr      ,
-                               pSym->Name            ,
-                               BUFF_SIZE - iCurr - 1  ) ;
+                    lstrcpyn(g_szBuff + iCurr      ,
+                             pSym->Name            ,
+                             BUFF_SIZE - iCurr - 1) ;
                     // Gotta leave now.
                     szRet = g_szBuff ;
                     __leave ;
                 }
                 else
                 {
-                    if ( dwDisp > 0 )
+                    if (dwDisp > 0)
                     {
-                        iCurr += wsprintf ( g_szBuff + iCurr         ,
-                                            _T ( "%s()+%d byte(s)" ) ,
-                                            pSym->Name               ,
-                                            dwDisp                    );
+                        iCurr += wsprintf(g_szBuff + iCurr         ,
+                                          _T("%s()+%d byte(s)") ,
+                                          pSym->Name               ,
+                                          dwDisp);
                     }
                     else
                     {
-                        iCurr += wsprintf ( g_szBuff + iCurr ,
-                                            _T ( "%s" )      ,
-                                            pSym->Name        ) ;
+                        iCurr += wsprintf(g_szBuff + iCurr ,
+                                          _T("%s")      ,
+                                          pSym->Name) ;
                     }
                 }
             }
@@ -768,47 +795,48 @@ LPCTSTR __stdcall
 
         }
 
-        if ( GSTSO_SRCLINE == ( dwOpts & GSTSO_SRCLINE ) )
+        if (GSTSO_SRCLINE == (dwOpts & GSTSO_SRCLINE))
         {
-            ZeroMemory ( &g_stLine , sizeof ( IMAGEHLP_LINE ) ) ;
-            g_stLine.SizeOfStruct = sizeof ( IMAGEHLP_LINE ) ;
+            ZeroMemory(&g_stLine , sizeof(IMAGEHLP_LINE)) ;
+            g_stLine.SizeOfStruct = sizeof(IMAGEHLP_LINE) ;
 
-            if ( TRUE ==
-                   InternalSymGetLineFromAddr ( (HANDLE)
-                                                  GetCurrentProcessId(),
-                                                g_stFrame.AddrPC.Offset,
-                                                &dwDisp                ,
-                                                &g_stLine             ))
+            if (TRUE ==
+                InternalSymGetLineFromAddr((HANDLE)
+                                           GetCurrentProcessId(),
+                                           g_stFrame.AddrPC.Offset,
+                                           &dwDisp                ,
+                                           &g_stLine))
             {
-                iCurr += wsprintf ( g_szBuff + iCurr , _T ( ", " ) ) ;
+                iCurr += wsprintf(g_szBuff + iCurr , _T(", ")) ;
 
                 // Copy no more than there is room for.
-                dwTemp = lstrlen ( g_stLine.FileName ) ;
-                if ( dwTemp > (DWORD)( BUFF_SIZE - iCurr - 25 ) )
+                dwTemp = lstrlen(g_stLine.FileName) ;
+
+                if (dwTemp > (DWORD)(BUFF_SIZE - iCurr - 25))
                 {
-                    lstrcpyn ( g_szBuff + iCurr      ,
-                               g_stLine.FileName     ,
-                               BUFF_SIZE - iCurr - 1  ) ;
+                    lstrcpyn(g_szBuff + iCurr      ,
+                             g_stLine.FileName     ,
+                             BUFF_SIZE - iCurr - 1) ;
                     // Gotta leave now.
                     szRet = g_szBuff ;
                     __leave ;
                 }
                 else
                 {
-                    if ( dwDisp > 0 )
+                    if (dwDisp > 0)
                     {
                         iCurr += wsprintf(g_szBuff + iCurr             ,
-                                          _T ("%s, line %d+%d byte(s)"),
+                                          _T("%s, line %d+%d byte(s)"),
                                           g_stLine.FileName            ,
                                           g_stLine.LineNumber          ,
-                                          dwDisp                      );
+                                          dwDisp);
                     }
                     else
                     {
-                        iCurr += wsprintf ( g_szBuff + iCurr     ,
-                                            _T ( "%s, line %d" ) ,
-                                            g_stLine.FileName    ,
-                                            g_stLine.LineNumber   ) ;
+                        iCurr += wsprintf(g_szBuff + iCurr     ,
+                                          _T("%s, line %d") ,
+                                          g_stLine.FileName    ,
+                                          g_stLine.LineNumber) ;
                     }
                 }
             }
@@ -816,269 +844,284 @@ LPCTSTR __stdcall
 
         szRet = g_szBuff ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ASSERT ( FALSE ) ;
+        ASSERT(FALSE) ;
         szRet = NULL ;
     }
-    return ( szRet ) ;
+
+    return (szRet) ;
 }
 
 BOOL __stdcall
-           GetFirstStackTraceStringVB ( DWORD                dwOpts  ,
-                                        EXCEPTION_POINTERS * pExPtrs ,
-                                        LPTSTR               szBuff  ,
-                                        UINT                 uiSize   )
+GetFirstStackTraceStringVB(DWORD                dwOpts  ,
+                           EXCEPTION_POINTERS * pExPtrs ,
+                           LPTSTR               szBuff  ,
+                           UINT                 uiSize)
 {
-    ASSERT ( FALSE == IsBadWritePtr ( szBuff , uiSize ) ) ;
-    if ( TRUE == IsBadWritePtr ( szBuff , uiSize ) )
+    ASSERT(FALSE == IsBadWritePtr(szBuff , uiSize)) ;
+
+    if (TRUE == IsBadWritePtr(szBuff , uiSize))
     {
-        return ( FALSE ) ;
+        return (FALSE) ;
     }
 
     LPCTSTR szRet ;
 
     __try
     {
-        szRet = GetFirstStackTraceString ( dwOpts , pExPtrs ) ;
-        if ( NULL == szRet )
+        szRet = GetFirstStackTraceString(dwOpts , pExPtrs) ;
+
+        if (NULL == szRet)
         {
             __leave ;
         }
-        lstrcpyn ( szBuff   ,
-                   szRet    ,
-                   min ( (UINT)lstrlen ( szRet ) + 1 , uiSize ) ) ;
+
+        lstrcpyn(szBuff   ,
+                 szRet    ,
+                 min((UINT)lstrlen(szRet) + 1 , uiSize)) ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         szRet = NULL ;
     }
-    return ( NULL != szRet ) ;
+
+    return (NULL != szRet) ;
 }
 
 BOOL __stdcall
-           GetNextStackTraceStringVB ( DWORD                dwOpts  ,
-                                       EXCEPTION_POINTERS * pExPtrs ,
-                                       LPTSTR               szBuff  ,
-                                       UINT                 uiSize   )
+GetNextStackTraceStringVB(DWORD                dwOpts  ,
+                          EXCEPTION_POINTERS * pExPtrs ,
+                          LPTSTR               szBuff  ,
+                          UINT                 uiSize)
 {
-    ASSERT ( FALSE == IsBadWritePtr ( szBuff , uiSize ) ) ;
-    if ( TRUE == IsBadWritePtr ( szBuff , uiSize ) )
+    ASSERT(FALSE == IsBadWritePtr(szBuff , uiSize)) ;
+
+    if (TRUE == IsBadWritePtr(szBuff , uiSize))
     {
-        return ( FALSE ) ;
+        return (FALSE) ;
     }
 
     LPCTSTR szRet ;
 
     __try
     {
-        szRet = GetNextStackTraceString ( dwOpts , pExPtrs ) ;
-        if ( NULL == szRet )
+        szRet = GetNextStackTraceString(dwOpts , pExPtrs) ;
+
+        if (NULL == szRet)
         {
             __leave ;
         }
-        lstrcpyn ( szBuff   ,
-                   szRet    ,
-                   min ( (UINT)lstrlen ( szRet ) + 1 , uiSize ) ) ;
+
+        lstrcpyn(szBuff   ,
+                 szRet    ,
+                 min((UINT)lstrlen(szRet) + 1 , uiSize)) ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         szRet = NULL ;
     }
-    return ( NULL != szRet ) ;
+
+    return (NULL != szRet) ;
 }
 
-LPCTSTR __stdcall GetRegisterString ( EXCEPTION_POINTERS * pExPtrs )
+LPCTSTR __stdcall GetRegisterString(EXCEPTION_POINTERS * pExPtrs)
 {
     // Check the parameter.
-    ASSERT ( FALSE == IsBadReadPtr ( pExPtrs                      ,
-                                     sizeof (EXCEPTION_POINTERS  ) ) ) ;
-    if ( TRUE == IsBadReadPtr ( pExPtrs                      ,
-                                sizeof ( EXCEPTION_POINTERS ) ) )
+    ASSERT(FALSE == IsBadReadPtr(pExPtrs                      ,
+                                 sizeof(EXCEPTION_POINTERS))) ;
+
+    if (TRUE == IsBadReadPtr(pExPtrs                      ,
+                             sizeof(EXCEPTION_POINTERS)))
     {
-        TRACE0 ( "GetRegisterString - invalid pExPtrs!\n" ) ;
-        return ( NULL ) ;
+        TRACE0("GetRegisterString - invalid pExPtrs!\n") ;
+        return (NULL) ;
     }
 
 #ifdef _ALPHA_
     // Do the ALPHA ones if needed.
-    ASSERT ( FALSE ) ;
+    ASSERT(FALSE) ;
 #else
     // This puts 48 bytes on the stack.  This could be a problem when
     //  the stack is blown.
-    wsprintf ( g_szBuff ,
-               _T ("EAX=%08X  EBX=%08X  ECX=%08X  EDX=%08X  ESI=%08X\r\n"\
-                   "EDI=%08X  EBP=%08X  ESP=%08X  EIP=%08X  FLG=%08X\r\n"\
-                   "CS=%04X   DS=%04X  SS=%04X  ES=%04X   "\
-                   "FS=%04X  GS=%04X" ) ,
-                   pExPtrs->ContextRecord->Eax      ,
-                   pExPtrs->ContextRecord->Ebx      ,
-                   pExPtrs->ContextRecord->Ecx      ,
-                   pExPtrs->ContextRecord->Edx      ,
-                   pExPtrs->ContextRecord->Esi      ,
-                   pExPtrs->ContextRecord->Edi      ,
-                   pExPtrs->ContextRecord->Ebp      ,
-                   pExPtrs->ContextRecord->Esp      ,
-                   pExPtrs->ContextRecord->Eip      ,
-                   pExPtrs->ContextRecord->EFlags   ,
-                   pExPtrs->ContextRecord->SegCs    ,
-                   pExPtrs->ContextRecord->SegDs    ,
-                   pExPtrs->ContextRecord->SegSs    ,
-                   pExPtrs->ContextRecord->SegEs    ,
-                   pExPtrs->ContextRecord->SegFs    ,
-                   pExPtrs->ContextRecord->SegGs     ) ;
+    wsprintf(g_szBuff ,
+             _T("EAX=%08X  EBX=%08X  ECX=%08X  EDX=%08X  ESI=%08X\r\n"\
+                "EDI=%08X  EBP=%08X  ESP=%08X  EIP=%08X  FLG=%08X\r\n"\
+                "CS=%04X   DS=%04X  SS=%04X  ES=%04X   "\
+                "FS=%04X  GS=%04X") ,
+             pExPtrs->ContextRecord->Eax      ,
+             pExPtrs->ContextRecord->Ebx      ,
+             pExPtrs->ContextRecord->Ecx      ,
+             pExPtrs->ContextRecord->Edx      ,
+             pExPtrs->ContextRecord->Esi      ,
+             pExPtrs->ContextRecord->Edi      ,
+             pExPtrs->ContextRecord->Ebp      ,
+             pExPtrs->ContextRecord->Esp      ,
+             pExPtrs->ContextRecord->Eip      ,
+             pExPtrs->ContextRecord->EFlags   ,
+             pExPtrs->ContextRecord->SegCs    ,
+             pExPtrs->ContextRecord->SegDs    ,
+             pExPtrs->ContextRecord->SegSs    ,
+             pExPtrs->ContextRecord->SegEs    ,
+             pExPtrs->ContextRecord->SegFs    ,
+             pExPtrs->ContextRecord->SegGs) ;
 
 #endif
-    return ( g_szBuff ) ;
+    return (g_szBuff) ;
 
 }
 
-BOOL __stdcall GetRegisterStringVB ( EXCEPTION_POINTERS * pExPtrs ,
-                                     LPTSTR               szBuff  ,
-                                     UINT                 uiSize   )
+BOOL __stdcall GetRegisterStringVB(EXCEPTION_POINTERS * pExPtrs ,
+                                   LPTSTR               szBuff  ,
+                                   UINT                 uiSize)
 {
-    ASSERT ( FALSE == IsBadWritePtr ( szBuff , uiSize ) ) ;
-    if ( TRUE == IsBadWritePtr ( szBuff , uiSize ) )
+    ASSERT(FALSE == IsBadWritePtr(szBuff , uiSize)) ;
+
+    if (TRUE == IsBadWritePtr(szBuff , uiSize))
     {
-        return ( FALSE ) ;
+        return (FALSE) ;
     }
 
     LPCTSTR szRet ;
 
     __try
     {
-        szRet = GetRegisterString ( pExPtrs ) ;
-        if ( NULL == szRet )
+        szRet = GetRegisterString(pExPtrs) ;
+
+        if (NULL == szRet)
         {
             __leave ;
         }
-        lstrcpyn ( szBuff   ,
-                   szRet    ,
-                   min ( (UINT)lstrlen ( szRet ) + 1 , uiSize ) ) ;
+
+        lstrcpyn(szBuff   ,
+                 szRet    ,
+                 min((UINT)lstrlen(szRet) + 1 , uiSize)) ;
     }
-    __except ( EXCEPTION_EXECUTE_HANDLER )
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         szRet = NULL ;
     }
-    return ( NULL != szRet ) ;
+
+    return (NULL != szRet) ;
 
 }
 
 //lint -e527
-LPCTSTR ConvertSimpleException ( DWORD dwExcept )
+LPCTSTR ConvertSimpleException(DWORD dwExcept)
 {
-    switch ( dwExcept )
+    switch (dwExcept)
     {
         case EXCEPTION_ACCESS_VIOLATION         :
-            return ( _T ( "EXCEPTION_ACCESS_VIOLATION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_ACCESS_VIOLATION")) ;
+            break ;
 
         case EXCEPTION_DATATYPE_MISALIGNMENT    :
-            return ( _T ( "EXCEPTION_DATATYPE_MISALIGNMENT" ) ) ;
-        break ;
+            return (_T("EXCEPTION_DATATYPE_MISALIGNMENT")) ;
+            break ;
 
         case EXCEPTION_BREAKPOINT               :
-            return ( _T ( "EXCEPTION_BREAKPOINT" ) ) ;
-        break ;
+            return (_T("EXCEPTION_BREAKPOINT")) ;
+            break ;
 
         case EXCEPTION_SINGLE_STEP              :
-            return ( _T ( "EXCEPTION_SINGLE_STEP" ) ) ;
-        break ;
+            return (_T("EXCEPTION_SINGLE_STEP")) ;
+            break ;
 
         case EXCEPTION_ARRAY_BOUNDS_EXCEEDED    :
-            return ( _T ( "EXCEPTION_ARRAY_BOUNDS_EXCEEDED" ) ) ;
-        break ;
+            return (_T("EXCEPTION_ARRAY_BOUNDS_EXCEEDED")) ;
+            break ;
 
         case EXCEPTION_FLT_DENORMAL_OPERAND     :
-            return ( _T ( "EXCEPTION_FLT_DENORMAL_OPERAND" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_DENORMAL_OPERAND")) ;
+            break ;
 
         case EXCEPTION_FLT_DIVIDE_BY_ZERO       :
-            return ( _T ( "EXCEPTION_FLT_DIVIDE_BY_ZERO" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_DIVIDE_BY_ZERO")) ;
+            break ;
 
         case EXCEPTION_FLT_INEXACT_RESULT       :
-            return ( _T ( "EXCEPTION_FLT_INEXACT_RESULT" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_INEXACT_RESULT")) ;
+            break ;
 
         case EXCEPTION_FLT_INVALID_OPERATION    :
-            return ( _T ( "EXCEPTION_FLT_INVALID_OPERATION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_INVALID_OPERATION")) ;
+            break ;
 
         case EXCEPTION_FLT_OVERFLOW             :
-            return ( _T ( "EXCEPTION_FLT_OVERFLOW" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_OVERFLOW")) ;
+            break ;
 
         case EXCEPTION_FLT_STACK_CHECK          :
-            return ( _T ( "EXCEPTION_FLT_STACK_CHECK" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_STACK_CHECK")) ;
+            break ;
 
         case EXCEPTION_FLT_UNDERFLOW            :
-            return ( _T ( "EXCEPTION_FLT_UNDERFLOW" ) ) ;
-        break ;
+            return (_T("EXCEPTION_FLT_UNDERFLOW")) ;
+            break ;
 
         case EXCEPTION_INT_DIVIDE_BY_ZERO       :
-            return ( _T ( "EXCEPTION_INT_DIVIDE_BY_ZERO" ) ) ;
-        break ;
+            return (_T("EXCEPTION_INT_DIVIDE_BY_ZERO")) ;
+            break ;
 
         case EXCEPTION_INT_OVERFLOW             :
-            return ( _T ( "EXCEPTION_INT_OVERFLOW" ) ) ;
-        break ;
+            return (_T("EXCEPTION_INT_OVERFLOW")) ;
+            break ;
 
         case EXCEPTION_PRIV_INSTRUCTION         :
-            return ( _T ( "EXCEPTION_PRIV_INSTRUCTION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_PRIV_INSTRUCTION")) ;
+            break ;
 
         case EXCEPTION_IN_PAGE_ERROR            :
-            return ( _T ( "EXCEPTION_IN_PAGE_ERROR" ) ) ;
-        break ;
+            return (_T("EXCEPTION_IN_PAGE_ERROR")) ;
+            break ;
 
         case EXCEPTION_ILLEGAL_INSTRUCTION      :
-            return ( _T ( "EXCEPTION_ILLEGAL_INSTRUCTION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_ILLEGAL_INSTRUCTION")) ;
+            break ;
 
         case EXCEPTION_NONCONTINUABLE_EXCEPTION :
-            return ( _T ( "EXCEPTION_NONCONTINUABLE_EXCEPTION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_NONCONTINUABLE_EXCEPTION")) ;
+            break ;
 
         case EXCEPTION_STACK_OVERFLOW           :
-            return ( _T ( "EXCEPTION_STACK_OVERFLOW" ) ) ;
-        break ;
+            return (_T("EXCEPTION_STACK_OVERFLOW")) ;
+            break ;
 
         case EXCEPTION_INVALID_DISPOSITION      :
-            return ( _T ( "EXCEPTION_INVALID_DISPOSITION" ) ) ;
-        break ;
+            return (_T("EXCEPTION_INVALID_DISPOSITION")) ;
+            break ;
 
         case EXCEPTION_GUARD_PAGE               :
-            return ( _T ( "EXCEPTION_GUARD_PAGE" ) ) ;
-        break ;
+            return (_T("EXCEPTION_GUARD_PAGE")) ;
+            break ;
 
         case EXCEPTION_INVALID_HANDLE           :
-            return ( _T ( "EXCEPTION_INVALID_HANDLE" ) ) ;
-        break ;
+            return (_T("EXCEPTION_INVALID_HANDLE")) ;
+            break ;
 
         default :
-            return ( NULL ) ;
-        break ;
+            return (NULL) ;
+            break ;
     }
 }
 //lint +e527
 
 
-BOOL InternalSymGetLineFromAddr ( IN  HANDLE          hProcess        ,
-                                  IN  DWORD           dwAddr          ,
-                                  OUT PDWORD          pdwDisplacement ,
-                                  OUT PIMAGEHLP_LINE  Line            )
+BOOL InternalSymGetLineFromAddr(IN  HANDLE          hProcess        ,
+                                IN  DWORD           dwAddr          ,
+                                OUT PDWORD          pdwDisplacement ,
+                                OUT PIMAGEHLP_LINE  Line)
 {
     // Have I already done the GetProcAddress?
-    if ( FALSE == g_bLookedForSymFuncs )
+    if (FALSE == g_bLookedForSymFuncs)
     {
         g_bLookedForSymFuncs = TRUE ;
         g_pfnSymGetLineFromAddr = (PFNSYMGETLINEFROMADDR)
-                     GetProcAddress(GetModuleHandle(_T("IMAGEHLP.DLL")),
-                                   "SymGetLineFromAddr"               );
+                                  GetProcAddress(GetModuleHandle(_T("IMAGEHLP.DLL")),
+                                          "SymGetLineFromAddr");
     }
-    if ( NULL != g_pfnSymGetLineFromAddr )
+
+    if (NULL != g_pfnSymGetLineFromAddr)
     {
 #ifdef WORK_AROUND_SRCLINE_BUG
 
@@ -1087,115 +1130,124 @@ BOOL InternalSymGetLineFromAddr ( IN  HANDLE          hProcess        ,
         //  a zero displacement.  I will walk backwards 100 bytes to
         //  find the line and return the proper displacement.
         DWORD dwTempDis = 0 ;
-        while ( FALSE == g_pfnSymGetLineFromAddr ( hProcess        ,
-                                                   dwAddr -
-                                                    dwTempDis      ,
-                                                   pdwDisplacement ,
-                                                   Line             ) )
+
+        while (FALSE == g_pfnSymGetLineFromAddr(hProcess        ,
+                                                dwAddr -
+                                                dwTempDis      ,
+                                                pdwDisplacement ,
+                                                Line))
         {
             dwTempDis += 1 ;
-            if ( 100 == dwTempDis )
+
+            if (100 == dwTempDis)
             {
-                return ( FALSE ) ;
+                return (FALSE) ;
             }
         }
 
         // It was found and the source line information is correct so
         //  change the displacement if it was looked up multiple times.
-        if ( 0 != dwTempDis )
+        if (0 != dwTempDis)
         {
             *pdwDisplacement = dwTempDis ;
         }
-        return ( TRUE ) ;
+
+        return (TRUE) ;
 
 #else  // WORK_AROUND_SRCLINE_BUG
-        return ( g_pfnSymGetLineFromAddr ( hProcess         ,
-                                           dwAddr           ,
-                                           pdwDisplacement  ,
-                                           Line              ) ) ;
+        return (g_pfnSymGetLineFromAddr(hProcess         ,
+                                        dwAddr           ,
+                                        pdwDisplacement  ,
+                                        Line)) ;
 #endif
     }
-    return ( FALSE ) ;
+
+    return (FALSE) ;
 }
 
 // Initializes the symbol engine if needed.
-void InitSymEng ( void )
+void InitSymEng(void)
 {
-    if ( FALSE == g_bSymEngInit )
+    if (FALSE == g_bSymEngInit)
     {
         // Set up the symbol engine.
-        DWORD dwOpts = SymGetOptions ( ) ;
+        DWORD dwOpts = SymGetOptions() ;
 
         // Turn on load lines.
-        SymSetOptions ( dwOpts                |
-                        SYMOPT_LOAD_LINES      ) ;
+        SymSetOptions(dwOpts                |
+                      SYMOPT_LOAD_LINES) ;
 
         // Initialize the symbol engine.
-        VERIFY ( SymInitialize ( (HANDLE)GetCurrentProcessId ( ) ,
-                                 NULL                            ,
-                                 FALSE                            ) ) ;
+        VERIFY(SymInitialize((HANDLE)GetCurrentProcessId() ,
+                             NULL                            ,
+                             FALSE)) ;
         UINT uiCount ;
         // Find out how many modules there are.
-        VERIFY ( GetLoadedModules ( GetCurrentProcessId ( ) ,
-                                    0                       ,
-                                    NULL                    ,
-                                    &uiCount                 ) ) ;
+        VERIFY(GetLoadedModules(GetCurrentProcessId() ,
+                                0                       ,
+                                NULL                    ,
+                                &uiCount)) ;
         // Allocate something big enough to hold the list.
         HMODULE * paMods = new HMODULE[ uiCount ] ;
 
         // Get the list for real.
-        if ( FALSE == GetLoadedModules ( GetCurrentProcessId ( ) ,
-                                         uiCount                 ,
-                                         paMods                  ,
-                                         &uiCount                 ) )
+        if (FALSE == GetLoadedModules(GetCurrentProcessId() ,
+                                      uiCount                 ,
+                                      paMods                  ,
+                                      &uiCount))
         {
-            ASSERT ( FALSE ) ;
+            ASSERT(FALSE) ;
             // Free the memory that I allocated earlier.
             delete [] paMods ;
             // There's not much I can do here...
             g_bSymEngInit = FALSE ;
             return ;
         }
+
         // The module filename.
         TCHAR szModName [ MAX_PATH ] ;
-        for ( UINT uiCurr = 0 ; uiCurr < uiCount ; uiCurr++ )
+
+        for (UINT uiCurr = 0 ; uiCurr < uiCount ; uiCurr++)
         {
             // Get the module's filename.
-            VERIFY ( GetModuleFileName ( paMods[ uiCurr ]     ,
-                                         szModName            ,
-                                         sizeof ( szModName )  ) ) ;
+            VERIFY(GetModuleFileName(paMods[ uiCurr ]     ,
+                                     szModName            ,
+                                     sizeof(szModName))) ;
 
             // In order to get the symbol engine to work outside a
             //  debugger, it needs a handle to the image.  Yes, this
             //  will leak but the OS will close it down when the process
             //  ends.
-            HANDLE hFile = CreateFile ( szModName       ,
-                                        GENERIC_READ    ,
-                                        FILE_SHARE_READ ,
-                                        NULL            ,
-                                        OPEN_EXISTING   ,
-                                        0               ,
-                                        0                ) ;
+            HANDLE hFile = CreateFile(szModName       ,
+                                      GENERIC_READ    ,
+                                      FILE_SHARE_READ ,
+                                      NULL            ,
+                                      OPEN_EXISTING   ,
+                                      0               ,
+                                      0) ;
 
-            VERIFY ( SymLoadModule ( (HANDLE)GetCurrentProcessId ( ) ,
-                                     hFile                           ,
-                                     szModName                       ,
-                                     NULL                            ,
-                                     (DWORD)paMods[ uiCurr ]         ,
-                                     0                               ));
+            VERIFY(SymLoadModule((HANDLE)GetCurrentProcessId() ,
+                                 hFile                           ,
+                                 szModName                       ,
+                                 NULL                            ,
+                                 (DWORD)paMods[ uiCurr ]         ,
+                                 0));
         }
+
         delete [] paMods ;
     }
+
     g_bSymEngInit = TRUE ;
 }
 
 // Cleans up the symbol engine if needed.
-void CleanupSymEng ( void )
+void CleanupSymEng(void)
 {
-    if ( TRUE == g_bSymEngInit )
+    if (TRUE == g_bSymEngInit)
     {
-        VERIFY ( SymCleanup ( (HANDLE)GetCurrentProcessId ( ) ) ) ;
+        VERIFY(SymCleanup((HANDLE)GetCurrentProcessId())) ;
     }
+
     g_bSymEngInit = FALSE ;
 }
 
@@ -1232,7 +1284,7 @@ typedef BOOL
     IN MINIDUMP_TYPE DumpType,
     IN CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, OPTIONAL
     IN CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, OPTIONAL
-    IN CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam OPTIONAL   ) ;
+    IN CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam OPTIONAL) ;
 
 // The structure I can package the data necessary to the dump writer
 // thread.
@@ -1247,7 +1299,7 @@ typedef struct tag_DUMPTHREADPARAMS
 } DUMPTHREADPARAMS , * LPDUMPTHREADPARAMS ;
 
 // Ye ol' DBGHELP.DLL name.
-static const TCHAR * k_DBGHELPDLLNAME = _T ( "DBGHELP.DLL" ) ;
+static const TCHAR * k_DBGHELPDLLNAME = _T("DBGHELP.DLL") ;
 // The function name for MiniDumpWriteDump.  Note, this is ANSI as
 // that's what GetProcAddress wants.
 static const char * k_MINIDUMPWRITEDUMP = "MiniDumpWriteDump" ;
@@ -1256,7 +1308,7 @@ static const char * k_MINIDUMPWRITEDUMP = "MiniDumpWriteDump" ;
                         File Specific Prototypes
 //////////////////////////////////////////////////////////////////////*/
 // The dumper function.
-unsigned WINAPI DumpThread ( LPVOID pData ) ;
+unsigned WINAPI DumpThread(LPVOID pData) ;
 
 /*//////////////////////////////////////////////////////////////////////
                           File Specific Globals
@@ -1274,28 +1326,30 @@ static BSUMDRET g_eIMDALastError = eINVALID_ERROR ;
                              Implementation
 //////////////////////////////////////////////////////////////////////*/
 
-BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable ( void)
+BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable(void)
 {
     // If this is the first time through, always do it.
-    if ( NULL == g_pfnMDWD )
+    if (NULL == g_pfnMDWD)
     {
         // Find DBGHELP.DLL in memory.
-        HINSTANCE hInstDBGHELP = GetModuleHandle ( k_DBGHELPDLLNAME ) ;
+        HINSTANCE hInstDBGHELP = GetModuleHandle(k_DBGHELPDLLNAME) ;
+
         // BugslayerUtil.DLL has it in memory, but someone might excise
         // this file for their own purposes so try and load it.
-        if ( NULL == hInstDBGHELP )
+        if (NULL == hInstDBGHELP)
         {
-            hInstDBGHELP = LoadLibrary ( k_DBGHELPDLLNAME ) ;
+            hInstDBGHELP = LoadLibrary(k_DBGHELPDLLNAME) ;
         }
-        if ( NULL != hInstDBGHELP )
+
+        if (NULL != hInstDBGHELP)
         {
             // At least I have DBGHELP.DLL's handle.  Get the exported
             // function.
             g_pfnMDWD = (PFNMINIDUMPWRITEDUMP)
-                 GetProcAddress ( hInstDBGHELP , k_MINIDUMPWRITEDUMP ) ;
+                        GetProcAddress(hInstDBGHELP , k_MINIDUMPWRITEDUMP) ;
 
 
-            if ( NULL != g_pfnMDWD )
+            if (NULL != g_pfnMDWD)
             {
                 // It's good so set the last error for this function.
                 g_eIMDALastError = eDUMP_SUCCEEDED ;
@@ -1314,102 +1368,109 @@ BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable ( void)
             g_eIMDALastError = eDBGHELP_NOT_FOUND ;
         }
     }
+
     // If g_pfnMDWD is not NULL, I found it.
-    return ( NULL != g_pfnMDWD ) ;
+    return (NULL != g_pfnMDWD) ;
 }
 
 BSUMDRET BUGSUTIL_DLLINTERFACE __stdcall
-    CreateCurrentProcessMiniDumpA ( MINIDUMP_TYPE        eType      ,
-                                    char *               szFileName ,
-                                    DWORD                dwThread   ,
-                                    EXCEPTION_POINTERS * pExceptInfo )
+CreateCurrentProcessMiniDumpA(MINIDUMP_TYPE        eType      ,
+                              char *               szFileName ,
+                              DWORD                dwThread   ,
+                              EXCEPTION_POINTERS * pExceptInfo)
 {
     // Check the string parameter because I am paranoid.
-    ASSERT ( FALSE == IsBadStringPtrA ( szFileName , MAX_PATH ) ) ;
-    if ( TRUE == IsBadStringPtrA ( szFileName , MAX_PATH ) )
+    ASSERT(FALSE == IsBadStringPtrA(szFileName , MAX_PATH)) ;
+
+    if (TRUE == IsBadStringPtrA(szFileName , MAX_PATH))
     {
-        return ( eBAD_PARAM ) ;
+        return (eBAD_PARAM) ;
     }
 
     // The return value.
     BSUMDRET eRetVal = eDUMP_SUCCEEDED ;
 
     // Allocate enough space to hold the converted string.
-    int iLen = ( lstrlenA ( szFileName ) + 1 ) * sizeof ( wchar_t ) ;
+    int iLen = (lstrlenA(szFileName) + 1) * sizeof(wchar_t) ;
     wchar_t * pWideFileName = (wchar_t*)
-                               HeapAlloc ( GetProcessHeap ( )         ,
-                                           HEAP_GENERATE_EXCEPTIONS |
-                                             HEAP_ZERO_MEMORY         ,
-                                           iLen                       );
+                              HeapAlloc(GetProcessHeap()         ,
+                                        HEAP_GENERATE_EXCEPTIONS |
+                                        HEAP_ZERO_MEMORY         ,
+                                        iLen);
 
-    int iRet = MultiByteToWideChar ( CP_ACP          ,
-                                     MB_PRECOMPOSED  ,
-                                     szFileName      ,
-                                     -1              ,
-                                     pWideFileName   ,
-                                     iLen             ) ;
-    ASSERT ( iRet != 0 ) ;
-    if ( iRet != 0 )
+    int iRet = MultiByteToWideChar(CP_ACP          ,
+                                   MB_PRECOMPOSED  ,
+                                   szFileName      ,
+                                   -1              ,
+                                   pWideFileName   ,
+                                   iLen) ;
+    ASSERT(iRet != 0) ;
+
+    if (iRet != 0)
     {
         // The conversion worked, call the wide function.
-        eRetVal = CreateCurrentProcessMiniDumpW ( eType         ,
-                                                  pWideFileName ,
-                                                  dwThread      ,
-                                                  pExceptInfo    ) ;
+        eRetVal = CreateCurrentProcessMiniDumpW(eType         ,
+                                                pWideFileName ,
+                                                dwThread      ,
+                                                pExceptInfo) ;
     }
     else
     {
         eRetVal = eBAD_PARAM ;
     }
 
-    if ( NULL != pWideFileName )
+    if (NULL != pWideFileName)
     {
-        HeapFree ( GetProcessHeap ( ) , 0 , pWideFileName ) ;
+        HeapFree(GetProcessHeap() , 0 , pWideFileName) ;
     }
 
-    return ( eRetVal ) ;
+    return (eRetVal) ;
 }
 
 
 BSUMDRET BUGSUTIL_DLLINTERFACE __stdcall
-    CreateCurrentProcessMiniDumpW ( MINIDUMP_TYPE        eType      ,
-                                    wchar_t *            szFileName ,
-                                    DWORD                dwThread   ,
-                                    EXCEPTION_POINTERS * pExceptInfo )
+CreateCurrentProcessMiniDumpW(MINIDUMP_TYPE        eType      ,
+                              wchar_t *            szFileName ,
+                              DWORD                dwThread   ,
+                              EXCEPTION_POINTERS * pExceptInfo)
 {
     // Check the string parameter because I am paranoid.  I can't check
     // the eType as that might change in the future.
-    ASSERT ( FALSE == IsBadStringPtrW ( szFileName , MAX_PATH ) ) ;
-    if ( TRUE == IsBadStringPtrW ( szFileName , MAX_PATH ) )
+    ASSERT(FALSE == IsBadStringPtrW(szFileName , MAX_PATH)) ;
+
+    if (TRUE == IsBadStringPtrW(szFileName , MAX_PATH))
     {
-        return ( eBAD_PARAM ) ;
+        return (eBAD_PARAM) ;
     }
+
     // If an exception pointer blob was passed in.
-    if ( NULL != pExceptInfo )
+    if (NULL != pExceptInfo)
     {
-        ASSERT ( FALSE ==
-           IsBadReadPtr ( pExceptInfo , sizeof ( EXCEPTION_POINTERS)));
-        if ( TRUE ==
-            IsBadReadPtr ( pExceptInfo , sizeof ( EXCEPTION_POINTERS)))
+        ASSERT(FALSE ==
+               IsBadReadPtr(pExceptInfo , sizeof(EXCEPTION_POINTERS)));
+
+        if (TRUE ==
+            IsBadReadPtr(pExceptInfo , sizeof(EXCEPTION_POINTERS)))
         {
-            return ( eBAD_PARAM ) ;
+            return (eBAD_PARAM) ;
         }
     }
 
     // Have I even tried to get the exported MiniDumpWriteDump function
     // yet?
-    if ( ( NULL == g_pfnMDWD ) && ( eINVALID_ERROR == g_eIMDALastError))
+    if ((NULL == g_pfnMDWD) && (eINVALID_ERROR == g_eIMDALastError))
     {
-        if ( FALSE == IsMiniDumpFunctionAvailable ( ) )
+        if (FALSE == IsMiniDumpFunctionAvailable())
         {
-            return ( g_eIMDALastError ) ;
+            return (g_eIMDALastError) ;
         }
     }
+
     // If the MiniDumpWriteDump function pointer is NULL, return
     // whatever was in g_eIMDALastError.
-    if ( NULL == g_pfnMDWD )
+    if (NULL == g_pfnMDWD)
     {
-        return ( g_eIMDALastError ) ;
+        return (g_eIMDALastError) ;
     }
 
     // Package up the data for the dump writer thread.
@@ -1423,33 +1484,34 @@ BSUMDRET BUGSUTIL_DLLINTERFACE __stdcall
 
     // Crank the writer thread.
     unsigned dwTID ;
-    HANDLE hThread = (HANDLE)_beginthreadex ( NULL        ,
-                                              0           ,
-                                              DumpThread  ,
-                                              &stParams   ,
-                                              0           ,
-                                              &dwTID       ) ;
-    ASSERT ( (HANDLE)-1 != hThread ) ;
-    if ( (HANDLE)-1 != hThread )
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL        ,
+                                            0           ,
+                                            DumpThread  ,
+                                            &stParams   ,
+                                            0           ,
+                                            &dwTID) ;
+    ASSERT((HANDLE) - 1 != hThread) ;
+
+    if ((HANDLE) - 1 != hThread)
     {
         // The thread is running.  Block until the thread ends.
-        WaitForSingleObject ( hThread , INFINITE ) ;
+        WaitForSingleObject(hThread , INFINITE) ;
 
         // Close the handle.
-        VERIFY ( CloseHandle ( hThread ) ) ;
+        VERIFY(CloseHandle(hThread)) ;
 
     }
     else
     {
-        stParams.dwMiniDumpWriteDumpLastError = GetLastError ( ) ;
+        stParams.dwMiniDumpWriteDumpLastError = GetLastError() ;
         stParams.eReturnValue = eDEATH_ERROR ;
     }
 
     // Set the last error code based so it looks like this thread made
     // the call to MiniDumpWriteDump.
-    SetLastError ( stParams.dwMiniDumpWriteDumpLastError ) ;
+    SetLastError(stParams.dwMiniDumpWriteDumpLastError) ;
 
-    return ( stParams.eReturnValue ) ;
+    return (stParams.eReturnValue) ;
 }
 
 
@@ -1464,25 +1526,26 @@ RETURNS         :
             struct contains the problem.
     TRUE  - All OK, Jumpmaster!
 ----------------------------------------------------------------------*/
-unsigned WINAPI DumpThread ( LPVOID pData )
+unsigned WINAPI DumpThread(LPVOID pData)
 {
     LPDUMPTHREADPARAMS pParams = (LPDUMPTHREADPARAMS)pData ;
 
     // Create the file first.
-    HANDLE hFile = CreateFileW ( pParams->szFileName             ,
-                                 GENERIC_READ | GENERIC_WRITE    ,
-                                  0                              ,
-                                  NULL                           ,
-                                  CREATE_ALWAYS                  ,
-                                  FILE_ATTRIBUTE_NORMAL          ,
-                                  NULL                            ) ;
-    ASSERT ( INVALID_HANDLE_VALUE != hFile ) ;
-    if ( INVALID_HANDLE_VALUE != hFile )
+    HANDLE hFile = CreateFileW(pParams->szFileName             ,
+                               GENERIC_READ | GENERIC_WRITE    ,
+                               0                              ,
+                               NULL                           ,
+                               CREATE_ALWAYS                  ,
+                               FILE_ATTRIBUTE_NORMAL          ,
+                               NULL) ;
+    ASSERT(INVALID_HANDLE_VALUE != hFile) ;
+
+    if (INVALID_HANDLE_VALUE != hFile)
     {
         MINIDUMP_EXCEPTION_INFORMATION   stMDEI ;
         MINIDUMP_EXCEPTION_INFORMATION * pMDEI = NULL ;
 
-        if ( NULL != pParams->pExceptInfo )
+        if (NULL != pParams->pExceptInfo)
         {
             stMDEI.ThreadId = pParams->dwThreadID ;
             stMDEI.ExceptionPointers = pParams->pExceptInfo ;
@@ -1491,15 +1554,16 @@ unsigned WINAPI DumpThread ( LPVOID pData )
         }
 
         // Got the file open.  Write it.
-        BOOL bRet = g_pfnMDWD ( GetCurrentProcess ( )   ,
-                                GetCurrentProcessId ( ) ,
-                                hFile                   ,
-                                pParams->eType          ,
-                                pMDEI                   ,
-                                NULL                    ,
-                                NULL                     ) ;
-        ASSERT ( TRUE == bRet ) ;
-        if ( TRUE == bRet )
+        BOOL bRet = g_pfnMDWD(GetCurrentProcess()   ,
+                              GetCurrentProcessId() ,
+                              hFile                   ,
+                              pParams->eType          ,
+                              pMDEI                   ,
+                              NULL                    ,
+                              NULL) ;
+        ASSERT(TRUE == bRet) ;
+
+        if (TRUE == bRet)
         {
             pParams->eReturnValue = eDUMP_SUCCEEDED ;
         }
@@ -1510,15 +1574,16 @@ unsigned WINAPI DumpThread ( LPVOID pData )
         }
 
         // Close the open file.
-        VERIFY ( CloseHandle ( hFile ) ) ;
+        VERIFY(CloseHandle(hFile)) ;
     }
     else
     {
         // Could not open the file!
         pParams->eReturnValue = eOPEN_DUMP_FAILED ;
     }
+
     // Always save the last error value so I can set it in the original
     // thread.
-    pParams->dwMiniDumpWriteDumpLastError = GetLastError ( ) ;
-    return ( eDUMP_SUCCEEDED == pParams->eReturnValue ) ;
+    pParams->dwMiniDumpWriteDumpLastError = GetLastError() ;
+    return (eDUMP_SUCCEEDED == pParams->eReturnValue) ;
 }

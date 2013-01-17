@@ -20,19 +20,19 @@ extern int g_nWinAmpInitVolume;
 /*****************************************************************************/
 WinAmpFrontEnd::WinAmpFrontEnd()
 {
-	winamp_win = 0;
-	currentTrackTitle = 0;
+    winamp_win = 0;
+    currentTrackTitle = 0;
 
-	for (int i = 0; i < 2; i++)
-		sprintf(DEDString[i],"Not initialized");
+    for (int i = 0; i < 2; i++)
+        sprintf(DEDString[i], "Not initialized");
 
-	if ((g_nWinAmpInitVolume >= 0)&&(g_nWinAmpInitVolume <= 255))
-		volume = g_nWinAmpInitVolume;
-	else
-		volume = INITIAL_VOLUME;
+    if ((g_nWinAmpInitVolume >= 0) && (g_nWinAmpInitVolume <= 255))
+        volume = g_nWinAmpInitVolume;
+    else
+        volume = INITIAL_VOLUME;
 
-	myTimer = 0;
-	WinAmpAlive = 0;
+    myTimer = 0;
+    WinAmpAlive = 0;
 };
 
 /*****************************************************************************/
@@ -40,8 +40,8 @@ WinAmpFrontEnd::WinAmpFrontEnd()
 /*****************************************************************************/
 WinAmpFrontEnd::~WinAmpFrontEnd()
 {
-	free(currentTrackTitle);
-	currentTrackTitle = 0;
+    free(currentTrackTitle);
+    currentTrackTitle = 0;
 };
 
 /*****************************************************************************/
@@ -52,24 +52,25 @@ WinAmpFrontEnd::~WinAmpFrontEnd()
 /*****************************************************************************/
 void WinAmpFrontEnd::InitWinAmp()
 {
-	// Find a window with classname "Winamp v1.x"
-	// Returns NULL if not found
-	winamp_win = FindWindow("Winamp v1.x",NULL);		
-	if (winamp_win == NULL)
-		ampexists=false;
-	else
-	{
-		ampexists=true;
-		// preinit volume (to 80% for now), so that I can sync
-		// that with the DED display (via the 'volume' variable
-		SendMessage(winamp_win,WM_USER, volume, 122);	
-	}
+    // Find a window with classname "Winamp v1.x"
+    // Returns NULL if not found
+    winamp_win = FindWindow("Winamp v1.x", NULL);
 
-	for (int i = 0; i < 2; i++)
-		sprintf(DEDString[i],"Not initialized");
+    if (winamp_win == NULL)
+        ampexists = false;
+    else
+    {
+        ampexists = true;
+        // preinit volume (to 80% for now), so that I can sync
+        // that with the DED display (via the 'volume' variable
+        SendMessage(winamp_win, WM_USER, volume, 122);
+    }
 
-	myTimer = 0;
-	WinAmpAlive = 0;
+    for (int i = 0; i < 2; i++)
+        sprintf(DEDString[i], "Not initialized");
+
+    myTimer = 0;
+    WinAmpAlive = 0;
 }
 
 /*****************************************************************************/
@@ -78,77 +79,77 @@ void WinAmpFrontEnd::InitWinAmp()
 /*****************************************************************************/
 void WinAmpFrontEnd::StopAndFadeout()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	copyCurTitle();
-	SendMessage(winamp_win, WM_COMMAND,WINAMP_BUTTON4_SHIFT,0);
+    copyCurTitle();
+    SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON4_SHIFT, 0);
 }
 /*****************************************************************************/
 //	Plays previous track in playlists, or restarts single track
 /*****************************************************************************/
 void WinAmpFrontEnd::Previous()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	copyCurTitle();
-	SendMessage(winamp_win, WM_COMMAND,WINAMP_BUTTON1,0);
+    copyCurTitle();
+    SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON1, 0);
 }
 /*****************************************************************************/
 //	Starts Playback.
 /*****************************************************************************/
 void WinAmpFrontEnd::Start()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	copyCurTitle();
-	SendMessage(winamp_win, WM_COMMAND,WINAMP_BUTTON2,0);
+    copyCurTitle();
+    SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON2, 0);
 }
 /*****************************************************************************/
 //	Stops Playback
 /*****************************************************************************/
 void WinAmpFrontEnd::Stop()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	copyCurTitle();
-	SendMessage(winamp_win, WM_COMMAND,WINAMP_BUTTON4,0);
+    copyCurTitle();
+    SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON4, 0);
 }
 /*****************************************************************************/
 //	Plays next track in playlist, or restarts single track
 /*****************************************************************************/
 void WinAmpFrontEnd::Next()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	copyCurTitle();
-	SendMessage(winamp_win, WM_COMMAND,WINAMP_BUTTON5,0);
+    copyCurTitle();
+    SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON5, 0);
 }
 /*****************************************************************************/
 //	Increasy volume by 1%
 /*****************************************************************************/
 void WinAmpFrontEnd::VolUp()
 {
-	if ((ampexists)&&(volume<255))
-	{
-		volume++;
-		SendMessage(winamp_win, WM_COMMAND,WINAMP_VOLUMEUP,0);
-	}
+    if ((ampexists) && (volume < 255))
+    {
+        volume++;
+        SendMessage(winamp_win, WM_COMMAND, WINAMP_VOLUMEUP, 0);
+    }
 }
 /*****************************************************************************/
 //	Decrease volume by 1%
 /*****************************************************************************/
 void WinAmpFrontEnd::VolDown()
 {
-	if ((ampexists)&&(volume>0))
-	{
-		volume--;
-		SendMessage(winamp_win, WM_COMMAND,WINAMP_VOLUMEDOWN,0);
-	}
+    if ((ampexists) && (volume > 0))
+    {
+        volume--;
+        SendMessage(winamp_win, WM_COMMAND, WINAMP_VOLUMEDOWN, 0);
+    }
 }
 /*****************************************************************************/
 //	Toggles Playback. Pause is interpreted as 'stopped' for now, so there is
@@ -156,17 +157,24 @@ void WinAmpFrontEnd::VolDown()
 /*****************************************************************************/
 void WinAmpFrontEnd::TogglePlayback()
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	int ret=SendMessage(winamp_win,WM_USER, 0, 104);
-	switch (ret)
-	{
-		case 1:	Stop(); break;
-		default:
-		case 3: Start(); break;	// actually, 3 is the 'paused' status.. but whatever..
-	}
-	copyCurTitle();
+    int ret = SendMessage(winamp_win, WM_USER, 0, 104);
+
+    switch (ret)
+    {
+        case 1:
+            Stop();
+            break;
+
+        default:
+        case 3:
+            Start();
+            break;	// actually, 3 is the 'paused' status.. but whatever..
+    }
+
+    copyCurTitle();
 }
 /*****************************************************************************/
 //	Copies title of currently played track into a class-internal (heap) string
@@ -181,60 +189,66 @@ void WinAmpFrontEnd::TogglePlayback()
 /*****************************************************************************/
 void WinAmpFrontEnd::copyCurTitle()
 {
-	if (!ampexists)	// should really not be necessary..
-		return;
+    if (!ampexists)	// should really not be necessary..
+        return;
 
-	if (currentTrackTitle)
-	{
-		free(currentTrackTitle);
-		currentTrackTitle = 0;
-	}
+    if (currentTrackTitle)
+    {
+        free(currentTrackTitle);
+        currentTrackTitle = 0;
+    }
 
-	char this_title[512],*p;
-	int len = 0;
+    char this_title[512], *p;
+    int len = 0;
 
-	len = GetWindowText(winamp_win,this_title,sizeof(this_title));
-	if (len == 0)
-		return;
+    len = GetWindowText(winamp_win, this_title, sizeof(this_title));
 
-	p = this_title+strlen(this_title)-8;
-	
-	while (p >= this_title)
-	{
-		if (!strnicmp(p,"- Winamp",8))
-		{
-			break;
-		}
-		p--;
-	}
-	if (p >= this_title)
-	{
-		p--;
-	}
-	
-	while (p >= this_title && *p == ' ')
-	{
-		p--;
-	}
-	*++p=0;
+    if (len == 0)
+        return;
 
-	currentTrackTitle = (char*)malloc(strlen(this_title)+1);
-	if (currentTrackTitle)
-		strcpy(currentTrackTitle,this_title);
+    p = this_title + strlen(this_title) - 8;
 
-	// copying DED String 1
-	strncpy(&DEDString[0][0],this_title,MY_MAX_DED_LEN-1);
-	DEDString[0][MY_MAX_DED_LEN-1] = '\0';
-	// ..if the title is longer, fill the rest in to DEDString 2
-	if (strlen(this_title)>MY_MAX_DED_LEN-1)
-	{
-		strncpy(&DEDString[1][0],&this_title[MY_MAX_DED_LEN-1],MY_MAX_DED_LEN-1);
-		DEDString[1][MY_MAX_DED_LEN-1] = '\0';
-	}
-	else	// else don´t print it
-	{
-		DEDString[1][0] = '\0';
-	}
+    while (p >= this_title)
+    {
+        if (!strnicmp(p, "- Winamp", 8))
+        {
+            break;
+        }
+
+        p--;
+    }
+
+    if (p >= this_title)
+    {
+        p--;
+    }
+
+    while (p >= this_title && *p == ' ')
+    {
+        p--;
+    }
+
+    *++p = 0;
+
+    currentTrackTitle = (char*)malloc(strlen(this_title) + 1);
+
+    if (currentTrackTitle)
+        strcpy(currentTrackTitle, this_title);
+
+    // copying DED String 1
+    strncpy(&DEDString[0][0], this_title, MY_MAX_DED_LEN - 1);
+    DEDString[0][MY_MAX_DED_LEN - 1] = '\0';
+
+    // ..if the title is longer, fill the rest in to DEDString 2
+    if (strlen(this_title) > MY_MAX_DED_LEN - 1)
+    {
+        strncpy(&DEDString[1][0], &this_title[MY_MAX_DED_LEN - 1], MY_MAX_DED_LEN - 1);
+        DEDString[1][MY_MAX_DED_LEN - 1] = '\0';
+    }
+    else	// else don´t print it
+    {
+        DEDString[1][0] = '\0';
+    }
 }
 /*****************************************************************************/
 //	returns pointer to string of currently played title. this string gets
@@ -242,10 +256,10 @@ void WinAmpFrontEnd::copyCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getCurTitle()
 {
-	if (!ampexists)
-		return "No WinAMP 2.xx window found !";
+    if (!ampexists)
+        return "No WinAMP 2.xx window found !";
 
-	return currentTrackTitle;	
+    return currentTrackTitle;
 }
 /*****************************************************************************/
 //	returns pointer to string of currently played title.
@@ -256,23 +270,23 @@ char* WinAmpFrontEnd::getCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 {
-	if (!ampexists)
-		return "No WinAMP window found !";
-		
-	if ((theLine != 0)&&(theLine != 1))
-		return 0;
+    if (!ampexists)
+        return "No WinAMP window found !";
 
-	return DEDString[theLine];
+    if ((theLine != 0) && (theLine != 1))
+        return 0;
+
+    return DEDString[theLine];
 }
 /*****************************************************************************/
 //	returns current volume. 0 <= volume <= 255
 /*****************************************************************************/
 int WinAmpFrontEnd::getVolume()
 {
-	if (!ampexists)
-		return 0;
+    if (!ampexists)
+        return 0;
 
-	return volume;
+    return volume;
 }
 /*****************************************************************************/
 //	should be called periodically to refresh the display of the currently
@@ -281,22 +295,23 @@ int WinAmpFrontEnd::getVolume()
 /*****************************************************************************/
 void WinAmpFrontEnd::Refresh(unsigned long timer)
 {
-	if (!ampexists)
-		return;
+    if (!ampexists)
+        return;
 
-	if (timer > myTimer)
-	{
-		copyCurTitle();
-		myTimer = timer + REFRESH_INTERVAL;
+    if (timer > myTimer)
+    {
+        copyCurTitle();
+        myTimer = timer + REFRESH_INTERVAL;
 
-		WinAmpAlive++;	// once every 40 secs I check if winamp was deactivated..
-		WinAmpAlive %= 20;
-		if (WinAmpAlive == 0)
-		{
-			if (FindWindow("Winamp v1.x",NULL) == NULL)
-			{
-				ampexists = false;
-			}
-		}
-	}
+        WinAmpAlive++;	// once every 40 secs I check if winamp was deactivated..
+        WinAmpAlive %= 20;
+
+        if (WinAmpAlive == 0)
+        {
+            if (FindWindow("Winamp v1.x", NULL) == NULL)
+            {
+                ampexists = false;
+            }
+        }
+    }
 }

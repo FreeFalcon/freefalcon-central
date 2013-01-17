@@ -50,44 +50,46 @@
 /********************************************************************/
 void AirframeClass::FlightControlSystem(void)
 {
-	Limiter *limiter = NULL;
+    Limiter *limiter = NULL;
 
-	limiter = gLimiterMgr->GetLimiter(PitchYawControlDamper,vehicleIndex);
-	if(limiter)
-	{
-		ylsdamp = plsdamp = limiter->Limit(qbar);
-	}
-	else
-	{
-		ylsdamp = plsdamp = 1.0F;
-	}
-	
-	limiter = gLimiterMgr->GetLimiter(RollControlDamper,vehicleIndex);
-	if(limiter)
-	{
-		rlsdamp = limiter->Limit(qbar);
-	}
-	else
-	{
-		rlsdamp = 1.0F;
-	}
+    limiter = gLimiterMgr->GetLimiter(PitchYawControlDamper, vehicleIndex);
 
-   /*----------------------------*/
-   /* gain schedules and filters */
-   /*----------------------------*/
-   Gains();
+    if (limiter)
+    {
+        ylsdamp = plsdamp = limiter->Limit(qbar);
+    }
+    else
+    {
+        ylsdamp = plsdamp = 1.0F;
+    }
 
-   SetStallConditions();
+    limiter = gLimiterMgr->GetLimiter(RollControlDamper, vehicleIndex);
 
-   /*--------------*/
-   /* control laws */
-   /*--------------*/
-   Pitch();
-   Roll();
-   Yaw();
-   Axial(SimLibMinorFrameTime);
+    if (limiter)
+    {
+        rlsdamp = limiter->Limit(qbar);
+    }
+    else
+    {
+        rlsdamp = 1.0F;
+    }
 
-   // This is probably unnecessary (it'll happen later)
-   // AND it is VERY wasteful...  SCR 8/5/98
-   //Trigenometry();
+    /*----------------------------*/
+    /* gain schedules and filters */
+    /*----------------------------*/
+    Gains();
+
+    SetStallConditions();
+
+    /*--------------*/
+    /* control laws */
+    /*--------------*/
+    Pitch();
+    Roll();
+    Yaw();
+    Axial(SimLibMinorFrameTime);
+
+    // This is probably unnecessary (it'll happen later)
+    // AND it is VERY wasteful...  SCR 8/5/98
+    //Trigenometry();
 }

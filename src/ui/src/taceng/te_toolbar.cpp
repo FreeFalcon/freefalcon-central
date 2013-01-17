@@ -43,26 +43,26 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void tactical_team_victory_button (long, short, C_Base *);
-static void tactical_ato_button (long, short, C_Base *);
-static void tactical_oob_button (long, short, C_Base *);
-static void tactical_flight_plan_button (long, short, C_Base *);
-static void tactical_munitions_button (long, short, C_Base *);
-static void tactical_briefing_button (long, short, C_Base *);
-static void tactical_briefing_print (long, short hittype, C_Base *ctrl);
-static void tactical_debriefing_print (long, short hittype, C_Base *ctrl);
+static void tactical_team_victory_button(long, short, C_Base *);
+static void tactical_ato_button(long, short, C_Base *);
+static void tactical_oob_button(long, short, C_Base *);
+static void tactical_flight_plan_button(long, short, C_Base *);
+static void tactical_munitions_button(long, short, C_Base *);
+static void tactical_briefing_button(long, short, C_Base *);
+static void tactical_briefing_print(long, short hittype, C_Base *ctrl);
+static void tactical_debriefing_print(long, short hittype, C_Base *ctrl);
 
-void CampaignButtonCB(long ID,short hittype,C_Base *control);
+void CampaignButtonCB(long ID, short hittype, C_Base *control);
 
-void tactical_show_ato_window (void);
-void tactical_show_oob_window (void);
+void tactical_show_ato_window(void);
+void tactical_show_oob_window(void);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 short GetFlightStatusID(Flight element);
-int CompressCampaignUntilTakeoff (Flight flight);
+int CompressCampaignUntilTakeoff(Flight flight);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,75 +74,77 @@ int CompressCampaignUntilTakeoff (Flight flight);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void hookup_toolbar_buttons (C_Window *winme)
+void hookup_toolbar_buttons(C_Window *winme)
 {
-	C_Button
-		*ctrl;
+    C_Button
+    *ctrl;
 
-	// Hook up Fly Button
-	ctrl=(C_Button *)winme->FindControl(SINGLE_FLY_CTRL);
-	if(ctrl)
-		ctrl->SetCallback(CampaignButtonCB);
+    // Hook up Fly Button
+    ctrl = (C_Button *)winme->FindControl(SINGLE_FLY_CTRL);
 
-	ctrl=(C_Button *)winme->FindControl(COMMS_FLY_CTRL);
-	if(ctrl)
-		ctrl->SetCallback(CampaignButtonCB);
+    if (ctrl)
+        ctrl->SetCallback(CampaignButtonCB);
 
-	// VC Button
-	ctrl = (C_Button *) winme->FindControl (VC_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(COMMS_FLY_CTRL);
 
-	if (ctrl != NULL)
-	{
-		ctrl->SetCallback (tactical_team_victory_button);
-	}
+    if (ctrl)
+        ctrl->SetCallback(CampaignButtonCB);
 
-	// ATO Button
-	ctrl = (C_Button *) winme->FindControl (ATO_BUTTON);
+    // VC Button
+    ctrl = (C_Button *) winme->FindControl(VC_BUTTON);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (tactical_ato_button);
-	}
+    if (ctrl != NULL)
+    {
+        ctrl->SetCallback(tactical_team_victory_button);
+    }
 
-	// OOB Button
-	ctrl = (C_Button *) winme->FindControl (OOB_BUTTON);
+    // ATO Button
+    ctrl = (C_Button *) winme->FindControl(ATO_BUTTON);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (tactical_oob_button);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(tactical_ato_button);
+    }
 
-	// Flight Plan Button
-	ctrl = (C_Button *) winme->FindControl (FLIGHT_PLAN_BUTTON);
+    // OOB Button
+    ctrl = (C_Button *) winme->FindControl(OOB_BUTTON);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (tactical_flight_plan_button);	
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(tactical_oob_button);
+    }
 
-	// Munitions Button
-	ctrl = (C_Button *) winme->FindControl (MUNITIONS_BUTTON);
+    // Flight Plan Button
+    ctrl = (C_Button *) winme->FindControl(FLIGHT_PLAN_BUTTON);
 
-	if (ctrl)
-	{
-		ctrl->SetCallback (tactical_munitions_button);	
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(tactical_flight_plan_button);
+    }
 
-	// Briefing
-	ctrl = (C_Button *) winme->FindControl (BRIEF_BUTTON);
+    // Munitions Button
+    ctrl = (C_Button *) winme->FindControl(MUNITIONS_BUTTON);
 
-	if (ctrl != NULL)
-	{
-		ctrl->SetCallback (tactical_briefing_button);
-	}
+    if (ctrl)
+    {
+        ctrl->SetCallback(tactical_munitions_button);
+    }
 
-	// TacRef
-	ctrl = (C_Button *) winme->FindControl (TACREF_CTRL);
+    // Briefing
+    ctrl = (C_Button *) winme->FindControl(BRIEF_BUTTON);
 
-	if (ctrl != NULL)
-	{
-		ctrl->SetCallback (OpenTacticalReferenceCB);
-	}
+    if (ctrl != NULL)
+    {
+        ctrl->SetCallback(tactical_briefing_button);
+    }
+
+    // TacRef
+    ctrl = (C_Button *) winme->FindControl(TACREF_CTRL);
+
+    if (ctrl != NULL)
+    {
+        ctrl->SetCallback(OpenTacticalReferenceCB);
+    }
 
 }
 
@@ -186,16 +188,16 @@ static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void tactical_team_victory_button (long, short hittype, C_Base *)
+static void tactical_team_victory_button(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	update_team_victory_window ();
+    update_team_victory_window();
 
-	gMainHandler->EnableWindowGroup (3400);
+    gMainHandler->EnableWindowGroup(3400);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -206,32 +208,32 @@ static void tactical_team_victory_button (long, short hittype, C_Base *)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void tactical_ato_button (long, short hittype, C_Base *)
+static void tactical_ato_button(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	//MonoPrint ("ATO Window\n");
+    //MonoPrint ("ATO Window\n");
 
-	tactical_show_ato_window ();
+    tactical_show_ato_window();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static void tactical_oob_button (long, short hittype, C_Base *)
+static void tactical_oob_button(long, short hittype, C_Base *)
 {
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
 
-	//MonoPrint ("OOB Window\n");
+    //MonoPrint ("OOB Window\n");
 
-	tactical_show_oob_window ();
+    tactical_show_oob_window();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -239,91 +241,94 @@ static void tactical_oob_button (long, short hittype, C_Base *)
 ///////////////////////////////////////////////////////////////////////////////
 
 extern VU_ID
-	gSelectedFlightID,
-	gActiveFlightID,
-	gCurrentFlightID;
+gSelectedFlightID,
+gActiveFlightID,
+gCurrentFlightID;
 
-void UpdateWaypointWindowInfo(C_Window *win,WayPoint wp,int wpnum, int flag=TRUE);
+void UpdateWaypointWindowInfo(C_Window *win, WayPoint wp, int wpnum, int flag = TRUE);
 
-static void tactical_flight_plan_button (long, short hittype, C_Base *ctrl)
+static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 {
-	C_Window
-		*win;
-	
-	WayPoint
-		wp;
-	
-	Flight
-		flt;
-	
-	if (hittype != C_TYPE_LMOUSEUP)
-	{
-		return;
-	}
-	
-	flt = (Flight )vuDatabase->Find (gCurrentFlightID);
+    C_Window
+    *win;
 
-	if (!flt)
-	{
-		return;
-	}
-	
-	win = gMainHandler->FindWindow (FLIGHT_PLAN_WIN);
-	if (win)
-	{
-		if (!(gMainHandler->GetWindowFlags (FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
-		{
-			gActiveFlightID = gSelectedFlightID;
+    WayPoint
+    wp;
 
-			wp = flt->GetFirstUnitWP ();
-			if (wp)
-			{
-				UpdateWaypointWindowInfo (win, wp, 1);
-				gMainHandler->EnableWindowGroup (ctrl->GetGroup ());
-			}
-		}
-		else
-		{
-			gMainHandler->WindowToFront (win);
-		}
-	}
+    Flight
+    flt;
+
+    if (hittype != C_TYPE_LMOUSEUP)
+    {
+        return;
+    }
+
+    flt = (Flight)vuDatabase->Find(gCurrentFlightID);
+
+    if (!flt)
+    {
+        return;
+    }
+
+    win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+
+    if (win)
+    {
+        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        {
+            gActiveFlightID = gSelectedFlightID;
+
+            wp = flt->GetFirstUnitWP();
+
+            if (wp)
+            {
+                UpdateWaypointWindowInfo(win, wp, 1);
+                gMainHandler->EnableWindowGroup(ctrl->GetGroup());
+            }
+        }
+        else
+        {
+            gMainHandler->WindowToFront(win);
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void OpenMunitionsWindowCB(long ID,short hittype,C_Base *control);
+void OpenMunitionsWindowCB(long ID, short hittype, C_Base *control);
 
-static void tactical_munitions_button (long ID, short hittype, C_Base *control)
+static void tactical_munitions_button(long ID, short hittype, C_Base *control)
 {
-	OpenMunitionsWindowCB (ID, hittype, control);
+    OpenMunitionsWindowCB(ID, hittype, control);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void do_tactical_briefing (C_Base *);
+void do_tactical_briefing(C_Base *);
 
-static void tactical_briefing_button (long, short hittype, C_Base *ctrl)
+static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 {
-	Flight		flight;
+    Flight		flight;
 
-	if (hittype != C_TYPE_LMOUSEUP)
-		return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
 
-	flight = (Flight) vuDatabase->Find(gSelectedFlightID);
-	if (!flight || !flight->IsFlight())
-		return;
+    flight = (Flight) vuDatabase->Find(gSelectedFlightID);
 
-	// KCK: This should only need to be called upon selecting a flight -
-	// but in edit mode there seems to be close to a zillion ways to select
-	// a flight, so I'm just going to redo it every time we look at the briefing -
-	// and before flying.
-	TheCampaign.MissionEvaluator->PreMissionEval(flight,FalconLocalSession->GetPilotSlot());
+    if (!flight || !flight->IsFlight())
+        return;
 
-	do_tactical_briefing (ctrl);
+    // KCK: This should only need to be called upon selecting a flight -
+    // but in edit mode there seems to be close to a zillion ways to select
+    // a flight, so I'm just going to redo it every time we look at the briefing -
+    // and before flying.
+    TheCampaign.MissionEvaluator->PreMissionEval(flight, FalconLocalSession->GetPilotSlot());
+
+    do_tactical_briefing(ctrl);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -416,43 +421,45 @@ void add_briefing_text (C_Window *win, int &x, int &y, char *str)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void BuildCampBrief (C_Window *);
-void BuildCampBrief (_TCHAR *txt);
-int SendStringToPrinter (_TCHAR *str, _TCHAR *title);
+void BuildCampBrief(C_Window *);
+void BuildCampBrief(_TCHAR *txt);
+int SendStringToPrinter(_TCHAR *str, _TCHAR *title);
 
-void do_tactical_briefing (C_Base *control)
+void do_tactical_briefing(C_Base *control)
 {
-	C_Window
-			*win;
+    C_Window
+    *win;
 
-	win = gMainHandler->FindWindow (BRIEF_WIN);
+    win = gMainHandler->FindWindow(BRIEF_WIN);
 
-	if (win)
-	{
-	    BuildCampBrief (win);
-	    gMainHandler->EnableWindowGroup(control->GetGroup());
-	    // JPO - attempt to add handlers for these
-	    C_Button *ctrl=(C_Button*)win->FindControl(BRIEF_PRINT);
-	    if (ctrl) 
-		ctrl->SetCallback(tactical_briefing_print);
-	}
+    if (win)
+    {
+        BuildCampBrief(win);
+        gMainHandler->EnableWindowGroup(control->GetGroup());
+        // JPO - attempt to add handlers for these
+        C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
+
+        if (ctrl)
+            ctrl->SetCallback(tactical_briefing_print);
+    }
 }
 
-static void tactical_briefing_print (long, short hittype, C_Base *ctrl)
+static void tactical_briefing_print(long, short hittype, C_Base *ctrl)
 {
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
-	_TCHAR string[8192];
-	BuildCampBrief(string);
-	SendStringToPrinter(string, "Briefing");
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
+
+    _TCHAR string[8192];
+    BuildCampBrief(string);
+    SendStringToPrinter(string, "Briefing");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void BuildCampDebrief (C_Window *win);
-void BuildCampDebrief (_TCHAR *txt);
+void BuildCampDebrief(C_Window *win);
+void BuildCampDebrief(_TCHAR *txt);
 #ifdef DEBUG
 #define FUNKY_KEVIN_DEBUG_STUFF 1
 #endif
@@ -461,40 +468,45 @@ void BuildCampDebrief (_TCHAR *txt);
 extern int inMission;
 #endif
 
-void do_tactical_debrief (void)
+void do_tactical_debrief(void)
 {
-	C_Window
-		*win;
+    C_Window
+    *win;
 
-	if(current_tactical_mission->get_type() != tt_training)
-	{
-		win = gMainHandler->FindWindow (DEBRIEF_WIN);
+    if (current_tactical_mission->get_type() != tt_training)
+    {
+        win = gMainHandler->FindWindow(DEBRIEF_WIN);
 
-		// KCK: Added the check for a pilot list so that we don't debrief after a
-		// discarded mission
-		if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data && TheCampaign.MissionEvaluator->flight_data->mission != AMIS_TRAINING)
-		{
-			BuildCampDebrief (win);
-			gMainHandler->EnableWindowGroup (win->GetGroup ());
-			// JPO - attempt to add handlers for these
-			C_Button *ctrl=(C_Button*)win->FindControl(BRIEF_PRINT);
-			if (ctrl) 
-			    ctrl->SetCallback(tactical_debriefing_print);
-		}
+        // KCK: Added the check for a pilot list so that we don't debrief after a
+        // discarded mission
+        if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data && TheCampaign.MissionEvaluator->flight_data->mission != AMIS_TRAINING)
+        {
+            BuildCampDebrief(win);
+            gMainHandler->EnableWindowGroup(win->GetGroup());
+            // JPO - attempt to add handlers for these
+            C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
+
+            if (ctrl)
+                ctrl->SetCallback(tactical_debriefing_print);
+        }
+
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-		else inMission = 0; // JPO allow training missions to finish in debug mode
+        else inMission = 0; // JPO allow training missions to finish in debug mode
+
 #endif
-	}
+    }
 }
 
-static void tactical_debriefing_print (long, short hittype, C_Base *ctrl)
+static void tactical_debriefing_print(long, short hittype, C_Base *ctrl)
 {
-    if(hittype != C_TYPE_LMOUSEUP)
-	return;
-    if (TheCampaign.MissionEvaluator == NULL || 
-	TheCampaign.MissionEvaluator->flight_data == NULL ||
-	TheCampaign.MissionEvaluator->flight_data->mission == AMIS_TRAINING)
-	return;
+    if (hittype != C_TYPE_LMOUSEUP)
+        return;
+
+    if (TheCampaign.MissionEvaluator == NULL ||
+        TheCampaign.MissionEvaluator->flight_data == NULL ||
+        TheCampaign.MissionEvaluator->flight_data->mission == AMIS_TRAINING)
+        return;
+
     _TCHAR string[8192];
     BuildCampDebrief(string);
     SendStringToPrinter(string, "DeBriefing");

@@ -23,57 +23,61 @@
 //
 // DigitalBrain::AiRunDecisionRoutines
 //
-// ------------------------------------------------- 
-FalconEntity* SpikeCheck (AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL);// 2002-02-10 S.G.
+// -------------------------------------------------
+FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
 
 // COBRA - RED - A list of Targets of No-Interest for AI
-const	DWORD	NonTargets[]={TYPE_TREE, TYPE_FENCE, TYPE_VASI, TYPE_TAXI_SIGN, 0 };
+const	DWORD	NonTargets[] = {TYPE_TREE, TYPE_FENCE, TYPE_VASI, TYPE_TAXI_SIGN, 0 };
 
 // COBRA - RED - This function returns TRUE if the passed type of a target is a target of interest
 bool DigitalBrain::EvaluateTarget(DWORD Type)
 {
-	const DWORD	*ptr=NonTargets;
-	// Look in the list
-	while(*ptr && *ptr!=Type) ptr++;
-	// Return the result
-	return *ptr?false:true;
+    const DWORD	*ptr = NonTargets;
+
+    // Look in the list
+    while (*ptr && *ptr != Type) ptr++;
+
+    // Return the result
+    return *ptr ? false : true;
 }
 
 
 
 void DigitalBrain::AiRunDecisionRoutines(void)
 {
-   //if (curMode == GunsJinkMode)
-   //{
-      GunsJinkCheck();
-   //}
+    //if (curMode == GunsJinkMode)
+    //{
+    GunsJinkCheck();
+    //}
 
-   //if (curMode == MissileDefeatMode)
-   //{
-      MissileDefeatCheck();
-   //}
+    //if (curMode == MissileDefeatMode)
+    //{
+    MissileDefeatCheck();
+    //}
 
-	// Check if I should be landing
-	ShiAssert(flightLead)
-	if (flightLead)
-		AiCheckForUnauthLand(flightLead->Id());
-	//AiCheckLand();
+    // Check if I should be landing
+    ShiAssert(flightLead)
 
-	// Check if I was ordered RTB
-	AiCheckRTB();
+    if (flightLead)
+        AiCheckForUnauthLand(flightLead->Id());
 
-	// Check If I was ordered to kill somthing
-	AiCheckEngage();
+    //AiCheckLand();
 
-	// Check if we have been ordered to perform a fancy maneuver
-	AiCheckManeuvers();
+    // Check if I was ordered RTB
+    AiCheckRTB();
 
-	// Check if we should be in formation
-	AiCheckFormation();
+    // Check If I was ordered to kill somthing
+    AiCheckEngage();
+
+    // Check if we have been ordered to perform a fancy maneuver
+    AiCheckManeuvers();
+
+    // Check if we should be in formation
+    AiCheckFormation();
 
 
-   // Always follow waypoints
-   AddMode(WaypointMode);
+    // Always follow waypoints
+    AddMode(WaypointMode);
 }
 
 
@@ -82,67 +86,74 @@ void DigitalBrain::AiRunDecisionRoutines(void)
 //
 // DigitalBrain::AiRunTargetSelection
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiRunTargetSelection(void)
 {
-VuEntity* pnewTarget;
-FalconEntity* curSpike = SpikeCheck (self);
+    VuEntity* pnewTarget;
+    FalconEntity* curSpike = SpikeCheck(self);
 
-// 2001-06-27 ADDED BY S.G. SO WING WILL SET THEIR ECM AS WELL
-   if (curSpike || (flightLead && flightLead != self && flightLead->IsSPJamming()))
-   {
-      if (self->HasSPJamming())
-	  {
-         self->SetFlag(ECM_ON);
-	  }
-   }
-   else
-   {
-      self->UnSetFlag(ECM_ON);
-   }
-// END OF ADDED SECTION
+    // 2001-06-27 ADDED BY S.G. SO WING WILL SET THEIR ECM AS WELL
+    if (curSpike || (flightLead && flightLead != self && flightLead->IsSPJamming()))
+    {
+        if (self->HasSPJamming())
+        {
+            self->SetFlag(ECM_ON);
+        }
+    }
+    else
+    {
+        self->UnSetFlag(ECM_ON);
+    }
 
-   if (curSpike)
-   {
-      SetThreat (curSpike);
-   }
-   else
-   {
-	   if(mDesignatedObject != FalconNullId) 
-		 {					// If target has been designated by the leader
+    // END OF ADDED SECTION
 
-		   pnewTarget = vuDatabase->Find(mDesignatedObject);	// Lookup target in database
-		   if(pnewTarget) 
-			 {
+    if (curSpike)
+    {
+        SetThreat(curSpike);
+    }
+    else
+    {
+        if (mDesignatedObject != FalconNullId)
+        {
+            // If target has been designated by the leader
+
+            pnewTarget = vuDatabase->Find(mDesignatedObject);	// Lookup target in database
+
+            if (pnewTarget)
+            {
 #if 0		   // Not working yet, commented out in case it creates more problem than it solves...
-			   // 2002-03-15 ADDED BY S.G. Special case when everyone in the unit is dead... Should help the AI not targeting chutes when that's all is left...
-			   // If it's a NON aggregated UNIT CAMPAIGN object, it SHOULD have components... If it doesn't, clear it's designated target.
-			   if (((FalconEntity *)pnewTarget)->IsCampaign() && ((CampBaseClass *)pnewTarget)->IsUnit() && !((CampBaseClass *)pnewTarget)->IsAggregate() && ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0) {
-				   ShiAssert(!"Empty deaggregated object as a target?!?");
-				   mDesignatedObject	= FalconNullId;
-			   }
-			   else
-			   // END OF ADDED SECTION
+
+                // 2002-03-15 ADDED BY S.G. Special case when everyone in the unit is dead... Should help the AI not targeting chutes when that's all is left...
+                // If it's a NON aggregated UNIT CAMPAIGN object, it SHOULD have components... If it doesn't, clear it's designated target.
+                if (((FalconEntity *)pnewTarget)->IsCampaign() && ((CampBaseClass *)pnewTarget)->IsUnit() && !((CampBaseClass *)pnewTarget)->IsAggregate() && ((CampBaseClass *)pnewTarget)->NumberOfComponents() == 0)
+                {
+                    ShiAssert(!"Empty deaggregated object as a target?!?");
+                    mDesignatedObject	= FalconNullId;
+                }
+                else
+                    // END OF ADDED SECTION
 #endif
-				   AiSearchTargetList(pnewTarget);							// Run targeting for wingman with designated target
-		   }
-		   else 
-			 {
-			   mDesignatedObject	= FalconNullId;
-		   }
-	   }
-	   else if(mpSearchFlags[AI_SEARCH_FOR_TARGET] || 
-				   mDesignatedObject == FalconNullId) {			// If we are ordered to scan for targets
-		   TargetSelection();											// Run the full selection routine
-	   }
-	   else {
-		   ShiAssert(curMode != GunsEngageMode);// Otherwise just chill out
-		   ClearTarget();													// No targets of interest
-			AiRestoreWeaponState();
-	   	mpActionFlags[AI_ENGAGE_TARGET]	= AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-	   }
-   }
+                    AiSearchTargetList(pnewTarget);							// Run targeting for wingman with designated target
+            }
+            else
+            {
+                mDesignatedObject	= FalconNullId;
+            }
+        }
+        else if (mpSearchFlags[AI_SEARCH_FOR_TARGET] ||
+                 mDesignatedObject == FalconNullId)  			// If we are ordered to scan for targets
+        {
+            TargetSelection();											// Run the full selection routine
+        }
+        else
+        {
+            ShiAssert(curMode != GunsEngageMode);// Otherwise just chill out
+            ClearTarget();													// No targets of interest
+            AiRestoreWeaponState();
+            mpActionFlags[AI_ENGAGE_TARGET]	= AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        }
+    }
 }
 
 
@@ -151,345 +162,383 @@ FalconEntity* curSpike = SpikeCheck (self);
 //
 // DigitalBrain::AiSearchTargetList
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
 {
-CampBaseClass* theTargetGroup = (CampBaseClass*)pentity;
-FalconEntity* theTarget = NULL;
-SimObjectType* objectPtr = NULL;
+    CampBaseClass* theTargetGroup = (CampBaseClass*)pentity;
+    FalconEntity* theTarget = NULL;
+    SimObjectType* objectPtr = NULL;
 
-	 if (!pentity)
-	 	 return;
+    if (!pentity)
+        return;
 
-   if (((FalconEntity*)pentity)->IsSim())
-   {
-      theTarget = (FalconEntity*)pentity;
-	  // 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
-	  if (!theTarget->OnGround() && (theTarget->IsDead() || theTarget->IsEject()))
-		  theTarget = NULL;
-	  // END OF ADDED SECTION 2002-04-02
-   }
-   else
-   {
-	  if (theTargetGroup->NumberOfComponents())
-// 2001-06-04 MODIFIED BY S.G. NEED TO ACCOUNT FOR GROUND TARGETS DIFFERENTLY THAN AIR TARGETS
-//       theTarget = theTargetGroup->GetComponentEntity (isWing % theTargetGroup->NumberOfComponents());
-	  {
-		  if (theTargetGroup->OnGround()) {
-			  // If we already have a ground target and it is part of the unit we are being asked to target and it's still alive, keep using it (ie, don't switch)
-			  if (groundTargetPtr && groundTargetPtr->BaseData()->IsSim() && 
-						((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup && 
-						!groundTargetPtr->BaseData()->IsExploding() && !groundTargetPtr->BaseData()->IsDead() && 
-						((SimBaseClass *)groundTargetPtr->BaseData())->pctStrength > 0.0f)
-				  return;
+    if (((FalconEntity*)pentity)->IsSim())
+    {
+        theTarget = (FalconEntity*)pentity;
 
-			  // Use our hep function
-			  theTarget = FindSimGroundTarget(theTargetGroup, theTargetGroup->NumberOfComponents(), 0);
-		  }
-		  // Target is not on the ground, select your opponent in the flight, wrapping if the opponent has less planes than us
-		  else
-			  theTarget = theTargetGroup->GetComponentEntity (isWing % theTargetGroup->NumberOfComponents());
-			// 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
-			if (theTarget && (theTarget->IsDead() || theTarget->IsEject()))
-				theTarget = NULL;
-			  // END OF ADDED SECTION 2002-04-02
-	   }
-       else
-		   theTarget = theTargetGroup;
-   }
+        // 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
+        if (!theTarget->OnGround() && (theTarget->IsDead() || theTarget->IsEject()))
+            theTarget = NULL;
 
-   if (theTarget)
-   {
-// 2001-05-10 MODIFIED BY S.G. IF WE HAVE A GROUND TARGET AND IT'S OUR TARGET, AVOID DOING THIS AS WELL (WE'RE FINE)
-//    if (!targetPtr || targetPtr->BaseData() != theTarget)
-      if ((!targetPtr || targetPtr->BaseData() != theTarget) && (!groundTargetPtr || groundTargetPtr->BaseData() != theTarget))
-      {
+        // END OF ADDED SECTION 2002-04-02
+    }
+    else
+    {
+        if (theTargetGroup->NumberOfComponents())
+            // 2001-06-04 MODIFIED BY S.G. NEED TO ACCOUNT FOR GROUND TARGETS DIFFERENTLY THAN AIR TARGETS
+            //       theTarget = theTargetGroup->GetComponentEntity (isWing % theTargetGroup->NumberOfComponents());
+        {
+            if (theTargetGroup->OnGround())
+            {
+                // If we already have a ground target and it is part of the unit we are being asked to target and it's still alive, keep using it (ie, don't switch)
+                if (groundTargetPtr && groundTargetPtr->BaseData()->IsSim() &&
+                    ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject() == theTargetGroup &&
+                    !groundTargetPtr->BaseData()->IsExploding() && !groundTargetPtr->BaseData()->IsDead() &&
+                    ((SimBaseClass *)groundTargetPtr->BaseData())->pctStrength > 0.0f)
+                    return;
+
+                // Use our hep function
+                theTarget = FindSimGroundTarget(theTargetGroup, theTargetGroup->NumberOfComponents(), 0);
+            }
+            // Target is not on the ground, select your opponent in the flight, wrapping if the opponent has less planes than us
+            else
+                theTarget = theTargetGroup->GetComponentEntity(isWing % theTargetGroup->NumberOfComponents());
+
+            // 2002-04-02 ADDED BY S.G. If it's dead or a chute, leave it alone...
+            if (theTarget && (theTarget->IsDead() || theTarget->IsEject()))
+                theTarget = NULL;
+
+            // END OF ADDED SECTION 2002-04-02
+        }
+        else
+            theTarget = theTargetGroup;
+    }
+
+    if (theTarget)
+    {
+        // 2001-05-10 MODIFIED BY S.G. IF WE HAVE A GROUND TARGET AND IT'S OUR TARGET, AVOID DOING THIS AS WELL (WE'RE FINE)
+        //    if (!targetPtr || targetPtr->BaseData() != theTarget)
+        if ((!targetPtr || targetPtr->BaseData() != theTarget) && (!groundTargetPtr || groundTargetPtr->BaseData() != theTarget))
+        {
 #ifdef DEBUG
-    /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
+            /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
 #else
-         objectPtr = new SimObjectType (theTarget);
+            objectPtr = new SimObjectType(theTarget);
 #endif
-         SetTarget (objectPtr);
-// 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS!
-		 missileShotTimer = 0;
-// END OF ADDED SECTION
-      }
-   }
-   else
-   {
-	   ShiAssert(curMode != GunsEngageMode);
-	   ClearTarget();
-	   mDesignatedObject = FalconNullId; // 2002-04-04 ADDED BY S.G. If we are clearing the target, we might as well clear the designated target as well so we leave it alone...
-	   AddMode (WaypointMode);
-   }
+            SetTarget(objectPtr);
+            // 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS!
+            missileShotTimer = 0;
+            // END OF ADDED SECTION
+        }
+    }
+    else
+    {
+        ShiAssert(curMode != GunsEngageMode);
+        ClearTarget();
+        mDesignatedObject = FalconNullId; // 2002-04-04 ADDED BY S.G. If we are clearing the target, we might as well clear the designated target as well so we leave it alone...
+        AddMode(WaypointMode);
+    }
 }
 
 // 2001-06-04 ADDED BY S.G. HELP FUNCTION TO SEARCH FOR A GROUND TARGET
 SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int targetNumComponents, int startPos)
 {
-	int i, gotRadar = FALSE;
-	int usComponents = self->GetCampaignObject()->NumberOfComponents();
-	int haveHARMS = FALSE;
-	int otherHaveHARMS = FALSE;
-	FeatureClassDataType	*fc = NULL;
-	SimBaseClass *simTarg = NULL;
-	SimBaseClass *firstSimTarg = NULL;
-	AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
+    int i, gotRadar = FALSE;
+    int usComponents = self->GetCampaignObject()->NumberOfComponents();
+    int haveHARMS = FALSE;
+    int otherHaveHARMS = FALSE;
+    FeatureClassDataType	*fc = NULL;
+    SimBaseClass *simTarg = NULL;
+    SimBaseClass *firstSimTarg = NULL;
+    AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
 
-	// Get the flight aircrafts (once per call instead of once per target querried)
-	for (i = 0; i < usComponents; i++) {
-		// I onced tried to get the player's current target so it could be skipped by the AI but
-		// all the player's are not on the same PC as the AI so this is not valid.
-		// Therefore, only get this from digital planes, or the player if he is local
-		// 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
-		flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
-		if (flightMember[i] && (flightMember[i]->IsDigital() || flightMember[i]->IsLocal())) {
-			// Now that we know it's local (hopefully, digitals are also local), see if they are carrying HARMS
-			// By first looking at their 'hasHARM' status
-			if (flightMember[i]->DBrain()->hasHARM) {
-				if (i == isWing)
-					haveHARMS = TRUE;
-				else
-					otherHaveHARMS = TRUE;
-			}
-			// Can't rely on 'hasHARM' so check the loadout of each plane yourself...
-			else {
-				// Try the loadout as long I didn't find an HARM on mine or another plane higher than us has an HARM
-				for (int j = 0; !haveHARMS && !(otherHaveHARMS && i > isWing) && flightMember[i]->Sms && j < flightMember[i]->Sms->NumHardpoints(); j++) {
-					if (flightMember[i]->Sms->hardPoint[j]->weaponPointer && flightMember[i]->Sms->hardPoint[j]->GetWeaponClass() == wcHARMWpn) {
-						if (i == isWing)
-							haveHARMS = TRUE;
-						else
-							otherHaveHARMS = TRUE;
-					}
-				}
-			}
-		}
-		else
-			flightMember[i] = NULL;
-	}
+    // Get the flight aircrafts (once per call instead of once per target querried)
+    for (i = 0; i < usComponents; i++)
+    {
+        // I onced tried to get the player's current target so it could be skipped by the AI but
+        // all the player's are not on the same PC as the AI so this is not valid.
+        // Therefore, only get this from digital planes, or the player if he is local
+        // 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
+        flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-	// Check each sim entity in the campaign entity in succession, starting at startPos.
-	// When incrementing i, use 0 if we had a 'startPos' but it wasn't valid
+        if (flightMember[i] && (flightMember[i]->IsDigital() || flightMember[i]->IsLocal()))
+        {
+            // Now that we know it's local (hopefully, digitals are also local), see if they are carrying HARMS
+            // By first looking at their 'hasHARM' status
+            if (flightMember[i]->DBrain()->hasHARM)
+            {
+                if (i == isWing)
+                    haveHARMS = TRUE;
+                else
+                    otherHaveHARMS = TRUE;
+            }
+            // Can't rely on 'hasHARM' so check the loadout of each plane yourself...
+            else
+            {
+                // Try the loadout as long I didn't find an HARM on mine or another plane higher than us has an HARM
+                for (int j = 0; !haveHARMS && !(otherHaveHARMS && i > isWing) && flightMember[i]->Sms && j < flightMember[i]->Sms->NumHardpoints(); j++)
+                {
+                    if (flightMember[i]->Sms->hardPoint[j]->weaponPointer && flightMember[i]->Sms->hardPoint[j]->GetWeaponClass() == wcHARMWpn)
+                    {
+                        if (i == isWing)
+                            haveHARMS = TRUE;
+                        else
+                            otherHaveHARMS = TRUE;
+                    }
+                }
+            }
+        }
+        else
+            flightMember[i] = NULL;
+    }
 
-//#define SG_TEST_NO_RANDOM_TARGET // Define this to make sure an AI always goes at the same target. Makes it easier to debug with constant behaviour
+    // Check each sim entity in the campaign entity in succession, starting at startPos.
+    // When incrementing i, use 0 if we had a 'startPos' but it wasn't valid
+
+    //#define SG_TEST_NO_RANDOM_TARGET // Define this to make sure an AI always goes at the same target. Makes it easier to debug with constant behaviour
 #ifndef SG_TEST_NO_RANDOM_TARGET
-	// 2001-10-19 ADDED BY S.G. IF WE ARE USING AN HARM OR A MAVERICK, DON'T RANDOMIZE
-	if (!haveHARMS && !hasAGMissile && targetNumComponents) 
-	{
-		// JB 011014 Target "randomly" if its just a long line of vehicles
-		if (startPos == 0)
-		{
-			startPos = rand() % targetNumComponents;
-			for (i = startPos; i < targetNumComponents && startPos > 0; i++)
-				if (!targetGroup->GetComponentEntity(i)->IsVehicle() || !targetGroup->GetComponentEntity(i)->OnGround())
-					startPos = 0;
-		}
-		// JB 011014
-	}
-	else
-		startPos = 0;
+
+    // 2001-10-19 ADDED BY S.G. IF WE ARE USING AN HARM OR A MAVERICK, DON'T RANDOMIZE
+    if (!haveHARMS && !hasAGMissile && targetNumComponents)
+    {
+        // JB 011014 Target "randomly" if its just a long line of vehicles
+        if (startPos == 0)
+        {
+            startPos = rand() % targetNumComponents;
+
+            for (i = startPos; i < targetNumComponents && startPos > 0; i++)
+                if (!targetGroup->GetComponentEntity(i)->IsVehicle() || !targetGroup->GetComponentEntity(i)->OnGround())
+                    startPos = 0;
+        }
+
+        // JB 011014
+    }
+    else
+        startPos = 0;
+
 #endif
 
-	for (i = startPos; i < targetNumComponents; i = startPos ? 0 : i + 1, startPos = 0 ) 
-	{
-		// Get the sim object associated to this entity number
-		simTarg = targetGroup->GetComponentEntity(i);
+    for (i = startPos; i < targetNumComponents; i = startPos ? 0 : i + 1, startPos = 0)
+    {
+        // Get the sim object associated to this entity number
+        simTarg = targetGroup->GetComponentEntity(i);
 
-		if (!simTarg || F4IsBadReadPtr(simTarg, sizeof (simTarg))) //sanity check
-			continue;
+        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+            continue;
 
-		// Is it alive?
-		if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f ) // Cobra - add priority filter?
-			continue; // Dead thing, ignore it.
+        // Is it alive?
+        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+            continue; // Dead thing, ignore it.
 
 
-		// COBRA - RED - skip if a target of no-interest
-		if(!EvaluateTarget(simTarg->GetType()))
-			continue;
-		// FRB - Put it back in
-//*		// Cobra - Don't target low priority features (trees, fences, sheds)
-		if (simTarg->IsStatic()) // It's a feature
-		{
-			fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
-			if (fc && !F4IsBadReadPtr(fc, sizeof (fc)) && fc->Priority > 2) // higher priority number = lower priority
-				continue;
-			if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
-				continue;
-		}
-//*/
-		// Are flight members already using it (was using it) as a target?#
-		int j = 0;
-		for (j = 0; j < usComponents; j++){
-			if (flightMember[j]) {
-				if (flightMember[j]->vehicleInUnit == self->vehicleInUnit){
-					continue;
-				}
+        // COBRA - RED - skip if a target of no-interest
+        if (!EvaluateTarget(simTarg->GetType()))
+            continue;
 
-				if (
-					flightMember[j]->DBrain() && 
-					(
-						(
-							flightMember[j]->DBrain()->groundTargetPtr && 
-							flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg
-						) || 
-						flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || 
-						flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg
-					)
-				){
-					break;  // Yes, ignore it.
-				}
-			}
-		}
+        // FRB - Put it back in
+        //*		// Cobra - Don't target low priority features (trees, fences, sheds)
+        if (simTarg->IsStatic()) // It's a feature
+        {
+            fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-		// If we didn't reach the end, someone else is using it so skip it.
-		if (j != usComponents)
-			continue;
+            if (fc && !F4IsBadReadPtr(fc, sizeof(fc)) && fc->Priority > 2)  // higher priority number = lower priority
+                continue;
 
-		// Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-		if (!firstSimTarg)
-			firstSimTarg = simTarg;
+            if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
+                continue;
+        }
 
-		// Is it an objective and we are not carrying HARMS (HARMS will go for the radar feature)? If so, stop right now and use that feature
-		// Cobra - take out radar with whatever AG weapon you have
-		// RED -  Code Restored, was causing continuous hunting for radars with any weapon!!!!
+        //*/
+        // Are flight members already using it (was using it) as a target?#
+        int j = 0;
 
-		// FRB - So?!!
-		//if (targetGroup->IsObjective() && !hasHARM)	break;
+        for (j = 0; j < usComponents; j++)
+        {
+            if (flightMember[j])
+            {
+                if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
+                {
+                    continue;
+                }
 
-		// If I have HARMS or no one has any and the entity has a radar, choose it
-		// 2001-07-12 S.G. Testing if radar first so it's not becoming an air defense if i have no harms
-		if ( (simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() != RDR_NO_RADAR) ||	// It's a vehicle and it has a radar
-			 (simTarg->IsStatic() && ((SimStaticClass *)simTarg)->GetRadarType() != RDR_NO_RADAR)) 	// It's a feature and it has a radar
-		{	
-			// 2001-07-29 S.G. If I was shooting at the campaign object, then I stick to it
-			if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup && ((FlightClass *)self->GetCampaignObject())->whoShot == self) || ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) && (haveHARMS || !otherHaveHARMS))) {
-				gotRadar = TRUE;
-				firstSimTarg = simTarg; // Yes, use it for a target
-				break; // and stop looking
-			}
-		}
-		// 2001-07-12 S.G. DON'T CHECK IF AIR DEFENSE IF IT'S A RADAR
-		else 
-		{
-			// Prioritize air defense thingies...
-			if (simTarg->IsGroundVehicle() && ((GroundClass *)simTarg)->isAirDefense) 
-			{
-				gotRadar = TRUE;
-				firstSimTarg = simTarg; // Yes, use it for a target
-				// 2001-07-12 S.G. DON'T CONTINUE IF I HAVE NO HARMS
-				if (!haveHARMS)
-					break;
-			}
-		}
-		// Look for the next one...
-	}
-	if (startPos < targetNumComponents) 
-	{
-		// Now after all this, see if the AI is too dumb for selecting a valid target... 
-		// If he is, select at random
-		if (!gotRadar && (unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
-			firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
+                if (
+                    flightMember[j]->DBrain() &&
+                    (
+                        (
+                            flightMember[j]->DBrain()->groundTargetPtr &&
+                            flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg
+                        ) ||
+                        flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                        flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg
+                    )
+                )
+                {
+                    break;  // Yes, ignore it.
+                }
+            }
+        }
 
-		// Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
-		if (firstSimTarg) {
-			gndTargetHistory[1] = gndTargetHistory[0];
-			gndTargetHistory[0] = firstSimTarg;
-		}
-	}
-	else
-		firstSimTarg = 0;
+        // If we didn't reach the end, someone else is using it so skip it.
+        if (j != usComponents)
+            continue;
 
-	// 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
-	if (((FlightClass *)self->GetCampaignObject())->whoShot == self) 
-	{
-		((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
-		((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
-	}
+        // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
+        if (!firstSimTarg)
+            firstSimTarg = simTarg;
 
-	// JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-	if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
-		firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
+        // Is it an objective and we are not carrying HARMS (HARMS will go for the radar feature)? If so, stop right now and use that feature
+        // Cobra - take out radar with whatever AG weapon you have
+        // RED -  Code Restored, was causing continuous hunting for radars with any weapon!!!!
 
-	return firstSimTarg;
+        // FRB - So?!!
+        //if (targetGroup->IsObjective() && !hasHARM)	break;
+
+        // If I have HARMS or no one has any and the entity has a radar, choose it
+        // 2001-07-12 S.G. Testing if radar first so it's not becoming an air defense if i have no harms
+        if ((simTarg->IsVehicle() && ((SimVehicleClass *)simTarg)->GetRadarType() != RDR_NO_RADAR) ||	// It's a vehicle and it has a radar
+            (simTarg->IsStatic() && ((SimStaticClass *)simTarg)->GetRadarType() != RDR_NO_RADAR)) 	// It's a feature and it has a radar
+        {
+            // 2001-07-29 S.G. If I was shooting at the campaign object, then I stick to it
+            if ((((FlightClass *)self->GetCampaignObject())->shotAt == targetGroup && ((FlightClass *)self->GetCampaignObject())->whoShot == self) || ((((FlightClass *)self->GetCampaignObject())->whoShot == NULL) && (haveHARMS || !otherHaveHARMS)))
+            {
+                gotRadar = TRUE;
+                firstSimTarg = simTarg; // Yes, use it for a target
+                break; // and stop looking
+            }
+        }
+        // 2001-07-12 S.G. DON'T CHECK IF AIR DEFENSE IF IT'S A RADAR
+        else
+        {
+            // Prioritize air defense thingies...
+            if (simTarg->IsGroundVehicle() && ((GroundClass *)simTarg)->isAirDefense)
+            {
+                gotRadar = TRUE;
+                firstSimTarg = simTarg; // Yes, use it for a target
+
+                // 2001-07-12 S.G. DON'T CONTINUE IF I HAVE NO HARMS
+                if (!haveHARMS)
+                    break;
+            }
+        }
+
+        // Look for the next one...
+    }
+
+    if (startPos < targetNumComponents)
+    {
+        // Now after all this, see if the AI is too dumb for selecting a valid target...
+        // If he is, select at random
+        if (!gotRadar && (unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
+            firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+
+        // Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
+        if (firstSimTarg)
+        {
+            gndTargetHistory[1] = gndTargetHistory[0];
+            gndTargetHistory[0] = firstSimTarg;
+        }
+    }
+    else
+        firstSimTarg = 0;
+
+    // 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
+    if (((FlightClass *)self->GetCampaignObject())->whoShot == self)
+    {
+        ((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
+        ((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
+    }
+
+    // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
+    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+        firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+
+    return firstSimTarg;
 }
 // END OF ADDED SECTION
 
 // 2001-12-17 Added by M.N. - for air diverts
 SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int targetNumComponents, int startPos)
 {
-	int i, gotRadar = FALSE;
-	int usComponents = self->GetCampaignObject()->NumberOfComponents();
-	int haveHARMS = FALSE;
-	int otherHaveHARMS = FALSE;
-	SimBaseClass *simTarg = NULL;
-	SimBaseClass *firstSimTarg = NULL;
-	AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
+    int i, gotRadar = FALSE;
+    int usComponents = self->GetCampaignObject()->NumberOfComponents();
+    int haveHARMS = FALSE;
+    int otherHaveHARMS = FALSE;
+    SimBaseClass *simTarg = NULL;
+    SimBaseClass *firstSimTarg = NULL;
+    AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
 
-	// Get the flight aircrafts (once per call instead of once per target querried)
-	for (i = 0; i < usComponents; i++) {
-		// I onced tried to get the player's current target so it could be skipped by the AI but
-		// all the player's are not on the same PC as the AI so this is not valid.
-		// Therefore, only get this from digital planes, or the player if he is local
-		// 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
-		flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
-		if (flightMember[i] && (!flightMember[i]->IsDigital() && !flightMember[i]->IsLocal()))
-		{
-			flightMember[i] = NULL;
-		}
-	}
+    // Get the flight aircrafts (once per call instead of once per target querried)
+    for (i = 0; i < usComponents; i++)
+    {
+        // I onced tried to get the player's current target so it could be skipped by the AI but
+        // all the player's are not on the same PC as the AI so this is not valid.
+        // Therefore, only get this from digital planes, or the player if he is local
+        // 2002-03-08 MODIFIED BY S.G. Code change so I'm only calling GetComponentEntity once and checking if it returns non NULL
+        flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
 
-	// Check each sim entity in the campaign entity in succession, starting at startPos.
-	// When incrementing i, use 0 if we had a 'startPos' but it wasn't valid
+        if (flightMember[i] && (!flightMember[i]->IsDigital() && !flightMember[i]->IsLocal()))
+        {
+            flightMember[i] = NULL;
+        }
+    }
 
-	for (i = startPos; i < targetNumComponents; i = startPos ? 0 : i + 1, startPos = 0 ) {
-		// Get the sim object associated to this entity number
-		simTarg = targetGroup->GetComponentEntity(i);
+    // Check each sim entity in the campaign entity in succession, starting at startPos.
+    // When incrementing i, use 0 if we had a 'startPos' but it wasn't valid
 
-		if (!simTarg) //sanity check
-			continue;
+    for (i = startPos; i < targetNumComponents; i = startPos ? 0 : i + 1, startPos = 0)
+    {
+        // Get the sim object associated to this entity number
+        simTarg = targetGroup->GetComponentEntity(i);
 
-		// Is it alive?
-		if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f )
-			continue; // Dead thing, ignore it.
+        if (!simTarg) //sanity check
+            continue;
 
-		// Are flight members already using it (was using it) as a target?
-		int j = 0;
-		for (j = 0; j < usComponents; j++)		// MN - use the gndtargethistory for divert air targets, too.
-		{
-			// Cobra - You will always get a match with my last target...skip me
-			if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
-				continue;
-			if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->airtargetPtr && flightMember[j]->DBrain()->airtargetPtr->BaseData() == simTarg) || flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
-				break;  // Yes, ignore it.
-		}
+        // Is it alive?
+        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)
+            continue; // Dead thing, ignore it.
 
-		// If we didn't reach the end, someone else is using it so skip it.
-		if (j != usComponents)
-			continue;
+        // Are flight members already using it (was using it) as a target?
+        int j = 0;
 
-		// Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-		if (!firstSimTarg)
-			firstSimTarg = simTarg;
+        for (j = 0; j < usComponents; j++)		// MN - use the gndtargethistory for divert air targets, too.
+        {
+            // Cobra - You will always get a match with my last target...skip me
+            if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
+                continue;
 
-		// Look for the next one...
-	}
-	if (startPos < targetNumComponents) {
-		// Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
-		if (firstSimTarg) {
-			gndTargetHistory[1] = gndTargetHistory[0];
-			gndTargetHistory[0] = firstSimTarg;
-		}
-	}
-	else
-		firstSimTarg = 0;
+            if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->airtargetPtr && flightMember[j]->DBrain()->airtargetPtr->BaseData() == simTarg) || flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
+                break;  // Yes, ignore it.
+        }
 
-	// JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-	if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
-		firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
+        // If we didn't reach the end, someone else is using it so skip it.
+        if (j != usComponents)
+            continue;
 
-	return firstSimTarg;
+        // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
+        if (!firstSimTarg)
+            firstSimTarg = simTarg;
+
+        // Look for the next one...
+    }
+
+    if (startPos < targetNumComponents)
+    {
+        // Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
+        if (firstSimTarg)
+        {
+            gndTargetHistory[1] = gndTargetHistory[0];
+            gndTargetHistory[0] = firstSimTarg;
+        }
+    }
+    else
+        firstSimTarg = 0;
+
+    // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
+    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+        firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+
+    return firstSimTarg;
 }
 // END of added section
 
@@ -497,226 +546,243 @@ SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int tar
 // Cobra help function to search for a JSOW ground target
 SimBaseClass *DigitalBrain::FindJSOWGroundTarget(CampBaseClass *targetGroup, int targetNumComponents, int feaNo)
 {
-	int usComponents = self->GetCampaignObject()->NumberOfComponents();
-	int FeatureNumber = feaNo;
-	FeatureClassDataType	*fc = NULL;
-	SimBaseClass *simTarg = NULL;
-	SimBaseClass *firstSimTarg = NULL;
-	AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
+    int usComponents = self->GetCampaignObject()->NumberOfComponents();
+    int FeatureNumber = feaNo;
+    FeatureClassDataType	*fc = NULL;
+    SimBaseClass *simTarg = NULL;
+    SimBaseClass *firstSimTarg = NULL;
+    AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
 
-	// Get the flight aircrafts (once per call instead of once per target querried)
-	for (int i = 0; i < usComponents; i++) 
-	{
-		flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
-	}
+    // Get the flight aircrafts (once per call instead of once per target querried)
+    for (int i = 0; i < usComponents; i++)
+    {
+        flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
+    }
 
-	// Check each sim entity in the campaign entity in succession, starting at startPos = 0.
-	int i = 0;
-	for (i = 0; i < targetNumComponents; i++ ) 
-	{
-		// Get the sim object associated to this entity number
-		simTarg = targetGroup->GetComponentEntity(i);
+    // Check each sim entity in the campaign entity in succession, starting at startPos = 0.
+    int i = 0;
 
-		if (!simTarg || F4IsBadReadPtr(simTarg, sizeof (simTarg))) //sanity check
-			continue;
+    for (i = 0; i < targetNumComponents; i++)
+    {
+        // Get the sim object associated to this entity number
+        simTarg = targetGroup->GetComponentEntity(i);
 
-		// Is it alive?
-		if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f ) // Cobra - add priority filter?
-			continue; // Dead thing, ignore it.
+        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+            continue;
 
-		// COBRA - RED - skip if a target of no-interest
-		if(!EvaluateTarget(simTarg->GetType()))
-			continue;
-		// RED - TODO -
-		// FRB - Leave it!
-///*		// FRB - Cobra - Don't target low priority features (trees, fences, sheds)
-		if (simTarg->IsStatic()) // It's a feature
-		{
-			fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
-			if (fc && !F4IsBadReadPtr(fc, sizeof (fc)) && fc->Priority > 2) // higher priority number = lower priority
-				continue;
-			if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
-				continue;
-		}//*/
+        // Is it alive?
+        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+            continue; // Dead thing, ignore it.
+
+        // COBRA - RED - skip if a target of no-interest
+        if (!EvaluateTarget(simTarg->GetType()))
+            continue;
+
+        // RED - TODO -
+        // FRB - Leave it!
+        ///*		// FRB - Cobra - Don't target low priority features (trees, fences, sheds)
+        if (simTarg->IsStatic()) // It's a feature
+        {
+            fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
+
+            if (fc && !F4IsBadReadPtr(fc, sizeof(fc)) && fc->Priority > 2)  // higher priority number = lower priority
+                continue;
+
+            if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
+                continue;
+        }//*/
 
 
-		// Are flight members already using it (was using it) as a target?
-		int j = 0;
-		for (j = 0; j < usComponents; j++)
-		{
-			if (!flightMember[j])
-				continue;
-			// Cobra - You will always get a match with my last target...skip me
-			if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
-				continue;
-			if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->groundTargetPtr && 
-				flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) || 
-				flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || 
-				flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
-				break;  // Yes, ignore it.
-		}
+        // Are flight members already using it (was using it) as a target?
+        int j = 0;
 
-		// If we didn't reach the end, someone else is using it so skip it.
-		if (j != usComponents)
-			continue;
+        for (j = 0; j < usComponents; j++)
+        {
+            if (!flightMember[j])
+                continue;
 
-		// Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-		if (!firstSimTarg)
-		{
-			FeatureNumber = i;
-			firstSimTarg = simTarg;
-		}
+            // Cobra - You will always get a match with my last target...skip me
+            if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
+                continue;
 
-		// Look for the next one...
-	}
-	if (i < targetNumComponents) 
-	{
-		// Now after all this, see if the AI is too dumb for selecting a valid target... 
-		// If he is, select at random
-		if ((unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
-		{
-			FeatureNumber = (rand() % targetNumComponents);
-			firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
-		}
+            if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->groundTargetPtr &&
+                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
+                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                    flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
+                break;  // Yes, ignore it.
+        }
 
-		// Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
-		if (firstSimTarg) 
-		{
-			gndTargetHistory[1] = gndTargetHistory[0];
-			gndTargetHistory[0] = firstSimTarg;
-		}
-	}
-	else
-		firstSimTarg = 0;
+        // If we didn't reach the end, someone else is using it so skip it.
+        if (j != usComponents)
+            continue;
 
-	// 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
-	if (((FlightClass *)self->GetCampaignObject())->whoShot == self) {
-		((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
-		((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
-	}
+        // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
+        if (!firstSimTarg)
+        {
+            FeatureNumber = i;
+            firstSimTarg = simTarg;
+        }
 
-	// JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-	if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
-	{
-		FeatureNumber = (rand() % targetNumComponents);
-		firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
-	}
+        // Look for the next one...
+    }
 
-	return firstSimTarg;
+    if (i < targetNumComponents)
+    {
+        // Now after all this, see if the AI is too dumb for selecting a valid target...
+        // If he is, select at random
+        if ((unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
+        {
+            FeatureNumber = (rand() % targetNumComponents);
+            firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+        }
+
+        // Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
+        if (firstSimTarg)
+        {
+            gndTargetHistory[1] = gndTargetHistory[0];
+            gndTargetHistory[0] = firstSimTarg;
+        }
+    }
+    else
+        firstSimTarg = 0;
+
+    // 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
+    if (((FlightClass *)self->GetCampaignObject())->whoShot == self)
+    {
+        ((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
+        ((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
+    }
+
+    // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
+    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+    {
+        FeatureNumber = (rand() % targetNumComponents);
+        firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+    }
+
+    return firstSimTarg;
 }
 
 
 // Cobra help function to search for a JDAM ground target
 int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNumComponents, int feaNo)
 {
-	int usComponents = self->GetCampaignObject()->NumberOfComponents();
-	int FeatureNumber = feaNo;
-	FeatureClassDataType	*fc = NULL;
-	SimBaseClass *simTarg = NULL;
-	SimBaseClass *firstSimTarg = NULL;
-	AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
+    int usComponents = self->GetCampaignObject()->NumberOfComponents();
+    int FeatureNumber = feaNo;
+    FeatureClassDataType	*fc = NULL;
+    SimBaseClass *simTarg = NULL;
+    SimBaseClass *firstSimTarg = NULL;
+    AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
 
-	if (usComponents <= 1)
-		return FeatureNumber;
+    if (usComponents <= 1)
+        return FeatureNumber;
 
-	// Get the flight aircrafts (once per call instead of once per target querried)
-	for (int i = 0; i < usComponents; i++) 
-	{
-		flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
-	}
+    // Get the flight aircrafts (once per call instead of once per target querried)
+    for (int i = 0; i < usComponents; i++)
+    {
+        flightMember[i] = (AircraftClass *)self->GetCampaignObject()->GetComponentEntity(i);
+    }
 
-	// Check each sim entity in the campaign entity in succession, starting at startPos = 0.
-	int i = 0;
-	for (i = 0; i < targetNumComponents; i++ ) 
-	{
-		// Get the sim object associated to this entity number
-		simTarg = targetGroup->GetComponentEntity(i);
+    // Check each sim entity in the campaign entity in succession, starting at startPos = 0.
+    int i = 0;
 
-		if (!simTarg || F4IsBadReadPtr(simTarg, sizeof (simTarg))) //sanity check
-			continue;
+    for (i = 0; i < targetNumComponents; i++)
+    {
+        // Get the sim object associated to this entity number
+        simTarg = targetGroup->GetComponentEntity(i);
 
-		// Is it alive?
-		if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f ) // Cobra - add priority filter?
-			continue; // Dead thing, ignore it.
+        if (!simTarg || F4IsBadReadPtr(simTarg, sizeof(simTarg)))  //sanity check
+            continue;
 
-		// COBRA - RED - skip if a target of no-interest
-		//if(!EvaluateTarget(simTarg->GetType()))
-		//	continue;
-		// RED - TODO -
-		// FRB - Cobra - Don't target low priority features (trees, fences, sheds)
-		if (simTarg->IsStatic()) // It's a feature
-		{
-			if ((Objective)simTarg)
-				fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
-			if (fc && !F4IsBadReadPtr(fc, sizeof (fc)) && fc->Priority > 2) // higher priority number = lower priority
-				continue;
-			if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
-				continue;
-		}
+        // Is it alive?
+        if (simTarg->IsExploding() || simTarg->IsDead() || simTarg->pctStrength <= 0.0f)  // Cobra - add priority filter?
+            continue; // Dead thing, ignore it.
 
-		// Are flight members already using it (was using it) as a target?
-		int j = 0;
-		for (j = 0; j < usComponents; j++)
-		{
-			if (!flightMember[j])
-				continue;
-			// Cobra - You will always get a match with my last target...skip me
-			if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
-				continue;
-			if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->groundTargetPtr && 
-				flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) || 
-				flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg || 
-				flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
-				break;  // Yes, ignore it.
-		}
+        // COBRA - RED - skip if a target of no-interest
+        //if(!EvaluateTarget(simTarg->GetType()))
+        //	continue;
+        // RED - TODO -
+        // FRB - Cobra - Don't target low priority features (trees, fences, sheds)
+        if (simTarg->IsStatic()) // It's a feature
+        {
+            if ((Objective)simTarg)
+                fc = GetFeatureClassData(((Objective)simTarg)->GetFeatureID(i));
 
-		// If we didn't reach the end, someone else is using it so skip it.
-		if (j != usComponents)
-			continue;
+            if (fc && !F4IsBadReadPtr(fc, sizeof(fc)) && fc->Priority > 2)  // higher priority number = lower priority
+                continue;
 
-		// Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-		if (!firstSimTarg)
-		{
-			FeatureNumber = i;
-			firstSimTarg = simTarg;
-		}
+            if (((Objective)simTarg)->GetFeatureStatus(i) == VIS_DESTROYED)
+                continue;
+        }
 
-		// Look for the next one...
-	}
-	if (i < targetNumComponents) 
-	{
-		// Now after all this, see if the AI is too dumb for selecting a valid target... 
-		// If he is, select at random
-		if ((unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
-		{
-			FeatureNumber = (rand() % targetNumComponents);
-			firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
-		}
+        // Are flight members already using it (was using it) as a target?
+        int j = 0;
 
-		// Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
-		if (firstSimTarg) 
-		{
-			gndTargetHistory[1] = gndTargetHistory[0];
-			gndTargetHistory[0] = firstSimTarg;
-		}
-	}
-	else
-		firstSimTarg = 0;
+        for (j = 0; j < usComponents; j++)
+        {
+            if (!flightMember[j])
+                continue;
 
-	// 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
-	if (((FlightClass *)self->GetCampaignObject())->whoShot == self) {
-		((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
-		((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
-	}
+            // Cobra - You will always get a match with my last target...skip me
+            if (flightMember[j]->vehicleInUnit == self->vehicleInUnit)
+                continue;
 
-	// JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-	if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
-	{
-		FeatureNumber = (rand() % targetNumComponents);
-		firstSimTarg = targetGroup->GetComponentEntity (rand() % targetNumComponents);
-	}
+            if (flightMember[j] && flightMember[j]->DBrain() && ((flightMember[j]->DBrain()->groundTargetPtr &&
+                    flightMember[j]->DBrain()->groundTargetPtr->BaseData() == simTarg) ||
+                    flightMember[j]->DBrain()->gndTargetHistory[0] == simTarg ||
+                    flightMember[j]->DBrain()->gndTargetHistory[1] == simTarg))
+                break;  // Yes, ignore it.
+        }
 
-	return FeatureNumber;
+        // If we didn't reach the end, someone else is using it so skip it.
+        if (j != usComponents)
+            continue;
+
+        // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
+        if (!firstSimTarg)
+        {
+            FeatureNumber = i;
+            firstSimTarg = simTarg;
+        }
+
+        // Look for the next one...
+    }
+
+    if (i < targetNumComponents)
+    {
+        // Now after all this, see if the AI is too dumb for selecting a valid target...
+        // If he is, select at random
+        if ((unsigned)((unsigned)rand() % (unsigned)32) > (unsigned)((unsigned)SkillLevel() + (unsigned)28))
+        {
+            FeatureNumber = (rand() % targetNumComponents);
+            firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+        }
+
+        // Keep track of the last two targets but only if we have one, otherwise, leave our previous targets alone
+        if (firstSimTarg)
+        {
+            gndTargetHistory[1] = gndTargetHistory[0];
+            gndTargetHistory[0] = firstSimTarg;
+        }
+    }
+    else
+        firstSimTarg = 0;
+
+    // 2001-07-29 S.G. If I was shooting at a (not necessarely THIS one) campaign object, say I'm not anymore since the object deaggregated.
+    if (((FlightClass *)self->GetCampaignObject())->whoShot == self)
+    {
+        ((FlightClass *)self->GetCampaignObject())->shotAt = NULL;
+        ((FlightClass *)self->GetCampaignObject())->whoShot = NULL;
+    }
+
+    // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
+    if (firstSimTarg == NULL && targetNumComponents && targetNumComponents < usComponents)
+    {
+        FeatureNumber = (rand() % targetNumComponents);
+        firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+    }
+
+    return FeatureNumber;
 }
 
 
@@ -724,23 +790,24 @@ int DigitalBrain::FindJDAMGroundTarget(CampBaseClass *targetGroup, int targetNum
 //
 // DigitalBrain::AiCheckEngage
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiCheckEngage(void)
 {
-// 2000-09-18 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS DUTY EVEN WHILE EXECUTING MANEUVERS...
-// 2000-09-25 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS STUFF WHEN HE HAS WEAPON FREE AS WELL
-// 2002-03-15 MODIFIED BY S.G. Perform this if mpActionFlags[AI_EXECUTE_MANEUVER] is NOT TRUE+1, since TRUE+1 mean we are doing a maneuver that's limiting the AI's ACTION to specific functions
-//	if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. && !mpActionFlags[AI_EXECUTE_MANEUVER] */) {
-//	if(mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) {
-	if((mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] != TRUE+1) {
-      MergeCheck();
-	  BvrEngageCheck();
-      GunsEngageCheck();
-      WvrEngageCheck();
-      MissileEngageCheck();      
-      AccelCheck();
-	}
+    // 2000-09-18 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS DUTY EVEN WHILE EXECUTING MANEUVERS...
+    // 2000-09-25 MODIFIED BY S.G. NEED THE WINGMEN TO DO ITS STUFF WHEN HE HAS WEAPON FREE AS WELL
+    // 2002-03-15 MODIFIED BY S.G. Perform this if mpActionFlags[AI_EXECUTE_MANEUVER] is NOT TRUE+1, since TRUE+1 mean we are doing a maneuver that's limiting the AI's ACTION to specific functions
+    //	if(mpActionFlags[AI_ENGAGE_TARGET] /* REMOVED BY S.G. && !mpActionFlags[AI_EXECUTE_MANEUVER] */) {
+    //	if(mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) {
+    if ((mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE) && mpActionFlags[AI_EXECUTE_MANEUVER] != TRUE + 1)
+    {
+        MergeCheck();
+        BvrEngageCheck();
+        GunsEngageCheck();
+        WvrEngageCheck();
+        MissileEngageCheck();
+        AccelCheck();
+    }
 }
 
 
@@ -749,21 +816,22 @@ void DigitalBrain::AiCheckEngage(void)
 //
 // DigitalBrain::AiCheckRTB
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiCheckRTB(void)
 {
-	// set waypoint to home
-	// check distance to home, contact tower it necessary
+    // set waypoint to home
+    // check distance to home, contact tower it necessary
 
-	if(mpActionFlags[AI_RTB]) {									// If we are ordered to do a maneuver
-		AddMode(RTBMode);								// Add maneuvers to stack
+    if (mpActionFlags[AI_RTB])  									// If we are ordered to do a maneuver
+    {
+        AddMode(RTBMode);								// Add maneuvers to stack
 
-		// if(mpActionFlags[AI_LANDING] == FALSE && distance to airbase < 15 nm, && no atc) {
-			// contact atc
-			//	mpActionFlags[AI_LANDING] = TRUE;
-		//}
-	}
+        // if(mpActionFlags[AI_LANDING] == FALSE && distance to airbase < 15 nm, && no atc) {
+        // contact atc
+        //	mpActionFlags[AI_LANDING] = TRUE;
+        //}
+    }
 }
 
 
@@ -771,70 +839,76 @@ void DigitalBrain::AiCheckRTB(void)
 //
 // DigitalBrain::AiCheckLand
 //
-// ------------------------------------------------- 
-	
+// -------------------------------------------------
+
 void DigitalBrain::AiCheckLandTakeoff(void)
 {
-	if(self->curWaypoint == NULL) {
-		return;
-	}
+    if (self->curWaypoint == NULL)
+    {
+        return;
+    }
 
-	if(SimLibElapsedTime > updateTime)
-	{
-		ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
-		if(Airbase)
-		{
-			float dx = self->XPos() - Airbase->XPos();
-			float dy = self->YPos() - Airbase->YPos();
-			distAirbase = (float)sqrt(dx*dx+dy*dy);
-		}
-		updateTime = SimLibElapsedTime + 15*CampaignSeconds;
-	}
-	
-	if( atcstatus >= tReqTaxi && atcstatus <= tTaxiBack )
-	{
-		mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		AddMode(TakeoffMode);
-	}
-	else if(	mpActionFlags[AI_LANDING] 
-		|| (atcstatus >= lReqClearance && atcstatus <= lCrashed)) 
-	{		
-		if(atcstatus > lIngressing)
-			mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		AddMode(LandingMode);					
-	}
-	else if(self->curWaypoint->GetWPAction() == WP_LAND && !self->OnGround() && distAirbase < 30.0F*NM_TO_FT
-		&& (missionComplete || IsSetATC(SaidRTB) || IsSetATC(SaidBingo) || mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
-	{
-		if(atcstatus > lIngressing)
-			mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		AddMode(LandingMode);	
-	}
-	else if(self->curWaypoint->GetWPAction() == WP_TAKEOFF && self->OnGround())
-	{
-		mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		AddMode(TakeoffMode);
-	}
-	else if(self->OnGround())
-	{
-		atcstatus = lTaxiOff;
-		mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		AddMode(LandingMode);
-	}
+    if (SimLibElapsedTime > updateTime)
+    {
+        ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
+
+        if (Airbase)
+        {
+            float dx = self->XPos() - Airbase->XPos();
+            float dy = self->YPos() - Airbase->YPos();
+            distAirbase = (float)sqrt(dx * dx + dy * dy);
+        }
+
+        updateTime = SimLibElapsedTime + 15 * CampaignSeconds;
+    }
+
+    if (atcstatus >= tReqTaxi && atcstatus <= tTaxiBack)
+    {
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+        AddMode(TakeoffMode);
+    }
+    else if (mpActionFlags[AI_LANDING]
+             || (atcstatus >= lReqClearance && atcstatus <= lCrashed))
+    {
+        if (atcstatus > lIngressing)
+            mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+
+        AddMode(LandingMode);
+    }
+    else if (self->curWaypoint->GetWPAction() == WP_LAND && !self->OnGround() && distAirbase < 30.0F * NM_TO_FT
+             && (missionComplete || IsSetATC(SaidRTB) || IsSetATC(SaidBingo) || mpActionFlags[AI_RTB])) // don't land if one of these conditions isn't met
+    {
+        if (atcstatus > lIngressing)
+            mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+
+        AddMode(LandingMode);
+    }
+    else if (self->curWaypoint->GetWPAction() == WP_TAKEOFF && self->OnGround())
+    {
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+        AddMode(TakeoffMode);
+    }
+    else if (self->OnGround())
+    {
+        atcstatus = lTaxiOff;
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+        AddMode(LandingMode);
+    }
 }
 
 // -------------------------------------------------
 //
 // DigitalBrain::AiCheckManeuvers
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiCheckManeuvers(void)
 {
 
-	if(mpActionFlags[AI_EXECUTE_MANEUVER]) {					// If we are ordered to do a maneuver
-		AddMode(FollowOrdersMode);								// Add maneuvers to stack
-	}
+    if (mpActionFlags[AI_EXECUTE_MANEUVER])  					// If we are ordered to do a maneuver
+    {
+        AddMode(FollowOrdersMode);								// Add maneuvers to stack
+    }
 }
 
 
@@ -842,23 +916,23 @@ void DigitalBrain::AiCheckManeuvers(void)
 //
 // DigitalBrain::AiCheckFormation
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiCheckFormation(void)
 {
-//temp Hack until I can talk to Vince about a better way. DSP
-//	if(mpActionFlags[AI_FOLLOW_FORMATION] && self->curWaypoint->GetWPAction() != WP_LAND) {					// If we are ordered to fly in formation
+    //temp Hack until I can talk to Vince about a better way. DSP
+    //	if(mpActionFlags[AI_FOLLOW_FORMATION] && self->curWaypoint->GetWPAction() != WP_LAND) {					// If we are ordered to fly in formation
 
-	// edg: if the wingy was told to engage a ground target, we must make sure that they
-	// will continue on waypoint mode so that they can go thru the ground attack logic
-	if(mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine != AGD_NONE || groundTargetPtr) )
-	{
-		AddMode( WaypointMode );
-	}
-	else if(mpActionFlags[AI_FOLLOW_FORMATION])
-	{
-		AddMode(WingyMode);										// Add formation mode to stack
-	}
+    // edg: if the wingy was told to engage a ground target, we must make sure that they
+    // will continue on waypoint mode so that they can go thru the ground attack logic
+    if (mpActionFlags[AI_ENGAGE_TARGET] && !mpActionFlags[AI_EXECUTE_MANEUVER] && (agDoctrine != AGD_NONE || groundTargetPtr))
+    {
+        AddMode(WaypointMode);
+    }
+    else if (mpActionFlags[AI_FOLLOW_FORMATION])
+    {
+        AddMode(WingyMode);										// Add formation mode to stack
+    }
 }
 
 
@@ -867,22 +941,27 @@ void DigitalBrain::AiCheckFormation(void)
 //
 // DigitalBrain::AiSplitFlight
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiSplitFlight(int extent, VU_ID from, int idx)
 {
-	if(vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead()) {	// if from the flight lead
-		if(extent == AiElement || extent == AiFlight) {
-			if(idx == AiElementLead || idx == AiSecondWing) {
-				mSplitFlight = TRUE;
-			}
-		}
-	}
-	else {	// Otherwise the order is coming from the element lead, we want to follow him
-		if(extent == AiWingman && idx == AiSecondWing) {
-			mSplitFlight = TRUE;
-		}
-	}
+    if (vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead())  	// if from the flight lead
+    {
+        if (extent == AiElement || extent == AiFlight)
+        {
+            if (idx == AiElementLead || idx == AiSecondWing)
+            {
+                mSplitFlight = TRUE;
+            }
+        }
+    }
+    else  	// Otherwise the order is coming from the element lead, we want to follow him
+    {
+        if (extent == AiWingman && idx == AiSecondWing)
+        {
+            mSplitFlight = TRUE;
+        }
+    }
 }
 
 
@@ -892,44 +971,52 @@ void DigitalBrain::AiSplitFlight(int extent, VU_ID from, int idx)
 //
 // DigitalBrain::AiGlueFlight
 //
-// ------------------------------------------------- 
+// -------------------------------------------------
 
 void DigitalBrain::AiGlueFlight(int extent, VU_ID from, int idx)
 {
-	if(vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead()) {	// if from the flight lead
-		if(extent == AiElement || extent == AiFlight) {
-			if(idx == AiElementLead || idx == AiSecondWing) {
-				mSplitFlight = FALSE;
-			}
-		}
-	}
-	else {	// Otherwise the order is coming from the element lead, we want to follow him
-		if(extent == AiWingman && idx == AiSecondWing) {
-			mSplitFlight = TRUE;
-		}
-	}
+    if (vuDatabase->Find(from) == self->GetCampaignObject()->GetComponentLead())  	// if from the flight lead
+    {
+        if (extent == AiElement || extent == AiFlight)
+        {
+            if (idx == AiElementLead || idx == AiSecondWing)
+            {
+                mSplitFlight = FALSE;
+            }
+        }
+    }
+    else  	// Otherwise the order is coming from the element lead, we want to follow him
+    {
+        if (extent == AiWingman && idx == AiSecondWing)
+        {
+            mSplitFlight = TRUE;
+        }
+    }
 }
 
 void DigitalBrain::AiCheckForUnauthLand(VU_ID lead)
 {
-	GridIndex	x,y;
-	vector		pos;
+    GridIndex	x, y;
+    vector		pos;
 
-	AircraftClass* leader = (AircraftClass*) vuDatabase->Find(lead);
+    AircraftClass* leader = (AircraftClass*) vuDatabase->Find(lead);
 
-	if(!self->OnGround() && leader && mpActionFlags[AI_FOLLOW_FORMATION] == TRUE && leader->DBrain()->ATCStatus() < tReqTaxi && leader->OnGround() && atcstatus == noATC) {
-		
-		pos.x = leader->XPos();
-		pos.y = leader->YPos();
-		ConvertSimToGrid (&pos, &x, &y);
-		
-		Objective obj = FindNearestFriendlyAirbase (self->GetTeam(), x, y);
-		if(obj) {
-			airbase = obj->Id();
-			atcstatus = lReqClearance;
-			SendATCMsg(atcstatus);
-			mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
-		}
-	}
+    if (!self->OnGround() && leader && mpActionFlags[AI_FOLLOW_FORMATION] == TRUE && leader->DBrain()->ATCStatus() < tReqTaxi && leader->OnGround() && atcstatus == noATC)
+    {
+
+        pos.x = leader->XPos();
+        pos.y = leader->YPos();
+        ConvertSimToGrid(&pos, &x, &y);
+
+        Objective obj = FindNearestFriendlyAirbase(self->GetTeam(), x, y);
+
+        if (obj)
+        {
+            airbase = obj->Id();
+            atcstatus = lReqClearance;
+            SendATCMsg(atcstatus);
+            mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
+        }
+    }
 }
 

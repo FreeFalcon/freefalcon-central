@@ -15,223 +15,231 @@ extern MEM_POOL gReadInMemPool;
 SimMoverDefinition** moverDefinitionData = NULL;
 int NumSimMoverDefinitions = 0;
 
-SimMoverDefinition::SimMoverDefinition (void)
+SimMoverDefinition::SimMoverDefinition(void)
 {
-   numSensors = 0;
-   sensorData = NULL;
+    numSensors = 0;
+    sensorData = NULL;
 }
 
-SimMoverDefinition::~SimMoverDefinition (void)
+SimMoverDefinition::~SimMoverDefinition(void)
 {
 }
 
-void SimMoverDefinition::ReadSimMoverDefinitionData (void)
+void SimMoverDefinition::ReadSimMoverDefinitionData(void)
 {
-	int i;
-	SimlibFileClass* vehList;
-	int vehicleType;
+    int i;
+    SimlibFileClass* vehList;
+    int vehicleType;
 
-	vehList = SimlibFileClass::Open(SIM_VEHICLE_DEFINITION_FILE, SIMLIB_READ);
+    vehList = SimlibFileClass::Open(SIM_VEHICLE_DEFINITION_FILE, SIMLIB_READ);
 
-	NumSimMoverDefinitions = atoi (vehList->GetNext());
-	#ifdef USE_SH_POOLS
-	moverDefinitionData = (SimMoverDefinition **)MemAllocPtr(gReadInMemPool, sizeof(SimMoverDefinition*)*NumSimMoverDefinitions,0);
-	#else
-	moverDefinitionData = new SimMoverDefinition*[NumSimMoverDefinitions];
-	#endif
+    NumSimMoverDefinitions = atoi(vehList->GetNext());
+#ifdef USE_SH_POOLS
+    moverDefinitionData = (SimMoverDefinition **)MemAllocPtr(gReadInMemPool, sizeof(SimMoverDefinition*)*NumSimMoverDefinitions, 0);
+#else
+    moverDefinitionData = new SimMoverDefinition*[NumSimMoverDefinitions];
+#endif
 
-	for (i=0; i<NumSimMoverDefinitions; i++)
-	{
-      vehicleType = atoi (vehList->GetNext());
-      switch (vehicleType)
-      {
-         case Aircraft:
-            moverDefinitionData[i] = new SimACDefinition (vehList->GetNext());
-         break;
-         
-         case Ground:
-            moverDefinitionData[i] = new SimGroundDefinition(vehList->GetNext());
-         break;
-         
-         case Helicopter:
-            moverDefinitionData[i] = new SimHeloDefinition(vehList->GetNext());
-         break;
-         
-         case Weapon:
-            moverDefinitionData[i] = new SimWpnDefinition (vehList->GetNext());
-         break;
-         
-         case Sea:
-            vehList->GetNext();
-            moverDefinitionData[i] = new SimMoverDefinition;
-         break;
+    for (i = 0; i < NumSimMoverDefinitions; i++)
+    {
+        vehicleType = atoi(vehList->GetNext());
 
-         default:
-            vehList->GetNext();
-            moverDefinitionData[i] = new SimMoverDefinition;
-         break;
-      }
-	}
-	vehList->Close();
-   delete vehList;
+        switch (vehicleType)
+        {
+            case Aircraft:
+                moverDefinitionData[i] = new SimACDefinition(vehList->GetNext());
+                break;
+
+            case Ground:
+                moverDefinitionData[i] = new SimGroundDefinition(vehList->GetNext());
+                break;
+
+            case Helicopter:
+                moverDefinitionData[i] = new SimHeloDefinition(vehList->GetNext());
+                break;
+
+            case Weapon:
+                moverDefinitionData[i] = new SimWpnDefinition(vehList->GetNext());
+                break;
+
+            case Sea:
+                vehList->GetNext();
+                moverDefinitionData[i] = new SimMoverDefinition;
+                break;
+
+            default:
+                vehList->GetNext();
+                moverDefinitionData[i] = new SimMoverDefinition;
+                break;
+        }
+    }
+
+    vehList->Close();
+    delete vehList;
 }
 
-void SimMoverDefinition::FreeSimMoverDefinitionData (void)
+void SimMoverDefinition::FreeSimMoverDefinitionData(void)
 {
-int i;
+    int i;
 
-	for (i=0; i<NumSimMoverDefinitions; i++)
-	{
-      delete moverDefinitionData[i];
-   }
+    for (i = 0; i < NumSimMoverDefinitions; i++)
+    {
+        delete moverDefinitionData[i];
+    }
 
-	#ifdef USE_SH_POOLS
-	MemFreePtr( moverDefinitionData );
-	#else
+#ifdef USE_SH_POOLS
+    MemFreePtr(moverDefinitionData);
+#else
     delete [] moverDefinitionData;
-	#endif
+#endif
 }
 
-SimACDefinition::SimACDefinition (char* fileName)
+SimACDefinition::SimACDefinition(char* fileName)
 {
-int i;
-SimlibFileClass* acFile;
+    int i;
+    SimlibFileClass* acFile;
 
-   acFile = SimlibFileClass::Open (fileName, SIMLIB_READ);
+    acFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
-   // What type of combat does it do?
-   combatClass = (CombatClass)atoi(acFile->GetNext());
+    // What type of combat does it do?
+    combatClass = (CombatClass)atoi(acFile->GetNext());
 
-   airframeIndex = atoi(acFile->GetNext());
-   numPlayerSensors  =  atoi(acFile->GetNext());
+    airframeIndex = atoi(acFile->GetNext());
+    numPlayerSensors  =  atoi(acFile->GetNext());
 
-	#ifdef USE_SH_POOLS
-	playerSensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int)*numPlayerSensors * 2,0);
-	#else
+#ifdef USE_SH_POOLS
+    playerSensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int) * numPlayerSensors * 2, 0);
+#else
     playerSensorData = new int [numPlayerSensors * 2];
-	#endif
-   for (i=0; i<numPlayerSensors; i++)
-   {
-      playerSensorData[i * 2]  =  atoi(acFile->GetNext());
-      playerSensorData[i * 2 + 1]  =  atoi(acFile->GetNext());
-   }
+#endif
 
-   numSensors  =  atoi(acFile->GetNext());
+    for (i = 0; i < numPlayerSensors; i++)
+    {
+        playerSensorData[i * 2]  =  atoi(acFile->GetNext());
+        playerSensorData[i * 2 + 1]  =  atoi(acFile->GetNext());
+    }
 
-	#ifdef USE_SH_POOLS
-	sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int)*numSensors * 2,0);
-	#else
+    numSensors  =  atoi(acFile->GetNext());
+
+#ifdef USE_SH_POOLS
+    sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int) * numSensors * 2, 0);
+#else
     sensorData = new int [numSensors * 2];
-	#endif
-   for (i=0; i<numSensors; i++)
-   {
-      sensorData[i * 2]  =  atoi(acFile->GetNext());
-      sensorData[i * 2 + 1]  =  atoi(acFile->GetNext());
-   }
+#endif
 
-	acFile->Close();
-   delete acFile;
+    for (i = 0; i < numSensors; i++)
+    {
+        sensorData[i * 2]  =  atoi(acFile->GetNext());
+        sensorData[i * 2 + 1]  =  atoi(acFile->GetNext());
+    }
+
+    acFile->Close();
+    delete acFile;
 }
 
-SimACDefinition::~SimACDefinition (void)
+SimACDefinition::~SimACDefinition(void)
 {
-	#ifdef USE_SH_POOLS
-	MemFreePtr( sensorData );
-	MemFreePtr( playerSensorData );
-	#else
-   	delete [] sensorData;
-   	delete [] playerSensorData;
-	#endif
+#ifdef USE_SH_POOLS
+    MemFreePtr(sensorData);
+    MemFreePtr(playerSensorData);
+#else
+    delete [] sensorData;
+    delete [] playerSensorData;
+#endif
 }
 
-SimWpnDefinition::SimWpnDefinition (char* fileName)
+SimWpnDefinition::SimWpnDefinition(char* fileName)
 {
-SimlibFileClass* wpnFile;
+    SimlibFileClass* wpnFile;
 
-   wpnFile = SimlibFileClass::Open (fileName, SIMLIB_READ);
+    wpnFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
-   flags = atoi(wpnFile->GetNext());
-   cd  = (float)atof(wpnFile->GetNext());
-   weight = (float)atof(wpnFile->GetNext());
-   area  = (float)atof(wpnFile->GetNext());
-   xEjection  = (float)atof(wpnFile->GetNext());
-   yEjection  = (float)atof(wpnFile->GetNext());
-   zEjection  = (float)atof(wpnFile->GetNext());
-   strcpy (mnemonic, wpnFile->GetNext());
-   weaponClass  = atoi(wpnFile->GetNext());
-   domain  = atoi(wpnFile->GetNext());
-   weaponType  = atoi(wpnFile->GetNext());
-   dataIdx  = atoi(wpnFile->GetNext());
+    flags = atoi(wpnFile->GetNext());
+    cd  = (float)atof(wpnFile->GetNext());
+    weight = (float)atof(wpnFile->GetNext());
+    area  = (float)atof(wpnFile->GetNext());
+    xEjection  = (float)atof(wpnFile->GetNext());
+    yEjection  = (float)atof(wpnFile->GetNext());
+    zEjection  = (float)atof(wpnFile->GetNext());
+    strcpy(mnemonic, wpnFile->GetNext());
+    weaponClass  = atoi(wpnFile->GetNext());
+    domain  = atoi(wpnFile->GetNext());
+    weaponType  = atoi(wpnFile->GetNext());
+    dataIdx  = atoi(wpnFile->GetNext());
 
-   wpnFile->Close();
-   delete wpnFile;
+    wpnFile->Close();
+    delete wpnFile;
 }
 
-SimWpnDefinition::~SimWpnDefinition (void)
+SimWpnDefinition::~SimWpnDefinition(void)
 {
 }
 
-SimHeloDefinition::SimHeloDefinition (char* fileName)
+SimHeloDefinition::SimHeloDefinition(char* fileName)
 {
-int i;
-SimlibFileClass* heloFile;
+    int i;
+    SimlibFileClass* heloFile;
 
-   heloFile = SimlibFileClass::Open (fileName, SIMLIB_READ);
+    heloFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
-   airframeIndex = atoi(heloFile->GetNext());
-   numSensors  =  atoi(heloFile->GetNext());
+    airframeIndex = atoi(heloFile->GetNext());
+    numSensors  =  atoi(heloFile->GetNext());
 
-	#ifdef USE_SH_POOLS
-	sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int)*numSensors * 2,0);
-	#else
+#ifdef USE_SH_POOLS
+    sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int) * numSensors * 2, 0);
+#else
     sensorData = new int [numSensors * 2];
-	#endif
-   for (i=0; i<numSensors; i++)
-   {
-      sensorData[i * 2]  =  atoi(heloFile->GetNext());
-      sensorData[i * 2 + 1]  =  atoi(heloFile->GetNext());
-   }
-	heloFile->Close();
-   delete heloFile;
+#endif
+
+    for (i = 0; i < numSensors; i++)
+    {
+        sensorData[i * 2]  =  atoi(heloFile->GetNext());
+        sensorData[i * 2 + 1]  =  atoi(heloFile->GetNext());
+    }
+
+    heloFile->Close();
+    delete heloFile;
 }
 
-SimHeloDefinition::~SimHeloDefinition (void)
+SimHeloDefinition::~SimHeloDefinition(void)
 {
-	#ifdef USE_SH_POOLS
-	MemFreePtr( sensorData );
-	#else
-   	delete [] sensorData;
-	#endif
+#ifdef USE_SH_POOLS
+    MemFreePtr(sensorData);
+#else
+    delete [] sensorData;
+#endif
 }
 
-SimGroundDefinition::SimGroundDefinition (char* fileName)
+SimGroundDefinition::SimGroundDefinition(char* fileName)
 {
-int i;
-SimlibFileClass* gndFile;
+    int i;
+    SimlibFileClass* gndFile;
 
-   gndFile = SimlibFileClass::Open (fileName, SIMLIB_READ);
+    gndFile = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
-   numSensors  =  atoi(gndFile->GetNext());
+    numSensors  =  atoi(gndFile->GetNext());
 
-	#ifdef USE_SH_POOLS
-	sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int)*numSensors * 2,0);
-	#else
+#ifdef USE_SH_POOLS
+    sensorData = (int *)MemAllocPtr(gReadInMemPool, sizeof(int) * numSensors * 2, 0);
+#else
     sensorData = new int [numSensors * 2];
-	#endif
-   for (i=0; i<numSensors; i++)
-   {
-      sensorData[i * 2]  =  atoi(gndFile->GetNext());
-      sensorData[i * 2 + 1]  =  atoi(gndFile->GetNext());
-   }
-	gndFile->Close();
-   delete gndFile;
+#endif
+
+    for (i = 0; i < numSensors; i++)
+    {
+        sensorData[i * 2]  =  atoi(gndFile->GetNext());
+        sensorData[i * 2 + 1]  =  atoi(gndFile->GetNext());
+    }
+
+    gndFile->Close();
+    delete gndFile;
 }
 
-SimGroundDefinition::~SimGroundDefinition (void)
+SimGroundDefinition::~SimGroundDefinition(void)
 {
-	#ifdef USE_SH_POOLS
-	MemFreePtr( sensorData );
-	#else
-   	delete [] sensorData;
-	#endif
+#ifdef USE_SH_POOLS
+    MemFreePtr(sensorData);
+#else
+    delete [] sensorData;
+#endif
 }

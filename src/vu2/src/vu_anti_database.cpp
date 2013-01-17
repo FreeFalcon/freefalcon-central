@@ -21,7 +21,7 @@
 
 VuAntiDatabase::VuAntiDatabase(uint tableSize, uint key) : VuHashTable(tableSize, key)
 {
-	// empty
+    // empty
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,87 +30,99 @@ VuAntiDatabase::VuAntiDatabase(uint tableSize, uint key) : VuHashTable(tableSize
 
 VuAntiDatabase::~VuAntiDatabase()
 {
-	Purge();
+    Purge();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int VuAntiDatabase::Purge (VU_BOOL all)
+int VuAntiDatabase::Purge(VU_BOOL all)
 {
-	int retval = 0;
-	unsigned int index = 0;
-	VuLinkNode **entry = table_;
-	VuLinkNode *ptr = *entry;
-	VuLinkNode *next, *last;
-	
-	VuEnterCriticalSection();
+    int retval = 0;
+    unsigned int index = 0;
+    VuLinkNode **entry = table_;
+    VuLinkNode *ptr = *entry;
+    VuLinkNode *next, *last;
 
-	while (index < capacity_){
-		last = 0;
-		while (ptr->entity_){
-			next = ptr->next_;
-			// sfr: smartpointer
-			VuEntity *ent = ptr->entity_.get();
+    VuEnterCriticalSection();
 
-			if (!all && ((ent->IsPrivate()&&ent->IsPersistent()) || ent->IsGlobal())){
-				ptr->next_ = vuTailNode;
-				if (last){
-					last->next_ = ptr;
-				}
-				else{
-					*entry = ptr;
-				}
-				last = ptr;
-			}
-			else {
-				vuCollectionManager->PutOnKillQueue(ptr, TRUE);
-				//ptr->entity_.reset();
-				// sfr: smartpointer
-				//VuDeReferenceEntity(ent);
-				retval++;
-				count_--;
-			}
-			ptr = next;
-		}
+    while (index < capacity_)
+    {
+        last = 0;
 
-		if (!last){
-			*entry = vuTailNode;
-		}
+        while (ptr->entity_)
+        {
+            next = ptr->next_;
+            // sfr: smartpointer
+            VuEntity *ent = ptr->entity_.get();
 
-		index++;
-		entry = table_ + index;
-		ptr = *entry;
-	}
+            if (!all && ((ent->IsPrivate() && ent->IsPersistent()) || ent->IsGlobal()))
+            {
+                ptr->next_ = vuTailNode;
 
-	VuExitCriticalSection();
+                if (last)
+                {
+                    last->next_ = ptr;
+                }
+                else
+                {
+                    *entry = ptr;
+                }
 
-	return retval;
+                last = ptr;
+            }
+            else
+            {
+                vuCollectionManager->PutOnKillQueue(ptr, TRUE);
+                //ptr->entity_.reset();
+                // sfr: smartpointer
+                //VuDeReferenceEntity(ent);
+                retval++;
+                count_--;
+            }
+
+            ptr = next;
+        }
+
+        if (!last)
+        {
+            *entry = vuTailNode;
+        }
+
+        index++;
+        entry = table_ + index;
+        ptr = *entry;
+    }
+
+    VuExitCriticalSection();
+
+    return retval;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VU_ERRCODE VuAntiDatabase::Insert (VuEntity *entity)
+VU_ERRCODE VuAntiDatabase::Insert(VuEntity *entity)
 {
-	if (vuDatabase->Find(entity->Id()) == 0)
-	{
-		VuEnterCriticalSection();
+    if (vuDatabase->Find(entity->Id()) == 0)
+    {
+        VuEnterCriticalSection();
 
-		// to ensure hash table insert succeeds
-		entity->SetVuState(VU_MEM_ACTIVE);
-		VuHashTable::Insert(entity);
-		entity->SetVuState(VU_MEM_SUSPENDED);
+        // to ensure hash table insert succeeds
+        entity->SetVuState(VU_MEM_ACTIVE);
+        VuHashTable::Insert(entity);
+        entity->SetVuState(VU_MEM_SUSPENDED);
 
-		// sfr: smartpointer
-		//VuReferenceEntity(entity);
-		VuExitCriticalSection();
+        // sfr: smartpointer
+        //VuReferenceEntity(entity);
+        VuExitCriticalSection();
 
-		return VU_SUCCESS;
-	}
-	return VU_NO_OP;
+        return VU_SUCCESS;
+    }
+
+    return VU_NO_OP;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,31 +131,35 @@ VU_ERRCODE VuAntiDatabase::Insert (VuEntity *entity)
 
 VU_ERRCODE VuAntiDatabase::Remove(VuEntity *entity)
 {
-	if (VuHashTable::Remove(entity)){
-		if (vuDatabase->Find(entity->Id()) == 0){
-			entity->SetVuState(VU_MEM_PENDING_DELETE);
-		}
-		// sfr: smartpointer
-		//VuDeReferenceEntity(entity);
-		return VU_SUCCESS;
-	}
-	return VU_NO_OP;
+    if (VuHashTable::Remove(entity))
+    {
+        if (vuDatabase->Find(entity->Id()) == 0)
+        {
+            entity->SetVuState(VU_MEM_PENDING_DELETE);
+        }
+
+        // sfr: smartpointer
+        //VuDeReferenceEntity(entity);
+        return VU_SUCCESS;
+    }
+
+    return VU_NO_OP;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VU_ERRCODE VuAntiDatabase::Remove (VU_ID entityId)
+VU_ERRCODE VuAntiDatabase::Remove(VU_ID entityId)
 {
-	VuEntity *ent = Find(entityId);
+    VuEntity *ent = Find(entityId);
 
-	if (ent)
-	{
-		return Remove(ent);
-	}
+    if (ent)
+    {
+        return Remove(ent);
+    }
 
-	return VU_NO_OP;
+    return VU_NO_OP;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,7 +168,7 @@ VU_ERRCODE VuAntiDatabase::Remove (VU_ID entityId)
 
 int VuAntiDatabase::Type()
 {
-	return VU_ANTI_DATABASE_COLLECTION;
+    return VU_ANTI_DATABASE_COLLECTION;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

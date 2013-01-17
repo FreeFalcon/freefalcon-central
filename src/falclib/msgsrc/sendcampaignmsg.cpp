@@ -18,87 +18,97 @@ extern C_Handler *gMainHandler;
 extern int gCurrentDataVersion;
 extern int gCampDataVersion;
 
-extern void CampaignJoinKeepAlive (void);
+extern void CampaignJoinKeepAlive(void);
 
-FalconSendCampaign::FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (SendCampaignMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconSendCampaign::FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-	uchar	*buffer;
-	dataBlock.dataSize = (short)TheCampaign.Encode(&buffer);
-	dataBlock.campInfo = buffer;
+    uchar	*buffer;
+    dataBlock.dataSize = (short)TheCampaign.Encode(&buffer);
+    dataBlock.campInfo = buffer;
 }
 
-FalconSendCampaign::FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (SendCampaignMsg, FalconEvent::CampaignThread, senderid, target)
+FalconSendCampaign::FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, senderid, target)
 {
-	dataBlock.campInfo = NULL;
-	dataBlock.dataSize = -1;
+    dataBlock.campInfo = NULL;
+    dataBlock.dataSize = -1;
 }
 
 FalconSendCampaign::~FalconSendCampaign(void)
 {
-	delete dataBlock.campInfo;
-	dataBlock.campInfo = NULL;
+    delete dataBlock.campInfo;
+    dataBlock.campInfo = NULL;
 }
 
-int FalconSendCampaign::Size () const { 
-	ShiAssert ( dataBlock.dataSize >= 0 );
-	return sizeof(dataBlock) + dataBlock.dataSize + FalconEvent::Size();
-}
-
-int FalconSendCampaign::Decode (VU_BYTE **buf, long *rem)
+int FalconSendCampaign::Size() const
 {
-	long init = *rem;
-
-	ShiAssert ( dataBlock.dataSize >= 0 );
-	memcpychk (&dataBlock, buf, sizeof (dataBlock), rem);
-	dataBlock.campInfo = new uchar[dataBlock.dataSize];
-	memcpychk (dataBlock.campInfo, buf, dataBlock.dataSize, rem);
-	FalconEvent::Decode (buf, rem);
-
-	int size = init - *rem;
-	ShiAssert (size == Size());
-
-	CampaignJoinKeepAlive();
-
-	return size;
+    ShiAssert(dataBlock.dataSize >= 0);
+    return sizeof(dataBlock) + dataBlock.dataSize + FalconEvent::Size();
 }
 
-int FalconSendCampaign::Encode (VU_BYTE **buf)
+int FalconSendCampaign::Decode(VU_BYTE **buf, long *rem)
 {
-	int size = 0;
+    long init = *rem;
 
-	memcpy (*buf, &dataBlock, sizeof (dataBlock));				*buf += sizeof (dataBlock);		size += sizeof (dataBlock);
-	memcpy (*buf, dataBlock.campInfo, dataBlock.dataSize);		*buf += dataBlock.dataSize;		size += dataBlock.dataSize;
-	ShiAssert ( dataBlock.dataSize >= 0 );
-	size += FalconEvent::Encode (buf);
+    ShiAssert(dataBlock.dataSize >= 0);
+    memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+    dataBlock.campInfo = new uchar[dataBlock.dataSize];
+    memcpychk(dataBlock.campInfo, buf, dataBlock.dataSize, rem);
+    FalconEvent::Decode(buf, rem);
 
-	ShiAssert (size == Size());
+    int size = init - *rem;
+    ShiAssert(size == Size());
 
-	return size;
+    CampaignJoinKeepAlive();
+
+    return size;
+}
+
+int FalconSendCampaign::Encode(VU_BYTE **buf)
+{
+    int size = 0;
+
+    memcpy(*buf, &dataBlock, sizeof(dataBlock));
+    *buf += sizeof(dataBlock);
+    size += sizeof(dataBlock);
+    memcpy(*buf, dataBlock.campInfo, dataBlock.dataSize);
+    *buf += dataBlock.dataSize;
+    size += dataBlock.dataSize;
+    ShiAssert(dataBlock.dataSize >= 0);
+    size += FalconEvent::Encode(buf);
+
+    ShiAssert(size == Size());
+
+    return size;
 };
 
 int FalconSendCampaign::Process(uchar autodisp)
 {
-	uchar		*bufptr = dataBlock.campInfo;
-	long bufSize = dataBlock.dataSize;
+    uchar		*bufptr = dataBlock.campInfo;
+    long bufSize = dataBlock.dataSize;
 
-	if (autodisp){
-		return 0;
-	}
+    if (autodisp)
+    {
+        return 0;
+    }
 
-	if (TheCampaign.Flags & CAMP_NEED_PRELOAD){
-		CampEnterCriticalSection();
-		gCampDataVersion = gCurrentDataVersion;
-		TheCampaign.Decode(&bufptr, &bufSize);
-		TheCampaign.Flags &= ~CAMP_NEED_PRELOAD;
-		TheCampaign.Flags |= CAMP_PRELOADED;
-		CampLeaveCriticalSection();
+    if (TheCampaign.Flags & CAMP_NEED_PRELOAD)
+    {
+        CampEnterCriticalSection();
+        gCampDataVersion = gCurrentDataVersion;
+        TheCampaign.Decode(&bufptr, &bufSize);
+        TheCampaign.Flags &= ~CAMP_NEED_PRELOAD;
+        TheCampaign.Flags |= CAMP_PRELOADED;
+        CampLeaveCriticalSection();
 
-		if(gMainHandler){
-			PostMessage(gMainHandler->GetAppWnd(),FM_GOT_CAMPAIGN_DATA,CAMP_NEED_PRELOAD,0);
-		}
-		return 1;
-	}
-	else {
-		return 0;
-	}
+        if (gMainHandler)
+        {
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
+        }
+
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

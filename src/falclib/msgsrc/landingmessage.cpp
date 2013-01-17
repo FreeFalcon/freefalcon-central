@@ -17,45 +17,47 @@
 
 #include "InvalidBufferException.h"
 
-FalconLandingMessage::FalconLandingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (LandingMessage, FalconEvent::SimThread, entityId, target, loopback)
+FalconLandingMessage::FalconLandingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(LandingMessage, FalconEvent::SimThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-FalconLandingMessage::FalconLandingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (LandingMessage, FalconEvent::SimThread, senderid, target)
+FalconLandingMessage::FalconLandingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(LandingMessage, FalconEvent::SimThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconLandingMessage::~FalconLandingMessage(void)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconLandingMessage::Process(uchar autodisp)
 {
-	GridIndex	x,y;
-	int			status;
+    GridIndex	x, y;
+    int			status;
 
-	if (!Entity() || autodisp)
-		return -1;
+    if (!Entity() || autodisp)
+        return -1;
 
-	// Check for friendly territory
-	x = SimToGrid(Entity()->YPos());
-	y = SimToGrid(Entity()->XPos());
+    // Check for friendly territory
+    x = SimToGrid(Entity()->YPos());
+    y = SimToGrid(Entity()->XPos());
 #if 0	//MI Marco's landing at relocated AB fix
-	if (GetRoE(GetOwner(TheCampaign.CampMapData,x,y),((FalconEntity*)Entity())->GetTeam(),ROE_AIR_USE_BASES) == ROE_ALLOWED)
-		status = PILOT_AVAILABLE;
-	else
-		{
-		status = PILOT_MIA;
-//		ShiAssert(!"Please show Kevin K this message!");
-		}
+
+    if (GetRoE(GetOwner(TheCampaign.CampMapData, x, y), ((FalconEntity*)Entity())->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
+        status = PILOT_AVAILABLE;
+    else
+    {
+        status = PILOT_MIA;
+        //		ShiAssert(!"Please show Kevin K this message!");
+    }
+
 #else
-	status = PILOT_AVAILABLE;
+    status = PILOT_AVAILABLE;
 #endif
 
-	TheCampaign.MissionEvaluator->RegisterLanding(this,status);
-	return 0;
+    TheCampaign.MissionEvaluator->RegisterLanding(this, status);
+    return 0;
 }

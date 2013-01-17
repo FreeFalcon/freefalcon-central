@@ -50,10 +50,10 @@
 #include "userids.h"
 #include "division.h"
 #include "cmap.h"
-void GenericTimerCB(long ID,short hittype,C_Base *control);
-void BlinkCommsButtonTimerCB(long ID,short hittype,C_Base *control);
-void tactical_select_load (long ID, short hittype, C_Base *ctrl);
-void tactical_select_training (long ID, short hittype, C_Base *ctrl);
+void GenericTimerCB(long ID, short hittype, C_Base *control);
+void BlinkCommsButtonTimerCB(long ID, short hittype, C_Base *control);
+void tactical_select_load(long ID, short hittype, C_Base *ctrl);
+void tactical_select_training(long ID, short hittype, C_Base *ctrl);
 void SetSingle_Comms_Ctrls();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,18 +67,18 @@ void SetSingle_Comms_Ctrls();
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void LoadCommonWindows (void);
-void CleanupTacticalEngagementUI (void);
+void LoadCommonWindows(void);
+void CleanupTacticalEngagementUI(void);
 
-extern int PlannerLoaded,TACSelLoaded;
-void LoadPlannerWindows (void);
+extern int PlannerLoaded, TACSelLoaded;
+void LoadPlannerWindows(void);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 extern C_Map
-	*gMapMgr;
+*gMapMgr;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,84 +86,88 @@ extern C_Map
 
 void LoadTacEngSelectWindows()
 {
-	C_Window *win;
-	C_Button *tac_train = NULL;
-	long ID;
+    C_Window *win;
+    C_Button *tac_train = NULL;
+    long ID;
 
-	if(!PlannerLoaded)
-		LoadPlannerWindows();
+    if (!PlannerLoaded)
+        LoadPlannerWindows();
 
-	LoadCommonWindows();
+    LoadCommonWindows();
 
-	if(!TACSelLoaded)
-	{
-		if( _LOAD_ART_RESOURCES_)
-			gMainParser->LoadImageList ("ts_res.lst");
-		else
-			gMainParser->LoadImageList ("ts_art.lst");
+    if (!TACSelLoaded)
+    {
+        if (_LOAD_ART_RESOURCES_)
+            gMainParser->LoadImageList("ts_res.lst");
+        else
+            gMainParser->LoadImageList("ts_art.lst");
 
-		gMainParser->LoadSoundList ("ts_snd.lst");
+        gMainParser->LoadSoundList("ts_snd.lst");
 
-		gMainParser->LoadWindowList ("ts_scf.lst");
+        gMainParser->LoadWindowList("ts_scf.lst");
 
-		ID=gMainParser->GetFirstWindowLoaded ();
+        ID = gMainParser->GetFirstWindowLoaded();
 
-		while(ID)
-		{
-			hookup_tactical_controls (ID);
-			ID = gMainParser->GetNextWindowLoaded ();
-		}
-		TACSelLoaded++;
-	}
+        while (ID)
+        {
+            hookup_tactical_controls(ID);
+            ID = gMainParser->GetNextWindowLoaded();
+        }
 
-	win = gMainHandler->FindWindow (TAC_MISSION_WIN);
+        TACSelLoaded++;
+    }
 
-	if (win) // JPO
-	    tac_train=(C_Button *)win->FindControl(TAC_TRAIN_CTRL);
-	if(tac_train)
-		tactical_select_training(TAC_TRAIN_CTRL,C_TYPE_LMOUSEUP,tac_train);
+    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
 
-	SetSingle_Comms_Ctrls();
+    if (win) // JPO
+        tac_train = (C_Button *)win->FindControl(TAC_TRAIN_CTRL);
+
+    if (tac_train)
+        tactical_select_training(TAC_TRAIN_CTRL, C_TYPE_LMOUSEUP, tac_train);
+
+    SetSingle_Comms_Ctrls();
 }
 
-void LoadTacticalWindows (void)
+void LoadTacticalWindows(void)
 {
-	long ID;
-	C_Window *win;
-	C_TimerHook *tmr;
+    long ID;
+    C_Window *win;
+    C_TimerHook *tmr;
 
-	if (TACLoaded)
-	{
-		return;
-	}
+    if (TACLoaded)
+    {
+        return;
+    }
 
-	if( _LOAD_ART_RESOURCES_)
-		gMainParser->LoadImageList ("te_res.lst");
-	else
-		gMainParser->LoadImageList ("te_art.lst");
+    if (_LOAD_ART_RESOURCES_)
+        gMainParser->LoadImageList("te_res.lst");
+    else
+        gMainParser->LoadImageList("te_art.lst");
 
-	gMainParser->LoadSoundList ("te_snd.lst");
+    gMainParser->LoadSoundList("te_snd.lst");
 
-	gMainParser->LoadWindowList ("te_scf.lst");
+    gMainParser->LoadWindowList("te_scf.lst");
 
-	ID=gMainParser->GetFirstWindowLoaded ();
+    ID = gMainParser->GetFirstWindowLoaded();
 
-	while(ID)
-	{
-		hookup_tactical_controls (ID);
-		ID = gMainParser->GetNextWindowLoaded ();
-	}
+    while (ID)
+    {
+        hookup_tactical_controls(ID);
+        ID = gMainParser->GetNextWindowLoaded();
+    }
 
-	win=gMainHandler->FindWindow(TAC_PLAY_SCREEN);
-	if(win)
-	{
-		tmr=new C_TimerHook;
-		tmr->Setup(C_DONT_CARE,C_TYPE_TIMER);
-		tmr->SetUpdateCallback(GenericTimerCB);
-		tmr->SetRefreshCallback(BlinkCommsButtonTimerCB);
-		tmr->SetUserNumber(_UI95_TIMER_DELAY_,1*_UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
+    win = gMainHandler->FindWindow(TAC_PLAY_SCREEN);
 
-		win->AddControl(tmr);
-	}
-	TACLoaded = TRUE;
+    if (win)
+    {
+        tmr = new C_TimerHook;
+        tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
+        tmr->SetUpdateCallback(GenericTimerCB);
+        tmr->SetRefreshCallback(BlinkCommsButtonTimerCB);
+        tmr->SetUserNumber(_UI95_TIMER_DELAY_, 1 * _UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
+
+        win->AddControl(tmr);
+    }
+
+    TACLoaded = TRUE;
 }

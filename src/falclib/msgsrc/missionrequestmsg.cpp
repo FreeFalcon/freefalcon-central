@@ -18,30 +18,31 @@
 
 extern F4CSECTIONHANDLE* vuCritical;
 
-FalconMissionRequestMessage::FalconMissionRequestMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (MissionRequestMsg, FalconEvent::CampaignThread, entityId, target, loopback)
-{	
-	// Your Code Goes Here
+FalconMissionRequestMessage::FalconMissionRequestMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+{
+    // Your Code Goes Here
 }
 
-FalconMissionRequestMessage::FalconMissionRequestMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (MissionRequestMsg, FalconEvent::CampaignThread, senderid, target)
+FalconMissionRequestMessage::FalconMissionRequestMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, senderid, target)
 {
-	// Your Code Goes Here
+    // Your Code Goes Here
 }
 
 FalconMissionRequestMessage::~FalconMissionRequestMessage(void)
 {
-	// Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconMissionRequestMessage::Process(uchar autodisp)
 {
-//	F4Assert(vuCritical->count == 0);
+    //	F4Assert(vuCritical->count == 0);
 
-	if (autodisp)
-		return -1;
+    if (autodisp)
+        return -1;
 
-	if (TeamInfo[dataBlock.team] && TeamInfo[dataBlock.team]->atm && TeamInfo[dataBlock.team]->atm->IsLocal())
-		TeamInfo[dataBlock.team]->atm->ProcessRequest(&(dataBlock.request));
-	return 0;
+    if (TeamInfo[dataBlock.team] && TeamInfo[dataBlock.team]->atm && TeamInfo[dataBlock.team]->atm->IsLocal())
+        TeamInfo[dataBlock.team]->atm->ProcessRequest(&(dataBlock.request));
+
+    return 0;
 }
 

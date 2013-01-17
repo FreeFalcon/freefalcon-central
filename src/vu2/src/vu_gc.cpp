@@ -10,33 +10,39 @@
 using namespace std;
 
 /** garbage collector internal structure. */
-struct VuGC::Data {
-	F4CSECTIONHANDLE *gcmutex;
-	// FIFOs
-	list<VuEntityBin> es;          ///< list entities to be deleted
+struct VuGC::Data
+{
+    F4CSECTIONHANDLE *gcmutex;
+    // FIFOs
+    list<VuEntityBin> es;          ///< list entities to be deleted
 };
 
-VuGC::VuGC() : d(new Data){
-	d->gcmutex = F4CreateCriticalSection("gc mutex");
+VuGC::VuGC() : d(new Data)
+{
+    d->gcmutex = F4CreateCriticalSection("gc mutex");
 }
-VuGC::~VuGC(){
-	flush();
-	F4DestroyCriticalSection(d->gcmutex);
-}
-
-void VuGC::insert(VuEntity *e){
-	F4ScopeLock l(d->gcmutex);
-	d->es.push_back(VuEntityBin(e));
+VuGC::~VuGC()
+{
+    flush();
+    F4DestroyCriticalSection(d->gcmutex);
 }
 
+void VuGC::insert(VuEntity *e)
+{
+    F4ScopeLock l(d->gcmutex);
+    d->es.push_back(VuEntityBin(e));
+}
 
-void VuGC::flush(){
-	// remove list nodes 
-	while (!d->es.empty()){
-		VuEntityBin &eb = d->es.back();
-		d->es.pop_back();
-		vuDatabase->ReallyRemove(eb.get());
-	}	
+
+void VuGC::flush()
+{
+    // remove list nodes
+    while (!d->es.empty())
+    {
+        VuEntityBin &eb = d->es.back();
+        d->es.pop_back();
+        vuDatabase->ReallyRemove(eb.get());
+    }
 }
 
 

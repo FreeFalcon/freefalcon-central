@@ -17,85 +17,98 @@ DynamicPatchClass		TheDynamicPatchList;
 
 void DynamicPatchClass::Setup(void)
 {
-	PatchList = NULL;
+    PatchList = NULL;
 }
 
 
-void DynamicPatchClass::Load( char *filename )
+void DynamicPatchClass::Load(char *filename)
 {
-	FILE	*file;
-	char	line[256];
-	char	name[256];
-	int		vnum;
-	int		argCnt;
+    FILE	*file;
+    char	line[256];
+    char	name[256];
+    int		vnum;
+    int		argCnt;
 
-	ShiAssert( PatchList == NULL );
+    ShiAssert(PatchList == NULL);
 
-	// Open the named patch file
-	file = fopen( filename, "r" );
-	if (!file) {
-		printf( "Failed to open alpha patch file %s\n", filename );
-		return;
-	}
+    // Open the named patch file
+    file = fopen(filename, "r");
 
-	// Read each line
-	while (fgets( line, sizeof(line), file )) {
+    if (!file)
+    {
+        printf("Failed to open alpha patch file %s\n", filename);
+        return;
+    }
 
-		argCnt = sscanf( line, "%d %s", &vnum, name );
-		if (argCnt == 2) {
-//			printf("  OLD STYLE VERTEX SPECIFICIATION:  %0d %s ==>", vnum, name );
-			sprintf(name, "%s/v%0d", name, vnum+1);
-//			printf("  NEW:  %s\n", name );
-			AddPatch( name );
-		} else {
-			argCnt = sscanf( line, "%s", name );
-			if (argCnt == 1) {
-//				printf("  PATCH:  %s\n", name );
-				AddPatch( name );
-			}
-		}
+    // Read each line
+    while (fgets(line, sizeof(line), file))
+    {
 
-	}
+        argCnt = sscanf(line, "%d %s", &vnum, name);
 
-	// Close the patch file
-	fclose( file );
+        if (argCnt == 2)
+        {
+            //			printf("  OLD STYLE VERTEX SPECIFICIATION:  %0d %s ==>", vnum, name );
+            sprintf(name, "%s/v%0d", name, vnum + 1);
+            //			printf("  NEW:  %s\n", name );
+            AddPatch(name);
+        }
+        else
+        {
+            argCnt = sscanf(line, "%s", name);
+
+            if (argCnt == 1)
+            {
+                //				printf("  PATCH:  %s\n", name );
+                AddPatch(name);
+            }
+        }
+
+    }
+
+    // Close the patch file
+    fclose(file);
 }
 
 
 void DynamicPatchClass::Cleanup(void)
 {
-	DynamicPatchRecord *record;
+    DynamicPatchRecord *record;
 
-	while (PatchList) {
-		record = PatchList;
-		PatchList = PatchList->next;
-		delete record;
-	}
+    while (PatchList)
+    {
+        record = PatchList;
+        PatchList = PatchList->next;
+        delete record;
+    }
 }
 
 
-void DynamicPatchClass::AddPatch( char *name )
+void DynamicPatchClass::AddPatch(char *name)
 {
-	DynamicPatchRecord *record = new DynamicPatchRecord;
+    DynamicPatchRecord *record = new DynamicPatchRecord;
 
-	ShiAssert( strlen(name) < sizeof(record->name) );
-	strcpy( record->name, name );
-	record->next	= PatchList;
-	PatchList		= record;
+    ShiAssert(strlen(name) < sizeof(record->name));
+    strcpy(record->name, name);
+    record->next	= PatchList;
+    PatchList		= record;
 }
 
 
-BOOL DynamicPatchClass::IsDynamic( char *name )
+BOOL DynamicPatchClass::IsDynamic(char *name)
 {
-	DynamicPatchRecord *record = PatchList;
+    DynamicPatchRecord *record = PatchList;
 
-	while(record) {
-		if (stricmp( record->name, name ) == 0) {
-			// We found a match!
-			return TRUE;
-		}
-		record = record->next;
-	}
+    while (record)
+    {
+        if (stricmp(record->name, name) == 0)
+        {
+            // We found a match!
+            return TRUE;
+        }
 
-	return FALSE;
+        record = record->next;
+    }
+
+    return FALSE;
 }

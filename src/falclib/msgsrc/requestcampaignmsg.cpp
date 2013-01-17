@@ -6,7 +6,7 @@
  */
 /*
 
-//sfr: this is not used, and does not compile 
+//sfr: this is not used, and does not compile
 #include "MsgInc\RequestCampaignMsg.h"
 #include "MsgInc\SendCampaignMsg.h"
 #include "mesg.h"

@@ -19,22 +19,22 @@ static sockaddr_in	address;
 
 void SetupTransport( WORD port )
 {
-	WORD		wVersionRequested;  
-	WSADATA		wsaData; 
-	int			result; 
+	WORD		wVersionRequested;
+	WSADATA		wsaData;
+	int			result;
 
 
 
 	// Open WinSock
-	wVersionRequested = MAKEWORD(1, 1); 
+	wVersionRequested = MAKEWORD(1, 1);
 	result = WSAStartup(wVersionRequested, &wsaData);
 	if (result != 0) {
-		ShiError( "Transport:  We couldn't load WinSock!" ); 
+		ShiError( "Transport:  We couldn't load WinSock!" );
 	}
-	if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 ) { 
-		WSACleanup(); 
-		ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock!" ); 
-	} 
+	if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 ) {
+		WSACleanup();
+		ShiError( "Transport:  We couldn't find a 1.1 compatable WinSock!" );
+	}
 
 
 	// Create a UDP socket
@@ -68,7 +68,7 @@ void CleanupTransport( void )
 	closesocket( sock );
 
 	// Close WinSock
-	WSACleanup(); 
+	WSACleanup();
 }
 
 

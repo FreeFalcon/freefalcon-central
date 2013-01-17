@@ -5,13 +5,16 @@
 // VuFilter -- dummy base class
 //-----------------------------------------------------------------------------
 
-VuFilter::~VuFilter(){
+VuFilter::~VuFilter()
+{
 }
 
-VU_BOOL VuFilter::RemoveTest(VuEntity *){
-	return TRUE;
+VU_BOOL VuFilter::RemoveTest(VuEntity *)
+{
+    return TRUE;
 }
 
-VU_BOOL VuFilter::Notice(VuMessage *){
-	return FALSE;
+VU_BOOL VuFilter::Notice(VuMessage *)
+{
+    return FALSE;
 }

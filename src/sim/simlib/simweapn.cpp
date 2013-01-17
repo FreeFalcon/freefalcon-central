@@ -20,367 +20,395 @@
 //extern VuAntiDatabase *vuAntiDB;
 extern int gNumWeaponsInAir;
 
-SimWeaponClass::SimWeaponClass(FILE* filePtr) : SimMoverClass (filePtr){
-	InitLocalData();
+SimWeaponClass::SimWeaponClass(FILE* filePtr) : SimMoverClass(filePtr)
+{
+    InitLocalData();
 }
 
-SimWeaponClass::SimWeaponClass(VU_BYTE** stream, long *rem) : SimMoverClass (stream, rem){
-	InitLocalData();
-	VU_ID vuid;
-	memcpychk(&vuid, stream, sizeof(VU_ID), rem);
-	VuBin<VuEntity> p(vuDatabase->Find(vuid));
-	parent.reset(static_cast<FalconEntity*>(p.get())); 
+SimWeaponClass::SimWeaponClass(VU_BYTE** stream, long *rem) : SimMoverClass(stream, rem)
+{
+    InitLocalData();
+    VU_ID vuid;
+    memcpychk(&vuid, stream, sizeof(VU_ID), rem);
+    VuBin<VuEntity> p(vuDatabase->Find(vuid));
+    parent.reset(static_cast<FalconEntity*>(p.get()));
 }
 
-SimWeaponClass::SimWeaponClass(int type) : SimMoverClass(type){
-	InitLocalData();
+SimWeaponClass::SimWeaponClass(int type) : SimMoverClass(type)
+{
+    InitLocalData();
 }
 
-SimWeaponClass::~SimWeaponClass(void){
-	CleanupLocalData();
+SimWeaponClass::~SimWeaponClass(void)
+{
+    CleanupLocalData();
 }
 
-void SimWeaponClass::InitData(){
-	SimMoverClass::InitData();
-	InitLocalData();
+void SimWeaponClass::InitData()
+{
+    SimMoverClass::InitData();
+    InitLocalData();
 }
 
-void SimWeaponClass::InitLocalData(){
-	// every weapon inserted is sent immediately
-	SetSendCreate(VuEntity::VU_SC_SEND_OOB);
-	
-	rackSlot = -1;
-	nextOnRail.reset();
-	parent.reset();
-	shooterPilotSlot = 255;
-	//parentReferenced = FALSE;
-	WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+void SimWeaponClass::InitLocalData()
+{
+    // every weapon inserted is sent immediately
+    SetSendCreate(VuEntity::VU_SC_SEND_OOB);
+
+    rackSlot = -1;
+    nextOnRail.reset();
+    parent.reset();
+    shooterPilotSlot = 255;
+    //parentReferenced = FALSE;
+    WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
 #ifndef MISSILE_TEST_PROG
-	ShiAssert(wc != NULL); // JPO catch it
-	if (wc) // JB 010220
-	{
-		if (wc->DamageType == NuclearDam)
-			lethalRadiusSqrd = (float)wc->BlastRadius * 3.0f;
-		else
-			lethalRadiusSqrd = (float)wc->BlastRadius;
-	}
-	else
-		lethalRadiusSqrd = 0.0f; // JB 010220
+    ShiAssert(wc != NULL); // JPO catch it
+
+    if (wc) // JB 010220
+    {
+        if (wc->DamageType == NuclearDam)
+            lethalRadiusSqrd = (float)wc->BlastRadius * 3.0f;
+        else
+            lethalRadiusSqrd = (float)wc->BlastRadius;
+    }
+    else
+        lethalRadiusSqrd = 0.0f; // JB 010220
+
 #else
-	lethalRadiusSqrd = 100.0F;
+    lethalRadiusSqrd = 100.0F;
 #endif
 
-	if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced){
-			lethalRadiusSqrd *= 1.5F;
-	}
-	if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated){
-			lethalRadiusSqrd *= 2.0F;
-	}
-	lethalRadiusSqrd *= lethalRadiusSqrd;
+    if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced)
+    {
+        lethalRadiusSqrd *= 1.5F;
+    }
+
+    if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated)
+    {
+        lethalRadiusSqrd *= 2.0F;
+    }
+
+    lethalRadiusSqrd *= lethalRadiusSqrd;
 }
 
-void SimWeaponClass::CleanupLocalData(){
-	nextOnRail.reset();
-	parent.reset();
+void SimWeaponClass::CleanupLocalData()
+{
+    nextOnRail.reset();
+    parent.reset();
 }
 
-void SimWeaponClass::CleanupData(){
-	CleanupLocalData();
-	SimMoverClass::CleanupData();
+void SimWeaponClass::CleanupData()
+{
+    CleanupLocalData();
+    SimMoverClass::CleanupData();
 }
 
-void SimWeaponClass::Init(){
-   SimMoverClass::Init(NULL);
+void SimWeaponClass::Init()
+{
+    SimMoverClass::Init(NULL);
 }
 
 int SimWeaponClass::Sleep()
 {
-   if (SimDriver.RunningInstantAction())
-   {
-      if (parent.get() == SimDriver.GetPlayerEntity())
-      {
-         gNumWeaponsInAir --;
-      }
-   }
+    if (SimDriver.RunningInstantAction())
+    {
+        if (parent.get() == SimDriver.GetPlayerEntity())
+        {
+            gNumWeaponsInAir --;
+        }
+    }
 
-   parent.reset();
-   /*if (parentReferenced)
-   {
-      parentReferenced = FALSE;
-      VuDeReferenceEntity (parent);
-      parent = NULL;
-   }*/
+    parent.reset();
+    /*if (parentReferenced)
+    {
+       parentReferenced = FALSE;
+       VuDeReferenceEntity (parent);
+       parent = NULL;
+    }*/
 
-	return SimMoverClass::Sleep();
+    return SimMoverClass::Sleep();
 }
 
-int SimWeaponClass::Wake (void)
+int SimWeaponClass::Wake(void)
 {
-	if (SimDriver.RunningInstantAction()){
-		if (parent.get() == SimDriver.GetPlayerEntity()){
-			++gNumWeaponsInAir;
-		}
-	}
-	return SimMoverClass::Wake();
-//   vuAntiDB->Remove (this);
+    if (SimDriver.RunningInstantAction())
+    {
+        if (parent.get() == SimDriver.GetPlayerEntity())
+        {
+            ++gNumWeaponsInAir;
+        }
+    }
+
+    return SimMoverClass::Wake();
+    //   vuAntiDB->Remove (this);
 }
 
 int SimWeaponClass::GetRadarType(void)
 {
-	WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
-	ShiAssert(wc);
+    ShiAssert(wc);
 
-	if (wc)
-		return wc->RadarType;
-	else
-		return 0;
+    if (wc)
+        return wc->RadarType;
+    else
+        return 0;
 }
 
-int SimWeaponClass::Exec (void)
+int SimWeaponClass::Exec(void)
 {
-   return SimMoverClass::Exec();
+    return SimMoverClass::Exec();
 }
 
 // function interface
 // serialization functions
 int SimWeaponClass::SaveSize()
 {
-   return SimMoverClass::SaveSize() + sizeof(VU_ID);
+    return SimMoverClass::SaveSize() + sizeof(VU_ID);
 }
 
 // Try this code for missile removal for remote entities
 #if 0
 int SimWeaponClass::SaveSize()
 {
-int		retval = 0;
+    int		retval = 0;
 
-   // Streamify the data
-	retval += sizeof(VU_ID);
-	retval += sizeof(VU_ID);
-   retval += sizeof(char);
-   retval += sizeof(char);
+    // Streamify the data
+    retval += sizeof(VU_ID);
+    retval += sizeof(VU_ID);
+    retval += sizeof(char);
+    retval += sizeof(char);
 
-	return retval;
+    return retval;
 }
 
 int SimWeaponClass::Save(VU_BYTE **stream)
 {
-	int		retval = 0;
+    int		retval = 0;
 
-	ShiAssert(parent);
-	if (!parent)
-		return NULL;
+    ShiAssert(parent);
 
-	VU_ID	parentId = parent->Id();
-	VU_ID	myId = parent->Id();
-   char hardPoint;
-   char slot = GetRackSlot();
+    if (!parent)
+        return NULL;
 
-   // Streamify the data
-	memcpy (*stream, &parentId,sizeof(VU_ID));		*stream += sizeof(VU_ID);
-	retval += sizeof(VU_ID);
+    VU_ID	parentId = parent->Id();
+    VU_ID	myId = parent->Id();
+    char hardPoint;
+    char slot = GetRackSlot();
 
-	memcpy (*stream, &myId,sizeof(VU_ID));		*stream += sizeof(VU_ID);
-	retval += sizeof(VU_ID);
+    // Streamify the data
+    memcpy(*stream, &parentId, sizeof(VU_ID));
+    *stream += sizeof(VU_ID);
+    retval += sizeof(VU_ID);
 
-   memcpy (*stream, &hardPoint, sizeof (char)); *stream += sizeof (char);
-   retval += sizeof(char);
+    memcpy(*stream, &myId, sizeof(VU_ID));
+    *stream += sizeof(VU_ID);
+    retval += sizeof(VU_ID);
 
-   memcpy (*stream, &hardPoint, sizeof (char)); *stream += sizeof (char);
-   retval += sizeof(char);
+    memcpy(*stream, &hardPoint, sizeof(char));
+    *stream += sizeof(char);
+    retval += sizeof(char);
 
-	return retval;
+    memcpy(*stream, &hardPoint, sizeof(char));
+    *stream += sizeof(char);
+    retval += sizeof(char);
+
+    return retval;
 }
 #endif
 
 int SimWeaponClass::Save(VU_BYTE **stream)
 {
-	int		retval;
-	
-	ShiAssert(parent);
-	if (!parent)
-		return NULL;
+    int		retval;
 
-	VU_ID	vuid = parent->Id();
+    ShiAssert(parent);
 
-	retval = SimMoverClass::Save(stream);
+    if (!parent)
+        return NULL;
 
-	memcpy (*stream,&vuid,sizeof(VU_ID));		*stream += sizeof(VU_ID);
-	retval += sizeof(VU_ID);
+    VU_ID	vuid = parent->Id();
 
-	return retval;
+    retval = SimMoverClass::Save(stream);
+
+    memcpy(*stream, &vuid, sizeof(VU_ID));
+    *stream += sizeof(VU_ID);
+    retval += sizeof(VU_ID);
+
+    return retval;
 }
 
 int SimWeaponClass::Save(FILE *file)
 {
-int retval;
+    int retval;
 
-   retval = SimMoverClass::Save (file);
+    retval = SimMoverClass::Save(file);
 
-   return (retval);
+    return (retval);
 }
 
 int SimWeaponClass::Handle(VuFullUpdateEvent *event)
 {
-   return (SimMoverClass::Handle(event));
+    return (SimMoverClass::Handle(event));
 }
 
 
 int SimWeaponClass::Handle(VuPositionUpdateEvent *event)
 {
-   return (SimMoverClass::Handle(event));
+    return (SimMoverClass::Handle(event));
 }
 
 int SimWeaponClass::Handle(VuTransferEvent *event)
 {
-   return (SimMoverClass::Handle(event));
+    return (SimMoverClass::Handle(event));
 }
 
-void SimWeaponClass::SetDead (int flag)
+void SimWeaponClass::SetDead(int flag)
 {
-	if (flag/* && parentReferenced*/)
-	{
-		/*parentReferenced = FALSE;
-		VuDeReferenceEntity (parent);*/
-		parent.reset();
-	}
-	SimMoverClass::SetDead(flag);
+    if (flag/* && parentReferenced*/)
+    {
+        /*parentReferenced = FALSE;
+        VuDeReferenceEntity (parent);*/
+        parent.reset();
+    }
+
+    SimMoverClass::SetDead(flag);
 }
 
 void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSquare, int damageType)
 {
 #ifndef MISSILE_TEST_PROG
 
-   FalconDamageMessage* message;
-   float normBlastDist;
-   float lethalCone;
+    FalconDamageMessage* message;
+    float normBlastDist;
+    float lethalCone;
 
-	// Don't damage other weapons
-	if (testObject->IsMissile() || testObject->IsBomb())
-		return;
+    // Don't damage other weapons
+    if (testObject->IsMissile() || testObject->IsBomb())
+        return;
 
-	// Adjust damage for distance:
-	WeaponClassDataType* wc = (WeaponClassDataType *)Falcon4ClassTable[Type()-VU_LAST_ENTITY_TYPE].dataPtr;
-	ShiAssert(wc);
-	// edg: calculate a normalized blast Dist
-	normBlastDist = ( lethalRadiusSqrd - rangeSquare )/( lethalRadiusSqrd );
+    // Adjust damage for distance:
+    WeaponClassDataType* wc = (WeaponClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    ShiAssert(wc);
+    // edg: calculate a normalized blast Dist
+    normBlastDist = (lethalRadiusSqrd - rangeSquare) / (lethalRadiusSqrd);
 
-	// quadratic dropoff
-	normBlastDist *= normBlastDist;
+    // quadratic dropoff
+    normBlastDist *= normBlastDist;
 
-	// Player setting damage modifier
-	if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced)
-		lethalCone = 0.7f;
-	else if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated)
-		lethalCone = 0.8f;
-	else
-		lethalCone = 0.9f;
+    // Player setting damage modifier
+    if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced)
+        lethalCone = 0.7f;
+    else if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated)
+        lethalCone = 0.8f;
+    else
+        lethalCone = 0.9f;
 
-	// pre gilman: within an 70% dist from blast there's a 100% chance
-	// of being hit.  Outside that there's a chance of nooot being hit
-	// at all based on the normalized blast distance
-	
-	//TJ_changes since before all missile were of rangeSquare = 0 this function never returned here for 
-	//air to air missiles ... however with  new calculation of damage we should always let the damage happen 
-	//or modify this to be less sensitive
-	/*
-	if (normBlastDist < lethalCone && PRANDFloatPos() * 2.0f > normBlastDist)
-	{
-		return;
-	}
-	*/ //end TJ_changes
+    // pre gilman: within an 70% dist from blast there's a 100% chance
+    // of being hit.  Outside that there's a chance of nooot being hit
+    // at all based on the normalized blast distance
 
-	message = new FalconDamageMessage (testObject->Id(), FalconLocalGame);
-	message->dataBlock.fEntityID  = parent->Id();
-	message->dataBlock.fCampID = parent->GetCampID();
-	message->dataBlock.fSide   = static_cast<uchar>(parent->GetCountry());
+    //TJ_changes since before all missile were of rangeSquare = 0 this function never returned here for
+    //air to air missiles ... however with  new calculation of damage we should always let the damage happen
+    //or modify this to be less sensitive
+    /*
+    if (normBlastDist < lethalCone && PRANDFloatPos() * 2.0f > normBlastDist)
+    {
+    	return;
+    }
+    */ //end TJ_changes
 
-	if (parent->IsSimObjective() || parent->IsCampaign())
-		message->dataBlock.fPilotID   = 255;
-	else
-		message->dataBlock.fPilotID   = shooterPilotSlot;
+    message = new FalconDamageMessage(testObject->Id(), FalconLocalGame);
+    message->dataBlock.fEntityID  = parent->Id();
+    message->dataBlock.fCampID = parent->GetCampID();
+    message->dataBlock.fSide   = static_cast<uchar>(parent->GetCountry());
 
-	message->dataBlock.fIndex     = parent->Type();
-	message->dataBlock.fWeaponID  = Type();
-	message->dataBlock.fWeaponUID = Id();
+    if (parent->IsSimObjective() || parent->IsCampaign())
+        message->dataBlock.fPilotID   = 255;
+    else
+        message->dataBlock.fPilotID   = shooterPilotSlot;
 
-	message->dataBlock.dEntityID  = testObject->Id();
-	message->dataBlock.dCampID = testObject->GetCampID();
-	message->dataBlock.dSide   = static_cast<uchar>(testObject->GetCountry());
+    message->dataBlock.fIndex     = parent->Type();
+    message->dataBlock.fWeaponID  = Type();
+    message->dataBlock.fWeaponUID = Id();
 
-	if (testObject->IsSim() && testObject->IsMover())
-		message->dataBlock.dPilotID   = ((SimMoverClass*)testObject)->pilotSlot;
-	else
-		message->dataBlock.dPilotID   = 255;
+    message->dataBlock.dEntityID  = testObject->Id();
+    message->dataBlock.dCampID = testObject->GetCampID();
+    message->dataBlock.dSide   = static_cast<uchar>(testObject->GetCountry());
 
-	message->dataBlock.dIndex     = testObject->Type();
+    if (testObject->IsSim() && testObject->IsMover())
+        message->dataBlock.dPilotID   = ((SimMoverClass*)testObject)->pilotSlot;
+    else
+        message->dataBlock.dPilotID   = 255;
 
-	//MI special case nukes
-	if(wc && wc->DamageType == NuclearDam)
-	{
-		message->dataBlock.damageStrength = normBlastDist * (wc->Strength * 2000000.0F);
-		message->dataBlock.damageRandomFact = 5.0F; // nukes have exaggerated Damage factor
-	}
-	else
-	{
-		message->dataBlock.damageRandomFact = PRANDFloat();
-		message->dataBlock.damageStrength = normBlastDist * wc->Strength;
-	}
+    message->dataBlock.dIndex     = testObject->Type();
+
+    //MI special case nukes
+    if (wc && wc->DamageType == NuclearDam)
+    {
+        message->dataBlock.damageStrength = normBlastDist * (wc->Strength * 2000000.0F);
+        message->dataBlock.damageRandomFact = 5.0F; // nukes have exaggerated Damage factor
+    }
+    else
+    {
+        message->dataBlock.damageRandomFact = PRANDFloat();
+        message->dataBlock.damageStrength = normBlastDist * wc->Strength;
+    }
 
 
-	if (normBlastDist >= lethalCone )
-	{
-		// Direct hit!
-		// message->dataBlock.damageRandomFact += 1.0F;
-		message->dataBlock.damageType = damageType;
-	}
-	else
-	{
-		message->dataBlock.damageType = FalconDamageType::ProximityDamage;
-	}
+    if (normBlastDist >= lethalCone)
+    {
+        // Direct hit!
+        // message->dataBlock.damageRandomFact += 1.0F;
+        message->dataBlock.damageType = damageType;
+    }
+    else
+    {
+        message->dataBlock.damageType = FalconDamageType::ProximityDamage;
+    }
 
-	// Player setting damage modifier
-	if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced)
-		message->dataBlock.damageRandomFact += 2.0F;
-	if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated)
-		message->dataBlock.damageRandomFact += 4.0F;
+    // Player setting damage modifier
+    if (PlayerOptions.GetWeaponEffectiveness() == WEEnhanced)
+        message->dataBlock.damageRandomFact += 2.0F;
 
-	message->RequestOutOfBandTransmit ();
-	FalconSendMessage (message,TRUE);
+    if (PlayerOptions.GetWeaponEffectiveness() == WEExaggerated)
+        message->dataBlock.damageRandomFact += 4.0F;
+
+    message->RequestOutOfBandTransmit();
+    FalconSendMessage(message, TRUE);
 #endif
 }
 
 
-short SimWeaponClass::GetWeaponId(){
-	Falcon4EntityClassType* classPtr;
-	WeaponClassDataType* wc;
-	classPtr = (Falcon4EntityClassType*)EntityType();
-	wc = (WeaponClassDataType*)classPtr->dataPtr;
-	return (short)
-		(((int)Falcon4ClassTable[wc->Index].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType))
-	;
+short SimWeaponClass::GetWeaponId()
+{
+    Falcon4EntityClassType* classPtr;
+    WeaponClassDataType* wc;
+    classPtr = (Falcon4EntityClassType*)EntityType();
+    wc = (WeaponClassDataType*)classPtr->dataPtr;
+    return (short)
+           (((int)Falcon4ClassTable[wc->Index].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType))
+           ;
 }
 
 SimWeaponDataType      *SimWeaponClass::GetSWD(void)
 {
-	Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType* classPtr;
 
-	classPtr = (Falcon4EntityClassType*)EntityType();
-	return  &SimWeaponDataTable[classPtr->vehicleDataIndex];
+    classPtr = (Falcon4EntityClassType*)EntityType();
+    return  &SimWeaponDataTable[classPtr->vehicleDataIndex];
 }
 
 Falcon4EntityClassType *SimWeaponClass::GetCT(void)
 {
-	return (Falcon4EntityClassType*)EntityType();
+    return (Falcon4EntityClassType*)EntityType();
 }
 
 WeaponClassDataType    *SimWeaponClass::GetWCD(void)
 {
-	Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType* classPtr;
 
-	classPtr = (Falcon4EntityClassType*)EntityType();
-	return (WeaponClassDataType*)classPtr->dataPtr;
+    classPtr = (Falcon4EntityClassType*)EntityType();
+    return (WeaponClassDataType*)classPtr->dataPtr;
 }
 

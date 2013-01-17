@@ -6,13 +6,16 @@
 //-----------------------------------------------------------------------------
 
 #if VU_ALL_FILTERED
-VuDatabaseIterator::VuDatabaseIterator() : VuHashIterator(vuDatabase->dbHash_){
+VuDatabaseIterator::VuDatabaseIterator() : VuHashIterator(vuDatabase->dbHash_)
+{
 }
 #else
-VuDatabaseIterator::VuDatabaseIterator() : VuHashIterator(vuDatabase){
+VuDatabaseIterator::VuDatabaseIterator() : VuHashIterator(vuDatabase)
+{
 }
 #endif
 
-VuDatabaseIterator::~VuDatabaseIterator(){
+VuDatabaseIterator::~VuDatabaseIterator()
+{
 }
 

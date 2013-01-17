@@ -40,7 +40,7 @@
 //		groundAlt = groundAlt - 500.0f - ( self->ZPos() - groundAlt + 500.0f ) * 2.0f;
 //		AltitudeHold( groundAlt );
 //   }
-//   
+//
 //   else if ( self->ZPos() - groundAlt < -1500.0f)
 //	   //TJL 11/15/03 Keep choppers in the weeds
 //   {

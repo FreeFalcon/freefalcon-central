@@ -58,7 +58,7 @@ CRITICAL_SECTION  RadioSubTitle::cs_radiosubtitle;
 #define THE_INPUT_FILE_NAME			"F4Talk95v1-0-0.csv"
 
 #define MAX_READ_LEN 2048	//	max size of a single line in the csv line. since that whole file is 300k,
-							//	2MB should be enough I guess
+//	2MB should be enough I guess
 #define SEPARATOR ','
 #define SEP ","
 #define QUOTAS '"'
@@ -68,110 +68,122 @@ CRITICAL_SECTION  RadioSubTitle::cs_radiosubtitle;
 //	#define DISPLAY_CHANNEL_NAME
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TTL)
 {
 
-	if (MaximumMessageNum != 0)
-		MaxMessageNum = MaximumMessageNum;
-	else
-		MaxMessageNum = 20;
+    if (MaximumMessageNum != 0)
+        MaxMessageNum = MaximumMessageNum;
+    else
+        MaxMessageNum = 20;
 
-	if (TTL != 0)
-		messageTTL = TTL;
-	else
-		messageTTL = MESSAGE_TTL;
+    if (TTL != 0)
+        messageTTL = TTL;
+    else
+        messageTTL = MESSAGE_TTL;
 
-	theRadioChatterList = new AList();
-	currentlyEditedNode = (SubTitleNode*)0;
-	LinkedListCount = 0;
+    theRadioChatterList = new AList();
+    currentlyEditedNode = (SubTitleNode*)0;
+    LinkedListCount = 0;
 
 #ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
-	for (int i = 0; i < MAX_FRAG_NUM; i++)
-	{
-		theStrings[i] = 0;
-	}
+
+    for (int i = 0; i < MAX_FRAG_NUM; i++)
+    {
+        theStrings[i] = 0;
+    }
+
 #endif	// DYNAMIC_LINE_NUM
 
-	colour_Flight		= TOFROM_FLIGHT_COLOUR;
-	colour_ToPackage	= TO_PACKAGE_COLOUR;
-	colour_ToFromPackage= TOFROM_PACKAGE_COLOUR;
-	colour_Team			= TO_TEAM_COLOUR;		// this is the guard channel
-	colour_Proximity	= IN_PROXIMITY_COLOUR;
-	colour_World		= TO_WORLD_COLOUR;
-	colour_Tower		= TOFROM_TOWER_COLOUR;
-	colour_Standard		= STANDARD_COLOUR;	// only used in default cases which (shouldn´t happen actually)
+    colour_Flight		= TOFROM_FLIGHT_COLOUR;
+    colour_ToPackage	= TO_PACKAGE_COLOUR;
+    colour_ToFromPackage = TOFROM_PACKAGE_COLOUR;
+    colour_Team			= TO_TEAM_COLOUR;		// this is the guard channel
+    colour_Proximity	= IN_PROXIMITY_COLOUR;
+    colour_World		= TO_WORLD_COLOUR;
+    colour_Tower		= TOFROM_TOWER_COLOUR;
+    colour_Standard		= STANDARD_COLOUR;	// only used in default cases which (shouldn´t happen actually)
 
 #ifdef DYNAMIC_LINE_NUM	// Retro 11Jan2004
-	FragCount = CountLinesInFile(THE_INPUT_FILE_NAME);
-	if (FragCount == 0)
-	{
-		throw Init_Error("No frag lines in subtitles input file");
-	}
-	else
-	{
-//		theStrings = (csvLine**)calloc(sizeof(csvLine*),FragCount+100); // Retro 11Jan2004 - accounting for count-errors :p
-		theStrings = (csvLine**)calloc(sizeof(csvLine*),FragCount);
-		if (theStrings == (csvLine**)0)
-		{
-			throw Init_Error("Could not create strings");
-		}
-	}
+    FragCount = CountLinesInFile(THE_INPUT_FILE_NAME);
+
+    if (FragCount == 0)
+    {
+        throw Init_Error("No frag lines in subtitles input file");
+    }
+    else
+    {
+        //		theStrings = (csvLine**)calloc(sizeof(csvLine*),FragCount+100); // Retro 11Jan2004 - accounting for count-errors :p
+        theStrings = (csvLine**)calloc(sizeof(csvLine*), FragCount);
+
+        if (theStrings == (csvLine**)0)
+        {
+            throw Init_Error("Could not create strings");
+        }
+    }
+
 #endif	// DYNAMIC_LINE_NUM
 
-	if (!ReadNewFile(THE_INPUT_FILE_NAME))
-	{
-		throw Init_Error("Error reading the subtitles input file");
-	}
+    if (!ReadNewFile(THE_INPUT_FILE_NAME))
+    {
+        throw Init_Error("Error reading the subtitles input file");
+    }
 
 #ifdef WRITE_BACK_STRING_FILE
-	WriteOut();
+    WriteOut();
 #endif
 
-	InitializeCriticalSection(&cs_radiosubtitle);
+    InitializeCriticalSection(&cs_radiosubtitle);
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 RadioSubTitle::~RadioSubTitle(void)
 {
-	int i = 0;
+    int i = 0;
 
-	SubTitleNode* node = 0;
-	do
-	{
-		delete(theRadioChatterList->RemHead());
-		node = (SubTitleNode*)theRadioChatterList->GetHead();
-	} while (node);
+    SubTitleNode* node = 0;
 
-	delete(theRadioChatterList);
-	theRadioChatterList = 0;
+    do
+    {
+        delete(theRadioChatterList->RemHead());
+        node = (SubTitleNode*)theRadioChatterList->GetHead();
+    }
+    while (node);
+
+    delete(theRadioChatterList);
+    theRadioChatterList = 0;
 
 #ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
-	for (i = 0; i < MAX_FRAG_NUM; i++)
-	{
-		if (theStrings[i])
-		{
-			delete(theStrings[i]);
-		}
-	}
+
+    for (i = 0; i < MAX_FRAG_NUM; i++)
+    {
+        if (theStrings[i])
+        {
+            delete(theStrings[i]);
+        }
+    }
+
 #else	// DYNAMIC_LINE_NUM
-	if (theStrings)
-	{
-		while (theStrings[i])
-		{
-			delete(theStrings[i]);
-			theStrings[i] = 0;
-			i++;
-		}
-		free(theStrings);
-		theStrings = 0;
-	}
+
+    if (theStrings)
+    {
+        while (theStrings[i])
+        {
+            delete(theStrings[i]);
+            theStrings[i] = 0;
+            i++;
+        }
+
+        free(theStrings);
+        theStrings = 0;
+    }
+
 #endif	// DYNAMIC_LINE_NUM
 
-	DeleteCriticalSection(&cs_radiosubtitle);
+    DeleteCriticalSection(&cs_radiosubtitle);
 }
 
 /*****************************************************************************/
@@ -179,15 +191,15 @@ RadioSubTitle::~RadioSubTitle(void)
 /*****************************************************************************/
 void RadioSubTitle::SetTTLAndMessageNum(const int MessageNum, const unsigned long TTL)
 {
-	if (MessageNum != 0)
-		MaxMessageNum = MessageNum;
-	else
-		MaxMessageNum = 20;
+    if (MessageNum != 0)
+        MaxMessageNum = MessageNum;
+    else
+        MaxMessageNum = 20;
 
-	if (TTL != 0)
-		messageTTL = TTL;
-	else
-		messageTTL = MESSAGE_TTL;
+    if (TTL != 0)
+        messageTTL = TTL;
+    else
+        messageTTL = MESSAGE_TTL;
 }
 
 /*****************************************************************************/
@@ -195,13 +207,16 @@ void RadioSubTitle::SetTTLAndMessageNum(const int MessageNum, const unsigned lon
 /*****************************************************************************/
 void RadioSubTitle::ResetAll()
 {
-	SubTitleNode* node = 0;
-	do
-	{
-		delete(theRadioChatterList->RemHead());
-		node = (SubTitleNode*)theRadioChatterList->GetHead();
-	} while (node);
-	LinkedListCount = 0;
+    SubTitleNode* node = 0;
+
+    do
+    {
+        delete(theRadioChatterList->RemHead());
+        node = (SubTitleNode*)theRadioChatterList->GetHead();
+    }
+    while (node);
+
+    LinkedListCount = 0;
 }
 
 /*****************************************************************************/
@@ -213,56 +228,64 @@ void RadioSubTitle::ResetAll()
 /*****************************************************************************/
 void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const unsigned long thePlayTime, const char theFilter)
 {
-	EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
+    EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
 
-	currentlyEditedNode = new SubTitleNode();
-	if (!currentlyEditedNode)
-	{
+    currentlyEditedNode = new SubTitleNode();
+
+    if (!currentlyEditedNode)
+    {
 #pragma warning(disable:4127)
-		ShiAssert(false);
+        ShiAssert(false);
 #pragma warning(default:4127)
-		LeaveCriticalSection(&cs_radiosubtitle);
-		return;
-	}
+        LeaveCriticalSection(&cs_radiosubtitle);
+        return;
+    }
 
-	LinkedListCount++;
-	currentlyEditedNode->messageStartTime = thePlayTime;
-	currentlyEditedNode->associatedChannel = FindChannelColour(theFilter);
-	
+    LinkedListCount++;
+    currentlyEditedNode->messageStartTime = thePlayTime;
+    currentlyEditedNode->associatedChannel = FindChannelColour(theFilter);
+
 #ifndef DISPLAY_CHANNEL_NAME
-	char* rchunk = GetRadioChunk(theTalker, theFrag);
-	if (rchunk)
-	{
-		OverWriteString(&currentlyEditedNode->theSpokenLine, rchunk);
-	}
-#else
-	char* chan = FindChannelName(theFilter);
-	char* rchunk = GetRadioChunk(theTalker, theFrag);
-	if (rchunk)
-	{
-		char* sum = (char*)malloc(strlen(chan)+strlen(rchunk)+1);
-		if (sum)
-		{
-			strcpy(sum,chan);
-			strcat(sum,rchunk);
+    char* rchunk = GetRadioChunk(theTalker, theFrag);
 
-			OverWriteString(&currentlyEditedNode->theSpokenLine, sum);
-			free(sum);
-		}
-	}
+    if (rchunk)
+    {
+        OverWriteString(&currentlyEditedNode->theSpokenLine, rchunk);
+    }
+
+#else
+    char* chan = FindChannelName(theFilter);
+    char* rchunk = GetRadioChunk(theTalker, theFrag);
+
+    if (rchunk)
+    {
+        char* sum = (char*)malloc(strlen(chan) + strlen(rchunk) + 1);
+
+        if (sum)
+        {
+            strcpy(sum, chan);
+            strcat(sum, rchunk);
+
+            OverWriteString(&currentlyEditedNode->theSpokenLine, sum);
+            free(sum);
+        }
+    }
+
 #endif
 
-	SubTitleNode* index = (SubTitleNode*)theRadioChatterList->GetHead();
-	while ((index)&&(index->messageStartTime < thePlayTime))
-	{
-		index = (SubTitleNode*)index->GetSucc();
-	}
-	if (index)
-		currentlyEditedNode->InsertAfter(index);
-	else
-		theRadioChatterList->AddTail(currentlyEditedNode);
+    SubTitleNode* index = (SubTitleNode*)theRadioChatterList->GetHead();
 
-	LeaveCriticalSection(&cs_radiosubtitle);
+    while ((index) && (index->messageStartTime < thePlayTime))
+    {
+        index = (SubTitleNode*)index->GetSucc();
+    }
+
+    if (index)
+        currentlyEditedNode->InsertAfter(index);
+    else
+        theRadioChatterList->AddTail(currentlyEditedNode);
+
+    LeaveCriticalSection(&cs_radiosubtitle);
 }
 
 /*****************************************************************************/
@@ -270,16 +293,17 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 /*****************************************************************************/
 void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 {
-	EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
+    EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
 
-	char* rchunk = GetRadioChunk(theTalker, theFrag);
-	if ((rchunk)&&(currentlyEditedNode))
-	{
-		AppendToString(&currentlyEditedNode->theSpokenLine," ");
-		AppendToString(&currentlyEditedNode->theSpokenLine,rchunk);
-	}
+    char* rchunk = GetRadioChunk(theTalker, theFrag);
 
-	LeaveCriticalSection(&cs_radiosubtitle);
+    if ((rchunk) && (currentlyEditedNode))
+    {
+        AppendToString(&currentlyEditedNode->theSpokenLine, " ");
+        AppendToString(&currentlyEditedNode->theSpokenLine, rchunk);
+    }
+
+    LeaveCriticalSection(&cs_radiosubtitle);
 
 }
 
@@ -289,46 +313,54 @@ void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 {
 #ifdef SHOW_FRAG_AND_TALKER___BUT_MEM_LEAK
-	if ((theStrings[theFrag])&&(theTalker < MAX_VOICE_NUM))
-	{
-		char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker])+30);	// mem leak but it´s only for test anyway 
-		if (bla)
-		{
-			char tmp[30];
-			sprintf(tmp,"-> %i %i ",theTalker, theFrag);
-			strcpy(bla,theStrings[theFrag]->Voices[theTalker]);
-			strcat(bla,tmp);
-			return bla;
-		}
-		else
-		{
-			return "bla";
-		}
-	}
-	else
-		return 0;
+
+    if ((theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    {
+        char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker]) + 30);	// mem leak but it´s only for test anyway
+
+        if (bla)
+        {
+            char tmp[30];
+            sprintf(tmp, "-> %i %i ", theTalker, theFrag);
+            strcpy(bla, theStrings[theFrag]->Voices[theTalker]);
+            strcat(bla, tmp);
+            return bla;
+        }
+        else
+        {
+            return "bla";
+        }
+    }
+    else
+        return 0;
+
 #else
 #ifdef NDEBUG
-	if ((theFrag < FragCount)&&(theStrings[theFrag])&&(theTalker < MAX_VOICE_NUM)&&!F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
-	{
-		return theStrings[theFrag]->Voices[theTalker];
-	}
+
+    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM) && !F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
+    {
+        return theStrings[theFrag]->Voices[theTalker];
+    }
+
 #else
-	if ((theFrag < FragCount)&&(theStrings[theFrag])&&(theTalker < MAX_VOICE_NUM))
-	{
-		if (F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
-		{
+
+    if ((theFrag < FragCount) && (theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
+    {
+        if (F4IsBadReadPtr(theStrings[theFrag], sizeof(csvLine)))
+        {
 #pragma warning(disable:4127)
-			ShiAssert(false);
+            ShiAssert(false);
 #pragma warning(default:4127)
-			return 0;
-		}
-		else
-			return theStrings[theFrag]->Voices[theTalker];
-	}
+            return 0;
+        }
+        else
+            return theStrings[theFrag]->Voices[theTalker];
+    }
+
 #endif
-	else
-		return 0;
+    else
+        return 0;
+
 #endif
 }
 
@@ -340,158 +372,178 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theTime)
 {
 
-	EnterCriticalSection(&cs_radiosubtitle);	// locking out the soundthread
+    EnterCriticalSection(&cs_radiosubtitle);	// locking out the soundthread
 
-	// Get the oldest message in the list..
-	SubTitleNode* node = (SubTitleNode*)theRadioChatterList->GetHead();
-	if (!node)
-	{
-		LeaveCriticalSection(&cs_radiosubtitle);
-		return 0;	// no messages to play..
-	}
-	
-	// walking back in the list
-	// we are not going to draw messages that have already outlived their TTL..
-	// if they weren´t displayed by now, well, tough luck (and I betcha your FPS suck hairy donkey balls too)
-	// these messages are going to be removed actually..
-	// this is done for every message (node) till I find one that is still to be drawn - and as the list is
-	// sorted by time, all following ones have also to be drawn so I break from the loop
-	while ((node)&&(node->messageStartTime  + messageTTL < theTime))
-	{
-		SubTitleNode* nodeToDelete = (SubTitleNode*)theRadioChatterList->RemHead();
-		if (nodeToDelete)
-		{
-			delete(nodeToDelete);
-			LinkedListCount--;
-		}
-		node = (SubTitleNode*)theRadioChatterList->GetHead();
-	}
+    // Get the oldest message in the list..
+    SubTitleNode* node = (SubTitleNode*)theRadioChatterList->GetHead();
 
-	if (!node)
-	{
-		LeaveCriticalSection(&cs_radiosubtitle);
-		 return 0;	// no messages to play.. (all messages were outdated)
-	}
+    if (!node)
+    {
+        LeaveCriticalSection(&cs_radiosubtitle);
+        return 0;	// no messages to play..
+    }
 
-	// the calling routine has to delete that array..
-	ColouredSubTitle** theMessages = (ColouredSubTitle**)calloc(sizeof(ColouredSubTitle*),LinkedListCount+1);
-	if (!theMessages)
-	{
-		LeaveCriticalSection(&cs_radiosubtitle);
-		return 0;
-	}
+    // walking back in the list
+    // we are not going to draw messages that have already outlived their TTL..
+    // if they weren´t displayed by now, well, tough luck (and I betcha your FPS suck hairy donkey balls too)
+    // these messages are going to be removed actually..
+    // this is done for every message (node) till I find one that is still to be drawn - and as the list is
+    // sorted by time, all following ones have also to be drawn so I break from the loop
+    while ((node) && (node->messageStartTime  + messageTTL < theTime))
+    {
+        SubTitleNode* nodeToDelete = (SubTitleNode*)theRadioChatterList->RemHead();
 
-	int i = 0;
+        if (nodeToDelete)
+        {
+            delete(nodeToDelete);
+            LinkedListCount--;
+        }
 
-	while (node)
-	{
-		// also do NOT draw are messages (nodes) that are scheduled to be played in da future
-		// since the list is sorted I can actually break once this condition is met
-		if (node->messageStartTime > theTime)
-		{
-			break;
-		}
-		if ((node->messageStartTime < theTime)&&(theTime < node->messageStartTime + messageTTL))
-		{
+        node = (SubTitleNode*)theRadioChatterList->GetHead();
+    }
+
+    if (!node)
+    {
+        LeaveCriticalSection(&cs_radiosubtitle);
+        return 0;	// no messages to play.. (all messages were outdated)
+    }
+
+    // the calling routine has to delete that array..
+    ColouredSubTitle** theMessages = (ColouredSubTitle**)calloc(sizeof(ColouredSubTitle*), LinkedListCount + 1);
+
+    if (!theMessages)
+    {
+        LeaveCriticalSection(&cs_radiosubtitle);
+        return 0;
+    }
+
+    int i = 0;
+
+    while (node)
+    {
+        // also do NOT draw are messages (nodes) that are scheduled to be played in da future
+        // since the list is sorted I can actually break once this condition is met
+        if (node->messageStartTime > theTime)
+        {
+            break;
+        }
+
+        if ((node->messageStartTime < theTime) && (theTime < node->messageStartTime + messageTTL))
+        {
 #if 0	// Retro 23May2004
-			theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
-			if (theMessages[i])
-			{
-				if (node->theSpokenLine)	// Retro 28Feb2004
-				{
-					theMessages[i]->theString = (char*)malloc(strlen(node->theSpokenLine)+1);
-					strcpy(theMessages[i]->theString,node->theSpokenLine);
-					theMessages[i]->theColour = node->associatedChannel;
-					i++;
-				}
-				else
-				{
+            theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
+
+            if (theMessages[i])
+            {
+                if (node->theSpokenLine)	// Retro 28Feb2004
+                {
+                    theMessages[i]->theString = (char*)malloc(strlen(node->theSpokenLine) + 1);
+                    strcpy(theMessages[i]->theString, node->theSpokenLine);
+                    theMessages[i]->theColour = node->associatedChannel;
+                    i++;
+                }
+                else
+                {
 #pragma warning(disable:4127)
-					ShiAssert(false);
+                    ShiAssert(false);
 #pragma warning(default:4127)
-				}
-			}
+                }
+            }
+
 #else	// Retro 23May2004
-			if (node->theSpokenLine)	// Retro 28Feb2004
-			{
-				theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
-				if (theMessages[i])
-				{
-					theMessages[i]->theString = (char*)malloc(strlen(node->theSpokenLine)+1);
-					strcpy(theMessages[i]->theString,node->theSpokenLine);
-					theMessages[i]->theColour = node->associatedChannel;
-					i++;
-				}
-				else
-				{
-					throw _com_error(E_OUTOFMEMORY);
-				}
-			}
-			else
-			{
+
+            if (node->theSpokenLine)	// Retro 28Feb2004
+            {
+                theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
+
+                if (theMessages[i])
+                {
+                    theMessages[i]->theString = (char*)malloc(strlen(node->theSpokenLine) + 1);
+                    strcpy(theMessages[i]->theString, node->theSpokenLine);
+                    theMessages[i]->theColour = node->associatedChannel;
+                    i++;
+                }
+                else
+                {
+                    throw _com_error(E_OUTOFMEMORY);
+                }
+            }
+            else
+            {
 #pragma warning(disable:4127)
-				ShiAssert(false);
+                ShiAssert(false);
 #pragma warning(default:4127)
-			}
+            }
+
 #endif	// Retro 23May2004
-		}
-		node = (SubTitleNode*)node->GetSucc();
+        }
 
-		// there´s a (user-set) limit on how many messages my be displayed, so we break out here
-		// (even if there may be messages that still should be played)
-		if (i > MaxMessageNum)
-			break;
-	}
+        node = (SubTitleNode*)node->GetSucc();
 
-	LeaveCriticalSection(&cs_radiosubtitle);
+        // there´s a (user-set) limit on how many messages my be displayed, so we break out here
+        // (even if there may be messages that still should be played)
+        if (i > MaxMessageNum)
+            break;
+    }
 
-	return theMessages;
+    LeaveCriticalSection(&cs_radiosubtitle);
+
+    return theMessages;
 }
 
 #ifdef WRITE_BACK_STRING_FILE
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 void RadioSubTitle::WriteOut(void)
 {
-	FILE* fp = fopen("Talk_output.csv","wt");
-	if (fp)
-	{
+    FILE* fp = fopen("Talk_output.csv", "wt");
+
+    if (fp)
+    {
 #ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
-		for (int j = 0; j < MAX_FRAG_NUM; j++)
-		{
-			if (theStrings[j])
-			{
-				for (int i = 0; i < MAX_VOICE_NUM; i++)
-				{
-					if (theStrings[j]->Voices[i])
-					{
-						fprintf(fp,"%s",theStrings[j]->Voices[i]);
-					}
-					fprintf(fp,SEP);
-				}
-				fprintf(fp,"\n");
-			}
-		}
+
+        for (int j = 0; j < MAX_FRAG_NUM; j++)
+        {
+            if (theStrings[j])
+            {
+                for (int i = 0; i < MAX_VOICE_NUM; i++)
+                {
+                    if (theStrings[j]->Voices[i])
+                    {
+                        fprintf(fp, "%s", theStrings[j]->Voices[i]);
+                    }
+
+                    fprintf(fp, SEP);
+                }
+
+                fprintf(fp, "\n");
+            }
+        }
+
 #else
-		if (theStrings)
-		{
-			while(theStrings[i])
-			{
-				for (int i = 0; i < MAX_VOICE_NUM; i++)
-				{
-					if (theStrings[j]->Voices[i])
-					{
-						fprintf(fp,"%s",theStrings[j]->Voices[i]);
-					}
-					fprintf(fp,SEP);
-				}
-				fprintf(fp,"\n");
-			}
-		}
+
+        if (theStrings)
+        {
+            while (theStrings[i])
+            {
+                for (int i = 0; i < MAX_VOICE_NUM; i++)
+                {
+                    if (theStrings[j]->Voices[i])
+                    {
+                        fprintf(fp, "%s", theStrings[j]->Voices[i]);
+                    }
+
+                    fprintf(fp, SEP);
+                }
+
+                fprintf(fp, "\n");
+            }
+        }
+
 #endif	// DYNAMIC_LINE_NUM
-		fclose(fp);
-	}
+        fclose(fp);
+    }
 }
 #endif	// WRITE_BACK_STRING_FILE
 
@@ -500,219 +552,254 @@ void RadioSubTitle::WriteOut(void)
 /*****************************************************************************/
 unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 {
-	if (theChannel & TOFROM_TOWER)
-		return colour_Tower;
-	else if (theChannel & TOFROM_FLIGHT)
-		return colour_Flight;
-	else if (theChannel & TO_PACKAGE)
-		return colour_ToPackage;
-	else if (theChannel & TOFROM_PACKAGE)
-		return colour_ToFromPackage;
-	else if (theChannel & TO_TEAM)
-		return colour_Team;
-	else if (theChannel & IN_PROXIMITY)
-		return colour_Proximity;
-	else if (theChannel & TO_WORLD)
-		return colour_World;
-	else
-		return colour_Standard;
+    if (theChannel & TOFROM_TOWER)
+        return colour_Tower;
+    else if (theChannel & TOFROM_FLIGHT)
+        return colour_Flight;
+    else if (theChannel & TO_PACKAGE)
+        return colour_ToPackage;
+    else if (theChannel & TOFROM_PACKAGE)
+        return colour_ToFromPackage;
+    else if (theChannel & TO_TEAM)
+        return colour_Team;
+    else if (theChannel & IN_PROXIMITY)
+        return colour_Proximity;
+    else if (theChannel & TO_WORLD)
+        return colour_World;
+    else
+        return colour_Standard;
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 char* RadioSubTitle::FindChannelName(const char theChannel)
 {
-	if (theChannel & TOFROM_TOWER)
-		return "[Tower] ";
-	else if (theChannel & TOFROM_FLIGHT)
-		return "[Flight] ";
-	else if (theChannel & TO_PACKAGE)
-		return "[To Package] ";
-	else if (theChannel & TOFROM_PACKAGE)
-		return "[To/From Package] ";
-	else if (theChannel & TO_TEAM)
-		return "[Guard] ";
-	else if (theChannel & IN_PROXIMITY)
-		return "[Proximity] ";
-	else if (theChannel & TO_WORLD)
-		return "[Broadcast] ";
-	else
-		return "[Unknown] ";
+    if (theChannel & TOFROM_TOWER)
+        return "[Tower] ";
+    else if (theChannel & TOFROM_FLIGHT)
+        return "[Flight] ";
+    else if (theChannel & TO_PACKAGE)
+        return "[To Package] ";
+    else if (theChannel & TOFROM_PACKAGE)
+        return "[To/From Package] ";
+    else if (theChannel & TO_TEAM)
+        return "[Guard] ";
+    else if (theChannel & IN_PROXIMITY)
+        return "[Proximity] ";
+    else if (theChannel & TO_WORLD)
+        return "[Broadcast] ";
+    else
+        return "[Unknown] ";
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
-void RadioSubTitle::SetChannelColours(	unsigned long flight, unsigned long toPackage, unsigned long ToFromPackage,
-										unsigned long Team, unsigned long Proximity, unsigned long World,
-										unsigned long Tower, unsigned long Standard)
+void RadioSubTitle::SetChannelColours(unsigned long flight, unsigned long toPackage, unsigned long ToFromPackage,
+                                      unsigned long Team, unsigned long Proximity, unsigned long World,
+                                      unsigned long Tower, unsigned long Standard)
 {
-	if (flight != 0)		colour_Flight		= flight;
-	if (toPackage != 0)		colour_ToPackage	= toPackage;
-	if (ToFromPackage != 0)	colour_ToFromPackage= ToFromPackage;
-	// 'Team' is the guard channel
-	if (Team != 0)			colour_Team			= Team;
-	if (Proximity != 0)		colour_Proximity	= Proximity;
-	if (World != 0)			colour_World		= World;
-	if (Tower != 0)			colour_Tower		= Tower;
-	if (Standard != 0)		colour_Standard		= Standard;
+    if (flight != 0)		colour_Flight		= flight;
+
+    if (toPackage != 0)		colour_ToPackage	= toPackage;
+
+    if (ToFromPackage != 0)	colour_ToFromPackage = ToFromPackage;
+
+    // 'Team' is the guard channel
+    if (Team != 0)			colour_Team			= Team;
+
+    if (Proximity != 0)		colour_Proximity	= Proximity;
+
+    if (World != 0)			colour_World		= World;
+
+    if (Tower != 0)			colour_Tower		= Tower;
+
+    if (Standard != 0)		colour_Standard		= Standard;
 }
 
 /*****************************************************************************/
 //	Inputs should be null-terminated strings that can be read as hex-number
 //	eg "0xFF00FF00"
 /*****************************************************************************/
-void RadioSubTitle::SetChannelColours(	char* flight, char* toPackage, char* ToFromPackage,
-										char* Team, char* Proximity, char* World,
-										char* Tower, char* Standard)
+void RadioSubTitle::SetChannelColours(char* flight, char* toPackage, char* ToFromPackage,
+                                      char* Team, char* Proximity, char* World,
+                                      char* Tower, char* Standard)
 {
-	unsigned long flightCol = 0;
-	unsigned long toPackageCol = 0;
-	unsigned long ToFromPackageCol = 0;
-	unsigned long TeamCol = 0;
-	unsigned long ProximityCol = 0;
-	unsigned long WorldCol = 0;
-	unsigned long TowerCol = 0;
-	unsigned long StandardCol = 0;
+    unsigned long flightCol = 0;
+    unsigned long toPackageCol = 0;
+    unsigned long ToFromPackageCol = 0;
+    unsigned long TeamCol = 0;
+    unsigned long ProximityCol = 0;
+    unsigned long WorldCol = 0;
+    unsigned long TowerCol = 0;
+    unsigned long StandardCol = 0;
 
-	unsigned long temp = 0;
+    unsigned long temp = 0;
 
-	if (flight)
-		if (sscanf(flight,"%x",&temp) == 1)
-			flightCol = temp;
-	if (toPackage)
-		if (sscanf(toPackage,"%x",&temp) == 1)
-			toPackageCol = temp;
-	if (ToFromPackage)
-		if (sscanf(ToFromPackage,"%x",&temp) == 1)
-			ToFromPackageCol = temp;
-	if (Team)
-		if (sscanf(Team,"%x",&temp) == 1)
-			TeamCol = temp;
-	if (Proximity)
-		if (sscanf(Proximity,"%x",&temp) == 1)
-			ProximityCol = temp;
-	if (World)
-		if (sscanf(World,"%x",&temp) == 1)
-			WorldCol = temp;
-	if (Tower)
-		if (sscanf(Tower,"%x",&temp) == 1)
-			TowerCol = temp;
-	if (Standard)
-		if (sscanf(Standard,"%x",&temp) == 1)
-			StandardCol = temp;
+    if (flight)
+        if (sscanf(flight, "%x", &temp) == 1)
+            flightCol = temp;
 
-	SetChannelColours(	flightCol,toPackageCol,ToFromPackageCol,
-						TeamCol,ProximityCol,WorldCol,
-						TowerCol,StandardCol);
+    if (toPackage)
+        if (sscanf(toPackage, "%x", &temp) == 1)
+            toPackageCol = temp;
+
+    if (ToFromPackage)
+        if (sscanf(ToFromPackage, "%x", &temp) == 1)
+            ToFromPackageCol = temp;
+
+    if (Team)
+        if (sscanf(Team, "%x", &temp) == 1)
+            TeamCol = temp;
+
+    if (Proximity)
+        if (sscanf(Proximity, "%x", &temp) == 1)
+            ProximityCol = temp;
+
+    if (World)
+        if (sscanf(World, "%x", &temp) == 1)
+            WorldCol = temp;
+
+    if (Tower)
+        if (sscanf(Tower, "%x", &temp) == 1)
+            TowerCol = temp;
+
+    if (Standard)
+        if (sscanf(Standard, "%x", &temp) == 1)
+            StandardCol = temp;
+
+    SetChannelColours(flightCol, toPackageCol, ToFromPackageCol,
+                      TeamCol, ProximityCol, WorldCol,
+                      TowerCol, StandardCol);
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 inline void RadioSubTitle::AppendToString(char** theOldOne, const char* theNewOne)
 {
-	if ((!theOldOne)||(!*theOldOne)||(!theNewOne))
-	{
-		assert(false);
-		return;
-	}
+    if ((!theOldOne) || (!*theOldOne) || (!theNewOne))
+    {
+        assert(false);
+        return;
+    }
 
-	int oldLen = strlen(*theOldOne);
-	int newLen = strlen(theNewOne);
+    int oldLen = strlen(*theOldOne);
+    int newLen = strlen(theNewOne);
 
-	char* temp = (char*)malloc(oldLen+newLen+1);
-	if (temp)
-	{
-		strcpy(temp,*theOldOne);
-		strcat(temp,theNewOne);
+    char* temp = (char*)malloc(oldLen + newLen + 1);
 
-		free(*theOldOne);
-		*theOldOne = temp;
-	}
+    if (temp)
+    {
+        strcpy(temp, *theOldOne);
+        strcat(temp, theNewOne);
+
+        free(*theOldOne);
+        *theOldOne = temp;
+    }
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 inline void RadioSubTitle::OverWriteString(char** theOldOne, const char* theNewOne)
 {
-	if (!theNewOne)
-	{
-		assert(false);
-		return;
-	}
+    if (!theNewOne)
+    {
+        assert(false);
+        return;
+    }
 
-	if (theOldOne)
-	{
-		if (*theOldOne)
-		{
-		free(*theOldOne);
-		*theOldOne = 0;
-		}
-	}
+    if (theOldOne)
+    {
+        if (*theOldOne)
+        {
+            free(*theOldOne);
+            *theOldOne = 0;
+        }
+    }
 
-	*theOldOne = (char*)malloc(strlen(theNewOne)+1);
-	if (*theOldOne)
-	{
-		strcpy(*theOldOne,theNewOne);
-	}
+    *theOldOne = (char*)malloc(strlen(theNewOne) + 1);
+
+    if (*theOldOne)
+    {
+        strcpy(*theOldOne, theNewOne);
+    }
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 void RadioSubTitle::HandleChunk(csvLine_t* theTextString, char* theChunk, int* ChunkCount)
 {
-	assert(theTextString);
-	assert(ChunkCount);
+    assert(theTextString);
+    assert(ChunkCount);
 
-	// 'theChunk' is often NULL, happens when the csv reads ',,'
+    // 'theChunk' is often NULL, happens when the csv reads ',,'
 
-	int ChunkIndex = *ChunkCount;
+    int ChunkIndex = *ChunkCount;
 
-	switch (ChunkIndex)
-	{
-	case 0:	// frag #
-		if (theChunk)
-		{
-			theTextString->Fragment = atoi(theChunk);
-			free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
-			theChunk = 0;
-		}
-		break;
-	case 1:	// maxvoice #
-		if (theChunk)
-		{
-			theTextString->VoiceCount = atoi(theChunk);
-			free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
-			theChunk = 0;
-		}
-		break;
-	case 2: // the actual voices
-	case 3: case 4: case 5:case 6: case 7: case 8: case 9:
-	case 10: case 11: case 12: case 13: case 14: case 15:
-		theTextString->Voices[ChunkIndex-2] = theChunk;
-		break;
-	case 16:	// summary
-		theTextString->Summary = theChunk;
-		break;
-	case 17:	// eval
-		if (theChunk)
-		{
-			theTextString->Eval = atoi(theChunk);
-			free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
-			theChunk = 0;
-		}
-		break;
-	default:	// shoudn´t happen
-		assert(false);
-		break;
-	}
+    switch (ChunkIndex)
+    {
+        case 0:	// frag #
+            if (theChunk)
+            {
+                theTextString->Fragment = atoi(theChunk);
+                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                theChunk = 0;
+            }
 
-	ChunkIndex++;
-	*ChunkCount = ChunkIndex;
+            break;
+
+        case 1:	// maxvoice #
+            if (theChunk)
+            {
+                theTextString->VoiceCount = atoi(theChunk);
+                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                theChunk = 0;
+            }
+
+            break;
+
+        case 2: // the actual voices
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+            theTextString->Voices[ChunkIndex - 2] = theChunk;
+            break;
+
+        case 16:	// summary
+            theTextString->Summary = theChunk;
+            break;
+
+        case 17:	// eval
+            if (theChunk)
+            {
+                theTextString->Eval = atoi(theChunk);
+                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                theChunk = 0;
+            }
+
+            break;
+
+        default:	// shoudn´t happen
+            assert(false);
+            break;
+    }
+
+    ChunkIndex++;
+    *ChunkCount = ChunkIndex;
 }
 
 /*****************************************************************************/
@@ -730,128 +817,138 @@ void RadioSubTitle::HandleChunk(csvLine_t* theTextString, char* theChunk, int* C
 /*****************************************************************************/
 void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const int theLength)
 {
-	assert(theTextString);
-	assert(theLine);
+    assert(theTextString);
+    assert(theLine);
 
-	// set start pointer
-	char* start = theLine;
-	char* end = theLine;
-	int len = 0;
-	int i = 0;
-	bool inDoubleQuotes = false;
+    // set start pointer
+    char* start = theLine;
+    char* end = theLine;
+    int len = 0;
+    int i = 0;
+    bool inDoubleQuotes = false;
 
-	int ChunkCount = 0;
+    int ChunkCount = 0;
 
-	do
-	{
-		if (end == 0)
-		{
-			assert(false);
-			break;
-		}
+    do
+    {
+        if (end == 0)
+        {
+            assert(false);
+            break;
+        }
 
-		// check for "
-		// if yes, look for next "
-		if (*end == QUOTAS/*'"'*/)
-		{
-			do
-			{
-				end++;
-			} while (*end != QUOTAS/*'"'*/);
-			inDoubleQuotes = true;
-		}
+        // check for "
+        // if yes, look for next "
+        if (*end == QUOTAS/*'"'*/)
+        {
+            do
+            {
+                end++;
+            }
+            while (*end != QUOTAS/*'"'*/);
 
-		// look for SEPERATOR
-		// set end pointer
-		if ((*end == SEPARATOR/*','*/)||(*end == '\0'))
-		{
-			if (end > start)
-			{
-				if (!inDoubleQuotes)
-				{
-					len = end - start + 1;
-					char* tmp = (char*)malloc(len);
-					if (tmp)
-					{
-						strncpy(tmp,start,len-1);
-						tmp[len-1] = '\0';
-						// copy chunk, hand it to handleroutiner
-						HandleChunk(theTextString,tmp,&ChunkCount);
-					}
-					start = end+1;
-				}
-				else
-				{
-					len = end - start - 2 + 1;
-					char* tmp = (char*)malloc(len);
-					if (tmp)
-					{
-						strncpy(tmp,start+1,len-1);
-						tmp[len-1] = '\0';
-						// copy chunk, hand it to handleroutiner
-						HandleChunk(theTextString,tmp,&ChunkCount);
-					}
-					start = end+1;
-					inDoubleQuotes = false;
-				}
-			}
-			else if (start == end)
-			{
-				// copy chunk, hand it to handleroutiner
-				HandleChunk(theTextString,0,&ChunkCount);
-				start = end+1;
-			}
-			else
-			{
-				assert(false);
-			}
+            inDoubleQuotes = true;
+        }
 
-			if (*end == '\0')
-			{
-				break;
-			}
-		}
-		i++;
-		// advance pointer
-		end++;
-	} while (i < theLength);
+        // look for SEPERATOR
+        // set end pointer
+        if ((*end == SEPARATOR/*','*/) || (*end == '\0'))
+        {
+            if (end > start)
+            {
+                if (!inDoubleQuotes)
+                {
+                    len = end - start + 1;
+                    char* tmp = (char*)malloc(len);
 
-//	assert(ChunkCount-1 == theTextString->VoiceCount);
+                    if (tmp)
+                    {
+                        strncpy(tmp, start, len - 1);
+                        tmp[len - 1] = '\0';
+                        // copy chunk, hand it to handleroutiner
+                        HandleChunk(theTextString, tmp, &ChunkCount);
+                    }
+
+                    start = end + 1;
+                }
+                else
+                {
+                    len = end - start - 2 + 1;
+                    char* tmp = (char*)malloc(len);
+
+                    if (tmp)
+                    {
+                        strncpy(tmp, start + 1, len - 1);
+                        tmp[len - 1] = '\0';
+                        // copy chunk, hand it to handleroutiner
+                        HandleChunk(theTextString, tmp, &ChunkCount);
+                    }
+
+                    start = end + 1;
+                    inDoubleQuotes = false;
+                }
+            }
+            else if (start == end)
+            {
+                // copy chunk, hand it to handleroutiner
+                HandleChunk(theTextString, 0, &ChunkCount);
+                start = end + 1;
+            }
+            else
+            {
+                assert(false);
+            }
+
+            if (*end == '\0')
+            {
+                break;
+            }
+        }
+
+        i++;
+        // advance pointer
+        end++;
+    }
+    while (i < theLength);
+
+    //	assert(ChunkCount-1 == theTextString->VoiceCount);
 }
 
 /*****************************************************************************/
-//	
+//
 /*****************************************************************************/
 bool RadioSubTitle::ReadNewFile(const char* theFileName)
 {
 
-	FILE* fp = fopen(theFileName,"rt");
-	if (fp)
-	{
-		char tmp[MAX_READ_LEN];
-		int j = 0;
+    FILE* fp = fopen(theFileName, "rt");
 
-		while (fgets(&tmp[0],MAX_READ_LEN,fp) != NULL)
-		{
-			if (j == 0)
-			{
-				j++;
-				continue;	// ignoring the first line
-			}
+    if (fp)
+    {
+        char tmp[MAX_READ_LEN];
+        int j = 0;
 
-			tmp[strlen(tmp)-1] = 0;	// getting rid of that damn newline
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        {
+            if (j == 0)
+            {
+                j++;
+                continue;	// ignoring the first line
+            }
 
-			theStrings[j-1] = new csvLine_t;
-			breakDownLine(theStrings[j-1],tmp,strlen(tmp));
-			j++;
-		}
-		fclose(fp);
-		return true;
-	}
-	else
-	{
-	 	return false;
-	}
+            tmp[strlen(tmp) - 1] = 0;	// getting rid of that damn newline
+
+            theStrings[j - 1] = new csvLine_t;
+            breakDownLine(theStrings[j - 1], tmp, strlen(tmp));
+            j++;
+        }
+
+        fclose(fp);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 #ifdef DYNAMIC_LINE_NUM		// Retro 11Jan2004
@@ -860,20 +957,23 @@ bool RadioSubTitle::ReadNewFile(const char* theFileName)
 /*****************************************************************************/
 int RadioSubTitle::CountLinesInFile(const char* theFileName)
 {
-	FILE* fp = fopen(theFileName,"rt");
-	if (fp)
-	{
-		char tmp[MAX_READ_LEN];
-		int linecount = 0;
+    FILE* fp = fopen(theFileName, "rt");
 
-		while (fgets(&tmp[0],MAX_READ_LEN,fp) != NULL)
-		{
-			linecount++;
-		}
-		fclose(fp);
-		return linecount;
-	}
-	return 0;
+    if (fp)
+    {
+        char tmp[MAX_READ_LEN];
+        int linecount = 0;
+
+        while (fgets(&tmp[0], MAX_READ_LEN, fp) != NULL)
+        {
+            linecount++;
+        }
+
+        fclose(fp);
+        return linecount;
+    }
+
+    return 0;
 }
 #endif	// DYNAMIC_LINE_NUM
 #pragma warning (pop)

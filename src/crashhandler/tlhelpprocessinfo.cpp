@@ -14,14 +14,14 @@ Windows98, and NT5.  NT4.0 is covered in NT4ProcessInfo.cpp.
 //////////////////////////////////////////////////////////////////////*/
 // The typedefs for the TOOLHELP32.DLL functions used by this module.
 // Type definitions for pointers to call tool help functions.
-typedef BOOL (WINAPI *MODULEWALK) ( HANDLE          hSnapshot ,
-                                    LPMODULEENTRY32 lpme       ) ;
-typedef BOOL (WINAPI *THREADWALK) ( HANDLE          hSnapshot ,
-                                    LPTHREADENTRY32 lpte       ) ;
-typedef BOOL (WINAPI *PROCESSWALK) ( HANDLE           hSnapshot ,
-                                     LPPROCESSENTRY32 lppe       ) ;
-typedef HANDLE (WINAPI *CREATESNAPSHOT) ( DWORD dwFlags       ,
-                                          DWORD th32ProcessID  ) ;
+typedef BOOL (WINAPI *MODULEWALK)(HANDLE          hSnapshot ,
+                                  LPMODULEENTRY32 lpme) ;
+typedef BOOL (WINAPI *THREADWALK)(HANDLE          hSnapshot ,
+                                  LPTHREADENTRY32 lpte) ;
+typedef BOOL (WINAPI *PROCESSWALK)(HANDLE           hSnapshot ,
+                                   LPPROCESSENTRY32 lppe) ;
+typedef HANDLE(WINAPI *CREATESNAPSHOT)(DWORD dwFlags       ,
+                                       DWORD th32ProcessID) ;
 
 
 /*//////////////////////////////////////////////////////////////////////
@@ -51,11 +51,11 @@ RETURNS         :
     TRUE  - Everything initialized properly.
     FALSE - There was a problem.
 ----------------------------------------------------------------------*/
-static BOOL InitTOOLHELP32 ( void )
+static BOOL InitTOOLHELP32(void)
 {
-    if ( TRUE == g_bInitialized )
+    if (TRUE == g_bInitialized)
     {
-        return ( TRUE ) ;
+        return (TRUE) ;
     }
 
     BOOL      bRet    = FALSE ;
@@ -63,43 +63,43 @@ static BOOL InitTOOLHELP32 ( void )
 
     // Obtain the module handle of the kernel to retrieve addresses of
     //  the tool helper functions.
-    hKernel = GetModuleHandleA ( "KERNEL32.DLL" ) ;
-    ASSERT ( NULL != hKernel ) ;
+    hKernel = GetModuleHandleA("KERNEL32.DLL") ;
+    ASSERT(NULL != hKernel) ;
 
-    if ( NULL != hKernel )
+    if (NULL != hKernel)
     {
         g_pCreateToolhelp32Snapshot =
-           (CREATESNAPSHOT)GetProcAddress ( hKernel ,
-                                            "CreateToolhelp32Snapshot");
-        ASSERT ( NULL != g_pCreateToolhelp32Snapshot ) ;
+            (CREATESNAPSHOT)GetProcAddress(hKernel ,
+                                           "CreateToolhelp32Snapshot");
+        ASSERT(NULL != g_pCreateToolhelp32Snapshot) ;
 
-        g_pModule32First = (MODULEWALK)GetProcAddress (hKernel ,
-                                                       "Module32First");
-        ASSERT ( NULL != g_pModule32First ) ;
+        g_pModule32First = (MODULEWALK)GetProcAddress(hKernel ,
+                           "Module32First");
+        ASSERT(NULL != g_pModule32First) ;
 
-        g_pModule32Next = (MODULEWALK)GetProcAddress (hKernel        ,
-                                                      "Module32Next"  );
-        ASSERT ( NULL != g_pModule32Next ) ;
+        g_pModule32Next = (MODULEWALK)GetProcAddress(hKernel        ,
+                          "Module32Next");
+        ASSERT(NULL != g_pModule32Next) ;
 
         g_pProcess32First =
-                (PROCESSWALK)GetProcAddress ( hKernel          ,
-                                              "Process32First"  ) ;
-        ASSERT ( NULL != g_pProcess32First ) ;
+            (PROCESSWALK)GetProcAddress(hKernel          ,
+                                        "Process32First") ;
+        ASSERT(NULL != g_pProcess32First) ;
 
         g_pProcess32Next =
-                (PROCESSWALK)GetProcAddress ( hKernel         ,
-                                              "Process32Next" ) ;
-        ASSERT ( NULL != g_pProcess32Next ) ;
+            (PROCESSWALK)GetProcAddress(hKernel         ,
+                                        "Process32Next") ;
+        ASSERT(NULL != g_pProcess32Next) ;
 
         g_pThread32First =
-                (THREADWALK)GetProcAddress ( hKernel         ,
-                                             "Thread32First"  ) ;
-        ASSERT ( NULL != g_pThread32First ) ;
+            (THREADWALK)GetProcAddress(hKernel         ,
+                                       "Thread32First") ;
+        ASSERT(NULL != g_pThread32First) ;
 
         g_pThread32Next =
-                (THREADWALK)GetProcAddress ( hKernel        ,
-                                             "Thread32Next"  ) ;
-        ASSERT ( NULL != g_pThread32Next ) ;
+            (THREADWALK)GetProcAddress(hKernel        ,
+                                       "Thread32Next") ;
+        ASSERT(NULL != g_pThread32Next) ;
 
         // All addresses must be non-NULL to be successful.  If one of
         //  these addresses is NULL, one of the needed lists cannot be
@@ -116,18 +116,19 @@ static BOOL InitTOOLHELP32 ( void )
     else
     {
         // Could not get the module handle of kernel.
-        SetLastErrorEx ( ERROR_DLL_INIT_FAILED , SLE_ERROR ) ;
+        SetLastErrorEx(ERROR_DLL_INIT_FAILED , SLE_ERROR) ;
         bRet = FALSE ;
     }
 
-    ASSERT ( TRUE == bRet ) ;
+    ASSERT(TRUE == bRet) ;
 
-    if ( TRUE == bRet )
+    if (TRUE == bRet)
     {
         // All OK, Jumpmaster!
         g_bInitialized = TRUE ;
     }
-    return ( bRet ) ;
+
+    return (bRet) ;
 }
 
 /*----------------------------------------------------------------------
@@ -152,20 +153,20 @@ RETURNS         :
     TRUE  - The function succeeded.  See the parameter discussion for
             the output parameters.
 ----------------------------------------------------------------------*/
-BOOL TLHELPGetLoadedModules ( DWORD     dwPID        ,
-                              UINT      uiCount      ,
-                              HMODULE * paModArray   ,
-                              LPUINT    puiRealCount   )
+BOOL TLHELPGetLoadedModules(DWORD     dwPID        ,
+                            UINT      uiCount      ,
+                            HMODULE * paModArray   ,
+                            LPUINT    puiRealCount)
 {
 
     // Always set puiRealCount to a know value before anything else.
     *puiRealCount = 0 ;
 
-    if ( FALSE == InitTOOLHELP32 ( ) )
+    if (FALSE == InitTOOLHELP32())
     {
-        ASSERT ( FALSE ) ;
-        SetLastErrorEx ( ERROR_DLL_INIT_FAILED , SLE_ERROR ) ;
-        return ( FALSE ) ;
+        ASSERT(FALSE) ;
+        SetLastErrorEx(ERROR_DLL_INIT_FAILED , SLE_ERROR) ;
+        return (FALSE) ;
     }
 
     // The snapshot handle.
@@ -179,32 +180,33 @@ BOOL TLHELPGetLoadedModules ( DWORD     dwPID        ,
 
 
     // Get the snapshot for the specified process.
-    hModSnap = g_pCreateToolhelp32Snapshot ( TH32CS_SNAPMODULE ,
-                                             dwPID              ) ;
-    ASSERT ( INVALID_HANDLE_VALUE != hModSnap ) ;
-    if ( INVALID_HANDLE_VALUE == hModSnap )
+    hModSnap = g_pCreateToolhelp32Snapshot(TH32CS_SNAPMODULE ,
+                                           dwPID) ;
+    ASSERT(INVALID_HANDLE_VALUE != hModSnap) ;
+
+    if (INVALID_HANDLE_VALUE == hModSnap)
     {
-        TRACE1 ( "Unable to get module snapshot for %08X\n" , dwPID ) ;
-        return ( FALSE ) ;
+        TRACE1("Unable to get module snapshot for %08X\n" , dwPID) ;
+        return (FALSE) ;
     }
 
-    memset ( &stME32 , NULL , sizeof ( MODULEENTRY32 ) ) ;
-    stME32.dwSize = sizeof ( MODULEENTRY32 ) ;
+    memset(&stME32 , NULL , sizeof(MODULEENTRY32)) ;
+    stME32.dwSize = sizeof(MODULEENTRY32) ;
 
     // Start getting the module values.
-    if ( TRUE == g_pModule32First ( hModSnap , &stME32 ) )
+    if (TRUE == g_pModule32First(hModSnap , &stME32))
     {
         do
         {
             // If uiCount is not zero, copy values.
-            if ( 0 != uiCount )
+            if (0 != uiCount)
             {
                 // If the passed in buffer is to small, set the flag.
                 //  This is so we match the functionality of the NT4
                 //  version of this function which will return the
                 //  correct total needed.
-                if ( ( TRUE == bBuffToSmall     ) ||
-                     ( *puiRealCount == uiCount )   )
+                if ((TRUE == bBuffToSmall) ||
+                    (*puiRealCount == uiCount))
                 {
                     bBuffToSmall = TRUE ;
                     break ;
@@ -213,35 +215,36 @@ BOOL TLHELPGetLoadedModules ( DWORD     dwPID        ,
                 {
                     // Copy this value in.
                     paModArray[ *puiRealCount ] =
-                                         (HINSTANCE)stME32.modBaseAddr ;
+                        (HINSTANCE)stME32.modBaseAddr ;
                 }
             }
+
             // Bump up the real total count.
             *puiRealCount += 1 ;
         }
-        while ( ( TRUE == g_pModule32Next ( hModSnap , &stME32 ) ) ) ;
+        while ((TRUE == g_pModule32Next(hModSnap , &stME32))) ;
     }
     else
     {
-        ASSERT ( FALSE ) ;
-        TRACE0 ( "Failed to get first module!\n" ) ;
+        ASSERT(FALSE) ;
+        TRACE0("Failed to get first module!\n") ;
         bRet = FALSE ;
     }
 
     // Close the snapshot handle.
-    VERIFY ( CloseHandle ( hModSnap ) ) ;
+    VERIFY(CloseHandle(hModSnap)) ;
 
     // Check if the buffer was too small.
-    if ( TRUE == bBuffToSmall )
+    if (TRUE == bBuffToSmall)
     {
-        ASSERT ( FALSE ) ;
-        TRACE0 ( "Buffer to small in TLHELPGetLoadedModules\n" ) ;
-        SetLastErrorEx ( ERROR_INSUFFICIENT_BUFFER , SLE_ERROR ) ;
+        ASSERT(FALSE) ;
+        TRACE0("Buffer to small in TLHELPGetLoadedModules\n") ;
+        SetLastErrorEx(ERROR_INSUFFICIENT_BUFFER , SLE_ERROR) ;
         bRet = FALSE ;
     }
 
     // All OK, Jumpmaster!
-    SetLastError ( ERROR_SUCCESS ) ;
-    return ( bRet ) ;
+    SetLastError(ERROR_SUCCESS) ;
+    return (bRet) ;
 }
 

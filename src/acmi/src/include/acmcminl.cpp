@@ -6,7 +6,7 @@
 
 inline int ACMICamera::Type() const
 {
-	return _type;
+    return _type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,8 +15,8 @@ inline int ACMICamera::Type() const
 
 inline void ACMICamera::SetRotateType(int type)
 {
-//!	_rotType = _type;
-	_rotType = type;
+    //!	_rotType = _type;
+    _rotType = type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ inline void ACMICamera::SetRotateType(int type)
 
 inline void ACMICamera::SetAction(int currentAction)
 {
-	_action = currentAction;
+    _action = currentAction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,9 +34,9 @@ inline void ACMICamera::SetAction(int currentAction)
 
 inline void ACMICamera::SetAction(int currentAction, float az, float el)
 {
-	_action = currentAction;
-	SetAzDir(az);
-	SetElDir(el);
+    _action = currentAction;
+    SetAzDir(az);
+    SetElDir(el);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ inline void ACMICamera::SetAction(int currentAction, float az, float el)
 
 inline int ACMICamera::Action() const
 {
-	return _action;
+    return _action;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,17 +54,17 @@ inline int ACMICamera::Action() const
 
 inline void ACMICamera::ToggleTracking()
 {
-	/*
-	if(_tracking >= NUM_TRACKING_CAMS)
-	{
-		_tracking = NO_TRACKING;
-	}
-	else
-	{
-		_tracking++;
-	}
-	*/
-	_tracking ^= 1;
+    /*
+    if(_tracking >= NUM_TRACKING_CAMS)
+    {
+    	_tracking = NO_TRACKING;
+    }
+    else
+    {
+    	_tracking++;
+    }
+    */
+    _tracking ^= 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ inline void ACMICamera::ToggleTracking()
 
 inline void ACMICamera::SetTracking(int n)
 {
-	_tracking = n;
+    _tracking = n;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ inline void ACMICamera::SetTracking(int n)
 
 inline int ACMICamera::Tracking() const
 {
-	return _tracking;
+    return _tracking;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ inline int ACMICamera::Tracking() const
 
 inline void ACMICamera::SetPosition(const Tpoint& pos)
 {
-	_pos.x = pos.x;
-	_pos.y = pos.y;
-	_pos.z = pos.z;
+    _pos.x = pos.x;
+    _pos.y = pos.y;
+    _pos.z = pos.z;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,9 +102,9 @@ inline void ACMICamera::SetPosition(const Tpoint& pos)
 
 inline void ACMICamera::GetPosition(Tpoint& pos) const
 {
-	pos.x = _pos.x;
-	pos.y = _pos.y;
-	pos.z = _pos.z;
+    pos.x = _pos.x;
+    pos.y = _pos.y;
+    pos.z = _pos.z;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ inline void ACMICamera::GetPosition(Tpoint& pos) const
 
 inline const Tpoint &ACMICamera::Position() const
 {
-	return _pos;
+    return _pos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ inline const Tpoint &ACMICamera::Position() const
 
 inline void ACMICamera::SetRotation(const Trotation &rot)
 {
-	memcpy(const_cast<Trotation *>(&_rot), const_cast<Trotation *>(&rot), sizeof(Trotation));
+    memcpy(const_cast<Trotation *>(&_rot), const_cast<Trotation *>(&rot), sizeof(Trotation));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ inline void ACMICamera::SetRotation(const Trotation &rot)
 
 inline void ACMICamera::GetRotation(Trotation &rot) const
 {
-	memcpy(const_cast<Trotation *>(&rot), const_cast<Trotation *>(&_rot), sizeof(Trotation));
+    memcpy(const_cast<Trotation *>(&rot), const_cast<Trotation *>(&_rot), sizeof(Trotation));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ inline void ACMICamera::GetRotation(Trotation &rot) const
 
 inline const Trotation &ACMICamera::Rotation() const
 {
-	return _rot;
+    return _rot;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,9 +149,9 @@ inline const Trotation &ACMICamera::Rotation() const
 
 inline void ACMICamera::SetWorldPosition(const Tpoint &pos)
 {
-	_worldPos.x = pos.x;
-	_worldPos.y = pos.y;
-	_worldPos.z = pos.z;
+    _worldPos.x = pos.x;
+    _worldPos.y = pos.y;
+    _worldPos.z = pos.z;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,9 +160,9 @@ inline void ACMICamera::SetWorldPosition(const Tpoint &pos)
 
 inline void ACMICamera::Translate(float x, float y, float z, Tpoint* camView)
 {
-	camView->x = x;
-	camView->y = y;
-	camView->z = z;
+    camView->x = x;
+    camView->y = y;
+    camView->z = z;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ inline void ACMICamera::Translate(float x, float y, float z, Tpoint* camView)
 
 inline void ACMICamera::SetElDir(float diff)
 {
-	_elDir = diff;
+    _elDir = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ inline void ACMICamera::SetElDir(float diff)
 
 inline void ACMICamera::SetAzDir(float diff)
 {
-	_azDir = diff;
+    _azDir = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ inline void ACMICamera::SetAzDir(float diff)
 
 inline void ACMICamera::SetObjectEl(float diff)
 {
-	_objectEl = diff;
+    _objectEl = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ inline void ACMICamera::SetObjectEl(float diff)
 
 inline void ACMICamera::SetObjectAz(float diff)
 {
-	_objectAz = diff;
+    _objectAz = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ inline void ACMICamera::SetObjectAz(float diff)
 
 inline void ACMICamera::SetObjectRoll(float diff)
 {
-	_objectRoll = diff;
+    _objectRoll = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,8 +216,8 @@ inline void ACMICamera::SetObjectRoll(float diff)
 
 inline void ACMICamera::SetPannerAz()
 {
-	_pannerAz = _objectAz;
-	_pannerEl = _objectEl;
+    _pannerAz = _objectAz;
+    _pannerEl = _objectEl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +226,7 @@ inline void ACMICamera::SetPannerAz()
 
 inline void ACMICamera::SetLocalEl(float diff)
 {
-	_localEl = diff;
+    _localEl = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ inline void ACMICamera::SetLocalEl(float diff)
 
 inline void ACMICamera::SetLocalAz(float diff)
 {
-	_localAz = diff;
+    _localAz = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,7 @@ inline void ACMICamera::SetLocalAz(float diff)
 
 inline float ACMICamera::El() const
 {
-	return(_objectEl + _localEl);
+    return(_objectEl + _localEl);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ inline float ACMICamera::El() const
 
 inline float ACMICamera::Az() const
 {
-	return(_objectAz + _localAz);
+    return(_objectAz + _localAz);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ inline float ACMICamera::Az() const
 
 inline void ACMICamera::SetSlewRate(float diff)
 {
-	_slewRate = diff;
+    _slewRate = diff;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

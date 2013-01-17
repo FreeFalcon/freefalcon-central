@@ -14,120 +14,126 @@
 static const float	MAX_DRIFT_RATE	= 20.0f;
 
 
-HarmSeekerClass::HarmSeekerClass( int type, SimMoverClass* parentPlatform ) : RwrClass(type, parentPlatform)
+HarmSeekerClass::HarmSeekerClass(int type, SimMoverClass* parentPlatform) : RwrClass(type, parentPlatform)
 {
-	dataProvided	= ExactPosition;
+    dataProvided	= ExactPosition;
 
-	couldGuide		= TRUE;
+    couldGuide		= TRUE;
 
-	// Pick a random drift rate for this instance
-	driftRateX = MAX_DRIFT_RATE * (float)((RAND_MAX>>1) - rand())/(RAND_MAX>>1);
-	driftRateY = MAX_DRIFT_RATE * (float)((RAND_MAX>>1) - rand())/(RAND_MAX>>1);
+    // Pick a random drift rate for this instance
+    driftRateX = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
+    driftRateY = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
 
-	launched		= false; 
-	launchedInPOS   = false;
-	handedoff		= false;	
+    launched		= false;
+    launchedInPOS   = false;
+    handedoff		= false;
 }
 
 
-SimObjectType* HarmSeekerClass::Exec (SimObjectType* missileTarget)
+SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
 {
-	BOOL			canGuide	= false;
-	float			z;
+    BOOL			canGuide	= false;
+    float			z;
 
-	SimMoverClass* theParent;
-	FireControlComputer* FCC;
-	HarmTargetingPod* HTS;
+    SimMoverClass* theParent;
+    FireControlComputer* FCC;
+    HarmTargetingPod* HTS;
 
-	theParent = (SimMoverClass*)(((MissileClass*)platform)->parent.get());
+    theParent = (SimMoverClass*)(((MissileClass*)platform)->parent.get());
 
-	// FRB - CTD fix?
-	if (!theParent)
-		return NULL;
+    // FRB - CTD fix?
+    if (!theParent)
+        return NULL;
 
-	FCC = ((SimVehicleClass*)theParent)->GetFCC();
-	HTS = (HarmTargetingPod*)FindSensor ( theParent, SensorClass::HTS );
+    FCC = ((SimVehicleClass*)theParent)->GetFCC();
+    HTS = (HarmTargetingPod*)FindSensor(theParent, SensorClass::HTS);
 
-	if ( HTS && ((MissileClass*)platform)->launchState != MissileClass::PreLaunch && !launched )
-	{
-		launched = true;
-		launchedInPOS = ( HTS->GetPreHandoffMode() == HarmTargetingPod::Pos );
-		handedoff = HTS->GetHandedoff();
-	}
+    if (HTS && ((MissileClass*)platform)->launchState != MissileClass::PreLaunch && !launched)
+    {
+        launched = true;
+        launchedInPOS = (HTS->GetPreHandoffMode() == HarmTargetingPod::Pos);
+        handedoff = HTS->GetHandedoff();
+    }
 
 
-	// Adopt the missile's target if it is providing one and it is not the missile itself
-	if (missileTarget) {
-		if (!platform->IsMissile() || ((MissileClass*)platform)->parent.get() != missileTarget->BaseData())
-		SetDesiredTarget( missileTarget );
-	}
+    // Adopt the missile's target if it is providing one and it is not the missile itself
+    if (missileTarget)
+    {
+        if (!platform->IsMissile() || ((MissileClass*)platform)->parent.get() != missileTarget->BaseData())
+            SetDesiredTarget(missileTarget);
+    }
 
-	// Validate our locked target
-	CheckLockedTarget();
+    // Validate our locked target
+    CheckLockedTarget();
 
-	// Decide if we can still guide on our locked target
-	if (lockedTarget)
-	{
-		// RV - I-Hawk - If we are in a POS handoff, no sensor checks needed
-		if ( launchedInPOS )
-		{
-			canGuide = handedoff; // make sure target was already handedoff
-		}
+    // Decide if we can still guide on our locked target
+    if (lockedTarget)
+    {
+        // RV - I-Hawk - If we are in a POS handoff, no sensor checks needed
+        if (launchedInPOS)
+        {
+            canGuide = handedoff; // make sure target was already handedoff
+        }
 
-		else
-		{
-			// Can't guide if its outside our sensor cone
-			if (CanSeeObject( lockedTarget ))
-			{
-				// Can't guide if the signal is too weak or in the air
-				if (CanDetectObject( lockedTarget ) && lockedTarget->BaseData()->OnGround())
-				{
-					canGuide = handedoff; // make sure target was already handedoff
-				}
-			}
- 		}
-	}
-	
-	// If we can guide, update our data and return the target entity
-	if (canGuide)
-	{
-		couldGuide = TRUE;
+        else
+        {
+            // Can't guide if its outside our sensor cone
+            if (CanSeeObject(lockedTarget))
+            {
+                // Can't guide if the signal is too weak or in the air
+                if (CanDetectObject(lockedTarget) && lockedTarget->BaseData()->OnGround())
+                {
+                    canGuide = handedoff; // make sure target was already handedoff
+                }
+            }
+        }
+    }
 
-		// Tell the base class where we're looking
-		seekerAzCenter = lockedTarget->localData->az;
-		seekerElCenter = lockedTarget->localData->el;
+    // If we can guide, update our data and return the target entity
+    if (canGuide)
+    {
+        couldGuide = TRUE;
 
-		// Return the target entity for the missile to guide upon
-		return lockedTarget;
-	}
-	
-	// If we were guiding, but now we're not, have the missile "coast"
-	if (couldGuide) {
+        // Tell the base class where we're looking
+        seekerAzCenter = lockedTarget->localData->az;
+        seekerElCenter = lockedTarget->localData->el;
 
-		couldGuide = FALSE;
+        // Return the target entity for the missile to guide upon
+        return lockedTarget;
+    }
 
-		// TODO:  Make sure the missile has a guide point even if the target dies...
-		// for now...
-		if (lockedTarget) {
-			ShiAssert( platform );
-			ShiAssert( platform->IsMissile() );
+    // If we were guiding, but now we're not, have the missile "coast"
+    if (couldGuide)
+    {
 
-			// Get the target's z height from the proper place (since campaign units lie)
-			if (lockedTarget->BaseData()->IsSim()) {
-				z = lockedTarget->BaseData()->ZPos();
-			} else {
-				z = OTWDriver.GetGroundLevel(lockedTarget->BaseData()->XPos(), lockedTarget->BaseData()->YPos() );
-			}
+        couldGuide = FALSE;
 
-			// Tell our parent missile where the target was when last seen
-			((MissileClass*)platform)->SetTargetPosition(	lockedTarget->BaseData()->XPos(),
-															lockedTarget->BaseData()->YPos(),
-															z );
+        // TODO:  Make sure the missile has a guide point even if the target dies...
+        // for now...
+        if (lockedTarget)
+        {
+            ShiAssert(platform);
+            ShiAssert(platform->IsMissile());
 
-			// Give it a bogus speed so the target location drifts while the signal is lost
-			((MissileClass*)platform)->SetTargetVelocity( driftRateX, driftRateY, 0.0f );
-		}
-	}
+            // Get the target's z height from the proper place (since campaign units lie)
+            if (lockedTarget->BaseData()->IsSim())
+            {
+                z = lockedTarget->BaseData()->ZPos();
+            }
+            else
+            {
+                z = OTWDriver.GetGroundLevel(lockedTarget->BaseData()->XPos(), lockedTarget->BaseData()->YPos());
+            }
 
-	return NULL;	// Indicate that we can't see our target
+            // Tell our parent missile where the target was when last seen
+            ((MissileClass*)platform)->SetTargetPosition(lockedTarget->BaseData()->XPos(),
+                    lockedTarget->BaseData()->YPos(),
+                    z);
+
+            // Give it a bogus speed so the target location drifts while the signal is lost
+            ((MissileClass*)platform)->SetTargetVelocity(driftRateX, driftRateY, 0.0f);
+        }
+    }
+
+    return NULL;	// Indicate that we can't see our target
 }

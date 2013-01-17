@@ -4,6 +4,6 @@
 
 void GroundClass::InitFromCampaignUnit(void)
 {
-	// Let's set up our initial destination and deltas using the actual AI logic..
-	gai->Process();
+    // Let's set up our initial destination and deltas using the actual AI logic..
+    gai->Process();
 }

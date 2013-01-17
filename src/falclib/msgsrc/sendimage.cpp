@@ -6,27 +6,27 @@
 #include "falcsess.h"
 #include "InvalidBufferException.h"
 
-UI_SendImage::UI_SendImage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (SendImage, FalconEvent::SimThread, entityId, target, loopback)
+UI_SendImage::UI_SendImage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendImage, FalconEvent::SimThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-UI_SendImage::UI_SendImage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (SendImage, FalconEvent::SimThread, senderid, target)
+UI_SendImage::UI_SendImage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendImage, FalconEvent::SimThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 UI_SendImage::~UI_SendImage(void)
 {
-   // Your Code Goes Here
-	delete dataBlock.data;
+    // Your Code Goes Here
+    delete dataBlock.data;
 }
 
 int UI_SendImage::Process(uchar autodisp)
 {
-   // Your Code Goes Here
-   return 0;
-   autodisp;
+    // Your Code Goes Here
+    return 0;
+    autodisp;
 }
 

@@ -18,93 +18,98 @@
 // This returns the team a country belongs to
 Team GetTeam(Control country)
 {
-	if ((country < NUM_TEAMS) && (TeamInfo[country] != NULL)){
-		return TeamInfo[country]->cteam;
-	}
-	else {
-		return country;
-	}
+    if ((country < NUM_TEAMS) && (TeamInfo[country] != NULL))
+    {
+        return TeamInfo[country]->cteam;
+    }
+    else
+    {
+        return country;
+    }
 }
 
 // Returns relations between a two countries
-int GetCCRelations (Control who, Control with)
+int GetCCRelations(Control who, Control with)
 {
-	if (TeamInfo[GetTeam(who)])
-	{
-		return TeamInfo[GetTeam(who)]->CStance(with);
-	}
-	else
-	{
-		return 0;
-	}
+    if (TeamInfo[GetTeam(who)])
+    {
+        return TeamInfo[GetTeam(who)]->CStance(with);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-int GetCTRelations (Control who, Team with)
+int GetCTRelations(Control who, Team with)
 {
-	if (TeamInfo[GetTeam(who)])
-	{
-		return TeamInfo[GetTeam(who)]->TStance(with);
-	}
-	else
-	{
-		return 0;
-	}
+    if (TeamInfo[GetTeam(who)])
+    {
+        return TeamInfo[GetTeam(who)]->TStance(with);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-int GetTTRelations (Team who, Team with)
+int GetTTRelations(Team who, Team with)
 {
-	if (TeamInfo[who])
-	{
-		return TeamInfo[who]->TStance(with);
-	}
-	else
-	{
-		return 0;
-	}
+    if (TeamInfo[who])
+    {
+        return TeamInfo[who]->TStance(with);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-int GetTCRelations (Team who, Control with)
+int GetTCRelations(Team who, Control with)
 {
-	if (TeamInfo[who])
-	{
-		return TeamInfo[who]->CStance(with);
-	}
-	else
-	{
-		return 0;
-	}
+    if (TeamInfo[who])
+    {
+        return TeamInfo[who]->CStance(with);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 // Sets a country to a team
-void SetTeam (Control country, int team)
+void SetTeam(Control country, int team)
 {
-	int i;
+    int i;
 
-	// Leave the old teams
-	for (i=0; i<NUM_TEAMS; i++){
-		if (i != team && TeamInfo[i] && TeamInfo[i]->member[country]){
-		    TeamInfo[i]->member[country] = 0;
-		}
-	}
-	ShiAssert(team > 0 && team < NUM_TEAMS);
-	TeamInfo[country]->cteam = (Team)team;
+    // Leave the old teams
+    for (i = 0; i < NUM_TEAMS; i++)
+    {
+        if (i != team && TeamInfo[i] && TeamInfo[i]->member[country])
+        {
+            TeamInfo[i]->member[country] = 0;
+        }
+    }
+
+    ShiAssert(team > 0 && team < NUM_TEAMS);
+    TeamInfo[country]->cteam = (Team)team;
     TeamInfo[team]->member[country] = 1;
-	//TeamInfo[team]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, DDP[10].priority);
-	TeamInfo[team]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, SEND_NOW);
-	TheCampaign.MakeCampMap(MAP_OWNERSHIP);
-	PostMessage(FalconDisplay.appWin,FM_REFRESH_CAMPMAP,0,0);
+    //TeamInfo[team]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, DDP[10].priority);
+    TeamInfo[team]->MakeTeamDirty(DIRTY_TEAM_RELATIONS, SEND_NOW);
+    TheCampaign.MakeCampMap(MAP_OWNERSHIP);
+    PostMessage(FalconDisplay.appWin, FM_REFRESH_CAMPMAP, 0, 0);
 }
 
-void SetTTRelations (Team who, Team with, int rel)
+void SetTTRelations(Team who, Team with, int rel)
 {
-	TeamInfo[who]->stance[with] = (short)rel;
-	//TeamInfo[who]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, DDP[11].priority);
-	TeamInfo[who]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, SEND_NOW);
+    TeamInfo[who]->stance[with] = (short)rel;
+    //TeamInfo[who]->MakeTeamDirty (DIRTY_TEAM_RELATIONS, DDP[11].priority);
+    TeamInfo[who]->MakeTeamDirty(DIRTY_TEAM_RELATIONS, SEND_NOW);
 }
 
 // Sets a country's relations to a team
-void SetCTRelations (Control who, Team with, int rel)
-	{
-	SetTTRelations(GetTeam(who),with,rel);
-	}
+void SetCTRelations(Control who, Team with, int rel)
+{
+    SetTTRelations(GetTeam(who), with, rel);
+}
 

@@ -3,19 +3,19 @@
 
 enum
 {
-	_CUSTOM_MAX_CTRLS_ = 20,
+    _CUSTOM_MAX_CTRLS_ = 20,
 };
 
 C_Custom::C_Custom() : C_Control()
 {
-	_SetCType_(_CNTL_CUSTOM_);
-	DefaultFlags_=C_BIT_ENABLED|C_BIT_MOUSEOVER;
+    _SetCType_(_CNTL_CUSTOM_);
+    DefaultFlags_ = C_BIT_ENABLED | C_BIT_MOUSEOVER;
 
-	Section_=0;
+    Section_ = 0;
 
-	Count_=0;
-	ItemValues_=NULL;
-	Items_=NULL;
+    Count_ = 0;
+    ItemValues_ = NULL;
+    Items_ = NULL;
 }
 
 C_Custom::C_Custom(char **stream) : C_Control(stream)
@@ -28,143 +28,151 @@ C_Custom::C_Custom(FILE *fp) : C_Control(fp)
 
 C_Custom::~C_Custom()
 {
-	if(Count_)
-		Cleanup();
+    if (Count_)
+        Cleanup();
 }
 
 long C_Custom::Size()
 {
-	return(0);
+    return(0);
 }
 
-void C_Custom::Setup(long ID,short Type,short NumCtrls)
+void C_Custom::Setup(long ID, short Type, short NumCtrls)
 {
-	short i;
+    short i;
 
-	SetID(ID);
-	SetType(Type);
-	SetDefaultFlags();
+    SetID(ID);
+    SetType(Type);
+    SetDefaultFlags();
 
-	if(Count_)
-		return;
+    if (Count_)
+        return;
 
-	SetReady(0);
+    SetReady(0);
 
-	if(NumCtrls > 0 && NumCtrls < _CUSTOM_MAX_CTRLS_)
-	{
-		Count_=NumCtrls;
-		Items_=new O_Output[Count_];
+    if (NumCtrls > 0 && NumCtrls < _CUSTOM_MAX_CTRLS_)
+    {
+        Count_ = NumCtrls;
+        Items_ = new O_Output[Count_];
 #ifdef USE_SH_POOLS
-		ItemValues_=(long*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],sizeof(long)*(Count_),FALSE);
+        ItemValues_ = (long*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(long) * (Count_), FALSE);
 #else
-		ItemValues_=new long[Count_];
+        ItemValues_ = new long[Count_];
 #endif
 
-		for(i=0;i<Count_;i++)
-		{
-			Items_[i].SetOwner(this);
-			ItemValues_[i]=0;
-		}
-		SetReady(1);
-	}
+        for (i = 0; i < Count_; i++)
+        {
+            Items_[i].SetOwner(this);
+            ItemValues_[i] = 0;
+        }
+
+        SetReady(1);
+    }
 }
 
 void C_Custom::Cleanup(void)
 {
-	short i;
+    short i;
 
-	if(!Count_)
-		return;
+    if (!Count_)
+        return;
 
-	for(i=0;i<Count_;i++)
-		Items_[i].Cleanup();
+    for (i = 0; i < Count_; i++)
+        Items_[i].Cleanup();
 
-	delete Items_;
+    delete Items_;
 #ifdef USE_SH_POOLS
-		MemFreePtr(ItemValues_);
+    MemFreePtr(ItemValues_);
 #else
-		delete ItemValues_;
+    delete ItemValues_;
 #endif
 
-	Items_=NULL;
-	ItemValues_=NULL;
-	Count_=0;
-	Section_=0;
+    Items_ = NULL;
+    ItemValues_ = NULL;
+    Count_ = 0;
+    Section_ = 0;
 }
 
 O_Output *C_Custom::GetItem(long idx)
 {
-	if(idx < Count_)
-		return(&Items_[idx]);
-	return(NULL);
+    if (idx < Count_)
+        return(&Items_[idx]);
+
+    return(NULL);
 }
 
-void C_Custom::SetValue(long idx,long value)
+void C_Custom::SetValue(long idx, long value)
 {
-	if(idx < Count_)
-		ItemValues_[idx]=value;
+    if (idx < Count_)
+        ItemValues_[idx] = value;
 }
 
 long C_Custom::GetValue(long idx)
 {
-	if(idx < Count_)
-		return(ItemValues_[idx]);
-	return(0);
+    if (idx < Count_)
+        return(ItemValues_[idx]);
+
+    return(0);
 }
 
-long C_Custom::CheckHotSpots(long relX,long relY)
+long C_Custom::CheckHotSpots(long relX, long relY)
 {
-	short i;
-	if(Ready() && !(GetFlags() & C_BIT_INVISIBLE) && Parent_)
-	{
-		if(relX >= GetX() && relY >= GetY() && relX < (GetX()+GetW()) && relY < (GetY()+GetH()))
-		{
-			Section_=0;
+    short i;
 
-			relX -= GetX();
-			relY -= GetY();
+    if (Ready() && !(GetFlags() & C_BIT_INVISIBLE) && Parent_)
+    {
+        if (relX >= GetX() && relY >= GetY() && relX < (GetX() + GetW()) && relY < (GetY() + GetH()))
+        {
+            Section_ = 0;
 
-			for(i=0;i<Count_;i++)
-			{
-				if(relX >= Items_[i].GetX() && relX < (Items_[i].GetX()+Items_[i].GetW()) &&
-				   relY >= Items_[i].GetY() && relY < (Items_[i].GetY()+Items_[i].GetH()))
-					Section_=i;
-			}
-			return(GetID());
-		}
-	}
-	return(0);
+            relX -= GetX();
+            relY -= GetY();
+
+            for (i = 0; i < Count_; i++)
+            {
+                if (relX >= Items_[i].GetX() && relX < (Items_[i].GetX() + Items_[i].GetW()) &&
+                    relY >= Items_[i].GetY() && relY < (Items_[i].GetY() + Items_[i].GetH()))
+                    Section_ = i;
+            }
+
+            return(GetID());
+        }
+    }
+
+    return(0);
 }
 
-BOOL C_Custom::Process(long ID,short HitType)
+BOOL C_Custom::Process(long ID, short HitType)
 {
-	gSoundMgr->PlaySound(GetSound(HitType));
-	if(Callback_)
-		(*Callback_)(ID,HitType,this);
+    gSoundMgr->PlaySound(GetSound(HitType));
 
-	return(TRUE);
+    if (Callback_)
+        (*Callback_)(ID, HitType, this);
+
+    return(TRUE);
 }
 
 void C_Custom::Refresh()
 {
-	short i;
+    short i;
 
-	if((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
-		return;
+    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+        return;
 
-	for(i=0;i<Count_;i++)
-		Items_[i].Refresh();
+    for (i = 0; i < Count_; i++)
+        Items_[i].Refresh();
 }
 
-void C_Custom::Draw(SCREEN *surface,UI95_RECT *cliprect)
+void C_Custom::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-	short i;
+    short i;
 
-	if((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
-		return;
+    if ((GetFlags() & C_BIT_INVISIBLE) || !Parent_ || !Ready())
+        return;
 
-	for(i=0;i<Count_;i++)
-		Items_[i].Draw(surface,cliprect);
-	if(MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
-		HighLite(surface,cliprect);
+    for (i = 0; i < Count_; i++)
+        Items_[i].Draw(surface, cliprect);
+
+    if (MouseOver_ || (GetFlags() & C_BIT_FORCEMOUSEOVER))
+        HighLite(surface, cliprect);
 }

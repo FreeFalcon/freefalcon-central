@@ -45,197 +45,218 @@ static int	coverHeight		= 0;
 
 void OTWDriverClass::SetupSplashScreen(void)
 {
-	int					result;
-	CImageFileMemory 	texFile;
-	BYTE				*imagePtr;
-	char				*filename;
-	unsigned long		*palPtr;
-	void				*buffer;
-	int					r, c;
-	char				string[MAX_PATH];
-	int					imageType;
-	FILE*				tmpFile;
+    int					result;
+    CImageFileMemory 	texFile;
+    BYTE				*imagePtr;
+    char				*filename;
+    unsigned long		*palPtr;
+    void				*buffer;
+    int					r, c;
+    char				string[MAX_PATH];
+    int					imageType;
+    FILE*				tmpFile;
 
-	//********************************
-	// Load the primary source image
-	//********************************
-	// Make sure we recognize this file type
+    //********************************
+    // Load the primary source image
+    //********************************
+    // Make sure we recognize this file type
 
-	if (OTWImage->targetXres () >= 1600)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
-	{
-		filename = "art\\splash\\load16.gif";
-		tmpFile = fopen (filename, "r");
-		if (tmpFile)
-		{
-		  fclose (tmpFile);
-		}
-		else
-			filename = "art\\splash\\load10.gif";
-	}
-	else if (OTWImage->targetXres () >= 1280)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
-	{
-		filename = "art\\splash\\load12.gif";
-		tmpFile = fopen (filename, "r");
-		if (tmpFile)
-		{
-		  fclose (tmpFile);
-		}
-		else
-			filename = "art\\splash\\load10.gif";
-	}
-	else if (OTWImage->targetXres () >= 1024)
-	{
-		filename = "art\\splash\\load10.gif";
-	}
-	else if (OTWImage->targetXres () >= 800)
-	{
-		filename = "art\\splash\\load8.gif";
-	}
-	else
-	{
-		filename = "art\\splash\\load6.gif";
-	}
+    if (OTWImage->targetXres() >= 1600)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
+    {
+        filename = "art\\splash\\load16.gif";
+        tmpFile = fopen(filename, "r");
 
-	texFile.imageType = CheckImageType( filename );
-	if ( texFile.imageType < 0 ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+        if (tmpFile)
+        {
+            fclose(tmpFile);
+        }
+        else
+            filename = "art\\splash\\load10.gif";
+    }
+    else if (OTWImage->targetXres() >= 1280)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
+    {
+        filename = "art\\splash\\load12.gif";
+        tmpFile = fopen(filename, "r");
 
-	// Open the input file
-	result = texFile.glOpenFileMem( filename );
-	if ( result != 1 ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+        if (tmpFile)
+        {
+            fclose(tmpFile);
+        }
+        else
+            filename = "art\\splash\\load10.gif";
+    }
+    else if (OTWImage->targetXres() >= 1024)
+    {
+        filename = "art\\splash\\load10.gif";
+    }
+    else if (OTWImage->targetXres() >= 800)
+    {
+        filename = "art\\splash\\load8.gif";
+    }
+    else
+    {
+        filename = "art\\splash\\load6.gif";
+    }
 
-	// Read the image data (note that ReadTextureImage will close texFile for us)
-	texFile.glReadFileMem();
-	result = ReadTextureImage( &texFile );
-	if (result != GOOD_READ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+    texFile.imageType = CheckImageType(filename);
 
-	// Store the image data
-	originalWidth	= texFile.image.width;
-	originalHeight	= texFile.image.height;
-	originalImage	= texFile.image.image;
-	originalPalette	= texFile.image.palette;
-	origImageType = texFile.imageType;//XX
-	ShiAssert( originalImage );
-	ShiAssert( originalPalette );
+    if (texFile.imageType < 0)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-	//*****************************
-	// Load the cover source image
-	//*****************************
-	// Make sure we recognize this file type
-	sprintf (string, "art\\splash\\load4.gif");
-	texFile.imageType = CheckImageType( string );
-	if ( texFile.imageType < 0 ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+    // Open the input file
+    result = texFile.glOpenFileMem(filename);
 
-	// Open the input file
-	result = texFile.glOpenFileMem( "art\\splash\\load4.gif" );
-	if ( result != 1 ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+    if (result != 1)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-	// Read the image data (note that ReadTextureImage will close texFile for us)
-	texFile.glReadFileMem();
-	result = ReadTextureImage( &texFile );
-	if (result != GOOD_READ) {
-		ShiWarning( "We failed to read a splash screen image" );
-		return;
-	}
+    // Read the image data (note that ReadTextureImage will close texFile for us)
+    texFile.glReadFileMem();
+    result = ReadTextureImage(&texFile);
 
-	// Store the image data
-	coverWidth	= texFile.image.width;
-	coverHeight	= texFile.image.height;
-	imagePtr	= texFile.image.image;
-	palPtr		= texFile.image.palette;
-	imageType	= texFile.imageType;//XX
-	ShiAssert( imagePtr );
-	ShiAssert( palPtr );
+    if (result != GOOD_READ)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-	//*********************************************
-	// Convert the cover image into an ImageBuffer
-	//*********************************************
-	// Setup the target image buffer
-	coverImage = new ImageBuffer();
-	coverImage->Setup( OTWImage->GetDisplayDevice(), coverWidth, coverHeight, SystemMem, None );
+    // Store the image data
+    originalWidth	= texFile.image.width;
+    originalHeight	= texFile.image.height;
+    originalImage	= texFile.image.image;
+    originalPalette	= texFile.image.palette;
+    origImageType = texFile.imageType;//XX
+    ShiAssert(originalImage);
+    ShiAssert(originalPalette);
 
-	// Lock the surface and do the pixel lookups
-	buffer = coverImage->Lock();
-	ShiAssert( buffer );
+    //*****************************
+    // Load the cover source image
+    //*****************************
+    // Make sure we recognize this file type
+    sprintf(string, "art\\splash\\load4.gif");
+    texFile.imageType = CheckImageType(string);
 
-	// OW
-	switch(coverImage->PixelSize())
-	{
-		case 2:
-		{
-			WORD *pixel;
-			if( imageType == IMAGE_TYPE_TGA )
-			{
-			}
-			else
-			for (r=0; r<coverHeight; r++)
-			{
-				pixel = (WORD*)coverImage->Pixel( buffer, r, 0 );
-				for (c=0; c<coverWidth; c++) *pixel++ = coverImage->Pixel32toPixel16( palPtr[*imagePtr++]);
-			}
+    if (texFile.imageType < 0)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-			break;
-		}
+    // Open the input file
+    result = texFile.glOpenFileMem("art\\splash\\load4.gif");
 
-		case 4:
-		{
-			DWORD *pixel;
-			if( imageType == IMAGE_TYPE_TGA )
-			{
-/*				for (r=0; r<coverHeight; r++)
-				{
-					pixel = (DWORD*)coverImage->Pixel( buffer, r, 0 );
-					for (c=0; c<coverWidth; c++) 
-					{
-						DWORD r,g,b;
-						r = *imagePtr++;
-						g = *imagePtr++;
-						b = *imagePtr++;
+    if (result != 1)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-						*pixel++ = coverImage->Pixel32toPixel32( (r<<16) | (g<<8) | b );
-					}
-				}
-*/
-			}
-			else {
-			for (r=0; r<coverHeight; r++)
-			{
-				pixel = (DWORD*)coverImage->Pixel( buffer, r, 0 );
-				for (c=0; c<coverWidth; c++) *pixel++ = coverImage->Pixel32toPixel32( palPtr[*imagePtr++]);
-			}
-			}
-			break;
-		}
+    // Read the image data (note that ReadTextureImage will close texFile for us)
+    texFile.glReadFileMem();
+    result = ReadTextureImage(&texFile);
 
-		default: ShiAssert(false);
-	}
+    if (result != GOOD_READ)
+    {
+        ShiWarning("We failed to read a splash screen image");
+        return;
+    }
 
-	coverImage->Unlock();
+    // Store the image data
+    coverWidth	= texFile.image.width;
+    coverHeight	= texFile.image.height;
+    imagePtr	= texFile.image.image;
+    palPtr		= texFile.image.palette;
+    imageType	= texFile.imageType;//XX
+    ShiAssert(imagePtr);
+    ShiAssert(palPtr);
 
-	// Set the chromakey color for the cover image
-	if( palPtr )//XX
-	coverImage->SetChromaKey( palPtr[0] );
-	else
-		coverImage->SetChromaKey( 0x00FF00FF );
+    //*********************************************
+    // Convert the cover image into an ImageBuffer
+    //*********************************************
+    // Setup the target image buffer
+    coverImage = new ImageBuffer();
+    coverImage->Setup(OTWImage->GetDisplayDevice(), coverWidth, coverHeight, SystemMem, None);
+
+    // Lock the surface and do the pixel lookups
+    buffer = coverImage->Lock();
+    ShiAssert(buffer);
+
+    // OW
+    switch (coverImage->PixelSize())
+    {
+        case 2:
+        {
+            WORD *pixel;
+
+            if (imageType == IMAGE_TYPE_TGA)
+            {
+            }
+            else
+                for (r = 0; r < coverHeight; r++)
+                {
+                    pixel = (WORD*)coverImage->Pixel(buffer, r, 0);
+
+                    for (c = 0; c < coverWidth; c++) *pixel++ = coverImage->Pixel32toPixel16(palPtr[*imagePtr++]);
+                }
+
+            break;
+        }
+
+        case 4:
+        {
+            DWORD *pixel;
+
+            if (imageType == IMAGE_TYPE_TGA)
+            {
+                /*				for (r=0; r<coverHeight; r++)
+                				{
+                					pixel = (DWORD*)coverImage->Pixel( buffer, r, 0 );
+                					for (c=0; c<coverWidth; c++)
+                					{
+                						DWORD r,g,b;
+                						r = *imagePtr++;
+                						g = *imagePtr++;
+                						b = *imagePtr++;
+
+                						*pixel++ = coverImage->Pixel32toPixel32( (r<<16) | (g<<8) | b );
+                					}
+                				}
+                */
+            }
+            else
+            {
+                for (r = 0; r < coverHeight; r++)
+                {
+                    pixel = (DWORD*)coverImage->Pixel(buffer, r, 0);
+
+                    for (c = 0; c < coverWidth; c++) *pixel++ = coverImage->Pixel32toPixel32(palPtr[*imagePtr++]);
+                }
+            }
+
+            break;
+        }
+
+        default:
+            ShiAssert(false);
+    }
+
+    coverImage->Unlock();
+
+    // Set the chromakey color for the cover image
+    if (palPtr) //XX
+        coverImage->SetChromaKey(palPtr[0]);
+    else
+        coverImage->SetChromaKey(0x00FF00FF);
 
 
-	// Free the uncoverted cover data
-	glReleaseMemory( (char*)texFile.image.image );
-	glReleaseMemory( (char*)texFile.image.palette );
+    // Free the uncoverted cover data
+    glReleaseMemory((char*)texFile.image.image);
+    glReleaseMemory((char*)texFile.image.palette);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -249,16 +270,16 @@ void OTWDriverClass::SetupSplashScreen(void)
 
 void OTWDriverClass::CleanupSplashScreen(void)
 {
-	// Release the original image data
-	glReleaseMemory( (char*)originalImage );
-	glReleaseMemory( (char*)originalPalette );
-	originalImage = NULL;
-	originalPalette = NULL;
+    // Release the original image data
+    glReleaseMemory((char*)originalImage);
+    glReleaseMemory((char*)originalPalette);
+    originalImage = NULL;
+    originalPalette = NULL;
 
-	// Release the converted cover image
-	coverImage->Cleanup();
-	delete coverImage;
-	coverImage = NULL;
+    // Release the converted cover image
+    coverImage->Cleanup();
+    delete coverImage;
+    coverImage = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -270,180 +291,185 @@ void OTWDriverClass::CleanupSplashScreen(void)
 ** animation on the load screen
 */
 
-void OTWDriverClass::SplashScreenUpdate( int frame )
+void OTWDriverClass::SplashScreenUpdate(int frame)
 {
-	int					top, left;
-	BYTE				*imagePtr=NULL;
-	void				*buffer=NULL;
-	int					x, y;
-	unsigned long		tweakedPalette[256];
-	unsigned long		*srcPal=NULL, *dstPal=NULL;
-	unsigned long		*startLit=NULL, *stopLit=NULL, *startInvar=NULL, *stop=NULL;
-	RECT				srcRect, dstRect;
-	int	imageType = IMAGE_TYPE_UNKNOWN;;
+    int					top, left;
+    BYTE				*imagePtr = NULL;
+    void				*buffer = NULL;
+    int					x, y;
+    unsigned long		tweakedPalette[256];
+    unsigned long		*srcPal = NULL, *dstPal = NULL;
+    unsigned long		*startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
+    RECT				srcRect, dstRect;
+    int	imageType = IMAGE_TYPE_UNKNOWN;;
 
-	// Validate our parameter
-	if( frame >= NUM_SPLASH_FRAMES ) {
-		ShiWarning( "Bad frame requested for the splash screen" );
-		return;
-	}
+    // Validate our parameter
+    if (frame >= NUM_SPLASH_FRAMES)
+    {
+        ShiWarning("Bad frame requested for the splash screen");
+        return;
+    }
 
-	if (!originalImage)
-	{
-		return;
-	}
+    if (!originalImage)
+    {
+        return;
+    }
 
-	// Get the upper left corner of the target area
-	top		= (OTWImage->targetYres() - originalHeight) / 2;
-	left	= (OTWImage->targetXres() - originalWidth) / 2;
-	if ((top < 0) || (left < 0)) {
-		ShiWarning( "Source art for splash screen too big!" );
-		return;
-	}
+    // Get the upper left corner of the target area
+    top		= (OTWImage->targetYres() - originalHeight) / 2;
+    left	= (OTWImage->targetXres() - originalWidth) / 2;
 
-	// Clear the back buffer to black to erase anything that might already be there
-	renderer->SetViewport( -1.0f, 1.0f, 1.0f, -1.0f );
-	renderer->StartFrame();
-	renderer->SetBackground( 0xFF000000 );
-	renderer->ClearFrame();
-	renderer->FinishFrame();
+    if ((top < 0) || (left < 0))
+    {
+        ShiWarning("Source art for splash screen too big!");
+        return;
+    }
 
-
-	imageType = origImageType;//XX
-
-	if( imageType != IMAGE_TYPE_TGA )//XX
-	{
-	// Darken all but the specified frame in the palette
-	srcPal		= originalPalette;
-	dstPal		= tweakedPalette;
-	startLit	= originalPalette + frame * PAL_FRAME_LENGTH;
-	stopLit		= startLit + PAL_FRAME_LENGTH;
-	startInvar	= originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
-	stop		= originalPalette + 256;
-
-	ShiAssert( srcPal <= startLit );
-	ShiAssert( startLit <= stopLit );
-	ShiAssert( stopLit <= startInvar );
-	ShiAssert( startInvar <= stop );
-
-	// Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-	while (srcPal < startLit)
-	{
-		*dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
-	}
-
-	// Copy the "lit" color intensities
-	while (srcPal < stopLit)
-	{
-		*dstPal++ = *srcPal++;
-	}
-
-	// Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-	while (srcPal < startInvar)
-	{
-		*dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
-	}
-
-	// Copy the invariant high portion of the palette
-	while (srcPal < stop)
-	{
-		*dstPal++ = *srcPal++;
-	}
-	}
-
-	// Lock the surface and do the pixel lookups
-	buffer = OTWImage->Lock();
-	ShiAssert( buffer );
-
-	imagePtr = originalImage;
+    // Clear the back buffer to black to erase anything that might already be there
+    renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+    renderer->StartFrame();
+    renderer->SetBackground(0xFF000000);
+    renderer->ClearFrame();
+    renderer->FinishFrame();
 
 
-	// OW
-	switch(coverImage->PixelSize())
-	{
-		case 2:
-		{
-			WORD *pixel;
+    imageType = origImageType;//XX
 
-			if( imageType == IMAGE_TYPE_TGA )//24bit TGA
-			{
-			}
-			else
-			for (y = 0; y < originalHeight; y ++)
-			{
-				pixel = (WORD*)OTWImage->Pixel (buffer, y + top, left);
+    if (imageType != IMAGE_TYPE_TGA) //XX
+    {
+        // Darken all but the specified frame in the palette
+        srcPal		= originalPalette;
+        dstPal		= tweakedPalette;
+        startLit	= originalPalette + frame * PAL_FRAME_LENGTH;
+        stopLit		= startLit + PAL_FRAME_LENGTH;
+        startInvar	= originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
+        stop		= originalPalette + 256;
 
-				//for (x = 0; x < originalWidth; x ++)
-				for (x = 0; x < originalWidth && imagePtr && *imagePtr >= 0 && *imagePtr < 256; x ++) // JB 010326 CTD
-				{
-					if (OTWImage)
-						*pixel = OTWImage->Pixel32toPixel16(tweakedPalette[*imagePtr]);
+        ShiAssert(srcPal <= startLit);
+        ShiAssert(startLit <= stopLit);
+        ShiAssert(stopLit <= startInvar);
+        ShiAssert(startInvar <= stop);
 
-					pixel ++;
-					imagePtr ++;
-				}
-			}
+        // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
+        while (srcPal < startLit)
+        {
+            *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+        }
 
-			break;
-		}
+        // Copy the "lit" color intensities
+        while (srcPal < stopLit)
+        {
+            *dstPal++ = *srcPal++;
+        }
 
-		case 4:
-		{
-			DWORD *pixel;
-			//XX
-			DWORD r,g,b;			
-			if( imageType == IMAGE_TYPE_TGA )//24bit TGA
-			{
-				for (y = 0; y < originalHeight; y ++)
-				{
-					pixel = (DWORD*)OTWImage->Pixel (buffer, y + top, left);
+        // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
+        while (srcPal < startInvar)
+        {
+            *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+        }
 
-					for(x = 0; x < originalWidth; x ++)
-					{
-						r = *imagePtr++;
-						g = *imagePtr++;
-						b = *imagePtr++;
+        // Copy the invariant high portion of the palette
+        while (srcPal < stop)
+        {
+            *dstPal++ = *srcPal++;
+        }
+    }
 
-						*pixel++ = OTWImage->Pixel32toPixel32( (r<<16) | (g<<8) | b );
-					}
-				}
-			}
-			else
-			for (y = 0; y < originalHeight; y ++)
-			{
-				pixel = (DWORD*)OTWImage->Pixel (buffer, y + top, left);
+    // Lock the surface and do the pixel lookups
+    buffer = OTWImage->Lock();
+    ShiAssert(buffer);
 
-				for (x = 0; x < originalWidth && imagePtr && *imagePtr >= 0 && *imagePtr < 256; x ++)
-				{
-					if (OTWImage)
-						*pixel = OTWImage->Pixel32toPixel32(tweakedPalette[*imagePtr]);
+    imagePtr = originalImage;
 
-					pixel ++;
-					imagePtr ++;
-				}
-			}
 
-			break;
-		}
+    // OW
+    switch (coverImage->PixelSize())
+    {
+        case 2:
+        {
+            WORD *pixel;
 
-		default: ShiAssert(false);
-	}
+            if (imageType == IMAGE_TYPE_TGA) //24bit TGA
+            {
+            }
+            else
+                for (y = 0; y < originalHeight; y ++)
+                {
+                    pixel = (WORD*)OTWImage->Pixel(buffer, y + top, left);
 
-	OTWImage->Unlock();
+                    //for (x = 0; x < originalWidth; x ++)
+                    for (x = 0; x < originalWidth && imagePtr && *imagePtr >= 0 && *imagePtr < 256; x ++) // JB 010326 CTD
+                    {
+                        if (OTWImage)
+                            *pixel = OTWImage->Pixel32toPixel16(tweakedPalette[*imagePtr]);
 
-	// Cover up the old radar wheel
-	srcRect.top		= 0;
-	srcRect.left	= 0;
-	srcRect.bottom	= coverHeight;
-	srcRect.right	= coverWidth;
-	dstRect.top		= srcRect.top  + top + COVER_TOP;
-	dstRect.left	= srcRect.left + left + COVER_LEFT;
-	dstRect.bottom	= dstRect.top  + coverHeight;
-	dstRect.right	= dstRect.left + coverWidth;
-//	OTWImage->ComposeTransparent (coverImage, &srcRect, &dstRect);
+                        pixel ++;
+                        imagePtr ++;
+                    }
+                }
 
-	// flip the surface
-	OTWImage->SwapBuffers(NULL);
+            break;
+        }
+
+        case 4:
+        {
+            DWORD *pixel;
+            //XX
+            DWORD r, g, b;
+
+            if (imageType == IMAGE_TYPE_TGA) //24bit TGA
+            {
+                for (y = 0; y < originalHeight; y ++)
+                {
+                    pixel = (DWORD*)OTWImage->Pixel(buffer, y + top, left);
+
+                    for (x = 0; x < originalWidth; x ++)
+                    {
+                        r = *imagePtr++;
+                        g = *imagePtr++;
+                        b = *imagePtr++;
+
+                        *pixel++ = OTWImage->Pixel32toPixel32((r << 16) | (g << 8) | b);
+                    }
+                }
+            }
+            else
+                for (y = 0; y < originalHeight; y ++)
+                {
+                    pixel = (DWORD*)OTWImage->Pixel(buffer, y + top, left);
+
+                    for (x = 0; x < originalWidth && imagePtr && *imagePtr >= 0 && *imagePtr < 256; x ++)
+                    {
+                        if (OTWImage)
+                            *pixel = OTWImage->Pixel32toPixel32(tweakedPalette[*imagePtr]);
+
+                        pixel ++;
+                        imagePtr ++;
+                    }
+                }
+
+            break;
+        }
+
+        default:
+            ShiAssert(false);
+    }
+
+    OTWImage->Unlock();
+
+    // Cover up the old radar wheel
+    srcRect.top		= 0;
+    srcRect.left	= 0;
+    srcRect.bottom	= coverHeight;
+    srcRect.right	= coverWidth;
+    dstRect.top		= srcRect.top  + top + COVER_TOP;
+    dstRect.left	= srcRect.left + left + COVER_LEFT;
+    dstRect.bottom	= dstRect.top  + coverHeight;
+    dstRect.right	= dstRect.left + coverWidth;
+    //	OTWImage->ComposeTransparent (coverImage, &srcRect, &dstRect);
+
+    // flip the surface
+    OTWImage->SwapBuffers(NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -451,83 +477,87 @@ void OTWDriverClass::SplashScreenUpdate( int frame )
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void OTWDriverClass::ShowSimpleWaitScreen( char *name )
+void OTWDriverClass::ShowSimpleWaitScreen(char *name)
 {
-	int		top, left;
-	int		width, height;
-	char	filename[MAX_PATH];
-	CImageFileMemory 	texFile;	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
-	FILE*				tmpFile;
+    int		top, left;
+    int		width, height;
+    char	filename[MAX_PATH];
+    CImageFileMemory 	texFile;	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
+    FILE*				tmpFile;
 
-	if (OTWImage->targetXres () >= 1600)	//THW 2003-11-15 Allow 1600x1200 exit screen
-	{
-		sprintf (filename, "art\\splash\\%s16.gif", name);
-		tmpFile = fopen (filename, "r");
-		if (tmpFile)
-		{
-			fclose (tmpFile);
-			width = 1600;
-			height = 1200;
-		}
-		else
-		{
-			sprintf (filename, "art\\splash\\%s10.gif", name);
-			width = 1024;
-			height = 768;
-		}
-	}
-	else if (OTWImage->targetXres () >= 1280)	//THW 2003-11-15 Allow 1280x1024 exit screen
-	{
-		sprintf (filename, "art\\splash\\%s12.gif", name);
-		tmpFile = fopen (filename, "r");
-		if (tmpFile)
-		{
-			fclose (tmpFile);
-			width = 1280;
-			height = 1024;
-		}
-		else
-		{
-			sprintf (filename, "art\\splash\\%s10.gif", name);
-			width = 1024;
-			height = 768;
-		}
-	}
-	else if (OTWImage->targetXres () >= 1024)
-	{
-		sprintf (filename, "art\\splash\\%s10.gif", name);
-		width = 1024;
-		height = 768;
-	}
-	else if (OTWImage->targetXres () >= 800)
-	{
-		sprintf (filename, "art\\splash\\%s8.gif", name);
-		width = 800;
-		height = 600;
-	}
-	else
-	{
-		sprintf (filename, "art\\splash\\%s6.gif", name);
-		width = 640;
-		height = 480;
-	}
+    if (OTWImage->targetXres() >= 1600)	//THW 2003-11-15 Allow 1600x1200 exit screen
+    {
+        sprintf(filename, "art\\splash\\%s16.gif", name);
+        tmpFile = fopen(filename, "r");
 
-	// Get the upper left corner of the target area
-	top		= (OTWImage->targetYres() - height) / 2;
-	left	= (OTWImage->targetXres() - width) / 2;
-	if ((top < 0) || (left < 0)) {
-		ShiWarning( "Source art for splash screen too big!" );
-		return;
-	}
+        if (tmpFile)
+        {
+            fclose(tmpFile);
+            width = 1600;
+            height = 1200;
+        }
+        else
+        {
+            sprintf(filename, "art\\splash\\%s10.gif", name);
+            width = 1024;
+            height = 768;
+        }
+    }
+    else if (OTWImage->targetXres() >= 1280)	//THW 2003-11-15 Allow 1280x1024 exit screen
+    {
+        sprintf(filename, "art\\splash\\%s12.gif", name);
+        tmpFile = fopen(filename, "r");
 
-	// Clear the back buffer to black to erase anything that might already be there
-	renderer->SetViewport( -1.0f, 1.0f, 1.0f, -1.0f );
-	renderer->StartFrame();
-	renderer->SetBackground( 0xFF000000 );
-	renderer->ClearFrame();
-	renderer->Render2DBitmap( 0, 0, left, top, width, height, filename );
-	renderer->FinishFrame();
-	OTWImage->SwapBuffers(NULL);
+        if (tmpFile)
+        {
+            fclose(tmpFile);
+            width = 1280;
+            height = 1024;
+        }
+        else
+        {
+            sprintf(filename, "art\\splash\\%s10.gif", name);
+            width = 1024;
+            height = 768;
+        }
+    }
+    else if (OTWImage->targetXres() >= 1024)
+    {
+        sprintf(filename, "art\\splash\\%s10.gif", name);
+        width = 1024;
+        height = 768;
+    }
+    else if (OTWImage->targetXres() >= 800)
+    {
+        sprintf(filename, "art\\splash\\%s8.gif", name);
+        width = 800;
+        height = 600;
+    }
+    else
+    {
+        sprintf(filename, "art\\splash\\%s6.gif", name);
+        width = 640;
+        height = 480;
+    }
+
+    // Get the upper left corner of the target area
+    top		= (OTWImage->targetYres() - height) / 2;
+    left	= (OTWImage->targetXres() - width) / 2;
+
+    if ((top < 0) || (left < 0))
+    {
+        ShiWarning("Source art for splash screen too big!");
+        return;
+    }
+
+    // Clear the back buffer to black to erase anything that might already be there
+    renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+    renderer->StartFrame();
+    renderer->SetBackground(0xFF000000);
+    renderer->ClearFrame();
+    renderer->Render2DBitmap(0, 0, left, top, width, height, filename);
+    renderer->FinishFrame();
+    OTWImage->SwapBuffers(NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

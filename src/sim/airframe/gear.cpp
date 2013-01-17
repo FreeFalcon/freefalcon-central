@@ -48,73 +48,78 @@ extern VU_TIME vuxGameTime;
 // this code provides the animations for gear strut compression and rolling wheels.
 void AirframeClass::RunLandingGear(void)
 {
-	if(auxaeroData->animWheelRadius[0] && platform->drawPointer)
-	{
-		// MLR 2003-10-04 code to support spinning landing wheels
-		// the idea here is to set the Radians/Sec rotation of the wheel
-		// while in contact with the ground.
-		// code in the surface.cpp file actually rotates the wheel, and
-		// gradually bleeds off the RPS one the gear is no longer grounded
-		// (which means this code is no longer running).
-		int i;			
-		float cgloc = GetAeroData(AeroDataSet::CGLoc);
+    if (auxaeroData->animWheelRadius[0] && platform->drawPointer)
+    {
+        // MLR 2003-10-04 code to support spinning landing wheels
+        // the idea here is to set the Radians/Sec rotation of the wheel
+        // while in contact with the ground.
+        // code in the surface.cpp file actually rotates the wheel, and
+        // gradually bleeds off the RPS one the gear is no longer grounded
+        // (which means this code is no longer running).
+        int i;
+        float cgloc = GetAeroData(AeroDataSet::CGLoc);
 
-		// sfr: distance moved in frame
-		SM_SCALAR speed = platform->GetVt();
-		SM_SCALAR dist = (speed * SimLibMajorFrameTime);
+        // sfr: distance moved in frame
+        SM_SCALAR speed = platform->GetVt();
+        SM_SCALAR dist = (speed * SimLibMajorFrameTime);
 
-		for(i=0;i<NumGear();i++)
-		{
-			Tpoint PtWorldPos;
-			Tpoint PtRelPos;
-			
-			PtRelPos.x = cgloc - GetAeroData(AeroDataSet::NosGearX + i*4);
-			PtRelPos.y = GetAeroData(AeroDataSet::NosGearY + i*4);
-			PtRelPos.z = GetAeroData(AeroDataSet::NosGearZ + i*4);
-			
-			MatrixMult( &((DrawableBSP*)platform->drawPointer)->orientation, &PtRelPos, &PtWorldPos );
- 		
-			PtWorldPos.x+=x;
-			PtWorldPos.y+=y;
-			PtWorldPos.z+=z;
+        for (i = 0; i < NumGear(); i++)
+        {
+            Tpoint PtWorldPos;
+            Tpoint PtRelPos;
+
+            PtRelPos.x = cgloc - GetAeroData(AeroDataSet::NosGearX + i * 4);
+            PtRelPos.y = GetAeroData(AeroDataSet::NosGearY + i * 4);
+            PtRelPos.z = GetAeroData(AeroDataSet::NosGearZ + i * 4);
+
+            MatrixMult(&((DrawableBSP*)platform->drawPointer)->orientation, &PtRelPos, &PtWorldPos);
+
+            PtWorldPos.x += x;
+            PtWorldPos.y += y;
+            PtWorldPos.z += z;
 
 
-			// MLR 2003-10-14 animate the landing gear strut
-			{ 
-				//gear[i].StrutExtension = OTWDriver.GetGroundLevel(PtWorldPos.x, PtWorldPos.y) - ( PtWorldPos.z + z)
-				gear[i].StrutExtension = groundZ - ( PtWorldPos.z );
+            // MLR 2003-10-14 animate the landing gear strut
+            {
+                //gear[i].StrutExtension = OTWDriver.GetGroundLevel(PtWorldPos.x, PtWorldPos.y) - ( PtWorldPos.z + z)
+                gear[i].StrutExtension = groundZ - (PtWorldPos.z);
 
-				// limit to values from auxaerodata
-				// these will get applied to a DOF or Translator to make it look like
-				// the gear is working.
+                // limit to values from auxaerodata
+                // these will get applied to a DOF or Translator to make it look like
+                // the gear is working.
 
-				if(gear[i].StrutExtension<-auxaeroData->animGearMaxComp[i]){
-					gear[i].StrutExtension=-auxaeroData->animGearMaxComp[i];
-				}
+                if (gear[i].StrutExtension < -auxaeroData->animGearMaxComp[i])
+                {
+                    gear[i].StrutExtension = -auxaeroData->animGearMaxComp[i];
+                }
 
-				gear[i].WheelRPS *= (1 - .4f * SimLibMajorFrameTime); // slows wheel down
+                gear[i].WheelRPS *= (1 - .4f * SimLibMajorFrameTime); // slows wheel down
 
-				if(gear[i].StrutExtension>auxaeroData->animGearMaxExt[i])
-				{ // wheel off ground
-					gear[i].StrutExtension=auxaeroData->animGearMaxExt[i];
-					// sfr: was in run gear function
-					// deaccel gear, since its not in touch with ground
-					// compute new angle
-					gear[i].WheelAngle += gear[i].WheelRPS * SimLibMajorFrameTime;
-				}
-				else if(SimLibMajorFrameTime && auxaeroData->animWheelRadius[i]){
-					// sfr: using plane speed now
-					// we need this for the case above, 
-					// when gear is not in touch with ground anymore
-					gear[i].WheelRPS = speed;
-					// wheel rotation increment
-					SM_SCALAR rInc = dist / auxaeroData->animWheelRadius[i];
-					gear[i].WheelAngle += rInc;						
-				}
-				// can be more than 2pi
-				gear[i].WheelAngle = fmod(gear[i].WheelAngle, ((float)(M_PI))*2.0f);
-			}
-		}
-	}
-	//error - need to have sound played when the radii are 0
+                if (gear[i].StrutExtension > auxaeroData->animGearMaxExt[i])
+                {
+                    // wheel off ground
+                    gear[i].StrutExtension = auxaeroData->animGearMaxExt[i];
+                    // sfr: was in run gear function
+                    // deaccel gear, since its not in touch with ground
+                    // compute new angle
+                    gear[i].WheelAngle += gear[i].WheelRPS * SimLibMajorFrameTime;
+                }
+                else if (SimLibMajorFrameTime && auxaeroData->animWheelRadius[i])
+                {
+                    // sfr: using plane speed now
+                    // we need this for the case above,
+                    // when gear is not in touch with ground anymore
+                    gear[i].WheelRPS = speed;
+                    // wheel rotation increment
+                    SM_SCALAR rInc = dist / auxaeroData->animWheelRadius[i];
+                    gear[i].WheelAngle += rInc;
+                }
+
+                // can be more than 2pi
+                gear[i].WheelAngle = fmod(gear[i].WheelAngle, ((float)(M_PI)) * 2.0f);
+            }
+        }
+    }
+
+    //error - need to have sound played when the radii are 0
 }

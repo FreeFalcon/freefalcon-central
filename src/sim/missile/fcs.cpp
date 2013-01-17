@@ -3,14 +3,14 @@
 
 void MissileClass::FlightControlSystem(void)
 {
-   /*----------------------------*/
-   /* gain schedules and filters */
-   /*----------------------------*/
+    /*----------------------------*/
+    /* gain schedules and filters */
+    /*----------------------------*/
     Gains();
 
-   /*--------------*/
-   /* control laws */
-   /*--------------*/
+    /*--------------*/
+    /* control laws */
+    /*--------------*/
     Pitch();
     Yaw();
 }

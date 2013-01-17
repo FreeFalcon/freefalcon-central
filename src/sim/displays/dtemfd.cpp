@@ -16,25 +16,27 @@
 void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY);
 
 
-void DteMfdDrawable::Display (VirtualDisplay* newDisplay)
+void DteMfdDrawable::Display(VirtualDisplay* newDisplay)
 {
-	//MI
-	float cX, cY = 0;
-	AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-	RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
-	if(!theRadar)
-	{
-		ShiWarning("Oh Oh shouldn't be here without a radar!");
-		return;
-	}
-	else
-	{
-		theRadar->GetCursorPosition (&cX, &cY);
-	}
+    //MI
+    float cX, cY = 0;
+    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+
+    if (!theRadar)
+    {
+        ShiWarning("Oh Oh shouldn't be here without a radar!");
+        return;
+    }
+    else
+    {
+        theRadar->GetCursorPosition(&cX, &cY);
+    }
+
     display = newDisplay;
-    display->TextCenter(0.0f,0.2f, "DTC ID");
+    display->TextCenter(0.0f, 0.2f, "DTC ID");
     float height = display->TextHeight();
-    display->TextCenter(0.0f,0.2f - height, "126534");
+    display->TextCenter(0.0f, 0.2f - height, "126534");
     LabelButton(0, "ON");
     LabelButton(2, "LOAD");
     LabelButton(5, "FCR");
@@ -46,22 +48,23 @@ void DteMfdDrawable::Display (VirtualDisplay* newDisplay)
     LabelButton(17, "INV");
     LabelButton(18, "COMM");
     LabelButton(19, "MPD");
-	//MI changed
-	if(g_bRealisticAvionics)
-	{
-		if(OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
-			OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
-		{
-			DrawBullseyeCircle(display, cX, cY);
-		}
-		else
-			DrawReference(MfdDisplay[OnMFD()]->GetOwnShip());
-	}
-	else
-		DrawReference (MfdDisplay[OnMFD()]->GetOwnShip());
+
+    //MI changed
+    if (g_bRealisticAvionics)
+    {
+        if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp &&
+            OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
+        {
+            DrawBullseyeCircle(display, cX, cY);
+        }
+        else
+            DrawReference(MfdDisplay[OnMFD()]->GetOwnShip());
+    }
+    else
+        DrawReference(MfdDisplay[OnMFD()]->GetOwnShip());
 }
 
-void DteMfdDrawable::PushButton (int whichButton, int whichMFD)
+void DteMfdDrawable::PushButton(int whichButton, int whichMFD)
 {
     MfdDrawable::PushButton(whichButton, whichMFD);
 }

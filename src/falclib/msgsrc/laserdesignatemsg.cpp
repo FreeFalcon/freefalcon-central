@@ -14,37 +14,39 @@
 #include "simbase.h"
 #include "InvalidBufferException.h"
 
-FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (LaserDesignateMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (LaserDesignateMsg, FalconEvent::SimThread, senderid, target)
+FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconLaserDesignateMsg::~FalconLaserDesignateMsg(void)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconLaserDesignateMsg::Process(uchar autodisp)
 {
-SimBaseClass	*theEntity;//,*shooter;
+    SimBaseClass	*theEntity;//,*shooter;
 
-	if (autodisp)
-		return 0;
+    if (autodisp)
+        return 0;
 
-	theEntity = (SimBaseClass*) vuDatabase->Find(dataBlock.target);
-	if (theEntity)
-   {
-      if (dataBlock.state)
-		   theEntity->SetFlag(IS_LASED);
-      else
-		   theEntity->UnSetFlag(IS_LASED);
-   }
-   return TRUE;
+    theEntity = (SimBaseClass*) vuDatabase->Find(dataBlock.target);
+
+    if (theEntity)
+    {
+        if (dataBlock.state)
+            theEntity->SetFlag(IS_LASED);
+        else
+            theEntity->UnSetFlag(IS_LASED);
+    }
+
+    return TRUE;
 }
 

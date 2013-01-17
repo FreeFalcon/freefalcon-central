@@ -19,19 +19,19 @@
 
 extern EventClass**	CampEvents;
 
-extern void UI_AddMovieToList(long ID,long timestamp,_TCHAR *Description);
+extern void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description);
 
-CampEventDataMessage::CampEventDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (CampEventDataMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+CampEventDataMessage::CampEventDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampEventDataMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-	dataBlock.event = 0;
-	dataBlock.status = 0;
+    dataBlock.event = 0;
+    dataBlock.status = 0;
 }
 
-CampEventDataMessage::CampEventDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (CampEventDataMsg, FalconEvent::CampaignThread, senderid, target)
+CampEventDataMessage::CampEventDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampEventDataMsg, FalconEvent::CampaignThread, senderid, target)
 {
-	dataBlock.event = 0;
-	dataBlock.status = 0;
-	type;
+    dataBlock.event = 0;
+    dataBlock.status = 0;
+    type;
 }
 
 CampEventDataMessage::~CampEventDataMessage(void)
@@ -40,24 +40,27 @@ CampEventDataMessage::~CampEventDataMessage(void)
 
 int CampEventDataMessage::Process(uchar autodisp)
 {
-	switch (dataBlock.message)
-	{
-			case eventMessage:
-					if (dataBlock.status)
-						CampEvents[dataBlock.event]->flags |= CE_FIRED;
-					else
-						CampEvents[dataBlock.event]->flags &= ~CE_FIRED;
-					break;
-			case victoryConditionMessage:
-					break;
-			case playMovie:
-					_TCHAR		str[128]={0};
-					AddIndexedStringToBuffer(1160+dataBlock.event-100,str);
-					UI_AddMovieToList(dataBlock.event,TheCampaign.CurrentTime,str); // Must be a "localized" string...
-					break;
-	}
+    switch (dataBlock.message)
+    {
+        case eventMessage:
+            if (dataBlock.status)
+                CampEvents[dataBlock.event]->flags |= CE_FIRED;
+            else
+                CampEvents[dataBlock.event]->flags &= ~CE_FIRED;
 
-	return 0;
-	autodisp;
+            break;
+
+        case victoryConditionMessage:
+            break;
+
+        case playMovie:
+            _TCHAR		str[128] = {0};
+            AddIndexedStringToBuffer(1160 + dataBlock.event - 100, str);
+            UI_AddMovieToList(dataBlock.event, TheCampaign.CurrentTime, str); // Must be a "localized" string...
+            break;
+    }
+
+    return 0;
+    autodisp;
 }
 

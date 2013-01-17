@@ -37,55 +37,69 @@
 
 float AircraftClass::GlocPrediction(void)
 {
-	float gFact;
-	float gs = af->nzcgb;
-	float skillFactor = (theBrain->SkillLevel() + 2.0F)/4.0F;
+    float gFact;
+    float gs = af->nzcgb;
+    float skillFactor = (theBrain->SkillLevel() + 2.0F) / 4.0F;
 
-	if (this == SimDriver.GetPlayerEntity()) {
-		skillFactor = 1.1F;
-	}
+    if (this == SimDriver.GetPlayerEntity())
+    {
+        skillFactor = 1.1F;
+    }
 
-	if (SimDriver.MotionOn()) {
-		if (gLoadSeconds >= 0.0F) {
-			if (gs > G0Plus+skillFactor) {
-				gLoadSeconds += (BLACKOUT_RATE * (gs-(G0Plus+skillFactor)) * SimLibMajorFrameTime);
-			}
-			else if (gs > G0Neg) {
-				gLoadSeconds *= (1.0F - AWAKEN_RATE  * skillFactor * SimLibMajorFrameTime);
-			}
-			else {
-				gLoadSeconds *= (1.0F - AWAKEN_RATE  * skillFactor * SimLibMajorFrameTime);
-				gLoadSeconds -= (REDOUT_RATE * (G0Neg - gs) * SimLibMajorFrameTime);
-			}
+    if (SimDriver.MotionOn())
+    {
+        if (gLoadSeconds >= 0.0F)
+        {
+            if (gs > G0Plus + skillFactor)
+            {
+                gLoadSeconds += (BLACKOUT_RATE * (gs - (G0Plus + skillFactor)) * SimLibMajorFrameTime);
+            }
+            else if (gs > G0Neg)
+            {
+                gLoadSeconds *= (1.0F - AWAKEN_RATE  * skillFactor * SimLibMajorFrameTime);
+            }
+            else
+            {
+                gLoadSeconds *= (1.0F - AWAKEN_RATE  * skillFactor * SimLibMajorFrameTime);
+                gLoadSeconds -= (REDOUT_RATE * (G0Neg - gs) * SimLibMajorFrameTime);
+            }
 
-			gFact = (gLoadSeconds - GREYOUT_ONSET * skillFactor) / ((BLACKOUT_ONSET - GREYOUT_ONSET) * skillFactor);
-			gFact = min ( max (gFact, 0.0F), 1.0F);
-		}
-		else {
-			if (gs <= G0Neg) {
-				gLoadSeconds += (REDOUT_RATE * (gs - G0Neg)  * SimLibMajorFrameTime);
-			}
-			else if (gs < G0Plus+skillFactor) {
-				gLoadSeconds *= (1.0F - UNREDDEN_RATE * skillFactor * SimLibMajorFrameTime);
-			}
-			else {
-				gLoadSeconds *= (1.0F - UNREDDEN_RATE * skillFactor * SimLibMajorFrameTime);
-				gLoadSeconds += (BLACKOUT_RATE * (gs - (G0Plus+skillFactor)) * SimLibMajorFrameTime);
-			}
-			gFact = (gLoadSeconds - PINKOUT_ONSET * skillFactor) / ((PINKOUT_ONSET - REDOUT_ONSET) * skillFactor);
-			gFact = min ( max (gFact, -1.0F), 0.0F);
-		}
-	}
-	else {
-		if (gLoadSeconds >= 0.0F) {
-			gFact = (gLoadSeconds - GREYOUT_ONSET * skillFactor) / ((BLACKOUT_ONSET - GREYOUT_ONSET) * skillFactor);
-			gFact = min ( max (gFact, 0.0F), 1.0F);
-		}
-		else {
-			gFact = (gLoadSeconds - PINKOUT_ONSET * skillFactor) / ((PINKOUT_ONSET - REDOUT_ONSET) * skillFactor);
-			gFact = min ( max (gFact, -1.0F), 0.0F);
-		}
-	}
+            gFact = (gLoadSeconds - GREYOUT_ONSET * skillFactor) / ((BLACKOUT_ONSET - GREYOUT_ONSET) * skillFactor);
+            gFact = min(max(gFact, 0.0F), 1.0F);
+        }
+        else
+        {
+            if (gs <= G0Neg)
+            {
+                gLoadSeconds += (REDOUT_RATE * (gs - G0Neg)  * SimLibMajorFrameTime);
+            }
+            else if (gs < G0Plus + skillFactor)
+            {
+                gLoadSeconds *= (1.0F - UNREDDEN_RATE * skillFactor * SimLibMajorFrameTime);
+            }
+            else
+            {
+                gLoadSeconds *= (1.0F - UNREDDEN_RATE * skillFactor * SimLibMajorFrameTime);
+                gLoadSeconds += (BLACKOUT_RATE * (gs - (G0Plus + skillFactor)) * SimLibMajorFrameTime);
+            }
 
-	return (gFact);
+            gFact = (gLoadSeconds - PINKOUT_ONSET * skillFactor) / ((PINKOUT_ONSET - REDOUT_ONSET) * skillFactor);
+            gFact = min(max(gFact, -1.0F), 0.0F);
+        }
+    }
+    else
+    {
+        if (gLoadSeconds >= 0.0F)
+        {
+            gFact = (gLoadSeconds - GREYOUT_ONSET * skillFactor) / ((BLACKOUT_ONSET - GREYOUT_ONSET) * skillFactor);
+            gFact = min(max(gFact, 0.0F), 1.0F);
+        }
+        else
+        {
+            gFact = (gLoadSeconds - PINKOUT_ONSET * skillFactor) / ((PINKOUT_ONSET - REDOUT_ONSET) * skillFactor);
+            gFact = min(max(gFact, -1.0F), 0.0F);
+        }
+    }
+
+    return (gFact);
 }

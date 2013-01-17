@@ -7,35 +7,36 @@
 #include "InvalidBufferException.h"
 
 
-FalconRequestObject::FalconRequestObject(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (RequestObject, FalconEvent::SimThread, entityId, target, loopback)
+FalconRequestObject::FalconRequestObject(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(RequestObject, FalconEvent::SimThread, entityId, target, loopback)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
-FalconRequestObject::FalconRequestObject(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (RequestObject, FalconEvent::SimThread, senderid, target)
+FalconRequestObject::FalconRequestObject(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(RequestObject, FalconEvent::SimThread, senderid, target)
 {
-   // Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconRequestObject::~FalconRequestObject(void)
 {
-   // Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconRequestObject::Process(uchar autodisp)
 {
-	if (autodisp)
-		return 0;
+    if (autodisp)
+        return 0;
 
-FalconSessionEntity* fromEnt = (FalconSessionEntity*)vuDatabase->Find (dataBlock.fromID);
+    FalconSessionEntity* fromEnt = (FalconSessionEntity*)vuDatabase->Find(dataBlock.fromID);
 
-   if (fromEnt && Entity() && Entity()->IsLocal())
-   {
-      VuMessage *resp;
-      resp = new VuFullUpdateEvent(Entity(), fromEnt);
-	   VuMessageQueue::PostVuMessage(resp);
-   }
-   return TRUE;
+    if (fromEnt && Entity() && Entity()->IsLocal())
+    {
+        VuMessage *resp;
+        resp = new VuFullUpdateEvent(Entity(), fromEnt);
+        VuMessageQueue::PostVuMessage(resp);
+    }
+
+    return TRUE;
 }
 

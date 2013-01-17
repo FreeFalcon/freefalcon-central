@@ -7,18 +7,20 @@
 // CPCursor::CPCursor
 //====================================================//
 
-CPCursor::CPCursor(CursorInitStr* pcursorInitStr) {
+CPCursor::CPCursor(CursorInitStr* pcursorInitStr)
+{
 
-	mIdNum		= pcursorInitStr->idNum;
-	mSrcRect		= pcursorInitStr->srcRect;
-	
-	mxHotspot	= pcursorInitStr->xhotSpot;
-	myHotspot	= pcursorInitStr->yhotSpot;
+    mIdNum		= pcursorInitStr->idNum;
+    mSrcRect		= pcursorInitStr->srcRect;
 
-	mpOTWImage	= pcursorInitStr->pOtwImage;
-	mpTemplate	= pcursorInitStr->pTemplate;	
+    mxHotspot	= pcursorInitStr->xhotSpot;
+    myHotspot	= pcursorInitStr->yhotSpot;
+
+    mpOTWImage	= pcursorInitStr->pOtwImage;
+    mpTemplate	= pcursorInitStr->pTemplate;
 }
 
-void CPCursor::Display(void) {
+void CPCursor::Display(void)
+{
 
 }

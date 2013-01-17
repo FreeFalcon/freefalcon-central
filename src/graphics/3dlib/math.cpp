@@ -56,120 +56,148 @@ New Matrix --> Old Matrix ==> new M(i),(j) = old M(i+1),(j+1)
 |    Programmed by Erick Jap                                May 27, 1993    |
 +---------------------------------------------------------------------------+
 */
-void 
-glGetSinCos (GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
+void
+glGetSinCos(GLfloat *sinOut, GLfloat *cosOut, GLFixed0_14 angle)
 {
-  angle &= 0x3fff;
-  if (angle & 0x1000) {
-    // angle between 270-360
-    if (angle & 0x2000) {	
-      *sinOut = (GLfloat) -CosineTable[angle-0x3000];
-      *cosOut = (GLfloat) CosineTable[0x4000-angle];
+    angle &= 0x3fff;
+
+    if (angle & 0x1000)
+    {
+        // angle between 270-360
+        if (angle & 0x2000)
+        {
+            *sinOut = (GLfloat) - CosineTable[angle - 0x3000];
+            *cosOut = (GLfloat) CosineTable[0x4000 - angle];
+        }
+        // angle between 90-180
+        else
+        {
+            *sinOut = (GLfloat) CosineTable[angle - 0x1000];
+            *cosOut = (GLfloat) - CosineTable[0x2000 - angle];
+        }
     }
-    // angle between 90-180
-    else {
-      *sinOut = (GLfloat) CosineTable[angle-0x1000];
-      *cosOut = (GLfloat) -CosineTable[0x2000-angle];
+    else
+    {
+        if (angle & 0x2000)
+        {
+            // angle between 180-270
+            *sinOut = (GLfloat) - CosineTable[0x3000 - angle];
+            *cosOut = (GLfloat) - CosineTable[angle - 0x2000];
+        }
+        else
+        {
+            // angle between 0-90
+            *sinOut = (GLfloat) CosineTable[0x1000 - angle];
+            *cosOut = (GLfloat) CosineTable[angle];
+        }
     }
-  }
-  else {
-    if (angle & 0x2000) {	
-      // angle between 180-270
-      *sinOut = (GLfloat) -CosineTable[0x3000-angle];
-      *cosOut = (GLfloat) -CosineTable[angle-0x2000];
-    }
-    else {
-      // angle between 0-90
-      *sinOut = (GLfloat) CosineTable[0x1000-angle];
-      *cosOut = (GLfloat) CosineTable[angle];
-    }
-  }
 }
 
-void 
-glGetSinCos (GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
+void
+glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
 {
-  angle &= 0x3fff;
-  if (angle & 0x1000) {
-    // angle between 270-360
-    if (angle & 0x2000) {	
-      *sinOut = -CosineTable[angle-0x3000];
-      *cosOut = CosineTable[0x4000-angle];
+    angle &= 0x3fff;
+
+    if (angle & 0x1000)
+    {
+        // angle between 270-360
+        if (angle & 0x2000)
+        {
+            *sinOut = -CosineTable[angle - 0x3000];
+            *cosOut = CosineTable[0x4000 - angle];
+        }
+        // angle between 90-180
+        else
+        {
+            *sinOut = CosineTable[angle - 0x1000];
+            *cosOut = -CosineTable[0x2000 - angle];
+        }
     }
-    // angle between 90-180
-    else {
-      *sinOut = CosineTable[angle-0x1000];
-      *cosOut = -CosineTable[0x2000-angle];
+    else
+    {
+        if (angle & 0x2000)
+        {
+            // angle between 180-270
+            *sinOut = -CosineTable[0x3000 - angle];
+            *cosOut = -CosineTable[angle - 0x2000];
+        }
+        else
+        {
+            // angle between 0-90
+            *sinOut = CosineTable[0x1000 - angle];
+            *cosOut = CosineTable[angle];
+        }
     }
-  }
-  else {
-    if (angle & 0x2000) {	
-      // angle between 180-270
-      *sinOut = -CosineTable[0x3000-angle];
-      *cosOut = -CosineTable[angle-0x2000];
-    }
-    else {
-      // angle between 0-90
-      *sinOut = CosineTable[0x1000-angle];
-      *cosOut = CosineTable[angle];
-    }
-  }
 }	/* glGetSinCos */
 
 
 
-GLdouble 
-glGetSine (GLFixed0_14 angle)
+GLdouble
+glGetSine(GLFixed0_14 angle)
 {
-  angle &= 0x3fff;
-  if (angle & 0x1000) {
-    // angle between 270-360
-    if (angle & 0x2000) {	
-      return -CosineTable[angle-0x3000];
+    angle &= 0x3fff;
+
+    if (angle & 0x1000)
+    {
+        // angle between 270-360
+        if (angle & 0x2000)
+        {
+            return -CosineTable[angle - 0x3000];
+        }
+        // angle between 90-180
+        else
+        {
+            return CosineTable[angle - 0x1000];
+        }
     }
-    // angle between 90-180
-    else {
-      return CosineTable[angle-0x1000];
+    else
+    {
+        if (angle & 0x2000)
+        {
+            // angle between 180-270
+            return -CosineTable[0x3000 - angle];
+        }
+        else
+        {
+            // angle between 0-90
+            return CosineTable[0x1000 - angle];
+        }
     }
-  }
-  else {
-    if (angle & 0x2000) {	
-      // angle between 180-270
-      return -CosineTable[0x3000-angle];
-    }
-    else {
-      // angle between 0-90
-      return CosineTable[0x1000-angle];
-    }
-  }
 }	/* glGetSine */
 
 
 
-GLdouble 
-glGetCosine (GLFixed0_14 angle)
+GLdouble
+glGetCosine(GLFixed0_14 angle)
 {
-  angle &= 0x3fff;
-  if (angle & 0x1000) {
-    // angle between 270-360
-    if (angle & 0x2000) {	
-      return CosineTable[0x4000-angle];
+    angle &= 0x3fff;
+
+    if (angle & 0x1000)
+    {
+        // angle between 270-360
+        if (angle & 0x2000)
+        {
+            return CosineTable[0x4000 - angle];
+        }
+        // angle between 90-180
+        else
+        {
+            return -CosineTable[0x2000 - angle];
+        }
     }
-    // angle between 90-180
-    else {
-      return -CosineTable[0x2000-angle];
+    else
+    {
+        if (angle & 0x2000)
+        {
+            // angle between 180-270
+            return -CosineTable[angle - 0x2000];
+        }
+        else
+        {
+            // angle between 0-90
+            return CosineTable[angle];
+        }
     }
-  }
-  else {
-    if (angle & 0x2000) {	
-      // angle between 180-270
-      return -CosineTable[angle-0x2000];
-    }
-    else {
-      // angle between 0-90
-      return CosineTable[angle];
-    }
-  }
 }	/* glGetCosine */
 
 
@@ -201,24 +229,26 @@ glGetCosine (GLFixed0_14 angle)
 +---------------------------------------------------------------------------+
 */
 
-GLFixed0_14 
-CalculateArcTan (GLfloat opposite,
-                 GLfloat adjacent)
+GLFixed0_14
+CalculateArcTan(GLfloat opposite,
+                GLfloat adjacent)
 {
-  GLFixed0_14	angle;
-  
-  if (opposite < adjacent)	{
-    angle = FloatToInt32((opposite * 16384.0f) / adjacent);
-    angle += (((16384-angle)*angle)/46080l);
-    angle >>= 3;
-  }
-  else {
-    angle = FloatToInt32((adjacent * 16384.0f) / opposite);
-    angle += (((16384-angle)*angle)/46080l);
-    angle = 4096 - (angle >> 3);
-  }
+    GLFixed0_14	angle;
 
-  return (angle);
+    if (opposite < adjacent)
+    {
+        angle = FloatToInt32((opposite * 16384.0f) / adjacent);
+        angle += (((16384 - angle) * angle) / 46080l);
+        angle >>= 3;
+    }
+    else
+    {
+        angle = FloatToInt32((adjacent * 16384.0f) / opposite);
+        angle += (((16384 - angle) * angle) / 46080l);
+        angle = 4096 - (angle >> 3);
+    }
+
+    return (angle);
 }	/* CalculateArcTan */
 
 
@@ -248,40 +278,56 @@ CalculateArcTan (GLfloat opposite,
 +---------------------------------------------------------------------------+
 */
 
-GLFixed0_14 
-glCalculateAngle (GLfloat opposite, 
-                  GLfloat adjacent)
+GLFixed0_14
+glCalculateAngle(GLfloat opposite,
+                 GLfloat adjacent)
 {
-  GLint       sign_opp, sign_adj;
-  GLFixed0_14 angle;
-  
-  if (!opposite)	{
-    if (adjacent < 0.0f) return (8192);	// 180 degree
-    return(0);
-  }
-  if (!adjacent) {
-    if (opposite < 0.0f) return (12288);	// 270 degree
-    return(4096);						// 90 degree
-  }
-  if (opposite < 0.0f)	{
-    sign_opp = 1;
-    opposite = -opposite;
-  }
-  else sign_opp = 0;
-  if (adjacent < 0.0f) {
-    sign_adj = 1;
-    adjacent = -adjacent;
-  }
-  else sign_adj = 0;
-  angle = CalculateArcTan (opposite, adjacent);
-  if (!angle)	{								// either 0 or 180
-    if (sign_adj) return (8192);			// 180 degree
-    return(0);
-  }
-  if (sign_opp) {								// quadrant 3 or 4
-    if (sign_adj) angle += 8192;			// quadrant 3
-    else angle = 16384 - angle;				// quadrant 4
-  }
-  else if (sign_adj) angle = 8192 - angle;	// quadrant 2
-  return (angle);								// quadrant 1
+    GLint       sign_opp, sign_adj;
+    GLFixed0_14 angle;
+
+    if (!opposite)
+    {
+        if (adjacent < 0.0f) return (8192);	// 180 degree
+
+        return(0);
+    }
+
+    if (!adjacent)
+    {
+        if (opposite < 0.0f) return (12288);	// 270 degree
+
+        return(4096);						// 90 degree
+    }
+
+    if (opposite < 0.0f)
+    {
+        sign_opp = 1;
+        opposite = -opposite;
+    }
+    else sign_opp = 0;
+
+    if (adjacent < 0.0f)
+    {
+        sign_adj = 1;
+        adjacent = -adjacent;
+    }
+    else sign_adj = 0;
+
+    angle = CalculateArcTan(opposite, adjacent);
+
+    if (!angle)	 								// either 0 or 180
+    {
+        if (sign_adj) return (8192);			// 180 degree
+
+        return(0);
+    }
+
+    if (sign_opp)  								// quadrant 3 or 4
+    {
+        if (sign_adj) angle += 8192;			// quadrant 3
+        else angle = 16384 - angle;				// quadrant 4
+    }
+    else if (sign_adj) angle = 8192 - angle;	// quadrant 2
+
+    return (angle);								// quadrant 1
 }	/* glCalculateAngle */

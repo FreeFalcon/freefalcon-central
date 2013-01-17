@@ -10,25 +10,27 @@
 
 #include "classtbl.h"  // JB 010106 CTD sanity check
 
-FeatureClassDataType* GetFeatureClassData (int index)
-	{
-	ShiAssert ( Falcon4ClassTable[index].dataPtr );
+FeatureClassDataType* GetFeatureClassData(int index)
+{
+    ShiAssert(Falcon4ClassTable[index].dataPtr);
 
-	if (Falcon4ClassTable[index].dataType <= DTYPE_MIN || Falcon4ClassTable[index].dataType >= DTYPE_MAX)  // JB 010106 CTD sanity check
-		return NULL; // JB 010106 CTD sanity check
+    if (Falcon4ClassTable[index].dataType <= DTYPE_MIN || Falcon4ClassTable[index].dataType >= DTYPE_MAX)  // JB 010106 CTD sanity check
+        return NULL; // JB 010106 CTD sanity check
 
-	return  (FeatureClassDataType*) Falcon4ClassTable[index].dataPtr;
-	}
+    return (FeatureClassDataType*) Falcon4ClassTable[index].dataPtr;
+}
 
-int GetFeatureRepairTime (int index)
-	{
-	FeatureClassDataType*		fc;
+int GetFeatureRepairTime(int index)
+{
+    FeatureClassDataType*		fc;
 
-	fc = GetFeatureClassData(index);
-	if (!fc)
-		return 0;
-	return fc->RepairTime;
-	}
+    fc = GetFeatureClassData(index);
+
+    if (!fc)
+        return 0;
+
+    return fc->RepairTime;
+}
 
 /*
 int GetFeatureHitChance (int id, int mt, int range, int hitflags)
@@ -200,15 +202,17 @@ int CalculateFeatureRange (int id, int mt)
 	}
 */
 
-int GetFeatureDetectionRange (int id, int mt)
-	{
-	FeatureClassDataType*	fc;
+int GetFeatureDetectionRange(int id, int mt)
+{
+    FeatureClassDataType*	fc;
 
-	fc = GetFeatureClassData(id);
-	if (!fc)
-		return 0;
-	return fc->Detection[mt];
-	}
+    fc = GetFeatureClassData(id);
+
+    if (!fc)
+        return 0;
+
+    return fc->Detection[mt];
+}
 
 /*
 int GetBestFeatureWeapon(int id, uchar* dam, MoveType m, int range)

@@ -2,9 +2,9 @@
 
 PlayerOptionsClass PlayerOptions;
 
-PlayerOptionsClass::PlayerOptionsClass (void)
+PlayerOptionsClass::PlayerOptionsClass(void)
 {
-	Initialize();
+    Initialize();
 }
 
 void PlayerOptionsClass::Initialize(void)
@@ -13,21 +13,21 @@ void PlayerOptionsClass::Initialize(void)
 
 int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
 {
-	return TRUE;
+    return TRUE;
 }
 
-void PlayerOptionsClass::ApplyOptions (void)
+void PlayerOptionsClass::ApplyOptions(void)
 {
 }
 
 int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
 {
-	return TRUE;
+    return TRUE;
 }
 
 int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 {
-	return TRUE;
+    return TRUE;
 }
 void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 {
@@ -35,6 +35,6 @@ void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 
 int CheckNumberPlayers(void)
 {
-	return 1;
+    return 1;
 }
 

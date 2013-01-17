@@ -44,7 +44,7 @@ extern "C" {
 #include "codelib\resources\reslib\src\resmgr.h"
 };
 
-void SwapCRLF (char *buf); 
+void SwapCRLF(char *buf);
 
 /*-------------------*/
 /* Private Functions */
@@ -63,7 +63,7 @@ SIM_FLOAT SimLibMajorFrameRate = 16.667F;
 SIM_FLOAT SimLibTimeOfDay;
 SIM_ULONG SimLibElapsedTime;
 float SimLibElapsedSeconds;						// COBRA - RED - Added Variable of Elasped Simulation Seconds
-float SimLibFrameElapsed,SimLibLastFrameTime;	// COBRA - RED - Added Variable of Elasped Frame Time
+float SimLibFrameElapsed, SimLibLastFrameTime;	// COBRA - RED - Added Variable of Elasped Frame Time
 SIM_UINT SimLibFrameCount = 0;
 SIM_INT SimLibMinorPerMajor = 3;
 
@@ -91,7 +91,7 @@ SIM_INT SimLibMinorPerMajor = 3;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SimlibFileClass::SimlibFileClass (void)
+SimlibFileClass::SimlibFileClass(void)
 {
     fptr = NULL;
     rights = 0;
@@ -120,81 +120,82 @@ SimlibFileClass::SimlibFileClass (void)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SimlibFileClass* SimlibFileClass::Open (char *fName, int flags)
+SimlibFileClass* SimlibFileClass::Open(char *fName, int flags)
 {
-SimlibFileClass* fHandle;
-char access[4] = {0};
-char fileName[_MAX_PATH];
-int offset, len;
+    SimlibFileClass* fHandle;
+    char access[4] = {0};
+    char fileName[_MAX_PATH];
+    int offset, len;
 
-   // What do we want to do with the file ?
-   if (flags & SIMLIB_UPDATE)
-   {
-      if (flags & SIMLIB_READWRITE)
-         strcpy (access, "r+\0");
-      else if (flags & SIMLIB_WRITE)
-         strcpy (access, "a+\0");
-   }
-   else if (flags & SIMLIB_READ)
-   {
-      strcpy (access, "r\0");
-   }
-   else if (flags & SIMLIB_READWRITE)
-   {
-      strcpy (access, "w+\0");
-   }
-   else if (flags & SIMLIB_WRITE)
-   {
-      strcpy (access, "w\0");
-   }
+    // What do we want to do with the file ?
+    if (flags & SIMLIB_UPDATE)
+    {
+        if (flags & SIMLIB_READWRITE)
+            strcpy(access, "r+\0");
+        else if (flags & SIMLIB_WRITE)
+            strcpy(access, "a+\0");
+    }
+    else if (flags & SIMLIB_READ)
+    {
+        strcpy(access, "r\0");
+    }
+    else if (flags & SIMLIB_READWRITE)
+    {
+        strcpy(access, "w+\0");
+    }
+    else if (flags & SIMLIB_WRITE)
+    {
+        strcpy(access, "w\0");
+    }
 
-   // Is this a binary file ?
-   if (flags & SIMLIB_BINARY)
-      strcat (access, "b\0");
-   else
-      strcat (access, "t\0");
+    // Is this a binary file ?
+    if (flags & SIMLIB_BINARY)
+        strcat(access, "b\0");
+    else
+        strcat(access, "t\0");
 
-   // Find the file in the database
-   if (flags & SIMLIB_READ)
-   {
-      if (F4FindFile (fName, fileName, _MAX_PATH, &offset, &len) == NULL)
-         strcpy (fileName, fName);
-   }
-   else
-      strcpy (fileName, fName);
+    // Find the file in the database
+    if (flags & SIMLIB_READ)
+    {
+        if (F4FindFile(fName, fileName, _MAX_PATH, &offset, &len) == NULL)
+            strcpy(fileName, fName);
+    }
+    else
+        strcpy(fileName, fName);
 
-   // Try the actual open
-   fHandle = new SimlibFileClass;
-   fHandle->fptr = ResFOpen (fileName, access);
+    // Try the actual open
+    fHandle = new SimlibFileClass;
+    fHandle->fptr = ResFOpen(fileName, access);
 
-   // Did it open ?
-   if (fHandle->fptr == NULL)
-   {
-      delete fHandle;
-      fHandle = NULL;
-      if (errno == ENOENT)
-         SimLibErrno = ENOTFOUND;
-      else
-         SimLibErrno = EACCESS;
+    // Did it open ?
+    if (fHandle->fptr == NULL)
+    {
+        delete fHandle;
+        fHandle = NULL;
 
-      MonoPrint ("Unable to open %s\n", fName);
-   }
-   else
-   {
-      #ifdef _DEBUG
-      fnumOpen ++;
-      #endif
+        if (errno == ENOENT)
+            SimLibErrno = ENOTFOUND;
+        else
+            SimLibErrno = EACCESS;
 
-      // Set the file data for this handle
-      fHandle->rights = flags;
-      fHandle->lastOp = -1;
+        MonoPrint("Unable to open %s\n", fName);
+    }
+    else
+    {
+#ifdef _DEBUG
+        fnumOpen ++;
+#endif
 
-      // Fully qualified pathname for resources
-      strcpy (fHandle->fName, fileName);
-   }
+        // Set the file data for this handle
+        fHandle->rights = flags;
+        fHandle->lastOp = -1;
 
-   // Return the handle or SIMLIB_ERR
-   return (fHandle);
+        // Fully qualified pathname for resources
+        strcpy(fHandle->fName, fileName);
+    }
+
+    // Return the handle or SIMLIB_ERR
+    return (fHandle);
 }
 
 /********************************************************************/
@@ -217,45 +218,49 @@ int offset, len;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::ReadLine (char *buf, int max_len)
+int SimlibFileClass::ReadLine(char *buf, int max_len)
 {
-int retval = SIMLIB_ERR;
+    int retval = SIMLIB_ERR;
 
-   F4Assert (fptr);
-   F4Assert (rights & SIMLIB_READ);
+    F4Assert(fptr);
+    F4Assert(rights & SIMLIB_READ);
 
-   char *cp;
-   // Skip Comments
-   while ((cp = fgets(buf, max_len, fptr)) != NULL)
-   {
-//RESMANAGER KLUDGE
-      SwapCRLF (buf); 
-//            if (buf[0] != ';' && buf[0] != '\r')
-      if (buf[0] != ';' && buf[0] != '\n')
-         break;
-   }
-   if (cp == NULL) {
-       SimLibErrno = EEOF;
-       return retval;
-   }
+    char *cp;
 
-//RESMANAGER KLUDGE
-   if(strchr (buf, '\r'))
-      *(strchr (buf, '\r')) = 0;
+    // Skip Comments
+    while ((cp = fgets(buf, max_len, fptr)) != NULL)
+    {
+        //RESMANAGER KLUDGE
+        SwapCRLF(buf);
 
-   // Strip the trailing new-line
-   if (!feof (fptr))
-   {
-      if (buf[strlen(buf)-1] == '\n')
-         buf[strlen(buf)-1] = 0;
+        //            if (buf[0] != ';' && buf[0] != '\r')
+        if (buf[0] != ';' && buf[0] != '\n')
+            break;
+    }
 
-      retval = SIMLIB_OK;
-      lastOp = SIMLIB_READ;
-   }
-   else
-      SimLibErrno = EEOF;
+    if (cp == NULL)
+    {
+        SimLibErrno = EEOF;
+        return retval;
+    }
 
-   return (retval);
+    //RESMANAGER KLUDGE
+    if (strchr(buf, '\r'))
+        *(strchr(buf, '\r')) = 0;
+
+    // Strip the trailing new-line
+    if (!feof(fptr))
+    {
+        if (buf[strlen(buf) - 1] == '\n')
+            buf[strlen(buf) - 1] = 0;
+
+        retval = SIMLIB_OK;
+        lastOp = SIMLIB_READ;
+    }
+    else
+        SimLibErrno = EEOF;
+
+    return (retval);
 }
 
 /********************************************************************/
@@ -277,22 +282,23 @@ int retval = SIMLIB_ERR;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::WriteLine (char *buf)
+int SimlibFileClass::WriteLine(char *buf)
 {
-SIM_INT retval = SIMLIB_ERR;
+    SIM_INT retval = SIMLIB_ERR;
 
-   // Can we write
-   F4Assert (fptr);
-   F4Assert (rights & SIMLIB_WRITE);
-   if (fprintf (fptr, "%s\n", buf) < 0)
-      SimLibErrno = EOUTPUT;
-   else
-   {
-      retval = SIMLIB_OK;
-      lastOp = SIMLIB_WRITE;
-   }
+    // Can we write
+    F4Assert(fptr);
+    F4Assert(rights & SIMLIB_WRITE);
 
-   return (retval);
+    if (fprintf(fptr, "%s\n", buf) < 0)
+        SimLibErrno = EOUTPUT;
+    else
+    {
+        retval = SIMLIB_OK;
+        lastOp = SIMLIB_WRITE;
+    }
+
+    return (retval);
 }
 
 /********************************************************************/
@@ -315,21 +321,22 @@ SIM_INT retval = SIMLIB_ERR;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::Read (void* buffer, unsigned int max_len)
+int SimlibFileClass::Read(void* buffer, unsigned int max_len)
 {
-int retval = SIMLIB_ERR;
+    int retval = SIMLIB_ERR;
 
-   F4Assert (fptr);
-   F4Assert (rights & SIMLIB_READ);
-   if (fread (buffer, 1, max_len, fptr) < max_len)
-      SimLibErrno = EEOF;
-   else
-   {
-      retval = SIMLIB_OK;
-      lastOp = SIMLIB_READ;
-   }
+    F4Assert(fptr);
+    F4Assert(rights & SIMLIB_READ);
 
-   return (retval);
+    if (fread(buffer, 1, max_len, fptr) < max_len)
+        SimLibErrno = EEOF;
+    else
+    {
+        retval = SIMLIB_OK;
+        lastOp = SIMLIB_READ;
+    }
+
+    return (retval);
 }
 
 /********************************************************************/
@@ -352,21 +359,22 @@ int retval = SIMLIB_ERR;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::Write (void* buffer, int max_len)
+int SimlibFileClass::Write(void* buffer, int max_len)
 {
-SIM_INT retval = SIMLIB_ERR;
+    SIM_INT retval = SIMLIB_ERR;
 
-   F4Assert (fptr);
-   F4Assert (rights & SIMLIB_WRITE);
-   if (fwrite (buffer, 1, max_len, fptr) < (unsigned int)max_len)
-      SimLibErrno = EOUTPUT;
-   else
-   {
-      retval = SIMLIB_OK;
-      lastOp = SIMLIB_WRITE;
-   }
+    F4Assert(fptr);
+    F4Assert(rights & SIMLIB_WRITE);
 
-   return (retval);
+    if (fwrite(buffer, 1, max_len, fptr) < (unsigned int)max_len)
+        SimLibErrno = EOUTPUT;
+    else
+    {
+        retval = SIMLIB_OK;
+        lastOp = SIMLIB_WRITE;
+    }
+
+    return (retval);
 }
 
 /********************************************************************/
@@ -388,29 +396,37 @@ SIM_INT retval = SIMLIB_ERR;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-char *SimlibFileClass::GetNext (void)
+char *SimlibFileClass::GetNext(void)
 {
-	static char aline[160];
-	int is_comment;
+    static char aline[160];
+    int is_comment;
 
-	// Can we read
-	F4Assert (fptr);
-	F4Assert (rights & SIMLIB_READ);
-	do {
-		fscanf (fptr, "%s", aline);
-		SwapCRLF (aline);
-		if (aline[0] == ';' || aline[0] == '#'){
-			if (fgets (aline, 160, fptr) == NULL){
-				break;
-			}
-			is_comment = TRUE;
-		}
-		else {
-			is_comment = FALSE;
-		}
-	} while (is_comment);
+    // Can we read
+    F4Assert(fptr);
+    F4Assert(rights & SIMLIB_READ);
 
-	return (aline);
+    do
+    {
+        fscanf(fptr, "%s", aline);
+        SwapCRLF(aline);
+
+        if (aline[0] == ';' || aline[0] == '#')
+        {
+            if (fgets(aline, 160, fptr) == NULL)
+            {
+                break;
+            }
+
+            is_comment = TRUE;
+        }
+        else
+        {
+            is_comment = FALSE;
+        }
+    }
+    while (is_comment);
+
+    return (aline);
 }
 
 /********************************************************************/
@@ -434,23 +450,24 @@ char *SimlibFileClass::GetNext (void)
 /********************************************************************/
 int SimlibFileClass::Close(void)
 {
-SIM_INT retval = SIMLIB_ERR;
+    SIM_INT retval = SIMLIB_ERR;
 
-   F4Assert (fptr);
-   if (ResFClose (fptr) == 0)
-   {
-   #ifdef _DEBUG
-   fnumOpen --;
-   #endif
-      fptr = NULL;
-      rights = 0;
-      lastOp = -1;
-      retval = SIMLIB_OK;
-   }
-   else
-      SimLibErrno = EACCESS;
+    F4Assert(fptr);
 
-   return (retval);
+    if (ResFClose(fptr) == 0)
+    {
+#ifdef _DEBUG
+        fnumOpen --;
+#endif
+        fptr = NULL;
+        rights = 0;
+        lastOp = -1;
+        retval = SIMLIB_OK;
+    }
+    else
+        SimLibErrno = EACCESS;
+
+    return (retval);
 }
 
 /********************************************************************/
@@ -473,28 +490,29 @@ SIM_INT retval = SIMLIB_ERR;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::Position (int offset, int origin)
+int SimlibFileClass::Position(int offset, int origin)
 {
-int retval = SIMLIB_ERR;
+    int retval = SIMLIB_ERR;
 
-   F4Assert (fptr);
-   if (fseek (fptr, offset, origin) == 0)
-      retval = SIMLIB_OK;
+    F4Assert(fptr);
 
-   return (retval);
+    if (fseek(fptr, offset, origin) == 0)
+        retval = SIMLIB_OK;
+
+    return (retval);
 }
 
-void SwapCRLF (char* buf)
+void SwapCRLF(char* buf)
 {
-int len = strlen (buf);
-int i;
+    int len = strlen(buf);
+    int i;
 
-   for (i=0; i<len; i++)
-   {
-      if (buf[i] == '\r')
-      {
-         memmove (buf + i, buf + i + 1, len - i - 1);
-         buf[len-1] = 0;
-      }
-   }
+    for (i = 0; i < len; i++)
+    {
+        if (buf[i] == '\r')
+        {
+            memmove(buf + i, buf + i + 1, len - i - 1);
+            buf[len - 1] = 0;
+        }
+    }
 }

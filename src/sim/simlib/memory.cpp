@@ -53,9 +53,9 @@
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_VOID *SimLibAlloc (SIM_INT len)
+SIM_VOID *SimLibAlloc(SIM_INT len)
 {
-	return (new char[len]);
+    return (new char[len]);
 }
 
 /********************************************************************/
@@ -77,9 +77,9 @@ SIM_VOID *SimLibAlloc (SIM_INT len)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_INT SimLibFree (SIM_VOID *mem_ptr)
+SIM_INT SimLibFree(SIM_VOID *mem_ptr)
 {
-	delete mem_ptr;
+    delete mem_ptr;
 
-	return (SIMLIB_OK);
+    return (SIMLIB_OK);
 }

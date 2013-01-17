@@ -7,57 +7,58 @@
 
 void HeliBrain::WvrEngageCheck(void)
 {
-Falcon4EntityClassType *classPtr;
+    Falcon4EntityClassType *classPtr;
 
-   /*---------------------*/
-   /* return if no target */
-   /*---------------------*/
-   if (maxTargetPtr == NULL)
-   {
-      return;
-   }
+    /*---------------------*/
+    /* return if no target */
+    /*---------------------*/
+    if (maxTargetPtr == NULL)
+    {
+        return;
+    }
 
-   /*-------*/
-   /* entry */
-   /*-------*/
-   if (curMode != WVREngageMode)
-   {
-      /*--------------------------------*/
-      /* check against threshold values */
-      /*--------------------------------*/
-		classPtr = (Falcon4EntityClassType*) (maxTargetPtr->BaseData()->EntityType());
-      if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE) // &&
-/*
-          targetPtr->sensorState    >= modeData[WVREngageMode].minSensorState &&
-          targetPtr->sensorId       >= modeData[WVREngageMode].minSensorId &&
-          targetPtr->pcRange        <= modeData[WVREngageMode].maxRange &&
-          targetPtr->pc_ata          <= modeData[WVREngageMode].max_ata)
-*/
-      {
-         AddMode(WVREngageMode);
-      }
-   } 
-   /*------------------------------------*/
-   /* engagement changes and transitions */
-   /*------------------------------------*/
-   else
-   {
-      /*----------------------------------*/
-      /* target change to a higher threat */
-      /*----------------------------------*/
-      /* handled in target selection */
+    /*-------*/
+    /* entry */
+    /*-------*/
+    if (curMode != WVREngageMode)
+    {
+        /*--------------------------------*/
+        /* check against threshold values */
+        /*--------------------------------*/
+        classPtr = (Falcon4EntityClassType*)(maxTargetPtr->BaseData()->EntityType());
 
-      /*-----------------------------------*/
-      /* target change to an easier target */
-      /*-----------------------------------*/
-      /* handled in target selection */
-   
-      /*------*/
-      /* exit */
-      /*------*/
+        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE) // &&
+            /*
+                      targetPtr->sensorState    >= modeData[WVREngageMode].minSensorState &&
+                      targetPtr->sensorId       >= modeData[WVREngageMode].minSensorId &&
+                      targetPtr->pcRange        <= modeData[WVREngageMode].maxRange &&
+                      targetPtr->pc_ata          <= modeData[WVREngageMode].max_ata)
+            */
+        {
+            AddMode(WVREngageMode);
+        }
+    }
+    /*------------------------------------*/
+    /* engagement changes and transitions */
+    /*------------------------------------*/
+    else
+    {
+        /*----------------------------------*/
+        /* target change to a higher threat */
+        /*----------------------------------*/
+        /* handled in target selection */
 
-      /*---------------------------------*/
-      /* target outside threshold values */
-      /*---------------------------------*/
-   } 
+        /*-----------------------------------*/
+        /* target change to an easier target */
+        /*-----------------------------------*/
+        /* handled in target selection */
+
+        /*------*/
+        /* exit */
+        /*------*/
+
+        /*---------------------------------*/
+        /* target outside threshold values */
+        /*---------------------------------*/
+    }
 }

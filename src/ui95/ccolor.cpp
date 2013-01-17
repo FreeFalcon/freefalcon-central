@@ -4,23 +4,23 @@
 
 static COLORSCHEME ColorScheme_0 =
 {
-	RGB(0,170,0), // Title Text
-	RGB(26,65,83), // Title background
-	RGB(156,209,229), // Border Lite color
-	RGB(97,159,186), // Border med color
-	RGB(26,65,83),    // Border dark color
-	RGB(62,115,139),     // Window client area background color
-	RGB(0,0,0), // Window color for selected item backgrounds
-	RGB(0,0,0), // Normal Text color
-	RGB(255,255,255), // Reverse Text color
-	RGB(100,100,100), // Disabled Text
+    RGB(0, 170, 0), // Title Text
+    RGB(26, 65, 83), // Title background
+    RGB(156, 209, 229), // Border Lite color
+    RGB(97, 159, 186), // Border med color
+    RGB(26, 65, 83),  // Border dark color
+    RGB(62, 115, 139),   // Window client area background color
+    RGB(0, 0, 0), // Window color for selected item backgrounds
+    RGB(0, 0, 0), // Normal Text color
+    RGB(255, 255, 255), // Reverse Text color
+    RGB(100, 100, 100), // Disabled Text
 };
 
-C_ColorMgr *gColorMgr=NULL;
+C_ColorMgr *gColorMgr = NULL;
 
 C_ColorMgr::C_ColorMgr()
 {
-	Root_=NULL;
+    Root_ = NULL;
 }
 
 C_ColorMgr::~C_ColorMgr()
@@ -29,70 +29,80 @@ C_ColorMgr::~C_ColorMgr()
 
 void C_ColorMgr::Setup()
 {
-	AddScheme(0,&ColorScheme_0);
+    AddScheme(0, &ColorScheme_0);
 }
 
 void C_ColorMgr::Cleanup()
 {
-	COLORLIST *cur,*prev;
+    COLORLIST *cur, *prev;
 
-	cur=Root_;
-	while(cur)
-	{
-		prev=cur;
-		cur=cur->Next;
-		delete prev;
-	}
-	Root_=NULL;
+    cur = Root_;
+
+    while (cur)
+    {
+        prev = cur;
+        cur = cur->Next;
+        delete prev;
+    }
+
+    Root_ = NULL;
 }
 
-void C_ColorMgr::AddScheme(long ID,COLORSCHEME *newscheme)
+void C_ColorMgr::AddScheme(long ID, COLORSCHEME *newscheme)
 {
-	COLORLIST *newcolor,*cur;
-	if(FindScheme(ID))
-		return;
+    COLORLIST *newcolor, *cur;
 
-	newcolor=new COLORLIST;
-	newcolor->ID=ID;
-	memcpy(&newcolor->Color,newscheme,sizeof(COLORSCHEME));
-	newcolor->Next=NULL;
+    if (FindScheme(ID))
+        return;
 
-	if(Root_ == NULL)
-		Root_=newcolor;
-	else
-	{
-		cur=Root_;
-		while(cur->Next)
-			cur=cur->Next;
+    newcolor = new COLORLIST;
+    newcolor->ID = ID;
+    memcpy(&newcolor->Color, newscheme, sizeof(COLORSCHEME));
+    newcolor->Next = NULL;
 
-		cur->Next=newcolor;
-	}
+    if (Root_ == NULL)
+        Root_ = newcolor;
+    else
+    {
+        cur = Root_;
+
+        while (cur->Next)
+            cur = cur->Next;
+
+        cur->Next = newcolor;
+    }
 }
 
 COLORSCHEME *C_ColorMgr::GetScheme(long ID)
 {
-	COLORLIST *cur;
+    COLORLIST *cur;
 
-	cur=Root_;
-	while(cur)
-	{
-		if(cur->ID == ID)
-			return(&cur->Color);
-		cur=cur->Next;
-	}
-	return(&Root_->Color);
+    cur = Root_;
+
+    while (cur)
+    {
+        if (cur->ID == ID)
+            return(&cur->Color);
+
+        cur = cur->Next;
+    }
+
+    return(&Root_->Color);
 }
 
 BOOL C_ColorMgr::FindScheme(long ID)
 {
-	COLORLIST *cur;
+    COLORLIST *cur;
 
-	cur=Root_;
-	while(cur)
-	{
-		if(cur->ID == ID)
-			return(TRUE);
-		cur=cur->Next;
-	}
-	return(FALSE);
+    cur = Root_;
+
+    while (cur)
+    {
+        if (cur->ID == ID)
+            return(TRUE);
+
+        cur = cur->Next;
+    }
+
+    return(FALSE);
 }

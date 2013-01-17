@@ -4,8 +4,8 @@
 #include "chandler.h"
 #include "ui95_dd.h"
 
-static WORD	reds,greens,blues;//LSH for r,g,b
-static WORD	redc,greenc,bluec;//count bits=1 after LSH
+static WORD	reds, greens, blues; //LSH for r,g,b
+static WORD	redc, greenc, bluec; //count bits=1 after LSH
 //XXstatic WORD	redm, greenm, bluem;//color masks
 static DWORD	redm, greenm, bluem;//color masks
 
@@ -26,100 +26,121 @@ WORD bShift[32];
 
 void UIBuildColorTable()
 {
-	int i,j;
-	float color;
+    int i, j;
+    float color;
 
-	for(i=0;i<201;i++)
-	{
-		color=(float)i/100;
-		for(j=0;j<256;j++)
-			if((j * color) >= 0x1f)//1f = 31 = 1<<5 - 1
-			{
-				UIColorTable[i][j] =0x1f;
-				rUIColorTable[i][j]=(short)(0x1f << reds);
-				gUIColorTable[i][j]=(short)(0x1f << greens);
-				bUIColorTable[i][j]=(short)(0x1f << blues);
-			}
-			else
-			{
-				UIColorTable[i][j] =WORD(j * color);
-				rUIColorTable[i][j]=static_cast<WORD>(WORD(j * color) << reds);	//! 
-				gUIColorTable[i][j]=static_cast<WORD>(WORD(j * color) << greens);
-				bUIColorTable[i][j]=static_cast<WORD>(WORD(j * color) << blues);
-			}
-	}
+    for (i = 0; i < 201; i++)
+    {
+        color = (float)i / 100;
 
-	for(i=0;i<32;i++)
-	{
-		Grey_1[i]= static_cast<WORD>(FloatToInt32((float)i * 0.1f));  //! 
-		Grey_3[i]= static_cast<WORD>(FloatToInt32((float)i * 0.3f));  //! 
-		Grey_6[i]= static_cast<WORD>(FloatToInt32((float)i * 0.6f));  //! 
-		rShift[i]= static_cast<short>(i << reds);
-		gShift[i]= static_cast<short>(i << greens);
-		bShift[i]= static_cast<short>(i << blues);
-	}
-}			
+        for (j = 0; j < 256; j++)
+            if ((j * color) >= 0x1f) //1f = 31 = 1<<5 - 1
+            {
+                UIColorTable[i][j] = 0x1f;
+                rUIColorTable[i][j] = (short)(0x1f << reds);
+                gUIColorTable[i][j] = (short)(0x1f << greens);
+                bUIColorTable[i][j] = (short)(0x1f << blues);
+            }
+            else
+            {
+                UIColorTable[i][j] = WORD(j * color);
+                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds);	//!
+                gUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << greens);
+                bUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << blues);
+            }
+    }
+
+    for (i = 0; i < 32; i++)
+    {
+        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); //!
+        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); //!
+        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); //!
+        rShift[i] = static_cast<short>(i << reds);
+        gShift[i] = static_cast<short>(i << greens);
+        bShift[i] = static_cast<short>(i << blues);
+    }
+}
 
 //XXvoid UI95_SetScreenColorInfo( WORD r_mask,WORD g_mask,WORD b_mask )
-void UI95_SetScreenColorInfo( DWORD r_mask, DWORD g_mask, DWORD b_mask )
+void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 {
     ShiAssert(r_mask != 0 && g_mask != 0 && b_mask != 0); // this should never happen
     // but I saw it once (JPO)
 
 
-	//XX
-	if( r_mask == 0x00FF0000 ) 
-		r_mask = 0xf800;
-	if( g_mask == 0x0000FF00 ) 
-		g_mask = 0x07e0;
-	if( b_mask == 0x000000FF ) 
-		b_mask = 0x001f;
+    //XX
+    if (r_mask == 0x00FF0000)
+        r_mask = 0xf800;
 
-	redm = r_mask;
-	greenm = g_mask;
-	bluem = b_mask;
+    if (g_mask == 0x0000FF00)
+        g_mask = 0x07e0;
 
-	// RED
-	reds = 0;
-	while(r_mask &&  !(r_mask & 1) ) { // JPO cater for no reds - weird!
-		r_mask >>= 1;
-		reds++;
-	}
-	redc=0;
-	while( r_mask & 1 ) {
-		r_mask >>= 1;
-		redc++;
-	}
-	if(redc == 6)//6 meaninig bits per red color component
-		reds++;
+    if (b_mask == 0x000000FF)
+        b_mask = 0x001f;
 
-	// GREEN
-	greens = 0;
-	while(g_mask && !(g_mask & 1) ) {
-		g_mask >>= 1;
-		greens++;
-	}
-	greenc=0;
-	while( g_mask & 1 ) {
-		g_mask >>= 1;
-		greenc++;
-	}
-	if(greenc == 6)
-		greens++;
+    redm = r_mask;
+    greenm = g_mask;
+    bluem = b_mask;
 
-	// BLUE
-	blues = 0;
-	while(b_mask && !(b_mask & 1) ) {
-		b_mask >>= 1;
-		blues++;
-	}
-	bluec=0;
-	while( b_mask & 1 ) {
-		b_mask >>= 1;
-		bluec++;
-	}
-	if(bluec == 6)
-		blues++;
+    // RED
+    reds = 0;
+
+    while (r_mask &&  !(r_mask & 1))   // JPO cater for no reds - weird!
+    {
+        r_mask >>= 1;
+        reds++;
+    }
+
+    redc = 0;
+
+    while (r_mask & 1)
+    {
+        r_mask >>= 1;
+        redc++;
+    }
+
+    if (redc == 6) //6 meaninig bits per red color component
+        reds++;
+
+    // GREEN
+    greens = 0;
+
+    while (g_mask && !(g_mask & 1))
+    {
+        g_mask >>= 1;
+        greens++;
+    }
+
+    greenc = 0;
+
+    while (g_mask & 1)
+    {
+        g_mask >>= 1;
+        greenc++;
+    }
+
+    if (greenc == 6)
+        greens++;
+
+    // BLUE
+    blues = 0;
+
+    while (b_mask && !(b_mask & 1))
+    {
+        b_mask >>= 1;
+        blues++;
+    }
+
+    bluec = 0;
+
+    while (b_mask & 1)
+    {
+        b_mask >>= 1;
+        bluec++;
+    }
+
+    if (bluec == 6)
+        blues++;
 }
 
 /*	 //!
@@ -135,45 +156,45 @@ void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shi
 }*/
 
 //XX void UI95_GetScreenColorInfo(WORD &r_mask,WORD &r_shift,WORD &g_mask, WORD &g_shift,WORD &b_mask,WORD &b_shift)
-void UI95_GetScreenColorInfo( DWORD &r_mask,WORD &r_shift, DWORD &g_mask,WORD &g_shift, DWORD &b_mask,WORD &b_shift)
+void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &g_shift, DWORD &b_mask, WORD &b_shift)
 {
-	r_mask = redm;
-	g_mask = greenm;
-	b_mask = bluem;
+    r_mask = redm;
+    g_mask = greenm;
+    b_mask = bluem;
 
-	r_shift=reds;
-	g_shift=greens;
-	b_shift=blues;
+    r_shift = reds;
+    g_shift = greens;
+    b_shift = blues;
 }
 
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-	return static_cast<WORD>(rShift[(rgb >> 10) & 0x1f]|gShift[(rgb >> 5) & 0x1f]|bShift[rgb & 0x1f]);//! 
+    return static_cast<WORD>(rShift[(rgb >> 10) & 0x1f] | gShift[(rgb >> 5) & 0x1f] | bShift[rgb & 0x1f]); //!
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-	return static_cast<WORD>(rShift[(rgb >> 3) & 0x1f] | gShift[(rgb >> 11) & 0x1f] | bShift[(rgb >> 19) & 0x1f]);//! 
+    return static_cast<WORD>(rShift[(rgb >> 3) & 0x1f] | gShift[(rgb >> 11) & 0x1f] | bShift[(rgb >> 19) & 0x1f]);//!
 }
 
 WORD UI95_ScreenToTga(WORD color)
 {
-	long r,g,b;
+    long r, g, b;
 
-	r = ((color >> reds)   & 0x1f) << 10;
-	g = ((color >> greens) & 0x1f) << 5;
-	b = ((color >> blues)  & 0x1f);
+    r = ((color >> reds)   & 0x1f) << 10;
+    g = ((color >> greens) & 0x1f) << 5;
+    b = ((color >> blues)  & 0x1f);
 
-	return static_cast<WORD>(r|g|b);//! 
+    return static_cast<WORD>(r | g | b); //!
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
-	long grey = Grey_3[(color  >> reds) & 0x1f] + Grey_6[(color  >> greens) & 0x1f] + Grey_1[(color  >> blues) & 0x1f];
+    long grey = Grey_3[(color  >> reds) & 0x1f] + Grey_6[(color  >> greens) & 0x1f] + Grey_1[(color  >> blues) & 0x1f];
 
-	return static_cast<WORD>(rShift[grey]|gShift[grey]|bShift[grey]); //! 
+    return static_cast<WORD>(rShift[grey] | gShift[grey] | bShift[grey]); //!
 }
 
 /*
@@ -262,7 +283,7 @@ void *UI95_Lock(IDirectDrawSurface *ddSurface)
 	// Initialize the surface description structure that we want filled in
 	memset( &UI95_ScreenFormat, 0, sizeof( UI95_ScreenFormat ) );
 	UI95_ScreenFormat.dwSize = sizeof( UI95_ScreenFormat );
-	
+
 	result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL );
 	if(result == DD_OK)
 		return(UI95_ScreenFormat.lpSurface);
@@ -295,7 +316,7 @@ GLImageInfo *LoadImageFile(char *filename)
 	result = texFile.glOpenFileMem( (GLbyte*)filename );
 	if ( result != 1 )
 		return(NULL);
-		
+
 	// Read the image data (note that ReadTextureImage will close texFile for us)
 	texFile.glReadFileMem();
 	result = ReadTextureImage( &texFile );
@@ -346,7 +367,7 @@ BOOL UI95_DDErrorCheck( HRESULT result )
 	return(TRUE);
 	switch ( result ) {
 
-      case DD_OK:                       
+      case DD_OK:
         return TRUE;
       case DDERR_ALREADYINITIALIZED:
         MessageBox( NULL, "DDERR_ALREADYINITIALIZED", "DDraw Error", MB_OK );
@@ -629,7 +650,7 @@ BOOL UI95_DDErrorCheck( HRESULT result )
 {
 	switch ( result ) {
 
-      case DD_OK:                       
+      case DD_OK:
         return TRUE;
       case DDERR_ALREADYINITIALIZED:
         MonoPrint("DDERR_ALREADYINITIALIZED\n");

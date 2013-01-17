@@ -69,29 +69,29 @@ EventElement* ReadEventFile (char* filename, uchar types[EVT_MESSAGE_BITS])
 	}
 */
 
-void InsertEventToList (EventElement* theEvent, EventElement* baseEvent)
+void InsertEventToList(EventElement* theEvent, EventElement* baseEvent)
 {
-	ShiAssert (baseEvent && theEvent);
+    ShiAssert(baseEvent && theEvent);
 
-	if (baseEvent)
-	{
-		theEvent->next = baseEvent->next;
-		baseEvent->next = theEvent;
-	}
+    if (baseEvent)
+    {
+        theEvent->next = baseEvent->next;
+        baseEvent->next = theEvent;
+    }
 }
 
-void DisposeEventList (EventElement* rootEvent)
-	{
-	EventElement* tmpEvent;
+void DisposeEventList(EventElement* rootEvent)
+{
+    EventElement* tmpEvent;
 
-	while (rootEvent)
-		{
-		tmpEvent = rootEvent;
-		rootEvent = rootEvent->next;
-//		if (tmpEvent->eventData)
-//			delete [] tmpEvent->eventData;
-//		tmpEvent->eventData;
-		delete tmpEvent;
-		}
-	}
+    while (rootEvent)
+    {
+        tmpEvent = rootEvent;
+        rootEvent = rootEvent->next;
+        //		if (tmpEvent->eventData)
+        //			delete [] tmpEvent->eventData;
+        //		tmpEvent->eventData;
+        delete tmpEvent;
+    }
+}
 

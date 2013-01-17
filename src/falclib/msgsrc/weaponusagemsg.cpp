@@ -39,7 +39,7 @@ int FalconWeaponUsageMessage::Process(uchar autodisp)
 
 	if (autodisp || !sq)
 		return 0;
-	
+
 	for (i=0; i<HARDPOINT_MAX; i++)
 		{
 		n = sq->GetStores(dataBlock.ids[i]) - dataBlock.num[i]*dataBlock.vehicles;

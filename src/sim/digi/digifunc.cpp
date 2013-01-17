@@ -3,14 +3,14 @@
 
 ACFormationData *acFormationData;
 
-void ReadDigitalBrainData (void)
+void ReadDigitalBrainData(void)
 {
-   acFormationData = new ACFormationData;
-   DigitalBrain::ReadManeuverData ();
+    acFormationData = new ACFormationData;
+    DigitalBrain::ReadManeuverData();
 }
 
-void FreeDigitalBrainData (void)
+void FreeDigitalBrainData(void)
 {
-   delete acFormationData;
-   DigitalBrain::FreeManeuverData ();
+    delete acFormationData;
+    DigitalBrain::FreeManeuverData();
 }

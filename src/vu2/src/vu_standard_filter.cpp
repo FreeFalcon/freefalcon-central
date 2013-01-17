@@ -15,8 +15,8 @@
 
 VuStandardFilter::VuStandardFilter(VuFlagBits mask, VU_TRI_STATE localSession) : VuFilter()
 {
-	localSession_ = localSession;
-	idmask_.breakdown_ = mask;
+    localSession_ = localSession;
+    idmask_.breakdown_ = mask;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,8 +25,8 @@ VuStandardFilter::VuStandardFilter(VuFlagBits mask, VU_TRI_STATE localSession) :
 
 VuStandardFilter::VuStandardFilter(ushort mask, VU_TRI_STATE localSession) : VuFilter()
 {
-	localSession_ = localSession;
-	idmask_.val_ = mask;
+    localSession_ = localSession;
+    idmask_.val_ = mask;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,13 +35,14 @@ VuStandardFilter::VuStandardFilter(ushort mask, VU_TRI_STATE localSession) : VuF
 
 VuStandardFilter::VuStandardFilter(VuStandardFilter* other) : VuFilter(other)
 {
-	localSession_ = DONT_CARE;
-	idmask_.val_ = 0;
-	if (other)
-	{
-		idmask_.val_ = other->idmask_.val_;
-		localSession_ = other->localSession_;
-	}
+    localSession_ = DONT_CARE;
+    idmask_.val_ = 0;
+
+    if (other)
+    {
+        idmask_.val_ = other->idmask_.val_;
+        localSession_ = other->localSession_;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,21 +51,22 @@ VuStandardFilter::VuStandardFilter(VuStandardFilter* other) : VuFilter(other)
 
 VuStandardFilter::~VuStandardFilter()
 {
-	// empty
+    // empty
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VU_BOOL 
+VU_BOOL
 VuStandardFilter::Notice(VuMessage* event)
 {
-	if ((localSession_ != DONT_CARE) && ((event->Type() == VU_TRANSFER_EVENT)))
-	{
-		return TRUE;
-	}
-	return FALSE;
+    if ((localSession_ != DONT_CARE) && ((event->Type() == VU_TRANSFER_EVENT)))
+    {
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,22 +75,22 @@ VuStandardFilter::Notice(VuMessage* event)
 
 VU_BOOL VuStandardFilter::Test(VuEntity* ent)
 {
-	if
-	(
-		((ushort)(ent->FlagValue()) & idmask_.val_) &&
-		(
-			(localSession_ == DONT_CARE) ||
-			((localSession_ == TRUE) && (ent->IsLocal())) ||
-			((localSession_ == FALSE) && (!ent->IsLocal()))
-		)
-	)
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
+    if
+    (
+        ((ushort)(ent->FlagValue()) & idmask_.val_) &&
+        (
+            (localSession_ == DONT_CARE) ||
+            ((localSession_ == TRUE) && (ent->IsLocal())) ||
+            ((localSession_ == FALSE) && (!ent->IsLocal()))
+        )
+    )
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,7 +99,7 @@ VU_BOOL VuStandardFilter::Test(VuEntity* ent)
 
 int VuStandardFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
-	return (int)ent1->Id() - (int)ent2->Id();
+    return (int)ent1->Id() - (int)ent2->Id();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,7 +108,7 @@ int VuStandardFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 
 VuFilter *VuStandardFilter::Copy()
 {
-	return new VuStandardFilter(this);
+    return new VuStandardFilter(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

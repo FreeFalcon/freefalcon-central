@@ -28,54 +28,62 @@
 #include "falcsess.h"
 #include "InvalidBufferException.h"
 
-void DeaggregateOwnershipCheck (CampEntity the_entity, FalconSessionEntity *session, int deag_request);
+void DeaggregateOwnershipCheck(CampEntity the_entity, FalconSessionEntity *session, int deag_request);
 
-FalconCampMessage::FalconCampMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (CampMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconCampMessage::FalconCampMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-	RequestReliableTransmit ();
-	// Your Code Goes Here
+    RequestReliableTransmit();
+    // Your Code Goes Here
 }
 
-FalconCampMessage::FalconCampMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (CampMsg, FalconEvent::CampaignThread, senderid, target)
+FalconCampMessage::FalconCampMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampMsg, FalconEvent::CampaignThread, senderid, target)
 {
-	// Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconCampMessage::~FalconCampMessage(void)
 {
-	// Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconCampMessage::Process(uchar autodisp)
 {
-	CampEntity			e;
+    CampEntity			e;
 
-	if (autodisp)
-		return 0;
+    if (autodisp)
+        return 0;
 
-	e = FindEntity(EntityId());
-	if (!e)
-		return 0;
-	switch (dataBlock.message)
-	{
-			case campAttackWarning:
-					break;
-			case campFiredOn:
-					break;
-			case campSpotted:
-					e->SetSpotted((Team)dataBlock.data1,TheCampaign.CurrentTime);
-					break;
-			case campRepair:
-					if (e->IsUnit())
-						((Unit)e)->ChangeVehicles(dataBlock.data1);
-					else if (e->IsObjective())
-						((Objective)e)->Repair();
-					break;
-			default:
-					break;
-	}
-	return 0;
+    e = FindEntity(EntityId());
+
+    if (!e)
+        return 0;
+
+    switch (dataBlock.message)
+    {
+        case campAttackWarning:
+            break;
+
+        case campFiredOn:
+            break;
+
+        case campSpotted:
+            e->SetSpotted((Team)dataBlock.data1, TheCampaign.CurrentTime);
+            break;
+
+        case campRepair:
+            if (e->IsUnit())
+                ((Unit)e)->ChangeVehicles(dataBlock.data1);
+            else if (e->IsObjective())
+                ((Objective)e)->Repair();
+
+            break;
+
+        default:
+            break;
+    }
+
+    return 0;
 }
 
 // ==================================================

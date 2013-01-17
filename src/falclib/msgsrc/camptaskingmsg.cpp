@@ -14,26 +14,26 @@
 #include "InvalidBufferException.h"
 
 
-FalconCampTaskingMessage::FalconCampTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (CampTaskingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconCampTaskingMessage::FalconCampTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-	// Your Code Goes Here
+    // Your Code Goes Here
 }
 
-FalconCampTaskingMessage::FalconCampTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (CampTaskingMsg, FalconEvent::CampaignThread, senderid, target)
+FalconCampTaskingMessage::FalconCampTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, senderid, target)
 {
-	// Your Code Goes Here
-	type;
+    // Your Code Goes Here
+    type;
 }
 
 FalconCampTaskingMessage::~FalconCampTaskingMessage(void)
 {
-	// Your Code Goes Here
+    // Your Code Goes Here
 }
 
 int FalconCampTaskingMessage::Process(uchar autodisp)
 {
-	// Not implemented currently
-	return 0;
-	autodisp;
+    // Not implemented currently
+    return 0;
+    autodisp;
 }
 
