@@ -2,7 +2,9 @@
 build/
 
 # Visual Studio files
+*.sdf
 *.pch
 *.ncb
 *.suo
 *.bak
+*.user

@@ -9,6 +9,14 @@ Combat Simulator. Most of the development was done from a small group of
 people dedicated to the scene. Now we're going open source, and anybody can
 contribute.
 
+## Configuration
+
+To set up the source code to run in Debug mode, you'll need an install of
+FreeFalcon on your computer. To tell Visual Studio where this installation is,
+right click on the FFViper project and select Properties from the dropdown.
+Under Configuration Options in the window that pops up, select Debugging and
+edit the Working Directory to the root of your FreeFalcon install.
+
 ## Contributing
 
 You can contribute to the project in various ways.
