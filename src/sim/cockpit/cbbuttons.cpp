@@ -2019,15 +2019,15 @@ void CBExEpu(void * pButton, int)
 
     switch (playerAC->af->GetEpuSwitch())
     {
-        case AirframeClass::EpuState::OFF:
+		case AirframeClass::OFF:
             pCPButton->SetCurrentState(0);
             break;
 
-        case AirframeClass::EpuState::AUTO:
+        case AirframeClass::AUTO:
             pCPButton->SetCurrentState(1);
             break;
 
-        case AirframeClass::EpuState::ON:
+        case AirframeClass::ON:
             pCPButton->SetCurrentState(2);
             break;
     }
@@ -2161,15 +2161,15 @@ void CBExRALTSwitch(void * pButton, int)
     //MI reported CTD check
     switch (playerAC->RALTStatus)
     {
-        case AircraftClass::RaltStatus::ROFF:
+        case AircraftClass::ROFF:
             pCPButton->SetCurrentState(0);
             break;
 
-        case AircraftClass::RaltStatus::RSTANDBY:
+        case AircraftClass::RSTANDBY:
             pCPButton->SetCurrentState(1);
             break;
 
-        case AircraftClass::RaltStatus::RON:
+        case AircraftClass::RON:
             pCPButton->SetCurrentState(2);
             break;
 
@@ -2219,22 +2219,22 @@ void CBERALTSwitch(void * pButton, int event)
 
     if (event == CP_MOUSE_BUTTON0)
     {
-        if (rs == AircraftClass::RaltStatus::ROFF)
+        if (rs == AircraftClass::ROFF)
         {
             SimRALTSTDBY(0, KEY_DOWN, pButton);
         }
-        else if (rs == AircraftClass::RaltStatus::RSTANDBY)
+        else if (rs == AircraftClass::RSTANDBY)
         {
             SimRALTON(0, KEY_DOWN, pButton);
         }
     }
     else
     {
-        if (rs == AircraftClass::RaltStatus::RON)
+        if (rs == AircraftClass::RON)
         {
             SimRALTSTDBY(0, KEY_DOWN, pButton);
         }
-        else if (rs == AircraftClass::RaltStatus::RSTANDBY)
+        else if (rs == AircraftClass::RSTANDBY)
         {
             SimRALTOFF(0, KEY_DOWN, pButton);
         }
@@ -3346,23 +3346,23 @@ void CBExEWSPGMButton(void * pButton, int event)
 
     switch (playerAC->EWSPGM())
     {
-        case AircraftClass::EWSPGMSwitch::Off:
+        case AircraftClass::Off:
             pCPButton->SetCurrentState(0);
             break;
 
-        case AircraftClass::EWSPGMSwitch::Stby:
+        case AircraftClass::Stby:
             pCPButton->SetCurrentState(1);
             break;
 
-        case AircraftClass::EWSPGMSwitch::Man:
+        case AircraftClass::Man:
             pCPButton->SetCurrentState(2);
             break;
 
-        case AircraftClass::EWSPGMSwitch::Semi:
+        case AircraftClass::Semi:
             pCPButton->SetCurrentState(3);
             break;
 
-        case AircraftClass::EWSPGMSwitch::Auto:
+        case AircraftClass::Auto:
             pCPButton->SetCurrentState(4);
             break;
 
@@ -3684,7 +3684,7 @@ void CBExExtlPower(void * pButton, int event)
         return;
     }
 
-    if (playerAC->ExtlState(AircraftClass::ExtlLightFlags::Extl_Main_Power))
+    if (playerAC->ExtlState(AircraftClass::Extl_Main_Power))
     {
         pCPButton->SetCurrentState(1);	//up
     }
@@ -3711,7 +3711,7 @@ void CBExExtlAntiColl(void * pButton, int event)
         return;
     }
 
-    if (playerAC->ExtlState(AircraftClass::ExtlLightFlags::Extl_Anti_Coll))
+    if (playerAC->ExtlState(AircraftClass::Extl_Anti_Coll))
     {
         pCPButton->SetCurrentState(1);	//up
     }
@@ -3738,7 +3738,7 @@ void CBExExtlSteady(void * pButton, int event)
         return;
     }
 
-    if (playerAC->ExtlState(AircraftClass::ExtlLightFlags::Extl_Flash))
+    if (playerAC->ExtlState(AircraftClass::Extl_Flash))
     {
         pCPButton->SetCurrentState(1);	//up
     }
@@ -3765,7 +3765,7 @@ void CBExExtlWing(void * pButton, int event)
         return;
     }
 
-    if (playerAC->ExtlState(AircraftClass::ExtlLightFlags::Extl_Wing_Tail))
+    if (playerAC->ExtlState(AircraftClass::Extl_Wing_Tail))
     {
         pCPButton->SetCurrentState(1);	//up
     }
@@ -3791,13 +3791,13 @@ void CBExAVTRSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton	= (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
 
-    if (playerAC->AVTRState(AircraftClass::AVTRStateFlags::AVTR_ON))
+    if (playerAC->AVTRState(AircraftClass::AVTR_ON))
     {
         pCPButton->SetCurrentState(1);	//up
     }
-    else if (playerAC->AVTRState(AircraftClass::AVTRStateFlags::AVTR_AUTO))
+    else if (playerAC->AVTRState(AircraftClass::AVTR_AUTO))
     {
         pCPButton->SetCurrentState(2);	//middle
     }
