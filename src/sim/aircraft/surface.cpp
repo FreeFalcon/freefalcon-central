@@ -1402,7 +1402,7 @@ void AircraftClass::RunLightSurfaces(void)
     //SetSwitch(COMP_TAIL_STROBE, light == 3);
     //SetSwitch(COMP_LAND_LIGHTS, light == 4);
 
-    if (!ExtlState(ExtlLightFlags::Extl_Main_Power))
+    if (!ExtlState(Extl_Main_Power))
     {
         // lights off
         SetSwitch(COMP_NAV_LIGHTS, FALSE);

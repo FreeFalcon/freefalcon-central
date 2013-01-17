@@ -414,9 +414,7 @@ void AircraftClass::DropEWS()
     //make noise
     if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 ||
          counterMeasureStation[CHAFF_STATION].weaponCount > 0) &&
-        (EWSPGM() == AircraftClass::EWSPGMSwitch::Man ||
-         EWSPGM() == AircraftClass::EWSPGMSwitch::Semi ||
-         EWSPGM() == AircraftClass::EWSPGMSwitch::Auto))
+        (EWSPGM() == Man || EWSPGM() == Semi || EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
         if (!SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))

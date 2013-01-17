@@ -427,7 +427,7 @@ void AircraftClass::InitLocalData(int flag)
     ClearAPFlag(AircraftClass::StrgSel);
 
     //EWS init
-    SetPGM(AircraftClass::EWSPGMSwitch::Off);
+    SetPGM(Off);
 
     //Exterior lights init
     //ExteriorLights = 0;
@@ -1455,7 +1455,7 @@ int AircraftClass::Exec(void)
             JettCountown -= SimLibMajorFrameTime;
 
             //AVTR
-            if (AVTRState(AircraftClass::AVTRStateFlags::AVTR_AUTO) && SimDriver.AVTROn())
+            if (AVTRState(AVTR_AUTO) && SimDriver.AVTROn())
             {
                 if (AVTRCountown > 0.0F)
                     AVTRCountown -= SimLibMajorFrameTime;
@@ -1498,10 +1498,10 @@ int AircraftClass::Exec(void)
             if (autopilotType == CombatAP && RALTCoolTime != -1.0f)
             {
                 RALTCoolTime = -1.0f;
-                RALTStatus = RaltStatus::RON;
+                RALTStatus = RON;
             }
             //made this an else if, the rest is orig code.
-            else if (HasPower(RaltPower) && RALTCoolTime > -1.0F && RALTStatus != RaltStatus::ROFF)
+            else if (HasPower(RaltPower) && RALTCoolTime > -1.0F && RALTStatus != ROFF)
                 RALTCoolTime -= SimLibMajorFrameTime;
             else
                 RALTCoolTime += SimLibMajorFrameTime;
@@ -3254,7 +3254,7 @@ void AircraftClass::SetPowerOutput(float)
 void AircraftClass::PreFlight()
 {
     RALTCoolTime = -1.0F;
-    RALTStatus = AircraftClass::RaltStatus::RON;
+    RALTStatus = RON;
     af->ClearEngineFlag(AirframeClass::MasterFuelOff);
     af->SetFuelSwitch(AirframeClass::FS_NORM);
     af->SetFuelPump(AirframeClass::FP_NORM);
@@ -3619,7 +3619,7 @@ void AircraftClass::ToggleBetty()
 //MI
 void AircraftClass::AddAVTRSeconds(void)
 {
-    if (AVTRState(AircraftClass::AVTRStateFlags::AVTR_AUTO))
+    if (AVTRState(AVTR_AUTO))
         AVTRCountown = 30.0F;
 }
 void AircraftClass::SetCockpitWingLight(bool state)
