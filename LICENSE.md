@@ -1,6 +1,7 @@
 # BSD 2-Clause License
 
-Copyright (c) 2013, FreeFalcon Project
+Copyright (c) 2013, FreeFalcon Open Source Project
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
