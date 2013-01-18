@@ -863,11 +863,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
         {
             Tpoint pos;
 
-#ifdef DEBUG
-            //tmpTarget = new SimObjectType(OBJ_TAG, platform, closestObj);
-#else
             tmpTarget = new SimObjectType(closestObj);
-#endif
             tmpTarget->Reference();
 
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement

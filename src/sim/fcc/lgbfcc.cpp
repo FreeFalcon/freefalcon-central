@@ -921,7 +921,7 @@ void FireControlComputer::ToggleLaserArm(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC && playerAC->Sms->MasterArm() != SMSBaseClass::MasterArmState::Arm)
+    if (playerAC && playerAC->Sms->MasterArm() != SMSBaseClass::Arm)
         return;
 
     LaserArm = !LaserArm;
