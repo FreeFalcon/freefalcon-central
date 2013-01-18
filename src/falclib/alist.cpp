@@ -1,6 +1,5 @@
 #include "AList.h"
 #include "f4thread.h"
-//#include "f4compress.h"
 
 AList::AList()
 {
@@ -155,28 +154,20 @@ void ANode::InsertBefore(ANode *n)
 
 ProtectedAList::ProtectedAList()
 {
-#ifndef F4COMPRESS
     listLock = F4CreateCriticalSection("alist");
-#endif
 }
 
 ProtectedAList::~ProtectedAList()
 {
-#ifndef F4COMPRESS
     F4DestroyCriticalSection(listLock);
-#endif
 }
 
 void ProtectedAList::Lock(void)
 {
-#ifndef F4COMPRESS
     F4EnterCriticalSection(listLock);
-#endif
 }
 
 void ProtectedAList::Unlock(void)
 {
-#ifndef F4COMPRESS
     F4LeaveCriticalSection(listLock);
-#endif
 }

@@ -36,16 +36,12 @@
 #include "sim/include/otwdrive.h" // MLR needed for SetVelocity since objects set there Delta values per frame
 #include "drawsgmt.h"
 #include "drawbsp.h"
-//#include "F4Compress.h"
 #include "terrtex.h"
 #include "sfx.h"
 #include "falclib/include/entity.h"
 #include "PSData.h"
 #include "drawable.h"
 #include "RedMacros.h"
-
-#ifndef F4COMPRESS
-
 
 // for when fakerand just won't do
 #define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
@@ -2937,18 +2933,9 @@ void ParticleDomain::Parse(void)
     }
 }
 
-
-
-#endif
-
-
-
-
-
 ////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //                              COBRA - RED - THE PS REWRITING                                     \\
 ////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
 
 const TrailRefsType TrailsTable[] =
 {
