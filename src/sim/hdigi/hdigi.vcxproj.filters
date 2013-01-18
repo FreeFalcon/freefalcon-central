@@ -32,9 +32,6 @@
     <ClCompile Include="h_Gengage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="h_Ground.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="h_Gunsjink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

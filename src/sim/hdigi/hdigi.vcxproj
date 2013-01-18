@@ -134,7 +134,6 @@
     <ClCompile Include="h_Engage.cpp" />
     <ClCompile Include="h_Flitlead.cpp" />
     <ClCompile Include="h_Gengage.cpp" />
-    <ClCompile Include="h_Ground.cpp" />
     <ClCompile Include="h_Gunsjink.cpp" />
     <ClCompile Include="h_landme.cpp" />
     <ClCompile Include="h_Mdefeat.cpp" />
