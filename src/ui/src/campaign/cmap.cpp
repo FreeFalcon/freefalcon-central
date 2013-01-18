@@ -1426,7 +1426,7 @@ void C_Map::BuildWPList(C_Waypoint *wplist, C_Waypoint *, Unit unit)
     long UseFlag;
     WAYPOINTLIST *wpl = NULL;
     short state;
-    _TCHAR buf[20];
+    _TCHAR buf[39];
     VU_ID *tmpID = NULL;
     short airwps, lastwp;
 
