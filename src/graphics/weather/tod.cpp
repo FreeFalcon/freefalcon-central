@@ -636,24 +636,14 @@ void CTimeOfDay::SetDefaultColor(Tcolor *col, Tcolor *defcol)
 
 int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 {
-
-    typedef bool (*rfile)(char * buf);
-    HMODULE lib = LoadLibrary("F:\\FreeFalcon6\\FFViperCompat.dll");
-    rfile fv_read = (rfile)GetProcAddress(lib, "fv_readfile");
-    fv_read("no_param");
-    FreeLibrary(lib);
-
-
-
     float fvar;
     int total;
     char buffer[80] = { '\0' };
 
     total = 0;
 
-    while (1)
+    while (true)
     {
-
         fscanf(in, "%s", buffer);
 
         strupr(buffer);
@@ -746,15 +736,10 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             fscanf(in, "%f %f %f", &tod -> TextureLighting.r, &tod -> TextureLighting.g, &tod -> TextureLighting.b);
         }
-
         else if (strcmp(buffer, "BADWEATHERLIGHTING") == 0)
         {
             fscanf(in, "%f %f %f", &tod -> BadWeatherLighting.r, &tod -> BadWeatherLighting.g, &tod -> BadWeatherLighting.b);
         }
-        // else if (strcmp (buffer, "LIGHTNINGCOLOR") == 0) {
-        // fscanf (in, "%f %f %f", &tod ->LightningColor.r, &tod ->LightningColor.g, &tod ->LightningColor.b);
-        // }
-
         else if (strcmp(buffer, "AMBIENT") == 0)
         {
             fscanf(in, "%f", &tod -> Ambient);
@@ -800,12 +785,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             fscanf(in, "%f %f %f", &tod ->VisColor.r, &tod ->VisColor.g, &tod ->VisColor.b);
         }
-        else
-        {
-            //MonoPrint("Ignoring TOD item %s\n", buffer);
-        }
     }
-
 
     return total;
 }
