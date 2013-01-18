@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CampTool", "campaign\campto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CampUI", "campaign\campui\CampUI.vcxproj", "{AB408B12-A8E9-4BA2-A312-92DF930559EF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CampUpd", "campaign\campupd\CampUpd.vcxproj", "{1B95EBF6-D3A4-49F1-8DB7-CB3058A5FFCF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CampUPD", "campaign\campupd\CampUpd.vcxproj", "{1B95EBF6-D3A4-49F1-8DB7-CB3058A5FFCF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cockpit", "sim\cockpit\Cockpit.vcxproj", "{C008F3F5-C2A9-49C0-8798-30D3B83A6CC2}"
 EndProject
@@ -115,7 +115,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Helo", "sim\helo\Helo.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ICP", "sim\icp\ICP.vcxproj", "{F0F3C561-1BEF-48C0-9708-9C588F326DB4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irst", "sim\irst\Irst.vcxproj", "{F02BF74B-FDB5-4E64-B232-554ADE43DF1A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IRST", "sim\irst\Irst.vcxproj", "{F02BF74B-FDB5-4E64-B232-554ADE43DF1A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lists", "codelib\tools\lists\Lists.vcxproj", "{0052E7E5-99E4-45A5-AF65-89C997DA37A1}"
 EndProject
@@ -135,7 +135,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Renderer", "graphics\render
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResMgr", "codelib\resources\reslib\ResMgr.vcxproj", "{637040B7-E832-4567-AB76-56A0521AFA9E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rwr", "sim\rwr\Rwr.vcxproj", "{5AFB5B41-122D-4929-9EC6-279F88934DD9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RWR", "sim\rwr\Rwr.vcxproj", "{5AFB5B41-122D-4929-9EC6-279F88934DD9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimDrive", "sim\simdrive\SimDrive.vcxproj", "{D180A90E-67BF-46E5-939E-744FD76B5BD1}"
 EndProject
@@ -181,19 +181,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vu2", "vu2\Vu2.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Weather", "graphics\weather\Weather.vcxproj", "{CD82E73C-C4C2-49E7-865B-DA2A463E181F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crashhandler", "crashhandler\crashhandler.vcxproj", "{06FEDAB4-0B59-4B15-8B9B-CC74F4D96C07}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrashHandler", "crashhandler\crashhandler.vcxproj", "{06FEDAB4-0B59-4B15-8B9B-CC74F4D96C07}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui95", "ui95\ui95.vcxproj", "{3BE385A8-D11D-4E54-BCEE-443CE3C81DBC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIComms", "ui\src\comms\UIComms.vcxproj", "{5D2D31C8-287E-4970-9425-B45745B3874C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "F4Compress", "F4Compress\F4Compress.vcxproj", "{B4FD05BE-1C1E-4934-B708-89706613CA57}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nvdxt", "graphics\nvdxt\nvdxt.vcxproj", "{D350E25E-8996-47C9-B3EF-D27986D93920}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3dlib", "graphics\3dlib\3DLib.vcxproj", "{13256DB2-A84D-4755-9EFC-BEECDA61713C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DLib", "graphics\3dlib\3DLib.vcxproj", "{13256DB2-A84D-4755-9EFC-BEECDA61713C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Acmi", "acmi\Acmi.vcxproj", "{4B65F64A-C572-44DA-834F-47CDDE6381FE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACMI", "acmi\Acmi.vcxproj", "{4B65F64A-C572-44DA-834F-47CDDE6381FE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aircraft", "sim\aircraft\Aircraft.vcxproj", "{7937590F-BA3E-4537-87E3-98863770AC81}"
 EndProject
@@ -447,8 +445,6 @@ Global
 		{5D2D31C8-287E-4970-9425-B45745B3874C}.Debug|Win32.Build.0 = Debug|Win32
 		{5D2D31C8-287E-4970-9425-B45745B3874C}.Release|Win32.ActiveCfg = Release|Win32
 		{5D2D31C8-287E-4970-9425-B45745B3874C}.Release|Win32.Build.0 = Release|Win32
-		{B4FD05BE-1C1E-4934-B708-89706613CA57}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B4FD05BE-1C1E-4934-B708-89706613CA57}.Release|Win32.ActiveCfg = Release|Win32
 		{D350E25E-8996-47C9-B3EF-D27986D93920}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D350E25E-8996-47C9-B3EF-D27986D93920}.Debug|Win32.Build.0 = Debug|Win32
 		{D350E25E-8996-47C9-B3EF-D27986D93920}.Release|Win32.ActiveCfg = Release|Win32
