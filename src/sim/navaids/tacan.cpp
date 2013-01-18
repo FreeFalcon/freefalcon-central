@@ -1106,7 +1106,7 @@ int TacanList::ChannelToFrequency(StationSet set, int channel)
 {
     switch (set)
     {
-        case StationSet::X:
+        case X:
             if (channel < 64)
                 return 961 + channel;
             else
@@ -1114,7 +1114,7 @@ int TacanList::ChannelToFrequency(StationSet set, int channel)
 
             break;
 
-        case StationSet::Y:
+        case Y:
             if (channel < 64)
                 return 1087 + channel;
             else return (channel - 126) + 1087;
