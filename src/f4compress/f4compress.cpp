@@ -213,9 +213,9 @@ int main(int argc, char* argv[])
     HKEY theKey;
     TheaterDef *td;
     DWORD type, size;
-    int retval, season;
-    BOOL bAuto = FALSE;
-    BOOL bForce = TRUE;
+    int retval;
+    bool bAuto = false;
+    bool bForce = true;
     char tmpPath[_MAX_PATH];
 
     HRESULT hr = CoInitialize(NULL);
@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
         g_theaters.SetNewTheater(td);
 
     if (argc > 1)
-        if (!stricmp(argv[1], "-auto")) bAuto = TRUE;
+        if (!stricmp(argv[1], "-auto")) bAuto = true;
 
 #ifndef F4SEASONSWITCH
 
@@ -267,7 +267,7 @@ int main(int argc, char* argv[])
                      "Recompress?",
                      MB_YESNO | MB_ICONEXCLAMATION);
 
-        if (retval == IDNO) bForce = FALSE;
+        if (retval == IDNO) bForce = false;
     }
 
 #endif
