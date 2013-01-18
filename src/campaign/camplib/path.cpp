@@ -26,7 +26,7 @@
 #include "GTM.h"
 #include "MsgInc\GndTaskingMsg.h"
 
-void			debugprintf(LPSTR dbgFormat, ...)
+void debugprintf(LPSTR dbgFormat, ...)
 {
     char  dbgBuffer[256];
     va_list ap;
@@ -50,9 +50,9 @@ void			debugprintf(LPSTR dbgFormat, ...)
 #define EUNIT_WEIGHT    2
 #define FUNIT_WEIGHT    5
 #define OBJ_WEIGHT      2
-#define THREAT_STEP		8
+#define THREAT_STEP 8
 
-#define PATH_DIAGONAL	0x8000						// set if a diagonal move
+#define PATH_DIAGONAL 0x8000 // set if a diagonal move
 
 // Costs are: 99=No move, 1-x= Easy to hard
 float CostTable[COVER_TYPES][MOVEMENT_TYPES] =
@@ -103,8 +103,8 @@ int DColor;
 int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags)
 {
     void*       o;
-    void*		t;
-    int			retval;
+    void* t;
+    int retval;
 
     moveTeam = who;
     moveType = type;
@@ -134,7 +134,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     o = PackXY(x, y);
     t = PackXY(xx, yy);
     // Debug stuff
-    //ulong	time,newtime;
+    //ulong time,newtime;
     //time = GetTickCount();
     retval = ASD->ASSearch(p, o, t, GetNeighborCoord, RETURN_PARTIAL_ON_FAIL | RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
     //newtime = GetTickCount();
@@ -150,8 +150,8 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
 
 costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags)
 {
-    costtype		cost = 0.0F;
-    int			d, i = 0;
+    costtype cost = 0.0F;
+    int d, i = 0;
 
     d = path->GetDirection(i);
 
@@ -170,7 +170,7 @@ costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags
 costtype GetPathCost(Objective o, Path path, MoveType mt, int flags)
 {
     costtype    cost = 0.0F;
-    int			d, i = 0;
+    int d, i = 0;
 
     d = path->GetDirection(i);
 
@@ -199,14 +199,14 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
 #ifdef CAMPTOOL
 
     if (ShowSearch)
-        //		DColor = (DColor+1)%16;
+        // DColor = (DColor+1)%16;
         DColor = Blue;
 
 #endif
 
     // Debug stuff
-    //ulong	time,newtime;
-    //GridIndex	x,y,xx,yy;
+    //ulong time,newtime;
+    //GridIndex x,y,xx,yy;
     //time = GetTickCount();
     retval = ASD->ASSearch(p, o, t, GetNeighborObject, RETURN_PARTIAL_ON_FAIL | RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
     //newtime = GetTickCount();
@@ -229,7 +229,7 @@ int GetObjectivePath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex y
 int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
 {
     void*       o;
-    void*		t;
+    void* t;
     GridIndex   ox, oy, tx, ty;
 
     O1->GetLocation(&ox, &oy);
@@ -263,9 +263,9 @@ int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
 // Used only by planning algorythm
 costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 {
-    Objective		o;
-    PathClass		path;
-    int				flags = 0;
+    Objective o;
+    PathClass path;
+    int flags = 0;
 
     // Movement options
     if (GetGroundRole(orders) == GRO_ATTACK)
@@ -292,7 +292,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 #ifdef CAMPTOOL
 
     if (ShowSearch)
-        //		DColor = (DColor+1)%16;
+        // DColor = (DColor+1)%16;
         DColor = Blue;
 
 #endif
@@ -309,7 +309,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, CampaignHeading h)
 {
     float          cost;
-    Objective		o;
+    Objective o;
 
     cost = CostTable[GetCover(x, y)][move];
 
@@ -326,7 +326,7 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                     o = FindNearestObjective(x, y, NULL);
 
                     // RV - Biker - Loop through ground units to find engineer battalion assigned for repair
-                    VuListIterator	uit(AllUnitList);
+                    VuListIterator uit(AllUnitList);
                     Unit u = GetFirstUnit(&uit);
                     GridIndex ux = 0, uy = 0;
                     bool assignedEng = false;
@@ -365,29 +365,29 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
                         cost = 5.0F;
                 }
                 else if (flags & PATH_ROADOK && GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
-                    cost = 0.5F;						// Use roads when we're allowed to
+                    cost = 0.5F; // Use roads when we're allowed to
                 else
-                    cost *= 0.5F;						// Otherwise, lesser bonus
+                    cost *= 0.5F; // Otherwise, lesser bonus
             }
 
             cost *= ReliefCost[GetRelief(x, y)];
             break;
 
         case LowAir:
-            cost *= ReliefCost[GetRelief(x, y)];			// This only makes since for helecopters
+            cost *= ReliefCost[GetRelief(x, y)]; // This only makes since for helecopters
             break;
 
         case Rail:
             if (GetRail(x, y))
             {
-                if (cost > MAX_COST)					// It's a bridge, check if intact
+                if (cost > MAX_COST) // It's a bridge, check if intact
                 {
                     o = FindNearestObjective(x, y, NULL);
 
                     if (o->GetType() == TYPE_PORT || (o->GetType() == TYPE_BRIDGE && (o->GetObjectiveStatus() > 0 || flags & PATH_ENGINEER)))
                         cost = 0.5F;
                 }
-                else if (flags & PATH_RAILOK && GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))	// Use rails when we're allowed to
+                else if (flags & PATH_RAILOK && GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
                     cost = 0.5F;
             }
 
@@ -417,16 +417,16 @@ float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, Campai
 
 /*
 void ResetThreats (void)
-	{
-	Objective		o;
+ {
+ Objective o;
 
-	o = (Objective) CdbGetFirstInPointerList(ThreatList);
-	while (o)
-		{
-		o->UnsetChecked();
-		o = (Objective) CdbGetNextInPointerList(ThreatList);
-		}
-	}
+ o = (Objective) CdbGetFirstInPointerList(ThreatList);
+ while (o)
+ {
+ o->UnsetChecked();
+ o = (Objective) CdbGetNextInPointerList(ThreatList);
+ }
+ }
 
 /*
 // Checks path between two waypoints at a given altitude
@@ -435,40 +435,40 @@ int CountLegThreats(WayPoint w1, WayPoint w2, Team who, AltitudeType alt)
    int         i,step,found=0;
    GridIndex   x,y,fx,fy;
    float       d;
-	double		theta;
+ double theta;
 
    w1->GetWPLocation(&fx,&fy);
    w2->GetWPLocation(&x,&y);
    d = Distance(x,y,fx,fy);
-	step = THREAT_STEP;
-	theta = asin((y-fy)/d);
-	for (i=0; i<d; i+=step)
-		{
-		x = fx + (GridIndex)(cos(theta)*i);
-		y = fy + (GridIndex)(sin(theta)*i);
-		found += CountThreat(x,y,alt,who,0);
-		}
+ step = THREAT_STEP;
+ theta = asin((y-fy)/d);
+ for (i=0; i<d; i+=step)
+ {
+ x = fx + (GridIndex)(cos(theta)*i);
+ y = fy + (GridIndex)(sin(theta)*i);
+ found += CountThreat(x,y,alt,who,0);
+ }
    return found;
    }
 
 // This counts the number of threats to a given type along a particular waypoint path
 int CheckPathThreats (WayPoint w, Team who, AltitudeType alt)
-	{
-	WayPoint		nw;
-	int			threats=0;
+ {
+ WayPoint nw;
+ int threats=0;
 
-	ResetThreats();
-	if (!w)
-		return 0;
-	nw = w->GetNextWP();
-	while (nw)
-		{
-		threats += CountLegThreats(w,nw,who,alt);
-		w = nw;
-		nw = w->GetNextWP();
-		}
-	return threats;
-	}
+ ResetThreats();
+ if (!w)
+ return 0;
+ nw = w->GetNextWP();
+ while (nw)
+ {
+ threats += CountLegThreats(w,nw,who,alt);
+ w = nw;
+ nw = w->GetNextWP();
+ }
+ return threats;
+ }
 */
 
 // ==========================
@@ -483,7 +483,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
     GridIndex   ox, oy, tx, ty, x, y;
     costtype    cost, left;
     void*       n;
-    float		leftmod = 1.0f;
+    float leftmod = 1.0f;
 
     UnpackXY(o, &ox, &oy);
     UnpackXY(t, &tx, &ty);
@@ -613,9 +613,9 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 
 costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveType type, Team team, int flags)
 {
-    Objective		n, p;
-    costtype		cost, opt, mult = 1.0F;
-    Team			owner;
+    Objective n, p;
+    costtype cost, opt, mult = 1.0F;
+    Team owner;
 
     n = o->GetNeighbor(neighbor);
 
@@ -637,9 +637,9 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
                 // Not allowed under certain circumstances:
                 if (n == t)
-                    ;		// This is ok.
+                    ; // This is ok.
                 else if (n->IsSecondary())
-                    //					return 255.0F;
+                    // return 255.0F;
                     mult = 4.0F;
                 else if (!t)
                     return 255.0F;
@@ -648,7 +648,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                     p = n->GetObjectiveParent();
 
                     if (p && p->GetTeam() != team)
-                        //						return 255.0F;
+                        // return 255.0F;
                         mult = 4.0F;
                 }
             }
@@ -658,7 +658,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
         // Check if road movement is allowed
         if (flags & PATH_ROADOK)
-            type = NoMove;				// KCK: I'm using the no-move slot for road movement costs!
+            type = NoMove; // KCK: I'm using the no-move slot for road movement costs!
 
         if (flags & PATH_RAILOK)
             type = Rail;
@@ -678,11 +678,11 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already
-            //GridIndex		ox,oy;
+            //GridIndex ox,oy;
             //o->GetLocation(&ox,&oy);
 
             // RV - Biker - Loop through ground units to find engineer battalion assigned for repair
-            VuListIterator	uit(AllUnitList);
+            VuListIterator uit(AllUnitList);
             Unit u = GetFirstUnit(&uit);
             GridIndex ux = 0, uy = 0;
             GridIndex nx = 0, ny = 0;

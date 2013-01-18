@@ -4,10 +4,10 @@
 #include "chandler.h"
 #include "ui95_dd.h"
 
-static WORD	reds, greens, blues; //LSH for r,g,b
-static WORD	redc, greenc, bluec; //count bits=1 after LSH
-//XXstatic WORD	redm, greenm, bluem;//color masks
-static DWORD	redm, greenm, bluem;//color masks
+static WORD reds, greens, blues; //LSH for r,g,b
+static WORD redc, greenc, bluec; //count bits=1 after LSH
+//XXstatic WORD redm, greenm, bluem;//color masks
+static DWORD redm, greenm, bluem;//color masks
 
 extern int FloatToInt32(float);
 
@@ -44,7 +44,7 @@ void UIBuildColorTable()
             else
             {
                 UIColorTable[i][j] = WORD(j * color);
-                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds);	//!
+                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); //!
                 gUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << greens);
                 bUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << blues);
             }
@@ -143,16 +143,16 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
         blues++;
 }
 
-/*	 //!
+/*  //!
 void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shift,WORD *b_mask,WORD *b_shift)
 {
-	*r_mask = redm;
-	*g_mask = greenm;
-	*b_mask = bluem;
+ *r_mask = redm;
+ *g_mask = greenm;
+ *b_mask = bluem;
 
-	*r_shift=reds;
-	*g_shift=greens;
-	*b_shift=blues;
+ *r_shift=reds;
+ *g_shift=greens;
+ *b_shift=blues;
 }*/
 
 //XX void UI95_GetScreenColorInfo(WORD &r_mask,WORD &r_shift,WORD &g_mask, WORD &g_shift,WORD &b_mask,WORD &b_shift)
@@ -200,53 +200,53 @@ WORD UI95_ScreenToGrey(WORD color)
 /*
 void UI95_GetScreenFormat(DDSURFACEDESC *desc)
 {
-	DWORD mask;
+ DWORD mask;
 
-	memcpy(&UI95_ScreenFormat,desc,desc->dwSize);
+ memcpy(&UI95_ScreenFormat,desc,desc->dwSize);
 
-	mask = UI95_ScreenFormat.ddpfPixelFormat.dwRBitMask;
-	reds = 0;
-	while( !(mask & 1) ) {
-		mask >>= 1;
-		reds++;
-	}
-	redc=0;
-	while( mask & 1 ) {
-		mask >>= 1;
-		redc++;
-	}
-	if(redc == 6)
-		reds++;
+ mask = UI95_ScreenFormat.ddpfPixelFormat.dwRBitMask;
+ reds = 0;
+ while( !(mask & 1) ) {
+ mask >>= 1;
+ reds++;
+ }
+ redc=0;
+ while( mask & 1 ) {
+ mask >>= 1;
+ redc++;
+ }
+ if(redc == 6)
+ reds++;
 
-	// GREEN
-	mask = UI95_ScreenFormat.ddpfPixelFormat.dwGBitMask;
-	greens = 0;
-	while( !(mask & 1) ) {
-		mask >>= 1;
-		greens++;
-	}
-	greenc=0;
-	while( mask & 1 ) {
-		mask >>= 1;
-		greenc++;
-	}
-	if(greenc == 6)
-		greens++;
+ // GREEN
+ mask = UI95_ScreenFormat.ddpfPixelFormat.dwGBitMask;
+ greens = 0;
+ while( !(mask & 1) ) {
+ mask >>= 1;
+ greens++;
+ }
+ greenc=0;
+ while( mask & 1 ) {
+ mask >>= 1;
+ greenc++;
+ }
+ if(greenc == 6)
+ greens++;
 
-	// BLUE
-	mask = UI95_ScreenFormat.ddpfPixelFormat.dwBBitMask;
-	blues = 0;
-	while( !(mask & 1) ) {
-		mask >>= 1;
-		blues++;
-	}
-	bluec=0;
-	while( mask & 1 ) {
-		mask >>= 1;
-		bluec++;
-	}
-	if(bluec == 6)
-		blues++;
+ // BLUE
+ mask = UI95_ScreenFormat.ddpfPixelFormat.dwBBitMask;
+ blues = 0;
+ while( !(mask & 1) ) {
+ mask >>= 1;
+ blues++;
+ }
+ bluec=0;
+ while( mask & 1 ) {
+ mask >>= 1;
+ bluec++;
+ }
+ if(bluec == 6)
+ blues++;
 }
 */
 
@@ -254,41 +254,41 @@ void UI95_GetScreenFormat(DDSURFACEDESC *desc)
 IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD,DWORD width,DWORD height)
 {
     HRESULT             result;
-	IDirectDrawSurface	*dds;
-    DDSURFACEDESC		ddDescription;
+ IDirectDrawSurface *dds;
+    DDSURFACEDESC ddDescription;
 
     // Initialize the surface description structure we'll use to request our surface
     memset( &ddDescription, 0, sizeof( ddDescription ) );
     ddDescription.dwSize = sizeof( ddDescription );
     ddDescription.dwFlags = DDSD_CAPS;
 
-	ddDescription.ddsCaps.dwCaps |=	DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
-	ddDescription.dwFlags		|= DDSD_WIDTH | DDSD_HEIGHT;
-	ddDescription.dwWidth	= width;
-	ddDescription.dwHeight	= height;
+ ddDescription.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
+ ddDescription.dwFlags |= DDSD_WIDTH | DDSD_HEIGHT;
+ ddDescription.dwWidth = width;
+ ddDescription.dwHeight = height;
 
     result=DD->CreateSurface( &ddDescription, &dds, NULL );
-	UI95_DDErrorCheck(result);
-	result=dds->GetSurfaceDesc( &ddDescription );
-	UI95_DDErrorCheck(result);
-	UI95_GetScreenFormat(&ddDescription);
-	return (dds);
+ UI95_DDErrorCheck(result);
+ result=dds->GetSurfaceDesc( &ddDescription );
+ UI95_DDErrorCheck(result);
+ UI95_GetScreenFormat(&ddDescription);
+ return (dds);
 }
 */
 
 /*
 void *UI95_Lock(IDirectDrawSurface *ddSurface)
 {
-	HRESULT result;
-	// Initialize the surface description structure that we want filled in
-	memset( &UI95_ScreenFormat, 0, sizeof( UI95_ScreenFormat ) );
-	UI95_ScreenFormat.dwSize = sizeof( UI95_ScreenFormat );
+ HRESULT result;
+ // Initialize the surface description structure that we want filled in
+ memset( &UI95_ScreenFormat, 0, sizeof( UI95_ScreenFormat ) );
+ UI95_ScreenFormat.dwSize = sizeof( UI95_ScreenFormat );
 
-	result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL );
-	if(result == DD_OK)
-		return(UI95_ScreenFormat.lpSurface);
-	UI95_DDErrorCheck( result );
-	return(NULL);
+ result=ddSurface->Lock( NULL, &UI95_ScreenFormat, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT, NULL );
+ if(result == DD_OK)
+ return(UI95_ScreenFormat.lpSurface);
+ UI95_DDErrorCheck( result );
+ return(NULL);
 }
 */
 
@@ -299,60 +299,60 @@ void CVTImageToDDS()
 
 GLImageInfo *LoadImageFile(char *filename)
 {
-	GLImageInfo *glImage;
-	CImageFileMemory 	texFile;
-	short result;
+ GLImageInfo *glImage;
+ CImageFileMemory  texFile;
+ short result;
 
 
-	if(!filename)
-		return(NULL);
+ if(!filename)
+ return(NULL);
 
-	// Make sure we recognize this file type
-	texFile.imageType = CheckImageType( (GLbyte*)filename );
-	if(texFile.imageType == IMAGE_TYPE_UNKNOWN )
-		return(NULL);
+ // Make sure we recognize this file type
+ texFile.imageType = CheckImageType( (GLbyte*)filename );
+ if(texFile.imageType == IMAGE_TYPE_UNKNOWN )
+ return(NULL);
 
-	// Open the input file
-	result = texFile.glOpenFileMem( (GLbyte*)filename );
-	if ( result != 1 )
-		return(NULL);
+ // Open the input file
+ result = texFile.glOpenFileMem( (GLbyte*)filename );
+ if ( result != 1 )
+ return(NULL);
 
-	// Read the image data (note that ReadTextureImage will close texFile for us)
-	texFile.glReadFileMem();
-	result = ReadTextureImage( &texFile );
-	if (result != GOOD_READ)
-		return(NULL);
+ // Read the image data (note that ReadTextureImage will close texFile for us)
+ texFile.glReadFileMem();
+ result = ReadTextureImage( &texFile );
+ if (result != GOOD_READ)
+ return(NULL);
 
-	// Store the image properties in our local storage
-	width = texFile.image.width;
-	height = texFile.image.height;
+ // Store the image properties in our local storage
+ width = texFile.image.width;
+ height = texFile.image.height;
 
-	// Do things differently for 8 bit and RGB images
-	if (flags & MPR_TI_PALETTE) {
+ // Do things differently for 8 bit and RGB images
+ if (flags & MPR_TI_PALETTE) {
 
-		imageData = texFile.image.image;
+ imageData = texFile.image.image;
 
-		// Create a palette object if we don't already have one
-		ShiAssert( texFile.image.palette );
-		if (!palette) {
-			palette = new Palette;
-			palette->Setup32( (DWORD*)texFile.image.palette );
-		} else {
-			palette->Reference();
-		}
+ // Create a palette object if we don't already have one
+ ShiAssert( texFile.image.palette );
+ if (!palette) {
+ palette = new Palette;
+ palette->Setup32( (DWORD*)texFile.image.palette );
+ } else {
+ palette->Reference();
+ }
 
-		// Release the image's palette data now that we've got our own copy
-		glReleaseMemory( texFile.image.palette );
-	} else {
+ // Release the image's palette data now that we've got our own copy
+ glReleaseMemory( texFile.image.palette );
+ } else {
 
-		// Force the image into 32bit ABGR format
-		ShiAssert( palette == NULL );
-		if ( texFile.image.palette ) {
-			imageData = ConvertImage( &texFile.image, COLOR_16M, NULL );
-			glReleaseMemory( texFile.image.image );
-			glReleaseMemory( texFile.image.palette );
-		}
-	}
+ // Force the image into 32bit ABGR format
+ ShiAssert( palette == NULL );
+ if ( texFile.image.palette ) {
+ imageData = ConvertImage( &texFile.image, COLOR_16M, NULL );
+ glReleaseMemory( texFile.image.image );
+ glReleaseMemory( texFile.image.palette );
+ }
+ }
 }
 
 IDirectDrawSurface *LoadImageFile(char *fname)
@@ -363,9 +363,9 @@ IDirectDrawSurface *LoadImageFile(char *fname)
 /*
 BOOL UI95_DDErrorCheck( HRESULT result )
 {
-	if(result != DD_OK) return(FALSE);
-	return(TRUE);
-	switch ( result ) {
+ if(result != DD_OK) return(FALSE);
+ return(TRUE);
+ switch ( result ) {
 
       case DD_OK:
         return TRUE;
@@ -595,7 +595,7 @@ BOOL UI95_DDErrorCheck( HRESULT result )
         MessageBox( NULL, "DDERR_SURFACEALREADYDEPENDENT", "DDraw Error", MB_OK );
         return FALSE;
       case DDERR_SURFACEBUSY:
-		//return(FALSE);
+ //return(FALSE);
         MessageBox( NULL, "DDERR_SURFACEBUSY", "DDraw Error", MB_OK );
         return FALSE;
       case DDERR_SURFACEISOBSCURED:
@@ -641,14 +641,14 @@ BOOL UI95_DDErrorCheck( HRESULT result )
         MessageBox( NULL, "UNKNOWN ERROR CODE", "DDraw Error", MB_OK );
         return FALSE;
     }
-	return(FALSE);
+ return(FALSE);
 }
 */
 
 /*
 BOOL UI95_DDErrorCheck( HRESULT result )
 {
-	switch ( result ) {
+ switch ( result ) {
 
       case DD_OK:
         return TRUE;
@@ -878,7 +878,7 @@ BOOL UI95_DDErrorCheck( HRESULT result )
         MonoPrint("DDERR_SURFACEALREADYDEPENDENT\n");
         return FALSE;
       case DDERR_SURFACEBUSY:
-		//return(FALSE);
+ //return(FALSE);
         MonoPrint("DDERR_SURFACEBUSY\n");
         return FALSE;
       case DDERR_SURFACEISOBSCURED:
@@ -924,6 +924,6 @@ BOOL UI95_DDErrorCheck( HRESULT result )
         MonoPrint("UNKNOWN ERROR CODE\n");
         return FALSE;
     }
-	return(FALSE);
+ return(FALSE);
 }
 */

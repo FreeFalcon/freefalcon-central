@@ -1,12 +1,12 @@
 /*******************************************************************************\
-	LightSample.cpp
+ LightSample.cpp
 
-	This tool inserts night lights into the multi-resolution terrain tiles
-	for Falcon 4.0
+ This tool inserts night lights into the multi-resolution terrain tiles
+ for Falcon 4.0
 
-	Scott Randolph
-	MicroProse
-	June 1, 1998
+ Scott Randolph
+ MicroProse
+ June 1, 1998
 \*******************************************************************************/
 #include <stdio.h>
 #include <io.h>
@@ -16,7 +16,7 @@
 #include "..\..\3Dlib\Image.h"
 
 
-#define NUM_LIGHT_COLORS	4
+#define NUM_LIGHT_COLORS 4
 
 
 void  ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height);
@@ -27,20 +27,20 @@ BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight);
 
 void main(int argc, char* argv[])
 {
-    char	baseName[_MAX_PATH];
-    char	fileName[_MAX_PATH];
+    char baseName[_MAX_PATH];
+    char fileName[_MAX_PATH];
 
-    WORD	lightWidth;
-    WORD	lightHeight;
-    BYTE	*lightImage;
-    DWORD	*lightPalette;
+    WORD lightWidth;
+    WORD lightHeight;
+    BYTE *lightImage;
+    DWORD *lightPalette;
 
-    char	texPrefix;
+    char texPrefix;
 
-    WORD	texWidth;
-    WORD	texHeight;
-    BYTE	*texImage;
-    DWORD	*texPalette;
+    WORD texWidth;
+    WORD texHeight;
+    BYTE *texImage;
+    DWORD *texPalette;
 
 
     // If we didn't get the right number of arguments, print a usage message
@@ -49,8 +49,8 @@ void main(int argc, char* argv[])
         printf("Usage:  LightSample <name> <lightName>\n");
         printf("    Reads <lightName>.pcx to get light positions.  Edits them into\n");
         printf("    H<name>.pcx, M<name>.pcx, L<name>.pcx, and T<name>.pcx\n");
-        printf("	NOTE:  This tool requires that the input and output images be\n");
-        printf("	       in the current working directory.\n");
+        printf(" NOTE:  This tool requires that the input and output images be\n");
+        printf("        in the current working directory.\n");
         exit(-1);
     }
 
@@ -130,8 +130,8 @@ void main(int argc, char* argv[])
 
 void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height)
 {
-    CImageFileMemory 	texFile;
-    DWORD				result;
+    CImageFileMemory  texFile;
+    DWORD result;
 
     *image = NULL;
     *palette = NULL;
@@ -145,7 +145,7 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
 
     if (result != 1)
     {
-        char	message[256];
+        char message[256];
         sprintf(message, "Failed to open %s", filename);
         ShiError(message);
     }
@@ -172,8 +172,8 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
 
 void WriteImage(char *filename, BYTE *image,  DWORD  *palette, WORD width,  WORD height)
 {
-    int			fileHandle;
-    GLImageInfo	imageInfo;
+    int fileHandle;
+    GLImageInfo imageInfo;
 
     // Make sure we recognize this file type
     ShiAssert(CheckImageType(filename) != IMAGE_TYPE_UNKNOWN);
@@ -199,8 +199,8 @@ void WriteImage(char *filename, BYTE *image,  DWORD  *palette, WORD width,  WORD
 
 void AddLights(BYTE *texImage, BYTE *lightImage, WORD texWidth, WORD texHeight)
 {
-    int		r;
-    int		c;
+    int r;
+    int c;
 
     for (r = 0; r < texHeight; r++)
     {
@@ -218,12 +218,12 @@ void AddLights(BYTE *texImage, BYTE *lightImage, WORD texWidth, WORD texHeight)
 // Take the current image and reduce its size in x and y by a factor of two
 BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight)
 {
-    int		w;
-    int		h;
-    int		r;
-    int		c;
-    BYTE	val;
-    BYTE	*newImage;
+    int w;
+    int h;
+    int r;
+    int c;
+    BYTE val;
+    BYTE *newImage;
 
     // Reduce the size of the light image by two in each dimension
     w = lightWidth  / 2;

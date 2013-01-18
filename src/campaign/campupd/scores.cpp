@@ -17,8 +17,8 @@
 #include "MsgInc\RegenerationMsg.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include "dinput.h"
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include "dinput.h"
 
 #include "falcsess.h"
 #include "uicomms.h"
@@ -43,10 +43,10 @@ extern tactical_mission
 // Instant action
 // Dogfight
 // Tactical Engagement
-long	gRefreshScoresList = 0;
-long	gScoreColor[10];
-_TCHAR	gScoreName[10][30];
-_TCHAR	gScorePoints[10][10];
+long gRefreshScoresList = 0;
+long gScoreColor[10];
+_TCHAR gScoreName[10][30];
+_TCHAR gScorePoints[10][10];
 // ===========================================
 // Global Functions
 // ===========================================
@@ -54,13 +54,13 @@ _TCHAR	gScorePoints[10][10];
 // Dogfight scoring routine
 void MakeDogfightTopTen(int mode)
 {
-    FlightDataClass		*flight_ptr;
-    PilotDataClass		*pilot_data;
-    int					i, j, worst, numscores;
-    int					tmps, score[10] = {0};				// Top 10 scores
-    int					active[10] = {0};
+    FlightDataClass *flight_ptr;
+    PilotDataClass *pilot_data;
+    int i, j, worst, numscores;
+    int tmps, score[10] = {0}; // Top 10 scores
+    int active[10] = {0};
     long tmpclr;
-    _TCHAR				tmpn[30];		// Top 10 names
+    _TCHAR tmpn[30]; // Top 10 names
 
     // Clear Global Text Strings
     memset(gScoreName, 0, sizeof(_TCHAR) * 10 * 30);
@@ -71,7 +71,7 @@ void MakeDogfightTopTen(int mode)
 
     if (mode == dog_TeamMatchplay)
     {
-        short	tscore[MAX_DOGFIGHT_TEAMS] = {0};
+        short tscore[MAX_DOGFIGHT_TEAMS] = {0};
 
         // Determine active teams
         flight_ptr = TheCampaign.MissionEvaluator->flight_data;

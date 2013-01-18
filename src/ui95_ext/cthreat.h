@@ -13,11 +13,11 @@ typedef struct
     C_Threat *Owner;
 } THREAT_CIRCLE;
 
-#define	HALFSQUAREROOT2	(0.5 * sqrt(2.0))
-#define	MAXCIRCLESIZE	4096
-#define	MAXOVERLAP		8
+#define HALFSQUAREROOT2 (0.5 * sqrt(2.0))
+#define MAXCIRCLESIZE 4096
+#define MAXOVERLAP 8
 
-#define	CHECKCIRCLEOVERLAP
+#define CHECKCIRCLEOVERLAP
 
 struct CircleEdge
 {
@@ -32,7 +32,7 @@ protected:
     static long MaxHeight1, MaxWidth1;
     static long CenterX, CenterY, Radius, Diagonal;
     static long CircleTop, CircleSize;
-    static int	CircleTopAddress;
+    static int CircleTopAddress;
     static char *CircleBuffer;
 
 #ifdef USE_SH_POOLS
@@ -128,7 +128,7 @@ public:
 
     void FillVerticalLineUpLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         if (cx < 0) cx = 0;
         else if (cx > MaxWidth1) cx = MaxWidth1;
@@ -144,7 +144,7 @@ public:
 
     void FillVerticalLineUpRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         if (cx < 0) cx = 0;
         else if (cx > MaxWidth1) cx = MaxWidth1;
@@ -160,7 +160,7 @@ public:
 
     void FillVerticalLineDownLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         if (cx < 0) cx = 0;
         else if (cx > MaxWidth1) cx = MaxWidth1;
@@ -174,7 +174,7 @@ public:
 
     void FillVerticalLineDownRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         if (cx < 0) cx = 0;
         else if (cx > MaxWidth1) cx = MaxWidth1;
@@ -188,7 +188,7 @@ public:
 
     void FillDiagonalLineLeftUpLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -200,7 +200,7 @@ public:
 
     void FillDiagonalLineLeftUpRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -212,7 +212,7 @@ public:
 
     void FillDiagonalLineLeftDownLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -224,7 +224,7 @@ public:
 
     void FillDiagonalLineLeftDownRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -236,7 +236,7 @@ public:
 
     void FillDiagonalLineRightUpLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -248,7 +248,7 @@ public:
 
     void FillDiagonalLineRightUpRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -260,7 +260,7 @@ public:
 
     void FillDiagonalLineRightDownLeft(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -272,7 +272,7 @@ public:
 
     void FillDiagonalLineRightDownRight(long cx, long cy)
     {
-        long	i;
+        long i;
 
         for (i = 0; i < Diagonal; i++)
         {
@@ -305,7 +305,7 @@ class C_Threat : public C_Base
 {
 protected:
     static Circle myCircle;
-    C_Hash		*Root_;
+    C_Hash *Root_;
 
 public:
     enum

@@ -39,16 +39,16 @@ void CalcRelAzEl(SimBaseClass* ownObject, float x, float y, float z, float* az, 
     float ry;
     float rz;
 
-    xft	= x - ownObject->XPos();
-    yft	= y - ownObject->YPos();
-    zft	= z - ownObject->ZPos();
+    xft = x - ownObject->XPos();
+    yft = y - ownObject->YPos();
+    zft = z - ownObject->ZPos();
 
-    rx	= ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
-    ry	= ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
-    rz	= ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
+    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
+    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
+    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
 
-    *az	= (float)atan2(ry, rx);
-    *el	= (float)atan2(-rz, sqrt(rx * rx + ry * ry));
+    *az = (float)atan2(ry, rx);
+    *el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
 }
 
 
@@ -75,40 +75,40 @@ void CalcRelValues(SimBaseClass* ownObject, FalconEntity* target, float* az, flo
     float rx;
     float ry;
     float rz;
-    float	range;
-    float	xfrm00;
+    float range;
+    float xfrm00;
     float xfrm01;
     float xfrm02;
     float rx_t;
     mlTrig trigtha;
     mlTrig trigpsi;
 
-    xft		= target->XPos() - ownObject->XPos();
-    yft		= target->YPos() - ownObject->YPos();
-    zft		= target->ZPos() - ownObject->ZPos();
+    xft = target->XPos() - ownObject->XPos();
+    yft = target->YPos() - ownObject->YPos();
+    zft = target->ZPos() - ownObject->ZPos();
 
-    rx			= ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
-    ry			= ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
-    rz			= ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
+    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
+    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
+    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
 
-    range		= (float)(xft * xft + yft * yft + zft * zft);
+    range = (float)(xft * xft + yft * yft + zft * zft);
 
     mlSinCos(&trigtha, target->Pitch());
     mlSinCos(&trigpsi, target->Yaw());
 
-    xfrm00	= trigpsi.cos * trigtha.cos;
-    xfrm01	= trigpsi.sin * trigtha.cos;
-    xfrm02	= -trigtha.sin;
+    xfrm00 = trigpsi.cos * trigtha.cos;
+    xfrm01 = trigpsi.sin * trigtha.cos;
+    xfrm02 = -trigtha.sin;
 
-    rx_t		= -(xfrm00 * xft + xfrm01 * yft + xfrm02 * zft);
+    rx_t = -(xfrm00 * xft + xfrm01 * yft + xfrm02 * zft);
 
-    rz			= -rz;
+    rz = -rz;
 
-    *ata		= (float)atan2(sqrt(range - rx * rx), rx);
+    *ata = (float)atan2(sqrt(range - rx * rx), rx);
     *ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
-    *droll	= (float)atan2(ry, rz);
-    *az		= (float)atan2(ry, rx);
-    *el		= (float)atan2(rz, sqrt(rx * rx + ry * ry));
+    *droll = (float)atan2(ry, rz);
+    *az = (float)atan2(ry, rx);
+    *el = (float)atan2(rz, sqrt(rx * rx + ry * ry));
 }
 
 // -----------------------------------------------------
@@ -130,7 +130,7 @@ void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr)
     float xft, yft, zft, rx_t;
     float range;
     FalconEntity* theObject;
-    mlTrig	psi;
+    mlTrig psi;
 
     theObject = targetPtr->BaseData();
 
@@ -151,10 +151,10 @@ void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr)
 
     range = (float)(xft * xft + yft * yft + zft * zft);
 
-    targetPtr->localData->range	= (float)sqrt(range);
-    targetPtr->localData->ataFrom	= (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
-    targetPtr->localData->az		= (float)atan2(yft, xft);
-    targetPtr->localData->el		= (float)atan2(-zft, sqrt(range - zft * zft));
+    targetPtr->localData->range = (float)sqrt(range);
+    targetPtr->localData->ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
+    targetPtr->localData->az = (float)atan2(yft, xft);
+    targetPtr->localData->el = (float)atan2(-zft, sqrt(range - zft * zft));
 }
 
 void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMatrix vmat, float elapsedTimeInverse)
@@ -211,7 +211,7 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
     /*------------------------------*/
     /* Do each plane execpt ownship */
     /*------------------------------*/
-    fucked_count = 0;	// HACK HACK HACK HACK HACK HACK HACK hackerydoodar HACK
+    fucked_count = 0; // HACK HACK HACK HACK HACK HACK HACK hackerydoodar HACK
     obj = targetList;
 
     while (obj)
@@ -254,7 +254,7 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
         }
         else
         {
-            mlTrig	psi;
+            mlTrig psi;
 
             // KCK: Optimized because Roll() and Pitch() are always zero for campaign objects
             mlSinCos(&psi, theObject->Yaw());
@@ -266,7 +266,7 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
         range = (float)(xft * xft + yft * yft + zft * zft);
         range = max(range, 1.0F);
         rz    = -rz;
-        rz_t	= -rz_t;
+        rz_t = -rz_t;
 
         ata            = (float)atan2(sqrt(range - rx * rx), rx);
         ataFrom        = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
@@ -695,7 +695,7 @@ void Trigenometry(SimMoverClass *platform)
 void CalcTransformMatrix(SimBaseClass* theObject)
 {
     // KCK: I changed this to use the math lib's mlTrig function. Hope I didn't fuck it up.
-    mlTrig	tha, phi, psi;
+    mlTrig tha, phi, psi;
     //since we calculate them here anyways, and they are so useful to have,
     //I go ahead and store the sine and cosine of all the angles (DSP)
 
@@ -707,12 +707,12 @@ void CalcTransformMatrix(SimBaseClass* theObject)
     theObject->dmx[0][1] =  psi.sin * tha.cos;
     theObject->dmx[0][2] = -tha.sin;
 
-    theObject->dmx[1][0] = -psi.sin * phi.cos	+	psi.cos * tha.sin * phi.sin;
-    theObject->dmx[1][1] =  psi.cos * phi.cos	+	psi.sin * tha.sin * phi.sin;
+    theObject->dmx[1][0] = -psi.sin * phi.cos + psi.cos * tha.sin * phi.sin;
+    theObject->dmx[1][1] =  psi.cos * phi.cos + psi.sin * tha.sin * phi.sin;
     theObject->dmx[1][2] =  tha.cos * phi.sin;
 
-    theObject->dmx[2][0] =  psi.sin * phi.sin	+	psi.cos * tha.sin * phi.cos;
-    theObject->dmx[2][1] = -psi.cos * phi.sin	+	psi.sin * tha.sin * phi.cos;
+    theObject->dmx[2][0] =  psi.sin * phi.sin + psi.cos * tha.sin * phi.cos;
+    theObject->dmx[2][1] = -psi.cos * phi.sin + psi.sin * tha.sin * phi.cos;
     theObject->dmx[2][2] =  tha.cos * phi.cos;
 
     theObject->platformAngles.cospsi = psi.cos;

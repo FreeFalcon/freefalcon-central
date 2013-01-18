@@ -131,10 +131,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         // sfr: cleanup camera mess
                         FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
                         //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                        //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
-                        //		FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
-                        //		break;
-                        //	}
+                        // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
+                        // FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
+                        // break;
+                        // }
                         //}
                     }
 
@@ -174,10 +174,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         // sfr: cleanup camera mess
                         FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
                         //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                        //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
-                        //		FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
-                        //		break;
-                        //	}
+                        // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
+                        // FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
+                        // break;
+                        // }
                         //}
                     }
 
@@ -217,10 +217,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         // sfr: cleanup camera mess
                         FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
                         //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                        //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotFlight) {
-                        //		FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
-                        //		break;
-                        //	}
+                        // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotFlight) {
+                        // FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
+                        // break;
+                        // }
                         //}
                     }
 
@@ -250,10 +250,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         // sfr: cleanup camera mess
                         FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
                         //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                        //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
-                        //		FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
-                        //		break;
-                        //	}
+                        // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
+                        // FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
+                        // break;
+                        // }
                         //}
                         vuDatabase->Remove(myBrain->targetSpotElement);  // Takes care of deleting the allocated memory and the driver allocation as well.
 
@@ -274,10 +274,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                         FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
                         // Kill the camera and clear out everything associated with this myBrain->targetSpot
                         //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                        //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
-                        //		FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
-                        //		break;
-                        //	}
+                        // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
+                        // FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
+                        // break;
+                        // }
                         //}
                         vuDatabase->Remove(myBrain->targetSpotWing);  // Takes care of deleting the allocated memory and the driver allocation as well.
 
@@ -293,7 +293,7 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
             break;
 
         case FalconWingmanMsg::WMClearSix:
-            targetId	= AiCheckForThreat(SimDriver.GetPlayerAircraft(), DOMAIN_AIR, 1);
+            targetId = AiCheckForThreat(SimDriver.GetPlayerAircraft(), DOMAIN_AIR, 1);
             break;
 
         case FalconWingmanMsg::WMCheckSix:
@@ -356,10 +356,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                             // sfr: cleanup camera mess
                             FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
                             //for (i = 1; i < FalconLocalSession->CameraCount(); i++) {
-                            //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
-                            //		FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
-                            //		break;
-                            //	}
+                            // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotWing) {
+                            // FalconLocalSession->RemoveCamera(myBrain->targetSpotWing);
+                            // break;
+                            // }
                             //}
                         }
 
@@ -435,10 +435,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                             // sfr: cleanup camera mess
                             FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
                             //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                            //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
-                            //		FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
-                            //		break;
-                            //	}
+                            // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotElement) {
+                            // FalconLocalSession->RemoveCamera(myBrain->targetSpotElement);
+                            // break;
+                            // }
                             //}
                         }
 
@@ -500,10 +500,10 @@ void AiSendPlayerCommand(int command, int extent, VU_ID targetId)
                             // sfr: cleanup camera mess
                             FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
                             //for (i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                            //	if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotFlight) {
-                            //		FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
-                            //		break;
-                            //	}
+                            // if (FalconLocalSession->GetCameraEntity(i) == myBrain->targetSpotFlight) {
+                            // FalconLocalSession->RemoveCamera(myBrain->targetSpotFlight);
+                            // break;
+                            // }
                             //}
                         }
 
@@ -643,19 +643,19 @@ void AiSendCommand(SimBaseClass* p_sender, int command, int extent, VU_ID target
 extern bool g_bMPFix2;
 void AiMakeCommandMsg(SimBaseClass* p_sender, int command, int extent, VU_ID targetid)
 {
-    FalconWingmanMsg*							p_commandMsgs;
+    FalconWingmanMsg* p_commandMsgs;
 
     if (g_bMPFix2)
-        p_commandMsgs	=
+        p_commandMsgs =
             new FalconWingmanMsg(p_sender->GetCampaignObject()->Id(), (VuTargetEntity*) vuDatabase->Find(vuLocalSessionEntity->Game()->OwnerId()))
         ;
     else
-        p_commandMsgs	= new FalconWingmanMsg(p_sender->GetCampaignObject()->Id(), FalconLocalGame);
+        p_commandMsgs = new FalconWingmanMsg(p_sender->GetCampaignObject()->Id(), FalconLocalGame);
 
-    p_commandMsgs->dataBlock.from			= p_sender->Id();
-    p_commandMsgs->dataBlock.to			= extent;
-    p_commandMsgs->dataBlock.command		= command;
-    p_commandMsgs->dataBlock.newTarget	= targetid;
+    p_commandMsgs->dataBlock.from = p_sender->Id();
+    p_commandMsgs->dataBlock.to = extent;
+    p_commandMsgs->dataBlock.command = command;
+    p_commandMsgs->dataBlock.newTarget = targetid;
 
     FalconSendMessage(p_commandMsgs, TRUE);
 }
@@ -683,24 +683,24 @@ VU_ID AiDesignateTarget(AircraftClass* aircraft)
 VU_ID AiCheckForThreat(AircraftClass* paircraft, char domain, int position, float* az)
 {
 
-    SimObjectType		*pobjectPtr;
-    SimObjectType		*pthreatPtr = NULL;
-    VuEntityType		*pclassPtr;
-    char					vuDomain;
-    char					vuClass;
-    char					vuType;
-    char					vuSType; //JB 010527 (from MN) ///////// New Variable for subtype
-    BOOL					inSideATA = FALSE;
+    SimObjectType *pobjectPtr;
+    SimObjectType *pthreatPtr = NULL;
+    VuEntityType *pclassPtr;
+    char vuDomain;
+    char vuClass;
+    char vuType;
+    char vuSType; //JB 010527 (from MN) ///////// New Variable for subtype
+    BOOL inSideATA = FALSE;
 
     pobjectPtr = paircraft->targetList;
 
     while (pobjectPtr)
     {
-        pclassPtr	= pobjectPtr->BaseData()->EntityType();
-        vuDomain		= pclassPtr->classInfo_[VU_DOMAIN];
-        vuClass		= pclassPtr->classInfo_[VU_CLASS];
-        vuType		= pclassPtr->classInfo_[VU_TYPE];
-        vuSType		= pclassPtr->classInfo_[VU_STYPE]; //JB 052701 (from MN)
+        pclassPtr = pobjectPtr->BaseData()->EntityType();
+        vuDomain = pclassPtr->classInfo_[VU_DOMAIN];
+        vuClass = pclassPtr->classInfo_[VU_CLASS];
+        vuType = pclassPtr->classInfo_[VU_TYPE];
+        vuSType = pclassPtr->classInfo_[VU_STYPE]; //JB 052701 (from MN)
 
         if (position == 1 && pobjectPtr->localData->ata >= 90.0F * DTR)
         {

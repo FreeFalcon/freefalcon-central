@@ -21,10 +21,10 @@
 #include "squadron.h"
 #include "falcsess.h"
 
-#include "radiosubtitle.h"				// Retro 20Dec2003 for subtitles
-#include "sim\include\navsystem.h"		// Retro 20Dec2003 for subtitles
+#include "radiosubtitle.h" // Retro 20Dec2003 for subtitles
+#include "sim\include\navsystem.h" // Retro 20Dec2003 for subtitles
 
-extern BOOL	killThread;
+extern BOOL killThread;
 extern float MAX_RADIO_RANGE;
 extern float RADIO_PROX_RANGE;
 extern VU_TIME vuxGameTime;
@@ -63,15 +63,15 @@ enum
 
 typedef struct
 {
-    int		mode;
-    int		talker;
-    int		message;
-    int		frag;
-    int		numEvals;
-    short	element[15];
-    short	data[15];
-    short	maxs[15];
-    short	eval[15];
+    int mode;
+    int talker;
+    int message;
+    int frag;
+    int numEvals;
+    short element[15];
+    short data[15];
+    short maxs[15];
+    short eval[15];
 } VoiceToolData;
 
 //#define NUM_FRAGS  2555
@@ -87,26 +87,26 @@ char *fragsPlayed;
 
 //#define NOCALLSIGNS 1
 
-#define	EBEARING_MIN	0
-#define	EBEARING_MAX	71
-#define	EANGELS_MIN		0
-#define	EANGELS_MAX		45
-#define	ERANGE_MIN		0
-#define	ERANGE_MAX		34		// 2001-09-15 M.N.
-#define	ETHOUSANDS_MIN	1
-#define	ETHOUSANDS_MAX	54
-#define	EAIRSPEED_MIN	0
-#define	EAIRSPEED_MAX	47
+#define EBEARING_MIN 0
+#define EBEARING_MAX 71
+#define EANGELS_MIN 0
+#define EANGELS_MAX 45
+#define ERANGE_MIN 0
+#define ERANGE_MAX 34 // 2001-09-15 M.N.
+#define ETHOUSANDS_MIN 1
+#define ETHOUSANDS_MAX 54
+#define EAIRSPEED_MIN 0
+#define EAIRSPEED_MAX 47
 
 
 int voice_ = 0; //default voice to play
 
 void *map_file(char *filename, long bytestomap = 0);
-extern	VoiceFilter		*voiceFilter;
-VoiceManager	*VM;
+extern VoiceFilter *voiceFilter;
+VoiceManager *VM;
 extern HINSTANCE hInst;
 extern HANDLE VMWakeEventHandle;
-//C_Hash			*fragTable = NULL;
+//C_Hash *fragTable = NULL;
 
 VoiceFilter::VoiceFilter(void)
 {
@@ -159,7 +159,7 @@ void VoiceFilter::SilenceVoices()
 
 void VoiceFilter::SetUpVoiceFilter(void)
 {
-    //	int	i;
+    // int i;
 
     LoadCommFile();
     LoadEvalFile();
@@ -176,7 +176,7 @@ void VoiceFilter::SetUpVoiceFilter(void)
 
 void VoiceFilter::CleanUpVoiceFilter(void)
 {
-    //	delete [] mesgTable;
+    // delete [] mesgTable;
 
     DisposeCommData();
     DisposeEvalData();
@@ -190,22 +190,22 @@ void VoiceFilter::CleanUpVoiceFilter(void)
 
   LoadCommFile
 
-	Purpose:	Load Conversation Data File
+ Purpose: Load Conversation Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::LoadCommFile(void)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\commFile.bin", FalconSoundThrDirectory);
 
-    //	commData = (char *)map_file(filename);
+    // commData = (char *)map_file(filename);
 
-    //	ShiAssert( commData );
+    // ShiAssert( commData );
     if (commfile.Open(filename) != TRUE)
         ShiError("Can't open commfile.bin");
 
@@ -216,11 +216,11 @@ void VoiceFilter::LoadCommFile(void)
 
   DisposeCommData
 
-	Purpose:	Dispose Coversation Data File
+ Purpose: Dispose Coversation Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::DisposeCommData(void)
@@ -233,22 +233,22 @@ void VoiceFilter::DisposeCommData(void)
 
   LoadEvalFile
 
-	Purpose:	Load Eval Data File
+ Purpose: Load Eval Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::LoadEvalFile(void)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\evalFile.bin", FalconSoundThrDirectory);
 
-    //	evalData = (char *)map_file(filename);
+    // evalData = (char *)map_file(filename);
 
-    //	ShiAssert( evalData );
+    // ShiAssert( evalData );
     if (evalfile.Open(filename) != TRUE)
         ShiError("Can't open evalFile.bin");
 
@@ -259,11 +259,11 @@ void VoiceFilter::LoadEvalFile(void)
 
   DisposeEvalData
 
-	Purpose:	Dispose Eval Data File
+ Purpose: Dispose Eval Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::DisposeEvalData(void)
@@ -276,16 +276,16 @@ void VoiceFilter::DisposeEvalData(void)
 
   LoadFragFile
 
-	Purpose:	Load Frag Data File
+ Purpose: Load Frag Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::LoadFragFile(void)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
 
     sprintf(filename, "%s\\fragFile.bin", FalconSoundThrDirectory);
@@ -303,11 +303,11 @@ void VoiceFilter::LoadFragFile(void)
 
   DisposeFragData
 
-	Purpose:	Dispose Frag Data File
+ Purpose: Dispose Frag Data File
 
-	  Arguments:
+   Arguments:
 
-		Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::DisposeFragData(void)
@@ -316,9 +316,9 @@ void VoiceFilter::DisposeFragData(void)
     fragfile.Close();
 }
 
-//	Retro 20Dec 2003 - pretty much ripped from somewhere else -
-//	(Voicemanager.cpp - FilterMessage()) - and put into its own routine
-//	used for the subtitles to determine over what readiochannel a specific message came
+// Retro 20Dec 2003 - pretty much ripped from somewhere else -
+// (Voicemanager.cpp - FilterMessage()) - and put into its own routine
+// used for the subtitles to determine over what readiochannel a specific message came
 char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID from, const VU_ID to)
 {
     char retval[2] = { 0, 0 };
@@ -385,7 +385,7 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
                     retval[i] |= TOFROM_FLIGHT;
                 else if ((TOFROM_TOWER & radiofilter) && gNavigationSys)
                 {
-                    VU_ID	ATCId;
+                    VU_ID ATCId;
                     gNavigationSys->GetAirbase(&ATCId);
 
                     if (ATCId == from || ATCId == to)
@@ -406,15 +406,15 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
 
   PlayRadioMessage
 
-	Purpose:	Evalutes the talker, message and data to retrieve a conversation
-				from the .tlk file and place the conversation in the circular
-				buffer queue.
+ Purpose: Evalutes the talker, message and data to retrieve a conversation
+ from the .tlk file and place the conversation in the circular
+ buffer queue.
 
-				  Arguments:	int talker - the person who is speaking;
-				  int msgid - the conversation to play;
-				  int *data - NULL is none. Used for Evals ( i.e. altitude, degrees ... )
+   Arguments: int talker - the person who is speaking;
+   int msgid - the conversation to play;
+   int *data - NULL is none. Used for Evals ( i.e. altitude, degrees ... )
 
-					Returns:
+ Returns:
 
 ****************************************************************************/
 void VoiceFilter::PlayRadioMessage(
@@ -422,15 +422,15 @@ void VoiceFilter::PlayRadioMessage(
     char radiofilter, char channel, VU_ID from, int evalby, VU_ID to
 )
 {
-    int				i;
-    short			evalElement;
-    short			fragNumber = 0, evalHdrNumber = 0;//, fileNumber;
-    COMM_FILE_INFO*	commHdrInfo;
-    //	char			*dcommPtr;
-    short			*commInfo;
-    short			*dfileNum;
-    CONVERSATION	message;
-    int				eval = 0;
+    int i;
+    short evalElement;
+    short fragNumber = 0, evalHdrNumber = 0;//, fileNumber;
+    COMM_FILE_INFO* commHdrInfo;
+    // char *dcommPtr;
+    short *commInfo;
+    short *dfileNum;
+    CONVERSATION message;
+    int eval = 0;
 
     // sfr: placing back original code and removing JB fucking hack which is wrong BTW, since
     // player entity can be an eject class instead of aircraft class...
@@ -462,7 +462,7 @@ void VoiceFilter::PlayRadioMessage(
         }
 
         //MonoPrint(
-        //	"Dumping Message: %d  Player: %d  ExitChan: %d KillThread: %d\n", msgid, player, exit, killThread
+        // "Dumping Message: %d  Player: %d  ExitChan: %d KillThread: %d\n", msgid, player, exit, killThread
         //);
         return;
     }
@@ -510,7 +510,7 @@ void VoiceFilter::PlayRadioMessage(
     message.to = to;
     message.sizeofConv = (char)(commHdrInfo->totalElements + 2); //need two extra spaces for pops
     message.interrupt = QUEUE_CONV;
-    message.playTime = playTime;		//when the message should be played
+    message.playTime = playTime; //when the message should be played
     message.priority = commHdrInfo->priority;
     message.convIndex = 0;
 
@@ -536,7 +536,7 @@ void VoiceFilter::PlayRadioMessage(
     *dfileNum = FragToFile(pop, RADIO_POP);
     dfileNum++;
 
-    bool newMessage = true;	// Retro 20Dec2003 for the RadioLabels
+    bool newMessage = true; // Retro 20Dec2003 for the RadioLabels
 
     for (i = 0; i < commHdrInfo->totalElements; i ++)
     {
@@ -566,7 +566,7 @@ void VoiceFilter::PlayRadioMessage(
                 {
                     message.sizeofConv--;
                     commInfo ++;
-                    //					dcommPtr += sizeof( short );
+                    // dcommPtr += sizeof( short );
                     continue;
                 }
 
@@ -613,13 +613,13 @@ void VoiceFilter::PlayRadioMessage(
                         // This should become irrelevant once Joe gets his changes in
                         if (evalElement > VF_SHORTCALLSIGN_OFFSET)
                         {
-                        	evalElement -= VF_SHORTCALLSIGN_OFFSET;
-                        	evalHdrNumber = eSHORTCALL;
+                         evalElement -= VF_SHORTCALLSIGN_OFFSET;
+                         evalHdrNumber = eSHORTCALL;
                         }
                         if (evalElement > VF_FLIGHTNUMBER_OFFSET)
                         {
-                        	evalElement -= VF_FLIGHTNUMBER_OFFSET;
-                        	evalHdrNumber = eFLIGHTNUMBER;
+                         evalElement -= VF_FLIGHTNUMBER_OFFSET;
+                         evalHdrNumber = eFLIGHTNUMBER;
                         }
                         */
                         break;
@@ -693,11 +693,11 @@ void VoiceFilter::PlayRadioMessage(
 
 KilometersToNauticalMiles
 
-Purpose:	Convert Kilometers to nautical miles
+Purpose: Convert Kilometers to nautical miles
 
-Arguments:	int feet
+Arguments: int feet
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::KilometersToNauticalMiles(short km)
@@ -709,7 +709,7 @@ short VoiceFilter::KilometersToNauticalMiles(short km)
     float dist;
 
     // 2001-09-15 M.N. MORE DISCRETE DISTANCES: FROM 60-400 NM IN 20 NM INCREMENTS
-    //	index = (short)FloatToInt32(KM_TO_NM * km);	-> NOT NEEDED, GETS CHANGED IN ANY CASE BELOW
+    // index = (short)FloatToInt32(KM_TO_NM * km); -> NOT NEEDED, GETS CHANGED IN ANY CASE BELOW
     dist = KM_TO_NM * km;
 
     // Ranges over 400 nm are in 50 nm increments
@@ -742,16 +742,16 @@ short VoiceFilter::KilometersToNauticalMiles(short km)
 
 FeetToAngel
 
-Purpose:	Convert feet to angles
+Purpose: Convert feet to angles
 
-Arguments:	int feet
+Arguments: int feet
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::FeetToAngel(int feet)
 {
-    int	index;
+    int index;
 
     if (feet == -1)
         return -1;
@@ -778,11 +778,11 @@ short VoiceFilter::FeetToAngel(int feet)
 
 FeetToThousands
 
-Purpose:	Convert feet to thousands
+Purpose: Convert feet to thousands
 
-Arguments:	int feet
+Arguments: int feet
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::FeetToThousands(int feet)
@@ -790,7 +790,7 @@ short VoiceFilter::FeetToThousands(int feet)
     if (feet == -1)
         return -1;
 
-    int	index;
+    int index;
 
     // 1000ft. = 1 Angel
     index = feet / 1000;
@@ -820,15 +820,15 @@ short VoiceFilter::FeetToThousands(int feet)
 
 DegreesToElement
 
-Purpose:	Convert degrees to eval index.
+Purpose: Convert degrees to eval index.
 
 DegreesToElement
 
-Purpose:	Convert degrees to eval index.
+Purpose: Convert degrees to eval index.
 
-Arguments:	int degree
+Arguments: int degree
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::DegreesToElement(int degree)
@@ -836,7 +836,7 @@ short VoiceFilter::DegreesToElement(int degree)
     if (degree == -1)
         return -1;
 
-    int	index;
+    int index;
 
     // Degree = 350 / 10 = 35 - index into Eval
     if (degree < 0)
@@ -856,11 +856,11 @@ short VoiceFilter::DegreesToElement(int degree)
 
 KnotsToElement
 
-Purpose:	Convert knots to eval index.
+Purpose: Convert knots to eval index.
 
-Arguments:	int knots
+Arguments: int knots
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::KnotsToElement(int knots)
@@ -868,7 +868,7 @@ short VoiceFilter::KnotsToElement(int knots)
     if (knots == -1)
         return -1;
 
-    int	index;
+    int index;
 
     index = (knots - 95) / 10;
 
@@ -885,11 +885,11 @@ short VoiceFilter::KnotsToElement(int knots)
 
 KnotsToReduceIncreaseToElement
 
-Purpose:	Convert knots to eval index.
+Purpose: Convert knots to eval index.
 
-Arguments:	int knots
+Arguments: int knots
 
-Returns:	int - eval index ( element )
+Returns: int - eval index ( element )
 
 ****************************************************************************/
 short VoiceFilter::KnotsToReduceIncreaseToElement(int knots)
@@ -897,7 +897,7 @@ short VoiceFilter::KnotsToReduceIncreaseToElement(int knots)
     if (knots == -1)
         return -1;
 
-    int	index;
+    int index;
 
     index = (knots - 110) / 10;
 
@@ -914,22 +914,22 @@ short VoiceFilter::KnotsToReduceIncreaseToElement(int knots)
 
 EvaluateElement
 
-  Purpose:	Find the file number of given the eval and element
+  Purpose: Find the file number of given the eval and element
 
-	Arguments:	short evalHdrNumber - eval to check;
-	int evalElement - element in eval.
+ Arguments: short evalHdrNumber - eval to check;
+ int evalElement - element in eval.
 
-	  Returns:	short - frag file number
+   Returns: short - frag file number
 Rewritten to use real data structures - JPO
 ****************************************************************************/
 short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 {
-    //  char	*dEvalData;
+    //  char *dEvalData;
     EVAL_FILE_INFO *eEvalData;
     EVAL_ELEM *eEvalElem;
 
-    //	EVAL_FILE_INFO	evalHdrInfo;
-    short	fragHdrNbr = 0;
+    // EVAL_FILE_INFO evalHdrInfo;
+    short fragHdrNbr = 0;
 
     //index into evaldata to get appropriate offset
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
@@ -948,8 +948,8 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 
     // 2001-09-22 M.N. random evalIndex (only for consecutive indexes) if evalElement == 32767 (max short+)
 
-    if (evalElement == 32767)				// allows later addition of random fragments, if wanted
-        evalElement = rand() % (upper + 1);	// => no hardcoded limits anymore
+    if (evalElement == 32767) // allows later addition of random fragments, if wanted
+        evalElement = rand() % (upper + 1); // => no hardcoded limits anymore
 
     // END of added section
 
@@ -964,16 +964,16 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
     {
         center = (lower + upper) / 2;
 
-        //	  if(evalElement == (( short *)dEvalData)[center * 2])
+        //   if(evalElement == (( short *)dEvalData)[center * 2])
         if (evalElement == eEvalElem[center].evalElem)
         {
-            //		  dEvalData += sizeof( short );
-            //		  fragHdrNbr = ((short *)dEvalData)[center * 2];
+            //   dEvalData += sizeof( short );
+            //   fragHdrNbr = ((short *)dEvalData)[center * 2];
             fragHdrNbr = eEvalElem[center].evalFrag;
             break;
         }
 
-        //	  if(evalElement < (( short *)dEvalData)[center * 2])
+        //   if(evalElement < (( short *)dEvalData)[center * 2])
         if (evalElement < eEvalElem[center].evalElem)
             upper = center - 1;
         else
@@ -988,12 +988,12 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 
 IndexElement
 
-  Purpose:	Find the file number of given the eval and index
+  Purpose: Find the file number of given the eval and index
 
-	Arguments:	short evalHdrNumber - eval to check;
-	int evalElement - element in eval.
+ Arguments: short evalHdrNumber - eval to check;
+ int evalElement - element in eval.
 
-	  Returns:	short - frag file number
+   Returns: short - frag file number
 
 ****************************************************************************/
 short VoiceFilter::IndexElement(short evalHdrNumber, short evalElement)
@@ -1001,12 +1001,12 @@ short VoiceFilter::IndexElement(short evalHdrNumber, short evalElement)
     if (killThread)
         return 0;
 
-    //  char	*dEvalData;
+    //  char *dEvalData;
     EVAL_FILE_INFO *eEvalData;
     EVAL_ELEM *eEvalElem;
 
-    //	EVAL_FILE_INFO	evalHdrInfo;
-    short	fragHdrNbr = 0;
+    // EVAL_FILE_INFO evalHdrInfo;
+    short fragHdrNbr = 0;
 
     //index into evaldata to get appropriate offset
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
@@ -1018,7 +1018,7 @@ short VoiceFilter::IndexElement(short evalHdrNumber, short evalElement)
     if (evalElement < 0)
         evalElement = 0;
     //  else if(evalElement >  ((EVAL_FILE_INFO *)dEvalData)->numEvals - 1)
-    //	  evalElement = (short)(((EVAL_FILE_INFO *)dEvalData)->numEvals - 1);
+    //   evalElement = (short)(((EVAL_FILE_INFO *)dEvalData)->numEvals - 1);
     else if (evalElement >  eEvalData->numEvals - 1)
         evalElement = eEvalData->numEvals - 1;
 
@@ -1038,12 +1038,12 @@ short VoiceFilter::IndexElement(short evalHdrNumber, short evalElement)
 
 FragToFile
 
-Purpose:	Find the file number of a frag and talker
+Purpose: Find the file number of a frag and talker
 
-Arguments:	int talker - speaker;
-			short fragNumber - frag file number
+Arguments: int talker - speaker;
+ short fragNumber - frag file number
 
-Returns:	short - snd file number
+Returns: short - snd file number
 
 ****************************************************************************/
 short VoiceFilter::FragToFile(int talker, short fragNumber)
@@ -1051,10 +1051,10 @@ short VoiceFilter::FragToFile(int talker, short fragNumber)
     if (killThread)
         return 0;
 
-    SPEAKER_TO_FILE	*dFragData;
-    FRAG_FILE_INFO	*fragHdrInfo;
-    short	fileNumber = 0;
-    int	index = 0;
+    SPEAKER_TO_FILE *dFragData;
+    FRAG_FILE_INFO *fragHdrInfo;
+    short fileNumber = 0;
+    int index = 0;
     SPEAKER_TO_FILE *headerInfo = NULL;
 
     //get pointer into fragData where FRAG_FILE_INFO structure is stored
@@ -1100,12 +1100,12 @@ short VoiceFilter::FragToFile(int talker, short fragNumber)
 
 //returns true if position data is within proximity, false if not, or it is not
 //a position based radio message
-int	VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
+int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
 {
-    COMM_FILE_INFO	*commHdrInfo;
-    //	char			*dcommPtr;
+    COMM_FILE_INFO *commHdrInfo;
+    // char *dcommPtr;
 
-    //	dcommPtr = commData;
+    // dcommPtr = commData;
 
     //get pointer to message data for the requested message
     if (*mesgID < 1)
@@ -1113,9 +1113,9 @@ int	VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
     else if (*mesgID >= commfile.MaxComms()) // JPO dynamic
         *mesgID = 1;
 
-    //	dcommPtr += ( *mesgID ) * sizeof(COMM_FILE_INFO);
+    // dcommPtr += ( *mesgID ) * sizeof(COMM_FILE_INFO);
 
-    //	commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
+    // commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(*mesgID);
 
     if (!commHdrInfo || F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
@@ -1125,8 +1125,8 @@ int	VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
 
     if (commHdrInfo->positionElement > -1)
     {
-        GridIndex		x1, y1, x2, y2;
-        float			theta, xs1, ys1, xs2, ys2;
+        GridIndex x1, y1, x2, y2;
+        float theta, xs1, ys1, xs2, ys2;
         x1 = data[commHdrInfo->positionElement];
         y1 = data[commHdrInfo->positionElement + 1];
 
@@ -1192,24 +1192,24 @@ int	VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
         if (SimDriver.InSim())
         {
             /* JB 010121
-            			ys1 = GridToSim(x1);
-            			xs1 = GridToSim(y1);
+             ys1 = GridToSim(x1);
+             xs1 = GridToSim(y1);
 
-            			if (FalconLocalSession->GetPlayerEntity())
-            			{
-            				ys2 = FalconLocalSession->GetPlayerEntity()->XPos();
-            				xs2 = FalconLocalSession->GetPlayerEntity()->YPos();
-            			}
-            			else if(FalconLocalSession->GetPlayerFlight())
-            			{
-            				ys2 = FalconLocalSession->GetPlayerFlight()->XPos();
-            				xs2 = FalconLocalSession->GetPlayerFlight()->YPos();
-            			}
-            			else
-            			{
-            				ys2 = FalconLocalSession->GetPlayerSquadron()->XPos();
-            				xs2 = FalconLocalSession->GetPlayerSquadron()->YPos();
-            			}
+             if (FalconLocalSession->GetPlayerEntity())
+             {
+             ys2 = FalconLocalSession->GetPlayerEntity()->XPos();
+             xs2 = FalconLocalSession->GetPlayerEntity()->YPos();
+             }
+             else if(FalconLocalSession->GetPlayerFlight())
+             {
+             ys2 = FalconLocalSession->GetPlayerFlight()->XPos();
+             xs2 = FalconLocalSession->GetPlayerFlight()->YPos();
+             }
+             else
+             {
+             ys2 = FalconLocalSession->GetPlayerSquadron()->XPos();
+             xs2 = FalconLocalSession->GetPlayerSquadron()->YPos();
+             }
             JB 010121 */
             if (DistSqu(xs1, ys1, xs2, ys2) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
             {
@@ -1243,13 +1243,13 @@ void InitDialogData(void)
 
 void SetupNewMsg(void)
 {
-    COMM_FILE_INFO*	commHdrInfo;
-    //	char			*dcommPtr;
-    short			*commInfo;
-    short			evalHdrNumber = 0;
-    //	char			*dEvalData;
+    COMM_FILE_INFO* commHdrInfo;
+    // char *dcommPtr;
+    short *commInfo;
+    short evalHdrNumber = 0;
+    // char *dEvalData;
     EVAL_FILE_INFO *eEvalData;
-    int				evalNum = 0;
+    int evalNum = 0;
 
     int i = 0;
 
@@ -1261,7 +1261,7 @@ void SetupNewMsg(void)
     commHdrInfo = voiceFilter->commfile.GetComm(VToolMsgData.message);
 
     // use offset in  just aquired data to position pointer
-    //	dcommPtr = voiceFilter->commData + commHdrInfo->commOffset;
+    // dcommPtr = voiceFilter->commData + commHdrInfo->commOffset;
     commInfo = voiceFilter->commfile.GetCommInd(commHdrInfo);
 
     for (i = 0; i < commHdrInfo->totalElements; i ++)
@@ -1469,7 +1469,7 @@ void PlayRandomMessage(int channel)
 
 int PlayToolMessage(HWND hwnd)
 {
-    char			buffer[MAX_PATH];
+    char buffer[MAX_PATH];
 
     if (VToolMsgData.message < voiceFilter->commfile.MaxComms())
     {
@@ -1498,7 +1498,7 @@ int PlayToolMessage(HWND hwnd)
         }
         else if (VToolMsgData.mode == PLAY_FRAG)
         {
-            CONVERSATION	message;
+            CONVERSATION message;
 
             message.status = SLOT_IN_USE;
             message.speaker = (char)VToolMsgData.talker;
@@ -1506,8 +1506,8 @@ int PlayToolMessage(HWND hwnd)
             message.filter = -1;
             message.sizeofConv = 1;
             message.interrupt = QUEUE_CONV;
-            message.playTime = vuxGameTime;				//when the message should be played
-            message.priority = 1;						//NORMAL_PRIORITY;
+            message.playTime = vuxGameTime; //when the message should be played
+            message.priority = 1; //NORMAL_PRIORITY;
             message.convIndex = 0;
 
 #ifdef USE_SH_POOLS
@@ -1532,13 +1532,13 @@ int PlayToolMessage(HWND hwnd)
 
 void UpdateVoiceDialog(HWND hwnd)
 {
-    char			buffer[MAX_PATH];
-    int				i = 0;
-    COMM_FILE_INFO*	commHdrInfo;
-    //char			*dcommPtr;
-    short			*commInfo;
-    short			fragNumber = 0, evalHdrNumber = 0;
-    int				evalNum = 0;
+    char buffer[MAX_PATH];
+    int i = 0;
+    COMM_FILE_INFO* commHdrInfo;
+    //char *dcommPtr;
+    short *commInfo;
+    short fragNumber = 0, evalHdrNumber = 0;
+    int evalNum = 0;
 
     _itoa(VToolMsgData.talker, buffer, 10);
     Edit_SetText(GetDlgItem(hwnd, IDC_VOICE), buffer);
@@ -1607,7 +1607,7 @@ void UpdateVoiceDialog(HWND hwnd)
 
 void GetDialogValues(HWND hwnd)
 {
-    char			buffer[MAX_PATH];
+    char buffer[MAX_PATH];
 
     GetWindowText(GetDlgItem(hwnd, IDC_VOICE), (LPTSTR) buffer, MAX_PATH);
     VToolMsgData.talker = atoi(buffer);
@@ -1655,13 +1655,13 @@ void GetDialogValues(HWND hwnd)
 
 LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char			buffer[MAX_PATH];
-    char			*pBuf;
-    int				index = 0;
-    FILE			*fp;
-    double			result;
-    //long			*lptr;
-    int				dec, sign;
+    char buffer[MAX_PATH];
+    char *pBuf;
+    int index = 0;
+    FILE *fp;
+    double result;
+    //long *lptr;
+    int dec, sign;
 
 
     switch (message)
@@ -1675,10 +1675,10 @@ LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             //DialogBox(hInst,MAKEINTRESOURCE(IDD_PLAYVOICES),hwnd,(DLGPROC)PlayVoicesProc);
             break;
 
-        case WM_COMMAND:                			/* message: received command	*/
+        case WM_COMMAND:                 /* message: received command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected.			*/
+                case IDOK:    /* "OK" box selected. */
                 case IDCANCEL:
                     EndDialog(hwnd, TRUE);     /* Exits the dialog box       */
                     return (TRUE);

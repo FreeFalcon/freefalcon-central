@@ -1,7 +1,7 @@
-#ifndef	ALLOC_Included
-#define	ALLOC_Included
+#ifndef ALLOC_Included
+#define ALLOC_Included
 
-#define	DEFAULT_ALLOC 0
+#define DEFAULT_ALLOC 0
 
 typedef struct
 {

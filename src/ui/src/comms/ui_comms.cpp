@@ -1,9 +1,9 @@
 /***************************************************************************\
-	UI_COMMS.cpp
-	Peter Ward
-	December 3, 1996
+ UI_COMMS.cpp
+ Peter Ward
+ December 3, 1996
 
-	Comms Handling stuff for thw UI
+ Comms Handling stuff for thw UI
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -54,7 +54,7 @@ enum
 {
     MUTE_IMAGE        = 2000,
     ICON_IMAGE        = 2001,
-    SND_HOMER		  = 500034,
+    SND_HOMER   = 500034,
 };
 
 
@@ -141,7 +141,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
 {
     C_TreeList  *tree;
     TREELIST    *item;
-    C_Player	*plyr;
+    C_Player *plyr;
     UI_RequestLogbook *rlb;
     FalconSessionEntity *session;
 
@@ -285,7 +285,7 @@ void LoadCommsWindows()
         gMainParser->LoadImageList("comm_art.lst");
 
     gMainParser->LoadSoundList("comm_snd.lst");
-    gMainParser->LoadWindowList("comm_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("comm_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -489,13 +489,13 @@ void ServerChatCommand(_TCHAR *msg)
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
         if ((arga && argb && !stricmp(arga, ".sfx")) || (arga && !stricmp(arga, ".")))
         {
-            static	int	sfx = 0;
-            static	float Dist = 300;
+            static int sfx = 0;
+            static float Dist = 300;
             static Tpoint vc = OTWDriver.GetEyePosition();;
-            char*	argc;
+            char* argc;
             argc = strtok(NULL, " ");
 
-            float	Pan, Tilt, d = 300;
+            float Pan, Tilt, d = 300;
 
             if (!stricmp(arga, ".")) goto doit;
 
@@ -513,9 +513,9 @@ void ServerChatCommand(_TCHAR *msg)
         doit:
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(sfx,				// type
-                             &vc,							// world pos
-                             60.0f,							// time to live
+                new SfxClass(sfx, // type
+                             &vc, // world pos
+                             60.0f, // time to live
                              1.0f));
         }
 
@@ -787,7 +787,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
         win->RefreshClient(txt->GetClient());
 
         win->ScanClientArea(2);
-        //		gSoundMgr->PlaySound(SND_HOMER);
+        // gSoundMgr->PlaySound(SND_HOMER);
     }
 }
 
@@ -1075,7 +1075,7 @@ void ProcessChatStr(CHATSTR *msg)
         OTWDriver.ShowMessage(chatbuf);
     }
 
-    if (msg->Text_) delete[] msg->Text_;		// OW - the message string was not deleted resulting in a memory leak
+    if (msg->Text_) delete[] msg->Text_; // OW - the message string was not deleted resulting in a memory leak
 
     delete msg;
 }
@@ -1236,7 +1236,7 @@ static void SetOnlineStatus(long ID)
 
 void SetSingle_Comms_Ctrls()
 {
-    //	SetOnlineStatus(IA_TOOLBAR_WIN); // Single player ONLY for Instant Action
+    // SetOnlineStatus(IA_TOOLBAR_WIN); // Single player ONLY for Instant Action
     SetOnlineStatus(DF_TOOLBAR_WIN);
     SetOnlineStatus(DF_PLAY_TOOLBAR_WIN);
     SetOnlineStatus(TAC_TOOLBAR_WIN);
@@ -1707,7 +1707,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
 {
     C_TreeList  *tree;
     TREELIST    *item;
-    C_Player	*plyr;
+    C_Player *plyr;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -1745,7 +1745,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
 {
     C_TreeList  *tree;
     TREELIST    *item;
-    C_Player	*plyr;
+    C_Player *plyr;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2188,11 +2188,11 @@ void UI_UpdateGameList()
                         }
 
                         /*
-                        						if(game == gCommsMgr->GetGame())
-                        						{
-                        							// Add to gCommsMgr game lists (if selected)
-                        							AddPlayerToGame(session);
-                        						}
+                         if(game == gCommsMgr->GetGame())
+                         {
+                         // Add to gCommsMgr game lists (if selected)
+                         AddPlayerToGame(session);
+                         }
                         */
                     }
                 }
@@ -2209,15 +2209,15 @@ void UI_UpdateGameList()
 
                 if (game)
                 {
-                    //					if(game->Id() == q->GameID)
-                    //						RemovePlayerFromGame(q->SessionID);
+                    // if(game->Id() == q->GameID)
+                    // RemovePlayerFromGame(q->SessionID);
                     if (game->GetGameType() == game_Campaign || game->GetGameType() == game_TacticalEngagement)
                         TallyPlayerSquadrons();
 
-                    //					else if(game->GetGameType() == game_Dogfight)
-                    //					{
-                    //						CheckFlyButton();
-                    //					}
+                    // else if(game->GetGameType() == game_Dogfight)
+                    // {
+                    // CheckFlyButton();
+                    // }
                 }
 
                 break;
@@ -2688,25 +2688,25 @@ static void HookupCommsControls(long ID)
         b->SetCallback(AddressInputCB);
 
 
-    //	ctrl=(C_Button *)winme->FindControl(CON_TYPE_MODEM);
-    //	if(ctrl)
-    //		ctrl->SetCallback(Phone_ConnectType_CB);
+    // ctrl=(C_Button *)winme->FindControl(CON_TYPE_MODEM);
+    // if(ctrl)
+    // ctrl->SetCallback(Phone_ConnectType_CB);
 
-    //	ctrl=(C_Button *)winme->FindControl(CON_TYPE_INTERNET);
-    //	if(ctrl)
-    //		ctrl->SetCallback(Phone_ConnectType_CB);
+    // ctrl=(C_Button *)winme->FindControl(CON_TYPE_INTERNET);
+    // if(ctrl)
+    // ctrl->SetCallback(Phone_ConnectType_CB);
 
-    //	ctrl=(C_Button *)winme->FindControl(CON_TYPE_LAN);
-    //	if(ctrl)
-    //		ctrl->SetCallback(Phone_ConnectType_CB);
+    // ctrl=(C_Button *)winme->FindControl(CON_TYPE_LAN);
+    // if(ctrl)
+    // ctrl->SetCallback(Phone_ConnectType_CB);
 
-    //	ctrl=(C_Button *)winme->FindControl(CON_TYPE_SERIAL);
-    //	if(ctrl)
-    //		ctrl->SetCallback(Phone_ConnectType_CB);
+    // ctrl=(C_Button *)winme->FindControl(CON_TYPE_SERIAL);
+    // if(ctrl)
+    // ctrl->SetCallback(Phone_ConnectType_CB);
 
-    //	ctrl=(C_Button *)winme->FindControl(CON_TYPE_JETNET);
-    //	if(ctrl)
-    //		ctrl->SetCallback(Phone_ConnectType_CB);
+    // ctrl=(C_Button *)winme->FindControl(CON_TYPE_JETNET);
+    // if(ctrl)
+    // ctrl->SetCallback(Phone_ConnectType_CB);
 
     tree = (C_TreeList*)winme->FindControl(PEOPLE_TREE);
 

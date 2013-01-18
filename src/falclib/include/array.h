@@ -2,7 +2,7 @@
 #define ARRAY_H
 // array.h
 // Star Trek Generations for Win32s
-// Copyright 1994 Spectrum Holobyte	Inc.
+// Copyright 1994 Spectrum Holobyte Inc.
 // file for Chuck Hughes's non-MFC object array functionality
 
 // standard compiler lib includes

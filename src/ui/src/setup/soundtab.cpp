@@ -100,7 +100,7 @@ void InitSoundSetup()
 {
     C_Window *win;
 
-    if (gSoundDriver)		// NULL if -nosound
+    if (gSoundDriver) // NULL if -nosound
     {
         PlayerOptions.GroupVol[MASTER_SOUND_GROUP] = gSoundDriver->GetMasterVolume();
     }
@@ -132,10 +132,10 @@ void InitSoundSetup()
 
 
         /*
-        UI_ENABLE_3D_SOUNDS							=70214,
-        UI_ENABLE_DOPPLER_EFFECT					=70215,
-        UI_ENABLE_DISTANCE_EFFECT					=70216,
-        UI_ENABLE_INTERNAL_SOUND					=70217
+        UI_ENABLE_3D_SOUNDS =70214,
+        UI_ENABLE_DOPPLER_EFFECT =70215,
+        UI_ENABLE_DISTANCE_EFFECT =70216,
+        UI_ENABLE_INTERNAL_SOUND =70217
         */
 
         C_Button *button;
@@ -158,7 +158,7 @@ void InitSoundSetup()
         }
 
         /*
-        EXTERNAL_SOUND_VOLUME						=70218
+        EXTERNAL_SOUND_VOLUME =70218
         */
 
         C_Slider *sldr;
@@ -167,30 +167,30 @@ void InitSoundSetup()
 
         if (sldr)
         {
-            //			if(PlayerOptions.SoundFlags<-10000)
-            //				PlayerOptions.SoundFlags=-10000;
+            // if(PlayerOptions.SoundFlags<-10000)
+            // PlayerOptions.SoundFlags=-10000;
 
-            //			if(PlayerOptions.SoundFlags>10000)
-            //				PlayerOptions.SoundFlags=10000;
+            // if(PlayerOptions.SoundFlags>10000)
+            // PlayerOptions.SoundFlags=10000;
 
-            //			if(PlayerOptions.SoundFlags<-5000)
-            //				PlayerOptions.SoundFlags=-5000;
+            // if(PlayerOptions.SoundFlags<-5000)
+            // PlayerOptions.SoundFlags=-5000;
 
-            //			if(PlayerOptions.SoundFlags>1000)
-            //				PlayerOptions.SoundFlags=1000;
+            // if(PlayerOptions.SoundFlags>1000)
+            // PlayerOptions.SoundFlags=1000;
 
             int smin, smax, pos;
 
             smax = sldr->GetSliderMax();
             smin = sldr->GetSliderMin();
 
-            //			pos=RESCALE(PlayerOptions.SoundExtAttenuation,-10000,1000,smin,smax);
+            // pos=RESCALE(PlayerOptions.SoundExtAttenuation,-10000,1000,smin,smax);
             pos = RESCALE(PlayerOptions.SoundExtAttenuation, -5000, 5000, smin, smax);
 
             sldr->SetSliderPos(pos);
 
 
-            //			sldr->SetSliderRange(-1000,1000);
+            // sldr->SetSliderRange(-1000,1000);
             sldr->SetCallback(SoundExtVolCB);
             sldr->Refresh();
 
@@ -286,7 +286,7 @@ void SoundSliderCB(long, short hittype, C_Base *control)
             idx = control->GetUserNumber(0);
             idx -= 100; // 100 based
             handle = SFX_DEF && idx < NumSFX ? SFX_DEF[idx].handle : SND_NO_HANDLE;
-            //			F4SetVolume(control->GetUserNumber(0),volume);
+            // F4SetVolume(control->GetUserNumber(0),volume);
             F4SetVolume(handle, volume);
             break;
 
@@ -364,10 +364,10 @@ void SoundFlagsCB(long, short hittype, C_Base *control)
     switch (ID)
     {
             /*
-            UI_ENABLE_3D_SOUNDS							=70214,
-            UI_ENABLE_DOPPLER_EFFECT					=70215,
-            UI_ENABLE_DISTANCE_EFFECT					=70216,
-            UI_ENABLE_INTERNAL_SOUND					=70217
+            UI_ENABLE_3D_SOUNDS =70214,
+            UI_ENABLE_DOPPLER_EFFECT =70215,
+            UI_ENABLE_DISTANCE_EFFECT =70216,
+            UI_ENABLE_INTERNAL_SOUND =70217
             */
 
         case UI_ENABLE_3D_SOUNDS:
@@ -408,14 +408,14 @@ void SoundExtVolCB(long, short hittype, C_Base *control)
 
 
 
-    //	PlayerOptions.SoundExtAttenuation = RESCALE(pos,smin,smax,-10000,10000);
+    // PlayerOptions.SoundExtAttenuation = RESCALE(pos,smin,smax,-10000,10000);
     PlayerOptions.SoundExtAttenuation = RESCALE(pos, smin, smax, -5000, 5000);
     /*
-    	FILE *fp;
-    	if(fp=fopen("slider.txt","a+"))
-    	{
-    		fprintf(fp,"Value %d\n",RESCALE(pos,smin,smax,-10000,10000));
-    		fclose(fp);
-    	}
+     FILE *fp;
+     if(fp=fopen("slider.txt","a+"))
+     {
+     fprintf(fp,"Value %d\n",RESCALE(pos,smin,smax,-10000,10000));
+     fclose(fp);
+     }
     */
 }

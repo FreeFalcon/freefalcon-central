@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     16Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #ifndef _FARRTEX_H_
 #define _FARRTEX_H_
@@ -19,9 +19,9 @@ extern class FarTexDB TheFarTextures;
 
 typedef struct FarTexEntry
 {
-    BYTE		*bits;		// 8 bit pixel data (NULL if not loaded)
-    UInt		handle;		// Rasterization engine texture handle (NULL if not available)
-    int			refCount;	// Reference count
+    BYTE *bits; // 8 bit pixel data (NULL if not loaded)
+    UInt handle; // Rasterization engine texture handle (NULL if not available)
+    int refCount; // Reference count
 } FarTexEntry;
 
 class FarTexFile : public FileMemMap
@@ -64,13 +64,13 @@ protected:
     FarTexFile fartexFile;
     FileMemMap fartexDDSFile;
 
-    int	texCount;
-    FarTexEntry	*texArray;		// Array of texture records
+    int texCount;
+    FarTexEntry *texArray; // Array of texture records
 
-    DWORD palette[256];			// Original, unlit palette data
-    PaletteHandle *palHandle;	// Rasterization engine palette handle (NULL if not available)
+    DWORD palette[256]; // Original, unlit palette data
+    PaletteHandle *palHandle; // Rasterization engine palette handle (NULL if not available)
 
-    int	linearSize;				// Linear DDS size for fartiles.dds
+    int linearSize; // Linear DDS size for fartiles.dds
 
     DXContext *private_rc;
 
@@ -102,8 +102,8 @@ public:
 
 #ifdef _DEBUG
 public:
-    int	LoadedTextureCount;
-    int	ActiveTextureCount;
+    int LoadedTextureCount;
+    int ActiveTextureCount;
 #endif
 };
 

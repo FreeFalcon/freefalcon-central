@@ -25,17 +25,17 @@
 extern int g_nShowDebugLabels;
 #endif
 
-extern bool g_bUseAggresiveIncompleteA2G;	// 2002-03-22 S.G.
-extern float g_fHotNoseAngle;				// 2002-03-22 S.G.
-extern float g_fMaxMARNoIdA;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId5kA;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId18kA;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId28kA;				// 2002-03-22 S.G.
-extern float g_fMaxMARNoIdB;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId5kB;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId18kB;				// 2002-03-22 S.G.
-extern float g_fMinMARNoId28kB;				// 2002-03-22 S.G.
-extern float g_fMinMARNoIdC;				// 2002-03-22 S.G.
+extern bool g_bUseAggresiveIncompleteA2G; // 2002-03-22 S.G.
+extern float g_fHotNoseAngle; // 2002-03-22 S.G.
+extern float g_fMaxMARNoIdA; // 2002-03-22 S.G.
+extern float g_fMinMARNoId5kA; // 2002-03-22 S.G.
+extern float g_fMinMARNoId18kA; // 2002-03-22 S.G.
+extern float g_fMinMARNoId28kA; // 2002-03-22 S.G.
+extern float g_fMaxMARNoIdB; // 2002-03-22 S.G.
+extern float g_fMinMARNoId5kB; // 2002-03-22 S.G.
+extern float g_fMinMARNoId18kB; // 2002-03-22 S.G.
+extern float g_fMinMARNoId28kB; // 2002-03-22 S.G.
+extern float g_fMinMARNoIdC; // 2002-03-22 S.G.
 
 
 //#define DEBUG_INTERCEPT
@@ -59,7 +59,7 @@ void DigitalBrain::BvrEngageCheck(void)
         bvrCurrProfile = Pnone;
 
         //if ((AircraftClass*)flightLead)
-        if ((AircraftClass*)flightLead && bvractionstep != 0)	//THW 2003-11-15 Only calc if necessary
+        if ((AircraftClass*)flightLead && bvractionstep != 0) //THW 2003-11-15 Only calc if necessary
         {
             if (((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 && self->GetCampaignObject()->NumberOfComponents() < 3 ||
                 ((AircraftClass*)flightLead)->DBrain()->bvractionstep == 0 && (AircraftClass *)self->GetCampaignObject() &&
@@ -137,42 +137,42 @@ void DigitalBrain::BvrEngageCheck(void)
 
 
         // 2002-03-04 ADDED BY S.G. Addition to the addition :-) On A2G, don't bother attacking what can't (won't) attack us!
-        /*	   // I think this is not required because SensorFusion will screen them out based on mission type and enemy plane combat type
-        	   if (SkillLevel() > 0) { // Recruit attacks all that moves
-        		   CampBaseClass *campBaseObj;
-        		   if (targetPtr->BaseData()->IsSim())
-        			   campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
-        		   else
-        			   campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
+        /*    // I think this is not required because SensorFusion will screen them out based on mission type and enemy plane combat type
+            if (SkillLevel() > 0) { // Recruit attacks all that moves
+            CampBaseClass *campBaseObj;
+            if (targetPtr->BaseData()->IsSim())
+            campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
+            else
+            campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
-        		   // If it has a campaign object and it's identified...
-        		   if (campBaseObj && campBaseObj->GetIdentified(self->GetTeam())) {
-        			   if (targetPtr->BaseData()->CombatClass() >= MnvrClassA10)
-        				   return; // Don't bother attacking non treathning aircrafts...
+            // If it has a campaign object and it's identified...
+            if (campBaseObj && campBaseObj->GetIdentified(self->GetTeam())) {
+            if (targetPtr->BaseData()->CombatClass() >= MnvrClassA10)
+            return; // Don't bother attacking non treathning aircrafts...
 
-        		   }
-        	   }
-        */	   // END OF ADDED SECTION 2002-03-04
+            }
+            }
+        */    // END OF ADDED SECTION 2002-03-04
 
         /*if (SkillLevel() > 1) {
            // For rookies and up, if our target is far,
            if (targetPtr->localData->range > 15.0F * NM_TO_FT) {
-        	   // Ignore if behind us
-        	   if (fabs(targetPtr->localData->ata) > 90.0F)
-        		   return;
+            // Ignore if behind us
+            if (fabs(targetPtr->localData->ata) > 90.0F)
+            return;
 
-        	   // Or if we have an escort
-        	   if (escortFlightID != FalconNullId) {
-        		   FlightClass *escortFlight = (FlightClass *)vuDatabase->Find(escortFlightID);
-        		   if (escortFlight && !escortFlight->IsDead())
-        			   return; // We have an alive escort so concentrate on the task at hand...
-        	   }
+            // Or if we have an escort
+            if (escortFlightID != FalconNullId) {
+            FlightClass *escortFlight = (FlightClass *)vuDatabase->Find(escortFlightID);
+            if (escortFlight && !escortFlight->IsDead())
+            return; // We have an alive escort so concentrate on the task at hand...
+            }
            }
         }
         else {
            // For recruits and cadets, only ignore the target if it's far and behind them
            if (targetPtr->localData->range > 15.0F * NM_TO_FT && fabs(targetPtr->localData->ata) > 90.0F * DTR)
-        	   return;
+            return;
         }*/
 
     }
@@ -664,7 +664,7 @@ void DigitalBrain::BvrChooseTactic(void)
         bvrCurrTactic = BvrNotch;
         bvrTacticTimer = SimLibElapsedTime + 20 * CampaignSeconds + SkillLevel() * 5 * CampaignSeconds;
         short edata[3];
-        int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+        int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
         edata[0] = flightIdx;
         edata[1] = 0;//notching
         AiMakeRadioResponse(self, rcEXECUTERESPONSE, edata);
@@ -782,203 +782,203 @@ void DigitalBrain::ChoiceProfile(void)
 
 
     /*
-    		 Pnone,
+      Pnone,
 
       AGGRESIVE MISSILE SUPERIORITY
-    		 Plevel1a,
-    		 Plevel2a,
-    	     Plevel3a,
+      Plevel1a,
+      Plevel2a,
+          Plevel3a,
 
       DEFENSIVE MISSILE SUPERIORITY
-    		 Plevel1b,
-    	     Plevel2b,
-    	     Plevel3b,
+      Plevel1b,
+          Plevel2b,
+          Plevel3b,
 
       INFERIOR MISSILES
-    		 Plevel1c,
-    	     Plevel2c,
-    	     Plevel3c,
+      Plevel1c,
+          Plevel2c,
+          Plevel3c,
       OTHER
-    	     Pbeamdeploy,
-    	     Pbeambeam,
-    	     Pwall,
-    	     Pgrinder,
-    	     Pwideazimuth,
-    	     Pshortazimuth,
-    	     PwideLT,
-    	     PShortLT,
-    		 PDefensive*/
+          Pbeamdeploy,
+          Pbeambeam,
+          Pwall,
+          Pgrinder,
+          Pwideazimuth,
+          Pshortazimuth,
+          PwideLT,
+          PShortLT,
+      PDefensive*/
 
     /*switch (((UnitClass*)(self->GetCampaignObject()))->GetUnitMission())
     {
     // medium agresiveness...balanced efford to kill and to survive
     // lead trail and grinding technicks when superoir missiles
-    	case AMIS_BARCAP:
-    	case AMIS_BARCAP2:
-    	case AMIS_HAVCAP:
-    	case AMIS_TARCAP:
-    	case AMIS_RESCAP:
-    	case AMIS_AMBUSHCAP:
-    	{
-    		if (calcThreatScore == 0)
-    		{
-    			if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMSpread, AiFlight);
-    			int choice = rand()% (SkillLevel()+1);
-    			if (choice == 0) bvrCurrProfile = Pwall;
-    			else if (choice == 1) bvrCurrProfile = PwideLT;
-    			else  bvrCurrProfile = Pgrinder;
-    		}
-    		else
-    		{
-    			if (Isflightlead)
-    				AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
-    			if (calcThreatScore == 1)
-    				{
+     case AMIS_BARCAP:
+     case AMIS_BARCAP2:
+     case AMIS_HAVCAP:
+     case AMIS_TARCAP:
+     case AMIS_RESCAP:
+     case AMIS_AMBUSHCAP:
+     {
+     if (calcThreatScore == 0)
+     {
+     if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMSpread, AiFlight);
+     int choice = rand()% (SkillLevel()+1);
+     if (choice == 0) bvrCurrProfile = Pwall;
+     else if (choice == 1) bvrCurrProfile = PwideLT;
+     else  bvrCurrProfile = Pgrinder;
+     }
+     else
+     {
+     if (Isflightlead)
+     AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
+     if (calcThreatScore == 1)
+     {
 
-    				}
-    			else
-    				{
+     }
+     else
+     {
 
-    				}
-    			if (choice == 0) bvrCurrProfile = Plevel1c;
-    			else if (choice == 1) bvrCurrProfile = Plevel2c;
-    			else if (choice == 2) bvrCurrProfile = Plevel3c;
-    			else if (choice == 3) bvrCurrProfile = PwideLT;
-    			else if (choice == 4) bvrCurrProfile = PShortLT;
-    			else if (choice == 5) bvrCurrProfile = Pwideazimuth;
-    			else if (choice == 6) bvrCurrProfile = Pshortazimuth;
-    			else if (choice == 7) bvrCurrProfile = Pwall;
-    			else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
-    			else if (choice == 9) bvrCurrProfile = Pbeambeam;
-    			else bvrCurrProfile = Pbeambeam;
-    		}
-    	}
-    	break;
+     }
+     if (choice == 0) bvrCurrProfile = Plevel1c;
+     else if (choice == 1) bvrCurrProfile = Plevel2c;
+     else if (choice == 2) bvrCurrProfile = Plevel3c;
+     else if (choice == 3) bvrCurrProfile = PwideLT;
+     else if (choice == 4) bvrCurrProfile = PShortLT;
+     else if (choice == 5) bvrCurrProfile = Pwideazimuth;
+     else if (choice == 6) bvrCurrProfile = Pshortazimuth;
+     else if (choice == 7) bvrCurrProfile = Pwall;
+     else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 9) bvrCurrProfile = Pbeambeam;
+     else bvrCurrProfile = Pbeambeam;
+     }
+     }
+     break;
     // extreemly aggresive missions...kill at all cost and move forward
-    	case AMIS_ALERT:
-    	case AMIS_INTERCEPT:
-    	{
-    		if (!outranged)
-    		{
-    			if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
-    			int choice = rand()% (SkillLevel()+1);
-    			if (choice == 0) bvrCurrProfile = Plevel1a;
-    			else if (choice == 1) bvrCurrProfile = Plevel2a;
-    			else bvrCurrProfile = Plevel3a;
-    		}
-    		else
-    		{
-    			if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
-    			int choice = rand()% (SkillLevel()+1);
-    			if (choice == 0) bvrCurrProfile = Plevel1c;
-    			else if (choice == 1) bvrCurrProfile = Plevel2c;
-    			else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
-    			else if (choice == 3) bvrCurrProfile = Pshortazimuth;
-    			else if (choice == 4) bvrCurrProfile = PwideLT;
-    			else bvrCurrProfile = Plevel3c;
-    		}
-    	}
-    	break;
-    	case AMIS_SWEEP:
-    	case AMIS_ESCORT: // it's a consideratino to stay on time here to protect the pacage
-    	{
-    		if (!outranged)
-    		{
-    			if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
-    			int choice = rand()% (SkillLevel()+1);
-    			if (choice == 0) bvrCurrProfile = Plevel2a;
-    			else if (choice == 1) bvrCurrProfile = PSweep;
-    			else bvrCurrProfile = PSweep;
-    		}
-    		else
-    		{
-    			if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
-    			int choice = rand()% (SkillLevel()+1);
-    			choice += rand()%4;
-    			if (choice == 0) bvrCurrProfile = Plevel1c;
-    			else if (choice == 1) bvrCurrProfile = Plevel2c;
-    			else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
-    			else if (choice == 3) bvrCurrProfile = Pshortazimuth;
-    			else if (choice == 4) bvrCurrProfile = PShortLT;
-    			else if (choice == 5) bvrCurrProfile = Pwideazimuth;
-    			else if (choice == 6) bvrCurrProfile = Plevel3c;
-    			else if (choice == 7) bvrCurrProfile = Pwall;
-    			else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
-    			else if (choice == 9) bvrCurrProfile = Pbeambeam;
-    			else bvrCurrProfile = Plevel3c;
-    		}
-    	}break;
+     case AMIS_ALERT:
+     case AMIS_INTERCEPT:
+     {
+     if (!outranged)
+     {
+     if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
+     int choice = rand()% (SkillLevel()+1);
+     if (choice == 0) bvrCurrProfile = Plevel1a;
+     else if (choice == 1) bvrCurrProfile = Plevel2a;
+     else bvrCurrProfile = Plevel3a;
+     }
+     else
+     {
+     if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
+     int choice = rand()% (SkillLevel()+1);
+     if (choice == 0) bvrCurrProfile = Plevel1c;
+     else if (choice == 1) bvrCurrProfile = Plevel2c;
+     else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 3) bvrCurrProfile = Pshortazimuth;
+     else if (choice == 4) bvrCurrProfile = PwideLT;
+     else bvrCurrProfile = Plevel3c;
+     }
+     }
+     break;
+     case AMIS_SWEEP:
+     case AMIS_ESCORT: // it's a consideratino to stay on time here to protect the pacage
+     {
+     if (!outranged)
+     {
+     if (Isflightlead)AiSendCommand (self, FalconWingmanMsg::WMFluidFour, AiFlight);
+     int choice = rand()% (SkillLevel()+1);
+     if (choice == 0) bvrCurrProfile = Plevel2a;
+     else if (choice == 1) bvrCurrProfile = PSweep;
+     else bvrCurrProfile = PSweep;
+     }
+     else
+     {
+     if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
+     int choice = rand()% (SkillLevel()+1);
+     choice += rand()%4;
+     if (choice == 0) bvrCurrProfile = Plevel1c;
+     else if (choice == 1) bvrCurrProfile = Plevel2c;
+     else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 3) bvrCurrProfile = Pshortazimuth;
+     else if (choice == 4) bvrCurrProfile = PShortLT;
+     else if (choice == 5) bvrCurrProfile = Pwideazimuth;
+     else if (choice == 6) bvrCurrProfile = Plevel3c;
+     else if (choice == 7) bvrCurrProfile = Pwall;
+     else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 9) bvrCurrProfile = Pbeambeam;
+     else bvrCurrProfile = Plevel3c;
+     }
+     }break;
 
     // thiese are mission with killing a-a dudes as second priority
     // so try to avoid, but be aggresive if the bandits wanna play
-    	case AMIS_SEADSTRIKE:
-    	case AMIS_SEADESCORT:
-    	case AMIS_OCASTRIKE:
-    	case AMIS_INTSTRIKE:
-    	case AMIS_STRIKE:
-    	case AMIS_DEEPSTRIKE:
-    	case AMIS_CAS:
-    	case AMIS_ONCALLCAS:
-    	case AMIS_PRPLANCAS:
-    	case AMIS_SAD:
-    	case AMIS_INT:
-    	case AMIS_BAI:
-    	case AMIS_ASW:
-    	case AMIS_ASHIP:
-    	case AMIS_RECON:
-    	case AMIS_BDA:
-    	case AMIS_PATROL:
-    	case AMIS_RECONPATROL:
-    	{
-    	//Cobra we are modifying here to allow A/G flights to attack
-    	//this works with prior new BVR code for A/G flights
-    		if (!IsSetATC(HasAGWeapon) || g_bUseAggresiveIncompleteA2G || (!g_bUseAggresiveIncompleteA2G && missionComplete))
-    		{
-    			if (!outranged)
-    				{
-    				if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMBox, AiFlight);
-    				int choice = rand()%3;
-    				if (choice == 0) bvrCurrProfile =  Plevel1b;
-    				else if (choice == 1) bvrCurrProfile = Plevel2b;
-    				else  bvrCurrProfile = Plevel3b;
-    				}
-    			else
-    				{
-    				if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
-    				int choice = rand()%11;
-    				if (choice == 0) bvrCurrProfile = Plevel1c;
-    				else if (choice == 1) bvrCurrProfile = Plevel2c;
-    				else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
-    				else if (choice == 3) bvrCurrProfile = Pshortazimuth;
-    				else if (choice == 4) bvrCurrProfile = PShortLT;
-    				else if (choice == 5) bvrCurrProfile = Pwideazimuth;
-    				else if (choice == 6) bvrCurrProfile = Plevel3c;
-    				else if (choice == 7) bvrCurrProfile = Pwall;
-    				else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
-    				else if (choice == 9) bvrCurrProfile = Pbeambeam;
-    				else bvrCurrProfile = Plevel3c;
-    				}
-    		}
-    		else
-    		{
-    			if (Isflightlead)
-    				{
-    				AiSendCommand (self, FalconWingmanMsg::WMBox, AiFlight);
-    				}
-    			bvrCurrProfile = PDefensive;
-    		}
-    	}
-    	break;
+     case AMIS_SEADSTRIKE:
+     case AMIS_SEADESCORT:
+     case AMIS_OCASTRIKE:
+     case AMIS_INTSTRIKE:
+     case AMIS_STRIKE:
+     case AMIS_DEEPSTRIKE:
+     case AMIS_CAS:
+     case AMIS_ONCALLCAS:
+     case AMIS_PRPLANCAS:
+     case AMIS_SAD:
+     case AMIS_INT:
+     case AMIS_BAI:
+     case AMIS_ASW:
+     case AMIS_ASHIP:
+     case AMIS_RECON:
+     case AMIS_BDA:
+     case AMIS_PATROL:
+     case AMIS_RECONPATROL:
+     {
+     //Cobra we are modifying here to allow A/G flights to attack
+     //this works with prior new BVR code for A/G flights
+     if (!IsSetATC(HasAGWeapon) || g_bUseAggresiveIncompleteA2G || (!g_bUseAggresiveIncompleteA2G && missionComplete))
+     {
+     if (!outranged)
+     {
+     if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMBox, AiFlight);
+     int choice = rand()%3;
+     if (choice == 0) bvrCurrProfile =  Plevel1b;
+     else if (choice == 1) bvrCurrProfile = Plevel2b;
+     else  bvrCurrProfile = Plevel3b;
+     }
+     else
+     {
+     if (Isflightlead) AiSendCommand (self, FalconWingmanMsg::WMResCell, AiFlight);
+     int choice = rand()%11;
+     if (choice == 0) bvrCurrProfile = Plevel1c;
+     else if (choice == 1) bvrCurrProfile = Plevel2c;
+     else if (choice == 2) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 3) bvrCurrProfile = Pshortazimuth;
+     else if (choice == 4) bvrCurrProfile = PShortLT;
+     else if (choice == 5) bvrCurrProfile = Pwideazimuth;
+     else if (choice == 6) bvrCurrProfile = Plevel3c;
+     else if (choice == 7) bvrCurrProfile = Pwall;
+     else if (choice == 8) bvrCurrProfile = Pbeamdeploy;
+     else if (choice == 9) bvrCurrProfile = Pbeambeam;
+     else bvrCurrProfile = Plevel3c;
+     }
+     }
+     else
+     {
+     if (Isflightlead)
+     {
+     AiSendCommand (self, FalconWingmanMsg::WMBox, AiFlight);
+     }
+     bvrCurrProfile = PDefensive;
+     }
+     }
+     break;
     default:
-    	{
-    	bvrCurrProfile = PDefensive;
-    	break;
-    	}
+     {
+     bvrCurrProfile = PDefensive;
+     break;
+     }
     break;
     }*/
     /////////////TEST TEST TEST//////////////////
-    //	static BVRProfileType test = Plevel1a;
-    //	bvrCurrProfile = test;
+    // static BVRProfileType test = Plevel1a;
+    // bvrCurrProfile = test;
     /////////////TEST TEST TEST//////////////////
 }
 // a = aggresive missilerange superiority
@@ -1149,7 +1149,7 @@ void DigitalBrain::level2b(void)
 
         case 2:
         {
-            if (Isflightlead)	bvrCurrTactic = BvrFollowWaypoints;
+            if (Isflightlead) bvrCurrTactic = BvrFollowWaypoints;
             else bvrCurrTactic = BvrFlyFormation;
 
             bvrTacticTimer = SimLibElapsedTime + 8 * CampaignSeconds;
@@ -1300,7 +1300,7 @@ void DigitalBrain::level3b(void)
 
         case 2:
         {
-            if (Isflightlead)	bvrCurrTactic = BvrFollowWaypoints;
+            if (Isflightlead) bvrCurrTactic = BvrFollowWaypoints;
             else bvrCurrTactic = BvrFlyFormation;
 
             bvrTacticTimer = SimLibElapsedTime + 8 * CampaignSeconds;
@@ -2003,14 +2003,14 @@ void DigitalBrain::Sweep(void)
         case 0:
         {
             // fly waypoints
-            if (Isflightlead)	bvrCurrTactic = BvrFollowWaypoints;
+            if (Isflightlead) bvrCurrTactic = BvrFollowWaypoints;
             else bvrCurrTactic = BvrFlyFormation;
         }
         break;
 
         case 1:// lean element into the threat
         {
-            if (Isflightlead)	bvrCurrTactic = BvrFollowWaypoints;
+            if (Isflightlead) bvrCurrTactic = BvrFollowWaypoints;
             else bvrCurrTactic = BvrPursuit;
         }
         break;
@@ -2037,7 +2037,7 @@ void DigitalBrain::Defensive(void)
             bvrCurrTactic = BvrNotch;
             bvrTacticTimer = SimLibElapsedTime + 15 * CampaignSeconds;
             short edata[3];
-            int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+            int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             edata[0] = flightIdx;
             edata[1] = 0;//notching
             AiMakeRadioResponse(self, rcEXECUTERESPONSE, edata);
@@ -2047,7 +2047,7 @@ void DigitalBrain::Defensive(void)
             bvrCurrTactic = BvrPump;
             bvrTacticTimer = SimLibElapsedTime + 30 * CampaignSeconds + SkillLevel() * 5 * CampaignSeconds;
             short edata[3];
-            int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+            int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             edata[0] = flightIdx;
             edata[1] = 3;//pumping
             AiMakeRadioResponse(self, rcEXECUTERESPONSE, edata);
@@ -2057,11 +2057,11 @@ void DigitalBrain::Defensive(void)
         {// our lead draged us into a dangeres situation we need to split and notch
         bvrCurrTactic = BvrNotch;
         bvrTacticTimer = SimLibElapsedTime + 15 * CampaignSeconds;
-        	short edata[3];
-        	int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
-        	edata[0] = flightIdx;
-        	edata[1] = 0;//notching
-        	AiMakeRadioResponse( self, rcEXECUTERESPONSE, edata );
+         short edata[3];
+         int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
+         edata[0] = flightIdx;
+         edata[1] = 0;//notching
+         AiMakeRadioResponse( self, rcEXECUTERESPONSE, edata );
         }*/
     }
     else
@@ -2216,25 +2216,25 @@ int DigitalBrain::WhoIsSpiked(void)
 
     /*CampBaseClass *campBaseObj;
     if (targetPtr->BaseData()->IsSim())
-    	campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
+     campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
     else
-    	campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
+     campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
     // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
     if ( !campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
     {
-    	RadarClass* theRadar = (RadarClass*)FindSensor(((SimMoverClass*)targetPtr->BaseData()), SensorClass::Radar);
-    	if (theRadar)
-    	{
-    	RadarDataSet* radarData = &radarDatFileTable[self->GetRadarType()];
-    	if (radarData->MaxTwstargets != 0)
-    		{
-    			if (WhoIsHotnosed() >3)
-    			{
-    				result += 16;
-    			}
-    		}
-    	}
+     RadarClass* theRadar = (RadarClass*)FindSensor(((SimMoverClass*)targetPtr->BaseData()), SensorClass::Radar);
+     if (theRadar)
+     {
+     RadarDataSet* radarData = &radarDatFileTable[self->GetRadarType()];
+     if (radarData->MaxTwstargets != 0)
+     {
+     if (WhoIsHotnosed() >3)
+     {
+     result += 16;
+     }
+     }
+     }
     }*/
 
     return result;
@@ -2246,132 +2246,132 @@ void DigitalBrain::CalculateMAR()
     //So, we just delete you and start over.
     /*
     // find MAR and DOR
-    	MAR = 5.0f * NM_TO_FT;
-    	TGTMAR = maxAAWpnRange/2;
+     MAR = 5.0f * NM_TO_FT;
+     TGTMAR = maxAAWpnRange/2;
 
-    	// 2002-03-22 MODIFIED BY S.G. Only use the original code if we have no minTGTMAR
-    	if (!self->af || self->af->GetMinTGTMAR() == 0.0) {
-    		if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
-    		{
-    			if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive.
-    				TGTMAR = max(TGTMAR,13.0f*NM_TO_FT);
-    		}
+     // 2002-03-22 MODIFIED BY S.G. Only use the original code if we have no minTGTMAR
+     if (!self->af || self->af->GetMinTGTMAR() == 0.0) {
+     if (self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
+     {
+     if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive.
+     TGTMAR = max(TGTMAR,13.0f*NM_TO_FT);
+     }
 
-    		if (
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
-    		 self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
-    		{
-    			if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive
-    				TGTMAR = max(TGTMAR,22.0f*NM_TO_FT);
-    		}
-    	}
-    	// Otherwise use its assigned minTGTMAR
-    	else {
-    		if (maxAAWpnRange > 6000.0f)
-    		// END OF ADDED SECTION 2002-03-06
-    			TGTMAR = max(TGTMAR,self->af->GetMinTGTMAR() * NM_TO_FT);
-    	}
-    	// END IF MODIFIED SECTION 2002-03-22
+     if (
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
+      self->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
+     {
+     if (maxAAWpnRange > 6000.0f) // 2002-03-06 ADDED BY S.G. If you only have guns or nothing, don't be foolish and go on the aggresive
+     TGTMAR = max(TGTMAR,22.0f*NM_TO_FT);
+     }
+     }
+     // Otherwise use its assigned minTGTMAR
+     else {
+     if (maxAAWpnRange > 6000.0f)
+     // END OF ADDED SECTION 2002-03-06
+     TGTMAR = max(TGTMAR,self->af->GetMinTGTMAR() * NM_TO_FT);
+     }
+     // END IF MODIFIED SECTION 2002-03-22
 
-    	// 2002-02-12 ADDED BY S.G. GetIdentified is a CampBaseClass so we must fetch it
-    	CampBaseClass *campBaseObj;
-    	if (targetPtr->BaseData()->IsSim())
-    		campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
-    	else
-    		campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
+     // 2002-02-12 ADDED BY S.G. GetIdentified is a CampBaseClass so we must fetch it
+     CampBaseClass *campBaseObj;
+     if (targetPtr->BaseData()->IsSim())
+     campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
+     else
+     campBaseObj = ((CampBaseClass *)targetPtr->BaseData());
 
-    	// If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
-    	if ( !campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
-    	{// we have Type ID.
-    		// 2002-03-22 MODIFIED BY S.G. If our target is an airplane and we have a minMAR, use it instead of the original method
-    		if (!targetPtr->BaseData()->IsAirplane() || !((AircraftClass *)targetPtr->BaseData())->af || ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
-    			if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
-    			{
-    				MAR  = max(MAR,5.0f*NM_TO_FT) ;
-    				if (targetPtr->BaseData()->ZPos() <-28000.0f)
-    					MAR += 8.0f* NM_TO_FT;
-    				else if (targetPtr->BaseData()->ZPos() <-18000.0f)
-    					MAR += 5.0f* NM_TO_FT;
-    				else if (targetPtr->BaseData()->ZPos() <-5000.0f)
-    					MAR += 3.0f* NM_TO_FT;
-    				MAR += min (10.0f * NM_TO_FT, spikesecondselement* NM_TO_FT/3);//add 1nm pr 3 spikesec...max 10nm
-    			}
+     // If it doesn't have a campaign object or it's identified... END OF ADDED SECTION plus the use of campBaseObj below
+     if ( !campBaseObj || campBaseObj->GetIdentified(self->GetTeam()))
+     {// we have Type ID.
+     // 2002-03-22 MODIFIED BY S.G. If our target is an airplane and we have a minMAR, use it instead of the original method
+     if (!targetPtr->BaseData()->IsAirplane() || !((AircraftClass *)targetPtr->BaseData())->af || ((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart() == 0.0f) {
+     if (targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG29||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_MIG31)
+     {
+     MAR  = max(MAR,5.0f*NM_TO_FT) ;
+     if (targetPtr->BaseData()->ZPos() <-28000.0f)
+     MAR += 8.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-18000.0f)
+     MAR += 5.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-5000.0f)
+     MAR += 3.0f* NM_TO_FT;
+     MAR += min (10.0f * NM_TO_FT, spikesecondselement* NM_TO_FT/3);//add 1nm pr 3 spikesec...max 10nm
+     }
 
-    			if (
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
-    			 targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
-    			{
-    				MAR  =max(MAR,10.0f*NM_TO_FT);
-    				if (targetPtr->BaseData()->ZPos() <-28000.0f)
-    					MAR += 17.0f* NM_TO_FT;
-    				else if (targetPtr->BaseData()->ZPos() <-18000.0f)
-    					MAR += 12.0f* NM_TO_FT;
-    				else if (targetPtr->BaseData()->ZPos() <-5000.0f)
-    					MAR += 5.0f* NM_TO_FT;
-    			}
-    		}
-    		// We have ACDATA for this target, use it
-    		else {
-    			MAR  = max(MAR,((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart()*NM_TO_FT) ;
+     if (
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_SU27||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F14A||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15C||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F15E||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F16C||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18A||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F18D||
+      targetPtr->BaseData()->EntityType()->classInfo_[VU_SPTYPE] == SPTYPE_F22)
+     {
+     MAR  =max(MAR,10.0f*NM_TO_FT);
+     if (targetPtr->BaseData()->ZPos() <-28000.0f)
+     MAR += 17.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-18000.0f)
+     MAR += 12.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-5000.0f)
+     MAR += 5.0f* NM_TO_FT;
+     }
+     }
+     // We have ACDATA for this target, use it
+     else {
+     MAR  = max(MAR,((AircraftClass *)targetPtr->BaseData())->af->GetMaxMARIdedStart()*NM_TO_FT) ;
 
-    			if (targetPtr->BaseData()->ZPos() <-28000.0f)
-    				MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded28k()*NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-18000.0f)
-    				MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded18k()*NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-5000.0f)
-    				MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded5k()*NM_TO_FT;
-    			MAR += min (((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIdedSpike()*NM_TO_FT, spikesecondselement*NM_TO_FT/3);//add 1nm pr 3 spikesec...max 10nm
-    		}
-    		// END OF MODIFIED SECTION 2002-03-22
-    	}
-    	else
-    	{// we Don't have Type ID, we have SA on their Speed and altitude though since the ent is spotted
-    		// 2002-03-22 MODIFIED BY S.G. Instead of using the hard coded value, use configurable one
-    		if (
-    			(targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f ||
-    			-targetPtr->BaseData()->ZPos() > 10000.0f)
+     if (targetPtr->BaseData()->ZPos() <-28000.0f)
+     MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded28k()*NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-18000.0f)
+     MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded18k()*NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-5000.0f)
+     MAR += ((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIded5k()*NM_TO_FT;
+     MAR += min (((AircraftClass *)targetPtr->BaseData())->af->GetAddMARIdedSpike()*NM_TO_FT, spikesecondselement*NM_TO_FT/3);//add 1nm pr 3 spikesec...max 10nm
+     }
+     // END OF MODIFIED SECTION 2002-03-22
+     }
+     else
+     {// we Don't have Type ID, we have SA on their Speed and altitude though since the ent is spotted
+     // 2002-03-22 MODIFIED BY S.G. Instead of using the hard coded value, use configurable one
+     if (
+     (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f ||
+     -targetPtr->BaseData()->ZPos() > 10000.0f)
 
-    			)
-    		{//this might be a combat jet.. asume the worst
-    			MAR  =max(MAR,g_fMaxMARNoIdA*NM_TO_FT); // 10.0f*NM_TO_FT);
-    			if (targetPtr->BaseData()->ZPos() <-28000.0f)
-    				MAR +=g_fMinMARNoId28kA*NM_TO_FT; // 17.0f* NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-18000.0f)
-    				MAR +=g_fMinMARNoId18kA*NM_TO_FT; // 12.0f* NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-5000.0f)
-    				MAR += g_fMinMARNoId5kA*NM_TO_FT; // 5.0f* NM_TO_FT;
-    		}
-    		else if (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 250.0f)
-    		{// this could be a a-a capable thingy, but if it's is it's low level so it's a-a long range shoot capabilitys are not great
-    			MAR  = max(MAR,g_fMaxMARNoIdB*NM_TO_FT) ; // 5.0f*NM_TO_FT
-    			if (targetPtr->BaseData()->ZPos() <-28000.0f)
-    				MAR +=g_fMinMARNoId28kB*NM_TO_FT; // 8.0f* NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-18000.0f)
-    				MAR +=g_fMinMARNoId18kB*NM_TO_FT; // 5.0f* NM_TO_FT;
-    			else if (targetPtr->BaseData()->ZPos() <-5000.0f)
-    				MAR += g_fMinMARNoId5kB*NM_TO_FT; // 3.0f* NM_TO_FT;
-    		}
-    			else
-    		{// this must be something unthreatening...it's below 250 knots
-    			MAR  = g_fMinMARNoIdC*NM_TO_FT; // 5.0f * NM_TO_FT;
-    		}
-    	}
+     )
+     {//this might be a combat jet.. asume the worst
+     MAR  =max(MAR,g_fMaxMARNoIdA*NM_TO_FT); // 10.0f*NM_TO_FT);
+     if (targetPtr->BaseData()->ZPos() <-28000.0f)
+     MAR +=g_fMinMARNoId28kA*NM_TO_FT; // 17.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-18000.0f)
+     MAR +=g_fMinMARNoId18kA*NM_TO_FT; // 12.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-5000.0f)
+     MAR += g_fMinMARNoId5kA*NM_TO_FT; // 5.0f* NM_TO_FT;
+     }
+     else if (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 250.0f)
+     {// this could be a a-a capable thingy, but if it's is it's low level so it's a-a long range shoot capabilitys are not great
+     MAR  = max(MAR,g_fMaxMARNoIdB*NM_TO_FT) ; // 5.0f*NM_TO_FT
+     if (targetPtr->BaseData()->ZPos() <-28000.0f)
+     MAR +=g_fMinMARNoId28kB*NM_TO_FT; // 8.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-18000.0f)
+     MAR +=g_fMinMARNoId18kB*NM_TO_FT; // 5.0f* NM_TO_FT;
+     else if (targetPtr->BaseData()->ZPos() <-5000.0f)
+     MAR += g_fMinMARNoId5kB*NM_TO_FT; // 3.0f* NM_TO_FT;
+     }
+     else
+     {// this must be something unthreatening...it's below 250 knots
+     MAR  = g_fMinMARNoIdC*NM_TO_FT; // 5.0f * NM_TO_FT;
+     }
+     }
 
-    	DOR = MAR + 10.0f* NM_TO_FT;*/
+     DOR = MAR + 10.0f* NM_TO_FT;*/
 }
 
 int DigitalBrain::IsSupportignmissile(void)
@@ -2409,30 +2409,30 @@ int DigitalBrain::IsSupportignmissile(void)
     if (missileFiredEntity && ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming && ((SimWeaponClass *)missileFiredEntity)->GetSPType() != SPTYPE_AIM120)
         result = 1;
 
-    /*	if (missileFiredEntity &&
-    		(((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
-    		((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
-    	{
-    		if (self->FCC->lastMissileImpactTime > (((MissileClass *)missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
-    			result = 1;
-    		else if (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar)
-    			result = result;
-    	}
+    /* if (missileFiredEntity &&
+     (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
+     ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
+     {
+     if (self->FCC->lastMissileImpactTime > (((MissileClass *)missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
+     result = 1;
+     else if (((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar)
+     result = result;
+     }
     */
     // MODIFIED BY S.G. Can't rely on this... I've seen missile still being guided that told they were not being guided. Use the radar of the missile (can't miss with that)
     if (wingman && wingman->DBrain()->missileFiredEntity && ((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming)
         result += 2;
 
-    /*	if (wingman &&
-    		wingman->DBrain()->missileFiredEntity &&
-    		(((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
-    		((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
-    	{
-    		if (wingman->FCC->lastMissileImpactTime > (((MissileClass *)wingman->DBrain()->missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
-    			result += 2;
-    		else if (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar)
-    			result = result;
-    	}
+    /* if (wingman &&
+     wingman->DBrain()->missileFiredEntity &&
+     (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming ||
+     ((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar ))
+     {
+     if (wingman->FCC->lastMissileImpactTime > (((MissileClass *)wingman->DBrain()->missileFiredEntity)->GetActiveTime(0.0f, 0.0f, 0.0f, 0.0f, 0.0f)))
+     result += 2;
+     else if (((SimWeaponClass *)wingman->DBrain()->missileFiredEntity)->sensorArray[0]->Type() == SensorClass::Radar)
+     result = result;
+     }
     */
     return result;
 }
@@ -2461,7 +2461,7 @@ int DigitalBrain::IsSplitup(void)
 
 int DigitalBrain::HowManyTargetet(void)
 {
-    int	result = 0;
+    int result = 0;
     AircraftClass *elementlead = NULL;
     AircraftClass *Mywing = NULL;
     AircraftClass *Elementwing = NULL;
@@ -2521,7 +2521,7 @@ int DigitalBrain::HowManyTargetet(void)
 
 int DigitalBrain::HowManyHotnosed(void)
 {
-    int	result = 0;
+    int result = 0;
     AircraftClass *elementlead = NULL;
     AircraftClass *Mywing = NULL;
     AircraftClass *Elementwing = NULL;
@@ -2554,7 +2554,7 @@ int DigitalBrain::HowManyHotnosed(void)
 
 int DigitalBrain::WhoIsHotnosed(void)
 {
-    int	result = 0;
+    int result = 0;
     AircraftClass *elementlead = NULL;
     AircraftClass *Mywing = NULL;
     AircraftClass *Elementwing = NULL;
@@ -2714,7 +2714,7 @@ void DigitalBrain::BaseLineIntercept(void)
         if (fabs(targetData->azFrom) < 35 * DTR)
         {
             //offset
-            if	(targetData->azFrom < 0.0f)
+            if (targetData->azFrom < 0.0f)
             {
                 az = az + 45.0f * DTR;
                 offsetdir = offRight;
@@ -2734,7 +2734,7 @@ void DigitalBrain::BaseLineIntercept(void)
         else
         {
             //collision
-            if	(targetData->azFrom > 0.0f)
+            if (targetData->azFrom > 0.0f)
             {
                 az = az + 45.0f * DTR;
 #ifdef DEBUG_INTERCEPT
@@ -3033,7 +3033,7 @@ void DigitalBrain::StickandThrottle(float DesiredSpeed, float DesiredAltitude)
     if (DesiredSpeed == -3)
     {
         // for notch high maneuver
-        //		DesiredSpeed = ((AircraftClass*)self)->af->MinVcas();
+        // DesiredSpeed = ((AircraftClass*)self)->af->MinVcas();
         DesiredSpeed = ((AircraftClass*)self)->af->GetOptKias(0); // 2002-03-14 MODIFIED BY S.G. If we have to climb, why not find our best climb speed?
         MaxEnergyMode = 10;
         sensitivityClimp *= 10;
@@ -3056,7 +3056,7 @@ void DigitalBrain::StickandThrottle(float DesiredSpeed, float DesiredAltitude)
         if (-self->ZPos() < -DesiredAltitude)
         {
             trackZ = min(self->ZPos() + (speeddifference * sensitivityClimp) , DesiredAltitude);
-            //		trackZ = max (trackZ,-45000.0f);
+            // trackZ = max (trackZ,-45000.0f);
         }
         else
         {
@@ -3067,7 +3067,7 @@ void DigitalBrain::StickandThrottle(float DesiredSpeed, float DesiredAltitude)
 
 
     AutoTrack(4.0f);
-    //	MachHold(DesiredSpeed*MaxEnergyMode, self->GetKias(), TRUE);
+    // MachHold(DesiredSpeed*MaxEnergyMode, self->GetKias(), TRUE);
     MachHold(DesiredSpeed, self->GetKias(), TRUE); // 2002-03-14 S.G. Not sure what RIK was trying to do here but this 'MaxEnergyMode' makes MachHold go into overtime trying to go really really fast :-(
     ShiAssert(trackZ < 0.0F);
 }
@@ -3075,34 +3075,34 @@ void DigitalBrain::StickandThrottle(float DesiredSpeed, float DesiredAltitude)
 void DigitalBrain::AiFlyBvrFOrmation(void)
 {
     ACFormationData::PositionData *curPosition;
-    float				rangeFactor;
-    float				groundZ;
-    int				vehInFlight;
-    int				flightIdx;
-    bool			iamelementlead = false;
+    float rangeFactor;
+    float groundZ;
+    int vehInFlight;
+    int flightIdx;
+    bool iamelementlead = false;
     AircraftClass* paircraft;
     // Get wingman slot position relative to the leader
-    vehInFlight		= ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-    flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+    flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
     if (flightIdx == AiFirstWing && vehInFlight == 2)
     {
-        curPosition	= &(acFormationData->twoposData[mFormation]);	// The four ship #2 slot position is copied in to the 2 ship formation array.
-        paircraft	= (AircraftClass*) flightLead;
+        curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
+        paircraft = (AircraftClass*) flightLead;
     }
     else if (flightIdx == AiSecondWing)
     {
         curPosition = &(acFormationData->twoposData[mFormation]);
-        paircraft	= (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
+        paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
     }
     else
     {
         curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-        paircraft	= (AircraftClass*) flightLead;
+        paircraft = (AircraftClass*) flightLead;
         iamelementlead = true;
     }
 
-    rangeFactor		= curPosition->range * (mFormLateralSpaceFactor);
+    rangeFactor = curPosition->range * (mFormLateralSpaceFactor);
 
     if ((AircraftClass*)flightLead && ((AircraftClass*)flightLead)->DBrain()->bvrCurrProfile == Pwall) rangeFactor *= 6;
 
@@ -3111,17 +3111,17 @@ void DigitalBrain::AiFlyBvrFOrmation(void)
 
     if (paircraft)
     {
-        trackX	= paircraft->XPos();
-        trackY	= paircraft->YPos();
-        trackZ	= paircraft->ZPos();
+        trackX = paircraft->XPos();
+        trackY = paircraft->YPos();
+        trackZ = paircraft->ZPos();
 
         // Calculate position relative to the leader
-        trackX	+= rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-        trackY	+= rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+        trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
+        trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
 
         if (curPosition->relEl)
         {
-            trackZ	+= rangeFactor * (float)sin(-curPosition->relEl);
+            trackZ += rangeFactor * (float)sin(-curPosition->relEl);
         }
         else
         {
@@ -3131,8 +3131,8 @@ void DigitalBrain::AiFlyBvrFOrmation(void)
         AiCheckInPositionCall(trackX, trackY, trackZ);
 
         // Set track point 1NM ahead of desired location
-        trackX	+= 1.0F * NM_TO_FT * (float)cos((paircraft)->af->sigma);
-        trackY	+= 1.0F * NM_TO_FT * (float)sin((paircraft)->af->sigma);
+        trackX += 1.0F * NM_TO_FT * (float)cos((paircraft)->af->sigma);
+        trackY += 1.0F * NM_TO_FT * (float)sin((paircraft)->af->sigma);
     }
 
     // check for terrain following
@@ -3156,13 +3156,13 @@ void DigitalBrain::AiFlyBvrFOrmation(void)
     float xft;
     float yft;
     float zft;
-    float	rx;
-    float	ry;
-    float	rz;
+    float rx;
+    float ry;
+    float rz;
 
     ShiAssert(trackZ < 0.0F);
     CalculateRelativePos(&xft, &yft, &zft, &rx, &ry, &rz);
-    //	SimpleTrack(SimpleTrackDist, 0.0F);
+    // SimpleTrack(SimpleTrackDist, 0.0F);
     ShiAssert(flightLead);
 
     if (flightLead)

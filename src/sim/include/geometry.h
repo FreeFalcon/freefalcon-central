@@ -31,7 +31,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
@@ -57,7 +57,7 @@ float TargetEl(FalconEntity* af1, SimObjectType* af2);
 void TargetAzEl(FalconEntity* af1, float x, float y, float z, float &az, float &el);  // MLR 6/28/2004 -
 void GetXYZ(SimBaseClass* platform, float az, float el, float range,
             float *x, float *y, float *z);
-void CalcRelAzEl(SimBaseClass*, float, float, float, float*, float*);		// added by VWF 7/1/98
+void CalcRelAzEl(SimBaseClass*, float, float, float, float*, float*); // added by VWF 7/1/98
 void CalcRelValues(SimBaseClass*, FalconEntity*, float*, float*, float*, float*, float*);  // added by VWF 7/6/98
 void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr);  // KCK 8/6
 

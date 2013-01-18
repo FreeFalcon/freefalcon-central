@@ -19,7 +19,7 @@
  *
  * AMD3D 3D library code: 3D Transformation
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 

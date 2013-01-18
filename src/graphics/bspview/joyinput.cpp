@@ -1,47 +1,47 @@
 /***************************************************************************\
-	JoyInput.cpp
-	Scott Randolph
-	February 18, 1998
+ JoyInput.cpp
+ Scott Randolph
+ February 18, 1998
 
-	Provide interaction through a joystick.
+ Provide interaction through a joystick.
 \***************************************************************************/
 #include <stdio.h>
 #include <math.h>
 #include "JoyInput.h"
 
 
-#define SIM_SPEED		1000.0f		// Feet per second
-#define SIM_ANG_RATE	2.0f		// Radians per second
-#define	HEAD_ANG_RATE	1.0f		// Radians per second
-#define	IIR_RATE		0.5f		// Percent new value added in (1.0 = no filter)
-#define PI				3.14159265359f
+#define SIM_SPEED 1000.0f // Feet per second
+#define SIM_ANG_RATE 2.0f // Radians per second
+#define HEAD_ANG_RATE 1.0f // Radians per second
+#define IIR_RATE 0.5f // Percent new value added in (1.0 = no filter)
+#define PI 3.14159265359f
 
 
-JoyInputClass	TheJoystick;
+JoyInputClass TheJoystick;
 
 
 
 /***************************************************************************\
-	Detect the joystick and initialize our internal structures.
+ Detect the joystick and initialize our internal structures.
 \***************************************************************************/
 void JoyInputClass::Setup(void)
 {
     ShiAssert(!IsReady());
 
     // Initialize our outputs to default values
-    throttleIIR		= 1.0f;
-    throttle		= 0.003f;
-    pitchRate		= 0.0f;
-    yawRate			= 0.0f;
-    rollRate		= 0.0f;
-    deltaMatrix		= IMatrix;
-    headPitchRate	= 0.0f;
-    headYawRate		= 0.0f;
-    headDeltaMatrix	= IMatrix;
-    buttons			= 0;
+    throttleIIR = 1.0f;
+    throttle = 0.003f;
+    pitchRate = 0.0f;
+    yawRate = 0.0f;
+    rollRate = 0.0f;
+    deltaMatrix = IMatrix;
+    headPitchRate = 0.0f;
+    headYawRate = 0.0f;
+    headDeltaMatrix = IMatrix;
+    buttons = 0;
 
     // Ask for the joystick properties
-    DWORD ret = joyGetDevCaps(JOYSTICKID1,	&joyCaps, sizeof(joyCaps));
+    DWORD ret = joyGetDevCaps(JOYSTICKID1, &joyCaps, sizeof(joyCaps));
 
     if (ret != JOYERR_NOERROR)
     {
@@ -65,7 +65,7 @@ void JoyInputClass::Setup(void)
 
 
 /***************************************************************************\
-	Clean up when the simulation loop is no longer needed.
+ Clean up when the simulation loop is no longer needed.
 \***************************************************************************/
 void JoyInputClass::Cleanup(void)
 {
@@ -78,11 +78,11 @@ void JoyInputClass::Cleanup(void)
 
 
 /***************************************************************************\
-	Do the computations for one time step in the simulation.
+ Do the computations for one time step in the simulation.
 \***************************************************************************/
 void JoyInputClass::Update(DWORD time)
 {
-    float deltaTime		= 0.0f;
+    float deltaTime = 0.0f;
 
 
     ShiAssert(IsReady());
@@ -131,7 +131,7 @@ void JoyInputClass::Update(DWORD time)
         throttleIIR += IIR_RATE * (65535 - (int)joyInfoEx.dwZpos) / 65535.0f;
         throttle = throttleIIR;
 #endif
-        throttle  = throttle * throttle * throttle;	// Use a polynomial curve to get better low end response
+        throttle  = throttle * throttle * throttle; // Use a polynomial curve to get better low end response
     }
 
     // Update the viewing rotation
@@ -143,8 +143,8 @@ void JoyInputClass::Update(DWORD time)
     {
         if (joyInfoEx.dwPOV == JOY_POVCENTERED)
         {
-            headPitchRate	= 0.0f;
-            headYawRate		= 0.0f;
+            headPitchRate = 0.0f;
+            headYawRate = 0.0f;
         }
         else
         {
@@ -161,13 +161,13 @@ void JoyInputClass::Update(DWORD time)
 
 
 /***************************************************************************\
-	Update the rotation matrix to account for the user's control inputs.
-	NOTE:  This is an approximation and will gimbal lock as well...
+ Update the rotation matrix to account for the user's control inputs.
+ NOTE:  This is an approximation and will gimbal lock as well...
 \***************************************************************************/
 void JoyInputClass::ConstructDeltaMatrix(float p, float r, float y, Trotation *T)
 {
-    Tpoint	at, up, rt;
-    float	mag;
+    Tpoint at, up, rt;
+    float mag;
 
     // TODO:  Add in roll component.
 

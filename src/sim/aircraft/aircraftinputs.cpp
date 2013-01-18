@@ -24,18 +24,18 @@
 #include "flightData.h"  // MD -- 20031110: fixes for ATT HLD autopilot
 
 extern int narrowFOV;
-extern BOOL	playerFlightModelHack;
+extern BOOL playerFlightModelHack;
 extern WeaponType playerLastWeaponType;
 extern WeaponClass playerLastWeaponClass;
 extern FireControlComputer::FCCMasterMode playerLastMasterMode;
 extern FireControlComputer::FCCSubMode playerLastSubMode;
 
-extern bool g_bNewDamageEffects;	// JB 000814
+extern bool g_bNewDamageEffects; // JB 000814
 extern bool g_bDisableFunkyChicken; // JB 000820
 extern int g_nMaxDebugLabel; // JB 020316
 
-extern bool g_bRealisticAvionics;	//MI
-extern bool g_bINS;	//MI
+extern bool g_bRealisticAvionics; //MI
+extern bool g_bINS; //MI
 
 #define DEBUGLABEL
 #ifdef DEBUGLABEL

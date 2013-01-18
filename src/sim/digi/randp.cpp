@@ -40,7 +40,7 @@ void DigitalBrain::RollAndPull(void)
         return;
     }
 
-    //	SLOW FLYING COMPETITION  ??  Rollign sizzors, flat sizzors or stack...some kinda 3/9 line fight
+    // SLOW FLYING COMPETITION  ??  Rollign sizzors, flat sizzors or stack...some kinda 3/9 line fight
     if (targetData->range <= 500.0f &&
         (targetPtr->BaseData()->Yaw() - self->Yaw() < 30.0F * DTR) &&
         targetData->ata >= 55.0F * DTR &&
@@ -103,7 +103,7 @@ void DigitalBrain::RollAndPull(void)
 
             if (targetPtr->localData->range > 6.0F * NM_TO_FT)
             {
-                //				MonoPrint ("pre mearge outside 6nm so let's fly fast");
+                // MonoPrint ("pre mearge outside 6nm so let's fly fast");
                 trackZ -= targetPtr->BaseData()->ZDelta() * 0.5f ;
 
                 // 2002-03-13 ADDED BY S.G. Lets not waste fuel for nothing IMHO
@@ -132,7 +132,7 @@ void DigitalBrain::RollAndPull(void)
 
             else if (targetPtr->localData->range  < 6.0F * NM_TO_FT && targetPtr->localData->range >= 1.5F * NM_TO_FT)
             {
-                //	MonoPrint ("between 6 and 1.5nm trying to force a merge nose up");
+                // MonoPrint ("between 6 and 1.5nm trying to force a merge nose up");
                 trackZ += 4000.0f;
                 MachHold(1.05f * cornerSpeed, self->GetKias(), TRUE); // 2002-03-14 MODIFIED BY S.G. from 2 * cornerSpeed to 1.05f * cornerSpeed. Don't over do it
                 AutoTrack(maxGs);

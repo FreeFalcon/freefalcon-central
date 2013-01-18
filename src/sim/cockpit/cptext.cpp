@@ -13,8 +13,8 @@
 
 CPText::CPText(ObjectInitStr *pobjectInitStr, int numStrings) : CPObject(pobjectInitStr)
 {
-    float		halfWidth;
-    float		halfHeight;
+    float halfWidth;
+    float halfHeight;
 
     int i;
 
@@ -35,13 +35,13 @@ CPText::CPText(ObjectInitStr *pobjectInitStr, int numStrings) : CPObject(pobject
 #endif
     }
 
-    halfWidth				= (float) DisplayOptions.DispWidth * 0.5F;
-    halfHeight				= (float) DisplayOptions.DispHeight * 0.5F;
+    halfWidth = (float) DisplayOptions.DispWidth * 0.5F;
+    halfHeight = (float) DisplayOptions.DispHeight * 0.5F;
 
-    mLeft		= (mDestRect.left - halfWidth) / halfWidth;
-    mRight	= (mDestRect.right - halfWidth) / halfWidth;
-    mTop		= -(mDestRect.top - halfHeight) / halfHeight;
-    mBottom	= -(mDestRect.bottom - halfHeight) / halfHeight;
+    mLeft = (mDestRect.left - halfWidth) / halfWidth;
+    mRight = (mDestRect.right - halfWidth) / halfWidth;
+    mTop = -(mDestRect.top - halfHeight) / halfHeight;
+    mBottom = -(mDestRect.bottom - halfHeight) / halfHeight;
 }
 
 
@@ -61,9 +61,9 @@ CPText::~CPText()
 void CPText::DisplayDraw(void)
 {
     int oldFont = VirtualDisplay::CurFont();
-    int	i;
-    int	start;
-    int	step;
+    int i;
+    int start;
+    int step;
 
     step = 11;
     start = mDestRect.top + 6;

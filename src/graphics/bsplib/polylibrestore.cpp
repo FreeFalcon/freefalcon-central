@@ -4,7 +4,7 @@
     March 24, 1998
 
     Provides pointer restoration services for 3D polygons of various types
-	after they've been read back from disk.
+ after they've been read back from disk.
 \***************************************************************************/
 #include "stdafx.h"
 #include "PolyLib.h"

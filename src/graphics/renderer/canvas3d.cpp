@@ -1,15 +1,15 @@
 /*
 ** Name: CANVAS3D.CPP
 ** Description:
-**		Class description which allows 2d primitives to be used on a
-**		"canvas" that exists somehwere in 3-space.  This class is derived
-**		from Render3D and provides 2d operations
-**		virtualized from the VirtualDisplay class.  The canvas is also a
-**		kind of 3d object which has location and orientation in world
-**		space.
+** Class description which allows 2d primitives to be used on a
+** "canvas" that exists somehwere in 3-space.  This class is derived
+** from Render3D and provides 2d operations
+** virtualized from the VirtualDisplay class.  The canvas is also a
+** kind of 3d object which has location and orientation in world
+** space.
 ** History:
-**		3-nov-97 (edg)
-**			We go marching in.....
+** 3-nov-97 (edg)
+** We go marching in.....
 */
 #include <math.h>
 #include "Matrix.h"
@@ -145,7 +145,7 @@ void Canvas3D::Update(const Tpoint *loc, const Trotation *rot)
 }
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void Canvas3D::Point(float x1, float y1)
 {
@@ -170,7 +170,7 @@ void Canvas3D::Point(float x1, float y1)
         p.x = canWorldPos.x + canWorldRight.x * xres + canWorldDown.x * yres;
         p.y = canWorldPos.y + canWorldRight.y * xres + canWorldDown.y * yres;
         p.z = canWorldPos.z + canWorldRight.z * xres + canWorldDown.z * yres;
-        r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+        r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
         r3d->Render3DPoint(&p);
     }
 }
@@ -178,12 +178,12 @@ void Canvas3D::Point(float x1, float y1)
 
 
 /***************************************************************************\
-	Put a one pixel wide line on the display
+ Put a one pixel wide line on the display
 \***************************************************************************/
 void Canvas3D::Line(float x1, float y1, float x2, float y2)
 {
-    float	x;
-    int		clipFlag;
+    float x;
+    int clipFlag;
     Tpoint  p1, p2;
     float   xres, yres;
 
@@ -275,18 +275,18 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
     p2.y = canWorldPos.y + canWorldRight.y * xres + canWorldDown.y * yres;
     p2.z = canWorldPos.z + canWorldRight.z * xres + canWorldDown.z * yres;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     r3d->Render3DLine(&p1, &p2);
 }
 
 
 
 /***************************************************************************\
-	Put a triangle on the display.  It is not filled (for now at least)
+ Put a triangle on the display.  It is not filled (for now at least)
 \***************************************************************************/
 void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 {
-    float	x;
+    float x;
     Tpoint  p1, p2, p3;
     float   xres, yres;
 
@@ -370,7 +370,7 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
     // r3d->Render3DLine( &p3, &p1 );
 
     // Draw the triangle
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     r3d->Render3DFlatTri(&p1, &p2, &p3);
 
     /*
@@ -380,12 +380,12 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display.
-	(The location given is used as the lower left corner of the text)
+ Put a mono-colored string of text on the display.
+ (The location given is used as the lower left corner of the text)
 \***************************************************************************/
 void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
 {
-    float	x, y;
+    float x, y;
     ThreeDVertex ps1, ps2;
     Tpoint p1;
     float xres, yres;
@@ -395,7 +395,7 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
     if (!*string)
         return;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
 
     // Rotation and translate this point based on the current settings
     x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
@@ -507,14 +507,14 @@ void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxe
 
     y1 += r3d->ScreenTextHeight() / ((float)yRes) * canScaleY;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     TextLeft(x1, y1, string, boxed);
 }
 
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display.
-	(The location given is used as the lower right corner of the text)
+ Put a mono-colored string of text on the display.
+ (The location given is used as the lower right corner of the text)
 \***************************************************************************/
 void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 {
@@ -523,13 +523,13 @@ void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     TextLeft(x1, y1, string, boxed);
 }
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display.
-	(The location given is used as the lower right corner of the text)
+ Put a mono-colored string of text on the display.
+ (The location given is used as the lower right corner of the text)
 \***************************************************************************/
 void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int boxed)
 {
@@ -539,15 +539,15 @@ void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int box
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
     y1 += r3d->ScreenTextHeight() / ((float)yRes) * canScaleY;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     TextLeft(x1, y1, string, boxed);
 }
 
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display.
-	(The location given is used as the horizontal center and vertical lower
-	 edge of the text)
+ Put a mono-colored string of text on the display.
+ (The location given is used as the horizontal center and vertical lower
+  edge of the text)
 \***************************************************************************/
 void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 {
@@ -556,7 +556,7 @@ void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     TextLeft(x1, y1, string, boxed);
 }
 
@@ -568,15 +568,15 @@ void Canvas3D::TextCenterVertical(float x1, float y1, const char *string, int bo
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;
     y1 += r3d->ScreenTextHeight() / ((float)yRes) * canScaleY;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     TextLeft(x1, y1, string, boxed);
 }
 
 
 /***************************************************************************\
-	Draw a circle in the viewport.  The radius given is in
-	the X direction.  The Y direction will be scaled to account for the
-	aspect ratio of the display and viewport.
+ Draw a circle in the viewport.  The radius given is in
+ the X direction.  The Y direction will be scaled to account for the
+ aspect ratio of the display and viewport.
 \***************************************************************************/
 void Canvas3D::Circle(float x, float y, float xRadius)
 {
@@ -586,7 +586,7 @@ void Canvas3D::Circle(float x, float y, float xRadius)
     float x2, y2;
     float yRadius;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     yRadius = xRadius * canScaleX / canScaleY;
 
     // Prime the pump
@@ -612,22 +612,22 @@ void Canvas3D::Circle(float x, float y, float xRadius)
 
 
 /***************************************************************************\
-	Draw a portion of a circle in the viewport.  The radius given is in
-	the X direction.  The Y direction will be scaled to account for the
-	aspect ratio of the display and viewport.  The start and stop angles
-	will be adjusted lie between 0 and 2PI.
+ Draw a portion of a circle in the viewport.  The radius given is in
+ the X direction.  The Y direction will be scaled to account for the
+ aspect ratio of the display and viewport.  The start and stop angles
+ will be adjusted lie between 0 and 2PI.
 \***************************************************************************/
 void Canvas3D::Arc(float x, float y, float xRadius, float start, float stop)
 {
-    int		entry, startEntry, stopEntry;
-    float 	yRadius;
+    int entry, startEntry, stopEntry;
+    float  yRadius;
 
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     yRadius = xRadius * canScaleX / canScaleY;
 
     // Find the first and last segment end point of interest
-    startEntry	= (int)(fmod(start, 2.0f * PI) / PI * 180.0) / CircleStep;
-    stopEntry	= (int)(fmod(stop,  2.0f * PI) / PI * 180.0) / CircleStep;
+    startEntry = (int)(fmod(start, 2.0f * PI) / PI * 180.0) / CircleStep;
+    stopEntry = (int)(fmod(stop,  2.0f * PI) / PI * 180.0) / CircleStep;
 
     // Make sure we aren't overrunning the precomputed array
     ShiAssert(startEntry >= 0);
@@ -660,13 +660,13 @@ void Canvas3D::Arc(float x, float y, float xRadius, float start, float stop)
 }
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void Canvas3D::Render2DPoint(float x1, float y1)
 {
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     r3d->Render2DPoint(x1, y1);
-    // MPRVtx_t	vert;
+    // MPRVtx_t vert;
 
     // Package up the point's coordinates
     // vert.x = (float)x1;
@@ -678,13 +678,13 @@ void Canvas3D::Render2DPoint(float x1, float y1)
 }
 
 /***************************************************************************\
-	Put a line on the display.
+ Put a line on the display.
 \***************************************************************************/
 void Canvas3D::Render2DLine(float x1, float y1, float x2, float y2)
 {
-    r3d->ForceAlpha = ForceAlpha;												// COBRA - RED -Forced Alpha
+    r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     r3d->Render2DLine(x1, y1, x2, y2);
-    // MPRVtx_t	vert;
+    // MPRVtx_t vert;
 
     // Package up the point's coordinates
     // vert.x = (float)x1;
@@ -701,7 +701,7 @@ void Canvas3D::Render2DLine(float x1, float y1, float x2, float y2)
 */
 float Canvas3D::NormalizedLineHeight(void)
 {
-    float	scaley;
+    float scaley;
     ThreeDVertex ps1, ps2;
     Tpoint p1;
 
@@ -728,11 +728,11 @@ float Canvas3D::NormalizedLineHeight(void)
 }
 
 /*
-** 	How wide is string s in normalized screen space
+**  How wide is string s in normalized screen space
 */
 float Canvas3D::TextWidth(char *s)
 {
-    float	scalex;
+    float scalex;
     ThreeDVertex ps1, ps2;
     Tpoint p1;
 
@@ -759,11 +759,11 @@ float Canvas3D::TextWidth(char *s)
 }
 
 /*
-** 	How high is char  in normalized screen space
+**  How high is char  in normalized screen space
 */
 float Canvas3D::TextHeight(void)
 {
-    float	scaley;
+    float scaley;
     ThreeDVertex ps1, ps2;
     Tpoint p1;
 

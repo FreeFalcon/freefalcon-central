@@ -24,7 +24,7 @@ enum DedType
 
 typedef struct   // jpo - maybe this will grow
 {
-    long	color0; // color ded is displayed in
+    long color0; // color ded is displayed in
 
 
     DedType dedtype;
@@ -47,22 +47,22 @@ public:
 
     // DED in viewport coords and pixel coords
     //MI changed for ICP Stuff
-    //RECT					mpLinePos[3];
-    //RECT					mpLinePos[4];
-    RECT					mpLinePos[5];
+    //RECT mpLinePos[3];
+    //RECT mpLinePos[4];
+    RECT mpLinePos[5];
 
-    float					mTop;
-    float					mLeft;
-    float					mBottom;
-    float					mRight;
-    long					mColor[2]; // night and day colours
-    DedType					mDedType;
+    float mTop;
+    float mLeft;
+    float mBottom;
+    float mRight;
+    long mColor[2]; // night and day colours
+    DedType mDedType;
 
 public:
 
     CPDed(ObjectInitStr *genericInit, DedInitStr *dedInit);
     virtual ~CPDed();
-    void	Exec(SimBaseClass*);
+    void Exec(SimBaseClass*);
     void DisplayDraw(void);
 };
 

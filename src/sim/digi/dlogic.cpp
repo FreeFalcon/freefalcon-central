@@ -109,12 +109,12 @@ void DigitalBrain::DecisionLogic(void)
                     airtargetPtr->Reference();
                     SetTarget(airtargetPtr);
 
-                    if (isWing)				// let them loose...
+                    if (isWing) // let them loose...
                         AiGoShooter();
 
-                    if (!isWing)			// make a radio call to the team
+                    if (!isWing) // make a radio call to the team
                     {
-                        int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+                        int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
                         FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
                         radioMessage->dataBlock.from = self->Id();
                         radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
@@ -123,7 +123,7 @@ void DigitalBrain::DecisionLogic(void)
                         radioMessage->dataBlock.edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
                         radioMessage->dataBlock.edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
                         radioMessage->dataBlock.edata[2] = 2 * (airtargetPtr->BaseData()->Type() - VU_LAST_ENTITY_TYPE);
-                        radioMessage->dataBlock.edata[3] = (short) SimToGrid(airtargetPtr->BaseData()->YPos());	//THW 2003-11-14 Bugfix: Swapped X/Y
+                        radioMessage->dataBlock.edata[3] = (short) SimToGrid(airtargetPtr->BaseData()->YPos()); //THW 2003-11-14 Bugfix: Swapped X/Y
                         radioMessage->dataBlock.edata[4] = (short) SimToGrid(airtargetPtr->BaseData()->XPos());
                         radioMessage->dataBlock.edata[5] = (short) airtargetPtr->BaseData()->ZPos();
                         radioMessage->dataBlock.time_to_play = 4000; // 4 seconds
@@ -141,7 +141,7 @@ void DigitalBrain::DecisionLogic(void)
     if (threatPtr == NULL && airtargetPtr == NULL && groundTargetPtr == NULL)  // M.N. only retarget if we aren't threatened and don't have a divert air target
     {
         // 2000-09-25 MODIFIED BY S.G. SO WEAPON FREE COMMAND WITH NO DESIGNATED TARGET MAKES THE AI GO AFTER THEIR TARGET...
-        //		if(isWing && mpActionFlags[AI_ENGAGE_TARGET]) {
+        // if(isWing && mpActionFlags[AI_ENGAGE_TARGET]) {
         if (isWing && (mpActionFlags[AI_ENGAGE_TARGET] || mWeaponsAction == AI_WEAPONS_FREE))
         {
             AiRunTargetSelection();
@@ -159,13 +159,13 @@ void DigitalBrain::DecisionLogic(void)
         // edg: check for dead targets!
 
         // 2000-09-21 MODIFIED BY S.G. THIS IS NOT ENOUGH. IF THE PLANE IS *DYING*, STOP TARGETING IT. NOT IF IT'S EXPLODING!
-        //		if ( targetPtr->BaseData()->IsExploding() )
+        // if ( targetPtr->BaseData()->IsExploding() )
         // 2002-01-14 MODIFIED BY S.G. targetPtr->BaseData CAN BE A *CAMPAIGN OBJECT* Don't assume it's a SimBaseClass!!!
         //                             Campaign object do not even have a pctStrength variable which will returned in garbage being used!
         if (targetPtr->BaseData()->IsSim() && ((SimBaseClass *)targetPtr->BaseData())->pctStrength <= 0.0f)  // Dying SIM target have a damage less than 0.0f
         {
             // 2000-09-21 MODIFIED BY S.G. SetTarget DOES TOO MUCH. NEED TO CALL ClearTarget INSTEAD WHICH SIMPLY CLEARS IT, NO MATTER WHAT
-            //			SetTarget( NULL );
+            // SetTarget( NULL );
             ClearTarget();
         }
         else
@@ -204,7 +204,7 @@ void DigitalBrain::DecisionLogic(void)
     ResolveModeConflicts();
 
     // Print mode changes as they occur
-    //	PrtMode();
+    // PrtMode();
 
     // If I'm a leader or a wingman with permission to shoot and not defensive or in waypoint mode
     // MODIFIED BY S.G. SO AI CAN STILL DEFEND THEMSELF WHEN RETURNING TO BASE (ODDLY ENOUGH, LandingMode IS WHEN RTBing
@@ -526,8 +526,8 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             if (!IsSetATC(AskedToEngage))
             {
                 SetATCFlag(AskedToEngage);
-                edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-                edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
+                edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+                edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
                 response = rcREQUESTTOENGAGE;
                 AiMakeRadioResponse(self, response, edata);
 
@@ -565,8 +565,8 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
                 response = rcENGAGINGB;
             }
 
-            edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
+            edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
             edata[2] = 2 * (newTarget->BaseData()->Type() - VU_LAST_ENTITY_TYPE);
             edata[3] = (short) SimToGrid(newTarget->BaseData()->YPos()); //THW 2003-11-14 Bugfix: Swapped X/Y
             edata[4] = (short) SimToGrid(newTarget->BaseData()->XPos());
@@ -580,15 +580,15 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
             // 2000-09-25 ADDED BY S.G. NEED TO FORCE THE AI TO SHOOT RIGHT AWAY
             missileShotTimer = 0;
             // END OF ADDED SECTION
-            edata[0]	= 2 * (newTarget->BaseData()->Type() - VU_LAST_ENTITY_TYPE);
-            navAngle	=  FloatToInt32(RTD * TargetAz(self, newTarget->BaseData()));
+            edata[0] = 2 * (newTarget->BaseData()->Type() - VU_LAST_ENTITY_TYPE);
+            navAngle =  FloatToInt32(RTD * TargetAz(self, newTarget->BaseData()));
 
             if (navAngle < 0)
             {
                 navAngle = 360 + navAngle;
             }
 
-            edata[1] = navAngle / 30;						// scale compass angle for radio eData
+            edata[1] = navAngle / 30; // scale compass angle for radio eData
 
             if (edata[1] >= 12)
             {
@@ -597,7 +597,7 @@ void DigitalBrain::SetTarget(SimObjectType* newTarget)
 
             rz = newTarget->BaseData()->ZPos() - self->ZPos();
 
-            if (rz < 300.0F && rz > -300.0F)  				// check relative alt and select correct frag
+            if (rz < 300.0F && rz > -300.0F)   // check relative alt and select correct frag
             {
                 edata[2] = 1;
             }
@@ -833,11 +833,11 @@ void DigitalBrain::FireControl(void)
 
     //Cobra JB is a crackhead
     /*if (curMissile->sensorArray[0] &&
-    	(curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming || curMissile->sensorArray[0]->Type() == SensorClass::Radar) &&
-    	( targetData->range >
-    	(self->FCC->missileRMax * (((0.99F - isWing * 0.05f)) *(1.30-1.00f * min(((((float)SkillLevel()/2 )/ ((float)self->Sms->numOnBoard[wcAimWpn]))), 1.0f) *
-    			((float)cos(targetPtr->localData->ataFrom/2) * (float)cos(targetPtr->localData->ataFrom/2)))))))
-    	return;*/
+     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming || curMissile->sensorArray[0]->Type() == SensorClass::Radar) &&
+     ( targetData->range >
+     (self->FCC->missileRMax * (((0.99F - isWing * 0.05f)) *(1.30-1.00f * min(((((float)SkillLevel()/2 )/ ((float)self->Sms->numOnBoard[wcAimWpn]))), 1.0f) *
+     ((float)cos(targetPtr->localData->ataFrom/2) * (float)cos(targetPtr->localData->ataFrom/2)))))))
+     return;*/
 
     if // stuff like mavs has 20 degree off bore cabability
     (
@@ -852,10 +852,10 @@ void DigitalBrain::FireControl(void)
     (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming && (targetData->ata > 35.0f * DTR/* ||  targetData->atadot < 0.0f*/)) // 2002-03-12 MODIFIED BY S.G. && has HIGHER precedence than ||
         return;
 
-    //	if // don't shoot semis if agregated
-    //			(curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming &&
-    //			((CampBaseClass*)curMissile->parent)->IsAggregate())
-    //			return;
+    // if // don't shoot semis if agregated
+    // (curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming &&
+    // ((CampBaseClass*)curMissile->parent)->IsAggregate())
+    // return;
 
     if // off bore or getting closer to bore
     (curMissile->sensorArray[0]->Type() == SensorClass::Radar && (targetData->ata > 35.0f * DTR /*||  targetData->atadot < 0.0f*/))  // 2002-03-12 MODIFIED BY S.G. && has HIGHER precedence than ||
@@ -1014,12 +1014,12 @@ BOOL DigitalBrain::CommandTest(void)
     int flightIdx;
 
     // 2000-09-21 S.G. NO NEED TO USE THIS FUNCTION CALL, isWing ALREADY HAS THAT VALUE FOR US...
-    //	flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
-    flightIdx		= isWing;
+    // flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    flightIdx = isWing;
 
     // If Leader, issue orders to wingmen
 
-    if (flightIdx == AiFlightLead || (flightIdx == AiElementLead && mSplitFlight && mpActionFlags[AI_ENGAGE_TARGET] && mCurrentManeuver == FalconWingmanMsg::WMTotalMsg))  	// VWF or rtb should be added
+    if (flightIdx == AiFlightLead || (flightIdx == AiElementLead && mSplitFlight && mpActionFlags[AI_ENGAGE_TARGET] && mCurrentManeuver == FalconWingmanMsg::WMTotalMsg))   // VWF or rtb should be added
     {
         return TRUE;
     }

@@ -21,10 +21,10 @@
 // if it does, we make this super of SimVuDriver
 class SpotDriver : public VuMaster
 {
-    VU_TIME		last_time;
-    SM_SCALAR	lx;
-    SM_SCALAR	ly;
-    SM_SCALAR	lz;
+    VU_TIME last_time;
+    SM_SCALAR lx;
+    SM_SCALAR ly;
+    SM_SCALAR lz;
 public:
     SpotDriver(VuEntity *entity);
     virtual void Exec(VU_TIME timestamp);

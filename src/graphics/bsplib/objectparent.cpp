@@ -16,15 +16,15 @@
 #include "falclib/include/IsBad.h"
 
 #include "Graphics\DXEngine\DXDefines.h"
-extern	bool g_bUse_DX_Engine;
-unsigned long	DXver = 0xFEEF;
+extern bool g_bUse_DX_Engine;
+unsigned long DXver = 0xFEEF;
 extern int nVer;
 
-ObjectParent		*TheObjectList = NULL;
-int					TheObjectListLength = 0;
+ObjectParent *TheObjectList = NULL;
+int TheObjectListLength = 0;
 
-#ifdef	DEBUG_LOD_ID
-char	TheLODNames[10000][32];
+#ifdef DEBUG_LOD_ID
+char TheLODNames[10000][32];
 #endif
 
 #ifdef USE_SH_POOLS
@@ -33,9 +33,9 @@ MEM_POOL gBSPLibMemPool = NULL;
 
 ObjectParent::ObjectParent()
 {
-    refCount					= 0;
-    pLODs						= NULL;
-    pSlotAndDynamicPositions	= NULL;
+    refCount = 0;
+    pLODs = NULL;
+    pSlotAndDynamicPositions = NULL;
 }
 
 
@@ -62,8 +62,8 @@ ObjectParent::~ObjectParent()
 
 void ObjectParent::SetupTable(char *basename)
 {
-    int		file;
-    char	filename[_MAX_PATH];
+    int file;
+    char filename[_MAX_PATH];
 
 #ifdef USE_SH_POOLS
 
@@ -147,11 +147,11 @@ void ObjectParent::CleanupTable(void)
 
 
 // Serialization Function, reading the File of parents
-static	int	ReadParentRecord(ObjectParent &Obj, int file)
+static int ReadParentRecord(ObjectParent &Obj, int file)
 {
-    ParentFileRecord	Record;
+    ParentFileRecord Record;
     // Get the single record
-    int	result = read(file, &Record, sizeof(ParentFileRecord));
+    int result = read(file, &Record, sizeof(ParentFileRecord));
 
     // if any record, exit here
     if (result < 0) return result;
@@ -193,10 +193,10 @@ static	int	ReadParentRecord(ObjectParent &Obj, int file)
 
 void ObjectParent::ReadParentList(int file)
 {
-    ObjectParent	*objParent;
-    ObjectParent	*end;
-    int				i;
-    int				result;
+    ObjectParent *objParent;
+    ObjectParent *end;
+    int i;
+    int result;
 
 
     // Read the length of the parent object array
@@ -216,13 +216,13 @@ void ObjectParent::ReadParentList(int file)
     /*// Now read the elements of the parent array
     result = read( file, TheObjectList, sizeof(*TheObjectList)*TheObjectListLength );
     if (result < 0 ) {
-    	char message[256];
-    	sprintf( message, "Reading object list:  %s", strerror(errno) );
-    	ShiError( message );
+     char message[256];
+     sprintf( message, "Reading object list:  %s", strerror(errno) );
+     ShiError( message );
     }*/
 
     // RED - Rewritten with serialization
-    int	Object = 0;
+    int Object = 0;
 
     // for each parent record
     while (Object < TheObjectListLength)
@@ -286,17 +286,17 @@ void ObjectParent::ReadParentList(int file)
 #endif
 
         // Read the reference list
-        char	LODName[32];
+        char LODName[32];
 
         for (i = 0; i < objParent->nLODs; i++)
         {
             if (g_bUse_DX_Engine) read(file, LODName, sizeof(LODName));
 
             result = read(file, &objParent->pLODs[i], sizeof(*objParent->pLODs));
-#ifdef	DEBUG_LOD_ID
+#ifdef DEBUG_LOD_ID
 
             // LOD ID DEBUG
-            if (g_bUse_DX_Engine)	memcpy(&TheLODNames[((int)(objParent->pLODs[i].objLOD) >> 1)], LODName, sizeof(LODName));;
+            if (g_bUse_DX_Engine) memcpy(&TheLODNames[((int)(objParent->pLODs[i].objLOD) >> 1)], LODName, sizeof(LODName));;
 
 #endif
 
@@ -325,9 +325,9 @@ void ObjectParent::ReadParentList(int file)
 
 void ObjectParent::VerifyVersion(int file)
 {
-    int				result;
-    UInt32			fileVersion;
-    char			message[80];
+    int result;
+    UInt32 fileVersion;
+    char message[80];
 
     // Read the magic number at the head of the file
     result = read(file, &fileVersion, sizeof(fileVersion));
@@ -362,7 +362,7 @@ void ObjectParent::FlushReferences(void)
 
 void ObjectParent::ReferenceTexSet(DWORD TexSet, DWORD MaxTexSet)
 {
-    LODrecord	*record = pLODs + nLODs - 1;
+    LODrecord *record = pLODs + nLODs - 1;
 
     while (record >= pLODs)
     {
@@ -376,7 +376,7 @@ void ObjectParent::ReleaseTexSet(DWORD TexSet, DWORD MaxTexSet)
     // RED - if object is locked, do not release
     if (Locked) return;
 
-    LODrecord	*record = pLODs + nLODs - 1;
+    LODrecord *record = pLODs + nLODs - 1;
 
     while (record >= pLODs)
     {
@@ -394,7 +394,7 @@ void ObjectParent::Reference(void)
     if (refCount == 0)
     {
         // Reference each of our child LODs (loaded or not)
-        LODrecord	*record = pLODs + nLODs - 1;
+        LODrecord *record = pLODs + nLODs - 1;
 
         ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof(*pLODs)));
 
@@ -425,7 +425,7 @@ void ObjectParent::ReferenceWithFetch(void)
         Locked = true;
 
         // Reference each of our child LODs (loaded or not)
-        LODrecord	*record = pLODs + nLODs - 1;
+        LODrecord *record = pLODs + nLODs - 1;
 
         while (record >= pLODs)
         {
@@ -445,7 +445,7 @@ void ObjectParent::Release(bool Unlock)
 {
     ShiAssert(refCount > 0);
 
-    LODrecord	*record		= pLODs + nLODs - 1;
+    LODrecord *record = pLODs + nLODs - 1;
 
     // Now reduce our reference count
     if (refCount) refCount--;
@@ -469,10 +469,10 @@ void ObjectParent::Release(bool Unlock)
 // is found before in part compensating more complex graphic drawing time
 ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
 {
-    LODrecord	*record		= NULL; // pLODs+nLODs-1;
-    ObjectLOD	*objLODptr	= NULL;
-    int	LOD = 0;
-    int	MaxLOD;
+    LODrecord *record = NULL; // pLODs+nLODs-1;
+    ObjectLOD *objLODptr = NULL;
+    int LOD = 0;
+    int MaxLOD;
 
     // 2002-03-29 MN possible CTD fix
     ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof * pLODs));

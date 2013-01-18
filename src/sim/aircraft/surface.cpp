@@ -30,7 +30,7 @@ extern float g_fPilotActInterval; // Cobra - Pilot animation act interval (minut
 extern float g_fPilotHeadMoveRate; // Cobra - Pilot animation act move rate
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 extern float g_fTIR2DPitchPercentage, g_fTIR2DYawPercentage;
-extern	TrackIR theTrackIRObject;		// Retro 27/09/03
+extern TrackIR theTrackIRObject; // Retro 27/09/03
 
 // MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs & Switches
 //                 because the ID numbers are out of order.
@@ -300,8 +300,8 @@ void AircraftClass::CalculateLef(float qfactor)
             {
                 if (g_bNewDamageEffects)
                 {
-                    leftLEFAngle = CheckLEF(0);	//left
-                    rightLEFAngle = CheckLEF(1);	//right
+                    leftLEFAngle = CheckLEF(0); //left
+                    rightLEFAngle = CheckLEF(1); //right
                 }
             }
         }
@@ -438,12 +438,12 @@ void AircraftClass::MoveSurfaces(void)
     {
         /*
         Switch and Dof settings for Helo
-        sw0	bit1=fast moving blades; bit2=slow moving blades
-        sw2	makes Muzzle flash visible
-        dof2	main rotor
-        dof3	Muzzle Flash
-        dof4	tail or secondary rotor
-        	*/
+        sw0 bit1=fast moving blades; bit2=slow moving blades
+        sw2 makes Muzzle flash visible
+        dof2 main rotor
+        dof3 Muzzle Flash
+        dof4 tail or secondary rotor
+         */
         // animate rotors
         if (GetSwitch(HELI_ROTORS) != 1)
         {
@@ -481,16 +481,16 @@ void AircraftClass::MoveSurfaces(void)
 
     {
         // MLR 2003-10-12 Throttle DOF (works on complex & simple - same ID)
-        //SetDOF(COMP_THROTTLE,af->Throtl());	// simple eh?
+        //SetDOF(COMP_THROTTLE,af->Throtl()); // simple eh?
         //ATARIBABY change for 2 engine ACs to be correct, help from Mike
         if (af->auxaeroData->nEngines == 2)
         {
             SetDOF(COMP_THROTTLE, af->engine1Throttle);
-            //			SetDOF(COMP_THROTTLE2,af->engine2Throttle); i will add later with second engine needles too
+            // SetDOF(COMP_THROTTLE2,af->engine2Throttle); i will add later with second engine needles too
         }
         else
         {
-            SetDOF(COMP_THROTTLE, af->Throtl());	// simple eh?
+            SetDOF(COMP_THROTTLE, af->Throtl()); // simple eh?
         }
 
         SetDOF(COMP_RPM, rpm[0]);
@@ -593,14 +593,14 @@ void AircraftClass::MoveSurfaces(void)
 
             }
 
-            /*	if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW &&
-            		af->GetHpSwitchType(l) <= COMP_WEAPON_BAY_4_SW) {
+            /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW &&
+             af->GetHpSwitchType(l) <= COMP_WEAPON_BAY_4_SW) {
 
-            		if(GetDOFValue(af->GetHpDofType(l)) > 0.0f)
-            			SetSwitch(af->GetHpSwitchType(l), 1);
-            		else
-            			SetSwitch(af->GetHpSwitchType(l), 0);
-            	}
+             if(GetDOFValue(af->GetHpDofType(l)) > 0.0f)
+             SetSwitch(af->GetHpSwitchType(l), 1);
+             else
+             SetSwitch(af->GetHpSwitchType(l), 0);
+             }
             }*/
         }
 
@@ -989,8 +989,8 @@ void AircraftClass::MoveSurfaces(void)
 
 
         //need to reimplement using the GetAfterburnerStage()
-        //	  since there isn't enough granularity in the powerOutput to show the noz
-        //	  correctly
+        //   since there isn't enough granularity in the powerOutput to show the noz
+        //   correctly
         // Nozzle position
         {
             int ab = 0;
@@ -1173,7 +1173,7 @@ void AircraftClass::MoveSurfaces(void)
                         af->auxaeroData->sndCanopyOpenStart,
                         af->auxaeroData->sndCanopyLoop, af->auxaeroData->sndCanopyOpenEnd
                        );
-                SetAcStatusBits(ACSTATUS_CANOPY);	//2004-03-23 Booster
+                SetAcStatusBits(ACSTATUS_CANOPY); //2004-03-23 Booster
             }
             else
             {
@@ -1314,7 +1314,7 @@ void AircraftClass::MoveSurfaces(void)
         {
             if (!stallShake)
             {
-                if (this->AutopilotType() != AircraftClass::CombatAP)	// Retro 20Feb2004.. it can STOP regardless of AP status however..
+                if (this->AutopilotType() != AircraftClass::CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
                 {
                     stallShake = TRUE;
                     JoystickPlayEffect(JoyStall1, 0);
@@ -1382,8 +1382,8 @@ void AircraftClass::MoveSurfaces(void)
 
                 if (acmiSwitchValue[l] != s)
                 {
-                    acmiSwitch.data.switchNum	  = l;
-                    acmiSwitch.data.switchVal	  = s;
+                    acmiSwitch.data.switchNum   = l;
+                    acmiSwitch.data.switchVal   = s;
                     acmiSwitch.data.prevSwitchVal = acmiSwitchValue[l];
                     acmiSwitchValue[l] = s;
                     gACMIRec.SwitchRecord(&acmiSwitch);
@@ -1654,7 +1654,7 @@ void AircraftClass::RunGearSurfaces(void)
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) || !g_bRollLinkedNWSRudder) 	// Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !af->IsSet(AirframeClass::IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
             }
@@ -1795,7 +1795,7 @@ void AircraftClass::RunGearSurfaces(void)
             gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        /*		if ( switch20 != GetSwitch(COMP_BROKEN_NOS_GEAR) )
+        /* if ( switch20 != GetSwitch(COMP_BROKEN_NOS_GEAR) )
         {
         acmiSwitch.data.switchNum = COMP_BROKEN_NOS_GEAR;
         acmiSwitch.data.switchVal = GetSwitch(COMP_BROKEN_NOS_GEAR);
@@ -1891,9 +1891,9 @@ float AircraftClass::CheckLEF(int side)
         case 0:
 
             //Left LEF
-            if (LEFState(LT_LEF_OUT) || LEFState(LEFSASYNCH))	//can't work anymore
+            if (LEFState(LT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
                 leftLEFAngle = LTLEFAOA;
-            else	//normal operation
+            else //normal operation
             {
                 if (LEFLocked)
                     leftLEFAngle = lLEF;
@@ -1905,9 +1905,9 @@ float AircraftClass::CheckLEF(int side)
         case 1:
 
             //Right LEF
-            if (LEFState(RT_LEF_OUT) || LEFState(LEFSASYNCH))	//can't work anymore
-                rightLEFAngle = RTLEFAOA;	//got set when we took hit
-            else	//normal operation
+            if (LEFState(RT_LEF_OUT) || LEFState(LEFSASYNCH)) //can't work anymore
+                rightLEFAngle = RTLEFAOA; //got set when we took hit
+            else //normal operation
             {
                 if (LEFLocked)
                     rightLEFAngle = rLEF;
@@ -1974,27 +1974,27 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
         static const int dmap[] =
         {
             // PIT DOF             SIMPLE
-            COMP_LT_STAB,			SIMP_LT_STAB,
-            COMP_RT_STAB,			SIMP_RT_STAB,
-            COMP_LT_FLAP,			SIMP_LT_AILERON,
-            COMP_RT_FLAP,			SIMP_RT_AILERON,
-            COMP_RUDDER,			SIMP_RUDDER_1,
-            COMP_LT_AIR_BRAKE_TOP,	SIMP_AIR_BRAKE,
-            COMP_LT_AIR_BRAKE_BOT,	SIMP_AIR_BRAKE,
-            COMP_RT_AIR_BRAKE_TOP,	SIMP_AIR_BRAKE,
-            COMP_RT_AIR_BRAKE_BOT,	SIMP_AIR_BRAKE,
-            COMP_SWING_WING,		SIMP_SWING_WING_1,
-            COMP_RT_TEF,			SIMP_RT_TEF,
-            COMP_LT_TEF,			SIMP_LT_TEF,
-            COMP_RT_LEF,			SIMP_RT_LEF,
-            COMP_LT_LEF,			SIMP_LT_LEF,
-            COMP_CANOPY_DOF,		SIMP_CANOPY_DOF,
-            COMP_PROPELLOR,			SIMP_PROPELLOR,
-            COMP_LT_SPOILER1,		SIMP_LT_SPOILER1,
-            COMP_RT_SPOILER1,		SIMP_RT_SPOILER1,
-            COMP_LT_SPOILER2,		SIMP_LT_SPOILER2,
-            COMP_RT_SPOILER2,		SIMP_RT_SPOILER2,
-            COMP_THROTTLE,			SIMP_THROTTLE,
+            COMP_LT_STAB, SIMP_LT_STAB,
+            COMP_RT_STAB, SIMP_RT_STAB,
+            COMP_LT_FLAP, SIMP_LT_AILERON,
+            COMP_RT_FLAP, SIMP_RT_AILERON,
+            COMP_RUDDER, SIMP_RUDDER_1,
+            COMP_LT_AIR_BRAKE_TOP, SIMP_AIR_BRAKE,
+            COMP_LT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,
+            COMP_RT_AIR_BRAKE_TOP, SIMP_AIR_BRAKE,
+            COMP_RT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,
+            COMP_SWING_WING, SIMP_SWING_WING_1,
+            COMP_RT_TEF, SIMP_RT_TEF,
+            COMP_LT_TEF, SIMP_LT_TEF,
+            COMP_RT_LEF, SIMP_RT_LEF,
+            COMP_LT_LEF, SIMP_LT_LEF,
+            COMP_CANOPY_DOF, SIMP_CANOPY_DOF,
+            COMP_PROPELLOR, SIMP_PROPELLOR,
+            COMP_LT_SPOILER1, SIMP_LT_SPOILER1,
+            COMP_RT_SPOILER1, SIMP_RT_SPOILER1,
+            COMP_LT_SPOILER2, SIMP_LT_SPOILER2,
+            COMP_RT_SPOILER2, SIMP_RT_SPOILER2,
+            COMP_THROTTLE, SIMP_THROTTLE,
         };
 
         static const int dmap_size = sizeof(dmap) / sizeof(dmap[0]) / 2;
@@ -2009,14 +2009,14 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
         static const int smap[] =
         {
             // PIT SWITCH          SIMPLE
-            COMP_PIT_AB,			SIMP_AB,
-            COMP_PIT_NOS_GEAR_SW,	SIMP_GEAR,
-            COMP_PIT_LT_GEAR_SW,	SIMP_GEAR,
-            COMP_PIT_RT_GEAR_SW,	SIMP_GEAR,
-            COMP_WING_VAPOR,		SIMP_WING_VAPOR,
-            COMP_CANOPY,			SIMP_CANOPY,
-            COMP_DRAGCHUTE,			SIMP_DRAGCHUTE,
-            COMP_HOOK,				SIMP_HOOK
+            COMP_PIT_AB, SIMP_AB,
+            COMP_PIT_NOS_GEAR_SW, SIMP_GEAR,
+            COMP_PIT_LT_GEAR_SW, SIMP_GEAR,
+            COMP_PIT_RT_GEAR_SW, SIMP_GEAR,
+            COMP_WING_VAPOR, SIMP_WING_VAPOR,
+            COMP_CANOPY, SIMP_CANOPY,
+            COMP_DRAGCHUTE, SIMP_DRAGCHUTE,
+            COMP_HOOK, SIMP_HOOK
         };
         static const int smap_size = sizeof(smap) / sizeof(smap[0]) / 2;
 

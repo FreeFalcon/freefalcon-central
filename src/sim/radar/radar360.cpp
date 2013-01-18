@@ -17,11 +17,11 @@
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
-static const float	BLIP_SIZE				= 0.04f;
-static const float	RADAR_CONE_ANGLE		= 0.33f * PI;
-static const float	SIN_RADAR_CONE_ANGLE	= (float)sin(RADAR_CONE_ANGLE);
-static const float	COS_RADAR_CONE_ANGLE	= (float)cos(RADAR_CONE_ANGLE);
-static const float	TAN_RADAR_CONE_ANGLE	= (float)tan(RADAR_CONE_ANGLE);
+static const float BLIP_SIZE = 0.04f;
+static const float RADAR_CONE_ANGLE = 0.33f * PI;
+static const float SIN_RADAR_CONE_ANGLE = (float)sin(RADAR_CONE_ANGLE);
+static const float COS_RADAR_CONE_ANGLE = (float)cos(RADAR_CONE_ANGLE);
+static const float TAN_RADAR_CONE_ANGLE = (float)tan(RADAR_CONE_ANGLE);
 
 
 Radar360Class::Radar360Class(int type, SimMoverClass* parentPlatform) : RadarClass(type, parentPlatform)
@@ -194,16 +194,16 @@ SimObjectType* Radar360Class::Exec(SimObjectType*)
 
 void Radar360Class::ExecAA(void)
 {
-    SimObjectType*	object = NULL;
-    SimObjectType*	newLock = NULL;
-    float			dx = 0.0F, dy = 0.0F;
-    float			x = 0.0F, y = 0.0F;
-    float			scaledCosYaw = 1.0F, scaledSinYaw = 0.0F;
-    int				sendThisFrame = FALSE;
-    float			bestSoFar = rangeFT;
-    float			range = 0.0F;
-    float			cursorDelta = BLIP_SIZE * 2.0f;
-    VU_ID			cursorTgtID = FalconNullId;
+    SimObjectType* object = NULL;
+    SimObjectType* newLock = NULL;
+    float dx = 0.0F, dy = 0.0F;
+    float x = 0.0F, y = 0.0F;
+    float scaledCosYaw = 1.0F, scaledSinYaw = 0.0F;
+    int sendThisFrame = FALSE;
+    float bestSoFar = rangeFT;
+    float range = 0.0F;
+    float cursorDelta = BLIP_SIZE * 2.0f;
+    VU_ID cursorTgtID = FalconNullId;
 
 
     // Prepare our rotation from world space into heading north space including feet->screen scaleing
@@ -224,7 +224,7 @@ void Radar360Class::ExecAA(void)
         bestSoFar = RADAR_CONE_ANGLE;
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)  	// Want one further out
+    else if (lockCmd == NEXT)   // Want one further out
     {
         if (lockedTarget)
         {
@@ -235,7 +235,7 @@ void Radar360Class::ExecAA(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)  	// Want one closer in
+    else if (lockCmd == PREV)   // Want one closer in
     {
         if (lockedTarget)
         {
@@ -277,8 +277,8 @@ void Radar360Class::ExecAA(void)
         // If we're looking for a lock or to check for under cursor, we'll need this stuff...
         dx = object->BaseData()->XPos() - platform->XPos();
         dy = object->BaseData()->YPos() - platform->YPos();
-        x = dy * scaledCosYaw - dx * scaledSinYaw;	// Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw;	// and scale from feet into viewport space
+        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
         range = (float)sqrt(dx * dx + dy * dy);
 
         // Mark the thing under the cursor
@@ -297,7 +297,7 @@ void Radar360Class::ExecAA(void)
         }
 
         // Skip the object if it can't be locked
-        if (!AWACSMode && !InAALockZone(object, x, y))  	// M.N. in AWACS mode, allow 360° locking
+        if (!AWACSMode && !InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
         {
             continue;
         }
@@ -375,7 +375,7 @@ void Radar360Class::ExecAA(void)
             default:
                 ShiWarning("Bad lock command");
         }
-    }	// End of our target list traversal loop
+    } // End of our target list traversal loop
 
 
     // If we changed locks, tell our previous target he's off the hook
@@ -415,23 +415,23 @@ void Radar360Class::ExecAA(void)
 
 void Radar360Class::ExecAG(void)
 {
-    FalconEntity*	object;
-    FalconEntity*	newLock;
-    float			dx, dy, dz;
-    float			x, y;
-    float			scaledCosYaw, scaledSinYaw;
-    float			range;
-    float			cosATA;
-    float			bestSoFar;
-    VuListIterator	*walker;
-    mlTrig			yaw;
-    float			cursorDelta = BLIP_SIZE * 2.0f;
-    VU_ID			cursorTgtID = FalconNullId;
-    float			d;
+    FalconEntity* object;
+    FalconEntity* newLock;
+    float dx, dy, dz;
+    float x, y;
+    float scaledCosYaw, scaledSinYaw;
+    float range;
+    float cosATA;
+    float bestSoFar;
+    VuListIterator *walker;
+    mlTrig yaw;
+    float cursorDelta = BLIP_SIZE * 2.0f;
+    VU_ID cursorTgtID = FalconNullId;
+    float d;
 
-    const float atx	= platform->dmx[0][0];
-    const float aty	= platform->dmx[0][1];
-    const float atz	= platform->dmx[0][2];
+    const float atx = platform->dmx[0][0];
+    const float aty = platform->dmx[0][1];
+    const float atz = platform->dmx[0][2];
 
 
     // Prepare our rotation from world space into heading north space including feet->screen scaleing
@@ -460,7 +460,7 @@ void Radar360Class::ExecAG(void)
         bestSoFar = COS_RADAR_CONE_ANGLE;
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)  	// Want one further out
+    else if (lockCmd == NEXT)   // Want one further out
     {
         if (lockedTarget)
         {
@@ -471,7 +471,7 @@ void Radar360Class::ExecAG(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)  	// Want one closer in
+    else if (lockCmd == PREV)   // Want one closer in
     {
         if (lockedTarget)
         {
@@ -489,8 +489,8 @@ void Radar360Class::ExecAG(void)
 
 
     // Decide where to start walking the objects
-    VuListIterator	vehicleWalker(SimDriver.combinedList);		// Vehicles
-    VuListIterator	featureWalker(SimDriver.combinedFeatureList);	// Buildings
+    VuListIterator vehicleWalker(SimDriver.combinedList); // Vehicles
+    VuListIterator featureWalker(SimDriver.combinedFeatureList); // Buildings
     object = (FalconEntity*)featureWalker.GetFirst();
 
     if (object)
@@ -530,13 +530,13 @@ void Radar360Class::ExecAG(void)
 
 
         // Now, we need this stuff...
-        dx		= object->XPos() - platform->XPos();
-        dy		= object->YPos() - platform->YPos();
-        dz		= object->ZPos() - platform->ZPos();
-        range	= (float)sqrt(dx * dx + dy * dy);
-        cosATA	= (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
-        x		= dy * scaledCosYaw - dx * scaledSinYaw;	// Rotate into heading up plan view space
-        y		= dy * scaledSinYaw + dx * scaledCosYaw;	// and scale from feet into viewport space
+        dx = object->XPos() - platform->XPos();
+        dy = object->YPos() - platform->YPos();
+        dz = object->ZPos() - platform->ZPos();
+        range = (float)sqrt(dx * dx + dy * dy);
+        cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
 
 
         // Mark the thing under the cursor
@@ -645,7 +645,7 @@ void Radar360Class::ExecAG(void)
             walker = &vehicleWalker;
             object = (FalconEntity*)vehicleWalker.GetFirst();
         }
-    }	// End of our target list traversal loop
+    } // End of our target list traversal loop
 
 
     // Update our locked target
@@ -682,12 +682,12 @@ void Radar360Class::ExecAG(void)
         float rz = platform->dmx[2][0] * x + platform->dmx[2][1] * y + platform->dmx[2][2] * z;
 
         // Calculate the body relative angles required for the sensor
-        float az	= (float)atan2(ry, rx);
-        float el	= (float)atan2(rz, sqrt(rx * rx + ry * ry));
+        float az = (float)atan2(ry, rx);
+        float el = (float)atan2(rz, sqrt(rx * rx + ry * ry));
 #else
         // Calculate the pseudo-body relative angles the sensor _really_ wants right now
-        float az	= (float)atan2(y, x) - platform->Yaw();
-        float el	= (float)atan2(z, sqrt(x * x + y * y)) - platform->Pitch();
+        float az = (float)atan2(y, x) - platform->Yaw();
+        float el = (float)atan2(z, sqrt(x * x + y * y)) - platform->Pitch();
 #endif
         SetSeekerPos(az, el);
     }
@@ -699,9 +699,9 @@ void Radar360Class::ExecAG(void)
 
 void Radar360Class::Display(VirtualDisplay *activeDisplay)
 {
-    float				scaledCosYaw, scaledSinYaw;
-    char				string[24];
-    Falcon4EntityClassType*	classPtr;
+    float scaledCosYaw, scaledSinYaw;
+    char string[24];
+    Falcon4EntityClassType* classPtr;
     int tmpColor = activeDisplay->Color();
 
 
@@ -713,7 +713,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     // For now we have to do this silly thing to placate the SMS display routine --
     // we really should get ride of the display/privateDisplay dicotemy.
     display = activeDisplay;
-    //	display->SetColor( 0x0000FF00 );
+    // display->SetColor( 0x0000FF00 );
 
 
     // Quit now if we're turned off
@@ -748,8 +748,8 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     // Mark where the locked target will be (if we have one)
     if (lockedTarget)
     {
-        float		dx, dy;		// World space deltas		(x north)
-        float		x, y;		// Screen space coordinates (x left/right)
+        float dx, dy; // World space deltas (x north)
+        float x, y; // Screen space coordinates (x left/right)
 
         dx = (lockedTarget->BaseData()->XPos() - platform->XPos());
         dy = (lockedTarget->BaseData()->YPos() - platform->YPos());
@@ -811,12 +811,12 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
 
 void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
 {
-    SimObjectType*		object;
-    float				dx, dy, dz;		// World space deltas		(x north)
-    float				x, y;			// Screen space coordinates (x left/right)
-    float				range;
-    char				string[24];
-    UInt32				color;
+    SimObjectType* object;
+    float dx, dy, dz; // World space deltas (x north)
+    float x, y; // Screen space coordinates (x left/right)
+    float range;
+    char string[24];
+    UInt32 color;
 
 
     // Consider each potential target for display
@@ -845,9 +845,9 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         // Skip the object if it is out of range
         // NOTE:  SCR 9/17/98 -- it appears that "range" isn't always updated before we get here.
         // we either need to make sure that it IS updated, or else not rely on it here (and in AG?)
-        //		if (object->localData->range > rangeFT) {
-        //			continue;
-        //		}
+        // if (object->localData->range > rangeFT) {
+        // continue;
+        // }
 
 
         // Okay, it qualifies, so convert to display units and create an altitude label
@@ -855,9 +855,9 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         dy = object->BaseData()->YPos() - platform->YPos();
         dz = object->BaseData()->ZPos() - platform->ZPos();
         range = (float)sqrt(dx * dx + dy * dy);
-        x = dy * scaledCosYaw - dx * scaledSinYaw;	// Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw;	// and scale from feet into viewport space
-        sprintf(string, "%1.0f", -0.001f * dz);	// Covert to 1000's of feet above
+        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
+        sprintf(string, "%1.0f", -0.001f * dz); // Covert to 1000's of feet above
         ShiAssert(strlen(string) < sizeof(string));
 
 
@@ -872,15 +872,15 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         // Choose the appropriate target color
         if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
         {
-            color = 0x000000FF;		// Red means at war
+            color = 0x000000FF; // Red means at war
         }
         else if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == Allied)
         {
-            color = 0x00FF0000;		// Blue means our team
+            color = 0x00FF0000; // Blue means our team
         }
         else
         {
-            color = 0x0000FF00;		// Green means everyone else
+            color = 0x0000FF00; // Green means everyone else
         }
 
         // Desaturate and brighten the target under the cursor
@@ -914,17 +914,17 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
 
 void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
 {
-    VuListIterator		*walker;
-    FalconEntity*		object;
-    float				dx, dy, dz;		// World space deltas		(x north)
-    float				x, y;			// Screen space coordinates (x left/right)
-    float				blipSize;
-    UInt32				color;
+    VuListIterator *walker;
+    FalconEntity* object;
+    float dx, dy, dz; // World space deltas (x north)
+    float x, y; // Screen space coordinates (x left/right)
+    float blipSize;
+    UInt32 color;
 
 
     // Decide where to start walking the objects
-    VuListIterator		featureWalker(SimDriver.combinedFeatureList);	// Buildings
-    VuListIterator		vehicleWalker(SimDriver.combinedList);		// Vehicles
+    VuListIterator featureWalker(SimDriver.combinedFeatureList); // Buildings
+    VuListIterator vehicleWalker(SimDriver.combinedList); // Vehicles
     object = (FalconEntity*)featureWalker.GetFirst();
 
     if (object)
@@ -963,8 +963,8 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         dx = object->XPos() - platform->XPos();
         dy = object->YPos() - platform->YPos();
         dz = object->ZPos() - platform->ZPos();
-        x = dy * scaledCosYaw - dx * scaledSinYaw;	// Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw;	// and scale from feet into viewport space
+        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
 
         // Skip if the object is off screen
         if ((fabs(x) > 1.0f) || (fabs(y) > 1.0f))
@@ -976,15 +976,15 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         switch (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()))
         {
             case War:
-                color = 0x000000FF;		// Red means at war
+                color = 0x000000FF; // Red means at war
                 break;
 
             case Allied:
-                color = 0x00FF0000;		// Blue means our team
+                color = 0x00FF0000; // Blue means our team
                 break;
 
             default:
-                color = 0x0000FF00;		// Green means everyone else
+                color = 0x0000FF00; // Green means everyone else
                 break;
         }
 
@@ -1012,7 +1012,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
             object = (FalconEntity*)vehicleWalker.GetFirst();
         }
 
-    }	// End of our target list traversal loop
+    } // End of our target list traversal loop
 }
 
 
@@ -1157,8 +1157,8 @@ void Radar360Class::NewRange(float newRange)
     newRange = (float)floor(newRange + 0.5f);
 
     // Keep cursors at same range/bearing when display scale changes
-    //	cursorX *= ratio;
-    //	cursorY *= ratio;
+    // cursorX *= ratio;
+    // cursorY *= ratio;
 
     // Keep our various measures of range consistent
     rangeFT = newRange * NM_TO_FT;

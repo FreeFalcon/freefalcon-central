@@ -1,8 +1,8 @@
 /*******************************************************************\
-	Simple tool to read in a 16 bit RAW file and scale its values
-	to 8 bits.
+ Simple tool to read in a 16 bit RAW file and scale its values
+ to 8 bits.
 
-	Scott Randolph		January 24, 1996		Spectrum HoloByte
+ Scott Randolph January 24, 1996 Spectrum HoloByte
 \*******************************************************************/
 #include <stdio.h>
 #include <math.h>
@@ -12,19 +12,19 @@
 
 int main(int argc, char **argv)
 {
-    HANDLE	inFile;
-    HANDLE	outFile;
-    DWORD	width;
-    DWORD	height;
-    DWORD	row;
-    char	*inName;
-    char	*outName;
-    WORD	*buffer;
-    WORD	*src;
-    BYTE	*dst;
-    short	maxValue;
-    double	scale;
-    DWORD	bytes;
+    HANDLE inFile;
+    HANDLE outFile;
+    DWORD width;
+    DWORD height;
+    DWORD row;
+    char *inName;
+    char *outName;
+    WORD *buffer;
+    WORD *src;
+    BYTE *dst;
+    short maxValue;
+    double scale;
+    DWORD bytes;
 
 
     // Check for expected number of parameters
@@ -43,10 +43,10 @@ int main(int argc, char **argv)
 
 
     // Get the width and height of the RAW file from the command line
-    inName	= argv[1];
-    outName	= argv[2];
-    width	= atoi(argv[3]);
-    height	= atoi(argv[4]);
+    inName = argv[1];
+    outName = argv[2];
+    width = atoi(argv[3]);
+    height = atoi(argv[4]);
 
     if (argc == 6)
     {

@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     10Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #ifndef _TEX_H_
 #define _TEX_H_
@@ -39,9 +39,9 @@ public:
     }
 
 #ifdef _DEBUG
-    static DWORD m_dwNumHandles;		// Number of instances
-    static DWORD m_dwBitmapBytes;		// Bytes allocated for bitmap copies
-    static DWORD m_dwTotalBytes;		// Total number of bytes allocated (including bitmap copies and object size)
+    static DWORD m_dwNumHandles; // Number of instances
+    static DWORD m_dwBitmapBytes; // Bytes allocated for bitmap copies
+    static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
 protected:

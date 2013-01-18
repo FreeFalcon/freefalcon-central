@@ -1,7 +1,7 @@
-#ifndef	RADIX_Included
-#define	RADIX_Included
+#ifndef RADIX_Included
+#define RADIX_Included
 
-#define	DEFAULT_RADIX 0
+#define DEFAULT_RADIX 0
 
 typedef struct radix_sort_s
 {

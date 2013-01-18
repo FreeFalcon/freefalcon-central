@@ -20,21 +20,21 @@ void MissileClass::UpdateTargetData(void)
     {
         if (targetPtr)
         {
-            ShiAssert(targetPtr->BaseData());		// We used to drop lock in this case, but it should never happen, right?
+            ShiAssert(targetPtr->BaseData()); // We used to drop lock in this case, but it should never happen, right?
 
             // This ensures that everybody agrees about where ground objects are even as they move
             // with terrain LOD changes.
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
             if (targetPtr->BaseData()->GetDomain() != DOMAIN_SEA) // JB carrier (otherwise ships stop when you fire a missile at them)
             {
-            	if (targetPtr->BaseData()->IsSim()						&&
-            		((SimBaseClass*)targetPtr->BaseData())->OnGround()	&&
-            		((SimBaseClass*)targetPtr->BaseData())->drawPointer)
-            	{
-            		Tpoint pos;
-            		((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
-            		((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);
-            	}
+             if (targetPtr->BaseData()->IsSim() &&
+             ((SimBaseClass*)targetPtr->BaseData())->OnGround() &&
+             ((SimBaseClass*)targetPtr->BaseData())->drawPointer)
+             {
+             Tpoint pos;
+             ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
+             ((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);
+             }
             }
             */
         }
@@ -96,8 +96,8 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         // 2001-05-10 ADDED BY S.G. WITHIN THIS, I ADDED A CalcRelGeom BECAUSE localData IS SOMETIME USED BEFORE THIS IS RAN. I'M CHECKING FOR range BEEING ZERO BECAUSE THIS IS LESS LIKELY TO BE IF CalRelGeom HAS BEEN RAN BEFORE...
         // 2001-05-25 MODIFIED BY S.G. WELL, AS IT TURNS OUT, SOMETIME IT IS NEVER CALLED SO BY DOING THIS HERE EVERY TIME AS WELL (SIGHT), I MAKE SURE IT *IS* RAN
         // 2001-10-20 REMOVED BY S.G. THIS SLOWS DOWN THE AIM-9 TARGET HUNTING. I'M MOVING IT TO THE FUNCTIONS NEEDING localData BEING SET CORRECTLY.
-        //		if (targetPtr->BaseData()->OnGround())
-        //			CalcRelGeom(this, targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
+        // if (targetPtr->BaseData()->OnGround())
+        // CalcRelGeom(this, targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
     }
 
     // If we're still on the rail, update our seeker as well -- otherwise let it do its thing

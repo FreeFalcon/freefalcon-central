@@ -33,9 +33,9 @@ extern bool g_bRealisticAvionics;
 //extern VuAntiDatabase *vuAntiDB;
 
 
-static long	ChaffTime            = 2 * SEC_TO_MSEC;
-static long	FlareTime            = 1 * SEC_TO_MSEC;
-static long	ProgramDropDuration  = 5 * SEC_TO_MSEC;
+static long ChaffTime            = 2 * SEC_TO_MSEC;
+static long FlareTime            = 1 * SEC_TO_MSEC;
+static long ProgramDropDuration  = 5 * SEC_TO_MSEC;
 // 2000-11-17 MODIFIED BY S.G. MEEDS TO BE TWO SECONDS AND NOT HALF A SECOND (TOO FAST)
 // static long AutoProgramTiming    = SEC_TO_MSEC / 2;
 static long AutoProgramTiming    = SEC_TO_MSEC * 2;
@@ -107,11 +107,11 @@ void AircraftClass::DoCountermeasures(void)
             // IS A float LESS THAN 1.0! NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
             //if (dropProgrammedTimer > SimLibMajorFrameTime)
             if (dropProgrammedTimer + AutoProgramTiming < SimLibElapsedTime)
-                //			{
-                //				// Not time yet.  Just keep counting down
-                //				dropProgrammedTimer -= FloatToInt32(SimLibMajorFrameTime);
-                //			}
-                //			else
+                // {
+                // // Not time yet.  Just keep counting down
+                // dropProgrammedTimer -= FloatToInt32(SimLibMajorFrameTime);
+                // }
+                // else
             {
                 // Time to do something
                 switch (dropProgrammedStep)
@@ -150,16 +150,16 @@ void AircraftClass::DoCountermeasures(void)
 
     if (FlareExpireTime() < SimLibElapsedTime)
     {
-        //me123 for flare timing		SetFlareExpireTime( 0 );
+        //me123 for flare timing SetFlareExpireTime( 0 );
         SetNewestFlareID(FalconNullId);
     }
 }
 
 void AircraftClass::DropChaff(void)
 {
-    vector		pos, posDelta;
-    int		type;
-    BombClass	*weapon;
+    vector pos, posDelta;
+    int type;
+    BombClass *weapon;
 
     if (counterMeasureStation[CHAFF_STATION].weaponCount > 0)
     {
@@ -261,7 +261,7 @@ void AircraftClass::DropChaff(void)
 
         //MI Moved further down
         /*if(counterMeasureStation[CHAFF_STATION].weaponCount > 0)
-        	F4SoundFXSetDist(SFX_BB_CHAFLARE, FALSE, 0.0f, 1.0f);*/
+         F4SoundFXSetDist(SFX_BB_CHAFLARE, FALSE, 0.0f, 1.0f);*/
     }
 
 
@@ -272,9 +272,9 @@ void AircraftClass::DropChaff(void)
 
 void AircraftClass::DropFlare(void)
 {
-    vector		pos, posDelta;
-    int		type;
-    BombClass	*weapon;
+    vector pos, posDelta;
+    int type;
+    BombClass *weapon;
 
     if (counterMeasureStation[FLARE_STATION].weaponCount > 0)
     {
@@ -288,12 +288,12 @@ void AircraftClass::DropFlare(void)
         }
 
         /*
-        		pos.x = XPos();
-        		pos.y = YPos();
-        		pos.z = ZPos();
-        		posDelta.x = XDelta() * 0.75F;
-        		posDelta.y = YDelta() * 0.75F;
-        		posDelta.z = ZDelta() * 0.75F;
+         pos.x = XPos();
+         pos.y = YPos();
+         pos.z = ZPos();
+         posDelta.x = XDelta() * 0.75F;
+         posDelta.y = YDelta() * 0.75F;
+         posDelta.z = ZDelta() * 0.75F;
         */
         // MLR 2003-11-16 New positional dispensers
         int NumToLaunch = 1;
@@ -383,7 +383,7 @@ void AircraftClass::DropFlare(void)
 
         //MI moved further down
         /*else if(counterMeasureStation[FLARE_STATION].weaponCount > 0)
-        	F4SoundFXSetDist(SFX_BB_CHAFLARE, FALSE, 0.0f, 1.0f);*/
+         F4SoundFXSetDist(SFX_BB_CHAFLARE, FALSE, 0.0f, 1.0f);*/
     }
 
     // If this is the player and they want unlimited chaff, let 'em have it
@@ -447,7 +447,7 @@ void AircraftClass::EWSChaffBurst(void)
         if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSChaffPower))
             return;
     }
-    else	//no RWR, return anyway
+    else //no RWR, return anyway
         return;
 
     //Set our next release time
@@ -468,7 +468,7 @@ void AircraftClass::EWSFlareBurst(void)
         if (!theRwr->IsOn() || !HasPower(AircraftClass::EWSFlarePower))
             return;
     }
-    else	//no RWR, return anyway
+    else //no RWR, return anyway
         return;
 
     //set our next release time

@@ -414,13 +414,13 @@ void AirframeClass::Axial(float dt)
                         vec.y = ydot + PRANDFloat() * 30.0f;
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass( SFX_AC_DEBRIS,		// type
-                        	SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                        	&pos,					// world pos
-                        	&vec,					// vel vector
-                        	3.0f,					// time to live
-                        	1.0f ) );				// scale
-                        	*/
+                         new SfxClass( SFX_AC_DEBRIS, // type
+                         SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                         &pos, // world pos
+                         &vec, // vel vector
+                         3.0f, // time to live
+                         1.0f ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_AC_DEBRIS + 1),
                                                               &pos,
                                                               &vec);

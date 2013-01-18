@@ -28,9 +28,9 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
     ShiAssert(minimumLOD >= 0);
     ShiAssert(maximumLOD >= minimumLOD);
 
-    minLOD	 = minimumLOD;
-    maxLOD	 = maximumLOD;
-    nLists	 = maxLOD + 1;		// Wastes extra array entries if minLOD != 0 (~ 50 bytes per)
+    minLOD  = minimumLOD;
+    maxLOD  = maximumLOD;
+    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD != 0 (~ 50 bytes per)
 
     maxRange = new float[(maxLOD + 1) ];
 
@@ -58,8 +58,8 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
     // Initially enable all detail levels at once.  This will be adjusted by the first
     // call to UpdateViewpoint().
-    highDetail	= minLOD;
-    lowDetail	= maxLOD;
+    highDetail = minLOD;
+    lowDetail = maxLOD;
 
     Speed = 0.0; // JB 010610
 
@@ -109,8 +109,8 @@ extern unsigned long vuxGameTime;
 // Move the viewer and swap blocks as needed (X North, Y East, Z Down)
 void TViewPoint::Update(const Tpoint *position)
 {
-    float	altAGL;
-    int		level;
+    float altAGL;
+    int level;
 
     // Lock everyone else out of this viewpoint while it is being updated
     EnterCriticalSection(&cs_update);
@@ -155,23 +155,23 @@ void TViewPoint::Update(const Tpoint *position)
     //THW 2003-11-14 Make it configurable
     if (altAGL < (500.0f * g_fTexDetailFactor))
     {
-        highDetail	= minLOD;
-        lowDetail	= maxLOD - g_nLowDetailFactor;
+        highDetail = minLOD;
+        lowDetail = maxLOD - g_nLowDetailFactor;
     }
     else if (altAGL < (6000.0f * g_fTexDetailFactor))
     {
-        highDetail	= minLOD;
-        lowDetail	= maxLOD;
+        highDetail = minLOD;
+        lowDetail = maxLOD;
     }
     else if (altAGL < (24000.0f * g_fTexDetailFactor))
     {
-        highDetail	= minLOD + 1;
-        lowDetail	= maxLOD;
+        highDetail = minLOD + 1;
+        lowDetail = maxLOD;
     }
     else if (altAGL < (36000.0f * g_fTexDetailFactor))
     {
-        highDetail	= minLOD + 2;
-        lowDetail	= maxLOD;
+        highDetail = minLOD + 2;
+        lowDetail = maxLOD;
     }
     else
     {
@@ -184,17 +184,17 @@ void TViewPoint::Update(const Tpoint *position)
             highDetail = minLOD + 3;
         }
 
-        lowDetail	= maxLOD;
+        lowDetail = maxLOD;
     }
 
     // Clamp the values to the avialable range of LODs
-    if (lowDetail  < minLOD)		lowDetail	= minLOD;
+    if (lowDetail  < minLOD) lowDetail = minLOD;
 
-    if (lowDetail  > maxLOD)		lowDetail	= maxLOD;
+    if (lowDetail  > maxLOD) lowDetail = maxLOD;
 
-    if (highDetail > lowDetail)	highDetail	= lowDetail;
+    if (highDetail > lowDetail) highDetail = lowDetail;
 
-    if (highDetail < minLOD)		highDetail	= minLOD;
+    if (highDetail < minLOD) highDetail = minLOD;
 
     // Unlock the viewpoint so others can query it
     LeaveCriticalSection(&cs_update);
@@ -203,13 +203,13 @@ void TViewPoint::Update(const Tpoint *position)
 
 // Return the tex ID of the tile at the provided position.
 // The position is in units of texture tiles from lower left.
-// 	r = WORLD_TO_LEVEL_POST( x, LOD );
-//	c = WORLD_TO_LEVEL_POST( y, LOD );
+//  r = WORLD_TO_LEVEL_POST( x, LOD );
+// c = WORLD_TO_LEVEL_POST( y, LOD );
 int TViewPoint::GetTileID(int r, int c)
 {
-    Tpost		*post;
-    const int	LOD = TheMap.LastNearTexLOD();
-    int			texID;
+    Tpost *post;
+    const int LOD = TheMap.LastNearTexLOD();
+    int texID;
 
     // Lock everyone else out of this viewpoint while we're using it
     EnterCriticalSection(&cs_update);
@@ -236,8 +236,8 @@ int TViewPoint::GetTileID(int r, int c)
 // Return the Nth path segment of the required type for the tile type specified.
 BOOL TViewPoint::GetPath(int texID, int type, int offset, TpathFeature *target)
 {
-    TexPath		*path;
-    const int	LOD = TheMap.LastNearTexLOD();
+    TexPath *path;
+    const int LOD = TheMap.LastNearTexLOD();
 
     ShiAssert(texID >= 0);
 
@@ -264,8 +264,8 @@ BOOL TViewPoint::GetPath(int texID, int type, int offset, TpathFeature *target)
 // Return the Nth area feature of the required type for the tile type specified.
 BOOL TViewPoint::GetArea(int texID, int type, int offset, TareaFeature *target)
 {
-    TexArea		*area;
-    const int	LOD = TheMap.LastNearTexLOD();
+    TexArea *area;
+    const int LOD = TheMap.LastNearTexLOD();
 
     ShiAssert(texID >= 0);
 
@@ -291,9 +291,9 @@ BOOL TViewPoint::GetArea(int texID, int type, int offset, TareaFeature *target)
 // The values returned are distances upward from zero (ie:  POSITIVE UP)
 void TViewPoint::GetAreaFloorAndCeiling(float *floor, float *ceiling)
 {
-    int		level;
-    float	minZ;
-    float	maxZ;
+    int level;
+    float minZ;
+    float maxZ;
 
 
     // Lock everyone else out of this viewpoint while we're using it
@@ -318,8 +318,8 @@ void TViewPoint::GetAreaFloorAndCeiling(float *floor, float *ceiling)
         maxZ = minZ = 0.0f;
     }
 
-    *floor = maxZ;		// Remember, positive Z is downward in world space
-    *ceiling = minZ;	// Remember, positive Z is downward in world space
+    *floor = maxZ; // Remember, positive Z is downward in world space
+    *ceiling = minZ; // Remember, positive Z is downward in world space
 }
 
 
@@ -328,18 +328,18 @@ void TViewPoint::GetAreaFloorAndCeiling(float *floor, float *ceiling)
 //  otherwise, 0 is returned.)
 int TViewPoint::GetGroundType(float x, float y)
 {
-    TexArea		*area;
-    TexPath		*path;
-    Tpost		*post;
-    TextureID	texID;
-    int			row, col;
-    float		xPos, yPos;
-    Edge		segment;
-    float		dx, dy, d;
-    float		r;
-    int			i;
-    int			type = -1;
-    const int	LOD = TheMap.LastNearTexLOD();
+    TexArea *area;
+    TexPath *path;
+    Tpost *post;
+    TextureID texID;
+    int row, col;
+    float xPos, yPos;
+    Edge segment;
+    float dx, dy, d;
+    float r;
+    int i;
+    int type = -1;
+    const int LOD = TheMap.LastNearTexLOD();
 
 
     // Lock everyone else out of this viewpoint while we're using it
@@ -465,11 +465,11 @@ int TViewPoint::GetGroundType(float x, float y)
 // Return the maximum z value of the terrain near the specified point.  (positive Z down)
 float TViewPoint::GetGroundLevelApproximation(float x, float y)
 {
-    int		LOD;
-    int		row;
-    int		col;
-    Tpost*	post;
-    float	elevation;
+    int LOD;
+    int row;
+    int col;
+    Tpost* post;
+    float elevation;
 
     // Compute the level relative post address of interest at the highest available LOD
     LOD = minLOD;
@@ -522,11 +522,11 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal, int *lod)
 float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 #endif
 {
-    int		LOD;
-    int		row, col;
-    float	x_pos, y_pos;
-    Tpost	*p1, *p2, *p3;
-    float	Nx, Ny, Nz;
+    int LOD;
+    int row, col;
+    float x_pos, y_pos;
+    Tpost *p1, *p2, *p3;
+    float Nx, Ny, Nz;
 
 
     // Compute the level post address of the point of interest
@@ -592,7 +592,7 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
     p3 = blockLists[LOD].GetPost(row + 1, col + 1);
     ShiAssert(p1);
     ShiAssert(p3);
-    Nz = -TheMap.Level(LOD)->FTperPOST();	// (remember positive Z is down)
+    Nz = -TheMap.Level(LOD)->FTperPOST(); // (remember positive Z is down)
 
     if (x_pos >= y_pos
         && p1 && p3) // JB 011019 CTD fix
@@ -603,8 +603,8 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 
         if (p2) // JB 011019 CTD fix
         {
-            Nx = p2->z - p1->z;		// (remember positive Z is down)
-            Ny = p3->z - p2->z;		// (remember positive Z is down)
+            Nx = p2->z - p1->z; // (remember positive Z is down)
+            Ny = p3->z - p2->z; // (remember positive Z is down)
         }
     }
     else if (p1 && p3)  // JB 011019 CTD fix
@@ -615,8 +615,8 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 
         if (p2) // JB 011019 CTD fix
         {
-            Nx = p3->z - p2->z;		// (remember positive Z is down)
-            Ny = p2->z - p1->z;		// (remember positive Z is down)
+            Nx = p3->z - p2->z; // (remember positive Z is down)
+            Ny = p2->z - p1->z; // (remember positive Z is down)
         }
     }
 
@@ -655,7 +655,7 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 
 int TViewPoint::GetLODLevel(float x, float y) const
 {
-    int		lod;
+    int lod;
 
     // Compute the level relative post address of interest at the highest available LOD
     lod = minLOD;
@@ -732,11 +732,11 @@ BOOL TViewPoint::TestSouth(int row, int col, float z, int LOD)
 // Return TRUE if the two specified points can see each other over the terrain
 BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 {
-    int		Px = 0, Py = 0;				// row and column to lower left of p1
-    int		Qx = 0, Qy = 0;				// row and column to lower left of p2
-    int		LOD_P = 0;				// Most detailed LOD which contains point P
-    int		LOD_Q = 0;				// Most detailed LOD which contains point Q
-    float	z = 0.0F, dz = 0.0F;		// Current LOS z and dz/per major step
+    int Px = 0, Py = 0; // row and column to lower left of p1
+    int Qx = 0, Qy = 0; // row and column to lower left of p2
+    int LOD_P = 0; // Most detailed LOD which contains point P
+    int LOD_Q = 0; // Most detailed LOD which contains point Q
+    float z = 0.0F, dz = 0.0F; // Current LOS z and dz/per major step
 
 
     // Find the most detailed LOD which contains each point
@@ -833,11 +833,11 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 // This version works only against a single LOD of the terrain
 BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, float dz, int LOD)
 {
-    int		nr;					// remainder
-    int		deltax, deltay;		// Q.x - P.x, Q.y - P.y
-    int		k;					// loop invariant constant
-    int		row, col;			// Current row and column being checked
-    BOOL	hit;				// Flag to indicate a terrain hit
+    int nr; // remainder
+    int deltax, deltay; // Q.x - P.x, Q.y - P.y
+    int k; // loop invariant constant
+    int row, col; // Current row and column being checked
+    BOOL hit; // Flag to indicate a terrain hit
 
 
     // Initialize values used in the following interations
@@ -850,63 +850,63 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
     EnterCriticalSection(&cs_update);
 
 
-#define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2)		\
-	for (f1, f2, f3, nr=0; ((f4) && (!hit)); f5) {		\
-		z += dz;										\
-  		if (nr < k) {									\
-			if (i1) {									\
-				hit = r1(row,col,z,LOD);				\
-			} else {									\
-				hit = TestVertex(row,col,z,LOD);		\
-			}											\
-		} else {										\
-			s1;											\
-			if (nr -= k) {								\
-				hit  = r2(row,col,z,LOD);				\
-				if (!hit) {								\
-					hit = r1(row,col,z,LOD);			\
-				}										\
-			} else {									\
-				hit = TestVertex(row,col,z,LOD);		\
-			}											\
-		}												\
-	}
+#define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2) \
+ for (f1, f2, f3, nr=0; ((f4) && (!hit)); f5) { \
+ z += dz; \
+   if (nr < k) { \
+ if (i1) { \
+ hit = r1(row,col,z,LOD); \
+ } else { \
+ hit = TestVertex(row,col,z,LOD); \
+ } \
+ } else { \
+ s1; \
+ if (nr -= k) { \
+ hit  = r2(row,col,z,LOD); \
+ if (!hit) { \
+ hit = r1(row,col,z,LOD); \
+ } \
+ } else { \
+ hit = TestVertex(row,col,z,LOD); \
+ } \
+ } \
+ }
 
 
     // For reference purposes, let theta be the angle from P to Q
-    if ((deltax >= 0) && (deltay >= 0) && (deltay < deltax))	 			// theta < 45
+    if ((deltax >= 0) && (deltay >= 0) && (deltay < deltax))   // theta < 45
     {
         OCTANT(row = Px + 1, col = Py, k = deltax - deltay,  row < Qx, row++, nr += deltay, col++, TestEast, TestSouth);
     }
-    else if ((deltax > 0) && (deltay >= 0) && (deltay >= deltax))	 	// 45 <= theta < 90
+    else if ((deltax > 0) && (deltay >= 0) && (deltay >= deltax))   // 45 <= theta < 90
     {
         OCTANT(col = Py + 1, row = Px, k = deltay - deltax,  col < Qy, col++, nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax <= 0) && (deltay >= 0) && (deltay > -deltax)) 	// 90 <= theta < 135
+    else if ((deltax <= 0) && (deltay >= 0) && (deltay > -deltax))  // 90 <= theta < 135
     {
         OCTANT(col = Py + 1, row = Px, k = deltay + deltax,  col < Qy, col++, nr -= deltax, row--, TestSouth, TestWest);
     }
-    else if ((deltax <= 0) && (deltay > 0) && (deltay <= -deltax)) 	// 135 <= theta < 180
+    else if ((deltax <= 0) && (deltay > 0) && (deltay <= -deltax))  // 135 <= theta < 180
     {
         OCTANT(row = Px - 1, col = Py, k = -deltax - deltay, row > Qx, row--, nr += deltay, col++, TestEast, TestNorth);
     }
-    else if ((deltax <= 0) && (deltay <= 0) && (deltay > deltax))  	// 180 <= theta < 225
+    else if ((deltax <= 0) && (deltay <= 0) && (deltay > deltax))   // 180 <= theta < 225
     {
         OCTANT(row = Px - 1, col = Py, k = -deltax + deltay, row > Qx, row--, nr -= deltay, col--, TestWest, TestNorth);
     }
-    else if ((deltax < 0) && (deltay <= 0) && (deltay <= deltax))  	// 225 <= theta < 270
+    else if ((deltax < 0) && (deltay <= 0) && (deltay <= deltax))   // 225 <= theta < 270
     {
         OCTANT(col = Py - 1, row = Px, k = -deltay + deltax, col > Qy, col--, nr -= deltax, row--, TestSouth, TestEast);
     }
-    else if ((deltax >= 0) && (deltay <= 0) && (-deltay > deltax))  	// 270 <= theta < 315
+    else if ((deltax >= 0) && (deltay <= 0) && (-deltay > deltax))   // 270 <= theta < 315
     {
         OCTANT(col = Py - 1, row = Px, k = -deltay - deltax, col > Qy, col--, nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax >= 0) && (deltay < 0) && (-deltay <= deltax))  	// 315 <= theta < 360
+    else if ((deltax >= 0) && (deltay < 0) && (-deltay <= deltax))   // 315 <= theta < 360
     {
         OCTANT(row = Px + 1, col = Py, k = deltax + deltay,  row < Qx, row++, nr -= deltay, col--, TestWest, TestSouth);
     }
-    else  	// P == Q
+    else   // P == Q
     {
     }
 
@@ -922,17 +922,17 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
 // position in the given direction hit the terrain.  Return FALSE otherwise
 BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
 {
-    int		LOD;
-    int		range;
-    BOOL	stepUp, stepRt;
-    int		hStep, vStep;
-    int		endRow, endCol;
-    int		prevRow, prevCol;
-    float	dzdx, dzdy, dydx, dxdy;
-    int		row, col;
-    int		rowt, colt;
-    float	x, y, z;
-    float	xt, yt, zt;
+    int LOD;
+    int range;
+    BOOL stepUp, stepRt;
+    int hStep, vStep;
+    int endRow, endCol;
+    int prevRow, prevCol;
+    float dzdx, dzdy, dydx, dxdy;
+    int row, col;
+    int rowt, colt;
+    float x, y, z;
+    float xt, yt, zt;
 
 
     // Store parameters of the vector we're testing
@@ -950,8 +950,8 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
 
 
     // Start at the eyepoint at the highest drawn detail level
-    row	= WORLD_TO_LEVEL_POST(X(), highDetail);
-    col	= WORLD_TO_LEVEL_POST(Y(), highDetail);
+    row = WORLD_TO_LEVEL_POST(X(), highDetail);
+    col = WORLD_TO_LEVEL_POST(Y(), highDetail);
 
 
     // Walk through all the LODs being drawn
@@ -1113,8 +1113,8 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
 #else
         // Restart the search at the eyepoint to avoid the case where
         // we might be above ground at one LOD, but under at the next.
-        row	= WORLD_TO_LEVEL_POST(X(), LOD + 1);
-        col	= WORLD_TO_LEVEL_POST(Y(), LOD + 1);
+        row = WORLD_TO_LEVEL_POST(X(), LOD + 1);
+        col = WORLD_TO_LEVEL_POST(Y(), LOD + 1);
 #endif
     }
 
@@ -1135,12 +1135,12 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
 //BOOL TViewPoint::horizontalEdgeTest( int row, int col, float x, float y, float z, int LOD )
 BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, int LOD)
 {
-    float	t, height;
-    Tpost	*left, *right;
+    float t, height;
+    Tpost *left, *right;
 
     // Get the relevant posts
-    left	= blockLists[LOD].GetPost(row, col);
-    right	= blockLists[LOD].GetPost(row, col + 1);
+    left = blockLists[LOD].GetPost(row, col);
+    right = blockLists[LOD].GetPost(row, col + 1);
 
     // Compute the height of the edge at the point the line crosses it
     t = WORLD_TO_FLOAT_LEVEL_POST(y, LOD) - col;
@@ -1154,12 +1154,12 @@ BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, i
 //BOOL TViewPoint::verticalEdgeTest( int row, int col, float x, float y, float z, int LOD )
 BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z, int LOD)
 {
-    float	t, height;
-    Tpost	*top, *bottom;
+    float t, height;
+    Tpost *top, *bottom;
 
     // Get the relevant posts
-    top		= blockLists[LOD].GetPost(row + 1, col);
-    bottom	= blockLists[LOD].GetPost(row,   col);
+    top = blockLists[LOD].GetPost(row + 1, col);
+    bottom = blockLists[LOD].GetPost(row,   col);
 
     // Compute the height of the edge at the point the line crosses it
     t = WORLD_TO_FLOAT_LEVEL_POST(x, LOD) - row;
@@ -1181,12 +1181,12 @@ BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z, int
 //
 void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *intersection, int LOD)
 {
-    Tpost	*SW, *NW, *NE, *SE;
-    float	Nx, Ny, Nz;
-    float	SWx, SWy, SWz;
-    float	PQdotN;
-    float	NdotDIR;
-    float	t;
+    Tpost *SW, *NW, *NE, *SE;
+    float Nx, Ny, Nz;
+    float SWx, SWy, SWz;
+    float PQdotN;
+    float NdotDIR;
+    float t;
 
     // Get the posts which bound this square
     SW = blockLists[LOD].GetPost(row,   col);
@@ -1245,6 +1245,6 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
 
     // Make sure the intersection we found is within the lower right half space
     // Rounding errors could make this assertion fail occasionally
-    //	ShiAssert( (intersection->x-SWx) <= (intersection->y-SWy) );
+    // ShiAssert( (intersection->x-SWx) <= (intersection->y-SWy) );
 
 }

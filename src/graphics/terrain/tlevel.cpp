@@ -37,15 +37,15 @@ MEM_POOL gTPostMemPool = NULL;
 // This memory block is used to fetch posts in disk format.  We can share it because
 // only one block is handled at a time, and we're done with the data from one block
 // before the next block is read in by the Loader.
-static TdiskPost	SharedPostIOBuffer[POSTS_PER_BLOCK];
-static TNewdiskPost	SharedNewPostIOBuffer[POSTS_PER_BLOCK];
+static TdiskPost SharedPostIOBuffer[POSTS_PER_BLOCK];
+static TNewdiskPost SharedNewPostIOBuffer[POSTS_PER_BLOCK];
 
 
 void TLevel::Setup(int level, int width, int height, const char *mapPath)
 {
-    char	filename[MAX_PATH];
-    int		offsetFile;
-    DWORD	bytes;
+    char filename[MAX_PATH];
+    int offsetFile;
+    DWORD bytes;
 
 #ifdef USE_SH_POOLS
     // gTPostMemPool = MemPoolInitFS( sizeof(Tpost)*POSTS_PER_BLOCK, 24, 0 );
@@ -53,11 +53,11 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
 #endif
 
     // Setup the properties of this level
-    feet_per_post	= LEVEL_POST_TO_WORLD(1, level);
-    feet_per_block	= LEVEL_BLOCK_TO_WORLD(1, level);
-    myLevel			= level;
-    blocks_wide		= width;
-    blocks_high		= height;
+    feet_per_post = LEVEL_POST_TO_WORLD(1, level);
+    feet_per_block = LEVEL_BLOCK_TO_WORLD(1, level);
+    myLevel = level;
+    blocks_wide = width;
+    blocks_high = height;
 
 
     // Create the synchronization object we'll need
@@ -85,7 +85,7 @@ void TLevel::Setup(int level, int width, int height, const char *mapPath)
 
         if (bytes != sizeof(TBlock*)*blocks_wide * blocks_high)
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "%s:  Couldn't read block offset data", strerror(errno));
             ShiError(message);
         }
@@ -135,11 +135,11 @@ void TLevel::Cleanup(void)
 {
     ShiAssert(IsReady());
 
-    blocks_wide	= 0;
-    blocks_high	= 0;
+    blocks_wide = 0;
+    blocks_high = 0;
 
-    feet_per_post	= 0.0f;
-    feet_per_block	= 0.0f;
+    feet_per_post = 0.0f;
+    feet_per_block = 0.0f;
 
     // Wait for all outstanding TLoader requests to complete or be canceled.
     // Note: We only really have to wait for all _our_ requests to complete, but
@@ -256,10 +256,10 @@ TBlock* TLevel::RequestBlockOwnership(int r, int c)
             }
 
             // Build the data transfer request to get the post data
-            request->filename	= NULL;
-            request->fileoffset	= block->fileOffset >> 1;
-            request->callback	= LoaderCallBack;
-            request->parameter	= block;
+            request->filename = NULL;
+            request->fileoffset = block->fileOffset >> 1;
+            request->callback = LoaderCallBack;
+            request->parameter = block;
 
             // Submit the request to the asynchronous loader
             TheLoader.EnqueueRequest(request);
@@ -280,7 +280,7 @@ TBlock* TLevel::RequestBlockOwnership(int r, int c)
 // the last user (refCount == 0)
 void TLevel::ReleaseBlock(TBlock *block)
 {
-    int		i;
+    int i;
 
     ShiAssert(IsReady());
     ShiAssert(block);
@@ -333,8 +333,8 @@ void TLevel::ReleaseBlock(TBlock *block)
 // without knowledge of the specific class to which the data is to be delivered.
 void TLevel::LoaderCallBack(LoaderQ* request)
 {
-    TBlock	*block;
-    TLevel	*myself;
+    TBlock *block;
+    TLevel *myself;
 
     ShiAssert(request);
 
@@ -354,11 +354,11 @@ void TLevel::LoaderCallBack(LoaderQ* request)
 // before being made available through this level.
 void TLevel::PreProcessBlock(LoaderQ* request)
 {
-    Tpost		*postArray;
-    Tpost		*memPost;
-    float		minZ;
-    float		maxZ;
-    TBlock		*block = (TBlock*)request->parameter;
+    Tpost *postArray;
+    Tpost *memPost;
+    float minZ;
+    float maxZ;
+    TBlock *block = (TBlock*)request->parameter;
 
 
     ShiAssert(IsReady());
@@ -374,7 +374,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
             if (!postFileMap.ReadDataAt(request->fileoffset, SharedNewPostIOBuffer,
                                         sizeof(SharedNewPostIOBuffer)))
             {
-                char	message[120];
+                char message[120];
                 sprintf(message, "%s:  Bad loader read (%0d)", strerror(errno), request->fileoffset);
                 ShiError(message);
             }
@@ -386,7 +386,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
 
         if (post == NULL)
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "Bad loader map for offset (%0d)", request->fileoffset);
             ShiError(message);
 
@@ -415,7 +415,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
         {
             if (!postFileMap.ReadDataAt(request->fileoffset, SharedPostIOBuffer, sizeof(SharedPostIOBuffer)))
             {
-                char	message[120];
+                char message[120];
                 sprintf(message, "%s:  Bad loader read (%0d)", strerror(errno), request->fileoffset);
                 ShiError(message);
             }
@@ -427,7 +427,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
 
         if (post == NULL)
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "Bad loader map for offset (%0d)", request->fileoffset);
             ShiError(message);
 
@@ -510,7 +510,7 @@ void TLevel::SetBlockPtr(UINT r, UINT c, TBlock *block)
         ShiAssert(block->IsOwned());
 
         // Store the offset from which this block was retrieved
-        block->fileOffset =	blocks[ r * blocks_wide + c ].offset;
+        block->fileOffset = blocks[ r * blocks_wide + c ].offset;
 
         // Durring debugging, make sure don't already have a pointer
         ShiAssert(block->fileOffset & 0x00000001);
@@ -557,5 +557,5 @@ TBlock * TLevel::GetBlockPtr(UINT r, UINT c)
 // Update the lighting properties based on the time of day
 void TLevel::TimeUpdateCallback(void *self)
 {
-    ((TLevel*)self)->lightLevel =	TheTimeOfDay.GetLightLevel();
+    ((TLevel*)self)->lightLevel = TheTimeOfDay.GetLightLevel();
 }

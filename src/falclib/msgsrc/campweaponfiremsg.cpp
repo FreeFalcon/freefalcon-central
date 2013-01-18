@@ -38,7 +38,7 @@
 #include "InvalidBufferException.h"
 #include "Graphics/Include/drawparticlesys.h"
 
-#define BANDIT_VEH 2800	// 2002-02-21 S.G.
+#define BANDIT_VEH 2800 // 2002-02-21 S.G.
 
 class C_Handler;
 
@@ -55,7 +55,7 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
 void FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId);
 void CreateDrawable(SimBaseClass *, float scale);
 void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId, int shots);
-FalconDamageMessage * GetSimDamageMessage(CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType,	int weapId);
+FalconDamageMessage * GetSimDamageMessage(CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType, int weapId);
 
 // ======================================
 // The message stuff
@@ -89,7 +89,7 @@ FalconCampWeaponsFire::~FalconCampWeaponsFire(void)
 int FalconCampWeaponsFire::Size() const
 {
     ShiAssert(dataBlock.size >= 0);
-    return	FalconEvent::Size() +
+    return FalconEvent::Size() +
             sizeof(VU_ID) + sizeof(VU_ID) + sizeof(dataBlock.weapon) +
             sizeof(dataBlock.shots) + sizeof(uchar) + sizeof(uchar) + sizeof(ushort) + dataBlock.size
             ;
@@ -165,10 +165,10 @@ int FalconCampWeaponsFire::Encode(VU_BYTE **buf)
 extern bool g_bLogEvents;
 int FalconCampWeaponsFire::Process(uchar autodisp)
 {
-    CampEntity	target = (CampEntity)vuDatabase->Find(EntityId());
-    CampEntity	shooter = (CampEntity)vuDatabase->Find(dataBlock.shooterID);
-    int			losses, shooterAc = 255, i;
-    FalconDeathMessage	*dtm = NULL;
+    CampEntity target = (CampEntity)vuDatabase->Find(EntityId());
+    CampEntity shooter = (CampEntity)vuDatabase->Find(dataBlock.shooterID);
+    int losses, shooterAc = 255, i;
+    FalconDeathMessage *dtm = NULL;
     //sfr: again we cant use datablock directly
     VU_BYTE *data = dataBlock.data;
 
@@ -234,7 +234,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         // Synthisize a shot message for flight shooters in our package
         if (shooter->IsFlight() && (shooter->InPackage() || g_bLogEvents))
         {
-            FalconWeaponsFire	wfm(FalconNullId, FalconLocalSession);
+            FalconWeaponsFire wfm(FalconNullId, FalconLocalSession);
             wfm.dataBlock.fCampID = shooter->GetCampID();
             wfm.dataBlock.fPilotID = dataBlock.fPilotId;
             wfm.dataBlock.fIndex = (unsigned short)(((Unit)shooter)->GetVehicleID(0) + VU_LAST_ENTITY_TYPE);
@@ -301,18 +301,18 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
                 pos.x = target->XPos() + 800.0f * PRANDFloat();
                 pos.y = target->YPos() + 800.0f * PRANDFloat();
                 OTWDriver.AddSfxRequest( new SfxClass( SFX_VEHICLE_BURNING,
-                						&pos,
-                						60.0f,
-                						90.0f ) );
+                 &pos,
+                 60.0f,
+                 90.0f ) );
                 */
 
                 pos.x = target->XPos() + 800.0f * PRANDFloat();
                 pos.y = target->YPos() + 800.0f * PRANDFloat();
                 /*
                 OTWDriver.AddSfxRequest( new SfxClass( SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL,
-                						&pos,
-                						2.0f,
-                						200.0f ) );
+                 &pos,
+                 2.0f,
+                 200.0f ) );
                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL + 1),
                                                       &pos,
@@ -330,9 +330,9 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
                 pos.z = target->ZPos() + 300.0f * PRANDFloat();
                 /*
                 OTWDriver.AddSfxRequest( new SfxClass( SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL,
-                						&pos,
-                						2.0f,
-                						200.0f ) );
+                 &pos,
+                 2.0f,
+                 200.0f ) );
                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL + 1),
                                                       &pos,
@@ -393,18 +393,18 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     // COBRA - RED - SUSPENDED FOR NOW, caused a CTD
     //Cobra TJL Let's say we missed ;)
     /*else
-    	{
-    	FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(target->Id(), FalconLocalSession);
-    	msg->dataBlock.from = shooter->Id();
-    	msg->dataBlock.to = MESSAGE_FOR_TEAM;
-    	msg->dataBlock.voice_id = (uchar)((Flight)shooter)->GetPilotVoiceID(shooterAc);
-    	msg->dataBlock.message = rcMISSED;
-    	msg->dataBlock.edata[0] = 32767;
-    	FalconSendMessage(msg, FALSE);
-    	}*/
+     {
+     FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(target->Id(), FalconLocalSession);
+     msg->dataBlock.from = shooter->Id();
+     msg->dataBlock.to = MESSAGE_FOR_TEAM;
+     msg->dataBlock.voice_id = (uchar)((Flight)shooter)->GetPilotVoiceID(shooterAc);
+     msg->dataBlock.message = rcMISSED;
+     msg->dataBlock.edata[0] = 32767;
+     FalconSendMessage(msg, FALSE);
+     }*/
 
     // Send a CampEvent message for weapon fire to the LOCAL MACHINE
-    FalconCampEventMessage	*newEvent = new FalconCampEventMessage(shooter->Id(), FalconLocalSession);
+    FalconCampEventMessage *newEvent = new FalconCampEventMessage(shooter->Id(), FalconLocalSession);
     newEvent->dataBlock.flags = 0;
     newEvent->dataBlock.team = shooter->GetTeam();
 
@@ -492,7 +492,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
     // Send a CampEvent message for losses to the LOCAL MACHINE
     if (target->IsFlight() && losses)
     {
-        FalconCampEventMessage	*newEvent = new FalconCampEventMessage(target->Id(), FalconLocalGame);
+        FalconCampEventMessage *newEvent = new FalconCampEventMessage(target->Id(), FalconLocalGame);
         newEvent->dataBlock.team = GetEnemyTeam(target->GetTeam());
         newEvent->dataBlock.eventType = FalconCampEventMessage::campLosses;
         target->GetLocation(&newEvent->dataBlock.data.xLoc, &newEvent->dataBlock.data.yLoc);
@@ -519,8 +519,8 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
 /*
  ** Name: GetSimTarget
  ** Description:
- **		Given a campenitity target, pull out one of the sim objects
- **		and return it as an object to target for damaging....
+ ** Given a campenitity target, pull out one of the sim objects
+ ** and return it as an object to target for damaging....
  */
 SimBaseClass* GetSimTarget(CampEntity target, uchar targetId)
 {
@@ -555,8 +555,8 @@ SimBaseClass* GetSimTarget(CampEntity target, uchar targetId)
 /*
  ** Name: FireOnSimEntity
  ** Description:
- **		This function handles the case where a campaign entity fires on
- **		a deaggregated campaign entity
+ ** This function handles the case where a campaign entity fires on
+ ** a deaggregated campaign entity
  */
 void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uchar shots[], uchar targetId)
 {
@@ -585,8 +585,8 @@ void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uc
 /*
  ** Name: FireOnSimEntity
  ** Description:
- **		This function handles the case where a campaign entity fires on
- **		a sim entity
+ ** This function handles the case where a campaign entity fires on
+ ** a sim entity
  */
 void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
 {
@@ -601,7 +601,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     wc = (WeaponClassDataType *)Falcon4ClassTable[WeaponDataTable[weaponId].Index].dataPtr;
     classPtr = &Falcon4ClassTable[WeaponDataTable[weaponId].Index ];
 
-    //	MonoPrint("Campaign Unit firing on sim entity. Weapon ID: %d, Shots: %d.\n",weaponId,shots);
+    // MonoPrint("Campaign Unit firing on sim entity. Weapon ID: %d, Shots: %d.\n",weaponId,shots);
 
     blastRange = 0.0f;
 
@@ -614,12 +614,12 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         if (wc->Flags & WEAP_TRACER)
         {
             // don't handle tracers
-            //			MonoPrint("Campaign unit unable to fire on sim entity due to gun code not existing.\n");
+            // MonoPrint("Campaign unit unable to fire on sim entity due to gun code not existing.\n");
             return;
         }
 
         // ok, it's a shell
-        //		MonoPrint( "Itsa Shell!\n" );
+        // MonoPrint( "Itsa Shell!\n" );
 
         // damage stuff goes here....
         if (wc->BlastRadius == 0)
@@ -681,7 +681,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
         endMessage->dataBlock.dCampSlot  = 0;
         endMessage->dataBlock.dIndex     = 0;
         endMessage->dataBlock.fWeaponUID = shooter->Id();
-        endMessage->dataBlock.wIndex 	 = (unsigned short)(WeaponDataTable[weaponId].Index + VU_LAST_ENTITY_TYPE);
+        endMessage->dataBlock.wIndex   = (unsigned short)(WeaponDataTable[weaponId].Index + VU_LAST_ENTITY_TYPE);
 
         if (hitSomething)
             endMessage->dataBlock.endCode    = FalconMissileEndMessage::MissileKill;
@@ -729,7 +729,7 @@ void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId)
     else
     {
         // do we need to handle any other types?
-        //		MonoPrint( "Not Weapon Class for Camp Weapon Message\n" );
+        // MonoPrint( "Not Weapon Class for Camp Weapon Message\n" );
         return;
     }
 }
@@ -798,7 +798,7 @@ GetSimDamageMessage(CampEntity shooter,
      */
 
     // FalconSendMessage (message,FALSE);
-    //me123	message->RequestOutOfBandTransmit ();
+    //me123 message->RequestOutOfBandTransmit ();
     return message;
 }
 
@@ -810,11 +810,11 @@ GetSimDamageMessage(CampEntity shooter,
 void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_id, int shots)
 {
     Tpoint  pos, tar, vec;
-    int		stype;
-    float	interval;
+    int stype;
+    float interval;
     // float d;
     VuEntity *player;
-    float	dx, dy;
+    float dx, dy;
     BOOL    shortDist = TRUE;
 
     //RV - I-Hawk - Added a 0 vector for RV new PS calls
@@ -891,11 +891,11 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         if (shortDist == FALSE)
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_ARMOR,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_ARMOR + 1),
                                                   &pos,
                                                   &vec);
@@ -903,9 +903,9 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         // AAA - Do tracers
         /*
         OTWDriver.AddSfxRequest( new SfxClass(SFX_DIST_AIRBURSTS,
-        						&tar,
-        						shots*2,
-        						interval ) );
+         &tar,
+         shots*2,
+         interval ) );
         */
         DrawableParticleSys::PS_AddParticleEx((SFX_DIST_AIRBURSTS + 1),
                                               &pos,
@@ -916,21 +916,21 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         if (shortDist == FALSE)
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_ARMOR,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_ARMOR + 1),
                                                   &pos,
                                                   &vec);
 
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
-        						&tar,
-        						shots*2,
-        						interval ) );
-        						*/
+         &tar,
+         shots*2,
+         interval ) );
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_DIST_GROUNDBURSTS + 1),
                                               &pos,
                                               &PSvec);
@@ -940,21 +940,21 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         if (shortDist == FALSE)
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_INFANTRY,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_INFANTRY + 1),
                                                   &pos,
                                                   &vec);
 
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
-        						&tar,
-        						shots*2,
-        						interval ) );
-        						*/
+         &tar,
+         shots*2,
+         interval ) );
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_DIST_GROUNDBURSTS + 1),
                                               &pos,
                                               &PSvec);
@@ -964,21 +964,21 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         if (shortDist == FALSE)
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_ARMOR,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_ARMOR + 1),
                                                   &pos,
                                                   &vec);
         else
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
-            						&tar,
-            						shots*2,
-            						interval ) );
-            						*/
+             &tar,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_GROUNDBURSTS + 1),
                                                   &pos,
                                                   &PSvec);
@@ -987,7 +987,7 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
     {
         // Add missile trail
         /*
-           vec.x *= 800;			// 800 fps velocity, what the heck.
+           vec.x *= 800; // 800 fps velocity, what the heck.
            vec.y *= 800;
            vec.z *= 800;
            OTWDriver.AddSfxRequest(SFX_TRAIL_SMOKECLOUD,SFX_MOVES|SFX_USES_GRAVITY|SFX_EXPLODE_WHEN_DONE,&pos,&vec,10.0F,400.0F);
@@ -996,11 +996,11 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         {
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_AALAUNCHES,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_AALAUNCHES + 1),
                                                   &pos,
                                                   &vec);
@@ -1018,19 +1018,19 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
         else if (target->OnGround())
             /*
             OTWDriver.AddSfxRequest( new SfxClass(SFX_DIST_GROUNDBURSTS,
-            						&tar,
-            						shots*2,
-            						interval ) );
-            						*/
+             &tar,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_GROUNDBURSTS + 1),
                                                   &pos,
                                                   &PSvec);
         else
             /*
             OTWDriver.AddSfxRequest( new SfxClass(SFX_DIST_AIRBURSTS,
-            						&tar,
-            						shots*2,
-            						interval ) );
+             &tar,
+             shots*2,
+             interval ) );
             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_AIRBURSTS + 1),
                                                   &pos,
@@ -1040,40 +1040,40 @@ void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_i
     {
         /*
         // Add missile trail
-        vec.x *= 800;			// 800 fps velocity, what the heck.
+        vec.x *= 800; // 800 fps velocity, what the heck.
         vec.y *= 800;
         vec.z *= 800;
          */
         if (shortDist == FALSE)
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_SAMLAUNCHES,
-            						&pos,
-            						&vec,
-            						shots*2,
-            						interval ) );
-            						*/
+             &pos,
+             &vec,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_SAMLAUNCHES + 1),
                                                   &pos,
                                                   &vec);
         else
             /*
             OTWDriver.AddSfxRequest( new SfxClass(SFX_DIST_AIRBURSTS,
-            						&tar,
-            						shots*2,
-            						interval ) );
-            						*/
+             &tar,
+             shots*2,
+             interval ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_DIST_AIRBURSTS + 1),
                                                   &pos,
                                                   &PSvec);
     }
-    else if (stype == STYPE_BOMB || stype == STYPE_BOMB_GUIDED || stype == STYPE_BOMB_IRON || stype == STYPE_ROCKET || stype == STYPE_BOMB_GPS)	//MI added GPS
+    else if (stype == STYPE_BOMB || stype == STYPE_BOMB_GUIDED || stype == STYPE_BOMB_IRON || stype == STYPE_ROCKET || stype == STYPE_BOMB_GPS) //MI added GPS
     {
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
-        						&tar,
-        						shots*2,
-        						interval ) );
-        						*/
+         &tar,
+         shots*2,
+         interval ) );
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_DIST_GROUNDBURSTS + 1),
                                               &pos,
                                               &PSvec);
@@ -1109,20 +1109,20 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         }
 
         // ok, it's a shell
-        //		MonoPrint( "Itsa Short Distance Shell Shell!\n" );
+        // MonoPrint( "Itsa Short Distance Shell Shell!\n" );
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
     {
-        //		MonoPrint( "Itsa Short Range Effect Missile!\n" );
+        // MonoPrint( "Itsa Short Range Effect Missile!\n" );
 
 
     }
     // itsa missile
     else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
     {
-        //		MonoPrint( "Itsa Short Range Effect Bomb!\n" );
+        // MonoPrint( "Itsa Short Range Effect Bomb!\n" );
         itsaBomb = TRUE;
 
     }
@@ -1139,37 +1139,37 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         endMessage->dataBlock.fEntityID  = shooter->Id();
 
         if (shooter->IsFlight())
-            endMessage->dataBlock.fPilotID	= (uchar)((Flight)shooter)->PickRandomPilot(target->Id().num_);
+            endMessage->dataBlock.fPilotID = (uchar)((Flight)shooter)->PickRandomPilot(target->Id().num_);
         else
-            endMessage->dataBlock.fPilotID	= 255;
+            endMessage->dataBlock.fPilotID = 255;
 
-        endMessage->dataBlock.fIndex		= shooter->Type();
+        endMessage->dataBlock.fIndex = shooter->Type();
 
-        endMessage->dataBlock.fCampID		= shooter->GetCampID();
-        endMessage->dataBlock.fSide			= shooter->GetOwner();
+        endMessage->dataBlock.fCampID = shooter->GetCampID();
+        endMessage->dataBlock.fSide = shooter->GetOwner();
 
-        endMessage->dataBlock.dEntityID		= target->Id();
-        endMessage->dataBlock.dCampID		= target->GetCampID();
-        endMessage->dataBlock.dSide			= target->GetOwner();
+        endMessage->dataBlock.dEntityID = target->Id();
+        endMessage->dataBlock.dCampID = target->GetCampID();
+        endMessage->dataBlock.dSide = target->GetOwner();
 
-        endMessage->dataBlock.dPilotID		= 0;
-        endMessage->dataBlock.dCampSlot		= 0;
-        endMessage->dataBlock.dIndex		= 0;
-        endMessage->dataBlock.fWeaponUID	= shooter->Id();
-        endMessage->dataBlock.wIndex		= (unsigned short)(weapon_id + VU_LAST_ENTITY_TYPE);
+        endMessage->dataBlock.dPilotID = 0;
+        endMessage->dataBlock.dCampSlot = 0;
+        endMessage->dataBlock.dIndex = 0;
+        endMessage->dataBlock.fWeaponUID = shooter->Id();
+        endMessage->dataBlock.wIndex = (unsigned short)(weapon_id + VU_LAST_ENTITY_TYPE);
 
-        endMessage->dataBlock.endCode		= FalconMissileEndMessage::MissileKill;
+        endMessage->dataBlock.endCode = FalconMissileEndMessage::MissileKill;
 
-        endMessage->dataBlock.xDelta		= 1500.0f;
-        endMessage->dataBlock.yDelta		= 0.0f;
-        endMessage->dataBlock.zDelta		= 0.0f;
+        endMessage->dataBlock.xDelta = 1500.0f;
+        endMessage->dataBlock.yDelta = 0.0f;
+        endMessage->dataBlock.zDelta = 0.0f;
 
         // if target is on the ground get ground level and type
         if (target->IsBattalion() || itsaBomb)
         {
-            endMessage->dataBlock.x		= target->XPos() + 700.0f * PRANDFloat();
-            endMessage->dataBlock.y		= target->YPos() + 700.0f * PRANDFloat();
-            endMessage->dataBlock.z		= OTWDriver.GetGroundLevel(
+            endMessage->dataBlock.x = target->XPos() + 700.0f * PRANDFloat();
+            endMessage->dataBlock.y = target->YPos() + 700.0f * PRANDFloat();
+            endMessage->dataBlock.z = OTWDriver.GetGroundLevel(
                                               endMessage->dataBlock.x,
                                               endMessage->dataBlock.y);
 
@@ -1179,10 +1179,10 @@ void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int wea
         }
         else
         {
-            endMessage->dataBlock.x				= target->XPos() + 700.0f * PRANDFloat();
-            endMessage->dataBlock.y				= target->YPos() + 700.0f * PRANDFloat();
-            endMessage->dataBlock.z				= target->ZPos();
-            endMessage->dataBlock.groundType	= -1;
+            endMessage->dataBlock.x = target->XPos() + 700.0f * PRANDFloat();
+            endMessage->dataBlock.y = target->YPos() + 700.0f * PRANDFloat();
+            endMessage->dataBlock.z = target->ZPos();
+            endMessage->dataBlock.groundType = -1;
         }
 
         FalconSendMessage(endMessage, FALSE);
@@ -1276,12 +1276,12 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
         vec.z = 0.0f;
         /*
         OTWDriver.AddSfxRequest( new SfxClass( SFX_SAM_LAUNCH,
-        						SFX_MOVES | SFX_NO_GROUND_CHECK,
-        						&pos,
-        						&vec,
-        						2.0f,
-        						1.0f ) );
-        						*/
+         SFX_MOVES | SFX_NO_GROUND_CHECK,
+         &pos,
+         &vec,
+         2.0f,
+         1.0f ) );
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_SAM_LAUNCH + 1),
                                               &pos,
                                               &vec);
@@ -1303,19 +1303,19 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
     FalconWeaponsFire* fireMsg;
 
     fireMsg = new FalconWeaponsFire(shooter->Id(), FalconLocalGame);
-    fireMsg->dataBlock.fEntityID	= shooter->Id();
-    fireMsg->dataBlock.weaponType	= FalconWeaponsFire::MRM;
-    fireMsg->dataBlock.fCampID		= shooter->GetCampID();
-    fireMsg->dataBlock.fSide		= shooter->GetOwner();
-    fireMsg->dataBlock.fPilotID		= (uchar)theMissile->shooterPilotSlot;
-    fireMsg->dataBlock.fIndex		= shooter->Type();
-    fireMsg->dataBlock.fWeaponID	= theMissile->Type();
-    fireMsg->dataBlock.dx			= 0.0f;
-    fireMsg->dataBlock.dy			= 0.0f;
-    fireMsg->dataBlock.dz			= 0.0f;
-    fireMsg->dataBlock.fWeaponUID	= theMissile->Id();
-    //	fireMsg->dataBlock.fireOnOff	= 1;
-    fireMsg->dataBlock.targetId		= simTarg->Id();
+    fireMsg->dataBlock.fEntityID = shooter->Id();
+    fireMsg->dataBlock.weaponType = FalconWeaponsFire::MRM;
+    fireMsg->dataBlock.fCampID = shooter->GetCampID();
+    fireMsg->dataBlock.fSide = shooter->GetOwner();
+    fireMsg->dataBlock.fPilotID = (uchar)theMissile->shooterPilotSlot;
+    fireMsg->dataBlock.fIndex = shooter->Type();
+    fireMsg->dataBlock.fWeaponID = theMissile->Type();
+    fireMsg->dataBlock.dx = 0.0f;
+    fireMsg->dataBlock.dy = 0.0f;
+    fireMsg->dataBlock.dz = 0.0f;
+    fireMsg->dataBlock.fWeaponUID = theMissile->Id();
+    // fireMsg->dataBlock.fireOnOff = 1;
+    fireMsg->dataBlock.targetId = simTarg->Id();
 
     fireMsg->RequestOutOfBandTransmit();
     fireMsg->RequestReliableTransmit();
@@ -1323,7 +1323,7 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
     FalconSendMessage(fireMsg);
 
 
-#if 0	// This is handled by the missile itself now...
+#if 0 // This is handled by the missile itself now...
     /*
     // Need to send a launch message if this missile is radar guided
     if (theMissile->sensorArray &&

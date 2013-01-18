@@ -25,7 +25,7 @@
 #include "Graphics/Include/renderow.h"
 #include "ffeedbk.h"
 #include "sms.h"
-#include "flightdata.h"	//MI
+#include "flightdata.h" //MI
 #include "IvibeData.h"
 #include "falclib/include/fakerand.h"//Cobra
 
@@ -44,7 +44,7 @@ static int gMaxIAWeaponsFired = 12;
 // End Gilman weapon count hack
 
 //MI CAT mod
-//extern bool g_bEnableCATIIIExtension;	//MI replaced with g_bRealisticAvionics
+//extern bool g_bEnableCATIIIExtension; //MI replaced with g_bRealisticAvionics
 
 void AircraftClass::DoWeapons()
 {
@@ -342,7 +342,7 @@ void AircraftClass::DoWeapons()
                 // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
 
                 // Ok, look for a Bomb
-                BombClass	*TheBomb = FCC->GetTheBomb();
+                BombClass *TheBomb = FCC->GetTheBomb();
 
                 // And if the Bomb is present and released
                 if (TheBomb && FCC->bombPickle)
@@ -354,7 +354,7 @@ void AircraftClass::DoWeapons()
 
                     //float wt = (Sms->hardPoint[Sms->CurHardpoint()]) ? (WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId].Weight) : 0.0f;
                     // RED - Turbulence based on Weight...
-                    float		wtTurb = sqrtf((float)wt) / 100.0f;
+                    float wtTurb = sqrtf((float)wt) / 100.0f;
 
                     // *** JDAM STUFF *** Check if it's powered
                     if (TheBomb->IsSetBombFlag(BombClass::IsGPS) && Sms->JDAMPowered)
@@ -413,7 +413,7 @@ void AircraftClass::DoWeapons()
                         return;
                     }
 
-                    bool	Ripple = true;
+                    bool Ripple = true;
 
                     // *** GENERIC BOMBS ***
                     // Checks for AI
@@ -449,7 +449,7 @@ void AircraftClass::DoWeapons()
                 // COBRA - RED - Rewritten in a decent and WORKING WAY..!!!!
 
                 // Ok, look for a Bomb
-                BombClass	*TheBomb = FCC->GetTheBomb();
+                BombClass *TheBomb = FCC->GetTheBomb();
 
                 // And if the Bomb is present and released
                 if (TheBomb && FCC->bombPickle)
@@ -461,7 +461,7 @@ void AircraftClass::DoWeapons()
 
                     //float wt = (Sms->hardPoint[Sms->CurHardpoint()]) ? WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId].Weight : 0.0f;
                     // RED - Turbulence based on Weight...
-                    float	wtTurb = sqrtf((float)wt) / 100.0f;
+                    float wtTurb = sqrtf((float)wt) / 100.0f;
                     // Set the target position
                     TheBomb->SetTarget(targetPtr);
 
@@ -491,7 +491,7 @@ void AircraftClass::DoWeapons()
             {
                 if (FCC->releaseConsent && !OnGround() && Sms->curWeapon)
                 {
-                    CampBaseClass		*campEntity;
+                    CampBaseClass *campEntity;
                     float vpLeft, vpTop, vpRight, vpBottom;
 
                     // Store the current viewport
@@ -520,16 +520,16 @@ void AircraftClass::DoWeapons()
 
                         if (campEntity && campEntity->GetComponents())
                         {
-                            VuListIterator		cit(campEntity->GetComponents());
+                            VuListIterator cit(campEntity->GetComponents());
 
-                            //				   if (campEntity->GetComponents())
-                            //					   {
+                            //    if (campEntity->GetComponents())
+                            //    {
                             entity = cit.GetFirst();
 
                             while (entity && !TheHud->CanSeeTarget(curWeapon->Type(), entity, this))
                                 entity = cit.GetNext();
 
-                            //					   }
+                            //    }
                         }
 
                         if (entity)
@@ -581,7 +581,7 @@ void AircraftClass::DoWeapons()
         // Special case for firing a load of rockets
         //      if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb && // MLR 4/3/2004 -
         //          FCC->GetSubMode() == FireControlComputer::RCKT  &&
-        //	             Sms->IsSet(SMSBaseClass::Firing) &&
+        //              Sms->IsSet(SMSBaseClass::Firing) &&
         //          FCC->bombPickle)
 
         if (FCC->GetMasterMode() == FireControlComputer::AirGroundRocket && // MLR 4/3/2004 -

@@ -17,47 +17,47 @@ extern F4CSECTIONHANDLE* SetupCritSection;
 
 typedef struct
 {
-    float	Xpos;
-    float	Ypos;
-    float	Zpos;
-    float	CamPitch;
-    float	CamRoll;
-    float	CamYaw;
-    float	CamX;
-    float	CamY;
-    float	CamZ;
+    float Xpos;
+    float Ypos;
+    float Zpos;
+    float CamPitch;
+    float CamRoll;
+    float CamYaw;
+    float CamX;
+    float CamY;
+    float CamZ;
 } ViewPos;
 
 typedef struct
 {
-    float	VisID;
-    float	Xpos;
-    float	Ypos;
-    float	Zpos;
-    float	Pitch;
-    float	Roll;
-    float	Yaw;
+    float VisID;
+    float Xpos;
+    float Ypos;
+    float Zpos;
+    float Pitch;
+    float Roll;
+    float Yaw;
 } ObjectPos;
 
 typedef struct
 {
-    float	VisID;
-    float	Priority;
-    float	Xpos;
-    float	Ypos;
-    float	Zpos;
-    float	Facing;
+    float VisID;
+    float Priority;
+    float Xpos;
+    float Ypos;
+    float Zpos;
+    float Facing;
 } FeaturePos;
 
 enum
 {
-    PITCH_CHG =	10,
-    YAW_CHG	=	10,
-    MAX_ALT	=	-50000,
+    PITCH_CHG = 10,
+    YAW_CHG = 10,
+    MAX_ALT = -50000,
     MIN_ALT = -10,
     ALT_CHG = 500,
-    SND_RNG	=	-4900,
-    SQRT_SND_RNG =	70,
+    SND_RNG = -4900,
+    SQRT_SND_RNG = 70,
     MAX_TERR_DIST = 80,
     MIN_TERR_DIST = 40,
     NUM_LEVELS = 5,
@@ -71,13 +71,13 @@ enum
 
 typedef struct
 {
-    int		FlightModel;
-    int		RadarMode;
-    int		WeapEffects;
-    int		Autopilot;
-    int		RefuelingMode;
-    int		PadlockMode;
-    int		flags;
+    int FlightModel;
+    int RadarMode;
+    int WeapEffects;
+    int Autopilot;
+    int RefuelingMode;
+    int PadlockMode;
+    int flags;
 } Preset;
 
 typedef struct
@@ -95,10 +95,10 @@ extern KeyVars KeyVar;
 
 typedef struct
 {
-    int calibrating;	//TRUE if currently calibrating
-    int state;			//state = 1 if waiting for user to let go of button, 0 if waiting for press
-    int step;			//current calibration step we're on
-    int disp_text;		//TRUE if we need to display text prompts this time through
+    int calibrating; //TRUE if currently calibrating
+    int state; //state = 1 if waiting for user to let go of button, 0 if waiting for press
+    int step; //current calibration step we're on
+    int disp_text; //TRUE if we need to display text prompts this time through
     int calibrated;
 } CalibrateStruct;
 
@@ -106,10 +106,10 @@ extern CalibrateStruct Calibration;
 
 enum
 {
-    CTR_JOY	=	70105,
-    MV_JOY =	70106,
-    MV_RUD =	70107,
-    MV_THR =	70108,
+    CTR_JOY = 70105,
+    MV_JOY = 70106,
+    MV_RUD = 70107,
+    MV_THR = 70108,
     USE_FILENAME = 1,
     USE_DEFAULT = 0,
 };

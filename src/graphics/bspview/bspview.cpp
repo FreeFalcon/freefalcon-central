@@ -4,7 +4,7 @@
     January 29, 1998
 
     This is the tool which reads a Multigen FLT file and displays it
-	through the BSPlib routines.
+ through the BSPlib routines.
 \***************************************************************************/
 #include <stdlib.h>
 #include <conio.h>
@@ -39,7 +39,7 @@ PlayerOptionsClass PlayerOptions;
 char *FalconTerrainDataDir = "";
 char *FalconObjectDataDir = "";
 char *FalconMiscTexDataDir = "";
-char *Falcon3DDataDir = "";		// M.N.
+char *Falcon3DDataDir = ""; // M.N.
 long __stdcall FalconMessageHandler(HWND hw, unsigned int msg, unsigned int wp, long lp);
 char g_CardDetails[1024];
 
@@ -55,18 +55,18 @@ void ConstructDeltaMatrix(float p, float r, float y, Trotation *T);
 
 void ResetLatLong(void) {}
 void SetLatLong(float, float) {}
-float WeatherClass::WxAltShift	= -2000.0f;
+float WeatherClass::WxAltShift = -2000.0f;
 // Globals shared by multiple functions
-//DeviceManager		devmgr;
-//DisplayDevice		device;
-Render3D			renderer;
-ImageBuffer			*image = NULL;
-ObjectInstance		*obj = NULL;
-BOOL				run = FALSE;
-float		    zoompos = 0.0f;
-float	    roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
+//DeviceManager devmgr;
+//DisplayDevice device;
+Render3D renderer;
+ImageBuffer *image = NULL;
+ObjectInstance *obj = NULL;
+BOOL run = FALSE;
+float     zoompos = 0.0f;
+float     roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
 
-DWORD				BACKGROUND_COLOR = 0xFFE5CCB2;
+DWORD BACKGROUND_COLOR = 0xFFE5CCB2;
 enum {CAM_ORBIT, CAM_PAN, CAM_ORIGIN} cameraMode = CAM_ORBIT;
 
 extern "C" {
@@ -90,7 +90,7 @@ extern MEM_POOL gBSPLibMemPool, glMemPool;
 static void
 Register()
 {
-    WNDCLASS	wc;
+    WNDCLASS wc;
     // set up and register window class
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_NOCLOSE;
     wc.lpfnWndProc = FalconMessageHandler;
@@ -98,7 +98,7 @@ Register()
     wc.cbWndExtra = sizeof(DWORD);
     wc.hInstance = NULL;
     //   wc.hIcon = NULL;
-    wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(105));	// OW BC
+    wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(105)); // OW BC
     wc.hCursor = NULL;
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName = NULL;
@@ -113,14 +113,14 @@ Register()
  */
 int main(int argc, char *argv[])
 {
-    char	msgbuf [1024];
-    char	filename[_MAX_PATH];
-    char	drive[_MAX_DRIVE];
-    char	path[_MAX_DIR];
-    char	fname[_MAX_FNAME];
-    char	ext[_MAX_EXT];
-    int		result;
-    int		id = 0;
+    char msgbuf [1024];
+    char filename[_MAX_PATH];
+    char drive[_MAX_DRIVE];
+    char path[_MAX_DIR];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    int result;
+    int id = 0;
 
     InitDebug(DEBUGGER_TEXT_MODE);
     // Set the FPU to 24 bit precision
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 
 
     /***********************************************************************************\
-    	Here we decide how to deal with the file the user provided
+     Here we decide how to deal with the file the user provided
     \***********************************************************************************/
     if (stricmp(ext, ".FLT") == 0)
     {
@@ -187,12 +187,12 @@ int main(int argc, char *argv[])
         }
 
     }
-    else 	if (stricmp(ext, ".HDR") == 0)
+    else  if (stricmp(ext, ".HDR") == 0)
     {
         // We've got a master object file, so load it
         strcpy(filename, drive);
         strcat(filename, path);
-        //		strcat( filename, "KoreaObj" );
+        // strcat( filename, "KoreaObj" );
         strcat(filename, fname);
         ObjectParent::SetupTable(filename);
 
@@ -210,13 +210,13 @@ int main(int argc, char *argv[])
 
 
     /***********************************************************************************\
-    	Read some default info from the registry, then confirm it with the user
+     Read some default info from the registry, then confirm it with the user
     \***********************************************************************************/
-    int				DriverNumber;
-    int				DeviceNumber;
-    int				screenWidth;
-    DWORD			type, size;
-    HKEY			theKey;
+    int DriverNumber;
+    int DeviceNumber;
+    int screenWidth;
+    DWORD type, size;
+    HKEY theKey;
 
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\BSPview",
                  0, KEY_ALL_ACCESS, &theKey);
@@ -244,14 +244,14 @@ int main(int argc, char *argv[])
 
 
     /***********************************************************************************\
-    	Here begins the display setup
+     Here begins the display setup
     \***********************************************************************************/
-    BOOL				drawGroundPlane;
-    DWORD				start;
-    DWORD				now;
-    char				frameRate[80];
-    Ppoint				lightVec = {0.0f, 0.0f, -1.0f};
-    Texture				groundTexture;
+    BOOL drawGroundPlane;
+    DWORD start;
+    DWORD now;
+    char frameRate[80];
+    Ppoint lightVec = {0.0f, 0.0f, -1.0f};
+    Texture groundTexture;
 
     FalconDisplay.devmgr.Setup();
     FalconDisplay.displayFullScreen = 0;
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
     }
 
     Register();
-    RECT		rect;
+    RECT rect;
 
     // Choose an appropriate window style
     if (FalconDisplay.displayFullScreen)
@@ -280,19 +280,19 @@ int main(int argc, char *argv[])
     rect.top = rect.left = 0;
     rect.right = screenWidth;
     rect.bottom = screenWidth * 3 / 4;
-    AdjustWindowRect(&rect,	FalconDisplay.windowStyle, FALSE);
+    AdjustWindowRect(&rect, FalconDisplay.windowStyle, FALSE);
     FalconDisplay.appWin = CreateWindow(
-                               "FalconDisplay",			/* class */
-                               "3D Output",				/* caption */
-                               FalconDisplay.windowStyle,					/* style */
-                               40,			/* init. x pos */
-                               40,			/* init. y pos */
-                               rect.right - rect.left,	/* init. x size */
-                               rect.bottom - rect.top,	/* init. y size */
-                               NULL,					/* parent window */
-                               NULL,					/* menu handle */
-                               NULL,					/* program handle */
-                               NULL					/* create parms */
+                               "FalconDisplay", /* class */
+                               "3D Output", /* caption */
+                               FalconDisplay.windowStyle, /* style */
+                               40, /* init. x pos */
+                               40, /* init. y pos */
+                               rect.right - rect.left, /* init. x size */
+                               rect.bottom - rect.top, /* init. y size */
+                               NULL, /* parent window */
+                               NULL, /* menu handle */
+                               NULL, /* program handle */
+                               NULL /* create parms */
                            );
 
     if (!FalconDisplay.appWin)
@@ -333,18 +333,18 @@ int main(int argc, char *argv[])
     }
 
 
-    Ppoint		camInput = {0.0f, 0.0f, 0.0f};
-    Ppoint		camPos;
-    Pmatrix		camRot = IMatrix;
-    Ppoint		objPos = Origin;
-    Pmatrix		objRot = IMatrix;
-    Pmatrix		rot;
+    Ppoint camInput = {0.0f, 0.0f, 0.0f};
+    Ppoint camPos;
+    Pmatrix camRot = IMatrix;
+    Ppoint objPos = Origin;
+    Pmatrix objRot = IMatrix;
+    Pmatrix rot;
 
-    float			LODBias	= 1.0f;
-    float			Scale	= 1.0f;
-    float			angle	= 0.0f;
-    float			dx		= 0.0f;
-    int				sw = 0;
+    float LODBias = 1.0f;
+    float Scale = 1.0f;
+    float angle = 0.0f;
+    float dx = 0.0f;
+    int sw = 0;
 
     obj = new ObjectInstance(id);
     run = TRUE;
@@ -354,13 +354,13 @@ int main(int argc, char *argv[])
 
 
     /***********************************************************************************\
-    	Here begins the display loop
+     Here begins the display loop
     \***********************************************************************************/
     while (run)
     {
         frameCnt++;
 
-        MSG	msg;
+        MSG msg;
 
         while (PeekMessage(&msg, FalconDisplay.appWin, 0, 0, PM_REMOVE))
         {
@@ -408,12 +408,12 @@ int main(int argc, char *argv[])
 
             if (TheJoystick.buttons & JOY_BUTTON4)
             {
-                camRot	= IMatrix;
-                objRot	= IMatrix;
-                LODBias	= 1.0f;
+                camRot = IMatrix;
+                objRot = IMatrix;
+                LODBias = 1.0f;
                 TheStateStack.SetLODBias(LODBias);
-                Scale	= 1.0f;
-                angle	= 0.0f;
+                Scale = 1.0f;
+                angle = 0.0f;
             }
 
 
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
             Pmatrix deltaMatrix;
             ConstructDeltaMatrix(pitch, roll, yaw, &deltaMatrix);
 
-            //		    MatrixMult( &camRot, &deltaMatrix, &rot );
+            //     MatrixMult( &camRot, &deltaMatrix, &rot );
             camRot = deltaMatrix;
         }
 
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
             DrawGroundPlane(&renderer, &groundTexture);
         }
 
-        //		renderer.Render3DObject(id, &objPos, &objRot);
+        // renderer.Render3DObject(id, &objPos, &objRot);
         TheStateStack.DrawObject(obj, &objRot, &objPos, Scale);
 
         sprintf(msgbuf, "id %0d frame %0d rate %s fps  Range %1.0f ft Radius %1.1f ft", id, frameCnt, frameRate, -camInput.x, obj->Radius());
@@ -482,21 +482,21 @@ int main(int argc, char *argv[])
 #endif
 
         renderer.FinishFrame();
-        //		image->SwapBuffers(renderer.context.rc);
+        // image->SwapBuffers(renderer.context.rc);
         image->SwapBuffers(false);
         now = GetTickCount();
 
         if (now - start > 1000)
         {
 
-            //			image->SwapBuffers(renderer.context.rc);
+            // image->SwapBuffers(renderer.context.rc);
             if (now == start)  start -= 1;
 
             sprintf(frameRate, "%0.1f", frameCnt * 1000.0f / (float)(now - start));
             ShiAssert(strlen(frameRate) < sizeof(frameRate));
             start = now;
             frameCnt = 0;
-            //			OutputDebugString (msgbuf); OutputDebugString("\n");
+            // OutputDebugString (msgbuf); OutputDebugString("\n");
         }
     }
 
@@ -580,27 +580,27 @@ BOOL GetNameFromUser(char *target, int targetSize)
  */
 int ChooseObjectID(int defaultID)
 {
-    RECT			rect;
-    HWND			editWin;
-    char			string[32];
+    RECT rect;
+    HWND editWin;
+    char string[32];
 
     // Build a window for this query
     rect.top = rect.left = 0;
     rect.right = 200;
     rect.bottom = 100;
-    AdjustWindowRect(&rect,	WS_OVERLAPPEDWINDOW, FALSE);
+    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
     editWin = CreateWindow(
-                  "EDIT",					/* class */
+                  "EDIT", /* class */
                   "Enter Visual Object ID",/* caption */
-                  WS_OVERLAPPEDWINDOW,	/* style */
-                  CW_USEDEFAULT,			/* init. x pos */
-                  CW_USEDEFAULT,			/* init. y pos */
-                  rect.right - rect.left,	/* init. x size */
-                  rect.bottom - rect.top,	/* init. y size */
-                  NULL,					/* parent window */
-                  NULL,					/* menu handle */
-                  NULL,					/* program handle */
-                  NULL					/* create parms */
+                  WS_OVERLAPPEDWINDOW, /* style */
+                  CW_USEDEFAULT, /* init. x pos */
+                  CW_USEDEFAULT, /* init. y pos */
+                  rect.right - rect.left, /* init. x size */
+                  rect.bottom - rect.top, /* init. y size */
+                  NULL, /* parent window */
+                  NULL, /* menu handle */
+                  NULL, /* program handle */
+                  NULL /* create parms */
               );
 
     if (!editWin)
@@ -629,31 +629,31 @@ int ChooseObjectID(int defaultID)
 // Draw a 1 KM square in the X/Y plane centered on the origin
 void DrawGroundPlane(Render3D *renderer, Texture *tex)
 {
-    Tpoint			worldSpace;
-    ThreeDVertex	v0, v1, v2, v3;
-    static const float	HALF_KM = FEET_PER_KM / 2.0f;
+    Tpoint worldSpace;
+    ThreeDVertex v0, v1, v2, v3;
+    static const float HALF_KM = FEET_PER_KM / 2.0f;
 
     worldSpace.z = 0.0f;
 
     // South West
-    worldSpace.x = -HALF_KM, 		worldSpace.y = -HALF_KM;
+    worldSpace.x = -HALF_KM,  worldSpace.y = -HALF_KM;
     renderer->TransformPoint(&worldSpace, &v0);
-    v0.u = 0.0f,	v0.v = 1.0f,	v0.q = v0.csZ * Q_SCALE;
+    v0.u = 0.0f, v0.v = 1.0f, v0.q = v0.csZ * Q_SCALE;
 
     // North West
-    worldSpace.x =  HALF_KM, 		worldSpace.y = -HALF_KM;
+    worldSpace.x =  HALF_KM,  worldSpace.y = -HALF_KM;
     renderer->TransformPoint(&worldSpace, &v1);
-    v1.u = 0.0f,	v1.v = 0.0f,	v1.q = v1.csZ * Q_SCALE;
+    v1.u = 0.0f, v1.v = 0.0f, v1.q = v1.csZ * Q_SCALE;
 
     // South East
-    worldSpace.x = -HALF_KM, 		worldSpace.y =  HALF_KM;
+    worldSpace.x = -HALF_KM,  worldSpace.y =  HALF_KM;
     renderer->TransformPoint(&worldSpace, &v2);
-    v2.u = 1.0f,	v2.v = 1.0f,	v2.q = v2.csZ * Q_SCALE;
+    v2.u = 1.0f, v2.v = 1.0f, v2.q = v2.csZ * Q_SCALE;
 
     // North East
-    worldSpace.x =  HALF_KM, 		worldSpace.y =  HALF_KM;
+    worldSpace.x =  HALF_KM,  worldSpace.y =  HALF_KM;
     renderer->TransformPoint(&worldSpace, &v3);
-    v3.u = 1.0f,	v3.v = 0.0f,	v3.q = v3.csZ * Q_SCALE;
+    v3.u = 1.0f, v3.v = 0.0f, v3.q = v3.csZ * Q_SCALE;
 
     v0.r = v1.r = v2.r = v3.r = 0.0f;
     v0.g = v1.g = v2.g = v3.g = 0.0f;
@@ -662,7 +662,7 @@ void DrawGroundPlane(Render3D *renderer, Texture *tex)
     // Setup the drawing state for these polygons
     renderer->context.RestoreState(STATE_TEXTURE_PERSPECTIVE);
 
-#if 0	// Enable to use Bilinear filtering
+#if 0 // Enable to use Bilinear filtering
     renderer->context.SetState(MPR_STA_ENABLES, MPR_SE_FILTERING);
     renderer->context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
     renderer->context.InvalidateState();
@@ -676,8 +676,8 @@ void DrawGroundPlane(Render3D *renderer, Texture *tex)
 
 void ControlPanel(void)
 {
-    HINSTANCE	hInstance;
-    int		result;
+    HINSTANCE hInstance;
+    int result;
 
     hInstance = GetModuleHandle(NULL);
     ShiAssert(hInstance);
@@ -689,21 +689,21 @@ void ControlPanel(void)
 
 void ApplyControlPanelChanges(HWND dlg)
 {
-    int		id;
-    BOOL	result;
-    HWND	control;
-    DWORD	listSlot;
-    char	string[80];
-    float	value;
-    DWORD	sliderPos;
+    int id;
+    BOOL result;
+    HWND control;
+    DWORD listSlot;
+    char string[80];
+    float value;
+    DWORD sliderPos;
 
 
     // Camera settings
-    if (IsDlgButtonChecked(dlg, IDC_CAM_ORBIT)	== BST_CHECKED)	cameraMode = CAM_ORBIT;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_ORBIT) == BST_CHECKED) cameraMode = CAM_ORBIT;
 
-    if (IsDlgButtonChecked(dlg, IDC_CAM_PAN)		== BST_CHECKED)	cameraMode = CAM_PAN;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_PAN) == BST_CHECKED) cameraMode = CAM_PAN;
 
-    if (IsDlgButtonChecked(dlg, IDC_CAM_ORIGIN)	== BST_CHECKED)	cameraMode = CAM_ORIGIN;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_ORIGIN) == BST_CHECKED) cameraMode = CAM_ORIGIN;
 
 
     // Background color
@@ -725,7 +725,7 @@ void ApplyControlPanelChanges(HWND dlg)
 
 
     // Switch settings
-    if (IsDlgButtonChecked(dlg, IDC_SW_ENABLE)	== BST_CHECKED)
+    if (IsDlgButtonChecked(dlg, IDC_SW_ENABLE) == BST_CHECKED)
     {
 
         control = GetDlgItem(dlg, IDC_SW_NUMBER);
@@ -736,69 +736,69 @@ void ApplyControlPanelChanges(HWND dlg)
             id = SendMessage(control, LB_GETITEMDATA, listSlot, 0);
             DWORD mask = 0;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT0)	== BST_CHECKED)	mask |= 0x00000001;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT0) == BST_CHECKED) mask |= 0x00000001;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT1)	== BST_CHECKED)	mask |= 0x00000002;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT1) == BST_CHECKED) mask |= 0x00000002;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT2)	== BST_CHECKED)	mask |= 0x00000004;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT2) == BST_CHECKED) mask |= 0x00000004;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT3)	== BST_CHECKED)	mask |= 0x00000008;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT3) == BST_CHECKED) mask |= 0x00000008;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT4)	== BST_CHECKED)	mask |= 0x00000010;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT4) == BST_CHECKED) mask |= 0x00000010;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT5)	== BST_CHECKED)	mask |= 0x00000020;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT5) == BST_CHECKED) mask |= 0x00000020;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT6)	== BST_CHECKED)	mask |= 0x00000040;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT6) == BST_CHECKED) mask |= 0x00000040;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT7)	== BST_CHECKED)	mask |= 0x00000080;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT7) == BST_CHECKED) mask |= 0x00000080;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT8)	== BST_CHECKED)	mask |= 0x00000100;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT8) == BST_CHECKED) mask |= 0x00000100;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT9)	== BST_CHECKED)	mask |= 0x00000200;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT9) == BST_CHECKED) mask |= 0x00000200;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT10)	== BST_CHECKED)	mask |= 0x00000400;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT10) == BST_CHECKED) mask |= 0x00000400;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT11)	== BST_CHECKED)	mask |= 0x00000800;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT11) == BST_CHECKED) mask |= 0x00000800;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT12)	== BST_CHECKED)	mask |= 0x00001000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT12) == BST_CHECKED) mask |= 0x00001000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT13)	== BST_CHECKED)	mask |= 0x00002000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT13) == BST_CHECKED) mask |= 0x00002000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT14)	== BST_CHECKED)	mask |= 0x00004000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT14) == BST_CHECKED) mask |= 0x00004000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT15)	== BST_CHECKED)	mask |= 0x00008000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT15) == BST_CHECKED) mask |= 0x00008000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT16)	== BST_CHECKED)	mask |= 0x00010000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT16) == BST_CHECKED) mask |= 0x00010000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT17)	== BST_CHECKED)	mask |= 0x00020000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT17) == BST_CHECKED) mask |= 0x00020000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT18)	== BST_CHECKED)	mask |= 0x00040000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT18) == BST_CHECKED) mask |= 0x00040000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT19)	== BST_CHECKED)	mask |= 0x00080000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT19) == BST_CHECKED) mask |= 0x00080000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT20)	== BST_CHECKED)	mask |= 0x00100000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT20) == BST_CHECKED) mask |= 0x00100000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT21)	== BST_CHECKED)	mask |= 0x00200000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT21) == BST_CHECKED) mask |= 0x00200000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT22)	== BST_CHECKED)	mask |= 0x00400000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT22) == BST_CHECKED) mask |= 0x00400000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT23)	== BST_CHECKED)	mask |= 0x00800000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT23) == BST_CHECKED) mask |= 0x00800000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT24)	== BST_CHECKED)	mask |= 0x01000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT24) == BST_CHECKED) mask |= 0x01000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT25)	== BST_CHECKED)	mask |= 0x02000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT25) == BST_CHECKED) mask |= 0x02000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT26)	== BST_CHECKED)	mask |= 0x04000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT26) == BST_CHECKED) mask |= 0x04000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT27)	== BST_CHECKED)	mask |= 0x08000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT27) == BST_CHECKED) mask |= 0x08000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT28)	== BST_CHECKED)	mask |= 0x10000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT28) == BST_CHECKED) mask |= 0x10000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT29)	== BST_CHECKED)	mask |= 0x20000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT29) == BST_CHECKED) mask |= 0x20000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT30)	== BST_CHECKED)	mask |= 0x40000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT30) == BST_CHECKED) mask |= 0x40000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT31)	== BST_CHECKED)	mask |= 0x80000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT31) == BST_CHECKED) mask |= 0x80000000;
 
             obj->SetSwitch(id, mask);
         }
@@ -806,7 +806,7 @@ void ApplyControlPanelChanges(HWND dlg)
 
 
     // DOF Rotation settings
-    if (IsDlgButtonChecked(dlg, IDC_DOFROT_ENABLE)	== BST_CHECKED)
+    if (IsDlgButtonChecked(dlg, IDC_DOFROT_ENABLE) == BST_CHECKED)
     {
 
         control = GetDlgItem(dlg, IDC_DOFROT_NUMBER);
@@ -823,7 +823,7 @@ void ApplyControlPanelChanges(HWND dlg)
     }
 
     // DOF Translation settings
-    if (IsDlgButtonChecked(dlg, IDC_DOFTRANS_ENABLE)	== BST_CHECKED)
+    if (IsDlgButtonChecked(dlg, IDC_DOFTRANS_ENABLE) == BST_CHECKED)
     {
 
         control = GetDlgItem(dlg, IDC_DOFTRANS_NUMBER);
@@ -840,7 +840,7 @@ void ApplyControlPanelChanges(HWND dlg)
     }
 
     // Slot children settings (NOTE: the children are never cleaned up...)
-    if (IsDlgButtonChecked(dlg, IDC_SLOT_ENABLE)	== BST_CHECKED)
+    if (IsDlgButtonChecked(dlg, IDC_SLOT_ENABLE) == BST_CHECKED)
     {
 
         control = GetDlgItem(dlg, IDC_SLOT_NUMBER);
@@ -868,11 +868,11 @@ void ApplyControlPanelChanges(HWND dlg)
 
 BOOL CALLBACK DialogProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    BOOL	result;
-    char	string[10];
-    HWND	control;
-    DWORD	listSlot;
-    int		i;
+    BOOL result;
+    char string[10];
+    HWND control;
+    DWORD listSlot;
+    int i;
 
     switch (msg)
     {
@@ -1141,7 +1141,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case WM_MOVE:
         {
-            RECT	dest;
+            RECT dest;
             GetClientRect(FalconDisplay.appWin, &dest);
             ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest);
             ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest + 1);
@@ -1170,8 +1170,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 void ConstructDeltaMatrix(float p, float r, float y, Trotation *T)
 {
-    Tpoint	at, up, rt;
-    float	mag;
+    Tpoint at, up, rt;
+    float mag;
 
     // TODO:  Add in roll component.
 

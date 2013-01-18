@@ -90,11 +90,11 @@ void ICPClass::EnterLat(void)
 
     //Wombat778 11-05-2003 Changed to a better formula that treats values as minutes with a decimal rather than seconds.
 
-    //	LATMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
-    //	LATSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);
+    // LATMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
+    // LATSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);
 
-    LATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG;		//Wombat778 11-5-2003
-    LATSeconds = 0;																										//Wombat778 11-5-2003
+    LATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; //Wombat778 11-5-2003
+    LATSeconds = 0; //Wombat778 11-5-2003
 
 
     Lat = LATDegrees + LATMinutes + LATSeconds;
@@ -133,7 +133,7 @@ void ICPClass::EnterLong(void)
     CheckDigits();
     //find cosLatitude --> Get this waypoints coords
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-    latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
     cosLat = (float)cos(latitude);
 
     //Get our entered Longitude
@@ -144,8 +144,8 @@ void ICPClass::EnterLong(void)
     //LONGMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
     //LONGSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);
 
-    LONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG;		//Wombat778 11-5-2003
-    LONGSeconds = 0;																									//Wombat778 11-5-2003
+    LONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; //Wombat778 11-5-2003
+    LONGSeconds = 0; //Wombat778 11-5-2003
 
     Long = LONGDegrees + LONGMinutes + LONGSeconds;
 
@@ -406,7 +406,7 @@ void ICPClass::EnterOA(void)
     else
     {
         if (OA1)
-            iOA_ALT	= AddUp();
+            iOA_ALT = AddUp();
         else if (OA2)
             iOA_ALT2 = AddUp();
 
@@ -433,7 +433,7 @@ void ICPClass::EnterVIP(void)
     }
     else
     {
-        iVIP_ALT	= AddUp();
+        iVIP_ALT = AddUp();
         ResetInput();
     }
 
@@ -457,7 +457,7 @@ void ICPClass::EnterVRP(void)
     }
     else
     {
-        iVRP_ALT	= AddUp();
+        iVRP_ALT = AddUp();
         ResetInput();
     }
 
@@ -619,9 +619,9 @@ void ICPClass::EnterINTG()
             ToggleIFFFlag(ICPClass::MODE_3);
         else if (INTGCode == 4)
             ToggleIFFFlag(ICPClass::MODE_4);
-        else if (INTGCode == 5)	//toggle mode C
+        else if (INTGCode == 5) //toggle mode C
             ToggleIFFFlag(ICPClass::MODE_C);
-        else if (INTGCode == 6)	//toggle mode 4B
+        else if (INTGCode == 6) //toggle mode 4B
             ToggleIFFFlag(ICPClass::MODE_4B);
         else if (INTGCode == 7)
         {
@@ -664,18 +664,18 @@ void ICPClass::EnterINTG()
 }
 void ICPClass::EnterINSStuff(void)
 {
-    float Curlatitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    float Curlatitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
     float CurcosLatitude = (float)cos(Curlatitude);
-    float Curlongitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CurcosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * CurcosLatitude);
+    float Curlongitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CurcosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * CurcosLatitude);
 
-    Curlatitude	*= RTD;
+    Curlatitude *= RTD;
     Curlongitude *= RTD;
 
     if (INSLine == 0)
     {
         CheckDigits();
         float INSLATDegrees = static_cast<float>((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
-        float INSLATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG;		// JPG 22 Dec 03 Deg, mins.decimal
+        float INSLATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
         float INSLATSeconds = 0;
         // float INSLATMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
         // float INSLATSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);  // JPG - old code, there are no seconds input
@@ -735,7 +735,7 @@ void ICPClass::EnterINSStuff(void)
     {
         CheckDigits();
         float INSLONGDegrees = static_cast<float>((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
-        float INSLONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG;		// JPG 22 Dec 03 Deg, mins.decimal
+        float INSLONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
         float INSLONGSeconds = 0;
         // float INSLONGMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
         // float INSLONGSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);  // JPG - old code, there are no seconds input

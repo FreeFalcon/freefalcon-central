@@ -17,8 +17,8 @@
 
 typedef union tBlockAddress
 {
-    TBlock*	ptr;
-    DWORD	offset;
+    TBlock* ptr;
+    DWORD offset;
 } tBlockAddress;
 
 class PostFile : public FileMemMap
@@ -42,88 +42,88 @@ public:
     {
         blocks = NULL;
     };
-    ~TLevel()	{};
+    ~TLevel() {};
 
     void Setup(int level, int width, int height, const char *mapPath);
     void Cleanup(void);
 
 
-    BOOL	IsReady(void)
+    BOOL IsReady(void)
     {
         return (blocks != NULL);
     };
 
-    int		LOD(void)
+    int LOD(void)
     {
         return myLevel;
     };
 
-    float	FTperPOST()
+    float FTperPOST()
     {
         return feet_per_post;
     };
-    float	FTperBLOCK()
+    float FTperBLOCK()
     {
         return feet_per_block;
     };
 
-    UINT	PostsWide(void)
+    UINT PostsWide(void)
     {
         return blocks_wide * POSTS_PER_BLOCK;
-    };	// How many posts across
-    UINT	PostsHigh(void)
+    }; // How many posts across
+    UINT PostsHigh(void)
     {
         return blocks_high * POSTS_PER_BLOCK;
-    };	// How many posts high
+    }; // How many posts high
 
-    UINT	BlocksWide(void)
+    UINT BlocksWide(void)
     {
         return blocks_wide;
-    };	 	// How many blocks across is this level
-    UINT	BlocksHigh(void)
+    };   // How many blocks across is this level
+    UINT BlocksHigh(void)
     {
         return blocks_high;
-    };		// How many blocks high is this level
+    }; // How many blocks high is this level
 
 
     // This function loads and/or increments the reference count of the given block
-    TBlock	*RequestBlockOwnership(int r, int c);
+    TBlock *RequestBlockOwnership(int r, int c);
 
     // This function assumes the block is already owned by the caller
-    TBlock	*GetOwnedBlock(int r, int c);
+    TBlock *GetOwnedBlock(int r, int c);
 
     // The following function decrements the reference count of the given block and frees it (if 0)
-    void	ReleaseBlock(TBlock *block);
+    void ReleaseBlock(TBlock *block);
 
 
 protected:
-    UINT	blocks_wide;	 	// How many blocks across is this level
-    UINT	blocks_high;		// How many blocks high is this level
+    UINT blocks_wide;   // How many blocks across is this level
+    UINT blocks_high; // How many blocks high is this level
 
-    tBlockAddress	*blocks;	// Point to an array of pointers to blocks (NULL means not loaded)
+    tBlockAddress *blocks; // Point to an array of pointers to blocks (NULL means not loaded)
 
-    float	feet_per_post;
-    float	feet_per_block;
+    float feet_per_post;
+    float feet_per_block;
 
-    float	lightLevel;			// Light level from 0 to 1
+    float lightLevel; // Light level from 0 to 1
 
-    int		myLevel;			// (0 is highest detail, goes up from there by ones)
+    int myLevel; // (0 is highest detail, goes up from there by ones)
 
-    PostFile	postFileMap;	    // mem mapped post file
+    PostFile postFileMap;     // mem mapped post file
 
-    CRITICAL_SECTION	cs_blockArray;
+    CRITICAL_SECTION cs_blockArray;
 
 
     // Handle asychronous block loading
-    static void LoaderCallBack(LoaderQ* request);		// Dummy front end
-    void		PreProcessBlock(LoaderQ* request);	// Actual worker function
+    static void LoaderCallBack(LoaderQ* request); // Dummy front end
+    void PreProcessBlock(LoaderQ* request); // Actual worker function
 
     // Handle time of day and lighting notifications
     static void TimeUpdateCallback(void *self);
 
 
     // Map from virutal block addresses (unbounded) to physical ones (one in the map)
-    inline void	VirtualToPhysicalBlockAddress(int *r, int *c)
+    inline void VirtualToPhysicalBlockAddress(int *r, int *c)
     {
         if ((*r >= (int)blocks_high) || (*r < 0) || (*c >= (int)blocks_wide) || (*c < 0))
         {
@@ -133,15 +133,15 @@ protected:
     }
 
     // Set/get the block pointer associated with a physcial block address
-    void	SetBlockPtr(UINT r, UINT c, TBlock *block);
+    void SetBlockPtr(UINT r, UINT c, TBlock *block);
     TBlock *GetBlockPtr(UINT r, UINT c);
 
 public:
     // The following functions should not be compiled into the final game...
-    void 	SaveBlock(TBlock *block);
-    static void	DebugDisplayInit(void);
-    static void	DebugDisplayOutput(void);
-    void	DebugDisplayLevel(void);
+    void  SaveBlock(TBlock *block);
+    static void DebugDisplayInit(void);
+    static void DebugDisplayOutput(void);
+    void DebugDisplayLevel(void);
 
 };
 

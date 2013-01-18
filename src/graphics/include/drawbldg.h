@@ -3,8 +3,8 @@
     July 10, 1996
 
     Derived class to do special position processing for buildings on the
-	ground.  (More precisly, any object which is to be placed on the
-	ground but not reoriented.)
+ ground.  (More precisly, any object which is to be placed on the
+ ground but not reoriented.)
 \***************************************************************************/
 #ifndef _DRAWBLDG_H_
 #define _DRAWBLDG_H_
@@ -16,12 +16,12 @@ class DrawableBuilding : public DrawableBSP
 {
 public:
     DrawableBuilding(int type, Tpoint *pos, float heading, float scale = 1.0f);
-    virtual ~DrawableBuilding()	{};
+    virtual ~DrawableBuilding() {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
 protected:
-    int		previousLOD;
+    int previousLOD;
 
 #ifdef USE_SH_POOLS
 public:
@@ -43,7 +43,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

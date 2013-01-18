@@ -1,8 +1,8 @@
 /*
 vector4.h
 
-	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004
+ Author: Miro "Jammer" Torrielli
+ Last Update: 21 April 2004
 */
 
 #ifndef _VECTOR4_H
@@ -26,7 +26,7 @@ struct vector4
 
     vector4(const float _x, const float _y, const float _z, const float _w) : x(_x), y(_y), z(_z), w(_w) { }
 
-    vector4(const vector4& v) :	x(v.x), y(v.y), z(v.z), w(v.w) { }
+    vector4(const vector4& v) : x(v.x), y(v.y), z(v.z), w(v.w) { }
 
     vector4(const vector3& v) : x(v.x), y(v.y), z(v.z), w(1.0f) { }
 

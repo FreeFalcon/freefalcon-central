@@ -26,42 +26,42 @@
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
-const float	RANGE_POSITION	= -0.8f; // offset from LHS of MFD
-const float	RANGE_MIDPOINT	=  0.45F; // where the text should appear
-const float	CURSOR_SIZE	=  0.05f;
+const float RANGE_POSITION = -0.8f; // offset from LHS of MFD
+const float RANGE_MIDPOINT =  0.45F; // where the text should appear
+const float CURSOR_SIZE =  0.05f;
 extern float g_fCursorSpeed;
 
 // RV - I-Hawk - Some helping functions
 void GetCurWezAngle(int i, float &angleX, float &angleY, float &offsetX, float &offsetY);
 void GetCurWezValue(int i, float &curX, float &curY, float &nextX, float &nextY);
 
-int HarmTargetingPod::flash = FALSE;	// Controls flashing display elements
+int HarmTargetingPod::flash = FALSE; // Controls flashing display elements
 
 
 HarmTargetingPod::HarmTargetingPod(int idx, SimMoverClass* self) : RwrClass(idx, self)
 {
-    sensorType			= HTS;
-    cursorX				= 0.0F;
-    cursorY				= 0.0F;
-    displayRange		= 60;
-    trueDisplayRange	= 60;
-    zoomFactor			= 1.0f;
-    HadZoomFactor		= 1.0f;
-    zoomMode			= Wide;
-    HadZoomMode			= NORM;
-    preHandoffMode		= Has;
-    filterMode			= ALL;
-    curTarget			= NULL;
-    POSTargetIndex		= -1;
-    handedoff			= false;
-    handoffRefTime		= 0x0;
-    HASTimer			= 0x0;
-    HASNumTargets		= 0;
-    HadOrigCursorX		= 0.0f;
-    HadOrigCursorY		= 0.0f;
-    HadOrigCursorX2		= 0.0f;
-    HadOrigCursorY2		= 0.0f;
-    yawBackup			= 0.0f;
+    sensorType = HTS;
+    cursorX = 0.0F;
+    cursorY = 0.0F;
+    displayRange = 60;
+    trueDisplayRange = 60;
+    zoomFactor = 1.0f;
+    HadZoomFactor = 1.0f;
+    zoomMode = Wide;
+    HadZoomMode = NORM;
+    preHandoffMode = Has;
+    filterMode = ALL;
+    curTarget = NULL;
+    POSTargetIndex = -1;
+    handedoff = false;
+    handoffRefTime = 0x0;
+    HASTimer = 0x0;
+    HASNumTargets = 0;
+    HadOrigCursorX = 0.0f;
+    HadOrigCursorY = 0.0f;
+    HadOrigCursorX2 = 0.0f;
+    HadOrigCursorY2 = 0.0f;
+    yawBackup = 0.0f;
 
     ClearDTSB();
     ClearPOSTargets();
@@ -74,7 +74,7 @@ HarmTargetingPod::~HarmTargetingPod(void)
 void HarmTargetingPod::LockTargetUnderCursor(void)
 {
     FireControlComputer* FCC = ((SimVehicleClass*)platform) -> GetFCC();
-    GroundListElement	*choice;
+    GroundListElement *choice;
 
     // RV - I-Hawk - Seperating lock modes by system submode, as HAS using elevation for position
     // calculation, and HAD using range (and has some special expended modes)
@@ -95,7 +95,7 @@ void HarmTargetingPod::LockTargetUnderCursor(void)
 // RV - I-Hawk - Special function to lock targets from the POS mode PB targets list
 void HarmTargetingPod::LockPOSTarget(void)
 {
-    GroundListElement	*choice = FindPOSTarget();
+    GroundListElement *choice = FindPOSTarget();
 
     handedoff = false; // Reset the handed off flag
     handoffRefTime = SimLibElapsedTime; // assign the current time to the Handoff timer
@@ -119,19 +119,19 @@ void HarmTargetingPod::LockPOSTarget(void)
 
 void HarmTargetingPod::BoresightTarget(void)
 {
-    GroundListElement	*tmpElement;
-    GroundListElement	*choice		= NULL;
-    float			bestSoFar	= 0.5f;
-    float			dx, dy, dz;
-    float			cosATA;
-    float			displayX, displayY;
-    mlTrig			trig;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar = 0.5f;
+    float dx, dy, dz;
+    float cosATA;
+    float displayX, displayY;
+    mlTrig trig;
 
 
     // Convienience synonym for the "At" vector of the platform...
-    const float atx	= platform->dmx[0][0];
-    const float aty	= platform->dmx[0][1];
-    const float atz	= platform->dmx[0][2];
+    const float atx = platform->dmx[0][0];
+    const float aty = platform->dmx[0][1];
+    const float atz = platform->dmx[0][2];
 
     // Set up the trig functions of our current heading
     mlSinCos(&trig, platform->Yaw());
@@ -139,7 +139,7 @@ void HarmTargetingPod::BoresightTarget(void)
     FireControlComputer* FCC = ((SimVehicleClass*)platform) -> GetFCC();
 
     // Walk our list looking for the thing in range and nearest our nose
-    for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
         if (tmpElement -> BaseObject() == NULL) continue;
 
@@ -179,15 +179,15 @@ void HarmTargetingPod::BoresightTarget(void)
 
 void HarmTargetingPod::NextTarget(void)
 {
-    GroundListElement	*tmpElement;
-    GroundListElement	*choice		= NULL;
-    float			bestSoFar	= 1e6f;
-    float			dx, dy;
-    float			displayX, displayY;
-    mlTrig			trig;
-    float			range;
-    float			currentRange;
-    GroundListElement		*currentElement;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar = 1e6f;
+    float dx, dy;
+    float displayX, displayY;
+    mlTrig trig;
+    float range;
+    float currentRange;
+    GroundListElement *currentElement;
 
 
     // Get data on our current target (if any)
@@ -210,7 +210,7 @@ void HarmTargetingPod::NextTarget(void)
     FireControlComputer* FCC = ((SimVehicleClass*)platform) -> GetFCC();
 
     // Walk our list looking for the nearest thing in range but farther than our current target
-    for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
         if (tmpElement -> BaseObject() == NULL) continue;
 
@@ -260,15 +260,15 @@ void HarmTargetingPod::NextTarget(void)
 
 void HarmTargetingPod::PrevTarget(void)
 {
-    GroundListElement	*tmpElement;
-    GroundListElement	*choice		= NULL;
-    float			bestSoFar	= -1.0f;
-    float			dx, dy;
-    float			displayX, displayY;
-    mlTrig			trig;
-    float			range;
-    float			currentRange;
-    GroundListElement	*currentElement;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar = -1.0f;
+    float dx, dy;
+    float displayX, displayY;
+    mlTrig trig;
+    float range;
+    float currentRange;
+    GroundListElement *currentElement;
 
     // Get data on our current target (if any)
     if (lockedTarget)
@@ -290,7 +290,7 @@ void HarmTargetingPod::PrevTarget(void)
     FireControlComputer* FCC = ((SimVehicleClass*)platform) -> GetFCC();
 
     // Walk our list looking for the farthest thing in range but nearer than our current target
-    for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
         if (tmpElement -> BaseObject() == NULL) continue;
 
@@ -384,10 +384,10 @@ void HarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     // Ownship "airplane" marker
     DWORD tempColor = display->Color();
     display->SetColor(GetMfdColor(MFD_CYAN));
-    static const float	NOSE	= 0.02f;
-    static const float	TAIL	= 0.08f;
-    static const float	WING	= 0.06f;
-    static const float	TAIL_WING	= 0.02f;
+    static const float NOSE = 0.02f;
+    static const float TAIL = 0.08f;
+    static const float WING = 0.06f;
+    static const float TAIL_WING = 0.02f;
     display->Line(-WING,   0.00f,  WING,  0.00f);
     display->Line(-TAIL_WING,   -0.08f,  TAIL_WING,  -0.08f);
     display->Line(0.00f, -TAIL,   0.00f,  NOSE);
@@ -643,7 +643,7 @@ void HarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
     display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
     static const float verticalHandoffLineTop = ALICTop + 0.05f;
     static const float verticalHandoffLineBottom = (ALICBottom + (0.1f * zoomFactor));
-    static const float horizontalHandoffLine = (verticalHandoffLineTop + verticalHandoffLineBottom)	/ 2.0f;
+    static const float horizontalHandoffLine = (verticalHandoffLineTop + verticalHandoffLineBottom) / 2.0f;
     static const float horizontalEdges = ALICSide * 0.66f;
     float topLineoffset = horizontalHandoffLine + (0.05f * zoomFactor);
     float bottomLineoffset = horizontalHandoffLine - (0.05f * zoomFactor);
@@ -752,7 +752,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
     // RV - I-Hawk - Make it a little bigger... it's too small
     mxRng *= 1.15f;
 
-    //	float footprintCtr =  (mxRng * ( 1.8f ))  / (2.0f * displayRange) ;
+    // float footprintCtr =  (mxRng * ( 1.8f ))  / (2.0f * displayRange) ;
     float footprintRad = mxRng  / displayRange;
 
     // RV - I-Hawk - White color
@@ -952,9 +952,9 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
         // sfr: taking my chances
         /*if (F4IsBadReadPtr(curObj, sizeof(SimObjectType)) || F4IsBadCodePtr((FARPROC) curObj->BaseData()))
         {
-        	// JB 010318 CTD
-        	curObj = curObj->next;
-        	continue;
+         // JB 010318 CTD
+         curObj = curObj->next;
+         continue;
         } */
 
         if (curObj->BaseData()->IsSim() && curObj->BaseData()->GetRadarType())
@@ -1063,7 +1063,7 @@ SimObjectType* HarmTargetingPod::Exec(SimObjectType*)
 
 VU_ID HarmTargetingPod::FindIDUnderCursor(void)
 {
-    GroundListElement	*choice = FindTargetUnderCursor();
+    GroundListElement *choice = FindTargetUnderCursor();
     VU_ID tgtId = FalconNullId;
 
     if (choice && choice->BaseObject())
@@ -1076,14 +1076,14 @@ VU_ID HarmTargetingPod::FindIDUnderCursor(void)
 
 GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
 {
-    GroundListElement		*tmpElement;
-    GroundListElement		*choice		= NULL;
-    float			bestSoFar	= 10.0f;
-    float			x, y;
-    float			displayX, displayY;
-    mlTrig			trig;
-    float			delta;
-    float			EXP1OffsetX, EXP1OffsetY, EXP2OffsetX, EXP2OffsetY;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar = 10.0f;
+    float x, y;
+    float displayX, displayY;
+    mlTrig trig;
+    float delta;
+    float EXP1OffsetX, EXP1OffsetY, EXP2OffsetX, EXP2OffsetY;
 
     if (HadZoomMode == NORM)
     {
@@ -1098,7 +1098,7 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
     // Walk our list looking for the thing in range and nearest the center of the cursors
-    for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
@@ -1186,21 +1186,21 @@ GroundListElement* HarmTargetingPod::FindTargetUnderCursor(void)
 
 GroundListElement* HarmTargetingPod::FindHASTargetUnderCursor(void)
 {
-    GroundListElement		*tmpElement;
-    GroundListElement		*choice		= NULL;
-    float			bestSoFar	= 10.0f;
-    float			x, y, x2, y2;
-    float			displayX, displayY;
-    float			alt, range, elevation, phi, alpha, ex, ey;
-    mlTrig			trig;
-    float			delta;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar = 10.0f;
+    float x, y, x2, y2;
+    float displayX, displayY;
+    float alt, range, elevation, phi, alpha, ex, ey;
+    mlTrig trig;
+    float delta;
 
     mlSinCos(&trig, platform->Yaw());
 
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
     // Walk our list looking for the thing in range and nearest the center of the cursors
-    for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
     {
         if (tmpElement->BaseObject() == NULL) continue;
 
@@ -1267,20 +1267,20 @@ GroundListElement* HarmTargetingPod::FindPOSTarget()
 // then it'll get into the list. The list can hold up to 4 targets
 void HarmTargetingPod::BuildPOSTargets(void)
 {
-    GroundListElement		*tmpElement;
-    GroundListElement		*choice		= NULL;
-    float			bestSoFar; // very small value from waypoint
-    mlTrig			trig;
-    float			wpX, wpY, wpZ;
-    float			x, y;
-    float			displayX, displayY;
-    float			delta;
-    float			waypointX, waypointY;
-    int				firstFreeTargetIndex;
-    WayPointClass	*curWaypoint;
-    WayPointClass	*tempWP, *firstValidWP, *lastValidWP;
+    GroundListElement *tmpElement;
+    GroundListElement *choice = NULL;
+    float bestSoFar; // very small value from waypoint
+    mlTrig trig;
+    float wpX, wpY, wpZ;
+    float x, y;
+    float displayX, displayY;
+    float delta;
+    float waypointX, waypointY;
+    int firstFreeTargetIndex;
+    WayPointClass *curWaypoint;
+    WayPointClass *tempWP, *firstValidWP, *lastValidWP;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
-    bool			curTargetFound = false;
+    bool curTargetFound = false;
 
     curWaypoint = ((SimVehicleClass*)platform)->curWaypoint; // Get the current waypoint
 
@@ -1337,7 +1337,7 @@ void HarmTargetingPod::BuildPOSTargets(void)
         bestSoFar = 0.005f;
         choice = NULL;
 
-        for (tmpElement	= FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+        for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
         {
             if (tmpElement->BaseObject() == NULL) continue;
 
@@ -1416,35 +1416,35 @@ void HarmTargetingPod::GetAGCenter(float* x, float* y)
 //#if 0
 //void HarmTargetingPod::BuildPreplannedTargetList (void)
 //{
-//	FlightClass* theFlight = (FlightClass*)(platform->GetCampaignObject());
-//	FalconPrivateList* knownEmmitters = NULL;
-//	ListElement* tmpElement;
-//	ListElement* curElement = NULL;
-//	FalconEntity* eHeader;
+// FlightClass* theFlight = (FlightClass*)(platform->GetCampaignObject());
+// FalconPrivateList* knownEmmitters = NULL;
+// ListElement* tmpElement;
+// ListElement* curElement = NULL;
+// FalconEntity* eHeader;
 //
-//	if (SimDriver.RunningCampaignOrTactical() && theFlight)
-//		knownEmmitters = theFlight->GetKnownEmitters();
+// if (SimDriver.RunningCampaignOrTactical() && theFlight)
+// knownEmmitters = theFlight->GetKnownEmitters();
 //
-//	if (knownEmmitters)
-//	{
-//		VuListIterator elementWalker (knownEmmitters);
+// if (knownEmmitters)
+// {
+// VuListIterator elementWalker (knownEmmitters);
 //
-//		eHeader = (FalconEntity*)elementWalker.GetFirst();
-//		while (eHeader)
-//		{
-//			tmpElement = new ListElement (eHeader);
+// eHeader = (FalconEntity*)elementWalker.GetFirst();
+// while (eHeader)
+// {
+// tmpElement = new ListElement (eHeader);
 //
-//			if (emmitterList == NULL)
-//				emmitterList = tmpElement;
-//			else
-//				curElement->next = tmpElement;
-//			curElement = tmpElement;
-//			eHeader = (FalconEntity*)elementWalker.GetNext();
-//		}
+// if (emmitterList == NULL)
+// emmitterList = tmpElement;
+// else
+// curElement->next = tmpElement;
+// curElement = tmpElement;
+// eHeader = (FalconEntity*)elementWalker.GetNext();
+// }
 //
-//		knownEmmitters->Unregister();
-//		delete knownEmmitters;
-//	}
+// knownEmmitters->Unregister();
+// delete knownEmmitters;
+// }
 //}
 //#endif
 
@@ -1469,8 +1469,8 @@ GroundListElement* HarmTargetingPod::FindEmmitter(FalconEntity *entity)
 
 int HarmTargetingPod::ObjectDetected(FalconEntity* newEmmitter, int trackType, int dummy)  // 2002-02-09 MODIFIED BY S.G. Added the unused dummy var
 {
-    int					retval = FALSE;
-    GroundListElement	*tmpElement;
+    int retval = FALSE;
+    GroundListElement *tmpElement;
 
     // We're only tracking ground things right now...
     if (newEmmitter->OnGround())
@@ -1526,7 +1526,7 @@ int HarmTargetingPod::ObjectDetected(FalconEntity* newEmmitter, int trackType, i
 // Will lock the sensor on the related entity (no change if NULL)
 void HarmTargetingPod::LockListElement(GroundListElement *choice)
 {
-    SimObjectType	*obj;
+    SimObjectType *obj;
 
     // If we have a candidate, look for it in the platform's target list
     if (choice)
@@ -1670,9 +1670,9 @@ void HarmTargetingPod::DrawDTSBBox()
     DWORD tempColor = display->Color();
 
     display->SetColor(GetMfdColor(MFD_BRIGHT_GREEN)); // Bright green
-    static const float	DTSBSide	= 0.65f;
-    static const float	DTSBTop		= 1.3f;
-    static const float	DTSBBottom	= 1.15f;
+    static const float DTSBSide = 0.65f;
+    static const float DTSBTop = 1.3f;
+    static const float DTSBBottom = 1.15f;
     display->Line(-DTSBSide,   DTSBTop,  DTSBSide,  DTSBTop);
     display->Line(-DTSBSide,   DTSBTop,  -DTSBSide,  DTSBBottom);
     display->Line(-DTSBSide,   DTSBBottom,  DTSBSide,  DTSBBottom);
@@ -2079,39 +2079,39 @@ void GetCurWezValue(int i, float &curX, float &curY, float &nextX, float &nextY)
 //// List elements of the HarmTargetingPod
 //HarmTargetingPod::ListElement::ListElement (FalconEntity* newEntity)
 //{
-//	F4Assert (newEntity);
+// F4Assert (newEntity);
 //
-//	baseObject	= newEntity;
-//	symbol		= RadarDataTable[newEntity->GetRadarType()].RWRsymbol;
-//	flags		= 0;
-//	next		= NULL;
-//	lastHit		= SimLibElapsedTime;
-//	VuReferenceEntity(newEntity);
+// baseObject = newEntity;
+// symbol = RadarDataTable[newEntity->GetRadarType()].RWRsymbol;
+// flags = 0;
+// next = NULL;
+// lastHit = SimLibElapsedTime;
+// VuReferenceEntity(newEntity);
 //}
 //
 //
 //HarmTargetingPod::ListElement::~ListElement ()
 //{
-//	VuDeReferenceEntity(baseObject);
+// VuDeReferenceEntity(baseObject);
 //}
 //
 //
 //void HarmTargetingPod::ListElement::HandoffBaseObject(void)
 //{
-//	FalconEntity	*newBase;
+// FalconEntity *newBase;
 //
-//	ShiAssert( baseObject );
+// ShiAssert( baseObject );
 //
-//	newBase = SimCampHandoff( baseObject, HANDOFF_RADAR );
+// newBase = SimCampHandoff( baseObject, HANDOFF_RADAR );
 //
-//	if (newBase != baseObject) {
-//		VuDeReferenceEntity(baseObject);
+// if (newBase != baseObject) {
+// VuDeReferenceEntity(baseObject);
 //
-//		baseObject = newBase;
+// baseObject = newBase;
 //
-//		if (baseObject) {
-//			VuReferenceEntity(baseObject);
-//		}
-//	}
+// if (baseObject) {
+// VuReferenceEntity(baseObject);
+// }
+// }
 //}
 //#endif

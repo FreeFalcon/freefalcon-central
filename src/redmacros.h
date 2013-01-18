@@ -3,11 +3,11 @@
 
 
 // This function returns the Distance btw 2 points
-inline	float	RED_Distance3D(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
+inline float RED_Distance3D(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
 {
-    float	dx = V1->x - V2->x;
-    float	dy = V1->y - V2->y;
-    float	dz = V1->z - V2->z;
+    float dx = V1->x - V2->x;
+    float dy = V1->y - V2->y;
+    float dz = V1->z - V2->z;
 
     return sqrtf(dx * dx + dy * dy + dz * dz);
 }
@@ -15,18 +15,18 @@ inline	float	RED_Distance3D(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
 
 
 // This function returns a vector lenght
-inline	float	RED_Lenght3D(D3DXVECTOR3 *V)
+inline float RED_Lenght3D(D3DXVECTOR3 *V)
 {
     return sqrtf(V->x * V->x + V->y * V->y + V->z * V->z);
 }
 
 
 
-inline	D3DXVECTOR3	RED_NormalizeVector(D3DXVECTOR3 *V)
+inline D3DXVECTOR3 RED_NormalizeVector(D3DXVECTOR3 *V)
 {
     D3DXVECTOR3 R;
 
-    float	Norm = sqrtf(V->x * V->x + V->y * V->y + V->z * V->z);
+    float Norm = sqrtf(V->x * V->x + V->y * V->y + V->z * V->z);
 
     if (!Norm) R.x = R.y = R.z = 0;
     else R.x = V->x / Norm, R.y = V->y / Norm, R.z = V->z / Norm;
@@ -34,7 +34,7 @@ inline	D3DXVECTOR3	RED_NormalizeVector(D3DXVECTOR3 *V)
     return R;
 }
 
-inline	D3DXVECTOR3	RED_CrossProduct(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
+inline D3DXVECTOR3 RED_CrossProduct(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
 {
     D3DXVECTOR3 V;
 
@@ -47,7 +47,7 @@ inline	D3DXVECTOR3	RED_CrossProduct(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
 }
 
 
-inline	D3DXVECTOR3	RED_Normal(D3DXVECTOR3 &S0, D3DXVECTOR3 &S1)
+inline D3DXVECTOR3 RED_Normal(D3DXVECTOR3 &S0, D3DXVECTOR3 &S1)
 {
     D3DXVECTOR3 V;
 

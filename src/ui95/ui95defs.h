@@ -81,7 +81,7 @@ enum // DONT use the highest bit (0x80000000) because this is a signed value
     C_TYPE_CONTROL,
     C_TYPE_LDROP,
     C_TYPE_IPADDRESS,
-    _CNTL_ANIMATION_		= 0x4001,
+    _CNTL_ANIMATION_ = 0x4001,
     _CNTL_BITMAP_,
     _CNTL_BUTTON_,
     _CNTL_EDITBOX_,
@@ -124,53 +124,53 @@ enum // DONT use the highest bit (0x80000000) because this is a signed value
 enum // Bit table
 {
     C_BIT_NOTHING           = 0x00000000, // Place holder... don't do jack
-    C_BIT_FIXEDSIZE			= 0x00000001, // Used EXCLUSIVELY for marking that the text has a fixed with buffer
-    C_BIT_LEADINGZEROS		= 0x00000002, // Used in cclock & ceditbox to put leading zeros in from of numeric values
-    C_BIT_VERTICAL			= 0x00000004, // Used in ctile for tiling vertically
-    C_BIT_HORIZONTAL		= 0x00000008, // Used in ctile for tiling horizontally
-    C_BIT_USEOUTLINE		= 0x00000010, // Used to draw an outline on the control's x,y,w,h corners
-    C_BIT_LEFT				= 0x00000020, // Used in cbutton to put labels at specific locations relative to the button
-    C_BIT_RIGHT				= 0x00000040, // Used in cbutton to put labels at specific locations relative to the button
-    C_BIT_TOP				= 0x00000080, // Used in cbutton to put labels at specific locations relative to the button
-    C_BIT_BOTTOM			= 0x00000100, // Used in cbutton to put labels at specific locations relative to the button
-    C_BIT_HCENTER			= 0x00000200, // used for horizontal centering
-    C_BIT_VCENTER			= 0x00000400, // used for vertical centering
-    C_BIT_ENABLED			= 0x00000800, // used for enabling/disabling controls
-    C_BIT_DRAGABLE			= 0x00001000, // used to set dragging capabilities
-    C_BIT_INVISIBLE			= 0x00002000, // used to make a control visible/invisible
-    C_BIT_FORCEMOUSEOVER	= 0x00004000, // used to force control to draw as if the mouse was over the control
-    C_BIT_USEBGIMAGE		= 0x00008000, // Used to draw a background image 1st before drawing rest of control
-    C_BIT_TIMER				= 0x00010000, // flag used to designate a timer control
-    C_BIT_CLOSEWINDOW		= 0x00020000, // used in clistbox to Close the Parent Window when done
-    C_BIT_ABSOLUTE			= 0x00040000, // flag used to indicate NOT to use a client area
-    C_BIT_SELECTABLE		= 0x00080000, // flag used for TAB/SHIFT TAB to jump between controls with keyboard
-    C_BIT_OPAQUE			= 0x00100000, // flag used to make text draw opaque... uses BgColor for filling behind char (can't set this for editboxes from script, since it is used to mark selected text)
-    C_BIT_CANTMOVE			= 0x00200000, // flag used by chandler to determine if a window can have it's depth changed
-    C_BIT_USELINE			= 0x00400000, // flag used for text... when set, draws an underline under the text
-    C_BIT_PASSWORD			= 0x00800000, // flag used to draw '*' instead of actual text
-    C_BIT_NOLABEL			= 0x01000000, // flag used to tell button NOT to draw it's label
-    C_BIT_WORDWRAP			= 0x02000000, // flag used in text to Word wrap
-    C_BIT_REMOVE			= 0x04000000, // flag used to tell cleanup code to cleanup (or NOT cleanup) a control
-    C_BIT_NOCLEANUP			= 0x08000000, // flag used by cwindow to tell it NOT to cleanup ANY of it's controls
-    C_BIT_MOUSEOVER			= 0x10000000, // flag used to disable MOUSEOVER hi-liting
-    C_BIT_TRANSLUCENT		= 0x20000000, // flag used to draw translucent bitmaps & fills, or mark a window as translucent so it refreshes windows behind itself also
-    C_BIT_USEBGFILL			= 0x40000000, // Similar to USEBGIMAGE, fills the x,y,w,h with the bgcolor
-    C_BIT_USEGRADIENT		= 0x80000000, // used to do a gradient fill in a window... not currently used in scripts
+    C_BIT_FIXEDSIZE = 0x00000001, // Used EXCLUSIVELY for marking that the text has a fixed with buffer
+    C_BIT_LEADINGZEROS = 0x00000002, // Used in cclock & ceditbox to put leading zeros in from of numeric values
+    C_BIT_VERTICAL = 0x00000004, // Used in ctile for tiling vertically
+    C_BIT_HORIZONTAL = 0x00000008, // Used in ctile for tiling horizontally
+    C_BIT_USEOUTLINE = 0x00000010, // Used to draw an outline on the control's x,y,w,h corners
+    C_BIT_LEFT = 0x00000020, // Used in cbutton to put labels at specific locations relative to the button
+    C_BIT_RIGHT = 0x00000040, // Used in cbutton to put labels at specific locations relative to the button
+    C_BIT_TOP = 0x00000080, // Used in cbutton to put labels at specific locations relative to the button
+    C_BIT_BOTTOM = 0x00000100, // Used in cbutton to put labels at specific locations relative to the button
+    C_BIT_HCENTER = 0x00000200, // used for horizontal centering
+    C_BIT_VCENTER = 0x00000400, // used for vertical centering
+    C_BIT_ENABLED = 0x00000800, // used for enabling/disabling controls
+    C_BIT_DRAGABLE = 0x00001000, // used to set dragging capabilities
+    C_BIT_INVISIBLE = 0x00002000, // used to make a control visible/invisible
+    C_BIT_FORCEMOUSEOVER = 0x00004000, // used to force control to draw as if the mouse was over the control
+    C_BIT_USEBGIMAGE = 0x00008000, // Used to draw a background image 1st before drawing rest of control
+    C_BIT_TIMER = 0x00010000, // flag used to designate a timer control
+    C_BIT_CLOSEWINDOW = 0x00020000, // used in clistbox to Close the Parent Window when done
+    C_BIT_ABSOLUTE = 0x00040000, // flag used to indicate NOT to use a client area
+    C_BIT_SELECTABLE = 0x00080000, // flag used for TAB/SHIFT TAB to jump between controls with keyboard
+    C_BIT_OPAQUE = 0x00100000, // flag used to make text draw opaque... uses BgColor for filling behind char (can't set this for editboxes from script, since it is used to mark selected text)
+    C_BIT_CANTMOVE = 0x00200000, // flag used by chandler to determine if a window can have it's depth changed
+    C_BIT_USELINE = 0x00400000, // flag used for text... when set, draws an underline under the text
+    C_BIT_PASSWORD = 0x00800000, // flag used to draw '*' instead of actual text
+    C_BIT_NOLABEL = 0x01000000, // flag used to tell button NOT to draw it's label
+    C_BIT_WORDWRAP = 0x02000000, // flag used in text to Word wrap
+    C_BIT_REMOVE = 0x04000000, // flag used to tell cleanup code to cleanup (or NOT cleanup) a control
+    C_BIT_NOCLEANUP = 0x08000000, // flag used by cwindow to tell it NOT to cleanup ANY of it's controls
+    C_BIT_MOUSEOVER = 0x10000000, // flag used to disable MOUSEOVER hi-liting
+    C_BIT_TRANSLUCENT = 0x20000000, // flag used to draw translucent bitmaps & fills, or mark a window as translucent so it refreshes windows behind itself also
+    C_BIT_USEBGFILL = 0x40000000, // Similar to USEBGIMAGE, fills the x,y,w,h with the bgcolor
+    C_BIT_USEGRADIENT = 0x80000000, // used to do a gradient fill in a window... not currently used in scripts
 };
 
 enum
 {
-    C_DRAW_NOTHING			= 0x00000000, // do nothing
-    C_DRAW_REFRESH			= 0x00000001, // Draw this item
-    C_DRAW_REFRESHALL		= 0x00000002, // Draw ALL
-    C_DRAW_COPYWINDOW		= 0x10000000, // Copy Window contents to front (OFFSCREEN) surface
-    C_DRAW_COPYTOFRONT		= 0x20000000, // Copy Front (OFFSCREEN) to Primary (SCREEN)
-    C_DRAW_UPDATE			= 0x40000000, // Flag used when the PostUpdate function is called
+    C_DRAW_NOTHING = 0x00000000, // do nothing
+    C_DRAW_REFRESH = 0x00000001, // Draw this item
+    C_DRAW_REFRESHALL = 0x00000002, // Draw ALL
+    C_DRAW_COPYWINDOW = 0x10000000, // Copy Window contents to front (OFFSCREEN) surface
+    C_DRAW_COPYTOFRONT = 0x20000000, // Copy Front (OFFSCREEN) to Primary (SCREEN)
+    C_DRAW_UPDATE = 0x40000000, // Flag used when the PostUpdate function is called
 };
 
 enum // WM_USER Messages for the UI
 {
-    C_WM_DRAWWINDOW			= WM_USER + 5000,
+    C_WM_DRAWWINDOW = WM_USER + 5000,
     C_WM_UPDATE,
     C_WM_COPYTOFRONT,
     C_WM_TIMER,

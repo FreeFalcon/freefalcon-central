@@ -14,7 +14,7 @@
 #define VIS_TYPE_MASK      0x7
 #define RADAR_ON           0x1
 #define ECM_ON             0x2
-#define AIR_BRAKES_OUT     0x4	// Should really be a position value, not a bit, but for now...
+#define AIR_BRAKES_OUT     0x4 // Should really be a position value, not a bit, but for now...
 #define CANOPY_OPEN        0x8
 #define OBJ_EXPLODING      0x10
 #define OBJ_DEAD           0x20
@@ -41,24 +41,24 @@ public:
     SimBaseSpecialData();
     ~SimBaseSpecialData();
 
-    float			rdrAz, rdrEl, rdrNominalRng;
-    float			rdrAzCenter, rdrElCenter;
-    float			rdrCycleTime;
-    int				flags;
-    int				status;
-    int				country;
-    unsigned char	afterburner_stage;
+    float rdrAz, rdrEl, rdrNominalRng;
+    float rdrAzCenter, rdrElCenter;
+    float rdrCycleTime;
+    int flags;
+    int status;
+    int country;
+    unsigned char afterburner_stage;
 
     // These should really move into SimMover or SimVeh, since they're only relevant there...
-    float			powerOutput;
-    unsigned char	powerOutputNet;
-    float			powerOutput2; // MLR 3/21/2004 -
-    unsigned char	powerOutputNet2;
+    float powerOutput;
+    unsigned char powerOutputNet;
+    float powerOutput2; // MLR 3/21/2004 -
+    unsigned char powerOutputNet2;
     // 2000-11-17 ADDED BY S.G. SO ENGINE HAS HEAT TEMP
-    float			engineHeatOutput;
-    unsigned char	engineHeatOutputNet;
+    float engineHeatOutput;
+    unsigned char engineHeatOutputNet;
     // END OF ADDED SECTION
-    VU_ID			ChaffID, FlareID;
+    VU_ID ChaffID, FlareID;
 };
 
 // Forward declarations for class pointers
@@ -78,14 +78,14 @@ class SimBaseNonLocalData
 {
 public:
     int flags;
-#define		NONLOCAL_GUNS_FIRING		0x00000001
-    float timer1;				// general purpose timer
-    float timer2;				// general purpose timer
-    float timer3;				// general purpose timer
-    float dx;					// use as a vector
+#define NONLOCAL_GUNS_FIRING 0x00000001
+    float timer1; // general purpose timer
+    float timer2; // general purpose timer
+    float timer3; // general purpose timer
+    float dx; // use as a vector
     float dy;
     float dz;
-    DrawableTrail *smokeTrail;	// smoke when guns are firing
+    DrawableTrail *smokeTrail; // smoke when guns are firing
 
     SimBaseNonLocalData();
     ~SimBaseNonLocalData();
@@ -115,10 +115,10 @@ protected:
     float sfxTimer;
     long lastDamageTime;
     long explosionTimer;
-    VU_ID lastShooter;				// KCK: replaces vu's lastShooter - Last person to hit this entity
-    VU_TIME lastChaff, lastFlare;		// When will the most recently dropped counter-measures expire?
+    VU_ID lastShooter; // KCK: replaces vu's lastShooter - Last person to hit this entity
+    VU_TIME lastChaff, lastFlare; // When will the most recently dropped counter-measures expire?
     long campaignFlags;
-    uchar localFlags;					// Don't transmit these, or else..
+    uchar localFlags; // Don't transmit these, or else..
 
 public:
     long timeOfDeath;
@@ -300,11 +300,11 @@ public:
     void SetNewestChaffID(VU_ID id);
     void SetNewestFlareID(VU_ID id);
 
-    VU_ID	NewestChaffID(void)
+    VU_ID NewestChaffID(void)
     {
         return specialData.ChaffID;
     };
-    VU_ID	NewestFlareID(void)
+    VU_ID NewestFlareID(void)
     {
         return specialData.FlareID;
     };
@@ -326,7 +326,7 @@ public:
     };
     // 2000-11-17 ADDED BY S.G. IT RETURNS THE ENGINE TEMP INSTEAD.
     // FOR NON AIRPLANE VEHICLE, RPM IS COPIED INTO ENGINE TEMP TO BE CONSISTENT
-    //	float EngineTempOutput (void) {return specialData.engineHeatOutput;};
+    // float EngineTempOutput (void) {return specialData.engineHeatOutput;};
     // END OF ADDED SECTION
     float RdrAz(void)
     {
@@ -414,32 +414,32 @@ public:
     }
     // incoming missile notification
     // 2000-11-17 INSTEAD OF USING PREVIOUSLY UNUSED VARS IN AIRFRAME, I'LL CREATE MY OWN INSTEAD
-    //	SimBaseClass *incomingMissile;
+    // SimBaseClass *incomingMissile;
     //  PLUS SetIncomingMissile CAN CLEAR UP THE ARRAY IF TRUE IS PASSED AS A SECOND PARAMETER (DEFAULTS TO FALSE)
-    //	void SetIncomingMissile ( SimBaseClass *missile );
+    // void SetIncomingMissile ( SimBaseClass *missile );
     SimBaseClass *incomingMissile[2];
     void SetIncomingMissile(SimBaseClass *missile, BOOL clearAll = FALSE);
     // 2000-11-17 ADDED BY S.G. INSTEAD OF USING oldrpm[5],
     // I'LL CREATE MY OWN VARIABLE TO KEEP THE MONITORED INCOMING MISSLE RANGE AND THE KEEP EVADING TIMER
-    float		incomingMissileRange;
-    VU_TIME	incomingMissileEvadeTimer;
+    float incomingMissileRange;
+    VU_TIME incomingMissileEvadeTimer;
     // END OF ADDED SECTION
 
     // threat
     VuBin<FalconEntity> threatObj;
     int threatType;
-#define	THREAT_NONE		0
-#define	THREAT_SPIKE	1
-#define	THREAT_MISSILE	2
-#define	THREAT_GUN		3
+#define THREAT_NONE 0
+#define THREAT_SPIKE 1
+#define THREAT_MISSILE 2
+#define THREAT_GUN 3
     void SetThreat(FalconEntity *threat, int type);
 
 
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     // event handlers
     virtual int Handle(VuFullUpdateEvent *event);

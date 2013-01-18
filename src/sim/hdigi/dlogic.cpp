@@ -168,8 +168,8 @@ void HeliBrain::TargetSelection(void)
 /*
 ** Name: SetTargetEntity
 ** Description:
-**		Creates a SimObjectType struct for the entity, sets the targetPtr,
-**		References the target.  Any pre-existing target is dereferenced.
+** Creates a SimObjectType struct for the entity, sets the targetPtr,
+** References the target.  Any pre-existing target is dereferenced.
 */
 void HeliBrain::SetTargetEntity(FalconEntity *obj)
 {
@@ -217,14 +217,14 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
 void HeliBrain::TargetSelection(SimObjectType *tlist)
 {
 
-    float					tmpAirRange = FLT_MAX;
-    float					tmpGndRange = FLT_MAX;
-    SimObjectType			*tmpObj;
-    SimObjectType			*tmpAirObj = NULL;
-    SimObjectType			*tmpGndObj = NULL;
-    SimBaseClass			*theObject;
-    Team					b;
-    float					range;
+    float tmpAirRange = FLT_MAX;
+    float tmpGndRange = FLT_MAX;
+    SimObjectType *tmpObj;
+    SimObjectType *tmpAirObj = NULL;
+    SimObjectType *tmpGndObj = NULL;
+    SimBaseClass *theObject;
+    Team b;
+    float range;
 
     // Loop until we find a target that is valid,
     // I now use the air flag to tell me whether the target is valid
@@ -279,8 +279,8 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
             /*
             if ( SimDriver.RunningInstantAction() && theObject->IsSetFlag( MOTION_OWNSHIP ) )
             {
-            	SetTarget( tmpObj );
-            	return;
+             SetTarget( tmpObj );
+             return;
             }
             else
             */
@@ -316,7 +316,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
     /*
     if ( SimDriver.RunningInstantAction() )
     {
-    	SetTarget( tmpAirObj );
+     SetTarget( tmpAirObj );
     }
     */
     // if they're both less than a certain range, flip a coin

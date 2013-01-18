@@ -49,7 +49,7 @@ static short Count;
 VU_ID gLastSquadron = FalconNullId;
 extern VU_ID gActiveFlightID, gLoadoutFlightID, gSelectedFlightID; // 2001-10-25 M.N. Added gSelectedFlightID
 
-int	gDragWPNum = 0;
+int gDragWPNum = 0;
 
 static void ClearUnitVehicles()
 {
@@ -229,16 +229,16 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
     if (txt)
     {
-        _TCHAR		tmp[80], *sptr;
+        _TCHAR tmp[80], *sptr;
         // KCK: This is a better way of doing this, when taking into account localization
         un->GetName(tmp, 79, FALSE);
         sptr = _tcschr(tmp, ' ') + 1;
         _tcscpy(buffer, sptr);
-        //		txt->Refresh();
-        //		_tcscpy(buffer, un->GetUnitClassName());
-        //		_tcscat(buffer,_T(" "));
-        //		GetSizeName(un->GetDomain(),un->GetType(),tmp);
-        //		_tcscat(buffer,tmp);
+        // txt->Refresh();
+        // _tcscpy(buffer, un->GetUnitClassName());
+        // _tcscat(buffer,_T(" "));
+        // GetSizeName(un->GetDomain(),un->GetType(),tmp);
+        // _tcscat(buffer,tmp);
         ForeignToUpper(buffer);
         txt->SetText(buffer);
         txt->Refresh();
@@ -318,16 +318,16 @@ void SetupUnitInfoWindow(VU_ID unitID)
             txt->SetFlagBitOn(C_BIT_INVISIBLE);
     }
 
-    /*	KCK: Changed to text box
-    	lbox=(C_ListBox*)win->FindControl(UNIT_OWNER);
-    	if(lbox)
-    	{
-    		// Use flag to determine owner name to choose.
-    		// This way TE works. Ideally, this would be a
-    		// text box and we'd set it to the team name string
-    		lbox->SetValue(TeamInfo[un->GetOwner()]->GetFlag()+1);
-    		lbox->Refresh();
-    	}
+    /* KCK: Changed to text box
+     lbox=(C_ListBox*)win->FindControl(UNIT_OWNER);
+     if(lbox)
+     {
+     // Use flag to determine owner name to choose.
+     // This way TE works. Ideally, this would be a
+     // text box and we'd set it to the team name string
+     lbox->SetValue(TeamInfo[un->GetOwner()]->GetFlag()+1);
+     lbox->Refresh();
+     }
     */
     txt = (C_Text*)win->FindControl(UNIT_OWNER);
 
@@ -422,7 +422,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
         if (obj)
         {
-            _TCHAR		tmp[80];
+            _TCHAR tmp[80];
             obj->GetName(tmp, 20, FALSE);
 
             if (gLangIDNum >= F4LANG_SPANISH)
@@ -542,15 +542,15 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     if (txt)
     {
-        _TCHAR		tmp[80], *sptr;
+        _TCHAR tmp[80], *sptr;
         // KCK: This is a better way of doing this, when taking into account localization
         div->GetName(tmp, 79, FALSE);
         sptr = _tcschr(tmp, ' ') + 1;
         _tcscpy(buffer, sptr);
-        //		_tcscpy(buffer, un->GetUnitClassName());
-        //		_tcscat(buffer,_T(" "));
-        //		ReadIndexedString(613, tmp, 79);
-        //		_tcscat(buffer,tmp);
+        // _tcscpy(buffer, un->GetUnitClassName());
+        // _tcscat(buffer,_T(" "));
+        // ReadIndexedString(613, tmp, 79);
+        // _tcscat(buffer,tmp);
         ForeignToUpper(buffer);
         txt->SetText(buffer);
         txt->Refresh();
@@ -602,16 +602,16 @@ void SetupDivisionInfoWindow(long DivID, short owner)
         txt->SetFlagBitOn(C_BIT_INVISIBLE);
     }
 
-    /*	KCK: Changed to text box
-    	lbox=(C_ListBox*)win->FindControl(UNIT_OWNER);
-    	if(lbox)
-    	{
-    		// Use flag to determine owner name to choose.
-    		// This way TE works. Ideally, this would be a
-    		// text box and we'd set it to the team name string
-    		lbox->SetValue(TeamInfo[owner]->GetFlag()+1);
-    		lbox->Refresh();
-    	}
+    /* KCK: Changed to text box
+     lbox=(C_ListBox*)win->FindControl(UNIT_OWNER);
+     if(lbox)
+     {
+     // Use flag to determine owner name to choose.
+     // This way TE works. Ideally, this would be a
+     // text box and we'd set it to the team name string
+     lbox->SetValue(TeamInfo[owner]->GetFlag()+1);
+     lbox->Refresh();
+     }
     */
 
     txt = (C_Text*)win->FindControl(UNIT_OWNER);
@@ -705,7 +705,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
         if (obj)
         {
-            _TCHAR		tmp[80];
+            _TCHAR tmp[80];
             obj->GetName(tmp, 20, FALSE);
 
             if (gLangIDNum >= F4LANG_SPANISH)
@@ -959,7 +959,7 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        //		if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+        // if(sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE || sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
         if (sqd->GetPilotData(i)->pilot_status != PILOT_KIA)
         {
             GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
@@ -1189,7 +1189,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
     _TCHAR buffer[200];
     short count, i;
     long total;
-    int	pilots;
+    int pilots;
     F4CSECTIONHANDLE *Leave;
 
     VuSessionsIterator sessionWalker(FalconLocalGame);
@@ -1285,14 +1285,14 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
         if (txt)
         {
-            _TCHAR		tmp[80], *sptr;
+            _TCHAR tmp[80], *sptr;
             // KCK: This is a better way of doing this, when taking into account localization
             sqd->GetName(tmp, 79, FALSE);
             sptr = _tcschr(tmp, ' ') + 1;
             _tcscpy(buffer, sptr);
-            //			_tcscpy(buffer,sqd->GetUnitClassName());
-            //			_tcscat(buffer," ");
-            //			_tcscat(buffer,gStringMgr->GetString(TXT_SQUADRON));
+            // _tcscpy(buffer,sqd->GetUnitClassName());
+            // _tcscat(buffer," ");
+            // _tcscat(buffer,gStringMgr->GetString(TXT_SQUADRON));
             ForeignToUpper(buffer);
             txt->SetText(buffer);
         }
@@ -1413,7 +1413,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
             if (count)
                 // 2000-11-17 MODIFIED BY S.G. SO WE TAKE AN *AVERAGE* OF THE SKILL
-                //				total/=count;
+                // total/=count;
                 total = (long)((float)total / (float)count + 0.5F);
 
             lbox->SetValue(total + 1);
@@ -1436,7 +1436,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
         if (txt)
         {
-            CampaignTime	time = (sqd->GetLastResupplyTime() + sqd->GetUnitSupplyTime());
+            CampaignTime time = (sqd->GetLastResupplyTime() + sqd->GetUnitSupplyTime());
             // Round to nearest hour
             time = (time / CampaignHours) * CampaignHours;
             GetTimeString(time, buffer, FALSE);
@@ -1624,7 +1624,7 @@ void UpdateSierraHotel()
                 {
                     kills = 0;
                     kills = session->GetKill(FalconSessionEntity::_AIR_KILLS_);
-                    //					if(kills || 1)
+                    // if(kills || 1)
                     {
                         ctrl = new C_Custom;
                         ctrl->Setup(C_DONT_CARE, FalconSessionEntity::_VS_HUMAN_, 2);
@@ -1700,7 +1700,7 @@ void UpdateSierraHotel()
             {
                 kills = sqd->GetPilotData(i)->aa_kills;
 
-                //				if(kills || 1)
+                // if(kills || 1)
                 {
                     GetPilotName(sqd->GetPilotData(i)->pilot_id, buffer, 25);
                     ctrl = new C_Custom;
@@ -1984,8 +1984,8 @@ void UpdateSierraHotel()
 
 WayPointClass* GetWayPointUnder(Unit unit)
 {
-    WayPoint	w = unit->GetFirstUnitWP();
-    GridIndex	x, y, wx, wy;
+    WayPoint w = unit->GetFirstUnitWP();
+    GridIndex x, y, wx, wy;
 
     unit->GetLocation(&x, &y);
     gDragWPNum = 0;
@@ -2013,12 +2013,12 @@ WayPointClass* GetWayPointUnder(Unit unit)
 
 void UnitCB(long ID, short hittype, C_Base *ctrl)
 {
-    CampEntity	entity;
-    Unit		unit;
-    float		wx, wy;
-    short		bx, by;
+    CampEntity entity;
+    Unit unit;
+    float wx, wy;
+    short bx, by;
     MAPICONLIST *item;
-    WayPointClass	*wp, *pw = NULL, *nw;
+    WayPointClass *wp, *pw = NULL, *nw;
 
     if (hittype == C_TYPE_LDROP)
     {
@@ -2157,12 +2157,12 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
 
 void fixup_unit(Unit unit)
 {
-    WayPointClass		*wp, *pwp;
-    CampaignHeading		h;
-    GridIndex			x, y, dx, dy, wx, wy, pwx, pwy;
-    int					z, ndt, dt;
-    CampaignTime		current_time;
-    float				heading;
+    WayPointClass *wp, *pwp;
+    CampaignHeading h;
+    GridIndex x, y, dx, dy, wx, wy, pwx, pwy;
+    int z, ndt, dt;
+    CampaignTime current_time;
+    float heading;
 
     current_time = TheCampaign.CurrentTime;
 
@@ -2174,7 +2174,7 @@ void fixup_unit(Unit unit)
         if (wp->GetWPAction() == WP_PICKUP)
         {
             // Load the airborne battalion.
-            Unit	cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit) wp->GetWPTarget();
 
             if (cargo)
             {
@@ -2188,7 +2188,7 @@ void fixup_unit(Unit unit)
         else if (wp->GetWPAction() == WP_AIRDROP)
         {
             // Unload the airborne battalion.
-            Unit	cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit) wp->GetWPTarget();
             unit->UnloadUnit();
 
             if (cargo)
@@ -2221,10 +2221,10 @@ void fixup_unit(Unit unit)
 
             // KCK NOTE: We may want to find grid paths for battalions...
             // But for now, just move in a staight line.
-            dx	= static_cast<short>(wx - pwx);
-            dy	= static_cast<short>(wy - pwy);
+            dx = static_cast<short>(wx - pwx);
+            dy = static_cast<short>(wy - pwy);
             ndt = current_time - pwp->GetWPDepartureTime();
-            dt	= wp->GetWPDepartureTime() - pwp->GetWPDepartureTime();
+            dt = wp->GetWPDepartureTime() - pwp->GetWPDepartureTime();
 
             if (ndt > dt)
                 ndt = dt;
@@ -2267,7 +2267,7 @@ void fixup_unit(Unit unit)
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)
         {
-            Unit	cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit) wp->GetWPTarget();
 
             if (cargo)
             {
@@ -2286,9 +2286,9 @@ void fixup_unit(Unit unit)
 
 void fixup_unit_starting_positions(void)
 {
-    VuListIterator		iter(AllRealList);
-    UnitClass			*unit;
-    victory_condition	*vc;
+    VuListIterator iter(AllRealList);
+    UnitClass *unit;
+    victory_condition *vc;
 
     unit = GetFirstUnit(&iter);
 

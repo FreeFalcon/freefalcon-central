@@ -42,235 +42,235 @@
 #ifndef __IWorkerThread_FWD_DEFINED__
 #define __IWorkerThread_FWD_DEFINED__
 typedef interface IWorkerThread IWorkerThread;
-#endif 	/* __IWorkerThread_FWD_DEFINED__ */
+#endif  /* __IWorkerThread_FWD_DEFINED__ */
 
 
 #ifndef __IBeaconListener_FWD_DEFINED__
 #define __IBeaconListener_FWD_DEFINED__
 typedef interface IBeaconListener IBeaconListener;
-#endif 	/* __IBeaconListener_FWD_DEFINED__ */
+#endif  /* __IBeaconListener_FWD_DEFINED__ */
 
 
 #ifndef __IGame_FWD_DEFINED__
 #define __IGame_FWD_DEFINED__
 typedef interface IGame IGame;
-#endif 	/* __IGame_FWD_DEFINED__ */
+#endif  /* __IGame_FWD_DEFINED__ */
 
 
 #ifndef __IGameEvents_FWD_DEFINED__
 #define __IGameEvents_FWD_DEFINED__
 typedef interface IGameEvents IGameEvents;
-#endif 	/* __IGameEvents_FWD_DEFINED__ */
+#endif  /* __IGameEvents_FWD_DEFINED__ */
 
 
 #ifndef __IPlayer_FWD_DEFINED__
 #define __IPlayer_FWD_DEFINED__
 typedef interface IPlayer IPlayer;
-#endif 	/* __IPlayer_FWD_DEFINED__ */
+#endif  /* __IPlayer_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServer_FWD_DEFINED__
 #define __IMasterServer_FWD_DEFINED__
 typedef interface IMasterServer IMasterServer;
-#endif 	/* __IMasterServer_FWD_DEFINED__ */
+#endif  /* __IMasterServer_FWD_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServer_FWD_DEFINED__
 #define __IRemoteMasterServer_FWD_DEFINED__
 typedef interface IRemoteMasterServer IRemoteMasterServer;
-#endif 	/* __IRemoteMasterServer_FWD_DEFINED__ */
+#endif  /* __IRemoteMasterServer_FWD_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServerEvents_FWD_DEFINED__
 #define __IRemoteMasterServerEvents_FWD_DEFINED__
 typedef interface IRemoteMasterServerEvents IRemoteMasterServerEvents;
-#endif 	/* __IRemoteMasterServerEvents_FWD_DEFINED__ */
+#endif  /* __IRemoteMasterServerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServerAdministration_FWD_DEFINED__
 #define __IMasterServerAdministration_FWD_DEFINED__
 typedef interface IMasterServerAdministration IMasterServerAdministration;
-#endif 	/* __IMasterServerAdministration_FWD_DEFINED__ */
+#endif  /* __IMasterServerAdministration_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServerEvents_FWD_DEFINED__
 #define __IMasterServerEvents_FWD_DEFINED__
 typedef interface IMasterServerEvents IMasterServerEvents;
-#endif 	/* __IMasterServerEvents_FWD_DEFINED__ */
+#endif  /* __IMasterServerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IHost_FWD_DEFINED__
 #define __IHost_FWD_DEFINED__
 typedef interface IHost IHost;
-#endif 	/* __IHost_FWD_DEFINED__ */
+#endif  /* __IHost_FWD_DEFINED__ */
 
 
 #ifndef __IHostInfo_FWD_DEFINED__
 #define __IHostInfo_FWD_DEFINED__
 typedef interface IHostInfo IHostInfo;
-#endif 	/* __IHostInfo_FWD_DEFINED__ */
+#endif  /* __IHostInfo_FWD_DEFINED__ */
 
 
 #ifndef __IBeaconListenerEvents_FWD_DEFINED__
 #define __IBeaconListenerEvents_FWD_DEFINED__
 typedef interface IBeaconListenerEvents IBeaconListenerEvents;
-#endif 	/* __IBeaconListenerEvents_FWD_DEFINED__ */
+#endif  /* __IBeaconListenerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IUplink_FWD_DEFINED__
 #define __IUplink_FWD_DEFINED__
 typedef interface IUplink IUplink;
-#endif 	/* __IUplink_FWD_DEFINED__ */
+#endif  /* __IUplink_FWD_DEFINED__ */
 
 
 #ifndef __IProvideGUID_FWD_DEFINED__
 #define __IProvideGUID_FWD_DEFINED__
 typedef interface IProvideGUID IProvideGUID;
-#endif 	/* __IProvideGUID_FWD_DEFINED__ */
+#endif  /* __IProvideGUID_FWD_DEFINED__ */
 
 
 #ifndef __IListViewItem_FWD_DEFINED__
 #define __IListViewItem_FWD_DEFINED__
 typedef interface IListViewItem IListViewItem;
-#endif 	/* __IListViewItem_FWD_DEFINED__ */
+#endif  /* __IListViewItem_FWD_DEFINED__ */
 
 
 #ifndef __IListViewItemContainer_FWD_DEFINED__
 #define __IListViewItemContainer_FWD_DEFINED__
 typedef interface IListViewItemContainer IListViewItemContainer;
-#endif 	/* __IListViewItemContainer_FWD_DEFINED__ */
+#endif  /* __IListViewItemContainer_FWD_DEFINED__ */
 
 
 #ifndef __IListView_FWD_DEFINED__
 #define __IListView_FWD_DEFINED__
 typedef interface IListView IListView;
-#endif 	/* __IListView_FWD_DEFINED__ */
+#endif  /* __IListView_FWD_DEFINED__ */
 
 
 #ifndef __IObjectManager_FWD_DEFINED__
 #define __IObjectManager_FWD_DEFINED__
 typedef interface IObjectManager IObjectManager;
-#endif 	/* __IObjectManager_FWD_DEFINED__ */
+#endif  /* __IObjectManager_FWD_DEFINED__ */
 
 
 #ifndef __IServerObjectManager_FWD_DEFINED__
 #define __IServerObjectManager_FWD_DEFINED__
 typedef interface IServerObjectManager IServerObjectManager;
-#endif 	/* __IServerObjectManager_FWD_DEFINED__ */
+#endif  /* __IServerObjectManager_FWD_DEFINED__ */
 
 
 #ifndef __IWorkerThread_FWD_DEFINED__
 #define __IWorkerThread_FWD_DEFINED__
 typedef interface IWorkerThread IWorkerThread;
-#endif 	/* __IWorkerThread_FWD_DEFINED__ */
+#endif  /* __IWorkerThread_FWD_DEFINED__ */
 
 
 #ifndef __IBeaconListener_FWD_DEFINED__
 #define __IBeaconListener_FWD_DEFINED__
 typedef interface IBeaconListener IBeaconListener;
-#endif 	/* __IBeaconListener_FWD_DEFINED__ */
+#endif  /* __IBeaconListener_FWD_DEFINED__ */
 
 
 #ifndef __IGame_FWD_DEFINED__
 #define __IGame_FWD_DEFINED__
 typedef interface IGame IGame;
-#endif 	/* __IGame_FWD_DEFINED__ */
+#endif  /* __IGame_FWD_DEFINED__ */
 
 
 #ifndef __IGameEvents_FWD_DEFINED__
 #define __IGameEvents_FWD_DEFINED__
 typedef interface IGameEvents IGameEvents;
-#endif 	/* __IGameEvents_FWD_DEFINED__ */
+#endif  /* __IGameEvents_FWD_DEFINED__ */
 
 
 #ifndef __IPlayer_FWD_DEFINED__
 #define __IPlayer_FWD_DEFINED__
 typedef interface IPlayer IPlayer;
-#endif 	/* __IPlayer_FWD_DEFINED__ */
+#endif  /* __IPlayer_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServer_FWD_DEFINED__
 #define __IMasterServer_FWD_DEFINED__
 typedef interface IMasterServer IMasterServer;
-#endif 	/* __IMasterServer_FWD_DEFINED__ */
+#endif  /* __IMasterServer_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServerAdministration_FWD_DEFINED__
 #define __IMasterServerAdministration_FWD_DEFINED__
 typedef interface IMasterServerAdministration IMasterServerAdministration;
-#endif 	/* __IMasterServerAdministration_FWD_DEFINED__ */
+#endif  /* __IMasterServerAdministration_FWD_DEFINED__ */
 
 
 #ifndef __IMasterServerEvents_FWD_DEFINED__
 #define __IMasterServerEvents_FWD_DEFINED__
 typedef interface IMasterServerEvents IMasterServerEvents;
-#endif 	/* __IMasterServerEvents_FWD_DEFINED__ */
+#endif  /* __IMasterServerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServer_FWD_DEFINED__
 #define __IRemoteMasterServer_FWD_DEFINED__
 typedef interface IRemoteMasterServer IRemoteMasterServer;
-#endif 	/* __IRemoteMasterServer_FWD_DEFINED__ */
+#endif  /* __IRemoteMasterServer_FWD_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServerEvents_FWD_DEFINED__
 #define __IRemoteMasterServerEvents_FWD_DEFINED__
 typedef interface IRemoteMasterServerEvents IRemoteMasterServerEvents;
-#endif 	/* __IRemoteMasterServerEvents_FWD_DEFINED__ */
+#endif  /* __IRemoteMasterServerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IHost_FWD_DEFINED__
 #define __IHost_FWD_DEFINED__
 typedef interface IHost IHost;
-#endif 	/* __IHost_FWD_DEFINED__ */
+#endif  /* __IHost_FWD_DEFINED__ */
 
 
 #ifndef __IBeaconListenerEvents_FWD_DEFINED__
 #define __IBeaconListenerEvents_FWD_DEFINED__
 typedef interface IBeaconListenerEvents IBeaconListenerEvents;
-#endif 	/* __IBeaconListenerEvents_FWD_DEFINED__ */
+#endif  /* __IBeaconListenerEvents_FWD_DEFINED__ */
 
 
 #ifndef __IProvideGUID_FWD_DEFINED__
 #define __IProvideGUID_FWD_DEFINED__
 typedef interface IProvideGUID IProvideGUID;
-#endif 	/* __IProvideGUID_FWD_DEFINED__ */
+#endif  /* __IProvideGUID_FWD_DEFINED__ */
 
 
 #ifndef __IListViewItem_FWD_DEFINED__
 #define __IListViewItem_FWD_DEFINED__
 typedef interface IListViewItem IListViewItem;
-#endif 	/* __IListViewItem_FWD_DEFINED__ */
+#endif  /* __IListViewItem_FWD_DEFINED__ */
 
 
 #ifndef __IListViewItemContainer_FWD_DEFINED__
 #define __IListViewItemContainer_FWD_DEFINED__
 typedef interface IListViewItemContainer IListViewItemContainer;
-#endif 	/* __IListViewItemContainer_FWD_DEFINED__ */
+#endif  /* __IListViewItemContainer_FWD_DEFINED__ */
 
 
 #ifndef __IListView_FWD_DEFINED__
 #define __IListView_FWD_DEFINED__
 typedef interface IListView IListView;
-#endif 	/* __IListView_FWD_DEFINED__ */
+#endif  /* __IListView_FWD_DEFINED__ */
 
 
 #ifndef __IObjectManager_FWD_DEFINED__
 #define __IObjectManager_FWD_DEFINED__
 typedef interface IObjectManager IObjectManager;
-#endif 	/* __IObjectManager_FWD_DEFINED__ */
+#endif  /* __IObjectManager_FWD_DEFINED__ */
 
 
 #ifndef __IServerObjectManager_FWD_DEFINED__
 #define __IServerObjectManager_FWD_DEFINED__
 typedef interface IServerObjectManager IServerObjectManager;
-#endif 	/* __IServerObjectManager_FWD_DEFINED__ */
+#endif  /* __IServerObjectManager_FWD_DEFINED__ */
 
 
 #ifndef __IUplink_FWD_DEFINED__
 #define __IUplink_FWD_DEFINED__
 typedef interface IUplink IUplink;
-#endif 	/* __IUplink_FWD_DEFINED__ */
+#endif  /* __IUplink_FWD_DEFINED__ */
 
 
 /* header files for imported files */
@@ -304,7 +304,7 @@ IWorkerThread :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IWorkerThreadVtbl
     {
@@ -338,23 +338,23 @@ IWorkerThread :
 #ifdef COBJMACROS
 
 
-#define IWorkerThread_QueryInterface(This,riid,ppvObject)	\
+#define IWorkerThread_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IWorkerThread_AddRef(This)	\
+#define IWorkerThread_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IWorkerThread_Release(This)	\
+#define IWorkerThread_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IWorkerThread_WorkerExecute(This)	\
+#define IWorkerThread_WorkerExecute(This) \
     (This)->lpVtbl -> WorkerExecute(This)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -370,7 +370,7 @@ IWorkerThread :
 
 
 
-#endif 	/* __IWorkerThread_INTERFACE_DEFINED__ */
+#endif  /* __IWorkerThread_INTERFACE_DEFINED__ */
 
 
 #ifndef __IBeaconListener_INTERFACE_DEFINED__
@@ -401,7 +401,7 @@ IBeaconListener :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IBeaconListenerVtbl
     {
@@ -449,32 +449,32 @@ IBeaconListener :
 #ifdef COBJMACROS
 
 
-#define IBeaconListener_QueryInterface(This,riid,ppvObject)	\
+#define IBeaconListener_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IBeaconListener_AddRef(This)	\
+#define IBeaconListener_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IBeaconListener_Release(This)	\
+#define IBeaconListener_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IBeaconListener_get_Name(This,pVal)	\
+#define IBeaconListener_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IBeaconListener_put_Name(This,newVal)	\
+#define IBeaconListener_put_Name(This,newVal) \
     (This)->lpVtbl -> put_Name(This,newVal)
 
-#define IBeaconListener_Start(This)	\
+#define IBeaconListener_Start(This) \
     (This)->lpVtbl -> Start(This)
 
-#define IBeaconListener_Stop(This)	\
+#define IBeaconListener_Stop(This) \
     (This)->lpVtbl -> Stop(This)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -528,7 +528,7 @@ IBeaconListener :
 
 
 
-#endif 	/* __IBeaconListener_INTERFACE_DEFINED__ */
+#endif  /* __IBeaconListener_INTERFACE_DEFINED__ */
 
 
 #ifndef __IGame_INTERFACE_DEFINED__
@@ -584,7 +584,7 @@ IGame :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IGameVtbl
     {
@@ -673,56 +673,56 @@ IGame :
 #ifdef COBJMACROS
 
 
-#define IGame_QueryInterface(This,riid,ppvObject)	\
+#define IGame_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IGame_AddRef(This)	\
+#define IGame_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IGame_Release(This)	\
+#define IGame_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IGame_get_Players(This,pVal)	\
+#define IGame_get_Players(This,pVal) \
     (This)->lpVtbl -> get_Players(This,pVal)
 
-#define IGame_get_Name(This,pVal)	\
+#define IGame_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IGame_put_Name(This,newVal)	\
+#define IGame_put_Name(This,newVal) \
     (This)->lpVtbl -> put_Name(This,newVal)
 
-#define IGame_get_NumPlayers(This,pVal)	\
+#define IGame_get_NumPlayers(This,pVal) \
     (This)->lpVtbl -> get_NumPlayers(This,pVal)
 
-#define IGame_get_Type(This,pVal)	\
+#define IGame_get_Type(This,pVal) \
     (This)->lpVtbl -> get_Type(This,pVal)
 
-#define IGame_get_MaxPlayers(This,pVal)	\
+#define IGame_get_MaxPlayers(This,pVal) \
     (This)->lpVtbl -> get_MaxPlayers(This,pVal)
 
-#define IGame_get_Version(This,pVal)	\
+#define IGame_get_Version(This,pVal) \
     (This)->lpVtbl -> get_Version(This,pVal)
 
-#define IGame_get_Location(This,pVal)	\
+#define IGame_get_Location(This,pVal) \
     (This)->lpVtbl -> get_Location(This,pVal)
 
-#define IGame_get_ServerName(This,pVal)	\
+#define IGame_get_ServerName(This,pVal) \
     (This)->lpVtbl -> get_ServerName(This,pVal)
 
-#define IGame_put_ServerName(This,newVal)	\
+#define IGame_put_ServerName(This,newVal) \
     (This)->lpVtbl -> put_ServerName(This,newVal)
 
-#define IGame_Update(This)	\
+#define IGame_Update(This) \
     (This)->lpVtbl -> Update(This)
 
-#define IGame_get_Mode(This,pVal)	\
+#define IGame_get_Mode(This,pVal) \
     (This)->lpVtbl -> get_Mode(This,pVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -881,7 +881,7 @@ IGame :
 
 
 
-#endif 	/* __IGame_INTERFACE_DEFINED__ */
+#endif  /* __IGame_INTERFACE_DEFINED__ */
 
 
 #ifndef __IGameEvents_INTERFACE_DEFINED__
@@ -908,7 +908,7 @@ IGameEvents :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IGameEventsVtbl
     {
@@ -948,26 +948,26 @@ IGameEvents :
 #ifdef COBJMACROS
 
 
-#define IGameEvents_QueryInterface(This,riid,ppvObject)	\
+#define IGameEvents_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IGameEvents_AddRef(This)	\
+#define IGameEvents_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IGameEvents_Release(This)	\
+#define IGameEvents_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IGameEvents_UpdateComplete(This,Game)	\
+#define IGameEvents_UpdateComplete(This,Game) \
     (This)->lpVtbl -> UpdateComplete(This,Game)
 
-#define IGameEvents_UpdateAborted(This,Game)	\
+#define IGameEvents_UpdateAborted(This,Game) \
     (This)->lpVtbl -> UpdateAborted(This,Game)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -997,7 +997,7 @@ IGameEvents :
 
 
 
-#endif 	/* __IGameEvents_INTERFACE_DEFINED__ */
+#endif  /* __IGameEvents_INTERFACE_DEFINED__ */
 
 
 #ifndef __IPlayer_INTERFACE_DEFINED__
@@ -1024,7 +1024,7 @@ IPlayer :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IPlayerVtbl
     {
@@ -1064,26 +1064,26 @@ IPlayer :
 #ifdef COBJMACROS
 
 
-#define IPlayer_QueryInterface(This,riid,ppvObject)	\
+#define IPlayer_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IPlayer_AddRef(This)	\
+#define IPlayer_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IPlayer_Release(This)	\
+#define IPlayer_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IPlayer_get_Name(This,pVal)	\
+#define IPlayer_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IPlayer_put_Name(This,newVal)	\
+#define IPlayer_put_Name(This,newVal) \
     (This)->lpVtbl -> put_Name(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -1113,7 +1113,7 @@ IPlayer :
 
 
 
-#endif 	/* __IPlayer_INTERFACE_DEFINED__ */
+#endif  /* __IPlayer_INTERFACE_DEFINED__ */
 
 
 #ifndef __IMasterServer_INTERFACE_DEFINED__
@@ -1152,7 +1152,7 @@ IMasterServer :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IMasterServerVtbl
     {
@@ -1212,38 +1212,38 @@ IMasterServer :
 #ifdef COBJMACROS
 
 
-#define IMasterServer_QueryInterface(This,riid,ppvObject)	\
+#define IMasterServer_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IMasterServer_AddRef(This)	\
+#define IMasterServer_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IMasterServer_Release(This)	\
+#define IMasterServer_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IMasterServer_get_Name(This,pVal)	\
+#define IMasterServer_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IMasterServer_get_Location(This,pVal)	\
+#define IMasterServer_get_Location(This,pVal) \
     (This)->lpVtbl -> get_Location(This,pVal)
 
-#define IMasterServer_get_AdminEmail(This,pVal)	\
+#define IMasterServer_get_AdminEmail(This,pVal) \
     (This)->lpVtbl -> get_AdminEmail(This,pVal)
 
-#define IMasterServer_get_Version(This,pVal)	\
+#define IMasterServer_get_Version(This,pVal) \
     (This)->lpVtbl -> get_Version(This,pVal)
 
-#define IMasterServer_get_MOTD(This,pVal)	\
+#define IMasterServer_get_MOTD(This,pVal) \
     (This)->lpVtbl -> get_MOTD(This,pVal)
 
-#define IMasterServer_get_HostInfos(This,pVal)	\
+#define IMasterServer_get_HostInfos(This,pVal) \
     (This)->lpVtbl -> get_HostInfos(This,pVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -1325,7 +1325,7 @@ IMasterServer :
 
 
 
-#endif 	/* __IMasterServer_INTERFACE_DEFINED__ */
+#endif  /* __IMasterServer_INTERFACE_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServer_INTERFACE_DEFINED__
@@ -1374,7 +1374,7 @@ IRemoteMasterServer :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IRemoteMasterServerVtbl
     {
@@ -1482,69 +1482,69 @@ IRemoteMasterServer :
 #ifdef COBJMACROS
 
 
-#define IRemoteMasterServer_QueryInterface(This,riid,ppvObject)	\
+#define IRemoteMasterServer_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IRemoteMasterServer_AddRef(This)	\
+#define IRemoteMasterServer_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IRemoteMasterServer_Release(This)	\
+#define IRemoteMasterServer_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IRemoteMasterServer_get_Name(This,pVal)	\
+#define IRemoteMasterServer_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IRemoteMasterServer_get_Location(This,pVal)	\
+#define IRemoteMasterServer_get_Location(This,pVal) \
     (This)->lpVtbl -> get_Location(This,pVal)
 
-#define IRemoteMasterServer_get_AdminEmail(This,pVal)	\
+#define IRemoteMasterServer_get_AdminEmail(This,pVal) \
     (This)->lpVtbl -> get_AdminEmail(This,pVal)
 
-#define IRemoteMasterServer_get_Version(This,pVal)	\
+#define IRemoteMasterServer_get_Version(This,pVal) \
     (This)->lpVtbl -> get_Version(This,pVal)
 
-#define IRemoteMasterServer_get_MOTD(This,pVal)	\
+#define IRemoteMasterServer_get_MOTD(This,pVal) \
     (This)->lpVtbl -> get_MOTD(This,pVal)
 
-#define IRemoteMasterServer_get_HostInfos(This,pVal)	\
+#define IRemoteMasterServer_get_HostInfos(This,pVal) \
     (This)->lpVtbl -> get_HostInfos(This,pVal)
 
 
-#define IRemoteMasterServer_get_Servername(This,pVal)	\
+#define IRemoteMasterServer_get_Servername(This,pVal) \
     (This)->lpVtbl -> get_Servername(This,pVal)
 
-#define IRemoteMasterServer_put_Servername(This,newVal)	\
+#define IRemoteMasterServer_put_Servername(This,newVal) \
     (This)->lpVtbl -> put_Servername(This,newVal)
 
-#define IRemoteMasterServer_get_Port(This,pVal)	\
+#define IRemoteMasterServer_get_Port(This,pVal) \
     (This)->lpVtbl -> get_Port(This,pVal)
 
-#define IRemoteMasterServer_put_Port(This,newVal)	\
+#define IRemoteMasterServer_put_Port(This,newVal) \
     (This)->lpVtbl -> put_Port(This,newVal)
 
-#define IRemoteMasterServer_get_MaxConcurrentHostQueries(This,pVal)	\
+#define IRemoteMasterServer_get_MaxConcurrentHostQueries(This,pVal) \
     (This)->lpVtbl -> get_MaxConcurrentHostQueries(This,pVal)
 
-#define IRemoteMasterServer_put_MaxConcurrentHostQueries(This,newVal)	\
+#define IRemoteMasterServer_put_MaxConcurrentHostQueries(This,newVal) \
     (This)->lpVtbl -> put_MaxConcurrentHostQueries(This,newVal)
 
-#define IRemoteMasterServer_Update(This)	\
+#define IRemoteMasterServer_Update(This) \
     (This)->lpVtbl -> Update(This)
 
-#define IRemoteMasterServer_CancelUpdate(This)	\
+#define IRemoteMasterServer_CancelUpdate(This) \
     (This)->lpVtbl -> CancelUpdate(This)
 
-#define IRemoteMasterServer_get_GameFilter(This,pVal)	\
+#define IRemoteMasterServer_get_GameFilter(This,pVal) \
     (This)->lpVtbl -> get_GameFilter(This,pVal)
 
-#define IRemoteMasterServer_put_GameFilter(This,newVal)	\
+#define IRemoteMasterServer_put_GameFilter(This,newVal) \
     (This)->lpVtbl -> put_GameFilter(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -1676,7 +1676,7 @@ IRemoteMasterServer :
 
 
 
-#endif 	/* __IRemoteMasterServer_INTERFACE_DEFINED__ */
+#endif  /* __IRemoteMasterServer_INTERFACE_DEFINED__ */
 
 
 #ifndef __IRemoteMasterServerEvents_INTERFACE_DEFINED__
@@ -1703,7 +1703,7 @@ IRemoteMasterServerEvents :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IRemoteMasterServerEventsVtbl
     {
@@ -1743,26 +1743,26 @@ IRemoteMasterServerEvents :
 #ifdef COBJMACROS
 
 
-#define IRemoteMasterServerEvents_QueryInterface(This,riid,ppvObject)	\
+#define IRemoteMasterServerEvents_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IRemoteMasterServerEvents_AddRef(This)	\
+#define IRemoteMasterServerEvents_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IRemoteMasterServerEvents_Release(This)	\
+#define IRemoteMasterServerEvents_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IRemoteMasterServerEvents_ServerListReceived(This,nServers)	\
+#define IRemoteMasterServerEvents_ServerListReceived(This,nServers) \
     (This)->lpVtbl -> ServerListReceived(This,nServers)
 
-#define IRemoteMasterServerEvents_UpdateComplete(This,bSuccess)	\
+#define IRemoteMasterServerEvents_UpdateComplete(This,bSuccess) \
     (This)->lpVtbl -> UpdateComplete(This,bSuccess)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -1792,7 +1792,7 @@ IRemoteMasterServerEvents :
 
 
 
-#endif 	/* __IRemoteMasterServerEvents_INTERFACE_DEFINED__ */
+#endif  /* __IRemoteMasterServerEvents_INTERFACE_DEFINED__ */
 
 
 #ifndef __IMasterServerAdministration_INTERFACE_DEFINED__
@@ -1815,7 +1815,7 @@ IRemoteMasterServerEvents :
         DWORD dwMinTransactionsPerSecond;
         DWORD dwMaxTransactionsPerSecond;
         __int64 nTotalTransactions;
-    }	IMasterServerAdministration_Statistics;
+    } IMasterServerAdministration_Statistics;
 
     typedef /* [public][public] */ struct __MIDL_IMasterServerAdministration_0002
     {
@@ -1827,7 +1827,7 @@ IRemoteMasterServerEvents :
         BSTR m_bstrLogPath;
         byte m_nLogLevel;
         IMasterServerAdministration_Statistics m_Stats;
-    }	IMasterServerAdministration_PropertySet;
+    } IMasterServerAdministration_PropertySet;
 
 
     EXTERN_C const IID IID_IMasterServerAdministration;
@@ -1875,7 +1875,7 @@ IMasterServerAdministration :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IMasterServerAdministrationVtbl
     {
@@ -1963,56 +1963,56 @@ IMasterServerAdministration :
 #ifdef COBJMACROS
 
 
-#define IMasterServerAdministration_QueryInterface(This,riid,ppvObject)	\
+#define IMasterServerAdministration_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IMasterServerAdministration_AddRef(This)	\
+#define IMasterServerAdministration_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IMasterServerAdministration_Release(This)	\
+#define IMasterServerAdministration_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IMasterServerAdministration_Start(This)	\
+#define IMasterServerAdministration_Start(This) \
     (This)->lpVtbl -> Start(This)
 
-#define IMasterServerAdministration_Stop(This)	\
+#define IMasterServerAdministration_Stop(This) \
     (This)->lpVtbl -> Stop(This)
 
-#define IMasterServerAdministration_get_BeaconListeners(This,pVal)	\
+#define IMasterServerAdministration_get_BeaconListeners(This,pVal) \
     (This)->lpVtbl -> get_BeaconListeners(This,pVal)
 
-#define IMasterServerAdministration_put_Name(This,newVal)	\
+#define IMasterServerAdministration_put_Name(This,newVal) \
     (This)->lpVtbl -> put_Name(This,newVal)
 
-#define IMasterServerAdministration_put_Location(This,newVal)	\
+#define IMasterServerAdministration_put_Location(This,newVal) \
     (This)->lpVtbl -> put_Location(This,newVal)
 
-#define IMasterServerAdministration_put_AdminEmail(This,newVal)	\
+#define IMasterServerAdministration_put_AdminEmail(This,newVal) \
     (This)->lpVtbl -> put_AdminEmail(This,newVal)
 
-#define IMasterServerAdministration_get_Statistics(This,pVal)	\
+#define IMasterServerAdministration_get_Statistics(This,pVal) \
     (This)->lpVtbl -> get_Statistics(This,pVal)
 
-#define IMasterServerAdministration_get_Properties(This,pVal)	\
+#define IMasterServerAdministration_get_Properties(This,pVal) \
     (This)->lpVtbl -> get_Properties(This,pVal)
 
-#define IMasterServerAdministration_put_MOTD(This,newVal)	\
+#define IMasterServerAdministration_put_MOTD(This,newVal) \
     (This)->lpVtbl -> put_MOTD(This,newVal)
 
-#define IMasterServerAdministration_get_IsStarted(This,pVal)	\
+#define IMasterServerAdministration_get_IsStarted(This,pVal) \
     (This)->lpVtbl -> get_IsStarted(This,pVal)
 
-#define IMasterServerAdministration_get_LogLevel(This,pVal)	\
+#define IMasterServerAdministration_get_LogLevel(This,pVal) \
     (This)->lpVtbl -> get_LogLevel(This,pVal)
 
-#define IMasterServerAdministration_put_LogLevel(This,newVal)	\
+#define IMasterServerAdministration_put_LogLevel(This,newVal) \
     (This)->lpVtbl -> put_LogLevel(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -2170,7 +2170,7 @@ IMasterServerAdministration :
 
 
 
-#endif 	/* __IMasterServerAdministration_INTERFACE_DEFINED__ */
+#endif  /* __IMasterServerAdministration_INTERFACE_DEFINED__ */
 
 
 #ifndef __IMasterServerEvents_INTERFACE_DEFINED__
@@ -2191,7 +2191,7 @@ IMasterServerEvents :
     public:
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IMasterServerEventsVtbl
     {
@@ -2221,25 +2221,25 @@ IMasterServerEvents :
 #ifdef COBJMACROS
 
 
-#define IMasterServerEvents_QueryInterface(This,riid,ppvObject)	\
+#define IMasterServerEvents_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IMasterServerEvents_AddRef(This)	\
+#define IMasterServerEvents_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IMasterServerEvents_Release(This)	\
+#define IMasterServerEvents_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
 
-#endif 	/* __IMasterServerEvents_INTERFACE_DEFINED__ */
+#endif  /* __IMasterServerEvents_INTERFACE_DEFINED__ */
 
 
 #ifndef __IHost_INTERFACE_DEFINED__
@@ -2289,7 +2289,7 @@ IHost :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IHostVtbl
     {
@@ -2368,50 +2368,50 @@ IHost :
 #ifdef COBJMACROS
 
 
-#define IHost_QueryInterface(This,riid,ppvObject)	\
+#define IHost_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IHost_AddRef(This)	\
+#define IHost_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IHost_Release(This)	\
+#define IHost_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IHost_get_Ping(This,pVal)	\
+#define IHost_get_Ping(This,pVal) \
     (This)->lpVtbl -> get_Ping(This,pVal)
 
-#define IHost_get_Hostname(This,pVal)	\
+#define IHost_get_Hostname(This,pVal) \
     (This)->lpVtbl -> get_Hostname(This,pVal)
 
-#define IHost_get_IP(This,pVal)	\
+#define IHost_get_IP(This,pVal) \
     (This)->lpVtbl -> get_IP(This,pVal)
 
-#define IHost_put_IP(This,newVal)	\
+#define IHost_put_IP(This,newVal) \
     (This)->lpVtbl -> put_IP(This,newVal)
 
-#define IHost_get_Port(This,pVal)	\
+#define IHost_get_Port(This,pVal) \
     (This)->lpVtbl -> get_Port(This,pVal)
 
-#define IHost_put_Port(This,newVal)	\
+#define IHost_put_Port(This,newVal) \
     (This)->lpVtbl -> put_Port(This,newVal)
 
-#define IHost_get_QueryPort(This,pVal)	\
+#define IHost_get_QueryPort(This,pVal) \
     (This)->lpVtbl -> get_QueryPort(This,pVal)
 
-#define IHost_put_QueryPort(This,newVal)	\
+#define IHost_put_QueryPort(This,newVal) \
     (This)->lpVtbl -> put_QueryPort(This,newVal)
 
-#define IHost_get_Hops(This,pVal)	\
+#define IHost_get_Hops(This,pVal) \
     (This)->lpVtbl -> get_Hops(This,pVal)
 
-#define IHost_Update(This)	\
+#define IHost_Update(This) \
     (This)->lpVtbl -> Update(This)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -2544,7 +2544,7 @@ IHost :
 
 
 
-#endif 	/* __IHost_INTERFACE_DEFINED__ */
+#endif  /* __IHost_INTERFACE_DEFINED__ */
 
 
 #ifndef __IHostInfo_INTERFACE_DEFINED__
@@ -2585,7 +2585,7 @@ IHostInfo :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IHostInfoVtbl
     {
@@ -2649,41 +2649,41 @@ IHostInfo :
 #ifdef COBJMACROS
 
 
-#define IHostInfo_QueryInterface(This,riid,ppvObject)	\
+#define IHostInfo_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IHostInfo_AddRef(This)	\
+#define IHostInfo_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IHostInfo_Release(This)	\
+#define IHostInfo_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IHostInfo_UpdateHeartbeat(This)	\
+#define IHostInfo_UpdateHeartbeat(This) \
     (This)->lpVtbl -> UpdateHeartbeat(This)
 
-#define IHostInfo_get_LastBeat(This,pVal)	\
+#define IHostInfo_get_LastBeat(This,pVal) \
     (This)->lpVtbl -> get_LastBeat(This,pVal)
 
-#define IHostInfo_put_IP(This,newVal)	\
+#define IHostInfo_put_IP(This,newVal) \
     (This)->lpVtbl -> put_IP(This,newVal)
 
-#define IHostInfo_get_IP(This,pVal)	\
+#define IHostInfo_get_IP(This,pVal) \
     (This)->lpVtbl -> get_IP(This,pVal)
 
-#define IHostInfo_put_Port(This,newVal)	\
+#define IHostInfo_put_Port(This,newVal) \
     (This)->lpVtbl -> put_Port(This,newVal)
 
-#define IHostInfo_get_Port(This,pVal)	\
+#define IHostInfo_get_Port(This,pVal) \
     (This)->lpVtbl -> get_Port(This,pVal)
 
-#define IHostInfo_CreateClientSideObject(This,pVal)	\
+#define IHostInfo_CreateClientSideObject(This,pVal) \
     (This)->lpVtbl -> CreateClientSideObject(This,pVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -2777,7 +2777,7 @@ IHostInfo :
 
 
 
-#endif 	/* __IHostInfo_INTERFACE_DEFINED__ */
+#endif  /* __IHostInfo_INTERFACE_DEFINED__ */
 
 
 #ifndef __IBeaconListenerEvents_INTERFACE_DEFINED__
@@ -2804,7 +2804,7 @@ IBeaconListenerEvents :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IBeaconListenerEventsVtbl
     {
@@ -2844,26 +2844,26 @@ IBeaconListenerEvents :
 #ifdef COBJMACROS
 
 
-#define IBeaconListenerEvents_QueryInterface(This,riid,ppvObject)	\
+#define IBeaconListenerEvents_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IBeaconListenerEvents_AddRef(This)	\
+#define IBeaconListenerEvents_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IBeaconListenerEvents_Release(This)	\
+#define IBeaconListenerEvents_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IBeaconListenerEvents_RegisterHostInfo(This,Game)	\
+#define IBeaconListenerEvents_RegisterHostInfo(This,Game) \
     (This)->lpVtbl -> RegisterHostInfo(This,Game)
 
-#define IBeaconListenerEvents_RevokeHostInfo(This,Game)	\
+#define IBeaconListenerEvents_RevokeHostInfo(This,Game) \
     (This)->lpVtbl -> RevokeHostInfo(This,Game)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -2893,7 +2893,7 @@ IBeaconListenerEvents :
 
 
 
-#endif 	/* __IBeaconListenerEvents_INTERFACE_DEFINED__ */
+#endif  /* __IBeaconListenerEvents_INTERFACE_DEFINED__ */
 
 
 #ifndef __IUplink_INTERFACE_DEFINED__
@@ -3024,7 +3024,7 @@ IUplink :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IUplinkVtbl
     {
@@ -3238,131 +3238,131 @@ IUplink :
 #ifdef COBJMACROS
 
 
-#define IUplink_QueryInterface(This,riid,ppvObject)	\
+#define IUplink_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IUplink_AddRef(This)	\
+#define IUplink_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IUplink_Release(This)	\
+#define IUplink_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IUplink_get_HeartbeatInterval(This,pVal)	\
+#define IUplink_get_HeartbeatInterval(This,pVal) \
     (This)->lpVtbl -> get_HeartbeatInterval(This,pVal)
 
-#define IUplink_put_HeartbeatInterval(This,newVal)	\
+#define IUplink_put_HeartbeatInterval(This,newVal) \
     (This)->lpVtbl -> put_HeartbeatInterval(This,newVal)
 
-#define IUplink_get_MasterServerName(This,pVal)	\
+#define IUplink_get_MasterServerName(This,pVal) \
     (This)->lpVtbl -> get_MasterServerName(This,pVal)
 
-#define IUplink_put_MasterServerName(This,newVal)	\
+#define IUplink_put_MasterServerName(This,newVal) \
     (This)->lpVtbl -> put_MasterServerName(This,newVal)
 
-#define IUplink_get_MasterServerPort(This,pVal)	\
+#define IUplink_get_MasterServerPort(This,pVal) \
     (This)->lpVtbl -> get_MasterServerPort(This,pVal)
 
-#define IUplink_put_MasterServerPort(This,newVal)	\
+#define IUplink_put_MasterServerPort(This,newVal) \
     (This)->lpVtbl -> put_MasterServerPort(This,newVal)
 
-#define IUplink_get_GameType(This,pVal)	\
+#define IUplink_get_GameType(This,pVal) \
     (This)->lpVtbl -> get_GameType(This,pVal)
 
-#define IUplink_put_GameType(This,newVal)	\
+#define IUplink_put_GameType(This,newVal) \
     (This)->lpVtbl -> put_GameType(This,newVal)
 
-#define IUplink_get_ServerName(This,pVal)	\
+#define IUplink_get_ServerName(This,pVal) \
     (This)->lpVtbl -> get_ServerName(This,pVal)
 
-#define IUplink_put_ServerName(This,newVal)	\
+#define IUplink_put_ServerName(This,newVal) \
     (This)->lpVtbl -> put_ServerName(This,newVal)
 
-#define IUplink_get_ServerLocation(This,pVal)	\
+#define IUplink_get_ServerLocation(This,pVal) \
     (This)->lpVtbl -> get_ServerLocation(This,pVal)
 
-#define IUplink_put_ServerLocation(This,newVal)	\
+#define IUplink_put_ServerLocation(This,newVal) \
     (This)->lpVtbl -> put_ServerLocation(This,newVal)
 
-#define IUplink_get_ServerVersion(This,pVal)	\
+#define IUplink_get_ServerVersion(This,pVal) \
     (This)->lpVtbl -> get_ServerVersion(This,pVal)
 
-#define IUplink_put_ServerVersion(This,newVal)	\
+#define IUplink_put_ServerVersion(This,newVal) \
     (This)->lpVtbl -> put_ServerVersion(This,newVal)
 
-#define IUplink_get_MaxPlayers(This,pVal)	\
+#define IUplink_get_MaxPlayers(This,pVal) \
     (This)->lpVtbl -> get_MaxPlayers(This,pVal)
 
-#define IUplink_put_MaxPlayers(This,newVal)	\
+#define IUplink_put_MaxPlayers(This,newVal) \
     (This)->lpVtbl -> put_MaxPlayers(This,newVal)
 
-#define IUplink_get_QueryPort(This,pVal)	\
+#define IUplink_get_QueryPort(This,pVal) \
     (This)->lpVtbl -> get_QueryPort(This,pVal)
 
-#define IUplink_put_QueryPort(This,newVal)	\
+#define IUplink_put_QueryPort(This,newVal) \
     (This)->lpVtbl -> put_QueryPort(This,newVal)
 
-#define IUplink_get_GameName(This,pVal)	\
+#define IUplink_get_GameName(This,pVal) \
     (This)->lpVtbl -> get_GameName(This,pVal)
 
-#define IUplink_put_GameName(This,newVal)	\
+#define IUplink_put_GameName(This,newVal) \
     (This)->lpVtbl -> put_GameName(This,newVal)
 
-#define IUplink_get_ServerPort(This,pVal)	\
+#define IUplink_get_ServerPort(This,pVal) \
     (This)->lpVtbl -> get_ServerPort(This,pVal)
 
-#define IUplink_put_ServerPort(This,newVal)	\
+#define IUplink_put_ServerPort(This,newVal) \
     (This)->lpVtbl -> put_ServerPort(This,newVal)
 
-#define IUplink_get_GameMode(This,pVal)	\
+#define IUplink_get_GameMode(This,pVal) \
     (This)->lpVtbl -> get_GameMode(This,pVal)
 
-#define IUplink_put_GameMode(This,newVal)	\
+#define IUplink_put_GameMode(This,newVal) \
     (This)->lpVtbl -> put_GameMode(This,newVal)
 
-#define IUplink_get_ServerVersionMin(This,pVal)	\
+#define IUplink_get_ServerVersionMin(This,pVal) \
     (This)->lpVtbl -> get_ServerVersionMin(This,pVal)
 
-#define IUplink_put_ServerVersionMin(This,newVal)	\
+#define IUplink_put_ServerVersionMin(This,newVal) \
     (This)->lpVtbl -> put_ServerVersionMin(This,newVal)
 
-#define IUplink_AddPlayer(This,Name)	\
+#define IUplink_AddPlayer(This,Name) \
     (This)->lpVtbl -> AddPlayer(This,Name)
 
-#define IUplink_FindPlayer(This,Name,pVal)	\
+#define IUplink_FindPlayer(This,Name,pVal) \
     (This)->lpVtbl -> FindPlayer(This,Name,pVal)
 
-#define IUplink_RemovePlayer(This,Name)	\
+#define IUplink_RemovePlayer(This,Name) \
     (This)->lpVtbl -> RemovePlayer(This,Name)
 
-#define IUplink_get_NumPlayers(This,pVal)	\
+#define IUplink_get_NumPlayers(This,pVal) \
     (This)->lpVtbl -> get_NumPlayers(This,pVal)
 
-#define IUplink_get_Players(This,pVal)	\
+#define IUplink_get_Players(This,pVal) \
     (This)->lpVtbl -> get_Players(This,pVal)
 
-#define IUplink_get_AdminName(This,pVal)	\
+#define IUplink_get_AdminName(This,pVal) \
     (This)->lpVtbl -> get_AdminName(This,pVal)
 
-#define IUplink_put_AdminName(This,newVal)	\
+#define IUplink_put_AdminName(This,newVal) \
     (This)->lpVtbl -> put_AdminName(This,newVal)
 
-#define IUplink_get_AdminEmail(This,pVal)	\
+#define IUplink_get_AdminEmail(This,pVal) \
     (This)->lpVtbl -> get_AdminEmail(This,pVal)
 
-#define IUplink_put_AdminEmail(This,newVal)	\
+#define IUplink_put_AdminEmail(This,newVal) \
     (This)->lpVtbl -> put_AdminEmail(This,newVal)
 
-#define IUplink_Start(This)	\
+#define IUplink_Start(This) \
     (This)->lpVtbl -> Start(This)
 
-#define IUplink_Stop(This)	\
+#define IUplink_Stop(This) \
     (This)->lpVtbl -> Stop(This)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -3846,7 +3846,7 @@ IUplink :
 
 
 
-#endif 	/* __IUplink_INTERFACE_DEFINED__ */
+#endif  /* __IUplink_INTERFACE_DEFINED__ */
 
 
 #ifndef __IProvideGUID_INTERFACE_DEFINED__
@@ -3873,7 +3873,7 @@ IProvideGUID :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IProvideGUIDVtbl
     {
@@ -3913,26 +3913,26 @@ IProvideGUID :
 #ifdef COBJMACROS
 
 
-#define IProvideGUID_QueryInterface(This,riid,ppvObject)	\
+#define IProvideGUID_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IProvideGUID_AddRef(This)	\
+#define IProvideGUID_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IProvideGUID_Release(This)	\
+#define IProvideGUID_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IProvideGUID_get_GUID(This,pVal)	\
+#define IProvideGUID_get_GUID(This,pVal) \
     (This)->lpVtbl -> get_GUID(This,pVal)
 
-#define IProvideGUID_put_GUID(This,newVal)	\
+#define IProvideGUID_put_GUID(This,newVal) \
     (This)->lpVtbl -> put_GUID(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -3962,7 +3962,7 @@ IProvideGUID :
 
 
 
-#endif 	/* __IProvideGUID_INTERFACE_DEFINED__ */
+#endif  /* __IProvideGUID_INTERFACE_DEFINED__ */
 
 
 #ifndef __IListViewItem_INTERFACE_DEFINED__
@@ -3987,7 +3987,7 @@ IListViewItem :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IListViewItemVtbl
     {
@@ -4033,30 +4033,30 @@ IListViewItem :
 #ifdef COBJMACROS
 
 
-#define IListViewItem_QueryInterface(This,riid,ppvObject)	\
+#define IListViewItem_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IListViewItem_AddRef(This)	\
+#define IListViewItem_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IListViewItem_Release(This)	\
+#define IListViewItem_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IListViewItem_get_GUID(This,pVal)	\
+#define IListViewItem_get_GUID(This,pVal) \
     (This)->lpVtbl -> get_GUID(This,pVal)
 
-#define IListViewItem_put_GUID(This,newVal)	\
+#define IListViewItem_put_GUID(This,newVal) \
     (This)->lpVtbl -> put_GUID(This,newVal)
 
 
-#define IListViewItem_GetColumnText(This,nColumn,pVal)	\
+#define IListViewItem_GetColumnText(This,nColumn,pVal) \
     (This)->lpVtbl -> GetColumnText(This,nColumn,pVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -4074,7 +4074,7 @@ IListViewItem :
 
 
 
-#endif 	/* __IListViewItem_INTERFACE_DEFINED__ */
+#endif  /* __IListViewItem_INTERFACE_DEFINED__ */
 
 
 #ifndef __IListViewItemContainer_INTERFACE_DEFINED__
@@ -4088,7 +4088,7 @@ IListViewItem :
         int fmt;
         int cx;
         BSTR Text;
-    }	IListViewItemContainer_ColumnInfo;
+    } IListViewItemContainer_ColumnInfo;
 
 
     EXTERN_C const IID IID_IListViewItemContainer;
@@ -4120,7 +4120,7 @@ IListViewItemContainer :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IListViewItemContainerVtbl
     {
@@ -4196,49 +4196,49 @@ IListViewItemContainer :
 #ifdef COBJMACROS
 
 
-#define IListViewItemContainer_QueryInterface(This,riid,ppvObject)	\
+#define IListViewItemContainer_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IListViewItemContainer_AddRef(This)	\
+#define IListViewItemContainer_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IListViewItemContainer_Release(This)	\
+#define IListViewItemContainer_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IListViewItemContainer_get_GUID(This,pVal)	\
+#define IListViewItemContainer_get_GUID(This,pVal) \
     (This)->lpVtbl -> get_GUID(This,pVal)
 
-#define IListViewItemContainer_put_GUID(This,newVal)	\
+#define IListViewItemContainer_put_GUID(This,newVal) \
     (This)->lpVtbl -> put_GUID(This,newVal)
 
 
-#define IListViewItemContainer_GetColumnText(This,nColumn,pVal)	\
+#define IListViewItemContainer_GetColumnText(This,nColumn,pVal) \
     (This)->lpVtbl -> GetColumnText(This,nColumn,pVal)
 
 
-#define IListViewItemContainer_get_ListViewColumnCount(This,pVal)	\
+#define IListViewItemContainer_get_ListViewColumnCount(This,pVal) \
     (This)->lpVtbl -> get_ListViewColumnCount(This,pVal)
 
-#define IListViewItemContainer_get_ListViewColumnInfo(This,nIndex,pVal)	\
+#define IListViewItemContainer_get_ListViewColumnInfo(This,nIndex,pVal) \
     (This)->lpVtbl -> get_ListViewColumnInfo(This,nIndex,pVal)
 
-#define IListViewItemContainer_EnumItems(This,ppenum)	\
+#define IListViewItemContainer_EnumItems(This,ppenum) \
     (This)->lpVtbl -> EnumItems(This,ppenum)
 
-#define IListViewItemContainer_RefreshItems(This)	\
+#define IListViewItemContainer_RefreshItems(This) \
     (This)->lpVtbl -> RefreshItems(This)
 
-#define IListViewItemContainer_get_Window(This,pVal)	\
+#define IListViewItemContainer_get_Window(This,pVal) \
     (This)->lpVtbl -> get_Window(This,pVal)
 
-#define IListViewItemContainer_put_Window(This,newVal)	\
+#define IListViewItemContainer_put_Window(This,newVal) \
     (This)->lpVtbl -> put_Window(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -4320,7 +4320,7 @@ IListViewItemContainer :
 
 
 
-#endif 	/* __IListViewItemContainer_INTERFACE_DEFINED__ */
+#endif  /* __IListViewItemContainer_INTERFACE_DEFINED__ */
 
 
 #ifndef __IListView_INTERFACE_DEFINED__
@@ -4347,7 +4347,7 @@ IListView :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IListViewVtbl
     {
@@ -4387,26 +4387,26 @@ IListView :
 #ifdef COBJMACROS
 
 
-#define IListView_QueryInterface(This,riid,ppvObject)	\
+#define IListView_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IListView_AddRef(This)	\
+#define IListView_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IListView_Release(This)	\
+#define IListView_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IListView_get_Container(This,pVal)	\
+#define IListView_get_Container(This,pVal) \
     (This)->lpVtbl -> get_Container(This,pVal)
 
-#define IListView_put_Container(This,newVal)	\
+#define IListView_put_Container(This,newVal) \
     (This)->lpVtbl -> put_Container(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -4436,7 +4436,7 @@ IListView :
 
 
 
-#endif 	/* __IListView_INTERFACE_DEFINED__ */
+#endif  /* __IListView_INTERFACE_DEFINED__ */
 
 
 #ifndef __IObjectManager_INTERFACE_DEFINED__
@@ -4480,7 +4480,7 @@ IObjectManager :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IObjectManagerVtbl
     {
@@ -4549,44 +4549,44 @@ IObjectManager :
 #ifdef COBJMACROS
 
 
-#define IObjectManager_QueryInterface(This,riid,ppvObject)	\
+#define IObjectManager_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IObjectManager_AddRef(This)	\
+#define IObjectManager_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IObjectManager_Release(This)	\
+#define IObjectManager_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IObjectManager_BindToObject(This,pguid,riid,p)	\
+#define IObjectManager_BindToObject(This,pguid,riid,p) \
     (This)->lpVtbl -> BindToObject(This,pguid,riid,p)
 
-#define IObjectManager_EnumObjects(This,ppenum)	\
+#define IObjectManager_EnumObjects(This,ppenum) \
     (This)->lpVtbl -> EnumObjects(This,ppenum)
 
-#define IObjectManager_get_Name(This,pVal)	\
+#define IObjectManager_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IObjectManager_get_AbsName(This,pVal)	\
+#define IObjectManager_get_AbsName(This,pVal) \
     (This)->lpVtbl -> get_AbsName(This,pVal)
 
-#define IObjectManager_put_Parent(This,newVal)	\
+#define IObjectManager_put_Parent(This,newVal) \
     (This)->lpVtbl -> put_Parent(This,newVal)
 
-#define IObjectManager_Refresh(This)	\
+#define IObjectManager_Refresh(This) \
     (This)->lpVtbl -> Refresh(This)
 
-#define IObjectManager_Start(This)	\
+#define IObjectManager_Start(This) \
     (This)->lpVtbl -> Start(This)
 
-#define IObjectManager_Stop(This)	\
+#define IObjectManager_Stop(This) \
     (This)->lpVtbl -> Stop(This)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -4693,7 +4693,7 @@ IObjectManager :
 
 
 
-#endif 	/* __IObjectManager_INTERFACE_DEFINED__ */
+#endif  /* __IObjectManager_INTERFACE_DEFINED__ */
 
 
 #ifndef __IServerObjectManager_INTERFACE_DEFINED__
@@ -4717,7 +4717,7 @@ IServerObjectManager :
 
     };
 
-#else 	/* C style interface */
+#else  /* C style interface */
 
     typedef struct IServerObjectManagerVtbl
     {
@@ -4791,48 +4791,48 @@ IServerObjectManager :
 #ifdef COBJMACROS
 
 
-#define IServerObjectManager_QueryInterface(This,riid,ppvObject)	\
+#define IServerObjectManager_QueryInterface(This,riid,ppvObject) \
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IServerObjectManager_AddRef(This)	\
+#define IServerObjectManager_AddRef(This) \
     (This)->lpVtbl -> AddRef(This)
 
-#define IServerObjectManager_Release(This)	\
+#define IServerObjectManager_Release(This) \
     (This)->lpVtbl -> Release(This)
 
 
-#define IServerObjectManager_BindToObject(This,pguid,riid,p)	\
+#define IServerObjectManager_BindToObject(This,pguid,riid,p) \
     (This)->lpVtbl -> BindToObject(This,pguid,riid,p)
 
-#define IServerObjectManager_EnumObjects(This,ppenum)	\
+#define IServerObjectManager_EnumObjects(This,ppenum) \
     (This)->lpVtbl -> EnumObjects(This,ppenum)
 
-#define IServerObjectManager_get_Name(This,pVal)	\
+#define IServerObjectManager_get_Name(This,pVal) \
     (This)->lpVtbl -> get_Name(This,pVal)
 
-#define IServerObjectManager_get_AbsName(This,pVal)	\
+#define IServerObjectManager_get_AbsName(This,pVal) \
     (This)->lpVtbl -> get_AbsName(This,pVal)
 
-#define IServerObjectManager_put_Parent(This,newVal)	\
+#define IServerObjectManager_put_Parent(This,newVal) \
     (This)->lpVtbl -> put_Parent(This,newVal)
 
-#define IServerObjectManager_Refresh(This)	\
+#define IServerObjectManager_Refresh(This) \
     (This)->lpVtbl -> Refresh(This)
 
-#define IServerObjectManager_Start(This)	\
+#define IServerObjectManager_Start(This) \
     (This)->lpVtbl -> Start(This)
 
-#define IServerObjectManager_Stop(This)	\
+#define IServerObjectManager_Stop(This) \
     (This)->lpVtbl -> Stop(This)
 
 
-#define IServerObjectManager_put_HostAddress(This,newVal)	\
+#define IServerObjectManager_put_HostAddress(This,newVal) \
     (This)->lpVtbl -> put_HostAddress(This,newVal)
 
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+#endif  /* C style interface */
 
 
 
@@ -4849,7 +4849,7 @@ IServerObjectManager :
 
 
 
-#endif 	/* __IServerObjectManager_INTERFACE_DEFINED__ */
+#endif  /* __IServerObjectManager_INTERFACE_DEFINED__ */
 
 
 

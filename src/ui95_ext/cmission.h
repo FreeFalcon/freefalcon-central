@@ -36,7 +36,7 @@ private:
     O_Output *Priority_;
 
     TREELIST *Owner_;
-    VU_ID		vuID;
+    VU_ID vuID;
 
 public:
     C_Mission();
@@ -139,31 +139,31 @@ public:
 
     _TCHAR *GetTakeOff()
     {
-        if (TakeOff_)	return(TakeOff_->GetText());
+        if (TakeOff_) return(TakeOff_->GetText());
 
         return(NULL);
     }
     _TCHAR *GetMission()
     {
-        if (Mission_)	return(Mission_->GetText());
+        if (Mission_) return(Mission_->GetText());
 
         return(NULL);
     }
     _TCHAR *GetPackage()
     {
-        if (Package_)	return(Package_->GetText());
+        if (Package_) return(Package_->GetText());
 
         return(NULL);
     }
     _TCHAR *GetStatus()
     {
-        if (Status_)	return(Status_->GetText());
+        if (Status_) return(Status_->GetText());
 
         return(NULL);
     }
     _TCHAR *GetPriority()
     {
-        if (Priority_)	return(Priority_->GetText());
+        if (Priority_) return(Priority_->GetText());
 
         return(NULL);
     }

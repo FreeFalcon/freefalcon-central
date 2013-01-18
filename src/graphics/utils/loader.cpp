@@ -17,7 +17,7 @@
 
 // Provide the one and only terrain database object.  It will be up to the
 // application to initialize and cleanup this object by calling Setup and Cleanup.
-Loader	TheLoader;
+Loader TheLoader;
 
 
 #ifdef _DEBUG
@@ -26,40 +26,40 @@ Loader	TheLoader;
 
 
 #ifdef LOADER_INSTRUMENT
-static	LoaderQ	lastActive;
-static	DWORD	lastActiveCalledAt	= 0;
-static	DWORD	lastSleptAt			= 0;
-static	DWORD	lastEnquedAt		= 0;
-static	DWORD	lastDequeueAt		= 0;
-static	DWORD	lastCanceledAt		= 0;
-static	int		forceWakeEvent		= 0;
+static LoaderQ lastActive;
+static DWORD lastActiveCalledAt = 0;
+static DWORD lastSleptAt = 0;
+static DWORD lastEnquedAt = 0;
+static DWORD lastDequeueAt = 0;
+static DWORD lastCanceledAt = 0;
+static int forceWakeEvent = 0;
 #endif
 
 // COBRA - DX - New DX Engine use Flag
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 
 void Loader::Setup()
 {
     // Setup the starting state for the main loop
-    head			      = NULL;
-    tail			      = NULL;
-    shutDown		      = FALSE;
-    stopped			   = FALSE;
-    paused			   = RUNNING;
-    queueIsEmpty	   = TRUE;
+    head       = NULL;
+    tail       = NULL;
+    shutDown       = FALSE;
+    stopped    = FALSE;
+    paused    = RUNNING;
+    queueIsEmpty    = TRUE;
     queueStatus       = QUEUE_FIFO;
-    TickDelay		 = DEFAULT_LOADER_DELAY;
+    TickDelay  = DEFAULT_LOADER_DELAY;
     actionDone = false;
 
 #ifdef LOADER_INSTRUMENT
     memset(&lastActive, 0, sizeof(lastActive));
-    lastActiveCalledAt	= 0;
-    lastSleptAt			= 0;
-    lastEnquedAt		= 0;
-    lastDequeueAt		= 0;
-    lastCanceledAt		= 0;
-    forceWakeEvent		= 0;
+    lastActiveCalledAt = 0;
+    lastSleptAt = 0;
+    lastEnquedAt = 0;
+    lastDequeueAt = 0;
+    lastCanceledAt = 0;
+    forceWakeEvent = 0;
 #endif
 
 
@@ -133,7 +133,7 @@ DWORD Loader::MainLoopWrapper(LPVOID myself)
 // The actual main loader service loop.  Won't return until flagged to stop
 DWORD Loader::MainLoop()
 {
-    LoaderQ	*Active;
+    LoaderQ *Active;
     actionDone = false;
 
     while (!shutDown)
@@ -227,7 +227,7 @@ void Loader::Dequeue(LoaderQ *Old)
     }
 
 #ifdef LOADER_INSTRUMENT
-    lastDequeueAt	= GetTickCount();
+    lastDequeueAt = GetTickCount();
 #endif
 
     if (!head)
@@ -243,16 +243,16 @@ void Loader::Enqueue(LoaderQ *New)
 {
     // This is debug code -- should go once I'm done testing.
 #ifdef _DEBUG
-    LoaderQ	*p = head;
+    LoaderQ *p = head;
 
     while (p)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset	== New->fileoffset) &&
-            (p->filename	== New->filename) &&
-            (p->parameter	== New->parameter) &&
-            (p->callback	== New->callback))
+        if ((p->fileoffset == New->fileoffset) &&
+            (p->filename == New->filename) &&
+            (p->parameter == New->parameter) &&
+            (p->callback == New->callback))
         {
 
             return;
@@ -324,7 +324,7 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
 
 LoaderQ* Loader::GetNextRequest(void)
 {
-    LoaderQ	*request;
+    LoaderQ *request;
 
 
     EnterCriticalSection(&cs_loaderQ);
@@ -348,7 +348,7 @@ LoaderQ* Loader::GetNextRequest(void)
 // Cancel (if possible) the request to load data into the specified target buffer
 BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *filename, DWORD fileoffset)
 {
-    LoaderQ	*p;
+    LoaderQ *p;
 
     EnterCriticalSection(&cs_loaderQ);
 
@@ -358,10 +358,10 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename	== filename) &&
-            (p->fileoffset	== fileoffset) &&
-            (p->parameter	== parameter) &&
-            (p->callback	== callback))
+        if ((p->filename == filename) &&
+            (p->fileoffset == fileoffset) &&
+            (p->parameter == parameter) &&
+            (p->callback == callback))
         {
 
             Dequeue(p);
@@ -419,13 +419,13 @@ void Loader::WaitForLoader(void)
     while ( !queueIsEmpty ) {
 
     #ifdef LOADER_INSTRUMENT
-    	if (forceWakeEvent > 0) {
-    		SetEvent( WakeEventHandle );
-    		forceWakeEvent--;
-    	}
+     if (forceWakeEvent > 0) {
+     SetEvent( WakeEventHandle );
+     forceWakeEvent--;
+     }
     #endif
 
-    	Sleep(100);
+     Sleep(100);
     }*/
 }
 

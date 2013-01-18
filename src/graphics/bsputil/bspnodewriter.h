@@ -11,9 +11,9 @@
 
 
 // Publicly called
-void	InitNodeStore(void);
-int		StoreBNode(BNode *node);
-void	WriteNodeStore(int file);
+void InitNodeStore(void);
+int StoreBNode(BNode *node);
+void WriteNodeStore(int file);
 
 // Worker sub-functions
 int  StoreBSubTree(BSubTree *node);

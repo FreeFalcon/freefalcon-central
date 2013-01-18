@@ -44,9 +44,9 @@ public:
     {
     public:
 
-        VU_ID			from;
-        VU_ID			game;
-        DogfightClass	settings;
+        VU_ID from;
+        VU_ID game;
+        DogfightClass settings;
     } dataBlock;
 
 protected:

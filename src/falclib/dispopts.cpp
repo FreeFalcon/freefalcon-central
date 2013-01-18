@@ -3,8 +3,8 @@
     Miro "Jammer" Torrielli
     06Oct03
 
-	- Begin Major Rewrite
-	- sfr: this file needs serialization badly. Its a mess to add new options
+ - Begin Major Rewrite
+ - sfr: this file needs serialization badly. Its a mess to add new options
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ void DisplayOptionsClass::Initialize(void)
     bZBuffering = TRUE;
     bRender2DCockpit = TRUE;
     bFontTexelAlignment = TRUE;
-    bScreenCoordinateBiasFix = true;		//Wombat778 4-01-04
+    bScreenCoordinateBiasFix = true; //Wombat778 4-01-04
     bSpecularLighting = true;
     m_texMode = TEX_MODE_DDS;
 
@@ -48,8 +48,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 {
     DWORD size;
     FILE *fp;
-    size_t		success = 0;
-    char		path[_MAX_PATH];
+    size_t success = 0;
+    char path[_MAX_PATH];
 
     sprintf(path, "%s\\config\\%s.dsp", FalconDataDirectory, filename);
     fp = fopen(path, "rb");
@@ -95,8 +95,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     DisplayOptions.DispDepth = 32;  //Cobra - always use 32-bit depth
     //========================================
 
-    const char	*buf;
-    int		i = 0;
+    const char *buf;
+    int i = 0;
 
     // Make sure the chosen sim video driver is still legal
     buf = FalconDisplay.devmgr.GetDriverName(i);
@@ -136,8 +136,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 int DisplayOptionsClass::SaveOptions(void)
 {
     FILE *fp;
-    size_t		success = 0;
-    char		path[_MAX_PATH];
+    size_t success = 0;
+    char path[_MAX_PATH];
 
     sprintf(path, "%s\\config\\display.dsp", FalconDataDirectory);
 

@@ -5,7 +5,7 @@
 #include "entity.h"
 #include "hardpnt.h"
 
-extern short NumRocketTypes;		// Added by M.N.
+extern short NumRocketTypes; // Added by M.N.
 extern short gRocketId;
 
 
@@ -56,12 +56,12 @@ void BombClass::LauInit(void)
 
                     if(weapClass==wcGunWpn)
                     {
-                    	hardPoint[i]->weaponPointer = InitAGun (newOwnship, hardPoint[i]->weaponId, hardPoint[i]->weaponCount);
+                     hardPoint[i]->weaponPointer = InitAGun (newOwnship, hardPoint[i]->weaponId, hardPoint[i]->weaponCount);
                     }
                     else
                     {
-                    	hardPoint[i]->weaponPointer = InitWeaponList (newOwnship, hardPoint[i]->weaponId,
-                    		hardPoint[i]->GetWeaponClass(), hardPoint[i]->weaponCount, InitAMissile);
+                     hardPoint[i]->weaponPointer = InitWeaponList (newOwnship, hardPoint[i]->weaponId,
+                     hardPoint[i]->GetWeaponClass(), hardPoint[i]->weaponCount, InitAMissile);
                     }
                     */
 
@@ -71,12 +71,12 @@ void BombClass::LauInit(void)
             }
 
             /*
-            if (!entryfound)	// use generic 2.75mm rocket
+            if (!entryfound) // use generic 2.75mm rocket
             {
-            	lauWeaponId  = gRocketId;
-            	lauMaxRounds = 19;
-            	lauRounds    = lauMaxRounds;
-            	lauSalvoSize = lauRounds;
+             lauWeaponId  = gRocketId;
+             lauMaxRounds = 19;
+             lauRounds    = lauMaxRounds;
+             lauSalvoSize = lauRounds;
             }*/
         }
     }

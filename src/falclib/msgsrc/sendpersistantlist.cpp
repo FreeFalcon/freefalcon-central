@@ -59,7 +59,7 @@ int FalconSendPersistantList::Decode(VU_BYTE **buf, long *rem)
     memcpychk(dataBlock.data, buf, dataBlock.size, rem);
     FalconEvent::Decode(buf, rem);
 
-    //	ShiAssert (size == Size());
+    // ShiAssert (size == Size());
 
     CampaignJoinKeepAlive();
 
@@ -87,7 +87,7 @@ int FalconSendPersistantList::Encode(VU_BYTE **buf)
 //sfr: added rem
 int FalconSendPersistantList::Process(uchar autodisp)
 {
-    VU_BYTE*	buf;
+    VU_BYTE* buf;
     long rem;
 
     if (autodisp || !TheCampaign.IsPreLoaded())

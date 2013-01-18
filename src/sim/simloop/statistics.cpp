@@ -1,10 +1,10 @@
 /***************************************************************************\
-	Statistics.cpp
+ Statistics.cpp
     Scott Randolph
     June 18, 1998
 
-	This module encapsulates some simple statistics gathering which can
-	be called from TheSimLoop while the graphics are running.
+ This module encapsulates some simple statistics gathering which can
+ be called from TheSimLoop while the graphics are running.
 \***************************************************************************/
 #include "stdhdr.h"
 #include "Battalion.H"
@@ -49,7 +49,7 @@
 #include "persist.h"
 
 
-BOOL	log_frame_rate = FALSE;
+BOOL log_frame_rate = FALSE;
 
 
 // Gather interesting statistics.  Not required for release versions
@@ -311,8 +311,8 @@ void PrintMemUsage(void)
 void WriteMemUsage(void)
 {
 #ifdef USE_SH_POOLS
-    int		simTotal, campTotal, graphTotal, soundTotal;
-    FILE	*fp;
+    int simTotal, campTotal, graphTotal, soundTotal;
+    FILE *fp;
 
     fp = fopen("memusage.log", "w");
 

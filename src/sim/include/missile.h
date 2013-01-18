@@ -46,7 +46,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     MissileInFlightData(void);
@@ -192,17 +192,17 @@ public:
     float boostguidesec;//me123 how many sec we are in boostguide mode
     float terminalguiderange;//me123 what range we transfere to terminal guidence
     float boostguideSensorPrecision;//me123
-    float	sustainguideSensorPrecision;//me123
-    float	terminalguideSensorPrecision; //me123
+    float sustainguideSensorPrecision;//me123
+    float terminalguideSensorPrecision; //me123
     float boostguideLead;//me123
-    float	sustainguideLead;//me123
-    float	terminalguideLead;//me123
+    float sustainguideLead;//me123
+    float terminalguideLead;//me123
     float boostguideGnav;//me123
-    float	sustainguideGnav;//me123
-    float	terminalguideGnav;//me123
+    float sustainguideGnav;//me123
+    float terminalguideGnav;//me123
     float boostguideBwap;//me123
-    float	sustainguideBwap;//me123
-    float	terminalguideBwap;//me123
+    float sustainguideBwap;//me123
+    float terminalguideBwap;//me123
 };
 
 class MissileAuxData
@@ -237,7 +237,7 @@ public:
     float ProximityfuseChange;
     float SecondStageTimer; // JPO - 2 stage missiles
     float SecondStageWeight; // JPO - 2 stage missile weight of discarded stage
-    float deployableWingsTime;	// A.S. Time until wings deploy
+    float deployableWingsTime; // A.S. Time until wings deploy
     int mistrail; // MN missile specific trails
     int misengGlow;
     int misengGlowBSP;
@@ -245,7 +245,7 @@ public:
     int proximityfuserange;
     int errorfromparrent;
     Tpoint misengLocation; // MLR 2003-10-11
-    int EngineSound; //	MLR 2003-10-30
+    int EngineSound; // MLR 2003-10-30
     float rocketDispersionConeAngle; // MLR 1/17/2004 -
     int rocketSalvoSize; // MLR 1/17/2004 -
     int sndAim9Growl;
@@ -353,8 +353,8 @@ public:
 
 
     //********** NEW TRAIL STUFF *************
-    DWORD		Trail;
-    DWORD		TrailId;
+    DWORD Trail;
+    DWORD TrailId;
     //****************************************
 
     Drawable2D *engGlow;
@@ -365,9 +365,9 @@ public:
     FalconMissileEndMessage::MissileEndCode done;
     FlightState launchState;
     int isCaged;
-    int isSpot;			// Marco edit - SPOT/SCAN Mode
-    int isSlave;			// Marco edit - Boresight/Slaved
-    int isTD;				// Marco edit - TD/BP (Auto-uncage)
+    int isSpot; // Marco edit - SPOT/SCAN Mode
+    int isSlave; // Marco edit - Boresight/Slaved
+    int isTD; // Marco edit - TD/BP (Auto-uncage)
     float alpha, alphat, beta;
     float x, y, z, alt;
     float xdot, ydot, zdot;
@@ -496,7 +496,7 @@ private:
     float range ;
 
     // pointer to class for in flight data
-    MissileInFlightData	*ifd;
+    MissileInFlightData *ifd;
 
 
     // Functions
@@ -552,7 +552,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

@@ -108,7 +108,7 @@ int FindBestResolution(void)
 
 FILE* OpenCampFile(char *filename, char *ext, char *mode)
 {
-    char	fullname[MAX_PATH], path[MAX_PATH];
+    char fullname[MAX_PATH], path[MAX_PATH];
 
     char
     buffer[MAX_PATH];
@@ -182,16 +182,16 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
         sprintf(path, FalconObjectDataDir);
     else if (stricmp(ext, "ssd") == 0)
         sprintf(path, FalconObjectDataDir);
-    else if (stricmp(ext, "rkt") == 0)		// 2001-11-05 Added by M.N.
+    else if (stricmp(ext, "rkt") == 0) // 2001-11-05 Added by M.N.
         sprintf(path, FalconObjectDataDir);
-    else if (stricmp(ext, "ddp") == 0)		// 2002-04-20 Added by M.N.
+    else if (stricmp(ext, "ddp") == 0) // 2002-04-20 Added by M.N.
         sprintf(path, FalconObjectDataDir);
     else
         sprintf(path, FalconCampaignSaveDirectory);
 
-    //	Outdated by resmgr:
-    //	if (!ResExistFile(filename))
-    //		ResAddPath(path, FALSE);
+    // Outdated by resmgr:
+    // if (!ResExistFile(filename))
+    // ResAddPath(path, FALSE);
 
     sprintf(fullname, "%s\\%s.%s", path, filename, ext);
     fp = fopen(fullname, mode);

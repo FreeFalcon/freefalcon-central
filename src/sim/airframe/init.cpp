@@ -79,9 +79,9 @@ void AirframeClass::Initialize()
     /* initialize quaternions */
     /*------------------------*/
 
-    mlSinCos(&trigGam, gmma	* 0.5F);
+    mlSinCos(&trigGam, gmma * 0.5F);
     mlSinCos(&trigSig, sigma * 0.5F);
-    mlSinCos(&trigMu,  mu	* 0.5F);
+    mlSinCos(&trigMu,  mu * 0.5F);
     e10 = trigSig.cos * trigGam.cos * trigMu.cos +
           trigSig.sin * trigGam.sin * trigMu.sin;
 

@@ -42,7 +42,7 @@ enum FalconMsgID
     AirAIModeChange,                    // 37
     MissionRequestMsg,                  // 38
     DivertMsg,                          // 39
-    EmptyMsg,						   // 40
+    EmptyMsg,    // 40
     WeatherMsg,                         // 41
     MissileEndMsg,                      // 42
     AWACSMsg,                           // 43

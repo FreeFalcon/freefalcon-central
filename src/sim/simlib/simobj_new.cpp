@@ -37,7 +37,7 @@ static int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self);
 void CalcTransformMatrix(SimBaseClass* theObject);
 
 
-DWORD	SimObjects = 0;
+DWORD SimObjects = 0;
 
 #ifdef DEBUG
 int ObjectNodes = 0;
@@ -56,8 +56,8 @@ int HighestUsed = 0;
 #endif
 
 #ifdef USE_SH_POOLS
-MEM_POOL	SimObjectType::pool;
-MEM_POOL	SimObjectLocalData::pool;
+MEM_POOL SimObjectType::pool;
+MEM_POOL SimObjectLocalData::pool;
 #endif
 
 #ifdef DEBUG
@@ -78,13 +78,13 @@ SimObjectType::SimObjectType(FalconEntity* baseObj)
     /* 2000-11-17 REMOVED BY S.G. INSTEAD OF JUST CLEARING HALF THE STUFF THROUGH A LOOP, I'LL 'memset' THE WHOLE STRUCTURE. I NEED TO DO THIS BECAUSE localData NEEDS TO BE CLEARED WHEN INITIALIZED WITH MY PATCHES
        for (i=0; i<NUM_RADAR_HISTORY; i++)
        {
-    	   localData->rdrSy[i] = 0;
-    	   localData->rdrX[i] = 0.0F;
-    	   localData->rdrY[i] = 0.0F;
-    	   localData->rdrHd[i] = 0.0F;
+        localData->rdrSy[i] = 0;
+        localData->rdrX[i] = 0.0F;
+        localData->rdrY[i] = 0.0F;
+        localData->rdrHd[i] = 0.0F;
        }
        for (i=0; i<SensorClass::NumSensorTypes; i++)
-    	   localData->sensorLoopCount[i] = 0;
+        localData->sensorLoopCount[i] = 0;
     */
     memset(localData, 0, sizeof(SimObjectLocalData));
 
@@ -152,7 +152,7 @@ void SimObjectType::Reference(int line, char *file)
 void SimObjectType::Reference(void)
 #endif
 {
-    ShiAssert(refCount < 100);	// Arbitrary limit, but this should be reasonable
+    ShiAssert(refCount < 100); // Arbitrary limit, but this should be reasonable
     ShiAssert(refCount >= 0);
     ShiAssert(refCount != 0xDDDDDDDD);
     ShiAssert(BaseData());
@@ -168,12 +168,12 @@ void SimObjectType::Reference(void)
 #ifdef SIMOBJ_REF_COUNT_DEBUG
     // Keep a complete history of ref/releases for this object
     // SCR 10/12/98
-    struct DebugRecord	*saveOps = new struct DebugRecord;
-    saveOps->line	= line;
+    struct DebugRecord *saveOps = new struct DebugRecord;
+    saveOps->line = line;
     strcpy(saveOps->file, file);
-    saveOps->refInc	= +1;
-    saveOps->prev	= refOps;
-    refOps			= saveOps;		// *** Danger Will Robinson! ***
+    saveOps->refInc = +1;
+    saveOps->prev = refOps;
+    refOps = saveOps; // *** Danger Will Robinson! ***
 #endif
 
 #ifdef DEBUG
@@ -192,7 +192,7 @@ void SimObjectType::Release(void)
     ObjectReferences--;
 #endif
 
-    ShiAssert(refCount <= 100);	// Arbitrary limit, but this should be reasonable
+    ShiAssert(refCount <= 100); // Arbitrary limit, but this should be reasonable
     ShiAssert(refCount > 0);
     ShiAssert(refCount != 0xDDDDDDDD);
     ShiAssert(BaseData());
@@ -200,17 +200,17 @@ void SimObjectType::Release(void)
     refCount--;
 
 #ifdef SIMOBJ_REF_COUNT_DEBUG
-    struct DebugRecord	*saveOps = new struct DebugRecord;
-    saveOps->line	= line;
+    struct DebugRecord *saveOps = new struct DebugRecord;
+    saveOps->line = line;
     strcpy(saveOps->file, file);
-    saveOps->refInc	= -1;
-    saveOps->prev	= refOps;
+    saveOps->refInc = -1;
+    saveOps->prev = refOps;
 #endif
 
     if (!refCount)
     {
         //LRKLUDGE to keep testing going
-        //		ShiAssert ( !next );
+        // ShiAssert ( !next );
         ShiAssert(!prev);
         VuDeReferenceEntity(BaseData());
         baseData = NULL;
@@ -221,7 +221,7 @@ void SimObjectType::Release(void)
     // THIS IS NASTY (and technically illegal) since we're writing to memory
     // which may already be freed, but it'll help with debugging
     // SCR 10/12/98
-    refOps			= saveOps;		// *** Danger Will Robinson! ***
+    refOps = saveOps; // *** Danger Will Robinson! ***
 #endif
 }
 
@@ -246,7 +246,7 @@ BOOL SimObjectType::IsReferenced(void)
 {
     /*
     if (refCount)
-    	return TRUE;
+     return TRUE;
     return FALSE;
     */
     return refCount;
@@ -317,8 +317,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         // Inherit certain attributes from campaign parent
         // HACK HACK HACK HACK HACK!!!
         if (FalconLocalGame->GetGameType() == game_Dogfight && initData->campUnit)
-            //	   if ((initData->campUnit && initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
-            //		   (initData->campObj && initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
+            //    if ((initData->campUnit && initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
+            //    (initData->campObj && initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
             // END HACK
         {
             retval->SetFalcFlag(FEC_REGENERATING);
@@ -418,12 +418,12 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
     /* // JB 010625 Commented out this section. Aim-120 bore mode didn't work in Instant Action.
        if ( SimDriver.RunningInstantAction() && !self->IsSetFlag( MOTION_OWNSHIP ) )
        {
-    	   // already got player?
-    	   // we need to make sure the player still exists though otherwise CalcRelGeom is unhappy :(
-    	   if ( inUseList != NULL || !SimDriver.playerEntity)
-    	   		return inUseList;
+        // already got player?
+        // we need to make sure the player still exists though otherwise CalcRelGeom is unhappy :(
+        if ( inUseList != NULL || !SimDriver.playerEntity)
+         return inUseList;
 
-    	   // create player target and return it
+        // create player target and return it
     #ifdef DEBUG
            tmpInUse = new SimObjectType(OBJ_TAG, self, SimDriver.playerEntity);
     #else
@@ -434,7 +434,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
            tmpInUse->next = NULL;
            CalcRelGeom (self, tmpInUse, NULL, 1.0F);
 
-    	   return tmpInUse;
+        return tmpInUse;
        }
     */
 
@@ -443,18 +443,18 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
     /*
     curInUse = inUseList;
     while (curInUse) {
-    	if (curInUse->next) {
-    		ShiAssert( SimCompare( curInUse->BaseData(), curInUse->next->BaseData() ) == 1 );
-    	}
-    	curInUse = curInUse->next;
+     if (curInUse->next) {
+     ShiAssert( SimCompare( curInUse->BaseData(), curInUse->next->BaseData() ) == 1 );
+     }
+     curInUse = curInUse->next;
     }
 
     SimBaseClass *previous = (SimBaseClass*)updateWalker.GetFirst();
     curUpdate = (SimBaseClass*)updateWalker.GetNext();
     while (curUpdate) {
-    	ShiAssert( SimCompare( previous, curUpdate ) == 1 );
-    	previous = curUpdate;
-    	curUpdate = (SimBaseClass*)updateWalker.GetNext();
+     ShiAssert( SimCompare( previous, curUpdate ) == 1 );
+     previous = curUpdate;
+     curUpdate = (SimBaseClass*)updateWalker.GetNext();
     }
     */
 #endif
@@ -483,7 +483,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
         {
             switch (SimCompare(curInUse->BaseData(), curUpdate))
             {
-                case 0:	// curUpdate == curInUse -- Means the current entry is still active
+                case 0: // curUpdate == curInUse -- Means the current entry is still active
                     if (!curUpdate->IsExploding() && CheckForConcern(curUpdate, self))
                     {
                         lastInUse = curInUse;
@@ -672,7 +672,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     // that don't go through this routine.  For now they don't have a target list at all.
     if (curUpdate->IsBomb())
     {
-        //ME123 CHAFF FLARE BOMBS SHOULD NOT BE REJECTED IMO	   return FALSE;
+        //ME123 CHAFF FLARE BOMBS SHOULD NOT BE REJECTED IMO    return FALSE;
     }
 
     // edg: I'm going to try this out -- don't put anything into target
@@ -742,19 +742,19 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
         else if (curUpdate->IsSim() &&
-                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER			||
-                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER	||
+                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER ||
+                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //				  ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
         else if (curUpdate->IsCampaign() &&
-                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER			||
-                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER	||
+                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER ||
+                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //				  ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
@@ -774,7 +774,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         else
             // MODIFIED BY S.G. FOR THE MISSILE TO FIND A LOCK WITH THIS SET TO 10 NM INSTEAD OF 8 NM
-            //		 airRange = 8.0F * NM_TO_FT * 8.0F * NM_TO_FT;
+            //  airRange = 8.0F * NM_TO_FT * 8.0F * NM_TO_FT;
             airRange = 10.0F * NM_TO_FT * 10.0F * NM_TO_FT;
 
         // END OF MODIFIED SECTION

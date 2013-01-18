@@ -1,7 +1,7 @@
 #ifndef _UI_TACREF_H_
 #define _UI_TACREF_H_
 
-#pragma warning ( disable: 4200 )	// Prevent the zero length array warning
+#pragma warning ( disable: 4200 ) // Prevent the zero length array warning
 #pragma pack(1)
 
 enum
@@ -74,7 +74,7 @@ struct RWR_Data
 };
 
 #pragma pack()
-#pragma warning ( default: 4200 )	// Restore normal warning behavior
+#pragma warning ( default: 4200 ) // Restore normal warning behavior
 
 #if 0
 class TacticalReference

@@ -20,7 +20,7 @@ VuSlaveSmootherSettings *vuxSlaveSettings = 0;
 VU_TIME vuxCurrentTime = 0;
 VU_TIME vuxTransmitTime = 0;
 VuSessionEntity *vuxLocalSessionEntity = 0;
-ulong vuxLocalDomain = 1;	// range = 1-31
+ulong vuxLocalDomain = 1; // range = 1-31
 VU_BYTE vuxLocalSession = 1;
 char *vuxWorldName = "EBS";
 VU_TIME vuxRealTime = 0;
@@ -62,8 +62,8 @@ uchar DamTypes[11] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
 
 int BestVehicleWeapon(int id, uchar* dam, MoveType m, int range)
 {
-    int			i, j, str, bs, w, wl, ws, bw = -1, bhp = -1;
-    VehicleClassDataType*	vc;
+    int i, j, str, bs, w, wl, ws, bw = -1, bhp = -1;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
 
@@ -117,7 +117,7 @@ int BestVehicleWeapon(int id, uchar* dam, MoveType m, int range)
 
 int ShowTable(uchar domain, FILE* fp)
 {
-    int		i, j, c, str, wid;
+    int i, j, c, str, wid;
 
     for (i = 0, c = 0; i < NumVehicleEntries; i++)
     {
@@ -148,22 +148,22 @@ int ShowTable(uchar domain, FILE* fp)
 
 /*
 
-		short		Index;						// descriptionIndex pointing here
-		short		Flags;
-		char		Name[16];
-		short		HitPoints;					// Damage this thing can take
-		short		Data1;						// Generic Data slots: For A/C- Cruise and Max Alt.
-		short		Data2;
-		uchar		CallsignIndex;
-		uchar		CallsignSlots;
-		uchar		HitChance[MOVEMENT_TYPES];	// Vehicle hit chances (best hitchance & bonus)
-		uchar		Strength[MOVEMENT_TYPES];	// Combat strengths (full strength only) (calculated)
-		uchar		Range[MOVEMENT_TYPES];		// Firing ranges (full strength only) (calculated)
-		uchar		Detection[MOVEMENT_TYPES];	// Electronic detection ranges
-		short		Weapon[HARDPOINT_MAX];		// Weapon id of weapons (or weapon list)
-		uchar		Weapons[HARDPOINT_MAX];		// Number of shots each (fully supplied)
-		uchar		DamageMod[OtherDam+1];		// How much each type will hurt me (% of strength applied)
-		};
+ short Index; // descriptionIndex pointing here
+ short Flags;
+ char Name[16];
+ short HitPoints; // Damage this thing can take
+ short Data1; // Generic Data slots: For A/C- Cruise and Max Alt.
+ short Data2;
+ uchar CallsignIndex;
+ uchar CallsignSlots;
+ uchar HitChance[MOVEMENT_TYPES]; // Vehicle hit chances (best hitchance & bonus)
+ uchar Strength[MOVEMENT_TYPES]; // Combat strengths (full strength only) (calculated)
+ uchar Range[MOVEMENT_TYPES]; // Firing ranges (full strength only) (calculated)
+ uchar Detection[MOVEMENT_TYPES]; // Electronic detection ranges
+ short Weapon[HARDPOINT_MAX]; // Weapon id of weapons (or weapon list)
+ uchar Weapons[HARDPOINT_MAX]; // Number of shots each (fully supplied)
+ uchar DamageMod[OtherDam+1]; // How much each type will hurt me (% of strength applied)
+ };
 */
 
 // =============================
@@ -177,7 +177,7 @@ char * ComAPIRecvBufferGet(int a)
     return NULL;
 }
 
-int	ComAPIGet(int a)
+int ComAPIGet(int a)
 {
     return 0;
 }

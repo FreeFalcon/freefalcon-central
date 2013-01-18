@@ -17,8 +17,8 @@ extern char TeamColor[NUM_TEAMS];
 extern char Side[NUM_COUNS][3];
 
 extern void DisplayCellData(HDC DC,
-                            GridIndex 	x,
-                            GridIndex 	y,
+                            GridIndex  x,
+                            GridIndex  y,
                             short    ScreenX,
                             short    ScreenY,
                             short    Size,

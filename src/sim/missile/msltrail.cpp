@@ -151,8 +151,8 @@ void MissileClass::InitTrail(void)
         //RV - I-Hawk - disabling old ground glow stuff...
         /*
         if (misgroundGlow != -1)
-        	groundGlow = new Drawable2D( misgroundGlow, 1.0, &newPoint );
-        	*/
+         groundGlow = new Drawable2D( misgroundGlow, 1.0, &newPoint );
+         */
     }
 
     // add 1st point
@@ -266,10 +266,10 @@ void MissileClass::UpdateTrail(void)
             /*
             if ( agl < 1000.0f )
             {
-            	 if ( !groundGlow->InDisplayList() )
-            	 {
-            	 OTWDriver.InsertObject(groundGlow );
-            	 }
+              if ( !groundGlow->InDisplayList() )
+              {
+              OTWDriver.InsertObject(groundGlow );
+              }
              // alpha fades with height, radius increases with height
              groundGlow->SetAlpha( 0.3f * ( 1000.0f - agl ) / 1000.0f );
              groundGlow->SetRadius( 20.0f + 350.0f * ( agl ) / 1000.0f );

@@ -1,11 +1,11 @@
 /***************************************************************************
-	SimLoop.h
+ SimLoop.h
     Scott Randolph
     June 18, 1998
 
-	This class is the master loop for the simulation and graphics.
-	It starts and stops each as appropriate during transitions between
-	the SIM and UI.
+ This class is the master loop for the simulation and graphics.
+ It starts and stops each as appropriate during transitions between
+ the SIM and UI.
 ***************************************************************************/
 #ifndef _SIMLOOP_H_
 #define _SIMLOOP_H_

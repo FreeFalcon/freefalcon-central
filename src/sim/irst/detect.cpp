@@ -12,8 +12,8 @@
 extern int g_nMissileFix;
 
 // Angle off sun at which sun effect goes to zero
-static const float	COS_SUN_EFFECT_HALF_ANGLE	= (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
-//extern bool g_bHardCoreReal; //me123	MI replaced with g_bRealisticAvionics
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
+//extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 
 int IrstClass::CanSeeObject(SimObjectType* obj)
@@ -49,7 +49,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
         // TODO: Fix this case to deal with localData->az being heading instead of relative az
         return TRUE;
     }
-    //else if (!g_bHardCoreReal)	MI
+    //else if (!g_bHardCoreReal) MI
     else if (!g_bRealisticAvionics)
     {
         if (obj == lockedTarget && obj->localData->ata < typeData->GimbalLimitHalfAngle)
@@ -127,8 +127,8 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
 
 float IrstClass::GetSignature(SimObjectType* obj)
 {
-    float	signal;
-    float	ataFactor;
+    float signal;
+    float ataFactor;
     // Get the IR output of the aircraft (relative to F16 at mil power)
     // TODO:  Make sure this uses real IR data from the class table and STRONGLY
     //        reflects afterburner usage...me123 done
@@ -185,10 +185,10 @@ float IrstClass::GetSignature(SimObjectType* obj)
 
 float IrstClass::GetSunFactor(SimObjectType* obj)
 {
-    Tpoint	sunRay;
-    float	dx, dy, dz;
-    float	scale;
-    float	strength;
+    Tpoint sunRay;
+    float dx, dy, dz;
+    float scale;
+    float strength;
 
     // Skip out if no sun
     if (!TheTimeOfDay.ThereIsASun())
@@ -222,8 +222,8 @@ float IrstClass::GetSunFactor(SimObjectType* obj)
 
 int IrstClass::CanDetectObject(SimObjectType* obj)
 {
-    float	signature;
-    float	sunFactor;
+    float signature;
+    float sunFactor;
 
     // 2002-04-17 MN "GPS type" weapons can see and detect always
     if (g_nMissileFix & 0x100)
@@ -264,7 +264,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         signature *= 1.2F;
     }
 
-    //if (!g_bHardCoreReal && obj == lockedTarget)	MI
+    //if (!g_bHardCoreReal && obj == lockedTarget) MI
     if (!g_bRealisticAvionics && obj == lockedTarget)
     {
         signature *= 1.5F;
@@ -295,7 +295,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
         // We took the sun, so tell the missile to go there (if thats what we are)
         if (platform->IsMissile())
         {
-            Tpoint	sunRay;
+            Tpoint sunRay;
             TheTimeOfDay.GetLightDirection(&sunRay);
             sunRay.x = sunRay.x * 1e6f + platform->XPos();
             sunRay.y = sunRay.y * 1e6f + platform->YPos();

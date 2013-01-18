@@ -30,26 +30,26 @@
 #include "Constant.h"
 
 
-#if 0	// I don't think these are used anymore....
+#if 0 // I don't think these are used anymore....
 // Useful basic data types
-typedef signed char		INT8;
-typedef unsigned char	UINT8;
-typedef short			INT16;
-typedef unsigned short	UINT16;
-typedef long			INT32;
-typedef unsigned long	UINT32;
-typedef UINT8			BYTE;
-typedef UINT16			WORD;
-typedef UINT32			DWORD;
+typedef signed char INT8;
+typedef unsigned char UINT8;
+typedef short INT16;
+typedef unsigned short UINT16;
+typedef long INT32;
+typedef unsigned long UINT32;
+typedef UINT8 BYTE;
+typedef UINT16 WORD;
+typedef UINT32 DWORD;
 #endif
 
 
 // Three by three rotation matrix
 typedef struct Trotation
 {
-    float	M11, M12, M13;
-    float	M21, M22, M23;
-    float	M31, M32, M33;
+    float M11, M12, M13;
+    float M21, M22, M23;
+    float M31, M32, M33;
 } Trotation;
 
 // Three space point// Three space point
@@ -59,15 +59,15 @@ typedef struct Tpoint
 } Tpoint;
 
 //typedef struct vector3 {
-//	float x, y, z;
+// float x, y, z;
 //} vector3;
 
 // RGB color
 typedef struct Tcolor
 {
-    float	r;
-    float	g;
-    float	b;
+    float r;
+    float g;
+    float b;
 
     // Pack Functions
     inline unsigned int Pack()
@@ -94,11 +94,11 @@ typedef struct Tcolor
 
 // Math constants
 #ifndef PI
-#define PI			3.14159265359f
+#define PI 3.14159265359f
 #endif
-#define TWO_PI		6.28318530718f
-#define PI_OVER_2	1.570796326795f
-#define PI_OVER_4	0.7853981633974f
+#define TWO_PI 6.28318530718f
+#define PI_OVER_2 1.570796326795f
+#define PI_OVER_4 0.7853981633974f
 
 
 #endif /* _TYPES_H_ */

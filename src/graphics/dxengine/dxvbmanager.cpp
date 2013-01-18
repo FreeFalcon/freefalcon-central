@@ -5,25 +5,25 @@
 #include "DXEngine.h"
 #include "dxvbmanager.h"
 #include "DXTools.h"
-#ifndef	DEBUG_ENGINE
+#ifndef DEBUG_ENGINE
 #include "../../sim/INCLUDE/ivibedata.h"
 #include "../../FALCLIB/include/fakerand.h"
 #endif
-CRITICAL_SECTION	cs_VbManager;
+CRITICAL_SECTION cs_VbManager;
 
-#ifdef	STAT_DX_ENGINE
+#ifdef STAT_DX_ENGINE
 #include "RedProfiler.h"
 #endif
-#ifdef	DATE_PROTECTION
+#ifdef DATE_PROTECTION
 #include "include/ComSup.h"
-extern	bool	DateOff;
+extern bool DateOff;
 #endif
 extern int TheObjectLODsCount;
 
 // The ONLY Vertex Buffers Manager
-CDXVbManager	TheVbManager;
-DWORD			VBModels;
-DWORD			VBase;
+CDXVbManager TheVbManager;
+DWORD VBModels;
+DWORD VBase;
 
 // * Constructor *
 CDXVbManager::CDXVbManager()
@@ -46,11 +46,11 @@ CDrawItem::CDrawItem()
 
 
 // Encrypting function for the model pointed by 'Buffer'
-VOID	CDXVbManager::Encrypt(DWORD *Buffer)
+VOID CDXVbManager::Encrypt(DWORD *Buffer)
 {
     // The Crypting Key
-    DWORD	Key = KEY_CRYPTER;
-    DWORD	Size;
+    DWORD Key = KEY_CRYPTER;
+    DWORD Size;
 
     // Scramble the Key
     Key += ((DxDbHeader*)Buffer)->Id;
@@ -74,11 +74,11 @@ VOID	CDXVbManager::Encrypt(DWORD *Buffer)
 
 
 // Decrypting function for the model pointed by 'Buffer'
-VOID	CDXVbManager::Decrypt(DWORD *Buffer)
+VOID CDXVbManager::Decrypt(DWORD *Buffer)
 {
     // The Crypting Key
-    DWORD	Key = KEY_CRYPTER;
-    DWORD	Size;
+    DWORD Key = KEY_CRYPTER;
+    DWORD Size;
 
     // Scramble the Key
     Key += ((DxDbHeader*)Buffer)->Id;
@@ -137,7 +137,7 @@ CVbVAT::~CVbVAT(void)
 
 
 
-void	CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
+void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
 {
     // if a Parent, link it to next Item and Update its data
     if (Vat->Prev)
@@ -175,7 +175,7 @@ void	CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
 
 
 // This is mapped to initialize Vertex Buffers Class
-const	DWORD	BaseClassFeaturesMap[BASE_VERTEX_BUFFERS] =
+const DWORD BaseClassFeaturesMap[BASE_VERTEX_BUFFERS] =
 {
     VB_CLASS_FEATURES,
     VB_CLASS_FEATURES,
@@ -190,10 +190,10 @@ const	DWORD	BaseClassFeaturesMap[BASE_VERTEX_BUFFERS] =
 
 // This function creates a VB and assign it at position 'i' in the VBs list
 // and assigns it the Class
-void	CDXVbManager::CreateVB(DWORD i, DWORD Class)
+void CDXVbManager::CreateVB(DWORD i, DWORD Class)
 {
     // Creates the Vertex Buffer Descriptor
-    D3DVERTEXBUFFERDESC	VBDesc;
+    D3DVERTEXBUFFERDESC VBDesc;
     VBDesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
     VBDesc.dwCaps = D3DVBCAPS_WRITEONLY;
     VBDesc.dwFVF = D3DFVF_MANAGED;
@@ -212,7 +212,7 @@ void	CDXVbManager::CreateVB(DWORD i, DWORD Class)
 // Main Vertex Buffer Manager initialization
 // The Base Number of vertex buffers are immediatly allocated
 // and the local D3D Device assigned
-void	CDXVbManager::Setup(IDirect3D7	*pD3D)
+void CDXVbManager::Setup(IDirect3D7 *pD3D)
 {
     // if already intialized exit here
     if (VBManagerInitialized) return;
@@ -237,7 +237,7 @@ void	CDXVbManager::Setup(IDirect3D7	*pD3D)
 
     ///////////// Creates the DRAW ITEMS Pools and assign pointers //////////////
     pVDrawItemPool = NULL;
-    CDrawItem	*dp;
+    CDrawItem *dp;
 
     for (int i = 0; i < BASE_DRAWS; i++)
     {
@@ -252,7 +252,7 @@ void	CDXVbManager::Setup(IDirect3D7	*pD3D)
     TotalDraws = 0;
 
     // The Simple Items buffer creation
-    D3DVERTEXBUFFERDESC	VBDesc;
+    D3DVERTEXBUFFERDESC VBDesc;
     VBDesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
     memset(&SimpleBuffer, 0, sizeof(SimpleBuffer));
     VBDesc.dwCaps = D3DVBCAPS_WRITEONLY;
@@ -270,7 +270,7 @@ void	CDXVbManager::Setup(IDirect3D7	*pD3D)
 
 
 // This is the release Function for the Vertex Buffer Manager
-void	CDXVbManager::Release(void)
+void CDXVbManager::Release(void)
 {
 
     // if already NON intialized exit here
@@ -295,7 +295,7 @@ void	CDXVbManager::Release(void)
     }
 
     ///////////// Removes the DRAW ITEMS Pools //////////////
-    CDrawItem	*dp = pVDrawItemPool, *dn;
+    CDrawItem *dp = pVDrawItemPool, *dn;
 
     while (dp)
     {
@@ -327,7 +327,7 @@ void	CDXVbManager::Release(void)
 // for the passed number of vertices... If found, the new VAT item is added to the list
 // and the Index in the Vertex Buffer for the starting point is returned
 // else is returned CHUNK_NOT_FOUND
-DWORD	CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
+DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
 {
     // If not enough space or wrong Vertex Buffer class skip
     if (Vbl->Free >= nVertices)
@@ -386,16 +386,16 @@ DWORD	CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
     }
 
     // if here, No Space Available
-    return	CHUNK_NOT_FOUND;
+    return CHUNK_NOT_FOUND;
 }
 
 
 
 // This function looks for an Avilable VB Buffer for the object ID of nVertices Vertices
 // if ound, updates the pVuBuffers Data for the ID and returns true
-bool	CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
+bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
 {
-    int	i = 0;
+    int i = 0;
 
     // if invalid class, exit here
     if (!Class) return false;
@@ -414,7 +414,7 @@ bool	CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
             continue;
         }
 
-        DWORD	Base;
+        DWORD Base;
 
         // if here, the right Class, check for Space and eventually scan
         // if found assign data to the Objects Buffer pointer whose ID is passed
@@ -449,10 +449,10 @@ bool	CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
 // COBRA - RED -
 // This function is called whenever there is to prepare a model or drawing
 // if the model is not already present it disposes vertex buffer, Nodes List and mark the model as present
-bool CDXVbManager::SetupModel(DWORD	ID, BYTE *Root, DWORD Class)
+bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
 {
     // Local Copy of data start
-    DWORD	*rt = (DWORD*)Root;
+    DWORD *rt = (DWORD*)Root;
 
     // FRB - Hack to skip huge bad model (dwNVertices > 2 million verts!!)
     if ((ID == 0) && (((DxDbHeader*)rt)->dwNVertices) > 100)
@@ -462,12 +462,12 @@ bool CDXVbManager::SetupModel(DWORD	ID, BYTE *Root, DWORD Class)
     if (!pVBuffers[ID].Valid)
     {
 
-#ifdef	CRYPTED_MODELS
+#ifdef CRYPTED_MODELS
         Decrypt(rt);
 #endif
 
         // Get number of vertices in the Model and look for Buffer Space, if no Space Exit
-        DWORD	dwNVertices = ((DxDbHeader*)rt)->dwNVertices;
+        DWORD dwNVertices = ((DxDbHeader*)rt)->dwNVertices;
 
         // FRB - Class = 0 is rejected...??
         if (Class == 0)
@@ -475,12 +475,12 @@ bool CDXVbManager::SetupModel(DWORD	ID, BYTE *Root, DWORD Class)
 
         if (!VBCheckForBuffer(ID, Class, dwNVertices)) goto Failure;
 
-        DWORD	pVPool = ((DxDbHeader*)rt)->pVPool;
+        DWORD pVPool = ((DxDbHeader*)rt)->pVPool;
         //********************************************************************
         // Allocate local copy of Nodes, no more managed by the old code
         // pVPool is the offset from start of model of the Vertex Pool, so,
         // also the size of Header+Nodes
-        void	*ptr = NULL;
+        void *ptr = NULL;
 
         if (!(ptr = malloc(pVPool))) goto Failure;
 
@@ -497,8 +497,8 @@ bool CDXVbManager::SetupModel(DWORD	ID, BYTE *Root, DWORD Class)
         pVBuffers[ID].Texs = (DWORD*)((BYTE*)rt + sizeof(DxDbHeader));
 
         // fetch number of nodes, Offset of vertex Pool, size of Vertex Pool, Nr of Vertices in the Vertex Pool
-        DWORD	dwNodesNr = ((DxDbHeader*)rt)->dwNodesNr;
-        DWORD	dwPoolSize = ((DxDbHeader*)rt)->dwPoolSize;
+        DWORD dwNodesNr = ((DxDbHeader*)rt)->dwNodesNr;
+        DWORD dwPoolSize = ((DxDbHeader*)rt)->dwPoolSize;
 
         pVBuffers[ID].NVertices = dwNVertices;
         pVBuffers[ID].NNodes = dwNodesNr;
@@ -518,7 +518,7 @@ bool CDXVbManager::SetupModel(DWORD	ID, BYTE *Root, DWORD Class)
         // Exit the Critical section
         UNLOCK_VB_MANAGER;
 
-#ifdef	STAT_DX_ENGINE
+#ifdef STAT_DX_ENGINE
         COUNT_PROFILE("VB Added : ");
         VBModels++;
 #endif
@@ -538,7 +538,7 @@ Failure:
 
 
 //  This function just releases a Model and free the memory and VBuffer
-void	CDXVbManager::ReleaseModel(DWORD	ID)
+void CDXVbManager::ReleaseModel(DWORD ID)
 {
     if (ID  >= (WORD) TheObjectLODsCount)
         return;
@@ -572,7 +572,7 @@ void	CDXVbManager::ReleaseModel(DWORD	ID)
     // Exit the Critical section
     UNLOCK_VB_MANAGER; // FRB
 
-#ifdef	STAT_DX_ENGINE
+#ifdef STAT_DX_ENGINE
     COUNT_PROFILE("VB Released : ");
     VBModels--;
 #endif
@@ -580,7 +580,7 @@ void	CDXVbManager::ReleaseModel(DWORD	ID)
 
 
 // Given a model ID and a Texture Index, returns the Texture ID
-DWORD	CDXVbManager::GetTextureID(DWORD ID, DWORD	TexIdx)
+DWORD CDXVbManager::GetTextureID(DWORD ID, DWORD TexIdx)
 {
     if (ID >= (WORD) TheObjectLODsCount)
         return 0;
@@ -596,14 +596,14 @@ DWORD	CDXVbManager::GetTextureID(DWORD ID, DWORD	TexIdx)
 
 
 // Retuns the pointer to a
-void	CDXVbManager::GetModelData(VBItemType &vi, DWORD ID)
+void CDXVbManager::GetModelData(VBItemType &vi, DWORD ID)
 {
     vi = pVBuffers[ID];
 }
 
 
 // Checks if a Model ID is valid
-bool	CDXVbManager::CheckDataID(DWORD ID)
+bool CDXVbManager::CheckDataID(DWORD ID)
 {
     if (ID >= (WORD) TheObjectLODsCount)
         return false;
@@ -615,11 +615,11 @@ bool	CDXVbManager::CheckDataID(DWORD ID)
 
 
 // The Draw request enqueuer
-void	CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstance *objInst, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
+void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstance *objInst, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
 {
 
-#ifdef	DATE_PROTECTION
-    extern	IntellivibeData		g_intellivibeData;
+#ifdef DATE_PROTECTION
+    extern IntellivibeData g_intellivibeData;
 
     if (DateOff && g_intellivibeData.In3D && PRANDFloat() < 0.3f) return;
 
@@ -668,7 +668,7 @@ void	CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstanc
 
 
 // This function appends a Draw request for an Object to the VB the object belongs to
-void	CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
+void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
 {
     if (ID >= (WORD) TheObjectLODsCount)
         return;
@@ -679,7 +679,7 @@ void	CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
     // if Such Object allocated in the Vertex Buffers
     if (pVBuffers[ID].Valid)
     {
-        VBufferListType	*pVBDesc;
+        VBufferListType *pVBDesc;
 
         // if not a pit object
         if (!TheDXEngine.GetPitMode())
@@ -698,7 +698,7 @@ void	CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
     // Exit the Critical section
     UNLOCK_VB_MANAGER; // FRB
 
-#ifdef	STAT_DX_ENGINE
+#ifdef STAT_DX_ENGINE
     REPORT_VALUE("VB Models :", VBModels);
 #endif
 }
@@ -706,13 +706,13 @@ void	CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
 
 
 // This function Resets the draw List making them ready to be flushed
-void	CDXVbManager::ResetDrawList(void)
+void CDXVbManager::ResetDrawList(void)
 {
     // Start from buffer 0 Draw Item Pointers
     BufferToDraw = 0;
     RootItemToDraw = NextItemToDraw = pVbList[BufferToDraw].pDrawRoot;
 
-#ifdef	USE_DRAW_SCRAMBLER
+#ifdef USE_DRAW_SCRAMBLER
     DrawPass = 1;
     ZeroMemory(DrawHits, sizeof(DrawHits));
 #endif
@@ -721,7 +721,7 @@ void	CDXVbManager::ResetDrawList(void)
 
 
 // This function Clear all Draw list to hold nothing
-void	CDXVbManager::ClearDrawList(void)
+void CDXVbManager::ClearDrawList(void)
 {
     // Reset each Buffer Pointer
     for (int a = 0; a < MAX_VERTEX_BUFFERS; a++)
@@ -752,9 +752,9 @@ void	CDXVbManager::ClearDrawList(void)
 
 
 // This function fill variables of the next Item to draw, returns FALSE if no more Itames to draw
-bool	CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *Transformation, bool *Lited, DWORD *LightID, float *FogLevel)
+bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *Transformation, bool *Lited, DWORD *LightID, float *FogLevel)
 {
-    bool	Traversed = false;
+    bool Traversed = false;
 
 
     // Check for Pit List
@@ -771,7 +771,7 @@ bool	CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
             PitList.pDrawRoot = PitList.pDrawRoot->Next;
             PitList.DrawsCount--;
             TotalDraws--;
-#ifndef	DEBUG_ENGINE
+#ifndef DEBUG_ENGINE
             //COUNT_PROFILE("PIT OBJECTS");
 #endif
             // Signal the DX Engine this is Pit Stuff
@@ -856,7 +856,7 @@ bool	CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
 
 
 // The simple buffer opening function
-void	CDXVbManager::OpenSimpleBuffer(void)
+void CDXVbManager::OpenSimpleBuffer(void)
 {
     if (!SimpleBuffer.VbPtr)
     {

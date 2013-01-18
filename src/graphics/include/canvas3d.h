@@ -1,15 +1,15 @@
 /*
 ** Name: CANVAS3D.H
 ** Description:
-**		Class description which allows 2d primitives to be used on a
-**		"canvas" that exists somehwere in 3-space.  This class is derived
-**		from Render3D and provides 2d operations
-**		virtualized from the VirtualDisplay class.  The canvas is also a
-**		kind of 3d object which has location and orientation in world
-**		space.
+** Class description which allows 2d primitives to be used on a
+** "canvas" that exists somehwere in 3-space.  This class is derived
+** from Render3D and provides 2d operations
+** virtualized from the VirtualDisplay class.  The canvas is also a
+** kind of 3d object which has location and orientation in world
+** space.
 ** History:
-**		3-nov-97 (edg)
-**			We go marching in.....
+** 3-nov-97 (edg)
+** We go marching in.....
 */
 #ifndef _CANVAS3D_H_
 #define _CANVAS3D_H_
@@ -38,15 +38,15 @@ public:
     virtual void Setup(Render3D * renderer);
     virtual void Cleanup(void);
 
-    void	ResetTargetRenderer(Render3D * renderer)
+    void ResetTargetRenderer(Render3D * renderer)
     {
         r3d = renderer;
     };
 
     // we don't implement these for anything
-    virtual void StartDraw(void) 	{} ;
-    virtual void ClearDraw(void) 	{} ;
-    virtual void EndDraw(void)	{} ;
+    virtual void StartDraw(void)  {} ;
+    virtual void ClearDraw(void)  {} ;
+    virtual void EndDraw(void) {} ;
     virtual void Render2DPoint(float x1, float y1);
     virtual void Render2DLine(float x1, float y1, float x2, float y2);
     virtual void Render2DTri(float, float, float, float, float, float) {};

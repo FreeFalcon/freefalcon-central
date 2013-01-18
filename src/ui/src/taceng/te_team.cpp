@@ -442,7 +442,7 @@ void SetupCurrentTeamValues(long team)
 void MakeNewTeamCB(long, short hittype, C_Base *)
 {
     long i;
-    int	tid;
+    int tid;
     _TCHAR buffer[30];
 
     if (hittype != C_TYPE_LMOUSEUP)
@@ -497,8 +497,8 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
 static void RemoveTeamCB(long, short hittype, C_Base *)
 {
     short i, TeamCount, new_owner;
-    CampBaseClass	*entity;
-    VuListIterator	eit(AllCampList);
+    CampBaseClass *entity;
+    VuListIterator eit(AllCampList);
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;

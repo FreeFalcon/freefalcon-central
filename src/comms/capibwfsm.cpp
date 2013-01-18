@@ -9,10 +9,10 @@
 using namespace std;
 
 // minimum bw for each state in bytes per second, setting min 32kbps for each
-//	LOBBY_ST = 0,      // lobby
-//	CAS_ST   = 1,      // inside CA or TE as server
-//	CAC_ST   = 2,      // inside CA or TE as client
-//	DF_ST    = 3,      // in dogfight
+// LOBBY_ST = 0,      // lobby
+// CAS_ST   = 1,      // inside CA or TE as server
+// CAC_ST   = 2,      // inside CA or TE as client
+// DF_ST    = 3,      // in dogfight
 int BwFSM::minBw[NOSTATE_ST] =
 {
     6000, 8000, 6000, 6000

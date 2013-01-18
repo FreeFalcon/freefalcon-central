@@ -20,7 +20,7 @@
 /*
 UI_SendDogfightSlot::UI_SendDogfightSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (SendDogfightSlot, FalconEvent::UIThread, entityId, target, loopback)
 {
-	RequestOutOfBandTransmit();
+ RequestOutOfBandTransmit();
 }
 
 UI_SendDogfightSlot::UI_SendDogfightSlot(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (SendDogfightSlot, FalconEvent::UIThread, senderid, target)
@@ -35,39 +35,39 @@ UI_SendDogfightSlot::~UI_SendDogfightSlot(void)
 
 int UI_SendDogfightSlot::Process(uchar autodisp)
 {
-	// Abort if this is autodispatching (the UI is probably shutdown)
-	if (autodisp)
-		return 0;
+ // Abort if this is autodispatching (the UI is probably shutdown)
+ if (autodisp)
+ return 0;
 
-	if(gCommsMgr != NULL)
-	{
-		VuGameEntity	*game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
+ if(gCommsMgr != NULL)
+ {
+ VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
 
-		if (game != FalconLocalGame)
-			return FALSE;
+ if (game != FalconLocalGame)
+ return FALSE;
 
-		gCommsMgr->LookAtGame(game);
+ gCommsMgr->LookAtGame(game);
 
-		if(dataBlock.status)
-		{
-			if(FalconLocalGame != game)
-				gCommsMgr->JoinGame(dataBlock.game);
+ if(dataBlock.status)
+ {
+ if(FalconLocalGame != game)
+ gCommsMgr->JoinGame(dataBlock.game);
 
-			FalconLocalSession->SetSide(dataBlock.teamid);
-			FalconLocalSession->SetPilotSlot(dataBlock.planeid);
-			FalconLocalSession->DoFullUpdate();
+ FalconLocalSession->SetSide(dataBlock.teamid);
+ FalconLocalSession->SetPilotSlot(dataBlock.planeid);
+ FalconLocalSession->DoFullUpdate();
 
-		}
-		else
-		{
-			gCommsMgr->LeaveGame();
+ }
+ else
+ {
+ gCommsMgr->LeaveGame();
 
-			FalconLocalSession->SetSide(255);
-			FalconLocalSession->SetPilotSlot(255);
-			FalconLocalSession->DoFullUpdate();
-		}
-	}
-	return TRUE;
+ FalconLocalSession->SetSide(255);
+ FalconLocalSession->SetPilotSlot(255);
+ FalconLocalSession->DoFullUpdate();
+ }
+ }
+ return TRUE;
 }
 
 */

@@ -58,19 +58,19 @@
 #define NO_LOCKS_ON_INIT_EXIT 0
 
 // The one and only CampaignClass instance:
-CampaignClass	TheCampaign;
+CampaignClass TheCampaign;
 
 
 enum
 {
     _MAX_IN_GROUP_ = 256,
 };
-TimeAdjustClass	TimeAdjust;
+TimeAdjustClass TimeAdjust;
 
 //JAM 06Dec03 - Bumped version number for realWeather changes.
 //int gCurrentDataVersion = 76; // Current version of campaign data files
 // Cobra - Revert back to SP3 version to make saved cam/tac files cpmpatible with Tacedit
-int gCurrentDataVersion = 73;				// SP3 version of campaign data files
+int gCurrentDataVersion = 73; // SP3 version of campaign data files
 int gCampDataVersion = gCurrentDataVersion;
 int gClearPilotInfo = 0;
 int gTacticalFullEdit = 0;
@@ -99,8 +99,8 @@ extern int PMRY;
 extern int MAXOI;
 
 #ifdef CAMPTOOL
-extern HWND		hToolWnd;
-extern void		CampaignWindow(HINSTANCE hInstance, int nCmdShow);
+extern HWND hToolWnd;
+extern void CampaignWindow(HINSTANCE hInstance, int nCmdShow);
 // Renaming tool stuff
 extern VU_ID_NUMBER RenameTable[65536];
 extern int gRenameIds;
@@ -117,7 +117,7 @@ extern void DisposeBaseLists(void);
 extern void DisposeCampaignLists(void);
 extern void DisposeTheaterLists(void);
 
-#define TIMEOUT_CYCLES 30			// Seconds to wait for requested info
+#define TIMEOUT_CYCLES 30 // Seconds to wait for requested info
 
 
 // ==========================
@@ -127,15 +127,15 @@ extern void DisposeTheaterLists(void);
 class OldSquadUIInfoClass
 {
 public:
-    float				x;									// Sim coordinates of squadron
-    float				y;
-    VU_ID				id;									// VU_ID (not valid til Campaign Loads)
-    short				dIndex;								// Description Index
-    short				nameId;								// The UI's id into name and patch data
-    uchar				specialty;
-    uchar				currentStrength;					// # of current active aircraft
-    uchar				country;
-    _TCHAR				airbaseName[80];					// Name of airbase (string)
+    float x; // Sim coordinates of squadron
+    float y;
+    VU_ID id; // VU_ID (not valid til Campaign Loads)
+    short dIndex; // Description Index
+    short nameId; // The UI's id into name and patch data
+    uchar specialty;
+    uchar currentStrength; // # of current active aircraft
+    uchar country;
+    _TCHAR airbaseName[80]; // Name of airbase (string)
 };
 
 // ==========================
@@ -265,16 +265,16 @@ void CampaignClass::Reset(void)
 //
 // This is the guts of setting up a campaign, but should be called only internally
 // There are 3 main paths to starting a campaign:
-//	1) Call NewCampaign					This initializes an empty world
-//	2) Call LoadCampaign				This loads a presaved world
-//	3) Call JoinCampaign				This gets campaign data remotely
+// 1) Call NewCampaign This initializes an empty world
+// 2) Call LoadCampaign This loads a presaved world
+// 3) Call JoinCampaign This gets campaign data remotely
 //
 // EndCampaign must be called afterwards to clean up.
 //
 F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEntity *joingame)
 {
-    FalconGameEntity	*newgame;
-    _TCHAR				*gamename;
+    FalconGameEntity *newgame;
+    _TCHAR *gamename;
 
     if (IsLoaded())
     {
@@ -329,7 +329,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     }
 
     //if (CurrentGame){
-    //	VuDeReferenceEntity(CurrentGame);
+    // VuDeReferenceEntity(CurrentGame);
     //}
     //VuReferenceEntity(newgame);
     CurrentGame.reset(newgame);
@@ -448,7 +448,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         return 0;
     }
 
-    InMainUI = false;	// MN for weather UI
+    InMainUI = false; // MN for weather UI
 
     TheCampaign.Suspend();
 
@@ -563,7 +563,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         // cause a reloading of weather for multiple instant action runs.
         ((WeatherClass*)realWeather)->CampLoad(savefile, 0);
         StandardRebuild();
-        lastAirPlan = 0;								// Force an air replan - To get squadron data into the ATM
+        lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         ChooseBullseye();
     }
     else
@@ -571,7 +571,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         ((WeatherClass*)realWeather)->CampLoad(savefile, gametype);
     }
 
-    //	ChillTypes();
+    // ChillTypes();
     Flags |= CAMP_LOADED;
 
     // Insert our game into the database - which will broadcast it if we're online
@@ -591,8 +591,8 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     // This should go away once they've been converted..
     if (tactical_is_training())
     {
-        VuListIterator	myit(AllAirList);
-        Unit			u;
+        VuListIterator myit(AllAirList);
+        Unit u;
         u = (Unit) myit.GetFirst();
 
         while (u)
@@ -645,12 +645,12 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     if (game != CurrentGame)
     {
-        EndCampaign();		// Shut down previous campaign request
+        EndCampaign(); // Shut down previous campaign request
     }
 
     if (IsLoaded())
     {
-        return 1;			// Already loaded, return success
+        return 1; // Already loaded, return success
     }
 
     if (!IsPreLoaded())
@@ -679,7 +679,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     {
         return 0;
         // We're resuming a previous request.
-        ShiAssert(0);		// KCK: I don't want to do this anymore. These are sent reliably
+        ShiAssert(0); // KCK: I don't want to do this anymore. These are sent reliably
         need_from_master = Flags & (CAMP_NEED_MASK & ~CAMP_NEED_ENTITIES);
         need_from_all = Flags & (CAMP_NEED_MASK & CAMP_NEED_ENTITIES);
 
@@ -699,7 +699,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
             if (camprequest->dataBlock.size > 0)
             {
-                uchar	*tmpptr;
+                uchar *tmpptr;
                 camprequest->dataBlock.data = tmpptr = new uchar[camprequest->dataBlock.size];
 
                 if (need_from_master & CAMP_NEED_OBJ_DELTAS)
@@ -758,14 +758,14 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         {
             need_from_master = CAMP_NEED_PERSIST | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_UNIT_DATA;
             need_from_all = 0;
-            //			need_from_all = CAMP_NEED_ENTITIES;
+            // need_from_all = CAMP_NEED_ENTITIES;
             Flags |= need_from_master | need_from_all;
         }
         else
         {
             need_from_master = CAMP_NEED_WEATHER | CAMP_NEED_PERSIST | CAMP_NEED_PRIORITIES | CAMP_NEED_OBJ_DELTAS | CAMP_NEED_TEAM_DATA | CAMP_NEED_UNIT_DATA | CAMP_NEED_VC;
             need_from_all = 0;
-            //			need_from_all = CAMP_NEED_ENTITIES;
+            // need_from_all = CAMP_NEED_ENTITIES;
             Flags |= need_from_master | need_from_all;
 
             if (!LoadPilotInfo(TheCampaign.Scenario))
@@ -782,7 +782,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         camprequest->dataBlock.dataNeeded = need_from_master;
         FalconSendMessage(camprequest, TRUE);
 
-        /*		// KCK: I don't think we need this anymore
+        /* // KCK: I don't think we need this anymore
         // Now send our entity request to everyone
         camprequest = new FalconRequestCampaignData(masterSession->Id(), FalconLocalGame);
         camprequest->dataBlock.who = FalconLocalSessionId;
@@ -811,7 +811,7 @@ int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 
     if (!(Flags & CAMP_LIGHT))
     {
-        lastAirPlan = 0;					// Force an air replan - To get squadron data into the ATM
+        lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         RebuildObjectiveLists();
         BuildDivisionData();
         StandardRebuild();
@@ -845,14 +845,14 @@ void CampaignClass::GotJoinData(void)
         PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, !FalconLocalGame->IsLocal(), 0);
 }
 
-#define CAMP_SAVE_NORMAL		0
-#define CAMP_SAVE_FULL			1
-#define CAMP_SAVE_LIGHT			2
+#define CAMP_SAVE_NORMAL 0
+#define CAMP_SAVE_FULL 1
+#define CAMP_SAVE_LIGHT 2
 
 int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int save_mode)
 {
-    FILE*	fp;
-    char	to[MAX_PATH], from[MAX_PATH];
+    FILE* fp;
+    char to[MAX_PATH], from[MAX_PATH];
 
     if (!IsLoaded() || (Flags & CAMP_LIGHT && save_mode != CAMP_SAVE_LIGHT))
         return 0;
@@ -899,21 +899,21 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
         {
             case CAMP_SAVE_LIGHT:
                 // KCK: These won't save right - no lists!
-                //				SaveBaseObjectives(savefile);
-                //				SaveObjectiveDeltas(savefile);
+                // SaveBaseObjectives(savefile);
+                // SaveObjectiveDeltas(savefile);
                 break;
 
             case CAMP_SAVE_FULL:
                 SaveBaseObjectives(savefile);
 
-                //				SaveObjectiveDeltas(savefile);
-                //				SaveBaseUnits(SaveFile);
+                // SaveObjectiveDeltas(savefile);
+                // SaveBaseUnits(SaveFile);
                 // KCK: Fall through to below
             case CAMP_SAVE_NORMAL:
             default:
                 SaveObjectiveDeltas(savefile);
                 SaveUnits(savefile);
-                //				SaveUnitDeltas(savefile);
+                // SaveUnitDeltas(savefile);
                 SaveTeams(savefile);
                 SaveCampaignEvents(savefile);
                 SavePilotInfo(savefile);
@@ -1015,11 +1015,11 @@ void CampaignClass::EndCampaign()
 #endif
 
     //if (CurrentGame){
-    //	if (!CurrentGame->SessionCount()){
-    //		vuDatabase->Remove(CurrentGame);
-    //	}
-    //	VuDeReferenceEntity(CurrentGame);
-    //	CurrentGame = NULL;
+    // if (!CurrentGame->SessionCount()){
+    // vuDatabase->Remove(CurrentGame);
+    // }
+    // VuDeReferenceEntity(CurrentGame);
+    // CurrentGame = NULL;
     //}
 
     if (Flags & CAMP_LOADED)
@@ -1038,7 +1038,7 @@ void CampaignClass::EndCampaign()
 
         if (!(Flags & CAMP_ONLINE))
         {
-            RemoveTeams();			// KCK NOTE: These could be 'silent removes' instead
+            RemoveTeams(); // KCK NOTE: These could be 'silent removes' instead
         }
 
         CleanupPersistantList();
@@ -1088,7 +1088,7 @@ void CampaignClass::EndCampaign()
 
 
 #if !NO_LOCKS_ON_INIT_EXIT
-    VuExitCriticalSection();		// KCK: I loath to do this, but VU just isn't threadsafe during shutdown
+    VuExitCriticalSection(); // KCK: I loath to do this, but VU just isn't threadsafe during shutdown
     CampLeaveCriticalSection();
 #endif
 }
@@ -1125,8 +1125,8 @@ int CampaignClass::GetMinutesSinceMidnight(void)
 // Read data from a file
 int CampaignClass::LoadData(FILE *fp)
 {
-    uchar	*buffer, *bufhead;
-    long	size;
+    uchar *buffer, *bufhead;
+    long size;
 
     fread(&size, sizeof(long), 1, fp);
     bufhead = buffer = new uchar[size];
@@ -1139,8 +1139,8 @@ int CampaignClass::LoadData(FILE *fp)
 // Save data to a file
 int CampaignClass::SaveData(FILE *fp)
 {
-    long	size;
-    uchar	*buffer;
+    long size;
+    uchar *buffer;
 
     size = Encode(&buffer);
 
@@ -1152,8 +1152,8 @@ int CampaignClass::SaveData(FILE *fp)
 
 long CampaignClass::SaveSize(void)
 {
-    CampUIEventElement	*event;
-    ulong	size = 0;
+    CampUIEventElement *event;
+    ulong size = 0;
 
     size += sizeof(CampaignTime);
     size += sizeof(CampaignTime);
@@ -1244,11 +1244,11 @@ long CampaignClass::SaveSize(void)
 // Read data from a stream
 int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 {
-    short				entries = 0, size = 0;
-    CampUIEventElement	*event = NULL, *last = NULL;
-    int					i = 0, loop = 0;
-    long				datasize = 0;
-    uchar				*buffer = NULL, *bufhead = NULL;
+    short entries = 0, size = 0;
+    CampUIEventElement *event = NULL, *last = NULL;
+    int i = 0, loop = 0;
+    long datasize = 0;
+    uchar *buffer = NULL, *bufhead = NULL;
 
     CampEnterCriticalSection();
 
@@ -1442,7 +1442,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     {
         if (gCampDataVersion < 42)
         {
-            OldSquadUIInfoClass		*osic = new OldSquadUIInfoClass[NumAvailSquadrons];
+            OldSquadUIInfoClass *osic = new OldSquadUIInfoClass[NumAvailSquadrons];
             memcpychk(osic, &buffer, sizeof(OldSquadUIInfoClass)*NumAvailSquadrons, &newRem);
             CampaignSquadronData = new SquadUIInfoClass[NumAvailSquadrons];
 
@@ -1499,11 +1499,11 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 // Write data into a stream
 int CampaignClass::Encode(VU_BYTE **stream)
 {
-    short				entries, size;
-    CampUIEventElement	*event;
-    uchar				*buffer, *bufhead, *sptr;
-    int					loop;
-    long				newsize, datasize;
+    short entries, size;
+    CampUIEventElement *event;
+    uchar *buffer, *bufhead, *sptr;
+    int loop;
+    long newsize, datasize;
 
     if (!(Flags & CAMP_LIGHT))
     {
@@ -1742,7 +1742,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
 
 int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
 {
-    unsigned char /*	*data,*/ *data_ptr;
+    unsigned char /* *data,*/ *data_ptr;
 
     if (IsLoaded())
         return 0;
@@ -1802,20 +1802,20 @@ int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
 
 int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
 {
-    FalconSessionEntity*		masterSession;
-    FalconRequestCampaignData*	camprequest;
+    FalconSessionEntity* masterSession;
+    FalconRequestCampaignData* camprequest;
 
     if (IsLoaded())
     {
         if (game != CurrentGame)
         {
-            EndCampaign();						// End any current game if it's different
+            EndCampaign(); // End any current game if it's different
         }
         else
         {
             // Notify UI of our successfull preload
             PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
-            return 1;							// Already preloaded, return success
+            return 1; // Already preloaded, return success
         }
     }
 
@@ -1829,7 +1829,7 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
         ClearCurrentPreload();
         gCommsMgr->LookAtGame(game);
         //if (CurrentGame){
-        //	VuDeReferenceEntity(CurrentGame);
+        // VuDeReferenceEntity(CurrentGame);
         //}
         //VuReferenceEntity(game);
         CurrentGame.reset(game);
@@ -1901,7 +1901,7 @@ void CampaignClass::Suspend(void)
 
     while (!IsSuspended() && (Flags & CAMP_SUSPEND_REQUEST))
     {
-        Sleep(100);												// Wait until the campaign is actually suspended
+        Sleep(100); // Wait until the campaign is actually suspended
     }
 
     ThreadManager::slow_campaign();
@@ -1956,7 +1956,7 @@ void CampaignClass::SetBullseye(uchar nameid, GridIndex x, GridIndex y)
 
 int CampaignClass::BearingToBullseyeDeg(float x, float y)
 {
-    float		bx, by, theta;
+    float bx, by, theta;
 
     // KCK: Remember - swap axises.
     by = GridToSim(BullseyeX);
@@ -1968,7 +1968,7 @@ int CampaignClass::BearingToBullseyeDeg(float x, float y)
 
 int CampaignClass::RangeToBullseyeFt(float x, float y)
 {
-    float		bx, by;
+    float bx, by;
 
     // KCK: Remember - swap axises.
     by = GridToSim(BullseyeX);
@@ -1978,8 +1978,8 @@ int CampaignClass::RangeToBullseyeFt(float x, float y)
 
 void CampaignClass::GetPlayerLocation(GridIndex *x, GridIndex *y)
 {
-    vector		pos;
-    VuEntity	*player;
+    vector pos;
+    VuEntity *player;
 
     player = FalconLocalSession->GetPlayerEntity();
 
@@ -2018,7 +2018,7 @@ CampUIEventElement* CampaignClass::GetRecentPriorityEventList(void)
 // This adds an event noed to the queue we're keeping - must be called from the event process function
 void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 {
-    int					added = 0;
+    int added = 0;
 
     CampEnterCriticalSection();
 
@@ -2079,8 +2079,8 @@ void CampaignClass::TrimCampUILists(void)
 {
     return;
     /*
-       CampUIEventElement	*sEvent,*pEvent;
-       int		i;
+       CampUIEventElement *sEvent,*pEvent;
+       int i;
 
        sEvent = StandardEventQueue;
        pEvent = PriorityEventQueue;
@@ -2150,9 +2150,9 @@ void CampaignClass::FreeCampMaps(void)
 // It builds scaled down database of available squadrons
 void CampaignClass::VerifySquadrons(int team)
 {
-    Unit				u;
-    int					s, squadrons = 0;
-    SquadUIInfoClass	*newData;
+    Unit u;
+    int s, squadrons = 0;
+    SquadUIInfoClass *newData;
 
     if (!AllAirList)
         return;
@@ -2185,8 +2185,8 @@ void CampaignClass::VerifySquadrons(int team)
     {
         if (u->IsSquadron())
         {
-            GridIndex			x, y;
-            Objective			o;
+            GridIndex x, y;
+            Objective o;
 
             newData[s].x = u->XPos();
             newData[s].y = u->YPos();
@@ -2229,7 +2229,7 @@ void CampaignClass::FreeSquadronData(void)
 void CampaignClass::ReadValidAircraftTypes(char *typefile)
 {
     char /* *data, */*data_ptr;
-    int			eClass[8], i, size;
+    int eClass[8], i, size;
 
     CampaignData cd;
     cd = ReadCampFile(typefile, "act");
@@ -2262,7 +2262,7 @@ void CampaignClass::ReadValidAircraftTypes(char *typefile)
 
 int CampaignClass::IsValidAircraftType(Unit u)
 {
-    int	type, i;
+    int type, i;
 
     // KCK: I'm intentionally return 0 in the FLY_ANY_AIRCRAFT
     // state, because we use this to determine if a mission should
@@ -2318,14 +2318,14 @@ void CampaignClass::ChillTypes(void)
 void Camp_Init(int processor)
 {
     TheCampaign.Flags = 0;
-    TheCampaign.InMainUI = true;	// we start in the main UI, don't we ? ;)
+    TheCampaign.InMainUI = true; // we start in the main UI, don't we ? ;)
     TheCampaign.Reset();
     TheCampaign.Processor = processor;
     campCritical = F4CreateCriticalSection("campCritical");
 #if MF_DONT_PROCESS_DELETE || VU_USE_ENUM_FOR_TYPES
-    FalconMessageFilter	campFilter(FalconEvent::CampaignThread, 0);
+    FalconMessageFilter campFilter(FalconEvent::CampaignThread, 0);
 #else
-    FalconMessageFilter	campFilter(FalconEvent::CampaignThread, VU_DELETE_EVENT_BITS);
+    FalconMessageFilter campFilter(FalconEvent::CampaignThread, VU_DELETE_EVENT_BITS);
 #endif
     TheCampaign.vuThread = new VuThread(&campFilter, F4_EVENT_QUEUE_SIZE * 4);
     SetTimeCompression(0);
@@ -2353,7 +2353,7 @@ void Camp_Exit(void)
 
         if (TheCampaign.IsSuspended())
         {
-            TheCampaign.Resume();			// Unpause, so we can exit
+            TheCampaign.Resume(); // Unpause, so we can exit
         }
     }
 
@@ -2390,21 +2390,21 @@ void Camp_FreeMemory(void)
     delete ASD;
     ASD = NULL;
     //sfr: Real weather destructor shouldnt be here!!
-    /*	if (realWeather != NULL){
-    		delete realWeather;
-    		realWeather = NULL;
-    	}
+    /* if (realWeather != NULL){
+     delete realWeather;
+     realWeather = NULL;
+     }
     */
 }
 
 void TrashCampaignUnits(void)
 {
-    Unit			u;
+    Unit u;
 
     FalconLocalSession->SetPlayerEntity(NULL);
     FalconLocalSession->SetPlayerFlight(NULL);
     FalconLocalSession->SetPlayerSquadron(NULL);
-    VuListIterator	myit(AllUnitList);
+    VuListIterator myit(AllUnitList);
     u = (Unit) myit.GetFirst();
 
     while (u)
@@ -2431,7 +2431,7 @@ int ReadVersionNumber(char *saveFile)
 {
     //char *data;
 
-    int	vers = 1;		// If we can't load a version file, assume the worst ? RH
+    int vers = 1; // If we can't load a version file, assume the worst ? RH
 
     CampaignData cd = ReadCampFile(saveFile, "ver");
 
@@ -2446,8 +2446,8 @@ int ReadVersionNumber(char *saveFile)
 
 void WriteVersionNumber(char *saveFile)
 {
-    FILE	*fp;
-    int		vers = gCurrentDataVersion;
+    FILE *fp;
+    int vers = gCurrentDataVersion;
 
     fp = OpenCampFile(saveFile, "ver", "w");
 
@@ -2460,7 +2460,7 @@ void WriteVersionNumber(char *saveFile)
 
 void NukeHistoryFiles(void)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\tmp.his", FalconCampUserSaveDirectory, TheCampaign.SaveFile);
     unlink(filename);
@@ -2474,8 +2474,8 @@ void NukeHistoryFiles(void)
 
 int SaveAfterRename(char *savefile, FalconGameType gametype)
 {
-    FILE*	fp;
-    char	filename[MAX_PATH];
+    FILE* fp;
+    char filename[MAX_PATH];
 
     strcpy(filename, savefile);
 
@@ -2488,8 +2488,8 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
         current_tactical_mission->save_data(filename);
     }
 
-    //	if (!CampMapSize || !TheaterSizeX || !CampMapData || save_mode == CAMP_SAVE_FULL)
-    //		MakeCampMap(MAP_OWNERSHIP);
+    // if (!CampMapSize || !TheaterSizeX || !CampMapData || save_mode == CAMP_SAVE_FULL)
+    // MakeCampMap(MAP_OWNERSHIP);
     TheCampaign.VerifySquadrons(FALCON_PLAYER_TEAM);
 
     fp = OpenCampFile(filename, "cmp", "wb");

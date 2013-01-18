@@ -10,7 +10,7 @@
 #include "DrawPuff.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawablePuff::pool;
+MEM_POOL DrawablePuff::pool;
 #endif
 
 
@@ -30,7 +30,7 @@ DrawablePuff::DrawablePuff(int ID, int texSetNum, Tpoint *pos)
 
 /***************************************************************************\
     Update the position of this overcast tile (called periodically to
-	account for wind).
+ account for wind).
 \***************************************************************************/
 void DrawablePuff::UpdateForDrift(float x, float y)
 {
@@ -40,6 +40,6 @@ void DrawablePuff::UpdateForDrift(float x, float y)
 
     // KCK: Why arn't we doing the following?:
     // are puffy's drifting? I've not noticed them not.
-    //	position.x = x + RealWeather->xOffset * FEET_PER_KM
-    //	position.y = y + RealWeather->yOffset * FEET_PER_KM
+    // position.x = x + RealWeather->xOffset * FEET_PER_KM
+    // position.y = y + RealWeather->yOffset * FEET_PER_KM
 }

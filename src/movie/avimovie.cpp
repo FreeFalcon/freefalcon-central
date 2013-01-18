@@ -25,7 +25,7 @@
 #define  MAX_MOVIES     4
 #define  DSB_SIZE       16384
 #define  AUDIO_TIMEOUT  5000
-#define PF						MonoPrint
+#define PF MonoPrint
 
 
 #undef MEASURE_TIME
@@ -34,20 +34,20 @@
 #include <sys/timeb.h>
 #include <time.h>
 
-struct _timeb	last;
-struct _timeb	now;
-BOOL			once;
-double			average;
-double			total;
-long			count;
+struct _timeb last;
+struct _timeb now;
+BOOL once;
+double average;
+double total;
+long count;
 
 #endif
 
 
 /* PRESPIN will fetch an arbitrarily small amount of data from the file.  The size is
    roughly the size of the internal cache of a cd drive or hd. */
-#define PRESPIN_CD		1
-#define CD_CACHE_SIZE	2048
+#define PRESPIN_CD 1
+#define CD_CACHE_SIZE 2048
 
 
 /*
@@ -91,7 +91,7 @@ typedef struct tagMOVIE
     // frame
     AVISTREAMS           aviStreams;       // video and audio streams
     //   AUDIO_CHANNEL        *audioChannel;    // audio channel
-    int			        audioChannel;    // Stream ID
+    int         audioChannel;    // Stream ID
     int                  audioHandle;      // audio handle
     int                  lastError;        // last error code
     SURFACEACCESS        sa;
@@ -154,13 +154,13 @@ static void doFrame(PMOVIE item)
     else
     {
 
-        last.time		= now.time;
-        last.millitm	= now.millitm;
+        last.time = now.time;
+        last.millitm = now.millitm;
 
         _ftime(&now);
 
-        diff			= (now.time + now.millitm / 1000.0) - (last.time + last.millitm / 1000.0);
-        total			+= diff;
+        diff = (now.time + now.millitm / 1000.0) - (last.time + last.millitm / 1000.0);
+        total += diff;
         count++;
     }
 
@@ -691,15 +691,15 @@ int movieStart(int handle)
 
 #ifdef MEASURE_TIME
 
-    now.time	= 0;
-    now.millitm	= 0;
+    now.time = 0;
+    now.millitm = 0;
 
-    last.time	= 0;
-    last.millitm	= 0;
+    last.time = 0;
+    last.millitm = 0;
 
-    average		= 0.0;
-    total		= 0.0;
-    count		= 0;
+    average = 0.0;
+    total = 0.0;
+    count = 0;
 
     once = FALSE;
 
@@ -844,8 +844,8 @@ int movieClose(int handle)
 
 #ifdef MEASURE_TIME
 
-    average		= count / total; //fps
-    FILE* fp	= fopen("measure.dat", "a");
+    average = count / total; //fps
+    FILE* fp = fopen("measure.dat", "a");
     fprintf(fp, "average framerate = %f fps\n", average);
     fclose(fp);
 
@@ -1230,7 +1230,7 @@ static unsigned int __stdcall movieThread(void* itemIn)
                         }
 
                         /*
-                        	Wait until audio starts
+                         Wait until audio starts
                         */
                         timeBegin = timeGetTime();
                         bytesProcessed = F4StreamPlayed(item->audioChannel);

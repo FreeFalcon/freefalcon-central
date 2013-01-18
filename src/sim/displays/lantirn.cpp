@@ -228,9 +228,9 @@ void LantirnClass::GetCameraPos(Tpoint *pos)
 
     if (playerAC)
     {
-        pos->x = playerAC->af->GetLantirnCameraX() * OTWDriver.Scale();	//external variables in a/c .dat file
-        pos->y = playerAC->af->GetLantirnCameraY() * OTWDriver.Scale();	//that describe camera position for each
-        pos->z = playerAC->af->GetLantirnCameraZ() * OTWDriver.Scale();	//aircraft that has LANTIRN
+        pos->x = playerAC->af->GetLantirnCameraX() * OTWDriver.Scale(); //external variables in a/c .dat file
+        pos->y = playerAC->af->GetLantirnCameraY() * OTWDriver.Scale(); //that describe camera position for each
+        pos->z = playerAC->af->GetLantirnCameraZ() * OTWDriver.Scale(); //aircraft that has LANTIRN
     }
     else
     {
@@ -253,7 +253,7 @@ void LantirnClass::Exec(AircraftClass* self)
 
         if (m_tfrmode == TFR_STBY)
         {
-            evasize = 0;	//MI
+            evasize = 0; //MI
             return;
         }
 
@@ -281,7 +281,7 @@ void LantirnClass::Exec(AircraftClass* self)
 
         //float angle = self->af->gmma;
         //if(self->af->gmma > 0)
-        //	angle /= 2.0F;
+        // angle /= 2.0F;
         //make sure we pass at least TFR_Clearance ft above top of the hill
         gAlt = -self->ZPos() + self->af->groundZ;
 
@@ -296,9 +296,9 @@ void LantirnClass::Exec(AircraftClass* self)
         //Check 3 times, first at our position to see which feature our vector is pointing at.
         //Then also at TFR_Clearance below us to be sure we pass over it, and also to calculate inclination needed to overfly it.
         //And finally at current holdheight as a backup fallback to make sure we don't miss a feature under us.
-        featureDistance  = FeatureCollisionPrediction(self, 0.0F, FALSE, FALSE, self->af->GetTFR_Clearance(),	5.0F, 1.5F, &featureHeight);
-        featureDistance2 = FeatureCollisionPrediction(self, self->af->GetTFR_Clearance(),  TRUE,  TRUE, self->af->GetTFR_Clearance(),	5.0F, 1.5F, &featureHeight2);
-        featureDistance3 = FeatureCollisionPrediction(self, gAlt - m_tfr_alt,  TRUE, FALSE, self->af->GetTFR_Clearance(),	5.0F, 1.5F, &featureHeight3);
+        featureDistance  = FeatureCollisionPrediction(self, 0.0F, FALSE, FALSE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight);
+        featureDistance2 = FeatureCollisionPrediction(self, self->af->GetTFR_Clearance(),  TRUE,  TRUE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight2);
+        featureDistance3 = FeatureCollisionPrediction(self, gAlt - m_tfr_alt,  TRUE, FALSE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight3);
 
         featureAngle = featureAngle2 = featureAngle3 = 0.0F;
 
@@ -630,7 +630,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
             p3.z = (float)fabs(vec.z);
 
             // loop thru each element in the objective
-            VuListIterator	featureWalker(objective->GetComponents());
+            VuListIterator featureWalker(objective->GetComponents());
             testFeature = (SimBaseClass*) featureWalker.GetFirst();
             firstFeature = TRUE;
 
@@ -711,9 +711,9 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
     }
 
     if (ClosestDistance < 2 * MaxDistance)
-        return ClosestDistance;		//yes! We found a feature within range...
+        return ClosestDistance; //yes! We found a feature within range...
     else
-        return -1.0F;				//we ain't found sh*t...
+        return -1.0F; //we ain't found sh*t...
 }
 float LantirnClass::GetEVAFactor(AircraftClass* self, int eva = 1)
 {

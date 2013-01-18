@@ -18,17 +18,17 @@ public:
     };
 #endif
 public:
-    long			ID;
-    long			Type;
-    long			Flags;
-    long			Group;
-    short			state;
-    short			x, y;
-    float			worldx, worldy;
-    C_Button		*Icon;
-    short			Dragable;
-    COLORREF		LineColor_[3];
-    WAYPOINTLIST	*Next;
+    long ID;
+    long Type;
+    long Flags;
+    long Group;
+    short state;
+    short x, y;
+    float worldx, worldy;
+    C_Button *Icon;
+    short Dragable;
+    COLORREF LineColor_[3];
+    WAYPOINTLIST *Next;
 };
 
 class C_Waypoint : public C_Control
@@ -46,21 +46,21 @@ public:
     };
 #endif
 private:
-    WAYPOINTLIST	*Root_, *LastWP_;
+    WAYPOINTLIST *Root_, *LastWP_;
 
-    long			Font_;
+    long Font_;
 
-    IMAGE_RSC		*Images_[8];
+    IMAGE_RSC *Images_[8];
 
-    float			MinWorldX_, MinWorldY_;
-    float			MaxWorldX_, MaxWorldY_;
+    float MinWorldX_, MinWorldY_;
+    float MaxWorldX_, MaxWorldY_;
 
-    short			WPScaleType_;
+    short WPScaleType_;
 
-    short			Dragging_;
-    UI95_RECT		last_;
-    float			scale_;
-    long			DefaultFlags_;
+    short Dragging_;
+    UI95_RECT last_;
+    float scale_;
+    long DefaultFlags_;
 
 public:
     C_Waypoint();

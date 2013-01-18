@@ -18,7 +18,7 @@ extern char FalconDataDirectory[];
 extern char FalconTerrainDataDir[];
 extern char FalconObjectDataDir[];
 extern char FalconMiscTexDataDir[];
-extern char Falcon3DDataDir[];	// for Korea.* files
+extern char Falcon3DDataDir[]; // for Korea.* files
 
 extern void TheaterReload(char *theater, char *loddata);
 extern void LoadTrails();
@@ -183,7 +183,7 @@ void TheaterList::SetPathName(char *dest, char *src, char *reldir)
 
 void TheaterList::SetCurrentTheater(TheaterDef *td)
 {
-    HKEY	theKey;
+    HKEY theKey;
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
 
     RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)td->m_name, strlen(td->m_name));
@@ -193,8 +193,8 @@ void TheaterList::SetCurrentTheater(TheaterDef *td)
 TheaterDef * TheaterList::GetCurrentTheater()
 {
     char TheaterName[_MAX_PATH];
-    HKEY	theKey;
-    DWORD	size, type;
+    HKEY theKey;
+    DWORD size, type;
 
 
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);

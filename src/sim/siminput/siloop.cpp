@@ -11,31 +11,31 @@
 #include "simdrive.h"
 #include "aircrft.h"
 
-#include "mouselook.h"	// Retro 18Jan2004
+#include "mouselook.h" // Retro 18Jan2004
 
 #pragma warning(push,4)
 
-#ifdef USE_DINPUT_8	// Retro 15Jan2004
+#ifdef USE_DINPUT_8 // Retro 15Jan2004
 #pragma message("______________Compiling with DirectInputVersion 0x0800 !!______________________")
 #else
 #pragma message("______________Compiling with DirectInputVersion 0x0700 !!______________________")
 #endif
 
 // sfr: removed
-//BOOL						gWindowActive;
-BOOL						gOccupiedBySim;
+//BOOL gWindowActive;
+BOOL gOccupiedBySim;
 
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
-LPDIRECTINPUT7				gpDIObject;
-LPDIRECTINPUTDEVICE7		gpDIDevice[SIM_NUMDEVICES];
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
+LPDIRECTINPUT7 gpDIObject;
+LPDIRECTINPUTDEVICE7 gpDIDevice[SIM_NUMDEVICES];
 #else
-LPDIRECTINPUT8				gpDIObject;
-LPDIRECTINPUTDEVICE8		gpDIDevice[SIM_NUMDEVICES];
+LPDIRECTINPUT8 gpDIObject;
+LPDIRECTINPUTDEVICE8 gpDIDevice[SIM_NUMDEVICES];
 #endif
-HANDLE						gphDeviceEvent[SIM_NUMDEVICES];
-BOOL						gpDeviceAcquired[SIM_NUMDEVICES];
-BOOL						gSimInputEnabled = FALSE;
-BOOL						gDIEnabled = FALSE;
+HANDLE gphDeviceEvent[SIM_NUMDEVICES];
+BOOL gpDeviceAcquired[SIM_NUMDEVICES];
+BOOL gSimInputEnabled = FALSE;
+BOOL gDIEnabled = FALSE;
 extern int NoRudder;
 
 void SetupInputFunctions(void);
@@ -43,7 +43,7 @@ void CleanupInputFunctions(void);
 
 // Callback for joystick enumeration
 BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef);
-#ifdef USE_DINPUT_8	// Retro 17Jan2004
+#ifdef USE_DINPUT_8 // Retro 17Jan2004
 void CheckForMouseAxis(void);
 #endif
 void JoystickStopAllEffects(void);
@@ -51,15 +51,15 @@ void JoystickStopAllEffects(void);
 DWORD nextJoyRead = 0;
 DWORD minJoyReadInterval = 84; //12 times pre second
 
-extern unsigned int NumberOfPOVs;	// Retro 26Dec2003
+extern unsigned int NumberOfPOVs; // Retro 26Dec2003
 
 // Retro 31Dec2003
 extern AxisMapping AxisMap;
 extern GameAxisSetup_t AxisSetup[AXIS_MAX];
-extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8];		/* '8' is defined by dinput: 8 axis maximum per device */
+extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8]; /* '8' is defined by dinput: 8 axis maximum per device */
 
 //*******************************************
-//	void InputCycle()
+// void InputCycle()
 // One iteration of the input loop.  This
 // may now poke directly into Sim/Graphics
 // state, so it _must_ be run on the Sim
@@ -67,8 +67,8 @@ extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8];		/* '8' is defined by dinput
 //*******************************************
 void InputCycle(void)
 {
-    DWORD	dw;
-    HWND	hWnd;
+    DWORD dw;
+    HWND hWnd;
 
     hWnd = FalconDisplay.appWin;
 
@@ -121,7 +121,7 @@ void InputCycle(void)
 }
 
 //*******************************************
-//	void NoInputCycle()
+// void NoInputCycle()
 // One iteration of the input loop.  This
 // may now poke directly into Sim/Graphics
 // state, so it _must_ be run on the Sim
@@ -129,7 +129,7 @@ void InputCycle(void)
 //*******************************************
 void NoInputCycle(void)
 {
-#if 0	// Retro 10Jan2004
+#if 0 // Retro 10Jan2004
     unsigned int i;
 
     /* here the THROTTLE is also set to 0, dunno if this is correct or not */
@@ -143,26 +143,26 @@ void NoInputCycle(void)
         IO.digital[i] = FALSE;
     }
 
-    for (i = 0; i < NumberOfPOVs; i++)	// Retro 26Dec2003
+    for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
     {
         IO.povHatAngle[i] = (unsigned long) - 1;
     }
 
 #else
-    IO.ResetAllInputs();	// Retro 10Jan2004
+    IO.ResetAllInputs(); // Retro 10Jan2004
 #endif
 }
 
 //***********************************
-//	BOOL SetupDIMouseAndKeyboard()
+// BOOL SetupDIMouseAndKeyboard()
 //***********************************
 BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
 {
 
-    BOOL	SetupResult = TRUE;
-    BOOL	MouseSetupResult;
-    BOOL	KeyboardSetupResult;
-    BOOL	CursorSetupResult;
+    BOOL SetupResult = TRUE;
+    BOOL MouseSetupResult;
+    BOOL KeyboardSetupResult;
+    BOOL CursorSetupResult;
 
     if (!gDIEnabled)
     {
@@ -170,13 +170,13 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
         return FALSE;
     }
 
-    gOccupiedBySim		= TRUE;
-    gyFuzz				= gxFuzz = 0;
-    gxPos					= DisplayOptions.DispWidth / 2;
-    gyPos					= DisplayOptions.DispHeight / 2;
-    gMouseSensitivity	= NORM_SENSITIVITY;
+    gOccupiedBySim = TRUE;
+    gyFuzz = gxFuzz = 0;
+    gxPos = DisplayOptions.DispWidth / 2;
+    gyPos = DisplayOptions.DispHeight / 2;
+    gMouseSensitivity = NORM_SENSITIVITY;
     // sfr: removed
-    //gWindowActive		= TRUE;
+    //gWindowActive = TRUE;
 
     // Register with DirectInput and get an IDirectInput to play with
 
@@ -184,28 +184,28 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
 
     //sfr: mouse grab
     // we use exlusive only if touch buddy disabled
-    MouseSetupResult	= SetupDIDevice(hWnd, (PlayerOptions.GetTouchBuddy() == false), SIM_MOUSE, GUID_SysMouse, &c_dfDIMouse, &dipdw); // Mouse
-    //	KeyboardSetupResult	= SetupDIDevice(hWnd, FALSE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
+    MouseSetupResult = SetupDIDevice(hWnd, (PlayerOptions.GetTouchBuddy() == false), SIM_MOUSE, GUID_SysMouse, &c_dfDIMouse, &dipdw); // Mouse
+    // KeyboardSetupResult = SetupDIDevice(hWnd, FALSE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
     // Retro 25 Nov 2003 - this forces foreground/exclusive for the keyboard and makes it possible to use the keyboard while
     // falcon is running in a background window
-    KeyboardSetupResult	= SetupDIDevice(hWnd, TRUE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
+    KeyboardSetupResult = SetupDIDevice(hWnd, TRUE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
 
 
-    CursorSetupResult		= CreateSimCursors();
+    CursorSetupResult = CreateSimCursors();
 
     // JB 010618 Disable these messages as they don't appear to do anything useful
     /*
     if(!KeyboardSetupResult){
-    	DIMessageBox(999, MB_OK, SSI_NO_KEYBOARD_INIT);
-    	SetupResult = FALSE;
+     DIMessageBox(999, MB_OK, SSI_NO_KEYBOARD_INIT);
+     SetupResult = FALSE;
     }
 
     if(SetupResult && !MouseSetupResult){
-    	SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_MOUSE_INIT);
+     SetupResult = DIMessageBox(999, MB_YESNO, SSI_NO_MOUSE_INIT);
     }
     else if (MouseSetupResult)
     {
-    	//      ShowCursor(FALSE);
+     //      ShowCursor(FALSE);
     }
     */
 
@@ -231,7 +231,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     SetupInputFunctions();
 
     gTimeLastMouseMove = vuxRealTime;
-    gTimeLastCursorUpdate = vuxRealTime;		//Wombat778 1-24-04
+    gTimeLastCursorUpdate = vuxRealTime; //Wombat778 1-24-04
 
     return (SetupResult);
 }
@@ -251,7 +251,7 @@ void SetupGameAxis()
 
     devobj.dwSize = sizeof(DIDEVICEOBJECTINSTANCE);
 
-    int AxisOffsets[] = {	DIJOFS_X,
+    int AxisOffsets[] = { DIJOFS_X,
                             DIJOFS_Y,
                             DIJOFS_Z,
                             DIJOFS_RX,
@@ -274,7 +274,7 @@ void SetupGameAxis()
             if (*AxisSetup[GameAxisIndex].device == DeviceIndex)
             {
                 // look what axis on that real device is mapped to that game axis..
-                if ((*AxisSetup[GameAxisIndex].axis != -1) && (*AxisSetup[GameAxisIndex].axis < 8))	// 8 is again the max DX axiscount..
+                if ((*AxisSetup[GameAxisIndex].axis != -1) && (*AxisSetup[GameAxisIndex].axis < 8)) // 8 is again the max DX axiscount..
                 {
                     // ok there´s one mapped. now see if it is indeed located on the device..
                     if (gpDIDevice[DeviceIndex]->GetObjectInfo(&devobj, AxisOffsets[*AxisSetup[GameAxisIndex].axis], DIPH_BYOFFSET) == DI_OK)
@@ -282,7 +282,7 @@ void SetupGameAxis()
                         // found it :) now set it up..
 
                         // apply range. bipolar is -10000...10000, unipolar is 0...15000
-                        DIPROPRANGE				diprg;
+                        DIPROPRANGE diprg;
                         diprg.diph.dwSize       = sizeof(diprg);
                         diprg.diph.dwHeaderSize = sizeof(diprg.diph);
                         diprg.diph.dwObj        = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
@@ -299,16 +299,16 @@ void SetupGameAxis()
                             diprg.lMax              = 15000;
                         }
 
-                        hres = gpDIDevice[DeviceIndex]->Unacquire();	// Retro 31Dec2003 - have to unacquire in order to change props
+                        hres = gpDIDevice[DeviceIndex]->Unacquire(); // Retro 31Dec2003 - have to unacquire in order to change props
 
                         hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_RANGE, &diprg.diph);
                         ShiAssert(hres == DI_OK);
 
 
                         /*****************************************************************************/
-                        //	Retro 23Jan2004
-                        //	Custom axis shaping.. setting the CPOINTS correctly is done by the outside
-                        //	program.
+                        // Retro 23Jan2004
+                        // Custom axis shaping.. setting the CPOINTS correctly is done by the outside
+                        // program.
                         /*****************************************************************************/
                         if ((PlayerOptions.GetAxisShaping() == true) && (AxisShapes.active[GameAxisIndex] == true))
                         {
@@ -321,12 +321,12 @@ void SetupGameAxis()
                             dipcp.diph.dwHeaderSize = sizeof(DIPROPHEADER);
                             dipcp.diph.dwObj = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
                             dipcp.diph.dwHow = DIPH_BYOFFSET;
-                            ShiAssert(dipcp.dwCPointsNum);	// if this is 0 nothing happens !
+                            ShiAssert(dipcp.dwCPointsNum); // if this is 0 nothing happens !
 
                             hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_CPOINTS, &dipcp.diph);
                             ShiAssert(hres == DI_OK);
                         }
-                        else	// not using custom axis shaping, standard deadzone/saturation zones apply
+                        else // not using custom axis shaping, standard deadzone/saturation zones apply
                         {
                             // if a deadzone is defined, apply it.. values are from 10000 (100%) to 0 (0%) of
                             // physical range to both sides of the '0' point. Default to 100 (1%)
@@ -355,22 +355,22 @@ void SetupGameAxis()
                                 hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_SATURATION, &dipdw.diph);
                                 ShiAssert(hres == DI_OK);
                             }
-                        }	// no custom axis shaping
+                        } // no custom axis shaping
 
 
                         // tell the program that it´s done.
                         IO.SetAnalogIsUsed((GameAxis_t)GameAxisIndex, true);
                     }
 
-#pragma warning(disable:4127)	// Getting rid of "conditional expression is constant"
+#pragma warning(disable:4127) // Getting rid of "conditional expression is constant"
                     else
                     {
-                        ShiAssert(false);	// did not find a specified axis on the specified device
+                        ShiAssert(false); // did not find a specified axis on the specified device
                     }
                 }
                 else
                 {
-                    ShiAssert(false);	// out-of-array ! DI only specifies 8 axis (0-7) !!
+                    ShiAssert(false); // out-of-array ! DI only specifies 8 axis (0-7) !!
                 }
 
 #pragma warning(default:4127)
@@ -381,7 +381,7 @@ void SetupGameAxis()
     // Retro 17Jan2004 - Handling the MouseWheel (ugh)
     if (IO.MouseWheelExists() == true)
     {
-        theMouseWheelAxis.SetWheelInactive();	// Retro 21Jan2004
+        theMouseWheelAxis.SetWheelInactive(); // Retro 21Jan2004
 
         for (int GameAxisIndex = 0; GameAxisIndex < AXIS_MAX; GameAxisIndex++)
         {
@@ -398,12 +398,12 @@ void SetupGameAxis()
 }
 
 /*******************************************************************************/
-//	Retro 6Jan2004
-//	This (not too elegant) routine checks if the devices specified in the
-//	AxisMap structures are indeed found in the array of DIDevices. Executed at
-//	startup, if a device is not found the return value is false and all
-//	axis settings will be reset to keyboard, prompting the user to reset his
-//	axis.
+// Retro 6Jan2004
+// This (not too elegant) routine checks if the devices specified in the
+// AxisMap structures are indeed found in the array of DIDevices. Executed at
+// startup, if a device is not found the return value is false and all
+// axis settings will be reset to keyboard, prompting the user to reset his
+// axis.
 /*******************************************************************************/
 bool CheckDeviceArray()
 {
@@ -500,36 +500,36 @@ bool CheckDeviceArray()
     return retval;
 }
 //***********************************
-//	BOOL SetupDIJoystick()
+// BOOL SetupDIJoystick()
 //
-//	Creates the DI interface, enumerates
-//	devices, loads FFB effects and the
-//	works..
+// Creates the DI interface, enumerates
+// devices, loads FFB effects and the
+// works..
 //***********************************
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
 BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd)
 #else
 BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
 #endif
 {
-    BOOL	JoystickSetupResult;
+    BOOL JoystickSetupResult;
     HRESULT hres;
 
     /*******************************************************************************/
-    //	Load the current real-device(-axis) to in-game-axis mapping
-    //	returns FALSE on error, this should maybe pop up an error msg box..
+    // Load the current real-device(-axis) to in-game-axis mapping
+    // returns FALSE on error, this should maybe pop up an error msg box..
     /*******************************************************************************/
 #ifndef NDEBUG
-    //int result = IO.ReadAxisMappingFile();	 // Retro 31Dec2003
-    //	ShiAssert(result != 0);
+    //int result = IO.ReadAxisMappingFile();  // Retro 31Dec2003
+    // ShiAssert(result != 0);
 #else
-    IO.ReadAxisMappingFile();	 // Retro 31Dec2003
+    IO.ReadAxisMappingFile();  // Retro 31Dec2003
 #endif
 
     /*******************************************************************************/
-    //	Create our interface to DInput7/8..
+    // Create our interface to DInput7/8..
     /*******************************************************************************/
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
     gDIEnabled = VerifyResult(DirectInputCreateEx(hInst, DIRECTINPUT_VERSION, IID_IDirectInput7, (void **) &gpDIObject, NULL));
 #else
     hres = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&gpDIObject, NULL);
@@ -540,22 +540,22 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
         return gDIEnabled;
 
     /*******************************************************************************/
-    //	Enumerate all available (attached) joysticks.. the enum routine itself
-    //	also calls up all kinds of stuff..
+    // Enumerate all available (attached) joysticks.. the enum routine itself
+    // also calls up all kinds of stuff..
     /*******************************************************************************/
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
     hres = gpDIObject->EnumDevices(DIDEVTYPE_JOYSTICK, InitJoystick, &hWnd, DIEDFL_ATTACHEDONLY);
 #else
     hres = gpDIObject->EnumDevices(DI8DEVCLASS_GAMECTRL, InitJoystick, &hWnd, DIEDFL_ATTACHEDONLY);
 #endif
 
     /*******************************************************************************/
-    //	ok we enumerated sticks, this doesn´t mean however that they are mapped yet !!
+    // ok we enumerated sticks, this doesn´t mean however that they are mapped yet !!
     /*******************************************************************************/
     if (gTotalJoy)
     {
 #ifdef USE_DINPUT_8
-        CheckForMouseAxis();	// Retro 17Jan2004
+        CheckForMouseAxis(); // Retro 17Jan2004
 #endif
 
         /*******************************************************************************/
@@ -577,7 +577,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
             {
                 BOOL result;
                 // wohoo.. user changed nothing !
-                result = IO.ReadFile();	// To get info about any center (or ABDetent) offsets -
+                result = IO.ReadFile(); // To get info about any center (or ABDetent) offsets -
                 // this (and the 'isReversed' info are the only things that are effectively read there
 
                 ShiAssert(result == TRUE);
@@ -591,26 +591,26 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
                         PlayerOptions.SetAxisShaping(false);
                 }
 
-                SetupGameAxis();	// set axis properties according to saves values
+                SetupGameAxis(); // set axis properties according to saves values
 
-                DIDEVCAPS CurJoyCaps;						// Retro 26Dec2003
-                CurJoyCaps.dwSize = sizeof(DIDEVCAPS);		// Retro 26Dec2003
+                DIDEVCAPS CurJoyCaps; // Retro 26Dec2003
+                CurJoyCaps.dwSize = sizeof(DIDEVCAPS); // Retro 26Dec2003
 
                 hres = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&CurJoyCaps);
 
-                //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0;	// Retro 26Dec2003 - either 0 or 1 POV hat
-                NumberOfPOVs = CurJoyCaps.dwPOVs;			// Wombat778 4-27-04 Dont limit to 1 POV
+                //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0; // Retro 26Dec2003 - either 0 or 1 POV hat
+                NumberOfPOVs = CurJoyCaps.dwPOVs; // Wombat778 4-27-04 Dont limit to 1 POV
             }
             else
             {
-                IO.Reset();	// Retro 11Jan2004 - nuke the axismaps struct
+                IO.Reset(); // Retro 11Jan2004 - nuke the axismaps struct
                 PlayerOptions.SetFFB(false);
             }
         }
         else
         {
             // nothing happens, as obviously the number/nature of enumerated devices has changed.
-            IO.Reset();	// Retro 11Jan2004 - nuke the axismaps struct
+            IO.Reset(); // Retro 11Jan2004 - nuke the axismaps struct
             PlayerOptions.SetFFB(false);
         }
 
@@ -633,7 +633,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
 }
 
 //**********************************************************
-//	BOOL CleanupDIMouseAndKeyboard()
+// BOOL CleanupDIMouseAndKeyboard()
 // Closes all input devices and terminates the input thread.
 //**********************************************************
 BOOL CleanupDIMouseAndKeyboard()
@@ -651,14 +651,14 @@ BOOL CleanupDIMouseAndKeyboard()
     gOccupiedBySim = FALSE;
     gSimInputEnabled = FALSE;
 
-    //	ShowCursor(TRUE);
+    // ShowCursor(TRUE);
 
     //CleanupInputFunctions();
     return(CleanupResult);
 }
 
 //**********************************************************
-//	BOOL CleanupDIJoystick()
+// BOOL CleanupDIJoystick()
 // Closes all input devices and terminates the input thread.
 //**********************************************************
 BOOL CleanupDIJoystick(void)
@@ -710,8 +710,8 @@ BOOL CleanupDIJoystick(void)
 }
 
 //**********************************************************
-//	Retro 14Feb2004 - my own version of the above, which
-//	does not go into 100.000 subroutines to do its thing..
+// Retro 14Feb2004 - my own version of the above, which
+// does not go into 100.000 subroutines to do its thing..
 //**********************************************************
 BOOL CleanupDIJoystickMk2(void)
 {
@@ -723,7 +723,7 @@ BOOL CleanupDIJoystickMk2(void)
         DIDEVCAPS devcaps;
         devcaps.dwSize = sizeof(DIDEVCAPS);
 
-        if (gpDIDevice[AxisMap.FlightControlDevice] != NULL)	// Retro 7May2004
+        if (gpDIDevice[AxisMap.FlightControlDevice] != NULL) // Retro 7May2004
         {
             HRESULT hr = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
 
@@ -752,7 +752,7 @@ BOOL CleanupDIJoystickMk2(void)
 
     while (gTotalJoy > 0)
     {
-        //		CleanupResult = CleanupResult && CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
+        // CleanupResult = CleanupResult && CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
         if (gpDIDevice[SIM_JOYSTICK1 + gTotalJoy - 1])
         {
             HRESULT hr = gpDIDevice[SIM_JOYSTICK1 + gTotalJoy - 1]->Unacquire();
@@ -777,10 +777,10 @@ BOOL CleanupDIJoystickMk2(void)
 void CleanupDIAll(void)
 {
     //    CleanupDIMouseAndKeyboard();
-#if 0						// Retro 14Feb2004
+#if 0 // Retro 14Feb2004
     CleanupDIJoystick();
 #else
-    CleanupDIJoystickMk2();	// Retro 14Feb2004
+    CleanupDIJoystickMk2(); // Retro 14Feb2004
 #endif
 
     // Retro 31Dec2003

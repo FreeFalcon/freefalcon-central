@@ -36,8 +36,8 @@ enum FalconGameType
 class FalconGameEntity : public VuGameEntity
 {
 public:
-    FalconGameType	gameType;
-    RulesClass		rules;
+    FalconGameType gameType;
+    RulesClass rules;
 
 public:
     // constructors & destructor

@@ -20,18 +20,18 @@
 
 #include "harmpod.h"
 
-#define SRM_RETICLE_SIZE		 0.35F
+#define SRM_RETICLE_SIZE  0.35F
 #define SRM_UNCAGE_RETICLE_SIZE  0.25F
 #define SRM_REARAA_RETICLE_SIZE  0.13F
 
-#define HARM_RETICLE_SIZE		 0.4F
-#define MRM_RETICLE_SIZE		 0.6F
-#define MSL_OVERRIDE_SIZE		 0.5F
+#define HARM_RETICLE_SIZE  0.4F
+#define MRM_RETICLE_SIZE  0.6F
+#define MSL_OVERRIDE_SIZE  0.5F
 
 #define AIM120ASECX              45.0f * DTR
 
 #define HARM_FOV_BOX_WIDTH       0.435f
-#define HARM_FOV_BOX_TOP			 -0.925f
+#define HARM_FOV_BOX_TOP  -0.925f
 #define HARM_FOV_BOX_BOTTOM      -1.075f
 
 extern bool g_bRealistivAvionics;
@@ -54,14 +54,14 @@ void HudClass::DrawDogfight()
         {
             /*if ( flash || targetData->range > FCC->missileRneMax || targetData->range < FCC->missileRneMin)
             {
-            	DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
+             DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
             }*/
             //MI changed
             if (!g_bRealisticAvionics)
                 DrawTDBox();
 
             //else
-            //	DrawAATDBox();
+            // DrawAATDBox();
             if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim120DLZ(true);
@@ -76,35 +76,35 @@ void HudClass::DrawDogfight()
             BORE/SLAVE selection.  To put this to rest, AIM-9L/Ms work like this:
 
             SLAVE/SPOT:
-            	1)Search (65-mil reticle), small diamond in center
-            	2)Radar lock-on, TD box and diamond track
-            	3)Uncage commanded, uncage diamond appears and TD box continues tracking
-            	4)Uncaged diamond self-track (break radar lock if desired)
+             1)Search (65-mil reticle), small diamond in center
+             2)Radar lock-on, TD box and diamond track
+             3)Uncage commanded, uncage diamond appears and TD box continues tracking
+             4)Uncaged diamond self-track (break radar lock if desired)
 
             SLAVE/SCAN:
-            	1)Search (100-mil reticle) & seeker nutates
-            	2)Radar Lock-on (still 100 mils), TD box & diamond tracking target
-            	3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
-            	  continues tracking
-            	4)Self-track (break radar lock if desired)
+             1)Search (100-mil reticle) & seeker nutates
+             2)Radar Lock-on (still 100 mils), TD box & diamond tracking target
+             3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
+               continues tracking
+             4)Self-track (break radar lock if desired)
             BORE/SPOT:
-            	1)Search (65-mil reticle), small diamond in center
-            	2)Radar lock-on (optional :), fly missile diamond to TGT
-            	3)Uncage commanded, uncaged diamond appears/tracks target (radar TD box could
-            	  potentially be tracking another target or the same one, while the diamond is tracking
-            	  the other.
-            	4)Self-track
+             1)Search (65-mil reticle), small diamond in center
+             2)Radar lock-on (optional :), fly missile diamond to TGT
+             3)Uncage commanded, uncaged diamond appears/tracks target (radar TD box could
+               potentially be tracking another target or the same one, while the diamond is tracking
+               the other.
+             4)Self-track
             BORE/SCAN:
-            	1)Search (100-mil reticle) & seeker nutates
-            	2)Radar lock-on (optional), fly diamond to TGT
-            	3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
-            	  continues tracking (if radar lock)
-            	4)Self-track
+             1)Search (100-mil reticle) & seeker nutates
+             2)Radar lock-on (optional), fly diamond to TGT
+             3)Uncage commanded, reticle shrinks to 65-mil, uncaged diamond appears and TD box
+               continues tracking (if radar lock)
+             4)Self-track
             */
             //MI make it dependant on missil bore/slave
             //if(playerAC && playerAC->Sms && playerAC->Sms->curWeapon &&
-            //	((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
-            //	DrawMissileReticle(0.3F, FALSE, TRUE);
+            // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
+            // DrawMissileReticle(0.3F, FALSE, TRUE);
             //else
             if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) || (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
@@ -125,8 +125,8 @@ void HudClass::DrawDogfight()
                     DrawTDBox();
 
                 // Marco Edit - not TD Box in Dogfight mode
-                //			else
-                //				DrawAATDBox();
+                // else
+                // DrawAATDBox();
                 DrawAim9DLZ();
                 DrawAim9Diamond();//me123 addet
             }
@@ -179,7 +179,7 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
 
 #endif
 
-    switch (FCC->GetMrmSubMode())	// ASSOCIATOR: Added MissileOverride here to get remembered mode
+    switch (FCC->GetMrmSubMode()) // ASSOCIATOR: Added MissileOverride here to get remembered mode
     {
         case FireControlComputer::Aim9:
             if (targetPtr)
@@ -283,8 +283,8 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
                     // JPG 17 Jan 04 - No again MI, see above
                     //MI make it dependant on missil bore/slave
                     //if(playerAC && playerAC->Sms && playerAC->Sms->curWeapon &&
-                    //	((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
-                    //	DrawMissileReticle(0.3F, FALSE, TRUE);
+                    // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
+                    // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
                     DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
                     DrawAim120Diamond();
@@ -437,8 +437,8 @@ void HudClass::DrawAirMissile(void)
                 {
                     //MI make it dependant on missil bore/slave
                     //if(playerAC && playerAC->Sms && playerAC->Sms->curWeapon &&
-                    //	((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
-                    //	DrawMissileReticle(0.3F, FALSE, TRUE);
+                    // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
+                    // DrawMissileReticle(0.3F, FALSE, TRUE);
                     //else
                     DrawMissileReticle(MRM_RETICLE_SIZE, FALSE, TRUE);
                     DrawAim120Diamond();
@@ -750,7 +750,7 @@ void HudClass::DrawAim9Diamond(void)
             //MI
             if (wpn && wpn->IsMissile() && ((MissileClass*)wpn)->isCaged)
             {
-                if ((((MissileClass*)wpn)->targetPtr) && (targetData) &&			//JPG 24 Jun 04 - It flashes here too (only flash diamond when FCC has targeted and in range)
+                if ((((MissileClass*)wpn)->targetPtr) && (targetData) && //JPG 24 Jun 04 - It flashes here too (only flash diamond when FCC has targeted and in range)
                     (targetData->range > FCC->missileRMin) && (targetData->range < FCC->missileRMax))
                 {
                     if (vuxRealTime & 0x100)
@@ -778,7 +778,7 @@ void HudClass::DrawAim9Diamond(void)
             else if (wpn && wpn->IsMissile() && !((MissileClass*)wpn)->isCaged)
             {
 
-                if ((((MissileClass*)wpn)->targetPtr) && (targetData) &&			//Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
+                if ((((MissileClass*)wpn)->targetPtr) && (targetData) && //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
                     (targetData->range > FCC->missileRMin) && (targetData->range < FCC->missileRMax))
                 {
                     if (vuxRealTime & 0x100)
@@ -986,7 +986,7 @@ void HudClass::DrawAim120DLZ(bool dfgt)
                     }
 
                     ShiAssert(strlen(tmpStrpole) < sizeof(tmpStrpole));
-                    //	display->TextRightVertical (leftEdge - 0.06F, yOffset - 0.09F, tmpStrpole);
+                    // display->TextRightVertical (leftEdge - 0.06F, yOffset - 0.09F, tmpStrpole);
                 }
         }
 
@@ -1141,13 +1141,13 @@ void HudClass::DrawAim120ASE(void)
         collPoint.z -= targetData->range / 5.0f;
         collPoint.z -= (ownship->ZPos() + 50000) * (targetData->range * FT_TO_NM / 40.0f);
 
-        rx =	ownship->dmx[0][0] * collPoint.x +
+        rx = ownship->dmx[0][0] * collPoint.x +
                 ownship->dmx[0][1] * collPoint.y +
                 ownship->dmx[0][2] * collPoint.z;
-        ry =	ownship->dmx[1][0] * collPoint.x +
+        ry = ownship->dmx[1][0] * collPoint.x +
                 ownship->dmx[1][1] * collPoint.y +
                 ownship->dmx[1][2] * collPoint.z;
-        rz =	ownship->dmx[2][0] * collPoint.x +
+        rz = ownship->dmx[2][0] * collPoint.x +
                 ownship->dmx[2][1] * collPoint.y +
                 ownship->dmx[2][2] * collPoint.z;
 
@@ -1157,13 +1157,13 @@ void HudClass::DrawAim120ASE(void)
         el = RadToHudUnitsY(((float)atan((-rz) / (float)sqrt(rx * rx + ry * ry + .0001f))));
         el = el / 6.0f;
 
-        //	  el -= MISSILE_RETICLE_OFFSET;
+        //   el -= MISSILE_RETICLE_OFFSET;
         if (fabs(az) < 0.9F && fabs(el  /*+ yCenter*/) < 0.9F)
         {
             display->Circle(az, el , MISSILE_ASE_SIZE);
             rMax   = FCC->missileRMax;
 
-            //		 if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
+            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
             if ((float)fabs(az) >= 0.9f || (float)fabs(el) >= 0.9f || targetData->range > rMax)
             {
                 // Display ASEC X
@@ -1177,18 +1177,18 @@ void HudClass::DrawAim120ASE(void)
         {
             az = max(min(az, 0.9f), -0.9f);
             el = max(min(el, 0.9f), -0.9f);
-            /*		 el +=  yCenter;
-            		 if ( el < -0.9f )
-            			 el = -0.9f - yCenter;
-            		 else if ( el > 0.9f )
-            			 el = 0.9f - yCenter;
-            		 else
-            			 el -= yCenter;
+            /*  el +=  yCenter;
+              if ( el < -0.9f )
+              el = -0.9f - yCenter;
+              else if ( el > 0.9f )
+              el = 0.9f - yCenter;
+              else
+              el -= yCenter;
             */
             display->Circle(az, el, MISSILE_ASE_SIZE);
             rMax   = FCC->missileRMax;
 
-            //		 if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
+            //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX || (float)fabs(FCC->missileSeekerEl) > AIM120ASECX || targetData->range > rMax)
             if ((float)fabs(az) >= 0.9f || (float)fabs(el) >= 0.9f || targetData->range > rMax)
 
             {
@@ -1364,58 +1364,58 @@ static void DrawShootCue(VirtualDisplay *display)
 
     struct Corner
     {
-        float	x, y;
+        float x, y;
     };
 
     static const struct Corner S[] =
     {
-        { hSize,	 vSize},
-        { -hSize,	 vSize},
-        { -hSize,	 0.0f},
-        { hSize,	 0.0f},
-        { hSize,	-vSize},
-        { -hSize,	-vSize}
+        { hSize,  vSize},
+        { -hSize,  vSize},
+        { -hSize,  0.0f},
+        { hSize,  0.0f},
+        { hSize, -vSize},
+        { -hSize, -vSize}
     };
 
     static const struct Corner H1[] =
     {
-        {hSize,		 vSize},
-        {hSize,		-vSize},
+        {hSize,  vSize},
+        {hSize, -vSize},
     };
     static const struct Corner H2[] =
     {
-        { -hSize,	 0.0f},
-        { hSize,	 0.0f},
+        { -hSize,  0.0f},
+        { hSize,  0.0f},
     };
     static const struct Corner H3[] =
     {
-        { -hSize,	 vSize},
-        { -hSize,	-vSize}
+        { -hSize,  vSize},
+        { -hSize, -vSize}
     };
 
     static const struct Corner O[] =
     {
-        { hSize,	 vSize},
-        { -hSize,	 vSize},
-        { -hSize,	-vSize},
-        { hSize,	-vSize},
-        { hSize,	 vSize},
+        { hSize,  vSize},
+        { -hSize,  vSize},
+        { -hSize, -vSize},
+        { hSize, -vSize},
+        { hSize,  vSize},
     };
 
     static const struct Corner T1[] =
     {
-        { hSize,	 vSize},
-        { -hSize,	 vSize},
+        { hSize,  vSize},
+        { -hSize,  vSize},
     };
     static const struct Corner T2[] =
     {
-        {0.0f,		 vSize},
-        {0.0f,		-vSize},
+        {0.0f,  vSize},
+        {0.0f, -vSize},
     };
 
 
-    const struct Corner	*letter;
-    int					i;
+    const struct Corner *letter;
+    int i;
 
     display->AdjustOriginInViewport(-0.3f, 0.0f);
     letter = S;
@@ -1698,7 +1698,7 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
 void HudClass::DrawAim9Reticle(float radius, int showRange, int showAspect)
 {
 
-    if (targetPtr && targetData && (targetData->range < FCC->missileRneMax) && (targetData->range > FCC->missileRneMin))		//should only the MAX range be tested? Now it stops flashing if below RNE
+    if (targetPtr && targetData && (targetData->range < FCC->missileRneMax) && (targetData->range > FCC->missileRneMin)) //should only the MAX range be tested? Now it stops flashing if below RNE
     {
         if (vuxRealTime & 0x100)
             DrawMissileReticle(radius, showRange, showAspect);

@@ -41,34 +41,34 @@ typedef struct
 // For missileType  See [Weapon Data].[Weapon Index] in the class table
 MISSILE_TYPE_FILE_MAP gMissFiles[] =
 {
-    "aim9l.dat", 	2, 			FALSE,		FALSE,
-    "aim120.dat", 	56, 		FALSE,		FALSE,
-    "agm65b.dat", 	18, 		FALSE,		TRUE,
-    "agm65d.dat", 	19, 		FALSE,		TRUE,
-    "agm45.dat", 	17, 		FALSE,		TRUE,
-    "agm88.dat", 	23, 		FALSE,		TRUE,
-    "sa6.dat", 		39, 		TRUE,		FALSE,
-    "2_75In.dat", 	71, 		FALSE,		TRUE,
-    "agmXXX.dat", 	18, 		FALSE,		TRUE,
-    "aim9p.dat", 	2, 			FALSE,		FALSE,
-    "aim54.dat", 	9,	 		FALSE,		FALSE,
-    "aa7.dat", 		53, 		FALSE,		FALSE,
-    "aa7r.dat", 	11, 		FALSE,		FALSE,
-    "aa9.dat", 		55, 		FALSE,		FALSE,
-    "aa10.dat", 	7, 			FALSE,		FALSE,
-    "aa10c.dat", 	8, 			FALSE,		FALSE,
-    "aa11.dat", 	10, 		FALSE,		FALSE,
-    "aim7.dat", 	1, 			FALSE,		FALSE,
-    "sa7.dat", 		40, 		TRUE,		FALSE,
-    "sa13.dat", 	36, 		TRUE,		FALSE,
-    "sa9.dat", 		122, 		TRUE,		FALSE,
-    "sa14.dat", 	134, 		TRUE,		FALSE,
-    "sa2.dat", 		37, 		TRUE,		FALSE,
-    "sa3.dat", 		116, 		TRUE,		FALSE,
-    "sa4.dat", 		38, 		TRUE,		FALSE,
-    "sa5.dat", 		117, 		TRUE,		FALSE,
-    "sa8.dat", 		41, 		TRUE,		FALSE,
-    "sa15.dat", 	123, 		TRUE,		FALSE,
+    "aim9l.dat",  2,  FALSE, FALSE,
+    "aim120.dat",  56,  FALSE, FALSE,
+    "agm65b.dat",  18,  FALSE, TRUE,
+    "agm65d.dat",  19,  FALSE, TRUE,
+    "agm45.dat",  17,  FALSE, TRUE,
+    "agm88.dat",  23,  FALSE, TRUE,
+    "sa6.dat",  39,  TRUE, FALSE,
+    "2_75In.dat",  71,  FALSE, TRUE,
+    "agmXXX.dat",  18,  FALSE, TRUE,
+    "aim9p.dat",  2,  FALSE, FALSE,
+    "aim54.dat",  9,   FALSE, FALSE,
+    "aa7.dat",  53,  FALSE, FALSE,
+    "aa7r.dat",  11,  FALSE, FALSE,
+    "aa9.dat",  55,  FALSE, FALSE,
+    "aa10.dat",  7,  FALSE, FALSE,
+    "aa10c.dat",  8,  FALSE, FALSE,
+    "aa11.dat",  10,  FALSE, FALSE,
+    "aim7.dat",  1,  FALSE, FALSE,
+    "sa7.dat",  40,  TRUE, FALSE,
+    "sa13.dat",  36,  TRUE, FALSE,
+    "sa9.dat",  122,  TRUE, FALSE,
+    "sa14.dat",  134,  TRUE, FALSE,
+    "sa2.dat",  37,  TRUE, FALSE,
+    "sa3.dat",  116,  TRUE, FALSE,
+    "sa4.dat",  38,  TRUE, FALSE,
+    "sa5.dat",  117,  TRUE, FALSE,
+    "sa8.dat",  41,  TRUE, FALSE,
+    "sa15.dat",  123,  TRUE, FALSE,
 };
 int gNumMissiles = sizeof(gMissFiles) / sizeof(MISSILE_TYPE_FILE_MAP);
 
@@ -97,10 +97,10 @@ int main(void)
     LoadWeaponData("Falcon4");
     LoadVehicleData("Falcon4");
 
-    if (!LoadRadarData("Falcon4"))				ShiError("Failed to load radar data");
+    if (!LoadRadarData("Falcon4")) ShiError("Failed to load radar data");
 
-    //	if (!LoadIRSTData("Falcon4"))				ShiError( "Failed to load IRST data" );
-    if (!LoadSimWeaponData("Falcon4"))			ShiError("Failed to load SimWeapon data");
+    // if (!LoadIRSTData("Falcon4")) ShiError( "Failed to load IRST data" );
+    if (!LoadSimWeaponData("Falcon4")) ShiError("Failed to load SimWeapon data");
 
 
     // Data fixup
@@ -162,7 +162,7 @@ int main(void)
         /*
         ** for testing
         if ( !gMissFiles[m].fireFromSurface )
-        		continue;
+         continue;
         */
 
 
@@ -327,7 +327,7 @@ int main(void)
 
                     // Lock speed at 0.7 Mach
                     // pdelta = CalcPressureRatio(-i, &ttheta, &rsigma);
-                    // sound	= (float)sqrt(ttheta) * AASL;
+                    // sound = (float)sqrt(ttheta) * AASL;
                     // l = 0.7F * sound;
 
                     // printf ("# Launch alt: %5d   TAS: %4d   Az: %3d   MaxRng: ", -i, l, k);
@@ -364,7 +364,7 @@ int main(void)
                             if (theMissile)
                             {
                                 // Remove the missile
-                                //						 vuAntiDB->Remove(theMissile);
+                                //  vuAntiDB->Remove(theMissile);
                                 theMissile = NULL;
                             }
 
@@ -377,7 +377,7 @@ int main(void)
                                 UpdateTarget();
                                 RunMissile();
                                 // printf( "Missile x,y,z:  %7.0f, %7.0f, %6.0f\n", theMissile->XPos(), theMissile->YPos(), theMissile->ZPos() );
-                                SimLibElapsedTime += 33;	// 33 ms = 30 Htz frame rate
+                                SimLibElapsedTime += 33; // 33 ms = 30 Htz frame rate
                             }
 
                             startRange -= 1.0F * NM_TO_FT;
@@ -390,7 +390,7 @@ int main(void)
                         fprintf(fp, "%8.2f ", startRange);
                         fprintf(stdout, "%8.2f ", startRange);
 
-                        //				   vuAntiDB->Remove(theMissile);
+                        //    vuAntiDB->Remove(theMissile);
                         theMissile = NULL;
                     }
 
@@ -456,8 +456,8 @@ void UpdateTarget(void)
 
 int LoadWeaponData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "WCD", "rb")) == NULL)
         return 0;
@@ -472,8 +472,8 @@ int LoadWeaponData(char *filename)
 }
 int LoadVehicleData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "VCD", "rb")) == NULL)
         return 0;
@@ -490,8 +490,8 @@ int LoadVehicleData(char *filename)
 
 int LoadRadarData(char *filename)
 {
-    FILE*		fp;
-    short		entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "RCD", "rb")) == NULL)
         return 0;
@@ -509,8 +509,8 @@ int LoadRadarData(char *filename)
 
 int LoadSimWeaponData(char *filename)
 {
-    FILE*		fp;
-    short		entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "SWD", "rb")) == NULL)
         return 0;

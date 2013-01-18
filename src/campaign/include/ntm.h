@@ -15,12 +15,12 @@ class NavalTaskingManagerClass : public CampManagerClass
 {
 private:
 public:
-    short			flags;
+    short flags;
     // These don't need to be transmitted
-    F4PFList		unitList;							// Collection of available ground assets
-    short			tod;									// Time of day (temp variable)
-    short			topPriority;						// Highest PO priority (for scaling)
-    short			done;									// Flagged when all units assigned
+    F4PFList unitList; // Collection of available ground assets
+    short tod; // Time of day (temp variable)
+    short topPriority; // Highest PO priority (for scaling)
+    short done; // Flagged when all units assigned
 public:
     // constructors
     NavalTaskingManagerClass(ushort type, Team t);

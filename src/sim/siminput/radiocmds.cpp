@@ -2,8 +2,8 @@
 #include "commands.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include "dinput.h"
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include "dinput.h"
 
 #include "otwdrive.h"
 #include "simdrive.h"
@@ -138,7 +138,7 @@ void SimToggleRadioVolume(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        //		SimDriver.GetPlayerAircraft()->Radio->ToggleVolume();
+        // SimDriver.GetPlayerAircraft()->Radio->ToggleVolume();
     }
 }
 

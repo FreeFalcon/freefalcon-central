@@ -75,7 +75,7 @@ int CampDirtyData::Decode(VU_BYTE **buf, long *rem)
     dataBlock.data = new uchar[dataBlock.size];
     memcpychk(dataBlock.data, buf, dataBlock.size, rem);
 
-    //	ShiAssert (size == Size());
+    // ShiAssert (size == Size());
 
     return init - *rem;
 }

@@ -18,13 +18,13 @@ enum
 
 typedef struct BoomData
 {
-    float			rx;				//relative to tanker center in ft
-    float			ry;				//relative to tanker center in ft
-    float			rz;				//relative to tanker center in ft
-    DrawableBSP*	drawPointer;	//pointer to our boom
-    float			az;				//in radians
-    float			el;				//in radians
-    float			ext;			//how far boom is extended in ft
+    float rx; //relative to tanker center in ft
+    float ry; //relative to tanker center in ft
+    float rz; //relative to tanker center in ft
+    DrawableBSP* drawPointer; //pointer to our boom
+    float az; //in radians
+    float el; //in radians
+    float ext; //how far boom is extended in ft
 } BoomData;
 
 class TankerBrain : public DigitalBrain
@@ -45,24 +45,24 @@ private:
     TailInsertList *thirstyQ;
     HeadInsertList *waitQ;
     SimVehicleClass* curThirsty;
-    int		numBooms;	// FRB - number of booms/boom service	required
-    int		numDrogues;// FRB - number of drogues/drogue service	required
+    int numBooms; // FRB - number of booms/boom service required
+    int numDrogues;// FRB - number of drogues/drogue service required
     float DrogueExt; // FRB - how far the basket extends
     Tpoint DrogueRFPos; // FRB - a/c postion adj.
     Tpoint BoomRFPos; // FRB - a/c postion adj.
     int DROGUE; // FRB - the drogue Slot to refuel from
     int BOOM; // FRB - the boom Slot to refuel from
-    DrawableBSP*	rack[5];
-    BoomData	boom[5];
-    TnkrType	type;
-    int stype; // FRB - subtype	(has direction lights - KC-135)
+    DrawableBSP* rack[5];
+    BoomData boom[5];
+    TnkrType type;
+    int stype; // FRB - subtype (has direction lights - KC-135)
     int ServiceType; // FRB - A/C sevice type requirement (boom or drogue)
     int flags;
     float holdAlt;
     SimObjectType* tankingPtr;
     long lastStabalize;
     long lastBoomCommand;
-    int turnallow;	// M.N.
+    int turnallow; // M.N.
     int directionsetup; // M.N.
     int HeadsUp; // MN
     float desSpeed; // MN

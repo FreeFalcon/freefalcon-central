@@ -19,11 +19,11 @@ public:
     };
 #endif
 public:
-    COLORREF	FgColor_;
-    COLORREF	BgColor_;
-    O_Output	*Image_;
-    O_Output	*Label_;
-    long		x_, y_; // Label Offsets - Not used for image
+    COLORREF FgColor_;
+    COLORREF BgColor_;
+    O_Output *Image_;
+    O_Output *Label_;
+    long x_, y_; // Label Offsets - Not used for image
 };
 
 class C_Button : public C_Control
@@ -108,8 +108,8 @@ public:
     void SetBackImage(long ImageID);
     void SetLabel(long ID, _TCHAR *txt);
     void SetLabel(long ID, long txtID);
-    //!		void SetLabel(short ID,_TCHAR *txt);
-    //!		void SetLabel(short ID,long txtID);
+    //! void SetLabel(short ID,_TCHAR *txt);
+    //! void SetLabel(short ID,long txtID);
     _TCHAR *GetLabel(short ID);
     void SetAllLabel(_TCHAR *txt);
     void SetAllLabel(long txtID);

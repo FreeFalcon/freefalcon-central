@@ -18,7 +18,7 @@
 #include "Campaign/Include/Cmpclass.h"
 
 extern int EndFlightFlag;
-#define MAJOR_FRAME_RESOLUTION		50
+#define MAJOR_FRAME_RESOLUTION 50
 
 HANDLE hLoopEvent;
 
@@ -59,10 +59,10 @@ void RealTimeFunction(unsigned long, void*)
         // sfr: 100 Hz always, since server can be in server mode
         update_time = vuxRealTime + 10;
         //if (FalconLocalSession->GetFlyState() == FLYSTATE_FLYING){
-        //	update_time = vuxRealTime + 10;		// 100 Hz - in Sim
+        // update_time = vuxRealTime + 10; // 100 Hz - in Sim
         //}
         //else {
-        //	update_time = vuxRealTime + 20;		// 50 Hz - in UI
+        // update_time = vuxRealTime + 20; // 50 Hz - in UI
         //}
     }
 

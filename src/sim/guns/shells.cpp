@@ -1,9 +1,9 @@
 /*
 ** Name: SHELLS.CPP
 ** Description:
-**		Functions for handling shell-type of Guns
+** Functions for handling shell-type of Guns
 ** History:
-**	19-feb-98 (edg)  We go marching in.....
+** 19-feb-98 (edg)  We go marching in.....
 */
 #include "stdhdr.h"
 #include "falcmesg.h"
@@ -38,7 +38,7 @@ extern bool g_bUseSkillForFlaks;
 
 /*
 ** Name: IsShell
-**		Returns TRUE if the guns is shell type
+** Returns TRUE if the guns is shell type
 */
 BOOL
 GunClass::IsShell(void)
@@ -51,7 +51,7 @@ GunClass::IsShell(void)
 
 /*
 ** Name: IsTracer
-**		Returns TRUE if the guns is tracer type
+** Returns TRUE if the guns is tracer type
 */
 BOOL
 GunClass::IsTracer(void)
@@ -64,7 +64,7 @@ GunClass::IsTracer(void)
 
 /*
 ** Name: ReadyToFire
-**		Returns TRUE if the guns is ready to fire
+** Returns TRUE if the guns is ready to fire
 */
 BOOL
 GunClass::ReadyToFire(void)
@@ -87,8 +87,8 @@ GunClass::ReadyToFire(void)
 
 /*
 ** Name: GetDamageAssesment
-**		Returns a value of estimated damage of this type of gun
-**		against the target
+** Returns a value of estimated damage of this type of gun
+** against the target
 */
 // VP_changes Nov 7, 2002
 // This functiin should be modified
@@ -179,8 +179,8 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 
 /*
 ** Name: FireTarget
-**		Reference the target and calc the time to detonate.
-**		If target is NULL, deref any existing target
+** Reference the target and calc the time to detonate.
+** If target is NULL, deref any existing target
 */
 void
 GunClass::FireShell(SimObjectType *newTarget)
@@ -206,13 +206,13 @@ GunClass::FireShell(SimObjectType *newTarget)
     newTarget->Reference();
     shellTargetPtr = newTarget;
     // hack the time in now.
-    shellDetonateTime = SimLibElapsedTime + 1500;	//MI this is how long from shot till explosion
+    shellDetonateTime = SimLibElapsedTime + 1500; //MI this is how long from shot till explosion
 }
 
 /*
 ** Name: UpdateShell
-**		Determines when its time to detonate.  Rolls dice.  And
-**		Sends messages as needed for effects and damage.
+** Determines when its time to detonate.  Rolls dice.  And
+** Sends messages as needed for effects and damage.
 */
 void
 GunClass::UpdateShell(void)
@@ -250,7 +250,7 @@ GunClass::UpdateShell(void)
         }
         // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED.
         // 2000-09-06 CHANGED AGAIN TO A NEW EQUATION (sqrt(speed / 100) * sqrt(range / 1000))
-        //		else if ( (rand() & 0x1F ) == 0x1F )
+        // else if ( (rand() & 0x1F ) == 0x1F )
         // Marco Edit - tried to return back to 1.08i2 + RP4 values
         // else if (40.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / 100000.0f) < 0.040625f)
         else if (31.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks) < 0.0325f)
@@ -277,7 +277,7 @@ GunClass::UpdateShell(void)
         {
             // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED. 1.08i2 ALSO USES rand INSTEAD OF PRANDFloatPos
             // 2000-09-06 CHANGED AGAIN TO A NEW EQUATION (sqrt(speed / 100) * sqrt(range / 1000))
-            //			rangeSquare *= 40.0f * PRANDFloatPos();
+            // rangeSquare *= 40.0f * PRANDFloatPos();
             rangeSquare *= 40.0f * rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks);
 
             // 2002-03-12 ADDED BY S.G. Use the ground troop skill if requested
@@ -326,7 +326,7 @@ GunClass::UpdateShell(void)
 
     endMessage->dataBlock.dIndex     = t->Type();
     endMessage->dataBlock.fWeaponUID = Id();
-    endMessage->dataBlock.wIndex 	 = Type();
+    endMessage->dataBlock.wIndex   = Type();
 
     if (hitSomething)
         endMessage->dataBlock.endCode    = FalconMissileEndMessage::MissileKill;
@@ -393,8 +393,8 @@ GunClass::UpdateShell(void)
 
 /*
 ** Name: GetSMSDomain
-**		Returns Air, Land or Both depending on what type of things
-**		Gun can shoot at.
+** Returns Air, Land or Both depending on what type of things
+** Gun can shoot at.
 */
 WeaponDomain GunClass::GetSMSDomain(void)
 {

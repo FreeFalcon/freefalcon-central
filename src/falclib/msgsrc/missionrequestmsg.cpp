@@ -35,7 +35,7 @@ FalconMissionRequestMessage::~FalconMissionRequestMessage(void)
 
 int FalconMissionRequestMessage::Process(uchar autodisp)
 {
-    //	F4Assert(vuCritical->count == 0);
+    // F4Assert(vuCritical->count == 0);
 
     if (autodisp)
         return -1;

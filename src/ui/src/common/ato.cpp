@@ -69,7 +69,7 @@ C_TreeList *gATOPackage = NULL;
 
 VU_ID gSelectedPackage = FalconNullId;
 VU_ID gSelectedFlightID = FalconNullId;
-VU_ID gSelectedATOFlight = FalconNullId;	// Unselected when Package is selected
+VU_ID gSelectedATOFlight = FalconNullId; // Unselected when Package is selected
 extern VU_ID gCurrentFlightID;
 
 void ShowPackageWPs(VU_ID package)
@@ -307,9 +307,9 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
     C_ListBox
     *listbox;
 
-    Flight	flight;
-    int		camp_id;
-    uchar	type;
+    Flight flight;
+    int camp_id;
+    uchar type;
 
     if (hittype != C_TYPE_SELECT)
     {
@@ -376,7 +376,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
     {
         // Setup list box with only valid roles
-        int	i, added;
+        int i, added;
 
         for (i = 1, added = 0; i < AMIS_OTHER; i++)
         {

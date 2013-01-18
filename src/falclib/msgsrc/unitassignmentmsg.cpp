@@ -27,14 +27,14 @@ FalconUnitAssignmentMessage::~FalconUnitAssignmentMessage(void)
 
 int FalconUnitAssignmentMessage::Process(uchar autodisp)
 {
-    Unit		u = FindUnit(EntityId());
+    Unit u = FindUnit(EntityId());
 
     if (autodisp || !u)
         return -1;
 
 #ifdef KEV_DEBUG
-    char			name1[80], name2[80], name3[80];		// For testing
-    Objective		po, so, ao;							// For testing
+    char name1[80], name2[80], name3[80]; // For testing
+    Objective po, so, ao; // For testing
     po = FindObjective(dataBlock.poid);
 
     if (po)
@@ -75,8 +75,8 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
 
     // For now, assume children are owned by same machine. If not, probably have
     // To forward the message
-    Unit	e;
-    int		en;
+    Unit e;
+    int en;
 
     for (en = 0; en < MAX_UNIT_CHILDREN; en++)
     {

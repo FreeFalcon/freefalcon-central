@@ -80,12 +80,12 @@ BasePathClass::BasePathClass(uchar **stream, long *rem)
     memcpychk(&length, stream, sizeof(uchar), rem);
     memcpychk(&current_location, stream, sizeof(uchar), rem);
     memcpychk(path, stream, sizeof(uchar) * (length + 1) / PATH_DIV, rem);
-    cost = 0.0F;			// Cost is pretty meaningless by this point
+    cost = 0.0F; // Cost is pretty meaningless by this point
 }
 
 BasePathClass::~BasePathClass()
 {
-    //	delete path;
+    // delete path;
 }
 
 int BasePathClass::Save(uchar **stream)
@@ -111,7 +111,7 @@ int BasePathClass::GetNextDirection(void)
     if (current_location >= length)
         return MAX_NEIGHBORS;
 
-    int	i = current_location / PATH_DIV;
+    int i = current_location / PATH_DIV;
     int o = current_location % PATH_DIV;
     return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
 }
@@ -123,7 +123,7 @@ int BasePathClass::GetPreviousDirection(int num)
     if (l < 0)
         return MAX_NEIGHBORS;
 
-    int	i = l / PATH_DIV;
+    int i = l / PATH_DIV;
     int o = l % PATH_DIV;
     return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
 }
@@ -133,7 +133,7 @@ int BasePathClass::GetDirection(int num)
     if (num >= length)
         return MAX_NEIGHBORS;
 
-    int	i = num / PATH_DIV;
+    int i = num / PATH_DIV;
     int o = num % PATH_DIV;
     return (path[i] >> (o * PATH_BITS)) & PATH_MASK;
 }
@@ -143,7 +143,7 @@ void BasePathClass::SetDirection(int num, int d)
     if (d < 0)
         d = MAX_NEIGHBORS;
 
-    int	i = num / PATH_DIV;
+    int i = num / PATH_DIV;
     int o = num % PATH_DIV;
     uchar temp = (unsigned char)(PATH_MASK << (o * PATH_BITS));
     path[i] &= ~temp;
@@ -221,7 +221,7 @@ int BasePathClass::CopyPath(BasePathClass *from_path)
 
 AS_DataClass::AS_DataClass(void)
 {
-    int			i;
+    int i;
 
     queue = NULL;
     tried = NULL;
@@ -255,8 +255,8 @@ AS_DataClass::~AS_DataClass(void)
 
 #ifdef DEBUG
     // Make sure we didn't lose any nodes during our run
-    int		count = 1;		// 1 for location
-    ASNode	T;
+    int count = 1; // 1 for location
+    ASNode T;
     T = queue;
 
     while (T)
@@ -291,9 +291,9 @@ AS_DataClass::~AS_DataClass(void)
 // return values: -1 on error, 0 if partial path found, 1 if full path found
 int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS_DataClass* asd, void* o, void* t), int flags, int maxSearch, costtype maxCost)
 {
-    int      	count = 0, retval = -1, max_length;
-    ASNode   	T;
-    float		best;
+    int       count = 0, retval = -1, max_length;
+    ASNode    T;
+    float best;
 
     if (origin == target)
         return 1;
@@ -511,7 +511,7 @@ void AS_DataClass::AS_merge(int)
                 if (insert_after)
                 {
                     // We've got a better version than this one, move this queue entry to waste
-                    ASNode	temp = T->next;
+                    ASNode temp = T->next;
                     T->next = temp->next;
                     AS_reattach(temp);
                 }
@@ -553,7 +553,7 @@ ASNode AS_DataClass::AS_get_new_node(int n)
     {
         // KCK: The following line is only usefull if the user's huristic overestimates -
         // And even then, it only gets slightly better answers for a moderate cost.
-        //		if (T->where == neighbors[n].where && neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
+        // if (T->where == neighbors[n].where && neighbors[n].cost+neighbors[n].to_go > T->cost + T->to_go)
         if (T->where == neighbors[n].where)
             return NULL;
 
@@ -566,7 +566,7 @@ ASNode AS_DataClass::AS_get_new_node(int n)
         waste = waste->next;
     }
     else
-        return NULL;			// We're out of waste nodes. We'll quit looking.
+        return NULL; // We're out of waste nodes. We'll quit looking.
 
     new_node->cost = neighbors[n].cost;
     new_node->to_go = neighbors[n].to_go;

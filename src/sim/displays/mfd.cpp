@@ -21,16 +21,16 @@
 #include "dispopts.h"
 #include "digi.h"
 #include "lantirn.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
 #include "object.h"
-#include "popmenu.h"					// a.s. begin
+#include "popmenu.h" // a.s. begin
 #include "Graphics/Include/renderow.h"  // a.s.
-#include "Graphics/Include/grinline.h"	// a.s. end
+#include "Graphics/Include/grinline.h" // a.s. end
 
 #include "flightData.h" // MD -- 20040727
 
@@ -44,10 +44,10 @@ extern bool g_bINS;
 
 extern bool g_bEnableMfdColors; // a.s. begin: makes Mfds transparent and colored
 extern float g_fMfdTransparency;// a.s.
-extern float g_fMfdRed;			// a.s.
-extern float g_fMfdGreen;		// a.s.
-extern float g_fMfdBlue;		// a.s.
-unsigned long mycolor;			// a.s. end
+extern float g_fMfdRed; // a.s.
+extern float g_fMfdGreen; // a.s.
+extern float g_fMfdBlue; // a.s.
+unsigned long mycolor; // a.s. end
 
 //ATARIBABY for 3d pit RTT MFD debug frame
 extern bool g_b3DClickableCockpitDebug;
@@ -188,21 +188,21 @@ MFDClass::MFDClass(int count, Render3D *r3d)
     TGPWarning = 0; // RV - I-Hawk
 
     // RED - Passed into CreateDrawables
-    /*	if (mfdDraw[MfdOff] == NULL) mfdDraw[MfdOff] = new BlankMfdDrawable;
-    	if (mfdDraw[MfdMenu] == NULL) mfdDraw[MfdMenu] = new MfdMenuDrawable;
-    	if (mfdDraw[TFRMode] == NULL) mfdDraw[TFRMode] = new LantirnDrawable;
-    	if (mfdDraw[FLIRMode] == NULL) mfdDraw[FLIRMode] = new FlirMfdDrawable;
-    	if (mfdDraw[TestMode] == NULL) mfdDraw[TestMode] = new TestMfdDrawable;
-    	if (mfdDraw[DTEMode] == NULL) mfdDraw[DTEMode] = new DteMfdDrawable;
-    	if (mfdDraw[FLCSMode] == NULL) mfdDraw[FLCSMode] = new FlcsMfdDrawable;
-    	if (mfdDraw[WPNMode] == NULL) mfdDraw[WPNMode] = new WpnMfdDrawable;
-    	if (mfdDraw[TGPMode]	== NULL) mfdDraw[TGPMode] = new TgpMfdDrawable;
+    /* if (mfdDraw[MfdOff] == NULL) mfdDraw[MfdOff] = new BlankMfdDrawable;
+     if (mfdDraw[MfdMenu] == NULL) mfdDraw[MfdMenu] = new MfdMenuDrawable;
+     if (mfdDraw[TFRMode] == NULL) mfdDraw[TFRMode] = new LantirnDrawable;
+     if (mfdDraw[FLIRMode] == NULL) mfdDraw[FLIRMode] = new FlirMfdDrawable;
+     if (mfdDraw[TestMode] == NULL) mfdDraw[TestMode] = new TestMfdDrawable;
+     if (mfdDraw[DTEMode] == NULL) mfdDraw[DTEMode] = new DteMfdDrawable;
+     if (mfdDraw[FLCSMode] == NULL) mfdDraw[FLCSMode] = new FlcsMfdDrawable;
+     if (mfdDraw[WPNMode] == NULL) mfdDraw[WPNMode] = new WpnMfdDrawable;
+     if (mfdDraw[TGPMode] == NULL) mfdDraw[TGPMode] = new TgpMfdDrawable;
 
-    	for (i = 0; i < MaxPrivMode; i++) {
-    		if (mfdDraw[i] == NULL){
-    			mfdDraw[i] = new BlankMfdDrawable;
-    		}
-    	}*/
+     for (i = 0; i < MaxPrivMode; i++) {
+     if (mfdDraw[i] == NULL){
+     mfdDraw[i] = new BlankMfdDrawable;
+     }
+     }*/
 
     // ASSO: commented out old canvas setup
     // set up the virtual cockpit MFD
@@ -265,13 +265,13 @@ MFDClass::~MFDClass()
     drawable = NULL;
 
     // RED - Passed into DestroyDrawables
-    /*	for (int i = 0; i < MaxPrivMode; i++) {
-    		if (mfdDraw[i]) {
-    			mfdDraw[i]->DisplayExit();
-    			delete mfdDraw[i];
-    			mfdDraw[i] = NULL;
-    		}
-    	}
+    /* for (int i = 0; i < MaxPrivMode; i++) {
+     if (mfdDraw[i]) {
+     mfdDraw[i]->DisplayExit();
+     delete mfdDraw[i];
+     mfdDraw[i] = NULL;
+     }
+     }
     */
     delete virtMFD;
     virtMFD = NULL;
@@ -331,7 +331,7 @@ void MFDClass::CreateDrawables(void)
 
 // RED - This function destroy all the drawables shared by MFDs
 // WARNING !! it Has to be called AFTER ALL MFDs are destroyed
-void	MFDClass::DestroyDrawables(void)
+void MFDClass::DestroyDrawables(void)
 {
     for (int i = 0; i < MaxPrivMode; i++)
     {
@@ -373,10 +373,10 @@ void MFDClass::SetOwnship(AircraftClass *newOwnship)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (playerAC &&	playerAC->IsSetFlag(MOTION_OWNSHIP) && ownship == playerAC && newOwnship != playerAC)
+    if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP) && ownship == playerAC && newOwnship != playerAC)
     {
         // If we are jumping to another vehicle view ...
-        restoreMode = mode;						// ... save the current MFD state
+        restoreMode = mode; // ... save the current MFD state
     }
 
     ownship = newOwnship;
@@ -386,11 +386,11 @@ void MFDClass::SetOwnship(AircraftClass *newOwnship)
     // If we are jumping back into our F16
     if (playerAC && playerAC->IsSetFlag(MOTION_OWNSHIP) && ownship == playerAC)
     {
-        SetMode(restoreMode);									// restore the saved MFD state
+        SetMode(restoreMode); // restore the saved MFD state
     }
     else
     {
-        SetMode(MfdOff);										// Otherwise turn the MFD off
+        SetMode(MfdOff); // Otherwise turn the MFD off
     }
 }
 
@@ -548,7 +548,7 @@ void MFDClass::SetMode(MfdMode newMode)
 
             // RV - I-Hawk - Replaced HUDMode with HADMode
             ///*case HUDMode:
-            //	drawable = TheHud;
+            // drawable = TheHud;
             //break;*/
 
         case HADMode:
@@ -1216,7 +1216,7 @@ void MfdDrawable::DrawReference(AircraftClass *self)
 
         case FireControlComputer::Nav:
         case FireControlComputer::ILS:
-        default:	//Catch all the other stuff
+        default: //Catch all the other stuff
             if (TheHud->waypointValid)
             {
                 offset = TheHud->waypointBearing / RefAngle;
@@ -1275,7 +1275,7 @@ void MfdDrawable::TGPAttitudeWarning(VirtualDisplay* display)
         display->SetFont(2);
         display->SetColor(GetMfdColor(MFD_RED));
 
-        static const float	warningSide	= 0.7f;
+        static const float warningSide = 0.7f;
 
         // Many lines to create the painted box...
         for (float warningBottom = -0.18f; warningBottom < 0.25f; warningBottom += 0.0025f)

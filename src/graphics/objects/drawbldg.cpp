@@ -3,8 +3,8 @@
     July 10, 1996
 
     Derived class to do special position processing for buildings on the
-	ground.  (More precisly, any object which is to be placed on the
-	ground but not reoriented.)
+ ground.  (More precisly, any object which is to be placed on the
+ ground but not reoriented.)
 \***************************************************************************/
 #include "Matrix.h"
 #include "RViewPnt.h"
@@ -19,7 +19,7 @@
 */
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableBuilding::pool;
+MEM_POOL DrawableBuilding::pool;
 #endif
 
 /***************************************************************************\
@@ -28,8 +28,8 @@ MEM_POOL	DrawableBuilding::pool;
 DrawableBuilding::DrawableBuilding(int ID, Tpoint *pos, float heading, float s)
     : DrawableBSP(s, ID)
 {
-    float	cosYaw;
-    float	sinYaw;
+    float cosYaw;
+    float sinYaw;
 
     // Compute the sine and cosine of the objects desired heading
     cosYaw = (float)cos(heading);
@@ -41,9 +41,9 @@ DrawableBuilding::DrawableBuilding(int ID, Tpoint *pos, float heading, float s)
     drawClassID = Building;
 
     // Construct the rotation matrix to orient the object correctly
-    orientation.M11 = cosYaw,	orientation.M12 = -sinYaw,	orientation.M13 = 0.0f;
-    orientation.M21 = sinYaw,	orientation.M22 = cosYaw,	orientation.M23 = 0.0f;
-    orientation.M31 = 0.0f,		orientation.M32 = 0.0f,		orientation.M33 = 1.0f;
+    orientation.M11 = cosYaw, orientation.M12 = -sinYaw, orientation.M13 = 0.0f;
+    orientation.M21 = sinYaw, orientation.M22 = cosYaw, orientation.M23 = 0.0f;
+    orientation.M31 = 0.0f, orientation.M32 = 0.0f, orientation.M33 = 1.0f;
 
     // Record our position (Z will be updated later)
     position = *pos;

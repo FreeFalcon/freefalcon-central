@@ -22,7 +22,7 @@
 extern UIComms *gCommsMgr;
 
 UI_UpdateMapPosition::UI_UpdateMapPosition(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) :
-	FalconEvent (UpdateMapPosition, FalconEvent::UIThread, entityId, target, loopback)
+ FalconEvent (UpdateMapPosition, FalconEvent::UIThread, entityId, target, loopback)
 {
    // Your Code Goes Here
 }
@@ -39,12 +39,12 @@ UI_UpdateMapPosition::~UI_UpdateMapPosition(void)
 
 int UI_UpdateMapPosition::Process(uchar autodisp)
 {
-	if(autodisp)
-		return(0);
+ if(autodisp)
+ return(0);
 
-	if(gCommsMgr){
-		gCommsMgr->UpdateLocation(dataBlock.x,dataBlock.y);
-	}
+ if(gCommsMgr){
+ gCommsMgr->UpdateLocation(dataBlock.x,dataBlock.y);
+ }
    return 0;
 }
 

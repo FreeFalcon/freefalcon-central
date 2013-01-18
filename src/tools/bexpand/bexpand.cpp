@@ -4,7 +4,7 @@
 #include "Brief.h"
 #include "CampStr.h"
 
-char FilesToRead[30][30] =	{	"Header.b",
+char FilesToRead[30][30] = { "Header.b",
                                 //"Header2.b",
                                 "Situate.b",
                                 "Element.b",
@@ -33,22 +33,22 @@ char FilesToRead[30][30] =	{	"Header.b",
                            };
 
 /*
-char FilesToRead[30][30] =	{	"SITUATE.b",				// 4
-								0,
-								"Loadout.b",			// 5
-								"LOADOUTH.B",			// 6
-								"NoSquad.b",			// 7
-								"OBJECTIV.B",			// 8
-								"RoE.b",				// 9
-								"SITUATE.B",			// 10
-								"SQUAD.B",
-								"STEERPT.B",
-								"STEERPTH.B",
-								"Support.b",
-								"THREAT.B",				// 15
-								"Threats.b",
-								0
-							};
+char FilesToRead[30][30] = { "SITUATE.b", // 4
+ 0,
+ "Loadout.b", // 5
+ "LOADOUTH.B", // 6
+ "NoSquad.b", // 7
+ "OBJECTIV.B", // 8
+ "RoE.b", // 9
+ "SITUATE.B", // 10
+ "SQUAD.B",
+ "STEERPT.B",
+ "STEERPTH.B",
+ "Support.b",
+ "THREAT.B", // 15
+ "Threats.b",
+ 0
+ };
 */
 #define MAX_TOKENS 128
 
@@ -56,30 +56,30 @@ char gTokenList[MAX_TOKENS][30] = { 0 };
 char gTokenListValue[MAX_TOKENS][180] = { 0 };
 int gTokenListOptions[MAX_TOKENS] = { 0 };
 int gTokenListCurOption[MAX_TOKENS] = { 0 };
-int	gNumTokens;
+int gNumTokens;
 char gBaseDir[MAX_PATH];
 char gLangDir[MAX_PATH];
 
 extern _TCHAR AirSTypesStr[20][20];
 extern _TCHAR GroundSTypesStr[20][20];
 
-_TCHAR	UnitNameLong[128] = "3rd Armored Battalion, 3rd Armored Brigade, 2nd Armored Division";
-_TCHAR	DivisionName[128] = "3rd Armored Division";
-_TCHAR	UnitNameShort[128] = "1st Armored Battalion";
-_TCHAR	SquadronName[128] = "1st Fighter Squadron";
-_TCHAR	BridgeName[128] = "Seoul Bridge";
-_TCHAR	AirbaseName[128] = "Osan Airbase";
-_TCHAR	PortName[128] = "Port of Koksan";
-_TCHAR	DepotName[128] = "Cheonyon Depot";
-_TCHAR	FeatureName[4][80] = { "Building", "Warehouse", "Fuel Tank", "Runway" };
+_TCHAR UnitNameLong[128] = "3rd Armored Battalion, 3rd Armored Brigade, 2nd Armored Division";
+_TCHAR DivisionName[128] = "3rd Armored Division";
+_TCHAR UnitNameShort[128] = "1st Armored Battalion";
+_TCHAR SquadronName[128] = "1st Fighter Squadron";
+_TCHAR BridgeName[128] = "Seoul Bridge";
+_TCHAR AirbaseName[128] = "Osan Airbase";
+_TCHAR PortName[128] = "Port of Koksan";
+_TCHAR DepotName[128] = "Cheonyon Depot";
+_TCHAR FeatureName[4][80] = { "Building", "Warehouse", "Fuel Tank", "Runway" };
 
 // ==================================
 // Stubs
 // ==================================
 
-char DOMAIN_AIR		= 1;
-char DOMAIN_LAND	= 2;
-char DOMAIN_SEA		= 3;
+char DOMAIN_AIR = 1;
+char DOMAIN_LAND = 2;
+char DOMAIN_SEA = 3;
 
 short NumObjectiveTypes = 30;
 
@@ -89,7 +89,7 @@ short NumObjectiveTypes = 30;
 
 FILE* OpenCampFile(char *filename, char *ext, char *mode)
 {
-    char	name[MAX_PATH];
+    char name[MAX_PATH];
 
     sprintf(name, "%s\\%s.%s", gBaseDir, filename, ext);
     return fopen(name, mode);
@@ -120,8 +120,8 @@ int FindTokenIndex(char *token)
 
 void AddToValueList(int index, char *value)
 {
-    int		add;
-    char	*nval, *cval;
+    int add;
+    char *nval, *cval;
 
     while (value[0] == ' ')
         value++;
@@ -177,8 +177,8 @@ void AddToTokenList(char *token, char *value)
 
 int FindCurrentValue(char *token)
 {
-    int		v, i = FindTokenIndex(token);
-    char	*vptr;
+    int v, i = FindTokenIndex(token);
+    char *vptr;
 
     if (i >= 0)
     {
@@ -203,8 +203,8 @@ int FindCurrentValue(char *token)
 
 int DoIfToken(char *token)
 {
-    char	*vptr = strchr(token, ' ');
-    int		value;
+    char *vptr = strchr(token, ' ');
+    int value;
 
     if (vptr)
     {
@@ -267,8 +267,8 @@ void AddStringToBrief(_TCHAR *hdr, _TCHAR *str, _TCHAR *brief)
 
 void AddIndexedStringToBrief(int sid, _TCHAR *brief)
 {
-    _TCHAR		wstring[MAX_STRLEN_PER_TOKEN];
-    _TCHAR		idstr[MAX_STRLEN_PER_TOKEN];
+    _TCHAR wstring[MAX_STRLEN_PER_TOKEN];
+    _TCHAR idstr[MAX_STRLEN_PER_TOKEN];
 
     sprintf(idstr, "%d", sid);
     ReadIndexedString(sid, wstring, MAX_STRLEN_PER_TOKEN);
@@ -277,8 +277,8 @@ void AddIndexedStringToBrief(int sid, _TCHAR *brief)
 
 void AddNumberToBrief(int sid, _TCHAR *brief)
 {
-    int			dig, div = 10000;
-    int			start = 0;
+    int dig, div = 10000;
+    int start = 0;
 
     while (div > 0)
     {
@@ -300,7 +300,7 @@ void AddNumberToBrief(int sid, _TCHAR *brief)
 
 void AddTimeToBrief(CampaignTime time, _TCHAR *brief)
 {
-    _TCHAR		tstring[MAX_STRLEN_PER_TOKEN];
+    _TCHAR tstring[MAX_STRLEN_PER_TOKEN];
 
     GetTimeString(time, tstring);
     AddStringToBrief("TIME", tstring, brief);
@@ -308,8 +308,8 @@ void AddTimeToBrief(CampaignTime time, _TCHAR *brief)
 
 void AddLocationToBrief(char type, _TCHAR *brief)
 {
-    _TCHAR		wdstr[41], wtmp[41], name[41], format[80], dist[10];
-    _TCHAR		hdr[30];
+    _TCHAR wdstr[41], wtmp[41], name[41], format[80], dist[10];
+    _TCHAR hdr[30];
 
     switch (type)
     {
@@ -400,7 +400,7 @@ void AddLocationToBrief(char type, _TCHAR *brief)
 
 void ReadComments(FILE* fh)
 {
-    int					c;
+    int c;
 
     c = fgetc(fh);
 
@@ -442,9 +442,9 @@ char* ReadToken(FILE *fp, char name[], int len)
 
 void ConstructOrderedSentence(_TCHAR *string, _TCHAR *format, ...)
 {
-    int			done = 0, count = 0, index = 0;
-    va_list		params;
-    _TCHAR		argstring[MAX_STRLEN_PER_TOKEN], addchar[2];
+    int done = 0, count = 0, index = 0;
+    va_list params;
+    _TCHAR argstring[MAX_STRLEN_PER_TOKEN], addchar[2];
 
     string[0] = 0;
 
@@ -454,7 +454,7 @@ void ConstructOrderedSentence(_TCHAR *string, _TCHAR *format, ...)
         {
             // read and add the numbered argument
             index++;
-            count = format[index] - '0';	// arg #
+            count = format[index] - '0'; // arg #
             va_start(params, format);       // Initialize variable arguments.
 
             while (count >= 0)
@@ -463,7 +463,7 @@ void ConstructOrderedSentence(_TCHAR *string, _TCHAR *format, ...)
                 count--;
             }
 
-            va_end(params);				// Reset variable arguments.
+            va_end(params); // Reset variable arguments.
             _tcscat(string, argstring);
         }
         else
@@ -482,13 +482,13 @@ void ConstructOrderedSentence(_TCHAR *string, _TCHAR *format, ...)
 // Name functions
 // ==================================
 
-short	*NameIndex = NULL;
-short	NameEntries = 0;
-char	NameFile[MAX_PATH];
+short *NameIndex = NULL;
+short NameEntries = 0;
+char NameFile[MAX_PATH];
 
 void LoadNames(char* filename)
 {
-    FILE	*fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "idx", "rb")) == NULL)
         return;
@@ -511,8 +511,8 @@ void FreeNames(void)
 
 _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
 {
-    FILE	*fp;
-    short	size, rlen;
+    FILE *fp;
+    short size, rlen;
 
     size = NameIndex[sid + 1] - NameIndex[sid];
     rlen = size / sizeof(_TCHAR);
@@ -532,8 +532,8 @@ _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
 
 void BuildExampleNames(void)
 {
-    _TCHAR	temp1[10], temp2[20], temp3[10];
-    _TCHAR	bat[40], brig[40], div[40], squad[40];
+    _TCHAR temp1[10], temp2[20], temp3[10];
+    _TCHAR bat[40], brig[40], div[40], squad[40];
 
     ReadIndexedString(615, bat, 39);
     ReadIndexedString(614, brig, 39);
@@ -551,7 +551,7 @@ void BuildExampleNames(void)
     ReadNameString(480, AirbaseName, 128);
     ReadNameString(650, PortName, 128);
     ReadNameString(475, DepotName, 128);
-    //	FeatureName[80][4] = { "Building", "Warehouse", "Fuel Tank", "Runway" };
+    // FeatureName[80][4] = { "Building", "Warehouse", "Fuel Tank", "Runway" };
 }
 
 // ==================================
@@ -560,11 +560,11 @@ void BuildExampleNames(void)
 
 void AnalyseFile(char *filename)
 {
-    int		done = 0, curr_stack = 0;
-    FILE	*fp;
-    char	default_value_string[5] = "0 1";
-    char	*sptr, *vptr, token[256], tmp[5];
-    char	if_token[MAX_STACK][256];
+    int done = 0, curr_stack = 0;
+    FILE *fp;
+    char default_value_string[5] = "0 1";
+    char *sptr, *vptr, token[256], tmp[5];
+    char if_token[MAX_STACK][256];
 
     fp = OpenCampFile(filename, "", "r");
 
@@ -599,7 +599,7 @@ void AnalyseFile(char *filename)
             {
                 sptr = strchr(token, 'E');
                 sptr += 2;
-                //				AddToTokenList("MISSION_EQ",vptr);
+                // AddToTokenList("MISSION_EQ",vptr);
             }
 
             // Ignore player specific stuff - it's just color changes
@@ -630,15 +630,15 @@ void AnalyseFile(char *filename)
         // Check for hidden evaluators..
         if (strncmp(token, "MISSION_DESCRIPTION", 19) == 0)
             AddToTokenList("MISSION_EQ", "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33");
-        //		else if (strncmp(token,"PACKAGE_MISSION_DESCRIPTION",27)==0)
-        //			AddToTokenList("PACKAGE_MISSION_EQ","1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33");
+        // else if (strncmp(token,"PACKAGE_MISSION_DESCRIPTION",27)==0)
+        // AddToTokenList("PACKAGE_MISSION_EQ","1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33");
         else if (strncmp(token, "PACKAGE_MISSION_DESCRIPTION", 27) == 0)
             AddToTokenList("MISSION_EQ", "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33");
         else if (strncmp(token, "CONTEXT_STR", 11) == 0)
             AddToTokenList("CONTEXT_EQ", "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45");
 
-        //		else if (strcmp(token,"PACKAGE_SUCCESS")==0 || strcmp(token,"FLIGHT_SUCCESS")==0 || strcmp(token,"LONG_MISSION_SUCCESS")==0)
-        //			AddToTokenList("MISSION_SUCCESS","1 2 3 4 5");
+        // else if (strcmp(token,"PACKAGE_SUCCESS")==0 || strcmp(token,"FLIGHT_SUCCESS")==0 || strcmp(token,"LONG_MISSION_SUCCESS")==0)
+        // AddToTokenList("MISSION_SUCCESS","1 2 3 4 5");
     }
 
     fclose(fp);
@@ -646,8 +646,8 @@ void AnalyseFile(char *filename)
 
 void DoToken(char *token, char *brief_string)
 {
-    char		*sptr;
-    int			i, value;
+    char *sptr;
+    int i, value;
 
     // special tokens
     if (strcmp(token, "#EOL") == 0)
@@ -668,21 +668,21 @@ void DoToken(char *token, char *brief_string)
         return;
     }
 
-    /*	if (strncmp(token,"#INC",4)==0)
-    		{
-    		sptr = token+5;
-    		if (strcmp(sptr,"PILOT")==0)
-    			{
-    			if (mec->curr_pilot)
-    				mec->curr_pilot = mec->FindPilotDataFromAC(fn, mec->curr_pilot->aircraft_slot+1);
-    			else
-    				mec->curr_pilot = mec->FindPilotDataFromAC(fn, 0);
-    			}
-    		if (strcmp(sptr,"WEAPON")==0)
-    			mec->curr_weapon++;
-    		if (strcmp(sptr,"DATA")==0)
-    			mec->curr_data++;
-    		}
+    /* if (strncmp(token,"#INC",4)==0)
+     {
+     sptr = token+5;
+     if (strcmp(sptr,"PILOT")==0)
+     {
+     if (mec->curr_pilot)
+     mec->curr_pilot = mec->FindPilotDataFromAC(fn, mec->curr_pilot->aircraft_slot+1);
+     else
+     mec->curr_pilot = mec->FindPilotDataFromAC(fn, 0);
+     }
+     if (strcmp(sptr,"WEAPON")==0)
+     mec->curr_weapon++;
+     if (strcmp(sptr,"DATA")==0)
+     mec->curr_data++;
+     }
     */
 
     // Text string ids
@@ -713,7 +713,7 @@ void DoToken(char *token, char *brief_string)
     }
     else if (strncmp(token, "PACKAGE_MISSION_DESCRIPTION", 27) == 0)
     {
-        //		value = FindCurrentValue("PACKAGE_MISSION_EQ");
+        // value = FindCurrentValue("PACKAGE_MISSION_EQ");
         value = FindCurrentValue("MISSION_EQ");
         sptr = token + 27;
         i = sptr[0] - '1';
@@ -783,18 +783,18 @@ void DoToken(char *token, char *brief_string)
         else
             AddStringToBrief("OBJECTIVE_NAME", DepotName, brief_string);
     }
-    /*	else if (strcmp(token,"AWACS_NAME")==0)
-    		{
-    		mec->curr_data = 1;
-    		}
-    	else if (strcmp(token,"JSTAR_NAME")==0)
-    		{
-    		mec->curr_data = 1;
-    		}
-    	else if (strcmp(token,"TANKER_NAME")==0)
-    		{
-    		mec->curr_data = 1;
-    		}
+    /* else if (strcmp(token,"AWACS_NAME")==0)
+     {
+     mec->curr_data = 1;
+     }
+     else if (strcmp(token,"JSTAR_NAME")==0)
+     {
+     mec->curr_data = 1;
+     }
+     else if (strcmp(token,"TANKER_NAME")==0)
+     {
+     mec->curr_data = 1;
+     }
     */
     else if (strncmp(token, "CONTEXT_STR", 11) == 0)
     {
@@ -805,9 +805,9 @@ void DoToken(char *token, char *brief_string)
     }
     else if (strncmp(token, "RESULT_STR", 10) == 0)
     {
-        _TCHAR		temp[128], format[128], t1[80], t2[80], hdr[30];
-        int			success = FindCurrentValue("PACKAGE_SUCCESS_EQ");
-        char		*sptr;
+        _TCHAR temp[128], format[128], t1[80], t2[80], hdr[30];
+        int success = FindCurrentValue("PACKAGE_SUCCESS_EQ");
+        char *sptr;
 
         value = FindCurrentValue("CONTEXT_EQ");
 
@@ -911,13 +911,13 @@ void DoToken(char *token, char *brief_string)
     {
         value = FindCurrentValue("MISSION_SUCCESS");
         AddIndexedStringToBrief(20 + value, brief_string);
-        //		AddIndexedStringToBrief(20+rand()%5,brief_string);
+        // AddIndexedStringToBrief(20+rand()%5,brief_string);
     }
     else if (strcmp(token, "PILOT_RATING") == 0)
         AddIndexedStringToBrief(10 + rand() % 5, brief_string);
     else if (strcmp(token, "PILOT_NAME") == 0)
     {
-        _TCHAR	temp[128];
+        _TCHAR temp[128];
         ReadIndexedString(2301, temp, 127);
         AddStringToBrief(token, temp, brief_string);
     }
@@ -931,7 +931,7 @@ void DoToken(char *token, char *brief_string)
         AddIndexedStringToBrief(3, brief_string);
     else if (strcmp(token, "LONG_MISSION_SUCCESS") == 0)
     {
-        _TCHAR		tstring[80], wstring[80];
+        _TCHAR tstring[80], wstring[80];
         value = FindCurrentValue("MISSION_SUCCESS");
         AddIndexedStringToBrief(25 + value, brief_string);
         ReadIndexedString(1000 + rand() % 5, wstring, 80);
@@ -975,7 +975,7 @@ void DoToken(char *token, char *brief_string)
         AddNumberToBrief(50, brief_string);
     else if (strcmp(token, "SHOW_EVENT") == 0)
     {
-        _TCHAR	format[128], temp[128], name[40], time[40];
+        _TCHAR format[128], temp[128], name[40], time[40];
 
         ReadIndexedString(41, name, 127);
         GetTimeString(123456, time);
@@ -1020,7 +1020,7 @@ void DoToken(char *token, char *brief_string)
         AddNumberToBrief(10000, brief_string);
     else if (strcmp(token, "WAYPOINT_CLIMB") == 0)
     {
-        //		AddIndexedStringToBrief(1600,brief_string);
+        // AddIndexedStringToBrief(1600,brief_string);
         AddIndexedStringToBrief(1650, brief_string);
     }
     else if (strcmp(token, "WAYPOINT_DESC") == 0)
@@ -1028,7 +1028,7 @@ void DoToken(char *token, char *brief_string)
     else if (strcmp(token, "ENEMY_SQUADRONS") == 0)
     {
         AddStringToBrief("SQUADRON_NAME", SquadronName, brief_string);
-        AddStringToBrief("SQUADRON_NAME", " (F-16)	-- 100%% ", brief_string);
+        AddStringToBrief("SQUADRON_NAME", " (F-16) -- 100%% ", brief_string);
         AddIndexedStringToBrief(164, brief_string);
         AddStringToBrief("", "\n", brief_string);
     }
@@ -1049,9 +1049,9 @@ void DoToken(char *token, char *brief_string)
 
 void DoFile(char *filename, FILE *op)
 {
-    int		done = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
-    FILE	*fp;
-    char	brief_string[1024], token[256];
+    int done = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
+    FILE *fp;
+    char brief_string[1024], token[256];
 
     do
     {
@@ -1123,14 +1123,14 @@ void DoFile(char *filename, FILE *op)
         {
             fprintf(op, "\n");
 
-            //			printf("\n");
+            // printf("\n");
             for (int i = 0; i < gNumTokens; i++)
             {
                 fprintf(op, "%s = %d\n", gTokenList[i], FindCurrentValue(gTokenList[i]));
-                //				printf("%s = %d\n",gTokenList[i],FindCurrentValue(gTokenList[i]));
+                // printf("%s = %d\n",gTokenList[i],FindCurrentValue(gTokenList[i]));
             }
 
-            //			printf(brief_string);
+            // printf(brief_string);
             fprintf(op, brief_string);
         }
 
@@ -1145,10 +1145,10 @@ void DoFile(char *filename, FILE *op)
 
 int main(int argc, char **argv)
 {
-    char	*args;
-    int		i = 0;
-    FILE	*op;
-    char	filename[MAX_PATH];
+    char *args;
+    int i = 0;
+    FILE *op;
+    char filename[MAX_PATH];
 
     if (argc >= 2)
     {
@@ -1177,7 +1177,7 @@ int main(int argc, char **argv)
         sprintf(gBaseDir, "D:\\falcon4\\campaign\\save");
         sprintf(gLangDir, "output");
         printf("Working directory: %s", gBaseDir);
-        //		scanf("%s",baseDir);
+        // scanf("%s",baseDir);
     }
 
     ReadIndex("strings");

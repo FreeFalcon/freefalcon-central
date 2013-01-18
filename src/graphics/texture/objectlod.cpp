@@ -15,24 +15,24 @@
 extern MEM_POOL gBSPLibMemPool;
 #endif
 
-ObjectLOD			*TheObjectLODs = NULL;
-int					TheObjectLODsCount = 0;
+ObjectLOD *TheObjectLODs = NULL;
+int TheObjectLODsCount = 0;
 #ifdef _DEBUG
-int		    ObjectLOD::lodsLoaded = 0;
+int     ObjectLOD::lodsLoaded = 0;
 #endif
 FileMemMap  ObjectLOD::ObjectLodMap;
 
-CRITICAL_SECTION	ObjectLOD::cs_ObjectLOD;
-static 	int		maxTagList;
+CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;
+static  int maxTagList;
 extern bool g_bUseMappedFiles;
 
 
 ObjectLOD::ObjectLOD()
 {
-    root		= NULL;
-    flags		= 0;
-    refCount	= 0;
-    onOrder		= 0;
+    root = NULL;
+    flags = 0;
+    refCount = 0;
+    onOrder = 0;
 }
 
 
@@ -65,8 +65,8 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
 
 void ObjectLOD::SetupTable(int file, char *basename)
 {
-    char	filename[_MAX_PATH];
-    int		result;
+    char filename[_MAX_PATH];
+    int result;
 
 
 #ifdef USE_SMART_HEAP
@@ -151,7 +151,7 @@ void ObjectLOD::CleanupTable(void)
 
 BOOL ObjectLOD::Fetch(void)
 {
-    BOOL	result;
+    BOOL result;
 
     EnterCriticalSection(&cs_ObjectLOD);
 
@@ -194,7 +194,7 @@ BOOL ObjectLOD::Fetch(void)
 // This is called from inside our critical section...
 void ObjectLOD::RequestLoad(void)
 {
-    LoaderQ		*request;
+    LoaderQ *request;
 
     // Allocate space for the async IO request
     request = new LoaderQ;
@@ -205,10 +205,10 @@ void ObjectLOD::RequestLoad(void)
     }
 
     // Build the data transfer request to get the required object data
-    request->filename	= NULL;
-    request->fileoffset	= fileoffset;
-    request->callback	= LoaderCallBack;
-    request->parameter	= this;
+    request->filename = NULL;
+    request->fileoffset = fileoffset;
+    request->callback = LoaderCallBack;
+    request->parameter = this;
 
     // Submit the request to the asynchronous loader
     TheLoader.EnqueueRequest(request);
@@ -217,12 +217,12 @@ void ObjectLOD::RequestLoad(void)
 
 void ObjectLOD::LoaderCallBack(LoaderQ* request)
 {
-    int			size;
-    int			tagCount;
-    BYTE		*nodeTreeData;
-    BRoot		*root;
-    BNodeType	*tagList = tagListBuffer;
-    ObjectLOD	*objLOD = (ObjectLOD*)request->parameter;
+    int size;
+    int tagCount;
+    BYTE *nodeTreeData;
+    BRoot *root;
+    BNodeType *tagList = tagListBuffer;
+    ObjectLOD *objLOD = (ObjectLOD*)request->parameter;
     DWORD offset = objLOD->fileoffset;
 
     // TODO:  Decompress in here...
@@ -236,7 +236,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
 
         if (data == NULL)
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "%s:  Bad object map", strerror(errno));
             ShiError(message);
         }
@@ -261,7 +261,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
         // Read the tag list length
         if (!ObjectLodMap.ReadDataAt(offset, &tagCount, sizeof(tagCount)))
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "%s:  Bad object seek", strerror(errno));
             ShiError(message);
         }
@@ -272,7 +272,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
         // Read the tag list
         if (!ObjectLodMap.ReadDataAt(offset, tagListBuffer, tagCount * sizeof(*tagListBuffer)))
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "%s:  Bad taglist read", strerror(errno));
             ShiError(message);
         }
@@ -292,7 +292,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
         // Read the BSP tree node data
         if (!ObjectLodMap.ReadDataAt(offset, nodeTreeData, size))
         {
-            char	message[120];
+            char message[120];
             sprintf(message, "%s:  Bad Lod read", strerror(errno));
             ShiError(message);
         }
@@ -301,7 +301,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
     // Restore the virtual function tables and pointer connectivity of the node tree
     root = (BRoot*)BNode::RestorePointers(nodeTreeData, 0, &tagList);
     ShiAssert(root->Type() == tagBRoot);
-    ShiAssert((BYTE*)root == nodeTreeData);	// Ensure it will be legal to use "root" to delete the whole buffer later...
+    ShiAssert((BYTE*)root == nodeTreeData); // Ensure it will be legal to use "root" to delete the whole buffer later...
 
     // Load all our textures
     root->LoadTextures();
@@ -318,7 +318,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
     }
     else
     {
-        ShiAssert(objLOD->onOrder == -1);	// We must have been Unloaded before IO completed
+        ShiAssert(objLOD->onOrder == -1); // We must have been Unloaded before IO completed
         root->UnloadTextures();
 #ifdef _DEBUG
         objLOD->lodsLoaded --;
@@ -336,7 +336,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
 
 void ObjectLOD::Unload(void)
 {
-    BYTE		*nodeTreeData;
+    BYTE *nodeTreeData;
 
     EnterCriticalSection(&cs_ObjectLOD);
 
@@ -378,9 +378,9 @@ void ObjectLOD::Unload(void)
 
 
 // Privatly used static members
-//int			ObjectLOD::objectFile = -1;
-BNodeType*	ObjectLOD::tagListBuffer = NULL;
+//int ObjectLOD::objectFile = -1;
+BNodeType* ObjectLOD::tagListBuffer = NULL;
 
 #ifdef USE_SMART_HEAP
-MEM_POOL	ObjectLOD::pool;
+MEM_POOL ObjectLOD::pool;
 #endif

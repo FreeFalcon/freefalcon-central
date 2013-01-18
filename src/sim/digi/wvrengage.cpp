@@ -70,10 +70,10 @@ void DigitalBrain::WvrEngageCheck(void)
 /*
 ** Name: WVREngage
 ** Description:
-**		Main function for within visual range engagement.
-**		Basically this function just checks the tactics timer to determiine
-**		when we next need to eval our BFM stuff.  It then runs the current
-**		tactic.
+** Main function for within visual range engagement.
+** Basically this function just checks the tactics timer to determiine
+** when we next need to eval our BFM stuff.  It then runs the current
+** tactic.
 */
 void DigitalBrain::WvrEngage(void)
 {
@@ -466,7 +466,7 @@ void DigitalBrain::WvrEngage(void)
 /*
 ** Name: WvrChooseTactic
 ** Description:
-**		Try and make some not completely idiotic decisions....
+** Try and make some not completely idiotic decisions....
 */
 void DigitalBrain::WvrChooseTactic(void)
 {
@@ -663,7 +663,7 @@ void DigitalBrain::WvrOverBank(float delta)
 /*
 ** Name: WvrStraight
 ** Description:
-**		Level out and fly straight at high speed.
+** Level out and fly straight at high speed.
 */
 void DigitalBrain::WvrStraight(void)
 {
@@ -683,7 +683,7 @@ void DigitalBrain::WvrStraight(void)
 /*
 ** Name: WvrAvoid
 ** Description:
-**		Try to fly around the threat
+** Try to fly around the threat
 */
 void DigitalBrain::WvrAvoid(void)
 {
@@ -695,7 +695,7 @@ void DigitalBrain::WvrAvoid(void)
 /*
 ** Name: WvrBeam
 ** Description:
-**		Keep aspect at 90
+** Keep aspect at 90
 */
 void DigitalBrain::WvrBeam(void)
 {
@@ -721,8 +721,8 @@ void DigitalBrain::WvrBeam(void)
 /*
 ** Name: WvrBugOut
 ** Description:
-**		Level out and fly straight at high speed.
-**		Head for the hills
+** Level out and fly straight at high speed.
+** Head for the hills
 */
 void DigitalBrain::WvrBugOut(void)
 {
@@ -734,7 +734,7 @@ void DigitalBrain::WvrBugOut(void)
 /*
 ** Name: Guns Jink
 ** Description:
-**		Jink around
+** Jink around
 */
 void DigitalBrain::WvrGunJink(void)
 {
@@ -745,8 +745,8 @@ void DigitalBrain::WvrGunJink(void)
 /*
 ** Name: SetThreat
 ** Description:
-**		Creates a SimObjectType struct for the entity, sets the threatPtr,
-**		References the target.  Any pre-existing target is dereferenced.
+** Creates a SimObjectType struct for the entity, sets the threatPtr,
+** References the target.  Any pre-existing target is dereferenced.
 */
 void DigitalBrain::SetThreat(FalconEntity *obj)
 {
@@ -791,8 +791,8 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
         if (randNum < 5)
         {
             // Yell for help
-            edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
+            edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
             AiMakeRadioResponse(self, rcHELPNOW, edata);
         }
         else if (randNum < 40)
@@ -809,15 +809,15 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
                     response = rcENGDEFENSIVEB;
                 }
 
-                edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-                edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
+                edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+                edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing;
                 edata[2] = (short) SimToGrid(threatPtr->BaseData()->YPos());
                 edata[3] = (short) SimToGrid(threatPtr->BaseData()->XPos());
                 edata[4] = (short) threatPtr->BaseData()->ZPos();
             }
             else
             {
-                edata[0]	= isWing;
+                edata[0] = isWing;
                 response = rcENGDEFENSIVEC;
             }
 
@@ -867,16 +867,16 @@ int CanEngage(AircraftClass *self, int combatClass, SimObjectType* targetPtr, in
 
 
                 /*if ((targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 300.0f || targetPtr->BaseData()->ZPos() < -10000.0f))  {
-                	//this might be a combat jet.. asume the worst
-                	hisCombatClass = 4;
+                 //this might be a combat jet.. asume the worst
+                 hisCombatClass = 4;
                 }
                 else if (targetPtr->BaseData()->GetVt() * FTPSEC_TO_KNOTS > 250.0f) {
-                	// this could be a a-a capable thingy, but if it's is it's low level so it's a-a long range shoot capabilitys are not great
-                	hisCombatClass = 1;
+                 // this could be a a-a capable thingy, but if it's is it's low level so it's a-a long range shoot capabilitys are not great
+                 hisCombatClass = 1;
                 }
                 else {
-                	// this must be something unthreatening...it's below 250 knots but it's still unidentified so...
-                	hisCombatClass = 0;
+                 // this must be something unthreatening...it's below 250 knots but it's still unidentified so...
+                 hisCombatClass = 0;
                 }*/
             }
         }

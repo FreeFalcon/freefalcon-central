@@ -20,9 +20,9 @@ private:
     long DefaultFlags_;
     long Font_;
     long Position_, Direction_;
-    //!		short Position_,Direction_;
+    //! short Position_,Direction_;
     long MarqueLen_;
-    //!		short MarqueLen_;
+    //! short MarqueLen_;
 
     // Don't save from here
     O_Output *Text_;

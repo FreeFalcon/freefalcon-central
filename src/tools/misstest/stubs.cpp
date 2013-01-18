@@ -31,7 +31,7 @@ SimulationDriver::SimulationDriver(void)
     doFile = FALSE;
     facList = NULL;
     tankerList = NULL;
-    //	airbaseList = NULL;
+    // airbaseList = NULL;
     atcList = NULL;
     avtrOn = TRUE;
     SimLibMajorFrameTime = 0.02F;
@@ -194,7 +194,7 @@ unsigned char GetTeam(unsigned char a)
 
 FILE* OpenCampFile(char *filename, char *ext, char *mode)
 {
-    char	fullname[MAX_PATH], path[MAX_PATH];
+    char fullname[MAX_PATH], path[MAX_PATH];
 
     if (strcmp(ext, "cmp") == 0)
         sprintf(path, FalconCampUserSaveDirectory);
@@ -249,9 +249,9 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
     else
         sprintf(path, FalconCampaignSaveDirectory);
 
-    //	Outdated by resmgr:
-    //	if (!ResExistFile(filename))
-    //		ResAddPath(path, FALSE);
+    // Outdated by resmgr:
+    // if (!ResExistFile(filename))
+    // ResAddPath(path, FALSE);
     sprintf(fullname, "%s\\%s.%s", path, filename, ext);
     return ResFOpen(fullname, mode);
 }

@@ -1,8 +1,8 @@
 /*
 ** Name: AFSIMPLE.CPP
 ** Description:
-**		Contains a very simple flight model for AI and autopilot aircraft
-**		control.
+** Contains a very simple flight model for AI and autopilot aircraft
+** control.
 */
 #include "stdhdr.h"
 #include "airframe.h"
@@ -36,19 +36,19 @@ extern AeroDataSet *aeroDataset;
 
 // for SIMPLE model
 #define MAX_AF_PITCH ( DTR * 89.0f )
-#define MAX_AF_ROLL	( DTR * 89.0f )
-#define MAX_AF_YAWRATE	( DTR * 20.0f )
-#define MAX_AF_FPS	( 450.0f * KNOTS_TO_FTPSEC )
+#define MAX_AF_ROLL ( DTR * 89.0f )
+#define MAX_AF_YAWRATE ( DTR * 20.0f )
+#define MAX_AF_FPS ( 450.0f * KNOTS_TO_FTPSEC )
 
-#define A1   (1.5F)			// integration constant
-#define A2   (0.5F)			// integration constant
-#define B1   (1.0F - 1.5F)		// integration constant
-#define B2   (1.0F - 0.5F)		// integration constant
+#define A1   (1.5F) // integration constant
+#define A2   (0.5F) // integration constant
+#define B1   (1.0F - 1.5F) // integration constant
+#define B2   (1.0F - 0.5F) // integration constant
 
 /*
 ** SetSimpleMode
 ** Description:
-**		Tell af to use simple mode
+** Tell af to use simple mode
 */
 void
 AirframeClass::SetSimpleMode(int mode)
@@ -68,8 +68,8 @@ AirframeClass::SetSimpleMode(int mode)
 /*
 ** SimpleModel
 ** Description:
-**		A very simple flight model for aircraft that the AI and autopilot
-**		will fly
+** A very simple flight model for aircraft that the AI and autopilot
+** will fly
 */
 void
 AirframeClass::SimpleModel(void)
@@ -101,12 +101,12 @@ AirframeClass::SimpleModel(void)
 
 
     // NOTE:
-    //	p     = roll rate (around X axis)
-    //	q     = pitch rate (around Y axis)
-    //	r     = yaw rate (around Z axis)
-    //	phi   = roll (around X axis)
-    //	theta = pitch (around Y axis)
-    //	psi   = yaw (around Z axis)
+    // p     = roll rate (around X axis)
+    // q     = pitch rate (around Y axis)
+    // r     = yaw rate (around Z axis)
+    // phi   = roll (around X axis)
+    // theta = pitch (around Y axis)
+    // psi   = yaw (around Z axis)
 
     // handle body rates -- flying
     if (IsSet(InAir))
@@ -173,7 +173,7 @@ AirframeClass::SimpleModel(void)
             // track point.
             if ((g_bTankerFMFix && platform->DBrain() && platform->DBrain()->IsTanker() &&
                  platform->TBrain() /* && platform->TBrain()->IsSet(TankerBrain::IsRefueling)  &&
-				platform->TBrain()->ReachedFirstTrackPoint() */) ||
+ platform->TBrain()->ReachedFirstTrackPoint() */) ||
                 (g_bSimpleFMUpdates && vt > 1 && gearPos < 0.7F &&
                  platform->DBrain()->GetCurrentMode() != DigitalBrain::LandingMode &&
                  platform->DBrain()->GetCurrentMode() != DigitalBrain::RefuelingMode))

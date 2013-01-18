@@ -2,7 +2,7 @@
     PlayerRWR.cpp
 
     This provides the special abilities required for a player's RWR.  Most
-	of the added functionality involves Display and Mode control.
+ of the added functionality involves Display and Mode control.
 \***************************************************************************/
 #include "stdhdr.h"
 #include "ClassTbl.h"
@@ -38,14 +38,14 @@ extern bool g_bRealisticAvionics;
 extern bool g_bIFFRWR; // JB 010727
 extern bool g_bRWR; // JB 010802
 
-#include "SimIO.h"	// Retro 3Jan2004
+#include "SimIO.h" // Retro 3Jan2004
 
 // MLR 2003-11-21 Moved volume control for RWR sounds here.
 void PlayRWRSoundFX(int SfxID, int Override, float Vol, float PScale)
 {
     if (g_bRealisticAvionics  && SimDriver.GetPlayerAircraft())
     {
-        if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false)				// Retro 3Jan2004
+        if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false) // Retro 3Jan2004
         {
             //make sure we don't hear it
             if (SimDriver.GetPlayerAircraft()->ThreatVolume == 8)
@@ -56,11 +56,11 @@ void PlayRWRSoundFX(int SfxID, int Override, float Vol, float PScale)
             else
                 Vol = -(float)(SimDriver.GetPlayerAircraft()->ThreatVolume * 250);
         }
-        else															// Retro 3Jan2004
+        else // Retro 3Jan2004
         {
             // Retro 26Jan2004 - the axis is now reversed on default and scales linear to the axis
-            //					- the user will have to shape it to logarithmic to use the throw efficiently
-            Vol = -(float)(/*15000-*/IO.GetAxisValue(AXIS_THREAT_VOLUME)) / 1.5F;	// Retro 26Jan2004
+            // - the user will have to shape it to logarithmic to use the throw efficiently
+            Vol = -(float)(/*15000-*/IO.GetAxisValue(AXIS_THREAT_VOLUME)) / 1.5F; // Retro 26Jan2004
         }
     }
 
@@ -168,9 +168,9 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
 
                     // END OF ADDED SECTION
                     /*
-                    						if (listElement)
-                    							listElement->lastHit = SimLibElapsedTime;
-                    					}
+                     if (listElement)
+                     listElement->lastHit = SimLibElapsedTime;
+                     }
                     */
                 }
             }
@@ -285,7 +285,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
             //if(!curEmitter->IsSim() &&
             // curEmitter->GetRadarMode()> FEC_RADAR_SEARCH_1 &&
             // curEmitter->GetRadarMode() != FEC_RADAR_SEARCH_100)
-            //	((BattalionClass*)(SimBaseClass*)curEmitter)->SetRadarMode(FEC_RADAR_SEARCH_1);
+            // ((BattalionClass*)(SimBaseClass*)curEmitter)->SetRadarMode(FEC_RADAR_SEARCH_1);
             // Add it to the list (if the list isn't full)
             //if (ObjectDetected(curEmitter, pingType))
             //{
@@ -512,8 +512,8 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
         return;
 
     RadarDataSet* radarfileData = &radarDatFileTable[record->radarData->RDRDataInd];
-    float	xPos, yPos, angle, radius;
-    mlTrig	trig;
+    float xPos, yPos, angle, radius;
+    mlTrig trig;
 
     ShiAssert(record->entity);
 
@@ -524,11 +524,11 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
 
         // JB 010727 RP5 RWR
         // 2001-02-20 MOFIFIED BY S.G. SO WE CONVERT LOCKED TARGET LETHALITY TO SOME VALID NUMBER
-        //		radius = (1.0F - record->lethality) * 0.95f;	// 0.95 keeps things from leaking off the edge of the display
+        // radius = (1.0F - record->lethality) * 0.95f; // 0.95 keeps things from leaking off the edge of the display
         if (record->lethality > 1.0)
-            radius = (2.0F - record->lethality) * 0.95f;	// 0.95 keeps things from leaking off the edge of the display
+            radius = (2.0F - record->lethality) * 0.95f; // 0.95 keeps things from leaking off the edge of the display
         else
-            radius = (1.0F - record->lethality) * 0.95f;	// 0.95 keeps things from leaking off the edge of the display
+            radius = (1.0F - record->lethality) * 0.95f; // 0.95 keeps things from leaking off the edge of the display
 
         // END OF MODIFIED SECTION
 
@@ -616,13 +616,13 @@ void PlayerRwrClass::DrawContact(DetectListElement *record)
 
 void PlayerRwrClass::DrawStatusSymbol(int symbol)
 {
-    static const float	MARK_SIZE = 0.15f;
+    static const float MARK_SIZE = 0.15f;
     //MI
     static const float  HAT_SIZE = 0.06f;
 
     switch (symbol)
     {
-        case Diamond:			// For designation
+        case Diamond: // For designation
             display->Line(0.0F, MARK_SIZE, MARK_SIZE, 0.0F);
             display->Line(0.0F, MARK_SIZE, -MARK_SIZE, 0.0F);
             display->Line(0.0F, -MARK_SIZE, MARK_SIZE, 0.0F);
@@ -634,12 +634,12 @@ void PlayerRwrClass::DrawStatusSymbol(int symbol)
             display->Arc(0.0, 0.0, MARK_SIZE, float(180.0 * DTR), 0);
             break;
 
-        case MissileActivity:	// LAUNCH && !entity->IsMissile()
+        case MissileActivity: // LAUNCH && !entity->IsMissile()
         {
             if (flash)  break;
         }
 
-        case MissileLaunch:	// LAUNCH && entity->IsMissile()
+        case MissileLaunch: // LAUNCH && entity->IsMissile()
         {
             display->Circle(0.0F, 0.0F, MARK_SIZE);
         }
@@ -864,17 +864,17 @@ void PlayerRwrClass::DoAudio(DetectListElement *record)
 
 void PlayerRwrClass::DrawGrid(void)
 {
-    static int		fpass = TRUE;
-    static float	tick[40][2];
-    int				i;
+    static int fpass = TRUE;
+    static float tick[40][2];
+    int i;
 
     // The first time through, we compute some stuff
     // (It'd be more efficient to precompute a static array, but its easier to write this way)
     // An intermediate solution would be a simple class with one global instance and a constructor.
     if (fpass)
     {
-        float			ang;
-        mlTrig			trig;
+        float ang;
+        mlTrig trig;
 
         fpass = FALSE;
 
@@ -990,7 +990,7 @@ int PlayerRwrClass::ManualSelect(void)
 }
 
 
-int	PlayerRwrClass::LightUnknowns(void)
+int PlayerRwrClass::LightUnknowns(void)
 {
     // Take the easy way if the search button is pushed
     if (ShowUnknowns())
@@ -1021,9 +1021,9 @@ int	PlayerRwrClass::LightUnknowns(void)
 
 void PlayerRwrClass::SelectNextEmitter(void)
 {
-    int	foundSelected = FALSE;
-    int	drawn;
-    int	last;
+    int foundSelected = FALSE;
+    int drawn;
+    int last;
     int i;
 
 
@@ -1229,7 +1229,7 @@ void PlayerRwrClass::CheckEWS(void)
                             SimDriver.GetPlayerAircraft()->SetFlag(ECM_ON);
                         }
 
-                        else if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Semi)	//ask if we want turn it on
+                        else if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Semi) //ask if we want turn it on
                         {
                             if (!SaidJammer)
                             {

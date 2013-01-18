@@ -57,7 +57,7 @@ extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 extern VehicleClassDataType* GetVehicleClassData(int index);
 void GetCallsign(int id, int num, _TCHAR* callsign);  // from campui
 
-extern bool g_bNewDamageEffects;	// JB 000816
+extern bool g_bNewDamageEffects; // JB 000816
 extern bool g_bDisableFunkyChicken; // JB 000820
 extern bool g_bRealisticAvionics;
 #include "ui/include/uicomms.h" // JB 010104
@@ -275,7 +275,7 @@ WayPointClass *SimVehicleClass::GetWayPointNo(int n)
 
 float SimVehicleClass::GetRCSFactor(void)
 {
-    VehicleClassDataType	*vc	= (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
     ShiAssert(vc);
 
     return vc->RCSfactor;
@@ -285,17 +285,17 @@ float SimVehicleClass::GetIRFactor(void)
 {
     // 2000-11-24 REWRITTEN BY S.G. SO IT USES THE NEW IR FIELD AND THE NEW ENGINE TEMPERATURE. THIS ALSO MAKES IT COMPATIBLE WITH RP4 MP.
 #if 1
-    //	if (!g_bHardCoreReal)	MI
+    // if (!g_bHardCoreReal) MI
     if (!g_bRealisticAvionics)
     {
-        VehicleClassDataType	*vc	= (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+        VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
         ShiAssert(vc);
 
         return vc->RCSfactor;
     }
     else
     {
-        VehicleClassDataType	*vc	= (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+        VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
         ShiAssert(vc);
         // TODO:  THis needs to return IR data
         // The IR signature is stored as a byte at offset 0x9E of the falcon4.vcd structure.
@@ -317,7 +317,7 @@ float SimVehicleClass::GetIRFactor(void)
             irOutput = (float)(irOutput + (((((PowerOutput() - 0.70) * 2) / irOutput) - 1.0f) * SimLibMajorFrameTime * 0.04f));
             irOutput = (max(min(0.6f, irOutput), 0.05f));    //,0.167f);
 
-            //	MonoPrint("IR output %d .\n",irOutput);
+            // MonoPrint("IR output %d .\n",irOutput);
             return max((irOutput * irSignature) * 1.875f, 0.15f);
         }
         else
@@ -330,12 +330,12 @@ float SimVehicleClass::GetIRFactor(void)
     }
 
 #else
-    VehicleClassDataType	*vc	= (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
     ShiAssert(vc);
 
     // TODO:  THis needs to return IR data
     // 2000-09-15 MODIFIED BY S.G. THIS GIVES IT THE IR DATA IT NEEDS
-    //	return vc->RCSfactor * PowerOutput();
+    // return vc->RCSfactor * PowerOutput();
 
     // The IR signature is stored as a byte at offset 0x9E of the falcon4.vcd structure.
     // This byte, as well as 0x9D and 0x9F are used for padding originally.
@@ -355,7 +355,7 @@ float SimVehicleClass::GetIRFactor(void)
 
 int SimVehicleClass::GetRadarType(void)
 {
-    VehicleClassDataType	*vc	= (VehicleClassDataType *)((Falcon4EntityClassType*)EntityType())->dataPtr;
+    VehicleClassDataType *vc = (VehicleClassDataType *)((Falcon4EntityClassType*)EntityType())->dataPtr;
     ShiAssert(vc);
 
     return vc->RadarType;
@@ -397,11 +397,11 @@ int SimVehicleClass::Exec(void)
             pos.z = ZPos();
             /*
             OTWDriver.AddSfxRequest(
-            			new SfxClass( SFX_FIRE1,		// type
-            			&pos,							// world pos
-            			0.5f,							// time to live
-            			20.0f + 50.0f * randamt ) );	// scale
-            			*/
+             new SfxClass( SFX_FIRE1, // type
+             &pos, // world pos
+             0.5f, // time to live
+             20.0f + 50.0f * randamt ) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
                                                   &pos,
                                                   &PSvec);
@@ -423,11 +423,11 @@ int SimVehicleClass::Exec(void)
         /*
         if ( !IsLocal() )
         {
-        	MonoPrint( "NonLocal Dying: Pct Strength now: %f\n", pctStrength );
+         MonoPrint( "NonLocal Dying: Pct Strength now: %f\n", pctStrength );
         }
         else
         {
-        	MonoPrint( "Local Vehicle Dying: Pct Strength now: %f\n", pctStrength );
+         MonoPrint( "Local Vehicle Dying: Pct Strength now: %f\n", pctStrength );
         }
         */
 
@@ -440,505 +440,505 @@ int SimVehicleClass::Exec(void)
         }
 
         ///*
-        //			 update dying timer
-        //			dyingTimer += SimLibMajorFrameTime;
+        //  update dying timer
+        // dyingTimer += SimLibMajorFrameTime;
         //
-        //			 Do nothing for the 1st part of dying
-        //			if ( pctStrength > -0.07f )
-        //			{
-        //			}
-        //		RV - I-Hawk - Commenting some unnecessary stuff here...
+        //  Do nothing for the 1st part of dying
+        // if ( pctStrength > -0.07f )
+        // {
+        // }
+        // RV - I-Hawk - Commenting some unnecessary stuff here...
         //
-        //			 just chuck out debris until a certain point in death sequence
-        //			else if ( pctStrength > -0.3f ) // I-Hawk - was -0.5f before
-        //			{
-        //				if ( dyingTimer > 0.3f ) //
-        //				{
-        //				   I-Hawk - better with the standard position...
+        //  just chuck out debris until a certain point in death sequence
+        // else if ( pctStrength > -0.3f ) // I-Hawk - was -0.5f before
+        // {
+        // if ( dyingTimer > 0.3f ) //
+        // {
+        //    I-Hawk - better with the standard position...
         //
-        //					/*
-        //					pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
-        //					pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
-        //					pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
-        //					*/
+        // /*
+        // pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
+        // pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
+        // pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
+        // */
         ///*
-        //					pos.x = XPos();
-        //					pos.y = YPos();
-        //					pos.z = ZPos();
+        // pos.x = XPos();
+        // pos.y = YPos();
+        // pos.z = ZPos();
         //
-        //					vec.x = XDelta();
-        //					vec.y = YDelta();
-        //					vec.z = ZDelta();
+        // vec.x = XDelta();
+        // vec.y = YDelta();
+        // vec.z = ZDelta();
         //
-        //					DrawableParticleSys::PS_AddParticleEx((PSFX_AC_EARLY_BURNING + 1),
-        //												&pos,
-        //												&vec);
+        // DrawableParticleSys::PS_AddParticleEx((PSFX_AC_EARLY_BURNING + 1),
+        // &pos,
+        // &vec);
         //
-        //					Cobra 11/12/04 TJL Removed per Steve and stops Scrape sound during dying
-        //					/*
-        //					if(!AddParticleEffect(PSFX_AC_EARLY_BURNING,&pos, &vec))
-        //					{
-        //						/*
-        //						OTWDriver.AddSfxRequest(
-        //								new SfxClass (SFX_SPARKS,			// type was SFX_SPARKS
-        //								&pos,							// world pos
-        //								1.0f,							// time to live
-        //								12.0f ));		// scale
-        //								*/
-        //					/*
-        //						DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //					}
-        //					*/
+        // Cobra 11/12/04 TJL Removed per Steve and stops Scrape sound during dying
+        // /*
+        // if(!AddParticleEffect(PSFX_AC_EARLY_BURNING,&pos, &vec))
+        // {
+        // /*
+        // OTWDriver.AddSfxRequest(
+        // new SfxClass (SFX_SPARKS, // type was SFX_SPARKS
+        // &pos, // world pos
+        // 1.0f, // time to live
+        // 12.0f )); // scale
+        // */
+        // /*
+        // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        // }
+        // */
         //
         ///*
-        //					for ( int i = 0; i < 3; i++ )
-        //					{
-        //						vec.x = XDelta() * 0.5f + PRANDFloat() * 20.0f;
-        //						vec.y = YDelta() * 0.5f + PRANDFloat() * 20.0f;
-        //						vec.z = ZDelta() * 0.5f + PRANDFloat() * 20.0f;
-        //						/*
-        //						OTWDriver.AddSfxRequest(
-        //								new SfxClass (SFX_AC_DEBRIS,			// type
-        //								SFX_MOVES | SFX_USES_GRAVITY,						// flags
-        //								&pos,							// world pos
-        //								&vec,							// vector
-        //								3.5f,							// time to live
-        //								2.0f ));		// scale
-        //								*/
+        // for ( int i = 0; i < 3; i++ )
+        // {
+        // vec.x = XDelta() * 0.5f + PRANDFloat() * 20.0f;
+        // vec.y = YDelta() * 0.5f + PRANDFloat() * 20.0f;
+        // vec.z = ZDelta() * 0.5f + PRANDFloat() * 20.0f;
+        // /*
+        // OTWDriver.AddSfxRequest(
+        // new SfxClass (SFX_AC_DEBRIS, // type
+        // SFX_MOVES | SFX_USES_GRAVITY, // flags
+        // &pos, // world pos
+        // &vec, // vector
+        // 3.5f, // time to live
+        // 2.0f )); // scale
+        // */
         ///*
-        //						DrawableParticleSys::PS_AddParticleEx((SFX_AC_DEBRIS + 1),
-        //												&pos,
-        //												&vec);
-        //					}
+        // DrawableParticleSys::PS_AddParticleEx((SFX_AC_DEBRIS + 1),
+        // &pos,
+        // &vec);
+        // }
         //
-        //					 zero out
-        //					dyingTimer = 0.0f;
-        //				}
-        //		   }
-        //		    if dyingTimer is greater than some value, we can run some
-        //		    sort of special effect such as tossing debris, ejection, etc...
+        //  zero out
+        // dyingTimer = 0.0f;
+        // }
+        //    }
+        //     if dyingTimer is greater than some value, we can run some
+        //     sort of special effect such as tossing debris, ejection, etc...
         //
-        //		RV - I-Hawk - Commenting lots of stuff here... needed no more.
+        // RV - I-Hawk - Commenting lots of stuff here... needed no more.
         //
-        //		   else switch( dyingType )
-        //		   {
-        //			   case 5:
-        //			   case SimVehicleClass::DIE_SMOKE:
-        //				   if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
-        //				   {
-        //					    run stuff here....
-        //					   pos.x = XPos();
-        //					   pos.y = YPos();
-        //					   pos.z = ZPos();
+        //    else switch( dyingType )
+        //    {
+        //    case 5:
+        //    case SimVehicleClass::DIE_SMOKE:
+        //    if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
+        //    {
+        //     run stuff here....
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //	   					vec.x = XDelta();
-        //						vec.y = YDelta();
-        //						vec.z = ZDelta();
+        //     vec.x = XDelta();
+        // vec.y = YDelta();
+        // vec.z = ZDelta();
         //
-        //						DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_SMOKE + 1),
-        //												&pos,
-        //												&vec);
+        // DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_SMOKE + 1),
+        // &pos,
+        // &vec);
         //
-        //						/* I-Hawk
-        //					   if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE,&pos,&vec))
-        //					   {
-        //	   					   vec.x = PRANDFloat() * 40.0f;
-        //						   vec.y = PRANDFloat() * 40.0f;
-        //						   vec.z = PRANDFloat() * 40.0f;
+        // /* I-Hawk
+        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE,&pos,&vec))
+        //    {
+        //        vec.x = PRANDFloat() * 40.0f;
+        //    vec.y = PRANDFloat() * 40.0f;
+        //    vec.z = PRANDFloat() * 40.0f;
         //
-        //						   switch ( PRANDInt5() )
-        //						   {
-        //						   case 0:
-        //						   	   /*
-        //							   OTWDriver.AddSfxRequest(
-        //								   new SfxClass (SFX_SPARKS,			// type
-        //								   &pos,							// world pos
-        //								   4.5f,							// time to live
-        //								   7.5f ));		// scale
-        //								   */
-        //						/*
-        //							   DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //							   break;
-        //						   case 1:
-        //							   /*
-        //							   OTWDriver.AddSfxRequest(
-        //								   new SfxClass (SFX_TRAILSMOKE,			// type
-        //								   SFX_MOVES,						// flags
-        //								   &pos,							// world pos
-        //								   &vec,							// vector
-        //								   4.5f,							// time to live
-        //								   20.5f ));		// scale
-        //								   */
-        //						/*
-        //							   DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-        //												&pos,
-        //												&vec);
-        //							   break;
-        //						   default:
-        //							   /*
-        //							   OTWDriver.AddSfxRequest(
-        //								   new SfxClass (SFX_AIR_SMOKECLOUD,			// type
-        //								   SFX_MOVES,						// flags
-        //								   &pos,							// world pos
-        //								   &vec,							// vector
-        //								   4.5f,							// time to live
-        //								   10.5f ));		// scale
-        //								   */
-        //						/*
-        //							   DrawableParticleSys::PS_AddParticleEx((SFX_AIR_SMOKECLOUD + 1),
-        //												&pos,
-        //												&vec);
-        //							   break;
-        //						   }
-        //					   }
-        //					   */
+        //    switch ( PRANDInt5() )
+        //    {
+        //    case 0:
+        //        /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_SPARKS, // type
+        //    &pos, // world pos
+        //    4.5f, // time to live
+        //    7.5f )); // scale
+        //    */
+        // /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        //    break;
+        //    case 1:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_TRAILSMOKE, // type
+        //    SFX_MOVES, // flags
+        //    &pos, // world pos
+        //    &vec, // vector
+        //    4.5f, // time to live
+        //    20.5f )); // scale
+        //    */
+        // /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
+        // &pos,
+        // &vec);
+        //    break;
+        //    default:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_AIR_SMOKECLOUD, // type
+        //    SFX_MOVES, // flags
+        //    &pos, // world pos
+        //    &vec, // vector
+        //    4.5f, // time to live
+        //    10.5f )); // scale
+        //    */
+        // /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_AIR_SMOKECLOUD + 1),
+        // &pos,
+        // &vec);
+        //    break;
+        //    }
+        //    }
+        //    */
         ///*
-        //					    reset the timer
-        //					   dyingTimer = 0.0f;
-        //				   }
-        //				   break;
-        //			   case 6:
-        //			   case SimVehicleClass::DIE_SHORT_FIREBALL:
-        //				   if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
-        //				   {
-        //					   pos.x = XPos();
-        //					   pos.y = YPos();
-        //					   pos.z = ZPos();
+        //     reset the timer
+        //    dyingTimer = 0.0f;
+        //    }
+        //    break;
+        //    case 6:
+        //    case SimVehicleClass::DIE_SHORT_FIREBALL:
+        //    if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
+        //    {
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //					   vec.x = XDelta();
-        //					   vec.y = YDelta();
-        //					   vec.z = ZDelta();
+        //    vec.x = XDelta();
+        //    vec.y = YDelta();
+        //    vec.z = ZDelta();
         //
-        //					   DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_FIREBALL + 1),
-        //												&pos,
-        //												&vec);
-        //					   /* I-Hawk
-        //					   if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL,&pos,&vec))
-        //					   {
-        //						   if ( pctStrength > -0.7f )
-        //						   {
-        //							   float randamt  =   PRANDFloatPos();
+        //    DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_FIREBALL + 1),
+        // &pos,
+        // &vec);
+        //    /* I-Hawk
+        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL,&pos,&vec))
+        //    {
+        //    if ( pctStrength > -0.7f )
+        //    {
+        //    float randamt  =   PRANDFloatPos();
         //
-        //							    run stuff here....
-        //							   pos.x = XPos();
-        //							   pos.y = YPos();
-        //							   pos.z = ZPos();
+        //     run stuff here....
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //							   vec.x = XDelta();
-        //							   vec.y = YDelta();
-        //							   vec.z = ZDelta();
+        //    vec.x = XDelta();
+        //    vec.y = YDelta();
+        //    vec.z = ZDelta();
         //
-        //							   /*
-        //							   OTWDriver.AddSfxRequest(
-        //								   new SfxClass( SFX_FIRE1,				// type
-        //								   &pos,							// world pos
-        //								   0.5f,							// time to live
-        //								   20.0f + 50.0f * randamt ) );		// scale
-        //								   */
-        //					   /*
-        //							   DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
-        //												&pos,
-        //												&PSvec);
-        //						   }
-        //						   else
-        //						   {
-        //							   vec.x = PRANDFloat() * 40.0f;
-        //							   vec.y = PRANDFloat() * 40.0f;
-        //							   vec.z = PRANDFloat() * 40.0f;
-        //							    run stuff here....
-        //							   pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
-        //							   pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
-        //							   pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
-        //							   switch ( PRANDInt5() )
-        //							   {
-        //							   case 0:
-        //								   /*
-        //								   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_SPARKS,			// type
-        //									   &pos,							// world pos
-        //									   4.5f,							// time to live
-        //									   12.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //								   break;
-        //							   case 1:
-        //								   /*
-        //								   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_SPARKS,			// type
-        //									   &pos,							// world pos
-        //									   1.5f,							// time to live
-        //									   12.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //								   break;
-        //							   default:
-        //								   /*
-        //								   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_TRAILSMOKE,			// type
-        //									   SFX_MOVES,						// flags
-        //									   &pos,							// world pos
-        //									   &vec,							// vector
-        //									   4.5f,							// time to live
-        //									   20.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-        //												&pos,
-        //												&vec);
-        //								   break;
-        //							   }
-        //						   }
-        //					   }
-        //					   */
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass( SFX_FIRE1, // type
+        //    &pos, // world pos
+        //    0.5f, // time to live
+        //    20.0f + 50.0f * randamt ) ); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
+        // &pos,
+        // &PSvec);
+        //    }
+        //    else
+        //    {
+        //    vec.x = PRANDFloat() * 40.0f;
+        //    vec.y = PRANDFloat() * 40.0f;
+        //    vec.z = PRANDFloat() * 40.0f;
+        //     run stuff here....
+        //    pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
+        //    pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
+        //    pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
+        //    switch ( PRANDInt5() )
+        //    {
+        //    case 0:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_SPARKS, // type
+        //    &pos, // world pos
+        //    4.5f, // time to live
+        //    12.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        //    break;
+        //    case 1:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_SPARKS, // type
+        //    &pos, // world pos
+        //    1.5f, // time to live
+        //    12.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        //    break;
+        //    default:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_TRAILSMOKE, // type
+        //    SFX_MOVES, // flags
+        //    &pos, // world pos
+        //    &vec, // vector
+        //    4.5f, // time to live
+        //    20.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
+        // &pos,
+        // &vec);
+        //    break;
+        //    }
+        //    }
+        //    }
+        //    */
         //
-        ///*					   // reset the timer
-        //					   dyingTimer = 0.0f;
-        //				   }
-        //				   break;
-        //			   case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
-        //				   if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
-        //				   {
+        ///*    // reset the timer
+        //    dyingTimer = 0.0f;
+        //    }
+        //    break;
+        //    case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
+        //    if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
+        //    {
         //
-        //					   RV - I-Hawk - No need for such random position and vector...
-        //					   /*
-        //						vec.x = PRANDFloat() * 40.0f;
-        //						vec.y = PRANDFloat() * 40.0f;
-        //						vec.z = PRANDFloat() * 40.0f;
-        //						 run stuff here....
-        //						pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
-        //						pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
-        //						pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
-        //						*/
+        //    RV - I-Hawk - No need for such random position and vector...
+        //    /*
+        // vec.x = PRANDFloat() * 40.0f;
+        // vec.y = PRANDFloat() * 40.0f;
+        // vec.z = PRANDFloat() * 40.0f;
+        //  run stuff here....
+        // pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
+        // pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
+        // pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
+        // */
         ///*
-        //					   pos.x = XPos();
-        //					   pos.y = YPos();
-        //					   pos.z = ZPos();
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //					   vec.x = XDelta();
-        //					   vec.y = YDelta();
-        //					   vec.z = ZDelta();
+        //    vec.x = XDelta();
+        //    vec.y = YDelta();
+        //    vec.z = ZDelta();
         //
-        //					   DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_SMOKE2 + 1),
-        //												&pos,
-        //												&vec);
+        //    DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_SMOKE2 + 1),
+        // &pos,
+        // &vec);
         //
-        //					   /* I-Hawk
-        //						if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE2,&pos,&vec))
-        //						{
-        //							switch ( PRANDInt5() )
-        //							{
-        //								case 0:
-        //								case 1:
-        //									/*
-        //									OTWDriver.AddSfxRequest(
-        //										new SfxClass (SFX_SPARKS,			// type
-        //										&pos,							// world pos
-        //										4.5f,							// time to live
-        //										12.5f ));		// scale
-        //										*/
-        //					   /*
-        //									DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //									break;
-        //								case 2:
-        //									/*
-        //									OTWDriver.AddSfxRequest(
-        //										new SfxClass (SFX_SPARKS,			// type
-        //										&pos,							// world pos
-        //										1.5f,							// time to live
-        //										12.5f ));		// scale
-        //										*/
-        //					   /*
-        //									DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //									break;
-        //								default:
-        //									/*
-        //									OTWDriver.AddSfxRequest(
-        //										new SfxClass (SFX_TRAILSMOKE,			// type
-        //										SFX_MOVES,						// flags
-        //										&pos,							// world pos
-        //										&vec,							// vector
-        //										4.5f,							// time to live
-        //										20.5f ));		// scale
-        //										*/
-        //					   /*
-        //									DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-        //												&pos,
-        //												&vec);
-        //									break;
-        //							}
-        //						}
-        //						*/
+        //    /* I-Hawk
+        // if(!AddParticleEffect(PSFX_VEHICLE_DIE_SMOKE2,&pos,&vec))
+        // {
+        // switch ( PRANDInt5() )
+        // {
+        // case 0:
+        // case 1:
+        // /*
+        // OTWDriver.AddSfxRequest(
+        // new SfxClass (SFX_SPARKS, // type
+        // &pos, // world pos
+        // 4.5f, // time to live
+        // 12.5f )); // scale
+        // */
+        //    /*
+        // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        // break;
+        // case 2:
+        // /*
+        // OTWDriver.AddSfxRequest(
+        // new SfxClass (SFX_SPARKS, // type
+        // &pos, // world pos
+        // 1.5f, // time to live
+        // 12.5f )); // scale
+        // */
+        //    /*
+        // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        // break;
+        // default:
+        // /*
+        // OTWDriver.AddSfxRequest(
+        // new SfxClass (SFX_TRAILSMOKE, // type
+        // SFX_MOVES, // flags
+        // &pos, // world pos
+        // &vec, // vector
+        // 4.5f, // time to live
+        // 20.5f )); // scale
+        // */
+        //    /*
+        // DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
+        // &pos,
+        // &vec);
+        // break;
+        // }
+        // }
+        // */
         ///*
-        //						 reset the timer
-        //						dyingTimer = 0.0f;
+        //  reset the timer
+        // dyingTimer = 0.0f;
         //
-        //				   }
-        //				   break;
-        //			   case SimVehicleClass::DIE_FIREBALL:
-        //				   if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
-        //				   {
-        //					   float randamt  =   PRANDFloatPos();
+        //    }
+        //    break;
+        //    case SimVehicleClass::DIE_FIREBALL:
+        //    if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
+        //    {
+        //    float randamt  =   PRANDFloatPos();
         //
-        //					    run stuff here....
-        //					   pos.x = XPos();
-        //					   pos.y = YPos();
-        //					   pos.z = ZPos();
+        //     run stuff here....
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //					   vec.x = XDelta();
-        //					   vec.y = YDelta();
-        //					   vec.z = ZDelta();
+        //    vec.x = XDelta();
+        //    vec.y = YDelta();
+        //    vec.z = ZDelta();
         //
-        //					   DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_FIREBALL2 + 1),
-        //												&pos,
-        //												&vec);
+        //    DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_FIREBALL2 + 1),
+        // &pos,
+        // &vec);
         //
-        //					   /* I-Hawk
-        //					   if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL2,&pos,&vec))
-        //					   {
-        //						   /*
-        //						   OTWDriver.AddSfxRequest(
-        //										new SfxClass( SFX_FIRE1,				// type
-        //										&pos,							// world pos
-        //										0.5f,							// time to live
-        //										40.0f + 30.0f * randamt ) );		// scale
-        //										*/
-        //					   /*
-        //						   DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
-        //												&pos,
-        //												&PSvec);
-        //					   }
-        //					   */
+        //    /* I-Hawk
+        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_FIREBALL2,&pos,&vec))
+        //    {
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        // new SfxClass( SFX_FIRE1, // type
+        // &pos, // world pos
+        // 0.5f, // time to live
+        // 40.0f + 30.0f * randamt ) ); // scale
+        // */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
+        // &pos,
+        // &PSvec);
+        //    }
+        //    */
         ///*
-        //					    reset the timer
-        //					   dyingTimer = 0.0f;
-        //				   }
-        //				   break;
-        //			   case SimVehicleClass::DIE_INTERMITTENT_FIRE:
-        //			   default:
-        //				   if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
-        //				   {
-        //					   pos.x = XPos();
-        //					   pos.y = YPos();
-        //					   pos.z = ZPos();
+        //     reset the timer
+        //    dyingTimer = 0.0f;
+        //    }
+        //    break;
+        //    case SimVehicleClass::DIE_INTERMITTENT_FIRE:
+        //    default:
+        //    if ( dyingTimer > 0.10f + ( 1.0f - gSfxLOD ) * 0.3f )
+        //    {
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
-        //					   vec.x = XDelta();
-        //					   vec.y = YDelta();
-        //					   vec.z = ZDelta();
+        //    vec.x = XDelta();
+        //    vec.y = YDelta();
+        //    vec.z = ZDelta();
         //
-        //					   DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_INTERMITTENT_FIRE + 1),
-        //												&pos,
-        //												&vec);
+        //    DrawableParticleSys::PS_AddParticleEx((PSFX_VEHICLE_DIE_INTERMITTENT_FIRE + 1),
+        // &pos,
+        // &vec);
         //
-        //					   /* I-Hawk
-        //					   if(!AddParticleEffect(PSFX_VEHICLE_DIE_INTERMITTENT_FIRE,&pos,&vec))
-        //					   {
+        //    /* I-Hawk
+        //    if(!AddParticleEffect(PSFX_VEHICLE_DIE_INTERMITTENT_FIRE,&pos,&vec))
+        //    {
         //
-        //						   if ( pctStrength > -0.6f ||
-        //							   pctStrength > -0.7f && pctStrength < -0.65 ||
-        //							   pctStrength > -0.8f && pctStrength < -0.75 ||
-        //							   pctStrength > -0.9f && pctStrength < -0.85 )
-        //						   {
-        //							   float randamt  =   PRANDFloatPos();
+        //    if ( pctStrength > -0.6f ||
+        //    pctStrength > -0.7f && pctStrength < -0.65 ||
+        //    pctStrength > -0.8f && pctStrength < -0.75 ||
+        //    pctStrength > -0.9f && pctStrength < -0.85 )
+        //    {
+        //    float randamt  =   PRANDFloatPos();
         //
-        //							    run stuff here....
-        //							   pos.x = XPos();
-        //							   pos.y = YPos();
-        //							   pos.z = ZPos();
+        //     run stuff here....
+        //    pos.x = XPos();
+        //    pos.y = YPos();
+        //    pos.z = ZPos();
         //
         //
-        //							   /*
-        //							   OTWDriver.AddSfxRequest(
-        //								   new SfxClass( SFX_FIRE1,				// type
-        //								   &pos,							// world pos
-        //								   0.5f,							// time to live
-        //								   20.0f + 50.0f * randamt ) );		// scale
-        //								   */
-        //					   /*
-        //							   DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
-        //												&pos,
-        //												&PSvec);
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass( SFX_FIRE1, // type
+        //    &pos, // world pos
+        //    0.5f, // time to live
+        //    20.0f + 50.0f * randamt ) ); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_FIRE1 + 1),
+        // &pos,
+        // &PSvec);
         //
-        //						   }
-        //						   else
-        //						   {
-        //							   vec.x = PRANDFloat() * 40.0f;
-        //							   vec.y = PRANDFloat() * 40.0f;
-        //							   vec.z = PRANDFloat() * 40.0f;
-        //							    run stuff here....
-        //							   pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
-        //							   pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
-        //							   pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
-        //							   switch ( PRANDInt5() )
-        //							   {
-        //							   case 0:
-        //							   case 1:
-        //								   /*
-        //								   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_SPARKS,			// type
-        //									   &pos,							// world pos
-        //									   4.5f,							// time to live
-        //									   12.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //								   break;
-        //							   case 2:
-        //								   /*
+        //    }
+        //    else
+        //    {
+        //    vec.x = PRANDFloat() * 40.0f;
+        //    vec.y = PRANDFloat() * 40.0f;
+        //    vec.z = PRANDFloat() * 40.0f;
+        //     run stuff here....
+        //    pos.x = XPos() - XDelta() * SimLibMajorFrameTime;
+        //    pos.y = YPos() - YDelta() * SimLibMajorFrameTime;
+        //    pos.z = ZPos() - ZDelta() * SimLibMajorFrameTime;
+        //    switch ( PRANDInt5() )
+        //    {
+        //    case 0:
+        //    case 1:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_SPARKS, // type
+        //    &pos, // world pos
+        //    4.5f, // time to live
+        //    12.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        //    break;
+        //    case 2:
+        //    /*
         //                                   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_SPARKS,			// type
-        //									   &pos,							// world pos
-        //									   1.5f,							// time to live
-        //									   12.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-        //												&pos,
-        //												&PSvec);
-        //								   break;
-        //							   default:
-        //								   /*
-        //								   OTWDriver.AddSfxRequest(
-        //									   new SfxClass (SFX_TRAILSMOKE,			// type
-        //									   SFX_MOVES,						// flags
-        //									   &pos,							// world pos
-        //									   &vec,							// vector
-        //									   4.5f,							// time to live
-        //									   20.5f ));		// scale
-        //									   */
-        //					   /*
-        //								   DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-        //												&pos,
-        //												&vec);
-        //								   break;
-        //							   }
-        //						   }
-        //					   }
-        //					   */
+        //    new SfxClass (SFX_SPARKS, // type
+        //    &pos, // world pos
+        //    1.5f, // time to live
+        //    12.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+        // &pos,
+        // &PSvec);
+        //    break;
+        //    default:
+        //    /*
+        //    OTWDriver.AddSfxRequest(
+        //    new SfxClass (SFX_TRAILSMOKE, // type
+        //    SFX_MOVES, // flags
+        //    &pos, // world pos
+        //    &vec, // vector
+        //    4.5f, // time to live
+        //    20.5f )); // scale
+        //    */
+        //    /*
+        //    DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
+        // &pos,
+        // &vec);
+        //    break;
+        //    }
+        //    }
+        //    }
+        //    */
         ///*
-        //					    reset the timer
-        //					   dyingTimer = 0.0f;
-        //				   }
-        //				   break;
-        //			} // end switch
-        //		} // end if LOD
+        //     reset the timer
+        //    dyingTimer = 0.0f;
+        //    }
+        //    break;
+        // } // end switch
+        // } // end if LOD
         //
-        //	 RV - I-Hawk - until here...
+        //  RV - I-Hawk - until here...
         //*/
 
         // RV - Biker - Effects for ships (maybe some special for tanker type)
@@ -954,11 +954,11 @@ int SimVehicleClass::Exec(void)
                 pos.z = 0.0f;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_WATERTRAIL,	// type
-                	&pos,							// world pos
-                	3.0f,							// time to live
-                	0.1f ));
-                	*/
+                 new SfxClass (SFX_WATERTRAIL, // type
+                 &pos, // world pos
+                 3.0f, // time to live
+                 0.1f ));
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_WATERTRAIL + 1),
                                                       &pos,
                                                       &PSvec);
@@ -1027,11 +1027,11 @@ int SimVehicleClass::Exec(void)
                 pos.z = 0.0f;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_VEHICLE_BURNING,	// type
-                	&pos,							// world pos
-                	rand()%5+15.0f,					// time to live
-                	0.1f ));
-                	*/
+                 new SfxClass (SFX_VEHICLE_BURNING, // type
+                 &pos, // world pos
+                 rand()%5+15.0f, // time to live
+                 0.1f ));
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_VEHICLE_BURNING + 1),
                                                       &pos,
                                                       &PSvec);
@@ -1045,11 +1045,11 @@ int SimVehicleClass::Exec(void)
                 pos.z = 0.0f;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_VEHICLE_BURNING,// type
-                	&pos,						// world pos
-                	rand()%5+15.0f,				// time to live
-                	0.1f ));
-                	*/
+                 new SfxClass (SFX_VEHICLE_BURNING,// type
+                 &pos, // world pos
+                 rand()%5+15.0f, // time to live
+                 0.1f ));
+                 */
                 //RV - I-Hawk - Change from VEHICLE_BURNING to FIRE2 for ships special late burning
                 DrawableParticleSys::PS_AddParticleEx((SFX_SHIP_BURNING_FIRE + 1),
                                                       &pos,
@@ -1062,9 +1062,9 @@ int SimVehicleClass::Exec(void)
             SetExploding(TRUE);
 
             //           MonoPrint ("Vehicle %d DEAD! Local: %s, Has Death Msg: %s\n",
-            //		   				Id().num_,
-            //						IsLocal() ? "TRUE" : "FALSE",
-            //						deathMessage ? "TRUE" : "FALSE" );
+            //     Id().num_,
+            // IsLocal() ? "TRUE" : "FALSE",
+            // deathMessage ? "TRUE" : "FALSE" );
 
             // local entity sends death message out
             if (deathMessage)
@@ -1118,12 +1118,12 @@ int SimVehicleClass::Handle(VuTransferEvent *event)
 
 VU_ERRCODE SimVehicleClass::InsertionCallback(void)
 {
-    //	KCK: If you're relying on the code below, something is
-    //	VERY, VERY wrong. Please talk to me before re-adding this code again
-    //	if (IsLocal())
-    //	{
-    //		Wake();
-    //	}
+    // KCK: If you're relying on the code below, something is
+    // VERY, VERY wrong. Please talk to me before re-adding this code again
+    // if (IsLocal())
+    // {
+    // Wake();
+    // }
 
     if (theBrain)
     {
@@ -1192,7 +1192,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (tPodDisplay)
                 tPodDisplay->SetSOI(FALSE);
 
-            if (FCC)	//MI
+            if (FCC) //MI
                 FCC->ClearSOIAll();
 
             break;
@@ -1210,7 +1210,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (tPodDisplay)
                 tPodDisplay->SetSOI(FALSE);
 
-            if (FCC)	//MI
+            if (FCC) //MI
                 FCC->ClearSOIAll();
 
             break;
@@ -1228,7 +1228,7 @@ void SimVehicleClass::SOIManager(SOI newSOI)
             if (tPodDisplay)
                 tPodDisplay->SetSOI(TRUE);
 
-            if (FCC)	//MI
+            if (FCC) //MI
                 FCC->ClearSOIAll();
 
             break;
@@ -1386,13 +1386,13 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     soundIdx = SFX_BOOMA1;
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass( SFX_GROUND_DUSTCLOUD,		// type
-                    	SFX_MOVES,
-                    	&pos,					// world pos
-                    	&mvec,					// vel vector
-                    	3.0,					// time to live
-                    	8.0f ) );				// scale
-                    	*/
+                     new SfxClass( SFX_GROUND_DUSTCLOUD, // type
+                     SFX_MOVES,
+                     &pos, // world pos
+                     &mvec, // vel vector
+                     3.0, // time to live
+                     8.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_DUSTCLOUD + 1),
                                                           &pos,
                                                           &mvec);
@@ -1403,13 +1403,13 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     soundIdx = SFX_SPLASH;
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass( SFX_WATER_CLOUD,		// type
-                    	SFX_MOVES,
-                    	&pos,					// world pos
-                    	&mvec,					// vel vector
-                    	3.0,					// time to live
-                    	10.0f ) );				// scale
-                    	*/
+                     new SfxClass( SFX_WATER_CLOUD, // type
+                     SFX_MOVES,
+                     &pos, // world pos
+                     &mvec, // vel vector
+                     3.0, // time to live
+                     10.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_WATER_CLOUD + 1),
                                                           &pos,
                                                           &mvec);
@@ -1430,11 +1430,11 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass( SFX_SPARKS,		// type
-                    	&pos,					// world pos
-                    	2.9f,					// time to live
-                    	14.3f ) );				// scale
-                    	*/
+                     new SfxClass( SFX_SPARKS, // type
+                     &pos, // world pos
+                     2.9f, // time to live
+                     14.3f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
                                                           &pos,
                                                           &PSvec);
@@ -1499,10 +1499,10 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
     // JB 010121 adjusted to work in MP
     if (g_bNewDamageEffects && IsSetFlag(MOTION_OWNSHIP) && // hitPoints > 0 && 2002-04-11 REMOVED BY S.G. Done below after ->af since it's now externalized
-        //			SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->AutopilotType() != AircraftClass::CombatAP &&
-        //			!(gCommsMgr && gCommsMgr->Online()) &&
+        // SimDriver.GetPlayerEntity() && SimDriver.GetPlayerEntity()->AutopilotType() != AircraftClass::CombatAP &&
+        // !(gCommsMgr && gCommsMgr->Online()) &&
         IsAirplane() &&
-        //			(rand() & 0x7) == 0x7 && // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
+        // (rand() & 0x7) == 0x7 && // 13% chance 2002-04-11 MOVED BY S.G. After the ->af and used the external var now
         ((AircraftClass*)this)->af &&
         ((AircraftClass*)this)->af->GetEngineDamageHitThreshold() < hitPoints && // 2002-04-11 ADDED BY S.G. hitPoints 'theshold' is no longer 1 or above but externalized
         ((AircraftClass*)this)->af->GetEngineDamageStopThreshold() > rand() % 100 && // 2002-04-11 ADDED BY S.G. instead of a fixed 13%, now uses an aiframe aux var
@@ -1510,7 +1510,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
        )
     {
         ((AircraftClass*)this)->af->SetFlag(AirframeClass::EngineStopped);
-        //			((AircraftClass*)this)->af->SetFlag(AirframeClass::EpuRunning);
+        // ((AircraftClass*)this)->af->SetFlag(AirframeClass::EpuRunning);
 
         // MODIFIED BY S.G. Instead of 50%, now uses an aiframe aux var
         // if ((rand() & 0x1) == 0x1) // JB 010115 half the time (13%/2) you won't be able to restart.
@@ -1523,7 +1523,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
     // debug non local
     if (!IsLocal())
     {
-        //	   MonoPrint( "NonLocal Apply Damage: Pct Strength now: %f\n", pctStrength );
+        //    MonoPrint( "NonLocal Apply Damage: Pct Strength now: %f\n", pctStrength );
     }
 
     // BIGASSCOW - We need to make this a local sound so it can be heard inside the cockpit.
@@ -1545,8 +1545,8 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             deathMessage->dataBlock.dEntityID  = Id();
             ShiAssert(GetCampaignObject())
-            deathMessage->dataBlock.dCampID		= ((CampBaseClass*)GetCampaignObject())->GetCampID();
-            deathMessage->dataBlock.dSide		= ((CampBaseClass*)GetCampaignObject())->GetOwner();
+            deathMessage->dataBlock.dCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
+            deathMessage->dataBlock.dSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
             deathMessage->dataBlock.dPilotID   = pilotSlot;
             deathMessage->dataBlock.dIndex     = Type();
 
@@ -1554,20 +1554,20 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
             if (lastToHit && !lastToHit->IsEject() && lastToHit->Id() != damageMessage->dataBlock.fEntityID)
             {
-                deathMessage->dataBlock.fEntityID		= lastToHit->Id();
-                deathMessage->dataBlock.fIndex			= lastToHit->Type();
+                deathMessage->dataBlock.fEntityID = lastToHit->Id();
+                deathMessage->dataBlock.fIndex = lastToHit->Type();
 
                 if (lastToHit->IsSim())
                 {
-                    deathMessage->dataBlock.fCampID		= ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
-                    deathMessage->dataBlock.fPilotID	= ((SimVehicleClass*)lastToHit)->pilotSlot;
-                    deathMessage->dataBlock.fSide		= ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
+                    deathMessage->dataBlock.fCampID = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
+                    deathMessage->dataBlock.fPilotID = ((SimVehicleClass*)lastToHit)->pilotSlot;
+                    deathMessage->dataBlock.fSide = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
                 }
                 else
                 {
-                    deathMessage->dataBlock.fCampID		= ((CampBaseClass*)lastToHit)->GetCampID();
-                    deathMessage->dataBlock.fPilotID	= 0;
-                    deathMessage->dataBlock.fSide		= ((CampBaseClass*)lastToHit)->GetOwner();
+                    deathMessage->dataBlock.fCampID = ((CampBaseClass*)lastToHit)->GetCampID();
+                    deathMessage->dataBlock.fPilotID = 0;
+                    deathMessage->dataBlock.fSide = ((CampBaseClass*)lastToHit)->GetOwner();
                 }
 
                 // We really don't know what weapon did the killing. Pick a non-existant one
@@ -1588,7 +1588,7 @@ void SimVehicleClass::ApplyDamage(FalconDamageMessage* damageMessage)
             }
 
             deathMessage->dataBlock.deathPctStrength = pctStrength;
-            //	me123		deathMessage->RequestOutOfBandTransmit ();
+            // me123 deathMessage->RequestOutOfBandTransmit ();
         }
 
         // this is now done in the exec() function when hitpoints reaches
@@ -1689,8 +1689,8 @@ void SimVehicleClass::SendFireMessage(SimWeaponClass* curWeapon, int type, int s
 /*
 ** Name: ApplyProximityDamage
 ** Description:
-**		Cycles thru objectList check for proximity.
-**		Cycles thru all objectives, and checks vs individual features
+** Cycles thru objectList check for proximity.
+** Cycles thru all objectives, and checks vs individual features
 **        if it's within the objective's bounds.
 */
 void
@@ -1778,7 +1778,7 @@ SimVehicleClass::ApplyProximityDamage(void)
                 message->dataBlock.damageRandomFact = 1.0f;
                 message->dataBlock.damageStrength = normBlastDist * 120.0f;
                 message->dataBlock.damageType = FalconDamageType::ProximityDamage;
-                //	me123			message->RequestOutOfBandTransmit ();
+                // me123 message->RequestOutOfBandTransmit ();
                 FalconSendMessage(message, TRUE);
 
             }
@@ -1790,7 +1790,7 @@ SimVehicleClass::ApplyProximityDamage(void)
 //MI
 void SimVehicleClass::StepSOI(int dir)
 {
-    SMSClass	*Sms = (SMSClass*)GetSMS();
+    SMSClass *Sms = (SMSClass*)GetSMS();
     MissileClass* theMissile = NULL;
     MissileDisplayClass* mslDisplay = NULL;
     SensorClass* tPodDisplay = NULL;
@@ -1827,12 +1827,12 @@ void SimVehicleClass::StepSOI(int dir)
             //Can the SOI move to the HUD?
             //ok let's see... AGR can't be the SOI
             //info from Snako
-            /*o	If CCIP, CCIP rockets, STRF, DTOS, or EO-VIS is selected, the forward position moves the
+            /*o If CCIP, CCIP rockets, STRF, DTOS, or EO-VIS is selected, the forward position moves the
             SOI to the HUD and makes it the SOI.  When LADD, EO PRE, or CCRP submode is selected along with
             the IP or RP, the SOI designations will move to the HUD when the DMS is moved forward.  When TWS
              is selected, TWS AUTO or MAN submode will be selected.
-            o	The UP direction wouldn't have any effect on A2A master modes.
-            o	If the aft (down) position is selected, the SOI moves to the MFD of the highest priority.
+            o The UP direction wouldn't have any effect on A2A master modes.
+            o If the aft (down) position is selected, the SOI moves to the MFD of the highest priority.
             Subsequent aft depressions move the SOI to the opposite MFD.
             */
             if (FCC->GetSubMode() == FireControlComputer::CCIP ||

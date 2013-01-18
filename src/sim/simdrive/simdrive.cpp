@@ -52,7 +52,7 @@
 #include "Persist.h"
 #include "Find.h"
 #include "TimerThread.h"
-#include "rwr.h"		// Goes once the RWR data is in the class table (if that ever happens)
+#include "rwr.h" // Goes once the RWR data is in the class table (if that ever happens)
 #include "falcsnd/voicemanager.h"
 #include "Graphics/Include/draw2d.h"
 #include "Graphics/Include/drawtrcr.h"
@@ -117,7 +117,7 @@ extern HWND mainMenuWnd;
 extern int FileVerify(void);
 
 extern ulong gBumpTime;
-extern int	gBumpFlag;
+extern int gBumpFlag;
 // Control Defines
 //#define DISPLAY_BLOW_COUNT
 
@@ -170,7 +170,7 @@ ulong gLastGndProcTime = 0;
 ulong gLastATCProcTime = 0;
 ulong gAveAirProcTime = 0;
 ulong gAveGndProcTime = 0;
-int	numAircraft = 0;
+int numAircraft = 0;
 int numGrndVeh = 0;
 ulong gLastSoundFxTime = 0;
 ulong gMaxSoundFxTime = 0;
@@ -288,8 +288,8 @@ void SimulationDriver::Startup(void)
     ReadAllAirframeData();
     ReadAllRadarData(); // JPO addition to read .dat files
 
-    AllSimFilter				allSimFilter;
-    SimDynamicTacanFilter	dynamicTacanFilter;
+    AllSimFilter allSimFilter;
+    SimDynamicTacanFilter dynamicTacanFilter;
 
     SimObjectFilter objectFilter;
     objectList = new FalconPrivateOrderedList(&objectFilter);
@@ -300,11 +300,11 @@ void SimulationDriver::Startup(void)
     featureList->Register();
 
 
-    UnitFilter	unitFilter(0, 1, 0, 0);
+    UnitFilter unitFilter(0, 1, 0, 0);
     campUnitList = new FalconPrivateOrderedList(&unitFilter);
     campUnitList->Register();
 
-    ObjFilter	objectiveFilter(0);
+    ObjFilter objectiveFilter(0);
     campObjList = new FalconPrivateOrderedList(&objectiveFilter);
     campObjList->Register();
 
@@ -312,7 +312,7 @@ void SimulationDriver::Startup(void)
     facList = new FalconPrivateList(&allSimFilter);
     facList->Register();
 
-    SimAirfieldFilter	airbaseFilter;
+    SimAirfieldFilter airbaseFilter;
     atcList = new VuFilteredList(&airbaseFilter);
     atcList->Register();
 
@@ -321,7 +321,7 @@ void SimulationDriver::Startup(void)
 
 
     CombinedSimFilter combinedFilter;
-    combinedList =		 new FalconPrivateOrderedList(&combinedFilter);
+    combinedList =  new FalconPrivateOrderedList(&combinedFilter);
     combinedList->Register();
 
     combinedFeatureList = new FalconPrivateOrderedList(&combinedFilter);
@@ -468,10 +468,10 @@ void SimulationDriver::Exit(void)
 void SimulationDriver::Cycle()
 {
     //START_PROFILE("SIMCYCLE_BEGIN");
-    //VuListIterator	objectWalker (objectList);
+    //VuListIterator objectWalker (objectList);
     static int runFrame, runGraphics = false;
-    long	elapsedTime;
-    float	gndz;
+    long elapsedTime;
+    float gndz;
 
     // Catch up for time elapsed
     //ShiAssert(lastRealTime <= vuxGameTime);
@@ -625,7 +625,7 @@ void SimulationDriver::Cycle()
             cycleAgain = 0; // MLR 1/2/2005 -
             //VuListIterator objectWalker(combinedList);
             // sfr: back to object list only...
-            VuListIterator	objectWalker(objectList);
+            VuListIterator objectWalker(objectList);
 
             for (
                 SimBaseClass *theObject = (SimBaseClass*)objectWalker.GetFirst(), *next = NULL;
@@ -654,7 +654,7 @@ void SimulationDriver::Cycle()
                 // that they are Exec()ed for the current frame.
                 // There is code in ::SimBaseClass that sets the flag FELF_ADDED_DURING_SIMDRIVER_CYCLE.
                 // We need to make sure we clear it here.
-                if	(
+                if (
                     !processObjsAddedInCycle ||
                     (processObjsAddedInCycle && theObject->IsSetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE))
                 )
@@ -811,7 +811,7 @@ void SimulationDriver::Pause(void)
     // And no, I don´t know if I need this..
     motionOn = 1;
     SimLibElapsedTime = vuxGameTime;
-    UPDATE_SIM_ELAPSED_SECONDS;											// COBRA - RED - Scale Elapsed Seconds
+    UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
 
 }
 // Retro attempt ends (hooray!)
@@ -821,7 +821,7 @@ void SimulationDriver::NoPause(void)
     SetTimeCompression(1);
     F4HearVoices();
     SimLibElapsedTime = vuxGameTime;
-    UPDATE_SIM_ELAPSED_SECONDS;											// COBRA - RED - Scale Elapsed Seconds
+    UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
 
 }
 
@@ -842,7 +842,7 @@ void SimulationDriver::TogglePause(void)
     motionOn = 1;
 
     SimLibElapsedTime = vuxGameTime;
-    UPDATE_SIM_ELAPSED_SECONDS;											// COBRA - RED - Scale Elapsed Seconds
+    UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
 
 }
 
@@ -897,9 +897,9 @@ void SimulationDriver::SetPlayerEntity(SimMoverClass* newObject)
 
         if (ATCId != FalconNullId && playerEntity)
         {
-            FalconATCMessage* atcMsg	= new FalconATCMessage(ATCId, FalconLocalGame);
-            atcMsg->dataBlock.type	= 0;
-            atcMsg->dataBlock.from	= playerEntity->Id();
+            FalconATCMessage* atcMsg = new FalconATCMessage(ATCId, FalconLocalGame);
+            atcMsg->dataBlock.type = 0;
+            atcMsg->dataBlock.from = playerEntity->Id();
             FalconSendMessage(atcMsg, FALSE);
         }
     }
@@ -963,7 +963,7 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
     int flightList = 0;
 #endif
     SimBaseClass* theObject = NULL;
-    int	vehicles = 0, last_to_add = 0, woken = 0;
+    int vehicles = 0, last_to_add = 0, woken = 0;
 
 
     ShiAssert(flightList);
@@ -978,9 +978,9 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
             // edg: a better detail setting algorithm.  Minimum vehicles is 3.
             // use a quadratic function on slider percentage.
             // so, if the battalion is 48 units the slider settings will give:
-            //	0 = 3
-            //	1 = 4
-            //	2 = 10
+            // 0 = 3
+            // 1 = 4
+            // 2 = 10
             //  3 = 20
             //  4 = 33
             //  5 = 48
@@ -1034,8 +1034,8 @@ void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, T
 // Sleep an entire sim flight
 void SimulationDriver::SleepCampaignFlight(TailInsertList *flightList)
 {
-    SimBaseClass*	theObject;
-    VuListIterator	flit(flightList);
+    SimBaseClass* theObject;
+    VuListIterator flit(flightList);
 
     // Put all objects in this flight to sleep
     theObject = (SimBaseClass*)flit.GetFirst();
@@ -1404,9 +1404,9 @@ CampBaseClass* SimulationDriver::FindNearestCampThreat(AircraftClass* aircraft, 
     myTeam = (Team)aircraft->GetTeam();
 
 #ifndef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(RealUnitProxList, (BIG_SCALAR)myX, (BIG_SCALAR)myY, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)myX, (BIG_SCALAR)myY, (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator	myit(RealUnitProxList, (BIG_SCALAR)myY, (BIG_SCALAR)myX, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)myY, (BIG_SCALAR)myX, (BIG_SCALAR)GridToSim(100));
 #endif
 
     theUnit = (CampBaseClass*)myit.GetFirst();
@@ -1478,9 +1478,9 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
     myTeam = aircraft->GetTeam();
 
 #ifndef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(RealUnitProxList, (BIG_SCALAR)myX, (BIG_SCALAR)myY, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)myX, (BIG_SCALAR)myY, (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator	myit(RealUnitProxList, (BIG_SCALAR)myY, (BIG_SCALAR)myX, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)myY, (BIG_SCALAR)myX, (BIG_SCALAR)GridToSim(100));
 #endif
 
     theUnit = (CampBaseClass*)myit.GetFirst();
@@ -1538,18 +1538,18 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
     float myX = 0.0F, myY = 0.0F, myAlt = 0.0F;
     float tmpRange = 0.0F, trafficRange = 0.0F, tmpTrafficAlt = 0.0F, trafficAlt = 0.0F;
     Team myTeam = 0;
-    int trafficCheckRange = 10;		// Range to check for traffic
-    int trafficCheckAlt = 2000;		// Relative altitude to check for traffic
-    int priTrafficDist = 5;			// Priority traffic distance (not fully implimented)
+    int trafficCheckRange = 10; // Range to check for traffic
+    int trafficCheckAlt = 2000; // Relative altitude to check for traffic
+    int priTrafficDist = 5; // Priority traffic distance (not fully implimented)
 
 
     if (!playerEntity)
         return NULL;
 
-    myX = aircraft->XPos();			// My X position
-    myY = aircraft->YPos();			// My Y position
-    myAlt = -aircraft->ZPos();		// My Altitude
-    myTeam = aircraft->GetTeam();	// Team info
+    myX = aircraft->XPos(); // My X position
+    myY = aircraft->YPos(); // My Y position
+    myAlt = -aircraft->ZPos(); // My Altitude
+    myTeam = aircraft->GetTeam(); // Team info
 
 
     theObject = (SimBaseClass*)updateWalker.GetFirst();
@@ -1573,17 +1573,17 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
                 trafficAlt = -theObject->ZPos();
 
                 // Check to see if traffic inside trafficCheckRange
-                if (SimToGrid(sqrt(trafficRange)) <= trafficCheckRange)	//SimToGrid and sqrt convert to NM
+                if (SimToGrid(sqrt(trafficRange)) <= trafficCheckRange) //SimToGrid and sqrt convert to NM
                 {
                     // Check to see if altitude of traffic falls within trafficCheckAlt limits
                     if (abs(trafficAlt - myAlt) <= trafficCheckAlt)
                     {
-                        FindTrafficConflict(theObject, aircraft, self);	// Check for conflict
+                        FindTrafficConflict(theObject, aircraft, self); // Check for conflict
 
-                        if (self->brain->trafficCheck == conflictTraffic)	// Traffic is a conflict
+                        if (self->brain->trafficCheck == conflictTraffic) // Traffic is a conflict
                         {
-                            retval = theObject;							// Set retval to current traffic
-                            self->brain->trafficCheck = newTraffic;		// This is new traffic
+                            retval = theObject; // Set retval to current traffic
+                            self->brain->trafficCheck = newTraffic; // This is new traffic
                         }
                     }
                 }
@@ -1604,13 +1604,13 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
                 if (abs(tmpTrafficAlt - myAlt) < abs(trafficAlt - myAlt) && SimToGrid(sqrt(tmpRange))
                     <= priTrafficDist)
                 {
-                    FindTrafficConflict(theObject, aircraft, self);			// Check for conflict
+                    FindTrafficConflict(theObject, aircraft, self); // Check for conflict
 
                     // a conflict was found and set in FindTrafficConflict function
                     if (self->brain->trafficCheck == conflictTraffic)
                     {
                         // this return value to this traffic because it is more of a threat
-                        trafficRange = tmpRange;						// setup traffic range
+                        trafficRange = tmpRange; // setup traffic range
                         retval = theObject;
                         self->brain->trafficCheck = priorityTraffic;
                     }
@@ -1644,9 +1644,9 @@ SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, Obje
             self->brain->trafficCheck = oldTraffic;
         }
 
-        self->brain->pLastTraffic = retval;			//Store last traffic called out
-        self->brain->trafficAltitude = *altitude;		// Store traffic altitude
-        self->brain->trafficRange = trafficRange;		// Store traffic range
+        self->brain->pLastTraffic = retval; //Store last traffic called out
+        self->brain->trafficAltitude = *altitude; // Store traffic altitude
+        self->brain->trafficRange = trafficRange; // Store traffic range
     }
     else
         self->brain->pLastTraffic = NULL;
@@ -1661,42 +1661,42 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
     float myHdg = 0.0F, trafficHdg = 0.0F;
     float xdiff = 0.0F, ydiff = 0.0F, angle = 0.0F;
-    int hdgToTraffic = 0;						// heading to traffic
-    int hdgToMyPlane = 0;						// heading to my plane
-    int relativeBearing = 0;					// relative heading from nose of my plane to traffic
-    int parallelTrafficHdg = 0;				// normalized parallel hdg referenced to hdgToMyPlane
-    int normalizedTrafficHdg = 0;				// normalized hdg of traffic referenced to hdgToMyPlane
-    float myKIAS = 0, trafficKIAS = 0;			// airspeed of me and traffic
+    int hdgToTraffic = 0; // heading to traffic
+    int hdgToMyPlane = 0; // heading to my plane
+    int relativeBearing = 0; // relative heading from nose of my plane to traffic
+    int parallelTrafficHdg = 0; // normalized parallel hdg referenced to hdgToMyPlane
+    int normalizedTrafficHdg = 0; // normalized hdg of traffic referenced to hdgToMyPlane
+    float myKIAS = 0, trafficKIAS = 0; // airspeed of me and traffic
 
     // Fine Tune conflict resolution with these numbers
-    int pureFwdOffset = 10;							// add or subtract this heading from hdgToMyPlane
+    int pureFwdOffset = 10; // add or subtract this heading from hdgToMyPlane
     int pureRearOffset = 5;
-    int leadFwdOffset = 10;						// fwd of 3/9 line, add or sub hdg from traffic's hdg
-    int leadRearOffset = 5;						// behind 3/9 line, add or sub hdg from traffic's hdg
-    float speedThreshold = 5.0F;				// overtaking speed threshold in GetKias
+    int leadFwdOffset = 10; // fwd of 3/9 line, add or sub hdg from traffic's hdg
+    int leadRearOffset = 5; // behind 3/9 line, add or sub hdg from traffic's hdg
+    float speedThreshold = 5.0F; // overtaking speed threshold in GetKias
 
 
-    myHdg = myAircraft->Yaw() * RTD;		// Find my heading
+    myHdg = myAircraft->Yaw() * RTD; // Find my heading
 
     if (myHdg < 0.0F)
         myHdg += 360.0F;
 
-    myKIAS = myAircraft->GetKias();		// My airspeed
+    myKIAS = myAircraft->GetKias(); // My airspeed
 
-    trafficHdg = traffic->Yaw() * RTD;	// Find traffic's heading
+    trafficHdg = traffic->Yaw() * RTD; // Find traffic's heading
 
     if (trafficHdg < 0.0F)
         trafficHdg += 360.0F;
 
-    trafficKIAS = traffic->GetKias();		// Traffic's airspeed
+    trafficKIAS = traffic->GetKias(); // Traffic's airspeed
 
 
-    xdiff = traffic->XPos() - myAircraft->XPos();		// get traffic's X Pos
-    ydiff = traffic->YPos() - myAircraft->YPos();		// get traffic's Y Pos
+    xdiff = traffic->XPos() - myAircraft->XPos(); // get traffic's X Pos
+    ydiff = traffic->YPos() - myAircraft->YPos(); // get traffic's Y Pos
 
-    angle = (float)atan2(ydiff, xdiff);				// get radian angle from traffic to my plane
+    angle = (float)atan2(ydiff, xdiff); // get radian angle from traffic to my plane
     //angle = angle - myAircraft->Yaw();
-    hdgToTraffic =  FloatToInt32(RTD * angle);	// convert to degrees
+    hdgToTraffic =  FloatToInt32(RTD * angle); // convert to degrees
 
     if (hdgToTraffic < 0)
         hdgToTraffic = 360 + hdgToTraffic;
@@ -1751,10 +1751,10 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         if ((normalizedTrafficHdg <= (parallelTrafficHdg - leadFwdOffset))  &&
             (normalizedTrafficHdg >= pureFwdOffset))
         {
-            self->brain->trafficCheck = conflictTraffic;	//possible conflict
+            self->brain->trafficCheck = conflictTraffic; //possible conflict
         }
         else
-            self->brain->trafficCheck = noTraffic;			//no conflict
+            self->brain->trafficCheck = noTraffic; //no conflict
 
         return;
     }
@@ -1767,10 +1767,10 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
             (normalizedTrafficHdg >= pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) > speedThreshold)
-                self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                self->brain->trafficCheck = conflictTraffic; //possible conflict
         }
         else
-            self->brain->trafficCheck = noTraffic;			//no conflict
+            self->brain->trafficCheck = noTraffic; //no conflict
 
         return;
     }
@@ -1783,10 +1783,10 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
             (normalizedTrafficHdg <= 360 - pureRearOffset))
         {
             if (abs(trafficKIAS - myKIAS) >= speedThreshold)
-                self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                self->brain->trafficCheck = conflictTraffic; //possible conflict
         }
         else
-            self->brain->trafficCheck = noTraffic;			//no conflict
+            self->brain->trafficCheck = noTraffic; //no conflict
 
         return;
     }
@@ -1798,10 +1798,10 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         if ((normalizedTrafficHdg >= (parallelTrafficHdg + leadFwdOffset))  &&
             (normalizedTrafficHdg <= 360 - pureFwdOffset))
         {
-            self->brain->trafficCheck = conflictTraffic;	//possible conflict
+            self->brain->trafficCheck = conflictTraffic; //possible conflict
         }
         else
-            self->brain->trafficCheck = noTraffic;			//no conflict
+            self->brain->trafficCheck = noTraffic; //no conflict
 
         return;
     }
@@ -1816,20 +1816,20 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
             if ((normalizedTrafficHdg >= parallelTrafficHdg)  &&
                 (normalizedTrafficHdg <= 360))
             {
-                self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                self->brain->trafficCheck = conflictTraffic; //possible conflict
             }
             else
-                self->brain->trafficCheck = noTraffic;			//no conflict
+                self->brain->trafficCheck = noTraffic; //no conflict
         }
         else
         {
             if ((normalizedTrafficHdg <= parallelTrafficHdg)  &&
                 (normalizedTrafficHdg >= 0))
             {
-                self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                self->brain->trafficCheck = conflictTraffic; //possible conflict
             }
             else
-                self->brain->trafficCheck = noTraffic;			//no conflict
+                self->brain->trafficCheck = noTraffic; //no conflict
         }
 
         return;
@@ -1843,9 +1843,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
         {
             if (normalizedTrafficHdg <= parallelTrafficHdg)
                 if (abs(trafficKIAS - myKIAS) >= speedThreshold)
-                    self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                    self->brain->trafficCheck = conflictTraffic; //possible conflict
                 else
-                    self->brain->trafficCheck = noTraffic;			//no conflict
+                    self->brain->trafficCheck = noTraffic; //no conflict
 
         }
         else
@@ -1853,9 +1853,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
             if ((normalizedTrafficHdg >= parallelTrafficHdg)  &&
                 (normalizedTrafficHdg <= 360))
                 if (abs(trafficKIAS - myKIAS) >= speedThreshold)
-                    self->brain->trafficCheck = conflictTraffic;	//possible conflict
+                    self->brain->trafficCheck = conflictTraffic; //possible conflict
                 else
-                    self->brain->trafficCheck = noTraffic;			//no conflict
+                    self->brain->trafficCheck = noTraffic; //no conflict
         }
 
         return;
@@ -1867,9 +1867,9 @@ void SimulationDriver::FindTrafficConflict(SimBaseClass *traffic, AircraftClass 
 
 /*
  ** Description:
- **		This function is called from ACMI when recording is toggled to ON.
- **		We need to walk the object lists and get initial states and stuff
- **		for them and write them out to recording file.
+ ** This function is called from ACMI when recording is toggled to ON.
+ ** We need to walk the object lists and get initial states and stuff
+ ** for them and write them out to recording file.
  */
 void SimulationDriver::InitACMIRecord(void)
 {
@@ -1996,8 +1996,8 @@ void SimulationDriver::InitACMIRecord(void)
             misPos.data.roll = theMover->Roll();
             misPos.data.pitch = theMover->Pitch();
             misPos.data.yaw = theMover->Yaw();
-            // remove			strcpy(misPos.data.label,"");
-            // remove			misPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
+            // remove strcpy(misPos.data.label,"");
+            // remove misPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
             gACMIRec.MissilePositionRecord(&misPos);
         }
         // bombs
@@ -2012,9 +2012,9 @@ void SimulationDriver::InitACMIRecord(void)
             genPos.data.roll = theMover->Roll();
             genPos.data.pitch = theMover->Pitch();
             genPos.data.yaw = theMover->Yaw();
-            // remove			strcpy(genPos.data.label,"");// = NULL;
+            // remove strcpy(genPos.data.label,"");// = NULL;
             //VWF
-            // remove			genPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
+            // remove genPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
 
             if (((BombClass *)theMover)->IsSetBombFlag(BombClass::IsFlare))
                 gACMIRec.FlarePositionRecord((ACMIFlarePositionRecord *)&genPos);
@@ -2031,8 +2031,8 @@ void SimulationDriver::InitACMIRecord(void)
             airPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             airPos.data.type = theMover->Type();
             airPos.data.uniqueID = ACMIIDTable->Add(theMover->Id(), (char *)((DrawableBSP*)(theMover->drawPointer))->Label(), TeamInfo[theMover->GetTeam()]->GetColor()); //.num_;
-            // remove			_mbsnbcpy((unsigned char*)airPos.data.label, (unsigned char *)((DrawableBSP*)(theMover->drawPointer))->Label(), ACMI_LABEL_LEN - 1);
-            // remove			airPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
+            // remove _mbsnbcpy((unsigned char*)airPos.data.label, (unsigned char *)((DrawableBSP*)(theMover->drawPointer))->Label(), ACMI_LABEL_LEN - 1);
+            // remove airPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
             airPos.data.x = theMover->XPos();
             airPos.data.y = theMover->YPos();
             airPos.data.z = theMover->ZPos();
@@ -2108,7 +2108,7 @@ void SimulationDriver::InitACMIRecord(void)
             genPos.data.roll = theMover->Roll();
             genPos.data.pitch = theMover->Pitch();
             genPos.data.yaw = theMover->Yaw();
-            // remove			genPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
+            // remove genPos.data.teamColor = TeamInfo[theMover->GetTeam()]->GetColor();
             gACMIRec.GenPositionRecord(&genPos);
         }
 
@@ -2207,32 +2207,32 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
     //static DWORD previousAngle = -1;
 
     //if((povHatAngle == -1 && previousAngle != -1) ||
-    //	(povHatAngle != -1 && previousAngle == -1)) {
+    // (povHatAngle != -1 && previousAngle == -1)) {
 
-    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit	 ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3	 || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
+    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit  ||
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3  || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV || // 2002-02-17 MODIFIED BY S.G. Needed now for the 'break lock by POV' to work
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit		 ||
-        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase		 ||
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeOrbit  ||
+        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeChase  ||
         OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeSatellite)
     {
         /*
-        	 if(povHatAngle == -1) {
-        	 OTWDriver.ViewTiltHold();
-        	 OTWDriver.ViewSpinHold();
-        	 }
-        	 else if((povHatAngle > POV_NW && povHatAngle < 36000) || povHatAngle < POV_NE) {
-        	 OTWViewUp(0, KEY_DOWN, NULL);
-        	 }
-        	 else if(povHatAngle > POV_NE && povHatAngle < POV_SE) {
-        	 OTWViewRight(0, KEY_DOWN, NULL);
-        	 }
-        	 else if(povHatAngle > POV_SE && povHatAngle < POV_SW) {
-        	 OTWViewDown(0, KEY_DOWN, NULL);
-        	 }
-        	 else if(povHatAngle > POV_SW && povHatAngle < POV_NW) {
-        	 OTWViewLeft(0, KEY_DOWN, NULL);
-        	 }*/
+          if(povHatAngle == -1) {
+          OTWDriver.ViewTiltHold();
+          OTWDriver.ViewSpinHold();
+          }
+          else if((povHatAngle > POV_NW && povHatAngle < 36000) || povHatAngle < POV_NE) {
+          OTWViewUp(0, KEY_DOWN, NULL);
+          }
+          else if(povHatAngle > POV_NE && povHatAngle < POV_SE) {
+          OTWViewRight(0, KEY_DOWN, NULL);
+          }
+          else if(povHatAngle > POV_SE && povHatAngle < POV_SW) {
+          OTWViewDown(0, KEY_DOWN, NULL);
+          }
+          else if(povHatAngle > POV_SW && povHatAngle < POV_NW) {
+          OTWViewLeft(0, KEY_DOWN, NULL);
+          }*/
 
         if (povHatAngle == -1)
         {
@@ -2313,30 +2313,30 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
         }
 
         /*
-        		if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 65535)) || (povHatAngle < POV_N + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2, 0);
-        		}
-        		else if((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, 0);
-        		}
-        		else if((povHatAngle >= (POV_E - POV_HALF_RANGE)) && (povHatAngle < POV_E + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight / 2);
-        		}
-        		else if((povHatAngle >= (POV_SE - POV_HALF_RANGE)) && (povHatAngle < POV_SE + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight);
-        		}
-        		else if((povHatAngle >= (POV_S - POV_HALF_RANGE)) && (povHatAngle < POV_S + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2 + 2, DisplayOptions.DispHeight);
-        		}
-        		else if((povHatAngle >= (POV_SW - POV_HALF_RANGE)) && (povHatAngle < POV_SW + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight);
-        		}
-        		else if((povHatAngle >= (POV_W - POV_HALF_RANGE)) && (povHatAngle < POV_W + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight / 2);
-        		}
-        		else if((povHatAngle >= (POV_NW - POV_HALF_RANGE)) && (povHatAngle < POV_NW + POV_HALF_RANGE)) {
-        		gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, 0);
-        		}
+         if(((povHatAngle >= (POV_NW + POV_HALF_RANGE)) && (povHatAngle < 65535)) || (povHatAngle < POV_N + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2, 0);
+         }
+         else if((povHatAngle >= (POV_NE - POV_HALF_RANGE)) && (povHatAngle < POV_NE + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, 0);
+         }
+         else if((povHatAngle >= (POV_E - POV_HALF_RANGE)) && (povHatAngle < POV_E + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight / 2);
+         }
+         else if((povHatAngle >= (POV_SE - POV_HALF_RANGE)) && (povHatAngle < POV_SE + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+         }
+         else if((povHatAngle >= (POV_S - POV_HALF_RANGE)) && (povHatAngle < POV_S + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, DisplayOptions.DispWidth / 2 + 2, DisplayOptions.DispHeight);
+         }
+         else if((povHatAngle >= (POV_SW - POV_HALF_RANGE)) && (povHatAngle < POV_SW + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight);
+         }
+         else if((povHatAngle >= (POV_W - POV_HALF_RANGE)) && (povHatAngle < POV_W + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, DisplayOptions.DispHeight / 2);
+         }
+         else if((povHatAngle >= (POV_NW - POV_HALF_RANGE)) && (povHatAngle < POV_NW + POV_HALF_RANGE)) {
+         gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(CP_MOUSE_BUTTON0, 0, 0);
+         }
          */
     }
 
@@ -2350,12 +2350,12 @@ void SimulationDriver::POVKludgeFunction(DWORD povHatAngle)   // VWF POV Kludge 
 // released the weapon
 /*void SimulationDriver::AddToDatabase (FalconEntity *theObject)
 {
-	vuDatabase->Insert((VuEntity *)theObject);
-	if(InCycle())
-	{
-		theObject->SetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE);
-		ObjAddedDuringCycle();
-	}
+ vuDatabase->Insert((VuEntity *)theObject);
+ if(InCycle())
+ {
+ theObject->SetFELocalFlag(FELF_ADDED_DURING_SIMDRIVER_CYCLE);
+ ObjAddedDuringCycle();
+ }
 }*/
 
 void SimulationDriver::AddToObjectList(VuEntity* theObject)

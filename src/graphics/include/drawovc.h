@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     08Nov03
 
-	- Drawable stratus
+ - Drawable stratus
 \***************************************************************************/
 #ifndef _DRAWOVC_H_
 #define _DRAWOVC_H_
@@ -29,7 +29,7 @@ public:
 protected:
     float layerRadius;
     Texture cloudTexture;
-    static BOOL	greenMode;
+    static BOOL greenMode;
     static Tcolor litCloudColor;
 
 #ifdef USE_SH_POOLS

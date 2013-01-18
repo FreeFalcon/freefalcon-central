@@ -60,7 +60,7 @@ void SimWeaponClass::InitLocalData()
     parent.reset();
     shooterPilotSlot = 255;
     //parentReferenced = FALSE;
-    WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    WeaponClassDataType *wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
 #ifndef MISSILE_TEST_PROG
     ShiAssert(wc != NULL); // JPO catch it
@@ -146,7 +146,7 @@ int SimWeaponClass::Wake(void)
 
 int SimWeaponClass::GetRadarType(void)
 {
-    WeaponClassDataType	*wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    WeaponClassDataType *wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
     ShiAssert(wc);
 
@@ -172,7 +172,7 @@ int SimWeaponClass::SaveSize()
 #if 0
 int SimWeaponClass::SaveSize()
 {
-    int		retval = 0;
+    int retval = 0;
 
     // Streamify the data
     retval += sizeof(VU_ID);
@@ -185,15 +185,15 @@ int SimWeaponClass::SaveSize()
 
 int SimWeaponClass::Save(VU_BYTE **stream)
 {
-    int		retval = 0;
+    int retval = 0;
 
     ShiAssert(parent);
 
     if (!parent)
         return NULL;
 
-    VU_ID	parentId = parent->Id();
-    VU_ID	myId = parent->Id();
+    VU_ID parentId = parent->Id();
+    VU_ID myId = parent->Id();
     char hardPoint;
     char slot = GetRackSlot();
 
@@ -220,14 +220,14 @@ int SimWeaponClass::Save(VU_BYTE **stream)
 
 int SimWeaponClass::Save(VU_BYTE **stream)
 {
-    int		retval;
+    int retval;
 
     ShiAssert(parent);
 
     if (!parent)
         return NULL;
 
-    VU_ID	vuid = parent->Id();
+    VU_ID vuid = parent->Id();
 
     retval = SimMoverClass::Save(stream);
 
@@ -314,7 +314,7 @@ void SimWeaponClass::SendDamageMessage(FalconEntity *testObject, float rangeSqua
     /*
     if (normBlastDist < lethalCone && PRANDFloatPos() * 2.0f > normBlastDist)
     {
-    	return;
+     return;
     }
     */ //end TJ_changes
 

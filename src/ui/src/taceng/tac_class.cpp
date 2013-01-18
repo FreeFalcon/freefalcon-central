@@ -428,8 +428,8 @@ void tactical_mission::process_load(char *data, int size, int)
 
     struct
     {
-        char	*str;
-        tokens	token;
+        char *str;
+        tokens token;
     }
     token_str[] =
     {
@@ -508,7 +508,7 @@ void tactical_mission::process_load(char *data, int size, int)
                 }
             }
         }
-        else if (buffer[0] != '\0')		// Otherwise, do we have something to set this state's value to.
+        else if (buffer[0] != '\0') // Otherwise, do we have something to set this state's value to.
         {
             switch (current_state)
             {
@@ -834,18 +834,18 @@ void tactical_mission::load(void)
 
         SendMessage(FalconDisplay.appWin, FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
 
-        /*		victory_condition::enter_critical_section ();
+        /* victory_condition::enter_critical_section ();
 
-        		while (conditions)
-        		{
-        			delete conditions;
-        		}
+         while (conditions)
+         {
+         delete conditions;
+         }
 
-        		conditions = NULL;
+         conditions = NULL;
 
-        		victory_condition::leave_critical_section ();
+         victory_condition::leave_critical_section ();
 
-        		process_load (data, size, TRUE);
+         process_load (data, size, TRUE);
         */
         delete data;
     }
@@ -915,14 +915,14 @@ void tactical_mission::preload(void)
 
     TheCampaign.LoadScenarioStats(game_TacticalEngagement, gUI_CampaignFile);
 
-    //	StartReadCampFile (game_TacticalEngagement, gUI_CampaignFile);
+    // StartReadCampFile (game_TacticalEngagement, gUI_CampaignFile);
     //
-    //	if (!LoadTeams (gUI_CampaignFile))
-    //	{
-    //		AddNewTeams (Neutral);
-    //	}
+    // if (!LoadTeams (gUI_CampaignFile))
+    // {
+    // AddNewTeams (Neutral);
+    // }
     //
-    //	EndReadCampFile ();
+    // EndReadCampFile ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -939,7 +939,7 @@ void tactical_mission::new_setup(void)
 
     _tcscpy(gUI_ScenarioName, get_title());
 
-    //	FalconLocalSession->SetCountry (team);
+    // FalconLocalSession->SetCountry (team);
 
     SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
 
@@ -1382,7 +1382,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                             vc->active = TRUE;
 
                         //else
-                        //	vc->active = FALSE;
+                        // vc->active = FALSE;
                     }
 
                     break;
@@ -1397,7 +1397,7 @@ void tactical_mission::evaluate_victory_conditions(void)
                         int i;
                         int classID;
                         uchar origtype;
-                        ObjClassDataType*		oc;
+                        ObjClassDataType* oc;
 
                         oc = objective->GetObjectiveClassData();
 
@@ -1439,8 +1439,8 @@ void tactical_mission::evaluate_victory_conditions(void)
 
                         //else
                         //{
-                        //	//MonoPrint ("FALSE\n");
-                        //	vc->active = FALSE;
+                        // //MonoPrint ("FALSE\n");
+                        // vc->active = FALSE;
                         //}
                     }
 
@@ -1521,7 +1521,7 @@ void tactical_mission::evaluate_victory_conditions(void)
 
                 //default:
                 //{
-                //	vc->active = FALSE;
+                // vc->active = FALSE;
                 //}
             }
 

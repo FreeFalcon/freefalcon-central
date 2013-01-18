@@ -19,7 +19,7 @@
  *
  * AMD3D 3D library code: Math routines (wrap fastcall ASM routines in math.asm)
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 
@@ -39,9 +39,9 @@ float _atan(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        call	a_atan
-        movd	res, mm0
+        movd mm0, x
+        call a_atan
+        movd res, mm0
         FEMMS
     }
     return res;
@@ -55,11 +55,11 @@ float _acos(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_acos
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_acos
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -68,18 +68,18 @@ float _acos(float x)
 
 
 /*---------------------------------------------------------------*/
-float	_asin(float x)
+float _asin(float x)
 {
     float fval;
 
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_asin
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_asin
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -94,11 +94,11 @@ float _log(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_log
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_log
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -113,11 +113,11 @@ float _log10(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_log10
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_log10
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -131,11 +131,11 @@ float _cosh(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_cosh
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_cosh
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -149,11 +149,11 @@ float _sinh(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_sinh
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_sinh
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -167,11 +167,11 @@ float _tanh(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_tanh
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_tanh
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -186,11 +186,11 @@ float _exp(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ecx
-        call	a_exp
-        pop		ecx
-        movd	fval, mm0
+        movd mm0, x
+        push ecx
+        call a_exp
+        pop ecx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -204,9 +204,9 @@ float _sqrt(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        call	a_sqrt
-        movd	fval, mm0
+        movd mm0, x
+        call a_sqrt
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -219,9 +219,9 @@ float _fabs(float x)
 
     __asm
     {
-        mov		eax, x
-        and		eax, 0x7fffffff
-        mov		fval, eax
+        mov eax, x
+        and eax, 0x7fffffff
+        mov fval, eax
     }
     return fval;
 }
@@ -234,9 +234,9 @@ float _ceil(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        call	a_ceil
-        movd	fval, mm0
+        movd mm0, x
+        call a_ceil
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -250,9 +250,9 @@ float _floor(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        call	a_floor
-        movd	fval, mm0
+        movd mm0, x
+        call a_floor
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -266,9 +266,9 @@ float _frexp(float x, int *y)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        call	a_frexp
-        movq	fval, mm0
+        movd mm0, x
+        call a_frexp
+        movq fval, mm0
         FEMMS
     }
     *y = *(int *)&fval[1];
@@ -278,18 +278,18 @@ float _frexp(float x, int *y)
 /*---------------------------------------------------------*/
 float _ldexp(float x, int exp)
 {
-    float	res;
+    float res;
     __asm
     {
         FEMMS
-        movd		mm0, x
-        movd		mm1, exp
-        push		ebx
-        push		ecx
-        call		a_ldexp
-        pop 		ecx
-        pop 		ebx
-        movd		res, mm0
+        movd mm0, x
+        movd mm1, exp
+        push ebx
+        push ecx
+        call a_ldexp
+        pop  ecx
+        pop  ebx
+        movd res, mm0
         FEMMS
     }
     return res;
@@ -302,12 +302,12 @@ float _modf(float x, float *iptr)
     __asm
     {
         FEMMS
-        movd		mm0, x
+        movd mm0, x
         pf2id(mm1, mm0)
         pi2fd(mm1, mm1)
-        pfsub(mm0, mm1)	// (I+F) - I = F
-        punpckldq	mm0, mm1		// mm0 = res:iptr
-        movd		res, mm0
+        pfsub(mm0, mm1) // (I+F) - I = F
+        punpckldq mm0, mm1 // mm0 = res:iptr
+        movd res, mm0
         FEMMS
     }
     *iptr = res[1];
@@ -322,10 +322,10 @@ float _fmod(float x, float y)
     __asm
     {
         FEMMS
-        movd		mm0, x
-        movd		mm1, y
-        call		a_fmod
-        movd		res, mm0
+        movd mm0, x
+        movd mm1, y
+        call a_fmod
+        movd res, mm0
         FEMMS
     }
 
@@ -338,18 +338,18 @@ void _sincos(float x, float *v)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ebx
-        push	ecx
-        push	esi
-        push	edi
-        call	a_sincos
-        mov		eax, v
-        pop		edi
-        pop		esi
-        pop		ecx
-        pop		ebx
-        movq	qword ptr [eax], mm0
+        movd mm0, x
+        push ebx
+        push ecx
+        push esi
+        push edi
+        call a_sincos
+        mov eax, v
+        pop edi
+        pop esi
+        pop ecx
+        pop ebx
+        movq qword ptr [eax], mm0
         FEMMS
     }
 }
@@ -362,17 +362,17 @@ float _sin(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ebx
-        push	ecx
-        push	esi
-        push	edi
-        call	a_sin
-        pop		edi
-        pop		esi
-        pop		ecx
-        pop		ebx
-        movd	fval, mm0
+        movd mm0, x
+        push ebx
+        push ecx
+        push esi
+        push edi
+        call a_sin
+        pop edi
+        pop esi
+        pop ecx
+        pop ebx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -386,17 +386,17 @@ float _cos(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ebx
-        push	ecx
-        push	esi
-        push	edi
-        call	a_cos
-        pop		edi
-        pop		esi
-        pop		ecx
-        pop		ebx
-        movd	fval, mm0
+        movd mm0, x
+        push ebx
+        push ecx
+        push esi
+        push edi
+        call a_cos
+        pop edi
+        pop esi
+        pop ecx
+        pop ebx
+        movd fval, mm0
         FEMMS
     }
     return fval;
@@ -410,17 +410,17 @@ float _tan(float x)
     __asm
     {
         FEMMS
-        movd	mm0, x
-        push	ebx
-        push	ecx
-        push	esi
-        push	edi
-        call	a_tan
-        pop		edi
-        pop		esi
-        pop		ecx
-        pop		ebx
-        movd	fval, mm0
+        movd mm0, x
+        push ebx
+        push ecx
+        push esi
+        push edi
+        call a_tan
+        pop edi
+        pop esi
+        pop ecx
+        pop ebx
+        movd fval, mm0
         FEMMS
     }
     return fval;

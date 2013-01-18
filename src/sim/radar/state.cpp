@@ -9,7 +9,7 @@
 #include "radarDoppler.h"
 #include "sms.h"
 #include "fcc.h" //MI
-#include "aircrft.h"	//MI
+#include "aircrft.h" //MI
 #include "Graphics\Include\gmComposit.h"
 
 // MD -- 20031231: added for analog Antenna Elevation Controls
@@ -19,12 +19,12 @@ extern SIMLIB_IO_CLASS IO;
 
 extern bool g_bMLU;
 // 2001-02-21 MODIFIED BY S.G. APG68_BAR_WIDTH IS 2.2
-//static const float APG68_BAR_WIDTH		= (2.0f * DTR);		// Here and in Modes.cpp
-static const float APG68_BAR_WIDTH		= (2.2f * DTR);		// Here and in Modes.cpp
+//static const float APG68_BAR_WIDTH = (2.0f * DTR); // Here and in Modes.cpp
+static const float APG68_BAR_WIDTH = (2.2f * DTR); // Here and in Modes.cpp
 
-static const float SAM_PATTERN_TIME		= 5.0F;
+static const float SAM_PATTERN_TIME = 5.0F;
 extern float g_fCursorSpeed;
-extern bool  g_bAGRadarFixes;	//MI
+extern bool  g_bAGRadarFixes; //MI
 
 // MD -- 20031221: fixing antenna elevation knob functions
 extern bool g_bAntElevKnobFix;
@@ -60,8 +60,8 @@ void RadarDopplerClass::ChangeMode(int newMode)
         {
             // RV - Biker - Should fix CTD
             // if (SimDriver.GetPlayerAircraft())
-            //	SimDriver.GetPlayerAircraft()->FCC->SetStptMode(FireControlComputer::FCCWaypoint);
-            //	SimDriver.GetPlayerAircraft()->FCC->waypointStepCmd = 127;
+            // SimDriver.GetPlayerAircraft()->FCC->SetStptMode(FireControlComputer::FCCWaypoint);
+            // SimDriver.GetPlayerAircraft()->FCC->waypointStepCmd = 127;
             AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
             if (playerAC)
@@ -117,7 +117,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
         case RWS:   // Range while search
         case LRS:
             prevMode = mode = (RadarMode)newMode;
-            fovStepCmd = 0;	//MI
+            fovStepCmd = 0; //MI
             SetFlagBit(SpaceStabalized);
             beamWidth = radarData->BeamHalfAngle;
             displayRange = 20.0F;
@@ -173,7 +173,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
 
             beamWidth = radarData->BeamHalfAngle;
             // 2001-02-21 MODIFIED BY S.G. IN TWS, APG68_BAR_WIDTH IS 3.2 (2.2 * 1.4545455)
-            //			barWidth = APG68_BAR_WIDTH * 1.3f;
+            // barWidth = APG68_BAR_WIDTH * 1.3f;
             barWidth = APG68_BAR_WIDTH * 1.4545455f;
             ClearFlagBit(VerticalScan);
             SetFlagBit(HorizontalScan);
@@ -364,7 +364,7 @@ void RadarDopplerClass::ChangeMode(int newMode)
                 prevMode = LRS;
 
             mode = SAM;
-            fovStepCmd = 0;	//MI
+            fovStepCmd = 0; //MI
             subMode = SAM_AUTO_MODE;
             displayAzScan = rwsAzs[curAzIdx];
 
@@ -524,7 +524,7 @@ void RadarDopplerClass::UpdateState(int cursorXCmd, int cursorYCmd)
     int maxIdx;
     float curCursorY = cursorY;
 
-    if (IsSOI() && !IsAG() && mode != STBY)	//MI added STBY check. No cursors in STBY
+    if (IsSOI() && !IsAG() && mode != STBY) //MI added STBY check. No cursors in STBY
     {
         if ((cursorXCmd != 0.0F || cursorYCmd != 0.0F) && !IsSet(STTingTarget))  // don't move cursor when you are in STT
         {
@@ -1236,18 +1236,18 @@ void RadarDopplerClass::DefaultAAMode(void)
             {
                 modeDesiredCmd = LastAGMode;
 
-                if (LastAGModes == 2)	//SnowPlow
+                if (LastAGModes == 2) //SnowPlow
                 {
                     SetAGSnowPlow(TRUE);
                 }
-                else if (LastAGModes == 3)	//STPT
+                else if (LastAGModes == 3) //STPT
                     SetAGSnowPlow(FALSE);
                 else
                     ShiWarning("Inconsistant state");
             }
             else if (FCC->GetMasterMode() == FireControlComputer::ClearOveride)
             {
-                if (FCC->GetLastMasterMode() == FireControlComputer::AAGun)	//AA mode
+                if (FCC->GetLastMasterMode() == FireControlComputer::AAGun) //AA mode
                     modeDesiredCmd = LastAAMode;
             }
             else if (FCC->GetMasterMode() == FireControlComputer::Dogfight)
@@ -1336,18 +1336,18 @@ void RadarDopplerClass::DefaultAGMode(void)
 
                 modeDesiredCmd = LastAGMode;
 
-                if (LastAGModes == 2)	//SnowPlow
+                if (LastAGModes == 2) //SnowPlow
                 {
                     SetAGSnowPlow(TRUE);
                 }
-                else if (LastAGModes == 3)	//STPT
+                else if (LastAGModes == 3) //STPT
                     SetAGSnowPlow(FALSE);
                 else
                     ShiWarning("Inconsistant state");
             }
             else if (FCC->GetMasterMode() == FireControlComputer::ClearOveride)
             {
-                if (FCC->GetLastMasterMode() == FireControlComputer::AAGun)	//AA mode
+                if (FCC->GetLastMasterMode() == FireControlComputer::AAGun) //AA mode
                     modeDesiredCmd = LastAAMode;
             }
             else if (FCC->GetMasterMode() == FireControlComputer::Dogfight)
@@ -1383,7 +1383,7 @@ void RadarDopplerClass::NextTarget(void)
     if (mode != TWS)
     {
         float RangeToBeat; //next target needs to be further then this
-        float MinRange = tdisplayRange;	//make sure we check the whole radar range
+        float MinRange = tdisplayRange; //make sure we check the whole radar range
 
         if (lockedTarget)
         {

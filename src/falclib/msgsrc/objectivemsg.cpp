@@ -48,7 +48,7 @@ FalconObjectiveMessage::~FalconObjectiveMessage(void)
 
 int FalconObjectiveMessage::Process(uchar autodisp)
 {
-    Objective	o;
+    Objective o;
     static int  updates = 0;
 
     if (autodisp)
@@ -63,7 +63,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
     {
         case objCaptured:
         {
-            Team		oldteam = o->GetTeam();
+            Team oldteam = o->GetTeam();
 
             if (oldteam == GetTeam((Control)dataBlock.data1))
                 return 0;
@@ -75,7 +75,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
 #ifdef KEV_DEBUG
             MonoPrint("Objective %d captured by Team %d!\n", o->GetCampID(), GetTeam((uchar)(dataBlock.data1)));
 #endif
-            GridIndex	x, y;
+            GridIndex x, y;
             o->GetLocation(&x, &y);
 #ifdef CAMPTOOL
 

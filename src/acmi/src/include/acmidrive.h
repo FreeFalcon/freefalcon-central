@@ -9,12 +9,12 @@
 #include "AcmiView.h"
 #include "AcmiCam.h"
 
-#define EXTERNAL	0
-#define CHASE		1
-#define	SATELLITE	8
-#define	REPLAY		9
-#define	FREE		10
-#define	STARTPOS	15
+#define EXTERNAL 0
+#define CHASE 1
+#define SATELLITE 8
+#define REPLAY 9
+#define FREE 10
+#define STARTPOS 15
 
 class SimBaseClass;
 class RViewPoint;
@@ -26,12 +26,12 @@ class SimObjectType;
 
 typedef struct
 {
-    int					frameNum;
-    int					tracking;
-    int					entityCam;
-    int					entityTracking;
-    ACMICamClass		*recorderCam;
-    //	CRITICAL_SECTION    criticalSection;
+    int frameNum;
+    int tracking;
+    int entityCam;
+    int entityTracking;
+    ACMICamClass *recorderCam;
+    // CRITICAL_SECTION    criticalSection;
 } rCamStruct;
 
 typedef struct DBLIST
@@ -54,17 +54,17 @@ public:
     };
     int keyCombo, insertMode;
 
-    ACMICamClass	*acmiCam, *attachedCam, *dettachedCam;
-    BOOL			FILE_LOADED;
-    rCamStruct		*recorderFrame;
-    char			acmiFileName[40];
-    BOOL			acmiChase;
-    BOOL			acmiReplay;
-    BOOL			acmiSatellite;
-    BOOL			acmiFree;
-    BOOL			CAM_UPDATE;
-    int				acmiCameraState;
-    int				camCorderCount;
+    ACMICamClass *acmiCam, *attachedCam, *dettachedCam;
+    BOOL FILE_LOADED;
+    rCamStruct *recorderFrame;
+    char acmiFileName[40];
+    BOOL acmiChase;
+    BOOL acmiReplay;
+    BOOL acmiSatellite;
+    BOOL acmiFree;
+    BOOL CAM_UPDATE;
+    int acmiCameraState;
+    int camCorderCount;
 
     DBLIST *ACMICamListAppend(DBLIST *list, void *node);
     void ACMICamListDestroy(DBLIST *list);
@@ -95,7 +95,7 @@ public:
         return viewPoint;
     };
 
-    void InitAcmi(IDirectDrawSurface	*surface);
+    void InitAcmi(IDirectDrawSurface *surface);
     void SetACMIFileName(char *fname);
     void GetObjectName(SimBaseClass* theObject, char *tmpStr);
     void InitUIVector(void);
@@ -190,7 +190,7 @@ public:
     {
         acmiCam->AcmiSetPannerAz();
     };
-    void AcmiIncrementPannerAzEl(int	currentAction, float az, float el)
+    void AcmiIncrementPannerAzEl(int currentAction, float az, float el)
     {
         acmiCam->AcmiIncrementPannerAzEl(currentAction, az, el);
     };
@@ -202,7 +202,7 @@ public:
     {
         acmiCam->AcmiSetSlewRate(diff);
     };
-    void SetRotateACMICameraType(int	type)
+    void SetRotateACMICameraType(int type)
     {
         acmiCam->SetRotateACMICameraType(type);
     };
@@ -214,7 +214,7 @@ public:
     {
         acmiCam->SetAcmiCameraAction(currentAction);
     };
-    void SetAcmiCameraAction(int	currentAction, float az, float el)
+    void SetAcmiCameraAction(int currentAction, float az, float el)
     {
         acmiCam->SetAcmiCameraAction(currentAction, az, el);
     };
@@ -268,7 +268,7 @@ private:
     void GetUserPosition(void);
     void ShowVersionString(void);
     RViewPoint* viewPoint;
-    RenderOTW	*renderer;
+    RenderOTW *renderer;
     int AcmiDrawing;
     int AcmiDrawingFinished;
     int isReady;
@@ -293,8 +293,8 @@ private:
     SimBaseClass* padlockPriority;
     VuOrderedList* AcmiDrawList;
     VuOrderedList* featureList;
-    //		VuEntity* flyingEye;
-    LIST	*simEntityList;
+    // VuEntity* flyingEye;
+    LIST *simEntityList;
     VuThread* vuThread;
 
     ACMIClass *acmiObjectData;

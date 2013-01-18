@@ -12,7 +12,7 @@
 
 extern void UpdateEvaluators(FlightDataClass *flight_data, PilotDataClass *pilot_data);
 
-ulong	gResendEvalRequestTime = 0;
+ulong gResendEvalRequestTime = 0;
 
 SendEvalMessage::SendEvalMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendEvalMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
@@ -36,7 +36,7 @@ SendEvalMessage::~SendEvalMessage()
 int SendEvalMessage::Size() const
 {
     ShiAssert(dataBlock.size >= 0);
-    return	(FalconEvent::Size() +	sizeof(int) + sizeof(ushort) + dataBlock.size);
+    return (FalconEvent::Size() + sizeof(int) + sizeof(ushort) + dataBlock.size);
 }
 
 int SendEvalMessage::Decode(VU_BYTE **buf, long *rem)
@@ -50,14 +50,14 @@ int SendEvalMessage::Decode(VU_BYTE **buf, long *rem)
     dataBlock.data = new uchar[dataBlock.size];
     memcpychk(dataBlock.data, buf, dataBlock.size, rem);
 
-    //	ShiAssert (size == Size());
+    // ShiAssert (size == Size());
 
     return init - *rem;
 }
 
 int SendEvalMessage::Encode(VU_BYTE **buf)
 {
-    int		size;
+    int size;
 
     ShiAssert(dataBlock.size >= 0);
     size = FalconEvent::Encode(buf);
@@ -79,13 +79,13 @@ int SendEvalMessage::Encode(VU_BYTE **buf)
 
 int SendEvalMessage::Process(uchar autodisp)
 {
-    PilotDataClass		*pilot_data;
-    //	FlightDataClass		*flight_data;
-    short				campid;
-    uchar				*bufptr = dataBlock.data;
-    uchar				slot, t;
-    uchar				d1, d5[MAX_DOGFIGHT_TEAMS];
-    short				d2, d3, d4;
+    PilotDataClass *pilot_data;
+    // FlightDataClass *flight_data;
+    short campid;
+    uchar *bufptr = dataBlock.data;
+    uchar slot, t;
+    uchar d1, d5[MAX_DOGFIGHT_TEAMS];
+    short d2, d3, d4;
 
     if (autodisp || Entity() == FalconLocalSession)
         return 0;
@@ -130,10 +130,10 @@ int SendEvalMessage::Process(uchar autodisp)
                 if (d4 > pilot_data->score)
                     pilot_data->score = d4;
 
-                //				memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar));				bufptr += sizeof(uchar);
-                //				memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short));			bufptr += sizeof(short);
-                //				memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short));		bufptr += sizeof(short);
-                //				memcpy(&pilot_data->score, bufptr, sizeof(short));					bufptr += sizeof(short);
+                // memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar)); bufptr += sizeof(uchar);
+                // memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short)); bufptr += sizeof(short);
+                // memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short)); bufptr += sizeof(short);
+                // memcpy(&pilot_data->score, bufptr, sizeof(short)); bufptr += sizeof(short);
                 memcpy(d5, bufptr, sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
                 MonoPrint("Got %d/%d/%d/%d, have %d/%d/%d/%d\n", d5[1], d5[2], d5[3], d5[4], TheCampaign.MissionEvaluator->rounds_won[1], TheCampaign.MissionEvaluator->rounds_won[2], TheCampaign.MissionEvaluator->rounds_won[3], TheCampaign.MissionEvaluator->rounds_won[4]);
 
@@ -206,7 +206,7 @@ int SendEvalMessage::Process(uchar autodisp)
 
 void RequestEvalData(void)
 {
-    SendEvalMessage	*msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
+    SendEvalMessage *msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
 
     msg->dataBlock.message = SendEvalMessage::requestData;
     FalconSendMessage(msg, TRUE);
@@ -216,9 +216,9 @@ void SendEvalData(FlightDataClass *flight_data, PilotDataClass *pilot_data)
 {
     if (FalconLocalGame)
     {
-        SendEvalMessage	*msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
-        int				size = 0;
-        uchar			*bufptr;
+        SendEvalMessage *msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
+        int size = 0;
+        uchar *bufptr;
 
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
@@ -290,13 +290,13 @@ void SendEvalData(FlightDataClass *flight_data, PilotDataClass *pilot_data)
 
 void SendEvalData(FlightDataClass *flight_data)
 {
-    return;			// TODO;
+    return; // TODO;
 
     if (FalconLocalGame)
     {
-        SendEvalMessage	*msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
-        int				size = 0;
-        uchar			*bufptr;
+        SendEvalMessage *msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
+        int size = 0;
+        uchar *bufptr;
 
         if (FalconLocalGame->GetGameType() == game_Dogfight)
         {
@@ -321,8 +321,8 @@ void SendEvalData(FlightDataClass *flight_data)
 
 void SendAllEvalData(void)
 {
-    FlightDataClass		*flight_data;
-    PilotDataClass		*pilot_data;
+    FlightDataClass *flight_data;
+    PilotDataClass *pilot_data;
 
     flight_data = TheCampaign.MissionEvaluator->flight_data;
 
@@ -334,7 +334,7 @@ void SendAllEvalData(void)
         {
             // This will check if we're the controlling flight
             UpdateEvaluators(flight_data, pilot_data);
-            //			SendEvalData(flight_data, pilot_data);
+            // SendEvalData(flight_data, pilot_data);
             pilot_data = pilot_data->next_pilot;
         }
 

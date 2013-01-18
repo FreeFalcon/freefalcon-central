@@ -9,8 +9,8 @@
 #include "Team.h"
 
 // Types of no fly zones:
-#define NFZ_OWNER_NOFLY		0				// Only owner team and allies not allowed here (ie: SAM defense zone)
-#define NFZ_OVERFLY_ONLY	1				// Only people with overfly privledges allowed (ie country borders)
+#define NFZ_OWNER_NOFLY 0 // Only owner team and allies not allowed here (ie: SAM defense zone)
+#define NFZ_OVERFLY_ONLY 1 // Only people with overfly privledges allowed (ie country borders)
 
 // No-fly zone class
 class NoFlyZoneClass;
@@ -20,12 +20,12 @@ class NoFlyZoneClass
 {
 private:
 public:
-    GridIndex			zonex;			// Location of zone
-    GridIndex			zoney;
-    short					radius;
-    uchar					owner;			// Who 'owns' this NFZ. Determines who can modify it
-    uchar					type;				// what type of NoFlyZone is it?
-    NFZ					next;
+    GridIndex zonex; // Location of zone
+    GridIndex zoney;
+    short radius;
+    uchar owner; // Who 'owns' this NFZ. Determines who can modify it
+    uchar type; // what type of NoFlyZone is it?
+    NFZ next;
 public:
     NoFlyZoneClass(void);
     int InZone(GridIndex x, GridIndex y, Team who, int flags);

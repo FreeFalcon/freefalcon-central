@@ -20,24 +20,24 @@ public:
 #endif
 private:
     // Save from here
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    long		Font_;
-    COLORREF	NormColor_, SelColor_, CursorColor_;
+    long Font_;
+    COLORREF NormColor_, SelColor_, CursorColor_;
 
     // Don't save from here
-    C_EditBox	*Day_;
-    C_EditBox	*Hour_;
-    C_EditBox	*Minute_;
-    C_EditBox	*Second_;
-    O_Output	*Sep0_;
-    O_Output	*Sep1_;
-    O_Output	*Sep2_;
+    C_EditBox *Day_;
+    C_EditBox *Hour_;
+    C_EditBox *Minute_;
+    C_EditBox *Second_;
+    O_Output *Sep0_;
+    O_Output *Sep1_;
+    O_Output *Sep2_;
 
     BOOL (*TimerCallback_)(C_Base *me);
 
-    C_EditBox	*CurEdit_;
-    long		Section_;
+    C_EditBox *CurEdit_;
+    long Section_;
 
 public:
 

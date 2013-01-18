@@ -1,8 +1,8 @@
 /*
 color.h
 
-	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004
+ Author: Miro "Jammer" Torrielli
+ Last Update: 21 April 2004
 */
 
 #ifndef _COLOR_H
@@ -10,11 +10,11 @@ color.h
 
 #include "math.h"
 
-#define MAKERGB(r,g,b)		((r<<16)+(g<<8)+b)
-#define MAKEARGB(a,r,g,b)	((a<<24)+(r<<16)+(g<<8)+b)
+#define MAKERGB(r,g,b) ((r<<16)+(g<<8)+b)
+#define MAKEARGB(a,r,g,b) ((a<<24)+(r<<16)+(g<<8)+b)
 
-#define SMALL_NUMBER		(1.e-8)
-#define KINDA_SMALL_NUMBER	(1.e-4)
+#define SMALL_NUMBER (1.e-8)
+#define KINDA_SMALL_NUMBER (1.e-4)
 
 struct color
 {

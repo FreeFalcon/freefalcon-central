@@ -98,7 +98,7 @@ extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 //MI for Radar Altimeter
 extern bool g_bRealisticAvionics;
 //static float Lasttime = SimLibElapsedTime * MSEC_TO_SEC; // 2002-01-29 MILOOK Not used but in case you decide to use it, shouldn't it be SEC_TO_MSEC?
-bool OneSec = FALSE;	//Did one second pass?
+bool OneSec = FALSE; //Did one second pass?
 
 extern bool g_bDarkHudFix;
 extern int g_nMPPowerXmitThreshold;
@@ -125,10 +125,10 @@ extern int RequestSARMission(FlightClass* flight);
 int gPlayerExitMenuShown = FALSE;
 
 #ifdef USE_SH_POOLS
-MEM_POOL	AircraftClass::pool;
+MEM_POOL AircraftClass::pool;
 #endif
 
-#define FOLLOW_RATE		10.0F
+#define FOLLOW_RATE 10.0F
 
 extern float g_fCarrierStartTolerance; // JB carrier
 
@@ -316,8 +316,8 @@ void AircraftClass::InitLocalData(int flag)
         share_.flags_.breakdown_.transfer_ = 0;
     }
 
-    pLandLitePool		= NULL;
-    mInhibitLitePool	= TRUE;
+    pLandLitePool = NULL;
+    mInhibitLitePool = TRUE;
 
     //used for safe deletion of sensor array when making a player vehicle
     tempSensorArray = NULL;
@@ -420,7 +420,7 @@ void AircraftClass::InitLocalData(int flag)
     ClearAPFlag(AircraftClass::AltHold);
     ClearAPFlag(AircraftClass::AttHold);
     //left switch to att hold (middle)
-    //me123	middle is not rollhold realy..besides sometimes you can't stear
+    //me123 middle is not rollhold realy..besides sometimes you can't stear
     //in mp after takeoff with this SetAPFlag(AircraftClass::RollHold);
     ClearAPFlag(AircraftClass::RollHold);
     ClearAPFlag(AircraftClass::HDGSel);
@@ -442,7 +442,7 @@ void AircraftClass::InitLocalData(int flag)
 
     //MI AVTR
     AVTRFlags = 0;
-    AVTRCountown = 0;	//AVTR auto
+    AVTRCountown = 0; //AVTR auto
     doAVTRCountdown = FALSE;
     AVTROn(AVTR_OFF);
 
@@ -481,12 +481,12 @@ void AircraftClass::InitLocalData(int flag)
     rightLEFAngle = 0.0F;
     TrimAPDisc = FALSE;
     TEFExtend = FALSE;
-    MissileVolume = 8;	//no volume
+    MissileVolume = 8; //no volume
     ThreatVolume = 8;
     GunFire = FALSE;
 
     //TGP Cooling
-    PodCooling = (float)((7 + rand() % 9) * 60);	//7 - 15 Minutes to cool down.
+    PodCooling = (float)((7 + rand() % 9) * 60); //7 - 15 Minutes to cool down.
     FCC = NULL;
     Sms = NULL;
     AWACSsaidAbort = false;
@@ -502,7 +502,7 @@ void AircraftClass::InitLocalData(int flag)
     brakePos = 0;//TJL 02/28/04
     speedBrakeState = 0.0f;
     swingWingAngle = 0; // MLR 3/5/2004 -
-    spawnpoint = 0;	//RAS-11Nov01-for initial spawnpoint
+    spawnpoint = 0; //RAS-11Nov01-for initial spawnpoint
     requestHotpitRefuel = FALSE; //TJL 08/16/04 //Cobra 10/30/04 TJL
     iffEnabled = FALSE;//Cobra 11/20/04
     interrogating = FALSE; //Cobra 11/21/04 True when TMS Left is Held
@@ -549,7 +549,7 @@ void AircraftClass::CleanupLocalData()
         mFaults = NULL;
     }
 
-    if (SimDriver.GetPlayerEntity() == this)  	//VWF
+    if (SimDriver.GetPlayerEntity() == this)   //VWF
     {
         gNavigationSys->DeleteMissionTacans();
     }
@@ -758,16 +758,16 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // REMOVE BEFORE FLIGHT
         if (af->initialMach < 0.01F)
         {
-            af->initialMach = 0.01F;					// Minimal speed to catch problems -
+            af->initialMach = 0.01F; // Minimal speed to catch problems -
         }
 
         if (af->initialMach > 2.0F && af->initialMach < 10.0F)
         {
-            af->initialMach = 2.0F;					// max mach speed
+            af->initialMach = 2.0F; // max mach speed
         }
 
         //if (af->initialMach > 1000.0F)
-        //af->initialMach = 1000.F;					// max fps
+        //af->initialMach = 1000.F; // max fps
 
 
         afIdx = SimACDefTable[classPtr->vehicleDataIndex].airframeIdx;
@@ -952,7 +952,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
             for (i = 0; i < numSensors - (hasHarm + hasLGB + needsRadar); i++)
             {
                 sensorType = SimACDefTable[classPtr->vehicleDataIndex].sensorType[i];
-                sensorIdx	= SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
+                sensorIdx = SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
 
                 switch (sensorType)
                 {
@@ -1071,7 +1071,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // 2000-11-17 MODIFIED BY S.G.
         // SO OUR SetPowerOutput WITH ENGINE TEMP IS USED INSTEAD OF THE SimBase CLASS ONE
         SetPowerOutput(af->rpm);
-        //me123 changed back		SetPowerOutput(af->rpm, af->oldp01[0]);
+        //me123 changed back SetPowerOutput(af->rpm, af->oldp01[0]);
         // END OF MODIFIED SECTION
 
         CalcTransformMatrix(this);
@@ -1164,11 +1164,11 @@ void AircraftClass::Init(SimInitDataClass* initData)
     rightLEFAngle = 0.0F;
     TrimAPDisc = FALSE;
     TEFExtend = FALSE;
-    MissileVolume = 8;	//no volume
+    MissileVolume = 8; //no volume
     ThreatVolume = 8;
     GunFire = FALSE;
     //Targeting pod cooling
-    PodCooling = (float)((7 + rand() % 9) * 60);	//7 - 15 Minutes to cool down.
+    PodCooling = (float)((7 + rand() % 9) * 60); //7 - 15 Minutes to cool down.
     CockpitWingLight = FALSE;
     CockpitWingLightFlash = FALSE;
     CockpitStrobeLight = FALSE;
@@ -1177,12 +1177,12 @@ void AircraftClass::Init(SimInitDataClass* initData)
     WideView = FALSE;
 }
 
-Tpoint	AircraftClass::GetTurbulence(void)
+Tpoint AircraftClass::GetTurbulence(void)
 {
     return TotalTurbulence;
 }
 
-void	AircraftClass::SetPulseTurbulence(float RateX, float RateY, float RateZ, float Time)
+void AircraftClass::SetPulseTurbulence(float RateX, float RateY, float RateZ, float Time)
 {
     PulseTurbulence.x += RateX;
     PulseTurbulence.y += RateY;
@@ -1232,7 +1232,7 @@ namespace
 int AircraftClass::Exec(void)
 {
     //START_PROFILE("AC_EXEC");
-    bool	EvenFrame = true;
+    bool EvenFrame = true;
     StaticTurbulence.x = StaticTurbulence.y = StaticTurbulence.z = 0.0f;
 
     if (this == SimDriver.GetPlayerEntity())
@@ -1240,8 +1240,8 @@ int AircraftClass::Exec(void)
         if (EvenFrame)
         {
             //* SPEED BRAKES *
-            float	Turb = af->dbrake * 0.005f * sqrtf(af->vcas);
-            static	float	LastMach = 0;
+            float Turb = af->dbrake * 0.005f * sqrtf(af->vcas);
+            static float LastMach = 0;
 
             // * MAX CAS *
             // Calculate based on Max Cas for the vehicle and removing a 70%
@@ -1256,7 +1256,7 @@ int AircraftClass::Exec(void)
             TempTurb = TempTurb / 1100 - 0.9f;
 
             // if we r over 90% of Mach Apply Turbulence
-            if (TempTurb > 0.0f && TempTurb <= 0.1f)	Turb += 10.0f * (TempTurb * TempTurb);
+            if (TempTurb > 0.0f && TempTurb <= 0.1f) Turb += 10.0f * (TempTurb * TempTurb);
 
             // if Passing Sonic Wave, Bang!!!
             if (TempTurb >= 0.1f && LastMach < 0.1f) SetPulseTurbulence(0.3f, 0.3f, 0.3f, 1.0f);
@@ -1276,7 +1276,7 @@ int AircraftClass::Exec(void)
             // COBRA - RED - Update Turbulence for the Pit, the Decrement is calculates with a rate of 100 mSecs
             if (PulseTurbulenceTime)
             {
-                float	Div = PulseTurbulenceTime / SimLibMajorFrameTime;
+                float Div = PulseTurbulenceTime / SimLibMajorFrameTime;
                 // Decrease it with present elapsed time rate
                 PulseTurbulence.x -= PulseTurbulence.x / Div;
                 PulseTurbulence.y -= PulseTurbulence.y / Div;
@@ -1459,7 +1459,7 @@ int AircraftClass::Exec(void)
             {
                 if (AVTRCountown > 0.0F)
                     AVTRCountown -= SimLibMajorFrameTime;
-                else if (AVTRCountown <= 0.0F)	//turn it off
+                else if (AVTRCountown <= 0.0F) //turn it off
                 {
                     ACMIToggleRecording(0, KEY_DOWN, NULL);
                     SimDriver.SetAVTR(FALSE);
@@ -1474,8 +1474,8 @@ int AircraftClass::Exec(void)
                 //Backup ADI engergy
                 if (MainPower() == MainPowerMain)
                 {
-                    if (BUPADIEnergy < 540.0F)	//9 minutes
-                        BUPADIEnergy += (SimLibMajorFrameTime * 9 * 2);	//full in 1 min
+                    if (BUPADIEnergy < 540.0F) //9 minutes
+                        BUPADIEnergy += (SimLibMajorFrameTime * 9 * 2); //full in 1 min
                 }
                 else if (BUPADIEnergy > 0.0F)
                     BUPADIEnergy -= SimLibMajorFrameTime;
@@ -1483,12 +1483,12 @@ int AircraftClass::Exec(void)
                 if (BUPADIEnergy > 0.0F) //goes away immediately
                     INSOn(BUP_ADI_OFF_IN);
                 else
-                    INSOff(BUP_ADI_OFF_IN);	//visibile
+                    INSOff(BUP_ADI_OFF_IN); //visibile
 
                 //TargetingPod Cooling
                 if (HasPower(AircraftClass::RightHptPower) && PodCooling > -1.0F)
                     PodCooling -= SimLibMajorFrameTime;
-                else	//warm it up if we don't have power
+                else //warm it up if we don't have power
                     PodCooling += SimLibMajorFrameTime;
             }
 
@@ -1734,7 +1734,7 @@ int AircraftClass::Exec(void)
 
                             v = (1.0f - af->auxaeroData->sndExt2Chart.Lookup(pwr)) * -10000;
                             p1 = af->auxaeroData->sndExt2PitchChart.Lookup(pwr);
-                            SoundPos.SfxRel(af->auxaeroData->sndExt2, eng, p1, v,	af->auxaeroData->engineLocation[eng]);
+                            SoundPos.SfxRel(af->auxaeroData->sndExt2, eng, p1, v, af->auxaeroData->engineLocation[eng]);
                         }
 
                         pwr = af->rpm2;
@@ -1865,30 +1865,30 @@ int AircraftClass::Exec(void)
             // COBRA - RED - SWITCH TAXI light on to use real lights
             SetSwitch(9, 1);
 
-            Trotation	rot;
-            Tpoint		relPos;
-            Tpoint		rotPos;
-            float			scale;
-            float			groundLevel;
+            Trotation rot;
+            Tpoint relPos;
+            Tpoint rotPos;
+            float scale;
+            float groundLevel;
 
-            rot.M11		= dmx[0][0];
-            rot.M21		= dmx[0][1];
-            rot.M31		= dmx[0][2];
+            rot.M11 = dmx[0][0];
+            rot.M21 = dmx[0][1];
+            rot.M31 = dmx[0][2];
 
-            rot.M12		= dmx[1][0];
-            rot.M22		= dmx[1][1];
-            rot.M32		= dmx[1][2];
+            rot.M12 = dmx[1][0];
+            rot.M22 = dmx[1][1];
+            rot.M32 = dmx[1][2];
 
-            rot.M13		= dmx[2][0];
-            rot.M23		= dmx[2][1];
-            rot.M33		= dmx[2][2];
+            rot.M13 = dmx[2][0];
+            rot.M23 = dmx[2][1];
+            rot.M33 = dmx[2][2];
 
             // Set the position of the pool relative
             // to the aircraft with a normalized vector
 
-            relPos.x	= 1.0F;
-            relPos.y	= 0.0F;
-            relPos.z	= 0.23F; // tangent of 13 degrees (down)
+            relPos.x = 1.0F;
+            relPos.y = 0.0F;
+            relPos.z = 0.23F; // tangent of 13 degrees (down)
 
             MatrixMult(&rot, &relPos, &rotPos);
 
@@ -1897,11 +1897,11 @@ int AircraftClass::Exec(void)
 
             // COBRA - RED - NEW TAXILIGHT
             // The difference btw vehicle and ground
-            float	ZDiff = ZPos() - groundLevel;
+            float ZDiff = ZPos() - groundLevel;
             // The spot light Z is the middle of Nose Gear Height
-            float	LiteZ = af->GetAeroData(AeroDataSet::NosGearZ) / 2;
+            float LiteZ = af->GetAeroData(AeroDataSet::NosGearZ) / 2;
             /// calculate the light projection at given angle
-            scale			= -(ZDiff - LiteZ) / rotPos.z;
+            scale = -(ZDiff - LiteZ) / rotPos.z;
             //float z=aeroDataset[af->VehicleIndex()].inputData[AeroDataSet::NosGearY]
 
             if (rotPos.z <= 0.0F)
@@ -1912,9 +1912,9 @@ int AircraftClass::Exec(void)
             {
                 mInhibitLitePool = FALSE;
 
-                rotPos.x	= XPos() + rotPos.x * (scale + 25.0F);
-                rotPos.y	= YPos() + rotPos.y * (scale + 25.0F);
-                rotPos.z	= ZPos() + rotPos.z * scale;
+                rotPos.x = XPos() + rotPos.x * (scale + 25.0F);
+                rotPos.y = YPos() + rotPos.y * (scale + 25.0F);
+                rotPos.z = ZPos() + rotPos.z * scale;
 
                 pLandLitePool->SetScale(1 + (2 - (LiteZ * 4) / -ZDiff));
                 pLandLitePool->Update(&rotPos, Yaw());
@@ -2200,10 +2200,10 @@ int AircraftClass::Exec(void)
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotWing);
                     //for (unsigned char i = 0; i < FalconLocalSession->CameraCount(); ++i) {
-                    //	if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotWing) {
-                    //		FalconLocalSession->RemoveCamera(DBrain()->targetSpotWing);
-                    //		break;
-                    //	}
+                    // if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotWing) {
+                    // FalconLocalSession->RemoveCamera(DBrain()->targetSpotWing);
+                    // break;
+                    // }
                     //}
 
                     // Takes care of deleting the allocated memory and the driver allocation as well.
@@ -2246,10 +2246,10 @@ int AircraftClass::Exec(void)
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     //for (unsigned char i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                    //	if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotElement) {
-                    //		FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
-                    //		break;
-                    //	}
+                    // if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotElement) {
+                    // FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
+                    // break;
+                    // }
                     //}
                     // Takes care of deleting the allocated memory and the driver allocation as well.
                     vuDatabase->Remove(DBrain()->targetSpotElement);
@@ -2290,10 +2290,10 @@ int AircraftClass::Exec(void)
                     // sfr: cleanup camera mess
                     FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
                     //for (int i = 0; i < FalconLocalSession->CameraCount(); i++) {
-                    //	if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotFlight) {
-                    //		FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
-                    //		break;
-                    //	}
+                    // if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotFlight) {
+                    // FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
+                    // break;
+                    // }
                     //}
                     // Takes care of deleting the allocated memory and the driver allocation as well.
                     vuDatabase->Remove(DBrain()->targetSpotFlight);
@@ -2335,9 +2335,9 @@ int AircraftClass::Exec(void)
 
         // bb pullup goes here?
         // factors from manual:
-        //	greater than 50ft AGL
-        //	descent rate > 960 fpm
-        //	landing gear up
+        // greater than 50ft AGL
+        // descent rate > 960 fpm
+        // landing gear up
         if (!isDigital &&
             ZPos() - af->groundZ < -50.0f &&
             af->gearPos <= 0.0f &&
@@ -2432,7 +2432,7 @@ int AircraftClass::Exec(void)
             // sfr: this is causing problems in server mode
             // RED - Floting/sunked Ground park fix - if planted, refresh Z ground position
             //if (isDigital && !af->IsSet(AirframeClass::OnObject) && af->IsSet(AirframeClass::Planted)){
-            //	SetPosition (af->x, af->y, OTWDriver.GetGroundLevel(af->x, af->y));
+            // SetPosition (af->x, af->y, OTWDriver.GetGroundLevel(af->x, af->y));
             //}
 
             //MI
@@ -2498,12 +2498,12 @@ int AircraftClass::Exec(void)
 
                         ///*
                         //if (!dustTrail){
-                        //	/*
-                        //	if (dustTrail=new DrawableTrail(TRAIL_DUSTCLOUD))
-                        //	{
-                        //		OTWDriver.InsertObject(dustTrail);
-                        //	}*/
-                        //	dustTrail = TRAIL_DUSTCLOUD;
+                        // /*
+                        // if (dustTrail=new DrawableTrail(TRAIL_DUSTCLOUD))
+                        // {
+                        // OTWDriver.InsertObject(dustTrail);
+                        // }*/
+                        // dustTrail = TRAIL_DUSTCLOUD;
                         //}
                         //*/
 
@@ -2523,9 +2523,9 @@ int AircraftClass::Exec(void)
 
                         /*
                         dustTrail_trail = DrawableParticleSys::PS_EmitTrail(
-                        	dustTrail_trail, dustTrail, pos.x, pos.y, pos.z
-                        	);
-                        	*/
+                         dustTrail_trail, dustTrail, pos.x, pos.y, pos.z
+                         );
+                         */
 
                         DrawableParticleSys::PS_AddParticleEx(
                             (theSFX + 1), &pos, &mvec);
@@ -2587,15 +2587,15 @@ int AircraftClass::Exec(void)
 
                 if (tanker)
                 {
-                    TankerMsg	= new FalconTankerMessage(tanker->Id(), FalconLocalGame);
+                    TankerMsg = new FalconTankerMessage(tanker->Id(), FalconLocalGame);
                 }
                 else
                 {
-                    TankerMsg	= new FalconTankerMessage(FalconNullId, FalconLocalGame);
+                    TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
                 }
 
-                TankerMsg->dataBlock.type	= FalconTankerMessage::DoneRefueling;
-                TankerMsg->dataBlock.caller	= Id();
+                TankerMsg->dataBlock.type = FalconTankerMessage::DoneRefueling;
+                TankerMsg->dataBlock.caller = Id();
                 TankerMsg->dataBlock.data1  = 0;
                 FalconSendMessage(TankerMsg);
             }
@@ -2615,7 +2615,7 @@ int AircraftClass::Exec(void)
         // 2000-11-17 MODIFIED BY S.G.
         // SO OUR SetPowerOutput WITH ENGINE TEMP IS USED INSTEAD OF THE SimBase CLASS ONE
         SetPowerOutput(af->rpm);
-        //me123 back		SetPowerOutput(af->rpm, af->oldp01[0]);
+        //me123 back SetPowerOutput(af->rpm, af->oldp01[0]);
         // END OF MODIFIED SECTION
 
         // Weapons
@@ -2639,7 +2639,7 @@ int AircraftClass::Exec(void)
                 tmpTarget = NULL;
             }
 
-            //   		if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb)
+            //    if (FCC->GetMasterMode() != FireControlComputer::AirGroundBomb)
             // TODO
             // COBRA - RED - WE HAD A CTD from this following call just entering 3D, still dunno why...
             SetTarget(FCC->Exec(tmpTarget, targetList, theInputs));
@@ -2663,7 +2663,7 @@ int AircraftClass::Exec(void)
         DoCountermeasures();
 
         // KCK: Really, this is the only safe way to set campaign positions -
-        UnitClass	*campObj = (UnitClass*) GetCampaignObject();
+        UnitClass *campObj = (UnitClass*) GetCampaignObject();
 
         if (campObj && campObj->IsLocal() && campObj->GetComponentLead() == this)
         {
@@ -2891,10 +2891,10 @@ void AircraftClass::RemovePilot(void)
 void AircraftClass::Eject(void)
 {
     int i;
-    EjectedPilotClass	*epc;
-    FalconEjectMessage	*ejectMessage;	// PJW... Yell at me for this :) 12/3/97
-    FalconDeathMessage	*deathMessage;	// SCR/KCK 12/10/98
-    FalconEntity		*lastToHit;
+    EjectedPilotClass *epc;
+    FalconEjectMessage *ejectMessage; // PJW... Yell at me for this :) 12/3/97
+    FalconDeathMessage *deathMessage; // SCR/KCK 12/10/98
+    FalconEntity *lastToHit;
 
     if (IsSetFalcFlag(FEC_REGENERATING))
     {
@@ -2902,57 +2902,57 @@ void AircraftClass::Eject(void)
         // Send an eject message and a death message right away
         ejectMessage = new FalconEjectMessage(Id(), FalconLocalGame);
         ShiAssert(ejectMessage);
-        ejectMessage->dataBlock.ePlaneID		= Id();
-        ejectMessage->dataBlock.eCampID			= ((CampBaseClass*)GetCampaignObject())->GetCampID();
-        ejectMessage->dataBlock.eFlightID		= GetCampaignObject()->Id();
-        ejectMessage->dataBlock.ePilotID		= pilotSlot;
-        ejectMessage->dataBlock.hadLastShooter	= (uchar)(LastShooter() != FalconNullId);
+        ejectMessage->dataBlock.ePlaneID = Id();
+        ejectMessage->dataBlock.eCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
+        ejectMessage->dataBlock.eFlightID = GetCampaignObject()->Id();
+        ejectMessage->dataBlock.ePilotID = pilotSlot;
+        ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() != FalconNullId);
         FalconSendMessage(ejectMessage, TRUE);
 
         deathMessage = new FalconDeathMessage(Id(), FalconLocalGame);
-        deathMessage->dataBlock.dEntityID			= Id();
-        deathMessage->dataBlock.dCampID				= ((CampBaseClass*)GetCampaignObject())->GetCampID();
-        deathMessage->dataBlock.dSide				= ((CampBaseClass*)GetCampaignObject())->GetOwner();
-        deathMessage->dataBlock.dPilotID			= pilotSlot;
-        deathMessage->dataBlock.dIndex				= Type();
-        deathMessage->dataBlock.fWeaponID			= Type();
-        deathMessage->dataBlock.fWeaponUID			= FalconNullId;
-        deathMessage->dataBlock.deathPctStrength	= pctStrength;
+        deathMessage->dataBlock.dEntityID = Id();
+        deathMessage->dataBlock.dCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
+        deathMessage->dataBlock.dSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
+        deathMessage->dataBlock.dPilotID = pilotSlot;
+        deathMessage->dataBlock.dIndex = Type();
+        deathMessage->dataBlock.fWeaponID = Type();
+        deathMessage->dataBlock.fWeaponUID = FalconNullId;
+        deathMessage->dataBlock.deathPctStrength = pctStrength;
 
         lastToHit = (SimVehicleClass*)vuDatabase->Find(LastShooter());
 
         if (lastToHit && !lastToHit->IsEject())
         {
-            deathMessage->dataBlock.damageType		= FalconDamageType::OtherDamage;
+            deathMessage->dataBlock.damageType = FalconDamageType::OtherDamage;
 
             if (lastToHit->IsSim())
             {
                 SimVehicleClass *lh = static_cast<SimVehicleClass*>(lastToHit);
-                deathMessage->dataBlock.fPilotID	= lh->pilotSlot;
-                deathMessage->dataBlock.fCampID		= lh->GetCampaignObject()->GetCampID();
-                deathMessage->dataBlock.fSide		= lh->GetCampaignObject()->GetOwner();
+                deathMessage->dataBlock.fPilotID = lh->pilotSlot;
+                deathMessage->dataBlock.fCampID = lh->GetCampaignObject()->GetCampID();
+                deathMessage->dataBlock.fSide = lh->GetCampaignObject()->GetOwner();
             }
             else
             {
                 CampBaseClass *lh = static_cast<CampBaseClass*>(lastToHit);
-                deathMessage->dataBlock.fPilotID	= 0;
-                deathMessage->dataBlock.fCampID		= lh->GetCampID();
-                deathMessage->dataBlock.fSide		= lh->GetOwner();
+                deathMessage->dataBlock.fPilotID = 0;
+                deathMessage->dataBlock.fCampID = lh->GetCampID();
+                deathMessage->dataBlock.fSide = lh->GetOwner();
             }
 
-            deathMessage->dataBlock.fEntityID		= lastToHit->Id();
-            deathMessage->dataBlock.fIndex			= lastToHit->Type();
+            deathMessage->dataBlock.fEntityID = lastToHit->Id();
+            deathMessage->dataBlock.fIndex = lastToHit->Type();
         }
         else
         {
             // If aircraft is undamaged, the death message we send is 'ground collision',
             // since the aircraft would probably get there eventually
-            deathMessage->dataBlock.damageType		= FalconDamageType::OtherDamage;
-            deathMessage->dataBlock.fPilotID		= pilotSlot;
-            deathMessage->dataBlock.fCampID			= GetCampaignObject()->GetCampID();
-            deathMessage->dataBlock.fSide			= GetCampaignObject()->GetOwner();
-            deathMessage->dataBlock.fEntityID		= Id();
-            deathMessage->dataBlock.fIndex			= Type();
+            deathMessage->dataBlock.damageType = FalconDamageType::OtherDamage;
+            deathMessage->dataBlock.fPilotID = pilotSlot;
+            deathMessage->dataBlock.fCampID = GetCampaignObject()->GetCampID();
+            deathMessage->dataBlock.fSide = GetCampaignObject()->GetOwner();
+            deathMessage->dataBlock.fEntityID = Id();
+            deathMessage->dataBlock.fIndex = Type();
         }
 
         deathMessage->RequestOutOfBandTransmit();
@@ -2998,14 +2998,14 @@ void AircraftClass::Eject(void)
 
                 if (ejectMessage != NULL)
                 {
-                    ejectMessage->dataBlock.ePlaneID		= Id();
-                    //				ejectMessage->dataBlock.eEjectID		= epc->Id();
-                    ejectMessage->dataBlock.eCampID			= ((CampBaseClass*)GetCampaignObject())->GetCampID();
+                    ejectMessage->dataBlock.ePlaneID = Id();
+                    // ejectMessage->dataBlock.eEjectID = epc->Id();
+                    ejectMessage->dataBlock.eCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
                     ejectMessage->dataBlock.eFlightID       = GetCampaignObject()->Id();
-                    //				ejectMessage->dataBlock.eSide			= ((CampBaseClass*)GetCampaignObject())->GetOwner();
-                    ejectMessage->dataBlock.ePilotID		= pilotSlot;
-                    //				ejectMessage->dataBlock.eIndex			= Type();
-                    ejectMessage->dataBlock.hadLastShooter	= (uchar)(LastShooter() != FalconNullId);
+                    // ejectMessage->dataBlock.eSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
+                    ejectMessage->dataBlock.ePilotID = pilotSlot;
+                    // ejectMessage->dataBlock.eIndex = Type();
+                    ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() != FalconNullId);
                     FalconSendMessage(ejectMessage, TRUE);
                 }
 
@@ -3187,23 +3187,23 @@ void AircraftClass::SetPowerOutput(float)
         }
 
         /*// disabled me123
-        	// ENGINE TEMP
-        	value = FloatToInt32(engineTempOutput / 1.6f * 255.0f);
+         // ENGINE TEMP
+         value = FloatToInt32(engineTempOutput / 1.6f * 255.0f);
 
-        	ShiAssert( value >= 0    );
-        	ShiAssert( value <= 0xFF );
+         ShiAssert( value >= 0    );
+         ShiAssert( value <= 0xFF );
 
-        	specialData.engineHeatOutput = engineTempOutput;
+         specialData.engineHeatOutput = engineTempOutput;
 
-        	diff = specialData.engineHeatOutputNet - value;
+         diff = specialData.engineHeatOutputNet - value;
 
-        	if ((diff < -16) || (diff > 16))
-        	{
-        		//MonoPrint ("%08x SPO %f\n", this, powerOutput);
+         if ((diff < -16) || (diff > 16))
+         {
+         //MonoPrint ("%08x SPO %f\n", this, powerOutput);
 
-        		specialData.engineHeatOutputNet = static_cast<uchar>(value);
-        		send = TRUE;
-        	}
+         specialData.engineHeatOutputNet = static_cast<uchar>(value);
+         send = TRUE;
+         }
         */
         // Send if one of the value changed
         if (send)
@@ -3311,7 +3311,7 @@ void AircraftClass::PreFlight()
 
     //ATARIBABY ground check added - Removed by JPG - was causing AI problems
     //if(Sms)
-    //	Sms->SetMasterArm(SMSBaseClass::Arm);	//set it to arm
+    // Sms->SetMasterArm(SMSBaseClass::Arm); //set it to arm
     //ATARIBABY Fixed second try to test
     if (Sms)
     {
@@ -3358,15 +3358,15 @@ void AircraftClass::PreFlight()
     INSAlignmentTimer = 480.0F;
     INSLatDrift = 0.0F;
     INSAlignmentStart = vuxGameTime;
-    BUPADIEnergy = 540.0F;	//9 minutes useable
+    BUPADIEnergy = 540.0F; //9 minutes useable
     //Set the missile and threat volume
-    MissileVolume = 0;	//max vol
+    MissileVolume = 0; //max vol
     ThreatVolume = 0;
     //Targeting Pod cooled
     PodCooling = 0.0F;
     //MI HUD
-    //	if(TheHud && this == SimDriver.GetPlayerEntity() && (!OnGround() ||
-    //		PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP))
+    // if(TheHud && this == SimDriver.GetPlayerEntity() && (!OnGround() ||
+    // PlayerOptions.GetStartFlag() != PlayerOptionsClass::START_RAMP))
     //ATARIBABY/WOMBAT Hud sym wheel ramp start fix
     // MD -- 20041216: this has to move to MakePlayerVehicle().  For MP games, it turns out that
     // the AircraftClass instances are preflighted before a player vehicle is marked as such so
@@ -3375,8 +3375,8 @@ void AircraftClass::PreFlight()
     // the same is not true and this code here gets invoked always.  Strange but true.
     //if(TheHud && this == SimDriver.GetPlayerEntity())
     //{
-    //	TheHud->SymWheelPos = 1.0F;
-    //	TheHud->SetLightLevel();
+    // TheHud->SymWheelPos = 1.0F;
+    // TheHud->SetLightLevel();
     //}
 
 
@@ -3389,42 +3389,42 @@ void AircraftClass::PreFlight()
     // this code is never called here because by the time you reach MakePlayerVehicle, the DonePreflight
     // flag is already set so PreFlight isn't called from there.  For some reason in single player games
     // the same is not true and this code here gets invoked always.  Strange but true.
-    //	if(IsPlayer() && OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
-    //	{
-    ////		OTWDriver.pCockpitManager->mpIcp->Comm1Volume = 4;	// MLR 2003-10-20 Med vol //was 0, max vol
-    ////		OTWDriver.pCockpitManager->mpIcp->Comm2Volume = 4;
+    // if(IsPlayer() && OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
+    // {
+    //// OTWDriver.pCockpitManager->mpIcp->Comm1Volume = 4; // MLR 2003-10-20 Med vol //was 0, max vol
+    //// OTWDriver.pCockpitManager->mpIcp->Comm2Volume = 4;
     //
-    //		// MD -- 20041211: turn on the radios and set the appropriate default knob settings
-    //		if (g_bManualRadioTuning)
-    //		{
-    //			OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetPowerOn(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetSecondaryPowerOn(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetGuardMonitor(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetActive(TRUE);
+    // // MD -- 20041211: turn on the radios and set the appropriate default knob settings
+    // if (g_bManualRadioTuning)
+    // {
+    // OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetPowerOn(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetSecondaryPowerOn(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetGuardMonitor(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->UfcComm1()->SetActive(TRUE);
     //
-    //			OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetPowerOn(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetSecondaryPowerOn(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetGuardMonitor(TRUE);
-    //			OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetActive(FALSE);
+    // OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetPowerOn(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetSecondaryPowerOn(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetGuardMonitor(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->BupComm1()->SetActive(FALSE);
     //
-    //			OTWDriver.pCockpitManager->mpIcp->UfcComm2()->SetPowerOn(TRUE);
+    // OTWDriver.pCockpitManager->mpIcp->UfcComm2()->SetPowerOn(TRUE);
     //
-    //			if (gNavigationSys)
-    //				gNavigationSys->SetControlSrc(NavigationSystem::ICP);
-    //		}
+    // if (gNavigationSys)
+    // gNavigationSys->SetControlSrc(NavigationSystem::ICP);
+    // }
     //
-    //		if(VM) // MLR 1/29/2004 -
-    //		{
-    //			OTWDriver.pCockpitManager->mpIcp->Comm1Volume=RESCALE(PlayerOptions.GroupVol[COM1_SOUND_GROUP],-2000,0,7,0);
-    //			OTWDriver.pCockpitManager->mpIcp->Comm2Volume=RESCALE(PlayerOptions.GroupVol[COM2_SOUND_GROUP],-2000,0,7,0);
-    //			if(PlayerOptions.GroupVol[COM1_SOUND_GROUP]<-2000) OTWDriver.pCockpitManager->mpIcp->Comm1Volume=8;
-    //			if(PlayerOptions.GroupVol[COM2_SOUND_GROUP]<-2000) OTWDriver.pCockpitManager->mpIcp->Comm2Volume=8;
-    //			F4SetStreamVolume(VM->VoiceHandle(0),PlayerOptions.GroupVol[COM1_SOUND_GROUP]);
-    //			F4SetStreamVolume(VM->VoiceHandle(1),PlayerOptions.GroupVol[COM2_SOUND_GROUP]);
-    //		}
+    // if(VM) // MLR 1/29/2004 -
+    // {
+    // OTWDriver.pCockpitManager->mpIcp->Comm1Volume=RESCALE(PlayerOptions.GroupVol[COM1_SOUND_GROUP],-2000,0,7,0);
+    // OTWDriver.pCockpitManager->mpIcp->Comm2Volume=RESCALE(PlayerOptions.GroupVol[COM2_SOUND_GROUP],-2000,0,7,0);
+    // if(PlayerOptions.GroupVol[COM1_SOUND_GROUP]<-2000) OTWDriver.pCockpitManager->mpIcp->Comm1Volume=8;
+    // if(PlayerOptions.GroupVol[COM2_SOUND_GROUP]<-2000) OTWDriver.pCockpitManager->mpIcp->Comm2Volume=8;
+    // F4SetStreamVolume(VM->VoiceHandle(0),PlayerOptions.GroupVol[COM1_SOUND_GROUP]);
+    // F4SetStreamVolume(VM->VoiceHandle(1),PlayerOptions.GroupVol[COM2_SOUND_GROUP]);
+    // }
     //
     //
-    //	}
+    // }
 
 
 
@@ -3647,7 +3647,7 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     if (PlayerOptions.GetStartFlag() == PlayerOptionsClass::START_RUNWAY)
     {
         af->vt = 0.0f;
-        spawnpoint = initData->ptIndex;	//RAS-11Nov04-store initial spawn point
+        spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
         return initData->ptIndex;
     }
 
@@ -3687,19 +3687,19 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
             af->initialPsi = af->psi = af->sigma = (float)atan2((y - af->y), (x - af->x));
             af->initialX = af->groundAnchorX = af->x;
             af->initialY = af->groundAnchorY = af->y;
-            spawnpoint = pt;	//RAS-11Nov04-store initial spawn point
+            spawnpoint = pt; //RAS-11Nov04-store initial spawn point
             return pt;
         }
     }
     else
     {
-        PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED;	// 02JAN04 - FRB - Reserve parking spot
-        spawnpoint = initData->ptIndex;	//RAS-11Nov04-store initial spawn point
+        PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+        spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
         return initData->ptIndex;
     }
 
-    spawnpoint = initData->ptIndex;	//RAS-11Nov04-store initial spawn point
-    PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED;	// 02JAN04 - FRB - Reserve parking spot
+    spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
+    PtDataTable[initData->ptIndex].flags |= PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
     return initData->ptIndex;
 }
 
@@ -3920,7 +3920,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     int flightIdx = 0;
     float x, y, z, xx, yy, zz;
     FalconEntity *wpTarget = NULL;
-    ObjClassDataType*		oc;
+    ObjClassDataType* oc;
     uchar tgtnum1 = 0;
     flight = (Flight)GetCampaignObject();
     flightIdx = flight->GetComponentIndex(aircraft);
@@ -3958,7 +3958,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     // RV - Biker, CTD Fix if target is not a possible objective
     if (JDAMtarget && JDAMtarget->IsObjective())
     {
-        FeatureClassDataType	*fc = NULL;
+        FeatureClassDataType *fc = NULL;
         oc = ((Objective)JDAMtarget)->GetObjectiveClassData();
         int featnum = oc->Features;
         int Priority = 99;

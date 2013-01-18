@@ -1,7 +1,7 @@
 /***************************************************************************\
     ui_gen.cpp
     Peter Ward
-	July 15, 1996
+ July 15, 1996
 
     This code contains a bunch of generic routines
 \***************************************************************************/
@@ -90,14 +90,14 @@ extern "C"
 
 enum
 {
-    BLUE_TEAM_ICONS				= 565120000,
-    BLUE_TEAM_ICONS_W			= 565120001,
+    BLUE_TEAM_ICONS = 565120000,
+    BLUE_TEAM_ICONS_W = 565120001,
     CAMP_AIR_BASE_ICON          = 10003,
 };
 
 void DeleteGroupList(long ID);
 
-#define COLLECTABLE_HP_OBJECTIVES		5
+#define COLLECTABLE_HP_OBJECTIVES 5
 int GetTopPriorityObjectives(int team, _TCHAR* buffers[COLLECTABLE_HP_OBJECTIVES]);
 int GetTeamSituation(Team t);
 BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
@@ -428,7 +428,7 @@ void GetFileList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[], long clien
     HANDLE ffhnd;
     BOOL last, ignore;
     long i;
-    _TCHAR	*ptr, *extension;
+    _TCHAR *ptr, *extension;
 
     if (!win || !cb) return;
 
@@ -531,7 +531,7 @@ void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], lon
     HANDLE ffhnd;
     BOOL last, ignore;
     long i, UniqueID;
-    _TCHAR	*ptr, *extension;
+    _TCHAR *ptr, *extension;
 
     if (!tree) return;
 
@@ -1257,9 +1257,9 @@ void MakeOccupationMap(IMAGE_RSC *Map)
 
     // HACK: Set uninitialized variables in CampMap
     // KCK TODO: Fix this, OR GetOwner() function for Terrain Team editor tool
-    //	MRX=Map_Max_X/MAP_RATIO;
-    //	MRY=Map_Max_Y/MAP_RATIO;
-    //	MAXOI = (sizeof(uchar)*MRX*MRY)/2;
+    // MRX=Map_Max_X/MAP_RATIO;
+    // MRY=Map_Max_Y/MAP_RATIO;
+    // MAXOI = (sizeof(uchar)*MRX*MRY)/2;
     ShiAssert(MRX && MRY && MAXOI);
 
     Palette = Map->GetPalette();
@@ -1339,9 +1339,9 @@ void MakeBigOccupationMap(IMAGE_RSC *Map)
 
     // HACK: Set uninitialized variables in CampMap
     // KCK TODO: Fix this, OR GetOwner() function for Terrain Team editor tool
-    //	MRX=Map_Max_X/MAP_RATIO;
-    //	MRY=Map_Max_Y/MAP_RATIO;
-    //	MAXOI = (sizeof(uchar)*MRX*MRY)/2;
+    // MRX=Map_Max_X/MAP_RATIO;
+    // MRY=Map_Max_Y/MAP_RATIO;
+    // MAXOI = (sizeof(uchar)*MRX*MRY)/2;
     ShiAssert(MRX && MRY && MAXOI);
 
     Palette = Map->GetPalette();
@@ -2007,7 +2007,7 @@ void UpdateIntel(long ID)
 
             if (TeamInfo[Team] && TeamInfo[Team]->GetOffensiveAirAction()->actionType)
             {
-                _TCHAR	timeStr[30] = {0};
+                _TCHAR timeStr[30] = {0};
                 AddTimeToBuffer(TeamInfo[Team]->GetOffensiveAirAction()->actionStartTime, timeStr, FALSE);
                 // KCK HACK: Can't seem to get this to size right. Remind me to ask Peter about
                 // this when he gets in
@@ -2059,7 +2059,7 @@ void UpdateIntel(long ID)
 
         if (txt)
         {
-            _TCHAR	timeStr[30] = {0};
+            _TCHAR timeStr[30] = {0};
             txt->Refresh();
             AddTimeToBuffer(TeamInfo[Team]->GetGroundAction()->actionTime, timeStr, FALSE);
             // KCK HACK: Can't seem to get this to size right. Remind me to ask Peter about
@@ -3029,7 +3029,7 @@ void LoadPeopleInfo(long client)
 
         y += win->GetH() / 2;
 
-#ifdef _DO_CREDITS_HACK	// OW
+#ifdef _DO_CREDITS_HACK // OW
         char strTmp[80];
         strTmp[0x0] = 'D';
         strTmp[0x1] = 'i';

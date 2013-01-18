@@ -193,14 +193,14 @@ Prof_extern_C void Prof_set_report_mode(Prof_Report_Mode desired)
 #define NUM_HEADER (NUM_VALUES+1)
 
 //컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
-//Procedure		Prof_dumpFile
-//Author		Retro
-//Date			Nov/Dec 2003
+//Procedure Prof_dumpFile
+//Author Retro
+//Date Nov/Dec 2003
 //
-//Desc			Builds a report an dumps it into 'report.txt'
-//				this should be called once a frame. Either this or the
-//				DumpOverlay should be called.
-//				When in doubt, use the dumpOverlay since this isn큧 very refined
+//Desc Builds a report an dumps it into 'report.txt'
+// this should be called once a frame. Either this or the
+// DumpOverlay should be called.
+// When in doubt, use the dumpOverlay since this isn큧 very refined
 //------------------------------------------------------------------------------
 Prof_extern_C void  Prof_dumpFile()
 {
@@ -253,17 +253,17 @@ Prof_extern_C void  Prof_dumpFile()
 
     Prof_free_report(pob);
     fclose(fp);
-#endif	// #ifdef Prof_ENABLED
+#endif // #ifdef Prof_ENABLED
 }
 
 
 //컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
-//Procedure		Prof_dumpOverlay
-//Author		Retro
-//Date			Nov/Dec 2003
+//Procedure Prof_dumpOverlay
+//Author Retro
+//Date Nov/Dec 2003
 //
-//Desc			Assembles a report (char**) and returns it. The calling function
-//				has to take care of deleting it again.
+//Desc Assembles a report (char**) and returns it. The calling function
+// has to take care of deleting it again.
 //------------------------------------------------------------------------------
 Prof_extern_C char** Prof_dumpOverlay()
 {
@@ -369,9 +369,9 @@ Prof_extern_C char** Prof_dumpOverlay()
 
     Prof_free_report(pob);
     return line;
-#else	// #ifdef Prof_ENABLED
+#else // #ifdef Prof_ENABLED
     return 0;
-#endif	// #ifdef Prof_ENABLED
+#endif // #ifdef Prof_ENABLED
 }
 
 // visit all Prof_Zone_Stacks

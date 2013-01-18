@@ -59,21 +59,21 @@ void TestBounds(int position, int dimension, int* pcursorIndex, int cursor0, int
 //====================================================//
 CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
 {
-    int		i;
+    int i;
 
-    mIdNum						= ppanelInitStr->idNum;
+    mIdNum = ppanelInitStr->idNum;
 
-    mxPanelOffset				= ppanelInitStr->xOffset;
-    myPanelOffset				= ppanelInitStr->yOffset;
+    mxPanelOffset = ppanelInitStr->xOffset;
+    myPanelOffset = ppanelInitStr->yOffset;
 
-    mNumSurfaces				= ppanelInitStr->numSurfaces;
-    mpSurfaceData				= ppanelInitStr->psurfaceData;
+    mNumSurfaces = ppanelInitStr->numSurfaces;
+    mpSurfaceData = ppanelInitStr->psurfaceData;
 
-    mNumObjects					= ppanelInitStr->numObjects;
+    mNumObjects = ppanelInitStr->numObjects;
 #if CPPANEL_STL
 
 #else
-    mpObjectIDs					= ppanelInitStr->pobjectIDs;
+    mpObjectIDs = ppanelInitStr->pobjectIDs;
 #endif
     mHudFont                = ppanelInitStr->hudFont;
     mMFDFont                = ppanelInitStr->mfdFont;
@@ -87,14 +87,14 @@ CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
     }
 
 #else
-    mpObjects					= new CPObject*[mNumObjects];
+    mpObjects = new CPObject*[mNumObjects];
 #endif
 
 
-    mNumButtonViews			= ppanelInitStr->numButtonViews;
-    mpButtonViewIDs			= ppanelInitStr->pbuttonViewIDs;
+    mNumButtonViews = ppanelInitStr->numButtonViews;
+    mpButtonViewIDs = ppanelInitStr->pbuttonViewIDs;
 
-    mpButtonViews				= NULL;
+    mpButtonViews = NULL;
 #ifdef USE_SH_POOLS
 
     if (mNumButtonViews > 0)
@@ -103,20 +103,20 @@ CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
     }
 
 #else
-    mpButtonViews				= new CPButtonView*[mNumButtonViews];
+    mpButtonViews = new CPButtonView*[mNumButtonViews];
 #endif
 
-    mpOTWImage					= ppanelInitStr->pOtwImage;
+    mpOTWImage = ppanelInitStr->pOtwImage;
 
-    mPan							= ppanelInitStr->pan * DTR;
-    mTilt							= ppanelInitStr->tilt * DTR;
+    mPan = ppanelInitStr->pan * DTR;
+    mTilt = ppanelInitStr->tilt * DTR;
 
-    mHScale						= ppanelInitStr->hScale;
-    mVScale						= ppanelInitStr->vScale;
-    ppanelInitStr->maskTop	= (int)(ppanelInitStr->maskTop * mVScale);
-    mMaskTop						= (ppanelInitStr->cockpitHeight * 0.5F - ppanelInitStr->maskTop) / (ppanelInitStr->cockpitHeight * 0.5F);
+    mHScale = ppanelInitStr->hScale;
+    mVScale = ppanelInitStr->vScale;
+    ppanelInitStr->maskTop = (int)(ppanelInitStr->maskTop * mVScale);
+    mMaskTop = (ppanelInitStr->cockpitHeight * 0.5F - ppanelInitStr->maskTop) / (ppanelInitStr->cockpitHeight * 0.5F);
 
-    mDoGeometry					= ppanelInitStr->doGeometry;
+    mDoGeometry = ppanelInitStr->doGeometry;
 
     for (i = 0; i < BOUNDS_TOTAL; i++)
     {
@@ -126,7 +126,7 @@ CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
 #ifdef USE_SH_POOLS
             mpViewBounds[i] = (ViewportBounds *)MemAllocPtr(gCockMemPool, sizeof(ViewportBounds), FALSE);
 #else
-            mpViewBounds[i]	= new ViewportBounds;
+            mpViewBounds[i] = new ViewportBounds;
 #endif
 
             ConvertRecttoVBounds(ppanelInitStr->pviewRects[i],
@@ -140,13 +140,13 @@ CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
         else
         {
 
-            mpViewBounds[i]	= NULL;
+            mpViewBounds[i] = NULL;
         }
     }
 
-    mDefaultCursor				= ppanelInitStr->defaultCursor;
-    mMouseBounds				= ppanelInitStr->mouseBounds;
-    mAdjacentPanels			= ppanelInitStr->adjacentPanels;
+    mDefaultCursor = ppanelInitStr->defaultCursor;
+    mMouseBounds = ppanelInitStr->mouseBounds;
+    mAdjacentPanels = ppanelInitStr->adjacentPanels;
 
     memcpy(osbLocation, ppanelInitStr->osbLocation, sizeof(osbLocation));
 
@@ -160,7 +160,7 @@ CPPanel::CPPanel(PanelInitStr* ppanelInitStr)
 
 CPPanel::~CPPanel()
 {
-    int	i;
+    int i;
 
     if (mpSurfaceData)
     {
@@ -251,7 +251,7 @@ void CPPanel::Exec(SimBaseClass* pOwnship, int CycleBit)
 
 void CPPanel::SetDirtyFlags()
 {
-    int		i;
+    int i;
 
     for (i = 0; i < mNumObjects; i++)
     {
@@ -270,9 +270,9 @@ void CPPanel::SetDirtyFlags()
 
 void CPPanel::DisplayBlit()
 {
-    int		i;
+    int i;
 
-    if (!DisplayOptions.bRender2DCockpit)	// OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
+    if (!DisplayOptions.bRender2DCockpit) // OW: dont loop in fast 2d mode ("blitting" handled by DisplayBlit3D)
     {
         // loop thru and display all surfaces for this panel
         F4EnterCriticalSection(OTWDriver.pCockpitManager->mpCockpitCritSec);
@@ -311,15 +311,15 @@ void CPPanel::DisplayBlit()
 // OW
 void CPPanel::DisplayBlit3D()
 {
-    int		i;
+    int i;
 
     // loop thru and display all surfaces for this panel
 
     F4EnterCriticalSection(OTWDriver.pCockpitManager->mpCockpitCritSec);
 
 
-    int	OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x / 2;
-    int	OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y / 2;
+    int OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x / 2;
+    int OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y / 2;
 
 
 
@@ -359,7 +359,7 @@ void CPPanel::DisplayBlit3D()
 
 void CPPanel::DisplayDraw()
 {
-    int		i;
+    int i;
 
     OTWDriver.renderer->SetOffset(OTWDriver.pCockpitManager->PitTurbulence.x, OTWDriver.pCockpitManager->PitTurbulence.y);
 
@@ -378,8 +378,8 @@ void CPPanel::DisplayDraw()
 
 BOOL CPPanel::POVDispatch(int direction)
 {
-    int	newPanel = -1;
-    BOOL	viewChanging = FALSE;
+    int newPanel = -1;
+    BOOL viewChanging = FALSE;
 
     switch (direction)
     {
@@ -432,14 +432,14 @@ BOOL CPPanel::POVDispatch(int direction)
 BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
 {
 
-    BOOL	found = FALSE;
-    BOOL	viewChanging = FALSE;
-    int	i = 0;
-    int	border;
-    int	height;
-    int	width;
-    int	newPanel = -1;
-    int	cursor0, cursor1, cursor2;
+    BOOL found = FALSE;
+    BOOL viewChanging = FALSE;
+    int i = 0;
+    int border;
+    int height;
+    int width;
+    int newPanel = -1;
+    int cursor0, cursor1, cursor2;
 
     if (mDefaultCursor >= 0)
     {
@@ -453,7 +453,7 @@ BOOL CPPanel::Dispatch(int* cursorIndex, int event, int xpos, int ypos)
         {
             border = OTWDriver.pCockpitManager->mMouseBorder;
             height = DisplayOptions.DispHeight;
-            width	 = DisplayOptions.DispWidth;
+            width  = DisplayOptions.DispWidth;
 
             if (event == CP_MOUSE_BUTTON0 || event == CP_MOUSE_BUTTON1)
             {
@@ -590,7 +590,7 @@ BOOL CPPanel::GetViewportBounds(ViewportBounds* bounds, int viewPort)
 void CPPanel::CreateLitSurfaces(float lightLevel)
 {
 
-    int	i;
+    int i;
 
     for (i = 0; i < mNumSurfaces; i++)
         mpSurfaceData[i].psurface->CreateLit();
@@ -598,7 +598,7 @@ void CPPanel::CreateLitSurfaces(float lightLevel)
     for (i = 0; i < mNumObjects; i++)
         mpObjects[i]->CreateLit();
 
-    for (i = 0; i < mNumButtonViews; i++)		//Wombat778 3-23-04 Added for rendered buttonviews
+    for (i = 0; i < mNumButtonViews; i++) //Wombat778 3-23-04 Added for rendered buttonviews
         mpButtonViews[i]->CreateLit();
 
     SetTOD(lightLevel);
@@ -608,7 +608,7 @@ void CPPanel::CreateLitSurfaces(float lightLevel)
 void CPPanel::DiscardLitSurfaces(void)
 {
 
-    int	i;
+    int i;
 
     for (i = 0; i < mNumSurfaces; i++)
     {
@@ -622,7 +622,7 @@ void CPPanel::DiscardLitSurfaces(void)
         mpObjects[i]->DiscardLit();
     }
 
-    for (i = 0; i < mNumButtonViews; i++)  	//Wombat778 3-23-04 Added for rendered buttonviews
+    for (i = 0; i < mNumButtonViews; i++)   //Wombat778 3-23-04 Added for rendered buttonviews
     {
 
         mpButtonViews[i]->DiscardLit();
@@ -721,16 +721,16 @@ void CPPanel::SetTOD(float lightLevel)
 
     int pixelsize = (gpTemplateSurface) ? gpTemplateSurface->PixelSize() : TemplateInfo->pixelsize;
 
-    DWORD		palette16[256];
-    DWORD		*palTgt		= palette16;
-    GLulong		*palData	= gpTemplatePalette;
-    GLulong		*palEnd		= palData + 208;	// Entries 208 through 255 are special...
+    DWORD palette16[256];
+    DWORD *palTgt = palette16;
+    GLulong *palData = gpTemplatePalette;
+    GLulong *palEnd = palData + 208; // Entries 208 through 255 are special...
 
-    DWORD	lighting;
-    DWORD	inColor;
-    DWORD	outColor;
-    int		i;
-    DWORD	mask;
+    DWORD lighting;
+    DWORD inColor;
+    DWORD outColor;
+    int i;
+    DWORD mask;
     BYTE red, green, blue;
 
     ShiAssert(FALSE == F4IsBadReadPtr(palData, 256 * sizeof(*palData)));
@@ -761,9 +761,9 @@ void CPPanel::SetTOD(float lightLevel)
             outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
             outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
-            blue		= (BYTE)(((outColor) >> 16) & 0xFF);
-            green		= (BYTE)(((outColor) >> 8)  & 0xFF);
-            red		= (BYTE)((outColor)	  		 & 0xFF);
+            blue = (BYTE)(((outColor) >> 16) & 0xFF);
+            green = (BYTE)(((outColor) >> 8)  & 0xFF);
+            red = (BYTE)((outColor)     & 0xFF);
             outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
 
             if (!gpTemplateSurface)
@@ -782,9 +782,9 @@ void CPPanel::SetTOD(float lightLevel)
 
         do
         {
-            blue		= (BYTE)(((*palData) >> 16) & 0xFF);
-            green		= (BYTE)(((*palData) >> 8)  & 0xFF);
-            red		= (BYTE)((*palData)	       & 0xFF);
+            blue = (BYTE)(((*palData) >> 16) & 0xFF);
+            green = (BYTE)(((*palData) >> 8)  & 0xFF);
+            red = (BYTE)((*palData)        & 0xFF);
             outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
 
             if (!gpTemplateSurface)
@@ -844,8 +844,8 @@ void CPPanel::SetTOD(float lightLevel)
     // Now convert all the 8 bit sources to 16 bit lit versions
     if (gpTemplateSurface && gpTemplateImage)
         Translate8to32(palette16,
-                       gpTemplateImage,			//	8 bit color indexes of template
-                       gpTemplateSurface);		//	16 bit ImageBuffer
+                       gpTemplateImage, // 8 bit color indexes of template
+                       gpTemplateSurface); // 16 bit ImageBuffer
 
     for (i = mNumSurfaces - 1; i >= 0; i--)
         mpSurfaceData[i].psurface->Translate(palette16);
@@ -855,16 +855,16 @@ void CPPanel::SetTOD(float lightLevel)
 
     if (DisplayOptions.bRender2DCockpit)
     {
-        DWORD		palette16[256];
-        DWORD		*palTgt		= palette16;
-        GLulong		*palData	= gpTemplatePalette;
-        GLulong		*palEnd		= palData + 208;	// Entries 208 through 255 are special...
+        DWORD palette16[256];
+        DWORD *palTgt = palette16;
+        GLulong *palData = gpTemplatePalette;
+        GLulong *palEnd = palData + 208; // Entries 208 through 255 are special...
 
-        DWORD	lighting;
-        DWORD	inColor;
-        DWORD	outColor;
-        int		i;
-        DWORD	mask;
+        DWORD lighting;
+        DWORD inColor;
+        DWORD outColor;
+        int i;
+        DWORD mask;
         BYTE red, green, blue;
 
         // Just copy the chromakey color without lighting it
@@ -888,11 +888,11 @@ void CPPanel::SetTOD(float lightLevel)
                 outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
                 outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
 
-                blue		= (BYTE)(((outColor) >> 16) & 0xFF);
-                green		= (BYTE)(((outColor) >> 8)  & 0xFF);
-                red		= (BYTE)((outColor)	  		 & 0xFF);
+                blue = (BYTE)(((outColor) >> 16) & 0xFF);
+                green = (BYTE)(((outColor) >> 8)  & 0xFF);
+                red = (BYTE)((outColor)     & 0xFF);
                 outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
-                outColor |= 0xff000000;		// OW add alpha
+                outColor |= 0xff000000; // OW add alpha
 
                 *palTgt = outColor;
 
@@ -906,11 +906,11 @@ void CPPanel::SetTOD(float lightLevel)
 
             do
             {
-                blue		= (BYTE)(((*palData) >> 16) & 0xFF);
-                green		= (BYTE)(((*palData) >> 8)  & 0xFF);
-                red		= (BYTE)((*palData)	       & 0xFF);
+                blue = (BYTE)(((*palData) >> 16) & 0xFF);
+                green = (BYTE)(((*palData) >> 8)  & 0xFF);
+                red = (BYTE)((*palData)        & 0xFF);
                 outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
-                outColor |= 0xff000000;		// OW add alpha
+                outColor |= 0xff000000; // OW add alpha
 
                 if (!gpTemplateSurface)
                     *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
@@ -939,7 +939,7 @@ void CPPanel::SetTOD(float lightLevel)
                 outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
                 outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
                 outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
-                outColor |= 0xff000000;		// OW add alpha
+                outColor |= 0xff000000; // OW add alpha
 
                 *palTgt = outColor & mask;
 
@@ -966,7 +966,7 @@ void CPPanel::SetTOD(float lightLevel)
         for (i = 0; i < mNumObjects; i++)
             mpObjects[i]->Translate3D(palette16);
 
-        for (i = 0; i < mNumButtonViews; i++)		//Wombat778 3-23-04  Added for rendered buttonviews (buttonviews arent objects)
+        for (i = 0; i < mNumButtonViews; i++) //Wombat778 3-23-04  Added for rendered buttonviews (buttonviews arent objects)
             mpButtonViews[i]->Translate3D(palette16);
 
     }

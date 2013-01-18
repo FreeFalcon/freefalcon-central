@@ -42,16 +42,16 @@ enum MenuColors {MENU_BLACK,
 
 MenuColorStruct gMenuColorTable[MENU_TOTAL_COLORS] =
 {
-    {"black",			0xff000000},
-    {"white",			0xffffffff},
-    {"bright_red",		0xff0000ff},
-    {"bright_green",	0xff00ff00},
-    {"bright_blue",	0xffff0000},
-    {"dark_grey",		0xff505050},
-    {"light_grey",		0xffc0c0c0},
-    {"cyan",				0xffffff00},
-    {"yellow",			0xff00ffff},
-    {"dark_red",		0xff000080}
+    {"black", 0xff000000},
+    {"white", 0xffffffff},
+    {"bright_red", 0xff0000ff},
+    {"bright_green", 0xff00ff00},
+    {"bright_blue", 0xffff0000},
+    {"dark_grey", 0xff505050},
+    {"light_grey", 0xffc0c0c0},
+    {"cyan", 0xffffff00},
+    {"yellow", 0xff00ffff},
+    {"dark_red", 0xff000080}
 };
 
 BOOL FindMenuColorIndex(char* pColorName, int* pindex)
@@ -77,8 +77,8 @@ BOOL FindMenuColorIndex(char* pColorName, int* pindex)
 
 BOOL FindMenuColorValue(char* pColorName, ULONG* pvalue)
 {
-    BOOL	found;
-    int	index;
+    BOOL found;
+    int index;
 
     *pvalue = 0;
 
@@ -95,37 +95,37 @@ BOOL FindMenuColorValue(char* pColorName, ULONG* pvalue)
 
 MenuManager::MenuManager(int width, int height)
 {
-    float		bufWidth;		// Buffer width
-    float		bufHeight;		// Buffer height
-    float		halfSWidth;		// Screen width
-    float		halfSHeight;	// Screen height
-    RECT		backDest = {0};
-    int		backWidth = 0;
-    int		backHeight = 0;
-    BOOL		found = FALSE;
-    int		i;
+    float bufWidth; // Buffer width
+    float bufHeight; // Buffer height
+    float halfSWidth; // Screen width
+    float halfSHeight; // Screen height
+    RECT backDest = {0};
+    int backWidth = 0;
+    int backHeight = 0;
+    BOOL found = FALSE;
+    int i;
 
-    mIsActive			= FALSE;
-    mCurMenu				= 0;
-    mCurPage				= 0;
-    mTargetId			= FalconNullId;
-    mpResDimensions	= NULL;
+    mIsActive = FALSE;
+    mCurMenu = 0;
+    mCurPage = 0;
+    mTargetId = FalconNullId;
+    mpResDimensions = NULL;
 
     ReadDataFile("art\\ckptart\\menu.dat");
 
-    ShiAssert(mpResDimensions);	// No dimension information in the data file!
+    ShiAssert(mpResDimensions); // No dimension information in the data file!
 
-    backWidth		= 0;
-    backHeight		= 0;
+    backWidth = 0;
+    backHeight = 0;
 
     for (i = 0; i < mTotalRes; i++)
     {
         if (!found && mpResDimensions[i].xRes == width && mpResDimensions[i].yRes == height)
         {
-            backDest.top		= mpResDimensions[i].mDimensions.top;
-            backDest.left		= mpResDimensions[i].mDimensions.left;
-            backDest.bottom	= mpResDimensions[i].mDimensions.bottom;
-            backDest.right		= mpResDimensions[i].mDimensions.right;
+            backDest.top = mpResDimensions[i].mDimensions.top;
+            backDest.left = mpResDimensions[i].mDimensions.left;
+            backDest.bottom = mpResDimensions[i].mDimensions.bottom;
+            backDest.right = mpResDimensions[i].mDimensions.right;
 
             found = TRUE;
         }
@@ -136,52 +136,52 @@ MenuManager::MenuManager(int width, int height)
                  mpResDimensions[i].yRes > backHeight)
         {
 
-            backWidth	= mpResDimensions[i].xRes;
-            backHeight	= mpResDimensions[i].yRes;
-            backDest.top		= mpResDimensions[i].mDimensions.top;
-            backDest.left		= mpResDimensions[i].mDimensions.left;
-            backDest.bottom	= mpResDimensions[i].mDimensions.bottom;
-            backDest.right		= mpResDimensions[i].mDimensions.right;
+            backWidth = mpResDimensions[i].xRes;
+            backHeight = mpResDimensions[i].yRes;
+            backDest.top = mpResDimensions[i].mDimensions.top;
+            backDest.left = mpResDimensions[i].mDimensions.left;
+            backDest.bottom = mpResDimensions[i].mDimensions.bottom;
+            backDest.right = mpResDimensions[i].mDimensions.right;
         }
     }
 
-    bufWidth				= (float)backDest.right - (float)backDest.left + 1.0F;
-    bufHeight			= (float)backDest.bottom - (float)backDest.top + 1.0F;
+    bufWidth = (float)backDest.right - (float)backDest.left + 1.0F;
+    bufHeight = (float)backDest.bottom - (float)backDest.top + 1.0F;
 
-    mDestRect.top		= backDest.top;
-    mDestRect.left		= backDest.left;
-    mDestRect.bottom	= FloatToInt32(mDestRect.top + bufHeight);
-    mDestRect.right	= FloatToInt32(mDestRect.left + bufWidth);
+    mDestRect.top = backDest.top;
+    mDestRect.left = backDest.left;
+    mDestRect.bottom = FloatToInt32(mDestRect.top + bufHeight);
+    mDestRect.right = FloatToInt32(mDestRect.left + bufWidth);
 
-    halfSWidth			= (float) DisplayOptions.DispWidth * 0.5F;
-    halfSHeight			= (float) DisplayOptions.DispHeight * 0.5F;
+    halfSWidth = (float) DisplayOptions.DispWidth * 0.5F;
+    halfSHeight = (float) DisplayOptions.DispHeight * 0.5F;
 
-    mLeft					= (mDestRect.left - halfSWidth) / halfSWidth;
-    mRight				= (mDestRect.right - halfSWidth) / halfSWidth;
-    mTop					= -(mDestRect.top - halfSHeight) / halfSHeight;
-    mBottom				= -(mDestRect.bottom - halfSHeight) / halfSHeight;
+    mLeft = (mDestRect.left - halfSWidth) / halfSWidth;
+    mRight = (mDestRect.right - halfSWidth) / halfSWidth;
+    mTop = -(mDestRect.top - halfSHeight) / halfSHeight;
+    mBottom = -(mDestRect.bottom - halfSHeight) / halfSHeight;
 }
 
 
 void MenuManager::ReadDataFile(char* pfileName)
 {
-    FILE*				pFile;
-    BOOL				quitFlag  = FALSE;
-    char*				presult = "";
-    char*				plinePtr;
-    const int		lineLen = MAX_LINE_BUFFER - 1;
-    char				plineBuffer[MAX_LINE_BUFFER] = "";
-    char				*ptoken;
-    char				pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    int				menuNumber = -1;
-    int				pageNumber = -1;
-    int				itemNumber = -1;
+    FILE* pFile;
+    BOOL quitFlag  = FALSE;
+    char* presult = "";
+    char* plinePtr;
+    const int lineLen = MAX_LINE_BUFFER - 1;
+    char plineBuffer[MAX_LINE_BUFFER] = "";
+    char *ptoken;
+    char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
+    int menuNumber = -1;
+    int pageNumber = -1;
+    int itemNumber = -1;
 
     pFile = CP_OPEN(pfileName, "r");
     F4Assert(pFile);
 
-    presult	= fgets(plineBuffer, lineLen, pFile);
-    quitFlag	= (presult == NULL);
+    presult = fgets(plineBuffer, lineLen, pFile);
+    quitFlag = (presult == NULL);
     plinePtr = plineBuffer;
 
     while (!quitFlag)
@@ -218,13 +218,13 @@ void MenuManager::ReadDataFile(char* pfileName)
             }
         }
 
-        presult	= fgets(plineBuffer, lineLen, pFile);
+        presult = fgets(plineBuffer, lineLen, pFile);
         plinePtr = plineBuffer;
-        quitFlag	= (presult == NULL);
+        quitFlag = (presult == NULL);
     }
 
     CP_CLOSE(pFile);
-    ShiAssert(mResCount == 0);	// Bad data in the manager information line!
+    ShiAssert(mResCount == 0); // Bad data in the manager information line!
 }
 
 
@@ -271,15 +271,15 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     (*menuNumber)++;
     *pageNumber = -1;
 
-    char	pdrawColor[20];
+    char pdrawColor[20];
     ULONG color;
-    char	pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char	*ptoken;
-    char	pmsgName[30] = "";
-    char	paiExtent[20] = "";
-    BOOL	found;
-    int	id;
-    int	i;
+    char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
+    char *ptoken;
+    char pmsgName[30] = "";
+    char paiExtent[20] = "";
+    BOOL found;
+    int id;
+    int i;
 
 
     MenuStruct* pMenu = &(mpMenus[*menuNumber]);
@@ -287,9 +287,9 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
 #ifdef USE_SH_POOLS
     pMenu->mpTitle = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
-    pMenu->mpTitle		= new char[mMaxTextLen];
+    pMenu->mpTitle = new char[mMaxTextLen];
 #endif
-    *(pMenu->mpTitle)	= '\0';
+    *(pMenu->mpTitle) = '\0';
 
 
     ptoken = FindToken(&plinePtr, pseparators);
@@ -333,7 +333,7 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
         pMenu->mDrawColor = gMenuColorTable[MENU_WHITE].mValue;
     }
 
-    id		= 0;
+    id = 0;
     found = FALSE;
 
     while (!found && id <= SimRoughPositionUpdateMsg)
@@ -365,20 +365,20 @@ void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber
     (*pageNumber)++;
     *itemNumber = -1;
 
-    char	pdrawColor[20];
+    char pdrawColor[20];
     ULONG color;
-    char	pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char	*ptoken;
+    char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
+    char *ptoken;
 
     PageStruct* pPage = &(mpMenus[*menuNumber].mpPages[*pageNumber]);
 
 #ifdef USE_SH_POOLS
     pPage->mpTitle = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
-    pPage->mpTitle		= new char[mMaxTextLen];
+    pPage->mpTitle = new char[mMaxTextLen];
 #endif
 
-    *(pPage->mpTitle)	= '\0';
+    *(pPage->mpTitle) = '\0';
 
     ptoken = FindToken(&plinePtr, pseparators);
     sscanf(ptoken, "%d",  &(pPage->mNumItems));
@@ -422,20 +422,20 @@ void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber
 {
     (*itemNumber)++;
 
-    char	pdrawColor[20];
+    char pdrawColor[20];
     ULONG color;
-    char	pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char	*ptoken;
+    char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
+    char *ptoken;
 
     ItemStruct* pItem = &(mpMenus[*menuNumber].mpPages[*pageNumber].mpItems[*itemNumber]);
 
 #ifdef USE_SH_POOLS
     pItem->mpText = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
-    pItem->mpText		= new char[mMaxTextLen];
+    pItem->mpText = new char[mMaxTextLen];
 #endif
 
-    *(pItem->mpText)	= '\0';
+    *(pItem->mpText) = '\0';
 
     ptoken = FindToken(&plinePtr, pseparators);
     sscanf(ptoken, "%d",  &(pItem->mCondition));
@@ -497,12 +497,12 @@ MenuManager::~MenuManager()
 
 void MenuManager::InitPage()
 {
-    mCallerIdx		= SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentIndex(SimDriver.GetPlayerEntity());
-    mNumInFlight	= ((FlightClass*) SimDriver.GetPlayerEntity()->GetCampaignObject())->GetTotalVehicles();
-    mExtent			= mpMenus[mCurMenu].mWingExtent;
+    mCallerIdx = SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentIndex(SimDriver.GetPlayerEntity());
+    mNumInFlight = ((FlightClass*) SimDriver.GetPlayerEntity()->GetCampaignObject())->GetTotalVehicles();
+    mExtent = mpMenus[mCurMenu].mWingExtent;
 
-    mpPage			= &(mpMenus[mCurMenu].mpPages[mCurPage]);
-    mNumItems		= mpPage->mNumItems;
+    mpPage = &(mpMenus[mCurMenu].mpPages[mCurPage]);
+    mNumItems = mpPage->mNumItems;
     // check for OnGround status
     mOnGround = false;
 
@@ -512,11 +512,11 @@ void MenuManager::InitPage()
     // check for an AWACS in the sky
     mAWACSavail = false;
 
-    if (!g_bAWACSRequired)		// Only check for AWACS available if user wants AWACS required...
+    if (!g_bAWACSRequired) // Only check for AWACS available if user wants AWACS required...
         mAWACSavail = true;
 
-    Unit				nu, cf;
-    VuListIterator		myit(AllAirList);
+    Unit nu, cf;
+    VuListIterator myit(AllAirList);
     nu = (Unit) myit.GetFirst();
 
     while (nu && !mAWACSavail)
@@ -538,8 +538,8 @@ void MenuManager::InitPage()
 
 void MenuManager::CheckItemConditions(BOOL poll)
 {
-    int			i;
-    int			condition;
+    int i;
+    int condition;
 
     // COBRA - RED - CTD Fix
     if (!SimDriver.GetPlayerEntity()) return;
@@ -590,17 +590,17 @@ void MenuManager::CheckItemConditions(BOOL poll)
     }
 }
 
-void	MenuManager::DisplayDraw(void)
+void MenuManager::DisplayDraw(void)
 {
     if (mIsActive)
     {
 
-        float	top;
+        float top;
         float left;
         float bottom;
         float right;
 
-        float	position = 0.8F;
+        float position = 0.8F;
 
         int mesgNum;
         int eType;
@@ -624,27 +624,27 @@ void	MenuManager::DisplayDraw(void)
         // ASSO: disable the radio comms menu border //Cobra 10/31/04 TJL
         if (!g_bDisableCommsBorder)
         {
-            OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0,	-1.0);
+            OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0, -1.0);
 
-            OTWDriver.renderer->SetColor(0x997B5200);					// 60% alpha blue
+            OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
             OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
-            OTWDriver.renderer->Render2DTri((float)mDestRect.left,	(float)mDestRect.top,
-                                            (float)mDestRect.right	- 1.0F,	(float)mDestRect.top,
-                                            (float)mDestRect.right	- 1.0F,	(float)mDestRect.bottom);
-            OTWDriver.renderer->Render2DTri((float)mDestRect.left,	(float)mDestRect.top,
-                                            (float)mDestRect.left,	(float)mDestRect.bottom,
-                                            (float)mDestRect.right	- 1.0F,	(float)mDestRect.bottom);
+            OTWDriver.renderer->Render2DTri((float)mDestRect.left, (float)mDestRect.top,
+                                            (float)mDestRect.right - 1.0F, (float)mDestRect.top,
+                                            (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
+            OTWDriver.renderer->Render2DTri((float)mDestRect.left, (float)mDestRect.top,
+                                            (float)mDestRect.left, (float)mDestRect.bottom,
+                                            (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
 
-            OTWDriver.renderer->SetColor(0xFF000000);					// black
+            OTWDriver.renderer->SetColor(0xFF000000); // black
 
             OTWDriver.renderer->Render2DLine((float)mDestRect.left, (float)mDestRect.top,
-                                             (float)mDestRect.right	- 1.0F,	(float)mDestRect.top);
+                                             (float)mDestRect.right - 1.0F, (float)mDestRect.top);
             OTWDriver.renderer->Render2DLine((float)mDestRect.right - 1.0F, (float)mDestRect.top,
-                                             (float)mDestRect.right	- 1.0F,	(float)mDestRect.bottom);
+                                             (float)mDestRect.right - 1.0F, (float)mDestRect.bottom);
             OTWDriver.renderer->Render2DLine((float)mDestRect.right - 1.0F, (float)mDestRect.bottom,
-                                             (float)mDestRect.left,	(float)mDestRect.bottom);
+                                             (float)mDestRect.left, (float)mDestRect.bottom);
             OTWDriver.renderer->Render2DLine((float)mDestRect.left, (float)mDestRect.bottom,
-                                             (float)mDestRect.left,	(float)mDestRect.top);
+                                             (float)mDestRect.left, (float)mDestRect.top);
         }
 
 
@@ -661,16 +661,16 @@ void	MenuManager::DisplayDraw(void)
 
         CheckItemConditions(TRUE);
 
-        mesgNum			= mpMenus[mCurMenu].mMsgId;
+        mesgNum = mpMenus[mCurMenu].mMsgId;
 
-        mesgNum			-= (VU_LAST_EVENT + 1);
-        numElements		= MsgNumElements[mesgNum];
-        elementNum		= 0;
-        eType				= -1;
+        mesgNum -= (VU_LAST_EVENT + 1);
+        numElements = MsgNumElements[mesgNum];
+        elementNum = 0;
+        eType = -1;
 
         while (eType < 0 && elementNum < numElements)
         {
-            eType				= FalconMsgElementTypes[mesgNum][elementNum] - 1001;
+            eType = FalconMsgElementTypes[mesgNum][elementNum] - 1001;
             elementNum++;
         }
 
@@ -679,7 +679,7 @@ void	MenuManager::DisplayDraw(void)
         // draw text here
         for (i = 0; i < mpMenus[mCurMenu].mpPages[mCurPage].mNumItems; i++)
         {
-            position	-= mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mSpacing;
+            position -= mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mSpacing;
 
             sprintf(ptextStr, "%d", (i + 1) % 10);
 
@@ -707,7 +707,7 @@ void	MenuManager::DisplayDraw(void)
 }
 
 
-void	MenuManager::StepNextPage(int state)
+void MenuManager::StepNextPage(int state)
 {
     if (state & KEY_DOWN)
     {
@@ -728,7 +728,7 @@ void	MenuManager::StepNextPage(int state)
     }
 }
 
-void	MenuManager::StepPrevPage(int state)
+void MenuManager::StepPrevPage(int state)
 {
     if (state & KEY_DOWN)
     {
@@ -757,18 +757,18 @@ void MenuManager::DeActivate(void)
 
 void MenuManager::DeActivateAndClear(void)
 {
-    mIsActive				= FALSE;
-    CommandsKeyCombo		= 0;
-    CommandsKeyComboMod	= 0;
+    mIsActive = FALSE;
+    CommandsKeyCombo = 0;
+    CommandsKeyComboMod = 0;
 }
 
 
 void MenuManager::ProcessInput(unsigned long val, int state, int type, int extent)
 {
-    int			message;
-    int			item = -1;
-    int			i;
-    ItemStruct*	pitem;
+    int message;
+    int item = -1;
+    int i;
+    ItemStruct* pitem;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (state & KEY_DOWN)
@@ -781,7 +781,7 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
             {
 
                 case DIK_0:
-                    item	= 9;
+                    item = 9;
                     break;
 
                 case DIK_1:
@@ -793,7 +793,7 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
                 case DIK_7:
                 case DIK_8:
                 case DIK_9:
-                    item	= val - DIK_1;
+                    item = val - DIK_1;
                     break;
             }
 
@@ -801,20 +801,20 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
             {
                 DeActivateAndClear();
 
-                pitem	= &(mpMenus[mCurMenu].mpPages[mCurPage].mpItems[item]);
+                pitem = &(mpMenus[mCurMenu].mpPages[mCurPage].mpItems[item]);
 
                 if (pitem->mIsAvailable)
                 {
-                    message	= pitem->mMessage;
+                    message = pitem->mMessage;
                     mTargetId = AiDesignateTarget(playerAC);
                     SendMenuMsg(mpMenus[mCurMenu].mMsgId, message, mpMenus[mCurMenu].mWingExtent, mTargetId);
                 }
             }
             else if (val == DIK_SYSRQ)
             {
-                CommandsKeyCombo		= 0;
-                CommandsKeyComboMod	= 0;
-                OTWDriver.takeScreenShot	= TRUE;
+                CommandsKeyCombo = 0;
+                CommandsKeyComboMod = 0;
+                OTWDriver.takeScreenShot = TRUE;
             }
             else
             {
@@ -867,7 +867,7 @@ void MenuManager::SendMenuMsg(int msgType, int enumId, int aiExtent, VU_ID targe
                 break;
 
             default:
-                ShiWarning("Unsupported Message Type");	// unsupported message
+                ShiWarning("Unsupported Message Type"); // unsupported message
                 break;
         }
     }
@@ -876,10 +876,10 @@ void MenuManager::SendMenuMsg(int msgType, int enumId, int aiExtent, VU_ID targe
 
 void MenuSendAtc(int enumId, int sendRequest)
 {
-    VU_ID						ATCId = vuNullId;
-    ObjectiveClass				*theATC;
-    FalconATCMessage			*atcMsg;
-    AircraftClass				*playerAC = SimDriver.GetPlayerAircraft();
+    VU_ID ATCId = vuNullId;
+    ObjectiveClass *theATC;
+    FalconATCMessage *atcMsg;
+    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     gNavigationSys->GetAirbase(&ATCId);
 
@@ -928,16 +928,16 @@ void MenuSendAtc(int enumId, int sendRequest)
     ShiAssert(theATC && theATC->brain);
 
     if (theATC && theATC->brain)
-        atcMsg	= new FalconATCMessage(ATCId, FalconLocalGame);
+        atcMsg = new FalconATCMessage(ATCId, FalconLocalGame);
     else
-        atcMsg	= new FalconATCMessage(FalconNullId, FalconLocalGame);
+        atcMsg = new FalconATCMessage(FalconNullId, FalconLocalGame);
 
-    atcMsg->dataBlock.type	= enumId;
+    atcMsg->dataBlock.type = enumId;
 
     if (SimDriver.GetPlayerEntity())
-        atcMsg->dataBlock.from	= SimDriver.GetPlayerEntity()->Id();
+        atcMsg->dataBlock.from = SimDriver.GetPlayerEntity()->Id();
     else
-        atcMsg->dataBlock.from	= FalconNullId;
+        atcMsg->dataBlock.from = FalconNullId;
 
     FalconSendMessage(atcMsg, FALSE);
 }
@@ -945,9 +945,9 @@ void MenuSendAtc(int enumId, int sendRequest)
 
 void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
 {
-    FalconAWACSMessage	*pawacsMsg;
+    FalconAWACSMessage *pawacsMsg;
     FalconRadioChatterMessage* radioMessage;
-    Flight				flight;
+    Flight flight;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     // Send the 'call' message
@@ -964,7 +964,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                 break;
 
             case FalconAWACSMessage::Judy:
-                //				SendCallToAWACS(playerAC, rcJUDY);
+                // SendCallToAWACS(playerAC, rcJUDY);
                 break;
 
             case FalconAWACSMessage::RequestPicture:
@@ -1044,7 +1044,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
 
             case FalconAWACSMessage::RequestSAR:
                 SendCallToAWACS(playerAC, rcSENDCHOPPERS, FalconLocalGame);
-                //				SendCallToAWACS(plane, rcAIRMANDOWND, FalconLocalGame); // JPO addition doesn't work
+                // SendCallToAWACS(plane, rcAIRMANDOWND, FalconLocalGame); // JPO addition doesn't work
                 break;
 
             case FalconAWACSMessage::OnStation:
@@ -1055,7 +1055,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
 
             case FalconAWACSMessage::OffStation:
                 // KCK: I don't think we have the speach to impliment this
-                //				SendCallToAWACS(plane, rcFACCONTACT);
+                // SendCallToAWACS(plane, rcFACCONTACT);
                 // VWF: It seems we dont have a "check out" call. Vamoose is as
                 // close as it gets.
                 //TJL 12/14/03 Enable Check Out Speech.
@@ -1078,7 +1078,7 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
                 SendCallToAWACS(playerAC, rcREQUESTVECTORTOTANKER, FalconLocalGame);
                 break;
 
-            case FalconAWACSMessage::VectorToCarrier:	// Carrier
+            case FalconAWACSMessage::VectorToCarrier: // Carrier
                 SendCallToAWACS(playerAC, rcVECTORTOCARRIER, FalconLocalGame);
                 break;
 
@@ -1100,9 +1100,9 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
     }
 
     // Now send the message
-    pawacsMsg						= new FalconAWACSMessage(SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
-    pawacsMsg->dataBlock.type		= enumId;
-    pawacsMsg->dataBlock.caller		= targetId;
+    pawacsMsg = new FalconAWACSMessage(SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
+    pawacsMsg->dataBlock.type = enumId;
+    pawacsMsg->dataBlock.caller = targetId;
 
     MonoPrint("Sending AWACS message #%d.\n", enumId);
 
@@ -1116,10 +1116,10 @@ void MenuSendWingman(int enumId, int extent)
 
 void MenuSendTanker(int enumId)
 {
-    VU_ID							TankerId = vuNullId;
-    AircraftClass				*theTanker = NULL;
-    FalconTankerMessage		*TankerMsg;
-    FlightClass					*flight;
+    VU_ID TankerId = vuNullId;
+    AircraftClass *theTanker = NULL;
+    FalconTankerMessage *TankerMsg;
+    FlightClass *flight;
 
     gNavigationSys->GetTacanVUID(gNavigationSys->GetControlSrc(), &TankerId);
 
@@ -1139,13 +1139,13 @@ void MenuSendTanker(int enumId)
         theTanker = (AircraftClass*) flight->GetComponentLead();
 
     if (theTanker)
-        TankerMsg	= new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
+        TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
     else
-        TankerMsg	= new FalconTankerMessage(FalconNullId, FalconLocalGame);
+        TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
 
-    TankerMsg->dataBlock.type	= enumId;
+    TankerMsg->dataBlock.type = enumId;
     TankerMsg->dataBlock.data1  = 1;
-    TankerMsg->dataBlock.caller	= SimDriver.GetPlayerEntity()->Id();
+    TankerMsg->dataBlock.caller = SimDriver.GetPlayerEntity()->Id();
     FalconSendMessage(TankerMsg);
 }
 

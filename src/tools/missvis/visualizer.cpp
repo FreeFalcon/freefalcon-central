@@ -23,7 +23,7 @@
  */
 void DrawCallback(DataPoint *dp)
 {
-    Tpoint	p1, p2;
+    Tpoint p1, p2;
 
     // Anchor all vectors at the current position
     p1.x = dp->x;
@@ -88,34 +88,34 @@ void Redraw(unsigned startAt, unsigned endBefore)
 int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdshow)
 
 {
-    MSG		msg;
-    int		done = FALSE;
-    int		screenWidth;
-    int		DeviceNumber;
-    int		DriverNumber;
-    HWND	win;
+    MSG msg;
+    int done = FALSE;
+    int screenWidth;
+    int DeviceNumber;
+    int DriverNumber;
+    HWND win;
 
-    DWORD	type, size;
-    HKEY	theKey;
-    char	terrDir[_MAX_PATH];
-    char	objDir[_MAX_PATH];
-    char	misctexDir[_MAX_PATH];
-    char	filename[_MAX_PATH];
+    DWORD type, size;
+    HKEY theKey;
+    char terrDir[_MAX_PATH];
+    char objDir[_MAX_PATH];
+    char misctexDir[_MAX_PATH];
+    char filename[_MAX_PATH];
 
-    DeviceManager		devmgr;
-    DisplayDevice		device;
-    ImageBuffer			*image;
-    RenderOTW			*renderer;
-    RViewPoint			viewpoint;
-    SimClass			Sim;
-    Texture				wire;
+    DeviceManager devmgr;
+    DisplayDevice device;
+    ImageBuffer *image;
+    RenderOTW *renderer;
+    RViewPoint viewpoint;
+    SimClass Sim;
+    Texture wire;
 
-    Tpoint			InitialPosition;
-    Trotation		ViewerOrientation;
+    Tpoint InitialPosition;
+    Trotation ViewerOrientation;
 
 
     /*
-    *	Initialize Smart Heap (required by version 3.x only)
+    * Initialize Smart Heap (required by version 3.x only)
     */
 #ifdef USE_SMART_HEAP
     MemRegisterTask();
@@ -128,7 +128,7 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
 
     /*
-    *	Read some default info from the registry, then confirm it with the user
+    * Read some default info from the registry, then confirm it with the user
     */
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\4.0",
                  0, KEY_ALL_ACCESS, &theKey);
@@ -252,15 +252,15 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
 
     // Intialize the rendering buffer managment class (creats its own window for now)
-#ifdef	FULL_SCREEN
+#ifdef FULL_SCREEN
     BOOL fullscreen = TRUE;
 #else
     BOOL fullscreen = FALSE;
 #endif
     devmgr.ChooseDevice(&DriverNumber, &DeviceNumber, &screenWidth);
     device.Setup(DriverNumber, DeviceNumber, screenWidth, screenWidth * 3 / 4, fullscreen);
-    win				= device.GetAppWin();
-    image			= device.GetImageBuffer();
+    win = device.GetAppWin();
+    image = device.GetImageBuffer();
 
 
     // Setup the terrain, environment, and graphics libraries
@@ -276,14 +276,14 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
     wire.FreeImage();
     TheTerrTextures.SetOverrideTexture(wire.TexHandle());
 
-    float groundRange	= 15.0f * FEET_PER_KM;
-    float weatherRange	= 0.0f;
+    float groundRange = 15.0f * FEET_PER_KM;
+    float weatherRange = 0.0f;
     viewpoint.Setup(groundRange, 0, 2, 0.0f);
 
     // Setup the out the window renderer object
     renderer = new RenderWire;
     renderer->Setup(image, &viewpoint);
-    //	renderer->SetSmoothShadingMode( TRUE );
+    // renderer->SetSmoothShadingMode( TRUE );
 
 
     // Setup the flight model simulator
@@ -299,7 +299,7 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
 
     // Find the record with the smallest range to target
-    DataPoint	record;
+    DataPoint record;
     record.range = 1e6f;
 
     for (int i = TheDataBase.TheDataLength - 1; i >= 0; i--)
@@ -351,31 +351,31 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
                             break;
 
-                        case 'f':		// 3D rendererpoint forward (along the ground)
+                        case 'f': // 3D rendererpoint forward (along the ground)
                             Sim.Forward(3200.0f);
                             break;
 
-                        case 'b':		// 3D rendererpoint backward (along the ground)
+                        case 'b': // 3D rendererpoint backward (along the ground)
                             Sim.Backward(3200.0f);
                             break;
 
-                        case 'r':		// 3D rendererpoint right (along the ground)
+                        case 'r': // 3D rendererpoint right (along the ground)
                             Sim.Rightward(3200.0f);
                             break;
 
-                        case 'l':		// 3D rendererpoint left (along the ground)
+                        case 'l': // 3D rendererpoint left (along the ground)
                             Sim.Leftward(3200.0f);
                             break;
 
-                        case 'L':		// Turn text labels on/off
+                        case 'L': // Turn text labels on/off
                             DrawableBSP::drawLabels = !DrawableBSP::drawLabels;
                             break;
 
-                        case 'S':		// Save the Sim state to disk
+                        case 'S': // Save the Sim state to disk
                             Sim.Save("SimSave.DAT");
                             break;
 
-                        case 's':		// Restore the Sim state from disk
+                        case 's': // Restore the Sim state from disk
                             Sim.Restore("SimSave.DAT");
                             break;
                     }
@@ -384,8 +384,8 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
                 case WM_MOVE:
                 {
-                    RECT	rect;
-                    POINT	clientOrigin = { 0, 0 };
+                    RECT rect;
+                    POINT clientOrigin = { 0, 0 };
 
                     ClientToScreen(win, &clientOrigin);
 

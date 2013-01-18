@@ -26,7 +26,7 @@
 #include "wingorder.h"//Cobra
 
 extern int g_nLowestSkillForGCI; // 2002-03-12 S.G. Replaces the hardcoded '3' for skill test
-extern float g_fSearchSimTargetFromRangeSqr;	// 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
+extern float g_fSearchSimTargetFromRangeSqr; // 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
 
 SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetList, VuFilteredList* vuList);
 FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
@@ -119,7 +119,7 @@ void DigitalBrain::DoTargeting(void)
         {
             if (mDesignatedObject != FalconNullId)
             {
-                campTarget = (FalconEntity*) vuDatabase->Find(mDesignatedObject);	// Lookup target in database
+                campTarget = (FalconEntity*) vuDatabase->Find(mDesignatedObject); // Lookup target in database
 
                 if (campTarget && campTarget->IsCampaign() && ((CampBaseClass*)campTarget)->GetComponents())
                 {
@@ -325,8 +325,8 @@ void DigitalBrain::TargetSelection(void)
         // IF THE TARGET ALREADY HAS A MISSILES ON ITS WAY AND
         // WE DIDN'T SHOOT IT, DECREASE ITS PRIORITY BY 4. THIS WILL MAKE THE CURRENT LESS LIKEABLE
         /*else if (objectPtr->BaseData()->IsSim() && ((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0] && ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent != self)
-        	//objectPtr->localData->targetTime *= 4.0f;
-        	//objectPtr->localData->threatScore -= 20;*/
+         //objectPtr->localData->targetTime *= 4.0f;
+         //objectPtr->localData->threatScore -= 20;*/
         else if (baseData->IsSim() && ((SimBaseClass *)baseData)->incomingMissile[0])
         {
             if (theRadar->digiRadarMode == RadarClass::DigiSTT)
@@ -352,14 +352,14 @@ void DigitalBrain::TargetSelection(void)
 
         /*if (objectPtr->localData->threatTime < threatTime)
         {
-        	threatTime = objectPtr->localData->threatTime;
-        	maxThreatPtr = objectPtr;
+         threatTime = objectPtr->localData->threatTime;
+         maxThreatPtr = objectPtr;
         }
 
         if (objectPtr->localData->targetTime < targetTime)
         {
-        	targetTime = objectPtr->localData->targetTime;
-        	maxTargetPtr = objectPtr;
+         targetTime = objectPtr->localData->targetTime;
+         maxTargetPtr = objectPtr;
         }*/
         //Cobra test we want to force a retarget
         //TODO don't do this if you have to support a missile
@@ -437,45 +437,45 @@ void DigitalBrain::TargetSelection(void)
 
         /*
            else if (threatTime < targetTime &&
-           	   maxThreatPtr &&
-        	   maxThreatPtr->BaseData()->IsAirplane() &&
-        	   !maxThreatPtr->BaseData()->OnGround() &&
-        	   maxThreatPtr->localData->range < 5.0f * NM_TO_FT )
+               maxThreatPtr &&
+            maxThreatPtr->BaseData()->IsAirplane() &&
+            !maxThreatPtr->BaseData()->OnGround() &&
+            maxThreatPtr->localData->range < 5.0f * NM_TO_FT )
            {
-        	  SetTarget(maxThreatPtr);
+           SetTarget(maxThreatPtr);
            }
            else if (targetTime < MAX_TARGET_TIME &&
                     maxTargetPtr &&
-        			maxTargetPtr->BaseData()->IsAirplane() &&
-        			!maxTargetPtr->BaseData()->OnGround() &&
-        			maxTargetPtr->localData->range < 5.0f * NM_TO_FT )
+         maxTargetPtr->BaseData()->IsAirplane() &&
+         !maxTargetPtr->BaseData()->OnGround() &&
+         maxTargetPtr->localData->range < 5.0f * NM_TO_FT )
            {
-        	  SetTarget(maxTargetPtr);
+           SetTarget(maxTargetPtr);
            }
            else if (curSpike &&
-           			curSpike->IsAirplane() &&
-        			!curSpike->OnGround() &&
-        			!foundSpike)
+            curSpike->IsAirplane() &&
+         !curSpike->OnGround() &&
+         !foundSpike)
            {
-        	  float dx, dy, dist;
+           float dx, dy, dist;
 
-        	  dx = self->XPos() - curSpike->XPos();
-        	  dy = self->YPos() - curSpike->YPos();
+           dx = self->XPos() - curSpike->XPos();
+           dy = self->YPos() - curSpike->YPos();
 
-        	  dist = dx * dx + dy * dy;
+           dist = dx * dx + dy * dy;
 
-        	  if ( dist < 5.0f * NM_TO_FT * 5.0f * NM_TO_FT )
-        	   SetThreat (curSpike);
-        	  else
-        	  {
-        		  ClearTarget();
-        	      AddMode (WaypointMode);
-        	  }
+           if ( dist < 5.0f * NM_TO_FT * 5.0f * NM_TO_FT )
+            SetThreat (curSpike);
+           else
+           {
+           ClearTarget();
+               AddMode (WaypointMode);
+           }
            }
            else
            {
-        	  ClearTarget();
-        	  AddMode (WaypointMode);
+           ClearTarget();
+           AddMode (WaypointMode);
            }*/
     }
 
@@ -498,10 +498,10 @@ void DigitalBrain::TargetSelection(void)
 /*
 ** Name: CampTargetSelection
 ** Description:
-**		When running in the campaign, we get our marching orders (targets)
-**		from the campaign entities.
-**		NOTE: This function is intended only for Air-Air.  Air-Ground is
-**		another function using a different target ptr
+** When running in the campaign, we get our marching orders (targets)
+** from the campaign entities.
+** NOTE: This function is intended only for Air-Air.  Air-Ground is
+** another function using a different target ptr
 */
 FalconEntity* DigitalBrain::CampTargetSelection(void)
 {
@@ -532,7 +532,7 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     // set ground target pointer if on ground!
     // never, ever set targetPtr to ground object
     // 2000-09-27 MODIFIED BY S.G. AI NEED TO SET ITS TARGET POINTER IF IT HAS REACHED ITS IP WAYPOINT AS WELL
-    //	if ( target->OnGround() && (missionClass == AAMission || missionComplete) && hasWeapons)
+    // if ( target->OnGround() && (missionClass == AAMission || missionComplete) && hasWeapons)
     if (target->OnGround() && (missionClass == AAMission || missionComplete || IsSetATC(ReachedIP)) && hasWeapons)
     {
         if (!groundTargetPtr)
@@ -562,8 +562,8 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
 // Insert 1 target into a sorted target list. Maintain sort order
 SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObjectType* newObj)
 {
-    SimObjectType	*tmpPtr;
-    SimObjectType	*last = NULL;
+    SimObjectType *tmpPtr;
+    SimObjectType *last = NULL;
 
     // This new object had better NOT be in someone elses list
     ShiAssert(newObj->next == NULL);
@@ -736,7 +736,7 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
         // PETER: curObject has NOT been set by anything (garbage off the stack)
         // I am assuming this is what you meant :)
         // HOWEVER, this causes crashes later on so I am just returning
-        //		return(targetList);
+        // return(targetList);
         curObject = targetList;
         rootObject = targetList;
         // PETER END HACK

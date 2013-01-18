@@ -14,7 +14,7 @@
 // The one and only color bank.  This would need to be replaced
 // by pointers to instances of ColorBankClass passed to each call
 // if more than one color store were to be simultaniously maintained.
-extern class ColorBankClass		TheColorBank;
+extern class ColorBankClass TheColorBank;
 
 
 class ColorBankClass
@@ -25,7 +25,7 @@ public:
         nColors = nDarkendColors = 0;
         ColorPool = ColorBuffer = NULL;
     };
-    ~ColorBankClass()	{};
+    ~ColorBankClass() {};
 
     enum ColorMode { NormalMode, UnlitMode, GreenMode, UnlitGreenMode };
 
@@ -33,7 +33,7 @@ public:
     static void Setup(int nclrs, int ndarkclrs);
     static void Cleanup(void);
     static void ReadPool(int file);
-    static void	SetLight(float red, float green, float blue);
+    static void SetLight(float red, float green, float blue);
     static void SetColorMode(ColorMode mode);
 
     // Debug parameter validation
@@ -42,25 +42,25 @@ public:
 
 public:
     // Publicly used color array (set when color mode is chosen)
-    static Pcolor		*ColorPool;
+    static Pcolor *ColorPool;
 
     // Color counts
-    static int			nColors;			// Total number of colors in each set
-    static int			nDarkendColors;		// Number of colors which are staticly lit
+    static int nColors; // Total number of colors in each set
+    static int nDarkendColors; // Number of colors which are staticly lit
 
     // These are the color pools for each mode
-    static Pcolor		*ColorBuffer;		// Normal (original) colors
-    static Pcolor		*DarkenedBuffer;	// Processed for static lighting on some colors
-    static Pcolor		*GreenIRBuffer;		// Processed for green without lighting
-    static Pcolor		*GreenTVBuffer;		// Processed for green with static lighting on some colors
+    static Pcolor *ColorBuffer; // Normal (original) colors
+    static Pcolor *DarkenedBuffer; // Processed for static lighting on some colors
+    static Pcolor *GreenIRBuffer; // Processed for green without lighting
+    static Pcolor *GreenTVBuffer; // Processed for green with static lighting on some colors
 
-    static DWORD		TODcolor;			//JAM 12Oct03
+    static DWORD TODcolor; //JAM 12Oct03
 
-    static int PitLightLevel;		// Cobra - 3D cockpit light level (0, 1, 2)
+    static int PitLightLevel; // Cobra - 3D cockpit light level (0, 1, 2)
 
     // Light levels for the staticly lit colors
-    //	float				redLevel;
-    //	float				greenLevel;
-    //	float				blueLevel;
+    // float redLevel;
+    // float greenLevel;
+    // float blueLevel;
 };
 #endif // _COLORBANK_H_

@@ -1,5 +1,5 @@
 /***************************************************************************\
-	PalBuildList.cpp
+ PalBuildList.cpp
     Scott Randolph
     March 9, 1998
 
@@ -11,14 +11,14 @@
 #include "PalBuildList.h"
 
 
-BuildTimePaletteList	ThePaletteBuildList;
+BuildTimePaletteList ThePaletteBuildList;
 
 
 int BuildTimePaletteList::AddReference(DWORD *palData)
 {
-    BuildTimePaletteEntry		*entry;
-    int							index;
-    int							i;
+    BuildTimePaletteEntry *entry;
+    int index;
+    int i;
 
     ShiAssert(palData);
 
@@ -51,10 +51,10 @@ int BuildTimePaletteList::AddReference(DWORD *palData)
     // Setup a new entry for our list
     entry = new BuildTimePaletteEntry;
     memcpy(entry->palData, palData, 256 * sizeof(*palData));
-    entry->index	= index;
+    entry->index = index;
     entry->refCount = 1;
-    entry->next		= NULL;
-    entry->prev		= tail;
+    entry->next = NULL;
+    entry->prev = tail;
 
     // Add the new entry to the list
     if (tail)
@@ -77,9 +77,9 @@ int BuildTimePaletteList::AddReference(DWORD *palData)
 
 void BuildTimePaletteList::BuildPool(void)
 {
-    BuildTimePaletteEntry		*entry;
-    int							texID;
-    int							palID;
+    BuildTimePaletteEntry *entry;
+    int texID;
+    int palID;
 
 
     // Create the empty palette pool
@@ -129,7 +129,7 @@ void BuildTimePaletteList::WritePool(int file)
 
 void BuildTimePaletteList::Report()
 {
-    printf("PALETTEBANK:	There were %0d palettes used\n", ThePaletteBank.nPalettes);
+    printf("PALETTEBANK: There were %0d palettes used\n", ThePaletteBank.nPalettes);
 }
 
 void BuildTimePaletteList::MergePalette()

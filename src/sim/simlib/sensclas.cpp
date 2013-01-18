@@ -56,7 +56,7 @@ void SensorClass::SetSensorTarget(SimObjectType* newTarget)
 
 void SensorClass::SetSensorTargetHack(FalconEntity* newTarget)
 {
-    SimObjectType	*tgt;
+    SimObjectType *tgt;
 
     // Aquire the new one (up to others to keep relative geometry up to date)
     if (newTarget)
@@ -86,14 +86,14 @@ void SensorClass::ClearSensorTarget()
 /*
 ** Name: CheckLockedTarget
 ** Description:
-**		If we have a current locked target do some checks on it: Is at
-**		a campaign unit?, has it been removed from the bubble?  has it
-**		been deagg'd/agg'd?.....  We may have to change the lock back and
-**		forth between a camp unit and its components.....
+** If we have a current locked target do some checks on it: Is at
+** a campaign unit?, has it been removed from the bubble?  has it
+** been deagg'd/agg'd?.....  We may have to change the lock back and
+** forth between a camp unit and its components.....
 */
 void SensorClass::CheckLockedTarget()
 {
-    SimObjectType	*newTarget;
+    SimObjectType *newTarget;
 
     // if no target, nothing to validate
     if (lockedTarget == NULL)

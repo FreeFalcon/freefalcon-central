@@ -16,29 +16,29 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    long		BaseID_;
-    short		State_;
-    short		IconX_, IconY_;
-    short		NumVehicles_;
-    short		NumPilots_;
-    short		NumPlayers_;
+    long BaseID_;
+    short State_;
+    short IconX_, IconY_;
+    short NumVehicles_;
+    short NumPilots_;
+    short NumPlayers_;
 
-    COLORREF	IconBgColor_[2];
-    COLORREF	InfoBgColor_[2];
+    COLORREF IconBgColor_[2];
+    COLORREF InfoBgColor_[2];
 
-    UI95_RECT	IconBg_;
-    UI95_RECT	InfoBg_;
-    O_Output	*Icon_;
-    O_Output	*Name_;
-    O_Output	*Planes_;
-    O_Output	*Pilots_;
-    O_Output	*Players_;
+    UI95_RECT IconBg_;
+    UI95_RECT InfoBg_;
+    O_Output *Icon_;
+    O_Output *Name_;
+    O_Output *Planes_;
+    O_Output *Pilots_;
+    O_Output *Players_;
 
-    TREELIST	*Owner_;
+    TREELIST *Owner_;
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
 public:
 

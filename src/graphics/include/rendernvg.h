@@ -15,8 +15,8 @@
 class RenderNVG : public RenderTV
 {
 public:
-    RenderNVG()				{};
-    virtual ~RenderNVG()	{};
+    RenderNVG() {};
+    virtual ~RenderNVG() {};
 
     virtual void Setup(ImageBuffer *imageBuffer, RViewPoint *vp);
 

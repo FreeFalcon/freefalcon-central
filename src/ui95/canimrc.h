@@ -1,20 +1,20 @@
 #ifndef _ANIM_RESOURCE_H_
 #define _ANIM_RESOURCE_H_
 
-#define RLE_END			0x8000
-#define RLE_SKIPROW		0x4000
-#define RLE_SKIPCOL		0x2000
-#define RLE_REPEAT		0x1000
-#define RLE_NO_DATA		0xffff
+#define RLE_END 0x8000
+#define RLE_SKIPROW 0x4000
+#define RLE_SKIPCOL 0x2000
+#define RLE_REPEAT 0x1000
+#define RLE_NO_DATA 0xffff
 
-#define RLE_KEYMASK		0xf000
-#define RLE_COUNTMASK	0x0fff
+#define RLE_KEYMASK 0xf000
+#define RLE_COUNTMASK 0x0fff
 
 #define COMP_NONE  0
 #define COMP_RLE   1
 #define COMP_DELTA 2
 
-#pragma warning ( disable: 4200 )	// Prevent the zero length array warning
+#pragma warning ( disable: 4200 ) // Prevent the zero length array warning
 class ANIMATION
 {
 #ifdef USE_SH_POOLS
@@ -46,7 +46,7 @@ typedef struct
     long Size;
     char Data[];
 } ANIM_FRAME;
-#pragma warning ( default: 4200 )	// Restore normal warning behavior
+#pragma warning ( default: 4200 ) // Restore normal warning behavior
 
 class ANIM_RES
 {

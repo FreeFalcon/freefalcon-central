@@ -18,7 +18,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
     uchar run;
 
     start = Src;
-    data = static_cast<uchar>((*Src) + 1);	// Just make data != *Src
+    data = static_cast<uchar>((*Src) + 1); // Just make data != *Src
     srcsize;
     count = 0xff;
     run = 0;
@@ -322,37 +322,37 @@ long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
 /* Test Code
 void main(int argc,char **argv)
 {
-	int ifp,ofp;
-	char *iBuf;
-	char *oBuf;
-	long iSize,oSize;
+ int ifp,ofp;
+ char *iBuf;
+ char *oBuf;
+ long iSize,oSize;
 
-	if(argc != 3)
-	{
-		printf("Usage: test ifp ofp\n");
-		exit(0);
-	}
+ if(argc != 3)
+ {
+ printf("Usage: test ifp ofp\n");
+ exit(0);
+ }
 
-	ifp=open(argv[1],O_RDONLY|O_BINARY);
-	iSize=filelength(ifp);
-	iBuf=(char *)calloc(1,iSize);
-	read(ifp,iBuf,iSize);
-	close(ifp);
+ ifp=open(argv[1],O_RDONLY|O_BINARY);
+ iSize=filelength(ifp);
+ iBuf=(char *)calloc(1,iSize);
+ read(ifp,iBuf,iSize);
+ close(ifp);
 
-	oBuf=(char *)calloc(1,iSize*2);
+ oBuf=(char *)calloc(1,iSize*2);
 
-	oSize=CompressRLE(iBuf,oBuf,iSize);
-	memset(iBuf,0,iSize);
+ oSize=CompressRLE(iBuf,oBuf,iSize);
+ memset(iBuf,0,iSize);
 
-	iSize=DecompressRLE(oBuf,iBuf,oSize);
-	ofp=open(argv[2],O_WRONLY|O_CREAT|O_BINARY);
-	write(ofp,iBuf,iSize);
-	close(ofp);
+ iSize=DecompressRLE(oBuf,iBuf,oSize);
+ ofp=open(argv[2],O_WRONLY|O_CREAT|O_BINARY);
+ write(ofp,iBuf,iSize);
+ close(ofp);
 
-	free(iBuf);
-	free(oBuf);
+ free(iBuf);
+ free(oBuf);
 
-	exit(0);
+ exit(0);
 }
 
 */

@@ -15,7 +15,7 @@ typedef ulong CampaignTime;
 #define CampaignHours  3600000
 #define CampaignDay   86400000
 
-#define INFINITE_TIME		    4294967295		// Max value of CampaignTime
+#define INFINITE_TIME     4294967295 // Max value of CampaignTime
 #define VEHICLE_GROUPS_PER_UNIT 16
 #define FEATURES_PER_OBJ        32
 #define MAXIMUM_ROLES           16
@@ -25,14 +25,14 @@ typedef ulong CampaignTime;
 #define MAX_UNIT_CHILDREN       5
 #define MAX_FEAT_DEPEND         5
 
-#define MAX_NUMBER_OF_OBJECTIVES		8000
-#define MAX_NUMBER_OF_UNITS				4000	// Max # of NON volitile units only
-#define MAX_NUMBER_OF_VOLATILE_UNITS	16000
-#define MAX_CAMP_ENTITIES				(MAX_NUMBER_OF_OBJECTIVES+MAX_NUMBER_OF_UNITS+MAX_NUMBER_OF_VOLATILE_UNITS)
+#define MAX_NUMBER_OF_OBJECTIVES 8000
+#define MAX_NUMBER_OF_UNITS 4000 // Max # of NON volitile units only
+#define MAX_NUMBER_OF_VOLATILE_UNITS 16000
+#define MAX_CAMP_ENTITIES (MAX_NUMBER_OF_OBJECTIVES+MAX_NUMBER_OF_UNITS+MAX_NUMBER_OF_VOLATILE_UNITS)
 
-#define MONOMODE_OFF		0
-#define MONOMODE_TEXT		1
-#define MONOMODE_MAP		2
+#define MONOMODE_OFF 0
+#define MONOMODE_TEXT 1
+#define MONOMODE_MAP 2
 
 class UnitClass;
 typedef UnitClass* Unit;
@@ -41,9 +41,9 @@ typedef UnitClass* Unit;
 // Vu shortcuts
 // =====================================
 
-typedef FalconPrivateList*			F4PFList;
-typedef FalconPrivateOrderedList*	F4POList;
-typedef VuListIterator*				F4LIt;
+typedef FalconPrivateList* F4PFList;
+typedef FalconPrivateOrderedList* F4POList;
+typedef VuListIterator* F4LIt;
 
 // =====================================
 // Campaign Library Functions

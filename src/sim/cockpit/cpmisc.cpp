@@ -16,19 +16,19 @@
 CPMisc::CPMisc()
 {
 
-    mChaffFlareMode		= none;
-    mChaffFlareControl	= manual;
+    mChaffFlareMode = none;
+    mChaffFlareControl = manual;
 
-    mMasterCautionLightState	= 0;
-    mMasterCautionEvent		= FALSE;
-    mEjectState				= FALSE;
+    mMasterCautionLightState = 0;
+    mMasterCautionEvent = FALSE;
+    mEjectState = FALSE;
 
-    mRefuelState			= 0;
-    mRefuelTimer 			= 0;
+    mRefuelState = 0;
+    mRefuelTimer  = 0;
 
-    mUHFPosition			= 0;
+    mUHFPosition = 0;
 
-    memset(MFDButtonArray, 0, sizeof(int) * MFD_BUTTONS * 4);		//Wombat778 4-12-04 changed from 2 to 4
+    memset(MFDButtonArray, 0, sizeof(int) * MFD_BUTTONS * 4); //Wombat778 4-12-04 changed from 2 to 4
 }
 
 
@@ -79,7 +79,7 @@ void CPMisc::SetMasterCautionEvent(void)
 void CPMisc::StepMasterCautionLight(void)
 {
 
-    BOOL	masterCautionState;
+    BOOL masterCautionState;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL || !playerAC->IsSetFlag(MOTION_OWNSHIP))
@@ -87,7 +87,7 @@ void CPMisc::StepMasterCautionLight(void)
         return;
     }
 
-    masterCautionState	= playerAC->mFaults->MasterCaution();
+    masterCautionState = playerAC->mFaults->MasterCaution();
 
     if (mMasterCautionLightState == 0 && masterCautionState == TRUE)
     {

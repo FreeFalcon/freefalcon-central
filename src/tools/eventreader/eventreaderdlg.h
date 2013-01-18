@@ -20,7 +20,7 @@ class CEventReaderDlg : public CDialog
 {
     // Construction
 public:
-    CEventReaderDlg(CWnd* pParent = NULL);	// standard constructor
+    CEventReaderDlg(CWnd* pParent = NULL); // standard constructor
     void ReadFile(void);
     void DisposeFile(void);
     void ParseEvent(EventElement* theEvent);
@@ -34,7 +34,7 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CEventReaderDlg)
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+    virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
     // Implementation

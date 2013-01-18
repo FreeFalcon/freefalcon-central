@@ -40,10 +40,10 @@
 // =====================
 
 #ifdef DEBUG
-//#define KEV_GDEBUG	0
+//#define KEV_GDEBUG 0
 #endif
 
-extern void			debugprintf(LPSTR dbgFormat, ...);
+extern void debugprintf(LPSTR dbgFormat, ...);
 
 //#define MonoPrint  debugprintf
 
@@ -60,40 +60,40 @@ extern costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objec
 // ======================================================================
 
 // Assignedment modes
-#define GTM_MODE_BEST		0			// Find the best unit for these orders, regardless of distance
-#define GTM_MODE_FASTEST	1			// Find a reasonable unit who can get there the fastest.
+#define GTM_MODE_BEST 0 // Find the best unit for these orders, regardless of distance
+#define GTM_MODE_FASTEST 1 // Find a reasonable unit who can get there the fastest.
 
-#define MAX_GTMU_SCORE		32000
-#define	MIN_ALLOWABLE_ROLE_SCORE		10
+#define MAX_GTMU_SCORE 32000
+#define MIN_ALLOWABLE_ROLE_SCORE 10
 
-#define COLLECTABLE_HP_OBJECTIVES		5
+#define COLLECTABLE_HP_OBJECTIVES 5
 
-#define COLLECT_RESERVE		0x01
-#define COLLECT_CAPTURE		0x02
-#define COLLECT_SECURE		0x04
-#define COLLECT_ASSAULT		0x08
-#define COLLECT_AIRBORNE	0x10
-#define COLLECT_COMMANDO	0x20
-#define COLLECT_DEFEND		0x40
-#define COLLECT_SUPPORT		0x80
-#define	COLLECT_REPAIR		0x100
-#define COLLECT_AIRDEFENSE	0x200
-#define COLLECT_RECON		0x400
-#define COLLECT_RADAR		0x800
+#define COLLECT_RESERVE 0x01
+#define COLLECT_CAPTURE 0x02
+#define COLLECT_SECURE 0x04
+#define COLLECT_ASSAULT 0x08
+#define COLLECT_AIRBORNE 0x10
+#define COLLECT_COMMANDO 0x20
+#define COLLECT_DEFEND 0x40
+#define COLLECT_SUPPORT 0x80
+#define COLLECT_REPAIR 0x100
+#define COLLECT_AIRDEFENSE 0x200
+#define COLLECT_RECON 0x400
+#define COLLECT_RADAR 0x800
 
-float	DM, IM;
-int		Assigned;
-int		AssignmentDistance;
+float DM, IM;
+int Assigned;
+int AssignmentDistance;
 
-int		sOffensiveAssigned, sOffensiveDesired;
+int sOffensiveAssigned, sOffensiveDesired;
 
 extern char OrderStr[GORD_LAST][15];
 
 #ifdef KEV_GDEBUG
-int				Priority, ReSearch, LastDiv;
-int				ObjCount[GORD_LAST], UnitCount[GORD_LAST], AssignedCount[GORD_LAST];
-char			GTMBuf[40];
-ulong			Time[GORD_LAST], ScoreTime, PickTime, ListBuildTime;
+int Priority, ReSearch, LastDiv;
+int ObjCount[GORD_LAST], UnitCount[GORD_LAST], AssignedCount[GORD_LAST];
+char GTMBuf[40];
+ulong Time[GORD_LAST], ScoreTime, PickTime, ListBuildTime;
 #endif
 
 int ScoreObjectiveOffensive(float uod, float odd, float ofd, float ufd, float im, float sm, int basescore, int priority);
@@ -154,7 +154,7 @@ int GroundTaskingManagerClass::Save(VU_BYTE **stream)
 
 int GroundTaskingManagerClass::Save(FILE *file)
 {
-    int	retval = 0;
+    int retval = 0;
 
     if (!file)
         return 0;
@@ -166,13 +166,13 @@ int GroundTaskingManagerClass::Save(FILE *file)
 
 void GroundTaskingManagerClass::DoCalculations(void)
 {
-    Objective		o;
-    int				score, fs, es, i;
-    float			d;
-    Team			t;
-    GridIndex		x, y;
-    POData			pd;
-    VuListIterator	poit(POList);
+    Objective o;
+    int score, fs, es, i;
+    float d;
+    Team t;
+    GridIndex x, y;
+    POData pd;
+    VuListIterator poit(POList);
 
     // Don't do this if we're not active, or not owned by this machine
     if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) || !IsLocal())
@@ -198,11 +198,11 @@ void GroundTaskingManagerClass::DoCalculations(void)
             for (i = 1; i < NUM_TEAMS; i++)
             {
                 if (GetRoE(owner, i, ROE_GROUND_FIRE))
-                    es += pd->ground_assigned[i] / 50;	// 1 assignment pt = 1 vehicle, so 1 enemy strength pt per 50 vehs..
+                    es += pd->ground_assigned[i] / 50; // 1 assignment pt = 1 vehicle, so 1 enemy strength pt per 50 vehs..
             }
 
             if (es > 30)
-                es = 30;								// Cap enemy strength after 1500 vehicles
+                es = 30; // Cap enemy strength after 1500 vehicles
 
             if (owner != t)
                 es = -es + (rand() % 5) - 2;
@@ -218,8 +218,8 @@ void GroundTaskingManagerClass::DoCalculations(void)
         else
             score += o->GetObjectivePriority() - 80;
 
-        //		os = (o->GetObjectivePriority()-80)*3;
-        //		score = os + fs + es + (rand()%5);
+        // os = (o->GetObjectivePriority()-80)*3;
+        // score = os + fs + es + (rand()%5);
 
         if (score < 0)
             score = 0;
@@ -237,8 +237,8 @@ void GroundTaskingManagerClass::DoCalculations(void)
             pd->ground_priority[owner] = score;
             pd->air_priority[owner] = score;
             // KCK: player_priority only used now if it's >= 0
-            //			if (!(pd->flags & GTMOBJ_PLAYER_SET_PRIORITY))
-            //				pd->player_priority[owner] = pd->air_priority[owner];
+            // if (!(pd->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+            // pd->player_priority[owner] = pd->air_priority[owner];
         }
 
         if (!GetRoE(owner, t, ROE_GROUND_CAPTURE) && owner != t)
@@ -259,9 +259,9 @@ void GroundTaskingManagerClass::DoCalculations(void)
 
 int GroundTaskingManagerClass::Task(void)
 {
-    int			done = 0;
-    int			count = 0, collect;
-    int			action;
+    int done = 0;
+    int count = 0, collect;
+    int action;
 
     // Don't do this if we're not active, or not owned by this machine
     if (!(TeamInfo[owner]->flags & TEAM_ACTIVE) || !IsLocal())
@@ -277,7 +277,7 @@ int GroundTaskingManagerClass::Task(void)
     }
 
 #ifdef DEBUG
-    ulong	time;//,newtime;
+    ulong time;//,newtime;
     time = GetTickCount();
 #endif
 
@@ -294,7 +294,7 @@ int GroundTaskingManagerClass::Task(void)
         collect |= COLLECT_SECURE;
 
 #ifdef KEV_GDEBUG
-    ulong	ltime;
+    ulong ltime;
     ltime = GetTickCount();
 #endif
 
@@ -310,9 +310,9 @@ int GroundTaskingManagerClass::Task(void)
             case GACTION_OFFENSIVE:
                 // Full offensive - priorities are offensive, securing, then defense
                 AssignUnits(GORD_CAPTURE, GTM_MODE_FASTEST);
-                //				if (NavalSuperiority(owner) >= STATE_CONTESTED)
+                // if (NavalSuperiority(owner) >= STATE_CONTESTED)
                 AssignUnits(GORD_ASSAULT, GTM_MODE_BEST);
-                //				if (AirSuperiority(owner) >= STATE_CONTESTED)
+                // if (AirSuperiority(owner) >= STATE_CONTESTED)
                 {
                     AssignUnits(GORD_AIRBORNE, GTM_MODE_BEST);
                     AssignUnits(GORD_COMMANDO, GTM_MODE_BEST);
@@ -597,9 +597,9 @@ int ScoreObj(int orders, int os, int ss, int ps, int pps, int fs)
 
 int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
 {
-    CAMPREGLIST_ITERATOR	objit(AllObjList);
-    Objective		o = NULL, so = NULL, po = NULL;
-    int				add_now = 0, os = 0, ss = 0, ps = 0, pps = 0, fs = 0;
+    CAMPREGLIST_ITERATOR objit(AllObjList);
+    Objective o = NULL, so = NULL, po = NULL;
+    int add_now = 0, os = 0, ss = 0, ps = 0, pps = 0, fs = 0;
 
     // Create the objective lists
     o = GetFirstObjective(&objit);
@@ -637,7 +637,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
 
             if (add_now & (COLLECT_RESERVE | COLLECT_CAPTURE | COLLECT_SECURE | COLLECT_ASSAULT | COLLECT_AIRBORNE | COLLECT_DEFEND | GORD_SUPPORT))
             {
-                GridIndex		ox, oy;
+                GridIndex ox, oy;
                 o->GetLocation(&ox, &oy);
                 fs = FloatToInt32(DistanceToFront(ox, oy));
             }
@@ -684,7 +684,7 @@ int GroundTaskingManagerClass::BuildObjectiveLists(int to_collect)
 
 void GroundTaskingManagerClass::AddToList(Unit u, int orders)
 {
-    USNode	curu;
+    USNode curu;
 
     if (orders == GORD_CAPTURE)
         sOffensiveAssigned++;
@@ -713,8 +713,8 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
 
         if ((to_collect & (0x01 << orders)) && IsValidObjective(orders, u->GetUnitObjective()))
         {
-            Objective	o = u->GetUnitObjective();
-            GODNode		curo = objList[orders];
+            Objective o = u->GetUnitObjective();
+            GODNode curo = objList[orders];
 
             while (curo)
             {
@@ -743,9 +743,9 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
     // Immobile units just do what they do best..
     if (u->GetMovementType() == NoMove)
     {
-        GridIndex	x, y;
-        Objective	o;
-        float		d = -1.0F;
+        GridIndex x, y;
+        Objective o;
+        float d = -1.0F;
         u->GetLocation(&x, &y);
         o = FindNearestObjective(x, y, &d);
 
@@ -820,9 +820,9 @@ void GroundTaskingManagerClass::AddToLists(Unit u, int to_collect)
 // Gather up all units for this team
 int GroundTaskingManagerClass::CollectGroundAssets(int to_collect)
 {
-    Unit			u, pu;
-    CAMPREGLIST_ITERATOR	myit(AllParentList);
-    int				count = 0, objListBuilt = 0;
+    Unit u, pu;
+    CAMPREGLIST_ITERATOR myit(AllParentList);
+    int count = 0, objListBuilt = 0;
 
     // Create the unit lists
     u = GetFirstUnit(&myit);
@@ -892,9 +892,9 @@ int GroundTaskingManagerClass::CollectGroundAssets(int to_collect)
 
 int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int score)
 {
-    Objective	so, po;
-    POData		pod;
-    //	SOData		sod;
+    Objective so, po;
+    POData pod;
+    // SOData sod;
 
     if (!u || !o)
         return 0;
@@ -929,34 +929,34 @@ int GroundTaskingManagerClass::AssignUnit(Unit u, int orders, Objective o, int s
     if (pod)
         pod->ground_assigned[owner] += u->GetTotalVehicles();
 
-    /*	if (so != po)
-    		{
-    		sod = GetSOData(so);
-    		if (sod)
-    			sod->assigned[owner] += u->GetTotalVehicles();
-    		}
+    /* if (so != po)
+     {
+     sod = GetSOData(so);
+     if (sod)
+     sod->assigned[owner] += u->GetTotalVehicles();
+     }
     */
 
 #ifdef KEV_GDEBUG
-    //	char		name1[128],name2[128];
-    //	GridIndex	x,y,ux,uy;
-    //	u->GetName(name1,127);
-    //	o->GetName(name2,127);
-    //	u->GetLocation(&ux,&uy);
-    //	o->GetLocation(&x,&y);
-    //	MonoPrint("%s (%d) %s -> %s (%d) @ %d,%d - d:%d, s:%d\n",name1,u->GetCampID(),OrderStr[orders],name2,o->GetCampID(),x,y,(int)Distance(ux,uy,x,y),score);
+    // char name1[128],name2[128];
+    // GridIndex x,y,ux,uy;
+    // u->GetName(name1,127);
+    // o->GetName(name2,127);
+    // u->GetLocation(&ux,&uy);
+    // o->GetLocation(&x,&y);
+    // MonoPrint("%s (%d) %s -> %s (%d) @ %d,%d - d:%d, s:%d\n",name1,u->GetCampID(),OrderStr[orders],name2,o->GetCampID(),x,y,(int)Distance(ux,uy,x,y),score);
 #endif
     return 1;
 }
 
 int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
 {
-    GODNode			curo, nexto;
-    USNode			curu, nextu;
-    int				ucnt = 0, ocnt = 0, sortBy = GODN_SORT_BY_PRIORITY;
+    GODNode curo, nexto;
+    USNode curu, nextu;
+    int ucnt = 0, ocnt = 0, sortBy = GODN_SORT_BY_PRIORITY;
 
 #ifdef KEV_GDEBUG
-    ulong	time, newtime;
+    ulong time, newtime;
     time = GetTickCount();
 #endif
 
@@ -967,10 +967,10 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
     // We're only going to reorder the unit farthest from our primary objective
     if (orders == GORD_RESERVE)
     {
-        GridIndex		x, y, px = 512, py = 512;
-        float			ds, bestds = FLT_MAX;
-        USNode			bestn = NULL;
-        Objective		po = (Objective) vuDatabase->Find(TeamInfo[owner]->GetGroundAction()->actionObjective);
+        GridIndex x, y, px = 512, py = 512;
+        float ds, bestds = FLT_MAX;
+        USNode bestn = NULL;
+        Objective po = (Objective) vuDatabase->Find(TeamInfo[owner]->GetGroundAction()->actionObjective);
 
         if (po)
             po->GetLocation(&px, &py);
@@ -1060,15 +1060,15 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
     return 1;
 }
 
-int	checks = 0, runs = 0;
+int checks = 0, runs = 0;
 
 int GroundTaskingManagerClass::AssignObjective(GODNode curo, int orders, int mode)
 {
-    USNode			curu, bestu;
-    int				bests, score, retval = 0;
+    USNode curu, bestu;
+    int bests, score, retval = 0;
 
 #ifdef KEV_GDEBUG
-    ulong	time;
+    ulong time;
     time = GetTickCount();
     runs++;
 #endif
@@ -1100,7 +1100,7 @@ int GroundTaskingManagerClass::AssignObjective(GODNode curo, int orders, int mod
         retval = AssignUnit(bestu->unit, orders, curo->obj, bestu->score);
         // Remove unit from the lists
         objList[orders]->RemoveUnitFromAll(bestu->unit);
-        //		canidateList[orders] = canidateList[orders]->Remove(bestu);
+        // canidateList[orders] = canidateList[orders]->Remove(bestu);
     }
 
     objList[orders] = objList[orders]->Remove(curo);
@@ -1112,12 +1112,12 @@ int GroundTaskingManagerClass::AssignObjective(GODNode curo, int orders, int mod
 
 int GroundTaskingManagerClass::ScoreUnit(USNode curu, GODNode curo, int orders, int mode)
 {
-    int			score = -32000;
-    GridIndex	ux, uy, ox, oy;
-    costtype	cost;
+    int score = -32000;
+    GridIndex ux, uy, ox, oy;
+    costtype cost;
 
 #ifdef KEV_GDEBUG
-    ulong	time;
+    ulong time;
     time = GetTickCount();
 #endif
 
@@ -1138,8 +1138,8 @@ int GroundTaskingManagerClass::ScoreUnit(USNode curu, GODNode curo, int orders, 
         curo->obj->GetLocation(&ox, &oy);
         score = curu->score + 100 - FloatToInt32(Distance(ox, oy, ux, uy)) / 5;
         // Adjust by distance from division
-        Division	div;
-        float		d;
+        Division div;
+        float d;
         curo->obj->GetLocation(&ox, &oy);
 
         if (div = GetDivisionByUnit(curu->unit))
@@ -1165,8 +1165,8 @@ int GroundTaskingManagerClass::ScoreUnit(USNode curu, GODNode curo, int orders, 
 
 int GroundTaskingManagerClass::ScoreUnitFast(USNode curu, GODNode curo, int orders, int mode)
 {
-    int			score = -32000;
-    GridIndex	ox, oy, ux, uy;
+    int score = -32000;
+    GridIndex ox, oy, ux, uy;
 
     curo->obj->GetLocation(&ox, &oy);
     curu->unit->GetLocation(&ux, &uy);
@@ -1190,8 +1190,8 @@ void GroundTaskingManagerClass::FinalizeOrders(void)
 // Sends a message to the GTM
 void GroundTaskingManagerClass::SendGTMMessage(VU_ID from, short message, short data1, short data2, VU_ID data3)
 {
-    VuTargetEntity	*target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconGndTaskingMessage*	togtm = new FalconGndTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
+    FalconGndTaskingMessage* togtm = new FalconGndTaskingMessage(Id(), target);
 
     if (this)
     {
@@ -1207,8 +1207,8 @@ void GroundTaskingManagerClass::SendGTMMessage(VU_ID from, short message, short 
 
 void GroundTaskingManagerClass::RequestEngineer(Objective o, int division)
 {
-    CAMPREGLIST_ITERATOR	myit(AllParentList);
-    Unit				u;
+    CAMPREGLIST_ITERATOR myit(AllParentList);
+    Unit u;
 
     o->SetNeedRepair(1);
 
@@ -1248,9 +1248,9 @@ int GroundTaskingManagerClass::Handle(VuFullUpdateEvent *event)
 
 int GetTopPriorityObjectives(int team, _TCHAR* buffers[COLLECTABLE_HP_OBJECTIVES])
 {
-    Objective		o;
-    _TCHAR			tmp[80];
-    int				i;
+    Objective o;
+    _TCHAR tmp[80];
+    int i;
 
     for (i = 0; i < COLLECTABLE_HP_OBJECTIVES; i++)
         buffers[i][0] = 0;
@@ -1301,10 +1301,10 @@ int GetTopPriorityObjectives(int team, _TCHAR* buffers[COLLECTABLE_HP_OBJECTIVES
 // This should encode the current priority of all primary objectives
 short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
 {
-    uchar					*data, *datahead;
-    ListNode				lp;
-    POData					pod;
-    short					size, count = 0, team, teams = 0;
+    uchar *data, *datahead;
+    ListNode lp;
+    POData pod;
+    short size, count = 0, team, teams = 0;
 
     // 'teammask' determines which team data we're sending. If no such
     // team exists, there's no reason to send the data. Check for this
@@ -1361,11 +1361,11 @@ short EncodePrimaryObjectiveList(uchar teammask, uchar **buffer)
 
 void DecodePrimaryObjectiveList(uchar *datahead, FalconEntity *fe)
 {
-    short				count, priority;
-    uchar				team, teammask, *data = datahead;
-    POData				pod = NULL;
-    Objective			po;
-    VU_ID				id;
+    short count, priority;
+    uchar team, teammask, *data = datahead;
+    POData pod = NULL;
+    Objective po;
+    VU_ID id;
 
     ShiAssert(PODataList && PODataList->GetFirstElement())
 
@@ -1409,8 +1409,8 @@ void DecodePrimaryObjectiveList(uchar *datahead, FalconEntity *fe)
 // This should send the current priority of all primary objectives
 void SendPrimaryObjectiveList(uchar teammask)
 {
-    FalconCampDataMessage	*msg;
-    int						team;
+    FalconCampDataMessage *msg;
+    int team;
 
     // If we're not specifying a team, send them all
     if (!teammask)
@@ -1443,9 +1443,9 @@ void SendPrimaryObjectiveList(uchar teammask)
 // This should save the current priority of all primary objectives to the passes file pointer
 void SavePrimaryObjectiveList(char* scenario)
 {
-    short				size, team;
-    uchar				*data, teammask = 0;
-    FILE				*fp;
+    short size, team;
+    uchar *data, teammask = 0;
+    FILE *fp;
 
     if ((fp = OpenCampFile(scenario, "pol", "wb")) == NULL)
         return;
@@ -1464,7 +1464,7 @@ void SavePrimaryObjectiveList(char* scenario)
 
 int LoadPrimaryObjectiveList(char* scenario)
 {
-    uchar		*data;
+    uchar *data;
 
     if ((data = (uchar *) ReadCampFile(scenario, "pol")) == NULL)
         return 0;

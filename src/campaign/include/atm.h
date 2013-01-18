@@ -14,23 +14,23 @@
 #include "Manager.h"
 #include "AirUnit.h"
 
-#define ATM_STEALTH_AVAIL	0x01							// We've got stealth aircraft to use
-#define ATM_NEW_PLANES		0x04							// We've got more planes to play with
-#define ATM_NEW_REQUESTS	0x08							// We've got one or more new mission requests
+#define ATM_STEALTH_AVAIL 0x01 // We've got stealth aircraft to use
+#define ATM_NEW_PLANES 0x04 // We've got more planes to play with
+#define ATM_NEW_REQUESTS 0x08 // We've got one or more new mission requests
 
-#define ATM_MAX_CYCLES		32								// Bit size of a long
+#define ATM_MAX_CYCLES 32 // Bit size of a long
 
 // Our scheduling requires a bitwise array of 1 minute time blocks. We've got 8 bits, so full would = 0xFF
 // However, if our cycle is < 8 minutes long, we need modify the meaning of 'full'
-#define ATM_CYCLE_FULL		0x1F							//	What a full schedule looks like (5 bits)
+#define ATM_CYCLE_FULL 0x1F // What a full schedule looks like (5 bits)
 
 class ATMAirbaseClass
 {
 public:
-    VU_ID			id;
-    uchar			schedule[ATM_MAX_CYCLES];
-    uchar			usage;
-    ATMAirbaseClass	*next;
+    VU_ID id;
+    uchar schedule[ATM_MAX_CYCLES];
+    uchar usage;
+    ATMAirbaseClass *next;
 public:
     ATMAirbaseClass(void);
     ATMAirbaseClass(CampEntity ent);
@@ -51,26 +51,26 @@ class AirTaskingManagerClass : public CampManagerClass
 private:
 public:
     // Transmittable data
-    short			flags;
-    short			squadrons;							// Number of available friendly squadrons
-    short			averageCAStrength;					// Rolling average CA strength of CA missions
-    short			averageCAMissions;					// Average # of CA missions being flow per hour
-    uchar			currentCAMissions;					// # of CA missions planned so far during current cycle
-    uchar			sampleCycles;						// # of cycles we've averaged missions over
+    short flags;
+    short squadrons; // Number of available friendly squadrons
+    short averageCAStrength; // Rolling average CA strength of CA missions
+    short averageCAMissions; // Average # of CA missions being flow per hour
+    uchar currentCAMissions; // # of CA missions planned so far during current cycle
+    uchar sampleCycles; // # of cycles we've averaged missions over
     // Anything below here doesn't get transmitted
-    int				missionsToFill;						// Amount of missions above to actually task.
-    int				missionsFilled;						// # actually filled to date
-    List			awacsList;							// List of awacs/jstar locations
-    List			tankerList;							// List of tanker track locations
-    List			ecmList;							// List of standoff jammer locations
-    List			requestList;						// List of mission requests yet to be processed.
-    List			delayedList;						// List of mission requests already handled, but not filled
-    F4PFList		squadronList;						// List of this team's squadrons
-    F4PFList		packageList;						// List of all active packages
-    ATMAirbaseClass	*airbaseList;						// List of active airbases
-    uchar			supplyBase;
-    uchar			cycle;								// which planning block we're in.
-    CampaignTime	scheduleTime;						// Last time we updated our blocks
+    int missionsToFill; // Amount of missions above to actually task.
+    int missionsFilled; // # actually filled to date
+    List awacsList; // List of awacs/jstar locations
+    List tankerList; // List of tanker track locations
+    List ecmList; // List of standoff jammer locations
+    List requestList; // List of mission requests yet to be processed.
+    List delayedList; // List of mission requests already handled, but not filled
+    F4PFList squadronList; // List of this team's squadrons
+    F4PFList packageList; // List of all active packages
+    ATMAirbaseClass *airbaseList; // List of active airbases
+    uchar supplyBase;
+    uchar cycle; // which planning block we're in.
+    CampaignTime scheduleTime; // Last time we updated our blocks
 public:
     // constructors & serial functions
     AirTaskingManagerClass(ushort type, Team t);

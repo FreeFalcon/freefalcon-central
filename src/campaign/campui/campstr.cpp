@@ -18,7 +18,7 @@
 #include "Brief.h"
 #include "F4Version.h"
 
-#define NUM_CAMERA_LABELS	16
+#define NUM_CAMERA_LABELS 16
 
 // These are used in my camp tool, so don't need to be UNICODE
 #ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be CAMPTOOL but gave link error when CAMPTOOL was undefined.
@@ -48,8 +48,8 @@ char CompressionStr[5][20];
 char CameraLabel[NUM_CAMERA_LABELS][40] = {"FLY-BY CAMERA", "CHASE CAMERA", "ORBIT CAMERA", "SATELLITE CAMERA", "WEAPON CAMERA", "TARGET TO WEAPON CAMERA", "ENEMY AIRCRAFT CAMERA", "FRIENDLY AIRCRAFT CAMERA", "ENEMY GROUND UNIT CAMERA", "FRIENDLY GROUND UNIT CAMERA", "INCOMING MISSILE CAMERA", "TARGET CAMERA", "TARGET TO SELF CAMERA", "ACTION CAMERA", "RECORDING"};
 
 // Index and string information
-ushort	*StringIndex;
-_TCHAR	*StringTable;
+ushort *StringIndex;
+_TCHAR *StringTable;
 
 //
 // Functions
@@ -71,7 +71,7 @@ char* GetSTypeName(int domain, int type, int stype, char buffer[])
 
 _TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
 {
-    _TCHAR	tmp[5];
+    _TCHAR tmp[5];
 
     if (nameid % 10 == 1 && nameid != 11)
     {
@@ -98,8 +98,8 @@ _TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
 
 _TCHAR* GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds)
 {
-    int		d, h, m, s;
-    _TCHAR	format[MAX_STRLEN_PER_TOKEN], hour[3], minute[3], second[3];
+    int d, h, m, s;
+    _TCHAR format[MAX_STRLEN_PER_TOKEN], hour[3], minute[3], second[3];
 
     d = (int)(time / CampaignDay);
     time -= d * CampaignDay;
@@ -128,9 +128,9 @@ _TCHAR* GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds)
 
 void ReadIndex(char* filename)
 {
-    FILE	*fp;
-    short	max, i;
-    int		size;
+    FILE *fp;
+    short max, i;
+    int size;
 
     if ((fp = OpenCampFile(filename, "idx", "rb")) == NULL)
         return;
@@ -190,7 +190,7 @@ void FreeIndex(void)
 
 void ReadIndexedString(int sid, _TCHAR *wstr, int len)
 {
-    ushort	size, rlen;
+    ushort size, rlen;
 
     size = StringIndex[sid + 1] - StringIndex[sid];
     rlen = size / sizeof(_TCHAR);
@@ -217,46 +217,46 @@ void ForeignToUpper(_TCHAR *buffer)
                 buffer[i] = _toupper(buffer[i]);
 
             /*
-            			switch (buffer[i])
-            				{
-            				case 'è':
-            				case 'é':
-            				case 'ë':
-            				case 'ê':
-            					buffer[i] = 'E';
-            					break;
-            				case 'â':
-            				case 'à':
-            				case 'á':
-            				case 'ä':
-            					buffer[i] = 'A';
-            					break;
-            				case 'ì':
-            				case 'í':
-            				case 'î':
-            				case 'ï':
-            					buffer[i] = 'I';
-            					break;
-            				case 'û':
-            				case 'ú':
-            				case 'ù':
-            				case 'ü':
-            					buffer[i] = 'U';
-            					break;
-            				case 'ç':
-            					buffer[i] = 'C';
-            					break;
-            				case 'ñ':
-            					buffer[i] = 'N';
-            					break;
-            				case 'ô':
-            				case 'ö':
-            					buffer[i] = 'O';
-            					break;
-            				default:
-            					if (_istlower(buffer[i]))
-            						buffer[i] = _toupper(buffer[i]);
-            				}
+             switch (buffer[i])
+             {
+             case 'è':
+             case 'é':
+             case 'ë':
+             case 'ê':
+             buffer[i] = 'E';
+             break;
+             case 'â':
+             case 'à':
+             case 'á':
+             case 'ä':
+             buffer[i] = 'A';
+             break;
+             case 'ì':
+             case 'í':
+             case 'î':
+             case 'ï':
+             buffer[i] = 'I';
+             break;
+             case 'û':
+             case 'ú':
+             case 'ù':
+             case 'ü':
+             buffer[i] = 'U';
+             break;
+             case 'ç':
+             buffer[i] = 'C';
+             break;
+             case 'ñ':
+             buffer[i] = 'N';
+             break;
+             case 'ô':
+             case 'ö':
+             buffer[i] = 'O';
+             break;
+             default:
+             if (_istlower(buffer[i]))
+             buffer[i] = _toupper(buffer[i]);
+             }
             */
         }
         else if (_istlower(buffer[i]))

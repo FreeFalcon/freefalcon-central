@@ -3,8 +3,8 @@
     Scott Randolph
     April 22, 1996
 
-	Manage the list of active objects to be drawn each frame for a given
-	renderer.
+ Manage the list of active objects to be drawn each frame for a given
+ renderer.
 \***************************************************************************/
 #include <math.h>
 #include "grTypes.h"
@@ -20,20 +20,20 @@
 #define _USE_OLD_SORT_ 1 // turn this off to make the sort 10 times slower...
 
 /***************************************************************************\
-	Clean up the object display list
+ Clean up the object display list
 \***************************************************************************/
 ObjectDisplayList::ObjectDisplayList()
 {
-    head			= NULL;
-    tail			= NULL;
-    nextToDraw		= NULL;
-    updateCBlist	= NULL;
-    sortCBlist		= NULL;
+    head = NULL;
+    tail = NULL;
+    nextToDraw = NULL;
+    updateCBlist = NULL;
+    sortCBlist = NULL;
 }
 
 
 /***************************************************************************\
-	Clean up the object display list
+ Clean up the object display list
 \***************************************************************************/
 ObjectDisplayList::~ObjectDisplayList()
 {
@@ -47,13 +47,13 @@ ObjectDisplayList::~ObjectDisplayList()
     }
 
     // Commented out because it doesn't crash and we're desperate
-    // ShiAssert ( !head );	ShiAssert( !head );
+    // ShiAssert ( !head ); ShiAssert( !head );
     // ShiAssert( !tail );
 }
 
 
 /***************************************************************************\
-	Add an instance of an object to the active display list
+ Add an instance of an object to the active display list
 \***************************************************************************/
 void ObjectDisplayList::InsertObject(DrawableObject *object)
 {
@@ -95,7 +95,7 @@ void ObjectDisplayList::InsertObject(DrawableObject *object)
 
 
 /***************************************************************************\
-	Remove an instance of an object from this display list
+ Remove an instance of an object from this display list
 \***************************************************************************/
 void ObjectDisplayList::RemoveObject(DrawableObject* object)
 {
@@ -152,20 +152,20 @@ void ObjectDisplayList::RemoveObject(DrawableObject* object)
 
 
 /*****************************************************************************\
-	Compute the distance metrics for each entry in the display list
-	given the new view point.  Entries below the bottom Z value given will
-	be removed from the list and placed into the "lowList" chain.  Entries
-	which are too high will go into the "highList" chain.
+ Compute the distance metrics for each entry in the display list
+ given the new view point.  Entries below the bottom Z value given will
+ be removed from the list and placed into the "lowList" chain.  Entries
+ which are too high will go into the "highList" chain.
 
     this version ONLY calculates the distance for the objects in it's list
 \*****************************************************************************/
 void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
 {
-    register float	x = pos->x;
-    register float	y = pos->y;
-    //	register float	z = pos->z;
+    register float x = pos->x;
+    register float y = pos->y;
+    // register float z = pos->z;
 
-    DrawableObject	*p;
+    DrawableObject *p;
 
     // Quit now if we don't have at least one list entry
     if (!head) return;
@@ -198,21 +198,21 @@ void ObjectDisplayList::UpdateMetrics(const Tpoint *pos)
 }
 
 /*****************************************************************************\
-	Compute the distance metrics for each entry in the display list
-	given the new view point.  Entries below the bottom Z value given will
-	be removed from the list and placed into the "lowList" chain.  Entries
-	which are too high will go into the "highList" chain.
+ Compute the distance metrics for each entry in the display list
+ given the new view point.  Entries below the bottom Z value given will
+ be removed from the list and placed into the "lowList" chain.  Entries
+ which are too high will go into the "highList" chain.
 \*****************************************************************************/
 void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList)
 {
-    register float	x = pos->x;
-    register float	y = pos->y;
-    //	register float	z = pos->z;
+    register float x = pos->x;
+    register float y = pos->y;
+    // register float z = pos->z;
 
-    DrawableObject	*p;
-    DrawableObject	*q;
+    DrawableObject *p;
+    DrawableObject *q;
 
-    long			i;
+    long i;
 
     // Quit now if we don't have at least one list entry
     if (!head) return;
@@ -341,7 +341,7 @@ void ObjectDisplayList::UpdateMetrics(long listNo, const Tpoint *pos, TransportS
 #endif
 
     // Now call anyone who has registered for a callback
-    for (UpdateCallBack	*nextCall = updateCBlist; nextCall; nextCall = nextCall->next)
+    for (UpdateCallBack *nextCall = updateCBlist; nextCall; nextCall = nextCall->next)
     {
         nextCall->fn(nextCall->self, listNo, pos, transList);
     }
@@ -431,9 +431,9 @@ void ObjectDisplayList::QuickSortLink(DrawableObject **head, DrawableObject *end
 
 #ifndef _USE_OLD_SORT_
 /*****************************************************************************\
-	Sort the display list in far to near order.  It is assumed that
-	the distances have already been computed through a call to
-	UpdateMetrics.
+ Sort the display list in far to near order.  It is assumed that
+ the distances have already been computed through a call to
+ UpdateMetrics.
 \*****************************************************************************/
 void ObjectDisplayList::SortForViewpoint(void)
 {
@@ -519,7 +519,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 #endif
 
     // Now call anyone who has registered for a callback
-    for (SortCallBack	*nextCall = sortCBlist; nextCall; nextCall = nextCall->next)
+    for (SortCallBack *nextCall = sortCBlist; nextCall; nextCall = nextCall->next)
     {
         nextCall->fn(nextCall->self);
     }
@@ -528,14 +528,14 @@ void ObjectDisplayList::SortForViewpoint(void)
 
 #ifdef _USE_OLD_SORT_ // replacing this routine
 /*****************************************************************************\
-	Sort the display list in far to near order.  It is assumed that
-	the distances have already been computed through a call to
-	UpdateMetrics.
+ Sort the display list in far to near order.  It is assumed that
+ the distances have already been computed through a call to
+ UpdateMetrics.
 \*****************************************************************************/
 void ObjectDisplayList::SortForViewpoint(void)
 {
-    DrawableObject	*p;
-    DrawableObject	*q;
+    DrawableObject *p;
+    DrawableObject *q;
 
 
     // Quit now if we don't have at least one list entry
@@ -594,7 +594,7 @@ void ObjectDisplayList::SortForViewpoint(void)
     }
 
     // Now call anyone who has registered for a callback
-    for (SortCallBack	*nextCall = sortCBlist; nextCall; nextCall = nextCall->next)
+    for (SortCallBack *nextCall = sortCBlist; nextCall; nextCall = nextCall->next)
     {
         nextCall->fn(nextCall->self);
     }
@@ -603,7 +603,7 @@ void ObjectDisplayList::SortForViewpoint(void)
 
 // This function just preloads all objects in the List withing a range
 // it exits when the list of ojects is fully loaded
-void	ObjectDisplayList::PreLoad(class RenderOTW *renderer)
+void ObjectDisplayList::PreLoad(class RenderOTW *renderer)
 {
     // for each object in list
     while (nextToDraw)
@@ -617,8 +617,8 @@ void	ObjectDisplayList::PreLoad(class RenderOTW *renderer)
 
 
 /*****************************************************************************\
-	Draw all the objects in the display list which lie beyond the given ring
-	Returns TRUE if any objects were actually drawn, FALSE otherwise.
+ Draw all the objects in the display list which lie beyond the given ring
+ Returns TRUE if any objects were actually drawn, FALSE otherwise.
 \*****************************************************************************/
 void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW *renderer)
 {
@@ -655,8 +655,8 @@ void ObjectDisplayList::DrawBeyond(float ringDistance, int LOD, class RenderOTW 
 }
 
 /*****************************************************************************\
-	Draw all the objects in the display list which lie beyond the given ring
-	Returns TRUE if any objects were actually drawn, FALSE otherwise.
+ Draw all the objects in the display list which lie beyond the given ring
+ Returns TRUE if any objects were actually drawn, FALSE otherwise.
 \*****************************************************************************/
 void ObjectDisplayList::DrawBeyond(float ringDistance, class Render3D *renderer)
 {
@@ -668,8 +668,8 @@ void ObjectDisplayList::DrawBeyond(float ringDistance, class Render3D *renderer)
 }
 
 /*****************************************************************************\
-	Add a pair of functions to be called at UpdateMetrics and SortForViewpoint
-	time.
+ Add a pair of functions to be called at UpdateMetrics and SortForViewpoint
+ time.
 \*****************************************************************************/
 void ObjectDisplayList::InsertUpdateCallbacks(UpdateCallBack *up, SortCallBack *sort, void *self)
 {
@@ -689,14 +689,14 @@ void ObjectDisplayList::InsertUpdateCallbacks(UpdateCallBack *up, SortCallBack *
     {
         ShiAssert(sortCBlist->next);
         updateCBlist->next->prev = updateCBlist;
-        sortCBlist->next->prev	 = sortCBlist;
+        sortCBlist->next->prev  = sortCBlist;
     }
 }
 
 
 /*****************************************************************************\
-	Remove a pair of functions to be called at UpdateMetrics and
-	SortForViewpoint time.
+ Remove a pair of functions to be called at UpdateMetrics and
+ SortForViewpoint time.
 \*****************************************************************************/
 void ObjectDisplayList::RemoveUpdateCallbacks(UpdateCallBack *up, SortCallBack *sort, void *self)
 {

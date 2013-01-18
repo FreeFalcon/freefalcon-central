@@ -9,8 +9,8 @@
 // Type and External Function Declarations
 // ---------------------------------------
 
-typedef	uchar			CellDataType;
-typedef CellDataType	*CellData;
+typedef uchar CellDataType;
+typedef CellDataType *CellData;
 
 extern void SetReliefType(CellData TheCell, ReliefType NewReliefType);
 

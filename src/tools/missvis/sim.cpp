@@ -1,24 +1,24 @@
 /***************************************************************************\
-	sim.c
-	Scott Randolph
-	November 25, 1994
+ sim.c
+ Scott Randolph
+ November 25, 1994
 
-	Provide the simulations calcuations and interaction with the user.
+ Provide the simulations calcuations and interaction with the user.
 \***************************************************************************/
 #include <stdio.h>
 #include <math.h>
 #include "Sim.h"
 
 
-#define SIM_SPEED		10000.0f	// Feet per second
-#define SIM_ANG_RATE	2.0f		// Radians per second
-#define	HEAD_ANG_RATE	1.0f		// Radians per second
-#define PI				3.14159265359f
+#define SIM_SPEED 10000.0f // Feet per second
+#define SIM_ANG_RATE 2.0f // Radians per second
+#define HEAD_ANG_RATE 1.0f // Radians per second
+#define PI 3.14159265359f
 
 
 /***************************************************************************\
-	Prepare the simulation for running by intialize required state and other
-	modules.
+ Prepare the simulation for running by intialize required state and other
+ modules.
 \***************************************************************************/
 void SimClass::Setup(void)
 {
@@ -29,8 +29,8 @@ void SimClass::Setup(void)
     headMatrix = IMatrix;
 
     // Put the head at its rest point
-    headPitch	= 0.0f;
-    headYaw		= 0.0f;
+    headPitch = 0.0f;
+    headYaw = 0.0f;
     headPos.x = 0.0f;
     headPos.y = 0.0f;
     headPos.z = 0.0f;
@@ -47,13 +47,13 @@ void SimClass::Setup(void)
     position.z = 0.0f;
 
     // Set our initial rates to zero
-    pitchRate	= 0.0f;
-    rollRate	= 0.0f;
-    yawRate		= 0.0f;
-    speed		= 0.0f;
+    pitchRate = 0.0f;
+    rollRate = 0.0f;
+    yawRate = 0.0f;
+    speed = 0.0f;
 
     // Ask for the joystick properties
-    UInt32 ret = joyGetDevCaps(JOYSTICKID1,	&joyCaps, sizeof(joyCaps));
+    UInt32 ret = joyGetDevCaps(JOYSTICKID1, &joyCaps, sizeof(joyCaps));
 
     if (ret != JOYERR_NOERROR)
     {
@@ -76,7 +76,7 @@ void SimClass::Setup(void)
 
 
 /***************************************************************************\
-	Clean up when the simulation loop is no longer needed.
+ Clean up when the simulation loop is no longer needed.
 \***************************************************************************/
 void SimClass::Cleanup(void)
 {
@@ -89,13 +89,13 @@ void SimClass::Cleanup(void)
 
 
 /***************************************************************************\
-	Do the computations for one time step in the simulation.  Call the
-	various other modules to get input and generate output.  Return TRUE
-	until the end condition for the simulation is detected.
+ Do the computations for one time step in the simulation.  Call the
+ various other modules to get input and generate output.  Return TRUE
+ until the end condition for the simulation is detected.
 \***************************************************************************/
 UInt32 SimClass::Update(UInt32 time)
 {
-    float deltaTime		= 0.0f;
+    float deltaTime = 0.0f;
 
 
     ShiAssert(IsReady());
@@ -136,19 +136,19 @@ UInt32 SimClass::Update(UInt32 time)
 
     if (!(joyCaps.wCaps & JOYCAPS_HASR))
     {
-        yawRate = 0.0f;				// Default to no yaw rate
+        yawRate = 0.0f; // Default to no yaw rate
     }
 
 #endif
 #if 1
     // Positive Z is decrease in throttle
     speed  = (65535 - (int)joyInfoEx.dwZpos) / 65535.0f;
-    speed  = speed * speed * speed;	// Use a polynomial curve to get better low end response
-    speed  *= SIM_SPEED;			// Scale from 0:1 to 0:SIM_SPEED
+    speed  = speed * speed * speed; // Use a polynomial curve to get better low end response
+    speed  *= SIM_SPEED; // Scale from 0:1 to 0:SIM_SPEED
 
     if (!(joyCaps.wCaps & JOYCAPS_HASZ))
     {
-        speed = SIM_SPEED * 0.25f;	// Default to 1/4 max speed
+        speed = SIM_SPEED * 0.25f; // Default to 1/4 max speed
     }
 
 #endif
@@ -202,8 +202,8 @@ UInt32 SimClass::Update(UInt32 time)
         }
 
         // Construct the head matrix
-        Tpoint	at, up, rt;
-        float	mag;
+        Tpoint at, up, rt;
+        float mag;
 
         // at is a point on the unit sphere
         at.x = cos(headYaw) * cos(headPitch);
@@ -243,16 +243,16 @@ UInt32 SimClass::Update(UInt32 time)
 
 
 /***************************************************************************\
-	Update the rotation matrix to account for the user's control inputs.
+ Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
 void SimClass::UpdateRotation(float rollChange, float pitchChange, float yawChange)
 {
     float e1dot, e2dot, e3dot, e4dot;
     float enorm;
 
-    float	p = rollChange;
-    float	q = pitchChange;
-    float	r = yawChange;
+    float p = rollChange;
+    float q = pitchChange;
+    float r = yawChange;
 
 
     /*-----------------------------------*/
@@ -299,12 +299,12 @@ void SimClass::UpdateRotation(float rollChange, float pitchChange, float yawChan
 
 
 /***************************************************************************\
-	Update the rotation matrix to account for the user's control inputs.
+ Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
 void SimClass::Save(char *filename)
 {
-    HANDLE	fileID;
-    UInt32	bytes;
+    HANDLE fileID;
+    UInt32 bytes;
 
     // Create a new data file
     fileID = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -335,13 +335,13 @@ void SimClass::Save(char *filename)
 
 
 /***************************************************************************\
-	Update the rotation matrix to account for the user's control inputs.
+ Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
 void SimClass::Restore(char *filename)
 {
-    HANDLE	fileID;
-    UInt32	bytes;
-    UInt32	result;
+    HANDLE fileID;
+    UInt32 bytes;
+    UInt32 result;
 
     // Create a new data file
     fileID = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -359,8 +359,8 @@ void SimClass::Restore(char *filename)
 
     if (!result)
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Couldn'd read far texture palette.", string);
         MessageBox(NULL, "Failed to load sim state", string, MB_OK);

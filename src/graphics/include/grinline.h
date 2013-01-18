@@ -66,7 +66,7 @@ inline void glReleaseMemory(void *memptr)
 inline GLfloat glConvertToRadian(GLFixed0_14 deg)
 {
     return (deg * (GLfloat) 0.000383495197f);
-}	/* glConvertToRadian */
+} /* glConvertToRadian */
 
 /*
 +---------------------------------------------------------------------------+
@@ -84,7 +84,7 @@ inline GLfloat glConvertToRadian(GLFixed0_14 deg)
 inline GLfloat glConvertToDegree(GLFixed0_14 deg)
 {
     return (deg * 0.021972656f);
-}	/* glConvertToDegree */
+} /* glConvertToDegree */
 
 /*
 +---------------------------------------------------------------------------+
@@ -102,12 +102,12 @@ inline GLfloat glConvertToDegree(GLFixed0_14 deg)
 inline GLFixed0_14 glConvertFromDegree(GLfloat deg)
 {
     return (FloatToInt32(deg * 45.511111111f + 0.5f));
-}	/* glConvertFromDegree */
+} /* glConvertFromDegree */
 
 inline GLfloat glConvertFromDegreef(GLfloat deg)
 {
     return (deg * 45.511111111f + 0.5f);
-}	/* glConvertFromDegreef */
+} /* glConvertFromDegreef */
 
 /*
 +---------------------------------------------------------------------------+
@@ -125,14 +125,14 @@ inline GLfloat glConvertFromDegreef(GLfloat deg)
 inline GLFixed0_14 glConvertFromRadian(GLfloat deg)
 {
     return (FloatToInt32(deg * 2607.594588f + 0.5f));
-}	/* glConvertFromRadian */
+} /* glConvertFromRadian */
 
 
 
 inline void glGetFileExtension(const char *file, char *ext)
 {
 #if 0
-    char	prevchar, currchar, nextchar;
+    char prevchar, currchar, nextchar;
 
     prevchar = '.';
 

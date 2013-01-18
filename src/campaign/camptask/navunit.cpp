@@ -78,7 +78,7 @@ extern int gCheckConstructFunction;
 // =================================
 
 #ifdef USE_SH_POOLS
-MEM_POOL	TaskForceClass::pool;
+MEM_POOL TaskForceClass::pool;
 #endif
 
 // ============================================
@@ -88,7 +88,7 @@ MEM_POOL	TaskForceClass::pool;
 // KCK: ALL TASK FORCE CONSTRUCTION SHOULD USE THIS FUNCTION!
 TaskForceClass* NewTaskForce(int type)
 {
-    TaskForceClass	*new_taskforce;
+    TaskForceClass *new_taskforce;
     /*VuEnterCriticalSection();
     lastVolatileId = vuAssignmentId;
     vuAssignmentId = lastNonVolatileId;
@@ -190,9 +190,9 @@ int TaskForceClass::GetUnitSpeed() const
 
 int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 {
-    static CampEntity		ent;
-    static int				round;
-    int						dist, i, ptIndexAt;
+    static CampEntity ent;
+    static int round;
+    int dist, i, ptIndexAt;
 
     // Reinitialize static vars upon query of first vehicle
     if (simdata->vehicleInUnit < 0)
@@ -221,13 +221,13 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
             }
 
             // Used only at sea
-            WayPoint			w;
+            WayPoint w;
             w = GetCurrentUnitWP();
 
             if (w)
             {
                 // Find heading to next waypoint
-                GridIndex	ux, uy, wx, wy;
+                GridIndex ux, uy, wx, wy;
                 GetLocation(&ux, &uy);
                 w->GetWPLocation(&wx, &wy);
                 simdata->heading = AngleTo(ux, uy, wx, wy);
@@ -244,7 +244,7 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
         if (simdata->ptIndex)
         {
             // In port
-            float	dx, dy;
+            float dx, dy;
 
             // Find the center point and direction point for this ship
             simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
@@ -252,17 +252,17 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
             if (!ptIndexAt)
             {
-                ShiAssert(!simdata->ptIndex);	// We should always have an even number of points
+                ShiAssert(!simdata->ptIndex); // We should always have an even number of points
 
                 // Reuse the old points, but with an offset
                 ent = NULL;
-                GetDeaggregationPoint(simdata->campSlot, &ent);		// Reset
+                GetDeaggregationPoint(simdata->campSlot, &ent); // Reset
                 simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
                 ptIndexAt        = GetDeaggregationPoint(simdata->campSlot, &ent);
                 round++;
             }
 
-            ShiAssert(ptIndexAt);		// We must have at least two points (center and toward)
+            ShiAssert(ptIndexAt); // We must have at least two points (center and toward)
             TranslatePointData(ent, simdata->ptIndex, &simdata->x, &simdata->y);
 
             // Face toward the "at" point
@@ -310,7 +310,7 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
     // Determine skill (Sim only uses it for anti-air stuff right now, so bow to expedience
     simdata->skill = ((TeamInfo[GetOwner()]->airDefenseExperience - 60) / 10) + rand() % 3 - 1;
-    //	simdata->skill = ((TeamInfo[GetOwner()]->navalExperience - 60) / 10) + rand()%3 - 1;
+    // simdata->skill = ((TeamInfo[GetOwner()]->navalExperience - 60) / 10) + rand()%3 - 1;
 
     // Clamp it to legal sim side values
     if (simdata->skill > 4)
@@ -339,8 +339,8 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
 int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
 {
-    int			pt = 0, type;
-    static int	last_pt, index = 0;
+    int pt = 0, type;
+    static int last_pt, index = 0;
 
     if (!*installation)
     {
@@ -351,8 +351,8 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         if (!Moving())
         {
             // Find the appropriate installation
-            GridIndex	x, y;
-            Objective	o;
+            GridIndex x, y;
+            Objective o;
             GetLocation(&x, &y);
             o = FindNearestObjective(x, y, NULL, 0);
             *installation = o;
@@ -360,7 +360,7 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
             // Find the appropriate list
             if (o)
             {
-                ObjClassDataType	*oc = o->GetObjectiveClassData();
+                ObjClassDataType *oc = o->GetObjectiveClassData();
                 index = oc->PtDataIndex;
 
                 while (index)
@@ -376,11 +376,11 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
                 }
 
 #ifdef DEBUG
-                FILE	*fp = fopen("PtDatErr.log", "a");
+                FILE *fp = fopen("PtDatErr.log", "a");
 
                 if (fp)
                 {
-                    char		name[80];
+                    char name[80];
                     o->GetName(name, 79, FALSE);
                     fprintf(fp, "Obj %s @ %d,%d: No header list of type %d.\n", name, x, y, DockListType);
                     fclose(fp);
@@ -394,12 +394,12 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
     if (index)
     {
         // We have a list, and want to find the correct point
-        UnitClassDataType		*uc = GetUnitClassData();
-        VehicleClassDataType	*vc = GetVehicleClassData(uc->VehicleType[slot]);
+        UnitClassDataType *uc = GetUnitClassData();
+        VehicleClassDataType *vc = GetVehicleClassData(uc->VehicleType[slot]);
 
         // Check which type of point we're looking for
         // TODO: Check ship type here...
-        //		type = SmallDockPt;
+        // type = SmallDockPt;
         type = LargeDockPt;
 
         // Return the next point, if it's the base type
@@ -411,12 +411,12 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
 
             if (!pt || PtDataTable[pt].type != type)
             {
-                FILE	*fp = fopen("PtDatErr.log", "a");
+                FILE *fp = fopen("PtDatErr.log", "a");
 
                 if (fp)
                 {
-                    char		name[80];
-                    GridIndex	x, y;
+                    char name[80];
+                    GridIndex x, y;
                     (*installation)->GetName(name, 79, FALSE);
                     (*installation)->GetLocation(&x, &y);
                     fprintf(fp, "HeaderList %d (Obj %s @ %d,%d): Insufficient points of type %d.\n", index, name, x, y, type);
@@ -443,12 +443,12 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
         }
 
 #ifdef DEBUG
-        FILE	*fp = fopen("PtDatErr.log", "a");
+        FILE *fp = fopen("PtDatErr.log", "a");
 
         if (fp)
         {
-            char		name[80];
-            GridIndex	x, y;
+            char name[80];
+            GridIndex x, y;
             (*installation)->GetName(name, 79, FALSE);
             (*installation)->GetLocation(&x, &y);
             fprintf(fp, "HeaderList %d (Obj %s @ %d,%d): No points of type %d.\n", index, name, x, y, type);
@@ -469,8 +469,8 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     GridIndex ox = 0, oy = 0;
     WayPoint w = NULL, ow = NULL;
     Objective o = NULL;
-    int	moving = 1;
-    CampaignHeading	h = 0;
+    int moving = 1;
+    CampaignHeading h = 0;
 
     // RV - Biker
     // Naval units now have three modes:
@@ -498,7 +498,7 @@ int TaskForceClass::MoveUnit(CampaignTime time)
     {
         DisposeWayPoints();
 
-        w = AddUnitWP(x, y, 0, 60,	TheCampaign.CurrentTime + (rand() % 15), 0, 0);
+        w = AddUnitWP(x, y, 0, 60, TheCampaign.CurrentTime + (rand() % 15), 0, 0);
         w->SetWPFlags(WPF_REPEAT);
 
         // This should prevent naval units to run into ground
@@ -595,12 +595,12 @@ int TaskForceClass::DoCombat(void)
 
 #if 0 // JPO mthis stuff now done in Choose Target - like Battalion
     // KCK: Super simple targetting (c)
-    Team				who = GetTeam();
-    CampEntity			e;
-    FalconEntity		*react_against = NULL, *air_react_against = NULL;
-    int					react, spot, best_reaction = 1, best_air_react = 1;
-    int					search_dist;
-    float				react_distance, air_react_distance, d;
+    Team who = GetTeam();
+    CampEntity e;
+    FalconEntity *react_against = NULL, *air_react_against = NULL;
+    int react, spot, best_reaction = 1, best_air_react = 1;
+    int search_dist;
+    float react_distance, air_react_distance, d;
     react_distance = air_react_distance = 9999.0F;
 
     SetEngaged(0);
@@ -645,9 +645,9 @@ int TaskForceClass::DoCombat(void)
 
                     if (e->GetComponents())
                     {
-                        VuListIterator	cit(e->GetComponents());
-                        FalconEntity	*fe;
-                        float			rsq, brsq = FLT_MAX;
+                        VuListIterator cit(e->GetComponents());
+                        FalconEntity *fe;
+                        float rsq, brsq = FLT_MAX;
 
                         fe = (FalconEntity *)cit.GetFirst();
 
@@ -687,8 +687,8 @@ int TaskForceClass::DoCombat(void)
 
     if (Engaged())
     {
-        FalconEntity	*e = GetTarget();
-        FalconEntity	*a = GetAirTarget();
+        FalconEntity *e = GetTarget();
+        FalconEntity *a = GetAirTarget();
 
         // Check vs our Ground Target
         if (!e)
@@ -712,7 +712,7 @@ int TaskForceClass::DoCombat(void)
             combat = ::DoCombat(this, a);
 
             if (combat < 0)
-                SetAirTarget(NULL);							// Clear targeting data so we can look for another
+                SetAirTarget(NULL); // Clear targeting data so we can look for another
         }
     }
 
@@ -721,11 +721,11 @@ int TaskForceClass::DoCombat(void)
 
 int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
 {
-    int			score = 0, enemy_threat_bonus = 1;
-    CampEntity	et = NULL;
-    MoveType	tmt, omt;
+    int score = 0, enemy_threat_bonus = 1;
+    CampEntity et = NULL;
+    MoveType tmt, omt;
 
-    if (!e)	return 0;
+    if (!e) return 0;
 
     // Some basic info on us.
     omt = GetMovementType();
@@ -762,8 +762,8 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
 /* 2002-02-11 COMMENTED OUT BY S.G. TOO MANY CHANGES TO TRACK THEM ALL (LIKE FOR OTHER UNIT TYPES)
    int TaskForceClass::DetectVs (AircraftClass *ac, float *d, int *combat, int *spot)
    {
-   int			react,det = Detected(this,ac,d);
-   CampEntity	e;
+   int react,det = Detected(this,ac,d);
+   CampEntity e;
 
    if (!(det & REACTION_MASK))
    return 0;
@@ -786,8 +786,8 @@ extern int CanItIdentify(CampEntity us, CampEntity them, float d, int mt);
 
 int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot)
 {
-    int			react, det = Detected(this, ac, d);
-    CampEntity	e;
+    int react, det = Detected(this, ac, d);
+    CampEntity e;
 
     e = ac->GetCampaignObject();
 
@@ -829,7 +829,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
 /* 2002-02-11 COMMENTED OUT BY S.G. TOO MANY CHANGES TO TRACK THEM ALL (LIKE FOR OTHER UNIT TYPES)
    int TaskForceClass::DetectVs (CampEntity e, float *d, int *combat, int *spot)
    {
-   int		react,det;
+   int react,det;
 
    det = Detected(this,e,d);
    if (!(det & REACTION_MASK))
@@ -851,7 +851,7 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
  */
 int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
 {
-    int		react, det;
+    int react, det;
 
     det = Detected(this, e, d);
 
@@ -917,12 +917,12 @@ CampaignTime TaskForceClass::GetMoveTime(void)
 void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
 {
     // This will use the last move time to determine the real x,y & z of the unit
-    float			movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
-    float			speed;
-    float			heading;
-    float			dist;
-    int				h = GetNextMoveDirection();
-    mlTrig			sincos;
+    float movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
+    float speed;
+    float heading;
+    float dist;
+    int h = GetNextMoveDirection();
+    mlTrig sincos;
 
     if (h < 0 || h > 7 || SimLibElapsedTime < last_move)
     {
@@ -947,14 +947,14 @@ void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
 
 WayPoint ResetCurrentWP(TaskForce tf)
 {
-    WayPoint	w;
-    GridIndex	x, y, ux, uy;
+    WayPoint w;
+    GridIndex x, y, ux, uy;
 
     w = tf->GetCurrentUnitWP();
 
     while (w && w->GetWPDepartureTime() < Camp_GetCurrentTime())
     {
-        if (w->GetWPFlags())				// Make sure we actually get here, it's important
+        if (w->GetWPFlags()) // Make sure we actually get here, it's important
         {
             w->GetWPLocation(&x, &y);
             tf->GetLocation(&ux, &uy);
@@ -977,19 +977,19 @@ WayPoint ResetCurrentWP(TaskForce tf)
 // This currently is only called if this waypoint has a flag set
 WayPoint DoWPAction(TaskForce tf, WayPoint w)
 {
-    WayPoint	cw;
+    WayPoint cw;
 
     if (!w || !tf)
         return NULL;
 
     // Check Actions
-    /*	int action = w->GetWPAction();
-    	switch (action)
-    	{
-    	case WP_NOTHING:
-    	default:
-    	break;
-    	}
+    /* int action = w->GetWPAction();
+     switch (action)
+     {
+     case WP_NOTHING:
+     default:
+     break;
+     }
      */
 
     // Check Flags
@@ -1051,7 +1051,7 @@ void TaskForceClass::ReturnToSearch(void)
 
 int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take tracking/detection parameter
 {
-    int	radMode = GetRadarMode();
+    int radMode = GetRadarMode();
 
     if (IsAggregate())
     {
@@ -1083,13 +1083,13 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
     assert(range);
     /*
-       FEC_RADAR_OFF			0x00	   	// Radar always off
-       FEC_RADAR_SEARCH_100	0x01	   	// Search Radar - 100 % of the time (always on)
-       FEC_RADAR_SEARCH_1		0x02	   	// Search Sequence #1
-       FEC_RADAR_SEARCH_2		0x03	   	// Search Sequence #2
-       FEC_RADAR_SEARCH_3		0x04	   	// Search Sequence #3
-       FEC_RADAR_AQUIRE		0x05	   	// Aquire Mode (looking for a target)
-       FEC_RADAR_GUIDE			0x06	   	// Missile in flight. Death is imminent*/
+       FEC_RADAR_OFF 0x00     // Radar always off
+       FEC_RADAR_SEARCH_100 0x01     // Search Radar - 100 % of the time (always on)
+       FEC_RADAR_SEARCH_1 0x02     // Search Sequence #1
+       FEC_RADAR_SEARCH_2 0x03     // Search Sequence #2
+       FEC_RADAR_SEARCH_3 0x04     // Search Sequence #3
+       FEC_RADAR_AQUIRE 0x05     // Aquire Mode (looking for a target)
+       FEC_RADAR_GUIDE 0x06     // Missile in flight. Death is imminent*/
 
 
     // Check if we still have any radar vehicles
@@ -1222,8 +1222,8 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
 
-    /*	else if (SimLibElapsedTime - AQUIREtimer > timetoaquire)
-    	{
+    /* else if (SimLibElapsedTime - AQUIREtimer > timetoaquire)
+     {
     // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
     if (GetRadarMode() == FEC_RADAR_AQUIRE && rand()%100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
     {
@@ -1241,12 +1241,12 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 int TaskForceClass::ChooseTarget(void)
 {
-    FalconEntity	*artTarget, *react_against = NULL, *air_react_against = NULL;
-    CampEntity		e;
-    float		d, react_distance, air_react_distance;
-    int			react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
-    int			search_dist;
-    Team		who;
+    FalconEntity *artTarget, *react_against = NULL, *air_react_against = NULL;
+    CampEntity e;
+    float d, react_distance, air_react_distance;
+    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
+    int search_dist;
+    Team who;
 
     if (IsChecked())
         return Engaged();
@@ -1255,12 +1255,12 @@ int TaskForceClass::ChooseTarget(void)
     react_distance = air_react_distance = 9999.0F;
 
 #ifdef DEBUG
-    DWORD				timec = GetTickCount();
+    DWORD timec = GetTickCount();
 #endif
 
     // Special case for fire support
     if (Targeted())
-        artTarget = GetTarget();					// Save our target
+        artTarget = GetTarget(); // Save our target
     else
         artTarget = NULL;
 
@@ -1312,9 +1312,9 @@ int TaskForceClass::ChooseTarget(void)
 
                     if (e->GetComponents())
                     {
-                        VuListIterator	cit(e->GetComponents());
-                        FalconEntity	*fe;
-                        float			rsq, brsq = FLT_MAX;
+                        VuListIterator cit(e->GetComponents());
+                        FalconEntity *fe;
+                        float rsq, brsq = FLT_MAX;
 
                         fe = (FalconEntity *)cit.GetFirst();
 
@@ -1373,7 +1373,7 @@ int TaskForceClass::ChooseTarget(void)
         SetTargeted(1);
         SetEngaged(1);
         SetCombat(1);
-        return -1;			// We want to sit here and shoot until we can't any longer
+        return -1; // We want to sit here and shoot until we can't any longer
     }
 
     if (nomove)

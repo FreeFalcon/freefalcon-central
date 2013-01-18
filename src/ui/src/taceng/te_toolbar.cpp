@@ -155,32 +155,32 @@ void hookup_toolbar_buttons(C_Window *winme)
 /*
 static void tactical_start_engagement (long ID, short hittype, C_Base *ctrl)
 {
-	Flight	fl;
-	int		pilotSlot;
+ Flight fl;
+ int pilotSlot;
 
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+ if(hittype != C_TYPE_LMOUSEUP)
+ return;
 
-	fl = FalconLocalSession->GetPlayerFlight();
-	pilotSlot = FalconLocalSession->GetPilotSlot();
+ fl = FalconLocalSession->GetPlayerFlight();
+ pilotSlot = FalconLocalSession->GetPilotSlot();
 
-	if (tactical_mission_loaded && fl && pilotSlot)
-	{
-		OTWDriver.todOffset = 0.0F;
+ if (tactical_mission_loaded && fl && pilotSlot)
+ {
+ OTWDriver.todOffset = 0.0F;
 
-		// tactical_enable_motion = 1; // !current_tactical_mission->is_flag_on (tf_start_paused);
+ // tactical_enable_motion = 1; // !current_tactical_mission->is_flag_on (tf_start_paused);
 
-		// Trigger the campaign to compress time and takeoff.
-		if (!CompressCampaignUntilTakeoff(fl))
-			return;
-	}
-	else
-	{
-		// PETER TODO: Clear mission window's selection TOO!
-		FalconLocalSession->SetPlayerFlight(NULL);
-		FalconLocalSession->SetPilotSlot(255);
-		return;
-	}
+ // Trigger the campaign to compress time and takeoff.
+ if (!CompressCampaignUntilTakeoff(fl))
+ return;
+ }
+ else
+ {
+ // PETER TODO: Clear mission window's selection TOO!
+ FalconLocalSession->SetPlayerFlight(NULL);
+ FalconLocalSession->SetPilotSlot(255);
+ return;
+ }
 }
 */
 
@@ -312,7 +312,7 @@ void do_tactical_briefing(C_Base *);
 
 static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
 {
-    Flight		flight;
+    Flight flight;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -340,80 +340,80 @@ _TCHAR *UI_WordWrap(C_Window *win,_TCHAR *str,long fontid,short width,BOOL *stat
 
 void add_briefing_text (C_Window *win, int &x, int &y, char *str)
 {
-	int
-		color,
-		startcol,
-		endcol,
-		wrap_w;
+ int
+ color,
+ startcol,
+ endcol,
+ wrap_w;
 
-	C_Text
-		*txt;
+ C_Text
+ *txt;
 
-	_TCHAR
-		*wrap;
+ _TCHAR
+ *wrap;
 
-	BOOL
-		status,
-		retval;
+ BOOL
+ status,
+ retval;
 
-	x = 0;
-	y = 0;
-	startcol = 0;
-	endcol = win->ClientArea_[0].right - win->ClientArea_[0].left - 10;
-	color = 0xffffff;
+ x = 0;
+ y = 0;
+ startcol = 0;
+ endcol = win->ClientArea_[0].right - win->ClientArea_[0].left - 10;
+ color = 0xffffff;
 
-	if (str)
-	{
-		retval=TRUE;
+ if (str)
+ {
+ retval=TRUE;
 
-		if ((win == NULL) || (str == NULL))
-		{
-			return;
-		}
+ if ((win == NULL) || (str == NULL))
+ {
+ return;
+ }
 
-		wrap_w = endcol - x;
+ wrap_w = endcol - x;
 
-		if (str)
-		{
-			wrap = UI_WordWrap (win, str, win->Font_, wrap_w, &status);
+ if (str)
+ {
+ wrap = UI_WordWrap (win, str, win->Font_, wrap_w, &status);
 
-			if (!status)
-			{
-				retval = status;
-			}
+ if (!status)
+ {
+ retval = status;
+ }
 
-			while (wrap)
-			{
-				wrap_w = endcol - startcol;
+ while (wrap)
+ {
+ wrap_w = endcol - startcol;
 
-				txt = new C_Text;
-				txt->Setup (C_DONT_CARE, C_TYPE_NORMAL);
-				txt->SetFixedWidth (_tcsclen (wrap)+1);
-				txt->SetText (wrap);
-				txt->SetXY (x, y);
-				txt->SetFGColor (color);
-				txt->SetFont (win->Font_);
-				txt->SetUserNumber (_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-				txt->SetFlagBitOn (C_BIT_LEFT);
-				txt->SetClient (0);
-				win->AddControl (txt);
-				wrap = UI_WordWrap (win, NULL, win->Font_, wrap_w, &status);
+ txt = new C_Text;
+ txt->Setup (C_DONT_CARE, C_TYPE_NORMAL);
+ txt->SetFixedWidth (_tcsclen (wrap)+1);
+ txt->SetText (wrap);
+ txt->SetXY (x, y);
+ txt->SetFGColor (color);
+ txt->SetFont (win->Font_);
+ txt->SetUserNumber (_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
+ txt->SetFlagBitOn (C_BIT_LEFT);
+ txt->SetClient (0);
+ win->AddControl (txt);
+ wrap = UI_WordWrap (win, NULL, win->Font_, wrap_w, &status);
 
-				if (wrap)
-				{
-					x = startcol;
-					y += gFontList->GetHeight (win->Font_);
-				}
+ if (wrap)
+ {
+ x = startcol;
+ y += gFontList->GetHeight (win->Font_);
+ }
 
-				if (!status)
-				{
-					retval = status;
-				}
-			}
+ if (!status)
+ {
+ retval = status;
+ }
+ }
 
-			x = txt->GetX() + txt->GetW();
-		}
-	}
+ x = txt->GetX() + txt->GetW();
+ }
+ }
 }
 */
 

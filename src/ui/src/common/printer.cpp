@@ -8,7 +8,7 @@
 
 extern int g_nPrintToFile;
 extern bool g_bAppendToBriefingFile;
-extern bool g_bBriefHTML;	//THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
+extern bool g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
 
 
 int WriteBriefingToFile(_TCHAR *string, char *fname);
@@ -33,7 +33,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         return 1;
     }
 
-    //	if (!g_nPrintToFile || g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
+    // if (!g_nPrintToFile || g_nPrintToFile & 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
     if (!g_bBriefHTML || !g_nPrintToFile || (g_nPrintToFile & 0x02)) // 0x00 + 0x02 means print out
     {
@@ -120,13 +120,13 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
 {
     int retval = 1;
     ShiAssert(IsBadStringPtr(string, 8192) == 0);
-    char	fullname[MAX_PATH];
-    HANDLE	fileID;
+    char fullname[MAX_PATH];
+    HANDLE fileID;
     extern char FalconDataDirectory[_MAX_PATH];
     unsigned long bytes, strsize;
     char tmpString[255];
 
-    FILETIME	CurrentTime;
+    FILETIME CurrentTime;
     GetSystemTimeAsFileTime(&CurrentTime);
     char TimeBuffer[100];
     PrintTime(TimeBuffer, CurrentTime);
@@ -139,7 +139,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     //It might be better for briefing processing programs to always have only one
     //briefing in the file...Make it configurable.
 
-    if (g_bAppendToBriefingFile && !g_bBriefHTML)	//No sense in appending HTML briefings
+    if (g_bAppendToBriefingFile && !g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);

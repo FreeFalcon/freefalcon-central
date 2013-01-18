@@ -388,12 +388,12 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     CharStr *MyChars;
     C_Fontmgr *newfont;
 
-    //	surface=UI95_CreateDDSurface(gMainDDraw,SCREEN_SIZE,SCREEN_SIZE);
-    //	if(!surface)
-    //	{
-    //		MonoPrint("Can't create DDSurface for Font conversion to BFT\n");
-    //		return(NULL);
-    //	}
+    // surface=UI95_CreateDDSurface(gMainDDraw,SCREEN_SIZE,SCREEN_SIZE);
+    // if(!surface)
+    // {
+    // MonoPrint("Can't create DDSurface for Font conversion to BFT\n");
+    // return(NULL);
+    // }
 
     font = new FONTLIST;
     font->Font_ = CreateFontIndirect(logfont);

@@ -492,7 +492,7 @@ BOOL C_Sound::RemoveSound(long ID)
     if (SoundList_)
         SoundList_->Remove(ID);
 
-    //	F4FreeSound(&cur->SoundID);
+    // F4FreeSound(&cur->SoundID);
     return(FALSE);
 }
 
@@ -510,16 +510,16 @@ long C_Sound::SetVolume(long Volume)
 
 void C_Sound::SetAllVolumes(long Volume)
 {
-    /*	cur=Root_;
-    	while(cur != NULL)
-    	{
-    		cur->Volume=Volume;
-    		if(cur->flags & SOUND_STREAM)
-    			F4SetStreamVolume(cur->SoundID,Volume);
-    		else
-    			F4SetVolume(cur->SoundID,Volume);
-    		cur=cur->Next;
-    	}*/
+    /* cur=Root_;
+     while(cur != NULL)
+     {
+     cur->Volume=Volume;
+     if(cur->flags & SOUND_STREAM)
+     F4SetStreamVolume(cur->SoundID,Volume);
+     else
+     F4SetVolume(cur->SoundID,Volume);
+     cur=cur->Next;
+     }*/
     gSoundDriver->SetStreamVolume(Stereo_, Volume);
     gSoundDriver->SetStreamVolume(Mono_, Volume);
 }

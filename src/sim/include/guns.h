@@ -30,10 +30,10 @@ typedef enum TracerCollisionMode
 
 
 // returned by tracer checks
-#define	TRACER_HIT_NOTHING			0x00000000
-#define	TRACER_HIT_FEATURE			0x00000001
-#define	TRACER_HIT_UNIT				0x00000002
-#define	TRACER_HIT_GROUND			0x00000004
+#define TRACER_HIT_NOTHING 0x00000000
+#define TRACER_HIT_FEATURE 0x00000001
+#define TRACER_HIT_UNIT 0x00000002
+#define TRACER_HIT_GROUND 0x00000004
 
 class GunClass : public SimWeaponClass
 {
@@ -58,7 +58,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
@@ -67,13 +67,13 @@ private:
     float dragFactor;
     int fireCount, bursts;
     int initialRounds;
-    float fractionalRoundsRemaining;	// Could make numRoundsRemaining a float, but this changed less code...
+    float fractionalRoundsRemaining; // Could make numRoundsRemaining a float, but this changed less code...
     DrawableTracer** tracers;
     Drawable2D** bullets;
     // ********** NEW TRAIL STUFF *************
     //DrawableTrail* smokeTrail;
-    DWORD		Trail;
-    DWORD		TrailIdNew;
+    DWORD Trail;
+    DWORD TrailIdNew;
     // ****************************************
 
     DrawableTrail* smokeTrail;
@@ -154,27 +154,27 @@ public:
     };
 
     // member functions
-    BOOL		IsShell(void);
-    BOOL		IsTracer(void);
-    BOOL		ReadyToFire(void);
-    float		GetDamageAssessment(SimBaseClass *target, float range);
-    void		FireShell(SimObjectType *target);
-    void		UpdateShell(void);
+    BOOL IsShell(void);
+    BOOL IsTracer(void);
+    BOOL ReadyToFire(void);
+    float GetDamageAssessment(SimBaseClass *target, float range);
+    void FireShell(SimObjectType *target);
+    void UpdateShell(void);
     WeaponDomain GetSMSDomain(void);
 
     //MI to add a timer to AAA
-    bool CheckAltitude;	//Do we need to update the target Altitude?
-    VU_TIME AdjustForAlt;	//How long it takes the AAA to adjust for our new Alt
-    float TargetAlt;		//How high our target currently is
+    bool CheckAltitude; //Do we need to update the target Altitude?
+    VU_TIME AdjustForAlt; //How long it takes the AAA to adjust for our new Alt
+    float TargetAlt; //How high our target currently is
 
     // member variables
-    WeaponDomain 				gunDomain;				// air, land, both
-    SimObjectType 			*shellTargetPtr;		// set when shell flying
-    GunType					typeOfGun;				// tracer or shell
-    VU_TIME					shellDetonateTime;		// when it goes cablooey
-    float						minShellRange;			// minimum for shell
-    float						maxShellRange;			// max for shell
-    WeaponClassDataType 		*wcPtr;					// pointer to weapon class data
+    WeaponDomain  gunDomain; // air, land, both
+    SimObjectType  *shellTargetPtr; // set when shell flying
+    GunType typeOfGun; // tracer or shell
+    VU_TIME shellDetonateTime; // when it goes cablooey
+    float minShellRange; // minimum for shell
+    float maxShellRange; // max for shell
+    WeaponClassDataType  *wcPtr; // pointer to weapon class data
 };
 
 #endif

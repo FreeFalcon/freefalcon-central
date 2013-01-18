@@ -10,8 +10,8 @@
 
 typedef void (*ScriptFunctionPtr)(void);
 
-extern ScriptFunctionPtr	ScriptArray[];
-extern int					ScriptArrayLength;
+extern ScriptFunctionPtr ScriptArray[];
+extern int ScriptArrayLength;
 
 #endif // _SCRIPTS_H_
 

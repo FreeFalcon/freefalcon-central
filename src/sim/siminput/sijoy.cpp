@@ -12,37 +12,37 @@
 #include "aircrft.h"
 #include "weather.h"
 
-#include "profiler.h"	// Retro 26Dec2003
-#include "mouselook.h"	// Retro 18Jan2004
+#include "profiler.h" // Retro 26Dec2003
+#include "mouselook.h" // Retro 18Jan2004
 
 #pragma warning(push,4)
 
 BOOL CALLBACK JoystickEnumEffectTypeProc(LPCDIEFFECTINFO pei, LPVOID pv);
 BOOL JoystickCreateEffect(DWORD dwEffectFlags);
 
-#define BUTTON_PRESSED	0x80
-#define KEY_DOWN		0x8
-#define REPEAT_DELAY	200
+#define BUTTON_PRESSED 0x80
+#define KEY_DOWN 0x8
+#define REPEAT_DELAY 200
 
 static DWORD LastPressed[SIMLIB_MAX_DIGITAL*SIM_NUMDEVICES] = {0};
 
 static DWORD LastPressedPOV[SIMLIB_MAX_POV] = {0};
 static int LastDirPOV[SIMLIB_MAX_POV] = {0};
-int	center = FALSE;
-int	setABdetent = FALSE;
-int setIdleCutoff = FALSE;	// Retro 1Feb2004
+int center = FALSE;
+int setABdetent = FALSE;
+int setIdleCutoff = FALSE; // Retro 1Feb2004
 long mHelmetIsUR = FALSE; // hack for UR Helmet detected
 long mHelmetID;
 float UR_HEAD_VIEW = 160.0f;
 float UR_PREV_X = 0.0f;
 float UR_PREV_Y = 0.0f;
 
-#include "TrackIR.h"				// Retro 26/09/03
-extern bool g_bEnableTrackIR;		// Retro 26/09/03
-extern TrackIR theTrackIRObject;	// Retro 27/09/03
+#include "TrackIR.h" // Retro 26/09/03
+extern bool g_bEnableTrackIR; // Retro 26/09/03
+extern TrackIR theTrackIRObject; // Retro 27/09/03
 
 extern int DisableSmoothing;
-extern bool g_bUseNewSmoothing;		// Retro 21Feb2004
+extern bool g_bUseNewSmoothing; // Retro 21Feb2004
 extern int NoRudder;
 static int JoyOutput[SIMLIB_MAX_ANALOG][2] = {0};
 extern int PickleOverride;
@@ -60,7 +60,7 @@ enum
     MAX_DIFF = 10000,
 };
 
-unsigned int NumberOfPOVs = 0;	// Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
+unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
 
 void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
 
@@ -72,13 +72,13 @@ int* gForceEffectIsRepeating = NULL;
 int* gForceEffectHasDirection = NULL;
 int gNumEffectsLoaded = 0;
 
-int g_nThrottleID = DIJOFS_Z;		// OW
+int g_nThrottleID = DIJOFS_Z; // OW
 
-//#define THE_MPS_WAY_OF_LIFE			// Retro 2Jan2004 - with this enabled, old 'IO.analog[].engrVal' algorithm is used. Else it´s mine =)
-#define AUTOCENTERFUN					// this should bring back autocentering with the FFB-button in the advanced controls tab disabled
-#define NO_CENTER_FOR_MY_AXIS_PLEASE	// Retro 9Jan2004 - what´s the point ? Doesn´t work too good anyways BTW (has offset)
-#define USE_IDLE_CUTOFF					// Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
-#define SYMMETRIC_THROTTLEDETENTS		// Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle !!
+//#define THE_MPS_WAY_OF_LIFE // Retro 2Jan2004 - with this enabled, old 'IO.analog[].engrVal' algorithm is used. Else it´s mine =)
+#define AUTOCENTERFUN // this should bring back autocentering with the FFB-button in the advanced controls tab disabled
+#define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - what´s the point ? Doesn´t work too good anyways BTW (has offset)
+#define USE_IDLE_CUTOFF // Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
+#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle !!
 
 /*****************************************************************************/
 //
@@ -90,11 +90,11 @@ void SetJoystickCenter(void)
 
 
 /*****************************************************************************/
-//	Bla.. shitty function that should fudge it so that throttles are NOT
-//	active when entering the 3d.. the user will have to move it a bit before
-//	it really 'works' - this was working in the older input code version but
-//	this functioniality seems to have been lost with the switch to the new
-//	code.. like I said,.. bla
+// Bla.. shitty function that should fudge it so that throttles are NOT
+// active when entering the 3d.. the user will have to move it a bit before
+// it really 'works' - this was working in the older input code version but
+// this functioniality seems to have been lost with the switch to the new
+// code.. like I said,.. bla
 /*****************************************************************************/
 long throttleInactiveValue = 0;
 bool throttleInactive = false;
@@ -110,7 +110,7 @@ void SetThrottleInActive()
     throttleInactive = true;
 }
 
-void resetStaticPOVButtonStates()	// Retro 24Aug2004
+void resetStaticPOVButtonStates() // Retro 24Aug2004
 {
     int i;
 
@@ -131,7 +131,7 @@ void resetStaticPOVButtonStates()	// Retro 24Aug2004
 /*****************************************************************************/
 inline void ProcessJoystickInput(GameAxis_t axis, long *value)
 {
-    if (g_bUseNewSmoothing == false)	// Retro 19Feb2004 - this old 'smoothing code' does exactly NADA for me..
+    if (g_bUseNewSmoothing == false) // Retro 19Feb2004 - this old 'smoothing code' does exactly NADA for me..
     {
         JoyOutput[axis][OldInput] = JoyOutput[axis][NewInput];
         JoyOutput[axis][NewInput] = *value;
@@ -151,7 +151,7 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
 
         IO.analog[axis].ioVal = *value;
     }
-    else	// This one´s better imo, (C) H. Kern of the TU Vienna.. showed it to me in "Konstruktion systemfähiger Messgeräte" ;)
+    else // This one´s better imo, (C) H. Kern of the TU Vienna.. showed it to me in "Konstruktion systemfähiger Messgeräte" ;)
     {
         if (IO.analog[axis].smoothingFactor)
         {
@@ -216,9 +216,9 @@ void GetURHelmetInput()
 /*****************************************************************************/
 //
 /*****************************************************************************/
-void GetTrackIRInput()	// Retro 26/09/03
+void GetTrackIRInput() // Retro 26/09/03
 {
-#if 0	// Retro 24Dez2004 - deprecated
+#if 0 // Retro 24Dez2004 - deprecated
     theTrackIRObject.GetTrackIR_ViewValues(&cockpitFlightData.headYaw, &cockpitFlightData.headPitch);
 #else
     theTrackIRObject.Poll();
@@ -240,17 +240,17 @@ void GetJoystickInput()
     DIJOYSTATE joyState;
 
     if (!gTotalJoy)
-        return;		// returning if we don´t have a stick
+        return; // returning if we don´t have a stick
 
-    long device_axis_values[SIM_NUMDEVICES][8];	// 8 axis in a DIJOYSTATE structure.. don´t think we´ll switch to DIJOYSTATE2
+    long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. don´t think we´ll switch to DIJOYSTATE2
 
     /*******************************************************************************/
-    //	Polling all devices..
+    // Polling all devices..
     /*******************************************************************************/
     for (int i = SIM_JOYSTICK1; i < gTotalJoy + SIM_JOYSTICK1; i++)
     {
-        //		hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[i])->Poll();
-        hRes = gpDIDevice[i]->Poll();	// Retro 21Jan2004
+        // hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[i])->Poll();
+        hRes = gpDIDevice[i]->Poll(); // Retro 21Jan2004
 
         // Retro 21Jan2004
         if ((hRes == DIERR_INPUTLOST) || (hRes == DIERR_NOTACQUIRED))
@@ -275,7 +275,7 @@ void GetJoystickInput()
             case DI_OK:
             {
                 /*******************************************************************************/
-                //	note the values of ALL axis
+                // note the values of ALL axis
                 /*******************************************************************************/
                 device_axis_values[i][DX_XAXIS] = joyState.lX;
                 device_axis_values[i][DX_YAXIS] = joyState.lY;
@@ -308,14 +308,14 @@ void GetJoystickInput()
         }
 
         /*******************************************************************************/
-        //	poll POV ONLY of current controller.. dunno if I should expand that
+        // poll POV ONLY of current controller.. dunno if I should expand that
         /*******************************************************************************/
         if (i == AxisMap.FlightControlDevice)
         {
             BOOL POVCentered;
             unsigned int j = 0;
 
-            for (j = 0; j < NumberOfPOVs; j++)	// Retro 26Dec2003
+            for (j = 0; j < NumberOfPOVs; j++) // Retro 26Dec2003
             {
                 POVCentered = (LOWORD(joyState.rgdwPOV[j]) == 0xFFFF);
 
@@ -327,11 +327,11 @@ void GetJoystickInput()
         }
     }
 
-    if (IO.MouseWheelExists() == true)	// Retro 17Jan2004
+    if (IO.MouseWheelExists() == true) // Retro 17Jan2004
         device_axis_values[SIM_MOUSE][DX_MOUSEWHEEL] = theMouseWheelAxis.GetAxisValue();
 
     /*******************************************************************************/
-    //	Copy and process flight control (roll and pitch) info
+    // Copy and process flight control (roll and pitch) info
     /*******************************************************************************/
     if ((IO.AnalogIsUsed(AXIS_PITCH)) && (IO.AnalogIsUsed(AXIS_ROLL)))
     {
@@ -355,7 +355,7 @@ void GetJoystickInput()
         else
             IO.analog[AXIS_ROLL].engrValue /= (10000.0F - (float)abs(IO.analog[AXIS_ROLL].center));
 
-#else	// Retro 2Jan2003
+#else // Retro 2Jan2003
 
         if (g_bUseNewSmoothing == false)
         {
@@ -405,8 +405,8 @@ void GetJoystickInput()
     }
 
     /*******************************************************************************/
-    //	Copy and process throttle data (if available)
-    //	engrVal goes from 0 to 1.5 !!!
+    // Copy and process throttle data (if available)
+    // engrVal goes from 0 to 1.5 !!!
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
@@ -451,7 +451,7 @@ void GetJoystickInput()
             if (throttleInactive == true)
             {
                 if (abs(throttleInactiveValue - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) < 5000)
-                    IO.analog[AXIS_THROTTLE].engrValue = 0.0F;	// no throttle ouput before the user moves the stick..
+                    IO.analog[AXIS_THROTTLE].engrValue = 0.0F; // no throttle ouput before the user moves the stick..
                 else
                 {
                     throttleInactive = false;
@@ -472,8 +472,8 @@ void GetJoystickInput()
     }
 
     /*******************************************************************************/
-    //	Copy and process throttle2 data (if available)
-    //	engrVal goes from 0 to 1.5 !!!
+    // Copy and process throttle2 data (if available)
+    // engrVal goes from 0 to 1.5 !!!
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {
@@ -534,7 +534,7 @@ void GetJoystickInput()
     }
 
     /*******************************************************************************/
-    //	Copy and process rudder data (if available)
+    // Copy and process rudder data (if available)
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_YAW))
     {
@@ -548,7 +548,7 @@ void GetJoystickInput()
         else
             IO.analog[AXIS_YAW].engrValue /= (10000.0F - (float)abs(IO.analog[AXIS_YAW].center));
 
-#else	// Retro 2Jan2003
+#else // Retro 2Jan2003
 
         if (g_bUseNewSmoothing == false)
         {
@@ -576,7 +576,7 @@ void GetJoystickInput()
             IO.analog[AXIS_YAW].center = device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] * -1;
         }
 
-        if (IO.analog[AXIS_YAW].isReversed == true)	// Retro 13Jan2004
+        if (IO.analog[AXIS_YAW].isReversed == true) // Retro 13Jan2004
         {
             IO.analog[AXIS_YAW].engrValue *= -1;
             IO.analog[AXIS_YAW].ioVal *= -1;
@@ -584,10 +584,10 @@ void GetJoystickInput()
     }
 
     /*******************************************************************************/
-    //	Copy and process additional axis
-    //	These are the axis added by Retro; their processing is a bit less elaborate,
-    //	and they don´t have ABDetent functionality. Unipolar Axis don´t have
-    //	center functionality either.
+    // Copy and process additional axis
+    // These are the axis added by Retro; their processing is a bit less elaborate,
+    // and they don´t have ABDetent functionality. Unipolar Axis don´t have
+    // center functionality either.
     /*******************************************************************************/
     extern GameAxisSetup_t AxisSetup[AXIS_MAX];
 
@@ -611,25 +611,25 @@ void GetJoystickInput()
             // bipolar axis..
             else
             {
-#ifndef NO_CENTER_FOR_MY_AXIS_PLEASE	// Retro 9Jan2004
+#ifndef NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004
                 long correctedVal = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis] + IO.analog[(GameAxis_t)a].center;
 #else
                 long correctedVal = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis];
-#endif	// NO_CENTER_FOR_MY_AXIS_PLEASE
+#endif // NO_CENTER_FOR_MY_AXIS_PLEASE
 
                 if (IO.analog[(GameAxis_t)a].isReversed)
                     correctedVal *= (-1);
 
                 ProcessJoystickInput((GameAxis_t)a, &correctedVal);
 
-#ifndef NO_CENTER_FOR_MY_AXIS_PLEASE	// Retro 9Jan2004
+#ifndef NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004
 
                 if (center)
                 {
                     IO.analog[(GameAxis_t)a].center = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis] * -1;
                 }
 
-#endif	// NO_CENTER_FOR_MY_AXIS_PLEASE
+#endif // NO_CENTER_FOR_MY_AXIS_PLEASE
             }
         }
     }
@@ -646,28 +646,28 @@ void GetJoystickInput()
         setABdetent = FALSE;
     }
 
-    if (setIdleCutoff)	// Retro 1Feb2004
+    if (setIdleCutoff) // Retro 1Feb2004
     {
         IO.SaveFile();
         setIdleCutoff = FALSE;
     }
 
     /*******************************************************************************/
-    //	Other VR stuff.. and TrackIR polling..
+    // Other VR stuff.. and TrackIR polling..
     /*******************************************************************************/
     if (mHelmetIsUR)
     {
         GetURHelmetInput();
     }
-    else if ((g_bEnableTrackIR) && (PlayerOptions.Get3dTrackIR() == true))	// Retro 26/09/03
+    else if ((g_bEnableTrackIR) && (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
     {
         GetTrackIRInput();
     }
 }
 
 /*******************************************************************************/
-// Retro:	I know process the buttons of ALL connected sticks. POV hat is only
-//			evaluated for the flight stick though
+// Retro: I know process the buttons of ALL connected sticks. POV hat is only
+// evaluated for the flight stick though
 /*******************************************************************************/
 void ProcessJoyButtonAndPOVHat(void)
 {
@@ -678,7 +678,7 @@ void ProcessJoyButtonAndPOVHat(void)
 
     for (i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES; i++)
     {
-#if 0	// Retro 24Aug2004
+#if 0 // Retro 24Aug2004
 
         if (IO.digital[i])
         {
@@ -693,15 +693,15 @@ void ProcessJoyButtonAndPOVHat(void)
                 {
                     if (ID  < 0)
                     {
-                        //						theFunc(1, KEY_DOWN, NULL);
-                        CallFunc(theFunc, 1, KEY_DOWN, NULL);		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        // theFunc(1, KEY_DOWN, NULL);
+                        CallFunc(theFunc, 1, KEY_DOWN, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                     }
                     else
                     {
-                        //						theFunc(1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID));
+                        // theFunc(1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID));
                         CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                         OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
-                    }												//to store it and all functions currently use 0. ;)
+                    } //to store it and all functions currently use 0. ;)
                 }
                 else if ((i % SIMLIB_MAX_DIGITAL) == 0)
                 {
@@ -723,23 +723,23 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (theFunc)
                 //theFunc(1, 0, NULL);
-                CallFunc(theFunc, 1, 0, NULL);		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
 
-            //			else if(i == 0)
+            // else if(i == 0)
             else if ((i % SIMLIB_MAX_DIGITAL) == 0)
             {
                 TriggerOverride = FALSE;
             }
-            //			else if(i == 1)
+            // else if(i == 1)
             else if ((i % SIMLIB_MAX_DIGITAL) == 1)
             {
                 PickleOverride = FALSE;
             }
         }
 
-#else	// Retro 24Aug2004 - this version just generates one DOWN event when a key is pressed and one UP event when released
+#else // Retro 24Aug2004 - this version just generates one DOWN event when a key is pressed and one UP event when released
 
-        //					the one above sent multiple DOWN events every 200 ticks.. not necessary imo
+        // the one above sent multiple DOWN events every 200 ticks.. not necessary imo
         if (IO.digital[i])
         {
             if (LastPressed[i] == 0)
@@ -751,13 +751,13 @@ void ProcessJoyButtonAndPOVHat(void)
                 {
                     if (ID  < 0)
                     {
-                        CallFunc(theFunc, 1, KEY_DOWN, NULL);		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        CallFunc(theFunc, 1, KEY_DOWN, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                     }
                     else
                     {
                         CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                         OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
-                    }												//to store it and all functions currently use 0. ;)
+                    } //to store it and all functions currently use 0. ;)
                 }
                 else if ((i % SIMLIB_MAX_DIGITAL) == 0)
                 {
@@ -779,7 +779,7 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (theFunc)
             {
-                CallFunc(theFunc, 1, 0, NULL);		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
             }
             else if ((i % SIMLIB_MAX_DIGITAL) == 0)
             {
@@ -791,11 +791,11 @@ void ProcessJoyButtonAndPOVHat(void)
             }
         }
 
-#endif	// Retro 24Aug2004
+#endif // Retro 24Aug2004
 
     }
 
-    for (i = 0; i < NumberOfPOVs; i++)	// Retro 26Dec2003
+    for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
     {
         if (IO.povHatAngle[i] != -1)
         {
@@ -842,14 +842,14 @@ void ProcessJoyButtonAndPOVHat(void)
                     if (ID  < 0)
                     {
                         //theFunc(1, KEY_DOWN, NULL);
-                        CallFunc(theFunc, 1, KEY_DOWN, NULL);		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        CallFunc(theFunc, 1, KEY_DOWN, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                     }
                     else
                     {
                         //theFunc(1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID));
-                        CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID));		//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                         OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
-                    }												//to store it and all functions currently use 0. ;)
+                    } //to store it and all functions currently use 0. ;)
                 }
                 else
                     SimDriver.POVKludgeFunction(IO.povHatAngle[i]);
@@ -865,7 +865,7 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (theFunc)
                 //theFunc(1, 0, NULL);
-                CallFunc(theFunc, 1, 0, NULL);	//Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
             else
                 SimDriver.POVKludgeFunction(IO.povHatAngle[i]);
         }
@@ -885,7 +885,7 @@ float ReadThrottle(void)
     HRESULT hRes;
     DIJOYSTATE joyState;
 
-    if ((gTotalJoy) && (IO.AnalogIsUsed(AXIS_THROTTLE) == true))	// Retro 4Jan2004
+    if ((gTotalJoy) && (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
     {
 
         hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
@@ -908,7 +908,7 @@ float ReadThrottle(void)
 
         hRes = gpDIDevice[AxisMap.Throttle.Device]->GetDeviceState(sizeof(DIJOYSTATE), &joyState);
 
-        //ShiAssert(hRes == DI_OK);	// Retro 4Jan2004  // MLR 5/2/2004 - driving me nuts
+        //ShiAssert(hRes == DI_OK); // Retro 4Jan2004  // MLR 5/2/2004 - driving me nuts
 
         long theDeviceValue = 0;
 
@@ -953,7 +953,7 @@ float ReadThrottle(void)
                 JoyOutput[AXIS_THROTTLE][OldInput] = JoyOutput[AXIS_THROTTLE][NewInput];
                 JoyOutput[AXIS_THROTTLE][NewInput] = theDeviceValue;
 
-                IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue;	// Retro 11Jan2004
+                IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue; // Retro 11Jan2004
 
                 if (IO.analog[AXIS_THROTTLE].center && theDeviceValue > IO.analog[AXIS_THROTTLE].center)
                     IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - theDeviceValue) / (15000.0F - IO.analog[AXIS_THROTTLE].center);
@@ -984,17 +984,17 @@ float ReadThrottle(void)
     return IO.analog[AXIS_THROTTLE].engrValue;
 }
 
-static int AxisCount = 0;	// Retro
-#define NUM_OF_STICK_AXIS 8	/* '8' is defined by dinput: 8 axis maximum per device */
+static int AxisCount = 0; // Retro
+#define NUM_OF_STICK_AXIS 8 /* '8' is defined by dinput: 8 axis maximum per device */
 AxisIDStuff DIAxisNames[SIM_NUMDEVICES*NUM_OF_STICK_AXIS];
 
 #ifndef USE_DINPUT_8
 /*****************************************************************************/
 // Retro 31Dec2003
-//	all this one does is to note the name of every axis located on a device -
-//	I don´t care if it´s x,y,z,rx,ry,rz,sl0 or sl1 yet
-//	- just note its name (copy it into that globat array above) and be done
-//	with it
+// all this one does is to note the name of every axis located on a device -
+// I don´t care if it´s x,y,z,rx,ry,rz,sl0 or sl1 yet
+// - just note its name (copy it into that globat array above) and be done
+// with it
 /*****************************************************************************/
 BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
 {
@@ -1056,16 +1056,16 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 
     return TRUE;
 }
-#else	// USE_DINPUT_8
+#else // USE_DINPUT_8
 /*****************************************************************************/
-//	Retro 16Jan2004 - with dinput8, enumerating device objects seems busted
-//	it´s picking up imaginary axis, and does not see real ones.. so I have to
-//	look for the real existing axis this way. Functionally it is the same
-//	as the CallBack function above (EnumDeviceObjects) but it handles all
-//	possible axis on a joystick at once.
+// Retro 16Jan2004 - with dinput8, enumerating device objects seems busted
+// it´s picking up imaginary axis, and does not see real ones.. so I have to
+// look for the real existing axis this way. Functionally it is the same
+// as the CallBack function above (EnumDeviceObjects) but it handles all
+// possible axis on a joystick at once.
 //
-//	Of course, should the dataformat change (to joystick2) then we´d have to
-//	change a bit here (and in the rest of the code !!)
+// Of course, should the dataformat change (to joystick2) then we´d have to
+// change a bit here (and in the rest of the code !!)
 /*****************************************************************************/
 void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 {
@@ -1087,14 +1087,14 @@ void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 
     AxisOffsets_t AxisOffsets[NUM_OF_STICK_AXIS] =
     {
-        { DIJOFS_X,			DX_XAXIS },
-        { DIJOFS_Y,			DX_YAXIS },
-        { DIJOFS_Z,			DX_ZAXIS },
-        { DIJOFS_RX,		DX_RXAXIS },
-        { DIJOFS_RY,		DX_RYAXIS },
-        { DIJOFS_RZ,		DX_RZAXIS },
-        { DIJOFS_SLIDER(0),	DX_SLIDER0 },
-        { DIJOFS_SLIDER(1),	DX_SLIDER1 }
+        { DIJOFS_X, DX_XAXIS },
+        { DIJOFS_Y, DX_YAXIS },
+        { DIJOFS_Z, DX_ZAXIS },
+        { DIJOFS_RX, DX_RXAXIS },
+        { DIJOFS_RY, DX_RYAXIS },
+        { DIJOFS_RZ, DX_RZAXIS },
+        { DIJOFS_SLIDER(0), DX_SLIDER0 },
+        { DIJOFS_SLIDER(1), DX_SLIDER1 }
     };
 
     for (int i = 0; i < NUM_OF_STICK_AXIS; i++)
@@ -1119,11 +1119,11 @@ void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
 }
 
 /*****************************************************************************/
-//	brrrr... trying to get the mousewheel as 'just another axis'
+// brrrr... trying to get the mousewheel as 'just another axis'
 //
-//	of course it isn´t that clear cut: mousewheel has no deadzone, no saturation
-//	and I can´t set range props. instead I´ll have to clamp the values depending
-//	on if the mapped axis is bipolar or unipolar
+// of course it isn´t that clear cut: mousewheel has no deadzone, no saturation
+// and I can´t set range props. instead I´ll have to clamp the values depending
+// on if the mapped axis is bipolar or unipolar
 /*****************************************************************************/
 void CheckForMouseAxis(void)
 {
@@ -1169,7 +1169,7 @@ void CheckForMouseAxis(void)
 
             DIAxisNames[AxisCount].DXAxisID = DX_MOUSEWHEEL;
 
-            DIAxisNames[AxisCount].DXDeviceID = SIM_MOUSE;	// SIM_MOUSE = 0
+            DIAxisNames[AxisCount].DXDeviceID = SIM_MOUSE; // SIM_MOUSE = 0
             AxisCount++;
 
             IO.SetMouseWheelExists(true);
@@ -1182,17 +1182,17 @@ void CheckForMouseAxis(void)
     // no mousewheel axis !
 #endif
 }
-#endif	// USE_DINPUT_8
+#endif // USE_DINPUT_8
 
 /*****************************************************************************/
 // by Retro 28Dec2003 (put it into its own function to be able to call it)
 //
-//	(De)activates the FFB autocenter function. If FFB is enabled in-game then
-//	autocenter goes OFF (we do it ourselves then), else we turn it back ON so
-//	that at least centering spring forces are there, else it feels like ass.
+// (De)activates the FFB autocenter function. If FFB is enabled in-game then
+// autocenter goes OFF (we do it ourselves then), else we turn it back ON so
+// that at least centering spring forces are there, else it feels like ass.
 //
-//	I´m ASSuming that this IS a FFB stick !!! You can´t check this with
-//	HasForceFeedback however (at least not here) !
+// I´m ASSuming that this IS a FFB stick !!! You can´t check this with
+// HasForceFeedback however (at least not here) !
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 {
@@ -1235,12 +1235,12 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 
 /*****************************************************************************/
 // by Retro 25Dec2003 (put it into its own function to be able to call it)
-//	Check if a device has FFB support. Called on startup, and when the primary
-//	device is changed (in the config tab)
-//	FFB is only supported for the primary flight device (the one with the PITCH
-//	and BANK axis)
+// Check if a device has FFB support. Called on startup, and when the primary
+// device is changed (in the config tab)
+// FFB is only supported for the primary flight device (the one with the PITCH
+// and BANK axis)
 //
-//	theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !!!
+// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  !!!
 /*****************************************************************************/
 int CheckForForceFeedback(const int theJoyIndex)
 {
@@ -1252,14 +1252,14 @@ int CheckForForceFeedback(const int theJoyIndex)
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 #endif
 
-    DIDEVCAPS				devcaps;
+    DIDEVCAPS devcaps;
     devcaps.dwSize = sizeof(DIDEVCAPS);
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->GetCapabilities(&devcaps);
 
-    if (theJoyIndex == AxisMap.FlightControlDevice - SIM_JOYSTICK1)	 // Retro 31Dec2003
+    if (theJoyIndex == AxisMap.FlightControlDevice - SIM_JOYSTICK1)  // Retro 31Dec2003
     {
-        //	a total shit sandwich here.. FFB only for the primary device ! if nothing is yet mapped
-        //	then it will have to wait till the user selects it in the appropriate screen
+        // a total shit sandwich here.. FFB only for the primary device ! if nothing is yet mapped
+        // then it will have to wait till the user selects it in the appropriate screen
         if (devcaps.dwFlags & DIDC_FORCEFEEDBACK)
         {
             //Got it
@@ -1314,41 +1314,41 @@ int CheckForForceFeedback(const int theJoyIndex)
 #ifndef AUTOCENTERFUN
         hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-        return FALSE;	// no ffb stick !
+        return FALSE; // no ffb stick !
     }
 
 #ifndef AUTOCENTERFUN
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-    return FALSE;	// device checked is not the primary flight stick (the only one that has FFB effects) !
+    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) !
 }
 
 /*****************************************************************************/
-//	Device Enumeration Callback Function (DECAF)
+// Device Enumeration Callback Function (DECAF)
 /*****************************************************************************/
 BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 {
-    BOOL					SetupResult;
+    BOOL SetupResult;
 
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
-    LPDIRECTINPUTDEVICE7		pdev;
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
+    LPDIRECTINPUTDEVICE7 pdev;
 #else
-    LPDIRECTINPUTDEVICE8		pdev;
+    LPDIRECTINPUTDEVICE8 pdev;
 #endif
 
-    //	LPDIRECTINPUTDEVICE		pdev;	// Retro 15Jan2004
-    HWND					hWndMain = *((HWND *)pvRef);
-    DIDEVCAPS				devcaps;
-    DIDEVICEOBJECTINSTANCE	devobj;
+    // LPDIRECTINPUTDEVICE pdev; // Retro 15Jan2004
+    HWND hWndMain = *((HWND *)pvRef);
+    DIDEVCAPS devcaps;
+    DIDEVICEOBJECTINSTANCE devobj;
 
     devobj.dwSize = sizeof(DIDEVICEOBJECTINSTANCE);
 
     devcaps.dwSize = sizeof(DIDEVCAPS);
 
     /*****************************************************************************/
-    //	Create the device
+    // Create the device
     /*****************************************************************************/
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
     SetupResult = VerifyResult(gpDIObject->CreateDeviceEx(pdinst->guidInstance, IID_IDirectInputDevice7, (void **) &pdev, NULL));
 #else
     HRESULT hr = gpDIObject->CreateDevice(pdinst->guidInstance, &pdev, NULL);
@@ -1366,7 +1366,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     SetupResult = VerifyResult(pdev->SetDataFormat(&c_dfDIJoystick));
 
     /*****************************************************************************/
-    //	so what do we have here ?
+    // so what do we have here ?
     /*****************************************************************************/
     SetupResult = VerifyResult(pdev->GetCapabilities(&devcaps));
 
@@ -1377,14 +1377,14 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     {
 #ifdef NDEBUG
         SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_FOREGROUND));
-#else	// bye bye FFB :/
+#else // bye bye FFB :/
         SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE | DISCL_BACKGROUND));
 #endif
     }
 
-#ifndef USE_DINPUT_8	// Retro 16Jan2004
+#ifndef USE_DINPUT_8 // Retro 16Jan2004
     /*****************************************************************************/
-    //	Enumerate all axis on the device
+    // Enumerate all axis on the device
     /*****************************************************************************/
     pdev->EnumObjects(EnumDeviceObjects, (void*)&pdinst->tszProductName, DIDFT_AXIS);
 #else
@@ -1394,10 +1394,10 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     if (SetupResult)
     {
         /***************************************************/
-        //	Convert it to a Device2 so we can Poll() it.
+        // Convert it to a Device2 so we can Poll() it.
         //  (Will also increment reference count if it succeeds)
         /***************************************************/
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
         SetupResult = VerifyResult(pdev->QueryInterface(IID_IDirectInputDevice2, (LPVOID *)&gpDIDevice[SIM_JOYSTICK1 + gTotalJoy]));
 #else
         gpDIDevice[SIM_JOYSTICK1 + gTotalJoy] = pdev;
@@ -1415,7 +1415,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     if (SetupResult)
     {
         /*****************************************************************************/
-        //	use pdinst to get name of joystick for display purposes
+        // use pdinst to get name of joystick for display purposes
         /*****************************************************************************/
         int len = _tcslen(pdinst->tszProductName);
         gDIDevNames[SIM_JOYSTICK1 + gTotalJoy] = new _TCHAR[len + 1];
@@ -1434,13 +1434,13 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         gTotalJoy++;
 
         /*****************************************************************************/
-        //	we've used up our whole array, sorry no more!!
+        // we've used up our whole array, sorry no more!!
         /*****************************************************************************/
         if ((SIM_JOYSTICK1 + gTotalJoy) >= SIM_NUMDEVICES)
             return DIENUM_STOP;
     }
 
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
     //if the call to QueryInterface succeeded the reference count was incremented to 2
     //so this will drop it to 1 or 0.
     pdev->Release();
@@ -1827,7 +1827,7 @@ void JoystickReleaseEffects(void)
 
     for (int i = 0; i < gNumEffectsLoaded; i++)
     {
-        //		gForceFeedbackEffect[i]->Unload();
+        // gForceFeedbackEffect[i]->Unload();
         ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[i], sizeof(*gForceFeedbackEffect[i])));
 
         if (F4IsBadReadPtr(gForceFeedbackEffect[i], sizeof(*gForceFeedbackEffect[i])))
@@ -1904,7 +1904,7 @@ int JoystickPlayEffect(int effectNum, int data)
     if (!hasForceFeedback || effectNum >= gNumEffectsLoaded || !gForceFeedbackEffect || !gForceFeedbackEffect[effectNum])
         return FALSE;
 
-    if (PlayerOptions.GetFFB() == false)	// Retro 27Dec2003 - returning false here.. dunno if this is too clever though
+    if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
         return FALSE;
 
     ShiAssert(FALSE == F4IsBadReadPtr(&gForceEffectHasDirection[effectNum], sizeof gForceEffectHasDirection[effectNum]));

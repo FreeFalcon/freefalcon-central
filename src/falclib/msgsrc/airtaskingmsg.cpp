@@ -60,7 +60,7 @@ int FalconAirTaskingMessage::Process(uchar autodisp)
         case atmAssignDivert:
         {
             // Player requested divert. Ask our ATM to build a divert specifically for this flight
-            Flight	flight = (Flight)FindUnit(dataBlock.from);
+            Flight flight = (Flight)FindUnit(dataBlock.from);
 
             if (flight)
                 TeamInfo[dataBlock.team]->atm->BuildSpecificDivert(flight);
@@ -72,12 +72,12 @@ int FalconAirTaskingMessage::Process(uchar autodisp)
             break;
 
         case atmCompleteMission:
-            //			TeamInfo[dataBlock.team]->atm->RemoveRequest((ushort)dataBlock.data1);
+            // TeamInfo[dataBlock.team]->atm->RemoveRequest((ushort)dataBlock.data1);
             break;
 
         case atmScheduleAircraft:
             ShiWarning("This should no longer be used");
-            //			TeamInfo[dataBlock.team]->atm->ScheduleAircraft(dataBlock.from, dataBlock.data1, dataBlock.data2);
+            // TeamInfo[dataBlock.team]->atm->ScheduleAircraft(dataBlock.from, dataBlock.data1, dataBlock.data2);
             break;
 
         case atmZapAirbase:

@@ -13,9 +13,9 @@ extern void CloseCampFile(FILE *fp);
 // Two global arrays
 // ========================
 
-char		*TexCodes;
-short		*Tiles;
-short		MaxTextureType;
+char *TexCodes;
+short *Tiles;
+short MaxTextureType;
 
 // ========================
 // Functions
@@ -23,7 +23,7 @@ short		MaxTextureType;
 
 void InitConverter(char *filename)
 {
-    char		realfile[MAX_PATH];
+    char realfile[MAX_PATH];
 
     sprintf(realfile, "%s", filename);
     readMap(realfile);
@@ -41,7 +41,7 @@ void CleanupConverter(void)
 
 char* GetFilename(short x, short y)
 {
-    int		index, i;
+    int index, i;
 
     if (!Tiles || !TexCodes)
         return "INVALID";
@@ -52,13 +52,13 @@ char* GetFilename(short x, short y)
         return "OFF MAP";
 
     index = Tiles[i];
-    //	MonoPrint("i: %d, index: %d\n",i,Tiles[i]);
+    // MonoPrint("i: %d, index: %d\n",i,Tiles[i]);
     return &TexCodes[index * FILENAMELEN];
 }
 
 int GetTextureIndex(short x, short y)
 {
-    int		i;
+    int i;
 
     if (!Tiles)
         return 0;
@@ -73,7 +73,7 @@ int GetTextureIndex(short x, short y)
 
 char* GetTextureId(int index)
 {
-    char	*file;
+    char *file;
     static char ret[20] = { "NON" };
 
     if (!TexCodes)
@@ -94,9 +94,9 @@ char* GetTextureId(int index)
 
 int readTexCodes(char *codeFile)
 {
-    int			i, ret, id, lid = 0;
-    FILE		*texCodesFile;
-    char		*tempCodes;
+    int i, ret, id, lid = 0;
+    FILE *texCodesFile;
+    char *tempCodes;
 
     // Open and read texture codes.
     if ((texCodesFile = OpenCampFile(codeFile, "tc", "rt")) == NULL)
@@ -164,7 +164,7 @@ int readTexCodes(char *codeFile)
 
 int readMap(char *mapFile)
 {
-    FILE	*in;
+    FILE *in;
 
     if ((in = OpenCampFile(mapFile, "tm", "rb")) != NULL)
     {

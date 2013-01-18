@@ -16,7 +16,7 @@ public:
         FeatureCollisionDamage,
         DebrisDamage,
         ProximityDamage,
-        OtherDamage,		// KCK: Use if you don't want any messages/scoring to occur
+        OtherDamage, // KCK: Use if you don't want any messages/scoring to occur
     };
 };
 

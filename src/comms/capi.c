@@ -139,21 +139,21 @@ int ComAPISendOOB(ComAPIHandle c, int msgsize, int type)
 }
 
 /*int ComAPISendX(ComAPIHandle c, int msgsize,ComAPIHandle Xcom){
-	int rc = 0;
-	enter_cs ();
-	if(c){
-		if (info_callback){
-			info_callback (c, 2, msgsize);
-		}
+ int rc = 0;
+ enter_cs ();
+ if(c){
+ if (info_callback){
+ info_callback (c, 2, msgsize);
+ }
 
-		rc = (*c->sendX_func)(c, msgsize,Xcom);
+ rc = (*c->sendX_func)(c, msgsize,Xcom);
 
-		if (rc > 0){
-			use_bandwidth(rc, 0);
-		}
-	}
-	leave_cs ();
-	return rc;
+ if (rc > 0){
+ use_bandwidth(rc, 0);
+ }
+ }
+ leave_cs ();
+ return rc;
 }*/
 
 /* recive data from a comms session */
@@ -277,7 +277,7 @@ unsigned long ComAPIQuery(ComAPIHandle c, int querytype)
         {
             case COMAPI_TCP_HEADER_OVERHEAD:
             {
-                ret_val = sizeof(tcpHeader) + 40;	// Size of underlying header.
+                ret_val = sizeof(tcpHeader) + 40; // Size of underlying header.
                 break;
             }
 
@@ -302,7 +302,7 @@ unsigned long ComAPIQuery(ComAPIHandle c, int querytype)
 #if 0
 int ComAPIEnumProtocols(int *protocols, int maxprotocols)
 {
-    //	int i=0,size=0, numprotos=0;
+    // int i=0,size=0, numprotos=0;
     WSADATA wsaData;
     int ourprotos = 0;
 
@@ -441,7 +441,7 @@ void ComAPIBWEnterState(int state)
 }
 
 //int ComAPIBWGetStatus(int isReliable){
-//	return get_status(isReliable);
+// return get_status(isReliable);
 //}
 ///////////////////
 // End Bandwidth //

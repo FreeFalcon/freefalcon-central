@@ -16,10 +16,10 @@
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
-static const float	BLIP_SIZE				= 0.02f;
-static const float	CURSOR_SIZE				= 0.03f;
-static const float	TRACK_SIZE				= 0.05f;
-static const float	VELOCITY_FLAG_SCALE		= 0.0000625f;	// .1/1600  len/kts
+static const float BLIP_SIZE = 0.02f;
+static const float CURSOR_SIZE = 0.03f;
+static const float TRACK_SIZE = 0.05f;
+static const float VELOCITY_FLAG_SCALE = 0.0000625f; // .1/1600  len/kts
 
 
 RadarSuperClass::RadarSuperClass(int type, SimMoverClass* parentPlatform) : RadarClass(type, parentPlatform)
@@ -130,9 +130,9 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     }
 
     // Update our display range if the cursors get too close or too far
-    if (cursorY >=  0.8f)	RangeStep(1);
+    if (cursorY >=  0.8f) RangeStep(1);
 
-    if (cursorY <= -0.8f)	RangeStep(-1);
+    if (cursorY <= -0.8f) RangeStep(-1);
 
     // Note if the cursors are in motion or not
     if ((cursorXCmd != 0) || (cursorYCmd != 0))
@@ -210,12 +210,12 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
             float rz = platform->dmx[2][0] * x + platform->dmx[2][1] * y + platform->dmx[2][2] * z;
 
             // Calculate the body relative angles required for the sensor
-            float az	= (float)atan2(ry, rx);
-            float el	= (float)atan2(rz, sqrt(rx * rx + ry * ry));
+            float az = (float)atan2(ry, rx);
+            float el = (float)atan2(rz, sqrt(rx * rx + ry * ry));
 #else
             // Calculate the pseudo-body relative angles the sensor _really_ wants right now
-            float az	= (float)atan2(y, x) - platform->Yaw();
-            float el	= (float)atan2(z, sqrt(x * x + y * y)) - platform->Pitch();
+            float az = (float)atan2(y, x) - platform->Yaw();
+            float el = (float)atan2(z, sqrt(x * x + y * y)) - platform->Pitch();
 #endif
             SetSeekerPos(az, el);
         }
@@ -233,35 +233,35 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
 void RadarSuperClass::ExecAG(void)
 {
-    FalconPrivateOrderedList	*list = NULL;
-    FalconEntity*				object = NULL;
-    FalconEntity*				newLock = NULL;
-    float						x = 0.0F, y = 0.0F;			// Screen space coordinates (x left/right)
-    float						dx = 0.0F, dy = 0.0F, dz = 0.0F;
-    float						range = 0.0F;
-    float						bestSoFar = 1e20f;;
-    mlTrig						yaw = {0.0F};
-    float						scaledCosYaw = 1.0F, scaledSinYaw = 0.0F;
-    float			cursorDelta = BLIP_SIZE * 2.0f;
-    VU_ID			cursorTgtID = FalconNullId;
+    FalconPrivateOrderedList *list = NULL;
+    FalconEntity* object = NULL;
+    FalconEntity* newLock = NULL;
+    float x = 0.0F, y = 0.0F; // Screen space coordinates (x left/right)
+    float dx = 0.0F, dy = 0.0F, dz = 0.0F;
+    float range = 0.0F;
+    float bestSoFar = 1e20f;;
+    mlTrig yaw = {0.0F};
+    float scaledCosYaw = 1.0F, scaledSinYaw = 0.0F;
+    float cursorDelta = BLIP_SIZE * 2.0f;
+    VU_ID cursorTgtID = FalconNullId;
 
     // Convienience synonym for the "At" vector of the platform...
-    const float atx	= platform->dmx[0][0];
-    const float aty	= platform->dmx[0][1];
-    const float atz	= platform->dmx[0][2];
+    const float atx = platform->dmx[0][0];
+    const float aty = platform->dmx[0][1];
+    const float atz = platform->dmx[0][2];
 
 
     // Choose the appropriate sim list based on the radar mode
     if (mode == GM)
     {
-        list = SimDriver.combinedFeatureList;	// Buildings
+        list = SimDriver.combinedFeatureList; // Buildings
     }
     else
     {
-        list = SimDriver.combinedList;			// Vehicles
+        list = SimDriver.combinedList; // Vehicles
     }
 
-    VuListIterator	objectWalker(list);
+    VuListIterator objectWalker(list);
 
 
     // Prepare our range metrics if we're stepping targets
@@ -279,7 +279,7 @@ void RadarSuperClass::ExecAG(void)
         bestSoFar = (float)cos(radarData->BeamHalfAngle);
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)  			// Want one further out
+    else if (lockCmd == NEXT)   // Want one further out
     {
         if (lockedTarget)
         {
@@ -290,7 +290,7 @@ void RadarSuperClass::ExecAG(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)  			// Want one closer in
+    else if (lockCmd == PREV)   // Want one closer in
     {
         if (lockedTarget)
         {
@@ -422,7 +422,7 @@ void RadarSuperClass::ExecAG(void)
             default:
                 ShiWarning("Bad lock command");
         }
-    }	// End of our target list traversal loop
+    } // End of our target list traversal loop
 
 
     /// Update our locked target
@@ -450,13 +450,13 @@ void RadarSuperClass::ExecAG(void)
 
 void RadarSuperClass::ExecAA(void)
 {
-    SimObjectType*	object;
-    SimObjectType*	newLock;
-    float			x, y;
-    float			bestSoFar;
-    int				sendThisFrame;
-    float			cursorDelta = BLIP_SIZE * 2.0f;
-    VU_ID			cursorTgtID = FalconNullId;
+    SimObjectType* object;
+    SimObjectType* newLock;
+    float x, y;
+    float bestSoFar;
+    int sendThisFrame;
+    float cursorDelta = BLIP_SIZE * 2.0f;
+    VU_ID cursorTgtID = FalconNullId;
 
 
     // See if we need to drop lock
@@ -501,10 +501,10 @@ void RadarSuperClass::ExecAA(void)
     }
     else if (lockCmd == BORE)
     {
-        bestSoFar = radarData->BeamHalfAngle;		// Model a somewhat narrow beam
+        bestSoFar = radarData->BeamHalfAngle; // Model a somewhat narrow beam
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)  			// Want one further out
+    else if (lockCmd == NEXT)   // Want one further out
     {
         if (lockedTarget)
         {
@@ -515,7 +515,7 @@ void RadarSuperClass::ExecAA(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)  			// Want one closer in
+    else if (lockCmd == PREV)   // Want one closer in
     {
         if (lockedTarget)
         {
@@ -663,7 +663,7 @@ void RadarSuperClass::ExecAA(void)
             default:
                 ShiWarning("Bad lock command");
         }
-    }	// End of our target list traversal loop
+    } // End of our target list traversal loop
 
 
     // If we changed locks, immediatly notify those concerned and update our state
@@ -705,7 +705,7 @@ void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
     }
 
     // Now draw the radar cursors and locked target data
-    //	display->SetColor( 0x0000FF00 );
+    // display->SetColor( 0x0000FF00 );
     DrawButtons();
     DrawCursor();
     DrawWaterline();
@@ -725,26 +725,26 @@ void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
 
 void RadarSuperClass::DisplayAGReturns(void)
 {
-    FalconPrivateOrderedList	*list;
-    FalconEntity				*object;
-    float						scaledCosYaw, scaledSinYaw;
-    float						x, y;			// Screen space coordinates (x left/right)
-    float						dx, dy, dz;
-    float						range;
+    FalconPrivateOrderedList *list;
+    FalconEntity *object;
+    float scaledCosYaw, scaledSinYaw;
+    float x, y; // Screen space coordinates (x left/right)
+    float dx, dy, dz;
+    float range;
     mlTrig trig;
 
 
     // Choose the appropriate sim list based on the radar mode
     if (mode == GM)
     {
-        list = SimDriver.combinedFeatureList;	// Buildings
+        list = SimDriver.combinedFeatureList; // Buildings
     }
     else
     {
-        list = SimDriver.combinedList;			// Vehicles
+        list = SimDriver.combinedList; // Vehicles
     }
 
-    VuListIterator	objectWalker(list);
+    VuListIterator objectWalker(list);
 
 
     // Prepare our rotation from world space into heading north space including feet->screen scaleing
@@ -772,8 +772,8 @@ void RadarSuperClass::DisplayAGReturns(void)
         dy = object->YPos() - platform->YPos();
         dz = object->ZPos() - platform->ZPos();
         range = (float)sqrt(dx * dx + dy * dy + dz * dz);
-        x = dy * scaledCosYaw - dx * scaledSinYaw;	// Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw;	// and scale from feet into viewport space
+        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
 
 
         // Skip the object if it is out of range or _really_ close
@@ -806,9 +806,9 @@ void RadarSuperClass::DisplayAGReturns(void)
 
 void RadarSuperClass::DisplayAAReturns(void)
 {
-    SimObjectType*		object;
-    float				x, y;			// Screen space coordinates (x left/right)
-    char				tmpStr[4];
+    SimObjectType* object;
+    float x, y; // Screen space coordinates (x left/right)
+    char tmpStr[4];
     int tmpColor = display->Color();
 
 
@@ -896,10 +896,10 @@ float RadarSuperClass::CursorDelta(float x, float y)
 
 void RadarSuperClass::DrawCursor(void)
 {
-    char	str[8];
-    float	ang;
-    float	high;
-    float	low;
+    char str[8];
+    float ang;
+    float high;
+    float low;
 
     display->AdjustOriginInViewport(cursorX, cursorY);
 
@@ -935,8 +935,8 @@ void RadarSuperClass::DrawCursor(void)
     low  = 0.001f * (low  * rangeFT - platform->ZPos());
 
     // Clamp to legal display range
-    high	= min(max(high, 0.0F), 99.0F);
-    low		= min(max(low,  0.0F), 99.0F);
+    high = min(max(high, 0.0F), 99.0F);
+    low = min(max(low,  0.0F), 99.0F);
 
 
     // Print the evelation limits of the scan volume
@@ -997,12 +997,12 @@ void RadarSuperClass::DrawBullseyeData(void)
 
 void RadarSuperClass::DrawLockedAirInfo(float h, float v)
 {
-    static const float		trackTriH = TRACK_SIZE * (float)cos(DTR * 30.0f);
-    static const float		trackTriV = TRACK_SIZE * (float)sin(DTR * 30.0f);
-    float					value;
-    float					x, y;		// Screen space coordinates (x left/right)
-    char					str[24];
-    Falcon4EntityClassType*	classPtr;
+    static const float trackTriH = TRACK_SIZE * (float)cos(DTR * 30.0f);
+    static const float trackTriV = TRACK_SIZE * (float)sin(DTR * 30.0f);
+    float value;
+    float x, y; // Screen space coordinates (x left/right)
+    char str[24];
+    Falcon4EntityClassType* classPtr;
     int tmpColor = display->Color();
 
 
@@ -1098,8 +1098,8 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
 
 void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 {
-    float					x, y;		// Screen space coordinates (x left/right)
-    char					string[16];
+    float x, y; // Screen space coordinates (x left/right)
+    char string[16];
 
     ShiAssert(lockedTarget);
 
@@ -1159,12 +1159,12 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 void RadarSuperClass::DrawWaterline(void)
 {
-    float	yPos, theta;
-    mlTrig	rot;
+    float yPos, theta;
+    mlTrig rot;
 
-    static const float	InsideEdge	= 0.08f;
-    static const float	OutsideEdge	= 0.40f;
-    static const float	Height		= 0.04f;
+    static const float InsideEdge = 0.08f;
+    static const float OutsideEdge = 0.40f;
+    static const float Height = 0.04f;
 
     theta  = -platform->Pitch();
 
@@ -1180,10 +1180,10 @@ void RadarSuperClass::DrawWaterline(void)
     display->AdjustOriginInViewport(rot.sin * yPos, rot.cos * yPos);
     display->AdjustRotationAboutOrigin(-platform->Roll());
 
-    display->Line(OutsideEdge,	-Height,	 OutsideEdge,	0.0f);
-    display->Line(OutsideEdge,	 0.0f,		 InsideEdge,	0.0f);
-    display->Line(-OutsideEdge,	-Height,	-OutsideEdge,	0.0f);
-    display->Line(-OutsideEdge,	 0.0f,		-InsideEdge,	0.0f);
+    display->Line(OutsideEdge, -Height,  OutsideEdge, 0.0f);
+    display->Line(OutsideEdge,  0.0f,  InsideEdge, 0.0f);
+    display->Line(-OutsideEdge, -Height, -OutsideEdge, 0.0f);
+    display->Line(-OutsideEdge,  0.0f, -InsideEdge, 0.0f);
 
     display->ZeroRotationAboutOrigin();
     display->CenterOriginInViewport();

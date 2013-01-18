@@ -4,14 +4,14 @@
     May 24, 1997
 
     This is a portion of the implemention for Render3D (see Render3D.h)
-	These function provide 3D clipping services.
-	It is assumed that all 3D coordinates have been transformed such
-	that the clipping volume is z >= 1 and -z <= x <= z and -z <= y <= z.
+ These function provide 3D clipping services.
+ It is assumed that all 3D coordinates have been transformed such
+ that the clipping volume is z >= 1 and -z <= x <= z and -z <= y <= z.
 \***************************************************************************/
 #include "Render3D.h"
 
 
-//#define DO_NEAR_CLIP_ONLY		// Can leave this defined as long as MPR is doing clipping
+//#define DO_NEAR_CLIP_ONLY // Can leave this defined as long as MPR is doing clipping
 #define DO_BACKFACE_CULLING
 
 
@@ -20,31 +20,31 @@
 // one thread at a time do clipping.  If this requirment is unacceptable, this
 // storage should become a member of the Render3D class.  Not doing so now
 // saves us one pointer indirection per use of this storage (ie: this->)
-static const int	MAX_VERT_LIST	= 10;		// (Input verts + num clip planes)
-static const int	MAX_EXTRA_VERTS	= 10;		// (2 x Number of clip planes)
-static ThreeDVertex	extraVerts[MAX_EXTRA_VERTS];// Used to hold temporaty vertices
-static int			extraVertCount;				// created by clipping.
+static const int MAX_VERT_LIST = 10; // (Input verts + num clip planes)
+static const int MAX_EXTRA_VERTS = 10; // (2 x Number of clip planes)
+static ThreeDVertex extraVerts[MAX_EXTRA_VERTS];// Used to hold temporaty vertices
+static int extraVertCount; // created by clipping.
 
 
 /***************************************************************************\
-	Given a list of vertices which make up a fan, clip them to the
-	top, bottom, left, right, and near planes.  Then draw the resultant
-	polygon.
+ Given a list of vertices which make up a fan, clip them to the
+ top, bottom, left, right, and near planes.  Then draw the resultant
+ polygon.
 \***************************************************************************/
 void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture, bool terrain, bool sort) //JAM 14Sep03
 {
-    ThreeDVertex	**v, **p, **lastIn, **nextOut;
-    ThreeDVertex	**inList, **outList, **temp;
-    ThreeDVertex	*vertList1[MAX_VERT_LIST];	// Used to hold poly vert pointer lists
-    ThreeDVertex	*vertList2[MAX_VERT_LIST];	// Used to hold poly vert pointer lists
-    DWORD			clipTest = 0;
+    ThreeDVertex **v, **p, **lastIn, **nextOut;
+    ThreeDVertex **inList, **outList, **temp;
+    ThreeDVertex *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    ThreeDVertex *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    DWORD clipTest = 0;
 
     ShiAssert(vertPointers);
     ShiAssert(count >= 3);
 
     // Intialize the vertex buffers
-    outList			= vertList1;
-    lastIn			= vertPointers + count;
+    outList = vertList1;
+    lastIn = vertPointers + count;
 
     for (nextOut = outList; vertPointers < lastIn; nextOut++)
     {
@@ -53,8 +53,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     }
 
     ShiAssert(nextOut - outList <= MAX_VERT_LIST);
-    inList			= vertList2;
-    extraVertCount	= 0;
+    inList = vertList2;
+    extraVertCount = 0;
 
 
     // Clip to the near plane
@@ -306,7 +306,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             if (nextOut - outList <= 2)  return;
         }
 
-#endif	// DO_NEAR_CLIP_ONLY
+#endif // DO_NEAR_CLIP_ONLY
     }
 
     // Finally draw the resultant polygon
@@ -318,7 +318,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
     for (v = outList; v < nextOut; v++)
     {
-        //		ShiAssert ((*v)->q >= -0.001F);
+        // ShiAssert ((*v)->q >= -0.001F);
 
         context.StorePrimitiveVertexData(*v);
     }
@@ -340,7 +340,7 @@ inline void InterpolateColorAndTex(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVer
 
     v->u = v1->u + t * (v2->u - v1->u);
     v->v = v1->v + t * (v2->v - v1->v);
-    v->q = v->csZ * Q_SCALE;			// Need to preserve scaling to 16.16
+    v->q = v->csZ * Q_SCALE; // Need to preserve scaling to 16.16
 }
 
 
@@ -348,7 +348,7 @@ inline void InterpolateColorAndTex(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVer
 // This function is expected to be called first in the clipping chain
 void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 {
-    float			x, y, z, t;
+    float x, y, z, t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (NEAR_CLIP - v1->csZ) / (v2->csZ - v1->csZ);
@@ -379,8 +379,8 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 // (ie: after near clip, but before all the others)
 void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 {
-    float	x, y, z, t;
-    float	dx, dy, dz;
+    float x, y, z, t;
+    float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     dx = v2->csX - v1->csX;
@@ -391,8 +391,8 @@ void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex 
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx);	// Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy);	// be avoided, but this way, the code is more standardized...
+    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
@@ -413,8 +413,8 @@ void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex 
 // (ie: after bottom clipping, but before horizontal)
 void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 {
-    float	x, y, z, t;
-    float	dx, dy, dz;
+    float x, y, z, t;
+    float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     dx = v2->csX - v1->csX;
@@ -425,8 +425,8 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx);	// Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy);	// be avoided, but this way, the code is more standardized...
+    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
@@ -447,8 +447,8 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 // (ie: after vertical clipping is complete, but before the other side is done)
 void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 {
-    float	x, y, z, t;
-    float	dx, dy, dz;
+    float x, y, z, t;
+    float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     dx = v2->csX - v1->csX;
@@ -459,8 +459,8 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx);	// Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy);	// be avoided, but this way, the code is more standardized...
+    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
@@ -483,8 +483,8 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
 // (ie: last)
 void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 {
-    float	x, y, z, t;
-    float	dx, dy, dz;
+    float x, y, z, t;
+    float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     dx = v2->csX - v1->csX;
@@ -495,8 +495,8 @@ void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx);	// Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy);	// be avoided, but this way, the code is more standardized...
+    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates

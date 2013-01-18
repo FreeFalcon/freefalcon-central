@@ -92,7 +92,7 @@ VuMessage::VuMessage(
     VuTargetEntity* target,
     VU_BOOL         loopback
 )
-    :	refcnt_(0), type_(type), flags_(VU_NORMAL_PRIORITY_MSG_FLAG), entityId_(entityId),
+    : refcnt_(0), type_(type), flags_(VU_NORMAL_PRIORITY_MSG_FLAG), entityId_(entityId),
         target_(target), postTime_(0), ent_(0)
 {
     // sfr: temp test
@@ -134,7 +134,7 @@ VuMessage::VuMessage(
 //sfr: vu change
 VuMessage::VuMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
     : refcnt_(0), type_(type), flags_(VU_REMOTE_MSG_FLAG), sender_(senderid), tgtid_(target),
-      entityId_(0, 0),	target_(0), postTime_(0), ent_(0)
+      entityId_(0, 0), target_(0), postTime_(0), ent_(0)
 {
     // sfr: temp test
     ++nmsgs;
@@ -159,20 +159,20 @@ VU_BOOL VuMessage::DoSend()
 
 /*VuEntity *VuMessage::SetEntity(VuEntity* ent)
 {
-	// sfr: equality test
-	if (ent == ent_){ return ent; }
+ // sfr: equality test
+ if (ent == ent_){ return ent; }
 
-	// reference new entity
-	if (ent){
-		VuReferenceEntity(ent);
-	}
-	// deferefence old
-	if (ent_){
-		VuDeReferenceEntity(ent_);
-	}
-	// swap pointers
-	ent_ = ent;
-	return ent_;
+ // reference new entity
+ if (ent){
+ VuReferenceEntity(ent);
+ }
+ // deferefence old
+ if (ent_){
+ VuDeReferenceEntity(ent_);
+ }
+ // swap pointers
+ ent_ = ent;
+ return ent_;
 }*/
 
 int VuMessage::Ref()
@@ -808,10 +808,10 @@ VuCreateEvent::VuCreateEvent(
 #if defined(VU_USE_CLASS_INFO)
     memcpy(classInfo_, entity->EntityType()->classInfo_, CLASS_NUM_BYTES);
 #endif
-    /*	vutype_ = entity->Type();
-    	size_   = 0;
-    	data_   = 0;
-    	expandedData_ = 0;*/
+    /* vutype_ = entity->Type();
+     size_   = 0;
+     data_   = 0;
+     expandedData_ = 0;*/
 }
 
 //sfr: converts added address
@@ -880,12 +880,12 @@ VuCreateEvent::~VuCreateEvent()
     // sfr: no more antidb
     /*
     if (
-    	Entity() && // we have an ent ...
-    	Entity()->VuState() == VU_MEM_ACTIVE &&	               // & have not yet removed it...
-    	Entity()->Id().creator_ == vuLocalSession.creator_ &&  // & it has our session tag...
-    	vuDatabase->Find(Entity()->Id()) == 0 	               // & it's not in the DB...
+     Entity() && // we have an ent ...
+     Entity()->VuState() == VU_MEM_ACTIVE &&                // & have not yet removed it...
+     Entity()->Id().creator_ == vuLocalSession.creator_ &&  // & it has our session tag...
+     vuDatabase->Find(Entity()->Id()) == 0                 // & it's not in the DB...
     ) {
-    	vuAntiDB->Insert(Entity());			// ==> put it in the anti DB
+     vuAntiDB->Insert(Entity()); // ==> put it in the anti DB
     }
     */
     // sfr: smartpointer
@@ -1136,7 +1136,7 @@ VU_ERRCODE VuCreateEvent::Process(VU_BOOL)
 
         SetEntity(expandedData_.get());
         // OW: me123 MP Fix
-        vuDatabase->/*Silent*/Insert(Entity());	 //me123 to silent otherwise this will
+        vuDatabase->/*Silent*/Insert(Entity());  //me123 to silent otherwise this will
 
         return VU_SUCCESS;
     }
@@ -1270,7 +1270,7 @@ int VuUnmanageEvent::Size() const
     return (VUUNMANAGEEVENT_SIZE);
 }
 
-int VuUnmanageEvent::Decode(VU_BYTE** buf,	long *rem)
+int VuUnmanageEvent::Decode(VU_BYTE** buf, long *rem)
 {
     VuEvent::Decode(buf, rem);
     memcpychk(&mark_, buf, sizeof(mark_), rem);
@@ -1458,7 +1458,7 @@ VuPositionUpdateEvent::VuPositionUpdateEvent(
         dy_ = entity->YDelta();
         dz_ = entity->ZDelta();
 #define CHK_MAXSPEED(d)\
-		do { if (d > MAX_SPEED){ d = MAX_SPEED; } else if (d < -MAX_SPEED){ d = -MAX_SPEED; } } while(0)
+ do { if (d > MAX_SPEED){ d = MAX_SPEED; } else if (d < -MAX_SPEED){ d = -MAX_SPEED; } } while(0)
         CHK_MAXSPEED(dx_);
         CHK_MAXSPEED(dy_);
         CHK_MAXSPEED(dz_);
@@ -2189,8 +2189,8 @@ int VuTimingMessage::Size() const
 
 int VuTimingMessage::Decode(VU_BYTE** buf, long *rem)
 {
-    VU_BYTE	*start = *buf;
-    VuSessionEntity	*session;
+    VU_BYTE *start = *buf;
+    VuSessionEntity *session;
 
     VuMessage::Decode(buf, rem);
 
@@ -2202,8 +2202,8 @@ int VuTimingMessage::Decode(VU_BYTE** buf, long *rem)
 
     if (session)
     {
-        float	compression = 0.0F;
-        int		deltal, delta1, delta2;
+        float compression = 0.0F;
+        int deltal, delta1, delta2;
         // Apply the new latency
         session->SetLatency((vuxRealTime - sessionRealSendTime_) / 2);
 

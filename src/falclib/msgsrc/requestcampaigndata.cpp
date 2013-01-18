@@ -61,7 +61,7 @@ FalconRequestCampaignData::~FalconRequestCampaignData(void)
 int FalconRequestCampaignData::Size(void) const
 {
     ShiAssert(dataBlock.size >= 0);
-    return	FalconEvent::Size() + sizeof(VU_ID) + sizeof(ulong) + sizeof(uchar) + dataBlock.size;
+    return FalconEvent::Size() + sizeof(VU_ID) + sizeof(ulong) + sizeof(uchar) + dataBlock.size;
 }
 
 int FalconRequestCampaignData::Decode(VU_BYTE **buf, long *rem)
@@ -81,7 +81,7 @@ int FalconRequestCampaignData::Decode(VU_BYTE **buf, long *rem)
         memcpychk(dataBlock.data, buf, dataBlock.size, rem);
     }
 
-    //	ShiAssert ( size == Size() );
+    // ShiAssert ( size == Size() );
 
     return init  - *rem;
 }
@@ -163,7 +163,7 @@ int FalconRequestCampaignData::Process(uchar autodisp)
 
 void SendRequestedData(void)
 {
-    int	sent = 0;
+    int sent = 0;
 
     CampEnterCriticalSection();
 
@@ -171,7 +171,7 @@ void SendRequestedData(void)
     {
         VU_BYTE *buf;
         uchar *dataptr = request->dataBlock.data;
-        FalconSessionEntity	*requester = (FalconSessionEntity*)vuDatabase->Find(request->dataBlock.who);
+        FalconSessionEntity *requester = (FalconSessionEntity*)vuDatabase->Find(request->dataBlock.who);
 
         if ((requester != NULL) && TheCampaign.IsLoaded())
         {
@@ -203,7 +203,7 @@ void SendRequestedData(void)
                 if (request->dataBlock.dataNeeded & CAMP_NEED_PRELOAD)
                 {
                     MonoPrint("Sending Preload\n");
-                    FalconSendCampaign*	msg = new FalconSendCampaign(request->dataBlock.who, requester);
+                    FalconSendCampaign* msg = new FalconSendCampaign(request->dataBlock.who, requester);
                     msg->dataBlock.campTime = Camp_GetCurrentTime();
                     msg->dataBlock.from = vuLocalSessionEntity->Id();
                     msg->RequestOutOfBandTransmit();
@@ -219,8 +219,8 @@ void SendRequestedData(void)
                 if (request->dataBlock.dataNeeded & CAMP_NEED_PERSIST)
                 {
                     MonoPrint("Sending Persist\n");
-                    FalconSendPersistantList*	msg = new FalconSendPersistantList(request->dataBlock.who, requester);
-                    int	maxSize = F4VuMaxTCPMessageSize - sizeof(FalconSendPersistantList);
+                    FalconSendPersistantList* msg = new FalconSendPersistantList(request->dataBlock.who, requester);
+                    int maxSize = F4VuMaxTCPMessageSize - sizeof(FalconSendPersistantList);
                     msg->dataBlock.size = (short)SizePersistantList(maxSize);
                     msg->dataBlock.data = new VU_BYTE[msg->dataBlock.size];
                     buf = (VU_BYTE*) msg->dataBlock.data;
@@ -271,21 +271,21 @@ void SendRequestedData(void)
                     // Non-weapon sim entities are sent with the campaign data.
                     // We could send weapons, I suppose...
                     //
-                    /*				// We really only want to send owned non campaign entities
-                    				VuMessage *resp = 0;
-                    				VuEntity *ent = NULL;
-                    				VuDatabaseIterator iter;
-                    				ent = iter.GetFirst();
-                    				while (ent)
-                    					{
-                    					if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_MANAGER)
-                    						{
-                    						resp = new VuFullUpdateEvent(ent, requester);
-                    						resp->RequestReliableTransmit();
-                    						VuMessageQueue::PostVuMessage(resp);
-                    						}
-                    					ent = iter.GetNext();
-                    					}
+                    /* // We really only want to send owned non campaign entities
+                     VuMessage *resp = 0;
+                     VuEntity *ent = NULL;
+                     VuDatabaseIterator iter;
+                     ent = iter.GetFirst();
+                     while (ent)
+                     {
+                     if (!ent->IsPrivate() && ent->IsLocal() && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_OBJECTIVE && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_UNIT && (ent->EntityType())->classInfo_[VU_CLASS] != CLASS_MANAGER)
+                     {
+                     resp = new VuFullUpdateEvent(ent, requester);
+                     resp->RequestReliableTransmit();
+                     VuMessageQueue::PostVuMessage(resp);
+                     }
+                     ent = iter.GetNext();
+                     }
                     */
                 }
 

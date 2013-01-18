@@ -4,7 +4,7 @@
     December 29, 1995
 
     This class provides management for drawing target buffers and sources
-	for blit operations.
+ for blit operations.
 \***************************************************************************/
 #ifndef _IMAGEBUF_H_
 #define _IMAGEBUF_H_
@@ -55,11 +55,11 @@ public:
     {
         return width;
     };
-    int	targetYres()
+    int targetYres()
     {
         return height;
     };
-    int	targetStride()
+    int targetStride()
     {
         return m_ddsdBack.lPitch;
     };
@@ -81,20 +81,20 @@ public:
     {
         return redShift;
     };
-    int	GreenShift(void)
+    int GreenShift(void)
     {
         return greenShift;
     };
-    int	BlueShift(void)
+    int BlueShift(void)
     {
         return blueShift;
     };
-    int	PixelSize()
+    int PixelSize()
     {
         return m_ddsdFront.ddpfPixelFormat.dwRGBBitCount >> 3;
     };
 
-    void RestoreAll();	// OW
+    void RestoreAll(); // OW
 
     // Used to allow direct pixel access to the back buffer
     void *Lock(bool bDontLockBits = false, bool bWriteOnly = true);
@@ -138,12 +138,12 @@ protected:
     BOOL m_bReady;
     DisplayDevice *device;
     IDirectDrawSurface7 *m_pDDSFront;
-    DDSURFACEDESC2	m_ddsdFront;
+    DDSURFACEDESC2 m_ddsdFront;
     HWND m_hWnd;
     RECT m_rcFront;
     bool m_bFrontRectValid;
     IDirectDrawSurface7 *m_pDDSBack;
-    DDSURFACEDESC2	m_ddsdBack;
+    DDSURFACEDESC2 m_ddsdBack;
     int width;
     int height;
     int redShift;

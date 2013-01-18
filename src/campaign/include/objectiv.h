@@ -22,30 +22,30 @@
 // Transmitable flags
 // =======================
 
-#define O_FRONTLINE				0x1
-#define O_SECONDLINE			0x2
-#define O_THIRDLINE				0x4
-#define O_B3					0x8
-#define O_JAMMED				0x10
-#define O_BEACH					0x20
-#define O_B1					0x40
-#define O_B2					0x80
-#define O_MANUAL_SET			0x100
-#define O_MOUNTAIN_SITE			0x200
-#define O_SAM_SITE				0x400
-#define O_ARTILLERY_SITE		0x800
-#define O_AMBUSHCAP_SITE		0x1000
-#define O_BORDER_SITE			0x2000
-#define O_COMMANDO_SITE			0x4000
-#define O_FLAT_SITE				0x8000
-#define O_RADAR_SITE			0x10000
-#define O_NEED_REPAIR			0x20000
-#define O_EMPTY1				0x40000
-#define O_EMPTY2				0x80000
-#define O_ABANDONED				0x100000
+#define O_FRONTLINE 0x1
+#define O_SECONDLINE 0x2
+#define O_THIRDLINE 0x4
+#define O_B3 0x8
+#define O_JAMMED 0x10
+#define O_BEACH 0x20
+#define O_B1 0x40
+#define O_B2 0x80
+#define O_MANUAL_SET 0x100
+#define O_MOUNTAIN_SITE 0x200
+#define O_SAM_SITE 0x400
+#define O_ARTILLERY_SITE 0x800
+#define O_AMBUSHCAP_SITE 0x1000
+#define O_BORDER_SITE 0x2000
+#define O_COMMANDO_SITE 0x4000
+#define O_FLAT_SITE 0x8000
+#define O_RADAR_SITE 0x10000
+#define O_NEED_REPAIR 0x20000
+#define O_EMPTY1 0x40000
+#define O_EMPTY2 0x80000
+#define O_ABANDONED 0x100000
 // 2002-02-13 ADDED BY MN for Sylvain's new Identify
-#define O_HAS_NCTR				0x200000
-#define O_IS_GCI				0x400000
+#define O_HAS_NCTR 0x200000
+#define O_IS_GCI 0x400000
 
 // =======================
 // Random externals
@@ -59,32 +59,32 @@ extern Objective FindObjective(VU_ID id);
 
 struct CampObjectiveTransmitDataType
 {
-    CampaignTime						last_repair;	// Last time this objective got something repaired
-    short								aiscore;		// Used for scoring junque
-    ulong								obj_flags;		// Transmitable flags
-    uchar								supply;			// Amount of supply going through here
-    uchar								fuel;			// Amount of fuel going through here
-    uchar								losses;			// Amount of supply/fuel losses (in percentage)
-    uchar								status;			// % operational
-    uchar								priority;		// Target's general priority
-    uchar*								fstatus;		// Array of feature statuses (was [((FEATURES_PER_OBJ*2)+7)/8])
+    CampaignTime last_repair; // Last time this objective got something repaired
+    short aiscore; // Used for scoring junque
+    ulong obj_flags; // Transmitable flags
+    uchar supply; // Amount of supply going through here
+    uchar fuel; // Amount of fuel going through here
+    uchar losses; // Amount of supply/fuel losses (in percentage)
+    uchar status; // % operational
+    uchar priority; // Target's general priority
+    uchar* fstatus; // Array of feature statuses (was [((FEATURES_PER_OBJ*2)+7)/8])
 };
 
 struct CampObjectiveStaticDataType
 {
-    short								nameid;			// Index into name table
-    short								local_data;		// Local AI data dump
-    VU_ID								parent;			// ID of parent SO or PO
-    Control								first_owner;	// Origional objective owner
-    uchar								links;			// Number of links
-    RadarRangeClass*					radar_data;		// Data on what a radar stationed here can see
-    ObjClassDataType*					class_data;		// Pointer to class data
+    short nameid; // Index into name table
+    short local_data; // Local AI data dump
+    VU_ID parent; // ID of parent SO or PO
+    Control first_owner; // Origional objective owner
+    uchar links; // Number of links
+    RadarRangeClass* radar_data; // Data on what a radar stationed here can see
+    ObjClassDataType* class_data; // Pointer to class data
 };
 
 struct CampObjectiveLinkDataType
 {
-    uchar								costs[MOVEMENT_TYPES];	// Cost to go here, depending on movement type
-    VU_ID								id;
+    uchar costs[MOVEMENT_TYPES]; // Cost to go here, depending on movement type
+    VU_ID id;
 };
 
 class ObjectiveClass : public CampBaseClass
@@ -109,16 +109,16 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 private:
-    CampObjectiveTransmitDataType	obj_data;
-    int								dirty_objective;
+    CampObjectiveTransmitDataType obj_data;
+    int dirty_objective;
 
 public:
-    CampObjectiveStaticDataType		static_data;
-    CampObjectiveLinkDataType*		link_data;		// The actual link data (was [OBJ_MAX_NEIGHBORS])
-    ATCBrain*						brain;
+    CampObjectiveStaticDataType static_data;
+    CampObjectiveLinkDataType* link_data; // The actual link data (was [OBJ_MAX_NEIGHBORS])
+    ATCBrain* brain;
 public:
     // access functions
     ulong GetObjFlags(void);
@@ -188,9 +188,9 @@ public:
     virtual int GetAproxCombatStrength(int mt, int range);
     virtual int GetWeaponRange(int mt, FalconEntity *target = NULL);  // 2008-03-08 ADDED SECOND DEFAULT PARM
     virtual int GetAproxWeaponRange(int mt);
-    virtual int GetDetectionRange(int mt);						// Takes into account emitter status
-    virtual int GetElectronicDetectionRange(int mt);			// Max Electronic detection range, even if turned off
-    virtual int CanDetect(FalconEntity* ent);					// Nonzero if this entity can see ent
+    virtual int GetDetectionRange(int mt); // Takes into account emitter status
+    virtual int GetElectronicDetectionRange(int mt); // Max Electronic detection range, even if turned off
+    virtual int CanDetect(FalconEntity* ent); // Nonzero if this entity can see ent
     virtual int OnGround(void)
     {
         return TRUE;
@@ -248,7 +248,7 @@ public:
     {
         return (int)(O_HAS_NCTR & obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
     }
-    int	HasRadarRanges(void);
+    int HasRadarRanges(void);
     void UpdateObjectiveLists(void);
     void ResetLinks(void);
     void Dump(void);
@@ -356,7 +356,7 @@ public:
     }
     // JB 000811
     // Set the last repair time to now if some damage has been taken
-    //void SetObjectiveStatus (uchar s)						{	obj_data.status = s; MakeObjectiveDirty (DIRTY_STATUS, SEND_NOW); }
+    //void SetObjectiveStatus (uchar s) { obj_data.status = s; MakeObjectiveDirty (DIRTY_STATUS, SEND_NOW); }
     void SetObjectiveStatus(uchar s)
     {
         if (obj_data.status > s) obj_data.last_repair = Camp_GetCurrentTime();
@@ -364,7 +364,7 @@ public:
         obj_data.status = s;
         MakeObjectiveDirty(DIRTY_STATUS, DDP[180].priority);
     }
-    //void SetObjectiveStatus (uchar s)						{	if (obj_data.status > s) obj_data.last_repair = Camp_GetCurrentTime(); obj_data.status = s; MakeObjectiveDirty (DIRTY_STATUS, SEND_NOW); }
+    //void SetObjectiveStatus (uchar s) { if (obj_data.status > s) obj_data.last_repair = Camp_GetCurrentTime(); obj_data.status = s; MakeObjectiveDirty (DIRTY_STATUS, SEND_NOW); }
     // JB 000811
     void SetObjectiveSupply(uchar s)
     {
@@ -456,7 +456,7 @@ public:
     int GetFeatureOffset(int f, float* x, float* y, float* z);
     ObjClassDataType* GetObjectiveClassData(void);
     char* GetObjectiveClassName(void);
-    //		int RoE (VuEntity* e, int type);
+    // int RoE (VuEntity* e, int type);
 
     uchar GetExpectedStatus(int hours);
     int GetRepairTime(int status);

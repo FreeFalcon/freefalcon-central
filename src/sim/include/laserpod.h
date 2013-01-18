@@ -65,12 +65,12 @@ public :
     };
 
 protected :
-    void	DrawTerrain(void);
+    void DrawTerrain(void);
 
-    int		hasTarget;
-    float	curFOV;
-    float	roll, pitch, yaw;
-    float	tgtX, tgtY, tgtZ;
+    int hasTarget;
+    float curFOV;
+    float roll, pitch, yaw;
+    float tgtX, tgtY, tgtZ;
     enum {NoTarget, TargetLocked};
 };
 

@@ -3,7 +3,7 @@
     Scott Randolph
     April 1, 1997
 
-	Provide a class to manage MPR palettes.
+ Provide a class to manage MPR palettes.
 \***************************************************************************/
 #include "stdafx.h"
 #include "TOD.h"
@@ -11,7 +11,7 @@
 #include "Tex.h"
 
 
-static DXContext	*rc = NULL;
+static DXContext *rc = NULL;
 
 //sfr: for debugging I put this in the cpp file
 Palette::Palette()
@@ -28,9 +28,9 @@ Palette::~Palette()
 
 
 /***************************************************************************\
-	Store some useful global information.  The RC is used for loading.
-	This means that at present, only one device at a time can load textures
-	through this interface.
+ Store some useful global information.  The RC is used for loading.
+ This means that at present, only one device at a time can load textures
+ through this interface.
 \***************************************************************************/
 void Palette::SetupForDevice(DXContext *texRC)
 {
@@ -39,8 +39,8 @@ void Palette::SetupForDevice(DXContext *texRC)
 
 
 /***************************************************************************\
-	This is called when we're done working with a given device (as
-	represented by an RC).
+ This is called when we're done working with a given device (as
+ represented by an RC).
 \***************************************************************************/
 //void Palette::CleanupForDevice( MPRHandle_t texRC )
 void Palette::CleanupForDevice(DXContext *texRC)
@@ -50,9 +50,9 @@ void Palette::CleanupForDevice(DXContext *texRC)
 
 
 /***************************************************************************\
-	Given a 256 entry, 32 bit per element palette, initialize our data
-	structures.  The data that is passed in is copied, so can be freed
-	by the caller after we return.
+ Given a 256 entry, 32 bit per element palette, initialize our data
+ structures.  The data that is passed in is copied, so can be freed
+ by the caller after we return.
 \***************************************************************************/
 void Palette::Setup32(DWORD *data32)
 {
@@ -68,14 +68,14 @@ void Palette::Setup32(DWORD *data32)
 
 
 /***************************************************************************\
-	Given a 256 entry, 24 bit per element palette, initialize our data
-	structures.  The data that is passed in is copied, so can be freed
-	by the caller after we return.
+ Given a 256 entry, 24 bit per element palette, initialize our data
+ structures.  The data that is passed in is copied, so can be freed
+ by the caller after we return.
 \***************************************************************************/
 void Palette::Setup24(BYTE *data24)
 {
-    DWORD	*to;
-    BYTE	*stop;
+    DWORD *to;
+    BYTE *stop;
 
     ShiAssert(palHandle == NULL);
     ShiAssert(data24);
@@ -84,15 +84,15 @@ void Palette::Setup24(BYTE *data24)
     refCount = 1;
 
     // Convert from 24 to 32 bit palette entries
-    to		= &paletteData[0];
-    stop	= data24 + 768;
+    to = &paletteData[0];
+    stop = data24 + 768;
 
     while (data24 < stop)
     {
         *to = ((BYTE)(*(data24))) |
               ((BYTE)(*(data24 + 1)) <<  8) |
               ((BYTE)(*(data24 + 2)) << 16) |
-              ((BYTE)(*(data24)) << 24);		// Repeat Red component for alpha channel
+              ((BYTE)(*(data24)) << 24); // Repeat Red component for alpha channel
         to++;
         data24 += 3;
     }
@@ -100,7 +100,7 @@ void Palette::Setup24(BYTE *data24)
 
 
 /***************************************************************************\
-	Set the MPR palette entries for the given palette.
+ Set the MPR palette entries for the given palette.
 \***************************************************************************/
 void Palette::UpdateMPR(DWORD *pal)
 {
@@ -115,12 +115,12 @@ void Palette::UpdateMPR(DWORD *pal)
         palHandle = new PaletteHandle(rc->m_pDD, 32, 256);
 
     ShiAssert(palHandle);
-    palHandle->Load(MPR_TI_PALETTE,	32, 0, 256, (BYTE*)pal);
+    palHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*)pal);
 }
 
 
 /***************************************************************************\
-	Note interest in this palette.
+ Note interest in this palette.
 \***************************************************************************/
 void Palette::Reference(void)
 {
@@ -132,12 +132,12 @@ void Palette::Reference(void)
 
 
 /***************************************************************************\
-	Free MPR palette resources (if we were the last one using it).
+ Free MPR palette resources (if we were the last one using it).
 \***************************************************************************/
 int Palette::Release(void)
 {
     //JAM 30Sep03
-    //	ShiAssert( refCount > 0 );
+    // ShiAssert( refCount > 0 );
 
     if (refCount > 0) refCount--;
 
@@ -160,14 +160,14 @@ int Palette::Release(void)
 
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
-	stored palette entries.
+ stored palette entries.
 \***************************************************************************/
 void Palette::LightTexturePalette(Tcolor *light)
 {
-    DWORD	pal[256];
-    DWORD	*to, *stop;
-    BYTE	*from;
-    float	r, g, b;
+    DWORD pal[256];
+    DWORD *to, *stop;
+    BYTE *from;
+    float r, g, b;
 
     r = light->r;
     g = light->g;
@@ -184,10 +184,10 @@ void Palette::LightTexturePalette(Tcolor *light)
     // Build the lite version of the palette in temporary storage
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r))			// Red
-               | (FloatToInt32(*(from + 1) * g) << 8)	// Green
-               | (FloatToInt32(*(from + 2) * b) << 16)	// Blue
-               | ((*(from + 3)) << 24);					// Alpha
+        *to  = (FloatToInt32(*(from)   * r)) // Red
+               | (FloatToInt32(*(from + 1) * g) << 8) // Green
+               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               | ((*(from + 3)) << 24); // Alpha
         from += 4;
         to ++;
     }
@@ -200,16 +200,16 @@ void Palette::LightTexturePalette(Tcolor *light)
 
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
-	stored palette entries.
+ stored palette entries.
 
-	Works within a palette entry range
+ Works within a palette entry range
 \***************************************************************************/
 void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 {
-    DWORD	pal[256];
-    DWORD	*to, *stop;
-    BYTE	*from;
-    float	r, g, b;
+    DWORD pal[256];
+    DWORD *to, *stop;
+    BYTE *from;
+    float r, g, b;
 
     r = light->r;
     g = light->g;
@@ -232,10 +232,10 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 
     while (to < stop)
     {
-        *to++  = (FloatToInt32(*(from)   * r))			// Red
-                 | (FloatToInt32(*(from + 1) * g) << 8)	// Green
-                 | (FloatToInt32(*(from + 2) * b) << 16)	// Blue
-                 | ((*(from + 3)) << 24);					// Alpha
+        *to++  = (FloatToInt32(*(from)   * r)) // Red
+                 | (FloatToInt32(*(from + 1) * g) << 8) // Green
+                 | (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                 | ((*(from + 3)) << 24); // Alpha
         from += 4;
     }
 
@@ -256,15 +256,15 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
-	stored palette entries.  This one does special processing to brighten
-	certain palette entries at night.
+ stored palette entries.  This one does special processing to brighten
+ certain palette entries at night.
 \***************************************************************************/
 void Palette::LightTexturePaletteBuilding(Tcolor *light)
 {
-    DWORD	pal[256];
-    DWORD	*to, *stop;
-    BYTE	*from;
-    float	r, g, b;
+    DWORD pal[256];
+    DWORD *to, *stop;
+    BYTE *from;
+    float r, g, b;
 
     r = light->r;
     g = light->g;
@@ -289,10 +289,10 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
     // Darken the "normal" palette entries
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r))			// Red
-               | (FloatToInt32(*(from + 1) * g) << 8)	// Green
-               | (FloatToInt32(*(from + 2) * b) << 16)	// Blue
-               | ((*(from + 3)) << 24);					// Alpha
+        *to  = (FloatToInt32(*(from)   * r)) // Red
+               | (FloatToInt32(*(from + 1) * g) << 8) // Green
+               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               | ((*(from + 3)) << 24); // Alpha
         from += 4;
         to ++;
     }
@@ -304,10 +304,10 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
 
         while (to < stop)
         {
-            *to  = (FloatToInt32(*(from)   * r))			// Red
-                   | (FloatToInt32(*(from + 1) * g) << 8)	// Green
-                   | (FloatToInt32(*(from + 2) * b) << 16)	// Blue
-                   | ((*(from + 3)) << 24);					// Alpha
+            *to  = (FloatToInt32(*(from)   * r)) // Red
+                   | (FloatToInt32(*(from + 1) * g) << 8) // Green
+                   | (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                   | ((*(from + 3)) << 24); // Alpha
             from += 4;
             to ++;
         }
@@ -317,40 +317,40 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
         // TODO: Blend these in gradually
         if (TheTimeOfDay.GetNVGmode())
         {
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
-            *to	= 0xFF00FF00;
+            *to = 0xFF00FF00;
             to++;
         }
         else
         {
-            *to	= 0xFF0000FF;
+            *to = 0xFF0000FF;
             to++;
-            *to	= 0xFF0F30BE;
+            *to = 0xFF0F30BE;
             to++;
-            *to	= 0xFFFF0000;
+            *to = 0xFFFF0000;
             to++;
-            *to	= 0xFFAD0000;
+            *to = 0xFFAD0000;
             to++;
-            *to	= 0xFFABD34C;
+            *to = 0xFFABD34C;
             to++;
-            *to	= 0xFF9BB432;
+            *to = 0xFF9BB432;
             to++;
-            *to	= 0xFF87C5F0;
+            *to = 0xFF87C5F0;
             to++;
-            *to	= 0xFF61B2EA;
+            *to = 0xFF61B2EA;
             to++;
         }
     }
@@ -363,14 +363,14 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
 
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
-	stored palette entries.
+ stored palette entries.
 \***************************************************************************/
 void Palette::LightTexturePaletteReflection(Tcolor *light)
 {
-    DWORD	pal[256];
-    DWORD	*to, *stop;
-    BYTE	*from;
-    float	r, g, b;
+    DWORD pal[256];
+    DWORD *to, *stop;
+    BYTE *from;
+    float r, g, b;
 
     r = light->r;
     g = light->g;
@@ -395,10 +395,10 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
     // Build the lite version of the palette in temporary storage
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r))			// Red
-               | (FloatToInt32(*(from + 1) * g) << 8)	// Green
-               | (FloatToInt32(*(from + 2) * b) << 16)	// Blue
-               | (0x26000000);							// Alpha
+        *to  = (FloatToInt32(*(from)   * r)) // Red
+               | (FloatToInt32(*(from + 1) * g) << 8) // Green
+               | (FloatToInt32(*(from + 2) * b) << 16) // Blue
+               | (0x26000000); // Alpha
         from += 4;
         to ++;
     }
@@ -411,8 +411,8 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
 ///////////////////////////////////////
 
 #ifdef _DEBUG
-DWORD PaletteHandle::m_dwNumHandles = 0;		// Number of instances
-DWORD PaletteHandle::m_dwTotalBytes = 0;			// Total number of bytes allocated (including bitmap copies and object size)
+DWORD PaletteHandle::m_dwNumHandles = 0; // Number of instances
+DWORD PaletteHandle::m_dwTotalBytes = 0; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
 PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 PalNumEntries)
@@ -438,7 +438,7 @@ PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 P
     ShiAssert(m_pPalData);
 
 #ifdef _DEBUG
-    InterlockedIncrement((long *) &m_dwNumHandles);		// Number of instances
+    InterlockedIncrement((long *) &m_dwNumHandles); // Number of instances
     InterlockedExchangeAdd((long *) &m_dwTotalBytes, sizeof(*this));
     InterlockedExchangeAdd((long *) &m_dwTotalBytes, sizeof(DWORD[256]) * 2);
 #endif
@@ -447,7 +447,7 @@ PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 P
 PaletteHandle::~PaletteHandle()
 {
 #ifdef _DEBUG
-    //InterlockedDecrement((long *) &m_dwNumHandles);		// Number of instances
+    //InterlockedDecrement((long *) &m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *) &m_dwTotalBytes, -sizeof(*this));
     //InterlockedExchangeAdd((long *) &m_dwTotalBytes, -(sizeof(DWORD[256]) * 2));
     //InterlockedExchangeAdd((long *) &m_dwTotalBytes, -(m_arrAttachedTextures.size() * 4));
@@ -508,7 +508,7 @@ void PaletteHandle::AttachToTexture(TextureHandle *pTex)
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
 
-    ShiAssert(it == m_arrAttachedTextures.end());	// do not attach twice
+    ShiAssert(it == m_arrAttachedTextures.end()); // do not attach twice
 
     if (it != m_arrAttachedTextures.end())
         return;
@@ -528,7 +528,7 @@ void PaletteHandle::DetachFromTexture(TextureHandle *pTex)
     if (!pTex) return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
-    ShiAssert(it != m_arrAttachedTextures.end());	// do not detach twice
+    ShiAssert(it != m_arrAttachedTextures.end()); // do not detach twice
 
     if (it == m_arrAttachedTextures.end())
         return;

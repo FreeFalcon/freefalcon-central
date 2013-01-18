@@ -24,13 +24,13 @@ class SimBaseClass;
 #define MAX_NCTR_RANGE    (60.0F * NM_TO_FT)
 #define NCTR_DELTA        0.1F
 //MI
-#define IFF_FRIENDLY		1
-#define IFF_HOSTILE			2
-#define IFF_UNKNOWN			3
-#define MAX_CONTACTS		20 //for random IFF offset
+#define IFF_FRIENDLY 1
+#define IFF_HOSTILE 2
+#define IFF_UNKNOWN 3
+#define MAX_CONTACTS 20 //for random IFF offset
 
 // MD
-#define MAX_TWS_TRACKS		10  // BLK50/52 APG-68 TWS mode tracks at most 10 targets
+#define MAX_TWS_TRACKS 10  // BLK50/52 APG-68 TWS mode tracks at most 10 targets
 
 class RadarDopplerClass : public RadarClass
 {
@@ -54,7 +54,7 @@ public:
     virtual void RangeStep(int cmd)
     {
         rangeChangeCmd = cmd;
-    };	// Step up/down in range
+    }; // Step up/down in range
 
     virtual void StepAAmode(void);
     virtual void SetSRMOverride();
@@ -79,7 +79,7 @@ public:
     };
     //MI added
     //need the current RadarMode
-    virtual RadarMode	GetRadarMode(void)
+    virtual RadarMode GetRadarMode(void)
     {
         return mode;
     };
@@ -183,7 +183,7 @@ public:
 
 protected:
     // Command queues -- These store commands until we're able to process them
-    float	gainCmd;
+    float gainCmd;
     int   rangeChangeCmd, scanHeightCmd, scanWidthCmd, elSlewCmd;
     int   modeDesiredCmd, fovStepCmd;
     int   dropTrackCmd, designateCmd, centerCmd;
@@ -220,35 +220,35 @@ public:
         HomingBeam   = 0x20000,
         AADecluttered = 0x40000,
         AGDecluttered = 0x80000,
-        MenuMode	 = 0x100000,
-        CtlMode	     = 0x200000,
-        AutoAGRange	 = 0x400000,
+        MenuMode  = 0x100000,
+        CtlMode      = 0x200000,
+        AutoAGRange  = 0x400000,
     };
 protected:
     enum Declutter
     {
-        MajorMode =	0x1,
-        SubMode =	0x2,
-        Fov =	0x4,
-        Ovrd =	0x8,
-        Cntl =	0x10,
-        Alt =	0x20,
+        MajorMode = 0x1,
+        SubMode = 0x2,
+        Fov = 0x4,
+        Ovrd = 0x8,
+        Cntl = 0x10,
+        Alt = 0x20,
         BupSen = Alt, // AG equiv
         AttackStr = 0x40,
         FzSp = AttackStr, // AG equiv
-        Dlz =	0x80,
-        Cz	= Dlz, // AG equiv
-        TgtData =	0x100,
+        Dlz = 0x80,
+        Cz = Dlz, // AG equiv
+        TgtData = 0x100,
         SightPt = TgtData,
-        Dclt =	0x200,
-        Fmt1 =	0x400,
-        Fmt2 =	0x800,
-        Fmt3 =	0x1000,
-        Swap =	0x2000,
-        WpnStat =	0x4000,
-        AzBar =	0x8000,
-        Rng =	0x10000,
-        Arrows =	0x20000,
+        Dclt = 0x200,
+        Fmt1 = 0x400,
+        Fmt2 = 0x800,
+        Fmt3 = 0x1000,
+        Swap = 0x2000,
+        WpnStat = 0x4000,
+        AzBar = 0x8000,
+        Rng = 0x10000,
+        Arrows = 0x20000,
         DefaultAgDclt = Ovrd | Cntl | BupSen | FzSp | Cz | Dclt | Fmt1 | Fmt2 | Fmt3 | Swap | Arrows,
         DefaultAaDclt = Ovrd | Cntl | Dclt | Fmt1 | Fmt2 | Fmt3 | Swap | Arrows,
     };
@@ -402,7 +402,7 @@ protected:
     float displayRange, displayAzScan;
     float cursorX, cursorY;
     float curCursorRate;
-    float antElevKnob;	// angle in radians commanded via HOTAS antenna knob, zero = centered
+    float antElevKnob; // angle in radians commanded via HOTAS antenna knob, zero = centered
     //MI moved to public
     //class SimObjectLocalData* lockedTargetData;
     float iffTimer;
@@ -477,9 +477,9 @@ protected :
     enum RadarModeFlags
     {
         AltTrack = 0x1,
-        PmMode	    = 0x2,
-        NaroBand	    = 0x4,
-        SpeedLo	    = 0x8,
+        PmMode     = 0x2,
+        NaroBand     = 0x4,
+        SpeedLo     = 0x8,
     };
     unsigned int radarmodeflags;
     void SetModeFlag(int flag)
@@ -565,7 +565,7 @@ protected :
     void AGRangingDisplay(void);
     void DrawReference(VirtualDisplay* display);
     void DrawDLZSymbol(void);
-    void DrawSymbol(int type, float schweemLen, int age, int flash = 0);	// MD -- 20040121: removed unused parameters and put in flash hint
+    void DrawSymbol(int type, float schweemLen, int age, int flash = 0); // MD -- 20040121: removed unused parameters and put in flash hint
     int  IsUnderCursor(SimObjectType* , float heading);
     int  IsUnderVSCursor(SimObjectType* , float heading);
     void DrawWaterline(void);
@@ -620,14 +620,14 @@ protected:
     void DrawNCTR(bool TWS);
     //MI remember our last MissOvr range
     int MissOvrRangeIdx, lastAirRangeIdx;
-    int LastAGModes;	//MI for remembering SnowPlow and that stuff
+    int LastAGModes; //MI for remembering SnowPlow and that stuff
     bool WasAutoAGRange;
     float GainPos;
     float curgain;
     int lastRngKnobPos;  // MD -- 20040108: added for analog RNG knob
     bool InitGain;
-    //	float GMTSlowSpeedReject; MN externalised F4Config.cpp
-    //	float GMTHighSpeedReject;
+    // float GMTSlowSpeedReject; MN externalised F4Config.cpp
+    // float GMTHighSpeedReject;
 
     int InitialGroundContactTest(
         float &ownX, float &ownY, float &ownZ,
@@ -643,7 +643,7 @@ protected:
 
 /* KLUDGE MACRO */
 #define RES180(a)  ((a) > 180.0F*DTR ? (a) - 360.0F*DTR :\
-	((a) < -180.0F * DTR ? (a) + 360.0F * DTR : (a)))
+ ((a) < -180.0F * DTR ? (a) + 360.0F * DTR : (a)))
 
 #endif
 

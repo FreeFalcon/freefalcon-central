@@ -13,15 +13,15 @@
 #include "IsA.h"
 
 
-#define STARTINGSOUNDREQUESTS	16
-#define STARTINGTRACKS			12
+#define STARTINGSOUNDREQUESTS 16
+#define STARTINGTRACKS 12
 
 
 // 10 seconds Raw B stereo, 20 seconds mono (22050 samp/sec x 2 bytes/samp)
-#define MIXINGBUFFERINT32S		262144
+#define MIXINGBUFFERINT32S 262144
 // DO NOT define MIXINGBUFFERBYTES AS MIXINGBUFFERINT32S*4, it causes MSC to barf,
 // just some of the time, with bad results, not exceptions
-#define MIXINGBUFFERBYTES		1048576
+#define MIXINGBUFFERBYTES 1048576
 
 #define MONO 1
 #define STEREO 2
@@ -67,17 +67,17 @@
 
 
 #define STARTSIDERANGE  7003
-#define LEFTSIDE		STARTSIDERANGE
-#define RIGHTSIDE		STARTSIDERANGE +1
-#define BOTHSIDES		STARTSIDERANGE +2
-#define EITHERSIDE		STARTSIDERANGE +3
+#define LEFTSIDE STARTSIDERANGE
+#define RIGHTSIDE STARTSIDERANGE +1
+#define BOTHSIDES STARTSIDERANGE +2
+#define EITHERSIDE STARTSIDERANGE +3
 
 
-#define REQUESTDENYNOCHANNEL	5004
-#define REQUESTDENYNOSOUNDCARD	5005
+#define REQUESTDENYNOCHANNEL 5004
+#define REQUESTDENYNOSOUNDCARD 5005
 
-#define REQUESTOK				1
-#define JUSTNOGOOD				-1
+#define REQUESTOK 1
+#define JUSTNOGOOD -1
 
 #define STARTINGIDNUM 10000
 #define IDHANDLE int
@@ -267,7 +267,7 @@ public:
     {
         return mFrame;
     }
-    inline double 	GiveMillisecondRemainder(void)
+    inline double  GiveMillisecondRemainder(void)
     {
         return mMSRemainder;
     }
@@ -476,8 +476,8 @@ private:
     friend class CSoundManager;
     // corresponding track, may be one track for several requests (links)
     CWaveTrack * mpTrack;
-    unsigned int mTotalBytesMixedSoFar;	// last byte offset in track that was mixed in
-    unsigned int mLocationLastMixedAt;	// mixing buffer offset where the last byte was mixed in
+    unsigned int mTotalBytesMixedSoFar; // last byte offset in track that was mixed in
+    unsigned int mLocationLastMixedAt; // mixing buffer offset where the last byte was mixed in
 public:
     CWaveRequest(char * SoundName);
     CWaveRequest(CRaw & craw);
@@ -542,13 +542,13 @@ class CSoundManager
     BOOL mIsValid; // was this object properly instantiated and started up without hitches
     int SetMillisecond_timeGetTime(void);   // request millisecond timer from system
     void ReleaseMillisecond_timeGetTime(void);  // release it as documented in API
-    unsigned int mTimerResolution;	// timer resolution actually obtained, hopefully
+    unsigned int mTimerResolution; // timer resolution actually obtained, hopefully
     unsigned int mTimerType;        // where are we getting the time from this time
     unsigned int mGameStartTime;    // time the SM was constructed, hopefully near program start, MS
-    unsigned int mMixingStartTime;	// time that we started mixing data last, milliseconds
-    unsigned int StartGameClock(void);	// sets mGameStartTime base at startup, in system milliseconds
-    unsigned int StartMixingClock(void);	// sets mMixingStartTime base, used during mixing, various sources
-    BOOL mSoundOutMechanismRunning;	// flag whether we are playing
+    unsigned int mMixingStartTime; // time that we started mixing data last, milliseconds
+    unsigned int StartGameClock(void); // sets mGameStartTime base at startup, in system milliseconds
+    unsigned int StartMixingClock(void); // sets mMixingStartTime base, used during mixing, various sources
+    BOOL mSoundOutMechanismRunning; // flag whether we are playing
     unsigned int mOutputSystemType; // waveout, directsound, other?
     int OffsetToMixAtNow(void);// for immediate mixing in, use this to figure buffer position
     friend class CWaveTrack;
@@ -562,7 +562,7 @@ class CSoundManager
     volatile BOOL mBlockSoundThread;    // Temporarily block it while array ops, etc
     CBOPArray * aRequests;
     CBOPArray * aTracks;
-    char * mpMixingBuffer;	// defined as char * but must be 32 bit aligned
+    char * mpMixingBuffer; // defined as char * but must be 32 bit aligned
     HWAVEOUT mhWaveOut;
     PWAVEHDR mpOutHeader;
     PMMTIME mpWaveOutCurrentTime;

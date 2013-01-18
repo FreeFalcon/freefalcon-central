@@ -90,8 +90,8 @@ BOOL VerifyResult(HRESULT hResult)
 
 BOOL DIMessageBox(int ErrNum, int Type, char* pErrStr)
 {
-    int	Response;
-    char	pOutStr[100];
+    int Response;
+    char pOutStr[100];
 
     sprintf(pOutStr, "Sim Input//DInput Error: %d, %s\n", ErrNum, pErrStr);
     Response = MessageBox(FalconDisplay.appWin, pErrStr, "Falcon Sim Input Error", Type);

@@ -8,11 +8,11 @@ class RailInfo // MLR 2/25/2004 - changed to class
 public:
     RailInfo()  // MLR 2/25/2004 -
     {
-        //pylonID		= 0;
-        //rackID		= 0;
-        //weaponID	= 0;
-        startBits	= 0;
-        currentBits	= 0;
+        //pylonID = 0;
+        //rackID = 0;
+        //weaponID = 0;
+        startBits = 0;
+        currentBits = 0;
         weaponCount = 0;
     };
 

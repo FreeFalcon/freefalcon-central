@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     08Nov03
 
-	- Drawable cumulus
+ - Drawable cumulus
 ***************************************************************************/
 #include "RenderOW.h"
 #include "Matrix.h"
@@ -18,7 +18,7 @@ extern int g_nGfxFix;
 MEM_POOL Drawable3DCloud::pool;
 #endif
 
-BOOL Drawable3DCloud::greenMode	= FALSE;
+BOOL Drawable3DCloud::greenMode = FALSE;
 Tcolor Drawable3DCloud::litCloudColor = { 0.f };
 
 //static const float TEX_UV_LSB = 1.f/1024.f;
@@ -45,7 +45,7 @@ void Drawable3DCloud::Draw(class RenderOTW *renderer, int)
 {
     // RED - LINEAR FOG - Remove the Clouds under Overcast layer...
     if (!(realWeather->weatherCondition == FAIR))/* || (realWeather->weatherCondition > FAIR &&
-	(-realWeather->viewerZ) > (-realWeather->stratusZ) && (-realWeather->viewerZ) < (-realWeather->stratusZ)+(realWeather->stratusDepth))))*/
+ (-realWeather->viewerZ) > (-realWeather->stratusZ) && (-realWeather->viewerZ) < (-realWeather->stratusZ)+(realWeather->stratusDepth))))*/
     {
         return;
     }

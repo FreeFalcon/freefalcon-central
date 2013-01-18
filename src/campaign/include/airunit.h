@@ -13,18 +13,18 @@
 // Types and Defines
 // =========================
 
-#define RESERVE_MINUTES				15					// How much extra fuel to load. Setable?
+#define RESERVE_MINUTES 15 // How much extra fuel to load. Setable?
 
 class AircraftClass;
 
-//	==========================================
+// ==========================================
 // Orders and roles available to air units
 // ==========================================
 
-#define ROLE_AWACS		22
-#define ROLE_JSTAR		23
-#define ROLE_TANKER		24
-#define ROLE_ELINT		25
+#define ROLE_AWACS 22
+#define ROLE_JSTAR 23
+#define ROLE_TANKER 24
+#define ROLE_ELINT 25
 
 // =========================
 // Air unit Class
@@ -62,7 +62,7 @@ public:
     {
         return GetUnitSpeed() * KPH_TO_FPS;
     }
-    virtual float GetKias()	const
+    virtual float GetKias() const
     {
         return GetVt() * FTPSEC_TO_KNOTS;
     }

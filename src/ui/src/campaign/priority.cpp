@@ -163,7 +163,7 @@ void ResetToDefaults()
         if (POD)
         {
             for (i = 0; i < NUM_TEAMS; i++)
-                //				POD->player_priority[i]=POD->air_priority[i];
+                // POD->player_priority[i]=POD->air_priority[i];
                 POD->player_priority[i] = -1;
 
             POD->flags &= ~GTMOBJ_PLAYER_SET_PRIORITY;
@@ -1081,7 +1081,7 @@ void SaveTargetPriorities()
         {
             value = static_cast<uchar>(SliderValue(sldr));
             TeamInfo[team]->SetUnitTypePriority(MAX_UNITTYPE - 1, value);
-            //			TeamInfo[team]->SetMissionPriority(AMIS_ASHIP, value);
+            // TeamInfo[team]->SetMissionPriority(AMIS_ASHIP, value);
         }
     }
 }
@@ -1211,7 +1211,7 @@ void SavePAKPriorities()
             i = FalconLocalSession->GetTeam();
 
             if (i > 0 && i < NUM_TEAMS && TeamInfo[i])
-                //			for(i=0;i<NUM_TEAMS;i++)
+                // for(i=0;i<NUM_TEAMS;i++)
             {
                 POD->player_priority[i] = PAKPriorities[idx][i][0];
                 POD->flags |= GTMOBJ_PLAYER_SET_PRIORITY;
@@ -1224,7 +1224,7 @@ void SavePAKPriorities()
     }
 
     // For multiplayer - send our new priorities
-    if (TRUE)		// isOnline()
+    if (TRUE) // isOnline()
     {
         uchar teammask;
         teammask = static_cast<uchar>((1 << FalconLocalSession->GetTeam()));

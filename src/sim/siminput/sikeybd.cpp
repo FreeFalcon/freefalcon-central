@@ -7,18 +7,18 @@
 void CallInputFunction(unsigned long val, int state);
 
 //***********************************
-//	void OnSimKeyboardInput()
+// void OnSimKeyboardInput()
 //***********************************
 
 void OnSimKeyboardInput()
 {
-    DIDEVICEOBJECTDATA	ObjData[DKEYBOARD_BUFFERSIZE];
-    DWORD						dwElements;
-    HRESULT					hResult;
-    UINT						i;
-    static int				ShiftCount = 0;
-    static int				CtrlCount = 0;
-    static int				AltCount = 0;
+    DIDEVICEOBJECTDATA ObjData[DKEYBOARD_BUFFERSIZE];
+    DWORD dwElements;
+    HRESULT hResult;
+    UINT i;
+    static int ShiftCount = 0;
+    static int CtrlCount = 0;
+    static int AltCount = 0;
     int state;
     char     buffer[256];
 

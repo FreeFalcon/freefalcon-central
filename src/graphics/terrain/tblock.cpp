@@ -4,14 +4,14 @@
     August 21, 1995
 
     This class manages all the posts which make up on block of terrain data.
-    Each block has pointers to its parent and its four childer.	 A block is
-	the smallest piece of a map which may be indepently loaded and unloaded.
+    Each block has pointers to its parent and its four childer.  A block is
+ the smallest piece of a map which may be indepently loaded and unloaded.
 \***************************************************************************/
 #include "Tblock.h"
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	TBlock::pool;
+MEM_POOL TBlock::pool;
 #endif
 
 
@@ -20,16 +20,16 @@ MEM_POOL	TBlock::pool;
 // needs to be loaded from disk.
 void TBlock::Setup(TLevel *Level, UINT r, UINT c)
 {
-    ShiAssert(!IsOwned());	// Shouldn't be setting up an already owned block
+    ShiAssert(!IsOwned()); // Shouldn't be setting up an already owned block
 
     // Initialize the members of the block header structure
-    level		= Level;
-    blockRow	= r;
-    blockCol	= c;
-    posts		= NULL;
-    minZ		= 1e6f;
-    maxZ		= -1e6f;
-    fileOffset	= 0;
+    level = Level;
+    blockRow = r;
+    blockCol = c;
+    posts = NULL;
+    minZ = 1e6f;
+    maxZ = -1e6f;
+    fileOffset = 0;
 
     // NOTE:  The posts pointer will be set when the data arrives
     // in the TLevel::PreProcessBlock() function
@@ -39,7 +39,7 @@ void TBlock::Setup(TLevel *Level, UINT r, UINT c)
 // This must be called inside of Level's critical section
 void TBlock::Cleanup(void)
 {
-    ShiAssert(!IsOwned());	// Shouldn't be cleaning up a still owned block
+    ShiAssert(!IsOwned()); // Shouldn't be cleaning up a still owned block
 
     if (posts)
     {

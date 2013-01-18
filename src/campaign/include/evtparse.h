@@ -22,7 +22,7 @@
 // Defines
 // ============================
 
-#define MAX_EVENT_STRING_LEN		128			// Maximum string length of an event string
+#define MAX_EVENT_STRING_LEN 128 // Maximum string length of an event string
 
 // ============================
 // Event Structure
@@ -50,19 +50,19 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
-    EventElement(void)			{};
-    ~EventElement(void)		{};
+    EventElement(void) {};
+    ~EventElement(void) {};
 
     // This data is used to build event lists
-    VU_ID			vuIdData1;
-    VU_ID			vuIdData2;
-    CampaignTime	eventTime;
-    _TCHAR			eventString[MAX_EVENT_STRING_LEN];
-    EventElement	*next;
+    VU_ID vuIdData1;
+    VU_ID vuIdData2;
+    CampaignTime eventTime;
+    _TCHAR eventString[MAX_EVENT_STRING_LEN];
+    EventElement *next;
 };
 
 // ============================

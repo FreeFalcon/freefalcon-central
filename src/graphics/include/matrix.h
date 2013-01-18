@@ -12,17 +12,17 @@
 
 
 /***************************************************************************\
-	Reference values provided by this module
+ Reference values provided by this module
 \***************************************************************************/
-extern const Tpoint		Origin;
-extern const Trotation	IMatrix;
+extern const Tpoint Origin;
+extern const Trotation IMatrix;
 
 
 
 /***************************************************************************\
-	Functions provided by this module
+ Functions provided by this module
 \***************************************************************************/
-void MatrixLoad(Trotation* T,	float a11, float a12, float a13,
+void MatrixLoad(Trotation* T, float a11, float a12, float a13,
                 float a21, float a22, float a23,
                 float a31, float a32, float a33);
 
@@ -36,6 +36,6 @@ void MatrixMult(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
 
 void MatrixMultTranspose(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
 
-void SetMatrixCPUMode(int nMode);		// 0 - Generic (default), 1- 3DNow, 2- ISSE
+void SetMatrixCPUMode(int nMode); // 0 - Generic (default), 1- 3DNow, 2- ISSE
 
 #endif /* _MATRIX_H_ */

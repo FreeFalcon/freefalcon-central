@@ -340,8 +340,8 @@ enum Sub_Types
     STYPE_BOMB                  = 1,
     STYPE_BOMB_GUIDED           = 2,
     STYPE_BOMB_IRON             = 3,
-    STYPE_BOMB_GPS							= 4,	//MI added for GPS Weaps
-    STYPE_BOMB_JSOW							= 5,	//Cobra - added for GPS JSOW (gliding weapons)
+    STYPE_BOMB_GPS = 4, //MI added for GPS Weaps
+    STYPE_BOMB_JSOW = 5, //Cobra - added for GPS JSOW (gliding weapons)
     STYPE_UNIT_AIRBORNE         = 2,
     STYPE_BATTLESHIP            = 1,
     STYPE_CARRIER               = 2,
@@ -1681,13 +1681,13 @@ enum Specific_Types
     SPTYPE_GBU10AB              = 1,
     SPTYPE_GBU12B               = 2,
     SPTYPE_GBU24B               = 3,
-    SPTYPE_GPS_JSOW1			  = 1,	//MI added for GPS Weaps
-    SPTYPE_GPS_JSOW2			  = 2,	//MI added for GPS Weaps
-    SPTYPE_GPS_JSOW3			  = 3,	//MI added for GPS Weaps
-    SPTYPE_GPS_JSOW4			  = 4,	//MI added for GPS Weaps
-    SPTYPE_GPS_JSOW5			  = 5,	//MI added for GPS Weaps
-    SPTYPE_GPS_JDAM1			  = 6,	//MI added for GPS Weaps
-    SPTYPE_GPS_JDAM2			  = 7,	//MI added for GPS Weaps
+    SPTYPE_GPS_JSOW1   = 1, //MI added for GPS Weaps
+    SPTYPE_GPS_JSOW2   = 2, //MI added for GPS Weaps
+    SPTYPE_GPS_JSOW3   = 3, //MI added for GPS Weaps
+    SPTYPE_GPS_JSOW4   = 4, //MI added for GPS Weaps
+    SPTYPE_GPS_JSOW5   = 5, //MI added for GPS Weaps
+    SPTYPE_GPS_JDAM1   = 6, //MI added for GPS Weaps
+    SPTYPE_GPS_JDAM2   = 7, //MI added for GPS Weaps
     SPTYPE_MK82                 = 1,
     SPTYPE_MK82SNAKEYE          = 2,
     SPTYPE_MK84                 = 3,
@@ -2232,14 +2232,14 @@ enum Mode_Types
 /* data Type Class table Entries */
 enum Data_Types
 {
-    DTYPE_MIN										= 0, // JB 010106 for sanity checks
+    DTYPE_MIN = 0, // JB 010106 for sanity checks
     DTYPE_FEATURE               = 1,
     DTYPE_NONE                  = 2,
     DTYPE_OBJECTIVE             = 3,
     DTYPE_UNIT                  = 4,
     DTYPE_VEHICLE               = 5,
     DTYPE_WEAPON                = 6,
-    DTYPE_MAX										= 7, // JB 010106 for sanity checks
+    DTYPE_MAX = 7, // JB 010106 for sanity checks
 };
 
 /* Bounding Box Class table Entries */
@@ -2709,22 +2709,22 @@ enum Vis_Types
     // VIS_RDROGUE1 goes with VIS_TNKR_DROGUE1, VIS_RDROGUE2 goes with VIS_TNKR_DROGUE2, etc.
     VIS_KC135BOOM                 = 1221,
     VIS_KC10BOOM                  = 1215,
-    VIS_KCBOOM1		                = 2210,
-    VIS_KCBOOM2		                = 2211,
-    VIS_KCBOOM3		                = 2212,
-    VIS_KCBOOM4		                = 2213,
-    VIS_KCBOOM5		                = 2214,
-    VIS_RDROGUE                   = 1223,	// IL-78 and KC-130
+    VIS_KCBOOM1                 = 2210,
+    VIS_KCBOOM2                 = 2211,
+    VIS_KCBOOM3                 = 2212,
+    VIS_KCBOOM4                 = 2213,
+    VIS_KCBOOM5                 = 2214,
+    VIS_RDROGUE                   = 1223, // IL-78 and KC-130
     VIS_RDROGUE1                  = 2215,
     VIS_RDROGUE2                  = 2216,
     VIS_RDROGUE3                  = 2217,
     VIS_RDROGUE4                  = 2218,
     VIS_RDROGUE5                  = 2219,
     VIS_KCDROGUE1                 = 2220, // Drogues for KC's with both boom and drogue
-    VIS_KCDROGUE2                 = 2221,	// vvvv
-    VIS_KCDROGUE3                 = 2222,	// vvvv
-    VIS_KCDROGUE4                 = 2223,	// vvvv
-    VIS_KCDROGUE5                 = 2224,	// Drogues for KC's with both boom and drogue
+    VIS_KCDROGUE2                 = 2221, // vvvv
+    VIS_KCDROGUE3                 = 2222, // vvvv
+    VIS_KCDROGUE4                 = 2223, // vvvv
+    VIS_KCDROGUE5                 = 2224, // Drogues for KC's with both boom and drogue
     // =================================================================
     VIS_BRIDGE1                   = 159,
     VIS_A10                       = 891,

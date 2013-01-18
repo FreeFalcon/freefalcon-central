@@ -37,17 +37,17 @@
 #include "Graphics/Include/Tod.h"
 
 // Almost works, but seems to cause trouble if wait for loader is disabled or on very fast (450+) machines.
-#define DELAY_TEX_LOAD	// Define this to delay object texture loads for improved disk access locality
+#define DELAY_TEX_LOAD // Define this to delay object texture loads for improved disk access locality
 
-extern int endAbort;						// From OTWdrive.cpp
-extern volatile int gLeftToDeaggregate;		// defined in Campaign.cpp
+extern int endAbort; // From OTWdrive.cpp
+extern volatile int gLeftToDeaggregate; // defined in Campaign.cpp
 extern unsigned short BUBBLE_REBUILD_TIME;
 extern int wait_for_loaded;
 extern int prevskycol;
 extern char FalconTerrainDataDir[_MAX_PATH];
 
 extern void RebuildBubble(int forced);
-extern void CampaignAutoSave(FalconGameType gametype);			// defined in WinMain.cpp
+extern void CampaignAutoSave(FalconGameType gametype); // defined in WinMain.cpp
 extern void set_spinner1(int);
 extern void ACMI_ImportFile(void);
 extern int tactical_is_training(void);
@@ -64,7 +64,7 @@ int sRewakeSessions = 0;
 int dumpMem = 0;
 void FixupGroundHeights(void);
 void RewakeSessions(void);
-extern CampaignTime	gLaunchTime;
+extern CampaignTime gLaunchTime;
 // Move this to AIInput when I feel like rebuilding
 int DIRTY_SEND_TIME_MS = 100;
 
@@ -218,11 +218,11 @@ void SimulationLoopControl::StartGraphics(void)
 {
     // Don't start until we're ready
     ///////////////////MP hacK
-    int delayCounter = 1200;	// 2 minutes
+    int delayCounter = 1200; // 2 minutes
     bool someoneawake = 1;
     g_bSleepAll = TRUE;//me123 host it's ok to sleep
 
-    //	gRebuildBubbleNow = TRUE;
+    // gRebuildBubbleNow = TRUE;
     while (someoneawake && (delayCounter))
     {
         someoneawake = FALSE;
@@ -301,18 +301,18 @@ int first_frame_time = 0;
 
 void SimulationLoopControl::Loop(void)
 {
-    DWORD			delta;
-    DWORD			real_delta;
-    CampaignTime	lastBubbleTime = 0;
+    DWORD delta;
+    DWORD real_delta;
+    CampaignTime lastBubbleTime = 0;
 #ifdef NO_TIMER_THREAD
-    CampaignTime	tmpTime;
+    CampaignTime tmpTime;
 #endif
 
     static int last_vr = 0;
 
 #if defined(_MSC_VER)
-    _controlfp(_RC_CHOP, MCW_RC);	// Set the FPU to Truncate
-    _controlfp(_PC_24, MCW_PC);	// Set the FPU to 24 bit precision
+    _controlfp(_RC_CHOP, MCW_RC); // Set the FPU to Truncate
+    _controlfp(_PC_24, MCW_PC); // Set the FPU to 24 bit precision
 #else
 #error Pay special attention to rounding mode and precision effects on floating point ops!
 #endif
@@ -642,10 +642,10 @@ void SimulationLoopControl::Loop(void)
 //sfr: pie screens!
 void SimulationLoopControl::StartLoop(void)
 {
-    FlightClass		*flight;
-    SimMoverClass	*player;
-    int				delayCounter;
-    int				abortMission;
+    FlightClass *flight;
+    SimMoverClass *player;
+    int delayCounter;
+    int abortMission;
 
     while (1)
     {
@@ -724,7 +724,7 @@ void SimulationLoopControl::StartLoop(void)
 
             if (!target->IsLocal())
             {
-                FalconSimCampMessage	*msg;
+                FalconSimCampMessage *msg;
                 //here we ask for all deaggregated data
                 msg = new FalconSimCampMessage(flight->Id(), target);
                 msg->dataBlock.from = FalconLocalSessionId;
@@ -759,7 +759,7 @@ void SimulationLoopControl::StartLoop(void)
         delayCounter = 120;
 
         // Wait until our flight is deaggregated
-        g_bSleepAll = FALSE;//me123	host it's ok to wake again now you are attached
+        g_bSleepAll = FALSE;//me123 host it's ok to wake again now you are attached
 
         while (flight && flight->IsAggregate() && (delayCounter))
         {
@@ -834,18 +834,18 @@ void SimulationLoopControl::StartLoop(void)
             CampEnterCriticalSection();
             /*
             #ifdef DELAY_TEX_LOAD
-            			if (wait_for_loaded) {
-            				TheTextureBank.SetDeferredLoad( TRUE );		// Hold off loading object textures 'till later
-            				TheLoader.SetPause( TRUE );					// Stop the loader so that we queue up all object requests.
-            			}
+             if (wait_for_loaded) {
+             TheTextureBank.SetDeferredLoad( TRUE ); // Hold off loading object textures 'till later
+             TheLoader.SetPause( TRUE ); // Stop the loader so that we queue up all object requests.
+             }
             #endif
 
-            *///			OTWDriver.RenderFirstFrame();
+            */// OTWDriver.RenderFirstFrame();
             /*
             #ifdef DELAY_TEX_LOAD
-            			if (wait_for_loaded) {
-            				TheLoader.SetPause( FALSE );				// Resume async loading
-            			}
+             if (wait_for_loaded) {
+             TheLoader.SetPause( FALSE ); // Resume async loading
+             }
             #endif
             */
             CampLeaveCriticalSection();
@@ -857,34 +857,34 @@ void SimulationLoopControl::StartLoop(void)
 
             //MonoPrint("Waiting for loader:  %d\n",vuxRealTime);
             /*
-            			if (wait_for_loaded)
-            			{
-            				delayCounter = 0;
-            				while (!TheLoader.LoaderQueueEmpty())
-            				{
-            					Sleep (100);
-            					delayCounter++;
-            					if ( delayCounter == 300 )
-            					{
-            						OTWDriver.SplashScreenUpdate( 4 );
-            					}
-            				}
+             if (wait_for_loaded)
+             {
+             delayCounter = 0;
+             while (!TheLoader.LoaderQueueEmpty())
+             {
+             Sleep (100);
+             delayCounter++;
+             if ( delayCounter == 300 )
+             {
+             OTWDriver.SplashScreenUpdate( 4 );
+             }
+             }
 
-            				//MonoPrint("Loader Finished:  %d\n",vuxRealTime);
+             //MonoPrint("Loader Finished:  %d\n",vuxRealTime);
 
             #ifdef DELAY_TEX_LOAD
-            				TheTextureBank.SetDeferredLoad( FALSE );	// Load all the deferred object textures
+             TheTextureBank.SetDeferredLoad( FALSE ); // Load all the deferred object textures
 
-            				delayCounter = 0;
-            				while (!TheLoader.LoaderQueueEmpty())
-            				{
-            					Sleep (100);
-            					delayCounter++;
-            				}
+             delayCounter = 0;
+             while (!TheLoader.LoaderQueueEmpty())
+             {
+             Sleep (100);
+             delayCounter++;
+             }
 
-            				//				MonoPrint("Deferred texture load finished:  %d\n",vuxRealTime);
+             // MonoPrint("Deferred texture load finished:  %d\n",vuxRealTime);
             #endif
-            			}
+             }
             */
             // Ok, so this is hacky.. KCK
             FixupGroundHeights();
@@ -932,8 +932,8 @@ void SimulationLoopControl::StartLoop(void)
             /*delayCounter = 20;
             // Delay to make the Loader working
             while (delayCounter){
-            	Sleep(100);
-            	delayCounter--;
+             Sleep(100);
+             delayCounter--;
             }*/
 
             g_intellivibeData.In3D = true;
@@ -982,7 +982,7 @@ void SimulationLoopControl::StartLoop(void)
             SimDriver.SetAVTR(FALSE);
         }
 
-        //		ACMI_ImportFile();
+        // ACMI_ImportFile();
 
 #ifdef DEBUG
         CloseStatistics();
@@ -1002,7 +1002,7 @@ void SimulationLoopControl::StartLoop(void)
 #define NO_REQUEST_CAMPAIGN_SLEEP 1
 #if !NO_REQUEST_CAMPAIGN_SLEEP
         // Request that the campaign do a final bubble rebuild
-        //		MonoPrint("Requesting campain to do a final bubble rebuild\n");
+        // MonoPrint("Requesting campain to do a final bubble rebuild\n");
         CampaignRequestSleep();
 
         while (!CampaignAllAsleep())
@@ -1011,27 +1011,27 @@ void SimulationLoopControl::StartLoop(void)
             // 2002-02-19 REMOVED BY S.G. NO NO NO! Wrong thread to do this!
             // 2002-01-02 ADDED BY S.G.
             // We are asked to sleep so keep doing bubble rebuild until all sim objects are sleeping
-            //			MonoPrint("Doing a final bubble rebuild\n");
-            //			RebuildBubble();
-            //			gRebuildBubbleNow = 0;
+            // MonoPrint("Doing a final bubble rebuild\n");
+            // RebuildBubble();
+            // gRebuildBubbleNow = 0;
             // END OF ADDED SECTION 2002-01-02
         }
 
 #endif
 
-        //		MonoPrint("Slowing down the campaign\n");
+        // MonoPrint("Slowing down the campaign\n");
         ThreadManager::slow_campaign();
 
-        //		MonoPrint("Shutting down sim...\n");
+        // MonoPrint("Shutting down sim...\n");
         // edg, calling sim driver exit is NOT thread safe since
         // this could be setting things dead in the midst of their exec'ing.
         // notify the simloop to exit and then wait for it tell us its done
         // SimDriver.Exit();
-        //		MonoPrint("Notifying it's time to exit\n");
+        // MonoPrint("Notifying it's time to exit\n");
         SimDriver.NotifyExit();
-        //		MonoPrint("Waiting for wait_for_sim_cleanup\n");
+        // MonoPrint("Waiting for wait_for_sim_cleanup\n");
         WaitForSingleObject(wait_for_sim_cleanup, 0xFFFFFFFF);
-        //		MonoPrint("Cleaning up Graphics...\n");
+        // MonoPrint("Cleaning up Graphics...\n");
         // SCR, calling OTW driver exit is NOT thread safe since
         // this will much with the display lists and drawables.
         // abortMission = OTWDriver.Exit();
@@ -1051,7 +1051,7 @@ void SimulationLoopControl::StartLoop(void)
         // with a function per game type if necessary.
         if (SimDriver.RunningCampaignOrTactical())
         {
-            //			MonoPrint("Posting message to main handler\n");
+            // MonoPrint("Posting message to main handler\n");
             if (abortMission)
             {
                 // Game aborted - reload current campaign
@@ -1069,7 +1069,7 @@ void SimulationLoopControl::StartLoop(void)
             PostMessage(FalconDisplay.appWin, FM_START_UI, 0, 0);
         }
 
-        //		MonoPrint("Done leaving simulation.\n");
+        // MonoPrint("Done leaving simulation.\n");
         ThreadManager::fast_campaign();
 
         currentMode = RunningSim;
@@ -1086,8 +1086,8 @@ void SimulationLoopControl::StartLoop(void)
 // this here. Bit hacky, but it works.
 void FixupGroundHeights()
 {
-    SimBaseClass		*theObject;
-    float				gndz;
+    SimBaseClass *theObject;
+    float gndz;
 
     // We need to ensure that nobody changes the VU database contents while we're iterating
     VuEnterCriticalSection();
@@ -1115,10 +1115,10 @@ void FixupGroundHeights()
 // KCK HACK HACK:  Make sure any sessions which are flying are awake..
 void RewakeSessions(void)
 {
-    VuSessionsIterator	sessionWalker(FalconLocalGame);
-    FalconSessionEntity	*session;
-    SimBaseClass		*theObject;
-    UnitClass			*theUnit;
+    VuSessionsIterator sessionWalker(FalconLocalGame);
+    FalconSessionEntity *session;
+    SimBaseClass *theObject;
+    UnitClass *theUnit;
 
     ShiAssert(GetCurrentThreadId() == gSimThreadID);
 

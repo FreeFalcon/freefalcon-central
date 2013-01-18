@@ -15,9 +15,9 @@ enum
     SND_NO_HANDLE       = 0,
 
     // JPO - best guess at what the next 4 mean
-    SND_BIT1	    = 0x00000001, // no idea what this is - its used but never tested that I can find
+    SND_BIT1     = 0x00000001, // no idea what this is - its used but never tested that I can find
     SND_STREAM_PART2    = 0x00000002, // were processing 2nd part of the buffer
-    SND_STREAM_DONE	    = 0x00000004, // weve read the whole stream now
+    SND_STREAM_DONE     = 0x00000004, // weve read the whole stream now
     SND_STREAM_FINAL    = 0x00000008, // we've played the whole stream now
 
     // Use SFX_ flags instead of these!
@@ -37,20 +37,20 @@ enum
     SND_STREAM_PAN_RT   = 0x00100000,
     SND_STREAM_PAN_LT   = 0x00200000,
     SND_STREAM_PAN_CIR  = 0x00400000,
-    SND_IS_IMAADPCM		= 0x10000000,
+    SND_IS_IMAADPCM = 0x10000000,
     SND_USE_THREAD      = 0x40000000,
 
-    SND_MIN_VOLUME		= -3000,
-    SND_MAX_VOLUME		= 0,
+    SND_MIN_VOLUME = -3000,
+    SND_MAX_VOLUME = 0,
 
-    SND_ADPCM_SBLOCK_ALIGN 		= 1024,	//ima adpcm block alignment for 16-bit stereo
-    SND_PCM_SBLOCK_ALIGN		= 4,		//pcm block alignment for 16-bit stereo
-    SND_ADPCM_MBLOCK_ALIGN 		= 512,	//ima adpcm block alignment for 16-bit mono
-    SND_PCM_MBLOCK_ALIGN		= 2,		//pcm block alignment for 16-bit mono
-    SND_BLOCK_SAMPLE			= 1017,	//#samples per block of ima adpcm
-    SND_COMPRESSION_RATIO		= 4,
-    SND_WAV_SCHAN				= 2,
-    SND_WAV_MCHAN				= 1,
+    SND_ADPCM_SBLOCK_ALIGN  = 1024, //ima adpcm block alignment for 16-bit stereo
+    SND_PCM_SBLOCK_ALIGN = 4, //pcm block alignment for 16-bit stereo
+    SND_ADPCM_MBLOCK_ALIGN  = 512, //ima adpcm block alignment for 16-bit mono
+    SND_PCM_MBLOCK_ALIGN = 2, //pcm block alignment for 16-bit mono
+    SND_BLOCK_SAMPLE = 1017, //#samples per block of ima adpcm
+    SND_COMPRESSION_RATIO = 4,
+    SND_WAV_SCHAN = 2,
+    SND_WAV_MCHAN = 1,
 };
 
 enum // Stream Callback Messages
@@ -117,9 +117,9 @@ public:
 
 typedef struct
 {
-    short	iSamp0;
-    char	bStepTableIndex;
-    char	bReserved;
+    short iSamp0;
+    char bStepTableIndex;
+    char bReserved;
 } IMA_BLOCK;
 
 typedef struct
@@ -150,11 +150,11 @@ typedef struct
 
 typedef struct
 {
-    char *data;				// actual file data (All except for 1st 8 bytes,free this)
-    WAVEFORMATEX *Format;	// ptr to format info in data
-    long NumSamples;		// for IMA_ADPCM, (and maybe others) get # samples so we know when we're done
-    char *Start;			// ptr to start of sample in data
-    long SampleLen;			// Length of sample
+    char *data; // actual file data (All except for 1st 8 bytes,free this)
+    WAVEFORMATEX *Format; // ptr to format info in data
+    long NumSamples; // for IMA_ADPCM, (and maybe others) get # samples so we know when we're done
+    char *Start; // ptr to start of sample in data
+    long SampleLen; // Length of sample
 } RIFF_FILE;
 
 //JPO turn into a class so we can construct/destruct
@@ -213,7 +213,7 @@ private:
     BOOL use3d; // use 3d stuff or not.
 
     // this is for chat buffer stuff....
-    // LPDIRECTSOUNDCAPTURE		chatInputDevice;
+    // LPDIRECTSOUNDCAPTURE chatInputDevice;
 
 public:
     CSoundMgr();
@@ -327,8 +327,8 @@ private:
     // Thread function to handle streaming from disk/memory
     long StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen);
     long StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen);
-    long ImaDecodeS16(char *sBuff, char *dBuff,	long bufferLength);
-    long ImaDecodeM16(char *sBuff, char	*dBuff,	long bufferLength);
+    long ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength);
+    long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength);
     BOOL BuildObjectList(HANDLE hArray[], int *nHandles, SoundStream *streams[]); // work out whats happening
     void ProcessStream(SoundStream *stream);
     void NotifyThread()

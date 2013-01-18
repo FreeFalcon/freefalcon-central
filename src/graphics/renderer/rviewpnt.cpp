@@ -4,7 +4,7 @@
     August 20, 1996
 
     Manages information about a world space location and keeps the weather,
-	terrain, and object lists in synch.
+ terrain, and object lists in synch.
 \***************************************************************************/
 #include "grmath.h"
 #include "TimeMgr.h"
@@ -20,7 +20,7 @@
 //#define _OLD_UPDATE_ // use scotts Update() funtion
 
 /***************************************************************************\
-	Setup the view point
+ Setup the view point
 \***************************************************************************/
 void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuffer)
 {
@@ -34,7 +34,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     SetupTextures();
 
     // Determine how many object lists we'll need
-    nObjectLists = _NUM_OBJECT_LISTS_;		// 0=in terrain, 1=below cloud, 2=in cloud, 3=above clouds, 4= above roof
+    nObjectLists = _NUM_OBJECT_LISTS_; // 0=in terrain, 1=below cloud, 2=in cloud, 3=above clouds, 4= above roof
 
     // Allocate memory for the list of altitude segregated object lists
 
@@ -80,9 +80,9 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     delete[] ranges;
 
     //JAM 12Dec03
-    cloudBase	= -(SKY_ROOF_HEIGHT - 0.1f);
-    cloudTops	= -SKY_ROOF_HEIGHT;
-    roofHeight	= -SKY_ROOF_HEIGHT;
+    cloudBase = -(SKY_ROOF_HEIGHT - 0.1f);
+    cloudTops = -SKY_ROOF_HEIGHT;
+    roofHeight = -SKY_ROOF_HEIGHT;
 
     if (bZBuffering)
         realWeather->Setup();
@@ -92,7 +92,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
 
 
 /***************************************************************************\
-	Clean up after ourselves
+ Clean up after ourselves
 \***************************************************************************/
 void RViewPoint::Cleanup(void)
 {
@@ -117,14 +117,14 @@ void RViewPoint::Cleanup(void)
 
 
 /***************************************************************************\
-	Change the visible range and detail levels of the terrain
-	NOTE:  This shouldn't be called until an update has been done so
-	that the position is valid.
+ Change the visible range and detail levels of the terrain
+ NOTE:  This shouldn't be called until an update has been done so
+ that the position is valid.
 \***************************************************************************/
 void RViewPoint::SetGroundRange(float gndRange, int maxDetail, int minDetail)
 {
-    TViewPoint	tempViewPoint;
-    int			i;
+    TViewPoint tempViewPoint;
+    int i;
 
     ShiAssert(IsReady());
 
@@ -156,11 +156,11 @@ void RViewPoint::SetGroundRange(float gndRange, int maxDetail, int minDetail)
 //JAM 12Dec03
 float defcloudop = 0.0;
 /***************************************************************************\
-	Update the state of the RViewPoint (time and location)
+ Update the state of the RViewPoint (time and location)
 \***************************************************************************/
 void RViewPoint::Update(const Tpoint *pos)
 {
-    int	i;
+    int i;
     float previousTop;
     TransportStr transList;
     DrawableObject *first, *p;
@@ -223,14 +223,14 @@ void RViewPoint::Update(const Tpoint *pos)
     }
 
     //DELME
-    //	cloudOpacity = defcloudop;
+    // cloudOpacity = defcloudop;
 
     TheTimeOfDay.GetVisColor(&cloudColor);
 }
 //JAM
 
 /***************************************************************************\
-	Insert an instance of an object into the active display lists
+ Insert an instance of an object into the active display lists
 \***************************************************************************/
 void RViewPoint::InsertObject(DrawableObject* object)
 {
@@ -257,7 +257,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
 
 
 /***************************************************************************\
-	Remove an instance of an object from the active display lists
+ Remove an instance of an object from the active display lists
 \***************************************************************************/
 void RViewPoint::RemoveObject(DrawableObject* object)
 {
@@ -270,7 +270,7 @@ void RViewPoint::RemoveObject(DrawableObject* object)
 
 
 /***************************************************************************\
-	Reset all the object lists to start with their most distance objects.
+ Reset all the object lists to start with their most distance objects.
 \***************************************************************************/
 void RViewPoint::ResetObjectTraversal(void)
 {
@@ -284,8 +284,8 @@ void RViewPoint::ResetObjectTraversal(void)
 
 
 /***************************************************************************\
-	Return the index of the object list which contains object at the given
-	z value.
+ Return the index of the object list which contains object at the given
+ z value.
 \***************************************************************************/
 int RViewPoint::GetContainingList(float zValue)
 {
@@ -304,38 +304,38 @@ int RViewPoint::GetContainingList(float zValue)
 
 
 /***************************************************************************\
-	Return TRUE if a line of sight exists between the two points with
-	respect to both clouds and terrain
+ Return TRUE if a line of sight exists between the two points with
+ respect to both clouds and terrain
 \***************************************************************************/
 float RViewPoint::CompositLineOfSight(Tpoint *p1, Tpoint *p2)
 {
-    //	if (LineOfSight( p1, p2 )) {
-    //		if (weather) {
-    //			return weather->LineOfSight( p1 ,p2 );
-    //		} else {
+    // if (LineOfSight( p1, p2 )) {
+    // if (weather) {
+    // return weather->LineOfSight( p1 ,p2 );
+    // } else {
     return 1.0f;
-    //		}
-    //	} else {
-    //		return 0.0f;
-    //	}
+    // }
+    // } else {
+    // return 0.0f;
+    // }
 }
 
 /***************************************************************************\
-	Return TRUE if a line of sight exists between the two points with
-	respect to clouds
+ Return TRUE if a line of sight exists between the two points with
+ respect to clouds
 \***************************************************************************/
 int RViewPoint::CloudLineOfSight(Tpoint *p1, Tpoint *p2)
 {
-    //	if (weather) {
-    //		return FloatToInt32(weather->LineOfSight( p1 ,p2 ));
-    //	} else {
+    // if (weather) {
+    // return FloatToInt32(weather->LineOfSight( p1 ,p2 ));
+    // } else {
     return 1;
-    //	}
+    // }
 }
 
 
 /***************************************************************************\
-	Update the moon texture for the time of day and altitude.
+ Update the moon texture for the time of day and altitude.
 \***************************************************************************/
 void RViewPoint::UpdateMoon()
 {
@@ -347,7 +347,7 @@ void RViewPoint::UpdateMoon()
 
     if (!lastDay) return;
 
-    lastDay = 0;			// do it only once when the moon appear
+    lastDay = 0; // do it only once when the moon appear
 
     TheTimeOfDay.CalculateMoonPhase();
 
@@ -355,15 +355,15 @@ void RViewPoint::UpdateMoon()
     TheTimeOfDay.CreateMoonPhase((unsigned char *)OriginalMoonTexture.imageData, (unsigned char *)MoonTexture.imageData);
 
     // Create the green moon texture based on the color version
-    BYTE *texel		= (BYTE*)MoonTexture.imageData;
-    BYTE *dest		= (BYTE*)GreenMoonTexture.imageData;
-    BYTE *stopTexel	= (BYTE*)MoonTexture.imageData + MoonTexture.dimensions * MoonTexture.dimensions;
+    BYTE *texel = (BYTE*)MoonTexture.imageData;
+    BYTE *dest = (BYTE*)GreenMoonTexture.imageData;
+    BYTE *stopTexel = (BYTE*)MoonTexture.imageData + MoonTexture.dimensions * MoonTexture.dimensions;
 
     while (texel < stopTexel)
     {
-        if (*texel != 0)  					// Don't touch the chromakeyed texels!
+        if (*texel != 0)   // Don't touch the chromakeyed texels!
         {
-            *dest++ = (BYTE)((*texel++) | 128);		// Use the "green" set of palette entries
+            *dest++ = (BYTE)((*texel++) | 128); // Use the "green" set of palette entries
         }
         else
         {
@@ -381,7 +381,7 @@ void RViewPoint::UpdateMoon()
 \***************************************************************************/
 void RViewPoint::SetupTextures()
 {
-    DWORD	*p, *stop;
+    DWORD *p, *stop;
 
 
     // Note that we haven't adapted for a particular day yet
@@ -407,8 +407,8 @@ void RViewPoint::SetupTextures()
 
         // Convert palette data to Green
         Palette *pal = GreenSunTexture.GetPalette();
-        p		= pal->paletteData;
-        stop	= p + 256;
+        p = pal->paletteData;
+        stop = p + 256;
 
         while (p < stop)
         {
@@ -509,7 +509,7 @@ void RViewPoint::ReleaseTextures(void)
 
 
 /***************************************************************************\
-	Update the moon and sun properties based on the time of day
+ Update the moon and sun properties based on the time of day
 \***************************************************************************/
 void RViewPoint::TimeUpdateCallback(void *self)
 {

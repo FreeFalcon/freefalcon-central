@@ -83,19 +83,19 @@ public:
         m_3     = 0x10000,
         m_c     = 0x20000,
         slv     = 0x40000,
-        lfwd    = 0x80000,	//20
+        lfwd    = 0x80000, //20
         rfwd    = 0x100000,
         sta1    = 0x200000,
         sta2    = 0x400000,
-        sta3    = 0x800000,	// 24
+        sta3    = 0x800000, // 24
         sta4    = 0x1000000,
         sta5    = 0x2000000,
         sta6    = 0x4000000,
-        sta7    = 0x8000000,	// 28
+        sta7    = 0x8000000, // 28
         sta8    = 0x10000000,
         sta9    = 0x20000000,
         ldgr    = 0x40000000,
-        fl_out  = 0x80000000,	// 32
+        fl_out  = 0x80000000, // 32
         NumFaultFunctions = 33
     };
 
@@ -105,9 +105,9 @@ public:
 
     typedef enum type_FSeverity
     {
-        cntl,			degr,
-        fail,			low,
-        rst,			temp,
+        cntl, degr,
+        fail, low,
+        rst, temp,
         warn,       no_fail,
         NumFaultSeverity
     };
@@ -121,16 +121,16 @@ public:
     struct str_FEntry
     {
         unsigned int               elFunction;
-        type_FSeverity		elSeverity;
+        type_FSeverity elSeverity;
     };
 
     //-------------------------------------------------
 
     struct str_FNames
     {
-        const char*	elpFSubSystemNames;
-        const char*	elpFFunctionNames;
-        const char*	elpFSeverityNames;
+        const char* elpFSubSystemNames;
+        const char* elpFFunctionNames;
+        const char* elpFSeverityNames;
     };
 
     struct str_DmgProbs
@@ -149,8 +149,8 @@ public:
     };
 
 private:
-    str_FEntry	mpFaultList[TotalFaultStrings];
-    int			mFaultCount;
+    str_FEntry mpFaultList[TotalFaultStrings];
+    int mFaultCount;
     FaultListItem mMflList[MAX_MFL];
     VU_TIME mStartTime;
     int mLastMfl;
@@ -167,7 +167,7 @@ public:
         type_FFunction mBreakable; // the functions
         float mSProb; // system probability
         float *mFProb; // function probability
-        int mCount;	// count of these & breakables
+        int mCount; // count of these & breakables
         unsigned int flags;
     } mpFaultData[TotalFaultStrings];
     static const char* mpFFunctionNames[NumFaultFunctions];
@@ -175,23 +175,23 @@ public:
 
     type_FFunction PickFunction(type_FSubSystem);
     type_FSubSystem PickSubSystem(int systemBits);
-    BOOL	IsFlagSet();
-    void	ClearFlag();
+    BOOL IsFlagSet();
+    void ClearFlag();
     void SetFault(type_FSubSystem, type_FFunction, type_FSeverity, BOOL);
-    void	ClearFault(type_FSubSystem);
-    void	ClearFault(type_FSubSystem, type_FFunction);
+    void ClearFault(type_FSubSystem);
+    void ClearFault(type_FSubSystem, type_FFunction);
 
-    void	GetFault(type_FSubSystem, str_FEntry*);
-    int	GetFault(type_FSubSystem);
+    void GetFault(type_FSubSystem, str_FEntry*);
+    int GetFault(type_FSubSystem);
 
-    void	GetFaultNames(type_FSubSystem, int, str_FNames*);
+    void GetFaultNames(type_FSubSystem, int, str_FNames*);
 
-    int	GetFaultCount(void)
+    int GetFaultCount(void)
     {
         return mFaultCount;
     }
-    void	TotalPowerFailure(); // JPO
-    void	RandomFailure(); // THW 2003-1120
+    void TotalPowerFailure(); // JPO
+    void RandomFailure(); // THW 2003-1120
     int      Breakable(type_FSubSystem id)
     {
         return mpFaultData[id].mBreakable;
@@ -200,7 +200,7 @@ public:
     // MFL support
     void AddMflList(VU_TIME time, type_FSubSystem type, int subtype); // add new MFL entry
     bool GetMflEntry(int n, const char **name, int *subsys, int *count, char timestr[]);
-    int	GetMflListCount()
+    int GetMflListCount()
     {
         return mLastMfl;
     };

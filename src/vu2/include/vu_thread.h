@@ -11,7 +11,7 @@
 #include "vutypes.h"
 #include "../../comms/capi.h"
 
-#define VU_DEFAULT_QUEUE_SIZE		100
+#define VU_DEFAULT_QUEUE_SIZE 100
 
 /** base class for vu threads data stuff. */
 class VuBaseThread

@@ -18,13 +18,13 @@
  * QUAT_LIB.C
  *
  * AMD3D 3D library code: Quaternion math
- *	These routines provide a portable quaternion math library.  3DNow!
+ * These routines provide a portable quaternion math library.  3DNow!
  *  accelerated versions of these routines can be found in QUAT.ASM.
  *
  *  Loosly based on the quaternion library presented by Jeff Lander.
  *  Adapted to 3DNow! implementation and library conventions.
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 
@@ -166,7 +166,7 @@ void quat2mat(const Quat quat, float m[4][4])
 void mult_quat(Quat dst, const Quat q1, const Quat q2)
 {
     // Do this to a temporary variable in case the output aliases an input
-    Quat	tmp;
+    Quat tmp;
     tmp[0] = q1[0] * q2[3] + q2[0] * q1[3] + q1[1] * q2[2] - q1[2] * q2[1];
     tmp[1] = q1[1] * q2[3] + q2[1] * q1[3] + q1[2] * q2[0] - q1[0] * q2[2];
     tmp[2] = q1[2] * q2[3] + q2[2] * q1[3] + q1[0] * q2[1] - q1[1] * q2[0];
@@ -202,7 +202,7 @@ void norm_quat(Quat dst, const Quat quat)
 
 
 /* euler2quat - construct a quaternion by applying the given euler angles
- *			in X-Y-Z order (pitch-yaw-roll)
+ * in X-Y-Z order (pitch-yaw-roll)
  *      rot     - the euler angles (3 elements)
  *      quat    - the resultant quaternion
  */
@@ -318,16 +318,16 @@ void _euler2quat(const float *rot, Quat quat)
 }
 
 /* euler2quat2 - construct a quaternion by applying the given euler angles
- *			in X-Y-Z order (pitch-yaw-roll).
- *			Less efficient than euler2quat(), but more easily modified for
- *			different rotation orders.
+ * in X-Y-Z order (pitch-yaw-roll).
+ * Less efficient than euler2quat(), but more easily modified for
+ * different rotation orders.
  *      rot     - the euler angles (3 elements)
  *      quat    - the resultant quaternion
  */
 void euler2quat2(const float *rot, Quat quat)
 {
-    Quat	qx, qy, qz, qf;
-    float	deg;
+    Quat qx, qy, qz, qf;
+    float deg;
 
     // Convert angles to radians (and half-angles), and compute partial quats
     deg = rot[0] * 0.5f * DEG2RAD;
@@ -357,7 +357,7 @@ void euler2quat2(const float *rot, Quat quat)
 
 /* quat2axis_angle - construct the axis-angle representation of the quaternion
  *      quat        - the quaternion
- *      axisAngle	- 4 element array to hold the <x,y,z> axis and w angle
+ *      axisAngle - 4 element array to hold the <x,y,z> axis and w angle
  */
 void quat2axis_angle(const Quat quat, float *axisAngle)
 {
@@ -387,8 +387,8 @@ void _quat2axis_angle(const Quat quat, float *axisAngle)
 
 
 /* axis_angle2quat - construct the quaternion representation of the given axis&angle
- *      axisAngle	- 4 element array of the <x,y,z> axis and w angle
- *      quat		- the resultant quaternion
+ *      axisAngle - 4 element array of the <x,y,z> axis and w angle
+ *      quat - the resultant quaternion
  */
 void axis_angle2quat(const float *axisAngle, Quat quat)
 {
@@ -401,11 +401,11 @@ void axis_angle2quat(const float *axisAngle, Quat quat)
 }
 
 
-#define DELTA	0.0001		// DIFFERENCE AT WHICH TO LERP INSTEAD OF SLERP
+#define DELTA 0.0001 // DIFFERENCE AT WHICH TO LERP INSTEAD OF SLERP
 /* slerp_quat - spherically interpolate between quat1 and quat2
- *		quat1, quat2	- points to interpolate through
- *		slerp			- interpolation factor, 0 = quat1, 1 = quat2.
- *		result			- the resultant quaternion
+ * quat1, quat2 - points to interpolate through
+ * slerp - interpolation factor, 0 = quat1, 1 = quat2.
+ * result - the resultant quaternion
  */
 void slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result)
 {
@@ -414,7 +414,7 @@ void slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result)
     float q2x, q2y, q2z, q2w;
 
     // DOT the quats to get the cosine of the angle between them
-    cosom =	quat1[0] * quat2[0] +
+    cosom = quat1[0] * quat2[0] +
             quat1[1] * quat2[1] +
             quat1[2] * quat2[2] +
             quat1[3] * quat2[3];
@@ -466,28 +466,28 @@ void slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result)
 
 
 /* trans_quat - rotate a point with a quat.  Note that this is equivalent
- *			to using quat2mat to make a rotation matrix, and then multiplying
- *			the vector by the matrix.  This form is more compact, and equally
- *			efficient when only transforming a single vector.  For other cases,
- *			it is advisable to construct the rotation matrix.
- *      result	- the resultant point (must point to 3 float array)
- *      q		- the quaternion for rotation
- *		v		- the vector/point to rotate (must have at least 3 elements)
+ * to using quat2mat to make a rotation matrix, and then multiplying
+ * the vector by the matrix.  This form is more compact, and equally
+ * efficient when only transforming a single vector.  For other cases,
+ * it is advisable to construct the rotation matrix.
+ *      result - the resultant point (must point to 3 float array)
+ *      q - the quaternion for rotation
+ * v - the vector/point to rotate (must have at least 3 elements)
  */
 void trans_quat(float *result, const Quat q, const float *v)
 {
     // result = av + bq + c(q.v CROSS v)
     // where
-    //	a = q.w^2 - (q.v DOT q.v)
-    //	b = 2 * (q.v DOT v)
-    //	c = 2q.w
-    float	w = q[3];	// just a convenience name
-    float	a = w * w - (q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
+    // a = q.w^2 - (q.v DOT q.v)
+    // b = 2 * (q.v DOT v)
+    // c = 2q.w
+    float w = q[3]; // just a convenience name
+    float a = w * w - (q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
     float   b = 2.0f * (q[0] * v[0] + q[1] * v[1] + q[2] * v[2]);
-    float	c = 2.0f * w;
+    float c = 2.0f * w;
 
     // Must store this, because result may alias v
-    float cross[3];	// q.v CROSS v
+    float cross[3]; // q.v CROSS v
     cross[0] = q[1] * v[2] - q[2] * v[1];
     cross[1] = q[2] * v[0] - q[0] * v[2];
     cross[2] = q[0] * v[1] - q[1] * v[0];

@@ -1,8 +1,8 @@
 /***************************************************************************\
     DrawPole.cpp    Ed Goldman
 
-	Based on DrawableShadowed, this class is used in ACMI to put altitude
-	poles and extra labels on an object.
+ Based on DrawableShadowed, this class is used in ACMI to put altitude
+ poles and extra labels on an object.
 \***************************************************************************/
 #include "Matrix.h"
 #include "RViewPnt.h"
@@ -10,16 +10,16 @@
 #include "Drawpole.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawablePoled::pool;
+MEM_POOL DrawablePoled::pool;
 #endif
 
-BOOL	DrawablePoled::drawHeading = FALSE;			// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawAlt = FALSE;				// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawSpeed = FALSE;			// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawTurnRadius = FALSE;		// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawTurnRate = FALSE;		// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawPole = TRUE;				// Shared by ALL drawable BSPs
-BOOL	DrawablePoled::drawlockrange = TRUE;		// Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawHeading = FALSE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawAlt = FALSE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawSpeed = FALSE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawTurnRadius = FALSE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawTurnRate = FALSE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawPole = TRUE; // Shared by ALL drawable BSPs
+BOOL DrawablePoled::drawlockrange = TRUE; // Shared by ALL drawable BSPs
 
 
 /***************************************************************************\
@@ -46,13 +46,13 @@ DrawablePoled::DrawablePoled(int ID, const Tpoint *pos, const Trotation *rot, fl
 \***************************************************************************/
 void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
 {
-    ThreeDVertex	labelPoint;
-    float			x, y;
+    ThreeDVertex labelPoint;
+    float x, y;
 
     // draw pole 1st if enabled
     if (drawPole == TRUE)
     {
-        Tpoint		pos;
+        Tpoint pos;
 
         pos.x = position.x;
         pos.y = position.y;
@@ -77,7 +77,7 @@ void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
         // now we draw the data labels if enabled
         if (drawSpeed && speedLen)
         {
-            x = labelPoint.x - speedLen;		// Centers text
+            x = labelPoint.x - speedLen; // Centers text
             renderer->ScreenText(x, y, speed);
             y += 10.0f;
         }
@@ -85,35 +85,35 @@ void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
 
         if (drawAlt && altLen)
         {
-            x = labelPoint.x - altLen;		// Centers text
+            x = labelPoint.x - altLen; // Centers text
             renderer->ScreenText(x, y, alt);
             y += 10.0f;
         }
 
         if (drawHeading && headingLen)
         {
-            x = labelPoint.x - headingLen;		// Centers text
+            x = labelPoint.x - headingLen; // Centers text
             renderer->ScreenText(x, y, heading);
             y += 10.0f;
         }
 
         if (drawlockrange && lockrangeLen)
         {
-            x = labelPoint.x - lockrangeLen;		// Centers text
+            x = labelPoint.x - lockrangeLen; // Centers text
             renderer->ScreenText(x, y, lockrange);
             y += 10.0f;
         }
 
         if (drawTurnRate && turnRateLen)
         {
-            x = labelPoint.x - turnRateLen;		// Centers text
+            x = labelPoint.x - turnRateLen; // Centers text
             renderer->ScreenText(x, y, turnRate);
             y += 10.0f;
         }
 
         if (drawTurnRadius && turnRadiusLen)
         {
-            x = labelPoint.x - turnRadiusLen;		// Centers text
+            x = labelPoint.x - turnRadiusLen; // Centers text
             renderer->ScreenText(x, y, turnRadius);
             y += 10.0f;
         }
@@ -169,7 +169,7 @@ void DrawablePoled::SetDataLabel(DWORD type, char *labelString)
 
 
 /***************************************************************************\
-	Return the specified data label
+ Return the specified data label
 \***************************************************************************/
 char * DrawablePoled::DataLabel(DWORD type)
 {
@@ -207,7 +207,7 @@ char * DrawablePoled::DataLabel(DWORD type)
 }
 
 /***************************************************************************\
-	Draw Target box on the object
+ Draw Target box on the object
 \***************************************************************************/
 void DrawablePoled::DrawTargetBox(class RenderOTW *renderer, ThreeDVertex *spos)
 {

@@ -6,11 +6,11 @@
 #include "camp2sim.h"
 #include "Graphics\Include\render2d.h"
 #include "lantirn.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
 
 //MI

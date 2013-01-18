@@ -47,8 +47,8 @@ private:
 public:
     enum
     {
-        _NO_FLAGS_			= 0x0000,
-        _USE_SUBTITLES_		= 0x0001,
+        _NO_FLAGS_ = 0x0000,
+        _USE_SUBTITLES_ = 0x0001,
     };
 
     C_Movie();

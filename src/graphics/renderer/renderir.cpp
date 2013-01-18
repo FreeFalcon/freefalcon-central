@@ -15,7 +15,7 @@
 #include "FalcLib\include\playerop.h"
 #include "Graphics\DXEngine\DXEngine.h"
 
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
 
@@ -23,10 +23,10 @@ void RenderIR::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 {
     RenderTV::Setup(imageBuffer, vp);
 
-    sky_color.r			= sky_color.g			= sky_color.b			= 0.f;
-    haze_sky_color.r	= haze_sky_color.g		= haze_sky_color.b		= 0.f;
-    haze_ground_color.r	= haze_ground_color.g	= haze_ground_color.b	= 0.f;
-    earth_end_color.r	= earth_end_color.g		= earth_end_color.b		= 0.f;
+    sky_color.r = sky_color.g = sky_color.b = 0.f;
+    haze_sky_color.r = haze_sky_color.g = haze_sky_color.b = 0.f;
+    haze_ground_color.r = haze_ground_color.g = haze_ground_color.b = 0.f;
+    earth_end_color.r = earth_end_color.g = earth_end_color.b = 0.f;
 
     //JAM 08Jan04
     lightAmbient = 1.f;
@@ -36,7 +36,7 @@ void RenderIR::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 
 void RenderIR::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     RenderOTW::StartDraw();
     //Drawable2D::SetGreenMode(TRUE); // RV - I-Hawk - Do not force green
     TheColorBank.SetColorMode(ColorBankClass::NormalMode);
@@ -50,7 +50,7 @@ void RenderIR::StartDraw(void)
 
 void RenderIR::EndDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     RenderOTW::EndDraw();
     Drawable2D::SetGreenMode(FALSE);
 

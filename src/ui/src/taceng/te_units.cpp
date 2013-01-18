@@ -45,8 +45,8 @@
 
 enum
 {
-    TAC_LOCATION	= 10000,
-    TAC_NOTARGET	= 10001,
+    TAC_LOCATION = 10000,
+    TAC_NOTARGET = 10001,
 };
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ void ChangePackTimeCB(long ID, short hittype, C_Base *control);
 void ChangeTimeCB(long ID, short hittype, C_Base *control);
 C_ATO_Flight *BuildATOFlightInfo(Flight fl);
 
-void tac_select_skill(long ID, short hittype, C_Base *control);	// M.N.
+void tac_select_skill(long ID, short hittype, C_Base *control); // M.N.
 
 extern GlobalPositioningSystem *gGps;
 extern C_Map *gMapMgr;
@@ -136,7 +136,7 @@ static long AtoMissStr[] =
 
 typedef struct
 {
-    table_of_equipment_manufacturers		side;
+    table_of_equipment_manufacturers side;
     char stype;
     char sptype;
 } toe;
@@ -195,7 +195,7 @@ toe table_of_equipment_def[] =
     toe_soviet, STYPE_UNIT_SS_MISSILE, SPTYPE_SOVIET_SCUD,
     toe_soviet, STYPE_UNIT_SS_MISSILE, SPTYPE_SOVIET_FROG7,
     toe_soviet, STYPE_UNIT_SP_ARTILLERY, SPTYPE_SOVIET_SP,
-    //		toe_soviet, STYPE_UNIT_SUPPLY, SPTYPE_SOVIET_SUP,
+    // toe_soviet, STYPE_UNIT_SUPPLY, SPTYPE_SOVIET_SUP,
     toe_soviet, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM21,
     toe_soviet, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM24,
     toe_soviet, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM9A52,
@@ -213,7 +213,7 @@ toe table_of_equipment_def[] =
     toe_us, STYPE_UNIT_MECHANIZED, SPTYPE_US_M2,
     toe_us, STYPE_UNIT_ROCKET, SPTYPE_US_MLRS,
     toe_us, STYPE_UNIT_SP_ARTILLERY, SPTYPE_US_M109,
-    //		toe_us, STYPE_UNIT_SUPPLY, SPTYPE_US_SUP,
+    // toe_us, STYPE_UNIT_SUPPLY, SPTYPE_US_SUP,
     toe_unknown, 0, 0
 };
 
@@ -250,7 +250,7 @@ int WeAreAddingPackage = 0;
 int EdittingPackage = 0;
 CampEntity gLastTarget = NULL;
 
-int gLastPilotSkill = 0;			// M.N. 2001-11-19
+int gLastPilotSkill = 0; // M.N. 2001-11-19
 
 VU_ID
 gLastBattalionObjID,
@@ -379,8 +379,8 @@ void LoadTEUnits()
 
 void hookup_new_squad_window(C_Window *win)
 {
-    C_Button		*btn;
-    C_ListBox		*lbox;
+    C_Button *btn;
+    C_ListBox *lbox;
 
     if (!win)
         return;
@@ -428,9 +428,9 @@ void hookup_new_squad_window(C_Window *win)
 
 void hookup_new_battalion_window(C_Window *win)
 {
-    C_Button	*btn;
-    C_ListBox	*list;
-    _TCHAR		buffer[80];
+    C_Button *btn;
+    C_ListBox *list;
+    _TCHAR buffer[80];
 
     btn = (C_Button *) win->FindControl(CREATE_UNIT);
 
@@ -692,7 +692,7 @@ void FillListBoxWithSquadrons(C_ListBox *lbox, long team, long aircraft_dindex)
 
 void tac_select_squadron_aircraft(long, short hittype, C_Base *control)
 {
-    C_Window	*win;
+    C_Window *win;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -707,8 +707,8 @@ void tac_select_squadron_aircraft(long, short hittype, C_Base *control)
 
 void tac_select_squadron_airbase(long, short hittype, C_Base *control)
 {
-    C_Window		*win;
-    CampBaseClass*	airbase;
+    C_Window *win;
+    CampBaseClass* airbase;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -729,9 +729,9 @@ void tac_select_squadron_airbase(long, short hittype, C_Base *control)
 
 SquadronClass* tactical_make_squadron(VU_ID id, long ac_type)
 {
-    GridIndex		x, y;
-    CampBaseClass*	airbase;
-    Squadron		new_squadron;
+    GridIndex x, y;
+    CampBaseClass* airbase;
+    Squadron new_squadron;
 
     airbase = (CampBaseClass*) FindEntity(id);
 
@@ -762,9 +762,9 @@ SquadronClass* tactical_make_squadron(VU_ID id, long ac_type)
 // This is called when we want to create a new squadron (ID is the ID of the airbase)
 void tactical_add_squadron(VU_ID id)
 {
-    C_ListBox		*lbox;
-    C_Window		*win;
-    CampBaseClass*	airbase;
+    C_ListBox *lbox;
+    C_Window *win;
+    CampBaseClass* airbase;
 
     win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
 
@@ -793,9 +793,9 @@ void tactical_add_squadron(VU_ID id)
 
     if (lbox)
     {
-        VuListIterator	ait(AllObjList);
-        Objective		o;
-        _TCHAR			name[80];
+        VuListIterator ait(AllObjList);
+        Objective o;
+        _TCHAR name[80];
 
         lbox->RemoveAllItems();
         o = (Objective) ait.GetFirst();
@@ -826,8 +826,8 @@ void tactical_add_squadron(VU_ID id)
 
 void tactical_create_squadron(long, short hittype, C_Base *)
 {
-    int			tid;
-    Squadron	squadron;
+    int tid;
+    Squadron squadron;
     C_PopupList *menu;
 
     if (hittype != C_TYPE_LMOUSEUP)
@@ -838,7 +838,7 @@ void tactical_create_squadron(long, short hittype, C_Base *)
     tid = gLastAircraftType - VU_LAST_ENTITY_TYPE;
 
     if (tid < 0)
-        tid = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_SQUADRON, STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F16C, 0, 0, 0);
+        tid = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_SQUADRON, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F16C, 0, 0, 0);
 
     if (!tid)
         return;
@@ -858,9 +858,9 @@ void tactical_create_squadron(long, short hittype, C_Base *)
     MenuToggleUnitCB(MID_UNITS_SQUAD_SQUADRON, 0, menu);
 
     display_air_units(squadron);
-    //	gGps->Update(); done by RefreshMapOnChange()
+    // gGps->Update(); done by RefreshMapOnChange()
     // MN 2002-01-04 show up the squadron faster
-    //	RefreshMapOnChange();
+    // RefreshMapOnChange();
 
 }
 
@@ -882,8 +882,8 @@ void tactical_cancel_squadron(long, short hittype, C_Base *)
 
 void LockTakeoffTimeCB(long, short hittype, C_Base *)
 {
-    C_Button	*btn;
-    C_Window	*win;
+    C_Button *btn;
+    C_Window *win;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -920,8 +920,8 @@ void LockTakeoffTimeCB(long, short hittype, C_Base *)
 
 void LockTimeOnTargetCB(long, short hittype, C_Base *)
 {
-    C_Button	*btn;
-    C_Window	*win;
+    C_Button *btn;
+    C_Window *win;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -966,14 +966,14 @@ void ChangePackTimeCB(long ID, short hittype, C_Base *control)
 
 void tactical_update_package(void)
 {
-    C_Window	*win;
-    C_ListBox	*lbox;
-    C_Text		*text;
-    C_EditBox	*edit;
-    C_Button	*btn;
-    C_Clock		*clock;
-    Unit		element = NULL;
-    int			start_day = 0;
+    C_Window *win;
+    C_ListBox *lbox;
+    C_Text *text;
+    C_EditBox *edit;
+    C_Button *btn;
+    C_Clock *clock;
+    Unit element = NULL;
+    int start_day = 0;
 
     if (new_package)
         element = new_package->GetFirstUnitElement();
@@ -986,7 +986,7 @@ void tactical_update_package(void)
 
         if (text)
         {
-            _TCHAR		buffer[80] = {0};
+            _TCHAR buffer[80] = {0};
 
             if (new_package_target)
             {
@@ -1118,15 +1118,15 @@ void tactical_update_package(void)
     }
 }
 
-void SetupPackageControls(C_Window	*win, C_Base *caller)
+void SetupPackageControls(C_Window *win, C_Base *caller)
 {
-    C_Button	*btn;
-    C_ListBox	*lbox;
-    C_Clock		*clock;
-    C_Text		*txt;
-    C_EditBox	*edit;
-    int			i;
-    CampaignTime	takeoff, tot;
+    C_Button *btn;
+    C_ListBox *lbox;
+    C_Clock *clock;
+    C_Text *txt;
+    C_EditBox *edit;
+    int i;
+    CampaignTime takeoff, tot;
 
     if (!win)
         return;
@@ -1138,8 +1138,8 @@ void SetupPackageControls(C_Window	*win, C_Base *caller)
     if (new_package && new_package->GetUnitElement(0))
     {
         // Set times based off of first flight in package
-        Flight			flight = (Flight) new_package->GetUnitElement(0);
-        WayPoint		w = flight->GetFirstUnitWP();
+        Flight flight = (Flight) new_package->GetUnitElement(0);
+        WayPoint w = flight->GetFirstUnitWP();
 
         if (w)
             takeoff = w->GetWPDepartureTime();
@@ -1330,7 +1330,7 @@ void SetupPackageControls(C_Window	*win, C_Base *caller)
 
     if (clock)
     {
-        int				hr, min, sec;
+        int hr, min, sec;
         hr = takeoff / CampaignHours;
         hr = hr % 24;
         min = (takeoff / CampaignMinutes) % 60;
@@ -1346,7 +1346,7 @@ void SetupPackageControls(C_Window	*win, C_Base *caller)
 
     if (clock)
     {
-        int				hr, min, sec;
+        int hr, min, sec;
         hr = tot / CampaignHours;
         hr = hr % 24;
         min = (tot / CampaignMinutes) % 60;
@@ -1432,11 +1432,11 @@ void SetupPackageControls(C_Window	*win, C_Base *caller)
 // i.e: when we're in package create mode and clicked on the map
 void tactical_add_package(VU_ID id, C_Base *caller)
 {
-    C_Window	*win = NULL;
-    C_TreeList	*tree = NULL;
-    CampEntity	ent = NULL;
-    GridIndex	x = 0, y = 0;
-    float		mx, my, maxy, scale;
+    C_Window *win = NULL;
+    C_TreeList *tree = NULL;
+    CampEntity ent = NULL;
+    GridIndex x = 0, y = 0;
+    float mx, my, maxy, scale;
 
     EdittingPackage = 0;
     WeAreAddingPackage = 1;
@@ -1505,9 +1505,9 @@ void tactical_add_package(VU_ID id, C_Base *caller)
 
 void tactical_edit_package(VU_ID id, C_Base *caller)
 {
-    C_Window	*win;
-    C_TreeList	*tree;
-    Flight		flight;
+    C_Window *win;
+    C_TreeList *tree;
+    Flight flight;
 
     new_package = (Package) vuDatabase->Find(id);
 
@@ -1627,8 +1627,8 @@ void DiscardPackage(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    //	if(!EdittingPackage)
-    //	{
+    // if(!EdittingPackage)
+    // {
     gNewSelectFlight = FalconNullId;
 
     if (new_package)
@@ -1637,7 +1637,7 @@ void DiscardPackage(long, short hittype, C_Base *control)
         new_package->Remove();
     }
 
-    //	}
+    // }
     EdittingPackage = 0;
     new_package = NULL;
     WeAreAddingPackage = 0;
@@ -1662,8 +1662,8 @@ void KeepPackage(long ID, short hittype, C_Base *control)
 
         if (!FalconLocalGame->IsLocal())
         {
-            FalconSessionEntity	*host = (FalconSessionEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
-            FalconEntity		*element;
+            FalconSessionEntity *host = (FalconSessionEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+            FalconEntity *element;
             new_package->DoFullUpdate();
             new_package->FalconEntity::SetOwner(host);
             element = (FalconEntity*) new_package->GetFirstUnitElement();
@@ -1722,7 +1722,7 @@ void tactical_make_package(long, short hittype, C_Base *)
 
         if (new_package)
         {
-            MissionRequestClass	mis;
+            MissionRequestClass mis;
 
             // Set up our mission request
             mis.who = gSelectedTeam;
@@ -1763,9 +1763,9 @@ void tactical_make_package(long, short hittype, C_Base *)
 
 void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime targetTime)
 {
-    Flight		flight;
-    WayPoint	w;
-    int			delta = 0, count = 0;
+    Flight flight;
+    WayPoint w;
+    int delta = 0, count = 0;
 
     if (!new_package)
         return;
@@ -1812,7 +1812,7 @@ void SetPackageTimes(Package new_package, CampaignTime takeoffTime, CampaignTime
 void tac_select_aircraft(long, short hittype, C_Base *control)
 {
     C_ListBox *lbox;
-    int	i, ac_type, mission = -1;
+    int i, ac_type, mission = -1;
     C_Window *win;
 
     if (hittype != C_TYPE_SELECT)
@@ -1871,7 +1871,7 @@ void tac_select_aircraft(long, short hittype, C_Base *control)
 
 void tac_select_skill(long, short hittype, C_Base *control)
 {
-    int	mission = -1;
+    int mission = -1;
     C_Window *win;
 
     if (hittype != C_TYPE_SELECT)
@@ -1889,7 +1889,7 @@ void tac_select_role(long, short hittype, C_Base *control)
 {
     C_ListBox *lbox;
     C_Window *win;
-    int	mission;
+    int mission;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -1906,10 +1906,10 @@ void tac_select_role(long, short hittype, C_Base *control)
 
     if (lbox)
     {
-        VuListIterator	cit(AllCampList);
-        CampEntity		ent;
-        _TCHAR			buffer[80] = {0};
-        int				gott = 0;
+        VuListIterator cit(AllCampList);
+        CampEntity ent;
+        _TCHAR buffer[80] = {0};
+        int gott = 0;
 
         // Clear old targets
         lbox->RemoveAllItems();
@@ -1953,7 +1953,7 @@ void tac_select_role(long, short hittype, C_Base *control)
 
         if (!gott)
         {
-            _TCHAR	tmp[40];
+            _TCHAR tmp[40];
             ReadIndexedString(257, tmp, 39);
             lbox->AddItem(TAC_NOTARGET, C_TYPE_ITEM, tmp);
             lbox->SetValue(TAC_NOTARGET);
@@ -1991,7 +1991,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
         // If we have a specific squadron selected, just show this airbase)
         if (ID > 1)
         {
-            CampEntity	airbase;
+            CampEntity airbase;
 
             urec = (UI_Refresher*)gGps->Find(ID);
 
@@ -2016,11 +2016,11 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
         // Otherwise, show all airbases owned by our team
         else
         {
-            VuListIterator	ait(AllObjList);
-            Objective		o;
-            _TCHAR			name[80];
-            GridIndex		x, y;
-            float			dsq, bdsq = FLT_MAX;
+            VuListIterator ait(AllObjList);
+            Objective o;
+            _TCHAR name[80];
+            GridIndex x, y;
+            float dsq, bdsq = FLT_MAX;
 
             o = (Objective) ait.GetFirst();
 
@@ -2089,12 +2089,12 @@ void tac_select_target(long, short hittype, C_Base *control)
 // either after a map click in flight add mode, or from within the tactical_add_package() function
 void tactical_add_flight(VU_ID id, C_Base *caller)
 {
-    C_Window	*win = NULL;
-    C_ListBox	*lbox = NULL;
-    C_Button	*btn = NULL;
-    CampEntity	ent = NULL;
-    short		x = 0, y = 0;
-    float		mx, my, maxy, scale;
+    C_Window *win = NULL;
+    C_ListBox *lbox = NULL;
+    C_Button *btn = NULL;
+    CampEntity ent = NULL;
+    short x = 0, y = 0;
+    float mx, my, maxy, scale;
 
     win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
 
@@ -2108,7 +2108,7 @@ void tactical_add_flight(VU_ID id, C_Base *caller)
             lbox = (C_ListBox *) win->FindControl(START_AT_LIST);
 
             if (lbox)
-                lbox->SetValue(1);			// Default to "start at takeoff" for package add mode
+                lbox->SetValue(1); // Default to "start at takeoff" for package add mode
         }
     }
     else
@@ -2138,7 +2138,7 @@ void tactical_add_flight(VU_ID id, C_Base *caller)
             lbox = (C_ListBox *) win->FindControl(START_AT_LIST);
 
             if (lbox)
-                lbox->SetValue(4);			// Default to "start at target" for direct add mode
+                lbox->SetValue(4); // Default to "start at target" for direct add mode
         }
     }
 
@@ -2218,20 +2218,20 @@ void tactical_add_flight(VU_ID id, C_Base *caller)
 // This is called when we've decided to actually create a requested flight
 void tactical_make_flight(long ID, short hittype, C_Base *control)
 {
-    C_Window		*win;
-    UI_Refresher	*urec = NULL;
-    Flight			new_flight = NULL;
-    Squadron		squadron = NULL;
-    WayPoint		w;
-    C_ListBox		*lbox;
-    int				tid;
-    GridIndex		x, y;
-    int				num_vehicles = 0, start_at = 1, done = 0, flights = 0, error;
-    VU_ID			pid, sid;
-    long			scampid, acampid, ac_type = 0;
-    //	VehicleClassDataType	*vc=NULL;
-    CampEntity		target = NULL;
-    MissionRequestClass	mis;
+    C_Window *win;
+    UI_Refresher *urec = NULL;
+    Flight new_flight = NULL;
+    Squadron squadron = NULL;
+    WayPoint w;
+    C_ListBox *lbox;
+    int tid;
+    GridIndex x, y;
+    int num_vehicles = 0, start_at = 1, done = 0, flights = 0, error;
+    VU_ID pid, sid;
+    long scampid, acampid, ac_type = 0;
+    // VehicleClassDataType *vc=NULL;
+    CampEntity target = NULL;
+    MissionRequestClass mis;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2338,7 +2338,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
 
         for (i = 0; i < PILOTS_PER_SQUADRON; i++)
         {
-            ((Squadron)squadron)->GetPilotData(i)->SetTEPilotRating(gLastPilotSkill - 1);	// 0-4 = Recruit->Ace
+            ((Squadron)squadron)->GetPilotData(i)->SetTEPilotRating(gLastPilotSkill - 1); // 0-4 = Recruit->Ace
         }
 
         // Count current flights in package
@@ -2415,10 +2415,10 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
             mis.tot = TheCampaign.CurrentTime + 3 * CampaignSeconds;
 
         // Adjust for additional flights (flights is # of previous flights in the package)
-        /*		if (MissionData[mis.mission].loitertime)
-        			mis.tot += MissionData[mis.mission].loitertime * flights * CampaignMinutes;
-        		else
-        			mis.tot += (CampaignTime)((flights) * 10 *CampaignSeconds);
+        /* if (MissionData[mis.mission].loitertime)
+         mis.tot += MissionData[mis.mission].loitertime * flights * CampaignMinutes;
+         else
+         mis.tot += (CampaignTime)((flights) * 10 *CampaignSeconds);
         */
         if (flights)
             mis.tot += MissionData[mis.mission].separation * CampaignSeconds;
@@ -2431,8 +2431,8 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
 
         if (mis.mission == AMIS_AIRCAV)
         {
-            Unit		unit = (Unit) vuDatabase->Find(mis.requesterID);
-            GridIndex	ux, uy;
+            Unit unit = (Unit) vuDatabase->Find(mis.requesterID);
+            GridIndex ux, uy;
 
             if (unit)
             {
@@ -2450,8 +2450,8 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
         if (error != PRET_SUCCESS)
         {
             // Show an error message box notifying user this action was not able to be performed
-            // Errors are:	PRET_NO_ASSETS - The aircraft wern't available
-            //				PRET_ABORTED - Timing was impossible (takeoff before current time, for example)
+            // Errors are: PRET_NO_ASSETS - The aircraft wern't available
+            // PRET_ABORTED - Timing was impossible (takeoff before current time, for example)
             MonoPrint("Error planning flight. Aborting\n");
             AreYouSure(TXT_FLIGHT_CANCELED, TXT_ERROR, CloseWindowCB, CloseWindowCB);
             new_package->CancelFlight(new_flight);
@@ -2539,7 +2539,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
     display_air_units(new_flight);
     new_flight = NULL;
     // MN 2002-01-04 show up the flight faster
-    //	RefreshMapOnChange();
+    // RefreshMapOnChange();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2548,7 +2548,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
 
 void display_air_units(Unit u)
 {
-    int			stype;
+    int stype;
     C_PopupList *menu;
 
     menu = gPopupMgr->GetMenu(MAP_POP);
@@ -2632,11 +2632,11 @@ void tactical_cancel_package(long, short hittype, C_Base *ctrl)
 // The id passed in should be the id of any objective we clicked on
 void tactical_add_battalion(VU_ID id, C_Base *caller)
 {
-    C_ListBox		*lbox = NULL;
-    C_Window		*win = NULL;
-    short			x = 0, y = 0;
-    float			mx, my, maxy, scale;
-    CampBaseClass	*ent = NULL;
+    C_ListBox *lbox = NULL;
+    C_Window *win = NULL;
+    short x = 0, y = 0;
+    float mx, my, maxy, scale;
+    CampBaseClass *ent = NULL;
 
     win = gMainHandler->FindWindow(NEW_BATT_WIN);
 
@@ -2712,8 +2712,8 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
 
 Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, GridIndex y)
 {
-    Objective		o = (Objective)vuDatabase->Find(current_obj);
-    //float			last=-1.0F;
+    Objective o = (Objective)vuDatabase->Find(current_obj);
+    //float last=-1.0F;
 
     // Non-mobile battalions always snap to their objectives
     // So clear their objective
@@ -2726,13 +2726,13 @@ Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, Grid
     // Snap battalion to nearest objective
     /*KCK: Commented out as per a beta-tester request. Let's see how it works
     if (bat->GetUnitNormalRole() == GRO_AIRDEFENSE)
-    	{
-    	// Air defense units need to snap to SAM sites
-    	if (!o)
-    		o = FindNearestObjective(x,y,&last,999);
-    	while (o && !o->SamSite())
-    		o = FindNearestObjective(x,y,&last,999);
-    	}
+     {
+     // Air defense units need to snap to SAM sites
+     if (!o)
+     o = FindNearestObjective(x,y,&last,999);
+     while (o && !o->SamSite())
+     o = FindNearestObjective(x,y,&last,999);
+     }
     */
     if (!o)
     {
@@ -2744,10 +2744,10 @@ Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, Grid
 
 void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 {
-    Objective		o;
-    WayPoint		wp, nw;
-    GridIndex		x, y, xd, yd;
-    int				role, oldgs;
+    Objective o;
+    WayPoint wp, nw;
+    GridIndex x, y, xd, yd;
+    int role, oldgs;
 
     o = FindValidObjective(bat, obj, tx, ty);
 
@@ -2824,10 +2824,10 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
     // If we don't own this unit, send the orders to the host
     if (!bat->IsLocal())
     {
-        FalconSessionEntity		*host = (FalconSessionEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
-        FalconCampDataMessage	*msg = new FalconCampDataMessage(bat->Id(), host);
-        uchar					*dataptr;
-        VU_ID					tmpId;
+        FalconSessionEntity *host = (FalconSessionEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+        FalconCampDataMessage *msg = new FalconCampDataMessage(bat->Id(), host);
+        uchar *dataptr;
+        VU_ID tmpId;
 
         msg->dataBlock.type = FalconCampDataMessage::campOrdersData;
         // Encode objective and location
@@ -2864,10 +2864,10 @@ void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty)
 
 void tactical_create_battalion(long, short hittype, C_Base *)
 {
-    Battalion		new_battalion;
-    int				tid;
-    Objective		o;
-    GridIndex		x, y;
+    Battalion new_battalion;
+    int tid;
+    Objective o;
+    GridIndex x, y;
 
     LoadTEUnits();
 
@@ -2940,7 +2940,7 @@ void tactical_cancel_battalion(long, short hittype, C_Base *)
 
 static void set_battalion_table_of_equipment(long, short hittype, C_Base *ctrl)
 {
-    C_ListBox		*list;
+    C_ListBox *list;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -2953,7 +2953,7 @@ static void set_battalion_table_of_equipment(long, short hittype, C_Base *ctrl)
 
 static void set_battalion_type(long, short hittype, C_Base *ctrl)
 {
-    C_ListBox	*list;
+    C_ListBox *list;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -2968,16 +2968,16 @@ static void set_battalion_type(long, short hittype, C_Base *ctrl)
 
 static void update_new_battalion_window(void)
 {
-    C_Window		*win;
-    C_Text			*text;
-    C_ListBox		*list;
-    UnitClassDataType		*uc;
-    VehicleClassDataType	*vc;
-    short			types[VEHICLE_GROUPS_PER_UNIT];
-    static int		batt[8] = {BATT_VEH1, BATT_VEH2, BATT_VEH3, BATT_VEH4, BATT_VEH5, BATT_VEH6, BATT_VEH7, BATT_VEH8};
-    static int		last_equip = -1;
-    int				num[VEHICLE_GROUPS_PER_UNIT], tid, equipment = -1, prev, loop;
-    _TCHAR			buffer[100];
+    C_Window *win;
+    C_Text *text;
+    C_ListBox *list;
+    UnitClassDataType *uc;
+    VehicleClassDataType *vc;
+    short types[VEHICLE_GROUPS_PER_UNIT];
+    static int batt[8] = {BATT_VEH1, BATT_VEH2, BATT_VEH3, BATT_VEH4, BATT_VEH5, BATT_VEH6, BATT_VEH7, BATT_VEH8};
+    static int last_equip = -1;
+    int num[VEHICLE_GROUPS_PER_UNIT], tid, equipment = -1, prev, loop;
+    _TCHAR buffer[100];
 
     win = gMainHandler->FindWindow(NEW_BATT_WIN);
 
@@ -3199,7 +3199,7 @@ void tactical_remove_squadron(SquadronClass *squadron)
                 flight->GetUnitPackage()->GetCampID()
             );
 
-            //			gMapMgr->SetWaypointList (flight->Id ());
+            // gMapMgr->SetWaypointList (flight->Id ());
 
             if (flight->GetUnitSquadron() == squadron)
             {

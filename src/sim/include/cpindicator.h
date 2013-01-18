@@ -8,8 +8,8 @@ extern MEM_POOL gCockMemPool;
 #endif
 
 
-#define IND_VERTICAL		0
-#define IND_HORIZONTAL	1
+#define IND_VERTICAL 0
+#define IND_HORIZONTAL 1
 
 class CPObject;
 //====================================================//
@@ -28,17 +28,17 @@ typedef struct
 
 typedef struct
 {
-    int	numTapes;
-    float	minVal;
-    int*	minPos;
-    float	maxVal;
-    int*	maxPos;
-    int	orientation;
-    RECT*	pdestRect;
-    RECT*	psrcRect;
+    int numTapes;
+    float minVal;
+    int* minPos;
+    float maxVal;
+    int* maxPos;
+    int orientation;
+    RECT* pdestRect;
+    RECT* psrcRect;
     int calibrationVal;
 
-    SourceIndicatorType *sourceindicator;	//Wombat778 3-22-04
+    SourceIndicatorType *sourceindicator; //Wombat778 3-22-04
 } IndicatorInitStr;
 
 //====================================================//
@@ -65,32 +65,32 @@ public:
     // Tape Properties
     //====================================================//
 
-    int	mNumTapes;
-    float	mMinVal;
-    float	mMaxVal;
-    int	mOrientation;
+    int mNumTapes;
+    float mMinVal;
+    float mMaxVal;
+    int mOrientation;
 
-    float	*mPixelSlope;
-    float	*mPixelIntercept;
-
-    //====================================================//
-    // Dimensions and Locations
-    //====================================================//
-
-    RECT				*mpDestRects;
-    RECT				*mpDestLocs;
-    RECT				*mpSrcLocs;
-    RECT				*mpSrcRects;
-
-    int				*mHeightTapeRect;
-    int				*mWidthTapeRect;
+    float *mPixelSlope;
+    float *mPixelIntercept;
 
     //====================================================//
     // Dimensions and Locations
     //====================================================//
 
-    float				*mpTapeValues;
-    int				mCalibrationVal;
+    RECT *mpDestRects;
+    RECT *mpDestLocs;
+    RECT *mpSrcLocs;
+    RECT *mpSrcRects;
+
+    int *mHeightTapeRect;
+    int *mWidthTapeRect;
+
+    //====================================================//
+    // Dimensions and Locations
+    //====================================================//
+
+    float *mpTapeValues;
+    int mCalibrationVal;
 
     //====================================================//
     // Pointers to Runtime Member Functions
@@ -98,10 +98,10 @@ public:
 
     virtual void Exec(SimBaseClass*);
     virtual void DisplayBlit(void);
-    void	  	DisplayBlit3D();			//Wombat778 3-22-04
+    void    DisplayBlit3D(); //Wombat778 3-22-04
 
     //Wombat778 3-22-04 Stuff for rendered indicators
-    SourceIndicatorType		*mpSourceBuffer;
+    SourceIndicatorType *mpSourceBuffer;
     virtual void CreateLit(void);
     virtual void DiscardLit(void);
     //Wombat778 End

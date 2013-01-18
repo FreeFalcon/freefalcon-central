@@ -26,7 +26,7 @@
 
 FalconATCMessage::FalconATCMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(ATCMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
-    //me123	RequestOutOfBandTransmit ();
+    //me123 RequestOutOfBandTransmit ();
     RequestReliableTransmit(); //me123
 }
 
@@ -47,7 +47,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
         return;
     }
 
-    Objective	o = (Objective)(flight->GetUnitAirbase());
+    Objective o = (Objective)(flight->GetUnitAirbase());
 
     // JBLOOK Added by M.N. for now to prevent CTD
     // when user issues "Inbound" on a carrier
@@ -80,13 +80,13 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
             case 0:
                 radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND1, FalconLocalGame);
                 //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
-                radioMessage->dataBlock.edata[4]	= 32767;
-                radioMessage->dataBlock.edata[5]	= (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
+                radioMessage->dataBlock.edata[4] = 32767;
+                radioMessage->dataBlock.edata[5] = (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[6]	= 4;
+                    radioMessage->dataBlock.edata[6] = 4;
                 else
-                    radioMessage->dataBlock.edata[6]	= -1;
+                    radioMessage->dataBlock.edata[6] = -1;
 
                 break;
 
@@ -95,7 +95,7 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
 
                 if (rand() % 2)
                 {
-                    radioMessage->dataBlock.edata[3]	= (short)(rand() % 3);
+                    radioMessage->dataBlock.edata[3] = (short)(rand() % 3);
                 }
                 else
                 {
@@ -110,27 +110,27 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
                     else
                         tod = 1;
 
-                    radioMessage->dataBlock.edata[3]	= (short)(3 + tod + (rand() % 3) * 3);
+                    radioMessage->dataBlock.edata[3] = (short)(3 + tod + (rand() % 3) * 3);
                 }
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[4]	= 4;
+                    radioMessage->dataBlock.edata[4] = 4;
                 else
-                    radioMessage->dataBlock.edata[4]	= -1;
+                    radioMessage->dataBlock.edata[4] = -1;
 
                 break;
 
             case 2:
                 radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND3, FalconLocalGame);
-                radioMessage->dataBlock.edata[4]	= -1;
-                radioMessage->dataBlock.edata[5]	= -1;
-                radioMessage->dataBlock.edata[6]	= 32767;
-                radioMessage->dataBlock.edata[7]	= (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
+                radioMessage->dataBlock.edata[4] = -1;
+                radioMessage->dataBlock.edata[5] = -1;
+                radioMessage->dataBlock.edata[6] = 32767;
+                radioMessage->dataBlock.edata[7] = (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[8]	= 4;
+                    radioMessage->dataBlock.edata[8] = 4;
                 else
-                    radioMessage->dataBlock.edata[8]	= -1;
+                    radioMessage->dataBlock.edata[8] = -1;
 
                 break;
         }
@@ -140,17 +140,17 @@ void HandleInboundFlight(ObjectiveClass *atc, Flight flight)
     }
     else
     {
-        VuListIterator		flightIter(flight->GetComponents());
+        VuListIterator flightIter(flight->GetComponents());
         aircraft = (AircraftClass*) flightIter.GetFirst();
 
         while (aircraft)
         {
             //all runways destroyed, divert 'em
             FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(aircraft->Id(), FalconLocalGame);
-            ATCCmdMessage->dataBlock.from		= atc->Id();
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Divert;
-            ATCCmdMessage->dataBlock.rwindex	= 0;
-            FalconSendMessage(ATCCmdMessage, FALSE);						// Send it
+            ATCCmdMessage->dataBlock.from = atc->Id();
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Divert;
+            ATCCmdMessage->dataBlock.rwindex = 0;
+            FalconSendMessage(ATCCmdMessage, FALSE); // Send it
             aircraft = (AircraftClass*) flightIter.GetNext();
         }
     }
@@ -185,13 +185,13 @@ void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
         {
             case 0:
                 radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND1, FalconLocalGame);
-                radioMessage->dataBlock.edata[4]	= 32767;
-                radioMessage->dataBlock.edata[5]	= (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
+                radioMessage->dataBlock.edata[4] = 32767;
+                radioMessage->dataBlock.edata[5] = (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[6]	= 4;
+                    radioMessage->dataBlock.edata[6] = 4;
                 else
-                    radioMessage->dataBlock.edata[6]	= -1;
+                    radioMessage->dataBlock.edata[6] = -1;
 
                 break;
 
@@ -200,7 +200,7 @@ void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
 
                 if (rand() % 2)
                 {
-                    radioMessage->dataBlock.edata[3]	= (short)(rand() % 3);
+                    radioMessage->dataBlock.edata[3] = (short)(rand() % 3);
                 }
                 else
                 {
@@ -215,27 +215,27 @@ void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
                     else
                         tod = 1;
 
-                    radioMessage->dataBlock.edata[3]	= (short)(3 + tod + (rand() % 3) * 3);
+                    radioMessage->dataBlock.edata[3] = (short)(3 + tod + (rand() % 3) * 3);
                 }
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[4]	= 4;
+                    radioMessage->dataBlock.edata[4] = 4;
                 else
-                    radioMessage->dataBlock.edata[4]	= -1;
+                    radioMessage->dataBlock.edata[4] = -1;
 
                 break;
 
             case 2:
                 radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND3, FalconLocalGame);
-                radioMessage->dataBlock.edata[4]	= -1;
-                radioMessage->dataBlock.edata[5]	= -1;
-                radioMessage->dataBlock.edata[6]	= 32767;
-                radioMessage->dataBlock.edata[7]	= (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
+                radioMessage->dataBlock.edata[4] = -1;
+                radioMessage->dataBlock.edata[5] = -1;
+                radioMessage->dataBlock.edata[6] = 32767;
+                radioMessage->dataBlock.edata[7] = (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(index));
 
                 if (rand() % 2)
-                    radioMessage->dataBlock.edata[8]	= 4;
+                    radioMessage->dataBlock.edata[8] = 4;
                 else
-                    radioMessage->dataBlock.edata[8]	= -1;
+                    radioMessage->dataBlock.edata[8] = -1;
 
                 break;
         }
@@ -247,10 +247,10 @@ void HandleInbound(ObjectiveClass *atc, AircraftClass *aircraft)
     {
         //all runways destroyed, divert 'em
         FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(aircraft->Id(), FalconLocalGame);
-        ATCCmdMessage->dataBlock.from		= atc->Id();
-        ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Divert;
-        ATCCmdMessage->dataBlock.rwindex	= 0;
-        FalconSendMessage(ATCCmdMessage, FALSE);						// Send it
+        ATCCmdMessage->dataBlock.from = atc->Id();
+        ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Divert;
+        ATCCmdMessage->dataBlock.rwindex = 0;
+        FalconSendMessage(ATCCmdMessage, FALSE); // Send it
     }
 }
 
@@ -266,7 +266,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
     float cosAngle = 0.0F, dx = 0.0F, dy = 0.0F, finalHdg = 0.0F;
     float finalX = 0.0F, finalY = 0.0F, baseX = 0.0F, baseY = 0.0F, x = 0.0F , y = 0.0F, z = 0.0F, dist = 0.0F;
-    int	taxiPoint = 0, tod = 0, time_in_minutes = 0;
+    int taxiPoint = 0, tod = 0, time_in_minutes = 0;
     int delay = 7 * CampaignSeconds;
 
     if (!PlayerOptions.PlayerRadioVoice)
@@ -275,7 +275,7 @@ int FalconATCMessage::Process(uchar autodisp)
     if (aircraft && aircraft->IsAirplane())
     {
         DigitalBrain *acBrain = aircraft->DBrain();
-        ATCBrain*	atcBrain = NULL;
+        ATCBrain* atcBrain = NULL;
 
         if (atc)
         {
@@ -333,7 +333,7 @@ int FalconATCMessage::Process(uchar autodisp)
                                 {
                                     //note this comm should be rcOUTSIDEAIRSPACE, but Joe misnamed it
                                     radioMessage = CreateCallFromATC(atc, aircraft, rcOUTSIDEAIRSPEED, FalconLocalGame);
-                                    radioMessage->dataBlock.edata[4]	= (short)(rand() % 2);
+                                    radioMessage->dataBlock.edata[4] = (short)(rand() % 2);
                                     radioMessage->dataBlock.time_to_play = delay;
                                     atcBrain->RemoveTraffic(aircraft->Id(), PtHeaderDataTable[info->rwindex].runwayNum);
                                 }
@@ -357,13 +357,13 @@ int FalconATCMessage::Process(uchar autodisp)
                                     ShiWarning("This should never happen!");
                                     radioMessage = CreateCallFromATC(atc, aircraft, rcCONTINUEINBOUND1, FalconLocalGame);
                                     //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
-                                    radioMessage->dataBlock.edata[4]	= 32767;
-                                    radioMessage->dataBlock.edata[5]	= (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(info->rwindex));
+                                    radioMessage->dataBlock.edata[4] = 32767;
+                                    radioMessage->dataBlock.edata[5] = (short)atcBrain->GetRunwayName(atcBrain->GetOppositeRunway(info->rwindex));
 
                                     if (rand() % 2)
-                                        radioMessage->dataBlock.edata[6]	= 4;
+                                        radioMessage->dataBlock.edata[6] = 4;
                                     else
-                                        radioMessage->dataBlock.edata[6]	= -1;
+                                        radioMessage->dataBlock.edata[6] = -1;
 
                                     break;
 
@@ -439,7 +439,7 @@ int FalconATCMessage::Process(uchar autodisp)
 
                             if (rand() % 2)
                             {
-                                radioMessage->dataBlock.edata[3]	= (short)(rand() % 3);
+                                radioMessage->dataBlock.edata[3] = (short)(rand() % 3);
                             }
                             else
                             {
@@ -454,13 +454,13 @@ int FalconATCMessage::Process(uchar autodisp)
                                 else
                                     tod = 1;
 
-                                radioMessage->dataBlock.edata[3]	= (short)(3 + tod + (rand() % 3) * 3);
+                                radioMessage->dataBlock.edata[3] = (short)(3 + tod + (rand() % 3) * 3);
                             }
 
                             if (rand() % 2)
-                                radioMessage->dataBlock.edata[4]	= 4;
+                                radioMessage->dataBlock.edata[4] = 4;
                             else
-                                radioMessage->dataBlock.edata[4]	= -1;
+                                radioMessage->dataBlock.edata[4] = -1;
 
                             atcBrain->SendCmdMessage(aircraft, info);
                         }
@@ -485,7 +485,7 @@ int FalconATCMessage::Process(uchar autodisp)
                             {
                                 AircraftClass *element = NULL;
                                 Flight flight = (Flight)aircraft->GetCampaignObject();
-                                VuListIterator	flightIter(flight->GetComponents());
+                                VuListIterator flightIter(flight->GetComponents());
                                 element = (AircraftClass*) flightIter.GetFirst();
 
                                 while (element)
@@ -528,7 +528,7 @@ int FalconATCMessage::Process(uchar autodisp)
                         {
                             //note this comm should be rcOUTSIDEAIRSPACE, but Joe misnamed it
                             radioMessage = CreateCallFromATC(atc, aircraft, rcOUTSIDEAIRSPEED, FalconLocalGame);
-                            radioMessage->dataBlock.edata[4]	= (short)(rand() % 2);
+                            radioMessage->dataBlock.edata[4] = (short)(rand() % 2);
                             radioMessage->dataBlock.time_to_play = delay;
                             FalconSendMessage(radioMessage, TRUE);
                         }

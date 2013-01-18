@@ -18,8 +18,8 @@ public:
     };
 #endif
 private:
-    short		Count_;
-    O_Output	*Data_;
+    short Count_;
+    O_Output *Data_;
 
     long ImageID_[_HIST_MAX_TEAMS_];
 

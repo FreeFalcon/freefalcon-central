@@ -34,8 +34,8 @@ UI_RequestAircraftSlot::~UI_RequestAircraftSlot()
 
 int UI_RequestAircraftSlot::Process(uchar autodisp)
 {
-    Flight				flight;
-    int					retval = FALSE;
+    Flight flight;
+    int retval = FALSE;
 
     if (autodisp || !FalconLocalGame)
     {
@@ -161,9 +161,9 @@ int UI_RequestAircraftSlot::ChangeFlightType(Flight flight)
     MonoPrint("Request Type Change %08x To %d\n", flight, dataBlock.requested_type);
     flight->SetEntityType(dataBlock.requested_type);
     flight->class_data = (UnitClassDataType*) Falcon4ClassTable[dataBlock.requested_type - VU_LAST_ENTITY_TYPE].dataPtr;
-    //	Falcon4EntityClassType*	classPtr = (Falcon4EntityClassType*)&Falcon4ClassTable[dataBlock.requested_type-VU_LAST_ENTITY_TYPE];
-    //	flight->SetUnitSType(classPtr->vuClassData.classInfo_[VU_STYPE]);
-    //	flight->SetUnitSPType(classPtr->vuClassData.classInfo_[VU_SPTYPE]);
+    // Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)&Falcon4ClassTable[dataBlock.requested_type-VU_LAST_ENTITY_TYPE];
+    // flight->SetUnitSType(classPtr->vuClassData.classInfo_[VU_STYPE]);
+    // flight->SetUnitSPType(classPtr->vuClassData.classInfo_[VU_SPTYPE]);
     SimDogfight.ApplySettingsToFlight(flight);
     flight->DoFullUpdate();
     UI_Refresh();
@@ -187,7 +187,7 @@ int UI_RequestAircraftSlot::ChangePilotSkill(Flight flight)
     {
         flight->pilots[dataBlock.requested_slot] = dataBlock.requested_skill;
         flight->MakeFlightDirty(DIRTY_PILOTS, DDP[152].priority);
-        //	flight->MakeFlightDirty (DIRTY_PILOTS, SEND_RELIABLE);
+        // flight->MakeFlightDirty (DIRTY_PILOTS, SEND_RELIABLE);
     }
 
     // KCK TODO: Dirty flight, so new skill will be sent.
@@ -221,7 +221,7 @@ int UI_RequestAircraftSlot::EmptyFlightSlot(Flight flight)
         if (flight->GetTotalVehicles() < 1)
         {
             RegroupFlight(flight);
-            vuDatabase->Remove(flight);		// Also, remove it from database immediately
+            vuDatabase->Remove(flight); // Also, remove it from database immediately
         }
     }
 
@@ -234,9 +234,9 @@ int UI_RequestAircraftSlot::EmptyFlightSlot(Flight flight)
 
 int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
 {
-    FalconSessionEntity	*requester = (FalconSessionEntity*)vuDatabase->Find(dataBlock.requesting_session);
+    FalconSessionEntity *requester = (FalconSessionEntity*)vuDatabase->Find(dataBlock.requesting_session);
     UI_SendAircraftSlot *msg = NULL;
-    int					i, got_slot = -1, retval = 0;
+    int i, got_slot = -1, retval = 0;
 
     if (!requester)
     {
@@ -258,7 +258,7 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
             flight->SetOwner(dataBlock.team);
             flight->SetLocation(0, 0);
             flight->SetUnitDestination(0, 0);
-            //			flight->SetFinal(1);
+            // flight->SetFinal(1);
             flight->SetUnitMissionID(AMIS_SWEEP);
             flight->SetFalcFlag(FEC_REGENERATING);
             flight->last_player_slot = PILOTS_PER_FLIGHT;
@@ -285,9 +285,9 @@ int UI_RequestAircraftSlot::AddFlightSlot(Flight flight)
     {
         MonoPrint("R %08x %d %d : ", requester->GetPlayerFlight(), requester->GetAircraftNum(), requester->GetPilotSlot());
         // Get rid of any previous slot.
-        Flight	oldflight = requester->GetAssignedPlayerFlight();
-        int		oldreq = dataBlock.requested_slot;
-        int		oldslt = dataBlock.current_pilot_slot;
+        Flight oldflight = requester->GetAssignedPlayerFlight();
+        int oldreq = dataBlock.requested_slot;
+        int oldslt = dataBlock.current_pilot_slot;
         dataBlock.requested_slot = requester->GetAssignedAircraftNum();
         dataBlock.current_pilot_slot = requester->GetAssignedPilotSlot();
 

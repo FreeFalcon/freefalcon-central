@@ -32,7 +32,7 @@ protected:
     int dyingType;
     enum
     {
-        DIE_SMOKE		= 0,
+        DIE_SMOKE = 0,
         DIE_FIREBALL,
         DIE_SHORT_FIREBALL,
         DIE_INTERMITTENT_FIRE,
@@ -64,8 +64,8 @@ public:
     SOI GetSOI(void)
     {
         return curSOI;
-    };	//MI
-    void StepSOI(int dir);	//MI
+    }; //MI
+    void StepSOI(int dir); //MI
 
     BaseBrain* Brain(void)
     {
@@ -116,7 +116,7 @@ public:
     virtual float GetRCSFactor(void);
     virtual float GetIRFactor(void);
     virtual int GetRadarType(void);
-    virtual long	GetTotalFuel(void)
+    virtual long GetTotalFuel(void)
     {
         return -1;
     }; // KCK: -1 means "unfueled vehicle"
@@ -143,8 +143,8 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     // event handlers
     virtual int Handle(VuFullUpdateEvent *event);

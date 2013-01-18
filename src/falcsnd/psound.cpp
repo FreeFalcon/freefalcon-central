@@ -36,15 +36,15 @@ extern "C"
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
-#define FS_OPEN			RES_FOPEN
-#define FS_READ			RES_FREAD
-#define FS_CLOSE		RES_FCLOSE
-#define FS_HANDLE		FILE *
+#define FS_OPEN RES_FOPEN
+#define FS_READ RES_FREAD
+#define FS_CLOSE RES_FCLOSE
+#define FS_HANDLE FILE *
 #else
-#define FS_OPEN			fopen
-#define FS_READ			fread
-#define FS_CLOSE		fclose
-#define FS_HANDLE		FILE *
+#define FS_OPEN fopen
+#define FS_READ fread
+#define FS_CLOSE fclose
+#define FS_HANDLE FILE *
 #endif
 
 // SORRY, STREAMING NOT ALLOWED in RESMGR (it decompressed the entire thing to a buffer)
@@ -106,18 +106,18 @@ CSoundMgr::~CSoundMgr()
 
 // Sound Installation / Removal functions
 //
-// Priority:	DSSCL_NORMAL (Lowest)	- Lets any APP use DSound when in focus
-//				DSSCL_PRIORITY			-
-//				DSSCL_EXCLUSIVE			-
-//				DSSCL_WRITEPRIMARY		-
+// Priority: DSSCL_NORMAL (Lowest) - Lets any APP use DSound when in focus
+// DSSCL_PRIORITY -
+// DSSCL_EXCLUSIVE -
+// DSSCL_WRITEPRIMARY -
 // Use DSSCL_NORMAL for now...
 //
 BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
 {
     HRESULT res;
     DSBUFFERDESC        dsbdesc;
-    //	DWORD Speakers;
-    //	DSCAPS dscaps;
+    // DWORD Speakers;
+    // DSCAPS dscaps;
 
     if (gSoundDriver)
     {
@@ -200,36 +200,36 @@ BOOL CSoundMgr::InstallDSound(HWND hwnd, DWORD Priority, WAVEFORMATEX *fmt)
             DSoundCheck(res);
 
         /*
-        		memset(&dscaps,0,sizeof(DSCAPS));
-        		dscaps.dwSize=sizeof(DSCAPS);
-        		res=DSound->GetCaps(&dscaps);
-        		if(res != DS_OK)
-        			DSoundCheck(res);
+         memset(&dscaps,0,sizeof(DSCAPS));
+         dscaps.dwSize=sizeof(DSCAPS);
+         res=DSound->GetCaps(&dscaps);
+         if(res != DS_OK)
+         DSoundCheck(res);
 
-        		res=lpNewDSBuf->GetFormat(fmt,sizeof(WAVEFORMATEX),&size);
-        		if(res != DS_OK)
-        			DSoundCheck(res);
+         res=lpNewDSBuf->GetFormat(fmt,sizeof(WAVEFORMATEX),&size);
+         if(res != DS_OK)
+         DSoundCheck(res);
 
-        		DSound->GetSpeakerConfig(&Speakers);
+         DSound->GetSpeakerConfig(&Speakers);
 
-        		switch(DSSPEAKER_CONFIG(Speakers))
-        		{
-        			case DSSPEAKER_HEADPHONE:
-        				res=1;
-        				break;
-        			case DSSPEAKER_MONO:
-        				res=2;
-        				break;
-        			case DSSPEAKER_QUAD:
-        				res=3;
-        				break;
-        			case DSSPEAKER_STEREO:
-        				res=4;
-        				break;
-        			case DSSPEAKER_SURROUND:
-        				res=5;
-        				break;
-        		}
+         switch(DSSPEAKER_CONFIG(Speakers))
+         {
+         case DSSPEAKER_HEADPHONE:
+         res=1;
+         break;
+         case DSSPEAKER_MONO:
+         res=2;
+         break;
+         case DSSPEAKER_QUAD:
+         res=3;
+         break;
+         case DSSPEAKER_STEREO:
+         res=4;
+         break;
+         case DSSPEAKER_SURROUND:
+         res=5;
+         break;
+         }
         */
 
         res = DSound->SetCooperativeLevel(hwnd, Priority);
@@ -639,9 +639,9 @@ long CSoundMgr::LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize
     if (bytesread < totalsize)
     {
         *HeaderSize = bytesread;
-        //		if(Format->wFormatTag == WAVE_FORMAT_IMA_ADPCM)
-        //			return((*SampleCount) * Format->nChannels * Format->wBitsPerSample/8);
-        //		else
+        // if(Format->wFormatTag == WAVE_FORMAT_IMA_ADPCM)
+        // return((*SampleCount) * Format->nChannels * Format->wBitsPerSample/8);
+        // else
         return(size);
     }
 
@@ -711,7 +711,7 @@ long CSoundMgr::LoadWaveFile(char *Filename, long Flags, SFX_DEF_ENTRY *sfx)
                 else
                 {
                     // other sounds have other requirements
-                    dsbdesc.dwFlags =	DSBCAPS_CTRLPAN |
+                    dsbdesc.dwFlags = DSBCAPS_CTRLPAN |
                                         DSBCAPS_CTRLVOLUME |
                                         DSBCAPS_CTRLFREQUENCY |
                                         DSBCAPS_GETCURRENTPOSITION2 ; // Need default controls (pan, volume, frequency).
@@ -931,33 +931,33 @@ BOOL CSoundMgr::PlaySample(long ID, long Flags)
                 /*
                 if(IsSamplePlaying(ID,0) && !(Flags & SND_OVERRIDE))
                 {
-                	if(Sample->Flags & SND_EXCLUSIVE)
-                		return(FALSE);
+                 if(Sample->Flags & SND_EXCLUSIVE)
+                 return(FALSE);
 
-                	//Sample=AddDuplicateSample(Sample);
+                 //Sample=AddDuplicateSample(Sample);
 
-                	// only play first sample;
-                	int i=0; //for(int i=0;i<Sample->DS3DBufferCount;i++)
-                	{
-                		if(Sample->Buf[i].DSoundBuffer)
-                		{
-                			Sample->Buf[i].DSoundBuffer->SetCurrentPosition(0);
+                 // only play first sample;
+                 int i=0; //for(int i=0;i<Sample->DS3DBufferCount;i++)
+                 {
+                 if(Sample->Buf[i].DSoundBuffer)
+                 {
+                 Sample->Buf[i].DSoundBuffer->SetCurrentPosition(0);
 
-                			if(Flags & SND_LOOP_SAMPLE)
-                				hr = Sample->Buf[i].DSoundBuffer->Play(0,0,DSBPLAY_LOOPING);
-                			else
-                				hr = Sample->Buf[i].DSoundBuffer->Play(0,0,0);
-                			if (FAILED(hr))
-                			DSoundCheck(hr);
-                		}
-                	}
+                 if(Flags & SND_LOOP_SAMPLE)
+                 hr = Sample->Buf[i].DSoundBuffer->Play(0,0,DSBPLAY_LOOPING);
+                 else
+                 hr = Sample->Buf[i].DSoundBuffer->Play(0,0,0);
+                 if (FAILED(hr))
+                 DSoundCheck(hr);
+                 }
+                 }
 
-                	return(TRUE);
+                 return(TRUE);
                 }
                 else */
                 {
                     //if(Flags & SND_EXCLUSIVE)
-                    //	Sample->Flags = SND_EXCLUSIVE;
+                    // Sample->Flags = SND_EXCLUSIVE;
                     // only play 1st sample
                     int i = 0; //for(int i=0;i<Sample->DS3DBufferCount;i++)
                     {
@@ -1042,17 +1042,17 @@ BOOL CSoundMgr::SetSamplePitch(long ID, float NewPitch)
 
     if(gSoundDriver)
     {
-    	if(DSound)
-    	{
-    		Sample=FindSample(ID);
-    		if(Sample != NULL)
-    		{
-    			Frequency=(long)(Sample->Frequency * NewPitch);
+     if(DSound)
+     {
+     Sample=FindSample(ID);
+     if(Sample != NULL)
+     {
+     Frequency=(long)(Sample->Frequency * NewPitch);
             Frequency = min ( max (DSBFREQUENCY_MIN, Frequency), DSBFREQUENCY_MAX);
-    			Sample->Buf[0].DSoundBuffer->SetFrequency(Frequency);
-    			return(TRUE);
-    		}
-    	}
+     Sample->Buf[0].DSoundBuffer->SetFrequency(Frequency);
+     return(TRUE);
+     }
+     }
     }
     return(FALSE);
     */
@@ -1187,31 +1187,31 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float vx, 
 }
 #endif
 /***********************************************************************
-	SetSamplePosition()
+ SetSamplePosition()
 
-	this function puts the sound data in Buf,
-	it doesn't get sent to a DSound3DBuffer/DSoundBuffer
-	until AssignSamples() below.
+ this function puts the sound data in Buf,
+ it doesn't get sent to a DSound3DBuffer/DSoundBuffer
+ until AssignSamples() below.
 
-	Pass in postion and velocities.
+ Pass in postion and velocities.
 
-	Since the sound system is only updated at 20hz (20fps)
-	it's very likely that an object will call upon a specific LOOPING sound
-	several times before it is actually updated.
+ Since the sound system is only updated at 20hz (20fps)
+ it's very likely that an object will call upon a specific LOOPING sound
+ several times before it is actually updated.
 
-	uid is used to prevent an object from playing the same LOOPING sound effect
-	multiple times per frame.
+ uid is used to prevent an object from playing the same LOOPING sound effect
+ multiple times per frame.
 
-	the uid also allows for the object to play from the same DSoundBuffer
-	where possible.
+ the uid also allows for the object to play from the same DSoundBuffer
+ where possible.
 
     For non-looping sounds, I presume that each sound is invoked one time,
-	and not multiple times as looping sounds are.  Therefore each call to
-	this function on a non-looping sound, should create another instance of
-	that sound.
+ and not multiple times as looping sounds are.  Therefore each call to
+ this function on a non-looping sound, should create another instance of
+ that sound.
 
-	Notes:
-	  Buf[].distsq is set to -1 when the buffer is unused.
+ Notes:
+   Buf[].distsq is set to -1 when the buffer is unused.
 *************************************************************************/
 BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitch, float vol,
                                   float vx, float vy, float vz, float dsq, int uid, int is3d)
@@ -1376,9 +1376,9 @@ BOOL CSoundMgr::SetSamplePosition(long ID, float x, float y, float z, float pitc
 
 
 /**************************************************************
-	This assigns the buffered sound calls to the DSoundBuffers,
-	Plays & Stops the buffers as needed and marks the buffers as
-	unused for the next update.
+ This assigns the buffered sound calls to the DSoundBuffers,
+ Plays & Stops the buffers as needed and marks the buffers as
+ unused for the next update.
 ***************************************************************/
 void CSoundMgr::AssignSamples(void)
 {
@@ -1696,7 +1696,7 @@ void CSoundMgr::AssignSamples(void)
 
 
 #ifdef SNDLOG
-                                                fprintf(fp, "  Delayed Play (distance effect - distsq=%f.4 time=%f.4)\n",	S->Buf[i].distsq ,  time * (1100 * 1100));
+                                                fprintf(fp, "  Delayed Play (distance effect - distsq=%f.4 time=%f.4)\n", S->Buf[i].distsq ,  time * (1100 * 1100));
 #endif
                                             }
                                         }
@@ -1710,8 +1710,8 @@ void CSoundMgr::AssignSamples(void)
                                         MonoPrint("    Playing Looped - Vol:%f  Freq:%f", S->Buf[i].vol, Frequency);
 #endif
 
-                                        S->Buf[i].DSoundBuffer->SetFrequency(Frequency);		 // MLR 12/22/2003 - added
-                                        S->Buf[i].DSoundBuffer->SetVolume((long)S->Buf[i].vol);	 // MLR 12/18/2003 - Added this
+                                        S->Buf[i].DSoundBuffer->SetFrequency(Frequency);  // MLR 12/22/2003 - added
+                                        S->Buf[i].DSoundBuffer->SetVolume((long)S->Buf[i].vol);  // MLR 12/18/2003 - Added this
                                         S->Buf[i].DSoundBuffer->SetCurrentPosition(0);
                                         S->Buf[i].DSoundBuffer->Play(0, 0, 0);
                                         S->Buf[i].distsq = -1;
@@ -1903,7 +1903,7 @@ SoundList *CSoundMgr::AddDuplicateSample(SoundList *Sample)
             Cur = Cur->Next;
         }
 
-        //		New=(SoundList *)malloc(sizeof(SoundList));
+        // New=(SoundList *)malloc(sizeof(SoundList));
 #ifdef USE_SH_POOLS
         New = (SoundList *)MemAllocPtr(gSoundMemPool, sizeof(SoundList), 0);
         memcpy(New, Sample, sizeof(SoundList));
@@ -1927,7 +1927,7 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
 {
     SoundList *Cur, *New;
 
-    //	New=(SoundList *)malloc(sizeof(SoundList));
+    // New=(SoundList *)malloc(sizeof(SoundList));
 #ifdef USE_SH_POOLS
     New = (SoundList *)MemAllocPtr(gSoundMemPool, sizeof(SoundList), 0);
 #else
@@ -1965,55 +1965,55 @@ long CSoundMgr::AddSampleToMgr(long Volume, long Frequency, long Direction, IDir
 
         /*  MLR 5/6/2004 - No need to allocate a 3D buffer
         if (g_bUse3dSound &&
-        	New->Flags & SFX_FLAGS_3D)
+         New->Flags & SFX_FLAGS_3D)
         {
-        	// create buffer here
-        	//if (FAILED(hr))
-        	//	DSoundCheck(hr);
-        	hr = New->Buf[i].DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
-        		(LPVOID *)&New->Buf[i].DSound3dBuffer);
-        	if (FAILED(hr))
-        		DSoundCheck(hr);
-        	else
-        	{
-        		d3dcount ++;
+         // create buffer here
+         //if (FAILED(hr))
+         // DSoundCheck(hr);
+         hr = New->Buf[i].DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
+         (LPVOID *)&New->Buf[i].DSound3dBuffer);
+         if (FAILED(hr))
+         DSoundCheck(hr);
+         else
+         {
+         d3dcount ++;
 
-        		hr = New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_DISABLE, DS3D_DEFERRED);
-        		if (FAILED(hr))
-        			DSoundCheck(hr);
-        		if ( sfx &&
-        			(sfx->flags & SFX_POS_EXTERN) &&
-        			(sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
-        		{
-        			float maxdist = (float)  sqrt(sfx->maxDistSq);
-        			hr = New->Buf[i].DSound3dBuffer->SetMaxDistance(maxdist, DS3D_DEFERRED);
-        			if (FAILED(hr))
-        				DSoundCheck(hr);
-        			float mindist = sfx->min3ddist;
-        			if (mindist == 0)
-        				mindist = maxdist/20.0f;
-        			hr = New->Buf[i].DSound3dBuffer->SetMinDistance(mindist, DS3D_DEFERRED);
-        			if (FAILED(hr))
-        				DSoundCheck(hr);
+         hr = New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_DISABLE, DS3D_DEFERRED);
+         if (FAILED(hr))
+         DSoundCheck(hr);
+         if ( sfx &&
+         (sfx->flags & SFX_POS_EXTERN) &&
+         (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+         {
+         float maxdist = (float)  sqrt(sfx->maxDistSq);
+         hr = New->Buf[i].DSound3dBuffer->SetMaxDistance(maxdist, DS3D_DEFERRED);
+         if (FAILED(hr))
+         DSoundCheck(hr);
+         float mindist = sfx->min3ddist;
+         if (mindist == 0)
+         mindist = maxdist/20.0f;
+         hr = New->Buf[i].DSound3dBuffer->SetMinDistance(mindist, DS3D_DEFERRED);
+         if (FAILED(hr))
+         DSoundCheck(hr);
 
 
-        			if(New->Flags & SFX_FLAGS_3D)
-        			{
-        				New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
-        			}
-        		}
-        	}
+         if(New->Flags & SFX_FLAGS_3D)
+         {
+         New->Buf[i].DSound3dBuffer->SetMode(DS3DMODE_NORMAL, DS3D_DEFERRED);
+         }
+         }
+         }
         }
         */
     }
 
     New->Next = NULL;
-    //	if(Flags & SND_EXCLUSIVE)
-    //		New->Flags |= SND_EXCLUSIVE;
-    //	if(Flags & SFX_POSITIONAL)
-    //		New->Flags |= SND_USE_3D;
-    //	if(Flags & SFX_POS_LOOPED) // MLR 12/6/2003 - commented out
-    //		New->Flags |= SND_LOOP_SAMPLE; // MLR 12/6/2003 -
+    // if(Flags & SND_EXCLUSIVE)
+    // New->Flags |= SND_EXCLUSIVE;
+    // if(Flags & SFX_POSITIONAL)
+    // New->Flags |= SND_USE_3D;
+    // if(Flags & SFX_POS_LOOPED) // MLR 12/6/2003 - commented out
+    // New->Flags |= SND_LOOP_SAMPLE; // MLR 12/6/2003 -
 
 
 
@@ -3338,7 +3338,7 @@ void CSoundMgr::ThreadHandler()
             // ok - so we loop through all streams, looking for things to do.
             for (Stream = StreamList; Stream != NULL; Stream = Stream->Next)
             {
-                if ((Stream->Status & SND_USE_THREAD) == 0) continue;			// not played on a thread
+                if ((Stream->Status & SND_USE_THREAD) == 0) continue; // not played on a thread
 
                 if (Stream->Status & SND_STREAM_DONE)
                 {
@@ -3510,31 +3510,31 @@ void CSoundMgr::DSoundCheck(HRESULT hr)
             // The call failed because resources (such as a priority level)
             // were already being used by another caller.
         case DSERR_ALLOCATED:
-            //			MessageBox(NULL,"DSERR_ALLOCATED","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_ALLOCATED","CSoundMgr",MB_OK);
             MonoPrint("DSERR_ALLOCATED");
             break;
 
             // The control (vol,pan,etc.) requested by the caller is not available.
         case DSERR_CONTROLUNAVAIL:
-            //			MessageBox(NULL,"DSERR_CONTROLUNAVAIL","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_CONTROLUNAVAIL","CSoundMgr",MB_OK);
             MonoPrint("DSERR_CONTROLUNAVAIL");
             break;
 
             // An invalid parameter was passed to the returning function
         case DSERR_INVALIDPARAM:
-            //			MessageBox(NULL,"DSERR_INVALIDPARAM","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_INVALIDPARAM","CSoundMgr",MB_OK);
             MonoPrint("DSERR_INVALIDPARAM");
             break;
 
             // This call is not valid for the current state of this object
         case DSERR_INVALIDCALL:
-            //			MessageBox(NULL,"DSERR_INVALIDCALL","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_INVALIDCALL","CSoundMgr",MB_OK);
             MonoPrint("DSERR_INVALIDCALL");
             break;
 
             // An undetermined error occured inside the DirectSound subsystem
         case DSERR_GENERIC:
-            //			MessageBox(NULL,"DSERR_GENERIC","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_GENERIC","CSoundMgr",MB_OK);
             MonoPrint("DSERR_GENERIC");
             break;
 
@@ -3542,48 +3542,48 @@ void CSoundMgr::DSoundCheck(HRESULT hr)
             // succeed.
         case DSERR_PRIOLEVELNEEDED:
             MonoPrint("DSERR_PRIOLEVELNEEDED");
-            //			MessageBox(NULL,"DSERR_PRIOLEVELNEEDED","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_PRIOLEVELNEEDED","CSoundMgr",MB_OK);
             break;
 
             // Not enough free memory is available to complete the operation
         case DSERR_OUTOFMEMORY:
-            //			MessageBox(NULL,"DSERR_OUTOFMEMORY","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_OUTOFMEMORY","CSoundMgr",MB_OK);
             MonoPrint("DSERR_OUTOFMEMORY");
             break;
 
             // The specified WAVE format is not supported
         case DSERR_BADFORMAT:
-            //			MessageBox(NULL,"DSERR_BADFORMAT","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_BADFORMAT","CSoundMgr",MB_OK);
             MonoPrint("DSERR_BADFORMAT");
             break;
 
             // The function called is not supported at this time
         case DSERR_UNSUPPORTED:
-            //			MessageBox(NULL,"DSERR_UNSUPPORTED","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_UNSUPPORTED","CSoundMgr",MB_OK);
             MonoPrint("DSERR_UNSUPPORTED");
             break;
 
             // No sound driver is available for use
         case DSERR_NODRIVER:
-            //			MessageBox(NULL,"DSERR_NODRIVER","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_NODRIVER","CSoundMgr",MB_OK);
             MonoPrint("DSERR_NODRIVER");
             break;
 
             // This object is already initialized
         case DSERR_ALREADYINITIALIZED:
-            //			MessageBox(NULL,"DSERR_ALREADYINITIALIZED","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_ALREADYINITIALIZED","CSoundMgr",MB_OK);
             MonoPrint("DSERR_ALREADYINITIALIZED");
             break;
 
             // This object does not support aggregation
         case DSERR_NOAGGREGATION:
-            //			MessageBox(NULL,"DSERR_NOAGGREGATION","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_NOAGGREGATION","CSoundMgr",MB_OK);
             MonoPrint("DSERR_NOAGGREGATION");
             break;
 
             // The buffer memory has been lost, and must be restored.
         case DSERR_BUFFERLOST:
-            //			MessageBox(NULL,"DSERR_BUFFERLOST","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_BUFFERLOST","CSoundMgr",MB_OK);
             MonoPrint("DSERR_BUFFERLOST");
             break;
 
@@ -3596,7 +3596,7 @@ void CSoundMgr::DSoundCheck(HRESULT hr)
 
             // This object has not been initialized
         case DSERR_UNINITIALIZED:
-            //			MessageBox(NULL,"DSERR_UNINITIALIZED","CSoundMgr",MB_OK);
+            // MessageBox(NULL,"DSERR_UNINITIALIZED","CSoundMgr",MB_OK);
             MonoPrint("DSERR_UNINITIALIZED");
             break;
 
@@ -3747,7 +3747,7 @@ LPDIRECTSOUNDBUFFER CSoundMgr::LoadWaveFile(char *Filename, SFX_DEF_ENTRY *sfx)
                                   DSBCAPS_GETCURRENTPOSITION2;
 
                 //if (g_bOldSoundAlg == false)
-                // 	dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
+                //  dsbdesc.dwFlags |= DSBCAPS_CTRLPOSITIONNOTIFY;
 
                 if (g_bUse3dSound && (sfx->flags & SFX_FLAGS_3D))
                 {

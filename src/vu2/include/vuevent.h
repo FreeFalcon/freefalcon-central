@@ -45,80 +45,80 @@ enum VuMessageTypes
     VU_LAST_EVENT
 };
 #else
-#define VU_UNKNOWN_MESSAGE		0		// 0x00000001
+#define VU_UNKNOWN_MESSAGE 0 // 0x00000001
 // error message
-#define VU_ERROR_MESSAGE		1		// 0x00000002
+#define VU_ERROR_MESSAGE 1 // 0x00000002
 // request messages
-#define VU_GET_REQUEST_MESSAGE		2		// 0x00000004
-#define VU_PUSH_REQUEST_MESSAGE		3		// 0x00000008
-#define VU_PULL_REQUEST_MESSAGE		4		// 0x00000010
+#define VU_GET_REQUEST_MESSAGE 2 // 0x00000004
+#define VU_PUSH_REQUEST_MESSAGE 3 // 0x00000008
+#define VU_PULL_REQUEST_MESSAGE 4 // 0x00000010
 // internal events
-#define VU_TIMER_EVENT			5		// 0x00000020
+#define VU_TIMER_EVENT 5 // 0x00000020
 #if !NO_RELEASE_EVENT
-#define VU_RELEASE_EVENT		6		// 0x00000040
+#define VU_RELEASE_EVENT 6 // 0x00000040
 #endif
 // event messages
-#define VU_DELETE_EVENT			            7		// 0x00000080
-//#define VU_UNMANAGE_EVENT		            8		// 0x00000100
-#define VU_MANAGE_EVENT			            9		// 0x00000200
-#define VU_CREATE_EVENT			            10		// 0x00000400
-#define VU_SESSION_EVENT                    11		// 0x00000800
-#define VU_TRANSFER_EVENT		            12		// 0x00001000
-#define VU_BROADCAST_GLOBAL_EVENT           13		// 0x00002000
-#define VU_POSITION_UPDATE_EVENT	        14		// 0x00004000
-#define VU_FULL_UPDATE_EVENT		        15		// 0x00008000
-#define VU_RESERVED_UPDATE_EVENT	        16		// 0x00010000 ***
-#define VU_ENTITY_COLLISION_EVENT	        17		// 0x00020000 ***
-#define VU_GROUND_COLLISION_EVENT	        18		// 0x00040000 ***
-#define VU_SHUTDOWN_EVENT	                19		// 0x00080000
-#define VU_TIMING_MESSAGE			        20		// 0x00100000
+#define VU_DELETE_EVENT             7 // 0x00000080
+//#define VU_UNMANAGE_EVENT             8 // 0x00000100
+#define VU_MANAGE_EVENT             9 // 0x00000200
+#define VU_CREATE_EVENT             10 // 0x00000400
+#define VU_SESSION_EVENT                    11 // 0x00000800
+#define VU_TRANSFER_EVENT             12 // 0x00001000
+#define VU_BROADCAST_GLOBAL_EVENT           13 // 0x00002000
+#define VU_POSITION_UPDATE_EVENT         14 // 0x00004000
+#define VU_FULL_UPDATE_EVENT         15 // 0x00008000
+#define VU_RESERVED_UPDATE_EVENT         16 // 0x00010000 ***
+#define VU_ENTITY_COLLISION_EVENT         17 // 0x00020000 ***
+#define VU_GROUND_COLLISION_EVENT         18 // 0x00040000 ***
+#define VU_SHUTDOWN_EVENT                 19 // 0x00080000
+#define VU_TIMING_MESSAGE         20 // 0x00100000
 #define VU_REQUEST_DUMMY_BLOCK_MESSAGE      21      // sfr: added for NAT stuff
-#define VU_LAST_EVENT				        21		// 0x00100000
+#define VU_LAST_EVENT         21 // 0x00100000
 // handy-dandy bit combinations
-#define VU_VU_MESSAGE_BITS		0x001ffffe
-#define VU_REQUEST_MSG_BITS		0x0000001c
-#define VU_VU_EVENT_BITS		0x000fffe0
-#define VU_DELETE_EVENT_BITS		0x000800c0
-#define VU_CREATE_EVENT_BITS		0x00000600
-#define VU_TIMER_EVENT_BITS		0x00000020
-#define VU_INTERNAL_EVENT_BITS		0x00080060
-#define VU_EXTERNAL_EVENT_BITS		0x0017ff82
-#define VU_USER_MESSAGE_BITS		0xffe00000
+#define VU_VU_MESSAGE_BITS 0x001ffffe
+#define VU_REQUEST_MSG_BITS 0x0000001c
+#define VU_VU_EVENT_BITS 0x000fffe0
+#define VU_DELETE_EVENT_BITS 0x000800c0
+#define VU_CREATE_EVENT_BITS 0x00000600
+#define VU_TIMER_EVENT_BITS 0x00000020
+#define VU_INTERNAL_EVENT_BITS 0x00080060
+#define VU_EXTERNAL_EVENT_BITS 0x0017ff82
+#define VU_USER_MESSAGE_BITS 0xffe00000
 #endif // use enum
 
 // error messages
-#define VU_UNKNOWN_ERROR				0
-#define VU_NO_SUCH_ENTITY_ERROR			1
-#define VU_CANT_MANAGE_ENTITY_ERROR		2	// for push request denial
-#define VU_DONT_MANAGE_ENTITY_ERROR		3	// for pull request denial
-#define VU_CANT_TRANSFER_ENTITY_ERROR	4	// for non-transferrable ents
-#define VU_TRANSFER_ASSOCIATION_ERROR	5	// for association errors
-#define VU_NOT_AVAILABLE_ERROR			6	// session too busy or exiting
+#define VU_UNKNOWN_ERROR 0
+#define VU_NO_SUCH_ENTITY_ERROR 1
+#define VU_CANT_MANAGE_ENTITY_ERROR 2 // for push request denial
+#define VU_DONT_MANAGE_ENTITY_ERROR 3 // for pull request denial
+#define VU_CANT_TRANSFER_ENTITY_ERROR 4 // for non-transferrable ents
+#define VU_TRANSFER_ASSOCIATION_ERROR 5 // for association errors
+#define VU_NOT_AVAILABLE_ERROR 6 // session too busy or exiting
 
-#define VU_LAST_ERROR			99
+#define VU_LAST_ERROR 99
 
 // timer types
-#define VU_UNKNOWN_TIMER		0
-#define VU_DELETE_TIMER			1
-#define VU_DELAY_TIMER			1
+#define VU_UNKNOWN_TIMER 0
+#define VU_DELETE_TIMER 1
+#define VU_DELAY_TIMER 1
 // MD -- 20050102: make bandwidth deferred message go back to VuMessageQueue::PostVuMessage
-#define VU_POSTVUMSGBW_TIMER	2
-#define VU_LAST_TIMER			99
+#define VU_POSTVUMSGBW_TIMER 2
+#define VU_LAST_TIMER 99
 
 // message flags
-#define VU_NORMAL_PRIORITY_MSG_FLAG 0x01	// send normal priority
-#define VU_OUT_OF_BAND_MSG_FLAG     0x02	// send unbuffered
-#define VU_KEEPALIVE_MSG_FLAG       0x04	// this is a keepalive msg
-#define VU_RELIABLE_MSG_FLAG        0x08	// attempt to send reliably
-#define VU_LOOPBACK_MSG_FLAG        0x10	// post msg to self as well
-#define VU_REMOTE_MSG_FLAG          0x20	// msg came from outside
-#define VU_SEND_FAILED_MSG_FLAG     0x40	// msg has been sent
-#define VU_PROCESSED_MSG_FLAG       0x80	// msg has been processed
+#define VU_NORMAL_PRIORITY_MSG_FLAG 0x01 // send normal priority
+#define VU_OUT_OF_BAND_MSG_FLAG     0x02 // send unbuffered
+#define VU_KEEPALIVE_MSG_FLAG       0x04 // this is a keepalive msg
+#define VU_RELIABLE_MSG_FLAG        0x08 // attempt to send reliably
+#define VU_LOOPBACK_MSG_FLAG        0x10 // post msg to self as well
+#define VU_REMOTE_MSG_FLAG          0x20 // msg came from outside
+#define VU_SEND_FAILED_MSG_FLAG     0x40 // msg has been sent
+#define VU_PROCESSED_MSG_FLAG       0x80 // msg has been processed
 
 // session event subtypes
 enum vuEventTypes
 {
-    VU_SESSION_UNKNOWN_SUBTYPE	= 0,
+    VU_SESSION_UNKNOWN_SUBTYPE = 0,
     VU_SESSION_CLOSE,
     VU_SESSION_JOIN_GAME,
     VU_SESSION_CHANGE_GAME,
@@ -230,7 +230,7 @@ public:
     }
 
     // app needs to Ref & UnRef messages they keep around
-    // 	most often this need not be done
+    //  most often this need not be done
     int Ref();
     int UnRef();
 
@@ -259,11 +259,11 @@ private:
     int LocalSize() const;
 
 private:
-    VU_BYTE refcnt_;		// vu references
+    VU_BYTE refcnt_; // vu references
 
 protected:
     VU_MSG_TYPE type_;
-    VU_BYTE flags_;		// misc flags
+    VU_BYTE flags_; // misc flags
     VU_ID sender_;
     VU_ID tgtid_;
     VU_ID entityId_;
@@ -455,9 +455,9 @@ public:
     // sfr: smartpointer
     VuBin<VuEntity> expandedData_;
 #ifdef VU_USE_CLASS_INFO
-    VU_BYTE classInfo_[CLASS_NUM_BYTES];	// entity class type
+    VU_BYTE classInfo_[CLASS_NUM_BYTES]; // entity class type
 #endif
-    ushort vutype_;			// entity type
+    ushort vutype_; // entity type
     ushort size_;
     VU_BYTE *data_;
     //sfr: converts
@@ -647,9 +647,9 @@ protected:
 protected:
 
 #ifdef VU_USE_CLASS_INFO
-    VU_BYTE classInfo_[CLASS_NUM_BYTES];	// entity class type
+    VU_BYTE classInfo_[CLASS_NUM_BYTES]; // entity class type
 #endif
-    ushort vutype_;			// entity type
+    ushort vutype_; // entity type
     //sfr: converts
     // this tells the entity ID
     // its necessary because when a player joins session
@@ -713,8 +713,8 @@ private:
     // data
 public:
     VU_ID otherId_;
-    VU_DAMAGE hitLocation_;	// affects damage
-    int hitEffect_;		// affects hitpoints/health
+    VU_DAMAGE hitLocation_; // affects damage
+    int hitEffect_; // affects hitpoints/health
 };
 
 //--------------------------------------------------
@@ -839,7 +839,7 @@ protected:
 
     // data
 public:
-    VU_TIME	sessionRealSendTime_;
+    VU_TIME sessionRealSendTime_;
     VU_TIME sessionGameSendTime_;
     VU_TIME remoteGameTime_;
 };

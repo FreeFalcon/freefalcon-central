@@ -5,7 +5,7 @@ template<class RealType>
 class Vector_3D
 {
 private:
-    RealType		_cmp[3];
+    RealType _cmp[3];
 
 public:
 
@@ -95,7 +95,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 //
-//	Vector_3D inlines
+// Vector_3D inlines
 
 template<class RealType>
 inline Vector_3D<RealType>::Vector_3D()

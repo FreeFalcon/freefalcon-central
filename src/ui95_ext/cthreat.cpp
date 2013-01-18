@@ -127,7 +127,7 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     while (circle)
     {
         // 2001-05-10 MODIFIED BY S.G. NEED TO LOOK UP THE MAP ITEM FLAG TO SEE IF IT CAN BE DISPLAYED OR NOT...
-        //		if(!(circle->Flags & C_BIT_INVISIBLE)) {
+        // if(!(circle->Flags & C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
         if (!(circle->Flags & C_BIT_INVISIBLE) && ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) && gpsItem->MapItem_ && !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE)))
@@ -171,7 +171,7 @@ long Circle::Radius;
 long Circle::Diagonal;
 long Circle::CircleTop;
 long Circle::CircleSize;
-int	Circle::CircleTopAddress;
+int Circle::CircleTopAddress;
 char *Circle::CircleBuffer;
 
 void Circle::InitBuffer()
@@ -194,7 +194,7 @@ void Circle::InitBuffer()
 
 void Circle::FillBuffer()
 {
-    int	i, j, k;
+    int i, j, k;
     char *buf = CircleBuffer + CircleTopAddress;
     CircleEdge *edge = Edge + CircleTop;
 
@@ -270,7 +270,7 @@ void Circle::CreateFilledCircle()
 
 void Circle::CreateFilledCirclePoints(long x, long y)
 {
-    long	cx, size;
+    long cx, size;
 
     cx = CenterX - x;
     size = x << 1;

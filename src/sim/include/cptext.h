@@ -41,8 +41,8 @@ public:
     CPText(ObjectInitStr*, int);
     virtual ~CPText();
 
-    void	Exec(SimBaseClass*);
-    void	DisplayDraw(void);
+    void Exec(SimBaseClass*);
+    void DisplayDraw(void);
 
 };
 

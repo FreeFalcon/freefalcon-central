@@ -7,16 +7,16 @@
 CPGauge::CPGauge(CPObjectInitStruct* BaseInitData, CPGaugeInitStruct *GaugeInitData) : CPObject(BaseInitData)
 {
 
-    mWidthTapeBitmap				= GaugeInitData->widthTapeBitmap;
-    mHeightTapeBitmap				= GaugeInitData->heightTapeBitmap;
-    mMaxTapeValue					= GaugeInitData->maxTapeValue;
-    mMaxValPosition				= GaugeInitData->maxValPosition;
-    mMinTapeValue					= GaugeInitData->minTapeValue;
-    mMinValPosition				= GaugeInitData->minValPosition;
-    mpTapeBitmapHandle			= GaugeInitData->TapeBitmapHandle;
+    mWidthTapeBitmap = GaugeInitData->widthTapeBitmap;
+    mHeightTapeBitmap = GaugeInitData->heightTapeBitmap;
+    mMaxTapeValue = GaugeInitData->maxTapeValue;
+    mMaxValPosition = GaugeInitData->maxValPosition;
+    mMinTapeValue = GaugeInitData->minTapeValue;
+    mMinValPosition = GaugeInitData->minValPosition;
+    mpTapeBitmapHandle = GaugeInitData->TapeBitmapHandle;
 
-    mpBackgroundBitmapHandle	= NULL;
-    mCurrentVal						= 60000.0F;
+    mpBackgroundBitmapHandle = NULL;
+    mCurrentVal = 60000.0F;
 }
 
 CPGauge::~CPGauge()
@@ -33,12 +33,12 @@ void CPGauge::Exec(void)
 void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
 {
     float PixelSlope;
-    float	PixelIntercept;
+    float PixelIntercept;
     float TapePosition;
-    int	UpperSrcBound;
-    int	LowerSrcBound;
-    int	UpperDestBound;
-    int	LowerDestBound;
+    int UpperSrcBound;
+    int LowerSrcBound;
+    int UpperDestBound;
+    int LowerDestBound;
 
     // Determine how many pixels represent a unit, (units/pixel)
     PixelSlope = (mMaxValPosition - mMinValPosition) / (mMaxTapeValue - mMinTapeValue);
@@ -55,15 +55,15 @@ void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
     }
 
     // Find the tape position
-    TapePosition		= (PixelSlope * Value) + PixelIntercept;
+    TapePosition = (PixelSlope * Value) + PixelIntercept;
 
-    UpperSrcBound	= (int) TapePosition - (mHeight / 2);
-    LowerSrcBound	= (int) TapePosition + (mHeight / 2);
+    UpperSrcBound = (int) TapePosition - (mHeight / 2);
+    LowerSrcBound = (int) TapePosition + (mHeight / 2);
 
     // Determine where the blit should go
     if (UpperSrcBound < 0)
     {
-        UpperDestBound	= -UpperSrcBound;
+        UpperDestBound = -UpperSrcBound;
         UpperSrcBound = 0;
     }
     else if (LowerSrcBound > mHeightTapeBitmap)

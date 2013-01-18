@@ -17,16 +17,16 @@ class Canvas3D;
 
 typedef struct
 {
-    int				callback;
-    Tpoint			*pUL;
-    Tpoint			*pUR;
-    Tpoint			*pLL;
-    RenderOTW		*pRender;
-    float				radius;
-    long				color;
-    int				endPoints;
-    float				*pvalues;
-    float				*ppoints;
+    int callback;
+    Tpoint *pUL;
+    Tpoint *pUR;
+    Tpoint *pLL;
+    RenderOTW *pRender;
+    float radius;
+    long color;
+    int endPoints;
+    float *pvalues;
+    float *ppoints;
 } VDialInitStr;
 
 //====================================================//
@@ -51,30 +51,30 @@ public:
 
 public:
 
-    float				mRadius;
-    long				mColor;
-    long				mNVGColor;
-    float				mDialValue;
+    float mRadius;
+    long mColor;
+    long mNVGColor;
+    float mDialValue;
 
-    Canvas3D*		mpCanvas;
-    RenderOTW*		renderer;
+    Canvas3D* mpCanvas;
+    RenderOTW* renderer;
 
-    int				mCallback;
-    CPCallback		mExecCallback;
+    int mCallback;
+    CPCallback mExecCallback;
 
-    SimBaseClass*	mpOwnship;
+    SimBaseClass* mpOwnship;
 
     //====================================================//
     // Dimensions and Locations
     //====================================================//
 
-    int				mEndPoints;
-    float				*mpValues;
-    float				*mpPoints;
-    float				*mpCosPoints;
-    float				*mpSinPoints;
+    int mEndPoints;
+    float *mpValues;
+    float *mpPoints;
+    float *mpCosPoints;
+    float *mpSinPoints;
 
-    void				Exec(SimBaseClass*);
+    void Exec(SimBaseClass*);
 
     //====================================================//
     // Constructors and Destructors

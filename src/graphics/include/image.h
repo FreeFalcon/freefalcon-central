@@ -9,21 +9,21 @@
 //___________________________________________________________________________
 // Error codes
 
-#define	NO_CODE					-1
-#define	GOOD_READ				0
-#define	GOOD_WRITE				0
-#define	BAD_FILE				1
-#define	BAD_READ				2
-#define	BAD_WRITE				2
-#define	UNEXPECTED_EOF			3
-#define	BAD_CODE				4
-#define	BAD_FIRSTCODE			5
-#define	BAD_ALLOC				6
-#define	BAD_SYMBOLSIZE			7
-#define	BAD_BITMAPWIDTH			8
-#define	BAD_COMPRESSION			9
-#define	BAD_COLORDEPTH			10
-#define	BAD_FORMAT				11
+#define NO_CODE -1
+#define GOOD_READ 0
+#define GOOD_WRITE 0
+#define BAD_FILE 1
+#define BAD_READ 2
+#define BAD_WRITE 2
+#define UNEXPECTED_EOF 3
+#define BAD_CODE 4
+#define BAD_FIRSTCODE 5
+#define BAD_ALLOC 6
+#define BAD_SYMBOLSIZE 7
+#define BAD_BITMAPWIDTH 8
+#define BAD_COMPRESSION 9
+#define BAD_COLORDEPTH 10
+#define BAD_FORMAT 11
 
 //___________________________________________________________________________
 
@@ -32,105 +32,105 @@
 // TGA
 struct TGA_HEADER
 {
-    GLubyte		identsize, colormaptype, imagetype;
-    GLushort	colormapstart, colormaplength;
-    GLubyte		colormapbits;
-    GLushort	xstart, ystart, width, height;
-    GLubyte		bits, descriptor;
+    GLubyte identsize, colormaptype, imagetype;
+    GLushort colormapstart, colormaplength;
+    GLubyte colormapbits;
+    GLushort xstart, ystart, width, height;
+    GLubyte bits, descriptor;
 };
 
 // BMP files header
 struct BMP_HEADER
 {
-    GLshort		bfType;
-    GLint		bfSize;
-    GLint		bfres;
-    GLint		bfOffs;
+    GLshort bfType;
+    GLint bfSize;
+    GLint bfres;
+    GLint bfOffs;
 };
 
 struct BMP_INFO
 {
-    GLint		biSize;
-    GLint		biWidth;
-    GLint		biHeight;
-    GLshort		biPlanes;
-    GLshort		biBitCount;
-    GLint		biCompression;
-    GLint		biSizeImage;
-    GLint		biXPelsPerMetre;
-    GLint		biYPelsPerMetre;
-    GLint		biClrUsed;
-    GLint		biClrImportant;
+    GLint biSize;
+    GLint biWidth;
+    GLint biHeight;
+    GLshort biPlanes;
+    GLshort biBitCount;
+    GLint biCompression;
+    GLint biSizeImage;
+    GLint biXPelsPerMetre;
+    GLint biYPelsPerMetre;
+    GLint biClrUsed;
+    GLint biClrImportant;
 };
 
 struct BMP_RGBQUAD
 {
-    GLubyte	rgbBlue;
-    GLubyte	rgbGreen;
-    GLubyte	rgbRed;
-    GLubyte	rgbres;
+    GLubyte rgbBlue;
+    GLubyte rgbGreen;
+    GLubyte rgbRed;
+    GLubyte rgbres;
 };
 
 // gif file typedefs
 struct GIFHEADER
 {
-    GLbyte  	sig[6];
-    GLushort	screenwidth, screenheight;
-    GLubyte 	flags, background, aspect;
+    GLbyte   sig[6];
+    GLushort screenwidth, screenheight;
+    GLubyte  flags, background, aspect;
 };
 
 struct IMAGEBLOCK
 {
-    GLushort	left, top, width, height;
-    GLubyte 	flags;
+    GLushort left, top, width, height;
+    GLubyte  flags;
 };
 
 struct CONTROLBLOCK
 {
-    GLbyte  	blocksize, flags;
-    GLushort	delay;
-    GLbyte  	transparent_colour, terminator;
+    GLbyte   blocksize, flags;
+    GLushort delay;
+    GLbyte   transparent_colour, terminator;
 };
 
 struct PLAINTEXT
 {
-    GLbyte  	blocksize;
-    GLushort	left, top, gridwidth, gridheight;
-    GLbyte  	cellwidth, cellheight, forecolour, backcolour;
+    GLbyte   blocksize;
+    GLushort left, top, gridwidth, gridheight;
+    GLbyte   cellwidth, cellheight, forecolour, backcolour;
 };
 
 struct APPLICATION
 {
-    GLbyte  	blocksize, applstring[8], authentication[3];
+    GLbyte   blocksize, applstring[8], authentication[3];
 };
 
 // lbm file typedef
 struct LBM_BMHD
 {
-    GLshort	width, height;
-    GLshort	x, y;
-    GLbyte	nPlanes, masking, compression, pad1;
-    GLushort	transparentColor;
-    GLbyte 	xAspect, yAspect;
-    GLshort	pageW, pageH;
+    GLshort width, height;
+    GLshort x, y;
+    GLbyte nPlanes, masking, compression, pad1;
+    GLushort transparentColor;
+    GLbyte  xAspect, yAspect;
+    GLshort pageW, pageH;
 };
 
 // pcx file typedef
 struct PCXHEAD
 {
-    GLbyte	manufacturer, version, encoding, bits_per_pixel;
-    GLshort	xmin, ymin, xmax, ymax, hres, vres;
-    GLbyte  	palette[48], reserved, colour_planes;
-    GLshort 	bytes_per_line, palette_type;
-    GLbyte  	filler[58];
+    GLbyte manufacturer, version, encoding, bits_per_pixel;
+    GLshort xmin, ymin, xmax, ymax, hres, vres;
+    GLbyte   palette[48], reserved, colour_planes;
+    GLshort  bytes_per_line, palette_type;
+    GLbyte   filler[58];
 };
 
 // apl file typedef
 struct APL_HEADER
 {
-    GLuint		magic;
-    GLushort	width;
-    GLushort	height;
+    GLuint magic;
+    GLushort width;
+    GLushort height;
 };
 
 #pragma pack (pop)
@@ -138,29 +138,29 @@ struct APL_HEADER
 //___________________________________________________________________________
 // Exported function prototypes
 
-GLubyte	*ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey = NULL);
-GLint 	UnpackGIF(CImageFileMemory *fi);
-GLint 	UnpackLBM(CImageFileMemory *fi);
-GLint 	UnpackPCX(CImageFileMemory *fi);
-GLint	ReadBMP(CImageFileMemory *fi);
-GLint	ReadAPL(CImageFileMemory *fi);
-GLint	ReadTGA(CImageFileMemory *fi);
+GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey = NULL);
+GLint  UnpackGIF(CImageFileMemory *fi);
+GLint  UnpackLBM(CImageFileMemory *fi);
+GLint  UnpackPCX(CImageFileMemory *fi);
+GLint ReadBMP(CImageFileMemory *fi);
+GLint ReadAPL(CImageFileMemory *fi);
+GLint ReadTGA(CImageFileMemory *fi);
 
-GLint	ReadDDS(CImageFileMemory *fi); //JAM 22Sep03
+GLint ReadDDS(CImageFileMemory *fi); //JAM 22Sep03
 
-GLint	WritePCX(int fileHandle, GLImageInfo *image);
+GLint WritePCX(int fileHandle, GLImageInfo *image);
 
-GLint	GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag);
-void   	GIF_SkipExtension(CImageFileMemory *fi);
-GLulong	*ReadLBMColorMap(CImageFileMemory *fi);
-GLubyte	*ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF);
+GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag);
+void    GIF_SkipExtension(CImageFileMemory *fi);
+GLulong *ReadLBMColorMap(CImageFileMemory *fi);
+GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF);
 
 //___________________________________________________________________________
 
 inline GLint CheckImageType(const char *file)
 {
-    char	ext[10];
-    GLint	i;
+    char ext[10];
+    GLint i;
 
     glGetFileExtension(file, ext);
 
@@ -186,12 +186,12 @@ inline GLint CheckImageType(const char *file)
     else
         i = IMAGE_TYPE_UNKNOWN;
 
-    return	i;
+    return i;
 };
 
 inline GLint ReadTextureImage(CImageFileMemory *fi)
 {
-    GLint	i;
+    GLint i;
 
     switch (fi -> imageType)
     {

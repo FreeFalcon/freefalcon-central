@@ -1,12 +1,12 @@
 #ifndef _C_KEYBOARD_VALUES_H_
 #define _C_KEYBOARD_VALUES_H_
 
-#define _MAX_KEYS_		256
-#define _MAX_STATES_	2
+#define _MAX_KEYS_ 256
+#define _MAX_STATES_ 2
 
-#define _SHIFT_DOWN_	(0x01)
-#define _CTRL_DOWN_		(0x02)
-#define _ALT_DOWN_		(0x04)
+#define _SHIFT_DOWN_ (0x01)
+#define _CTRL_DOWN_ (0x02)
+#define _ALT_DOWN_ (0x04)
 
 // Ascii conversion table from Direct Input Keys (DIK/Scan Code) equivalents
 // SHIFT,CTRL,ALT are treated as "states" and NOT individual keys

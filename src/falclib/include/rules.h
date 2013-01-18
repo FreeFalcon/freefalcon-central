@@ -10,21 +10,21 @@ enum {RUL_PW_LEN = 20};
 
 typedef struct
 {
-    _TCHAR				Password[RUL_PW_LEN];
-    int					MaxPlayers;
-    float				ObjMagnification;
-    int					SimFlags;					// Sim flags
-    FlightModelType		SimFlightModel;			// Flight model type
-    WeaponEffectType	SimWeaponEffect;
-    AvionicsType		SimAvionicsType;
+    _TCHAR Password[RUL_PW_LEN];
+    int MaxPlayers;
+    float ObjMagnification;
+    int SimFlags; // Sim flags
+    FlightModelType SimFlightModel; // Flight model type
+    WeaponEffectType SimWeaponEffect;
+    AvionicsType SimAvionicsType;
     AutopilotModeType   SimAutopilotType;
-    RefuelModeType		SimAirRefuelingMode;
-    PadlockModeType		SimPadlockMode;
-    ulong				BumpTimer;
-    ulong				AiPullTime;
-    ulong				AiPatience;
-    ulong				AtcPatience;
-    short				GeneralFlags;
+    RefuelModeType SimAirRefuelingMode;
+    PadlockModeType SimPadlockMode;
+    ulong BumpTimer;
+    ulong AiPullTime;
+    ulong AiPatience;
+    ulong AtcPatience;
+    short GeneralFlags;
 } RulesStruct;
 
 typedef enum
@@ -136,7 +136,7 @@ public:
     {
         return (GeneralFlags & GEN_EXTERNAL_VIEW) && TRUE;
     }
-    int	InvulnerableOn(void)
+    int InvulnerableOn(void)
     {
         return (SimFlags & SIM_INVULNERABLE) && TRUE;
     }

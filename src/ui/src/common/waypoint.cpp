@@ -39,10 +39,10 @@
 
 #pragma warning(disable : 4127)
 
-#define WPERROR_NO_TARGET		0x01
-#define WPERROR_SPEED			0x02
-#define WPERROR_TIME			0x04
-#define WPERROR_FUEL			0x08
+#define WPERROR_NO_TARGET 0x01
+#define WPERROR_SPEED 0x02
+#define WPERROR_TIME 0x04
+#define WPERROR_FUEL 0x08
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,13 +81,13 @@ extern C_Map *gMapMgr;
 ///////////////////////////////////////////////////////////////////////////////
 
 VU_ID gActiveFlightID = FalconNullId; // Currently selected waypoint flight
-short gActiveWPNum = 0;				// Current Waypoint in this list
+short gActiveWPNum = 0; // Current Waypoint in this list
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-extern bool g_bAnyWaypointTask;		//Wombat778 9-27-2003
+extern bool g_bAnyWaypointTask; //Wombat778 9-27-2003
 
 static WayPointClass *get_current_waypoint(void)
 {
@@ -124,14 +124,14 @@ static WayPointClass *get_current_waypoint(void)
 // KCK: This will set up the "special" data associated with certain actions/flags
 static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
 {
-    CampEntity		ent;
-    Flight			flt = NULL;
-    long			hr, mn, sc, action, flags, fid;
-    CampaignTime	time;
-    C_Text			*txt = NULL;
-    C_Clock			*clk;
-    VU_ID			*tmpID;
-    _TCHAR			buffer[130];
+    CampEntity ent;
+    Flight flt = NULL;
+    long hr, mn, sc, action, flags, fid;
+    CampaignTime time;
+    C_Text *txt = NULL;
+    C_Clock *clk;
+    VU_ID *tmpID;
+    _TCHAR buffer[130];
 
     flt = (Flight)vuDatabase->Find(gActiveFlightID);
 
@@ -253,11 +253,11 @@ static void SetSteerPointValues(C_Window *win, WayPointClass *wp, int)
             txt->Refresh();
         }
 
-        txt = (C_Text *)win->FindControl(FEATURE_FIELD);	// Target building
+        txt = (C_Text *)win->FindControl(FEATURE_FIELD); // Target building
 
         if (txt && ent && ent->IsObjective())
         {
-            FeatureClassDataType	*fc;
+            FeatureClassDataType *fc;
             fid = wp->GetWPTargetBuilding();
 
             if (fid < 255)
@@ -520,7 +520,7 @@ void UpdateWaypointWindowInfo(C_Window *win, WayPointClass *wp, int wpnum, int c
     {
         if (prev_wp)
         {
-            float				speed;
+            float speed;
 
             // Air Speed in nm/hr
             if (wp->GetWPFlags() & WPF_HOLDCURRENT)
@@ -605,7 +605,7 @@ void UpdateWaypointWindowInfo(C_Window *win, WayPointClass *wp, int wpnum, int c
     if (lbox)
     {
         lbox->SetValue(wp->GetWPAction() + 1);
-        //		SteerPointTypeCB(ACTION_LISTBOX,C_TYPE_SELECT,lbox);
+        // SteerPointTypeCB(ACTION_LISTBOX,C_TYPE_SELECT,lbox);
     }
 
     // Draw Error boxes
@@ -717,8 +717,8 @@ void GotoNextWaypointCB(long, short hittype, C_Base *control)
 
 void DeleteWPCB(long, short hittype, C_Base *)
 {
-    WayPoint		wp, nw;
-    Flight			flt;
+    WayPoint wp, nw;
+    Flight flt;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -741,7 +741,7 @@ void DeleteWPCB(long, short hittype, C_Base *)
 
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
     {
-        Flight	un;
+        Flight un;
 
         un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
 
@@ -760,10 +760,10 @@ void DeleteWPCB(long, short hittype, C_Base *)
 
 void SetupFlightSpecificControls(Flight flt)
 {
-    C_PopupList		*menu;
-    C_ListBox		*lbox;
+    C_PopupList *menu;
+    C_ListBox *lbox;
     C_Window *win;
-    int				i, mission;
+    int i, mission;
 
     if (!flt) // it is possible to this to be null... so avoid PJW
         return;
@@ -912,7 +912,7 @@ void ChangeTOSCB(long ID, short hittype, C_Base *control)
     long t;
     WayPoint wp;
 
-    if ((hittype != C_TYPE_LMOUSEUP) &&	(hittype != C_TYPE_LMOUSEDBLCLK) &&	(hittype != C_TYPE_REPEAT))
+    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_LMOUSEDBLCLK) && (hittype != C_TYPE_REPEAT))
         return;
 
     clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
@@ -933,7 +933,7 @@ void ChangeTOSCB(long ID, short hittype, C_Base *control)
 
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
         {
-            Flight	un;
+            Flight un;
             un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
 
             if (un)
@@ -950,40 +950,40 @@ void ChangeTOSCB(long ID, short hittype, C_Base *control)
     unit->MakeWaypointsDirty();
 
     /*
-    	C_Clock *clk;
-    	long t;
-    	WayPoint wp;
+     C_Clock *clk;
+     long t;
+     WayPoint wp;
 
-    	if ((hittype != C_TYPE_LMOUSEUP) &&	(hittype != C_TYPE_LMOUSEDBLCLK) &&	(hittype != C_TYPE_REPEAT))
-    		return;
+     if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_LMOUSEDBLCLK) && (hittype != C_TYPE_REPEAT))
+     return;
 
-    	clk=(C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
-    	if(clk)
-    	{
-    		ChangeTimeCB(ID,hittype,control);
+     clk=(C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
+     if(clk)
+     {
+     ChangeTimeCB(ID,hittype,control);
 
-    		wp = get_current_waypoint ();
-    		if (wp)
-    		{
-    			wp->SetWPFlag (WPF_TIME_LOCKED);
-    			t = clk->GetTime() * VU_TICS_PER_SECOND;
-    			wp->SetWPTimes(t);
-    			recalculate_waypoints(wp);
-    		}
+     wp = get_current_waypoint ();
+     if (wp)
+     {
+     wp->SetWPFlag (WPF_TIME_LOCKED);
+     t = clk->GetTime() * VU_TICS_PER_SECOND;
+     wp->SetWPTimes(t);
+     recalculate_waypoints(wp);
+     }
 
-    		if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
-    		{
-    			Flight	un;
-    			un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
-    			if(un)
-    			{
-    				fixup_unit (un);
-    				gGps->Update();
-    				gMapMgr->DrawMap();
-    			}
-    		}
-    	}
-    	*/
+     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
+     {
+     Flight un;
+     un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
+     if(un)
+     {
+     fixup_unit (un);
+     gGps->Update();
+     gMapMgr->DrawMap();
+     }
+     }
+     }
+     */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -992,11 +992,11 @@ void ChangeTOSCB(long ID, short hittype, C_Base *control)
 
 void ChangeAirspeedCB(long ID, short hittype, C_Base *)
 {
-    WayPointClass	*wp = NULL;
-    float			speed = 0.0F;
-    int				dir = 0;
+    WayPointClass *wp = NULL;
+    float speed = 0.0F;
+    int dir = 0;
 
-    if ((hittype != C_TYPE_LMOUSEUP) &&	(hittype != C_TYPE_REPEAT) && (hittype != C_TYPE_LMOUSEDBLCLK))
+    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT) && (hittype != C_TYPE_LMOUSEDBLCLK))
         return;
 
     if (ID == AIRSPEED_DECR)
@@ -1018,7 +1018,7 @@ void ChangeAirspeedCB(long ID, short hittype, C_Base *)
 
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
         {
-            Flight	un;
+            Flight un;
 
             un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
 
@@ -1038,11 +1038,11 @@ void ChangeAirspeedCB(long ID, short hittype, C_Base *)
 
 void ChangeAltCB(long ID, short hittype, C_Base *)
 {
-    int				value = 0, dir = 0;
-    WayPointClass	*wp = NULL;
-    float			speed = 0.0F;
+    int value = 0, dir = 0;
+    WayPointClass *wp = NULL;
+    float speed = 0.0F;
 
-    if ((hittype != C_TYPE_LMOUSEUP) &&	(hittype != C_TYPE_REPEAT) && (hittype != C_TYPE_LMOUSEDBLCLK))
+    if ((hittype != C_TYPE_LMOUSEUP) && (hittype != C_TYPE_REPEAT) && (hittype != C_TYPE_LMOUSEDBLCLK))
         return;
 
     if (ID == ALT_INC)
@@ -1101,9 +1101,9 @@ void ChangeAltCB(long ID, short hittype, C_Base *)
 
 void ChangePatrolCB(long ID, short hittype, C_Base *control)
 {
-    C_Clock			*clk;
-    CampaignTime	time;
-    WayPoint		wp;
+    C_Clock *clk;
+    CampaignTime time;
+    WayPoint wp;
 
     if (hittype != C_TYPE_LMOUSEUP && hittype != C_TYPE_REPEAT)
         return;
@@ -1118,7 +1118,7 @@ void ChangePatrolCB(long ID, short hittype, C_Base *control)
 
         if (wp && !(wp->GetWPFlags() & WPF_REPEAT))
         {
-            if (wp->GetNextWP())		// 2001-11-17 M.N. this crashes in really rare conditions
+            if (wp->GetNextWP()) // 2001-11-17 M.N. this crashes in really rare conditions
                 wp = wp->GetNextWP();
         }
 
@@ -1131,7 +1131,7 @@ void ChangePatrolCB(long ID, short hittype, C_Base *control)
 
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
         {
-            Flight	un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
+            Flight un = (Flight)vuDatabase->Find(gMapMgr->GetCurWPID());
 
             if (un)
             {
@@ -1253,11 +1253,11 @@ static void calculate_waypoint_times_between(WayPointClass *wp1, WayPointClass *
 
 void refresh_waypoint(WayPointClass * wp)
 {
-    C_Window		*win = NULL;
-    C_Waypoint		*cwp = NULL;
-    FlightClass		*flt = NULL;
-    WayPointClass	*w = NULL;
-    int				i = 0, campID = 0;
+    C_Window *win = NULL;
+    C_Waypoint *cwp = NULL;
+    FlightClass *flt = NULL;
+    WayPointClass *w = NULL;
+    int i = 0, campID = 0;
 
     flt = (Flight) vuDatabase->Find(gActiveFlightID);
 
@@ -1320,9 +1320,9 @@ void recalculate_waypoint_list(WayPointClass *wp, int minSpeed, int maxSpeed)
     if (wp->GetWPFlags() & WPF_TIME_LOCKED)
     {
         // We're gonna have to do two recalculations, one before and one after this waypoint
-        WayPointClass	*pw, *nw;
-        float			dist;
-        int				time;
+        WayPointClass *pw, *nw;
+        float dist;
+        int time;
         pw = wp->GetPrevWP();
         nw = wp->GetNextWP();
 
@@ -1361,8 +1361,8 @@ void recalculate_waypoint_list(WayPointClass *wp, int minSpeed, int maxSpeed)
 // We've changed waypoint wp's location, speed, or time and need to recalculate
 void recalculate_waypoints(WayPointClass *wp)
 {
-    FlightClass		*flt;
-    int				minSpeed, maxSpeed;
+    FlightClass *flt;
+    int minSpeed, maxSpeed;
 
     flt = (Flight) vuDatabase->Find(gActiveFlightID);
 
@@ -1387,10 +1387,10 @@ void recalculate_waypoints(WayPointClass *wp)
 
 void recalculate_waypoint(WayPointClass *wp, int, int)
 {
-    GridIndex		x, y, nx, ny;
-    float			speed, dist, d;
-    WayPointClass	*pw, *nw, *w;
-    CampaignTime	startTime = 0, endTime = 0, lockedTime = 0, now;
+    GridIndex x, y, nx, ny;
+    float speed, dist, d;
+    WayPointClass *pw, *nw, *w;
+    CampaignTime startTime = 0, endTime = 0, lockedTime = 0, now;
 
     if (!wp)
         return;
@@ -1443,7 +1443,7 @@ void recalculate_waypoint(WayPointClass *wp, int, int)
             d = Distance(x, y, nx, ny);
 
             if (w->GetWPFlags() & WPF_SPEED_LOCKED)
-                lockedTime += FloatToInt32((d * CampaignHours) / w->GetWPSpeed());		// This time is locked up
+                lockedTime += FloatToInt32((d * CampaignHours) / w->GetWPSpeed()); // This time is locked up
             else
                 dist += d;
 
@@ -1556,12 +1556,12 @@ void recalculate_waypoint(WayPointClass *wp, int, int)
 
 int WayPointErrorCode(WayPointClass *wp, Flight flt)
 {
-    WayPointClass	*pw;
-    float			dist, speed, minSpeed, maxSpeed;
-    int				errors = 0, action;
-    unsigned int	fuelAvail;
-    long			time;
-    CampaignTime	missionTime, takeoff, land;
+    WayPointClass *pw;
+    float dist, speed, minSpeed, maxSpeed;
+    int errors = 0, action;
+    unsigned int fuelAvail;
+    long time;
+    CampaignTime missionTime, takeoff, land;
 
     // Check for bad target/airbase/patrol times
     action = wp->GetWPAction();
@@ -1635,7 +1635,7 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt)
 
 int IsValidWP(WayPointClass *wp, Flight flt)
 {
-    int				errors;
+    int errors;
 
     errors = WayPointErrorCode(wp, flt);
 
@@ -1647,10 +1647,10 @@ int IsValidWP(WayPointClass *wp, Flight flt)
 
 void ValidateWayPoints(Flight flt)
 {
-    C_Waypoint		*cwp;
-    WayPoint		w;
-    int				i = 1;
-    int				campID;
+    C_Waypoint *cwp;
+    WayPoint w;
+    int i = 1;
+    int campID;
 
     if (!flt)
         return;
@@ -1759,10 +1759,10 @@ void set_waypoint_enroute_action(long, short hittype, C_Base *control)
 
 void set_waypoint_action(WayPoint wp, int action)
 {
-    int				flags, oldaction, oldflags;
-    WayPoint		pw;
-    CampBaseClass	*ent;
-    GridIndex		x, y, ex = -1, ey = -1;
+    int flags, oldaction, oldflags;
+    WayPoint pw;
+    CampBaseClass *ent;
+    GridIndex x, y, ex = -1, ey = -1;
 
     if (!wp)
         return;
@@ -1914,10 +1914,10 @@ void set_waypoint_action(WayPoint wp, int action)
 
 void set_waypoint_action(long, short hittype, C_Base *control)
 {
-    C_ListBox		*lbox;
-    WayPointClass	*wp;
-    C_Window		*win;
-    int				action;
+    C_ListBox *lbox;
+    WayPointClass *wp;
+    C_Window *win;
+    int action;
 
     if (hittype != C_TYPE_SELECT)
         return;
@@ -1981,7 +1981,7 @@ void set_waypoint_formation(long, short hittype, C_Base *control)
 // Takes speed in nm/hr and altitude in ft
 float get_ground_speed(float speed, int altitude)
 {
-    float vcas,	vtas, error;
+    float vcas, vtas, error;
     vtas = speed;
     error = speed / 2.0F;
 
@@ -2067,10 +2067,10 @@ void RebuildCurrentWPList()
 // Find a new target/airbase etc if this waypoint requires it
 void DropWayPoint(WayPoint wp)
 {
-    GridIndex		x, y;
-    CampBaseClass	*ent;
-    int				action;
-    Unit			unit;
+    GridIndex x, y;
+    CampBaseClass *ent;
+    int action;
+    Unit unit;
 
     if (!wp)
         return;
@@ -2178,13 +2178,13 @@ void DropWayPoint(WayPoint wp)
 
 void WaypointCB(long ID, short hittype, class C_Base *ctrl)
 {
-    C_Window		*win = NULL;
-    Unit			un = NULL;
-    float			wx = 0.0F, wy = 0.0F, wz = 0.0F;
-    GridIndex		gx = 0, gy = 0;
-    C_Waypoint		*cwp = NULL;
-    WAYPOINTLIST	*wpicon = NULL;
-    WayPointClass	*wp = NULL; //,*lwp=NULL;
+    C_Window *win = NULL;
+    Unit un = NULL;
+    float wx = 0.0F, wy = 0.0F, wz = 0.0F;
+    GridIndex gx = 0, gy = 0;
+    C_Waypoint *cwp = NULL;
+    WAYPOINTLIST *wpicon = NULL;
+    WayPointClass *wp = NULL; //,*lwp=NULL;
 
     cwp = (C_Waypoint *) ctrl;
 
@@ -2230,7 +2230,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
                     {
                         if (cwp->GetType() == C_TYPE_DRAGXY)
                         {
-                            float	x, y, z;
+                            float x, y, z;
                             wx = wpicon->worldx;
                             wy = wpicon->worldy;
 
@@ -2351,7 +2351,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
             if (!(ID & 0x40000000))
             {
                 gActiveWPNum = static_cast<short>(ID & 0xff);
-                //			gActiveWPNum=control->GetUserNumber(C_STATE_1);
+                // gActiveWPNum=control->GetUserNumber(C_STATE_1);
                 wp = get_current_waypoint();
             }
 

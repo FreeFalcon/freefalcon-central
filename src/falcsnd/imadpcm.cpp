@@ -1,7 +1,7 @@
 /*************************************************************************
-	$Header: /home/cvsroot/RedCobra/FalcSnd/imadpcm.cpp,v 1.1.1.1 2003/09/26 20:20:44 Red Exp $
+ $Header: /home/cvsroot/RedCobra/FalcSnd/imadpcm.cpp,v 1.1.1.1 2003/09/26 20:20:44 Red Exp $
 
-	decode a buffer containing IMA ADPCM into a MS PCM
+ decode a buffer containing IMA ADPCM into a MS PCM
 
 *************************************************************************/
 
@@ -43,37 +43,37 @@ const short step[89] =
     22385, 24623, 27086, 29794, 32767
 };
 
-short  	imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample, short nStepSize);
-short 	imaadpcmNextStepIndex(short nEncodedSample, short nStepIndex);
-BOOL 	imaadpcmValidStepIndex(short nStepIndex);
+short   imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample, short nStepSize);
+short  imaadpcmNextStepIndex(short nEncodedSample, short nStepIndex);
+BOOL  imaadpcmValidStepIndex(short nStepIndex);
 //-----------------------------------------------------------------------
 //function ImaDecodeS16
 //decodes ima adpcm into stereo 16-bit pcm
-long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
+long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
 {
-    short	blockHeaderSize;
-    UINT	blockAlignment;
-    UINT	blockLength;
-    S8		*dBuffStart;
-    long	leftSamples;
-    long	rightSamples;
-    short	stepSize;
-    short	i;
-    ImaBlockHeader_t	header;
+    short blockHeaderSize;
+    UINT blockAlignment;
+    UINT blockLength;
+    S8 *dBuffStart;
+    long leftSamples;
+    long rightSamples;
+    short stepSize;
+    short i;
+    ImaBlockHeader_t header;
 
-    short	predSampleL;
-    short	stepIndexL;
-    short	encSampleL;
+    short predSampleL;
+    short stepIndexL;
+    short encSampleL;
 
-    short	predSampleR;
-    short	stepIndexR;
-    short	encSampleR;
+    short predSampleR;
+    short stepIndexR;
+    short encSampleR;
 
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(ImaBlockHeader_t) * SND_WAV_SCHAN;
-    blockAlignment 	= SND_ADPCM_SBLOCK_ALIGN;
-    dBuffStart		= dBuff;
+    blockAlignment  = SND_ADPCM_SBLOCK_ALIGN;
+    dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
     while (bufferLength)
@@ -85,15 +85,15 @@ long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
             return 0;
         }
 
-        blockLength 	= blockAlignment;
+        blockLength  = blockAlignment;
         bufferLength   -= blockLength;
         blockLength    -= blockHeaderSize;
 
         //get the left header
-        header		= *(ImaBlockHeader_t *)sBuff;
-        sBuff		= sBuff + sizeof(ImaBlockHeader_t);
+        header = *(ImaBlockHeader_t *)sBuff;
+        sBuff = sBuff + sizeof(ImaBlockHeader_t);
         predSampleL = header.iSamp0;
-        stepIndexL	= (short)header.bStepTableIndex;
+        stepIndexL = (short)header.bStepTableIndex;
 
         if (!imaadpcmValidStepIndex(stepIndexL))
         {
@@ -102,10 +102,10 @@ long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
         }
 
         //get the right header
-        header		= *(ImaBlockHeader_t *)sBuff;
-        sBuff		= sBuff + sizeof(ImaBlockHeader_t);
-        predSampleR	= header.iSamp0;
-        stepIndexR	= (short)header.bStepTableIndex;
+        header = *(ImaBlockHeader_t *)sBuff;
+        sBuff = sBuff + sizeof(ImaBlockHeader_t);
+        predSampleR = header.iSamp0;
+        stepIndexR = (short)header.bStepTableIndex;
 
         if (!imaadpcmValidStepIndex(stepIndexR))
         {
@@ -115,7 +115,7 @@ long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
 
         //write out the first sample
         *(long *)dBuff = MAKELONG(predSampleL, predSampleR);
-        dBuff			= dBuff + sizeof(long);
+        dBuff = dBuff + sizeof(long);
 
         //the first long contains 4 left samples the second long
         //contains 4 right samples.  Will process the source in 8-byte
@@ -130,32 +130,32 @@ long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
         {
             blockLength    -= 8;
 
-            leftSamples 	= *(long *)sBuff;
-            sBuff	  		= sBuff + sizeof(long);
-            rightSamples 	= *(long *)sBuff;
-            sBuff			= sBuff + sizeof(long);
+            leftSamples  = *(long *)sBuff;
+            sBuff    = sBuff + sizeof(long);
+            rightSamples  = *(long *)sBuff;
+            sBuff = sBuff + sizeof(long);
 
             for (i = 8; i > 0; i--)
             {
                 //left channel
-                encSampleL	= (leftSamples & 0x0F);
-                stepSize	= step[stepIndexL];
+                encSampleL = (leftSamples & 0x0F);
+                stepSize = step[stepIndexL];
                 predSampleL = imaadpcmSampleDecode(encSampleL, predSampleL, stepSize);
-                stepIndexL	= imaadpcmNextStepIndex(encSampleL, stepIndexL);
+                stepIndexL = imaadpcmNextStepIndex(encSampleL, stepIndexL);
 
                 //right channel
-                encSampleR 	= (rightSamples & 0x0F);
-                stepSize	= step[stepIndexR];
+                encSampleR  = (rightSamples & 0x0F);
+                stepSize = step[stepIndexR];
                 predSampleR = imaadpcmSampleDecode(encSampleR, predSampleR, stepSize);
-                stepIndexR 	= imaadpcmNextStepIndex(encSampleR, stepIndexR);
+                stepIndexR  = imaadpcmNextStepIndex(encSampleR, stepIndexR);
 
                 //write out the sample
                 *(long *)dBuff = MAKELONG(predSampleL, predSampleR);
-                dBuff			= dBuff + sizeof(long);
+                dBuff = dBuff + sizeof(long);
 
                 //shift the next input ssample into the low-order 4 bits
-                leftSamples 	>>= 4;
-                rightSamples	>>= 4;
+                leftSamples  >>= 4;
+                rightSamples >>= 4;
             } //loop of i=8 decrement to 0
         } //0 != blockLength
     } //while 0 != bufferLength
@@ -168,38 +168,38 @@ long ImaDecodeS16(S8 *sBuff, S8	*dBuff,	S32	bufferLength)
 //------------------------------------------------------------------------
 //function ImaDecodeM16
 //decodes ima adpcm into mono 16-bit pcm
-long ImaDecodeM16(char *sBuff, char	*dBuff,	long bufferLength)
+long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 {
-    short	blockHeaderSize;
-    UINT	blockAlignment;
-    UINT	blockLength;
-    char	*dBuffStart;
-    long	sample;
-    short	stepSize;
-    ImaBlockHeader_t	header;
+    short blockHeaderSize;
+    UINT blockAlignment;
+    UINT blockLength;
+    char *dBuffStart;
+    long sample;
+    short stepSize;
+    ImaBlockHeader_t header;
 
-    short	predSample;
-    short	stepIndex;
-    short	encSample;
+    short predSample;
+    short stepIndex;
+    short encSample;
 
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(ImaBlockHeader_t) * SND_WAV_MCHAN;
-    blockAlignment 	= SND_ADPCM_MBLOCK_ALIGN;
-    dBuffStart		= dBuff;
+    blockAlignment  = SND_ADPCM_MBLOCK_ALIGN;
+    dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
     while (bufferLength >= blockHeaderSize)
     {
-        blockLength 	= (UINT)min(bufferLength, blockAlignment);
+        blockLength  = (UINT)min(bufferLength, blockAlignment);
         bufferLength   -= blockLength;
         blockLength    -= blockHeaderSize;
 
         //get the block header
-        header		= *(ImaBlockHeader_t *)sBuff;
-        sBuff		= sBuff + sizeof(ImaBlockHeader_t);
+        header = *(ImaBlockHeader_t *)sBuff;
+        sBuff = sBuff + sizeof(ImaBlockHeader_t);
         predSample  = header.iSamp0;
-        stepIndex 	= (short)header.bStepTableIndex;
+        stepIndex  = (short)header.bStepTableIndex;
 
         if (!imaadpcmValidStepIndex(stepIndex))
         {
@@ -209,29 +209,29 @@ long ImaDecodeM16(char *sBuff, char	*dBuff,	long bufferLength)
 
         //write out the first sample
         *(short *)dBuff = (short)predSample;
-        dBuff			= dBuff + sizeof(short);
+        dBuff = dBuff + sizeof(short);
 
         while (blockLength--)
         {
-            sample	 	= *sBuff++;
+            sample   = *sBuff++;
 
             //sample 1
-            encSample	= (sample & (char)0x0F);
-            stepSize	= step[stepIndex];
+            encSample = (sample & (char)0x0F);
+            stepSize = step[stepIndex];
             predSample  = imaadpcmSampleDecode(encSample, predSample, stepSize);
-            stepIndex	= imaadpcmNextStepIndex(encSample, stepIndex);
+            stepIndex = imaadpcmNextStepIndex(encSample, stepIndex);
 
             *(short *)dBuff = (short)predSample;
-            dBuff			= dBuff + sizeof(short);
+            dBuff = dBuff + sizeof(short);
 
             //sample 2
-            encSample	= (sample >> 4);
-            stepSize	= step[stepIndex];
-            predSample	= imaadpcmSampleDecode(encSample, predSample, stepSize);
-            stepIndex 	= imaadpcmNextStepIndex(encSample, stepIndex);
+            encSample = (sample >> 4);
+            stepSize = step[stepIndex];
+            predSample = imaadpcmSampleDecode(encSample, predSample, stepSize);
+            stepIndex  = imaadpcmNextStepIndex(encSample, stepIndex);
 
-            *(short *)dBuff	= (short)predSample;
-            dBuff			= dBuff + sizeof(short);
+            *(short *)dBuff = (short)predSample;
+            dBuff = dBuff + sizeof(short);
         } //0 != blockLength
     } //while bufferLength >= blockHeaderSize
 

@@ -83,17 +83,17 @@ void AirframeClass::Gains(void)
     else
     {
        aoabias = (GRAVITY * platform->platformAngles.cosgam *
-    				cosmuLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
+     cosmuLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
        //aoabias = (GRAVITY * platform->platformAngles.costhe *
-    	//		cosphiLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
+     // cosphiLim / qsom + 0.1F*gearPos - clift0 * (1.0F + tefFactor * 0.05F)) / clalph0 - tefFactor + lefFactor;
 
        if(!IsSet(InAir))
        {
-    	   float bleed = max(0.0F , min(aoabias*(vt - minVcas*KNOTS_TO_FTPSEC*0.5F)/(minVcas*KNOTS_TO_FTPSEC*0.25F), 1.0F));
-    	   aoabias = max(0.0F,min (bleed, aoamax));
+        float bleed = max(0.0F , min(aoabias*(vt - minVcas*KNOTS_TO_FTPSEC*0.5F)/(minVcas*KNOTS_TO_FTPSEC*0.25F), 1.0F));
+        aoabias = max(0.0F,min (bleed, aoamax));
        }
        else
-    	   aoabias = max(0.0F,min (aoabias, aoamax));
+        aoabias = max(0.0F,min (aoabias, aoamax));
     }*/
     if (IsSet(InAir))
     {

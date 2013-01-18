@@ -1,8 +1,8 @@
 /*****************************************************************************/
-//	Filename:	winampfrontend.h
-//	Author:		Retro
-//	Date:		3Jan2004
-//	Description:see .cpp
+// Filename: winampfrontend.h
+// Author: Retro
+// Date: 3Jan2004
+// Description:see .cpp
 /*****************************************************************************/
 
 /* "ONE IN THE EYE OF THE BEAUTIFUL PEOPLE.." */
@@ -12,7 +12,7 @@
 
 #include "sim\include\stdhdr.h"
 
-#include "sim\include\Icp.h"	// for MAX_DED_LEN
+#include "sim\include\Icp.h" // for MAX_DED_LEN
 
 // because I start at DED pos 1 with my strings
 #define MY_MAX_DED_LEN (MAX_DED_LEN-1)
@@ -52,7 +52,7 @@ private:
     // if the title is longer it´s cut off
     char DEDString[2][MY_MAX_DED_LEN];
 
-    int volume;			// value between 0-255
+    int volume; // value between 0-255
 
     unsigned long myTimer;
     int WinAmpAlive;

@@ -60,7 +60,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmap(IDirectDraw *pdd, LPCSTR szBitmap, 
     DeleteObject(hbm);
 
     return pdds;
-}		/* end DDLoadBitmap */
+} /* end DDLoadBitmap */
 
 extern "C" IDirectDrawSurface * DDLoadBitmapEx(IDirectDraw *pdd,
         LPCSTR szBitmap, int wid, int ht, ST_RECT *bmRect)
@@ -104,7 +104,7 @@ extern "C" IDirectDrawSurface * DDLoadBitmapEx(IDirectDraw *pdd,
     DeleteObject(hbm);
 
     return pdds;
-}		/* DDLoadBitmapEx */
+} /* DDLoadBitmapEx */
 
 /*
  *  DDReLoadBitmap
@@ -142,7 +142,7 @@ HRESULT DDReLoadBitmap(IDirectDrawSurface *pdds, LPCSTR szBitmap)
 
     DeleteObject(hbm);
     return hr;
-}		/* end DDReLoadBitmap */
+} /* end DDReLoadBitmap */
 
 HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
                          ST_RECT *bmRect)
@@ -174,7 +174,7 @@ HRESULT DDReLoadBitmapEx(IDirectDrawSurface *pdds, LPCSTR szBitmap,
 
     DeleteObject(hbm);
     return hr;
-}		/* end DDReLoadBitmapEx */
+} /* end DDReLoadBitmapEx */
 
 
 // also return HBITMAP and doesn't delete it
@@ -205,7 +205,7 @@ HRESULT DDReLoadBitmap1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     }
 
     return hr;
-}		/* end DDReLoadBitmap1 */
+} /* end DDReLoadBitmap1 */
 
 // also return HBITMAP and doesn't delete it
 HRESULT DDReLoadBitmapEx1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
@@ -235,7 +235,7 @@ HRESULT DDReLoadBitmapEx1(IDirectDrawSurface *pdds, LPCSTR szBitmap,
     }
 
     return hr;
-}		/* end DDReLoadBitmapEx1 */
+} /* end DDReLoadBitmapEx1 */
 
 /*
  *  DDCopyBitmap

@@ -9,29 +9,29 @@
 #define _RENDER2D_H_
 
 #include "Ttypes.h"
-//#include "ImageBuf.h"	// ASSO: moved to display.h so the RTT works correctly
-//#include "Context.h"	// ASSO: moved to display.h so the RTT works correctly
+//#include "ImageBuf.h" // ASSO: moved to display.h so the RTT works correctly
+//#include "Context.h" // ASSO: moved to display.h so the RTT works correctly
 #include "Display.h"
-//#include "Tex.h"		// ASSO: moved to display.h so the RTT works correctly
+//#include "Tex.h" // ASSO: moved to display.h so the RTT works correctly
 
 typedef struct TwoDVertex: public MPRVtxTexClr_t
 {
     /* MPRVtxTexClr_t provides:
-    	float	x, y;
-    	float	r, g, b, a;
-    	float	u, v, q;
+     float x, y;
+     float r, g, b, a;
+     float u, v, q;
 
        Then I add:
     */
-    DWORD	clipFlag;
+    DWORD clipFlag;
 } TwoDVertex;
 
 
 class Render2D : public VirtualDisplay
 {
 public:
-    Render2D()			{};
-    virtual ~Render2D()	{};
+    Render2D() {};
+    virtual ~Render2D() {};
 
     virtual void Setup(ImageBuffer *imageBuffer);
     virtual void Cleanup(void);
@@ -98,17 +98,17 @@ public:
 
 public:
     // Window and rendering context handles
-    //ContextMPR context;	// ASSO: moved to display.h so the RTT works correctly
+    //ContextMPR context; // ASSO: moved to display.h so the RTT works correctly
 
 protected:
-    // ImageBuffer *image;	// ASSO: moved to display.h so the RTT works correctly
+    // ImageBuffer *image; // ASSO: moved to display.h so the RTT works correctly
 
 private:
     void IntersectTop(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v);
     void IntersectBottom(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v);
     void IntersectLeft(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v);
     void IntersectRight(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v);
-    float	OffsetX, OffsetY;
+    float OffsetX, OffsetY;
 };
 
 

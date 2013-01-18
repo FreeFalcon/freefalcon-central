@@ -3,9 +3,9 @@
 
 enum
 {
-    _IS_ASCII_			= 0x01, // ANY printable
-    _IS_ALPHA_			= 0x02, // A-Z (upper or lower case)
-    _IS_DIGIT_			= 0x04, // 0-9
+    _IS_ASCII_ = 0x01, // ANY printable
+    _IS_ALPHA_ = 0x02, // A-Z (upper or lower case)
+    _IS_DIGIT_ = 0x04, // 0-9
 };
 
 // [0] = NOT SHIFT, [1] = SHIFT

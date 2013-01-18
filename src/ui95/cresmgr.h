@@ -10,16 +10,16 @@ class C_Resmgr;
 
 enum
 {
-    _RSC_8_BIT_			= 0x00000001,
-    _RSC_16_BIT_		= 0x00000002,
-    _RSC_USECOLORKEY_	= 0x40000000,
-    _RSC_SINGLE_		= 0x00000001,
-    _RSC_MULTIPLE_		= 0x00000002,
+    _RSC_8_BIT_ = 0x00000001,
+    _RSC_16_BIT_ = 0x00000002,
+    _RSC_USECOLORKEY_ = 0x40000000,
+    _RSC_SINGLE_ = 0x00000001,
+    _RSC_MULTIPLE_ = 0x00000002,
 
     // Add types as needed
-    _RSC_IS_IMAGE_		= 100,
-    _RSC_IS_SOUND_		= 101,
-    _RSC_IS_FLAT_		= 102,
+    _RSC_IS_IMAGE_ = 100,
+    _RSC_IS_SOUND_ = 101,
+    _RSC_IS_FLAT_ = 102,
 };
 
 class C_Resmgr
@@ -49,13 +49,13 @@ private:
 
     short reds, greens, blues; // shift values to convert to SCREEN format
 
-    C_Hash	*IDTable_;
-    C_Hash	*Index_;
-    char	*Idx_;
-    char	*Data_;
-    WORD	ColorKey_;
+    C_Hash *IDTable_;
+    C_Hash *Index_;
+    char *Idx_;
+    char *Data_;
+    WORD ColorKey_;
 
-    char	name_[MAX_PATH];
+    char name_[MAX_PATH];
     FILE *OpenResFile(const char *name, const char *sfx, const char *mode);
 public:
 

@@ -16,24 +16,24 @@
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	TListEntry::pool;
-MEM_POOL	TBlockList::pool;
+MEM_POOL TListEntry::pool;
+MEM_POOL TBlockList::pool;
 #endif
 
 
-// Construct an empty range sorted list manager	for the specified map level
+// Construct an empty range sorted list manager for the specified map level
 void TBlockList::Setup(TLevel *MapLevel, float SwapInRange)
 {
     // Store our setup values we'll need later
-    myLevelPtr		= MapLevel;
-    head = tail		= NULL;
+    myLevelPtr = MapLevel;
+    head = tail = NULL;
 
 
     // Retain a block of samples with a minimum radius of "SwapInRange"
     // This number is how many blocks ahead of the viewer to request blocks
     // (0 means only the block the viewer is over is requested)
     interestRange   = FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperPOST()));
-    inBlockDistance	= FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperBLOCK()));
+    inBlockDistance = FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperBLOCK()));
 
     // Store the distance (in blocks) at which we want to throw out blocks
     // (should be at least inBlockDistance + 1 to avoid thrashing)
@@ -53,7 +53,7 @@ void TBlockList::Cleanup(void)
 {
     // Block until all my outstanding requests have been filled (to avoid delivery to a destroyed object)
     // SCR 4-23-98  I think this is unnecessary and may needlessly slow shutdown.
-    //	TheLoader.WaitForLoader();
+    // TheLoader.WaitForLoader();
 
     // Release all the entries in the list and the blocks that go with them
     inBlockDistance = 0;
@@ -117,8 +117,8 @@ void TBlockList::UpdateBlockList(int vx, int vy)
     // Request the loading of data coming into range ahead of us
     if (vy)
     {
-        if (vy > 0)	same = ourBlockCol + inBlockDistance;
-        else		same = ourBlockCol - inBlockDistance;
+        if (vy > 0) same = ourBlockCol + inBlockDistance;
+        else same = ourBlockCol - inBlockDistance;
 
         for (r = ourBlockRow - inBlockDistance; r <= ourBlockRow + inBlockDistance; r++)
         {
@@ -128,17 +128,17 @@ void TBlockList::UpdateBlockList(int vx, int vy)
 
     if (vx)
     {
-        if (vx > 0)	same = ourBlockRow + inBlockDistance;
-        else		same = ourBlockRow - inBlockDistance;
+        if (vx > 0) same = ourBlockRow + inBlockDistance;
+        else same = ourBlockRow - inBlockDistance;
 
         // Special case for diagonal motion -- to avoid double loading the corner block
-        start	= ourBlockCol - inBlockDistance;
-        stop	= ourBlockCol + inBlockDistance;
+        start = ourBlockCol - inBlockDistance;
+        stop = ourBlockCol + inBlockDistance;
 
         if (vy)
         {
-            if (vy > 0)	stop--;
-            else			start++;
+            if (vy > 0) stop--;
+            else start++;
         }
 
         for (c = start; c <= stop; c++)
@@ -153,10 +153,10 @@ void TBlockList::UpdateBlockList(int vx, int vy)
 // (X North, Y East, Z Down)
 void TBlockList::RebuildBlockList(void)
 {
-    int	r, c;
-    int	rStart, rStop;
-    int	cStart, cStop;
-    TListEntry*	oldHead;
+    int r, c;
+    int rStart, rStop;
+    int cStart, cStop;
+    TListEntry* oldHead;
     TListEntry* discard;
 
 
@@ -166,10 +166,10 @@ void TBlockList::RebuildBlockList(void)
 
 
     // Compute the bounds of the region we need to fetch
-    cStart	= ourBlockCol - inBlockDistance;
-    cStop	= ourBlockCol + inBlockDistance;
-    rStart	= ourBlockRow - inBlockDistance;
-    rStop	= ourBlockRow + inBlockDistance;
+    cStart = ourBlockCol - inBlockDistance;
+    cStop = ourBlockCol + inBlockDistance;
+    rStart = ourBlockRow - inBlockDistance;
+    rStop = ourBlockRow + inBlockDistance;
 
 
     // Fetch the area around the viewer's starting position
@@ -231,12 +231,12 @@ Tpost* TBlockList::GetPost(int levelPostRow, int levelPostCol)
 
 
 // Return the maximum distance (in level posts) from the current postion in level post space
-// at which	all data is owned by this list (but not greater than requested SwapInRange)
+// at which all data is owned by this list (but not greater than requested SwapInRange)
 void TBlockList::ComputeAvailableRange(void)
 {
-    int		row, col;
-    TBlock	*block;
-    int		Hrange, Vrange;
+    int row, col;
+    TBlock *block;
+    int Hrange, Vrange;
 
 
     // Get the block rows and columns which bound our area of immediate interest
@@ -251,7 +251,7 @@ void TBlockList::ComputeAvailableRange(void)
     minZ = 1e6f;
     maxZ = -1e6f;
 
-    //	Step through the blocks in the area of interest
+    // Step through the blocks in the area of interest
     for (row = startRow; row <= stopRow; row++)
     {
         for (col = startCol; col <= stopCol; col++)
@@ -321,8 +321,8 @@ void TBlockList::ComputeAvailableRange(void)
 // THIS CALL SHOULD ONLY BE MADE WHILE PROTECTED BY A CRITICAL SECTION
 void TBlockList::ReleaseDistantBlocks()
 {
-    int			dx, dy;
-    TListEntry*	entry;
+    int dx, dy;
+    TListEntry* entry;
     TListEntry* discard;
 
 
@@ -382,7 +382,7 @@ void TBlockList::ReleaseDistantBlocks()
 // THIS CALL SHOULD ONLY BE MADE WHILE PROTECTED BY A CRITICAL SECTION
 void TBlockList::InsertBlock(int row, int col)
 {
-    TListEntry*	entry;
+    TListEntry* entry;
 
 
     // Allocate memory for the new block list entry
@@ -406,15 +406,15 @@ void TBlockList::InsertBlock(int row, int col)
 
 
     // Add this block to the head of this list
-    entry->prev		= NULL;
-    entry->next		= head;
+    entry->prev = NULL;
+    entry->next = head;
 
     if (head)
     {
-        head->prev	= entry;
+        head->prev = entry;
     }
 
-    head			= entry;
+    head = entry;
 
     if (!tail)
     {

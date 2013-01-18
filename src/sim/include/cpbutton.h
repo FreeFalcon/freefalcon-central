@@ -17,18 +17,18 @@ extern MEM_POOL gCockMemPool;
 // Normal Button States
 //====================================================//
 
-#define CPBUTTON_OFF			0
-#define CPBUTTON_ON			1
+#define CPBUTTON_OFF 0
+#define CPBUTTON_ON 1
 
 //====================================================//
 // Button Types
 //====================================================//
 
-#define CPBUTTON_EXCLUSIVE	0
-#define CPBUTTON_MOMENTARY	1
-#define CPBUTTON_TOGGLE		2
+#define CPBUTTON_EXCLUSIVE 0
+#define CPBUTTON_MOMENTARY 1
+#define CPBUTTON_TOGGLE 2
 
-#define MAX_MOMENTARY_COUNT	1  // i.e. momentary buttons stay down for two frames
+#define MAX_MOMENTARY_COUNT 1  // i.e. momentary buttons stay down for two frames
 
 //====================================================//
 // CPLight Class Definition
@@ -54,31 +54,31 @@ public:
     // State Information
     //====================================================//
 
-    int		mStates;
-    int		mState;
-    int		mInitialState;
-    int		mType;
-    int		mMomentaryCount; // for momentary buttons only
+    int mStates;
+    int mState;
+    int mInitialState;
+    int mType;
+    int mMomentaryCount; // for momentary buttons only
 
     //====================================================//
     // Source Locations for Template Surface
     //====================================================//
 
-    RECT			*mpSrcRect;
+    RECT *mpSrcRect;
 
     //====================================================//
     // Pointer to Cursor Information
     //====================================================//
 
-    int			mCursorId;
-    int			mCursorIndex;
+    int mCursorId;
+    int mCursorIndex;
 
     //====================================================//
     // Runtime Member Functions
     //====================================================//
 
-    void			DisplayBlit(void);
-    BOOL			HandleEvent(int*, int, int, int);
+    void DisplayBlit(void);
+    BOOL HandleEvent(int*, int, int, int);
 
     //====================================================//
     // Constructors and Destructors

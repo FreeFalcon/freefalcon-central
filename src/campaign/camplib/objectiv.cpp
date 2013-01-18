@@ -61,9 +61,9 @@ using namespace std;
 // =================================
 
 #ifdef USE_SH_POOLS
-MEM_POOL	ObjectiveClass::pool;
+MEM_POOL ObjectiveClass::pool;
 extern MEM_POOL gObjMemPool;
-// MEM_POOL	gObjHeapMemPool;
+// MEM_POOL gObjHeapMemPool;
 #endif
 
 //=========================
@@ -145,7 +145,7 @@ void UpdateObjectiveLists(Objective o);
 
 ObjectiveClass::ObjectiveClass(int typeindex) : CampBaseClass(typeindex, GetIdFromNamespace(ObjectiveNS))
 {
-    int			size;
+    int size;
 
     dirty_objective = 0;
     static_data.first_owner = 0;
@@ -167,8 +167,8 @@ ObjectiveClass::ObjectiveClass(int typeindex) : CampBaseClass(typeindex, GetIdFr
     obj_data.fstatus = new uchar[size];
 #endif
     memset(obj_data.fstatus, 0, size);
-    //	for (i=0; i<size; i++)
-    //		obj_data.fstatus[i] = 0xFF;
+    // for (i=0; i<size; i++)
+    // obj_data.fstatus[i] = 0xFF;
 
     link_data = NULL;
 
@@ -196,24 +196,24 @@ ObjectiveClass::ObjectiveClass(int typeindex) : CampBaseClass(typeindex, GetIdFr
 
 ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
 {
-    uchar	size, nsize, i;
+    uchar size, nsize, i;
 
     dirty_objective = 0;
     static_data.class_data = (ObjClassDataType*)Falcon4ClassTable[share_.entityType_ - VU_LAST_ENTITY_TYPE].dataPtr;
 
     //#ifdef CAMPTOOL
-    //	if (gRenameIds)	{
-    //		VU_ID		new_id = FalconNullId;
+    // if (gRenameIds) {
+    // VU_ID new_id = FalconNullId;
     //
-    //		// Rename this ID
-    //		for (new_id.num_ = FIRST_OBJECTIVE_VU_ID_NUMBER; new_id.num_ < LAST_OBJECTIVE_VU_ID_NUMBER; new_id.num_++) {
-    //			if (!vuDatabase->Find(new_id))	{
-    //				RenameTable[share_.id_.num_] = new_id.num_;
-    //				share_.id_ = new_id;
-    //				break;
-    //			}
-    //		}
-    //	}
+    // // Rename this ID
+    // for (new_id.num_ = FIRST_OBJECTIVE_VU_ID_NUMBER; new_id.num_ < LAST_OBJECTIVE_VU_ID_NUMBER; new_id.num_++) {
+    // if (!vuDatabase->Find(new_id)) {
+    // RenameTable[share_.id_.num_] = new_id.num_;
+    // share_.id_ = new_id;
+    // break;
+    // }
+    // }
+    // }
     //#endif
 
     ShiAssert(static_data.class_data);
@@ -232,7 +232,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
     }
     else
     {
-        short		temp;
+        short temp;
         memcpychk(&temp, stream, sizeof(short), rem);
         obj_data.obj_flags = temp;
     }
@@ -395,7 +395,7 @@ ObjectiveClass::~ObjectiveClass(void)
 
 int ObjectiveClass::SaveSize(void)
 {
-    int	size = CampBaseClass::SaveSize()
+    int size = CampBaseClass::SaveSize()
                + sizeof(CampaignTime)
                + sizeof(ulong)
                + sizeof(uchar)
@@ -432,7 +432,7 @@ int ObjectiveClass::SaveSize(int)
 int ObjectiveClass::Save(VU_BYTE **stream)
 {
     int len, i;
-    uchar	num = 0;
+    uchar num = 0;
 
     CampBaseClass::Save(stream);
 
@@ -507,8 +507,8 @@ int ObjectiveClass::Save(VU_BYTE **stream)
 
 int ObjectiveClass::Save(VU_BYTE **stream, int update)
 {
-    uchar		len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
-    uchar		owner = GetOwner();
+    uchar len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
+    uchar owner = GetOwner();
 
     memcpy(*stream, &obj_data.last_repair, sizeof(CampaignTime));
     *stream += sizeof(CampaignTime);
@@ -530,8 +530,8 @@ int ObjectiveClass::Save(VU_BYTE **stream, int update)
 
 void ObjectiveClass::UpdateFromData(VU_BYTE **stream, long *rem)
 {
-    uchar		len;
-    uchar		owner;
+    uchar len;
+    uchar owner;
 
     memcpychk(&obj_data.last_repair, stream, sizeof(CampaignTime), rem);
     memcpychk(&owner, stream, sizeof(uchar), rem);
@@ -585,12 +585,12 @@ void ObjectiveClass::SendDeaggregateData(VuTargetEntity *target)
     if (IsAggregate())
         return;
 
-    uchar			len, value;
-    int				totalsize, fid, f, classID;
-    uchar			*ddptr = NULL;
-    FalconSimCampMessage	*msg;
-    SimBaseClass			*feature;
-    FeatureClassDataType*	fc;
+    uchar len, value;
+    int totalsize, fid, f, classID;
+    uchar *ddptr = NULL;
+    FalconSimCampMessage *msg;
+    SimBaseClass *feature;
+    FeatureClassDataType* fc;
 
     if (!GetComponents())
         return;
@@ -625,7 +625,7 @@ void ObjectiveClass::SendDeaggregateData(VuTargetEntity *target)
     //MonoPrint ("Features %08x:%08x = %d\n", Id(), static_data.class_data->Features);
 
     fid = static_data.class_data->FirstFeature;
-    VuListIterator			myit(GetComponents());
+    VuListIterator myit(GetComponents());
     feature = (SimBaseClass*) myit.GetFirst();
 
     for (f = 0; f < static_data.class_data->Features; f++, fid++)
@@ -683,16 +683,16 @@ int ObjectiveClass::Deaggregate(FalconSessionEntity *session)
 
     ShiAssert(FalconLocalGame->IsLocal());
 
-    int						f, fid, added = 0;
-    VehicleID				classID;
-    float					x, y, z;
-    SimInitDataClass		simdata;
-    FeatureClassDataType*	fc;
-    ObjClassDataType*		oc;
-    SimBaseClass*			newObject;
-    //	FalconCampDataMessage	*msg = NULL;
-    //	uchar					value,*ddptr = NULL;
-    SimFeatureFilter		filter;
+    int f, fid, added = 0;
+    VehicleID classID;
+    float x, y, z;
+    SimInitDataClass simdata;
+    FeatureClassDataType* fc;
+    ObjClassDataType* oc;
+    SimBaseClass* newObject;
+    // FalconCampDataMessage *msg = NULL;
+    // uchar value,*ddptr = NULL;
+    SimFeatureFilter filter;
 
     memset(&simdata, 0, sizeof(simdata));
 
@@ -812,8 +812,8 @@ int ObjectiveClass::RecordCurrentState(FalconSessionEntity *session, int)
     if (GetComponents())
     {
         VuEntity *feature, *next;
-        int				f;
-        VuListIterator	myit(GetComponents());
+        int f;
+        VuListIterator myit(GetComponents());
 
         for (feature = myit.GetFirst(); feature != NULL; feature = next)
         {
@@ -856,7 +856,7 @@ int ObjectiveClass::Reaggregate(FalconSessionEntity*)
         CampEnterCriticalSection();
         {
             // this iterator needs to be destroyed before the list, otherwise we CTD
-            VuListIterator	myit(GetComponents());
+            VuListIterator myit(GetComponents());
             VuEntity *feature = myit.GetFirst();
 
             while (feature)
@@ -876,8 +876,8 @@ int ObjectiveClass::Reaggregate(FalconSessionEntity*)
     if (TheCampaign.IsOnline())
     {
         // Send Reaggregation data to everyone in the group
-        uchar	len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
-        uchar	*dataptr;
+        uchar len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
+        uchar *dataptr;
         FalconSimCampMessage *msg = new FalconSimCampMessage(Id(), FalconLocalGame);
         msg->dataBlock.message = FalconSimCampMessage::simcampReaggregateFromData;
         msg->dataBlock.from = GetDeagOwner();
@@ -916,13 +916,13 @@ int ObjectiveClass::TransferOwnership(FalconSessionEntity* session)
     // Send the transfer owenership message
     if (TheCampaign.IsOnline())
     {
-        uchar	len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
+        uchar len = (uchar)(((static_data.class_data->Features * 2) + 7) / 8);
         FalconCampDataMessage *msg = new FalconCampDataMessage(Id(), FalconLocalGame);
         msg->dataBlock.type = FalconCampDataMessage::campDeaggregateStatusChangeData;
         msg->dataBlock.size = (ushort)(sizeof(VU_ID) + len + sizeof(uchar));
         msg->dataBlock.data = new uchar[msg->dataBlock.size];
-        uchar	*dataptr = msg->dataBlock.data;
-        VU_ID	vuid = session->Id();
+        uchar *dataptr = msg->dataBlock.data;
+        VU_ID vuid = session->Id();
         memcpy(dataptr, &vuid, sizeof(VU_ID));
         dataptr += sizeof(VU_ID);
         memcpy(dataptr, &len, sizeof(uchar));
@@ -973,14 +973,14 @@ int ObjectiveClass::Wake()
     }
 
     AwakeCampaignEntities++;
-    //	RemoveFromSimLists();
+    // RemoveFromSimLists();
 
     return 1;
 }
 
 int ObjectiveClass::Sleep(void)
 {
-    //	OTWDriver.LockObject ();
+    // OTWDriver.LockObject ();
     // 2002-04-14 put back in by MN - we need to sleep our features, and this does it,
     //while a more general function name could have been chosen ;)
     SimDriver.SleepCampaignFlight(GetComponents()); //2002-02-11 REMOVED BY S.G. MPS original Cut and paste bug from UnitClass. Objectives have no flights!
@@ -988,15 +988,15 @@ int ObjectiveClass::Sleep(void)
     SetAwake(0);
     AwakeCampaignEntities--;
 
-    //	InsertInSimLists(XPos(),YPos());
-    //	OTWDriver.UnLockObject ();
+    // InsertInSimLists(XPos(),YPos());
+    // OTWDriver.UnLockObject ();
 
     return 1;
 }
 
 void ObjectiveClass::InsertInSimLists(float cameraX, float cameraY)
 {
-    //	SetChecked(1);
+    // SetChecked(1);
 
     // This case is for the destructor's sleep call.
     // Basically, we're going away, so don't put us in any lists.
@@ -1033,16 +1033,16 @@ void ObjectiveClass::DeaggregateFromData(VU_BYTE* data, long size)
     //we use this for size tracking
     long *rem = &size;
 
-    int						f, fid, classID, added = 0;
-    SimInitDataClass		simdata;
-    SimBaseClass*			newObject;
-    FalconSessionEntity*	session;
-    VU_ID					vuid;
-    uchar					len, features, value;
-    FeatureClassDataType*	fc;
-    float					x, y, z;
-    SimFeatureFilter		filter;
-    ulong					creator;
+    int f, fid, classID, added = 0;
+    SimInitDataClass simdata;
+    SimBaseClass* newObject;
+    FalconSessionEntity* session;
+    VU_ID vuid;
+    uchar len, features, value;
+    FeatureClassDataType* fc;
+    float x, y, z;
+    SimFeatureFilter filter;
+    ulong creator;
 
     SetComponents(new TailInsertList(&filter));
     GetComponents()->Register();
@@ -1167,7 +1167,7 @@ void ObjectiveClass::ReaggregateFromData(VU_BYTE* data, long size)
     ShiAssert(!FalconLocalGame->IsLocal());
 
     // Get current status
-    uchar	len;
+    uchar len;
     memcpy(&len, data, sizeof(uchar));
     data += sizeof(uchar);
     memcpy(obj_data.fstatus, data, len);
@@ -1182,7 +1182,7 @@ void ObjectiveClass::ReaggregateFromData(VU_BYTE* data, long size)
         {
             // destroy iterator before components
             VuEntity *feature, *nextFeature;
-            VuListIterator	myit(GetComponents());
+            VuListIterator myit(GetComponents());
 
             for (
                 feature = myit.GetFirst();
@@ -1216,27 +1216,27 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
         return;
     }
 
-    VU_ID					vuid;
-    uchar					len;
+    VU_ID vuid;
+    uchar len;
 
     // Change the owner of the deaggregated entities
     SetDeagOwner(*(VU_ID*)data);
     data += sizeof(VU_ID);
-    //memcpy(&deag_owner, data, sizeof(VU_ID));						data += sizeof(VU_ID);
+    //memcpy(&deag_owner, data, sizeof(VU_ID)); data += sizeof(VU_ID);
     memcpy(&len, data, sizeof(uchar));
     data += sizeof(uchar);
     memcpy(obj_data.fstatus, data, len);
     data += len;
 
 #ifdef DEAG_DEBUG
-    //	MonoPrint ("Transfering ownership of remote objective #%d - new owner is %d!\n",GetCampID(),deag_owner.creator_.value_);
+    // MonoPrint ("Transfering ownership of remote objective #%d - new owner is %d!\n",GetCampID(),deag_owner.creator_.value_);
 #endif
 
     // Change ownership locally
     if (GetComponents())
     {
-        VuEntity*		feature;
-        VuListIterator	myit(GetComponents());
+        VuEntity* feature;
+        VuListIterator myit(GetComponents());
 
         feature = myit.GetFirst();
 
@@ -1271,12 +1271,12 @@ void ObjectiveClass::TransferOwnershipFromData(VU_BYTE* data, long size)
 // and add any craters we require.
 int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
 {
-    Int32			i, hc, range, shot, losses = 0, totalShots = 0;
-    GridIndex		sx, sy, tx, ty;
-    int				str = 0, strength, flags;
-    DamType			dt;
-    Unit			shooter = (Unit)vuDatabase->Find(cwfm->dataBlock.shooterID);
-    uchar			size, addcrater = 0;
+    Int32 i, hc, range, shot, losses = 0, totalShots = 0;
+    GridIndex sx, sy, tx, ty;
+    int str = 0, strength, flags;
+    DamType dt;
+    Unit shooter = (Unit)vuDatabase->Find(cwfm->dataBlock.shooterID);
+    uchar size, addcrater = 0;
 
     if (!IsLocal())
         return 0;
@@ -1295,7 +1295,7 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
     // Unit type specific stuff
     if (shooter->IsFlight() && cwfm->dataBlock.dPilotId == 255)
     {
-        WayPoint		w = shooter->GetCurrentUnitWP();
+        WayPoint w = shooter->GetCurrentUnitWP();
 
         // If we're attacking our pre-assigned WP target, check for a specific feature ID
         if (w && w->GetWPTargetID() == shooter->GetTargetID())
@@ -1348,7 +1348,7 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
                 addcrater++;
             }
 
-            shot += 1 + (rand() % (losses + 1));		// Random stray shots - let's be nice
+            shot += 1 + (rand() % (losses + 1)); // Random stray shots - let's be nice
         }
     }
 
@@ -1387,8 +1387,8 @@ int ObjectiveClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
 // This ApplyDamage() simply chooses which features to eliminate and sets their status appropriately
 int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
 {
-    int						fid, hp, lost = 0, count = 0, s, this_pass;
-    FeatureClassDataType*	fc;
+    int fid, hp, lost = 0, count = 0, s, this_pass;
+    FeatureClassDataType* fc;
 
     while (*str > 0 && count < MAX_DAMAGE_TRIES)
     {
@@ -1403,7 +1403,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
                     f = fid;
             }
 
-            continue;			// Force another pass;
+            continue; // Force another pass;
         }
 
         fid = GetFeatureID(f);
@@ -1420,7 +1420,7 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
             s = GetFeatureStatus(f);
 
             if (s == VIS_DAMAGED)
-                hp /= 2;							// Feature is already damaged
+                hp /= 2; // Feature is already damaged
 
             this_pass = 1;
 
@@ -1432,8 +1432,8 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
                 s = VIS_DAMAGED;
             else
             {
-                count = MAX_DAMAGE_TRIES;			// Stop applying damage, since we can't hurt our target
-                this_pass = 0;						// Didn't actually kill this
+                count = MAX_DAMAGE_TRIES; // Stop applying damage, since we can't hurt our target
+                this_pass = 0; // Didn't actually kill this
                 return lost;
             }
 
@@ -1448,10 +1448,10 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
                 lost++;
             }
 
-            if (!(flags & WEAP_AREA))				// Not area effect weapon, only get one kill per shot
+            if (!(flags & WEAP_AREA)) // Not area effect weapon, only get one kill per shot
                 *str = 0;
-            else if (*str > MINIMUM_STRENGTH * 2)		// Otherwise halve our strength and keep applying damage
-                *str /= 2;							// NOTE: This doesn't guarentee nearest adjacent feature
+            else if (*str > MINIMUM_STRENGTH * 2) // Otherwise halve our strength and keep applying damage
+                *str /= 2; // NOTE: This doesn't guarentee nearest adjacent feature
             else
                 count = MAX_DAMAGE_TRIES;
         }
@@ -1468,8 +1468,8 @@ int ObjectiveClass::ApplyDamage(DamType d, int *str, int f, short flags)
 // All players handle this message in order to keep objective status and event messages consistant
 int ObjectiveClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessage *dtm)
 {
-    int		lost, f, i, s, islocal = IsLocal();
-    uchar	size, addcrater;
+    int lost, f, i, s, islocal = IsLocal();
+    uchar size, addcrater;
 
     lost = *data;
     data++;
@@ -1498,7 +1498,7 @@ int ObjectiveClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessa
         // Generate a death message if we or the shooter is a member of the package
         if (dtm)
         {
-            FeatureClassDataType*	fc;
+            FeatureClassDataType* fc;
             fc = GetFeatureClassData(GetFeatureID(f));
             dtm->dataBlock.dPilotID = 255;
             dtm->dataBlock.dIndex = (ushort)(fc->Index + VU_LAST_ENTITY_TYPE);
@@ -1536,7 +1536,7 @@ int ObjectiveClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessa
 
         // The local entity sends atm a message if there's a chance we lost a runway
         // 2001-08-01 MODIFIED BY S.G. ARMYBASE SHOULD BE DEALT WITH TOO SINCE THEY CARRY CHOPPERS
-        //		if (islocal && GetType() == TYPE_AIRBASE && GetObjectiveStatus() < 51)
+        // if (islocal && GetType() == TYPE_AIRBASE && GetObjectiveStatus() < 51)
         if (islocal && (GetType() == TYPE_AIRBASE || GetType() == TYPE_ARMYBASE) && GetObjectiveStatus() < 51)
             TeamInfo[GetTeam()]->atm->SendATMMessage(Id(), GetTeam(), FalconAirTaskingMessage::atmZapAirbase, 0, 0, NULL, 0);
     }
@@ -1548,8 +1548,8 @@ int ObjectiveClass::DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessa
 
 void ObjectiveClass::Repair(void)
 {
-    int				repair, bf;
-    CampaignTime	time;
+    int repair, bf;
+    CampaignTime time;
 
     if (GetObjectiveStatus() != 100)
     {
@@ -1560,7 +1560,7 @@ void ObjectiveClass::Repair(void)
         // JB 000811
         // Repair one feature at a time and reset the repair time
         // only after something has been fixed.
-        /*//-		while (bf > -1)
+        /*//- while (bf > -1)
           {
           RepairFeature(bf);
           bf = BestRepairFeature(this, &repair);
@@ -1581,7 +1581,7 @@ void ObjectiveClass::Repair(void)
 
 uchar* ObjectiveClass::GetDamageModifiers(void)
 {
-    ObjClassDataType*	oc;
+    ObjClassDataType* oc;
 
     oc = GetObjectiveClassData();
 
@@ -1640,14 +1640,14 @@ int ObjectiveClass::GetAproxWeaponRange(int)
 
 int ObjectiveClass::GetDetectionRange(int mt)
 {
-    ObjClassDataType*		oc = GetObjectiveClassData();
-    int						dr = 0;
+    ObjClassDataType* oc = GetObjectiveClassData();
+    int dr = 0;
 
     ShiAssert(oc);
 
     if (IsEmitting() && oc->RadarFeature < 255 && GetFeatureStatus(oc->RadarFeature) != VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
-        //		dr = oc->Detection[mt];
+        // dr = oc->Detection[mt];
     {
         if ((dr = oc->Detection[mt]) > 250)
             dr = 250 + (oc->Detection[mt] - 250) * 50;
@@ -1664,7 +1664,7 @@ int ObjectiveClass::GetElectronicDetectionRange(int mt)
 {
     if (static_data.class_data->RadarFeature < 255 && GetFeatureStatus(static_data.class_data->RadarFeature) != VIS_DESTROYED)
         // 2001-04-21 MODIFIED BY S.G. ABOVE 250 HAS A NEW MEANING SO USE THE UNIT ELECTRONIC DETECTION RANGE INSTEAD...
-        //		return static_data.class_data->Detection[mt];
+        // return static_data.class_data->Detection[mt];
     {
         if (static_data.class_data->Detection[mt] > 250)
             return 250 + (static_data.class_data->Detection[mt] - 250) * 50;
@@ -1677,8 +1677,8 @@ int ObjectiveClass::GetElectronicDetectionRange(int mt)
 
 int ObjectiveClass::CanDetect(FalconEntity* ent)
 {
-    float			ds, mrs, vdr, dx, dy;
-    MoveType		mt;
+    float ds, mrs, vdr, dx, dy;
+    MoveType mt;
 
     mt = ent->GetMovementType();
     ds = DistSqu(XPos(), YPos(), ent->XPos(), ent->YPos());
@@ -1694,7 +1694,7 @@ int ObjectiveClass::CanDetect(FalconEntity* ent)
         // 2001-04-22 ADDED BY S.G. OBJECTIVES NEEDS TO BE AFFECTED BY SOJ AS MUCH AS UNITS
         if (ent->IsFlight())
         {
-            Flight	ecmFlight = ((FlightClass *)ent)->GetECMFlight();
+            Flight ecmFlight = ((FlightClass *)ent)->GetECMFlight();
 
             if (((FlightClass *)ent)->HasAreaJamming())
                 ecmFlight = (FlightClass *)ent;
@@ -1743,7 +1743,7 @@ int ObjectiveClass::CanDetect(FalconEntity* ent)
         {
             // Only check vs visual detection range
             // 2001-03-16 MODIFIED BY S.G. LOOKS LIKE THEY FORGOT GetVisualDetectionRange IS IN KILOMETERS AND NOT FEET
-            //			vdr = (float)GetVisualDetectionRange(mt);
+            // vdr = (float)GetVisualDetectionRange(mt);
             vdr = (float)GetVisualDetectionRange(mt) * KM_TO_FT;
             vdr *= vdr;
 
@@ -1759,13 +1759,13 @@ int ObjectiveClass::CanDetect(FalconEntity* ent)
         // Stealth aircraft act as if they're flying at double their range
         if (ent->IsFlight())
         {
-            UnitClassDataType	*uc = ((Flight)ent)->GetUnitClassData();
+            UnitClassDataType *uc = ((Flight)ent)->GetUnitClassData();
 
             if (uc->Flags & VEH_STEALTH)
             {
                 // 2001-04-29 MODIFIED BY S.G. IF IT'S A STEALTH AND IT GOT HERE, IT WASN'T DETECTED VISUALLY SO ABORT RIGHT NOW
-                //				dx *= 2.0F;
-                //				dy *= 2.0F;
+                // dx *= 2.0F;
+                // dy *= 2.0F;
                 vdr = (float)GetVisualDetectionRange(mt) * KM_TO_FT;
                 vdr *= vdr;
 
@@ -1777,8 +1777,8 @@ int ObjectiveClass::CanDetect(FalconEntity* ent)
         }
 
         // 2001-04-06 MODIFIED BY S.G. NEED TO ACCOMODATE FOR THE OBJECTIVE'S MSL ALTITUDE SINCE ZPos IS 0 FOR OBJECTIVE...
-        //		return static_data.radar_data->CanDetect(dx,dy,ent->ZPos()-ZPos());
-        ShiAssert(ZPos() == 0.0f);	// Warn if the objective ZPos is something else than 0
+        // return static_data.radar_data->CanDetect(dx,dy,ent->ZPos()-ZPos());
+        ShiAssert(ZPos() == 0.0f); // Warn if the objective ZPos is something else than 0
         float AGLz = ent->ZPos() + TheMap.GetMEA(XPos(), YPos());
 
         if (AGLz > 0.0f)
@@ -1851,7 +1851,7 @@ void ObjectiveClass::GetArcAngle(int anum, float* a1, float *a2)
 
 int ObjectiveClass::SiteCanDetect(FalconEntity* ent)
 {
-    float		dx, dy;
+    float dx, dy;
 
     if (!HasRadarRanges())
         return 0;
@@ -1862,7 +1862,7 @@ int ObjectiveClass::SiteCanDetect(FalconEntity* ent)
     // Stealth aircraft act as if they're flying at double their range
     if (ent->IsFlight())
     {
-        UnitClassDataType	*uc = ((Flight)ent)->GetUnitClassData();
+        UnitClassDataType *uc = ((Flight)ent)->GetUnitClassData();
 
         if (uc->Flags & VEH_STEALTH)
         {
@@ -1876,7 +1876,7 @@ int ObjectiveClass::SiteCanDetect(FalconEntity* ent)
 
 float ObjectiveClass::GetSiteRange(FalconEntity* ent)
 {
-    float		dx, dy;
+    float dx, dy;
 
     if (!HasRadarRanges())
         return 0.0F;
@@ -1888,7 +1888,7 @@ float ObjectiveClass::GetSiteRange(FalconEntity* ent)
 
 void ObjectiveClass::SetObjectiveClass(int dindex)
 {
-    int		nsize;
+    int nsize;
 
     SetEntityType((ushort)dindex);
     static_data.class_data = (ObjClassDataType*)Falcon4ClassTable[dindex - VU_LAST_ENTITY_TYPE].dataPtr;
@@ -1907,7 +1907,7 @@ void ObjectiveClass::SetObjectiveClass(int dindex)
 
 void ObjectiveClass::SendObjMessage(VU_ID from, short mes, short d1, short d2, short d3)
 {
-    FalconObjectiveMessage	*message = new FalconObjectiveMessage(Id(), FalconLocalGame);
+    FalconObjectiveMessage *message = new FalconObjectiveMessage(Id(), FalconLocalGame);
 
     message->dataBlock.from = from;
     message->dataBlock.message = mes;
@@ -1919,9 +1919,9 @@ void ObjectiveClass::SendObjMessage(VU_ID from, short mes, short d1, short d2, s
 
 void ObjectiveClass::AddObjectiveNeighbor(Objective o, uchar c[MOVEMENT_TYPES])
 {
-    int			i;
-    Objective	n;
-    CampObjectiveLinkDataType*	tmp_link;
+    int i;
+    Objective n;
+    CampObjectiveLinkDataType* tmp_link;
 
     // Find if it exists first
     for (i = 0; i < static_data.links; i++)
@@ -1951,7 +1951,7 @@ void ObjectiveClass::AddObjectiveNeighbor(Objective o, uchar c[MOVEMENT_TYPES])
 
 void ObjectiveClass::SetNeighborCosts(int num, uchar c[MOVEMENT_TYPES])
 {
-    int		j;
+    int j;
 
     if (num >= static_data.links)
         return;
@@ -1967,8 +1967,8 @@ void ObjectiveClass::SetNeighborCosts(int num, uchar c[MOVEMENT_TYPES])
 
 void ObjectiveClass::RemoveObjectiveNeighbor(int n)
 {
-    CampObjectiveLinkDataType*	tmp_link;
-    int		nn;
+    CampObjectiveLinkDataType* tmp_link;
+    int nn;
 
     if (n >= static_data.links)
         return;
@@ -1995,11 +1995,11 @@ void ObjectiveClass::RemoveObjectiveNeighbor(int n)
 
 void ObjectiveClass::SetObjectiveType(ObjectiveType t)
 {
-    uchar	type, stype;
-    int	dindex;
+    uchar type, stype;
+    int dindex;
 
     type = t;
-    stype = 1;						// Try for a real objective
+    stype = 1; // Try for a real objective
     dindex = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, type, stype, 0, 0, 0, 0);
 
     if (!dindex)
@@ -2011,11 +2011,11 @@ void ObjectiveClass::SetObjectiveType(ObjectiveType t)
 
 void ObjectiveClass::SetObjectiveSType(uchar s)
 {
-    uchar	type, stype;
-    int	dindex;
+    uchar type, stype;
+    int dindex;
 
     type = GetType();
-    stype = s;						// Try for a real objective
+    stype = s; // Try for a real objective
     dindex = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, type, stype, 0, 0, 0, 0);
 
     if (!dindex)
@@ -2027,7 +2027,7 @@ void ObjectiveClass::SetObjectiveSType(uchar s)
 
 void ObjectiveClass::SetObjectiveName(char* name)
 {
-    int			nid;
+    int nid;
 
     nid = GetObjectiveNameID();
 
@@ -2051,9 +2051,9 @@ void ObjectiveClass::SetObjectiveName(char* name)
 
 _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
 {
-    int			nid, pnid = 0;
-    Objective	p;
-    _TCHAR		buffer[80];
+    int nid, pnid = 0;
+    Objective p;
+    _TCHAR buffer[80];
 
     nid = GetObjectiveNameID();
 
@@ -2067,7 +2067,7 @@ _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
 
             if (gLangIDNum == F4LANG_FRENCH)
             {
-                _TCHAR		namestr[80];
+                _TCHAR namestr[80];
                 ReadNameString(pnid, namestr, 79);
 
                 if (namestr[0] == 'A' || namestr[0] == 'a' || namestr[0] == 'E' || namestr[0] == 'e' ||
@@ -2104,8 +2104,8 @@ _TCHAR* ObjectiveClass::GetFullName(_TCHAR* name, int size, int object)
 
 void ObjectiveClass::DisposeObjective(void)
 {
-    Objective 		no;
-    int				n, on;
+    Objective  no;
+    int n, on;
 
     // Kill links _from_ linked objectives. Our links will die when we do.
     for (n = 0; n < static_data.links; n++)
@@ -2263,7 +2263,7 @@ void ObjectiveClass::UpdateObjectiveLists(void)
 
 Objective ObjectiveClass::GetNeighbor(int num)
 {
-    Objective	n;
+    Objective n;
 
     if (num >= static_data.links)
         return NULL;
@@ -2306,7 +2306,7 @@ Objective ObjectiveClass::GetObjectivePrimary(void)
 
 void ObjectiveClass::SetFeatureStatus(int f, int n)
 {
-    int		i = f / 4;
+    int i = f / 4;
 
     if (GetFeatureStatus(f) == n)
         return;
@@ -2332,7 +2332,7 @@ void ObjectiveClass::SetFeatureStatus(int f, int n)
 // from is the feature causing the set or -1 if it's the first feature to be set (to prevent a loop from forming)
 void ObjectiveClass::SetFeatureStatus(int f, int n, int from)
 {
-    int		i = f / 4;
+    int i = f / 4;
 
     if (GetFeatureStatus(f) == n)
         return;
@@ -2363,7 +2363,7 @@ short ObjectiveClass::GetObjectiveDataRate(void)
 
 short ObjectiveClass::GetAdjustedDataRate(void)
 {
-    int						almost;
+    int almost;
 
     if (!static_data.class_data)
         return 0;
@@ -2377,7 +2377,7 @@ short ObjectiveClass::GetAdjustedDataRate(void)
 
 int ObjectiveClass::GetFeatureStatus(int f)
 {
-    int		i = f / 4;
+    int i = f / 4;
     f -= i * 4;
 
     //if (f<=0)Cobra Put this back to below. This breaks damage stuff
@@ -2454,7 +2454,7 @@ int ObjectiveClass::GetFeatureOffset(int f, float* x, float* y, float* z)
 
 void ObjectiveClass::ResetObjectiveStatus(void)
 {
-    int					f, s;
+    int f, s;
 
     s = 100;
 
@@ -2480,8 +2480,8 @@ void ObjectiveClass::ResetObjectiveStatus(void)
         else
         {
             // Make sure we're below our maximum for # of active runways
-            int					index, runways = 0, inactive = 0, max;
-            ObjClassDataType	*oc = GetObjectiveClassData();
+            int index, runways = 0, inactive = 0, max;
+            ObjClassDataType *oc = GetObjectiveClassData();
             index = oc->PtDataIndex;
 
             while (index)
@@ -2529,7 +2529,7 @@ void ObjectiveClass::ResetObjectiveStatus(void)
 
 uchar ObjectiveClass::GetExpectedStatus(int hours)
 {
-    int		bf, s;
+    int bf, s;
 
     s = GetObjectiveStatus();
     hours += ((Camp_GetCurrentTime() - GetObjectiveRepairTime()) / CampaignHours);
@@ -2550,7 +2550,7 @@ uchar ObjectiveClass::GetExpectedStatus(int hours)
 // returns # of hours until the objective becomes status% operational
 int ObjectiveClass::GetRepairTime(int status)
 {
-    int		s, hours = 2400, f;
+    int s, hours = 2400, f;
 
     ResetObjectiveStatus();
     s = GetObjectiveStatus();
@@ -2570,7 +2570,7 @@ int ObjectiveClass::GetRepairTime(int status)
 
 uchar ObjectiveClass::GetBestTarget(void)
 {
-    int		i, v, bv = 0, f = 0;
+    int i, v, bv = 0, f = 0;
 
     for (i = 0; i < static_data.class_data->Features; i++)
     {
@@ -2593,7 +2593,7 @@ ObjClassDataType* ObjectiveClass::GetObjectiveClassData(void)
 
 void ObjectiveClass::RepairFeature(int f)
 {
-    int		cur;
+    int cur;
 
     cur = GetFeatureStatus(f);
 
@@ -2607,22 +2607,22 @@ void ObjectiveClass::RepairFeature(int f)
 
     // KCK: Used to go from destroyed to damaged. This seems a little weird now that I think about it,
     // except for the case of runways...
-    //	if (cur == VIS_DESTROYED)
-    //		{
-    //		SetFeatureStatus(f,VIS_DAMAGED);
-    //		if (Falcon4ClassTable[GetFeatureID(f)].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY) // (IS_RUNWAY)
-    //			CleanupLinkedPersistantObjects (this, f, VIS_RWYPATCH, 2);
-    //		}
+    // if (cur == VIS_DESTROYED)
+    // {
+    // SetFeatureStatus(f,VIS_DAMAGED);
+    // if (Falcon4ClassTable[GetFeatureID(f)].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY) // (IS_RUNWAY)
+    // CleanupLinkedPersistantObjects (this, f, VIS_RWYPATCH, 2);
+    // }
 }
 
 void ObjectiveClass::RecalculateParent(void)
 {
-    Objective	n, s = NULL, bp = NULL;
-    Int32		i, j, d, bd = 9999;
-    Team		who, own;
-    GridIndex	x, y, X, Y;
-    //	POData		pod=NULL;
-    //	SOData		sod=NULL;
+    Objective n, s = NULL, bp = NULL;
+    Int32 i, j, d, bd = 9999;
+    Team who, own;
+    GridIndex x, y, X, Y;
+    // POData pod=NULL;
+    // SOData sod=NULL;
 
     if (!this)
         return;
@@ -2638,7 +2638,7 @@ void ObjectiveClass::RecalculateParent(void)
         GetLocation(&x, &y);
         own = GetTeam();
         {
-            VuListIterator	myit(POList);
+            VuListIterator myit(POList);
             n = GetFirstObjective(&myit);
 
             while (n != NULL)
@@ -2669,9 +2669,9 @@ void ObjectiveClass::RecalculateParent(void)
         if (s)
         {
             SetObjectiveParent(s->Id());
-            //			pod = GetPOData(s);
-            //			if (pod)
-            //				pod->children++;
+            // pod = GetPOData(s);
+            // if (pod)
+            // pod->children++;
         }
         else
         {
@@ -2679,14 +2679,14 @@ void ObjectiveClass::RecalculateParent(void)
         }
 
         // Set frontline flags for us and our PO, if any.
-        //		if (IsNearfront())
-        //			{
-        //			sod = GetSOData(this);
-        //			if (sod)
-        //				sod->flags |= GTMOBJ_FRONTLINE;
-        //			if (pod)
-        //				pod->flags |= GTMOBJ_FRONTLINE;
-        //			}
+        // if (IsNearfront())
+        // {
+        // sod = GetSOData(this);
+        // if (sod)
+        // sod->flags |= GTMOBJ_FRONTLINE;
+        // if (pod)
+        // pod->flags |= GTMOBJ_FRONTLINE;
+        // }
     }
     else
     {
@@ -2701,9 +2701,9 @@ void ObjectiveClass::RecalculateParent(void)
             {
                 SetObjectiveParent(n->Id());
                 // KCK WARNING: Am I using this?
-                //				sod = GetSOData(n);
-                //				if (sod)
-                //					sod->children++;
+                // sod = GetSOData(n);
+                // if (sod)
+                // sod->children++;
                 return;
             }
 
@@ -2718,7 +2718,7 @@ void ObjectiveClass::RecalculateParent(void)
             n = GetNeighbor(i);
             j = 0;
 
-            while	(n && j < n->static_data.links)
+            while (n && j < n->static_data.links)
             {
                 s = n->GetNeighbor(j);
 
@@ -2738,9 +2738,9 @@ void ObjectiveClass::RecalculateParent(void)
         {
             SetObjectiveParent(bp->Id());
             // KCK WARNING: Am I using this?
-            //			sod = GetSOData(bp);
-            //			if (sod)
-            //				sod->children++;
+            // sod = GetSOData(bp);
+            // if (sod)
+            // sod->children++;
         }
         else
             SetObjectiveParent(FalconNullId);
@@ -2759,7 +2759,7 @@ void ObjectiveClass::RecalculateParent(void)
 Objective NewObjective(void)
 {
     Objective   o;
-    int			cid;
+    int cid;
 
     cid = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, TYPE_CITY, 1, 0, 0, 0, 0);
 
@@ -2802,7 +2802,7 @@ Objective NewObjective(void)
 Objective NewObjective(short tid, VU_BYTE **stream, long *rem)
 {
     Objective   o;
-    int			i;
+    int i;
 
     if (tid == 0)
     {
@@ -2812,7 +2812,7 @@ Objective NewObjective(short tid, VU_BYTE **stream, long *rem)
     CampEnterCriticalSection();
     o = new ObjectiveClass(stream, rem);
 
-    if (RepairObjective) 		// Activated by command line parameter '-repair',
+    if (RepairObjective)  // Activated by command line parameter '-repair',
     {
         for (i = 0; i < o->GetTotalFeatures(); i++)
         {
@@ -2844,12 +2844,12 @@ Objective NewObjective(short tid, VU_BYTE **stream, long *rem)
 
 int LoadBaseObjectives(char* scenario)
 {
-    int	old_version;
+    int old_version;
     Objective   o;
     short       num, i, type;
-    long		size, newsize;
-    uchar		*buffer, *bufptr;
-    uchar		/* *data,*/*data_ptr;
+    long size, newsize;
+    uchar *buffer, *bufptr;
+    uchar /* *data,*/*data_ptr;
 
     old_version = gCampDataVersion;
 
@@ -2877,9 +2877,9 @@ int LoadBaseObjectives(char* scenario)
 
     if (LZSS_Expand(data_ptr, rem, buffer, size) < 0)
     {
-        //		char err[200];
-        //		sprintf(err, "%s %d: error expanding buffer", __FILE__, __LINE__);
-        //		throw std::InvalidBufferException(err);
+        // char err[200];
+        // sprintf(err, "%s %d: error expanding buffer", __FILE__, __LINE__);
+        // throw std::InvalidBufferException(err);
     }
 
     //now we have the uncompressed buffer, of size tSize
@@ -2911,19 +2911,19 @@ int LoadBaseObjectives(char* scenario)
 
 int LoadObjectiveDeltas(char* savefile)
 {
-    long		csize;
-    uchar		/* *data,*/ *data_ptr;
+    long csize;
+    uchar /* *data,*/ *data_ptr;
 
     if (strcmp(savefile, TheCampaign.Scenario) == 0)
     {
         // KCK Temporary: Reset dirty flags and return;
         if (!AllObjList)
         {
-            return 1;		// InstantAction/DogFight
+            return 1; // InstantAction/DogFight
         }
 
-        Objective		o;
-        VuListIterator	myit(AllObjList);
+        Objective o;
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o)
@@ -2954,10 +2954,10 @@ int LoadObjectiveDeltas(char* savefile)
 
 void SaveBaseObjectives(char* scenario)
 {
-    FILE			*fp;
-    short			num = 0, type;
+    FILE *fp;
+    short num = 0, type;
     long            size = 0, newsize;
-    Objective		o;
+    Objective o;
     uchar           *buffer, *cbuffer, *bufptr;
 
     if ((fp = OpenCampFile(scenario, "obj", "wb")) == NULL)
@@ -2967,7 +2967,7 @@ void SaveBaseObjectives(char* scenario)
 
     // Count # of objectives
     {
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o)
@@ -2988,7 +2988,7 @@ void SaveBaseObjectives(char* scenario)
 
     // Now save
     {
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o)
@@ -3013,9 +3013,9 @@ void SaveBaseObjectives(char* scenario)
 
 void SaveObjectiveDeltas(char* savefile)
 {
-    long		csize;
-    uchar		*cbuffer;
-    FILE		*fp;
+    long csize;
+    uchar *cbuffer;
+    FILE *fp;
 
     if ((fp = OpenCampFile(savefile, "obd", "wb")) == NULL)
         return;
@@ -3030,15 +3030,15 @@ void SaveObjectiveDeltas(char* savefile)
 
 int BestRepairFeature(Objective o, int *hours)
 {
-    int	score, best = 0;
-    int	s, v, t, bt = 9999, f, bf = -1;
+    int score, best = 0;
+    int s, v, t, bt = 9999, f, bf = -1;
 
     bool assignedEng = false;
 
     GridIndex ux = 0, uy = 0;
     GridIndex ox = 0, oy = 0;
 
-    VuListIterator	uit(AllUnitList);
+    VuListIterator uit(AllUnitList);
     Unit u;
 
     // RV - Biker - Where is the object
@@ -3099,14 +3099,14 @@ int BestRepairFeature(Objective o, int *hours)
             }
         }
 
-        //		if (s != VIS_DESTROYED && !o->GetFeatureID(f))
-        //			o->SetFeatureStatus(f,VIS_DESTROYED);
+        // if (s != VIS_DESTROYED && !o->GetFeatureID(f))
+        // o->SetFeatureStatus(f,VIS_DESTROYED);
     }
 
     // 2001-03-12 MODIFIED BY S.G. SO IT DOESN'T WAIT ONE MORE HOUR BEFORE FINISHING THE REPAIR
     // 2001-03-13 REINSTATED BECAUSE THE DATA FILE ISN'T ADJUSTED FOR IT YET,
     if (bt < *hours)
-        //	if (bt <= *hours)
+        // if (bt <= *hours)
     {
         *hours -= bt;
         return bf;
@@ -3117,8 +3117,8 @@ int BestRepairFeature(Objective o, int *hours)
 
 int BestTargetFeature(Objective o, uchar targeted[])
 {
-    int					score, best = 0;
-    int					s, f, bf = 0;
+    int score, best = 0;
+    int s, f, bf = 0;
 
     // Find 'quickest fix'. That is, the feature which will give us the most operational
     // percentage in the shortest time.
@@ -3145,7 +3145,7 @@ int BestTargetFeature(Objective o, uchar targeted[])
 void RepairObjectives(void)
 {
     Objective      o;
-    VuListIterator	myit(AllObjList);
+    VuListIterator myit(AllObjList);
     o = GetFirstObjective(&myit);
 
     while (o != NULL)
@@ -3158,8 +3158,8 @@ void RepairObjectives(void)
 // This will add all child objectives to the passed list.
 void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, int level, int flags)
 {
-    Objective	n;
-    int			i;
+    Objective n;
+    int i;
 
     o->SetObjectiveScore((short)level);
 
@@ -3193,7 +3193,7 @@ void AddChildObjectives(Objective o, Objective p, F4PFList list, int maxdist, in
 
 F4PFList GetChildObjectives(Objective o, int maxdist, int flags)
 {
-    F4PFList	list;
+    F4PFList list;
 
     if (!o)
         return NULL;
@@ -3211,7 +3211,7 @@ F4PFList GetChildObjectives(Objective o, int maxdist, int flags)
 
 Objective GetFirstObjective(F4LIt l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetFirst();
 
@@ -3228,7 +3228,7 @@ Objective GetFirstObjective(F4LIt l)
 
 Objective GetNextObjective(F4LIt l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetNext();
 
@@ -3245,7 +3245,7 @@ Objective GetNextObjective(F4LIt l)
 
 Objective GetFirstObjective(VuGridIterator* l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetFirst();
 
@@ -3262,7 +3262,7 @@ Objective GetFirstObjective(VuGridIterator* l)
 
 Objective GetNextObjective(VuGridIterator* l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetNext();
 
@@ -3283,14 +3283,14 @@ Objective GetNextObjective(VuGridIterator* l)
 
 void CaptureObjective(Objective co, Control who, Unit u)
 {
-    FalconCampEventMessage	*newEvent;
-    VU_ID					vuid;
-    Team					newown;
-    Unit					unit;
+    FalconCampEventMessage *newEvent;
+    VU_ID vuid;
+    Team newown;
+    Unit unit;
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator			fit(RealUnitProxList, co->YPos(), co->XPos(), 5000.0F);
+    VuGridIterator fit(RealUnitProxList, co->YPos(), co->XPos(), 5000.0F);
 #else
-    VuGridIterator			fit(RealUnitProxList, co->XPos(), co->YPos(), 5000.0F);
+    VuGridIterator fit(RealUnitProxList, co->XPos(), co->YPos(), 5000.0F);
 #endif
 
     if (u)
@@ -3362,11 +3362,11 @@ void CaptureObjective(Objective co, Control who, Unit u)
 int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
 {
     long            size = 0, newsize;
-    short			count = 0;
-    Objective		o;
-    CampEntity		ent;
-    VU_BYTE			*buf, *sptr, *bufhead;
-    VU_ID			vuid, ownerid;
+    short count = 0;
+    Objective o;
+    CampEntity ent;
+    VU_BYTE *buf, *sptr, *bufhead;
+    VU_ID vuid, ownerid;
 
     if (owner)
     {
@@ -3376,7 +3376,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
     // Count size of dirty objectives changable data
     {
         // Use AllCamp iterator - just in case we don't have an ObjList (Dogfight)
-        VuListIterator	myit(AllCampList);
+        VuListIterator myit(AllCampList);
         ent = (CampEntity) myit.GetFirst();
 
         while (ent)
@@ -3404,7 +3404,7 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
 
     // Encode the data
     {
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         ent = (CampEntity) myit.GetFirst();
 
         while (ent)
@@ -3447,10 +3447,10 @@ int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner)
 int DecodeObjectiveDeltas(VU_BYTE **stream, long *rem, FalconSessionEntity *)
 {
     long            size;
-    short			count;
-    VU_ID			vuid;
-    Objective		o;
-    VU_BYTE			*buf, *bufhead;
+    short count;
+    VU_ID vuid;
+    Objective o;
+    VU_BYTE *buf, *bufhead;
 
     memcpychk(&count, stream, sizeof(short), rem);
     memcpychk(&size, stream, sizeof(long), rem);
@@ -3460,9 +3460,9 @@ int DecodeObjectiveDeltas(VU_BYTE **stream, long *rem, FalconSessionEntity *)
 
     if (LZSS_Expand(*stream, rem[0], buf, size) < 0)
     {
-        //		char err[200];
-        //		sprintf(err, "%s %d: error expanding data", __FILE__, __LINE__);
-        //		throw std::InvalidBufferException(err);
+        // char err[200];
+        // sprintf(err, "%s %d: error expanding data", __FILE__, __LINE__);
+        // throw std::InvalidBufferException(err);
     }
 
     //our new buffer is size size
@@ -3528,7 +3528,7 @@ void ObjectiveClass::WriteDirty(unsigned char **stream)
     start = *stream;
     ptr = start;
 
-    //	MonoPrint ("OB %08x\n", dirty_objective);
+    // MonoPrint ("OB %08x\n", dirty_objective);
 
     // Encode it up
 
@@ -3579,10 +3579,10 @@ void ObjectiveClass::ReadDirty(VU_BYTE **stream, long *rem)
         int size = ((static_data.class_data->Features * 2) + 7) / 8;
         stp = obj_data.fstatus;
 
-        //		for (num = 0; num < size; num ++){
+        // for (num = 0; num < size; num ++){
         memcpychk(stp, stream, sizeof(unsigned char)*size, rem);
-        //			stp += sizeof (unsigned char);
-        //		}
+        // stp += sizeof (unsigned char);
+        // }
     }
 }
 

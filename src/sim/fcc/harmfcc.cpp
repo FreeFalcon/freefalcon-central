@@ -15,9 +15,9 @@ extern bool g_bRealisticAvionics;
 
 void FireControlComputer::HarmMode(void)
 {
-    MissileClass		*theMissile;
-    HarmTargetingPod	*theHTS;
-    Tpoint				pos;
+    MissileClass *theMissile;
+    HarmTargetingPod *theHTS;
+    Tpoint pos;
 
     theHTS = (HarmTargetingPod*)FindSensor(platform, SensorClass::HTS);
     theMissile = (MissileClass *)(Sms->GetCurrentWeapon());
@@ -76,8 +76,8 @@ void FireControlComputer::HarmMode(void)
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
                 if (targetPtr->BaseData()->IsSim() && ((SimBaseClass*)targetPtr->BaseData())->IsAwake())
                 {
-                	((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
-                	((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);
+                 ((SimBaseClass*)targetPtr->BaseData())->drawPointer->GetPosition (&pos);
+                 ((SimBaseClass*)targetPtr->BaseData())->SetPosition (pos.x, pos.y, pos.z);
                 }
                 */
 

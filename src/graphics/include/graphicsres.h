@@ -4,7 +4,7 @@
     November 13, 1997
 
     Provides a simple isolation layer between the graphics and terrain
-	libraries and the resource manager (if any).
+ libraries and the resource manager (if any).
 \***************************************************************************/
 #ifndef _GRAPHICSRES_H_
 #define _GRAPHICSRES_H_

@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     08Nov03
 
-	- Drawable cumulus
+ - Drawable cumulus
 \***************************************************************************/
 #ifndef _DRAWCLD_H_
 #define _DRAWCLD_H_
@@ -29,7 +29,7 @@ public:
 protected:
     float puffRadius;
     Texture cloudTexture;
-    static BOOL	greenMode;
+    static BOOL greenMode;
     static Tcolor litCloudColor;
 
 #ifdef USE_SH_POOLS

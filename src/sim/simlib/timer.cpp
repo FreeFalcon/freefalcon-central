@@ -102,24 +102,24 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::FindUnusedHandle(void)
 /*------------------*/
 
 /************************************************************************/
-/*																								*/
-/* Routine: TimerOnetimeEventCleanup(TimerInstaninstata *cleanupData)	*/
-/*																								*/
-/* Description:																			*/
-/*		Cleans up the timer class upon execution of one-shot timer events.*/
-/*		This must be called before exit from one-shot timer callbacks.    */
-/*																								*/
-/* Inputs:																					*/
-/*    None																					*/
-/*																								*/
-/* Outputs:																					*/
-/*    None																					*/
-/*																								*/
-/*  Development History :																*/
-/*  Date      Programer           Description									*/
+/* */
+/* Routine: TimerOnetimeEventCleanup(TimerInstaninstata *cleanupData) */
+/* */
+/* Description: */
+/* Cleans up the timer class upon execution of one-shot timer events.*/
+/* This must be called before exit from one-shot timer callbacks.    */
+/* */
+/* Inputs: */
+/*    None */
+/* */
+/* Outputs: */
+/*    None */
+/* */
+/*  Development History : */
+/*  Date      Programer           Description */
 /*----------------------------------------------------------------------*/
-/*  18-Aug-97 MPS                  Created										*/
-/*																								*/
+/*  18-Aug-97 MPS                  Created */
+/* */
 /************************************************************************/
 void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 {
@@ -158,7 +158,7 @@ void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 /*------------------------------------------------------------------*/
 /*  23-Jan-95 LR                  Initial Write                     */
 /*  18-Aug-97 MPS                 Added support for NULL timer      */
-/*                                   handles	                       */
+/*                                   handles                        */
 /*                                                                  */
 /********************************************************************/
 SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS(void)
@@ -190,7 +190,7 @@ SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS(void)
 /*------------------------------------------------------------------*/
 /*  23-Jan-95 LR                  Initial Write                     */
 /*  18-Aug-97 MPS                 Added support for NULL timer      */
-/*                                   handles	                       */
+/*                                   handles                        */
 /*                                                                  */
 /********************************************************************/
 SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
@@ -225,15 +225,15 @@ SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
 /*------------------------------------------------------------------*/
 /*  23-Jan-95 LR                  Initial Write                     */
 /*  18-Aug-97 MPS                 Added support for NULL timer      */
-/*                                   handles	                       */
+/*                                   handles                        */
 /*                                                                  */
 /********************************************************************/
 //SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 //(
-//	SIM_INT period,
-//	SIM_INT res,
-//	LPTIMECALLBACK funcPtr,
-//	DWORD userData
+// SIM_INT period,
+// SIM_INT res,
+// LPTIMECALLBACK funcPtr,
+// DWORD userData
 //)
 SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 (
@@ -282,7 +282,7 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
 /*------------------------------------------------------------------*/
 /*  23-Jan-95 LR                  Initial Write                     */
 /*  18-Aug-97 MPS                 Added support for NULL timer      */
-/*                                   handles	                       */
+/*                                   handles                        */
 /*                                                                  */
 /********************************************************************/
 SIM_INT SIMLIB_TIMER_CLASS::StopTimer(SIM_TIMER_HANDLE hTimer)
@@ -357,15 +357,15 @@ SIM_INT SIMLIB_TIMER_CLASS::StopTimer(SIM_TIMER_HANDLE hTimer)
 /*------------------------------------------------------------------*/
 /*  23-Jan-95 LR                  Initial Write                     */
 /*  18-Aug-97 MPS                 Added support for NULL timer      */
-/*                                   handles	                       */
+/*                                   handles                        */
 /*                                                                  */
 /********************************************************************/
 //SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
 //(
-//	SIM_INT delay,
-//	SIM_INT res,
-//	LPTIMECALLBACK funcPtr,
-//	DWORD userData
+// SIM_INT delay,
+// SIM_INT res,
+// LPTIMECALLBACK funcPtr,
+// DWORD userData
 //)
 SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
 (

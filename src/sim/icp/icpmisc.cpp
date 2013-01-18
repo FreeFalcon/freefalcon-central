@@ -11,14 +11,14 @@
 #include "otwdrive.h"
 #include "sms.h"
 
-#define PosA		0
-#define PosB		1
-#define PosC		7
-#define PosD		8
-#define PosE		13
-#define PosF		14
-#define PosG		19
-#define PosH		20
+#define PosA 0
+#define PosB 1
+#define PosC 7
+#define PosD 8
+#define PosE 13
+#define PosF 14
+#define PosG 19
+#define PosH 20
 
 extern "C" double getVar(double lat, double lon, double elev, double year);
 
@@ -79,16 +79,16 @@ void ICPClass::ExecCORRMode(void)
 }
 void ICPClass::ExecMAGVMode(void)
 {
-    latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
-    latitude	*= RTD;
-    longitude	*= RTD;
+    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+    latitude *= RTD;
+    longitude *= RTD;
     /****************************************************************
-    *Latitude, degrees, north positive, 							*
-    *Longitude, degrees, east positive (for 100W, enter -100),		*
-    *Elevation, km above MSL",										*
-    *Year, as a floating point number (enter 1994.5 for June '94),	*
+    *Latitude, degrees, north positive,  *
+    *Longitude, degrees, east positive (for 100W, enter -100), *
+    *Elevation, km above MSL", *
+    *Year, as a floating point number (enter 1994.5 for June '94), *
     /***************************************************************/
     float MV = static_cast<float>(getVar(latitude, longitude, 0, 2001.0));
     //Line2
@@ -175,14 +175,14 @@ void ICPClass::ExecGPSMode(void)
     FillDEDMatrix(1, 12, tempstr);
     //Line3
     FillDEDMatrix(2, 2, "MM/DD/YY");
-    //	FillDEDMatrix(2,12,"12/23/00");			//Wombat778 10-18-2003 Removed to make date live.  Date is current date/time
+    // FillDEDMatrix(2,12,"12/23/00"); //Wombat778 10-18-2003 Removed to make date live.  Date is current date/time
 
     //  Calculate the date
     SYSTEMTIME time;
-    GetLocalTime(&time);					//Wombat778 10-18-2003 is this going to hurt performance?  It doesnt really need to balculated every frame
+    GetLocalTime(&time); //Wombat778 10-18-2003 is this going to hurt performance?  It doesnt really need to balculated every frame
     int temptime = time.wYear;
 
-    if (temptime > 1999)		//convert the date to 2 digits. This wont work > 2100 but falcon wont be around by then;-)
+    if (temptime > 1999) //convert the date to 2 digits. This wont work > 2100 but falcon wont be around by then;-)
         temptime -= 2000;
     else
         temptime -= 1900;
@@ -190,11 +190,11 @@ void ICPClass::ExecGPSMode(void)
     sprintf(tempstr, "%02d/%02d/%02d", time.wMonth, time.wDay, temptime);
     FillDEDMatrix(2, 12, tempstr);
 
-    //	end of date code
+    // end of date code
 
     //Line4
     FillDEDMatrix(3, 7, "G/S");
-    //	FillDEDMatrix(3,15,"2KTS");  //Wombat778 10-18-2003 Removed to make speed live. Added following instead
+    // FillDEDMatrix(3,15,"2KTS");  //Wombat778 10-18-2003 Removed to make speed live. Added following instead
 
     //  calculate the speed
 
@@ -203,11 +203,11 @@ void ICPClass::ExecGPSMode(void)
     sprintf(tempstr, "%03d", GroundSpeed);
     FillDEDMatrix(3, (15 - strlen(tempstr)), tempstr);
 
-    //	end of speed code
+    // end of speed code
 
     //Line5
     FillDEDMatrix(4, 6, "MHDG");
-    //FillDEDMatrix(4,12,"003*");			//Wombat778 10-18-2003 Removed to make heading live
+    //FillDEDMatrix(4,12,"003*"); //Wombat778 10-18-2003 Removed to make heading live
 
     //calculate the heading
     int tempheading = FloatToInt32((cockpitFlightData.yaw * 10.0F * RTD) / 10.0f);
@@ -305,27 +305,27 @@ BOOL ICPClass::CheckForHARM(void)
 
     return FALSE;
 }
-/*			curWeapon && curWeaponClass == wcHARMWpn
-	sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
-				hasHARM += sms->hardPoint[hp]->weaponCount;
+/* curWeapon && curWeaponClass == wcHARMWpn
+ sms->hardPoint[hp] && sms->hardPoint[hp]->weaponPointer && sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
+ hasHARM += sms->hardPoint[hp]->weaponCount;
 }*/
 // Retro 3Jan2004 from here...
 #include "falcsnd\winampfrontend.h"
-extern bool g_bPilotEntertainment;	// Retro 3Jan2004
+extern bool g_bPilotEntertainment; // Retro 3Jan2004
 
 void ICPClass::ExecWinAmpMode(void)
 {
 
     if (!g_bPilotEntertainment)
     {
-        ShiAssert(false);	// we really shouldn´t be here then !
+        ShiAssert(false); // we really shouldn´t be here then !
         return;
     }
 
     if (!winamp)
         return;
 
-    winamp->Refresh(vuxRealTime);	// have to use real timer here, in case of pause etc..
+    winamp->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..
 
     ClearStrings();
 

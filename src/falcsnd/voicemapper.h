@@ -13,8 +13,8 @@ class VoiceMapper
     static const unsigned int default_voices[];
     static const int max_default_voices;
     /*JAM 19Sep03    static const struct namemap {
-    	char *name;
-    	unsigned int id;
+     char *name;
+     unsigned int id;
         } Names[];*/
 public:
     //JAM 19Sep03 - Fixes MSVC7 compile errors

@@ -15,19 +15,19 @@ public:
 
     enum DisplayMode {Movie, UI, UILarge, Planner, Layout, Sim, NumModes};
     DisplayMode currentMode;
-    int	xOffset;
-    int	yOffset;
-    int	width[NumModes];
-    int	height[NumModes];
-    int	depth[NumModes];
-    int	doubleBuffer[NumModes];
+    int xOffset;
+    int yOffset;
+    int width[NumModes];
+    int height[NumModes];
+    int depth[NumModes];
+    int doubleBuffer[NumModes];
     HWND appWin;
-    int	windowStyle;
+    int windowStyle;
     // Device managment
-    DeviceManager	devmgr;
-    DisplayDevice	theDisplayDevice;
-    int	deviceNumber;
-    int	displayFullScreen;
+    DeviceManager devmgr;
+    DisplayDevice theDisplayDevice;
+    int deviceNumber;
+    int displayFullScreen;
 
     void Setup(int languageNum);
     void Cleanup();

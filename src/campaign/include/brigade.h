@@ -29,14 +29,14 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    uchar			elements;							// Number of child units
-    mutable uchar	c_element;							// Which one we're looking at
-    VU_ID			element[MAX_UNIT_CHILDREN];			// VU_IDs of elements
-    short			fullstrength;						// How many vehicles we were before we took losses
+    uchar elements; // Number of child units
+    mutable uchar c_element; // Which one we're looking at
+    VU_ID element[MAX_UNIT_CHILDREN]; // VU_IDs of elements
+    short fullstrength; // How many vehicles we were before we took losses
 public:
     // constructors and serial functions
     BrigadeClass(ushort type);

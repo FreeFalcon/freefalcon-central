@@ -49,7 +49,7 @@ struct CampStateType
     IDList            Owned;
     IDList            PriData;
     IDList            SecData;
-    CampStateType*		NextState;
+    CampStateType* NextState;
 };
 typedef CampStateType* CampaignState;
 
@@ -61,7 +61,7 @@ typedef CampStateType* CampaignState;
 #define POLITICAL_STATE       1
 #define AIR_DEF_STATE         2
 #define AIR_OFF_STATE         3
-#define AIR_SUP_STATE			4
+#define AIR_SUP_STATE 4
 #define GROUND_DEF_STATE      5
 #define GROUND_OFF_STATE      6
 #define YS_ACTIVITY_STATE     7
@@ -115,11 +115,11 @@ typedef CampStateType* CampaignState;
 #define AOF_GROUND            4
 
 // Defines for AIR_SUP_STATE:
-#define ASU_HSUP_LOST			0
-#define ASU_HSUP_CONTESTED		1
-#define ASU_HSUP_FULL			2
-#define ASU_ESUP_CONTESTED		3
-#define ASU_ESUP_FULL			4
+#define ASU_HSUP_LOST 0
+#define ASU_HSUP_CONTESTED 1
+#define ASU_HSUP_FULL 2
+#define ASU_ESUP_CONTESTED 3
+#define ASU_ESUP_FULL 4
 
 // Defines for GROUND_DEF_STATE:
 #define GRD_FULLRETREAT       0

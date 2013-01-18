@@ -58,11 +58,11 @@ public:
         skillLevel = newLevel;
     };
 
-    virtual int	IsTanker(void)
+    virtual int IsTanker(void)
     {
         return FALSE;
     }
-    virtual void	InitBoom(void)	{};
+    virtual void InitBoom(void) {};
     virtual void CleanupBoom(void) {};
 };
 

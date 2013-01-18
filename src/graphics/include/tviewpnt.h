@@ -50,62 +50,62 @@ public:
     };
 
     // Move the viewer and swap blocks as needed
-    void	Update(const Tpoint *position);
+    void Update(const Tpoint *position);
 
     // Return the Nth feature of the required type from the tile containing the viewpoint
-    int		GetTileID(int r, int c);
-    BOOL	GetPath(int TileID, int type, int offset, TpathFeature *target);
-    BOOL	GetArea(int TileID, int type, int offset, TareaFeature *target);
+    int GetTileID(int r, int c);
+    BOOL GetPath(int TileID, int type, int offset, TpathFeature *target);
+    BOOL GetArea(int TileID, int type, int offset, TareaFeature *target);
 
     // Return the min and max LODs ever useable by this viewpoint
-    int		GetMinLOD(void)
+    int GetMinLOD(void)
     {
         return minLOD;
     };
-    int		GetMaxLOD(void)
+    int GetMaxLOD(void)
     {
         return maxLOD;
     };
 
     // Return the highest and lowest terrain elevation within range of this viewpoint
-    void	GetAreaFloorAndCeiling(float *floor, float *ceiling);
+    void GetAreaFloorAndCeiling(float *floor, float *ceiling);
 
-    // Return the low and high detail levels to be used for drawing	the next frame
-    int		GetHighLOD(void)
+    // Return the low and high detail levels to be used for drawing the next frame
+    int GetHighLOD(void)
     {
         return highDetail;
     };
-    int		GetLowLOD(void)
+    int GetLowLOD(void)
     {
         return lowDetail;
     };
 
     // Return the largest distance from the viewer a post will ever want to be drawn
     // in world space and level post space
-    float	GetMaxRange(void)
+    float GetMaxRange(void)
     {
         return maxRange[maxLOD];
     };
-    float	GetMaxRange(int LOD)
+    float GetMaxRange(int LOD)
     {
         return maxRange[LOD];
     };
-    int		GetMaxPostRange(int LOD)
+    int GetMaxPostRange(int LOD)
     {
         return blockLists[LOD].GetMaxPostRange();
     };
 
     // Return the maximum distance from the current postion at which all
     // data is owned by the specified LOD list in world space and in level posts
-    float	GetAvailableRange(void)
+    float GetAvailableRange(void)
     {
         return LEVEL_POST_TO_WORLD(blockLists[maxLOD].GetAvailablePostRange(), maxLOD);
     };
-    float	GetAvailableRange(int LOD)
+    float GetAvailableRange(int LOD)
     {
         return LEVEL_POST_TO_WORLD(blockLists[LOD].GetAvailablePostRange(), LOD);
     };
-    int		GetAvailablePostRange(int LOD)
+    int GetAvailablePostRange(int LOD)
     {
         return blockLists[LOD].GetAvailablePostRange();
     };
@@ -113,7 +113,7 @@ public:
     // Return the distance to the farthest piece of terrain that will be drawn in the next frame
     // (The .65 factor is a magic number that seems to work to account for the fact that
     //  the terrain engine leaves a safty margin of undrawn posts arround the viewpoint).
-    float	GetDrawingRange(void)
+    float GetDrawingRange(void)
     {
         return LEVEL_POST_TO_WORLD(blockLists[lowDetail].GetAvailablePostRange(), lowDetail) * 0.65f;
     };
@@ -130,48 +130,48 @@ public:
     // Return the type of ground under the specified point on the ground
     // (requires terrain data including textures to be loaded at that point,
     //  otherwise, 0 is returned.)
-    int		GetGroundType(float x, float y);
+    int GetGroundType(float x, float y);
 
     // Return the z value of the terrain at the specified point.  (positive Z down)
     // If the third argument is provided to the exact version, then the normal
     // will also be returned
-    float	GetGroundLevelApproximation(float x, float y);
+    float GetGroundLevelApproximation(float x, float y);
     // sfr: new prototype with LOD level
 #define USE_GET_LOD_LEVEL 1
 #if USE_GET_LOD_LEVEL
     /** returns the ground level at the highest possible LOD for the given spot.
     * normal and the LOD level are also returned if not NULL.
     */
-    float	GetGroundLevel(float x, float y, Tpoint *normal = NULL, int *lod = NULL);
+    float GetGroundLevel(float x, float y, Tpoint *normal = NULL, int *lod = NULL);
 #else
-    float	GetGroundLevel(float x, float y, Tpoint *normal = NULL);
+    float GetGroundLevel(float x, float y, Tpoint *normal = NULL);
 #endif
 
     // Return TRUE if the given point is on or under the terrain
-    BOOL	UnderGround(Tpoint *position);
+    BOOL UnderGround(Tpoint *position);
 
     // Return TRUE if the two specified points can see each other over the terrain
-    BOOL	LineOfSight(Tpoint *p1, Tpoint *p2);
+    BOOL LineOfSight(Tpoint *p1, Tpoint *p2);
 
     // Find the intersection with the terrain (return FALSE if there isn't one)
-    BOOL	GroundIntersection(Tpoint *dir, Tpoint *intersection);
+    BOOL GroundIntersection(Tpoint *dir, Tpoint *intersection);
 
 
     // Get the position and orientation matrix for this viewpoint
-    float	X(void)
+    float X(void)
     {
         return pos.x;
     };
-    float	Y(void)
+    float Y(void)
     {
         return pos.y;
     };
-    float	Z(void)
+    float Z(void)
     {
         return pos.z;
     };
 
-    void	GetPos(Tpoint *p)
+    void GetPos(Tpoint *p)
     {
         *p = pos;
     };
@@ -200,25 +200,25 @@ private:
 
 protected:
     // Last reported world space location of the viewer (X north, Y east, Z down)
-    Tpoint		pos;
+    Tpoint pos;
 
     // Range sorted lists of pointers to data blocks at each map level
     // (level 0 is highest level of detail)
-    int					nLists;
-    TBlockList			*blockLists;
+    int nLists;
+    TBlockList *blockLists;
     mutable CRITICAL_SECTION cs_update;
 
 
     // The farest into the distance this viewer should ever see (in world space)
-    float	*maxRange;
+    float *maxRange;
 
     // The lowest and highest detail levels ever to be used by this viewpoint
-    int		minLOD;
-    int		maxLOD;
+    int minLOD;
+    int maxLOD;
 
     // The lowest and highest detail levels currently turned on for drawing
-    int		highDetail;		// 0 <= highDetail <= lowDetail
-    int		lowDetail;		// higheDetail <= lowDetail <= nLevels-1;
+    int highDetail; // 0 <= highDetail <= lowDetail
+    int lowDetail; // higheDetail <= lowDetail <= nLevels-1;
 };
 
 

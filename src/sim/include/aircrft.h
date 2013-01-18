@@ -7,24 +7,24 @@
 #include "fsound.h"
 #include "dofsnswitches.h"
 
-#define FLARE_STATION	0
-#define CHAFF_STATION	1
-#define DEBRIS_STATION	2
+#define FLARE_STATION 0
+#define CHAFF_STATION 1
+#define DEBRIS_STATION 2
 
 #define NEW_VORTEX_TRAILS 1 //RV - I-Hawk - new vortex trails implementation
 
 ////////////////////////////////////////////
 struct DamageF16PieceStructure
 {
-    int	mask;
-    int	index;
-    int	damage;
+    int mask;
+    int index;
+    int damage;
     int sfxflag;
-    int	sfxtype;
+    int sfxtype;
     float lifetime;
     float dx, dy, dz;
     float yd, pd, rd;
-    float pitch, roll;	// resting angle
+    float pitch, roll; // resting angle
 };
 ////////////////////////////////////////////
 
@@ -69,11 +69,11 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
-    enum AutoPilotType	{ThreeAxisAP, WaypointAP, CombatAP, LantirnAP, APOff};
+    enum AutoPilotType {ThreeAxisAP, WaypointAP, CombatAP, LantirnAP, APOff};
     // this is extremely stupid, since it allows a plane to be both an A10 and an F16.
     // wrong way to do things.
     enum ACFLAGS
@@ -230,10 +230,10 @@ public:
     //unsigned int ExteriorLights;
     enum ExtlLightFlags
     {
-        Extl_Main_Power		= ACSTATUS_EXT_LIGHTS,
-        Extl_Anti_Coll		= ACSTATUS_EXT_TAILSTROBE,
-        Extl_Wing_Tail		= ACSTATUS_EXT_NAVLIGHTS,
-        Extl_Flash			= ACSTATUS_EXT_NAVLIGHTSFLASH,
+        Extl_Main_Power = ACSTATUS_EXT_LIGHTS,
+        Extl_Anti_Coll = ACSTATUS_EXT_TAILSTROBE,
+        Extl_Wing_Tail = ACSTATUS_EXT_NAVLIGHTS,
+        Extl_Flash = ACSTATUS_EXT_NAVLIGHTSFLASH,
     };
     void ExtlOn(ExtlLightFlags fl)
     {
@@ -252,20 +252,20 @@ public:
     unsigned int INSFlags;
     enum INSAlignFlags
     {
-        INS_PowerOff		= 0x1,
-        INS_AlignNorm		= 0x2,
-        INS_AlignHead		= 0x4,
-        INS_Cal				= 0x8,
-        INS_AlignFlight		= 0x10,
-        INS_Nav				= 0x20,
-        INS_Aligned			= 0x40,
-        INS_ADI_OFF_IN		= 0x80,
-        INS_ADI_AUX_IN		= 0x100,
-        INS_HUD_FPM			= 0x200,
-        INS_HUD_STUFF		= 0x400,
-        INS_HSI_OFF_IN		= 0x800,
-        INS_HSD_STUFF		= 0x1000,
-        BUP_ADI_OFF_IN		= 0x2000,
+        INS_PowerOff = 0x1,
+        INS_AlignNorm = 0x2,
+        INS_AlignHead = 0x4,
+        INS_Cal = 0x8,
+        INS_AlignFlight = 0x10,
+        INS_Nav = 0x20,
+        INS_Aligned = 0x40,
+        INS_ADI_OFF_IN = 0x80,
+        INS_ADI_AUX_IN = 0x100,
+        INS_HUD_FPM = 0x200,
+        INS_HUD_STUFF = 0x400,
+        INS_HSI_OFF_IN = 0x800,
+        INS_HSD_STUFF = 0x1000,
+        BUP_ADI_OFF_IN = 0x2000,
     };
     void INSOn(INSAlignFlags fl)
     {
@@ -325,9 +325,9 @@ public:
     void AddAVTRSeconds(void);
     enum AVTRStateFlags
     {
-        AVTR_ON	= 0x1,
+        AVTR_ON = 0x1,
         AVTR_AUTO = 0x2,
-        AVTR_OFF	= 0x4,
+        AVTR_OFF = 0x4,
     };
     void AVTROn(AVTRStateFlags fl)
     {
@@ -356,11 +356,11 @@ public:
     float rightLEFAngle;
     enum LEFStateFlags
     {
-        LT_LEF_DAMAGED	= 0x1,
-        LT_LEF_OUT		= 0x2,
-        RT_LEF_DAMAGED	= 0x8,
-        RT_LEF_OUT		= 0x10,
-        LEFSASYNCH		= 0x20,
+        LT_LEF_DAMAGED = 0x1,
+        LT_LEF_OUT = 0x2,
+        RT_LEF_DAMAGED = 0x8,
+        RT_LEF_OUT = 0x10,
+        LEFSASYNCH = 0x20,
     };
     void LEFOn(LEFStateFlags fl)
     {
@@ -415,29 +415,29 @@ private:
     void CleanupLocalData();
 public:
 
-    float					glocFactor;
-    int						fireGun, fireMissile, lastPickle;
-    FackClass*				mFaults;
-    AirframeClass*			af;
-    FireControlComputer*	FCC;
-    SMSClass*				Sms;
-    GunClass*				Guns;
+    float glocFactor;
+    int fireGun, fireMissile, lastPickle;
+    FackClass* mFaults;
+    AirframeClass* af;
+    FireControlComputer* FCC;
+    SMSClass* Sms;
+    GunClass* Guns;
 
-    virtual void	Init(SimInitDataClass* initData);
-    virtual int	   Wake(void);
-    //virtual int 	Sleep(void);
-    virtual int		Exec(void);
-    virtual void	JoinFlight(void);
+    virtual void Init(SimInitDataClass* initData);
+    virtual int    Wake(void);
+    //virtual int  Sleep(void);
+    virtual int Exec(void);
+    virtual void JoinFlight(void);
     virtual int    CombatClass(void);  // 2002-02-25 MODIFIED BY S.G. virtual added in front since FlightClass also have one now...
     void           SetAutopilot(AutoPilotType flag);
-    AutoPilotType	AutopilotType(void)
+    AutoPilotType AutopilotType(void)
     {
         return autopilotType;
     };
-    VU_ID	         HomeAirbase(void);
-    VU_ID	         TakeoffAirbase(void);
-    VU_ID	         LandingAirbase(void);
-    VU_ID	         DivertAirbase(void);
+    VU_ID          HomeAirbase(void);
+    VU_ID          TakeoffAirbase(void);
+    VU_ID          LandingAirbase(void);
+    VU_ID          DivertAirbase(void);
     void           DropProgramed(void);
     int            IsF16(void)
     {
@@ -451,33 +451,33 @@ public:
     void SetPowerOutput(float powerOutput); //me123 changed back
     // END OF ADDED SECTION
     // sfr: commented out
-    //virtual void	SetVt(float newvt);
-    //virtual void	SetKias(float newkias);
-    void			ResetFuel(void);
-    virtual long	GetTotalFuel(void);
-    virtual void	GetTransform(TransformMatrix vmat);
-    virtual void	ApplyDamage(FalconDamageMessage *damageMessage);
-    virtual void	SetLead(int flag);
-    virtual void	ReceiveOrders(FalconEvent* newOrder);
-    virtual float	GetP(void);
-    virtual float	GetQ(void);
-    virtual float	GetR(void);
-    virtual float	GetAlpha(void);
-    virtual float	GetBeta(void);
-    virtual float	GetNx(void);
-    virtual float	GetNy(void);
-    virtual float	GetNz(void);
-    virtual float	GetGamma(void);
-    virtual float	GetSigma(void);
-    virtual float	GetMu(void);
-    virtual void	MakePlayerVehicle(void);
-    virtual void	MakeNonPlayerVehicle(void);
-    virtual void	MakeLocal(void);
-    virtual void	MakeRemote(void);
-    virtual void	ConfigurePlayerAvionics(void);
-    virtual void	SetVuPosition(void);
-    virtual void	Regenerate(float x, float y, float z, float yaw);
-    virtual			FireControlComputer* GetFCC(void)
+    //virtual void SetVt(float newvt);
+    //virtual void SetKias(float newkias);
+    void ResetFuel(void);
+    virtual long GetTotalFuel(void);
+    virtual void GetTransform(TransformMatrix vmat);
+    virtual void ApplyDamage(FalconDamageMessage *damageMessage);
+    virtual void SetLead(int flag);
+    virtual void ReceiveOrders(FalconEvent* newOrder);
+    virtual float GetP(void);
+    virtual float GetQ(void);
+    virtual float GetR(void);
+    virtual float GetAlpha(void);
+    virtual float GetBeta(void);
+    virtual float GetNx(void);
+    virtual float GetNy(void);
+    virtual float GetNz(void);
+    virtual float GetGamma(void);
+    virtual float GetSigma(void);
+    virtual float GetMu(void);
+    virtual void MakePlayerVehicle(void);
+    virtual void MakeNonPlayerVehicle(void);
+    virtual void MakeLocal(void);
+    virtual void MakeRemote(void);
+    virtual void ConfigurePlayerAvionics(void);
+    virtual void SetVuPosition(void);
+    virtual void Regenerate(float x, float y, float z, float yaw);
+    virtual FireControlComputer* GetFCC(void)
     {
         return FCC;
     };
@@ -489,14 +489,14 @@ public:
     virtual int HasAreaJamming(void);
 
 #ifdef _DEBUG
-    virtual void	SetDead(int);
+    virtual void SetDead(int);
 #endif // _DEBUG
 
 private:
     // sfr: I wonder who is the genius who made these var public
     // ideally all should be private
     // im setting isDigital for now
-    int					isDigital;
+    int isDigital;
 
 public:
     // sfr: adding public functions
@@ -511,18 +511,18 @@ public:
         this->isDigital = isDigital;
         this->autopilotType = isDigital ? CombatAP : APOff;
     }
-    long				mCautionCheckTime;
-    BOOL				MPOCmd;
-    char				dropChaffCmd;
-    char				dropFlareCmd;
+    long mCautionCheckTime;
+    BOOL MPOCmd;
+    char dropChaffCmd;
+    char dropFlareCmd;
     int            acFlags;
-    AutoPilotType		autopilotType;
-    AutoPilotType		lastapType;
+    AutoPilotType autopilotType;
+    AutoPilotType lastapType;
 
     VU_TIME        dropProgrammedTimer;
-    unsigned short		dropProgrammedStep;
+    unsigned short dropProgrammedStep;
 
-    float				bingoFuel;
+    float bingoFuel;
     //MI taking these functions for the ICP stuff, made some changes
     float GetBingoFuel(void)
     {
@@ -541,7 +541,7 @@ public:
     void CorrectCAT(void);
     //MI for RALT stuff
     enum RaltStatus { ROFF, RSTANDBY, RON } RALTStatus;
-    float RALTCoolTime;	//Cooling is in progress
+    float RALTCoolTime; //Cooling is in progress
     int RaltReady()
     {
         return (RALTCoolTime < 0.0F && RALTStatus == RON) ? 1 : 0;
@@ -567,12 +567,12 @@ public:
     int FlareCount, ChaffCount, ChaffSalvoCount, FlareSalvoCount;
     VU_TIME ChaffBurstInterval, FlareBurstInterval, ChaffSalvoInterval, FlareSalvoInterval;
     //MI Autopilot
-    enum APFlags	{AltHold = 0x1, //Right switch up
+    enum APFlags {AltHold = 0x1, //Right switch up
                      AttHold = 0x2, //Right Switch down
-                     StrgSel = 0x4,	//Left switch down
+                     StrgSel = 0x4, //Left switch down
                      RollHold = 0x8, //Left switch middle
-                     HDGSel = 0x10,	//Left switch up
-                     Override = 0x20,	//Paddle switch
+                     HDGSel = 0x10, //Left switch up
+                     Override = 0x20, //Paddle switch
                      StickStrng = 0x40
                  };  // MD -- 20031115: AP fixes; this one is for when stick steering temporarily overrides AP pitch hold
     unsigned int APFlag;
@@ -596,10 +596,10 @@ public:
     bool SeatArmed;
     void StepSeatArm(void);
 
-    TransformMatrix		vmat;
-    float				gLoadSeconds;
-    long				lastStatus;
-    BasicWeaponStation	counterMeasureStation[3];
+    TransformMatrix vmat;
+    float gLoadSeconds;
+    long lastStatus;
+    BasicWeaponStation counterMeasureStation[3];
     enum   // what trail is used for what
     {
         TRAIL_DAMAGE = 0, // we've been hit
@@ -608,10 +608,10 @@ public:
         TRAIL_MAX,
         MAXENGINES = 8,
     };
-    //DrawableTrail*		smokeTrail[TRAIL_MAX];
-    //DrawableTrail	    *conTrails[MAXENGINES];
-    //DrawableTrail	    *engineTrails[MAXENGINES];
-    //DrawableTrail	*rwingvortex, *lwingvortex;
+    //DrawableTrail* smokeTrail[TRAIL_MAX];
+    //DrawableTrail     *conTrails[MAXENGINES];
+    //DrawableTrail     *engineTrails[MAXENGINES];
+    //DrawableTrail *rwingvortex, *lwingvortex;
     //DrawableTrail   *wingvapor;
     //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect!
     // ********** NEW TRAIL STUFF *************
@@ -623,10 +623,10 @@ public:
     DWORD       colorConTrails_trail[MAXENGINES];
     DWORD       engineTrails[MAXENGINES];
     DWORD       engineTrails_trail[MAXENGINES];
-    DWORD		lwingvortex;
-    DWORD		lwingvortex_trail;
-    DWORD		rwingvortex;
-    DWORD		rwingvortex_trail;
+    DWORD lwingvortex;
+    DWORD lwingvortex_trail;
+    DWORD rwingvortex;
+    DWORD rwingvortex_trail;
     DWORD       lvortex1;
     DWORD       lvortex1_trail;
     DWORD       rvortex1;
@@ -648,12 +648,12 @@ public:
     void SetColorContrail(int color);
     // ****************************************
     BOOL             dustConnect;  // MLR 1/4/2004 -
-    BOOL				playerSmokeOn;
+    BOOL playerSmokeOn;
     DrawableGroundVehicle* pLandLitePool;
-    BOOL				mInhibitLitePool;
-    void				CleanupLitePool(void);
-    void	AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail);
-    void	CancelEngineTrails(DWORD *tlist, DWORD *tlist_trail);
+    BOOL mInhibitLitePool;
+    void CleanupLitePool(void);
+    void AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail);
+    void CancelEngineTrails(DWORD *tlist, DWORD *tlist_trail);
 
     // JPO Avionics power settings;
     unsigned int powerFlags;
@@ -750,52 +750,52 @@ public:
     bool playBetty;
     void ToggleBetty(void);
     //MI RF switch
-    int RFState;	//0 = NORM; 1 = QUIET; 2 = SILENT
+    int RFState; //0 = NORM; 1 = QUIET; 2 = SILENT
     void GSounds(void);
     void SSounds(void);
     int SpeedToleranceTanks;
     int SpeedToleranceBombs;
     float GToleranceTanks;
     float GToleranceBombs;
-    int OverSpeedToleranceTanks[3];	//3 levels of OverSpeed for tanks
+    int OverSpeedToleranceTanks[3]; //3 levels of OverSpeed for tanks
     int OverSpeedToleranceBombs[3]; //3 levels of OverSpeed for bombs
-    int OverGToleranceTanks[3];	//3 levels of OverG for tanks
+    int OverGToleranceTanks[3]; //3 levels of OverG for tanks
     int OverGToleranceBombs[3]; //3 levels of OverG for bombs
     void AdjustTankSpeed(int level);
     void AdjustBombSpeed(int level);
     void AdjustTankG(int level);
     void AdjustBombG(int level);
 
-    void	DoWeapons(void);
-    float	GlocPrediction(void);
-    void	InitCountermeasures(void);
-    void	CleanupCountermeasures(void);
-    void	InitDamageStation(void);
-    void	CleanupDamageStation(void);
+    void DoWeapons(void);
+    float GlocPrediction(void);
+    void InitCountermeasures(void);
+    void CleanupCountermeasures(void);
+    void InitDamageStation(void);
+    void CleanupDamageStation(void);
     void    CleanupVortex(void);  //RV - I-Hawk - new function to clean up vortex and dust trails
-    void	DoCountermeasures(void);
-    void	DropChaff(void);
-    void	DropFlare(void);
-    void	GatherInputs(void);
-    void	RunSensors(void);
-    BOOL	LandingCheck(float noseAngle, float impactAngle, int groundType);
-    void	GroundFeatureCheck(float groundZ);
-    void	RunExplosion(void);
-    void	ShowDamage(void);
-    void	CleanupDamage(void);
-    void	MoveSurfaces(void);
+    void DoCountermeasures(void);
+    void DropChaff(void);
+    void DropFlare(void);
+    void GatherInputs(void);
+    void RunSensors(void);
+    BOOL LandingCheck(float noseAngle, float impactAngle, int groundType);
+    void GroundFeatureCheck(float groundZ);
+    void RunExplosion(void);
+    void ShowDamage(void);
+    void CleanupDamage(void);
+    void MoveSurfaces(void);
     // sfr: control light dofs
-    void	RunLightSurfaces(void);
+    void RunLightSurfaces(void);
     // control gear dofs
-    void	RunGearSurfaces(void);
+    void RunGearSurfaces(void);
 
-    void	ToggleAutopilot(void);
-    void	OnGroundInit(SimInitDataClass* initData);
-    void	CheckObjectCollision(void);
-    void	CheckPersistantCollision(void);
-    void	CautionCheck(void);
-    void	SetCursorCmdsByAnalog(void);   // MD -- 20040110: analog cursor control support
-    void	SetSpeedBrake(void); //TJL 02/28/04
+    void ToggleAutopilot(void);
+    void OnGroundInit(SimInitDataClass* initData);
+    void CheckObjectCollision(void);
+    void CheckPersistantCollision(void);
+    void CautionCheck(void);
+    void SetCursorCmdsByAnalog(void);   // MD -- 20040110: analog cursor control support
+    void SetSpeedBrake(void); //TJL 02/28/04
     int brakePos; //TJL 02/28/04
     float speedBrakeState; //TJL 02/28/04
     CampBaseClass* JDAMtarget;//Cobra
@@ -825,12 +825,12 @@ public:
     {
         return TRUE;
     }
-    virtual float	Mass(void);
+    virtual float Mass(void);
 
     // Has the player triggered the ejection sequence?
-    BOOL	ejectTriggered;
-    float	ejectCountdown;
-    BOOL	doEjectCountdown;
+    BOOL ejectTriggered;
+    float ejectCountdown;
+    BOOL doEjectCountdown;
 
     //MI Emergency jettison
     bool EmerJettTriggered;
@@ -883,7 +883,7 @@ protected:
 
 public:
     VuEntity *attachedEntity; // JB carrier
-    bool AWACSsaidAbort;		// MN when target got occupied, AWACS says something useful
+    bool AWACSsaidAbort; // MN when target got occupied, AWACS says something useful
     //TJL 01/04/04 Moved it here from private to access it (per Jam)
     void CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr1 , float &sl2, float &sr2);
     //TJL 01/04/04 added this variable to catch the wingsweep.
@@ -919,11 +919,11 @@ private: // MLR's 2003-10
     float carrierInitTimer;
     int takeoffSlot;
 
-    AircraftTurbulence	*turbulence, *lVortex, *rVortex;
+    AircraftTurbulence *turbulence, *lVortex, *rVortex;
 
 public:
-    void	SetPulseTurbulence(float RateX, float RateY, float RateZ, float Time);
-    void	SetStaticTurbulence(float RateX, float RateY, float RateZ)
+    void SetPulseTurbulence(float RateX, float RateY, float RateZ, float Time);
+    void SetStaticTurbulence(float RateX, float RateY, float RateZ)
     {
         StaticTurbulence.x += RateX;
         StaticTurbulence.y += RateY;
@@ -934,8 +934,8 @@ public:
 
 private:
     // COBRA - RED - Adding turbulence to the Pit
-    float				PulseTurbulenceTime;
-    Tpoint				PulseTurbulence, StaticTurbulence, TotalTurbulence;
+    float PulseTurbulenceTime;
+    Tpoint PulseTurbulence, StaticTurbulence, TotalTurbulence;
 };
 
 #endif

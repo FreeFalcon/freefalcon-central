@@ -152,7 +152,7 @@ LISTBOX *intercept_lbox = NULL;
 void hookup_team_buttons
 (
     C_Window *winme,
-    int	team,
+    int team,
     long colour_id,
     long new_team_id,
     long team_id,
@@ -1809,18 +1809,18 @@ static void change_vc_team_name(long ID, short hittype, C_Base *ctrl)
         listbox->AddItem(vt_degrade, C_TYPE_ITEM, "Degrade");
 
         /*
-        		if (new_team == -1)
-        		{
-        			listbox->AddItem (vt_kills, C_TYPE_ITEM, "Kills");
-        			listbox->AddItem (vt_frags, C_TYPE_ITEM, "Frags");
-        			listbox->AddItem (vt_deaths, C_TYPE_ITEM, "Deaths");
-        			listbox->AddItem (vt_landing, C_TYPE_ITEM, "Landing");
-        		}
+         if (new_team == -1)
+         {
+         listbox->AddItem (vt_kills, C_TYPE_ITEM, "Kills");
+         listbox->AddItem (vt_frags, C_TYPE_ITEM, "Frags");
+         listbox->AddItem (vt_deaths, C_TYPE_ITEM, "Deaths");
+         listbox->AddItem (vt_landing, C_TYPE_ITEM, "Landing");
+         }
 
-        		listbox->AddItem (vt_tos, C_TYPE_ITEM, "Tos");
-        		listbox->AddItem (vt_airspeed, C_TYPE_ITEM, "Airspeed");
-        		listbox->AddItem (vt_altitude, C_TYPE_ITEM, "Altitude");
-        		listbox->AddItem (vt_position, C_TYPE_ITEM, "Position");
+         listbox->AddItem (vt_tos, C_TYPE_ITEM, "Tos");
+         listbox->AddItem (vt_airspeed, C_TYPE_ITEM, "Airspeed");
+         listbox->AddItem (vt_altitude, C_TYPE_ITEM, "Altitude");
+         listbox->AddItem (vt_position, C_TYPE_ITEM, "Position");
         */
     }
 
@@ -2509,7 +2509,7 @@ void TacEngGameOver()
         current_tactical_mission->set_game_over(1);
         check_victory_conditions();
 
-        TriggerTacEndGame();	// Tell UI to open window
+        TriggerTacEndGame(); // Tell UI to open window
         OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
     }
 }
@@ -2541,7 +2541,7 @@ void TacEngSetVCCompleted(long ID, int value)
 
         if (!current_tactical_mission->get_game_over() && check_victory_conditions())
         {
-            TriggerTacEndGame();	// Tell UI to open window
+            TriggerTacEndGame(); // Tell UI to open window
             OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
         }
     }
@@ -2561,7 +2561,7 @@ void CheckForVictory(void)
         {
             // Kevin, when you transmit the EndgameResult variable... there is a duplicate section of code to this in
             // te_team_victory.cpp at the bottom
-            TriggerTacEndGame();	// Tell UI to open window
+            TriggerTacEndGame(); // Tell UI to open window
             OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() | SHOW_TE_SCORES);
         }
     }

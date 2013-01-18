@@ -4,10 +4,10 @@
     January 2, 1995
 
     This class provides 3D drawing functions specific to rendering out the
-	window views including terrain.
+ window views including terrain.
 
-	This file contains the implementations of the terrain polygon
-	drawing functions.
+ This file contains the implementations of the terrain polygon
+ drawing functions.
 \***************************************************************************/
 #include <math.h>
 #include "Tmap.h"
@@ -19,7 +19,7 @@
 // sfr: @TODO remove this hack
 #include "Falclib/Include/IsBad.h"
 
-//#define SET_FG_COLOR_ON_FLAT		// Call SetColor for each flat shaded terrain chunck
+//#define SET_FG_COLOR_ON_FLAT // Call SetColor for each flat shaded terrain chunck
 
 
 /***************************************************************************
@@ -27,15 +27,15 @@
 ***************************************************************************/
 void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
 {
-    TerrainVertex		*v0, *v1, *v2, *v3;
-    Tpost				*post;
+    TerrainVertex *v0, *v1, *v2, *v3;
+    Tpost *post;
 
 
     // Get the vertecies required to draw this square
-    v0 = vertexBuffer[LOD] + maxSpanExtent * r + c;			// South-West
-    v1 = vertexBuffer[LOD] + maxSpanExtent * (r + 1) + c;		// North-West
-    v2 = v0 + 1;												// South-East
-    v3 = v1 + 1;												// North-East
+    v0 = vertexBuffer[LOD] + maxSpanExtent * r + c; // South-West
+    v1 = vertexBuffer[LOD] + maxSpanExtent * (r + 1) + c; // North-West
+    v2 = v0 + 1; // South-East
+    v3 = v1 + 1; // North-East
 
 
 #ifdef TWO_D_MAP_AVAILABLE
@@ -50,12 +50,12 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
 
         // Draw the square represented by this lower left corner
         SetColor(0x80400000);
-        Render2DTri((UInt16)(v0->x),	(UInt16)(v0->y),
-                    (UInt16)(v0->x + (TWODSCALE << LOD)),	(UInt16)(v0->y),
-                    (UInt16)(v0->x + (TWODSCALE << LOD)),	(UInt16)(v0->y - (TWODSCALE << LOD)));
-        Render2DTri((UInt16)(v0->x),	(UInt16)(v0->y),
-                    (UInt16)(v0->x + (TWODSCALE << LOD)),	(UInt16)(v0->y - (TWODSCALE << LOD)),
-                    (UInt16)(v0->x),	(UInt16)(v0->y - (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v0->x), (UInt16)(v0->y),
+                    (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y),
+                    (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y - (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v0->x), (UInt16)(v0->y),
+                    (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y - (TWODSCALE << LOD)),
+                    (UInt16)(v0->x), (UInt16)(v0->y - (TWODSCALE << LOD)));
 
         return;
     }
@@ -107,8 +107,8 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor((FloatToInt32(v0->r * 255.9f))		|
-                 (FloatToInt32(v0->g * 255.9f) << 8)	|
+        SetColor((FloatToInt32(v0->r * 255.9f)) |
+                 (FloatToInt32(v0->g * 255.9f) << 8) |
                  (FloatToInt32(v0->b * 255.9f) << 16) |
                  (FloatToInt32(v0->a * 255.9f) << 24));
 #endif
@@ -121,18 +121,18 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
 
 /***************************************************************************
     Draw an element of a connector ring.  Expect the high detail LOD number
-	and the r/c address of the lower left corner in highres units.  We'll
-	handle alignment with the low detail data here.
+ and the r/c address of the lower left corner in highres units.  We'll
+ handle alignment with the low detail data here.
 ***************************************************************************/
 void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 {
 
-    TerrainVertex	*v0, *v1, *v2, *v3, *v4;
-    int				lowRow;
-    int				lowCol;
-    int				lowKeyOffset;
-    int				highKeyOffset;
-    Tpost			*post;
+    TerrainVertex *v0, *v1, *v2, *v3, *v4;
+    int lowRow;
+    int lowCol;
+    int lowKeyOffset;
+    int highKeyOffset;
+    Tpost *post;
 
 
     // Compute the corresponding post locations in the lower detail level
@@ -194,8 +194,8 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor((FloatToInt32(v0->r * 255.9f))		|
-                 (FloatToInt32(v0->g * 255.9f) << 8)	|
+        SetColor((FloatToInt32(v0->r * 255.9f)) |
+                 (FloatToInt32(v0->g * 255.9f) << 8) |
                  (FloatToInt32(v0->b * 255.9f) << 16) |
                  (FloatToInt32(v0->a * 255.9f) << 24));
 #endif
@@ -235,19 +235,19 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v1->x),	(UInt16)(v1->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v1->x), (UInt16)(v1->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
 #else
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y),
-                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y + (TWODSCALE << LOD)));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y + (TWODSCALE << LOD)),
-                    (UInt16)(v2->x),	(UInt16)(v2->y + (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y),
+                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y + (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y + (TWODSCALE << LOD)),
+                    (UInt16)(v2->x), (UInt16)(v2->y + (TWODSCALE << LOD)));
 #endif
         return;
     }
@@ -276,19 +276,19 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
-	and the r/c address of the upper left corner in highres units.  We'll
-	handle alignment with the low detail data here.
+ and the r/c address of the upper left corner in highres units.  We'll
+ handle alignment with the low detail data here.
 \***************************************************************************/
 void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 {
     \
 
-    TerrainVertex	*v0, *v1, *v2, *v3, *v4;
-    int				lowRow;
-    int				lowCol;
-    int				lowKeyOffset;
-    int				highKeyOffset;
-    Tpost			*post;
+    TerrainVertex *v0, *v1, *v2, *v3, *v4;
+    int lowRow;
+    int lowCol;
+    int lowKeyOffset;
+    int highKeyOffset;
+    Tpost *post;
 
 
     // Compute the corresponding post locations in the lower detail level
@@ -349,8 +349,8 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
     }
     else if (v3->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF))		|
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8)	|
+        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
                  ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
                  ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
 #endif
@@ -390,19 +390,19 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v1->x),	(UInt16)(v1->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v1->x), (UInt16)(v1->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
 #else
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y - (TWODSCALE << LOD)));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)),	(UInt16)(v2->y - (TWODSCALE << LOD)),
-                    (UInt16)(v2->x),	(UInt16)(v2->y - (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y - (TWODSCALE << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y - (TWODSCALE << LOD)),
+                    (UInt16)(v2->x), (UInt16)(v2->y - (TWODSCALE << LOD)));
 #endif
         return;
     }
@@ -431,19 +431,19 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
-	and the r/c address of the lower left corner in highres units.  We'll
-	handle alignment with the low detail data here.
+ and the r/c address of the lower left corner in highres units.  We'll
+ handle alignment with the low detail data here.
 \***************************************************************************/
 void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 {
     \
 
-    TerrainVertex	*v0, *v1, *v2, *v3, *v4;
-    int				lowRow;
-    int				lowCol;
-    int				lowKeyOffset;
-    int				highKeyOffset;
-    Tpost			*post;
+    TerrainVertex *v0, *v1, *v2, *v3, *v4;
+    int lowRow;
+    int lowCol;
+    int lowKeyOffset;
+    int highKeyOffset;
+    Tpost *post;
 
 
     // Compute the corresponding post locations in the lower detail level
@@ -505,8 +505,8 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF))		|
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8)	|
+        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
                  ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
                  ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
 #endif
@@ -546,19 +546,19 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v1->x),	(UInt16)(v1->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v1->x), (UInt16)(v1->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
 #else
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << LOD)),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << LOD)),	(UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << LOD)),	(UInt16)(v2->y + (TWODSCALE << 1 << LOD)),
-                    (UInt16)(v2->x),	(UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v2->x), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
 #endif
         return;
     }
@@ -587,18 +587,18 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
-	and the r/c address of the lower right corner in highres units.  We'll
-	handle alignment with the low detail data here.
+ and the r/c address of the lower right corner in highres units.  We'll
+ handle alignment with the low detail data here.
 \***************************************************************************/
 void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
 {
 
-    TerrainVertex	*v0, *v1, *v2, *v3, *v4;
-    int				lowRow;
-    int				lowCol;
-    int				lowKeyOffset;
-    int				highKeyOffset;
-    Tpost			*post;
+    TerrainVertex *v0, *v1, *v2, *v3, *v4;
+    int lowRow;
+    int lowCol;
+    int lowKeyOffset;
+    int highKeyOffset;
+    Tpost *post;
 
 
     // Compute the corresponding post locations in the lower detail level
@@ -659,8 +659,8 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
     }
     else if (v2->RenderingStateHandle == STATE_SOLID)
     {
-        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF))		|
-                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8)	|
+        SetColor(((FloatToInt32(v0->r * 255.9f) & 0xFF)) |
+                 ((FloatToInt32(v0->g * 255.9f) & 0xFF) << 8) |
                  ((FloatToInt32(v0->b * 255.9f) & 0xFF) << 16) |
                  ((FloatToInt32(v0->a * 255.9f) & 0xFF) << 24));
 #endif
@@ -700,19 +700,19 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v1->x),	(UInt16)(v1->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x),	(UInt16)(v2->y),
-                    (UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v4->x),	(UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v1->x), (UInt16)(v1->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
+                    (UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v4->x), (UInt16)(v4->y));
 #else
-        Render2DTri((UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v3->x + (TWODSCALE << LOD)),	(UInt16)(v3->y),
-                    (UInt16)(v3->x + (TWODSCALE << LOD)),	(UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
-        Render2DTri((UInt16)(v3->x),	(UInt16)(v3->y),
-                    (UInt16)(v3->x + (TWODSCALE << LOD)),	(UInt16)(v3->y + (TWODSCALE << 1 << LOD)),
-                    (UInt16)(v3->x),	(UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
+        Render2DTri((UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y),
+                    (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
+        Render2DTri((UInt16)(v3->x), (UInt16)(v3->y),
+                    (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v3->x), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
 #endif
         return;
     }

@@ -33,7 +33,7 @@ bool g_bNoSound = false;
 
 // F4SoundPos stuff
 AList sndPurgeList;
-F4CSECTIONHANDLE*    SoundPosSection;	// Thread critical section information
+F4CSECTIONHANDLE*    SoundPosSection; // Thread critical section information
 
 #include "conv.h"
 #include "VoiceManager.h"
@@ -54,7 +54,7 @@ LookupTable SonicBoomTable;
 
 #else // USE RESMGR
 
-//	#include "cmpclass.h"
+// #include "cmpclass.h"
 extern "C"
 {
 #include "codelib\resources\reslib\src\resmgr.h"
@@ -79,7 +79,7 @@ extern "C"
 // presumably, this will hook into the UI's settings screen where there
 // are vol sliders for different groups
 
-//	not needed anymore using PlayerOptions class
+// not needed anymore using PlayerOptions class
 /*
 float gGroupMaxVols[NUM_SOUND_GROUPS] =
 {
@@ -90,11 +90,11 @@ float gGroupMaxVols[NUM_SOUND_GROUPS] =
 };*/
 
 
-WAVEFORMATEX	mono_8bit_8k;
-WAVEFORMATEX	mono_8bit_22k;
-WAVEFORMATEX	mono_16bit_22k;
-WAVEFORMATEX	stereo_8bit_22k;
-WAVEFORMATEX	stereo_16bit_22k =
+WAVEFORMATEX mono_8bit_8k;
+WAVEFORMATEX mono_8bit_22k;
+WAVEFORMATEX mono_16bit_22k;
+WAVEFORMATEX stereo_8bit_22k;
+WAVEFORMATEX stereo_16bit_22k =
 {
     WAVE_FORMAT_PCM,
     2,
@@ -104,7 +104,7 @@ WAVEFORMATEX	stereo_16bit_22k =
     16,
     0x0000,
 };
-WAVEFORMATEX	mono_16bit_8k =
+WAVEFORMATEX mono_16bit_8k =
 {
     WAVE_FORMAT_PCM,
     1,
@@ -114,17 +114,17 @@ WAVEFORMATEX	mono_16bit_8k =
     16,
     0x0000,
 };
-LIST			*sndHandleList;
-VoiceFilter		*voiceFilter = NULL;
-//AWACSMessage	*messageCenter;
+LIST *sndHandleList;
+VoiceFilter *voiceFilter = NULL;
+//AWACSMessage *messageCenter;
 
 // stuff for chat buffers
-static const WORD	SAMPLE_SIZE	= 1;					// Bytes per sample
-static const DWORD	SAMPLE_RATE	= 8000;					// Sample per second
+static const WORD SAMPLE_SIZE = 1; // Bytes per sample
+static const DWORD SAMPLE_RATE = 8000; // Sample per second
 typedef enum State { Receive = 0, Transmit, NotReady };
-static State	chatMode;
-LPDIRECTSOUNDCAPTURE		chatInputDevice;
-extern "C" LPDIRECTSOUND		DIRECT_SOUND_OBJECT;
+static State chatMode;
+LPDIRECTSOUNDCAPTURE chatInputDevice;
+extern "C" LPDIRECTSOUND DIRECT_SOUND_OBJECT;
 // Chat IO stuff prototypes
 BOOL ChatSetup(void);
 void ChatCleanup(void);
@@ -245,7 +245,7 @@ char *ReadFile(char Filename[])
         return(NULL);
 
     size = GetFileSize(wf, NULL);
-    //	Data=(char *)malloc(size);
+    // Data=(char *)malloc(size);
     Data = new char[size];
 
     if (Data == NULL)
@@ -298,13 +298,13 @@ void InitWaveFormatEXData(void)
     stereo_16bit_22k.wBitsPerSample = 16;
     stereo_16bit_22k.cbSize = 0x0000;
 
-    /*	mono_16bit_8k.wFormatTag = 0x0001;
-    	mono_16bit_8k.nChannels = 0x0001;
-    	mono_16bit_8k.nSamplesPerSec = 0x00001f40;
-    	mono_16bit_8k.nAvgBytesPerSec = 0x00003e80;
-    	mono_16bit_8k.nBlockAlign = 0x0001;
-    	mono_16bit_8k.wBitsPerSample = 0x0010;
-    	mono_16bit_8k.cbSize = 0x0000;*/
+    /* mono_16bit_8k.wFormatTag = 0x0001;
+     mono_16bit_8k.nChannels = 0x0001;
+     mono_16bit_8k.nSamplesPerSec = 0x00001f40;
+     mono_16bit_8k.nAvgBytesPerSec = 0x00003e80;
+     mono_16bit_8k.nBlockAlign = 0x0001;
+     mono_16bit_8k.wBitsPerSample = 0x0010;
+     mono_16bit_8k.cbSize = 0x0000;*/
     mono_16bit_8k.wFormatTag = 1;
     mono_16bit_8k.nChannels = 1;
     mono_16bit_8k.nSamplesPerSec = 8000;
@@ -368,7 +368,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
         voiceFilter = new VoiceFilter;
         voiceFilter->SetUpVoiceFilter();
         voiceFilter->StartVoiceManager();
-        //		messageCenter = new AWACSMessage;
+        // messageCenter = new AWACSMessage;
     }
 
     char sfxtable[_MAX_PATH];
@@ -383,7 +383,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
         sprintf (sfxtable, "%s\\%s", FalconObjectDataDir, FALCONSNDTABLE);
         if (ReadSFXTable (sfxtable) == FALSE)
         {
-        	return FALSE;
+         return FALSE;
         }*/
     }
 
@@ -487,9 +487,9 @@ void F4FreeSound(int* sound)
 /*
  * Like the function says.
  *  Need to know if these functions are what they are looking for
-	or if the functionality should be more a stop - the sound if started
-	again would start at the beginning. Pause being, resume from point
-	of pause.
+ or if the functionality should be more a stop - the sound if started
+ again would start at the beginning. Pause being, resume from point
+ of pause.
     SoundPause // This stop is more of a pause
     SoundResume
 
@@ -515,42 +515,42 @@ void F4SoundStart()
 }
 
 /* Must replace the CreateStream function call with
-	AUDIO_ITEM		*tlkItem = NULL;
-	int				dummyHandle;
+ AUDIO_ITEM *tlkItem = NULL;
+ int dummyHandle;
 
-	dummyHandle = AudioCreate( &( waveFormat ) );
-	audioChannel = SoundRequestChannel( dummyHandle,
-							 &( audioHandle ), DSB_SIZE );
+ dummyHandle = AudioCreate( &( waveFormat ) );
+ audioChannel = SoundRequestChannel( dummyHandle,
+  &( audioHandle ), DSB_SIZE );
 
-	tlkItem = AudioGetItem( audioHandle );
+ tlkItem = AudioGetItem( audioHandle );
 
-	if ( audioChannel )
-		SoundStreamChannel( audioChannel, fillSoundBuffer );
+ if ( audioChannel )
+ SoundStreamChannel( audioChannel, fillSoundBuffer );
  *
  */
 /*int F4CreateStream(int Flags)
 {
-	int StreamID=SND_NO_HANDLE;
+ int StreamID=SND_NO_HANDLE;
 
-	if(gSoundDriver)
-	{
-		switch(Flags)
-		{
-			case 1: // 22k 8bit mono
-				StreamID=gSoundDriver->CreateStream(&Mono_22K_8Bit,0.5f);
-				break;
-			case 2: // 22k 16bit mono
-				StreamID=gSoundDriver->CreateStream(&Mono_22K_16Bit,0.5f);
-				break;
-			case 3: // 22k 8bit stereo
-				StreamID=gSoundDriver->CreateStream(&Stereo_22K_8Bit,0.5f);
-				break;
-			case 4: // 22k 16bit stereo
-				StreamID=gSoundDriver->CreateStream(&Stereo_22K_16Bit,0.5f);
-				break;
-		}
-	}
-	return(StreamID);
+ if(gSoundDriver)
+ {
+ switch(Flags)
+ {
+ case 1: // 22k 8bit mono
+ StreamID=gSoundDriver->CreateStream(&Mono_22K_8Bit,0.5f);
+ break;
+ case 2: // 22k 16bit mono
+ StreamID=gSoundDriver->CreateStream(&Mono_22K_16Bit,0.5f);
+ break;
+ case 3: // 22k 8bit stereo
+ StreamID=gSoundDriver->CreateStream(&Stereo_22K_8Bit,0.5f);
+ break;
+ case 4: // 22k 16bit stereo
+ StreamID=gSoundDriver->CreateStream(&Stereo_22K_16Bit,0.5f);
+ break;
+ }
+ }
+ return(StreamID);
 }
 */
 
@@ -652,16 +652,16 @@ void F4StopAllStreams()
         voiceFilter->ResetVoiceManager();
     }
 
-    /*		Also the following just stops and I need to play them here
-    	*/
+    /* Also the following just stops and I need to play them here
+     */
     if (gSoundDriver)
         gSoundDriver->StopAllStreams();
 }
 /*
 void F4PlayVoiceStreams()
 {
-	if(voiceFilter)
-		voiceFilter->ResumeVoiceStreams();
+ if(voiceFilter)
+ voiceFilter->ResumeVoiceStreams();
 }*/
 
 long F4SetStreamVolume(int ID, long vol)
@@ -693,7 +693,7 @@ long F4StreamPlayed(int StreamID)
 }
 // Direction (dBs) =-10000 to 10000 where -=Left,0=Center,+=Right (This is a Percentage)
 /* Update this with the audio function
-	SND_EXPORT int AudioSetPan( int handle, int location );
+ SND_EXPORT int AudioSetPan( int handle, int location );
  * There is also a linear pan function AudioSetPanRate
  */
 void F4PanSound(int soundIdx, int PanDir)
@@ -752,9 +752,9 @@ void F4SetSoundFlags(int soundIdx, long flags)
 void F4SetStreamFlags(int, long)
 {
     /*
-    	if(gSoundDriver && soundIdx != SND_NO_HANDLE)
-    	{
-    	}
+     if(gSoundDriver && soundIdx != SND_NO_HANDLE)
+     {
+     }
     */
 }
 
@@ -843,7 +843,7 @@ void ExitSoundManager(void)
 
     if (gSoundDriver)
     {
-        //		delete messageCenter;
+        // delete messageCenter;
         delete voiceFilter;
         voiceFilter = NULL;
         gSoundDriver->RemoveAllSamples();
@@ -960,8 +960,8 @@ BOOL ReadSFXTable(char *sndtable)
                     SFX_DEF[i].soundGroup,
                     SFX_DEF[i].InternalID,
                     SFX_DEF[i].Unused
-                    //			SFX_DEF[i].majorSymbol,
-                    //			SFX_DEF[i].minorSymbol
+                    // SFX_DEF[i].majorSymbol,
+                    // SFX_DEF[i].minorSymbol
                    );
         }
 
@@ -979,7 +979,7 @@ BOOL ReadSFXTable(char *sndtable)
 // MLR 2003-10-18 Read sound table from text file
 
 
-extern bool	g_bEnableDopplerSound, g_bSoundDistanceEffect;
+extern bool g_bEnableDopplerSound, g_bSoundDistanceEffect;
 extern float g_fSoundDopplerFactor, g_fSoundRolloffFactor;
 extern int g_nSoundUpdateMS;
 
@@ -1019,16 +1019,16 @@ BOOL ReadSFXTableTXT(char *sndtable)
             strncpy(SFX_DEF[i].fileName, arg, 64);
             SFX_DEF[i].offset = TokenI(0, 0);
             SFX_DEF[i].length = TokenI(0, 0);
-            SFX_DEF[i].handle = 0;		// run time data
+            SFX_DEF[i].handle = 0; // run time data
             SFX_DEF[i].maxDistSq = TokenF(0, 50000);
             SFX_DEF[i].maxDistSq *= SFX_DEF[i].maxDistSq; // Must square values
             SFX_DEF[i].min3ddist = TokenF(0, 0);
             SFX_DEF[i].min3ddist *= SFX_DEF[i].min3ddist; // Must square values
             SFX_DEF[i].maxVol = TokenF(0, 0);
             SFX_DEF[i].minVol = TokenF(0, -1000);
-            SFX_DEF[i].distSq = 0;		// TokenI(0,0); run time data
-            SFX_DEF[i].override = 0;		// TokenI(0,0); run time data
-            SFX_DEF[i].lastFrameUpdated = 0;		// TokenI(0,0); run time data
+            SFX_DEF[i].distSq = 0; // TokenI(0,0); run time data
+            SFX_DEF[i].override = 0; // TokenI(0,0); run time data
+            SFX_DEF[i].lastFrameUpdated = 0; // TokenI(0,0); run time data
             //SFX_DEF[i].flags=TokenI(0,0);
             arg = strtok(0, " ,\t\n");
             SFX_DEF[i].flags = 0;
@@ -1075,8 +1075,8 @@ BOOL ReadSFXTableTXT(char *sndtable)
             SFX_DEF[i].coneOutsideAngle = cos(TokenF(180) / 180 * PI);
             SFX_DEF[i].coneOutsideVol   = TokenF(SFX_DEF[i].maxVol);
 
-            //			SFX_DEF[i].majorSymbol=TokenI(0,0);
-            //			SFX_DEF[i].minorSymbol=TokenI(0,0);
+            // SFX_DEF[i].majorSymbol=TokenI(0,0);
+            // SFX_DEF[i].minorSymbol=TokenI(0,0);
             i++;
         }
     }
@@ -1160,8 +1160,8 @@ void F4ReloadSFX(void)
         sprintf (sfxtable, "%s\\%s", FalconObjectDataDir, FALCONSNDTABLE);
         if (ReadSFXTable (sfxtable) == FALSE)
         {
-        	// screwed
-        	return;
+         // screwed
+         return;
         }
         */
     }
@@ -1192,8 +1192,8 @@ void LoadSFX(char *falconDataDir)
             SFX_DEF[i].handle = F4LoadFXSound(fname, SFX_DEF[i].flags, &SFX_DEF[i]);
             //if(SFX_DEF[i].handle == SND_NO_HANDLE)
             //{
-            //	if(fp)
-            //		fprintf(fp,"LoadSFX() didn't load %d:%s\n",i,fname);
+            // if(fp)
+            // fprintf(fp,"LoadSFX() didn't load %d:%s\n",i,fname);
             //}
             // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
         }
@@ -1208,14 +1208,14 @@ void LoadSFX(char *falconDataDir)
             SFX_DEF[i].handle = F4LoadFXSound(fname, SFX_DEF[i].flags, &SFX_DEF[i]);
             //if(SFX_DEF[i].handle == SND_NO_HANDLE)
             //{
-            //	if(fp)
-            //		fprintf(fp,"LoadSFX() didn't load %f\n",fname);
+            // if(fp)
+            // fprintf(fp,"LoadSFX() didn't load %f\n",fname);
             //}
             // ShiAssert (SFX_DEF[i].handle != SND_NO_HANDLE); // MLR 1/21/2004 - who cares!
         }
 
         //if(fp)
-        //	fclose(fp);
+        // fclose(fp);
     }
 }
 
@@ -1270,7 +1270,7 @@ void UnLoadSFX(void)
 /*
 ** Name: ChatSetup
 ** Description:
-**		Setup the chat buffer and kick off other chat stuff...
+** Setup the chat buffer and kick off other chat stuff...
 */
 BOOL
 ChatSetup(void)
@@ -1278,27 +1278,27 @@ ChatSetup(void)
     if (!gSoundDriver) return(FALSE);
 
 #ifdef CHAT_USED
-    HRESULT	result;
+    HRESULT result;
     WAVEFORMATEX audioFormat;
 
     // Setup the audio format structure we want
     /*
-    audioFormat.wFormatTag		= WAVE_FORMAT_PCM;
-    audioFormat.nChannels		= 1;
-    audioFormat.nSamplesPerSec	= SAMPLE_RATE;
-    audioFormat.nAvgBytesPerSec	= SAMPLE_RATE * SAMPLE_SIZE;
-    audioFormat.nBlockAlign		= SAMPLE_SIZE;
-    audioFormat.wBitsPerSample	= 8 * SAMPLE_SIZE;
-    audioFormat.cbSize			= 0;
+    audioFormat.wFormatTag = WAVE_FORMAT_PCM;
+    audioFormat.nChannels = 1;
+    audioFormat.nSamplesPerSec = SAMPLE_RATE;
+    audioFormat.nAvgBytesPerSec = SAMPLE_RATE * SAMPLE_SIZE;
+    audioFormat.nBlockAlign = SAMPLE_SIZE;
+    audioFormat.wBitsPerSample = 8 * SAMPLE_SIZE;
+    audioFormat.cbSize = 0;
     */
 
-    audioFormat.wFormatTag		= SND_FORMAT;
-    audioFormat.nChannels		= SND_CHANNELS;
-    audioFormat.nSamplesPerSec	= SND_SAMPLE_RATE;
-    audioFormat.nAvgBytesPerSec	= SND_AVG_RATE;
-    audioFormat.nBlockAlign		= SND_BLOCK_ALIGN;
-    audioFormat.wBitsPerSample	= SND_BIT_RATE;
-    audioFormat.cbSize			= 0;
+    audioFormat.wFormatTag = SND_FORMAT;
+    audioFormat.nChannels = SND_CHANNELS;
+    audioFormat.nSamplesPerSec = SND_SAMPLE_RATE;
+    audioFormat.nAvgBytesPerSec = SND_AVG_RATE;
+    audioFormat.nBlockAlign = SND_BLOCK_ALIGN;
+    audioFormat.wBitsPerSample = SND_BIT_RATE;
+    audioFormat.cbSize = 0;
 
 
     // Setup input stuff
@@ -1324,13 +1324,13 @@ ChatSetup(void)
 /*
 ** Name: ChatCleanup
 ** Description:
-**		Cleanup chat stuff...
+** Cleanup chat stuff...
 */
 void
 ChatCleanup(void)
 {
 #ifdef CHAT_USED
-    HRESULT	result;
+    HRESULT result;
 
     if (!gSoundDriver) return;
 
@@ -1362,14 +1362,14 @@ F4ChatToggleXmitReceive(void)
     if (chatMode == Transmit)
     {
         chatMode = Receive;
-        //		KCK: Commented out - need to use new VoiceDataMessage
-        //		EndTransmission();
+        // KCK: Commented out - need to use new VoiceDataMessage
+        // EndTransmission();
     }
     else
     {
         chatMode = Transmit;
-        //		KCK: Commented out - need to use new VoiceDataMessage
-        //		BeginTransmission();
+        // KCK: Commented out - need to use new VoiceDataMessage
+        // BeginTransmission();
     }
 }
 
@@ -1414,8 +1414,8 @@ void F4SoundLeaving3d(void)
 /*
 ** Name: F4SoundSetCamPosAndOrient
 ** Description:
-**		Should be called at the start of the otwframe to set the
-**		Camera position and orientation.
+** Should be called at the start of the otwframe to set the
+** Camera position and orientation.
 */
 
 float ExtAttenuation = -10000;
@@ -1469,9 +1469,9 @@ extern "C" void F4SoundFXSetCamPosAndOrient(Tpoint *campos, Trotation *camrot, T
 /*
 ** Name: F4SoundSetPos
 ** Description:
-**		Sets a sound's position in the world.  We use the camera location
-**		to get distance squared to camera and then set the distance in
-**		the effects table.
+** Sets a sound's position in the world.  We use the camera location
+** to get distance squared to camera and then set the distance in
+** the effects table.
 */
 
 extern "C" void
@@ -1523,8 +1523,8 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     if (gSoundObject)
     {
-        if ((SFX_DEF[ sfxId ].flags & SFX_POS_LOOPED)	||
-            override									||
+        if ((SFX_DEF[ sfxId ].flags & SFX_POS_LOOPED) ||
+            override ||
             (!gSoundObject->IsPlaying(sfxId, 0)))
             gSoundObject->Sfx(sfxId, 0, pscale, volume, CamPos.x, CamPos.y, CamPos.z);
     }
@@ -1534,13 +1534,13 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 // for looping sounds.  mask = 7 is every 8th frame
 // mask = 3 is every 4th frame
 static unsigned int sPosLoopStagger = 0;
-#define LOOP_STAGGER_MASK		0x00000003U
+#define LOOP_STAGGER_MASK 0x00000003U
 
 /*
 ** Name: F4SoundPositionDriver
 ** Description:
-**	Goes thru the list of sound effects and determines if they should be
-**	started/stopped or volume increased/decreased.
+** Goes thru the list of sound effects and determines if they should be
+** started/stopped or volume increased/decreased.
 */
 extern "C" void
 F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
@@ -1616,7 +1616,7 @@ F4SoundFXPositionDriver(unsigned int begFrame, unsigned int endFrame)
 /*
 ** Name: F4SoundFXInit
 ** Description:
-**		Inits soundfx variables
+** Inits soundfx variables
 */
 extern "C" void
 F4SoundFXInit(void)
@@ -1638,7 +1638,7 @@ F4SoundFXInit(void)
 /*
 ** Name: F4SoundFXEnd
 ** Description:
-**		Stops all sounds from playing
+** Stops all sounds from playing
 */
 extern "C" void
 F4SoundFXEnd(void)
@@ -1828,7 +1828,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
 /*
 void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol, float X, float Y, float Z)
 {
-	F4SoundFXSetPos(SfxID, 0, X, Y, Z, PScale, Vol, vel.x, vel.y, vel.z,uid + SID,platform);
+ F4SoundFXSetPos(SfxID, 0, X, Y, Z, PScale, Vol, vel.x, vel.y, vel.z,uid + SID,platform);
 }
 */
 

@@ -64,7 +64,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *control);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#define MAX_TACTICAL_MISSIONS	1000
+#define MAX_TACTICAL_MISSIONS 1000
 
 typedef struct
 {
@@ -179,8 +179,8 @@ extern MissionDataType MissionData[];
 // KCK: These are used by the UI to create it's list boxes.
 int IsValidMission(int dindex, int mission)
 {
-    int					role = MissionData[mission].skill;
-    UnitClassDataType	*uc;
+    int role = MissionData[mission].skill;
+    UnitClassDataType *uc;
 
     switch (mission)
     {
@@ -208,7 +208,7 @@ int IsValidMission(int dindex, int mission)
             // Helo only
             uc = (UnitClassDataType*)(Falcon4ClassTable[dindex].dataPtr);
 
-            if (uc->Scores[role]) //  && 0)	// Need to check for helo types
+            if (uc->Scores[role]) //  && 0) // Need to check for helo types
                 return TRUE;
 
             break;

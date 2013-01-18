@@ -13,7 +13,7 @@ class C_Handler;
 #include <stdlib.h>
 //#include <ddraw.h>
 #define USE_DINPUT_8
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
 #define DIRECTINPUT_VERSION 0x0700
 #else
 #define DIRECTINPUT_VERSION 0x0800
@@ -41,9 +41,9 @@ extern MEM_POOL UI_Pools[UI_MAX_POOLS];
 #include "SmartHeap\Include\smrtheap.hpp"
 #endif
 
-#define _SHIFT_DOWN_	(0x01)
-#define _CTRL_DOWN_		(0x02)
-#define _ALT_DOWN_		(0x04)
+#define _SHIFT_DOWN_ (0x01)
+#define _CTRL_DOWN_ (0x02)
+#define _ALT_DOWN_ (0x04)
 
 
 extern unsigned char _Keys_[][2];
@@ -112,7 +112,7 @@ private:
     ImageBuffer *Front_; // Surface to blit to
     SCREEN surface_;
     RECT FrontRect_;
-    //		RECT PrimaryRect_;
+    // RECT PrimaryRect_;
     volatile long TimerLoop_, ControlLoop_, OutputLoop_;
     long OutputWait_;
     unsigned TimerID_;
@@ -136,23 +136,23 @@ private:
     TOOL_TIP OverLast_;
 
     // Grab control (item found in CheckHotSpots)
-    GRABBER		Grab_;
+    GRABBER Grab_;
 
     // Drag stuff
-    GRABBER		Drag_;
+    GRABBER Drag_;
 
     // Current Window
-    C_Window	*CurWindow_;
+    C_Window *CurWindow_;
 
     // Last Message was MouseDown (will be either L or R mouse)... 0 if not MouseDown... used for repeating
-    long		MouseDown_;
-    long		MouseDownTime_;
-    long		LastUp_;
-    long		LastUpTime_;
-    long		DoubleClickTime_;
-    C_Base		*MouseControl_;
+    long MouseDown_;
+    long MouseDownTime_;
+    long LastUp_;
+    long LastUpTime_;
+    long DoubleClickTime_;
+    C_Base *MouseControl_;
 
-    //		DDSURFACEDESC ScreenFormat;
+    // DDSURFACEDESC ScreenFormat;
 
     UI95_RECT rectlist_[HND_MAX_RECTS];
     short rectcount_;
@@ -270,7 +270,7 @@ public:
         return(FrontRect_.bottom - FrontRect_.top);
     }
 
-    //		long Busy() { return(HandlingMessage); }
+    // long Busy() { return(HandlingMessage); }
 
     void SetDrawFlag(long val)
     {
@@ -327,8 +327,8 @@ public:
     void RemovingControl(C_Base *control);
     void DropControl();
     void StartDrag();
-    //!		short GetDragX(WORD MouseX);
-    //!		short GetDragY(WORD MouseY);
+    //! short GetDragX(WORD MouseX);
+    //! short GetDragY(WORD MouseY);
     long GetDragX(WORD MouseX);
     long GetDragY(WORD MouseY);
     BOOL Dragging(void)
@@ -338,7 +338,7 @@ public:
         return(FALSE);
     }
     BOOL GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType);
-    //!		BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
+    //! BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);
     BOOL DragItem(WORD MouseX, WORD MouseY, C_Window *overme);
     BOOL DropItem(WORD MouseX, WORD MouseY, C_Window *overme);
 };

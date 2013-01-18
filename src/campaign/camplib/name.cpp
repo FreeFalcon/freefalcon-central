@@ -25,13 +25,13 @@
 // Name Index
 // ===============================
 
-//char	NameTable[MAX_NAMES][MAX_NAME_LENGTH];
+//char NameTable[MAX_NAMES][MAX_NAME_LENGTH];
 
-short	*NameIndex = NULL;
-short	NameEntries = 0;
-char	NameFile[40];
+short *NameIndex = NULL;
+short NameEntries = 0;
+char NameFile[40];
 
-_TCHAR	*NameStream = NULL;
+_TCHAR *NameStream = NULL;
 
 // ===============================
 // Global functions
@@ -68,7 +68,7 @@ void LoadNames(char* filename)
 
 void LoadNameStream(void)
 {
-    FILE	*fp;
+    FILE *fp;
 
     if (NameStream)
     {
@@ -91,9 +91,9 @@ void LoadNameStream(void)
 // Kinda tricky here. We need to save the .idx file, the .wch and the .txt to make this work
 int SaveNames(char* filename)
 {
-    FILE*			fp;
-    int				i;
-    _TCHAR			buffer[128];
+    FILE* fp;
+    int i;
+    _TCHAR buffer[128];
 
     if ((fp = OpenCampFile(filename, "idx", "wb")) == NULL)
         return 0;
@@ -143,8 +143,8 @@ void FreeNames(void)
 
 _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
 {
-    FILE	*fp;
-    unsigned int	size, rlen;
+    FILE *fp;
+    unsigned int size, rlen;
 
     if (!NameIndex) // JB 010731 CTD
         return wstr;
@@ -179,8 +179,8 @@ _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
 // This is a pain in the ass. Figure it out if you can, monkey boy.
 int AddName(_TCHAR *name)
 {
-    int		i, nid = 0, len, lastoffset = 0, offset = 0, movesize;
-    _TCHAR	*newstream;
+    int i, nid = 0, len, lastoffset = 0, offset = 0, movesize;
+    _TCHAR *newstream;
 
     len = _tcslen(name);
 
@@ -216,7 +216,7 @@ int AddName(_TCHAR *name)
     // Otherwise tack on a new entry
     else
     {
-        short	*TmpIdx;
+        short *TmpIdx;
         nid = NameEntries;
         // Reallocate our memory
         TmpIdx = new short[NameEntries + 1];
@@ -252,8 +252,8 @@ int SetName(int nameid, _TCHAR *name)
 
 int FindName(_TCHAR* name)
 {
-    int		i;
-    _TCHAR	entry[128];
+    int i;
+    _TCHAR entry[128];
 
     for (i = 0; i < NameEntries; i++)
     {
@@ -268,8 +268,8 @@ int FindName(_TCHAR* name)
 
 void RemoveName(int nid)
 {
-    int		movesize, i, len;
-    _TCHAR	*tmp;
+    int movesize, i, len;
+    _TCHAR *tmp;
 
     if (nid < 2)
         return;
@@ -292,7 +292,7 @@ void RemoveName(int nid)
 
 void RemoveName(_TCHAR* name)
 {
-    int		nid;
+    int nid;
 
     nid = FindName(name);
     RemoveName(nid);
@@ -300,94 +300,94 @@ void RemoveName(_TCHAR* name)
 
 /*
 int InitNames (void)
-	{
-	sprintf(NameTable[0],"Nowhere");
-	sprintf(NameTable[1],"New");
-	NameEntries = 2;
-	return 1;
-	}
+ {
+ sprintf(NameTable[0],"Nowhere");
+ sprintf(NameTable[1],"New");
+ NameEntries = 2;
+ return 1;
+ }
 
 int LoadNames (char* name)
-	{
-	FILE*	fp;
+ {
+ FILE* fp;
 
-	if ((fp = OpenCampFile (name, "nam", "rb")) == NULL)
-		return 0;
-	fread(&NameEntries,sizeof(short),1,fp);
-	fread(NameTable,MAX_NAME_LENGTH,NameEntries,fp);
-	fclose(fp);
-	return 1;
-	}
+ if ((fp = OpenCampFile (name, "nam", "rb")) == NULL)
+ return 0;
+ fread(&NameEntries,sizeof(short),1,fp);
+ fread(NameTable,MAX_NAME_LENGTH,NameEntries,fp);
+ fclose(fp);
+ return 1;
+ }
 
 int SaveNames (char* name)
-	{
-	FILE*			fp;
-	int				i;
+ {
+ FILE* fp;
+ int i;
 
-	if ((fp = OpenCampFile (name, "nam", "wb")) == NULL)
-		return 0;
-	fwrite(&NameEntries,sizeof(short),1,fp);
-	fwrite(NameTable,MAX_NAME_LENGTH,NameEntries,fp);
-	fclose(fp);
+ if ((fp = OpenCampFile (name, "nam", "wb")) == NULL)
+ return 0;
+ fwrite(&NameEntries,sizeof(short),1,fp);
+ fwrite(NameTable,MAX_NAME_LENGTH,NameEntries,fp);
+ fclose(fp);
 
-	// Save these off as text
-	if ((fp = OpenCampFile (name, "txt", "wt")) == NULL)
-		return 0;
-	for (i=0; i<NameEntries; i++)
-		fprintf(fp, "%d %s\n", i, NameTable[i]);
-	fprintf("-1");
-	fclose(fp);
+ // Save these off as text
+ if ((fp = OpenCampFile (name, "txt", "wt")) == NULL)
+ return 0;
+ for (i=0; i<NameEntries; i++)
+ fprintf(fp, "%d %s\n", i, NameTable[i]);
+ fprintf("-1");
+ fclose(fp);
 
-	return 1;
-	}
+ return 1;
+ }
 
 char* GetName (int nameid)
-	{
-	return NameTable[nameid];
-	}
+ {
+ return NameTable[nameid];
+ }
 
 int AddName (char* name)
-	{
-	int			i,nid=0;
+ {
+ int i,nid=0;
 
-	for (i=2; i<NameEntries && !nid; i++)
-		{
-		if (NameTable[i][0] == 0 || !strcmp(NameTable[i],"<None>"))
-			nid = i;
-		}
-	if (!nid && NameEntries < MAX_NAMES)
-		{
-		nid = NameEntries;
-		NameEntries++;
-		}
-	if (nid < 2)
-		return 0;
+ for (i=2; i<NameEntries && !nid; i++)
+ {
+ if (NameTable[i][0] == 0 || !strcmp(NameTable[i],"<None>"))
+ nid = i;
+ }
+ if (!nid && NameEntries < MAX_NAMES)
+ {
+ nid = NameEntries;
+ NameEntries++;
+ }
+ if (nid < 2)
+ return 0;
 
-	sprintf(NameTable[nid],name);
-	return nid;
-	}
+ sprintf(NameTable[nid],name);
+ return nid;
+ }
 
 void SetName (int nameid, char* name)
-	{
-	sprintf(NameTable[nameid],name);
-	}
+ {
+ sprintf(NameTable[nameid],name);
+ }
 
 int FindName (char* name)
-	{
-	int		i;
+ {
+ int i;
 
-	for (i=0; i<NameEntries; i++)
-		{
-		if (strcmp(name,NameTable[i]) == 0)
-			return i;
-		}
-	return 0;
-	}
+ for (i=0; i<NameEntries; i++)
+ {
+ if (strcmp(name,NameTable[i]) == 0)
+ return i;
+ }
+ return 0;
+ }
 
 void RemoveName (char* name)
-	{
-	int		nid;
+ {
+ int nid;
 
-	nid = FindName(name);
-	NameTable[nid][0] = 0;
+ nid = FindName(name);
+ NameTable[nid][0] = 0;
 */

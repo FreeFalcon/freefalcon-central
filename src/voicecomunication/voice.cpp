@@ -43,14 +43,14 @@ WCHAR*                              g_wszPath           = NULL;
 HOST_NODE*                          g_pHostList         = NULL;
 CRITICAL_SECTION                    g_csHostList;
 DPNID                               g_dpnidLocalPlayer  = 0;
-extern bool							g_bVoiceCom;
+extern bool g_bVoiceCom;
 
 
 void SendFreqid(DPNID dpnidplayer, DPNID dpnidgroup, unsigned long freq);
 #define GAME_MSGID_SetClientListenFreqs             1
-#define GAME_MSGID_SetFreqId						2
-#define GAME_MSGID_Setg_dpnidLocalPlayer		    3
-#define GAME_MSGID_ResetFreqarrey				    4
+#define GAME_MSGID_SetFreqId 2
+#define GAME_MSGID_Setg_dpnidLocalPlayer     3
+#define GAME_MSGID_ResetFreqarrey     4
 //#define GAME_MSGID_   4
 struct GAMEMSG_GENERIC
 {
@@ -569,7 +569,7 @@ HRESULT WINAPI LobbyAppMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PV
 HRESULT WINAPI DirectVoiceServerMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer)
 {
     if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp)
-        //	switch(dwMessageId)
+        // switch(dwMessageId)
     {
 
     }
@@ -1431,9 +1431,9 @@ void CleanupDirectPlay()
 
 #ifdef _UNICODE
     if( cchDestChar == -1 )
-	    wcscpy( tstrDestination, wstrSource );
+     wcscpy( tstrDestination, wstrSource );
     else
-	    wcsncpy( tstrDestination, wstrSource, cchDestChar );
+     wcsncpy( tstrDestination, wstrSource, cchDestChar );
 #else
     DXUtil_ConvertWideStringToAnsi( tstrDestination, wstrSource, cchDestChar );
 #endif
@@ -1529,7 +1529,7 @@ void startupvoice(char *ip)
                 MonoPrint("Failed Hosting:  0x%X\n", hr);
                 goto LCleanup;
             }
-            else 	g_bconected = true;
+            else  g_bconected = true;
         }
         else
         {
@@ -1614,7 +1614,7 @@ void RefreshVoiceFreqs()
 
     if (g_bHost && !g_dpnidLocalPlayer) return;
 
-    if (!g_bHost && (g_afreqarrey.Freq[0][0] == 0 ||	g_afreqarrey.Freq[1][0] == 0 || g_afreqarrey.Freq[2][0] == 0)) return;
+    if (!g_bHost && (g_afreqarrey.Freq[0][0] == 0 || g_afreqarrey.Freq[1][0] == 0 || g_afreqarrey.Freq[2][0] == 0)) return;
 
     if (!g_afreqarrey.count && !init)
     {
@@ -1747,7 +1747,7 @@ void RefreshVoiceFreqs()
         case rcfTower:
             if (gNavigationSys && SimDriver.GetPlayerEntity())
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
                 comvuid1.num_ = ATCId;
             }
@@ -1862,7 +1862,7 @@ void RefreshVoiceFreqs()
         case rcfTower:
             if (gNavigationSys && SimDriver.GetPlayerEntity())
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
                 comvuid2.num_ = ATCId;
             }
@@ -2014,7 +2014,7 @@ void Transmit(int com)
         case rcfTower:
             if (gNavigationSys && SimDriver.GetPlayerEntity())
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
                 comvuid1.num_ = ATCId;
             }
@@ -2142,7 +2142,7 @@ void Transmit(int com)
         case rcfTower:
             if (gNavigationSys && SimDriver.GetPlayerEntity())
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
                 comvuid2.num_ = ATCId;
             }

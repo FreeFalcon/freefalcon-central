@@ -20,11 +20,11 @@
 
 //--------------------------------------
 
-#define	HAS_DATA_DIMENSION		0x01
-#define	HAS_WINDOW_DIMENSION		0x02
+#define HAS_DATA_DIMENSION 0x01
+#define HAS_WINDOW_DIMENSION 0x02
 
-#define	HASH_ELEMENT_SIZE		4
-#define	HASH_MAX_SIZE			16
+#define HASH_ELEMENT_SIZE 4
+#define HASH_MAX_SIZE 16
 
 //--------------------------------------
 
@@ -40,11 +40,11 @@ ElementList *HashRow[HASH_MAX_SIZE], *HashCol[HASH_MAX_SIZE];
 #pragma pack (push, 1)
 struct PCXHEADER
 {
-    char	manufacturer, version, encoding, bits_per_pixel;
-    short	xmin, ymin, xmax, ymax, hres, vres;
-    char  	palette[48], reserved, colour_planes;
-    short 	bytes_per_line, palette_type;
-    char  	filler[58];
+    char manufacturer, version, encoding, bits_per_pixel;
+    short xmin, ymin, xmax, ymax, hres, vres;
+    char   palette[48], reserved, colour_planes;
+    short  bytes_per_line, palette_type;
+    char   filler[58];
 };
 #pragma pack (pop)
 
@@ -65,8 +65,8 @@ int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff, 
 int InsertTileColElement(ElementList **list, int counter, unsigned short *buff, int height);
 int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff, int height);
 
-int	datawidth, dataheight;
-int	windowwidth, windowheight;
+int datawidth, dataheight;
+int windowwidth, windowheight;
 unsigned short *databuffer;
 unsigned char  *mapbuffer;
 int totalimagebytes;
@@ -366,7 +366,7 @@ int countbyte(unsigned char *image, int width)
 
 int packImageRow(unsigned char *image, unsigned char *out, int total)
 {
-    int	i, j, k;
+    int i, j, k;
 
     i = 0;
 

@@ -18,8 +18,8 @@ FackClass::FackClass()
 {
 
     mMasterCaution = 0;
-    NeedsWarnReset = 0;	//MI Warn reset switch
-    DidManWarnReset = 0;	//MI Warn reset switch
+    NeedsWarnReset = 0; //MI Warn reset switch
+    DidManWarnReset = 0; //MI Warn reset switch
     NeedAckAvioncFault = FALSE;
 }
 
@@ -31,7 +31,7 @@ FackClass::~FackClass()
 // FackClass::IsFlagSet
 //-------------------------------------------------
 
-BOOL	FackClass::IsFlagSet()
+BOOL FackClass::IsFlagSet()
 {
 
     return mCautions.IsFlagSet();
@@ -40,7 +40,7 @@ BOOL	FackClass::IsFlagSet()
 //-------------------------------------------------
 // FackClass::ClearFlag
 //-------------------------------------------------
-void	FackClass::ClearFlag()
+void FackClass::ClearFlag()
 {
     MonoPrint("remove call\n");
 }
@@ -52,7 +52,7 @@ void	FackClass::ClearFlag()
 void FackClass::SetFault(int systemBits, BOOL doWarningMsg)
 {
     FaultClass::type_FSubSystem subSystem = mFaults.PickSubSystem(systemBits);
-    FaultClass::type_FFunction	function = mFaults.PickFunction(subSystem);
+    FaultClass::type_FFunction function = mFaults.PickFunction(subSystem);
 
 
     //TJL 01/11/04 Added Additional ENUM list
@@ -60,16 +60,16 @@ void FackClass::SetFault(int systemBits, BOOL doWarningMsg)
 }
 
 void FackClass::SetFault(
-    FaultClass::type_FSubSystem	subsystem,
-    FaultClass::type_FFunction	function,
-    FaultClass::type_FSeverity	severity,
+    FaultClass::type_FSubSystem subsystem,
+    FaultClass::type_FFunction function,
+    FaultClass::type_FSeverity severity,
     BOOL doWarningMsg)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL) return;
 
-    FaultClass::str_FEntry	entry;
+    FaultClass::str_FEntry entry;
 
     //ShiAssert(doWarningMsg == 0 || SimDriver.GetPlayerEntity()->mFaults == this); // should only apply to us
     GetFault(subsystem, &entry);
@@ -135,7 +135,7 @@ void FackClass::SetFault(
             subsystem == FaultClass::ufc_fault)
         {
             playerAC->NeedsToPlayCaution = TRUE;//caution
-            SetMasterCaution();	//set our MasterCaution immediately
+            SetMasterCaution(); //set our MasterCaution immediately
             playerAC->WhenToPlayCaution = vuxGameTime + 7 * CampaignSeconds;
             NeedAckAvioncFault = TRUE;
         }
@@ -143,8 +143,8 @@ void FackClass::SetFault(
         {
             /*//these are warnings
             if(function == FaultClass::dual ||
-            	function == FaultClass::efire ||
-            	function == FaultClass::hydr)
+             function == FaultClass::efire ||
+             function == FaultClass::hydr)
             { */
             // sfr: this was inverted
             if (!playerAC->NeedsToPlayWarning)
@@ -162,7 +162,7 @@ void FackClass::SetFault(
 // FackClass::SetFault
 //-------------------------------------------------
 
-void	FackClass::SetFault(type_CSubSystem subsystem)
+void FackClass::SetFault(type_CSubSystem subsystem)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -187,7 +187,7 @@ void	FackClass::SetFault(type_CSubSystem subsystem)
             else
             {
                 //these are warnings
-                if (GetFault(tf_fail) ||	//never get's set currently
+                if (GetFault(tf_fail) || //never get's set currently
                     GetFault(obs_wrn) || //never get's set currently
                     GetFault(eng_fire) ||
                     GetFault(eng2_fire) || //TJL 01/24/04 multi-engine
@@ -238,7 +238,7 @@ void	FackClass::SetFault(type_CSubSystem subsystem)
                         }
 
                         playerAC->NeedsToPlayCaution = TRUE;//caution
-                        SetMasterCaution();	//set our MasterCaution immediately
+                        SetMasterCaution(); //set our MasterCaution immediately
                     }
                 }
 
@@ -256,7 +256,7 @@ void	FackClass::SetFault(type_CSubSystem subsystem)
 // FackClass::ClearFault
 //-------------------------------------------------
 
-void	FackClass::ClearFault(FaultClass::type_FSubSystem subsystem)
+void FackClass::ClearFault(FaultClass::type_FSubSystem subsystem)
 {
 
     mFaults.ClearFault(subsystem);
@@ -279,13 +279,13 @@ void	FackClass::ClearFault(FaultClass::type_FSubSystem subsystem)
 //-------------------------------------------------
 // FackClass::ClearFault
 //-------------------------------------------------
-void	FackClass::ClearFault(type_CSubSystem subsystem)
+void FackClass::ClearFault(type_CSubSystem subsystem)
 {
 
     if (g_bRealisticAvionics)
     {
         //warnings
-        if (!GetFault(tf_fail) &&	//never get's set currently
+        if (!GetFault(tf_fail) && //never get's set currently
             !GetFault(obs_wrn) && //never get's set currently
             !GetFault(eng_fire) &&
             !GetFault(eng2_fire) && //TJL 01/24/04 multi-engine
@@ -339,7 +339,7 @@ void	FackClass::ClearFault(type_CSubSystem subsystem)
 // FackClass::GetFault
 //-------------------------------------------------
 
-void	FackClass::GetFault(FaultClass::type_FSubSystem subsystem, FaultClass::str_FEntry* pentry)
+void FackClass::GetFault(FaultClass::type_FSubSystem subsystem, FaultClass::str_FEntry* pentry)
 {
 
     mFaults.GetFault(subsystem, pentry);
@@ -349,7 +349,7 @@ void	FackClass::GetFault(FaultClass::type_FSubSystem subsystem, FaultClass::str_
 // FackClass::GetFault
 //-------------------------------------------------
 
-BOOL	FackClass::GetFault(FaultClass::type_FSubSystem subsystem)
+BOOL FackClass::GetFault(FaultClass::type_FSubSystem subsystem)
 {
 
     return mFaults.GetFault(subsystem);
@@ -359,7 +359,7 @@ BOOL	FackClass::GetFault(FaultClass::type_FSubSystem subsystem)
 // FackClass::GetFault
 //-------------------------------------------------
 
-BOOL	FackClass::GetFault(type_CSubSystem subsystem)
+BOOL FackClass::GetFault(type_CSubSystem subsystem)
 {
 
     return mCautions.GetCaution(subsystem);
@@ -369,13 +369,13 @@ BOOL	FackClass::GetFault(type_CSubSystem subsystem)
 // FackClass::GetFaultNames
 //-------------------------------------------------
 
-void	FackClass::GetFaultNames(FaultClass::type_FSubSystem subsystem, int funcNum, FaultClass::str_FNames* pnames)
+void FackClass::GetFaultNames(FaultClass::type_FSubSystem subsystem, int funcNum, FaultClass::str_FNames* pnames)
 {
 
     mFaults.GetFaultNames(subsystem, funcNum, pnames);
 }
 
-void	FackClass::TotalPowerFailure()
+void FackClass::TotalPowerFailure()
 {
     mFaults.TotalPowerFailure(); // JPO
 
@@ -404,41 +404,41 @@ void	FackClass::TotalPowerFailure()
         mMasterCaution = TRUE;
 
     /*if(!SimDriver.GetPlayerEntity()->NeedsToPlayCaution)
-    	SimDriver.GetPlayerEntity()->WhenToPlayCaution = vuxGameTime + 7*CampaignSeconds;
+     SimDriver.GetPlayerEntity()->WhenToPlayCaution = vuxGameTime + 7*CampaignSeconds;
     SimDriver.GetPlayerEntity()->NeedsToPlayCaution = TRUE;*/
 }
 
-void	FackClass::RandomFailure()
+void FackClass::RandomFailure()
 {
     mFaults.RandomFailure(); // THW Same as above, just for random failure
 
     //Wombat778 2-25-04 Removed because if the fault is random, surely we shouldnt be setting these cautions every time.
 
-    /*	if(g_bRealisticAvionics)
-    	{
-    		SetCaution(radar_alt_fault);
-    		SetCaution(le_flaps_fault);
-    		SetCaution(hook_fault);
-    		SetCaution(nws_fault);
-    		SetCaution(ecm_fault);
-    		SetCaution(iff_fault);
-    	}
-    	else
-    	{
-    		mCautions.SetCaution(radar_alt_fault);
-    		mCautions.SetCaution(le_flaps_fault);
-    		mCautions.SetCaution(hook_fault);
-    		mCautions.SetCaution(nws_fault);
-    		mCautions.SetCaution(ecm_fault);
-    		mCautions.SetCaution(iff_fault);
-    	}*/
+    /* if(g_bRealisticAvionics)
+     {
+     SetCaution(radar_alt_fault);
+     SetCaution(le_flaps_fault);
+     SetCaution(hook_fault);
+     SetCaution(nws_fault);
+     SetCaution(ecm_fault);
+     SetCaution(iff_fault);
+     }
+     else
+     {
+     mCautions.SetCaution(radar_alt_fault);
+     mCautions.SetCaution(le_flaps_fault);
+     mCautions.SetCaution(hook_fault);
+     mCautions.SetCaution(nws_fault);
+     mCautions.SetCaution(ecm_fault);
+     mCautions.SetCaution(iff_fault);
+     }*/
 
     if (!g_bRealisticAvionics)
         mMasterCaution = TRUE;
 }
 
 //MI
-void	FackClass::SetWarning(type_CSubSystem subsystem)
+void FackClass::SetWarning(type_CSubSystem subsystem)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -463,7 +463,7 @@ void	FackClass::SetWarning(type_CSubSystem subsystem)
         SetWarnReset();
     }
 }
-void	FackClass::SetCaution(type_CSubSystem subsystem)
+void FackClass::SetCaution(type_CSubSystem subsystem)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -484,6 +484,6 @@ void	FackClass::SetCaution(type_CSubSystem subsystem)
         }
 
         playerAC->NeedsToPlayCaution = TRUE;//caution
-        SetMasterCaution();	//set our MasterCaution immediately
+        SetMasterCaution(); //set our MasterCaution immediately
     }
 }

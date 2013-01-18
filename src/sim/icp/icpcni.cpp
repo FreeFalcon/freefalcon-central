@@ -19,7 +19,7 @@
 extern bool g_bRealisticAvionics;
 
 //---------------------------------------------------------
-//	ICPClass::ExecCNIMode
+// ICPClass::ExecCNIMode
 //---------------------------------------------------------
 
 void ICPClass::ExecCNIMode()
@@ -30,14 +30,14 @@ void ICPClass::ExecCNIMode()
 
     if (!g_bRealisticAvionics)
     {
-        int							type;
-        static int					wpflags;
-        static int						frame = 0;
-        char							timeStr[16]			= "";
-        char							band;
-        TacanList::StationSet	set;
-        int							channel;
-        VU_ID							vuId;
+        int type;
+        static int wpflags;
+        static int frame = 0;
+        char timeStr[16] = "";
+        char band;
+        TacanList::StationSet set;
+        int channel;
+        VU_ID vuId;
 
 
 
@@ -47,7 +47,7 @@ void ICPClass::ExecCNIMode()
 
             // Clear the update flag
 
-            mUpdateFlags				&= !CNI_UPDATE;
+            mUpdateFlags &= !CNI_UPDATE;
 
             // Calculate Some Stuff
             if (playerAC->curWaypoint)
@@ -61,15 +61,15 @@ void ICPClass::ExecCNIMode()
 
             if (wpflags & WPF_TARGET)
             {
-                type	= Way_TGT;
+                type = Way_TGT;
             }
             else if (wpflags & WPF_IP)
             {
-                type	= Way_IP;
+                type = Way_IP;
             }
             else
             {
-                type	= Way_STPT;
+                type = Way_STPT;
             }
 
             //Original code
@@ -89,7 +89,7 @@ void ICPClass::ExecCNIMode()
 
 
             // Format Line 2: Current Time
-            FormatTime(vuxGameTime / 1000, timeStr);		// Get game time and convert to secs
+            FormatTime(vuxGameTime / 1000, timeStr); // Get game time and convert to secs
             sprintf(mpLine2, "COMM2 : %-12s %8s", (VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX"), timeStr);
 
             if (mICPTertiaryMode == COMM1_MODE)
@@ -132,10 +132,10 @@ void ICPClass::ExecCNIMode()
         else if (frame == 9)
         {
 
-            FormatTime(vuxGameTime * 0.001F, timeStr);		// Get game time and convert to secs
+            FormatTime(vuxGameTime * 0.001F, timeStr); // Get game time and convert to secs
             sprintf(mpLine2, "COMM2 : %-12s %8s", (VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX"), timeStr);
 
-            frame							= 0;
+            frame = 0;
 
             if (mICPTertiaryMode == COMM2_MODE)
             {
@@ -164,8 +164,8 @@ void ICPClass::ExecCNIMode()
         //BEGIN Line1
         //COMM STUFF
         // MD -- 20040202: changed so that UHF is always printed above VHF per the real jet
-        //		if(WhichRadio == 0)	//COMM1 is active
-        //		{
+        // if(WhichRadio == 0) //COMM1 is active
+        // {
         if (VM)
         {
             if (VM->radiofilter[0] == rcfFromPackage)
@@ -185,33 +185,33 @@ void ICPClass::ExecCNIMode()
         else
             FillDEDMatrix(0, 1, "UHF");
 
-        //		}
-        //		else	//COMM2 is active
-        //		{
-        //			if(VM)
-        //			{
-        //				if(VM->radiofilter[1] == rcfFromPackage)
-        //					sprintf(tempstr,"From Pac");
-        //				else if(VM->radiofilter[1] == rcfProx)
-        //					sprintf(tempstr,"Prox");
-        //				else if(VM->radiofilter[1] == rcfAll)
-        //					sprintf(tempstr,"Broadc");
-        //				else
-        //					sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
-        //			}
-        //			else
-        //				sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
-        //			// FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting!
-        //			if (transmitingvoicecom2)
-        //				FillDEDMatrix(0,1,"VHF",2);
-        //			else
-        //				FillDEDMatrix(0,1,"VHF");
-        //		}
+        // }
+        // else //COMM2 is active
+        // {
+        // if(VM)
+        // {
+        // if(VM->radiofilter[1] == rcfFromPackage)
+        // sprintf(tempstr,"From Pac");
+        // else if(VM->radiofilter[1] == rcfProx)
+        // sprintf(tempstr,"Prox");
+        // else if(VM->radiofilter[1] == rcfAll)
+        // sprintf(tempstr,"Broadc");
+        // else
+        // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
+        // }
+        // else
+        // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
+        // // FillDEDMatrix(0,1,"VHF"); MD -- 20031121: should show active when transmitting!
+        // if (transmitingvoicecom2)
+        // FillDEDMatrix(0,1,"VHF",2);
+        // else
+        // FillDEDMatrix(0,1,"VHF");
+        // }
         FillDEDMatrix(0, 6, tempstr);
 
         //END COMM STUFF
         //WAYPOINT INFO
-        if (!MAN)	//Auto Waypoint
+        if (!MAN) //Auto Waypoint
         {
             if (IsICPSet(ICPClass::EDIT_STPT))
                 sprintf(tempstr, "\x01%2dA", mWPIndex + 1);
@@ -247,7 +247,7 @@ void ICPClass::ExecCNIMode()
         //Up
         // MD -- 20040204: UHF should always appear in line 1, VHF in line 3
         //if(IsICPSet(ICPClass::EDIT_VHF) && WhichRadio == 1)
-        //	FillDEDMatrix(0,5,"\x01");
+        // FillDEDMatrix(0,5,"\x01");
         //else
         if (IsICPSet(ICPClass::EDIT_VHF))
             FillDEDMatrix(2, 5, "\x01");
@@ -255,7 +255,7 @@ void ICPClass::ExecCNIMode()
             FillDEDMatrix(0, 5, "\x01");
 
         //else if(IsICPSet(ICPClass::EDIT_UHF))
-        //	FillDEDMatrix(2,5,"\x01");
+        // FillDEDMatrix(2,5,"\x01");
         //END LINE 1
 
         //BEGIN LINE 2
@@ -277,8 +277,8 @@ void ICPClass::ExecCNIMode()
 
         //BEGIN LINE 3
         // MD -- 20040202: changed so that UHF is always printed above VHF per the real jet
-        //		if(WhichRadio == 0)	//COMM1 is active
-        //		{
+        // if(WhichRadio == 0) //COMM1 is active
+        // {
         if (VM)
         {
             if (VM->radiofilter[1] == rcfFromPackage)
@@ -299,29 +299,29 @@ void ICPClass::ExecCNIMode()
             FillDEDMatrix(2, 1, "VHF");
 
         FillDEDMatrix(2, 6, tempstr);
-        //		}
-        //		else	//COMM2 is active
-        //		{
-        //			if(VM)
-        //			{
-        //				if(VM->radiofilter[0] == rcfFromPackage)
-        //					sprintf(tempstr,"From Pac");
-        //				else if(VM->radiofilter[0] == rcfProx)
-        //					sprintf(tempstr,"Prox");
-        //				else if(VM->radiofilter[0] == rcfAll)
-        //					sprintf(tempstr,"Broadc");
-        //				else
-        //					sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
-        //			}
-        //			else
-        //				sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
-        //			// FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting!
-        //			if (transmitingvoicecom1)
-        //				FillDEDMatrix(2,1,"UHF",2);
-        //			else
-        //				FillDEDMatrix(2,1,"UHF");
-        //			FillDEDMatrix(2,6, tempstr);
-        //		}
+        // }
+        // else //COMM2 is active
+        // {
+        // if(VM)
+        // {
+        // if(VM->radiofilter[0] == rcfFromPackage)
+        // sprintf(tempstr,"From Pac");
+        // else if(VM->radiofilter[0] == rcfProx)
+        // sprintf(tempstr,"Prox");
+        // else if(VM->radiofilter[0] == rcfAll)
+        // sprintf(tempstr,"Broadc");
+        // else
+        // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
+        // }
+        // else
+        // sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
+        // // FillDEDMatrix(2,1, "UHF"); MD -- 20031121: should show active when transmitting!
+        // if (transmitingvoicecom1)
+        // FillDEDMatrix(2,1,"UHF",2);
+        // else
+        // FillDEDMatrix(2,1,"UHF");
+        // FillDEDMatrix(2,6, tempstr);
+        // }
         //Get the time
         FormatTime(vuxGameTime / 1000, timeStr);
         FillDEDMatrix(2, (24 - strlen(timeStr)), timeStr);

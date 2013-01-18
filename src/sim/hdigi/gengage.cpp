@@ -34,7 +34,7 @@ void HeliBrain::GunsEngageCheck(void)
         if (curMode == GunsEngageMode)
         {
             ClearFlag(MslFireFlag | GunFireFlag);
-            //		 MonoPrint("HELO BRAIN Exiting Guns Engange\n");
+            //  MonoPrint("HELO BRAIN Exiting Guns Engange\n");
         }
 
         return;
@@ -47,7 +47,7 @@ void HeliBrain::GunsEngageCheck(void)
         if (curMode == GunsEngageMode)
         {
             ClearFlag(MslFireFlag | GunFireFlag);
-            //		 MonoPrint("HELO BRAIN Exiting Guns Engange\n");
+            //  MonoPrint("HELO BRAIN Exiting Guns Engange\n");
         }
 
         return;
@@ -109,7 +109,7 @@ void HeliBrain::GunsEngage(void)
 
     if (targetPtr == NULL)
     {
-        //	  	MonoPrint("HELO BRAIN Exiting Guns Engange\n");
+        //    MonoPrint("HELO BRAIN Exiting Guns Engange\n");
         return;
     }
 
@@ -120,7 +120,7 @@ void HeliBrain::GunsEngage(void)
         if (curMode == GunsEngageMode)
         {
             ClearFlag(MslFireFlag | GunFireFlag);
-            //			 MonoPrint("HELO BRAIN Exiting Guns Engange\n");
+            //  MonoPrint("HELO BRAIN Exiting Guns Engange\n");
         }
 
         return;
@@ -243,7 +243,7 @@ void HeliBrain::GunsEngage(void)
     /*---------------------------*/
     /* Range to target
     /*---------------------------*/
-    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) *	(wpY - self->YPos());
+    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) * (wpY - self->YPos());
     rz = wpZ - self->ZPos();
 
     /*------------------------------------*/
@@ -293,7 +293,7 @@ void HeliBrain::GunsEngage(void)
         desSpeed = elerr / MAX_HELI_PITCH;
 
     // sprintf( debugbuf, "heading=%.3f, rollLoad=%.3f dir=%.3f, desSpeed=%.3f, elerr=%.3f\n",
-    // 		 desHeading * RTD, rollLoad, rollDir, desSpeed, elerr );
+    //   desHeading * RTD, rollLoad, rollDir, desSpeed, elerr );
     // OutputDebugString( debugbuf );
 
     if (targetPtr->BaseData()->OnGround())
@@ -354,20 +354,20 @@ void HeliBrain::FireControl(void)
     if ( theObject->OnGround() )
     {
        if ( targetData->range < 1000.0f ||
-       		targetData->range > 10000.0f)
-       		return;
+        targetData->range > 10000.0f)
+        return;
     }
     else
     {
-    	if ( targetData->range < self->FCC->missileRneMin ||
-       		 targetData->range > self->FCC->missileRneMax  )
-    	   {
-    		   return;
-    	   }
+     if ( targetData->range < self->FCC->missileRneMin ||
+         targetData->range > self->FCC->missileRneMax  )
+        {
+        return;
+        }
     }
 
     if ( targetData->range < self->FCC->missileRneMin ||
-       	 targetData->range > self->FCC->missileRneMax  )
+         targetData->range > self->FCC->missileRneMax  )
     {
        return;
     }
@@ -393,12 +393,12 @@ void HeliBrain::FireControl(void)
     float xft, yft, zft, az, el;
 
 #ifdef _DEBUG
-    /*	if ( theObject->IsAirplane() )
-    		MonoPrint( "HELO BRAIN Firing Missile at Air Unit\n" );
-    	else if ( theObject->IsHelicopter() )
-    		MonoPrint( "HELO BRAIN Firing Missile at Helo Unit\n" );
-    	else if ( theObject->IsGroundVehicle() )
-    		MonoPrint( "HELO BRAIN Firing Missile at Ground Unit\n" );
+    /* if ( theObject->IsAirplane() )
+     MonoPrint( "HELO BRAIN Firing Missile at Air Unit\n" );
+     else if ( theObject->IsHelicopter() )
+     MonoPrint( "HELO BRAIN Firing Missile at Helo Unit\n" );
+     else if ( theObject->IsGroundVehicle() )
+     MonoPrint( "HELO BRAIN Firing Missile at Ground Unit\n" );
     */
 #endif
 
@@ -487,10 +487,10 @@ void HeliBrain::WeaponSelection(void)
             {
                 theMissile   = (MissileClass *)(self->Sms->curWeapon);
 
-                thisRmax	 = theMissile->GetRMax(-self->ZPos(), self->Vt(), targetData->az, targetPtr->BaseData()->Vt(), targetData->ataFrom);
-                thisRmin	 = 0.1F * thisRmax;		// Shouldn't we call GetRMin???
+                thisRmax  = theMissile->GetRMax(-self->ZPos(), self->Vt(), targetData->az, targetPtr->BaseData()->Vt(), targetData->ataFrom);
+                thisRmin  = 0.1F * thisRmax; // Shouldn't we call GetRMin???
                 thisPctRange = targetData->range / thisRmax;
-                thisASE		 = DTR * theMissile->GetASE(-self->ZPos(), self->Vt(), targetData->ataFrom, targetPtr->BaseData()->Vt(), targetData->range);
+                thisASE  = DTR * theMissile->GetASE(-self->ZPos(), self->Vt(), targetData->ataFrom, targetPtr->BaseData()->Vt(), targetData->range);
 
                 if (thisPctRange < pctRange && thisRmin < targetData->range)
                 {
@@ -499,7 +499,7 @@ void HeliBrain::WeaponSelection(void)
                     curMissile = (MissileClass *)(self->Sms->curWeapon);
                     curMissileStation = self->Sms->curWpnStation;
                     curMissileNum     = self->Sms->curWpnNum;
-                    //	  		   MonoPrint( "HELO BRAIN Missile Selected!\n" );
+                    //       MonoPrint( "HELO BRAIN Missile Selected!\n" );
                 }
             }
 
@@ -570,8 +570,8 @@ void HeliBrain::WeaponSelection(void)
 
             if (self->Sms->curWeapon)
             {
-                //				MonoPrint( "Helo found AG Missile.  Class = %d\n",
-                //							self->Sms->hardPoint[i]->GetWeaponClass() );
+                // MonoPrint( "Helo found AG Missile.  Class = %d\n",
+                // self->Sms->hardPoint[i]->GetWeaponClass() );
 
                 curAG = (MissileClass *)(self->Sms->curWeapon);
                 curAGStation = self->Sms->CurHardpoint();
@@ -599,8 +599,8 @@ void HeliBrain::WeaponSelection(void)
 
             if (self->Sms->curWeapon)
             {
-                //				MonoPrint( "Helo found Rocket.  Class = %d\n",
-                //							self->Sms->hardPoint[i]->GetWeaponClass() );
+                // MonoPrint( "Helo found Rocket.  Class = %d\n",
+                // self->Sms->hardPoint[i]->GetWeaponClass() );
 
                 curRock = (MissileClass *)(self->Sms->curWeapon);
                 curRockStation = self->Sms->CurHardpoint();
@@ -638,9 +638,9 @@ void HeliBrain::WeaponSelection(void)
                 self->FCC->SetMasterMode(FireControlComputer::Missile);
                 /*
                 if (self->Sms->hardPoint[curMissileStation]->GetWeaponType() == wtAim120 )
-                	self->FCC->SetSubMode(FireControlComputer::Aim120);
+                 self->FCC->SetSubMode(FireControlComputer::Aim120);
                 else
-                	self->FCC->SetSubMode(FireControlComputer::Aim9);
+                 self->FCC->SetSubMode(FireControlComputer::Aim9);
                 */
                 // self->FCC->Exec(targetPtr, self->targetList, self->theInputs);
             }
@@ -713,7 +713,7 @@ void HeliBrain::WeaponSelection(void)
 
     /*
     if ( curAA || curAG || curRock || curGun )
-    	anyWeapons = TRUE;
+     anyWeapons = TRUE;
     */
 
 }

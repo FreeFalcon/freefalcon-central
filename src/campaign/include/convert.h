@@ -1,10 +1,10 @@
 #ifndef CONVERT_H
-#define	CONVERT_H
+#define CONVERT_H
 
-#define TEXCODELEN		16384			// Number of possible textures
-#define FILENAMELEN		14				// Length of each texture name entry
+#define TEXCODELEN 16384 // Number of possible textures
+#define FILENAMELEN 14 // Length of each texture name entry
 
-extern short	MaxTextureType;
+extern short MaxTextureType;
 
 extern void InitConverter(char *filename);
 

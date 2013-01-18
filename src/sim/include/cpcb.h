@@ -9,18 +9,18 @@ typedef void (*ButtonCallback)(void *, int);
 /** callbacks for everyting but buttons */
 typedef struct
 {
-    CPCallback	ExecCallback;
-    CPCallback	EventCallback;
-    CPCallback	DisplayCallback;
+    CPCallback ExecCallback;
+    CPCallback EventCallback;
+    CPCallback DisplayCallback;
 } CPCallbackStruct;
 /** array of callbacks */
-extern CPCallbackStruct	CPCallbackArray[];
+extern CPCallbackStruct CPCallbackArray[];
 
 /** button callbacks */
 typedef struct
 {
     ButtonCallback TransAeroToState;
-    ButtonCallback	TransStateToAero;
+    ButtonCallback TransStateToAero;
 } ButtonCallbackStruct;
 /** array of button callbacks */
 extern ButtonCallbackStruct ButtonCallbackArray[];

@@ -27,7 +27,7 @@ const int NUM_COMM_CHANNELS = 15;
 extern bool g_bRealisticAvionics;
 #include "hud.h"
 
-char*	mpPointTypeNames[] = {"NONE", "GM", "POS"};
+char* mpPointTypeNames[] = {"NONE", "GM", "POS"};
 
 char *ICPModeNames[NUM_ICP_MODES] =
 {
@@ -41,14 +41,14 @@ char *ICPModeNames[NUM_ICP_MODES] =
     "FAULT",
     "ALOW",
     "NAV",
-    "LIST",	//MI for new ICP stuff
-    "IFF",	//MI for new ICP stuff
+    "LIST", //MI for new ICP stuff
+    "IFF", //MI for new ICP stuff
     "AA",
     "AG"
 };
 
 //==================================================//
-//	ICPClass::~ICPClass
+// ICPClass::~ICPClass
 //==================================================//
 
 ICPClass::~ICPClass()
@@ -57,7 +57,7 @@ ICPClass::~ICPClass()
 }
 
 //==================================================//
-//	ICPClass::ICPClass
+// ICPClass::ICPClass
 //==================================================//
 
 ICPClass::ICPClass()
@@ -67,17 +67,17 @@ ICPClass::ICPClass()
     {
         //MI Original code
         strcpy(mpSelectedModeName, ICPModeNames[NAV_MODE]);
-        mICPPrimaryMode				= AA_MODE;
-        mICPSecondaryMode			= NONE_MODE;
-        mICPTertiaryMode			= COMM1_MODE;
-        mpTertiaryExclusiveButton	= NULL;
-        mpSecondaryExclusiveButton	= NULL;
-        mpPrimaryExclusiveButton	= NULL;
+        mICPPrimaryMode = AA_MODE;
+        mICPSecondaryMode = NONE_MODE;
+        mICPTertiaryMode = COMM1_MODE;
+        mpTertiaryExclusiveButton = NULL;
+        mpSecondaryExclusiveButton = NULL;
+        mpPrimaryExclusiveButton = NULL;
 
-        mWPIndex					= 0;
-        mMarkIndex				= 0;
-        mDLinkIndex				= 0;
-        mList						= STPT_LIST;
+        mWPIndex = 0;
+        mMarkIndex = 0;
+        mDLinkIndex = 0;
+        mList = STPT_LIST;
         HomeWP = 1;
 
         *mpLine1 = '\0';
@@ -97,18 +97,18 @@ ICPClass::ICPClass()
         //MI modified for ICP stuff
         strcpy(mpSelectedModeName, ICPModeNames[NAV_MODE]);
 
-        mICPPrimaryMode					= NAV_MODE;
-        mICPSecondaryMode				= NONE_MODE;
-        mICPTertiaryMode				= NONE_MODE;
-        mpTertiaryExclusiveButton		= NULL;
-        mpSecondaryExclusiveButton		= NULL;
-        mpPrimaryExclusiveButton		= NULL;
-        LastMode						= CNI_MODE;
+        mICPPrimaryMode = NAV_MODE;
+        mICPSecondaryMode = NONE_MODE;
+        mICPTertiaryMode = NONE_MODE;
+        mpTertiaryExclusiveButton = NULL;
+        mpSecondaryExclusiveButton = NULL;
+        mpPrimaryExclusiveButton = NULL;
+        LastMode = CNI_MODE;
 
-        mWPIndex						= 0;
-        mMarkIndex						= 0;
-        mDLinkIndex						= 0;
-        mList							= STPT_LIST;
+        mWPIndex = 0;
+        mMarkIndex = 0;
+        mDLinkIndex = 0;
+        mList = STPT_LIST;
 
         *mpLine1 = '\0';
         *mpLine2 = '\0';
@@ -123,7 +123,7 @@ ICPClass::ICPClass()
 
 
 //==================================================//
-//	ICPClass::GetTertiaryExclusiveButton
+// ICPClass::GetTertiaryExclusiveButton
 //==================================================//
 CPButtonObject* ICPClass::GetTertiaryExclusiveButton(void)
 {
@@ -132,7 +132,7 @@ CPButtonObject* ICPClass::GetTertiaryExclusiveButton(void)
 
 
 //==================================================//
-//	ICPClass::GetPrimaryExclusiveButton
+// ICPClass::GetPrimaryExclusiveButton
 //==================================================//
 
 CPButtonObject* ICPClass::GetPrimaryExclusiveButton(void)
@@ -142,7 +142,7 @@ CPButtonObject* ICPClass::GetPrimaryExclusiveButton(void)
 
 
 //==================================================//
-//	ICPClass::GetSecondaryExclusiveButton
+// ICPClass::GetSecondaryExclusiveButton
 //==================================================//
 
 CPButtonObject* ICPClass::GetSecondaryExclusiveButton(void)
@@ -151,7 +151,7 @@ CPButtonObject* ICPClass::GetSecondaryExclusiveButton(void)
 }
 
 //==================================================//
-//	ICPClass::InitPrimaryExclusiveButton
+// ICPClass::InitPrimaryExclusiveButton
 //==================================================//
 
 void ICPClass::InitPrimaryExclusiveButton(CPButtonObject *pbutton)
@@ -161,7 +161,7 @@ void ICPClass::InitPrimaryExclusiveButton(CPButtonObject *pbutton)
 }
 
 //==================================================//
-//	ICPClass::InitTertiaryExclusiveButton
+// ICPClass::InitTertiaryExclusiveButton
 //==================================================//
 
 void ICPClass::InitTertiaryExclusiveButton(CPButtonObject *pbutton)
@@ -171,7 +171,7 @@ void ICPClass::InitTertiaryExclusiveButton(CPButtonObject *pbutton)
 }
 
 //==================================================//
-//	ICPClass::SetOwnship
+// ICPClass::SetOwnship
 //==================================================//
 
 void ICPClass::SetOwnship(void)
@@ -183,12 +183,12 @@ void ICPClass::SetOwnship(void)
     {
 
         // Waypoint Stuff
-        mpWayPoints				= playerAC->waypoint; // head of the waypoint list
-        mNumWayPts				= (BYTE) playerAC->numWaypoints;
+        mpWayPoints = playerAC->waypoint; // head of the waypoint list
+        mNumWayPts = (BYTE) playerAC->numWaypoints;
 
-        mCruiseWPIndex			= 0;
-        mpCruiseWP				= mpWayPoints;
-        mList					= STPT_LIST;
+        mCruiseWPIndex = 0;
+        mpCruiseWP = mpWayPoints;
+        mList = STPT_LIST;
 
         // Fault stuff
         mFaultNum = 0;
@@ -197,12 +197,12 @@ void ICPClass::SetOwnship(void)
     else   // 2002-02-15 ADDED BY S.G. Clear it up if we can't get the player's aircraft info
     {
         // Waypoint Stuff
-        mpWayPoints				= NULL;
-        mNumWayPts				= 0;
+        mpWayPoints = NULL;
+        mNumWayPts = 0;
 
-        mCruiseWPIndex			= 0;
-        mpCruiseWP				= mpWayPoints;
-        mList					= STPT_LIST;
+        mCruiseWPIndex = 0;
+        mpCruiseWP = mpWayPoints;
+        mList = STPT_LIST;
 
         // Fault stuff
         mFaultNum = 0;
@@ -210,11 +210,11 @@ void ICPClass::SetOwnship(void)
     }
 }
 
-#include "falcsnd\winampfrontend.h"	// Retro 3Jan2004
-extern bool g_bPilotEntertainment;	// Retro 3Jan2004
+#include "falcsnd\winampfrontend.h" // Retro 3Jan2004
+extern bool g_bPilotEntertainment; // Retro 3Jan2004
 
 //==================================================//
-//	ICPClass::HandleInput
+// ICPClass::HandleInput
 //==================================================//
 
 
@@ -230,8 +230,8 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             if (pbutton != mpPrimaryExclusiveButton)
             {
                 mpPrimaryExclusiveButton->SetCurrentState(0);
-                mICPPrimaryMode				= mode;
-                mpPrimaryExclusiveButton	= pbutton;
+                mICPPrimaryMode = mode;
+                mpPrimaryExclusiveButton = pbutton;
 
                 if (mICPSecondaryMode == NONE_MODE)
                 {
@@ -253,8 +253,8 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             if (pbutton != mpTertiaryExclusiveButton)
             {
                 mpTertiaryExclusiveButton->SetCurrentState(0);
-                mICPTertiaryMode				= mode;
-                mpTertiaryExclusiveButton	= pbutton;
+                mICPTertiaryMode = mode;
+                mpTertiaryExclusiveButton = pbutton;
                 mUpdateFlags |= CNI_UPDATE;
 
                 if (VM)
@@ -287,7 +287,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     mpSecondaryExclusiveButton->SetCurrentState(0);
                 }
 
-                mICPSecondaryMode				= mode;
+                mICPSecondaryMode = mode;
                 mpSecondaryExclusiveButton = pbutton;
 
 
@@ -348,7 +348,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         //Master Modes
         if (mode == AA_BUTTON || mode == AG_BUTTON || mode == NAV_BUTTON)
         {
-            mICPPrimaryMode	= mode;
+            mICPPrimaryMode = mode;
 
             if (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == EIGHT_BUTTON)
                 ExecMODEMode();
@@ -366,9 +366,9 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
         }
 
         /****************************************************/
-        /*These are OVERRIDE buttons. With each of these	*/
-        /*we can get into specific DED pages, no matter in	*/
-        /*what mode we've been before.						*/
+        /*These are OVERRIDE buttons. With each of these */
+        /*we can get into specific DED pages, no matter in */
+        /*what mode we've been before. */
         /****************************************************/
 
         else if (mode == COMM1_BUTTON || mode == COMM2_BUTTON ||
@@ -429,7 +429,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             {
                 if (mode == NEXT_BUTTON)
                 {
-                    if (PREUHF == NUM_COMM_CHANNELS)	// ASSO:
+                    if (PREUHF == NUM_COMM_CHANNELS) // ASSO:
                         PREUHF = 1;
                     else
                         PREUHF++;
@@ -437,7 +437,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 else
                 {
                     if (PREUHF == 1)
-                        PREUHF = NUM_COMM_CHANNELS;	// ASSO:
+                        PREUHF = NUM_COMM_CHANNELS; // ASSO:
                     else
                         PREUHF--;
                 }
@@ -446,7 +446,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             {
                 if (mode == NEXT_BUTTON)
                 {
-                    if (PREVHF == NUM_COMM_CHANNELS)	// ASSO:
+                    if (PREVHF == NUM_COMM_CHANNELS) // ASSO:
                         PREVHF = 1;
                     else
                         PREVHF++;
@@ -454,7 +454,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                 else
                 {
                     if (PREVHF == 1)
-                        PREVHF = NUM_COMM_CHANNELS;	// ASSO:
+                        PREVHF = NUM_COMM_CHANNELS; // ASSO:
                     else
                         PREVHF--;
                 }
@@ -511,7 +511,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
             {
                 ClearStrings();
                 ExecINTGMode();
-                mICPSecondaryMode = 100;	//small hack
+                mICPSecondaryMode = 100; //small hack
             }
             else
                 ClearInput();
@@ -707,18 +707,18 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
         /*else if(mode == FACK_BUTTON)
         {
-        	ClearStrings();
-        	ClearFlags();
-        	SetICPFlag(ICPClass::MODE_FACK);
-        	PNUpdateFACKMode (NEXT_BUTTON, FACK_BUTTON);
-        	ExecFACKMode();
+         ClearStrings();
+         ClearFlags();
+         SetICPFlag(ICPClass::MODE_FACK);
+         PNUpdateFACKMode (NEXT_BUTTON, FACK_BUTTON);
+         ExecFACKMode();
         }*/
     }
 }
 
 
 //==================================================//
-//	ICPClass::Exec
+// ICPClass::Exec
 //==================================================//
 
 void ICPClass::Exec()
@@ -969,7 +969,7 @@ void ICPClass::Exec()
                         ExecWinAmpMode();
 
                     break;
-                }	// Retro 3Jan2004 end
+                } // Retro 3Jan2004 end
 
                 case NONE_MODE:
                     ExecMISCMode();
@@ -982,7 +982,7 @@ void ICPClass::Exec()
 }
 
 //==================================================//
-//	ICPClass::HandleENTR
+// ICPClass::HandleENTR
 //==================================================//
 
 void ICPClass::HandleENTR(int mode)
@@ -1007,7 +1007,7 @@ void ICPClass::HandleENTR(int mode)
 
 
 //==================================================//
-//	ICPClass::HandlePrevNext
+// ICPClass::HandlePrevNext
 //==================================================//
 
 void ICPClass::HandlePrevNext(int button, int mode)

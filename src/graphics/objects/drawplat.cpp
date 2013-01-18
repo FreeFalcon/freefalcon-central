@@ -4,18 +4,18 @@
     April 10, 1997
 
     Derived class from DrawableBSP which handles large flat objects which
-	can lie beneath other objects (ie: runways, carries, bridges).
+ can lie beneath other objects (ie: runways, carries, bridges).
 ***************************************************************************/
 #include "DrawBldg.h"
 #include "DrawPlat.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawablePlatform::pool;
+MEM_POOL DrawablePlatform::pool;
 #endif
 
 
 /**************************************************************************
-	Initialize a platform object (One which underlies other objects).
+ Initialize a platform object (One which underlies other objects).
 ***************************************************************************/
 DrawablePlatform::DrawablePlatform(float s)
     : DrawableObject(s)
@@ -32,14 +32,14 @@ DrawablePlatform::DrawablePlatform(float s)
     minX = minY =  1e24f;
 
     // Fill in our callback request structures for when we get added to a parent list
-    updateCBstruct.fn	= UpdateMetrics;
-    updateCBstruct.self	= this;
-    updateCBstruct.next	= NULL;
-    updateCBstruct.prev	= NULL;
-    sortCBstruct.fn		= SortForViewpoint;
-    sortCBstruct.self	= this;
-    sortCBstruct.next	= NULL;
-    sortCBstruct.prev	= NULL;
+    updateCBstruct.fn = UpdateMetrics;
+    updateCBstruct.self = this;
+    updateCBstruct.next = NULL;
+    updateCBstruct.prev = NULL;
+    sortCBstruct.fn = SortForViewpoint;
+    sortCBstruct.self = this;
+    sortCBstruct.next = NULL;
+    sortCBstruct.prev = NULL;
 
     // Setup the lists of included objects
     flatStaticObjects.Setup();
@@ -51,10 +51,10 @@ DrawablePlatform::DrawablePlatform(float s)
 
 /**************************************************************************
     Remove an instance of a platform object.
-	All the children must be removed before this happens.  The dynamic
-	children are handled when SetParentList( NULL ) happens upon removal
-	of this object from the display list.  The static objects must be
-	manually removed before this point.
+ All the children must be removed before this happens.  The dynamic
+ children are handled when SetParentList( NULL ) happens upon removal
+ of this object from the display list.  The static objects must be
+ manually removed before this point.
 ***************************************************************************/
 DrawablePlatform::~DrawablePlatform()
 {
@@ -71,10 +71,10 @@ DrawablePlatform::~DrawablePlatform()
 
 /**************************************************************************
     Permanently add a flat (drivable surface) object to this container.
-	( Removal is handled by the normal object removal process though
-	the ObjectDisplayList class )
-	We add the containment bubble for the new surface to that accumulated
-	for the rest of the platform to acheive a maximum coverage area.
+ ( Removal is handled by the normal object removal process though
+ the ObjectDisplayList class )
+ We add the containment bubble for the new surface to that accumulated
+ for the rest of the platform to acheive a maximum coverage area.
 ***************************************************************************/
 void DrawablePlatform::InsertStaticSurface(DrawableBuilding *object)
 {
@@ -93,7 +93,7 @@ void DrawablePlatform::InsertStaticSurface(DrawableBuilding *object)
     position.x = (maxX + minX) * 0.5f;
     position.y = (maxY + minY) * 0.5f;
 
-    InclusionRadiusSquared =	(maxX - position.x) * (maxX - position.x) +
+    InclusionRadiusSquared = (maxX - position.x) * (maxX - position.x) +
                                 (maxY - position.y) * (maxY - position.y);
     radius = (float)sqrt(InclusionRadiusSquared);
 
@@ -106,8 +106,8 @@ void DrawablePlatform::InsertStaticSurface(DrawableBuilding *object)
 
 /**************************************************************************
     Permanently add a (non-flat) object to this container.
-	( Removal is handled by the normal object removal process though
-	the ObjectDisplayList class )
+ ( Removal is handled by the normal object removal process though
+ the ObjectDisplayList class )
 ***************************************************************************/
 void DrawablePlatform::InsertStaticObject(DrawableObject* object)
 {
@@ -121,8 +121,8 @@ void DrawablePlatform::InsertStaticObject(DrawableObject* object)
 ***************************************************************************/
 void DrawablePlatform::Draw(class RenderOTW *renderer, int LOD)
 {
-    DrawableObject	*obj;
-    float			distance;
+    DrawableObject *obj;
+    float distance;
 
 
     // Draw all the flat objects we contain in list order
@@ -158,8 +158,8 @@ void DrawablePlatform::Draw(class RenderOTW *renderer, int LOD)
 ***************************************************************************/
 void DrawablePlatform::Draw(class Render3D *renderer)
 {
-    DrawableObject	*obj;
-    float			distance;
+    DrawableObject *obj;
+    float distance;
 
 
     // Draw all the flat objects we contain in list order
@@ -242,7 +242,7 @@ void DrawablePlatform::SortForViewpoint(void)
 {
     DrawableObject *obj;
     DrawableObject *objNext;
-    float			checkDistance;
+    float checkDistance;
 
 
     // Have the non-zero height objects update their sort ordering
@@ -296,13 +296,13 @@ void DrawablePlatform::SortForViewpoint(void)
 
 /***************************************************************************
     See if an object is within our area, and if so, grab it from it's
-	parent.
+ parent.
 ***************************************************************************/
 BOOL DrawablePlatform::ObjectInside(DrawableObject *obj)
 {
-    Tpoint			objPos;
-    float			rangeSquared;
-    float			dx, dy;
+    Tpoint objPos;
+    float rangeSquared;
+    float dx, dy;
 
 
     ShiAssert(obj);

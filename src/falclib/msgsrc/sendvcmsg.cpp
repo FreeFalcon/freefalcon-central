@@ -17,10 +17,10 @@
 
 struct sent_vc
 {
-    int	team;
-    int	type;
+    int team;
+    int type;
     VU_ID id;
-    int	fid;
+    int fid;
     int tol;
     int pts;
     int num;

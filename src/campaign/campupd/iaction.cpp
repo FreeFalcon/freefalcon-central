@@ -65,133 +65,133 @@ extern VU_ID gActiveFlightID;
 
 static struct ia_type
 {
-    char						*name;
-    instant_action_unit_type	type;
-    char						stype;
-    char						sptype;
+    char *name;
+    instant_action_unit_type type;
+    char stype;
+    char sptype;
 
 }
 ia_air_objects[] =
 {
-    "an2",		ia_an2,		STYPE_UNIT_AIR_TRANSPORT,	SPTYPE_AN2,
-    "an24",		ia_an24,	STYPE_UNIT_AIR_TRANSPORT,	SPTYPE_AN24,
-    "c130",		ia_c130,	STYPE_UNIT_AIR_TRANSPORT,	SPTYPE_C130,
-    "il76",		ia_il76,	STYPE_UNIT_AIR_TRANSPORT,	SPTYPE_IL76M,
-    "y8",		ia_y8,		STYPE_UNIT_AIR_TRANSPORT,	SPTYPE_Y8,
-    "a10",		ia_a10,		STYPE_UNIT_ATTACK,			SPTYPE_A10,
-    "f4g",		ia_f4g,		STYPE_UNIT_ATTACK,			SPTYPE_F4G,
-    "fb111",	ia_fb111,	STYPE_UNIT_ATTACK,			SPTYPE_FB111,
-    "il28",		ia_il28,	STYPE_UNIT_ATTACK,			SPTYPE_IL28,
-    "mig27",	ia_mig27,	STYPE_UNIT_ATTACK,			SPTYPE_MIG27,
-    "su25",		ia_su25,	STYPE_UNIT_ATTACK,			SPTYPE_SU25,
-    "ah64",		ia_ah64,	STYPE_UNIT_ATTACK_HELO,		SPTYPE_AH64,
-    "ah64d",	ia_ah64d,	STYPE_UNIT_ATTACK_HELO,		SPTYPE_AH64D,
-    "ka50",		ia_ka50,	STYPE_UNIT_ATTACK_HELO,		SPTYPE_KA50,
-    "mi24",		ia_mi24,	STYPE_UNIT_ATTACK_HELO,		SPTYPE_MI24,
-    "a50",		ia_a50,		STYPE_UNIT_AWACS,			SPTYPE_A50,
-    "e3",		ia_e3,		STYPE_UNIT_AWACS,			SPTYPE_E3,
-    "b52g",		ia_b52g,	STYPE_UNIT_BOMBER,			SPTYPE_B52G,
-    "tu16",		ia_tu16,	STYPE_UNIT_BOMBER,			SPTYPE_TU16,
-    "ef111",	ia_ef111,	STYPE_UNIT_ECM,				SPTYPE_EF111,
-    "f14a",		ia_f14a,	STYPE_UNIT_FIGHTER,			SPTYPE_F14A,
-    "f15c",		ia_f15c,	STYPE_UNIT_FIGHTER,			SPTYPE_F15C,
-    "f4e",		ia_f4e,		STYPE_UNIT_FIGHTER,			SPTYPE_F4E,
-    "f5e",		ia_f5e,		STYPE_UNIT_FIGHTER,			SPTYPE_F5E,
-    "mig19",	ia_mig19,	STYPE_UNIT_FIGHTER,			SPTYPE_MIG19,
-    "mig21",	ia_mig21,	STYPE_UNIT_FIGHTER,			SPTYPE_MIG21,
-    "mig23",	ia_mig23,	STYPE_UNIT_FIGHTER,			SPTYPE_MIG23MS,
-    "mig25",	ia_mig25,	STYPE_UNIT_FIGHTER,			SPTYPE_MIG25,
-    "mig29",	ia_mig29,	STYPE_UNIT_FIGHTER,			SPTYPE_MIG29,
-    "su27",		ia_su27,	STYPE_UNIT_FIGHTER,			SPTYPE_SU27,
-    "f117",		ia_f117,	STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F117,
-    "f15e",		ia_f15e,	STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F15E,
-    "f16c",		ia_f16c,	STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F16C,
-    "f18a",		ia_f18a,	STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F18A,
-    "f18d",		ia_f18d,	STYPE_UNIT_FIGHTER_BOMBER,	SPTYPE_F18D,
-    "md500",	ia_md500,	STYPE_UNIT_RECON_HELO,		SPTYPE_MD500,
-    "oh58d",	ia_oh58d,	STYPE_UNIT_RECON_HELO,		SPTYPE_OH58D,
-    "il78",		ia_il78,	STYPE_UNIT_TANKER,			SPTYPE_IL78,
-    "kc10",		ia_kc10,	STYPE_UNIT_TANKER,			SPTYPE_KC10,
-    "kc135",	ia_kc135,	STYPE_UNIT_TANKER,			SPTYPE_KC135,
-    "tu16n",	ia_tu16n,	STYPE_UNIT_TANKER,			SPTYPE_TU16N,
-    "ch47",		ia_ch47,	STYPE_UNIT_TRANSPORT_HELO,	SPTYPE_CH47,
-    "uh1n",		ia_uh1n,	STYPE_UNIT_TRANSPORT_HELO,	SPTYPE_UH1N,
-    "uh60l",	ia_uh60l,	STYPE_UNIT_TRANSPORT_HELO,	SPTYPE_UH60L,
-    0,			ia_unknown,	0,							0
+    "an2", ia_an2, STYPE_UNIT_AIR_TRANSPORT, SPTYPE_AN2,
+    "an24", ia_an24, STYPE_UNIT_AIR_TRANSPORT, SPTYPE_AN24,
+    "c130", ia_c130, STYPE_UNIT_AIR_TRANSPORT, SPTYPE_C130,
+    "il76", ia_il76, STYPE_UNIT_AIR_TRANSPORT, SPTYPE_IL76M,
+    "y8", ia_y8, STYPE_UNIT_AIR_TRANSPORT, SPTYPE_Y8,
+    "a10", ia_a10, STYPE_UNIT_ATTACK, SPTYPE_A10,
+    "f4g", ia_f4g, STYPE_UNIT_ATTACK, SPTYPE_F4G,
+    "fb111", ia_fb111, STYPE_UNIT_ATTACK, SPTYPE_FB111,
+    "il28", ia_il28, STYPE_UNIT_ATTACK, SPTYPE_IL28,
+    "mig27", ia_mig27, STYPE_UNIT_ATTACK, SPTYPE_MIG27,
+    "su25", ia_su25, STYPE_UNIT_ATTACK, SPTYPE_SU25,
+    "ah64", ia_ah64, STYPE_UNIT_ATTACK_HELO, SPTYPE_AH64,
+    "ah64d", ia_ah64d, STYPE_UNIT_ATTACK_HELO, SPTYPE_AH64D,
+    "ka50", ia_ka50, STYPE_UNIT_ATTACK_HELO, SPTYPE_KA50,
+    "mi24", ia_mi24, STYPE_UNIT_ATTACK_HELO, SPTYPE_MI24,
+    "a50", ia_a50, STYPE_UNIT_AWACS, SPTYPE_A50,
+    "e3", ia_e3, STYPE_UNIT_AWACS, SPTYPE_E3,
+    "b52g", ia_b52g, STYPE_UNIT_BOMBER, SPTYPE_B52G,
+    "tu16", ia_tu16, STYPE_UNIT_BOMBER, SPTYPE_TU16,
+    "ef111", ia_ef111, STYPE_UNIT_ECM, SPTYPE_EF111,
+    "f14a", ia_f14a, STYPE_UNIT_FIGHTER, SPTYPE_F14A,
+    "f15c", ia_f15c, STYPE_UNIT_FIGHTER, SPTYPE_F15C,
+    "f4e", ia_f4e, STYPE_UNIT_FIGHTER, SPTYPE_F4E,
+    "f5e", ia_f5e, STYPE_UNIT_FIGHTER, SPTYPE_F5E,
+    "mig19", ia_mig19, STYPE_UNIT_FIGHTER, SPTYPE_MIG19,
+    "mig21", ia_mig21, STYPE_UNIT_FIGHTER, SPTYPE_MIG21,
+    "mig23", ia_mig23, STYPE_UNIT_FIGHTER, SPTYPE_MIG23MS,
+    "mig25", ia_mig25, STYPE_UNIT_FIGHTER, SPTYPE_MIG25,
+    "mig29", ia_mig29, STYPE_UNIT_FIGHTER, SPTYPE_MIG29,
+    "su27", ia_su27, STYPE_UNIT_FIGHTER, SPTYPE_SU27,
+    "f117", ia_f117, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F117,
+    "f15e", ia_f15e, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F15E,
+    "f16c", ia_f16c, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F16C,
+    "f18a", ia_f18a, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F18A,
+    "f18d", ia_f18d, STYPE_UNIT_FIGHTER_BOMBER, SPTYPE_F18D,
+    "md500", ia_md500, STYPE_UNIT_RECON_HELO, SPTYPE_MD500,
+    "oh58d", ia_oh58d, STYPE_UNIT_RECON_HELO, SPTYPE_OH58D,
+    "il78", ia_il78, STYPE_UNIT_TANKER, SPTYPE_IL78,
+    "kc10", ia_kc10, STYPE_UNIT_TANKER, SPTYPE_KC10,
+    "kc135", ia_kc135, STYPE_UNIT_TANKER, SPTYPE_KC135,
+    "tu16n", ia_tu16n, STYPE_UNIT_TANKER, SPTYPE_TU16N,
+    "ch47", ia_ch47, STYPE_UNIT_TRANSPORT_HELO, SPTYPE_CH47,
+    "uh1n", ia_uh1n, STYPE_UNIT_TRANSPORT_HELO, SPTYPE_UH1N,
+    "uh60l", ia_uh60l, STYPE_UNIT_TRANSPORT_HELO, SPTYPE_UH60L,
+    0, ia_unknown, 0, 0
 },
 ia_grnd_objects[] =
 {
-    "chinese_t80",		ia_chinese_t80,		STYPE_UNIT_ARMOR,				SPTYPE_CHINESE_TYPE80,
-    "chinese_t85",		ia_chinese_t85,		STYPE_UNIT_ARMOR,				SPTYPE_CHINESE_TYPE85II,
-    "chinese_t90",		ia_chinese_t90,		STYPE_UNIT_ARMOR,				SPTYPE_CHINESE_TYPE90II,
-    "chinese_sa6",		ia_chinese_sa6,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_CHINESE_SA6,
-    "chinese_zu23",		ia_chinese_zu23,	STYPE_UNIT_AIR_DEFENSE,			SPTYPE_CHINESE_ZU23,
-    "chinese_hq",		ia_chinese_hq,		STYPE_UNIT_HQ,					SPTYPE_CHINESE_HQ,
-    "chinese_inf",		ia_chinese_inf,		STYPE_UNIT_INFANTRY,			SPTYPE_CHINESE_INF,
-    "chinese_mech",		ia_chinese_mech,	STYPE_UNIT_MECHANIZED,			SPTYPE_CHINESE_MECH,
-    "chinese_sp",		ia_chinese_sp,		STYPE_UNIT_SP_ARTILLERY,		SPTYPE_CHINESE_SP,
-    "chinese_art",		ia_chinese_art,		STYPE_UNIT_TOWED_ARTILLERY,		SPTYPE_CHINESE_ART,
-    "dprk_aaa",			ia_dprk_aaa,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_DPRK_AAA,
-    "dprk_sa2",			ia_drpk_sa2,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_DPRK_SA2,
-    "dprk_sa3",			ia_dprk_sa3,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_DPRK_SA3,
-    "dprk_sa5",			ia_dprk_sa5,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_DPRK_SA5,
-    "dprk_airmobile",	ia_dprk_airmobile,	STYPE_UNIT_AIRMOBILE,			SPTYPE_DPRK_AIR_MOBILE,
-    "dprk_t55",			ia_dprk_t55,		STYPE_UNIT_ARMOR,				SPTYPE_DPRK_T55,
-    "dprk_t62",			ia_dprk_t62,		STYPE_UNIT_ARMOR,				SPTYPE_DPRK_T62,
-    "dprk_hq",			ia_dprk_hq,			STYPE_UNIT_HQ,					SPTYPE_DPRK_HQ,
-    "dprk_inf",			ia_dprk_inf,		STYPE_UNIT_INFANTRY,			SPTYPE_DPRK_INF,
-    "dprk_bmp1",		ia_dprk_bmp1,		STYPE_UNIT_MECHANIZED,			SPTYPE_DPRK_BMP1,
-    "dprk_bmp2",		ia_dprk_bmp2,		STYPE_UNIT_MECHANIZED,			SPTYPE_DPRK_BMP2,
-    "dprk_bm21",		ia_dprk_bm21,		STYPE_UNIT_ROCKET,				SPTYPE_DPRK_BM21,
-    "dprk_sp122",		ia_dprk_sp122,		STYPE_UNIT_SP_ARTILLERY,		SPTYPE_DPRK_SP_122,
-    "dprk_sp152",		ia_dprk_sp152,		STYPE_UNIT_SP_ARTILLERY,		SPTYPE_DPRK_SP_152,
-    "dprk_frog",		ia_dprk_frog,		STYPE_UNIT_SS_MISSILE,			SPTYPE_DPRK_FROG,
-    "dprk_scud",		ia_dprk_scud,		STYPE_UNIT_SS_MISSILE,			SPTYPE_DPRK_SCUD,
-    "dprk_tow_art",		ia_dprk_tow_art,	STYPE_UNIT_TOWED_ARTILLERY,		SPTYPE_DPRK_TOW_ART,
-    "rok_aaa",			ia_rok_aaa,			STYPE_UNIT_AIR_DEFENSE,			SPTYPE_ROK_AAA,
-    "rok_hawk",			ia_rok_hawk,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_ROK_HAWK,
-    "rok_nike",			ia_rok_nike,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_ROK_NIKE,
-    "rok_m48",			ia_rok_m48,			STYPE_UNIT_ARMOR,				SPTYPE_ROK_M48,
-    "rok_hq",			ia_rok_hq,			STYPE_UNIT_HQ,					SPTYPE_ROK_HQ,
-    "rok_inf",			ia_rok_inf,			STYPE_UNIT_INFANTRY,			SPTYPE_ROK_INF,
-    "rok_marine",		ia_rok_marine,		STYPE_UNIT_MARINE,				SPTYPE_ROK_MARINE,
-    "rok_m113",			ia_rok_m113,		STYPE_UNIT_MECHANIZED,			SPTYPE_ROK_M113,
-    "rok_sp",			ia_rok_sp,			STYPE_UNIT_SP_ARTILLERY,		SPTYPE_ROK_SP,
-    "rok_m198",			ia_rok_m198,		STYPE_UNIT_TOWED_ARTILLERY,		SPTYPE_ROK_M198,
-    "soviet_sa15",		ia_soviet_sa15,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_SOVIET_SA15,
-    "soviet_sa6",		ia_soviet_sa6,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_SOVIET_SA6,
-    "soviet_sa8",		ia_soviet_sa8,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_SOVIET_SA8,
-    "soviet_air",		ia_soviet_air,		STYPE_UNIT_AIRMOBILE,			SPTYPE_SOVIET_AIR,
-    "soviet_t72",		ia_soviet_t72,		STYPE_UNIT_ARMOR,				SPTYPE_SOVIET_T72,
-    "soviet_t80",		ia_soviet_t80,		STYPE_UNIT_ARMOR,				SPTYPE_SOVIET_T80,
-    "soviet_eng",		ia_soviet_eng,		STYPE_UNIT_ENGINEER,			SPTYPE_SOVIET_ENG,
-    "soviet_hq",		ia_soviet_hq,		STYPE_UNIT_HQ,					SPTYPE_SOVIET_HQ,
-    "soviet_inf",		ia_soviet_inf,		STYPE_UNIT_INFANTRY,			SPTYPE_SOVIET_INF,
-    "soviet_marine",	ia_soviet_marine,	STYPE_UNIT_MARINE,				SPTYPE_SOVIET_MARINE,
-    "soviet_mech",		ia_soviet_mech,		STYPE_UNIT_MECHANIZED,			SPTYPE_SOVIET_MECH,
-    "soviet_scud",		ia_soviet_scud,		STYPE_UNIT_SS_MISSILE,			SPTYPE_SOVIET_SCUD,
-    "soviet_frog7",		ia_soviet_frog7,	STYPE_UNIT_SS_MISSILE,			SPTYPE_SOVIET_FROG7,
-    "soviet_sp",		ia_soviet_sp,		STYPE_UNIT_SP_ARTILLERY,		SPTYPE_SOVIET_SP,
-    "soviet_sup",		ia_soviet_sup,		STYPE_UNIT_SUPPLY,				SPTYPE_SOVIET_SUP,
-    "soveit_bm21",		ia_soviet_bm21,		STYPE_UNIT_ROCKET,				SPTYPE_SOVIET_BM21,
-    "soviet_bm24",		ia_soviet_bm24,		STYPE_UNIT_ROCKET,				SPTYPE_SOVIET_BM24,
-    "soviet_bm9a52",	ia_soviet_bm9a52,	STYPE_UNIT_ROCKET,				SPTYPE_SOVIET_BM9A52,
-    "soviet_art",		ia_soviet_art,		STYPE_UNIT_TOWED_ARTILLERY,		SPTYPE_SOVIET_ART,
-    "us_patriot",		ia_us_patriot,		STYPE_UNIT_AIR_DEFENSE,			SPTYPE_US_PATRIOT,
-    "us_hawk",			ia_us_hawk,			STYPE_UNIT_AIR_DEFENSE,			SPTYPE_US_HAWK,
-    "us_air",			ia_us_air,			STYPE_UNIT_AIRMOBILE,			SPTYPE_US_AIR,
-    "us_m1",			ia_us_m1,			STYPE_UNIT_ARMOR,				SPTYPE_US_M1,
-    "us_m60",			ia_us_m60,			STYPE_UNIT_ARMOR,				SPTYPE_US_M60,
-    "us_cav",			ia_us_cav,			STYPE_UNIT_ARMORED_CAV,			SPTYPE_US_CAV,
-    "us_eng",			ia_us_eng,			STYPE_UNIT_ENGINEER,			SPTYPE_US_ENG,
-    "us_hq",			ia_us_hq,			STYPE_UNIT_HQ,					SPTYPE_US_HQ,
-    "us_inf",			ia_us_inf,			STYPE_UNIT_INFANTRY,			SPTYPE_US_INF,
-    "us_lav25",			ia_us_lav25,		STYPE_UNIT_MARINE,				SPTYPE_US_LAV25,
-    "us_m2",			ia_us_m2,			STYPE_UNIT_MECHANIZED,			SPTYPE_US_M2,
-    "us_mlrs",			ia_us_mirs,			STYPE_UNIT_ROCKET,				SPTYPE_US_MLRS,
-    "us_m109",			ia_us_m109,			STYPE_UNIT_SP_ARTILLERY,		SPTYPE_US_M109,
-    "us_sup",			ia_us_sup,			STYPE_UNIT_SUPPLY,				SPTYPE_US_SUP,
-    0,					ia_unknown,			0,								0
+    "chinese_t80", ia_chinese_t80, STYPE_UNIT_ARMOR, SPTYPE_CHINESE_TYPE80,
+    "chinese_t85", ia_chinese_t85, STYPE_UNIT_ARMOR, SPTYPE_CHINESE_TYPE85II,
+    "chinese_t90", ia_chinese_t90, STYPE_UNIT_ARMOR, SPTYPE_CHINESE_TYPE90II,
+    "chinese_sa6", ia_chinese_sa6, STYPE_UNIT_AIR_DEFENSE, SPTYPE_CHINESE_SA6,
+    "chinese_zu23", ia_chinese_zu23, STYPE_UNIT_AIR_DEFENSE, SPTYPE_CHINESE_ZU23,
+    "chinese_hq", ia_chinese_hq, STYPE_UNIT_HQ, SPTYPE_CHINESE_HQ,
+    "chinese_inf", ia_chinese_inf, STYPE_UNIT_INFANTRY, SPTYPE_CHINESE_INF,
+    "chinese_mech", ia_chinese_mech, STYPE_UNIT_MECHANIZED, SPTYPE_CHINESE_MECH,
+    "chinese_sp", ia_chinese_sp, STYPE_UNIT_SP_ARTILLERY, SPTYPE_CHINESE_SP,
+    "chinese_art", ia_chinese_art, STYPE_UNIT_TOWED_ARTILLERY, SPTYPE_CHINESE_ART,
+    "dprk_aaa", ia_dprk_aaa, STYPE_UNIT_AIR_DEFENSE, SPTYPE_DPRK_AAA,
+    "dprk_sa2", ia_drpk_sa2, STYPE_UNIT_AIR_DEFENSE, SPTYPE_DPRK_SA2,
+    "dprk_sa3", ia_dprk_sa3, STYPE_UNIT_AIR_DEFENSE, SPTYPE_DPRK_SA3,
+    "dprk_sa5", ia_dprk_sa5, STYPE_UNIT_AIR_DEFENSE, SPTYPE_DPRK_SA5,
+    "dprk_airmobile", ia_dprk_airmobile, STYPE_UNIT_AIRMOBILE, SPTYPE_DPRK_AIR_MOBILE,
+    "dprk_t55", ia_dprk_t55, STYPE_UNIT_ARMOR, SPTYPE_DPRK_T55,
+    "dprk_t62", ia_dprk_t62, STYPE_UNIT_ARMOR, SPTYPE_DPRK_T62,
+    "dprk_hq", ia_dprk_hq, STYPE_UNIT_HQ, SPTYPE_DPRK_HQ,
+    "dprk_inf", ia_dprk_inf, STYPE_UNIT_INFANTRY, SPTYPE_DPRK_INF,
+    "dprk_bmp1", ia_dprk_bmp1, STYPE_UNIT_MECHANIZED, SPTYPE_DPRK_BMP1,
+    "dprk_bmp2", ia_dprk_bmp2, STYPE_UNIT_MECHANIZED, SPTYPE_DPRK_BMP2,
+    "dprk_bm21", ia_dprk_bm21, STYPE_UNIT_ROCKET, SPTYPE_DPRK_BM21,
+    "dprk_sp122", ia_dprk_sp122, STYPE_UNIT_SP_ARTILLERY, SPTYPE_DPRK_SP_122,
+    "dprk_sp152", ia_dprk_sp152, STYPE_UNIT_SP_ARTILLERY, SPTYPE_DPRK_SP_152,
+    "dprk_frog", ia_dprk_frog, STYPE_UNIT_SS_MISSILE, SPTYPE_DPRK_FROG,
+    "dprk_scud", ia_dprk_scud, STYPE_UNIT_SS_MISSILE, SPTYPE_DPRK_SCUD,
+    "dprk_tow_art", ia_dprk_tow_art, STYPE_UNIT_TOWED_ARTILLERY, SPTYPE_DPRK_TOW_ART,
+    "rok_aaa", ia_rok_aaa, STYPE_UNIT_AIR_DEFENSE, SPTYPE_ROK_AAA,
+    "rok_hawk", ia_rok_hawk, STYPE_UNIT_AIR_DEFENSE, SPTYPE_ROK_HAWK,
+    "rok_nike", ia_rok_nike, STYPE_UNIT_AIR_DEFENSE, SPTYPE_ROK_NIKE,
+    "rok_m48", ia_rok_m48, STYPE_UNIT_ARMOR, SPTYPE_ROK_M48,
+    "rok_hq", ia_rok_hq, STYPE_UNIT_HQ, SPTYPE_ROK_HQ,
+    "rok_inf", ia_rok_inf, STYPE_UNIT_INFANTRY, SPTYPE_ROK_INF,
+    "rok_marine", ia_rok_marine, STYPE_UNIT_MARINE, SPTYPE_ROK_MARINE,
+    "rok_m113", ia_rok_m113, STYPE_UNIT_MECHANIZED, SPTYPE_ROK_M113,
+    "rok_sp", ia_rok_sp, STYPE_UNIT_SP_ARTILLERY, SPTYPE_ROK_SP,
+    "rok_m198", ia_rok_m198, STYPE_UNIT_TOWED_ARTILLERY, SPTYPE_ROK_M198,
+    "soviet_sa15", ia_soviet_sa15, STYPE_UNIT_AIR_DEFENSE, SPTYPE_SOVIET_SA15,
+    "soviet_sa6", ia_soviet_sa6, STYPE_UNIT_AIR_DEFENSE, SPTYPE_SOVIET_SA6,
+    "soviet_sa8", ia_soviet_sa8, STYPE_UNIT_AIR_DEFENSE, SPTYPE_SOVIET_SA8,
+    "soviet_air", ia_soviet_air, STYPE_UNIT_AIRMOBILE, SPTYPE_SOVIET_AIR,
+    "soviet_t72", ia_soviet_t72, STYPE_UNIT_ARMOR, SPTYPE_SOVIET_T72,
+    "soviet_t80", ia_soviet_t80, STYPE_UNIT_ARMOR, SPTYPE_SOVIET_T80,
+    "soviet_eng", ia_soviet_eng, STYPE_UNIT_ENGINEER, SPTYPE_SOVIET_ENG,
+    "soviet_hq", ia_soviet_hq, STYPE_UNIT_HQ, SPTYPE_SOVIET_HQ,
+    "soviet_inf", ia_soviet_inf, STYPE_UNIT_INFANTRY, SPTYPE_SOVIET_INF,
+    "soviet_marine", ia_soviet_marine, STYPE_UNIT_MARINE, SPTYPE_SOVIET_MARINE,
+    "soviet_mech", ia_soviet_mech, STYPE_UNIT_MECHANIZED, SPTYPE_SOVIET_MECH,
+    "soviet_scud", ia_soviet_scud, STYPE_UNIT_SS_MISSILE, SPTYPE_SOVIET_SCUD,
+    "soviet_frog7", ia_soviet_frog7, STYPE_UNIT_SS_MISSILE, SPTYPE_SOVIET_FROG7,
+    "soviet_sp", ia_soviet_sp, STYPE_UNIT_SP_ARTILLERY, SPTYPE_SOVIET_SP,
+    "soviet_sup", ia_soviet_sup, STYPE_UNIT_SUPPLY, SPTYPE_SOVIET_SUP,
+    "soveit_bm21", ia_soviet_bm21, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM21,
+    "soviet_bm24", ia_soviet_bm24, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM24,
+    "soviet_bm9a52", ia_soviet_bm9a52, STYPE_UNIT_ROCKET, SPTYPE_SOVIET_BM9A52,
+    "soviet_art", ia_soviet_art, STYPE_UNIT_TOWED_ARTILLERY, SPTYPE_SOVIET_ART,
+    "us_patriot", ia_us_patriot, STYPE_UNIT_AIR_DEFENSE, SPTYPE_US_PATRIOT,
+    "us_hawk", ia_us_hawk, STYPE_UNIT_AIR_DEFENSE, SPTYPE_US_HAWK,
+    "us_air", ia_us_air, STYPE_UNIT_AIRMOBILE, SPTYPE_US_AIR,
+    "us_m1", ia_us_m1, STYPE_UNIT_ARMOR, SPTYPE_US_M1,
+    "us_m60", ia_us_m60, STYPE_UNIT_ARMOR, SPTYPE_US_M60,
+    "us_cav", ia_us_cav, STYPE_UNIT_ARMORED_CAV, SPTYPE_US_CAV,
+    "us_eng", ia_us_eng, STYPE_UNIT_ENGINEER, SPTYPE_US_ENG,
+    "us_hq", ia_us_hq, STYPE_UNIT_HQ, SPTYPE_US_HQ,
+    "us_inf", ia_us_inf, STYPE_UNIT_INFANTRY, SPTYPE_US_INF,
+    "us_lav25", ia_us_lav25, STYPE_UNIT_MARINE, SPTYPE_US_LAV25,
+    "us_m2", ia_us_m2, STYPE_UNIT_MECHANIZED, SPTYPE_US_M2,
+    "us_mlrs", ia_us_mirs, STYPE_UNIT_ROCKET, SPTYPE_US_MLRS,
+    "us_m109", ia_us_m109, STYPE_UNIT_SP_ARTILLERY, SPTYPE_US_M109,
+    "us_sup", ia_us_sup, STYPE_UNIT_SUPPLY, SPTYPE_US_SUP,
+    0, ia_unknown, 0, 0
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -338,7 +338,7 @@ void instant_action::check_next_wave(void)
                     create_more_stuff();
                 }
 
-                //				MonoPrint ("Flights %d\n", count_flights);
+                // MonoPrint ("Flights %d\n", count_flights);
 
                 if (((count_flights == 0) || ((wave_time) && (TheCampaign.CurrentTime > wave_time))) && (aircraft_left < 4))
                 {
@@ -357,7 +357,7 @@ void instant_action::check_next_wave(void)
 
 void instant_action::set_start_wave(int wave)
 {
-    ShiAssert(wave >= 0 && wave <= 4);	// Since its used as sim skill it had better be this way...
+    ShiAssert(wave >= 0 && wave <= 4); // Since its used as sim skill it had better be this way...
 
     current_wave = wave;
     generic_skill = wave;
@@ -368,8 +368,8 @@ void instant_action::set_start_wave(int wave)
     // when it was changed to the top of InstantActionFlyCB(), but it asserted and
     // I didn't want to figure out if the assert was necessary or not.
     // SO, I hacked this into the Team load from file.
-    //	TeamInfo[2]->airExperience			= 60 + 10 * wave;
-    //	TeamInfo[2]->airDefenseExperience	= 60 + 10 * wave;
+    // TeamInfo[2]->airExperience = 60 + 10 * wave;
+    // TeamInfo[2]->airDefenseExperience = 60 + 10 * wave;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -961,7 +961,7 @@ void instant_action::create_player_flight(void)
         {
             // Moving Mud Loadout
 
-            loadout->WeaponID[0] = 60;	// Guns
+            loadout->WeaponID[0] = 60; // Guns
             loadout->WeaponCount[0] = 51;
 
             loadout->WeaponID[1] = 12; // AIM-9M
@@ -995,25 +995,25 @@ void instant_action::create_player_flight(void)
         {
             // Fighter Sweep Loadout
 
-            loadout->WeaponID[0] = 60;	// Guns
+            loadout->WeaponID[0] = 60; // Guns
             loadout->WeaponCount[0] = 51;
 
-            loadout->WeaponID[1] = 56;	//AIM120
+            loadout->WeaponID[1] = 56; //AIM120
             loadout->WeaponID[9] = 56;
             loadout->WeaponCount[1] = 1;
             loadout->WeaponCount[9] = 1;
 
-            loadout->WeaponID[2] = 12;	//AIM9-M
+            loadout->WeaponID[2] = 12; //AIM9-M
             loadout->WeaponID[8] = 12;
             loadout->WeaponCount[2] = 1;
             loadout->WeaponCount[8] = 1;
 
-            loadout->WeaponID[3] = 150;	//TW: AIM-9X
+            loadout->WeaponID[3] = 150; //TW: AIM-9X
             loadout->WeaponCount[3] = 1;
             loadout->WeaponID[7] = 150;
             loadout->WeaponCount[7] = 1;
 
-            loadout->WeaponID[5] = 70;	//Jammer Pod
+            loadout->WeaponID[5] = 70; //Jammer Pod
             loadout->WeaponCount[5] = 1;
 
         }
@@ -1123,224 +1123,224 @@ void instant_action::create_player_flight(void)
 
     wave_created = 0;
     /*
-    	int
-    		tid;
+     int
+     tid;
 
-    	short
-    		x,
-    		y;
+     short
+     x,
+     y;
 
-    	int
-    		i,
-    		num_vehicles;
+     int
+     i,
+     num_vehicles;
 
-    	VehicleClassDataType
-    		*vc;
+     VehicleClassDataType
+     *vc;
 
-    	LoadoutStruct
-    		*loadout;
+     LoadoutStruct
+     *loadout;
 
-    	tid = GetClassID
-    	(
-    		DOMAIN_AIR,
-    		CLASS_UNIT,
-    		TYPE_FLIGHT,
-    		STYPE_UNIT_FIGHTER_BOMBER,
-    		SPTYPE_F16C,
-    		0,
-    		0,
-    		0
-    	);
+     tid = GetClassID
+     (
+     DOMAIN_AIR,
+     CLASS_UNIT,
+     TYPE_FLIGHT,
+     STYPE_UNIT_FIGHTER_BOMBER,
+     SPTYPE_F16C,
+     0,
+     0,
+     0
+     );
 
-    	if (!tid)
-    	{
-    		MonoPrint ("Cannot create F16C Flight\n");
-    		return;
-    	}
+     if (!tid)
+     {
+     MonoPrint ("Cannot create F16C Flight\n");
+     return;
+     }
 
-    	tid += VU_LAST_ENTITY_TYPE;
+     tid += VU_LAST_ENTITY_TYPE;
 
-    	player_flight = NewFlight(tid, 0, 0);
+     player_flight = NewFlight(tid, 0, 0);
 
-    	if (!player_flight)
-    	{
-    		MonoPrint ("Cannot create FlightClass object\n");
-    		return;
-    	}
+     if (!player_flight)
+     {
+     MonoPrint ("Cannot create FlightClass object\n");
+     return;
+     }
 
-    	num_vehicles = 1;
+     num_vehicles = 1;
 
-    	x = SimToGrid (start_y);
-    	y = SimToGrid (start_x);
+     x = SimToGrid (start_y);
+     y = SimToGrid (start_x);
 
-    	player_flight->SetOwner (1);
-    	player_flight->SetLocation (x, y);
-    	player_flight->SetAltitude (10000);
+     player_flight->SetOwner (1);
+     player_flight->SetLocation (x, y);
+     player_flight->SetAltitude (10000);
 
-    	player_flight->SetUnitMission (AMIS_SWEEP);
+     player_flight->SetUnitMission (AMIS_SWEEP);
 
-    	switch (num_vehicles)
-    	{
-    		case 1:
-    		{
-    			player_flight->SetNumVehicles (0, 1);
-    			break;
-    		}
+     switch (num_vehicles)
+     {
+     case 1:
+     {
+     player_flight->SetNumVehicles (0, 1);
+     break;
+     }
 
-    		case 2:
-    		{
-    			player_flight->SetNumVehicles (0, 2);
-    			break;
-    		}
+     case 2:
+     {
+     player_flight->SetNumVehicles (0, 2);
+     break;
+     }
 
-    		case 3:
-    		{
-    			player_flight->SetNumVehicles (0, 2);
-    			player_flight->SetNumVehicles (1, 1);
-    			break;
-    		}
+     case 3:
+     {
+     player_flight->SetNumVehicles (0, 2);
+     player_flight->SetNumVehicles (1, 1);
+     break;
+     }
 
-    		case 4:
-    		{
-    			player_flight->SetNumVehicles (0, 2);
-    			player_flight->SetNumVehicles (1, 2);
-    			break;
-    		}
-    	}
+     case 4:
+     {
+     player_flight->SetNumVehicles (0, 2);
+     player_flight->SetNumVehicles (1, 2);
+     break;
+     }
+     }
 
-    	for (i = 0; i < PILOTS_PER_FLIGHT; i ++)
-    	{
-    		if (i < num_vehicles)
-    		{
-    			player_flight->plane_stats[i] = AIRCRAFT_AVAILABLE;
-    			player_flight->pilots[i] = 0;
-    			player_flight->player_slots[i] = PILOTS_PER_FLIGHT;
-    			player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, DDP[144].priority);
-    			//	player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLEANDOOB);
-    		}
-    		else
-    		{
-    			player_flight->plane_stats[i] = AIRCRAFT_NOT_ASSIGNED;
-    			player_flight->pilots[i] = NO_PILOT;
-    			player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, DDP[145].priority);
-    			//	player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLEANDOOB);
-    		}
-    	}
+     for (i = 0; i < PILOTS_PER_FLIGHT; i ++)
+     {
+     if (i < num_vehicles)
+     {
+     player_flight->plane_stats[i] = AIRCRAFT_AVAILABLE;
+     player_flight->pilots[i] = 0;
+     player_flight->player_slots[i] = PILOTS_PER_FLIGHT;
+     player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, DDP[144].priority);
+     // player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLEANDOOB);
+     }
+     else
+     {
+     player_flight->plane_stats[i] = AIRCRAFT_NOT_ASSIGNED;
+     player_flight->pilots[i] = NO_PILOT;
+     player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, DDP[145].priority);
+     // player_flight->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLEANDOOB);
+     }
+     }
 
-    	player_flight->last_player_slot = PILOTS_PER_FLIGHT;
+     player_flight->last_player_slot = PILOTS_PER_FLIGHT;
 
-    	// Name this flight
-    	vc = GetVehicleClassData (player_flight->GetVehicleID (0));
+     // Name this flight
+     vc = GetVehicleClassData (player_flight->GetVehicleID (0));
 
-    	player_flight->callsign_id = vc->CallsignIndex;
+     player_flight->callsign_id = vc->CallsignIndex;
 
-    	GetCallsignID (&player_flight->callsign_id, &player_flight->callsign_num, vc->CallsignSlots);
+     GetCallsignID (&player_flight->callsign_id, &player_flight->callsign_num, vc->CallsignSlots);
 
-    	if (player_flight->callsign_num)
-    	{
-    		SetCallsignID (player_flight->callsign_id, player_flight->callsign_num);
-    	}
+     if (player_flight->callsign_num)
+     {
+     SetCallsignID (player_flight->callsign_id, player_flight->callsign_num);
+     }
 
-    	// Load some weapons
-    	loadout = new LoadoutStruct;
+     // Load some weapons
+     loadout = new LoadoutStruct;
 
-    	if (current_mode == 'm')
-    	{
-    		// Moving Mud Loadout
+     if (current_mode == 'm')
+     {
+     // Moving Mud Loadout
 
-    		loadout->WeaponID[0] = 60;	// Guns
-    		loadout->WeaponCount[0] = 51;
+     loadout->WeaponID[0] = 60; // Guns
+     loadout->WeaponCount[0] = 51;
 
-    		loadout->WeaponID[1] = 12;
-    		loadout->WeaponCount[1] = 1;
+     loadout->WeaponID[1] = 12;
+     loadout->WeaponCount[1] = 1;
 
-    		loadout->WeaponID[2] = 20;
-    		loadout->WeaponCount[2] = 1;
+     loadout->WeaponID[2] = 20;
+     loadout->WeaponCount[2] = 1;
 
-    		loadout->WeaponID[3] = 71;
-    		loadout->WeaponCount[3] = 19;
+     loadout->WeaponID[3] = 71;
+     loadout->WeaponCount[3] = 19;
 
-    		loadout->WeaponID[4] = 81;
-    		loadout->WeaponCount[4] = 3;
+     loadout->WeaponID[4] = 81;
+     loadout->WeaponCount[4] = 3;
 
-    		loadout->WeaponID[5] = 70;
-    		loadout->WeaponCount[5] = 1;
+     loadout->WeaponID[5] = 70;
+     loadout->WeaponCount[5] = 1;
 
-    		loadout->WeaponID[6] = 5;
-    		loadout->WeaponCount[6] = 3;
+     loadout->WeaponID[6] = 5;
+     loadout->WeaponCount[6] = 3;
 
-    		// loadout->WeaponID[7] = 74;
-    		// edg test dynamics of durandal
-    		loadout->WeaponID[7] = 65;
-    		loadout->WeaponCount[7] = 1;
+     // loadout->WeaponID[7] = 74;
+     // edg test dynamics of durandal
+     loadout->WeaponID[7] = 65;
+     loadout->WeaponCount[7] = 1;
 
-    		loadout->WeaponID[8] = 64;
-    		loadout->WeaponCount[8] = 1;
+     loadout->WeaponID[8] = 64;
+     loadout->WeaponCount[8] = 1;
 
-    		loadout->WeaponID[9] = 23;
-    		loadout->WeaponCount[9] = 1;
-    	}
-    	else
-    	{
-    		// Fighter Sweep Loadout
+     loadout->WeaponID[9] = 23;
+     loadout->WeaponCount[9] = 1;
+     }
+     else
+     {
+     // Fighter Sweep Loadout
 
-    		loadout->WeaponID[0] = 60;	// Guns
-    		loadout->WeaponCount[0] = 51;
+     loadout->WeaponID[0] = 60; // Guns
+     loadout->WeaponCount[0] = 51;
 
-    		loadout->WeaponID[1] = 56;	//AIM120
-    		loadout->WeaponID[9] = 56;
-    		loadout->WeaponCount[1] = 1;
-    		loadout->WeaponCount[9] = 1;
+     loadout->WeaponID[1] = 56; //AIM120
+     loadout->WeaponID[9] = 56;
+     loadout->WeaponCount[1] = 1;
+     loadout->WeaponCount[9] = 1;
 
-    		loadout->WeaponID[2] = 12;	//AIM9
-    		loadout->WeaponID[8] = 12;
-    		loadout->WeaponCount[2] = 1;
-    		loadout->WeaponCount[8] = 1;
+     loadout->WeaponID[2] = 12; //AIM9
+     loadout->WeaponID[8] = 12;
+     loadout->WeaponCount[2] = 1;
+     loadout->WeaponCount[8] = 1;
 
-    		loadout->WeaponID[3] = 150;	//AIM-9X
-    		loadout->WeaponCount[3] = 1;
-    		loadout->WeaponID[7] = 150;
-    		loadout->WeaponCount[7] = 1;
+     loadout->WeaponID[3] = 150; //AIM-9X
+     loadout->WeaponCount[3] = 1;
+     loadout->WeaponID[7] = 150;
+     loadout->WeaponCount[7] = 1;
     //MI we don't want AG loadout in Fighter Sweep
     #if 0
-    		loadout->WeaponID[4] = 5;	//MK82
-    		loadout->WeaponCount[4] = 3;
+     loadout->WeaponID[4] = 5; //MK82
+     loadout->WeaponCount[4] = 3;
     #else
-    		loadout->WeaponID[4] = 0;
-    		loadout->WeaponCount[4] = 0;
+     loadout->WeaponID[4] = 0;
+     loadout->WeaponCount[4] = 0;
     #endif
-    		loadout->WeaponID[5] = 70;	//Jammer Pod
-    		loadout->WeaponCount[5] = 1;
+     loadout->WeaponID[5] = 70; //Jammer Pod
+     loadout->WeaponCount[5] = 1;
     //MI we don't want AG loadout in Fighter Sweep
     #if 0
-    		loadout->WeaponID[6] = 19;	//Maverick
-    		loadout->WeaponCount[6] = 3;
+     loadout->WeaponID[6] = 19; //Maverick
+     loadout->WeaponCount[6] = 3;
     #else
-    		loadout->WeaponID[6] = 0;
-    		loadout->WeaponCount[6] = 0;
+     loadout->WeaponID[6] = 0;
+     loadout->WeaponCount[6] = 0;
     #endif
-    	}
+     }
 
-    	player_flight->SetLoadout(loadout,1);
-    	player_flight->SetFinal (1);
+     player_flight->SetLoadout(loadout,1);
+     player_flight->SetFinal (1);
 
-    	vuDatabase->QuickInsert (player_flight);
+     vuDatabase->QuickInsert (player_flight);
 
-    	FalconLocalSession->SetPlayerFlight (player_flight);
-    	FalconLocalSession->SetAircraftNum (0);
-    	FalconLocalSession->SetPilotSlot (PILOTS_PER_FLIGHT);
-    	FalconLocalSession->DoFullUpdate ();
+     FalconLocalSession->SetPlayerFlight (player_flight);
+     FalconLocalSession->SetAircraftNum (0);
+     FalconLocalSession->SetPilotSlot (PILOTS_PER_FLIGHT);
+     FalconLocalSession->DoFullUpdate ();
 
-    	gSelectedFlightID = player_flight->Id ();
+     gSelectedFlightID = player_flight->Id ();
 
-    	TheCampaign.MissionEvaluator->PreMissionEval (player_flight,FalconLocalSession->GetPilotSlot());
+     TheCampaign.MissionEvaluator->PreMissionEval (player_flight,FalconLocalSession->GetPilotSlot());
 
-    	wave_created = 0;
+     wave_created = 0;
     */
 
 }
 
-#define MAX_IA_WAYPOINTS		4
+#define MAX_IA_WAYPOINTS 4
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1375,10 +1375,10 @@ void instant_action::move_player_flight(void)
 
     //edg: this next bit o stuff looks for nearest airbases and sets
     // the players waypoints to them
-    Objective			o;
-    int					numWaypoints, i;
-    float				wx[MAX_IA_WAYPOINTS], wy[MAX_IA_WAYPOINTS];
-    float				d[MAX_IA_WAYPOINTS];
+    Objective o;
+    int numWaypoints, i;
+    float wx[MAX_IA_WAYPOINTS], wy[MAX_IA_WAYPOINTS];
+    float d[MAX_IA_WAYPOINTS];
 
     numWaypoints     = 0;
     d[0] = 1000.0f * NM_TO_FT;
@@ -1628,7 +1628,7 @@ void instant_action::create_flight(ia_data &data)
     }
 
     flight->GetLocation(&px, &py);
-    rad = (flight->GetLastDirection() * 45 + data.aspect) * DTR;	// WARNING - Dodgy code from Kevin...
+    rad = (flight->GetLastDirection() * 45 + data.aspect) * DTR; // WARNING - Dodgy code from Kevin...
 
     MonoPrint("Create Flight %d,%d %d ", px, py, flight->GetLastDirection() * 45);
 
@@ -1668,7 +1668,7 @@ void instant_action::create_flight(ia_data &data)
     new_flight->SetOwner(data.side);
     new_flight->SetLocation(x, y);
     new_flight->SetAltitude(FloatToInt32(data.altitude));
-    //	new_flight->SetInPackage(1);
+    // new_flight->SetInPackage(1);
 
     if ((data.dumb) || (!((data.radar) || (data.heat))))
     {
@@ -1763,7 +1763,7 @@ void instant_action::create_flight(ia_data &data)
     {
         for (loop = 0; loop < data.num_vector; loop ++)
         {
-            rad = (flight->GetLastDirection() * 45 + data.vector[loop]) * DTR;	// WARNING - Dodgy code from Kevin...
+            rad = (flight->GetLastDirection() * 45 + data.vector[loop]) * DTR; // WARNING - Dodgy code from Kevin...
 
             nx += (short)FloatToInt32((float)sin(rad) * data.v_dist[loop]);
             ny += (short)FloatToInt32((float)cos(rad) * data.v_dist[loop]);
@@ -1921,9 +1921,9 @@ void instant_action::create_battalion(ia_data &data)
     Objective
     objective;
 
-    UnitClassDataType		*uc;
-    VehicleClassDataType	*vc;
-    Falcon4EntityClassType	*classPtr;
+    UnitClassDataType *uc;
+    VehicleClassDataType *vc;
+    Falcon4EntityClassType *classPtr;
 
     ia = 0;
 
@@ -1950,7 +1950,7 @@ void instant_action::create_battalion(ia_data &data)
     }
 
     flight->GetLocation(&px, &py);
-    rad = (flight->GetLastDirection() * 45 + data.aspect) * DTR;	// WARNING - Dodgy code from Kevin...
+    rad = (flight->GetLastDirection() * 45 + data.aspect) * DTR; // WARNING - Dodgy code from Kevin...
 
     x = (short)(px + FloatToInt32((float)sin(rad) * data.distance));
     y = (short)(py + FloatToInt32((float)cos(rad) * data.distance));
@@ -2030,15 +2030,15 @@ void instant_action::create_battalion(ia_data &data)
         /*
         if (new_battalion->GetUnitNormalRole() == GRO_AIRDEFENSE)
         {
-        	new_battalion->SetUnitOrders(GORD_AIRDEFENSE,objective->Id());
-        	new_battalion->SetUnitDestination (x, y);
+         new_battalion->SetUnitOrders(GORD_AIRDEFENSE,objective->Id());
+         new_battalion->SetUnitDestination (x, y);
         }
         else if (objective->GetTeam() == new_battalion->GetTeam())
-        	new_battalion->SetUnitOrders(GORD_DEFEND,objective->Id());
+         new_battalion->SetUnitOrders(GORD_DEFEND,objective->Id());
         else if (objective->GetTeam() != new_battalion->GetTeam())
-        	new_battalion->SetUnitOrders(GORD_CAPTURE,objective->Id());
+         new_battalion->SetUnitOrders(GORD_CAPTURE,objective->Id());
         if (rand()%3)
-        	new_battalion->SetUnitDestination (x, y);*/
+         new_battalion->SetUnitDestination (x, y);*/
     }
 
     new_battalion->BuildElements();
@@ -2062,51 +2062,51 @@ void instant_action::create_battalion(ia_data &data)
 
 static const struct
 {
-    instant_action_unit_type	type;	// Instanct action record label
-    float						range;	// Approximate intial range (km)
+    instant_action_unit_type type; // Instanct action record label
+    float range; // Approximate intial range (km)
 } groundStuff[] =
 #if 1
 {
-    { ia_dprk_bmp1,		10.0f	},	// Always
-    { ia_dprk_sp122,	10.0f	},
-    { ia_dprk_hq,		10.0f	},
-    { ia_dprk_t55,		15.0f	},
+    { ia_dprk_bmp1, 10.0f }, // Always
+    { ia_dprk_sp122, 10.0f },
+    { ia_dprk_hq, 10.0f },
+    { ia_dprk_t55, 15.0f },
 
-    { ia_dprk_sp152,	10.0f	},	// Moving Mud Level 0	"Recruit"
-    { ia_dprk_scud,		15.0f	},
-    { ia_dprk_tow_art,	10.0f	},
-    { ia_dprk_aaa,		10.0f	},
+    { ia_dprk_sp152, 10.0f }, // Moving Mud Level 0 "Recruit"
+    { ia_dprk_scud, 15.0f },
+    { ia_dprk_tow_art, 10.0f },
+    { ia_dprk_aaa, 10.0f },
 
-    { ia_dprk_bmp2,		10.0f	},	// Moving Mud Level 1  "Cadet"
-    { ia_dprk_frog,		10.0f	},
-    { ia_drpk_sa2,		20.0f	},
-    { ia_dprk_t62,		15.0f	},
+    { ia_dprk_bmp2, 10.0f }, // Moving Mud Level 1  "Cadet"
+    { ia_dprk_frog, 10.0f },
+    { ia_drpk_sa2, 20.0f },
+    { ia_dprk_t62, 15.0f },
 
-    { ia_dprk_inf,		7.0f	},	// Moving Mud Level 2	"Rookie"
-    { ia_dprk_bm21,		10.0f	},
-    { ia_dprk_sa5,		40.0f	},
-    { ia_soviet_t72,	15.0f	},
+    { ia_dprk_inf, 7.0f }, // Moving Mud Level 2 "Rookie"
+    { ia_dprk_bm21, 10.0f },
+    { ia_dprk_sa5, 40.0f },
+    { ia_soviet_t72, 15.0f },
 
-    { ia_dprk_sa3,		15.0f	},	// Moving Mud Level 3	"Veteran"
-    { ia_soviet_bm24,	10.0f	},
-    { ia_soviet_sa8,	12.0f	},
-    { ia_soviet_mech,	10.0f	},
+    { ia_dprk_sa3, 15.0f }, // Moving Mud Level 3 "Veteran"
+    { ia_soviet_bm24, 10.0f },
+    { ia_soviet_sa8, 12.0f },
+    { ia_soviet_mech, 10.0f },
 
-    { ia_chinese_zu23,	10.0f	},	// Moving Mud Level 4	"Ace"
-    { ia_chinese_sa6,	30.0f	},
-    { ia_soviet_t80,	10.0f	},
-    { ia_soviet_sa15,	10.0f	},
+    { ia_chinese_zu23, 10.0f }, // Moving Mud Level 4 "Ace"
+    { ia_chinese_sa6, 30.0f },
+    { ia_soviet_t80, 10.0f },
+    { ia_soviet_sa15, 10.0f },
 };
 #else
 {
-    { ia_dprk_aaa,		10.0f	},
-    { ia_dprk_sa5,		40.0f	},
-    { ia_drpk_sa2,		20.0f	},
-    { ia_dprk_inf,		20.0f	},
-    { ia_dprk_inf,		20.0f	},
-    { ia_dprk_inf,		20.0f	},
-    { ia_dprk_inf,		20.0f	},
-    { ia_soviet_sa15,	20.0f	},
+    { ia_dprk_aaa, 10.0f },
+    { ia_dprk_sa5, 40.0f },
+    { ia_drpk_sa2, 20.0f },
+    { ia_dprk_inf, 20.0f },
+    { ia_dprk_inf, 20.0f },
+    { ia_dprk_inf, 20.0f },
+    { ia_dprk_inf, 20.0f },
+    { ia_soviet_sa15, 20.0f },
 };
 #endif
 static const int groundStuffLen = sizeof(groundStuff) / sizeof(groundStuff[0]);
@@ -2126,13 +2126,13 @@ void instant_action::create_more_stuff(void)
 
     if (current_mode == 'm')
     {
-        level = (current_wave + 2) * 4;		// Pick our starting level
-        level += time / 30000;			// One new vehicle type every 30 seconds
+        level = (current_wave + 2) * 4; // Pick our starting level
+        level += time / 30000; // One new vehicle type every 30 seconds
     }
     else
     {
-        level = (current_wave + 1) * 4;		// In fighter sweep, we bias down one level for ground things
-        level += time / 120000;			// One new vehicle type very 2 minutes
+        level = (current_wave + 1) * 4; // In fighter sweep, we bias down one level for ground things
+        level += time / 120000; // One new vehicle type very 2 minutes
     }
 
     if (level > groundStuffLen)
@@ -2144,10 +2144,10 @@ void instant_action::create_more_stuff(void)
 
     thing = rand() % level;
 
-    data.type		= groundStuff[thing].type;
-    data.distance	= groundStuff[thing].range * (0.75f + 0.5f * rand() / (float)RAND_MAX);
-    data.aspect		= (float)(rand() % 120 - 60);
-    data.side		= 2;
+    data.type = groundStuff[thing].type;
+    data.distance = groundStuff[thing].range * (0.75f + 0.5f * rand() / (float)RAND_MAX);
+    data.aspect = (float)(rand() % 120 - 60);
+    data.side = 2;
 
     create_battalion(data);
 }

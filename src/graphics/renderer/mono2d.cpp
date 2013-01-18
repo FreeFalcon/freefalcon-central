@@ -4,7 +4,7 @@
     February 5, 1996
 
     This class provides 2D drawing functions for a Hercules monochrome
-	display.
+ display.
 \***************************************************************************/
 #include <conio.h>
 #include <math.h>
@@ -12,14 +12,14 @@
 
 
 /***************************************************************************\
-	Constants which are used to manipulate the hardware
+ Constants which are used to manipulate the hardware
 \***************************************************************************/
-#define CONTROL_REG			0x3B8
-#define CONFIG_REG			0x3BF
-#define STATUS_REG			0x3BA
-#define DATA_REG			0x3B5
-#define ADDRESS_REG			0x3B4
-#define FRAME_BUFFER_ADDR	0xB0000
+#define CONTROL_REG 0x3B8
+#define CONFIG_REG 0x3BF
+#define STATUS_REG 0x3BA
+#define DATA_REG 0x3B5
+#define ADDRESS_REG 0x3B4
+#define FRAME_BUFFER_ADDR 0xB0000
 
 // Hardware intialization settings
 static int graph_settings[] = { 53, 45, 46,  7, 91, 2, 87, 87, 2,  3,  0,  0, 0, 0, 0, 0 };
@@ -35,14 +35,14 @@ static int text_settings[]  = { 97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0,
 #endif
 
 // Offscreen drawing buffer management stuff
-static char	*screen_buffer[2];
-static int	page				= 0;
-static int	monoDisplayCount	= 0;
-static BOOL	enabled				= FALSE;
+static char *screen_buffer[2];
+static int page = 0;
+static int monoDisplayCount = 0;
+static BOOL enabled = FALSE;
 
 
 /***************************************************************************\
-	Setup hardware for graphics display
+ Setup hardware for graphics display
 \***************************************************************************/
 void MonochromeDisplay::Setup(void)
 {
@@ -187,11 +187,11 @@ void MonochromeDisplay::EndDraw(void)
 
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void MonochromeDisplay::Render2DPoint(float x, float y)
 {
-    int	x1, y1;
+    int x1, y1;
     int the_byte;
     int the_bit;
     char *currentValue;
@@ -209,7 +209,7 @@ void MonochromeDisplay::Render2DPoint(float x, float y)
 
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void MonochromeDisplay::Render2DPoint(int x1, int y1)
 {
@@ -227,7 +227,7 @@ void MonochromeDisplay::Render2DPoint(int x1, int y1)
 
 
 /***************************************************************************\
-	Put a straight line on the display.
+ Put a straight line on the display.
 \***************************************************************************/
 void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y1in)
 {
@@ -367,7 +367,7 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
 //
 
 /***************************************************************************\
-	Put the hardware into text only mode ( 8 x 25 characters )
+ Put the hardware into text only mode ( 8 x 25 characters )
 \***************************************************************************/
 void MonochromeDisplay::EnterTextOnlyMode(void)
 {
@@ -391,7 +391,7 @@ void MonochromeDisplay::EnterTextOnlyMode(void)
 
 
 /***************************************************************************\
-	Put the display back into the expected graphics mode
+ Put the display back into the expected graphics mode
 \***************************************************************************/
 void MonochromeDisplay::LeaveTextOnlyMode(void)
 {
@@ -424,7 +424,7 @@ void MonochromeDisplay::LeaveTextOnlyMode(void)
 
 
 /***************************************************************************\
-	Clear the display while in text only mode
+ Clear the display while in text only mode
 \***************************************************************************/
 void MonochromeDisplay::ClearTextOnly(void)
 {
@@ -440,15 +440,15 @@ void MonochromeDisplay::ClearTextOnly(void)
 
 
 /***************************************************************************\
-	Put a string on the display in a fashion similar to "printf()"
+ Put a string on the display in a fashion similar to "printf()"
 \***************************************************************************/
 void MonochromeDisplay::PrintTextOnly(char *string, ...)
 {
-    va_list			params;   /* watcom manual 'Library' p.470 */
-    unsigned char	*addr;
-    int				i = 0;
-    int				check;
-    static char		output_buffer[120];
+    va_list params;   /* watcom manual 'Library' p.470 */
+    unsigned char *addr;
+    int i = 0;
+    int check;
+    static char output_buffer[120];
 
     // Process the variable length parameter list to get a single string
     va_start(params, string);
@@ -472,8 +472,8 @@ void MonochromeDisplay::PrintTextOnly(char *string, ...)
             }
             else
             {
-                *(addr++) = output_buffer[i++];		// Character code
-                *(addr++) = (unsigned char)0x7;		// Pen attribute
+                *(addr++) = output_buffer[i++]; // Character code
+                *(addr++) = (unsigned char)0x7; // Pen attribute
             }
 
             if ((textX++) >= 79)
@@ -487,7 +487,7 @@ void MonochromeDisplay::PrintTextOnly(char *string, ...)
 
 
 /***************************************************************************\
-	Do the processing for a line wrap in text only mode (includes scrolling)
+ Do the processing for a line wrap in text only mode (includes scrolling)
 \***************************************************************************/
 unsigned char * MonochromeDisplay::NewLineTextOnly(void)
 {

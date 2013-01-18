@@ -4,9 +4,9 @@
 
 void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw, float headPitch, float headRoll)
 {
-    Tpoint	at = {1.0F}, up = {1.0F}, rt = {1.0F};
-    float	scale = 0.0F;
-    mlTrig	trigYaw = {0.0F}, trigPitch = {0.0F};
+    Tpoint at = {1.0F}, up = {1.0F}, rt = {1.0F};
+    float scale = 0.0F;
+    mlTrig trigYaw = {0.0F}, trigPitch = {0.0F};
 
 #if 0
 
@@ -29,7 +29,7 @@ void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw, float
     mlSinCos(&trigYaw,   headYaw);
     mlSinCos(&trigPitch, headPitch);
 
-    if (order == YAW_PITCH)  	// front
+    if (order == YAW_PITCH)   // front
     {
         at.x = trigYaw.cos * trigPitch.cos;
         at.y = trigYaw.sin * trigPitch.cos;
@@ -112,23 +112,23 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
     if (headRoll != 0.0F)
     {
 
-        mlTrig		trigRoll;
-        Trotation	R;
-        Tpoint		p;
-        float			c, s, t;
-        float			x, y, z;
-        float			scale;
+        mlTrig trigRoll;
+        Trotation R;
+        Tpoint p;
+        float c, s, t;
+        float x, y, z;
+        float scale;
 
-        scale	= 1.0f / (float)sqrt(p_at->x * p_at->x + p_at->y * p_at->y + p_at->z * p_at->z);
-        x		= p_at->x * scale;
-        y		= p_at->y * scale;
-        z		= p_at->z * scale;
+        scale = 1.0f / (float)sqrt(p_at->x * p_at->x + p_at->y * p_at->y + p_at->z * p_at->z);
+        x = p_at->x * scale;
+        y = p_at->y * scale;
+        z = p_at->z * scale;
 
         mlSinCos(&trigRoll, headRoll);
 
-        c		= trigRoll.cos;
-        s		= trigRoll.sin;
-        t		= 1 - c;
+        c = trigRoll.cos;
+        s = trigRoll.sin;
+        t = 1 - c;
 
         R.M11 = t * x * x + c;
         R.M12 = t * x * y + s * z;
@@ -141,14 +141,14 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
         R.M33 = t * z * z + c;
 
         MatrixMult(&R, p_rt, &p);
-        p_rt->x	= p.x;
-        p_rt->y	= p.y;
-        p_rt->z	= p.z;
+        p_rt->x = p.x;
+        p_rt->y = p.y;
+        p_rt->z = p.z;
 
         MatrixMult(&R, p_up, &p);
-        p_up->x	= p.x;
-        p_up->y	= p.y;
-        p_up->z	= p.z;
+        p_up->x = p.x;
+        p_up->y = p.y;
+        p_up->z = p.z;
     }
 }
 

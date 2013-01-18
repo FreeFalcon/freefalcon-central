@@ -21,7 +21,7 @@
 #include "aircrft.h"
 #include "Object.h"
 #include "flightdata.h"
-#include "radardoppler.h"	//MI
+#include "radardoppler.h" //MI
 #include "AIInput.h" // 2002-03-28 MN
 #include "team.h"//Cobra 11/28/04
 #include "flight.h"//Cobra
@@ -42,7 +42,7 @@ extern bool g_bINS;
 extern bool g_bRQDFix;
 extern bool g_bSetWaypointNumFix;
 
-extern float g_fHSDSymbolSize;		//Wombat778 11-13-2003
+extern float g_fHSDSymbolSize; //Wombat778 11-13-2003
 
 extern bool g_bHsdStptFix; // MD -- 20040727: added for correction to HSD nav point drawing
 
@@ -51,26 +51,26 @@ extern bool g_bHsdStptFix; // MD -- 20040727: added for correction to HSD nav po
 
 FireControlComputer::HsdCnfgStates FireControlComputer::hsdcntlcfg[20] =
 {
-    {"FCR", HSDNOFCR},	// 0
-    {"PRE", HSDNOPRE},	// 1
-    {"AIFF", HSDNOAIFF},	// 2
-    {"", HSDNONE},	// 3
-    {"CNTL", HSDCNTL},	// 4
-    {"LINE1", HSDNOLINE1},	// 5
-    {"LINE2", HSDNOLINE2},	// 6
-    {"LINE3", HSDNOLINE3},	// 7
-    {"LINE4", HSDNONE},	// 8
-    {"RINGS", HSDNORINGS},	// 9
-    {"S-J", HSDNONE},	// 10 S-J
-    {"SMS", HSDNONE},	// 11 SMS
-    {"", HSDNONE},	// 12
-    {"HSD", HSDNONE},	// 13 HSD
-    {"SWAP", HSDNONE},	// 14 SWAP
-    {"ADLNK", HSDNOADLNK},	// 15
-    {"GDLNK", HSDNOGNDLNK},	// 16
-    {"NAV3", HSDNONAV3},	// 17
-    {"NAV2", HSDNONAV2},	// 18
-    {"NAV1", HSDNONAV1},	// 19
+    {"FCR", HSDNOFCR}, // 0
+    {"PRE", HSDNOPRE}, // 1
+    {"AIFF", HSDNOAIFF}, // 2
+    {"", HSDNONE}, // 3
+    {"CNTL", HSDCNTL}, // 4
+    {"LINE1", HSDNOLINE1}, // 5
+    {"LINE2", HSDNOLINE2}, // 6
+    {"LINE3", HSDNOLINE3}, // 7
+    {"LINE4", HSDNONE}, // 8
+    {"RINGS", HSDNORINGS}, // 9
+    {"S-J", HSDNONE}, // 10 S-J
+    {"SMS", HSDNONE}, // 11 SMS
+    {"", HSDNONE}, // 12
+    {"HSD", HSDNONE}, // 13 HSD
+    {"SWAP", HSDNONE}, // 14 SWAP
+    {"ADLNK", HSDNOADLNK}, // 15
+    {"GDLNK", HSDNOGNDLNK}, // 16
+    {"NAV3", HSDNONAV3}, // 17
+    {"NAV2", HSDNONAV2}, // 18
+    {"NAV1", HSDNONAV1}, // 19
 };
 int FireControlComputer::HsdRangeTbl[HSDRANGESIZE] =   // Range table JPO
 {
@@ -197,7 +197,7 @@ void FireControlComputer::NavMode(void)
                     ttg = ((float)sqrt(dx * dx + dy * dy)) / playerAC->GetVt();
                 }
                 else
-                    ttg = ((float)curWaypoint->GetWPArrivalTime() -	SimLibElapsedTime) / SEC_TO_MSEC;
+                    ttg = ((float)curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / SEC_TO_MSEC;
             }
             else
                 ttg = 0.0f;
@@ -310,10 +310,10 @@ void FireControlComputer::NavMode(void)
             WayPointClass* curOA = NULL;
             WayPointClass* curVIP = NULL;
             WayPointClass* curVRP = NULL;
-            int				i;
-            float			OAXPos;
-            float			OAYPos;
-            float			OAZPos;
+            int i;
+            float OAXPos;
+            float OAYPos;
+            float OAZPos;
 
             ShiAssert(platform->curWaypoint != NULL || !F4IsBadReadPtr(platform->curWaypoint, sizeof(WayPointClass)));
 
@@ -453,7 +453,7 @@ void FireControlComputer::SetStptMode(FCCStptMode mode)
 {
     if (platform == (SimVehicleClass*)SimDriver.GetPlayerAircraft())
     {
-        mNewStptMode	= mode;
+        mNewStptMode = mode;
     }
 }
 
@@ -470,8 +470,8 @@ void FireControlComputer::InitNewStptMode(void)
             // Save the current
             if (mStptMode == FCCWaypoint)
             {
-                mpSavedWaypoint		= platform->curWaypoint;
-                mSavedWayNumber		= TheHud->waypointNum;
+                mpSavedWaypoint = platform->curWaypoint;
+                mSavedWayNumber = TheHud->waypointNum;
             }
 
             // MD -- 20040228: on mode change, cancel any GM SP ground stabilization
@@ -499,31 +499,31 @@ void FireControlComputer::InitNewStptMode(void)
                     }
                     else
                     {
-                        platform->curWaypoint	= mpSavedWaypoint;
+                        platform->curWaypoint = mpSavedWaypoint;
                     }
 
-                    TheHud->waypointNum	= mSavedWayNumber;
+                    TheHud->waypointNum = mSavedWayNumber;
                     mStptMode = mNewStptMode;
                     break;
 
                 case FCCMarkpoint:
                     gNavigationSys->GetMarkWayPoint(&platform->curWaypoint);
-                    TheHud->waypointNum	= gNavigationSys->GetMarkIndex() + 20;
+                    TheHud->waypointNum = gNavigationSys->GetMarkIndex() + 20;
                     mStptMode = mNewStptMode;
                     break;
 
                 case FCCDLinkpoint:
                     gNavigationSys->GetDLinkWayPoint(&platform->curWaypoint);
-                    TheHud->waypointNum	= gNavigationSys->GetDLinkIndex() + 30;
-                    //mStptMode = FCCWaypoint;	//MI outcommented. Causes our STPT to not be restored correctly.
+                    TheHud->waypointNum = gNavigationSys->GetDLinkIndex() + 30;
+                    //mStptMode = FCCWaypoint; //MI outcommented. Causes our STPT to not be restored correctly.
                     mStptMode = FCCDLinkpoint;
                     break;
 
                 case FCCGMPseudoPoint:
                 {
                     RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(platform, SensorClass::Radar);
-                    mpSavedWaypoint	= platform->curWaypoint;
-                    mSavedWayNumber	= TheHud->waypointNum;
+                    mpSavedWaypoint = platform->curWaypoint;
+                    mSavedWayNumber = TheHud->waypointNum;
                     platform->curWaypoint = theRadar->GMSPWaypt();
                     mStptMode = mNewStptMode;
                 }
@@ -531,7 +531,7 @@ void FireControlComputer::InitNewStptMode(void)
             }
         }
 
-        //		mStptMode = mNewStptMode;
+        // mStptMode = mNewStptMode;
     }
 }
 
@@ -542,17 +542,17 @@ void FireControlComputer::StepNextWayPoint(void)
     WayPointClass* curWaypoint;
     int pntNum = TheHud->waypointNum;
 
-    curWaypoint		= platform->curWaypoint;
+    curWaypoint = platform->curWaypoint;
 
 #if 1
 
-    if (curWaypoint)	// OW
-        nextWaypoint	= curWaypoint->GetNextWP();
+    if (curWaypoint) // OW
+        nextWaypoint = curWaypoint->GetNextWP();
     else
-        nextWaypoint	= NULL;
+        nextWaypoint = NULL;
 
 #else
-    nextWaypoint	= curWaypoint->GetNextWP();
+    nextWaypoint = curWaypoint->GetNextWP();
 #endif
 
     if (nextWaypoint)
@@ -573,7 +573,7 @@ void FireControlComputer::SetWaypointNum(int num)
 {
     WayPointClass* curWaypoint = platform->waypoint;
     RadarClass* theRadar = (RadarClass*)FindSensor(platform, SensorClass::Radar);
-    float			rx, ry, rz;
+    float rx, ry, rz;
     int i;
 
     TheHud->waypointNum = num;
@@ -583,7 +583,7 @@ void FireControlComputer::SetWaypointNum(int num)
 
     //find the first waypoint
     for (i = 0; curWaypoint->GetPrevWP(); i++)
-        curWaypoint	= curWaypoint->GetPrevWP();
+        curWaypoint = curWaypoint->GetPrevWP();
 
     //find the corect waypoint
     for (i = 0; i < num && curWaypoint; i++)
@@ -592,9 +592,9 @@ void FireControlComputer::SetWaypointNum(int num)
         // 2002-04-18 MN let's add a config file variable to test that later - AI uses this function, too,
         // so we need to be sure it works...
         if (!g_bSetWaypointNumFix)
-            curWaypoint	= curWaypoint->GetPrevWP();
+            curWaypoint = curWaypoint->GetPrevWP();
         else
-            curWaypoint	= curWaypoint->GetNextWP();
+            curWaypoint = curWaypoint->GetNextWP();
 
     if (theRadar && curWaypoint)
     {
@@ -613,11 +613,11 @@ void FireControlComputer::StepPrevWayPoint(void)
     WayPointClass* nextWaypoint;
     WayPointClass* curWaypoint;
 
-    curWaypoint		= platform->curWaypoint;
+    curWaypoint = platform->curWaypoint;
 
     if (curWaypoint)
     {
-        nextWaypoint	= curWaypoint->GetPrevWP();
+        nextWaypoint = curWaypoint->GetPrevWP();
 
         if (nextWaypoint)
         {
@@ -652,7 +652,7 @@ void FireControlComputer::StepPrevWayPoint(void)
 void FireControlComputer::StepPoint(void)
 {
     RadarClass* theRadar;
-    float			rx, ry, rz;
+    float rx, ry, rz;
 
     if (waypointStepCmd == 1 || waypointStepCmd == -1 || waypointStepCmd == 127)
     {
@@ -695,7 +695,7 @@ void FireControlComputer::StepPoint(void)
                 }
 
                 gNavigationSys->GetMarkWayPoint(&platform->curWaypoint);
-                TheHud->waypointNum	= gNavigationSys->GetMarkIndex() + 20;
+                TheHud->waypointNum = gNavigationSys->GetMarkIndex() + 20;
                 OTWDriver.pCockpitManager->mpIcp->SetICPUpdateFlag(MARK_UPDATE);
                 OTWDriver.pCockpitManager->mpIcp->SetICPUpdateFlag(CNI_UPDATE);
                 break;
@@ -712,7 +712,7 @@ void FireControlComputer::StepPoint(void)
                 }
 
                 gNavigationSys->GetDLinkWayPoint(&platform->curWaypoint);
-                TheHud->waypointNum	= gNavigationSys->GetDLinkIndex() + 30;
+                TheHud->waypointNum = gNavigationSys->GetDLinkIndex() + 30;
                 OTWDriver.pCockpitManager->mpIcp->SetICPUpdateFlag(DLINK_UPDATE);
                 OTWDriver.pCockpitManager->mpIcp->SetICPUpdateFlag(CNI_UPDATE);
                 break;
@@ -762,7 +762,7 @@ void FireControlComputer::NavDisplay(void)
     float basedir = 0.0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    //if (g_bEnableColorMfd)	DrawBorder();
+    //if (g_bEnableColorMfd) DrawBorder();
     if (IsHsdState(HSDFRZ))
     {
         float x, y;
@@ -779,22 +779,22 @@ void FireControlComputer::NavDisplay(void)
     else if (!IsHsdState(HSDCEN)) // JPO depressed view
         display->AdjustOriginInViewport(0.0F, -0.4F);
 
-    //Wombat778 11-10-2003		Added to center on cursor in EXP modes
+    //Wombat778 11-10-2003 Added to center on cursor in EXP modes
 
-    if ((HSDZoom > 0)	&& IsSOI)
+    if ((HSDZoom > 0) && IsSOI)
     {
         if (!IsHsdState(HSDCEN))
         {
             if (HSDZoom == 2)
-                display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 0.4F);			//Adjust to the previously set HSDXPos and HSDYPos (set when zooming)
+                display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 0.4F); //Adjust to the previously set HSDXPos and HSDYPos (set when zooming)
             else
-                display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 1.2F);			//Should only get here if the HSDZoom is 4
+                display->AdjustOriginInViewport(-HSDXPos, (-HSDYPos) - 1.2F); //Should only get here if the HSDZoom is 4
         }
         else
             display->AdjustOriginInViewport(-HSDXPos, -HSDYPos);
     }
 
-    //Wombat778 11-10-2003		End of added code
+    //Wombat778 11-10-2003 End of added code
 
 
     // RV - RED - WARNING...!!!!
@@ -805,7 +805,7 @@ void FireControlComputer::NavDisplay(void)
     // saving it and restoring after gfx Draw
     // This is the fastest and more harmless way to fix till new code
     // and works fine, as the draw is then stretched by Texture drawing...
-    float	OldScaleX = display->scaleX, OldScaleY = display->scaleY;
+    float OldScaleX = display->scaleX, OldScaleY = display->scaleY;
     display->scaleY = display->scaleX;
 
     // Add ownship marker
@@ -915,7 +915,7 @@ void FireControlComputer::NavDisplay(void)
             display->AdjustRotationAboutOrigin(basedir);
             display->SetColor(GetMfdColor(MFD_CURSOR));
 
-            if (g_bRealisticAvionics)	//MI changed
+            if (g_bRealisticAvionics) //MI changed
             {
                 if (HSDZoom == 0 && !IsSOI)
                 {
@@ -1188,8 +1188,8 @@ void FireControlComputer::DrawWayPoints()
             MapWaypointToDisplay(curWaypoint, &displayX, &displayY);
             DrawPointPair(curWaypoint, x2, y2, displayX, displayY);
 
-            x2				= displayX;
-            y2				= displayY;
+            x2 = displayX;
+            y2 = displayY;
             curWaypoint = curWaypoint->GetNextWP();
         }
     }
@@ -1214,9 +1214,9 @@ void FireControlComputer::DrawMarkPoints(void)
     }
 
     WayPointClass* curWaypoint = NULL;
-    int				i;
-    float				displayX;
-    float				displayY;
+    int i;
+    float displayX;
+    float displayY;
 
     for (i = 0; i < MAX_MARKPOINTS; i++)
     {
@@ -1255,11 +1255,11 @@ void FireControlComputer::DrawLinkPoints(void)
 
     WayPointClass* prevWaypoint = NULL;
     WayPointClass* curWaypoint = NULL;
-    int				i = 0;
-    float				x2 = 0.0F;
-    float				y2 = 0.0F;
-    float				displayX = 0.0F;
-    float				displayY = 0.0F;
+    int i = 0;
+    float x2 = 0.0F;
+    float y2 = 0.0F;
+    float displayX = 0.0F;
+    float displayY = 0.0F;
 
     gNavigationSys->GetDLinkWayPoint(0, &prevWaypoint);
 
@@ -1285,9 +1285,9 @@ void FireControlComputer::DrawLinkPoints(void)
                 }
             }
 
-            x2				= displayX;
-            y2				= displayY;
-            prevWaypoint	= curWaypoint;
+            x2 = displayX;
+            y2 = displayY;
+            prevWaypoint = curWaypoint;
         }
     }
 }
@@ -1304,9 +1304,9 @@ void FireControlComputer::DrawDESTOAPoints(void)
     }
 
     WayPointClass* curWaypoint = NULL;
-    int				i;
-    float			displayX;
-    float			displayY;
+    int i;
+    float displayX;
+    float displayY;
 
     for (i = 0; i < MAX_DESTOA; i++)
     {
@@ -1330,14 +1330,14 @@ void FireControlComputer::DrawVIPOAPoints(void)
     //MI
     /*if(g_bRealisticAvionics && g_bINS)
     {
-    	if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
-    		return;
+     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     return;
     }*/
 
     WayPointClass* curWaypoint = NULL;
-    int				i;
-    float			displayX;
-    float			displayY;
+    int i;
+    float displayX;
+    float displayY;
 
     for (i = 0; i < MAX_VIPOA; i++)
     {
@@ -1361,14 +1361,14 @@ void FireControlComputer::DrawVRPOAPoints(void)
     //MI
     /*if(g_bRealisticAvionics && g_bINS)
     {
-    	if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
-    		return;
+     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_NAV))
+     return;
     }*/
 
     WayPointClass* curWaypoint = NULL;
-    int				i;
-    float			displayX;
-    float			displayY;
+    int i;
+    float displayX;
+    float displayY;
 
     for (i = 0; i < MAX_VRPOA; i++)
     {
@@ -1497,7 +1497,7 @@ void FireControlComputer::DrawPointSymbol(WayPointClass* curWaypoint, float disp
 /////////////////////////////////////////////////////////////////
 
 
-//static const float SMDELTA = 0.05f; // small distance for symbols		//Wombat778 11-13-2003 removed to set in each function from g_bHSDSymbolSize
+//static const float SMDELTA = 0.05f; // small distance for symbols //Wombat778 11-13-2003 removed to set in each function from g_bHSDSymbolSize
 static const float LGDELTA = 0.1f; // larger distance for symbols
 // --------------------------------------------------------------
 // FireControlComputer::DrawTGTSymbol
@@ -1505,7 +1505,7 @@ static const float LGDELTA = 0.1f; // larger distance for symbols
 
 void FireControlComputer::DrawTGTSymbol(float displayX, float displayY)
 {
-    float SMDELTA = g_fHSDSymbolSize;		//Wombat778 11-13-2003		Set SMDELTA to the external variable
+    float SMDELTA = g_fHSDSymbolSize; //Wombat778 11-13-2003 Set SMDELTA to the external variable
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
@@ -1530,7 +1530,7 @@ void FireControlComputer::DrawTGTSymbol(float displayX, float displayY)
 
 void FireControlComputer::DrawIPSymbol(float displayX, float displayY)
 {
-    float SMDELTA = g_fHSDSymbolSize;		//Wombat778 11-13-2003		Set SMDELTA to the external variable
+    float SMDELTA = g_fHSDSymbolSize; //Wombat778 11-13-2003 Set SMDELTA to the external variable
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
@@ -1554,7 +1554,7 @@ void FireControlComputer::DrawIPSymbol(float displayX, float displayY)
 
 void FireControlComputer::DrawMarkSymbol(float displayX, float displayY, int type)
 {
-    float SMDELTA = g_fHSDSymbolSize;		//Wombat778 11-13-2003		Set SMDELTA to the external variable
+    float SMDELTA = g_fHSDSymbolSize; //Wombat778 11-13-2003 Set SMDELTA to the external variable
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //MI
@@ -1748,7 +1748,7 @@ void FireControlComputer::DrawFLOT(void)
                     xPos = (GridToSim(flotX) - platform->YPos()) * FT_TO_NM / HSDRange;
                 }
 
-                if (DistSqu(x, y, xPos, yPos) < FLOTDrawDistance)	// when FLOT points are too far away from each other, don't draw a line
+                if (DistSqu(x, y, xPos, yPos) < FLOTDrawDistance) // when FLOT points are too far away from each other, don't draw a line
                     display->Line(x, y, xPos, yPos);
 
                 x = xPos;
@@ -1766,8 +1766,8 @@ void FireControlComputer::DrawBullseye(void)
     //MI
     /*if(g_bRealisticAvionics && g_bINS)
     {
-    	if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
-    		return;
+     if(playerAC && !playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+     return;
     }*/
 
     RadarClass* theRadar = (RadarClass*)FindSensor(platform, SensorClass::Radar);
@@ -1940,8 +1940,8 @@ void FireControlComputer::DrawPPThreats(void)
 
           // Draw all known emmitters
           while (tmpElement)
-    	   {
-    		  // TODO:  Consider filtering based on RWR settings here...
+        {
+       // TODO:  Consider filtering based on RWR settings here...
 
                 y2 = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / HSDRange;
                 x2 = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / HSDRange;
@@ -1993,8 +1993,8 @@ void FireControlComputer::DrawGhostCursor(void)
         {
           if(playerAC)
           {
-        	  cursorX += playerAC->GetINSLatDrift();
-        	  cursorY += playerAC->GetINSLongDrift();
+           cursorX += playerAC->GetINSLatDrift();
+           cursorY += playerAC->GetINSLongDrift();
           }
         }*/
 
@@ -2028,7 +2028,7 @@ void FireControlComputer::DrawScanVolume(void)
         display->Line(0.0F,  0.0F,  trig.sin * scale, trig.cos * scale);
         display->Line(0.0F,  0.0F, -trig.sin * scale, trig.cos * scale);
         //display->AdjustRotationAboutOrigin(270*DTR);
-        display->AdjustRotationAboutOrigin(272 * DTR);			//Wombat778 11-13-2003 make the arc appear centered.  This is a hack to fix a bug in the arc code, but at least it is symmetrical
+        display->AdjustRotationAboutOrigin(272 * DTR); //Wombat778 11-13-2003 make the arc appear centered.  This is a hack to fix a bug in the arc code, but at least it is symmetrical
         display->Arc(0.0f, 0.0f, scale, 2 * PI - cone, 2 * PI);
         display->Arc(0.0f, 0.0f, scale, 0.0f, cone);
         // 2002-03-08 MN This was missing (was present in V1.071) and messed up FLOT and Bullseye on HSD
@@ -2685,7 +2685,7 @@ void FireControlComputer::MoveCursor(void)
                 if (!IsHsdState(HSDCEN))
                     DispY -= 0.4F;
 
-                float tolerance = 0.05F;	//just about the size of the circle
+                float tolerance = 0.05F; //just about the size of the circle
                 float CursWPRange = (float)sqrt((DispX - xPos) * (DispX - xPos) + (DispY - yPos) * (DispY - yPos));
 
                 //CursWPRange;

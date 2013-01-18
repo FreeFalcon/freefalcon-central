@@ -32,7 +32,7 @@ FalconLaserDesignateMsg::~FalconLaserDesignateMsg(void)
 
 int FalconLaserDesignateMsg::Process(uchar autodisp)
 {
-    SimBaseClass	*theEntity;//,*shooter;
+    SimBaseClass *theEntity;//,*shooter;
 
     if (autodisp)
         return 0;

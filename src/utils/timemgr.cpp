@@ -3,8 +3,8 @@
     Scott Randolph
     March 20, 1997
 
-	Manage the visual world's clock and provide periodic callbacks to
-	this modules which need to adjust with time of day changes.
+ Manage the visual world's clock and provide periodic callbacks to
+ this modules which need to adjust with time of day changes.
 \***************************************************************************/
 #include "TimeMgr.h"
 
@@ -13,9 +13,9 @@
 TimeManager TheTimeManager;
 
 
-static const int	MAX_TOD_CALLBACKS	= 64;		// Max number of requestors
-static const long	CALLBACK_CYCLE_TIME	= 60000L;	// Approx time to update all requestors
-static const long	CALLBACK_TIME_STEP	= CALLBACK_CYCLE_TIME / MAX_TOD_CALLBACKS;
+static const int MAX_TOD_CALLBACKS = 64; // Max number of requestors
+static const long CALLBACK_CYCLE_TIME = 60000L; // Approx time to update all requestors
+static const long CALLBACK_TIME_STEP = CALLBACK_CYCLE_TIME / MAX_TOD_CALLBACKS;
 
 
 
@@ -24,8 +24,8 @@ void TimeManager::Setup(int startYear, int startDayOfYear)
     ShiAssert(!IsReady());
 
     // Store the day the clock started
-    year		= startYear;
-    startDay	= startDayOfYear;
+    year = startYear;
+    startDay = startDayOfYear;
 
     // Allocate and intialize the callback list.
     CBlist = new TimeCallBack[MAX_TOD_CALLBACKS];
@@ -69,8 +69,8 @@ void TimeManager::RegisterTimeUpdateCB(void(*fn)(void*), void *self)
         {
             if (CBlist[i].fn == NULL)
             {
-                CBlist[i].self	= self;
-                CBlist[i].fn	= fn;
+                CBlist[i].self = self;
+                CBlist[i].fn = fn;
                 break;
             }
         }
@@ -94,8 +94,8 @@ void TimeManager::ReleaseTimeUpdateCB(void(*fn)(void*), void *self)
         {
             if (CBlist[i].self == self)
             {
-                CBlist[i].fn	= NULL;
-                CBlist[i].self	= NULL;
+                CBlist[i].fn = NULL;
+                CBlist[i].self = NULL;
                 break;
             }
         }
@@ -112,7 +112,7 @@ void TimeManager::SetTime(DWORD newTime)
     ShiAssert(IsReady());
 
     // We're in trouble if the clock rolls over (approximatly 49 days after start)
-    //	ShiAssert(newTime >= lastUpdateTime);
+    // ShiAssert(newTime >= lastUpdateTime);
 
     // Update all our measures of time
     deltaTime = newTime - currentTime;

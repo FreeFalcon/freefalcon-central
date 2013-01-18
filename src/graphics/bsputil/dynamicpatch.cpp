@@ -1,10 +1,10 @@
 /***************************************************************************\
-	DynamicPatch.cpp
+ DynamicPatch.cpp
     Scott Randolph
     April 8, 1998
 
     Keeps a list of polygon/vertex combinations which runtime moveable
-	(ie: Dyanmic vertices).
+ (ie: Dyanmic vertices).
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@
 #include "DynamicPatch.h"
 
 
-DynamicPatchClass		TheDynamicPatchList;
+DynamicPatchClass TheDynamicPatchList;
 
 
 void DynamicPatchClass::Setup(void)
@@ -23,11 +23,11 @@ void DynamicPatchClass::Setup(void)
 
 void DynamicPatchClass::Load(char *filename)
 {
-    FILE	*file;
-    char	line[256];
-    char	name[256];
-    int		vnum;
-    int		argCnt;
+    FILE *file;
+    char line[256];
+    char name[256];
+    int vnum;
+    int argCnt;
 
     ShiAssert(PatchList == NULL);
 
@@ -48,9 +48,9 @@ void DynamicPatchClass::Load(char *filename)
 
         if (argCnt == 2)
         {
-            //			printf("  OLD STYLE VERTEX SPECIFICIATION:  %0d %s ==>", vnum, name );
+            // printf("  OLD STYLE VERTEX SPECIFICIATION:  %0d %s ==>", vnum, name );
             sprintf(name, "%s/v%0d", name, vnum + 1);
-            //			printf("  NEW:  %s\n", name );
+            // printf("  NEW:  %s\n", name );
             AddPatch(name);
         }
         else
@@ -59,7 +59,7 @@ void DynamicPatchClass::Load(char *filename)
 
             if (argCnt == 1)
             {
-                //				printf("  PATCH:  %s\n", name );
+                // printf("  PATCH:  %s\n", name );
                 AddPatch(name);
             }
         }
@@ -90,8 +90,8 @@ void DynamicPatchClass::AddPatch(char *name)
 
     ShiAssert(strlen(name) < sizeof(record->name));
     strcpy(record->name, name);
-    record->next	= PatchList;
-    PatchList		= record;
+    record->next = PatchList;
+    PatchList = record;
 }
 
 

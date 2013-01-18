@@ -22,16 +22,16 @@
 /* ADDED BY S.G. FOR SELECTIVE JETISSON */ #include "airframe.h"
 #include "campbase.h" // Marco for AIM9P
 #include "classtbl.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
-#include "simdrive.h"	//MI
-#include "hud.h"	//MI
-#include "fault.h"	//MI
-#include "radardoppler.h"	//MI
+#include "simdrive.h" //MI
+#include "hud.h" //MI
+#include "fault.h" //MI
+#include "radardoppler.h" //MI
 #include "rdrackdata.h"
 #include "bomb.h"
 #include "navsystem.h"
@@ -47,14 +47,14 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY);
 
 SensorClass* FindLaserPod(SimMoverClass* theObject);
 extern int F4FlyingEyeType;
-//extern bool g_bArmingDelay;//me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bArmingDelay;//me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 extern bool g_bMLU;
-//extern bool g_bHardCoreReal; //me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 
 
 //MI
-int	SmsDrawable::flash = FALSE;
+int SmsDrawable::flash = FALSE;
 int SmsDrawable::InputFlash = FALSE;
 //M.N.
 int maxripple;
@@ -122,19 +122,19 @@ SmsDrawable::SmsDrawable(SMSClass* self)
     /*
     if(Sms->Prof1)
     {
-    	Sms->rippleCount = Sms->Prof1RP;
-    	Sms->rippleInterval = Sms->Prof1RS;
-    	Sms->SetPair(Sms->Prof1Pair);
-    	if(pFCC)
-    		pFCC->SetSubMode(Sms->Prof1SubMode);
+     Sms->rippleCount = Sms->Prof1RP;
+     Sms->rippleInterval = Sms->Prof1RS;
+     Sms->SetPair(Sms->Prof1Pair);
+     if(pFCC)
+     pFCC->SetSubMode(Sms->Prof1SubMode);
     }
     else
     {
-    	Sms->rippleCount = Sms->Prof2RP;
-    	Sms->rippleInterval = Sms->Prof2RS;
-    	Sms->SetPair(Sms->Prof2Pair);
-    	if(pFCC)
-    		pFCC->SetSubMode(Sms->Prof2SubMode);
+     Sms->rippleCount = Sms->Prof2RP;
+     Sms->rippleInterval = Sms->Prof2RS;
+     Sms->SetPair(Sms->Prof2Pair);
+     if(pFCC)
+     pFCC->SetSubMode(Sms->Prof2SubMode);
     }*/
 
     // 2002-01-28 ADDED BY S.G. Init our stuff to keep the target deaggregated until last missile impact
@@ -163,7 +163,7 @@ SmsDrawable::~SmsDrawable(void)
     // sfr: this seems quite odd...
     // 2002-01-28 ADDED BY S.G. Clean up our act once we get destroyed
     //if (thePrevMissile && thePrevMissileIsRef){
-    //	VuDeReferenceEntity((VuEntity *)thePrevMissile);
+    // VuDeReferenceEntity((VuEntity *)thePrevMissile);
     //}
     //thePrevMissileIsRef = FALSE;
     //thePrevMissile = NULL;
@@ -230,20 +230,20 @@ VirtualDisplay* SmsDrawable::GetDisplay(void)
         {
             // Cobra - causes TGP MFD display to disappear in 3D pit
             /*
-            			SensorClass* laserPod = FindLaserPod (Sms->ownship);
+             SensorClass* laserPod = FindLaserPod (Sms->ownship);
 
-            			if (laserPod)
-            			{
-            				if (!laserPod->GetDisplay())
-            				{
-            					if (privateDisplay)
-            					{
-             						laserPod->DisplayInit(((Render2D*)(privateDisplay))->GetImageBuffer());
-            					}
-            					laserPod->viewPoint = viewPoint;
-            				}
-            				retval = laserPod->GetDisplay();
-            			}
+             if (laserPod)
+             {
+             if (!laserPod->GetDisplay())
+             {
+             if (privateDisplay)
+             {
+              laserPod->DisplayInit(((Render2D*)(privateDisplay))->GetImageBuffer());
+             }
+             laserPod->viewPoint = viewPoint;
+             }
+             retval = laserPod->GetDisplay();
+             }
             */
         }
         break;
@@ -273,47 +273,47 @@ void SmsDrawable::UpdateGroundSpot(void)
 
     // 2002-01-28 ADDED BY S.G. Keep a note on the previous missile if we currently have no missile selected...
     /*if (thePrevMissile) {
-    	// If it's a new missile, switch to it
-    	if (theMissile && (thePrevMissile != theMissile)){
-    		if (thePrevMissileIsRef){
-    			VuDeReferenceEntity((VuEntity *)thePrevMissile);
-    		}
-    		thePrevMissile = theMissile;
-    		if (thePrevMissile->RefCount() > 0) {
-    			VuReferenceEntity((VuEntity *)thePrevMissile);
-    			thePrevMissileIsRef = TRUE;
-    		}
-    		else {
-    			thePrevMissileIsRef = FALSE;
-    		}
-    	}
+     // If it's a new missile, switch to it
+     if (theMissile && (thePrevMissile != theMissile)){
+     if (thePrevMissileIsRef){
+     VuDeReferenceEntity((VuEntity *)thePrevMissile);
+     }
+     thePrevMissile = theMissile;
+     if (thePrevMissile->RefCount() > 0) {
+     VuReferenceEntity((VuEntity *)thePrevMissile);
+     thePrevMissileIsRef = TRUE;
+     }
+     else {
+     thePrevMissileIsRef = FALSE;
+     }
+     }
     }
     // If we have a missile now, keep note of it for later
     else if (theMissile) {
-    	thePrevMissile = theMissile;
-    	if (theMissile->RefCount() > 0) {
-    		VuReferenceEntity((VuEntity *)thePrevMissile);
-    		thePrevMissileIsRef = TRUE;
-    	}
+     thePrevMissile = theMissile;
+     if (theMissile->RefCount() > 0) {
+     VuReferenceEntity((VuEntity *)thePrevMissile);
+     thePrevMissileIsRef = TRUE;
+     }
     }
 
     // If our previous missile is now dead
     if (thePrevMissile && (thePrevMissile != theMissile) && thePrevMissile->IsDead()) {
-    	if (thePrevMissileIsRef)
-    		VuDeReferenceEntity((VuEntity *)thePrevMissile);
-    	thePrevMissileIsRef = FALSE;
-    	thePrevMissile = NULL;
+     if (thePrevMissileIsRef)
+     VuDeReferenceEntity((VuEntity *)thePrevMissile);
+     thePrevMissileIsRef = FALSE;
+     thePrevMissile = NULL;
     }
 
     // Now check if it's time to reference our thePrevMissile
     if (thePrevMissile && thePrevMissileIsRef == FALSE && thePrevMissile->RefCount() > 0) {
-    	VuReferenceEntity((VuEntity *)thePrevMissile);
-    	thePrevMissileIsRef = TRUE;
+     VuReferenceEntity((VuEntity *)thePrevMissile);
+     thePrevMissileIsRef = TRUE;
     }
 
     // If we don't currently have a missile but had one, use it.
     if (thePrevMissile && !theMissile){
-    	theMissile = thePrevMissile.get();
+     theMissile = thePrevMissile.get();
     }*/
     // END OF ADDED SECTION
 
@@ -408,11 +408,11 @@ void SmsDrawable::UpdateGroundSpot(void)
         FalconLocalSession->RemoveCamera(groundSpot);
         //for (i=0; i<FalconLocalSession->CameraCount(); i++)
         //{
-        //	if (FalconLocalSession->GetCameraEntity(i) == groundSpot)
-        //	{
-        //		FalconLocalSession->RemoveCamera(groundSpot);
-        //		break;
-        //	}
+        // if (FalconLocalSession->GetCameraEntity(i) == groundSpot)
+        // {
+        // FalconLocalSession->RemoveCamera(groundSpot);
+        // break;
+        // }
         //}
     }
 }
@@ -690,12 +690,12 @@ void SmsDrawable::SetDisplayMode(SmsDisplayMode newDisplayMode)
 
         case SelJet:
             lastMode = displayMode;
-            //		hardPointSelected = ((AircraftClass *)Sms->ownship)->af->oldp01[5];
-            //hardPointSelected = sjHardPointSelected;	// Until I fixe oldp01 being private // MLR 3/9/2004 -
+            // hardPointSelected = ((AircraftClass *)Sms->ownship)->af->oldp01[5];
+            //hardPointSelected = sjHardPointSelected; // Until I fixe oldp01 being private // MLR 3/9/2004 -
             break;
     }
 
-    //	hardPointSelected = 0;
+    // hardPointSelected = 0;
     displayMode = newDisplayMode;
 }
 
@@ -720,8 +720,8 @@ void SmsDrawable::StepDisplayMode(void)
             break;
 
         case SelJet:
-            //		hardPointSelected = ((AircraftClass *)Sms->ownship)->af->oldp01[5];
-            //		hardPointSelected = sjHardPointSelected;	// Until I fixe oldp01 being private // MLR 3/9/2004 -
+            // hardPointSelected = ((AircraftClass *)Sms->ownship)->af->oldp01[5];
+            // hardPointSelected = sjHardPointSelected; // Until I fixe oldp01 being private // MLR 3/9/2004 -
             break;
 
         case Inv:
@@ -731,7 +731,7 @@ void SmsDrawable::StepDisplayMode(void)
             break;
     }
 
-    //	hardPointSelected = 0;
+    // hardPointSelected = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1041,7 +1041,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 7:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0)	//MI
+            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
             {
                 if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) ||  //me123 status test. addet four lines
                     (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser) ||
@@ -1057,9 +1057,9 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                     Sms->SetAGBPair(!Sms->GetAGBPair());
                     /*
                     if (Sms->pair)
-                    	Sms->SetPair(FALSE);
+                     Sms->SetPair(FALSE);
                     else
-                    	Sms->SetPair(TRUE);
+                     Sms->SetPair(TRUE);
                     */
                 }
             }
@@ -1067,7 +1067,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 8:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0)	//MI
+            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
             {
                 if ((pFCC->GetMasterMode() == FireControlComputer::AirGroundBomb) || //me123 status test. addet four lines
                     (pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser))
@@ -1084,7 +1084,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 9:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0)	//MI
+            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
                     pFCC->WeaponStep();
@@ -1105,7 +1105,7 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             break;
 
         case 15:
-            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0)	//MI
+            if (g_bRealisticAvionics && Sms->CurHardpoint() >= 0) //MI
             {
                 if (pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
                     pFCC->WeaponStep();
@@ -1158,15 +1158,15 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                     /*
                     if(Sms->Prof1)
                     {
-                    	Sms->Prof1NSTL++;
-                    	if(Sms->Prof1NSTL > 2)
-                    		Sms->Prof1NSTL = 0;
+                     Sms->Prof1NSTL++;
+                     if(Sms->Prof1NSTL > 2)
+                     Sms->Prof1NSTL = 0;
                     }
                     else
                     {
-                    	Sms->Prof2NSTL++;
-                    	if(Sms->Prof2NSTL > 2)
-                    		Sms->Prof2NSTL = 0;
+                     Sms->Prof2NSTL++;
+                     if(Sms->Prof2NSTL > 2)
+                     Sms->Prof2NSTL = 0;
                     }*/
                     SetWeapParams();
                 }
@@ -1208,8 +1208,8 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             }
             //I-Hawk - Moved this to WpnMfd
             //else if (Sms->curWeaponType == wtAgm88) {
-            //	// HTS used HSD display range for now, so...
-            //	//SimHSDRangeStepDown (0, KEY_DOWN, NULL);
+            // // HTS used HSD display range for now, so...
+            // //SimHSDRangeStepDown (0, KEY_DOWN, NULL);
             //}
 
             else if (g_bRealisticAvionics && pFCC->GetMasterMode() == FireControlComputer::AirGroundMissile && Sms->curWeaponType == wtAgm65)
@@ -1230,8 +1230,8 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
                 //I-Hawk - Moved this to WpnMfd
                 //else if (Sms->curWeaponType == wtAgm88)
                 //{
-                //	// HTS used HSD display range for now, so...
-                //	//SimHSDRangeStepUp (0, KEY_DOWN, NULL);
+                // // HTS used HSD display range for now, so...
+                // //SimHSDRangeStepUp (0, KEY_DOWN, NULL);
                 //}
 
                 else if (isJDAM || isJSOW)
@@ -1268,8 +1268,8 @@ void SmsDrawable::WpnAGPushButton(int whichButton, int whichMFD)
             //I-Hawk - Moved this to WpnMfd
             //else if (Sms->curWeaponType == wtAgm88)
             //{
-            //	// HTS used HSD display range for now, so...
-            //	//SimHSDRangeStepUp (0, KEY_DOWN, NULL);
+            // // HTS used HSD display range for now, so...
+            // //SimHSDRangeStepUp (0, KEY_DOWN, NULL);
             //}
             break;
     }
@@ -1282,7 +1282,7 @@ void SmsDrawable::WpnAGMenu(int whichButton, int whichMFD)
     RadarDopplerClass* pradar = (RadarDopplerClass*) FindSensor(playerAC, SensorClass::Radar);
     FireControlComputer* pFCC = Sms->ownship->GetFCC();
 
-    if (pradar)	//MI fix
+    if (pradar) //MI fix
         pradar->SetScanDir(1.0F);
 
     switch (whichButton)
@@ -1423,27 +1423,27 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
             {
                 StepSelectiveJettisonMode(5);
                 //          hardPointSelected ^= (1 << 5);
-                //			sjHardPointSelected = hardPointSelected;
+                // sjHardPointSelected = hardPointSelected;
             }
 
             break;
 
         case 6:
             StepSelectiveJettisonMode(6);
-            //	hardPointSelected ^= (1 << 6);
-            //	sjHardPointSelected = hardPointSelected;
+            // hardPointSelected ^= (1 << 6);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 7:
             StepSelectiveJettisonMode(7);
-            //	hardPointSelected ^= (1 << 7);
-            //	sjHardPointSelected = hardPointSelected;
+            // hardPointSelected ^= (1 << 7);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 8:
             StepSelectiveJettisonMode(8);
-            //	hardPointSelected ^= (1 << 8);
-            //	sjHardPointSelected = hardPointSelected;
+            // hardPointSelected ^= (1 << 8);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 10:
@@ -1500,20 +1500,20 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
 
         case 16:
             StepSelectiveJettisonMode(2);
-            //	    hardPointSelected ^= (1 << 2);
-            //		sjHardPointSelected = hardPointSelected;
+            //     hardPointSelected ^= (1 << 2);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 17:
             StepSelectiveJettisonMode(3);
-            //	    hardPointSelected ^= (1 << 3);
-            //		sjHardPointSelected = hardPointSelected;
+            //     hardPointSelected ^= (1 << 3);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 18:
             StepSelectiveJettisonMode(4);
-            //	    hardPointSelected ^= (1 << 4);
-            //		sjHardPointSelected = hardPointSelected;
+            //     hardPointSelected ^= (1 << 4);
+            // sjHardPointSelected = hardPointSelected;
             break;
 
         case 19:
@@ -1523,8 +1523,8 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
     //MI commented out to fix SJ remembering stuff
     //sjHardPointSelected = hardPointSelected;
     // 2000-08-26 ADDED BY S.G. SO WE SAVE THE JETTISON SELECTION
-    //	if (displayMode == SelJet)	// Until I fixe oldp01 being private
-    //		((AircraftClass *)Sms->ownship)->af->oldp01[5] = hardPointSelected;
+    // if (displayMode == SelJet) // Until I fixe oldp01 being private
+    // ((AircraftClass *)Sms->ownship)->af->oldp01[5] = hardPointSelected;
 }
 
 // MLR 3/9/2004 -
@@ -1557,16 +1557,16 @@ void SmsDrawable::StepSelectiveJettisonMode(int hp)
     /*
     else
     {   // SP3 data compatible
-    	switch(sjSelected[hp])
-    	{
-    	case JettisonNone:
-    		sjSelected[hp] = SelectiveRack;
-    		break;
-    	case SelectiveRack:
-    	default:
-    		sjSelected[hp] = JettisonNone;
-    		break;
-    	}
+     switch(sjSelected[hp])
+     {
+     case JettisonNone:
+     sjSelected[hp] = SelectiveRack;
+     break;
+     case SelectiveRack:
+     default:
+     sjSelected[hp] = JettisonNone;
+     break;
+     }
     }
     */
 }
@@ -1849,7 +1849,7 @@ char SmsDrawable::HdptStationSym(int n) // JPO new routine
 {
     if (Sms->hardPoint[n] == NULL) return ' '; // empty hp
 
-    if (Sms->hardPoint[n]->weaponCount <= 0) return ' ';	//MI don't bother drawing empty hardpoints
+    if (Sms->hardPoint[n]->weaponCount <= 0) return ' '; //MI don't bother drawing empty hardpoints
 
     if (Sms->StationOK(n) == FALSE) return 'F'; // malfunction on  HP
 
@@ -2224,12 +2224,12 @@ void SmsDrawable::WpnAAMissileButton(int whichButton, int whichMfd)
                 {
                     /*if (Sms->aim9warmtime != 0.0)
                     {
-                    	Sms->aim9cooltime = (SimLibElapsedTime + 3 * CampaignSeconds) - ((Sms->aim9warmtime - SimLibElapsedTime) / 20); // 20 = 60/3
-                    	Sms->aim9warmtime = 0.0;
+                     Sms->aim9cooltime = (SimLibElapsedTime + 3 * CampaignSeconds) - ((Sms->aim9warmtime - SimLibElapsedTime) / 20); // 20 = 60/3
+                     Sms->aim9warmtime = 0.0;
                     }
                     else
                     {
-                    	Sms->aim9cooltime = SimLibElapsedTime + 3 * CampaignSeconds; // in 3 seconds
+                     Sms->aim9cooltime = SimLibElapsedTime + 3 * CampaignSeconds; // in 3 seconds
                     }*/
                     Sms->SetCoolState(SMSClass::COOLING);
                 }
@@ -2431,7 +2431,7 @@ void SmsDrawable::BombDisplay(void)
         }
 
         //OWLOOK we need a switch here for arming delay
-        //if (g_bArmingDelay)	MI
+        //if (g_bArmingDelay) MI
         if (g_bRealisticAvionics && g_bMLU)
         {
             sprintf(tmpStr, "AD %.0f", Sms->armingdelay); //me123
@@ -2814,11 +2814,11 @@ void SmsDrawable::ChangeProf(void)
     //if(pFCC->GetSubMode() == FireControlComputer::OBSOLETERCKT)
     // MLR 5/30/2004 - going to allow rockets
     //if(pFCC->GetMasterMode() == FireControlComputer::AirGroundRocket)
-    //	return; // MLR 4/3/2004 - Rockets have no profiles
+    // return; // MLR 4/3/2004 - Rockets have no profiles
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     RadarDopplerClass* pradar = (RadarDopplerClass*) FindSensor(playerAC, SensorClass::Radar);
 
-    if (pradar)	//MI fix
+    if (pradar) //MI fix
     {
         pradar->SetScanDir(1.0F);
         pradar->SelectLastAGMode();
@@ -2846,33 +2846,33 @@ void SmsDrawable::ChangeProf(void)
 
     if(Sms->Prof1)
     {
-    	Sms->rippleCount = Sms->Prof1RP;
-    	Sms->rippleInterval = Sms->Prof1RS;
-    	Sms->SetPair(Sms->Prof1Pair);
-    	if(pFCC)
-    	{
-    		if(pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
-    			pFCC->SetSubMode(FireControlComputer::SLAVE);
-    		else
-    		{
-    			pFCC->SetSubMode(Sms->Prof1SubMode);
-    		}
-    	}
+     Sms->rippleCount = Sms->Prof1RP;
+     Sms->rippleInterval = Sms->Prof1RS;
+     Sms->SetPair(Sms->Prof1Pair);
+     if(pFCC)
+     {
+     if(pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
+     pFCC->SetSubMode(FireControlComputer::SLAVE);
+     else
+     {
+     pFCC->SetSubMode(Sms->Prof1SubMode);
+     }
+     }
     }
     else
     {
-    	Sms->rippleCount = Sms->Prof2RP;
-    	Sms->rippleInterval = Sms->Prof2RS;
-    	Sms->SetPair(Sms->Prof2Pair);
-    	if(pFCC)
-    	{
-    		if(pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
-    			pFCC->SetSubMode(FireControlComputer::SLAVE);
-    		else
-    		{
-    			pFCC->SetSubMode(Sms->Prof2SubMode);
-    		}
-    	}
+     Sms->rippleCount = Sms->Prof2RP;
+     Sms->rippleInterval = Sms->Prof2RS;
+     Sms->SetPair(Sms->Prof2Pair);
+     if(pFCC)
+     {
+     if(pFCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
+     pFCC->SetSubMode(FireControlComputer::SLAVE);
+     else
+     {
+     pFCC->SetSubMode(Sms->Prof2SubMode);
+     }
+     }
     }
     */
 }
@@ -2904,23 +2904,23 @@ void SmsDrawable::SetWeapParams(void)
             /*
             if(Sms->Prof1)
             {
-            	Sms->rippleCount = Sms->Prof1RP;
-            	Sms->rippleInterval = Sms->Prof1RS;
-            	Sms->SetPair(Sms->Prof1Pair);
-            	if(Sms->Prof1NSTL == 0 || Sms->Prof1NSTL == 2)
-            		Sms->armingdelay = Sms->C1AD2;
-            	else
-            		Sms->armingdelay = Sms->C1AD1;
+             Sms->rippleCount = Sms->Prof1RP;
+             Sms->rippleInterval = Sms->Prof1RS;
+             Sms->SetPair(Sms->Prof1Pair);
+             if(Sms->Prof1NSTL == 0 || Sms->Prof1NSTL == 2)
+             Sms->armingdelay = Sms->C1AD2;
+             else
+             Sms->armingdelay = Sms->C1AD1;
             }
             else
             {
-            	Sms->rippleCount = Sms->Prof2RP;
-            	Sms->rippleInterval = Sms->Prof2RS;
-            	Sms->SetPair(Sms->Prof2Pair);
-            	if(Sms->Prof2NSTL == 0 || Sms->Prof2NSTL == 2)
-            		Sms->armingdelay = Sms->C1AD2;
-            	else
-            		Sms->armingdelay = Sms->C1AD1;
+             Sms->rippleCount = Sms->Prof2RP;
+             Sms->rippleInterval = Sms->Prof2RS;
+             Sms->SetPair(Sms->Prof2Pair);
+             if(Sms->Prof2NSTL == 0 || Sms->Prof2NSTL == 2)
+             Sms->armingdelay = Sms->C1AD2;
+             else
+             Sms->armingdelay = Sms->C1AD1;
             } */
         }
     }
@@ -3084,12 +3084,12 @@ void SmsDrawable::JDAMDisplay(void)
                 float dX = xCurr - self->XPos();
                 float dY = yCurr - self->YPos();
 
-                float latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
+                float latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
                 float cosLatitude = (float)cos(latitude);
-                float longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
+                float longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
 
-                latitude	*= RTD;
-                longitude	*= RTD;
+                latitude *= RTD;
+                longitude *= RTD;
 
                 int   longDeg = FloatToInt32(longitude);
                 float longMin = (float)fabs(longitude - longDeg) * DEG_TO_MIN;
@@ -3119,7 +3119,7 @@ void SmsDrawable::JDAMDisplay(void)
 
 
         //OWLOOK we need a switch here for arming delay
-        //if (g_bArmingDelay)	MI
+        //if (g_bArmingDelay) MI
         if (g_bRealisticAvionics && g_bMLU)
         {
             sprintf(tmpStr, "AD %.0f", Sms->armingdelay); //me123

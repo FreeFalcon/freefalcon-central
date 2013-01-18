@@ -1,11 +1,11 @@
 /*******************************************************************\
-	A tool to read in an 8 bit RAW texture template file and
-	write out an 16 bit RAW texture ID map.  The input file uses a
-	two by two pixel square to encode the required texture at each
-	post.  As a result, the input file is 2x in width and height as
-	compared to the output file.
+ A tool to read in an 8 bit RAW texture template file and
+ write out an 16 bit RAW texture ID map.  The input file uses a
+ two by two pixel square to encode the required texture at each
+ post.  As a result, the input file is 2x in width and height as
+ compared to the output file.
 
-	Scott Randolph		February 22, 1996		Spectrum HoloByte
+ Scott Randolph February 22, 1996 Spectrum HoloByte
 \*******************************************************************/
 #include <stdio.h>
 #include <math.h>
@@ -17,9 +17,9 @@
 
 
 // Used to accumulate the list of terrain textures in use by this map
-codeListEntry	*codeList;
-setListEntry	setList[256];
-int				setListLen = 0;
+codeListEntry *codeList;
+setListEntry setList[256];
+int setListLen = 0;
 
 
 // Convert an "Eric" tile code into a compressed (sequential) code
@@ -78,7 +78,7 @@ WORD CompressedCode(WORD code)
 // Return the number of textures actually applied to the terrain map
 void PrintTextureList(void)
 {
-    codeListEntry	*entry = codeList;
+    codeListEntry *entry = codeList;
 
     while (entry)
     {
@@ -165,20 +165,20 @@ void ReleaseCodeList(void)
 // The main routine which handles parameter interpretation and the main read/write loop
 int main(int argc, char **argv)
 {
-    HANDLE			inFile;
-    HANDLE			outFile;
-    int				width;
-    int				height;
-    int				row;
-    int				col;
-    char			*inName;
-    char			*outName;
-    BYTE			*buffer;
-    PIXELCLUSTER	sourceSamples;
-    WORD			*IDbuffer;
-    DWORD			bytes;
-    WORD			code;
-    int				i, j;
+    HANDLE inFile;
+    HANDLE outFile;
+    int width;
+    int height;
+    int row;
+    int col;
+    char *inName;
+    char *outName;
+    BYTE *buffer;
+    PIXELCLUSTER sourceSamples;
+    WORD *IDbuffer;
+    DWORD bytes;
+    WORD code;
+    int i, j;
 
 
     // Initialize the list of tile and set codes as empty
@@ -210,10 +210,10 @@ int main(int argc, char **argv)
 
 
     // Get the width and height of the RAW file from the command line
-    inName	= argv[1];
-    outName	= argv[2];
-    width	= atoi(argv[3]);
-    height	= atoi(argv[4]);
+    inName = argv[1];
+    outName = argv[2];
+    width = atoi(argv[3]);
+    height = atoi(argv[4]);
 
 
     // Allocate a buffer large enough to hold our input file
@@ -226,12 +226,12 @@ int main(int argc, char **argv)
 
 
     // Open the input file
-    //	printf( "Opening input file.\n");
+    // printf( "Opening input file.\n");
     inFile = CreateFile(inName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     ShiAssert(inFile != INVALID_HANDLE_VALUE);
 
     // Open the output file
-    //	printf( "Opening output file.\n");
+    // printf( "Opening output file.\n");
     outFile = CreateFile(outName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     ShiAssert(outFile != INVALID_HANDLE_VALUE);
 
@@ -253,14 +253,14 @@ int main(int argc, char **argv)
 
 
     // Do one row and a time
-    //	printf( "Converting data points.\n");
+    // printf( "Converting data points.\n");
     for (row = 1; row < height - 1; row++)
     {
 
 
         // We are skipping the edge columns to simplicity's sake
-        IDbuffer[ 0 ]		= 0;
-        IDbuffer[ width - 1 ]	= 0;
+        IDbuffer[ 0 ] = 0;
+        IDbuffer[ width - 1 ] = 0;
 
 
         // Fill in the row of output data with appropriatly chosen texture IDs
@@ -296,7 +296,7 @@ int main(int argc, char **argv)
             sourceSamples.p4C = buffer[((row << 1) + 1) * (width << 1) + ((col << 1) + 2) ];
 
             code = DecodeCluster(sourceSamples, row, col);
-            //			assert( code != 0xFFFF );
+            // assert( code != 0xFFFF );
 
             IDbuffer[ col ] = CompressedCode(code);
             AddToCodeList(IDbuffer[ col ], code);

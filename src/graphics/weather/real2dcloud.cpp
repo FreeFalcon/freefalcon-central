@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     09Nov03
 
-	Stratus cloud class
+ Stratus cloud class
 \***************************************************************************/
 #include "Real2DCloud.h"
 

@@ -4,7 +4,7 @@
 #include "REDprofiler.h"
 
 
-#define	PARTICLE_NAMES_LEN	32
+#define PARTICLE_NAMES_LEN 32
 //JAM 19Apr04
 struct Point
 {
@@ -14,15 +14,15 @@ struct Point
 /***************************************************************************\
     DrawParticleSys
 
-	Several Classes and data structures for creating particle effects
+ Several Classes and data structures for creating particle effects
 
-	DrawableParticleSys
-	  + ParticleNode
-	      + SubPartXXX
-		  + SubPartXXX
-		  + ...
-	  + ParticleNode
-	      + SubPartXXX
+ DrawableParticleSys
+   + ParticleNode
+       + SubPartXXX
+   + SubPartXXX
+   + ...
+   + ParticleNode
+       + SubPartXXX
 
 
     MLR
@@ -52,7 +52,7 @@ struct Point
 
 
 // for when fakerand just won't do
-#define	NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
+#define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
 #define DTR 0.01745329F
 
 extern int g_nGfxFix;
@@ -63,8 +63,8 @@ extern int sGreenMode;
 // Cobra - Purge the PS list every PurgeTimeInc msec.
 extern int g_nPSPurgeInterval;
 static DWORD TimeToPurge = 0L;
-static WORD	 ParticleFilterCount;							// COBRA - RED - Counter of SFX adding for filtering
-#define	MAX_PARTICLE_FILTER_LEVEL	10						// COBRA - RED - Level for SFX Filter
+static WORD  ParticleFilterCount; // COBRA - RED - Counter of SFX adding for filtering
+#define MAX_PARTICLE_FILTER_LEVEL 10 // COBRA - RED - Level for SFX Filter
 
 //static DWORD PurgeTimeInc = 60000L;
 static DWORD PurgeTimeInc = g_nPSPurgeInterval;
@@ -79,8 +79,8 @@ extern int g_nPSKillFPS;//Cobra
 extern bool g_bHighSFX; // Cobra
 
 /**** Static class data ***/
-BOOL    DrawableParticleSys::greenMode	= FALSE;
-char	*DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
+BOOL    DrawableParticleSys::greenMode = FALSE;
+char *DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
 {
     "$NONE",
     "$AIR_HANGING_EXPLOSION",
@@ -218,20 +218,20 @@ char	*DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
     "$NUKE",//TJL
 };
 
-int		DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
-AList	DrawableParticleSys::textureList;
-ProtectedAList	DrawableParticleSys::paramList;
-AList	DrawableParticleSys::dpsList;
-float	DrawableParticleSys::groundLevel;
-float	DrawableParticleSys::cameraDistance;
-int		DrawableParticleSys::reloadParameters = 0;
-float	DrawableParticleSys::winddx;
-float	DrawableParticleSys::winddy;
+int DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
+AList DrawableParticleSys::textureList;
+ProtectedAList DrawableParticleSys::paramList;
+AList DrawableParticleSys::dpsList;
+float DrawableParticleSys::groundLevel;
+float DrawableParticleSys::cameraDistance;
+int DrawableParticleSys::reloadParameters = 0;
+float DrawableParticleSys::winddx;
+float DrawableParticleSys::winddy;
 
 
 /**** Macros ****/
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
-#define NRESCALE(in,outmin,outmax)			  RESCALE(in,0,1,outmin,outmax)
+#define NRESCALE(in,outmin,outmax)   RESCALE(in,0,1,outmin,outmax)
 
 /****** Basic Data Structs ******/
 struct psRGBA
@@ -309,7 +309,7 @@ public:
     //JAM 19Apr04 - Need to change these TPoints (Tpoint) to Points (defined above).
     union
     {
-        float		 param[9];
+        float  param[9];
 
         struct
         {
@@ -359,9 +359,9 @@ typedef enum
 struct ParticleEmitterParam
 {
     PSEmitterModeEnum  mode;
-    ParticleDomain	   domain;
+    ParticleDomain    domain;
     ParticleDomain     target;
-    float		   param[9];
+    float    param[9];
     int            id;
     char           name[PS_NAMESIZE];
     int            stages;
@@ -373,7 +373,7 @@ class ParticleParamNode : public ANode
 {
 public:
     char    name[PS_NAMESIZE];
-    int		id;
+    int id;
     int     subid;
 
     int     particleType; // which paritcle class to use for particles????
@@ -390,14 +390,14 @@ public:
     int       lightStages;
     timedRGB  light[10];
 
-    int			sizeStages;
-    timedFloat	size[10];
+    int sizeStages;
+    timedFloat size[10];
 
-    int			alphaStages;
-    timedFloat	alpha[10];
+    int alphaStages;
+    timedFloat alpha[10];
 
 
-    int			gravityStages;
+    int gravityStages;
     timedFloat  gravity[10]; // 0 floats, negative rises, positive sinks
 
     int         accelStages;
@@ -442,13 +442,13 @@ public:
 
     PSOrientation orientation;
 
-    int		Frames;								// COBRA - RED - Features for Frame Sequences | Number of Frames in a sequence
-    float	FrameTime;							// COBRA - RED - Features for Frame Sequences | Frames Timing
+    int Frames; // COBRA - RED - Features for Frame Sequences | Number of Frames in a sequence
+    float FrameTime; // COBRA - RED - Features for Frame Sequences | Frames Timing
 };
 
 /** ParticleSys Flags **/
 #define PSF_CHARACTERS "MG"
-#define PSF_NONE	     (0) // use spacing value a a time (in seconds) instead of distance
+#define PSF_NONE      (0) // use spacing value a a time (in seconds) instead of distance
 #define PSF_MORPHATTRIBS (1<<0) // blend attributes over lifespan)
 #define PSF_GROUNDTEST   (1<<1) // enable terrain surface level check
 
@@ -463,7 +463,7 @@ int PPNCount = 0;
 
 /***********************************************************************
 
-	The ParticleNode
+ The ParticleNode
 
 ***********************************************************************/
 
@@ -483,12 +483,12 @@ public:
 public:
     ParticleParamNode *ppn;
 
-    int    birthTime;				//
-    int    lastTime;				// last time we were updated
-    float  lifespan;				// in seconds
-    float  life;					// normalized
-    float	LastTimeRest;			// COBRA - RED - Features for Frame Sequences | Modulo ime for animations
-    int		FrameNr;				// COBRA - RED - Features for Frame Sequences | rame Number Displayed
+    int    birthTime; //
+    int    lastTime; // last time we were updated
+    float  lifespan; // in seconds
+    float  life; // normalized
+    float LastTimeRest; // COBRA - RED - Features for Frame Sequences | Modulo ime for animations
+    int FrameNr; // COBRA - RED - Features for Frame Sequences | rame Number Displayed
 
     static float      elapsedTime;
     static Trotation *rotation; // runtime computed, shared
@@ -505,9 +505,9 @@ public:
 class ParticleFramesNode : public ANode
 {
 public:
-    char	SequenceName[PARTICLE_NAMES_LEN];				// Name of the Sequence
-    int		NFrames;										// frames of the Sequence
-    void	*Sequence;										// pointer to the Frame List pointers in memory
+    char SequenceName[PARTICLE_NAMES_LEN]; // Name of the Sequence
+    int NFrames; // frames of the Sequence
+    void *Sequence; // pointer to the Frame List pointers in memory
 };
 
 
@@ -516,9 +516,9 @@ public:
 class ParticlePlayList : public ANode
 {
 public:
-    char	PlayListName[PARTICLE_NAMES_LEN];				// Name of the Play List
-    int		NItems;											// frames of the Sequence
-    void	*List;											// pointer to the List pointers in memory
+    char PlayListName[PARTICLE_NAMES_LEN]; // Name of the Play List
+    int NItems; // frames of the Sequence
+    void *List; // pointer to the List pointers in memory
 };
 
 
@@ -530,7 +530,7 @@ float      ParticleNode::elapsedTime = 0;
 Trotation *ParticleNode::rotation    = &psIRotation;
 /***********************************************************************
 
-	SubParticle Data
+ SubParticle Data
 
 ***********************************************************************/
 
@@ -747,25 +747,25 @@ void SubPartPoly::Run(RenderOTW *renderer, ParticleNode *owner)
 
     if (PPN->texture)
     {
-        if (PPN->Frames == 0)renderer->context.SelectTexture1(PPN->texture->TexHandle());	// COBRA - RED - Simple Texture
-        else  																			// COBRA - RED - Frames Sequence
+        if (PPN->Frames == 0)renderer->context.SelectTexture1(PPN->texture->TexHandle()); // COBRA - RED - Simple Texture
+        else   // COBRA - RED - Frames Sequence
         {
-            if ((owner->elapsedTime + owner->LastTimeRest) >= PPN->FrameTime) 			//
+            if ((owner->elapsedTime + owner->LastTimeRest) >= PPN->FrameTime)  //
             {
-                owner->FrameNr++;															// If time for a frame elapsed next frame
+                owner->FrameNr++; // If time for a frame elapsed next frame
 
-                if (owner->FrameNr >= PPN->Frames) owner->FrameNr = 0;							// Looping
+                if (owner->FrameNr >= PPN->Frames) owner->FrameNr = 0; // Looping
 
-                owner->LastTimeRest = owner->elapsedTime - PPN->FrameTime;				// Keep remaining time
+                owner->LastTimeRest = owner->elapsedTime - PPN->FrameTime; // Keep remaining time
             }
-            else  																	// else, if not elapsed time for a frame
+            else   // else, if not elapsed time for a frame
             {
-                owner->LastTimeRest += owner->elapsedTime;								// just update Frame Time Counter
+                owner->LastTimeRest += owner->elapsedTime; // just update Frame Time Counter
             }
 
-            Texture **Tex = (Texture**)PPN->texture;										// Gets the Base Frame
-            Tex += owner->FrameNr;															// calculates the Frame Position
-            renderer->context.SelectTexture1((*Tex)->TexHandle());						// Selects It
+            Texture **Tex = (Texture**)PPN->texture; // Gets the Base Frame
+            Tex += owner->FrameNr; // calculates the Frame Position
+            renderer->context.SelectTexture1((*Tex)->TexHandle()); // Selects It
         }
     }
 
@@ -1091,9 +1091,9 @@ void ParticleNode::Init(int ID, Tpoint *Pos, Tpoint *Vel, Tpoint *Aim)
     /*int l;
     for(l = 0; ppn->emitter[l].stages && l<PSMAX_EMITTERS; l++)
     {
-    	SubPart *sub = new SubPartEmitter(this);
-    	sub->next = firstSubPart;
-    	firstSubPart = sub;
+     SubPart *sub = new SubPartEmitter(this);
+     sub->next = firstSubPart;
+     firstSubPart = sub;
     }*/
 
 
@@ -1213,9 +1213,9 @@ ParticleNode::~ParticleNode()
 {
     SubPart *sub = firstSubPart;
 
-    /*	if(ppn->Frames){														// COBRA - RED - If sequence
-    		free ((void*)ppn->texture);											// delete Frames List from memory
-    	}*/
+    /* if(ppn->Frames){ // COBRA - RED - If sequence
+     free ((void*)ppn->texture); // delete Frames List from memory
+     }*/
     while (sub)
     {
         SubPart *next = sub->next;
@@ -1260,12 +1260,12 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
         life = 1.0f; // just to make sure we do the last stages
     }
 
-    /*	else			// COBRA - RED - If returns before die, will not append new emitters or nodes
-    	{
-    		if(life>1.0f) // waiting to die
-    			return;
-    	}
-    */					// COBRA - RED - End
+    /* else // COBRA - RED - If returns before die, will not append new emitters or nodes
+     {
+     if(life>1.0f) // waiting to die
+     return;
+     }
+    */ // COBRA - RED - End
 
     if (elapsedTime)
     {
@@ -1279,7 +1279,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
 
         if (ppn->simpleDrag)
         {
-            float Drag_x_Time = ppn->simpleDrag * elapsedTime;		// COBRA - RED - Cached same Value
+            float Drag_x_Time = ppn->simpleDrag * elapsedTime; // COBRA - RED - Cached same Value
 
             vel.x -= DrawableParticleSys::winddx;
             vel.y -= DrawableParticleSys::winddy;
@@ -1370,7 +1370,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
 
 
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
 DrawableParticleSys::DrawableParticleSys(int particlesysType, float scale)
     : DrawableObject(scale)
@@ -1439,23 +1439,23 @@ void DrawableParticleSys::AddParticle(int Id, Tpoint *worldPos, Tpoint *v)
 
     // COBRA - RED - New FPS Filter
     // Cobra - Keep the Particle list cleaned up
-    /*	if ((now >= TimeToPurge)&&PurgeTimeInc)
-    	{
-    		TimeToPurge = (now + PurgeTimeInc);
-    		CleanParticleList();
-    	}
-    	// Cobra - Purge the Particle list
-    	else if ((now >= TimeToPurgeAll)&&PurgeTimeInc)
-    	{
-    		TimeToPurgeAll = (now + PurgeAllTimeInc);
-    		ClearParticleList();
-    	}
-    	//cobra Bail out of FPS is lower than 10
-    	float fpsTest = OTWDriver.GetFPS();
-     	if (fpsTest < g_nPSKillFPS)
-    		{
-    		return;
-    		}*/
+    /* if ((now >= TimeToPurge)&&PurgeTimeInc)
+     {
+     TimeToPurge = (now + PurgeTimeInc);
+     CleanParticleList();
+     }
+     // Cobra - Purge the Particle list
+     else if ((now >= TimeToPurgeAll)&&PurgeTimeInc)
+     {
+     TimeToPurgeAll = (now + PurgeAllTimeInc);
+     ClearParticleList();
+     }
+     //cobra Bail out of FPS is lower than 10
+     float fpsTest = OTWDriver.GetFPS();
+      if (fpsTest < g_nPSKillFPS)
+     {
+     return;
+     }*/
 
     // COBRA - RED - The Particle Filetr starts here
     // The Filter works on a counter Basis...The counter rolls off each MAX_PARTICLE_FILTER_LEVEL counts
@@ -1465,7 +1465,7 @@ void DrawableParticleSys::AddParticle(int Id, Tpoint *worldPos, Tpoint *v)
     // the more near the limit the more are filtered...when at limit or ps under limit, no particles
     // are more added.
 
-    float fpsTest = OTWDriver.GetFPS();				// Get the Actal FPS
+    float fpsTest = OTWDriver.GetFPS(); // Get the Actal FPS
 
     // Calculates the filter level ... the more near fps limit, the lower the filter level
     float FilterLevel = (fpsTest - g_nPSKillFPS) * (MAX_PARTICLE_FILTER_LEVEL / (g_nPSKillFPS * 1.5f - g_nPSKillFPS + 1.0f));
@@ -1524,8 +1524,8 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
         float wind;
 
         // current wind
-        //		mlSinCos(&trigWind, TheWeather->GetWindHeading(&n->pos));
-        //		wind =  TheWeather->GetWindSpeedFPS(&n->pos);
+        // mlSinCos(&trigWind, TheWeather->GetWindHeading(&n->pos));
+        // wind =  TheWeather->GetWindSpeedFPS(&n->pos);
         mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&n->pos));
         wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&n->pos);
         winddx = trigWind.cos * wind;
@@ -1550,8 +1550,8 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
             ParticleNode *n2 = (ParticleNode *)n->GetSucc();
 
             // Cobra - Moved the node killer to start of mission (otwloop.cpp)
-            //					also in DrawableParticleSys::AddParticle()
-            if ((n->IsDead()) /*&& !PurgeTimeInc*/)						// COBRA - RED - If no1 updates PurgeTimeInc,
+            // also in DrawableParticleSys::AddParticle()
+            if ((n->IsDead()) /*&& !PurgeTimeInc*/) // COBRA - RED - If no1 updates PurgeTimeInc,
             {
                 // when it could be 0...???
                 n->Remove();
@@ -1681,25 +1681,25 @@ ParticleTextureNode *DrawableParticleSys::GetTextureNode(char *fn)
 // COBRA - RED - Adds a Frame References List taht is stored in the Node of a Particle Item
 ParticleTextureNode *DrawableParticleSys::GetFramesList(char *fn, int Frames)
 {
-    char	Name[64];
+    char Name[64];
 
-    static Texture **List, **BaseList;													// Item pointer in the List
+    static Texture **List, **BaseList; // Item pointer in the List
 
-    BaseList = (Texture**)malloc(sizeof(Texture*)*Frames);	// is Allocated for N Frames
+    BaseList = (Texture**)malloc(sizeof(Texture*)*Frames); // is Allocated for N Frames
     List = BaseList;
 
-    if (!List) return 0;																// Out of Memory
+    if (!List) return 0; // Out of Memory
 
-    for (int a = 0; a < Frames; a++)	 													// for each Frame
+    for (int a = 0; a < Frames; a++)   // for each Frame
     {
-        strncpy(Name, fn, sizeof(Name));											// creates each frame name
-        strtok(Name, "., ");															// till extension
-        sprintf(&Name[strlen(Name)], "_%03d.dds", a);									// with number appended
+        strncpy(Name, fn, sizeof(Name)); // creates each frame name
+        strtok(Name, "., "); // till extension
+        sprintf(&Name[strlen(Name)], "_%03d.dds", a); // with number appended
         *List = &GetTextureNode(Name)->texture;
-        List++;									// Each Pointer is Updated
+        List++; // Each Pointer is Updated
     }
 
-    return((ParticleTextureNode*)BaseList);																// and returns it
+    return((ParticleTextureNode*)BaseList); // and returns it
 
 }
 
@@ -1970,16 +1970,16 @@ void DrawableParticleSys::LoadParameters(void)
                 {
                     memset(ppn, 0, sizeof(*ppn));
                     strncpy(ppn->name, n, PS_NAMESIZE);
-                    ppn->id					= -1;
-                    ppn->accel[0].value		= 1;
-                    ppn->alpha[0].value		= 1;
-                    ppn->velInherit			= 1;
-                    ppn->drawType			= PSDT_POLY;
-                    currentemitter			= -1;
-                    ppn->sndVol[0].value	= 0;
-                    ppn->sndPitch[0].value	= 1;
-                    ppn->trailId			= -1;
-                    ppn->visibleDistance	= 10000;
+                    ppn->id = -1;
+                    ppn->accel[0].value = 1;
+                    ppn->alpha[0].value = 1;
+                    ppn->velInherit = 1;
+                    ppn->drawType = PSDT_POLY;
+                    currentemitter = -1;
+                    ppn->sndVol[0].value = 0;
+                    ppn->sndPitch[0].value = 1;
+                    ppn->trailId = -1;
+                    ppn->visibleDistance = 10000;
                     paramList.AddTail(ppn);
                 }
             }
@@ -2029,7 +2029,7 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("animate")
         {
-            int	Frames = TokenI(0);
+            int Frames = TokenI(0);
             ppn->FrameTime = 1.0f / TokenF(1);
             strncpy(ppn->texFilename, TokenStr(""), 64);
             ppn->texture = (Texture*)GetFramesList(ppn->texFilename, Frames);
@@ -2121,8 +2121,8 @@ void DrawableParticleSys::LoadParameters(void)
 
                 On("emissionvelocity")
                 {
-                    ppn->emitter[currentemitter].velocity		= TokenF(0);
-                    ppn->emitter[currentemitter].velVariation	= TokenF(0);
+                    ppn->emitter[currentemitter].velocity = TokenF(0);
+                    ppn->emitter[currentemitter].velVariation = TokenF(0);
                 }
 
             }
@@ -2142,8 +2142,8 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("initialVelocity")
         {
-            ppn->velInitial		= TokenF(1);
-            ppn->velVariation	= TokenF(0);
+            ppn->velInitial = TokenF(1);
+            ppn->velVariation = TokenF(0);
         }
 
         On("drawtype")
@@ -2266,7 +2266,7 @@ void DrawableParticleSys::LoadParameters(void)
     }
 
     //------------------
-    //	fp = fopen("NoEmitterDefined.txt", "w");
+    // fp = fopen("NoEmitterDefined.txt", "w");
     //------------------
 
     // link the emmitter names to ids;
@@ -2298,7 +2298,7 @@ void DrawableParticleSys::LoadParameters(void)
                 // this will prevent a CTD
                 ppn->emitter[t].stages = 0;
                 //------------------
-                //				fprintf(fp, " %s\n", ppn->emitter[t].name);
+                // fprintf(fp, " %s\n", ppn->emitter[t].name);
                 //------------------
             }
         }
@@ -2307,7 +2307,7 @@ void DrawableParticleSys::LoadParameters(void)
     }
 
     //------------------
-    //	fclose(fp);
+    // fclose(fp);
     //------------------
 
     if (psContext)
@@ -2350,7 +2350,7 @@ int DrawableParticleSys::GetNameId(char *name)
 
 /***********************************************************************
 
-	The ParticleDomain
+ The ParticleDomain
 
 ***********************************************************************/
 

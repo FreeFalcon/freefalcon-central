@@ -30,10 +30,10 @@ void AddPODataEntry(Objective po);
 
 void CleanupObjList(void)
 {
-    ListNode		lp, np;
-    POData			pod;
-    Objective		o;
-    VuListIterator	poit(POList);
+    ListNode lp, np;
+    POData pod;
+    Objective o;
+    VuListIterator poit(POList);
 
     // Eliminate objectives no longer in list
     lp = PODataList->GetFirstElement();;
@@ -72,8 +72,8 @@ void DisposeObjList(void)
 
 void AddPODataEntry(Objective po)
 {
-    POData			pd;
-    int				i;
+    POData pd;
+    int i;
 
     pd = new PrimaryObjectiveData();
     pd->objective = po->Id();
@@ -96,8 +96,8 @@ void AddPODataEntry(Objective po)
 
 POData GetPOData(Objective po)
 {
-    ListNode		lp;
-    POData			pd;
+    ListNode lp;
+    POData pd;
 
     lp = PODataList->GetFirstElement();
 
@@ -116,9 +116,9 @@ POData GetPOData(Objective po)
 
 void ResetObjectiveAssignmentScores(void)
 {
-    POData		pod;
-    ListNode	lp;
-    int			i;
+    POData pod;
+    ListNode lp;
+    int i;
 
     lp = PODataList->GetFirstElement();
 
@@ -145,12 +145,12 @@ UnitScoreNode::UnitScoreNode(void)
     next = NULL;
 }
 
-#define USN_SORT_BY_SCORE			1
-#define USN_SORT_BY_DISTANCE		2
+#define USN_SORT_BY_SCORE 1
+#define USN_SORT_BY_DISTANCE 2
 
 UnitScoreNode* UnitScoreNode::Insert(UnitScoreNode* to_insert, int sort_by)
 {
-    USNode		last_node;
+    USNode last_node;
 
     if (to_insert == this)
         return this;
@@ -218,7 +218,7 @@ UnitScoreNode* UnitScoreNode::Insert(UnitScoreNode* to_insert, int sort_by)
 
 UnitScoreNode* UnitScoreNode::Remove(UnitScoreNode* to_remove)
 {
-    USNode		last_node, temp;
+    USNode last_node, temp;
 
     if (to_remove == this)
     {
@@ -247,7 +247,7 @@ UnitScoreNode* UnitScoreNode::Remove(UnitScoreNode* to_remove)
 
 UnitScoreNode* UnitScoreNode::Remove(Unit u)
 {
-    USNode		last_node, temp;
+    USNode last_node, temp;
 
     if (u == unit)
     {
@@ -276,7 +276,7 @@ UnitScoreNode* UnitScoreNode::Remove(Unit u)
 
 UnitScoreNode* UnitScoreNode::Purge(void)
 {
-    USNode		temp, cur = next;
+    USNode temp, cur = next;
 
     while (cur)
     {
@@ -291,7 +291,7 @@ UnitScoreNode* UnitScoreNode::Purge(void)
 
 UnitScoreNode* UnitScoreNode::Sort(int sort_by)
 {
-    USNode		temp, last, head = NULL;
+    USNode temp, last, head = NULL;
 
     last = this;
     temp = next;
@@ -321,8 +321,8 @@ UnitScoreNode* UnitScoreNode::Sort(int sort_by)
 // Sorted objective list components
 // ================================
 
-#define GODN_SORT_BY_PRIORITY		1
-#define GODN_SORT_BY_OPTIONS		2
+#define GODN_SORT_BY_PRIORITY 1
+#define GODN_SORT_BY_OPTIONS 2
 
 GndObjDataType::GndObjDataType(void)
 {
@@ -500,7 +500,7 @@ GODNode GndObjDataType::Remove(Objective o)
 
 GODNode GndObjDataType::Purge(void)
 {
-    GODNode		temp;
+    GODNode temp;
 
     while (next)
     {
@@ -516,7 +516,7 @@ GODNode GndObjDataType::Purge(void)
 GODNode GndObjDataType::Sort(int sort_by)
 {
     // Reorder by # of options
-    GODNode		temp, last, head = NULL;
+    GODNode temp, last, head = NULL;
 
     last = this;
     temp = next;
@@ -544,7 +544,7 @@ GODNode GndObjDataType::Sort(int sort_by)
 
 void GndObjDataType::InsertUnit(Unit u, int s, int d)
 {
-    USNode		new_node;
+    USNode new_node;
 
     if (s <= 0 || d <= 0)
         return;
@@ -564,7 +564,7 @@ void GndObjDataType::InsertUnit(Unit u, int s, int d)
 
 UnitScoreNode* GndObjDataType::RemoveUnit(Unit u)
 {
-    USNode		temp = unit_list;
+    USNode temp = unit_list;
 
     while (temp)
     {
@@ -583,7 +583,7 @@ UnitScoreNode* GndObjDataType::RemoveUnit(Unit u)
 
 void GndObjDataType::RemoveUnitFromAll(Unit u)
 {
-    GODNode		cur = this;
+    GODNode cur = this;
 
     while (cur)
     {

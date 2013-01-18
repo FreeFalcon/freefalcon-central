@@ -3,13 +3,13 @@
     Scott Randolph
     January 2, 1995
 
-	Erick Jap
-	October 30, 1996
+ Erick Jap
+ October 30, 1996
 
     This class provides 3D drawing functions specific to rendering out the
-	window views including terrain.
+ window views including terrain.
 
-	This file contains the implementations of the sky drawing functions
+ This file contains the implementations of the sky drawing functions
 \***************************************************************************/
 //JAM 30Sep03 - Begin Major Rewrite
 #include <math.h>
@@ -33,16 +33,16 @@
 #define FLAT_FILLER
 
 // Distances are used in place of sizes -- bigger distance gives smaller apparent size
-const float	RenderOTW::MOON_DIST				= 40.0f;
-const float	RenderOTW::SUN_DIST					= 30.0f;
-const float	RenderOTW::MOST_SUN_GLARE_DIST		= 12.0f;
-const float	RenderOTW::MIN_SUN_GLARE			= 0.0f;
-const float	RenderOTW::ROOF_REPEAT_COUNT		= 6.0f;
-const float	RenderOTW::HAZE_ALTITUDE_FACTOR		= (1.0f / (SKY_MAX_HEIGHT - SKY_ROOF_HEIGHT));
-const float	RenderOTW::GLARE_FACTOR				= (4096.0f / SKY_MAX_HEIGHT);
+const float RenderOTW::MOON_DIST = 40.0f;
+const float RenderOTW::SUN_DIST = 30.0f;
+const float RenderOTW::MOST_SUN_GLARE_DIST = 12.0f;
+const float RenderOTW::MIN_SUN_GLARE = 0.0f;
+const float RenderOTW::ROOF_REPEAT_COUNT = 6.0f;
+const float RenderOTW::HAZE_ALTITUDE_FACTOR = (1.0f / (SKY_MAX_HEIGHT - SKY_ROOF_HEIGHT));
+const float RenderOTW::GLARE_FACTOR = (4096.0f / SKY_MAX_HEIGHT);
 
-Texture		RenderOTW::texRoofTop;
-Texture		RenderOTW::texRoofBottom;
+Texture RenderOTW::texRoofTop;
+Texture RenderOTW::texRoofBottom;
 
 extern int g_nGfxFix;
 
@@ -61,7 +61,7 @@ void RenderOTW::SetRoofMode(BOOL state)
     // Get the textures we'll need if the roof is being turned on
     if (state && !texRoofTop.TexHandle())
     {
-        Tcolor	light;
+        Tcolor light;
 
         texRoofTop.LoadAndCreate("OVClayerT.gif", MPR_TI_PALETTE);
         texRoofBottom.LoadAndCreate("OVClayerB.gif", MPR_TI_PALETTE);
@@ -92,19 +92,19 @@ BOOL RenderOTW::DrawSky(void)
     if (!skyRoof)
     {
         DrawSkyNoRoof();
-        return TRUE;		// Need to draw terrain
+        return TRUE; // Need to draw terrain
     }
 
 
     if (viewpoint->Z() < -SKY_ROOF_HEIGHT)
     {
         DrawSkyAbove();
-        return FALSE;		// Don't need to draw terrain
+        return FALSE; // Don't need to draw terrain
     }
     else
     {
         DrawSkyBelow();
-        return TRUE;		// Need to draw terrain
+        return TRUE; // Need to draw terrain
     }
 }
 
@@ -114,16 +114,16 @@ BOOL RenderOTW::DrawSky(void)
 \***************************************************************************/
 void RenderOTW::DrawSkyNoRoof(void)
 {
-    HorizonRecord	horizon;
+    HorizonRecord horizon;
 
-    double	angleOfDepression, percentHalfXscale;
-    float	pixelWidth, pixelDistance;
-    float	vpZ = -viewpoint->Z();
+    double angleOfDepression, percentHalfXscale;
+    float pixelWidth, pixelDistance;
+    float vpZ = -viewpoint->Z();
 
-    float	bandAngleUp = min(PI / 18.0f, (PI / 48.0f) * (SKY_MAX_HEIGHT / vpZ));
+    float bandAngleUp = min(PI / 18.0f, (PI / 48.0f) * (SKY_MAX_HEIGHT / vpZ));
 
-    float	top		= Pitch() + diagonal_half_angle;
-    float	bottom	= Pitch() - diagonal_half_angle;
+    float top = Pitch() + diagonal_half_angle;
+    float bottom = Pitch() - diagonal_half_angle;
 
 
 
@@ -146,15 +146,15 @@ void RenderOTW::DrawSkyNoRoof(void)
 
 
     // Decide which portions of the sky can possibly be seen by the viewer in this orientation
-    BOOL canSeeAboveTop		= top > bandAngleUp;
-    BOOL canSeeAboveHorizon	= top > 0.0f;
-    BOOL canSeeAboveTerrain	= top > -angleOfDepression;
-    BOOL canSeeBelowClear	= bottom < bandAngleUp;
-    BOOL canSeeBelowHorizon	= bottom < 0.0f;
+    BOOL canSeeAboveTop = top > bandAngleUp;
+    BOOL canSeeAboveHorizon = top > 0.0f;
+    BOOL canSeeAboveTerrain = top > -angleOfDepression;
+    BOOL canSeeBelowClear = bottom < bandAngleUp;
+    BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller	= canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop	= canSeeAboveHorizon && canSeeBelowClear;
-    BOOL drawClear	= canSeeAboveTop;
+    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawClear = canSeeAboveTop;
 
 
     // Compute two points on the horizon which are sure to be off opposite edges of the screen
@@ -190,7 +190,7 @@ void RenderOTW::DrawSkyNoRoof(void)
     }
     else
     {
-        percentHalfXscale = 10.0f;	// any big number should do...
+        percentHalfXscale = 10.0f; // any big number should do...
     }
 
     pixelDistance = scaleX * (float)percentHalfXscale;
@@ -241,20 +241,20 @@ void RenderOTW::DrawSkyNoRoof(void)
 \***************************************************************************/
 void RenderOTW::DrawSkyBelow(void)
 {
-    ThreeDVertex	v0, v1, v2, v3;
-    TwoDVertex	*vertPointers[4] = { &v0, &v1, &v2, &v3 };
+    ThreeDVertex v0, v1, v2, v3;
+    TwoDVertex *vertPointers[4] = { &v0, &v1, &v2, &v3 };
 
-    double	angleOfInclination, angleOfDepression;
-    double	percentHalfXscale;
-    float	pixelWidth, pixelDistance;
-    float	vpAlt = -viewpoint->Z();
+    double angleOfInclination, angleOfDepression;
+    double percentHalfXscale;
+    float pixelWidth, pixelDistance;
+    float vpAlt = -viewpoint->Z();
 
-    float	top		= Pitch() + diagonal_half_angle;
-    float	bottom	= Pitch() - diagonal_half_angle;
+    float top = Pitch() + diagonal_half_angle;
+    float bottom = Pitch() - diagonal_half_angle;
 
-    float	u, v;
+    float u, v;
 
-    HorizonRecord	horizon;
+    HorizonRecord horizon;
 
 #ifdef TWO_D_MAP_AVAILABLE
 
@@ -276,15 +276,15 @@ void RenderOTW::DrawSkyBelow(void)
 
 
     // Decide which portions of the sky can possibly be seen by the viewer in this orientation
-    BOOL canSeeAboveTop		= top > angleOfInclination;
-    BOOL canSeeAboveHorizon	= top > 0.0f;
-    BOOL canSeeAboveTerrain	= top > -angleOfDepression;
-    BOOL canSeeBelowClear	= bottom < angleOfInclination;
-    BOOL canSeeBelowHorizon	= bottom < 0.0f;
+    BOOL canSeeAboveTop = top > angleOfInclination;
+    BOOL canSeeAboveHorizon = top > 0.0f;
+    BOOL canSeeAboveTerrain = top > -angleOfDepression;
+    BOOL canSeeBelowClear = bottom < angleOfInclination;
+    BOOL canSeeBelowHorizon = bottom < 0.0f;
 
-    BOOL drawFiller	= canSeeAboveTerrain && canSeeBelowHorizon;
-    BOOL drawTop	= canSeeAboveHorizon && canSeeBelowClear;
-    BOOL drawClear	= canSeeAboveTop;
+    BOOL drawFiller = canSeeAboveTerrain && canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawClear = canSeeAboveTop;
 
 
     // Compute two points on the horizon which are sure to be off opposite edges of the screen
@@ -320,31 +320,31 @@ void RenderOTW::DrawSkyBelow(void)
     // Clear that part of the screen which will not be covered by sky or terrain
     if (drawClear)
     {
-        Tpoint			worldSpace;
+        Tpoint worldSpace;
 
         worldSpace.z = -SKY_ROOF_HEIGHT;
         u = (float)fmod(viewpoint->Y() * 0.5f * ROOF_REPEAT_COUNT / SKY_ROOF_RANGE, 1.0f);
         v = 1.0f - (float)fmod(viewpoint->X() * 0.5f * ROOF_REPEAT_COUNT / SKY_ROOF_RANGE, 1.0f);
 
         // South West
-        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v0);
-        v0.u = u,					v0.v = v + ROOF_REPEAT_COUNT,	v0.q = v0.csZ * Q_SCALE;
+        v0.u = u, v0.v = v + ROOF_REPEAT_COUNT, v0.q = v0.csZ * Q_SCALE;
 
         // North West
-        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v1);
-        v1.u = u,					v1.v = v,					v1.q = v1.csZ * Q_SCALE;
+        v1.u = u, v1.v = v, v1.q = v1.csZ * Q_SCALE;
 
         // North East
-        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v2);
-        v2.u = u + ROOF_REPEAT_COUNT,	v2.v = v,					v2.q = v2.csZ * Q_SCALE;
+        v2.u = u + ROOF_REPEAT_COUNT, v2.v = v, v2.q = v2.csZ * Q_SCALE;
 
         // South East
-        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v3);
-        v3.u = u + ROOF_REPEAT_COUNT,	v3.v = v + ROOF_REPEAT_COUNT,	v3.q = v3.csZ * Q_SCALE;
+        v3.u = u + ROOF_REPEAT_COUNT, v3.v = v + ROOF_REPEAT_COUNT, v3.q = v3.csZ * Q_SCALE;
 
         v0.r = v1.r = v2.r = v3.r = 0.5f;
         v0.g = v1.g = v2.g = v3.g = 0.6f;
@@ -371,13 +371,13 @@ void RenderOTW::DrawSkyBelow(void)
     // Draw the hazey sky band
     if (drawTop)
     {
-        v0.x = shiftX + horizon.hx + horizon.vx;		// horizon right
+        v0.x = shiftX + horizon.hx + horizon.vx; // horizon right
         v0.y = shiftY + horizon.hy + horizon.vy;
-        v1.x = shiftX - horizon.hx + horizon.vx;		// horizon left
+        v1.x = shiftX - horizon.hx + horizon.vx; // horizon left
         v1.y = shiftY - horizon.hy + horizon.vy;
-        v2.x = shiftX - horizon.hx + horizon.vxUp;		// upper left
+        v2.x = shiftX - horizon.hx + horizon.vxUp; // upper left
         v2.y = shiftY - horizon.hy + horizon.vyUp;
-        v3.x = shiftX + horizon.hx + horizon.vxUp;		// upper right
+        v3.x = shiftX + horizon.hx + horizon.vxUp; // upper right
         v3.y = shiftY + horizon.hy + horizon.vyUp;
 
         v0.r = v1.r = haze_sky_color.r;
@@ -398,38 +398,38 @@ void RenderOTW::DrawSkyBelow(void)
 
         // Clip and draw the smooth shaded horizon polygon
         context.RestoreState(STATE_GOURAUD);
-        /*		if (dithered) {
-        			context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
-        			context.InvalidateState();
-        		}*/
+        /* if (dithered) {
+         context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
+         context.InvalidateState();
+         }*/
         ClipAndDraw2DFan(&vertPointers[0], 4);
     }
 
 
     // Draw the celestial objects
-    if (TheTimeOfDay.ThereIsASun())		DrawSun();
+    if (TheTimeOfDay.ThereIsASun()) DrawSun();
 
-    if (TheTimeOfDay.ThereIsAMoon())	DrawMoon();
+    if (TheTimeOfDay.ThereIsAMoon()) DrawMoon();
 
 
     // Draw the poly of low intensity haze color to fill from the terrain to the horizon
     if (drawFiller)
     {
 
-        v0.x = shiftX + horizon.hx + horizon.vxDn;		// lower right
+        v0.x = shiftX + horizon.hx + horizon.vxDn; // lower right
         v0.y = shiftY + horizon.hy + horizon.vyDn;
         v0.r = haze_ground_color.r;
         v0.g = haze_ground_color.g;
         v0.b = haze_ground_color.b;
-        v1.x = shiftX - horizon.hx + horizon.vxDn;		// lower left
+        v1.x = shiftX - horizon.hx + horizon.vxDn; // lower left
         v1.y = shiftY - horizon.hy + horizon.vyDn;
         v1.r = haze_ground_color.r;
         v1.g = haze_ground_color.g;
         v1.b = haze_ground_color.b;
 
-        v2.x = shiftX - horizon.hx + horizon.vx;		// horizon left
+        v2.x = shiftX - horizon.hx + horizon.vx; // horizon left
         v2.y = shiftY - horizon.hy + horizon.vy;
-        v3.x = shiftX + horizon.hx + horizon.vx;		// horizon right
+        v3.x = shiftX + horizon.hx + horizon.vx; // horizon right
         v3.y = shiftY + horizon.hy + horizon.vy;
 
         v2.r = earth_end_color.r;
@@ -447,10 +447,10 @@ void RenderOTW::DrawSkyBelow(void)
 
         // Clip and draw the smooth shaded horizon polygon
         context.RestoreState(STATE_GOURAUD);
-        /*		if (dithered) {
-        			context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
-        			context.InvalidateState();
-        		}*/
+        /* if (dithered) {
+         context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
+         context.InvalidateState();
+         }*/
         ClipAndDraw2DFan(&vertPointers[0], 4);
     }
 }
@@ -461,18 +461,18 @@ void RenderOTW::DrawSkyBelow(void)
 \***************************************************************************/
 void RenderOTW::DrawSkyAbove(void)
 {
-    double	angleOfDepression, percentHalfXscale;
-    float	pixelWidth, pixelDistance;
-    float	vpAlt = -viewpoint->Z();
+    double angleOfDepression, percentHalfXscale;
+    float pixelWidth, pixelDistance;
+    float vpAlt = -viewpoint->Z();
 
-    float	bandAngleUp = min(PI / 18.0f, (PI / 48.0f) * (SKY_MAX_HEIGHT / vpAlt));
+    float bandAngleUp = min(PI / 18.0f, (PI / 48.0f) * (SKY_MAX_HEIGHT / vpAlt));
 
-    float	top		= Pitch() + diagonal_half_angle;
-    float	bottom	= Pitch() - diagonal_half_angle;
+    float top = Pitch() + diagonal_half_angle;
+    float bottom = Pitch() - diagonal_half_angle;
 
-    float	u, v;
+    float u, v;
 
-    HorizonRecord	horizon;
+    HorizonRecord horizon;
 
 #ifdef TWO_D_MAP_AVAILABLE
 
@@ -492,16 +492,16 @@ void RenderOTW::DrawSkyAbove(void)
 
 
     // Decide which portions of the sky can possibly be seen by the viewer in this orientation
-    BOOL canSeeAboveTop		= top > bandAngleUp;
-    BOOL canSeeAboveHorizon	= top > 0.0f;
-    BOOL canSeeAboveClouds	= top > -angleOfDepression;
-    BOOL canSeeBelowClear	= bottom < bandAngleUp;
-    BOOL canSeeBelowHorizon	= bottom < 0.0f;
-    BOOL canSeeCloudLayer	= bottom < -angleOfDepression;
+    BOOL canSeeAboveTop = top > bandAngleUp;
+    BOOL canSeeAboveHorizon = top > 0.0f;
+    BOOL canSeeAboveClouds = top > -angleOfDepression;
+    BOOL canSeeBelowClear = bottom < bandAngleUp;
+    BOOL canSeeBelowHorizon = bottom < 0.0f;
+    BOOL canSeeCloudLayer = bottom < -angleOfDepression;
 
-    BOOL drawFiller	= canSeeAboveClouds && canSeeBelowHorizon;
-    BOOL drawTop	= canSeeAboveHorizon && canSeeBelowClear;
-    BOOL drawClear	= canSeeAboveTop;
+    BOOL drawFiller = canSeeAboveClouds && canSeeBelowHorizon;
+    BOOL drawTop = canSeeAboveHorizon && canSeeBelowClear;
+    BOOL drawClear = canSeeAboveTop;
     BOOL drawClouds = canSeeCloudLayer;
 
 
@@ -553,9 +553,9 @@ void RenderOTW::DrawSkyAbove(void)
     // Draw the celestial objects
     DrawStars();
 
-    if (TheTimeOfDay.ThereIsASun())		DrawSun();
+    if (TheTimeOfDay.ThereIsASun()) DrawSun();
 
-    if (TheTimeOfDay.ThereIsAMoon())	DrawMoon();
+    if (TheTimeOfDay.ThereIsAMoon()) DrawMoon();
 
     // Draw the poly of low intensity haze color to fill from the terrain to the horizon
     if (drawFiller)
@@ -567,32 +567,32 @@ void RenderOTW::DrawSkyAbove(void)
     // Draw the overcast layer below us (covers all terrain)
     if (drawClouds)
     {
-        Tpoint			worldSpace;
-        ThreeDVertex	v0, v1, v2, v3;
+        Tpoint worldSpace;
+        ThreeDVertex v0, v1, v2, v3;
 
         worldSpace.z = -SKY_ROOF_HEIGHT;
         u = (float)fmod(viewpoint->Y() * 0.5f * ROOF_REPEAT_COUNT / SKY_ROOF_RANGE, 1.0f);
         v = 1.0f - (float)fmod(viewpoint->X() * 0.5f * ROOF_REPEAT_COUNT / SKY_ROOF_RANGE, 1.0f);
 
         // South West
-        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v0);
-        v0.u = u,					v0.v = v + ROOF_REPEAT_COUNT,	v0.q = v0.csZ * Q_SCALE;
+        v0.u = u, v0.v = v + ROOF_REPEAT_COUNT, v0.q = v0.csZ * Q_SCALE;
 
         // North West
-        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() - SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v1);
-        v1.u = u,					v1.v = v,					v1.q = v1.csZ * Q_SCALE;
+        v1.u = u, v1.v = v, v1.q = v1.csZ * Q_SCALE;
 
         // South East
-        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() - SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v2);
-        v2.u = u + ROOF_REPEAT_COUNT,	v2.v = v + ROOF_REPEAT_COUNT,	v2.q = v2.csZ * Q_SCALE;
+        v2.u = u + ROOF_REPEAT_COUNT, v2.v = v + ROOF_REPEAT_COUNT, v2.q = v2.csZ * Q_SCALE;
 
         // North East
-        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE, 		worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
+        worldSpace.x = viewpoint->X() + SKY_ROOF_RANGE,  worldSpace.y = viewpoint->Y() + SKY_ROOF_RANGE;
         TransformPoint(&worldSpace, &v3);
-        v3.u = u + ROOF_REPEAT_COUNT,	v3.v = v,					v3.q = v3.csZ * Q_SCALE;
+        v3.u = u + ROOF_REPEAT_COUNT, v3.v = v, v3.q = v3.csZ * Q_SCALE;
 
         v0.r = v1.r = v2.r = v3.r = 0.5f;
         v0.g = v1.g = v2.g = v3.g = 0.6f;
@@ -603,9 +603,9 @@ void RenderOTW::DrawSkyAbove(void)
 
         if (GetFilteringMode())
         {
-            //			context.SetState( MPR_STA_ENABLES, MPR_SE_FILTERING );
+            // context.SetState( MPR_STA_ENABLES, MPR_SE_FILTERING );
             context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-            //			context.InvalidateState();
+            // context.InvalidateState();
         }
 
         context.SelectTexture1(texRoofTop.TexHandle());
@@ -621,10 +621,10 @@ void RenderOTW::DrawSkyAbove(void)
 \***************************************************************************/
 void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
 {
-    Edge		horizonLine;
-    BOOL		amOut, wasOut, startedOut;
-    MPRVtx_t	vert[6];
-    unsigned short		num;
+    Edge horizonLine;
+    BOOL amOut, wasOut, startedOut;
+    MPRVtx_t vert[6];
+    unsigned short num;
 
     // Setup a line equation for the horizon in pixel space
     horizonLine.SetupWithVector(shiftX + pHorizon->vxUp, shiftY + pHorizon->vyUp, pHorizon->hx, pHorizon->hy);
@@ -739,10 +739,10 @@ void RenderOTW::DrawClearSky(HorizonRecord *pHorizon)
 #if NEW_SKY_HORIZON
 void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
 {
-    float		dr = 0.0F, dg = 0.0F, db = 0.0F;
-    const int	num = 4;
-    TwoDVertex	v0, v1, v2, v3;
-    TwoDVertex	*vertPointers[4];
+    float dr = 0.0F, dg = 0.0F, db = 0.0F;
+    const int num = 4;
+    TwoDVertex v0, v1, v2, v3;
+    TwoDVertex *vertPointers[4];
     // find out if sun is left or right
     bool sunLeft = pHorizon->sunEffectPos.x <= scaleX;
 
@@ -756,16 +756,16 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
     }
 
     // Build the corners of our horizon polygon
-    v0.x = shiftX + pHorizon->hx + pHorizon->vx;			// horizon right
+    v0.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
     v0.y = shiftY + pHorizon->hy + pHorizon->vy;
 
-    v1.x = shiftX - pHorizon->hx + pHorizon->vx;			// horizon left
+    v1.x = shiftX - pHorizon->hx + pHorizon->vx; // horizon left
     v1.y = shiftY - pHorizon->hy + pHorizon->vy;
 
-    v2.x = shiftX - pHorizon->hx + pHorizon->vxUp;			// upper left
+    v2.x = shiftX - pHorizon->hx + pHorizon->vxUp; // upper left
     v2.y = shiftY - pHorizon->hy + pHorizon->vyUp;
 
-    v3.x = shiftX + pHorizon->hx + pHorizon->vxUp;			// upper right
+    v3.x = shiftX + pHorizon->hx + pHorizon->vxUp; // upper right
     v3.y = shiftY + pHorizon->hy + pHorizon->vyUp;
 
     if (pHorizon->horeffect)
@@ -834,22 +834,22 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
     // find out if sun is left or right
     bool sunLeft = pHorizon->sunEffectPos.x <= scaleX;
 
-    float			dr = 0.0F, dg = 0.0F, db = 0.0F;
-    const int		num = 4;
-    float			/*hazescale, */lhazescale, rhazescale;
-    TwoDVertex		v0, v1, v2, v3;
-    TwoDVertex		*vertPointers[4];
+    float dr = 0.0F, dg = 0.0F, db = 0.0F;
+    const int num = 4;
+    float /*hazescale, */lhazescale, rhazescale;
+    TwoDVertex v0, v1, v2, v3;
+    TwoDVertex *vertPointers[4];
 
-    v0.x = shiftX + pHorizon->hx + pHorizon->vxDn;		// lower right
+    v0.x = shiftX + pHorizon->hx + pHorizon->vxDn; // lower right
     v0.y = shiftY + pHorizon->hy + pHorizon->vyDn;
 
-    v1.x = shiftX - pHorizon->hx + pHorizon->vxDn;		// lower left
+    v1.x = shiftX - pHorizon->hx + pHorizon->vxDn; // lower left
     v1.y = shiftY - pHorizon->hy + pHorizon->vyDn;
 
-    v2.x = shiftX - pHorizon->hx + pHorizon->vx;		// horizon left
+    v2.x = shiftX - pHorizon->hx + pHorizon->vx; // horizon left
     v2.y = shiftY - pHorizon->hy + pHorizon->vy;
 
-    v3.x = shiftX + pHorizon->hx + pHorizon->vx;	// horizon right
+    v3.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
     v3.y = shiftY + pHorizon->hy + pHorizon->vy;
 
 
@@ -869,9 +869,9 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
         dg = pHorizon->sunEffectColor.g - haze_sky_color.g;
         db = pHorizon->sunEffectColor.b - haze_sky_color.b;
 
-        //hazescale	= pHorizon->hazescale;//  * 0.4f;
-        rhazescale	= pHorizon->rhazescale;// * 0.5f;
-        lhazescale	= pHorizon->lhazescale;// * 0.5f;
+        //hazescale = pHorizon->hazescale;//  * 0.4f;
+        rhazescale = pHorizon->rhazescale;// * 0.5f;
+        lhazescale = pHorizon->lhazescale;// * 0.5f;
 
         v2.r = haze_sky_color.r + dr * lhazescale;
         v2.g = haze_sky_color.g + dg * lhazescale;
@@ -924,10 +924,10 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
 
 void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
 {
-    float		dr = 0.0F, dg = 0.0F, db = 0.0F;
-    int			num = 0;
-    TwoDVertex	v0, v1, v2, v3, v4;
-    TwoDVertex	*vertPointers[5] = { &v0, &v1, &v2, &v3, &v4 };
+    float dr = 0.0F, dg = 0.0F, db = 0.0F;
+    int num = 0;
+    TwoDVertex v0, v1, v2, v3, v4;
+    TwoDVertex *vertPointers[5] = { &v0, &v1, &v2, &v3, &v4 };
 
 
     num = 4;
@@ -957,20 +957,20 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
         v2.g = haze_sky_color.g + dg * pHorizon->lhazescale;
         v2.b = haze_sky_color.b + db * pHorizon->lhazescale;
 
-        v0.x = shiftX + pHorizon->hx + pHorizon->vx;			// horizon right
+        v0.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
         v0.y = shiftY + pHorizon->hy + pHorizon->vy;
         v1.x = pHorizon->sunEffectPos.x;
         v1.y = pHorizon->sunEffectPos.y;
-        v2.x = shiftX - pHorizon->hx + pHorizon->vx;			// horizon left
+        v2.x = shiftX - pHorizon->hx + pHorizon->vx; // horizon left
         v2.y = shiftY - pHorizon->hy + pHorizon->vy;
 
-        v3.x = shiftX - pHorizon->hx + pHorizon->vxUp;			// upper left
+        v3.x = shiftX - pHorizon->hx + pHorizon->vxUp; // upper left
         v3.y = shiftY - pHorizon->hy + pHorizon->vyUp;
         v3.r = sky_color.r;
         v3.g = sky_color.g;
         v3.b = sky_color.b;
 
-        v4.x = shiftX + pHorizon->hx + pHorizon->vxUp;			// upper right
+        v4.x = shiftX + pHorizon->hx + pHorizon->vxUp; // upper right
         v4.y = shiftY + pHorizon->hy + pHorizon->vyUp;
         v4.r = sky_color.r;
         v4.g = sky_color.g;
@@ -978,13 +978,13 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
     }
     else
     {
-        v0.x = shiftX + pHorizon->hx + pHorizon->vx;			// horizon right
+        v0.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
         v0.y = shiftY + pHorizon->hy + pHorizon->vy;
-        v1.x = shiftX - pHorizon->hx + pHorizon->vx;			// horizon left
+        v1.x = shiftX - pHorizon->hx + pHorizon->vx; // horizon left
         v1.y = shiftY - pHorizon->hy + pHorizon->vy;
-        v2.x = shiftX - pHorizon->hx + pHorizon->vxUp;			// upper left
+        v2.x = shiftX - pHorizon->hx + pHorizon->vxUp; // upper left
         v2.y = shiftY - pHorizon->hy + pHorizon->vyUp;
-        v3.x = shiftX + pHorizon->hx + pHorizon->vxUp;			// upper right
+        v3.x = shiftX + pHorizon->hx + pHorizon->vxUp; // upper right
         v3.y = shiftY + pHorizon->hy + pHorizon->vyUp;
 
         if (pHorizon->horeffect)
@@ -1032,8 +1032,8 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
     context.RestoreState(STATE_GOURAUD);
     /*
     if (dithered){
-    	context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
-    	context.InvalidateState();
+     context.SetState( MPR_STA_ENABLES, MPR_SE_DITHERING );
+     context.InvalidateState();
     }
     */
     ClipAndDraw2DFan(&vertPointers[0], num);
@@ -1041,24 +1041,24 @@ void RenderOTW::DrawSkyHazeBand(struct HorizonRecord *pHorizon)
 
 void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
 {
-    float			dr = 0.0F, dg = 0.0F, db = 0.0F;
-    int				num = 0;
-    float			hazescale, lhazescale, rhazescale;
-    TwoDVertex		v0, v1, v2, v3, v4;
-    TwoDVertex		*vertPointers[5] = { &v0, &v1, &v2, &v3, &v4 };
+    float dr = 0.0F, dg = 0.0F, db = 0.0F;
+    int num = 0;
+    float hazescale, lhazescale, rhazescale;
+    TwoDVertex v0, v1, v2, v3, v4;
+    TwoDVertex *vertPointers[5] = { &v0, &v1, &v2, &v3, &v4 };
 
-    v0.x = shiftX + pHorizon->hx + pHorizon->vxDn;		// lower right
+    v0.x = shiftX + pHorizon->hx + pHorizon->vxDn; // lower right
     v0.y = shiftY + pHorizon->hy + pHorizon->vyDn;
     v0.r = haze_ground_color.r;
     v0.g = haze_ground_color.g;
     v0.b = haze_ground_color.b;
-    v1.x = shiftX - pHorizon->hx + pHorizon->vxDn;		// lower left
+    v1.x = shiftX - pHorizon->hx + pHorizon->vxDn; // lower left
     v1.y = shiftY - pHorizon->hy + pHorizon->vyDn;
     v1.r = haze_ground_color.r;
     v1.g = haze_ground_color.g;
     v1.b = haze_ground_color.b;
 
-    v2.x = shiftX - pHorizon->hx + pHorizon->vx;		// horizon left
+    v2.x = shiftX - pHorizon->hx + pHorizon->vx; // horizon left
     v2.y = shiftY - pHorizon->hy + pHorizon->vy;
 
     if (pHorizon->horeffect)
@@ -1068,9 +1068,9 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
         db = pHorizon->sunEffectColor.b - earth_end_color.b;
 
         // scale down the scale factor for ground
-        hazescale	= pHorizon->hazescale  * 0.4f;
-        lhazescale	= pHorizon->rhazescale * 0.5f;
-        rhazescale	= pHorizon->lhazescale * 0.5f;
+        hazescale = pHorizon->hazescale  * 0.4f;
+        lhazescale = pHorizon->rhazescale * 0.5f;
+        rhazescale = pHorizon->lhazescale * 0.5f;
 
         v2.r = earth_end_color.r + dr * lhazescale;
         v2.g = earth_end_color.g + dg * lhazescale;
@@ -1082,7 +1082,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
 
             v3.x = pHorizon->sunEffectPos.x;
             v3.y = pHorizon->sunEffectPos.y;
-            v4.x = shiftX + pHorizon->hx + pHorizon->vx;	// horizon right
+            v4.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
             v4.y = shiftY + pHorizon->hy + pHorizon->vy;
 
             v3.r = earth_end_color.r + dr * hazescale;
@@ -1097,7 +1097,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
         {
             num = 4;
 
-            v3.x = shiftX + pHorizon->hx + pHorizon->vx;	// horizon right
+            v3.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
             v3.y = shiftY + pHorizon->hy + pHorizon->vy;
 
             v3.r = earth_end_color.r + dr * rhazescale;
@@ -1109,7 +1109,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
     {
         num = 4;
 
-        v3.x = shiftX + pHorizon->hx + pHorizon->vx;		// horizon right
+        v3.x = shiftX + pHorizon->hx + pHorizon->vx; // horizon right
         v3.y = shiftY + pHorizon->hy + pHorizon->vy;
 
         v2.r = earth_end_color.r;
@@ -1145,7 +1145,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
     if (dithered)
     {
         context.SetState(MPR_STA_ENABLES, MPR_SE_DITHERING);
-        //		context.InvalidateState();
+        // context.InvalidateState();
     }
 
 #endif
@@ -1164,7 +1164,7 @@ void RenderOTW::DrawStars(void)
 
     if (vpAlt > SKY_ROOF_HEIGHT)
     {
-        float	althazefactor;
+        float althazefactor;
 
         if (vpAlt > SKY_MAX_HEIGHT)
         {
@@ -1183,13 +1183,13 @@ void RenderOTW::DrawStars(void)
 
     if (starblend > 0.000001f)
     {
-        Tcolor		star_color;
-        Tcolor		sky_part;
-        DWORD		draw_color;
-        MPRVtx_t	vert;
-        register float		scratch_x;
-        register float		scratch_y;
-        register float		scratch_z;
+        Tcolor star_color;
+        Tcolor sky_part;
+        DWORD draw_color;
+        MPRVtx_t vert;
+        register float scratch_x;
+        register float scratch_y;
+        register float scratch_z;
 
 
         // Compute the sky color portion of the star colors
@@ -1244,11 +1244,11 @@ void RenderOTW::DrawStars(void)
             scratch_y = T.M31 * coord->x + T.M32 * coord->y + T.M33 * coord->z;
 
             // Now determine if the point is out behind us or to the sides
-            if (scratch_z < 0.000001f)											continue;
+            if (scratch_z < 0.000001f) continue;
 
-            if (GetHorizontalClipFlags(scratch_x, scratch_z) != ON_SCREEN)	continue;
+            if (GetHorizontalClipFlags(scratch_x, scratch_z) != ON_SCREEN) continue;
 
-            if (GetVerticalClipFlags(scratch_y, scratch_z) != ON_SCREEN)	continue;
+            if (GetVerticalClipFlags(scratch_y, scratch_z) != ON_SCREEN) continue;
 
             // Finally, do the perspective divide and scale and shift into screen space
             register float OneOverZ = 1.0f / scratch_z;
@@ -1263,13 +1263,13 @@ void RenderOTW::DrawStars(void)
 
 
 /***************************************************************************\
-	Draw the sun
+ Draw the sun
 \***************************************************************************/
 void RenderOTW::DrawSun(void)
 {
-    Tpoint	center;
-    float	alpha;
-    float	dist;
+    Tpoint center;
+    float alpha;
+    float dist;
 
 
     // RED - Do not draw if inside a layer
@@ -1320,14 +1320,14 @@ void RenderOTW::DrawSun(void)
 
 
 /***************************************************************************\
-	Draw the moon
+ Draw the moon
 \***************************************************************************/
 void RenderOTW::DrawMoon(void)
 {
     // RED - Do not draw if inside a layer
     if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
 
-    Tpoint	center;
+    Tpoint center;
 
     ShiAssert(TheTimeOfDay.ThereIsAMoon());
 
@@ -1348,7 +1348,7 @@ void RenderOTW::DrawMoon(void)
 
 
     float dist = MOON_DIST;
-#if 0	// I think this looks a little silly.  Let try without it...
+#if 0 // I think this looks a little silly.  Let try without it...
     int moonpitch = TheTimeOfDay.GetMoonPitch();
 
     if (moonpitch < 512)
@@ -1383,14 +1383,14 @@ void RenderOTW::DrawMoon(void)
 
 
 /***************************************************************************\
-	Do the setup for the billboard of a celestial object (sun/moon)
+ Do the setup for the billboard of a celestial object (sun/moon)
 \***************************************************************************/
 int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r, float g, float b)
 {
-    ThreeDVertex	v0, v1, v2, v3;
-    Tpoint			eastSide;
-    Tpoint			corner;
-    Tpoint			center = *cntr;
+    ThreeDVertex v0, v1, v2, v3;
+    Tpoint eastSide;
+    Tpoint corner;
+    Tpoint center = *cntr;
 
     // Cross the vector toward the center with North (1,0,0) to get the side vector
 
@@ -1412,19 +1412,19 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     corner.y = center.y - eastSide.y;
     corner.z = center.z - eastSide.z;
     TransformCameraCentricPoint(&corner, &v0);
-    v0.u = 0.0f,	v0.v = 0.0f;
+    v0.u = 0.0f, v0.v = 0.0f;
     v0.q = 1.0f;
 
     //JAM 04Oct03
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        v0.r = r,		v0.g = g;
+        v0.r = r, v0.g = g;
         v0.b = b;
         v0.a = alpha;
     }
     else
     {
-        v0.r = 1.0f,	v0.g = 1.0f;
+        v0.r = 1.0f, v0.g = 1.0f;
         v0.b = 1.0f;
         v0.a = alpha;
     }
@@ -1433,19 +1433,19 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     corner.y = center.y + eastSide.y;
     corner.z = center.z + eastSide.z;
     TransformCameraCentricPoint(&corner, &v1);
-    v1.u = 1.0f,	v1.v = 0.0f;
+    v1.u = 1.0f, v1.v = 0.0f;
     v1.q = 1.0f;
 
     //JAM 04Oct03
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        v1.r = r,		v1.g = g;
+        v1.r = r, v1.g = g;
         v1.b = b;
         v1.a = alpha;
     }
     else
     {
-        v1.r = 1.0f,	v1.g = 1.0f;
+        v1.r = 1.0f, v1.g = 1.0f;
         v1.b = 1.0f;
         v1.a = alpha;
     }
@@ -1453,19 +1453,19 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     // South East corner
     corner.x = center.x - 1.0f;
     TransformCameraCentricPoint(&corner, &v2);
-    v2.u = 1.0f,	v2.v = 1.0f;
+    v2.u = 1.0f, v2.v = 1.0f;
     v2.q = 1.0f;
 
     //JAM 04Oct03
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        v2.r = r,		v2.g = g;
+        v2.r = r, v2.g = g;
         v2.b = b;
         v2.a = alpha;
     }
     else
     {
-        v2.r = 1.0f,	v2.g = 1.0f;
+        v2.r = 1.0f, v2.g = 1.0f;
         v2.b = 1.0f;
         v2.a = alpha;
     }
@@ -1474,19 +1474,19 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     corner.y = center.y - eastSide.y;
     corner.z = center.z - eastSide.z;
     TransformCameraCentricPoint(&corner, &v3);
-    v3.u = 0.0f,	v3.v = 1.0f;
+    v3.u = 0.0f, v3.v = 1.0f;
     v3.q = 1.0f;
 
     //JAM 04Oct03
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        v3.r = r,		v3.g = g;
+        v3.r = r, v3.g = g;
         v3.b = b;
         v3.a = alpha;
     }
     else
     {
-        v3.r = 1.0f,	v3.g = 1.0f;
+        v3.r = 1.0f, v3.g = 1.0f;
         v3.b = 1.0f;
         v3.a = alpha;
     }
@@ -1497,7 +1497,7 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
     if (g_nGfxFix & 0x04)
         gif = true;
 
-    if (v0.clipFlag & v1.clipFlag & v2.clipFlag & v3.clipFlag) return 0;	// not visible
+    if (v0.clipFlag & v1.clipFlag & v2.clipFlag & v3.clipFlag) return 0; // not visible
 
     DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, gif);
 
@@ -1511,8 +1511,8 @@ int RenderOTW::DrawCelestialBody(Tpoint *cntr, float dist, float alpha, float r,
 \***************************************************************************/
 void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
 {
-    Tpoint			sunEffectWorldSpace;
-    ThreeDVertex	sunEffectScreenSpace;
+    Tpoint sunEffectWorldSpace;
+    ThreeDVertex sunEffectScreenSpace;
 
     //JAM 09Dec03
     if (realWeather->UnderOvercast() || realWeather->InsideOvercast())
@@ -1641,7 +1641,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
 
 /***************************************************************************\
     Establish the lighting parameters for this renderer as the time of
-	day changes.
+ day changes.
 \***************************************************************************/
 void RenderOTW::SetTimeOfDayColor(void)
 {
@@ -1654,18 +1654,18 @@ void RenderOTW::SetTimeOfDayColor(void)
         lightSpecular = 0.f;
         TheTimeOfDay.GetLightDirection(&lightVector);
 
-        sky_color.r			= 0.f;
-        sky_color.g			= NVG_SKY_LEVEL;
-        sky_color.b			= 0.f;
-        haze_sky_color.r	= 0.f;
-        haze_sky_color.g	= NVG_SKY_LEVEL;
-        haze_sky_color.b	= 0.f;
-        earth_end_color.r	= 0.f;
-        earth_end_color.g	= NVG_SKY_LEVEL;
-        earth_end_color.b	= 0.f;
-        haze_ground_color.r	= 0.f;
-        haze_ground_color.g	= NVG_SKY_LEVEL;
-        haze_ground_color.b	= 0.f;
+        sky_color.r = 0.f;
+        sky_color.g = NVG_SKY_LEVEL;
+        sky_color.b = 0.f;
+        haze_sky_color.r = 0.f;
+        haze_sky_color.g = NVG_SKY_LEVEL;
+        haze_sky_color.b = 0.f;
+        earth_end_color.r = 0.f;
+        earth_end_color.g = NVG_SKY_LEVEL;
+        earth_end_color.b = 0.f;
+        haze_ground_color.r = 0.f;
+        haze_ground_color.g = NVG_SKY_LEVEL;
+        haze_ground_color.b = 0.f;
 
         DWORD ground_haze = (FloatToInt32(haze_ground_color.g * 255.9f) << 8) + 0xff000000;
         context.SetState(MPR_STA_FOG_COLOR, ground_haze);
@@ -1673,7 +1673,7 @@ void RenderOTW::SetTimeOfDayColor(void)
     else
     {
 
-        Tcolor	light;
+        Tcolor light;
 
         // Set 3D object lighting environment
         lightAmbient = TheTimeOfDay.GetAmbientValue();
@@ -1682,8 +1682,8 @@ void RenderOTW::SetTimeOfDayColor(void)
         TheTimeOfDay.GetLightDirection(&lightVector);
 
         // Store terrain lighting environment (not used at present)
-        lightTheta	= (float)atan2(lightVector.y, lightVector.x);
-        lightPhi	= (float)atan2(-lightVector.z, sqrt(lightVector.x * lightVector.x + lightVector.y * lightVector.y));
+        lightTheta = (float)atan2(lightVector.y, lightVector.x);
+        lightPhi = (float)atan2(-lightVector.z, sqrt(lightVector.x * lightVector.x + lightVector.y * lightVector.y));
         ShiAssert(lightPhi <= PI * 0.5f);
 
         // Get the new colors for this time of day
@@ -1707,7 +1707,7 @@ void RenderOTW::SetTimeOfDayColor(void)
         TheTimeOfDay.GetTextureLightingColor(&ground_color);
 
         // TODO:  Set the fog color for the objects
-        //	TheStateStack.SetDepthCueColor( haze_ground_color.r, haze_ground_color.g, haze_ground_color.b );
+        // TheStateStack.SetDepthCueColor( haze_ground_color.r, haze_ground_color.g, haze_ground_color.b );
 
         // Adjust the color of the roof textures if they're loaded
         if (texRoofTop.TexHandle())
@@ -1728,8 +1728,8 @@ void RenderOTW::SetTimeOfDayColor(void)
 
 /***************************************************************************\
     Adjust the target color as necessary for display.  This is here
-	just to allow derived classes (like RenderTV) to convert colors as
-	necessary.
+ just to allow derived classes (like RenderTV) to convert colors as
+ necessary.
 \***************************************************************************/
 //void RenderOTW::ProcessColor( Tcolor *color )
 void RenderOTW::ProcessColor(Tcolor * color)
@@ -1745,7 +1745,7 @@ void RenderOTW::ProcessColor(Tcolor * color)
 
 /***************************************************************************\
     Adjust the sky color based on angle from sun and altitude.  This is
-	updated each frame.
+ updated each frame.
 \***************************************************************************/
 void RenderOTW::AdjustSkyColor(void)
 {
@@ -1758,11 +1758,11 @@ void RenderOTW::AdjustSkyColor(void)
     // Start with the default sky color for this time of day
 
     // darken color at high altitude
-    float	vpAlt = -viewpoint->Z();
+    float vpAlt = -viewpoint->Z();
 
     if (vpAlt > SKY_ROOF_HEIGHT)
     {
-        float	althazefactor, althazefactorblue;
+        float althazefactor, althazefactorblue;
 
         if (vpAlt > SKY_MAX_HEIGHT)
         {
@@ -1800,7 +1800,7 @@ void RenderOTW::AdjustSkyColor(void)
                 vpAlt = (SKY_MAX_HEIGHT - vpAlt) * GLARE_FACTOR;
                 float intensity = (float)glGetSine(FloatToInt32(vpAlt));
                 intensity *= SunGlareValue;
-                intensity *= 0.25f;	// scale it down
+                intensity *= 0.25f; // scale it down
 
                 if (intensity > 0.05f)
                 {
@@ -1823,8 +1823,8 @@ void RenderOTW::AdjustSkyColor(void)
 
 
 /***************************************************************************\
-	This function is called from the miscellanious texture loader function.
-	It must be hardwired into that function.
+ This function is called from the miscellanious texture loader function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void RenderOTW::SetupTexturesOnDevice( DWORD rc )
 void RenderOTW::SetupTexturesOnDevice(DXContext *rc)
@@ -1834,7 +1834,7 @@ void RenderOTW::SetupTexturesOnDevice(DXContext *rc)
 
 /***************************************************************************\
     This function is called from the miscellanious texture clean up function.
-	It must be hardwired into that function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void RenderOTW::ReleaseTexturesOnDevice( DWORD rc )
 void RenderOTW::ReleaseTexturesOnDevice(DXContext *rc)
@@ -1849,7 +1849,7 @@ void RenderOTW::ReleaseTexturesOnDevice(DXContext *rc)
 
 
 /***************************************************************************\
-	Update the lighting properties based on the time of day
+ Update the lighting properties based on the time of day
 \***************************************************************************/
 void RenderOTW::TimeUpdateCallback(void *self)
 {

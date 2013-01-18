@@ -95,10 +95,10 @@ int AircraftClass::Wake(void)
         /*
         if(!turbulence)
         {
-        	turbulence = new AircraftTurbulence;
-        	turbulence->lifeSpan = 30; // seconds;
-        	turbulence->growthRate = 5; // feet/sec
-        	turbulence->startRadius = af->GetAeroData(AeroDataSet::Span) / 4;
+         turbulence = new AircraftTurbulence;
+         turbulence->lifeSpan = 30; // seconds;
+         turbulence->growthRate = 5; // feet/sec
+         turbulence->startRadius = af->GetAeroData(AeroDataSet::Span) / 4;
         }
         */
         if (!lVortex)
@@ -435,17 +435,17 @@ void AircraftClass::MakePlayerVehicle(void)
             }
         }
     }
-    else  	// JPO start up anyway.
+    else   // JPO start up anyway.
     {
         PreFlight();
     }
 
     // just for testing simple flight model!!!
     // if (af->IsSet(AirframeClass::Simplified))
-    //		af->SetSimpleMode( SIMPLE_MODE_AF );
+    // af->SetSimpleMode( SIMPLE_MODE_AF );
     //     af->SetFlag(AirframeClass::Simplified);
     // else
-    // 		af->SetSimpleMode( FALSE );
+    //  af->SetSimpleMode( FALSE );
     if (PlayerOptions.GetFlightModelType() == FMSimplified)
     {
         // EASTER EGG: use helicopter hifi model
@@ -520,7 +520,7 @@ void AircraftClass::MakePlayerVehicle(void)
         Sms->SetUnlimitedAmmo(TRUE);
 
     // Get rid of old sensors
-    //s = numSensors;					// Set sensors to 0, so we can run while we're doing this
+    //s = numSensors; // Set sensors to 0, so we can run while we're doing this
 
     // OW - fixes memory leak
     if (tempSensorArray)
@@ -575,8 +575,8 @@ void AircraftClass::MakePlayerVehicle(void)
 
     for (i = 0; i < s; i++)
     {
-        sensorClass	= SimACDefTable[classPtr->vehicleDataIndex].sensorType[i];
-        sensorType	= SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
+        sensorClass = SimACDefTable[classPtr->vehicleDataIndex].sensorType[i];
+        sensorType = SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
 
         switch (sensorClass)
         {
@@ -600,7 +600,7 @@ void AircraftClass::MakePlayerVehicle(void)
                         break;
 
                     case ATRealistic:
-                    case ATRealisticAV:	// M.N.
+                    case ATRealisticAV: // M.N.
                         sensorArray[i] = new RadarDopplerClass(GetRadarType(), this);
                         // SCR 11/28/98  I don't think this is a valid thing to assert -- the sensorIdx data is old and out of date.
                         //                  F4Assert (sensorType == GetRadarType());
@@ -843,21 +843,21 @@ void AircraftClass::SetVuPosition(void)
 /* sfr: commented out
 void AircraftClass::SetVt(float newvt)
 {
-	af->vt = newvt;
-	vt = newvt;
+ af->vt = newvt;
+ vt = newvt;
 }
 
 void AircraftClass::SetKias(float newkias)
 {
-	af->vcas = newkias;
-	GetKias = newkias;
+ af->vcas = newkias;
+ GetKias = newkias;
 }
 
 // OW: Jackals "scold-on-bounce" fix
 
 float AircraftClass::GetKias()
 {
-	return GetKias;
+ return GetKias;
 }*/
 
 //void AircraftClass::Regenerate (float newx, float newy, float newz, float newyaw)

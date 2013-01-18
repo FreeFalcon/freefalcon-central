@@ -25,12 +25,12 @@ typedef Int16 GridIndex;
 
 typedef struct gridloctype
 {
-    GridIndex		x;
-    GridIndex		y;
+    GridIndex x;
+    GridIndex y;
 } GridLocation;
 
-extern short				Map_Max_X;							// World Size, in grid coordinates
-extern short				Map_Max_Y;
+extern short Map_Max_X; // World Size, in grid coordinates
+extern short Map_Max_Y;
 
 extern void InitTheaterTerrain(void);
 

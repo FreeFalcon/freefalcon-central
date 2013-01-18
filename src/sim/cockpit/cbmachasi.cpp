@@ -14,7 +14,7 @@
 
 //MI
 extern bool g_bRealisticAvionics;
-extern bool g_bMachAsiDial;			//Wombat778 7-9-04
+extern bool g_bMachAsiDial; //Wombat778 7-9-04
 
 void CBEMachAsi(void * pObject)
 {
@@ -25,7 +25,7 @@ void CBEMachAsi(void * pObject)
     if (!g_bMachAsiDial)
     {
 
-        CPMachAsi*		pCPMachAsi;
+        CPMachAsi* pCPMachAsi;
         pCPMachAsi = (CPMachAsi*) pObject;
 
         //MI
@@ -42,11 +42,11 @@ void CBEMachAsi(void * pObject)
             pCPMachAsi->mAirSpeed = value;
         }
         else
-            pCPMachAsi->mAirSpeed		= cockpitFlightData.kias / 100.0F;
+            pCPMachAsi->mAirSpeed = cockpitFlightData.kias / 100.0F;
     }
     else
     {
-        CPDial*		pCPDial;
+        CPDial* pCPDial;
 
         pCPDial = (CPDial*) pObject;
 
@@ -68,7 +68,7 @@ void CBEMachAsi(void * pObject)
             pCPDial->mDialValue = value;
         }
         else
-            pCPDial->mDialValue		= ((AircraftClass *)pCPDial->mpOwnship)->GetKias() / 100.0F;
+            pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->GetKias() / 100.0F;
     }
 }
 
@@ -76,10 +76,10 @@ void CBEMachAsi(void * pObject)
 void CBEMach(void * pObject)
 {
 
-    CPDigits*		pCPDigits	= (CPDigits*) pObject;
-    float				machNumber;
-    int				firstDigit;
-    int				secondDigit;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
+    float machNumber;
+    int firstDigit;
+    int secondDigit;
 
     machNumber = cockpitFlightData.mach;
 
@@ -96,7 +96,7 @@ void CBEMach(void * pObject)
             value = 0.0F;
 
         //if(value > 22.0F)
-        //	value = 22.0F;
+        // value = 22.0F;
 
         pCPDigits->SetDigitValues((int)value);
     }

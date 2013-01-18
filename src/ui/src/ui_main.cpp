@@ -1,10 +1,10 @@
 #define _USE_MOVIE_ 1
 /***************************************************************************\
-	UI_Main.cpp
-	Peter Ward
-	December 3, 1996
+ UI_Main.cpp
+ Peter Ward
+ December 3, 1996
 
-	Main UI screen stuff for falcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -70,7 +70,7 @@
 #include "sim/include/OTWDrive.h"
 
 extern OTWDriverClass OTWDriver; // JB 010615
-extern bool g_bHiResUI;	// M.N. 2001-11-20
+extern bool g_bHiResUI; // M.N. 2001-11-20
 
 //JAM 18Nov03
 #include "Weather.h"
@@ -419,7 +419,7 @@ int HelpLoaded = 0;
 int TACSelLoaded = 0;
 enum
 {
-    SND_FLY			  = 500003,
+    SND_FLY   = 500003,
     SND_SCREAM        = 500005,
     SND_BAD1          = 500006,
     SND_SECOND        = 500007,
@@ -427,11 +427,11 @@ enum
     SND_NICE          = 500009,
     SND_BAD2          = 500010,
     SND_YOUSUCK       = 500011,
-    SND_TAKEOFF		  = 500023,
-    SND_CAMPAIGN	  = 500024,
-    SND_LIBYA		  = 500025,
-    SND_AMBIENT1	  = 500051,
-    SND_AMBIENT2	  = 500052,
+    SND_TAKEOFF   = 500023,
+    SND_CAMPAIGN   = 500024,
+    SND_LIBYA   = 500025,
+    SND_AMBIENT1   = 500051,
+    SND_AMBIENT2   = 500052,
     SND_CAMPAIGN_GOOD = 500053,
     SND_CAMPAIGN_MEDIUM = 500054,
     SND_CAMPAIGN_BAD = 500055,
@@ -528,9 +528,9 @@ void CloseAllRenderers(long openID)
 
 void LeaveCurrentGame()
 {
-    //	KCK: This needs to NOT be here.
-    //	if (!FalconLocalGame)
-    //		return;
+    // KCK: This needs to NOT be here.
+    // if (!FalconLocalGame)
+    // return;
 
     switch (FalconLocalGame->GetGameType())
     {
@@ -615,7 +615,7 @@ void LoadMainWindow()
     }
     else
     {
-        gMainParser->LoadImageList("main_art.lst");	// these aren't loaded anymore
+        gMainParser->LoadImageList("main_art.lst"); // these aren't loaded anymore
     }
 
     gMainParser->LoadSoundList("main_snd.lst");
@@ -658,10 +658,10 @@ static void ExitTheGameCB(long , short hittype, C_Base *)
         gCommsMgr->StopComms();
     }
 
-    /*	if (skycolor)
-    		delete [] skycolor;
-    	if (weatherPatternData)
-    		delete [] weatherPatternData;
+    /* if (skycolor)
+     delete [] skycolor;
+     if (weatherPatternData)
+     delete [] weatherPatternData;
     */
 
 #ifdef DEBUG
@@ -680,8 +680,8 @@ void ExitCloseWindowCB(long , short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    //	gMainHandler->SetOutputDelay(80);
-    //	gMainHandler->SetControlDelay(80);
+    // gMainHandler->SetOutputDelay(80);
+    // gMainHandler->SetControlDelay(80);
     if (control->GetGroup())
     {
         gMainHandler->DisableWindowGroup(control->GetGroup());
@@ -704,8 +704,8 @@ static void ExitButtonCB(long , short hittype, C_Base *)
     if (win)
         win->VY_[1] = win->ClientArea_[1].top;
 
-    //	gMainHandler->SetOutputDelay(40);
-    //	gMainHandler->SetControlDelay(40);
+    // gMainHandler->SetOutputDelay(40);
+    // gMainHandler->SetControlDelay(40);
     ExitVerify(TXT_EXIT_GAME, ExitTheGameCB, ExitCloseWindowCB);
 }
 
@@ -1257,7 +1257,7 @@ void GlobalSetup()
     DWORD b_mask;
     WORD b_shift;
     char *mouse;
-    //	FILE *fp;
+    // FILE *fp;
 
     mouse = MAKEINTRESOURCE(UI_F16);
     gCursors[1] = LoadCursor(hInst, mouse);
@@ -1303,12 +1303,12 @@ void GlobalSetup()
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    //	fp=fopen("art\\main\\ascii.bin","rb");
-    //	if(fp)
-    //	{
-    //		fread(Key_Chart,sizeof(Key_Chart),1,fp);
-    //		fclose(fp);
-    //	}
+    // fp=fopen("art\\main\\ascii.bin","rb");
+    // if(fp)
+    // {
+    // fread(Key_Chart,sizeof(Key_Chart),1,fp);
+    // fclose(fp);
+    // }
 
     if (gImageMgr == NULL)
         gImageMgr = new C_Image;
@@ -1316,7 +1316,7 @@ void GlobalSetup()
     gImageMgr->Setup();
     gImageMgr->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
-    //!	UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     gImageMgr->SetScreenFormat(r_shift, g_shift, b_shift);
 
     gFontList = new C_Font;
@@ -1477,10 +1477,10 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
     LastTypePlayed = 1;
 
     if (TeamInfo[FalconLocalSession->GetTeam()]->playerRating < -5)
-        //	if(TeamInfo[2]->Initiative() < 34)
+        // if(TeamInfo[2]->Initiative() < 34)
         gMusic->AddQ(SND_CAMPAIGN_BAD);
     else if (TeamInfo[FalconLocalSession->GetTeam()]->playerRating < 5)
-        //	else if (TeamInfo[2]->Initiative() < 67)
+        // else if (TeamInfo[2]->Initiative() < 67)
         gMusic->AddQ(SND_CAMPAIGN_MEDIUM);
     else
         gMusic->AddQ(SND_CAMPAIGN_GOOD);
@@ -1493,8 +1493,8 @@ void PlayThatFunkyMusicWhiteBoy()
     if (!gMusic || !MusicStopped)
         return;
 
-    //	if(GetCurrentTime() < (MusicStopped + 60000l))
-    //		return;
+    // if(GetCurrentTime() < (MusicStopped + 60000l))
+    // return;
 
     if (LastTypePlayed != 1)
     {
@@ -1535,88 +1535,88 @@ void PlayUIMovie(long ID)
 
 void UI_LoadSkyWeatherData()
 {
-    /*	// M.N.
-    	FILE*		fp;
-    	int			i = 0;
-    	char		file[1024];
-    	_TCHAR		image1[MAX_PATH], image2[MAX_PATH], image3[MAX_PATH], image4[MAX_PATH];
-    	_TCHAR		name[50], filename[50], picname[50];
+    /* // M.N.
+     FILE* fp;
+     int i = 0;
+     char file[1024];
+     _TCHAR image1[MAX_PATH], image2[MAX_PATH], image3[MAX_PATH], image4[MAX_PATH];
+     _TCHAR name[50], filename[50], picname[50];
 
-    	// Skycolor data readin
-    //	sprintf(file,"%s\\weather\\todtable.dat",FalconTerrainDataDir);
+     // Skycolor data readin
+    // sprintf(file,"%s\\weather\\todtable.dat",FalconTerrainDataDir);
 
-    	/* format:
-    		[NumberOfSkyColors]
-    		[UI display name]
-    		[TOD file name] [Image1] [Image2] [Image3] [Image4]
-    	*/
+     /* format:
+     [NumberOfSkyColors]
+     [UI display name]
+     [TOD file name] [Image1] [Image2] [Image3] [Image4]
+     */
 
-    /*	if(!(fp=fopen(file,"rt")))
-    		return;
-    	NumberOfSkyColors = atoi(fgets(file,1024,fp));
+    /* if(!(fp=fopen(file,"rt")))
+     return;
+     NumberOfSkyColors = atoi(fgets(file,1024,fp));
 
-    	skycolor = new SkyColorDataType[NumberOfSkyColors];
-    	while (i<NumberOfSkyColors) //for (int i=0; i<NumberOfSkyColors; i++)
-    	{
-    		fgets(file,1024,fp);
-    		if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
-    			continue;
+     skycolor = new SkyColorDataType[NumberOfSkyColors];
+     while (i<NumberOfSkyColors) //for (int i=0; i<NumberOfSkyColors; i++)
+     {
+     fgets(file,1024,fp);
+     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     continue;
 
-    		strcpy(name,file);
-    		strcpy(skycolor[i].name,name);
-    		fgets(file,1024,fp);
-    		sscanf(file, "%s %s %s %s %s",filename,image1,image2,image3,image4);
-    		strcpy(skycolor[i].todname,filename);
-    		strcpy(skycolor[i].image1,image1);
-    		if (!strlen(image2))		// If we have no entry, use the main image
-    			strcpy(image2,image1);
-    		strcpy(skycolor[i].image2,image2);
-    		if (!strlen(image3))
-    			strcpy(image3,image1);
-    		strcpy(skycolor[i].image3,image3);
-    		if (!strlen(image4))
-    			strcpy(image4,image1);
-    		strcpy(skycolor[i].image4,image4);
-    		strcpy(image1,"");
-    		strcpy(image2,"");
-    		strcpy(image3,"");
-    		strcpy(image4,"");
-    		i++;
-    	}
-    	fclose(fp);
+     strcpy(name,file);
+     strcpy(skycolor[i].name,name);
+     fgets(file,1024,fp);
+     sscanf(file, "%s %s %s %s %s",filename,image1,image2,image3,image4);
+     strcpy(skycolor[i].todname,filename);
+     strcpy(skycolor[i].image1,image1);
+     if (!strlen(image2)) // If we have no entry, use the main image
+     strcpy(image2,image1);
+     strcpy(skycolor[i].image2,image2);
+     if (!strlen(image3))
+     strcpy(image3,image1);
+     strcpy(skycolor[i].image3,image3);
+     if (!strlen(image4))
+     strcpy(image4,image1);
+     strcpy(skycolor[i].image4,image4);
+     strcpy(image1,"");
+     strcpy(image2,"");
+     strcpy(image3,"");
+     strcpy(image4,"");
+     i++;
+     }
+     fclose(fp);
 
-    	prevskycol = PlayerOptions.skycol;
+     prevskycol = PlayerOptions.skycol;
 
-    	sprintf(file,"%s\\weather\\weathertable.dat",FalconTerrainDataDir);
+     sprintf(file,"%s\\weather\\weathertable.dat",FalconTerrainDataDir);
 
-    	if(!(fp=fopen(file,"rt")))
-    		return;
-    	NumWeatherPatterns = atoi(fgets(file,1024,fp));
-    	i = 0;
-    	weatherPatternData = new WeatherPatternDataType[NumWeatherPatterns];
-    	while (i<NumWeatherPatterns)
-    //	for (i=0; i<NumWeatherPatterns; i++)
-    	{
-    		fgets(file,1024,fp);
-    		if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
-    			continue;
-    		strcpy(weatherPatternData[i].name,file);
-    		fgets(file,1024,fp);
-    		sscanf(file,"%s %s",filename, picname); // filename = RAW, picname = picture
-    		strcpy(weatherPatternData[i].filename,filename);
-    		strcpy(weatherPatternData[i].picfname,picname);
-    		i++;
-    	}
-    	fclose(fp);
+     if(!(fp=fopen(file,"rt")))
+     return;
+     NumWeatherPatterns = atoi(fgets(file,1024,fp));
+     i = 0;
+     weatherPatternData = new WeatherPatternDataType[NumWeatherPatterns];
+     while (i<NumWeatherPatterns)
+    // for (i=0; i<NumWeatherPatterns; i++)
+     {
+     fgets(file,1024,fp);
+     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     continue;
+     strcpy(weatherPatternData[i].name,file);
+     fgets(file,1024,fp);
+     sscanf(file,"%s %s",filename, picname); // filename = RAW, picname = picture
+     strcpy(weatherPatternData[i].filename,filename);
+     strcpy(weatherPatternData[i].picfname,picname);
+     i++;
+     }
+     fclose(fp);
     */
 }
 
 int UI_Startup()
 {
-    C_Window	*win;
+    C_Window *win;
     ImageBuffer *Primary;
-    int			i;
-    DWORD		r_mask, g_mask, b_mask;
+    int i;
+    DWORD r_mask, g_mask, b_mask;
 
     // OW
     //ShowCursor(TRUE);
@@ -1628,7 +1628,7 @@ int UI_Startup()
     FalconMessageFilter UIFilter(FalconEvent::UIThread, 0);
 
     // OW: Enable UI Hardware acceleration
-    //	FalconDisplay.EnterMode(FalconDisplayConfiguration::UI);
+    // FalconDisplay.EnterMode(FalconDisplayConfiguration::UI);
 
     // M.N. Large UI
     if (g_bHiResUI)
@@ -1672,7 +1672,7 @@ int UI_Startup()
 
     gMainHandler = new C_Handler;
     gMainHandler->Setup(FalconDisplay.appWin, NULL, Primary);
-    //	gMainHandler->SetCallback(UIMainMouse);
+    // gMainHandler->SetCallback(UIMainMouse);
 
     GlobalSetup();
     LoadArtwork();
@@ -1756,11 +1756,11 @@ int UI_Startup()
             DoResultsWindows();
             /*
             if(MissionResult & PROMOTION)
-            	PromotionWindow();
+             PromotionWindow();
             if(MissionResult & AWARD_MEDAL)
-            	AwardWindow();
+             AwardWindow();
             else if(MissionResult & COURT_MARTIAL)
-            	CourtMartialWindow();
+             CourtMartialWindow();
             */
 
         }

@@ -12,12 +12,12 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int				idNum;
-    RECT				srcRect;
-    int				xhotSpot;
-    int				yhotSpot;
-    ImageBuffer*	pOtwImage;
-    ImageBuffer*	pTemplate;
+    int idNum;
+    RECT srcRect;
+    int xhotSpot;
+    int yhotSpot;
+    ImageBuffer* pOtwImage;
+    ImageBuffer* pTemplate;
 } CursorInitStr;
 
 //====================================================//
@@ -44,22 +44,22 @@ public:
     // ID Tag
     //====================================================//
 
-    int				mIdNum;
+    int mIdNum;
 
     //====================================================//
     // Source Location in Template Buffer and Hotspot Offsets
     //====================================================//
 
-    RECT				mSrcRect;
-    int				mxHotspot;
-    int				myHotspot;
+    RECT mSrcRect;
+    int mxHotspot;
+    int myHotspot;
 
     //====================================================//
     // Pointer's to Outside Image Buffers
     //====================================================//
 
-    ImageBuffer		*mpOTWImage;
-    ImageBuffer		*mpTemplate;
+    ImageBuffer *mpOTWImage;
+    ImageBuffer *mpTemplate;
 
     //====================================================//
     // Runtime Member Functions

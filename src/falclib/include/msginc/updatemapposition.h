@@ -26,14 +26,14 @@ class UI_UpdateMapPosition : public FalconEvent
       UI_UpdateMapPosition(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
       ~UI_UpdateMapPosition(void);
       int Size (void) { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: changed to long *
-	  int Decode (VU_BYTE **buf, long *rem) {
-		  long init = *rem;
+   //sfr: changed to long *
+   int Decode (VU_BYTE **buf, long *rem) {
+   long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk (&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
+   FalconEvent::Decode (buf, rem);
+   memcpychk (&dataBlock, buf, sizeof (dataBlock), rem);
+   return init - *rem;
+   };
       int Encode (VU_BYTE **buf)
          {
          int size;
@@ -47,9 +47,9 @@ class UI_UpdateMapPosition : public FalconEvent
       class DATA_BLOCK
       {
          public:
-			VU_ID from;
+ VU_ID from;
             long x;
-			long y;
+ long y;
       } dataBlock;
 
    protected:

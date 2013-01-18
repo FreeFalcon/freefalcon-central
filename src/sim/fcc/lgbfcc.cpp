@@ -36,7 +36,7 @@ void FireControlComputer::TargetingPodMode(void)
 {
     float dx, dy, dz;
     float rx, ry, rz;
-    //float pitch, roll, yaw;	//moved to the class
+    //float pitch, roll, yaw; //moved to the class
     float tmpX, tmpY, tmpZ;
     int isLimited = FALSE;
     WayPointClass* curWaypoint = platform->curWaypoint;
@@ -61,7 +61,7 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if (!systemTarget && !F4IsBadReadPtr(targetingPod, sizeof(targetingPod)))	// M.N. CTD fix
+    if (!systemTarget && !F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
 
@@ -91,7 +91,7 @@ void FireControlComputer::TargetingPodMode(void)
         ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
         }
         else
-        	*/
+         */
         {
             pos.x = systemTarget->BaseData()->XPos();
             pos.y = systemTarget->BaseData()->YPos();
@@ -117,10 +117,10 @@ void FireControlComputer::TargetingPodMode(void)
                 if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
                 {
                 ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition( &pos );
-                systemTarget->BaseData()->SetPosition(	systemTarget->BaseData()->XPos(),
+                systemTarget->BaseData()->SetPosition( systemTarget->BaseData()->XPos(),
                 systemTarget->BaseData()->YPos(), pos.z);
                 }
-                	*/
+                 */
                 groundDesignateX = systemTarget->BaseData()->XPos();
                 groundDesignateY = systemTarget->BaseData()->YPos();
                 groundDesignateZ = systemTarget->BaseData()->ZPos();
@@ -155,7 +155,7 @@ void FireControlComputer::TargetingPodMode(void)
             inRange = TRUE;
 
             // 2001-04-16 MODIFIED BY S.G. ONLY SET THE TARGET IF OUR POD CAN SEE IT
-            //		 targetingPod->SetDesiredTarget(systemTarget);
+            //  targetingPod->SetDesiredTarget(systemTarget);
             if (systemTarget)
             {
                 CalcRelGeom(platform, systemTarget, NULL, 1.0F / SimLibMajorFrameTime);
@@ -202,10 +202,10 @@ void FireControlComputer::TargetingPodMode(void)
                     /*
                     if(targetingPod->IsSOI())
                     {
-                    	if(targetingPod->CurrentTarget())
-                    	{
-                    		tgpmode=OWNTGT;
-                    	}
+                     if(targetingPod->CurrentTarget())
+                     {
+                     tgpmode=OWNTGT;
+                     }
                     }
                     */
 
@@ -247,10 +247,10 @@ void FireControlComputer::TargetingPodMode(void)
                             /*
                             if(designateCmd)
                             {
-                            	if (targetingPod->CanSeeObject(systemTarget) && targetingPod->CanDetectObject(systemTarget))
-                            	{
-                            		targetingPod->SetDesiredTarget(systemTarget);
-                            	}
+                             if (targetingPod->CanSeeObject(systemTarget) && targetingPod->CanDetectObject(systemTarget))
+                             {
+                             targetingPod->SetDesiredTarget(systemTarget);
+                             }
                             }
                             */
                         }
@@ -260,7 +260,7 @@ void FireControlComputer::TargetingPodMode(void)
                         {
                             /* When the TGP is not the SOI and the FCR is not tracking a target,
                             the TGP LOS is positioned to 0 degrees azimuth and 3 degrees elevation.
-                            	*/
+                             */
                             float dx, dy, dz, rx, ry, rz, yaw, pitch, roll;
 
                             // -3 degrees down
@@ -294,7 +294,7 @@ void FireControlComputer::TargetingPodMode(void)
                     return;
             }
 
-            if (preDesignate)	//not ground stabilized
+            if (preDesignate) //not ground stabilized
             {
                 if (subMode == SLAVE)
                 {
@@ -391,7 +391,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
             }
-            else	//predesignate (ground stabilized)
+            else //predesignate (ground stabilized)
             {
                 float xMove = 0.0F, yMove = 0.0F;
 
@@ -485,7 +485,7 @@ void FireControlComputer::TargetingPodMode(void)
                         rz = 0.0F;
 
 
-                        //ry =  costheta * deltaY - sintheta * deltaX;	// orthogonal rotation of euklidian base
+                        //ry =  costheta * deltaY - sintheta * deltaX; // orthogonal rotation of euklidian base
                         //rx =  sintheta * deltaY + costheta * deltaX;
                         //rz = 0.0F;
 
@@ -626,7 +626,7 @@ void FireControlComputer::TargetingPodMode(void)
                     if (!theRadar)
                         curTarget = NULL;
                     // 2002-04-12 MN Changed as we now also have ground units on GM radar when they are standing still
-                    //			   else if(theRadar->IsAG() == RadarClass::GM)
+                    //    else if(theRadar->IsAG() == RadarClass::GM)
                     else if (!g_bAGRadarFixes && theRadar->IsAG() == RadarClass::GM)
                         curTarget = NULL;
 
@@ -787,7 +787,7 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 Timer += SimLibMajorFrameTime;
 
-                if (Timer >= 4.5F)	//lases 4 seconds after impact + 0.5 seconds from above
+                if (Timer >= 4.5F) //lases 4 seconds after impact + 0.5 seconds from above
                 {
                     CheckForLaserFire = FALSE;
                     LaserFire = FALSE;
@@ -817,7 +817,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
     FalconEntity* testObject = NULL;
     FalconEntity* closestObj = NULL;
     SimObjectType* tmpTarget = NULL;
-    FeatureClassDataType	*fc = NULL;
+    FeatureClassDataType *fc = NULL;
     SimBaseClass *simTarg = NULL;
     float groundRange;
     float curMin, dx, dy;
@@ -832,7 +832,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
         if (g_bRealisticAvionics)
         {
-            curMin *= 2;	//double the range
+            curMin *= 2; //double the range
         }
 
         {
@@ -875,11 +875,11 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
             //if ((SimBaseClass*)tmpTarget->BaseData()-> )
             /*  JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-            	 if (tmpTarget->BaseData()->IsSim())
-            	 // We ASSUMED that testObject IsSim above, so why check here???
-            	{
-            		((SimBaseClass*)tmpTarget->BaseData())->drawPointer->GetPosition (&pos);
-            	} else
+              if (tmpTarget->BaseData()->IsSim())
+              // We ASSUMED that testObject IsSim above, so why check here???
+             {
+             ((SimBaseClass*)tmpTarget->BaseData())->drawPointer->GetPosition (&pos);
+             } else
             */
             {
                 pos.x = tmpTarget->BaseData()->XPos();

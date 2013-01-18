@@ -187,7 +187,7 @@ void UI_Refresher::AddMission(CampEntity entity)
     {
         if (((FlightClass*)entity)->GetUnitMission() != AMIS_ALERT)
         {
-            VehicleClassDataType*	vc;
+            VehicleClassDataType* vc;
             Falcon4EntityClassType* classPtr;
             int vid;
 
@@ -427,7 +427,7 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                                 (int)(-flt->ZPos() / 1000.0), (int)flt->GetKias(), (long)flt->CalculateFuelAvailable(255));
                     else
                         sprintf(buffer, "%d*%s \n%03dx%d \nAlt %d \nSpd %d",
-                                //						sprintf (buffer, "%d*%s@%03dx%d/A%d/V%d",
+                                // sprintf (buffer, "%d*%s@%03dx%d/A%d/V%d",
                                 flt->GetACCount(),  name, bearing, range,
                                 (int)(-flt->ZPos() / 1000.0), (int)flt->GetKias());
 
@@ -471,29 +471,29 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
     }
 
     // 2001-05-09 COMMENTED OUT BY S.G. X AND Y ARE ALREADY FINE AND THIS SCREWS THEM UP
-    /*	if(Threat_)
-    	{
-    		if(Threat_->SamLow)
-    		{
-    			Threat_->SamLow->x=static_cast<long>(entity->YPos());
-    			Threat_->SamLow->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
-    		}
-    		if(Threat_->SamHigh)
-    		{
-    			Threat_->SamHigh->x=static_cast<long>(entity->YPos());
-    			Threat_->SamHigh->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
-    		}
-    		if(Threat_->RadarLow)
-    		{
-    			Threat_->RadarLow->x=static_cast<long>(entity->YPos());
-    			Threat_->RadarLow->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
-    		}
-    		if(Threat_->RadarHigh)
-    		{
-    			Threat_->RadarHigh->x=static_cast<long>(entity->YPos());
-    			Threat_->RadarHigh->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
-    		}
-    	}
+    /* if(Threat_)
+     {
+     if(Threat_->SamLow)
+     {
+     Threat_->SamLow->x=static_cast<long>(entity->YPos());
+     Threat_->SamLow->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
+     }
+     if(Threat_->SamHigh)
+     {
+     Threat_->SamHigh->x=static_cast<long>(entity->YPos());
+     Threat_->SamHigh->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
+     }
+     if(Threat_->RadarLow)
+     {
+     Threat_->RadarLow->x=static_cast<long>(entity->YPos());
+     Threat_->RadarLow->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
+     }
+     if(Threat_->RadarHigh)
+     {
+     Threat_->RadarHigh->x=static_cast<long>(entity->YPos());
+     Threat_->RadarHigh->y=static_cast<long>(Owner_->Map_->GetMaxY()-entity->XPos());
+     }
+     }
     */
     if (MapItem_ && entity->IsUnit() && entity->GetTeam() != Owner_->TeamNo_)
     {

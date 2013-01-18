@@ -30,8 +30,8 @@ void DigitalBrain::GroundCheck(void)
     // 2001-10-21 Modified by M.N. When Leader is in WaypointMode, Wings are always in Wingymode.
     // so they do terrain based ground checks for the wingies, but not for leads - makes no sense.
     // Let it follow waypoints close to the ground
-    if ( //( curMode == WaypointMode ||		// also perform GroundCheck for leaders
-        //curMode == LandingMode ||		// airbases with hilly terrain around need GroundCheck
+    if ( //( curMode == WaypointMode || // also perform GroundCheck for leaders
+        //curMode == LandingMode || // airbases with hilly terrain around need GroundCheck
         /*(curMode == WaypointMode && agDoctrine != AGD_NONE) ||*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
         curMode == TakeoffMode //)
         && threatPtr == NULL)
@@ -125,7 +125,7 @@ void DigitalBrain::GroundCheck(void)
         // Test the terrain along the likely path we will take.  Take into account the deltas along the ground
         // and the fact that we may be headed straight down so the deltas could be very small.  Since we still
         // need to test the terrain in case we're diving into a valley, test the terrain along the recovery path.
-        //		 for (float i = 0.0; i < lookahead && !groundavoid; i += 0.5)
+        //  for (float i = 0.0; i < lookahead && !groundavoid; i += 0.5)
         for (float i = 0.0; i < lookahead; i += 0.5)
         {
             // Project a recovery path based on our pitch.
@@ -271,8 +271,8 @@ void DigitalBrain::PullUp(void)
         }
         else
         {
-            //			cushAlt -= MIN_ALTT * 0.5f;
-            //			pStick = 1.0f - ( myAlt - cushAlt )/(MIN_ALTT * 0.5f);
+            // cushAlt -= MIN_ALTT * 0.5f;
+            // pStick = 1.0f - ( myAlt - cushAlt )/(MIN_ALTT * 0.5f);
 
             cushAlt = maxElevation + g_fAIMinAlt;
 
@@ -294,8 +294,8 @@ void DigitalBrain::PullUp(void)
     else
         pStick = 1.0f;
 
-    //	if (pullupTimer < SimLibElapsedTime)
-    //		pullupTimer = 0; // This says us "stop pull up"
+    // if (pullupTimer < SimLibElapsedTime)
+    // pullupTimer = 0; // This says us "stop pull up"
     // Cobra -
     if ((groundAvoidNeeded) && (pullupTimer <= SimLibElapsedTime))
         pullupTimer = SimLibElapsedTime + ((unsigned long)(g_fPullupTime * CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode

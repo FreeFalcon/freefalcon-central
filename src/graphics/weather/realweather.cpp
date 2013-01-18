@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     09Nov03
 
-	- And then there was light
+ - And then there was light
 \***************************************************************************/
 #include "d3d.h"
 #include "polylib.h"
@@ -38,9 +38,9 @@
 extern int g_nGfxFix;
 extern int TimeOfDayGeneral();
 extern bool g_bHearThunder;
-Tcolor	RealWeather::litCloudColor = { 0 };
-float	RealWeather::WeatherQuality, RealWeather::WeatherQualityRate;
-DWORD	RealWeather::WeatherQualityStep, RealWeather::WeatherQualityElapsed;
+Tcolor RealWeather::litCloudColor = { 0 };
+float RealWeather::WeatherQuality, RealWeather::WeatherQualityRate;
+DWORD RealWeather::WeatherQualityStep, RealWeather::WeatherQualityElapsed;
 //extern Weather *TheWeather;
 
 
@@ -50,11 +50,11 @@ DWORD	RealWeather::WeatherQualityStep, RealWeather::WeatherQualityElapsed;
 
 
 // The Base indexes for Cirrus and Cirrcum
-#define	FIRST_CIRRUS_INDEX	0
-#define	FIRST_CIRCUM_INDEX	4
+#define FIRST_CIRRUS_INDEX 0
+#define FIRST_CIRCUM_INDEX 4
 
 // COBRA - DX- These are the coordibnates for a 4x4 items Texture
-const	float	UVCoords4X4[16][4][2] =
+const float UVCoords4X4[16][4][2] =
 {
 
     {{  0.00f,  0.00f, }, { 0.25f, 0.00f }, { 0.25f, 0.25f}, {0.00f, 0.25f}},
@@ -89,7 +89,7 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
     // the Cloud vertices
-    D3DDYNVERTEX	Quad[4];
+    D3DDYNVERTEX Quad[4];
 
     if (realWeather->weatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
     else if ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
@@ -133,7 +133,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
 {
 
 
-    if (UnderOvercast())	return;
+    if (UnderOvercast()) return;
 
     // if stratus invisible, do not draw it
     if (!(Stratus2Color & 0xff000000) || ShadingFactor < 2.0f) return;
@@ -142,7 +142,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
 
     // the Cloud vertices
-    D3DDYNVERTEX	Quad[4];
+    D3DDYNVERTEX Quad[4];
 
     // Offset for Cirrus Cumulus
     txtIndex += FIRST_CIRCUM_INDEX;
@@ -189,7 +189,7 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
 #endif
 
     // the Cloud vertices
-    D3DDYNVERTEX	Quad[4];
+    D3DDYNVERTEX Quad[4];
 
     // Assign textures Coord
     Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
@@ -229,7 +229,7 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
 // LOW    = Ground < Z <= Stratus 1
 // MIDDLE = Stratus 1 < Z <= Stratus 2
 // HI     = Stratus 2 < Z
-DWORD	RealWeather::GetObserverOrder(float ZPosition)
+DWORD RealWeather::GetObserverOrder(float ZPosition)
 {
     if (ZPosition >= stratusZ) return OBSERVER_LOW;
 
@@ -245,24 +245,24 @@ DWORD	RealWeather::GetObserverOrder(float ZPosition)
 // WARNING !!!! LAYER_TOP are the overall objects, IT CLOSES THE DRAWING, so MUST BE ALWAYS PRESENT
 
 // * SUNNY VIEW ORDER *
-const	DWORD	SunnyDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
+const DWORD SunnyDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
 {
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP},			// LOW
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP},			// MIDDLE
-    {LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP},			// HI
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP}, // LOW
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP}, // MIDDLE
+    {LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP}, // HI
 };
 
 // * POOR VIEW ORDER *
-const	DWORD	PoorDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
+const DWORD PoorDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
 {
-    {LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP},														// LOW
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP},							// MIDDLE
-    {LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP},							// HI
+    {LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP}, // LOW
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP}, // MIDDLE
+    {LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP}, // HI
 };
 
 
 // Function setting the Alpha/2D stuff deraw ordering, based on weather and observer Z position
-void	RealWeather::SetDrawingOrder(float ZPosition)
+void RealWeather::SetDrawingOrder(float ZPosition)
 {
     // get the observer order
     DWORD Observer = GetObserverOrder(ZPosition);
@@ -272,13 +272,13 @@ void	RealWeather::SetDrawingOrder(float ZPosition)
     {
 
             // Fair or good weather
-        case	SUNNY		:	// SUNNY AND FAIR USE SAME WEATHER TABLE
-        case	FAIR		:
+        case SUNNY : // SUNNY AND FAIR USE SAME WEATHER TABLE
+        case FAIR :
             TheDXEngine.DX2D_SetDrawOrder((DWORD*)&SunnyDrawOrder[Observer]);
             break;
 
-        case	POOR		:	// POOR / INCLEMENT USE SAME TABLE
-        case	INCLEMENT	:
+        case POOR : // POOR / INCLEMENT USE SAME TABLE
+        case INCLEMENT :
             TheDXEngine.DX2D_SetDrawOrder((DWORD*)&PoorDrawOrder[Observer]);
             break;
 
@@ -390,7 +390,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
 
     if (UnderOvercast() || InsideOvercast())
     {
-        float	OvercastShading = .8f + ShadingFactor * 0.05f;
+        float OvercastShading = .8f + ShadingFactor * 0.05f;
 
         // if under Overcast
         if (UnderOvercast())
@@ -452,7 +452,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     else VisibleHeight = 10000.0f;
 
     // Setup Overcast parameters
-    float	StratusHalf = stratusDepth / 2.0f;
+    float StratusHalf = stratusDepth / 2.0f;
 
     // Update fog evolution with weather
     if (weatherCondition == POOR) LinearFogLimit = -stratusZ * 4.0f;
@@ -468,9 +468,9 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     if (LinearFogStatus)
     {
         // get the viewer Delta distance
-        float	dx = viewerX - LastViewPos.x, dy = viewerY - LastViewPos.y, dz = viewerZ - LastViewPos.z;
-        float	Distance = sqrtf(dx * dx + dy * dy + dz * dz);
-        float	ElapsedTime	= (float)(TheTimeManager.GetClockTime() - LastTime) * .001f;
+        float dx = viewerX - LastViewPos.x, dy = viewerY - LastViewPos.y, dz = viewerZ - LastViewPos.z;
+        float Distance = sqrtf(dx * dx + dy * dy + dz * dz);
+        float ElapsedTime = (float)(TheTimeManager.GetClockTime() - LastTime) * .001f;
 
         // fog varies based on travelled distace / 1000 ( arbitrary ) + a little offset
         LinearFogDelta += PRANDFloat() * (Distance / 10.0f + 0.1f) * ElapsedTime;
@@ -575,10 +575,10 @@ void RealWeather::GenerateClouds(bool bRandom)
         /*if(weatherCondition > FAIR
         &&(-viewerZ) > (-stratusZ) && (-viewerZ) < (-stratusZ)+stratusDepth)
         {
-        	numCells = 5;
-        	cellSize = 7168;
-        	// COBRA - DX - Passed as single cell feature
-        	puffRadius = 3000.f + 500.f * PRANDFloatPos();
+         numCells = 5;
+         cellSize = 7168;
+         // COBRA - DX - Passed as single cell feature
+         puffRadius = 3000.f + 500.f * PRANDFloatPos();
         }
         else*/
         {
@@ -756,16 +756,16 @@ void RealWeather::UpdateCells()
 
 void RealWeather::UpdateDrawables()
 {
-    bool	DrawTheRain = false;
+    bool DrawTheRain = false;
 
     if (!renderer) return;
 
     //START_PROFILE("Clouds");
 
     // Get the Observer position order
-    DWORD	ObserverPos = GetObserverOrder(viewerZ);
+    DWORD ObserverPos = GetObserverOrder(viewerZ);
     // get the original startus position
-    float	Stratus1Z = stratusZ;
+    float Stratus1Z = stratusZ;
 
     // if weather bad, position is upper or lower the stratus ( overcast ) layer
     if (weatherCondition > FAIR)
@@ -813,7 +813,7 @@ void RealWeather::UpdateDrawables()
     }
 
     // Stratus 2 Alpha, Depends on Shading and Sun pitch
-    float	  SunPitch = (float)TheTimeOfDay.GetSunPitch();
+    float   SunPitch = (float)TheTimeOfDay.GetSunPitch();
 
     if (SunPitch < 10.0f) SunPitch = 10.0f;
 
@@ -933,7 +933,7 @@ void RealWeather::UpdateDrawables()
                 shadowPos.y = shadowPos.z = 0;
                 RotatePoint(&shadowPos, 0, 0, sunYaw);
                 // COBRA - RED - Restored to CloudRadius... too much large causes bad effects on ground...
-                float	Radius = cloudRadius; //weatherCellArray[row][col].Radius;
+                float Radius = cloudRadius; //weatherCellArray[row][col].Radius;
                 shadowPos.x += weatherCellArray[row][col].cloudPosX + weatherShiftX;
                 shadowPos.y += weatherCellArray[row][col].cloudPosY + weatherShiftY;
                 shadowPos.z = renderer->viewpoint->GetGroundLevel(shadowPos.x, shadowPos.y);
@@ -1028,7 +1028,7 @@ void RealWeather::DrawRain()
 
     if (otwPlatform)
     {
-        yaw	= ((SimMoverClass *)otwPlatform)->Yaw();
+        yaw = ((SimMoverClass *)otwPlatform)->Yaw();
         vel = min(((SimMoverClass *)otwPlatform)->GetKias(), 30.f);
         pitch = vel * (((SimMoverClass *)otwPlatform)->Pitch() - 90.f * DTR) / 30.f;
     }
@@ -1255,7 +1255,7 @@ void RealWeather::DoLightning()
             {
                 static int uid = 0;
                 F4SoundFXSetPos(SFX_THUNDER, TRUE, lightningPos.x, lightningPos.y, lightningPos.z, 1, 0, uid);
-                // 7-11-04 version				F4SoundFXSetPos(SFX_THUNDER,FALSE,lightningPos.x,lightningPos.y,lightningPos.z,1,0,0,0,0,uid,0);
+                // 7-11-04 version F4SoundFXSetPos(SFX_THUNDER,FALSE,lightningPos.x,lightningPos.y,lightningPos.z,1,0,0,0,0,uid,0);
                 uid++;
 
                 if (uid > 99)
@@ -1365,10 +1365,10 @@ void RealWeather::TimeUpdateCallback(void *)
 bool RealWeather::ReadWeather(void)
 {
 
-    FILE*		fp;
-    int			i = 0;
-    int			cnt = 0;
-    char		file[1024];
+    FILE* fp;
+    int i = 0;
+    int cnt = 0;
+    char file[1024];
     extern char FalconTerrainDataDir[];
     //char tmpChar[10];
     int tmp = 0;
@@ -1550,7 +1550,7 @@ bool RealWeather::ReadWeather(void)
                     altim = FloatToInt32(altim * 0.02953f);
                     memset(&cpy, 0, sizeof(cpy));
                 }
-                /*Provided the visibility is >=10 km, AND the height of the lowest cloud (any amount) is					>=5000 ft (or highest minimum sector altitude) AND there are no cumulonimbus clouds (CB,					any height) within sight AND there is no significant weather (see list below), then the						visibility and cloud part of the standard METAR is replaced by CAVOK (say "cav-oh-kay":						'Ceiling And Visibility OK'). (not used by certain countries, e.g. the United States)*/
+                /*Provided the visibility is >=10 km, AND the height of the lowest cloud (any amount) is >=5000 ft (or highest minimum sector altitude) AND there are no cumulonimbus clouds (CB, any height) within sight AND there is no significant weather (see list below), then the visibility and cloud part of the standard METAR is replaced by CAVOK (say "cav-oh-kay": 'Ceiling And Visibility OK'). (not used by certain countries, e.g. the United States)*/
                 else if (strcmp(pch, "CAVOK") == 0) //Basically CLR
                 {
                     tm = 1;
@@ -1666,85 +1666,85 @@ bool RealWeather::ReadWeather(void)
     /*sprintf(file,"%s\\weather\\RKSS.txt",FalconTerrainDataDir);
 
     if(!(fp=fopen(file,"rt")))
-    	{
-    	metar = NULL;
-    	return FALSE;
-    	}
+     {
+     metar = NULL;
+     return FALSE;
+     }
     numMETARS = atoi(fgets(file,1024,fp));
     metar = new METAR[numMETARS];
 
     while (i<numMETARS)
     {
-    	fgets(file,1024,fp);
-    	if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
-    		continue;
+     fgets(file,1024,fp);
+     if (file[0] == '\r' || file[0] == '#' || file[0] == ';' || file[0] == '\n')
+     continue;
 
-    	switch (cnt)
-    		{
-    		case 0:
-    			//Station
-    			strcpy(tmpChar,file);
-    			strcpy(metar[i].station,tmpChar);
-    			break;
-    		case 1:
-    			//Time
-    			sscanf(file,"%6d",&tmp);
-    			metar[i].time = tmp;
-    			break;
-    		case 2:
-    			//#Wind Direction
-    			sscanf(file,"%3d",&tmp);
-    			metar[i].windDirection = tmp;
-    			break;
-    		case 3:
-    			//#Wind Speed (knots)
-    			sscanf(file,"%4d",&tmp);
-    			metar[i].windSpeed = tmp;
-    			break;
-    		case 4:
-    			//#Visibility (miles) (99 = Unlimited/Clr)
-    			sscanf(file,"%3d",&tmp);
-    			metar[i].visibility = tmp;
-    			break;
-    		case 5:
-    			//#Sky Coverage 1
-    			strcpy(tmpChar,file);
-    			strcpy(metar[i].skyCoverage1,tmpChar);
-    			break;
-    		case 6:
-    			//#Coverage Altitude (feet) 1
-    			sscanf(file,"%6d",&tmp);
-    			metar[i].skyCoverageAlt1 = tmp;
-    			break;
-    		case 7:
-    			//#sky Coverage 2 (FEW, SCT, BKN, OVC, CLR)
-    			strcpy(tmpChar,file);
-    			strcpy(metar[i].skyCoverage2,tmpChar);
-    			break;
-    		case 8:
-    			//#Coverage Altitude (feet) 2
-    			sscanf(file,"%6d",&tmp);
-    			metar[i].skyCoverageAlt2 = tmp;
-    			break;
-    		case 9:
-    			//#Weather Type (RA, TS, NONE)
-    			strcpy(tmpChar,file);
-    			strcpy(metar[i].weatherType,tmpChar);
-    			break;
-    		case 10:
-    			//#Altimeter
-    			sscanf(file,"%4d",&tmp);
-    			metar[i].altimeter = tmp;
-    			break;
-    		default:
-    			break;
-    		}
-    	cnt++;
-    	if (cnt == 11)
-    		{
-    		cnt = 0;
-    		i++;
-    		}
+     switch (cnt)
+     {
+     case 0:
+     //Station
+     strcpy(tmpChar,file);
+     strcpy(metar[i].station,tmpChar);
+     break;
+     case 1:
+     //Time
+     sscanf(file,"%6d",&tmp);
+     metar[i].time = tmp;
+     break;
+     case 2:
+     //#Wind Direction
+     sscanf(file,"%3d",&tmp);
+     metar[i].windDirection = tmp;
+     break;
+     case 3:
+     //#Wind Speed (knots)
+     sscanf(file,"%4d",&tmp);
+     metar[i].windSpeed = tmp;
+     break;
+     case 4:
+     //#Visibility (miles) (99 = Unlimited/Clr)
+     sscanf(file,"%3d",&tmp);
+     metar[i].visibility = tmp;
+     break;
+     case 5:
+     //#Sky Coverage 1
+     strcpy(tmpChar,file);
+     strcpy(metar[i].skyCoverage1,tmpChar);
+     break;
+     case 6:
+     //#Coverage Altitude (feet) 1
+     sscanf(file,"%6d",&tmp);
+     metar[i].skyCoverageAlt1 = tmp;
+     break;
+     case 7:
+     //#sky Coverage 2 (FEW, SCT, BKN, OVC, CLR)
+     strcpy(tmpChar,file);
+     strcpy(metar[i].skyCoverage2,tmpChar);
+     break;
+     case 8:
+     //#Coverage Altitude (feet) 2
+     sscanf(file,"%6d",&tmp);
+     metar[i].skyCoverageAlt2 = tmp;
+     break;
+     case 9:
+     //#Weather Type (RA, TS, NONE)
+     strcpy(tmpChar,file);
+     strcpy(metar[i].weatherType,tmpChar);
+     break;
+     case 10:
+     //#Altimeter
+     sscanf(file,"%4d",&tmp);
+     metar[i].altimeter = tmp;
+     break;
+     default:
+     break;
+     }
+     cnt++;
+     if (cnt == 11)
+     {
+     cnt = 0;
+     i++;
+     }
     }
     fclose(fp);*/
 

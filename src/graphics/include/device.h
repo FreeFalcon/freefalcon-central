@@ -16,21 +16,21 @@ public:
     DisplayDevice();
     ~DisplayDevice();
 
-    void			Setup(int driverNum, int devNum, int width, int height, int nDepth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer);
-    void			Cleanup(void);
+    void Setup(int driverNum, int devNum, int width, int height, int nDepth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer);
+    void Cleanup(void);
 
-    BOOL			IsReady(void)
+    BOOL IsReady(void)
     {
         return (m_DXCtx != NULL);
     };
 
-    BOOL			IsHardware(void)
+    BOOL IsHardware(void)
     {
         ShiAssert(IsReady());
         return m_DXCtx->m_eDeviceCategory > DXContext::D3DDeviceCategory_Software;
     };
 
-    HWND			GetAppWin(void)
+    HWND GetAppWin(void)
     {
         return appWin;
     };
@@ -38,7 +38,7 @@ public:
     {
         return m_DXCtx->m_pDD;
     };
-    ImageBuffer*	GetImageBuffer(void)
+    ImageBuffer* GetImageBuffer(void)
     {
         return &image;
     };
@@ -50,12 +50,12 @@ public:
 protected:
     DXContext *m_DXCtx;
 
-    HWND						appWin;
-    BOOL						privateWindow;
-    ImageBuffer					image;
-    int							driverNumber;
+    HWND appWin;
+    BOOL privateWindow;
+    ImageBuffer image;
+    int driverNumber;
 
-    DisplayDevice				*next;
+    DisplayDevice *next;
 
     friend class DeviceManager;
 };

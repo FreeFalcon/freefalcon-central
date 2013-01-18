@@ -2,7 +2,7 @@
 
 
 
-	The Big OOB (Order of Battle)
+ The Big OOB (Order of Battle)
 
 
 */
@@ -38,10 +38,10 @@
 
 enum
 {
-    SMALL_AF				= 200100,
-    SMALL_ARMY				= 200101,
-    SMALL_NAVY				= 200102,
-    SMALL_OBJ				= 200103,
+    SMALL_AF = 200100,
+    SMALL_ARMY = 200101,
+    SMALL_NAVY = 200102,
+    SMALL_OBJ = 200103,
 };
 
 extern C_Handler *gMainHandler;
@@ -534,7 +534,7 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
             if (btn && !(btn->GetFlags() & C_BIT_INVISIBLE) && btn->GetState())
             {
                 // 2002-01-04 MODIFIED BY S.G. GetTeam is 'based one' and not 'based zero' so I'll add '1' to i.
-                //				root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) | Cat);
+                // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) | Cat);
                 root = gOOBTree->Find((GetTeam(static_cast<uchar>(i + 1)) << 24) | Cat);
 
                 if (root && root->Item_->GetFlags() & C_BIT_INVISIBLE)
@@ -560,50 +560,50 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
     //                            It deals with child root object and only Objectives have child root object (like CCC) and seems to concur to what I'm seeing.
     //                            I'm seeing not ill effect with this code commented out.
     /*
-    	for(i=0;i<4;i++)
-    	{
-    		for(j=0;j<8;j++)
-    		{
-    			root=gOOBTree->Find((j << 24) | OOBCategories[i]); // Comment by S.G. Here j starting at zero is not going to harm anything since we do it for ALL teams so left as is
-    			if(root)
-    			{
-    				root=root->Child;
-    				while(root)
-    				{
-    					if(TurnOn)
-    					{
-    						if(root->Item_->GetUserNumber(0) == owner || FindChildren(root->Child,owner))
-    						{
-    							root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
-    							child=root->Child;
-    							while(child)
-    							{
-    								if(child->Item_->GetUserNumber(0) == owner)
-    									child->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
-    								child=child->Next;
-    							}
-    						}
-    					}
-    					else
-    					{
-    						if(root->Item_->GetUserNumber(0) == owner && !FindOtherChildren(root->Child,owner))
-    							root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
-    						else
-    						{
-    							child=root->Child;
-    							while(child)
-    							{
-    								if(child->Item_->GetUserNumber(0) == owner)
-    									child->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
-    								child=child->Next;
-    							}
-    						}
-    					}
-    					root=root->Next;
-    				}
-    			}
-    		}
-    	}
+     for(i=0;i<4;i++)
+     {
+     for(j=0;j<8;j++)
+     {
+     root=gOOBTree->Find((j << 24) | OOBCategories[i]); // Comment by S.G. Here j starting at zero is not going to harm anything since we do it for ALL teams so left as is
+     if(root)
+     {
+     root=root->Child;
+     while(root)
+     {
+     if(TurnOn)
+     {
+     if(root->Item_->GetUserNumber(0) == owner || FindChildren(root->Child,owner))
+     {
+     root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
+     child=root->Child;
+     while(child)
+     {
+     if(child->Item_->GetUserNumber(0) == owner)
+     child->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
+     child=child->Next;
+     }
+     }
+     }
+     else
+     {
+     if(root->Item_->GetUserNumber(0) == owner && !FindOtherChildren(root->Child,owner))
+     root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
+     else
+     {
+     child=root->Child;
+     while(child)
+     {
+     if(child->Item_->GetUserNumber(0) == owner)
+     child->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
+     child=child->Next;
+     }
+     }
+     }
+     root=root->Next;
+     }
+     }
+     }
+     }
     */
     gOOBTree->RecalcSize();
     gOOBTree->Parent_->RefreshClient(gOOBTree->GetClient());
@@ -698,7 +698,7 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
         return(NULL);
 
     //if(!UnitPtr->IconIndex)
-    //	return(NULL);
+    // return(NULL);
 
     // Create new parent class
     newinfo = new C_Entity;
@@ -778,7 +778,7 @@ C_Entity *BuildUnitInfo(Unit unit)
         return(NULL);
 
     //if(!UnitPtr->IconIndex)
-    //	return(NULL);
+    // return(NULL);
 
     // Create new parent class
     newinfo = new C_Entity;

@@ -19,11 +19,11 @@
 class TListEntry
 {
 public:
-    TBlock		*block;
-    int			virtualRow;
-    int			virtualCol;
-    TListEntry	*next;
-    TListEntry	*prev;
+    TBlock *block;
+    int virtualRow;
+    int virtualCol;
+    TListEntry *next;
+    TListEntry *prev;
 
 #ifdef USE_SH_POOLS
 public:
@@ -45,7 +45,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 
@@ -53,8 +53,8 @@ public:
 class TBlockList
 {
 public:
-    TBlockList()	{};
-    ~TBlockList()	{};
+    TBlockList() {};
+    ~TBlockList() {};
 
     void Setup(TLevel *MapLevel, float PrefetchRange);
     void Cleanup(void);
@@ -79,11 +79,11 @@ public:
 
     // Return the min and max elevations within the current available range
     // (positive Z is DOWN)
-    float	GetMaxZ(void)
+    float GetMaxZ(void)
     {
         return maxZ;
     };
-    float	GetMinZ(void)
+    float GetMinZ(void)
     {
         return minZ;
     };
@@ -118,29 +118,29 @@ private:
     TLevel *myLevelPtr;
 
     // The level post location of the center of attention of this list
-    int		ourLevelPostRow;
-    int		ourLevelPostCol;
+    int ourLevelPostRow;
+    int ourLevelPostCol;
 
     // The block row and column of the center of attention of this list
-    int		ourBlockRow;
-    int		ourBlockCol;
+    int ourBlockRow;
+    int ourBlockCol;
 
     // Max and min z values within all loaded blocks in the list
     // (positive Z is DOWN)
-    float	maxZ;
-    float	minZ;
+    float maxZ;
+    float minZ;
 
     // linked list of all the blocks we own
-    TListEntry	*head;
-    TListEntry	*tail;
+    TListEntry *head;
+    TListEntry *tail;
 
     // Level post space distance to which we are interested in data from this list
-    int		interestRange;
-    int		availableRange;
+    int interestRange;
+    int availableRange;
 
     // Block space distance at which to bring blocks in and out
-    int		inBlockDistance;
-    int		outBlockDistance;
+    int inBlockDistance;
+    int outBlockDistance;
 
 
 #ifdef USE_SH_POOLS
@@ -163,7 +163,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

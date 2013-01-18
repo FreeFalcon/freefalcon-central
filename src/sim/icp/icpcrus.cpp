@@ -20,17 +20,17 @@ int CalcFuelOnSta(float distanceToSta)
 {
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    float	fuelConsumed;
-    int	fuelOnStation;
+    float fuelConsumed;
+    int fuelOnStation;
     float speed = max(1.0F, playerAC->GetVt());
 
-    //fuelConsumed	= distanceToSta / playerAC->GetVt() * playerAC->af->FuelFlow() / 3600.0F;
-    fuelConsumed	= distanceToSta / speed * playerAC->af->FuelFlow() / 3600.0F;
+    //fuelConsumed = distanceToSta / playerAC->GetVt() * playerAC->af->FuelFlow() / 3600.0F;
+    fuelConsumed = distanceToSta / speed * playerAC->af->FuelFlow() / 3600.0F;
     //MI this will not take any external tanks
 #if 0
-    fuelOnStation	= (int)(playerAC->af->Fuel() - fuelConsumed);
+    fuelOnStation = (int)(playerAC->af->Fuel() - fuelConsumed);
 #else
-    fuelOnStation	= (int)(playerAC->GetTotalFuel() - fuelConsumed);
+    fuelOnStation = (int)(playerAC->GetTotalFuel() - fuelConsumed);
 #endif
 
     return fuelOnStation;
@@ -41,18 +41,18 @@ void ICPClass::ExecCRUSMode(void)
 {
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    static int			heading = 0;
-    static float		windSpeed = 0.0F;
-    //	char				offset;
-    float				distanceToSta = 0.0F;
-    int					altitude1 = 0, altitude2 = 0;
-    int					altitude = 0;
-    float				cruise = 0.0F;
-    int					wpflags = 0, action = 0;
-    float				deltaX = 0.0F, deltaY = 0.0F;
-    float				xpos = 0.0F, ypos = 0.0F, zpos = 0.0F;
-    WayPointClass*		pwaypoint = NULL;
-    int					fos = 0;
+    static int heading = 0;
+    static float windSpeed = 0.0F;
+    // char offset;
+    float distanceToSta = 0.0F;
+    int altitude1 = 0, altitude2 = 0;
+    int altitude = 0;
+    float cruise = 0.0F;
+    int wpflags = 0, action = 0;
+    float deltaX = 0.0F, deltaY = 0.0F;
+    float xpos = 0.0F, ypos = 0.0F, zpos = 0.0F;
+    WayPointClass* pwaypoint = NULL;
+    int fos = 0;
 
     if (!g_bRealisticAvionics)
     {
@@ -67,8 +67,8 @@ void ICPClass::ExecCRUSMode(void)
 
                 case STPT_LIST:
 
-                    wpflags	= mpCruiseWP->GetWPFlags();
-                    action	= mpCruiseWP->GetWPAction();
+                    wpflags = mpCruiseWP->GetWPFlags();
+                    action = mpCruiseWP->GetWPAction();
 
                     //check the steerpoint list
                     //get current steerpoint
@@ -99,12 +99,12 @@ void ICPClass::ExecCRUSMode(void)
                     break;
             }
 
-            Tpoint			pos;
+            Tpoint pos;
             pos.x = playerAC->XPos();
             pos.y = playerAC->YPos();
             pos.z = playerAC->ZPos();
 
-            heading		= FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
+            heading = FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
 
             if (heading <= 0)
             {
@@ -120,7 +120,7 @@ void ICPClass::ExecCRUSMode(void)
                 heading = 360 + heading;
             }
 
-            windSpeed	= ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
+            windSpeed = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
 
         }
 
@@ -133,10 +133,10 @@ void ICPClass::ExecCRUSMode(void)
 
                 pwaypoint->GetLocation(&xpos, &ypos, &zpos);
 
-                deltaX			= xpos - playerAC->XPos();
-                deltaY			= ypos - playerAC->YPos();
-                distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
-                fos				= max(0, CalcFuelOnSta(distanceToSta));
+                deltaX = xpos - playerAC->XPos();
+                deltaY = ypos - playerAC->YPos();
+                distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+                fos = max(0, CalcFuelOnSta(distanceToSta));
 
                 sprintf(mpLine3, "FOS %d WND %03d / %3.1f KTS", fos, heading, windSpeed);
                 break;
@@ -155,10 +155,10 @@ void ICPClass::ExecCRUSMode(void)
                 {
                     pwaypoint->GetLocation(&xpos, &ypos, &zpos);
 
-                    deltaX			= xpos - playerAC->XPos();
-                    deltaY			= ypos - playerAC->YPos();
-                    distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
-                    fos				= max(0, CalcFuelOnSta(distanceToSta));
+                    deltaX = xpos - playerAC->XPos();
+                    deltaY = ypos - playerAC->YPos();
+                    distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+                    fos = max(0, CalcFuelOnSta(distanceToSta));
 
                     sprintf(mpLine3, "FOS %d WND %03d / %3.1f KTS", fos, heading, windSpeed);
                 }
@@ -179,10 +179,10 @@ void ICPClass::ExecCRUSMode(void)
 
                     pwaypoint->GetLocation(&xpos, &ypos, &zpos);
 
-                    deltaX			= xpos - playerAC->XPos();
-                    deltaY			= ypos - playerAC->YPos();
-                    distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
-                    fos				= max(0, CalcFuelOnSta(distanceToSta));
+                    deltaX = xpos - playerAC->XPos();
+                    deltaY = ypos - playerAC->YPos();
+                    distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+                    fos = max(0, CalcFuelOnSta(distanceToSta));
 
                     sprintf(mpLine3, "FOS %d WND %03d / %3.1f KTS", fos, heading, windSpeed);
                 }
@@ -192,10 +192,10 @@ void ICPClass::ExecCRUSMode(void)
 
         if (pwaypoint)
         {
-            cruise			= playerAC->af->GetOptimumCruise();
-            altitude			= FloatToInt32(playerAC->af->GetOptimumAltitude());
-            altitude1		= altitude / 1000;
-            altitude2		= altitude % 1000;
+            cruise = playerAC->af->GetOptimumCruise();
+            altitude = FloatToInt32(playerAC->af->GetOptimumAltitude());
+            altitude1 = altitude / 1000;
+            altitude2 = altitude % 1000;
 
             if (altitude1 > 0)
             {
@@ -243,12 +243,12 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mpCruiseWP == NULL)
                 {
-                    mpCruiseWP		= playerAC->waypoint;
+                    mpCruiseWP = playerAC->waypoint;
                     mCruiseWPIndex = 0;
                     //MI Done as comment told us to
-                    //mCruiseMarkIndex		= MAX_MARKPOINTS - 1; //Change this to mCruiseDLinkIndex =  MAX_DLINKPOINTS - 1; when DLINK goes back in game
+                    //mCruiseMarkIndex = MAX_MARKPOINTS - 1; //Change this to mCruiseDLinkIndex =  MAX_DLINKPOINTS - 1; when DLINK goes back in game
                     mCruiseDLinkIndex =  MAX_DLINKPOINTS - 1;
-                    mList				= MARK_LIST;
+                    mList = MARK_LIST;
                 }
                 else
                 {
@@ -262,10 +262,10 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mpCruiseWP == NULL)
                 {
-                    mpCruiseWP		= playerAC->waypoint;
+                    mpCruiseWP = playerAC->waypoint;
                     mCruiseWPIndex = mNumWayPts - 1;
-                    mCruiseMarkIndex		= 0;
-                    mList				= MARK_LIST;
+                    mCruiseMarkIndex = 0;
+                    mList = MARK_LIST;
                 }
                 else
                 {
@@ -284,10 +284,10 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mCruiseMarkIndex < 0)
                 {
-                    mList		= STPT_LIST;
+                    mList = STPT_LIST;
                     mCruiseWPIndex = 0;
 
-                    mpCruiseWP	= playerAC->waypoint;
+                    mpCruiseWP = playerAC->waypoint;
 
                     while (mpCruiseWP && mpCruiseWP->GetNextWP())
                     {
@@ -303,16 +303,16 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mCruiseMarkIndex > MAX_MARKPOINTS - 1)
                 {
-                    mCruiseWPIndex		= 0;
-                    mList			= STPT_LIST;
-                    mpCruiseWP	= playerAC->waypoint;
+                    mCruiseWPIndex = 0;
+                    mList = STPT_LIST;
+                    mpCruiseWP = playerAC->waypoint;
                 }
             }
 
             break;
 
             //MI changed for DLINK stuff, as comment tells us to
-            //#if 0			// Remove #if 0 when we put DLINK back in game
+            //#if 0 // Remove #if 0 when we put DLINK back in game
         case DLINK_LIST:
 
             if (button == PREV_BUTTON)
@@ -322,8 +322,8 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mCruiseDLinkIndex < 0)
                 {
-                    mCruiseMarkIndex	= MAX_DLINKPOINTS - 1;
-                    mList			= MARK_LIST;
+                    mCruiseMarkIndex = MAX_DLINKPOINTS - 1;
+                    mList = MARK_LIST;
                 }
             }
             else if (button == NEXT_BUTTON)
@@ -333,9 +333,9 @@ void ICPClass::PNUpdateCRUSMode(int button, int)
 
                 if (mCruiseDLinkIndex > MAX_DLINKPOINTS - 1)
                 {
-                    mCruiseWPIndex		= 0;
-                    mList			= STPT_LIST;
-                    mpCruiseWP	= mpOwnship->waypoint;
+                    mCruiseWPIndex = 0;
+                    mList = STPT_LIST;
+                    mpCruiseWP = mpOwnship->waypoint;
                 }
             }
 
@@ -375,14 +375,14 @@ void ICPClass::CruiseRNG(void)
     FillDEDMatrix(2, 8, "FUEL");
 
     /*if(wp)
-    	wp->GetLocation(&xCurr, &yCurr, &zCurr);*/
+     wp->GetLocation(&xCurr, &yCurr, &zCurr);*/
     if (playerAC->curWaypoint)
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
-    float deltaX			= xCurr - playerAC->XPos();
-    float deltaY			= yCurr - playerAC->YPos();
-    float distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
-    int fos				= max(0, CalcFuelOnSta(distanceToSta));
+    float deltaX = xCurr - playerAC->XPos();
+    float deltaY = yCurr - playerAC->YPos();
+    float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+    int fos = max(0, CalcFuelOnSta(distanceToSta));
     sprintf(tempstr, "%dLBS", fos);
 
     if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
@@ -441,18 +441,18 @@ void ICPClass::CruiseHOME(void)
     if (wp)
         wp->GetLocation(&xCurr, &yCurr, &zCurr);
 
-    float deltaX			= xCurr - playerAC->XPos();
-    float deltaY			= yCurr - playerAC->YPos();
-    float distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
-    int fos				= max(0, CalcFuelOnSta(distanceToSta));
+    float deltaX = xCurr - playerAC->XPos();
+    float deltaY = yCurr - playerAC->YPos();
+    float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+    int fos = max(0, CalcFuelOnSta(distanceToSta));
 
     if (playerAC->af->platform->IsF16())
     {
-        float	fuelConsumed;
-        int	fuelOnStation;
-        fuelConsumed	= distanceToSta / 6000.0f * 10.0f * 0.67f;
-        fuelConsumed	+= min(1, distanceToSta / 6000.0f / 80.0f) * (500.0f - (-playerAC->ZPos()) / 40.0f * 0.5f);
-        fuelOnStation	= (int)(playerAC->GetTotalFuel() - fuelConsumed);
+        float fuelConsumed;
+        int fuelOnStation;
+        fuelConsumed = distanceToSta / 6000.0f * 10.0f * 0.67f;
+        fuelConsumed += min(1, distanceToSta / 6000.0f / 80.0f) * (500.0f - (-playerAC->ZPos()) / 40.0f * 0.5f);
+        fuelOnStation = (int)(playerAC->GetTotalFuel() - fuelConsumed);
         fos = fuelOnStation;
     }
 
@@ -465,9 +465,9 @@ void ICPClass::CruiseHOME(void)
 
     //Line4
     FillDEDMatrix(3, 5, "OPT ALT");
-    int altitude		= FloatToInt32(playerAC->af->GetOptimumAltitude());
-    int altitude1		= altitude / 1000;
-    int altitude2		= altitude % 1000;
+    int altitude = FloatToInt32(playerAC->af->GetOptimumAltitude());
+    int altitude1 = altitude / 1000;
+    int altitude2 = altitude % 1000;
 
     if (altitude1 > 0)
         sprintf(tempstr, "%2d,%03dFT", altitude1, altitude2);
@@ -653,11 +653,11 @@ void ICPClass::CruiseTOS(void)
     FillDEDMatrix(3, 9, "ETA");
 
     /*if(wp)
-    	wp->GetLocation(&xCurr, &yCurr,&zCurr);*/
+     wp->GetLocation(&xCurr, &yCurr,&zCurr);*/
     if (playerAC->curWaypoint)
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
-    ETA	= SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(playerAC->XPos(),
+    ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(playerAC->XPos(),
             playerAC->YPos(), xCurr, yCurr) / playerAC->af->vt);
 
     if (!playerAC->OnGround())
@@ -681,7 +681,7 @@ void ICPClass::CruiseTOS(void)
     else
     {
         GroundSpeed = TheHud->waypointSpeed;
-        GroundSpeed += GroundSpeed * 0.1F;	//<--- This is NOT correct, but it's approximate
+        GroundSpeed += GroundSpeed * 0.1F; //<--- This is NOT correct, but it's approximate
     }
 
     GroundSpeed = max(min(GroundSpeed, 9999), 0);
@@ -700,9 +700,9 @@ void ICPClass::StepHOMERNGSTPT(int mode)
     if (Cruise_HOME)
         HomeWP = GetHOMERNGSTPTNum(HomeWP, mode);
     /*else if(Cruise_RNG)
-    	RangeWP = GetHOMERNGSTPTNum(RangeWP, mode);
+     RangeWP = GetHOMERNGSTPTNum(RangeWP, mode);
     else
-    	TOSWP = GetHOMERNGSTPTNum(TOSWP, mode);*/
+     TOSWP = GetHOMERNGSTPTNum(TOSWP, mode);*/
     else
     {
         if (mode == PREV_BUTTON)
@@ -721,12 +721,12 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
 
     if (mode == NEXT_BUTTON)
     {
-        curWaypoint	= playerAC->GetWayPointNo(tempvar);
+        curWaypoint = playerAC->GetWayPointNo(tempvar);
 
-        if (curWaypoint && curWaypoint->GetNextWP())	// OW
+        if (curWaypoint && curWaypoint->GetNextWP()) // OW
             nextWaypoint = curWaypoint->GetNextWP();
         else
-            nextWaypoint	= NULL;
+            nextWaypoint = NULL;
 
         if (nextWaypoint)
             tempvar++;
@@ -735,7 +735,7 @@ int ICPClass::GetHOMERNGSTPTNum(int var, int mode)
     }
     else
     {
-        curWaypoint	= playerAC->GetWayPointNo(tempvar);
+        curWaypoint = playerAC->GetWayPointNo(tempvar);
 
         if (curWaypoint && curWaypoint->GetPrevWP())
             nextWaypoint = curWaypoint->GetPrevWP();

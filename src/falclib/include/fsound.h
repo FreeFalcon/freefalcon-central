@@ -29,8 +29,8 @@ extern "C"
     struct SfxDef;
 
     // KCK: Used to convert flight and wing callnumbers to the correct CALLNUMBER eval value
-#define VF_SHORTCALLSIGN_OFFSET		45
-#define	VF_FLIGHTNUMBER_OFFSET		36
+#define VF_SHORTCALLSIGN_OFFSET 45
+#define VF_FLIGHTNUMBER_OFFSET 36
 
     int  F4LoadFXSound(char filename[], long Flags, struct SfxDef *sfx);
     int  F4LoadSound(char filename[], long Flags);
@@ -72,11 +72,11 @@ extern "C"
     ** Sound Groups
     */
     /*
-    #define FX_SOUND_GROUP					0
-    #define ENGINE_SOUND_GROUP				1
-    #define SIDEWINDER_SOUND_GROUP			2
-    #define RWR_SOUND_GROUP					3
-    #define NUM_SOUND_GROUPS				4
+    #define FX_SOUND_GROUP 0
+    #define ENGINE_SOUND_GROUP 1
+    #define SIDEWINDER_SOUND_GROUP 2
+    #define RWR_SOUND_GROUP 3
+    #define NUM_SOUND_GROUPS 4
     */
 #include "SoundGroups.h"
 

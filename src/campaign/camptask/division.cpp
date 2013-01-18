@@ -84,7 +84,7 @@ Unit DivisionClass::GetPrevUnitElement(Unit e)
 
 Unit DivisionClass::GetUnitElement(int en)
 {
-    Unit	ret = NULL;
+    Unit ret = NULL;
 
     if (en < elements && element[c_element])
     {
@@ -107,10 +107,10 @@ Unit DivisionClass::GetUnitElementByID(int eid)
 
 void DivisionClass::UpdateDivisionStats(void)
 {
-    Unit			u;
-    GridIndex		ex, ey;
-    uchar			count[50] = { 0 };
-    int				bcount = 0, btype = 0, i;
+    Unit u;
+    GridIndex ex, ey;
+    uchar count[50] = { 0 };
+    int bcount = 0, btype = 0, i;
 
     x = y = 0;
     u = GetFirstUnitElement();
@@ -157,10 +157,10 @@ void DivisionClass::RemoveChildren(void)
     element = NULL;
 }
 
-void DivisionClass::RemoveChild(VU_ID	eid)
+void DivisionClass::RemoveChild(VU_ID eid)
 {
-    int		i = 0, j;
-    Unit	e;
+    int i = 0, j;
+    Unit e;
 
     while (i < elements)
     {
@@ -187,7 +187,7 @@ void DivisionClass::RemoveChild(VU_ID	eid)
 
 void DumpDivisionData(int team)
 {
-    DivisionClass	*deadd;
+    DivisionClass *deadd;
 
     while (DivisionData[team])
     {
@@ -210,11 +210,11 @@ void DumpDivisionData(void)
 
 void BuildDivisionData(void)
 {
-    Division		dc;
-    Division		dd[NUM_TEAMS] = { NULL };
-    Unit			u;
-    int				d, t;
-    uchar			divels[NUM_TEAMS][MAX_DIVISION] = { 0 };
+    Division dc;
+    Division dd[NUM_TEAMS] = { NULL };
+    Unit u;
+    int d, t;
+    uchar divels[NUM_TEAMS][MAX_DIVISION] = { 0 };
     uchar tempteam; // JB 010220 CTD
     uchar tempdivision; // JB 010220 CTD
 
@@ -230,7 +230,7 @@ void BuildDivisionData(void)
 
     // Count # of elements in each division
     {
-        VuListIterator	myit(AllParentList);
+        VuListIterator myit(AllParentList);
         u = (Unit) myit.GetFirst();
 
         while (u)
@@ -336,75 +336,75 @@ void BuildDivisionData(void)
 
 /*
 void BuildDivisionData (void)
-	{
-	DivisionClass	*dc,*nextd,*lastd;
-	Unit			u;
-	int				c,d,t;
-	VuListIterator	myit(AllParentList);
-	uchar			divlist[256];
+ {
+ DivisionClass *dc,*nextd,*lastd;
+ Unit u;
+ int c,d,t;
+ VuListIterator myit(AllParentList);
+ uchar divlist[256];
 
-	memset(divlist,0,256);
+ memset(divlist,0,256);
 
-	// Find out what we got, first;
-	for (t=0; t<NUM_TEAMS; t++)
-		{
-		dc = GetFirstDivision(t);
-		while (dc)
-			{
-			if (!dc->BuildDivision(dc->owner,dc->nid))
-				{
-				// No longer needed, kill off
-				if (dc == DivisionData[t])
-					DivisionData[t] = dc->next;
-				else if (lastd)
-					lastd->next = dc->next;
-				nextd = dc->next;
-				delete dc;
+ // Find out what we got, first;
+ for (t=0; t<NUM_TEAMS; t++)
+ {
+ dc = GetFirstDivision(t);
+ while (dc)
+ {
+ if (!dc->BuildDivision(dc->owner,dc->nid))
+ {
+ // No longer needed, kill off
+ if (dc == DivisionData[t])
+ DivisionData[t] = dc->next;
+ else if (lastd)
+ lastd->next = dc->next;
+ nextd = dc->next;
+ delete dc;
 #ifdef DEBUG
-				DivisionSanityCheck();
+ DivisionSanityCheck();
 #endif
-				dc = nextd;
-				}
-			else
-				{
-				divlist[dc->nid] |= (1 << dc->owner);
-				lastd = dc;
-				dc = dc->next;
-				}
-			}
-		}
+ dc = nextd;
+ }
+ else
+ {
+ divlist[dc->nid] |= (1 << dc->owner);
+ lastd = dc;
+ dc = dc->next;
+ }
+ }
+ }
 
-	// Now add any newly found stuff
-	u = GetFirstUnit(&myit);
-	while (u)
-		{
-		if (u->GetDomain() == DOMAIN_LAND && u->GetUnitDivision())
-			{
-			d = u->GetUnitDivision();
-			c = u->GetOwner();
-			if (!(divlist[d] & (1 << c)))
-				{
-//				CampEnterCriticalSection();
-				dc = new DivisionClass();
-				if (!dc->BuildDivision(c,d))
-					{
-					delete dc;
+ // Now add any newly found stuff
+ u = GetFirstUnit(&myit);
+ while (u)
+ {
+ if (u->GetDomain() == DOMAIN_LAND && u->GetUnitDivision())
+ {
+ d = u->GetUnitDivision();
+ c = u->GetOwner();
+ if (!(divlist[d] & (1 << c)))
+ {
+// CampEnterCriticalSection();
+ dc = new DivisionClass();
+ if (!dc->BuildDivision(c,d))
+ {
+ delete dc;
 #ifdef DEBUG
-					DivisionSanityCheck();
+ DivisionSanityCheck();
 #endif
-					}
-				else
-					{
-					dc->next = DivisionData[u->GetTeam()];
-					DivisionData[u->GetTeam()] = dc;
-					}
-//				CampLeaveCriticalSection();
-				divlist[d] |= (1 << c);
-				}
-			}
-		u = GetNextUnit(&myit);
-		}
-	}
+ }
+ else
+ {
+ dc->next = DivisionData[u->GetTeam()];
+ DivisionData[u->GetTeam()] = dc;
+ }
+// CampLeaveCriticalSection();
+ divlist[d] |= (1 << c);
+ }
+ }
+ u = GetNextUnit(&myit);
+ }
+ }
 */
 
 Division GetFirstDivision(int team)
@@ -419,7 +419,7 @@ Division GetNextDivision(Division d)
 
 Division GetFirstDivisionByCountry(int country)
 {
-    Division	d = DivisionData[GetTeam(country)];
+    Division d = DivisionData[GetTeam(country)];
 
     while (d)
     {
@@ -466,8 +466,8 @@ Division GetDivisionByUnit(Unit u)
 
 Division FindDivisionByXY(GridIndex x, GridIndex y)
 {
-    int			t;
-    Division	d = NULL;
+    int t;
+    Division d = NULL;
 
     for (t = 0; t < NUM_TEAMS; t++)
     {
@@ -487,8 +487,8 @@ Division FindDivisionByXY(GridIndex x, GridIndex y)
 
 int DivisionSanityCheck(void)
 {
-    Division	tmp;
-    int			i;
+    Division tmp;
+    int i;
 
     for (i = 0; i < NUM_TEAMS; i++)
     {

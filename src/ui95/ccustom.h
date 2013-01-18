@@ -16,15 +16,15 @@ public:
     };
 #endif
 private:
-    long		DefaultFlags_;
+    long DefaultFlags_;
 
-    long		*ItemValues_;
-    O_Output	*Items_;
+    long *ItemValues_;
+    O_Output *Items_;
 
-    short		Section_;
+    short Section_;
 
-    short		Count_;
-    short		Last_;
+    short Count_;
+    short Last_;
 
 public:
     C_Custom();

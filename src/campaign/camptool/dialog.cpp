@@ -43,8 +43,8 @@ extern void ResAddPath(char* a, int b) {}
 extern void Camp_MakeInstantAction(void);
 extern int RegroupFlight(Flight flight);
 
-char     	CampFile[MAX_PATH];
-char		TheaterFile[MAX_PATH];
+char      CampFile[MAX_PATH];
+char TheaterFile[MAX_PATH];
 OPENFILENAME CampFileName;
 OPENFILENAME TheaterFileName;
 CHAR        cmpFile[MAX_PATH]      = "\0";
@@ -66,7 +66,7 @@ extern _TCHAR GroundSTypesStr[20][20];
 
 #ifdef CAMPTOOL
 
-short	ObjTypeConverter[35];				// Converts from alphabetical order to real types
+short ObjTypeConverter[35]; // Converts from alphabetical order to real types
 
 extern short NameEntries;
 extern _TCHAR *NameStream;
@@ -105,37 +105,37 @@ int inButton(RECT *but, WORD xPos, WORD yPos)
 *
 ****************************************************************************/
 
-BOOL WINAPI About(HWND hDlg, UINT message,	/* type of message                 */
-                  WPARAM wParam, LPARAM lParam)     	/* message-specific information    */
+BOOL WINAPI About(HWND hDlg, UINT message, /* type of message                 */
+                  WPARAM wParam, LPARAM lParam)      /* message-specific information    */
 
 {
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             return (TRUE);
 
-        case WM_COMMAND:                		/* message: received a command */
-            if (LOWORD(wParam) == IDOK   		/* "OK" box selected?        */
+        case WM_COMMAND:                 /* message: received a command */
+            if (LOWORD(wParam) == IDOK    /* "OK" box selected?        */
                 || LOWORD(wParam) == IDCANCEL)
             {
                 /* System menu close command? */
-                EndDialog(hDlg, TRUE);			/* Exits the dialog box        */
+                EndDialog(hDlg, TRUE); /* Exits the dialog box        */
                 return (TRUE);
             }
 
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 void UpdateNames(HWND hDlg, Objective O)
 {
-    Objective		o;
-    char				buffer[80];
-    long				i;
+    Objective o;
+    char buffer[80];
+    long i;
 
     o = O->GetObjectiveParent();
     i = O->GetObjectiveNameID();
@@ -155,7 +155,7 @@ void UpdateNames(HWND hDlg, Objective O)
         i = SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_FINDSTRINGEXACT, 0, (LPARAM)ReadNameString(O->GetObjectiveNameID(), buffer, 79));
         SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_SETCURSEL, i, 0);
         InvalidateRect(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), NULL, TRUE);
-        //		EnableWindow(GetDlgItem(hDlg,IDC_OBJ_NAMECOMBO),1);
+        // EnableWindow(GetDlgItem(hDlg,IDC_OBJ_NAMECOMBO),1);
     }
 
     if (o)
@@ -168,7 +168,7 @@ void UpdateNames(HWND hDlg, Objective O)
 
 void UpdateSTypeCombo(HWND hDlg, Objective O)
 {
-    int		i, j, type;
+    int i, j, type;
 
     // Fill stype combo box
     type = O->GetType();
@@ -183,7 +183,7 @@ void UpdateSTypeCombo(HWND hDlg, Objective O)
 
         if (j)
         {
-            ObjClassDataType*		oc;
+            ObjClassDataType* oc;
             oc = (ObjClassDataType*) Falcon4ClassTable[j].dataPtr;
 
             if (oc)
@@ -201,13 +201,13 @@ void UpdateSTypeCombo(HWND hDlg, Objective O)
 
 BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    Objective		o, O = GlobObj;
-    RECT			rect;
-    GridIndex		x, y;
-    char			buffer[256], *sptr;
-    static char		lastname[80];
-    static int		editing = 0, unique = 0, renaming = 0, recalc = 0;
-    int				i, j;
+    Objective o, O = GlobObj;
+    RECT rect;
+    GridIndex x, y;
+    char buffer[256], *sptr;
+    static char lastname[80];
+    static int editing = 0, unique = 0, renaming = 0, recalc = 0;
+    int i, j;
 
     if (!O)
     {
@@ -217,7 +217,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
 
             // Fill type combo box
             for (i = 1; i <= NumObjectiveTypes; i++)
@@ -226,7 +226,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                 if (j)
                 {
-                    ObjClassDataType*		oc;
+                    ObjClassDataType* oc;
                     oc = (ObjClassDataType*) Falcon4ClassTable[j].dataPtr;
 
                     if (oc)
@@ -371,10 +371,10 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            HDC			hDC, DC;
+            HDC hDC, DC;
             PAINTSTRUCT ps, nps;
-            HWND		hCWnd;
-            int			c = 0;
+            HWND hCWnd;
+            int c = 0;
 
             InvalidateRect(GetDlgItem(hDlg, IDC_OBJ_NAMEVAL), NULL, TRUE);
             PostMessage(GetDlgItem(hDlg, IDC_OBJ_NAMEVAL), WM_PAINT, 0, 0);
@@ -391,9 +391,9 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 hDC = BeginPaint(hDlg, &ps);
 
-                //				SetWindowText(GetDlgItem(hDlg,IDC_OBJ_OWNVAL),Side[O->GetObjectiveOldown()]);
-                //				SetWindowText(GetDlgItem(hDlg,IDC_OBJ_OCCVAL),Side[O->GetObjectiveControl()]);
-                //				SetWindowText(GetDlgItem(hDlg,IDC_OBJ_TYPEVAL),O->GetObjectiveClassName());
+                // SetWindowText(GetDlgItem(hDlg,IDC_OBJ_OWNVAL),Side[O->GetObjectiveOldown()]);
+                // SetWindowText(GetDlgItem(hDlg,IDC_OBJ_OCCVAL),Side[O->GetObjectiveControl()]);
+                // SetWindowText(GetDlgItem(hDlg,IDC_OBJ_TYPEVAL),O->GetObjectiveClassName());
                 sprintf(buffer, "%d%%", O->GetObjectiveStatus());
                 SetWindowText(GetDlgItem(hDlg, IDC_OBJ_STATVAL), buffer);
                 sprintf(buffer, "%d", O->GetObjectiveSupply());
@@ -420,10 +420,10 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        case WM_COMMAND:                			/* message: received command	*/
+        case WM_COMMAND:                 /* message: received command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected.			*/
+                case IDOK:    /* "OK" box selected. */
                 case IDCANCEL:
                     i = O->GetObjectiveNameID();
 
@@ -515,7 +515,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (i > 1)
                         {
-                            _TCHAR	last[80];
+                            _TCHAR last[80];
                             j = SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_FINDSTRINGEXACT, 0, (LPARAM)ReadNameString(i, last, 79));
                             SendMessage(GetDlgItem(hDlg, IDC_OBJ_NAMECOMBO), CB_DELETESTRING, j, 0);
                             SetName(i, buffer);
@@ -643,7 +643,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     UpdateNames(hDlg, O);
                     break;
 
-                case IDC_OBJ_DEL:		// Inherit name, but don't remove from list
+                case IDC_OBJ_DEL: // Inherit name, but don't remove from list
                     O->SetObjectiveNameID(0);
                     UpdateNames(hDlg, O);
                     renaming = 0;
@@ -730,22 +730,22 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    RECT					rect;
-    static int			mission, tottype, toteam, vsteam, targettype;
-    static CampEntity	target;
-    char					buffer[40];
-    int					i;
+    RECT rect;
+    static int mission, tottype, toteam, vsteam, targettype;
+    static CampEntity target;
+    char buffer[40];
+    int i;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             vsteam = targettype = 0;
             target = NULL;
             sprintf(buffer, "%d", CurX);
@@ -793,7 +793,7 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
         case WM_PAINT:
         {
-            HDC			hDC;
+            HDC hDC;
             PAINTSTRUCT ps;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -807,10 +807,10 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected?			 */
+                case IDOK:    /* "OK" box selected?  */
                 {
                     MissionRequestClass mis;
 
@@ -868,7 +868,7 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
                         if (targettype == 1)
                         {
-                            Objective		o;
+                            Objective o;
                             targettype = CLASS_OBJECTIVE;
                             o = GetObjectiveByXY(CurX, CurY);
 
@@ -885,7 +885,7 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
                         }
                         else if (targettype == 2)
                         {
-                            Unit				u;
+                            Unit u;
                             targettype = CLASS_UNIT;
                             u = FindUnitByXY(AllRealList, CurX, CurY, 0);
 
@@ -925,21 +925,21 @@ BOOL WINAPI MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    RECT			rect;
-    static int		head;
-    char			buffer[40];
-    int				i;
+    RECT rect;
+    static int head;
+    char buffer[40];
+    int i;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             sprintf(buffer, "%d", (int)(((WeatherClass*)realWeather)->temperature));
             SetWindowText(GetDlgItem(hDlg, IDC_WD_TEMPVAL), buffer);
             head = (int)(((WeatherClass*)realWeather)->windHeading * 180 / PI);
@@ -962,7 +962,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 
         case WM_PAINT:
         {
-            HDC			hDC;
+            HDC hDC;
             PAINTSTRUCT ps;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -973,10 +973,10 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected?			 */
+                case IDOK:    /* "OK" box selected?  */
                     EndDialog(hDlg, TRUE);
                     break;
 
@@ -1070,21 +1070,21 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char			buffer[40];
-    int				i, j, r;
+    char buffer[40];
+    int i, j, r;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
         {
-            HWND		cb;
+            HWND cb;
 
             SetWindowText(GetDlgItem(hDlg, IDC_COUNTRYLABEL1), Side[1]);
             SetWindowText(GetDlgItem(hDlg, IDC_COUNTRYLABEL2), Side[2]);
@@ -1140,9 +1140,9 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            HDC			hDC;
+            HDC hDC;
             PAINTSTRUCT ps;
-            RECT			rect;
+            RECT rect;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
             {
@@ -1152,12 +1152,12 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             i = LOWORD(wParam);
 
             switch (i)
             {
-                case IDOK:   					/* "OK" box selected?			 */
+                case IDOK:    /* "OK" box selected?  */
                 case IDCANCEL:
                     EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
                     return (TRUE);
@@ -1284,23 +1284,23 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char				buffer[256], temp[40];
-    int					i, j;
-    static int			so, su, sm;
-    static TeamClass	*tempTeam;
+    char buffer[256], temp[40];
+    int i, j;
+    static int so, su, sm;
+    static TeamClass *tempTeam;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
         {
-            HWND		cb;
+            HWND cb;
 
             // Team combo box
             for (i = 0; i < NUM_TEAMS; i++)
@@ -1333,9 +1333,9 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            HDC			hDC;
+            HDC hDC;
             PAINTSTRUCT ps;
-            RECT			rect;
+            RECT rect;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
             {
@@ -1354,10 +1354,10 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 SetWindowText(GetDlgItem(hDlg, IDC_EXPERIENCE4), buffer);
                 sprintf(buffer, "%d", tempTeam->GetReinforcement());
                 SetWindowText(GetDlgItem(hDlg, IDC_REINFORCEMENTS), buffer);
-                //				sprintf(buffer,"%d",tempTeam->attackTime);
-                //				SetWindowText(GetDlgItem(hDlg,IDC_ATTACKTIME),buffer);
-                //				sprintf(buffer,"%d",tempTeam->offensiveLoss);
-                //				SetWindowText(GetDlgItem(hDlg,IDC_OFFENSELOSS),buffer);
+                // sprintf(buffer,"%d",tempTeam->attackTime);
+                // SetWindowText(GetDlgItem(hDlg,IDC_ATTACKTIME),buffer);
+                // sprintf(buffer,"%d",tempTeam->offensiveLoss);
+                // SetWindowText(GetDlgItem(hDlg,IDC_OFFENSELOSS),buffer);
                 sprintf(buffer, "%d", tempTeam->teamFlag);
                 SetWindowText(GetDlgItem(hDlg, IDC_FLAGID), buffer);
                 sprintf(buffer, "%d", tempTeam->equipment);
@@ -1474,18 +1474,18 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command	*/
+        case WM_COMMAND:                 /* message: received a command */
             i = LOWORD(wParam);
 
             switch (i)
             {
-                case IDOK:   					/* "OK" box selected?			*/
+                case IDOK:    /* "OK" box selected? */
                     memcpy(TeamInfo[tempTeam->who], tempTeam, sizeof(TeamClass));
-                    EndDialog(hDlg, TRUE);		/* Exits the dialog box			*/
+                    EndDialog(hDlg, TRUE); /* Exits the dialog box */
                     break;
 
                 case IDCANCEL:
-                    EndDialog(hDlg, TRUE);		/* Exits the dialog box			*/
+                    EndDialog(hDlg, TRUE); /* Exits the dialog box */
                     return (TRUE);
                     break;
 
@@ -1574,15 +1574,15 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_ATTACKTIME:
                     GetDlgItemText(hDlg, i, buffer, 39);
                     j = atoi(buffer);
-                    //					if (HIWORD(wParam) == EN_KILLFOCUS)
-                    //						tempTeam->attackTime = j;
+                    // if (HIWORD(wParam) == EN_KILLFOCUS)
+                    // tempTeam->attackTime = j;
                     break;
 
                 case IDC_OFFENSELOSS:
                     GetDlgItemText(hDlg, i, buffer, 39);
                     j = atoi(buffer);
-                    //					if (HIWORD(wParam) == EN_KILLFOCUS)
-                    //						tempTeam->offensiveLoss = j;
+                    // if (HIWORD(wParam) == EN_KILLFOCUS)
+                    // tempTeam->offensiveLoss = j;
                     break;
 
                 case IDC_FLAGID:
@@ -1739,7 +1739,7 @@ BOOL WINAPI EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1748,23 +1748,23 @@ extern COLORREF SideColRGB[NUM_COUNS];
 
 BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    int			x, y, i;
-    static int	type = IDC_MAP_OWNERSHIP;
+    int x, y, i;
+    static int type = IDC_MAP_OWNERSHIP;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             return (TRUE);
             break;
 
         case WM_PAINT:
         {
-            HDC			hDC, DC;
+            HDC hDC, DC;
             PAINTSTRUCT ps, nps;
-            HWND		hCWnd;
-            RECT		rect;
-            int			c = 0, lastcol = -1, hi, dat, s = 0;
-            uchar		*map_data;
+            HWND hCWnd;
+            RECT rect;
+            int c = 0, lastcol = -1, hi, dat, s = 0;
+            uchar *map_data;
 
             switch (type)
             {
@@ -1869,7 +1869,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -1899,7 +1899,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1908,7 +1908,7 @@ BOOL WINAPI AdjustForceRatioProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 {
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             SendMessage(GetDlgItem(hDlg, IDC_SLIDER1), TBM_SETRANGE, 0, (LPARAM)MAKELONG(0, 4));
             SendMessage(GetDlgItem(hDlg, IDC_SLIDER2), TBM_SETRANGE, 0, (LPARAM)MAKELONG(0, 4));
             SendMessage(GetDlgItem(hDlg, IDC_SLIDER3), TBM_SETRANGE, 0, (LPARAM)MAKELONG(0, 4));
@@ -1923,13 +1923,13 @@ BOOL WINAPI AdjustForceRatioProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
         case WM_PAINT:
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
-                    TheCampaign.GroundRatio		= static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER1), TBM_GETPOS, 0, 0));
-                    TheCampaign.AirRatio		= static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER2), TBM_GETPOS, 0, 0));
-                    TheCampaign.NavalRatio		= static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER3), TBM_GETPOS, 0, 0));
+                    TheCampaign.GroundRatio = static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER1), TBM_GETPOS, 0, 0));
+                    TheCampaign.AirRatio = static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER2), TBM_GETPOS, 0, 0));
+                    TheCampaign.NavalRatio = static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER3), TBM_GETPOS, 0, 0));
                     TheCampaign.AirDefenseRatio = static_cast<short>(SendMessage(GetDlgItem(hDlg, IDC_SLIDER4), TBM_GETPOS, 0, 0));
                     EndDialog(hDlg, TRUE);      /* Exits the dialog box        */
                     return (TRUE);
@@ -1948,19 +1948,19 @@ BOOL WINAPI AdjustForceRatioProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char	buffer[80], filename[80];
-    int		left, right, top, bottom, newleft, newbottom, width, height;
+    char buffer[80], filename[80];
+    int left, right, top, bottom, newleft, newbottom, width, height;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             SetWindowText(GetDlgItem(hDlg, IDC_CC_LEFT), "0");
             sprintf(buffer, "%d", Map_Max_X);
             SetWindowText(GetDlgItem(hDlg, IDC_CC_RIGHT), buffer);
@@ -1978,7 +1978,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
         case WM_PAINT:
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -2005,16 +2005,16 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     Map_Max_Y = height;
                     TheCampaign.TheaterSizeX = Map_Max_X;
                     TheCampaign.TheaterSizeY = Map_Max_Y;
-                    CampEntity	ent;
-                    GridIndex	x, y;
-                    int			i, j, k;
-                    short		count[1000] = {0};
-                    short		first[1000] = {0};
-                    short		fx[1000] = {0};
-                    short		fy[1000] = {0};
+                    CampEntity ent;
+                    GridIndex x, y;
+                    int i, j, k;
+                    short count[1000] = {0};
+                    short first[1000] = {0};
+                    short fx[1000] = {0};
+                    short fy[1000] = {0};
 
                     {
-                        VuListIterator	myit(AllCampList);
+                        VuListIterator myit(AllCampList);
                         ent = (CampEntity) myit.GetFirst();
 
                         while (ent)
@@ -2087,7 +2087,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -2096,14 +2096,14 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 
 BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char	buffer[80];
-    _TCHAR	tbuffer1[80] = { "" }, tbuffer2[80] = { "" };
-    int		i;
-    CampEntity	target;
+    char buffer[80];
+    _TCHAR tbuffer1[80] = { "" }, tbuffer2[80] = { "" };
+    int i;
+    CampEntity target;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             ReadIndexedString(300 + TheCampaign.MissionEvaluator->player_element->mission, tbuffer1, 512);
             ReadIndexedString(300 + TheCampaign.MissionEvaluator->package_mission, tbuffer2, 512);
             sprintf(buffer, "%s (%s)", tbuffer1, tbuffer2);
@@ -2153,14 +2153,14 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             SetWindowText(GetDlgItem(hDlg, IDC_FIST_TARGET), buffer);
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
                 {
-                    int			rating;
-                    Objective	o;
-                    Flight		flight;
+                    int rating;
+                    Objective o;
+                    Flight flight;
                     rating = 10 * (SendMessage(GetDlgItem(hDlg, IDC_FIST_SUCCESS), CB_GETCURSEL, 0, 0) - 2);
                     // KCK: Technically, we should probably use the parent PO if there is one, but whatever...
                     o = FindNearestObjective(POList, TheCampaign.MissionEvaluator->tx, TheCampaign.MissionEvaluator->ty, NULL);
@@ -2184,13 +2184,13 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_FIST_SUCCESS:
                     break;
 
-                    /*				case IDC_FIST_SUCCESS2:
-                    					if (HIWORD(wParam) == CBN_SELENDOK)
-                    						{
-                    						i = SendMessage(GetDlgItem(hDlg,IDC_FIST_SUCCESS2),CB_GETCURSEL,0,0);
-                    						// NEW MISSION SUCCESS HERE
-                    						}
-                    					break;
+                    /* case IDC_FIST_SUCCESS2:
+                     if (HIWORD(wParam) == CBN_SELENDOK)
+                     {
+                     i = SendMessage(GetDlgItem(hDlg,IDC_FIST_SUCCESS2),CB_GETCURSEL,0,0);
+                     // NEW MISSION SUCCESS HERE
+                     }
+                     break;
                     */
                 case IDC_FIST_DESTROYED:
                 {
@@ -2200,11 +2200,11 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         if (target->IsObjective())
                         {
-                            uchar	target_b = TheCampaign.MissionEvaluator->player_element->target_building;
+                            uchar target_b = TheCampaign.MissionEvaluator->player_element->target_building;
 
                             if (target_b >= ((Objective)target)->GetTotalFeatures() || ((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED)
                             {
-                                int	count = 0;
+                                int count = 0;
                                 target_b = rand() % ((Objective)target)->GetTotalFeatures();
 
                                 while (count < 20 && (((Objective)target)->GetFeatureStatus(target_b) == VIS_DESTROYED || !((Objective)target)->GetFeatureValue(target_b)))
@@ -2221,7 +2221,7 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
                             for (i = 0; i < 5; i++)
                             {
-                                int	count = 0, veh, n;
+                                int count = 0, veh, n;
                                 veh = rand() % VEHICLE_GROUPS_PER_UNIT;
 
                                 while (count < 20 && ((Unit)target)->GetNumVehicles(veh) == 0)
@@ -2261,26 +2261,26 @@ BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 // Check tool globals
-int		gCheatRating;
-int		gCheatPriority;
-int		gCheatingOn = 0;
-ulong	gCheatNextTime;
-ulong	gCheatTimeInterval;
+int gCheatRating;
+int gCheatPriority;
+int gCheatingOn = 0;
+ulong gCheatNextTime;
+ulong gCheatTimeInterval;
 
 int DoACheatFlight(void)
 {
-    Unit			u;
-    Flight			flight, best = NULL;
-    int				done = 0;
+    Unit u;
+    Flight flight, best = NULL;
+    int done = 0;
 
     {
-        VuListIterator	flit(AllAirList);
+        VuListIterator flit(AllAirList);
         u = (Unit) flit.GetFirst();
 
         while (u && !done)
@@ -2306,12 +2306,12 @@ int DoACheatFlight(void)
 
     if (best)
     {
-        Objective	o;
-        Package		pack = (Package)best->GetUnitParent();
+        Objective o;
+        Package pack = (Package)best->GetUnitParent();
 
         if (pack)
         {
-            GridIndex	tx, ty;
+            GridIndex tx, ty;
             pack->GetUnitDestination(&tx, &ty);
             o = FindNearestObjective(POList, tx, ty, NULL);
 
@@ -2339,11 +2339,11 @@ void CheckForCheatFlight(ulong time)
 
 BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char	buffer[80];
+    char buffer[80];
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             SetWindowText(GetDlgItem(hDlg, IDC_FREQ_EDIT), "30");
 
             SendMessage(GetDlgItem(hDlg, IDC_PRIORITY_COMBO), CB_ADDSTRING, 0, (LPARAM)"Highest");
@@ -2367,7 +2367,7 @@ BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_PAINT:
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -2412,7 +2412,7 @@ BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -2429,7 +2429,7 @@ BOOL CALLBACK FileOpenHookProc(
     WPARAM wParam,            /* message-specific information    */
     LPARAM lParam)
 {
-    CHAR 		szTempText[256];
+    CHAR  szTempText[256];
 
     switch (message)
     {
@@ -2447,7 +2447,7 @@ BOOL CALLBACK FileOpenHookProc(
 
 BOOL OpenCampFile(HWND hWnd)
 {
-    char			*sptr;
+    char *sptr;
 
     strcpy(cmpFile, "");
     strcpy(cmpFileTitle, "");
@@ -2463,13 +2463,13 @@ BOOL OpenCampFile(HWND hWnd)
     CampFileName.lpstrFileTitle    = cmpFileTitle;
     CampFileName.nMaxFileTitle     = sizeof(cmpFileTitle);
     CampFileName.lpstrInitialDir   = FalconCampaignSaveDirectory;
-    //	CampFileName.lpstrInitialDir   = F4FindFile("savegame.dir",buf,80,&offset,&len);
+    // CampFileName.lpstrInitialDir   = F4FindFile("savegame.dir",buf,80,&offset,&len);
     CampFileName.nFileOffset       = 0;
     CampFileName.nFileExtension    = 0;
     CampFileName.lCustData         = 0;
     CampFileName.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST |
                          OFN_NOCHANGEDIR | OFN_HIDEREADONLY /* | OFN_ENABLEHOOK */ | OFN_LONGNAMES;
-    //	CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
+    // CampFileName.lpfnHook = (LPOFNHOOKPROC)MakeProcInstance(FileOpenHookProc, NULL);
     CampFileName.lpfnHook = NULL;
     CampFileName.lpstrFilter       = cmpFilter;
     CampFileName.lpstrTitle        = "Open a Campaign file";
@@ -2513,7 +2513,7 @@ BOOL OpenCampFile(HWND hWnd)
 
 BOOL OpenTheaterFile(HWND hWnd)
 {
-    char			*sptr;
+    char *sptr;
 
     strcpy(thrFile, "");
     strcpy(thrFileTitle, "");
@@ -2659,8 +2659,8 @@ BOOL SaveCampFile(HWND hWnd, int mode)
 
 BOOL SaveTheaterFile(HWND hWnd)
 {
-    CHAR 		buf[256];
-    char		*sptr;
+    CHAR  buf[256];
+    char *sptr;
 
     if (strlen(TheaterFileName.lpstrFile) < 1)
         return FALSE;
@@ -2700,23 +2700,23 @@ BOOL SaveTheaterFile(HWND hWnd)
 #ifdef CAMPTOOL
 /*
 BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
-	{
-	CHAR		filename[80];
-	FILE*		fp;
+ {
+ CHAR filename[80];
+ FILE* fp;
 
-	if (strlen(file.lpstrFile) < 1)
-		return FALSE;
-	if (!CheckFile(hWnd,file))
-		return FALSE;
-	// Set Current Campaign to use this theater
-	sprintf(filename,file.lpstrFile);
-	fp = fopen(filename, "wb");
-	if (GlobUnit != NULL)
-		GlobUnit->Save(fp);
-	fclose(fp);
-	MessageBox( hWnd, filename, "File Saved", MB_OK );
-	return TRUE;
-	}
+ if (strlen(file.lpstrFile) < 1)
+ return FALSE;
+ if (!CheckFile(hWnd,file))
+ return FALSE;
+ // Set Current Campaign to use this theater
+ sprintf(filename,file.lpstrFile);
+ fp = fopen(filename, "wb");
+ if (GlobUnit != NULL)
+ GlobUnit->Save(fp);
+ fclose(fp);
+ MessageBox( hWnd, filename, "File Saved", MB_OK );
+ return TRUE;
+ }
 */
 #endif
 
@@ -2756,8 +2756,8 @@ BOOL CALLBACK FileSaveHookProc(
 
 BOOL SaveAsCampFile(HWND hWnd, int mode)
 {
-    char		buf[80];
-    int			offset, len;
+    char buf[80];
+    int offset, len;
 
     strcpy(cmpFile, "");
     strcpy(cmpFileTitle, "");
@@ -2797,8 +2797,8 @@ BOOL SaveAsCampFile(HWND hWnd, int mode)
 
 BOOL SaveAsTheaterFile(HWND hWnd)
 {
-    char		buf[80];
-    int			offset, len;
+    char buf[80];
+    int offset, len;
 
     strcpy(thrFile, "");
     strcpy(thrFileTitle, "");
@@ -2840,10 +2840,10 @@ BOOL SaveAsTheaterFile(HWND hWnd)
 
 BOOL SaveAsScriptedUnitFile(HWND hWnd)
 {
-    char			buf[80];
+    char buf[80];
     CHAR        file[256]      = "";
     CHAR        file_title[256] = "";
-    int			offset, len;
+    int offset, len;
     OPENFILENAME this_file;
 
     this_file.lStructSize       = sizeof(OPENFILENAME);
@@ -2868,9 +2868,9 @@ BOOL SaveAsScriptedUnitFile(HWND hWnd)
     this_file.lpstrTitle        = "Save Unit As";
     this_file.lpstrDefExt       = "scu";
 
-    //	if (GetSaveFileName(&this_file))
-    //		return(SaveScriptedUnitFile(hWnd,this_file));
-    //	else
+    // if (GetSaveFileName(&this_file))
+    // return(SaveScriptedUnitFile(hWnd,this_file));
+    // else
     {
         ProcessCDError(CommDlgExtendedError(), hWnd);
         return FALSE;

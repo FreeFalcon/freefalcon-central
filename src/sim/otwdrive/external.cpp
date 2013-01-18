@@ -1,12 +1,12 @@
 /***************************************************************************\
-	External.cpp
-	Scott Randolph
-	Jun 15, 1998
+ External.cpp
+ Scott Randolph
+ Jun 15, 1998
 
-	Provides external camera functionality for the OTWdriver.
-	It is a bit messy still, but at least its not one giant linear file
-	anymore...
-	\***************************************************************************/
+ Provides external camera functionality for the OTWdriver.
+ It is a bit messy still, but at least its not one giant linear file
+ anymore...
+ \***************************************************************************/
 #include "Graphics\Include\RViewPnt.h"
 #include "Graphics\Include\RenderOW.h"
 #include "Graphics\Include\DrawBSP.h"
@@ -21,14 +21,14 @@
 float OTWDriverClass::GetDoppler(float x, float y, float z, float dx, float dy, float dz)
 {
     // MLR 12/1/2003 - Doppler effects are computed in the FalcSnd project
-    Tpoint camPos;	// Camera position
-    Tpoint camVec;	// Camera (listener) motion vector
-    Tpoint dPos;	// Vector from camera to object
+    Tpoint camPos; // Camera position
+    Tpoint camVec; // Camera (listener) motion vector
+    Tpoint dPos; // Vector from camera to object
     float dist;
     float camClosure, objClosure;
     float closure;
-    static const float APPROX_MACH	= 1000.0f;				// Ft/sec.  Use a constant mach approximation
-    static const float SPEED_CLAMP	= 0.6f * APPROX_MACH;	// Ft/sec.  Limit the amount of doppler shift applied
+    static const float APPROX_MACH = 1000.0f; // Ft/sec.  Use a constant mach approximation
+    static const float SPEED_CLAMP = 0.6f * APPROX_MACH; // Ft/sec.  Limit the amount of doppler shift applied
 
 
     // This all works fine, but doesn't provide any perceivable benfit right now
@@ -103,20 +103,20 @@ float OTWDriverClass::GetDoppler(float x, float y, float z, float dx, float dy, 
     return 1.0f + closure / APPROX_MACH;
 }
 
-#include "SimIO.h"		//	Retro 17Jan2004
-#include "mouselook.h"	// Retro 18Jan2004
+#include "SimIO.h" // Retro 17Jan2004
+#include "mouselook.h" // Retro 18Jan2004
 
 void OTWDriverClass::SetExternalCameraPosition(float dT)
 {
-    Trotation	tilt;
-    float		costha, sintha, cospsi, sinpsi;
-    Tpoint		dPos;
-    Tpoint		newPos;
-    float		dRoll;
-    float		camYaw, camPitch;
-    float		dist;
-    float		groundHeight;
-    float		platRoll;
+    Trotation tilt;
+    float costha, sintha, cospsi, sinpsi;
+    Tpoint dPos;
+    Tpoint newPos;
+    float dRoll;
+    float camYaw, camPitch;
+    float dist;
+    float groundHeight;
+    float platRoll;
 
     // Display is outside the aircraft....
     ShiAssert(!DisplayInCockpit());
@@ -137,7 +137,7 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
 
     // Retro ends
 
-    if (PlayerOptions.GetMouseLook() == true)	// Retro 18Jan2004
+    if (PlayerOptions.GetMouseLook() == true) // Retro 18Jan2004
         theMouseView.Compute(slewRate * dT);
 
     if (!otwPlatform)
@@ -145,15 +145,15 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
 
         cameraVel.x = cameraVel.y = cameraVel.z = 0; // MLR 12/2/2003 -
 
-        //Retro_dead 16Jan2004		chaseAz += azDir * slewRate * dT;
-        //Retro_dead 16Jan2004		chaseEl += elDir * slewRate * dT;
+        //Retro_dead 16Jan2004 chaseAz += azDir * slewRate * dT;
+        //Retro_dead 16Jan2004 chaseEl += elDir * slewRate * dT;
         // Retro 16Jan2004
-        if (PlayerOptions.GetMouseLook() == false)	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook() == false) // Retro 18Jan2004
         {
             chaseAz += azDir * slewRate * dT;
             chaseEl += elDir * slewRate * dT;
         }
-        else	// Retro 18Jan2004
+        else // Retro 18Jan2004
         {
             chaseAz = theMouseView.GetMouseAzim();
             chaseEl = theMouseView.GetMouseElev();
@@ -187,15 +187,15 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     if (GetOTWDisplayMode() == ModeOrbit)
     {
         // absolute position chase mode
-        //Retro_dead 16Jan2004		chaseAz += azDir * slewRate * dT;
-        //Retro_dead 16Jan2004		chaseEl += elDir * slewRate * dT;
+        //Retro_dead 16Jan2004 chaseAz += azDir * slewRate * dT;
+        //Retro_dead 16Jan2004 chaseEl += elDir * slewRate * dT;
         // Retro 16Jan2004
-        if (PlayerOptions.GetMouseLook() == false)	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook() == false) // Retro 18Jan2004
         {
             chaseAz += azDir * slewRate * dT;
             chaseEl += elDir * slewRate * dT;
         }
-        else	// Retro 18Jan2004
+        else // Retro 18Jan2004
         {
             chaseAz = theMouseView.GetMouseAzim();
             chaseEl = theMouseView.GetMouseElev();
@@ -257,8 +257,8 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
                               &cameraRot);
 
         // PositandOrientSetData (0.0f, 0.0f, chaseRange * 20.0f,
-        // 	camPitch, chaseAz, 0.0f,
-        // 	&cameraPos, &cameraRot);
+        //  camPitch, chaseAz, 0.0f,
+        //  &cameraPos, &cameraRot);
 
     }
 
@@ -279,8 +279,8 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     {
 
         // "spring" constants for camera roll and move
-#define KMOVE			0.59f
-#define KROLL			0.55f
+#define KMOVE 0.59f
+#define KROLL 0.55f
 
         // allow a relative slewing when in chase mode
         chaseAz += azDir * slewRate * dT;
@@ -409,8 +409,8 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
 
         // now get yaw and pitch based on look at vector
         dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-        camPitch	= (float) - asin(dPos.z / dist);
-        camYaw		= (float)atan2(dPos.y, dPos.x);
+        camPitch = (float) - asin(dPos.z / dist);
+        camYaw = (float)atan2(dPos.y, dPos.x);
 
         PositandOrientSetData(newPos.x, newPos.y, newPos.z,
                               camPitch, chaseCamRoll, camYaw,
@@ -477,8 +477,8 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
         if (dist == 0.0F)
             dist = 1.0F;
 
-        camPitch	= (float) - asin(dPos.z / dist);
-        camYaw		= (float)atan2(dPos.y, dPos.x);
+        camPitch = (float) - asin(dPos.z / dist);
+        camYaw = (float)atan2(dPos.y, dPos.x);
 
         // set camera position and matrix
         PositandOrientSetData(newPos.x, newPos.y, newPos.z,
@@ -497,15 +497,15 @@ void OTWDriverClass::SetExternalCameraPosition(float dT)
     }
 }
 #include "profiler.h"
-#include "fmath.h"			// needed for Jam´s new cos/sin/etc assembly stuff
+#include "fmath.h" // needed for Jam´s new cos/sin/etc assembly stuff
 #pragma warning (push, 4)
 extern int targetCompressionRatio;
 /*****************************************************************************/
 // Retro 23Dec2003
-//	This function moves the camera slighly to simulate the relative movement of
-//	an imaginary formation-flying airplane that holds the camera in order to
-//	heighten immersion (or such).
-//	THIS function IMPLICITLY changes the cameraPos !!!
+// This function moves the camera slighly to simulate the relative movement of
+// an imaginary formation-flying airplane that holds the camera in order to
+// heighten immersion (or such).
+// THIS function IMPLICITLY changes the cameraPos !!!
 /*****************************************************************************/
 void OTWDriverClass::DisplaceTheCamera(float dT)
 {
@@ -515,7 +515,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
         return;
 
     // only compute any additional displacement when NOT paused..
-    if (targetCompressionRatio && SimDriver.MotionOn())	// Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
+    if (targetCompressionRatio && SimDriver.MotionOn()) // Retro 29Feb2004 - hope that takes care of 'FREEZE' state too
     {
         // have to keep dT in check.. too long (or too short ?) values mess up the movement of the cam..
         // dT is in seconds.. be sure..
@@ -547,7 +547,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
             float thisFrameScale = 0.1F + (float)FabsF((dir[i])->scale * Cos(dir[i]->Displ / dir[i]->maxDispl * HALF_PI));
             (dir[i])->Displ += (thisFramewobbleDistance * thisFrameScale * dir[i]->direction);
 
-            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl))	// bumped into a limit.. limits are symmetric (duh!)
+            if (FabsF((dir[i])->Displ) > FabsF((dir[i])->maxDispl)) // bumped into a limit.. limits are symmetric (duh!)
             {
                 // so now we select a new cam-direction and speed (randomly)
                 ReInitDisplacement(dir[i]);
@@ -561,8 +561,8 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
     cameraPos.y += yDir->Displ;
     cameraPos.z += zDir->Displ;
 }
-#ifdef USE_WING_SPAN	// doesn´t work properly now.
-#include "Sim\Include\Airframe.h"	// needed for wing span
+#ifdef USE_WING_SPAN // doesn´t work properly now.
+#include "Sim\Include\Airframe.h" // needed for wing span
 #endif
 /*****************************************************************************/
 // Retro 23Dec2003
@@ -605,10 +605,10 @@ void OTWDriverClass::toggleDisplaceCamera(void)
 
 void OTWDriverClass::SetFlybyCameraPosition(float dT)
 {
-    Tpoint	dPos;
-    float	camYaw, camPitch;
-    float	dist;
-    float	groundHeight;
+    Tpoint dPos;
+    float camYaw, camPitch;
+    float dist;
+    float groundHeight;
 
 
     // if we're in end flight cinematics, use otwplatform as focus point.
@@ -659,8 +659,8 @@ void OTWDriverClass::SetFlybyCameraPosition(float dT)
 
     // now get yaw and pitch based on look at vector
     dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-    camPitch	= (float) - asin(dPos.z / dist);
-    camYaw		= (float)atan2(dPos.y, dPos.x);
+    camPitch = (float) - asin(dPos.z / dist);
+    camYaw = (float)atan2(dPos.y, dPos.x);
 
     PositandOrientSetData(cameraPos.x, cameraPos.y, cameraPos.z,
                           camPitch, 0.0f, camYaw,
@@ -670,11 +670,11 @@ void OTWDriverClass::SetFlybyCameraPosition(float dT)
 
 void OTWDriverClass::BuildExternalNearList(void)
 {
-    SimBaseClass	*theObject;
-    Tpoint			wsPos;
-    float			referenceDepth;
-    float			dx, dy, dz;
-    float			depth;
+    SimBaseClass *theObject;
+    Tpoint wsPos;
+    float referenceDepth;
+    float dx, dy, dz;
+    float depth;
 
 
     // We rebuild the near list each frame...
@@ -690,10 +690,10 @@ void OTWDriverClass::BuildExternalNearList(void)
     wsPos.z = focusPoint.z + cameraPos.z;
 
     // Figure out the image space depth of the object of attention
-    dx		= ownshipPos.x - wsPos.x;
-    dy		= ownshipPos.y - wsPos.y;
-    dz		= ownshipPos.z - wsPos.z;
-    referenceDepth	= (float)fabs(dx * cameraRot.M11 + dy * cameraRot.M21 + dz * cameraRot.M31);
+    dx = ownshipPos.x - wsPos.x;
+    dy = ownshipPos.y - wsPos.y;
+    dz = ownshipPos.z - wsPos.z;
+    referenceDepth = (float)fabs(dx * cameraRot.M11 + dy * cameraRot.M21 + dz * cameraRot.M31);
 
 
     VuListIterator otwDrawWalker(SimDriver.objectList);
@@ -706,20 +706,20 @@ void OTWDriverClass::BuildExternalNearList(void)
     )
     {
         // Skip things on the groud, without draw pointers, hidden, or exploding
-        if (theObject->OnGround()					||
-            theObject->IsSetLocalFlag(IS_HIDDEN)	||
-            !theObject->drawPointer					||
-            theObject->IsExploding()				||
+        if (theObject->OnGround() ||
+            theObject->IsSetLocalFlag(IS_HIDDEN) ||
+            !theObject->drawPointer ||
+            theObject->IsExploding() ||
             otwPlatform.get() == theObject)
         {
             continue;
         }
 
         // Compute its scene depth
-        dx		= theObject->drawPointer->X() - wsPos.x;
-        dy		= theObject->drawPointer->Y() - wsPos.y;
-        dz		= theObject->drawPointer->Z() - wsPos.z;
-        depth	= dx * cameraRot.M11 + dy * cameraRot.M21 + dz * cameraRot.M31;
+        dx = theObject->drawPointer->X() - wsPos.x;
+        dy = theObject->drawPointer->Y() - wsPos.y;
+        dz = theObject->drawPointer->Z() - wsPos.z;
+        depth = dx * cameraRot.M11 + dy * cameraRot.M21 + dz * cameraRot.M31;
 
         if (fabs(depth) < referenceDepth)
         {
@@ -732,13 +732,13 @@ void OTWDriverClass::BuildExternalNearList(void)
 //JAM - FIXME
 void OTWDriverClass::DrawExternalViewTarget(void)
 {
-    Tpoint			worldPosition;
-    Tpoint			viewPos;
-    DrawableBSP		*drawable;
-    Tpoint			objOrigin = Origin;
-    float 			groundZ, bottom, top;
-    drawPtrList		*entry;
-    static int		LODlie = 0;				// A way to force an object to update its terrain data every frame.
+    Tpoint worldPosition;
+    Tpoint viewPos;
+    DrawableBSP *drawable;
+    Tpoint objOrigin = Origin;
+    float  groundZ, bottom, top;
+    drawPtrList *entry;
+    static int LODlie = 0; // A way to force an object to update its terrain data every frame.
 
     // Make sure we don't get in here when we shouldn't.
     if (otwPlatform.get() == NULL || otwPlatform->drawPointer == NULL)
@@ -843,7 +843,7 @@ void OTWDriverClass::SetEjectCamChaseMode(EjectedPilotClass *ejectedPilot, int c
     {
         airCraft = ejectedPilot->GetParentAircraft();
         /*
-        	 SetOTWDisplayMode(ModeOrbit);
+          SetOTWDisplayMode(ModeOrbit);
          ** edg note: I don't particularly think starting out in 1st person
          ** and then going to 3rd person is so great.  We'll just do 3rd
          ** person in orbit mode.
@@ -871,13 +871,13 @@ void OTWDriverClass::SetEjectCamChaseMode(EjectedPilotClass *ejectedPilot, int c
         }
 
         /*
-        	 else if(chaseMode == 1) {
-        	 SetOTWDisplayMode(ModeChase);
-        	 }
-        	 else if(chaseMode == 2) {
-        	 SetOTWDisplayMode(ModeOrbit);
-        	 }
-        	 else {
+          else if(chaseMode == 1) {
+          SetOTWDisplayMode(ModeChase);
+          }
+          else if(chaseMode == 2) {
+          SetOTWDisplayMode(ModeOrbit);
+          }
+          else {
         // F4Assert(0);
         SetOTWDisplayMode(ModeChase);
         }

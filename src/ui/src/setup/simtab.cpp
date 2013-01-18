@@ -12,9 +12,9 @@ Preset Presets[] =
     {FMAccurate, ATRealisticAV, WEAccurate, APNormal, ARRealistic, PDRealistic, 0},
     {FMAccurate, ATRealistic, WEAccurate, APNormal, ARModerated, PDRealistic, SIM_UNLIMITED_CHAFF},
     {FMAccurate, ATSimplified, WEEnhanced, APEnhanced, ARModerated, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS},
-    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL},			//need to put SIM_UNLIMITED_FUEL
+    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL}, //need to put SIM_UNLIMITED_FUEL
     {FMSimplified, ATEasy, WEExaggerated, APIntelligent, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT | SIM_UNLIMITED_AMMO | SIM_UNLIMITED_CHAFF | SIM_NAMETAGS | SIM_UNLIMITED_FUEL | SIM_NO_COLLISIONS},
-    //{FMSimplified,ATEasy,WEExaggerated,APIntelligent,ARSimplistic, PDSuper,SIM_NO_BLACKOUT|SIM_UNLIMITED_AMMO|SIM_UNLIMITED_CHAFF|SIM_NAMETAGS|SIM_UNLIMITED_FUEL|SIM_NO_COLLISIONS},	//back into these two after DEMO
+    //{FMSimplified,ATEasy,WEExaggerated,APIntelligent,ARSimplistic, PDSuper,SIM_NO_BLACKOUT|SIM_UNLIMITED_AMMO|SIM_UNLIMITED_CHAFF|SIM_NAMETAGS|SIM_UNLIMITED_FUEL|SIM_NO_COLLISIONS}, //back into these two after DEMO
 };
 
 extern C_Handler *gMainHandler;
@@ -25,10 +25,10 @@ extern C_Handler *gMainHandler;
 
 int GetRealism(C_Window *win)
 {
-    C_ListBox	*listbox;
-    C_Button	*button;
+    C_ListBox *listbox;
+    C_Button *button;
 
-    int			realism = 100, maxrealism = 100;
+    int realism = 100, maxrealism = 100;
 
     if (win == NULL)
         return 0;
@@ -162,9 +162,9 @@ int GetRealism(C_Window *win)
         if (button->GetState())
         {
             // Cobra - 03-08-05 Temp disabled due to unknown cause mid-air collisions
-            //		realism   -= button->GetUserNumber(0);
-            //		if(maxrealism   > button->GetUserNumber(1))
-            //			maxrealism   = button->GetUserNumber(1);
+            // realism   -= button->GetUserNumber(0);
+            // if(maxrealism   > button->GetUserNumber(1))
+            // maxrealism   = button->GetUserNumber(1);
         }
     }
 
@@ -250,10 +250,10 @@ int GetRealism(C_Window *win)
 
 int SetRealism(C_Window *win)
 {
-    C_Button	*button;
-    C_EditBox	*ebox;
-    C_ListBox	*listbox;
-    int			realism = 100, maxrealism = 100;
+    C_Button *button;
+    C_EditBox *ebox;
+    C_ListBox *listbox;
+    int realism = 100, maxrealism = 100;
 
     if (win == NULL)
         return 0;
@@ -314,10 +314,10 @@ void SetSkillCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    int			Index;
-    C_Button	*button;
-    C_Window	*win;
-    C_ListBox	*lbox;
+    int Index;
+    C_Button *button;
+    C_Window *win;
+    C_ListBox *lbox;
 
     win = (C_Window *)control->Parent_;
 
@@ -436,8 +436,8 @@ void SetSkillCB(long, short hittype, C_Base *control)
                 lbox->SetValue(SET_PADLOCK_2);
                 break;
                 //case PDSuper:
-                //	lbox->SetValue(SET_PADLOCK_3);
-                //	break;
+                // lbox->SetValue(SET_PADLOCK_3);
+                // break;
         }
     }
 
@@ -538,21 +538,21 @@ void SetSkillCB(long, short hittype, C_Base *control)
 #include "RadioSubTitle.h"
 extern int g_nSubTitleTTL;
 extern int g_nNumberOfSubTitles;
-extern char g_strRadioflightCol[0x40];			// Retro 27Dec2003
-extern char g_strRadiotoPackageCol[0x40];		// Retro 27Dec2003
-extern char g_strRadioToFromPackageCol[0x40];	// Retro 27Dec2003
-extern char g_strRadioTeamCol[0x40];			// Retro 27Dec2003
-extern char g_strRadioProximityCol[0x40];		// Retro 27Dec2003
-extern char g_strRadioWorldCol[0x40];			// Retro 27Dec2003
-extern char g_strRadioTowerCol[0x40];			// Retro 27Dec2003
-extern char g_strRadioStandardCol[0x40];		// Retro 27Dec2003
+extern char g_strRadioflightCol[0x40]; // Retro 27Dec2003
+extern char g_strRadiotoPackageCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioToFromPackageCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioTeamCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioProximityCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioWorldCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioTowerCol[0x40]; // Retro 27Dec2003
+extern char g_strRadioStandardCol[0x40]; // Retro 27Dec2003
 
 void SubTitleCB(long ID, short hittype, C_Base *control)
 {
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    if ((PlayerOptions.getSubtitles() == false) && (!radioLabel))	// need to create a new object..
+    if ((PlayerOptions.getSubtitles() == false) && (!radioLabel)) // need to create a new object..
     {
         try
         {
@@ -573,7 +573,7 @@ void SubTitleCB(long ID, short hittype, C_Base *control)
             control->SetState(C_STATE_0);
         };
     }
-    else	// need to delete the object..
+    else // need to delete the object..
     {
         delete(radioLabel);
         radioLabel = 0;

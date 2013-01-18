@@ -1,6 +1,6 @@
 #include "Star.h"
 #include "Falclib\Include\openfile.h"
-#define EPSILON		1e-6f
+#define EPSILON 1e-6f
 #define elonge      278.833540f     /* Ecliptic longitude of the Sun at epoch 1980.0 */
 #define elongp      282.596403f     /* Ecliptic longitude of the Sun at perigee */
 #define eccent      0.016718f       /* Eccentricity of Earth's orbit */
@@ -34,8 +34,8 @@ float CStar::SunAz;
 float CStar::SunAlt;
 float CStar::MoonAz;
 float CStar::MoonAlt;
-float CStar::Horizon = (float)(-PI / 2);			// default ==> show all stars
-float CStar::HorizonRange = (float)(-PI / 2);	// default ==> don't dim stars
+float CStar::Horizon = (float)(-PI / 2); // default ==> show all stars
+float CStar::HorizonRange = (float)(-PI / 2); // default ==> don't dim stars
 float CStar::IntensityRange = 1.0f;
 int CStar::minStarIntensity = 0;
 
@@ -47,12 +47,12 @@ int CStar::minStarIntensity = 0;
 /*
 inline int FloatToInt32(float x)
 {
-	__asm {
-		fld   dword ptr [x];
-		fistp dword ptr [x];
-		mov eax, dword ptr [x];
-	}
-	return x;
+ __asm {
+ fld   dword ptr [x];
+ fistp dword ptr [x];
+ mov eax, dword ptr [x];
+ }
+ return x;
 }
 */
 //#pragma warning(default : 4244)
@@ -89,7 +89,7 @@ void CStar::GetDateTime(char *string, float timezone)
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     int hour, minute;
-    float	second;
+    float second;
     int day = Day;
     int month = Month;
     int year = Year;
@@ -186,7 +186,7 @@ void CStar::UpdateTime(float curtime)
 
     if (UniversalTime >= 1.0f)
     {
-        int	ut = FloatToInt32(UniversalTime);
+        int ut = FloatToInt32(UniversalTime);
         ExtraDay += ut;
         UniversalTime -= ut;
     }
@@ -317,13 +317,13 @@ int CStar::Setup(char *starfile, float maxmagnitude)
 
     char buffer[MAXSTRING];
 
-    int		totalcons = 0, totalstar = 0;
-    float	minmag = 0.0F, maxmag = 0.0F;
-    float	minint, maxint;
+    int totalcons = 0, totalstar = 0;
+    float minmag = 0.0F, maxmag = 0.0F;
+    float minint, maxint;
 
     minint = 0.5f;
     maxint = 1.0f;
-    fscanf(in, "%s", buffer);		// StarInfo
+    fscanf(in, "%s", buffer); // StarInfo
 
     while (1)
     {
@@ -385,36 +385,36 @@ int CStar::Setup(char *starfile, float maxmagnitude)
     data -> star = star;
     data -> totalstar = totalstar;
 
-    float	deltamag = max(0.01F, maxmag - minmag);
-    float	deltaint = (maxint - minint) / deltamag;
+    float deltamag = max(0.01F, maxmag - minmag);
+    float deltaint = (maxint - minint) / deltamag;
 
-    StarRecord	*curstar = star;
+    StarRecord *curstar = star;
     int i, j;
-    float	mag;
+    float mag;
 
     for (i = 0; i < totalcons; i++)
     {
-        fscanf(in, "%s", buffer);		// Constellation
+        fscanf(in, "%s", buffer); // Constellation
         fscanf(in, "%[^\n]", buffer);
-        fscanf(in, "%s", buffer);		// TotalStar
+        fscanf(in, "%s", buffer); // TotalStar
         fscanf(in, "%d", &totalstar);
 
         for (j = 0; j < totalstar; j++)
         {
-            fscanf(in, "%s", buffer);	// Mag
+            fscanf(in, "%s", buffer); // Mag
             fscanf(in, "%f", &mag);
-            fscanf(in, "%s", buffer);	// RaDec
+            fscanf(in, "%s", buffer); // RaDec
             fscanf(in, "%f %f", &curstar -> ra, &curstar -> dec);
             curstar -> ra = hourtorad(curstar -> ra);
             curstar -> dec = degtorad(curstar -> dec);
-            fscanf(in, "%s", buffer);	// ID
+            fscanf(in, "%s", buffer); // ID
             fscanf(in, "%[^\n]", buffer);
 
             if (mag < maxmagnitude)
             {
                 mag = (mag - minmag) * deltaint;
 
-                if (mag > 1.0f) mag = 1.0f;	// just in case
+                if (mag > 1.0f) mag = 1.0f; // just in case
 
                 curstar -> color = FloatToInt32((1.0f - mag) * 255.0f);
                 curstar++;
@@ -485,7 +485,7 @@ void CStar::Cleanup()
     }
 }
 
-#define	MAXRANGE	2.5
+#define MAXRANGE 2.5
 int CStar::InsideRange(float starpos, float pos)
 {
     if (starpos < pos - degtorad(MAXRANGE)) return 0;
@@ -504,7 +504,7 @@ void CStar::UpdateStar()
 
     for (i = 0; i < CurrentStarData -> totalstar; i++, star++)
     {
-        if (star -> color < minStarIntensity) continue;	// skip dim star
+        if (star -> color < minStarIntensity) continue; // skip dim star
 
         if (CalculateStarCoord(star -> ra, star -> dec, coord))
         {
@@ -716,7 +716,7 @@ float CStar::GetMoonPhase()
     float Lambdasun = FixAngle(Ec + elongp);
     float ml = FixAngle(13.1763966f * Day + mmlong);
     float MM = FixAngle(ml - 0.1114041f * Day - mmlongp);
-    //	float MN = FixAngle (mlnode - 0.0529539f * Day);
+    // float MN = FixAngle (mlnode - 0.0529539f * Day);
     float Ev = 1.2739f * (float) sin(degtorad(2 * (ml - Lambdasun) - MM));
     float sinM = (float) sin(degtorad(M));
     float Ae = 0.1858f * sinM;
@@ -746,7 +746,7 @@ void CStar::GetSunRaDec(float *ra, float *dec)
 void CStar::GetMoonRaDec(float *ra, float *dec)
 {
     float t = degtorad(deltaJulian) / 36525.0f;
-    float l =								 GetRangeRad(degtorad(218.32f) + 481267.883f * t)
+    float l =  GetRangeRad(degtorad(218.32f) + 481267.883f * t)
             + degtorad(6.29f) * (float)sin(GetRangeRad(degtorad(134.9f)  + 477198.85f  * t))
             - degtorad(1.27f) * (float)sin(GetRangeRad(degtorad(259.2f)  - 413335.38f  * t))
             + degtorad(0.66f) * (float)sin(GetRangeRad(degtorad(235.7f)  + 890534.23f  * t))
@@ -763,7 +763,7 @@ void CStar::GetMoonRaDec(float *ra, float *dec)
                   + degtorad(0.0095f) * (float)cos(GetRangeRad(degtorad(259.2f) - 413335.38f * t))
                   + degtorad(0.0078f) * (float)cos(GetRangeRad(degtorad(235.7f) + 890534.23f * t))
                   + degtorad(0.0028f) * (float)cos(GetRangeRad(degtorad(269.9f) + 954397.7f  * t));
-    //	float sdia = 0.2725f * gp;
+    // float sdia = 0.2725f * gp;
     float rm = 1.0f / (float) sin(gp);
     float cosbm = (float) cos(bm);
     float xg = rm * (float) cos(l) * cosbm;

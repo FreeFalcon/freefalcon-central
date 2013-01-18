@@ -23,20 +23,20 @@
 #ifndef _SHI__TARGETS_H_
 #define _SHI__TARGETS_H_
 
-#define SHI_CS_m_68k	4
-#define SHI_CS_m_i486	5
-#define SHI_CS_m_i586	6
-#define SHI_CS_m_i686	7
-#define SHI_CS_m_i786	8
-#define SHI_CS_m_i886	9
+#define SHI_CS_m_68k 4
+#define SHI_CS_m_i486 5
+#define SHI_CS_m_i586 6
+#define SHI_CS_m_i686 7
+#define SHI_CS_m_i786 8
+#define SHI_CS_m_i886 9
 #define SHI_CS_m_k6_2   10
-#define SHI_CS_m_m2	11
-#define SHI_CS_m_mips1	12
-#define SHI_CS_m_mips2	13
-#define SHI_CS_m_mips3	14
-#define SHI_CS_m_ppc601	15
-#define SHI_CS_m_psx	16
-#define SHI_CS_m_saturn	17
-#define SHI_CS_m_u64	18
+#define SHI_CS_m_m2 11
+#define SHI_CS_m_mips1 12
+#define SHI_CS_m_mips2 13
+#define SHI_CS_m_mips3 14
+#define SHI_CS_m_ppc601 15
+#define SHI_CS_m_psx 16
+#define SHI_CS_m_saturn 17
+#define SHI_CS_m_u64 18
 
 #endif  /* _SHI__TARGETS_H_ */

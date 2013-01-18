@@ -3,9 +3,9 @@
     July 10, 1996
 
     Derived class to do special position processing for vehicles on the
-	ground.  (More precisly, any object which is to be placed on the
-	ground and reoriented so that it's "up" vector is aligned with the
-	terrain normal.)
+ ground.  (More precisly, any object which is to be placed on the
+ ground and reoriented so that it's "up" vector is aligned with the
+ terrain normal.)
 \***************************************************************************/
 #include "Matrix.h"
 #include "RViewPnt.h"
@@ -13,7 +13,7 @@
 #include "DrawGrnd.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableGroundVehicle::pool;
+MEM_POOL DrawableGroundVehicle::pool;
 #endif
 
 
@@ -82,10 +82,10 @@ void DrawableGroundVehicle::Draw(class RenderOTW *renderer, int LOD)
     if (LOD != previousLOD)
     {
 
-        Tpoint	normal;
-        float	s;
-        float	Nx, Ny, Nz;
-        float	x, y, z;
+        Tpoint normal;
+        float s;
+        float Nx, Ny, Nz;
+        float x, y, z;
 
         if (drivingOn)
         {

@@ -197,7 +197,7 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
             sq->AddMessage(msg);
             //}
             //else{
-            //	vuLowSendQueue->AddMessage(msg);
+            // vuLowSendQueue->AddMessage(msg);
             //retval = msg->Size();
             //}
             // sfr: why not for both?
@@ -263,15 +263,15 @@ void VuMessageQueue::FlushAllQueues()
 
 /*
 int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), void *arg){
-	int count = 0;
-	VuEnterCriticalSection();
-	VuMessageQueue *cur = queuecollhead_;
-	while (cur) {
-		count += cur->InvalidateQueueMessages(evalFunc, arg);
-		cur = cur->nextqueue_;
-	}
-	VuExitCriticalSection();
-	return count;
+ int count = 0;
+ VuEnterCriticalSection();
+ VuMessageQueue *cur = queuecollhead_;
+ while (cur) {
+ count += cur->InvalidateQueueMessages(evalFunc, arg);
+ cur = cur->nextqueue_;
+ }
+ VuExitCriticalSection();
+ return count;
 }
 */
 
@@ -288,7 +288,7 @@ void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 VU_BOOL VuMessageQueue::ReallocQueue()
 {
     int size = (tail_ - head_) * 2;
-    VuMessage	**newhead, **cp, **rp;
+    VuMessage **newhead, **cp, **rp;
 
     newhead = new VuMessage*[size];
     cp      = newhead;

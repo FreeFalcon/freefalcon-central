@@ -285,8 +285,8 @@ static int MessageReceive(
 
 static int MessagePoll(VuCommsContext* ctxt)
 {
-    static int		last_full_update = 0;
-    int				now;
+    static int last_full_update = 0;
+    int now;
     int             count   = 0;
     int             length  = 0;
     ComAPIHandle    ch      = ctxt->handle_;
@@ -590,7 +590,7 @@ VuTargetEntity::~VuTargetEntity()
     }
 
     //if (vuLowSendQueue){
-    //	vuLowSendQueue->RemoveTarget(this);
+    // vuLowSendQueue->RemoveTarget(this);
     //}
     CloseComms();
 }
@@ -855,7 +855,7 @@ void VuTargetEntity::SetReliableCommsHandle(ComAPIHandle ch, int bufSize, int pa
 
 int VuTargetEntity::SendQueuedMessage(void)
 {
-    int	size;
+    int size;
 
     if ((reliableComms_.handle_) && (reliableComms_.status_ == VU_CONN_ACTIVE))
     {
@@ -959,7 +959,7 @@ int VuTargetEntity::GetMessages()
 
 void VuTargetEntity::SetDirty(void)
 {
-    //	MonoPrint ("Set Dirty\n");
+    // MonoPrint ("Set Dirty\n");
     dirty = 1;
 }
 
@@ -1102,7 +1102,7 @@ int VuTargetEntity::FlushOutboundMessageBuffer()
     }
 
     //if (retval > 0) {
-    //	VuMainThread::ReportXmit(retval);
+    // VuMainThread::ReportXmit(retval);
     //}
 
     VuExitCriticalSection();
@@ -1327,7 +1327,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
     )
     {
         // recoverable error
-        VuMessageQueue::RepostMessage(msg, 500);	// 500 ms delay
+        VuMessageQueue::RepostMessage(msg, 500); // 500 ms delay
         return 0;
     }
 
@@ -1348,7 +1348,7 @@ VuSessionEntity::VuSessionEntity(ushort typeindex, ulong domainMask, char *calls
     gameId_(VU_SESSION_NULL_GROUP), // assigned on session open
     groupCount_(0),
     groupHead_(0),
-    //		bandwidth_(33600),
+    // bandwidth_(33600),
 #ifdef VU_SIMPLE_LATENCY
     timeDelta_(0),
     latency_(0),
@@ -2740,7 +2740,7 @@ VU_ERRCODE VuSessionEntity::Handle(VuSessionEvent* event)
                 }
                 else
                 {
-                    //					MonoPrint ("Session refers to a game that does not exist\n");
+                    // MonoPrint ("Session refers to a game that does not exist\n");
                     VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, event);
                     VuMessageQueue::PostVuMessage(timer);
                 }
@@ -2935,7 +2935,7 @@ VuGroupEntity::VuGroupEntity(char* groupname) :
 
 
 VuGroupEntity::VuGroupEntity(int type, char *gamename, VuFilter* filter)
-    : VuTargetEntity(type, VuxGetId()),	groupName_(0), sessionMax_(VU_DEFAULT_GROUP_SIZE)
+    : VuTargetEntity(type, VuxGetId()), groupName_(0), sessionMax_(VU_DEFAULT_GROUP_SIZE)
 {
     groupName_ = new char[strlen(gamename) + 1];
     strcpy(groupName_, gamename);
@@ -3337,7 +3337,7 @@ VuGlobalGroup::VuGlobalGroup()
 {
     // make certain owner is NULL session
     share_.ownerId_     = VU_SESSION_NULL_CONNECTION;
-    share_.id_.creator_	= (0);
+    share_.id_.creator_ = (0);
     share_.id_.num_     = VU_GLOBAL_GROUP_ENTITY_ID;
     sessionMax_         = 1024;
     connected_          = FALSE;
@@ -3868,7 +3868,7 @@ VuPlayerPoolGame::VuPlayerPoolGame(ulong domainMask)
 {
     // make certain owner is NULL session
     share_.ownerId_     = VU_SESSION_NULL_CONNECTION;
-    share_.id_.creator_	= (0);
+    share_.id_.creator_ = (0);
     share_.id_.num_     = VU_PLAYER_POOL_ENTITY_ID;
     sessionMax_         = 255;
 

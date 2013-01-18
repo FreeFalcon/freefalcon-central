@@ -32,7 +32,7 @@ private:
     public:
         Tpoint position; // feet
         Tpoint vector;   // normalized vector
-        float	time;     // seconds
+        float time;     // seconds
         float   stength;  // arbitrary strength value
     };
 
@@ -67,7 +67,7 @@ int ClosestApproachLinePoint(Tpoint &A, Tpoint &B, Tpoint &C, float &PercentOfAB
     ABnorm.z = AB.z / (lengthAB + .00000001f);
 
     float cosAngleCAB = ACnorm.x * ABnorm.x + ACnorm.y * ABnorm.y + ACnorm.z * ABnorm.z;
-    float lengthAD	  = cosAngleCAB * lengthAC;
+    float lengthAD   = cosAngleCAB * lengthAC;
 
     //D = A + ABnorm * lengthAD;
     PercentOfAB = lengthAD / (lengthAB + .00000001f);
@@ -346,17 +346,17 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
                     segNormal.z = End.position.z - Start.position.z;
 
                     /*
-                    //				segNormal.Normalize();
-                    				float l = sqrt(segNormal.x*segNormal.x + segNormal.y*segNormal.y + segNormal.z*segNormal.z);
-                    				if (l > 0.000001f)
-                    				{
-                    						segNormal.x /= l;
-                    						segNormal.y /= l;
-                    						segNormal.z /= l;
-                    				}
+                    // segNormal.Normalize();
+                     float l = sqrt(segNormal.x*segNormal.x + segNormal.y*segNormal.y + segNormal.z*segNormal.z);
+                     if (l > 0.000001f)
+                     {
+                     segNormal.x /= l;
+                     segNormal.y /= l;
+                     segNormal.z /= l;
+                     }
 
-                    				// only doing roll for now;
-                    				float rcos = segNormal % rtp.fwd;
+                     // only doing roll for now;
+                     float rcos = segNormal % rtp.fwd;
                     */
                     if (owner->type == AircraftTurbulence::RVORTEX)
                         dirMult = 1.0f;

@@ -1,7 +1,7 @@
 /***************************************************************************\
     Context.h
     Scott Randolph
-	April 29, 1996
+ April 29, 1996
 
     //JAM 06Oct03 - Begin Major Rewrite
 \***************************************************************************/
@@ -66,12 +66,12 @@ extern  "C" {
 
     typedef enum MPRSurfaceType
     {
-        SystemMem, VideoMem,	// Valid for front or back buffer specifier
-        Primary, 				// Valid for front buffer specifier only
-        Flip,					// Valid for back buffer specifier only
+        SystemMem, VideoMem, // Valid for front or back buffer specifier
+        Primary,  // Valid for front buffer specifier only
+        Flip, // Valid for back buffer specifier only
         None,
-        LocalVideoMem,			// True local video memory
-        LocalVideoMem3D,		// True local video memory
+        LocalVideoMem, // True local video memory
+        LocalVideoMem3D, // True local video memory
     } MPRSurfaceType;
 
     typedef struct MPRSurfaceDescription
@@ -107,7 +107,7 @@ extern  "C" {
 
     typedef enum
     {
-        MPR_PKT_POINTS = 1,           /* MUST BE SAME AS HOOK_POINTS		   */
+        MPR_PKT_POINTS = 1,           /* MUST BE SAME AS HOOK_POINTS    */
         MPR_PKT_LINES,                /* MUST BE SAME AS HOOK_LINES          */
         MPR_PKT_POLYLINE,             /* MUST BE SAME AS HOOK_POLYLINE       */
         MPR_PKT_TRIANGLES,            /* MUST BE SAME AS HOOK_TRIANGLES      */
@@ -117,7 +117,7 @@ extern  "C" {
         MPR_PKT_ID_COUNT,             /* MUST BE LAST */
     } MPRPacketID;
 
-#define MPR_PRM_POINTS			MPR_PKT_POINTS
+#define MPR_PRM_POINTS MPR_PKT_POINTS
 #define MPR_PRM_LINES           MPR_PKT_LINES
 #define MPR_PRM_POLYLINE        MPR_PKT_POLYLINE
 #define MPR_PRM_TRIANGLES       MPR_PKT_TRIANGLES
@@ -130,12 +130,12 @@ extern  "C" {
         MPR_STA_ENABLES,              // MPR_SE
         MPR_STA_DISABLES,             // MPR_SE
 
-        MPR_STA_SRC_BLEND_FUNCTION,	// MPR_BF
-        MPR_STA_DST_BLEND_FUNCTION,	// MPR_BF
-        MPR_STA_ALPHA_OP_FUNCTION,	// MPR_TO
-        MPR_STA_COLOR_OP_FUNCTION,	// MPR_TO
+        MPR_STA_SRC_BLEND_FUNCTION, // MPR_BF
+        MPR_STA_DST_BLEND_FUNCTION, // MPR_BF
+        MPR_STA_ALPHA_OP_FUNCTION, // MPR_TO
+        MPR_STA_COLOR_OP_FUNCTION, // MPR_TO
 
-        MPR_STA_TEXTURE_FACTOR,		// DWORD RGBA
+        MPR_STA_TEXTURE_FACTOR, // DWORD RGBA
 
         MPR_STA_TEX_FILTER,           // MPR_TX
 
@@ -176,16 +176,16 @@ extern  "C" {
     } mprMsgID;
 
     // Possible values for: MPR_STA_ENABLES & MPR_STA_DISABLES
-#define MPR_SE_SHADING							0x00000001L
-#define MPR_SE_TEXTURING						0x00000002L
-#define MPR_SE_MODULATION						0x00000004L
-#define MPR_SE_Z_BUFFERING						0x00000008L
-#define MPR_SE_Z_MASKING						0x00000010L
-#define MPR_SE_SCISSORING						0x00000020L
-#define	MPR_SE_ALPHA							0x00000040L
-#define MPR_SE_CHROMA							0x00000080L
-#define MPR_SE_FILTERING						0x00000100L
-#define MPR_SE_Z_WRITE							0x00000200L
+#define MPR_SE_SHADING 0x00000001L
+#define MPR_SE_TEXTURING 0x00000002L
+#define MPR_SE_MODULATION 0x00000004L
+#define MPR_SE_Z_BUFFERING 0x00000008L
+#define MPR_SE_Z_MASKING 0x00000010L
+#define MPR_SE_SCISSORING 0x00000020L
+#define MPR_SE_ALPHA 0x00000040L
+#define MPR_SE_CHROMA 0x00000080L
+#define MPR_SE_FILTERING 0x00000100L
+#define MPR_SE_Z_WRITE 0x00000200L
 #define MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE  0x00000400L
 
     // Possible values for: MPR_STA_SRC_BLEND_FUNCTION & MPR_STA_DST_BLEND_FUNCTION
@@ -258,21 +258,21 @@ extern  "C" {
 #define MPR_TI_DEFAULT              0x000000
 #define MPR_TI_MIPMAP               0x000001
 #define MPR_TI_CHROMAKEY            0x000020
-#define MPR_TI_ALPHA	            0x000040
+#define MPR_TI_ALPHA             0x000040
 #define MPR_TI_PALETTE              0x000080
-#define MPR_TI_DDS					0x000100
-#define MPR_TI_DXT1					0x000200
-#define MPR_TI_DXT3					0x000400
-#define MPR_TI_DXT5					0x000800
-#define MPR_TI_16					0x001000
-#define MPR_TI_32					0x002000
-#define MPR_TI_64					0x004000
-#define MPR_TI_128					0x008000
-#define MPR_TI_256					0x010000
-#define MPR_TI_512					0x020000
-#define MPR_TI_1024					0x040000
-#define MPR_TI_2048					0x080000
-#define MPR_TI_INVALID				0x100000
+#define MPR_TI_DDS 0x000100
+#define MPR_TI_DXT1 0x000200
+#define MPR_TI_DXT3 0x000400
+#define MPR_TI_DXT5 0x000800
+#define MPR_TI_16 0x001000
+#define MPR_TI_32 0x002000
+#define MPR_TI_64 0x004000
+#define MPR_TI_128 0x008000
+#define MPR_TI_256 0x010000
+#define MPR_TI_512 0x020000
+#define MPR_TI_1024 0x040000
+#define MPR_TI_2048 0x080000
+#define MPR_TI_INVALID 0x100000
 
     struct IDirectDraw7;
     struct IDirect3D7;
@@ -358,18 +358,18 @@ extern  "C" {
         DWORD m_dwFlags;
         DWORD m_dwChromaKey;
         PaletteHandle *m_pPalAttach;
-        BYTE *m_pImageData;					// Copy if palettized src image data if the device doesnt not support palettized textures
-        bool m_bImageDataOwned;				// self allocated or not
+        BYTE *m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
+        bool m_bImageDataOwned; // self allocated or not
         int m_nImageDataStride;
 
         enum _TextureHandleFlags
         {
-            FLAG_HINT_DYNAMIC	= 0x1,
-            FLAG_HINT_STATIC	= 0x2,
-            FLAG_NOTMANAGED		= 0x4,		// dont use the texture manager
-            FLAG_INLOCALVIDMEM	= 0x8,		// put it in videomemory
-            FLAG_RENDERTARGET	= 0x10,		// can be used as 3d render target
-            FLAG_MATCHPRIMARY	= 0x20,		// use same pixel format as primary surface
+            FLAG_HINT_DYNAMIC = 0x1,
+            FLAG_HINT_STATIC = 0x2,
+            FLAG_NOTMANAGED = 0x4, // dont use the texture manager
+            FLAG_INLOCALVIDMEM = 0x8, // put it in videomemory
+            FLAG_RENDERTARGET = 0x10, // can be used as 3d render target
+            FLAG_MATCHPRIMARY = 0x20, // use same pixel format as primary surface
         };
 
     protected:
@@ -401,9 +401,9 @@ extern  "C" {
 
 #ifdef _DEBUG
     public:
-        static DWORD m_dwNumHandles;			// Number of instances
-        static DWORD m_dwBitmapBytes;			// Bytes allocated for bitmap copies
-        static DWORD m_dwTotalBytes;			// Total number of bytes allocated (including bitmap copies and object size)
+        static DWORD m_dwNumHandles; // Number of instances
+        static DWORD m_dwBitmapBytes; // Bytes allocated for bitmap copies
+        static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 
     protected:
         std::string m_strName;
@@ -452,8 +452,8 @@ extern  "C" {
 
 #ifdef _DEBUG
     public:
-        static DWORD m_dwNumHandles;			// Number of instances
-        static DWORD m_dwTotalBytes;			// Total number of bytes allocated (including bitmap copies and object size)
+        static DWORD m_dwNumHandles; // Number of instances
+        static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
         void Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt16 entries, UInt8 *PalBuffer);
@@ -485,24 +485,24 @@ extern  "C" {
 
     enum PRIM_COLOR_OP
     {
-        PRIM_COLOP_NONE			= 0,
-        PRIM_COLOP_COLOR		= 1,
-        PRIM_COLOP_INTENSITY	= 2,
-        PRIM_COLOP_TEXTURE		= 4,
-        PRIM_COLOP_FOG			= 8,
+        PRIM_COLOP_NONE = 0,
+        PRIM_COLOP_COLOR = 1,
+        PRIM_COLOP_INTENSITY = 2,
+        PRIM_COLOP_TEXTURE = 4,
+        PRIM_COLOP_FOG = 8,
     };
 
     // values for SetupMPRState flag argument
-#define	CHECK_PREVIOUS_STATE 0x01
+#define CHECK_PREVIOUS_STATE 0x01
 
     enum
     {
-        //SOLID								(plainPolys)
+        //SOLID (plainPolys)
         STATE_SOLID = 0,
         STATE_LIT,
         STATE_GOURAUD,
 
-        //TEXTURED							(texturedPolys)
+        //TEXTURED (texturedPolys)
         STATE_TEXTURE,
         STATE_TEXTURE_PERSPECTIVE,
         STATE_TEXTURE_LIT,
@@ -520,7 +520,7 @@ extern  "C" {
         STATE_LANDSCAPE_LIT,
         STATE_LANDSCAPE_GOURAUD,
 
-        //TRANSLUCENT						(translucentPolys)
+        //TRANSLUCENT (translucentPolys)
         STATE_ALPHA_SOLID,
         STATE_ALPHA_LIT,
         STATE_ALPHA_GOURAUD,
@@ -546,7 +546,7 @@ extern  "C" {
 
         STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP,
 
-        //DOUBLE-TEXTURED					(texturedPolys)
+        //DOUBLE-TEXTURED (texturedPolys)
         STATE_MULTITEXTURE,
         STATE_MULTITEXTURE_ALPHA,
 
@@ -562,48 +562,48 @@ extern  "C" {
     // Transformed + Lit Vertex
     struct TLVERTEX
     {
-        float		sx;
-        float		sy;
-        float		sz;
-        float		rhw;
-        DWORD		color;
-        DWORD		specular;
-        float		tu0;
-        float		tv0;
-        float		tu1;
-        float		tv1;
+        float sx;
+        float sy;
+        float sz;
+        float rhw;
+        DWORD color;
+        DWORD specular;
+        float tu0;
+        float tv0;
+        float tu1;
+        float tv1;
     };
 
     // Software Vertex Class
     class SVertex
     {
     public:
-        float		sx;
-        float		sy;
-        float		sz;
-        float		rhw;
-        DWORD		color;
-        DWORD		specular;
-        float		tu0;
-        float		tv0;
-        float		tu1;
-        float		tv1;
+        float sx;
+        float sy;
+        float sz;
+        float rhw;
+        DWORD color;
+        DWORD specular;
+        float tu0;
+        float tv0;
+        float tu1;
+        float tv1;
 
-        SVertex		*pNext;
+        SVertex *pNext;
     };
 
     // Software Polygon Class
     class SPolygon
     {
     public:
-        SPolygon	*pNext;
-        SVertex		*pVertexList;
+        SPolygon *pNext;
+        SVertex *pVertexList;
 
-        DWORD		numVertices;
-        int			renderState;
-        GLint		textureID0;
-        GLint		textureID1;
-        DWORD		zBuffer;
+        DWORD numVertices;
+        int renderState;
+        GLint textureID0;
+        GLint textureID1;
+        DWORD zBuffer;
 
     public:
         void CalcPolyZ();
@@ -613,46 +613,46 @@ extern  "C" {
     // UnTransformed + Lit Vertex
     struct LVERTEX
     {
-        float		x;
-        float		y;
-        float		z;
-        DWORD		color;
-        DWORD		specular;
-        float		tu0;
-        float		tv0;
-        float		tu1;
-        float		tv1;
+        float x;
+        float y;
+        float z;
+        DWORD color;
+        DWORD specular;
+        float tu0;
+        float tv0;
+        float tu1;
+        float tv1;
     };
 
     // Hardware Vertex Class
     class HVertex
     {
     public:
-        float		x;
-        float		y;
-        float		z;
-        DWORD		color;
-        DWORD		specular;
-        float		tu0;
-        float		tv0;
-        float		tu1;
-        float		tv1;
+        float x;
+        float y;
+        float z;
+        DWORD color;
+        DWORD specular;
+        float tu0;
+        float tv0;
+        float tu1;
+        float tv1;
 
-        HVertex		*pNext;
+        HVertex *pNext;
     };
 
     // Hardware Polygon Class
     class HPolygon
     {
     public:
-        HPolygon	*pNext;
-        HVertex		*pVertexList;
+        HPolygon *pNext;
+        HVertex *pVertexList;
 
-        DWORD		numVertices;
-        int			renderState;
-        GLint		textureID0;
-        GLint		textureID1;
-        DWORD		zBuffer;
+        DWORD numVertices;
+        int renderState;
+        GLint textureID0;
+        GLint textureID1;
+        DWORD zBuffer;
 
         LPD3DMATRIX mW;
 
@@ -786,7 +786,7 @@ extern  "C" {
         DXContext *m_pCtxDX;
 
     protected:
-        int m_nFrameDepth;						// EndScene is called when this value reaches zero
+        int m_nFrameDepth; // EndScene is called when this value reaches zero
         ImageBuffer *m_pIB;
         IDirectDraw7 *m_pDD;
         IDirect3DDevice7 *m_pD3DD;
@@ -818,7 +818,7 @@ extern  "C" {
 #endif
 
         IDirectDrawSurface7 *m_pDDSP;
-        bool m_bNoD3DStatsAvail;				// D3D Texture management stats (dx debug runtime only)
+        bool m_bNoD3DStatsAvail; // D3D Texture management stats (dx debug runtime only)
         bool m_bRenderTargetHasZBuffer;
         bool m_bViewportLocked;
 

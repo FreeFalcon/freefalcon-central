@@ -36,7 +36,7 @@
 #include "classtbl.h"
 #include "PtData.h"
 
-#include "FalcLib\include\playerop.h"	// OW
+#include "FalcLib\include\playerop.h" // OW
 
 void CenterOnFeatureCB(long ID, short hittype, C_Base *control);
 void SetBullsEye(C_Window *);
@@ -143,7 +143,7 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
 {
     C_Feature *feat;
     long TextID;
-    FeatureClassDataType*	fc;
+    FeatureClassDataType* fc;
     long classID;
 
     classID = obj->GetFeatureID(featureID);
@@ -335,10 +335,10 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
 
 void AddUnitToTargetTree(Unit unit)
 {
-    Tpoint					objPos;
-    TREELIST				*item, *parent;
-    C_Entity				*recon_ent;
-    C_Feature				*veh;
+    Tpoint objPos;
+    TREELIST *item, *parent;
+    C_Entity *recon_ent;
+    C_Feature *veh;
 
     if (gGps->GetTeamNo() >= 0 && unit->GetTeam() != gGps->GetTeamNo())
         if (!unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) && !unit->IsFlight())
@@ -346,10 +346,10 @@ void AddUnitToTargetTree(Unit unit)
 
     if (TargetTree)
     {
-        SimInitDataClass		simdata;
-        int						v, vehs, motiontype, inslot, visType;
-        VehicleID				classID;
-        VehicleClassDataType	*vc;
+        SimInitDataClass simdata;
+        int v, vehs, motiontype, inslot, visType;
+        VehicleID classID;
+        VehicleClassDataType *vc;
 
         // Check for possible problems
         if (unit->IsFlight() && !unit->ShouldDeaggregate())
@@ -428,19 +428,19 @@ void AddUnitToTargetTree(Unit unit)
 
 void AddObjectiveToTargetTree(Objective obj)
 {
-    short					f, fid;
-    VehicleID				classID;
+    short f, fid;
+    VehicleID classID;
     Falcon4EntityClassType* classPtr;
-    float					x, y, z;
-    FeatureClassDataType*	fc;
-    ObjClassDataType*		oc;
-    BSPLIST					*drawptr;
-    Tpoint					objPos;
-    TREELIST				*item, *parent;
-    C_Entity				*recon_ent;
-    C_Feature				*feat;
-    BSPLIST					*Parent;
-    short					ShowAllFeatures = 0;
+    float x, y, z;
+    FeatureClassDataType* fc;
+    ObjClassDataType* oc;
+    BSPLIST *drawptr;
+    Tpoint objPos;
+    TREELIST *item, *parent;
+    C_Entity *recon_ent;
+    C_Feature *feat;
+    BSPLIST *Parent;
+    short ShowAllFeatures = 0;
 
     if (TargetTree)
     {
@@ -495,7 +495,7 @@ void AddObjectiveToTargetTree(Objective obj)
 
                             if (obj->brain)
                             {
-                                //								index = obj->GetComponentIndex(this);
+                                // index = obj->GetComponentIndex(this);
                                 int texIdx = obj->brain->GetRunwayTexture(f);
                                 ((DrawableBSP*)drawptr->object)->SetTextureSet(texIdx);
                             }
@@ -546,7 +546,7 @@ void GetGroundUnitsNear(float x, float y, float range)
         if (deltay < 0) deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
-        //		if((deltax < range & deltay < range) && !un->IsSquadron())
+        // if((deltax < range & deltay < range) && !un->IsSquadron())
         if (deltax < range && deltay < range && !un->IsSquadron())
             AddUnitToTargetTree(un);
 
@@ -572,7 +572,7 @@ void GetObjectivesNear(float x, float y, float range)
         if (deltay < 0) deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
-        //		if(deltax < range & deltay < range)
+        // if(deltax < range & deltay < range)
         if (deltax < range && deltay < range)
             AddObjectiveToTargetTree(Obj);
 
@@ -635,24 +635,24 @@ void ReconArea(float x, float y, float range)
 
         if (gUIViewer->GetRendOTW())
         {
-            //			gUIViewer->GetRendOTW()->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
+            // gUIViewer->GetRendOTW()->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
 
             gUIViewer->GetRendOTW()->SetDitheringMode(PlayerOptions.HazingOn());
 
             if (FalconDisplay.theDisplayDevice.IsHardware())
             {
                 gUIViewer->GetRendOTW()->SetFilteringMode(PlayerOptions.FilteringOn());
-                //				gUIViewer->GetRendOTW()->SetAlphaMode(PlayerOptions.AlphaOn());
+                // gUIViewer->GetRendOTW()->SetAlphaMode(PlayerOptions.AlphaOn());
                 gUIViewer->GetRendOTW()->SetHazeMode(PlayerOptions.HazingOn());
-                //				gUIViewer->GetRendOTW()->SetSmoothShadingMode( PlayerOptions.GouraudOn() );
+                // gUIViewer->GetRendOTW()->SetSmoothShadingMode( PlayerOptions.GouraudOn() );
             }
 
             else
             {
                 gUIViewer->GetRendOTW()->SetFilteringMode(false);
-                //				gUIViewer->GetRendOTW()->SetAlphaMode(false);
+                // gUIViewer->GetRendOTW()->SetAlphaMode(false);
                 gUIViewer->GetRendOTW()->SetHazeMode(false);
-                //				gUIViewer->GetRendOTW()->SetSmoothShadingMode(false);
+                // gUIViewer->GetRendOTW()->SetSmoothShadingMode(false);
             }
 
             gUIViewer->GetRendOTW()->SetObjectDetail(PlayerOptions.ObjectDetailLevel());

@@ -1,22 +1,22 @@
 /*****************************************************************************/
-//	Filename:	winampfrontend.cpp
-//	Author:		Retro
-//	Date:		3Jan2004
-//	Description:Used the winamp 2.xx API to communicate with said application
-//				Provides some functions that are currently used within the
-//				DED/ICP code, they can however be bound to keyboard commands
-//				as well..
+// Filename: winampfrontend.cpp
+// Author: Retro
+// Date: 3Jan2004
+// Description:Used the winamp 2.xx API to communicate with said application
+// Provides some functions that are currently used within the
+// DED/ICP code, they can however be bound to keyboard commands
+// as well..
 /*****************************************************************************/
-#include "frontend.h"		// Retro - Winamp functionality
+#include "frontend.h" // Retro - Winamp functionality
 #include "winampfrontend.h"
 
-#define REFRESH_INTERVAL 2000	// a check every 2 seconds if the title changed..
-#define INITIAL_VOLUME 204		// 80% max volume
+#define REFRESH_INTERVAL 2000 // a check every 2 seconds if the title changed..
+#define INITIAL_VOLUME 204 // 80% max volume
 
 extern int g_nWinAmpInitVolume;
 
 /*****************************************************************************/
-//	Constructor..
+// Constructor..
 /*****************************************************************************/
 WinAmpFrontEnd::WinAmpFrontEnd()
 {
@@ -36,7 +36,7 @@ WinAmpFrontEnd::WinAmpFrontEnd()
 };
 
 /*****************************************************************************/
-//	Destruktor..
+// Destruktor..
 /*****************************************************************************/
 WinAmpFrontEnd::~WinAmpFrontEnd()
 {
@@ -45,10 +45,10 @@ WinAmpFrontEnd::~WinAmpFrontEnd()
 };
 
 /*****************************************************************************/
-//	Initialisation. Searches for the winamp window. I might want to call
-//	this on entering the 3d so that the user doesn´t have to restart falcon
-//	if he accidentially canceled (or didn´t open in the first place) the winamp
-//	window
+// Initialisation. Searches for the winamp window. I might want to call
+// this on entering the 3d so that the user doesn´t have to restart falcon
+// if he accidentially canceled (or didn´t open in the first place) the winamp
+// window
 /*****************************************************************************/
 void WinAmpFrontEnd::InitWinAmp()
 {
@@ -74,8 +74,8 @@ void WinAmpFrontEnd::InitWinAmp()
 }
 
 /*****************************************************************************/
-//	Fades out (5 seconds timer) and stops playback. I might call this on
-//	exitting the 3d..
+// Fades out (5 seconds timer) and stops playback. I might call this on
+// exitting the 3d..
 /*****************************************************************************/
 void WinAmpFrontEnd::StopAndFadeout()
 {
@@ -86,7 +86,7 @@ void WinAmpFrontEnd::StopAndFadeout()
     SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON4_SHIFT, 0);
 }
 /*****************************************************************************/
-//	Plays previous track in playlists, or restarts single track
+// Plays previous track in playlists, or restarts single track
 /*****************************************************************************/
 void WinAmpFrontEnd::Previous()
 {
@@ -97,7 +97,7 @@ void WinAmpFrontEnd::Previous()
     SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON1, 0);
 }
 /*****************************************************************************/
-//	Starts Playback.
+// Starts Playback.
 /*****************************************************************************/
 void WinAmpFrontEnd::Start()
 {
@@ -108,7 +108,7 @@ void WinAmpFrontEnd::Start()
     SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON2, 0);
 }
 /*****************************************************************************/
-//	Stops Playback
+// Stops Playback
 /*****************************************************************************/
 void WinAmpFrontEnd::Stop()
 {
@@ -119,7 +119,7 @@ void WinAmpFrontEnd::Stop()
     SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON4, 0);
 }
 /*****************************************************************************/
-//	Plays next track in playlist, or restarts single track
+// Plays next track in playlist, or restarts single track
 /*****************************************************************************/
 void WinAmpFrontEnd::Next()
 {
@@ -130,7 +130,7 @@ void WinAmpFrontEnd::Next()
     SendMessage(winamp_win, WM_COMMAND, WINAMP_BUTTON5, 0);
 }
 /*****************************************************************************/
-//	Increasy volume by 1%
+// Increasy volume by 1%
 /*****************************************************************************/
 void WinAmpFrontEnd::VolUp()
 {
@@ -141,7 +141,7 @@ void WinAmpFrontEnd::VolUp()
     }
 }
 /*****************************************************************************/
-//	Decrease volume by 1%
+// Decrease volume by 1%
 /*****************************************************************************/
 void WinAmpFrontEnd::VolDown()
 {
@@ -152,8 +152,8 @@ void WinAmpFrontEnd::VolDown()
     }
 }
 /*****************************************************************************/
-//	Toggles Playback. Pause is interpreted as 'stopped' for now, so there is
-//	no resume but a complete start of the paused track
+// Toggles Playback. Pause is interpreted as 'stopped' for now, so there is
+// no resume but a complete start of the paused track
 /*****************************************************************************/
 void WinAmpFrontEnd::TogglePlayback()
 {
@@ -171,25 +171,25 @@ void WinAmpFrontEnd::TogglePlayback()
         default:
         case 3:
             Start();
-            break;	// actually, 3 is the 'paused' status.. but whatever..
+            break; // actually, 3 is the 'paused' status.. but whatever..
     }
 
     copyCurTitle();
 }
 /*****************************************************************************/
-//	Copies title of currently played track into a class-internal (heap) string
-//	Also copies this title into two class internal strings that are
-//	set up to be displayed in the DED (they have the correct length)
+// Copies title of currently played track into a class-internal (heap) string
+// Also copies this title into two class internal strings that are
+// set up to be displayed in the DED (they have the correct length)
 //
-//	the upper part is ripped straight out of the winamp tutorial, and not
-//	really optimized ?
+// the upper part is ripped straight out of the winamp tutorial, and not
+// really optimized ?
 //
-//	this function should be called on start/stop/next/previous/toggle
-//	IN ADDITION should be called at fixed intervals (every 2 seconds ?)
+// this function should be called on start/stop/next/previous/toggle
+// IN ADDITION should be called at fixed intervals (every 2 seconds ?)
 /*****************************************************************************/
 void WinAmpFrontEnd::copyCurTitle()
 {
-    if (!ampexists)	// should really not be necessary..
+    if (!ampexists) // should really not be necessary..
         return;
 
     if (currentTrackTitle)
@@ -245,14 +245,14 @@ void WinAmpFrontEnd::copyCurTitle()
         strncpy(&DEDString[1][0], &this_title[MY_MAX_DED_LEN - 1], MY_MAX_DED_LEN - 1);
         DEDString[1][MY_MAX_DED_LEN - 1] = '\0';
     }
-    else	// else don´t print it
+    else // else don´t print it
     {
         DEDString[1][0] = '\0';
     }
 }
 /*****************************************************************************/
-//	returns pointer to string of currently played title. this string gets
-//	deleted in this class, so no action by the user is required
+// returns pointer to string of currently played title. this string gets
+// deleted in this class, so no action by the user is required
 /*****************************************************************************/
 char* WinAmpFrontEnd::getCurTitle()
 {
@@ -262,11 +262,11 @@ char* WinAmpFrontEnd::getCurTitle()
     return currentTrackTitle;
 }
 /*****************************************************************************/
-//	returns pointer to string of currently played title.
+// returns pointer to string of currently played title.
 //
-//	line 0 is first chunk of title, line 1 second chunk. every chunk has the
-//	correct length for the DED. if the title is longer than 2*chunklength, it
-//	is cut off
+// line 0 is first chunk of title, line 1 second chunk. every chunk has the
+// correct length for the DED. if the title is longer than 2*chunklength, it
+// is cut off
 /*****************************************************************************/
 char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 {
@@ -279,7 +279,7 @@ char* WinAmpFrontEnd::getDEDTitle(const int theLine)
     return DEDString[theLine];
 }
 /*****************************************************************************/
-//	returns current volume. 0 <= volume <= 255
+// returns current volume. 0 <= volume <= 255
 /*****************************************************************************/
 int WinAmpFrontEnd::getVolume()
 {
@@ -289,9 +289,9 @@ int WinAmpFrontEnd::getVolume()
     return volume;
 }
 /*****************************************************************************/
-//	should be called periodically to refresh the display of the currently
-//	played track in the DED. of course, if no DED is being displayed, this
-//	function need not be called...
+// should be called periodically to refresh the display of the currently
+// played track in the DED. of course, if no DED is being displayed, this
+// function need not be called...
 /*****************************************************************************/
 void WinAmpFrontEnd::Refresh(unsigned long timer)
 {
@@ -303,7 +303,7 @@ void WinAmpFrontEnd::Refresh(unsigned long timer)
         copyCurTitle();
         myTimer = timer + REFRESH_INTERVAL;
 
-        WinAmpAlive++;	// once every 40 secs I check if winamp was deactivated..
+        WinAmpAlive++; // once every 40 secs I check if winamp was deactivated..
         WinAmpAlive %= 20;
 
         if (WinAmpAlive == 0)

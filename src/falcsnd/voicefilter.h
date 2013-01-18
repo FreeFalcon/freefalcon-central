@@ -1,11 +1,11 @@
-#ifndef	_VOICE_FILTER_H_
+#ifndef _VOICE_FILTER_H_
 #define _VOICE_FILTER_H_
 
 #include "FileMemMap.h"
 
-#define	SLOT_IN_USE				1
-#define VOICE_INITIALIZE		-1
-#define SPEAKER_INIT			0
+#define SLOT_IN_USE 1
+#define VOICE_INITIALIZE -1
+#define SPEAKER_INIT 0
 
 //flags for COMM_FILE_INFO structure
 enum
@@ -16,13 +16,13 @@ enum
 //radio bitflags
 typedef enum
 {
-    TOFROM_FLIGHT	= 0x01,
-    TO_PACKAGE		= 0x02,
-    TOFROM_PACKAGE	= 0x04,
-    TO_TEAM			= 0x08,
-    IN_PROXIMITY	= 0x10,
-    TO_WORLD		= 0x20,
-    TOFROM_TOWER	= 0x40,
+    TOFROM_FLIGHT = 0x01,
+    TO_PACKAGE = 0x02,
+    TOFROM_PACKAGE = 0x04,
+    TO_TEAM = 0x08,
+    IN_PROXIMITY = 0x10,
+    TO_WORLD = 0x20,
+    TOFROM_TOWER = 0x40,
 } PlayBits;
 
 //radio channel filters
@@ -68,22 +68,22 @@ enum
  */
 typedef struct
 {
-    short	speaker;
-    short	fileNbr;
+    short speaker;
+    short fileNbr;
 } SPEAKER_TO_FILE;
 
 typedef struct
 {
-    short			fragHdrNbr;
-    short			totalSpeakers;
-    long			fragOffset;
+    short fragHdrNbr;
+    short totalSpeakers;
+    long fragOffset;
 } FRAG_FILE_INFO;
 
 typedef struct
 {
-    short			evalHdrNbr;
-    short			numEvals;
-    long			evalOffset;
+    short evalHdrNbr;
+    short numEvals;
+    long evalOffset;
 } EVAL_FILE_INFO;
 
 typedef struct
@@ -95,10 +95,10 @@ typedef struct
 /*
 #pragma pack( push, pack1, 1 )
 typedef struct {
-	short			commHdrNbr;
-	short			totalElements;
-	short			totalEvals;
-	long			commOffset;
+ short commHdrNbr;
+ short totalElements;
+ short totalEvals;
+ long commOffset;
 } COMM_FILE_INFO;
 #pragma pack( pop, pack1 )
 */
@@ -106,28 +106,28 @@ typedef struct {
 #pragma pack(1)
 typedef struct
 {
-    short			commHdrNbr;
-    unsigned short	warp;
-    unsigned char	priority;
-    char			positionElement;
-    short			bullseye;
-    unsigned char	totalElements;
-    unsigned char	totalEvals;
-    long			commOffset;
+    short commHdrNbr;
+    unsigned short warp;
+    unsigned char priority;
+    char positionElement;
+    short bullseye;
+    unsigned char totalElements;
+    unsigned char totalEvals;
+    long commOffset;
 } COMM_FILE_INFO;
 #pragma pack()
 
 typedef struct
 {
-    int	speaker;
-    int	voice;
-    int	status;
+    int speaker;
+    int voice;
+    int status;
 } SPEAKER_VOICE_LOOKUP;
 
 typedef struct
 {
-    int	mesgID;
-    int	timeCalled;
+    int mesgID;
+    int timeCalled;
 } MESG_REPEAT_LOOKUP;
 
 class FragFile : public FileMemMap
@@ -230,21 +230,21 @@ public:
     void StartVoiceManager(void);
     void EndVoiceManager(void);
     void ResetVoiceManager(void);
-    //		void ResumeVoiceStreams( void );
+    // void ResumeVoiceStreams( void );
     void HearVoices();
     void SilenceVoices();
     void SetUpVoiceFilter(void);
     void CleanUpVoiceFilter(void);
     void PlayRadioMessage(char talker, short msgid, short *data = NULL, VU_TIME playTime = vuxGameTime, char radiofilter = TO_TEAM, char channel = 0, VU_ID from = FalconNullId, int evalby = EVAL_BY_VALUE, VU_ID to = FalconNullId);
-    char CanUserHearThisMessage(const char radiofilter, const VU_ID, const VU_ID);	// Retro 21Dec2003
-    int	GetBullseyeComm(int *mesgID, short *data);
+    char CanUserHearThisMessage(const char radiofilter, const VU_ID, const VU_ID); // Retro 21Dec2003
+    int GetBullseyeComm(int *mesgID, short *data);
     int GetWarp(int mesgID);
     short IndexElement(short evalHdrNumber, short evalElement);
     short FragToFile(int talker, short fragNumber);
 
 private:
-    //	MESG_REPEAT_LOOKUP		*mesgTable;
-    //		char *commData; //, *evalData; //, *fragData;
+    // MESG_REPEAT_LOOKUP *mesgTable;
+    // char *commData; //, *evalData; //, *fragData;
     CommFile commfile;
     FragFile fragfile;
     EvalFile evalfile;

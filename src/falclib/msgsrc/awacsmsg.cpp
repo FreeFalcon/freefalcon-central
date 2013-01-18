@@ -50,7 +50,7 @@ VU_ID FindAircraftTarget(AircraftClass* theVehicle);  // 2001-10-26 ADDED BY S.G
 FalconAWACSMessage::FalconAWACSMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(AWACSMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
     // Your Code Goes Here
-    //me123	RequestOutOfBandTransmit ();
+    //me123 RequestOutOfBandTransmit ();
     RequestReliableTransmit(); //me123
 }
 
@@ -73,7 +73,7 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
     stdFlightSet setTmp;
 
     {
-        VuListIterator	unitWalker(SimDriver.objectList);
+        VuListIterator unitWalker(SimDriver.objectList);
         SimBaseClass *p = (SimBaseClass*) unitWalker.GetFirst();
 
         while (p)
@@ -98,7 +98,7 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
             {
                 D3DFrame::Vector vPos(p->XPos(), p->YPos(), p->ZPos());
                 float fRange = (vPos - vPosPlane).Size2D() / NM_TO_FT;
-                const float fRangeMax = 50;	// 50 nm
+                const float fRangeMax = 50; // 50 nm
 
                 if (fRange <= fRangeMax)
                 {
@@ -106,8 +106,8 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
 
                     switch (missionType)
                     {
-                        case AMIS_BARCAP:	// BARCAP missions to protect a target area
-                        case AMIS_BARCAP2:	// BARCAP missions to defend a border
+                        case AMIS_BARCAP: // BARCAP missions to protect a target area
+                        case AMIS_BARCAP2: // BARCAP missions to defend a border
                         case AMIS_HAVCAP:
                         case AMIS_TARCAP:
 
@@ -117,15 +117,15 @@ static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &ar
                         case AMIS_ALERT:
 
                             // case AMIS_INTERCEPT:
-                        case AMIS_ONCALLCAS:	// On call CAS
+                        case AMIS_ONCALLCAS: // On call CAS
 
-                            // case AMIS_PRPLANCAS:	// Pre planned CAS
-                        case AMIS_CAS:	// Immediate CAS
+                            // case AMIS_PRPLANCAS: // Pre planned CAS
+                        case AMIS_CAS: // Immediate CAS
 
                             // case AMIS_RECON:
                         case AMIS_BDA:
                         case AMIS_PATROL:
-                        case AMIS_RECONPATROL:	// Recon for enemy ground vehicles
+                        case AMIS_RECONPATROL: // Recon for enemy ground vehicles
                         {
                             arrCandidates.insert(std::map<float, FlightClass *>::value_type(fRange, pFlight));
                             setTmp.insert(pFlight);
@@ -158,13 +158,13 @@ int FalconAWACSMessage::Process(uchar autodisp)
 {
     float altitude;
     short X, Y;
-    Flight		flight = NULL;
+    Flight flight = NULL;
     AircraftClass *plane = NULL;
     FalconEntity* otherThing = NULL; // 2002-02-28 REINSTATED BY S.G. Could be a sim or a campaign object
-    //	CampBaseClass* otherThing = NULL;
+    // CampBaseClass* otherThing = NULL;
     FalconRadioChatterMessage* radioMessage = NULL;
     Objective airbase = NULL;
-    Flight	tankerFlight = NULL;
+    Flight tankerFlight = NULL;
     AircraftClass *tanker = NULL;
     TaskForce carrier = NULL; // VectorToCarrier
     int randNum;
@@ -187,13 +187,13 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
         if (g_bAWACSRequired)   // JPO - an awacs for this flight is required
         {
-            Flight	awacs = flight->GetFlightController();
+            Flight awacs = flight->GetFlightController();
 
             if (awacs == NULL) // 2001-09-23 ADDED BY M.N. no AWACS assigned to the package ?
             {
                 //               -> check if there is an AWACS in the sky at all
-                Unit				nu, cf;
-                VuListIterator		myit(AllAirList);
+                Unit nu, cf;
+                VuListIterator myit(AllAirList);
                 nu = (Unit) myit.GetFirst();
 
                 while (nu)
@@ -221,7 +221,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
         {
             case Unable:
 
-                //			SendCallToAWACS(plane, rcUNABLE);
+                // SendCallToAWACS(plane, rcUNABLE);
                 // KCK: Reply to any pending diverts
                 if (plane->IsLocal())
                     CheckDivertStatus(DIVERT_REPLY_NO);
@@ -231,7 +231,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
             case Wilco:
 
-                //			SendCallToAWACS(plane, rcCOPY);
+                // SendCallToAWACS(plane, rcCOPY);
                 // KCK: Reply to any pending diverts
                 if (plane->IsLocal())
                     CheckDivertStatus(DIVERT_REPLY_YES);
@@ -241,7 +241,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
             case Judy:
                 // This is the flight's request.
-                //			SendCallToAWACS(plane, rcJUDY);
+                // SendCallToAWACS(plane, rcJUDY);
                 radioMessage = new FalconRadioChatterMessage(FalconNullId , FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
                 radioMessage->dataBlock.from = plane->Id();
@@ -261,7 +261,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
             case RequestPicture:
             {
-                //				SendCallToAWACS (plane, rcPICTUREQUERY, FalconLocalSession);
+                // SendCallToAWACS (plane, rcPICTUREQUERY, FalconLocalSession);
 
                 if (plane->IsLocal())
                 {
@@ -285,26 +285,26 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 SimBaseClass *theThreat = SimDriver.FindNearestThreat (plane, &X, &Y, &altitude);
                 if (theThreat)
                 {
-                	radioMessage = CreateCallFromAwacs (flight, rcPICTUREBRA, FalconLocalSession);
-                	//for now 4 sounds better (also almost always true :)
-                	radioMessage->dataBlock.edata[4] =4;	//picture
-                	//for now let's not play this part
-                	radioMessage->dataBlock.edata[5] = -1;	//split type
-                	radioMessage->dataBlock.edata[6] = X;
-                	radioMessage->dataBlock.edata[7] = Y;
-                	radioMessage->dataBlock.edata[8] = FloatToInt32(altitude);
-                	MonoPrint ("Making threat call\n");
+                 radioMessage = CreateCallFromAwacs (flight, rcPICTUREBRA, FalconLocalSession);
+                 //for now 4 sounds better (also almost always true :)
+                 radioMessage->dataBlock.edata[4] =4; //picture
+                 //for now let's not play this part
+                 radioMessage->dataBlock.edata[5] = -1; //split type
+                 radioMessage->dataBlock.edata[6] = X;
+                 radioMessage->dataBlock.edata[7] = Y;
+                 radioMessage->dataBlock.edata[8] = FloatToInt32(altitude);
+                 MonoPrint ("Making threat call\n");
                 }
                 else if(campThreat = SimDriver.FindNearestCampThreat (plane, &X, &Y, &altitude))
                 {
-                	radioMessage = CreateCallFromAwacs(flight, rcPICTUREBRA);
-                	//for now 4 sounds better (also almost always true :)
-                	radioMessage->dataBlock.edata[4] =4;	//picture
-                	//for now let's not play this part
-                	radioMessage->dataBlock.edata[5] = -1;	//split type
-                	radioMessage->dataBlock.edata[6] = X;
-                	radioMessage->dataBlock.edata[7] = Y;
-                	radioMessage->dataBlock.edata[8] = FloatToInt32(altitude);
+                 radioMessage = CreateCallFromAwacs(flight, rcPICTUREBRA);
+                 //for now 4 sounds better (also almost always true :)
+                 radioMessage->dataBlock.edata[4] =4; //picture
+                 //for now let's not play this part
+                 radioMessage->dataBlock.edata[5] = -1; //split type
+                 radioMessage->dataBlock.edata[6] = X;
+                 radioMessage->dataBlock.edata[7] = Y;
+                 radioMessage->dataBlock.edata[8] = FloatToInt32(altitude);
                 }
                 else */
                 theThreat = SimDriver.FindNearestEnemyPlane(plane, &X, &Y, &altitude);
@@ -313,9 +313,9 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 {
                     radioMessage = CreateCallFromAwacsPlane(plane, rcPICTUREBRA);
                     //for now 4 sounds better (also almost always true :)
-                    radioMessage->dataBlock.edata[4] = 4;	//picture
+                    radioMessage->dataBlock.edata[4] = 4; //picture
                     //for now let's not play this part
-                    radioMessage->dataBlock.edata[5] = -1;	//split type
+                    radioMessage->dataBlock.edata[5] = -1; //split type
                     radioMessage->dataBlock.edata[6] = X;
                     radioMessage->dataBlock.edata[7] = Y;
                     radioMessage->dataBlock.edata[8] = (short)FloatToInt32(altitude);
@@ -329,9 +329,9 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     {
                         radioMessage = CreateCallFromAwacsPlane(plane, rcPICTUREBRA);
                         //for now 4 sounds better (also almost always true :)
-                        radioMessage->dataBlock.edata[4] = 4;	//picture
+                        radioMessage->dataBlock.edata[4] = 4; //picture
                         //for now let's not play this part
-                        radioMessage->dataBlock.edata[5] = -1;	//split type
+                        radioMessage->dataBlock.edata[5] = -1; //split type
                         radioMessage->dataBlock.edata[6] = X;
                         radioMessage->dataBlock.edata[7] = Y;
                         radioMessage->dataBlock.edata[8] = (short)FloatToInt32(altitude);
@@ -352,7 +352,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 if (flight)
                 {
                     int numAircraft = 0;
-                    //				SendCallToAWACS(plane, rcVECTORTOTHREAT);
+                    // SendCallToAWACS(plane, rcVECTORTOTHREAT);
                     CampBaseClass *campThreat = NULL;
                     SimBaseClass *simThreat = NULL; //SimDriver.FindNearestEnemyPlane(plane, &X, &Y, &altitude);
                     stdRange2FlightMap arrCandidates;
@@ -409,7 +409,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         // This is the awacs's response
                         radioMessage = CreateCallFromAwacs(flight, rcAIRCOVERSENT);
                         radioMessage->dataBlock.edata[4] = -1; // No ETA time calculatable at this time
-                        radioMessage->dataBlock.time_to_play = delay;	// Delay the response
+                        radioMessage->dataBlock.time_to_play = delay; // Delay the response
                         FalconSendMessage(radioMessage, FALSE);
                     }
 
@@ -430,8 +430,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     SMSClass *sms = (SMSClass*) plane->GetSMS();
 
                     // KCK: This works fine for aggregates.. Not so fine otherwise
-                    //				hasWeaps = flight->HasWeapons();
-                    //				hasFuel = flight->HasFuel();
+                    // hasWeaps = flight->HasWeapons();
+                    // hasFuel = flight->HasFuel();
                     role = flight->GetUnitCurrentRole();
 
                     // KCK: Here's one which will base all of the decisions off the player's aircraft
@@ -455,8 +455,8 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                     hasWeaps++;
                             }
 
-                            //						else
-                            //							hasWeaps++;		// Non-combat roles always 'have weapons'
+                            // else
+                            // hasWeaps++; // Non-combat roles always 'have weapons'
                         }
                     }
 
@@ -464,14 +464,14 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         hasFuel++;
 
                     // Pick what we say depending on our status
-                    //				if (!hasWeaps)
-                    //					SendCallToAWACS(plane, rcENDCAPARMS);
-                    //				else
-                    //					SendCallToAWACS(plane, rcENDCAPFUEL);
+                    // if (!hasWeaps)
+                    // SendCallToAWACS(plane, rcENDCAPARMS);
+                    // else
+                    // SendCallToAWACS(plane, rcENDCAPFUEL);
 
                     // 2002-02-21 MN bugfix - need to get missioneval status flag to see if STATION_OVER is true
                     // Awac's reponse.
-                    FlightDataClass	*flight_ptr = NULL;
+                    FlightDataClass *flight_ptr = NULL;
                     int meflags = 0;
 
                     flight_ptr = TheCampaign.MissionEvaluator->FindFlightData(flight);
@@ -480,7 +480,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         meflags = flight_ptr->status_flags;
 
                     // What's that ?? Only true if FEVAL_GOT_TO_TARGET is true and false at the same time ??
-                    //				if (!hasFuel || !hasWeaps || ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
+                    // if (!hasFuel || !hasWeaps || ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && !(flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET)))
                     if (!hasFuel || !hasWeaps || ((flight->GetEvalFlags() & FEVAL_MISSION_STARTED) && (flight->GetEvalFlags() & FEVAL_GOT_TO_TARGET) && (meflags & MISEVAL_FLIGHT_STATION_OVER)))
                     {
                         if (rand() % 2)
@@ -494,7 +494,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     else
                         radioMessage = CreateCallFromAwacs(flight, rcCAPNOTOVER);
 
-                    radioMessage->dataBlock.time_to_play = delay;	// Delay the response
+                    radioMessage->dataBlock.time_to_play = delay; // Delay the response
                     FalconSendMessage(radioMessage, FALSE);
                 }
 
@@ -505,7 +505,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 {
                     // Flight requesting divert
                     // KCK: I don't think we have the speach to impliment this
-                    //				SendCallToAWACS(plane, rcREQUESTTASK);
+                    // SendCallToAWACS(plane, rcREQUESTTASK);
                     flight->SetUnitPriority(0);
                 }
 
@@ -515,7 +515,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 if (flight)
                 {
                     // Flight requesting SAR
-                    //				SendCallToAWACS(plane, rcREQUESTDIVERT);
+                    // SendCallToAWACS(plane, rcREQUESTDIVERT);
                     flight->SetUnitPriority(0);
 
                     // AWACS response
@@ -538,10 +538,10 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                     //TJL Check in should only respond/work for aircraft on ARO_GA type missions
                     // All others will be told "unable".
-                    //MissionRequestClass		mis;
-                    Unit				nu, cf;
+                    //MissionRequestClass mis;
+                    Unit nu, cf;
                     {
-                        VuListIterator		myit(AllAirList);
+                        VuListIterator myit(AllAirList);
                         nu = (Unit) myit.GetFirst();
 
                         while (nu)
@@ -553,7 +553,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                                 continue;
                         }
                     }
-#if 0			// Retro 20May2004 - fixed logic
+#if 0 // Retro 20May2004 - fixed logic
 
                     if (flight->GetUnitCurrentRole() != ARO_GA &&
                         flight->GetUnitMission() != (AMIS_ONCALLCAS || AMIS_PRPLANCAS || AMIS_CAS || AMIS_SAD || AMIS_INT || AMIS_BAI))
@@ -565,7 +565,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                          (flight->GetUnitMission() != AMIS_SAD) &&
                          (flight->GetUnitMission() != AMIS_INT) &&
                          (flight->GetUnitMission() != AMIS_BAI)))
-#endif			// Retro 20May2004 - end
+#endif // Retro 20May2004 - end
                     {
                         radioMessage = CreateCallFromAwacs(flight, rcUNABLE);
                         radioMessage->dataBlock.time_to_play = delay;
@@ -640,28 +640,28 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 if (flight)
                 {
                     // KCK: I don't think we have the speach to impliment this
-                    //				SendCallToAWACS(plane, rcFACCONTACT);
+                    // SendCallToAWACS(plane, rcFACCONTACT);
                     // VWF: It seems we dont have a "check out" call. Vamoose is as
                     // close as it gets.
                     // AWACS/FAC callsign
-                    //			SendCallToAWACS(plane, rcVAMOOSE);
+                    // SendCallToAWACS(plane, rcVAMOOSE);
 
                     flight->ClearEvalFlag(FLIGHT_ON_STATION);
 
-                    /*	radioMessage = new FalconRadioChatterMessage( FalconNullId , FalconLocalSession );
-                    	radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                    	radioMessage->dataBlock.from = plane->Id();
-                    	radioMessage->dataBlock.voice_id = (uchar)flight->GetPilotVoiceID(plane->pilotSlot);
-                    	radioMessage->dataBlock.message = rcVAMOOSE;
-                    	radioMessage->dataBlock.edata[0] = -1;
-                    	radioMessage->dataBlock.edata[1] = -1;
-                    	FalconSendMessage(radioMessage, FALSE);*/
+                    /* radioMessage = new FalconRadioChatterMessage( FalconNullId , FalconLocalSession );
+                     radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
+                     radioMessage->dataBlock.from = plane->Id();
+                     radioMessage->dataBlock.voice_id = (uchar)flight->GetPilotVoiceID(plane->pilotSlot);
+                     radioMessage->dataBlock.message = rcVAMOOSE;
+                     radioMessage->dataBlock.edata[0] = -1;
+                     radioMessage->dataBlock.edata[1] = -1;
+                     FalconSendMessage(radioMessage, FALSE);*/
                     if (MissionData[flight->GetUnitMission()].flags & AMIS_EXPECT_DIVERT)
                         flight->SetDiverted(1);
 
                     // OW: Acknowledge
                     // radioMessage = CreateCallFromAwacs(flight, rcROGER);
-                    radioMessage = CreateCallFromAwacs(flight, rcCOPY);	// rcROGER is broken somehow
+                    radioMessage = CreateCallFromAwacs(flight, rcCOPY); // rcROGER is broken somehow
                     radioMessage->dataBlock.time_to_play = delay;
                     FalconSendMessage(radioMessage, FALSE);
                 }
@@ -669,7 +669,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 break;
 
             case VectorHome:
-                //			SendCallToAWACS(plane, rcVECTORHOMEPLATE);
+                // SendCallToAWACS(plane, rcVECTORHOMEPLATE);
                 //if not you must be homeless
 
                 airbase = (Objective)vuDatabase->Find(plane->HomeAirbase());
@@ -700,10 +700,10 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 {
 
 #if 1
-                    FalconRadioChatterMessage	*radioMessage;
+                    FalconRadioChatterMessage *radioMessage;
 
                     // Flight requesting divert field
-                    //				SendCallToAWACS(plane, rcDIVERTFIELD);
+                    // SendCallToAWACS(plane, rcDIVERTFIELD);
 
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
@@ -745,16 +745,16 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         radioMessage->dataBlock.edata[2] = gDefaultAWACSCallSign;
                     }
 
-                    radioMessage->dataBlock.time_to_play = delay;	// Delay the response
+                    radioMessage->dataBlock.time_to_play = delay; // Delay the response
                     FalconSendMessage(radioMessage, FALSE);
                 }
 
 #else
-                    WayPoint	w = flight->GetFirstUnitWP();
-                    FalconRadioChatterMessage	*radioMessage;
+                    WayPoint w = flight->GetFirstUnitWP();
+                    FalconRadioChatterMessage *radioMessage;
 
                     // Flight requesting divert field
-                    //				SendCallToAWACS(plane, rcDIVERTFIELD);
+                    // SendCallToAWACS(plane, rcDIVERTFIELD);
 
                     // Awacs response
                     radioMessage = CreateCallFromAwacs(flight, rcVECTORALTERNATE);
@@ -785,7 +785,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                         radioMessage->dataBlock.edata[2] = gDefaultAWACSCallSign;
                     }
 
-                    radioMessage->dataBlock.time_to_play = delay;	// Delay the response
+                    radioMessage->dataBlock.time_to_play = delay; // Delay the response
                     FalconSendMessage(radioMessage, FALSE);
                 }
 
@@ -795,10 +795,10 @@ int FalconAWACSMessage::Process(uchar autodisp)
             case VectorToPackage:
                 if (flight)
                 {
-                    //				SendCallToAWACS(plane, rcVECTORTOPACKAGE);
+                    // SendCallToAWACS(plane, rcVECTORTOPACKAGE);
 
-                    Flight		leadElement = NULL;
-                    Package		pack = (Package)flight->GetUnitParent();
+                    Flight leadElement = NULL;
+                    Package pack = (Package)flight->GetUnitParent();
 
                     if (pack)
                         leadElement = (Flight)pack->GetFirstUnitElement();
@@ -853,7 +853,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 break;
 
             case VectorToTanker:
-                //			SendCallToAWACS (plane, rcREQUESTVECTORTOTANKER);
+                // SendCallToAWACS (plane, rcREQUESTVECTORTOTANKER);
 
                 tankerFlight = flight->GetTankerFlight();
 
@@ -904,7 +904,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     Unit nu, cf;
                     float dist, bestdist = 99999.9F, dx, dy;
                     {
-                        VuListIterator		myit(AllRealList);
+                        VuListIterator myit(AllRealList);
                         nu = (Unit) myit.GetFirst();
 
                         while (nu)
@@ -959,7 +959,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                 if (flight)
                 {
                     int numAircraft = 0;
-                    //				SendCallToAWACS(plane, rcVECTORTOTHREAT);
+                    // SendCallToAWACS(plane, rcVECTORTOTHREAT);
                     CampBaseClass *campThreat = NULL;
                     SimBaseClass *simThreat = SimDriver.FindNearestThreat(plane, &X, &Y, &altitude);
 
@@ -970,11 +970,11 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                         //for this request we just want the BRA part
                         if (numAircraft > 1)
-                            radioMessage->dataBlock.edata[4] = (short)((simThreat->Type() - VU_LAST_ENTITY_TYPE) * 2 + 1);	//type
+                            radioMessage->dataBlock.edata[4] = (short)((simThreat->Type() - VU_LAST_ENTITY_TYPE) * 2 + 1); //type
                         else
-                            radioMessage->dataBlock.edata[4] = (short)((simThreat->Type() - VU_LAST_ENTITY_TYPE) * 2);	//type
+                            radioMessage->dataBlock.edata[4] = (short)((simThreat->Type() - VU_LAST_ENTITY_TYPE) * 2); //type
 
-                        radioMessage->dataBlock.edata[5] = (short)numAircraft;	//number
+                        radioMessage->dataBlock.edata[5] = (short)numAircraft; //number
                         radioMessage->dataBlock.edata[6] = X;
                         radioMessage->dataBlock.edata[7] = Y;
                         radioMessage->dataBlock.edata[8] = (short)FloatToInt32(altitude);
@@ -991,11 +991,11 @@ int FalconAWACSMessage::Process(uchar autodisp)
 
                             //for this request we just want the BRA part
                             if (numAircraft > 1)
-                                radioMessage->dataBlock.edata[4] = (short)(((Unit)campThreat)->GetVehicleID(0) * 2 + 1);	//type
+                                radioMessage->dataBlock.edata[4] = (short)(((Unit)campThreat)->GetVehicleID(0) * 2 + 1); //type
                             else
-                                radioMessage->dataBlock.edata[4] = (short)(((Unit)campThreat)->GetVehicleID(0) * 2);	//type
+                                radioMessage->dataBlock.edata[4] = (short)(((Unit)campThreat)->GetVehicleID(0) * 2); //type
 
-                            radioMessage->dataBlock.edata[5] = (short)numAircraft;	//number
+                            radioMessage->dataBlock.edata[5] = (short)numAircraft; //number
                             radioMessage->dataBlock.edata[6] = X;
                             radioMessage->dataBlock.edata[7] = Y;
                             radioMessage->dataBlock.edata[8] = (short)FloatToInt32(altitude);
@@ -1020,7 +1020,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                     CampBaseClass *target =  NULL;
 
                     // This is the flight's request
-                    //				SendCallToAWACS(plane, rcVECTORTOTARGET);
+                    // SendCallToAWACS(plane, rcVECTORTOTARGET);
 
                     // This is AWAC's response
                     target = (CampBaseClass *)vuDatabase->Find(flight->GetAssignedTarget());
@@ -1184,7 +1184,7 @@ int FalconAWACSMessage::Process(uchar autodisp)
                             // MLR 2003-11-20 got a CTD here because simThing was 0x3, added initializing to 0 above.
                             // in Sim we always have only one aircraft locked or under the cursor
                             radioMessage->dataBlock.edata[5] =
-                                (short)((simThing->Type() - VU_LAST_ENTITY_TYPE) * 2);	//type
+                                (short)((simThing->Type() - VU_LAST_ENTITY_TYPE) * 2); //type
                         }
                         else
                         {

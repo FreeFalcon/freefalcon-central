@@ -375,10 +375,10 @@ void FindMissionInBriefing(long ID)
 
                                     // KLUDGE: Throw player in 1st slot
                                     // KCK: This should be done regardless of online status
-                                    //									if(!gCommsMgr->Online())
-                                    //									{ // Throw player in 1st slot
+                                    // if(!gCommsMgr->Online())
+                                    // { // Throw player in 1st slot
                                     RequestACSlot(flight, 0, static_cast<uchar>(flight->GetAdjustedAircraftSlot(0)), 0, 0, 1);
-                                    //									}
+                                    // }
                                     StopLookingforMission = 1;
                                 }
                                 else
@@ -417,7 +417,7 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     C_Window *win;
     _TCHAR buffer[200];
     TREELIST *item;
-    int	ent_mission;
+    int ent_mission;
     Package package;
     WayPoint wp;
 
@@ -489,20 +489,20 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     buffer[1] = 0;
     // KCK: It seemed more logical to get the priority from the flight, not the package's request
     // PJW: Why Kevin you are sooo fucking wrong... and ASK when making changes butt fuck
-    //	buffer[0]=(255 - element->GetUnitPriority()) / 51 + _T('A');
+    // buffer[0]=(255 - element->GetUnitPriority()) / 51 + _T('A');
     buffer[0] = static_cast<char>((255 - package->GetMissionRequest()->priority) / 51 + _T('A'));
     mission->SetPriority(static_cast<short>(tree->GetUserNumber(C_STATE_4)), 0, buffer);
     mission->SetPriorityID(static_cast<short>(255 - package->GetMissionRequest()->priority));
 
     // Set a callback incase someone actually wants to see this mission
-    //	if (TheCampaign.Flags & CAMP_TACTICAL)
-    //	{
-    //		mission->SetCallback (TacMissionSelectCB);
-    //	}
-    //	else
-    //	{
+    // if (TheCampaign.Flags & CAMP_TACTICAL)
+    // {
+    // mission->SetCallback (TacMissionSelectCB);
+    // }
+    // else
+    // {
     mission->SetCallback(MissionSelectCB);
-    //	}
+    // }
 
     // Tack on the VU_ID
     mission->SetVUID(element->Id());

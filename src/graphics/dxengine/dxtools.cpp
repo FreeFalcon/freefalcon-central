@@ -6,10 +6,10 @@
 #include "../../falclib/include/mltrig.h"
 #include "dxengine.h"
 
-#ifndef	DEBUG_ENGINE
+#ifndef DEBUG_ENGINE
 
 // This function just assign a PMatrix object to a DX Compliant Matrix
-void	AssignPmatrixToD3DXMATRIX(D3DXMATRIX *d, Pmatrix *s)
+void AssignPmatrixToD3DXMATRIX(D3DXMATRIX *d, Pmatrix *s)
 {
     d->m00 = s->M11;
     d->m01 = s->M21;
@@ -30,7 +30,7 @@ void	AssignPmatrixToD3DXMATRIX(D3DXMATRIX *d, Pmatrix *s)
 }
 
 
-void	AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s)
+void AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s)
 {
     d->M11 = s->m00;
     d->M21 = s->m01;
@@ -51,16 +51,16 @@ void	AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s)
 ///////////////////////////////////////////// SCRIPTS MANAGEMENT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-static const float	Seconds				= 1.0f / 1000.0f;
-static const float	Minutes				= Seconds / (60.0f);
-static const float	Hours				= Minutes / (60.0f);
-static const float	Degrees				= (PI / 180.0f);
-static const float	DegreesPerSecond	= Degrees * Seconds;
+static const float Seconds = 1.0f / 1000.0f;
+static const float Minutes = Seconds / (60.0f);
+static const float Hours = Minutes / (60.0f);
+static const float Degrees = (PI / 180.0f);
+static const float DegreesPerSecond = Degrees * Seconds;
 
 // the boolean return value is used by the caller to understand if the next script in the list is to be
 // processed, false means no more script processing
 
-bool	DXScript_None(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
+bool DXScript_None(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     return true;
 }
@@ -71,19 +71,19 @@ bool	DXScript_None(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 // Argument 0 = SwitchNr to apply the animation
 // Argument 1 = Delay btw frames in mSecs
 // Argument 2 = Number of Frames
-bool	DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
+bool DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
     if (obj->ParentObject->nSwitches <= 0) return true;
 
     if (Argument[0]  >= (WORD) obj->ParentObject->nSwitches) return true;
 
-#ifdef	DEBUG_ENGINE
+#ifdef DEBUG_ENGINE
     // Get the timings
-    DWORD	Delta = GetTickCount();
+    DWORD Delta = GetTickCount();
 #else
     // Get the timings
-    DWORD	Delta = TheTimeManager.GetClockTime();
+    DWORD Delta = TheTimeManager.GetClockTime();
 #endif
     // Scale it by the delay
     Delta /= Argument[1];
@@ -100,27 +100,27 @@ bool	DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 // Argument 0 = Starting Dof
 // Argument 1 = Nr of DOFS to apply rotation
 // Argument 2 = FLOAT, Degrees per second of rotation
-bool	DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
+bool DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
     if (obj->ParentObject->nDOFs <= 0) return true;
 
     // Get the Starting DOF
-    DWORD	Dof = Argument[0];
+    DWORD Dof = Argument[0];
     // get the number of Dofs to apply the rotation
-    DWORD	Count = Argument[1];
+    DWORD Count = Argument[1];
 
     // consistency check and Limitation
     if (Dof >= (WORD) obj->ParentObject->nDOFs) return true;
 
     if ((Dof + Count) >= (WORD) obj->ParentObject->nDOFs) Count = obj->ParentObject->nDOFs - Dof - 1;
 
-#ifdef	DEBUG_ENGINE
+#ifdef DEBUG_ENGINE
     // Get the timings
-    float	Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
 #else
     // Get the timings
-    float	Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
 #endif
 
     // for each DOF
@@ -140,27 +140,27 @@ bool	DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 // Argument 0 = Starting Dof
 // Argument 1 = Nr of DOFS to apply rotation
 // Argument 2 = FLOAT, Degrees per second of rotation
-bool	DXScript_HelyRotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
+bool DXScript_HelyRotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
     if (obj->ParentObject->nDOFs <= 0) return true;
 
     // Get the Starting DOF
-    DWORD	Dof = Argument[0];
+    DWORD Dof = Argument[0];
     // get the number of Dofs to apply the rotation
-    DWORD	Count = Argument[1];
+    DWORD Count = Argument[1];
 
     // consistency check and Limitation
     if (Dof >= (WORD) obj->ParentObject->nDOFs) return true;
 
     if ((Dof + Count) >= (WORD) obj->ParentObject->nDOFs) Count = obj->ParentObject->nDOFs - Dof - 1;
 
-#ifdef	DEBUG_ENGINE
+#ifdef DEBUG_ENGINE
     // Get the timings
-    float	Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
 #else
     // Get the timings
-    float	Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
 #endif
 
     // for each DOF
@@ -176,21 +176,21 @@ bool	DXScript_HelyRotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 }
 
 
-float	TestAngle;
+float TestAngle;
 
 
 // Military rotating beacon script
 // Assume model has green pointing north, and two whites 30 degrees apart pointing southward
 // switch bits:
-//		1	0   degree green dim
-//		2	0   degree green flash
-//		3	0   degree green has flashed flag
-//		5	165 degree white dim
-//		6	165 degree white flash
-//		7	165 degree white has flashed flag
-//		9	195 degree white dim
-//		10	195 degree white flash
-//		11	195 degree white has flashed flag
+// 1 0   degree green dim
+// 2 0   degree green flash
+// 3 0   degree green has flashed flag
+// 5 165 degree white dim
+// 6 165 degree white flash
+// 7 165 degree white has flashed flag
+// 9 195 degree white dim
+// 10 195 degree white flash
+// 11 195 degree white has flashed flag
 bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     ShiAssert(obj->ParentObject->nSwitches > 1);
@@ -202,12 +202,12 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     DWORD sw = obj->SwitchValues[1];
 
-#ifdef	DEBUG_ENGINE
+#ifdef DEBUG_ENGINE
     // Get the timings
-    float	Delta = GetTickCount() * 36.0f * DegreesPerSecond;
+    float Delta = GetTickCount() * 36.0f * DegreesPerSecond;
 #else
     // Get the timings
-    float	Delta = TheTimeManager.GetClockTime() * 36.0f * DegreesPerSecond;
+    float Delta = TheTimeManager.GetClockTime() * 36.0f * DegreesPerSecond;
 #endif
 
     float RelAngle;
@@ -216,7 +216,7 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
     if (pos->y) RelAngle = (float)atan2(pos->x, pos->y);
 
     // calculate the Beacon World Transformation
-    D3DXVECTOR3	BeaconWorldDir(1, 0, 0);
+    D3DXVECTOR3 BeaconWorldDir(1, 0, 0);
     // get the Beacon world transformation
     D3DXMATRIX WorldVect = TheDXEngine.AppliedState;
     // kill any world translation, just keep rotation
@@ -233,15 +233,15 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
 
     // All flashes OFF
-    sw &= 0xFFFFF000;				// All off
+    sw &= 0xFFFFF000; // All off
 
     /////// 0 degree green light
 
-    if (fabs(RelAngle) <= 3.0f)	sw |= 0x7;				// Flash on, has flashed, visible
+    if (fabs(RelAngle) <= 3.0f) sw |= 0x7; // Flash on, has flashed, visible
 
-    if (RelAngle >= 162.0f && RelAngle <= 168.0f) sw |= 0x700;				// Flash on, has flashed, visible
+    if (RelAngle >= 162.0f && RelAngle <= 168.0f) sw |= 0x700; // Flash on, has flashed, visible
 
-    if (RelAngle >= -168.0f && RelAngle <= -162.0f) sw |= 0x70;				// Flash on, has flashed, visible
+    if (RelAngle >= -168.0f && RelAngle <= -162.0f) sw |= 0x70; // Flash on, has flashed, visible
 
     // Now store the computed results
     obj->DOFValues[0].rotation = (float)fmod(Delta, 2.0f * PI);
@@ -263,8 +263,8 @@ bool DXScript_VASIF(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     float angle = (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) / Degrees;
 
-    if (angle > 4.0f) obj->SetSwitch(0, 2);	// White
-    else obj->SetSwitch(0, 1);	// Red
+    if (angle > 4.0f) obj->SetSwitch(0, 2); // White
+    else obj->SetSwitch(0, 1); // Red
 
     return true;
 }
@@ -278,17 +278,17 @@ bool DXScript_VASIN(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     float angle = (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) / Degrees;
 
-    if (angle > 2.0f) obj->SetSwitch(0, 2);	// White
-    else obj->SetSwitch(0, 1);	// Red
+    if (angle > 2.0f) obj->SetSwitch(0, 2); // White
+    else obj->SetSwitch(0, 1); // Red
 
     return true;
 }
 
 
-#define	GS	(3.0f)
-#define	NANGLES	(sizeof(angles)/sizeof(float))
+#define GS (3.0f)
+#define NANGLES (sizeof(angles)/sizeof(float))
 
-const	float angles[] = {GS + 2.3f, GS + 2, GS + 1.7f, GS + 1.3f, GS + 1, GS + 0.7F, GS + 0.3f, GS,
+const float angles[] = {GS + 2.3f, GS + 2, GS + 1.7f, GS + 1.3f, GS + 1, GS + 0.7F, GS + 0.3f, GS,
                           GS - 0.3f, GS - 0.7f, GS - 1, GS - 1.3f, GS - 1.7f
                        };
 
@@ -316,12 +316,12 @@ bool DXScript_MeatBall(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 // TODO:  Should run at 10hz, not frame rate (ie be time based not frame based)
 bool DXScript_Chaff(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
-#ifdef	DEBUG_ENGINE
+#ifdef DEBUG_ENGINE
     // Get the timings
-    DWORD	Delta = (GetTickCount() & 0xffffff) / 100;
+    DWORD Delta = (GetTickCount() & 0xffffff) / 100;
 #else
     // Get the timings
-    DWORD	Delta = (TheTimeManager.GetClockTime() & 0xffffff) / 100;
+    DWORD Delta = (TheTimeManager.GetClockTime() & 0xffffff) / 100;
 #endif
 
     // consistency check
@@ -368,7 +368,7 @@ bool DXScript_CollapseChute(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument
 
 
 
-bool	(*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance*, DWORD*) =
+bool (*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance*, DWORD*) =
 {
     DXScript_None,
     DXScript_Animate,

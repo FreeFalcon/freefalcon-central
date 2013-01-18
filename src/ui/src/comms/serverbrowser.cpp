@@ -1,7 +1,7 @@
 /***************************************************************************\
-	serverbrowser.cpp
-	Oliver Weichhold
-	August 19, 2000
+ serverbrowser.cpp
+ Oliver Weichhold
+ August 19, 2000
 \***************************************************************************/
 
 // TODO
@@ -79,7 +79,7 @@ public:
 
     // Attributes
     _bstr_t m_bstrMasterServerName;
-    _bstr_t m_bstrName;		// These are copied verbatim from the master server
+    _bstr_t m_bstrName; // These are copied verbatim from the master server
     _bstr_t m_bstrLocation;
     _bstr_t m_bstrVersion;
     _bstr_t m_bstrMOTD;
@@ -294,46 +294,46 @@ static void OnClickedBack(long, short hittype, C_Base *control)
     if (wndClose)
         LocalCloseWindowCB(wndClose->GetID(), hittype, wndClose);
 }
-/* 	This crashes, removed from the UI
+/*  This crashes, removed from the UI
 static void OnClickedSettings(long, short hittype,C_Base *control)
 {
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+ if(hittype != C_TYPE_LMOUSEUP)
+ return;
 
-	C_Window *win;
-	C_Button *button;
+ C_Window *win;
+ C_Button *button;
 
-	win=gMainHandler->FindWindow(JETNET_WIN);
-	if(!win) return;
+ win=gMainHandler->FindWindow(JETNET_WIN);
+ if(!win) return;
 
-	button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
-	if (button)
-	{
-		g_bEnableUplink = !g_bEnableUplink;
-		if (g_bEnableUplink) // now we switched from off to on, set up the uplink
-		{
-			// Make sure all objects are registered
-			ComSup::RegisterServer("GNGameSpy.dll");
-			ComSup::RegisterServer("GNCorePS.dll");
-			ComSup::RegisterServer("GNShared.dll");
+ button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
+ if (button)
+ {
+ g_bEnableUplink = !g_bEnableUplink;
+ if (g_bEnableUplink) // now we switched from off to on, set up the uplink
+ {
+ // Make sure all objects are registered
+ ComSup::RegisterServer("GNGameSpy.dll");
+ ComSup::RegisterServer("GNCorePS.dll");
+ ComSup::RegisterServer("GNShared.dll");
 
-			// Create Uplink service object
-			CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
+ // Create Uplink service object
+ CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
 
-			m_pUplink->PutMasterServerName(g_strMasterServerName);
-			m_pUplink->PutMasterServerPort(g_nMasterServerPort);
-			m_pUplink->PutQueryPort(7778);
-			m_pUplink->PutHeartbeatInterval(60000);
-			m_pUplink->PutServerVersion(strVersion);
-			m_pUplink->PutServerVersionMin(strVersion);
-			m_pUplink->PutServerLocation(g_strServerLocation);
-			m_pUplink->PutServerName(g_strServerName);
-			m_pUplink->PutGameName("Falcon4");
-			m_pUplink->PutGameMode("openplaying");
-		}
-		else
-			m_pUplink->Release();
-	}
+ m_pUplink->PutMasterServerName(g_strMasterServerName);
+ m_pUplink->PutMasterServerPort(g_nMasterServerPort);
+ m_pUplink->PutQueryPort(7778);
+ m_pUplink->PutHeartbeatInterval(60000);
+ m_pUplink->PutServerVersion(strVersion);
+ m_pUplink->PutServerVersionMin(strVersion);
+ m_pUplink->PutServerLocation(g_strServerLocation);
+ m_pUplink->PutServerName(g_strServerName);
+ m_pUplink->PutGameName("Falcon4");
+ m_pUplink->PutGameMode("openplaying");
+ }
+ else
+ m_pUplink->Release();
+ }
 }*/
 
 
@@ -524,11 +524,11 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
 static void OnClickedSetup(long,short hittype,C_Base *control)
 {
     if(hittype != C_TYPE_LMOUSEUP)
-	return;
+ return;
     C_Window *win;
     win=gMainHandler->FindWindow(SETUP_JETNET_OPTIONS_WIN);
     if(win == NULL)
-	return;
+ return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -664,9 +664,9 @@ void HookupServerBrowserControls(long ID)
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_Location);
 
-    /*	ctrl = (C_Button *) winme->FindControl(SETUP_JETNET_ENABLEUPLINK);
-    	if(ctrl)
-    		ctrl->SetCallback(OnClickedSettings);
+    /* ctrl = (C_Button *) winme->FindControl(SETUP_JETNET_ENABLEUPLINK);
+     if(ctrl)
+     ctrl->SetCallback(OnClickedSettings);
     */
     m_pWndStatus = (C_Text *) winme->FindControl(JETNET_STATUS);
 
@@ -674,7 +674,7 @@ void HookupServerBrowserControls(long ID)
 
     UpdateServerStatus();
 
-    //	SetJNSettings();	// setup window
+    // SetJNSettings(); // setup window
 }
 
 C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
@@ -757,7 +757,7 @@ static void Update()
 
         else
         {
-            m_pListServers->DeleteBranch(m_pListServers->GetRoot());		// Delete all items
+            m_pListServers->DeleteBranch(m_pListServers->GetRoot()); // Delete all items
             ClearServerList();
 
 #if 0
@@ -1036,8 +1036,8 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
     GNETCORELib::IGamePtr pGame(_pGame);
 
     m_dwIP = GNETCORELib::IHostPtr(pGame)->GetIP();
-    m_nPing = GNETCORELib::IHostPtr(pGame)->GetPing();	// remember for quick sorting
-    m_nPlayers = pGame->GetNumPlayers();	// remember for quick sorting
+    m_nPing = GNETCORELib::IHostPtr(pGame)->GetPing(); // remember for quick sorting
+    m_nPlayers = pGame->GetNumPlayers(); // remember for quick sorting
 
     char buf[0x10];
     _bstr_t str;

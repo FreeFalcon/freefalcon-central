@@ -3,7 +3,7 @@
     Scott Randolph
     April 1, 1997
 
-	Provide a class to manage MPR palettes.
+ Provide a class to manage MPR palettes.
 \***************************************************************************/
 #ifndef _PALETTE_H_
 #define _PALETTE_H_
@@ -38,19 +38,19 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     //sfr: sent to CPP for better debug
-    Palette();//	{ refCount = 0; palHandle = NULL; memset(paletteData, 0, sizeof(paletteData)); };
-    ~Palette();//	{ ShiAssert( refCount == 0); };
+    Palette();// { refCount = 0; palHandle = NULL; memset(paletteData, 0, sizeof(paletteData)); };
+    ~Palette();// { ShiAssert( refCount == 0); };
 
 public:
     DWORD paletteData[256];
     PaletteHandle *palHandle;
 
 protected:
-    int		refCount;
+    int refCount;
 
 public:
     static void SetupForDevice(DXContext *texRC);

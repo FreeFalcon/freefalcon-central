@@ -7,7 +7,7 @@ SFX_DEF_ENTRY BuiltinSFX[] =
 {
     {
         "none.wav",       0, 0, 0, 10.0F, -5000.0F, -10000.0F, 10.0F, 0, 0,
-        SFX_POSITIONAL,	1.0F,	1.0F,	FX_SOUND_GROUP,	0,  0
+        SFX_POSITIONAL, 1.0F, 1.0F, FX_SOUND_GROUP, 0,  0
     },
     {
         "biggun1.wav",    0, 0, 0, 10000000.0F, 0.0F, -10000.0F, 10000000.0F, 0, 0,

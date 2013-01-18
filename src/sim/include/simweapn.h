@@ -29,7 +29,7 @@ public:
     virtual int Wake(void);
     //char parentReferenced;
     int rackSlot;
-    uchar shooterPilotSlot;				// The pilotSlot of the pilot who shot this weapon
+    uchar shooterPilotSlot; // The pilotSlot of the pilot who shot this weapon
     Float32 lethalRadiusSqrd;
     FalconEntityBin parent;
 
@@ -62,8 +62,8 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     // event handlers
     virtual int Handle(VuFullUpdateEvent *event);

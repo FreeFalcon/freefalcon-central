@@ -1,9 +1,9 @@
 /***************************************************************************\
-	UI_lgbk.cpp
-	David Power
-	July 14,1997
+ UI_lgbk.cpp
+ David Power
+ July 14,1997
 
-	Logbook screen for falcon
+ Logbook screen for falcon
 \***************************************************************************/
 #include <windows.h>
 #include <targa.h>
@@ -81,7 +81,7 @@ extern int LBLoaded;
 
 enum
 {
-    PW_TITLE_BAR			= 140002,
+    PW_TITLE_BAR = 140002,
 };
 
 enum
@@ -92,7 +92,7 @@ enum
 
 extern C_String *gStringMgr;
 
-long gFullRanksTxt[NUM_RANKS] = {	TXT_SEC_LT,
+long gFullRanksTxt[NUM_RANKS] = { TXT_SEC_LT,
                                     TXT_LEIUTENANT,
                                     TXT_CAPTAIN,
                                     TXT_MAJOR,
@@ -127,7 +127,7 @@ void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base*),
 {
     C_Window *win;
     C_Button *btn;
-    C_Text	 *text;
+    C_Text  *text;
 
 
 
@@ -441,7 +441,7 @@ void RealLoadLogbook() // without daves extra garbage
         gMainParser->LoadImageList("lb_art.lst");
 
     gMainParser->LoadSoundList("lb_snd.lst");
-    gMainParser->LoadWindowList("lb_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("lb_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -535,7 +535,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
     BOOL last, ignore;
     long i; //,y=0;
     int items = 0;
-    _TCHAR	*dst, *ptr, *extension;
+    _TCHAR *dst, *ptr, *extension;
 
     if (!win || !lbox) return;
 
@@ -1434,7 +1434,7 @@ void ChangeImageCB(long ID, short hittype, C_Base *control)
 
 int SetResourceImage(long ID, long ImageID)
 {
-    C_Window	*win;
+    C_Window *win;
     win = gMainHandler->FindWindow(LOG_WIN);
 
     if (win != NULL)
@@ -1466,11 +1466,11 @@ int SetResourceImage(long ID, long ImageID)
 //sets image for button with ID == ID
 int SetImage(long ID, _TCHAR *filename , long ImageID)
 {
-    C_Button	*button;
-    C_Window	*win;
+    C_Button *button;
+    C_Window *win;
     C_Resmgr *resmgr = NULL;
     IMAGE_RSC *Image = NULL;
-    //	IMAGE_RSC *PrevImage=NULL;
+    // IMAGE_RSC *PrevImage=NULL;
     F4CSECTIONHANDLE *Leave;
 
     win = gMainHandler->FindWindow(LOG_WIN);
@@ -1560,13 +1560,13 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 
             if(ID == PATCH_PIC)
             {
-            	CenX = 508;
-            	CenY = 322;
+             CenX = 508;
+             CenY = 322;
             }
             else if(ID == PILOT_PIC)
             {
-            	CenX = PicArea.left + (PicArea.right - PicArea.left)/2;
-            	CenY = PicArea.top + (PicArea.bottom - PicArea.top)/2;
+             CenX = PicArea.left + (PicArea.right - PicArea.left)/2;
+             CenY = PicArea.top + (PicArea.bottom - PicArea.top)/2;
             }
 
 
@@ -1598,32 +1598,32 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 /*
 void LoadLogCB(long ID,short hittype,C_Base *control)
 {
-	C_EditBox * ebox;
-	_TCHAR fname[MAX_PATH];
+ C_EditBox * ebox;
+ _TCHAR fname[MAX_PATH];
 
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+ if(hittype != C_TYPE_LMOUSEUP)
+ return;
 
-	gMainHandler->HideWindow(control->Parent_);
+ gMainHandler->HideWindow(control->Parent_);
 
-	ebox=(C_EditBox*)control->Parent_->FindControl(FILE_NAME);
-	if(ebox)
-	{
-		_tcscpy(fname,ebox->GetText());
-		for(int i=0;i<_tcslen(fname);i++)
-			if(fname[i] == '.')
-				fname[i]=0;
+ ebox=(C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+ if(ebox)
+ {
+ _tcscpy(fname,ebox->GetText());
+ for(int i=0;i<_tcslen(fname);i++)
+ if(fname[i] == '.')
+ fname[i]=0;
 
-		if(fname[0] == 0)
-			return;
-		UI_logbk.LoadData(fname);
-		LogState &= ~LB_CHECKED;
-		if(!UI_logbk.CheckPassword(_T("")))
-			PasswordWindow(TXT_LOG_IN,TXT_LOG_IN_MESSAGE,CheckPasswordCB,NoPasswordCB);
-		LBSetupControls();
-		PlayerOptions.LoadOptions(UI_logbk.OptionsFile());
-		UpdateKeyMapList(PlayerOptions.keyfile,1);
-	}
+ if(fname[0] == 0)
+ return;
+ UI_logbk.LoadData(fname);
+ LogState &= ~LB_CHECKED;
+ if(!UI_logbk.CheckPassword(_T("")))
+ PasswordWindow(TXT_LOG_IN,TXT_LOG_IN_MESSAGE,CheckPasswordCB,NoPasswordCB);
+ LBSetupControls();
+ PlayerOptions.LoadOptions(UI_logbk.OptionsFile());
+ UpdateKeyMapList(PlayerOptions.keyfile,1);
+ }
 }
 */
 void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
@@ -1871,10 +1871,10 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 /*
 void LoadLogBookCB(long ID,short hittype,C_Base *control)
 {
-	if(hittype != C_TYPE_LMOUSEUP)
-		return;
+ if(hittype != C_TYPE_LMOUSEUP)
+ return;
 
-	LoadAFile("config\\*.lbk",NULL,LoadLogCB,CloseWindowCB);
+ LoadAFile("config\\*.lbk",NULL,LoadLogCB,CloseWindowCB);
 }
 */
 
@@ -1963,10 +1963,10 @@ int CheckCallsign(_TCHAR *filename)
 
 int SaveControlValues(void)
 {
-    C_Window	*win;
-    C_EditBox	*ebox;
-    C_Text		*text;
-    C_ListBox	*lbox;
+    C_Window *win;
+    C_EditBox *ebox;
+    C_Text *text;
+    C_ListBox *lbox;
 
     win = gMainHandler->FindWindow(LOG_WIN);
 
@@ -2092,8 +2092,8 @@ int SaveControlValues(void)
 
 void SaveLogBookCB(long ID, short hittype, C_Base *control)
 {
-    C_Window	*win;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_EditBox *ebox;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2184,9 +2184,9 @@ void HookupLBControls(long ID)
         ctrl->SetCallback(SaveLogBookCB);
 
     /*
-    	ctrl=(C_Button *)winme->FindControl(LOG_LOAD);
-    	if(ctrl != NULL)
-    		ctrl->SetCallback(LoadLogBookCB);*/
+     ctrl=(C_Button *)winme->FindControl(LOG_LOAD);
+     if(ctrl != NULL)
+     ctrl->SetCallback(LoadLogBookCB);*/
 
     ctrl = (C_Button *)winme->FindControl(PATCH_PIC);
 

@@ -8,7 +8,7 @@
     multiple versions of posts (ie: textured vs. not textured).  For now,
     only one.
 
-	This is version that is used at runtime in memory.
+ This is version that is used at runtime in memory.
 \***************************************************************************/
 #ifndef _TPOST_H_
 #define _TPOST_H_
@@ -21,22 +21,22 @@
 typedef struct Tpost
 {
 
-    // X can be obtained from:  	x = LEVEL_POST_TO_WORLD( levelRow, LOD );
-    // Y can be obtained from:  	y = LEVEL_POST_TO_WORLD( levelCol, LOD );
-    float		z;		// Units of floating point feet -- positive z axis points DOWN
+    // X can be obtained from:   x = LEVEL_POST_TO_WORLD( levelRow, LOD );
+    // Y can be obtained from:   y = LEVEL_POST_TO_WORLD( levelCol, LOD );
+    float z; // Units of floating point feet -- positive z axis points DOWN
 
     // Color information
-    int			colorIndex;	// (could shrink to a byte)
+    int colorIndex; // (could shrink to a byte)
 
     // Texture information
-    float		u;		// u is East/West
-    float		v;		// v is North/South
-    float		d;
-    TextureID	texID;	// 16 bit value (see TerrTex.h)
+    float u; // u is East/West
+    float v; // v is North/South
+    float d;
+    TextureID texID; // 16 bit value (see TerrTex.h)
 
     // normal information
-    float		theta;
-    float		phi;
+    float theta;
+    float phi;
 
 } Tpost;
 

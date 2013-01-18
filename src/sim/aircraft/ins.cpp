@@ -68,10 +68,10 @@ void AircraftClass::RunINS(void)
         INSLatDrift = 0.0F;
 
     if (GetKias() >= 60 && OnGround() && INSState(INS_AlignNorm))
-        INS60kts = TRUE;	//needs to be turned off
+        INS60kts = TRUE; //needs to be turned off
 
     //Check for power
-    if (currentPower == PowerNone)		//Emergency bus
+    if (currentPower == PowerNone) //Emergency bus
     {
         //SwitchINSToOff();
         INSAlignmentTimer = 0.0F;
@@ -109,20 +109,20 @@ void AircraftClass::DoINSAlign(void)
         return;
 
     if (INSState(INS_AlignFlight))
-        INSAlignmentTimer += 8 * SimLibMajorFrameTime;	//reach 480 in 1 min
+        INSAlignmentTimer += 8 * SimLibMajorFrameTime; //reach 480 in 1 min
     else
         INSAlignmentTimer += SimLibMajorFrameTime;
 
-    if (INSAlignmentTimer >= 12)	//12 seconds
+    if (INSAlignmentTimer >= 12) //12 seconds
         INSStatus = 90;
 
-    if (INSAlignmentTimer >= 60)	//60 Seconds
+    if (INSAlignmentTimer >= 60) //60 Seconds
         INSStatus = 79;
 
-    if (INSAlignmentTimer >= 90)	//90 seconds
+    if (INSAlignmentTimer >= 90) //90 seconds
         INSStatus = 70;
 
-    if (INSAlignmentTimer >= 155)	//every 65 seconds one step less
+    if (INSAlignmentTimer >= 155) //every 65 seconds one step less
         INSStatus = 60;
 
     if (INSAlignmentTimer >= 220)
@@ -137,7 +137,7 @@ void AircraftClass::DoINSAlign(void)
     if (INSAlignmentTimer >= 415)
         INSStatus = 20;
 
-    if (INSAlignmentTimer >= 480)	//8 minutes
+    if (INSAlignmentTimer >= 480) //8 minutes
         INSStatus = 10;
 }
 void AircraftClass::SwitchINSToOff(void)
@@ -178,7 +178,7 @@ void AircraftClass::SwitchINSToAlign(void)
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
         OTWDriver.pCockpitManager->mpIcp->SetICPFlag(ICPClass::MODE_LIST);
-        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23);	//SIX Button, INS Page
+        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23); //SIX Button, INS Page
         OTWDriver.pCockpitManager->mpIcp->INSLine = 0;
     }
 }
@@ -188,7 +188,7 @@ void AircraftClass::SwitchINSToNav(void)
     INSOff(INS_AlignNorm);
     INSOff(INS_PowerOff);
     INSOff(INS_AlignFlight);
-    CalcINSOffset();	//entered wrong INS coords?
+    CalcINSOffset(); //entered wrong INS coords?
     INSAlign = FALSE;
     INSAlignmentStart = vuxGameTime;
 }
@@ -196,8 +196,8 @@ void AircraftClass::SwitchINSToInFLT(void)
 {
     /*if(INSState(INS_PowerOff))
     {
-    	INSAlignmentTimer = 0.0F;
-    	HasAligned = FALSE;
+     INSAlignmentTimer = 0.0F;
+     HasAligned = FALSE;
     }*/
 
     if (OnGround())
@@ -220,7 +220,7 @@ void AircraftClass::SwitchINSToInFLT(void)
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
         OTWDriver.pCockpitManager->mpIcp->SetICPFlag(ICPClass::MODE_LIST);
-        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23);	//SIX Button, INS Page
+        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23); //SIX Button, INS Page
         OTWDriver.pCockpitManager->mpIcp->INSLine = 3;
     }
 }
@@ -280,8 +280,8 @@ void AircraftClass::CalcINSDrift(void)
 
     //difference from alignment till now
     INSTimeDiff = (float)vuxGameTime - INSAlignmentStart;
-    INSTimeDiff /= 1000;	//to get seconds
-    INSTimeDiff /= 60;	//minutes
+    INSTimeDiff /= 1000; //to get seconds
+    INSTimeDiff /= 60; //minutes
 #ifndef _DEBUG
 
     //no drift when GPS is powered
@@ -315,7 +315,7 @@ void AircraftClass::CalcINSDrift(void)
         INSLatDrift += (INSLatDrift / 60) * Factor;
         //get it in feet
         INSLatDrift *= NM_TO_FT;
-        INSLongDrift = INSLatDrift;	//drifts the same in both directions
+        INSLongDrift = INSLatDrift; //drifts the same in both directions
 
         //drift in random direction
         INSLatDrift *= INSDriftLatDirection;
@@ -333,7 +333,7 @@ void AircraftClass::CalcINSOffset(void)
         float CosCurlat = (float)cos(Curlatitude);
         float Curlongitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CosCurlat) + cockpitFlightData.y) / (EARTH_RADIUS_FT * CosCurlat);
 
-        Curlatitude	*= RTD;
+        Curlatitude *= RTD;
         Curlongitude *= RTD;
 
         //from our initial alignment position, to where we are now
@@ -343,7 +343,7 @@ void AircraftClass::CalcINSOffset(void)
         OTWDriver.pCockpitManager->mpIcp->INSLATDiff += DiffLat;
         OTWDriver.pCockpitManager->mpIcp->INSLONGDiff += DiffLong;
 
-        Curlatitude = 90 - Curlatitude;	//to be formula "compatible", we need the opposing value
+        Curlatitude = 90 - Curlatitude; //to be formula "compatible", we need the opposing value
 
         //find how many feet our degree is at the current lat
         //Lat is N/S and one degree is about 60 NM

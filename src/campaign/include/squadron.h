@@ -10,19 +10,19 @@
 #define UMSG_FROM_RESERVE   255
 
 // Defines for types of stats update
-#define ASTAT_AAKILL		0
-#define ASTAT_AGKILL		1
-#define ASTAT_ASKILL		2
-#define ASTAT_ANKILL		3
-#define ASTAT_MISSIONS		4
-#define ASTAT_PKILL			5								// Player kill
+#define ASTAT_AAKILL 0
+#define ASTAT_AGKILL 1
+#define ASTAT_ASKILL 2
+#define ASTAT_ANKILL 3
+#define ASTAT_MISSIONS 4
+#define ASTAT_PKILL 5 // Player kill
 
-#define SQUADRON_PT_FUEL				100					// How many lbs each point of fuel is worth
-#define SQUADRON_PT_SUPPLY				20					// How many weapon shots each point of supply is worth
-#define SQUADRON_MISSIONS_PER_HOUR		4					// How many missions we expect each plane to fly per hour
+#define SQUADRON_PT_FUEL 100 // How many lbs each point of fuel is worth
+#define SQUADRON_PT_SUPPLY 20 // How many weapon shots each point of supply is worth
+#define SQUADRON_MISSIONS_PER_HOUR 4 // How many missions we expect each plane to fly per hour
 
-#define SQUADRON_SPECIALTY_AA			1					// Specialty values
-#define SQUADRON_SPECIALTY_AG			2
+#define SQUADRON_SPECIALTY_AA 1 // Specialty values
+#define SQUADRON_SPECIALTY_AG 2
 
 // =========================
 // Squadron Class
@@ -50,31 +50,31 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    long				fuel;							// fuel avail, 100s of lbs
-    uchar				specialty;    					// Squadron's specialty
-    uchar				stores[MAXIMUM_WEAPTYPES];		// # of weapons available
-    PilotClass			pilot_data[PILOTS_PER_SQUADRON];// Pilot info
-    ulong				schedule[VEHICLE_GROUPS_PER_UNIT];	// Aircraft usage schedule.
-    VU_ID				airbase_id;						// ID of this squadron's airbase/carrier
-    VU_ID				hot_spot;						// ID of 'primary' Primary Objective
-    uchar				rating[ARO_OTHER];				// Rating by mission roll
-    short				aa_kills;						// Kill counts (air to air)
-    short				ag_kills;						// (air to ground)
-    short				as_kills;						// (air to static)
-    short				an_kills;						// (air to naval)
-    short				missions_flown;
-    short				mission_score;
-    uchar				total_losses;					// Total aircraft losses since start of war
-    uchar				pilot_losses;					// Total pilot losses since start of war
-    uchar				assigned;						// Assigned to current package
-    uchar				squadron_patch;					// ID of this squadron's patch art
-    int					dirty_squadron;
-    CampaignTime		last_resupply_time;				// Last time we received supply/reinforcements
-    uchar				last_resupply;					// Number of aircraft we received
+    long fuel; // fuel avail, 100s of lbs
+    uchar specialty;     // Squadron's specialty
+    uchar stores[MAXIMUM_WEAPTYPES]; // # of weapons available
+    PilotClass pilot_data[PILOTS_PER_SQUADRON];// Pilot info
+    ulong schedule[VEHICLE_GROUPS_PER_UNIT]; // Aircraft usage schedule.
+    VU_ID airbase_id; // ID of this squadron's airbase/carrier
+    VU_ID hot_spot; // ID of 'primary' Primary Objective
+    uchar rating[ARO_OTHER]; // Rating by mission roll
+    short aa_kills; // Kill counts (air to air)
+    short ag_kills; // (air to ground)
+    short as_kills; // (air to static)
+    short an_kills; // (air to naval)
+    short missions_flown;
+    short mission_score;
+    uchar total_losses; // Total aircraft losses since start of war
+    uchar pilot_losses; // Total pilot losses since start of war
+    uchar assigned; // Assigned to current package
+    uchar squadron_patch; // ID of this squadron's patch art
+    int dirty_squadron;
+    CampaignTime last_resupply_time; // Last time we received supply/reinforcements
+    uchar last_resupply; // Number of aircraft we received
 
 public:
 
@@ -133,9 +133,9 @@ public:
         return squadron_patch;
     }
 
-    void SetSchedule(int, ulong);	// OR ulong into schedule
-    void ClearSchedule(int);		// set it to 0
-    void ShiftSchedule(int);		// shift it to the right 1 bit
+    void SetSchedule(int, ulong); // OR ulong into schedule
+    void ClearSchedule(int); // set it to 0
+    void ShiftSchedule(int); // shift it to the right 1 bit
     void SetHotSpot(VU_ID);
     void SetRating(int, uchar);
     void SetAAKills(short);

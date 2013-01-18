@@ -15,21 +15,21 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int					idNum;
-    int					callbackSlot;
-    int					transparencyType;
-    int					cycleBits;
-    int					persistant;
-    int					bsurface;
-    RECT				bsrcRect;
-    RECT				bdestRect;
-    RECT				destRect;
-    ImageBuffer*		pOTWImage;
-    ImageBuffer*		pTemplate;
-    CockpitManager*	pCPManager;
+    int idNum;
+    int callbackSlot;
+    int transparencyType;
+    int cycleBits;
+    int persistant;
+    int bsurface;
+    RECT bsrcRect;
+    RECT bdestRect;
+    RECT destRect;
+    ImageBuffer* pOTWImage;
+    ImageBuffer* pTemplate;
+    CockpitManager* pCPManager;
     // sfr: 2 scale factors
-    float				hScale;			//Wombat778 10-06-2003 Changes scale from int to float
-    float				vScale;			//Wombat778 10-06-2003 Changes scale from int to float
+    float hScale; //Wombat778 10-06-2003 Changes scale from int to float
+    float vScale; //Wombat778 10-06-2003 Changes scale from int to float
 } ObjectInitStr;
 
 
@@ -56,42 +56,42 @@ public:
     //====================================================//
     // Identification Tag and Callback Ids
     //====================================================//
-    int				mIdNum;
-    int				mCallbackSlot;
-    int				mTransparencyType;
+    int mIdNum;
+    int mCallbackSlot;
+    int mTransparencyType;
 
     //====================================================//
     // Dimensions and Locations
     //====================================================//
     // sfr: changed to 2 factors
-    float			mHScale;			//Wombat778 10-06-2003 Changes mScale from int to float
-    float			mVScale;
-    int				mWidth;
-    int				mHeight;
-    RECT			mDestRect;
+    float mHScale; //Wombat778 10-06-2003 Changes mScale from int to float
+    float mVScale;
+    int mWidth;
+    int mHeight;
+    RECT mDestRect;
 
     //====================================================//
     // Frame Execution and Timing
     //====================================================//
-    int				mCycleBits;
-    BOOL			mDirtyFlag;
+    int mCycleBits;
+    BOOL mDirtyFlag;
 
     //====================================================//
     // Persistance Optimization
     //====================================================//
-    int				mPersistant;
-    int				mBSurface;
-    RECT			mBSrcRect;
-    RECT			mBDestRect;
-    ImageBuffer		*mpBackgroundSurface;	//VWF May be able to remove later
+    int mPersistant;
+    int mBSurface;
+    RECT mBSrcRect;
+    RECT mBDestRect;
+    ImageBuffer *mpBackgroundSurface; //VWF May be able to remove later
 
     //====================================================//
     // Pointers to the Outside World
     //====================================================//
-    SimBaseClass	*mpOwnship;
-    ImageBuffer		*mpOTWImage;
-    ImageBuffer		*mpTemplate;
-    CockpitManager	*mpCPManager;
+    SimBaseClass *mpOwnship;
+    ImageBuffer *mpOTWImage;
+    ImageBuffer *mpTemplate;
+    CockpitManager *mpCPManager;
 
     // OW
     PaletteHandle *m_pPalette;
@@ -100,27 +100,27 @@ public:
     //====================================================//
     // Pointers to Runtime Callback functions
     //====================================================//
-    CPCallback		mExecCallback;
-    CPCallback		mDisplayCallback;
-    CPCallback		mEventCallback;
+    CPCallback mExecCallback;
+    CPCallback mDisplayCallback;
+    CPCallback mEventCallback;
 
     //====================================================//
     // Runtime Member Functions
     //====================================================//
-    void			Exec(void) {};
-    virtual void	Exec(SimBaseClass*) {};
-    virtual void	DisplayBlit(void) {};
-    virtual void	DisplayDraw(void) {};
+    void Exec(void) {};
+    virtual void Exec(SimBaseClass*) {};
+    virtual void DisplayBlit(void) {};
+    virtual void DisplayDraw(void) {};
 
-    virtual void	HandleEvent(void) {};
-    void			SetDirtyFlag()
+    virtual void HandleEvent(void) {};
+    void SetDirtyFlag()
     {
         mDirtyFlag = TRUE;
     };
-    virtual void 	CreateLit(void) {};
-    virtual void	DiscardLit(void);
-    virtual void	Translate(WORD*) {};
-    virtual void	Translate(DWORD*) {};		// OW added for 32 Bit rendering
+    virtual void  CreateLit(void) {};
+    virtual void DiscardLit(void);
+    virtual void Translate(WORD*) {};
+    virtual void Translate(DWORD*) {}; // OW added for 32 Bit rendering
 
     // OW
     virtual void DisplayBlit3D() { };

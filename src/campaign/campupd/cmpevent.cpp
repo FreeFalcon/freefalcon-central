@@ -36,10 +36,10 @@
 
 #include "debuggr.h"
 
-EventClass**	CampEvents = NULL;
-short			CE_Events = 0;
+EventClass** CampEvents = NULL;
+short CE_Events = 0;
 
-#define	CE_MAX_TRIGGERED		3
+#define CE_MAX_TRIGGERED 3
 
 // ============================
 // External Function Prototypes
@@ -117,7 +117,7 @@ void EventClass::DoEvent(void)
 
 void EventClass::SetEvent(int status)
 {
-    CampEventDataMessage	*msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
+    CampEventDataMessage *msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
     msg->dataBlock.message = CampEventDataMessage::eventMessage;
     msg->dataBlock.event = event;
 
@@ -154,9 +154,9 @@ int CheckTriggers(char *scenario)
 
 int ReadNumberOfEvents(char* scenario)
 {
-    char		token[121];
-    int			done = 0;
-    FILE		*fp;
+    char token[121];
+    int done = 0;
+    FILE *fp;
 
     CE_Events = 0;
 
@@ -194,9 +194,9 @@ int ReadNumberOfEvents(char* scenario)
 
 void SetInitialEvents(char* scenario)
 {
-    FILE*		fp;
-    char		token[121];
-    int			done = 0;
+    FILE* fp;
+    char token[121];
+    int done = 0;
 
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return;
@@ -211,8 +211,8 @@ void SetInitialEvents(char* scenario)
 
         if (strncmp(token, "#SET_EVENT", 10) == 0)
         {
-            char	*sptr = strchr(token, ' ');
-            int		i = 0;
+            char *sptr = strchr(token, ' ');
+            int i = 0;
 
             if (sptr)
                 sptr++;
@@ -222,8 +222,8 @@ void SetInitialEvents(char* scenario)
         }
         else if (strncmp(token, "#RESET_EVENT", 10) == 0)
         {
-            char	*sptr = strchr(token, ' ');
-            int		i = 0;
+            char *sptr = strchr(token, ' ');
+            int i = 0;
 
             if (sptr)
                 sptr++;
@@ -233,24 +233,24 @@ void SetInitialEvents(char* scenario)
         }
         else if (strncmp(token, "#SET_TEMPO", 10) == 0)
         {
-            /*			char	*sptr;
-            			if (sptr = strchr(token,' '))
-            				sptr++;
-            			TheCampaign.Tempo = atoi (sptr);
+            /* char *sptr;
+             if (sptr = strchr(token,' '))
+             sptr++;
+             TheCampaign.Tempo = atoi (sptr);
             */
         }
         else if (strncmp(token, "#CHANGE_PRIORITIES", 18) == 0)
         {
-            /*			char	*sptr;
-            			int		team,i;
-            			if (sptr = strchr(token,' '))
-            				sptr++;
-            			team = atoi(sptr);
-            			if (sptr = strchr(sptr,' '))
-            				sptr++;
-            			i = atoi(sptr);
-            			if (TeamInfo[team])
-            				TeamInfo[team]->ReadPriorityFile(i);
+            /* char *sptr;
+             int team,i;
+             if (sptr = strchr(token,' '))
+             sptr++;
+             team = atoi(sptr);
+             if (sptr = strchr(sptr,' '))
+             sptr++;
+             i = atoi(sptr);
+             if (TeamInfo[team])
+             TeamInfo[team]->ReadPriorityFile(i);
             */
         }
 
@@ -264,9 +264,9 @@ void SetInitialEvents(char* scenario)
 
 void ReadSpecialCampaignData(char* scenario)
 {
-    FILE*		fp;
-    char		token[121];
-    int			done = 0;
+    FILE* fp;
+    char token[121];
+    int done = 0;
 
     // Initialise variables to default values
     TheaterXPosition = Map_Max_X / 2;
@@ -289,8 +289,8 @@ void ReadSpecialCampaignData(char* scenario)
         // set them individually for each campaign :-)
         if (strncmp(token, "#BULLSEYE_X", 11) == 0) // bullseye reference point X position
         {
-            char	*sptr = strchr(token, ' ');
-            int		i = 0;
+            char *sptr = strchr(token, ' ');
+            int i = 0;
 
             if (sptr)
                 sptr++;
@@ -300,8 +300,8 @@ void ReadSpecialCampaignData(char* scenario)
         }
         else if (strncmp(token, "#BULLSEYE_Y", 11) == 0) // bullseye reference point Y position
         {
-            char	*sptr = strchr(token, ' ');
-            int		i = 0;
+            char *sptr = strchr(token, ' ');
+            int i = 0;
 
             if (sptr)
                 sptr++;
@@ -311,8 +311,8 @@ void ReadSpecialCampaignData(char* scenario)
         }
         else if (strncmp(token, "#FLOT_SORTDIRECTION", 19) == 0) // 0 = West-East, 1 = North-South
         {
-            char	*sptr = strchr(token, ' ');
-            int		i = 0;
+            char *sptr = strchr(token, ' ');
+            int i = 0;
 
             if (sptr)
                 sptr++;
@@ -322,8 +322,8 @@ void ReadSpecialCampaignData(char* scenario)
         }
         else if (strncmp(token, "#FLOT_DRAWDISTANCE", 11) == 0) // bullseye reference point X position
         {
-            char	*sptr = strchr(token, ' ');
-            float		i = 0.0f;
+            char *sptr = strchr(token, ' ');
+            float i = 0.0f;
 
             if (sptr)
                 sptr++;
@@ -356,8 +356,8 @@ int NewCampaignEvents(char* scenario)
 // Load both events and triggers
 int LoadCampaignEvents(char* filename, char* scenario)
 {
-    uchar			/* *data,*/ *data_ptr;
-    short			i, events;
+    uchar /* *data,*/ *data_ptr;
+    short i, events;
 
     ReadNumberOfEvents(scenario);
     CampaignData cd = ReadCampFile(filename, "evt");
@@ -389,8 +389,8 @@ int LoadCampaignEvents(char* filename, char* scenario)
 // Save both events and triggers
 int SaveCampaignEvents(char* filename)
 {
-    FILE*		fp;
-    int			i;
+    FILE* fp;
+    int i;
 
     if ((fp = OpenCampFile(filename, "evt", "wb")) == NULL)
         return 0;
@@ -414,7 +414,7 @@ int SaveCampaignEvents(char* filename)
 
 void DisposeCampaignEvents(void)
 {
-    int			i;
+    int i;
 
     if (!CampEvents || !CE_Events)
         return;
@@ -446,12 +446,12 @@ void DisposeCampaignEvents(void)
 
 int ReadScriptedTriggerFile(char* filename)
 {
-    FILE*		fp;
-    int			i, done = 0, initdone = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
-    char		token[128], *sptr;
-    _TCHAR		eol[2] = { '\n', 0 };
-    Objective	o;
-    Team		team;
+    FILE* fp;
+    int i, done = 0, initdone = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
+    char token[128], *sptr;
+    _TCHAR eol[2] = { '\n', 0 };
+    Objective o;
+    Team team;
 
     if ((fp = OpenCampFile(filename, "tri", "r")) == NULL)
     {
@@ -577,7 +577,7 @@ int ReadScriptedTriggerFile(char* filename)
                         stack_active[curr_stack] = 0;
                     else
                     {
-                        POData	pod = GetPOData(o);
+                        POData pod = GetPOData(o);
 
                         if (pod && pod->ground_assigned[team])
                             stack_active[curr_stack] = 1;
@@ -587,7 +587,7 @@ int ReadScriptedTriggerFile(char* filename)
                 }
                 else if (strncmp(token, "#IF_CONTROLLED", 14) == 0)
                 {
-                    char	type;
+                    char type;
 
                     if (sptr = strchr(token, ' '))
                         sptr++;
@@ -731,7 +731,7 @@ int ReadScriptedTriggerFile(char* filename)
                 }
                 else if (strncmp(token, "#IF_PRI_CONTROLLED_LT", 21) == 0)
                 {
-                    int	controlled = 0;
+                    int controlled = 0;
 
                     if (sptr = strchr(token, ' '))
                         sptr++;
@@ -745,7 +745,7 @@ int ReadScriptedTriggerFile(char* filename)
                         sptr++;
 
                     i = atoi(sptr);
-                    VuListIterator	poit(POList);
+                    VuListIterator poit(POList);
                     o = GetFirstObjective(&poit);
 
                     while (o)
@@ -773,27 +773,27 @@ int ReadScriptedTriggerFile(char* filename)
                     else
                         stack_active[curr_stack] = 0;
 
-                    /*					int				offensive_assigned = 0;
-                    					if (sptr = strchr(token,' '))
-                    						sptr++;
-                    					if (*sptr == 'F')
-                    						team = FalconLocalSession->GetTeam();
-                    					else
-                    						team = GetEnemyTeam(FalconLocalSession->GetTeam());
-                    					if (sptr = strchr(sptr,' '))
-                    						sptr++;
-                    					// Check if we have offensive units assigned
-                    					if (TeamInfo[team]->GetGroundAction()->actionType != GACTION_OFFENSIVE)
-                    						stack_active[curr_stack] = 0;
-                    					else
-                    						stack_active[curr_stack] = 1;
+                    /* int offensive_assigned = 0;
+                     if (sptr = strchr(token,' '))
+                     sptr++;
+                     if (*sptr == 'F')
+                     team = FalconLocalSession->GetTeam();
+                     else
+                     team = GetEnemyTeam(FalconLocalSession->GetTeam());
+                     if (sptr = strchr(sptr,' '))
+                     sptr++;
+                     // Check if we have offensive units assigned
+                     if (TeamInfo[team]->GetGroundAction()->actionType != GACTION_OFFENSIVE)
+                     stack_active[curr_stack] = 0;
+                     else
+                     stack_active[curr_stack] = 1;
                     */
                 }
                 else if (strncmp(token, "#IF_FORCE_RATIO", 15) == 0)
                 {
-                    Team	opposite;
-                    char	type, func;
-                    int		os, ts, ratio;
+                    Team opposite;
+                    char type, func;
+                    int os, ts, ratio;
 
                     if (sptr = strchr(token, ' '))
                         sptr++;
@@ -933,16 +933,16 @@ int ReadScriptedTriggerFile(char* filename)
             // special tokens
             if (strncmp(token, "#PLAY_MOVIE", 11) == 0)
             {
-                //				_TCHAR					str[128] = {0};
-                CampEventDataMessage	*msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
+                // _TCHAR str[128] = {0};
+                CampEventDataMessage *msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
 
                 i = atoi(sptr);
                 // queue movie
-                //				AddIndexedStringToBuffer(1160+i-100,str);
-                //				UI_AddMovieToList(i,TheCampaign.CurrentTime,str);
+                // AddIndexedStringToBuffer(1160+i-100,str);
+                // UI_AddMovieToList(i,TheCampaign.CurrentTime,str);
                 msg->dataBlock.message = CampEventDataMessage::playMovie;
                 msg->dataBlock.event = i;
                 FalconSendMessage(msg, TRUE);
@@ -950,7 +950,7 @@ int ReadScriptedTriggerFile(char* filename)
             }
             else if (strncmp(token, "#CHANGE_RELATIONS", 17) == 0)
             {
-                int	with, rel;
+                int with, rel;
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
@@ -992,7 +992,7 @@ int ReadScriptedTriggerFile(char* filename)
             }
             else if (strncmp(token, "#SHIFT_INITIATIVE", 16) == 0)
             {
-                int	to, amount;
+                int to, amount;
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
@@ -1042,19 +1042,19 @@ int ReadScriptedTriggerFile(char* filename)
             }
             else if (strncmp(token, "#CHANGE_PRIORITIES", 18) == 0)
             {
-                /*				if (sptr = strchr(token,' '))
-                					sptr++;
-                				team = atoi(sptr);
-                				if (sptr = strchr(sptr,' '))
-                					sptr++;
-                				i = atoi(sptr);
-                				if (TeamInfo[team])
-                					TeamInfo[team]->ReadPriorityFile(i);
+                /* if (sptr = strchr(token,' '))
+                 sptr++;
+                 team = atoi(sptr);
+                 if (sptr = strchr(sptr,' '))
+                 sptr++;
+                 i = atoi(sptr);
+                 if (TeamInfo[team])
+                 TeamInfo[team]->ReadPriorityFile(i);
                 */
             }
             else if (strncmp(token, "#SET_MINIMUM_SUPPLIES", 18) == 0)
             {
-                int		s, f, r;
+                int s, f, r;
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
@@ -1087,8 +1087,8 @@ int ReadScriptedTriggerFile(char* filename)
             }
             else if (strncmp(token, "#SET_PAK_PRIORITY", 17) == 0)
             {
-                CampEntity	e;
-                POData		pod;
+                CampEntity e;
+                POData pod;
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
@@ -1117,16 +1117,16 @@ int ReadScriptedTriggerFile(char* filename)
 #endif
                     pod->ground_priority[team] = pod->air_priority[team] = i;
                     // KCK: player_priority only used now if >= 0
-                    //					if (!(pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
-                    //						pod->player_priority[team] =  i;
+                    // if (!(pod->flags & GTMOBJ_PLAYER_SET_PRIORITY))
+                    // pod->player_priority[team] =  i;
                     pod->flags |= GTMOBJ_SCRIPTED_PRIORITY;
                 }
             }
             else if (strncmp(token, "#SET_TEMPO", 10) == 0)
             {
-                /*				if (sptr = strchr(token,' '))
-                					sptr++;
-                				TheCampaign.Tempo = atoi (sptr);
+                /* if (sptr = strchr(token,' '))
+                 sptr++;
+                 TheCampaign.Tempo = atoi (sptr);
                 */
             }
             else if (strncmp(token, "#TOTAL_EVENTS", 13) == 0 || strncmp(token, "#SET", 4) == 0 || strcmp(token, "#ENDINIT") == 0)

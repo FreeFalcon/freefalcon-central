@@ -4,8 +4,8 @@
 /*
 * math.h
 *
-*	Author: Miro "Jammer" Torrielli
-*	sfr: adding some non win32 stuff to make it compile on linux. The implementation is not good though, specially ftoi functions.
+* Author: Miro "Jammer" Torrielli
+* sfr: adding some non win32 stuff to make it compile on linux. The implementation is not good though, specially ftoi functions.
 */
 
 #include <math.h>
@@ -51,7 +51,7 @@ template<class T> inline T Square(const T A)
 
 //template<class T> inline T Clamp( const T X, const T Min, const T Max )
 //{
-//	return X<Min ? Min : X<Max ? X : Max;
+// return X<Min ? Min : X<Max ? X : Max;
 //}
 
 template<class T> inline T Align(const T Ptr, int Alignment)
@@ -103,8 +103,8 @@ static inline float SqrtSSE(float x)
     return x;
 }
 
-#define sqrt	SqrtSSE
-#define sqrtf	SqrtSSE
+#define sqrt SqrtSSE
+#define sqrtf SqrtSSE
 
 #else //_MSC_VER >= 1300
 
@@ -134,8 +134,8 @@ static inline float Sqrt(float x)
     return x;
 }
 
-#define sqrt	Sqrt
-#define sqrtf	Sqrt
+#define sqrt Sqrt
+#define sqrtf Sqrt
 
 #endif //_MSC_VER >= 1300
 
@@ -188,7 +188,7 @@ static inline bool Fgreater(float f0, float f1, float tol)
 }
 
 #if WIN32
-#pragma warning(disable : 4035)	// Retro 29Apr2004 - suppress 'No return value' warning
+#pragma warning(disable : 4035) // Retro 29Apr2004 - suppress 'No return value' warning
 #endif
 static inline int FloatToInt32(float x)
 {
@@ -204,7 +204,7 @@ static inline int FloatToInt32(float x)
 #endif
 }
 #if WIN32
-#pragma warning(default : 4035)	// Retro 29Apr2004
+#pragma warning(default : 4035) // Retro 29Apr2004
 #endif
 
 static inline void FloatToInt32Store(int *a, float x)

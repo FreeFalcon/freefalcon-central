@@ -19,14 +19,14 @@
 class UnitFilter : public VuFilter
 {
 public:
-    uchar		parent;					// Set if parents only
-    uchar		real;					// Set if real only
-    ushort		host;					// Set if this host only
-    uchar		inactive;				// active or inactive units only
+    uchar parent; // Set if parents only
+    uchar real; // Set if real only
+    ushort host; // Set if this host only
+    uchar inactive; // active or inactive units only
 
 public:
     UnitFilter(uchar p, uchar r, ushort h, uchar a);
-    virtual ~UnitFilter(void)			{}
+    virtual ~UnitFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -43,13 +43,13 @@ public:
 class AirUnitFilter : public VuFilter
 {
 public:
-    uchar		parent;					// Set if parents only
-    uchar		real;					// Set if real only
-    ushort		host;					// Set if this host only
+    uchar parent; // Set if parents only
+    uchar real; // Set if real only
+    ushort host; // Set if this host only
 
 public:
     AirUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~AirUnitFilter(void)		{}
+    virtual ~AirUnitFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -66,13 +66,13 @@ public:
 class GroundUnitFilter : public VuFilter
 {
 public:
-    uchar		parent;					// Set if parents only
-    uchar		real;					// Set if real only
-    ushort		host;					// Set if this host only
+    uchar parent; // Set if parents only
+    uchar real; // Set if real only
+    ushort host; // Set if this host only
 
 public:
     GroundUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~GroundUnitFilter(void)		{}
+    virtual ~GroundUnitFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -89,13 +89,13 @@ public:
 class NavalUnitFilter : public VuFilter
 {
 public:
-    uchar		parent;					// Set if parents only
-    uchar		real;					// Set if real only
-    ushort		host;					// Set if this host only
+    uchar parent; // Set if parents only
+    uchar real; // Set if real only
+    ushort host; // Set if this host only
 
 public:
     NavalUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~NavalUnitFilter(void)		{}
+    virtual ~NavalUnitFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -109,13 +109,13 @@ public:
     }
 };
 
-extern UnitFilter			AllUnitFilter;
-extern AirUnitFilter		AllAirFilter;
-extern GroundUnitFilter		AllGroundFilter;
-extern NavalUnitFilter		AllNavalFilter;
-extern UnitFilter			AllParentFilter;
-extern UnitFilter			AllRealFilter;
-extern UnitFilter			InactiveFilter;
+extern UnitFilter AllUnitFilter;
+extern AirUnitFilter AllAirFilter;
+extern GroundUnitFilter AllGroundFilter;
+extern NavalUnitFilter AllNavalFilter;
+extern UnitFilter AllParentFilter;
+extern UnitFilter AllRealFilter;
+extern UnitFilter InactiveFilter;
 
 /** corrects grid computations which are wrong. */
 #define GRID_CORRECTION 1
@@ -146,8 +146,8 @@ public:
     virtual VU_BOOL RemoveTest(VuEntity *ent);
 };
 
-extern UnitProxFilter*	AllUnitProxFilter;
-extern UnitProxFilter*	RealUnitProxFilter;
+extern UnitProxFilter* AllUnitProxFilter;
+extern UnitProxFilter* RealUnitProxFilter;
 
 // ==============================
 // Manager Filters
@@ -164,11 +164,11 @@ extern UnitProxFilter*	RealUnitProxFilter;
 class ObjFilter : public VuFilter
 {
 public:
-    ushort		host;					// Set if this host only
+    ushort host; // Set if this host only
 
 public:
     ObjFilter(ushort h);
-    virtual ~ObjFilter(void)			{}
+    virtual ~ObjFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -221,8 +221,8 @@ class CampBaseFilter : public VuFilter
 public:
 
 public:
-    CampBaseFilter(void)				{}
-    virtual ~CampBaseFilter(void)		{}
+    CampBaseFilter(void) {}
+    virtual ~CampBaseFilter(void) {}
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -243,36 +243,36 @@ extern CampBaseFilter CampFilter;
 // ==============================
 
 #if VU_ALL_FILTERED
-extern VuLinkedList* AllUnitList;		// All units
-extern VuLinkedList* AllAirList;		// All air units
-extern VuLinkedList* AllParentList;		// All parent units
-extern VuLinkedList* AllRealList;		// All real units
-extern VuLinkedList* AllObjList;		// All objectives
-extern VuLinkedList* AllCampList;		// All campaign entities
-extern VuLinkedList* InactiveList;		// Inactive units (reinforcements)
+extern VuLinkedList* AllUnitList; // All units
+extern VuLinkedList* AllAirList; // All air units
+extern VuLinkedList* AllParentList; // All parent units
+extern VuLinkedList* AllRealList; // All real units
+extern VuLinkedList* AllObjList; // All objectives
+extern VuLinkedList* AllCampList; // All campaign entities
+extern VuLinkedList* InactiveList; // Inactive units (reinforcements)
 #else
-extern VuFilteredList *AllUnitList;		// All units
-extern VuFilteredList *AllAirList;		// All air units
-extern VuFilteredList *AllRealList;		// All real units
-extern VuFilteredList *AllParentList;	// All parent units
-extern VuFilteredList *AllObjList;		// All objectives
-extern VuFilteredList *AllCampList;		// All campaign entities
-extern VuFilteredList *InactiveList;	// Inactive units (reinforcements)
+extern VuFilteredList *AllUnitList; // All units
+extern VuFilteredList *AllAirList; // All air units
+extern VuFilteredList *AllRealList; // All real units
+extern VuFilteredList *AllParentList; // All parent units
+extern VuFilteredList *AllObjList; // All objectives
+extern VuFilteredList *AllCampList; // All campaign entities
+extern VuFilteredList *InactiveList; // Inactive units (reinforcements)
 #endif
 
 //==============================
 // Maintained Containers
 //==============================
 
-#define MAX_DIRTY_BUCKETS	9 //me123 from 8
+#define MAX_DIRTY_BUCKETS 9 //me123 from 8
 
-extern F4PFList FrontList;				// Frontline objectives
-extern F4POList POList;					// Primary objective list
-extern F4PFList SOList;					// Secondary objective list
-extern F4PFList AirDefenseList;			// All air defenses
-extern F4PFList EmitterList;			// All emitters
+extern F4PFList FrontList; // Frontline objectives
+extern F4POList POList; // Primary objective list
+extern F4PFList SOList; // Secondary objective list
+extern F4PFList AirDefenseList; // All air defenses
+extern F4PFList EmitterList; // All emitters
 
-//extern TailInsertList *DirtyBucket[MAX_DIRTY_BUCKETS];	// dirty data
+//extern TailInsertList *DirtyBucket[MAX_DIRTY_BUCKETS]; // dirty data
 #define USE_VU_COLL_FOR_CAMPAIGN 1
 #define USE_VU_COLL_FOR_DIRTY 1
 
@@ -333,8 +333,8 @@ extern List FLOTList;
 // Proximity Lists
 // ==============================
 
-extern VuGridTree* ObjProxList;			// Proximity list of all objectives
-extern VuGridTree* RealUnitProxList;	// Proximity list of all real units
+extern VuGridTree* ObjProxList; // Proximity list of all objectives
+extern VuGridTree* RealUnitProxList; // Proximity list of all real units
 
 // ==============================
 // Global Iterators

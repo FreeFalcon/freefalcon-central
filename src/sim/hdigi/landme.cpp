@@ -53,7 +53,7 @@ void HeliBrain::LandMe(void)
             LevelTurn(0.0f, 0.0f, TRUE);
             AltitudeHold(holdAlt);
             MachHold(0.0f, 0.0F, FALSE);
-            //			MonoPrint( "HELO BRAIN Landing\n" );
+            // MonoPrint( "HELO BRAIN Landing\n" );
             break;
 
         case Landing:
@@ -64,7 +64,7 @@ void HeliBrain::LandMe(void)
                 throtl = 0.50f;
                 onStation = Landed;
                 jinkTime = SimLibElapsedTime + 30000;
-                //				MonoPrint( "HELO BRAIN Landed!\n" );
+                // MonoPrint( "HELO BRAIN Landed!\n" );
             }
             else
             {

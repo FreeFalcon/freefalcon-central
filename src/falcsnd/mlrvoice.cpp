@@ -228,10 +228,10 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
 
     distsq = dx * dx + dy * dy + dz * dz;
 
-    //	if(IsThunder)
-    //		if(distsq > 510000000000.f)
-    //			return;
-    //	else if(distsq > sfx->distSq)
+    // if(IsThunder)
+    // if(distsq > 510000000000.f)
+    // return;
+    // else if(distsq > sfx->distSq)
     if (!IsThunder && (distsq > sfx->distSq))
     {
         return;
@@ -248,9 +248,9 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
 
     /*
     if(!(sfx->flags & SFX_POS_EXTERN))
-    	priority = 1;
+     priority = 1;
     else
-    	priority = vol - (distsq / sfx->distSq) * 10000;
+     priority = vol - (distsq / sfx->distSq) * 10000;
     */
 
     status = VSSTART;
@@ -314,10 +314,10 @@ bool mlrVoice::AllocateBuffers(void)
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
                                                  (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  //				&&
-                        //	 sfx							&&
-                        //	(sfx->flags & SFX_POS_EXTERN)	&&
-                        //	(sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+                    if (DSound3dBuffer)  // &&
+                        //  sfx &&
+                        // (sfx->flags & SFX_POS_EXTERN) &&
+                        // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
                         float maxdist = (float)  sqrt(sfx->maxDistSq);
@@ -387,10 +387,10 @@ bool mlrVoice::AllocateBuffers(void)
                 {
                     DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  //				&&
-                        //	 sfx							&&
-                        //	(sfx->flags & SFX_POS_EXTERN)	&&
-                        //	(sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
+                    if (DSound3dBuffer)  // &&
+                        //  sfx &&
+                        // (sfx->flags & SFX_POS_EXTERN) &&
+                        // (sfx->flags & SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
                         float maxdist = (float)  sqrt(sfx->maxDistSq);
@@ -513,7 +513,7 @@ void mlrVoice::PreExec()
         if (sfx->flags & SFX_POS_EXTINT)
             status = VSSTOP;
 
-        if (sfx->flags & SFX_POS_INSIDE)	    // don't play internal sound
+        if (sfx->flags & SFX_POS_INSIDE)     // don't play internal sound
             status = VSSTOP;
 
         if (sfx->flags & SFX_FLAGS_VMS && !g_bSoundHearVMSExternal)
@@ -528,7 +528,7 @@ void mlrVoice::PreExec()
         vol += PlayerOptions.GroupVol[ sfx->soundGroup ];
     }
 
-    //	if(vol>0) vol=0;
+    // if(vol>0) vol=0;
 
     if (vol < -10000)
     {
@@ -549,7 +549,7 @@ void mlrVoice::PreExec()
                              z - gVoiceManager.listenerPosition.z
                            };
 
-            //			delta.Normalize();
+            // delta.Normalize();
             float l = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
             if (l > 0.0000001)

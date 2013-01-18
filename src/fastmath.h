@@ -3,13 +3,13 @@
 
 
 // Float to Int32
-inline	DWORD	F_I32(float x)
+inline DWORD F_I32(float x)
 {
-    DWORD	r;
+    DWORD r;
     _asm
     {
-        fld		x
-        fistp	r
+        fld x
+        fistp r
     }
     return r;
 }
@@ -17,15 +17,15 @@ inline	DWORD	F_I32(float x)
 
 
 // Absolute Value
-inline	float	F_ABS(float x)
+inline float F_ABS(float x)
 {
     float r;
 
     _asm
     {
-        fld		x
+        fld x
         fabs
-        fstp	r
+        fstp r
     }
     return r;
 }

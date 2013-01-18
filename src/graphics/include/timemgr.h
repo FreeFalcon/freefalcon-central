@@ -3,8 +3,8 @@
     Scott Randolph
     March 20, 1997
 
-	Manage the visual world's clock and provide periodic callbacks to
-	this modules which need to adjust with time of day changes.
+ Manage the visual world's clock and provide periodic callbacks to
+ this modules which need to adjust with time of day changes.
 \***************************************************************************/
 #ifndef TIMEMGR_H
 #define TIMEMGR_H
@@ -12,7 +12,7 @@
 #include "grtypes.h"
 
 
-#define MSEC_PER_DAY					86400000L	// 60sec * 60min * 24hr
+#define MSEC_PER_DAY 86400000L // 60sec * 60min * 24hr
 
 
 typedef struct TimeCallBack
@@ -36,59 +36,59 @@ public:
     };
     ~TimeManager()
     {
-        if (IsReady())	Cleanup();
+        if (IsReady()) Cleanup();
     };
 
-    void	Setup(int startYear, int startDayOfYear);
-    void	Cleanup(void);
+    void Setup(int startYear, int startDayOfYear);
+    void Cleanup(void);
 
-    BOOL	IsReady(void)
+    BOOL IsReady(void)
     {
         return (CBlist != NULL);
     };
 
-    void	SetTime(DWORD newTime);
-    void	Refresh(void);
+    void SetTime(DWORD newTime);
+    void Refresh(void);
 
-    void	RegisterTimeUpdateCB(void(*fn)(void *self), void *self);
-    void	ReleaseTimeUpdateCB(void(*fn)(void *self), void *self);
+    void RegisterTimeUpdateCB(void(*fn)(void *self), void *self);
+    void ReleaseTimeUpdateCB(void(*fn)(void *self), void *self);
 
-    DWORD	GetYearAD(void)
+    DWORD GetYearAD(void)
     {
         return year;
     };
-    DWORD	GetDayOfYear(void)
+    DWORD GetDayOfYear(void)
     {
         return today;
     };
-    DWORD	GetDayOfLunarMonth(void)
+    DWORD GetDayOfLunarMonth(void)
     {
         return today & 31;
     };
-    DWORD	GetTimeOfDay(void)
+    DWORD GetTimeOfDay(void)
     {
         return timeOfDay;
     };
-    DWORD	GetClockTime(void)
+    DWORD GetClockTime(void)
     {
         return currentTime;
     };
-    DWORD	GetDeltaTime(void)
+    DWORD GetDeltaTime(void)
     {
         return deltaTime;
     };
 
 protected:
-    DWORD			deltaTime;					// milliseconds between the two most recent updates
-    DWORD			currentTime;				// milliseconds since midnight, day 0
-    DWORD			timeOfDay;					// milliseconds since midnight today
-    DWORD			startDay;					// number of days from Jan 1 to day 0
-    DWORD			today;						// number of days from Jan 1 to today
-    DWORD			year;						// number of years AD
+    DWORD deltaTime; // milliseconds between the two most recent updates
+    DWORD currentTime; // milliseconds since midnight, day 0
+    DWORD timeOfDay; // milliseconds since midnight today
+    DWORD startDay; // number of days from Jan 1 to day 0
+    DWORD today; // number of days from Jan 1 to today
+    DWORD year; // number of years AD
 
-    DWORD			lastUpdateTime;				// currentTime at last callback execution
-    int				nextCallToMake;				// index of next CB function to call
-    TimeCallBack	*CBlist;
+    DWORD lastUpdateTime; // currentTime at last callback execution
+    int nextCallToMake; // index of next CB function to call
+    TimeCallBack *CBlist;
 };
 
 

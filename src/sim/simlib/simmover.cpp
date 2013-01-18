@@ -439,8 +439,8 @@ void SimMoverClass::CleanupLocalData()
         {
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass ( 2.0f,		// time to live
-            	nonLocalData->smokeTrail )
+             new SfxClass ( 2.0f, // time to live
+             nonLocalData->smokeTrail )
             );
             */
             DrawableParticleSys::PS_KillTrail((PS_PTR)nonLocalData->smokeTrail);
@@ -734,8 +734,8 @@ int SimMoverClass::Exec(void)
                             // RV I-Hawk - RV new trail calls changes
                             /*
                             OTWDriver.AddSfxRequest(
-                            	new SfxClass ( 2.0f,		// time to live
-                            	nonLocalData->smokeTrail ) );
+                             new SfxClass ( 2.0f, // time to live
+                             nonLocalData->smokeTrail ) );
                             */
                             DrawableParticleSys::PS_KillTrail((PS_PTR)nonLocalData->smokeTrail);
 
@@ -772,13 +772,13 @@ int SimMoverClass::Exec(void)
                         // add a tracer
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass(SFX_GUN_TRACER,				// type
-                        	SFX_MOVES | SFX_USES_GRAVITY,						// flags
-                        	&pos,							// world pos
-                        	&vec,							// vector
-                        	3.0f,							// time to live
-                        	1.0f));							// scale
-                        	*/
+                         new SfxClass(SFX_GUN_TRACER, // type
+                         SFX_MOVES | SFX_USES_GRAVITY, // flags
+                         &pos, // world pos
+                         &vec, // vector
+                         3.0f, // time to live
+                         1.0f)); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_GUN_TRACER + 1),
                                                               &pos,
                                                               &vec);
@@ -827,13 +827,13 @@ int SimMoverClass::Exec(void)
                     // add a tracer
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_GUN_TRACER,				// type
-                    	SFX_MOVES | SFX_USES_GRAVITY,						// flags
-                    	&pos,							// world pos
-                    	&vec,							// vector
-                    	3.0f,							// time to live
-                    	1.0f));							// scale
-                    	*/
+                     new SfxClass(SFX_GUN_TRACER, // type
+                     SFX_MOVES | SFX_USES_GRAVITY, // flags
+                     &pos, // world pos
+                     &vec, // vector
+                     3.0f, // time to live
+                     1.0f)); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GUN_TRACER + 1),
                                                           &pos,
                                                           &vec);
@@ -854,8 +854,8 @@ int SimMoverClass::Exec(void)
                         // RV I-Hawk - RV new trail calls changes
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass ( 2.0f,		// time to live
-                        	nonLocalData->smokeTrail ) );
+                         new SfxClass ( 2.0f, // time to live
+                         nonLocalData->smokeTrail ) );
                         */
                         DrawableParticleSys::PS_KillTrail((PS_PTR)nonLocalData->smokeTrail);
                         nonLocalData->smokeTrail = NULL;
@@ -1020,7 +1020,7 @@ int SimMoverClass::Handle(VuFullUpdateEvent *event)
 
 int SimMoverClass::Handle(VuPositionUpdateEvent *event)
 {
-    UnitClass	*campObj = (UnitClass*) GetCampaignObject();
+    UnitClass *campObj = (UnitClass*) GetCampaignObject();
 
     if (campObj && campObj->IsLocal() && campObj->GetComponentLead() == this)
     {
@@ -1049,10 +1049,10 @@ void SimMoverClass::SetDead(int flag)
        {
           tmpObject = targetList;
           targetList = targetList->next;
-    	 tmpObject->prev = NULL;
-    	 tmpObject->next = NULL;
+      tmpObject->prev = NULL;
+      tmpObject->next = NULL;
           tmpObject->Release();
-    	 tmpObject = NULL;
+      tmpObject = NULL;
        }
        targetList = NULL;
        ClearTarget();
@@ -1213,10 +1213,10 @@ int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 /*
 ** Name: FeatureCollision
 ** Description:
-**		Check to see if the we've collided with any features.
-**		Gross level check is objective bubble follwed by some
-**		sort of more refined test with elements in the objective bubble.
-**		Returns pointer of base class feature struck
+** Check to see if the we've collided with any features.
+** Gross level check is objective bubble follwed by some
+** sort of more refined test with elements in the objective bubble.
+** Returns pointer of base class feature struck
 */
 SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
 {
@@ -1265,7 +1265,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
             p3.z = (float)fabs(vec.z);
 
             // loop thru each element in the objective
-            VuListIterator	featureWalker(objective->GetComponents());
+            VuListIterator featureWalker(objective->GetComponents());
             testFeature = (SimBaseClass*) featureWalker.GetFirst();
             firstFeature = TRUE;
 
@@ -1357,12 +1357,12 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
 /** sfr: removed
 void SimMoverClass::SetVt (float new_vt)
 {
-	vt = new_vt;
+ vt = new_vt;
 }
 
 void SimMoverClass::SetKias (float new_kias)
 {
-	GetKias = new_kias;
+ GetKias = new_kias;
 }*/
 
 // sfr: @todo ok Im declaring this function here, because thats how this was originally done. Still
@@ -1384,9 +1384,9 @@ float SimMoverClass::GetVt() const
 }
 
 /*void SimMoverClass::SetDelta(SM_SCALAR dx, SM_SCALAR dy, SM_SCALAR dz){
-	VuEntity::SetDelta(dx, dy, dz);
-	vt = static_cast<float>(sqrt(dx*dx + dy*dy + dz*dz));
-	//kias = get_air_speed(vt * FTPSEC_TO_KNOTS, -1*FloatToInt32(ZPos()));
+ VuEntity::SetDelta(dx, dy, dz);
+ vt = static_cast<float>(sqrt(dx*dx + dy*dy + dz*dz));
+ //kias = get_air_speed(vt * FTPSEC_TO_KNOTS, -1*FloatToInt32(ZPos()));
 }
 */
 

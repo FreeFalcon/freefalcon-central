@@ -1,8 +1,8 @@
 #ifndef _MAPICON_H_
 #define _MAPICON_H_
 
-#define ICON_LABEL		(30)
-#define NUM_DIRECTIONS	(8)
+#define ICON_LABEL (30)
+#define NUM_DIRECTIONS (8)
 
 class ARC_REC
 {
@@ -55,22 +55,22 @@ public:
     };
 #endif
 public:
-    long		ID;
-    long		Type;
-    long		Flags;
-    long		state;
-    short		x, y;
-    float		worldx, worldy;
-    long		Status;
-    long		ImageID;
-    short		Dragable;
-    DETECTOR	*Detect;
+    long ID;
+    long Type;
+    long Flags;
+    long state;
+    short x, y;
+    float worldx, worldy;
+    long Status;
+    long ImageID;
+    short Dragable;
+    DETECTOR *Detect;
     C_MapIcon   *Owner;
-    O_Output	*Icon;
-    O_Output	*Div;
-    O_Output	*Brig;
-    O_Output	*Bat;
-    O_Output	*Label;
+    O_Output *Icon;
+    O_Output *Div;
+    O_Output *Brig;
+    O_Output *Bat;
+    O_Output *Label;
 };
 
 class C_MapIcon : public C_Control
@@ -88,25 +88,25 @@ public:
     };
 #endif
 private:
-    long		Font_;
-    short		Team_;
-    float		scale_;
-    short		ShowCircles_;
-    long		LastTime_, CurTime_;
-    long		DefaultFlags_;
-    C_Hash		*Root_;
+    long Font_;
+    short Team_;
+    float scale_;
+    short ShowCircles_;
+    long LastTime_, CurTime_;
+    long DefaultFlags_;
+    C_Hash *Root_;
     MAPICONLIST *Last_;
     MAPICONLIST *OverLast_;
-    C_Resmgr	*Icons_[NUM_DIRECTIONS][2];
+    C_Resmgr *Icons_[NUM_DIRECTIONS][2];
 
 public:
 
     enum
     {
-        LOW_SAM		= 0x0001,
-        HIGH_SAM	= 0x0002,
-        LOW_RADAR	= 0x0004,
-        HIGH_RADAR	= 0x0008,
+        LOW_SAM = 0x0001,
+        HIGH_SAM = 0x0002,
+        LOW_RADAR = 0x0004,
+        HIGH_RADAR = 0x0008,
     };
 
     C_MapIcon();
@@ -163,8 +163,8 @@ public:
     void Show();
     void Hide();
     void SetScaleFactor(float scale);
-    MAPICONLIST	*FindID(long ID);
-    MAPICONLIST	*GetLastItem()
+    MAPICONLIST *FindID(long ID);
+    MAPICONLIST *GetLastItem()
     {
         return(Last_);
     }

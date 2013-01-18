@@ -4,7 +4,7 @@
     October 8, 1997
 
     This is a portion of the implemention for Render2D (see Render2D.h)
-	These function provides 2D viewport clipping services.
+ These function provides 2D viewport clipping services.
 \***************************************************************************/
 #include "Render2D.h"
 
@@ -13,45 +13,45 @@
 // one thread at a time do clipping.  If this requirment is unacceptable, this
 // storage should become a member of the Render2D class.  Not doing so now
 // saves us one pointer indirection per use of this storage (ie: this->)
-static const int	MAX_VERT_LIST  = 32;		// (2 x largest number of verts in input fan)
-static TwoDVertex	extraVerts[MAX_VERT_LIST];	// Used to hold temporaty vertices
-static int			extraVertCount;				// created by clipping.
+static const int MAX_VERT_LIST  = 32; // (2 x largest number of verts in input fan)
+static TwoDVertex extraVerts[MAX_VERT_LIST]; // Used to hold temporaty vertices
+static int extraVertCount; // created by clipping.
 
 extern int g_nGfxFix; // MN
 
 /***************************************************************************\
-	Set the clip flags for the given vertex.
+ Set the clip flags for the given vertex.
 \***************************************************************************/
 void Render2D::SetClipFlags(TwoDVertex* vert)
 {
     vert->clipFlag = ON_SCREEN;
 
-    if (vert->x < leftPixel)		vert->clipFlag |= CLIP_LEFT;
-    else if (vert->x > rightPixel)	vert->clipFlag |= CLIP_RIGHT;
+    if (vert->x < leftPixel) vert->clipFlag |= CLIP_LEFT;
+    else if (vert->x > rightPixel) vert->clipFlag |= CLIP_RIGHT;
 
-    if (vert->y < topPixel)			vert->clipFlag |= CLIP_TOP;
-    else if (vert->y > bottomPixel)	vert->clipFlag |= CLIP_BOTTOM;
+    if (vert->y < topPixel) vert->clipFlag |= CLIP_TOP;
+    else if (vert->y > bottomPixel) vert->clipFlag |= CLIP_BOTTOM;
 }
 
 /***************************************************************************
-	Given a list of vertices which make up a fan, clip them to the
-	top, bottom, left, right, and near planes.  Then draw the resultant
-	polygon.
+ Given a list of vertices which make up a fan, clip them to the
+ top, bottom, left, right, and near planes.  Then draw the resultant
+ polygon.
 ***************************************************************************/
 void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool gifPicture)
 {
-    TwoDVertex	**v, **p, **lastIn, **nextOut;
-    TwoDVertex	**inList, **outList, **temp;
-    TwoDVertex	*vertList1[MAX_VERT_LIST];	// Used to hold poly vert pointer lists
-    TwoDVertex	*vertList2[MAX_VERT_LIST];	// Used to hold poly vert pointer lists
-    DWORD		clipTest = 0;
+    TwoDVertex **v, **p, **lastIn, **nextOut;
+    TwoDVertex **inList, **outList, **temp;
+    TwoDVertex *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    TwoDVertex *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    DWORD clipTest = 0;
 
     ShiAssert(vertPointers);
     ShiAssert(count >= 3);
 
     // Intialize the vertex buffers
-    outList			= vertList1;
-    lastIn			= vertPointers + count;
+    outList = vertList1;
+    lastIn = vertPointers + count;
 
     for (nextOut = outList; vertPointers < lastIn; nextOut++)
     {
@@ -59,8 +59,8 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
         *nextOut = (*vertPointers++);
     }
 
-    inList			= vertList2;
-    extraVertCount	= 0;
+    inList = vertList2;
+    extraVertCount = 0;
 
 
     // Note:  we handle only leading and trailing culled triangles.  If
@@ -69,7 +69,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     // have to check all triangles instead of stopping after the second reject loop below.
     // If a new set of un-culled triangles was encountered, we'd have to make a new polygon
     // and resubmit it.
-    if (gifPicture /*|| g_nGfxFix & 0x08*/)  //	removed again, caused AG radar not to be displayed on Matrox G400
+    if (gifPicture /*|| g_nGfxFix & 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
     {
         temp = inList;
         inList = outList;
@@ -79,7 +79,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
         // We only support one flavor of clipping right now. The other version would just
         // be this same code repeated with inverted compare signs.
-        //		ShiAssert( CullFlag == CULL_ALLOW_CW );
+        // ShiAssert( CullFlag == CULL_ALLOW_CW );
 
         // Always copy the vertex at the root of the fan
         *nextOut++ = *inList;
@@ -305,7 +305,7 @@ inline void InterpolateColorAndTex(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v
 // This function is expected to be called first in the clipping chain
 void Render2D::IntersectBottom(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 {
-    float	t;
+    float t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (bottomPixel - v1->y) / (v2->y - v1->y);
@@ -339,7 +339,7 @@ void Render2D::IntersectBottom(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 // (ie: after bottom clipping, but before horizontal)
 void Render2D::IntersectTop(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 {
-    float	t;
+    float t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (topPixel - v1->y) / (v2->y - v1->y);
@@ -373,7 +373,7 @@ void Render2D::IntersectTop(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 // (ie: after vertical clipping is complete, but before the other side is done)
 void Render2D::IntersectRight(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 {
-    float	t;
+    float t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (rightPixel - v1->x) / (v2->x - v1->x);
@@ -393,7 +393,7 @@ void Render2D::IntersectRight(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 // (ie: last)
 void Render2D::IntersectLeft(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v)
 {
-    float	t;
+    float t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (leftPixel - v1->x) / (v2->x - v1->x);

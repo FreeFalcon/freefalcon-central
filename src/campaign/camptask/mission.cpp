@@ -36,32 +36,32 @@ int counttanker = 0;
 #endif
 
 // Mission Modes
-#define MMODE_TAKEOFF				0
-#define MMODE_ENROUTE				1
-#define MMODE_AT_ASSEMBLY			2
-#define MMODE_INGRESS				3
-#define MMODE_AT_BREAKPOINT			4
-#define MMODE_IN_TARGET_AREA		5
-#define MMODE_AT_TURNPOINT			6
-#define MMODE_EGRESS				7
-#define MMODE_AT_POSTASSEMBLY		8
-#define MMODE_RETURN_TO_BASE		9
-#define MMODE_LANDING				10
+#define MMODE_TAKEOFF 0
+#define MMODE_ENROUTE 1
+#define MMODE_AT_ASSEMBLY 2
+#define MMODE_INGRESS 3
+#define MMODE_AT_BREAKPOINT 4
+#define MMODE_IN_TARGET_AREA 5
+#define MMODE_AT_TURNPOINT 6
+#define MMODE_EGRESS 7
+#define MMODE_AT_POSTASSEMBLY 8
+#define MMODE_RETURN_TO_BASE 9
+#define MMODE_LANDING 10
 
-#define	MIN_DIST_FOR_INGRESS		50				// Minimum Distance To Target to fly at ingress altitude
-#define MIN_DIST_FOR_CRUISE			30				// Minimum Distance To Front to fly at cruise altitude
+#define MIN_DIST_FOR_INGRESS 50 // Minimum Distance To Target to fly at ingress altitude
+#define MIN_DIST_FOR_CRUISE 30 // Minimum Distance To Front to fly at cruise altitude
 
-#define	TT_AVERAGE					0
-#define	TT_TOTAL					1
-#define	TT_MAX						2
+#define TT_AVERAGE 0
+#define TT_TOTAL 1
+#define TT_MAX 2
 
-//#define CLIMB_RATIO					0.3F 2002-03-21 MN externalised g_fClimbRatio
+//#define CLIMB_RATIO 0.3F 2002-03-21 MN externalised g_fClimbRatio
 
-#define MAX_ENEMY_CA_MISSIONS_FOR_HIGH_PROFILE	100	// Hard coded for now, may be variable later
+#define MAX_ENEMY_CA_MISSIONS_FOR_HIGH_PROFILE 100 // Hard coded for now, may be variable later
 
 // Some combined profile types
-#define MPROF_STANDARD		(MPROF_LOW | MPROF_HIGH)
-#define MPROF_FIXED			0
+#define MPROF_STANDARD (MPROF_LOW | MPROF_HIGH)
+#define MPROF_FIXED 0
 
 #ifdef USE_SH_POOLS
 MEM_POOL MissionRequestClass::pool;
@@ -113,8 +113,8 @@ int MissionRequestClass::RequestMission(void)
 
     if ((TeamInfo[who]) && (TeamInfo[who]->atm) && (TeamInfo[who]->flags & TEAM_ACTIVE))
     {
-        VuTargetEntity				*target = (VuTargetEntity*) vuDatabase->Find(TeamInfo[who]->atm->OwnerId());
-        FalconMissionRequestMessage	*message =
+        VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(TeamInfo[who]->atm->OwnerId());
+        FalconMissionRequestMessage *message =
             new FalconMissionRequestMessage(TeamInfo[who]->atm->Id(), vuLocalSessionEntity.get());
         GetPriority(this);
         message->dataBlock.request = *this;
@@ -122,7 +122,7 @@ int MissionRequestClass::RequestMission(void)
 
         if (priority > 0)
         {
-            FalconSendMessage(message, FALSE);			// KCK NOTE: Go ahead and let a few messages miss their target
+            FalconSendMessage(message, FALSE); // KCK NOTE: Go ahead and let a few messages miss their target
             return 0;
         }
         else
@@ -134,7 +134,7 @@ int MissionRequestClass::RequestMission(void)
 
 int MissionRequestClass::RequestEnemyMission(void)
 {
-    int		bonus = priority;
+    int bonus = priority;
 
     if (!vs)
         return -1;
@@ -143,7 +143,7 @@ int MissionRequestClass::RequestEnemyMission(void)
     {
         if (TeamInfo[who])
         {
-            priority = bonus;		// Reset to bonus priority;
+            priority = bonus; // Reset to bonus priority;
             RequestMission();
         }
     }
@@ -157,50 +157,50 @@ int MissionRequestClass::RequestEnemyMission(void)
 
 MissionDataType MissionData [AMIS_OTHER] =
 {
-    { AMIS_NONE,		AMIS_TAR_NONE,		0,				MPROF_STANDARD,	TPROF_ATTACK,	TDESC_NONE,	WP_NOTHING,	WP_LAST,		0,		  0,	  0,  0,  0, 0,  0,  0, AMIS_NONE,		0,  0, 0, 0 },
-    { AMIS_BARCAP,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_HIGH,		TPROF_SEARCH,	TDESC_TTL,	WP_NOTHING,	WP_CAP,			100,	400,	200,  0, 15, 2,  5, 30, AMIS_NONE,	   15, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_BARCAP2,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_HIGH,		TPROF_SEARCH,	TDESC_TTL,	WP_NOTHING,	WP_CAP,			100,	400,	200,  0, 15, 2,  5, 30, AMIS_NONE,	   15, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_HAVCAP,		AMIS_TAR_UNIT,		ARO_CA,			MPROF_HIGH,		TPROF_SEARCH,	TDESC_ATA,	WP_ESCORT,	WP_CAP,			100,	400,	300, -60, 60, 2,  5, 30, AMIS_NONE,		1, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_NO_BREAKPT | AMIS_FLYALWAYS }, //AMIS_EXPECT_DIVERT | removed, don't divert HAVCAPs
-    { AMIS_TARCAP,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_HIGH,		TPROF_SEARCH,	TDESC_TAO,	WP_NOTHING,	WP_CAP,			100,	300,	200, -60, 15, 2,  5, 30, AMIS_NONE,	   30, 15, 0, AMIS_ADDAWACS | AMIS_HIGHTHREAT | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_RESCAP,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_HIGH,		TPROF_SEARCH,	TDESC_TAO,	WP_ESCORT,	WP_CAP,			50,		100,	100,  0, 15, 2,  5, 30, AMIS_NONE,	   30, 15, 0, AMIS_ADDAWACS | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_AMBUSHCAP,	AMIS_TAR_LOCATION,	ARO_CA,			MPROF_LOW,		TPROF_SEARCH,	TDESC_TTL,	WP_NOTHING,	WP_CAP,			2,		 10,	  7,  0, 15, 2,  5, 30, AMIS_NONE,	   30, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_SWEEP,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_HIGH,		TPROF_SWEEP,	TDESC_TTL,	WP_CA,		WP_CA,			100,	400,	200,  0,  0, 4,  5, 30, AMIS_NONE,		1, 30, 0, AMIS_ADDAWACS | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT },
-    { AMIS_ALERT,		AMIS_TAR_LOCATION,	ARO_CA,			MPROF_LOW,		TPROF_NONE,		TDESC_TAO,	WP_NOTHING,	WP_NOTHING,		0,		 10,	  0,  0,  0, 2,  0, 10, AMIS_NONE,		1,  0, 0, AMIS_NOTHREAT | AMIS_TARGET_ONLY | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
-    { AMIS_INTERCEPT,	AMIS_TAR_UNIT,		ARO_CA,			MPROF_HIGH,		TPROF_TARGET,	TDESC_TAO,	WP_NOTHING,	WP_INTERCEPT,	100,	400,	200,  0,  0, 2,  0, 20, AMIS_NONE,		0,  0, 0, AMIS_IMMEDIATE | AMIS_ASSIGNED_TAR | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
-    { AMIS_ESCORT,		AMIS_TAR_UNIT,		ARO_CA,			MPROF_STANDARD,	TPROF_FLYBY,	TDESC_ATA,	WP_ESCORT,	WP_ESCORT,		50,		600,	200, -60,  0, 2, 10, 20, AMIS_NONE,		1,  0, 0, AMIS_ADDAWACS | AMIS_HIGHTHREAT | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_NONE, AMIS_TAR_NONE, 0, MPROF_STANDARD, TPROF_ATTACK, TDESC_NONE, WP_NOTHING, WP_LAST, 0,   0,   0,  0,  0, 0,  0,  0, AMIS_NONE, 0,  0, 0, 0 },
+    { AMIS_BARCAP, AMIS_TAR_LOCATION, ARO_CA, MPROF_HIGH, TPROF_SEARCH, TDESC_TTL, WP_NOTHING, WP_CAP, 100, 400, 200,  0, 15, 2,  5, 30, AMIS_NONE,    15, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_BARCAP2, AMIS_TAR_LOCATION, ARO_CA, MPROF_HIGH, TPROF_SEARCH, TDESC_TTL, WP_NOTHING, WP_CAP, 100, 400, 200,  0, 15, 2,  5, 30, AMIS_NONE,    15, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_HAVCAP, AMIS_TAR_UNIT, ARO_CA, MPROF_HIGH, TPROF_SEARCH, TDESC_ATA, WP_ESCORT, WP_CAP, 100, 400, 300, -60, 60, 2,  5, 30, AMIS_NONE, 1, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_NO_BREAKPT | AMIS_FLYALWAYS }, //AMIS_EXPECT_DIVERT | removed, don't divert HAVCAPs
+    { AMIS_TARCAP, AMIS_TAR_LOCATION, ARO_CA, MPROF_HIGH, TPROF_SEARCH, TDESC_TAO, WP_NOTHING, WP_CAP, 100, 300, 200, -60, 15, 2,  5, 30, AMIS_NONE,    30, 15, 0, AMIS_ADDAWACS | AMIS_HIGHTHREAT | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_RESCAP, AMIS_TAR_LOCATION, ARO_CA, MPROF_HIGH, TPROF_SEARCH, TDESC_TAO, WP_ESCORT, WP_CAP, 50, 100, 100,  0, 15, 2,  5, 30, AMIS_NONE,    30, 15, 0, AMIS_ADDAWACS | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_AMBUSHCAP, AMIS_TAR_LOCATION, ARO_CA, MPROF_LOW, TPROF_SEARCH, TDESC_TTL, WP_NOTHING, WP_CAP, 2,  10,   7,  0, 15, 2,  5, 30, AMIS_NONE,    30, 15, 0, AMIS_ADDAWACS | AMIS_NOTHREAT | AMIS_DONT_COORD | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_SWEEP, AMIS_TAR_LOCATION, ARO_CA, MPROF_HIGH, TPROF_SWEEP, TDESC_TTL, WP_CA, WP_CA, 100, 400, 200,  0,  0, 4,  5, 30, AMIS_NONE, 1, 30, 0, AMIS_ADDAWACS | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT },
+    { AMIS_ALERT, AMIS_TAR_LOCATION, ARO_CA, MPROF_LOW, TPROF_NONE, TDESC_TAO, WP_NOTHING, WP_NOTHING, 0,  10,   0,  0,  0, 2,  0, 10, AMIS_NONE, 1,  0, 0, AMIS_NOTHREAT | AMIS_TARGET_ONLY | AMIS_EXPECT_DIVERT | AMIS_NO_BREAKPT | AMIS_FLYALWAYS },
+    { AMIS_INTERCEPT, AMIS_TAR_UNIT, ARO_CA, MPROF_HIGH, TPROF_TARGET, TDESC_TAO, WP_NOTHING, WP_INTERCEPT, 100, 400, 200,  0,  0, 2,  0, 20, AMIS_NONE, 0,  0, 0, AMIS_IMMEDIATE | AMIS_ASSIGNED_TAR | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
+    { AMIS_ESCORT, AMIS_TAR_UNIT, ARO_CA, MPROF_STANDARD, TPROF_FLYBY, TDESC_ATA, WP_ESCORT, WP_ESCORT, 50, 600, 200, -60,  0, 2, 10, 20, AMIS_NONE, 1,  0, 0, AMIS_ADDAWACS | AMIS_HIGHTHREAT | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
     // 2001-06-30 MODIFIED BY S.G. SO SEAD STRIKES BEHAVES LIKE SEAD ESCORTS FOR EN ROUTE SAM THREAT
-    //	{ AMIS_SEADSTRIKE,	AMIS_TAR_UNIT,		ARO_SEAD,		MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_SEAD,		20,		120,	 40,  0,  0, 4, 10, 40, AMIS_ESCORT,	1,255, 0, AMIS_ADDECM | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_HIGHTHREAT | AMIS_NO_TARGETABORT },
+    // { AMIS_SEADSTRIKE, AMIS_TAR_UNIT, ARO_SEAD, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_SEAD, 20, 120,  40,  0,  0, 4, 10, 40, AMIS_ESCORT, 1,255, 0, AMIS_ADDECM | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_HIGHTHREAT | AMIS_NO_TARGETABORT },
     // Fixed by M.N. forgot to add the RP5 SEADSTRIKE line...
-    { AMIS_SEADSTRIKE,	AMIS_TAR_UNIT,		ARO_SEAD,		MPROF_STANDARD,	TPROF_ATTACK,	TDESC_ATA,	WP_SEAD,	WP_SEAD,		20,		120,	 40,  0,  0, 4, 10, 40, AMIS_ESCORT,	1, 255, 0, AMIS_ADDECM | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_HIGHTHREAT | AMIS_NO_TARGETABORT },
-    { AMIS_SEADESCORT,	AMIS_TAR_UNIT,		ARO_SEAD,		MPROF_STANDARD,	TPROF_FLYBY,	TDESC_ATA,	WP_SEAD,	WP_SEAD,		20,		120,	 40, -60,  0, 2, 10, 40, AMIS_NONE,		1,  0, 0, AMIS_ADDECM | AMIS_HIGHTHREAT | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_OCASTRIKE,	AMIS_TAR_OBJECTIVE,	ARO_S,			MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_STRIKE,		5,		120,	 80,  0,  0, 4, 10, 40, AMIS_ESCORT,	1, 255, 0, AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_INTSTRIKE,	AMIS_TAR_OBJECTIVE,	ARO_S,			MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_STRIKE,		5,		120,	 50,  0,  0, 4, 10, 40, AMIS_ESCORT,	1, 255, 0, AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_STRIKE,		AMIS_TAR_OBJECTIVE,	ARO_S,			MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_STRIKE,		5,		120,	 80,  0,  0, 4, 10, 40, AMIS_ESCORT,	1, 255, 0, AMIS_ADDAWACS | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_DEEPSTRIKE,	AMIS_TAR_OBJECTIVE,	ARO_S,			MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_STRIKE,		5,		120,	 80,  0,  0, 4, 10, 40, AMIS_ESCORT,	1, 255, 0, AMIS_ADDAWACS | AMIS_ADDECM | AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDSEAD | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_STSTRIKE,	AMIS_TAR_OBJECTIVE,	ARO_S,			MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_STRIKE,		5,		120,	 80,  0,  0, 4, 10, 40, AMIS_NONE,		1, 255, VEH_STEALTH, AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_STRATBOMB,	AMIS_TAR_OBJECTIVE,	ARO_SB,			MPROF_HIGH,		TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_BOMB,		200,	600,	300,  0,  0, 2, 10, 120, AMIS_ESCORT,	1, 255, 0, AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
-    { AMIS_FAC,			AMIS_TAR_LOCATION,	ARO_FAC,		MPROF_LOW,		TPROF_LOITER,	TDESC_TAO,	WP_NOTHING,	WP_FAC,			5,		100,	 50,  0, 30, 1,  5, 60, AMIS_SWEEP,	   10, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NPC_ONLY | AMIS_FLYALWAYS },
-    { AMIS_ONCALLCAS,	AMIS_TAR_LOCATION,	ARO_GA,			MPROF_STANDARD,	TPROF_LOITER,	TDESC_TAO,	WP_NOTHING,	WP_CASCP,		2,		100,	 50,  0, 15, 2,  5, 60, AMIS_SWEEP,	   10, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_ADDFAC | AMIS_ADDBARCAP | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NO_BREAKPT | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
-    { AMIS_PRPLANCAS,	AMIS_TAR_UNIT,		ARO_GA,			MPROF_STANDARD,	TPROF_TARGET,	TDESC_TAO,	WP_NOTHING,	WP_GNDSTRIKE,	2,		100,	 50,  0,  0, 2,  5, 60, AMIS_SWEEP,	   15, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_ADDBARCAP | AMIS_NOTHREAT | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS },
-    { AMIS_CAS,			AMIS_TAR_LOCATION,	ARO_GA,			MPROF_STANDARD,	TPROF_TARGET,	TDESC_TAO,	WP_NOTHING,	WP_GNDSTRIKE,	2,		100,	 50,  0,  0, 2,  0, 20, AMIS_SWEEP,	    0,  0, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_IMMEDIATE | AMIS_DONT_COORD | AMIS_ASSIGNED_TAR | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
-    { AMIS_SAD,			AMIS_TAR_LOCATION,	ARO_GA,			MPROF_STANDARD,	TPROF_SEARCH,	TDESC_ATA,	WP_SAD,		WP_SAD,			5,		200,	100,  0,  0, 2,  5, 60, AMIS_NONE,	   20, 30, 0, AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDBARCAP | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
-    { AMIS_INT,			AMIS_TAR_LOCATION,	ARO_GA,			MPROF_STANDARD,	TPROF_SEARCH,	TDESC_ATA,	WP_NOTHING,	WP_SAD,			5,		200,	100,  0,  5, 4,  5, 60, AMIS_NONE,		1, 30, 0, AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDBARCAP | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
-    { AMIS_BAI,			AMIS_TAR_LOCATION,	ARO_GA,			MPROF_STANDARD,	TPROF_SEARCH,	TDESC_ATA,	WP_NOTHING,	WP_SAD,			5,		200,	100,  0, 15, 4,  0, 60, AMIS_NONE,		1, 30, 0, AMIS_AVOIDTHREAT | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
-    { AMIS_AWACS,		AMIS_TAR_LOCATION,	ARO_AWACS,		MPROF_HIGH,		TPROF_LOITER,	TDESC_TAO,	WP_ELINT,	WP_ELINT,		300,	400,	400,  0, 300, 1, 20, 120, AMIS_HAVCAP,   50, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_JSTAR,		AMIS_TAR_LOCATION,	ARO_JSTAR,		MPROF_HIGH,		TPROF_LOITER,	TDESC_TAO,	WP_ELINT,	WP_ELINT,		300,	400,	400,  0, 300, 1, 20, 120, AMIS_HAVCAP,   50, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_TANKER,		AMIS_TAR_LOCATION,	ARO_TANK,		MPROF_HIGH,		TPROF_LOITER,	TDESC_TAO,	WP_TANKER,	WP_TANKER,		100,	300,	200,  0, 300, 1, 20, 120, AMIS_HAVCAP,   40, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_RECON,		AMIS_TAR_OBJECTIVE,	ARO_REC,		MPROF_LOW,		TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_RECON,		2,		600,	400,  0,  0, 2, 10, 40, AMIS_ESCORT,	1, 90, 0, AMIS_ADDBARCAP },
-    { AMIS_BDA,			AMIS_TAR_OBJECTIVE,	ARO_REC,		MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_RECON,		2,		200,	100, 120,  0, 2, 10, 40, AMIS_NONE,		1,  0, 0, AMIS_AVOIDTHREAT | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS },
-    { AMIS_ECM,			AMIS_TAR_LOCATION,	ARO_ECM,		MPROF_HIGH,		TPROF_LOITER,	TDESC_TAO,	WP_JAM,		WP_JAM,			100,	500,	200,  0, 60, 1, 10, 60, AMIS_HAVCAP,   30, 60, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_AIRCAV,		AMIS_TAR_UNIT,		ARO_TACTRANS,	MPROF_LOW,		TPROF_LAND,		TDESC_ATA,	WP_NOTHING,	WP_AIRDROP,		5,		 25,	  5,  0,  2, 4,  5, 40, AMIS_SWEEP,		1,  0, VEH_VTOL, AMIS_AVOIDTHREAT | AMIS_ADDSWEEP | AMIS_ADDESCORT | AMIS_MATCHSPEED | AMIS_DONT_USE_AC | AMIS_FUDGE_RANGE | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS | AMIS_HIGHTHREAT /* KCK: TO ALLOW MORE TO FLY */ },
-    { AMIS_AIRLIFT,		AMIS_TAR_LOCATION,	ARO_TRANS,		MPROF_HIGH,		TPROF_LAND,		TDESC_TTL,	WP_NOTHING,	WP_LAND,		100,	300,	200,  0, 30, 1,  5, 40, AMIS_ESCORT,	1,  0, 0, AMIS_NOTHREAT | AMIS_MATCHSPEED | AMIS_DONT_USE_AC | AMIS_AIR_LAUNCH_OK | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_SAR,			AMIS_TAR_LOCATION,	ARO_TACTRANS,	MPROF_LOW,		TPROF_TARGET,	TDESC_TAO,	WP_NOTHING,	WP_RESCUE,		1,		 25,	  5,  0,  0, 1,  5, 40, AMIS_RESCAP,	1,  0, VEH_VTOL, AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS },
-    { AMIS_ASW,			AMIS_TAR_UNIT,		ARO_ASW,		MPROF_LOW,		TPROF_SEARCH,	TDESC_ATA,	WP_ASW,		WP_ASW,			5,		100,	 50,  0,  0, 1,  5, 40, AMIS_SWEEP,	   20,  0, VEH_NAVY, AMIS_ADDSWEEP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
-    { AMIS_ASHIP,		AMIS_TAR_UNIT,		ARO_ASHIP,		MPROF_STANDARD,	TPROF_ATTACK,	TDESC_TAO,	WP_NOTHING,	WP_NAVSTRIKE,	5,		100,	 80,  0,  0, 2, 10, 40, AMIS_ESCORT,	1,  0, 0, AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS },
-    { AMIS_PATROL,		AMIS_TAR_LOCATION,	ARO_REC,		MPROF_STANDARD,	TPROF_TARGET,	TDESC_ATA,	WP_RECON,	WP_RECON,		100,	500,	 50,  0, 30, 1, 10, 60, AMIS_SWEEP,	   20, 60, VEH_NAVY, AMIS_ADDSWEEP | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS },
-    { AMIS_RECONPATROL,	AMIS_TAR_LOCATION,	ARO_REC,		MPROF_LOW,		TPROF_LOITER,	TDESC_TAO,	WP_RECON,	WP_RECON,		5,		 25,	  5,  0, 30, 2,  5, 60, AMIS_SWEEP,	   10, 60, VEH_VTOL | VEH_ARMY, AMIS_ADDSWEEP | AMIS_NPC_ONLY | AMIS_DONT_COORD | AMIS_TARGET_ONLY },
-    { AMIS_ABORT,		AMIS_TAR_LOCATION,	0,				MPROF_LOW,		TPROF_TARGET,	TDESC_NONE,	WP_NOTHING,	WP_NOTHING,		5,		500,	100,  0,  0, 0,  0, 60, AMIS_NONE,		0,  0, 0, AMIS_FLYALWAYS },
-    { AMIS_TRAINING,	AMIS_TAR_NONE,		0,				MPROF_STANDARD,	TPROF_ATTACK,	TDESC_NONE,	WP_NOTHING,	WP_NOTHING,		0,		  0,	  0,  0,  0, 0,  0,  0, AMIS_NONE,		0,  0, 0, AMIS_FLYALWAYS }
+    { AMIS_SEADSTRIKE, AMIS_TAR_UNIT, ARO_SEAD, MPROF_STANDARD, TPROF_ATTACK, TDESC_ATA, WP_SEAD, WP_SEAD, 20, 120,  40,  0,  0, 4, 10, 40, AMIS_ESCORT, 1, 255, 0, AMIS_ADDECM | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_HIGHTHREAT | AMIS_NO_TARGETABORT },
+    { AMIS_SEADESCORT, AMIS_TAR_UNIT, ARO_SEAD, MPROF_STANDARD, TPROF_FLYBY, TDESC_ATA, WP_SEAD, WP_SEAD, 20, 120,  40, -60,  0, 2, 10, 40, AMIS_NONE, 1,  0, 0, AMIS_ADDECM | AMIS_HIGHTHREAT | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_OCASTRIKE, AMIS_TAR_OBJECTIVE, ARO_S, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_STRIKE, 5, 120,  80,  0,  0, 4, 10, 40, AMIS_ESCORT, 1, 255, 0, AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_INTSTRIKE, AMIS_TAR_OBJECTIVE, ARO_S, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_STRIKE, 5, 120,  50,  0,  0, 4, 10, 40, AMIS_ESCORT, 1, 255, 0, AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_STRIKE, AMIS_TAR_OBJECTIVE, ARO_S, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_STRIKE, 5, 120,  80,  0,  0, 4, 10, 40, AMIS_ESCORT, 1, 255, 0, AMIS_ADDAWACS | AMIS_ADDBDA | AMIS_AVOIDTHREAT | AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_DEEPSTRIKE, AMIS_TAR_OBJECTIVE, ARO_S, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_STRIKE, 5, 120,  80,  0,  0, 4, 10, 40, AMIS_ESCORT, 1, 255, 0, AMIS_ADDAWACS | AMIS_ADDECM | AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDSEAD | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_STSTRIKE, AMIS_TAR_OBJECTIVE, ARO_S, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_STRIKE, 5, 120,  80,  0,  0, 4, 10, 40, AMIS_NONE, 1, 255, VEH_STEALTH, AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_STRATBOMB, AMIS_TAR_OBJECTIVE, ARO_SB, MPROF_HIGH, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_BOMB, 200, 600, 300,  0,  0, 2, 10, 120, AMIS_ESCORT, 1, 255, 0, AMIS_ADDSEAD | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_ADDOCASTRIKE | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT },
+    { AMIS_FAC, AMIS_TAR_LOCATION, ARO_FAC, MPROF_LOW, TPROF_LOITER, TDESC_TAO, WP_NOTHING, WP_FAC, 5, 100,  50,  0, 30, 1,  5, 60, AMIS_SWEEP,    10, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NPC_ONLY | AMIS_FLYALWAYS },
+    { AMIS_ONCALLCAS, AMIS_TAR_LOCATION, ARO_GA, MPROF_STANDARD, TPROF_LOITER, TDESC_TAO, WP_NOTHING, WP_CASCP, 2, 100,  50,  0, 15, 2,  5, 60, AMIS_SWEEP,    10, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_ADDFAC | AMIS_ADDBARCAP | AMIS_NOTHREAT | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NO_BREAKPT | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
+    { AMIS_PRPLANCAS, AMIS_TAR_UNIT, ARO_GA, MPROF_STANDARD, TPROF_TARGET, TDESC_TAO, WP_NOTHING, WP_GNDSTRIKE, 2, 100,  50,  0,  0, 2,  5, 60, AMIS_SWEEP,    15, 20, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_ADDBARCAP | AMIS_NOTHREAT | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS },
+    { AMIS_CAS, AMIS_TAR_LOCATION, ARO_GA, MPROF_STANDARD, TPROF_TARGET, TDESC_TAO, WP_NOTHING, WP_GNDSTRIKE, 2, 100,  50,  0,  0, 2,  0, 20, AMIS_SWEEP,     0,  0, 0, AMIS_ADDJSTAR | AMIS_AVOIDTHREAT | AMIS_ADDOCASTRIKE | AMIS_IMMEDIATE | AMIS_DONT_COORD | AMIS_ASSIGNED_TAR | AMIS_EXPECT_DIVERT | AMIS_FLYALWAYS },
+    { AMIS_SAD, AMIS_TAR_LOCATION, ARO_GA, MPROF_STANDARD, TPROF_SEARCH, TDESC_ATA, WP_SAD, WP_SAD, 5, 200, 100,  0,  0, 2,  5, 60, AMIS_NONE,    20, 30, 0, AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDBARCAP | AMIS_ADDTANKER | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
+    { AMIS_INT, AMIS_TAR_LOCATION, ARO_GA, MPROF_STANDARD, TPROF_SEARCH, TDESC_ATA, WP_NOTHING, WP_SAD, 5, 200, 100,  0,  5, 4,  5, 60, AMIS_NONE, 1, 30, 0, AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDBARCAP | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
+    { AMIS_BAI, AMIS_TAR_LOCATION, ARO_GA, MPROF_STANDARD, TPROF_SEARCH, TDESC_ATA, WP_NOTHING, WP_SAD, 5, 200, 100,  0, 15, 4,  0, 60, AMIS_NONE, 1, 30, 0, AMIS_AVOIDTHREAT | AMIS_DONT_COORD | AMIS_NO_BREAKPT },
+    { AMIS_AWACS, AMIS_TAR_LOCATION, ARO_AWACS, MPROF_HIGH, TPROF_LOITER, TDESC_TAO, WP_ELINT, WP_ELINT, 300, 400, 400,  0, 300, 1, 20, 120, AMIS_HAVCAP,   50, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_JSTAR, AMIS_TAR_LOCATION, ARO_JSTAR, MPROF_HIGH, TPROF_LOITER, TDESC_TAO, WP_ELINT, WP_ELINT, 300, 400, 400,  0, 300, 1, 20, 120, AMIS_HAVCAP,   50, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_TANKER, AMIS_TAR_LOCATION, ARO_TANK, MPROF_HIGH, TPROF_LOITER, TDESC_TAO, WP_TANKER, WP_TANKER, 100, 300, 200,  0, 300, 1, 20, 120, AMIS_HAVCAP,   40, 120, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_AIR_LAUNCH_OK | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_RECON, AMIS_TAR_OBJECTIVE, ARO_REC, MPROF_LOW, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_RECON, 2, 600, 400,  0,  0, 2, 10, 40, AMIS_ESCORT, 1, 90, 0, AMIS_ADDBARCAP },
+    { AMIS_BDA, AMIS_TAR_OBJECTIVE, ARO_REC, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_RECON, 2, 200, 100, 120,  0, 2, 10, 40, AMIS_NONE, 1,  0, 0, AMIS_AVOIDTHREAT | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS },
+    { AMIS_ECM, AMIS_TAR_LOCATION, ARO_ECM, MPROF_HIGH, TPROF_LOITER, TDESC_TAO, WP_JAM, WP_JAM, 100, 500, 200,  0, 60, 1, 10, 60, AMIS_HAVCAP,   30, 60, 0, AMIS_ADDESCORT | AMIS_ADDSWEEP | AMIS_NOTHREAT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_AIRCAV, AMIS_TAR_UNIT, ARO_TACTRANS, MPROF_LOW, TPROF_LAND, TDESC_ATA, WP_NOTHING, WP_AIRDROP, 5,  25,   5,  0,  2, 4,  5, 40, AMIS_SWEEP, 1,  0, VEH_VTOL, AMIS_AVOIDTHREAT | AMIS_ADDSWEEP | AMIS_ADDESCORT | AMIS_MATCHSPEED | AMIS_DONT_USE_AC | AMIS_FUDGE_RANGE | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS | AMIS_HIGHTHREAT /* KCK: TO ALLOW MORE TO FLY */ },
+    { AMIS_AIRLIFT, AMIS_TAR_LOCATION, ARO_TRANS, MPROF_HIGH, TPROF_LAND, TDESC_TTL, WP_NOTHING, WP_LAND, 100, 300, 200,  0, 30, 1,  5, 40, AMIS_ESCORT, 1,  0, 0, AMIS_NOTHREAT | AMIS_MATCHSPEED | AMIS_DONT_USE_AC | AMIS_AIR_LAUNCH_OK | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_SAR, AMIS_TAR_LOCATION, ARO_TACTRANS, MPROF_LOW, TPROF_TARGET, TDESC_TAO, WP_NOTHING, WP_RESCUE, 1,  25,   5,  0,  0, 1,  5, 40, AMIS_RESCAP, 1,  0, VEH_VTOL, AMIS_AVOIDTHREAT | AMIS_HIGHTHREAT | AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_NO_TARGETABORT | AMIS_FLYALWAYS },
+    { AMIS_ASW, AMIS_TAR_UNIT, ARO_ASW, MPROF_LOW, TPROF_SEARCH, TDESC_ATA, WP_ASW, WP_ASW, 5, 100,  50,  0,  0, 1,  5, 40, AMIS_SWEEP,    20,  0, VEH_NAVY, AMIS_ADDSWEEP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS | AMIS_FLYALWAYS },
+    { AMIS_ASHIP, AMIS_TAR_UNIT, ARO_ASHIP, MPROF_STANDARD, TPROF_ATTACK, TDESC_TAO, WP_NOTHING, WP_NAVSTRIKE, 5, 100,  80,  0,  0, 2, 10, 40, AMIS_ESCORT, 1,  0, 0, AMIS_ADDESCORT | AMIS_ADDBARCAP | AMIS_MATCHSPEED | AMIS_NO_TARGETABORT | AMIS_NO_DIST_BONUS },
+    { AMIS_PATROL, AMIS_TAR_LOCATION, ARO_REC, MPROF_STANDARD, TPROF_TARGET, TDESC_ATA, WP_RECON, WP_RECON, 100, 500,  50,  0, 30, 1, 10, 60, AMIS_SWEEP,    20, 60, VEH_NAVY, AMIS_ADDSWEEP | AMIS_MATCHSPEED | AMIS_NO_DIST_BONUS },
+    { AMIS_RECONPATROL, AMIS_TAR_LOCATION, ARO_REC, MPROF_LOW, TPROF_LOITER, TDESC_TAO, WP_RECON, WP_RECON, 5,  25,   5,  0, 30, 2,  5, 60, AMIS_SWEEP,    10, 60, VEH_VTOL | VEH_ARMY, AMIS_ADDSWEEP | AMIS_NPC_ONLY | AMIS_DONT_COORD | AMIS_TARGET_ONLY },
+    { AMIS_ABORT, AMIS_TAR_LOCATION, 0, MPROF_LOW, TPROF_TARGET, TDESC_NONE, WP_NOTHING, WP_NOTHING, 5, 500, 100,  0,  0, 0,  0, 60, AMIS_NONE, 0,  0, 0, AMIS_FLYALWAYS },
+    { AMIS_TRAINING, AMIS_TAR_NONE, 0, MPROF_STANDARD, TPROF_ATTACK, TDESC_NONE, WP_NOTHING, WP_NOTHING, 0,   0,   0,  0,  0, 0,  0,  0, AMIS_NONE, 0,  0, 0, AMIS_FLYALWAYS }
 };
 
 // Standard altitude levels (int feet)
@@ -245,10 +245,10 @@ WayPoint AddExitRoute(WayPoint cw, Flight u, MissionRequestClass *mis);
 
 void SetupAltitudes(Flight flight, MissionRequestClass *mis)
 {
-    VehicleClassDataType*	vc;
-    float		dtt;
-    int			minAlt, maxAlt;
-    GridIndex	x, y;
+    VehicleClassDataType* vc;
+    float dtt;
+    int minAlt, maxAlt;
+    GridIndex x, y;
 
     // Collect some usefull data
     vc = GetVehicleClassData(flight->GetVehicleID(0));
@@ -276,8 +276,8 @@ void SetupAltitudes(Flight flight, MissionRequestClass *mis)
         sMissionProfile = MissionData[mis->mission].mission_profile;
 
     // Choose an altitude at our target
-    minAlt = MissionData[mis->mission].minalt * 100;		// Minimum altitude at target
-    maxAlt = MissionData[mis->mission].maxalt * 100;		// Maximum altitude at target
+    minAlt = MissionData[mis->mission].minalt * 100; // Minimum altitude at target
+    maxAlt = MissionData[mis->mission].maxalt * 100; // Maximum altitude at target
 
     if (flight->IsHelicopter() && maxAlt > 0)
         // RV - Biker - Set chopper min/max alt to 500
@@ -350,10 +350,10 @@ void SetupAltitudes(Flight flight, MissionRequestClass *mis)
     else if (DistanceToFront(x, y) < MIN_DIST_FOR_CRUISE)
         sCruiseAlt = sMissionAlt;
     else
-        sCruiseAlt = vc->CruiseAlt * 100;						// Cruise altitude (over friendly territory)
+        sCruiseAlt = vc->CruiseAlt * 100; // Cruise altitude (over friendly territory)
 
     // Randomize our altitudes some
-    int	alt_level;
+    int alt_level;
     alt_level = GetAltitudeLevel(sMissionAlt);
     sMissionAlt += LevelIncrement[alt_level] * (mis->tx + mis->ty) % (alt_level + 1);
     alt_level = GetAltitudeLevel(sTargetAlt);
@@ -389,8 +389,8 @@ void SetCurrentAltitude(void)
 
 void CheckForClimb(WayPoint cw)
 {
-    int			alt, altd;
-    WayPoint	lw;
+    int alt, altd;
+    WayPoint lw;
 
     // Check for max climb/decent
     alt = cw->GetWPAltitude();
@@ -402,8 +402,8 @@ void CheckForClimb(WayPoint cw)
 
         if (alt > 0 && abs(altd) > GRID_SIZE_FT)
         {
-            GridIndex	x, y, lx, ly;
-            int			maxdelta;
+            GridIndex x, y, lx, ly;
+            int maxdelta;
             // maxdelta is 1/2 distance we're travelling
             cw->GetWPLocation(&x, &y);
             lw->GetWPLocation(&lx, &ly);
@@ -411,7 +411,7 @@ void CheckForClimb(WayPoint cw)
             if (x == lx && y == ly)
             {
                 // Waypoints co-located. need to add a new one
-                WayPoint	nw;
+                WayPoint nw;
                 lx = x + SimToGrid((float)altd);
                 ly = y;
                 nw = new WayPointClass(lx, ly, lw->GetWPAltitude() + altd / 2, 0, 0, 0, WP_NOTHING, 0);
@@ -441,8 +441,8 @@ void CheckForClimb(WayPoint cw)
 // This should be called after each waypoint is set up.
 void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 {
-    static int	nextmode;
-    int			alt = 0;
+    static int nextmode;
+    int alt = 0;
 
     if (reset)
         nextmode = -1;
@@ -505,7 +505,7 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 
     // Check if we should perform our route action or not (depends on target description)
     // 2001-06-28 MODIFIED BY S.G. sMissionMode TAKES MANY VALUES! DON'T CHECK FOR EQUALITY BUT CHECKS FOR RANGE OF VALUES!
-    //	if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
     if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
         cw->SetWPRouteAction(sRouteAction);
     else
@@ -550,7 +550,7 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 
     // I've noticed a problem where really high altitudes get generated.
     ShiAssert(cw->GetWPAltitude() < 100000);
-    //	ShiAssert(cw->GetWPAltitude() > 0 || cw->GetWPAction() == WP_LAND || cw->GetWPAction() == WP_TAKEOFF);
+    // ShiAssert(cw->GetWPAltitude() > 0 || cw->GetWPAction() == WP_LAND || cw->GetWPAction() == WP_TAKEOFF);
 
     // Set holdcurrent flag, if we need to
     if (sMissionMode == MMODE_RETURN_TO_BASE || (sMissionMode > MMODE_TAKEOFF && cw->GetWPAltitude() == 0))
@@ -561,8 +561,8 @@ void FinalizeWayPoint(WayPoint cw, int reset = FALSE)
 // This should be called only if we know our mode isn't changing (after filler waypoints)
 void FinalizeFillerWayPoint(WayPoint cw)
 {
-    int			altd;
-    WayPoint	lw;
+    int altd;
+    WayPoint lw;
 
     // Check if in coordinated area "In Package" -> i.e: all package elements will fly this waypoint
     if (sMissionMode >= MMODE_AT_ASSEMBLY && sMissionMode <= MMODE_AT_POSTASSEMBLY)
@@ -575,7 +575,7 @@ void FinalizeFillerWayPoint(WayPoint cw)
 
     // Check if we should perform our route action or not (depends on target description)
     // 2001-06-28 MODIFIED BY S.G. sMissionMode TAKES MANY VALUES! DON'T CHECK FOR EQUALITY BUT CHECKS FOR RANGE OF VALUES!
-    //	if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
+    // if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode == MMODE_INGRESS || sMissionMode == MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode == MMODE_ENROUTE || sMissionMode == MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
     if ((sMissionMode == MMODE_IN_TARGET_AREA && sTargetDesc <= TDESC_TAO) || ((sMissionMode >= MMODE_INGRESS && sMissionMode <= MMODE_EGRESS) && sTargetDesc <= TDESC_ATA) || ((sMissionMode >= MMODE_ENROUTE && sMissionMode <= MMODE_RETURN_TO_BASE) && sTargetDesc <= TDESC_TTL))
         cw->SetWPRouteAction(sRouteAction);
 
@@ -592,8 +592,8 @@ void FinalizeFillerWayPoint(WayPoint cw)
         if (sCurrentAlt > 0 && abs(altd) > GRID_SIZE_FT)
         {
             // Just climb at max
-            GridIndex	x, y, lx, ly;
-            int			maxdelta;
+            GridIndex x, y, lx, ly;
+            int maxdelta;
             // maxdelta is 1/2 distance we're travelling
             cw->GetWPLocation(&x, &y);
             lw->GetWPLocation(&lx, &ly);
@@ -616,13 +616,13 @@ void FinalizeFillerWayPoint(WayPoint cw)
 // depending on the target profile.
 int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
 {
-    WayPoint		nw, cw, sw;
-    GridIndex		bx, by, ax, ay;
-    Package			pack;
-    int				exitroute = 0;
-    CampEntity		airbase = FindEntity(airbaseID);
+    WayPoint nw, cw, sw;
+    GridIndex bx, by, ax, ay;
+    Package pack;
+    int exitroute = 0;
+    CampEntity airbase = FindEntity(airbaseID);
 
-    WayPoint		tmpWP;
+    WayPoint tmpWP;
 
     if (!airbase)
         return 0;
@@ -644,8 +644,8 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
         if (mis->mission == AMIS_AIRCAV)
         {
             // We've got to pick up our cargo first
-            Unit		u = FindUnit(mis->requesterID);
-            GridIndex	x, y;
+            Unit u = FindUnit(mis->requesterID);
+            GridIndex x, y;
 
             if (!u)
                 return 0;
@@ -657,10 +657,10 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
             cw->InsertWP(nw);
             cw = nw;
             // KCK EXPERIMENTAL: Try making taking off part of our 'PICKUP'..
-            //			nw = new WayPointClass(x, y, 0, 0, 0, 0, WP_TAKEOFF, WPF_TAKEOFF);
-            //			FinalizeWayPoint(nw);
-            //			cw->InsertWP(nw);
-            //			cw = nw;
+            // nw = new WayPointClass(x, y, 0, 0, 0, 0, WP_TAKEOFF, WPF_TAKEOFF);
+            // FinalizeWayPoint(nw);
+            // cw->InsertWP(nw);
+            // cw = nw;
         }
 
         // Ingress route
@@ -775,8 +775,8 @@ int BuildPathToTarget(Flight u, MissionRequestClass *mis, VU_ID airbaseID)
 
 void BuildDivertPath(Flight flight, MissionRequestClass *mis)
 {
-    WayPoint	cw, w, nw, tw;
-    GridIndex	x, y;
+    WayPoint cw, w, nw, tw;
+    GridIndex x, y;
 
     w = cw = flight->GetCurrentUnitWP();
 
@@ -839,9 +839,9 @@ void BuildDivertPath(Flight flight, MissionRequestClass *mis)
 // last wp in the list (break point).
 WayPoint SetupIngressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    Unit			pack;
-    WayPoint		nw, tw, dw, aw;
-    GridIndex		iax, iay, bpx, bpy;
+    Unit pack;
+    WayPoint nw, tw, dw, aw;
+    GridIndex iax, iay, bpx, bpy;
 
     pack = u->GetUnitParent();
 
@@ -888,8 +888,8 @@ WayPoint SetupIngressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Copies the package's ingress path into this unit's wp path starting at cw
 WayPoint AddIngressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint		nw;
-    Unit			pack;
+    WayPoint nw;
+    Unit pack;
 
     pack = u->GetUnitParent();
     nw = CloneWPList(((Package)pack)->GetIngress());
@@ -920,9 +920,9 @@ WayPoint AddIngressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Adds an IP, Target WP, and a Turn point (safe turning location, past target)
 WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    GridIndex		ipx, ipy, tpx, tpy, bx, by;
-    WayPoint		tw, tpw, nw;
-    Unit			pack;
+    GridIndex ipx, ipy, tpx, tpy, bx, by;
+    WayPoint tw, tpw, nw;
+    Unit pack;
 
     pack = u->GetUnitParent();
     u->GetLocation(&bx, &by);
@@ -944,8 +944,8 @@ WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 
     if (!tpx || !tpy)
     {
-        int			i, s, bs = 9999, fh, h, d;
-        GridIndex	x, y;
+        int i, s, bs = 9999, fh, h, d;
+        GridIndex x, y;
         // Look around for a safe spot
         nw->GetWPLocation(&ipx, &ipy);
         fh = (int)DirectionTo(ipx, ipy, mis->tx, mis->ty);
@@ -986,9 +986,9 @@ WayPoint AddAttackProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Adds two loiter waypoints, which repeat until out of fuel
 WayPoint AddLoiterProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    GridIndex		lx, ly;
-    WayPoint		tw, lw;
-    float			r;
+    GridIndex lx, ly;
+    WayPoint tw, lw;
+    float r;
 
     // The Target Location
     tw = new WayPointClass(mis->tx, mis->ty, 0, 0, 0, 0, MissionData[mis->mission].targetwp, WPF_TARGET | WPF_CP);
@@ -999,7 +999,7 @@ WayPoint AddLoiterProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
     cw = tw;
 
     // The Loiter Location (loop back to previous wp)
-    r = DirectionTowardFriendly(mis->tx, mis->ty, u->GetTeam());		// Direction away from front, essentially
+    r = DirectionTowardFriendly(mis->tx, mis->ty, u->GetTeam()); // Direction away from front, essentially
 
     // Special case for FAC missions - direction towards enemy
     if (mis->mission == AMIS_FAC)
@@ -1044,9 +1044,9 @@ WayPoint AddBypassProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Flys from break point to target and on to regroup point, staying at safest altitude
 WayPoint AddFlyByProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    //	GridIndex		tpx,tpy;
-    WayPoint		tw;
-    Unit			pack;
+    // GridIndex tpx,tpy;
+    WayPoint tw;
+    Unit pack;
 
     pack = u->GetUnitParent();
 
@@ -1062,10 +1062,10 @@ WayPoint AddFlyByProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Adds three waypoints forming a half circle around the target area
 WayPoint AddSweepProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    GridIndex	sx[3], sy[3], x, y;
-    int			i, s, ls, score, bs, fh, ch, h, d;
-    int			ad[3] = { -2, 0, 2 };
-    WayPoint	sw, fw;
+    GridIndex sx[3], sy[3], x, y;
+    int i, s, ls, score, bs, fh, ch, h, d;
+    int ad[3] = { -2, 0, 2 };
+    WayPoint sw, fw;
 
     // Sweep around mission destination point
     u->GetLocation(&x, &y);
@@ -1121,7 +1121,7 @@ WayPoint AddSweepProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Adds a land && takeoff WP at target
 WayPoint AddLandProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint		tw;
+    WayPoint tw;
 
     // Mark both takeoff and land flags, since we're not staying here.
     tw = new WayPointClass(mis->tx, mis->ty, 0, 0, 0, MissionData[mis->mission].loitertime * CampaignMinutes, MissionData[mis->mission].targetwp, WPF_TARGET | WPF_LAND | WPF_TAKEOFF);
@@ -1134,16 +1134,16 @@ WayPoint AddLandProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 
     cw = tw;
     // KCK: Experimental - Fold the takeoff bit into previous waypoint.
-    //	tw = new WayPointClass(mis->tx, mis->ty, 0, 0, 0, 0, WP_TAKEOFF, WPF_TARGET | WPF_TAKEOFF);
-    //	FinalizeWayPoint(tw);
-    //	cw->InsertWP(tw);
+    // tw = new WayPointClass(mis->tx, mis->ty, 0, 0, 0, 0, WP_TAKEOFF, WPF_TARGET | WPF_TAKEOFF);
+    // FinalizeWayPoint(tw);
+    // cw->InsertWP(tw);
     return tw;
 }
 
 // Adds a target wp only
 WayPoint AddTargetProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint		tw;
+    WayPoint tw;
 
     tw = new WayPointClass(mis->tx, mis->ty, 0, 0, 0, 0, MissionData[mis->mission].targetwp, WPF_TARGET);
     tw->SetWPTarget(mis->targetID);
@@ -1159,9 +1159,9 @@ WayPoint AddTargetProfile(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Finds a path from waypoint cw to home base, and finds and saves an egress assembly point
 WayPoint SetupEgressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint		nw, bw, tw, dw;
-    GridIndex		eax, eay, bx, by;
-    Unit			pack;
+    WayPoint nw, bw, tw, dw;
+    GridIndex eax, eay, bx, by;
+    Unit pack;
 
     pack = u->GetUnitParent();
 
@@ -1198,8 +1198,8 @@ WayPoint SetupEgressPoints(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Copies the package's egress path into this unit's wp path
 WayPoint AddEgressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint			nw;
-    Package				pack;
+    WayPoint nw;
+    Package pack;
 
     pack = (Package)u->GetUnitParent();
     nw = CloneWPList(pack->GetEgress());
@@ -1232,20 +1232,20 @@ WayPoint AddEgressPath(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Places a waypoint at a good turn location nearby target. Techincally part of egress route, when desired
 WayPoint AddExitRoute(WayPoint cw, Flight u, MissionRequestClass *mis)
 {
-    WayPoint		nw, bw;
-    GridIndex		eax, eay, bx, by, tx, ty, x, y;
-    Unit			pack;
-    int				i, s, bs = 99999, fh, h, d;
+    WayPoint nw, bw;
+    GridIndex eax, eay, bx, by, tx, ty, x, y;
+    Unit pack;
+    int i, s, bs = 99999, fh, h, d;
 
     pack = u->GetUnitParent();
 
     // Find a good egress direction (from target or turn point)
-    cw->GetWPLocation(&tx, &ty);						// Last way point (Turn point or target)
+    cw->GetWPLocation(&tx, &ty); // Last way point (Turn point or target)
     fh = (int)DirectionTo(mis->tx, mis->ty, tx, ty);
 
     if (fh == Here)
     {
-        nw = cw->GetPrevWP();	// Pre-target WP
+        nw = cw->GetPrevWP(); // Pre-target WP
         nw->GetWPLocation(&tx, &ty);
         fh = (int)(DirectionTo(mis->tx, mis->ty, tx, ty) + 4) % 8;
     }
@@ -1300,11 +1300,11 @@ WayPoint AddExitRoute(WayPoint cw, Flight u, MissionRequestClass *mis)
 // Add WP for Tanker, Abort strip, and Secondary Target
 void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 {
-    WayPoint		w, lw;
-    int				d;
-    GridIndex		x, y;
-    Objective		o;
-    CampaignTime	time;
+    WayPoint w, lw;
+    int d;
+    GridIndex x, y;
+    Objective o;
+    CampaignTime time;
 
     // KCK NOTE: This assumes the flight is still owned by the ATM's machine
     // If not, abort..
@@ -1339,8 +1339,8 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 
         if (d < MAXIMUM_TANKER_DISTANCE * 4)
         {
-            w = new WayPointClass(x, y, 20000, 0, 0, 0, WP_REFUEL, WPF_REFUEL_INFORMATION);	// M.N. added REFUEL_INFORMATION flag
-            //			w->SetWPTarget(tanker);
+            w = new WayPointClass(x, y, 20000, 0, 0, 0, WP_REFUEL, WPF_REFUEL_INFORMATION); // M.N. added REFUEL_INFORMATION flag
+            // w->SetWPTarget(tanker);
             lw->InsertWP(w);
             lw = w;
         }
@@ -1364,7 +1364,7 @@ void AddInformationWPs(Flight flight, MissionRequestClass *mis)
 
 void ClearDivertWayPoints(Flight flight)
 {
-    WayPoint		w, nw;
+    WayPoint w, nw;
 
     w = flight->GetFirstUnitWP();
 
@@ -1385,17 +1385,17 @@ void ClearDivertWayPoints(Flight flight)
 
 int AddTankerWayPoint(Flight u, int refuel)
 {
-    WayPoint		w = NULL, lw = NULL, fw = NULL, sw = NULL, bw = NULL;
-    float			dist, wdist;
-    Int32			d, bd;
-    int				fuel, fuelNeeded;
-    GridIndex		x, y, ix, iy, wx, wy;
-    //	Objective		o;		Use CampMap team locator instead of objective
-    Package			pack;
+    WayPoint w = NULL, lw = NULL, fw = NULL, sw = NULL, bw = NULL;
+    float dist, wdist;
+    Int32 d, bd;
+    int fuel, fuelNeeded;
+    GridIndex x, y, ix, iy, wx, wy;
+    // Objective o; Use CampMap team locator instead of objective
+    Package pack;
     MissionRequestClass *mis;
-    CampaignTime	time, totime, landtime, ingresstime;
-    int				wpinserted = 0;
-    long			length;
+    CampaignTime time, totime, landtime, ingresstime;
+    int wpinserted = 0;
+    long length;
 
     // This assumes the flight is still owned by the ATM's machine
     // If not, return..
@@ -1448,7 +1448,7 @@ int AddTankerWayPoint(Flight u, int refuel)
 
     lw = u->wp_list;
 
-    if (refuel > (2 * fuel / 3) && g_bAddIngressWP)	// Add a Tanker waypoint at ingress
+    if (refuel > (2 * fuel / 3) && g_bAddIngressWP) // Add a Tanker waypoint at ingress
     {
         // Find the ingress waypoint closest to an active tanker
         bd = 9990;
@@ -1470,7 +1470,7 @@ int AddTankerWayPoint(Flight u, int refuel)
                 iy = y;
             }
 
-            //			o = FindNearestObjective(wx,wy,NULL); // objective near the waypoint => marker for territory
+            // o = FindNearestObjective(wx,wy,NULL); // objective near the waypoint => marker for territory
             if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam()) // abort search if we got into enemy territory
             {
                 break;
@@ -1479,17 +1479,17 @@ int AddTankerWayPoint(Flight u, int refuel)
             lw = lw->GetNextWP();
         }
 
-        if (ix != 0 && iy != 0)	// -> We have found a tanker near a waypoint
+        if (ix != 0 && iy != 0) // -> We have found a tanker near a waypoint
         {
             dist = DistanceToFront(ix, iy); // Tankers distance to FLOT
             w = new WayPointClass(ix, iy, 20000, 0, 0, 0, WP_REFUEL, 0);
 
-            //			o = FindNearestObjective(wx,wy,NULL);
+            // o = FindNearestObjective(wx,wy,NULL);
             // We can have the case that a waypoint on the other side of the FLOT
             // is closer to an active tanker at its mistot time than a waypoint on friendly side.
             // In this case, go one waypoint back
             if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam() && bw->GetPrevWP())
-                bw = bw->GetPrevWP();		// Is wx,wy right here ?????????????????
+                bw = bw->GetPrevWP(); // Is wx,wy right here ?????????????????
 
             bw->GetWPLocation(&x, &y);
             wdist = DistanceToFront(x, y);
@@ -1502,7 +1502,7 @@ int AddTankerWayPoint(Flight u, int refuel)
                 // Do the friendly territory check here again
                 bw->GetWPLocation(&x, &y);
 
-                //				o = FindNearestObjective(x,y,NULL);
+                // o = FindNearestObjective(x,y,NULL);
                 if (::GetOwner(TheCampaign.CampMapData, x, y) != u->GetTeam() && bw->GetPrevWP())
                     bw = bw->GetPrevWP();
 
@@ -1563,7 +1563,7 @@ int AddTankerWayPoint(Flight u, int refuel)
             iy = y;
         }
 
-        //		o = FindNearestObjective(wx,wy,NULL);
+        // o = FindNearestObjective(wx,wy,NULL);
         if (::GetOwner(TheCampaign.CampMapData, wx, wy) != u->GetTeam()) // abort search if we got into enemy territory
         {
             //bw = lw;
@@ -1573,7 +1573,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         lw = lw->GetPrevWP();
     }
 
-    if (ix != 0 && iy != 0)	// -> We have found a tanker, otherwise ix==iy==0;
+    if (ix != 0 && iy != 0) // -> We have found a tanker, otherwise ix==iy==0;
     {
         dist = DistanceToFront(ix, iy); // Tankers distance to FLOT
         w = new WayPointClass(ix, iy, 20000, 0, 0, 0, WP_REFUEL, 0);
@@ -1592,7 +1592,7 @@ int AddTankerWayPoint(Flight u, int refuel)
         wpinserted++;
         length = SetWPTimesTanker(u, mis, false, totime);
 
-        if (wpinserted == 2)	// we already have an ingress waypoint
+        if (wpinserted == 2) // we already have an ingress waypoint
         {
             length = w->GetWPArrivalTime() - ingresstime;
             fuelNeeded = ((int)(length / CampaignMinutes) * u->GetClassData()->Rate);
@@ -1600,7 +1600,7 @@ int AddTankerWayPoint(Flight u, int refuel)
             if (fuelNeeded > fuel * 1.5) // way ingresstanker -> egresstanker, 50% tolerance
                 return 0;
         }
-        else		// only an egress waypoint
+        else // only an egress waypoint
         {
             length = w->GetWPArrivalTime() - totime;
             fuelNeeded = ((int)(length / CampaignMinutes) * u->GetClassData()->Rate);
@@ -1630,12 +1630,12 @@ int WayPointErrorCode(WayPointClass *wp, Flight flt);
 // Adjusts times for a waypoint list, and returns mission length
 long SetWPTimes(Flight u, MissionRequestClass *mis)
 {
-    WayPoint		w, fw, tw = NULL;
-    CampaignTime	mission_time, to, land, time;
-    long			offset;
-    float			minSpeed, maxSpeed, speed, dist;
-    GridIndex		x, y, nx, ny;
-    Package			pack;
+    WayPoint w, fw, tw = NULL;
+    CampaignTime mission_time, to, land, time;
+    long offset;
+    float minSpeed, maxSpeed, speed, dist;
+    GridIndex x, y, nx, ny;
+    Package pack;
 
     fw = w = u->GetFirstUnitWP();
 
@@ -1720,7 +1720,7 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         w->GetWPLocation(&nx, &ny);
         dist = Distance(x, y, nx, ny);
 
-        if (w->GetWPArrivalTime() > 0)			// Preset time - Adjust Speed to match
+        if (w->GetWPArrivalTime() > 0) // Preset time - Adjust Speed to match
         {
             ShiAssert(w->GetWPArrivalTime() > mission_time);
             time = w->GetWPArrivalTime() - mission_time;
@@ -1746,15 +1746,15 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
 
         mission_time += w->GetWPStationTime();
 #ifdef DEBUG
-        //		if (u->GetUnitMission() != AMIS_ALERT && u->GetUnitMission() != AMIS_RECONPATROL)
-        //			ShiAssert(!WayPointErrorCode(w,u));
+        // if (u->GetUnitMission() != AMIS_ALERT && u->GetUnitMission() != AMIS_RECONPATROL)
+        // ShiAssert(!WayPointErrorCode(w,u));
 #endif
         w = w->GetNextWP();
         x = nx;
         y = ny;
     }
 
-    land = mission_time;		// This is landing time
+    land = mission_time; // This is landing time
 
     // Backwards, from target to takeoff
     mission_time = tw->GetWPArrivalTime();
@@ -1767,9 +1767,9 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         w->GetWPLocation(&nx, &ny);
         dist = Distance(x, y, nx, ny);
 
-        if (w->GetWPArrivalTime() > 0)			// Preset time
+        if (w->GetWPArrivalTime() > 0) // Preset time
         {
-            //			ShiAssert(mission_time > w->GetWPDepartureTime());
+            // ShiAssert(mission_time > w->GetWPDepartureTime());
             time = mission_time - w->GetWPDepartureTime();
             speed = (dist * CampaignHours) / time;
 
@@ -1794,26 +1794,26 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
         }
 
         // 2002-03-21 MN give a bit more time at takeoff
-        /*		if (w->GetWPAction() == WP_TAKEOFF)
-        		{
-        			mission_time -= 15000; // we need a bit more time to take off...
-        			w->SetWPTimes(mission_time);
-        			time = prevmission_time - w->GetWPDepartureTime();
-        			speed = (dist * CampaignHours) / time;
-        			if (speed < minSpeed)
-        				speed = minSpeed;
-        			if (speed > maxSpeed)
-        				speed = maxSpeed;
-        			w->GetNextWP()->SetWPSpeed(speed);
-        		}
-        		else*/
+        /* if (w->GetWPAction() == WP_TAKEOFF)
+         {
+         mission_time -= 15000; // we need a bit more time to take off...
+         w->SetWPTimes(mission_time);
+         time = prevmission_time - w->GetWPDepartureTime();
+         speed = (dist * CampaignHours) / time;
+         if (speed < minSpeed)
+         speed = minSpeed;
+         if (speed > maxSpeed)
+         speed = maxSpeed;
+         w->GetNextWP()->SetWPSpeed(speed);
+         }
+         else*/
         w->SetWPTimes(mission_time);
         w = w->GetPrevWP();
         x = nx;
         y = ny;
     }
 
-    to = mission_time;			// This is takeoff time
+    to = mission_time; // This is takeoff time
 
     // Calculate length and check for impossible takeoff times
     // 2001-10-31 MODIFIED by M.N. Added new flag check for TE Missions.
@@ -1834,11 +1834,11 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 // type == true: Ingress refuel waypoint - adapt
 // type == false: Egress refuel waypoint
 {
-    WayPoint		w, fw, tw = NULL;
-    CampaignTime	mission_time;
-    float			minSpeed, maxSpeed, speed, dist;
-    GridIndex		x, y, nx, ny;
-    Package			pack;
+    WayPoint w, fw, tw = NULL;
+    CampaignTime mission_time;
+    float minSpeed, maxSpeed, speed, dist;
+    GridIndex x, y, nx, ny;
+    Package pack;
 
     fw = w = u->GetFirstUnitWP();
 
@@ -1928,7 +1928,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
             {
                 w->SetWPArrive(mission_time);
                 mission_time += 3 * CampaignMinutes;
-                w->SetWPDepartTime(mission_time);	// 3 minutes to refuel
+                w->SetWPDepartTime(mission_time); // 3 minutes to refuel
             }
             else w->SetWPTimes(mission_time);
 
@@ -1953,7 +1953,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 
         return 0;
     }
-    else	// ingress -> adjust takeoff to target waypoint ; time = landing time
+    else // ingress -> adjust takeoff to target waypoint ; time = landing time
     {
         // Backwards, from target to takeoff
         mission_time = tw->GetWPArrivalTime();
@@ -1970,7 +1970,7 @@ long SetWPTimesTanker(Flight u, MissionRequestClass *mis, bool type, CampaignTim
 
             // If we have the refuel waypoint, set a new departure time
             if (w->GetWPAction() == WP_REFUEL)
-                w->SetWPDepartTime(mission_time + 3 * CampaignMinutes);	// 3 minutes to refuel
+                w->SetWPDepartTime(mission_time + 3 * CampaignMinutes); // 3 minutes to refuel
 
             w->SetWPTimes(mission_time);
             w = w->GetPrevWP();
@@ -2021,15 +2021,15 @@ WayPoint CheckSafePath(WayPoint w, WayPoint nw, Flight flight)
 int ScoreThreatsOnWPLeg(WayPoint w1, WayPoint w2, Team who, int type)
 {
     GridIndex   x, y, x1, y1, x2, y2;
-    float		xd, yd, d;
-    int			step, steps = 0, threat, dist, worst = 0, al;
+    float xd, yd, d;
+    int step, steps = 0, threat, dist, worst = 0, al;
 
     // Check for threats along this leg
     w1->GetWPLocation(&x1, &y1);
     w2->GetWPLocation(&x2, &y2);
     d = Distance(x1, y1, x2, y2);
 
-    //	al = GetAltitudeLevel(sCurrentAlt);
+    // al = GetAltitudeLevel(sCurrentAlt);
     if (w2->GetWPFlags() & WPF_HOLDCURRENT)
         al = GetAltitudeLevel(w1->GetWPAltitude());
     else
@@ -2072,9 +2072,9 @@ int ScoreThreatsOnWPLeg(WayPoint w1, WayPoint w2, Team who, int type)
 int CheckBestAltitude(GridIndex tx, GridIndex ty, Team who, int min, int max, int try_for, int type)
 {
     GridIndex   x, y;
-    int			a, ca, la = 1, ha = ALT_LEVELS, bests = 9999, threat;
-    int			score[ALT_LEVELS] = { 0 };
-    int			bestLevel, d;
+    int a, ca, la = 1, ha = ALT_LEVELS, bests = 9999, threat;
+    int score[ALT_LEVELS] = { 0 };
+    int bestLevel, d;
 
     // Some basic stuff
     if (min == max)
@@ -2167,8 +2167,8 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
     PathClass   path;
     GridIndex   x, y, nx, ny;
     WayPoint    w;
-    MoveType	moveType = Air;
-    int			passes = 0;
+    MoveType moveType = Air;
+    int passes = 0;
 
     // Set up our data
     QuickSearch = MAP_RATIO * 2;                     // Use fast path routines
@@ -2212,7 +2212,7 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
         return 0;
 
     // Now let's try to eliminated unneeded waypoints
-    //	EliminateExcessWaypoints (w1,w2,flight->GetTeam());
+    // EliminateExcessWaypoints (w1,w2,flight->GetTeam());
 
     return 1;
 }
@@ -2220,9 +2220,9 @@ int FindSafePath(WayPoint w1, WayPoint w2, Flight flight)
 // This adds new waypoints to a path in order to 'segmentize' it.
 WayPoint FillAirPath(Path path, GridIndex *x, GridIndex *y, GridIndex nx, GridIndex ny, WayPoint w)
 {
-    CampaignHeading	lh, h;
-    int				i, step = QuickSearch, steps = 0;
-    WayPoint		nw;
+    CampaignHeading lh, h;
+    int i, step = QuickSearch, steps = 0;
+    WayPoint nw;
 
     ShiAssert(step);
 
@@ -2265,17 +2265,17 @@ static const float COS_10 = (float)cos(10 * DTR), COS_120 = (float)cos(120 * DTR
 
 WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
 {
-    WayPoint	w, mw, nw;
+    WayPoint w, mw, nw;
     int         nh, mh, oh;
-    GridIndex	x, y, mx, my, nx, ny;
-    float		wnd, wmd, mnd, cwm, cnm;
+    GridIndex x, y, mx, my, nx, ny;
+    float wnd, wmd, mnd, cwm, cnm;
 #ifdef DEBUG
-    static int	trimmed_by_angle = 0, trimmed_by_threat = 0;
+    static int trimmed_by_angle = 0, trimmed_by_threat = 0;
 #endif
 
-    w = w1;						// Starting waypoint for this check
-    mw = w->GetNextWP();		// Middle waypoint (The one we may decide to eliminate)
-    nw = mw->GetNextWP();		// End waypoint
+    w = w1; // Starting waypoint for this check
+    mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
+    nw = mw->GetNextWP(); // End waypoint
 
     while (w && mw && nw && w != w2 && mw != w2)
     {
@@ -2329,36 +2329,36 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
     return w;
 
     /*
-    	w = w1;						// Starting waypoint for this check
-    	mw = w->GetNextWP();		// Middle waypoint (The one we may decide to eliminate)
-    	nw = mw->GetNextWP();		// End waypoint
-    	while (w && mw && nw && w != w2 && mw != w2)
-    		{
-    		// Check to see if this is a filler way point
-    		if (mw->GetWPAction()==WP_NOTHING)
-    			{
-    			// Check threats FIRST HALF
-    			mh = ScoreThreatsOnWPLeg (w,mw,who,TT_AVERAGE);
-    			// Check threats SECOND HALF
-    			oh = ScoreThreatsOnWPLeg (mw,nw,who,TT_AVERAGE);
-    			// Check threats SHORTER PATH
-    			nh = ScoreThreatsOnWPLeg (w,nw,who,TT_AVERAGE);
-    			// Take the lowest cost route
-    			if (nh <= oh+mh)
-    				{
-    				mw->DeleteWP ();
-    				mw = NULL;
-    				}
-    			else
-    				w = mw;
-    			}
-    		else
-    			w = mw;
-    		// Set up for the next pass, if any
-    		mw = w->GetNextWP();
-    		nw = mw->GetNextWP();
-    		}
-    	return w;
+     w = w1; // Starting waypoint for this check
+     mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
+     nw = mw->GetNextWP(); // End waypoint
+     while (w && mw && nw && w != w2 && mw != w2)
+     {
+     // Check to see if this is a filler way point
+     if (mw->GetWPAction()==WP_NOTHING)
+     {
+     // Check threats FIRST HALF
+     mh = ScoreThreatsOnWPLeg (w,mw,who,TT_AVERAGE);
+     // Check threats SECOND HALF
+     oh = ScoreThreatsOnWPLeg (mw,nw,who,TT_AVERAGE);
+     // Check threats SHORTER PATH
+     nh = ScoreThreatsOnWPLeg (w,nw,who,TT_AVERAGE);
+     // Take the lowest cost route
+     if (nh <= oh+mh)
+     {
+     mw->DeleteWP ();
+     mw = NULL;
+     }
+     else
+     w = mw;
+     }
+     else
+     w = mw;
+     // Set up for the next pass, if any
+     mw = w->GetNextWP();
+     nw = mw->GetNextWP();
+     }
+     return w;
     */
 }
 
@@ -2367,10 +2367,10 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
 // type tells routine wether to search forwards or backwards.
 WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team who)
 {
-    WayPoint	w, nw, bw, pw = NULL;
-    GridIndex	x, y, nx, ny, tx, ty, cx, cy, bx, by;
-    int			guesses = 0, step, owner, dist, done = 0; //alt,balt=0;
-    float		d, xd, yd, dsq = (float)distance * distance;
+    WayPoint w, nw, bw, pw = NULL;
+    GridIndex x, y, nx, ny, tx, ty, cx, cy, bx, by;
+    int guesses = 0, step, owner, dist, done = 0; //alt,balt=0;
+    float d, xd, yd, dsq = (float)distance * distance;
 
     bx = by = 0;
     w2->GetWPLocation(&tx, &ty);
@@ -2412,7 +2412,7 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
                 bw = NULL;
             }
             else
-                bw = w;											// Use existing WP if possible
+                bw = w; // Use existing WP if possible
 
             if (type)
                 pw = nw;
@@ -2458,12 +2458,12 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
     // Eliminate any unneeded waypoints before or after this one.
     // KCK NOTE: This is a fairly expensive check for a possibility of eliminating one waypoint.
     // If we determine we need more speed, we can axe this.
-    /*	bw = nw->GetNextWP();
-    	if (bw && bw->GetNextWP())
-    		EliminateExcessWaypoints(nw,bw->GetNextWP(),who);
-    	bw = pw->GetPrevWP();
-    	if (bw)
-    		EliminateExcessWaypoints(bw,nw,who);
+    /* bw = nw->GetNextWP();
+     if (bw && bw->GetNextWP())
+     EliminateExcessWaypoints(nw,bw->GetNextWP(),who);
+     bw = pw->GetPrevWP();
+     if (bw)
+     EliminateExcessWaypoints(bw,nw,who);
     */
     return nw;
 }
@@ -2471,10 +2471,10 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
 // This will traverse a wp path starting at w1 and add a waypoint at distance from w2
 WayPoint AddDistanceWaypoint(WayPoint w1, WayPoint w2, int distance)
 {
-    WayPoint	w, nw, bw;
-    GridIndex	x, y, nx, ny, tx, ty, cx, cy;
-    int			step, dist; //,alt;
-    float		d, xd, yd;
+    WayPoint w, nw, bw;
+    GridIndex x, y, nx, ny, tx, ty, cx, cy;
+    int step, dist; //,alt;
+    float d, xd, yd;
 
     w2->GetWPLocation(&tx, &ty);
     w = w1;
@@ -2484,7 +2484,7 @@ WayPoint AddDistanceWaypoint(WayPoint w1, WayPoint w2, int distance)
         w->GetWPLocation(&x, &y);
         nw = w->GetNextWP();
         nw->GetWPLocation(&nx, &ny);
-        //		alt = nw->GetWPAltitude();
+        // alt = nw->GetWPAltitude();
         d = Distance(x, y, nx, ny);
         dist = FloatToInt32(d);
         xd = (float)(nx - x) / d;
@@ -2517,21 +2517,21 @@ WayPoint AddDistanceWaypoint(WayPoint w1, WayPoint w2, int distance)
 // Returns values telling wether to add sead and/or ecm.
 int CheckPathThreats(Unit u)
 {
-    FalconPrivateList	threats(&CampFilter);
-    WayPoint		w, nw;
-    int				step, retval = 0, dist;
-    //	short			targeted=0;
-    //	long			target_flags;
-    GridIndex		x, y, fx, fy, nx, ny;
-    float			xd, yd, d;
-    //	CampEntity		e;
+    FalconPrivateList threats(&CampFilter);
+    WayPoint w, nw;
+    int step, retval = 0, dist;
+    // short targeted=0;
+    // long target_flags;
+    GridIndex x, y, fx, fy, nx, ny;
+    float xd, yd, d;
+    // CampEntity e;
 
     // Set our main target as targeted
-    //	e = u->GetCampTarget();
-    //	if (e)
-    //		ThreatSearch[e->GetCampID()] = 2;
+    // e = u->GetCampTarget();
+    // if (e)
+    // ThreatSearch[e->GetCampID()] = 2;
 
-    //	target_flags = MissionData[u->GetUnitMission()].flags;
+    // target_flags = MissionData[u->GetUnitMission()].flags;
     w = u->GetFirstUnitWP();
     nw = w->GetNextWP();
 
@@ -2555,19 +2555,19 @@ int CheckPathThreats(Unit u)
             if (retval == (NEED_SEAD | NEED_ECM))
                 return retval;
 
-            /*			// This was only usefull when we wanted to actually target things which got in our way.
-            			if (CollectThreatsFast (x,y,GetAltitudeLevel(nw->GetWPAltitude()),u->GetTeam(),FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED,&threats))
-            				{
-            				if (nw->GetWPAltitude() < LOW_ALTITUDE_CUTOFF)
-            					mt = LowAir;
-            				else
-            					mt = Air;
-            				if (w->GetWPArrivalTime() > 1.0F)
-            					time = w->GetWPArrivalTime() + TimeToArrive(Distance(fx,fy,x,y),u->GetCruiseSpeed());
-            				else
-            					time = u->GetUnitTOT();
-            				retval |= TargetThreats(u->GetTeam(),u->GetUnitPriority(),&threats,mt,time,target_flags,&targeted);
-            				}
+            /* // This was only usefull when we wanted to actually target things which got in our way.
+             if (CollectThreatsFast (x,y,GetAltitudeLevel(nw->GetWPAltitude()),u->GetTeam(),FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED,&threats))
+             {
+             if (nw->GetWPAltitude() < LOW_ALTITUDE_CUTOFF)
+             mt = LowAir;
+             else
+             mt = Air;
+             if (w->GetWPArrivalTime() > 1.0F)
+             time = w->GetWPArrivalTime() + TimeToArrive(Distance(fx,fy,x,y),u->GetCruiseSpeed());
+             else
+             time = u->GetUnitTOT();
+             retval |= TargetThreats(u->GetTeam(),u->GetUnitPriority(),&threats,mt,time,target_flags,&targeted);
+             }
             */
         }
 
@@ -2582,20 +2582,20 @@ int CheckPathThreats(Unit u)
 // Returns what type of escorts we'll need
 int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignTime time, long target_flags, short* targeted)
 {
-    CampEntity			e;
-    int					retval = 0, do_request;
-    int					strike_type = AMIS_SEADSTRIKE;
-    GridIndex			x, y;
-    MissionRequestClass	mis;
+    CampEntity e;
+    int retval = 0, do_request;
+    int strike_type = AMIS_SEADSTRIKE;
+    GridIndex x, y;
+    MissionRequestClass mis;
 
-    VuListIterator		tit(list);
+    VuListIterator tit(list);
     e = GetFirstEntity(&tit);
 
     while (e)
     {
         do_request = FALSE;
 
-        if (e->GetAproxCombatStrength(mt, 0) > 0)						// This unit can hurt us
+        if (e->GetAproxCombatStrength(mt, 0) > 0) // This unit can hurt us
         {
             retval |= NEED_SEAD;
 
@@ -2607,7 +2607,7 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
                 do_request = TRUE;
             }
         }
-        else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt])	// This unit has radar
+        else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt]) // This unit has radar
         {
             retval |= NEED_ECM;
 
@@ -2654,73 +2654,73 @@ int TargetThreats(Team team, int priority, F4PFList list, MoveType mt, CampaignT
 // Produces mission requests against threats in the passed list at time 'time'.
 // Returns what type of escorts we'll need
 int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, CampaignTime time, long target_flags, short* targeted)
-	{
-	CampEntity			e;
-	int					retval=0,oca,strike_type=0;
-//	GridIndex			x,y;
-//	MissionRequestClass	mis;
-	VuListIterator		tit(list);
+ {
+ CampEntity e;
+ int retval=0,oca,strike_type=0;
+// GridIndex x,y;
+// MissionRequestClass mis;
+ VuListIterator tit(list);
 
-	e = GetFirstEntity(&tit);
-	while (e)
-		{
-		// check for enemy stuff
-		if (ThreatSearch[e->GetCampID()] < 2)
-			{
-			oca = 0;
-			if (e->GetAproxCombatStrength(mt,0) > 0)						// This unit can hurt us
-				{
-				retval |= NEED_SEAD;
-				if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) || rand() < HALF_CHANCE))
-					{
-					// Specifically, it's a SAM battalion
-					strike_type = AMIS_SEADSTRIKE;
-					mis.context = enemyAirDefense;
-					oca++;
-					}
-				}
-			else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt])	// This unit has radar
-				{
-				retval |= NEED_ECM;
-				if (e->IsObjective())
-					{
-					strike_type = AMIS_OCASTRIKE;
-					mis.context = enemyAirPowerRadar;
-					oca++;
-					}
-				else
-					{
-					strike_type = AMIS_SEADSTRIKE;
-					mis.context = enemyAirDefense;
-					oca++;
-					}
-				}
-			ThreatSearch[e->GetCampID()] = 2;
-			if (oca && (target_flags & AMIS_ADDOCASTRIKE))
-				{
-				// Plan a type of oca Strike mission
-				e->GetLocation(&x,&y);
-				mis.tot = time;
-				mis.who = team;
-				mis.vs = e->GetTeam();
-				mis.tot_type = TYPE_LE;
-				mis.tx = x;
-				mis.ty = y;
-				mis.targetID = e->Id();
-				mis.mission = strike_type;
-				mis.roe_check = ROE_AIR_ATTACK;
-				mis.flags = 0;
-				mis.priority = priority/4;
-				mis.RequestMission();
-//				MonoPrint("Targeting unit %d\n",tu->GetUnitID());
-				*targeted++;
-				}
-			}
-		e = GetNextEntity(&tit);
-		}
-	return retval;
-	}
-	*/
+ e = GetFirstEntity(&tit);
+ while (e)
+ {
+ // check for enemy stuff
+ if (ThreatSearch[e->GetCampID()] < 2)
+ {
+ oca = 0;
+ if (e->GetAproxCombatStrength(mt,0) > 0) // This unit can hurt us
+ {
+ retval |= NEED_SEAD;
+ if (e->IsUnit() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE && (e->GetSpotted(team) || rand() < HALF_CHANCE))
+ {
+ // Specifically, it's a SAM battalion
+ strike_type = AMIS_SEADSTRIKE;
+ mis.context = enemyAirDefense;
+ oca++;
+ }
+ }
+ else if (e->GetDetectionRange(mt) > VisualDetectionRange[mt]) // This unit has radar
+ {
+ retval |= NEED_ECM;
+ if (e->IsObjective())
+ {
+ strike_type = AMIS_OCASTRIKE;
+ mis.context = enemyAirPowerRadar;
+ oca++;
+ }
+ else
+ {
+ strike_type = AMIS_SEADSTRIKE;
+ mis.context = enemyAirDefense;
+ oca++;
+ }
+ }
+ ThreatSearch[e->GetCampID()] = 2;
+ if (oca && (target_flags & AMIS_ADDOCASTRIKE))
+ {
+ // Plan a type of oca Strike mission
+ e->GetLocation(&x,&y);
+ mis.tot = time;
+ mis.who = team;
+ mis.vs = e->GetTeam();
+ mis.tot_type = TYPE_LE;
+ mis.tx = x;
+ mis.ty = y;
+ mis.targetID = e->Id();
+ mis.mission = strike_type;
+ mis.roe_check = ROE_AIR_ATTACK;
+ mis.flags = 0;
+ mis.priority = priority/4;
+ mis.RequestMission();
+// MonoPrint("Targeting unit %d\n",tu->GetUnitID());
+ *targeted++;
+ }
+ }
+ e = GetNextEntity(&tit);
+ }
+ return retval;
+ }
+ */
 
 
 
@@ -2756,26 +2756,26 @@ int TargetThreats (Team team, int priority, F4PFList list, MoveType mt, Campaign
 
 
 WayPoint EliminateExcessWaypoints (WayPoint w1, WayPoint w2, int who, int min, int max)
-	{
-	WayPoint	w,mw,nw;
-	int         nh,mh,oh,safe=0;
-	int			alt=0,alt2;
+ {
+ WayPoint w,mw,nw;
+ int         nh,mh,oh,safe=0;
+ int alt=0,alt2;
 
-	w = w1;						// Starting waypoint for this check
-	mw = w->GetNextWP();		// Middle waypoint (The one we may decide to eliminate)
-	nw = mw->GetNextWP();		// End waypoint
-	while (w && mw && nw && w != w2 && mw != w2)
-		{
-		// Check for safest Altitude
-		mh = CheckBestAltitude(w,mw,who,min,max,&alt,TT_TOTAL);
-		mw->SetWPAltitudeLevel(alt);
-		// Check to see if this is a filler way point
-		if (mw->GetWPAction()==WP_NOTHING)
-			{
-			// Get AA strength of shorter path
-			nh = CheckBestAltitude(w,nw,who,min,max,&alt,TT_TOTAL);
-			// Get AA strength of second half of longer path
-			oh = CheckBestAltitude(mw,nw,who,min,max,&alt2,TT_TOTAL);
+ w = w1; // Starting waypoint for this check
+ mw = w->GetNextWP(); // Middle waypoint (The one we may decide to eliminate)
+ nw = mw->GetNextWP(); // End waypoint
+ while (w && mw && nw && w != w2 && mw != w2)
+ {
+ // Check for safest Altitude
+ mh = CheckBestAltitude(w,mw,who,min,max,&alt,TT_TOTAL);
+ mw->SetWPAltitudeLevel(alt);
+ // Check to see if this is a filler way point
+ if (mw->GetWPAction()==WP_NOTHING)
+ {
+ // Get AA strength of shorter path
+ nh = CheckBestAltitude(w,nw,who,min,max,&alt,TT_TOTAL);
+ // Get AA strength of second half of longer path
+ oh = CheckBestAltitude(mw,nw,who,min,max,&alt2,TT_TOTAL);
 //nw->GetWPLocation(&x,&y);
 //mw->GetWPLocation(&nx,&ny);
 //ShowWPLeg(0,x,y,nx,ny,8);
@@ -2784,39 +2784,39 @@ WayPoint EliminateExcessWaypoints (WayPoint w1, WayPoint w2, int who, int min, i
 //nw->GetWPLocation(&nx,&ny);
 //ShowWPLeg(0,x,y,nx,ny,9);
 //MonoPrint("Costs: %d + %d = %d or %d", mh, oh, oh+mh, nh);
-			// Take the lowest cost route
-			if (nh <= oh+mh)
-				{
-				mw->DeleteWP ();
-				mw = NULL;
-				nw->SetWPAltitudeLevel(alt);
+ // Take the lowest cost route
+ if (nh <= oh+mh)
+ {
+ mw->DeleteWP ();
+ mw = NULL;
+ nw->SetWPAltitudeLevel(alt);
 //ShowWPLeg(0,x,y,nx,ny,15);
 //MonoPrint(" Took shorter, alt = %d\n",alt);
-				}
-			else
-				{
-				nw->SetWPAltitudeLevel(alt2);
-				w = mw;
+ }
+ else
+ {
+ nw->SetWPAltitudeLevel(alt2);
+ w = mw;
 //mw->GetWPLocation(&nx,&ny);
 //ShowWPLeg(0,x,y,nx,ny,15);
 //nw->GetWPLocation(&x,&y);
 //ShowWPLeg(0,x,y,nx,ny,15);
 //MonoPrint(" Took Longer, alt = %d/%d\n",alt,alt2);
-				}
-			}
-		else
-			{
+ }
+ }
+ else
+ {
 //ShowWPLeg(0,x,y,nx,ny,15);
 //MonoPrint("alt = %d\n",alt);
-			w = mw;
-			}
+ w = mw;
+ }
 //Sleep(8000);
-		// Set up for the next pass, if any
-		mw = w->GetNextWP();
-		nw = mw->GetNextWP();
-		}
-	return w;
-	}
+ // Set up for the next pass, if any
+ mw = w->GetNextWP();
+ nw = mw->GetNextWP();
+ }
+ return w;
+ }
 
 */
 

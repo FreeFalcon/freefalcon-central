@@ -44,9 +44,9 @@ public:
     };
 #endif
 public:
-    long		ID;
-    C_Resmgr	*Owner;
-    FlatHeader	*Header;
+    long ID;
+    C_Resmgr *Owner;
+    FlatHeader *Header;
 
     FLAT_RSC()
     {

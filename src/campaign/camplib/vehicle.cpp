@@ -23,7 +23,7 @@
 
 char* GetVehicleName(VehicleID vid)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
 
@@ -41,8 +41,8 @@ VehicleClassDataType* GetVehicleClassData(int index)
 // Calculates hit chance of built in weapons. Estimates for loadable weapons are maximum
 int CalculateVehicleHitChance(int id, int mt)
 {
-    int							i, hc, bc = 0, wid, wl, j;
-    VehicleClassDataType*	vc;
+    int i, hc, bc = 0, wid, wl, j;
+    VehicleClassDataType* vc;
 
     vc = GetVehicleClassData(id);
 
@@ -89,7 +89,7 @@ int CalculateVehicleHitChance(int id, int mt)
 // Returns the precalculated average strength at a given range
 int GetAproxVehicleCombatStrength(int id, int mt, int range)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = GetVehicleClassData(id);
 
@@ -102,8 +102,8 @@ int GetAproxVehicleCombatStrength(int id, int mt, int range)
 // Calculates the best strength possible (including hit chance) against the passed movement type (ignores range)
 int CalculateVehicleCombatStrength(int id, int mt)
 {
-    int							i, j, str, wid, wl, bs = 0;
-    VehicleClassDataType*	vc;
+    int i, j, str, wid, wl, bs = 0;
+    VehicleClassDataType* vc;
 
     vc = GetVehicleClassData(id);
 
@@ -148,7 +148,7 @@ int CalculateVehicleCombatStrength(int id, int mt)
 // Returns the precalculated max range
 int GetAproxVehicleRange(int id, int mt)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = GetVehicleClassData(id);
 
@@ -161,8 +161,8 @@ int GetAproxVehicleRange(int id, int mt)
 // Determines the vehicle's max range (this is used to do the precalculation)
 int CalculateVehicleRange(int id, int mt)
 {
-    int							i, j, rng, wid, wl, br = 0;
-    VehicleClassDataType*	vc;
+    int i, j, rng, wid, wl, br = 0;
+    VehicleClassDataType* vc;
 
     vc = GetVehicleClassData(id);
 
@@ -208,7 +208,7 @@ int CalculateVehicleRange(int id, int mt)
 
 int GetVehicleDetectionRange(int id, int mt)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
 
@@ -220,8 +220,8 @@ int GetVehicleDetectionRange(int id, int mt)
 
 int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_point)
 {
-    int			i, str, bs, w, ws, bw = -1, bhp = -1;
-    VehicleClassDataType*	vc;
+    int i, str, bs, w, ws, bw = -1, bhp = -1;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
 
@@ -255,7 +255,7 @@ int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_po
 
 int GetVehicleWeapon(int vid, int hp)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
     ShiAssert(vc);
@@ -264,7 +264,7 @@ int GetVehicleWeapon(int vid, int hp)
 
 int GetVehicleWeapons(int vid, int hp)
 {
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
 
     vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
     ShiAssert(vc);

@@ -15,7 +15,7 @@ void HeliBrain::Actions(void)
     {
         /*
         if ( modeStack.curMode == GunsEngageMode )
-        		GunsEngage();
+         GunsEngage();
         else
         */
         FollowLead();

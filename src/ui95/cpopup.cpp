@@ -600,8 +600,8 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
     if (relX < Parent_->ClientArea_[GetClient()].left || relX > Parent_->ClientArea_[GetClient()].right ||
         relY < Parent_->ClientArea_[GetClient()].top || relY > Parent_->ClientArea_[GetClient()].bottom)
     {
-        /*		CloseSubMenus();
-        		CloseWindow();
+        /* CloseSubMenus();
+         CloseWindow();
         */
         return(TRUE);
     }
@@ -672,14 +672,14 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
                         else
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT);	//!
+                                                      C_TYPE_LEFT); //!
                     }
                     else
                     {
                         if ((Parent_->GetX() - w - 48 + 15) > Handler_->GetX())
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT);	 //!
+                                                      C_TYPE_LEFT);  //!
                         else
                             cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() + Parent_->GetW() - 15),
                                                       static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
@@ -932,7 +932,7 @@ BOOL C_PopupList::CloseWindow()
 {
     Handler_->EnterCritical();
     CloseSubMenus();
-    //	CloseWindow();
+    // CloseWindow();
     Handler_->RemoveWindow(Window_);
     Window_->Cleanup();
     delete Window_;

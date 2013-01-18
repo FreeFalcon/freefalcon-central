@@ -37,8 +37,8 @@ public:
     int MissileTrack(void);
     int GunTrack(void);
 
-    GNDAIClass *gai;					// AI object
-    int groupId;						// group id
+    GNDAIClass *gai; // AI object
+    int groupId; // group id
     ulong lastProcess;
     ulong lastThought;
     ulong thoughtRate;
@@ -46,27 +46,27 @@ public:
     ulong nextSamFireTime;
 
 
-    unsigned isFootSquad:		1;		// Since these are booleans, they can each be one bit
-    unsigned isTowed:			1;
-    unsigned isEmitter:		1;
-    unsigned hasCrew:			1;
-    unsigned needKeepAlive:	1;
-    unsigned isAirCapable:	1;
-    unsigned isGroundCapable:	1;
-    unsigned isAirDefense:	1;
-    unsigned allowSamFire:	1;
-    unsigned isShip:		1;
+    unsigned isFootSquad: 1; // Since these are booleans, they can each be one bit
+    unsigned isTowed: 1;
+    unsigned isEmitter: 1;
+    unsigned hasCrew: 1;
+    unsigned needKeepAlive: 1;
+    unsigned isAirCapable: 1;
+    unsigned isGroundCapable: 1;
+    unsigned isAirDefense: 1;
+    unsigned allowSamFire: 1;
+    unsigned isShip: 1;
 
     // RV - Biker
     unsigned radarDown: 1;
 
     // Other drawables associated with ground stuff
-    //	  DrawableGuys *crewDrawable;					// Crew, if any		-> KCK: Done with a switch now
-    DrawableGroundVehicle *truckDrawable;			// Tow vehicle (truck), if any
+    //   DrawableGuys *crewDrawable; // Crew, if any -> KCK: Done with a switch now
+    DrawableGroundVehicle *truckDrawable; // Tow vehicle (truck), if any
 
     // Weapon stuff
-    SMSBaseClass	*Sms;
-    GroundClass	*battalionFireControl;	// The active fire control radar vehicle in this battalion
+    SMSBaseClass *Sms;
+    GroundClass *battalionFireControl; // The active fire control radar vehicle in this battalion
     void FindBattalionFireControl(void);
 
 
@@ -118,7 +118,7 @@ public:
 
 protected:
     // guns stuff
-    ulong gunFireFlags;		// is gun firing?  One bit per hardpoint
+    ulong gunFireFlags; // is gun firing?  One bit per hardpoint
     TransformMatrix gunDmx;
 
 #ifdef USE_SH_POOLS
@@ -141,12 +141,12 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 
-#define TURRET_ROTATE_RATE		30.0F*DTR
-#define TURRET_ELEVATE_RATE		15.0F*DTR
+#define TURRET_ROTATE_RATE 30.0F*DTR
+#define TURRET_ELEVATE_RATE 15.0F*DTR
 
 enum
 {

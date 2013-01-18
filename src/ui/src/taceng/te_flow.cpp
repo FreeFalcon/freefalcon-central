@@ -57,13 +57,13 @@
 extern int gRenameIds;
 #endif CAMPTOOL
 
-#pragma warning(disable : 4127)	// Conditional Expression is constant warning
+#pragma warning(disable : 4127) // Conditional Expression is constant warning
 
-extern C_Map  	*gMapMgr;
+extern C_Map   *gMapMgr;
 
 
 extern int MainLastGroup, TacLastGroup;
-extern void RebuildFLOTList(void);	// 2001-10-31 M.N.
+extern void RebuildFLOTList(void); // 2001-10-31 M.N.
 extern int RebuildFrontList(void);  // 2001-10-31 M.N.
 extern _TCHAR gLastTEFile[MAX_PATH]; // 2002-03-12 MN
 extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
@@ -642,7 +642,7 @@ void tactical_play_setup()
     if (!gMainHandler)
         return;
 
-    //	MonoPrint ("Tactical Play Setup\n");
+    // MonoPrint ("Tactical Play Setup\n");
 
     gMainHandler->EnterCritical();
     gMainHandler->DisableWindowGroup(100);

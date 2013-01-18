@@ -4,8 +4,8 @@
     April 2, 1997
 
     This is a one stop source for the terrain/weather/graphics system
-	startup and shutdown sequences.  Just call these functions and you're
-	set.
+ startup and shutdown sequences.  Just call these functions and you're
+ set.
 \***************************************************************************/
 #include "PalBank.h"
 #include "TexBank.h"
@@ -35,18 +35,18 @@
 //JAM 18Nov03
 #include "RealWeather.h"
 
-static char	theaterPath[_MAX_PATH];
-static char	objectPath[_MAX_PATH];
-static char	misctexPath[_MAX_PATH];
+static char theaterPath[_MAX_PATH];
+static char objectPath[_MAX_PATH];
+static char misctexPath[_MAX_PATH];
 
 
 #ifdef GRAPHICS_USE_RES_MGR
-static int	ResHandleTerrainTex		= -1;
-static char	*TerrainTexArchiveName	= "Texture.zip";
+static int ResHandleTerrainTex = -1;
+static char *TerrainTexArchiveName = "Texture.zip";
 #endif
 
 #ifdef USE_SH_POOLS
-MEM_POOL glMemPool;					// 3dlib stuff
+MEM_POOL glMemPool; // 3dlib stuff
 #endif
 
 //extern void Load2DFontTextures();
@@ -55,13 +55,13 @@ MEM_POOL glMemPool;					// 3dlib stuff
 extern int g_nYear; // JB 010804
 extern int g_nDay; // JB 010804
 /***************************************************************************\
-	Load all data and create all structures which do not depend on a
-	specific graphics device.  This should be done only once.  This must
-	be done before any of the other setup calls are made.
+ Load all data and create all structures which do not depend on a
+ specific graphics device.  This should be done only once.  This must
+ be done before any of the other setup calls are made.
 \***************************************************************************/
 void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
 {
-    char	fullPath[_MAX_PATH];
+    char fullPath[_MAX_PATH];
 
 
     // Store the data path and the map name
@@ -106,8 +106,8 @@ void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
     TheLoader.Setup();
 
     // Setup the environmental time manager object
-    TheTimeManager.Setup(g_nYear, g_nDay);		// TODO:  Get a day of the month in here or somewhere
-    TheTimeManager.SetTime(0);			// TODO:  Get a time of day in here or somewhere
+    TheTimeManager.Setup(g_nYear, g_nDay); // TODO:  Get a day of the month in here or somewhere
+    TheTimeManager.SetTime(0); // TODO:  Get a time of day in here or somewhere
 
     // M.N. Turn around setup - first terrain, then TOD - we need theater.map's LAT/LONG for the stars
 
@@ -126,14 +126,14 @@ void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
 
 
 /***************************************************************************\
-	Load all data and create all structures which require a specific
-	graphics device to be identified.  For now, this can only be done
-	for one device at a time.  In the future, we might allow multiple
-	simultanious graphics devices through this interface.
+ Load all data and create all structures which require a specific
+ graphics device to be identified.  For now, this can only be done
+ for one device at a time.  In the future, we might allow multiple
+ simultanious graphics devices through this interface.
 \***************************************************************************/
 void DeviceDependentGraphicsSetup(DisplayDevice *device)
 {
-    char	fullPath[_MAX_PATH];
+    char fullPath[_MAX_PATH];
 
     // OW - must initialize Textures first for pools to work
 #if 1
@@ -161,19 +161,19 @@ void DeviceDependentGraphicsSetup(DisplayDevice *device)
     DrawableBSP::SetupTexturesOnDevice(device->GetDefaultRC());
     Drawable2D::SetupTexturesOnDevice(device->GetDefaultRC());
     DrawableTrail::SetupTexturesOnDevice(device->GetDefaultRC());
-    Render2D::Load2DFontSet();	// ASFO:
-    Render2D::Load3DFontSet();	// ASFO:
-    Render2D::ChangeFontSet(&VirtualDisplay::Font2D);	// ASFO:
+    Render2D::Load2DFontSet(); // ASFO:
+    Render2D::Load3DFontSet(); // ASFO:
+    Render2D::ChangeFontSet(&VirtualDisplay::Font2D); // ASFO:
     DrawableParticleSys::SetupTexturesOnDevice(device->GetDefaultRC());
-    //	DrawableOvercast::SetupTexturesOnDevice( device->GetDefaultRC() );
+    // DrawableOvercast::SetupTexturesOnDevice( device->GetDefaultRC() );
     realWeather->SetupTexturesOnDevice(device->GetDefaultRC()); //JAM 09Nov03
     RenderOTW::SetupTexturesOnDevice(device->GetDefaultRC());
-    //	Render2D::Load2DFontTextures(); //JAM 22Dec03
+    // Render2D::Load2DFontTextures(); //JAM 22Dec03
 }
 
 
 /***************************************************************************
-	Clean up all graphics device dependent data and structures.
+ Clean up all graphics device dependent data and structures.
 ***************************************************************************/
 void DeviceDependentGraphicsCleanup(DisplayDevice *device)
 {
@@ -182,13 +182,13 @@ void DeviceDependentGraphicsCleanup(DisplayDevice *device)
     DrawableBSP::ReleaseTexturesOnDevice(device->GetDefaultRC());
     Drawable2D::ReleaseTexturesOnDevice(device->GetDefaultRC());
     DrawableTrail::ReleaseTexturesOnDevice(device->GetDefaultRC());
-    Render2D::Release2DFontSet();	// ASFO:
-    Render2D::Release3DFontSet();	// ASFO:
+    Render2D::Release2DFontSet(); // ASFO:
+    Render2D::Release3DFontSet(); // ASFO:
     DrawableParticleSys::ReleaseTexturesOnDevice(device->GetDefaultRC());
-    //	DrawableOvercast::ReleaseTexturesOnDevice( device->GetDefaultRC() );
+    // DrawableOvercast::ReleaseTexturesOnDevice( device->GetDefaultRC() );
     realWeather->ReleaseTexturesOnDevice(device->GetDefaultRC()); //JAM 09Nov03
     RenderOTW::ReleaseTexturesOnDevice(device->GetDefaultRC());
-    //	Render2D::Release2DFontTextures(); //JAM 22Dec03
+    // Render2D::Release2DFontTextures(); //JAM 22Dec03
 
     // Wait for loader here to ensure everything which depends of this repositories is gone
     TheLoader.WaitLoader();
@@ -204,9 +204,9 @@ void DeviceDependentGraphicsCleanup(DisplayDevice *device)
 
 
 /***************************************************************************
-	Clean up all graphics device independent data and structures.
-	This should not be done until all device dependent stuff has been
-	cleaned up.
+ Clean up all graphics device independent data and structures.
+ This should not be done until all device dependent stuff has been
+ cleaned up.
 ***************************************************************************/
 void DeviceIndependentGraphicsCleanup(void)
 {
@@ -237,7 +237,7 @@ void DeviceIndependentGraphicsCleanup(void)
 // has already been loaded.
 void TheaterReload(char *theater, char *loddata)
 {
-    char	fullPath[_MAX_PATH];
+    char fullPath[_MAX_PATH];
 
     //    TheLoader.Cleanup();
     TheTimeOfDay.Cleanup();
@@ -274,10 +274,10 @@ void TheaterReload(char *theater, char *loddata)
 
 #endif
     // Setup the Asynchronous loader object
-    //	TheLoader.Setup();
+    // TheLoader.Setup();
     // Setup the environmental time manager object
-    //    TheTimeManager.Setup( g_nYear, g_nDay );		// TODO:  Get a day of the month in here or somewhere
-    //TheTimeManager.SetTime( 0 );			// TODO:  Get a time of day in here or somewhere
+    //    TheTimeManager.Setup( g_nYear, g_nDay ); // TODO:  Get a day of the month in here or somewhere
+    //TheTimeManager.SetTime( 0 ); // TODO:  Get a time of day in here or somewhere
 
     // Setup the time of day manager
     sprintf(fullPath, "%s\\weather", theaterPath);

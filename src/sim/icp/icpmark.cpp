@@ -17,7 +17,7 @@ extern bool g_bRealisticAvionics;
 void ICPClass::ExecMARKMode(void)
 {
 
-    NavigationSystem::Point_Type	pointType;
+    NavigationSystem::Point_Type pointType;
 
     if (!g_bRealisticAvionics)
     {
@@ -73,9 +73,9 @@ void ICPClass::ExecMARKMode(void)
 void ICPClass::ENTRUpdateMARKMode(void)
 {
 
-    float		xprime, yprime;
-    float		x, y, z;
-    mlTrig	trig;
+    float xprime, yprime;
+    float x, y, z;
+    mlTrig trig;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC)

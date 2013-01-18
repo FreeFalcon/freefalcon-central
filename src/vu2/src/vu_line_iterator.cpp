@@ -25,8 +25,8 @@ VuLineIterator::VuLineIterator
 
     VU_KEY key1origin      = coll->filter_->Key1(origin);
     VU_KEY key2origin      = coll->filter_->Key2(origin);
-    //	VU_KEY key1destination = coll->filter_->Key1(destination);
-    //	VU_KEY key2destination = coll->filter_->Key2(destination);
+    // VU_KEY key1destination = coll->filter_->Key1(destination);
+    // VU_KEY key2destination = coll->filter_->Key2(destination);
     VU_KEY key1radius      = coll->filter_->Distance1(radius);
     VU_KEY key2radius      = coll->filter_->Distance2(radius);
     lineA_                 = 1;
@@ -79,8 +79,8 @@ VuLineIterator::VuLineIterator(
     key1cur_ = 0;
     VU_KEY key1origin      = coll->filter_->CoordToKey1(xPos0);
     VU_KEY key2origin      = coll->filter_->CoordToKey2(yPos0);
-    //	VU_KEY key1destination = coll->filter_->CoordToKey1(xPos1);
-    //	VU_KEY key2destination = coll->filter_->CoordToKey2(yPos1);
+    // VU_KEY key1destination = coll->filter_->CoordToKey1(xPos1);
+    // VU_KEY key2destination = coll->filter_->CoordToKey2(yPos1);
     VU_KEY key1radius      = coll->filter_->Distance1(radius);
     VU_KEY key2radius      = coll->filter_->Distance2(radius);
     lineA_ = 1;

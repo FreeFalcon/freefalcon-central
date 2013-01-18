@@ -15,26 +15,26 @@ extern "C" {
 #endif
 
 
-#define CAPI_VERSION		1
-#define CAPI_REVISION		4
-#define CAPI_PATCH		    0
-#define CAPI_REVISION_DATE	"5/27/98"
-#define CAPI_PATCH_DATE	    "5/27/98"
+#define CAPI_VERSION 1
+#define CAPI_REVISION 4
+#define CAPI_PATCH     0
+#define CAPI_REVISION_DATE "5/27/98"
+#define CAPI_PATCH_DATE     "5/27/98"
 
 
 
     /* Protocol values for ComAPIEnumProtocols */
-#define CAPI_UNKNOWN_PROTOCOL	       0
-#define CAPI_UDP_PROTOCOL	          1
+#define CAPI_UNKNOWN_PROTOCOL        0
+#define CAPI_UDP_PROTOCOL           1
 #define CAPI_IP_MULTICAST_PROTOCOL   2
-#define CAPI_SERIAL_PROTOCOL	       3
-#define CAPI_TEN_PROTOCOL	          4
+#define CAPI_SERIAL_PROTOCOL        3
+#define CAPI_TEN_PROTOCOL           4
 #define CAPI_TCP_PROTOCOL            5
 #define CAPI_DPLAY_MODEM_PROTOCOL    6
 #define CAPI_DPLAY_SERIAL_PROTOCOL   7
 #define CAPI_DPLAY_TCP_PROTOCOL      8
 #define CAPI_DPLAY_IPX_PROTOCOL      9
-#define CAPI_RUDP_PROTOCOL			10
+#define CAPI_RUDP_PROTOCOL 10
 #define CAPI_GROUP_PROTOCOL         11
 #define CAPI_LAST_PROTOCOL           CAPI_GROUP_PROTOCOL
 

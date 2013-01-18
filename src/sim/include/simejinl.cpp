@@ -59,7 +59,7 @@ inline SIM_FLOAT EjectedPilotClass::StageEndTime() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline SIM_FLOAT	EjectedPilotClass::DragFactor() const
+inline SIM_FLOAT EjectedPilotClass::DragFactor() const
 {
     // Do some assertions.
     F4Assert(_pd != NULL);
@@ -72,7 +72,7 @@ inline SIM_FLOAT	EjectedPilotClass::DragFactor() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline SIM_FLOAT	EjectedPilotClass::Mass() const
+inline SIM_FLOAT EjectedPilotClass::Mass() const
 {
     // Do some assertions.
     F4Assert(_pd != NULL);
@@ -150,7 +150,7 @@ inline SIM_FLOAT EjectedPilotClass::PitchDecay() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline SIM_FLOAT	EjectedPilotClass::YawSpeed() const
+inline SIM_FLOAT EjectedPilotClass::YawSpeed() const
 {
     // Do some assertions.
     F4Assert(_pd != NULL);
@@ -222,9 +222,9 @@ inline int EjectedPilotClass::AdvanceStage()
 /*
 inline void EjectedPilotClass::ExecFromAircraft()
 {
-	_execCalledFromAircraft = TRUE;
-	Exec();
-	_execCalledFromAircraft = FALSE;
+ _execCalledFromAircraft = TRUE;
+ Exec();
+ _execCalledFromAircraft = FALSE;
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,12 +258,12 @@ inline BOOL EjectedPilotClass::IsDigiPilot() const
 /*
 inline BOOL EjectedPilotClass::CanCollideWithOwnAircraft() const
 {
-	return
-	(
-		_stage >= PD_CHUTE_OPENING ?
-		TRUE :
-		FALSE
-	);
+ return
+ (
+ _stage >= PD_CHUTE_OPENING ?
+ TRUE :
+ FALSE
+ );
 }
 */
 

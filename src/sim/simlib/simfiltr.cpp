@@ -232,7 +232,7 @@ VU_BOOL SimLocalFilter::Test(VuEntity* ent1)
 //VU_BOOL SimLocalFilter::RemoveTest (VuEntity* ent1)
 VU_BOOL SimLocalFilter::RemoveTest(VuEntity*)
 {
-    return TRUE;		// KCK NOTE: Until we can remove on ownership transfer
+    return TRUE; // KCK NOTE: Until we can remove on ownership transfer
 }
 
 int SimLocalFilter::Compare(VuEntity *ent1, VuEntity *ent2)
@@ -293,7 +293,7 @@ VuFilter* SimObjectFilter::Copy(void)
 /* KCK Not being used now that we tossed LM
 SimSurfaceFilter::SimSurfaceFilter(uchar domain_to_filter)
 {
-	domain = domain_to_filter;
+ domain = domain_to_filter;
 }
 
 SimSurfaceFilter::~SimSurfaceFilter(void)
@@ -302,22 +302,22 @@ SimSurfaceFilter::~SimSurfaceFilter(void)
 
 VU_BOOL SimSurfaceFilter::Test (VuEntity* ent1)
 {
-	if (ent1->Type() > VU_LAST_ENTITY_TYPE && ((FalconEntity*)ent1)->IsSim())
-		{
-		VuEntityType*	classPtr = ent1->EntityType();
-		if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
-			{
-			if (domain != DOMAIN_ANY)
-				{
-				if (classPtr->classInfo_[VU_DOMAIN] == domain)
-					return TRUE;
-				}
-			else if (classPtr->classInfo_[VU_DOMAIN] != DOMAIN_AIR)
-				return TRUE;
-			}
-		}
+ if (ent1->Type() > VU_LAST_ENTITY_TYPE && ((FalconEntity*)ent1)->IsSim())
+ {
+ VuEntityType* classPtr = ent1->EntityType();
+ if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
+ {
+ if (domain != DOMAIN_ANY)
+ {
+ if (classPtr->classInfo_[VU_DOMAIN] == domain)
+ return TRUE;
+ }
+ else if (classPtr->classInfo_[VU_DOMAIN] != DOMAIN_AIR)
+ return TRUE;
+ }
+ }
 
-	return FALSE;
+ return FALSE;
 }
 
 VU_BOOL SimSurfaceFilter::RemoveTest (VuEntity* ent1)

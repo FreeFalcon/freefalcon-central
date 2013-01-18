@@ -15,12 +15,12 @@ VuHashIterator::VuHashIterator(VuHashTable* coll) :
     entry_ = 0;
 #endif
 
-    //	vuCollectionManager->Register(this);
+    // vuCollectionManager->Register(this);
 }
 
 VuHashIterator::~VuHashIterator()
 {
-    //	vuCollectionManager->DeRegister(this);
+    // vuCollectionManager->DeRegister(this);
 }
 
 
@@ -226,16 +226,16 @@ VuEntity *VuHashIterator::CurrEnt()
 /*VU_BOOL VuHashIterator::IsReferenced (VuEntity* ent)
 {
 // 2002-02-04 MODIFIED BY S.G. If ent is false, then it can't be a valid entity, right? That's what I think too :-)
-//	if (curr_->entity_ == ent)
-	// sfr: smartpointer
-	if (ent && curr_->entity_.get() == ent)
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
+// if (curr_->entity_ == ent)
+ // sfr: smartpointer
+ if (ent && curr_->entity_.get() == ent)
+ {
+ return TRUE;
+ }
+ else
+ {
+ return FALSE;
+ }
 }*/
 
 

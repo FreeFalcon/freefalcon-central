@@ -52,34 +52,34 @@
 #include "simbase.h"
 #endif
 
-#define GNDAI_MAX_DIST		(2000.0F)
-#define MIN_DIST			(100.0F)
-#define AI_COLLISION_RANGE	(500.0F)
+#define GNDAI_MAX_DIST (2000.0F)
+#define MIN_DIST (100.0F)
+#define AI_COLLISION_RANGE (500.0F)
 
 
 // Next_WayPoint - get the next way point..
 //
-// Input:	none.
+// Input: none.
 //
-// Output:	WayPoint * = tells whether we have a new way point or not
+// Output: WayPoint * = tells whether we have a new way point or not
 //
 // By Mark McCubbin
 // (c) 1997
 WayPointClass *GNDAIClass::Next_WayPoint(void)
 {
 
-    float		vel;
-    float		distance,
+    float vel;
+    float distance,
                 dx,
                 dy,
                 dz;
 
     // Used for the campaign movement..
     //
-    BattalionClass	*theBattalion;
-    WayPoint		waypoint = NULL;
-    int				dir;
-    GridIndex		ox,
+    BattalionClass *theBattalion;
+    WayPoint waypoint = NULL;
+    int dir;
+    GridIndex ox,
                     oy,
                     x,
                     y;
@@ -175,7 +175,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
             self->SetYPRDelta(0.0F, 0.0F, 0.0F);
         }
 
-        waypoint = (WayPoint)&waypoint;	// MCC WARNING - this tells the AI code we
+        waypoint = (WayPoint)&waypoint; // MCC WARNING - this tells the AI code we
         // are still moving.....!!!!!!!!
     }
 
@@ -185,9 +185,9 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
 
 // Fire - fire on current target
 //
-// Input:	none.
+// Input: none.
 //
-// Output:	BOOL Yes, NO.
+// Output: BOOL Yes, NO.
 //
 // TODO: Change to use local target pointer.
 //
@@ -249,22 +249,22 @@ void GNDAIClass::Fire(void)
 
             // 2000-10-12 MODIFIED BY S.G. WE NEED TO KNOW IF IT IS A GUN SHOT. IF SO, SHOOT AGAIN VERY SOON
             //if (self->DoWeapons()) {
-            //	nextAirFire	= SimLibElapsedTime + airFireRate;	// Shot -- wait a while
+            // nextAirFire = SimLibElapsedTime + airFireRate; // Shot -- wait a while
             int ret;
 
             if (ret = self->DoWeapons())
             {
                 // If it's just TRUE, it's a missile launch, wait 'airFireRate' otherwise wait half a second
                 if (ret == TRUE)
-                    nextAirFire	= SimLibElapsedTime + airFireRate;	// Shot -- wait a while
+                    nextAirFire = SimLibElapsedTime + airFireRate; // Shot -- wait a while
                 else
                 {
                     // 2000-10-27 ADDED BY S.G.
                     // SO GUNS CAN HAVE DIFFERENT FIRE RATE... NOT IN RP4, SIMPLY ADD 500 TO MAKE IT LIKE RP4
                     //if (ret == TRUE + 1) // It's a slow fire rate
-                    //	nextAirFire	= SimLibElapsedTime + 2000;
+                    // nextAirFire = SimLibElapsedTime + 2000;
                     //else
-                    nextAirFire	= SimLibElapsedTime + 500;
+                    nextAirFire = SimLibElapsedTime + 500;
                 }
 
                 // END OF MODIFIED SECTION
@@ -274,7 +274,7 @@ void GNDAIClass::Fire(void)
                 if (SimLibElapsedTime > nextFire + 2000)
                 {
                     // No shot, exceeded window -- Try again soon
-                    nextAirFire	= SimLibElapsedTime + 2000;
+                    nextAirFire = SimLibElapsedTime + 2000;
                 }
                 else
                 {
@@ -282,7 +282,7 @@ void GNDAIClass::Fire(void)
                 }
             }
 
-            nextGroundFire	= SimLibElapsedTime + gndFireRate;	// Shot or not shot, wait a while
+            nextGroundFire = SimLibElapsedTime + gndFireRate; // Shot or not shot, wait a while
         }
         else
         {
@@ -297,7 +297,7 @@ void GNDAIClass::Fire(void)
             {
                 float xft, yft, zft;
                 float realRange, tof;
-                FalconEntity	*target;
+                FalconEntity *target;
 
                 SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
 
@@ -322,7 +322,7 @@ void GNDAIClass::Fire(void)
                 //if(theWeapon->IsGun()) {
                 if (theWeapon && theWeapon->IsGun())
                 {
-                    GunClass	*Gun = (GunClass*)theWeapon;
+                    GunClass *Gun = (GunClass*)theWeapon;
 
                     // Guess TOF
                     tof = realRange / Gun->initBulletVelocity + 0.25F;

@@ -52,4 +52,4 @@ HRESULT DDCopyBitmap(IDirectDrawSurface *pdds, char *image,
 HRESULT DDStretchBitmap(IDirectDrawSurface *pdds, char *image,
                         BITMAPINFO *bmi, int x, int y, int w, int h, int dest_w, int dest_h, int src_y);
 
-#endif		// end _DDUTIL_H_
+#endif // end _DDUTIL_H_

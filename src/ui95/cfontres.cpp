@@ -290,9 +290,9 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
 
                         //XX
                         //if(seg & 1)
-                        //	*dptr++=color;
+                        // *dptr++=color;
                         //else
-                        //	dptr++;
+                        // dptr++;
 
                         if (seg & 1)
                         {
@@ -451,12 +451,12 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
 void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y)
 {
-    if (str)	Draw(surface, str, _tcsclen(str), color, x, y);
+    if (str) Draw(surface, str, _tcsclen(str), color, x, y);
 }
 
 void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y)
 {
-    if (str)	DrawSolid(surface, str, _tcsclen(str), color, bgcolor, x, y);
+    if (str) DrawSolid(surface, str, _tcsclen(str), color, bgcolor, x, y);
 }
 
 void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)

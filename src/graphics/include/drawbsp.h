@@ -46,19 +46,19 @@ public:
         return (slotNumber < instance.ParentObject->nSlots) && (instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL);
     };
 
-    int	GetNumSlots(void)
+    int GetNumSlots(void)
     {
         return instance.ParentObject->nSlots;
     };
-    int	GetNumDOFs(void)
+    int GetNumDOFs(void)
     {
         return instance.ParentObject->nDOFs;
     };
-    int	GetNumSwitches(void)
+    int GetNumSwitches(void)
     {
         return instance.ParentObject->nSwitches;
     };
-    int	GetNumDynamicVertices(void)
+    int GetNumDynamicVertices(void)
     {
         return instance.ParentObject->nDynamicCoords;
     };
@@ -81,15 +81,15 @@ public:
         return instance.GetNTextureSet();
     };
 
-    float	GetDOFangle(int DOF);
-    float	GetDOFoffset(int DOF);
-    void	GetDynamicVertex(int vertID, float *dx, float *dy, float *dz);
+    float GetDOFangle(int DOF);
+    float GetDOFoffset(int DOF);
+    void GetDynamicVertex(int vertID, float *dx, float *dy, float *dz);
 
     // RV - Biker
-    void	GetDynamicCoords(int vertID, float *dx, float *dy, float *dz);
+    void GetDynamicCoords(int vertID, float *dx, float *dy, float *dz);
 
-    UInt32	GetSwitchMask(int switchNumber);
-    UInt32	GetTextureSet(void)
+    UInt32 GetSwitchMask(int switchNumber);
+    UInt32 GetTextureSet(void)
     {
         return instance.TextureSet;
     };
@@ -119,11 +119,11 @@ public:
     };
 
     // These two functions are used to handle preloading BSP objects for quick drawing later
-    static void	LockAndLoad(int id)
+    static void LockAndLoad(int id)
     {
         TheObjectList[id].ReferenceWithFetch();
     };
-    static void	Unlock(int id)
+    static void Unlock(int id)
     {
         TheObjectList[id].Release();
     };
@@ -138,26 +138,26 @@ public:
     };
 
 public:
-    Trotation			orientation;
-    static BOOL			drawLabels;		// Shared by ALL drawable BSPs
+    Trotation orientation;
+    static BOOL drawLabels; // Shared by ALL drawable BSPs
 
-    ObjectInstance		instance;
+    ObjectInstance instance;
     // RED - Object volume, used for Radar stuff
-    float	GetRadarSign(void)
+    float GetRadarSign(void)
     {
         return RadarSign;
     }
 
 protected:
-    int					id;				// TODO: With the new BSP lib, this id could go...
-    //ObjectInstance		instance;
+    int id; // TODO: With the new BSP lib, this id could go...
+    //ObjectInstance instance;
 
-    BOOL				inhibitDraw;	// When TRUE, the Draw function just returns
+    BOOL inhibitDraw; // When TRUE, the Draw function just returns
 
-    char				label[32];
-    int					labelLen;
-    DWORD				labelColor;
-    float				RadarSign;
+    char label[32];
+    int labelLen;
+    DWORD labelColor;
+    float RadarSign;
 
     // Handle time of day notifications
     static void TimeUpdateCallback(void *unused);
@@ -190,7 +190,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

@@ -101,7 +101,7 @@ namespace FilterSaveStuff
         UNITS_SQUAD_SQUADRON,
         UNITS_SQUAD_PACKAGE,
         UNITS_SQUAD_FIGHTER,
-        //	UNITS_SQUAD_FIGHTBOMB,	// no idea what that is, isn´t used either..
+        // UNITS_SQUAD_FIGHTBOMB, // no idea what that is, isn´t used either..
         UNITS_SQUAD_ATTACK,
         UNITS_SQUAD_BOMBER,
         UNITS_SQUAD_SUPPORT,
@@ -118,25 +118,25 @@ namespace FilterSaveStuff
     };
 
     // those can be preinitialized if the need arises..
-    bool filterState[END_OF_ENUM__USED_FOR_SIZE] =  	// Legend stuff
+    bool filterState[END_OF_ENUM__USED_FOR_SIZE] =   // Legend stuff
     {
         false, false,
         // Objectives
         true, false, false, false, false, false,
         false, false, false, false, false, false,
         // Units
-        false, false, false,		// this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
+        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
         true, false, false, false, false, true,
         false, false, false, false, true, false,
         false,
         // Sams/Radar
         false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)!
-    };	// ..ugly, but whatever..
-}	// namespace FilterSaveStuff, end Retro 26/10/03
+    }; // ..ugly, but whatever..
+} // namespace FilterSaveStuff, end Retro 26/10/03
 
 void MenuToggleObjectiveCB(long ID, short, C_Base *control)
 {
-    using namespace FilterSaveStuff;	// Retro 26/10/03. Here I take note if a certain objective filter is enabled or disabled
+    using namespace FilterSaveStuff; // Retro 26/10/03. Here I take note if a certain objective filter is enabled or disabled
 
     switch (ID)
     {
@@ -314,7 +314,7 @@ void MenuToggleObjectiveCB(long ID, short, C_Base *control)
 
 void MenuToggleUnitCB(long ID, short, C_Base *control)
 {
-    using namespace FilterSaveStuff;	// Retro 26/10/03. Here I take note if a certain unit filter is enabled or disabled
+    using namespace FilterSaveStuff; // Retro 26/10/03. Here I take note if a certain unit filter is enabled or disabled
 
     switch (ID)
     {
@@ -529,7 +529,7 @@ void MenuToggleUnitCB(long ID, short, C_Base *control)
 
 void MenuToggleNamesCB(long ID, short, C_Base *control)
 {
-    using namespace FilterSaveStuff;	// Retro 26/10/03. Here I take note if map names are enabled or disabled
+    using namespace FilterSaveStuff; // Retro 26/10/03. Here I take note if map names are enabled or disabled
 
     if (((C_PopupList *)control)->GetItemState(ID))
     {
@@ -547,7 +547,7 @@ void MenuToggleNamesCB(long ID, short, C_Base *control)
 
 void MenuToggleBullseyeCB(long ID, short, C_Base *control)
 {
-    using namespace FilterSaveStuff;	// Retro 26/10/03. Here I take note if the bullseye is enabled or disabled
+    using namespace FilterSaveStuff; // Retro 26/10/03. Here I take note if the bullseye is enabled or disabled
 
     if (((C_PopupList *)control)->GetItemState(ID))
     {
@@ -564,7 +564,7 @@ void MenuToggleBullseyeCB(long ID, short, C_Base *control)
 }
 void MenuSetCirclesCB(long, short, C_Base *)
 {
-    using namespace FilterSaveStuff;	// Retro 26/10/03. Here I take note if a threat filter is enabled or disabled.
+    using namespace FilterSaveStuff; // Retro 26/10/03. Here I take note if a threat filter is enabled or disabled.
     // this works as radiobutton so only one may be active
 
     C_PopupList *menu;
@@ -781,13 +781,13 @@ void MenuAlternateCB(long, short, C_Base *)
 
 WayPointClass* GetSelectedWayPoint(void)
 {
-    C_Base			*caller;
-    C_Base			*control;
-    C_Waypoint		*cwp;
-    VU_ID			*tmpID;
-    Unit			unit;
-    WayPoint		wp;
-    int				i;
+    C_Base *caller;
+    C_Base *control;
+    C_Waypoint *cwp;
+    VU_ID *tmpID;
+    Unit unit;
+    WayPoint wp;
+    int i;
 
     caller = gPopupMgr->GetCallingControl();
 
@@ -815,7 +815,7 @@ WayPointClass* GetSelectedWayPoint(void)
             // global ids match this information.
             if (gMapMgr->GetCurWP() == cwp)
             {
-                VU_ID			*tmpID;
+                VU_ID *tmpID;
 
                 tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
@@ -850,7 +850,7 @@ WayPointClass* GetSelectedWayPoint(void)
 void SteerPointMenuOpenCB(C_Base *, C_Base *)
 {
     C_PopupList *menu;
-    WayPoint	wp;
+    WayPoint wp;
 
     // We've opened a steerpoint's popup menu. Setup current values!
     wp = GetSelectedWayPoint();
@@ -1217,7 +1217,7 @@ void MenuOpenWpWindowCB(long, short, C_Base *)
 
 void MenuLockCB(long ID, short, C_Base *)
 {
-    WayPoint	wp = NULL;
+    WayPoint wp = NULL;
 
     gPopupMgr->CloseMenu();
 
@@ -1237,7 +1237,7 @@ void MenuLockCB(long ID, short, C_Base *)
 
 void MenuClimbCB(long ID, short, C_Base *)
 {
-    WayPoint	wp = NULL;
+    WayPoint wp = NULL;
 
     gPopupMgr->CloseMenu();
 
@@ -1256,8 +1256,8 @@ void MenuClimbCB(long ID, short, C_Base *)
 
 void MenuFormationCB(long ID, short, C_Base *)
 {
-    WayPoint	wp = NULL;
-    int			formation;
+    WayPoint wp = NULL;
+    int formation;
 
     gPopupMgr->CloseMenu();
 
@@ -1273,8 +1273,8 @@ void MenuFormationCB(long ID, short, C_Base *)
 
 void MenuEnrouteCB(long ID, short, C_Base *)
 {
-    WayPoint	wp = NULL;
-    int			action;
+    WayPoint wp = NULL;
+    int action;
 
     gPopupMgr->CloseMenu();
 
@@ -1290,8 +1290,8 @@ void MenuEnrouteCB(long ID, short, C_Base *)
 
 void MenuActionCB(long ID, short, C_Base *)
 {
-    WayPoint	wp = NULL;
-    int			action;
+    WayPoint wp = NULL;
+    int action;
 
     gPopupMgr->CloseMenu();
 
@@ -1331,7 +1331,7 @@ void MenuAddWPCB(long, short, C_Base *)
 
     wp = un->GetFirstUnitWP();
     // if(un->GetCurrentUnitWP() != wp)
-    //	return;
+    // return;
 
     wps = cwp->GetLast();
 
@@ -1351,8 +1351,8 @@ void MenuAddWPCB(long, short, C_Base *)
 
 void MenuDeleteWPCB(long, short hittype, C_Base *)
 {
-    WayPoint		wp, rw;
-    Unit			un;
+    WayPoint wp, rw;
+    Unit un;
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
@@ -1525,14 +1525,14 @@ void MenuSetOwnerCB(long ID, short, C_Base *)
 
 void MenuAddUnitCB(long ID, short, C_Base *control)
 {
-    C_Base			*caller;
-    C_MapIcon		*icon;
-    C_DrawList		*piggy;
-    C_TreeList		*tree;
-    long			iconid;
-    TREELIST		*item;
-    UI_Refresher	*urec;
-    VU_ID			vid = FalconNullId;
+    C_Base *caller;
+    C_MapIcon *icon;
+    C_DrawList *piggy;
+    C_TreeList *tree;
+    long iconid;
+    TREELIST *item;
+    UI_Refresher *urec;
+    VU_ID vid = FalconNullId;
 
     urec = NULL;
     caller = gPopupMgr->GetCallingControl();
@@ -1707,7 +1707,7 @@ void SetMapSettings()
 
         // Units
 
-#if 0	// screwy, doesn´t work yet
+#if 0 // screwy, doesn´t work yet
 
         /* this is a radio box so only 1 of the 3 may be active */
         if (filterState[UNITS_DIV])
@@ -1756,8 +1756,8 @@ void SetMapSettings()
             menu->SetItemState(MID_UNITS_NAVY_SUPPLY, 1);
 
         /* not saved yet - WTF is this anyway ? */
-        //	if (filterState[UNITS_SQUAD_FIGHTBOMB])
-        //		menu->SetItemState(MID_UNITS_SQUAD_FIGHTBOMB,1);
+        // if (filterState[UNITS_SQUAD_FIGHTBOMB])
+        // menu->SetItemState(MID_UNITS_SQUAD_FIGHTBOMB,1);
 
         if (g_nUnidentifiedInUI)
             if (filterState[UNITS_SQUAD_UNKNOWN])
@@ -1773,7 +1773,7 @@ void SetMapSettings()
         else if (filterState[CIRCLE_RADAR_HIGH])
             menu->SetItemState(MID_CIRCLE_RADAR_HIGH, 1);
 
-    }	// namespace-scope ends here, Retro 26/10/03 ends here
+    } // namespace-scope ends here, Retro 26/10/03 ends here
 
     if (menu)
     {
@@ -2350,7 +2350,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
 void HookupCampaignMenus()
 {
     C_PopupList *menu;
-    int			i;
+    int i;
 
     menu = gPopupMgr->GetMenu(MAP_POP);
 

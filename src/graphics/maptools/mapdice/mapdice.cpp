@@ -1,9 +1,9 @@
 /*******************************************************************************\
-	Map Converter from BMP color and RAW elevation to Falcon 4.0 LOD format
+ Map Converter from BMP color and RAW elevation to Falcon 4.0 LOD format
 
-	Scott Randolph
-	Spectrum HoloByte
-	November 14, 1995
+ Scott Randolph
+ Spectrum HoloByte
+ November 14, 1995
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
@@ -13,84 +13,84 @@
 #include "..\..\3Dlib\Image.h"
 
 
-#define 		MAX_LEVELS				6		// How many levels of detail to generate
-#define			LAST_TEX_LEVEL			2		// What is the number of the last level to be textured
+#define  MAX_LEVELS 6 // How many levels of detail to generate
+#define LAST_TEX_LEVEL 2 // What is the number of the last level to be textured
 
-const float		altScale	= 8.0f * FEET_PER_METER;	// Must match units in *-E.RAW file
+const float altScale = 8.0f * FEET_PER_METER; // Must match units in *-E.RAW file
 
-float			FeetPerPost = (FEET_PER_KM / 4.0f);		// I've got 250m posts at the moment
-const int		MEA_DOWNSAMPLE_SHIFT = 5;				// From 250m to 8km
-const float		FeetToMEAcell = 1.0f / (FeetPerPost * (1 << MEA_DOWNSAMPLE_SHIFT));
+float FeetPerPost = (FEET_PER_KM / 4.0f); // I've got 250m posts at the moment
+const int MEA_DOWNSAMPLE_SHIFT = 5; // From 250m to 8km
+const float FeetToMEAcell = 1.0f / (FeetPerPost * (1 << MEA_DOWNSAMPLE_SHIFT));
 
 
-static const WORD	INVALID_TEXID	= 0xFFFF;
+static const WORD INVALID_TEXID = 0xFFFF;
 
 
 int main(int argc, char* argv[])
 {
 
-    BYTE		*ColorIndexBuffer	= NULL;
-    DWORD		*ColorPaletteBuffer	= NULL;
-    BYTE		*ElevationBuffer	= NULL;
-    WORD		*TexIDBuffer		= NULL;
-    WORD		*FarFieldBuffer		= NULL;
-    WORD		*NormalBuffer		= NULL;
-    TdiskPost	*postBuffer			= NULL;
-    TdiskPost	*postBufferPrev		= NULL;
+    BYTE *ColorIndexBuffer = NULL;
+    DWORD *ColorPaletteBuffer = NULL;
+    BYTE *ElevationBuffer = NULL;
+    WORD *TexIDBuffer = NULL;
+    WORD *FarFieldBuffer = NULL;
+    WORD *NormalBuffer = NULL;
+    TdiskPost *postBuffer = NULL;
+    TdiskPost *postBufferPrev = NULL;
 
-    DWORD		ElevationBufferSize;
-    DWORD		TexIDBufferSize;
-    DWORD		FarFieldBufferSize;
-    DWORD		NormalBufferSize;
-    DWORD		postBufferSize;
+    DWORD ElevationBufferSize;
+    DWORD TexIDBufferSize;
+    DWORD FarFieldBufferSize;
+    DWORD NormalBufferSize;
+    DWORD postBufferSize;
 
-    CImageFileMemory	colorFile;
+    CImageFileMemory colorFile;
 
-    HANDLE		elevationFile;
-    HANDLE		textureFile;
-    HANDLE		farFieldFile;
-    HANDLE		headerFile;
-    HANDLE		postFile;
-    HANDLE		offsetFile;
+    HANDLE elevationFile;
+    HANDLE textureFile;
+    HANDLE farFieldFile;
+    HANDLE headerFile;
+    HANDLE postFile;
+    HANDLE offsetFile;
 
-    int			bufferWidth;
-    int			bufferHeight;
+    int bufferWidth;
+    int bufferHeight;
 
-    Int16		MEAvalue;
-    int			MEAwidth;
-    int			MEAheight;
+    Int16 MEAvalue;
+    int MEAwidth;
+    int MEAheight;
 
-    int			texMapWidth;
-    int			texMapHeight;
+    int texMapWidth;
+    int texMapHeight;
 
-    int			farMapWidth;
-    int			farMapHeight;
+    int farMapWidth;
+    int farMapHeight;
 
     OPENFILENAME dialogInfo;
-    char		filename[256];
-    char		dataRootDir[256];
-    char		dataSet[256];
-    char		texPath[256];
+    char filename[256];
+    char dataRootDir[256];
+    char dataSet[256];
+    char texPath[256];
 
-    int			row;
-    int			col;
-    int			r;
-    int			c;
+    int row;
+    int col;
+    int r;
+    int c;
 
-    int			top;
-    int			left;
-    int			bottom;
-    int			right;
+    int top;
+    int left;
+    int bottom;
+    int right;
 
-    int			LOD;
-    int			blockRow;
-    int			blockCol;
-    DWORD		dataOffset;
+    int LOD;
+    int blockRow;
+    int blockCol;
+    DWORD dataOffset;
 
-    int			LastFarTexLevel;
-    DWORD		fileOffset = 0xFFFFFFFF;
-    DWORD		bytes;
-    int			result;
+    int LastFarTexLevel;
+    DWORD fileOffset = 0xFFFFFFFF;
+    DWORD bytes;
+    int result;
 
 
     // See if we got a filename on the command line
@@ -154,13 +154,13 @@ int main(int argc, char* argv[])
     *p = '\0';
     strcpy(dataRootDir, dir);
     strcpy(dataSet, base);
-    dataSet[strlen(dataSet) - 2] = '\0';	// Get rid of the "-C"
+    dataSet[strlen(dataSet) - 2] = '\0'; // Get rid of the "-C"
     strcpy(texPath, dir);
     strcat(texPath, "\\texture\\");
 
 
     /************************************************************************************\
-    	Got all input args -- Begin Setup
+     Got all input args -- Begin Setup
     \************************************************************************************/
 
 
@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
 
     if (result != 1)
     {
-        char	message[256];
+        char message[256];
         sprintf(message, "Failed to open %s", filename);
         ShiError(message);
     }
@@ -191,10 +191,10 @@ int main(int argc, char* argv[])
     ShiAssert(colorFile.image.palette);
 
     // Store the image data
-    bufferWidth			= colorFile.image.width;
-    bufferHeight		= colorFile.image.height;
-    ColorIndexBuffer	= colorFile.image.image;
-    ColorPaletteBuffer	= (DWORD*)colorFile.image.palette;
+    bufferWidth = colorFile.image.width;
+    bufferHeight = colorFile.image.height;
+    ColorIndexBuffer = colorFile.image.image;
+    ColorPaletteBuffer = (DWORD*)colorFile.image.palette;
 
 
     // Allocate space for the elevation buffer
@@ -231,8 +231,8 @@ int main(int argc, char* argv[])
 
 
     // Store the size of the MEA table we're going to build
-    MEAwidth	= bufferWidth  >> MEA_DOWNSAMPLE_SHIFT;
-    MEAheight	= bufferHeight >> MEA_DOWNSAMPLE_SHIFT;
+    MEAwidth = bufferWidth  >> MEA_DOWNSAMPLE_SHIFT;
+    MEAheight = bufferHeight >> MEA_DOWNSAMPLE_SHIFT;
 
     // Open the MEA table output file
     sprintf(filename, "%s\\terrain\\Theater.MEA", dataRootDir);
@@ -255,10 +255,10 @@ int main(int argc, char* argv[])
         {
             MEAvalue = -32000;
 
-            top		= row << MEA_DOWNSAMPLE_SHIFT;
-            left	= col << MEA_DOWNSAMPLE_SHIFT;
-            bottom	= ((row + 1) << MEA_DOWNSAMPLE_SHIFT) - 1;
-            right	= ((col + 1) << MEA_DOWNSAMPLE_SHIFT) - 1;
+            top = row << MEA_DOWNSAMPLE_SHIFT;
+            left = col << MEA_DOWNSAMPLE_SHIFT;
+            bottom = ((row + 1) << MEA_DOWNSAMPLE_SHIFT) - 1;
+            right = ((col + 1) << MEA_DOWNSAMPLE_SHIFT) - 1;
 
 
             // Search for the maximum height within this MEA cell
@@ -354,7 +354,7 @@ int main(int argc, char* argv[])
             double phi;
 
             // Convert from catesian to spherical coordinates
-            phi		= asin(Nz);
+            phi = asin(Nz);
             ShiAssert(phi <= PI / 2.0);
             ShiAssert(phi >= 0.0);
 
@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                theta	= atan2(Ny, Nx);
+                theta = atan2(Ny, Nx);
             }
 
             if (theta < 0.0)  theta += PI * 2.0;
@@ -381,17 +381,17 @@ int main(int argc, char* argv[])
             ShiAssert(theta >= 0.0);
 
             // Scale theta from 0 - 2 PI (360 degrees) to 0 - 255
-            static const double thetaInStart	= 0.0;
-            static const double thetaInStop		= PI * 2.0;
-            static const double thetaInRange	= thetaInStop - thetaInStart;
-            static const double thetaOutScale	= 255.99;
+            static const double thetaInStart = 0.0;
+            static const double thetaInStop = PI * 2.0;
+            static const double thetaInRange = thetaInStop - thetaInStart;
+            static const double thetaOutScale = 255.99;
             theta = thetaOutScale * (theta - thetaInStart) / thetaInRange;
 
             // Scale phi from 1.3 - PI/2 to 0 - 63
-            static const double phiInStart	= 1.3;
-            static const double phiInStop	= PI / 2.0;
-            static const double phiInRange	= phiInStop - phiInStart;
-            static const double phiOutScale	= 63.99;
+            static const double phiInStart = 1.3;
+            static const double phiInStop = PI / 2.0;
+            static const double phiInRange = phiInStop - phiInStart;
+            static const double phiOutScale = 63.99;
             phi = phiOutScale * (phi - phiInStart) / phiInRange;
 
             if (phi < 0.0)  phi = 0.0;
@@ -439,8 +439,8 @@ int main(int argc, char* argv[])
 
 
     // Allocate space for the texture ID buffer
-    texMapWidth		= bufferWidth >> LAST_TEX_LEVEL;
-    texMapHeight	= bufferHeight >> LAST_TEX_LEVEL;
+    texMapWidth = bufferWidth >> LAST_TEX_LEVEL;
+    texMapHeight = bufferHeight >> LAST_TEX_LEVEL;
     TexIDBufferSize = texMapWidth * texMapHeight * sizeof(*TexIDBuffer);
     TexIDBuffer = (WORD*)malloc(TexIDBufferSize);
     ShiAssert(TexIDBuffer);
@@ -545,8 +545,8 @@ int main(int argc, char* argv[])
 
     // Allocate the memory for each disk block as it is constructed
     postBufferSize = POSTS_PER_BLOCK * sizeof(*postBuffer);
-    postBuffer		= (TdiskPost*)malloc(postBufferSize);
-    postBufferPrev	= (TdiskPost*)malloc(postBufferSize);
+    postBuffer = (TdiskPost*)malloc(postBufferSize);
+    postBufferPrev = (TdiskPost*)malloc(postBufferSize);
     ShiAssert(postBuffer);
     ShiAssert(postBufferPrev);
 
@@ -585,10 +585,10 @@ int main(int argc, char* argv[])
                 printf("Reading far field data for LOD %0d\n", LOD);
 
                 // Allocate space for the far field texture offset buffer
-                farMapWidth			= bufferWidth >> LOD;
-                farMapHeight		= bufferHeight >> LOD;
-                FarFieldBufferSize	= farMapWidth * farMapHeight * sizeof(*FarFieldBuffer);
-                FarFieldBuffer		= (WORD*)malloc(FarFieldBufferSize);
+                farMapWidth = bufferWidth >> LOD;
+                farMapHeight = bufferHeight >> LOD;
+                FarFieldBufferSize = farMapWidth * farMapHeight * sizeof(*FarFieldBuffer);
+                FarFieldBuffer = (WORD*)malloc(FarFieldBufferSize);
                 ShiAssert(FarFieldBuffer);
 
                 // Read in the data
@@ -660,10 +660,10 @@ int main(int argc, char* argv[])
                         dataOffset = ((bufferHeight - 1) - (row + blockStartRow)) * bufferWidth + (col + blockStartCol);
 
                         // Store this point's data into the post array
-                        post->z			= (Int16)(ElevationBuffer[dataOffset] * altScale);
-                        post->color		= ColorIndexBuffer[dataOffset];
-                        post->theta		= NormalBuffer[dataOffset] & 0xFF;
-                        post->phi		= NormalBuffer[dataOffset] >> 8;
+                        post->z = (Int16)(ElevationBuffer[dataOffset] * altScale);
+                        post->color = ColorIndexBuffer[dataOffset];
+                        post->theta = NormalBuffer[dataOffset] & 0xFF;
+                        post->phi = NormalBuffer[dataOffset] >> 8;
 
                         // Fill in appropriate texture information
                         if (LOD <= LAST_TEX_LEVEL)
@@ -672,7 +672,7 @@ int main(int argc, char* argv[])
                                             ((col + blockStartCol) >> LAST_TEX_LEVEL);
 
                             // Figure out the right texture ID (includes Mipmap effects)
-                            post->texID	= TexIDBuffer[ texOffset ] | ((LAST_TEX_LEVEL - LOD) << 12);
+                            post->texID = TexIDBuffer[ texOffset ] | ((LAST_TEX_LEVEL - LOD) << 12);
                         }
                         else
                         {
@@ -681,11 +681,11 @@ int main(int argc, char* argv[])
 
                             if (FarFieldBuffer)
                             {
-                                post->texID	= FarFieldBuffer[farFieldOffset];
+                                post->texID = FarFieldBuffer[farFieldOffset];
                             }
                             else
                             {
-                                post->texID	= INVALID_TEXID;
+                                post->texID = INVALID_TEXID;
                             }
                         }
 

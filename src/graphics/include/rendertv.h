@@ -15,8 +15,8 @@
 class RenderTV : public RenderOTW
 {
 public:
-    RenderTV()			{};
-    virtual ~RenderTV()	{};
+    RenderTV() {};
+    virtual ~RenderTV() {};
 
     virtual void Setup(ImageBuffer *imageBuffer, RViewPoint *vp);
 

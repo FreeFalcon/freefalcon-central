@@ -54,7 +54,7 @@
 /*                                                  */
 /****************************************************/
 
-#define BITS_PER_BYTE 8		/* Currently true for all */
+#define BITS_PER_BYTE 8 /* Currently true for all */
 
 #define GET_NUM_BITS(TYPE) (BITS_PER_BYTE*sizeof(TYPE))
 

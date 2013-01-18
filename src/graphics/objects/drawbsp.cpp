@@ -23,11 +23,11 @@
 #include "RealWeather.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableBSP::pool;
+MEM_POOL DrawableBSP::pool;
 #endif
 
-BOOL	DrawableBSP::drawLabels = FALSE;		// Shared by ALL drawable BSPs
-extern int g_nNearLabelLimit;	// JB 000807
+BOOL DrawableBSP::drawLabels = FALSE; // Shared by ALL drawable BSPs
+extern int g_nNearLabelLimit; // JB 000807
 extern bool g_bSmartScaling; // JB 010112
 extern bool g_bDrawBoundingBox;
 extern bool g_bLabelRadialFix;
@@ -70,7 +70,7 @@ DrawableBSP::~DrawableBSP(void)
     // HACK!!!
     // This check should go as soon as Drawable2D stops inheriting from
     // this class.
-    //	if (id < 0)  return;
+    // if (id < 0)  return;
 
     // Mark this id as having been released
     id = -id;
@@ -97,7 +97,7 @@ void DrawableBSP::Update(const Tpoint *pos, const Trotation *rot)
 
 
 /***************************************************************************\
-    Attach an object as a child	(no further updates need to be done on it)
+    Attach an object as a child (no further updates need to be done on it)
 \***************************************************************************/
 void DrawableBSP::AttachChild(DrawableBSP *child, int slotNumber)
 {
@@ -132,8 +132,8 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
     ShiAssert((instance.SlotChildren) && (instance.SlotChildren[slotNumber] == &child->instance));
 
-    Tpoint	offset;
-    Tpoint	pos;
+    Tpoint offset;
+    Tpoint pos;
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
@@ -333,23 +333,23 @@ void DrawableBSP::SetLabel(char *labelString, DWORD color)
 
 
 /***************************************************************************\
-**	Determine if a line segment (origin + vector) intersects bounding box
-**	for the BSP.
+** Determine if a line segment (origin + vector) intersects bounding box
+** for the BSP.
 **  Return TRUE if so and the collision point.
-**	Algo from GGEms I
+** Algo from GGEms I
 \***************************************************************************/
 BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *collide, float boxScale)
 {
-    Tpoint		origin = {0.0F}, vec = {0.0F};
-    Tpoint		pos = {0.0F};
-    int			i = 0;
-    float 		*minBp = NULL, *maxBp = NULL, *orgp = NULL, *vecp = NULL, *collp = NULL;
-    enum		{LEFT, RIGHT, MIDDLE}		quadrant[3] = {LEFT};
-    float		t = 0.0F, tMax = 0.0F;
-    float		minB[3] = {0.0F}, maxB[3] = {0.0F};
-    float		candidatePlane[3] = {0.0F};
-    int			whichPlane = 0;
-    BOOL		inside = TRUE;
+    Tpoint origin = {0.0F}, vec = {0.0F};
+    Tpoint pos = {0.0F};
+    int i = 0;
+    float  *minBp = NULL, *maxBp = NULL, *orgp = NULL, *vecp = NULL, *collp = NULL;
+    enum {LEFT, RIGHT, MIDDLE} quadrant[3] = {LEFT};
+    float t = 0.0F, tMax = 0.0F;
+    float minB[3] = {0.0F}, maxB[3] = {0.0F};
+    float candidatePlane[3] = {0.0F};
+    int whichPlane = 0;
+    BOOL inside = TRUE;
 
     // First we transform the origin and vector into object space (since that's easier than rotating the box)
     pos.x = from->x - position.x;
@@ -456,9 +456,9 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // Check final candidate is within the bounds of the side of the box
-    orgp	= (float *)&origin;
-    vecp	= (float *)&vec;
-    collp	= (float *)&pos;
+    orgp = (float *)&origin;
+    vecp = (float *)&vec;
+    collp = (float *)&pos;
 
     for (i = 0; i < 3; i++, vecp++, orgp++, collp++)
     {
@@ -495,7 +495,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
 // it returns false is the BSP results not visible for any reason
 bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
 {
-    float			alpha, fog, z;
+    float alpha, fog, z;
 
     // RED - Linear Fog - checvk if under visibility limit
     if (position.z > realWeather->VisibleLimit()) return false;
@@ -526,7 +526,7 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
                 {
                     alpha = renderer->GetRangeOnlyFog(z);
 
-                    if (alpha < fog)	alpha = fog;
+                    if (alpha < fog) alpha = fog;
 
                     alpha = 1.f - alpha;
                 }
@@ -553,13 +553,13 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
 }
 
 /***************************************************************************\
-	This is the call used by the out the window terrain rendering system.
+ This is the call used by the out the window terrain rendering system.
 \***************************************************************************/
 //void DrawableBSP::Draw( RenderOTW *renderer, int LOD )
 void DrawableBSP::Draw(RenderOTW *renderer, int)
 {
-    ThreeDVertex	labelPoint;
-    float			x, y;
+    ThreeDVertex labelPoint;
+    float x, y;
 
     ShiAssert(id >= 0);
 
@@ -645,7 +645,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     }
 
 
-#ifdef	DEBUG_LOD_ID
+#ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
     if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
@@ -654,8 +654,8 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
         if (labelPoint.clipFlag == ON_SCREEN)
         {
-            x = labelPoint.x - labelLen;		// Centers text
-            y = labelPoint.y - 12;				// Place text above center of object
+            x = labelPoint.x - labelLen; // Centers text
+            y = labelPoint.y - 12; // Place text above center of object
             renderer->SetColor(labelColor);
             renderer->SetFont(2);
             renderer->ScreenText(x, y, TheDXEngine.GetLodUsedLabel());
@@ -670,14 +670,14 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         if (!g_bSmartScaling && !PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
-        // JB 000807	Add near label limit and labels that get brighter as they get closer
-        //		if ( labelPoint.clipFlag == ON_SCREEN )//-
-        //		{//-
-        //			x = labelPoint.x - renderer->ScreenTextWidth(label) / 2;		// Centers text//-
-        //			y = labelPoint.y - 12;				// Place text above center of object//-
-        //			renderer->SetColor( labelColor );//-
-        //			renderer->ScreenText( x, y, label );//-
-        //		} //-
+        // JB 000807 Add near label limit and labels that get brighter as they get closer
+        // if ( labelPoint.clipFlag == ON_SCREEN )//-
+        // {//-
+        // x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text//-
+        // y = labelPoint.y - 12; // Place text above center of object//-
+        // renderer->SetColor( labelColor );//-
+        // renderer->ScreenText( x, y, label );//-
+        // } //-
 
         // RV - RED - If ACMI force Label Limit to 150 nMiles
         long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
@@ -693,7 +693,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
             if (labelPoint.clipFlag == ON_SCREEN &&
-                labelPoint.csZ < limitcheck)			//Same condition as below!!!
+                labelPoint.csZ < limitcheck) //Same condition as below!!!
             {
                 float dx = position.x - renderer->X();
                 float dy = position.y - renderer->Y();
@@ -708,20 +708,20 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         {
             int colorsub = int((labelPoint.csZ / (limit >> 3))) << 5;
 
-            if (colorsub > 180)	// let's not reduce brightness too much, keep a glimpse of the original color
+            if (colorsub > 180) // let's not reduce brightness too much, keep a glimpse of the original color
                 colorsub = 180;
 
             int red = (labelColor & 0x000000ff);
             red -= min(red, colorsub);
             int green = (labelColor & 0x0000ff00) >> 8;
-            green -= min(green, colorsub + 30);		// green would be too light -> +30
+            green -= min(green, colorsub + 30); // green would be too light -> +30
             int blue = (labelColor & 0x00ff0000) >> 16;
             blue -= min(blue, colorsub);
 
             long newlabelColor = blue << 16 | green << 8 | red;
 
-            x = labelPoint.x - renderer->ScreenTextWidth(label) / 2;		// Centers text
-            y = labelPoint.y - 12;				// Place text above center of object
+            x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text
+            y = labelPoint.y - 12; // Place text above center of object
             renderer->SetColor(newlabelColor);
             renderer->ScreenText(x, y, label);
 
@@ -730,7 +730,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
             {
                 char label2[32];
                 sprintf(label2, "%4.1f nm", labelPoint.csZ / 6076); // convert from ft to nm
-                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) / 2;	// Centers text
+                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) / 2; // Centers text
                 float y2 = labelPoint.y + 4; // Distance below center object
                 renderer->ScreenText(x2, y2, label2);
             }
@@ -754,12 +754,12 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
 
 /***************************************************************************\
-	This call is used for micellanious BSP object display.
+ This call is used for micellanious BSP object display.
 \***************************************************************************/
 void DrawableBSP::Draw(Render3D *renderer)
 {
-    ThreeDVertex	labelPoint;
-    float			x, y;
+    ThreeDVertex labelPoint;
+    float x, y;
 
     ShiAssert(id >= 0);
 
@@ -772,7 +772,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 
     TheStateStack.DrawObject(&instance, &orientation, &position, scale);
 
-#ifdef	DEBUG_LOD_ID
+#ifdef DEBUG_LOD_ID
 
     // Now compute the starting location for our label text
     if (drawLabels && TheDXEngine.GetLodUsedLabel()[0])
@@ -781,8 +781,8 @@ void DrawableBSP::Draw(Render3D *renderer)
 
         if (labelPoint.clipFlag == ON_SCREEN)
         {
-            x = labelPoint.x - labelLen;		// Centers text
-            y = labelPoint.y - 12;				// Place text above center of object
+            x = labelPoint.x - labelLen; // Centers text
+            y = labelPoint.y - 12; // Place text above center of object
             renderer->SetFont(2);
             renderer->SetColor(labelColor);
             renderer->ScreenText(x, y, TheDXEngine.GetLodUsedLabel());
@@ -798,8 +798,8 @@ void DrawableBSP::Draw(Render3D *renderer)
 
         if (labelPoint.clipFlag == ON_SCREEN)
         {
-            x = labelPoint.x - labelLen;		// Centers text
-            y = labelPoint.y - 12;				// Place text above center of object
+            x = labelPoint.x - labelLen; // Centers text
+            y = labelPoint.y - 12; // Place text above center of object
             renderer->SetColor(labelColor);
             renderer->ScreenText(x, y, label);
         }
@@ -815,14 +815,14 @@ void DrawableBSP::Draw(Render3D *renderer)
 \***************************************************************************/
 void DrawableBSP::DrawBoundingBox(Render3D *renderer)
 {
-    Tpoint		max, min;
-    Tpoint		p, p1, p2;
-    Trotation	M;
+    Tpoint max, min;
+    Tpoint p, p1, p2;
+    Trotation M;
 
     ShiAssert(id >= 0);
 
     // TEMPORARY:  We're putting the data into the min/max structure in Erick's old
-    //	x Right, y Down, z Front ordering to avoid changes in the code below....
+    // x Right, y Down, z Front ordering to avoid changes in the code below....
     max.x = instance.BoxRight();
     max.y = instance.BoxBottom();
     max.z = instance.BoxFront();
@@ -1057,7 +1057,7 @@ void DrawableBSP::DrawBoundingBox(Render3D *renderer)
 
 /***************************************************************************\
     This function is called from the miscellanious texture loader function.
-	It must be hardwired into that function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void DrawableBSP::SetupTexturesOnDevice( DWORD rc )
 void DrawableBSP::SetupTexturesOnDevice(DXContext *rc)
@@ -1071,7 +1071,7 @@ void DrawableBSP::SetupTexturesOnDevice(DXContext *rc)
 
 /***************************************************************************\
     This function is called from the miscellanious texture cleanup function.
-	It must be hardwired into that function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void DrawableBSP::ReleaseTexturesOnDevice( DWORD rc )
 void DrawableBSP::ReleaseTexturesOnDevice(DXContext *rc)
@@ -1084,13 +1084,13 @@ void DrawableBSP::ReleaseTexturesOnDevice(DXContext *rc)
 
 /***************************************************************************\
     Update the light on the affected object texture palettes.
-	NOTE:  Since the textures are static, this function can also
-		   be static, so the self parameter is ignored.
+ NOTE:  Since the textures are static, this function can also
+    be static, so the self parameter is ignored.
 \***************************************************************************/
 //void DrawableBSP::TimeUpdateCallback( void *self )
 void DrawableBSP::TimeUpdateCallback(void *)
 {
-    Tcolor	light;
+    Tcolor light;
 
     // Get the light level from the time of day manager
     TheTimeOfDay.GetTextureLightingColor(&light);
@@ -1099,9 +1099,9 @@ void DrawableBSP::TimeUpdateCallback(void *)
     TheColorBank.SetLight(light.r, light.g, light.b);
 
     /*JAM 05Jan04
-    	// Update all the textures which aren't dynamicly lit
-    	ThePaletteBank.LightReflectionPalette( 2, &light );
-    	ThePaletteBank.LightBuildingPalette( 3, &light );*/
+     // Update all the textures which aren't dynamicly lit
+     ThePaletteBank.LightReflectionPalette( 2, &light );
+     ThePaletteBank.LightBuildingPalette( 3, &light );*/
 }
 
 /***************************************************************************\

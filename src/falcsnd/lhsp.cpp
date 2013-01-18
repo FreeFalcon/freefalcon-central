@@ -2,12 +2,12 @@
 
   LHSP.cpp
 
-	Lernout & Hauspie Speech compression
+ Lernout & Hauspie Speech compression
 
-	  Version 1.02
+   Version 1.02
 
-		Written by Jim DiZoglio (x257)       (c) 1997 Microprose
-		Rewritten by Dave Power
+ Written by Jim DiZoglio (x257)       (c) 1997 Microprose
+ Rewritten by Dave Power
 
 ------------------------------------------------------------------------ */
 #include <windows.h>
@@ -48,18 +48,18 @@ LHSP::~LHSP(void)
 
 void LHSP::InitializeLHSP(void)
 {
-    //CODECINFOEX		CodecInfoExStruct;
+    //CODECINFOEX CodecInfoExStruct;
     //
     //ST80_GetCodecInfoEx( &CodecInfoExStruct, sizeof( CODECINFOEX ) );
     //PMSIZE = CodecInfoExStruct.wInputBufferSize;
     //CODESIZE = CodecInfoExStruct.wCodedBufferSize;
     //
-    ////	lpInputUncoded = new unsigned char[ MAXCODESIZE ];
+    //// lpInputUncoded = new unsigned char[ MAXCODESIZE ];
     ////lpInputUncoded = new unsigned char[ MAX_INDECODE_SIZE ];
     //
     //if ( ( hAccess = ST80_Open_Decoder( LINEAR_PCM_16_BIT ) ) == NULL )
     //{
-    //	return;
+    // return;
     //}
 }
 
@@ -69,10 +69,10 @@ void LHSP::InitializeLHSP(void)
 
 long LHSP::ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer)
 {
-    unsigned char	*outputPtr;
-    //unsigned long	errorCode;
-    long			outputCodedSize;
-    long			loopCount, decodeSize, compDecodeSize = 0;
+    unsigned char *outputPtr;
+    //unsigned long errorCode;
+    long outputCodedSize;
+    long loopCount, decodeSize, compDecodeSize = 0;
 
     if (input->bytesRead >= input->compFileLength)
         return 0;
@@ -97,21 +97,21 @@ long LHSP::ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer)
         /* I must check if Decode adjusts the output buffer size to use for channel struct */
         //errorCode = ST80_Decode
         //(
-        //	hAccess,
-        //	(unsigned char *)input->dataPtr,
-        //	( LPWORD )&decodeSize,
-        //	outputPtr,
-        //	( LPWORD )&outputCodedSize
+        // hAccess,
+        // (unsigned char *)input->dataPtr,
+        // ( LPWORD )&decodeSize,
+        // outputPtr,
+        // ( LPWORD )&outputCodedSize
         //);
 
-        /*	if ( errorCode == LH_EBADARG )
-        	{
-        		return 0;
-        	}
-        	if ( errorCode == LH_BADHANDLE )
-        	{
-        		return 0;
-        	}*/
+        /* if ( errorCode == LH_EBADARG )
+         {
+         return 0;
+         }
+         if ( errorCode == LH_BADHANDLE )
+         {
+         return 0;
+         }*/
 
         input->dataPtr += decodeSize;
         outputPtr += outputCodedSize;
@@ -138,8 +138,8 @@ void LHSP::CleanupLHSP(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 /*
-void LHSP::VoiceClose( FILE	*falconVoiceFile )
+void LHSP::VoiceClose( FILE *falconVoiceFile )
 {
-	//if (falconVoiceFile)
-	//	fclose( falconVoiceFile );
+ //if (falconVoiceFile)
+ // fclose( falconVoiceFile );
 }*/

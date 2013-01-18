@@ -12,8 +12,8 @@
 // List Flags
 // =================================
 
-#define		LADT_SORTED_LIST		0x01			// Keep this list sorted
-#define		LADT_FREE_USER_DATA		0x02			// Free user data on delete
+#define LADT_SORTED_LIST 0x01 // Keep this list sorted
+#define LADT_FREE_USER_DATA 0x02 // Free user data on delete
 
 // =================================
 // List ADT - Private Implementation
@@ -25,11 +25,11 @@ class ListElementClass
 {
     friend class ListClass;
 private:
-    void				*user_data;
-    short				key;
-    uchar				flags;
-    ListElementClass	*prev;
-    ListElementClass	*next;
+    void *user_data;
+    short key;
+    uchar flags;
+    ListElementClass *prev;
+    ListElementClass *next;
 
 private:
     ListElementClass(short newKey = 0, void *newData = NULL, uchar newFlags = 0);
@@ -79,7 +79,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 typedef ListElementClass* ListNode;
@@ -87,9 +87,9 @@ typedef ListElementClass* ListNode;
 class ListClass
 {
 private:
-    uchar				flags;
-    ListElementClass	*front;
-    ListElementClass	*end;
+    uchar flags;
+    ListElementClass *front;
+    ListElementClass *end;
 
 public:
     ListClass(uchar newFlags = 0);
@@ -135,7 +135,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 typedef ListClass* List;

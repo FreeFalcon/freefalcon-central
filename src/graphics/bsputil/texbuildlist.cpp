@@ -1,5 +1,5 @@
 /***************************************************************************\
-	TexBuildList.cpp
+ TexBuildList.cpp
     Scott Randolph
     March 4, 1998
 
@@ -11,19 +11,19 @@
 #include "TexBuildList.h"
 #include "GraphicsRes.h"
 
-BuildTimeTextureList	TheTextureBuildList;
+BuildTimeTextureList TheTextureBuildList;
 
 
 
 // To be conservative, we'll got twice the size of our biggest uncompressed texture
-static const int	MAX_COMPRESSED_SIZE	= 256 * 256 * 2;
+static const int MAX_COMPRESSED_SIZE = 256 * 256 * 2;
 
 
 
 int BuildTimeTextureList::AddReference(char *filename)
 {
-    BuildTimeTextureEntry		*entry;
-    int							index;
+    BuildTimeTextureEntry *entry;
+    int index;
 
     // See if we've already got a matching texture to share
     index = 0;
@@ -45,10 +45,10 @@ int BuildTimeTextureList::AddReference(char *filename)
     entry = new BuildTimeTextureEntry;
     ShiAssert(strlen(filename) < sizeof(entry->filename));
     strcpy(entry->filename, filename);
-    entry->index	= index;
+    entry->index = index;
     entry->refCount = 1;
-    entry->next		= NULL;
-    entry->prev		= tail;
+    entry->next = NULL;
+    entry->prev = tail;
 
     // Add the new entry to the list
     if (tail)
@@ -71,8 +71,8 @@ int BuildTimeTextureList::AddReference(char *filename)
 
 void BuildTimeTextureList::ConvertToAPL(int index)
 {
-    BuildTimeTextureEntry		*entry;
-    char						*extension;
+    BuildTimeTextureEntry *entry;
+    char *extension;
 
     for (entry = head; entry; entry = entry->next)
     {
@@ -100,9 +100,9 @@ void BuildTimeTextureList::ConvertToAPL(int index)
 
 void BuildTimeTextureList::BuildPool()
 {
-    BuildTimeTextureEntry		*entry;
-    DWORD						*palData;
-    int							palID;
+    BuildTimeTextureEntry *entry;
+    DWORD *palData;
+    int palID;
 
     ResInit(0);
     ResCreatePath("d:\\source\\falcon4.orig\\graphics\\bspbuild", FALSE);
@@ -129,7 +129,7 @@ void BuildTimeTextureList::BuildPool()
         {
             printf("WARNING!  Failed to read texture %s\n", entry->filename);
             fflush(NULL);
-            palID = 0;	// Punt!  Might break somewhere else later (runtime?) but for now...
+            palID = 0; // Punt!  Might break somewhere else later (runtime?) but for now...
         }
 
         TheTextureBank.TexturePool[entry->index].palID = palID;
@@ -155,12 +155,12 @@ void BuildTimeTextureList::WritePool(int file)
 
 void BuildTimeTextureList::WriteTextureData(int file)
 {
-    int		i;
-    int		size;
-    int		compressedSize;
-    int		compressedOffset = 0;
-    BYTE	*uncompressedBuffer;
-    BYTE	*compressedBuffer;
+    int i;
+    int size;
+    int compressedSize;
+    int compressedOffset = 0;
+    BYTE *uncompressedBuffer;
+    BYTE *compressedBuffer;
 
     printf("Writing texture data\n");
 
@@ -187,8 +187,8 @@ void BuildTimeTextureList::WriteTextureData(int file)
         write(file, compressedBuffer, compressedSize);
 
         // Remember where we put it.
-        TheTextureBank.TexturePool[i].fileOffset	= compressedOffset;
-        TheTextureBank.TexturePool[i].fileSize		= compressedSize;
+        TheTextureBank.TexturePool[i].fileOffset = compressedOffset;
+        TheTextureBank.TexturePool[i].fileSize = compressedSize;
 
         maxCompressedTextureSize = max(maxCompressedTextureSize, compressedSize);
 
@@ -202,7 +202,7 @@ void BuildTimeTextureList::WriteTextureData(int file)
 
 void BuildTimeTextureList::Report()
 {
-    BuildTimeTextureEntry		*entry;
+    BuildTimeTextureEntry *entry;
 
     printf("\nTexture Report (%0d textures)\n", TheTextureBank.nTextures);
     printf("  ID   Name                 PalID\n");

@@ -9,10 +9,10 @@ class FalconEntity;
 // Creation Flags
 // ==============================
 
-#define SIDC_SILENT_INSERT		0x01			// Don't broadcast a create event upon insertion
-#define SIDC_REMOTE_OWNER		0x02			// We want to create this with a remote machine as owner
-#define SIDC_FORCE_ID			0x04			// Assign an Id to this entity
-#define SIDC_NO_INSERT			0x08			// Don't insert the entity
+#define SIDC_SILENT_INSERT 0x01 // Don't broadcast a create event upon insertion
+#define SIDC_REMOTE_OWNER 0x02 // We want to create this with a remote machine as owner
+#define SIDC_FORCE_ID 0x04 // Assign an Id to this entity
+#define SIDC_NO_INSERT 0x08 // Don't insert the entity
 
 // =================================
 // Forward Declarations for pointers
@@ -39,7 +39,7 @@ public:
     };
     CreateType createType;                   ///< What type/where this entity is being created from
     Int32 createFlags;                       ///< Any special creation tasks
-    FalconSessionEntity	*owner;              ///< Pointer to the session we want to own this
+    FalconSessionEntity *owner;              ///< Pointer to the session we want to own this
     // sfr: this is stupid, since both are of the same type and only one will be used.
     // either we make different types or use only one.
     // Im leaving only one
@@ -63,15 +63,15 @@ public:
     Int32         specialFlags;              ///< flags in special data
     Int32         ptIndex;                   ///< Index into our pt list, if any.
     Int32         rwIndex;                   ///< Runway index (which runway is being used for T/O or landing, if any.
-    Int32		  start_stalled;								 ///< Start in a deep stall;
-    short weapon[HARDPOINT_MAX];             ///< Weapon ID of each hardpoint	- A/C Only
-    unsigned char weapons[HARDPOINT_MAX];    ///< Weapons on that harpoint		- A/C Only
+    Int32   start_stalled;  ///< Start in a deep stall;
+    short weapon[HARDPOINT_MAX];             ///< Weapon ID of each hardpoint - A/C Only
+    unsigned char weapons[HARDPOINT_MAX];    ///< Weapons on that harpoint - A/C Only
     Int32         numWaypoints;              ///< Number of waypoints
     Int32         currentWaypoint;           ///< Waypoint the unit is currently heading towards
     Int32         callsignIdx;               ///< Index into the Callsign array (ie: Viper/Cowboy/etc)
     Int32         callsignNum;               ///< Flight num of callsign (ie: Viper1/Viper2/Viper3/etc)
     WayPointClass *waypointList;             ///< List of waypoints
-    uchar		  displayPriority;							 ///< Detail level at which to display this entity
+    uchar   displayPriority;  ///< Detail level at which to display this entity
 };
 
 #endif

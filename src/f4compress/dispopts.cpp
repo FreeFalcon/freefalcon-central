@@ -1,7 +1,7 @@
 /***************************************************************************\
     Dispopts.h
 
-	JAM 06Oct03 - Begin Major Rewrite
+ JAM 06Oct03 - Begin Major Rewrite
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +30,7 @@ void DisplayOptionsClass::Initialize(void)
     bLinearMipFiltering = false;
     bMipmapping = false;
     bRender2DCockpit = true;
-    bScreenCoordinateBiasFix = false;		//Wombat778 4-01-04
+    bScreenCoordinateBiasFix = false; //Wombat778 4-01-04
     bSpecularLighting = false;
 
     FalconDisplay.SetSimMode(DispWidth, DispHeight, DispDepth);
@@ -40,8 +40,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 {
     DWORD size;
     FILE *fp;
-    size_t		success = 0;
-    char		path[_MAX_PATH];
+    size_t success = 0;
+    char path[_MAX_PATH];
 
     sprintf(path, "%s\\config\\%s.dsp", FalconDataDirectory, filename);
     fp = fopen(path, "rb");
@@ -77,8 +77,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
         return TRUE;
     }
 
-    const char	*buf;
-    int		i = 0;
+    const char *buf;
+    int i = 0;
 
     // Make sure the chosen sim video driver is still legal
     buf = FalconDisplay.devmgr.GetDriverName(i);
@@ -118,8 +118,8 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 int DisplayOptionsClass::SaveOptions(void)
 {
     FILE *fp;
-    size_t		success = 0;
-    char		path[_MAX_PATH];
+    size_t success = 0;
+    char path[_MAX_PATH];
 
     sprintf(path, "%s\\config\\display.dsp", FalconDataDirectory);
 

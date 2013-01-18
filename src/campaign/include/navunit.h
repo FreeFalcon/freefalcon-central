@@ -9,20 +9,20 @@
 // Naval Unit defines
 // =========================
 
-#define NORD_NONE			0
-#define NORD_ATTACK			1
-#define NORD_BOMBARD		2
-#define NORD_TRANSPORT		3
-#define NORD_STATION		4
-#define NORD_OTHER			5
+#define NORD_NONE 0
+#define NORD_ATTACK 1
+#define NORD_BOMBARD 2
+#define NORD_TRANSPORT 3
+#define NORD_STATION 4
+#define NORD_OTHER 5
 
-#define NRO_NONE			0
-#define NRO_ATTACK			1
-#define NRO_BOMBARD			2
-#define NRO_TRANSPORT		3
-#define NRO_OTHER			4
+#define NRO_NONE 0
+#define NRO_ATTACK 1
+#define NRO_BOMBARD 2
+#define NRO_TRANSPORT 3
+#define NRO_OTHER 4
 
-#define NAV_PLAN_AHEAD		8
+#define NAV_PLAN_AHEAD 8
 
 // =========================
 // TaskForceClass
@@ -50,27 +50,27 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    CampaignTime		last_move;
-    CampaignTime		last_combat;
-    uchar				orders;     		// Unit's mission
-    uchar				last_direction;		// Direction of last move
-    Percentage			supply;				// Unit's supply
-    SmallPathClass		path;
-    VU_ID				air_target;			// The ID of any air target (in addition to regular target)
+    CampaignTime last_move;
+    CampaignTime last_combat;
+    uchar orders;      // Unit's mission
+    uchar last_direction; // Direction of last move
+    Percentage supply; // Unit's supply
+    SmallPathClass path;
+    VU_ID air_target; // The ID of any air target (in addition to regular target)
     uchar missiles_flying;
-    uchar			radar_mode;				// Radar mode
-    uchar			search_mode;			// Radar Search mode
+    uchar radar_mode; // Radar mode
+    uchar search_mode; // Radar Search mode
     VU_TIME SEARCHtimer ;
     VU_TIME AQUIREtimer ;
-    uchar			step_search_mode;		// 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
+    uchar step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
 public:
 
-    uchar					tacan_channel;				// Support for carriers
-    uchar					tacan_band;					// Support for carriers
+    uchar tacan_channel; // Support for carriers
+    uchar tacan_band; // Support for carriers
 
 
     TaskForceClass(ushort type);
@@ -196,7 +196,7 @@ public:
     {
         radar_mode = mode;
     }
-    //		virtual void SetRadarMode (int mode)				{ radar_mode = mode; }
+    // virtual void SetRadarMode (int mode) { radar_mode = mode; }
     virtual void ReturnToSearch(void);
     // 2002-03-22 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED!
     // sfr: modified base class
@@ -204,7 +204,7 @@ public:
     {
         search_mode = mode;
     }
-    //		virtual void SetSearchMode (int mode)				{ step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
+    // virtual void SetSearchMode (int mode) { step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
     virtual int StepRadar(int t, int d, float range); //me123 modifyed to take tracking/detection range parameter
     virtual int ChooseTarget(void);
     virtual void IncrementTime(CampaignTime dt)

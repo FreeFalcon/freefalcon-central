@@ -2,8 +2,8 @@
     VehRWR.cpp
 
     This provides the basic functionality of a Radar Warning Receiver.
-	This class is used directly by AI aircraft.  The player's RWR
-	derives from this class.
+ This class is used directly by AI aircraft.  The player's RWR
+ derives from this class.
 \***************************************************************************/
 #include "stdhdr.h"
 #include "object.h"
@@ -36,42 +36,42 @@ VehRwrClass::VehRwrClass(int type, SimMoverClass* self) : RwrClass(type, self)
 {
     int i;
 
-    lowAltPriority	= FALSE;
-    dropPattern		= 1;
+    lowAltPriority = FALSE;
+    dropPattern = 1;
 
     numContacts = 0;
 
     for (i = 0; i < MaxRWRTracks; i++)
     {
-        detectionList[i].entity				= NULL;
-        detectionList[i].radarData			= NULL;
-        detectionList[i].bearing			= 0.0f;
-        detectionList[i].lastPlayed			= 0;
-        detectionList[i].lastHit			= 0;
-        detectionList[i].isLocked			= 0;
-        detectionList[i].isAGLocked			= 0;//Cobra TJL
-        detectionList[i].missileLaunch		= 0;
-        detectionList[i].missileActivity	= 0;
-        detectionList[i].previouslyLocked	= 0;
-        detectionList[i].newDetection		= 0;
-        detectionList[i].newDetectionDisplay		= 0; // JB 010727
-        detectionList[i].selected			= 0;
+        detectionList[i].entity = NULL;
+        detectionList[i].radarData = NULL;
+        detectionList[i].bearing = 0.0f;
+        detectionList[i].lastPlayed = 0;
+        detectionList[i].lastHit = 0;
+        detectionList[i].isLocked = 0;
+        detectionList[i].isAGLocked = 0;//Cobra TJL
+        detectionList[i].missileLaunch = 0;
+        detectionList[i].missileActivity = 0;
+        detectionList[i].previouslyLocked = 0;
+        detectionList[i].newDetection = 0;
+        detectionList[i].newDetectionDisplay = 0; // JB 010727
+        detectionList[i].selected = 0;
         // JB 010727 RP5 RWR
         // 2001-02-15 ADDED BY S.G. SO THE NEW cantPlay field IS ZEROED AS WELL AND playIt AS WELL
-        detectionList[i].cantPlay			= 0;
-        detectionList[i].playIt				= 0;
+        detectionList[i].cantPlay = 0;
+        detectionList[i].playIt = 0;
         // END OF ADDED SECTION
-        detectionList[i].lethality			= 0.0f;
+        detectionList[i].lethality = 0.0f;
     }
 
     // First entry is the default selection
-    detectionList[0].selected	= 1;
+    detectionList[0].selected = 1;
 }
 
 
 VehRwrClass::~VehRwrClass(void)
 {
-    int	i;
+    int i;
 
     for (i = 0; i < numContacts; i++)
     {
@@ -186,28 +186,28 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
         // Time out our guidance flags
         // JB 010727 RP5 RWR
         // 2001-02-27 MODIFIED BY S.G. INSTEAD OF USING THE detectionList[i].lastHit + 5000, I'LL USE THE detectionList[i].lastPlayed FIELD INSTEAD. SEE PlayerRWR FOR REASONING.
-        //		      THE 15000 IS A 'GUESTIMATE' HOOLA WILL TELL ME THE REAL VALUE LATER ON
-        //		if (SimLibElapsedTime > detectionList[i].lastHit + RadarClass::TrackUpdateTime * 2.5f)
+        //       THE 15000 IS A 'GUESTIMATE' HOOLA WILL TELL ME THE REAL VALUE LATER ON
+        // if (SimLibElapsedTime > detectionList[i].lastHit + RadarClass::TrackUpdateTime * 2.5f)
 
         // 2002-01-27 me123 MP lock message fix - we now only send a message when the state changes
-        /*		if (detectionList[i].missileActivity && SimLibElapsedTime > detectionList[i].lastPlayed + 15000)
-        		{
-        	//		detectionList[i].missileLaunch = 0;
-        	//		detectionList[i].missileActivity = 0;
-        		}
+        /* if (detectionList[i].missileActivity && SimLibElapsedTime > detectionList[i].lastPlayed + 15000)
+         {
+         // detectionList[i].missileLaunch = 0;
+         // detectionList[i].missileActivity = 0;
+         }
 
-        		// Time out our lock flag
-        		if (SimLibElapsedTime > detectionList[i].lastHit + TRACK_CYCLE)
-        		{
-        //			detectionList[i].isLocked = 0; me123 dont' time out anymore...a trackunlock will be gerantied
-        		}*/
+         // Time out our lock flag
+         if (SimLibElapsedTime > detectionList[i].lastHit + TRACK_CYCLE)
+         {
+        // detectionList[i].isLocked = 0; me123 dont' time out anymore...a trackunlock will be gerantied
+         }*/
 
         // Time out our radiate flag
         if (detectionList[i].entity->IsSim())
         {
             // JB 010727 RP5 RWR Changed to 3 seconds S.G. WHY?
             // 2001-02-18 MODIFIED BY S.G. IN 1.08i2, THIS IS 30 SECONDS! I'll change it to 6 seconds like the other if it's for the player. Also, why use floats?!?
-            //				((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * 2.0F * SEC_TO_MSEC)
+            // ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * 2.0F * SEC_TO_MSEC)
             if (SimLibElapsedTime > detectionList[i].lastHit + ((SimBaseClass*)detectionList[i].entity)->RdrCycleTime() * SEC_TO_MSEC + 1000 &&
                 SimLibElapsedTime > detectionList[i].lastHit + (platform == SimDriver.GetPlayerAircraft() ? 3 * SEC_TO_MSEC : 30 * SEC_TO_MSEC))
             {
@@ -222,7 +222,7 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
                 // 2002-03-10 MODIFIED BY S.G. If IsSim returned false, don't cast it to SimBaseClass but CampBaseClass and not required anyway since IsDead is defined in a parent class
                 //                             Also, I've seen campaign entries stay here forever with missileActivity set because the missile was launched when aggregated (hence made it here) but once it deaggregated, it stayed here. So to fix this, if it's a DEAGGREGATED campaign object, remove its lock
                 //                             I also moved 'DropTrack' on a line by itself. It's much combersome to put breakpoint if the if body is on the same line as the if statement (also done above).
-                // if (!detectionList[i].isLocked || (SimBaseClass*)detectionList[i].entity->IsDead())	DropTrack (i);
+                // if (!detectionList[i].isLocked || (SimBaseClass*)detectionList[i].entity->IsDead()) DropTrack (i);
                 if (!detectionList[i].isLocked || detectionList[i].entity->IsDead() || !((CampBaseClass*)detectionList[i].entity)->IsAggregate())
                     DropTrack(i);
             }
@@ -236,8 +236,8 @@ SimObjectType* VehRwrClass::Exec(SimObjectType* targetList)
 int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int radarMode)  // 2002-02-09 MODIFIED BY S.G. Added the radarMode var
 {
     int retval = FALSE;
-    float				lethality;
-    DetectListElement	*listElement;
+    float lethality;
+    DetectListElement *listElement;
 
     F4Assert(numContacts == 0 || detectionList[numContacts - 1].entity);
 
@@ -285,7 +285,7 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
             // If this is the new head of the list, it's lethal, and dropPattern, drop countermeasures
             /*if (listElement == &detectionList[0] && AutoDrop() && lethality > COUNTERMEASURES_DROP_THRESHOLD)
             {
-            	((AircraftClass*)platform)->DropProgramed();
+             ((AircraftClass*)platform)->DropProgramed();
             }*/ //Cobra Removed because it gets triggered incorrectly and only gets hit once.
             //It's worthless.
         }
@@ -293,15 +293,15 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
 
     // JB 010718
     /*
-    	else
-    	{
-    		// Resort him into the list
-    		if (listElement->lethality != lethality)
-    		{
-    			listElement->lethality = lethality;
-    			ResortList (listElement);
-    		}
-    	}
+     else
+     {
+     // Resort him into the list
+     if (listElement->lethality != lethality)
+     {
+     listElement->lethality = lethality;
+     ResortList (listElement);
+     }
+     }
     */
 
     if (listElement)
@@ -358,16 +358,16 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                             //F4SoundFXSetDist( SFX_TWS_LOCK, FALSE, 0.0f, 1.0f );
                             PlayRWRSoundFX(SFX_TWS_LOCK, FALSE, 0.0f, 1.0f);
 
-                            listElement->missileLaunch		= 1;
+                            listElement->missileLaunch = 1;
                         }
                 }
 
             case Track_Lock:
 
                 if (radarMode == RadarClass::DigiSTT) // 2002-02-10 ADDED BY S.G. Only in STT will the target be flagged as having a lock.
-                    listElement->isLocked				= 1;
+                    listElement->isLocked = 1;
                 else
-                    listElement->isLocked				= 0;
+                    listElement->isLocked = 0;
 
                 if (whoPingedMe->OnGround() && SimLibElapsedTime > spikeTimer)//Cobra
                 {
@@ -414,11 +414,11 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
                 break;
 
             case Track_Unlock:
-                listElement->isLocked				= 0;
+                listElement->isLocked = 0;
 
             case Track_LaunchEnd:
-                listElement->missileActivity		= 0;
-                listElement->missileLaunch			= 0;
+                listElement->missileActivity = 0;
+                listElement->missileLaunch = 0;
 
                 if (whoPingedMe->OnGround())
                     listElement->isAGLocked = 0;//Cobra
@@ -465,13 +465,13 @@ void VehRwrClass::ReportBuddySpike(FalconEntity* theObject)
 
 float VehRwrClass::GetLethality(FalconEntity* theObject)
 {
-    int		alt			= (lowAltPriority) ? LOW_ALT_LETHALITY : HIGH_ALT_LETHALITY;
-    float	lethality	= RadarDataTable[theObject->GetRadarType()].Lethality[alt];
+    int alt = (lowAltPriority) ? LOW_ALT_LETHALITY : HIGH_ALT_LETHALITY;
+    float lethality = RadarDataTable[theObject->GetRadarType()].Lethality[alt];
 
     // Scale lethality for normalized range
     float dx = theObject->XPos() - platform->XPos();
     float dy = theObject->YPos() - platform->YPos();
-    float nomRange	= RadarDataTable[theObject->GetRadarType()].NominalRange;
+    float nomRange = RadarDataTable[theObject->GetRadarType()].NominalRange;
     float range  = (float)sqrt(dx * dx + dy * dy) / (2.0f * nomRange);
 
     if (range < 0.8f)
@@ -497,9 +497,9 @@ float VehRwrClass::GetLethality(FalconEntity* theObject)
             break;
     }
 
-    if (GetRoE(theObject->GetTeam(), platform->GetTeam(), ROE_AIR_ENGAGE))	// JB 010730
+    if (GetRoE(theObject->GetTeam(), platform->GetTeam(), ROE_AIR_ENGAGE)) // JB 010730
         lethality += .5;
-    else if (g_bIFFRWR)	// JB 010727
+    else if (g_bIFFRWR) // JB 010727
         lethality = 0.0;
 
     return lethality;
@@ -524,7 +524,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                     curSpike = detectionList[i].entity;
 
                     // Only react to enemy activity
-                    if (!curSpike->IsMissile() && TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)  	// 2002-02-09 MODIFIED BY S.G. Added the !IsMissile since AI do not attack missiles anyway...
+                    if (!curSpike->IsMissile() && TeamInfo[platform->GetTeam()]->TStance(curSpike->GetTeam()) > Neutral)   // 2002-02-09 MODIFIED BY S.G. Added the !IsMissile since AI do not attack missiles anyway...
                     {
                         return curSpike;
                     }
@@ -541,7 +541,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
         {
             if (detectionList[i].isLocked)   // If not even locked, don't bother...
             {
-                if (((*data & RWR_GET_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) ||	// The lock is of the right type
+                if (((*data & RWR_GET_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) || // The lock is of the right type
                     ((*data & RWR_GET_SAM) && detectionList[i].radarMode == RadarClass::DigiSAM) ||
                     ((*data & RWR_GET_TWS) && detectionList[i].radarMode == RadarClass::DigiTWS) ||
                     ((*data & RWR_GET_RWS) && detectionList[i].radarMode == RadarClass::DigiRWS))
@@ -556,7 +556,7 @@ FalconEntity* VehRwrClass::CurSpike(FalconEntity *byHim, int *data)  // 2002-02-
                             // If we passed a prioritisation mask and not of the right priority, just keep it for later in case we have none of that type
                             if (*data & RWR_PRIORITIZE_MASK)
                             {
-                                if (((*data & RWR_PRIORITIZE_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) ||	// The lock is of the right priority, return it
+                                if (((*data & RWR_PRIORITIZE_STT) && detectionList[i].radarMode == RadarClass::DigiSTT) || // The lock is of the right priority, return it
                                     ((*data & RWR_PRIORITIZE_SAM) && detectionList[i].radarMode == RadarClass::DigiSAM) ||
                                     ((*data & RWR_PRIORITIZE_TWS) && detectionList[i].radarMode == RadarClass::DigiTWS) ||
                                     ((*data & RWR_PRIORITIZE_RWS) && detectionList[i].radarMode == RadarClass::DigiRWS))

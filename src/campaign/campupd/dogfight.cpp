@@ -19,8 +19,8 @@
 #include "F4Find.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include "dinput.h"
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include "dinput.h"
 
 #include "falcsess.h"
 #include "uicomms.h"
@@ -119,12 +119,12 @@ DogfightClass::~DogfightClass(void)
 void DogfightClass::ApplySettings(void)
 {
     // This will update all our dogfight flights to mimic the new settings
-    Unit				unit;
-    int					i;
+    Unit unit;
+    int i;
 
     // KCK: Should this be done on the host only, or should everyone assume we have the same data?
-    //	if (!FalconLocalGame || !FalconLocalGame->IsLocal())
-    //		return;
+    // if (!FalconLocalGame || !FalconLocalGame->IsLocal())
+    // return;
 
     if (!TheCampaign.IsLoaded())
     {
@@ -148,7 +148,7 @@ void DogfightClass::ApplySettings(void)
 
     if (FalconLocalGame && FalconLocalGame->IsLocal())
     {
-        VuListIterator		flit(AllRealList);
+        VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
 
         while (unit)
@@ -201,10 +201,10 @@ void DogfightClass::ApplySettings(void)
 
 void DogfightClass::ApplySettingsToFlight(Flight flight)
 {
-    float				x, y, z;
-    WayPoint			w;
-    int					p, i, cid = 0;
-    CampaignTime		ttc = FloatToInt32(startRange / 1500.0F) * CampaignSeconds;	// find time to convergence in campaign time
+    float x, y, z;
+    WayPoint w;
+    int p, i, cid = 0;
+    CampaignTime ttc = FloatToInt32(startRange / 1500.0F) * CampaignSeconds; // find time to convergence in campaign time
 
     x = startX + DFOffsetX[flight->GetTeam()] * startRange * 0.5F;
     y = startY + DFOffsetY[flight->GetTeam()] * startRange * 0.5F;
@@ -358,7 +358,7 @@ void DogfightClass::ReceiveSettings(DogfightClass *tmpSettings)
 
 void DogfightClass::RequestSettings(FalconGameEntity *game)
 {
-    UI_RequestDogfightInfo	*settings;
+    UI_RequestDogfightInfo *settings;
 
     if (game)
     {
@@ -376,14 +376,14 @@ void DogfightClass::RequestSettings(FalconGameEntity *game)
 int DogfightClass::ReadyToStart(void)
 {
     int retval = FALSE;
-    Unit				unit;
+    Unit unit;
     int teamUsed[MAX_DOGFIGHT_TEAMS] = {0};
     int i, numTeams = 0;
 
     // Check if it's ok to hit the 'Fly' button
     if (!(flags & DF_GAME_OVER))
     {
-        VuListIterator		flit(AllRealList);
+        VuListIterator flit(AllRealList);
         unit = (Unit)flit.GetFirst();
 
         while (unit)
@@ -425,7 +425,7 @@ void DogfightClass::SetFilename(char *filename)
 
 void DogfightClass::LoadSettings(void)
 {
-    FILE		*fp;
+    FILE *fp;
 
     fp = fopen(settings_filename, "rb");
 
@@ -468,7 +468,7 @@ void DogfightClass::LoadSettings(void)
 
 void DogfightClass::SaveSettings(char *filename)
 {
-    FILE		*fp;
+    FILE *fp;
 
     fp = fopen(filename, "wb");
 
@@ -640,9 +640,9 @@ void DogfightClass::UpdateDogfight(void)
 
 void DogfightClass::UpdateGameStatus(void)
 {
-    VuSessionsIterator		sessionWalker(FalconLocalGame);
-    FalconSessionEntity		*session;
-    DogfightStatus			newStatus = dog_Waiting;
+    VuSessionsIterator sessionWalker(FalconLocalGame);
+    FalconSessionEntity *session;
+    DogfightStatus newStatus = dog_Waiting;
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -712,7 +712,7 @@ int DogfightClass::AdjustClassId(int oldid, int team)
 
 int DogfightClass::GameOver(void)
 {
-    int		i, over = FALSE;
+    int i, over = FALSE;
 
     switch (gameType)
     {
@@ -720,7 +720,7 @@ int DogfightClass::GameOver(void)
         case dog_TeamFurball:
         {
             {
-                short	score[MAX_DOGFIGHT_TEAMS];
+                short score[MAX_DOGFIGHT_TEAMS];
                 TheCampaign.MissionEvaluator->GetTeamScore(score);
 
                 for (i = 0; i < MAX_DOGFIGHT_TEAMS; i++)
@@ -758,11 +758,11 @@ int DogfightClass::GameOver(void)
 
 int DogfightClass::CheckRoundOver(void)
 {
-    SimBaseClass	*theObject;
-    int				activeAC[MAX_DOGFIGHT_TEAMS] = {0}, activeTeams = 0, team, lastTeam = 0;
-    CampEntity		campEntity;
+    SimBaseClass *theObject;
+    int activeAC[MAX_DOGFIGHT_TEAMS] = {0}, activeTeams = 0, team, lastTeam = 0;
+    CampEntity campEntity;
 
-    VuListIterator	updateWalker(SimDriver.objectList);
+    VuListIterator updateWalker(SimDriver.objectList);
     theObject = (SimBaseClass*)updateWalker.GetFirst();
 
     while (theObject)
@@ -794,12 +794,12 @@ int DogfightClass::CheckRoundOver(void)
 
 void DogfightClass::RoundOver(void)
 {
-    SimBaseClass	*theObject;
-    int				activeAC[MAX_DOGFIGHT_TEAMS] = {0}, activeTeams = 0, team, lastTeam = 0;
-    CampEntity		campEntity;
+    SimBaseClass *theObject;
+    int activeAC[MAX_DOGFIGHT_TEAMS] = {0}, activeTeams = 0, team, lastTeam = 0;
+    CampEntity campEntity;
 
     {
-        VuListIterator	updateWalker(SimDriver.objectList);
+        VuListIterator updateWalker(SimDriver.objectList);
         theObject = (SimBaseClass*)updateWalker.GetFirst();
 
         while (theObject)
@@ -889,10 +889,10 @@ void DogfightClass::RestartGame(void)
 
 void DogfightClass::EndRound(void)
 {
-    SimBaseClass	*theObject;
+    SimBaseClass *theObject;
 
     {
-        VuListIterator	updateWalker(SimDriver.objectList);
+        VuListIterator updateWalker(SimDriver.objectList);
         theObject = (SimBaseClass*)updateWalker.GetFirst();
 
         while (theObject)
@@ -915,7 +915,7 @@ void DogfightClass::EndRound(void)
 
 void DogfightClass::ResetRound(void)
 {
-    //	localGameStatus = gameStatus = dog_Starting;
+    // localGameStatus = gameStatus = dog_Starting;
     RegenerateAvailableAircraft();
 }
 
@@ -924,7 +924,7 @@ void DogfightClass::ResetRound(void)
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef DEBUG
-int		gLastRegenCount = 0;
+int gLastRegenCount = 0;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -935,11 +935,11 @@ void DogfightClass::RegenerateAvailableAircraft(void)
 {
     if (regenerationQueue)
     {
-        SimBaseClass	*theObject;
-        FalconRegenerationMessage	*msg;
-        int				restartIt;
+        SimBaseClass *theObject;
+        FalconRegenerationMessage *msg;
+        int restartIt;
 
-        VuListIterator	it(regenerationQueue);
+        VuListIterator it(regenerationQueue);
         theObject = (SimBaseClass*)it.GetFirst();
 
         while (theObject)

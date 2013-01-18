@@ -102,9 +102,9 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 else if (TFADV);
                 else
                 {
-                    long	alt;
-                    int	alt1, alt2;
-                    char	tmpstr[5] = "";
+                    long alt;
+                    int alt1, alt2;
+                    char tmpstr[5] = "";
                     alt = (long)TheHud->lowAltWarning;
 
                     alt1 = (int) alt / 1000;

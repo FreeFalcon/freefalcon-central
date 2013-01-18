@@ -28,13 +28,13 @@
 #include "FalcLib/include/dispopts.h"
 #include "TimeMgr.h"
 
-extern DeviceManager		devmgr;
-extern ACMIView			*acmiView;
-extern int					DisplayFullScreen;
-extern int					DeviceNumber;
+extern DeviceManager devmgr;
+extern ACMIView *acmiView;
+extern int DisplayFullScreen;
+extern int DeviceNumber;
 
 #include "Graphics\DXEngine\DXVBManager.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 
 extern C_Handler *gMainHandler;
@@ -219,7 +219,7 @@ void ACMIView::SetupEntityUIMappings()
     ACMIEntityData *e;
 
 
-    //	_tape->_simTapeEntities[i].name;
+    // _tape->_simTapeEntities[i].name;
 
     F4Assert(_entityUIMappings == NULL);
     F4Assert(_tape != NULL && _tape->IsLoaded());
@@ -304,7 +304,7 @@ BOOL ACMIView::LoadTape(char *fname, BOOL reload)
     else
     {
 
-        //	SetupEntityUIMappings(); // JPO fixup.
+        // SetupEntityUIMappings(); // JPO fixup.
     }
 
     _tapeHasLoaded = TRUE;
@@ -377,7 +377,7 @@ long ACMIView::ListBoxID(int objectNum, long filter)
             /*
             if(_tape->EntityGroup(objectNum) == 0)
             {
-            	menuID = _entityUIMappings[objectNum].listboxId;
+             menuID = _entityUIMappings[objectNum].listboxId;
             }
             break;
             */
@@ -386,7 +386,7 @@ long ACMIView::ListBoxID(int objectNum, long filter)
             /*
             if(_tape->EntityGroup(objectNum) == 1)
             {
-            	menuID = _entityUIMappings[objectNum].listboxId;
+             menuID = _entityUIMappings[objectNum].listboxId;
             }
             break;
             */
@@ -395,7 +395,7 @@ long ACMIView::ListBoxID(int objectNum, long filter)
             /*
             if(_tape->EntityGroup(objectNum) == 0)
             {
-            	menuID = _entityUIMappings[objectNum].listboxId;
+             menuID = _entityUIMappings[objectNum].listboxId;
             }
             break;
             */
@@ -430,7 +430,7 @@ long ACMIView::ListBoxID(int objectNum, long filter)
         case FREE_CAM:
             menuID = _entityUIMappings[objectNum].listboxId;
             break;
-            //		default:
+            // default:
     };
 
     return(menuID);
@@ -487,7 +487,7 @@ void ACMIView::InitGraphics(C_Window *win)
     Trotation
     viewRotation;
 
-    float				l, t, r, b, sw, sh;
+    float l, t, r, b, sw, sh;
 
 
     // Preload objects which will need to be instant access
@@ -507,7 +507,7 @@ void ACMIView::InitGraphics(C_Window *win)
         wireTexture.LoadAndCreate("WireTile.GIF", MPR_TI_PALETTE);
         wireTexture.FreeImage();
         TheTerrTextures.SetOverrideTexture(wireTexture.TexHandle());
-        //		_renderer = new RenderWire;
+        // _renderer = new RenderWire;
         _renderer = new RenderOTW;
     }
     else
@@ -528,15 +528,15 @@ void ACMIView::InitGraphics(C_Window *win)
 
         _renderer->Setup(gMainHandler->GetFront(), _viewPoint);
 
-        //		_renderer->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
-        //		_renderer->SetSmoothShadingMode( TRUE );//PlayerOptions.GouraudOn() );
+        // _renderer->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
+        // _renderer->SetSmoothShadingMode( TRUE );//PlayerOptions.GouraudOn() );
 
         _renderer->SetHazeMode(PlayerOptions.HazingOn());
         _renderer->SetDitheringMode(PlayerOptions.HazingOn());
 
         _renderer->SetFilteringMode(PlayerOptions.FilteringOn());
         _renderer->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
-        //		_renderer->SetAlphaMode(PlayerOptions.AlphaOn());
+        // _renderer->SetAlphaMode(PlayerOptions.AlphaOn());
         _renderer->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
     }
     else
@@ -546,9 +546,9 @@ void ACMIView::InitGraphics(C_Window *win)
                           2,
                           0.0f);
         _renderer->Setup(gMainHandler->GetFront(), _viewPoint);
-        //		_renderer->SetTerrainTextureLevel(2);
+        // _renderer->SetTerrainTextureLevel(2);
         _renderer->SetHazeMode(FALSE);
-        //		_renderer->SetSmoothShadingMode(FALSE);
+        // _renderer->SetSmoothShadingMode(FALSE);
     }
 
     TheVbManager.Setup(gMainHandler->GetFront()->GetDisplayDevice()->GetDefaultRC()->m_pD3D);

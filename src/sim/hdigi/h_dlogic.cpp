@@ -78,39 +78,39 @@ void HeliBrain::TargetSelection(void)
     }
 
     // see if we've already got a target
-    /*	if ( targetPtr )
-    	{
-    		target = targetPtr->BaseData();
+    /* if ( targetPtr )
+     {
+     target = targetPtr->BaseData();
 
-    		// is it a campaign object? if not we can return....
-    		if (target->IsSim() )
-    		{
-    			return;
-    		}
+     // is it a campaign object? if not we can return....
+     if (target->IsSim() )
+     {
+     return;
+     }
 
-    		// itsa campaign object.  Check to see if its deagg'd
-    		if (((CampBaseClass*)target)->IsAggregate() )
-    		{
-    			// still aggregated, return
-    			return;
-    		}
+     // itsa campaign object.  Check to see if its deagg'd
+     if (((CampBaseClass*)target)->IsAggregate() )
+     {
+     // still aggregated, return
+     return;
+     }
 
-    		// the campaign object is now deaggregated, choose a sim entity
-    		// to target on it
+     // the campaign object is now deaggregated, choose a sim entity
+     // to target on it
 
-    		// M.N. use S.G.'s FindSimGroundTarget function to choose a sim entity
+     // M.N. use S.G.'s FindSimGroundTarget function to choose a sim entity
 
-    		simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
+     simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-    		if (!simTarg)	// another sanity check
-    			return;
+     if (!simTarg) // another sanity check
+     return;
 
-    		if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
-    				SetTargetEntity( simTarg );
+     if (!simTarg->IsExploding() && !simTarg->IsDead() && simTarg->pctStrength > 0.0f) // still alive?
+     SetTargetEntity( simTarg );
 
-    		return;
+     return;
 
-    	} // end if already targetPtr
+     } // end if already targetPtr
     */
 
     // at this point we have no target, we're going to ask the campaign
@@ -161,7 +161,7 @@ void HeliBrain::TargetSelection(void)
     {
         simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
 
-        if (!simTarg)	// another sanity check
+        if (!simTarg) // another sanity check
             return;
 
         // set it as our target
@@ -266,8 +266,8 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
 /*
 ** Name: SetTargetEntity
 ** Description:
-**		Creates a SimObjectType struct for the entity, sets the targetPtr,
-**		References the target.  Any pre-existing target is dereferenced.
+** Creates a SimObjectType struct for the entity, sets the targetPtr,
+** References the target.  Any pre-existing target is dereferenced.
 */
 void HeliBrain::SetTargetEntity(FalconEntity *obj)
 {
@@ -315,14 +315,14 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
 void HeliBrain::TargetSelection(SimObjectType *tlist)
 {
 
-    float					tmpAirRange = FLT_MAX;
-    float					tmpGndRange = FLT_MAX;
-    SimObjectType			*tmpObj;
-    SimObjectType			*tmpAirObj = NULL;
-    SimObjectType			*tmpGndObj = NULL;
-    SimBaseClass			*theObject;
-    Team					b;
-    float					range;
+    float tmpAirRange = FLT_MAX;
+    float tmpGndRange = FLT_MAX;
+    SimObjectType *tmpObj;
+    SimObjectType *tmpAirObj = NULL;
+    SimObjectType *tmpGndObj = NULL;
+    SimBaseClass *theObject;
+    Team b;
+    float range;
 
     // Loop until we find a target that is valid,
     // I now use the air flag to tell me whether the target is valid
@@ -377,8 +377,8 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
             /*
             if ( SimDriver.RunningInstantAction() && theObject->IsSetFlag( MOTION_OWNSHIP ) )
             {
-            	SetTarget( tmpObj );
-            	return;
+             SetTarget( tmpObj );
+             return;
             }
             else
             */
@@ -414,7 +414,7 @@ void HeliBrain::TargetSelection(SimObjectType *tlist)
     /*
     if ( SimDriver.RunningInstantAction() )
     {
-    	SetTarget( tmpAirObj );
+     SetTarget( tmpAirObj );
     }
     */
     // if they're both less than a certain range, flip a coin

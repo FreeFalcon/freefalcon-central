@@ -11,23 +11,23 @@
 #include "airunit.h"
 
 // Return values for BuildMissionGroup
-#define PRET_NO_ASSETS		1
-#define PRET_DELAYED		2
-#define PRET_SUCCESS		3
-#define PRET_ABORTED		4
-#define PRET_CANCELED		5
-#define PRET_REPEAT			6
-#define PRET_HANDLED		7
-#define PRET_NOTARGET		8
-#define PRET_TIMEOUT		9
+#define PRET_NO_ASSETS 1
+#define PRET_DELAYED 2
+#define PRET_SUCCESS 3
+#define PRET_ABORTED 4
+#define PRET_CANCELED 5
+#define PRET_REPEAT 6
+#define PRET_HANDLED 7
+#define PRET_NOTARGET 8
+#define PRET_TIMEOUT 9
 
 // Reponse receipt flags
-#define PRESPONSE_CA		0x01
-#define PRESPONSE_ESCORT	0x02
-#define PRESPONSE_AWACS		0x04
-#define PRESPONSE_JSTAR		0x08
-#define PRESPONSE_TANKER	0x10
-#define PRESPONSE_ECM		0x20
+#define PRESPONSE_CA 0x01
+#define PRESPONSE_ESCORT 0x02
+#define PRESPONSE_AWACS 0x04
+#define PRESPONSE_JSTAR 0x08
+#define PRESPONSE_TANKER 0x10
+#define PRESPONSE_ECM 0x20
 
 // =========================
 // Package Class
@@ -55,39 +55,39 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    uchar				elements;					// Number of child units
-    uchar				c_element;					// Which one we're looking at
-    VU_ID				element[MAX_UNIT_CHILDREN];	// VU_IDs of elements
-    VU_ID				interceptor;				// ID of enemy BARCAP/SWEEP/Etc flight, if any
-    VU_ID				awacs;						// ID of any awacs support
-    VU_ID				jstar;						// ID of any jstar support
-    VU_ID				ecm;						// ID of any ecm support
-    VU_ID				tanker;						// ID of any tanker support
-    uchar				wait_cycles;				// How many cycles until timeout
-    uchar				flights;					// flights in this package
-    ushort				wait_for;					// Mission Requests to wait for (until timeout)
+    uchar elements; // Number of child units
+    uchar c_element; // Which one we're looking at
+    VU_ID element[MAX_UNIT_CHILDREN]; // VU_IDs of elements
+    VU_ID interceptor; // ID of enemy BARCAP/SWEEP/Etc flight, if any
+    VU_ID awacs; // ID of any awacs support
+    VU_ID jstar; // ID of any jstar support
+    VU_ID ecm; // ID of any ecm support
+    VU_ID tanker; // ID of any tanker support
+    uchar wait_cycles; // How many cycles until timeout
+    uchar flights; // flights in this package
+    ushort wait_for; // Mission Requests to wait for (until timeout)
     // This stuff shouldn't change after init
-    GridIndex			iax, iay;					// Ingress assembly point
-    GridIndex			eax, eay;					// Egress assembly point (if any)
-    GridIndex			bpx, bpy;					// Break point (if any)
-    GridIndex			tpx, tpy;					// Turn point (if any)
-    CampaignTime		takeoff;					// Earliest flight's takeoff time
-    CampaignTime		tp_time;
-    ulong				package_flags;
-    uchar				escort_type;				// 2001-11-10 M.N.
-    short				caps;						// capabilities required for this package
-    short				requests;					// What other mission types we want.
-    short				responses;					// What sort of reaction we've caused
-    WayPoint			ingress;					// Ingress Route
-    WayPoint			egress;						// Egress Route
-    MissionRequestClass	mis_request;				// The origional request (lot'so repeated data here, we could trim)
+    GridIndex iax, iay; // Ingress assembly point
+    GridIndex eax, eay; // Egress assembly point (if any)
+    GridIndex bpx, bpy; // Break point (if any)
+    GridIndex tpx, tpy; // Turn point (if any)
+    CampaignTime takeoff; // Earliest flight's takeoff time
+    CampaignTime tp_time;
+    ulong package_flags;
+    uchar escort_type; // 2001-11-10 M.N.
+    short caps; // capabilities required for this package
+    short requests; // What other mission types we want.
+    short responses; // What sort of reaction we've caused
+    WayPoint ingress; // Ingress Route
+    WayPoint egress; // Egress Route
+    MissionRequestClass mis_request; // The origional request (lot'so repeated data here, we could trim)
     // Not added to i/o functions
-    short				aa_strength;					// The combined Air to Air strength of this package
-    int					dirty_package;
+    short aa_strength; // The combined Air to Air strength of this package
+    int dirty_package;
 
 public:
     // Access Functions

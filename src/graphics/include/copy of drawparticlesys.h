@@ -17,8 +17,8 @@ enum PSType // it's critical that this, and the name array in the cpp are in syn
 {
     PST_NONE            = 0,
     PST_SPARKS          = 1,
-    PST_EXPLOSION_SMALL	= 2,
-    PST_NAPALM			= 3
+    PST_EXPLOSION_SMALL = 2,
+    PST_NAPALM = 3
 };
 
 // Used to draw segmented trails (like missile trails)
@@ -40,8 +40,8 @@ public:
     DrawableParticleSys(int ParticleSysType, float scale = 1.0f);
     virtual ~DrawableParticleSys();
 
-    void	AddParticle(int ID, Tpoint *p , Tpoint *v = 0);
-    void	AddParticle(Tpoint *p, Tpoint *v = 0);
+    void AddParticle(int ID, Tpoint *p , Tpoint *v = 0);
+    void AddParticle(Tpoint *p, Tpoint *v = 0);
 
     void Exec(void);
     virtual void Draw(class RenderOTW *renderer, int LOD);
@@ -55,14 +55,14 @@ public:
     void    SetHeadVelocity(Tpoint *FPS);
 
 protected:
-    static BOOL	greenMode;
+    static BOOL greenMode;
     static Tcolor litCloudColor;
 
-    int					type;
+    int type;
 private:
     AList particleList;
     ParticleParam *param;
-    int	 Something;
+    int  Something;
     Tpoint headFPS;
     Tpoint position;
 

@@ -5,32 +5,32 @@ NAVSYSTEM.CPP
   Written by: Vincent Finley
   For: Microprose Inc.
 
-	Revision History:
-		Created: 1/9/98
+ Revision History:
+ Created: 1/9/98
 
-	Function List:
-		NavigationSystem::SetControlMechanism()
-		NavigationSystem::GetControlMechanism()
-		NavigationSystem::ToggleControlMechanism
-		NavigationSystem::SetInstrumentMode
+ Function List:
+ NavigationSystem::SetControlMechanism()
+ NavigationSystem::GetControlMechanism()
+ NavigationSystem::ToggleControlMechanism
+ NavigationSystem::SetInstrumentMode
 
-		NavigationSystem::GetInstrumentMode
-		NavigationSystem::StepInstrumentMode
-		NavigationSystem::GetMarkPoint
-		NavigationSystem::SetMarkPoint
-		NavigationSystem::GetDataLink
-		NavigationSystem::SetDataLink
-		NavigationSystem::FillNextDataLink
+ NavigationSystem::GetInstrumentMode
+ NavigationSystem::StepInstrumentMode
+ NavigationSystem::GetMarkPoint
+ NavigationSystem::SetMarkPoint
+ NavigationSystem::GetDataLink
+ NavigationSystem::SetDataLink
+ NavigationSystem::FillNextDataLink
 
-		NavigationSystem::SetTacanChannel
-		NavigationSystem::GetTacanChannel
+ NavigationSystem::SetTacanChannel
+ NavigationSystem::GetTacanChannel
 
-		NavigationSystem::StepTacanChannelDigit
-		NavigationSystem::StepTacanBand
+ NavigationSystem::StepTacanChannelDigit
+ NavigationSystem::StepTacanBand
 
-	Description:
-		This file consolidates all of the cockpit related navigation
-		instruments and lists.
+ Description:
+ This file consolidates all of the cockpit related navigation
+ instruments and lists.
 -----------------------------------------------------------------*/
 
 #include "navsystem.h"
@@ -127,12 +127,12 @@ void GetLatLong(float *latitude, float *longitude)
 void ApproxLatLong(float x, float y, float* latitude, float* longitude)
 {
 
-    float	cosLatitude;
+    float cosLatitude;
 
-    *latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + x) / EARTH_RADIUS_FT;
+    *latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + x) / EARTH_RADIUS_FT;
     cosLatitude = (float)cos(*latitude);
 
-    *longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + y) / (EARTH_RADIUS_FT * cosLatitude);
+    *longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + y) / (EARTH_RADIUS_FT * cosLatitude);
 }
 
 
@@ -144,19 +144,19 @@ void ApproxLatLong(float x, float y, float* latitude, float* longitude)
 void BuildLatLongStr(float latitude, float longitude, char* latStr, char* longStr)
 {
 
-    int	latDeg,		longDeg;
-    float	latMin,		longMin;
+    int latDeg, longDeg;
+    float latMin, longMin;
     char *LatStr = "N";
     char *LongStr = "E";
 
-    latitude		*= RTD;
-    longitude	*= RTD;
+    latitude *= RTD;
+    longitude *= RTD;
 
-    longDeg		= FloatToInt32(longitude);
-    longMin		= (float)fabs(longitude - longDeg) * DEG_TO_MIN;
+    longDeg = FloatToInt32(longitude);
+    longMin = (float)fabs(longitude - longDeg) * DEG_TO_MIN;
 
-    latDeg		= FloatToInt32(latitude);
-    latMin		= (float)fabs(latitude - latDeg) * DEG_TO_MIN;
+    latDeg = FloatToInt32(latitude);
+    latMin = (float)fabs(latitude - latDeg) * DEG_TO_MIN;
 
     // format lat/long here
     if (latDeg < 0)
@@ -192,7 +192,7 @@ void BuildLatLongStr(float latitude, float longitude, char* latStr, char* longSt
 void GetTypeString(int index, char* string)
 {
 
-    uchar	dataType = Falcon4ClassTable[index].dataType;
+    uchar dataType = Falcon4ClassTable[index].dataType;
 
 
     if (dataType == DTYPE_FEATURE)
@@ -240,13 +240,13 @@ void GetTypeString(int index, char* string)
 NavigationSystem::NavigationSystem()
 {
 
-    int	i;
+    int i;
 
-    mInstrumentMode						= NAV;
-    mCurrentTCNSrc							= ICP;
+    mInstrumentMode = NAV;
+    mCurrentTCNSrc = ICP;
 
-    mpCurrentDomain[AUXCOMM]			=	TacanList::AA;
-    mpCurrentDomain[ICP]					=	TacanList::AA;
+    mpCurrentDomain[AUXCOMM] = TacanList::AA;
+    mpCurrentDomain[ICP] = TacanList::AA;
 
     memset(&mpCurrentTCN[ICP], 0, sizeof mpCurrentTCN[ICP]);
     memset(&mpCurrentTCN[AUXCOMM], 0, sizeof mpCurrentTCN[ICP]);
@@ -256,26 +256,26 @@ NavigationSystem::NavigationSystem()
     //MI initialize the ICP's settings
     SetTacanChannel(ICP, 106, TacanList::X);
 
-    mpMissionTacans						= NULL;
-    mpCurrentMissionTacan				= NULL;
+    mpMissionTacans = NULL;
+    mpCurrentMissionTacan = NULL;
 
-    mCurrentMark							= 0;
-    mCurrentDLink							= 0;
+    mCurrentMark = 0;
+    mCurrentDLink = 0;
 
-    mUHFMode									= UHF_NORM;
+    mUHFMode = UHF_NORM;
 
-    mpCurrentIls.frontx					= 0.0F;
-    mpCurrentIls.fronty					= 0.0F;
-    mpCurrentIls.backx					= 0.0F;
-    mpCurrentIls.backy					= 0.0F;
-    mpCurrentIls.z							= 0.0F;
-    mpCurrentIls.rwyidx					= 0;
-    *mpCurrentIls.rwynum					= NULL;
-    mpCurrentIls.heading					= 0;
-    mpCurrentIls.sinHeading				= 0.0F;
-    mpCurrentIls.cosHeading				= 0.0F;
-    mpCurrentIls.vuID						= FalconNullId;
-    mpCurrentIls.pobjective				= NULL;
+    mpCurrentIls.frontx = 0.0F;
+    mpCurrentIls.fronty = 0.0F;
+    mpCurrentIls.backx = 0.0F;
+    mpCurrentIls.backy = 0.0F;
+    mpCurrentIls.z = 0.0F;
+    mpCurrentIls.rwyidx = 0;
+    *mpCurrentIls.rwynum = NULL;
+    mpCurrentIls.heading = 0;
+    mpCurrentIls.sinHeading = 0.0F;
+    mpCurrentIls.cosHeading = 0.0F;
+    mpCurrentIls.vuID = FalconNullId;
+    mpCurrentIls.pobjective = NULL;
 
 
     mCurrentDESTOA = 0;
@@ -284,10 +284,10 @@ NavigationSystem::NavigationSystem()
 
     for (i = 0; i < MAX_MARKPOINTS; i++)
     {
-        mpMarkPoints[i].pointType	= NODATA;
-        mpMarkPoints[i].pWaypoint	= NULL;
-        *(mpMarkPoints[i].pLatStr)	= NULL;
-        *(mpMarkPoints[i].pLongStr)	= NULL;
+        mpMarkPoints[i].pointType = NODATA;
+        mpMarkPoints[i].pWaypoint = NULL;
+        *(mpMarkPoints[i].pLatStr) = NULL;
+        *(mpMarkPoints[i].pLongStr) = NULL;
     }
 
     for (i = 0; i < MAX_DLINKPOINTS; i++)
@@ -301,26 +301,26 @@ NavigationSystem::NavigationSystem()
     {
         for (i = 0; i < MAX_DESTOA; i++)
         {
-            mpDESTOA[i].pointType	= NODATA;
-            mpDESTOA[i].pWaypoint	= NULL;
-            *(mpDESTOA[i].pLatStr)	= NULL;
-            *(mpDESTOA[i].pLongStr)	= NULL;
+            mpDESTOA[i].pointType = NODATA;
+            mpDESTOA[i].pWaypoint = NULL;
+            *(mpDESTOA[i].pLatStr) = NULL;
+            *(mpDESTOA[i].pLongStr) = NULL;
         }
 
         for (i = 0; i < MAX_VIPOA; i++)
         {
-            mpVIPOA[i].pointType	= NODATA;
-            mpVIPOA[i].pWaypoint	= NULL;
-            *(mpVIPOA[i].pLatStr)	= NULL;
-            *(mpVIPOA[i].pLongStr)	= NULL;
+            mpVIPOA[i].pointType = NODATA;
+            mpVIPOA[i].pWaypoint = NULL;
+            *(mpVIPOA[i].pLatStr) = NULL;
+            *(mpVIPOA[i].pLongStr) = NULL;
         }
 
         for (i = 0; i < MAX_VRPOA; i++)
         {
-            mpVRPOA[i].pointType	= NODATA;
-            mpVRPOA[i].pWaypoint	= NULL;
-            *(mpVRPOA[i].pLatStr)	= NULL;
-            *(mpVRPOA[i].pLongStr)	= NULL;
+            mpVRPOA[i].pointType = NODATA;
+            mpVRPOA[i].pWaypoint = NULL;
+            *(mpVRPOA[i].pLatStr) = NULL;
+            *(mpVRPOA[i].pLongStr) = NULL;
         }
     }
 }
@@ -336,7 +336,7 @@ NavigationSystem::NavigationSystem()
 NavigationSystem::~NavigationSystem()
 {
 
-    int	i;
+    int i;
 
     DeleteMissionTacans();
 
@@ -388,49 +388,49 @@ NavigationSystem::~NavigationSystem()
 void NavigationSystem::SetIlsData(VU_ID airbaseid, int rwyidx)
 {
 
-    int				backIdx;
+    int backIdx;
 
-    mpCurrentIls.vuID				= airbaseid;
-    mpCurrentIls.pobjective		= (ObjectiveClass *)vuDatabase->Find(mpCurrentIls.vuID);
+    mpCurrentIls.vuID = airbaseid;
+    mpCurrentIls.pobjective = (ObjectiveClass *)vuDatabase->Find(mpCurrentIls.vuID);
     ShiAssert(FALSE == F4IsBadReadPtr(mpCurrentIls.pobjective, sizeof * mpCurrentIls.pobjective));
-    //	if (mpCurrentIls.pobjective->ZPos() == 0.0f) // JPO - fix up old data
-    //	    	mpCurrentIls.pobjective->SetPosition (mpCurrentIls.pobjective->XPos(),
-    //		mpCurrentIls.pobjective->YPos(),
-    //		OTWDriver.GetGroundLevel(mpCurrentIls.pobjective->XPos(), mpCurrentIls.pobjective->YPos()));
+    // if (mpCurrentIls.pobjective->ZPos() == 0.0f) // JPO - fix up old data
+    //      mpCurrentIls.pobjective->SetPosition (mpCurrentIls.pobjective->XPos(),
+    // mpCurrentIls.pobjective->YPos(),
+    // OTWDriver.GetGroundLevel(mpCurrentIls.pobjective->XPos(), mpCurrentIls.pobjective->YPos()));
 
-    mpCurrentIls.rwyidx			= rwyidx;
-    backIdx							= mpCurrentIls.pobjective->brain->GetOppositeRunway(mpCurrentIls.rwyidx);
+    mpCurrentIls.rwyidx = rwyidx;
+    backIdx = mpCurrentIls.pobjective->brain->GetOppositeRunway(mpCurrentIls.rwyidx);
 
     TranslatePointData(mpCurrentIls.pobjective, GetFirstPt(backIdx), &mpCurrentIls.backx, &mpCurrentIls.backy);
     TranslatePointData(mpCurrentIls.pobjective, GetFirstPt(mpCurrentIls.rwyidx), &mpCurrentIls.frontx, &mpCurrentIls.fronty);
 
     // 2001-05-15 MODIFIED BY S.G. PER JULIAN'S INSTRUCTION BUT USING MY APPROACH. JULIAN'S APPROACH CAN POSSIBLY CREATE PROBLEMS IN OTHER SECTION OF THE CODE THAT ASSUMES THE OBJECTIVE IS AT ZERO ALTITUDE
-    //	mpCurrentIls.z					= mpCurrentIls.pobjective->ZPos();
+    // mpCurrentIls.z = mpCurrentIls.pobjective->ZPos();
     if (mpCurrentIls.pobjective->ZPos() == 0.0f) // JPO - fix up old data
         mpCurrentIls.z = OTWDriver.GetGroundLevel(mpCurrentIls.pobjective->XPos(), mpCurrentIls.pobjective->YPos());
     else
         mpCurrentIls.z = mpCurrentIls.pobjective->ZPos();
 
-    mpCurrentIls.heading			= PtHeaderDataTable[backIdx].data;
-    mpCurrentIls.sinHeading		= PtHeaderDataTable[backIdx].sinHeading;
-    mpCurrentIls.cosHeading		= PtHeaderDataTable[backIdx].cosHeading;
+    mpCurrentIls.heading = PtHeaderDataTable[backIdx].data;
+    mpCurrentIls.sinHeading = PtHeaderDataTable[backIdx].sinHeading;
+    mpCurrentIls.cosHeading = PtHeaderDataTable[backIdx].cosHeading;
 
     if (PtHeaderDataTable[backIdx].ltrt == 0)
     {
         // 2001-05-24 MODIFIED BY S.G. NEED TO ROUND, NOT TRUNCATE
-        //		sprintf(mpCurrentIls.rwynum, "%02d", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
+        // sprintf(mpCurrentIls.rwynum, "%02d", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
         sprintf(mpCurrentIls.rwynum, "%02d", (int)(PtHeaderDataTable[backIdx].data / 10.0F + 0.53F));
     }
-    else if (PtHeaderDataTable[backIdx].ltrt == -1)  	// left, just a guess vwf
+    else if (PtHeaderDataTable[backIdx].ltrt == -1)   // left, just a guess vwf
     {
         // 2001-05-24 MODIFIED BY S.G. NEED TO ROUND, NOT TRUNCATE
-        //		sprintf(mpCurrentIls.rwynum, "%02dL", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
+        // sprintf(mpCurrentIls.rwynum, "%02dL", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
         sprintf(mpCurrentIls.rwynum, "%02dL", (int)(PtHeaderDataTable[backIdx].data / 10.0F + 0.53F));
     }
-    else 	if (PtHeaderDataTable[backIdx].ltrt == 1)
+    else  if (PtHeaderDataTable[backIdx].ltrt == 1)
     {
         // 2001-05-24 MODIFIED BY S.G. NEED TO ROUND, NOT TRUNCATE
-        //		sprintf(mpCurrentIls.rwynum, "%02dR", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
+        // sprintf(mpCurrentIls.rwynum, "%02dR", (int)(PtHeaderDataTable[backIdx].data/10.0F + 0.499F));
         sprintf(mpCurrentIls.rwynum, "%02dR", (int)(PtHeaderDataTable[backIdx].data / 10.0F + 0.53F));
     }
     else
@@ -463,14 +463,14 @@ void NavigationSystem::ExecIls(void)
     if (SimDriver.GetPlayerAircraft() && mpCurrentIls.rwyidx != 0 && mpCurrentIls.vuID != FalconNullId && (GetInstrumentMode() == NavigationSystem::ILS_TACAN || GetInstrumentMode() == NavigationSystem::ILS_NAV))
     {
 
-        xfrontdiff						= mpCurrentIls.frontx - SimDriver.GetPlayerAircraft()->XPos();
-        yfrontdiff						= mpCurrentIls.fronty - SimDriver.GetPlayerAircraft()->YPos();
-        xbackdiff						= mpCurrentIls.backx - SimDriver.GetPlayerAircraft()->XPos();
-        ybackdiff						= mpCurrentIls.backy - SimDriver.GetPlayerAircraft()->YPos();
+        xfrontdiff = mpCurrentIls.frontx - SimDriver.GetPlayerAircraft()->XPos();
+        yfrontdiff = mpCurrentIls.fronty - SimDriver.GetPlayerAircraft()->YPos();
+        xbackdiff = mpCurrentIls.backx - SimDriver.GetPlayerAircraft()->XPos();
+        ybackdiff = mpCurrentIls.backy - SimDriver.GetPlayerAircraft()->YPos();
 
-        zdiff								= (float)fabs(mpCurrentIls.z - SimDriver.GetPlayerAircraft()->ZPos());
+        zdiff = (float)fabs(mpCurrentIls.z - SimDriver.GetPlayerAircraft()->ZPos());
 
-        bearingToLocalizer			= (float) atan2(xbackdiff, ybackdiff);						// radians +-pi, xaxis = 0deg
+        bearingToLocalizer = (float) atan2(xbackdiff, ybackdiff); // radians +-pi, xaxis = 0deg
 
         if (bearingToLocalizer >= -90.0F * DTR && bearingToLocalizer <= 180.0F * DTR)
         {
@@ -481,19 +481,19 @@ void NavigationSystem::ExecIls(void)
             bearingToLocalizer = -(270.0F * DTR + bearingToLocalizer);
         }
 
-        distToToLocalizer				= (float) sqrt(xfrontdiff * xfrontdiff + yfrontdiff * yfrontdiff);
+        distToToLocalizer = (float) sqrt(xfrontdiff * xfrontdiff + yfrontdiff * yfrontdiff);
 
-        el									= (float) atan2(zdiff, distToToLocalizer);
-        approach							= (float)mpCurrentIls.heading;
+        el = (float) atan2(zdiff, distToToLocalizer);
+        approach = (float)mpCurrentIls.heading;
 
         if (approach > 180)
         {
             approach -= 360;
         }
 
-        approach	*= DTR;
+        approach *= DTR;
 
-        mpCurrentIls.gpDeviation	= bearingToLocalizer - approach;						// Calc approach error
+        mpCurrentIls.gpDeviation = bearingToLocalizer - approach; // Calc approach error
 
         if (mpCurrentIls.gpDeviation < -180.0F * DTR)
         {
@@ -504,7 +504,7 @@ void NavigationSystem::ExecIls(void)
             mpCurrentIls.gpDeviation -= 360.0F * DTR;
         }
 
-        mpCurrentIls.gsDeviation	= 3.0F * DTR - el;											// Calc glideSlope error 3 degress from level
+        mpCurrentIls.gsDeviation = 3.0F * DTR - el; // Calc glideSlope error 3 degress from level
     }
 }
 
@@ -528,7 +528,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
         //MI check to make sure we are allowed to get the ILS
         if (g_bRealisticAvionics)
         {
-            VU_ID		ID;
+            VU_ID ID;
             int Digit1, Digit2, Digit3, TacanChannel;
             int range, type;
             float ilsf;
@@ -545,9 +545,9 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
                                                GetTacanBand(NavigationSystem::AUXCOMM), GetDomain(NavigationSystem::AUXCOMM),
                                                &ID, &range, &type, &ilsf);
 
-                if (GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::Y ||	//Tacanband isn't X
-                    GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA ||	//Not in AG Mode
-                    mpCurrentIls.vuID != ID)									//Tacanchannel not same
+                if (GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::Y || //Tacanband isn't X
+                    GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA || //Not in AG Mode
+                    mpCurrentIls.vuID != ID) //Tacanchannel not same
                 {
                     return FALSE;
                 }
@@ -563,8 +563,8 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
                                                GetTacanBand(NavigationSystem::ICP), GetDomain(NavigationSystem::ICP),
                                                &ID, &range, &type, &ilsf);
 
-                if (GetTacanBand(NavigationSystem::ICP) == TacanList::Y ||	//Tacanband isn't X
-                    GetDomain(NavigationSystem::ICP) == TacanList::AA ||	// Not in AG mode
+                if (GetTacanBand(NavigationSystem::ICP) == TacanList::Y || //Tacanband isn't X
+                    GetDomain(NavigationSystem::ICP) == TacanList::AA || // Not in AG mode
                     mpCurrentIls.vuID != ID)
                 {
                     return FALSE;
@@ -578,7 +578,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
             returnVal = TRUE;
 
             if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
-                SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
+                SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
         }
         else if (attribute == GS_DEV)
         {
@@ -586,7 +586,7 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
             returnVal = TRUE;
 
             if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
-                SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+                SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
     }
     else
@@ -594,8 +594,8 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, float* value)
         //MI additions
         if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
         {
-            SimDriver.GetPlayerAircraft()->LOCValid = FALSE;	//Flag visible
-            SimDriver.GetPlayerAircraft()->GSValid = FALSE;	//Flag visible
+            SimDriver.GetPlayerAircraft()->LOCValid = FALSE; //Flag visible
+            SimDriver.GetPlayerAircraft()->GSValid = FALSE; //Flag visible
         }
     }
 
@@ -654,8 +654,8 @@ BOOL NavigationSystem::GetILSAttribute(Attribute attribute, VU_ID* pId)
 void NavigationSystem::DeleteMissionTacans(void)
 {
 
-    Tacan_Data_LL_Str*	pLink;
-    Tacan_Data_LL_Str*	pNext;
+    Tacan_Data_LL_Str* pLink;
+    Tacan_Data_LL_Str* pNext;
 
     if (mpMissionTacans)
     {
@@ -663,14 +663,14 @@ void NavigationSystem::DeleteMissionTacans(void)
 
         while (pLink)
         {
-            pNext	=	pLink->pNext;
+            pNext = pLink->pNext;
             delete pLink->pData;
             delete pLink;
             pLink = pNext;
         }
 
-        mpMissionTacans				= NULL;
-        mpCurrentMissionTacan		= NULL;
+        mpMissionTacans = NULL;
+        mpCurrentMissionTacan = NULL;
     }
 }
 /////////////////////////////////////////////////////////////////
@@ -683,15 +683,15 @@ void NavigationSystem::DeleteMissionTacans(void)
 void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 {
 
-    WayPointClass*				pwaypoint = ownship->waypoint;
-    VU_ID							id;
-    int							channel;
-    TacanList::Domain			domain;
-    TacanList::StationSet	set;
-    Tacan_Data_LL_Str*		pLink;
-    Tacan_Data_LL_Str*		prevLink;
-    FlightClass*				pFlight = NULL;
-    FlightClass*				pTankerFlight = NULL;
+    WayPointClass* pwaypoint = ownship->waypoint;
+    VU_ID id;
+    int channel;
+    TacanList::Domain domain;
+    TacanList::StationSet set;
+    Tacan_Data_LL_Str* pLink;
+    Tacan_Data_LL_Str* prevLink;
+    FlightClass* pFlight = NULL;
+    FlightClass* pTankerFlight = NULL;
 
     if (mpMissionTacans)
     {
@@ -704,8 +704,8 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 
     // Moved tanker tacan channel behind waypoint "channels"
 
-    //	prevLink = new Tacan_Data_LL_Str;
-    //	prevLink->pData = new Tacan_Data_Str;
+    // prevLink = new Tacan_Data_LL_Str;
+    // prevLink->pData = new Tacan_Data_Str;
     prevLink = NULL;
 
     while (pwaypoint)
@@ -718,23 +718,23 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
             float ilsfreq;
 
             if (gTacanList->GetChannelFromVUID(id, &channel, &set, &domain,
-                                               &range, &ttype, &ilsfreq))  	// If we find the tacan put it in the list
+                                               &range, &ttype, &ilsfreq))   // If we find the tacan put it in the list
             {
 
 
-                pLink						= new Tacan_Data_LL_Str;
-                pLink->pData				= new Tacan_Data_Str;
+                pLink = new Tacan_Data_LL_Str;
+                pLink->pData = new Tacan_Data_Str;
 
-                pLink->pNext				= NULL;
-                pLink->pPrevious			= NULL;
-                pLink->pData->vuID		= id;
-                pLink->pData->channel	= channel;
-                pLink->pData->set			= set;
-                pLink->pData->digits[2]	= channel / 100;		// Break up into digits
-                channel						= channel - pLink->pData->digits[2] * 100;
-                pLink->pData->digits[1]	= channel / 10;
-                channel						= channel - pLink->pData->digits[1] * 10;
-                pLink->pData->digits[0]	= channel;
+                pLink->pNext = NULL;
+                pLink->pPrevious = NULL;
+                pLink->pData->vuID = id;
+                pLink->pData->channel = channel;
+                pLink->pData->set = set;
+                pLink->pData->digits[2] = channel / 100; // Break up into digits
+                channel = channel - pLink->pData->digits[2] * 100;
+                pLink->pData->digits[1] = channel / 10;
+                channel = channel - pLink->pData->digits[1] * 10;
+                pLink->pData->digits[0] = channel;
                 pLink->pData->range = range;
                 pLink->pData->ilsfreq = ilsfreq;
                 pLink->pData->ttype = ttype;
@@ -744,13 +744,13 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
                 //add link
                 if (mpMissionTacans == NULL)
                 {
-                    mpMissionTacans		= pLink;
-                    pLink->pPrevious		= NULL;
+                    mpMissionTacans = pLink;
+                    pLink->pPrevious = NULL;
                 }
                 else
                 {
-                    //					mpMissionTacans->pPrevious = pLink;
-                    //					pLink->pNext			= mpMissionTacans;
+                    // mpMissionTacans->pPrevious = pLink;
+                    // pLink->pNext = mpMissionTacans;
 
                     // 2001-10-08 M.N. sort the other way around
                     //                 -> first list entry is always our home base
@@ -767,7 +767,7 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
         pwaypoint = pwaypoint->GetNextWP();
     }
 
-    pFlight			= (FlightClass*) ownship->GetCampaignObject();
+    pFlight = (FlightClass*) ownship->GetCampaignObject();
 
     if (pFlight)
     {
@@ -776,31 +776,31 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 
     if (pTankerFlight)
     {
-        pLink							= new Tacan_Data_LL_Str;
-        pLink->pData				= new Tacan_Data_Str;
+        pLink = new Tacan_Data_LL_Str;
+        pLink->pData = new Tacan_Data_Str;
 
-        pLink->pNext				= NULL;
-        pLink->pPrevious			= NULL;
-        pLink->pData->vuID		= pTankerFlight->Id();
-        pLink->pData->channel	= (int)pTankerFlight->tacan_channel;
-        channel						= pLink->pData->channel;
-        pLink->pData->set			= TacanList::Y;
-        pLink->pData->digits[2]	= channel / 100;		// Break up into digits
-        channel						= channel - pLink->pData->digits[2] * 100;
-        pLink->pData->digits[1]	= channel / 10;
-        channel						= channel - pLink->pData->digits[1] * 10;
-        pLink->pData->digits[0]	= channel;
+        pLink->pNext = NULL;
+        pLink->pPrevious = NULL;
+        pLink->pData->vuID = pTankerFlight->Id();
+        pLink->pData->channel = (int)pTankerFlight->tacan_channel;
+        channel = pLink->pData->channel;
+        pLink->pData->set = TacanList::Y;
+        pLink->pData->digits[2] = channel / 100; // Break up into digits
+        channel = channel - pLink->pData->digits[2] * 100;
+        pLink->pData->digits[1] = channel / 10;
+        channel = channel - pLink->pData->digits[1] * 10;
+        pLink->pData->digits[0] = channel;
         pLink->pData->range = 150;
         pLink->pData->ilsfreq = 0;
         pLink->pData->ttype = 1;
 
-        pLink->type					= TANKER;
+        pLink->type = TANKER;
 
-        //	mpMissionTacans			= pLink;
+        // mpMissionTacans = pLink;
 
 
         //add link (we already have at least one tacan, so just add another one
-        //	ShiAssert(prevLink); not needed anymore
+        // ShiAssert(prevLink); not needed anymore
 
         // M.N. we have no airbase - can be in IA; CTD Fix
 
@@ -820,7 +820,7 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 
     if (mpMissionTacans)
     {
-        mpCurrentMissionTacan			= mpMissionTacans;
+        mpCurrentMissionTacan = mpMissionTacans;
         CopyMissionTCNData(&mpCurrentTCN[ICP], mpCurrentMissionTacan);
         SetDomain(mpMissionTacans->type);
     }
@@ -837,15 +837,15 @@ void NavigationSystem::SetMissionTacans(AircraftClass* ownship)
 void NavigationSystem::CopyMissionTCNData(Tacan_Data_Str* pData, Tacan_Data_LL_Str* pLink)
 {
 
-    pData->vuID			= pLink->pData->vuID;
-    pData->channel		= pLink->pData->channel;
-    pData->set			= pLink->pData->set;
-    pData->digits[0]	= pLink->pData->digits[0];
-    pData->digits[1]	= pLink->pData->digits[1];
-    pData->digits[2]	= pLink->pData->digits[2];
-    pData->range		= pLink->pData->range;
-    pData->ilsfreq		= pLink->pData->ilsfreq;
-    pData->ttype		= pLink->pData->ttype;
+    pData->vuID = pLink->pData->vuID;
+    pData->channel = pLink->pData->channel;
+    pData->set = pLink->pData->set;
+    pData->digits[0] = pLink->pData->digits[0];
+    pData->digits[1] = pLink->pData->digits[1];
+    pData->digits[2] = pLink->pData->digits[2];
+    pData->range = pLink->pData->range;
+    pData->ilsfreq = pLink->pData->ilsfreq;
+    pData->ttype = pLink->pData->ttype;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -877,14 +877,14 @@ NavigationSystem::Type NavigationSystem::GetType(void)
 void NavigationSystem::StepPreviousTacan(void)
 {
 
-    Tacan_Data_LL_Str*	p_current;
+    Tacan_Data_LL_Str* p_current;
 
     if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID != FalconNullId)
     {
         if (mpCurrentMissionTacan->pPrevious == NULL)
         {
 
-            p_current	= mpMissionTacans;
+            p_current = mpMissionTacans;
 
             while (p_current->pNext != NULL)
             {
@@ -911,7 +911,7 @@ void NavigationSystem::StepPreviousTacan(void)
 // NavigationSystem::StepNextTacan
 //---------------------------------------------------------------
 
-void NavigationSystem::StepNextTacan(void)  	// For ICP Only
+void NavigationSystem::StepNextTacan(void)   // For ICP Only
 {
 
     if (mpCurrentMissionTacan && mpCurrentMissionTacan->pData->vuID != FalconNullId)
@@ -944,11 +944,11 @@ void NavigationSystem::GetHomeID(VU_ID* id)
 
     if (mpMissionTacans)
     {
-        *id			= mpMissionTacans->pData->vuID;
+        *id = mpMissionTacans->pData->vuID;
     }
     else
     {
-        *id			= FalconNullId;
+        *id = FalconNullId;
     }
 }
 
@@ -965,11 +965,11 @@ void NavigationSystem::GetCurrentID(VU_ID* id)
 
     if (mpCurrentMissionTacan)
     {
-        *id			= mpCurrentMissionTacan->pData->vuID;
+        *id = mpCurrentMissionTacan->pData->vuID;
     }
     else
     {
-        *id			= FalconNullId;
+        *id = FalconNullId;
     }
 }
 
@@ -982,7 +982,7 @@ void NavigationSystem::GetCurrentID(VU_ID* id)
 BOOL NavigationSystem::GetTCNPosition(float *xp, float *yp, float *zp)
 {
 
-    VuEntity*	entity;
+    VuEntity* entity;
 
     entity = vuDatabase->Find(mpCurrentTCN[mCurrentTCNSrc].vuID);
 
@@ -1001,8 +1001,8 @@ BOOL NavigationSystem::GetTCNPosition(float *xp, float *yp, float *zp)
         }
     }
 
-    //	else if(entity->GetType() == STYPE_UNIT_CARRIER) {
-    //	}
+    // else if(entity->GetType() == STYPE_UNIT_CARRIER) {
+    // }
 
     *xp = entity->XPos();
     *yp = entity->YPos();
@@ -1168,12 +1168,12 @@ void NavigationSystem::SetDomain(Tacan_Channel_Src src, TacanList::Domain domain
         return;
     }
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
     mpCurrentDomain[src] = domain;
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -1203,7 +1203,7 @@ TacanList::Domain NavigationSystem::GetDomain(Tacan_Channel_Src src)
 TacanList::Domain NavigationSystem::ToggleDomain(Tacan_Channel_Src src)
 {
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
     if (mpCurrentDomain[src] == TacanList::AA)
     {
@@ -1216,7 +1216,7 @@ TacanList::Domain NavigationSystem::ToggleDomain(Tacan_Channel_Src src)
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
 
     return mpCurrentDomain[src];
 }
@@ -1272,8 +1272,8 @@ void NavigationSystem::StepInstrumentMode(void)
     //MI additions
     if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
     {
-        SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
-        SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+        SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
+        SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
     }
 
     if (mInstrumentMode == TACAN)
@@ -1382,10 +1382,10 @@ int NavigationSystem::GetVRPOAIndex(void)
 void NavigationSystem::GetMarkPoint(Point_Type* ppointType, char* platStr, char* plongStr)
 {
 
-    *platStr		= NULL;
-    *plongStr	= NULL;
+    *platStr = NULL;
+    *plongStr = NULL;
 
-    *ppointType	= mpMarkPoints[mCurrentMark].pointType;
+    *ppointType = mpMarkPoints[mCurrentMark].pointType;
 
     strcpy(platStr, mpMarkPoints[mCurrentMark].pLatStr);
     strcpy(plongStr, mpMarkPoints[mCurrentMark].pLongStr);
@@ -1397,10 +1397,10 @@ void NavigationSystem::GetMarkPoint(Point_Type* ppointType, char* platStr, char*
 //---------------------------------------------------------------
 void NavigationSystem::GetDESTOA(Point_Type* ppointType, char* platStr, char* plongStr)
 {
-    *platStr	= NULL;
-    *plongStr	= NULL;
+    *platStr = NULL;
+    *plongStr = NULL;
 
-    *ppointType	= mpDESTOA[mCurrentDESTOA].pointType;
+    *ppointType = mpDESTOA[mCurrentDESTOA].pointType;
 
     strcpy(platStr, mpDESTOA[mCurrentDESTOA].pLatStr);
     strcpy(plongStr, mpDESTOA[mCurrentDESTOA].pLongStr);
@@ -1411,10 +1411,10 @@ void NavigationSystem::GetDESTOA(Point_Type* ppointType, char* platStr, char* pl
 //---------------------------------------------------------------
 void NavigationSystem::GetVIPOA(Point_Type* ppointType, char* platStr, char* plongStr)
 {
-    *platStr	= NULL;
-    *plongStr	= NULL;
+    *platStr = NULL;
+    *plongStr = NULL;
 
-    *ppointType	= mpVIPOA[mCurrentVIPOA].pointType;
+    *ppointType = mpVIPOA[mCurrentVIPOA].pointType;
 
     strcpy(platStr, mpVIPOA[mCurrentVIPOA].pLatStr);
     strcpy(plongStr, mpVIPOA[mCurrentVIPOA].pLongStr);
@@ -1425,10 +1425,10 @@ void NavigationSystem::GetVIPOA(Point_Type* ppointType, char* platStr, char* plo
 //---------------------------------------------------------------
 void NavigationSystem::GetVRPOA(Point_Type* ppointType, char* platStr, char* plongStr)
 {
-    *platStr	= NULL;
-    *plongStr	= NULL;
+    *platStr = NULL;
+    *plongStr = NULL;
 
-    *ppointType	= mpVRPOA[mCurrentVRPOA].pointType;
+    *ppointType = mpVRPOA[mCurrentVRPOA].pointType;
 
     strcpy(platStr, mpVIPOA[mCurrentVRPOA].pLatStr);
     strcpy(plongStr, mpVIPOA[mCurrentVRPOA].pLongStr);
@@ -1551,12 +1551,12 @@ void NavigationSystem::SetMarkPoint(Point_Type type, float x, float y, float z, 
         delete mpMarkPoints[mCurrentMark].pWaypoint;
     }
 
-    mpMarkPoints[mCurrentMark].pWaypoint		= new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
+    mpMarkPoints[mCurrentMark].pWaypoint = new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
     mpMarkPoints[mCurrentMark].pWaypoint->SetLocation(x, y, z);
     mpMarkPoints[mCurrentMark].pWaypoint->SetWPArrive(arriveTime);
 
 
-    mpMarkPoints[mCurrentMark].pointType		= type;
+    mpMarkPoints[mCurrentMark].pointType = type;
 
     ApproxLatLong(x, y, &latitude, &longitude);
     BuildLatLongStr(latitude, longitude, mpMarkPoints[mCurrentMark].pLatStr, mpMarkPoints[mCurrentMark].pLongStr);
@@ -1575,10 +1575,10 @@ void NavigationSystem::SetDESTOAPoint(Point_Type type, float x, float y, float z
     if (mpDESTOA[number].pWaypoint)
         delete mpDESTOA[number].pWaypoint;
 
-    mpDESTOA[number].pWaypoint		= new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
+    mpDESTOA[number].pWaypoint = new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
     mpDESTOA[number].pWaypoint->SetLocation(x, y, z);
 
-    mpDESTOA[number].pointType		= type;
+    mpDESTOA[number].pointType = type;
 
     ApproxLatLong(x, y, &latitude, &longitude);
     BuildLatLongStr(latitude, longitude, mpDESTOA[number].pLatStr, mpDESTOA[number].pLongStr);
@@ -1596,13 +1596,13 @@ void NavigationSystem::SetVIPOAPoint(Point_Type type, float x, float y, float z,
     if (mpVIPOA[mCurrentVIPOA].pWaypoint)
         delete mpVIPOA[mCurrentVIPOA].pWaypoint;
 
-    mpVIPOA[mCurrentVIPOA].pWaypoint		= new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
+    mpVIPOA[mCurrentVIPOA].pWaypoint = new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
     mpVIPOA[mCurrentVIPOA].pWaypoint->SetLocation(x, y, z);
     //Needed?
     //mpVIPOA[mCurrentVIPOA].pWaypoint->SetWPArrive(arriveTime);
 
 
-    mpVIPOA[mCurrentVIPOA].pointType		= type;
+    mpVIPOA[mCurrentVIPOA].pointType = type;
 
     ApproxLatLong(x, y, &latitude, &longitude);
     BuildLatLongStr(latitude, longitude, mpVIPOA[mCurrentVIPOA].pLatStr, mpVIPOA[mCurrentVIPOA].pLongStr);
@@ -1620,13 +1620,13 @@ void NavigationSystem::SetVRPOAPoint(Point_Type type, float x, float y, float z,
     if (mpVRPOA[mCurrentVRPOA].pWaypoint)
         delete mpVRPOA[mCurrentVRPOA].pWaypoint;
 
-    mpVRPOA[mCurrentVRPOA].pWaypoint		= new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
+    mpVRPOA[mCurrentVRPOA].pWaypoint = new WayPointClass(0, 0, 0, 0, 0, 0, 0, 0);
     mpVRPOA[mCurrentVRPOA].pWaypoint->SetLocation(x, y, z);
     //Needed?
     //mpVRPOA[mCurrentVRPOA].pWaypoint->SetWPArrive(arriveTime);
 
 
-    mpVRPOA[mCurrentVRPOA].pointType		= type;
+    mpVRPOA[mCurrentVRPOA].pointType = type;
 
     ApproxLatLong(x, y, &latitude, &longitude);
     BuildLatLongStr(latitude, longitude, mpVRPOA[mCurrentVRPOA].pLatStr, mpVRPOA[mCurrentVRPOA].pLongStr);
@@ -1716,16 +1716,16 @@ void NavigationSystem::GetDataLink(FalconDLinkMessage::DLinkPointType* ptype,
                                    char* pheading,
                                    char* pdistance)
 {
-    *ptype			= mpDLinkPoints[mCurrentDLink].pointType;
-    *ppointNumber	= mCurrentDLink;
+    *ptype = mpDLinkPoints[mCurrentDLink].pointType;
+    *ppointNumber = mCurrentDLink;
 
     if (*ptype == FalconDLinkMessage::NODLINK)
     {
-        *ptarget		= NULL;
-        *pthreat		= NULL;
-        *ptypeStr	= NULL;
-        *pheading	= NULL;
-        *pdistance	= NULL;
+        *ptarget = NULL;
+        *pthreat = NULL;
+        *ptypeStr = NULL;
+        *pheading = NULL;
+        *pdistance = NULL;
     }
     else
     {
@@ -1752,9 +1752,9 @@ void NavigationSystem::SetDataLinks(char totalPoints,
                                     short* px,
                                     short* py,
                                     short* pz,
-                                    long*	parriveTime)
+                                    long* parriveTime)
 {
-    int	i;
+    int i;
     float tgtx;
     float tgty;
     float tgtz;
@@ -1763,8 +1763,8 @@ void NavigationSystem::SetDataLinks(char totalPoints,
     float ipz;
     float deltax;
     float deltay;
-    int	heading;
-    float	distance;
+    int heading;
+    float distance;
 
     GetTypeString(target, mpDLinkTarget);
     GetTypeString(threat, mpDLinkThreat);
@@ -1794,17 +1794,17 @@ void NavigationSystem::SetDataLinks(char totalPoints,
             mpDLinkPoints[i].pWaypoint->GetLocation(&tgtx, &tgty, &tgtz);
             mpDLinkPoints[i - 1].pWaypoint->GetLocation(&ipx, &ipy, &ipz);
 
-            deltax		= tgtx - ipx;
-            deltay		= tgty - ipy;
+            deltax = tgtx - ipx;
+            deltay = tgty - ipy;
 
-            heading		= FloatToInt32(ConvertRadtoNav((float)atan2(deltax, deltay)));
+            heading = FloatToInt32(ConvertRadtoNav((float)atan2(deltax, deltay)));
 
             if (heading == 0)
             {
                 heading = 360;
             }
 
-            distance		= (float)sqrt(deltax * deltax + deltay + deltay) * FT_TO_NM;
+            distance = (float)sqrt(deltax * deltax + deltay + deltay) * FT_TO_NM;
 
             sprintf(mpDLinkPoints[i].attackHeading, "%3d", heading);
 
@@ -1821,8 +1821,8 @@ void NavigationSystem::SetDataLinks(char totalPoints,
         else
         {
 
-            *(mpDLinkPoints[i].attackHeading)	= NULL;
-            *(mpDLinkPoints[i].distance)			= NULL;
+            *(mpDLinkPoints[i].attackHeading) = NULL;
+            *(mpDLinkPoints[i].distance) = NULL;
         }
     }
 
@@ -1890,7 +1890,7 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int digit, int val
     if (digit < 0 || digit > 2)
     {
         // Tacan Channels have between one and three digits.
-        ShiWarning("Too many digits");					// Element #2 = MSDigit, Element #0 = LSDigit
+        ShiWarning("Too many digits"); // Element #2 = MSDigit, Element #0 = LSDigit
         return;
     }
 
@@ -1901,16 +1901,16 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int digit, int val
         return;
     }
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
-    mpCurrentTCN[src].digits[digit]	= value;											// Set the element to the appropiate value
-    mpCurrentTCN[src].channel			=	mpCurrentTCN[src].digits[2] * 100 +		// Set the update the channel in the struct
+    mpCurrentTCN[src].digits[digit] = value; // Set the element to the appropiate value
+    mpCurrentTCN[src].channel = mpCurrentTCN[src].digits[2] * 100 + // Set the update the channel in the struct
                                             mpCurrentTCN[src].digits[1] * 10 +
                                             mpCurrentTCN[src].digits[0];
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -1937,14 +1937,14 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
     *type = 0;
     *ilsfreq = 0;
 
-    if (set == TacanList::Y && mpCurrentDomain[src] == TacanList::AA)  	// this only works for tankers now
+    if (set == TacanList::Y && mpCurrentDomain[src] == TacanList::AA)   // this only works for tankers now
     {
 
-        FlightClass*	p_flight;
-        BOOL				result = FALSE;
+        FlightClass* p_flight;
+        BOOL result = FALSE;
 
         VuListIterator findWalker(SimDriver.tankerList);
-        *id		= FalconNullId;
+        *id = FalconNullId;
         p_flight = (FlightClass*)findWalker.GetFirst();
 
         while (p_flight && result == FALSE)
@@ -1952,8 +1952,8 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
 
             if (((int)p_flight->tacan_channel) == channel)
             {
-                *id		= p_flight->Id();
-                result	= TRUE;
+                *id = p_flight->Id();
+                result = TRUE;
                 *rangep = 150;
                 *type = 1;
                 *ilsfreq = 0;
@@ -1970,7 +1970,7 @@ void NavigationSystem::FindTacanStation(Tacan_Channel_Src src,
         if (!gTacanList->GetVUIDFromChannel(channel, set, mpCurrentDomain[src],
                                             id, rangep, type, ilsfreq))
         {
-            *id		= FalconNullId;
+            *id = FalconNullId;
         }
     }
 }
@@ -2001,26 +2001,26 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel)
 {
 
 
-    if (channel < 1 || channel > 126)  				// Tacan Channels are numbered 1 to 126
+    if (channel < 1 || channel > 126)   // Tacan Channels are numbered 1 to 126
     {
         ShiWarning("Bad TACAN Channel");
         return;
     }
 
-    VU_ID				vuID;
+    VU_ID vuID;
 
-    mpCurrentTCN[src].channel	= channel;		// Set the new channel
+    mpCurrentTCN[src].channel = channel; // Set the new channel
 
     // Break up into digits
-    mpCurrentTCN[src].digits[2]	= channel / 100;
-    channel								= channel - mpCurrentTCN[src].digits[2] * 100;
-    mpCurrentTCN[src].digits[1]	= channel / 10;
-    channel								= channel - mpCurrentTCN[src].digits[1] * 10;
-    mpCurrentTCN[src].digits[0]	= channel;
+    mpCurrentTCN[src].digits[2] = channel / 100;
+    channel = channel - mpCurrentTCN[src].digits[2] * 100;
+    mpCurrentTCN[src].digits[1] = channel / 10;
+    channel = channel - mpCurrentTCN[src].digits[1] * 10;
+    mpCurrentTCN[src].digits[0] = channel;
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -2058,12 +2058,12 @@ void NavigationSystem::SetTacanBand(Tacan_Channel_Src src, TacanList::StationSet
         return;
     }
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
-    mpCurrentTCN[src].set	= set;
+    mpCurrentTCN[src].set = set;
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -2095,7 +2095,7 @@ TacanList::StationSet NavigationSystem::GetTacanBand(Tacan_Channel_Src src)
 void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel, TacanList::StationSet set)
 {
 
-    if (channel < 1 || channel > 126)  				// Tacan Channels are numbered 1 to 126
+    if (channel < 1 || channel > 126)   // Tacan Channels are numbered 1 to 126
     {
         ShiWarning("Bad TACAN Number");
         return;
@@ -2107,23 +2107,23 @@ void NavigationSystem::SetTacanChannel(Tacan_Channel_Src src, int channel, Tacan
         return;
     }
 
-    VU_ID				vuID;
+    VU_ID vuID;
 
-    mpCurrentTCN[src].channel	= channel;		// Set the new channel
+    mpCurrentTCN[src].channel = channel; // Set the new channel
 
     // Break up into digits
-    mpCurrentTCN[src].digits[2]	= channel / 100;
-    channel								= channel - mpCurrentTCN[src].digits[2] * 100;
-    mpCurrentTCN[src].digits[1]	= channel / 10;
-    channel								= channel - mpCurrentTCN[src].digits[1] * 10;
-    mpCurrentTCN[src].digits[0]	= channel;
+    mpCurrentTCN[src].digits[2] = channel / 100;
+    channel = channel - mpCurrentTCN[src].digits[2] * 100;
+    mpCurrentTCN[src].digits[1] = channel / 10;
+    channel = channel - mpCurrentTCN[src].digits[1] * 10;
+    mpCurrentTCN[src].digits[0] = channel;
 
-    mpCurrentTCN[src].set	= set;
+    mpCurrentTCN[src].set = set;
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
 
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     // sfr: wooooa, we are creating gNavigationSys here, how can we use it???
     /*gNavigationSys->*/
@@ -2142,7 +2142,7 @@ void NavigationSystem::GetTacanChannel(Tacan_Channel_Src src, int* channel, Taca
 {
 
     *channel = mpCurrentTCN[src].channel;
-    *set		= mpCurrentTCN[src].set;
+    *set = mpCurrentTCN[src].set;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -2164,11 +2164,11 @@ void NavigationSystem::StepTacanChannelDigit(Tacan_Channel_Src src, int digit, i
         return;
     }
 
-    VU_ID			vuID;
+    VU_ID vuID;
 
     //JPO rewrite to step in either direction.
     // increment/decrement first, ask questions later.
-    mpCurrentTCN[src].digits[digit]	+= direction;			// Set the element to the appropiate value
+    mpCurrentTCN[src].digits[digit] += direction; // Set the element to the appropiate value
 
     if (digit == 2)  // can only be 0 or 1.
     {
@@ -2184,13 +2184,13 @@ void NavigationSystem::StepTacanChannelDigit(Tacan_Channel_Src src, int digit, i
 
     }
 
-    mpCurrentTCN[src].channel			=	mpCurrentTCN[src].digits[2] * 100 +		// Set the update the channel in the struct
+    mpCurrentTCN[src].channel = mpCurrentTCN[src].digits[2] * 100 + // Set the update the channel in the struct
                                             mpCurrentTCN[src].digits[1] * 10 +
                                             mpCurrentTCN[src].digits[0];
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID				= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -2207,7 +2207,7 @@ void NavigationSystem::StepTacanChannelDigit(Tacan_Channel_Src src, int digit, i
 void NavigationSystem::StepTacanBand(Tacan_Channel_Src src)
 {
 
-    VU_ID			vuID;
+    VU_ID vuID;
 
     if (mpCurrentTCN[src].set == TacanList::X)
     {
@@ -2220,7 +2220,7 @@ void NavigationSystem::StepTacanBand(Tacan_Channel_Src src)
 
     FindTacanStation(src, mpCurrentTCN[src].channel, mpCurrentTCN[src].set,
                      &vuID, &mpCurrentTCN[src].range, &mpCurrentTCN[src].ttype, &mpCurrentTCN[src].ilsfreq);
-    mpCurrentTCN[src].vuID	= vuID;
+    mpCurrentTCN[src].vuID = vuID;
     // MD --20040605: and update ILS info since we may be changing TACAN completely
     /*gNavigationSys->*/
     SetIlsFromTacan();
@@ -2295,12 +2295,12 @@ void NavigationSystem::SetUHFSrc(NavigationSystem::UHF_Mode_Type mode)
 //---------------------------------------------------------------
 // NavigationSystem::GetAirbase
 //---------------------------------------------------------------
-void	NavigationSystem::GetAirbase(VU_ID* pATCId)
+void NavigationSystem::GetAirbase(VU_ID* pATCId)
 {
-    WayPointClass			*pcurrentWaypoint;
-    Objective				airbase;
-    GridIndex				x, y;
-    vector					pos;
+    WayPointClass *pcurrentWaypoint;
+    Objective airbase;
+    GridIndex x, y;
+    vector pos;
 
     // 2002-04-08 MN CTD fix
     if (!SimDriver.GetPlayerAircraft())
@@ -2315,11 +2315,11 @@ void	NavigationSystem::GetAirbase(VU_ID* pATCId)
     }
     else if (GetInstrumentMode() == NAV || GetInstrumentMode() == ILS_NAV)
     {
-        pcurrentWaypoint	= SimDriver.GetPlayerAircraft()->curWaypoint;
+        pcurrentWaypoint = SimDriver.GetPlayerAircraft()->curWaypoint;
 
         if (pcurrentWaypoint && pcurrentWaypoint->GetWPAction() == WP_LAND)
         {
-            *pATCId	= pcurrentWaypoint->GetWPTargetID();
+            *pATCId = pcurrentWaypoint->GetWPTargetID();
         }
         else if (SimDriver.GetPlayerAircraft())
         {
@@ -2330,7 +2330,7 @@ void	NavigationSystem::GetAirbase(VU_ID* pATCId)
             airbase = FindNearestFriendlyAirbase(SimDriver.GetPlayerAircraft()->GetTeam(), x, y);
 
             if (airbase)
-                *pATCId	= airbase->Id();
+                *pATCId = airbase->Id();
             else
                 *pATCId = FalconNullId;
         }
@@ -2345,11 +2345,11 @@ void	NavigationSystem::GetAirbase(VU_ID* pATCId)
 //---------------------------------------------------------------
 // NavigationSystem::IsTCNTanker
 //---------------------------------------------------------------
-BOOL	NavigationSystem::IsTCNTanker(void)
+BOOL NavigationSystem::IsTCNTanker(void)
 {
-    VU_ID				VuId;
-    CampBaseClass*	pCampBase;
-    FlightClass*	pFlight;
+    VU_ID VuId;
+    CampBaseClass* pCampBase;
+    FlightClass* pFlight;
 
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);
@@ -2373,10 +2373,10 @@ BOOL	NavigationSystem::IsTCNTanker(void)
 // NavigationSystem::IsTCNCarrier
 //---------------------------------------------------------------
 
-BOOL	NavigationSystem::IsTCNCarrier(void)
+BOOL NavigationSystem::IsTCNCarrier(void)
 {
-    VU_ID				VuId;
-    CampBaseClass*	pCampBase;
+    VU_ID VuId;
+    CampBaseClass* pCampBase;
 
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);
@@ -2395,10 +2395,10 @@ BOOL	NavigationSystem::IsTCNCarrier(void)
 // NavigationSystem::IsTCNAirbase
 //---------------------------------------------------------------
 
-BOOL	NavigationSystem::IsTCNAirbase(void)
+BOOL NavigationSystem::IsTCNAirbase(void)
 {
-    VU_ID				VuId;
-    CampBaseClass*	pCampBase;
+    VU_ID VuId;
+    CampBaseClass* pCampBase;
 
     GetTacanVUID(GetControlSrc(), &VuId);
     pCampBase = (CampBaseClass*) vuDatabase->Find(VuId);

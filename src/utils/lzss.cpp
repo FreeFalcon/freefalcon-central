@@ -1,23 +1,23 @@
 /*--------------------------------------------------------------------
-	$Header: /home/cvsroot/RedCobra/utils/lzss.cpp,v 1.1.1.1 2005/07/28 07:31:54 Red Exp $
+ $Header: /home/cvsroot/RedCobra/utils/lzss.cpp,v 1.1.1.1 2005/07/28 07:31:54 Red Exp $
 
-	This file lzss.c was originally the bottom of the carman.c
-	program, given in the Data Compression Book, by Nelson and Gailly,
-	2nd Ed., M&T Books, c.1996.  I have taken out the all of the
-	archive related stuff, and left in the lzss compression.  Any
-	change I make to the file will be marked by an empty comment.
+ This file lzss.c was originally the bottom of the carman.c
+ program, given in the Data Compression Book, by Nelson and Gailly,
+ 2nd Ed., M&T Books, c.1996.  I have taken out the all of the
+ archive related stuff, and left in the lzss compression.  Any
+ change I make to the file will be marked by an empty comment.
 
-	Changes by Kevin Klemmick on Aug 27, 1997: converted to c++ and
-	made MSDV c++ compliant.
+ Changes by Kevin Klemmick on Aug 27, 1997: converted to c++ and
+ made MSDV c++ compliant.
 
-	More additions on Aug 29, 1997: Added Jim D's versions.
+ More additions on Aug 29, 1997: Added Jim D's versions.
 
-	Changes by Kevin Klemmick on Aug 13, 1998: Set up for external
-	library - user can define wether to use "C" or "C++" (for linkage
-	purposes, primarily).
+ Changes by Kevin Klemmick on Aug 13, 1998: Set up for external
+ library - user can define wether to use "C" or "C++" (for linkage
+ purposes, primarily).
 
-	Additional changes: Implimented compression contexts, for multi-
-	threaded support.
+ Additional changes: Implimented compression contexts, for multi-
+ threaded support.
 
 --------------------------------------------------------------------*/
 
@@ -415,10 +415,10 @@ int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* c
  * using normal file I/O.
  */
 
-void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt)				/**/
+void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
 {
     ctxt->FlagBitMask = 1;
-    ctxt->DataBuffer[ 0 ] = *input_string;										/**/
+    ctxt->DataBuffer[ 0 ] = *input_string; /**/
 }
 
 /*
@@ -428,13 +428,13 @@ void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt)				/**/
  * have a fresh set.
  */
 
-int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt)						/**/
+int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
 {
     ctxt->inc_input_string = 0;
 
     if (ctxt->FlagBitMask == 0x100)
     {
-        InitInputBuffer(input_string, ctxt);										/**/
+        InitInputBuffer(input_string, ctxt); /**/
         ctxt->inc_input_string = 1;
     }
 
@@ -554,7 +554,7 @@ extern "C"
             for (i = 0 ; i < replace_count ; i++)
             {
                 DeleteString(MOD_WINDOW(current_position + LOOK_AHEAD_SIZE), &ctxt);
-                c = *input_string;  		                  /**/
+                c = *input_string;                     /**/
                 size--;                                     /**/
 
                 if (size < 0)                               /**/
@@ -728,7 +728,7 @@ extern "C"
         LZSS_COMP_CTXT ctxt;
 
         /* getting file compression size */
-        unsigned long	curPos, finalPos;
+        unsigned long curPos, finalPos;
 
         curPos = ftell(output->file);
 
@@ -851,7 +851,7 @@ extern "C"
     {
         int i;
         int c;
-        int	inputRet;
+        int inputRet;
         unsigned long byteCount;
         unsigned char *ptr;
         LZSS_COMP_CTXT ctxt;
@@ -873,8 +873,8 @@ extern "C"
 
 
             // TEMP FIX
-            /*	if ( ptr >= tempFileEnd )
-            		break;*/
+            /* if ( ptr >= tempFileEnd )
+             break;*/
 
             if (inputRet)
             {

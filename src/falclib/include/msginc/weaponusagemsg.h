@@ -53,10 +53,10 @@ class FalconWeaponUsageMessage : public FalconEvent
       class DATA_BLOCK
       {
          public:
-			short fuel;
+ short fuel;
             uchar ids[HARDPOINT_MAX];
             uchar num[HARDPOINT_MAX];
-			uchar vehicles;
+ uchar vehicles;
       } dataBlock;
 
    protected:

@@ -1,6 +1,6 @@
-//	Filename:		Frontend.h
-//	Description:	Contains some definitions for the WinAMP api
-//					Added by Retro 3Jan2004
+// Filename: Frontend.h
+// Description: Contains some definitions for the WinAMP api
+// Added by Retro 3Jan2004
 
 #ifndef _WAFE_H_
 #define _WAFE_H_

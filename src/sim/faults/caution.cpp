@@ -8,11 +8,11 @@
 CautionClass::CautionClass()
 {
 
-    int	i;
+    int i;
 
     for (i = 0; i < NumVectors; i++)
     {
-        mpBitVector[i]	= 0x0;
+        mpBitVector[i] = 0x0;
     }
 }
 
@@ -29,7 +29,7 @@ BOOL CautionClass::IsFlagSet()
 
     for (i = 0; i < NumVectors; i++)
     {
-        flag 	|= mpBitVector[i];
+        flag  |= mpBitVector[i];
     }
 
     return (flag != 0);
@@ -109,11 +109,11 @@ BOOL CautionClass::GetCaution(type_TWSubSystem subsystem)
 void CautionClass::SetCaution(int subsystem)
 {
 
-    int		vectorNum	= 0;
-    int		bitNum;
+    int vectorNum = 0;
+    int bitNum;
 
-    vectorNum	= subsystem / BITS_PER_VECTOR;
-    bitNum		= subsystem - vectorNum * BITS_PER_VECTOR;
+    vectorNum = subsystem / BITS_PER_VECTOR;
+    bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
     mpBitVector[vectorNum] |= 0x01 << bitNum;
 
@@ -126,11 +126,11 @@ void CautionClass::SetCaution(int subsystem)
 void CautionClass::ClearCaution(int subsystem)
 {
 
-    int		vectorNum	= 0;
-    int		bitNum;
+    int vectorNum = 0;
+    int bitNum;
 
-    vectorNum	= subsystem / BITS_PER_VECTOR;
-    bitNum		= subsystem - vectorNum * BITS_PER_VECTOR;
+    vectorNum = subsystem / BITS_PER_VECTOR;
+    bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
     mpBitVector[vectorNum] &= ~(0x01 << bitNum);
 
@@ -143,11 +143,11 @@ void CautionClass::ClearCaution(int subsystem)
 BOOL CautionClass::GetCaution(int subsystem)
 {
 
-    int		vectorNum	= 0;
-    int		bitNum;
+    int vectorNum = 0;
+    int bitNum;
 
-    vectorNum	= subsystem / BITS_PER_VECTOR;
-    bitNum		= subsystem - vectorNum * BITS_PER_VECTOR;
+    vectorNum = subsystem / BITS_PER_VECTOR;
+    bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
     return ((mpBitVector[vectorNum] & (0x01 << bitNum)) != 0);
 }

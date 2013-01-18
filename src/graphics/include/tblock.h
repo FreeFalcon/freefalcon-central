@@ -6,7 +6,7 @@
 
     This class manages all the posts which make up on block of terrain data.
     A block is the smallest piece of a map which may be indepently loaded
-	and unloaded.
+ and unloaded.
 \***************************************************************************/
 #ifndef _TBLOCK_H_
 #define _TBLOCK_H_
@@ -29,38 +29,38 @@ public:
         ShiAssert(owners == 0);
     };
 
-    TLevel*	Level()
+    TLevel* Level()
     {
         return level;
     };
 
-    float	GetMaxZ(void)
+    float GetMaxZ(void)
     {
         return maxZ;
     };
-    float	GetMinZ(void)
+    float GetMinZ(void)
     {
         return minZ;
     };
 
     // Return the row and column address of this physical block in the map grid
-    UINT	Row()
+    UINT Row()
     {
         return blockRow;
     };
-    UINT	Col()
+    UINT Col()
     {
         return blockCol;
     };
 
     // Return a pointer to the South West post in this block (array element 0)
-    Tpost*	Posts()
+    Tpost* Posts()
     {
         return posts;
     };
 
     // Return a pointer to the specified post (in local row/col coordinates)
-    Tpost*	Post(UINT r, UINT c)
+    Tpost* Post(UINT r, UINT c)
     {
         ShiAssert(r < (UINT)POSTS_ACROSS_BLOCK);
         ShiAssert(c < (UINT)POSTS_ACROSS_BLOCK);
@@ -69,24 +69,24 @@ public:
 
 protected:
     // Block coordinates of this block within its level
-    UINT	blockRow;
-    UINT	blockCol;
+    UINT blockRow;
+    UINT blockCol;
 
     // Offset of this block's data in the disk file
-    DWORD	fileOffset;
+    DWORD fileOffset;
 
     // Max and min z values within this block
-    float	maxZ;
-    float	minZ;
+    float maxZ;
+    float minZ;
 
     // The level to which this block belongs
-    TLevel	*level;
+    TLevel *level;
 
     // Pointer to the array of posts (NULL when not loaded in memory)
-    Tpost	*posts;
+    Tpost *posts;
 
     // How many viewers are using this block -- if none, this block should be removed
-    int		owners;
+    int owners;
 
 
     // Intialize and release block headers - only allowed from within a TLevel's critical section.
@@ -95,12 +95,12 @@ protected:
 
     // Set and check ownership of this block (block may belong to multiple viewers)
     // These should only be called from within the level's critical section
-    void	Reference(void);							// Request use of this block
-    int		Release(void);							// Express disinterest in this block
-    BOOL	IsOwned(void)
+    void Reference(void); // Request use of this block
+    int Release(void); // Express disinterest in this block
+    BOOL IsOwned(void)
     {
         return (owners > 0);
-    };	// Are we in use by any entity?
+    }; // Are we in use by any entity?
 
 
     // Allow the level which owns each block to get at the private functions of this class.
@@ -128,7 +128,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

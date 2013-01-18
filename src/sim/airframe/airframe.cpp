@@ -57,7 +57,7 @@ extern ACMISwitchRecord acmiSwitch;
 
 extern AeroDataSet *aeroDataset;
 //MI for CATIII Default stuff
-//	extern bool g_bEnableCATIIIExtension;	//MI replaced with g_bRealisticAvionics
+// extern bool g_bEnableCATIIIExtension; //MI replaced with g_bRealisticAvionics
 extern bool g_bCATIIIDefault;
 //MI RALT stuff
 extern bool g_bRealisticAvionics;
@@ -67,13 +67,13 @@ extern unsigned long gFuelState;
 extern float g_fPilotActInterval; // Cobra - Pilot animation act interval
 extern float g_fPilotHeadMoveRate; // Cobra - Pilot animation act move rate
 
-extern float g_fMeanTimeBetweenFailures;	//Wombat778 2-24-2004
-extern bool g_bEnableRandomFailures;		//Wombat778 2-24-2004
+extern float g_fMeanTimeBetweenFailures; //Wombat778 2-24-2004
+extern bool g_bEnableRandomFailures; //Wombat778 2-24-2004
 
 #include "flightdata.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	AirframeClass::pool;
+MEM_POOL AirframeClass::pool;
 #endif
 
 extern float get_air_speed(float, int);
@@ -93,27 +93,27 @@ AirframeClass::AirframeClass(AircraftClass* self)
     memset(this, 0 , sizeof(AirframeClass));
     // Initialze interpolaters
     nzcgb = 0.0F;
-    curMachBreak			= curAlphaBreak		= 0;
-    curRollAlphaBreak	= curRollQbarBreak	= 0;
-    curEngMachBreak		= curEngAltBreak	= 0;
+    curMachBreak = curAlphaBreak = 0;
+    curRollAlphaBreak = curRollQbarBreak = 0;
+    curEngMachBreak = curEngAltBreak = 0;
     jp01 = jp02 = 0;
     jy01 = jy02 = 0;
     platform = self;
     vehicleIndex = 4; //default to f-16
 
-    pstab	= rstab		= 0.0F;
-    plsdamp	= rlsdamp	= ylsdamp	= 1.0f;
-    zpdamp	= 0.0F;
-    dragIndex	= 0.0F;
+    pstab = rstab = 0.0F;
+    plsdamp = rlsdamp = ylsdamp = 1.0f;
+    zpdamp = 0.0F;
+    dragIndex = 0.0F;
     loadingFraction = 1.0F;
-    assymetry	= 0.0F;
-    tefFactor	= lefFactor = 0.0F;
-    curMaxGs		= 9.0F;
-    stallMode	= None;
-    oscillationTimer		= 0.0F;
-    oscillationSlope		= 0.0F;
-    p	= q		= r		= 0.0F;
-    //xdot = ydot	= zdot	= 0.0F;
+    assymetry = 0.0F;
+    tefFactor = lefFactor = 0.0F;
+    curMaxGs = 9.0F;
+    stallMode = None;
+    oscillationTimer = 0.0F;
+    oscillationSlope = 0.0F;
+    p = q = r = 0.0F;
+    //xdot = ydot = zdot = 0.0F;
     alpdot = betdot = 0.0F;
     initialFuel = 0.0F;
     tp04 = zp02 = kp04 = kp06 = wp02 = 0.0F;
@@ -126,43 +126,43 @@ AirframeClass::AirframeClass(AircraftClass* self)
     //rshape2 = 0.0f;
     //pshape2 = 0.0f;
     //yshape2 = 0.0f;
-    rshape1	= 0.0f;
-    pshape1	= 0.0f;
-    yshape1	= 0.0f;
-    slice	= 0.0F;
-    pitch	= 0.0F;
+    rshape1 = 0.0f;
+    pshape1 = 0.0f;
+    yshape1 = 0.0f;
+    slice = 0.0F;
+    pitch = 0.0F;
     avgPdelta = avgRdelta = avgYdelta = 0;
     //limiterAssault = 0.0f;
     stallMagnitude = 15.0f;
     desiredMagnitude = 15.0f;
-    throtl	= 0.0F;
+    throtl = 0.0F;
     engine1Throttle = 0.0F; //TJL 01/11/04
     engine2Throttle = 0.0F; //TJL 01/11/04
     speedBrake = 0.0F;
-    dbrake	= 0.0F;
-    anozl	= 0.0F;
-    psi		= theta = phi	= 0.0F;
-    mu		= sigma = gmma	= 0.0F;
-    alpha	= beta	= 0.0F;
-    gearPos	= 0.0F;
+    dbrake = 0.0F;
+    anozl = 0.0F;
+    psi = theta = phi = 0.0F;
+    mu = sigma = gmma = 0.0F;
+    alpha = beta = 0.0F;
+    gearPos = 0.0F;
     gearHandle = -1.0F;
     hookHandle = -1.0F; // JB carrier
     altGearDeployed = false; // JPO - marker
-    gear		= NULL; // JPO - need to free this ... but where...
+    gear = NULL; // JPO - need to free this ... but where...
     grndphi = grndthe = 0.0F;
     lefPos = tefPos = 0;
 
-    flags	= 0;
-    ethrst	= 1.0F;
-    xaero	= yaero		= zaero		= 0.0F;
-    xwaero	= ywaero	= zwaero	= 0.0F;
-    xsaero	= ysaero	= zsaero	= 0.0F;
-    xprop	= yprop		= zprop		= 0.0F;
-    xwprop	= ywprop	= zwprop	= 0.0F;
-    xsprop	= ysprop	= zsprop	= 0.0F;
-    epuFuel	= 100.0F;
-    epuState	= AUTO;
-    hydrAB	= 0; // JPO - start with none.
+    flags = 0;
+    ethrst = 1.0F;
+    xaero = yaero = zaero = 0.0F;
+    xwaero = ywaero = zwaero = 0.0F;
+    xsaero = ysaero = zsaero = 0.0F;
+    xprop = yprop = zprop = 0.0F;
+    xwprop = ywprop = zwprop = 0.0F;
+    xsprop = ysprop = zsprop = 0.0F;
+    epuFuel = 100.0F;
+    epuState = AUTO;
+    hydrAB = 0; // JPO - start with none.
     jfsaccumulator = 100.0f;
     externalFuel = 0.0F;
     SetFlag(Trimming);
@@ -170,7 +170,7 @@ AirframeClass::AirframeClass(AircraftClass* self)
     SetFlag(EngineStopped); // JPO - start off stopped - preflight will start it
     //TJL 01/11/04 Multi-Engine
     SetEngineFlag(EngineStopped2);
-    pstick	= rstick	= ypedal	= 0.0F;
+    pstick = rstick = ypedal = 0.0F;
     // assume not simple model
     simpleMode = SIMPLE_MODE_OFF;
     hf = NULL;
@@ -182,13 +182,13 @@ AirframeClass::AirframeClass(AircraftClass* self)
     thrust1 = 0.0F; //TJL 01/11/04 Engine 1
     thrust2 = 0.0F; //TJL 01/11/04 Engine 2
 
-    NextFailure = 0;		//Wombat778 2-24-04
+    NextFailure = 0; //Wombat778 2-24-04
 
     forcedHeading = 0.0F;
     forcedSpeed = 0.0F;
 
-    lastRStick = 0.0F;	//RAS 02Apr04:  Nose wheel steering hold last value
-    lastYPedal = 0.0F;	//RAS 02Apr04:  Hold pedal value
+    lastRStick = 0.0F; //RAS 02Apr04:  Nose wheel steering hold last value
+    lastYPedal = 0.0F; //RAS 02Apr04:  Hold pedal value
 
 #if 1
     // Set our anchor so that when we're moving slowly we can accumulate our position in high precision
@@ -252,7 +252,7 @@ AirframeClass::AirframeClass(AircraftClass* self)
     //MI Home Fuel stuff
     HomeFuel = 0;
     //MI JFS spin time
-    JFSSpinTime = 240;	//4 minutes available
+    JFSSpinTime = 240; //4 minutes available
     dragChute = DRAGC_STOWED;
     canopyState = false;
     nozzlePos = 0;
@@ -464,20 +464,20 @@ void AirframeClass::Init(int idx)
             }
             else
             {
-                vt			= 0.0F;
-                thrtab		= 0.0F;
-                dbrake		= 0.0F;
-                gearPos		= 1.0F;
-                gearHandle	= 1.0F;
+                vt = 0.0F;
+                thrtab = 0.0F;
+                dbrake = 0.0F;
+                gearPos = 1.0F;
+                gearHandle = 1.0F;
                 // lights on on the ground JPO
                 //MI not in realistic, now we have switches for that
                 platform->ClearAcStatusBits(
                     AircraftClass::ACSTATUS_EXT_LIGHTS | AircraftClass::ACSTATUS_EXT_NAVLIGHTS |
                     AircraftClass::ACSTATUS_EXT_NAVLIGHTSFLASH | AircraftClass::ACSTATUS_EXT_TAILSTROBE
                 );
-                speedBrake	= 0.0F;
-                pwrlev		= -1.0F;
-                sigma		= initialPsi;
+                speedBrake = 0.0F;
+                pwrlev = -1.0F;
+                sigma = initialPsi;
                 //Trigenometry();
                 ClearFlag(Trimming);
                 Initialize();
@@ -508,7 +508,7 @@ void AirframeClass::Init(int idx)
             groundDeltaY = 0.0f;
 
             //MI CATIII as default
-            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension)	MI
+            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension) MI
             if (g_bCATIIIDefault && g_bRealisticAvionics)
             {
                 if (platform->IsPlayer())
@@ -565,13 +565,13 @@ void AirframeClass::Init(int idx)
                 //Clamp vt to some minimum value
                 if (!platform->IsPlayer())
                 {
-                    vt		= max(vt, minVcas * 0.6F * KNOTS_TO_FTPSEC);
-                    vcas	= vt * FTPSEC_TO_KNOTS;
+                    vt = max(vt, minVcas * 0.6F * KNOTS_TO_FTPSEC);
+                    vcas = vt * FTPSEC_TO_KNOTS;
 
                     if (!IsSet(GearBroken))
                     {
-                        gearPos		= 0.0F;
-                        gearHandle	= -1.0F;
+                        gearPos = 0.0F;
+                        gearHandle = -1.0F;
                     }
                 }
 
@@ -590,8 +590,8 @@ void AirframeClass::Init(int idx)
 
                 if (!IsSet(GearBroken))
                 {
-                    gearPos		= 1.0F;
-                    gearHandle	= 1.0F;
+                    gearPos = 1.0F;
+                    gearHandle = 1.0F;
                 }
 
                 ClearFlag(Trimming);
@@ -599,7 +599,7 @@ void AirframeClass::Init(int idx)
             }
 
             //MI CATIII as default
-            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension)	MI
+            //if(g_bCATIIIDefault && g_bEnableCATIIIExtension) MI
             if (g_bCATIIIDefault && g_bRealisticAvionics)
             {
                 if (platform->IsPlayer())
@@ -716,7 +716,7 @@ void AirframeClass::Init(int idx)
 
         void AirframeClass::RemoteUpdate()
         {
-            ObjectGeometry	*pa = &platform->platformAngles;
+            ObjectGeometry *pa = &platform->platformAngles;
             mlTrig Trig;
             float newGamma, newSigma;
             float dt;
@@ -942,11 +942,11 @@ void AirframeClass::Init(int idx)
                             zpdamp = min(zpdamp, 0.2F);
                         }
 
-                        if (!IsSet(Simplified)	&&
+                        if (!IsSet(Simplified) &&
                             ((!platform->OnGround() && vcas < 180.0f) ||
-                             (fabs(pshape) > 0.85F  && fabs(rshape) > 0.85F)	||
-                             (fabs(alpha)  > 18.0F)	|| //&& IsSet(LowSpdHorn) )		||
-                             (fabs(pshape) > 0.6F	&& fabs(rshape) > 0.6F && IsSet(LowSpdHorn))))
+                             (fabs(pshape) > 0.85F  && fabs(rshape) > 0.85F) ||
+                             (fabs(alpha)  > 18.0F) || //&& IsSet(LowSpdHorn) ) ||
+                             (fabs(pshape) > 0.6F && fabs(rshape) > 0.6F && IsSet(LowSpdHorn))))
                         {
                             loadingFraction = weight / emptyWeight; //me123
 
@@ -959,7 +959,7 @@ void AirframeClass::Init(int idx)
                                 alpha > 31.0F  - 9 * (loadingFraction - 1.3F) - //me123 addet 9
                                 //me123 bulshit IsSet(LowSpdHorn)*3.0F
                                 //me123 - IsSet(CATLimiterIII)*5.0F
-                                - fabs(assymetry / weight) * 10.0F		|| // 10 from 5 me123
+                                - fabs(assymetry / weight) * 10.0F || // 10 from 5 me123
                                 alpha < -14.0F + (loadingFraction - 1.3F) +
                                 IsSet(LowSpdHorn) * 3.0F + fabs(assymetry / weight) * 5.0F)
                             {
@@ -1127,7 +1127,7 @@ void AirframeClass::Init(int idx)
 
         void  AirframeClass::RemoveWeapon(float Weight, float DragIndex, float offset)
         {
-            //	ShiAssert(weight - Weight >= emptyWeight + fuel + externalFuel);
+            // ShiAssert(weight - Weight >= emptyWeight + fuel + externalFuel);
             MonoPrint("RemoveWeapon W%f DI%f, O%f", Weight, DragIndex, offset);
 
             if (weight - Weight < emptyWeight + fuel + externalFuel)
@@ -1146,9 +1146,9 @@ void AirframeClass::Init(int idx)
         {
             float tempMach, tempqsom, Mu_fric;
             float th1, th2, newthrotl, cd, drag, accel = 1.0F;
-            int EngAltBreak	= 0;
+            int EngAltBreak = 0;
             int EngMachBreak = 0;
-            int	AlphaBreak = 0;
+            int AlphaBreak = 0;
             int MachBreak = 0;
             int groundType;
 
@@ -1244,12 +1244,12 @@ void AirframeClass::Init(int idx)
             z = hf->XE.z;
 
             // NOTE:
-            //	p	=	roll rate (around X axis)
-            //	q	=	pitch rate (around Y axis)
-            //	r	=	yaw rate (around Z axis)
-            //	phi	=	roll (around X axis)
-            //	theta=	pitch (around Y axis)
-            //	psi	=	yaw (around Z axis)
+            // p = roll rate (around X axis)
+            // q = pitch rate (around Y axis)
+            // r = yaw rate (around Z axis)
+            // phi = roll (around X axis)
+            // theta= pitch (around Y axis)
+            // psi = yaw (around Z axis)
             phi = hf->XE.ax;
             theta = hf->XE.ay;
             psi = hf->XE.az;
@@ -1316,7 +1316,7 @@ void AirframeClass::Init(int idx)
                 center = platform->Sms->NumHardpoints() - 1;
 
 
-            WeaponClassDataType		*wd = NULL;
+            WeaponClassDataType *wd = NULL;
             float maxfuel = 0.0F;
             maxfuel += aeroDataset[vehicleIndex].inputData[2];
 
@@ -1415,10 +1415,10 @@ void AirframeClass::Init(int idx)
 
         GearData::GearData(void)
         {
-            strength	= 100.0F;	//how many hitpoints it has left
-            vel			= 0.0F;		//at what rate is it currently compressing/extending in ft/s
-            obstacle	= 0.0F;		//rock height/rut depth
-            flags		= 0;		//gear stuck/broken, door stuck/broken,
+            strength = 100.0F; //how many hitpoints it has left
+            vel = 0.0F; //at what rate is it currently compressing/extending in ft/s
+            obstacle = 0.0F; //rock height/rut depth
+            flags = 0; //gear stuck/broken, door stuck/broken,
         }
         // JPO - attempt to locate external tanks and capacity.
         void AirframeClass::FindExternalTanks(void)
@@ -1437,7 +1437,7 @@ void AirframeClass::Init(int idx)
             if (weapons == 1)
                 center = platform->Sms->NumHardpoints() - 1;
 
-            WeaponClassDataType		*wd;
+            WeaponClassDataType *wd;
 
             for (int i = 0; i < platform->Sms->NumHardpoints(); i++)
             {
@@ -1462,10 +1462,10 @@ void AirframeClass::Init(int idx)
         /*
         void AirframeClass::ToggleLL(void)
         {
-        	if(LLON)
-        		LLON = FALSE;
-        	else
-        		LLON = TRUE;
+         if(LLON)
+         LLON = FALSE;
+         else
+         LLON = TRUE;
         }
         */
 
@@ -1496,8 +1496,8 @@ void AirframeClass::Init(int idx)
         {
             int sw = platform->IsComplex() ? COMP_HOOK : SIMP_HOOK;
 
-            FackClass*		faultSys;
-            faultSys	= ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
+            FackClass* faultSys;
+            faultSys = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
 
             if (IsSet(Hook))
             {
@@ -1553,8 +1553,8 @@ void AirframeClass::Init(int idx)
         {
             int sw = platform->IsComplex() ? COMP_HOOK : SIMP_HOOK;
 
-            FackClass*		faultSys;
-            faultSys	= ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
+            FackClass* faultSys;
+            faultSys = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
 
             if (IsSet(Hook))
             {
@@ -1585,8 +1585,8 @@ void AirframeClass::Init(int idx)
         {
             int sw = platform->IsComplex() ? COMP_HOOK : SIMP_HOOK;
 
-            FackClass*		faultSys;
-            faultSys	= ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
+            FackClass* faultSys;
+            faultSys = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->mFaults;
 
             if (!IsSet(Hook))
             {

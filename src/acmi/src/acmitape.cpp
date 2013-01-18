@@ -25,7 +25,7 @@
 #include "codelib\tools\lists\lists.h"
 #include "debuggr.h"
 #include "AcmiTape.h"
-#include "sim\include\misctemp.h"		// for Clamp function.
+#include "sim\include\misctemp.h" // for Clamp function.
 #include "sim\include\simbase.h"
 #include "sim\include\otwdrive.h"
 #include "sim\include\sfx.h"
@@ -47,7 +47,7 @@
 #include "AcmiView.h"
 #include "AcmiUI.h"
 
-extern ACMIView			*acmiView;
+extern ACMIView *acmiView;
 
 
 long tempTarget; // for missile lock.
@@ -482,11 +482,11 @@ BOOL ReadRawACMIPositionData
     // or in 0 - 2PI range
     /* nah, this ain't right....  need to fix songy's stuff
     if ( rawPositionData.entityPosData.pitch < 0.0f )
-    	rawPositionData.entityPosData.pitch += 2.0f * PI;
+     rawPositionData.entityPosData.pitch += 2.0f * PI;
     if ( rawPositionData.entityPosData.roll < 0.0f )
-    	rawPositionData.entityPosData.roll += 2.0f * PI;
+     rawPositionData.entityPosData.roll += 2.0f * PI;
     if ( rawPositionData.entityPosData.yaw < 0.0f )
-    	rawPositionData.entityPosData.yaw += 2.0f * PI;
+     rawPositionData.entityPosData.yaw += 2.0f * PI;
     */
 
     return (!result || result == EOF ? FALSE : TRUE);
@@ -679,8 +679,8 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
 
                 rawPositionData->entityPosData.time = hdr.time;
                 rawPositionData->entityPosData.type = PosTypePos;
-                // remove				rawPositionData->entityPosData.teamColor = genpos.teamColor;
-                // remove				strcpy((char*)rawPositionData->entityPosData.label, (char*)genpos.label);
+                // remove rawPositionData->entityPosData.teamColor = genpos.teamColor;
+                // remove strcpy((char*)rawPositionData->entityPosData.label, (char*)genpos.label);
                 rawPositionData->entityPosData.posData.x = genpos.x;
                 rawPositionData->entityPosData.posData.y = genpos.y;
                 rawPositionData->entityPosData.posData.z = genpos.z;
@@ -784,7 +784,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
 
                 // fill in data
                 fedata->uniqueID = fs.uniqueID;
-                fedata->data.index = -1;	// will be filled in later
+                fedata->data.index = -1; // will be filled in later
                 fedata->data.time = hdr.time;
                 fedata->data.newStatus = fs.newStatus;
                 fedata->data.prevStatus = fs.prevStatus;
@@ -971,7 +971,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
 
             default:
                 // KCK: I was hitting this repeatidly.. So I'm making it a ShiAssert (and therefore ignorable)
-                //				ShiAssert(0);
+                // ShiAssert(0);
                 break;
         }
 
@@ -1142,8 +1142,8 @@ void ACMITape::ParseEntities(void)
                 importEntityInfo->uniqueID = entityType->uniqueID;
                 importEntityInfo->type = entityType->type;
                 importEntityInfo->flags = entityType->flags;
-                // remove				importEntityInfo->teamColor = entityType->entityPosData.teamColor;
-                // remove				strcpy((importEntityInfo->label), (char*) entityType->entityPosData.label);
+                // remove importEntityInfo->teamColor = entityType->entityPosData.teamColor;
+                // remove strcpy((importEntityInfo->label), (char*) entityType->entityPosData.label);
 
                 importEntityList = AppendToEndOfList(importEntityList, &importEntityListEnd, importEntityInfo);
                 importNumEnt++;
@@ -1197,10 +1197,10 @@ void ACMITape::ParseEntities(void)
 
 /*
 ** Description:
-**		At this point importEntList and importPosList should be populated.
-**		Now, we're going to have to setup the offset pointers to do the
-**		file mapping.  Each entity chains back and forth thru its position
-**		list.
+** At this point importEntList and importPosList should be populated.
+** Now, we're going to have to setup the offset pointers to do the
+** file mapping.  Each entity chains back and forth thru its position
+** list.
 */
 void ACMITape::ThreadEntityPositions(ACMITapeHeader *tapeHdr)
 {
@@ -1400,10 +1400,10 @@ void ACMITape::ThreadEntityPositions(ACMITapeHeader *tapeHdr)
 
 /*
 ** Description:
-**		At this point importEntList and importPosList should be populated.
-**		Now, we're going to have to setup the offset pointers to do the
-**		file mapping.  Each entity chains back and forth thru its position
-**		list.
+** At this point importEntList and importPosList should be populated.
+** Now, we're going to have to setup the offset pointers to do the
+** file mapping.  Each entity chains back and forth thru its position
+** list.
 */
 void ACMITape::ThreadEntityEvents(ACMITapeHeader *tapeHdr)
 {
@@ -1490,9 +1490,9 @@ void ACMITape::ThreadEntityEvents(ACMITapeHeader *tapeHdr)
 
 /*
 ** Description:
-**		At this point importEntList and importPosList should be populated.
-**		Also the entities and positions are now threaded
-**		write out the file
+** At this point importEntList and importPosList should be populated.
+** Also the entities and positions are now threaded
+** write out the file
 */
 void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 {
@@ -1813,7 +1813,7 @@ BOOL ACMITape::GetEntityPosition
             turnrate = (float)acos((dx * dx1 + dy * dy1 + dz * dz1) /
                                    (float)sqrt((dx * dx + dy * dy + dz * dz) * (dx1 * dx1 + dy1 * dy1 + dz1 * dz1)));
             turnrate *= RTD / (pos2->time - pos1->time);
-            //		   turnrate = RTD * fabs( dAng ) / ( pos2->time - pos1->time );
+            //    turnrate = RTD * fabs( dAng ) / ( pos2->time - pos1->time );
 
             if (turnrate != 0.0f)
             {
@@ -2269,7 +2269,7 @@ void ACMITape::AdvanceFeatEventHead(void)
             /*
             if(feat->objBase->drawPointer->InDisplayList())
             {
-            	_viewPoint->RemoveObject(feat->objBase->drawPointer);
+             _viewPoint->RemoveObject(feat->objBase->drawPointer);
             }
             delete feat->objBase->drawPointer;
             feat->objBase->drawPointer = NULL;
@@ -2284,7 +2284,7 @@ void ACMITape::AdvanceFeatEventHead(void)
             // set damaged texture set if needed
             if ( curr->prevStatus == VIS_DAMAGED )
             {
-            	((DrawableBSP *)feat->objBase->drawPointer)->SetTextureSet( 1 );
+             ((DrawableBSP *)feat->objBase->drawPointer)->SetTextureSet( 1 );
             }
 
             // features get put into draw list and positioned here.
@@ -2340,7 +2340,7 @@ void ACMITape::AdvanceFeatEventHead(void)
             // remove old from display and delete
             if(feat->objBase->drawPointer->InDisplayList())
             {
-            	_viewPoint->RemoveObject(feat->objBase->drawPointer);
+             _viewPoint->RemoveObject(feat->objBase->drawPointer);
             }
             delete feat->objBase->drawPointer;
             feat->objBase->drawPointer = NULL;
@@ -2355,7 +2355,7 @@ void ACMITape::AdvanceFeatEventHead(void)
             // set damaged texture set if needed
             if ( curr->newStatus == VIS_DAMAGED )
             {
-            	((DrawableBSP *)feat->objBase->drawPointer)->SetTextureSet( 1 );
+             ((DrawableBSP *)feat->objBase->drawPointer)->SetTextureSet( 1 );
             }
 
             // features get put into draw list and positioned here.
@@ -2375,8 +2375,8 @@ void ACMITape::AdvanceFeatEventHead(void)
 
 /*
 ** Description:
-**		Opens the passed in tape file name and sets up the memory mapped
-**		stuff
+** Opens the passed in tape file name and sets up the memory mapped
+** stuff
 */
 long ACMITape::OpenTapeFile(char *fname)
 {
@@ -2472,7 +2472,7 @@ long ACMITape::OpenTapeFile(char *fname)
 
 /*
 ** Description:
-**		Releases system stuff done in OpenTapeFile
+** Releases system stuff done in OpenTapeFile
 */
 void ACMITape::CloseTapeFile(void)
 {
@@ -2488,8 +2488,8 @@ void ACMITape::CloseTapeFile(void)
 
 /*
 ** Description:
-**		Interpolates between 2 angles.  dT is the relative dist (0-1)
-**		between begin and end.
+** Interpolates between 2 angles.  dT is the relative dist (0-1)
+** between begin and end.
 */
 float ACMITape::AngleInterp(float begAng, float endAng, float dT)
 {
@@ -2512,11 +2512,11 @@ float ACMITape::AngleInterp(float begAng, float endAng, float dT)
 
     /*
     if ( endAng < -0.5f * PI && begAng > 0.5f * PI )
-    	dAng = endAng + ( 2.0f * PI ) - begAng;
+     dAng = endAng + ( 2.0f * PI ) - begAng;
     else if ( endAng > 0.5f * PI && begAng < -0.5f * PI )
-    	dAng = endAng - ( 2.0f * PI ) - begAng;
+     dAng = endAng - ( 2.0f * PI ) - begAng;
     else
-    	dAng = endAng - begAng;
+     dAng = endAng - begAng;
     */
 
     return (float)(begAng + dAng * dT);
@@ -2555,9 +2555,9 @@ void ACMITape::AdvanceAllHeads(void)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Reads the entities off of the tape and sets up the in-memory
-**		sim and graphics representation for them so that they can be
-**		manipulated and moved
+** Reads the entities off of the tape and sets up the in-memory
+** sim and graphics representation for them so that they can be
+** manipulated and moved
 */
 void ACMITape::SetupSimTapeEntities()
 {
@@ -2829,8 +2829,8 @@ void ACMITape::SetupSimTapeEntities()
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Cleans up the _simTapeEntities list freeing objects and removing
-**		drawables from lists
+** Cleans up the _simTapeEntities list freeing objects and removing
+** drawables from lists
 */
 void ACMITape::CleanupSimTapeEntities(void)
 {
@@ -3006,7 +3006,7 @@ void ACMITape::CleanupSimTapeEntities(void)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Access simtape entity by index
+** Access simtape entity by index
 */
 SimTapeEntity * ACMITape::GetSimTapeEntity(int index)
 {
@@ -3021,7 +3021,7 @@ SimTapeEntity * ACMITape::GetSimTapeEntity(int index)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Returns if entity exists in current frame or not
+** Returns if entity exists in current frame or not
 */
 BOOL ACMITape::IsEntityInFrame(int index)
 {
@@ -3056,8 +3056,8 @@ BOOL ACMITape::IsEntityInFrame(int index)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		returns the index of the entity targeted by the entity who's
-**		index is passed in.  -1 is no target.
+** returns the index of the entity targeted by the entity who's
+** index is passed in.  -1 is no target.
 */
 int ACMITape::GetEntityCurrentTarget(int index)
 {
@@ -3092,7 +3092,7 @@ int ACMITape::GetEntityCurrentTarget(int index)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**	Puts the entity into darw list
+** Puts the entity into darw list
 */
 void ACMITape::InsertEntityInFrame(int index)
 {
@@ -3110,7 +3110,7 @@ void ACMITape::InsertEntityInFrame(int index)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**	removes the entity from darw list
+** removes the entity from darw list
 */
 void ACMITape::RemoveEntityFromFrame(int index)
 {
@@ -3128,8 +3128,8 @@ void ACMITape::RemoveEntityFromFrame(int index)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Runs thru the entity list and determines if the entities
-**		should be inserted/removed from draw and/or positioned in the frame.
+** Runs thru the entity list and determines if the entities
+** should be inserted/removed from draw and/or positioned in the frame.
 */
 void ACMITape::UpdateSimTapeEntities(void)
 {
@@ -3306,8 +3306,8 @@ void ACMITape::UpdateSimTapeEntities(void)
 
         // BING 3-20-98
         // TURN ON LABELS FOR ENTITIES.
-        //	acmiView->GetObjectName(acmiView->Tape()->GetSimTapeEntity(i)->objBase,tmpStr);
-        //		((DrawableBSP *)ep->objBase->drawPointer)->SetLabel(ep->name , labelColor );
+        // acmiView->GetObjectName(acmiView->Tape()->GetSimTapeEntity(i)->objBase,tmpStr);
+        // ((DrawableBSP *)ep->objBase->drawPointer)->SetLabel(ep->name , labelColor );
 
         /////////////////////////////////////////////////////////////////////////////////////
 
@@ -3358,15 +3358,15 @@ void ACMITape::UpdateSimTapeEntities(void)
                 wtpos.z = ep->objBase->dmx[1][2] * 20.0f * _tapeObjScale + ep->z;
                 ep->wrTrail->AddPointAtHead(&wtpos, (DWORD)(_simTime * 1000));
 
-                /*				ep->wtLength++;
-                				wtpos.x = ep->objBase->dmx[1][0] * -40.0f + ep->x;
-                				wtpos.y = ep->objBase->dmx[1][1] * -40.0f + ep->y;
-                				wtpos.z = ep->objBase->dmx[1][2] * -40.0f + ep->z;
-                				ep->wlTrail->AddPointAtHead( &wtpos, (DWORD)(_simTime * 1000) );
-                				wtpos.x = ep->objBase->dmx[1][0] * 40.0f + ep->x;
-                				wtpos.y = ep->objBase->dmx[1][1] * 40.0f + ep->y;
-                				wtpos.z = ep->objBase->dmx[1][2] * 40.0f + ep->z;
-                				ep->wrTrail->AddPointAtHead( &wtpos, (DWORD)(_simTime * 1000) );
+                /* ep->wtLength++;
+                 wtpos.x = ep->objBase->dmx[1][0] * -40.0f + ep->x;
+                 wtpos.y = ep->objBase->dmx[1][1] * -40.0f + ep->y;
+                 wtpos.z = ep->objBase->dmx[1][2] * -40.0f + ep->z;
+                 ep->wlTrail->AddPointAtHead( &wtpos, (DWORD)(_simTime * 1000) );
+                 wtpos.x = ep->objBase->dmx[1][0] * 40.0f + ep->x;
+                 wtpos.y = ep->objBase->dmx[1][1] * 40.0f + ep->y;
+                 wtpos.z = ep->objBase->dmx[1][2] * 40.0f + ep->z;
+                 ep->wrTrail->AddPointAtHead( &wtpos, (DWORD)(_simTime * 1000) );
                 */
 
 
@@ -3558,10 +3558,10 @@ void ACMITape::CleanupEventList(void)
 }
 
 /*
-**	Takes the acmi info passed in from the tape and creates an
-**	active event record for it, sets up the objects, inserts them
-**	into the display list(if needed) and chains it to the active list head
-**	dT should be the time delta between start time for event and read head
+** Takes the acmi info passed in from the tape and creates an
+** active event record for it, sets up the objects, inserts them
+** into the display list(if needed) and chains it to the active list head
+** dT should be the time delta between start time for event and read head
 */
 ActiveEvent *
 ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
@@ -3705,9 +3705,9 @@ ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
 
 
 /*
-**	Removes objects from display lists
-**	Frees memory for any objects.
-**	Frees memory for ActiveEvent and event data
+** Removes objects from display lists
+** Frees memory for any objects.
+** Frees memory for ActiveEvent and event data
 */
 void
 ACMITape::RemoveActiveEvent(ActiveEvent **eptrptr)
@@ -3785,7 +3785,7 @@ ACMITape::UpdateTracerEvent(TracerEventData *td, float dT)
 
 
 /*
-**	Run the update cycle for all active events
+** Run the update cycle for all active events
 */
 void
 ACMITape::UpdateActiveEvents(void)
@@ -3814,15 +3814,15 @@ ACMITape::UpdateActiveEvents(void)
                 /*
                 if ( _simTime > event->timeEnd || event->time > _simTime )
                 {
-                	if ( td->objTracer->InDisplayList() )
-                		_viewPoint->RemoveObject( td->objTracer );
+                 if ( td->objTracer->InDisplayList() )
+                 _viewPoint->RemoveObject( td->objTracer );
                 }
                 else
                 {
-                	// the event is active....
-                	if ( !td->objTracer->InDisplayList() )
-                		_viewPoint->InsertObject( td->objTracer );
-                	UpdateTracerEvent( td, _simTime - event->time );
+                 // the event is active....
+                 if ( !td->objTracer->InDisplayList() )
+                 _viewPoint->InsertObject( td->objTracer );
+                 UpdateTracerEvent( td, _simTime - event->time );
                 }
                 */
                 break;
@@ -3850,7 +3850,7 @@ ACMITape::UpdateActiveEvents(void)
 ////////////////////////////////////////////////////////////////////////////////
 /*
 ** Description:
-**		Sets the wing trails
+** Sets the wing trails
 */
 void ACMITape::SetWingTrails(BOOL turnOn)
 {
@@ -3989,8 +3989,8 @@ extern void ClearSortedEventList(void);
 
 /*
 ** Description:
-**		Reads the event file and writes out associated text events with
-**		the tape.
+** Reads the event file and writes out associated text events with
+** the tape.
 */
 void
 ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
@@ -4016,7 +4016,7 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
         _tcscpy(te.msgStr, cur->eventString);
 
         // KCK: Edit out some script info which is used in debreiefings
-        _TCHAR	*strptr = _tcschr(te.msgStr, '@');
+        _TCHAR *strptr = _tcschr(te.msgStr, '@');
 
         if (strptr)
         {
@@ -4081,8 +4081,8 @@ error_exit:
 
 /*
 ** Description:
-**		returns pointer to 1st text event element and the count of
-**		elements
+** returns pointer to 1st text event element and the count of
+** elements
 */
 void *
 ACMITape::GetTextEvents(int *count)
@@ -4112,11 +4112,11 @@ void *ACMITape::GetCallsignList(long *count)
 /*
 ** Name: CreateFeatureDrawable
 ** Description:
-**		Creates and/or updates the drawpointer for a feature.
-**		This function will also insert the drawpointer in the viewpoint
-**		display list or into the drawpointer of another object if it's
-**		a composite object like a bridge or airbase.
-**		Rewritten from CreateDrawable in OTWDriver.
+** Creates and/or updates the drawpointer for a feature.
+** This function will also insert the drawpointer in the viewpoint
+** display list or into the drawpointer of another object if it's
+** a composite object like a bridge or airbase.
+** Rewritten from CreateDrawable in OTWDriver.
 */
 void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
 {
@@ -4157,14 +4157,14 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     F4Assert(classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_FEATURE);
 
     // A feature thingy..
-    SimBaseClass	*prevObj = NULL, *nextObj = NULL;
+    SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
     // In many cases, our visType should be modified by our neighbors.
     if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED &&
         (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM ||
          ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
     {
-        int	idx = feat->slot;
+        int idx = feat->slot;
 
         prevObj = FindComponentFeature(feat->leadIndex, idx - 1);
         nextObj = FindComponentFeature(feat->leadIndex, idx + 1);
@@ -4304,8 +4304,8 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
 /*
 ** Name: FindComponentFeature
 ** Description:
-**		Tries to find the feature with the leadindex and slot
-**		Passed in.
+** Tries to find the feature with the leadindex and slot
+** Passed in.
 */
 SimBaseClass *ACMITape::FindComponentFeature(long leadIndex, int slot)
 {

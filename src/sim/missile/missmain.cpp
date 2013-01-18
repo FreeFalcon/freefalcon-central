@@ -52,8 +52,8 @@ ACMIMissilePositionRecord misPos;
 void CalcTransformMatrix(SimBaseClass* theObject);
 
 #ifdef USE_SH_POOLS
-MEM_POOL	MissileClass::pool;
-MEM_POOL	MissileInFlightData::pool;
+MEM_POOL MissileClass::pool;
+MEM_POOL MissileInFlightData::pool;
 #endif
 
 extern int g_nMissileFix;
@@ -327,7 +327,7 @@ void MissileClass::Init(void)
             inputData->gimlim = 90.0f * DTR;
         }
 
-        SensorClass	*snsr;
+        SensorClass *snsr;
 
         switch (inputData->seekerType)
         {
@@ -383,7 +383,7 @@ void MissileClass::Init(void)
         //      display = NULL;
 
 
-#if 0	// SCR 11/6/98  PowerOutput is part of SimBase's high priority dirty data.  It should be propigated
+#if 0 // SCR 11/6/98  PowerOutput is part of SimBase's high priority dirty data.  It should be propigated
         // to all machines, so this should not be necessary.  If this is a problem, figure out why dirty
         // data is handling it...
 
@@ -496,9 +496,9 @@ void MissileClass::Start(SimObjectType *tgt)
 
     /*
        if (targetPtr)
-    	   MonoPrint ("Missile launched at %d\n", targetPtr->BaseData()->Id().num_);
+        MonoPrint ("Missile launched at %d\n", targetPtr->BaseData()->Id().num_);
        else
-    	   MonoPrint ("Missile launched at nothing\n");
+        MonoPrint ("Missile launched at nothing\n");
     */
 }
 
@@ -533,7 +533,7 @@ int MissileClass::Exec(void)
         else
         {
             //if (((DrawableBSP*)drawPointer)->Label()[0] != '\0')
-            //	MonoPrint ("ZPOS %.2f\n", ZPos());
+            // MonoPrint ("ZPOS %.2f\n", ZPos());
 #ifndef MISSILE_TEST_PROG
             if (sensorArray)
             {
@@ -544,9 +544,9 @@ int MissileClass::Exec(void)
 #else
             /*
             if ( targetPtr ){
-            	targetX = targetPtr->BaseData()->XPos();
-            	targetY = targetPtr->BaseData()->YPos();
-            	targetZ = targetPtr->BaseData()->ZPos();
+             targetX = targetPtr->BaseData()->XPos();
+             targetY = targetPtr->BaseData()->YPos();
+             targetZ = targetPtr->BaseData()->ZPos();
             }
             */
             CalcTransformMatrix(this);
@@ -823,14 +823,14 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
     rmax *= (1500.0F + vt + targetVt * (float)cos(ataFrom)) / 1500.0F;
 
     // Scale for ataFrom
-    //	rmax *= (cos(ataFrom) + 1.5F) / 2.5F;
+    // rmax *= (cos(ataFrom) + 1.5F) / 2.5F;
 
     return (rmax);
 }
 
 // This is used for time of flight and other computations (unfortunatly)
-static const float	MISSILE_SPEED = 1500.0f;	//me123 ajusted from 2000 // Feet per second -- VERY WRONG, but easy... // JB 010215 changed from 1300 to 1500
-static const float	MISSILE_ALTITUDE_BONUS = 23.0f;	//me123 addet here and in fccmain.cpp // JB 010215 changed from 24 to 23
+static const float MISSILE_SPEED = 1500.0f; //me123 ajusted from 2000 // Feet per second -- VERY WRONG, but easy... // JB 010215 changed from 1300 to 1500
+static const float MISSILE_ALTITUDE_BONUS = 23.0f; //me123 addet here and in fccmain.cpp // JB 010215 changed from 24 to 23
 
 //float MissileClass::GetTOF (float alt, float vt, float ataFrom, float targetVt, float range)
 //me123 overtake needs to be calvulated the same way in Fccmain.cpp
@@ -842,7 +842,7 @@ float MissileClass::GetTOF(float alt, float vt, float ataFrom, float targetVt, f
     float tof = range / overtake;
     tof += -5.0f * (float) sin(.07 * tof); // JB 010215
 
-    return max(0.0F, tof);	// Counting on silent failure of divid by 0.0 here...
+    return max(0.0F, tof); // Counting on silent failure of divid by 0.0 here...
 }
 //me123 overtake needs to be calvulated the same way in Fccmain.cpp
 float MissileClass::GetActiveRange(float alt, float vt, float ataFrom, float targetVt, float range)
@@ -884,16 +884,16 @@ int MissileClass::SetSeekerPos(float* az, float* el)
     int isLimited = FALSE;
 
 
-    ShiAssert(parent->IsSim());	// SCR 9/22/98:  I think this is only called on behalf of the player.
-    ShiAssert(parent);			// A missile should always have a parent
-    //	if (parent && parent->IsSim() )
-    //	{
+    ShiAssert(parent->IsSim()); // SCR 9/22/98:  I think this is only called on behalf of the player.
+    ShiAssert(parent); // A missile should always have a parent
+    // if (parent && parent->IsSim() )
+    // {
     memcpy(dmx, ((SimBaseClass*)parent.get())->dmx, sizeof(TransformMatrix));
-    //	}
+    // }
 
-    ShiAssert(sensorArray);	// SCR 10/9/98:  Who's calling this on a missile with no seeker???
+    ShiAssert(sensorArray); // SCR 10/9/98:  Who's calling this on a missile with no seeker???
 
-    if (sensorArray == NULL)  	// VWF I'm hoping that this will help.
+    if (sensorArray == NULL)   // VWF I'm hoping that this will help.
     {
         return FALSE;
     }
@@ -990,8 +990,8 @@ int MissileClass::Sleep()
         return retval;
     }
 
-    /*	if (trail)
-    		RemoveTrail();*/
+    /* if (trail)
+     RemoveTrail();*/
 
     if (TrailId)
     {
@@ -1105,7 +1105,7 @@ MissileClass::EndMissile(void)
         done != FalconMissileEndMessage::GroundImpact &&
         done != FalconMissileEndMessage::FeatureImpact &&
         done != FalconMissileEndMessage::BombImpact && // "bomb warhead" missiles hit SIM target
-        done != FalconMissileEndMessage::ArmingDelay)	// when the warhead is not yet armed, do nothing here
+        done != FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
     {
         if (flags & SensorLostLock)
             done = FalconMissileEndMessage::ExceedFOV;
@@ -1131,7 +1131,7 @@ MissileClass::EndMissile(void)
                         targetPtr->Release();
 
 #ifdef DEBUG
-                    /*	   targetPtr = new SimObjectType( OBJ_TAG, NULL, campBaseObj );*/
+                    /*    targetPtr = new SimObjectType( OBJ_TAG, NULL, campBaseObj );*/
 #else
                     targetPtr = new SimObjectType(campBaseObj);
 #endif
@@ -1172,7 +1172,7 @@ MissileClass::EndMissile(void)
     if (parent->IsSim())
         endMessage->dataBlock.fPilotID   = shooterPilotSlot;
     else
-        endMessage->dataBlock.fPilotID   = 0;	// Flight leads get all kills for now...
+        endMessage->dataBlock.fPilotID   = 0; // Flight leads get all kills for now...
 
     if (targetPtr)
     {
@@ -1214,7 +1214,7 @@ MissileClass::EndMissile(void)
 
     if (done == FalconMissileEndMessage::GroundImpact || ZPos() > groundZ)
     {
-        endMessage->dataBlock.z			 = groundZ;
+        endMessage->dataBlock.z  = groundZ;
         endMessage->dataBlock.groundType = (char)OTWDriver.GetGroundType(XPos(), YPos());
     }
 
@@ -1253,10 +1253,10 @@ MissileClass::EndMissile(void)
 /*
 ** Name: ApplyProximityDamage
 ** Description:
-**		At this point the missile has reached the end of its life.
-**		We send out an end message.  If state is missile kill, we send
-**		a damage message to its target.  Otherwise, we look for any ground
-**		objects that may have been impacted by the missile exploding.
+** At this point the missile has reached the end of its life.
+** We send out an end message.  If state is missile kill, we send
+** a damage message to its target.  Otherwise, we look for any ground
+** objects that may have been impacted by the missile exploding.
 */
 void
 MissileClass::ApplyProximityDamage(void)
@@ -1281,40 +1281,40 @@ MissileClass::ApplyProximityDamage(void)
         //Instead of just attacking object you are targeting we will now loop through all aircraft ....
 
         //JAM 03Nov03 - This block is causing HARMS and many AA missiles to not cause any damage. Restoring SP3 code for now.
-        /*		if( domain & wdAir ) {
-        			SimBaseClass* testObject;
+        /* if( domain & wdAir ) {
+         SimBaseClass* testObject;
 
-        			if (!SimDriver.objectList) return;
+         if (!SimDriver.objectList) return;
 
-        			VuListIterator objectWalker(SimDriver.objectList);
-        			testObject = (SimBaseClass*) objectWalker.GetFirst();
+         VuListIterator objectWalker(SimDriver.objectList);
+         testObject = (SimBaseClass*) objectWalker.GetFirst();
 
-        			while (testObject) {
-        				//TJ_changes
-        				//Only check against planes ....
-        				//removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
-        				if ( !(testObject->IsAirplane())/* || targetPtr &&  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
-			testObject = (SimBaseClass*) objectWalker.GetNext();
-			continue;
-		}
-		tmpX = testObject->XPos() - XPos();
-		tmpY = testObject->YPos() - YPos();
-		tmpZ = testObject->ZPos() - ZPos();
+         while (testObject) {
+         //TJ_changes
+         //Only check against planes ....
+         //removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
+         if ( !(testObject->IsAirplane())/* || targetPtr &&  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
+ testObject = (SimBaseClass*) objectWalker.GetNext();
+ continue;
+ }
+ tmpX = testObject->XPos() - XPos();
+ tmpY = testObject->YPos() - YPos();
+ tmpZ = testObject->ZPos() - ZPos();
 
-		rangeSquare = tmpX*tmpX + tmpY*tmpY + tmpZ*tmpZ;
+ rangeSquare = tmpX*tmpX + tmpY*tmpY + tmpZ*tmpZ;
 
-		if (rangeSquare < lethalRadiusSqrd ) {
-			// edg: calculate a normalized blast Dist
-			normBlastDist = ( lethalRadiusSqrd - rangeSquare )/( lethalRadiusSqrd );
+ if (rangeSquare < lethalRadiusSqrd ) {
+ // edg: calculate a normalized blast Dist
+ normBlastDist = ( lethalRadiusSqrd - rangeSquare )/( lethalRadiusSqrd );
 
-			// quadratic dropoff
-			normBlastDist *= normBlastDist;
-			SendDamageMessage( targetPtr->BaseData(), rangeSquare, FalconDamageType::MissileDamage ); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
-		}
-		testObject = (SimBaseClass*) objectWalker.GetNext();
-	}
+ // quadratic dropoff
+ normBlastDist *= normBlastDist;
+ SendDamageMessage( targetPtr->BaseData(), rangeSquare, FalconDamageType::MissileDamage ); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
+ }
+ testObject = (SimBaseClass*) objectWalker.GetNext();
+ }
 }
-*/		if (targetPtr)
+*/ if (targetPtr)
         {
             // F4Assert(targetPtr->BaseData()->IsSim());
             SendDamageMessage(targetPtr->BaseData(), 0, FalconDamageType::MissileDamage); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
@@ -1397,7 +1397,7 @@ MissileClass::ApplyProximityDamage(void)
             if (objective->GetComponents())
             {
                 // loop thru each element in the objective
-                VuListIterator	featureWalker(objective->GetComponents());
+                VuListIterator featureWalker(objective->GetComponents());
                 testObject = (FalconEntity*) featureWalker.GetFirst();
 
                 while (testObject)
@@ -1445,14 +1445,14 @@ MissileClass::ApplyProximityDamage(void)
 }
 
 
-#define TIME_TO_RUN_IMPACT		30.0f
+#define TIME_TO_RUN_IMPACT 30.0f
 
 /*
 ** Name: FindRocketGroundImpact
 ** Description:
-**		Test flies a rocket (although should work for any missile, but
-**		guidance isn't tested ) until it impacts ground.
-**		Returns TRUE if resolution found and sets impact x,y,z
+** Test flies a rocket (although should work for any missile, but
+** guidance isn't tested ) until it impacts ground.
+** Returns TRUE if resolution found and sets impact x,y,z
 */
 BOOL
 MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impactZ, float *impactTime)
@@ -1463,85 +1463,85 @@ MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impa
     // Cobra test
     static FILE *fp = NULL;
     //if (fp == NULL)
-    //	fp = fopen("G:\\RocketImpact.txt", "w");
+    // fp = fopen("G:\\RocketImpact.txt", "w");
 
     /*
-    	// edg: yuck.  Unfortuantely we have to do this
-    	ifd = new MissileInFlightData;
+     // edg: yuck.  Unfortuantely we have to do this
+     ifd = new MissileInFlightData;
 
-    	// init stuff and save vars we need to set back at end....
-    	runTime = 0.0f;
-    	saveMinorFrameTime = SimLibMinorFrameTime;
+     // init stuff and save vars we need to set back at end....
+     runTime = 0.0f;
+     saveMinorFrameTime = SimLibMinorFrameTime;
 
-    	initXLoc = 0.0f;
-    	initYLoc = 0.0f;
-    	initZLoc = 0.0f;
-    	initAz = 0.0f;
-    	initEl = 0.0f;
+     initXLoc = 0.0f;
+     initYLoc = 0.0f;
+     initZLoc = 0.0f;
+     initAz = 0.0f;
+     initEl = 0.0f;
 
-    	SimLibMinorFrameTime = 0.05f;
+     SimLibMinorFrameTime = 0.05f;
 
-    	// Start stuff....
+     // Start stuff....
        Init1();
-    	launchState = Launching;
+     launchState = Launching;
 
-    	// Exec Stuff
-    	// runtime updated in fly missile
-    	// keep flying up until a max time or until the ground is hit
-    	while ( runTime < TIME_TO_RUN_IMPACT )
-    	{
-    		 // not sure if this is needed
+     // Exec Stuff
+     // runtime updated in fly missile
+     // keep flying up until a max time or until the ground is hit
+     while ( runTime < TIME_TO_RUN_IMPACT )
+     {
+      // not sure if this is needed
              //CalcTransformMatrix(this);
 
-    		//MI fix for rocket recticle bouncing... these 3 lines where commented....
-    		lastx = x;
-    		lasty = y;
-    		lastz = z;
+     //MI fix for rocket recticle bouncing... these 3 lines where commented....
+     lastx = x;
+     lasty = y;
+     lastz = z;
 
-    		 // flies the thing
-             CommandGuide();		// TODO: Avoid this -- all it does for rockets is set the G commands to 1.0
+      // flies the thing
+             CommandGuide(); // TODO: Avoid this -- all it does for rockets is set the G commands to 1.0
 
-    		 flags |= FindingImpact; // MLR 1/9/2004 - added to prevent the rocket's launch smoke puff trail when selected
+      flags |= FindingImpact; // MLR 1/9/2004 - added to prevent the rocket's launch smoke puff trail when selected
              FlyMissile();
-    		 flags &= ~FindingImpact;
+      flags &= ~FindingImpact;
 
-             ClosestApproach();		// TODO: Avoid this -- it's only really meaningful for proximity fuzed weapons
+             ClosestApproach(); // TODO: Avoid this -- it's only really meaningful for proximity fuzed weapons
              SetPosition (x, y, z);
 
-    		 if ( launchState == InFlight )
-    		 {
+      if ( launchState == InFlight )
+      {
                 SetDelta(xdot, ydot, zdot);
                 SetYPR(psi, theta, phi);
                 SetYPRDelta (r, q, p);
-    			// sfr: no more
+     // sfr: no more
                 //SetVt(vt);
 
-    			groundZ = OTWDriver.GetGroundLevel( x, y );
-    			if ( z > groundZ )
-    		 		break;
-    		 }
-    	}
+     groundZ = OTWDriver.GetGroundLevel( x, y );
+     if ( z > groundZ )
+       break;
+      }
+     }
 
-    	*impactTime = runTime;
+     *impactTime = runTime;
 
-    	float degpsi = psi * RTD;
-    	float degphi = phi * RTD;
-    	float degtheta = theta * RTD;
+     float degpsi = psi * RTD;
+     float degphi = phi * RTD;
+     float degtheta = theta * RTD;
 
 
-    	// restore stuff
-    	runTime = 0.0f;
-    	GuidenceTime = 0.0f;
-    	SimLibMinorFrameTime = saveMinorFrameTime;
+     // restore stuff
+     runTime = 0.0f;
+     GuidenceTime = 0.0f;
+     SimLibMinorFrameTime = saveMinorFrameTime;
         launchState = PreLaunch;
-    	delete ifd;
-    	ifd = NULL;
+     delete ifd;
+     ifd = NULL;
 
-    	// check for no resolution
-    	if ( *impactTime >= TIME_TO_RUN_IMPACT )
-    		return FALSE;
+     // check for no resolution
+     if ( *impactTime >= TIME_TO_RUN_IMPACT )
+     return FALSE;
 
-    	// at this point we've hit the ground
+     // at this point we've hit the ground
       // Interpolate for the time
       float delta = (groundZ - lastz) / (z - lastz);
       *impactX = lastx + delta * (x - lastx);

@@ -24,10 +24,10 @@ typedef struct
 
 typedef struct
 {
-    RECT*	psrcRects;
-    int	numDestDigits;
-    RECT*	pdestRects;
-    SourceDigitType *sourcedigits;	//Wombat778 3-22-04
+    RECT* psrcRects;
+    int numDestDigits;
+    RECT* pdestRects;
+    SourceDigitType *sourcedigits; //Wombat778 3-22-04
 } DigitsInitStr;
 
 //====================================================//
@@ -50,32 +50,32 @@ public:
 #endif
 public:
 
-    long				mValue;
-    int				*mpValues;
+    long mValue;
+    int *mpValues;
     //====================================================//
     // Dimensions and Locations
     //====================================================//
 
-    RECT				*mpDestRects;
-    RECT				*mpSrcRects;
-    int				mDestDigits;
-    char				*mpDestString;
+    RECT *mpDestRects;
+    RECT *mpSrcRects;
+    int mDestDigits;
+    char *mpDestString;
 
     //====================================================//
     // Pointers to Runtime Member Functions
     //====================================================//
 
-    void				Exec(void) {};
-    void				Exec(SimBaseClass*);
-    void				DisplayBlit(void);
-    void				DisplayBlit3D();			//Wombat778 3-22-04
-    void				DisplayDraw(void) {};
-    void				SetDigitValues(long);
+    void Exec(void) {};
+    void Exec(SimBaseClass*);
+    void DisplayBlit(void);
+    void DisplayBlit3D(); //Wombat778 3-22-04
+    void DisplayDraw(void) {};
+    void SetDigitValues(long);
     //MI
-    bool				active;
+    bool active;
 
     //Wombat778 3-22-04 Stuff for rendered digits
-    SourceDigitType		*mpSourceBuffer;
+    SourceDigitType *mpSourceBuffer;
     virtual void CreateLit(void);
     virtual void DiscardLit(void);
     //Wombat778 End

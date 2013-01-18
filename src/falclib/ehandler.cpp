@@ -7,13 +7,13 @@
 #include "f4vu.h"
 #include "FalcSess.h"
 #include "uicomms.h"
-#include "minidump.h"		//Wombat778 5-01-04
-#include "DBGHELP_MINDUMP.h"	//Wombat778 5-01-04
+#include "minidump.h" //Wombat778 5-01-04
+#include "DBGHELP_MINDUMP.h" //Wombat778 5-01-04
 
 
-extern	DWORD	gDebugLodID;		// The Model ID under draw by the DX Engine... 0xffffffff if no model
-extern	DWORD	gDebugTextureID;	// The Texture ID currently referenced
-extern	char	g_sVersion[];
+extern DWORD gDebugLodID; // The Model ID under draw by the DX Engine... 0xffffffff if no model
+extern DWORD gDebugTextureID; // The Texture ID currently referenced
+extern char g_sVersion[];
 
 // Copyright © 1998 Bruce Dawson.
 
@@ -26,18 +26,18 @@ information after crashes. See exceptionhandler.h for information
 on how to hook it in.
 */
 
-const int NumCodeBytes = 16;	// Number of code bytes to record.
-const int MaxStackDump = 2048;	// Maximum number of DWORDS in stack dumps.
-const int StackColumns = 8;		// Number of columns in stack dump.
+const int NumCodeBytes = 16; // Number of code bytes to record.
+const int MaxStackDump = 2048; // Maximum number of DWORDS in stack dumps.
+const int StackColumns = 8; // Number of columns in stack dump.
 
-#define	ONEK			1024
-#define	SIXTYFOURK		(64*ONEK)
-#define	ONEM			(ONEK*ONEK)
-#define	ONEG			(ONEK*ONEK*ONEK)
+#define ONEK 1024
+#define SIXTYFOURK (64*ONEK)
+#define ONEM (ONEK*ONEK)
+#define ONEG (ONEK*ONEK*ONEK)
 
 extern bool g_bModuleList; // JB 010101
 
-extern int g_nMiniDump;	//Wombat778 5-01-04
+extern int g_nMiniDump; //Wombat778 5-01-04
 
 extern int MajorVersion;
 extern int MinorVersion;
@@ -55,7 +55,7 @@ extern bool g_bOldStackDump; // 2002-04-01 S.G.
 
 static void hprintf(HANDLE LogFile, char* Format, ...)
 {
-    char buffer[4000];	// wvsprintf never prints more than one K.
+    char buffer[4000]; // wvsprintf never prints more than one K.
     // JPO increased - we may do more now.
 
     va_list arglist;
@@ -123,7 +123,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             if (ModuleFile != INVALID_HANDLE_VALUE)
             {
                 FileSize = GetFileSize(ModuleFile, 0);
-                FILETIME	LastWriteTime;
+                FILETIME LastWriteTime;
 
                 if (GetFileTime(ModuleFile, 0, 0, &LastWriteTime))
                 {
@@ -159,7 +159,7 @@ static void RecordModuleList(HANDLE LogFile)
     hprintf(LogFile, "\r\n"
             "\tModule list: names, addresses, sizes, time stamps "
             "and file times:\r\n");
-    SYSTEM_INFO	SystemInfo;
+    SYSTEM_INFO SystemInfo;
     GetSystemInfo(&SystemInfo);
     const size_t PageSize = SystemInfo.dwPageSize;
     // Set NumPages to the number of pages in the 4GByte address space,
@@ -170,7 +170,7 @@ static void RecordModuleList(HANDLE LogFile)
 
     while (pageNum < NumPages)
     {
-        MEMORY_BASIC_INFORMATION	MemInfo;
+        MEMORY_BASIC_INFORMATION MemInfo;
 
         if (VirtualQuery((void *)(pageNum * PageSize), &MemInfo,
                          sizeof(MemInfo)))
@@ -206,17 +206,17 @@ static void RecordModuleList(HANDLE LogFile)
 
 static void RecordSystemInformation(HANDLE LogFile)
 {
-    FILETIME	CurrentTime;
+    FILETIME CurrentTime;
     GetSystemTimeAsFileTime(&CurrentTime);
     char TimeBuffer[100];
     PrintTime(TimeBuffer, CurrentTime);
     hprintf(LogFile, "Error occurred at %s.\r\n", TimeBuffer);
-    char	ModuleName[MAX_PATH];
+    char ModuleName[MAX_PATH];
 
     if (GetModuleFileName(0, ModuleName, sizeof(ModuleName)) <= 0)
         lstrcpy(ModuleName, "Unknown");
 
-    char	UserName[200];
+    char UserName[200];
     DWORD UserNameSize = sizeof(UserName);
 
     if (!GetUserName(UserName, &UserNameSize))
@@ -224,12 +224,12 @@ static void RecordSystemInformation(HANDLE LogFile)
 
     hprintf(LogFile, "%s, run by %s.\r\n", ModuleName, UserName);
 
-    SYSTEM_INFO	SystemInfo;
+    SYSTEM_INFO SystemInfo;
     GetSystemInfo(&SystemInfo);
     hprintf(LogFile, "%d processor(s), type %d.\r\n",
             SystemInfo.dwNumberOfProcessors, SystemInfo.dwProcessorType);
 
-    MEMORYSTATUS	MemInfo;
+    MEMORYSTATUS MemInfo;
     MemInfo.dwLength = sizeof(MemInfo);
     GlobalMemoryStatus(&MemInfo);
     // Print out the amount of physical memory, rounded up.
@@ -259,11 +259,11 @@ static void RecordSystemInformation(HANDLE LogFile)
 
             switch (FalconLocalGame->GetGameType())
             {
-                case 	game_InstantAction:
+                case  game_InstantAction:
                     gtype = "Instant Action";
                     break;
 
-                case 	game_Dogfight:
+                case  game_Dogfight:
                     gtype = "DogFight";
                     break;
 
@@ -303,8 +303,8 @@ static const char *GetExceptionDescription(DWORD ExceptionCode)
 {
     struct ExceptionNames
     {
-        DWORD	ExceptionCode;
-        char*	ExceptionName;
+        DWORD ExceptionCode;
+        char* ExceptionName;
     };
 
     ExceptionNames ExceptionMap[] =
@@ -365,7 +365,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 #endif
     static int BeenHere;
 
-    if (BeenHere)	// Going recursive! That must mean this routine crashed!
+    if (BeenHere) // Going recursive! That must mean this routine crashed!
         return EXCEPTION_CONTINUE_SEARCH;
 
     BeenHere = TRUE;
@@ -378,7 +378,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     //Wombat778 5-01-04 Create a Minidump
     //Cobra 12/05/04  Let's remove this for now.
     /*if (g_nMiniDump >= 0)
-    	CreateCurrentProcessMiniDumpW ( (MINIDUMP_TYPE) g_nMiniDump			,
+     CreateCurrentProcessMiniDumpW ( (MINIDUMP_TYPE) g_nMiniDump ,
                                              L"dumplog.dmp"         ,
                                              GetCurrentThreadId ( )    ,
                                              data              ) ;*/
@@ -395,8 +395,8 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                 return EXCEPTION_CONTINUE_SEARCH;
     }
 
-    char	ModuleName[MAX_PATH];
-    char	FileName[MAX_PATH] = "Unknown";
+    char ModuleName[MAX_PATH];
+    char FileName[MAX_PATH] = "Unknown";
 
     // Create a filename to record the error information to.
     // Storing it in the executable directory works well.
@@ -428,14 +428,14 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     SetFilePointer(LogFile, 0, 0, FILE_END);
     // Print out some blank lines to separate this error log from any previous ones.
     hprintf(LogFile, "\r\n\r\n\r\n\r\n");
-    PEXCEPTION_RECORD	Exception = data->ExceptionRecord;
-    PCONTEXT			Context = data->ContextRecord;
+    PEXCEPTION_RECORD Exception = data->ExceptionRecord;
+    PCONTEXT Context = data->ContextRecord;
 
     if (!hinstDbgHelp)
     {
-        char	CrashModulePathName[MAX_PATH];
-        char	*CrashModuleFileName = "Unknown";
-        MEMORY_BASIC_INFORMATION	MemInfo;
+        char CrashModulePathName[MAX_PATH];
+        char *CrashModuleFileName = "Unknown";
+        MEMORY_BASIC_INFORMATION MemInfo;
 
         // VirtualQuery can be used to get the allocation base associated with a
         // code address, which is the same as the ModuleHandle. This can be used
@@ -465,7 +465,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 
         wsprintf(DebugMessage, "%s location %08x caused an access violation.\r\n",
                  readwrite, Exception->ExceptionInformation[1]);
-#ifdef	_DEBUG
+#ifdef _DEBUG
         // The VisualC++ debugger doesn't actually tell you whether a read
         // or a write caused the access violation, nor does it tell what
         // address was being read or written. So I fixed that.
@@ -510,7 +510,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 
         while (stackmsg)
         {
-            hprintf(LogFile, "Stack: %s\r\n", 	stackmsg);
+            hprintf(LogFile, "Stack: %s\r\n",  stackmsg);
             stackmsg = GetNextStackTraceString(options, data);
         }
 
@@ -532,7 +532,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                     // Load the top (highest address) of the stack from the
                     // thread information block. It will be found there in
                     // Win9x and Windows NT.
-                    mov	eax, fs:[4]
+                    mov eax, fs:[4]
                     mov pStackTop, eax
                 }
 
@@ -544,10 +544,10 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                 // confusing delays when programs crash. Therefore I implemented
                 // simple buffering for the stack dumping code instead of calling
                 // hprintf directly.
-                char	buffer[1000] = "";
+                char buffer[1000] = "";
                 const int safetyzone = 50;
-                char*	nearend = buffer + sizeof(buffer) - safetyzone;
-                char*	output = buffer;
+                char* nearend = buffer + sizeof(buffer) - safetyzone;
+                char* output = buffer;
 
                 while (pStack + 1 <= pStackTop)
                 {

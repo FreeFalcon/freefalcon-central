@@ -1,8 +1,8 @@
 /*
 matrix33.h
 
-	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004
+ Author: Miro "Jammer" Torrielli
+ Last Update: 21 April 2004
 */
 
 #ifndef _MATRIX33_H

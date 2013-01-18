@@ -16,15 +16,15 @@ void ICPClass::ExecFACKMode(void)
     {
         //MI original Code
 
-        FaultClass::str_FNames	faultNames;
-        int			faultCount;
+        FaultClass::str_FNames faultNames;
+        int faultCount;
 
         if (!playerAC)
         {
             return;
         }
 
-        faultCount	= playerAC->mFaults->GetFFaultCount();
+        faultCount = playerAC->mFaults->GetFFaultCount();
 
         if (mUpdateFlags & FACK_UPDATE || (!(mUpdateFlags & FACK_UPDATE) && faultCount))
         {
@@ -87,7 +87,7 @@ void ICPClass::ExecPfl()
     }
     else
     {
-        if (m_function == FaultClass::nofault)					//Wombat778 10-20-2003 removed change because it seemed to break PFL in realistic modes.  Changed code in ICPclass instead.
+        if (m_function == FaultClass::nofault) //Wombat778 10-20-2003 removed change because it seemed to break PFL in realistic modes.  Changed code in ICPclass instead.
             playerAC->mFaults->GetFirstFault(&m_subsystem, &m_function);
 
         PflFault(m_subsystem, m_function);
@@ -107,7 +107,7 @@ void ICPClass::PflFault(FaultClass::type_FSubSystem sys, int func)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
     char tempstr[40];
-    FaultClass::str_FNames	faultNames;
+    FaultClass::str_FNames faultNames;
 
     playerAC->mFaults->GetFaultNames(sys, func, &faultNames);
     //Line1

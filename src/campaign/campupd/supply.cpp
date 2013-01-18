@@ -23,22 +23,22 @@
 #include "classtbl.h"
 #include "Debuggr.h"
 
-#define	MAX_SUPPLIES			60000
-#define	MAX_SUPPLY_RATIO		0.5F
+#define MAX_SUPPLIES 60000
+#define MAX_SUPPLY_RATIO 0.5F
 
-#define	AUTOMATIC_SUPPLY		5
-#define AUTOMATIC_REPLACEMENTS	1
+#define AUTOMATIC_SUPPLY 5
+#define AUTOMATIC_REPLACEMENTS 1
 
 #ifdef DEBUG
-int		gSupplyFromProduction[NUM_TEAMS];
-int		gSupplyFromAirlift[NUM_TEAMS];
-int		gSupplyFromOffensive[NUM_TEAMS];
-int		gFuelFromProduction[NUM_TEAMS];
-int		gFuelFromAirlift[NUM_TEAMS];
-int		gFuelFromOffensive[NUM_TEAMS];
-int		gReplacmentsFromProduction[NUM_TEAMS];
-int		gReplacmentsFromAirlift[NUM_TEAMS];
-int		gReplacmentsFromOffensive[NUM_TEAMS];
+int gSupplyFromProduction[NUM_TEAMS];
+int gSupplyFromAirlift[NUM_TEAMS];
+int gSupplyFromOffensive[NUM_TEAMS];
+int gFuelFromProduction[NUM_TEAMS];
+int gFuelFromAirlift[NUM_TEAMS];
+int gFuelFromOffensive[NUM_TEAMS];
+int gReplacmentsFromProduction[NUM_TEAMS];
+int gReplacmentsFromAirlift[NUM_TEAMS];
+int gReplacmentsFromOffensive[NUM_TEAMS];
 #endif
 
 extern bool g_bPowerGrid;
@@ -52,18 +52,18 @@ extern bool g_bPowerGrid;
 // This should be called by the Campaign Master only
 int ProduceSupplies(CampaignTime deltaTime)
 {
-    Objective		o, po;
-    Team			who;
-    float			rate;
-    int				type;
-    ulong			supply[NUM_TEAMS] = {0}, fuel[NUM_TEAMS] = {0}, s, f, power;
-    ulong			replacements[NUM_TEAMS] = {0};
-    MissionRequestClass	mis;
+    Objective o, po;
+    Team who;
+    float rate;
+    int type;
+    ulong supply[NUM_TEAMS] = {0}, fuel[NUM_TEAMS] = {0}, s, f, power;
+    ulong replacements[NUM_TEAMS] = {0};
+    MissionRequestClass mis;
     GridIndex x, y;
 
     // Produce supplies, fuel and reinforcements (factories and refineries)
     {
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o)
@@ -72,7 +72,7 @@ int ProduceSupplies(CampaignTime deltaTime)
 
             //Cobra Added Army, depot, and port per JimG
             if ((type == TYPE_FACTORY || type == TYPE_ARMYBASE || type == TYPE_DEPOT || type == TYPE_PORT)
-                && o->GetObjectiveOldown() == o->GetOwner())		// Supply
+                && o->GetObjectiveOldown() == o->GetOwner()) // Supply
             {
                 if (g_bPowerGrid)
                 {
@@ -95,8 +95,8 @@ int ProduceSupplies(CampaignTime deltaTime)
                     replacements[who] += FloatToInt32((s * DataRateModRepl));   // A.S.  2001-12-09 DataRateModification for replacements only
 
                     // *** old code ***
-                    //				supply[who] += s;
-                    //			    replacements[who] += s;
+                    // supply[who] += s;
+                    //     replacements[who] += s;
 
 
                     // Request an interdiction stike mission
@@ -131,7 +131,7 @@ int ProduceSupplies(CampaignTime deltaTime)
                     }
                 }
             }
-            else if (type == TYPE_REFINERY && o->GetObjectiveOldown() == o->GetOwner())	// Fuel
+            else if (type == TYPE_REFINERY && o->GetObjectiveOldown() == o->GetOwner()) // Fuel
             {
                 if (g_bPowerGrid)
                 {
@@ -186,7 +186,7 @@ int ProduceSupplies(CampaignTime deltaTime)
             // NOTE: IF WE WANT SPECIAL SUPPLY SOURCES (OFF-MAP SUPPLY SOURCES), ADD THE
             // BONUS HERE.
             // if (o->IsBonusSupplySource())
-            //		supply += 1000;
+            // supply += 1000;
 
             o = GetNextObjective(&myit);
         }
@@ -197,7 +197,7 @@ int ProduceSupplies(CampaignTime deltaTime)
 
     for (who = 0; who < NUM_TEAMS; who++)
     {
-        int			actionBonus = TeamInfo[who]->GetGroundAction()->actionType;
+        int actionBonus = TeamInfo[who]->GetGroundAction()->actionType;
 
         // A.S. 2001-12-09  No Action Type Bonus for production of supply, fuel and replacements
         if (NoActionBonusProd)
@@ -241,8 +241,8 @@ int ProduceSupplies(CampaignTime deltaTime)
 
 void AddSupply(Objective  o, int supply, int fuel)
 {
-    int			s, f;
-    WORD		sup = o->static_data.local_data;
+    int s, f;
+    WORD sup = o->static_data.local_data;
 
     s = LOBYTE(sup) + supply;
 
@@ -261,9 +261,9 @@ void AddSupply(Objective  o, int supply, int fuel)
 // Updates values to amount which actually made it. returns 0 if none made it.
 int SendSupply(Objective s, Objective d, int *supply, int *fuel)
 {
-    Objective	c;
-    PathClass	path;
-    int			i, l, n, loss, type;
+    Objective c;
+    PathClass path;
+    int i, l, n, loss, type;
 
     if (!*supply && !*fuel)
         return 0;
@@ -284,7 +284,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
         if (type == TYPE_ROAD || type == TYPE_INTERSECT || type == TYPE_RAILROAD || type == TYPE_BRIDGE)
         {
             AddSupply(c, *supply / 10, *fuel / 10);
-            l = c->GetObjectiveSupplyLosses() + 2;		// Automatic loss rate of 2% per objective
+            l = c->GetObjectiveSupplyLosses() + 2; // Automatic loss rate of 2% per objective
             *supply = *supply * (100 - l) / 100;
             *fuel = *fuel * (100 - l) / 100;
         }
@@ -298,8 +298,8 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
 
 void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 {
-    Unit		e;
-    float		sratio, fratio;
+    Unit e;
+    float sratio, fratio;
 
     if (u->IsBattalion() || u->IsSquadron())
     {
@@ -309,8 +309,8 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
         // KCK: We can add supply and fuel directly now, since we're asserting all
         // entities are local to the host. Values will be updated via dirty data
         u->SupplyUnit(supply, fuel);
-        //		// Send the supply message
-        //		u->SendUnitMessage(u->Id(),FalconUnitMessage::unitSupply,supply,fuel,0);
+        // // Send the supply message
+        // u->SendUnitMessage(u->Id(),FalconUnitMessage::unitSupply,supply,fuel,0);
     }
     else if (u->IsBrigade())
     {
@@ -339,19 +339,19 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 // Supplies units - must be called by Campaign Master
 int SupplyUnits(Team who, CampaignTime deltaTime)
 {
-    Objective		o, s;
-    Unit			unit;
-    int				supply, fuel, replacements, gots, gotf, type;
-    int				sneeded = 0, fneeded = 0, rneeded = 0;
-    float			sratio, fratio, rratio;
-    GridIndex		x, y;
-    MissionRequestClass	mis;
+    Objective o, s;
+    Unit unit;
+    int supply, fuel, replacements, gots, gotf, type;
+    int sneeded = 0, fneeded = 0, rneeded = 0;
+    float sratio, fratio, rratio;
+    GridIndex x, y;
+    MissionRequestClass mis;
     // A.S. begin additional variables 2001-12-09
     // A.S. We now distinguish between aircrafts and ground vehicles
-    int				rneeded_a = 0, rneeded_v = 0, repl_a = 0, repl_v = 0;
-    float			rratio_a, rratio_v,	a_v_nratio, repl; 			// A.S.
-    float			sqnbonus, lambda;								// A.S.
-    int				repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0;	// A.S. debug variables
+    int rneeded_a = 0, rneeded_v = 0, repl_a = 0, repl_v = 0;
+    float rratio_a, rratio_v, a_v_nratio, repl;  // A.S.
+    float sqnbonus, lambda; // A.S.
+    int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
     // end added section
 
     if (!TeamInfo[who] || !(TeamInfo[who]->flags & TEAM_ACTIVE))
@@ -360,8 +360,8 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     sratio = fratio = rratio = 0.0F;
 
     // A.S. begin, 2001-12-09.
-    rratio_a = rratio_v = a_v_nratio = repl = lambda = 0.0F;		// A.S.
-    sqnbonus = RelSquadBonus;									    // A.S. gives Sqn relative (!) more repl. than Bde.
+    rratio_a = rratio_v = a_v_nratio = repl = lambda = 0.0F; // A.S.
+    sqnbonus = RelSquadBonus;     // A.S. gives Sqn relative (!) more repl. than Bde.
     // end added section
 
     // zero supply values
@@ -392,7 +392,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 rneeded += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
 
                 // A.S. begin
-                if (unit->IsSquadron() && NoTypeBonusRepl)		// A.S. extra calculation for squadrons
+                if (unit->IsSquadron() && NoTypeBonusRepl) // A.S. extra calculation for squadrons
                 {
                     rneeded_a += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
                 }
@@ -408,7 +408,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     // A.S. begin, 2001-12-09.
     if (NoTypeBonusRepl)
     {
-        rneeded_v = rneeded - rneeded_a;						//A.S. calculation for groud vehicles
+        rneeded_v = rneeded - rneeded_a; //A.S. calculation for groud vehicles
 
         if (rneeded > 0)
             a_v_nratio = ((float)rneeded_a) / rneeded;
@@ -471,7 +471,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         if (rratio_v > MAX_SUPPLY_RATIO)
             rratio_v = MAX_SUPPLY_RATIO;
 
-        if (repl == 0)  							// to handle situations like 0/0 !
+        if (repl == 0)   // to handle situations like 0/0 !
         {
             rratio_a = 0;
             rratio_v = 0;
@@ -494,7 +494,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 TheCampaign.CurrentTime - unit->GetLastResupplyTime() > unit->GetUnitSupplyTime()
             )
             {
-                float			typeBonus = 1.0F;
+                float typeBonus = 1.0F;
 
                 if (unit->GetUnitCurrentRole() == GRO_ATTACK)
                     typeBonus = 6.0F;
@@ -523,11 +523,11 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 replacements = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * rratio * typeBonus);
 
                 // A.S. begin, 2001-12-09
-                repl_s += replacements;				// debug
+                repl_s += replacements; // debug
 
-                if (NoTypeBonusRepl) 	// New code for distinguishing between aircrafts and ground vehicles
+                if (NoTypeBonusRepl)  // New code for distinguishing between aircrafts and ground vehicles
                 {
-                    if (unit->IsSquadron())				// this algorithm guarantees that no team can get more repl than available
+                    if (unit->IsSquadron()) // this algorithm guarantees that no team can get more repl than available
                     {
                         prob = rand() % 100;
                         repl_a = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a);
@@ -562,7 +562,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 }
                 else
                 {
-                    if (replacements)	// ++++++ old code begin ++++++
+                    if (replacements) // ++++++ old code begin ++++++
                     {
                         TeamInfo[who]->SetReplacementsAvail(TeamInfo[who]->GetReplacementsAvail() - replacements);
 
@@ -575,7 +575,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                         unit->ChangeVehicles(replacements);
                     }
-                }	// end added section  (important: this section replaces(!) the section marked with ++++++ old code ++++++ !)
+                } // end added section  (important: this section replaces(!) the section marked with ++++++ old code ++++++ !)
 
                 if (fuel || supply)
                 {
@@ -608,20 +608,20 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
     // A.S. debug begin
     //if (NoTypeBonusRepl) {
-    //	if (who == 2 || who==6) {
-    //		FILE *deb;
-    //		deb = fopen("c:\\temp\\deb1.txt", "a");
-    //		fprintf(deb, "Team %2d  ReplaAvail = %3d  A_Needed = %3d  V_Needed %4d  Aircraft = %2d  Vehicle = %3d  TIME = %d\n", who, (int)repl, rneeded_a, rneeded_v, repl_a_s, repl_v_s, TheCampaign.CurrentTime );
-    //		fclose(deb);
-    //	}
+    // if (who == 2 || who==6) {
+    // FILE *deb;
+    // deb = fopen("c:\\temp\\deb1.txt", "a");
+    // fprintf(deb, "Team %2d  ReplaAvail = %3d  A_Needed = %3d  V_Needed %4d  Aircraft = %2d  Vehicle = %3d  TIME = %d\n", who, (int)repl, rneeded_a, rneeded_v, repl_a_s, repl_v_s, TheCampaign.CurrentTime );
+    // fclose(deb);
+    // }
     //}
     //else {
-    //	if (who == 2 || who==6) {	// A.S. debug
-    //		FILE *deb;
-    //		deb = fopen("c:\\temp\\deb1.txt", "a");
-    //		fprintf(deb, "Team %2d  ReplaAvail = %3d  Needed = %3d | Repl_a = %2d repl_v = %3d | TIME = %d\n", who, TeamInfo[who]->GetReplacementsAvail(), rneeded, repl_sa, (repl_s-repl_sa) , TheCampaign.CurrentTime % CampaignHours );
-    //		fclose(deb);
-    //	}
+    // if (who == 2 || who==6) { // A.S. debug
+    // FILE *deb;
+    // deb = fopen("c:\\temp\\deb1.txt", "a");
+    // fprintf(deb, "Team %2d  ReplaAvail = %3d  Needed = %3d | Repl_a = %2d repl_v = %3d | TIME = %d\n", who, TeamInfo[who]->GetReplacementsAvail(), rneeded, repl_sa, (repl_s-repl_sa) , TheCampaign.CurrentTime % CampaignHours );
+    // fclose(deb);
+    // }
     //}
     // A.S. debug end
 
@@ -717,175 +717,175 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 /*
 // Supplies units - must be called by Campaign Master
 int SupplyUnits (Team team)
-	{
-	Objective		o,s;
-	Unit			p;
-	int				supply,fuel,gots,gotf,type,i,who;
-	int				sneeded[NUM_TEAMS],fneeded[NUM_TEAMS];
-	float			sratio[NUM_TEAMS],fratio[NUM_TEAMS];
-	GridIndex		x,y;
-	MissionRequestClass	mis;
-	VuListIterator myit(AllParentList);
-	VuListIterator objit(AllObjList);
+ {
+ Objective o,s;
+ Unit p;
+ int supply,fuel,gots,gotf,type,i,who;
+ int sneeded[NUM_TEAMS],fneeded[NUM_TEAMS];
+ float sratio[NUM_TEAMS],fratio[NUM_TEAMS];
+ GridIndex x,y;
+ MissionRequestClass mis;
+ VuListIterator myit(AllParentList);
+ VuListIterator objit(AllObjList);
 
-	// zero supply values
-	o = GetFirstObjective(&objit);
-	while (o)
-		{
-		o->static_data.local_data = 0;
-		o = GetNextObjective(&objit);
-		}
+ // zero supply values
+ o = GetFirstObjective(&objit);
+ while (o)
+ {
+ o->static_data.local_data = 0;
+ o = GetNextObjective(&objit);
+ }
 
-	// zero record values
-	for (i=0; i<NUM_TEAMS; i++)
-		sneeded[i] = fneeded[i] = 0;
+ // zero record values
+ for (i=0; i<NUM_TEAMS; i++)
+ sneeded[i] = fneeded[i] = 0;
 
-	// Calculate needs
-	p = GetFirstUnit(&myit);
-	while (p)
-		{
-		who = p->GetTeam();
-		if (p->GetDomain() != DOMAIN_AIR || p->GetType() == TYPE_SQUADRON)
-			{
-			sneeded[who] += p->GetUnitSupplyNeed(FALSE);
-			fneeded[who] += p->GetUnitFuelNeed(FALSE);
-			}
-		p = GetNextUnit(&myit);
-		}
+ // Calculate needs
+ p = GetFirstUnit(&myit);
+ while (p)
+ {
+ who = p->GetTeam();
+ if (p->GetDomain() != DOMAIN_AIR || p->GetType() == TYPE_SQUADRON)
+ {
+ sneeded[who] += p->GetUnitSupplyNeed(FALSE);
+ fneeded[who] += p->GetUnitFuelNeed(FALSE);
+ }
+ p = GetNextUnit(&myit);
+ }
 
-	// Calculate what ratio of needed supply we're going to give out
-	for (i=0; i<NUM_TEAMS; i++)
-		{
-		if (sneeded[i] > 0)
-			sratio[i] = (float)TeamInfo[i]->supplyAvail / sneeded[i];
-		else
-			sratio[i] = 0.0F;
-		if (sratio[i] > 1.0F)
-			sratio[i] = 1.0F;
-		if (fneeded[i] > 0)
-			fratio[i] = (float)TeamInfo[i]->fuelAvail / fneeded[i];
-		else
-			fratio[i] = 0.0F;
-		if (fratio[i] > 1.0F)
-			fratio[i] = 1.0F;
-		}
+ // Calculate what ratio of needed supply we're going to give out
+ for (i=0; i<NUM_TEAMS; i++)
+ {
+ if (sneeded[i] > 0)
+ sratio[i] = (float)TeamInfo[i]->supplyAvail / sneeded[i];
+ else
+ sratio[i] = 0.0F;
+ if (sratio[i] > 1.0F)
+ sratio[i] = 1.0F;
+ if (fneeded[i] > 0)
+ fratio[i] = (float)TeamInfo[i]->fuelAvail / fneeded[i];
+ else
+ fratio[i] = 0.0F;
+ if (fratio[i] > 1.0F)
+ fratio[i] = 1.0F;
+ }
 
-	// Supply units
-	p = GetFirstUnit(&myit);
-	while (p)
-		{
-		who = p->GetTeam();
-		if (p->GetDomain() != DOMAIN_AIR || p->GetType() == TYPE_SQUADRON)
-			{
-			supply = p->GetUnitSupplyNeed(FALSE) * sratio[who];
-			fuel = p->GetUnitFuelNeed(FALSE) * fratio[who];
-			if (supply > TeamInfo[who]->supplyAvail)
-				supply = TeamInfo[who]->supplyAvail;
-			if (fuel > TeamInfo[who]->fuelAvail)
-				fuel = TeamInfo[who]->fuelAvail;
-			if (fuel || supply)
-				{
-				p->GetLocation(&x,&y);
-				o = FindNearestFriendlyObjective(p->GetTeam(),&x,&y,0);
-				if (o)
-					{
-					s = FindNearestSupplySource(o);
-					if (s)
-						{
-						TeamInfo[who]->supplyAvail -= supply;
-						TeamInfo[who]->fuelAvail -= fuel;
-						gots = supply;
-						gotf = fuel;
-						if (SendSupply(s,o,&gots,&gotf));
-							SupplyUnit(p,supply,gots,fuel,gotf);
-						}
-					}
-				}
-			RepairUnit(p);
-			}
-		p = GetNextUnit(&myit);
-		}
+ // Supply units
+ p = GetFirstUnit(&myit);
+ while (p)
+ {
+ who = p->GetTeam();
+ if (p->GetDomain() != DOMAIN_AIR || p->GetType() == TYPE_SQUADRON)
+ {
+ supply = p->GetUnitSupplyNeed(FALSE) * sratio[who];
+ fuel = p->GetUnitFuelNeed(FALSE) * fratio[who];
+ if (supply > TeamInfo[who]->supplyAvail)
+ supply = TeamInfo[who]->supplyAvail;
+ if (fuel > TeamInfo[who]->fuelAvail)
+ fuel = TeamInfo[who]->fuelAvail;
+ if (fuel || supply)
+ {
+ p->GetLocation(&x,&y);
+ o = FindNearestFriendlyObjective(p->GetTeam(),&x,&y,0);
+ if (o)
+ {
+ s = FindNearestSupplySource(o);
+ if (s)
+ {
+ TeamInfo[who]->supplyAvail -= supply;
+ TeamInfo[who]->fuelAvail -= fuel;
+ gots = supply;
+ gotf = fuel;
+ if (SendSupply(s,o,&gots,&gotf));
+ SupplyUnit(p,supply,gots,fuel,gotf);
+ }
+ }
+ }
+ RepairUnit(p);
+ }
+ p = GetNextUnit(&myit);
+ }
 
-	// Calculate current supply percentages (for UI)
-	int				shave[NUM_TEAMS]={0},swant[NUM_TEAMS]={0},fhave[NUM_TEAMS]={0},fwant[NUM_TEAMS]={0};
-	p = GetFirstUnit(&myit);
-	while (p)
-		{
-		who = p->GetTeam();
-		if (p->GetDomain() == DOMAIN_LAND || p->IsSquadron())
-			{
-			int	ths = p->GetUnitSupplyNeed(TRUE);
-			int	thf = p->GetUnitFuelNeed(TRUE);
-			shave[who] += ths;
-			fhave[who] += thf;
-			swant[who] += ths + p->GetUnitSupplyNeed(FALSE);
-			fwant[who] += thf + p->GetUnitFuelNeed(FALSE);
-			}
-		p = GetNextUnit(&myit);
-		}
-	for (i=0; i<NUM_TEAMS; i++)
-		{
-		if (swant[i])
-			TeamInfo[i]->currentStats.supplyLevel = shave[i]*100/swant[i];
-		if (fwant[i])
-			TeamInfo[i]->currentStats.fuelLevel = fhave[i]*100/fwant[i];
-		}
+ // Calculate current supply percentages (for UI)
+ int shave[NUM_TEAMS]={0},swant[NUM_TEAMS]={0},fhave[NUM_TEAMS]={0},fwant[NUM_TEAMS]={0};
+ p = GetFirstUnit(&myit);
+ while (p)
+ {
+ who = p->GetTeam();
+ if (p->GetDomain() == DOMAIN_LAND || p->IsSquadron())
+ {
+ int ths = p->GetUnitSupplyNeed(TRUE);
+ int thf = p->GetUnitFuelNeed(TRUE);
+ shave[who] += ths;
+ fhave[who] += thf;
+ swant[who] += ths + p->GetUnitSupplyNeed(FALSE);
+ fwant[who] += thf + p->GetUnitFuelNeed(FALSE);
+ }
+ p = GetNextUnit(&myit);
+ }
+ for (i=0; i<NUM_TEAMS; i++)
+ {
+ if (swant[i])
+ TeamInfo[i]->currentStats.supplyLevel = shave[i]*100/swant[i];
+ if (fwant[i])
+ TeamInfo[i]->currentStats.fuelLevel = fhave[i]*100/fwant[i];
+ }
 
 
-	// Reset loss values, set supply values, and request missions
-//	CampEnterCriticalSection();
-	o = GetFirstObjective(&objit);
-	while (o)
-		{
-		supply = LOBYTE(o->static_data.local_data);
-		fuel = HIBYTE(o->static_data.local_data);
-		if (supply > 5 || fuel > 5)
-			{
-			o->SendObjMessage(o->Id(),FalconObjectiveMessage::objSetSupply,(short)(supply),(short)(fuel),0);
-//			o->SendObjMessage(o->Id(),FalconObjectiveMessage::objSetLosses,0,0,0);
-			type = o->GetType();
-			if (type == TYPE_ROAD || type == TYPE_INTERSECT)
-				{
-				// Request an interdiction mission
-				mis.requesterID = o->Id();
-				o->GetLocation(&mis.tx,&mis.ty);
-				mis.vs = o->GetTeam();
-				mis.who = GetEnemyTeam(mis.vs);
-				mis.tot = Camp_GetCurrentTime() + (30+rand()%480)*CampaignMinutes;
-				mis.tot_type = TYPE_NE;
-				mis.targetID = FalconNullId;
-				mis.mission = AMIS_INT;
-				mis.roe_check = ROE_AIR_ATTACK;
-				mis.context = enemySupplyInterdictionZone;
-//				mis.priority = (supply+fuel)/20;
-				mis.RequestMission();
-				}
-			if (type == TYPE_BRIDGE || type == TYPE_DEPOT || type == TYPE_PORT)
-				{
-				// Request an interdiction strike mission
-				mis.requesterID = o->Id();
-				o->GetLocation(&mis.tx,&mis.ty);
-				mis.vs = o->GetTeam();
-				mis.who = GetEnemyTeam(mis.vs);
-				mis.tot = Camp_GetCurrentTime() + (30+rand()%480)*CampaignMinutes;
-				mis.tot_type = TYPE_NE;
-				mis.targetID = o->Id();
-				mis.mission = AMIS_INTSTRIKE;
-				mis.roe_check = ROE_AIR_ATTACK;
-				if (type == TYPE_BRIDGE)
-						mis.context = enemySupplyInterdictionBridge;
-				if (type == TYPE_DEPOT)
-						mis.context = enemySupplyInterdictionDepot;
-				if (type == TYPE_PORT)
-						mis.context = enemySupplyInterdictionPort;
-//				mis.priority = (supply+fuel)/20;
-				mis.RequestMission();
-				}
-			}
-		o = GetNextObjective(&objit);
-		}
-//	CampLeaveCriticalSection();
-	return 1;
-	}
+ // Reset loss values, set supply values, and request missions
+// CampEnterCriticalSection();
+ o = GetFirstObjective(&objit);
+ while (o)
+ {
+ supply = LOBYTE(o->static_data.local_data);
+ fuel = HIBYTE(o->static_data.local_data);
+ if (supply > 5 || fuel > 5)
+ {
+ o->SendObjMessage(o->Id(),FalconObjectiveMessage::objSetSupply,(short)(supply),(short)(fuel),0);
+// o->SendObjMessage(o->Id(),FalconObjectiveMessage::objSetLosses,0,0,0);
+ type = o->GetType();
+ if (type == TYPE_ROAD || type == TYPE_INTERSECT)
+ {
+ // Request an interdiction mission
+ mis.requesterID = o->Id();
+ o->GetLocation(&mis.tx,&mis.ty);
+ mis.vs = o->GetTeam();
+ mis.who = GetEnemyTeam(mis.vs);
+ mis.tot = Camp_GetCurrentTime() + (30+rand()%480)*CampaignMinutes;
+ mis.tot_type = TYPE_NE;
+ mis.targetID = FalconNullId;
+ mis.mission = AMIS_INT;
+ mis.roe_check = ROE_AIR_ATTACK;
+ mis.context = enemySupplyInterdictionZone;
+// mis.priority = (supply+fuel)/20;
+ mis.RequestMission();
+ }
+ if (type == TYPE_BRIDGE || type == TYPE_DEPOT || type == TYPE_PORT)
+ {
+ // Request an interdiction strike mission
+ mis.requesterID = o->Id();
+ o->GetLocation(&mis.tx,&mis.ty);
+ mis.vs = o->GetTeam();
+ mis.who = GetEnemyTeam(mis.vs);
+ mis.tot = Camp_GetCurrentTime() + (30+rand()%480)*CampaignMinutes;
+ mis.tot_type = TYPE_NE;
+ mis.targetID = o->Id();
+ mis.mission = AMIS_INTSTRIKE;
+ mis.roe_check = ROE_AIR_ATTACK;
+ if (type == TYPE_BRIDGE)
+ mis.context = enemySupplyInterdictionBridge;
+ if (type == TYPE_DEPOT)
+ mis.context = enemySupplyInterdictionDepot;
+ if (type == TYPE_PORT)
+ mis.context = enemySupplyInterdictionPort;
+// mis.priority = (supply+fuel)/20;
+ mis.RequestMission();
+ }
+ }
+ o = GetNextObjective(&objit);
+ }
+// CampLeaveCriticalSection();
+ return 1;
+ }
 
 */

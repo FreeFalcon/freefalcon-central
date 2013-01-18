@@ -9,7 +9,7 @@
 #include "sms.h"
 #include "aircrft.h"
 #include "MsgInc\RadioChatterMsg.h"
-#include "flight.h"	// Marco edit for 'Pitbull' call
+#include "flight.h" // Marco edit for 'Pitbull' call
 #include "RedProfiler.h"
 
 bool Pitbull = true ;
@@ -22,12 +22,12 @@ void MissileClass::RunSeeker(void)
     // Don't come here without a sensor
     ShiAssert(sensorArray);
 
-    if (!sensorArray) return;		// Shouldn't be necessary, but at this stage, lets be safe...
+    if (!sensorArray) return; // Shouldn't be necessary, but at this stage, lets be safe...
 
     // Don't come here without a sensor
     ShiAssert(sensorArray[0]);
 
-    if (!sensorArray[0]) return;		// Shouldn't be necessary, but at this stage, lets be safe...
+    if (!sensorArray[0]) return; // Shouldn't be necessary, but at this stage, lets be safe...
 
     // No seeker if in SAFE
     if (launchState == PreLaunch &&
@@ -52,13 +52,13 @@ void MissileClass::RunSeeker(void)
     }
 
     // For missiles that go active (AMRAAM) is it time to switch seekers?
-    ShiAssert(timpct >= 0.0f);	// If this fails, we might try to give ANY missile an active radar
+    ShiAssert(timpct >= 0.0f); // If this fails, we might try to give ANY missile an active radar
     // KLUDGE: 2000-08-26 MODIFIED BY S.G. SO ARH MISSILE WAIT LONGER WHEN THE TARGET IS JAMMING
     // IT DOESN'T MATTER IF targetPtr IS NULL AND newTarget IS SET BECAUSE GoActive WILL BE DONE LATER IN THE ROUTINE ANYHOW IN SUCH A SCENARIO
-    //	if ((timpct < inputData->mslActiveTtg) && (sensorArray[0]->Type() != SensorClass::Radar))
+    // if ((timpct < inputData->mslActiveTtg) && (sensorArray[0]->Type() != SensorClass::Radar))
 
     //ME123 WE GET A CTD HERE IF NOT MAKING THE ARH CHECK FIRST !
-    //	if (timpct * ((targetPtr && targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f) < inputData->mslActiveTtg && sensorArray[0]->Type() != SensorClass::Radar)
+    // if (timpct * ((targetPtr && targetPtr->BaseData()->IsSPJamming()) ? 1.5f : 1.0f) < inputData->mslActiveTtg && sensorArray[0]->Type() != SensorClass::Radar)
     // Marco edit - Also added in GoActive for 'Mad Dog' Launches
     if (inputData->mslActiveTtg > 0 && launchState == InFlight && sensorArray[0]->Type() != SensorClass::Radar && !isSlave)
     {
@@ -150,15 +150,15 @@ void MissileClass::RunSeeker(void)
     if (targetPtr)
     {
         //me123 check if the missile seekerhead can track
-        //		SetSeekerPos(&targetPtr->localData->az,&targetPtr->localData->el);
+        // SetSeekerPos(&targetPtr->localData->az,&targetPtr->localData->el);
         ata = targetPtr->localData->ata;
 
         if (ata > inputData->gimlim ||
             fabs(sensorArray[0]->SeekerAz() - targetPtr->localData->az) > inputData->atamax ||
             fabs(sensorArray[0]->SeekerEl() - targetPtr->localData->el) > inputData->atamax)
         {
-            //		flags |= SensorLostLock;
-            //		SetTarget( NULL );
+            // flags |= SensorLostLock;
+            // SetTarget( NULL );
         }
     }
 
@@ -177,10 +177,10 @@ void MissileClass::GoActive(void)
     sensorArray[0]->SetPower(FALSE);
     delete(sensorArray[0]);
 
-    wentActive = true;	// MN this is currently only used for debug labels
+    wentActive = true; // MN this is currently only used for debug labels
 
     // Construct and initialize the new active radar sensor
-    ShiAssert(GetRadarType());	// Type 0 is RDR_NO_RADAR -- we'd better not be going active without a radar...
+    ShiAssert(GetRadarType()); // Type 0 is RDR_NO_RADAR -- we'd better not be going active without a radar...
     sensorArray[0] = new RadarMissileClass(GetRadarType(), this);
     ShiAssert(sensorArray[0]);
     sensorArray[0]->SetDesiredTarget(targetPtr);

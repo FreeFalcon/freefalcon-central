@@ -14,7 +14,7 @@
 #include "camp2sim.h"
 #include "playerop.h"
 #include "flightData.h"
-#include "hud.h"	//MI
+#include "hud.h" //MI
 #include "aircrft.h" // 2002-03-01 MN
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
@@ -23,9 +23,9 @@ static const float rangeFOV = (float)tan(1.0F * DTR);
 static const float MAVERICK_SLEW_RATE  = 0.05F;
 extern float g_fCursorSpeed;
 
-extern bool g_bRealisticAvionics;	//MI
+extern bool g_bRealisticAvionics; //MI
 
-extern bool g_bMavFixes;	// a.s.
+extern bool g_bMavFixes; // a.s.
 extern bool g_bMavFix2; // MN
 
 void FireControlComputer::AirGroundMissileMode(void)
@@ -165,13 +165,13 @@ void FireControlComputer::MaverickMode(void)
             if (systemTarget && systemTarget->BaseData()->OnGround())
             {
                 /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-                			if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
+                 if (systemTarget->BaseData()->IsSim() && ((SimBaseClass*)systemTarget->BaseData())->IsAwake())
                 {
                    ((SimBaseClass*)systemTarget->BaseData())->drawPointer->GetPosition (&pos);
                    systemTarget->BaseData()->SetPosition (systemTarget->BaseData()->XPos(),
                       systemTarget->BaseData()->YPos(), pos.z);
                 }
-                			*/
+                 */
 
                 groundDesignateX = systemTarget->BaseData()->XPos();
                 groundDesignateY = systemTarget->BaseData()->YPos();
@@ -527,7 +527,7 @@ void FireControlComputer::MaverickMode(void)
                             rz = 0.0F;
 
                             /*
-                            ry =  costheta * deltaY - sintheta * deltaX;	// orthogonal rotation of euklidian base
+                            ry =  costheta * deltaY - sintheta * deltaX; // orthogonal rotation of euklidian base
                             rx =  sintheta * deltaY + costheta * deltaX;
                             rz = 0.0F;
                             */
@@ -685,9 +685,9 @@ void FireControlComputer::MaverickMode(void)
             // RV - Biker - New WEZ calculation for Mavs
             // if (targetPtr)
             //{
-            //	missileWEZDisplayRange = 10.0F * NM_TO_FT;
-            //	theDisplay->SetTarget(TRUE);
-            //	missileTOF    = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, targetPtr->localData->range);
+            // missileWEZDisplayRange = 10.0F * NM_TO_FT;
+            // theDisplay->SetTarget(TRUE);
+            // missileTOF    = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, targetPtr->localData->range);
             //}
 
             if (targetPtr)
@@ -867,7 +867,7 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
             tmpTarget->Reference();
 
             /* JB 010624 Why? Setting the position like this screws up multiplayer and entitys' movement
-            if (tmpTarget->BaseData()->IsSim())		// We ASSUMED that testObject IsSim above, so why check here???
+            if (tmpTarget->BaseData()->IsSim()) // We ASSUMED that testObject IsSim above, so why check here???
             {
             ((SimBaseClass*)tmpTarget->BaseData())->drawPointer->GetPosition (&pos);
             } else
@@ -970,7 +970,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
             fabs(curTarget->localData->el - pitch) < minDist &&
             curTarget->BaseData()->IsSim() &&
             !curTarget->BaseData()->IsWeapon() &&
-            curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC)	//MI Maverik lockup fix
+            curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);
             theMissile->RunSeeker();

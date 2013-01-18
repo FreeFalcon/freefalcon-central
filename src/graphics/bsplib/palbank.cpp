@@ -14,21 +14,21 @@ extern MEM_POOL gBSPLibMemPool;
 #endif
 
 // Static data members (used to avoid requiring "this" to be passed to every access function)
-int				PaletteBankClass::nPalettes		= 0;
-Palette*		PaletteBankClass::PalettePool	= NULL;
+int PaletteBankClass::nPalettes = 0;
+Palette* PaletteBankClass::PalettePool = NULL;
 
 // Management functions
 void PaletteBankClass::Setup(int nEntries)
 {
     // Create our array of palettes
-    nPalettes	= nEntries;
+    nPalettes = nEntries;
 
     if (nEntries)
     {
 #ifdef USE_SH_POOLS
         PalettePool = (Palette *)MemAllocPtr(gBSPLibMemPool, sizeof(Palette) * (nEntries), 0);
 #else
-        PalettePool	= new Palette[nEntries];
+        PalettePool = new Palette[nEntries];
 #endif
     }
     else
@@ -87,7 +87,7 @@ void PaletteBankClass::ReadPool(int file)
 void PaletteBankClass::FlushHandles(void)
 {
     int id;
-    int	cnt;
+    int cnt;
 
     // Clear our extra reference which was holding the MPR instances of palettes
     for (id = 0; id < nPalettes; id++)

@@ -146,10 +146,10 @@ VuThread::~VuThread()
 /*
 VuThread::VuThread(int queueSize) : VuBaseThread(){
 #if VU_USE_ENUM_FOR_TYPES
-	messageQueue_ = new VuMessageQueue(queueSize, NULL);
+ messageQueue_ = new VuMessageQueue(queueSize, NULL);
 #else
-	VuStandardMsgFilter smf;
-	messageQueue_ = new VuMessageQueue(queueSize, &smf);
+ VuStandardMsgFilter smf;
+ messageQueue_ = new VuMessageQueue(queueSize, &smf);
 #endif
 }
 */
@@ -345,7 +345,7 @@ void VuMainThread::Update()
     //START_PROFILE("VUMAINUP_GROUP");
     // Send low priority messages
     //if (vuLowSendQueue){
-    //	vuLowSendQueue->DispatchMessages(-1, FALSE);
+    // vuLowSendQueue->DispatchMessages(-1, FALSE);
     //}
 
     // our session is dirty, send update
@@ -678,7 +678,7 @@ void VuMainThread::FlushOutboundMessages()
     }
 
     //if (vuLowSendQueue){
-    //	vuLowSendQueue->DispatchMessages(-1, TRUE);
+    // vuLowSendQueue->DispatchMessages(-1, TRUE);
     //}
 
     VuTargetEntity* target;

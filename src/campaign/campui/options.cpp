@@ -28,7 +28,7 @@ void ReadSpecialCampaignData(char* scenario);
 // Option Setting Functions
 // ========================
 
-uchar			max_veh[5] = { 8, 12, 12, 16, 16 };
+uchar max_veh[5] = { 8, 12, 12, 16, 16 };
 
 void AdjustCampaignOptions(void)
 {
@@ -37,8 +37,8 @@ void AdjustCampaignOptions(void)
     AdjustForceRatios();
     // KCK: Don't muck with the mission list on a non-campaign thread.
     // I'd rather be certain to clear them when saving new games
-    //	ClearMissionLists();
-    //	NukeHistoryFiles();
+    // ClearMissionLists();
+    // NukeHistoryFiles();
     ClearEventList();
     CampLeaveCriticalSection();
     SetInitialEvents(TheCampaign.Scenario);
@@ -75,7 +75,7 @@ void AdjustExperienceLevels(void)
 
 void AdjustSquadronPilotSkills(Squadron u)
 {
-    int		i, skill;
+    int i, skill;
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
@@ -95,8 +95,8 @@ void AdjustSquadronPilotSkills(Squadron u)
 
 void AdjustForceRatios(void)
 {
-    Unit			u;
-    int				eteam, pteam, prgu, ergu, prad, erad, prau, erau, prnu, ernu, t;
+    Unit u;
+    int eteam, pteam, prgu, ergu, prad, erad, prau, erau, prnu, ernu, t;
 
     pteam = FalconLocalSession->GetTeam();
     eteam = GetEnemyTeam(pteam);
@@ -114,29 +114,29 @@ void AdjustForceRatios(void)
     {
         if (t == pteam)
         {
-            TeamInfo[t]->max_vehicle[RCLASS_AIR]		= max_veh[prau];
-            TeamInfo[t]->max_vehicle[RCLASS_GROUND]		= max_veh[prgu];
-            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE]	= max_veh[prad];
-            TeamInfo[t]->max_vehicle[RCLASS_NAVAL]		= max_veh[prnu];
+            TeamInfo[t]->max_vehicle[RCLASS_AIR] = max_veh[prau];
+            TeamInfo[t]->max_vehicle[RCLASS_GROUND] = max_veh[prgu];
+            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE] = max_veh[prad];
+            TeamInfo[t]->max_vehicle[RCLASS_NAVAL] = max_veh[prnu];
         }
         else if (t == eteam)
         {
-            TeamInfo[t]->max_vehicle[RCLASS_AIR]		= max_veh[erau];
-            TeamInfo[t]->max_vehicle[RCLASS_GROUND]		= max_veh[ergu];
-            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE]	= max_veh[erad];
-            TeamInfo[t]->max_vehicle[RCLASS_NAVAL]		= max_veh[ernu];
+            TeamInfo[t]->max_vehicle[RCLASS_AIR] = max_veh[erau];
+            TeamInfo[t]->max_vehicle[RCLASS_GROUND] = max_veh[ergu];
+            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE] = max_veh[erad];
+            TeamInfo[t]->max_vehicle[RCLASS_NAVAL] = max_veh[ernu];
         }
         else
         {
-            TeamInfo[t]->max_vehicle[RCLASS_AIR]		= VEHICLE_GROUPS_PER_UNIT;
-            TeamInfo[t]->max_vehicle[RCLASS_GROUND]		= VEHICLE_GROUPS_PER_UNIT;
-            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE]	= VEHICLE_GROUPS_PER_UNIT;
-            TeamInfo[t]->max_vehicle[RCLASS_NAVAL]		= VEHICLE_GROUPS_PER_UNIT;
+            TeamInfo[t]->max_vehicle[RCLASS_AIR] = VEHICLE_GROUPS_PER_UNIT;
+            TeamInfo[t]->max_vehicle[RCLASS_GROUND] = VEHICLE_GROUPS_PER_UNIT;
+            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE] = VEHICLE_GROUPS_PER_UNIT;
+            TeamInfo[t]->max_vehicle[RCLASS_NAVAL] = VEHICLE_GROUPS_PER_UNIT;
         }
     }
 
     // Traverse all our real units, adjusting force strengths as necessary
-    VuListIterator	myit(AllUnitList);
+    VuListIterator myit(AllUnitList);
     u = (Unit) myit.GetFirst();
 
     while (u)
@@ -147,7 +147,7 @@ void AdjustForceRatios(void)
 
         if (!u->IsFlight())
         {
-            UnitClassDataType	*uc = u->GetUnitClassData();
+            UnitClassDataType *uc = u->GetUnitClassData();
 
             for (int slot = 0; slot < VEHICLE_GROUPS_PER_UNIT; slot++)
                 u->SetNumVehicles(slot, uc->NumElements[slot]);
@@ -212,14 +212,14 @@ void AdjustForceRatios(void)
             u->SetUnitSupply(TeamInfo[u->GetTeam()]->startStats.supplyLevel);
         else if (u->IsSquadron())
         {
-            UnitClassDataType*	uc = u->GetUnitClassData();
-            long				fuel;
-            float				ratio;
+            UnitClassDataType* uc = u->GetUnitClassData();
+            long fuel;
+            float ratio;
 
             ShiAssert(uc);
 
             // Squadrons want enough fuel to load each plane SQUADRON_MISSIONS_PER_HOUR times per hour for 2 supply periods
-            //			fuel = (((uc->Fuel * u->GetTotalVehicles() * SQUADRON_MISSIONS_PER_HOUR*2*MIN_RESUPPLY)/60) * TeamInfo[u->GetTeam()]->startStats.fuelLevel)/100;
+            // fuel = (((uc->Fuel * u->GetTotalVehicles() * SQUADRON_MISSIONS_PER_HOUR*2*MIN_RESUPPLY)/60) * TeamInfo[u->GetTeam()]->startStats.fuelLevel)/100;
             fuel = ((u->GetUnitFuelNeed(FALSE) + u->GetUnitFuelNeed(TRUE)) * TeamInfo[u->GetTeam()]->startStats.fuelLevel) / 100;
             u->SetSquadronFuel(fuel * SUPPLY_PT_FUEL);
 
@@ -241,7 +241,7 @@ void AdjustForceRatios(void)
 // KCK NOTE: Eliminate companies 3 and 4 depending on the force ratios
 void ChopCompany(Unit u, int crating)
 {
-    int		slot;
+    int slot;
 
     for (slot = max_veh[crating]; slot < VEHICLE_GROUPS_PER_UNIT; slot++)
         u->SetNumVehicles(slot, 0);

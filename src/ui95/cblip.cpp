@@ -2,10 +2,10 @@
 #include "chandler.h"
 
 // Times are in Minutes
-#define CUTOFF_TIME		60
-#define STATE_7_TIME	45
-#define STATE_6_TIME	30
-#define STATE_5_TIME	15
+#define CUTOFF_TIME 60
+#define STATE_7_TIME 45
+#define STATE_6_TIME 30
+#define STATE_5_TIME 15
 
 #ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
 

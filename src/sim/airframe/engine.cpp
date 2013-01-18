@@ -465,19 +465,19 @@ void AirframeClass::EngineModel(float dt)
             if(aburnLit)
             {
 
-            	//AB
-            	ta01 = auxaeroData->abSpoolRate + spoolAltRate;
-            	tgross = Math.FLTust(thrtab,ta01,dt,olda01);
+             //AB
+             ta01 = auxaeroData->abSpoolRate + spoolAltRate;
+             tgross = Math.FLTust(thrtab,ta01,dt,olda01);
             }
             else
             {
-            	//MIL
-            	if(pwrlev <= 1.0F)
-            		ta01 = auxaeroData->normSpoolRate + spoolAltRate;
-            	else
-            		ta01 = auxaeroData->abSpoolRate + spoolAltRate;
+             //MIL
+             if(pwrlev <= 1.0F)
+             ta01 = auxaeroData->normSpoolRate + spoolAltRate;
+             else
+             ta01 = auxaeroData->abSpoolRate + spoolAltRate;
 
-            	tgross = Math.FLTust(thrtab,ta01,dt,olda01);
+             tgross = Math.FLTust(thrtab,ta01,dt,olda01);
             }*/
 
         }
@@ -638,8 +638,8 @@ void AirframeClass::EngineModel(float dt)
 
         rpm = Math.FLTust (rpmCmd, spoolrate, dt, oldRpm);
         if (fuel > 0.0F)
-        	rpm = max (rpm, 0.01F);
-        	*/
+         rpm = max (rpm, 0.01F);
+         */
 
 
         // ADDED BY S.G. TO SIMULATE THE HEAT PRODUCED BY THE ENGINE
@@ -785,9 +785,9 @@ void AirframeClass::EngineModel(float dt)
         /*-----------------------*/
         xsprop =  xprop * platform->platformAngles.cosalp;
         ysprop =  yprop;
-        //   zsprop = 0.0F;		//assume flcs cancels this out? (makes life easier)
+        //   zsprop = 0.0F; //assume flcs cancels this out? (makes life easier)
         //   zsprop = -thrust*platform->platformAngles.sinalp * 0.001F; //why the 0.001F ?
-        //	zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
+        // zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
         zsprop = - xprop * platform->platformAngles.sinalp;
     }
     else   // harrier fake stuff - doesn't really work.
@@ -802,9 +802,9 @@ void AirframeClass::EngineModel(float dt)
         /*-----------------------*/
         xsprop =  xprop * platform->platformAngles.cosalp;
         ysprop =  yprop;
-        //   zsprop = 0.0F;		//assume flcs cancels this out? (makes life easier)
+        //   zsprop = 0.0F; //assume flcs cancels this out? (makes life easier)
         //   zsprop = -thrust*platform->platformAngles.sinalp * 0.001F; //why the 0.001F ?
-        //	zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
+        // zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
         zsprop = - xprop * platform->platformAngles.sinalp +
                  zprop * platform->platformAngles.cosalp;
 
@@ -1249,19 +1249,19 @@ void AirframeClass::MultiEngineModel(float dt)
             //Engine 1
             if(aburnLit)
             {
-            	//AB
-            	ta01 = auxaeroData->abSpoolRate + spoolAltRate;
-            	tgross = Math.FLTust(thrtab,ta01,dt,olda01);
+             //AB
+             ta01 = auxaeroData->abSpoolRate + spoolAltRate;
+             tgross = Math.FLTust(thrtab,ta01,dt,olda01);
             }
             else
             {
-            	//MIL
-            	if(pwrlevEngine1 <= 1.0F)
-            		ta01 = auxaeroData->normSpoolRate + spoolAltRate;
-            	else
-            		ta01 = auxaeroData->abSpoolRate + spoolAltRate;
+             //MIL
+             if(pwrlevEngine1 <= 1.0F)
+             ta01 = auxaeroData->normSpoolRate + spoolAltRate;
+             else
+             ta01 = auxaeroData->abSpoolRate + spoolAltRate;
 
-            	tgross = Math.FLTust(thrtab,ta01,dt,olda01);
+             tgross = Math.FLTust(thrtab,ta01,dt,olda01);
             }*/
         }
 
@@ -1372,11 +1372,11 @@ void AirframeClass::MultiEngineModel(float dt)
         }
 
         /*
-        	//Total Fuel Burn
-        	fuelFlowTotal = fuelFlowSS + fuelFlowSS2;
-        	// Throw CBEFuelFlow the Total so the indicator works
-        	fuelFlow = fuelFlowTotal;
-        	*/
+         //Total Fuel Burn
+         fuelFlowTotal = fuelFlowSS + fuelFlowSS2;
+         // Throw CBEFuelFlow the Total so the indicator works
+         fuelFlow = fuelFlowTotal;
+         */
 
         if (!IsSet(NoFuelBurn))
         {
@@ -1396,8 +1396,8 @@ void AirframeClass::MultiEngineModel(float dt)
 
         rpm = Math.FLTust (rpmCmd, spoolrate, dt, oldRpm);
         if (fuel > 0.0F)
-        	rpm = max (rpm, 0.01F);
-        	*/
+         rpm = max (rpm, 0.01F);
+         */
 
         // ADDED BY S.G. TO SIMULATE THE HEAT PRODUCED BY THE ENGINE
         // I'M USING A PREVIOUSLY UNUSED ARRAY CALLED oldp01 FOR ENGINE HEAT TEMPERATURE
@@ -1751,19 +1751,19 @@ void AirframeClass::MultiEngineModel(float dt)
             //Engine 2
             if(aburnLit2)
             {
-            	//AB
-            	ta02 = auxaeroData->abSpoolRate + spoolAltRate;
-            	tgross2 = Math.FLTust(thrtab2,ta02,dt,olda012);
+             //AB
+             ta02 = auxaeroData->abSpoolRate + spoolAltRate;
+             tgross2 = Math.FLTust(thrtab2,ta02,dt,olda012);
             }
             else
             {
-            	//MIL
-            	if(pwrlevEngine2 <= 1.0F)
-            		ta02 = auxaeroData->normSpoolRate + spoolAltRate;
-            	else
-            		ta02 = auxaeroData->abSpoolRate + spoolAltRate;
+             //MIL
+             if(pwrlevEngine2 <= 1.0F)
+             ta02 = auxaeroData->normSpoolRate + spoolAltRate;
+             else
+             ta02 = auxaeroData->abSpoolRate + spoolAltRate;
 
-            	tgross2 = Math.FLTust(thrtab2,ta02,dt,olda012);
+             tgross2 = Math.FLTust(thrtab2,ta02,dt,olda012);
             }*/
 
         }
@@ -1873,11 +1873,11 @@ void AirframeClass::MultiEngineModel(float dt)
                 fuelFlowSS2 = auxaeroData->minFuelFlow;
 
             /*
-            			//Total Fuel Burn
-            			fuelFlowTotal = fuelFlowSS + fuelFlowSS2;
-            			// Throw CBEFuelFlow the Total so the indicator works
-            			fuelFlow = fuelFlowTotal;
-            			*/
+             //Total Fuel Burn
+             fuelFlowTotal = fuelFlowSS + fuelFlowSS2;
+             // Throw CBEFuelFlow the Total so the indicator works
+             fuelFlow = fuelFlowTotal;
+             */
 
             if (!IsSet(NoFuelBurn))
             {
@@ -1899,8 +1899,8 @@ void AirframeClass::MultiEngineModel(float dt)
 
         rpm2 = Math.FLTust (rpmCmd2, spoolrate2, dt, oldRpm2);
         if (fuel > 0.0F)
-        	rpm2 = max (rpm2, 0.01F);
-        	*/
+         rpm2 = max (rpm2, 0.01F);
+         */
 
         // ADDED BY S.G. TO SIMULATE THE HEAT PRODUCED BY THE ENGINE
         // I'M USING A PREVIOUSLY UNUSED ARRAY CALLED oldp01 FOR ENGINE HEAT TEMPERATURE
@@ -1960,10 +1960,10 @@ void AirframeClass::MultiEngineModel(float dt)
         }
 
         thrust   = 0.0F;
-        tgross2	= 0.0F;
+        tgross2 = 0.0F;
         fuelFlow2 = 0.0F;
-        rpm2		= oldRpm2[0];
-        ftit2	= 5.85f;
+        rpm2 = oldRpm2[0];
+        ftit2 = 5.85f;
     }
 
 
@@ -2053,9 +2053,9 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------------------*/
         xsprop =  xprop * platform->platformAngles.cosalp;
         ysprop =  yprop;
-        //   zsprop = 0.0F;		//assume flcs cancels this out? (makes life easier)
+        //   zsprop = 0.0F; //assume flcs cancels this out? (makes life easier)
         //   zsprop = -thrust*platform->platformAngles.sinalp * 0.001F; //why the 0.001F ?
-        //	zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
+        // zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
         zsprop = - xprop * platform->platformAngles.sinalp;
     }
     else   // harrier fake stuff - doesn't really work.
@@ -2070,9 +2070,9 @@ void AirframeClass::MultiEngineModel(float dt)
         /*-----------------------*/
         xsprop =  xprop * platform->platformAngles.cosalp;
         ysprop =  yprop;
-        //   zsprop = 0.0F;		//assume flcs cancels this out? (makes life easier)
+        //   zsprop = 0.0F; //assume flcs cancels this out? (makes life easier)
         //   zsprop = -thrust*platform->platformAngles.sinalp * 0.001F; //why the 0.001F ?
-        //	zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
+        // zsprop = -thrust*platform->platformAngles.sinalp; // JPO previous
         zsprop = - xprop * platform->platformAngles.sinalp +
                  zprop * platform->platformAngles.cosalp;
 
@@ -2175,7 +2175,7 @@ void AirframeClass::JfsEngineStart()
 
     SetFlag(AirframeClass::JfsStart);
     //MI add in JFS spin time
-    JFSSpinTime = 240;	//4 minutes available
+    JFSSpinTime = 240; //4 minutes available
 
 
 }
@@ -2390,7 +2390,7 @@ void AirframeClass::FuelTransfer(float dt)
         if (m_tanks[TANK_AFTRES] < auxaeroData->fuelMinAft)
         {
             if (!g_bRealisticAvionics)
-                //platform->mFaults->SetFault(fwd_fuel_low_fault);	//MI should probably be AFT tank
+                //platform->mFaults->SetFault(fwd_fuel_low_fault); //MI should probably be AFT tank
                 platform->mFaults->SetFault(aft_fuel_low_fault);
             else
                 platform->mFaults->SetCaution(aft_fuel_low_fault);
@@ -2626,7 +2626,7 @@ int AirframeClass::CheckHome(void)
             //Calculate the distance to it
             float deltaX = wpX - x;
             float deltaY = wpY - y;
-            float distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+            float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
             float fuelConsumed;
 
             if (!IsSet(InAir))
@@ -2643,8 +2643,8 @@ int AirframeClass::CheckHome(void)
 
             if (platform->IsF16())
             {
-                int	fuelOnStation;
-                float fuelConsumed	= distanceToSta / 6000.0f * 10.0f * 0.67f;
+                int fuelOnStation;
+                float fuelConsumed = distanceToSta / 6000.0f * 10.0f * 0.67f;
                 fuelConsumed += min(1, distanceToSta / 6000.0f / 80.0f) * (500.0f - (-platform->ZPos()) / 40.0f * 0.5f);
                 fuelOnStation = (int)(platform->GetTotalFuel() - fuelConsumed);
                 HomeFuel = fuelOnStation;
@@ -2652,16 +2652,16 @@ int AirframeClass::CheckHome(void)
 
             if (HomeFuel < 800)
             {
-                return 1;	//here we get a warning
+                return 1; //here we get a warning
             }
             else
             {
-                return 0;	//here not
+                return 0; //here not
             }
         }
     }
 
-    return 0;	//dummy
+    return 0; //dummy
 }
 
 float AirframeClass::GetJoker()
@@ -2760,7 +2760,7 @@ float AirframeClass::EngineRpmMods(float rpmCmd)
         //Zone 2 AB no lights or delayed lights possible
         if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
         {
-            //	if ((SimLibElapsedTime - engEventTimer) >= 5000)
+            // if ((SimLibElapsedTime - engEventTimer) >= 5000)
             if (rpm <= 1.0F && engFlag1 == 0)
             {
                 int randnum = rand() % 100;
@@ -2894,7 +2894,7 @@ float AirframeClass::Engine1RpmMods(float rpmCmd)
         //Zone 2 AB no lights or delayed lights possible
         if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
         {
-            //	if ((SimLibElapsedTime - engEventTimer) >= 5000)
+            // if ((SimLibElapsedTime - engEventTimer) >= 5000)
             if (rpm <= 1.0F && engFlag1 == 0)
             {
                 int randnum = rand() % 100;
@@ -3119,7 +3119,7 @@ float AirframeClass::Engine2RpmMods(float rpmCmd2)
         //Zone 2 AB no lights or delayed lights possible
         if ((platform->ZPos() < -30000.0F) && vcas < 225.0F)
         {
-            //	if ((SimLibElapsedTime - engEventTimer) >= 5000)
+            // if ((SimLibElapsedTime - engEventTimer) >= 5000)
             if (rpm2 <= 1.0F && engFlag2 == 0)
             {
                 int randnum = rand() % 100;

@@ -1,5 +1,5 @@
-#ifndef	_3DEJ_COSINE_TABLE_H_
-#define	_3DEJ_COSINE_TABLE_H_
+#ifndef _3DEJ_COSINE_TABLE_H_
+#define _3DEJ_COSINE_TABLE_H_
 
 double CosineTable[] =
 {

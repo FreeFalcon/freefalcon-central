@@ -32,15 +32,15 @@ void HeliBrain::FollowWaypoints(void)
     //switch (self->curWaypoint->GetWPAction())
     //{
     //   case WP_LAND:
-    //		if ( onStation == Arrived || onStation == Stabilizing )
-    //	 		LandMe();
-    //		else if ( !(onStation == OnStation) )
-    //			GoToCurrentWaypoint();
-    //		break;
+    // if ( onStation == Arrived || onStation == Stabilizing )
+    //   LandMe();
+    // else if ( !(onStation == OnStation) )
+    // GoToCurrentWaypoint();
+    // break;
     //
-    //	default:
-    //		GoToCurrentWaypoint();
-    //		break;
+    // default:
+    // GoToCurrentWaypoint();
+    // break;
     //}
 }
 

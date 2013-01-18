@@ -1,7 +1,7 @@
 /***************************************************************************\
     Context.cpp
     Scott Randolph
-	April 29, 1996
+ April 29, 1996
 
     JAM 06Oct03 - Begin Major Rewrite
 \***************************************************************************/
@@ -22,7 +22,7 @@
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
 
-#define	INT3 _asm {int 3}
+#define INT3 _asm {int 3}
 
 #ifdef _DEBUG
 
@@ -270,14 +270,14 @@ void ContextMPR::Cleanup()
 #endif
 
 #ifdef _CONTEXT_RECORD_USED_STATES
-    MonoPrint("ContextMPR::Cleanup - Report of used states follows\n	");
+    MonoPrint("ContextMPR::Cleanup - Report of used states follows\n ");
     std::set<int>::iterator it;
 
     for (it = m_setStatesUsed.begin(); it != m_setStatesUsed.end(); it++)
         MonoPrint("%d,", *it);
 
     m_setStatesUsed.clear();
-    MonoPrint("\nContextMPR::Cleanup - End of report\n	");
+    MonoPrint("\nContextMPR::Cleanup - End of report\n ");
 #endif
 }
 
@@ -860,7 +860,7 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
 // flag & 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
-    UInt32	i = 0;
+    UInt32 i = 0;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::SetCurrentState (%d,0x%X)\n", state, flag);
@@ -2404,7 +2404,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     Spoint *xyz;
     Pcolor *rgba;
     TLVERTEX *pVtx;
-    BVertex	*BVertex;
+    BVertex *BVertex;
     BPolygon *BPolygon;
 
     // Incoming type is always MPR_PRM_TRIFAN
@@ -3197,7 +3197,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 {
     float zNear;
     TLVERTEX *pVtx;
-    BVertex	*BVertex;
+    BVertex *BVertex;
     BPolygon *BPolygon;
 
     // Ensure no degenerate nPrimTypeitives
@@ -3467,26 +3467,26 @@ void ContextMPR::Stats::Report()
 
     float fT = dwTotalPrimitives / 100.0f;
 
-    MonoPrint("	MinFPS: %d\n", dwMinFPS);
-    MonoPrint("	MaxFPS: %d\n", dwMaxFPS);
-    MonoPrint("	AverageFPS: %d\n", dwAverageFPS);
-    MonoPrint("	TotalPrimitives: %d\n", dwTotalPrimitives);
-    MonoPrint("	Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3], arrPrimitives[3] / fT);
-    MonoPrint("	Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4], arrPrimitives[4] / fT);
-    MonoPrint("	Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5], arrPrimitives[5] / fT);
-    MonoPrint("	Point Lists: %d (%.2f %%)\n", arrPrimitives[0], arrPrimitives[0] / fT);
-    MonoPrint("	Line Lists: %d (%.2f %%)\n", arrPrimitives[1], arrPrimitives[1] / fT);
-    MonoPrint("	Line Strips: %d (%.2f %%)\n", arrPrimitives[2], arrPrimitives[2] / fT);
-    MonoPrint("	AvgVtxBatchSize: %d\n", dwAvgVtxBatchSize);
-    MonoPrint("	MaxVtxBatchSize: %d\n", dwMaxVtxBatchSize);
-    MonoPrint("	AvgPrimBatchSize: %d\n", dwAvgPrimBatchSize);
-    MonoPrint("	MaxPrimBatchSize: %d\n", dwMaxPrimBatchSize);
-    MonoPrint("	AvgVtxCountPerSecond: %d\n", dwAvgVtxCountPerSecond);
-    MonoPrint("	MaxVtxCountPerSecond: %d\n", dwMaxVtxCountPerSecond);
-    MonoPrint("	AvgPrimCountPerSecond: %d\n", dwAvgPrimCountPerSecond);
-    MonoPrint("	MaxPrimCountPerSecond: %d\n", dwMaxPrimCountPerSecond);
-    MonoPrint("	TextureChangesTotal: %d\n", dwPutTextureTotal);
-    MonoPrint("	TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached, (float) dwPutTextureCached / (dwPutTextureTotal / 100.0f));
+    MonoPrint(" MinFPS: %d\n", dwMinFPS);
+    MonoPrint(" MaxFPS: %d\n", dwMaxFPS);
+    MonoPrint(" AverageFPS: %d\n", dwAverageFPS);
+    MonoPrint(" TotalPrimitives: %d\n", dwTotalPrimitives);
+    MonoPrint(" Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3], arrPrimitives[3] / fT);
+    MonoPrint(" Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4], arrPrimitives[4] / fT);
+    MonoPrint(" Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5], arrPrimitives[5] / fT);
+    MonoPrint(" Point Lists: %d (%.2f %%)\n", arrPrimitives[0], arrPrimitives[0] / fT);
+    MonoPrint(" Line Lists: %d (%.2f %%)\n", arrPrimitives[1], arrPrimitives[1] / fT);
+    MonoPrint(" Line Strips: %d (%.2f %%)\n", arrPrimitives[2], arrPrimitives[2] / fT);
+    MonoPrint(" AvgVtxBatchSize: %d\n", dwAvgVtxBatchSize);
+    MonoPrint(" MaxVtxBatchSize: %d\n", dwMaxVtxBatchSize);
+    MonoPrint(" AvgPrimBatchSize: %d\n", dwAvgPrimBatchSize);
+    MonoPrint(" MaxPrimBatchSize: %d\n", dwMaxPrimBatchSize);
+    MonoPrint(" AvgVtxCountPerSecond: %d\n", dwAvgVtxCountPerSecond);
+    MonoPrint(" MaxVtxCountPerSecond: %d\n", dwMaxVtxCountPerSecond);
+    MonoPrint(" AvgPrimCountPerSecond: %d\n", dwAvgPrimCountPerSecond);
+    MonoPrint(" MaxPrimCountPerSecond: %d\n", dwMaxPrimCountPerSecond);
+    MonoPrint(" TextureChangesTotal: %d\n", dwPutTextureTotal);
+    MonoPrint(" TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached, (float) dwPutTextureCached / (dwPutTextureTotal / 100.0f));
 
     MonoPrint("End of stats report\n");
 }

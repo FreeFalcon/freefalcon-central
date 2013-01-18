@@ -6,8 +6,8 @@
 
 #include "InvalidBufferException.h"
 
-#define		WP_HAVE_DEPTIME		0x01
-#define		WP_HAVE_TARGET		0x02
+#define WP_HAVE_DEPTIME 0x01
+#define WP_HAVE_TARGET 0x02
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
@@ -16,7 +16,7 @@ extern int gRenameIds;
 #endif
 
 #ifdef USE_SH_POOLS
-MEM_POOL	WayPointClass::pool;
+MEM_POOL WayPointClass::pool;
 #endif
 
 
@@ -88,7 +88,7 @@ WayPointClass::WayPointClass(
 //WayPointClass::WayPointClass (VU_BYTE **stream, long *rem)
 WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
 {
-    uchar	haves;
+    uchar haves;
     memcpychk(&haves, stream, sizeof(uchar), rem);
     memcpychk(&GridX, stream, sizeof(GridIndex), rem);
     memcpychk(&GridY, stream, sizeof(GridIndex), rem);
@@ -142,7 +142,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
 
 WayPointClass::WayPointClass(FILE* fp)
 {
-    uchar	haves;
+    uchar haves;
     fread(&haves, sizeof(uchar), 1, fp);
     fread(&GridX, sizeof(GridIndex), 1, fp);
     fread(&GridY, sizeof(GridIndex), 1, fp);
@@ -188,7 +188,7 @@ WayPointClass::WayPointClass(FILE* fp)
     else
         Depart = Arrive;
 
-    //	fread(&Tactic, sizeof(short), 1, fp);
+    // fread(&Tactic, sizeof(short), 1, fp);
     ::SetWPSpeed(this);
     PrevWP = NULL;
     NextWP = NULL;
@@ -197,7 +197,7 @@ WayPointClass::WayPointClass(FILE* fp)
 
 int WayPointClass::SaveSize(void)
 {
-    int		size = 0;
+    int size = 0;
 
     if (TargetID != FalconNullId)
         size += sizeof(VU_ID) + sizeof(uchar);
@@ -219,7 +219,7 @@ int WayPointClass::SaveSize(void)
 
 int WayPointClass::Save(VU_BYTE **stream)
 {
-    uchar	haves = 0;
+    uchar haves = 0;
 
     if (TargetID != FalconNullId)
     {
@@ -273,16 +273,16 @@ int WayPointClass::Save(VU_BYTE **stream)
         *stream += sizeof(CampaignTime);
     }
 
-    //	memcpy(*stream, &Tactic, sizeof(short));			*stream += sizeof(short);
+    // memcpy(*stream, &Tactic, sizeof(short)); *stream += sizeof(short);
     //#ifdef _DEBUG
-    //	ShiAssert(*stream - start == SaveSize()); // keep us honest JPO
+    // ShiAssert(*stream - start == SaveSize()); // keep us honest JPO
     //#endif
     return SaveSize();
 }
 
 int WayPointClass::Save(FILE* fp)
 {
-    uchar	haves = 0;
+    uchar haves = 0;
 
     if (!fp)
     {
@@ -326,7 +326,7 @@ int WayPointClass::Save(FILE* fp)
     if (haves & WP_HAVE_DEPTIME)
         fwrite(&Depart, sizeof(CampaignTime), 1, fp);
 
-    //	fwrite(&Tactic, sizeof(short), 1, fp);
+    // fwrite(&Tactic, sizeof(short), 1, fp);
     return 1;
 }
 
@@ -376,7 +376,7 @@ void WayPointClass::UnlinkNextWP(void)
 
 void WayPointClass::SetNextWP(WayPointClass *w)
 {
-    float dx, dy, dz, sx, sy, sz, delta_x, delta_y, time, dist,	speed;
+    float dx, dy, dz, sx, sy, sz, delta_x, delta_y, time, dist, speed;
 
     if (NextWP)
     {
@@ -492,7 +492,7 @@ void WayPointClass::SplitWP()
 // Insert a waypoint after this.
 void WayPointClass::InsertWP(WayPointClass *new_wp)
 {
-    WayPointClass	*last = new_wp;
+    WayPointClass *last = new_wp;
 
     new_wp->PrevWP = this;
 
@@ -641,7 +641,7 @@ void WayPointClass::GetLocation(float *x, float *y, float *z) const
 
 void DeleteWPList(WayPoint w)
 {
-    WayPoint		t;
+    WayPoint t;
 
     while (w != NULL)
     {
@@ -654,9 +654,9 @@ void DeleteWPList(WayPoint w)
 // Sets a set of waypoint times to start at waypoint w at time start.
 CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
 {
-    CampaignTime	mission_time, length, land = 0;
-    GridIndex		x, y, nx, ny;
-    CampaignTime	station;
+    CampaignTime mission_time, length, land = 0;
+    GridIndex x, y, nx, ny;
+    CampaignTime station;
 
     if (!w)
     {
@@ -715,8 +715,8 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
 // Shifts a set of waypoints by time delta.
 CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 {
-    CampaignTime	mission_time, length, land = 0;
-    int				station;
+    CampaignTime mission_time, length, land = 0;
+    int station;
 
     if (!w)
         return 0;
@@ -767,8 +767,8 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 // Sets a set of waypoint times to start at waypoint w as soon as we can get there from x,y.
 CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed, int flags)
 {
-    CampaignTime	mission_time, length;
-    GridIndex		nx, ny;
+    CampaignTime mission_time, length;
+    GridIndex nx, ny;
 
     if (!w)
     {
@@ -811,7 +811,7 @@ WayPoint CloneWPToList(WayPoint w, WayPoint stop)
 
 WayPoint CloneWPList(WayPoint w)
 {
-    WayPoint		nw, lw, list;
+    WayPoint nw, lw, list;
 
     lw = list = NULL;
 
@@ -839,8 +839,8 @@ WayPoint CloneWPList(WayPoint w)
 
 WayPoint CloneWPList(WayPointClass wps[], int waypoints)
 {
-    WayPoint		w, nw, lw, list;
-    int			i;
+    WayPoint w, nw, lw, list;
+    int i;
 
     nw = w = lw = list = NULL;
 
@@ -872,27 +872,27 @@ WayPoint CloneWPList(WayPointClass wps[], int waypoints)
 // This assumes the graphic's altitude map is loaded. Z is the wp's stored altitude
 float AdjustAltitudeForMSL_AGL(float x, float y, float z)
 {
-    float		terrain_level = TheMap.GetMEA(x, y);
+    float terrain_level = TheMap.GetMEA(x, y);
 
     // 2001-03-24 MODIFIED BY S.G. THIS IS COMPLETELY FOOBAR...
 #if 1 // NOT TESTED SO BROUGHT BACK TO ORIGINAL. FOR LATER I GUESS
 
-    if (z < 0.0F && z <= MINIMUM_ASL_ALTITUDE)						// AGL
+    if (z < 0.0F && z <= MINIMUM_ASL_ALTITUDE) // AGL
         return z - terrain_level;
-    else if (z < 0.0F && z - terrain_level < 500.0F)				// Avoid hills
+    else if (z < 0.0F && z - terrain_level < 500.0F) // Avoid hills
         return -500.0F - terrain_level;
-    else															// MSL
+    else // MSL
         return z;
 
 #else
 
     // Do we need to test for z being negative, it should anyhow. Also, MINIMUM_ASL_ALTITUDE is POSITIVE!
     // terrain_level IS ALSO POSITIVE!
-    if (z < 0.0F && z > -MINIMUM_ASL_ALTITUDE)						// z is AGL if it's 'below' this altitude
-        return z - terrain_level;									// This returns the altitude above MSL
-    else if (z < 0.0F && z + terrain_level > -500.0F)				// If our -MSL height plus the terrain height is less than -500
-        return -500.0F - terrain_level;								// return 500 feet 'above' the terrain
-    else															// We ok (not flagged AGL and above high hills), use the MSL height 'as is'
+    if (z < 0.0F && z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
+        return z - terrain_level; // This returns the altitude above MSL
+    else if (z < 0.0F && z + terrain_level > -500.0F) // If our -MSL height plus the terrain height is less than -500
+        return -500.0F - terrain_level; // return 500 feet 'above' the terrain
+    else // We ok (not flagged AGL and above high hills), use the MSL height 'as is'
         return z;
 
 #endif
@@ -901,10 +901,10 @@ float AdjustAltitudeForMSL_AGL(float x, float y, float z)
 // This will calculate and set this waypoint's speed from it's distance and time values
 float SetWPSpeed(WayPoint wp)
 {
-    WayPoint	pw;
-    float		speed = 0.0F;
-    GridIndex	x, y, px, py;
-    CampaignTime	time;
+    WayPoint pw;
+    float speed = 0.0F;
+    GridIndex x, y, px, py;
+    CampaignTime time;
 
     pw = wp->GetPrevWP();
 

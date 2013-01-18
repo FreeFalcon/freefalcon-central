@@ -26,7 +26,7 @@ public:
     GroundListElement(FalconEntity *newEntity);
     ~GroundListElement();
 
-    FalconEntity*	BaseObject(void)
+    FalconEntity* BaseObject(void)
     {
         return baseObject;
     };
@@ -34,19 +34,19 @@ public:
     {
         return next;
     };
-    void		HandoffBaseObject(void);
+    void HandoffBaseObject(void);
 
-    GroundListElement*	next;
+    GroundListElement* next;
     enum { DataLink = 0x1, RangeRing = 0x2,
            Radiate    = 0x4,
            Track      = 0x8,
            Launch     = 0x10,
            UnChecked  = 0x20,
          };
-    int		flags;
-    int		symbol;
-    float		range;
-    VU_TIME		lastHit;
+    int flags;
+    int symbol;
+    float range;
+    VU_TIME lastHit;
     void SetFlag(int flag)
     {
         flags |= flag;
@@ -65,7 +65,7 @@ public:
         flags ^= flag;
     };
 private:
-    FalconEntity*	baseObject;
+    FalconEntity* baseObject;
 };
 
 class FireControlComputer : public MfdDrawable
@@ -84,7 +84,7 @@ public:
     enum HsdStates
     {
         HSDNONE = 0x0,
-        HSDCEN =	0x1, //centered display
+        HSDCEN = 0x1, //centered display
         HSDCPL =    0x2,  // coupled to FCR radar
         HSDEXP1 =    0x4,
         HSDEXP2 =    0x8,
@@ -106,22 +106,22 @@ public:
     };
     // MLR - the "last" nomenclature is a bit of a misnomer.
     // these vars indicate the current state of the various modes
-    int			    lastAirAirHp,
+    int     lastAirAirHp,
                     lastAirGroundHp,
                     lastDogfightHp,
-                    lastMissileOverrideHp;		// MLR 2/1/2004
+                    lastMissileOverrideHp; // MLR 2/1/2004
 
-    FCCSubMode		lastAirAirSubMode,
+    FCCSubMode lastAirAirSubMode,
                     //lastAirGroundMissileSubMode, // MLR 4/11/2004 -
                     //lastAirGroundHARMSubMode,    // MLR 4/11/2004 -
                     lastAirGroundLaserSubMode,   // MLR 4/11/2004 -
                     //lastAirGroundCameraSubMode,  // MLR 4/11/2004 -
-                    lastAirAirGunSubMode,		// MLR 2/6/2004 -
-                    lastAirGroundGunSubMode,	// MLR 2/6/2004 -
+                    lastAirAirGunSubMode, // MLR 2/6/2004 -
+                    lastAirGroundGunSubMode, // MLR 2/6/2004 -
                     lastMissileOverrideSubMode,
-                    lastDogfightGunSubMode;		// MLR 4/1/2004 -
+                    lastDogfightGunSubMode; // MLR 4/1/2004 -
 
-    bool			inAAGunMode, inAGGunMode;	// MLR 3/14/2004 -
+    bool inAAGunMode, inAGGunMode; // MLR 3/14/2004 -
 
     FCCMasterMode GetLastMasterMode()
     {
@@ -140,18 +140,18 @@ public:
         return lastNavMasterMode;
     };
     /*
-    FCCMasterMode GetLastAaMasterMode()	 { return lastAaMasterMode; };
-    FCCMasterMode GetLastAgMasterMode()	 { return lastAgMasterMode; };
+    FCCMasterMode GetLastAaMasterMode()  { return lastAaMasterMode; };
+    FCCMasterMode GetLastAgMasterMode()  { return lastAgMasterMode; };
     */
 
 private:
     enum { HSDRANGESIZE = 5 };
-    FCCMasterMode	lastMasterMode;
+    FCCMasterMode lastMasterMode;
     // ASSOCIATOR
-    FCCMasterMode	lastNavMasterMode;
-    FCCMasterMode	lastAgMasterMode;
-    FCCSubMode		lastSubMode;
-    int				lastCage, playerFCC, lastDesignate;
+    FCCMasterMode lastNavMasterMode;
+    FCCMasterMode lastAgMasterMode;
+    FCCSubMode lastSubMode;
+    int lastCage, playerFCC, lastDesignate;
     int bombReleaseOverride;
     static struct HsdCnfgStates
     {
@@ -185,10 +185,10 @@ private:
     SimObjectType* TargetStep(SimObjectType*, int);
 
     // Steerpoints
-    WayPointClass*	mpSavedWaypoint;
-    int				mSavedWayNumber;
-    FCCStptMode		mStptMode;
-    FCCStptMode		mNewStptMode;
+    WayPointClass* mpSavedWaypoint;
+    int mSavedWayNumber;
+    FCCStptMode mStptMode;
+    FCCStptMode mNewStptMode;
 
     void StepPoint(void);
     void InitNewStptMode(void);
@@ -249,7 +249,7 @@ public:
     char bombPickle, missileTarget, noSolution, waypointStepCmd;
     char HSDRangeStepCmd;
     int cursorXCmd, cursorYCmd; // MD -- 20040110: make the cursor commands int values to help analog axis integration
-    int HSDCursorXCmd, HSDCursorYCmd;	//MI
+    int HSDCursorXCmd, HSDCursorYCmd; //MI
 
     FireControlComputer(SimVehicleClass*, int);
     ~FireControlComputer(void);
@@ -281,7 +281,7 @@ public:
     float missileWEZmax;
     float missileWEZmin;
 
-    bool Aim9AtGround;	// Marco Edit - for whether AIM9 diamond
+    bool Aim9AtGround; // Marco Edit - for whether AIM9 diamond
     // pointing at the ground or not
 
     float airGroundDelayTime, airGroundRange, airGroundBearing, airGroundMinRange, airGroundMaxRange;
@@ -453,7 +453,7 @@ public:
     int HSDZoom;
     void ToggleHSDZoom(void);
     void HSDDisplay(void);
-    float xPos;	//position of the curson on the scope
+    float xPos; //position of the curson on the scope
     float yPos;
     void MoveCursor(void);
     int HSDDesignate;
@@ -465,8 +465,8 @@ public:
     void CheckPP(void);
 
 
-    float HSDXPos;		//Wombat778 11-10-2003
-    float HSDYPos;		//Wombat778 11-10-2003
+    float HSDXPos; //Wombat778 11-10-2003
+    float HSDYPos; //Wombat778 11-10-2003
 
     // MLR 2/1/2004 - Weapon/MasterMode compatibility
 
@@ -514,18 +514,18 @@ private:
 
     // MLR 3/5/2004 - used for finding rocket impact position
     VuBin<MissileClass> rocketPointer;
-    int			  rocketWeaponId;
+    int   rocketWeaponId;
 
     // COBRA - RED - The Pickle Time Stuff
-    DWORD	PickleTimeToRelease;
+    DWORD PickleTimeToRelease;
 };
 
 extern const float RANGE_POSITION;
 extern const float RANGE_MIDPOINT;
 
-#define	DEFAULT_PICKLE	0
-#define	SEC_1_PICKLE	1000
-#define	PICKLE(x)		PickleTimeToRelease=x
+#define DEFAULT_PICKLE 0
+#define SEC_1_PICKLE 1000
+#define PICKLE(x) PickleTimeToRelease=x
 
 
 #endif

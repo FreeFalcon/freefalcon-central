@@ -18,8 +18,8 @@
 
 enum TrackType
 {
-    Track_None = 0,	// Never sent, but the RWR uses this one internally
-    Track_Ping,		// Never sent, but the RWR uses this one internally
+    Track_None = 0, // Never sent, but the RWR uses this one internally
+    Track_Ping, // Never sent, but the RWR uses this one internally
     Track_Unlock,
     Track_Lock,
     Track_LaunchEnd,

@@ -10,14 +10,14 @@
 // Defines
 //==============================
 
-#define DIVERT_NO_DIVERT		0
-#define DIVERT_WAIT_FOR_REPLY	1
-#define DIVERT_REPLY_NO			2
-#define DIVERT_REPLY_YES		3
+#define DIVERT_NO_DIVERT 0
+#define DIVERT_WAIT_FOR_REPLY 1
+#define DIVERT_REPLY_NO 2
+#define DIVERT_REPLY_YES 3
 
-#define DIVERT_DENIGNED			-1			// AWACS refused to divert the flight
-#define DIVERT_CANCLED			-2			// AWACS canceled the divert (enemy aborted or killed)
-#define DIVERT_SUCCEEDED		-3			// AWACS letting you know the divert is over (enemy dead)
+#define DIVERT_DENIGNED -1 // AWACS refused to divert the flight
+#define DIVERT_CANCLED -2 // AWACS canceled the divert (enemy aborted or killed)
+#define DIVERT_SUCCEEDED -3 // AWACS letting you know the divert is over (enemy dead)
 
 #pragma pack (1)
 
@@ -56,13 +56,13 @@ public:
     class DATA_BLOCK
     {
     public:
-        CampaignTime	tot;
-        ulong			flags;
-        VU_ID			targetID;
-        VU_ID			requesterID;
-        GridIndex		tx, ty;
-        uchar			mission;
-        uchar			priority;
+        CampaignTime tot;
+        ulong flags;
+        VU_ID targetID;
+        VU_ID requesterID;
+        GridIndex tx, ty;
+        uchar mission;
+        uchar priority;
     } dataBlock;
 
 protected:

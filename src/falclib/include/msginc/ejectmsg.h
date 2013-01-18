@@ -42,14 +42,14 @@ public:
     {
     public:
 
-        VU_ID	ePlaneID;
-        //			 VU_ID	eEjectID;
+        VU_ID ePlaneID;
+        //  VU_ID eEjectID;
         VU_ID   eFlightID;
-        ushort	eCampID;
-        //          ushort	eIndex;
-        uchar	ePilotID;
-        //			 uchar	eSide;
-        uchar	hadLastShooter;
+        ushort eCampID;
+        //          ushort eIndex;
+        uchar ePilotID;
+        //  uchar eSide;
+        uchar hadLastShooter;
     } dataBlock;
 
 protected:

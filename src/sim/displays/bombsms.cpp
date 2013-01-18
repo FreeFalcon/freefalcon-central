@@ -187,12 +187,12 @@ int SMSClass::DropBomb(int allowRipple)
             /*
             if (hardPoint[curHardpoint]->GetRackOrPylon()) // MLR 2/20/2004 - added OrPylon
             {
-            	OTWDriver.DetachObject(hardPoint[curHardpoint]->GetRackOrPylon(),
-            	(DrawableBSP*)(theBomb->drawPointer), theBomb->GetRackSlot());// MLR 2/20/2004 - added OrPylon
+             OTWDriver.DetachObject(hardPoint[curHardpoint]->GetRackOrPylon(),
+             (DrawableBSP*)(theBomb->drawPointer), theBomb->GetRackSlot());// MLR 2/20/2004 - added OrPylon
             }
             else if (ownship->drawPointer && curHardpoint && theBomb->drawPointer)
             {
-            	OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theBomb->drawPointer), slotId);
+             OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theBomb->drawPointer), slotId);
             }
             */
         }

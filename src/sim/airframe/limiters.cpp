@@ -2,11 +2,11 @@
 #include "limiters.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	ThreePointLimiter::pool;
-MEM_POOL	ValueLimiter::pool;
-MEM_POOL	PercentLimiter::pool;
-MEM_POOL	LineLimiter::pool;
-MEM_POOL	MinMaxLimiter::pool;
+MEM_POOL ThreePointLimiter::pool;
+MEM_POOL ValueLimiter::pool;
+MEM_POOL PercentLimiter::pool;
+MEM_POOL LineLimiter::pool;
+MEM_POOL MinMaxLimiter::pool;
 #endif
 
 LimiterMgrClass *gLimiterMgr = NULL;
@@ -34,24 +34,24 @@ LimiterMgrClass::LimiterMgrClass(int numdatasets)
 
 LimiterMgrClass::~LimiterMgrClass(void)
 {
-    /*	LimiterLink *next;
-    	LimiterLink *cur;
+    /* LimiterLink *next;
+     LimiterLink *cur;
 
-    	for(int i = 0; i < numDatasets; i++)
-    	{
-    		next = limiterDatasets[i];
-    		while(next)
-    		{
-    			cur = next;
-    			next = cur->next;
+     for(int i = 0; i < numDatasets; i++)
+     {
+     next = limiterDatasets[i];
+     while(next)
+     {
+     cur = next;
+     next = cur->next;
 
-    			delete cur->limiter;
-    			cur->limiter = NULL;
-    			delete cur;
-    			cur = NULL;
-    		}
+     delete cur->limiter;
+     cur->limiter = NULL;
+     delete cur;
+     cur = NULL;
+     }
 
-    	}*/
+     }*/
 
     delete [] limiterDatasets;
     limiterDatasets = NULL;
@@ -67,8 +67,8 @@ LimiterMgrClass::~LimiterMgrClass(void)
 
 int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
 {
-    //	LimiterLink *next;
-    //	LimiterLink *cur;
+    // LimiterLink *next;
+    // LimiterLink *cur;
     int limiterType, key;
     int numLimiters, i;
     char buf[160];
@@ -77,20 +77,20 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
         return FALSE;
 
     /*
-    	if(limiterDatasets[dataset])
-    	{
-    		next = limiterDatasets[dataset];
-    		while(next)
-    		{
-    			cur = next;
-    			next = cur->next;
+     if(limiterDatasets[dataset])
+     {
+     next = limiterDatasets[dataset];
+     while(next)
+     {
+     cur = next;
+     next = cur->next;
 
-    			delete cur->limiter;
-    			cur->limiter = NULL;
-    			delete cur;
-    			cur = NULL;
-    		}
-    	}*/
+     delete cur->limiter;
+     cur->limiter = NULL;
+     delete cur;
+     cur = NULL;
+     }
+     }*/
 
     numLimiters = atoi(file->GetNext());
 
@@ -99,9 +99,9 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
 
     for (i = 0; i < numLimiters; i++)
     {
-        /*	next = limiterDatasets[dataset];
-        	limiterDatasets[dataset] = new LimiterLink;
-        	limiterDatasets[dataset]->next = next;*/
+        /* next = limiterDatasets[dataset];
+         limiterDatasets[dataset] = new LimiterLink;
+         limiterDatasets[dataset]->next = next;*/
 
         limiterType = atoi(file->GetNext());
         key = atoi(file->GetNext());
@@ -144,8 +144,8 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
 
         file->ReadLine(buf, 160);
 
-        /*		if(limiterDatasets[dataset]->limiter)
-        			limiterDatasets[dataset]->limiter->Setup(buf);*/
+        /* if(limiterDatasets[dataset]->limiter)
+         limiterDatasets[dataset]->limiter->Setup(buf);*/
         if (limiterDatasets[dataset * NumLimiterTypes + key])
             limiterDatasets[dataset * NumLimiterTypes + key]->Setup(buf);
 
@@ -154,36 +154,36 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
     return TRUE;
 }
 
-int	LimiterMgrClass::HasLimiter(int key, int dataset)
+int LimiterMgrClass::HasLimiter(int key, int dataset)
 {
-    /*	LimiterLink *cur = limiterDatasets[dataset];
+    /* LimiterLink *cur = limiterDatasets[dataset];
 
-    	while(cur)
-    	{
-    		if(cur->key == key)
-    			return TRUE;
+     while(cur)
+     {
+     if(cur->key == key)
+     return TRUE;
 
-    		cur = cur->next;
-    	}
+     cur = cur->next;
+     }
 
-    	return FALSE;*/
+     return FALSE;*/
 
     return limiterDatasets[dataset * NumLimiterTypes + key] ? 1 : 0;
 }
 
 Limiter *LimiterMgrClass::GetLimiter(int key, int dataset)
 {
-    /*	LimiterLink *cur = limiterDatasets[dataset];
+    /* LimiterLink *cur = limiterDatasets[dataset];
 
-    	while(cur)
-    	{
-    		if(cur->key == key)
-    			return cur->limiter;
+     while(cur)
+     {
+     if(cur->key == key)
+     return cur->limiter;
 
-    		cur = cur->next;
-    	}
+     cur = cur->next;
+     }
 
-    	return NULL;*/
+     return NULL;*/
     return limiterDatasets[dataset * NumLimiterTypes + key];
 }
 
@@ -267,7 +267,7 @@ void ThreePointLimiter::Setup(char *string)
 void ThreePointLimiter::Setup(float *x, float *y)
 {
     float tempX, tempY;
-    int		i, j;
+    int i, j;
 
     for (i = 0; i < 2; i++)
     {

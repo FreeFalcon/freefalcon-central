@@ -10,17 +10,17 @@
 
 
 // Functions for public use
-void		SetupTransport(WORD port);
-void		CleanupTransport(void);
+void SetupTransport(WORD port);
+void CleanupTransport(void);
 
-unsigned	Send(void* data, unsigned size);
-unsigned	Receive(void* data, unsigned size);
+unsigned Send(void* data, unsigned size);
+unsigned Receive(void* data, unsigned size);
 
-BOOL		DataReady(void);
+BOOL DataReady(void);
 
 // #define LOOPBACK_TEST
 #ifdef LOOPBACK_TEST
-void		ResetTransport(void);
+void ResetTransport(void);
 #endif
 
 #endif // _TRANSPORT_H_

@@ -47,9 +47,9 @@ public:
     };
 #endif
 public:
-    long		ID;
-    C_Resmgr	*Owner;
-    SoundHeader	*Header;
+    long ID;
+    C_Resmgr *Owner;
+    SoundHeader *Header;
 
     BOOL Play(int Stream);
     BOOL Loop(int Stream);

@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     09Nov03
 
-	Volumetric cloud class
+ Volumetric cloud class
 \***************************************************************************/
 #include "Real3DCloud.h"
 #include "RealWeather.h"

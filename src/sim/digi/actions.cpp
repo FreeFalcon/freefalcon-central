@@ -6,7 +6,7 @@
 #include "campbase.h"
 #include "radar.h"
 #include "Find.h" // 2002-03-11 MN
-#include "Falclib/include/MsgInc/RadioChatterMsg.h"	// MN
+#include "Falclib/include/MsgInc/RadioChatterMsg.h" // MN
 #include "Flight.h" // MN
 
 #define SHOW_MANEUVERLABELS
@@ -298,7 +298,7 @@ void DigitalBrain::Actions(void)
                 {
                     // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
                     // altitude error is calculated as holdAlt + self->ZPos() there !!!
-                    //			   holdAlt = min (-5000.0F, self->ZPos());
+                    //    holdAlt = min (-5000.0F, self->ZPos());
                     //TJL 11/08/03 Hold position altitude but bug out
                     //holdAlt = min (5000.0F, -self->ZPos());
                     holdAlt = -self->ZPos();
@@ -455,9 +455,9 @@ void DigitalBrain::Actions(void)
     if (curMode > WVREngageMode)
         engagementTimer = 0;
 
-    //	if(isWing) {
-    //		PrtMode();
-    //	}
+    // if(isWing) {
+    // PrtMode();
+    // }
 
     /*-----------------------------------------------------------------*/
     /* Ground avoid now runs concurrently with whatever mode has been  */
@@ -470,13 +470,13 @@ void DigitalBrain::Actions(void)
     {
 
         // 2001-10-21 MODIFIED by M.N.
-        /*		if(((AircraftClass*) self)->af->GetSimpleMode()) {
-        			SimplePullUp();
-        		}
-        		else { */
+        /* if(((AircraftClass*) self)->af->GetSimpleMode()) {
+         SimplePullUp();
+         }
+         else { */
 
         GroundCheck();  // Cobra - make sure max elev data is current
-        PullUp();	// let's forget SimplePullUp(); They just set pstick of 0.1f, which is WAY
+        PullUp(); // let's forget SimplePullUp(); They just set pstick of 0.1f, which is WAY
         // too little, the AI must fly into the hills. No more low-alt crashes with PullUp();
     }
     else
@@ -491,12 +491,12 @@ void DigitalBrain::AirbaseCheck()
     bool nearestAirbase = false;
     bool returnHomebase = false;
 
-    if (self->af->Fuel() <= 0.0F)	// just float down and try to land - gear is out in that case
+    if (self->af->Fuel() <= 0.0F) // just float down and try to land - gear is out in that case
         return;
 
-    GridIndex	x, y;
+    GridIndex x, y;
     float dist;
-    vector		pos;
+    vector pos;
     Objective obj = NULL;
 
     if (airbasediverted == 1)
@@ -538,7 +538,7 @@ void DigitalBrain::AirbaseCheck()
     }
 
     // 2002-03-13 modified by MN works together with checks in Separate.cpp, if 49.9% damage, head to hearest airbase instead of home base
-    if (IsSetATC(SaidFumes) || self->pctStrength < 0.50f)	// when on fumes, force RTB to closest airbase
+    if (IsSetATC(SaidFumes) || self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
     {
         nearestAirbase = true;
         airbasediverted = 2;
@@ -551,7 +551,7 @@ void DigitalBrain::AirbaseCheck()
         if (!(moreFlags & SaidImADot))
         {
             moreFlags |= SaidImADot;
-            int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+            int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
@@ -591,7 +591,7 @@ void DigitalBrain::AirbaseCheck()
         {
             airbase = obj->Id();
             moreFlags |= NewHomebase; // set this so that ResetATC doesn't reset our new airbase
-            int flightIdx	= self->GetCampaignObject()->GetComponentIndex(self);
+            int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
             FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;

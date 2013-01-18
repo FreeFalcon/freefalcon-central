@@ -4,7 +4,7 @@
     February 16, 1998
 
     Provides build time services for accumulating and processing
-	the list of parent objects.
+ the list of parent objects.
 \***************************************************************************/
 #include <io.h>
 #include <fcntl.h>
@@ -19,7 +19,7 @@
 #include "ParentBuildList.h"
 
 
-BuildTimeParentList	TheParentBuildList;
+BuildTimeParentList TheParentBuildList;
 
 #define MAX_ACCUMULATE( dst, src ) ((dst) = max( (dst), (src) ))
 #define MIN_ACCUMULATE( dst, src ) ((dst) = min( (dst), (src) ))
@@ -27,15 +27,15 @@ BuildTimeParentList	TheParentBuildList;
 
 void BuildTimeParentList::AddItem(int id, char *filename)
 {
-    BuildTimeParentEntry	*entry;
-    BuildTimeParentEntry	*prevEntry;
+    BuildTimeParentEntry *entry;
+    BuildTimeParentEntry *prevEntry;
 
 
     // Setup a new entry for our list of parents
     entry = new BuildTimeParentEntry;
     ShiAssert(strlen(filename) < sizeof(entry->filename));
     strcpy(entry->filename, filename);
-    entry->id	= id;
+    entry->id = id;
     entry->bflags = 0;
     // Find the right place to insert this entry to retain ID ordering
     prevEntry = tail;
@@ -81,10 +81,10 @@ void BuildTimeParentList::AddItem(int id, char *filename)
 
 BOOL BuildTimeParentList::BuildParentTable()
 {
-    BuildTimeParentEntry	*entry;
-    ObjectParent			*objParent;
-    int						maxID = -1;
-    int						i;
+    BuildTimeParentEntry *entry;
+    ObjectParent *objParent;
+    int maxID = -1;
+    int i;
 
 
     // Quit right now if we don't have any parent objects in our list to process
@@ -172,38 +172,38 @@ BOOL BuildTimeParentList::BuildParentTable()
     while (entry)
     {
         objParent = &TheObjectList[entry->id];
-        //		printf ("Process ID %d\n", entry->id);
+        // printf ("Process ID %d\n", entry->id);
         ShiAssert(objParent != NULL);
-        objParent->radius			= -1.0f;
-        objParent->maxX				= -1e12f;
-        objParent->maxY				= -1e12f;
-        objParent->maxZ				= -1e12f;
-        objParent->minX				= 1e12f;
-        objParent->minY				= 1e12f;
-        objParent->minZ				= 1e12f;
-        objParent->nSwitches		= 0;
-        objParent->nDOFs			= 0;
-        objParent->nSlots			= 0;
-        objParent->nDynamicCoords	= 0;
-        objParent->nTextureSets		= 0;
+        objParent->radius = -1.0f;
+        objParent->maxX = -1e12f;
+        objParent->maxY = -1e12f;
+        objParent->maxZ = -1e12f;
+        objParent->minX = 1e12f;
+        objParent->minY = 1e12f;
+        objParent->minZ = 1e12f;
+        objParent->nSwitches = 0;
+        objParent->nDOFs = 0;
+        objParent->nSlots = 0;
+        objParent->nDynamicCoords = 0;
+        objParent->nTextureSets = 0;
 
         for (i = objParent->nLODs - 1; i >= 0; i--)
         {
             ShiAssert(entry->pBuildLODs[i] != NULL);
             objParent->pLODs[i].objLOD = &TheObjectLODs[ entry->pBuildLODs[i]->index ];
 
-            MAX_ACCUMULATE(objParent->radius,	entry->pBuildLODs[i]->radius);
-            MAX_ACCUMULATE(objParent->maxX,	entry->pBuildLODs[i]->maxX);
-            MAX_ACCUMULATE(objParent->maxY,	entry->pBuildLODs[i]->maxY);
-            MAX_ACCUMULATE(objParent->maxZ,	entry->pBuildLODs[i]->maxZ);
-            MIN_ACCUMULATE(objParent->minX,	entry->pBuildLODs[i]->minX);
-            MIN_ACCUMULATE(objParent->minY,	entry->pBuildLODs[i]->minY);
-            MIN_ACCUMULATE(objParent->minZ,	entry->pBuildLODs[i]->minZ);
+            MAX_ACCUMULATE(objParent->radius, entry->pBuildLODs[i]->radius);
+            MAX_ACCUMULATE(objParent->maxX, entry->pBuildLODs[i]->maxX);
+            MAX_ACCUMULATE(objParent->maxY, entry->pBuildLODs[i]->maxY);
+            MAX_ACCUMULATE(objParent->maxZ, entry->pBuildLODs[i]->maxZ);
+            MIN_ACCUMULATE(objParent->minX, entry->pBuildLODs[i]->minX);
+            MIN_ACCUMULATE(objParent->minY, entry->pBuildLODs[i]->minY);
+            MIN_ACCUMULATE(objParent->minZ, entry->pBuildLODs[i]->minZ);
 
-            MAX_ACCUMULATE(objParent->nSwitches,		entry->pBuildLODs[i]->nSwitches,);
-            MAX_ACCUMULATE(objParent->nDOFs,			entry->pBuildLODs[i]->nDOFs);
-            MAX_ACCUMULATE(objParent->nSlots,			entry->pBuildLODs[i]->nSlots);
-            MAX_ACCUMULATE(objParent->nDynamicCoords,	entry->pBuildLODs[i]->nDynamicCoords);
+            MAX_ACCUMULATE(objParent->nSwitches, entry->pBuildLODs[i]->nSwitches,);
+            MAX_ACCUMULATE(objParent->nDOFs, entry->pBuildLODs[i]->nDOFs);
+            MAX_ACCUMULATE(objParent->nSlots, entry->pBuildLODs[i]->nSlots);
+            MAX_ACCUMULATE(objParent->nDynamicCoords, entry->pBuildLODs[i]->nDynamicCoords);
 
             if (entry->pBuildLODs[i]->nTextureSets != objParent->nTextureSets)
             {
@@ -262,8 +262,8 @@ BOOL BuildTimeParentList::BuildParentTable()
 // instances.
 void BuildTimeParentList::ReleasePhantomReferences(void)
 {
-    BuildTimeParentEntry	*entry;
-    ObjectParent			*objParent;
+    BuildTimeParentEntry *entry;
+    ObjectParent *objParent;
 
     entry = head;
 
@@ -278,8 +278,8 @@ void BuildTimeParentList::ReleasePhantomReferences(void)
 
 void BuildTimeParentList::WriteVersion(int file)
 {
-    int				result;
-    DWORD			fileVersion = FORMAT_VERSION;
+    int result;
+    DWORD fileVersion = FORMAT_VERSION;
 
     // Write the magic number at the head of the file
     result = write(file, &fileVersion, sizeof(fileVersion));
@@ -293,11 +293,11 @@ void BuildTimeParentList::WriteVersion(int file)
 
 void BuildTimeParentList::WriteParentTable(int file)
 {
-    int						result;
-    BuildTimeParentEntry	*entry;
-    ObjectParent			*objParent;
-    int						objIdx;
-    int						i;
+    int result;
+    BuildTimeParentEntry *entry;
+    ObjectParent *objParent;
+    int objIdx;
+    int i;
 
 
     printf("Writing parent data\n");
@@ -381,13 +381,13 @@ void BuildTimeParentList::MergeEntries()
 
 void BuildTimeParentList::AddExisiting(ObjectParent *op, int id)
 {
-    BuildTimeParentEntry	*entry;
-    BuildTimeParentEntry	*prevEntry;
+    BuildTimeParentEntry *entry;
+    BuildTimeParentEntry *prevEntry;
 
     // Setup a new entry for our list of parents
     entry = new BuildTimeParentEntry;
     strcpy(entry->filename, "bogus");
-    entry->id	= id;
+    entry->id = id;
     entry->bflags = 1;
     //ShiAssert(op->nLODs > 0);
     entry->pBuildLODs = new BuildTimeLODEntry*[op->nLODs];

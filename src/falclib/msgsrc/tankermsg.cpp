@@ -41,7 +41,7 @@ int FalconTankerMessage::Process(uchar autodisp)
     FalconRadioChatterMessage* radioMessage;
     AircraftClass *component = NULL;
 
-    int	pos;
+    int pos;
 
     if (autodisp)
         return 0;
@@ -57,7 +57,7 @@ int FalconTankerMessage::Process(uchar autodisp)
                 if (SimDriver.GetPlayerEntity() != thirstyOne || PlayerOptions.PlayerRadioVoice)
                     SendCallToPlane(theTanker, thirstyOne, rcREQUESTFUEL, FalconLocalSession);
 
-                VuListIterator	cit(thirstyOne->GetCampaignObject()->GetComponents());
+                VuListIterator cit(thirstyOne->GetCampaignObject()->GetComponents());
                 component = (AircraftClass*)cit.GetFirst();
 
                 while (component)
@@ -233,7 +233,7 @@ int FalconTankerMessage::Process(uchar autodisp)
         {
             case RequestFuel:
             {
-                VuListIterator	cit(thirstyOne->GetCampaignObject()->GetComponents());
+                VuListIterator cit(thirstyOne->GetCampaignObject()->GetComponents());
                 component = (AircraftClass*)cit.GetFirst();
 
                 if (thirstyOne->OwnerId() != vuLocalSessionEntity->Game()->OwnerId()) component = thirstyOne;
@@ -286,10 +286,10 @@ int FalconTankerMessage::Process(uchar autodisp)
 
                         if (pos > 0)
                         {
-                            FalconTankerMessage *TankerMsg	= new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
-                            TankerMsg->dataBlock.type	= PositionUpdate;
+                            FalconTankerMessage *TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
+                            TankerMsg->dataBlock.type = PositionUpdate;
                             TankerMsg->dataBlock.data1  = (float)pos;
-                            TankerMsg->dataBlock.caller	= component->Id();
+                            TankerMsg->dataBlock.caller = component->Id();
                             FalconSendMessage(TankerMsg);
                         }
                     }

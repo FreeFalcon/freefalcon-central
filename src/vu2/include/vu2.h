@@ -3,20 +3,20 @@
 
 //#pragma warning (disable : 4514)
 
-#define VU_DEFAULT_GROUP_SIZE	6
+#define VU_DEFAULT_GROUP_SIZE 6
 
 // -----------------
 //    VU options
 // -----------------
-#define VU_SIMPLE_LATENCY		1
-//#define VU_TRACK_LATENCY  	1
-#define VU_GRID_TREE_Y_MAJOR	1
+#define VU_SIMPLE_LATENCY 1
+//#define VU_TRACK_LATENCY   1
+#define VU_GRID_TREE_Y_MAJOR 1
 
 // sfr: I think cameras can be viewed as areas of interest
-#define VU_MAX_SESSION_CAMERAS	8
+#define VU_MAX_SESSION_CAMERAS 8
 
 // Set this if you don't want to auto-dispatch
-#define REALLOC_QUEUES			1
+#define REALLOC_QUEUES 1
 
 // define this to send 8 byte class info with create msgs
 // #define VU_SEND_CLASS_INFO 1

@@ -19,50 +19,50 @@ class PlayerOptionsClass
 {
 private:
 public:
-    int DispFlags;							// Display Options
-    //	int DispTextureLevel;					//0-4 (to what level do we display textures)
-    float DispTerrainDist;					//sets max range at which textures are displayed
-    int DispMaxTerrainLevel;				//should 0-2 can be up to 4
+    int DispFlags; // Display Options
+    // int DispTextureLevel; //0-4 (to what level do we display textures)
+    float DispTerrainDist; //sets max range at which textures are displayed
+    int DispMaxTerrainLevel; //should 0-2 can be up to 4
 
-    int		ObjFlags;						// Object Display Options
-    float	ObjDetailLevel;					// (.5 - 2) (modifies LOD switching distance)
-    float	ObjMagnification;				// 1-5
-    int		ObjDeaggLevel;					// 0-100 (Percentage of vehicles deaggregated per unit)
-    int		BldDeaggLevel;					// 0-5 (determines which buildings get deaggregated)
-    int		ACMIFileSize;					// 1-? MB's (determines the largest size a single acmi tape will be)
-    float	SfxLevel;						// 1.0-5.0
-    float	PlayerBubble;					// 0.5 - 2 multiplier for player bubble size
+    int ObjFlags; // Object Display Options
+    float ObjDetailLevel; // (.5 - 2) (modifies LOD switching distance)
+    float ObjMagnification; // 1-5
+    int ObjDeaggLevel; // 0-100 (Percentage of vehicles deaggregated per unit)
+    int BldDeaggLevel; // 0-5 (determines which buildings get deaggregated)
+    int ACMIFileSize; // 1-? MB's (determines the largest size a single acmi tape will be)
+    float SfxLevel; // 1.0-5.0
+    float PlayerBubble; // 0.5 - 2 multiplier for player bubble size
 
-    int					SimFlags;			// Sim flags
-    FlightModelType		SimFlightModel;		// FlightModelType
-    WeaponEffectType	SimWeaponEffect;	// WeaponEffectType
-    AvionicsType		SimAvionicsType;	// Avionics Difficulty
-    AutopilotModeType   SimAutopilotType;	// AutopilotModeType
-    RefuelModeType		SimAirRefuelingMode;// RefuelModeType
-    PadlockModeType		SimPadlockMode;		// PadlockModeType
-    VisualCueType		SimVisualCueMode;	// VisualCueType
+    int SimFlags; // Sim flags
+    FlightModelType SimFlightModel; // FlightModelType
+    WeaponEffectType SimWeaponEffect; // WeaponEffectType
+    AvionicsType SimAvionicsType; // Avionics Difficulty
+    AutopilotModeType   SimAutopilotType; // AutopilotModeType
+    RefuelModeType SimAirRefuelingMode;// RefuelModeType
+    PadlockModeType SimPadlockMode; // PadlockModeType
+    VisualCueType SimVisualCueMode; // VisualCueType
 
-    int GeneralFlags;						// General stuff
+    int GeneralFlags; // General stuff
 
-    int CampGroundRatio;					// Default force ratio values
+    int CampGroundRatio; // Default force ratio values
     int CampAirRatio;
     int CampAirDefenseRatio;
     int CampNavalRatio;
 
-    int CampEnemyAirExperience;			// 0-4	Green - Ace
-    int CampEnemyGroundExperience;		// 0-4	Green - Ace
-    int CampEnemyStockpile;				// 0-100 % of max
-    int CampFriendlyStockpile;			// 0-100 % of max
+    int CampEnemyAirExperience; // 0-4 Green - Ace
+    int CampEnemyGroundExperience; // 0-4 Green - Ace
+    int CampEnemyStockpile; // 0-100 % of max
+    int CampFriendlyStockpile; // 0-100 % of max
 
-    int	  GroupVol[NUM_SOUND_GROUPS];		// Values are 0 to -3600 in dBs
+    int   GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
 
-    float Realism;							// stores last realism value saved less the value
+    float Realism; // stores last realism value saved less the value
     // from UnlimitedAmmo (this is used to modify scores in
     // Instant Action.)
-    _TCHAR  keyfile[PL_FNAME_LEN];			// name of keystrokes file to use
-    GUID	joystick;						// unique identifier for which joystick to use
+    _TCHAR  keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
+    GUID joystick; // unique identifier for which joystick to use
 
-    int				SimTaxiFirst;		// if true, start player taxiing instead of on the runway
+    int SimTaxiFirst; // if true, start player taxiing instead of on the runway
 
 public:
     // Important stuff
@@ -72,8 +72,8 @@ public:
     int SaveOptions(char* filename/* = LogBook.Callsign()*/);
     void ApplyOptions(void);
 
-    int InCompliance(void *rules);	// returns TRUE if in FULL compliance w/rules
-    void ComplyWRules(void *rules);	// forces all settings not in compliance to minimum settings
+    int InCompliance(void *rules); // returns TRUE if in FULL compliance w/rules
+    void ComplyWRules(void *rules); // forces all settings not in compliance to minimum settings
 
     // Nifty Access functions
     int GouraudOn(void)
@@ -93,8 +93,8 @@ public:
         return (DispFlags & DISP_PERSPECTIVE) && TRUE;
     }
 
-    //	void SetTextureLevel(int level)							{ DispTextureLevel = level;}
-    //	int TextureLevel (void)									{ return DispTextureLevel; }
+    // void SetTextureLevel(int level) { DispTextureLevel = level;}
+    // int TextureLevel (void) { return DispTextureLevel; }
     void SetTerrainDistance(float distance)
     {
         DispTerrainDist = distance;
@@ -116,8 +116,8 @@ public:
     {
         return (ObjFlags & DISP_OBJ_DYN_SCALING) && TRUE;
     }
-    //	int ObjectTexturesOn (void)								{ return (ObjFlags & DISP_OBJ_TEXTURES) && TRUE; }
-    //	int ObjectShadingOn (void)								{ return (ObjFlags & DISP_OBJ_SHADING) && TRUE; }
+    // int ObjectTexturesOn (void) { return (ObjFlags & DISP_OBJ_TEXTURES) && TRUE; }
+    // int ObjectShadingOn (void) { return (ObjFlags & DISP_OBJ_SHADING) && TRUE; }
     float ObjectDetailLevel(void)
     {
         return ObjDetailLevel;
@@ -219,7 +219,7 @@ public:
     {
         return (SimFlags & SIM_BULLSEYE_CALLS) && TRUE;
     }
-    int	InvulnerableOn(void)
+    int InvulnerableOn(void)
     {
         return (SimFlags & SIM_INVULNERABLE) && TRUE;
     }

@@ -17,7 +17,7 @@
 #include "falcsess.h"
 #include "InvalidBufferException.h"
 
-extern EventClass**	CampEvents;
+extern EventClass** CampEvents;
 
 extern void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description);
 
@@ -54,7 +54,7 @@ int CampEventDataMessage::Process(uchar autodisp)
             break;
 
         case playMovie:
-            _TCHAR		str[128] = {0};
+            _TCHAR str[128] = {0};
             AddIndexedStringToBuffer(1160 + dataBlock.event - 100, str);
             UI_AddMovieToList(dataBlock.event, TheCampaign.CurrentTime, str); // Must be a "localized" string...
             break;

@@ -1,9 +1,9 @@
 /***************************************************************************\
     Weather.cpp
     Miro "Jammer" Torrielli
-	20Nov03
+ 20Nov03
 
-	- And then there was light
+ - And then there was light
 \***************************************************************************/
 
 #include "CmpGlobl.h"
@@ -27,7 +27,7 @@
 
 
 extern int gCurrentDataVersion;
-float	COVersion = 0.0077f; // Cobra file version kludge
+float COVersion = 0.0077f; // Cobra file version kludge
 
 WeatherClass::WeatherClass() : RealWeather()
 {
@@ -54,7 +54,7 @@ void WeatherClass::Init(bool instantAction)
     {
         lockedCondition = TRUE;
         // Cobra - no random weather
-        //	UpdateCondition(min(1+rand()%4,4));
+        // UpdateCondition(min(1+rand()%4,4));
         UpdateCondition(PlayerOptions.weatherCondition);
     }
 
@@ -521,17 +521,17 @@ int WeatherClass::CampLoad(char* name, int type)
             // Cobra - compatibility with Tacedit
             /* Tacedit label              Cobra Variables
             ====================     =========================
-            	Wind Direction         (4) Wind Heading (degrees)
-            	Wind Speed             (4) Cumulus Base (feet)
-            	Time                   (4) Campaign/TE Time
-            	Temperature            (4) Stratus Base (feet)
-            	Temp                   (1) Temperature (deg. Celcius)
-            	Wind                   (1) Wind Speed (knots)
-            	Cloud base             (1) Weather condition (1=Sunny,2=fair,3=poor,4=inclement)
-            	Con Layer Start        (1) Contrail Base (100's of feet)
-            	Con Layer End          (1) Overcast Depth (100's of feet)
-            	X Off                  (4) Stratus 2 Base (future)
-            	Y Off                  (4) Cobra file version (do not change) */
+             Wind Direction         (4) Wind Heading (degrees)
+             Wind Speed             (4) Cumulus Base (feet)
+             Time                   (4) Campaign/TE Time
+             Temperature            (4) Stratus Base (feet)
+             Temp                   (1) Temperature (deg. Celcius)
+             Wind                   (1) Wind Speed (knots)
+             Cloud base             (1) Weather condition (1=Sunny,2=fair,3=poor,4=inclement)
+             Con Layer Start        (1) Contrail Base (100's of feet)
+             Con Layer End          (1) Overcast Depth (100's of feet)
+             X Off                  (4) Stratus 2 Base (future)
+             Y Off                  (4) Cobra file version (do not change) */
 
             // Cobra version check  (gCampDataVersion = 73 = SP3 version)
             // Tacedit reverses XOff and YOff when TE is saved. :^(
@@ -546,7 +546,7 @@ int WeatherClass::CampLoad(char* name, int type)
                 ftemp1 = *((float *)(data_ptr + 21));
             }
 
-            //		if ((*((float *)(data_ptr+25))) == COVersion)
+            // if ((*((float *)(data_ptr+25))) == COVersion)
             if (ftemp == COVersion)
             {
                 utemp = *((char *)(data_ptr + 18));
@@ -576,8 +576,8 @@ int WeatherClass::CampLoad(char* name, int type)
                 windSpeed = (float)utemp / (KPH_TO_FPS * FTPSEC_TO_KNOTS);
                 data_ptr += sizeof(char);
 
-                //			utemp = *((char *)data_ptr);
-                //			UpdateCondition((int)utemp);
+                // utemp = *((char *)data_ptr);
+                // UpdateCondition((int)utemp);
                 data_ptr += sizeof(char);
 
                 utemp = *((char *)data_ptr);
@@ -608,9 +608,9 @@ int WeatherClass::CampLoad(char* name, int type)
                 data_ptr += sizeof(CampaignTime);
                 temperature = *((float *) data_ptr);
                 data_ptr += sizeof(float);
-                //			TodaysTemp = *((uchar *) data_ptr);
+                // TodaysTemp = *((uchar *) data_ptr);
                 data_ptr += sizeof(uchar);
-                //			TodaysWind = *((uchar *) data_ptr);
+                // TodaysWind = *((uchar *) data_ptr);
                 data_ptr += sizeof(uchar);
                 cumulusBase = (int) * ((uchar *) data_ptr);
 
@@ -630,7 +630,7 @@ int WeatherClass::CampLoad(char* name, int type)
                     contrailHigh = 95000.f;
 
                 //if (contrailHigh < 45000.f)
-                //	contrailHigh = 45000.f;
+                // contrailHigh = 45000.f;
                 stratusBase = 220;
                 stratus2Base = 350;
                 stratusZ = -22000.f;
@@ -690,33 +690,33 @@ int WeatherClass::Save(char* name)
 
     else
     {
-        UINT	uix = 0;
+        UINT uix = 0;
         BYTE uConv;
         char sConv;
-        float	fTemp;
+        float fTemp;
 
         fwrite(&windHeading, sizeof(float), 1, fp);
-        fTemp = -cumulusZ;														// WindSpeed
+        fTemp = -cumulusZ; // WindSpeed
         fwrite(&fTemp, sizeof(float), 1, fp);
         fwrite(&lastCheck, sizeof(CampaignTime), 1, fp);
-        fTemp = -stratusZ;														// Temperature
+        fTemp = -stratusZ; // Temperature
         fwrite(&fTemp, sizeof(float), 1, fp);
-        sConv = (char)(int)temperature;							// TodaysTemp
+        sConv = (char)(int)temperature; // TodaysTemp
         fwrite(&sConv, sizeof(char), 1, fp);
         uConv = (BYTE)(windSpeed * (KPH_TO_FPS * FTPSEC_TO_KNOTS));
-        fwrite(&uConv, sizeof(BYTE), 1, fp);							// TodaysWind
+        fwrite(&uConv, sizeof(BYTE), 1, fp); // TodaysWind
         uConv = (BYTE)weatherCondition;
-        fwrite(&uConv, sizeof(BYTE), 1, fp);							// TodaysBase
-        uConv = (BYTE)(int)(contrailLow / 1000.0f + 0.5);	// same
+        fwrite(&uConv, sizeof(BYTE), 1, fp); // TodaysBase
+        uConv = (BYTE)(int)(contrailLow / 1000.0f + 0.5); // same
         fwrite(&uConv, sizeof(BYTE), 1, fp);
-        uConv = (BYTE)(int)(stratusDepth / 100.0f);			// TodaysConHigh
+        uConv = (BYTE)(int)(stratusDepth / 100.0f); // TodaysConHigh
         fwrite(&uConv, sizeof(BYTE), 1, fp);
-        fTemp = -stratus2Z;														// Temperature
-        fwrite(&fTemp, sizeof(float), 1, fp);				// offsetX
-        fwrite(&COVersion, sizeof(float), 1, fp);				// offsetY
-        fwrite(&uix, sizeof(UINT), 1, fp);								// map width
-        fwrite(&uix, sizeof(UINT), 1, fp);								// map height
-        //		fwrite(map,sizeof(CellState),w*h,fp);
+        fTemp = -stratus2Z; // Temperature
+        fwrite(&fTemp, sizeof(float), 1, fp); // offsetX
+        fwrite(&COVersion, sizeof(float), 1, fp); // offsetY
+        fwrite(&uix, sizeof(UINT), 1, fp); // map width
+        fwrite(&uix, sizeof(UINT), 1, fp); // map height
+        // fwrite(map,sizeof(CellState),w*h,fp);
     }
 
     CloseCampFile(fp);

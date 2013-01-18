@@ -3,7 +3,7 @@
     July 29, 1997
 
     Derived class to do special position and containment processing for
-	bridges (platforms upon which ground vehicles can drive).
+ bridges (platforms upon which ground vehicles can drive).
 ***************************************************************************/
 
 #include "RViewPnt.h"
@@ -12,7 +12,7 @@
 #include "DrawBrdg.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableBridge::pool;
+MEM_POOL DrawableBridge::pool;
 #endif
 
 
@@ -35,14 +35,14 @@ DrawableBridge::DrawableBridge(float s)
     minX = minY =  1e24f;
 
     // Fill in our callback request structures for when we get added to a parent list
-    updateCBstruct.fn	= UpdateMetrics;
-    updateCBstruct.self	= this;
-    updateCBstruct.next	= NULL;
-    updateCBstruct.prev	= NULL;
-    sortCBstruct.fn		= SortForViewpoint;
-    sortCBstruct.self	= this;
-    sortCBstruct.next	= NULL;
-    sortCBstruct.prev	= NULL;
+    updateCBstruct.fn = UpdateMetrics;
+    updateCBstruct.self = this;
+    updateCBstruct.next = NULL;
+    updateCBstruct.prev = NULL;
+    sortCBstruct.fn = SortForViewpoint;
+    sortCBstruct.self = this;
+    sortCBstruct.next = NULL;
+    sortCBstruct.prev = NULL;
 
     // Setup the contained object lists
     roadbedObjects.Setup();
@@ -53,10 +53,10 @@ DrawableBridge::DrawableBridge(float s)
 
 /***************************************************************************
     Remove an instance of a brige object.
-	All the children must be removed before this happens.  The dynamic
-	children are handled when SetParentList( NULL ) happens upon removal
-	of this object from the display list.  The static objects must be
-	manually removed before this point.
+ All the children must be removed before this happens.  The dynamic
+ children are handled when SetParentList( NULL ) happens upon removal
+ of this object from the display list.  The static objects must be
+ manually removed before this point.
 ***************************************************************************/
 DrawableBridge::~DrawableBridge(void)
 {
@@ -77,7 +77,7 @@ DrawableBridge::~DrawableBridge(void)
 ***************************************************************************/
 void DrawableBridge::AddSegment(DrawableRoadbed *piece)
 {
-    Tpoint		max, min;
+    Tpoint max, min;
 
     ShiAssert(piece);
 
@@ -92,7 +92,7 @@ void DrawableBridge::AddSegment(DrawableRoadbed *piece)
     position.x = (maxX + minX) * 0.5f;
     position.y = (maxY + minY) * 0.5f;
 
-    InclusionRadiusSquared =	(maxX - position.x) * (maxX - position.x) +
+    InclusionRadiusSquared = (maxX - position.x) * (maxX - position.x) +
                                 (maxY - position.y) * (maxY - position.y);
     radius = (float)sqrt(InclusionRadiusSquared);
 
@@ -105,7 +105,7 @@ void DrawableBridge::AddSegment(DrawableRoadbed *piece)
 
 /***************************************************************************
     Replace a piece of a bridge (used for damage, etc.)
-	Note that this will, in fact, replace ANY drawable object in ANY list.
+ Note that this will, in fact, replace ANY drawable object in ANY list.
 ***************************************************************************/
 void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *newPiece)
 {
@@ -125,12 +125,12 @@ void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *ne
 
 /***************************************************************************\
     Return the altitude of (and optionally, the normal to) the surface of
-	the bridge at the provided location.
+ the bridge at the provided location.
 \***************************************************************************/
 float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
 {
-    DrawableRoadbed	*roadbed;
-    Tpoint			pos;
+    DrawableRoadbed *roadbed;
+    Tpoint pos;
 
     pos.x = x;
     pos.y = y;
@@ -172,7 +172,7 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
 \***************************************************************************/
 void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
 {
-    DrawableObject	*obj;
+    DrawableObject *obj;
 
     // See if we need to update our ground position
     if (LOD != previousLOD)
@@ -233,7 +233,7 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
 \***************************************************************************/
 void DrawableBridge::Draw(class Render3D *renderer)
 {
-    DrawableObject	*obj;
+    DrawableObject *obj;
 
     // First draw the raodbed (should all be DrawableRoadbed)
     roadbedObjects.ResetTraversal();
@@ -279,7 +279,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
 {
     DrawableObject *obj;
     DrawableObject *objNext;
-    float			checkDistance;
+    float checkDistance;
 
 
     // Have the object lists update their sort metrics.
@@ -373,11 +373,11 @@ void DrawableBridge::SortForViewpoint(void)
 
 /***************************************************************************\
     See if an object is within our area, and if so, grab it from it's
-	parent.
+ parent.
 \***************************************************************************/
 BOOL DrawableBridge::ObjectInside(DrawableObject *obj)
 {
-    Tpoint			objPos;
+    Tpoint objPos;
 
     ShiAssert(obj);
 

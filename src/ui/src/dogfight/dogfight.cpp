@@ -1,8 +1,8 @@
 /***************************************************************************\
-	UI_dfght.cpp
-	Peter Ward
-	December 3, 1996
-	Main UI screen stuff for falcon
+ UI_dfght.cpp
+ Peter Ward
+ December 3, 1996
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -159,57 +159,57 @@ enum
 
 enum // Map Icon Res IDs
 {
-    BLUE_AIR_NORTH				= 565121004,
-    BLUE_AIR_NORTH_W			= 565121005,
-    BROWN_AIR_NORTH				= 565121020,
-    BROWN_AIR_NORTH_W			= 565121021,
-    GREEN_AIR_NORTH				= 565121036,
-    GREEN_AIR_NORTH_W			= 565121037,
-    GREY_AIR_NORTH				= 565121052,
-    GREY_AIR_NORTH_W			= 565121053,
-    ORANGE_AIR_NORTH			= 565121068,
-    ORANGE_AIR_NORTH_W			= 565121069,
-    RED_AIR_NORTH				= 565121084,
-    RED_AIR_NORTH_W				= 565121085,
-    WHITE_AIR_NORTH				= 565121100,
-    WHITE_AIR_NORTH_W			= 565121101,
-    YELLOW_AIR_NORTH			= 565121116,
-    YELLOW_AIR_NORTH_W			= 565121117,
-    ICON_F16	 	= 10065,
-    ICON_A10	 	= 10066,
-    ICON_AH64	 	= 10067,
-    ICON_AN2 		= 10068,
-    ICON_B52 		= 10069,
-    ICON_C130 		= 10070,
-    ICON_CH47 		= 10071,
-    ICON_F111		= 10072,
-    ICON_F117 		= 10073,
-    ICON_F14 		= 10074,
-    ICON_F15C 		= 10075,
-    ICON_F18 		= 10076,
-    ICON_F4 		= 10077,
-    ICON_F5 		= 10078,
-    ICON_IL28 		= 10079,
-    ICON_IL76 		= 10080,
-    ICON_KA50 		= 10081,
-    ICON_KC10 		= 10082,
-    ICON_KC135	 	= 10083,
-    ICON_MD500	 	= 10084,
-    ICON_MI24 		= 10085,
-    ICON_MIG19	 	= 10086,
-    ICON_MIG21	 	= 10087,
-    ICON_MIG23		= 10088,
-    ICON_MIG25	 	= 10089,
-    ICON_MIG29	 	= 10090,
-    ICON_OH58 		= 10091,
-    ICON_SU25 		= 10092,
-    ICON_SU27 		= 10093,
-    ICON_TU16N	 	= 10094,
-    ICON_UH1H 		= 10095,
-    ICON_UH60 		= 10096,
-    ICON_AN24	 	= 10097,
-    ICON_E3 		= 10098,
-    ICON_A50	 	= 10099,
+    BLUE_AIR_NORTH = 565121004,
+    BLUE_AIR_NORTH_W = 565121005,
+    BROWN_AIR_NORTH = 565121020,
+    BROWN_AIR_NORTH_W = 565121021,
+    GREEN_AIR_NORTH = 565121036,
+    GREEN_AIR_NORTH_W = 565121037,
+    GREY_AIR_NORTH = 565121052,
+    GREY_AIR_NORTH_W = 565121053,
+    ORANGE_AIR_NORTH = 565121068,
+    ORANGE_AIR_NORTH_W = 565121069,
+    RED_AIR_NORTH = 565121084,
+    RED_AIR_NORTH_W = 565121085,
+    WHITE_AIR_NORTH = 565121100,
+    WHITE_AIR_NORTH_W = 565121101,
+    YELLOW_AIR_NORTH = 565121116,
+    YELLOW_AIR_NORTH_W = 565121117,
+    ICON_F16   = 10065,
+    ICON_A10   = 10066,
+    ICON_AH64   = 10067,
+    ICON_AN2  = 10068,
+    ICON_B52  = 10069,
+    ICON_C130  = 10070,
+    ICON_CH47  = 10071,
+    ICON_F111 = 10072,
+    ICON_F117  = 10073,
+    ICON_F14  = 10074,
+    ICON_F15C  = 10075,
+    ICON_F18  = 10076,
+    ICON_F4  = 10077,
+    ICON_F5  = 10078,
+    ICON_IL28  = 10079,
+    ICON_IL76  = 10080,
+    ICON_KA50  = 10081,
+    ICON_KC10  = 10082,
+    ICON_KC135   = 10083,
+    ICON_MD500   = 10084,
+    ICON_MI24  = 10085,
+    ICON_MIG19   = 10086,
+    ICON_MIG21   = 10087,
+    ICON_MIG23 = 10088,
+    ICON_MIG25   = 10089,
+    ICON_MIG29   = 10090,
+    ICON_OH58  = 10091,
+    ICON_SU25  = 10092,
+    ICON_SU27  = 10093,
+    ICON_TU16N   = 10094,
+    ICON_UH1H  = 10095,
+    ICON_UH60  = 10096,
+    ICON_AN24   = 10097,
+    ICON_E3  = 10098,
+    ICON_A50   = 10099,
     ICON_F22        = 10122,
     ICON_EA6B       = 10123,
     ICON_TU95       = 10124,
@@ -245,53 +245,53 @@ typedef struct
 DF_AIRPLANE_TYPE DFAIPlanesDef[] =
 {
     NULL, NULL, NULL, NULL, DF_NO_AC, 0, 0,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_A10,       STYPE_UNIT_ATTACK,			DF_AC_A10,         TXT_A10,        ICON_A10,
-    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_A50,       STYPE_UNIT_AWACS,			DF_AC_A50,         TXT_A50,        ICON_A50,
-    //	TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_AC130U,    STYPE_UNIT_ATTACK,			DF_AC_AC130U,      TXT_AC130U,     ICON_C130,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64,      STYPE_UNIT_ATTACK_HELO,		DF_AC_AH64,        TXT_AH64,       ICON_AH64,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64D,     STYPE_UNIT_ATTACK_HELO,		DF_AC_AH64D,       TXT_AH64D,      ICON_AH64,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN2,       STYPE_UNIT_AIR_TRANSPORT,	DF_AC_AN2,         TXT_AN2,        ICON_AN2,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN24,      STYPE_UNIT_AIR_TRANSPORT,	DF_AC_AN24,        TXT_AN24,       ICON_AN24,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B1B,       STYPE_UNIT_BOMBER,			DF_AC_B1B,         TXT_B1B,        ICON_B1B,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B52G,      STYPE_UNIT_BOMBER,			DF_AC_B52G,        TXT_B52G,       ICON_B52,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_C130,      STYPE_UNIT_AIR_TRANSPORT,	DF_AC_C130,        TXT_C130,       ICON_C130,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_CH47,      STYPE_UNIT_TRANSPORT_HELO,	DF_AC_CH47,        TXT_CH47,       ICON_CH47,
-    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_E3,        STYPE_UNIT_AWACS,			DF_AC_E3,          TXT_E3,         ICON_E3,
-    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EA6B,      STYPE_UNIT_ECM,				DF_AC_EA6B,        TXT_EA6B,       ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EF111,     STYPE_UNIT_ECM,				DF_AC_EF111,       TXT_EF111,      ICON_F111,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F4E,       STYPE_UNIT_FIGHTER,			DF_AC_F4E,         TXT_F4E,        ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_F4G,       STYPE_UNIT_ATTACK,			DF_AC_F4G,         TXT_F4G,        ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F5E,       STYPE_UNIT_FIGHTER,			DF_AC_F5E,         TXT_F5E,        ICON_F5,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F14A,      STYPE_UNIT_FIGHTER,			DF_AC_F14A,        TXT_F14A,       ICON_F14,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F15C,      STYPE_UNIT_FIGHTER,			DF_AC_F15C,        TXT_F15C,       ICON_F15C,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F15E,      STYPE_UNIT_FIGHTER_BOMBER,	DF_AC_F15E,        TXT_F15E,       ICON_F15C,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F16C,      STYPE_UNIT_FIGHTER_BOMBER,	DF_AC_F16C,        TXT_F16C,       ICON_F16,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18A,      STYPE_UNIT_FIGHTER_BOMBER,	DF_AC_F18A,        TXT_F18A,       ICON_F18,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18D,      STYPE_UNIT_FIGHTER_BOMBER,	DF_AC_F18D,        TXT_F18D,       ICON_F18,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F22,       STYPE_UNIT_FIGHTER,			DF_AC_F22,         TXT_F22,        ICON_F22,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F117,      STYPE_UNIT_FIGHTER_BOMBER,	DF_AC_F117,        TXT_F117,       ICON_F117,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_FB111,     STYPE_UNIT_ATTACK,			DF_AC_FB111,       TXT_FB111,      ICON_F111,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_IL28,      STYPE_UNIT_ATTACK,			DF_AC_IL28,        TXT_IL28,       ICON_IL28,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_IL76M,     STYPE_UNIT_AIR_TRANSPORT,	DF_AC_IL76M,       TXT_IL76M,      ICON_IL76,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_KA50,      STYPE_UNIT_ATTACK_HELO,		DF_AC_KA50,        TXT_KA50,       ICON_KA50,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC10,      STYPE_UNIT_TANKER,			DF_AC_KC10,        TXT_KC10,       ICON_KC10,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_IL78,      STYPE_UNIT_TANKER,			DF_AC_IL78,        TXT_IL78,       ICON_IL76,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC135,     STYPE_UNIT_TANKER,			DF_AC_KC135,       TXT_KC135,      ICON_KC135,
-    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_MD500,     STYPE_UNIT_RECON_HELO,		DF_AC_MD500,       TXT_MD500,      ICON_MD500,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_MI24,      STYPE_UNIT_ATTACK_HELO,		DF_AC_MI24,        TXT_MI24,       ICON_MI24,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG19,     STYPE_UNIT_FIGHTER,			DF_AC_MIG19,       TXT_MIG19,      ICON_MIG19,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG21,     STYPE_UNIT_FIGHTER,			DF_AC_MIG21,       TXT_MIG21,      ICON_MIG21,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG23MS,   STYPE_UNIT_FIGHTER,			DF_AC_MIG23MS,     TXT_MIG23MS,    ICON_MIG23,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG25,     STYPE_UNIT_FIGHTER,			DF_AC_MIG25,       TXT_MIG25,      ICON_MIG25,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG29,     STYPE_UNIT_FIGHTER,			DF_AC_MIG29,       TXT_MIG29,      ICON_MIG29,
-    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_OH58D,     STYPE_UNIT_RECON_HELO,		DF_AC_OH58D,       TXT_OH58D,      ICON_OH58,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_SU25,      STYPE_UNIT_ATTACK,			DF_AC_SU25,        TXT_SU25,       ICON_SU25,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_SU27,      STYPE_UNIT_FIGHTER,			DF_AC_SU27,        TXT_SU27,       ICON_SU27,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU16,      STYPE_UNIT_BOMBER,			DF_AC_TU16,        TXT_TU16,       ICON_TU16N,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_TU16N,     STYPE_UNIT_TANKER,			DF_AC_TU16N,       TXT_TU16N,      ICON_TU16N,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU95,      STYPE_UNIT_BOMBER,			DF_AC_TU95,        TXT_TU95,       ICON_TU95,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH1N,      STYPE_UNIT_TRANSPORT_HELO,	DF_AC_UH1N,        TXT_UH1N,       ICON_UH1H,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH60L,     STYPE_UNIT_TRANSPORT_HELO,	DF_AC_UH60L,       TXT_UH60L,      ICON_UH60,
+    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_A10,       STYPE_UNIT_ATTACK, DF_AC_A10,         TXT_A10,        ICON_A10,
+    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_A50,       STYPE_UNIT_AWACS, DF_AC_A50,         TXT_A50,        ICON_A50,
+    // TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_AC130U,    STYPE_UNIT_ATTACK, DF_AC_AC130U,      TXT_AC130U,     ICON_C130,
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64,      STYPE_UNIT_ATTACK_HELO, DF_AC_AH64,        TXT_AH64,       ICON_AH64,
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64D,     STYPE_UNIT_ATTACK_HELO, DF_AC_AH64D,       TXT_AH64D,      ICON_AH64,
+    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN2,       STYPE_UNIT_AIR_TRANSPORT, DF_AC_AN2,         TXT_AN2,        ICON_AN2,
+    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN24,      STYPE_UNIT_AIR_TRANSPORT, DF_AC_AN24,        TXT_AN24,       ICON_AN24,
+    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B1B,       STYPE_UNIT_BOMBER, DF_AC_B1B,         TXT_B1B,        ICON_B1B,
+    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B52G,      STYPE_UNIT_BOMBER, DF_AC_B52G,        TXT_B52G,       ICON_B52,
+    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_C130,      STYPE_UNIT_AIR_TRANSPORT, DF_AC_C130,        TXT_C130,       ICON_C130,
+    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_CH47,      STYPE_UNIT_TRANSPORT_HELO, DF_AC_CH47,        TXT_CH47,       ICON_CH47,
+    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_E3,        STYPE_UNIT_AWACS, DF_AC_E3,          TXT_E3,         ICON_E3,
+    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EA6B,      STYPE_UNIT_ECM, DF_AC_EA6B,        TXT_EA6B,       ICON_F4,
+    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EF111,     STYPE_UNIT_ECM, DF_AC_EF111,       TXT_EF111,      ICON_F111,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F4E,       STYPE_UNIT_FIGHTER, DF_AC_F4E,         TXT_F4E,        ICON_F4,
+    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_F4G,       STYPE_UNIT_ATTACK, DF_AC_F4G,         TXT_F4G,        ICON_F4,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F5E,       STYPE_UNIT_FIGHTER, DF_AC_F5E,         TXT_F5E,        ICON_F5,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F14A,      STYPE_UNIT_FIGHTER, DF_AC_F14A,        TXT_F14A,       ICON_F14,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F15C,      STYPE_UNIT_FIGHTER, DF_AC_F15C,        TXT_F15C,       ICON_F15C,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F15E,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F15E,        TXT_F15E,       ICON_F15C,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F16C,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F16C,        TXT_F16C,       ICON_F16,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18A,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F18A,        TXT_F18A,       ICON_F18,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18D,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F18D,        TXT_F18D,       ICON_F18,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F22,       STYPE_UNIT_FIGHTER, DF_AC_F22,         TXT_F22,        ICON_F22,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F117,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F117,        TXT_F117,       ICON_F117,
+    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_FB111,     STYPE_UNIT_ATTACK, DF_AC_FB111,       TXT_FB111,      ICON_F111,
+    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_IL28,      STYPE_UNIT_ATTACK, DF_AC_IL28,        TXT_IL28,       ICON_IL28,
+    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_IL76M,     STYPE_UNIT_AIR_TRANSPORT, DF_AC_IL76M,       TXT_IL76M,      ICON_IL76,
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_KA50,      STYPE_UNIT_ATTACK_HELO, DF_AC_KA50,        TXT_KA50,       ICON_KA50,
+    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC10,      STYPE_UNIT_TANKER, DF_AC_KC10,        TXT_KC10,       ICON_KC10,
+    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_IL78,      STYPE_UNIT_TANKER, DF_AC_IL78,        TXT_IL78,       ICON_IL76,
+    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC135,     STYPE_UNIT_TANKER, DF_AC_KC135,       TXT_KC135,      ICON_KC135,
+    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_MD500,     STYPE_UNIT_RECON_HELO, DF_AC_MD500,       TXT_MD500,      ICON_MD500,
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_MI24,      STYPE_UNIT_ATTACK_HELO, DF_AC_MI24,        TXT_MI24,       ICON_MI24,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG19,     STYPE_UNIT_FIGHTER, DF_AC_MIG19,       TXT_MIG19,      ICON_MIG19,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG21,     STYPE_UNIT_FIGHTER, DF_AC_MIG21,       TXT_MIG21,      ICON_MIG21,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG23MS,   STYPE_UNIT_FIGHTER, DF_AC_MIG23MS,     TXT_MIG23MS,    ICON_MIG23,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG25,     STYPE_UNIT_FIGHTER, DF_AC_MIG25,       TXT_MIG25,      ICON_MIG25,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG29,     STYPE_UNIT_FIGHTER, DF_AC_MIG29,       TXT_MIG29,      ICON_MIG29,
+    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_OH58D,     STYPE_UNIT_RECON_HELO, DF_AC_OH58D,       TXT_OH58D,      ICON_OH58,
+    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_SU25,      STYPE_UNIT_ATTACK, DF_AC_SU25,        TXT_SU25,       ICON_SU25,
+    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_SU27,      STYPE_UNIT_FIGHTER, DF_AC_SU27,        TXT_SU27,       ICON_SU27,
+    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU16,      STYPE_UNIT_BOMBER, DF_AC_TU16,        TXT_TU16,       ICON_TU16N,
+    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_TU16N,     STYPE_UNIT_TANKER, DF_AC_TU16N,       TXT_TU16N,      ICON_TU16N,
+    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU95,      STYPE_UNIT_BOMBER, DF_AC_TU95,        TXT_TU95,       ICON_TU95,
+    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH1N,      STYPE_UNIT_TRANSPORT_HELO, DF_AC_UH1N,        TXT_UH1N,       ICON_UH1H,
+    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH60L,     STYPE_UNIT_TRANSPORT_HELO, DF_AC_UH60L,       TXT_UH60L,      ICON_UH60,
     NULL, NULL, NULL, NULL, 0, 0, 0
 };
 
@@ -490,8 +490,8 @@ void SetCurrentGameState(C_TreeList *tree, short state)
 // This is what we call when we want to join an existing game
 void JoinDogfightCB(long, short hittype, C_Base *)
 {
-    FalconGameEntity	*game;
-    C_Window			*win;
+    FalconGameEntity *game;
+    C_Window *win;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -540,11 +540,11 @@ void GameHasStarted(void)
 
 void ReallyJoinDogfightCB(void)
 {
-    //	if ((SimDogfight.GetDogfightGameStatus() >= dog_Starting) && (SimDogfight.GetGameType() == dog_TeamMatchplay))
-    //	{
-    //		GameHasStarted();
-    //		return;
-    //	}
+    // if ((SimDogfight.GetDogfightGameStatus() >= dog_Starting) && (SimDogfight.GetGameType() == dog_TeamMatchplay))
+    // {
+    // GameHasStarted();
+    // return;
+    // }
 
     MonoPrint("Joining Dogfight game.\n");
 
@@ -555,7 +555,7 @@ void ReallyJoinDogfightCB(void)
 
 static void DogfightBeginCB(long ID, short hittype, C_Base *control)
 {
-    FalconGameEntity	*game;
+    FalconGameEntity *game;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -637,9 +637,9 @@ void DogfightJoinSuccess(void)
 // NOTE: control can be NULL so DON'T use it
 void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
 {
-    Flight			flight;
-    int				idx, type;
-    uchar			teamid;
+    Flight flight;
+    int idx, type;
+    uchar teamid;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -921,9 +921,9 @@ C_Pilot *MakePilot(C_TreeList *list, Flight flight, FalconSessionEntity *session
 {
     long team, ACID;
     long idx;
-    C_Resmgr	*iconresdark, *iconreslite;
-    C_Pilot		*newpilot;
-    _TCHAR		callbuf[40];
+    C_Resmgr *iconresdark, *iconreslite;
+    C_Pilot *newpilot;
+    _TCHAR callbuf[40];
     _TCHAR      acefactor[10];
 
     team = flight->GetTeam();
@@ -938,7 +938,7 @@ C_Pilot *MakePilot(C_TreeList *list, Flight flight, FalconSessionEntity *session
     newpilot->Setup(C_DONT_CARE, 0);
     newpilot->SetVUID(flight->Id());
 
-    //	GetCallsign (flight->callsign_id, flight->callsign_num, buffer);
+    // GetCallsign (flight->callsign_id, flight->callsign_num, buffer);
     // Set Callsign
     switch (skill)
     {
@@ -995,10 +995,10 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
 {
     long team, ACID;
     long idx, w, h;
-    C_Dog_Flight	*newflt;
-    C_Resmgr		*iconresdark, *iconreslite;
-    IMAGE_RSC		*dark = NULL, *lite = NULL;
-    _TCHAR		callbuf[40];
+    C_Dog_Flight *newflt;
+    C_Resmgr *iconresdark, *iconreslite;
+    IMAGE_RSC *dark = NULL, *lite = NULL;
+    _TCHAR callbuf[40];
 
     LoadDfPlanes();
     team = flight->GetTeam();
@@ -1058,9 +1058,9 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
 {
     long team, ACID;
     long idx, w, h;
-    C_Resmgr		*iconresdark, *iconreslite;
-    IMAGE_RSC		*dark = NULL, *lite = NULL;
-    _TCHAR		callbuf[40];
+    C_Resmgr *iconresdark, *iconreslite;
+    IMAGE_RSC *dark = NULL, *lite = NULL;
+    _TCHAR callbuf[40];
 
     if (!newflt)
         return;
@@ -1118,12 +1118,12 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
 // Construct a cpilot control and add it to tree
 C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
 {
-    C_Pilot			*pilot;
-    C_Dog_Flight	*fltctrl;
-    TREELIST		*item, *flt, *cur;
-    _TCHAR			*str;
-    long			ID, count;
-    int				found = 0;
+    C_Pilot *pilot;
+    C_Dog_Flight *fltctrl;
+    TREELIST *item, *flt, *cur;
+    _TCHAR *str;
+    long ID, count;
+    int found = 0;
 
     // Create a unique ID
     ID  = flight->GetTeam() << 24;
@@ -1185,8 +1185,8 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
         if (FalconLocalGame)
         {
             // Add a player pilot
-            FalconSessionEntity	*session;
-            VuSessionsIterator	sit(FalconLocalGame);
+            FalconSessionEntity *session;
+            VuSessionsIterator sit(FalconLocalGame);
 
             // Find this player's session
             session = (FalconSessionEntity*) sit.GetFirst();
@@ -1257,9 +1257,9 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
 
 C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
 {
-    C_Dog_Flight	*dfflight;
-    TREELIST		*item;
-    long			ID;
+    C_Dog_Flight *dfflight;
+    TREELIST *item;
+    long ID;
 
     // Create a unique ID
     ID  = flight->GetTeam() << 24;
@@ -1383,15 +1383,15 @@ void ClearOldDFInfo(long timestamp)
 
 void BuildDFPlayerList()
 {
-    VuListIterator	listit(AllRealList);
-    Unit			unit;
-    Flight			flight;
-    int				ac, team;
-    C_Window		*win;
-    C_TreeList		*flist, *tlist;
-    C_Pilot			*furplt, *teamplt;
-    C_Dog_Flight	*furflt, *teamflt;
-    long			timestamp;
+    VuListIterator listit(AllRealList);
+    Unit unit;
+    Flight flight;
+    int ac, team;
+    C_Window *win;
+    C_TreeList *flist, *tlist;
+    C_Pilot *furplt, *teamplt;
+    C_Dog_Flight *furflt, *teamflt;
+    long timestamp;
 
     if (!gMainHandler)
         return;
@@ -1627,8 +1627,8 @@ static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 
                 if (game)
                 {
-                    //					if(game->GetGameType() == game_Dogfight)
-                    //						gCommsMgr->RequestSettings(game->Id());
+                    // if(game->GetGameType() == game_Dogfight)
+                    // gCommsMgr->RequestSettings(game->Id());
                 }
             }
         }
@@ -1676,8 +1676,8 @@ short ConvertDFIDtoTeam(long ID)
 
 void AddDogfightFlightCB(long, short hittype, C_Base *control)
 {
-    Flight	flight = NULL;
-    long	teamid = 0, skill = 0, acid = 0, idx = 0, type = 0, callgroup = 0;
+    Flight flight = NULL;
+    long teamid = 0, skill = 0, acid = 0, idx = 0, type = 0, callgroup = 0;
     C_ListBox *lbox = NULL;
     long value = 0;
 
@@ -2407,7 +2407,7 @@ void LoadDogFightWindows()
         if (!gDogfightBites)
             gDogfightBites = gMainParser->ParseSoundBite("art\\dgft\\play\\uiddf.scf");
 
-        gMainParser->LoadWindowList("df_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+        gMainParser->LoadWindowList("df_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
         ID = gMainParser->GetFirstWindowLoaded();
 
@@ -2777,7 +2777,7 @@ void SaveItCB(long, short hittype, C_Base *control)
     C_EditBox *ebox;
     C_Window *win;
     C_TreeList *tree;
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2823,7 +2823,7 @@ void VerifySaveItCB(long ID, short hittype, C_Base *control)
 {
     C_EditBox *ebox;
     FILE *fp;
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2929,7 +2929,7 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
 // Callback from clicking on a remote game's name
 void SelectDFGameFileCB(long, short hittype, C_Base *)
 {
-    FalconGameEntity	*game = NULL;		// KCK: Need to get game associated with button
+    FalconGameEntity *game = NULL; // KCK: Need to get game associated with button
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2947,7 +2947,7 @@ void LoadRadioCB(long, short hittype, C_Base *)
         return;
 
     // Probably don't want to load settings until after we load the campaign
-    //	LoadDFSettingsCB(ID,hittype,control);
+    // LoadDFSettingsCB(ID,hittype,control);
     CheckFlyButton();
 }
 
@@ -3029,9 +3029,9 @@ float MapXtoSimX(C_Cursor* crsr)
     xpos = TheCampaign.TheaterSizeX * FEET_PER_KM * ratio;
     return xpos;
     // KCK: This is cut and paste from peter's code. I don't pretend to understand how it works.
-    //	xpos = ((crsr->GetX()+(crsr->GetW()/2)-crsr->MinX_) * 3072.0f) / ((crsr->MaxX_-crsr->MinX_)*256.0f);
-    //	xpos *= FEET_PER_KM / 1000.0F;
-    //	return xpos;
+    // xpos = ((crsr->GetX()+(crsr->GetW()/2)-crsr->MinX_) * 3072.0f) / ((crsr->MaxX_-crsr->MinX_)*256.0f);
+    // xpos *= FEET_PER_KM / 1000.0F;
+    // return xpos;
 }
 
 float MapYtoSimY(C_Cursor* crsr)
@@ -3042,37 +3042,37 @@ float MapYtoSimY(C_Cursor* crsr)
     ypos = TheCampaign.TheaterSizeY * FEET_PER_KM * ratio;
     return ypos;
     // KCK: This is cut and paste from peter's code. I don't pretend to understand how it works.
-    //	ypos = (((crsr->MaxY_-crsr->MinY_) - (crsr->GetY()+(crsr->GetH()/2)-crsr->MinY_)) * 4096.0f) / ((crsr->MaxY_-crsr->MinY_)*256.0f);
-    //	ypos *= FEET_PER_KM / 1000.0F;
-    //	return ypos;
+    // ypos = (((crsr->MaxY_-crsr->MinY_) - (crsr->GetY()+(crsr->GetH()/2)-crsr->MinY_)) * 4096.0f) / ((crsr->MaxY_-crsr->MinY_)*256.0f);
+    // ypos *= FEET_PER_KM / 1000.0F;
+    // return ypos;
 }
 
 long SimXtoMapX(float simx, C_Cursor* crsr)
 {
-    float	ratio = 0.5F;
-    int		mapx;
+    float ratio = 0.5F;
+    int mapx;
 
     if (TheCampaign.TheaterSizeX)
         ratio = simx / (TheCampaign.TheaterSizeX * FEET_PER_KM);
 
     mapx = FloatToInt32((crsr->MaxX_ - crsr->MinX_) * ratio);
     return mapx;
-    //	simx = (simx * 1000.0F) / FEET_PER_KM;
-    //	return FloatToInt32(((simx * ((crsr->MaxX_-crsr->MinX_)*256.0f)) /  3072.0F) - (crsr->GetW()/2) + crsr->MinX_);
+    // simx = (simx * 1000.0F) / FEET_PER_KM;
+    // return FloatToInt32(((simx * ((crsr->MaxX_-crsr->MinX_)*256.0f)) /  3072.0F) - (crsr->GetW()/2) + crsr->MinX_);
 }
 
 long SimYtoMapY(float simy, C_Cursor* crsr)
 {
-    float	ratio = 0.5F;
-    int		mapy;
+    float ratio = 0.5F;
+    int mapy;
 
     if (TheCampaign.TheaterSizeY)
         ratio = 1.0F - (simy / (TheCampaign.TheaterSizeY * FEET_PER_KM));
 
     mapy = FloatToInt32((crsr->MaxY_ - crsr->MinY_) * ratio);
     return mapy;
-    //	simy = (simy * 1000.0F) / FEET_PER_KM;
-    //	return -1 * FloatToInt32(((simy * ((crsr->MaxY_-crsr->MinY_)*256.0f)) /  4096.0F) + crsr->MinY_ + (crsr->GetH()/2) - (crsr->MaxY_-crsr->MinY_));
+    // simy = (simy * 1000.0F) / FEET_PER_KM;
+    // return -1 * FloatToInt32(((simy * ((crsr->MaxY_-crsr->MinY_)*256.0f)) /  4096.0F) + crsr->MinY_ + (crsr->GetH()/2) - (crsr->MaxY_-crsr->MinY_));
 }
 
 float MapXtoRatio(C_Cursor* crsr)
@@ -3091,14 +3091,14 @@ float MapYtoRatio(C_Cursor* crsr)
 
 long RatiotoMapX(float ratio, C_Cursor* crsr)
 {
-    int		mapx;
+    int mapx;
     mapx = FloatToInt32((crsr->MaxX_ - crsr->MinX_) * ratio) - crsr->GetW() / 2;
     return mapx;
 }
 
 long RatiotoMapY(float ratio, C_Cursor* crsr)
 {
-    int		mapy;
+    int mapy;
     mapy = FloatToInt32((crsr->MaxY_ - crsr->MinY_) * (1.0F - ratio)) - crsr->GetH() / 2;
     return mapy;
 }
@@ -3115,7 +3115,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
     if (!flight)
         return;
 
-    //	TheCampaign.MissionEvaluator->PreMissionEval(flight,FalconLocalSession->GetPilotSlot());
+    // TheCampaign.MissionEvaluator->PreMissionEval(flight,FalconLocalSession->GetPilotSlot());
 
     // Trigger the campaign to compress time and takeoff.
     flight->SetAborted(0);
@@ -3125,7 +3125,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
         return;
 
     // 2002-03-09 MN Send a "[Commiting now]" message to the chat windows
-    enum { PSEUDO_CONTROL_DF				= 565419998 };
+    enum { PSEUDO_CONTROL_DF = 565419998 };
 
     C_EditBox control;
     control.Setup(PSEUDO_CONTROL_DF, 39);
@@ -3228,7 +3228,7 @@ void CleanupDebriefCB(long, short hittype, C_Base *control)
         return;
 
     gMainHandler->DisableWindowGroup(control->GetGroup());
-    //	ClearPilotList();
+    // ClearPilotList();
 }
 
 void SeeDFFilesCB(long, short hittype, C_Base *control)
@@ -3501,7 +3501,7 @@ static void HookupDogFightControls(long ID)
     if (lbox)
         lbox->SetCallback(DFGameModeCB);
 
-    //	DF_LOAD Callbacks
+    // DF_LOAD Callbacks
 
     ctrl = (C_Button *)winme->FindControl(DF_LOAD_CTRL);
 
@@ -3518,7 +3518,7 @@ static void HookupDogFightControls(long ID)
     if (ctrl)
         ctrl->SetCallback(SaveDFSettingsCB);
 
-    //	DF_TOOL Callbacks
+    // DF_TOOL Callbacks
 
     ctrl = (C_Button *)winme->FindControl(SINGLE_FLY_CTRL);
 
@@ -3530,7 +3530,7 @@ static void HookupDogFightControls(long ID)
     if (ctrl)
         ctrl->SetCallback(DogfightFlyCB);
 
-    //	DF_TEAMS Callbacks
+    // DF_TEAMS Callbacks
 
     // Team play stuff
     ctrl = (C_Button *)winme->FindControl(DF_CRIMSON);
@@ -3660,7 +3660,7 @@ static void HookupDogFightControls(long ID)
     if (tree)
         tree->SetCallback(SelectDogfightItemCB);
 
-    //	DF_MAP Callbacks
+    // DF_MAP Callbacks
     // sfr: hack to fix
     //crsr=(C_Cursor *)winme->FindControl(10049);
     crsr = (C_Cursor *)winme->FindControl(DF_MAP_CURSOR);
@@ -3668,7 +3668,7 @@ static void HookupDogFightControls(long ID)
     if (crsr)
         crsr->SetCallback(MoveGameLocationCB);
 
-    //	Debriefing callbacks
+    // Debriefing callbacks
     ctrl = (C_Button *)winme->FindControl(DF_CLOSE_WINDOW);
 
     if (ctrl)

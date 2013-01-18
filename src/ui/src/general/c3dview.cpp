@@ -17,15 +17,15 @@
 #include "TexBank.h"
 #include "FalcLib\include\dispopts.h"
 
-#include "Sim/Include/navsystem.h"		//Wombat778 11-3-2003
+#include "Sim/Include/navsystem.h" //Wombat778 11-3-2003
 
 extern C_Handler *gMainHandler;
 
 #include "Graphics/DXEngine/DXVBManager.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
-extern bool g_bReconLatLong;			//Wombat778 11-3-2003
-extern OBJECTINFO Recon;				//Wombat778 11-3-2003
+extern bool g_bReconLatLong; //Wombat778 11-3-2003
+extern OBJECTINFO Recon; //Wombat778 11-3-2003
 
 //JAM 21Nov03
 #include "RealWeather.h"
@@ -40,7 +40,7 @@ BOOL C_3dViewer::Setup()
     BSPLIST *cur;
 
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
-    if (g_bUse_DX_Engine)	TheVbManager.Setup((gMainHandler->GetFront())->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+    if (g_bUse_DX_Engine) TheVbManager.Setup((gMainHandler->GetFront())->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
 
     if (objects_)
     {
@@ -86,13 +86,13 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
     // Need to setup nearest Z up to 10.0 feet to compensate tight FOV angle
     rend3d_->SetFOV(ViewAngle * DTR, 10.0f);
     rend3d_->SetCamera(&currentPos_, &currentRot_);
-    //	rend3d_->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
-    //	rend3d_->SetSmoothShadingMode( PlayerOptions.ObjectShadingOn() );
+    // rend3d_->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
+    // rend3d_->SetSmoothShadingMode( PlayerOptions.ObjectShadingOn() );
 
-    //	rend3d_->SetHazeMode(PlayerOptions.HazingOn());
-    //	rend3d_->SetFilteringMode( PlayerOptions.FilteringOn() );
+    // rend3d_->SetHazeMode(PlayerOptions.HazingOn());
+    // rend3d_->SetFilteringMode( PlayerOptions.FilteringOn() );
     rend3d_->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
-    //	rend3d_->SetAlphaMode(PlayerOptions.AlphaOn());
+    // rend3d_->SetAlphaMode(PlayerOptions.AlphaOn());
     rend3d_->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
 
 
@@ -124,8 +124,8 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 
     rendOTW_->SetViewport(l, t, r, b);
 
-    //	rendOTW_->SetTerrainTextureLevel(TextureLevel_);
-    //	rendOTW_->SetSmoothShadingMode(SmoothShading_);
+    // rendOTW_->SetTerrainTextureLevel(TextureLevel_);
+    // rendOTW_->SetSmoothShadingMode(SmoothShading_);
 
     viewPoint_->Update(&currentPos_);
 
@@ -283,7 +283,7 @@ BSPLIST *C_3dViewer::LoadBridge(long ID, int objID)
     return(NULL);
 }
 
-BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc, Tpoint *objPos, BSPLIST *Parent)
+BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent)
 {
     BSPLIST *bspobj;
 
@@ -420,7 +420,7 @@ BOOL C_3dViewer::View3d(long ID)
         {
             gMainHandler->Unlock();
             rend3d_->SetCamera(&currentPos_, &currentRot_);
-            //			rend3d_->SetTime(Time_+(GetCurrentTime() % 60000l));
+            // rend3d_->SetTime(Time_+(GetCurrentTime() % 60000l));
 
             //JAM 16Dec03
             if (DisplayOptions.bZBuffering)
@@ -495,7 +495,7 @@ BOOL C_3dViewer::ViewGreyOTW()
 
         // RED - As Model Loadings are deferred to Scene drawing, continue to draw the scene till
         // The loader is loading models
-        /*		do{*/
+        /* do{*/
         rendOTW_->context.StartFrame();
         rendOTW_->StartDraw();
         rendOTW_->PreLoadScene(&zeroPos_, &currentRot_);
@@ -504,17 +504,17 @@ BOOL C_3dViewer::ViewGreyOTW()
         rendOTW_->EndDraw();
         rendOTW_->context.FinishFrame(NULL);
 
-        /*			// now wait for Loader to end it's work
-        			TheLoader.WaitForLoader();
+        /* // now wait for Loader to end it's work
+         TheLoader.WaitForLoader();
 
-        			// Draw again the scene, all should ready to be drawn
-        			rendOTW_->context.StartFrame();
-        			rendOTW_->StartDraw();
-        			rendOTW_->DrawScene(&zeroPos_,&currentRot_);
-        			rendOTW_->context.FlushPolyLists();
-        			rendOTW_->EndDraw();
-        			rendOTW_->context.FinishFrame(NULL);
-        		} while(!TheLoader.LoaderQueueEmpty());*/
+         // Draw again the scene, all should ready to be drawn
+         rendOTW_->context.StartFrame();
+         rendOTW_->StartDraw();
+         rendOTW_->DrawScene(&zeroPos_,&currentRot_);
+         rendOTW_->context.FlushPolyLists();
+         rendOTW_->EndDraw();
+         rendOTW_->context.FinishFrame(NULL);
+         } while(!TheLoader.LoaderQueueEmpty());*/
 
 
         //Wombat778 11-3-2003 Added to allow Latitude/Longitude to be drawn on the display.  A bit of a hack but works ok.
@@ -528,13 +528,13 @@ BOOL C_3dViewer::ViewGreyOTW()
 
             sprintf(tempstr, "%s        %s", latstr, longstr);
 
-            int TempFont = rendOTW_->CurFont();		//Added to be able to restore the font.
-            int TempColor = rendOTW_->Color();		//Added to be able to restore the color
-            rendOTW_->SetFont(2);					//Set a bigger font
-            rendOTW_->SetColor(0xFF00FFFF);			//Yellow.  Seemed to be the best color for visibility.
+            int TempFont = rendOTW_->CurFont(); //Added to be able to restore the font.
+            int TempColor = rendOTW_->Color(); //Added to be able to restore the color
+            rendOTW_->SetFont(2); //Set a bigger font
+            rendOTW_->SetColor(0xFF00FFFF); //Yellow.  Seemed to be the best color for visibility.
             rendOTW_->ScreenText((float)viewport.left + 4, (float)viewport.top + 1, tempstr);
-            rendOTW_->SetFont(TempFont);			//Added to restore the font
-            rendOTW_->SetColor(TempColor);			//Added to restore the color
+            rendOTW_->SetFont(TempFont); //Added to restore the font
+            rendOTW_->SetColor(TempColor); //Added to restore the color
 
 
         }

@@ -1,9 +1,9 @@
 /***************************************************************************\
-	UI_IA.cpp
-	Peter Ward
-	December 3, 1996
+ UI_IA.cpp
+ Peter Ward
+ December 3, 1996
 
-	Main UI screen stuff for falcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "entity.h"
@@ -46,7 +46,7 @@ EventElement *SortedEventList = NULL;
 
 void AddtoEventList(EventElement *theEvent)
 {
-    EventElement	*cur, *last = NULL, *newone;
+    EventElement *cur, *last = NULL, *newone;
 
     while (theEvent)
     {
@@ -149,10 +149,10 @@ static void AddMessageToWindow(C_Window *win, long client, int *y, CampaignTime 
 // and add the messages to a window
 void ProcessEventList(C_Window *win, long client)
 {
-    EventElement		*cur;
-    FlightDataClass		*flight_data;
-    PilotDataClass		*pilot_data;
-    int					i, y = 0;
+    EventElement *cur;
+    FlightDataClass *flight_data;
+    PilotDataClass *pilot_data;
+    int i, y = 0;
 
     // Build an event list from the MissionEvaluator class
     flight_data = TheCampaign.MissionEvaluator->flight_data;
@@ -193,9 +193,9 @@ void ProcessEventList(C_Window *win, long client)
 // cleaning up the sorted list
 EventElement * ProcessEventListForACMI(void)
 {
-    FlightDataClass		*flight_data;
-    PilotDataClass		*pilot_data;
-    int					i;//,y=0;
+    FlightDataClass *flight_data;
+    PilotDataClass *pilot_data;
+    int i;//,y=0;
 
     // Build an event list from the MissionEvaluator class
     flight_data = TheCampaign.MissionEvaluator->flight_data;
@@ -370,13 +370,13 @@ void TimeToAscii(ulong time, char* time_str)
 #ifdef _WRITE_TO_FILE_
 long BuildEvent(EventElement *theEvent, _TCHAR output[])
 {
-    FalconDamageMessage			dmm(FalconNullId, NULL);
-    FalconWeaponsFire			wfm(FalconNullId, NULL);
-    FalconDeathMessage			dtm(FalconNullId, NULL);
-    FalconMissileEndMessage		mem(FalconNullId, NULL);
-    FalconLandingMessage		lnd(FalconNullId, NULL);
-    FalconEjectMessage			ejc(FalconNullId, NULL);
-    FalconPlayerStatusMessage	psm(FalconNullId, NULL);
+    FalconDamageMessage dmm(FalconNullId, NULL);
+    FalconWeaponsFire wfm(FalconNullId, NULL);
+    FalconDeathMessage dtm(FalconNullId, NULL);
+    FalconMissileEndMessage mem(FalconNullId, NULL);
+    FalconLandingMessage lnd(FalconNullId, NULL);
+    FalconEjectMessage ejc(FalconNullId, NULL);
+    FalconPlayerStatusMessage psm(FalconNullId, NULL);
     int retval = 0;
 
     if (theEvent == NULL)
@@ -468,50 +468,50 @@ BOOL CheckAlreadyCollided(VU_ID ID1, VU_ID ID2, long gameTime)
 }
 
 /*
-	BuildMessage - Builds the strings for debriefing an Event saved in "lastevt.acm"
-		input	 -	EventElement *theEvent			Event Record
-					int           DbrfType			Debriefing type:
-									0 = Instant Action
-									1 = Dogfight
+ BuildMessage - Builds the strings for debriefing an Event saved in "lastevt.acm"
+ input  - EventElement *theEvent Event Record
+ int           DbrfType Debriefing type:
+ 0 = Instant Action
+ 1 = Dogfight
 
-					VU_ID         TrackID - 0, or ID of messages you are interested in
-					              (Based on shooter)
-					long          TrackTime - time of message which we are tracking (the one that set TrackID)
+ VU_ID         TrackID - 0, or ID of messages you are interested in
+               (Based on shooter)
+ long          TrackTime - time of message which we are tracking (the one that set TrackID)
 
-		output	 -	_TCHAR		  output[4][40]		Array of strings where:
-									[0] = Time
-									[1] = Who/What is doing this
-									[2] = Who/What they are doing this too
-									[3] = Weapon Used
+ output  - _TCHAR   output[4][40] Array of strings where:
+ [0] = Time
+ [1] = Who/What is doing this
+ [2] = Who/What they are doing this too
+ [3] = Weapon Used
 
-		returns	 -	String ID to use to print "output" variables
-					0 = Don't use this string...
-					1 or greater... string ID to use
+ returns  - String ID to use to print "output" variables
+ 0 = Don't use this string...
+ 1 or greater... string ID to use
 
-	Note: The calling routine is responsible for using [Return Value] to build the output string based on
-		  language ordering of the Parameters
+ Note: The calling routine is responsible for using [Return Value] to build the output string based on
+   language ordering of the Parameters
 */
 
 
 
 
 /*
-	// HOW TO GET THE MESSAGES YOU WANT IN ProcessEventList
+ // HOW TO GET THE MESSAGES YOU WANT IN ProcessEventList
 
-	unsigned char mask[EVT_MESSAGE_BITS];
+ unsigned char mask[EVT_MESSAGE_BITS];
 
-	// Clear Masks
-	for(y=0;y<EVT_MESSAGE_BITS;y++)
-		mask[y]=0;
+ // Clear Masks
+ for(y=0;y<EVT_MESSAGE_BITS;y++)
+ mask[y]=0;
 
-	// Desired messages
-	mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
-	mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
-	mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
-	mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
-	mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
-	mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
-	mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ // Desired messages
+ mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 
@@ -530,63 +530,63 @@ static void AddMessageToFile(FILE *ofp, long eventID, _TCHAR output[][32], BOOL 
     fwrite(buffer, _tcsclen(buffer)*sizeof(_TCHAR), 1, ofp);
 }
 /*
-	// HOW TO GET THE MESSAGES YOU WANT IN SaveEventList
+ // HOW TO GET THE MESSAGES YOU WANT IN SaveEventList
 
-	unsigned char mask[EVT_MESSAGE_BITS];
+ unsigned char mask[EVT_MESSAGE_BITS];
 
-	// Clear Masks
-	for(y=0;y<EVT_MESSAGE_BITS;y++)
-		mask[y]=0;
+ // Clear Masks
+ for(y=0;y<EVT_MESSAGE_BITS;y++)
+ mask[y]=0;
 
-	// Desired messages
-	mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
-	mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
-	mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
-	mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
-	mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
-	mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
-	mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ // Desired messages
+ mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 
 /* This function is no longer used
 void SaveEventList(FILE *ofp,unsigned char mask[],int DebriefType)
 {
-	EventElement *evList,*cur;
-	long eventMessage;
-	BOOL TrackFlag,Done;
-	VU_ID TrackID;
-	long TrackTime;
-	long dummy;
+ EventElement *evList,*cur;
+ long eventMessage;
+ BOOL TrackFlag,Done;
+ VU_ID TrackID;
+ long TrackTime;
+ long dummy;
 
-	evList=ReadEventFile("lastflt", mask);
-	if(evList == NULL)
-		return;
+ evList=ReadEventFile("lastflt", mask);
+ if(evList == NULL)
+ return;
 
-	TrackID=FalconNullId;
+ TrackID=FalconNullId;
 
-	cur=evList;
-	while(cur)
-	{
-		eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
-		if(eventMessage)
-		{
-			TrackFlag=FALSE;
-			Done=FALSE;
-			while(eventMessage && !Done)
-			{
-				if(TrackID == FalconNullId)
-					Done=TRUE;
-				AddMessageToFile(ofp,eventMessage,UIEventOutput,TrackFlag);
-				TrackFlag=TRUE;
-				if(!Done)
-					eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
-			}
+ cur=evList;
+ while(cur)
+ {
+ eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
+ if(eventMessage)
+ {
+ TrackFlag=FALSE;
+ Done=FALSE;
+ while(eventMessage && !Done)
+ {
+ if(TrackID == FalconNullId)
+ Done=TRUE;
+ AddMessageToFile(ofp,eventMessage,UIEventOutput,TrackFlag);
+ TrackFlag=TRUE;
+ if(!Done)
+ eventMessage=BuildMessage(cur,UIEventOutput,DebriefType,&TrackID,&TrackTime,&dummy);
+ }
 
-		}
-		cur=cur->next;
-	}
-	DisposeEventList(evList);
+ }
+ cur=cur->next;
+ }
+ DisposeEventList(evList);
 }
 */
 

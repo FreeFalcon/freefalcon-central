@@ -33,17 +33,17 @@ static const InputDataDesc AuxBombDataDesc[] =
     { "cbuDamageDiameterBurstAltMultiplier", InputDataDesc::ID_FLOAT, OFFSET(cbuDamageDiameterBAMult), ".2083"},
     { "cbuMaxDamageDiameter",   InputDataDesc::ID_FLOAT, OFFSET(cbuMaxDamageDiameter), "300"},
     { "cbuBlastMultiplier", InputDataDesc::ID_FLOAT, OFFSET(cbuBlastMultiplier), "1.0"},
-    { "sndFlightSFX",			InputDataDesc::ID_FLOAT, OFFSET(sndFlightSFX), "0"},
-    { "lauSalvoSize",			InputDataDesc::ID_INT,		OFFSET(lauSalvoSize),	"-1"},
-    { "lauWeaponId",			InputDataDesc::ID_INT,		OFFSET(lauWeaponId),	"0"},
-    { "lauRounds",				InputDataDesc::ID_INT,      OFFSET(lauRounds),		"0"},
-    { "lauAzimuth",				InputDataDesc::ID_FLOAT,	OFFSET(lauAzimuth),		"0"},
-    { "lauElevation",			InputDataDesc::ID_FLOAT,	OFFSET(lauElevation),	"0"},
-    { "lauRippleTimeMS",        InputDataDesc::ID_INT,	    OFFSET(lauRippleTime), "10"},
-    { "psFeatureImpact",		InputDataDesc::ID_STRING,	OFFSET(psFeatureImpact), ""},
-    { "psBombImpact",			InputDataDesc::ID_STRING,	OFFSET(psBombImpact), ""},
-    { "JDAMLift",			InputDataDesc::ID_FLOAT,	OFFSET(JDAMLift),	"5"},
-    { "JSOWmaxRange",			InputDataDesc::ID_FLOAT,	OFFSET(JSOWmaxRange),	"40"},
+    { "sndFlightSFX", InputDataDesc::ID_FLOAT, OFFSET(sndFlightSFX), "0"},
+    { "lauSalvoSize", InputDataDesc::ID_INT, OFFSET(lauSalvoSize), "-1"},
+    { "lauWeaponId", InputDataDesc::ID_INT, OFFSET(lauWeaponId), "0"},
+    { "lauRounds", InputDataDesc::ID_INT,      OFFSET(lauRounds), "0"},
+    { "lauAzimuth", InputDataDesc::ID_FLOAT, OFFSET(lauAzimuth), "0"},
+    { "lauElevation", InputDataDesc::ID_FLOAT, OFFSET(lauElevation), "0"},
+    { "lauRippleTimeMS",        InputDataDesc::ID_INT,     OFFSET(lauRippleTime), "10"},
+    { "psFeatureImpact", InputDataDesc::ID_STRING, OFFSET(psFeatureImpact), ""},
+    { "psBombImpact", InputDataDesc::ID_STRING, OFFSET(psBombImpact), ""},
+    { "JDAMLift", InputDataDesc::ID_FLOAT, OFFSET(JDAMLift), "5"},
+    { "JSOWmaxRange", InputDataDesc::ID_FLOAT, OFFSET(JSOWmaxRange), "40"},
 
     { NULL},
 };
@@ -122,8 +122,8 @@ void ReadAllBombData(void)
         {
             strncpy(BombDataset[i].name, buffer, sizeof(BombDataset[i].name));
             BombDataset[i].name[sizeof(BombDataset[i].name) - 1] = '\0';
-            BombDataset[i].inputData	= BombInputRead(inputFile);
-            BombDataset[i].auxData		= BombAuxAeroRead(inputFile); // JPO
+            BombDataset[i].inputData = BombInputRead(inputFile);
+            BombDataset[i].auxData = BombAuxAeroRead(inputFile); // JPO
             inputFile->Close();
             delete inputFile;
         }
@@ -186,7 +186,7 @@ BombAuxData *BombAuxAeroRead(SimlibFileClass* inputFile)
 
     if (ParseSimlibFile(auxBombData, AuxBombDataDesc, inputFile) == false)
     {
-        //	    F4Assert(!"Bad parsing of aux aero data");
+        //     F4Assert(!"Bad parsing of aux aero data");
     }
 
     return (auxBombData);

@@ -8,8 +8,8 @@
 #include "find.h"
 #include "flightdata.h"
 
-#define S_IN_M		60
-#define S_IN_H		3600
+#define S_IN_M 60
+#define S_IN_H 3600
 
 extern bool g_bIFF;
 
@@ -149,7 +149,7 @@ int ICPClass::CheckMode(void)
         if (IsICPSet(ICPClass::MODE_COMM1) || IsICPSet(ICPClass::MODE_COMM2) ||
             IsICPSet(ICPClass::MODE_IFF) || IsICPSet(ICPClass::MODE_DLINK) ||
             IsICPSet(ICPClass::MODE_FACK) || IsICPSet(ICPClass::BLOCK_MODE) ||
-            (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) ||	//INTG
+            (IsICPSet(ICPClass::MODE_LIST) && mICPSecondaryMode == 100) || //INTG
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
         else
@@ -450,12 +450,12 @@ void ICPClass::FillDEDMatrix(int Line, int Pos, char *str, int Inverted)
 void ICPClass::GetWind(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    Tpoint			pos;
+    Tpoint pos;
     pos.x = playerAC->XPos();
     pos.y = playerAC->YPos();
     pos.z = playerAC->ZPos();
 
-    heading	= FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
+    heading = FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
 
     if (heading <= 0)
         heading += 180;
@@ -466,7 +466,7 @@ void ICPClass::GetWind(void)
         heading = 360 + heading;
 
 
-    windSpeed	= ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
+    windSpeed = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
 
 }
 void ICPClass::AddSTPT(int Line, int Pos)
@@ -502,14 +502,14 @@ void ICPClass::ClearInverted(int Line, int Start, int End)
 
 void ICPClass::FindEDR(long hours, char* timeStr)
 {
-    long	minutes, secs;
-    char	hoursStr[3] = "";
-    char	minutesStr[3] = "";
-    char	secsStr[3] = "";
-    minutes	= hours % S_IN_H;			// generate hours column
-    hours		= hours  / S_IN_H;
-    secs		= minutes % S_IN_M;		// generate secs column
-    minutes	= minutes / S_IN_M;			// generate minutes column
+    long minutes, secs;
+    char hoursStr[3] = "";
+    char minutesStr[3] = "";
+    char secsStr[3] = "";
+    minutes = hours % S_IN_H; // generate hours column
+    hours = hours  / S_IN_H;
+    secs = minutes % S_IN_M; // generate secs column
+    minutes = minutes / S_IN_M; // generate minutes column
 
     if (hours <= 0 && minutes <= 0 && secs <= 0)
     {
@@ -693,7 +693,7 @@ void ICPClass::CheckAutoSTPT(void)
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
     float deltaX = xCurr - playerAC->XPos();
     float deltaY = yCurr - playerAC->YPos();
-    float distanceToSta	= ((float)sqrt(deltaX * deltaX + deltaY * deltaY) * FT_TO_NM);
+    float distanceToSta = ((float)sqrt(deltaX * deltaX + deltaY * deltaY) * FT_TO_NM);
 
     if (distanceToSta <= 2)
         PNUpdateSTPTMode(NEXT_BUTTON, 0);
@@ -859,7 +859,7 @@ void ICPClass::InitStuff(void)
     FillStrings = TRUE;
 
     //Laser page
-    LaserTime = 8;	//8 seconds
+    LaserTime = 8; //8 seconds
     LaserLine = 1;
     LaserCode = 1123;
     ClearPFLLines();
@@ -1022,20 +1022,20 @@ float ICPClass::GetNumScans(void)
 //functions for INS only
 void ICPClass::GetINSInfo(void)
 {
-    latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
 
-    latitude	*= RTD;
-    longitude	*= RTD;
+    latitude *= RTD;
+    longitude *= RTD;
 
     StartLat = latitude;
     StartLong = longitude;
 
-    latDeg	= FloatToInt32(latitude);
-    latMin	= (float)fabs(latitude - latDeg) * DEG_TO_MIN;
-    longDeg		= FloatToInt32(longitude);
-    longMin		= (float)fabs(longitude - longDeg) * DEG_TO_MIN;
+    latDeg = FloatToInt32(latitude);
+    latMin = (float)fabs(latitude - latDeg) * DEG_TO_MIN;
+    longDeg = FloatToInt32(longitude);
+    longMin = (float)fabs(longitude - longDeg) * DEG_TO_MIN;
 
     // format lat/long here
     if (latMin < 10.0F)

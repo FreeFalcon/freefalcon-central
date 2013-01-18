@@ -26,8 +26,8 @@
 #include "ffeedbk.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include "dinput.h"
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include "dinput.h"
 
 #include "flight.h"
 #include "simdrive.h"
@@ -42,7 +42,7 @@
 
 extern VU_TIME vuxGameTime;
 extern int gPlayerExitMenuShown;
-//extern bool g_bHardCoreReal; //me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 extern bool g_bRollLinkedNWSRudder; // ASSOCIATOR 30/11/03 Added for roll unlinked rudder and NWS on the ground
 
@@ -62,10 +62,10 @@ void AirframeClass::EquationsOfMotion(float dt)
 
     if (IsSet(InAir))
     {
-        groundAnchorX	= x;
-        groundAnchorY	= y;
-        groundDeltaX	= 0.0f;
-        groundDeltaY	= 0.0f;
+        groundAnchorX = x;
+        groundAnchorY = y;
+        groundDeltaX = 0.0f;
+        groundDeltaY = 0.0f;
     }
     else
         groundType = OTWDriver.GetGroundType(x, y);
@@ -295,7 +295,7 @@ void AirframeClass::CalcBodyRates(float dt)
                         gear[i].vel = 0.0F;
 
                     //else
-                    //	gear[i].vel = min(5.0F, max(-5.0F, gear[i].vel));
+                    // gear[i].vel = min(5.0F, max(-5.0F, gear[i].vel));
                     if (fabs(GearExt) < 0.001F && gear[i].vel == 0.0F)
                     {
                         GearExt = 0.0F;
@@ -554,7 +554,7 @@ void AirframeClass::CalcBodyRates(float dt)
         //                 pulled back
         //                 everything seems to work with it disabled :)
         //if(!alpdelta && pstick > 0.0F && alpha > 0.0F)
-        //	alpdelta = max(-alpha, (GRAVITY + zsaeroLim)*-ANG_RATE*dt*dt);
+        // alpdelta = max(-alpha, (GRAVITY + zsaeroLim)*-ANG_RATE*dt*dt);
         alpha += alpdelta;
         oldp03[0] += alpdelta;
         oldp03[1] += alpdelta;
@@ -642,7 +642,7 @@ void AirframeClass::CalcBodyRates(float dt)
         q = Math.FLTust(qptchc, tp01 * auxaeroData->pitchElasticity, dt , oldp05);
         ShiAssert(!_isnan(q));
         //if(!IsSet(InAir))
-        //	q = max(0.0F, q);
+        // q = max(0.0F, q);
 
         /*----------------------------------*/
         /* body axis roll rate and yaw rate */
@@ -735,33 +735,33 @@ void AirframeClass::CalcBodyRates(float dt)
         ShiAssert(!_isnan(r));
         /* REMOVED BY S.G. THIS CODE IS PART OF THE CLUPRIT WHY HOOKING TO THE TANKER DOESN'T WORK
 
-        		// If on a boom, damp the rates
-        		if (IsSet(Refueling))
-        		{
-        			float rateDeadband = 0.05F*PlayerOptions.GetRefuelingMode();
+         // If on a boom, damp the rates
+         if (IsSet(Refueling))
+         {
+         float rateDeadband = 0.05F*PlayerOptions.GetRefuelingMode();
 
-        			// Try to follow the tanker, unless rates are to high
-        			if (q > rateDeadband)
-        				q -= rateDeadband;
-        			else if (q < -rateDeadband)
-        				q += rateDeadband;
-        			else
-        				q = -gmma*0.75F;
+         // Try to follow the tanker, unless rates are to high
+         if (q > rateDeadband)
+         q -= rateDeadband;
+         else if (q < -rateDeadband)
+         q += rateDeadband;
+         else
+         q = -gmma*0.75F;
 
-        			if (p > rateDeadband)
-        				p -= rateDeadband;
-        			else if (p < -rateDeadband)
-        				p += rateDeadband;
-        			else
-        				p = -phi*0.75F;
+         if (p > rateDeadband)
+         p -= rateDeadband;
+         else if (p < -rateDeadband)
+         p += rateDeadband;
+         else
+         p = -phi*0.75F;
 
-        			if (r > rateDeadband)
-        				r -= rateDeadband;
-        			else if (r < -rateDeadband)
-        				r += rateDeadband;
-        			else
-        				r = (forcedHeading - sigma)*0.75F;
-        		}
+         if (r > rateDeadband)
+         r -= rateDeadband;
+         else if (r < -rateDeadband)
+         r += rateDeadband;
+         else
+         r = (forcedHeading - sigma)*0.75F;
+         }
         */
     }
     else
@@ -864,10 +864,10 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 {
     float rCom, rMax, Mu_fric = 0.0F;
     float NWSrshape = 0.0F, NWSyshape = 0.0F;
-    float NWSBias = 0.02F;				// RAS 02Apr04 - Adjust how fast Nose Wheel turns (1.0 max)
+    float NWSBias = 0.02F; // RAS 02Apr04 - Adjust how fast Nose Wheel turns (1.0 max)
     // 0.01 is pretty slow, and 0.05 is fairly fast
 
-    if (IsSet(InAir) || platform->mFaults->GetFault(nws_fault))	//MI added faults check
+    if (IsSet(InAir) || platform->mFaults->GetFault(nws_fault)) //MI added faults check
         return;
 
     if (g_bRealisticAvionics && platform->Pitch() * RTD > 3 && IsSet(NoseSteerOn))
@@ -890,52 +890,52 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             // MonoPrint("RStick = %f \n", RStick);
             // MonoPrint("YPedal = %f \n", YPedal);
 
-            if (RStick || lastRStick || YPedal || lastYPedal)				// Verify that we have a keyboard/rudder input or that the nose wheel
+            if (RStick || lastRStick || YPedal || lastYPedal) // Verify that we have a keyboard/rudder input or that the nose wheel
             {
                 // is in a position other than zero
-                if (RStick || lastRStick)									// use this if using keyboard
+                if (RStick || lastRStick) // use this if using keyboard
                 {
-                    if (RStick > 0.0F || lastRStick > 0.0F)					// NWS commanded to the right
+                    if (RStick > 0.0F || lastRStick > 0.0F) // NWS commanded to the right
                     {
-                        if ((lastRStick < NWSBias) && (RStick < NWSBias))	// if float value near center, zero out variables
+                        if ((lastRStick < NWSBias) && (RStick < NWSBias)) // if float value near center, zero out variables
                         {
-                            RStick = 0.0F;									// Acutaly nose wheel positin less than NWSBias so set all var's to zero
+                            RStick = 0.0F; // Acutaly nose wheel positin less than NWSBias so set all var's to zero
                             lastRStick = 0.0F;
                         }
                         else
                         {
-                            if (lastRStick < RStick)					// Nose Wheel less than commanded position
+                            if (lastRStick < RStick) // Nose Wheel less than commanded position
                             {
-                                RStick = lastRStick + NWSBias;		// Turn nose wheel right by NWSBias amount
-                                lastRStick = RStick;				// Save last nose wheel position
+                                RStick = lastRStick + NWSBias; // Turn nose wheel right by NWSBias amount
+                                lastRStick = RStick; // Save last nose wheel position
                             }
-                            else									// We get here if nose wheel is greater than commanded position
+                            else // We get here if nose wheel is greater than commanded position
                             {
-                                RStick = lastRStick - NWSBias;		// Turn nose wheel left by NWSBias amount
+                                RStick = lastRStick - NWSBias; // Turn nose wheel left by NWSBias amount
                                 lastRStick = RStick;
                             }
                         }
                     }
                     else
                     {
-                        if (RStick < 0.0F || lastRStick < 0.0F)		// NWS commanded to the left
+                        if (RStick < 0.0F || lastRStick < 0.0F) // NWS commanded to the left
                         {
-                            if ((lastRStick > -NWSBias) && (RStick > -NWSBias))	// If float vaule near center, zero out variables
+                            if ((lastRStick > -NWSBias) && (RStick > -NWSBias)) // If float vaule near center, zero out variables
                             {
                                 RStick = 0.0F;
                                 lastRStick = 0.0F;
                             }
                             else
                             {
-                                if (lastRStick > RStick)				// Nose Wheel less than commanded position
+                                if (lastRStick > RStick) // Nose Wheel less than commanded position
                                 {
-                                    RStick = lastRStick - NWSBias;	// Turn nose wheel left by NWSBias amount
-                                    lastRStick = RStick;			// Save last nose wheel position
+                                    RStick = lastRStick - NWSBias; // Turn nose wheel left by NWSBias amount
+                                    lastRStick = RStick; // Save last nose wheel position
                                 }
-                                else								// Nose wheel farther left than commanded
+                                else // Nose wheel farther left than commanded
                                 {
-                                    RStick = lastRStick + NWSBias;	// Turn nose wheel right by NWSBias amount
-                                    lastRStick = RStick;			// Save last nose wheel position
+                                    RStick = lastRStick + NWSBias; // Turn nose wheel right by NWSBias amount
+                                    lastRStick = RStick; // Save last nose wheel position
                                 }
                             }
                         }
@@ -945,7 +945,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
                     if (lastRStick)
                     {
-                        NWSrshape = lastRStick;			//*lastRStick;
+                        NWSrshape = lastRStick; //*lastRStick;
 
                         if (lastRStick < 0)
                             NWSrshape *= -1.0F;
@@ -1005,7 +1005,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
                 // NWSyshape is the gain based on nose wheel (rudder pedal) position.  Original yshape gain calculated in gain.cpp
                 if (lastYPedal)
                 {
-                    NWSyshape = lastYPedal;			//*lastYPedal;
+                    NWSyshape = lastYPedal; //*lastYPedal;
 
                     if (lastYPedal < 0)
                         NWSyshape *= -1.0F;
@@ -1019,7 +1019,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
 
 
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked NWS on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder)	// Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder) // Retro 31Dec2003
             {
                 // rCom =  vt/(13.167F/(float)sin(-ypedal * fabs(yshape) * 0.55856F));
                 rCom =  vt / (13.167F / (float)sin(-YPedal * fabs(NWSyshape) * 0.55856F));
@@ -1027,7 +1027,7 @@ void AirframeClass::CalcGroundTurnRate(float dt)
             else
             {
                 // rCom =  vt/(13.167F/(float)sin(rstick * fabs(rshape) * 0.55856F));
-                if (fabs(RStick) > fabs(YPedal))  	// ASSOCIATOR: Added check so that we can use rudder keys and stick
+                if (fabs(RStick) > fabs(YPedal))   // ASSOCIATOR: Added check so that we can use rudder keys and stick
                 {
                     rCom =  vt / (13.167F / (float)sin(RStick * fabs(NWSrshape) * 0.55856F));
                 }
@@ -1078,14 +1078,14 @@ void AirframeClass::CalcGroundTurnRate(float dt)
         else
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
-            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder) 	// Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) && !IsSet(IsDigital) || !g_bRollLinkedNWSRudder)  // Retro 31Dec2003
             {
                 r =  max(-0.5F, min(ypedal * (float)fabs(yshape) * wy01 * cy * qsom * 0.5F, 0.5F));
             }
             else
             {
                 // ASSOCIATOR 30/11/03 Negated rstick to reverse roll linked rudder direction on the ground
-                if (fabs(rstick) > fabs(ypedal))  	// ASSOCIATOR: Added check so that we can use rudder keys and stick
+                if (fabs(rstick) > fabs(ypedal))   // ASSOCIATOR: Added check so that we can use rudder keys and stick
                 {
                     r =  max(-0.5F, min(-rstick * (float)fabs(rshape) * wy01 * cy * qsom * 0.5F, 0.5F));
                 }
@@ -1128,20 +1128,20 @@ void AirframeClass::ResetOrientation()
 {
     mlTrig trigGam, trigSig, trigMu;
 
-    mlSinCos(&trigGam,	gmma	* 0.5F);
-    mlSinCos(&trigSig,	sigma	* 0.5F);
-    mlSinCos(&trigMu,	mu		* 0.5F);
+    mlSinCos(&trigGam, gmma * 0.5F);
+    mlSinCos(&trigSig, sigma * 0.5F);
+    mlSinCos(&trigMu, mu * 0.5F);
 
-    e1 =	trigSig.cos * trigGam.cos * trigMu.cos +
+    e1 = trigSig.cos * trigGam.cos * trigMu.cos +
             trigSig.sin * trigGam.sin * trigMu.sin;
 
-    e2 =	trigSig.sin * trigGam.cos * trigMu.cos -
+    e2 = trigSig.sin * trigGam.cos * trigMu.cos -
             trigSig.cos * trigGam.sin * trigMu.sin;
 
-    e3 =	trigSig.cos * trigGam.sin * trigMu.cos +
+    e3 = trigSig.cos * trigGam.sin * trigMu.cos +
             trigSig.sin * trigGam.cos * trigMu.sin;
 
-    e4 =	trigSig.cos * trigGam.cos * trigMu.sin -
+    e4 = trigSig.cos * trigGam.cos * trigMu.sin -
             trigSig.sin * trigGam.sin * trigMu.cos;
 }
 
@@ -1315,7 +1315,7 @@ float AirframeClass::CalculateVt(float dt)
                         groundType == COVERAGE_WATER ||
                         groundType == COVERAGE_RIVER ||
                         groundType == COVERAGE_THINFOREST ||
-                        groundType == COVERAGE_THICKFOREST	||
+                        groundType == COVERAGE_THICKFOREST ||
                         groundType == COVERAGE_ROCKY ||
                         groundType == COVERAGE_URBAN
                     )
@@ -1955,7 +1955,7 @@ float AirframeClass::CheckHeight(void) const
 
     // sfr: removed JB check
     //if (F4IsBadReadPtr(platform, sizeof(AircraftClass))) // JB 010317 CTD
-    //	return 0;
+    // return 0;
 
     float cgloc = GetAeroData(AeroDataSet::CGLoc);
     float length = GetAeroData(AeroDataSet::Length);

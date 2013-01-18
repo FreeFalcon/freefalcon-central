@@ -18,7 +18,7 @@
 #include "stdhdr.h"
 #include "Graphics/DXEngine/DXVBManager.h"
 
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 
 #include "ClassTbl.h"
@@ -60,10 +60,10 @@ extern	bool g_bUse_DX_Engine;
 #include "Weather.h"
 #include "DrawParticleSys.h"
 
-#include "radiosubtitle.h"	// Retro 16Dec2003
-#include "falcsnd/winampfrontend.h"	// Retro 3Jan2004
-#include "mouselook.h"	// Retro 18Jan2004
-extern bool g_bPilotEntertainment;	// Retro 3Jan2004
+#include "radiosubtitle.h" // Retro 16Dec2003
+#include "falcsnd/winampfrontend.h" // Retro 3Jan2004
+#include "mouselook.h" // Retro 18Jan2004
+extern bool g_bPilotEntertainment; // Retro 3Jan2004
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 
 
@@ -76,16 +76,16 @@ extern int F4FlyingEyeType;
 extern HWND mainMenuWnd;
 extern VU_ID gVmPlayVU_ID;
 extern int narrowFOV;
-//extern bool g_b3DClickableCockpit;		//Wombat778 10-10-2003
-extern char g_strForceCockpitDat[0x40];		//Wombat778 10-10-2003
-//extern char g_strForcePadlockDat[0x40];		//Wombat778 10-10-2003
-extern int g_nForceCockpitResolution;	//Wombat778 4-02-04
-int FindBestResolution(void);			//Wombat778 4-03-04
-extern float g_fHybridPitThreshold1;		//Wombat778 11-18-04
-extern float g_fHybridPitThreshold2;		//Wombat778 11-18-04
-extern int   g_nHybridPitModeDelay;			//Wombat778 11-18-04
+//extern bool g_b3DClickableCockpit; //Wombat778 10-10-2003
+extern char g_strForceCockpitDat[0x40]; //Wombat778 10-10-2003
+//extern char g_strForcePadlockDat[0x40]; //Wombat778 10-10-2003
+extern int g_nForceCockpitResolution; //Wombat778 4-02-04
+int FindBestResolution(void); //Wombat778 4-03-04
+extern float g_fHybridPitThreshold1; //Wombat778 11-18-04
+extern float g_fHybridPitThreshold2; //Wombat778 11-18-04
+extern int   g_nHybridPitModeDelay; //Wombat778 11-18-04
 
-extern bool g_bEnableDisplacementCam;	// Retro 25Dec2003
+extern bool g_bEnableDisplacementCam; // Retro 25Dec2003
 
 // when in an external camera position we need to tell the player bubble
 // where we are.  So we create one of these thingy's
@@ -105,7 +105,7 @@ extern MEM_BOOL MEM_CALLBACK errPrint(MEM_ERROR_INFO *errorInfo);
 extern MEM_ERROR_FN lastErrorFn;
 #endif
 
-extern bool	g_bEnableMfdSize; // a.s. enables resizing of Mfds
+extern bool g_bEnableMfdSize; // a.s. enables resizing of Mfds
 extern float g_fMfd_p_Size;   // a.s.
 
 
@@ -147,8 +147,8 @@ DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
    0xff000000,
    0xff00bf00,
    };
-   const DWORD*	OTWDriverClass::hudColor = HUDcolor;
-   const int		OTWDriverClass::NumHudColors = sizeof(HUDcolor)/sizeof(HUDcolor[0]);
+   const DWORD* OTWDriverClass::hudColor = HUDcolor;
+   const int OTWDriverClass::NumHudColors = sizeof(HUDcolor)/sizeof(HUDcolor[0]);
    */
 
 // MFD Placement
@@ -187,7 +187,7 @@ OTWDriverClass::OTWDriverClass(void)
     endFlightTimer = 0;
     actionCameraTimer = 0;
     actionCameraMode = FALSE;
-    HybridPitModeEnabled = 0;	//Wombat778 11-18-04
+    HybridPitModeEnabled = 0; //Wombat778 11-18-04
 
     flybyTimer = 0;
     endFlightPointSet = FALSE;
@@ -248,16 +248,16 @@ OTWDriverClass::OTWDriverClass(void)
     snapDir = 0.0F;
     stopState = STOP_STATE0;
 
-    mpPadlockCandidate	= NULL;
+    mpPadlockCandidate = NULL;
     mPadlockCandidateID  = FalconNullId;
 
-    mObjectOccluded		= TRUE;
+    mObjectOccluded = TRUE;
 
-    mTDTimeout				= 0.0F;
+    mTDTimeout = 0.0F;
 
-    mIsSlewInit				= FALSE;
-    mSlewPStart				= 0.0F;
-    mSlewTStart				= 0.0F;
+    mIsSlewInit = FALSE;
+    mSlewPStart = 0.0F;
+    mSlewTStart = 0.0F;
 
     eyeHeadRoll = 0.0F;
     eyePan = 0.0F;
@@ -267,7 +267,7 @@ OTWDriverClass::OTWDriverClass(void)
     chaseRange = -500.0F;
     azDir = 0.0F;
     elDir = 0.0F;
-    slewRate = 40.0f * DTR;	// 40 deg per sec
+    slewRate = 40.0f * DTR; // 40 deg per sec
     todOffset = 0.0f;
     mPadlockTimeout = 0.0F;
     e1 = 1.0F;
@@ -307,13 +307,13 @@ OTWDriverClass::OTWDriverClass(void)
     vDEDrenderer = NULL;
     vPFLrenderer = NULL;
 
-    vBoresightY = 0.75f;	// ASSO:
+    vBoresightY = 0.75f; // ASSO:
 
     pCockpitManager = NULL;
     pPadlockCPManager = NULL;
-    pMenuManager	= NULL;
+    pMenuManager = NULL;
 
-    mDoSidebar	= FALSE;
+    mDoSidebar = FALSE;
 
     PadlockF3_InitSidebar();
 
@@ -356,7 +356,7 @@ OTWDriverClass::OTWDriverClass(void)
     bVCockZBuffering = FALSE;
 
     // Create Shared Memory object for data output
-    gSharedMemHandle = CreateFileMapping((HANDLE)0xFFFFFFFF,	NULL,	PAGE_READWRITE,
+    gSharedMemHandle = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE,
                                          0, sizeof(FlightData), "FalconSharedMemoryArea");
 
     if (gSharedMemHandle)
@@ -370,7 +370,7 @@ OTWDriverClass::OTWDriverClass(void)
     }
 
     // Create Shared Memory object for other output
-    gIntellivibeShared = CreateFileMapping((HANDLE)0xFFFFFFFF,	NULL,	PAGE_READWRITE,
+    gIntellivibeShared = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE,
                                            0, sizeof(IntellivibeData), "FalconIntellivibeSharedMemoryArea");
 
     if (gIntellivibeShared)
@@ -385,20 +385,20 @@ OTWDriverClass::OTWDriverClass(void)
 
     cs_update = F4CreateCriticalSection("cs_update"); // JB 010616
     bKeepClean = FALSE; // JB 010616
-    liftlinecolor = (0xFF0096FF);	// M.N. 011223
+    liftlinecolor = (0xFF0096FF); // M.N. 011223
     simObjectPtr = NULL; // M.N. 020102 - probably caused the CalcRelGeom CTD
 
-    ProfilerActive = false;	// Retro 16/10/03
-    DisplayProfiler = false;	// Retro 16/10/03
+    ProfilerActive = false; // Retro 16/10/03
+    DisplayProfiler = false; // Retro 16/10/03
 
-    xDir = new CamDisplacement(1.F, 3.F, 1.F);	// Retro 23Dec2003
-    yDir = new CamDisplacement(-1.F, -3.F, 1.F);	// Retro 23Dec2003
-    zDir = new CamDisplacement(1.F, 3.F, 1.F);	// Retro 23Dec2003
+    xDir = new CamDisplacement(1.F, 3.F, 1.F); // Retro 23Dec2003
+    yDir = new CamDisplacement(-1.F, -3.F, 1.F); // Retro 23Dec2003
+    zDir = new CamDisplacement(1.F, 3.F, 1.F); // Retro 23Dec2003
 
-    displaceCamera = false;		// Retro 25Dec2003
+    displaceCamera = false; // Retro 25Dec2003
 
     // 1 meter per second ? not sure bout the distance units (again)
-    cameraDisplacementRate = 1.0F;				// Retro 24Dec2003 - this should be constant
+    cameraDisplacementRate = 1.0F; // Retro 24Dec2003 - this should be constant
     currentFPS = 0.0f;//Cobra
 
 #if NEW_SERVER_VIEWPOINT
@@ -507,7 +507,7 @@ void OTWDriverClass::SetTrackPlatform(SimBaseClass *obj)
 #endif
 
 /*
- **	RunActionCamera looks for interesting things going on and sets the
+ ** RunActionCamera looks for interesting things going on and sets the
  **  Camera Mode accordingly.   It essentially does this by prioritizing
  **  any weapons flying or objects firing.
  */
@@ -1851,9 +1851,9 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
 /*--------------------------------------------*/
 void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
 {
-    int	i;
-    AircraftClass*	avionicsObj;
-    SimBaseClass*	curPlatform = otwPlatform.get();
+    int i;
+    AircraftClass* avionicsObj;
+    SimBaseClass* curPlatform = otwPlatform.get();
 
     // sanity check
     if (obj && !obj->IsSim())
@@ -1974,13 +1974,13 @@ void OTWDriverClass::ServerSetviewPoint(void)
 }
 #endif
 
-#include "SimIO.h"	// Retro 9Jan2004
+#include "SimIO.h" // Retro 9Jan2004
 
 void OTWDriverClass::Enter(void)
 {
-    Tpoint			viewPos;
-    Trotation		viewRotation;
-    int				i;
+    Tpoint viewPos;
+    Trotation viewRotation;
+    int i;
     F4SoundEntering3d(); // MLR 12/13/2003 - Just inits some data for the sound code
 
     gOtwCameraLocation = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
@@ -1992,7 +1992,7 @@ void OTWDriverClass::Enter(void)
 
     if (MemDefaultPool)
     {
-        //	MonoPrint( "Shrinking Default Memory Pool by %d Bytes\n",
+        // MonoPrint( "Shrinking Default Memory Pool by %d Bytes\n",
         MemPoolShrink(MemDefaultPool)/* )*/;
     }
 
@@ -2110,7 +2110,7 @@ void OTWDriverClass::Enter(void)
     TCHAR* eCPName = NULL;
     TCHAR* eCPNameNCTR = NULL;
 
-    FlightClass	*pFlight = FalconLocalSession->GetPlayerFlight();
+    FlightClass *pFlight = FalconLocalSession->GetPlayerFlight();
 
     if (pFlight)
     {
@@ -2224,8 +2224,8 @@ void OTWDriverClass::Enter(void)
 
     if (resX > 0 && resY > 0)
     {
-        pCockpitManager	= new CockpitManager(OTWImage, "ws_ckpit.dat", TRUE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
-        pPadlockCPManager	= new CockpitManager(OTWImage, "ws_plock.dat", FALSE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
+        pCockpitManager = new CockpitManager(OTWImage, "ws_ckpit.dat", TRUE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
+        pPadlockCPManager = new CockpitManager(OTWImage, "ws_plock.dat", FALSE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
     }
     else
     {
@@ -2234,28 +2234,28 @@ void OTWDriverClass::Enter(void)
             switch (FindCockpitResolution(COCKPIT_FILE_6x4, COCKPIT_FILE_8x6, COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, eCPVisType, eCPName, eCPNameNCTR))
             {
                 case 2:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 3:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 4:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 5:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 default:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
             }
         }
@@ -2264,28 +2264,28 @@ void OTWDriverClass::Enter(void)
             switch (FindCockpitResolution(COCKPIT_FILE_8x6, COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
             {
                 default:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 2:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 3:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 4:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 5:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
             }
         }
@@ -2294,58 +2294,58 @@ void OTWDriverClass::Enter(void)
             switch (FindCockpitResolution(COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
             {
                 default:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 2:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 3:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 4:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 5:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
             }
         }
         else if (FindBestResolution() == 1280)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_10x7, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))			//Wombat778 10-12-2003 Changed to use the findcockpitresolution function to make sure that order of loading is right
+            switch (FindCockpitResolution(COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_10x7, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR)) //Wombat778 10-12-2003 Changed to use the findcockpitresolution function to make sure that order of loading is right
             {
                 case 1:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 2:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);		//Load 1600 pit and scale down to 1280
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1600 pit and scale down to 1280
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 default:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);		//Load 1024 pit and scale up to 1280
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1280
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 4:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 5:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
             }
@@ -2355,28 +2355,28 @@ void OTWDriverClass::Enter(void)
             switch (FindCockpitResolution(COCKPIT_FILE_16x12, COCKPIT_FILE_12x9, COCKPIT_FILE_10x7, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
             {
                 case 1:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);				//Load the 1600 pit
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load the 1600 pit
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 2:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);		//Load 1280 pit and scale up to 1600
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1280 pit and scale up to 1600
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 default:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);		//Load 1024 pit and scale up to 1600
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1600
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 4:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
 
                 case 5:
-                    pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
                     break;
             }
         }
@@ -2384,8 +2384,8 @@ void OTWDriverClass::Enter(void)
         else
         {
             // Unsupported resolution, but fill in w/ 8x6
-            pCockpitManager	= new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, 1.0f, 1.0f, TRUE);
-            pPadlockCPManager	= new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, 1.0f, 1.0f, TRUE);
+            pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, 1.0f, 1.0f, TRUE);
+            pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, 1.0f, 1.0f, TRUE);
             startMode = ModeHud;
         }
     }
@@ -2400,7 +2400,7 @@ void OTWDriverClass::Enter(void)
     MfdSize = 154 * DisplayOptions.DispHeight / 480;
 
     if (g_bEnableMfdSize)
-        MfdSize = (int)((g_fMfd_p_Size / 100.0F) * 154.0F) * DisplayOptions.DispHeight / 480;	//a.s.
+        MfdSize = (int)((g_fMfd_p_Size / 100.0F) * 154.0F) * DisplayOptions.DispHeight / 480; //a.s.
 
     VirtualMFD[0].top    = DisplayOptions.DispHeight - MfdSize;
     VirtualMFD[0].right  = MfdSize - 1;
@@ -2437,7 +2437,7 @@ void OTWDriverClass::Enter(void)
 
     /*if(renderer->GetAlphaMode())*/
     vrCockpit->SetSwitchMask(0, 1);
-    //	else vrCockpit->SetSwitchMask( 0, 0);
+    // else vrCockpit->SetSwitchMask( 0, 0);
 
     if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(1, 1);
@@ -2461,15 +2461,15 @@ void OTWDriverClass::Enter(void)
     DrawableBSP::LockAndLoad(MapVisId(797));
     DrawableBSP::LockAndLoad(MapVisId(VIS_END_MISSION));
 
-    //	renderer->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
-    //	renderer->SetSmoothShadingMode( PlayerOptions.GouraudOn() );
+    // renderer->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
+    // renderer->SetSmoothShadingMode( PlayerOptions.GouraudOn() );
 
     renderer->SetHazeMode(PlayerOptions.HazingOn());
     renderer->SetDitheringMode(PlayerOptions.HazingOn());
 
     renderer->SetFilteringMode(PlayerOptions.FilteringOn());
     renderer->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
-    //	renderer->SetAlphaMode(PlayerOptions.AlphaOn());
+    // renderer->SetAlphaMode(PlayerOptions.AlphaOn());
     renderer->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
 
     //Get player options
@@ -2478,8 +2478,8 @@ void OTWDriverClass::Enter(void)
     if (!PlayerOptions.NameTagsOn())
     {
         // Make sure name tags are off if they're not allowed
-        DrawableBSP::drawLabels		= FALSE;
-        DrawablePoint::drawLabels	= FALSE;
+        DrawableBSP::drawLabels = FALSE;
+        DrawablePoint::drawLabels = FALSE;
     }
 
     // Initialize ejection cam.
@@ -2491,15 +2491,15 @@ void OTWDriverClass::Enter(void)
 
     SetOTWDisplayMode(startMode);
 
-    drawInfoBar = PlayerOptions.getInfoBar();		// Retro 16Dec2003
+    drawInfoBar = PlayerOptions.getInfoBar(); // Retro 16Dec2003
 
-    takePrettyScreenShot = OFF;	// Retro 7May2004
-    LabelState = FALSE;			// Retro 8May2004
+    takePrettyScreenShot = OFF; // Retro 7May2004
+    LabelState = FALSE; // Retro 8May2004
 
     if (g_bEnableDisplacementCam)
-        displaceCamera = true;	// Retro 23Dec2003
+        displaceCamera = true; // Retro 23Dec2003
     else
-        displaceCamera = false;	// Retro 25Dec2003
+        displaceCamera = false; // Retro 25Dec2003
 
     // Retro 16Dec2003 - wipes internal structs clear of messages of last mission
     // 'drawSubTitles' doesn´t destroy or create the radiolabel class - it just governs if the labels are created
@@ -2507,31 +2507,31 @@ void OTWDriverClass::Enter(void)
     // has to do this in the UI
     if ((PlayerOptions.getSubtitles()) && (radioLabel))
     {
-        drawSubTitles = true;	// Retro 16Dec2003
+        drawSubTitles = true; // Retro 16Dec2003
         radioLabel->ResetAll();
     }
     else
     {
-        drawSubTitles = false;	// Retro 21Dec2003
+        drawSubTitles = false; // Retro 21Dec2003
     }
 
-    if ((g_bPilotEntertainment) && (winamp))	// Retro 3Jan2004 (all) - looking for that winamp window..
+    if ((g_bPilotEntertainment) && (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
     {
         winamp->InitWinAmp();
     }
 
-    IO.ResetAllInputs();		// Retro 9Jan2004
+    IO.ResetAllInputs(); // Retro 9Jan2004
 
     extern void SetThrottleInActive();
-    SetThrottleInActive();		// Retro 4Jan2004
+    SetThrottleInActive(); // Retro 4Jan2004
 
     // Retro 18Jan2004
     theMouseView.Reset();
     // Retro ends
 
     // Retro 1Feb2004 - preinit those values so that on first frame the values are shown
-    //	if the ac has no dual engine / no flaps then the display routines are NOT entered
-    //	in subsequent frames
+    // if the ac has no dual engine / no flaps then the display routines are NOT entered
+    // in subsequent frames
 
     // RV - Biker - Never seen any difference in left and right engine so this is worthless
     //showEngine = true;
@@ -2541,8 +2541,8 @@ void OTWDriverClass::Enter(void)
 
     slewRate = (float)PlayerOptions.GetKeyboardPOVPanningSensitivity() * DTR;
 
-    // Retro 15Feb2004 -	load the default clickable pit mode into a variable that may
-    //						be changed by the user in the 3d
+    // Retro 15Feb2004 - load the default clickable pit mode into a variable that may
+    // be changed by the user in the 3d
     extern bool clickableMouseMode;
     clickableMouseMode = PlayerOptions.GetClickablePitMode();
 
@@ -3088,10 +3088,10 @@ void OTWDriverClass::RemoveObjectFromDrawList(SimBaseClass* theObject)
 
         // RED - NEW PS TRAILS - No more needed a remove
         /*if (theObject->IsMissile() &&
-        		((MissileClass*)theObject)->trail &&
-        		((MissileClass*)theObject)->trail->InDisplayList() )
+         ((MissileClass*)theObject)->trail &&
+         ((MissileClass*)theObject)->trail->InDisplayList() )
         {
-        	viewPoint->RemoveObject(((MissileClass*)theObject)->trail);
+         viewPoint->RemoveObject(((MissileClass*)theObject)->trail);
         }*/
 
         if (

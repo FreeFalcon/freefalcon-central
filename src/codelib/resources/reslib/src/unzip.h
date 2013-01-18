@@ -8,9 +8,9 @@
   prototypes (or "forward declarations," in the case of non-ANSI compilers),
   macros, and global-variable declarations.
 
-  created	Mark Adler & Jean-loup Gailly
-  modified	Roger Fujii (STTNG:AFU)
-  modified  Kevin Ray	(RESMGR)
+  created Mark Adler & Jean-loup Gailly
+  modified Roger Fujii (STTNG:AFU)
+  modified  Kevin Ray (RESMGR)
   ---------------------------------------------------------------------------*/
 
 #ifndef __unzip_h   /* prevent multiple inclusions */

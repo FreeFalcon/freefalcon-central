@@ -9,13 +9,13 @@ CommsQueue *gUICommsQ = NULL;
 
 /* static char *QueueType[]=
 {
-	"_Q_NOTHING_",
-	"_Q_SESSION_ADD_",
-	"_Q_SESSION_REMOVE_",
-	"_Q_SESSION_UPDATE_",
-	"_Q_GAME_ADD_",
-	"_Q_GAME_REMOVE_",
-	"_Q_GAME_UPDATE_",
+ "_Q_NOTHING_",
+ "_Q_SESSION_ADD_",
+ "_Q_SESSION_REMOVE_",
+ "_Q_SESSION_UPDATE_",
+ "_Q_GAME_ADD_",
+ "_Q_GAME_REMOVE_",
+ "_Q_GAME_UPDATE_",
 }; */
 
 F4CSECTIONHANDLE* QueueCritical = NULL;

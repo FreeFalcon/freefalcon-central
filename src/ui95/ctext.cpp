@@ -2,7 +2,7 @@
 #include "chandler.h"
 
 #ifdef _UI95_PARSER_ // List of Keywords & functions to handle them
-char	g_sVersion[100];
+char g_sVersion[100];
 
 enum
 {

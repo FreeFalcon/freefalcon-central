@@ -74,7 +74,7 @@ int GetWeaponHitChance(int w, int mt, int range)
 
     if (w < 0 || w >= NumWeaponTypes) return 0;
 
-    int	wr;
+    int wr;
 
     wr = GetWeaponRange(w, mt);
 

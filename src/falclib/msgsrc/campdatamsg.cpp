@@ -21,7 +21,7 @@
 extern C_Handler *gMainHandler;
 
 #ifdef DEBUG
-int	cdecode_count = 0, cencode_count = 0;
+int cdecode_count = 0, cencode_count = 0;
 #endif
 
 void DecodePrimaryObjectiveList(uchar *data, FalconEntity *fe);
@@ -109,7 +109,7 @@ int FalconCampDataMessage::Encode(VU_BYTE **buf)
 
 int FalconCampDataMessage::Process(uchar autodisp)
 {
-    CampEntity	ent = (CampEntity)vuDatabase->Find(EntityId());
+    CampEntity ent = (CampEntity)vuDatabase->Find(EntityId());
     //sfr: we cant use databloc directly because we update pointer
     VU_BYTE *data = dataBlock.data;
 
@@ -132,9 +132,9 @@ int FalconCampDataMessage::Process(uchar autodisp)
         case campOrdersData:
             // Set the new orders
         {
-            VU_ID			tmpId;
-            GridIndex		x, y;
-            uchar			*dataPtr = dataBlock.data;
+            VU_ID tmpId;
+            GridIndex x, y;
+            uchar *dataPtr = dataBlock.data;
 
             ShiAssert(ent->IsBattalion());
 

@@ -1,9 +1,9 @@
 /***************************************************************************\
-	UI_Cmpgn.cpp
-	Peter Ward
-	December 3, 1996
+ UI_Cmpgn.cpp
+ Peter Ward
+ December 3, 1996
 
-	Main UI screen stuff for falcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -82,13 +82,13 @@ extern bool g_bServer;
 extern OBJECTINFO Recon;
 extern long gRefreshScoresList;
 
-extern VU_ID gCurrentFlightID;	// Current Mission Flight (Mission Window) Also sets gSelectedFlight
-extern VU_ID gPlayerFlightID;	// Flight Player is in (NULL) if not in a flight
-extern short gPlayerPlane;		// Player's current slot
-extern VU_ID gActiveFlightID;	// Current Selected Waypoint flight
-extern short gActiveWPNum;		// Current Waypoint
-extern VU_ID gSelectedFlightID;	// Last flight Selected (in ATO,OOB,Mission etc)
-extern VU_ID gLoadoutFlightID;	// Currnet flight being Loaded with weapons
+extern VU_ID gCurrentFlightID; // Current Mission Flight (Mission Window) Also sets gSelectedFlight
+extern VU_ID gPlayerFlightID; // Flight Player is in (NULL) if not in a flight
+extern short gPlayerPlane; // Player's current slot
+extern VU_ID gActiveFlightID; // Current Selected Waypoint flight
+extern short gActiveWPNum; // Current Waypoint
+extern VU_ID gSelectedFlightID; // Last flight Selected (in ATO,OOB,Mission etc)
+extern VU_ID gLoadoutFlightID; // Currnet flight being Loaded with weapons
 extern VU_ID gSelectedEntity;
 extern VU_ID gInterceptersId;
 extern RulesClass CurrRules;
@@ -349,11 +349,11 @@ enum
     SND_NICE          = 500009,
     SND_BAD2          = 500010,
     SND_YOUSUCK       = 500011,
-    SND_TAKEOFF		  = 500023,
-    SND_CAMPAIGN	  = 500024,
-    SND_LIBYA		  = 500025,
-    SND_AMBIENT		  = 500033,
-    CSM1			  = 400134,
+    SND_TAKEOFF   = 500023,
+    SND_CAMPAIGN   = 500024,
+    SND_LIBYA   = 500025,
+    SND_AMBIENT   = 500033,
+    CSM1   = 400134,
 };
 
 long CampEventSoundID;
@@ -537,7 +537,7 @@ void ReplayUIMovie(long MovieID)
 void CloseAWWWindowTimer(void)
 {
     gAWWTimeout -= UI_TIMER_INTERVAL;
-    Flight	interceptors = (Flight) vuDatabase->Find(gInterceptersId);
+    Flight interceptors = (Flight) vuDatabase->Find(gInterceptersId);
 
     // KCK: Close the window on timeout, interceptor death, or interceptor takeoff
     if (gAWWTimeout < 0 || !interceptors) // || interceptors->Moving())
@@ -678,8 +678,8 @@ void Cancel_Scramble_CB(long, short hittype, C_Base *)
 // closing the box and resetting the previous compression ratio (done in Cancel_Scramble)
 void Scramble_Intercept_CB(long ID, short hittype, C_Base *control)
 {
-    C_Window	*win;
-    Flight		flight = (Flight)vuDatabase->Find(gInterceptersId);
+    C_Window *win;
+    Flight flight = (Flight)vuDatabase->Find(gInterceptersId);
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -687,16 +687,16 @@ void Scramble_Intercept_CB(long ID, short hittype, C_Base *control)
     // Try to find the correct list item
     if (flight)
     {
-        UI_Refresher	*urec;
+        UI_Refresher *urec;
 
         urec = FindMissionItem(flight);
 
         if (urec)
         {
             // Update this item
-            //			if(urec->Mission_)
-            //				urec->RemoveMission();
-            //			urec->AddMission(flight);
+            // if(urec->Mission_)
+            // urec->RemoveMission();
+            // urec->AddMission(flight);
             //... renumber... or set final
             RequestACSlot(flight, 0, static_cast<uchar>(flight->GetAdjustedAircraftSlot(0)), 0, 0, 1);
             gCurrentFlightID = gInterceptersId;
@@ -1038,7 +1038,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     C_Button *btn;
     C_Blip *blip;
     _TCHAR buffer[200];
-    Squadron	ps;
+    Squadron ps;
     GridIndex x, y;
 
     InCleanup = 0;
@@ -1192,7 +1192,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     else
     {
         SetTimeCompression(1);
-        //	UpdateRemoteCompression();	done by InitTimeCompressionBox
+        // UpdateRemoteCompression(); done by InitTimeCompressionBox
         InitTimeCompressionBox(1);
     }
 
@@ -1517,8 +1517,8 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     UpdateMissionWindow(TAC_AIRCRAFT);
 
-    //	gATOAll->SetMenu (AIRUNIT_MENU);
-    //	gATOPackage->SetMenu (AIRUNIT_MENU);
+    // gATOAll->SetMenu (AIRUNIT_MENU);
+    // gATOPackage->SetMenu (AIRUNIT_MENU);
 
     TheCampaign.GetBullseyeLocation(&x, &y);
     gMapMgr->SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
@@ -1732,8 +1732,8 @@ static void OpenFlightPlanWindowCB(long, short hittype, C_Base *control)
 // "Fly" button
 void CampaignButtonCB(long, short hittype, C_Base *)
 {
-    Flight	fl;
-    int		pilotSlot, entryType;
+    Flight fl;
+    int pilotSlot, entryType;
     WayPoint wp;
     C_Window *win;
     C_Button *btn;
@@ -1764,8 +1764,8 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     TheCampaign.MissionEvaluator->PreMissionEval(fl, static_cast<uchar>(pilotSlot));
 
     // KCK HACK TO ISOLATE KNEEBOARD CRASH BUG
-    //	if (!TheCampaign.MissionEvaluator->player_pilot)
-    //		*((unsigned int *) 0x00) = 0;
+    // if (!TheCampaign.MissionEvaluator->player_pilot)
+    // *((unsigned int *) 0x00) = 0;
     // END HACK
 
 #ifdef DEBUG
@@ -1778,7 +1778,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     entryType = CompressCampaignUntilTakeoff(fl);
 
     // 2002-03-09 MN Send a "[Commiting now]" message to the chat windows
-    enum { PSEUDO_CONTROL				= 565419999 };
+    enum { PSEUDO_CONTROL = 565419999 };
 
     C_EditBox control;
     control.Setup(PSEUDO_CONTROL, 39);
@@ -2047,7 +2047,7 @@ BOOL CampaignClockCB(C_Base *me)
 
     if (me == NULL) return(FALSE);
 
-    //	curtime=TheCampaign.CurrentTime/VU_TICS_PER_SECOND;
+    // curtime=TheCampaign.CurrentTime/VU_TICS_PER_SECOND;
     curtime = vuxGameTime / VU_TICS_PER_SECOND;
 
     if (((C_Clock*)me)->GetTime() != curtime)
@@ -2108,21 +2108,21 @@ void CleanupCampaignUI()
             gOOBTree->DeleteBranch(gOOBTree->GetRoot());
         }
 
-        /*		if(gTaskList)
-        		{
-        			while(gTaskList)
-        			{
-        				last=gTaskList;
-        				gTaskList=gTaskList->Next;
-        				if(last->Label_)
-        				{
-        					last->Label_->Cleanup();
-        					delete last->Label_;
-        				}
-        				delete last;
-        			}
-        			gTaskList=NULL;
-        		}
+        /* if(gTaskList)
+         {
+         while(gTaskList)
+         {
+         last=gTaskList;
+         gTaskList=gTaskList->Next;
+         if(last->Label_)
+         {
+         last->Label_->Cleanup();
+         delete last->Label_;
+         }
+         delete last;
+         }
+         gTaskList=NULL;
+         }
         */
         win = gMainHandler->FindWindow(STRAT_WIN);
 
@@ -2230,21 +2230,21 @@ void CleanupTacticalEngagementUI()
         if (gVCTree)
             gVCTree->DeleteBranch(gVCTree->GetRoot());
 
-        /*		if(gTaskList)
-        		{
-        			while(gTaskList)
-        			{
-        				last=gTaskList;
-        				gTaskList=gTaskList->Next;
-        				if(last->Label_)
-        				{
-        					last->Label_->Cleanup();
-        					delete last->Label_;
-        				}
-        				delete last;
-        			}
-        			gTaskList=NULL;
-        		}
+        /* if(gTaskList)
+         {
+         while(gTaskList)
+         {
+         last=gTaskList;
+         gTaskList=gTaskList->Next;
+         if(last->Label_)
+         {
+         last->Label_->Cleanup();
+         delete last->Label_;
+         }
+         delete last;
+         }
+         gTaskList=NULL;
+         }
         */
         if (gUIViewer)
         {
@@ -2446,7 +2446,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
             break;
     }
 
-    //	playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
+    // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
     if (!gTimeModeServer && !g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
@@ -3686,9 +3686,9 @@ static void HookupCampaignControls(long ID)
         ctrl->SetCallback(CancelPriorityCB);
 
     // OLD Control... removed by Joe
-    //	ctrl=(C_Button*)winme->FindControl(RESET);
-    //	if(ctrl)
-    //		ctrl->SetCallback(ResetPriorityCB);
+    // ctrl=(C_Button*)winme->FindControl(RESET);
+    // if(ctrl)
+    // ctrl->SetCallback(ResetPriorityCB);
 
     ctrl = (C_Button*)winme->FindControl(TARGET_PRIORITIES);
 

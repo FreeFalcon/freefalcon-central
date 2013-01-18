@@ -28,7 +28,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE)
         {
             ShiWarning("Should never make an A/C this way");
-            //			theVehicle = new AircraftClass(TRUE, &data);
+            // theVehicle = new AircraftClass(TRUE, &data);
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
         {
@@ -95,7 +95,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER)
         {
             ShiWarning("Should never make an Helo this way");
-            //			theVehicle = new HelicopterClass(&data);
+            // theVehicle = new HelicopterClass(&data);
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
         {
@@ -106,12 +106,12 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
     else if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND)
     {
         ShiWarning("Should never make an Truck this way");
-        //		theVehicle = new GroundClass (&data);
+        // theVehicle = new GroundClass (&data);
     }
     else if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_SEA)
     {
         ShiWarning("Should never make an Ship this way");
-        //		theVehicle = new GroundClass (&data);
+        // theVehicle = new GroundClass (&data);
     }
 
     F4Assert(theVehicle);
@@ -122,7 +122,7 @@ VuEntity* SimVUCreateVehicle(ushort type, ushort sizeShort, VU_BYTE* data)
         //theVehicle->SetDelta(0.0F, 0.0F, 0.0F);
         //theVehicle->SetYPRDelta(0.0F, 0.0F, 0.0F);
         theVehicle->SetDriver(NULL);
-        //		MonoPrint("Got remote creation event! Inserting object %08x\n", theVehicle);
+        // MonoPrint("Got remote creation event! Inserting object %08x\n", theVehicle);
 
         theVehicle->Init(NULL);
     }

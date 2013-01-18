@@ -4,8 +4,8 @@
     January 29, 1998
 
     This handles reading a MultiGen FLT file into our parent
-	object structure.  It normally expects to find only LOD
-	distances and external references in its targets.
+ object structure.  It normally expects to find only LOD
+ distances and external references in its targets.
 \***************************************************************************/
 #include <stdlib.h>
 #include <MgAPIall.h>
@@ -19,32 +19,32 @@
 
 typedef struct LODrecord2: public LODrecord
 {
-    BuildTimeLODEntry	*buildTimeLOD;
+    BuildTimeLODEntry *buildTimeLOD;
 } LODrecord2;
 
-static const int	MAX_LODS_PER_PARENT = 20;
-static LODrecord2	LODlist[MAX_LODS_PER_PARENT];
-static int			LODlistLen;
+static const int MAX_LODS_PER_PARENT = 20;
+static LODrecord2 LODlist[MAX_LODS_PER_PARENT];
+static int LODlistLen;
 
 
 void InitializeDefaultParent(char *filename)
 {
-    LODlistLen	= 1;
+    LODlistLen = 1;
 
-    LODlist[0].buildTimeLOD	= TheLODBuildList.AddReference(filename);
-    LODlist[0].maxRange		= 600000.0f;
+    LODlist[0].buildTimeLOD = TheLODBuildList.AddReference(filename);
+    LODlist[0].maxRange = 600000.0f;
 }
 
 
 BOOL ProcessLOD(mgrec *rec)
 {
-    char	*fullpath = NULL;
-    char	filename[_MAX_FNAME];
-    char	ext[_MAX_EXT];
-    double	dist = -1.0f;
-    DWORD	retval;
-    mgrec	*child;
-    mgrec	*next;
+    char *fullpath = NULL;
+    char filename[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    double dist = -1.0f;
+    DWORD retval;
+    mgrec *child;
+    mgrec *next;
 
     // Walk down the chain of nodes to the bottom
     next = mgGetChild(rec);
@@ -91,8 +91,8 @@ BOOL ProcessLOD(mgrec *rec)
         ShiAssert(strlen(filename) < sizeof(filename));
         mgFree(fullpath);
 
-        LODlist[LODlistLen].buildTimeLOD	= TheLODBuildList.AddReference(filename);
-        LODlist[LODlistLen].maxRange		= (float)dist;
+        LODlist[LODlistLen].buildTimeLOD = TheLODBuildList.AddReference(filename);
+        LODlist[LODlistLen].maxRange = (float)dist;
         LODlistLen++;
 
         return TRUE;
@@ -109,10 +109,10 @@ BOOL ProcessLOD(mgrec *rec)
 
 BOOL ExtractControlInfo(mgrec *rec)
 {
-    mgrec	*child;
-    BNode	*masterNode = NULL;
-    BNode	*node = NULL;
-    BOOL	result = FALSE;
+    mgrec *child;
+    BNode *masterNode = NULL;
+    BNode *node = NULL;
+    BOOL result = FALSE;
 
     if (!rec)  return FALSE;
 
@@ -135,8 +135,8 @@ BOOL ExtractControlInfo(mgrec *rec)
 
 BOOL ReadControlFlt(BuildTimeParentEntry *buildParent)
 {
-    mgrec	*db;		// top record of database file specified on command line
-    int		i;
+    mgrec *db; // top record of database file specified on command line
+    int i;
     ObjectParent *objParent = &TheObjectList[buildParent->id];
 
     // open the named database file

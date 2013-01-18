@@ -7,11 +7,11 @@
 /*
 ** Name: HandleThreat
 ** Description:
-**		Take some sort of action against a threat that has been set via
-**		the threat pointer.   The threat is presumed to be not our primary
-**		target and was notified to us either thru a spike on radar, missile
-**		or gun fire at us.
-&&		Return TRUE if handling a threat
+** Take some sort of action against a threat that has been set via
+** the threat pointer.   The threat is presumed to be not our primary
+** target and was notified to us either thru a spike on radar, missile
+** or gun fire at us.
+&& Return TRUE if handling a threat
 */
 BOOL DigitalBrain::HandleThreat(void)
 {

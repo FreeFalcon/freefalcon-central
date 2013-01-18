@@ -152,10 +152,10 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
         display->TextCenter(0, (pos--) / divs, buf);
         sprintf(buf, "f3Ht/Dist %.0f / %.0f", theLantirn->featureHeight3, theLantirn->featureDistance3);
         display->TextCenter(0, (pos--) / divs, buf);
-        //	sprintf (buf, "MinDist %.0f", theLantirn->minavoiddist);
-        //	display->TextCenter(0, -0.25, buf);
-        //	sprintf (buf, "ADist %.0f", theLantirn->avoiddist);
-        //	display->TextCenter(0, -0.375, buf);
+        // sprintf (buf, "MinDist %.0f", theLantirn->minavoiddist);
+        // display->TextCenter(0, -0.25, buf);
+        // sprintf (buf, "ADist %.0f", theLantirn->avoiddist);
+        // display->TextCenter(0, -0.375, buf);
     }
     else
     {
@@ -358,7 +358,7 @@ void LantirnDrawable::DrawTerrain()
     if (DisplayOptions.bZBuffering)
         ((RenderIR*)display)->context.FlushPolyLists();
 
-    //	((RenderIR*)display)->PostSceneCloudOcclusion();
+    // ((RenderIR*)display)->PostSceneCloudOcclusion();
     //  ((RenderIR*)display)->FinishFrame();
     display->StartDraw();
 }

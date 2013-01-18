@@ -354,9 +354,9 @@ void C_Window::SetY(short NewY)
 short C_Window::GetPrimaryW()
 {
     long lResult = (Handler_ ? (Handler_->GetW()) : 800); // why 800? default screen width?
-    //	if(Handler_)
-    //		return(Handler_->GetW());
-    //	return(800);
+    // if(Handler_)
+    // return(Handler_->GetW());
+    // return(800);
     return static_cast<short>(lResult);
 }
 
@@ -1541,7 +1541,7 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
 void C_Window::GetScreenFormat()
 {
     UI95_GetScreenColorInfo(r_mask_, r_shift_, g_mask_, g_shift_, b_mask_, b_shift_);
-    //!	UI95_GetScreenColorInfo(&r_mask_,&r_shift_,&g_mask_,&g_shift_,&b_mask_,&b_shift_);
+    //! UI95_GetScreenColorInfo(&r_mask_,&r_shift_,&g_mask_,&g_shift_,&b_mask_,&b_shift_);
     r_max_ = static_cast<WORD>(r_mask_ >> r_shift_);
     g_max_ = static_cast<WORD>(g_mask_ >> g_shift_);
     b_max_ = static_cast<WORD>(b_mask_ >> b_shift_);
@@ -2221,10 +2221,10 @@ BOOL C_Window::CheckLine(long x1, long y1, long x2, long y2, long minx, long min
 
 enum
 {
-    LINE_CLIP_LEFT		= 0x01,
-    LINE_CLIP_RIGHT		= 0x02,
-    LINE_CLIP_TOP		= 0x04,
-    LINE_CLIP_BOTTOM	= 0x08,
+    LINE_CLIP_LEFT = 0x01,
+    LINE_CLIP_RIGHT = 0x02,
+    LINE_CLIP_TOP = 0x04,
+    LINE_CLIP_BOTTOM = 0x08,
 };
 
 BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)

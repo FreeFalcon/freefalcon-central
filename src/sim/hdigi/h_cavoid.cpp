@@ -138,7 +138,7 @@ void HeliBrain::CollisionAvoid(void)
     // OutputDebugString( "In Collision Avoid\n" );
 
     // Range to current track
-    // rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) *	(trackY - self->YPos());
+    // rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
 
     // Heading error for current waypoint
     desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) - self->Yaw();

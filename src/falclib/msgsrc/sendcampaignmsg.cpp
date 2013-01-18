@@ -22,7 +22,7 @@ extern void CampaignJoinKeepAlive(void);
 
 FalconSendCampaign::FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-    uchar	*buffer;
+    uchar *buffer;
     dataBlock.dataSize = (short)TheCampaign.Encode(&buffer);
     dataBlock.campInfo = buffer;
 }
@@ -83,7 +83,7 @@ int FalconSendCampaign::Encode(VU_BYTE **buf)
 
 int FalconSendCampaign::Process(uchar autodisp)
 {
-    uchar		*bufptr = dataBlock.campInfo;
+    uchar *bufptr = dataBlock.campInfo;
     long bufSize = dataBlock.dataSize;
 
     if (autodisp)

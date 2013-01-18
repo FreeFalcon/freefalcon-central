@@ -35,7 +35,7 @@
 #include "sim\include\airframe.h"
 #include "sim\include\simweapn.h"
 
-#pragma warning(disable : 4244)	 // for +=
+#pragma warning(disable : 4244)  // for +=
 
 enum
 {
@@ -92,34 +92,34 @@ enum
     TER2L_DIS             = 200051,
     TER2L_DIFF            = 200052,
     DOUBLE_TER_4_DIFF     = 200053,
-    DOUBLE_TER_4		  = 200054,
+    DOUBLE_TER_4   = 200054,
     DOUBLE_TER_5L_DIFF    = 200055,
-    DOUBLE_TER_5L		  = 200056,
+    DOUBLE_TER_5L   = 200056,
     DOUBLE_TER_5R_DIFF    = 200057,
-    DOUBLE_TER_5R		  = 200058,
-    QUAD_EMPTY			  = 200059,
-    QUAD_FULL			  = 200060,
-    QUAD_DIS			  = 200061,
-    QUAD_DIFF			  = 200062,
-    QUAD_EMPTY_DIFF	      = 200063,
-    QUAD1L				  = 200064,
-    QUAD1L_DIS			  = 200065,
-    QUAD1L_DIFF		      = 200066,
-    QUAD1R				  = 200067,
-    QUAD1R_DIS			  = 200068,
-    QUAD1R_DIFF		      = 200069,
-    QUAD2L				  = 200070,
-    QUAD2L_DIS			  = 200071,
-    QUAD2L_DIFF		      = 200072,
-    QUAD2R				  = 200073,
-    QUAD2R_DIS			  = 200074,
-    QUAD2R_DIFF		      = 200075,
-    QUAD3L				  = 200076,
-    QUAD3L_DIS			  = 200078,
-    QUAD3L_DIFF		      = 200079,
-    QUAD3R				  = 200080,
-    QUAD3R_DIS			  = 200081,
-    QUAD3R_DIFF		      = 200082,
+    DOUBLE_TER_5R   = 200058,
+    QUAD_EMPTY   = 200059,
+    QUAD_FULL   = 200060,
+    QUAD_DIS   = 200061,
+    QUAD_DIFF   = 200062,
+    QUAD_EMPTY_DIFF       = 200063,
+    QUAD1L   = 200064,
+    QUAD1L_DIS   = 200065,
+    QUAD1L_DIFF       = 200066,
+    QUAD1R   = 200067,
+    QUAD1R_DIS   = 200068,
+    QUAD1R_DIFF       = 200069,
+    QUAD2L   = 200070,
+    QUAD2L_DIS   = 200071,
+    QUAD2L_DIFF       = 200072,
+    QUAD2R   = 200073,
+    QUAD2R_DIS   = 200074,
+    QUAD2R_DIFF       = 200075,
+    QUAD3L   = 200076,
+    QUAD3L_DIS   = 200078,
+    QUAD3L_DIFF       = 200079,
+    QUAD3R   = 200080,
+    QUAD3R_DIS   = 200081,
+    QUAD3R_DIFF       = 200082,
     INT_EMPTY             = 200083,
     INT_FULL              = 200084,
     INT_DIS               = 200085,
@@ -143,16 +143,16 @@ StoresList *gStores = NULL;
 short g3dObjectID = 0;
 extern C_Handler *gMainHandler;
 extern VU_ID gSelectedFlightID;
-extern VU_ID gPlayerFlightID;	// Flight Player is in (NULL) if not in a flight
+extern VU_ID gPlayerFlightID; // Flight Player is in (NULL) if not in a flight
 VU_ID gLoadoutFlightID = FalconNullId;
 extern short FlightStatusID[];
 
 OBJECTINFO Object;
 
 // Loaded stores values
-LoadoutStruct gCurStores[5];		// Last slot is the Starting list for the flight (set by kevin)
-LoadoutStruct gOriginalStores[5];	// Last slot is the Starting list for the flight (set by kevin)
-RailList      gCurRails[4];			// per AC... four max
+LoadoutStruct gCurStores[5]; // Last slot is the Starting list for the flight (set by kevin)
+LoadoutStruct gOriginalStores[5]; // Last slot is the Starting list for the flight (set by kevin)
+RailList      gCurRails[4]; // per AC... four max
 
 long HardPoints; // number of valid hardpoints
 static long Quantity     [4][2][HARDPOINT_MAX]; // Totals [Aircraft][0=Weapon ID,1=qty][#slots for different types (can't have more types than hardpoints)]
@@ -391,19 +391,19 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
     {
         if(rackClassPtr->visType[0])
         {
-    	rail->rackID=rackptr->ctind;
-    	rail->weaponID=WeaponDataTable[WeaponIndex].Index;
-    	rail->startBits=AttachBits[count];
-    	rail->currentBits=AttachBits[count];
+     rail->rackID=rackptr->ctind;
+     rail->weaponID=WeaponDataTable[WeaponIndex].Index;
+     rail->startBits=AttachBits[count];
+     rail->currentBits=AttachBits[count];
         }
     }
     else
     {
         if(weapClassPtr->visType[0])
         {
-    	rail->weaponID=WeaponDataTable[WeaponIndex].Index;
-    	rail->startBits=AttachBits[1];
-    	rail->currentBits=AttachBits[1];
+     rail->weaponID=WeaponDataTable[WeaponIndex].Index;
+     rail->startBits=AttachBits[1];
+     rail->currentBits=AttachBits[1];
         }
     }
     */
@@ -639,46 +639,46 @@ void ClearHardPoint(long plane, long hardpoint, long, RailInfo *rail)
 
     if(rail->rackID)
     {
-    	Rack=gUIViewer->Find((plane << 24) + (hardpoint << 16));
-    	if(Rack)
-    	{
-    		if(rail->weaponID && rail->startBits)
-    		{
-    			bits=rail->startBits;
-    			i=0;
-    			while(bits)
-    			{
-    				if(bits & 1)
-    				{
-    					Weapon=gUIViewer->Find((plane << 24) + (hardpoint << 16) + (i+1));
-    					if(Weapon)
-    					{
-    						// JB 020314 work from the back to the font (like the 3d code)
-    						((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object),
-    							((DrawableBSP*)Rack->object)->instance.ParentObject->nSlots - i - 1);
-    						gUIViewer->Remove((plane << 24) + (hardpoint << 16) + (i+1));
-    					}
-    				}
-    				bits >>= 1;
-    				i++;
-    			}
-    		}
-    		((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Rack->object),hardpoint-1);
-    		gUIViewer->Remove((plane << 24) + (hardpoint << 16));
-    		Rack=NULL;
-    	}
+     Rack=gUIViewer->Find((plane << 24) + (hardpoint << 16));
+     if(Rack)
+     {
+     if(rail->weaponID && rail->startBits)
+     {
+     bits=rail->startBits;
+     i=0;
+     while(bits)
+     {
+     if(bits & 1)
+     {
+     Weapon=gUIViewer->Find((plane << 24) + (hardpoint << 16) + (i+1));
+     if(Weapon)
+     {
+     // JB 020314 work from the back to the font (like the 3d code)
+     ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object),
+     ((DrawableBSP*)Rack->object)->instance.ParentObject->nSlots - i - 1);
+     gUIViewer->Remove((plane << 24) + (hardpoint << 16) + (i+1));
+     }
+     }
+     bits >>= 1;
+     i++;
+     }
+     }
+     ((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Rack->object),hardpoint-1);
+     gUIViewer->Remove((plane << 24) + (hardpoint << 16));
+     Rack=NULL;
+     }
     }
     else if(rail->weaponID)
     {
-    	if(rail->startBits)
-    	{
-    		Weapon=gUIViewer->Find((plane << 24) + (hardpoint << 16) + 1);
-    		if(Weapon)
-    		{
-    			((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Weapon->object),hardpoint-1);
-    			gUIViewer->Remove((plane << 24) + (hardpoint << 16) + 1);
-    		}
-    	}
+     if(rail->startBits)
+     {
+     Weapon=gUIViewer->Find((plane << 24) + (hardpoint << 16) + 1);
+     if(Weapon)
+     {
+     ((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Weapon->object),hardpoint-1);
+     gUIViewer->Remove((plane << 24) + (hardpoint << 16) + 1);
+     }
+     }
     }*/
     //rail->rackID=0; // MLR 2/25/2004 -
     //rail->weaponID=0;
@@ -732,8 +732,8 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
     //Falcon4EntityClassType* rackPtr,*weapPtr;
     BSPLIST *Plane;
     DrawableBSP *PlaneBSP;
-    //	BSPLIST *Rack;
-    //	BSPLIST *Weapon;
+    // BSPLIST *Rack;
+    // BSPLIST *Weapon;
     short /*bits,*/i;
 
     Plane = gUIViewer->Find((plane << 24));
@@ -783,45 +783,45 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
 
     rail->hardPoint.AttachAllWeaponBSP();
 
-    //	if(g3dObjectID == VIS_F16C)
-    //		Check_HTS_Tirn((DrawableBSP*)Plane->object,&gCurStores[plane]);
+    // if(g3dObjectID == VIS_F16C)
+    // Check_HTS_Tirn((DrawableBSP*)Plane->object,&gCurStores[plane]);
     /*
 
     if(rail->rackID)
     {
-    	rackPtr=&Falcon4ClassTable[rail->rackID];
-    	Rack=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16),rackPtr->visType[0]);
-    	if(Rack)
-    	{
-    		((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Rack->object),hardpoint-1);
+     rackPtr=&Falcon4ClassTable[rail->rackID];
+     Rack=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16),rackPtr->visType[0]);
+     if(Rack)
+     {
+     ((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Rack->object),hardpoint-1);
 
-    		if(rail->weaponID && rail->startBits)
-    		{
-    			weapPtr=&Falcon4ClassTable[rail->weaponID];
-    			bits=rail->startBits;
-    			i=0;
-    			while(bits)
-    			{
-    				Weapon=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16) + (i+1),weapPtr->visType[0]);
-    				if(Weapon)
-    					// JB 020314 work from the back to the font (like the 3d code)
-    					((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object),
-    						((DrawableBSP*)Rack->object)->instance.ParentObject->nSlots - i - 1);
-    				bits >>= 1;
-    				i++;
-    			}
-    		}
-    	}
+     if(rail->weaponID && rail->startBits)
+     {
+     weapPtr=&Falcon4ClassTable[rail->weaponID];
+     bits=rail->startBits;
+     i=0;
+     while(bits)
+     {
+     Weapon=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16) + (i+1),weapPtr->visType[0]);
+     if(Weapon)
+     // JB 020314 work from the back to the font (like the 3d code)
+     ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object),
+     ((DrawableBSP*)Rack->object)->instance.ParentObject->nSlots - i - 1);
+     bits >>= 1;
+     i++;
+     }
+     }
+     }
     }
     else if(rail->weaponID)
     {
-    	if(rail->startBits)
-    	{
-    		weapPtr=&Falcon4ClassTable[rail->weaponID];
-    		Weapon=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16) + 1,weapPtr->visType[0]);
-    		if(Weapon)
-    			((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Weapon->object),hardpoint-1);
-    	}
+     if(rail->startBits)
+     {
+     weapPtr=&Falcon4ClassTable[rail->weaponID];
+     Weapon=gUIViewer->LoadBSP((plane << 24) + (hardpoint << 16) + 1,weapPtr->visType[0]);
+     if(Weapon)
+     ((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Weapon->object),hardpoint-1);
+     }
     }
     */
 }
@@ -931,7 +931,7 @@ void LoadHardPoint(long plane, long num, long center)
 void LoadFlight(VU_ID flightID)
 {
     Flight flt;
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
     Falcon4EntityClassType* classPtr;
     BSPLIST *obj;
     int vid, v, i, j, ac, loads;
@@ -952,8 +952,8 @@ void LoadFlight(VU_ID flightID)
 
     for (i = 0; i < 5; i++)
     {
-        memset(&gCurStores[i],		0,	sizeof(LoadoutStruct));
-        memset(&gOriginalStores[i],	0,	sizeof(LoadoutStruct));
+        memset(&gCurStores[i], 0, sizeof(LoadoutStruct));
+        memset(&gOriginalStores[i], 0, sizeof(LoadoutStruct));
     }
 
     vid = flt->GetVehicleID(0);
@@ -978,9 +978,9 @@ void LoadFlight(VU_ID flightID)
     else
         i = 0;
 
-    HardPoints	= i;
-    ac			= flt->GetTotalVehicles();
-    loads		= flt->GetNumberOfLoadouts();
+    HardPoints = i;
+    ac = flt->GetTotalVehicles();
+    loads = flt->GetNumberOfLoadouts();
 
     // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
     ShiAssert(ac > 0 && loads > 0 && ac < 4);
@@ -1201,14 +1201,14 @@ BOOL MuniTimeCB(C_Base *control)
 
                     for (int hpi = 0; hpi < HARDPOINT_MAX ; ++hpi)
                     {
-                        if ((gOriginalStores[aci].WeaponID[hpi]		!= flightLOS.WeaponID[hpi]) ||
-                            (gOriginalStores[aci].WeaponCount[hpi]	!= flightLOS.WeaponCount[hpi]))
+                        if ((gOriginalStores[aci].WeaponID[hpi] != flightLOS.WeaponID[hpi]) ||
+                            (gOriginalStores[aci].WeaponCount[hpi] != flightLOS.WeaponCount[hpi]))
                         {
                             // update the info for the loadout
-                            gOriginalStores[aci].WeaponID[hpi]		= flightLOS.WeaponID[hpi];
-                            gOriginalStores[aci].WeaponCount[hpi]	= flightLOS.WeaponCount[hpi];
-                            gCurStores[aci].WeaponID[hpi]			= flightLOS.WeaponID[hpi];
-                            gCurStores[aci].WeaponCount[hpi]		= flightLOS.WeaponCount[hpi];
+                            gOriginalStores[aci].WeaponID[hpi] = flightLOS.WeaponID[hpi];
+                            gOriginalStores[aci].WeaponCount[hpi] = flightLOS.WeaponCount[hpi];
+                            gCurStores[aci].WeaponID[hpi] = flightLOS.WeaponID[hpi];
+                            gCurStores[aci].WeaponCount[hpi] = flightLOS.WeaponCount[hpi];
 
                             ref = true;
                         }
@@ -1227,11 +1227,11 @@ BOOL MuniTimeCB(C_Base *control)
             }
 
             // 2001-10-23 MODIFIED BY S.G. Now either the original code or we are in Tac edit can go in and don't use takeoff but do just like in 'SetupMunitionsWindow' to get the time
-            //			if((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit) // JB 010729
-            //			{
-            //				GetTimeString(takeoff,buf);
-            //				txt->Refresh();
-            //				txt->SetText(buf);
+            // if((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit) // JB 010729
+            // {
+            // GetTimeString(takeoff,buf);
+            // txt->Refresh();
+            // txt->SetText(buf);
             if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit || (TheCampaign.Flags & CAMP_TACTICAL_EDIT)) // JB 010729
             {
                 txt->Refresh();
@@ -1274,15 +1274,15 @@ BOOL MuniTimeCB(C_Base *control)
 
             if (ref)
             {
-                //				win=txt->GetParent();
+                // win=txt->GetParent();
 
-                //				if (win)
-                //				{
+                // if (win)
+                // {
                 SetCurrentLoadout();
                 control->Parent_->RefreshClient(2);
-                //					win->ScanClientAreas();
-                //					win->RefreshWindow();
-                //				}
+                // win->ScanClientAreas();
+                // win->RefreshWindow();
+                // }
             }
         }
         else
@@ -1352,8 +1352,8 @@ void DetermineWeight(VU_ID FlightID)
                     if (store->Type == StoresList::_TYPE_FUEL_)
                         _FUEL_WEIGHT_[i] += store->Fuel * Quantity[i][1][j];
 
-                    //					_MUNITIONS_WEIGHT_[i]+=store->Weight * Quantity[i][1][j];
-                    //					_DRAG_FACTOR_[i]+=store->DragFactor * Quantity[i][1][j];
+                    // _MUNITIONS_WEIGHT_[i]+=store->Weight * Quantity[i][1][j];
+                    // _DRAG_FACTOR_[i]+=store->DragFactor * Quantity[i][1][j];
                 }
             }
 
@@ -1730,7 +1730,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
                 }
 
                 btn->SetAllLabel(buf);
-                btn->Refresh();		 //@ mark here:  Set pilots
+                btn->Refresh();  //@ mark here:  Set pilots
             }
 
             SetPlaneToArm(i, TRUE);
@@ -2089,7 +2089,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
             ok = GetJRackAndWeapon(gVCPtr, classPtr, gCurStores[i].WeaponID[hp], gCurStores[i].WeaponCount[hp], static_cast<short>(hp), &gCurRails[i].rail[hp]);
             //}
             //else
-            //	ok = GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID),gCurStores[i].WeaponID[hp],gCurStores[i].WeaponCount[hp],static_cast<short>(hp),static_cast<short>(HardPoints/2),&gCurRails[i].rail[hp]);
+            // ok = GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID),gCurStores[i].WeaponID[hp],gCurStores[i].WeaponCount[hp],static_cast<short>(hp),static_cast<short>(HardPoints/2),&gCurRails[i].rail[hp]);
 
             if (ok)
                 LoadHardPoint(i, hp, HardPoints / 2, &gCurRails[i].rail[hp]);
@@ -2827,7 +2827,7 @@ void MakeStoresList(C_Window *win, long client)
                                 // JPO - from default, to 0. Move default up to 5/6 case
                                 // this will only handle the no weapon case now I think,
                                 // which may not even exist.
-                            case 0:								//!!marked
+                            case 0: //!!marked
                                 btn->SetBackImage(POD_EMPTY);
                                 btn->SetImage(C_STATE_0, POD_EMPTY);
                                 btn->SetImage(C_STATE_1, POD_EMPTY_DIFF); // should be diff
@@ -2910,7 +2910,7 @@ void RestoreStores(C_Window *win)
 
                 //}
                 //else
-                //	ok = GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID), gCurStores[i].WeaponID[j],gCurStores[i].WeaponCount[j],static_cast<short>(j),static_cast<short>(HardPoints/2),&gCurRails[i].rail[j]);
+                // ok = GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID), gCurStores[i].WeaponID[j],gCurStores[i].WeaponCount[j],static_cast<short>(j),static_cast<short>(HardPoints/2),&gCurRails[i].rail[j]);
                 if (ok)
                     LoadHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
             }
@@ -2954,7 +2954,7 @@ void UseStores()
     Flight flt;
     int i, ac, hp, loads;
     Squadron sq;
-    LoadoutStruct	*loadout, *newloadout;
+    LoadoutStruct *loadout, *newloadout;
 
     flt = (Flight)vuDatabase->Find(gLoadoutFlightID);
 
@@ -3000,9 +3000,9 @@ void UseStores()
 
     // KCK: Gilman wanted weapons used by the player to have a larger effect.. This isn't exactly very easy to
     // do, because if they then change this loadout later, they won't be put back...
-    //	i = FalconLocalSession->GetAircraftNum();
-    //	if (i < PILOTS_PER_FLIGHT)
-    //		UpdateSquadronStores (sq, gCurStores[i].WeaponID, gCurStores[i].WeaponCount, 0, 4);
+    // i = FalconLocalSession->GetAircraftNum();
+    // if (i < PILOTS_PER_FLIGHT)
+    // UpdateSquadronStores (sq, gCurStores[i].WeaponID, gCurStores[i].WeaponCount, 0, 4);
 
     // KCK: Flights optimize to use a single LoadoutStruct for all aircraft,
     // After the player mucks with it, we're going to use one PER aircraft.

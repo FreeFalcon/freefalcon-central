@@ -15,15 +15,15 @@ typedef FlightClass* Flight;
  * Message Type Request Aircraft Slot
  */
 
-#define REQUEST_SLOT_JOIN_PLAYER		1
-#define REQUEST_SLOT_JOIN_AI			2
-#define REQUEST_SLOT_LEAVE				3
-#define REQUEST_FLIGHT_DELETE			4
-#define REQUEST_CALLSIGN_CHANGE			5
-#define REQUEST_SKILL_CHANGE			6
-#define REQUEST_TEAM_CHANGE				7
-#define REQUEST_TYPE_CHANGE				8
-#define REQUEST_UI_UPDATE				9
+#define REQUEST_SLOT_JOIN_PLAYER 1
+#define REQUEST_SLOT_JOIN_AI 2
+#define REQUEST_SLOT_LEAVE 3
+#define REQUEST_FLIGHT_DELETE 4
+#define REQUEST_CALLSIGN_CHANGE 5
+#define REQUEST_SKILL_CHANGE 6
+#define REQUEST_TEAM_CHANGE 7
+#define REQUEST_TYPE_CHANGE 8
+#define REQUEST_UI_UPDATE 9
 class UI_RequestAircraftSlot : public FalconEvent
 {
 public:
@@ -48,8 +48,8 @@ public:
         uchar team;
         uchar current_pilot_slot;
         uchar requested_slot;
-        uchar requested_skill;		// AI only
-        short requested_type;		// AI only
+        uchar requested_skill; // AI only
+        short requested_type; // AI only
     } dataBlock;
 
 protected:

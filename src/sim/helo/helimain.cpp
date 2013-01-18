@@ -33,75 +33,75 @@
 #include "sfx.h" // I-Hawk 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	HelicopterClass::pool;
+MEM_POOL HelicopterClass::pool;
 #endif
 
 void SetLabel(SimBaseClass* theObject);
 
 // these are offsets from the lead heli's tail for formation flying
 // TJL 11/15/03 Test at higher value: Default 150
-//#define	DSPREAD(n)		(500.0f * n)
+//#define DSPREAD(n) (500.0f * n)
 // FRB - a little closer
-#define	DSPREAD(n)		(250.0f * n)
+#define DSPREAD(n) (250.0f * n)
 Tpoint gFormationOffsets[] =
 {
     //TJL 11/30/03 Helos only fly 4-ship max formations.  To help make formation changes easier,
     // I have limited the DSPREAD stuff to the first 4.
-    //	   X		 		Y			 			Z
-    { 0.0f,				0.0f,					0.0f },		/*  0 */
-    { DSPREAD(-0.25f),	DSPREAD(0.5f),			0.0f },		/*  1 */
-    { DSPREAD(-0.25f),	DSPREAD(-0.5f),			0.0f },		/*  2 */
-    { DSPREAD(-0.5f),	  DSPREAD(-1.0f),			0.0f },		/*  3 */
+    //    X   Y   Z
+    { 0.0f, 0.0f, 0.0f }, /*  0 */
+    { DSPREAD(-0.25f), DSPREAD(0.5f), 0.0f }, /*  1 */
+    { DSPREAD(-0.25f), DSPREAD(-0.5f), 0.0f }, /*  2 */
+    { DSPREAD(-0.5f),   DSPREAD(-1.0f), 0.0f }, /*  3 */
 
-    //{ 0.0f,				0.0f,					0.0f },		/*  0 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-1.0f),			0.0f },		/*  1 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-1.0f),			0.0f },		/*  2 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-2.0f),			0.0f },		/*  3 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-2.0f),			0.0f },		/*  4 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-2.0f),			0.0f },		/*  5 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-2.0f),			0.0f },		/*  6 */
-    //{ DSPREAD(-3.0f),	DSPREAD(-3.0f),			0.0f },		/*  7 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-3.0f),			0.0f },		/*  8 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-3.0f),			0.0f },		/*  9 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-3.0f),			0.0f },		/* 10 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-3.0f),			0.0f },		/* 11 */
-    //{ DSPREAD( 3.0f),	DSPREAD(-3.0f),			0.0f },		/* 12 */
-    //{ DSPREAD(-4.0f),	DSPREAD(-4.0f),			0.0f },		/* 13 */
-    //{ DSPREAD(-3.0f),	DSPREAD(-4.0f),			0.0f },		/* 14 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-4.0f),			0.0f },		/* 15 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-4.0f),			0.0f },		/* 16 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-4.0f),			0.0f },		/* 17 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-4.0f),			0.0f },		/* 18 */
-    //{ DSPREAD( 3.0f),	DSPREAD(-4.0f),			0.0f },		/* 19 */
-    //{ DSPREAD( 4.0f),	DSPREAD(-4.0f),			0.0f },		/* 20 */
-    //{ DSPREAD(-5.0f),	DSPREAD(-5.0f),			0.0f },		/* 21 */
-    //{ DSPREAD(-4.0f),	DSPREAD(-5.0f),			0.0f },		/* 22 */
-    //{ DSPREAD(-3.0f),	DSPREAD(-5.0f),			0.0f },		/* 23 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-5.0f),			0.0f },		/* 24 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-5.0f),			0.0f },		/* 25 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-5.0f),			0.0f },		/* 26 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-5.0f),			0.0f },		/* 27 */
-    //{ DSPREAD( 3.0f),	DSPREAD(-5.0f),			0.0f },		/* 28 */
-    //{ DSPREAD( 4.0f),	DSPREAD(-5.0f),			0.0f },		/* 29 */
-    //{ DSPREAD( 5.0f),	DSPREAD(-5.0f),			0.0f },		/* 30 */
-    //{ DSPREAD(-6.0f),	DSPREAD(-6.0f),			0.0f },		/* 31 */
-    //{ DSPREAD(-5.0f),	DSPREAD(-6.0f),			0.0f },		/* 32 */
-    //{ DSPREAD(-4.0f),	DSPREAD(-6.0f),			0.0f },		/* 33 */
-    //{ DSPREAD(-3.0f),	DSPREAD(-6.0f),			0.0f },		/* 34 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-6.0f),			0.0f },		/* 35 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-6.0f),			0.0f },		/* 36 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-6.0f),			0.0f },		/* 37 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-6.0f),			0.0f },		/* 38 */
-    //{ DSPREAD( 3.0f),	DSPREAD(-6.0f),			0.0f },		/* 39 */
-    //{ DSPREAD( 4.0f),	DSPREAD(-6.0f),			0.0f },		/* 40 */
-    //{ DSPREAD( 5.0f),	DSPREAD(-6.0f),			0.0f },		/* 41 */
-    //{ DSPREAD( 6.0f),	DSPREAD(-6.0f),			0.0f },		/* 42 */
-    //{ DSPREAD(-3.0f),	DSPREAD(-7.0f),			0.0f },		/* 43 */
-    //{ DSPREAD(-2.0f),	DSPREAD(-7.0f),			0.0f },		/* 44 */
-    //{ DSPREAD(-1.0f),	DSPREAD(-7.0f),			0.0f },		/* 45 */
-    //{ DSPREAD( 1.0f),	DSPREAD(-7.0f),			0.0f },		/* 46 */
-    //{ DSPREAD( 2.0f),	DSPREAD(-7.0f),			0.0f },		/* 47 */
-    //{ DSPREAD( 3.0f),	DSPREAD(-7.0f),			0.0f },		/* 48 */
+    //{ 0.0f, 0.0f, 0.0f }, /*  0 */
+    //{ DSPREAD(-1.0f), DSPREAD(-1.0f), 0.0f }, /*  1 */
+    //{ DSPREAD( 1.0f), DSPREAD(-1.0f), 0.0f }, /*  2 */
+    //{ DSPREAD(-2.0f), DSPREAD(-2.0f), 0.0f }, /*  3 */
+    //{ DSPREAD(-1.0f), DSPREAD(-2.0f), 0.0f }, /*  4 */
+    //{ DSPREAD( 1.0f), DSPREAD(-2.0f), 0.0f }, /*  5 */
+    //{ DSPREAD( 2.0f), DSPREAD(-2.0f), 0.0f }, /*  6 */
+    //{ DSPREAD(-3.0f), DSPREAD(-3.0f), 0.0f }, /*  7 */
+    //{ DSPREAD(-2.0f), DSPREAD(-3.0f), 0.0f }, /*  8 */
+    //{ DSPREAD(-1.0f), DSPREAD(-3.0f), 0.0f }, /*  9 */
+    //{ DSPREAD( 1.0f), DSPREAD(-3.0f), 0.0f }, /* 10 */
+    //{ DSPREAD( 2.0f), DSPREAD(-3.0f), 0.0f }, /* 11 */
+    //{ DSPREAD( 3.0f), DSPREAD(-3.0f), 0.0f }, /* 12 */
+    //{ DSPREAD(-4.0f), DSPREAD(-4.0f), 0.0f }, /* 13 */
+    //{ DSPREAD(-3.0f), DSPREAD(-4.0f), 0.0f }, /* 14 */
+    //{ DSPREAD(-2.0f), DSPREAD(-4.0f), 0.0f }, /* 15 */
+    //{ DSPREAD(-1.0f), DSPREAD(-4.0f), 0.0f }, /* 16 */
+    //{ DSPREAD( 1.0f), DSPREAD(-4.0f), 0.0f }, /* 17 */
+    //{ DSPREAD( 2.0f), DSPREAD(-4.0f), 0.0f }, /* 18 */
+    //{ DSPREAD( 3.0f), DSPREAD(-4.0f), 0.0f }, /* 19 */
+    //{ DSPREAD( 4.0f), DSPREAD(-4.0f), 0.0f }, /* 20 */
+    //{ DSPREAD(-5.0f), DSPREAD(-5.0f), 0.0f }, /* 21 */
+    //{ DSPREAD(-4.0f), DSPREAD(-5.0f), 0.0f }, /* 22 */
+    //{ DSPREAD(-3.0f), DSPREAD(-5.0f), 0.0f }, /* 23 */
+    //{ DSPREAD(-2.0f), DSPREAD(-5.0f), 0.0f }, /* 24 */
+    //{ DSPREAD(-1.0f), DSPREAD(-5.0f), 0.0f }, /* 25 */
+    //{ DSPREAD( 1.0f), DSPREAD(-5.0f), 0.0f }, /* 26 */
+    //{ DSPREAD( 2.0f), DSPREAD(-5.0f), 0.0f }, /* 27 */
+    //{ DSPREAD( 3.0f), DSPREAD(-5.0f), 0.0f }, /* 28 */
+    //{ DSPREAD( 4.0f), DSPREAD(-5.0f), 0.0f }, /* 29 */
+    //{ DSPREAD( 5.0f), DSPREAD(-5.0f), 0.0f }, /* 30 */
+    //{ DSPREAD(-6.0f), DSPREAD(-6.0f), 0.0f }, /* 31 */
+    //{ DSPREAD(-5.0f), DSPREAD(-6.0f), 0.0f }, /* 32 */
+    //{ DSPREAD(-4.0f), DSPREAD(-6.0f), 0.0f }, /* 33 */
+    //{ DSPREAD(-3.0f), DSPREAD(-6.0f), 0.0f }, /* 34 */
+    //{ DSPREAD(-2.0f), DSPREAD(-6.0f), 0.0f }, /* 35 */
+    //{ DSPREAD(-1.0f), DSPREAD(-6.0f), 0.0f }, /* 36 */
+    //{ DSPREAD( 1.0f), DSPREAD(-6.0f), 0.0f }, /* 37 */
+    //{ DSPREAD( 2.0f), DSPREAD(-6.0f), 0.0f }, /* 38 */
+    //{ DSPREAD( 3.0f), DSPREAD(-6.0f), 0.0f }, /* 39 */
+    //{ DSPREAD( 4.0f), DSPREAD(-6.0f), 0.0f }, /* 40 */
+    //{ DSPREAD( 5.0f), DSPREAD(-6.0f), 0.0f }, /* 41 */
+    //{ DSPREAD( 6.0f), DSPREAD(-6.0f), 0.0f }, /* 42 */
+    //{ DSPREAD(-3.0f), DSPREAD(-7.0f), 0.0f }, /* 43 */
+    //{ DSPREAD(-2.0f), DSPREAD(-7.0f), 0.0f }, /* 44 */
+    //{ DSPREAD(-1.0f), DSPREAD(-7.0f), 0.0f }, /* 45 */
+    //{ DSPREAD( 1.0f), DSPREAD(-7.0f), 0.0f }, /* 46 */
+    //{ DSPREAD( 2.0f), DSPREAD(-7.0f), 0.0f }, /* 47 */
+    //{ DSPREAD( 3.0f), DSPREAD(-7.0f), 0.0f }, /* 48 */
 };
 
 extern int testFlag;
@@ -222,26 +222,26 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     atWaypoint      = waypoint;
 
     //for (i=0; i<numWaypoints; i++) {
-    //	curWaypoint->GetLocation (&wp1X, &wp1Y, &wp1Z);
-    //	// sanity check helo waypoints....
+    // curWaypoint->GetLocation (&wp1X, &wp1Y, &wp1Z);
+    // // sanity check helo waypoints....
     //
-    //	// below ground?
-    //	if (wp1Z >= (OTWDriver.GetGroundLevel(wp1X, wp1Y))) {
-    //		FILE	*fp = fopen("WPground.log","a");
-    //		if (fp) {
-    //			fprintf(fp, "WP: %5.0f Ground: % 5.0f\n", wp1Z, OTWDriver.GetGroundLevel(wp1X, wp1Y));
-    //			fclose(fp);
-    //		}
-    //		curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 5.0f );
-    //	}
-    //	// limit max alt for helo's to around 8000 ft AGL
-    //	else if (wp1Z < (OTWDriver.GetGroundLevel(wp1X, wp1Y) - 8000.0f)) {
-    //		curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 8000.0f );
-    //	}
-    //	//else
-    //	//	curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 1000.0f );
+    // // below ground?
+    // if (wp1Z >= (OTWDriver.GetGroundLevel(wp1X, wp1Y))) {
+    // FILE *fp = fopen("WPground.log","a");
+    // if (fp) {
+    // fprintf(fp, "WP: %5.0f Ground: % 5.0f\n", wp1Z, OTWDriver.GetGroundLevel(wp1X, wp1Y));
+    // fclose(fp);
+    // }
+    // curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 5.0f );
+    // }
+    // // limit max alt for helo's to around 8000 ft AGL
+    // else if (wp1Z < (OTWDriver.GetGroundLevel(wp1X, wp1Y) - 8000.0f)) {
+    // curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 8000.0f );
+    // }
+    // //else
+    // // curWaypoint->SetLocation (wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) - 1000.0f );
     //
-    //	curWaypoint = curWaypoint->GetNextWP();
+    // curWaypoint = curWaypoint->GetNextWP();
     //}
     curWaypoint     = waypoint;
 
@@ -255,23 +255,23 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //TJL 11/29/03 This OLD code auto steps past takeoff waypoint
     //I will remove and rewrite
 
-    /*	if (curWaypoint)
-    		{
+    /* if (curWaypoint)
+     {
 
-    		if (curWaypoint == atWaypoint)
-    			curWaypoint = curWaypoint->GetNextWP();
+     if (curWaypoint == atWaypoint)
+     curWaypoint = curWaypoint->GetNextWP();
 
-    		atWaypoint->GetLocation (&wp1X, &wp1Y, &wp1Z);
+     atWaypoint->GetLocation (&wp1X, &wp1Y, &wp1Z);
 
-    		if (curWaypoint == NULL)
-    			{
-    			wp1X = initData->x;
-    			wp1Y = initData->y;
-    			curWaypoint = atWaypoint;
-    			}
+     if (curWaypoint == NULL)
+     {
+     wp1X = initData->x;
+     wp1Y = initData->y;
+     curWaypoint = atWaypoint;
+     }
 
-    		curWaypoint->GetLocation (&wp2X, &wp2Y, &wp2Z);
-    		}*/
+     curWaypoint->GetLocation (&wp2X, &wp2Y, &wp2Z);
+     }*/
     //REMOVED OLD CODE; BEGIN REWRITE
     if (curWaypoint)
     {
@@ -633,7 +633,7 @@ int HelicopterClass::Exec(void)
             genPos.data.roll = Roll();
             genPos.data.pitch = Pitch();
             genPos.data.yaw = Yaw();
-            // remove		  genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
+            // remove   genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
             gACMIRec.GenPositionRecord(&genPos);
         }
 
@@ -730,7 +730,7 @@ int HelicopterClass::Exec(void)
             /*
             if ( !hBrain->isWing )
             {
-            	hBrain->TargetSelection( targetList );
+             hBrain->TargetSelection( targetList );
             }
             */
 
@@ -987,14 +987,14 @@ void HelicopterClass::LandingCheck(void)
           message->dataBlock.fEntityID  = Id();
           if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
           {
-        	 message->dataBlock.fCampID = GetCallsignIdx();
-        	 message->dataBlock.fFlightID = (int)GetCampaignObject();
-        	 message->dataBlock.fSide   = GetCountry();
+          message->dataBlock.fCampID = GetCallsignIdx();
+          message->dataBlock.fFlightID = (int)GetCampaignObject();
+          message->dataBlock.fSide   = GetCountry();
           }
           else
           {
-        	 message->dataBlock.fCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-        	 message->dataBlock.fSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+          message->dataBlock.fCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+          message->dataBlock.fSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
           }
           message->dataBlock.fPilotID   = pilotSlot;
           message->dataBlock.fIndex     = Type();
@@ -1004,14 +1004,14 @@ void HelicopterClass::LandingCheck(void)
           message->dataBlock.dEntityID  = Id();
           if (!SimDriver.RunningCampaign() || GetCampaignObject() == NULL || IsDogfight())
           {
-        	 message->dataBlock.dCampID = GetCallsignIdx();
-        	 message->dataBlock.dFlightID = (int)GetCampaignObject();
-        	 message->dataBlock.dSide   = GetCountry();
+          message->dataBlock.dCampID = GetCallsignIdx();
+          message->dataBlock.dFlightID = (int)GetCampaignObject();
+          message->dataBlock.dSide   = GetCountry();
           }
           else
           {
-        	 message->dataBlock.dCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-        	 message->dataBlock.dSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+          message->dataBlock.dCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+          message->dataBlock.dSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
           }
           message->dataBlock.dPilotID   = pilotSlot;
           message->dataBlock.dIndex     = Type();
@@ -1031,12 +1031,12 @@ void HelicopterClass::LandingCheck(void)
     }
 }
 
-#define LOD_MAX_DIST		20000.0f
+#define LOD_MAX_DIST 20000.0f
 
 /*
 ** Name: GetApproxViewDist
 ** Description:
-**		Sets the distLOD var based on distance from camera
+** Sets the distLOD var based on distance from camera
 */
 void
 HelicopterClass::SetDistLOD(void)
@@ -1087,7 +1087,7 @@ HelicopterClass::SetDistLOD(void)
 /*
 ** Name: GetFormationPos
 ** Description:
-**		Gets the position this vehicle should be in in the formation
+** Gets the position this vehicle should be in in the formation
 */
 void
 HelicopterClass::GetFormationPos(float *x, float *y, float *z)
@@ -1160,7 +1160,7 @@ void HelicopterClass::PromoteSubordinates(void)
             if (theObj->drawPointer)
                 SetLabel(theObj);
 
-            //				theObj->drawPointer->SetLabel (((DrawableBSP *)drawPointer)->Label(), 0xff00ff00);
+            // theObj->drawPointer->SetLabel (((DrawableBSP *)drawPointer)->Label(), 0xff00ff00);
             newLead = theObj;
             theObj->flightLead = theObj;
             theObj->useDistLOD = FALSE;

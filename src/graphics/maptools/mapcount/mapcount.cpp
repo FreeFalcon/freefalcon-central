@@ -19,17 +19,17 @@
 
 //--------------------------------------
 
-#define	HAS_DATA_DIMENSION		0x01
-#define	HAS_WINDOW_DIMENSION	0x02
+#define HAS_DATA_DIMENSION 0x01
+#define HAS_WINDOW_DIMENSION 0x02
 
-#define	HAS_MAX_TILE			0x10
-#define	HAS_MAX_SET				0x20
-#define	CALCULATE_COORD_TILE	0x40
-#define	CALCULATE_COORD_SET		0x80
-#define	HAS_QUERY				0xf0
+#define HAS_MAX_TILE 0x10
+#define HAS_MAX_SET 0x20
+#define CALCULATE_COORD_TILE 0x40
+#define CALCULATE_COORD_SET 0x80
+#define HAS_QUERY 0xf0
 
-#define	HASH_ELEMENT_SIZE		4
-#define	HASH_MAX_SIZE			16
+#define HASH_ELEMENT_SIZE 4
+#define HASH_MAX_SIZE 16
 
 //--------------------------------------
 
@@ -60,8 +60,8 @@ int DeleteSetRowElement(ElementList **list, int counter, unsigned short *buff);
 int InsertSetColElement(ElementList **list, int counter, unsigned short *buff);
 int DeleteSetColElement(ElementList **list, int counter, unsigned short *buff);
 
-int	datawidth, dataheight;
-int	windowwidth, windowheight;
+int datawidth, dataheight;
+int windowwidth, windowheight;
 unsigned short *databuffer;
 
 void main(int argc, char *argv[])
@@ -82,7 +82,7 @@ void main(int argc, char *argv[])
     }
 
     int i, j, flag;
-    int	maxtileno, maxsetno;
+    int maxtileno, maxsetno;
 
     flag = 0;
 
@@ -176,7 +176,7 @@ void main(int argc, char *argv[])
 
     if ((flag & HAS_MAX_TILE) || (flag & CALCULATE_COORD_TILE))
     {
-        int	savetrow, savetcol, totaltile, curtile, maxtile;
+        int savetrow, savetcol, totaltile, curtile, maxtile;
 
         memset(HashRow, 0, HASH_MAX_SIZE * sizeof(ElementList *));
         totaltile = CreateTileListElement(HashRow);
@@ -233,7 +233,7 @@ void main(int argc, char *argv[])
 
     if ((flag & HAS_MAX_SET) || (flag & CALCULATE_COORD_SET))
     {
-        int	savesrow, savescol, totalset, curset, maxset;
+        int savesrow, savescol, totalset, curset, maxset;
 
         memset(HashRow, 0, HASH_MAX_SIZE * sizeof(ElementList *));
         totalset = CreateSetListElement(HashRow);

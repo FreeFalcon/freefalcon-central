@@ -1,4 +1,4 @@
-//	=========================================================================
+// =========================================================================
 //
 // F4find.c
 //
@@ -93,7 +93,7 @@ char* F4FindFile(char filename[], char *buffer, int bufSize, int *fileOffset, in
             // FF dirty deeds
             if (!Done)
             {
-                FILE*		fp;
+                FILE* fp;
                 sprintf(path, "%s\\RedViper.exe", FalconDataDirectory);
 
                 if (fp = fopen(path, "rb"))
@@ -164,7 +164,7 @@ FILE* F4CreateFile(char* filename, char* path, char* mode)
 {
     char filedir[MAX_PATH], *ppath;
     char tmpStr[1024];
-    FILE*		fp;
+    FILE* fp;
 
     // Strip the FalconDataDirectory off the path, if it's there
     ppath = path;
@@ -196,9 +196,9 @@ FILE* F4CreateFile(char* filename, char* path, char* mode)
 
 FILE* F4OpenFile(char *filename, char *mode)
 {
-    char	path[MAX_PATH], errstr[80];
-    int	offset, length;
-    FILE*		fp;
+    char path[MAX_PATH], errstr[80];
+    int offset, length;
+    FILE* fp;
 
     if (!F4FindFile(filename, path, 256, &offset, &length))
     {
@@ -219,7 +219,7 @@ FILE* F4OpenFile(char *filename, char *mode)
 
 int F4ReadFile(FILE *fp, void *buffer, int size)
 {
-    char	errstr[80];
+    char errstr[80];
 
     if (!size || !fp)
         return 0;
@@ -234,7 +234,7 @@ int F4ReadFile(FILE *fp, void *buffer, int size)
 
 int F4WriteFile(FILE *fp, void *buffer, int size)
 {
-    char	errstr[80];
+    char errstr[80];
 
     if (!size || !fp)
         return 0;
@@ -264,8 +264,8 @@ char* F4ExtractPath(char *path)
 // Returns size of data read, or -1 on error
 int F4LoadData(char filename[], void* buffer, int length)
 {
-    char		path[256], ebuf[256];
-    int		offset, len;
+    char path[256], ebuf[256];
+    int offset, len;
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
@@ -286,8 +286,8 @@ int F4LoadData(char filename[], void* buffer, int length)
 // Returns size of data actually read, or -1 on error
 int F4LoadData(char path[], void* buffer, int offset, int length)
 {
-    FILE*		fp;
-    char		ebuf[80];
+    FILE* fp;
+    char ebuf[80];
 
     if ((fp = fopen(path, "rb")) == NULL)
     {
@@ -315,8 +315,8 @@ int F4LoadData(char path[], void* buffer, int offset, int length)
 // Returns -1 on error
 int F4SaveData(char filename[], void* buffer, int length)
 {
-    char		path[256], ebuf[256];
-    int		offset, len;
+    char path[256], ebuf[256];
+    int offset, len;
 
     if (F4FindFile(filename, path, 256, &offset, &len))
     {
@@ -335,8 +335,8 @@ int F4SaveData(char filename[], void* buffer, int length)
 
 int F4SaveData(char path[], void* buffer, int offset, int length)
 {
-    FILE*		fp;
-    char		ebuf[80];
+    FILE* fp;
+    char ebuf[80];
 
     if ((fp = fopen(path, "wb")) == NULL)
     {
@@ -363,11 +363,11 @@ int F4SaveData(char path[], void* buffer, int offset, int length)
 char* F4LoadDataID(char basicfile[], int dataID, char* buffer)
 {
     int      d1, d2;
-    int		fcheck;
-    short		offset, length, maxdata;
-    FILE*		fhandle;
-    char		ebuf[80];
-    char		filename[80];
+    int fcheck;
+    short offset, length, maxdata;
+    FILE* fhandle;
+    char ebuf[80];
+    char filename[80];
 
     sprintf(filename, "%s", basicfile);
     F4FindFile(basicfile, filename, 80, &d1, &d2);

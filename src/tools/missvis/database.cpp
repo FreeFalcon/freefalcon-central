@@ -1,28 +1,28 @@
 /***************************************************************************\
-	DataBase.cpp
-	Scott Randolph
-	November 18, 1998
+ DataBase.cpp
+ Scott Randolph
+ November 18, 1998
 
-	Read in and store missile test data.
+ Read in and store missile test data.
 \***************************************************************************/
 #include <io.h>
 #include <fcntl.h>
 #include "DataBase.h"
 
 
-DataBaseClass	TheDataBase;
+DataBaseClass TheDataBase;
 
 
 void DataBaseClass::ReadData(char *filename)
 {
-    int			file = -1;
-    DataPoint	tempData;
+    int file = -1;
+    DataPoint tempData;
 
     file = open(filename, _O_RDONLY | _O_BINARY, 0000666);
 
     if (file < 0)
     {
-        char	message[80];
+        char message[80];
         sprintf(message, "Failed to open input file %s.", filename);
         ShiError(message);
     }
@@ -36,7 +36,7 @@ void DataBaseClass::ReadData(char *filename)
 
     if (TheDataLength < 1)
     {
-        char	message[80];
+        char message[80];
         sprintf(message, "No data in input file %s.", filename);
         ShiError(message);
     }
@@ -61,7 +61,7 @@ void DataBaseClass::FreeData(void)
 
 void DataBaseClass::Process(void(*fn)(DataPoint *arg), unsigned startAt, unsigned stopBefore)
 {
-    int		i;
+    int i;
 
     // Skip the ones too early
     for (i = 0; i < TheDataLength; i++)

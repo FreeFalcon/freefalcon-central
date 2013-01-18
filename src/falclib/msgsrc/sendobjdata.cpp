@@ -12,7 +12,7 @@
 #include "InvalidBufferException.h"
 
 
-#define	DEBUG_STARTUP	1
+#define DEBUG_STARTUP 1
 
 extern C_Handler *gMainHandler;
 extern void CampaignJoinKeepAlive(void);
@@ -20,7 +20,7 @@ extern void CampaignJoinKeepAlive(void);
 // Maximum size data block we can send per message
 // Since this needs an instance of the message to really be sized correctly,
 // I wait and calculate it the first chance I get.
-ulong	gObjBlockSize = 0;
+ulong gObjBlockSize = 0;
 
 FalconSendObjData::FalconSendObjData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendObjData, FalconEvent::CampaignThread, entityId, target, loopback)
 {
@@ -85,8 +85,8 @@ int FalconSendObjData::Encode(VU_BYTE **buf)
 
 int FalconSendObjData::Process(uchar autodisp)
 {
-    uchar				*bufptr;
-    FalconSessionEntity	*session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
+    uchar *bufptr;
+    FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
 
     if (autodisp || !TheCampaign.IsPreLoaded() || !session)
         return -1;
@@ -174,14 +174,14 @@ int FalconSendObjData::Process(uchar autodisp)
 
 void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded)
 {
-    int			blocks, needed = 0, curBlock = 0, blocksize;
-    ulong		sizeleft;
-    uchar		*buffer, *bufptr;
-    FalconSendObjData	*msg;
+    int blocks, needed = 0, curBlock = 0, blocksize;
+    ulong sizeleft;
+    uchar *buffer, *bufptr;
+    FalconSendObjData *msg;
 
     if (!blocksNeeded)
     {
-        int		set = rand();
+        int set = rand();
 
         if (!set)
             set++;
@@ -196,7 +196,7 @@ void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, u
     if (!gObjBlockSize)
     {
         // This is a temporary message, purely for sizing purposes
-        FalconSendObjData	msg(session->Id(), target);
+        FalconSendObjData msg(session->Id(), target);
         gObjBlockSize = F4VuMaxTCPMessageSize - msg.Size();
     }
 

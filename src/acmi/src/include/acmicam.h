@@ -5,58 +5,58 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define DETTACHED_CAM		0
-#define ATTACHED_CAM			1
+#define DETTACHED_CAM 0
+#define ATTACHED_CAM 1
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define LOCAL_ROTATION		0
-#define OBJECT_ROTATION		1
+#define LOCAL_ROTATION 0
+#define OBJECT_ROTATION 1
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define NUM_TRACKING_CAMS	2
+#define NUM_TRACKING_CAMS 2
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define NO_TRACKING			0
-#define LOCAL_TRACKING		1
-#define GLOBAL_TRACKING		2
+#define NO_TRACKING 0
+#define LOCAL_TRACKING 1
+#define GLOBAL_TRACKING 2
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define NO_ACTION				0
-#define ZOOM_IN				1
-#define ZOOM_OUT				2
-#define LOCAL_RIGHT_ROT		3
-#define LOCAL_LEFT_ROT		4
-#define LOCAL_UP_ROT			5
-#define LOCAL_DOWN_ROT		6
-#define OBJECT_RIGHT_ROT	7
-#define OBJECT_LEFT_ROT		8
-#define OBJECT_UP_ROT		9
-#define OBJECT_DOWN_ROT		10
-#define OBJECT_XRT_YUP_ROT	11
-#define OBJECT_XLT_YDN_ROT	12
-#define OBJECT_XRT_YDN_ROT	13
-#define OBJECT_XLT_YUP_ROT	14
-#define	NO_ROTATION			15
-#define HOME					16
-#define ACMI_PANNER			17
+#define NO_ACTION 0
+#define ZOOM_IN 1
+#define ZOOM_OUT 2
+#define LOCAL_RIGHT_ROT 3
+#define LOCAL_LEFT_ROT 4
+#define LOCAL_UP_ROT 5
+#define LOCAL_DOWN_ROT 6
+#define OBJECT_RIGHT_ROT 7
+#define OBJECT_LEFT_ROT 8
+#define OBJECT_UP_ROT 9
+#define OBJECT_DOWN_ROT 10
+#define OBJECT_XRT_YUP_ROT 11
+#define OBJECT_XLT_YDN_ROT 12
+#define OBJECT_XRT_YDN_ROT 13
+#define OBJECT_XLT_YUP_ROT 14
+#define NO_ROTATION 15
+#define HOME 16
+#define ACMI_PANNER 17
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define HOME_RANGE			-300.0F
+#define HOME_RANGE -300.0F
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,41 +158,41 @@ public:
 
 private:
     // Detached or attached?
-    int				_type;
+    int _type;
 
     // Detached or attached?
-    int				_rotType;
+    int _rotType;
 
     // Camera position relative to object.
-    Tpoint			_pos;
+    Tpoint _pos;
 
     // World coords of camera position.
-    Tpoint			_worldPos;
+    Tpoint _worldPos;
 
     // Camera rotation matrix.
-    Trotation		_rot;
+    Trotation _rot;
 
-    float				_objectAz, _localAz, _pannerAz;
-    float				_objectEl, _localEl, _pannerEl;
-    float				_objectRoll;
+    float _objectAz, _localAz, _pannerAz;
+    float _objectEl, _localEl, _pannerEl;
+    float _objectRoll;
 
     // For a dettached camera, set this value to 0.0F
-    float				_objectRange;
+    float _objectRange;
 
     // Used to rotate around self.
-    float				_rotate;
+    float _rotate;
 
     // Used to rotate around object.
-    float				_objectRotate;
+    float _objectRotate;
 
-    float				_azDir;
-    float				_elDir;
-    float				_slewRate;
-    int				_action;
-    int				_tracking;
-    Tpoint			_chasePos;
-    Tpoint			_chaseObjPos;
-    float			_chaseRoll;
+    float _azDir;
+    float _elDir;
+    float _slewRate;
+    int _action;
+    int _tracking;
+    Tpoint _chasePos;
+    Tpoint _chaseObjPos;
+    float _chaseRoll;
 
     void DoAction();
 };

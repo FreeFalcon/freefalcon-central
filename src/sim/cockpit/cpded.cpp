@@ -12,13 +12,13 @@
 //MI for ICP stuff
 extern bool g_bRealisticAvionics;
 
-extern bool g_bDEDSpacingFix;		//Wombat778 10-17-2003
+extern bool g_bDEDSpacingFix; //Wombat778 10-17-2003
 
 #include "navsystem.h"
 #include "aircrft.h"
 
 //==================================================//
-//	CPDed::~CPDed
+// CPDed::~CPDed
 //==================================================//
 
 CPDed::~CPDed()
@@ -27,65 +27,65 @@ CPDed::~CPDed()
 }
 
 //==================================================//
-//	CPDed::CPDed
+// CPDed::CPDed
 //==================================================//
 
 CPDed::CPDed(ObjectInitStr *pobjectInitStr, DedInitStr *pdedInitStr) : CPObject(pobjectInitStr)
 {
 
-    int		yOffset;
-    float		halfWidth;
-    float		halfHeight;
+    int yOffset;
+    float halfWidth;
+    float halfHeight;
 
-    mCycleBits				= 0xFFFF;
+    mCycleBits = 0xFFFF;
 
     //MI changed for ICP Stuff
     if (!g_bRealisticAvionics)
-        yOffset					= (mDestRect.bottom - mDestRect.top) / 3; // 3 lines of DED text
+        yOffset = (mDestRect.bottom - mDestRect.top) / 3; // 3 lines of DED text
     else
-        yOffset					= (mDestRect.bottom - mDestRect.top) / 6; // 5 lines of DED text but spaced tighter
+        yOffset = (mDestRect.bottom - mDestRect.top) / 6; // 5 lines of DED text but spaced tighter
 
-    mpLinePos[0].top		= mDestRect.top + 2;
-    mpLinePos[0].left		= mDestRect.left;
-    mpLinePos[0].bottom	= mpLinePos[0].top + yOffset;
-    mpLinePos[0].right	= mDestRect.right;
+    mpLinePos[0].top = mDestRect.top + 2;
+    mpLinePos[0].left = mDestRect.left;
+    mpLinePos[0].bottom = mpLinePos[0].top + yOffset;
+    mpLinePos[0].right = mDestRect.right;
 
-    mpLinePos[1].top		= mpLinePos[0].bottom;
-    mpLinePos[1].left		= mDestRect.left;
-    mpLinePos[1].bottom	= mpLinePos[1].top + yOffset;
-    mpLinePos[1].right	= mDestRect.right;
+    mpLinePos[1].top = mpLinePos[0].bottom;
+    mpLinePos[1].left = mDestRect.left;
+    mpLinePos[1].bottom = mpLinePos[1].top + yOffset;
+    mpLinePos[1].right = mDestRect.right;
 
-    mpLinePos[2].top		= mpLinePos[1].bottom;
-    mpLinePos[2].left		= mDestRect.left;
-    mpLinePos[2].bottom	= mpLinePos[2].top + yOffset;
-    mpLinePos[2].right	= mDestRect.right;
+    mpLinePos[2].top = mpLinePos[1].bottom;
+    mpLinePos[2].left = mDestRect.left;
+    mpLinePos[2].bottom = mpLinePos[2].top + yOffset;
+    mpLinePos[2].right = mDestRect.right;
 
     //MI added for ICP Stuff
-    mpLinePos[3].top		= mpLinePos[2].bottom;
-    mpLinePos[3].left		= mDestRect.left;
-    mpLinePos[3].bottom		= mpLinePos[3].top + yOffset;
-    mpLinePos[3].right		= mDestRect.right;
+    mpLinePos[3].top = mpLinePos[2].bottom;
+    mpLinePos[3].left = mDestRect.left;
+    mpLinePos[3].bottom = mpLinePos[3].top + yOffset;
+    mpLinePos[3].right = mDestRect.right;
 
-    mpLinePos[4].top		= mpLinePos[3].bottom;
-    mpLinePos[4].left		= mDestRect.left;
-    mpLinePos[4].bottom		= mpLinePos[4].top + yOffset;
-    mpLinePos[4].right		= mDestRect.right;
+    mpLinePos[4].top = mpLinePos[3].bottom;
+    mpLinePos[4].left = mDestRect.left;
+    mpLinePos[4].bottom = mpLinePos[4].top + yOffset;
+    mpLinePos[4].right = mDestRect.right;
 
-    halfWidth				= (float) DisplayOptions.DispWidth * 0.5F;
-    halfHeight				= (float) DisplayOptions.DispHeight * 0.5F;
+    halfWidth = (float) DisplayOptions.DispWidth * 0.5F;
+    halfHeight = (float) DisplayOptions.DispHeight * 0.5F;
 
-    mLeft						= (mDestRect.left - halfWidth) / halfWidth;
-    mRight					= (mDestRect.right - halfWidth) / halfWidth;
-    mTop						= -(mDestRect.top - halfHeight) / halfHeight;
-    mBottom					= -(mDestRect.bottom - halfHeight) / halfHeight;
+    mLeft = (mDestRect.left - halfWidth) / halfWidth;
+    mRight = (mDestRect.right - halfWidth) / halfWidth;
+    mTop = -(mDestRect.top - halfHeight) / halfHeight;
+    mBottom = -(mDestRect.bottom - halfHeight) / halfHeight;
     // JPO - let the cockpit designers decide
-    mColor[0]					= pdedInitStr->color0;
-    mColor[1]					= CalculateNVGColor(pdedInitStr->color0);
+    mColor[0] = pdedInitStr->color0;
+    mColor[1] = CalculateNVGColor(pdedInitStr->color0);
     mDedType = pdedInitStr->dedtype;
 }
 
 //==================================================//
-//	ICPClass::Exec
+// ICPClass::Exec
 //==================================================//
 
 void CPDed::Exec(SimBaseClass*)
@@ -105,7 +105,7 @@ void CPDed::Exec(SimBaseClass*)
 }
 
 //==================================================//
-//	ICPClass::DisplayDraw
+// ICPClass::DisplayDraw
 //==================================================//
 
 
@@ -113,7 +113,7 @@ void CPDed::DisplayDraw(void)
 {
     int oldFont = VirtualDisplay::CurFont();
     // COBRA - RED- Pit Vibrations
-    ViewportBounds	ViewPort;
+    ViewportBounds ViewPort;
     ViewPort.left = mLeft;
     ViewPort.right = mRight;
     ViewPort.top = mTop;
@@ -152,7 +152,7 @@ void CPDed::DisplayDraw(void)
                     OTWDriver.renderer->SetColor(mColor[0]);
                 // JB 000819
                 else
-                    //			 OTWDriver.renderer->SetColor(0xFF00A200);
+                    //  OTWDriver.renderer->SetColor(0xFF00A200);
                     OTWDriver.renderer->SetColor(mColor[1]);
 
                 VirtualDisplay::SetFont(mpCPManager->DEDFont());
@@ -181,7 +181,7 @@ void CPDed::DisplayDraw(void)
 
 
             // JPO do this after the return...
-            VirtualDisplay::SetFont(0);	//MI hardcoded because we NEED this font
+            VirtualDisplay::SetFont(0); //MI hardcoded because we NEED this font
 
             //we're a DED
             if (mDedType == DEDT_DED)
@@ -192,7 +192,7 @@ void CPDed::DisplayDraw(void)
                 //Wombat778 10-17-2003 Aeyes Ded spacing fix
                 float stepx;
 
-                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024))	//Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
+                if ((g_bDEDSpacingFix) || (DisplayOptions.DispWidth > 1024)) //Wombat778 12-12-2003 Changed to allow automatic selection of the fix at high resolutions
                     stepx = VirtualDisplay::pFontSet->fontData[VirtualDisplay::pFontSet->fontNum][32].pixelWidth;
                 else
                     stepx = 5.0F;

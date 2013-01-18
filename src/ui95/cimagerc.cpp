@@ -34,8 +34,8 @@ extern C_Parser *gMainParser;
 
 C_Image *gImageMgr = NULL;
 
-#define _IMAGE_HASH_SIZE_		(512)
-#define _IMAGE_SUB_HASH_SIZE_	(20)
+#define _IMAGE_HASH_SIZE_ (512)
+#define _IMAGE_SUB_HASH_SIZE_ (20)
 
 static void DelResCB(void *me)
 {
@@ -131,8 +131,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, UI95_RECT *rect, short x, shor
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0;	//!
-    int i = 0, j = 0;		//!
+    int neww = 0, newh = 0; //!
+    int i = 0, j = 0; //!
 
     if (Root_->Find(ID) || Finder_->Find(ID))
     {
@@ -267,8 +267,8 @@ C_Resmgr *C_Image::AddImage(long ID, long LastID, short x, short y, short w, sho
     WORD *dptr16 = NULL;
     WORD *sptr16 = NULL;
     WORD *Palette = NULL;
-    int neww = 0, newh = 0;	//!
-    int i = 0, j = 0;		//!
+    int neww = 0, newh = 0; //!
+    int i = 0, j = 0; //!
 
     if (Root_->Find(ID) || Finder_->Find(ID))
     {

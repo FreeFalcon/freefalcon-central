@@ -2,7 +2,7 @@
 #ifndef VRINPUT_H
 #define VRINPUT_H
 
-// #define VOICE_INPUT	1
+// #define VOICE_INPUT 1
 
 extern void InitVoiceRecognitionEngine(void);
 

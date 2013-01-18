@@ -25,7 +25,7 @@ extern bool g_bGreyMFD;
 extern bool g_bGreyScaleMFD;
 extern bool bNVGmode;
 
-int	TgpMfdDrawable::flash = FALSE;
+int TgpMfdDrawable::flash = FALSE;
 
 void TgpMfdDrawable::DisplayInit(ImageBuffer* image)
 {
@@ -78,7 +78,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
     else if (!laserPod)
     {
-        //display = privateDisplay;			//Wombat778 3-24-04  CTD Fix in virtual cockpit.
+        //display = privateDisplay; //Wombat778 3-24-04  CTD Fix in virtual cockpit.
         OffMode(display);
         return;
     }
@@ -93,7 +93,7 @@ void TgpMfdDrawable::Display(VirtualDisplay* newDisplay)
     flash = (vuxRealTime & 0x200);
 
     //Check if we're in standby
-    if (self->PodCooling > 0.0F)	//always stby
+    if (self->PodCooling > 0.0F) //always stby
         pFCC->InhibitFire = TRUE;
 
     if (pFCC->InhibitFire)
@@ -360,7 +360,7 @@ char TgpMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 {
     if (Sms->hardPoint[n] == NULL) return ' '; // empty hp
 
-    if (Sms->hardPoint[n]->weaponCount <= 0) return ' ';	//MI don't bother drawing empty hardpoints
+    if (Sms->hardPoint[n]->weaponCount <= 0) return ' '; //MI don't bother drawing empty hardpoints
 
     if (Sms->StationOK(n) == FALSE) return 'F'; // malfunction on  HP
 
@@ -400,12 +400,12 @@ void TgpMfdDrawable::LaserIndicator(VirtualDisplay* display)
             display->TextLeft(x - 0.75F, y, "L");
     }
 
-    /*	display->TextLeft(.25f, .80f, "LaserArm         ", (pFCC->LaserArm          ? 2 : 0));
-    	display->TextLeft(.25f, .70f, "CheckForLaserFire", (pFCC->CheckForLaserFire ? 2 : 0));
-    	display->TextLeft(.25f, .60f, "InhibitFire      ", (pFCC->InhibitFire       ? 2 : 0));
-    	display->TextLeft(.25f, .50f, "LaserWasFired    ", (pFCC->LaserWasFired     ? 2 : 0));
-    	display->TextLeft(.25f, .40f, "LaserFire        ", (pFCC->LaserFire         ? 2 : 0));
-    	display->TextLeft(.25f, .30f, "ManualFire       ", (pFCC->ManualFire        ? 2 : 0)); */
+    /* display->TextLeft(.25f, .80f, "LaserArm         ", (pFCC->LaserArm          ? 2 : 0));
+     display->TextLeft(.25f, .70f, "CheckForLaserFire", (pFCC->CheckForLaserFire ? 2 : 0));
+     display->TextLeft(.25f, .60f, "InhibitFire      ", (pFCC->InhibitFire       ? 2 : 0));
+     display->TextLeft(.25f, .50f, "LaserWasFired    ", (pFCC->LaserWasFired     ? 2 : 0));
+     display->TextLeft(.25f, .40f, "LaserFire        ", (pFCC->LaserFire         ? 2 : 0));
+     display->TextLeft(.25f, .30f, "ManualFire       ", (pFCC->ManualFire        ? 2 : 0)); */
 }
 void TgpMfdDrawable::ImpactTime(VirtualDisplay* display)
 {
@@ -506,7 +506,7 @@ void TgpMfdDrawable::OSBLabels(VirtualDisplay* display)
             else
                 LabelButton(9, "STBY");
         }
-        else	//NAV
+        else //NAV
         {
             if (StbyMode)
                 LabelButton(5, "A-G");
@@ -556,7 +556,7 @@ void TgpMfdDrawable::OSBLabels(VirtualDisplay* display)
     }
     else
     {
-        LabelButton(0, "A-G");	//would be either A-A or A-G.. but AA isn't modelled
+        LabelButton(0, "A-G"); //would be either A-A or A-G.. but AA isn't modelled
 
         if (laserPod->CurFOV() < 1.7F * DTR)
             sprintf(Str, "EXP");

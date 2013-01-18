@@ -12,7 +12,7 @@
 /*
 UI_UpdateSettings::UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (UpdateSettings, FalconEvent::UIThread, entityId, target, loopback)
 {
-	RequestOutOfBandTransmit();
+ RequestOutOfBandTransmit();
 }
 
 UI_UpdateSettings::UI_UpdateSettings(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent (UpdateSettings, FalconEvent::UIThread, senderid, target)
@@ -27,14 +27,14 @@ UI_UpdateSettings::~UI_UpdateSettings(void)
 
 int UI_UpdateSettings::Process(uchar autodisp)
 {
-	if(dataBlock.from != vuLocalSessionEntity->Id())
-	{
-		if(gCommsMgr == NULL)
-			return(0);
+ if(dataBlock.from != vuLocalSessionEntity->Id())
+ {
+ if(gCommsMgr == NULL)
+ return(0);
 
-		gCommsMgr->UpdateSetting(dataBlock.setting,dataBlock.value);
-	}
-	return(0);
+ gCommsMgr->UpdateSetting(dataBlock.setting,dataBlock.value);
+ }
+ return(0);
 }
 */
 #endif

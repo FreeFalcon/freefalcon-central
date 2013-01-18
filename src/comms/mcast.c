@@ -172,7 +172,7 @@ ComAPIHandle ComIPMulticastOpen(int buffersize, char *gamename, int mc_scope)
     comSendAddr.sin_port         = htons(CAPI_UDP_PORT);
 
     /*   setsockopt(c->send_sock, SOL_SOCKET, SO_BROADCAST, */
-    /* 	    	(char *)&trueValue, sizeof(int) );   */
+    /*       (char *)&trueValue, sizeof(int) );   */
 
     c->recv_sock = WSAJoinLeaf(c->recv_sock,
                                (struct sockaddr *)&comRecvAddr, sizeof(comRecvAddr),

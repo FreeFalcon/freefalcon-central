@@ -8,28 +8,28 @@
 #include "DXTools.h"
 #include "DXLightEngine.h"
 
-#ifndef	DEBUG_ENGINE
+#ifndef DEBUG_ENGINE
 
 #endif
 
 
 /////////////////////////////////////////// LIGHT ENGINE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-CDXLight	TheLightEngine;
+CDXLight TheLightEngine;
 
-_MM_ALIGN16	CDXLightElement	CDXLight::LightList[MAX_DYNAMIC_LIGHTS];
-IDirect3DDevice7	*CDXLight::m_pD3DD;
-IDirect3D7			*CDXLight::m_pD3D;
-LightIndexType		CDXLight::SwitchedList[MAX_SAMETIME_LIGHTS];
-DWORD				CDXLight::LightID;
-DWORD				CDXLight::DynamicLights;
-float				CDXLight::MaxRange;
-bool				CDXLight::LightsToOn[MAX_DYNAMIC_LIGHTS];
-bool				CDXLight::LightsLoaded;
+_MM_ALIGN16 CDXLightElement CDXLight::LightList[MAX_DYNAMIC_LIGHTS];
+IDirect3DDevice7 *CDXLight::m_pD3DD;
+IDirect3D7 *CDXLight::m_pD3D;
+LightIndexType CDXLight::SwitchedList[MAX_SAMETIME_LIGHTS];
+DWORD CDXLight::LightID;
+DWORD CDXLight::DynamicLights;
+float CDXLight::MaxRange;
+bool CDXLight::LightsToOn[MAX_DYNAMIC_LIGHTS];
+bool CDXLight::LightsLoaded;
 
 
 
-void CDXLight::Setup(IDirect3DDevice7	*pD3DD, IDirect3D7	*pD3D)
+void CDXLight::Setup(IDirect3DDevice7 *pD3DD, IDirect3D7 *pD3D)
 {
     // assign the D3D pointers
     m_pD3DD = pD3DD;
@@ -44,10 +44,10 @@ void CDXLight::Setup(IDirect3DDevice7	*pD3DD, IDirect3D7	*pD3D)
 
 
 // Thi function resets and inits the lights list parameters
-void	CDXLight::ResetLightsList(void)
+void CDXLight::ResetLightsList(void)
 {
 
-#ifdef	LIGHT_ENGINE_DEBUG
+#ifdef LIGHT_ENGINE_DEBUG
     REPORT_VALUE("LIGHTS", DynamicLights);
 #endif
 
@@ -74,11 +74,11 @@ void	CDXLight::ResetLightsList(void)
 
 
 // This function adds a light in the Dynamic Lights List
-DWORD	CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos, float Range)
+DWORD CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos, float Range)
 {
-    DWORD	Index = 0;
-    float	ActualRange = 0.0f;
-    bool	Assigned = false;
+    DWORD Index = 0;
+    float ActualRange = 0.0f;
+    bool Assigned = false;
 
     // Do not add static lights... they r just use to pre compute emissive colours
     if (Light->Flags.Static) return NULL;
@@ -138,7 +138,7 @@ DWORD	CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMat
     // number of lights
     DynamicLights = Index;
 
-    //	REPORT_VALUE("Dynamic Lights", DynamicLights);
+    // REPORT_VALUE("Dynamic Lights", DynamicLights);
     // set up the longest range left in list
     MaxRange = ActualRange;
     // return the light ID for this object
@@ -148,16 +148,16 @@ DWORD	CDXLight::AddDynamicLight(DWORD ID, DXLightType *Light, D3DXMATRIX *RotMat
 
 
 #ifdef DEBUG_LOD_ID
-extern	DWORD	gDebugLodID;
-extern	char	TheLODNames[10000][32];
+extern DWORD gDebugLodID;
+extern char TheLODNames[10000][32];
 #endif
 
 // This function switch on the nearest lights to an object of a certain radius
-void	CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
+void CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
 {
-    _MM_ALIGN16	XMMVector	Pos, Acc, Square;
-    DWORD					idx, ldx, LightsInList = 0;
-    float					Dist, MaxDist = 0.0f;
+    _MM_ALIGN16 XMMVector Pos, Acc, Square;
+    DWORD idx, ldx, LightsInList = 0;
+    float Dist, MaxDist = 0.0f;
 
     // setup the position for XMM use
     *(D3DVECTOR*)&Pos.d3d = *pos;
@@ -168,7 +168,7 @@ void	CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         // Enable the lights + 1 ( light #0 is the Sun )
         idx = 0;
 
-        //		while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
+        // while(idx<MAX_DYNAMIC_LIGHTS && LightList[idx].CameraDistance<=DYNAMIC_LIGHT_INSIDE_RANGE){
         while (idx < DynamicLights)
         {
             m_pD3DD->SetLight(idx + 1, &LightList[idx++].Light);
@@ -226,12 +226,12 @@ void	CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
         {
 
             // Get the Distance btw Light & Object
-            //float	dx=Pos.d3d.x-LightList[idx].Light.dvPosition.x;
-            //float	dy=Pos.d3d.y-LightList[idx].Light.dvPosition.y;
-            //float	dz=Pos.d3d.z-LightList[idx].Light.dvPosition.z;
+            //float dx=Pos.d3d.x-LightList[idx].Light.dvPosition.x;
+            //float dy=Pos.d3d.y-LightList[idx].Light.dvPosition.y;
+            //float dz=Pos.d3d.z-LightList[idx].Light.dvPosition.z;
             // Calculate Horizontal and Vertical Angle btw Light & Object
-            float	ax = atan2(Acc.d3d.x, Acc.d3d.y);
-            float	ay = atan2(Acc.d3d.z, sqrtf(Square.d3d.x + Square.d3d.y));
+            float ax = atan2(Acc.d3d.x, Acc.d3d.y);
+            float ay = atan2(Acc.d3d.z, sqrtf(Square.d3d.x + Square.d3d.y));
 
             // transform the angles in same Sign Domain of the light angles X/Y
             if (fabs(ax - LightList[idx].alphaX) > PI) ax += ax > LightList[idx].alphaX ? -2 * PI : 2 * PI;
@@ -242,9 +242,9 @@ void	CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
             float laX = LightList[idx].alphaX;
             float laY = LightList[idx].alphaY;
             // Calculate the Angular Delta given by Object Radius
-            float	dPhi = atanf(Radius / Dist);
+            float dPhi = atanf(Radius / Dist);
 
-#ifdef	LIGHT_ENGINE_DEBUG
+#ifdef LIGHT_ENGINE_DEBUG
             REPORT_VALUE("Max :", (int)(LightList[idx].alphaX * 180 / PI));
             REPORT_VALUE("Min :", (int)(LightList[idx].alphaY * 180 / PI));
 #ifdef DEBUG_LOD_ID
@@ -281,7 +281,7 @@ void	CDXLight::UpdateDynamicLights(DWORD ID, D3DVECTOR *pos, float Radius)
             if (Dist < MaxDist)
             {
                 // setup a temporary for the new Max Distance
-                float	TempDist = 0.0f;
+                float TempDist = 0.0f;
 
                 // check if lower distance than any in the object lites list
                 for (ldx = 0; ldx < MAX_SAMETIME_LIGHTS; ldx++)
@@ -343,7 +343,7 @@ void CDXLight::EnableMappedLights(void)
 
 
 // This function adds a light in the Dynamic Lights List
-void	CDXEngine::AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos)
+void CDXEngine::AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos)
 {
     // Only if space available in the list
     if (LightsNumber < MAX_DYNAMIC_LIGHTS)
@@ -368,7 +368,7 @@ void	CDXEngine::AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix, D3DVECT
 
 
 // This function clears the Dynamic Lights List
-void	CDXEngine::RemoveDynamicLights(void)
+void CDXEngine::RemoveDynamicLights(void)
 {
     while (LightsNumber)
     {
@@ -381,37 +381,37 @@ void	CDXEngine::RemoveDynamicLights(void)
 
 // *** NO MORE USED !!!! ***
 // This function is the HardCoding for the PIT of the Taxi Spotlight
-void	CDXEngine::DrawOwnSpot(Trotation *Rotation)
+void CDXEngine::DrawOwnSpot(Trotation *Rotation)
 {
-    /*	DXLightType	OwnSpot;
+    /* DXLightType OwnSpot;
 
-    	D3DXMATRIX	RotMatrix;
+     D3DXMATRIX RotMatrix;
     #ifndef DEBUG_ENGINE
-    	AssignPmatrixToD3DXMATRIX(&RotMatrix, Rotation);
+     AssignPmatrixToD3DXMATRIX(&RotMatrix, Rotation);
     #endif
 
 
-    	// initialize it
-    	memset(&OwnSpot, 0, sizeof(OwnSpot));
+     // initialize it
+     memset(&OwnSpot, 0, sizeof(OwnSpot));
 
-    	OwnSpot.Light.dcvDiffuse.r=OwnSpot.Light.dcvDiffuse.g=OwnSpot.Light.dcvDiffuse.b=1.0f;
-    	OwnSpot.Light.dcvSpecular.r=OwnSpot.Light.dcvSpecular.g=OwnSpot.Light.dcvSpecular.b=1.0f;
-    	OwnSpot.Light.dvRange=1500.0f;
-    	OwnSpot.Light.dvAttenuation0=0.1f;
-    	OwnSpot.Light.dvAttenuation1=0.01f;
-    	OwnSpot.Light.dltType=D3DLIGHT_SPOT;
-    	OwnSpot.Light.dvTheta=0.1f;
-    	OwnSpot.Light.dvPhi=1.3f;
-    	OwnSpot.Light.dvFalloff=1.0f;
-    	OwnSpot.Light.dvDirection.z=0.23f;
-    	OwnSpot.Light.dvDirection.y=0.0f;
-    	OwnSpot.Light.dvDirection.x=1.0f;
+     OwnSpot.Light.dcvDiffuse.r=OwnSpot.Light.dcvDiffuse.g=OwnSpot.Light.dcvDiffuse.b=1.0f;
+     OwnSpot.Light.dcvSpecular.r=OwnSpot.Light.dcvSpecular.g=OwnSpot.Light.dcvSpecular.b=1.0f;
+     OwnSpot.Light.dvRange=1500.0f;
+     OwnSpot.Light.dvAttenuation0=0.1f;
+     OwnSpot.Light.dvAttenuation1=0.01f;
+     OwnSpot.Light.dltType=D3DLIGHT_SPOT;
+     OwnSpot.Light.dvTheta=0.1f;
+     OwnSpot.Light.dvPhi=1.3f;
+     OwnSpot.Light.dvFalloff=1.0f;
+     OwnSpot.Light.dvDirection.z=0.23f;
+     OwnSpot.Light.dvDirection.y=0.0f;
+     OwnSpot.Light.dvDirection.x=1.0f;
 
-    	OwnSpot.Flags.OwnLight=false;
+     OwnSpot.Flags.OwnLight=false;
 
 
-    	D3DVECTOR	Pos(4, 0, 5);
-    	D3DXVec3TransformCoord((D3DXVECTOR3*)&Pos, (D3DXVECTOR3*)&Pos, &RotMatrix);
-    	TheLightEngine.AddDynamicLight(0, &OwnSpot, &RotMatrix, &Pos, 0);
+     D3DVECTOR Pos(4, 0, 5);
+     D3DXVec3TransformCoord((D3DXVECTOR3*)&Pos, (D3DXVECTOR3*)&Pos, &RotMatrix);
+     TheLightEngine.AddDynamicLight(0, &OwnSpot, &RotMatrix, &Pos, 0);
     */
 }

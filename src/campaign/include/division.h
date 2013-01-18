@@ -27,18 +27,18 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
-    GridIndex		x;									// Averaged Location
-    GridIndex		y;
-    short			nid;								// Division id
-    short			owner;
-    uchar			type;								// type type (armor/infanty/etc)
-    uchar			elements;							// Number of child units
-    uchar			c_element;							// Which one we're looking at
-    VU_ID			*element;							// VU_IDs of elements
-    DivisionClass	*next;
+    GridIndex x; // Averaged Location
+    GridIndex y;
+    short nid; // Division id
+    short owner;
+    uchar type; // type type (armor/infanty/etc)
+    uchar elements; // Number of child units
+    uchar c_element; // Which one we're looking at
+    VU_ID *element; // VU_IDs of elements
+    DivisionClass *next;
 
 public:
     DivisionClass(void);
@@ -68,7 +68,7 @@ public:
     void RemoveChild(VU_ID eid);
 };
 
-typedef DivisionClass	*Division;
+typedef DivisionClass *Division;
 
 // ========================
 // Other functions

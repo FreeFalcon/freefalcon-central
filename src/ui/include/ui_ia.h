@@ -46,9 +46,9 @@ extern UI_IA InstantActionSettings;
 
 struct kill_list
 {
-    long	id;
-    int		num;
-    long	points;
+    long id;
+    int num;
+    long points;
     kill_list *next;
 };
 

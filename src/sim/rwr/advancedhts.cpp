@@ -23,7 +23,7 @@
 #include "AdvancedHTS.h"
 #include "aircrft.h"
 
-const float	CURSOR_SIZE	=  0.065f;
+const float CURSOR_SIZE =  0.065f;
 
 AdvancedHarmTargetingPod::AdvancedHarmTargetingPod(int idx, SimMoverClass* self) : HarmTargetingPod(idx, self)
 {
@@ -56,13 +56,13 @@ AdvancedHarmTargetingPod::~AdvancedHarmTargetingPod(void)
 // RV - I-Hawk - HAD display
 void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
 {
-    float			displayX, displayY;
-    float			x2, y2;
-    float			wpX, wpY, wpZ;
-    float			cosAng, sinAng;
-    WayPointClass	*curWaypoint;
-    GroundListElement*	tmpElement;
-    mlTrig			trig;
+    float displayX, displayY;
+    float x2, y2;
+    float wpX, wpY, wpZ;
+    float cosAng, sinAng;
+    WayPointClass *curWaypoint;
+    GroundListElement* tmpElement;
+    mlTrig trig;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
     // Let the base class do the basics
@@ -162,15 +162,15 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
 // RV - I-Hawk - HAD EXP display
 void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
 {
-    float			displayX, displayY;
-    float			x, y;
-    float			cosAng, sinAng, origCosAng, origSinAng;
-    float			EXP1OffsetX, EXP1OffsetY, EXP2OffsetX, EXP2OffsetY;
-    float			yawOffsetAng;
-    float			origDisplayX, origDisplayY;
+    float displayX, displayY;
+    float x, y;
+    float cosAng, sinAng, origCosAng, origSinAng;
+    float EXP1OffsetX, EXP1OffsetY, EXP2OffsetX, EXP2OffsetY;
+    float yawOffsetAng;
+    float origDisplayX, origDisplayY;
     DWORD tempColor;
-    GroundListElement*	tmpElement;
-    mlTrig			trig, trig2;
+    GroundListElement* tmpElement;
+    mlTrig trig, trig2;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
     // Let the base class do the basics
@@ -302,10 +302,10 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     // RV - I-Hawk - Ownship "airplane" marker. Here the display is relatively "static" and the
     // only thing that moves and turn is the ownship AC marker
     display->SetColor(GetMfdColor(MFD_CYAN));
-    static const float	NOSE	= 0.02f;
-    static const float	TAIL	= 0.08f;
-    static const float	WING	= 0.06f;
-    static const float	TAIL_WING	= 0.02f;
+    static const float NOSE = 0.02f;
+    static const float TAIL = 0.08f;
+    static const float WING = 0.06f;
+    static const float TAIL_WING = 0.02f;
 
     yawOffsetAng = platform->Yaw() - yawBackup;
     float yawOffsetAng2 = yawBackup - platform->Yaw();
@@ -357,14 +357,14 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
 // RV - I-Hawk - HAS mode
 void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
 {
-    unsigned		numOfDrawnTargets, curTime;
-    float			displayX, displayY, NormDisplayX, NormDisplayY, NormDisplayYNoOffset;
-    float			x, y, x2, y2;
-    float			cosAng, sinAng;
-    float			range, alpha, ex, ey, phi, elevation;
-    float			rangeX, rangeY, trueRange;
-    GroundListElement*	tmpElement;
-    mlTrig			trig;
+    unsigned numOfDrawnTargets, curTime;
+    float displayX, displayY, NormDisplayX, NormDisplayY, NormDisplayYNoOffset;
+    float x, y, x2, y2;
+    float cosAng, sinAng;
+    float range, alpha, ex, ey, phi, elevation;
+    float rangeX, rangeY, trueRange;
+    GroundListElement* tmpElement;
+    mlTrig trig;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
     // Let the base class do the basics
@@ -484,11 +484,11 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
 // RV - I-Hawk - Handoff mode (getting here after target is locked in HAS mode)
 void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
 {
-    float			displayX, displayY, NormDisplayX, NormDisplayY, NormDisplayYNoOffset;
-    float			x, y, x2, y2;
-    float			cosAng, sinAng;
-    float			range, alpha, ex, ey, phi, elevation;
-    mlTrig			trig;
+    float displayX, displayY, NormDisplayX, NormDisplayY, NormDisplayYNoOffset;
+    float x, y, x2, y2;
+    float cosAng, sinAng;
+    float range, alpha, ex, ey, phi, elevation;
+    mlTrig trig;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
     GroundListElement* tmpElement = NULL;
 
@@ -846,7 +846,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
 void AdvancedHarmTargetingPod::DrawEmitter(GroundListElement* tmpElement, float &displayX, float &displayY, float &origDisplayY)
 {
     DWORD color;
-    int	  boxed;
+    int   boxed;
 
     switch (submode)
     {

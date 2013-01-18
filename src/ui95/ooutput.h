@@ -37,34 +37,34 @@ public:
 #endif
 protected:
     // Stuff that can be saved
-    long		flags_;
-    long		Font_;
-    long		ScaleSet_;
-    COLORREF	FgColor_, BgColor_;
-    UI95_RECT	Src_, Dest_;
-    long		origx_, origy_;
-    long		x_, y_; // relative x,y (offset from the Draw(x,y,...) parameters
-    long		w_, h_; // relative w,h
-    long		lastx_, lasty_, lastw_, lasth_;
-    short		_OType_;
-    short		animtype_;
-    short		frame_;
-    short		direction_;
-    short		ready_;
-    short		fperc_, bperc_;
-    short		LabelLen_;
-    short		WWWidth_;
-    short		WWCount_;
-    short		OpStart_, OpEnd_;
+    long flags_;
+    long Font_;
+    long ScaleSet_;
+    COLORREF FgColor_, BgColor_;
+    UI95_RECT Src_, Dest_;
+    long origx_, origy_;
+    long x_, y_; // relative x,y (offset from the Draw(x,y,...) parameters
+    long w_, h_; // relative w,h
+    long lastx_, lasty_, lastw_, lasth_;
+    short _OType_;
+    short animtype_;
+    short frame_;
+    short direction_;
+    short ready_;
+    short fperc_, bperc_;
+    short LabelLen_;
+    short WWWidth_;
+    short WWCount_;
+    short OpStart_, OpEnd_;
 
     // Don't save this stuff
-    long		*Rows_;
-    long		*Cols_;
-    WORDWRAP	*Wrap_;
-    _TCHAR		*Label_;
-    IMAGE_RSC	*Image_;
-    ANIM_RES	*Anim_;
-    C_Base		*Owner_; // pointer to creator control
+    long *Rows_;
+    long *Cols_;
+    WORDWRAP *Wrap_;
+    _TCHAR *Label_;
+    IMAGE_RSC *Image_;
+    ANIM_RES *Anim_;
+    C_Base *Owner_; // pointer to creator control
 
     void O_Output::ExtractAnim(SCREEN *surface, long FrameNo, long x, long y, UI95_RECT *src, UI95_RECT *dest);
     void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long x, long y, UI95_RECT *src, UI95_RECT *dest);

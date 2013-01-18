@@ -21,10 +21,10 @@ using namespace std;
 
 
 
-CStar	TheStar;
+CStar TheStar;
 
 // The one and only time manager
-CTimeOfDay	TheTimeOfDay;
+CTimeOfDay TheTimeOfDay;
 
 extern float g_fLatitude; // JB 010804
 
@@ -36,7 +36,7 @@ extern float g_fLatitude; // JB 010804
 SkyColorDataType* skycolor;
 
 // size of sun glare area = 22.5 deg
-static const int	SUN_GLARE_SIZE		= 1024;
+static const int SUN_GLARE_SIZE = 1024;
 
 unsigned char CTimeOfDay::MoonPhaseMask[8 * 64];
 unsigned char CTimeOfDay::CurrentMoonPhaseMask[8 * 64];
@@ -46,9 +46,9 @@ unsigned char CTimeOfDay::CurrentMoonPhaseMask[8 * 64];
 
 void CTimeOfDay::Setup(char *dataPath)
 {
-    char	todfile[_MAX_PATH];
-    char	starfile[_MAX_PATH];
-    FILE	*in;
+    char todfile[_MAX_PATH];
+    char starfile[_MAX_PATH];
+    FILE *in;
 
     ShiAssert(!IsReady());
 
@@ -58,11 +58,11 @@ void CTimeOfDay::Setup(char *dataPath)
 
     sprintf(starfile, "%s\\star.dat", dataPath);
 
-    if (!skycolor || !(in = fopen(todfile, "r")))	// Oops, the todfile is not there ? Use default one
+    if (!skycolor || !(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
     {
         sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
 
-        if (!(in = fopen(todfile, "r")))	// Oops, the todfile is not there ? Use default one
+        if (!(in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
             sprintf(todfile, "%s\\tod.lst", dataPath);
         else
             fclose(in);
@@ -119,24 +119,24 @@ void CTimeOfDay::Setup(char *dataPath)
     SetVar(TimeOfDay);
 
     ////////////////
-    if (TheStar.Setup(starfile, 11.0f))  	// load all stars with magnitude less than 11
+    if (TheStar.Setup(starfile, 11.0f))   // load all stars with magnitude less than 11
     {
         //ShiError ("Failed Loading Star");
         // We nead to exit cleanly?
     }
 
     TheStarData = TheStar.GetStarData();
-    TheStar.SetHorizon((float) degtorad(5), (float) degtorad(15));	// display stars with elevation > horizon
+    TheStar.SetHorizon((float) degtorad(5), (float) degtorad(15)); // display stars with elevation > horizon
     // M.N. changed back from theater.map readout. It seems that the sun position is normalized to korean latitude,
     // so no need to change it at all...
-    TheStar.SetLocation(g_fLatitude, 0.0f);								// latitude, longitude
+    TheStar.SetLocation(g_fLatitude, 0.0f); // latitude, longitude
 
     /*
-    	struct tm *newtime;
-    	long ltime;
-    	time( &ltime );
-    	newtime = gmtime( &ltime );
-    	TheStar.SetDate (newtime -> tm_mday, newtime -> tm_mon + 1, newtime -> tm_year + 1900);
+     struct tm *newtime;
+     long ltime;
+     time( &ltime );
+     newtime = gmtime( &ltime );
+     TheStar.SetDate (newtime -> tm_mday, newtime -> tm_mon + 1, newtime -> tm_year + 1900);
     */
     int year = TheTimeManager.GetYearAD();
     int extraday = TheTimeManager.GetDayOfYear();
@@ -207,21 +207,21 @@ void CTimeOfDay::SetNVGmode(BOOL state)
 {
     NVGmode = state;
     /*
-    	Tcolor	paletteEffect;
-    	int		id;
+     Tcolor paletteEffect;
+     int id;
 
-    	// Convert all the object texture palettes appropriatly
-    	paletteEffect.g = 1.0f;
-    	if (NVGmode) {
-    		paletteEffect.r = 0.0f;
-    		paletteEffect.b = 0.0f;
-    	} else {
-    		paletteEffect.r = 1.0f;
-    		paletteEffect.b = 1.0f;
-    	}
-    	for (id=0; ThePaletteBank.IsValidIndex( id ); id++) {
-    		ThePaletteBank.LightPalette( id, &paletteEffect );
-    	}
+     // Convert all the object texture palettes appropriatly
+     paletteEffect.g = 1.0f;
+     if (NVGmode) {
+     paletteEffect.r = 0.0f;
+     paletteEffect.b = 0.0f;
+     } else {
+     paletteEffect.r = 1.0f;
+     paletteEffect.b = 1.0f;
+     }
+     for (id=0; ThePaletteBank.IsValidIndex( id ); id++) {
+     ThePaletteBank.LightPalette( id, &paletteEffect );
+     }
     */
     // Force a lighting refresh to reflect the changes
     TheTimeManager.Refresh();
@@ -237,10 +237,10 @@ void CTimeOfDay::TimeUpdateCallback(void *self)
 
 void CTimeOfDay::UpdateSkyProperties()
 {
-    int				i, c, n;
-    TimeOfDayStruct	*tod, *ntod;
-    unsigned		now;
-    float			t;
+    int i, c, n;
+    TimeOfDayStruct *tod, *ntod;
+    unsigned now;
+    float t;
 
 
     // Convert from time since clock start to time since midnight
@@ -307,53 +307,53 @@ void CTimeOfDay::UpdateSkyProperties()
     SetVar(tod);
 
     // Add in deltas toward the second record
-    m_SkyColor.r			+= t * (ntod -> SkyColor.r - m_SkyColor.r);
-    m_SkyColor.g			+= t * (ntod -> SkyColor.g - m_SkyColor.g);
-    m_SkyColor.b			+= t * (ntod -> SkyColor.b - m_SkyColor.b);
-    m_HazeSkyColor.r		+= t * (ntod -> HazeSkyColor.r - m_HazeSkyColor.r);
-    m_HazeSkyColor.g		+= t * (ntod -> HazeSkyColor.g - m_HazeSkyColor.g);
-    m_HazeSkyColor.b		+= t * (ntod -> HazeSkyColor.b - m_HazeSkyColor.b);
-    m_GroundColor.r			+= t * (ntod -> GroundColor.r - m_GroundColor.r);
-    m_GroundColor.g			+= t * (ntod -> GroundColor.g - m_GroundColor.g);
-    m_GroundColor.b			+= t * (ntod -> GroundColor.b - m_GroundColor.b);
-    m_HazeGroundColor.r		+= t * (ntod -> HazeGroundColor.r - m_HazeGroundColor.r);
-    m_HazeGroundColor.g		+= t * (ntod -> HazeGroundColor.g - m_HazeGroundColor.g);
-    m_HazeGroundColor.b		+= t * (ntod -> HazeGroundColor.b - m_HazeGroundColor.b);
-    m_TextureLighting.r		+= t * (ntod -> TextureLighting.r - m_TextureLighting.r);
-    m_TextureLighting.g		+= t * (ntod -> TextureLighting.g - m_TextureLighting.g);
-    m_TextureLighting.b		+= t * (ntod -> TextureLighting.b - m_TextureLighting.b);
+    m_SkyColor.r += t * (ntod -> SkyColor.r - m_SkyColor.r);
+    m_SkyColor.g += t * (ntod -> SkyColor.g - m_SkyColor.g);
+    m_SkyColor.b += t * (ntod -> SkyColor.b - m_SkyColor.b);
+    m_HazeSkyColor.r += t * (ntod -> HazeSkyColor.r - m_HazeSkyColor.r);
+    m_HazeSkyColor.g += t * (ntod -> HazeSkyColor.g - m_HazeSkyColor.g);
+    m_HazeSkyColor.b += t * (ntod -> HazeSkyColor.b - m_HazeSkyColor.b);
+    m_GroundColor.r += t * (ntod -> GroundColor.r - m_GroundColor.r);
+    m_GroundColor.g += t * (ntod -> GroundColor.g - m_GroundColor.g);
+    m_GroundColor.b += t * (ntod -> GroundColor.b - m_GroundColor.b);
+    m_HazeGroundColor.r += t * (ntod -> HazeGroundColor.r - m_HazeGroundColor.r);
+    m_HazeGroundColor.g += t * (ntod -> HazeGroundColor.g - m_HazeGroundColor.g);
+    m_HazeGroundColor.b += t * (ntod -> HazeGroundColor.b - m_HazeGroundColor.b);
+    m_TextureLighting.r += t * (ntod -> TextureLighting.r - m_TextureLighting.r);
+    m_TextureLighting.g += t * (ntod -> TextureLighting.g - m_TextureLighting.g);
+    m_TextureLighting.b += t * (ntod -> TextureLighting.b - m_TextureLighting.b);
 
-    m_BadWeatherLighting.r	+= t * (ntod -> BadWeatherLighting.r - m_BadWeatherLighting.r);
-    m_BadWeatherLighting.g	+= t * (ntod -> BadWeatherLighting.g - m_BadWeatherLighting.g);
-    m_BadWeatherLighting.b	+= t * (ntod -> BadWeatherLighting.b - m_BadWeatherLighting.b);
+    m_BadWeatherLighting.r += t * (ntod -> BadWeatherLighting.r - m_BadWeatherLighting.r);
+    m_BadWeatherLighting.g += t * (ntod -> BadWeatherLighting.g - m_BadWeatherLighting.g);
+    m_BadWeatherLighting.b += t * (ntod -> BadWeatherLighting.b - m_BadWeatherLighting.b);
 
-    m_VisColor.r	+= t * (ntod -> VisColor.r - m_VisColor.r);
-    m_VisColor.g	+= t * (ntod -> VisColor.g - m_VisColor.g);
-    m_VisColor.b	+= t * (ntod -> VisColor.b - m_VisColor.b);
+    m_VisColor.r += t * (ntod -> VisColor.r - m_VisColor.r);
+    m_VisColor.g += t * (ntod -> VisColor.g - m_VisColor.g);
+    m_VisColor.b += t * (ntod -> VisColor.b - m_VisColor.b);
 
     Tcolor Color;
     Color = tod->RainColor;
-    Color.r		+= t * (ntod -> RainColor.r - tod->RainColor.r);
-    Color.g		+= t * (ntod -> RainColor.g - tod->RainColor.g);
-    Color.b		+= t * (ntod -> RainColor.b - tod->RainColor.b);
+    Color.r += t * (ntod -> RainColor.r - tod->RainColor.r);
+    Color.g += t * (ntod -> RainColor.g - tod->RainColor.g);
+    Color.b += t * (ntod -> RainColor.b - tod->RainColor.b);
     RainColor = MakeColor(&Color);
 
     Color = tod->SnowColor;
-    Color.r		+= t * (ntod -> SnowColor.r - tod->SnowColor.r);
-    Color.g		+= t * (ntod -> SnowColor.g - tod->SnowColor.g);
-    Color.b		+= t * (ntod -> SnowColor.b - tod->SnowColor.b);
+    Color.r += t * (ntod -> SnowColor.r - tod->SnowColor.r);
+    Color.g += t * (ntod -> SnowColor.g - tod->SnowColor.g);
+    Color.b += t * (ntod -> SnowColor.b - tod->SnowColor.b);
     SnowColor = MakeColor(&Color);
 
-    LightningColor.r	+= t * (ntod -> LightningColor.r - tod->LightningColor.r);
-    LightningColor.g	+= t * (ntod -> LightningColor.g - tod->LightningColor.g);
-    LightningColor.b	+= t * (ntod -> LightningColor.b - tod->LightningColor.b);
+    LightningColor.r += t * (ntod -> LightningColor.r - tod->LightningColor.r);
+    LightningColor.g += t * (ntod -> LightningColor.g - tod->LightningColor.g);
+    LightningColor.b += t * (ntod -> LightningColor.b - tod->LightningColor.b);
 
-    m_Ambient		+= t * (ntod -> Ambient - m_Ambient);
-    m_Diffuse		+= t * (ntod -> Diffuse - m_Diffuse);
-    m_Specular		+= t * (ntod -> Specular - m_Specular);
-    m_MinVis		+= t * (ntod -> MinVis  - m_MinVis);
+    m_Ambient += t * (ntod -> Ambient - m_Ambient);
+    m_Diffuse += t * (ntod -> Diffuse - m_Diffuse);
+    m_Specular += t * (ntod -> Specular - m_Specular);
+    m_MinVis += t * (ntod -> MinVis  - m_MinVis);
 
-    float	ra, dec, az, alt;
+    float ra, dec, az, alt;
     TheStar.GetSunRaDec(&ra, &dec);
     TheStar.ConvertPosition(ra, dec, &az, &alt);
     TheStar.SetSunPosition(az, alt);
@@ -377,89 +377,89 @@ void CTimeOfDay::UpdateSkyProperties()
         t1 = (t1 / NEW_MOON_PHASE) * (float)sin(alt);//angletorad(IMoonPitch));
         t1 = (1.0f + t1) / 2.0f;
 
-        if (t1 < 0.45f) t1 = 0.45f;		// limit the darkness level
+        if (t1 < 0.45f) t1 = 0.45f; // limit the darkness level
 
-        m_HazeGroundColor.r		*= t1;
-        m_HazeGroundColor.g		*= t1;
-        m_HazeGroundColor.b		*= t1;
-        m_TextureLighting.r		*= t1;
-        m_TextureLighting.g		*= t1;
-        m_TextureLighting.b		*= t1;
+        m_HazeGroundColor.r *= t1;
+        m_HazeGroundColor.g *= t1;
+        m_HazeGroundColor.b *= t1;
+        m_TextureLighting.r *= t1;
+        m_TextureLighting.g *= t1;
+        m_TextureLighting.b *= t1;
 
-        m_BadWeatherLighting.r	*= t1;
-        m_BadWeatherLighting.g	*= t1;
-        m_BadWeatherLighting.b	*= t1;
+        m_BadWeatherLighting.r *= t1;
+        m_BadWeatherLighting.g *= t1;
+        m_BadWeatherLighting.b *= t1;
 
-        m_Ambient				*= t1;
-        m_Diffuse				*= t1;
-        m_Specular				*= t1;
+        m_Ambient *= t1;
+        m_Diffuse *= t1;
+        m_Specular *= t1;
     }
 
     // Update the positions and effects of the celstial objects
     m_StarIntensity += t * (ntod -> StarIntensity - m_StarIntensity);
     TheStar.UpdateStar();
     /*
-    	if(realWeather->weatherCondition > FAIR)
-    	{
-    		if(realWeather->weatherCondition == INCLEMENT)
-    		{
-    			BadWeatherLighting.r = max(BadWeatherLighting.r/1.5f,0.01f);
-    			BadWeatherLighting.g = max(BadWeatherLighting.g/1.5f,0.01f);
-    			BadWeatherLighting.b = max(BadWeatherLighting.b/1.5f,0.01f);
-    		}
+     if(realWeather->weatherCondition > FAIR)
+     {
+     if(realWeather->weatherCondition == INCLEMENT)
+     {
+     BadWeatherLighting.r = max(BadWeatherLighting.r/1.5f,0.01f);
+     BadWeatherLighting.g = max(BadWeatherLighting.g/1.5f,0.01f);
+     BadWeatherLighting.b = max(BadWeatherLighting.b/1.5f,0.01f);
+     }
 
-    		if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
-    		{
-    			if(realWeather->weatherCondition > POOR)
-    			 Specular = 0.f;
-    			else
-    			 Specular *= 0.2f;
+     if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
+     {
+     if(realWeather->weatherCondition > POOR)
+      Specular = 0.f;
+     else
+      Specular *= 0.2f;
 
-    			SkyColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
-    			SkyColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
-    			SkyColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
+     SkyColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
+     SkyColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
+     SkyColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
 
-    			HazeSkyColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
-    			HazeSkyColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
-    			HazeSkyColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
+     HazeSkyColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
+     HazeSkyColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
+     HazeSkyColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
 
-    			HazeGroundColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
-    			HazeGroundColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
-    			HazeGroundColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
+     HazeGroundColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
+     HazeGroundColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
+     HazeGroundColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
 
-    			GroundColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
-    			GroundColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
-    			GroundColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
+     GroundColor.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
+     GroundColor.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
+     GroundColor.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
 
-    			TextureLighting.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
-    			TextureLighting.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
-    			TextureLighting.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
-    		}
-    		else
-    		{
-    			SkyColor.r = (SkyColor.r*(1.f - scaleFactor))+(BadWeatherLighting.r*scaleFactor);
-    			SkyColor.g = (SkyColor.g*(1.f - scaleFactor))+(BadWeatherLighting.g*scaleFactor);
-    			SkyColor.b = (SkyColor.b*(1.f - scaleFactor))+(BadWeatherLighting.b*scaleFactor);
+     TextureLighting.r = BadWeatherLighting.r/max((1.25f*scaleFactor),1.f);
+     TextureLighting.g = BadWeatherLighting.g/max((1.25f*scaleFactor),1.f);
+     TextureLighting.b = BadWeatherLighting.b/max((1.25f*scaleFactor),1.f);
+     }
+     else
+     {
+     SkyColor.r = (SkyColor.r*(1.f - scaleFactor))+(BadWeatherLighting.r*scaleFactor);
+     SkyColor.g = (SkyColor.g*(1.f - scaleFactor))+(BadWeatherLighting.g*scaleFactor);
+     SkyColor.b = (SkyColor.b*(1.f - scaleFactor))+(BadWeatherLighting.b*scaleFactor);
 
-    			HazeSkyColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
-    			HazeSkyColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
-    			HazeSkyColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
+     HazeSkyColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
+     HazeSkyColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
+     HazeSkyColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
 
-    			HazeGroundColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
-    			HazeGroundColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
-    			HazeGroundColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
+     HazeGroundColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
+     HazeGroundColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
+     HazeGroundColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
 
-    			GroundColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
-    			GroundColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
-    			GroundColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
+     GroundColor.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
+     GroundColor.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
+     GroundColor.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
 
-    			TextureLighting.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
-    			TextureLighting.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
-    			TextureLighting.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
-    		}
+     TextureLighting.r = min(BadWeatherLighting.r/max((1.25f*scaleFactor),.67f),.9f);
+     TextureLighting.g = min(BadWeatherLighting.g/max((1.25f*scaleFactor),.67f),.9f);
+     TextureLighting.b = min(BadWeatherLighting.b/max((1.25f*scaleFactor),.67f),.9f);
+     }
 
-    		Diffuse /= max((2.f*scaleFactor),1.f);
-    	}*/
+     Diffuse /= max((2.f*scaleFactor),1.f);
+     }*/
 }
 
 
@@ -467,27 +467,27 @@ void CTimeOfDay::UpdateSkyProperties()
 void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
 {
     // default values
-    StarIntensity		= m_StarIntensity;
-    MinVis				= m_MinVis;
-    VisColor			= m_VisColor;
-    Ambient				= m_Ambient;
-    Specular			= m_Specular;
+    StarIntensity = m_StarIntensity;
+    MinVis = m_MinVis;
+    VisColor = m_VisColor;
+    Ambient = m_Ambient;
+    Specular = m_Specular;
 
     // Deafule values if nont under/inside an overcast layer
     if (weatherCondition <= FAIR)
     {
-        SkyColor			= m_SkyColor;
-        HazeSkyColor		= m_HazeSkyColor;
-        GroundColor			= m_GroundColor;
-        HazeGroundColor		= m_HazeGroundColor;
-        TextureLighting		= m_TextureLighting;
-        BadWeatherLighting	= m_BadWeatherLighting;
-        Diffuse				= m_Diffuse;
+        SkyColor = m_SkyColor;
+        HazeSkyColor = m_HazeSkyColor;
+        GroundColor = m_GroundColor;
+        HazeGroundColor = m_HazeGroundColor;
+        TextureLighting = m_TextureLighting;
+        BadWeatherLighting = m_BadWeatherLighting;
+        Diffuse = m_Diffuse;
     }
     else
     {
 
-        Diffuse				= m_Diffuse / max((2.f * scaleFactor), 1.f);
+        Diffuse = m_Diffuse / max((2.f * scaleFactor), 1.f);
 
         // Bad weather stuff
         if (weatherCondition == INCLEMENT)
@@ -560,9 +560,9 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
 
 void CTimeOfDay::CalculateSunGroundPos(Tpoint *pos)
 {
-    pos -> x =	SunCoord.x;
-    pos -> y =	SunCoord.y;
-    pos -> z =	0.0f;
+    pos -> x = SunCoord.x;
+    pos -> y = SunCoord.y;
+    pos -> z = 0.0f;
 }
 
 // Return point on unit sphere at center of sun/moon
@@ -600,9 +600,9 @@ void CTimeOfDay::GetLightDirection(Tpoint *LightDirection)
         sH = 0.0F;
     }
 
-    LightDirection->x =	cC * cH;
-    LightDirection->y =	cC * sH;
-    LightDirection->z =	-sC;
+    LightDirection->x = cC * cH;
+    LightDirection->y = cC * sH;
+    LightDirection->z = -sC;
 }
 
 
@@ -645,9 +645,9 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 
 
 
-    float	fvar;
-    int		total;
-    char	buffer[80] = { '\0' };
+    float fvar;
+    int total;
+    char buffer[80] = { '\0' };
 
     total = 0;
 
@@ -667,7 +667,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         }
         else if (strcmp(buffer, "TIME") == 0)
         {
-            DWORD	ivar1, ivar2, ivar3;
+            DWORD ivar1, ivar2, ivar3;
 
             if (total != 0)
             {
@@ -751,9 +751,9 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         {
             fscanf(in, "%f %f %f", &tod -> BadWeatherLighting.r, &tod -> BadWeatherLighting.g, &tod -> BadWeatherLighting.b);
         }
-        //		else if (strcmp (buffer, "LIGHTNINGCOLOR") == 0) {
-        //			fscanf (in, "%f %f %f", &tod ->LightningColor.r, &tod ->LightningColor.g, &tod ->LightningColor.b);
-        //		}
+        // else if (strcmp (buffer, "LIGHTNINGCOLOR") == 0) {
+        // fscanf (in, "%f %f %f", &tod ->LightningColor.r, &tod ->LightningColor.g, &tod ->LightningColor.b);
+        // }
 
         else if (strcmp(buffer, "AMBIENT") == 0)
         {
@@ -890,11 +890,11 @@ int CTimeOfDay::CalculateMoonPercent(void)
 
 void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
 {
-    if (phase == NEW_MOON_PHASE) 			// new moon --> all moon dark
+    if (phase == NEW_MOON_PHASE)  // new moon --> all moon dark
         memset((void *) image, 0, 8 * 64);
-    else  					// part of moon dark
+    else   // part of moon dark
     {
-        int	array[64];
+        int array[64];
 
         int reverse = 0;
         int sizex = NEW_MOON_PHASE / 2 - phase;
@@ -966,7 +966,7 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
             array[counter++] = xpos;
         }
 
-        int	j;
+        int j;
 
         for (j = 0; j < 32; j++) array[63 - j] = array[j];
 
@@ -975,8 +975,8 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
             for (j = 0; j < 64; j++) array[j] = 64 - array[j];
         }
 
-        int	row, col, col1;
-        int	start, stop;
+        int row, col, col1;
+        int start, stop;
         unsigned char *dest = image;
 
         for (row = 0; row < 64; row++)
@@ -1075,7 +1075,7 @@ void CTimeOfDay::RotateMoonMask(int angle)
 
 void CTimeOfDay::CalculateMoonPhase()
 {
-    int	angle = 0;
+    int angle = 0;
     float dy = SunCoord.y - MoonCoord.y;
 
     if (dy > 1.0f)
@@ -1110,7 +1110,7 @@ void CTimeOfDay::CalculateMoonPhase()
 
 void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
 {
-    int	i, j, k;
+    int i, j, k;
     unsigned char *mask = CurrentMoonPhaseMask;
 
     for (i = 0; i < 64; i++)

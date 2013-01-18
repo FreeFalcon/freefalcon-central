@@ -33,9 +33,9 @@ int numObjsInDrawList = 0;
 
 void OTWDriverClass::UpdateVehicleDrawables(void)
 {
-    SimBaseClass	*theObject;
-    Tpoint			objLocation;
-    Trotation		objRotation;
+    SimBaseClass *theObject;
+    Tpoint objLocation;
+    Trotation objRotation;
 
     if (!SimDriver.objectList)
         // The Sim isn't running yet..
@@ -117,10 +117,10 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
 
 
     // Now update campaign unit positions
-    VuListIterator	otwCampDrawWalker(SimDriver.campUnitList);
-    int				doIDtags = PlayerOptions.NameTagsOn();
+    VuListIterator otwCampDrawWalker(SimDriver.campUnitList);
+    int doIDtags = PlayerOptions.NameTagsOn();
 
-    Unit				campObject = (UnitClass*)otwCampDrawWalker.GetFirst();
+    Unit campObject = (UnitClass*)otwCampDrawWalker.GetFirst();
 
     while (campObject)
     {
@@ -156,12 +156,12 @@ void OTWDriverClass::TimeUpdateCallback(void *self)
 }
 void OTWDriverClass::UpdateAllLitObjects(void)
 {
-    float			lightLevel;
-    drawPtrList		*entry;
+    float lightLevel;
+    drawPtrList *entry;
 
 
     // Get the light level from the time of day manager
-    lightLevel	= TheTimeOfDay.GetLightLevel();
+    lightLevel = TheTimeOfDay.GetLightLevel();
 
     // Check each object and see if it wants to be turned on or off
     for (entry = litObjectRoot; entry; entry = entry->next)

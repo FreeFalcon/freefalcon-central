@@ -33,37 +33,37 @@
 #define LightGreen   10
 #define LightBrown   11
 #define LightRed     12
-#define LightGray		13
+#define LightGray 13
 #define DarkGray     14
 #define White        15
 
-DWORD ColorTable16[16] = {	RGB_BLACK, RGB_BLUE, RGB_GREEN, RGB_YELLOW,
+DWORD ColorTable16[16] = { RGB_BLACK, RGB_BLUE, RGB_GREEN, RGB_YELLOW,
                             RGB_RED, RGB_MAGENTA, RGB_BROWN, RGB_GRAY,
                             RGB_ORANGE, RGB_LIGHTBLUE, RGB_LIGHTGREEN, RGB_LIGHTBROWN,
                             RGB_LIGHTRED, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_WHITE
                          };
-HPALETTE			hPal;
+HPALETTE hPal;
 
-HBITMAP			BMaps[16];
-HPEN				Pens[16];
-HBRUSH			Brushes[16];
-HDC				hMDC;
-HDC				BMapDC = NULL;
-HBITMAP			BMap;
+HBITMAP BMaps[16];
+HPEN Pens[16];
+HBRUSH Brushes[16];
+HDC hMDC;
+HDC BMapDC = NULL;
+HBITMAP BMap;
 
-static int		CurrX, CurrY;
+static int CurrX, CurrY;
 
 extern HINSTANCE hInst;
 
 void _initgraphics(HDC DC)
 {
-    int			i;
-    HBITMAP		hOldBMap;
+    int i;
+    HBITMAP hOldBMap;
 
     // load bitmaps
     for (i = 0; i < 16; i++)
     {
-        //      	BMaps[i] = LoadBitmap( hInst, MAKEINTRESOURCE( BNames[i] ) ) ;
+        //       BMaps[i] = LoadBitmap( hInst, MAKEINTRESOURCE( BNames[i] ) ) ;
         Pens[i] = CreatePen(PS_SOLID, 0, ColorTable16[i]);
         Brushes[i] = CreateSolidBrush(ColorTable16[i]);
     }
@@ -77,11 +77,11 @@ void _initgraphics(HDC DC)
 
 void _shutdowngraphics()
 {
-    int			i;
+    int i;
 
     for (i = 0; i < 16; i++)
     {
-        //			DeleteObject(BMaps[i]);
+        // DeleteObject(BMaps[i]);
         DeleteObject(Pens[i]);
         DeleteObject(Brushes[i]);
     }
@@ -92,22 +92,22 @@ void _shutdowngraphics()
 
 void _drawbmap(HDC DC, int num, int ULX, int ULY, int size, int ofx, int ofy)
 {
-    BitBlt(DC,	ULX, ULY, size, size, hMDC, 16 * (num % 8) + ofx, 16 * (num / 8) + ofy, SRCCOPY);
+    BitBlt(DC, ULX, ULY, size, size, hMDC, 16 * (num % 8) + ofx, 16 * (num / 8) + ofy, SRCCOPY);
 }
 
 /*
-	void _drawsbmap(HDC DC, int num, int ULX, int ULY, int size)
-		{
-		HDC	hBmOld;
+ void _drawsbmap(HDC DC, int num, int ULX, int ULY, int size)
+ {
+ HDC hBmOld;
 
-		hBmOld = (HBITMAP)SelectObject(hMDC, BMaps[num]);
-		StretchBlt(DC, ULX, ULY, size, size, hMDC, 0, 0, 8, 8, SRCCOPY);
-		}
+ hBmOld = (HBITMAP)SelectObject(hMDC, BMaps[num]);
+ StretchBlt(DC, ULX, ULY, size, size, hMDC, 0, 0, 8, 8, SRCCOPY);
+ }
 */
 
 void _rectangle(HDC DC, int mode, int ULX, int ULY, int LRX, int LRY)
 {
-    RECT		myrect;
+    RECT myrect;
 
     if (mode == _GFILLINTERIOR)
         Rectangle(DC, ULX, ULY, LRX, LRY);
@@ -123,7 +123,7 @@ void _rectangle(HDC DC, int mode, int ULX, int ULY, int LRX, int LRY)
 
 void _ellipse(HDC DC, int mode, int ULX, int ULY, int LRX, int LRY)
 {
-    HBRUSH	last;
+    HBRUSH last;
 
     if (mode == _GBORDER)
     {

@@ -31,7 +31,7 @@ void HudClass::DrawGuns(void)
 
     // Don't do anything until we have some history
     //if (SimLibFrameCount < 2 * SimLibMajorFrameRate)
-    //	return;
+    // return;
 
     // 2001-04-09 ADDED  BY S.G. IF WE HAVE NO GUNS ONBOARD, DON'T DO GUNS DISPLAY STUFF
     // RV - Biker - AC without guns should also have a reticle and target location line
@@ -176,21 +176,21 @@ void HudClass::DrawEEGS(void)
 
 void HudClass::FlyBullets(void)
 {
-    int			i;
-    SIM_LONG	dt;
-    float		tf;
+    int i;
+    SIM_LONG dt;
+    float tf;
 
-    int			before, after;
-    float		interp;
+    int before, after;
+    float interp;
 
-    float		dx, dy, dz;
-    float		rx, ry, rz;
+    float dx, dy, dz;
+    float rx, ry, rz;
 
     // Fly out a bunch of bullets
     for (i = 0; i < NumEEGSSegments; i++)
     {
-        dt = EEGSTimePerSegment * (i + 1);	// ms
-        tf = dt * 0.001F;					// seconds
+        dt = EEGSTimePerSegment * (i + 1); // ms
+        tf = dt * 0.001F; // seconds
 
         // Get the interpolation parameters for the required time
         interp = EEGShistory(dt, &before, &after);
@@ -218,13 +218,13 @@ void HudClass::FlyBullets(void)
 
 void HudClass::DrawFunnel(void)
 {
-    int		i, iprev;
-    float	radius;
-    float	dx, dy;
+    int i, iprev;
+    float radius;
+    float dx, dy;
 
     // Calculate funnel shape
     iprev = 1;
-    //	ShiAssert( NumEEGSSegments > 1 );
+    // ShiAssert( NumEEGSSegments > 1 );
 
     for (i = 0; i < NumEEGSSegments; i++)
     {
@@ -233,7 +233,7 @@ void HudClass::DrawFunnel(void)
         radius = (float)atan2(DefaultTargetSpan * 0.5f, bulletRange[i]);
         radius = RadToHudUnits(radius);
 
-#if 1	// It turns out that the F16 doesn't really rotate the width vector, so we won't either
+#if 1 // It turns out that the F16 doesn't really rotate the width vector, so we won't either
         dx = -radius;
         dy =  0.0f;
 #else
@@ -274,7 +274,7 @@ void HudClass::DrawFunnel(void)
         funnel2Y[i] = bulletV[i] - dy;
 #else
         // IIR filtered
-        static const float TC = 0.5f;	// Seconds...
+        static const float TC = 0.5f; // Seconds...
         float m, im;
 
         if (SimLibMajorFrameTime < TC)
@@ -301,9 +301,9 @@ void HudClass::DrawFunnel(void)
                                     hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
     // Draw the funnel (limited at 2 sec time of flight)
-    static const int	stopIdx = 2000 / EEGSTimePerSegment;
+    static const int stopIdx = 2000 / EEGSTimePerSegment;
 
-    //	ShiAssert( stopIdx < NumEEGSSegments );
+    // ShiAssert( stopIdx < NumEEGSSegments );
     for (i = stopIdx; i > 0; i--)
     {
         //MI make it dissapearn
@@ -464,11 +464,11 @@ void HudClass::DrawTDCircle(void)
 // and one line inside the funnel at 9G lead for the locked target
 void HudClass::DrawTSymbol(void)
 {
-    float	rx, ry, offset, offsetX, offsetY;
-    float	tf, interp, xPosL, yPosL, xPosR, yPosR;
-    float	scale;
-    int		idx;
-    int		tfms;
+    float rx, ry, offset, offsetX, offsetY;
+    float tf, interp, xPosL, yPosL, xPosR, yPosR;
+    float scale;
+    int idx;
+    int tfms;
 
     ShiAssert(targetPtr);
     ShiAssert(targetData);
@@ -496,7 +496,7 @@ void HudClass::DrawTSymbol(void)
     tfms = FloatToInt32(tf * 1000.0f);
 
     // Which bullet index to use
-    idx		= tfms / EEGSTimePerSegment - 1;
+    idx = tfms / EEGSTimePerSegment - 1;
 
     if (idx > NumEEGSSegments - 2)
         idx = NumEEGSSegments - 2;
@@ -505,7 +505,7 @@ void HudClass::DrawTSymbol(void)
         idx = 0;
 
     //me123 status test. multible changes in the draw eegs rutine.
-    //	interp	= (float)((tfms - (idx+1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
+    // interp = (float)((tfms - (idx+1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
 
     xPosL = funnel1X[1];// + (funnel1X[idx + 1] - funnel1X[idx]) * interp;
     yPosL = funnel1Y[1];// + (funnel1Y[idx + 1] - funnel1Y[idx]) * interp;
@@ -588,8 +588,8 @@ void HudClass::DrawTSymbol(void)
         rx *= scale;
         ry *= scale;*/
 
-        display->Line(xPosR	, yPosR	, xPosR + rx * 0.15f, yPosR + ry * 0.15f);
-        display->Line(xPosL	, yPosL	, xPosL - rx * 0.15f, yPosL - ry * 0.15f);
+        display->Line(xPosR , yPosR , xPosR + rx * 0.15f, yPosR + ry * 0.15f);
+        display->Line(xPosL , yPosL , xPosL - rx * 0.15f, yPosL - ry * 0.15f);
     }
 
     display->AdjustOriginInViewport((xPosL + xPosR) * 0.5F, (yPosL + yPosR) * 0.5F);
@@ -601,7 +601,7 @@ void HudClass::DrawTSymbol(void)
     display->AdjustOriginInViewport(-(xPosL + xPosR) * 0.5F, -(yPosL + yPosR) * 0.5F);
 
     // How to interpolate/extrapolate between the two bullet records
-    interp	= (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
+    interp = (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
 
     xPosL = funnel1X[idx] + (funnel1X[idx + 1] - funnel1X[idx]) * interp;
     yPosL = funnel1Y[idx] + (funnel1Y[idx + 1] - funnel1Y[idx]) * interp;
@@ -633,10 +633,10 @@ void HudClass::DrawTSymbol(void)
 // ASSOCIATOR 03/12/03: Added the combined SnapShot LCOS Gunmode SSLC
 void HudClass::DrawSSLC(void)
 {
-    float	tf, range, interp;
-    float	xPos, yPos;		// The HUD space location of the hypothetical bullet in flight
-    int		tfms, idx;
-    float	radius;
+    float tf, range, interp;
+    float xPos, yPos; // The HUD space location of the hypothetical bullet in flight
+    int tfms, idx;
+    float radius;
 
     if (targetPtr)
         DrawLCOSForSSLC();
@@ -647,10 +647,10 @@ void HudClass::DrawSSLC(void)
     // Continuously Computed Impact Line
     static const float tickWidth = MRToHudUnits(5.0F);
 
-    static const int	idx1 =  500 / EEGSTimePerSegment;
-    static const int	idx2 = 1000 / EEGSTimePerSegment;
-    static const int	idx3 = 1500 / EEGSTimePerSegment;
-    //	ShiAssert( idx3 < NumEEGSSegments );
+    static const int idx1 =  500 / EEGSTimePerSegment;
+    static const int idx2 = 1000 / EEGSTimePerSegment;
+    static const int idx3 = 1500 / EEGSTimePerSegment;
+    // ShiAssert( idx3 < NumEEGSSegments );
 
     display->Line(0.0F, 0.0F, bulletH[idx1], bulletV[idx1]);
     display->Line(bulletH[idx1] - tickWidth, bulletV[idx1], bulletH[idx1] + tickWidth, bulletV[idx1]);
@@ -673,7 +673,7 @@ void HudClass::DrawSSLC(void)
     tfms = FloatToInt32(tf * 1000.0f);
 
     // Which bullet index to use
-    idx		= tfms / EEGSTimePerSegment - 1;
+    idx = tfms / EEGSTimePerSegment - 1;
 
     if (idx > NumEEGSSegments - 2)
         idx = NumEEGSSegments - 2;
@@ -682,7 +682,7 @@ void HudClass::DrawSSLC(void)
         idx = 0;
 
     // How to interpolate/extrapolate between the two bullet records
-    interp	= (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
+    interp = (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
 
     // Draw the range pipper
     xPos = bulletH[idx] + (bulletH[idx + 1] - bulletH[idx]) * interp;
@@ -710,10 +710,10 @@ void HudClass::DrawLCOSForSSLC(void)
 {
     float angle, rangeTic1X, rangeTic1Y, rangeTic2X, rangeTic2Y;
     mlTrig trig;
-    float	hPos, vPos;		// The HUD space location of the hypothetical bullet after a 1 second flight
+    float hPos, vPos; // The HUD space location of the hypothetical bullet after a 1 second flight
 
 
-    static const SIM_LONG	dt = 1000;
+    static const SIM_LONG dt = 1000;
     hPos = bulletH[dt / EEGSTimePerSegment];
     vPos = bulletV[dt / EEGSTimePerSegment];
 
@@ -789,10 +789,10 @@ void HudClass::DrawLCOS(void)
 {
     float angle, rangeTic1X, rangeTic1Y, rangeTic2X, rangeTic2Y;
     mlTrig trig;
-    float	hPos, vPos;		// The HUD space location of the hypothetical bullet after a 1 second flight
+    float hPos, vPos; // The HUD space location of the hypothetical bullet after a 1 second flight
 
 
-    static const SIM_LONG	dt = 1000;
+    static const SIM_LONG dt = 1000;
     hPos = bulletH[dt / EEGSTimePerSegment];
     vPos = bulletV[dt / EEGSTimePerSegment];
 
@@ -865,10 +865,10 @@ void HudClass::DrawLCOS(void)
 
 void HudClass::DrawSnapshot(void)
 {
-    float	tf, range, interp;
-    float	xPos, yPos;		// The HUD space location of the hypothetical bullet in flight
-    int		tfms, idx;
-    float	radius;
+    float tf, range, interp;
+    float xPos, yPos; // The HUD space location of the hypothetical bullet in flight
+    int tfms, idx;
+    float radius;
 
     display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
@@ -876,10 +876,10 @@ void HudClass::DrawSnapshot(void)
     // Continuously Computed Impact Line
     static const float tickWidth = MRToHudUnits(5.0F);
 
-    static const int	idx1 =  500 / EEGSTimePerSegment;
-    static const int	idx2 = 1000 / EEGSTimePerSegment;
-    static const int	idx3 = 1500 / EEGSTimePerSegment;
-    //	ShiAssert( idx3 < NumEEGSSegments );
+    static const int idx1 =  500 / EEGSTimePerSegment;
+    static const int idx2 = 1000 / EEGSTimePerSegment;
+    static const int idx3 = 1500 / EEGSTimePerSegment;
+    // ShiAssert( idx3 < NumEEGSSegments );
 
     display->Line(0.0F, 0.0F, bulletH[idx1], bulletV[idx1]);
     display->Line(bulletH[idx1] - tickWidth, bulletV[idx1], bulletH[idx1] + tickWidth, bulletV[idx1]);
@@ -902,7 +902,7 @@ void HudClass::DrawSnapshot(void)
     tfms = FloatToInt32(tf * 1000.0f);
 
     // Which bullet index to use
-    idx		= tfms / EEGSTimePerSegment - 1;
+    idx = tfms / EEGSTimePerSegment - 1;
 
     if (idx > NumEEGSSegments - 2)
         idx = NumEEGSSegments - 2;
@@ -911,7 +911,7 @@ void HudClass::DrawSnapshot(void)
         idx = 0;
 
     // How to interpolate/extrapolate between the two bullet records
-    interp	= (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
+    interp = (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
 
     // Draw the range pipper
     xPos = bulletH[idx] + (bulletH[idx + 1] - bulletH[idx]) * interp;
@@ -941,8 +941,8 @@ void HudClass::SetEEGSData(float x, float y, float z,
                            float gamma, float sigma,
                            float theta, float psi, float vt)
 {
-    mlTrig	trigGamma, trigSigma, trigTheta, trigPsi;
-    float	dx, dy, dz, initVel;
+    mlTrig trigGamma, trigSigma, trigTheta, trigPsi;
+    float dx, dy, dz, initVel;
 
     // If the HUD is drawing (ie: the player is here), we'd assume we have a gun on this airplane...
     ShiAssert(ownship);
@@ -1005,11 +1005,11 @@ void HudClass::SetEEGSData(float x, float y, float z,
 // Time interpolation from sampled EEGS data to the specified time ago
 float HudClass::EEGShistory(SIM_LONG dt, int *beforeIndex, int *afterIndex)
 {
-    SIM_LONG	time;
-    float		t;
-    int			i;
-    int			before = -1;
-    int			after;
+    SIM_LONG time;
+    float t;
+    int i;
+    int before = -1;
+    int after;
 
     // Convert from ms ago to a sim time
     time = SimLibElapsedTime - dt;
@@ -1063,22 +1063,22 @@ float HudClass::EEGShistory(SIM_LONG dt, int *beforeIndex, int *afterIndex)
 //MI
 void HudClass::FlyFEDSBullets(bool NewBullets)
 {
-    int			i;
-    SIM_LONG	dt;
-    float		tf;
+    int i;
+    SIM_LONG dt;
+    float tf;
 
-    int			before, after;
-    float		interp;
+    int before, after;
+    float interp;
 
-    float		dx, dy, dz;
-    float		lastX, lastY, lastZ;
-    float		rx, ry, rz;
+    float dx, dy, dz;
+    float lastX, lastY, lastZ;
+    float rx, ry, rz;
 
     // Fly out a bunch of bullets
     for (i = 0; i < NumEEGSSegments / 4; i++)
     {
-        dt = EEGSTimePerSegment * (i + 1);	// ms
-        tf = dt * 0.001F;					// seconds
+        dt = EEGSTimePerSegment * (i + 1); // ms
+        tf = dt * 0.001F; // seconds
 
         // Get the interpolation parameters for the required time
         interp = EEGShistory(dt, &before, &after);
@@ -1107,11 +1107,11 @@ void HudClass::FlyFEDSBullets(bool NewBullets)
 
         /*else
         {
-        	//TODO
-        	//Make this so the bullets fly based on their last position
-        	rx = ownship->dmx[0][0]*lastX + ownship->dmx[0][1]*lastY + ownship->dmx[0][2]*dz;
-        	ry = ownship->dmx[1][0]*lastX + ownship->dmx[1][1]*lastY + ownship->dmx[1][2]*dz;
-        	rz = ownship->dmx[2][0]*lastX + ownship->dmx[2][1]*lastY + ownship->dmx[2][2]*dz;
+         //TODO
+         //Make this so the bullets fly based on their last position
+         rx = ownship->dmx[0][0]*lastX + ownship->dmx[0][1]*lastY + ownship->dmx[0][2]*dz;
+         ry = ownship->dmx[1][0]*lastX + ownship->dmx[1][1]*lastY + ownship->dmx[1][2]*dz;
+         rz = ownship->dmx[2][0]*lastX + ownship->dmx[2][1]*lastY + ownship->dmx[2][2]*dz;
         }*/
 
         // Store the HUD space projection of the bullet's position and it's range
@@ -1130,38 +1130,38 @@ void HudClass::FlyFEDSBullets(bool NewBullets)
 
 void HudClass::DrawBATR(void)
 {
-    float	tf, range, interp;
-    float	xPos, yPos;		// The HUD space location of the hypothetical bullet in flight
-    int		tfms, idx;
-    //float	radius;
+    float tf, range, interp;
+    float xPos, yPos; // The HUD space location of the hypothetical bullet in flight
+    int tfms, idx;
+    //float radius;
 
     //display->AdjustOriginInViewport (0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-    //	hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    // hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Continuously Computed Impact Line
     static const float tickWidth = MRToHudUnits(5.0F);
 
-    static const int	idx1 =  500 / EEGSTimePerSegment;
-    static const int	idx2 = 1000 / EEGSTimePerSegment;
-    static const int	idx3 = 1500 / EEGSTimePerSegment;
+    static const int idx1 =  500 / EEGSTimePerSegment;
+    static const int idx2 = 1000 / EEGSTimePerSegment;
+    static const int idx3 = 1500 / EEGSTimePerSegment;
 
-    //	ShiAssert( idx3 < NumEEGSSegments );
+    // ShiAssert( idx3 < NumEEGSSegments );
     /*
-    	display->Line(	0.0F, 0.0F, bulletH[idx1], bulletV[idx1]);
-    	display->Line(	bulletH[idx1] - tickWidth, bulletV[idx1], bulletH[idx1] + tickWidth, bulletV[idx1]);
+     display->Line( 0.0F, 0.0F, bulletH[idx1], bulletV[idx1]);
+     display->Line( bulletH[idx1] - tickWidth, bulletV[idx1], bulletH[idx1] + tickWidth, bulletV[idx1]);
 
-    	display->Line(	bulletH[idx1], bulletV[idx1], bulletH[idx2], bulletV[idx2]);
-    	display->Line(	bulletH[idx2] - tickWidth, bulletV[idx2], bulletH[idx2] + tickWidth, bulletV[idx2]);
+     display->Line( bulletH[idx1], bulletV[idx1], bulletH[idx2], bulletV[idx2]);
+     display->Line( bulletH[idx2] - tickWidth, bulletV[idx2], bulletH[idx2] + tickWidth, bulletV[idx2]);
 
-    	display->Line(	bulletH[idx2], bulletV[idx2], bulletH[idx3], bulletV[idx3]);
-    	display->Line(	bulletH[idx3] - tickWidth, bulletV[idx3], bulletH[idx3] + tickWidth, bulletV[idx3]);
+     display->Line( bulletH[idx2], bulletV[idx2], bulletH[idx3], bulletV[idx3]);
+     display->Line( bulletH[idx3] - tickWidth, bulletV[idx3], bulletH[idx3] + tickWidth, bulletV[idx3]);
     */
     // Pipper, 1 TOF in the future
     if (targetPtr)
         range = min(targetData->range, 9000.0f);
 
     /*else
-    	range = 1500.0F; */
+     range = 1500.0F; */
 
     // How long to fly to the chosen range (neglecting gravity)?
     ShiAssert(FALSE == F4IsBadReadPtr(ownship->Guns, sizeof * ownship->Guns)); // JPO
@@ -1169,7 +1169,7 @@ void HudClass::DrawBATR(void)
     tfms = FloatToInt32(tf * 1000.0f);
 
     // Which bullet index to use
-    idx		= tfms / EEGSTimePerSegment - 1;
+    idx = tfms / EEGSTimePerSegment - 1;
 
     if (idx > NumEEGSSegments - 2)
         idx = NumEEGSSegments - 2;
@@ -1178,7 +1178,7 @@ void HudClass::DrawBATR(void)
         idx = 0;
 
     // How to interpolate/extrapolate between the two bullet records
-    interp	= (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
+    interp = (float)((tfms - (idx + 1) * EEGSTimePerSegment)) / EEGSTimePerSegment;
 
     // Draw the range pipper
     xPos = bulletH[idx] + (bulletH[idx + 1] - bulletH[idx]) * interp;
@@ -1187,17 +1187,17 @@ void HudClass::DrawBATR(void)
     display->Circle(xPos, yPos, 0.022F);   //0.012F
 
     // If we DON'T have a locked target, draw a cirle showing default wing span at default range (1500.0f)
-    /*	if( targetPtr == NULL )
+    /* if( targetPtr == NULL )
     {
-    	// Decide how big the default target would be at the default range
-    	// First in radians, then in HUD viewport space units.
-    	radius = (float)atan2( DefaultTargetSpan*0.5f, 1500.0f );
-    	radius = RadToHudUnits(radius);
-    	display->Circle (xPos, yPos, radius);
+     // Decide how big the default target would be at the default range
+     // First in radians, then in HUD viewport space units.
+     radius = (float)atan2( DefaultTargetSpan*0.5f, 1500.0f );
+     radius = RadToHudUnits(radius);
+     display->Circle (xPos, yPos, radius);
     } */
 
 
     // Put the viewport origin back where it was
     //display->AdjustOriginInViewport (0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-    //	hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    // hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 }

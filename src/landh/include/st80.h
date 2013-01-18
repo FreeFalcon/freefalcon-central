@@ -1,15 +1,15 @@
 /*
- *   Project:		StreamTalk(TM)80 (8000bps,8kHz) codec
- *   Workfile:		st80.h
- *   Authors:		Alfred Wiesen, Luc Boschmans
- *   Created:		30 August 1995
- *   Last update:	29 May 1996
- *   DLL Version:	3.00
+ *   Project: StreamTalk(TM)80 (8000bps,8kHz) codec
+ *   Workfile: st80.h
+ *   Authors: Alfred Wiesen, Luc Boschmans
+ *   Created: 30 August 1995
+ *   Last update: 29 May 1996
+ *   DLL Version: 3.00
  *   Revision:          StreamTalk Product Line.
  *   Comment:
  *
- *	(C) Copyright 1993-96 Lernout & Hauspie Speech Products N.V. (TM)
- *	All rights reserved. Company confidential.
+ * (C) Copyright 1993-96 Lernout & Hauspie Speech Products N.V. (TM)
+ * All rights reserved. Company confidential.
  */
 
 # ifndef __ST80_H  /* avoid multiple include */
@@ -35,21 +35,21 @@ typedef struct CodecInfo_tag
 
 typedef struct CodecInfoEx_tag
 {
-    WORD		wFormatSubTag;
-    char		szFormatSubTagName[80];
-    BOOL 	bIsVariableBitRate;
-    BOOL 	bIsRealTimeEncoding;
-    BOOL 	bIsRealTimeDecoding;
-    BOOL 	bIsFloatingPoint;
-    WORD		wInputDataFormat;
-    DWORD 	dwInputSampleRate;
-    WORD 	wInputBitsPerSample;
-    DWORD 	nAvgBytesPerSec;
-    WORD 	wInputBufferSize;
-    WORD 	wCodedBufferSize;
-    WORD 	wMinimumCodedBufferSize;
-    DWORD 	dwDLLVersion;
-    WORD 	cbSize;  // size of extra data, not declared here.
+    WORD wFormatSubTag;
+    char szFormatSubTagName[80];
+    BOOL  bIsVariableBitRate;
+    BOOL  bIsRealTimeEncoding;
+    BOOL  bIsRealTimeDecoding;
+    BOOL  bIsFloatingPoint;
+    WORD wInputDataFormat;
+    DWORD  dwInputSampleRate;
+    WORD  wInputBitsPerSample;
+    DWORD  nAvgBytesPerSec;
+    WORD  wInputBufferSize;
+    WORD  wCodedBufferSize;
+    WORD  wMinimumCodedBufferSize;
+    DWORD  dwDLLVersion;
+    WORD  cbSize;  // size of extra data, not declared here.
 } CODECINFOEX, near *PCODECINFOEX, far *LPCODECINFOEX;
 
 
@@ -67,11 +67,11 @@ typedef struct CodecInfoEx_tag
  *  Possible flags for the dwFlags parameter of Open_Coder
  */
 
-# define LINEAR_PCM_16_BIT	0x0001
-# define LINEAR_PCM_8_BIT	0x0002
-# define ADPCM_G721		0x0004
-# define MULAW			0x0008
-# define ALAW			0x0010
+# define LINEAR_PCM_16_BIT 0x0001
+# define LINEAR_PCM_8_BIT 0x0002
+# define ADPCM_G721 0x0004
+# define MULAW 0x0008
+# define ALAW 0x0010
 
 /*
  *  Some real types are defined here

@@ -174,335 +174,335 @@ extern int mgIndex2RGB(mgrec *rec, int colind, float inten, short *r, short *g, 
 
 struct flt_HeaderRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		formatRev;
-    int		DBRev;
-    char	dateRev[32];
-    short	nextGroupID;
-    short	nextLODID;
-    short	nextObjectID;
-    short 	nextPolyID;
-    short	unitFactor;
-    char	vertexUnit;
-    char	texflag;
-    int		flags;
-    int		notused0[6];
-    int		projectionType;
-    int		notused1[7];
-    short	nextDOFID;
-    short	vertexStorageType;
-    int		databaseOrigin;
-    double	swDBcoordx;
-    double	swDBcoordy;
-    double	deltax;
-    double	deltay;
-    short	nextSoundBeadID;
-    short	nextPathBeadID;
-    int		reserved0[2];
-    short	nextClippingRegionBeadID;
-    short	nextTextBeadID;
-    short	nextBSPID;
-    short	nextSwitchBeadID;
-    int		reserved1;
-    double	swCornerLatitude;
-    double	swCornerLongitude;
-    double	neCornerLatitude;
-    double	neCornerLongitude;
-    double	originalLatitude;
-    double	originalLongitude;
-    double	lambertUpperLatitude;
-    double	lambertLowerLatitude;
-    short	nextLightSourceID;
-    short	reserved2;
-    int		reserved3;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int formatRev;
+    int DBRev;
+    char dateRev[32];
+    short nextGroupID;
+    short nextLODID;
+    short nextObjectID;
+    short  nextPolyID;
+    short unitFactor;
+    char vertexUnit;
+    char texflag;
+    int flags;
+    int notused0[6];
+    int projectionType;
+    int notused1[7];
+    short nextDOFID;
+    short vertexStorageType;
+    int databaseOrigin;
+    double swDBcoordx;
+    double swDBcoordy;
+    double deltax;
+    double deltay;
+    short nextSoundBeadID;
+    short nextPathBeadID;
+    int reserved0[2];
+    short nextClippingRegionBeadID;
+    short nextTextBeadID;
+    short nextBSPID;
+    short nextSwitchBeadID;
+    int reserved1;
+    double swCornerLatitude;
+    double swCornerLongitude;
+    double neCornerLatitude;
+    double neCornerLongitude;
+    double originalLatitude;
+    double originalLongitude;
+    double lambertUpperLatitude;
+    double lambertLowerLatitude;
+    short nextLightSourceID;
+    short reserved2;
+    int reserved3;
 };
 
 struct flt_GroupRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    short 	relativePriority;
-    short	spareAlignment;
-    int		Flags;
-    short	sfx1, sfx2;
-    char	layerNumber;
-    char	reserved0;
-    int		reserved1;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    short  relativePriority;
+    short spareAlignment;
+    int Flags;
+    short sfx1, sfx2;
+    char layerNumber;
+    char reserved0;
+    int reserved1;
 };
 
 struct flt_ObjectRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		Flags;
-    short	relativePriority;
-    short	transparencyFactor;
-    short	sfx1, sfx2;
-    short	significance;
-    short	spare;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int Flags;
+    short relativePriority;
+    short transparencyFactor;
+    short sfx1, sfx2;
+    short significance;
+    short spare;
 };
 
 struct flt_BinarySeparatingPlane
 {
-    short 	Opcode;
-    short 	recordLen;
-    char	IDField[8];
-    int		reserved;
-    double	a, b, c, d;
+    short  Opcode;
+    short  recordLen;
+    char IDField[8];
+    int reserved;
+    double a, b, c, d;
 };
 
 struct flt_SharedVertex
 {
-    short 	Opcode;
-    short	recordLen;
-    int		totalLen;
+    short  Opcode;
+    short recordLen;
+    int totalLen;
 };
 
 struct flt_VertexList
 {
-    short 	Opcode;
-    short	recordLen;
-    int		offset[1];
+    short  Opcode;
+    short recordLen;
+    int offset[1];
 };
 
 struct flt_VertexCoordinate
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColor;
-    unsigned short 	Flags;
-    double	x, y, z;
-    unsigned int		packedColor;
-    int		reserved;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColor;
+    unsigned short  Flags;
+    double x, y, z;
+    unsigned int packedColor;
+    int reserved;
 };
 
 struct flt_VertexCoordinateTexture
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColor;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	u, v;
-    unsigned int		packedColor;
-    int		reserved;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColor;
+    unsigned short  Flags;
+    double x, y, z;
+    float u, v;
+    unsigned int packedColor;
+    int reserved;
 };
 
 struct flt_VertexCoordinateNormal
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColor;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	nx, ny, nz;
-    unsigned int		packedColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColor;
+    unsigned short  Flags;
+    double x, y, z;
+    float nx, ny, nz;
+    unsigned int packedColor;
 };
 
 struct flt_VertexCoordinateTextureNormal
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColor;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	nx, ny, nz;
-    float	u, v;
-    unsigned int		packedColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColor;
+    unsigned short  Flags;
+    double x, y, z;
+    float nx, ny, nz;
+    float u, v;
+    unsigned int packedColor;
 };
 
 struct flt_PolygonRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		colorCode;
-    short	relativePriority;
-    char	howToDraw;
-    char	texWhite;
-    unsigned short	primaryColor;
-    unsigned short	secondaryColor;
-    char	notused;
-    char	templateTransparency;
-    short	detailTextureNo;
-    short	textureNo;
-    short	materialCode;
-    short	surfaceCode;
-    short	featureID;
-    int		IRMaterialCode;
-    short	transparency;
-    char	influences;
-    char	linestyle;
-    unsigned int		Flags;
-    char	lightMode;
-    char	reserved0;
-    char	reserved1[6];
-    unsigned int		packedPrimaryColor;
-    unsigned int		packedSecondaryColor;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int colorCode;
+    short relativePriority;
+    char howToDraw;
+    char texWhite;
+    unsigned short primaryColor;
+    unsigned short secondaryColor;
+    char notused;
+    char templateTransparency;
+    short detailTextureNo;
+    short textureNo;
+    short materialCode;
+    short surfaceCode;
+    short featureID;
+    int IRMaterialCode;
+    short transparency;
+    char influences;
+    char linestyle;
+    unsigned int Flags;
+    char lightMode;
+    char reserved0;
+    char reserved1[6];
+    unsigned int packedPrimaryColor;
+    unsigned int packedSecondaryColor;
 };
 
 struct flt_ColorRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned char	reserved[128];
-    int		rgb[512];
+    short  Opcode;
+    short recordLen;
+    unsigned char reserved[128];
+    int rgb[512];
 };
 
 struct flt_MaterialTable
 {
-    float	ambientRed, ambientGreen, ambientBlue;
-    float	diffuseRed, diffuseGreen, diffuseBlue;
-    float	specularRed, specularGreen, specularBlue;
-    float	emissiveRed, emissiveGreen, emissiveBlue;
-    float	shininess, alpha;
-    int		Flags;
-    char	name[12];
-    int		spares[28];
+    float ambientRed, ambientGreen, ambientBlue;
+    float diffuseRed, diffuseGreen, diffuseBlue;
+    float specularRed, specularGreen, specularBlue;
+    float emissiveRed, emissiveGreen, emissiveBlue;
+    float shininess, alpha;
+    int Flags;
+    char name[12];
+    int spares[28];
 };
 
 struct flt_MaterialRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    flt_MaterialTable	mat[64];
+    short  Opcode;
+    short recordLen;
+    flt_MaterialTable mat[64];
 };
 
 struct flt_LongIDRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	id[1];
+    short  Opcode;
+    short recordLen;
+    char id[1];
 };
 
 struct flt_TexturePatternRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	filename[200];
-    int		patternIndex;
-    int		xloc, yloc;
+    short  Opcode;
+    short recordLen;
+    char filename[200];
+    int patternIndex;
+    int xloc, yloc;
 };
 
 struct flt_DegreeOfFreedomRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		reserved;
-    double	originx, originy, originz;
-    double	pointxaxis_x, pointxaxis_y, pointxaxis_z;
-    double	pointxyplane_x, pointxyplane_y, pointxyplane_z;
-    double	minz, maxz, currentz, incrementz;
-    double	miny, maxy, currenty, incrementy;
-    double	minx, maxx, currentx, incrementx;
-    double	minpitch, maxpitch, currentpitch, incrementpitch;
-    double	minroll, maxroll, currentroll, incrementroll;
-    double	minyaw, maxyaw, currentyaw, incrementyaw;
-    double	minzscale, maxzscale, currentzscale, incrementzscale;
-    double	minyscale, maxyscale, currentyscale, incrementyscale;
-    double	minxscale, maxxscale, currentxscale, incrementxscale;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int reserved;
+    double originx, originy, originz;
+    double pointxaxis_x, pointxaxis_y, pointxaxis_z;
+    double pointxyplane_x, pointxyplane_y, pointxyplane_z;
+    double minz, maxz, currentz, incrementz;
+    double miny, maxy, currenty, incrementy;
+    double minx, maxx, currentx, incrementx;
+    double minpitch, maxpitch, currentpitch, incrementpitch;
+    double minroll, maxroll, currentroll, incrementroll;
+    double minyaw, maxyaw, currentyaw, incrementyaw;
+    double minzscale, maxzscale, currentzscale, incrementzscale;
+    double minyscale, maxyscale, currentyscale, incrementyscale;
+    double minxscale, maxxscale, currentxscale, incrementxscale;
 };
 
 struct flt_SwitchRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		CurrentMaskIndex;
-    int		NumberWordPerMask;
-    int		NumberMask;
-    int		MaskList[1];
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int CurrentMaskIndex;
+    int NumberWordPerMask;
+    int NumberMask;
+    int MaskList[1];
 };
 
 struct flt_BoundingBoxRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		reserved;
-    double	minx, miny, minz;
-    double	maxx, maxy, maxz;
+    short  Opcode;
+    short recordLen;
+    int reserved;
+    double minx, miny, minz;
+    double maxx, maxy, maxz;
 };
 
 struct flt_BoundingSphereRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		reserved;
-    double	radius;
+    short  Opcode;
+    short recordLen;
+    int reserved;
+    double radius;
 };
 
 struct flt_LODRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		Spare;
-    double	switchin, switchout;
-    short	fxid1, fxid2;
-    int		Flags;
-    double	centerx, centery, centerz;
-    double	morphrange;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int Spare;
+    double switchin, switchout;
+    short fxid1, fxid2;
+    int Flags;
+    double centerx, centery, centerz;
+    double morphrange;
 };
 
 struct flt_ExternalReferenceRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	filename[200];
-    char	reserved[2];
-    short	padding;
-    int		Flags;
+    short  Opcode;
+    short recordLen;
+    char filename[200];
+    char reserved[2];
+    short padding;
+    int Flags;
 };
 
 struct flt_PutRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	fromoriginx, fromoriginy, fromoriginz;
-    double	fromalignx, fromaligny, fromalignz;
-    double	fromtrackx, fromtracky, fromtrackz;
-    double	toalignx, toaligny, toalignz;
-    double	totrackx, totracky, totrackz;
-    double	temp1, temp2, temp3;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double fromoriginx, fromoriginy, fromoriginz;
+    double fromalignx, fromaligny, fromalignz;
+    double fromtrackx, fromtracky, fromtrackz;
+    double toalignx, toaligny, toalignz;
+    double totrackx, totracky, totrackz;
+    double temp1, temp2, temp3;
 };
 
 struct flt_TranslateRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	refx, refy, refz;
-    double	deltax, deltay, deltaz;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double refx, refy, refz;
+    double deltax, deltay, deltaz;
 };
 
 struct flt_RotatePointRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	centerx, centery, centerz;
-    float	axisi, axisj, axisk;
-    float	angle;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double centerx, centery, centerz;
+    float axisi, axisj, axisk;
+    float angle;
 };
 
 struct flt_CommentRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	id[1];
+    short  Opcode;
+    short recordLen;
+    char id[1];
 };
 
 struct flt_TransformationMatrixRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    float	matrix[16];
+    short  Opcode;
+    short recordLen;
+    float matrix[16];
 };
 
 #pragma pack (pop)
@@ -514,350 +514,350 @@ struct flt_TransformationMatrixRecord
 
 struct aflt_HeaderRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		formatRev;
-    int		DBRev;
-    char	dateRev[32];
-    short	nextGroupID;
-    short	nextLODID;
-    short	nextObjectID;
-    short 	nextPolyID;
-    short	unitFactor;
-    char	vertexUnit;
-    char	texflag;
-    int		flags;
-    int		notused0[6];
-    int		projectionType;
-    int		notused1[7];
-    short	nextDOFID;
-    short	vertexStorageType;
-    int		databaseOrigin;
-    double	swDBcoordx;
-    double	swDBcoordy;
-    double	deltax;
-    double	deltay;
-    short	nextSoundBeadID;
-    short	nextPathBeadID;
-    int		reserved0[2];
-    short	nextClippingRegionBeadID;
-    short	nextTextBeadID;
-    short	nextBSPID;
-    short	nextSwitchBeadID;
-    int		reserved1;
-    double	swCornerLatitude;
-    double	swCornerLongitude;
-    double	neCornerLatitude;
-    double	neCornerLongitude;
-    double	originalLatitude;
-    double	originalLongitude;
-    double	lambertUpperLatitude;
-    double	lambertLowerLatitude;
-    short	nextLightSourceID;
-    short	reserved2;
-    short	nextRoadBeadIDNumber;
-    short	nextCATBeadIDNumber;
-    short	reserved3[4];
-    int		EarthEllipsoidModel;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int formatRev;
+    int DBRev;
+    char dateRev[32];
+    short nextGroupID;
+    short nextLODID;
+    short nextObjectID;
+    short  nextPolyID;
+    short unitFactor;
+    char vertexUnit;
+    char texflag;
+    int flags;
+    int notused0[6];
+    int projectionType;
+    int notused1[7];
+    short nextDOFID;
+    short vertexStorageType;
+    int databaseOrigin;
+    double swDBcoordx;
+    double swDBcoordy;
+    double deltax;
+    double deltay;
+    short nextSoundBeadID;
+    short nextPathBeadID;
+    int reserved0[2];
+    short nextClippingRegionBeadID;
+    short nextTextBeadID;
+    short nextBSPID;
+    short nextSwitchBeadID;
+    int reserved1;
+    double swCornerLatitude;
+    double swCornerLongitude;
+    double neCornerLatitude;
+    double neCornerLongitude;
+    double originalLatitude;
+    double originalLongitude;
+    double lambertUpperLatitude;
+    double lambertLowerLatitude;
+    short nextLightSourceID;
+    short reserved2;
+    short nextRoadBeadIDNumber;
+    short nextCATBeadIDNumber;
+    short reserved3[4];
+    int EarthEllipsoidModel;
 };
 
 struct aflt_GroupRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    short 	relativePriority;
-    short	spareAlignment;
-    int		Flags;
-    short	sfx1, sfx2;
-    short	significance;
-    char	layerCode;
-    char	reserved0;
-    int		reserved1;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    short  relativePriority;
+    short spareAlignment;
+    int Flags;
+    short sfx1, sfx2;
+    short significance;
+    char layerCode;
+    char reserved0;
+    int reserved1;
 };
 
 struct aflt_ObjectRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		Flags;
-    short	relativePriority;
-    short	transparencyFactor;
-    short	sfx1, sfx2;
-    short	significance;
-    short	spare;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int Flags;
+    short relativePriority;
+    short transparencyFactor;
+    short sfx1, sfx2;
+    short significance;
+    short spare;
 };
 
 struct aflt_PolygonRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		colorCode;
-    short	relativePriority;
-    char	howToDraw;
-    char	texWhite;
-    unsigned short	primaryColorName;
-    unsigned short	secondaryColorName;
-    char	notused;
-    char	templateTransparency;
-    short	detailTextureNo;
-    short	textureNo;
-    short	materialCode;
-    short	surfaceCode;
-    short	featureID;
-    int		IRMaterialCode;
-    short	transparency;
-    char	influences;
-    char	linestyle;
-    unsigned int		Flags;
-    char	lightMode;
-    char	reserved0;
-    char	reserved1[4];
-    unsigned int		packedPrimaryColor;
-    unsigned int		packedSecondaryColor;
-    short	texturemappingindex;
-    short	reserved2[2];
-    unsigned int		primaryColor, secondaryColor;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int colorCode;
+    short relativePriority;
+    char howToDraw;
+    char texWhite;
+    unsigned short primaryColorName;
+    unsigned short secondaryColorName;
+    char notused;
+    char templateTransparency;
+    short detailTextureNo;
+    short textureNo;
+    short materialCode;
+    short surfaceCode;
+    short featureID;
+    int IRMaterialCode;
+    short transparency;
+    char influences;
+    char linestyle;
+    unsigned int Flags;
+    char lightMode;
+    char reserved0;
+    char reserved1[4];
+    unsigned int packedPrimaryColor;
+    unsigned int packedSecondaryColor;
+    short texturemappingindex;
+    short reserved2[2];
+    unsigned int primaryColor, secondaryColor;
 };
 
 struct aflt_DegreeOfFreedomRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		reserved;
-    double	originx, originy, originz;
-    double	pointxaxis_x, pointxaxis_y, pointxaxis_z;
-    double	pointxyplane_x, pointxyplane_y, pointxyplane_z;
-    double	minz, maxz, currentz, incrementz;
-    double	miny, maxy, currenty, incrementy;
-    double	minx, maxx, currentx, incrementx;
-    double	minpitch, maxpitch, currentpitch, incrementpitch;
-    double	minroll, maxroll, currentroll, incrementroll;
-    double	minyaw, maxyaw, currentyaw, incrementyaw;
-    double	minzscale, maxzscale, currentzscale, incrementzscale;
-    double	minyscale, maxyscale, currentyscale, incrementyscale;
-    double	minxscale, maxxscale, currentxscale, incrementxscale;
-    int		Flags;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int reserved;
+    double originx, originy, originz;
+    double pointxaxis_x, pointxaxis_y, pointxaxis_z;
+    double pointxyplane_x, pointxyplane_y, pointxyplane_z;
+    double minz, maxz, currentz, incrementz;
+    double miny, maxy, currenty, incrementy;
+    double minx, maxx, currentx, incrementx;
+    double minpitch, maxpitch, currentpitch, incrementpitch;
+    double minroll, maxroll, currentroll, incrementroll;
+    double minyaw, maxyaw, currentyaw, incrementyaw;
+    double minzscale, maxzscale, currentzscale, incrementzscale;
+    double minyscale, maxyscale, currentyscale, incrementyscale;
+    double minxscale, maxxscale, currentxscale, incrementxscale;
+    int Flags;
 };
 
 struct aflt_VertexList
 {
-    short 	Opcode;
-    short	recordLen;
-    int		offset[1];
+    short  Opcode;
+    short recordLen;
+    int offset[1];
 };
 
 struct aflt_BinarySeparatingPlane
 {
-    short 	Opcode;
-    short 	recordLen;
-    char	IDField[8];
-    int		reserved;
-    double	a, b, c, d;
+    short  Opcode;
+    short  recordLen;
+    char IDField[8];
+    int reserved;
+    double a, b, c, d;
 };
 
 struct aflt_ExternalReferenceRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	filename[200];
-    char	reserved[2];
-    int		Flags;
-    short	reserved1;
+    short  Opcode;
+    short recordLen;
+    char filename[200];
+    char reserved[2];
+    int Flags;
+    short reserved1;
 };
 
 struct aflt_LODRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		Spare;
-    double	switchin, switchout;
-    short	fxid1, fxid2;
-    int		Flags;
-    double	centerx, centery, centerz;
-    double	morphrange;
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int Spare;
+    double switchin, switchout;
+    short fxid1, fxid2;
+    int Flags;
+    double centerx, centery, centerz;
+    double morphrange;
 };
 
 struct aflt_SwitchRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	IDField[8];
-    int		CurrentMaskIndex;
-    int		NumberWordPerMask;
-    int		NumberMask;
-    int		MaskList[1];
+    short  Opcode;
+    short recordLen;
+    char IDField[8];
+    int CurrentMaskIndex;
+    int NumberWordPerMask;
+    int NumberMask;
+    int MaskList[1];
 };
 
 struct aflt_LongIDRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	id[1];
+    short  Opcode;
+    short recordLen;
+    char id[1];
 };
 
 struct aflt_BoundingBoxRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		reserved;
-    double	minx, miny, minz;
-    double	maxx, maxy, maxz;
+    short  Opcode;
+    short recordLen;
+    int reserved;
+    double minx, miny, minz;
+    double maxx, maxy, maxz;
 };
 
 struct aflt_BoundingSphereRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		reserved;
-    double	radius;
+    short  Opcode;
+    short recordLen;
+    int reserved;
+    double radius;
 };
 
-struct aflt_SharedVertex  	// Gamegen's new name : Vertex Palette
+struct aflt_SharedVertex   // Gamegen's new name : Vertex Palette
 {
-    short 	Opcode;
-    short	recordLen;
-    int		totalLen;
+    short  Opcode;
+    short recordLen;
+    int totalLen;
 };
 
 struct aflt_VertexCoordinate
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColorName;
-    unsigned short 	Flags;
-    double	x, y, z;
-    unsigned int	packedColor;
-    unsigned int 	vertexColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColorName;
+    unsigned short  Flags;
+    double x, y, z;
+    unsigned int packedColor;
+    unsigned int  vertexColor;
 };
 
 struct aflt_VertexCoordinateTexture
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColorName;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	u, v;
-    unsigned int	packedColor;
-    unsigned int 	vertexColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColorName;
+    unsigned short  Flags;
+    double x, y, z;
+    float u, v;
+    unsigned int packedColor;
+    unsigned int  vertexColor;
 };
 
 struct aflt_VertexCoordinateNormal
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColorName;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	nx, ny, nz;
-    unsigned int	packedColor;
-    unsigned int 	vertexColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColorName;
+    unsigned short  Flags;
+    double x, y, z;
+    float nx, ny, nz;
+    unsigned int packedColor;
+    unsigned int  vertexColor;
 };
 
 struct aflt_VertexCoordinateTextureNormal
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned short 	vertexColorName;
-    unsigned short 	Flags;
-    double	x, y, z;
-    float	nx, ny, nz;
-    float	u, v;
-    unsigned int	packedColor;
-    unsigned int 	vertexColor;
+    short  Opcode;
+    short recordLen;
+    unsigned short  vertexColorName;
+    unsigned short  Flags;
+    double x, y, z;
+    float nx, ny, nz;
+    float u, v;
+    unsigned int packedColor;
+    unsigned int  vertexColor;
 };
 
 struct aflt_ColorRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    unsigned char	reserved[128];
-    int		rgb[1024];
-    int		totalColorName;
+    short  Opcode;
+    short recordLen;
+    unsigned char reserved[128];
+    int rgb[1024];
+    int totalColorName;
 };
 
 struct aflt_ColorNameRecord
 {
-    short	length;
-    short	reserved0;
-    short	colorIndex;
-    char	colorName[1];
+    short length;
+    short reserved0;
+    short colorIndex;
+    char colorName[1];
 };
 
 struct aflt_MaterialRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		materialIndex;
-    char	name[12];
-    int		Flags;
-    float	ambientRed, ambientGreen, ambientBlue;
-    float	diffuseRed, diffuseGreen, diffuseBlue;
-    float	specularRed, specularGreen, specularBlue;
-    float	emissiveRed, emissiveGreen, emissiveBlue;
-    float	shininess, alpha;
-    int		spares;
+    short  Opcode;
+    short recordLen;
+    int materialIndex;
+    char name[12];
+    int Flags;
+    float ambientRed, ambientGreen, ambientBlue;
+    float diffuseRed, diffuseGreen, diffuseBlue;
+    float specularRed, specularGreen, specularBlue;
+    float emissiveRed, emissiveGreen, emissiveBlue;
+    float shininess, alpha;
+    int spares;
 };
 
 struct aflt_TexturePatternRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	filename[200];
-    int		patternIndex;
-    int		xloc, yloc;
+    short  Opcode;
+    short recordLen;
+    char filename[200];
+    int patternIndex;
+    int xloc, yloc;
 };
 
 struct aflt_PutRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	fromoriginx, fromoriginy, fromoriginz;
-    double	fromalignx, fromaligny, fromalignz;
-    double	fromtrackx, fromtracky, fromtrackz;
-    double	toalignx, toaligny, toalignz;
-    double	totrackx, totracky, totrackz;
-    double	temp1, temp2, temp3;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double fromoriginx, fromoriginy, fromoriginz;
+    double fromalignx, fromaligny, fromalignz;
+    double fromtrackx, fromtracky, fromtrackz;
+    double toalignx, toaligny, toalignz;
+    double totrackx, totracky, totrackz;
+    double temp1, temp2, temp3;
 };
 
 struct aflt_TranslateRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	refx, refy, refz;
-    double	deltax, deltay, deltaz;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double refx, refy, refz;
+    double deltax, deltay, deltaz;
 };
 
 struct aflt_RotatePointRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    int		temp;
-    double	centerx, centery, centerz;
-    float	axisi, axisj, axisk;
-    float	angle;
+    short  Opcode;
+    short recordLen;
+    int temp;
+    double centerx, centery, centerz;
+    float axisi, axisj, axisk;
+    float angle;
 };
 
 struct aflt_CommentRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    char	id[1];
+    short  Opcode;
+    short recordLen;
+    char id[1];
 };
 
 struct aflt_TransformationMatrixRecord
 {
-    short 	Opcode;
-    short	recordLen;
-    float	matrix[16];
+    short  Opcode;
+    short recordLen;
+    float matrix[16];
 };
 
 #pragma pack (pop)

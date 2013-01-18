@@ -3,7 +3,7 @@
     Mikal "Wombat778" Shaikh
     06Mar04
 
-	-Script interpreter for training scripts
+ -Script interpreter for training scripts
 \***************************************************************************/
 
 #include "Graphics\Include\renderow.h"
@@ -50,7 +50,7 @@ void DoText(float x, float y, char *string, int boxed, int orientation)
             break;
 
         case 3:
-            OTWDriver.renderer->TextLeftVertical(x, y, string, boxed);	//Not sure what the vertical ones do, but leave in there for now
+            OTWDriver.renderer->TextLeftVertical(x, y, string, boxed); //Not sure what the vertical ones do, but leave in there for now
             break;
 
         case 4:
@@ -77,7 +77,7 @@ TrainingScriptClass::TrainingScriptClass()
     repeatlist = NULL;
     blockallowlist = NULL;
     numfunctions = 0;
-    functiontable = new FunctionTableType[MAX_SCRIPTFUNCS];		//Changed from malloc
+    functiontable = new FunctionTableType[MAX_SCRIPTFUNCS]; //Changed from malloc
     RestartScript();
     InitFunctions();
 
@@ -87,7 +87,7 @@ TrainingScriptClass::~TrainingScriptClass()
 {
     RestartScript();
     ClearAllLines();
-    delete [] functiontable;		//changed from free
+    delete [] functiontable; //changed from free
 }
 
 
@@ -104,9 +104,9 @@ TrainingScriptClass::CmdPrint(LineType *line)
     }
 
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
         AddRepeatList(line);
         nextline = nextline->next;
@@ -156,9 +156,9 @@ TrainingScriptClass::CmdOval(LineType *line)
     }
 
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
         AddRepeatList(line);
         nextline = nextline->next;
@@ -177,11 +177,11 @@ TrainingScriptClass::CmdOval(LineType *line)
         tempcolor = OTWDriver.renderer->Color();
         OTWDriver.renderer->SetColor(line->localcolor);
 
-        sscanf(line->GetArg(2), "%f", &xradius);		//This is a circle
+        sscanf(line->GetArg(2), "%f", &xradius); //This is a circle
 
         if (line->numargs == 4)
         {
-            sscanf(line->GetArg(3), "%f", &yradius);	//This is an oval
+            sscanf(line->GetArg(3), "%f", &yradius); //This is an oval
             OTWDriver.renderer->Oval(line->localcursorx, line->localcursory, xradius, yradius);
         }
         else
@@ -213,9 +213,9 @@ TrainingScriptClass::CmdLine(LineType *line)
     }
 
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
         AddRepeatList(line);
         nextline = nextline->next;
@@ -268,9 +268,9 @@ TrainingScriptClass::CmdWaitPrint(LineType *line)
         return false;
     }
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
@@ -312,9 +312,9 @@ TrainingScriptClass::CmdWait(LineType *line)
         return false;
     }
 
-    if (firstrun)						//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
@@ -347,18 +347,18 @@ TrainingScriptClass::CmdWaitInput(LineType *line)
         return false;
     }
 
-    if (firstrun)						//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
         capturing = true;
     }
 
-    if (line->localtimer && (vuxRealTime > line->localtimer))				//if no, then if the timer has expired, move to the next line
+    if (line->localtimer && (vuxRealTime > line->localtimer)) //if no, then if the timer has expired, move to the next line
     {
         nextline = nextline->next;
         capturing = false;
-        return false;						//Timed out, so return false.
+        return false; //Timed out, so return false.
     }
 
     for (int i = 2; i < line->numargs; i++)
@@ -408,16 +408,16 @@ TrainingScriptClass::CmdWaitMouse(LineType *line)
         return false;
     }
 
-    if (firstrun)						//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
-    if (line->localtimer && (vuxRealTime > line->localtimer))				//if no, then if the timer has expired, move to the next line
+    if (line->localtimer && (vuxRealTime > line->localtimer)) //if no, then if the timer has expired, move to the next line
     {
         nextline = nextline->next;
-        return false;						//Timed out, so return false.
+        return false; //Timed out, so return false.
     }
 
 
@@ -446,7 +446,7 @@ TrainingScriptClass::CmdIfTrue(LineType *line)
     if (!nextline->next)
     {
         nextline = nextline->next;
-        return false;							//Error in placement
+        return false; //Error in placement
     }
 
     if (result)
@@ -464,7 +464,7 @@ TrainingScriptClass::CmdIfNotTrue(LineType *line)
     if (!nextline->next)
     {
         nextline = nextline->next;
-        return false;							//Error in placement
+        return false; //Error in placement
     }
 
     if (!result)
@@ -503,7 +503,7 @@ TrainingScriptClass::CmdWaitSound(LineType *line)
         return false;
     }
 
-    if (firstrun)						//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
         line->localsoundid = F4StartStream(line->GetArg(1), 0);
 
     if (!gSoundDriver->IsStreamPlaying(line->localsoundid))
@@ -526,9 +526,9 @@ TrainingScriptClass::CmdWaitSoundStop(LineType *line)
         return false;
     }
 
-    if (firstrun)						//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
@@ -551,12 +551,12 @@ bool
 TrainingScriptClass::CmdEndSection(LineType *line)
 {
 
-    if (stacktop)										//If there is a return stack, then use it
+    if (stacktop) //If there is a return stack, then use it
     {
         nextline = PopStack();
         return true;
     }
-    else													//Otherwise, just skip to the next line
+    else //Otherwise, just skip to the next line
     {
         nextline = nextline->next;
         return false;
@@ -569,7 +569,7 @@ bool
 TrainingScriptClass::CmdEndScript(LineType *line)
 {
 
-    nextline = NULL;									//End the script;
+    nextline = NULL; //End the script;
     return true;
 
 }
@@ -661,7 +661,7 @@ TrainingScriptClass::CmdJumpSection(LineType *line)
     }
 
     nextline = nextline->next;
-    return false;					//Section not found
+    return false; //Section not found
 }
 
 bool
@@ -690,7 +690,7 @@ TrainingScriptClass::CmdCallSection(LineType *line)
     }
 
     nextline = nextline->next;
-    return false;					//Section not found
+    return false; //Section not found
 }
 
 bool
@@ -816,7 +816,7 @@ TrainingScriptClass::CmdWhile(LineType *line)
             linewalker = linewalker->next;
         }
 
-        nextline = nextline->next;	//No ENDSECTION found.  Just skip the loop
+        nextline = nextline->next; //No ENDSECTION found.  Just skip the loop
         return false;
     }
     else
@@ -841,7 +841,7 @@ TrainingScriptClass::CmdWhileNot(LineType *line)
 
         while (linewalker)
         {
-            if (!strcmp(linewalker->GetArg(0), "EndSection"))	//3-16-04 changed ENDSECTION to EndSection
+            if (!strcmp(linewalker->GetArg(0), "EndSection")) //3-16-04 changed ENDSECTION to EndSection
             {
                 nextline = linewalker->next;
                 return false;
@@ -850,7 +850,7 @@ TrainingScriptClass::CmdWhileNot(LineType *line)
             linewalker = linewalker->next;
         }
 
-        nextline = nextline->next;	//No ENDSECTION found.  Just skip the loop
+        nextline = nextline->next; //No ENDSECTION found.  Just skip the loop
         return false;
     }
     else
@@ -888,7 +888,7 @@ TrainingScriptClass::CmdCallIf(LineType *line)
         }
 
         nextline = nextline->next;
-        return false;					//Section not found
+        return false; //Section not found
     }
     else if (line->numargs == 3)
     {
@@ -907,7 +907,7 @@ TrainingScriptClass::CmdCallIf(LineType *line)
         }
 
         nextline = nextline->next;
-        return false;					//Section not found
+        return false; //Section not found
     }
 
     nextline = nextline->next;
@@ -941,7 +941,7 @@ TrainingScriptClass::CmdCallIfNot(LineType *line)
         }
 
         nextline = nextline->next;
-        return false;					//Section not found
+        return false; //Section not found
     }
     else if (line->numargs == 3)
     {
@@ -960,7 +960,7 @@ TrainingScriptClass::CmdCallIfNot(LineType *line)
         }
 
         nextline = nextline->next;
-        return false;					//Section not found
+        return false; //Section not found
     }
 
     nextline = nextline->next;
@@ -1119,9 +1119,9 @@ TrainingScriptClass::CmdWaitCallbackVisible(LineType *line)
         return false;
     }
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
@@ -1161,9 +1161,9 @@ TrainingScriptClass::CmdWaitDialVisible(LineType *line)
         return false;
     }
 
-    if (firstrun)								//is this the first time that this has been run
+    if (firstrun) //is this the first time that this has been run
     {
-        sscanf(line->GetArg(1), "%f", &waittime);		//if yes, set the timer
+        sscanf(line->GetArg(1), "%f", &waittime); //if yes, set the timer
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
@@ -1510,13 +1510,13 @@ LineType::AddArg(char *argtext)
 {
     ArgType *newarg;
 
-    if (!strcmp(argtext, ""))		//If this is a null string, return
+    if (!strcmp(argtext, "")) //If this is a null string, return
         return false;
 
     newarg = new ArgType;
 
     newarg->arglength = strlen(argtext);
-    newarg->arg = new char[newarg->arglength + 1];		//Changed from malloc
+    newarg->arg = new char[newarg->arglength + 1]; //Changed from malloc
 
     strcpy(newarg->arg, argtext);
 
@@ -1551,7 +1551,7 @@ LineType::GetArg(int argnum)
         i++;
     }
 
-    return "";		//This should NEVER happen.
+    return ""; //This should NEVER happen.
 }
 
 
@@ -1608,7 +1608,7 @@ TrainingScriptClass::AddLine(char *linetext)
 
             case '/':
             {
-                if (linetext[i + 1] == '/')					//This should mean that only lines with // should be a comment, not just one slash
+                if (linetext[i + 1] == '/') //This should mean that only lines with // should be a comment, not just one slash
                 {
                     templine[charcounter] = '\0';
                     charcounter = 0;
@@ -1630,7 +1630,7 @@ TrainingScriptClass::AddLine(char *linetext)
                 {
                     templine[charcounter] = '\n';
                     charcounter++;
-                    i++;				//Make sure we are skipping the 'n' character
+                    i++; //Make sure we are skipping the 'n' character
                     break;
                 }
                 else
@@ -1806,7 +1806,7 @@ ArgType::ArgType()
 
 ArgType::~ArgType()
 {
-    delete [] arg;			//changed from free
+    delete [] arg; //changed from free
 }
 
 
@@ -1980,7 +1980,7 @@ TrainingScriptClass::ClearCaptureList()
 }
 
 bool
-TrainingScriptClass::AddBlockAllowCommand(InputFunctionType theFunc, int callback)		//Can be used to either allow or disallow a command based on the type of list it is
+TrainingScriptClass::AddBlockAllowCommand(InputFunctionType theFunc, int callback) //Can be used to either allow or disallow a command based on the type of list it is
 {
     CaptureListType *temp;
 
@@ -2005,9 +2005,9 @@ TrainingScriptClass::IsBlocked(InputFunctionType theFunc, int callback)
 
     walker = blockallowlist;
 
-    if (isblocklist)				//is this a blocklist or an allow list
+    if (isblocklist) //is this a blocklist or an allow list
     {
-        while (walker)				//This is a blocklist
+        while (walker) //This is a blocklist
         {
             if (theFunc && walker->theFunc == theFunc)
                 return true;
@@ -2022,7 +2022,7 @@ TrainingScriptClass::IsBlocked(InputFunctionType theFunc, int callback)
     }
     else
     {
-        while (walker)					//This is an allow list
+        while (walker) //This is an allow list
         {
             if (theFunc && walker->theFunc == theFunc)
                 return false;
@@ -2065,16 +2065,16 @@ CaptureListType::CaptureListType()
 bool
 TrainingScriptClass::LoadScript(char *name)
 {
-    FILE*			ScriptFile;
-    char			templine[MAX_LINE_LENGTH];
-    int				i = 0;
+    FILE* ScriptFile;
+    char templine[MAX_LINE_LENGTH];
+    int i = 0;
 
     ClearAllLines();
     RestartScript();
 
     ScriptFile = fopen(name, "r");
 
-    F4Assert(ScriptFile);			//Error: Couldn't open file
+    F4Assert(ScriptFile); //Error: Couldn't open file
 
     if (ScriptFile)
     {

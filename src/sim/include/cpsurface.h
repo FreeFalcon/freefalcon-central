@@ -13,11 +13,11 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int				idNum;
-    BOOL				persistant;
-    BYTE				*psrcBuffer;
-    ImageBuffer		*pOtwImage;
-    RECT				srcRect;
+    int idNum;
+    BOOL persistant;
+    BYTE *psrcBuffer;
+    ImageBuffer *pOtwImage;
+    RECT srcRect;
 } SurfaceInitStr;
 
 //====================================================//
@@ -41,17 +41,17 @@ public:
 #endif
 public:
 
-    int				mIdNum;
+    int mIdNum;
 
-    RECT				mSrcRect;
-    ImageBuffer		*mpSurfaceBuffer;
-    GLubyte			*mpSourceBuffer;
-    ImageBuffer		*mpOTWImage;
+    RECT mSrcRect;
+    ImageBuffer *mpSurfaceBuffer;
+    GLubyte *mpSourceBuffer;
+    ImageBuffer *mpOTWImage;
 
-    BOOL				mPersistant;
+    BOOL mPersistant;
 
-    int				mWidth;
-    int				mHeight;
+    int mWidth;
+    int mHeight;
 
     // OW
     PaletteHandle *m_pPalette;

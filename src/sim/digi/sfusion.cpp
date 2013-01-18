@@ -42,10 +42,10 @@ void DigitalBrain::SensorFusion(void)
     /* int delayTime;
     unsigned int fromSkill = 6 * SEC_TO_MSEC * (SkillLevel() + 1);
 
-    	if (fromSkill > self->targetUpdateRate)
-    		delayTime = SimLibElapsedTime - fromSkill;
-    	else
-    		delayTime = SimLibElapsedTime - self->targetUpdateRate;
+     if (fromSkill > self->targetUpdateRate)
+     delayTime = SimLibElapsedTime - fromSkill;
+     else
+     delayTime = SimLibElapsedTime - self->targetUpdateRate;
     */
     /*--------------------*/
     /* do for all objects */
@@ -115,78 +115,78 @@ void DigitalBrain::SensorFusion(void)
           // Aces get to use GCI
           // Idiots find out about you inside 1 mile anyway
           if (localData->range > 3.0F * NM_TO_FT && // gci is crap inside 3nm
-        		 (SkillLevel() >= 2 &&
-        	  localData->range < 25.0F * NM_TO_FT||
-        	  SkillLevel() >=3  &&
-        	  localData->range < 35.0F * NM_TO_FT||
-        	  SkillLevel() >=4  &&
-        	  localData->range < 55.0F * NM_TO_FT)
-        	  )//me123 not if no sensor has seen it || localData->range < 1.0F * NM_TO_FT)
+          (SkillLevel() >= 2 &&
+           localData->range < 25.0F * NM_TO_FT||
+           SkillLevel() >=3  &&
+           localData->range < 35.0F * NM_TO_FT||
+           SkillLevel() >=4  &&
+           localData->range < 55.0F * NM_TO_FT)
+           )//me123 not if no sensor has seen it || localData->range < 1.0F * NM_TO_FT)
           {
-        	 canSee = TRUE;
+          canSee = TRUE;
           }
 
           // You can always see your designated target
           if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
           {
-        	 canSee = TRUE;//me123
+          canSee = TRUE;//me123
           }
 
           for (i = 0; i<self->numSensors && !canSee; i++)
           {
-        	 if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
-        		 localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
-        	 {
-        		canSee = TRUE;
-        		break;
-        	 }
+          if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
+          localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
+          {
+         canSee = TRUE;
+         break;
+          }
           }
          }
          else {*/
         // 2001-03-21 REDONE BY S.G. SO SIM AIRPLANE WIL FLAG FLIGHT/AIRPLANE AS DETECTED AND WILL PROVIDE GCI
         /*#if 0
-        		// Aces get to use GCI
-        		// Idiots find out about you inside 1 mile anyway
-        		if (SkillLevel() >= 3 && localData->range < 15.0F * NM_TO_FT || localData->range < 1.0F * NM_TO_FT)
-        		{
-        			canSee = TRUE;
-        		}
+         // Aces get to use GCI
+         // Idiots find out about you inside 1 mile anyway
+         if (SkillLevel() >= 3 && localData->range < 15.0F * NM_TO_FT || localData->range < 1.0F * NM_TO_FT)
+         {
+         canSee = TRUE;
+         }
 
-        		// You can always see your designated target
-        		if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
-        		{
-        			canSee = TRUE;
-        		}
+         // You can always see your designated target
+         if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
+         {
+         canSee = TRUE;
+         }
 
-        		for (i = 0; i<self->numSensors && !canSee; i++)
-        		{
-        			if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
-        				localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
-        			{
-        				canSee = TRUE;
-        				break;
-        			}
-        		}
+         for (i = 0; i<self->numSensors && !canSee; i++)
+         {
+         if (localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack ||
+         localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime)
+         {
+         canSee = TRUE;
+         break;
+         }
+         }
         #else */
         // First I'll get the campaign object if it's for a sim since I use it at many places...
         /*CampBaseClass *campBaseObj = (CampBaseClass *)baseObj;
 
         if (baseObj->IsSim())
-        	campBaseObj = ((SimBaseClass*)baseObj)->GetCampaignObject();
+         campBaseObj = ((SimBaseClass*)baseObj)->GetCampaignObject();
 
         // If the object is a weapon, don't do GCI on it
         if (baseObj->IsWeapon())
-        	campBaseObj = NULL;
+         campBaseObj = NULL;
 
         // This is our GCI implementation... Ace and Veteran gets to use GCI.
         // Only if we have a valid base object...
         // This code is to make sure our GCI targets are prioritized, just like other targets
         if (campBaseObj && SkillLevel() >= g_nLowestSkillForGCI && localData->range < 30.0F * NM_TO_FT)
-        	if (campBaseObj->GetSpotted(self->GetTeam()))
-        		canSee = TRUE;
+         if (campBaseObj->GetSpotted(self->GetTeam()))
+         canSee = TRUE;
         // You can always see your designated target
         if (baseObj->Id() == mDesignatedObject && localData->range > 8.0F * NM_TO_FT)
-        	canSee = TRUE;*/
+         canSee = TRUE;*/
 
         //if (SimDriver.RunningDogfight()) // 2002-02-17 ADDED BY S.G. If in dogfight, don't loose sight of your opponent.
         //canSee = TRUE; //Cobra removed to test
@@ -202,15 +202,15 @@ void DigitalBrain::SensorFusion(void)
         /*int identified = FALSE;
 
         if (self->sensorArray[i]->Type() == SensorClass::RWR) {
-        	if (((RwrClass *)self->sensorArray[i])->GetTypeData()->flag & RWR_EXACT_TYPE)
-        		identified = TRUE;
+         if (((RwrClass *)self->sensorArray[i])->GetTypeData()->flag & RWR_EXACT_TYPE)
+         identified = TRUE;
         }
         else if (self->sensorArray[i]->Type() == SensorClass::Radar) {
-        	if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() && (((RadarClass *)self->sensorArray[i])->radarData->flag & RAD_NCTR) && localData->ataFrom < 45.0f * DTR && localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
-        		identified = TRUE;
+         if (((RadarClass *)self->sensorArray[i])->GetRadarDatFile() && (((RadarClass *)self->sensorArray[i])->radarData->flag & RAD_NCTR) && localData->ataFrom < 45.0f * DTR && localData->range < ((RadarClass *)self->sensorArray[i])->GetRadarDatFile()->MaxNctrRange / (2.0f * (16.0f - (float)SkillLevel()) / 16.0f)) // 2002-03-05 MODIFIED BY S.G. target's aspect and skill used in the equation
+         identified = TRUE;
         }
         else
-        	identified = TRUE;
+         identified = TRUE;
 
         campBaseObj->SetSpotted(self->GetTeam(),TheCampaign.CurrentTime, identified);
         }
@@ -324,7 +324,7 @@ void DigitalBrain::SensorFusion(void)
                 else
                     campObj = (CampBaseClass *)baseObj;
 
-                int isMissionTarget = campObj && (((FlightClass *)(self->GetCampaignObject()))->								GetUnitMissionTargetID() == campObj->Id() ||
+                int isMissionTarget = campObj && (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() ||
                                                   ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
                 if (isMissionTarget)
@@ -362,7 +362,7 @@ void DigitalBrain::SensorFusion(void)
               if (canSee)
               {
 
-        			if (baseObj->IsMissile())
+         if (baseObj->IsMissile())
                  {
 
                     if (pcId == ID_MISSILE)
@@ -377,7 +377,7 @@ void DigitalBrain::SensorFusion(void)
                           if (localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
                             localData->threatTime = localData->range / AVE_AIM120_VEL;
                           else
-        					localData->threatTime = localData->range / AVE_AIM9L_VEL;
+         localData->threatTime = localData->range / AVE_AIM9L_VEL;
                        }
                     }
                     else localData->threatTime = MAX_THREAT_TIME;
@@ -386,32 +386,32 @@ void DigitalBrain::SensorFusion(void)
                  else if ((baseObj->IsAirplane() || (baseObj->IsFlight() && !baseObj->IsHelicopter())) && pcId != ID_NONE && pcId < ID_NEUTRAL && GuestimateCombatClass(self, baseObj) < MnvrClassA10)
                  {
 
-        			 //TJL 11/07/03 VO log says there is an radian error in this code
-        			 // I think it is here.  ataFrom is in radians
+          //TJL 11/07/03 VO log says there is an radian error in this code
+          // I think it is here.  ataFrom is in radians
                     //turnTime = localData->ataFrom / FIVE_G_TURN_RATE;
-        			 turnTime = localData->ataFrom*RTD / FIVE_G_TURN_RATE;// 15.9f degrees per second
+          turnTime = localData->ataFrom*RTD / FIVE_G_TURN_RATE;// 15.9f degrees per second
 
-        			 //TJL 11/07/03 Cos takes radians, thus no *DTR
+          //TJL 11/07/03 Cos takes radians, thus no *DTR
                     //totV = obj->BaseData()->GetVt() + self->GetVt()*(float)cos(localData->ata*DTR);
-        			totV = obj->BaseData()->GetVt() + self->GetVt()*(float)cos(localData->ata);
+         totV = obj->BaseData()->GetVt() + self->GetVt()*(float)cos(localData->ata);
 
 
-        			if (SpikeCheck(self) == obj->BaseData())//me123 addet
+         if (SpikeCheck(self) == obj->BaseData())//me123 addet
                     rmax = 2.5f*60762.11F;
-        			else
-        			rmax = 60762.11F;
+         else
+         rmax = 60762.11F;
 
                     if (localData->range > rmax)
                     {
-        			      if ( totV <= 0.0f )
-        			      {
-                       		timeToRmax = MAX_THREAT_TIME * 2.0f;
-        			      }
-        			      else
-        			      {
-                       		timeToRmax = (localData->range - rmax) / totV;
-                       		tof = rmax / AVE_AIM120_VEL;
-        			      }
+               if ( totV <= 0.0f )
+               {
+                        timeToRmax = MAX_THREAT_TIME * 2.0f;
+               }
+               else
+               {
+                        timeToRmax = (localData->range - rmax) / totV;
+                        tof = rmax / AVE_AIM120_VEL;
+               }
                     }
                     else
                     {
@@ -427,7 +427,7 @@ void DigitalBrain::SensorFusion(void)
                  }
               }
 
-        	  */
+           */
 
         /*----------------------------------------------------*/
         /* Targetability determination                        */
@@ -447,41 +447,41 @@ void DigitalBrain::SensorFusion(void)
         // Since I'm going to check for this twice in the next if statement, do it once here but also do the 'canSee' test which is not CPU intensive and will prevent the test from being performed if can't see.
 
         /*
-        	  CampBaseClass *campObj;
-        	  if (baseObj->IsSim())
-        		  campObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
-        	  else
-        		  campObj = (CampBaseClass *)baseObj;
-        	  int isMissionTarget = canSee && campObj && (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() || ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
+           CampBaseClass *campObj;
+           if (baseObj->IsSim())
+           campObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
+           else
+           campObj = (CampBaseClass *)baseObj;
+           int isMissionTarget = canSee && campObj && (((FlightClass *)(self->GetCampaignObject()))->GetUnitMissionTargetID() == campObj->Id() || ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
 
               if (canSee &&
-        		  (baseObj->IsAirplane() || (baseObj->IsFlight() && !baseObj->IsHelicopter()) || (baseObj->IsHelicopter() && ((missionType != AMIS_SWEEP && IsSetATC(OnSweep)) || isMissionTarget))) &&
-        		  pcId < ID_NEUTRAL &&
-        		  (GuestimateCombatClass(self, baseObj) < MnvrClassA10 || IsSetATC(OnSweep) || isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
+           (baseObj->IsAirplane() || (baseObj->IsFlight() && !baseObj->IsHelicopter()) || (baseObj->IsHelicopter() && ((missionType != AMIS_SWEEP && IsSetATC(OnSweep)) || isMissionTarget))) &&
+           pcId < ID_NEUTRAL &&
+           (GuestimateCombatClass(self, baseObj) < MnvrClassA10 || IsSetATC(OnSweep) || isMissionTarget)) // 2002-03-11 Don't assume you know the combat class
         // END OF MODIFIED SECTION 2002-03-05
               {
-        		  // TJL 11/07/03 Cos takes Radians thus no *DTR
+           // TJL 11/07/03 Cos takes Radians thus no *DTR
                  //totV     = obj->BaseData()->GetVt()*(float)cos(localData->ataFrom*DTR) + self->GetVt();
-        		totV     = obj->BaseData()->GetVt()*(float)cos(localData->ataFrom) + self->GetVt();
+         totV     = obj->BaseData()->GetVt()*(float)cos(localData->ataFrom) + self->GetVt();
 
-        		  //TJL 11/07/03 VO log says there is an radian error in this code
-        			 // I think it is here.  ataFrom is in radians
+           //TJL 11/07/03 VO log says there is an radian error in this code
+          // I think it is here.  ataFrom is in radians
                     //turnTime = localData->ataFrom / FIVE_G_TURN_RATE;
-        			 turnTime = localData->ataFrom*RTD / FIVE_G_TURN_RATE;// 15.9f degrees per second
+          turnTime = localData->ataFrom*RTD / FIVE_G_TURN_RATE;// 15.9f degrees per second
 
                  rmax = maxAAWpnRange;//me123 60762.11F;
 
                  if (localData->range > rmax)
                  {
-        			   if ( totV <= 0.0f )
-        			   {
+            if ( totV <= 0.0f )
+            {
                        timeToRmax = MAX_TARGET_TIME * 2.0f;
-        			   }
-        			   else
-        			   {
+            }
+            else
+            {
                        timeToRmax = (localData->range - rmax) / totV;
                        tof = rmax / AVE_AIM120_VEL;
-        			   }
+            }
                  }
                  else
                  {
@@ -495,7 +495,7 @@ void DigitalBrain::SensorFusion(void)
               {
                  localData->targetTime = 2.0F * MAX_TARGET_TIME;
               }
-        	  */
+           */
 
         obj = obj->next;
     }

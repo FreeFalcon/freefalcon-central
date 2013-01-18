@@ -25,11 +25,11 @@ private:
 
     short state_;
 
-    VU_ID	 vuID;
+    VU_ID  vuID;
 
-    O_Output	*Icon_;
-    O_Output	*Callsign_;
-    O_Output	*Aircraft_;
+    O_Output *Icon_;
+    O_Output *Callsign_;
+    O_Output *Aircraft_;
 
 public:
     C_Dog_Flight();

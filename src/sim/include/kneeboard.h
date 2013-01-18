@@ -45,7 +45,7 @@ public:
     /*float GetVcenter()   const { return wsVcenter;   }
     float GetHcenter()   const { return wsHcenter;   }
     float GetHsize()     const { return wsHsize;     }
-    float GetVsize()     const { return wsVsize;	 }
+    float GetVsize()     const { return wsVsize;  }
     int   GetPixelMag()  const { return pixelMag;    }
     float GetPixel2nmX() const { return m_pixel2nmX; }
     float GetPixel2nmY() const { return m_pixel2nmY; }*/
@@ -60,19 +60,19 @@ private:
     // sfr: non sense using an internal parameter to a private function
     void LoadKneeImage(/*CImageFileMemory &imagefile*/);
     // Which page we're displaying
-    Page		page;
+    Page page;
     /*
-    	// Real world map dimensions (R/O externally)
-    	float		wsVcenter;	//vertical center
-    	float		wsHcenter;	//horizontal center
-    	float		wsHsize;	//horizontal size
-    	float		wsVsize;	//vertical size
-    	int			pixelMag;
-    	float m_pixel2nmX, m_pixel2nmY;
+     // Real world map dimensions (R/O externally)
+     float wsVcenter; //vertical center
+     float wsHcenter; //horizontal center
+     float wsHsize; //horizontal size
+     float wsVsize; //vertical size
+     int pixelMag;
+     float m_pixel2nmX, m_pixel2nmY;
     */
     // Map image surface and Blt rectangles
     bool imageLoaded;
-    CImageFileMemory 	mapImageFile;
+    CImageFileMemory  mapImageFile;
 
 };
 

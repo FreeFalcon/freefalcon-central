@@ -10,7 +10,7 @@
 // Data types and defines
 // ================================
 
-typedef enum {	NoMove = 0,
+typedef enum { NoMove = 0,
                 Foot,
                 Wheeled,
                 Tracked,
@@ -22,27 +22,27 @@ typedef enum {	NoMove = 0,
              } MoveType;
 
 // Radar Modes
-#define FEC_RADAR_OFF			0x00	   	// Radar always off
-#define FEC_RADAR_SEARCH_100	0x01	   	// Search Radar - 100 % of the time (always on)
-#define FEC_RADAR_SEARCH_1		0x02	   	// Search Sequence #1
-#define FEC_RADAR_SEARCH_2		0x03	   	// Search Sequence #2
-#define FEC_RADAR_SEARCH_3		0x04	   	// Search Sequence #3
-#define FEC_RADAR_AQUIRE		0x05	   	// Aquire Mode (looking for a target)
-#define FEC_RADAR_GUIDE			0x06	   	// Missile in flight. Death is imminent
-#define FEC_RADAR_CHANGEMODE	0x07	   	// Missile in flight. Death is imminent
+#define FEC_RADAR_OFF 0x00     // Radar always off
+#define FEC_RADAR_SEARCH_100 0x01     // Search Radar - 100 % of the time (always on)
+#define FEC_RADAR_SEARCH_1 0x02     // Search Sequence #1
+#define FEC_RADAR_SEARCH_2 0x03     // Search Sequence #2
+#define FEC_RADAR_SEARCH_3 0x04     // Search Sequence #3
+#define FEC_RADAR_AQUIRE 0x05     // Aquire Mode (looking for a target)
+#define FEC_RADAR_GUIDE 0x06     // Missile in flight. Death is imminent
+#define FEC_RADAR_CHANGEMODE 0x07     // Missile in flight. Death is imminent
 // Flags
-#define FEC_HOLDSHORT			0x01		// Don't takeoff until a player attaches
-#define FEC_PLAYERONLY			0x02		// This entity is only valid if under player control
-#define FEC_HASPLAYERS			0x04		// One or more player is attached to this entity
-#define FEC_REGENERATING		0x08		// This entity is undead.
-#define FEC_PLAYER_ENTERING		0x10		// A player is soon to attach to this aircraft/flight
-#define FEC_INVULNERABLE		0x20		// This thing can't be destroyed
+#define FEC_HOLDSHORT 0x01 // Don't takeoff until a player attaches
+#define FEC_PLAYERONLY 0x02 // This entity is only valid if under player control
+#define FEC_HASPLAYERS 0x04 // One or more player is attached to this entity
+#define FEC_REGENERATING 0x08 // This entity is undead.
+#define FEC_PLAYER_ENTERING 0x10 // A player is soon to attach to this aircraft/flight
+#define FEC_INVULNERABLE 0x20 // This thing can't be destroyed
 
 // localFlags
 #define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
 #define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new!
 #define FELF_UPDATE_TARGET_LIST_TEMP         0x4 // temporary marker for UpdateTargetList()      
-#define FELF_ADDED_DURING_SIMDRIVER_CYCLE	 0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
+#define FELF_ADDED_DURING_SIMDRIVER_CYCLE  0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
 
 // ================================
 // FalcEntity class
@@ -53,20 +53,20 @@ class FalconSessionEntity;
 class FalconEntity : public VuEntity
 {
 private:
-    int			dirty_falcent;
+    int dirty_falcent;
 
-    int			dirty_classes;
+    int dirty_classes;
     /** flags indicating unit dirtyness. Can be Ored. See enum Dirtyness for valid scores. */
-    int			dirty_score;
+    int dirty_score;
 
     /** returns the dirty bucket where unit should be inserted based on its dirty_score.
     * If unit is not dirty, returns -1
     */
     static int calc_dirty_bucket(int dirty_score);
-    uchar		falconFlags;
+    uchar falconFlags;
 
 protected:
-    char		falconType;
+    char falconType;
 
 public:
 
@@ -156,19 +156,19 @@ public:
 
     virtual int Wake(void) = 0;
     virtual int Sleep(void) = 0;
-    virtual short GetCampID(void) = 0; //				{ ShiWarning( "Illegal use of FalconEntity" ); return 0; };
-    virtual uchar GetTeam(void) = 0;	//			{ ShiWarning( "Illegal use of FalconEntity" ); return 0; };
-    virtual uchar GetCountry(void) = 0; //				{ ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual short GetCampID(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual uchar GetTeam(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual uchar GetCountry(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
     virtual uchar GetDomain(void);
     virtual int GetRadarMode(void)
     {
         return FEC_RADAR_OFF;
     }
     // sfr: modified to uchar
-    virtual void SetRadarMode(uchar)		{};
-    virtual void ReturnToSearch(void)			{};
+    virtual void SetRadarMode(uchar) {};
+    virtual void ReturnToSearch(void) {};
     // sfr: modified to uchar
-    virtual void SetSearchMode(uchar)		{};
+    virtual void SetSearchMode(uchar) {};
     virtual int CombatClass(void)
     {
         return 999;    // 2002-02-25 ADDED BY S.G. No combat class for non flight or non aircraft class
@@ -312,7 +312,7 @@ public:
     {
         return 0.0f;
     }
-    virtual int	GetRadarType(void);
+    virtual int GetRadarType(void);
 
     virtual uchar* GetDamageModifiers(void);
     void GetLocation(short* x, short* y) const;
@@ -346,10 +346,10 @@ public:
     void MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score);
 
     // 2002-03-22 ADDED BY S.G. Needs them outside of battalion class
-    virtual void SetAQUIREtimer(VU_TIME newTime)		{ };
-    virtual void SetSEARCHtimer(VU_TIME newTime)		{ };
+    virtual void SetAQUIREtimer(VU_TIME newTime) { };
+    virtual void SetSEARCHtimer(VU_TIME newTime) { };
     // sfr: modified to uchar
-    virtual void SetStepSearchMode(uchar)					{ };
+    virtual void SetStepSearchMode(uchar) { };
     virtual VU_TIME GetAQUIREtimer(void)
     {
         return 0;

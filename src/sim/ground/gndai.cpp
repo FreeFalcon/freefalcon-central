@@ -70,26 +70,26 @@ ulong gConfirmTarg = 0;
 #endif
 
 #ifdef USE_SH_POOLS
-MEM_POOL	GNDAIClass::pool;
+MEM_POOL GNDAIClass::pool;
 #endif
 
 void SetLabel(SimBaseClass* theObject);
 
-extern GridIndex  	dx[17];
-extern GridIndex	dy[17];
+extern GridIndex   dx[17];
+extern GridIndex dy[17];
 
 #define GNDAI_SINF(a) sinf(a)
 #define GNDAI_COSF(a) cosf(a)
 
-#define AI_SCALEFAC		50		// Used for debug code..
-#define AI_COORD_SCALE	2
+#define AI_SCALEFAC 50 // Used for debug code..
+#define AI_COORD_SCALE 2
 
-#define	OPTIMAL_VEHICLE_ROTATION	(90.0F * DTR)		// Optimal rotation speed (radians/second)
+#define OPTIMAL_VEHICLE_ROTATION (90.0F * DTR) // Optimal rotation speed (radians/second)
 
 // edg: this is an attempt to reduce vehicles from going thru each other --
 // just spread em out.  Scale existing table offsets by this amount
-#define OFFSET_SCALE				(2.5f)
-#define RANDOM_OFFSET_SCALE			(0.5f)
+#define OFFSET_SCALE (2.5f)
+#define RANDOM_OFFSET_SCALE (0.5f)
 
 // The formation data is stored as relative offsets, the first coord is redundant
 // each "leader" is actually the first coord in the list (therefore it has to be
@@ -209,9 +209,9 @@ AIOffsetType FormationRandomness[ GNDAI_FORM_END ] =
 // KCK: Had to fix this, as Mark still didn't have it correct.. Grrr..
 typedef struct
 {
-    int			leader_idx;
-    int			rank;
-    int			uid;
+    int leader_idx;
+    int rank;
+    int uid;
 } BattalionInitType;
 
 BattalionInitType BattalionHeir[48] =
@@ -283,13 +283,13 @@ BattalionInitType BattalionHeir[48] =
 
 // This is used as a temporary pointer haven for vehicles being added
 // It assumes vehicles are added in increasing order
-static GNDAIClass	*simb[48];
-static GNDAIClass	*batCmdr;
+static GNDAIClass *simb[48];
+static GNDAIClass *batCmdr;
 
 // Create a new GroundAI
 GNDAIClass *NewGroundAI(GroundClass *us, int position, BOOL isFirst, int skill)
 {
-    GNDAIClass	*gai;
+    GNDAIClass *gai;
 
     if (isFirst)
     {
@@ -452,7 +452,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
 void GNDAIClass::SetLeader(GNDAIClass* newLeader)
 {
     leader = newLeader;
-    /*	GNDAIClass* oldLeader = leader;
+    /* GNDAIClass* oldLeader = leader;
 
     // edg: don't reference/deref if ourself
     if (newLeader != oldLeader)
@@ -529,16 +529,16 @@ void GNDAIClass::SetAirTarget(SimObjectType *newTarget)
 /*
  ** Name: ProcessTargeting
  ** Description:
- **		In this function we do all the processing necessary to set up a
- **		target.   Only the highest leader will maintain a targetList.
- **		Subordinates off of the leader will use this list to determine
- **		their own targeting (ie setting their targetPtr) which is essentially
- **		based on the type of weapons they carry.
+ ** In this function we do all the processing necessary to set up a
+ ** target.   Only the highest leader will maintain a targetList.
+ ** Subordinates off of the leader will use this list to determine
+ ** their own targeting (ie setting their targetPtr) which is essentially
+ ** based on the type of weapons they carry.
  */
 void GNDAIClass::ProcessTargeting(void)
 {
-    FalconEntity	*campTargetEntity;
-    SimObjectType	*newTarget;
+    FalconEntity *campTargetEntity;
+    SimObjectType *newTarget;
 
     // If we're towed and moving, don't bother holding a target
     // This will prevent us from shooting on the move...
@@ -609,11 +609,11 @@ void GNDAIClass::ProcessTargeting(void)
         }
         else
         {
-            AircraftClass		*player;
-            AircraftClass		*best = NULL;
-            int		bestReact = 1;
-            Team	who = self->GetTeam();
-            VuSessionsIterator		sit(FalconLocalGame);
+            AircraftClass *player;
+            AircraftClass *best = NULL;
+            int bestReact = 1;
+            Team who = self->GetTeam();
+            VuSessionsIterator sit(FalconLocalGame);
             FalconSessionEntity* session = (FalconSessionEntity*) sit.GetFirst();
 
             while (session)
@@ -622,7 +622,7 @@ void GNDAIClass::ProcessTargeting(void)
 
                 if (player && player->IsAirplane() && GetRoE(who, player->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
                 {
-                    int	react, det;
+                    int react, det;
                     float d;
 
                     det = Detected(parent_unit, player, &d);
@@ -709,9 +709,9 @@ void GNDAIClass::ProcessTargeting(void)
     }
 
     // Pick an element of the battalion's aggregate target as our personal target
-    //	1. if we don't have a target
-    //	2. our target is dead
-    //	3. our commander wants us to shoot at another unit
+    // 1. if we don't have a target
+    // 2. our target is dead
+    // 3. our commander wants us to shoot at another unit
 
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
     //if(!self->targetPtr || self->targetPtr->BaseData()->IsDead() || newUnit != oldUnit)
@@ -748,7 +748,7 @@ void GNDAIClass::ProcessTargeting(void)
                if (radar->platform->targetPtr->localData->sensorState[i]>= SensorClass::Detection)
                detecting = TRUE;
                if (radar->platform->targetPtr->localData->range > range)
-            	range = radar->platform->targetPtr->localData->range ;
+             range = radar->platform->targetPtr->localData->range ;
                }
                */
 
@@ -1005,13 +1005,13 @@ void GNDAIClass::Order_Battalion(void)
 {
     float deltaX, deltaY;
     float distToDestSqu, closeToRange;
-    mlTrig	trig;
+    mlTrig trig;
     Objective o;
     int i, j;
     int delta = 1 - g_nlookAroundWaterTiles;
 
 
-    moveFlags |= GNDAI_MOVE_BATTALION;		// We're the battalion lead
+    moveFlags |= GNDAI_MOVE_BATTALION; // We're the battalion lead
 
     // are we halted?
     if (moveState == GNDAI_MOVE_HALTED)
@@ -1080,8 +1080,8 @@ void GNDAIClass::Order_Battalion(void)
                     // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK !!!
                     // Look what they have done: since when are Sim coordinates SHORT ??? No wonder the ground units move strangely...
                     // GridToSim returns a float !!! And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
-                    //					ideal_y = (short)GridToSim(gridX + dx[moveDir]);
-                    //					ideal_x = (short)GridToSim(gridY + dy[moveDir]);
+                    // ideal_y = (short)GridToSim(gridX + dx[moveDir]);
+                    // ideal_x = (short)GridToSim(gridY + dy[moveDir]);
                     ideal_y = GridToSim(gridX + dx[moveDir]);
                     ideal_x = GridToSim(gridY + dy[moveDir]);
                     deltaX = ideal_x - self->XPos() ;
@@ -1103,7 +1103,7 @@ void GNDAIClass::Order_Battalion(void)
                     ((Battalion)self->GetCampaignObject())->SetLastCheck(0);
                 }
 
-                //				MonoPrint("Battalion Following Path: Next move = %d, heading = %3.3f\n",moveDir,ideal_h);
+                // MonoPrint("Battalion Following Path: Next move = %d, heading = %3.3f\n",moveDir,ideal_h);
             }
             else if (self->curWaypoint)
             {
@@ -1127,7 +1127,7 @@ void GNDAIClass::Order_Battalion(void)
     {
         // KCK: For simplicity, I'm going to check current tile's coverage. This should be
         // enough for our purposes until we get bridges to work.
-        GridIndex	cx, cy;
+        GridIndex cx, cy;
         ShiAssert(parent_unit);
         parent_unit->GetLocation(&cx, &cy);
         // 2002-02-23 MN Let ground units traverse the water when there is a bridge - now that they move correctly...
@@ -1201,7 +1201,7 @@ void GNDAIClass::Order_Battalion(void)
 
 void GNDAIClass::Order_Company(void)
 {
-    ShiAssert(battalionCommand);	// This should always be TRUE, right?
+    ShiAssert(battalionCommand); // This should always be TRUE, right?
 
     if (moveState != GNDAI_MOVE_HALTED)
     {
@@ -1232,7 +1232,7 @@ void GNDAIClass::Order_Company(void)
 
 void GNDAIClass::Order_Platoon(void)
 {
-    ShiAssert(battalionCommand);	// This should always be TRUE, right?
+    ShiAssert(battalionCommand); // This should always be TRUE, right?
 
     if (moveState != GNDAI_MOVE_HALTED)
     {
@@ -1264,7 +1264,7 @@ void GNDAIClass::Order_Platoon(void)
 
 void GNDAIClass::Order_Squad(void)
 {
-    ShiAssert(battalionCommand);	// This should always be TRUE, right?
+    ShiAssert(battalionCommand); // This should always be TRUE, right?
 
     if (moveState != GNDAI_MOVE_HALTED)
     {
@@ -1281,8 +1281,8 @@ void GNDAIClass::Order_Squad(void)
             else
             {
                 // Otherwise, move out.
-                float	rx, ry;
-                int		randx, randy;
+                float rx, ry;
+                int randx, randy;
                 ideal_x = leader->ideal_x;
                 ideal_y = leader->ideal_y;
                 randx = FloatToInt32(FormationRandomness[formation].x);
@@ -1326,8 +1326,8 @@ int GNDAIClass::CheckThrough(void)
 // Move one frame's worth towards our destination
 void GNDAIClass::Move_Towards_Dest(void)
 {
-    float	delx = 0.0F, dely = 0.0F, delh = 0.0F, rotvel = OPTIMAL_VEHICLE_ROTATION, speed = 0.0F, tx = 0.0F, ty = 0.0F;
-    mlTrig	trig;
+    float delx = 0.0F, dely = 0.0F, delh = 0.0F, rotvel = OPTIMAL_VEHICLE_ROTATION, speed = 0.0F, tx = 0.0F, ty = 0.0F;
+    mlTrig trig;
 
     ShiAssert(battalionCommand);
 
@@ -1362,7 +1362,7 @@ void GNDAIClass::Move_Towards_Dest(void)
                 {
                     moveFlags |= GNDAI_WENT_THROUGH;
                     Process();
-                    //					Move_Towards_Dest();
+                    // Move_Towards_Dest();
                     return;
                 }
 
@@ -1382,9 +1382,9 @@ void GNDAIClass::Move_Towards_Dest(void)
     if (!(moveFlags & GNDAI_MOVE_FIXED_POSITIONS) && delh != 0.0F)
     {
         //if (delh >= PI || (delh < 0 && delh > -PI))
-        //	rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
+        // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
         //else if (delh <= -PI || delh > 0)
-        //	rotvel = OPTIMAL_VEHICLE_ROTATION;
+        // rotvel = OPTIMAL_VEHICLE_ROTATION;
 
         if (delh >= PI || (delh < 0 && delh > -PI))
         {
@@ -1461,7 +1461,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         /*
         // sfr: removed VT
         if(g_bRealisticAvionics && g_bAGRadarFixes){
-        	self->SetVt(speed);
+         self->SetVt(speed);
         }*/
     }
 
@@ -1469,12 +1469,12 @@ void GNDAIClass::Move_Towards_Dest(void)
     //MI
     else
     {
-    	if(g_bRealisticAvionics && g_bAGRadarFixes){
-    		self->SetVt(0.0F);
-    	}
+     if(g_bRealisticAvionics && g_bAGRadarFixes){
+     self->SetVt(0.0F);
+     }
     }*/
     // KCK: This is done in Exec()
-    //	self->SetPosition (self->XPos()+delx, self->YPos()+dely, self->ZPos());
+    // self->SetPosition (self->XPos()+delx, self->YPos()+dely, self->ZPos());
 
     // RV - Biker - Don't move at full speed when damaged
     float decFast = 0.5f * SimLibMajorFrameTime;
@@ -1494,22 +1494,22 @@ void GNDAIClass::Move_Towards_Dest(void)
 // It should fill the initData stucture with an x & y position, which is passed the the vehicle
 // and broadcast to remote machines in the deaggregation message
 // There are the following cases:
-// a) We're on a road, in column:	place appropriately along road using the tile features.
-// b) We're in a city:				place somewhere on roads
-// c) We're in the open:			place anywhere but in water/buildings/forest/etc, in formation if possible
+// a) We're on a road, in column: place appropriately along road using the tile features.
+// b) We're in a city: place somewhere on roads
+// c) We're in the open: place anywhere but in water/buildings/forest/etc, in formation if possible
 // All other cases are handled by the campaign, and will not cause this function to be called
 //
-// Data known upon entry:	initData.campSlot,inSlot
-//							initData.campUnit = the Campaign Unit
-//							initData.heading = best guess heading
-//							initData.x/y/z = position of campaign Unit
+// Data known upon entry: initData.campSlot,inSlot
+// initData.campUnit = the Campaign Unit
+// initData.heading = best guess heading
+// initData.x/y/z = position of campaign Unit
 //
 void FindVehiclePosition(SimInitDataClass *initData)
 {
     // Calculate battalion position (0-47) of this vehicle
-    int		position = initData->campSlot * 3 + initData->inSlot;
-    int		formation = ((UnitClass*)(initData->campBase))->GetUnitFormation();
-    int		cur_leader_idx;
+    int position = initData->campSlot * 3 + initData->inSlot;
+    int formation = ((UnitClass*)(initData->campBase))->GetUnitFormation();
+    int cur_leader_idx;
 
     // KCK: for now, place in formation (essentially, option 3 without checking for obsticals)
     cur_leader_idx = BattalionHeir[position].leader_idx;
@@ -1520,8 +1520,8 @@ void FindVehiclePosition(SimInitDataClass *initData)
         {
             // Offset from our platoon leader + a random offset based on formation type
 
-            float	rx, ry;
-            int		randx, randy;
+            float rx, ry;
+            int randx, randy;
             randx = FloatToInt32(FormationRandomness[formation].x);
             randy = FloatToInt32(FormationRandomness[formation].y);
             rx = (float)(rand() % randx) - (randx / 2);
@@ -1581,7 +1581,7 @@ void AdjustOffset(float h, float *x, float*y, float xo, float yo)
  */
 void GNDAIClass::PromoteSubordinates(void)
 {
-    GNDAIClass	*bc = NULL;
+    GNDAIClass *bc = NULL;
     GroundClass *theObj;
     GroundClass *newLead = NULL;
 
@@ -1615,7 +1615,7 @@ void GNDAIClass::PromoteSubordinates(void)
     if (self->GetCampaignObject()->IsAggregate())
     {
         {
-            VuListIterator	vehicleWalker(self->GetCampaignObject()->GetComponents());
+            VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
             theObj = (GroundClass*)vehicleWalker.GetFirst();
 
             while (theObj)
@@ -1642,7 +1642,7 @@ void GNDAIClass::PromoteSubordinates(void)
         // here with one or more "expoding" objects in the list, so we have to find the
         // first NON-exploding object (if any) to be the new battalion commander.
         {
-            VuListIterator	vehicleWalker(self->GetCampaignObject()->GetComponents());
+            VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
             theObj = (GroundClass*)vehicleWalker.GetFirst();
 
             while (theObj && theObj != self && (theObj->IsExploding() || theObj->IsDead()))
@@ -1665,7 +1665,7 @@ void GNDAIClass::PromoteSubordinates(void)
     if (rank)
     {
         // Get the first vehicle in our battalion (or task force)
-        VuListIterator	vehicleWalker(self->GetCampaignObject()->GetComponents());
+        VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
         theObj = (GroundClass*)vehicleWalker.GetFirst();
 
         // loop thru elements in flight
@@ -1680,15 +1680,15 @@ void GNDAIClass::PromoteSubordinates(void)
             // is to allow dead vehicles to inherit command, and then
             // have them pass it along to the next guy when they call
             // PromoteSubordinates()
-            /*			if ( theObj->IsExploding() || theObj->IsDead() )
-            			{
-            			SetLeader( NULL );
-            			battalionCommand = NULL;
-            			rank = 0;
-            			theObj = (GroundClass*)vehicleWalker.GetNext();
-            			continue;
-            			}
-            			*/
+            /* if ( theObj->IsExploding() || theObj->IsDead() )
+             {
+             SetLeader( NULL );
+             battalionCommand = NULL;
+             rank = 0;
+             theObj = (GroundClass*)vehicleWalker.GetNext();
+             continue;
+             }
+             */
             ShiAssert(theObj->VuState() == VU_MEM_ACTIVE);
 
             // do we promote this guy?
@@ -1726,19 +1726,19 @@ void GNDAIClass::PromoteSubordinates(void)
     rank = 0;
 }
 
-#define LOD_MAX_DIST		20000.0f
-#define LOD_MAX_DIST_SQU	(LOD_MAX_DIST*LOD_MAX_DIST)
+#define LOD_MAX_DIST 20000.0f
+#define LOD_MAX_DIST_SQU (LOD_MAX_DIST*LOD_MAX_DIST)
 
 /*
  ** Name: GetApproxViewDist
  ** Description:
- **		Sets the distLOD var based on distance from camera
+ ** Sets the distLOD var based on distance from camera
  */
 void
 GNDAIClass::SetDistLOD(void)
 {
     Tpoint viewLoc;
-    float	xd, yd, zd, distsqu;
+    float xd, yd, zd, distsqu;
 
     // get view pos
     if (OTWDriver.GetViewpoint())

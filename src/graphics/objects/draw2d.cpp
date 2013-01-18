@@ -1,10 +1,10 @@
 /*
 ** Name: DRAW2D.CPP
 ** Description:
-**		Class description for drawable 2d objects (billboards).  These
-**		may (or not) have a sequence of textures to use for animations.
+** Class description for drawable 2d objects (billboards).  These
+** may (or not) have a sequence of textures to use for animations.
 ** History:
-**		14-Jul-97 (edg)  We go dancing in .....
+** 14-Jul-97 (edg)  We go dancing in .....
 */
 #include "TimeMgr.h"
 #include "TOD.h"
@@ -26,7 +26,7 @@
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	Drawable2D::pool;
+MEM_POOL Drawable2D::pool;
 #endif
 
 // define for preloading all animation textures
@@ -37,35 +37,35 @@ static float sLOD = 1.0f;
 int sGreenMode = 0;
 static float sMaxScreenRes = 1.0f;
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
-#define NUM_TEX_SHEETS	32
-#define NUM_TEXTURES_USED	7
-#define TEX_UV_DIM		0.246f
+#define NUM_TEX_SHEETS 32
+#define NUM_TEXTURES_USED 7
+#define TEX_UV_DIM 0.246f
 Texture gGlobTextures[NUM_TEX_SHEETS];
 
 // for alpha per texel textures
-static const int	NUM_APL_TEXTURES = 11;
-Texture		gAplTextures[NUM_APL_TEXTURES];
-Texture		gAplTexturesGreen[NUM_APL_TEXTURES];
+static const int NUM_APL_TEXTURES = 11;
+Texture gAplTextures[NUM_APL_TEXTURES];
+Texture gAplTexturesGreen[NUM_APL_TEXTURES];
 
 // scatter plotting vertices
 /*
-#define NUM_SMOKE_SCATTER_FRAMES		5
-#define NUM_SMOKE_SCATTER_POINTS		6
-#define NUM_FIRE_SCATTER_FRAMES		8
-#define NUM_FIRE_SCATTER_POINTS		12
-#define NUM_EXPLODE_SCATTER_FRAMES		1
-#define NUM_EXPLODE_SCATTER_POINTS		10
+#define NUM_SMOKE_SCATTER_FRAMES 5
+#define NUM_SMOKE_SCATTER_POINTS 6
+#define NUM_FIRE_SCATTER_FRAMES 8
+#define NUM_FIRE_SCATTER_POINTS 12
+#define NUM_EXPLODE_SCATTER_FRAMES 1
+#define NUM_EXPLODE_SCATTER_POINTS 10
 */
-#define NUM_SMOKE_SCATTER_FRAMES		1
-#define NUM_SMOKE_SCATTER_POINTS		1
-#define NUM_FIRE_SCATTER_FRAMES		8
-#define NUM_FIRE_SCATTER_POINTS		12
-#define NUM_EXPLODE_SCATTER_FRAMES		1
-#define NUM_EXPLODE_SCATTER_POINTS		10
+#define NUM_SMOKE_SCATTER_FRAMES 1
+#define NUM_SMOKE_SCATTER_POINTS 1
+#define NUM_FIRE_SCATTER_FRAMES 8
+#define NUM_FIRE_SCATTER_POINTS 12
+#define NUM_EXPLODE_SCATTER_FRAMES 1
+#define NUM_EXPLODE_SCATTER_POINTS 10
 
-#define SCATTER_ZMAX			(5000.0f + 15000.0f * sLOD)
+#define SCATTER_ZMAX (5000.0f + 15000.0f * sLOD)
 Tpoint gFireScatterPoints[ NUM_FIRE_SCATTER_FRAMES ][ NUM_FIRE_SCATTER_POINTS ];
 Tpoint gSmokeScatterPoints[ NUM_SMOKE_SCATTER_FRAMES ][ NUM_SMOKE_SCATTER_POINTS ];
 Tpoint gExplodeScatterPoints[ NUM_EXPLODE_SCATTER_FRAMES ][ NUM_EXPLODE_SCATTER_POINTS ];
@@ -107,19 +107,19 @@ static float lightLevel = 1.0f;
 
 Tpoint glowCrossVerts[] =
 {
-    //		X				Y				Z
-    {		0.0f,			0.0f,			-14.0f },
-    {		0.0f,			1.0f,			-2.0f },
-    {		0.0f,			2.0f,			-1.0f },
-    {		0.0f,			14.0f,			 0.0f },
-    {		0.0f,			2.0f,			 1.0f },
-    {		0.0f,			1.0f,			 2.0f },
-    {		0.0f,			0.0f,			 14.0f },
-    {		0.0f,		   -1.0f,			 2.0f },
-    {		0.0f,		   -2.0f,			 1.0f },
-    {		0.0f,		   -14.0f,			 0.0f },
-    {		0.0f,		   -2.0f,			-1.0f },
-    {		0.0f,		   -1.0f,			-2.0f },
+    // X Y Z
+    { 0.0f, 0.0f, -14.0f },
+    { 0.0f, 1.0f, -2.0f },
+    { 0.0f, 2.0f, -1.0f },
+    { 0.0f, 14.0f,  0.0f },
+    { 0.0f, 2.0f,  1.0f },
+    { 0.0f, 1.0f,  2.0f },
+    { 0.0f, 0.0f,  14.0f },
+    { 0.0f,    -1.0f,  2.0f },
+    { 0.0f,    -2.0f,  1.0f },
+    { 0.0f,    -14.0f,  0.0f },
+    { 0.0f,    -2.0f, -1.0f },
+    { 0.0f,    -1.0f, -2.0f },
 };
 int numGlowCrossVerts = sizeof(glowCrossVerts) / sizeof(Tpoint);
 
@@ -135,7 +135,7 @@ int numGlowStarVerts = sizeof(glowStarVerts) / sizeof(Tpoint);
 Tpoint coneDim = { 4.5f, 2.0f, 2.0f };
 
 // lens flare stuff
-#define NUM_FLARE_CIRCLES		10
+#define NUM_FLARE_CIRCLES 10
 Tpoint lensFlareVerts[16];
 const int numLensFlareVerts = sizeof(lensFlareVerts) / sizeof(Tpoint);
 float lensAlphas[] =
@@ -181,883 +181,883 @@ float lensDist[] =
 
 Tcolor lensRGB[] =
 {
-    {	1.00f,		1.00f, 		0.60f 	},
-    {	1.00f,		0.80f, 		1.00f 	},
-    {	0.90f,		1.00f, 		0.80f 	},
-    {	1.00f,		0.80f, 		0.80f 	},
-    {	1.00f,		0.90f, 		1.00f 	},
+    { 1.00f, 1.00f,  0.60f  },
+    { 1.00f, 0.80f,  1.00f  },
+    { 0.90f, 1.00f,  0.80f  },
+    { 1.00f, 0.80f,  0.80f  },
+    { 1.00f, 0.90f,  1.00f  },
 
-    {	0.80f,		0.95f, 		0.60f 	},
-    {	1.00f,		0.40f, 		0.80f 	},
-    {	1.00f,		1.00f, 		0.50f 	},
-    {	1.00f,		0.20f, 		1.00f 	},
-    {	0.70f,		0.70f, 		1.00f 	},
+    { 0.80f, 0.95f,  0.60f  },
+    { 1.00f, 0.40f,  0.80f  },
+    { 1.00f, 1.00f,  0.50f  },
+    { 1.00f, 0.20f,  1.00f  },
+    { 0.70f, 0.70f,  1.00f  },
 };
 
 Tcolor lensCenterRGB[] =
 {
-    {	0.30f,		0.30f, 		1.00f 	},
-    {	0.60f,		0.20f, 		0.30f 	},
-    {	0.20f,		0.20f, 		1.00f 	},
-    {	0.70f,		0.30f, 		1.00f 	},
-    {	0.20f,		0.20f, 		0.80f 	},
+    { 0.30f, 0.30f,  1.00f  },
+    { 0.60f, 0.20f,  0.30f  },
+    { 0.20f, 0.20f,  1.00f  },
+    { 0.70f, 0.30f,  1.00f  },
+    { 0.20f, 0.20f,  0.80f  },
 
-    {	1.00f,		0.40f, 		0.90f 	},
-    {	0.70f,		0.70f, 		1.00f 	},
-    {	0.30f,		1.00f, 		0.90f 	},
-    {	0.40f,		0.90f, 		1.00f 	},
-    {	0.10f,		1.00f, 		0.60f 	},
+    { 1.00f, 0.40f,  0.90f  },
+    { 0.70f, 0.70f,  1.00f  },
+    { 0.30f, 1.00f,  0.90f  },
+    { 0.40f, 0.90f,  1.00f  },
+    { 0.10f, 1.00f,  0.60f  },
 };
 
 TYPES2D gTypeTable[] =
 {
     // Air explosion
     {
-        ANIM_STOP | FADE_START | DO_FIVE_POINTS,			// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        1,									// texture id sequence
-        0,									// startTexture
-        16,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        ANIM_STOP | FADE_START | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        1, // texture id sequence
+        0, // startTexture
+        16, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Small Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS,							// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        0,									// texture id sequence
-        0,									// startTexture
-        12,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        0, // texture id sequence
+        0, // startTexture
+        12, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.9f,  // COBRA - RED - a Little More visible: was 1.0f,								// initAlpha
-        .00005f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.9f,  // COBRA - RED - a Little More visible: was 1.0f, // initAlpha
+        .00005f, // fadeRate
         10,
-        12,									// startTexture
-        1,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        0,			// numGlowVerts
-        300.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        300.0f, // maxExpand
     },
     // Flare
     {
-        ANIM_LOOP ,	// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_LOOP , // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
         4,
-        14,									// startTexture
-        1,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        14, // startTexture
+        1, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Air Explosion 2
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP,							// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         1,
-        0,									// startTexture
-        16,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        16, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Smoke Ring
     {
-        FADE_START | ANIM_HOLD_LAST ,	// flags
-        1.0f,								// initAlpha
-        0.0008f,							// fadeRate
+        FADE_START | ANIM_HOLD_LAST , // flags
+        1.0f, // initAlpha
+        0.0008f, // fadeRate
         3,
-        15,									// startTexture
-        1,									// numTextures
-        480.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        15, // startTexture
+        1, // numTextures
+        480.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Small Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS,							// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        6,									// texture id sequence
-        0,									// startTexture
-        16,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        6, // texture id sequence
+        0, // startTexture
+        16, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Chem Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP,							// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         6,
-        0,									// startTexture
-        16,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        16, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Small Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS,							// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        4,									// texture id sequence
-        0,									// startTexture
-        14,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        ANIM_HALF_RATE | ANIM_STOP | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        4, // texture id sequence
+        0, // startTexture
+        14, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Debris Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP,							// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         4,
-        0,									// startTexture
-        14,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        14, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Cloud 5
     {
-        ANIM_HOLD_LAST | USES_BB_MATRIX,	// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HOLD_LAST | USES_BB_MATRIX, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
         3,
-        13,									// startTexture
-        1,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        13, // startTexture
+        1, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.8f,								// initAlpha
-        .00005f,							// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.8f, // initAlpha
+        .00005f, // fadeRate
         8,
-        13,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        300.0f,							// maxExpand
+        13, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        300.0f, // maxExpand
     },
     // Gunsmoke
     {
-        ANIM_LOOP | FADE_START,		// flags
-        0.8f,								// initAlpha
-        .0001f,								// fadeRate
+        ANIM_LOOP | FADE_START, // flags
+        0.8f, // initAlpha
+        .0001f, // fadeRate
         6,
-        8,									// startTexture
-        8,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        300.0f,							// maxExpand
+        8, // startTexture
+        8, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        300.0f, // maxExpand
     },
     // Air Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        1.0f,								// initAlpha
-        .0002f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        .0002f, // fadeRate
         10,
-        12,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        400.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        400.0f, // maxExpand
     },
     // Glowing explosion Object Square
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE,		// flags
-        1.0f,								// initAlpha
-        .0006f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowSquareVerts,						// glowVerts
-        numGlowSquareVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE, // flags
+        1.0f, // initAlpha
+        .0006f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowSquareVerts, // glowVerts
+        numGlowSquareVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // missile Glowing Object
     {
-        GLOW_SPHERE | GLOW_RAND_POINTS,		// flags
-        0.9f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowStarVerts,						// glowVerts
-        numGlowStarVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        0.9f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowStarVerts, // glowVerts
+        numGlowStarVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT,						// flags
-        0.6f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        0.6f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Glowing explosion Object Cross
     {
-        GLOW_SPHERE ,						// flags
-        1.0f,								// initAlpha
-        .0009f,								// fadeRate
-        0,									// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        50.0f,								// expandRate
-        glowCrossVerts,						// glowVerts
-        numGlowCrossVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GLOW_SPHERE , // flags
+        1.0f, // initAlpha
+        .0009f, // fadeRate
+        0, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        50.0f, // expandRate
+        glowCrossVerts, // glowVerts
+        numGlowCrossVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Crater 1
     {
-        ANIM_HOLD_LAST,						// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HOLD_LAST, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
         3,
-        14,									// start Textures
-        1,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        14, // start Textures
+        1, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Crater 2
     {
-        ANIM_HOLD_LAST,						// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HOLD_LAST, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
         3,
-        14,									// start Textures
-        1,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        14, // start Textures
+        1, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Crater 3
     {
-        ANIM_HOLD_LAST,						// flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HOLD_LAST, // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
         3,
-        14,									// start Textures
-        1,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        14, // start Textures
+        1, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // FIRE
     {
-        RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.9f,								// initAlpha
-        0.0f,								// fadeRate
+        RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.9f, // initAlpha
+        0.0f, // fadeRate
         0,
-        0,									// startTexture
-        6,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        6, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // GROUND STRIKE
     {
-        USES_TREE_MATRIX,					// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        USES_TREE_MATRIX, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         5,
-        0,									// startTexture
-        16,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        16, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Water STRIKE
     {
-        USES_TREE_MATRIX,					// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        USES_TREE_MATRIX, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         2,
-        0,									// startTexture
-        16,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        16, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Hit Explosion
     {
-        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP,							// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_STOP | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         0,
-        0,									// startTexture
-        12,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        12, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Sparks
     /*
     {
-    	ANIM_STOP | USES_BB_MATRIX | ANIM_HALF_RATE,							// flags
-    	1.0f,								// initAlpha
-    	0.0f,								// fadeRate
-    	0,
-    	12,									// startTexture
-    	4,									// numTextures
-    	0.0f,								// expandRate
-    	NULL,								// glowVerts
-    	0,									// numGlowVerts
-    	10000.0f,							// maxExpand
+     ANIM_STOP | USES_BB_MATRIX | ANIM_HALF_RATE, // flags
+     1.0f, // initAlpha
+     0.0f, // fadeRate
+     0,
+     12, // startTexture
+     4, // numTextures
+     0.0f, // expandRate
+     NULL, // glowVerts
+     0, // numGlowVerts
+     10000.0f, // maxExpand
     },
     */
     // SPARKS explosion Object Star
     {
-        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE | GLOW_RAND_POINTS,		// flags
-        1.0f,								// initAlpha
-        .0015f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        FADE_START | ALPHA_DAYLIGHT | ALPHA_BRIGHTEN | GLOW_SPHERE | GLOW_RAND_POINTS, // flags
+        1.0f, // initAlpha
+        .0015f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Artillery Explosion
     {
-        USES_TREE_MATRIX | ANIM_STOP,					// flags
-        0.8f,								// initAlpha
-        0.0f,								// fadeRate
+        USES_TREE_MATRIX | ANIM_STOP, // flags
+        0.8f, // initAlpha
+        0.0f, // fadeRate
         3,
-        0,									// startTexture
-        10,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        10, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // shock ring
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST,	// flags
-        0.5f,								// initAlpha
-        0.0007f,							// fadeRate
+        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        0.5f, // initAlpha
+        0.0007f, // fadeRate
         4,
-        15,									// startTexture
-        1,									// numTextures
-        480.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        15, // startTexture
+        1, // numTextures
+        480.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // long hanging smoke
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS,		// flags
-        1.0f,								// initAlpha
-        .00001f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        .00001f, // fadeRate
         6,
-        0,									// startTexture
-        8,									// numTextures
-        10.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        500.0f,							// maxExpand
+        0, // startTexture
+        8, // numTextures
+        10.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        500.0f, // maxExpand
     },
     // Shaped FIRE DEBRIS
     {
-        ANIM_LOOP | TEXTURED_CONE | FADE_START,					// flags
-        1.0f,								// initAlpha
-        0.0001f,								// fadeRate
+        ANIM_LOOP | TEXTURED_CONE | FADE_START, // flags
+        1.0f, // initAlpha
+        0.0001f, // fadeRate
         6,
-        8,									// startTexture
-        8,									// numTextures
-        0.0f,								// expandRate
-        &coneDim,								// glowVerts
-        1,									// numGlowVerts
-        10000.0f,							// maxExpand
+        8, // startTexture
+        8, // numTextures
+        0.0f, // expandRate
+        &coneDim, // glowVerts
+        1, // numGlowVerts
+        10000.0f, // maxExpand
     },
 
     // Water CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.6f,								// initAlpha
-        .0001f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        .0001f, // fadeRate
         7,
-        14,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        100.0f,							// maxExpand
+        14, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        100.0f, // maxExpand
     },
     // DARK DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,		 // flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0,									// startTexture
-        0,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0, // startTexture
+        0, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // FIRE DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,		 // flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0,									// startTexture
-        0,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0, // startTexture
+        0, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // LIGHT DEBRIS
     {
-        GOURAUD_TRI | GLOW_RAND_POINTS,		 // flags
-        1.0f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0,									// startTexture
-        0,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        GOURAUD_TRI | GLOW_RAND_POINTS,  // flags
+        1.0f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0, // startTexture
+        0, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Glowing explosion Object Sphere
     {
-        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT,						// flags
-        0.8f,								// initAlpha
-        0.0009f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        10.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        100.0f,							// maxExpand
+        GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        0.8f, // initAlpha
+        0.0009f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        10.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        100.0f, // maxExpand
     },
     // shock ring -- small
     {
-        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST,	// flags
-        0.6f,								// initAlpha
-        0.0007f,							// fadeRate
+        USES_TREE_MATRIX | FADE_START | ANIM_HOLD_LAST, // flags
+        0.6f, // initAlpha
+        0.0007f, // fadeRate
         4,
-        15,									// startTexture
-        1,									// numTextures
-        100.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        15, // startTexture
+        1, // numTextures
+        100.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fast fading cloud
     {
-        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS,		// flags
-        1.0f,								// initAlpha
-        .0005f,								// fadeRate
+        ANIM_HALF_RATE | ANIM_LOOP | FADE_START | DO_FIVE_POINTS, // flags
+        1.0f, // initAlpha
+        .0005f, // fadeRate
         6,
-        0,									// startTexture
-        8,									// numTextures
-        60.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        8, // numTextures
+        60.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // long hanging smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.5f,								// initAlpha
-        .000015f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.5f, // initAlpha
+        .000015f, // fadeRate
         6,
-        12,									// startTexture
-        1,									// numTextures
-        15.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,			// numGlowVerts
-        500.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        15.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        500.0f, // maxExpand
     },
     // FLAME
     {
-        ANIM_LOOP | DO_FIVE_POINTS,			// flags
-        0.7f,								// initAlpha
-        0.0f,								// fadeRate
+        ANIM_LOOP | DO_FIVE_POINTS, // flags
+        0.7f, // initAlpha
+        0.0f, // fadeRate
         4,
-        0,									// startTexture
-        8,									// numTextures
-        0.0f,								// expandRate
-        NULL,								// glowVerts
-        0,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        8, // numTextures
+        0.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // FIRE EXPANDING
     {
-        FADE_START | RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.6f,								// initAlpha
-        .00045f,								// fadeRate
+        FADE_START | RAND_START_FRAME | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        .00045f, // fadeRate
         0,
-        0,									// startTexture
-        6,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        6, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Dustcloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.4f,								// initAlpha
-        .00004f,							// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.4f, // initAlpha
+        .00004f, // fadeRate
         8,
-        13,									// startTexture
-        1,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        1,									// numGlowVerts
-        50.0f,								// maxExpand
+        13, // startTexture
+        1, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        1, // numGlowVerts
+        50.0f, // maxExpand
     },
     // fire hot
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.7f,								// initAlpha
-        .0009f,								// fadeRate
+        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.7f, // initAlpha
+        .0009f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        10.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        10.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire med
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.6f,								// initAlpha
-        .0009f,								// fadeRate
+        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        .0009f, // fadeRate
         2,
-        0,									// startTexture
-        2,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire cool
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.4f,								// initAlpha
-        .0009f,								// fadeRate
+        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.4f, // initAlpha
+        .0009f, // fadeRate
         4,
-        0,									// startTexture
-        2,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire 1
     {
-        FADE_LAST | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        1.0f,								// initAlpha
-        0.0001f,								// fadeRate
+        FADE_LAST | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        0.0001f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        50.0f,								// expandRate
-        NULL,								// glowVerts
-        1,			// numGlowVerts
-        120.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        50.0f, // expandRate
+        NULL, // glowVerts
+        1, // numGlowVerts
+        120.0f, // maxExpand
     },
     // fire 2
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.6f,								// initAlpha
-        0.0001f,								// fadeRate
+        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        0.0001f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire 3
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.4f,								// initAlpha
-        0.0001f,								// fadeRate
+        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.4f, // initAlpha
+        0.0001f, // fadeRate
         2,
-        0,									// startTexture
-        2,									// numTextures
-        10.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        10.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire 4
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.9f,								// initAlpha
-        0.00007f,								// fadeRate
+        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | SMOKE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.9f, // initAlpha
+        0.00007f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        1,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        1, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire 5
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.9f,								// initAlpha
-        0.00007f,								// fadeRate
+        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.9f, // initAlpha
+        0.00007f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        1,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        1, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // fire 6
     {
-        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.8f,								// initAlpha
-        0.0001f,								// fadeRate
+        FADE_START | ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.8f, // initAlpha
+        0.0001f, // fadeRate
         0,
-        0,									// startTexture
-        2,									// numTextures
-        3.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        2, // numTextures
+        3.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Fire Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,				// flags
-        0.9f, // COBRA - RED - a Little More visible: was 0.8f,	// initAlpha
-        .00005f,												// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.9f, // COBRA - RED - a Little More visible: was 0.8f, // initAlpha
+        .00005f, // fadeRate
         6,
-        12,									// startTexture
-        1,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        300.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        300.0f, // maxExpand
     },
     // Trail Smoke
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        1.0f,								// initAlpha
-        .0002f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        .0002f, // fadeRate
         10,
-        12,									// startTexture
-        1,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        40.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        40.0f, // maxExpand
     },
     // Trail Dust
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,					// flags
-        0.5f, // COBRA - RED - a Little Less visible: was 0.8f,		// initAlpha
-        .0002f,														// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.5f, // COBRA - RED - a Little Less visible: was 0.8f, // initAlpha
+        .0002f, // fadeRate
         8,
-        13,									// startTexture
-        1,									// numTextures
-        30.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        50.0f,							// maxExpand
+        13, // startTexture
+        1, // numTextures
+        30.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        50.0f, // maxExpand
     },
     // fire 7
     {
-        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL,			// flags
-        0.15f,								// initAlpha
-        0.0001f,								// fadeRate
+        ANIM_LOOP | SEQ_SCATTER_ANIM | FIRE_SCATTER_PLOT | ALPHA_PER_TEXEL, // flags
+        0.15f, // initAlpha
+        0.0001f, // fadeRate
         6,
-        0,									// startTexture
-        1,									// numTextures
-        40.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_FIRE_SCATTER_FRAMES,			// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        1, // numTextures
+        40.0f, // expandRate
+        NULL, // glowVerts
+        NUM_FIRE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Blue Cloud
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.6f,								// initAlpha
-        .0003f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        .0003f, // fadeRate
         9,
-        0,									// startTexture
-        1,									// numTextures
-        10.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        100.0f,							// maxExpand
+        0, // startTexture
+        1, // numTextures
+        10.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        100.0f, // maxExpand
     },
     // STEAM CLOUD
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.8f,								// initAlpha
-        .00005f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.8f, // initAlpha
+        .00005f, // fadeRate
         7,
-        14,									// startTexture
-        1,									// numTextures
-        40.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        400.0f,							// maxExpand
+        14, // startTexture
+        1, // numTextures
+        40.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        400.0f, // maxExpand
     },
     // Ground Flash
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT,						// flags
-        0.4f,								// initAlpha
-        0.0005f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        -170.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        0.4f, // initAlpha
+        0.0005f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        -170.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT,						// flags
-        0.2f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        0.2f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Missile Ground Glow
     {
-        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT,						// flags
-        0.2f,								// initAlpha
-        0.0f,								// fadeRate
-        NULL,								// texture id sequence
-        0, 									// numTextures
-        0, 									// numTextures
-        0.0f,								// expandRate
-        glowCircleVerts,						// glowVerts
-        numGlowCircleVerts,					// numGlowVerts
-        10000.0f,							// maxExpand
+        GROUND_GLOW | GLOW_RAND_POINTS | GLOW_SPHERE | ALPHA_BRIGHTEN | ALPHA_DAYLIGHT, // flags
+        0.2f, // initAlpha
+        0.0f, // fadeRate
+        NULL, // texture id sequence
+        0,  // numTextures
+        0,  // numTextures
+        0.0f, // expandRate
+        glowCircleVerts, // glowVerts
+        numGlowCircleVerts, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Big Smoke 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        1.0f,								// initAlpha
-        .00005f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        .00005f, // fadeRate
         10,
-        12,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        0,			// numGlowVerts
-        30000.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        0, // numGlowVerts
+        30000.0f, // maxExpand
     },
     // Big Smoke 2
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        1.0f,								// initAlpha
-        .00005f,								// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        .00005f, // fadeRate
         6,
-        12,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        30000.0f,							// maxExpand
+        12, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        30000.0f, // maxExpand
     },
     // Big Dust 1
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        1.0f,								// initAlpha
-        .00006f,							// fadeRate
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        1.0f, // initAlpha
+        .00006f, // fadeRate
         8,
-        13,									// startTexture
-        1,									// numTextures
-        20.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        30000.0f,							// maxExpand
+        13, // startTexture
+        1, // numTextures
+        20.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        30000.0f, // maxExpand
     },
     // Incendiary Explosion
     {
-        FADE_START | ANIM_LOOP | ANIM_HALF_RATE | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP,							// flags
-        1.0f,								// initAlpha
-        0.0001f,								// fadeRate
+        FADE_START | ANIM_LOOP | ANIM_HALF_RATE | EXPLODE_SCATTER_PLOT | ANIM_NO_CLAMP, // flags
+        1.0f, // initAlpha
+        0.0001f, // fadeRate
         1,
-        0,									// startTexture
-        16,									// numTextures
-        80.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_EXPLODE_SCATTER_FRAMES,									// numGlowVerts
-        10000.0f,							// maxExpand
+        0, // startTexture
+        16, // numTextures
+        80.0f, // expandRate
+        NULL, // glowVerts
+        NUM_EXPLODE_SCATTER_FRAMES, // numGlowVerts
+        10000.0f, // maxExpand
     },
     // Water Wake
     {
-        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL,		// flags
-        0.6f,								// initAlpha
-        0.00001f,								// fadeRate
-        7,									// texid
-        14,									// startTexture
-        1,									// numTextures
-        10.0f,								// expandRate
-        NULL,								// glowVerts
-        NUM_SMOKE_SCATTER_FRAMES,			// numGlowVerts
-        100.0f,							// maxExpand
+        ANIM_LOOP | FADE_START | ALPHA_PER_TEXEL, // flags
+        0.6f, // initAlpha
+        0.00001f, // fadeRate
+        7, // texid
+        14, // startTexture
+        1, // numTextures
+        10.0f, // expandRate
+        NULL, // glowVerts
+        NUM_SMOKE_SCATTER_FRAMES, // numGlowVerts
+        100.0f, // maxExpand
     },
 
 };
@@ -1067,7 +1067,7 @@ const int DRAW2D_MAXTYPES = sizeof(gTypeTable) / sizeof(gTypeTable[0]);
 /*
 ** Name Drawable 2d constructor
 ** Description:
-**		init some vars.  pre-fetch the textures we want to use
+** init some vars.  pre-fetch the textures we want to use
 */
 Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p)
     : DrawableObject(scale)
@@ -1113,14 +1113,14 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p)
     // if not already done
 #ifndef PRELOAD_TEX
     // if ( typeData.glTexId )
-    // 	glInsertTexture( *typeData.glTexId, 1 );
+    //  glInsertTexture( *typeData.glTexId, 1 );
 #endif
 }
 
 /*
 ** Name Drawable 2d constructor
 ** Description:
-**		init some vars.  pre-fetch the textures we want to use
+** init some vars.  pre-fetch the textures we want to use
 */
 Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
     : DrawableObject(scale)
@@ -1165,7 +1165,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
     // if not already done
 #ifndef PRELOAD_TEX
     // if ( typeData.glTexId )
-    // 	glInsertTexture( *typeData.glTexId, 1 );
+    //  glInsertTexture( *typeData.glTexId, 1 );
 #endif
 
     orientation = *rot;
@@ -1176,10 +1176,10 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, Trotation *rot)
 /*
 ** Name Drawable 2d constructor
 ** Description:
-**		init some vars.  pre-fetch the textures we want to use
-**		This constructor takes an array of verts in objects space.
-**		Valid number is 3 (triangle) or 4 (trapezoid).
-**		Specification starts with bottom left vert and goes clockwise.
+** init some vars.  pre-fetch the textures we want to use
+** This constructor takes an array of verts in objects space.
+** Valid number is 3 (triangle) or 4 (trapezoid).
+** Specification starts with bottom left vert and goes clockwise.
 */
 Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *verts, Tpoint *uvs)
     : DrawableObject(scale)
@@ -1237,7 +1237,7 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *v
     // if not already done
 #ifndef PRELOAD_TEX
     // if ( typeData.glTexId )
-    // 	glInsertTexture( *typeData.glTexId, 1 );
+    //  glInsertTexture( *typeData.glTexId, 1 );
 #endif
 
 }
@@ -1247,13 +1247,13 @@ Drawable2D::Drawable2D(int type2d, float scale, Tpoint *p, int nVerts, Tpoint *v
 /*
 ** Name Drawable 2d destructor
 ** Description:
-**		release the textures we used
+** release the textures we used
 */
 Drawable2D::~Drawable2D(void)
 {
 #ifndef PRELOAD_TEX
     // if ( typeData.glTexId )
-    // 	glDeleteTexture( *typeData.glTexId, 0 );
+    //  glDeleteTexture( *typeData.glTexId, 0 );
 #endif
 }
 
@@ -1262,7 +1262,7 @@ Drawable2D::~Drawable2D(void)
 /*
 ** Name: SetPosition
 ** Description:
-**		Change the position of the object
+** Change the position of the object
 */
 void Drawable2D::SetPosition(Tpoint *p)
 {
@@ -1274,8 +1274,8 @@ void Drawable2D::SetPosition(Tpoint *p)
 /*
 ** Name: GetAlphaTimeToLive
 ** Description:
-**		Based on the fade rate and init alpha, will return approximately
-**		how long (in secs) the effect will list
+** Based on the fade rate and init alpha, will return approximately
+** how long (in secs) the effect will list
 */
 float Drawable2D::GetAlphaTimeToLive(void)
 {
@@ -1298,7 +1298,7 @@ float Drawable2D::GetAlphaTimeToLive(void)
 /*
 ** Name: Update
 ** Description:
-**		Change the position, orientation of the object
+** Change the position, orientation of the object
 */
 
 void Drawable2D::Update(const Tpoint *pos, const Trotation *rot)
@@ -1316,17 +1316,17 @@ void Drawable2D::Update(const Tpoint *pos, const Trotation *rot)
 /*
 ** Name: Draw
 ** Description:
-**		Sequence thru the texture animation and draw a square.
+** Sequence thru the texture animation and draw a square.
 */
 void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 {
-    Tpoint				ws = {0.0F};
-    ThreeDVertex		v0, v1, v2, v3, spos;
-    Tpoint				upv = {0.0F}, leftv = {0.0F};
-    Tpoint				dl = {0.0F}, du = {0.0F};
-    DWORD				now = 0;
-    int					dT = 0;
-    BOOL				doFivePoints = FALSE;
+    Tpoint ws = {0.0F};
+    ThreeDVertex v0, v1, v2, v3, spos;
+    Tpoint upv = {0.0F}, leftv = {0.0F};
+    Tpoint dl = {0.0F}, du = {0.0F};
+    DWORD now = 0;
+    int dT = 0;
+    BOOL doFivePoints = FALSE;
 
 
     // force green mode (debugging)
@@ -1735,8 +1735,8 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
         v3.q = v3.csZ * 0.001f;
     }
 
-    //	if( renderer->GetAlphaMode() )
-    //	{
+    // if( renderer->GetAlphaMode() )
+    // {
     if (!sGreenMode)  //JAM - FIXME
     {
         if (typeData.flags & USES_TREE_MATRIX)
@@ -1752,23 +1752,23 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
             renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
     }
 
-    /*	}
-    	else
-    	{
-    		doFivePoints = FALSE;
+    /* }
+     else
+     {
+     doFivePoints = FALSE;
 
-    		if(typeData.flags & USES_TREE_MATRIX)
-    			renderer->context.RestoreState(STATE_ALPHA_TEXTURE_PERSPECTIVE);
-    		else
-    			renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
-    	}
+     if(typeData.flags & USES_TREE_MATRIX)
+     renderer->context.RestoreState(STATE_ALPHA_TEXTURE_PERSPECTIVE);
+     else
+     renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
+     }
     */
     if (!sGreenMode)  //JAM - FIXME
     {
         if (renderer->GetFilteringMode())
         {
             renderer->context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-            //			renderer->context.InvalidateState();
+            // renderer->context.InvalidateState();
         }
     }
 
@@ -1834,7 +1834,7 @@ void Drawable2D::Draw(class RenderOTW *renderer, int LOD)
 /*
 ** Name: SetupTexturesOnDevice
 ** Description:
-**		This is texture setup for 2d animations
+** This is texture setup for 2d animations
 */
 void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
 {
@@ -1939,78 +1939,78 @@ void Drawable2D::SetupTexturesOnDevice(DXContext *rc)
     // setup the scatter plotting
     for ( i = 0; i < NUM_SMOKE_SCATTER_FRAMES; i++ )
     {
-    	for ( j = 0; j < NUM_SMOKE_SCATTER_POINTS; j++ )
-    	{
-    		if ( i == 0 )
-    		{
-    			gSmokeScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-    			if ( rand() & 1 )
-    				gSmokeScatterPoints[i][j].x = -gSmokeScatterPoints[i][j].x;
-    			gSmokeScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-    			if ( rand() & 1 )
-    				gSmokeScatterPoints[i][j].y = -gSmokeScatterPoints[i][j].y;
-    			gSmokeScatterPoints[i][j].z = (float)((float)rand()/(float)RAND_MAX) * 0.3f + 0.3f;
-    			continue;
-    		}
+     for ( j = 0; j < NUM_SMOKE_SCATTER_POINTS; j++ )
+     {
+     if ( i == 0 )
+     {
+     gSmokeScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gSmokeScatterPoints[i][j].x = -gSmokeScatterPoints[i][j].x;
+     gSmokeScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gSmokeScatterPoints[i][j].y = -gSmokeScatterPoints[i][j].y;
+     gSmokeScatterPoints[i][j].z = (float)((float)rand()/(float)RAND_MAX) * 0.3f + 0.3f;
+     continue;
+     }
 
-    		gSmokeScatterPoints[i][j].x = gSmokeScatterPoints[i-1][j].x;
-    		gSmokeScatterPoints[i][j].y = gSmokeScatterPoints[i-1][j].y;
-    		gSmokeScatterPoints[i][j].z = gSmokeScatterPoints[i-1][j].z + 0.10f;
-    	}
+     gSmokeScatterPoints[i][j].x = gSmokeScatterPoints[i-1][j].x;
+     gSmokeScatterPoints[i][j].y = gSmokeScatterPoints[i-1][j].y;
+     gSmokeScatterPoints[i][j].z = gSmokeScatterPoints[i-1][j].z + 0.10f;
+     }
     }
     for ( i = 0; i < NUM_FIRE_SCATTER_FRAMES; i++ )
     {
-    	for ( j = 0; j < NUM_FIRE_SCATTER_POINTS; j++ )
-    	{
-    		if ( i == 0 )
-    		{
-    			if ( j & 1 )
-    			{
-    				gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-    				if ( rand() & 1 )
-    					gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
-    				gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-    				if ( rand() & 1 )
-    					gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
-    				gFireScatterPoints[i][j].z = 0.9f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
-    			}
-    			else
-    			{
-    				gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
-    				if ( rand() & 1 )
-    					gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
-    				gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
-    				if ( rand() & 1 )
-    					gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
-    				gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
-    			}
+     for ( j = 0; j < NUM_FIRE_SCATTER_POINTS; j++ )
+     {
+     if ( i == 0 )
+     {
+     if ( j & 1 )
+     {
+     gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
+     gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
+     gFireScatterPoints[i][j].z = 0.9f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
+     }
+     else
+     {
+     gFireScatterPoints[i][j].x = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gFireScatterPoints[i][j].x = -gFireScatterPoints[i][j].x;
+     gFireScatterPoints[i][j].y = (float)((float)rand()/(float)RAND_MAX);
+     if ( rand() & 1 )
+     gFireScatterPoints[i][j].y = -gFireScatterPoints[i][j].y;
+     gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
+     }
 
-    			continue;
-    		}
+     continue;
+     }
 
-    		if ( j & 1 )
-    		{
-    			gFireScatterPoints[i][j].x = gFireScatterPoints[i-1][j].x;
-    			gFireScatterPoints[i][j].y = gFireScatterPoints[i-1][j].y + 0.2f;
-    			gFireScatterPoints[i][j].z = gFireScatterPoints[i-1][j].z * 0.8f;
-    			if ( gFireScatterPoints[i][j].y > 1.0f )
-    			{
-    				gFireScatterPoints[i][j].y -= 2.0f;
-    				gFireScatterPoints[i][j].z = 0.9f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
-    			}
-    		}
-    		else
-    		{
-    			gFireScatterPoints[i][j].x = gFireScatterPoints[i-1][j].x;
-    			gFireScatterPoints[i][j].y = gFireScatterPoints[i-1][j].y - 0.2f;
-    			gFireScatterPoints[i][j].z = gFireScatterPoints[i-1][j].z * 1.2f;
-    			if ( gFireScatterPoints[i][j].y < -1.0f )
-    			{
-    				gFireScatterPoints[i][j].y += 2.0f;
-    				gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
-    			}
-    		}
-    	}
+     if ( j & 1 )
+     {
+     gFireScatterPoints[i][j].x = gFireScatterPoints[i-1][j].x;
+     gFireScatterPoints[i][j].y = gFireScatterPoints[i-1][j].y + 0.2f;
+     gFireScatterPoints[i][j].z = gFireScatterPoints[i-1][j].z * 0.8f;
+     if ( gFireScatterPoints[i][j].y > 1.0f )
+     {
+     gFireScatterPoints[i][j].y -= 2.0f;
+     gFireScatterPoints[i][j].z = 0.9f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
+     }
+     }
+     else
+     {
+     gFireScatterPoints[i][j].x = gFireScatterPoints[i-1][j].x;
+     gFireScatterPoints[i][j].y = gFireScatterPoints[i-1][j].y - 0.2f;
+     gFireScatterPoints[i][j].z = gFireScatterPoints[i-1][j].z * 1.2f;
+     if ( gFireScatterPoints[i][j].y < -1.0f )
+     {
+     gFireScatterPoints[i][j].y += 2.0f;
+     gFireScatterPoints[i][j].z = 0.3f + (float)((float)rand()/(float)RAND_MAX) * 0.3f;
+     }
+     }
+     }
     }
     */
 
@@ -2274,14 +2274,14 @@ void Drawable2D::TimeUpdateCallback(void *)
 /*
 ** Name: DrawGlowSphere
 ** Description:
-**		Draws an alpha faded spherical colored object
+** Draws an alpha faded spherical colored object
 */
 void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
 {
-    Tpoint				center, os;
-    ThreeDVertex		v0, v1, v2, vLast;
-    int					i;
-    DWORD				now;
+    Tpoint center, os;
+    ThreeDVertex v0, v1, v2, vLast;
+    int i;
+    DWORD now;
 
     if (alpha <= 0.05f)
         return;
@@ -2318,8 +2318,8 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
     }
     else
     {
-        //		if ( !renderer->GetAlphaMode() )
-        //			return;
+        // if ( !renderer->GetAlphaMode() )
+        // return;
 
         alpha = initAlpha * (1.0f - lightLevel * 0.5f) - ((float)(now - alphaStartTime)) * typeData.fadeRate;
 
@@ -2571,13 +2571,13 @@ void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, int)
 /*
 ** Name: DrawGouraudTri
 ** Description:
-**		Draws a gouraud shaded triangle
+** Draws a gouraud shaded triangle
 */
 void Drawable2D::DrawGouraudTri(class RenderOTW *renderer, int)
 {
-    Tpoint				center, os;
-    ThreeDVertex		v0, v1, v2, v3;
-    DWORD				now;
+    Tpoint center, os;
+    ThreeDVertex v0, v1, v2, v3;
+    DWORD now;
     float randradius;
 
     if (alpha <= 0.05f)
@@ -2758,18 +2758,18 @@ void Drawable2D::DrawGouraudTri(class RenderOTW *renderer, int)
 /*
 ** Name: Draw2DLensFlare
 ** Description:
-**		Gets the look at vector and lighting direction.  If the angle
-**		between the 2 is within a predefined limit, it will draw a series
-**		of alpha blended circles along the light vector.
+** Gets the look at vector and lighting direction.  If the angle
+** between the 2 is within a predefined limit, it will draw a series
+** of alpha blended circles along the light vector.
 */
 void Draw2DLensFlare(class RenderOTW *renderer)
 {
-    Tpoint				position, center, lv, av;
-    int					i, j;
-    float				dotp;
-    float				radius;
-    float				alphaPct;
-    Tpoint				atPosition;
+    Tpoint position, center, lv, av;
+    int i, j;
+    float dotp;
+    float radius;
+    float alphaPct;
+    Tpoint atPosition;
     bool gif = false;
 
 
@@ -2812,7 +2812,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
     atPosition.z = renderer->Z() + av.z * 90.0f - lv.z * 40.0f;
 
 
-    D3DDYNVERTEX	v[numLensFlareVerts + 2], vLast, vLasti;
+    D3DDYNVERTEX v[numLensFlareVerts + 2], vLast, vLasti;
 
     v[0].dwSpecular = v[1].dwSpecular = v[2].dwSpecular = v[3].dwSpecular = 0x00000000;
 
@@ -2823,8 +2823,8 @@ void Draw2DLensFlare(class RenderOTW *renderer)
         position.y = atPosition.y + lv.y * lensDist[j] * (1.2f - alphaPct);
         position.z = atPosition.z + lv.z * lensDist[j] * (1.2f - alphaPct);
 
-        float	Alpha = lensAlphas[j] * alphaPct * lightLevel * 0.80f;
-        DWORD	ColorOut, ColorIn;
+        float Alpha = lensAlphas[j] * alphaPct * lightLevel * 0.80f;
+        DWORD ColorOut, ColorIn;
         ColorOut = v[2].dwColour = v[1].dwColour = F_TO_ARGB(Alpha, lensRGB[j].r, lensRGB[j].g, lensRGB[j].b);
         ColorIn = v[0].dwColour = v[3].dwColour = F_TO_ARGB(Alpha, lensCenterRGB[j].r, lensCenterRGB[j].g, lensCenterRGB[j].b);
 
@@ -2912,20 +2912,20 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 /*
 ** Name: Draw2DSunGlowEffect
 ** Description:
-**		Gets the look at vector and lighting direction.  If the angle
-**		between the 2 is within a predefined limit, it will draw a series
-**		of alpha blended circles along the light vector.
+** Gets the look at vector and lighting direction.  If the angle
+** between the 2 is within a predefined limit, it will draw a series
+** of alpha blended circles along the light vector.
 */
 void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, float alpha)
 {
-    Tpoint				center, os;
-    ThreeDVertex		v0, v1, v2, v3, vLast, vLasti;
-    int					i;
-    float				radius, iradius;
+    Tpoint center, os;
+    ThreeDVertex v0, v1, v2, v3, vLast, vLasti;
+    int i;
+    float radius, iradius;
     bool gif = false;
 
-    //	if ( !renderer->GetAlphaMode() )
-    //		return;
+    // if ( !renderer->GetAlphaMode() )
+    // return;
 
     if (alpha < 0.0001)
         return;
@@ -3159,8 +3159,8 @@ void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, fl
 /*
 ** Name: GetAnimFrame
 ** Description:
-**		Gets the current animation frame based on time delta from
-**		start of object existence
+** Gets the current animation frame based on time delta from
+** start of object existence
 */
 int Drawable2D::GetAnimFrame(int dT, DWORD start)
 {
@@ -3306,21 +3306,21 @@ void Drawable2D::SetStartTime(DWORD start, DWORD now)
 */
 void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 {
-    Tpoint				ws;
-    ThreeDVertex		v0, v1, v2, v3, spos;
-    ThreeDVertex		vm;
-    TwoDVertex			*vertArray[6];
-    Tpoint				leftv;
-    Tpoint				dl;
-    float				screenR, elementR, elementRbase;
-    float 				xRes;
-    float 				yRes;
-    float				top, bottom, left, right;
-    int					i;
-    float				scaleZ;
-    int					numToPlot;
-    BOOL				doFivePoints;
-    int					texseq;
+    Tpoint ws;
+    ThreeDVertex v0, v1, v2, v3, spos;
+    ThreeDVertex vm;
+    TwoDVertex *vertArray[6];
+    Tpoint leftv;
+    Tpoint dl;
+    float screenR, elementR, elementRbase;
+    float  xRes;
+    float  yRes;
+    float top, bottom, left, right;
+    int i;
+    float scaleZ;
+    int numToPlot;
+    BOOL doFivePoints;
+    int texseq;
 
     // make our radius larger -- this way building fires will sort
     // better on buildings
@@ -3368,7 +3368,7 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
     /*
     if (screenR > sMaxScreenRes * xRes * 0.5f )
     {
-    	screenR = xRes * sMaxScreenRes * 0.5f;
+     screenR = xRes * sMaxScreenRes * 0.5f;
     }
     */
     elementRbase = screenR * 0.4f + (1.0f - scaleZ) * 0.6f;
@@ -3399,19 +3399,19 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
     else
     {
-        //		if(renderer->GetAlphaMode()) //JAM - FIXME
+        // if(renderer->GetAlphaMode()) //JAM - FIXME
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
 
-        /*		else
-        		{
-        			renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
-        			doFivePoints = FALSE;
-        		}
+        /* else
+         {
+         renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
+         doFivePoints = FALSE;
+         }
         */
         if (renderer->GetFilteringMode())
         {
             renderer->context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-            //			renderer->context.InvalidateState();
+            // renderer->context.InvalidateState();
         }
     }
 
@@ -3456,14 +3456,14 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
     /*
     else if ( typeData.flags & EXPLODE_SCATTER_PLOT )
     {
-    	v0.r = v1.r = 1.0f;
-    	v0.g = v1.g = 1.0f;
-    	v0.b = v1.b = 1.0f;
-    	v0.a = v1.a = alpha * (1.0f - scaleZ);
-    	v2.r = v3.r = 1.0f;
-    	v2.g = v3.g = 1.0f;
-    	v2.b = v3.b = 1.0f;
-    	v2.a = v3.a = alpha;
+     v0.r = v1.r = 1.0f;
+     v0.g = v1.g = 1.0f;
+     v0.b = v1.b = 1.0f;
+     v0.a = v1.a = alpha * (1.0f - scaleZ);
+     v2.r = v3.r = 1.0f;
+     v2.g = v3.g = 1.0f;
+     v2.b = v3.b = 1.0f;
+     v2.a = v3.a = alpha;
     }
     */
     else
@@ -3526,27 +3526,27 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
         // screen bounds, we toss the entire element
 
         //if ( dl.x < left || dl.y < top || dl.x > right || dl.y > bottom )
-        //	continue;
+        // continue;
 
         v0.x = dl.x - elementR;
         v0.y = dl.y - elementR;
         //if ( v0.x < left || v0.y < top || v0.x > right || v0.y > bottom )
-        //	continue;
+        // continue;
 
         v1.x = dl.x + elementR;
         v1.y = dl.y - elementR;
         //if ( v1.x < left || v1.y < top || v1.x > right || v1.y > bottom )
-        //	continue;
+        // continue;
 
         v2.x = dl.x + elementR;
         v2.y = dl.y + elementR;
         //if ( v2.x < left || v2.y < top || v2.x > right || v2.y > bottom )
-        //	continue;
+        // continue;
 
         v3.x = dl.x - elementR;
         v3.y = dl.y + elementR;
         //if ( v3.x < left || v3.y < top || v3.x > right || v3.y > bottom )
-        //	continue;
+        // continue;
 
         if (v2.x < left || v2.y < top || v0.x > right || v0.y > bottom)
             continue;
@@ -3656,21 +3656,21 @@ void Drawable2D::APLScatterPlot(RenderOTW *renderer)
 */
 void Drawable2D::ScatterPlot(RenderOTW *renderer)
 {
-    Tpoint				ws;
-    ThreeDVertex		v0, v1, v2, v3, spos;
-    ThreeDVertex		vm;
-    Tpoint				leftv;
-    Tpoint				dl;
-    float				screenR, elementR, elementRbase;
-    // float 				xRes = renderer->GetImageBuffer()->targetXres();
-    // float 				yRes = renderer->GetImageBuffer()->targetYres();
-    float 				xRes;
-    float 				yRes;
-    float				top, bottom, left, right;
-    int					i;
-    float				scaleZ;
-    int					numToPlot;
-    BOOL				doFivePoints;
+    Tpoint ws;
+    ThreeDVertex v0, v1, v2, v3, spos;
+    ThreeDVertex vm;
+    Tpoint leftv;
+    Tpoint dl;
+    float screenR, elementR, elementRbase;
+    // float  xRes = renderer->GetImageBuffer()->targetXres();
+    // float  yRes = renderer->GetImageBuffer()->targetYres();
+    float  xRes;
+    float  yRes;
+    float top, bottom, left, right;
+    int i;
+    float scaleZ;
+    int numToPlot;
+    BOOL doFivePoints;
 
     // better on buildings
     radius = realRadius * 3.0f;
@@ -3717,7 +3717,7 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     /*
     if (screenR > sMaxScreenRes * xRes * 0.5f )
     {
-    	screenR = xRes * sMaxScreenRes * 0.5f;
+     screenR = xRes * sMaxScreenRes * 0.5f;
     }
     */
     elementRbase = screenR * 0.4f + (1.0f - scaleZ) * 0.6f;
@@ -3743,26 +3743,26 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
     doFivePoints = (scaleZ * sLOD > 0.4f || type == DRAW2D_LONG_HANGING_SMOKE2);
 
     // setup rendering context
-    //	if( renderer->GetAlphaMode() )
-    //	{
+    // if( renderer->GetAlphaMode() )
+    // {
     if (!sGreenMode) //JAM - FIXME
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
     else
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
 
-    /*	}
-    	else
-    	{
-    		renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
-    		doFivePoints = FALSE;
-    	}
+    /* }
+     else
+     {
+     renderer->context.RestoreState(STATE_ALPHA_TEXTURE);
+     doFivePoints = FALSE;
+     }
     */
     if (!sGreenMode)
     {
         if (renderer->GetFilteringMode())
         {
             renderer->context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-            //			renderer->context.InvalidateState();
+            // renderer->context.InvalidateState();
         }
     }
 
@@ -3980,28 +3980,28 @@ void Drawable2D::ScatterPlot(RenderOTW *renderer)
 /*
 ** Name: DrawTexturedCone
 ** Description:
-**		Basically this is 1 segment of a trail.  It can be animated.
-**		The dimensions of the segment are specified by the orientation
-**		matrix ( direction ) and 1 Tpoint where x is the length dim, y
-**		is the radius at the start position and z iis the radius at the
-**		end point.
+** Basically this is 1 segment of a trail.  It can be animated.
+** The dimensions of the segment are specified by the orientation
+** matrix ( direction ) and 1 Tpoint where x is the length dim, y
+** is the radius at the start position and z iis the radius at the
+** end point.
 */
 void Drawable2D::DrawTexturedCone(class RenderOTW *renderer, int)
 {
-    Tpoint	left, right;
-    Tpoint	DOV, UP;
-    float	dx, dy, dz;
-    float	widthX, widthY, widthZ;
-    float	mag, normalizer;
+    Tpoint left, right;
+    Tpoint DOV, UP;
+    float dx, dy, dz;
+    float widthX, widthY, widthZ;
+    float mag, normalizer;
     Tpoint  end;
-    ThreeDVertex		v0, v1, v2, v3;
-    UV					uvStart;
+    ThreeDVertex v0, v1, v2, v3;
+    UV uvStart;
 
     // setup rendering context
-    //	if(renderer->GetAlphaMode()) //JAM - FIXME
+    // if(renderer->GetAlphaMode()) //JAM - FIXME
     renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
-    //	else
-    //		renderer->context.RestoreState(STATE_ALPHA_TEXTURE_PERSPECTIVE);
+    // else
+    // renderer->context.RestoreState(STATE_ALPHA_TEXTURE_PERSPECTIVE);
 
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
     renderer->context.SelectTexture1(curTex->TexHandle());
@@ -4134,16 +4134,16 @@ void Drawable2D::SetGreenMode(BOOL mode)
 /*
 ** Name: DrawGlowSphere
 ** Description:
-**		Draws an alpha faded spherical colored object
-**		This version is a static function that can be called by
-**		other classes.
+** Draws an alpha faded spherical colored object
+** This version is a static function that can be called by
+** other classes.
 */
 void Drawable2D::DrawGlowSphere(class RenderOTW *renderer, Tpoint *pos, float radius, float alpha)
 {
-    Tpoint				center, os;
-    ThreeDVertex		v0, v1, v2, vLast;
-    int					i;
-    TYPES2D 			*typeData;		// data for anim type
+    Tpoint center, os;
+    ThreeDVertex v0, v1, v2, vLast;
+    int i;
+    TYPES2D  *typeData; // data for anim type
 
     // get the type data info
     typeData = &gTypeTable[ DRAW2D_EXPLCIRC_GLOW ];

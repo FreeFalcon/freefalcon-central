@@ -13,13 +13,13 @@ void ICPClass::CNIBackup(void)
 {
     //Line1
     // MD -- 20040204: actually the UHF entry is always on line one
-    //if(WhichRadio == 0)	//COMM1 is active
+    //if(WhichRadio == 0) //COMM1 is active
     FillDEDMatrix(0, 0, "UHF");
 
-    //else	//COMM2 is active
-    //	FillDEDMatrix(0,0,"VHF");
+    //else //COMM2 is active
+    // FillDEDMatrix(0,0,"VHF");
     //WAYPOINT INFO
-    if (!MAN)	//Auto Waypoint
+    if (!MAN) //Auto Waypoint
     {
         if (IsICPSet(ICPClass::EDIT_STPT))
             sprintf(tempstr, "\x01%2dA", mWPIndex + 1);
@@ -56,10 +56,10 @@ void ICPClass::CNIBackup(void)
 
     //Line3
     // MD -- 20040204: actually the UHF entry is always on line one
-    //if(WhichRadio == 0)	//COMM1 is active
+    //if(WhichRadio == 0) //COMM1 is active
     FillDEDMatrix(2, 0, "VHF");
-    //else	//COMM2 is active
-    //	FillDEDMatrix(2,0, "UHF");
+    //else //COMM2 is active
+    // FillDEDMatrix(2,0, "UHF");
     //Get the time
     FormatTime(vuxGameTime / 1000, timeStr);
     FillDEDMatrix(2, (24 - strlen(timeStr)), timeStr);
@@ -101,7 +101,7 @@ void ICPClass::IFFBackup(void)
 }
 void ICPClass::ILSBackup(void)
 {
-    VU_ID							id;
+    VU_ID id;
 
     if (gNavigationSys)
         gNavigationSys->GetTacanVUID(NavigationSystem::AUXCOMM, &id);

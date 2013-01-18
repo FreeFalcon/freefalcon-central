@@ -128,7 +128,7 @@ glGetSinCos(GLdouble *sinOut, GLdouble *cosOut, GLFixed0_14 angle)
             *cosOut = CosineTable[angle];
         }
     }
-}	/* glGetSinCos */
+} /* glGetSinCos */
 
 
 
@@ -163,7 +163,7 @@ glGetSine(GLFixed0_14 angle)
             return CosineTable[0x1000 - angle];
         }
     }
-}	/* glGetSine */
+} /* glGetSine */
 
 
 
@@ -198,7 +198,7 @@ glGetCosine(GLFixed0_14 angle)
             return CosineTable[angle];
         }
     }
-}	/* glGetCosine */
+} /* glGetCosine */
 
 
 /*
@@ -219,7 +219,7 @@ glGetCosine(GLFixed0_14 angle)
 |                     A = A + (16384-A)*A/(128*8*45);                       |
 |                     A = A/8;                                              |
 |                  }                                                        |
-|                  else	{                                                   |
+|                  else {                                                   |
 |                     A = X/Y * 16384;                                      |
 |                     A = A + (16384-A)*A/(128*8*45);                       |
 |                     A = 4096 - A/8;                                       |
@@ -233,7 +233,7 @@ GLFixed0_14
 CalculateArcTan(GLfloat opposite,
                 GLfloat adjacent)
 {
-    GLFixed0_14	angle;
+    GLFixed0_14 angle;
 
     if (opposite < adjacent)
     {
@@ -249,7 +249,7 @@ CalculateArcTan(GLfloat opposite,
     }
 
     return (angle);
-}	/* CalculateArcTan */
+} /* CalculateArcTan */
 
 
 
@@ -287,16 +287,16 @@ glCalculateAngle(GLfloat opposite,
 
     if (!opposite)
     {
-        if (adjacent < 0.0f) return (8192);	// 180 degree
+        if (adjacent < 0.0f) return (8192); // 180 degree
 
         return(0);
     }
 
     if (!adjacent)
     {
-        if (opposite < 0.0f) return (12288);	// 270 degree
+        if (opposite < 0.0f) return (12288); // 270 degree
 
-        return(4096);						// 90 degree
+        return(4096); // 90 degree
     }
 
     if (opposite < 0.0f)
@@ -315,19 +315,19 @@ glCalculateAngle(GLfloat opposite,
 
     angle = CalculateArcTan(opposite, adjacent);
 
-    if (!angle)	 								// either 0 or 180
+    if (!angle)   // either 0 or 180
     {
-        if (sign_adj) return (8192);			// 180 degree
+        if (sign_adj) return (8192); // 180 degree
 
         return(0);
     }
 
-    if (sign_opp)  								// quadrant 3 or 4
+    if (sign_opp)   // quadrant 3 or 4
     {
-        if (sign_adj) angle += 8192;			// quadrant 3
-        else angle = 16384 - angle;				// quadrant 4
+        if (sign_adj) angle += 8192; // quadrant 3
+        else angle = 16384 - angle; // quadrant 4
     }
-    else if (sign_adj) angle = 8192 - angle;	// quadrant 2
+    else if (sign_adj) angle = 8192 - angle; // quadrant 2
 
-    return (angle);								// quadrant 1
-}	/* glCalculateAngle */
+    return (angle); // quadrant 1
+} /* glCalculateAngle */

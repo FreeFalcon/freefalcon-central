@@ -1,9 +1,9 @@
 /**********************s*****************************************************\
-	sim.h
-	Scott Randolph
-	November 25, 1994
+ sim.h
+ Scott Randolph
+ November 25, 1994
 
-	Provide the simulations calcuations and interaction with the user.
+ Provide the simulations calcuations and interaction with the user.
 \***************************************************************************/
 #ifndef _SIM_H_
 #define _SIM_H_
@@ -25,34 +25,34 @@ public:
     };
 
 protected:
-    DWORD		lastTime;
-    BOOL		ready;
-    BOOL		haveJoystick;
-    JOYINFOEX	joyInfoEx;
-    JOYCAPS		joyCaps;
-    float		e1;
-    float		e2;
-    float		e3;
-    float		e4;
+    DWORD lastTime;
+    BOOL ready;
+    BOOL haveJoystick;
+    JOYINFOEX joyInfoEx;
+    JOYCAPS joyCaps;
+    float e1;
+    float e2;
+    float e3;
+    float e4;
 
 public:
-    Tpoint		position;
-    Trotation	rotation;
+    Tpoint position;
+    Trotation rotation;
 
-    float		speed;
-    float		pitchRate;
-    float		yawRate;
-    float		rollRate;
+    float speed;
+    float pitchRate;
+    float yawRate;
+    float rollRate;
 
-    float		headPitchRate;
-    float		headYawRate;
-    float		headPitch;
-    float		headYaw;
+    float headPitchRate;
+    float headYawRate;
+    float headPitch;
+    float headYaw;
 
-    Tpoint		headPos;
-    Trotation	headMatrix;
+    Tpoint headPos;
+    Trotation headMatrix;
 
-    DWORD		buttons;
+    DWORD buttons;
 
     void  Setup(void);
     void  Cleanup(void);

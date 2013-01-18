@@ -38,12 +38,12 @@
 #define AIRFRAME_DATASET "actypes.lst"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	AirframeDataPool;
+MEM_POOL AirframeDataPool;
 extern MEM_POOL gReadInMemPool;
 #endif
 
 /*-------------------------------*/
-/* Global Vars					 */
+/* Global Vars  */
 /*-------------------------------*/
 AeroDataSet *aeroDataset = NULL;
 int num_sets = 0;
@@ -147,10 +147,10 @@ int AirframeClass::ReadData(int idx)
 
     for (int i = 0; i < aeroDataset[idx].inputData[AeroDataSet::NumGear]; i++)
     {
-        gear[i].strength	= 100.0F;	//how many hitpoints it has left
-        gear[i].vel		= 0.0F;		//at what rate is it currently compressing/extending in ft/s
-        gear[i].obstacle	= 0.0F;		//rock height/rut depth
-        gear[i].flags	= 0;
+        gear[i].strength = 100.0F; //how many hitpoints it has left
+        gear[i].vel = 0.0F; //at what rate is it currently compressing/extending in ft/s
+        gear[i].obstacle = 0.0F; //rock height/rut depth
+        gear[i].flags = 0;
     }
 
     if (aeroDataset[idx].inputData[AeroDataSet::NumGear] > 1)
@@ -231,12 +231,12 @@ void ReadData(float* inputData, SimlibFileClass* inputFile)
     inputData[AeroDataSet::ThetaMax] = (float)atof(inputFile->GetNext()) * DTR;
 
     /*-------------------*/
-    /* Read in NumGear	*/
+    /* Read in NumGear */
     /*-------------------*/
     inputData[AeroDataSet::NumGear] = (float)atof(inputFile->GetNext());
 
     /*-------------------*/
-    /* Read in GearPos	*/
+    /* Read in GearPos */
     /*-------------------*/
     for (int i = 0; i < inputData[AeroDataSet::NumGear]; i++)
     {
@@ -611,7 +611,7 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "mainGenRpm", InputDataDesc::ID_FLOAT, OFFSET(mainGenRpm), "0.63"},
     { "stbyGenRpm", InputDataDesc::ID_FLOAT, OFFSET(stbyGenRpm), "0.6"},
     { "epuBurnTime", InputDataDesc::ID_FLOAT, OFFSET(epuBurnTime), "600"},
-    { "DeepStallEngineStall", InputDataDesc::ID_INT, OFFSET(DeepStallEngineStall), "0"},	//Need bool
+    { "DeepStallEngineStall", InputDataDesc::ID_INT, OFFSET(DeepStallEngineStall), "0"}, //Need bool
     { "engineDamageStopThreshold", InputDataDesc::ID_INT, OFFSET(engineDamageStopThreshold), "13"},  // 2002-04-11 ADDED BY S.G. Externalized the 13% chance of engine stop
     { "engineDamageNoRestartThreshold", InputDataDesc::ID_INT, OFFSET(engineDamageNoRestartThreshold), "50"}, // 2002-04-11 ADDED BY S.G. Externalized the 50% chance of engine not able to restart
     { "engineDamageHitThreshold", InputDataDesc::ID_INT, OFFSET(engineDamageHitThreshold), "0"}, // 2002-04-11 ADDED BY S.G. Externalized the hitChance > 0 chance of engine shutting down
@@ -782,11 +782,11 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "sndGearOpenEnd", InputDataDesc::ID_INT, OFFSET(sndGearOpenEnd), "150"},
     { "sndGearLoop", InputDataDesc::ID_INT, OFFSET(sndGearLoop), "148"},
     // MLR 2/15/2004 -
-    { "sndCanopyOpenStart",		InputDataDesc::ID_INT, OFFSET(sndCanopyOpenStart),	"271"},
-    { "sndCanopyOpenEnd",		InputDataDesc::ID_INT, OFFSET(sndCanopyOpenEnd),	"272"},
-    { "sndCanopyCloseStart",	InputDataDesc::ID_INT, OFFSET(sndCanopyCloseStart), "273"},
-    { "sndCanopyCloseEnd",		InputDataDesc::ID_INT, OFFSET(sndCanopyCloseEnd),	"274"},
-    { "sndCanopyLoop",			InputDataDesc::ID_INT, OFFSET(sndCanopyLoop),		"275"},
+    { "sndCanopyOpenStart", InputDataDesc::ID_INT, OFFSET(sndCanopyOpenStart), "271"},
+    { "sndCanopyOpenEnd", InputDataDesc::ID_INT, OFFSET(sndCanopyOpenEnd), "272"},
+    { "sndCanopyCloseStart", InputDataDesc::ID_INT, OFFSET(sndCanopyCloseStart), "273"},
+    { "sndCanopyCloseEnd", InputDataDesc::ID_INT, OFFSET(sndCanopyCloseEnd), "274"},
+    { "sndCanopyLoop", InputDataDesc::ID_INT, OFFSET(sndCanopyLoop), "275"},
 
     { "rollLimitForAiInWP", InputDataDesc::ID_FLOAT, OFFSET(rollLimitForAiInWP), "180.0"}, // 2002-01-31 ADDED BY S.G. AI limition on roll when in waypoint (or similar) mode
     { "flap2Nozzle", InputDataDesc::ID_INT, OFFSET(flap2Nozzle), "0"},
@@ -798,7 +798,7 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "decelDistance", InputDataDesc::ID_FLOAT, OFFSET(decelDistance), "1000.0"},
     { "followRate", InputDataDesc::ID_FLOAT, OFFSET(followRate), "20.0"}, // original was 10, 20 brings some better results
     { "desiredClosureFactor", InputDataDesc::ID_FLOAT, OFFSET(desiredClosureFactor), "0.25"}, // original was hardcoded to 0.25
-    //	{ "IL78Factor", InputDataDesc::ID_FLOAT, OFFSET(IL78Factor), "0.0"}, // IL78 range to basket modifier (to fix "GivingGas" flagging)
+    // { "IL78Factor", InputDataDesc::ID_FLOAT, OFFSET(IL78Factor), "0.0"}, // IL78 range to basket modifier (to fix "GivingGas" flagging)
     { "longLeg", InputDataDesc::ID_FLOAT, OFFSET(longLeg), "100.0"}, // 60 nm long leg of tanker track pattern
     { "shortLeg", InputDataDesc::ID_FLOAT, OFFSET(shortLeg), "25.0"}, // 25nm short leg of tanker track pattern
     { "refuelRate", InputDataDesc::ID_FLOAT, OFFSET(refuelRate), "50.0"}, // 50 lbs per second
@@ -837,7 +837,7 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "HtsAble", InputDataDesc::ID_INT, OFFSET(HtsAble), "0"},
 
     //MI TFR
-    { "Has_TFR", InputDataDesc::ID_INT, OFFSET(Has_TFR), "0"},	//does this plane have TFR?
+    { "Has_TFR", InputDataDesc::ID_INT, OFFSET(Has_TFR), "0"}, //does this plane have TFR?
     { "PID_K", InputDataDesc::ID_FLOAT, OFFSET(PID_K), "0.5"}, //Proportianal gain in TFR PID pitch controler.
     { "PID_KI", InputDataDesc::ID_FLOAT, OFFSET(PID_KI), "0.0"}, //Intergral gain in TFR PID pitch controler
     { "PID_KD", InputDataDesc::ID_FLOAT, OFFSET(PID_KD), "0.39"}, //Differential gain in TFR PID pitch controler
@@ -864,12 +864,12 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "LantirnCameraZ", InputDataDesc::ID_FLOAT, OFFSET(LantirnCameraZ), "5.0"},
 
     // Digi's related MAR calculation
-    { "MinTGTMAR", InputDataDesc::ID_FLOAT, OFFSET(minTGTMAR), "0.0"},	// 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
-    { "MaxMARIdedStart", InputDataDesc::ID_FLOAT, OFFSET(maxMARIdedStart), "0.0"},		// 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 5K
-    { "AddMARIded5k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded5k), "0.0"},		// 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 5K
-    { "AddMARIded18k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded18k), "0.0"},		// 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 18K
-    { "AddMARIded28k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded28k), "0.0"},		// 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 28K
-    { "AddMARIdedSpike", InputDataDesc::ID_FLOAT, OFFSET(addMARIdedSpike), "0.0"},		// 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and spiked
+    { "MinTGTMAR", InputDataDesc::ID_FLOAT, OFFSET(minTGTMAR), "0.0"}, // 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
+    { "MaxMARIdedStart", InputDataDesc::ID_FLOAT, OFFSET(maxMARIdedStart), "0.0"}, // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 5K
+    { "AddMARIded5k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded5k), "0.0"}, // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 5K
+    { "AddMARIded18k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded18k), "0.0"}, // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 18K
+    { "AddMARIded28k", InputDataDesc::ID_FLOAT, OFFSET(addMARIded28k), "0.0"}, // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and below 28K
+    { "AddMARIdedSpike", InputDataDesc::ID_FLOAT, OFFSET(addMARIdedSpike), "0.0"}, // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is ID'ed and spiked
 
     // 2003-09-30 added by MLR to support Aircraft animations
     { "animEngineRPMMult",   InputDataDesc::ID_FLOAT, OFFSET(animEngineRPMMult), "1000.0"},
@@ -975,39 +975,39 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "sndExternalVol",           InputDataDesc::ID_FLOAT, OFFSET(sndExternalVol),     "-2000.0"},
     { "sndInt",                   InputDataDesc::ID_INT, OFFSET(sndInt),             "-1"}, // MLR 2003-11-10 internal engine sound
     // MLR 1/8/2004 -
-    { "sndIntChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndIntChart),        "1  0 1"},
-    { "sndAbIntChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbIntChart),      "2  0 0  1 1"},
-    { "sndInt2Chart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndInt2Chart),       "3  0 0  1 1  1.035 1"},
-    { "sndExtChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExtChart),        "1  0 1"},
-    { "sndAbExtChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbExtChart),      "2  0 0  1 1"},
-    { "sndExt2Chart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExt2Chart),       "3  0 0  1 1  1.035 1"},
+    { "sndIntChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndIntChart),        "1  0 1"},
+    { "sndAbIntChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbIntChart),      "2  0 0  1 1"},
+    { "sndInt2Chart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndInt2Chart),       "3  0 0  1 1  1.035 1"},
+    { "sndExtChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExtChart),        "1  0 1"},
+    { "sndAbExtChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbExtChart),      "2  0 0  1 1"},
+    { "sndExt2Chart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExt2Chart),       "3  0 0  1 1  1.035 1"},
 
-    { "sndIntPitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndIntPitchChart),        "2 0 0 1.03 1.47"},
-    { "sndAbIntPitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbIntPitchChart),      "2 0 0 1.03 1.47"},
-    { "sndInt2PitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndInt2PitchChart),       "2 0 0 1.03 1.47"},
-    { "sndExtPitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExtPitchChart),        "2 0 0 1.03 1.47"},
-    { "sndAbExtPitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbExtPitchChart),      "2 0 0 1.03 1.47"},
-    { "sndExt2PitchChart",			InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExt2PitchChart),       "2 0 0 1.03 1.47"},
+    { "sndIntPitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndIntPitchChart),        "2 0 0 1.03 1.47"},
+    { "sndAbIntPitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbIntPitchChart),      "2 0 0 1.03 1.47"},
+    { "sndInt2PitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndInt2PitchChart),       "2 0 0 1.03 1.47"},
+    { "sndExtPitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExtPitchChart),        "2 0 0 1.03 1.47"},
+    { "sndAbExtPitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAbExtPitchChart),      "2 0 0 1.03 1.47"},
+    { "sndExt2PitchChart", InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndExt2PitchChart),       "2 0 0 1.03 1.47"},
 
 
 
-    { "sndInt2",				InputDataDesc::ID_INT, OFFSET(sndInt2),                "0"},
-    { "sndExt2",				InputDataDesc::ID_INT, OFFSET(sndExt2),                "0"},
+    { "sndInt2", InputDataDesc::ID_INT, OFFSET(sndInt2),                "0"},
+    { "sndExt2", InputDataDesc::ID_INT, OFFSET(sndExt2),                "0"},
     // MLR 1/8/2004 - aerodynamic sounds
     { "sndAero1",               InputDataDesc::ID_INT, OFFSET(sndAero[0]),         "0"},
     { "sndAero2",               InputDataDesc::ID_INT, OFFSET(sndAero[1]),         "0"},
     { "sndAero3",               InputDataDesc::ID_INT, OFFSET(sndAero[2]),         "0"},
     { "sndAero4",               InputDataDesc::ID_INT, OFFSET(sndAero[3]),         "0"},
 
-    { "sndAero1AOAChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[0]),     "1 0 0"},
-    { "sndAero2AOAChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[1]),     "1 0 0"},
-    { "sndAero3AOAChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[2]),     "1 0 0"},
-    { "sndAero4AOAChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[3]),     "1 0 0"},
+    { "sndAero1AOAChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[0]),     "1 0 0"},
+    { "sndAero2AOAChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[1]),     "1 0 0"},
+    { "sndAero3AOAChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[2]),     "1 0 0"},
+    { "sndAero4AOAChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroAOAChart[3]),     "1 0 0"},
 
-    { "sndAero1SpeedChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[0]),   "1 0 0"},
-    { "sndAero2SpeedChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[1]),   "1 0 0"},
-    { "sndAero3SpeedChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[2]),   "1 0 0"},
-    { "sndAero4SpeedChart",	    InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[3]),   "1 0 0"},
+    { "sndAero1SpeedChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[0]),   "1 0 0"},
+    { "sndAero2SpeedChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[1]),   "1 0 0"},
+    { "sndAero3SpeedChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[2]),   "1 0 0"},
+    { "sndAero4SpeedChart",     InputDataDesc::ID_LOOKUPTABLE, OFFSET(sndAeroSpeedChart[3]),   "1 0 0"},
 
     // MLR 2003-11/16 Flare dispenser locations, directions, and qtys
     // note qtys only reflect what could be carried and do not reflect what the aircraft has
@@ -1079,56 +1079,56 @@ static const InputDataDesc AuxAeroDataDesc[] =
     { "ChaffSeq",                 InputDataDesc::ID_INT, OFFSET(Chaff.Sequence),             "0"},
     { "ChaffDispensers",          InputDataDesc::ID_INT, OFFSET(Chaff.Count),                "1"},
     { "PilotEyePos",                InputDataDesc::ID_VECTOR, OFFSET(pilotEyePos),             "15 0 -3"},
-    { "typeAC",					  InputDataDesc::ID_INT, OFFSET(typeAC), "0"}, //TJL 02/08/04 Used to set aircraft specific features
-    { "typeEngine",				  InputDataDesc::ID_INT, OFFSET(typeEngine), "0"},//TJL 02/08/04 Used to set engine specific features
+    { "typeAC",   InputDataDesc::ID_INT, OFFSET(typeAC), "0"}, //TJL 02/08/04 Used to set aircraft specific features
+    { "typeEngine",   InputDataDesc::ID_INT, OFFSET(typeEngine), "0"},//TJL 02/08/04 Used to set engine specific features
 
-    { "elevRate",					  InputDataDesc::ID_FLOAT, OFFSET(elevRate), "90"},  // MLR 1/14/2004 - Stab rates
-    { "gunPitch",					InputDataDesc::ID_FLOAT, OFFSET(gunElevation), "0"},   // MLR 1/28/2004 -
-    { "gunYaw",						InputDataDesc::ID_FLOAT, OFFSET(gunAzimuth), "0"},   // MLR 1/28/2004 -
+    { "elevRate",   InputDataDesc::ID_FLOAT, OFFSET(elevRate), "90"},  // MLR 1/14/2004 - Stab rates
+    { "gunPitch", InputDataDesc::ID_FLOAT, OFFSET(gunElevation), "0"},   // MLR 1/28/2004 -
+    { "gunYaw", InputDataDesc::ID_FLOAT, OFFSET(gunAzimuth), "0"},   // MLR 1/28/2004 -
 
-    { "MeanTimeBetweenFailures",	InputDataDesc::ID_FLOAT, OFFSET(MeanTimeBetweenFailures), "0"},   //Wombat778 2-24-04
+    { "MeanTimeBetweenFailures", InputDataDesc::ID_FLOAT, OFFSET(MeanTimeBetweenFailures), "0"},   //Wombat778 2-24-04
 
     //{ "anim",          InputDataDesc::ID_FLOAT, OFFSET(anim),     "0.0"},
 
     // RV - Biker - Use default values
-    //{ "A2GJDAMAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GJDAMAlt),		"-1"},
-    //{ "A2GJSOWAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GJSOWAlt),		"-1"},
-    //{ "A2GHarmAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GHarmAlt),		"-1"},
-    //{ "A2GAGMAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GAGMAlt),			"-1"},
-    //{ "A2GGBUAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GGBUAlt),			"-1"},
-    //{ "A2GDumbHDAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GDumbHDAlt),		"-1"},
-    //{ "A2GClusterAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GClusterAlt),		"-1"},
-    //{ "A2GDumbLDAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GDumbLDAlt),		"-1"},
-    //{ "A2GGenericBombAlt",			InputDataDesc::ID_FLOAT, OFFSET(A2GGenericBombAlt),	"-1"},
-    //{ "A2GGunRocketAlt",			InputDataDesc::ID_FLOAT, OFFSET(A2GGunRocketAlt),	"-1"},
-    //{ "A2GCameraAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GCameraAlt),		"-1"},
-    //{ "A2GBombMissileAlt",          InputDataDesc::ID_FLOAT, OFFSET(A2GBombMissileAlt),	"-1"},
+    //{ "A2GJDAMAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GJDAMAlt), "-1"},
+    //{ "A2GJSOWAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GJSOWAlt), "-1"},
+    //{ "A2GHarmAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GHarmAlt), "-1"},
+    //{ "A2GAGMAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GAGMAlt), "-1"},
+    //{ "A2GGBUAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGBUAlt), "-1"},
+    //{ "A2GDumbHDAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GDumbHDAlt), "-1"},
+    //{ "A2GClusterAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GClusterAlt), "-1"},
+    //{ "A2GDumbLDAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GDumbLDAlt), "-1"},
+    //{ "A2GGenericBombAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGenericBombAlt), "-1"},
+    //{ "A2GGunRocketAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGunRocketAlt), "-1"},
+    //{ "A2GCameraAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GCameraAlt), "-1"},
+    //{ "A2GBombMissileAlt",          InputDataDesc::ID_FLOAT, OFFSET(A2GBombMissileAlt), "-1"},
 
-    { "A2GJDAMAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GJDAMAlt),		"20000.0"},
-    { "A2GJSOWAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GJSOWAlt),		"25000.0"},
-    { "A2GHarmAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GHarmAlt),		"20000.0"},
-    { "A2GAGMAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GAGMAlt),			"18000.0"},
-    { "A2GGBUAlt",					InputDataDesc::ID_FLOAT, OFFSET(A2GGBUAlt),			"18000.0"},
-    { "A2GDumbHDAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GDumbHDAlt),		 "1500.0"},
-    { "A2GClusterAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GClusterAlt),		"15000.0"},
-    { "A2GDumbLDAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GDumbLDAlt),		"15000.0"},
-    { "A2GGenericBombAlt",			InputDataDesc::ID_FLOAT, OFFSET(A2GGenericBombAlt),	"1000.0"},
-    { "A2GGunRocketAlt",			InputDataDesc::ID_FLOAT, OFFSET(A2GGunRocketAlt),	 "8000.0"},
-    { "A2GCameraAlt",				InputDataDesc::ID_FLOAT, OFFSET(A2GCameraAlt),		"12000.0"},
-    { "A2GBombMissileAlt",          InputDataDesc::ID_FLOAT, OFFSET(A2GBombMissileAlt),	"13000.0"},
+    { "A2GJDAMAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GJDAMAlt), "20000.0"},
+    { "A2GJSOWAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GJSOWAlt), "25000.0"},
+    { "A2GHarmAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GHarmAlt), "20000.0"},
+    { "A2GAGMAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GAGMAlt), "18000.0"},
+    { "A2GGBUAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGBUAlt), "18000.0"},
+    { "A2GDumbHDAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GDumbHDAlt),  "1500.0"},
+    { "A2GClusterAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GClusterAlt), "15000.0"},
+    { "A2GDumbLDAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GDumbLDAlt), "15000.0"},
+    { "A2GGenericBombAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGenericBombAlt), "1000.0"},
+    { "A2GGunRocketAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GGunRocketAlt),  "8000.0"},
+    { "A2GCameraAlt", InputDataDesc::ID_FLOAT, OFFSET(A2GCameraAlt), "12000.0"},
+    { "A2GBombMissileAlt",          InputDataDesc::ID_FLOAT, OFFSET(A2GBombMissileAlt), "13000.0"},
 
     { "swingwingHinge",             InputDataDesc::ID_VECTOR, OFFSET(swingWingHinge),   "2 3 0"},
     //Cobra 10/30/04 TJL
-    { "animIntakeRamp1",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[0]),	"0 0"},
-    { "animIntakeRamp2",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[1]),	"0 0"},
-    { "animIntakeRamp3",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[2]),	"0 0"},
+    { "animIntakeRamp1",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[0]), "0 0"},
+    { "animIntakeRamp2",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[1]), "0 0"},
+    { "animIntakeRamp3",           InputDataDesc::ID_2DTABLE, OFFSET(animIntakeRamp[2]), "0 0"},
 
-    { "FTITStart",				InputDataDesc::ID_FLOAT, OFFSET(FTITStart),	"5.0"},//TJL 09/11/04
-    { "FTITIdle",				InputDataDesc::ID_FLOAT, OFFSET(FTITIdle),	"7.0"},//TJL 09/11/04
-    { "FTITMax",				InputDataDesc::ID_FLOAT, OFFSET(FTITMax),	"8.9"},//TJL 09/11/04
-    { "criticalAOA",			InputDataDesc::ID_FLOAT, OFFSET(criticalAOA),	"0.0"},//TJL 09/11/04
-    { "hasIFF",					InputDataDesc::ID_INT, OFFSET(hasIFF),	"0"},//Cobra 11/20/04
-    { "hasThrRev",				InputDataDesc::ID_INT, OFFSET(hasThrRev),	"0"},//Cobra 02/06/05
+    { "FTITStart", InputDataDesc::ID_FLOAT, OFFSET(FTITStart), "5.0"},//TJL 09/11/04
+    { "FTITIdle", InputDataDesc::ID_FLOAT, OFFSET(FTITIdle), "7.0"},//TJL 09/11/04
+    { "FTITMax", InputDataDesc::ID_FLOAT, OFFSET(FTITMax), "8.9"},//TJL 09/11/04
+    { "criticalAOA", InputDataDesc::ID_FLOAT, OFFSET(criticalAOA), "0.0"},//TJL 09/11/04
+    { "hasIFF", InputDataDesc::ID_INT, OFFSET(hasIFF), "0"},//Cobra 11/20/04
+    { "hasThrRev", InputDataDesc::ID_INT, OFFSET(hasThrRev), "0"},//Cobra 02/06/05
     { NULL}
 };
 #undef OFFSET
@@ -1155,46 +1155,46 @@ AuxAeroData *AirframeAuxAeroRead(SimlibFileClass* inputFile)
 
     if (ParseSimlibFile(auxaeroData, AuxAeroDataDesc, inputFile) == false)
     {
-        //	    F4Assert(!"Bad parsing of aux aero data");
+        //     F4Assert(!"Bad parsing of aux aero data");
     }
 
     // RV - Biker - That does not work so remove it
     // MLR 2/5/2004 - Load defaults as needed
     //if(auxaeroData->A2GJDAMAlt<0)
-    //	auxaeroData->A2GJDAMAlt=g_fA2GJDAMAlt;
+    // auxaeroData->A2GJDAMAlt=g_fA2GJDAMAlt;
     //
     //if(auxaeroData->A2GJSOWAlt<0)
-    //	auxaeroData->A2GJSOWAlt=g_fA2GJSOWAlt;
+    // auxaeroData->A2GJSOWAlt=g_fA2GJSOWAlt;
     //
     //if(auxaeroData->A2GHarmAlt<0)
-    //	auxaeroData->A2GHarmAlt=g_fA2GHarmAlt;
+    // auxaeroData->A2GHarmAlt=g_fA2GHarmAlt;
     //
     //if(auxaeroData->A2GAGMAlt<0)
-    //	auxaeroData->A2GAGMAlt=g_fA2GAGMAlt;
+    // auxaeroData->A2GAGMAlt=g_fA2GAGMAlt;
     //
     //if(auxaeroData->A2GGBUAlt<0)
-    //	auxaeroData->A2GGBUAlt=g_fA2GGBUAlt;
+    // auxaeroData->A2GGBUAlt=g_fA2GGBUAlt;
     //
     //if(auxaeroData->A2GDumbHDAlt<0)
-    //	auxaeroData->A2GDumbHDAlt=g_fA2GDumbHDAlt;
+    // auxaeroData->A2GDumbHDAlt=g_fA2GDumbHDAlt;
     //
     //if(auxaeroData->A2GClusterAlt<0)
-    //	auxaeroData->A2GClusterAlt=g_fA2GClusterAlt;
+    // auxaeroData->A2GClusterAlt=g_fA2GClusterAlt;
     //
     //if(auxaeroData->A2GDumbLDAlt<0)
-    //	auxaeroData->A2GDumbLDAlt=g_fA2GDumbLDAlt;
+    // auxaeroData->A2GDumbLDAlt=g_fA2GDumbLDAlt;
     //
     //if(auxaeroData->A2GGenericBombAlt<0)
-    //	auxaeroData->A2GGenericBombAlt=g_fA2GGenericBombAlt;
+    // auxaeroData->A2GGenericBombAlt=g_fA2GGenericBombAlt;
     //
     //if(auxaeroData->A2GGunRocketAlt<0)
-    //	auxaeroData->A2GGunRocketAlt=g_fA2GGunRocketAlt;
+    // auxaeroData->A2GGunRocketAlt=g_fA2GGunRocketAlt;
     //
     //if(auxaeroData->A2GCameraAlt<0)
-    //	auxaeroData->A2GCameraAlt=g_fA2GCameraAlt;
+    // auxaeroData->A2GCameraAlt=g_fA2GCameraAlt;
     //
     //if(auxaeroData->A2GBombMissileAlt<0)
-    //	auxaeroData->A2GBombMissileAlt=g_fBombMissileAltitude;*/
+    // auxaeroData->A2GBombMissileAlt=g_fBombMissileAltitude;*/
 
     return (auxaeroData);
 }

@@ -13,7 +13,7 @@
 
 /* 2001-09-07 S.G. RP5 */ extern bool g_bRP5Comp;
 
-static const float APG68_PULSE_WIDTH	= 2.0e-5f;
+static const float APG68_PULSE_WIDTH = 2.0e-5f;
 
 int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
                                  int *angCell, int *velCell)
@@ -106,23 +106,23 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
 
 int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 {
-    float	S = ReturnStrength(obj);
+    float S = ReturnStrength(obj);
 
 
     // 2000-09-22 MODIFIED BY S.G. SO THE MODE AFFECTS THE SIGNAL STRENGTH IN A DIFFERENT WAY
     // THE MODS ARE
 
     // With radar lock/bugged target:
-    // RWS/SAM:	1.1
-    // TWS:		1.0
-    // VS:		1.2
-    // STT:		1.4
+    // RWS/SAM: 1.1
+    // TWS: 1.0
+    // VS: 1.2
+    // STT: 1.4
 
     // No radar lock/bugged target:
-    // RWS/SAM:	1.0
-    // TWS:		0.9
-    // VS:		1.2
-    // STT:		1.4
+    // RWS/SAM: 1.0
+    // TWS: 0.9
+    // VS: 1.2
+    // STT: 1.4
 
 
     // This function only runs in Air to Air radar mode for the player
@@ -151,7 +151,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             // if the expected possition is too far from the actual hammer signal to zero
             if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
             {
-                float expectedY =	 rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
+                float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
                 float expectedX = (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) +
                                   (
                                       (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) -
@@ -189,7 +189,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         // if the expected possition is too far from the actual hammer signal to zero
         if (rdrData->rdrSy[0] && rdrData->rdrSy[1]) // we have a track history
         {
-            float expectedY =	 rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
+            float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
             float expectedX = (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) +
                               (
                                   (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) -
@@ -227,15 +227,15 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
     if (1)// me123 agreed with jjb to test this !g_bRP5Comp)
     {
-        VU_ID lastChaffID			= FalconNullId;
-        VU_ID			id;
-        FalconEntity	*cm;
-        float			chance;
-        int				dummy = 0;
+        VU_ID lastChaffID = FalconNullId;
+        VU_ID id;
+        FalconEntity *cm;
+        float chance;
+        int dummy = 0;
         SimObjectType *target = obj;
-        static const float	cmRangeArray[]		= {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
-        static const float	cmBiteChanceArray[]	= {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
-        static const int	cmArrayLength		= sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
+        static const float cmRangeArray[] = {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
+        static const float cmBiteChanceArray[] = {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
+        static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
         // No counter measures deployed by campaign things
         // countermeasures only work when tracking (for now)
@@ -263,7 +263,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             // Try to find the counter measure entity in the database
             cm = (FalconEntity*)vuDatabase->Find(id);
 
-            //		MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
+            // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
             if (!cm)
             {
@@ -286,14 +286,14 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             if (chance > (float)rand() / RAND_MAX)
             {
                 // Compute some relative geometry stuff
-                const float atx	= platform->dmx[0][0];
-                const float aty	= platform->dmx[0][1];
-                const float atz	= platform->dmx[0][2];
-                const float dx	= cm->XPos() - platform->XPos();
-                const float dy	= cm->YPos() - platform->YPos();
-                const float dz	= cm->ZPos() - platform->ZPos();
-                const float range	= (float)sqrt(dx * dx + dy * dy);
-                const float cosATA	= (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+                const float atx = platform->dmx[0][0];
+                const float aty = platform->dmx[0][1];
+                const float atz = platform->dmx[0][2];
+                const float dx = cm->XPos() - platform->XPos();
+                const float dy = cm->YPos() - platform->YPos();
+                const float dz = cm->ZPos() - platform->ZPos();
+                const float range = (float)sqrt(dx * dx + dy * dy);
+                const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
 
                 // Only take the bait if we can see the thing
                 // TODO:  Should probably use beam width instead of scan angle...
@@ -306,7 +306,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             }
             else
             {
-                //			MonoPrint ("No %f %08x\n", chance, target);
+                // MonoPrint ("No %f %08x\n", chance, target);
             }
 
             // Note that we've considered this countermeasure

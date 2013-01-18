@@ -23,16 +23,16 @@
 // ==========================================
 // Fly states
 // ==========================================
-#define FLYSTATE_IN_UI				0					// Sitting in the UI
-#define	FLYSTATE_LOADING			1					// Loading the sim data
-#define FLYSTATE_WAITING			2					// Waiting for other players
-#define FLYSTATE_FLYING				3					// Flying
-#define FLYSTATE_DEAD				4					// We're now dead, waiting for respawn
+#define FLYSTATE_IN_UI 0 // Sitting in the UI
+#define FLYSTATE_LOADING 1 // Loading the sim data
+#define FLYSTATE_WAITING 2 // Waiting for other players
+#define FLYSTATE_FLYING 3 // Flying
+#define FLYSTATE_DEAD 4 // We're now dead, waiting for respawn
 
 // ==========================================
 // Other defines
 // ==========================================
-#define FS_MAXBLK					320					// Maximum number of data blocks
+#define FS_MAXBLK 320 // Maximum number of data blocks
 
 // ==========================================
 // Externs
@@ -57,39 +57,39 @@ public:
         _STATIC_KILLS_,
         _KILL_CATS_,
 
-        _VS_AI_		= 1,
-        _VS_HUMAN_	= 2,
+        _VS_AI_ = 1,
+        _VS_HUMAN_ = 2,
     };
 
 private:
     //sfr: for some reason, game is raising trying to delete name, allocate statically
-    _TCHAR			name[_NAME_LEN_ + 1];
-    _TCHAR			callSign[_CALLSIGN_LEN_ + 1];
-    VU_ID			playerSquadron;
-    VU_ID			playerFlight;
-    VU_ID			playerEntity;
+    _TCHAR name[_NAME_LEN_ + 1];
+    _TCHAR callSign[_CALLSIGN_LEN_ + 1];
+    VU_ID playerSquadron;
+    VU_ID playerFlight;
+    VU_ID playerEntity;
     // sfr: using smartpointers
     VuBin<SquadronClass> playerSquadronPtr;
     VuBin<FlightClass> playerFlightPtr;
-    VuBin<FalconEntity>	playerEntityPtr;
-    float			AceFactor;			// Player Ace Factor
-    float			initAceFactor;		// AceFactor at beginning of match
-    float			bubbleRatio;		// This session's multiplier for the player bubble size
-    ushort			kills[_KILL_CATS_]; // Player kills - can't keep in log book
-    ushort			missions;			// Player missions flown
-    uchar			country;			// Country or Team player is on
-    uchar			aircraftNum;		// Which aircraft in a flight we're using (0-3)
-    uchar			pilotSlot;			// Which pilot slot we've been assigned to
-    uchar			flyState;			// What we're doing (sitting in UI, waiting to load, flying)
-    short			reqCompression;		// Requested compression rate
-    ulong			latency;			// Current latency estimate for this session
-    uchar			samples;			// # of samples in current latency calculation
-    uchar			rating;				// Player rating (averaged)
-    uchar			voiceID;			// Player's voice of choice
+    VuBin<FalconEntity> playerEntityPtr;
+    float AceFactor; // Player Ace Factor
+    float initAceFactor; // AceFactor at beginning of match
+    float bubbleRatio; // This session's multiplier for the player bubble size
+    ushort kills[_KILL_CATS_]; // Player kills - can't keep in log book
+    ushort missions; // Player missions flown
+    uchar country; // Country or Team player is on
+    uchar aircraftNum; // Which aircraft in a flight we're using (0-3)
+    uchar pilotSlot; // Which pilot slot we've been assigned to
+    uchar flyState; // What we're doing (sitting in UI, waiting to load, flying)
+    short reqCompression; // Requested compression rate
+    ulong latency; // Current latency estimate for this session
+    uchar samples; // # of samples in current latency calculation
+    uchar rating; // Player rating (averaged)
+    uchar voiceID; // Player's voice of choice
 
-    uchar			assignedAircraftNum;
-    uchar			assignedPilotSlot;
-    FlightClass		*assignedPlayerFlightPtr;
+    uchar assignedAircraftNum;
+    uchar assignedPilotSlot;
+    FlightClass *assignedPlayerFlightPtr;
 #if FINE_INT
     // sfr: fine interest object list
     typedef VuBin<FalconEntity> FalconEntityBin;
@@ -100,18 +100,18 @@ private:
 
 
 public:
-    uchar*			unitDataSendBuffer;		// Unit data the local session is sending to this session
-    short			unitDataSendSet;
-    long			unitDataSendSize;
-    uchar*			unitDataReceiveBuffer;	// Unit data the local session is receiving from this session
-    short			unitDataReceiveSet;
-    uchar			unitDataReceived[FS_MAXBLK / 8];
-    uchar*			objDataSendBuffer;		// Objective data the local session is sending to this session
-    short			objDataSendSet;
-    long			objDataSendSize;
-    uchar*			objDataReceiveBuffer;	// Objective data the local session is receiving from this session
-    short			objDataReceiveSet;
-    uchar			objDataReceived[FS_MAXBLK / 8];
+    uchar* unitDataSendBuffer; // Unit data the local session is sending to this session
+    short unitDataSendSet;
+    long unitDataSendSize;
+    uchar* unitDataReceiveBuffer; // Unit data the local session is receiving from this session
+    short unitDataReceiveSet;
+    uchar unitDataReceived[FS_MAXBLK / 8];
+    uchar* objDataSendBuffer; // Objective data the local session is sending to this session
+    short objDataSendSet;
+    long objDataSendSize;
+    uchar* objDataReceiveBuffer; // Objective data the local session is receiving from this session
+    short objDataReceiveSet;
+    uchar objDataReceived[FS_MAXBLK / 8];
 
 public:
     // constructors & destructor
@@ -159,7 +159,7 @@ public:
     {
         return playerFlightPtr.get();
     }
-    SquadronClass* GetPlayerSquadron(void)	const
+    SquadronClass* GetPlayerSquadron(void) const
     {
         return playerSquadronPtr.get();
     }
@@ -289,9 +289,9 @@ public:
     int InSessionBubble(FalconEntity* ent, float bubble_multiplier = 1.0F);
 
     // event Handlers
-    //		virtual VU_ERRCODE Handle(VuEvent *event);
+    // virtual VU_ERRCODE Handle(VuEvent *event);
     virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
-    //		virtual VU_ERRCODE Handle(VuSessionEvent *event);
+    // virtual VU_ERRCODE Handle(VuSessionEvent *event);
 
 #if FINE_INT
     // sfr
@@ -311,7 +311,7 @@ public:
 #define FalconLocalSession ((FalconSessionEntity*)vuLocalSessionEntity.get())
 #define FalconLocalSessionId vuLocalSession
 #define FalconLocalGame (vuLocalSessionEntity ?\
-	((FalconSessionEntity*)vuLocalSessionEntity.get())->GetGame() : NULL)
+ ((FalconSessionEntity*)vuLocalSessionEntity.get())->GetGame() : NULL)
 #define FalconLocalGameId (vuLocalSessionEntity->GameId())
 
 #endif

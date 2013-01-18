@@ -24,11 +24,11 @@ class FalconEvent : public VuMessage
 public:
     enum HandlingThread
     {
-        NoThread                     = 0x0,				// This would be rather pointless
+        NoThread                     = 0x0, // This would be rather pointless
         SimThread                    = 0x1,
         CampaignThread               = 0x2,
-        UIThread					 = 0x4,
-        VuThread					 = 0x8,			// Realtime thread! carefull with what you send here
+        UIThread  = 0x4,
+        VuThread  = 0x8, // Realtime thread! carefull with what you send here
         AllThreads                   = 0xff
     };
 

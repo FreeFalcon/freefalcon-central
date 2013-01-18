@@ -1,7 +1,7 @@
 /***************************************************************************\
     Context.cpp
     Scott Randolph
-	April 29, 1996
+ April 29, 1996
 
     //JAM 06Oct03 - Begin Major Rewrite
 \***************************************************************************/
@@ -22,7 +22,7 @@
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
 
-#define	INT3 _asm {int 3}
+#define INT3 _asm {int 3}
 
 #ifdef _DEBUG
 
@@ -64,7 +64,7 @@ inline void ContextMPR::ZCX_Calculate(void)
 }
 
 // Macro to use CXes
-#define	SCALE_SZ(x)	(szCX1+szCX2/x)
+#define SCALE_SZ(x) (szCX1+szCX2/x)
 
 // COBRA - RED - End
 
@@ -110,7 +110,7 @@ ContextMPR::ContextMPR()
     palID = 0;
     texID = 0;
 
-    ZCX_Calculate();				// COBRA - RED - Drawing CXs update
+    ZCX_Calculate(); // COBRA - RED - Drawing CXs update
 
 #ifdef _DEBUG
     m_pVtxEnd = NULL;
@@ -290,14 +290,14 @@ void ContextMPR::Cleanup()
 #endif
 
 #ifdef _CONTEXT_RECORD_USED_STATES
-    MonoPrint("ContextMPR::Cleanup - Report of used states follows\n	");
+    MonoPrint("ContextMPR::Cleanup - Report of used states follows\n ");
     std::set<int>::iterator it;
 
     for (it = m_setStatesUsed.begin(); it != m_setStatesUsed.end(); it++)
         MonoPrint("%d,", *it);
 
     m_setStatesUsed.clear();
-    MonoPrint("\nContextMPR::Cleanup - End of report\n	");
+    MonoPrint("\nContextMPR::Cleanup - End of report\n ");
 #endif
 }
 
@@ -838,7 +838,7 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
 // flag & 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
-    UInt32	i = 0;
+    UInt32 i = 0;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::SetCurrentState (%d,0x%X)\n", state, flag);
@@ -2332,7 +2332,7 @@ void ContextMPR::setGlobalZBias(float zBias)
 {
     if (gZBias != zBias) gZBias = zBias;
 
-    ZCX_Calculate();							// COBRA - RED - Drawing CXs update
+    ZCX_Calculate(); // COBRA - RED - Drawing CXs update
 }
 
 inline TLVERTEX* SPolygon::CopyToVertexBuffer(TLVERTEX *bufferPos)
@@ -2365,14 +2365,14 @@ inline void ContextMPR::AllocatePolygon(SPolygon *&curPoly, const DWORD numVerti
     curPoly->numVertices = numVertices;
     curPoly->pVertexList = (SVertex *)(DWORD(curPoly) + sizeof(SPolygon));
 
-    /*	SVertex *curVert = curPoly->pVertexList;
+    /* SVertex *curVert = curPoly->pVertexList;
 
-    	for(int i = numVertices-1; i > 0; i--,curVert++)
-    	{
-    		curVert->pNext = (curVert+1);
-    	}
+     for(int i = numVertices-1; i > 0; i--,curVert++)
+     {
+     curVert->pNext = (curVert+1);
+     }
 
-    	curVert->pNext = curPoly->pVertexList;*/
+     curVert->pNext = curPoly->pVertexList;*/
 }
 
 inline void ContextMPR::AddPolygon(SPolygon *&polyList, SPolygon *&curPoly)
@@ -2424,7 +2424,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                 else
                     SetTexture1(-1);
 
-                if (pCur->renderState >=	STATE_MULTITEXTURE)
+                if (pCur->renderState >= STATE_MULTITEXTURE)
                     SetTexture2(pCur->textureID1);
 
                 verttot = pCur->numVertices;
@@ -2446,9 +2446,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     Spoint *xyz;
     Pcolor *rgba;
     TLVERTEX *pVtx;
-    SVertex	*sVertex;
+    SVertex *sVertex;
     SPolygon *sPolygon;
-    float	PolyZAvg = 0;
+    float PolyZAvg = 0;
 
     // Incoming type is always MPR_PRM_TRIFAN
     ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
@@ -2508,7 +2508,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             xyz  = &TheStateStack.XformedPosPool[*xyzIdxPtr++];
 
 
-            if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+            if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
             {
                 pVtx->sx = xyz->x - 0.5f;
                 pVtx->sy = xyz->y - 0.5f;
@@ -2521,7 +2521,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
             // NOTE: HACK!!
             if (xyz->z > 5)
-                pVtx->sz = SCALE_SZ(xyz->z);					// COBRA - RED - Using precomputed CXs
+                pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
             else
                 pVtx->sz = 0.f;
 
@@ -2602,7 +2602,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
     else
     {
-        int	i = poly->nVerts;
+        int i = poly->nVerts;
 
         //for(int i = 0; i < poly->nVerts; i++)
         while (i--)
@@ -2614,7 +2614,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
             // NOTE: HACK!!
             if (xyz->z > 5)
-                sVertex->sz = SCALE_SZ(xyz->z);					// COBRA - RED - Using precomputed CXs;
+                sVertex->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs;
             else
                 sVertex->sz = 0.f;
 
@@ -2690,7 +2690,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 sVertex->tv0 = 0;
             }
 
-            PolyZAvg += sVertex->sz;			// COBRA - RED - Poly Z Sum is calculated onthe fly
+            PolyZAvg += sVertex->sz; // COBRA - RED - Poly Z Sum is calculated onthe fly
 
             // COBRA - RED - Linking of vertexes is done on the fly
             if (i) sVertex = sVertex->pNext = sVertex + 1;
@@ -2784,7 +2784,7 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = v0->x - 0.5f;
         pVtx->sy = v0->y - 0.5f;
@@ -2796,7 +2796,7 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     }
 
     if (v0->z)
-        pVtx->sz = SCALE_SZ(v0->z);					// COBRA - RED - Using precomputed CXs
+        pVtx->sz = SCALE_SZ(v0->z); // COBRA - RED - Using precomputed CXs
     else
         pVtx->sz = 0.f;
 
@@ -2848,7 +2848,7 @@ void ContextMPR::Draw2DPoint(float x, float y)
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
     ShiAssert(FALSE == F4IsBadWritePtr(pVtx, sizeof * pVtx));
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = x - 0.5f;
         pVtx->sy = y - 0.5f;
@@ -2910,7 +2910,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
     ShiAssert(FALSE == F4IsBadWritePtr(pVtx, 2 * sizeof * pVtx));
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = v0->x - 0.5f;
         pVtx->sy = v0->y - 0.5f;
@@ -2922,7 +2922,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     }
 
     if (v0->z)
-        pVtx->sz = SCALE_SZ(v0->z);					// COBRA - RED - Using precomputed CXs
+        pVtx->sz = SCALE_SZ(v0->z); // COBRA - RED - Using precomputed CXs
     else
         pVtx->sz = 0.f;
 
@@ -2940,7 +2940,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = v1->x - 0.5f;
         pVtx->sy = v1->y - 0.5f;
@@ -3010,7 +3010,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = x0 - 0.5f;
         pVtx->sy = y0 - 0.5f;
@@ -3033,7 +3033,7 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     pVtx->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
-    if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+    if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
         pVtx->sx = x1 - 0.5f;
         pVtx->sy = y1 - 0.5f;
@@ -3108,7 +3108,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
         // Check for overrun
         ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-        if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+        if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
         {
             pVtx->sx = xyz->x - 0.5f;
             pVtx->sy = xyz->y - 0.5f;
@@ -3120,7 +3120,7 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
         }
 
         if (xyz->z)
-            pVtx->sz = SCALE_SZ(xyz->z);					// COBRA - RED - Using precomputed CXs;
+            pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs;
         else
             pVtx->sz = 0.f;
 
@@ -3198,7 +3198,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
         // Check for overrun
         ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-        if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+        if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
         {
 
             pVtx->sx = pData->x - 0.5f;
@@ -3303,7 +3303,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         // Check for overrun
         ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-        if (DisplayOptions.bScreenCoordinateBiasFix)		//Wombat778 4-01-04
+        if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
         {
             pVtx->sx = pData->x - 0.5f;
             pVtx->sy = pData->y - 0.5f;
@@ -3385,7 +3385,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     TLVERTEX *pVtx;
     SVertex *sVertex;
     SPolygon *sPolygon;
-    float	PolyZAvg = 0;
+    float PolyZAvg = 0;
 
     // Ensure no degenerate nPrimTypeitives
     ShiAssert((nVerts >= 3) || (nPrimType == MPR_PRM_POINTS && nVerts >= 1) || (nPrimType <= MPR_PRM_POLYLINE && nVerts >= 2));
@@ -3517,7 +3517,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 
 
         // Iterate for each vertex
-        int	i = nVerts;
+        int i = nVerts;
 
         //for(int i = 0; i < poly->nVerts; i++)
         while (i--)
@@ -3569,7 +3569,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
             sVertex->color = currentState != -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
-            PolyZAvg += sVertex->sz;							// COBRA - RED - Poly Z Sum is calculated onthe fly
+            PolyZAvg += sVertex->sz; // COBRA - RED - Poly Z Sum is calculated onthe fly
 
             // COBRA - RED - Linking of vertexes is done on the fly
             if (i) sVertex = sVertex->pNext = sVertex + 1;
@@ -3745,26 +3745,26 @@ void ContextMPR::Stats::Report()
 
     float fT = dwTotalPrimitives / 100.0f;
 
-    MonoPrint("	MinFPS: %d\n", dwMinFPS);
-    MonoPrint("	MaxFPS: %d\n", dwMaxFPS);
-    MonoPrint("	AverageFPS: %d\n", dwAverageFPS);
-    MonoPrint("	TotalPrimitives: %d\n", dwTotalPrimitives);
-    MonoPrint("	Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3], arrPrimitives[3] / fT);
-    MonoPrint("	Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4], arrPrimitives[4] / fT);
-    MonoPrint("	Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5], arrPrimitives[5] / fT);
-    MonoPrint("	Point Lists: %d (%.2f %%)\n", arrPrimitives[0], arrPrimitives[0] / fT);
-    MonoPrint("	Line Lists: %d (%.2f %%)\n", arrPrimitives[1], arrPrimitives[1] / fT);
-    MonoPrint("	Line Strips: %d (%.2f %%)\n", arrPrimitives[2], arrPrimitives[2] / fT);
-    MonoPrint("	AvgVtxBatchSize: %d\n", dwAvgVtxBatchSize);
-    MonoPrint("	MaxVtxBatchSize: %d\n", dwMaxVtxBatchSize);
-    MonoPrint("	AvgPrimBatchSize: %d\n", dwAvgPrimBatchSize);
-    MonoPrint("	MaxPrimBatchSize: %d\n", dwMaxPrimBatchSize);
-    MonoPrint("	AvgVtxCountPerSecond: %d\n", dwAvgVtxCountPerSecond);
-    MonoPrint("	MaxVtxCountPerSecond: %d\n", dwMaxVtxCountPerSecond);
-    MonoPrint("	AvgPrimCountPerSecond: %d\n", dwAvgPrimCountPerSecond);
-    MonoPrint("	MaxPrimCountPerSecond: %d\n", dwMaxPrimCountPerSecond);
-    MonoPrint("	TextureChangesTotal: %d\n", dwPutTextureTotal);
-    MonoPrint("	TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached, (float) dwPutTextureCached / (dwPutTextureTotal / 100.0f));
+    MonoPrint(" MinFPS: %d\n", dwMinFPS);
+    MonoPrint(" MaxFPS: %d\n", dwMaxFPS);
+    MonoPrint(" AverageFPS: %d\n", dwAverageFPS);
+    MonoPrint(" TotalPrimitives: %d\n", dwTotalPrimitives);
+    MonoPrint(" Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3], arrPrimitives[3] / fT);
+    MonoPrint(" Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4], arrPrimitives[4] / fT);
+    MonoPrint(" Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5], arrPrimitives[5] / fT);
+    MonoPrint(" Point Lists: %d (%.2f %%)\n", arrPrimitives[0], arrPrimitives[0] / fT);
+    MonoPrint(" Line Lists: %d (%.2f %%)\n", arrPrimitives[1], arrPrimitives[1] / fT);
+    MonoPrint(" Line Strips: %d (%.2f %%)\n", arrPrimitives[2], arrPrimitives[2] / fT);
+    MonoPrint(" AvgVtxBatchSize: %d\n", dwAvgVtxBatchSize);
+    MonoPrint(" MaxVtxBatchSize: %d\n", dwMaxVtxBatchSize);
+    MonoPrint(" AvgPrimBatchSize: %d\n", dwAvgPrimBatchSize);
+    MonoPrint(" MaxPrimBatchSize: %d\n", dwMaxPrimBatchSize);
+    MonoPrint(" AvgVtxCountPerSecond: %d\n", dwAvgVtxCountPerSecond);
+    MonoPrint(" MaxVtxCountPerSecond: %d\n", dwMaxVtxCountPerSecond);
+    MonoPrint(" AvgPrimCountPerSecond: %d\n", dwAvgPrimCountPerSecond);
+    MonoPrint(" MaxPrimCountPerSecond: %d\n", dwMaxPrimCountPerSecond);
+    MonoPrint(" TextureChangesTotal: %d\n", dwPutTextureTotal);
+    MonoPrint(" TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached, (float) dwPutTextureCached / (dwPutTextureTotal / 100.0f));
 
     MonoPrint("End of stats report\n");
 }

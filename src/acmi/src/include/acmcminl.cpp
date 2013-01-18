@@ -15,7 +15,7 @@ inline int ACMICamera::Type() const
 
 inline void ACMICamera::SetRotateType(int type)
 {
-    //!	_rotType = _type;
+    //! _rotType = _type;
     _rotType = type;
 }
 
@@ -57,11 +57,11 @@ inline void ACMICamera::ToggleTracking()
     /*
     if(_tracking >= NUM_TRACKING_CAMS)
     {
-    	_tracking = NO_TRACKING;
+     _tracking = NO_TRACKING;
     }
     else
     {
-    	_tracking++;
+     _tracking++;
     }
     */
     _tracking ^= 1;

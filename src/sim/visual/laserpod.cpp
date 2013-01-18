@@ -11,8 +11,8 @@
 #include "falcsess.h"
 #include "sms.h"
 #include "aircrft.h"
-#include "simdrive.h"	//MI
-#include "fcc.h"	//MI
+#include "simdrive.h" //MI
+#include "fcc.h" //MI
 #include "FalcLib\include\dispopts.h"
 #include "airframe.h"
 
@@ -286,7 +286,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             display->Line(0.2F,  0.0F, -0.2F,  0.0F);
             display->AdjustOriginInViewport(-seekerAzCenter / LGB_GIMBAL_MAX, -seekerElCenter / LGB_GIMBAL_MAX);
         }
-        else	//but instead, there's a small square
+        else //but instead, there's a small square
         {
             if (!MenuMode)
             {

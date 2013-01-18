@@ -13,7 +13,7 @@
 #include "Graphics\DXEngine\DXVBManager.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableTracer::pool;
+MEM_POOL DrawableTracer::pool;
 #endif
 
 // bleh
@@ -65,10 +65,10 @@ void DXDrawableTracer::Update(Tpoint *head, Tpoint *tail)
 //void DrawableTracer::Draw( class RenderOTW *renderer, int LOD )
 void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
 {
-    D3DVECTOR			v0, v1, v2, v3, v4, v5;
-    int					lineColor, LineEndColor;
-    float				DetailLevel;
-    D3DVECTOR			Vector;
+    D3DVECTOR v0, v1, v2, v3, v4, v5;
+    int lineColor, LineEndColor;
+    float DetailLevel;
+    D3DVECTOR Vector;
 
 
     //COUNT_PROFILE("Tracers Nr");
@@ -98,22 +98,22 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     }
 
     // Alpha Check
-    if (alpha > 1.0f)	alpha = 1.0f;
+    if (alpha > 1.0f) alpha = 1.0f;
 
     // now Alpha is proportional to distance
     float LineAlpha =/*alpha * */(1 - DetailLevel * 0.2f);
 
 
     // Set the Colour
-    lineColor =	((unsigned int)(LineAlpha * 255.0f) << 24) 	     +	// alpha
-                ((unsigned int)(r * 255.0f) << 16) +	// blue
-                ((unsigned int)(g * 255.0f) << 8)  +	// green
-                ((unsigned int)(b * 255.0f));		 	// red
+    lineColor = ((unsigned int)(LineAlpha * 255.0f) << 24)       + // alpha
+                ((unsigned int)(r * 255.0f) << 16) + // blue
+                ((unsigned int)(g * 255.0f) << 8)  + // green
+                ((unsigned int)(b * 255.0f));   // red
 
-    LineEndColor =	((unsigned int)(LineAlpha * 32.0f) << 24) 	     +	// alpha
-                    ((unsigned int)(r * 255.0f) << 16) +	// blue
-                    ((unsigned int)(g * 255.0f) << 8)  +	// green
-                    ((unsigned int)(b * 255.0f));		 	// red
+    LineEndColor = ((unsigned int)(LineAlpha * 32.0f) << 24)       + // alpha
+                    ((unsigned int)(r * 255.0f) << 16) + // blue
+                    ((unsigned int)(g * 255.0f) << 8)  + // green
+                    ((unsigned int)(b * 255.0f));   // red
 
     if (DetailLevel > 0.15f)
     {
@@ -135,7 +135,7 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     Vector.z = tailEnd.z - position.z;
 
     // Normalize the Direction vector
-    float	k = sqrtf(Vector.x * Vector.x + Vector.y * Vector.y + Vector.z * Vector.z);
+    float k = sqrtf(Vector.x * Vector.x + Vector.y * Vector.y + Vector.z * Vector.z);
     Vector.x /= k;
     Vector.y /= k;
     Vector.z /= k;
@@ -143,7 +143,7 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     v0 = *(D3DVECTOR*)&position;
     v5 = *(D3DVECTOR*)&tailEnd;
 
-    D3DVECTOR	mid(Vector);
+    D3DVECTOR mid(Vector);
     mid.x *= 0.2f * k;
     mid.y *= 0.2f * k;
     mid.z *= 0.2f * k;

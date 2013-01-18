@@ -36,14 +36,14 @@ static int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self);
 void CalcTransformMatrix(SimBaseClass* theObject);
 
 #ifdef USE_SH_POOLS
-MEM_POOL	SimObjectType::pool;
-MEM_POOL	SimObjectLocalData::pool;
+MEM_POOL SimObjectType::pool;
+MEM_POOL SimObjectLocalData::pool;
 #endif
 
 //sfr: test
 #define COUNT_SIMOBJECTTYPE 0
 #if COUNT_SIMOBJECTTYPE
-DWORD	SimObjects = 0;
+DWORD SimObjects = 0;
 F4CSECTIONHANDLE *som = F4CreateCriticalSection("sim object count");
 #endif
 
@@ -113,7 +113,7 @@ BOOL SimObjectType::IsReferenced(void)
 {
     /*
     if (refCount)
-    	return TRUE;
+     return TRUE;
     return FALSE;
     */
     return refCount;
@@ -191,8 +191,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         // Inherit certain attributes from campaign parent
         // HACK HACK HACK HACK HACK!!!
         if (FalconLocalGame->GetGameType() == game_Dogfight && initData->campBase->IsUnit())
-            //	   if ((initData->campUnit && initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
-            //		   (initData->campObj && initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
+            //    if ((initData->campUnit && initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) ||
+            //    (initData->campObj && initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
             // END HACK
         {
             retval->SetFalcFlag(FEC_REGENERATING);
@@ -220,10 +220,10 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
 
         /*
         if (initData->createFlags & SIDC_SILENT_INSERT){
-        	vuDatabase->SilentInsert (retval);
+         vuDatabase->SilentInsert (retval);
         }
         else if (!(initData->createFlags & SIDC_NO_INSERT)){
-        	vuDatabase->QuickInsert (retval);
+         vuDatabase->QuickInsert (retval);
         }*/
         // sfr: flags now take care of sending creation events
         vuDatabase->Insert(retval);
@@ -252,8 +252,8 @@ SimBaseClass* AddVehicleToSim(SimInitDataClass *initData, int motionType)
         // sfr: temp test
         //static bool first = true;
         //if (first){
-        //	first = false;
-        //	debugPtr = theVehicle;
+        // first = false;
+        // debugPtr = theVehicle;
         //}
     }
     else if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)
@@ -335,7 +335,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
         {
             switch (SimCompare(curInUse->BaseData(), curUpdate))
             {
-                case 0:	// curUpdate == curInUse -- Means the current entry is still active
+                case 0: // curUpdate == curInUse -- Means the current entry is still active
                     if (!curUpdate->IsExploding() && CheckForConcern(curUpdate, self))
                     {
                         lastInUse = curInUse;
@@ -535,7 +535,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     // NOTE:  The missile will eventually have their own target list maintenance polices
     // that don't go through this routine.  For now they don't have a target list at all.
     //if (curUpdate->IsBomb()){
-    //ME123 CHAFF FLARE BOMBS SHOULD NOT BE REJECTED IMO	   return FALSE;
+    //ME123 CHAFF FLARE BOMBS SHOULD NOT BE REJECTED IMO    return FALSE;
     //}
 
     // edg: I'm going to try this out -- don't put anything into target
@@ -609,19 +609,19 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
         else if (curUpdate->IsSim() &&
-                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER			||
-                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER	||
+                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER ||
+                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //				  ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
         else if (curUpdate->IsCampaign() &&
-                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER			||
-                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER	||
+                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER ||
+                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER ||
                   // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //				  ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
                   ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
@@ -641,7 +641,7 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         else
             // MODIFIED BY S.G. FOR THE MISSILE TO FIND A LOCK WITH THIS SET TO 10 NM INSTEAD OF 8 NM
-            //		 airRange = 8.0F * NM_TO_FT * 8.0F * NM_TO_FT;
+            //  airRange = 8.0F * NM_TO_FT * 8.0F * NM_TO_FT;
             airRange = 10.0F * NM_TO_FT * 10.0F * NM_TO_FT;
 
         // END OF MODIFIED SECTION

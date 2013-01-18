@@ -7,8 +7,8 @@
 
 //#include "trainingscript.h"
 
-#include "Graphics/Include/grinline.h"	//Wombat778 3-22-04
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 //===================================
 // Function Bodies for CPButtonObject
@@ -21,31 +21,31 @@ extern bool g_bFilter2DPit;		//Wombat778 3-30-04
 CPButtonObject::CPButtonObject(ButtonObjectInitStr *pInitStr)
 {
 
-    mIdNum				= pInitStr->objectId;
-    mCallbackSlot		= pInitStr->callbackSlot;
-    mTotalStates		= pInitStr->totalStates;
-    mNormalState		= pInitStr->normalState;
+    mIdNum = pInitStr->objectId;
+    mCallbackSlot = pInitStr->callbackSlot;
+    mTotalStates = pInitStr->totalStates;
+    mNormalState = pInitStr->normalState;
 
 #ifndef _CPBUTTON_USE_STL_CONTAINERS
-    mTotalViews			= pInitStr->totalViews;
-    mViewSlot			= 0;
+    mTotalViews = pInitStr->totalViews;
+    mViewSlot = 0;
 #endif
 
-    mCursorIndex		= pInitStr->cursorIndex;
-    mDelay				= pInitStr->delay;
+    mCursorIndex = pInitStr->cursorIndex;
+    mDelay = pInitStr->delay;
 
-    mDelayInc			= -1;
-    mCurrentState		= mNormalState;
+    mDelayInc = -1;
+    mCurrentState = mNormalState;
 
-    mSound1				= pInitStr->sound1;
-    mSound2				= pInitStr->sound2;
+    mSound1 = pInitStr->sound1;
+    mSound2 = pInitStr->sound2;
 
     // JPO - lets be careful out there
     if (mCallbackSlot >= 0 && mCallbackSlot < TOTAL_BUTTONCALLBACK_SLOTS)
     {
 
-        mTransStateToAero	= ButtonCallbackArray[mCallbackSlot].TransStateToAero;
-        mTransAeroToState	= ButtonCallbackArray[mCallbackSlot].TransAeroToState;
+        mTransStateToAero = ButtonCallbackArray[mCallbackSlot].TransStateToAero;
+        mTransAeroToState = ButtonCallbackArray[mCallbackSlot].TransAeroToState;
     }
     else
     {
@@ -59,7 +59,7 @@ CPButtonObject::CPButtonObject(ButtonObjectInitStr *pInitStr)
 #ifdef USE_SH_POOLS
     mpButtonView = (CPButtonView **)MemAllocPtr(gCockMemPool, sizeof(CPButtonView *)*mTotalViews, FALSE);
 #else
-    mpButtonView		= new CPButtonView*[mTotalViews];
+    mpButtonView = new CPButtonView*[mTotalViews];
 #endif
 
     memset(mpButtonView, 0, mTotalViews * sizeof(CPButtonView*));
@@ -76,7 +76,7 @@ void CPButtonObject::HandleEvent(int event)
 
     if (mTransAeroToState)
     {
-        mTransAeroToState(this, event);			// translate aero to button click
+        mTransAeroToState(this, event); // translate aero to button click
     }
 
     mDelayInc = mDelay;
@@ -107,7 +107,7 @@ void CPButtonObject::HandleMouseEvent(int event)
             mTransStateToAero(this, event);     //translate button click to aero
             //Wombat778 3-06-04 If the scripting object is capturing, add the callback
             //if (TrainingScript->IsCapturing())
-            //	TrainingScript->CaptureCommand(NULL, mCallbackSlot);
+            // TrainingScript->CaptureCommand(NULL, mCallbackSlot);
         }
 
         HandleEvent(event);
@@ -119,7 +119,7 @@ int CPButtonObject::GetSound(int which) const
 
     int returnVal = -1;
 
-    F4Assert(which == 1 || which == 2);	//values for which can only be 1 or 2;
+    F4Assert(which == 1 || which == 2); //values for which can only be 1 or 2;
 
     if (which == 1)
     {
@@ -147,7 +147,7 @@ void CPButtonObject::SetSound(int which, int index)
     }
     else
     {
-        ShiWarning("Which can only be 1 or 2");	//values for which can only be 1 or 2;
+        ShiWarning("Which can only be 1 or 2"); //values for which can only be 1 or 2;
     }
 }
 
@@ -224,7 +224,7 @@ BOOL CPButtonObject::DoBlit(void)
 void CPButtonObject::NotifyViews()
 {
 
-    int		i;
+    int i;
 
 #ifndef _CPBUTTON_USE_STL_CONTAINERS
 
@@ -243,9 +243,9 @@ void CPButtonObject::NotifyViews()
 // CPButtonObject::GetCurrentState
 //------------------------------------------------------------------
 /*
-int CPButtonObject::	GetCurrentState() {
+int CPButtonObject:: GetCurrentState() {
 
-	return mCurrentState;
+ return mCurrentState;
 }
 */
 
@@ -255,7 +255,7 @@ int CPButtonObject::	GetCurrentState() {
 /*
 int CPButtonObject::GetNormalState() {
 
-	return mNormalState;
+ return mNormalState;
 }
 */
 //------------------------------------------------------------------
@@ -264,7 +264,7 @@ int CPButtonObject::GetNormalState() {
 /*
 int CPButtonObject::GetId() {
 
-	return mIdNum;
+ return mIdNum;
 }
 */
 //------------------------------------------------------------------
@@ -273,7 +273,7 @@ int CPButtonObject::GetId() {
 /*
 int CPButtonObject::GetCursorIndex() {
 
-	return mCursorIndex;
+ return mCursorIndex;
 }
 */
 //------------------------------------------------------------------
@@ -332,22 +332,22 @@ void CPButtonObject::UpdateStatus()
 CPButtonView::CPButtonView(ButtonViewInitStr* pButtonViewInitStr)
 {
 
-    mIdNum				= pButtonViewInitStr->objectId;
-    mParentButton		= pButtonViewInitStr->parentButton;
-    mTransparencyType	= pButtonViewInitStr->transparencyType;
-    mDestRect			= pButtonViewInitStr->destRect;
-    mpSrcRect			= pButtonViewInitStr->pSrcRect;	// List of Rects
-    mpOTWImage			= pButtonViewInitStr->pOTWImage;
-    mpTemplate			= pButtonViewInitStr->pTemplate;
-    mPersistant			= pButtonViewInitStr->persistant;
-    mStates				= pButtonViewInitStr->states;
-    mHScale				= pButtonViewInitStr->hScale;
-    mVScale				= pButtonViewInitStr->vScale;
+    mIdNum = pButtonViewInitStr->objectId;
+    mParentButton = pButtonViewInitStr->parentButton;
+    mTransparencyType = pButtonViewInitStr->transparencyType;
+    mDestRect = pButtonViewInitStr->destRect;
+    mpSrcRect = pButtonViewInitStr->pSrcRect; // List of Rects
+    mpOTWImage = pButtonViewInitStr->pOTWImage;
+    mpTemplate = pButtonViewInitStr->pTemplate;
+    mPersistant = pButtonViewInitStr->persistant;
+    mStates = pButtonViewInitStr->states;
+    mHScale = pButtonViewInitStr->hScale;
+    mVScale = pButtonViewInitStr->vScale;
 
-    mDestRect.top		= (LONG)(mDestRect.top * mVScale);
-    mDestRect.left		= (LONG)(mDestRect.left * mHScale);
-    mDestRect.bottom	= (LONG)(mDestRect.bottom * mVScale);
-    mDestRect.right	= (LONG)(mDestRect.right * mHScale);
+    mDestRect.top = (LONG)(mDestRect.top * mVScale);
+    mDestRect.left = (LONG)(mDestRect.left * mHScale);
+    mDestRect.bottom = (LONG)(mDestRect.bottom * mVScale);
+    mDestRect.right = (LONG)(mDestRect.right * mHScale);
 
     //Wombat778 3-22-04  Added following for rendered (rather than blitted buttonviews)
     if (DisplayOptions.bRender2DCockpit)
@@ -356,14 +356,14 @@ CPButtonView::CPButtonView(ButtonViewInitStr* pButtonViewInitStr)
 
         for (int i = 0; i < mStates; i++)
         {
-            mpSourceBuffer[i].mWidth		= mpSrcRect[i].right - mpSrcRect[i].left;
-            mpSourceBuffer[i].mHeight		= mpSrcRect[i].bottom - mpSrcRect[i].top;
+            mpSourceBuffer[i].mWidth = mpSrcRect[i].right - mpSrcRect[i].left;
+            mpSourceBuffer[i].mHeight = mpSrcRect[i].bottom - mpSrcRect[i].top;
         }
     }
 
     //Wombat778 end
 
-    m_pPalette = NULL;			//Wombat778 3-23-04 added to initialize new variable
+    m_pPalette = NULL; //Wombat778 3-23-04 added to initialize new variable
 }
 
 //------------------------------------------------------------------
@@ -406,7 +406,7 @@ void CPButtonView::DisplayBlit(void)
         return;
     }
 
-    if (DisplayOptions.bRender2DCockpit)			//Handle these in displayblit3d
+    if (DisplayOptions.bRender2DCockpit) //Handle these in displayblit3d
         return;
 
     if (mpButtonObject->DoBlit() && mStates)
@@ -425,7 +425,7 @@ void CPButtonView::DisplayBlit(void)
     mDirtyFlag = FALSE;
 }
 
-void RenderButtonViewPoly(SourceButtonViewType *sb, tagRECT *destrect, GLint alpha)		//Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
+void RenderButtonViewPoly(SourceButtonViewType *sb, tagRECT *destrect, GLint alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
 {
 
     OTWDriver.renderer->CenterOriginInViewport();
@@ -481,7 +481,7 @@ void CPButtonView::DisplayBlit3D(void)
         return;
     }
 
-    if (!DisplayOptions.bRender2DCockpit)			//Handle these in displayblit
+    if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
     if (mpButtonObject->DoBlit() && mStates)
@@ -490,7 +490,7 @@ void CPButtonView::DisplayBlit3D(void)
         if (mTransparencyType == CPTRANSPARENT)
         {
 
-            if (g_bFilter2DPit)		//Wombat778 3-30-04 Add option to filter
+            if (g_bFilter2DPit) //Wombat778 3-30-04 Add option to filter
                 RenderButtonViewPoly(&mpSourceBuffer[mpButtonObject->GetCurrentState()], &mDestRect, STATE_CHROMA_TEXTURE);
             else
                 RenderButtonViewPoly(&mpSourceBuffer[mpButtonObject->GetCurrentState()], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
@@ -498,7 +498,7 @@ void CPButtonView::DisplayBlit3D(void)
         else
         {
 
-            if (g_bFilter2DPit)		//Wombat778 3-30-04 Add option to filter
+            if (g_bFilter2DPit) //Wombat778 3-30-04 Add option to filter
                 RenderButtonViewPoly(&mpSourceBuffer[mpButtonObject->GetCurrentState()], &mDestRect, STATE_TEXTURE);
             else
                 RenderButtonViewPoly(&mpSourceBuffer[mpButtonObject->GetCurrentState()], &mDestRect, STATE_TEXTURE_NOFILTER);
@@ -541,7 +541,7 @@ void CPButtonView::CreateLit(void)
                     if (!pTex->Create("CPButtonView", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].buttonview, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
@@ -563,7 +563,7 @@ void CPButtonView::DiscardLit(void)
     {
         for (int i2 = 0; i2 < mStates; i2++)
         {
-            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++)	//delete the textures for each buttonview
+            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each buttonview
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();

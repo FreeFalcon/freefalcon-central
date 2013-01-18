@@ -19,7 +19,7 @@
  *
  * AMD3D 3D library code: Maxtrix Manipulation
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 

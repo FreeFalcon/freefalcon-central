@@ -72,10 +72,10 @@
 #endif
 #include "aircrft.h"
 #include "MissEval.h"
-//#define KEV_DEBUG	1
+//#define KEV_DEBUG 1
 //#define _TIMEDEBUG
 
-extern bool g_bFloatingBullseye;	// JB/Codec 010115
+extern bool g_bFloatingBullseye; // JB/Codec 010115
 extern bool g_bServer;
 extern bool g_bServerHostAll;
 extern int g_nDeagTimer;
@@ -95,49 +95,49 @@ extern int g_nTaxiLaunchTime;
 // =====================================
 Float32 f;
 
-GridIndex  			dx[17] = {0, 1, 1, 1, 0, -1, -1, -1, 0, 0, 2, 2, 2, 0, -2, -2, -2}; // dx per direction
-GridIndex  			dy[17] = {1, 1, 0, -1, -1, -1, 0, 1, 0, 2, 2, 0, -2, -2, -2, 0, 2}; // dy per direction
+GridIndex   dx[17] = {0, 1, 1, 1, 0, -1, -1, -1, 0, 0, 2, 2, 2, 0, -2, -2, -2}; // dx per direction
+GridIndex   dy[17] = {1, 1, 0, -1, -1, -1, 0, 1, 0, 2, 2, 0, -2, -2, -2, 0, 2}; // dy per direction
 
-int	VisualDetectionRange[OtherDam] = { 12, 4, 5, 5, 8, 16, 10, 5 };
+int VisualDetectionRange[OtherDam] = { 12, 4, 5, 5, 8, 16, 10, 5 };
 //2001-03-24 MODIFIED BY S.G. SO LOW AIR AND AIR MOVEMENT TYPE ARE DOWN TO 1 MINUTE FROM 2 MINUTES
-//CampaignTime	ReconLossTime[MOVEMENT_TYPES] =
+//CampaignTime ReconLossTime[MOVEMENT_TYPES] =
 //{ CampaignHours, 20*CampaignMinutes, 10*CampaignMinutes, 10*CampaignMinutes,
 //2*CampaignMinutes, 2*CampaignMinutes, 10*CampaignMinutes, 10*CampaignMinutes };
-CampaignTime	ReconLossTime[MOVEMENT_TYPES] =
+CampaignTime ReconLossTime[MOVEMENT_TYPES] =
 {
     CampaignHours, 20 * CampaignMinutes, 10 * CampaignMinutes,
     10 * CampaignMinutes, 1 * CampaignMinutes, 1 * CampaignMinutes, 10 * CampaignMinutes, 10 * CampaignMinutes
 };
-uchar			DefaultDamageMods[OtherDam + 1] = { 0, 100, 100, 0, 0, 100, 100, 0, 0, 0, 0 };
+uchar DefaultDamageMods[OtherDam + 1] = { 0, 100, 100, 0, 0, 100, 100, 0, 0, 0, 0 };
 
 // distance squared, in feet of fatherest visual effect
-#define MAX_DISTANT_EFFECT_DIST_SQ	45000000000
+#define MAX_DISTANT_EFFECT_DIST_SQ 45000000000
 // The max distance (ft) at which we'll deaggregate persistant objects
-#define PERSIST_BUBBLE_MAX		10*GRID_SIZE_FT
+#define PERSIST_BUBBLE_MAX 10*GRID_SIZE_FT
 
-#define CAMP_NORMAL_MODE		0
-#define CAMP_STARTING_UP		1
+#define CAMP_NORMAL_MODE 0
+#define CAMP_STARTING_UP 1
 
-#define CAMPAIGN_STAGE_TIME_MINUTES		5
+#define CAMPAIGN_STAGE_TIME_MINUTES 5
 
-#define STAGE_1		1
-#define STAGE_2		2
-#define STAGE_3		3
-#define STAGE_4		4
-#define STAGE_5		5
-#define STAGE_6		6
-#define STAGE_7		7
-#define STAGE_8		8
-#define STAGE_9		9
-#define STAGE_10	10
-#define STAGE_11	11
-#define STAGE_12	12
+#define STAGE_1 1
+#define STAGE_2 2
+#define STAGE_3 3
+#define STAGE_4 4
+#define STAGE_5 5
+#define STAGE_6 6
+#define STAGE_7 7
+#define STAGE_8 8
+#define STAGE_9 9
+#define STAGE_10 10
+#define STAGE_11 11
+#define STAGE_12 12
 
 // Campaign Locals
-static int	sCampaignSleepRequested = 0;
-static int	sCampaignStartingUp = CAMP_NORMAL_MODE;
-static int	sTakeoffTime = 0;
-static int	FirstflightsTakeoffTime = 0;
+static int sCampaignSleepRequested = 0;
+static int sCampaignStartingUp = CAMP_NORMAL_MODE;
+static int sTakeoffTime = 0;
+static int FirstflightsTakeoffTime = 0;
 
 
 // Campaign's critical section
@@ -165,7 +165,7 @@ extern void CheckForCheatFlight(ulong time);
 #ifdef CAMPTOOL
 extern void ShowTime(CampaignTime t);
 extern void RedrawPlayerBubble(void);
-extern boolean	PBubble;
+extern boolean PBubble;
 extern HWND hMainWnd;
 #endif
 
@@ -257,8 +257,8 @@ Objective AddObjectiveToCampaign(GridIndex x, GridIndex y)
 
 int LinkCampaignObjectives(Path path, Objective O1, Objective O2)
 {
-    int	        i = 0, cost = 0, found = 0;
-    uchar		costs[MOVEMENT_TYPES] = {254};
+    int         i = 0, cost = 0, found = 0;
+    uchar costs[MOVEMENT_TYPES] = {254};
     GridIndex   x = 0, y = 0;
 
     for (i = 0; i < MOVEMENT_TYPES; i++)
@@ -273,7 +273,7 @@ int LinkCampaignObjectives(Path path, Objective O1, Objective O2)
                 cost = (FloatToInt32(path->GetCost()) + cost) / 2;
 
                 if (cost > 254)
-                    cost = 254;			// If it's possible to move, but very expensive, mark it as our max movable cost (254)
+                    cost = 254; // If it's possible to move, but very expensive, mark it as our max movable cost (254)
 
                 costs[i] = (uchar)cost;
                 found = 1;
@@ -285,7 +285,7 @@ int LinkCampaignObjectives(Path path, Objective O1, Objective O2)
             cost = FloatToInt32(path->GetCost());
 
             if (cost > 254)
-                cost = 254;				// If it's possible to move, but very expensive, mark it as our max movable cost (254)
+                cost = 254; // If it's possible to move, but very expensive, mark it as our max movable cost (254)
 
             costs[i] = (uchar)cost;
             found = 1;
@@ -335,7 +335,7 @@ int UnLinkCampaignObjectives(Objective O1, Objective O2)
 int RecalculateLinks(Objective o)
 {
     PathClass   path;
-    Objective	n;
+    Objective n;
     char        nn;
 
     for (nn = 0; nn < o->NumLinks(); nn++)
@@ -378,16 +378,16 @@ int TimeOfDayGeneral(CampaignTime time)
 {
     // 2001-04-10 MODIFIED BY S.G. SO IT USES MILISECOND AND NOT MINUTES!
     //I COULD CHANGE THE .H FILE BUT IT WOULD TAKE TOO LONG TO RECOMPILE :-(
-    /*	if (time < TOD_SUNUP)
-    	return TOD_NIGHT;
-    	else if (time < TOD_SUNUP + 120*CampaignMinutes)
-    	return TOD_DAWNDUSK;
-    	else if (time < TOD_SUNDOWN - 120*CampaignMinutes)
-    	return TOD_DAY;
-    	else if (time < TOD_SUNDOWN)
-    	return TOD_DAWNDUSK;
-    	else
-    	return TOD_NIGHT;
+    /* if (time < TOD_SUNUP)
+     return TOD_NIGHT;
+     else if (time < TOD_SUNUP + 120*CampaignMinutes)
+     return TOD_DAWNDUSK;
+     else if (time < TOD_SUNDOWN - 120*CampaignMinutes)
+     return TOD_DAY;
+     else if (time < TOD_SUNDOWN)
+     return TOD_DAWNDUSK;
+     else
+     return TOD_NIGHT;
      */
     // time can be over one day so I need to keep just the time in the current day...
 
@@ -446,7 +446,7 @@ CampaignTime TimeOfDay(void)
 
 void ResizeBubble(int moversInBubble)
 {
-    float		br, new_ratio;
+    float br, new_ratio;
 
     br = (float)(PLAYER_BUBBLE_MOVERS - moversInBubble);
     //new_ratio = ((FalconSessionEntity*)vuLocalSessionEntity.get())->GetBubbleRatio() * 1.0F + (br * 0.01F);
@@ -473,15 +473,15 @@ extern bool g_bLogEvents;
 /* Here we do the following:
  *
  * a) Set Interested() state on entity.
- *		Interested() means it should be deaggregated by the end of rebuild bubble
+ * Interested() means it should be deaggregated by the end of rebuild bubble
  * b) Wake or Sleep the entity locally if it's deaggregated and in/out of our bubble
  * c) Post a Deaggregate message if it's in someone's bubble and we're the host
  * d) Check if it's within our local local sim area and insert
- *		or remove it from the sim lists accordingly
+ * or remove it from the sim lists accordingly
  */
 int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
 {
-    int	want_deaggregate = 0, want_in_sim_list = 0;
+    int want_deaggregate = 0, want_in_sim_list = 0;
     bool didsimlistcrap = FALSE;
     int inbobble = (session->InSessionBubble(e, REAGREGATION_RATIO));
 
@@ -494,7 +494,7 @@ int DeaggregationCheck(CampEntity e, FalconSessionEntity *session)
             {
                 VuTargetEntity* target = (VuTargetEntity*)
                                          vuDatabase->Find(vuLocalSessionEntity->Game()->OwnerId());
-                FalconSimCampMessage	*msg = new FalconSimCampMessage(e->Id(), target);
+                FalconSimCampMessage *msg = new FalconSimCampMessage(e->Id(), target);
 
                 //me123 let the host own all the planes
                 // sfr: host will own battallions too, since battallion 3d movement depends on 2d
@@ -697,7 +697,7 @@ void ChooseNewSession(CampEntity ent)
     if (best_session)
     {
         //VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
-        FalconSimCampMessage	*msg = new FalconSimCampMessage(ent->Id(), FalconLocalGame);
+        FalconSimCampMessage *msg = new FalconSimCampMessage(ent->Id(), FalconLocalGame);
         msg->dataBlock.from = best_session->Id();
         msg->dataBlock.message = FalconSimCampMessage::simcampChangeOwner;
         FalconSendMessage(msg);
@@ -717,18 +717,18 @@ int gGameType = -1;
 
 void RebuildBubble(int forced)
 {
-    float			sx, sy;
-    //	float			sx2,sy2;
-    VuGridIterator	*myit;
-    Objective		o;
-    Unit			u;
-    //CampEntity		c;
-    VuEntity		*player;
-    //	VuEntity		*camera2;
-    //	int				airm = 0,gndm = 0,moversInBubble;
-    int				deag_ents = 0, reag_ents = 0, deag;
-    int				ok;
-    VuSessionsIterator	*sit;
+    float sx, sy;
+    // float sx2,sy2;
+    VuGridIterator *myit;
+    Objective o;
+    Unit u;
+    //CampEntity c;
+    VuEntity *player;
+    // VuEntity *camera2;
+    // int airm = 0,gndm = 0,moversInBubble;
+    int deag_ents = 0, reag_ents = 0, deag;
+    int ok;
+    VuSessionsIterator *sit;
     FalconSessionEntity  *session;
 
     CampEnterCriticalSection();
@@ -744,8 +744,8 @@ void RebuildBubble(int forced)
             if (FalconLocalGame->IsLocal())
             {
                 // host wake missiles and bombs so we can drive them
-                SimBaseClass	*object;
-                VuListIterator	dit(SimDriver.ObjsWithNoCampaignParentList);
+                SimBaseClass *object;
+                VuListIterator dit(SimDriver.ObjsWithNoCampaignParentList);
                 object = (SimBaseClass*)dit.GetFirst();
                 int numberofobjects = 0;
                 int wokenthiscycle = 0;
@@ -823,7 +823,7 @@ void RebuildBubble(int forced)
     )
     {
         //if (c->IsFlight()){
-        //	c->SetInterest();
+        // c->SetInterest();
         //}
         c->UnsetInterest();
         reag_ents++;
@@ -842,7 +842,7 @@ void RebuildBubble(int forced)
         {
             CampBaseBin cb = it->second;
             //if (cb->IsFlight()){
-            //	cb->SetInterest();
+            // cb->SetInterest();
             //}
             cb->UnsetInterest();
             reag_ents++;
@@ -853,7 +853,7 @@ void RebuildBubble(int forced)
     // Mark all entities in sim lists as unchecked
     if (SimDriver.campUnitList)
     {
-        VuListIterator		cit(SimDriver.campUnitList);
+        VuListIterator cit(SimDriver.campUnitList);
         u = (Unit) cit.GetFirst();
 
         while (u)
@@ -865,7 +865,7 @@ void RebuildBubble(int forced)
 
     if (SimDriver.campObjList)
     {
-        VuListIterator		cit(SimDriver.campObjList);
+        VuListIterator cit(SimDriver.campObjList);
         o = (Objective) cit.GetFirst();
 
         while (o)
@@ -893,8 +893,8 @@ void RebuildBubble(int forced)
         // Find the first camera
         player = session->GetCameraEntity(0);
 
-        /*		if (!player && FalconLocalGame->IsLocal() && gCommsMgr->Online())
-        		player = FalconLocalSession->GetPlayerFlight();
+        /* if (!player && FalconLocalGame->IsLocal() && gCommsMgr->Online())
+         player = FalconLocalSession->GetPlayerFlight();
          */
         if (player && (player != FalconLocalSession || !sCampaignSleepRequested))
         {
@@ -954,8 +954,8 @@ void RebuildBubble(int forced)
                 if (FalconLocalGame->IsLocal())
                 {
                     // host wake missiles and bombs so we can drive them
-                    VuListIterator	dit(SimDriver.ObjsWithNoCampaignParentList);
-                    SimBaseClass	*object;
+                    VuListIterator dit(SimDriver.ObjsWithNoCampaignParentList);
+                    SimBaseClass *object;
                     object = (SimBaseClass*)dit.GetFirst();
                     int numberofobjects = 0;
                     int wokenthiscycle = 0;
@@ -1041,7 +1041,7 @@ void RebuildBubble(int forced)
                         }
                         else
                         {
-                            CampaignTime	minDeagTime;
+                            CampaignTime minDeagTime;
                             Objective airbase = (Objective)u->GetUnitAirbase();
 
                             // We'll deaggregate a few minutes before takeoff for objective airbases
@@ -1298,7 +1298,7 @@ void RebuildBubble(int forced)
                     if (ok)
                     {
                         VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
-                        FalconSimCampMessage	*msg = new FalconSimCampMessage(c->Id(), target);
+                        FalconSimCampMessage *msg = new FalconSimCampMessage(c->Id(), target);
                         msg->dataBlock.from = FalconLocalSessionId;
                         msg->dataBlock.message = FalconSimCampMessage::simcampReaggregate;
                         FalconSendMessage(msg);
@@ -1345,7 +1345,7 @@ void RebuildBubble(int forced)
                     if (ok)
                     {
                         VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
-                        FalconSimCampMessage	*msg = new FalconSimCampMessage(cb->Id(), target);
+                        FalconSimCampMessage *msg = new FalconSimCampMessage(cb->Id(), target);
                         msg->dataBlock.from = FalconLocalSessionId;
                         msg->dataBlock.message = FalconSimCampMessage::simcampReaggregate;
                         FalconSendMessage(msg);
@@ -1389,14 +1389,14 @@ void RebuildBubble(int forced)
 
                         if (!ok)
                         {
-                            //							MonoPrint ("Reaggregating Flight that is a player flight %08x\n", c);
+                            // MonoPrint ("Reaggregating Flight that is a player flight %08x\n", c);
                         }
                     }
 
                     if (ok)
                     {
                         //float
-                        //	dist = 0.0;
+                        // dist = 0.0;
 
                         //MonoPrint ("I WANT TO REAGGREGATE %08x %f\n", c, dist);
                     }
@@ -1499,8 +1499,8 @@ int CampaignAllAsleep(void)
 // Check proximity of an effect to the player
 int InterestingSFX(float x, float y)
 {
-    float		d, xd, yd;
-    VuEntity	*player;
+    float d, xd, yd;
+    VuEntity *player;
 
     player = FalconLocalSession->GetCameraEntity(0);
 
@@ -1514,7 +1514,7 @@ int InterestingSFX(float x, float y)
     if (d < MAX_DISTANT_EFFECT_DIST_SQ)
     {
 #ifndef NDEBUG
-        //		MonoPrint("Firing distant visual effect at %f,%f.\n",x,y);
+        // MonoPrint("Firing distant visual effect at %f,%f.\n",x,y);
 #endif
         return 1;
     }
@@ -1528,8 +1528,8 @@ int InterestingSFX(float x, float y)
 
 int CreateCampFile(char *filename, char* path)
 {
-    char	fullname[MAX_PATH];
-    FILE*	fp;
+    char fullname[MAX_PATH];
+    FILE* fp;
 
     // This filename doesn't exist yet (At least res manager doesn't think so)
     // Create it, so that the manager can find it -
@@ -1537,8 +1537,8 @@ int CreateCampFile(char *filename, char* path)
     fp = fopen(fullname, "wb");
     fclose(fp);
     // Now add the current save directory path, if we still can't find this file
-    //	if (!ResExistFile(filename))
-    //		ResAddPath(path, FALSE);
+    // if (!ResExistFile(filename))
+    // ResAddPath(path, FALSE);
     return 1;
 }
 
@@ -1553,7 +1553,7 @@ int CreateCampFile(char *filename, char* path)
 // We allow 4 WCH files - we only currently use two, but given future products
 // I'm setting it to 4 so that they don't not work.
 
-#define MAX_WCH_FILES	4
+#define MAX_WCH_FILES 4
 
 static int
 next_wch_file = 0;
@@ -1736,10 +1736,10 @@ void StartReadCampFile(FalconGameType type, char *filename)
 ///////////////////////////////////////////////////////////////////////////////
 CampaignData ReadCampFile(char *filename, char *ext)
 {
-    int	size, index;
+    int size, index;
 
     CampaignData cd = { -1, NULL};
-    char /* *data,*/	buffer[MAX_PATH];
+    char /* *data,*/ buffer[MAX_PATH];
 
     FILE *fp;
 
@@ -1792,7 +1792,7 @@ CampaignData ReadCampFile(char *filename, char *ext)
     }
 
     return cd;
-    //	return NULL;
+    // return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1905,8 +1905,8 @@ void EndWriteCampFile(void)
 
 FILE* OpenCampFile(char *filename, char *ext, char *mode)
 {
-    char	fullname[MAX_PATH], path[MAX_PATH];
-    int		index;
+    char fullname[MAX_PATH], path[MAX_PATH];
+    int index;
 
     char
     buffer[MAX_PATH];
@@ -2038,16 +2038,16 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
         sprintf(path, FalconObjectDataDir);
     else if (stricmp(ext, "ssd") == 0)
         sprintf(path, FalconObjectDataDir);
-    else if (stricmp(ext, "rkt") == 0)		// 2001-11-05 Added by M.N.
+    else if (stricmp(ext, "rkt") == 0) // 2001-11-05 Added by M.N.
         sprintf(path, FalconObjectDataDir);
-    else if (stricmp(ext, "ddp") == 0)		// 2002-04-20 Added by M.N.
+    else if (stricmp(ext, "ddp") == 0) // 2002-04-20 Added by M.N.
         sprintf(path, FalconObjectDataDir);
     else
         sprintf(path, FalconCampaignSaveDirectory);
 
-    //	Outdated by resmgr:
-    //	if (!ResExistFile(filename))
-    //		ResAddPath(path, FALSE);
+    // Outdated by resmgr:
+    // if (!ResExistFile(filename))
+    // ResAddPath(path, FALSE);
 
     sprintf(fullname, "%s\\%s.%s", path, filename, ext);
     fp = fopen(fullname, mode);
@@ -2133,17 +2133,17 @@ void ChooseBullseye(void)
 
     // 2000-11-27 REMOVED BY S.G. SORRY KEVIN, NO MORE HARDCODED BULLSEYE :-)
     // KCK: They want a fixed Bullseye.. So.. here it is:
-    //	TheCampaign.SetBullseye(1,390,464);
+    // TheCampaign.SetBullseye(1,390,464);
     // END OF REMOVED SECTION
     // This code will pick the best frontline objective as a bullseye
     //reenabled by me123
-    Objective		o;
-    GridIndex		cx, cy, x, y, bestx = -1, besty = -1;
-    float			d, bestd = 999.9F;
+    Objective o;
+    GridIndex cx, cy, x, y, bestx = -1, besty = -1;
+    float d, bestd = 999.9F;
 
     if (g_nChooseBullseyeFix & 0x01)
     {
-        cx = TheaterXPosition;	// from falcon4.aii - theater dependant
+        cx = TheaterXPosition; // from falcon4.aii - theater dependant
         cy = TheaterYPosition;
     }
     else
@@ -2154,7 +2154,7 @@ void ChooseBullseye(void)
 
     // Choose the best frontline objective as a bullseye
     {
-        VuListIterator	frontit(FrontList);
+        VuListIterator frontit(FrontList);
         o = (Objective) frontit.GetFirst();
 
         while (o)
@@ -2184,10 +2184,10 @@ void ChooseBullseye(void)
 // Mission launch stuff
 // =======================================
 
-CampaignTime	gCompressTillTime = 0;
-CampaignTime	gLaunchTime = 0;
-CampaignTime	gOldCompressTillTime = 0;
-CampaignTime	gOldCompressionRatio = -1;
+CampaignTime gCompressTillTime = 0;
+CampaignTime gLaunchTime = 0;
+CampaignTime gOldCompressTillTime = 0;
+CampaignTime gOldCompressionRatio = -1;
 
 void SetEntryTime(Flight flight)
 {
@@ -2270,7 +2270,7 @@ void SetEntryTime(Flight flight)
 // This will cause the campaign to compress until the current mission's takeoff time
 int CompressCampaignUntilTakeoff(Flight flight)
 {
-    WayPoint		w;
+    WayPoint w;
 
     ShiAssert(flight);
     /////////////////me123 check all clients takeoff time if we are host
@@ -2278,7 +2278,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
 
     if (FalconLocalGame && FalconLocalGame->IsLocal())
     {
-        VuSessionsIterator	sessionWalker(FalconLocalGame);
+        VuSessionsIterator sessionWalker(FalconLocalGame);
         FalconSessionEntity *sess;
         sess = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -2325,8 +2325,8 @@ int CompressCampaignUntilTakeoff(Flight flight)
         // Tell the flight to hold short if we're coming into the sim.
         flight->SetFalcFlag(FEC_HOLDSHORT);
 
-        if (FalconLocalGame->IsLocal()) 	sTakeoffTime = firstentrytime;
-        else 	sTakeoffTime = w->GetWPArrivalTime();
+        if (FalconLocalGame->IsLocal())  sTakeoffTime = firstentrytime;
+        else  sTakeoffTime = w->GetWPArrivalTime();
 
         gLaunchTime = w->GetWPArrivalTime() ;
 
@@ -2337,7 +2337,7 @@ int CompressCampaignUntilTakeoff(Flight flight)
                 break;
 
             case PlayerOptionsClass::START_TAXI:
-                gLaunchTime -= g_nTaxiLaunchTime * CampaignMinutes;	// Booster 2004/10/12 Taxi takeoff time option
+                gLaunchTime -= g_nTaxiLaunchTime * CampaignMinutes; // Booster 2004/10/12 Taxi takeoff time option
                 break;
 
             case PlayerOptionsClass::START_RUNWAY:
@@ -2374,7 +2374,7 @@ void DoCompressionLoop(void)
 {
     if (gCompressTillTime > 0)
     {
-        Flight		pf = FalconLocalSession->GetPlayerFlight();
+        Flight pf = FalconLocalSession->GetPlayerFlight();
 
         // Reset gCompressTillTime, in case player has changed options
         if (sTakeoffTime)
@@ -2395,12 +2395,12 @@ void DoCompressionLoop(void)
             return;
         }
 
-        /*		if ()
-        		{
-        		gCompressTillTime = 0;
-        		UI_HandleAirbaseDestroyed();
-        		return;
-        		}
+        /* if ()
+         {
+         gCompressTillTime = 0;
+         UI_HandleAirbaseDestroyed();
+         return;
+         }
          */
 
         // Check for sim entry
@@ -2414,11 +2414,11 @@ void DoCompressionLoop(void)
                 // We've reached our takeoff time, now takeoff
                 // Minimize bubble ratio for our session
                 SimLibElapsedTime = vuxGameTime;
-                UPDATE_SIM_ELAPSED_SECONDS;								// COBRA - RED - Scale Elapsed Seconds
+                UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
                 gCompressTillTime = 0;
 
                 // OW FIXME: sometimes gets called when mainhandler is already freed!
-                //				if (gMainHandler->GetAppWnd ())
+                // if (gMainHandler->GetAppWnd ())
                 if (gMainHandler && gMainHandler->GetAppWnd())
                 {
                     switch (FalconLocalGame->GetGameType())
@@ -2475,13 +2475,13 @@ void DoCompressionLoop(void)
 
             diff = gCompressTillTime - vuxGameTime;
 
-            diff = diff / 2500;	// two 1/2 minutes away - start reducing compression ratio
+            diff = diff / 2500; // two 1/2 minutes away - start reducing compression ratio
 
             if (diff > 64) // Are we a few minutes away
             {
                 diff = 64;
             }
-            else if (diff <= 0)	// Don't just stop however
+            else if (diff <= 0) // Don't just stop however
             {
                 diff = 1;
             }
@@ -2517,7 +2517,7 @@ void UpdatePlayerSessions()
     VuEnterCriticalSection();
 #endif
 
-    VuSessionsIterator	sit(FalconLocalGame);
+    VuSessionsIterator sit(FalconLocalGame);
     FalconSessionEntity *session, *nextSession;
 
     for (
@@ -2552,8 +2552,8 @@ void UpdatePlayerSessions()
 
 unsigned int __stdcall HandleCampaignThread(void)
 {
-    CampaignTime	deltatime;
-    int				sleepTic;
+    CampaignTime deltatime;
+    int sleepTic;
     int startup = 0;
 
 #if defined(_MSC_VER)
@@ -2646,12 +2646,12 @@ unsigned int __stdcall HandleCampaignThread(void)
 
             if (gameCompressionRatio > 0 /*1*/)
             {
-                SetTemporaryCompression(gameCompressionRatio / 2);	// Slow things down
+                SetTemporaryCompression(gameCompressionRatio / 2); // Slow things down
             }
         }
         else if (gameCompressionRatio != targetCompressionRatio)
         {
-            SetTemporaryCompression(targetCompressionRatio);		// Back to full speed
+            SetTemporaryCompression(targetCompressionRatio); // Back to full speed
         }
 
         TheCampaign.CurrentTime += deltatime;
@@ -2772,9 +2772,9 @@ unsigned int __stdcall CampaignThread(void)
 
 void DoTacticalLoop(int startup)
 {
-    static int			stage, lastStage;
-    static CampaignTime	lastCheck;
-    Team		t;
+    static int stage, lastStage;
+    static CampaignTime lastCheck;
+    Team t;
 
     // Calculate our current stage
     stage = (TheCampaign.CurrentTime % CampaignHours) / (CAMPAIGN_STAGE_TIME_MINUTES * CampaignMinutes);
@@ -2847,7 +2847,7 @@ void DoTacticalLoop(int startup)
 
     // Update weather when in UI
     if (!SimDriver.InSim())
-        ((WeatherClass*)realWeather)->UpdateWeather();						// Sim calls this otherwise
+        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
 }
 
 // ==============================================================
@@ -2858,8 +2858,8 @@ void DoTacticalLoop(int startup)
 
 void DoCampaignLoop(int startup)
 {
-    static int	stage, lastStage, planCount;
-    Team		t;
+    static int stage, lastStage, planCount;
+    Team t;
 
     // Calculate our current stage
     stage = (TheCampaign.CurrentTime % CampaignHours) / (CAMPAIGN_STAGE_TIME_MINUTES * CampaignMinutes);
@@ -2985,7 +2985,7 @@ void DoCampaignLoop(int startup)
     // Update weather when in UI
     if (!SimDriver.InSim())
     {
-        ((WeatherClass*)realWeather)->UpdateWeather();						// Sim calls this otherwise
+        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
     }
 
     // Task air
@@ -3057,7 +3057,7 @@ void UpdateRealUnits(CampaignTime deltatime)
     CampEnterCriticalSection();
     //STOP_PROFILE("CA UPD REAL LOCK");
 
-    VuListIterator	rit(AllRealList);
+    VuListIterator rit(AllRealList);
 
     for (UnitClass *u = (UnitClass*)rit.GetFirst(), *next = NULL; u != NULL; u = next)
     {
@@ -3073,7 +3073,7 @@ void UpdateRealUnits(CampaignTime deltatime)
         {
             //START_PROFILE("CA UPD REAL DEAD");
             // wait a bit before removing
-            const unsigned int REAL_DEATH_TIMEOUT_MS =		240000/*7200000*/;
+            const unsigned int REAL_DEATH_TIMEOUT_MS = 240000/*7200000*/;
 
             if (TheCampaign.CurrentTime - u->GetLastCheck() > REAL_DEATH_TIMEOUT_MS)
             {
@@ -3115,7 +3115,7 @@ void CheckNewDay(void)
 
 void PlanGroundAndNavalUnits(int *planCount)
 {
-    Team		t;
+    Team t;
 
     (*planCount)++;
 
@@ -3142,7 +3142,7 @@ void PlanGroundAndNavalUnits(int *planCount)
 
 void OrderGroundAndNavalUnits(void)
 {
-    Team	t;
+    Team t;
 
     ResetObjectiveAssignmentScores();
     BuildDivisionData();
@@ -3160,8 +3160,8 @@ void OrderGroundAndNavalUnits(void)
 // Rally units (Tactical engagement only) VP_chnges it should be checked
 void RallyUnits(int minutes)
 {
-    Unit			u;
-    VuListIterator	myit(AllParentList);
+    Unit u;
+    VuListIterator myit(AllParentList);
 
     // Create the unit lists
     u = GetFirstUnit(&myit);

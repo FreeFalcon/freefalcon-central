@@ -4,11 +4,11 @@
     January 2, 1995
 
     This class provides 3D drawing functions specific to rendering out the
-	window views including terrain.
+ window views including terrain.
 
-	This file provides the terrain culling computations.  The view volume
-	is computed and the posts required to draw the terrain within the volume
-	are identified.
+ This file provides the terrain culling computations.  The view volume
+ is computed and the posts required to draw the terrain within the volume
+ are identified.
 \***************************************************************************/
 #include <math.h>
 #include "TMap.h"
@@ -17,10 +17,10 @@
 #include "RenderOW.h"
 
 
-static const int	MAX_POSITIVE_I	=  25000;
-static const int	MAX_NEGATIVE_I	= -25000;
-static const float	MAX_POSTIVE_F	= MAX_POSITIVE_I * 819.995f;	// FeetPerPost
-static const float	MAX_NEGATIVE_F	= MAX_NEGATIVE_I * 819.995f;	// FeetPerPost
+static const int MAX_POSITIVE_I =  25000;
+static const int MAX_NEGATIVE_I = -25000;
+static const float MAX_POSTIVE_F = MAX_POSITIVE_I * 819.995f; // FeetPerPost
+static const float MAX_NEGATIVE_F = MAX_NEGATIVE_I * 819.995f; // FeetPerPost
 
 
 
@@ -29,10 +29,10 @@ static const float	MAX_NEGATIVE_F	= MAX_NEGATIVE_I * 819.995f;	// FeetPerPost
 \***************************************************************************/
 void RenderOTW::BuildRingList(void)
 {
-    int				LOD;
-    int				startRing;
-    int				stopRing;
-    int				ring;
+    int LOD;
+    int startRing;
+    int stopRing;
+    int ring;
 
 
     ShiAssert(IsReady());
@@ -60,14 +60,14 @@ void RenderOTW::BuildRingList(void)
         // Determine the location of the glue row and column at the outside of this LOD region
         // NOTE:  These two must evaluate to zero or one, as they are used arithmetically
         LODdata[LOD].glueOnBottom   = LODdata[LOD].centerRow & 1;
-        LODdata[LOD].glueOnLeft		= LODdata[LOD].centerCol & 1;
+        LODdata[LOD].glueOnLeft = LODdata[LOD].centerCol & 1;
 
 
 #ifdef TWO_D_MAP_AVAILABLE
 
         if (twoDmode)
         {
-            char	message[80];
+            char message[80];
             SetColor(0xFFFFFFFF);
             sprintf(message, "LOD%0d Glue: %s %s", LOD,
                     LODdata[LOD].glueOnBottom ? "Bottom" : "Top",
@@ -180,16 +180,16 @@ void RenderOTW::BuildRingList(void)
 
 /***************************************************************************\
     Compute the regions of posts to be drawn in each sector which has
-	a horizontal traversal order.
+ a horizontal traversal order.
 \***************************************************************************/
 void RenderOTW::ClipHorizontalSectors(void)
 {
-    SpanListEntry	*span = NULL;
-    int				LOD = 0;
-    int				w = 0, e = 0;
-    float			startLocation = 0.0F;
-    BoundSegment	eastBoundry[4];
-    BoundSegment	westBoundry[4];
+    SpanListEntry *span = NULL;
+    int LOD = 0;
+    int w = 0, e = 0;
+    float startLocation = 0.0F;
+    BoundSegment eastBoundry[4];
+    BoundSegment westBoundry[4];
 
 
     // Construct the ordered edge list (horizontal span case - X buckets (since X is North/Up))
@@ -285,8 +285,8 @@ void RenderOTW::ClipHorizontalSectors(void)
         // Spans are  empty until we get to the top corner of the bounding region
         if (span->Tsector.insideEdge > startLocation)
         {
-            span->Tsector.maxEndPoint	= MAX_NEGATIVE_F;
-            span->Tsector.minEndPoint	= MAX_POSTIVE_F;
+            span->Tsector.maxEndPoint = MAX_NEGATIVE_F;
+            span->Tsector.minEndPoint = MAX_POSTIVE_F;
             continue;
         }
 
@@ -315,8 +315,8 @@ void RenderOTW::ClipHorizontalSectors(void)
             // Nothing on these spans if we've exhausted our edges
             if (span->Tsector.insideEdge <= westBoundry[w].end)
             {
-                span->Tsector.maxEndPoint	= MAX_NEGATIVE_F;
-                span->Tsector.minEndPoint	= MAX_POSTIVE_F;
+                span->Tsector.maxEndPoint = MAX_NEGATIVE_F;
+                span->Tsector.minEndPoint = MAX_POSTIVE_F;
                 continue;
             }
 
@@ -339,10 +339,10 @@ void RenderOTW::ClipHorizontalSectors(void)
             }
 
             // We can't exhaust this edge without having already exhausted the one above
-            //			ShiAssert( span->Tsector.insideEdge > eastBoundry[e].end );
-            //			ShiAssert( e > 0 );		// We _must_ have taken a step in the while above
-            //			ShiAssert( e < 3 );
-            //			ShiAssert( eastBoundry[e].end <= eastBoundry[e-1].end );
+            // ShiAssert( span->Tsector.insideEdge > eastBoundry[e].end );
+            // ShiAssert( e > 0 ); // We _must_ have taken a step in the while above
+            // ShiAssert( e < 3 );
+            // ShiAssert( eastBoundry[e].end <= eastBoundry[e-1].end );
         }
 
 
@@ -361,8 +361,8 @@ void RenderOTW::ClipHorizontalSectors(void)
         // Spans are empty until we get to the top corner of the bounding region
         if (span->Bsector.insideEdge > startLocation)
         {
-            span->Bsector.maxEndPoint	= MAX_NEGATIVE_F;
-            span->Bsector.minEndPoint	= MAX_POSTIVE_F;
+            span->Bsector.maxEndPoint = MAX_NEGATIVE_F;
+            span->Bsector.minEndPoint = MAX_POSTIVE_F;
             continue;
         }
 
@@ -391,8 +391,8 @@ void RenderOTW::ClipHorizontalSectors(void)
             // Nothing on these spans if we've exhausted our edges
             if (span->Bsector.insideEdge <= westBoundry[w].end)
             {
-                span->Bsector.maxEndPoint	= MAX_NEGATIVE_F;
-                span->Bsector.minEndPoint	= MAX_POSTIVE_F;
+                span->Bsector.maxEndPoint = MAX_NEGATIVE_F;
+                span->Bsector.minEndPoint = MAX_POSTIVE_F;
                 continue;
             }
 
@@ -415,9 +415,9 @@ void RenderOTW::ClipHorizontalSectors(void)
             }
 
             // We can't exhaust this edge without having already exhausted the one above
-            //			ShiAssert( e > 0 );		// We _must_ have taken a step in the while above
-            //			ShiAssert( e < 3 );
-            //			ShiAssert( eastBoundry[e].end <= eastBoundry[e-1].end );
+            // ShiAssert( e > 0 ); // We _must_ have taken a step in the while above
+            // ShiAssert( e < 3 );
+            // ShiAssert( eastBoundry[e].end <= eastBoundry[e-1].end );
         }
 
 
@@ -432,16 +432,16 @@ void RenderOTW::ClipHorizontalSectors(void)
 
 /***************************************************************************\
     Compute the regions of posts to be drawn in each sector which has
-	a vertical traversal order.
+ a vertical traversal order.
 \***************************************************************************/
 void RenderOTW::ClipVerticalSectors(void)
 {
-    SpanListEntry	*span = NULL;
-    int				LOD = 0;
-    int				n = 0, s = 0;
-    float			startLocation = 0.0F;
-    BoundSegment	northBoundry[4];
-    BoundSegment	southBoundry[4];
+    SpanListEntry *span = NULL;
+    int LOD = 0;
+    int n = 0, s = 0;
+    float startLocation = 0.0F;
+    BoundSegment northBoundry[4];
+    BoundSegment southBoundry[4];
 
 
     // Construct the ordered edge list (horizontal span case - Y buckets (since Y is East/Right))
@@ -537,8 +537,8 @@ void RenderOTW::ClipVerticalSectors(void)
         // Spans are empty until we get to the top corner of the bounding region
         if (span->Rsector.insideEdge > startLocation)
         {
-            span->Rsector.minEndPoint	= MAX_POSTIVE_F;
-            span->Rsector.maxEndPoint	= MAX_NEGATIVE_F;
+            span->Rsector.minEndPoint = MAX_POSTIVE_F;
+            span->Rsector.maxEndPoint = MAX_NEGATIVE_F;
             continue;
         }
 
@@ -567,8 +567,8 @@ void RenderOTW::ClipVerticalSectors(void)
             // Nothing on these spans if we've exhausted our edges
             if (span->Rsector.insideEdge <= southBoundry[s].end)
             {
-                span->Rsector.minEndPoint	= MAX_POSTIVE_F;
-                span->Rsector.maxEndPoint	= MAX_NEGATIVE_F;
+                span->Rsector.minEndPoint = MAX_POSTIVE_F;
+                span->Rsector.maxEndPoint = MAX_NEGATIVE_F;
                 continue;
             }
 
@@ -591,9 +591,9 @@ void RenderOTW::ClipVerticalSectors(void)
             }
 
             // We can't exhaust this edge without having already exhausted the one above
-            //			ShiAssert( n > 0 );		// We _must_ have taken a step in the while above
-            //			ShiAssert( n < 3 );
-            //			ShiAssert( northBoundry[n].end <= northBoundry[n-1].end );
+            // ShiAssert( n > 0 ); // We _must_ have taken a step in the while above
+            // ShiAssert( n < 3 );
+            // ShiAssert( northBoundry[n].end <= northBoundry[n-1].end );
         }
 
 
@@ -613,8 +613,8 @@ void RenderOTW::ClipVerticalSectors(void)
         // Spans are empty until we get to the top corner of the bounding region
         if (span->Lsector.insideEdge > startLocation)
         {
-            span->Lsector.maxEndPoint	= MAX_NEGATIVE_F;
-            span->Lsector.minEndPoint	= MAX_POSTIVE_F;
+            span->Lsector.maxEndPoint = MAX_NEGATIVE_F;
+            span->Lsector.minEndPoint = MAX_POSTIVE_F;
             continue;
         }
 
@@ -643,8 +643,8 @@ void RenderOTW::ClipVerticalSectors(void)
             // Nothing on these spans if we've exhausted our edges
             if (span->Lsector.insideEdge <= southBoundry[s].end)
             {
-                span->Lsector.minEndPoint	= MAX_POSTIVE_F;
-                span->Lsector.maxEndPoint	= MAX_NEGATIVE_F;
+                span->Lsector.minEndPoint = MAX_POSTIVE_F;
+                span->Lsector.maxEndPoint = MAX_NEGATIVE_F;
                 continue;
             }
 
@@ -667,9 +667,9 @@ void RenderOTW::ClipVerticalSectors(void)
             }
 
             // We can't exhaust this edge without having already exhausted the one above
-            //			ShiAssert( n > 0 );		// We _must_ have taken a step in the while above
-            //			ShiAssert( n < 3 );
-            //			ShiAssert( northBoundry[n].end <= northBoundry[n-1].end );
+            // ShiAssert( n > 0 ); // We _must_ have taken a step in the while above
+            // ShiAssert( n < 3 );
+            // ShiAssert( northBoundry[n].end <= northBoundry[n-1].end );
         }
 
 
@@ -683,16 +683,16 @@ void RenderOTW::ClipVerticalSectors(void)
 
 /***************************************************************************\
     Given the spanList which contains the world space extents of the
-	inner edges of the horizontal and vertical spans of squares, we
-	construct the set of all lower left corner posts for the squares we
-	need to draw.
+ inner edges of the horizontal and vertical spans of squares, we
+ construct the set of all lower left corner posts for the squares we
+ need to draw.
 
-	NOTE:  We count on the truncation during the float to int conversion to
-	adjust the end points side to side.  The inner/outter adjustment is explicit.
+ NOTE:  We count on the truncation during the float to int conversion to
+ adjust the end points side to side.  The inner/outter adjustment is explicit.
 \***************************************************************************/
 void RenderOTW::BuildCornerSet(void)
 {
-    SpanListEntry	*span;
+    SpanListEntry *span;
 
 
     // Move from inner ring outward
@@ -732,14 +732,14 @@ void RenderOTW::BuildCornerSet(void)
         }
 
         // Convert all the start/stop points into units of level posts
-        span->Tsector.startDraw	= WORLD_TO_LEVEL_POST(span->Tsector.minEndPoint, span->LOD);
-        span->Tsector.stopDraw	= WORLD_TO_LEVEL_POST(span->Tsector.maxEndPoint, span->LOD);
-        span->Rsector.startDraw	= WORLD_TO_LEVEL_POST(span->Rsector.minEndPoint, span->LOD);
-        span->Rsector.stopDraw	= WORLD_TO_LEVEL_POST(span->Rsector.maxEndPoint, span->LOD);
-        span->Bsector.startDraw	= WORLD_TO_LEVEL_POST(span->Bsector.minEndPoint, span->LOD);
-        span->Bsector.stopDraw	= WORLD_TO_LEVEL_POST(span->Bsector.maxEndPoint, span->LOD);
-        span->Lsector.startDraw	= WORLD_TO_LEVEL_POST(span->Lsector.minEndPoint, span->LOD);
-        span->Lsector.stopDraw	= WORLD_TO_LEVEL_POST(span->Lsector.maxEndPoint, span->LOD);
+        span->Tsector.startDraw = WORLD_TO_LEVEL_POST(span->Tsector.minEndPoint, span->LOD);
+        span->Tsector.stopDraw = WORLD_TO_LEVEL_POST(span->Tsector.maxEndPoint, span->LOD);
+        span->Rsector.startDraw = WORLD_TO_LEVEL_POST(span->Rsector.minEndPoint, span->LOD);
+        span->Rsector.stopDraw = WORLD_TO_LEVEL_POST(span->Rsector.maxEndPoint, span->LOD);
+        span->Bsector.startDraw = WORLD_TO_LEVEL_POST(span->Bsector.minEndPoint, span->LOD);
+        span->Bsector.stopDraw = WORLD_TO_LEVEL_POST(span->Bsector.maxEndPoint, span->LOD);
+        span->Lsector.startDraw = WORLD_TO_LEVEL_POST(span->Lsector.minEndPoint, span->LOD);
+        span->Lsector.stopDraw = WORLD_TO_LEVEL_POST(span->Lsector.maxEndPoint, span->LOD);
 
 #if 0
 
@@ -774,37 +774,37 @@ void RenderOTW::BuildCornerSet(void)
 #endif
 
         // Make all the start/stop points relative to the ring centers at each LOD
-        span->Tsector.startDraw	-= LODdata[span->LOD].centerCol;
-        span->Tsector.stopDraw	-= LODdata[span->LOD].centerCol;
-        span->Rsector.startDraw	-= LODdata[span->LOD].centerRow;
-        span->Rsector.stopDraw	-= LODdata[span->LOD].centerRow;
-        span->Bsector.startDraw	-= LODdata[span->LOD].centerCol;
-        span->Bsector.stopDraw	-= LODdata[span->LOD].centerCol;
-        span->Lsector.startDraw	-= LODdata[span->LOD].centerRow;
-        span->Lsector.stopDraw	-= LODdata[span->LOD].centerRow;
+        span->Tsector.startDraw -= LODdata[span->LOD].centerCol;
+        span->Tsector.stopDraw -= LODdata[span->LOD].centerCol;
+        span->Rsector.startDraw -= LODdata[span->LOD].centerRow;
+        span->Rsector.stopDraw -= LODdata[span->LOD].centerRow;
+        span->Bsector.startDraw -= LODdata[span->LOD].centerCol;
+        span->Bsector.stopDraw -= LODdata[span->LOD].centerCol;
+        span->Lsector.startDraw -= LODdata[span->LOD].centerRow;
+        span->Lsector.stopDraw -= LODdata[span->LOD].centerRow;
     }
 
 
-    // AT THIS POINT:	startDraw and stopDraw in all the rings completly specify all the lower
-    //					left corner points for squares to be drawn, but may OVER specify them.
-    //					TrimCornerSet() below will adjust and round the start/stop points as
-    //					necessary.
+    // AT THIS POINT: startDraw and stopDraw in all the rings completly specify all the lower
+    // left corner points for squares to be drawn, but may OVER specify them.
+    // TrimCornerSet() below will adjust and round the start/stop points as
+    // necessary.
 }
 
 
 
 /***************************************************************************\
     Given the spanList which contains the world space extents of the
-	inner edges of the horizontal and vertical spans of squares, we
-	construct the set of all lower left corner posts for the squares we
-	need to draw.
+ inner edges of the horizontal and vertical spans of squares, we
+ construct the set of all lower left corner posts for the squares we
+ need to draw.
 
-	NOTE:  We count on the truncation during the float to int conversion to
-	adjust the end points side to side.  The inner/outter adjustment is explicit.
+ NOTE:  We count on the truncation during the float to int conversion to
+ adjust the end points side to side.  The inner/outter adjustment is explicit.
 \***************************************************************************/
 void RenderOTW::TrimCornerSet(void)
 {
-    SpanListEntry	*span;
+    SpanListEntry *span;
 
 
     // Move from inner ring outward
@@ -1199,25 +1199,25 @@ void RenderOTW::TrimCornerSet(void)
     }
 
 
-    // AT THIS POINT:	startDraw and stopDraw in all the rings completly and exactly specify
-    //					the lower left corner points for squares to be drawn.
+    // AT THIS POINT: startDraw and stopDraw in all the rings completly and exactly specify
+    // the lower left corner points for squares to be drawn.
 }
 
 
 
 /***************************************************************************\
     Given the spanList which contains all the lower left corner posts,
-	construct the expanded set which also includes every post's N, E, and NE
-	neighbor.
+ construct the expanded set which also includes every post's N, E, and NE
+ neighbor.
 \***************************************************************************/
 void RenderOTW::BuildVertexSet(void)
 {
-    SpanListEntry	*span;
-    SpanListEntry	*innerSpan;
-    SpanListEntry	*outterSpan;
-    SpanListEntry	*controlSpan;
-    int				LOD;
-    int				lowPos;
+    SpanListEntry *span;
+    SpanListEntry *innerSpan;
+    SpanListEntry *outterSpan;
+    SpanListEntry *controlSpan;
+    int LOD;
+    int lowPos;
 
 
     // First clear the list of spans to be transformed
@@ -1273,85 +1273,85 @@ void RenderOTW::BuildVertexSet(void)
             // TOP
             if (LODdata[LOD].glueOnBottom)
             {
-                innerSpan  = span + 1;		// "glue control"
-                controlSpan = span + 1;		// "glue control"
-                outterSpan = span - 2;		// "last drawn"
+                innerSpan  = span + 1; // "glue control"
+                controlSpan = span + 1; // "glue control"
+                outterSpan = span - 2; // "last drawn"
             }
             else
             {
-                innerSpan  = span;			// "outter xform"
-                controlSpan = span;			// "outter xform"
-                outterSpan = span - 2;		// "last drawn"
+                innerSpan  = span; // "outter xform"
+                controlSpan = span; // "outter xform"
+                outterSpan = span - 2; // "last drawn"
             }
 
-            innerSpan->Tsector.startXform  = min(controlSpan->Tsector.startDraw,		innerSpan->Tsector.startXform);
-            innerSpan->Tsector.stopXform   = max(controlSpan->Tsector.stopDraw + 2,		innerSpan->Tsector.stopXform);
-            lowPos = (controlSpan->Tsector.startDraw  + LODdata[LOD].glueOnLeft)	>> 1;
+            innerSpan->Tsector.startXform  = min(controlSpan->Tsector.startDraw, innerSpan->Tsector.startXform);
+            innerSpan->Tsector.stopXform   = max(controlSpan->Tsector.stopDraw + 2, innerSpan->Tsector.stopXform);
+            lowPos = (controlSpan->Tsector.startDraw  + LODdata[LOD].glueOnLeft) >> 1;
             outterSpan->Tsector.startXform = min(lowPos, outterSpan->Tsector.startXform);
-            lowPos = (controlSpan->Tsector.stopDraw + 2 + LODdata[LOD].glueOnLeft)	>> 1;
+            lowPos = (controlSpan->Tsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >> 1;
             outterSpan->Tsector.stopXform  = max(lowPos, outterSpan->Tsector.stopXform);
 
             // RIGHT
             if (LODdata[LOD].glueOnLeft)
             {
-                innerSpan  = span + 1;		// "glue control"
-                controlSpan = span + 1;		// "glue control"
-                outterSpan = span - 2;		// "last drawn"
+                innerSpan  = span + 1; // "glue control"
+                controlSpan = span + 1; // "glue control"
+                outterSpan = span - 2; // "last drawn"
             }
             else
             {
-                innerSpan  = span;			// "outter xform"
-                controlSpan = span;			// "outter xform"
-                outterSpan = span - 2;		// "last drawn"
+                innerSpan  = span; // "outter xform"
+                controlSpan = span; // "outter xform"
+                outterSpan = span - 2; // "last drawn"
             }
 
-            innerSpan->Rsector.startXform  = min(innerSpan->Rsector.startDraw,			innerSpan->Rsector.startXform);
-            innerSpan->Rsector.stopXform   = max(innerSpan->Rsector.stopDraw + 2,		innerSpan->Rsector.stopXform);
-            lowPos = (innerSpan->Rsector.startDraw  + LODdata[LOD].glueOnBottom)	>> 1;
+            innerSpan->Rsector.startXform  = min(innerSpan->Rsector.startDraw, innerSpan->Rsector.startXform);
+            innerSpan->Rsector.stopXform   = max(innerSpan->Rsector.stopDraw + 2, innerSpan->Rsector.stopXform);
+            lowPos = (innerSpan->Rsector.startDraw  + LODdata[LOD].glueOnBottom) >> 1;
             outterSpan->Rsector.startXform = min(lowPos, outterSpan->Rsector.startXform);
-            lowPos = (innerSpan->Rsector.stopDraw + 2 + LODdata[LOD].glueOnBottom)	>> 1;
+            lowPos = (innerSpan->Rsector.stopDraw + 2 + LODdata[LOD].glueOnBottom) >> 1;
             outterSpan->Rsector.stopXform  = max(lowPos, outterSpan->Rsector.stopXform);
 
             // BOTTOM
             if (LODdata[LOD].glueOnBottom)
             {
-                innerSpan  = span + 1;		// "glue control"
-                controlSpan = span;			// "outter xform"
-                outterSpan = span - 1;		// "inner xform"
+                innerSpan  = span + 1; // "glue control"
+                controlSpan = span; // "outter xform"
+                outterSpan = span - 1; // "inner xform"
             }
             else
             {
-                innerSpan  = span + 2;		// "first normal draw"
-                controlSpan = span + 1;		// "glue control"
-                outterSpan = span - 1;		// "inner xform"
+                innerSpan  = span + 2; // "first normal draw"
+                controlSpan = span + 1; // "glue control"
+                outterSpan = span - 1; // "inner xform"
             }
 
-            innerSpan->Bsector.startXform  = min(controlSpan->Bsector.startDraw,		innerSpan->Bsector.startXform);
-            innerSpan->Bsector.stopXform   = max(controlSpan->Bsector.stopDraw + 2,		innerSpan->Bsector.stopXform);
-            lowPos = (controlSpan->Bsector.startDraw  + LODdata[LOD].glueOnLeft)	>> 1;
+            innerSpan->Bsector.startXform  = min(controlSpan->Bsector.startDraw, innerSpan->Bsector.startXform);
+            innerSpan->Bsector.stopXform   = max(controlSpan->Bsector.stopDraw + 2, innerSpan->Bsector.stopXform);
+            lowPos = (controlSpan->Bsector.startDraw  + LODdata[LOD].glueOnLeft) >> 1;
             outterSpan->Bsector.startXform = min(lowPos, outterSpan->Bsector.startXform);
-            lowPos = (controlSpan->Bsector.stopDraw + 2 + LODdata[LOD].glueOnLeft)	>> 1;
+            lowPos = (controlSpan->Bsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >> 1;
             outterSpan->Bsector.stopXform  = max(lowPos, outterSpan->Bsector.stopXform);
 
             // LEFT
             if (LODdata[LOD].glueOnLeft)
             {
-                innerSpan  = span + 1;		// "glue control"
-                controlSpan = span;			// "outter xform"
-                outterSpan = span - 1;		// "inner xform"
+                innerSpan  = span + 1; // "glue control"
+                controlSpan = span; // "outter xform"
+                outterSpan = span - 1; // "inner xform"
             }
             else
             {
-                innerSpan  = span + 2;		// "first normal draw"
-                controlSpan = span + 1;		// "glue control"
-                outterSpan = span - 1;		// "inner xform"
+                innerSpan  = span + 2; // "first normal draw"
+                controlSpan = span + 1; // "glue control"
+                outterSpan = span - 1; // "inner xform"
             }
 
-            innerSpan->Lsector.startXform  = min(controlSpan->Lsector.startDraw,		innerSpan->Lsector.startXform);
-            innerSpan->Lsector.stopXform   = max(controlSpan->Lsector.stopDraw + 2,		innerSpan->Lsector.stopXform);
-            lowPos = (controlSpan->Lsector.startDraw  + LODdata[LOD].glueOnBottom)	>> 1;
+            innerSpan->Lsector.startXform  = min(controlSpan->Lsector.startDraw, innerSpan->Lsector.startXform);
+            innerSpan->Lsector.stopXform   = max(controlSpan->Lsector.stopDraw + 2, innerSpan->Lsector.stopXform);
+            lowPos = (controlSpan->Lsector.startDraw  + LODdata[LOD].glueOnBottom) >> 1;
             outterSpan->Lsector.startXform = min(lowPos, outterSpan->Lsector.startXform);
-            lowPos = (controlSpan->Lsector.stopDraw + 2 + LODdata[LOD].glueOnBottom)	>> 1;
+            lowPos = (controlSpan->Lsector.stopDraw + 2 + LODdata[LOD].glueOnBottom) >> 1;
             outterSpan->Lsector.stopXform  = max(lowPos, outterSpan->Lsector.stopXform);
 
             span++;
@@ -1359,32 +1359,32 @@ void RenderOTW::BuildVertexSet(void)
             // We'll call draw gap filler on this span
             if (LODdata[LOD].glueOnBottom)
             {
-                span->Bsector.startXform = min(span->Bsector.startDraw,			span->Bsector.startXform);
-                span->Bsector.stopXform  = max(span->Bsector.stopDraw + 1,			span->Bsector.stopXform);
-                (span + 1)->Bsector.startXform = min(span->Bsector.startDraw,	(span + 1)->Bsector.startXform);
-                (span + 1)->Bsector.stopXform  = max(span->Bsector.stopDraw + 1,	(span + 1)->Bsector.stopXform);
+                span->Bsector.startXform = min(span->Bsector.startDraw, span->Bsector.startXform);
+                span->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, span->Bsector.stopXform);
+                (span + 1)->Bsector.startXform = min(span->Bsector.startDraw, (span + 1)->Bsector.startXform);
+                (span + 1)->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, (span + 1)->Bsector.stopXform);
             }
             else
             {
-                span->Tsector.startXform = min(span->Tsector.startDraw,			span->Tsector.startXform);
-                span->Tsector.stopXform  = max(span->Tsector.stopDraw + 1,			span->Tsector.stopXform);
-                (span - 1)->Tsector.startXform = min(span->Tsector.startDraw,	(span - 1)->Tsector.startXform);
-                (span - 1)->Tsector.stopXform  = max(span->Tsector.stopDraw + 1,	(span - 1)->Tsector.stopXform);
+                span->Tsector.startXform = min(span->Tsector.startDraw, span->Tsector.startXform);
+                span->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, span->Tsector.stopXform);
+                (span - 1)->Tsector.startXform = min(span->Tsector.startDraw, (span - 1)->Tsector.startXform);
+                (span - 1)->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, (span - 1)->Tsector.stopXform);
             }
 
             if (LODdata[span->LOD].glueOnLeft)
             {
-                span->Lsector.startXform = min(span->Lsector.startDraw,			span->Lsector.startXform);
-                span->Lsector.stopXform  = max(span->Lsector.stopDraw + 1,			span->Lsector.stopXform);
-                (span + 1)->Lsector.startXform = min(span->Lsector.startDraw,	(span + 1)->Lsector.startXform);
-                (span + 1)->Lsector.stopXform  = max(span->Lsector.stopDraw + 1,	(span + 1)->Lsector.stopXform);
+                span->Lsector.startXform = min(span->Lsector.startDraw, span->Lsector.startXform);
+                span->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, span->Lsector.stopXform);
+                (span + 1)->Lsector.startXform = min(span->Lsector.startDraw, (span + 1)->Lsector.startXform);
+                (span + 1)->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, (span + 1)->Lsector.stopXform);
             }
             else
             {
-                span->Rsector.startXform = min(span->Rsector.startDraw,			span->Rsector.startXform);
-                span->Rsector.stopXform  = max(span->Rsector.stopDraw + 1,			span->Rsector.stopXform);
-                (span - 1)->Rsector.startXform = min(span->Rsector.startDraw,	(span - 1)->Rsector.startXform);
-                (span - 1)->Rsector.stopXform  = max(span->Rsector.stopDraw + 1,	(span - 1)->Rsector.stopXform);
+                span->Rsector.startXform = min(span->Rsector.startDraw, span->Rsector.startXform);
+                span->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, span->Rsector.stopXform);
+                (span - 1)->Rsector.startXform = min(span->Rsector.startDraw, (span - 1)->Rsector.startXform);
+                (span - 1)->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, (span - 1)->Rsector.stopXform);
             }
         }
     }
@@ -1417,35 +1417,35 @@ void RenderOTW::BuildVertexSet(void)
 
 /***************************************************************************\
     Step through the spans and transform all the identified verticies we'll
-	need for drawing.
+ need for drawing.
 \***************************************************************************/
 void RenderOTW::TransformVertexSet(void)
 {
-    SpanListEntry	*span;
-    int				LOD;
-    int				ring;
-    SpanMinMax		*sector;
+    SpanListEntry *span;
+    int LOD;
+    int ring;
+    SpanMinMax *sector;
 
     // Move from inner ring outward
     for (span = firstEmptySpan - 1; span >= spanList; span--)
     {
-        LOD		= span->LOD;
-        ring	= span->ring;
+        LOD = span->LOD;
+        ring = span->ring;
 
         // TOP_SPAN
-        sector	= &span->Tsector;
+        sector = &span->Tsector;
         TransformRun(ring,  sector->startXform, sector->stopXform - sector->startXform, LOD, TRUE);
 
         // RIGHT_SPAN
-        sector	= &span->Rsector;
+        sector = &span->Rsector;
         TransformRun(sector->startXform,  ring, sector->stopXform - sector->startXform, LOD, FALSE);
 
         // BOTTOM_SPAN
-        sector	= &span->Bsector;
+        sector = &span->Bsector;
         TransformRun(-ring, sector->startXform, sector->stopXform - sector->startXform, LOD, TRUE);
 
         // LEFT_SPAN
-        sector	= &span->Lsector;
+        sector = &span->Lsector;
         TransformRun(sector->startXform, -ring, sector->stopXform - sector->startXform, LOD, FALSE);
     }
 }
@@ -1462,9 +1462,9 @@ void RenderOTW::ComputeBounds(void)
     // camera postion which will always yeild a conservative estimate.
     // To be really paranoid, the CULL_BACKUP_DISTANCE is
     // a function of field of view to get a constant linear margin.
-    float cullMargin		= LEVEL_POST_TO_WORLD(2, viewpoint->GetHighLOD());
-    float backupDistance	= cullMargin / (float)sin(diagonal_half_angle);
-    Tpoint	CullPoint;
+    float cullMargin = LEVEL_POST_TO_WORLD(2, viewpoint->GetHighLOD());
+    float backupDistance = cullMargin / (float)sin(diagonal_half_angle);
+    Tpoint CullPoint;
     GetAt(&CullPoint);
     CullPoint.x = X() - CullPoint.x * backupDistance;
     CullPoint.y = Y() - CullPoint.y * backupDistance;
@@ -1475,18 +1475,18 @@ void RenderOTW::ComputeBounds(void)
     // Get the vertical bounds of the terrain arround our viewpoint
     float areaFloor;
     float areaCeiling;
-    areaFloor	= viewpoint->GetTerrainFloor();		// -Z is up
-    areaCeiling	= viewpoint->GetTerrainCeiling();	// -Z is up
+    areaFloor = viewpoint->GetTerrainFloor(); // -Z is up
+    areaCeiling = viewpoint->GetTerrainCeiling(); // -Z is up
 
 
-    //	First compute the front and back distances of the ground patch
+    // First compute the front and back distances of the ground patch
     //  (front may be behind the viewer, in which case it will be negative)
     //  (back will never be behind the viewer and will never be negative)
-    float top	= Pitch() + diagonal_half_angle;
+    float top = Pitch() + diagonal_half_angle;
     float bottom = Pitch() - diagonal_half_angle;
 
-    float aboveMin = areaFloor - CullPoint.z;		// -Z is up
-    float aboveMax = areaCeiling - CullPoint.z;		// -Z is up
+    float aboveMin = areaFloor - CullPoint.z; // -Z is up
+    float aboveMax = areaCeiling - CullPoint.z; // -Z is up
 
     float front = -1e30f;
     float back =  -1e30f;
@@ -1654,29 +1654,29 @@ void RenderOTW::ComputeBounds(void)
 
     // With the viewer looking down the x axis,
     // the right side of view volume is defined by the origin (eye point) and
-    Tpoint	Corner1 = { 1.0f, (float)tan(diagonal_half_angle),  1.0f };
-    Tpoint	Corner2 = { 1.0f, (float)tan(diagonal_half_angle), -1.0f };
+    Tpoint Corner1 = { 1.0f, (float)tan(diagonal_half_angle),  1.0f };
+    Tpoint Corner2 = { 1.0f, (float)tan(diagonal_half_angle), -1.0f };
 
 
     // This plane should then be rotated in pitch about the y axis (look up/down)
     // Rotate the two points
     // NOTE:  We're computing the sides with pitch always pointing downward because
-    //		  the plane/plane intersection does the wrong thing when looking up.
+    //   the plane/plane intersection does the wrong thing when looking up.
     // NOTE2: It would seem to me that I should have a minus sign in front of the pitch
-    //		  term in the following two lines.  I may have a sign wrong somewhere else,
+    //   term in the following two lines.  I may have a sign wrong somewhere else,
     //        though, since it seems to work correctly as written...
-    float	sinPitch	= (float)sin(fabs(Pitch()));
-    float	cosPitch	= (float)cos(fabs(Pitch()));
-    float	sinYaw		= (float)sin(Yaw());
-    float	cosYaw		= (float)cos(Yaw());
+    float sinPitch = (float)sin(fabs(Pitch()));
+    float cosPitch = (float)cos(fabs(Pitch()));
+    float sinYaw = (float)sin(Yaw());
+    float cosYaw = (float)cos(Yaw());
 
-    temp		= Corner1.x * cosPitch	- Corner1.z * sinPitch;
-    Corner1.z	= Corner1.x * sinPitch	+ Corner1.z * cosPitch;
-    Corner1.x	= temp;
+    temp = Corner1.x * cosPitch - Corner1.z * sinPitch;
+    Corner1.z = Corner1.x * sinPitch + Corner1.z * cosPitch;
+    Corner1.x = temp;
 
-    temp		= Corner2.x * cosPitch	- Corner2.z * sinPitch;
-    Corner2.z	= Corner2.x * sinPitch	+ Corner2.z * cosPitch;
-    Corner2.x	= temp;
+    temp = Corner2.x * cosPitch - Corner2.z * sinPitch;
+    Corner2.z = Corner2.x * sinPitch + Corner2.z * cosPitch;
+    Corner2.x = temp;
 
 
     // Construct the normal to the plane using the cross product of the vectors from the eye point
@@ -1706,24 +1706,24 @@ void RenderOTW::ComputeBounds(void)
 
     // Now get two points on this line and two points on its reflection across the X axis
     // point one on each side is at X = front.  Point two on each side is at X = back.
-    rightY1	= -(A * front + C) / B;
-    rightY2	= -(A * back + C) / B;
-    leftY1	= -rightY1;
-    leftY2	= -rightY2;
+    rightY1 = -(A * front + C) / B;
+    rightY2 = -(A * back + C) / B;
+    leftY1 = -rightY1;
+    leftY2 = -rightY2;
 
     // Rotate the four points about the z axis to account for the viewer's yaw angle
     // and shift them out to the viewers location in world space
-    rightX1	= cosYaw * front - sinYaw * rightY1 + CullPoint.x;
-    rightY1	= sinYaw * front + cosYaw * rightY1 + CullPoint.y;
+    rightX1 = cosYaw * front - sinYaw * rightY1 + CullPoint.x;
+    rightY1 = sinYaw * front + cosYaw * rightY1 + CullPoint.y;
 
-    rightX2	= cosYaw * back - sinYaw * rightY2 + CullPoint.x;
-    rightY2	= sinYaw * back + cosYaw * rightY2 + CullPoint.y;
+    rightX2 = cosYaw * back - sinYaw * rightY2 + CullPoint.x;
+    rightY2 = sinYaw * back + cosYaw * rightY2 + CullPoint.y;
 
-    leftX1	= cosYaw * front - sinYaw * leftY1 + CullPoint.x;
-    leftY1	= sinYaw * front + cosYaw * leftY1 + CullPoint.y;
+    leftX1 = cosYaw * front - sinYaw * leftY1 + CullPoint.x;
+    leftY1 = sinYaw * front + cosYaw * leftY1 + CullPoint.y;
 
-    leftX2	= cosYaw * back - sinYaw * leftY2 + CullPoint.x;
-    leftY2	= sinYaw * back + cosYaw * leftY2 + CullPoint.y;
+    leftX2 = cosYaw * back - sinYaw * leftY2 + CullPoint.x;
+    leftY2 = sinYaw * back + cosYaw * leftY2 + CullPoint.y;
 
 
     //
@@ -1774,14 +1774,14 @@ void RenderOTW::ComputeBounds(void)
     {
         // Draw the view volume representation (assuming its in world space)
         SetColor(0xFF0000A0);
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))),	(UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
+        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))),
+                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
+        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
+                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))));
+        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
+                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))));
+        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))),
+                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
     }
 
 #endif

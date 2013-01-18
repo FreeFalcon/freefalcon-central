@@ -8,24 +8,24 @@
 // Update defines
 // ====================
 
-#define	ENEMY_DETECTED		0x01
-#define ENEMY_IN_RANGE		0x02
-#define FRIENDLY_DETECTED	0x04
-#define FRIENDLY_IN_RANGE	0x08
-#define ENEMY_SAME_HEX		0x10
+#define ENEMY_DETECTED 0x01
+#define ENEMY_IN_RANGE 0x02
+#define FRIENDLY_DETECTED 0x04
+#define FRIENDLY_IN_RANGE 0x08
+#define ENEMY_SAME_HEX 0x10
 
-#define ALL_DETECTION		0x1f
+#define ALL_DETECTION 0x1f
 
 // 2001-03-22 TESTING BY S.G. EVEN IF THE ENEMY IS IN RANGE, DON'T REACT IF YOU CANNOT SEE IT!
-//#define REACTION_MASK		0x13			// Required to react
-#define REACTION_MASK		0x11			// Required to react
+//#define REACTION_MASK 0x13 // Required to react
+#define REACTION_MASK 0x11 // Required to react
 
 // ===================
 // Unit Entity ADT
 // ===================
 
 class FlightClass;
-typedef FlightClass*	Flight;
+typedef FlightClass* Flight;
 
 extern int UpdateUnit(Unit U, CampaignTime DeltaTime);
 

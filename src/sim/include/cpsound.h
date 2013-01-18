@@ -8,8 +8,8 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int	soundId;
-    int	F4SoundEntry;
+    int soundId;
+    int F4SoundEntry;
 } CPSoundIndex;
 
 
@@ -28,14 +28,14 @@ public:
     };
 #endif
 
-    int				mNumSounds;
-    int				mSoundTally;
-    CPSoundIndex*	mpSoundArray;
+    int mNumSounds;
+    int mSoundTally;
+    CPSoundIndex* mpSoundArray;
 
 public:
 
-    int	GetSoundIndex(int);
-    void	AddSound(int, int);
+    int GetSoundIndex(int);
+    void AddSound(int, int);
 
     CPSoundList(int);
     ~CPSoundList();

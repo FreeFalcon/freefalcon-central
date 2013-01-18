@@ -24,7 +24,7 @@
 /*
  * How close is close enough?
  */
-#define POINT_BLANK		400				// 20 ft^2
+#define POINT_BLANK 400 // 20 ft^2
 
 /*
  * Message Type Damage Message

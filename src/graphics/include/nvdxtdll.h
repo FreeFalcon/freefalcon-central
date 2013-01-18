@@ -23,8 +23,8 @@
 class NVDXTDLL_API CNvdxtdll
 {
 public:
-	CNvdxtdll(void);
-	// TODO: add your methods here.
+ CNvdxtdll(void);
+ // TODO: add your methods here.
 };
 
 extern NVDXTDLL_API int nNvdxtdll;

@@ -16,11 +16,11 @@
  * State defines
  */
 
-#define PSM_STATE_JOINED_GAME		1		// Player joined the game (not entered sim)
-#define PSM_STATE_ENTERED_SIM		2		// Player has entered the arena/sim
-#define PSM_STATE_LEFT_GAME			3
-#define PSM_STATE_LEFT_SIM			4
-#define PSM_STATE_TRANSFERED		5		// Player transfered between entities
+#define PSM_STATE_JOINED_GAME 1 // Player joined the game (not entered sim)
+#define PSM_STATE_ENTERED_SIM 2 // Player has entered the arena/sim
+#define PSM_STATE_LEFT_GAME 3
+#define PSM_STATE_LEFT_SIM 4
+#define PSM_STATE_TRANSFERED 5 // Player transfered between entities
 
 /*
  * Message Type Player Enter/Exit Sim

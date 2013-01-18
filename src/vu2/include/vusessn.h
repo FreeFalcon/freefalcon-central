@@ -12,12 +12,12 @@
 #include "vuevent.h"
 #include "vucoll.h"
 
-#define VU_SESSION_NULL_CONNECTION	vuNullId
-#define VU_SESSION_NULL_GROUP		vuNullId
+#define VU_SESSION_NULL_CONNECTION vuNullId
+#define VU_SESSION_NULL_GROUP vuNullId
 
-#define VU_DEFAULT_PLAYER_NAME 		"anonymous"
-#define VU_GAME_GROUP_NAME    	    "Vu2 Game"
-#define VU_PLAYER_POOL_GROUP_NAME	"Player Pool"
+#define VU_DEFAULT_PLAYER_NAME  "anonymous"
+#define VU_GAME_GROUP_NAME         "Vu2 Game"
+#define VU_PLAYER_POOL_GROUP_NAME "Player Pool"
 
 #define PACKET_HDR_SIZE (vuKnownConnectionId ? 0 : sizeof(VU_SESSION_ID) + sizeof(VU_ID_NUMBER))
 #define MIN_MSG_HDR_SIZE (2)     // 1 for type, 1 for min length
@@ -54,7 +54,7 @@ struct VuCommsContext
     VuCommsConnectStatus  status_;
     VU_BOOL               reliable_;
     int                   maxMsgSize_;
-    int					maxPackSize_;
+    int maxPackSize_;
     // outgoing data
     VU_BYTE               *normalSendPacket_;
     VU_BYTE               *normalSendPacketPtr_;
@@ -74,7 +74,7 @@ struct VuCommsContext
     VU_ID                 targetId_;
     VU_TIME               timestamp_;
     // ping data
-    int					ping;
+    int ping;
 };
 
 
@@ -92,7 +92,7 @@ public:
     virtual int Save(FILE *file);
 
     // Special VU type getters
-    virtual VU_BOOL IsTarget();	// returns TRUE
+    virtual VU_BOOL IsTarget(); // returns TRUE
 
     virtual VU_BOOL HasTarget(VU_ID id) = 0; // TRUE --> id contains (or is) ent
     virtual VU_BOOL InTarget(VU_ID id) = 0; // TRUE --> ent contained by (or is) id
@@ -286,7 +286,7 @@ public:
 #endif //VU_TRACK_LATENCY
 
     // Special VU type getters
-    virtual VU_BOOL IsSession();	// returns TRUE
+    virtual VU_BOOL IsSession(); // returns TRUE
 
     virtual VU_BOOL HasTarget(VU_ID id);  // TRUE --> id contains (or is) ent
     virtual VU_BOOL InTarget(VU_ID id);   // TRUE --> ent contained by (or is) id
@@ -325,7 +325,7 @@ public:
 
 protected:
     VuSessionEntity(ushort typeindex, ulong domainMask, char *callsign);
-    VU_SESSION_ID OpenSession();	// returns session id
+    VU_SESSION_ID OpenSession(); // returns session id
     void CloseSession();
 
     /** called when session is inserted into DB. */
@@ -356,15 +356,15 @@ protected:
 #ifdef VU_TRACK_LATENCY
     VU_BYTE timeSyncState_;
     VU_TIME latency_;
-    VU_TIME masterTime_;		// time from master
-    VU_TIME masterTimePostTime_;	// local time of net msg post
-    VU_TIME responseTime_;		// local time local msg post
-    VU_SESSION_ID masterTimeOwner_;	// sender of master msg
+    VU_TIME masterTime_; // time from master
+    VU_TIME masterTimePostTime_; // local time of net msg post
+    VU_TIME responseTime_; // local time local msg post
+    VU_SESSION_ID masterTimeOwner_; // sender of master msg
     // local data
     // time synchro statistics
     VU_TIME lagTotal_;
     int lagPackets_;
-    int lagUpdate_;	// when packets > update, change latency value
+    int lagUpdate_; // when packets > update, change latency value
 #endif //VU_TRACK_LATENCY
     // msg tracking
     int lastMsgRecvd_;
@@ -443,7 +443,7 @@ public:
     virtual VU_ERRCODE RemoveSession(VuSessionEntity *session);
     VU_ERRCODE RemoveSession(VU_ID sessionId);
 
-    virtual VU_BOOL IsGroup();	// returns TRUE
+    virtual VU_BOOL IsGroup(); // returns TRUE
 
     // event Handlers
     virtual VU_ERRCODE Handle(VuSessionEvent *event);
@@ -513,7 +513,7 @@ public:
     virtual VU_ERRCODE AddSession(VuSessionEntity *session);
     virtual VU_ERRCODE RemoveSession(VuSessionEntity *session);
 
-    virtual VU_BOOL IsGame();	// returns TRUE
+    virtual VU_BOOL IsGame(); // returns TRUE
 
     // event Handlers
     virtual VU_ERRCODE Handle(VuSessionEvent *event);
@@ -543,7 +543,7 @@ public:
 
     virtual ~VuPlayerPoolGame();
 
-    // virtual function interface	-- stubbed out here
+    // virtual function interface -- stubbed out here
     virtual int SaveSize();
     virtual int Save(VU_BYTE **stream);
     virtual int Save(FILE *file);
@@ -569,7 +569,7 @@ public:
 
     virtual ~VuGlobalGroup();
 
-    // virtual function interface	-- stubbed out here
+    // virtual function interface -- stubbed out here
     virtual int SaveSize();
     virtual int Save(VU_BYTE **stream);
     virtual int Save(FILE *file);

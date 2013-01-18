@@ -41,9 +41,9 @@ void set_mip_filter_callback(MIPFiltercallback callback);
 
 #ifndef TRGBA
 #define TRGBA
-typedef	struct
+typedef struct
 {
-    BYTE	rgba[4];
+    BYTE rgba[4];
 } rgba_t;
 #endif
 

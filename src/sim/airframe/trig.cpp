@@ -100,25 +100,25 @@ inline void DebugValidation(DTransformMatrix &M) {};
     wind axis euler angles.
 
  Inputs (implicit):
-    alpha:	angle of attack in degrees (positive means nose above vv)
-	beta:	angle of side slipe in degrees (positive means nose LEFT of vv)
-	sigma:	velocity vector "yaw" in world space in radians
-	gmma:	velocity vector "pitch" in world space in radians
-	mu:		velocity vector "roll" in world space in radians
+    alpha: angle of attack in degrees (positive means nose above vv)
+ beta: angle of side slipe in degrees (positive means nose LEFT of vv)
+ sigma: velocity vector "yaw" in world space in radians
+ gmma: velocity vector "pitch" in world space in radians
+ mu: velocity vector "roll" in world space in radians
 
  Outputs (implicit):
-	psi:	nose vector "yaw" in world space in radians
-	theta:	nose vector "pitch" in world space in radians
-	phi:	nose vector "roll" in world space in radians
-	(Cos and Sine of all input and output angles)
-	dmx:	"direction cosine matrix" or world space rotation matrix of the body
+ psi: nose vector "yaw" in world space in radians
+ theta: nose vector "pitch" in world space in radians
+ phi: nose vector "roll" in world space in radians
+ (Cos and Sine of all input and output angles)
+ dmx: "direction cosine matrix" or world space rotation matrix of the body
 
   Note:
     This is all based on the fact that the columns of a rotation matrix are the
-	unit normal basis vectors for a coordinate system.  That is, if we build
-	the rotation matrix from direction cosines, then the columns of the matrix
-	are unit vectors point forward, right, and up.  Column 1 is "at", column 2
-	is "right", and column 3 is "up".
+ unit normal basis vectors for a coordinate system.  That is, if we build
+ the rotation matrix from direction cosines, then the columns of the matrix
+ are unit vectors point forward, right, and up.  Column 1 is "at", column 2
+ is "right", and column 3 is "up".
 
   Development History :
   Date      Programer           Description
@@ -210,9 +210,9 @@ void AirframeClass::Trigenometry()
 
     // sfr: black triangle fix
     /* original
-    platform->dmx[2][0] = R[2][0]*vv[0][0]					  + R[2][2]*vv[2][0];
-    platform->dmx[2][1] = R[2][0]*vv[0][1]					  + R[2][2]*vv[2][1];
-    platform->dmx[2][2] = R[2][0]*vv[0][2]					  + R[2][2]*vv[2][2];
+    platform->dmx[2][0] = R[2][0]*vv[0][0]   + R[2][2]*vv[2][0];
+    platform->dmx[2][1] = R[2][0]*vv[0][1]   + R[2][2]*vv[2][1];
+    platform->dmx[2][2] = R[2][0]*vv[0][2]   + R[2][2]*vv[2][2];
     */
     platform->dmx[2][0] = R[2][0] * vv[0][0] + R[2][1] * vv[1][0] + R[2][2] * vv[2][0];
     platform->dmx[2][1] = R[2][0] * vv[0][1] + R[2][1] * vv[1][1] + R[2][2] * vv[2][1];
@@ -222,7 +222,7 @@ void AirframeClass::Trigenometry()
     DebugValidation(platform->dmx);
 
 #ifdef _DEBUG
-    DTransformMatrix	dmx;
+    DTransformMatrix dmx;
 
     dmx[0][0] = R[0][0] * vv[0][0] + R[0][1] * vv[1][0] + R[0][2] * vv[2][0];
     dmx[0][1] = R[0][0] * vv[0][1] + R[0][1] * vv[1][1] + R[0][2] * vv[2][1];
@@ -232,9 +232,9 @@ void AirframeClass::Trigenometry()
     dmx[1][1] = R[1][0] * vv[0][1] + R[1][1] * vv[1][1] + R[1][2] * vv[2][1];
     dmx[1][2] = R[1][0] * vv[0][2] + R[1][1] * vv[1][2] + R[1][2] * vv[2][2];
 
-    dmx[2][0] = R[2][0] * vv[0][0]					+ R[2][2] * vv[2][0];
-    dmx[2][1] = R[2][0] * vv[0][1]					+ R[2][2] * vv[2][1];
-    dmx[2][2] = R[2][0] * vv[0][2]					+ R[2][2] * vv[2][2];
+    dmx[2][0] = R[2][0] * vv[0][0] + R[2][2] * vv[2][0];
+    dmx[2][1] = R[2][0] * vv[0][1] + R[2][2] * vv[2][1];
+    dmx[2][2] = R[2][0] * vv[0][2] + R[2][2] * vv[2][2];
 
     DebugValidation(dmx);
 
@@ -247,9 +247,9 @@ void AirframeClass::Trigenometry()
     //MatrixMult( &R, &vv, &N );
 
     // Derive the body direction angles from the orientation matrix
-    psi			= (float)atan2(platform->dmx[0][1], platform->dmx[0][0]);		// yaw
-    theta		= (float) - asin(platform->dmx[0][2]);							// pitch
-    phi			= (float)atan2(platform->dmx[1][2], platform->dmx[2][2]);		// roll
+    psi = (float)atan2(platform->dmx[0][1], platform->dmx[0][0]); // yaw
+    theta = (float) - asin(platform->dmx[0][2]); // pitch
+    phi = (float)atan2(platform->dmx[1][2], platform->dmx[2][2]); // roll
 
     // Finally, store the cos and sin of the body angles
     mlSinCos(&trig, psi);

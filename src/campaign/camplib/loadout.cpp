@@ -16,14 +16,14 @@
 #include "camplib.h"
 #include "campweap.h"
 #include "WeapList.h"
-#include "Campaign.h"	// 2001-09-18 M.N. TV-guided weapons
+#include "Campaign.h" // 2001-09-18 M.N. TV-guided weapons
 #include "entity.h"
 #include "loadout.h"
 #include "Squadron.h"
 #include "FalcSess.h"
 
 
-#define INFINITE_AI_AMMO	1		// With this defined, if an AI is out of ammo, they'll load 2 of the worst thing they have
+#define INFINITE_AI_AMMO 1 // With this defined, if an AI is out of ammo, they'll load 2 of the worst thing they have
 
 #ifdef USE_SH_POOLS
 // MEM_POOL LoadoutStruct::pool;
@@ -31,10 +31,10 @@
 
 extern short NumWeaponTypes;
 
-extern uchar		DefaultDamageMods[OtherDam + 1];
-//extern int			GetTotalTimeOfDay();
-//extern int			GetTimeOfDay(int i);
-//extern float		GetGroundColoring(int c);
+extern uchar DefaultDamageMods[OtherDam + 1];
+//extern int GetTotalTimeOfDay();
+//extern int GetTimeOfDay(int i);
+//extern float GetGroundColoring(int c);
 
 uchar AdjustedWeaponCount(int *total, uchar max_this_station, short wid);
 
@@ -47,8 +47,8 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
     {
 #ifndef INFINITE_AI_AMMO
         // Check for infinite weapons
-        int					index;
-        UnitClassDataType	*uc = squadron->GetUnitClassData();
+        int index;
+        UnitClassDataType *uc = squadron->GetUnitClassData();
         ShiAssert(uc);
         index = uc->SpecialIndex;
 
@@ -62,12 +62,12 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         if (max > 2)
         {
             if (!(vc->VisibleFlags & (0x01 << hp)))
-                to_load = max;										// Bomb-bay or gun - So fill 'er up
+                to_load = max; // Bomb-bay or gun - So fill 'er up
             else
-                max = to_load = WeaponDataTable[wid].FireRate;		// Otherwise, load one shot's
+                max = to_load = WeaponDataTable[wid].FireRate; // Otherwise, load one shot's
 
             if (last_hp + 1 - hp != hp)
-                to_load *= 2;										// Twice as many, if we've got an opposite hp
+                to_load *= 2; // Twice as many, if we've got an opposite hp
         }
     }
     else
@@ -76,10 +76,10 @@ int LoadWeapon(int hp, int last_hp, short wid, int to_load, int max, Squadron sq
         // Bomb-bay or gun - one shot is considered the whole thing, so adjust to_load
         if (!(vc->VisibleFlags & (0x01 << hp)))
         {
-            to_load += max - 1;										// Adjust 1 pt worth of to_load to max;
+            to_load += max - 1; // Adjust 1 pt worth of to_load to max;
 
             if (last_hp + 1 - hp != hp && to_load > max)
-                to_load += max - 1;									// Symetrical - Adjust another point
+                to_load += max - 1; // Symetrical - Adjust another point
         }
     }
 
@@ -110,7 +110,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
     //LRKLUDGE
     //if (wid == 184)
-    //	wid = 185;
+    // wid = 185;
 
     score = GetWeaponScore(wid, dam, mt, 0);
 
@@ -118,7 +118,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     if (WeaponDataTable[wid].DamageType == NuclearDam)
         score = 0;
 
-    //	score = FloatToInt32((GetWeaponRange(wid,mt)+1)/5.0F*score);
+    // score = FloatToInt32((GetWeaponRange(wid,mt)+1)/5.0F*score);
 
     // RV - Biker - Rework this later on
     switch (type_flags)
@@ -168,7 +168,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
         score = 0;
 
     if (type_flags && type_flags & WeaponDataTable[wid].Flags)
-        score += 100;			// Needed so we load non-combat type things
+        score += 100; // Needed so we load non-combat type things
 
     if ((guide_flags & WEAP_GUIDED_MASK) && (guide_flags & WeaponDataTable[wid].GuidanceFlags) != guide_flags)
         score = 0;
@@ -196,11 +196,11 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
         if (WeaponDataTable[wid].GuidanceFlags == WEAP_VISUALONLY && WeaponDataTable[wid].DamageType == PenetrationDam)
             score = 0;
 
-        /*FILE	*fp = fopen("BAI.log","a");
+        /*FILE *fp = fopen("BAI.log","a");
         if (fp)
         {
-        	fprintf(fp, "WID: %3d Flags: %x Score: %d\n", wid, WeaponDataTable[wid].GuidanceFlags, score);
-        	fclose(fp);
+         fprintf(fp, "WID: %3d Flags: %x Score: %d\n", wid, WeaponDataTable[wid].GuidanceFlags, score);
+         fclose(fp);
         }*/
     }
 
@@ -230,9 +230,9 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 
         if (wid == lw)
         {
-            if (mt != Air)			// Keep air to ground weapons similar
+            if (mt != Air) // Keep air to ground weapons similar
                 score *= 4;
-            else					// Keep air to air weapons different
+            else // Keep air to air weapons different
                 score /= 4;
         }
     }
@@ -241,7 +241,7 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
     // stops if TimeOfDayGeneral returns dawndusk
     if (WeaponDataTable[wid].GuidanceFlags == WEAP_TV)
     {
-        CampaignTime	now = TheCampaign.CurrentTime;
+        CampaignTime now = TheCampaign.CurrentTime;
 
         if (TimeOfDayGeneral(now) < TOD_DAWNDUSK)
             score = 0;
@@ -258,9 +258,9 @@ int WeaponLoadScore(int wid, int lw, uchar *dam, MoveType mt, int type_flags, in
 // Takes a damage modifier array, movement type and flags to determine which weapons to load
 int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, int type_flags, int guide_flags, short Weapon[HARDPOINT_MAX], uchar Weapons[HARDPOINT_MAX])
 {
-    int		i, hp, wl, score, bs, bw, wid, lhp, chp, lw = 0, sl = 0, tl = num, force_on_one = 0;
-    VehicleClassDataType	*vc;
-    UnitClassDataType		*uc = NULL;
+    int i, hp, wl, score, bs, bw, wid, lhp, chp, lw = 0, sl = 0, tl = num, force_on_one = 0;
+    VehicleClassDataType *vc;
+    UnitClassDataType *uc = NULL;
 
     //int temp_flags = type_flags;
     //int temp_num = 1;
@@ -300,11 +300,11 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
     for (hp = chp; hp <= lhp && num > 0; hp++)
     {
         // RV - Biker - Jammers now do overwrite AA and AG weapons
-        //if (!Weapon[hp] && (!sl || !Weapon[lhp+1-hp]))		// Only check for empty hard points
-        if (!Weapon[hp] && (!sl || !Weapon[lhp + 1 - hp]) || ((type_flags & WEAP_ECM || type_flags & WEAP_LASER_POD) && !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON))))		// Only check for empty hard points
+        //if (!Weapon[hp] && (!sl || !Weapon[lhp+1-hp])) // Only check for empty hard points
+        if (!Weapon[hp] && (!sl || !Weapon[lhp + 1 - hp]) || ((type_flags & WEAP_ECM || type_flags & WEAP_LASER_POD) && !(WeaponDataTable[Weapon[hp]].Flags & (WEAP_FUEL | WEAP_RECON)))) // Only check for empty hard points
             //if (!Weapon[hp] || (temp_flags & WEAP_LASER_POD))
         {
-            if (vc->Weapons[hp] == 255)		// This is a weapon list
+            if (vc->Weapons[hp] == 255) // This is a weapon list
             {
                 wl = vc->Weapon[hp];
 
@@ -330,7 +330,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                                 score = 0;
 
 #else
-                            score = -score;			// The worst thing wins..
+                            score = -score; // The worst thing wins..
 #endif
                         }
                         else if (((Squadron)squadron)->GetUnitStores(wid) < 100)
@@ -380,7 +380,7 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
                 {
                     // This is a freebee - it's our gun
                     Weapon[hp] = vc->Weapon[hp];
-                    Weapons[hp] = vc->Weapons[hp];							// Max loadable weapons
+                    Weapons[hp] = vc->Weapons[hp]; // Max loadable weapons
                 }
             }
         }
@@ -409,25 +409,25 @@ int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num, in
 
 uchar AdjustedWeaponCount(int *total, uchar max_this_station, short wid)
 {
-    int			count;
-    int			rate = GetWeaponFireRate(wid);
+    int count;
+    int rate = GetWeaponFireRate(wid);
 
     if (rate > max_this_station)
         rate = max_this_station;
 
     if (*total == 1 && max_this_station > 0)
     {
-        count = rate;								// Load one shot's worth
+        count = rate; // Load one shot's worth
         *total -= 1;
     }
-    //	else if (max_this_station/rate > *total/2)
-    //		{
-    //		count = ((*total)*rate)/2;					// Load 1/2 num shot's worth (we'll load the other half symetrically)
-    //		*total /= 2;
-    //		}
+    // else if (max_this_station/rate > *total/2)
+    // {
+    // count = ((*total)*rate)/2; // Load 1/2 num shot's worth (we'll load the other half symetrically)
+    // *total /= 2;
+    // }
     else
     {
-        count = max_this_station;					// Load the maximum
+        count = max_this_station; // Load the maximum
         *total -= count;
     }
 
@@ -436,7 +436,7 @@ uchar AdjustedWeaponCount(int *total, uchar max_this_station, short wid)
 
 void LoadvsAir(int vindex, short Weapon[HARDPOINT_MAX], uchar Weapons[HARDPOINT_MAX])
 {
-    uchar*		damageMods;
+    uchar* damageMods;
 
     // This give 100% damage vs most common types of damage.
     // WARNING: if this doesn't get what we want, we can enter 100% for everything

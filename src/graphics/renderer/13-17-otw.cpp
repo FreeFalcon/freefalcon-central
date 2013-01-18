@@ -4,10 +4,10 @@
     January 2, 1995
 
     This class provides 3D drawing functions specific to rendering out the
-	window views including terrain.
+ window views including terrain.
 
-	This file provides the Setup and Cleanup code for the RenderOTW class,
-	as well as miscellanious interface functions.
+ This file provides the Setup and Cleanup code for the RenderOTW class,
+ as well as miscellanious interface functions.
 \***************************************************************************/
 //JAM 297Sep03 - Begin Major Rewrite
 #include <math.h>
@@ -34,9 +34,9 @@ extern float SimLibMajorFrameTime;
 
 #pragma warning(disable : 4127)
 
-const float RenderOTW::PERSPECTIVE_RANGE	= 6000.0f;
-const float RenderOTW::NVG_TUNNEL_PERCENT	= 0.2f;
-const float RenderOTW::DETAIL_RANGE			= 8000.f;
+const float RenderOTW::PERSPECTIVE_RANGE = 6000.0f;
+const float RenderOTW::NVG_TUNNEL_PERCENT = 0.2f;
+const float RenderOTW::DETAIL_RANGE = 8000.f;
 
 extern bool g_bEnableWeatherExtensions;
 extern float g_fCloudThicknessFactor;
@@ -45,8 +45,8 @@ extern bool g_bFullScreenNVG;
 extern unsigned long    vuxRealTime;
 
 #ifdef TWO_D_MAP_AVAILABLE
-BOOL	twoDmode = FALSE;		// Use to control map display mode while debugging
-int		TWODSCALE = 5;
+BOOL twoDmode = FALSE; // Use to control map display mode while debugging
+int TWODSCALE = 5;
 #endif
 
 #ifdef DAVE_DBG
@@ -61,13 +61,13 @@ ulong terrTime = 0;
 
 
 /***************************************************************************\
-	Setup the rendering context for thiw view
+ Setup the rendering context for thiw view
 \***************************************************************************/
 void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 {
-    int				usedLODcount;
-    int				LOD;
-    int				LODbufferSize;
+    int usedLODcount;
+    int LOD;
+    int LODbufferSize;
 
 
     // Call our parents Setup code (win is available only after this call)
@@ -77,11 +77,11 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     viewpoint = vp;
 
     // Start with the default light source position (over head)
-    lightTheta		= 0.0f;
-    lightPhi		= PI_OVER_2;
-    SunGlareValue	= 0.0f;
-    SunGlareWashout	= 0.0f;
-    //	smoothed = 0; // intialise to something
+    lightTheta = 0.0f;
+    lightPhi = PI_OVER_2;
+    SunGlareValue = 0.0f;
+    SunGlareWashout = 0.0f;
+    // smoothed = 0; // intialise to something
     textureLevel = 4; //JAM 01Dec03 - Hardcoding this for now, to be removed.
     filtering = hazed = 0;
 
@@ -90,25 +90,25 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     PreSceneCloudOcclusion(0.0f, 0x80808080);
 
     // Adjust our back clipping plane based on the range defined for this viewpoint
-    SetFar(viewpoint->GetMaxRange() * 0.707f);	// far = maxRange * cos(half_angle)
+    SetFar(viewpoint->GetMaxRange() * 0.707f); // far = maxRange * cos(half_angle)
 
     // Set the default sky and haze properties
     SetDitheringMode(TRUE);
     SetTerrainTextureLevel(TheMap.LastNearTexLOD());
-    SetObjectTextureState(TRUE);	// Default to using textured objects
+    SetObjectTextureState(TRUE); // Default to using textured objects
     SetFilteringMode(FALSE);
-    SetHazeMode(TRUE);			// (TRUE = ON, FALSE = OFF)
+    SetHazeMode(TRUE); // (TRUE = ON, FALSE = OFF)
     SetRoofMode(FALSE);
-    //	SetSmoothShadingMode( TRUE ); // JPO - this uses the value from previous state
+    // SetSmoothShadingMode( TRUE ); // JPO - this uses the value from previous state
 
     // Default to full alpha blending for special effects
     //    alphaMode = TRUE;
 
     // Setup a default sky (will be replaced by Time of Day processing)
-    sky_color.r			= sky_color.g			= sky_color.b			= 0.5f;
-    haze_sky_color.r	= haze_sky_color.g		= haze_sky_color.b		= 0.4f;
-    haze_ground_color.r	= haze_ground_color.g	= haze_ground_color.b	= 0.3f;
-    earth_end_color.r	= earth_end_color.g		= earth_end_color.b		= 0.2f;
+    sky_color.r = sky_color.g = sky_color.b = 0.5f;
+    haze_sky_color.r = haze_sky_color.g = haze_sky_color.b = 0.4f;
+    haze_ground_color.r = haze_ground_color.g = haze_ground_color.b = 0.3f;
+    earth_end_color.r = earth_end_color.g = earth_end_color.b = 0.2f;
 
 
     // Figure out how many posts outward we might ever see at any detail level
@@ -123,8 +123,8 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 
     // Figure the total number of rings to deal with assuming max number of posts
     // across each of the detail levels.  Include room for a few extra padding rings
-    usedLODcount		= viewpoint->GetMaxLOD() - viewpoint->GetMinLOD() + 1;
-    spanListMaxEntries	= (maxSpanOffset + 1) * usedLODcount + 2;
+    usedLODcount = viewpoint->GetMaxLOD() - viewpoint->GetMinLOD() + 1;
+    spanListMaxEntries = (maxSpanOffset + 1) * usedLODcount + 2;
 
 
     // Allocate memory for our list of vertex spans
@@ -236,9 +236,9 @@ void RenderOTW::Cleanup(void)
     vertexMemory = NULL;
 
     // Set our allowable ranges to 0
-    maxSpanOffset		= 0;
-    maxSpanExtent		= 0;
-    spanListMaxEntries	= 0;
+    maxSpanOffset = 0;
+    maxSpanExtent = 0;
+    spanListMaxEntries = 0;
 
     // Discard the pointer to our associated TViewPoint object
     viewpoint = NULL;
@@ -250,7 +250,7 @@ void RenderOTW::Cleanup(void)
 
 
 /***************************************************************************\
-	Do start of frame housekeeping
+ Do start of frame housekeeping
 \***************************************************************************/
 void RenderOTW::StartFrame(void)
 {
@@ -259,7 +259,7 @@ void RenderOTW::StartFrame(void)
     if (TheTimeOfDay.GetNVGmode())
     {
         Drawable2D::SetGreenMode(TRUE);
-        //		DrawableOvercast::SetGreenMode(TRUE);
+        // DrawableOvercast::SetGreenMode(TRUE);
         realWeather->SetGreenMode(TRUE); //JAM 10Nov03
         TheColorBank.SetColorMode(ColorBankClass::GreenMode);
     }
@@ -267,7 +267,7 @@ void RenderOTW::StartFrame(void)
 
 
 /***************************************************************************\
-	Select the amount of textureing employed for terrain
+ Select the amount of textureing employed for terrain
 \***************************************************************************/
 void RenderOTW::SetTerrainTextureLevel(int level)
 {
@@ -295,11 +295,11 @@ void RenderOTW::SetTerrainTextureLevel(int level)
     }
 
     // Rearrange the texture blend settings
-    //	blend_start	= viewpoint->GetMaxRange( textureLevel - 1 );
-    //	blend_depth	= viewpoint->GetMaxRange( textureLevel ) * 0.8f;
+    // blend_start = viewpoint->GetMaxRange( textureLevel - 1 );
+    // blend_depth = viewpoint->GetMaxRange( textureLevel ) * 0.8f;
 
     // Convert from range from viewer to range from start
-    haze_depth	-= haze_start;
+    haze_depth -= haze_start;
 
     // Reevaluate which rendering states to use for each LOD
     SetupStates();
@@ -317,47 +317,47 @@ void RenderOTW::SetupStates(void)
 }
 
 /***************************************************************************\
-	These are used to construct the tunnel vision effect
+ These are used to construct the tunnel vision effect
 \***************************************************************************/
-static const float	big = 1.2f;
-static const float	ltl = 0.5f;
+static const float big = 1.2f;
+static const float ltl = 0.5f;
 static const struct pnt
 {
     float x, y;
 } OutsidePoints[] =
 {
-    {	 ltl,	 big	},
-    {	 1.0f,	 1.0f	},
-    {	 big,	 ltl	},
-    {	 big,	-ltl	},
-    {	 1.0f,	-1.0f	},
-    {	 ltl,	-big	},
-    {	-ltl,	-big	},
-    {	-1.0f,	-1.0f	},
-    {	-big,	-ltl	},
-    {	-big,	 ltl	},
-    {	-1.0f,	 1.0f	},
-    {	-ltl,	 big	},
-    {	 ltl,	 big	}
+    {  ltl,  big },
+    {  1.0f,  1.0f },
+    {  big,  ltl },
+    {  big, -ltl },
+    {  1.0f, -1.0f },
+    {  ltl, -big },
+    { -ltl, -big },
+    { -1.0f, -1.0f },
+    { -big, -ltl },
+    { -big,  ltl },
+    { -1.0f,  1.0f },
+    { -ltl,  big },
+    {  ltl,  big }
 };
-static const int	NumPoints = sizeof(OutsidePoints) / sizeof(struct pnt);
-static const float	PercentBlend = 0.1f;
-static const float	PercentScale = 1.0f + PercentBlend;
+static const int NumPoints = sizeof(OutsidePoints) / sizeof(struct pnt);
+static const float PercentBlend = 0.1f;
+static const float PercentScale = 1.0f + PercentBlend;
 
 
 /***************************************************************************\
-	Setup the tunnel vision effect.  This should only be called
-	on the primary out the window view.  The percent supplied is
-	is relative to the total size of the underlying image object.
-	THIS CALL IS TO BE CALLED _BEFORE_ DrawScene()
+ Setup the tunnel vision effect.  This should only be called
+ on the primary out the window view.  The percent supplied is
+ is relative to the total size of the underlying image object.
+ THIS CALL IS TO BE CALLED _BEFORE_ DrawScene()
 \***************************************************************************/
 void RenderOTW::SetTunnelPercent(float percent, DWORD color)
 {
     float startpct = percent;
 
     // Clamp the percent value to the allowable range
-    if (percent > 1.0f)			percent = 1.0f;
-    else if (percent < 0.0f)	percent = 0.0f;
+    if (percent > 1.0f) percent = 1.0f;
+    else if (percent < 0.0f) percent = 0.0f;
 
     // Apply adjustments if we're in NVG mode
     if (TheTimeOfDay.GetNVGmode() && (percent < NVG_TUNNEL_PERCENT))
@@ -381,16 +381,16 @@ void RenderOTW::SetTunnelPercent(float percent, DWORD color)
     }
 
     // Store the new tunnel vision parameters
-    tunnelColor			= color;
-    tunnelPercent		= percent;
-    tunnelAlphaWidth	= percent * PercentScale;
-    tunnelSolidWidth	= tunnelAlphaWidth - PercentBlend;
+    tunnelColor = color;
+    tunnelPercent = percent;
+    tunnelAlphaWidth = percent * PercentScale;
+    tunnelSolidWidth = tunnelAlphaWidth - PercentBlend;
 }
 
 
 /***************************************************************************\
-	Setup the cloud "fuzz" effect as we enter/leave the clouds
-	CALL _BEFORE_ DrawScene() gets underway.
+ Setup the cloud "fuzz" effect as we enter/leave the clouds
+ CALL _BEFORE_ DrawScene() gets underway.
 \***************************************************************************/
 void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
 {
@@ -408,7 +408,7 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         // Set the MPR color correction terms to get "fade out"
         // TODO:  Update this once Marc's changes are in...
 #if 1
-        //		context.SetColorCorrection( color, percent );
+        // context.SetColorCorrection( color, percent );
 #else
         // This is a total hack to get "green" results on MFDs:
         float correction = 1.0f + percent * percent * 100.0f;
@@ -420,16 +420,16 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
         {
 
             // Guess that we're on a green display
-            //			context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(1.0f) );
-            //			context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(correction) );
-            //			context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(1.0f) );
+            // context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(1.0f) );
+            // context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(correction) );
+            // context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(1.0f) );
         }
         else
         {
             // Assume a color display
-            //			context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(correction) );
-            //			context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(correction) );
-            //			context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(correction) );
+            // context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(correction) );
+            // context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(correction) );
+            // context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(correction) );
         }
 
 #endif
@@ -438,8 +438,8 @@ void RenderOTW::PreSceneCloudOcclusion(float percent, DWORD color)
 
 
 /***************************************************************************\
-	Finish the cloud "fuzz" effect as we enter/leave the clouds
-	CALL between DrawScene() and FinishFrame()
+ Finish the cloud "fuzz" effect as we enter/leave the clouds
+ CALL between DrawScene() and FinishFrame()
 \***************************************************************************/
 void RenderOTW::PostSceneCloudOcclusion(void)
 {
@@ -456,7 +456,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         // OW
 #if 1
         // Draw the viewport sized alpha blended polygon
-        MPRVtx_t	pVtx[4];
+        MPRVtx_t pVtx[4];
 
         // Set the foreground color and drawing state
         context.SelectForegroundColor(cloudColor);
@@ -475,7 +475,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         context.DrawPrimitive(MPR_PRM_TRIFAN, 0, 4, pVtx, sizeof(pVtx[0]));
 #else
         // Draw the viewport sized alpha blended polygon
-        MPRVtx_t	*p;
+        MPRVtx_t *p;
 
         // Set the foreground color and drawing state
         context.SelectForegroundColor(cloudColor);
@@ -510,29 +510,29 @@ void RenderOTW::PostSceneCloudOcclusion(void)
 
         // Set the color correction terms back to normal
         // TODO:  Update this once Marc's changes are in...
-        //		context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(1.0f) );
-        //		context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(1.0f) );
-        //		context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(1.0f) );
+        // context.SetState( MPR_STA_GAMMA_RED,   (DWORD)(1.0f) );
+        // context.SetState( MPR_STA_GAMMA_GREEN, (DWORD)(1.0f) );
+        // context.SetState( MPR_STA_GAMMA_BLUE,  (DWORD)(1.0f) );
 
     }
 }
 
 
 /***************************************************************************\
-	When the tunnel vision effect is in use, this call draws the colored
-	screen border which represents the portion of the players vision which
-	has been lost.
-	THIS CALL IS TO BE CALLED _AFTER_ FinishFrame()
-	It is illegal to call this function without first calling SetTunnelPercent()
+ When the tunnel vision effect is in use, this call draws the colored
+ screen border which represents the portion of the players vision which
+ has been lost.
+ THIS CALL IS TO BE CALLED _AFTER_ FinishFrame()
+ It is illegal to call this function without first calling SetTunnelPercent()
 \***************************************************************************/
 void RenderOTW::DrawTunnelBorder(void)
 {
-    TwoDVertex	vert[NumPoints * 2 + 1];
+    TwoDVertex vert[NumPoints * 2 + 1];
     TwoDVertex* vertPointers[4];
-    int			i;
-    int			j1, j2;
-    float		x, y;
-    float		alpha;
+    int i;
+    int j1, j2;
+    float x, y;
+    float alpha;
 
     // Quit now if the tunnel isn't being drawn
     if (tunnelAlphaWidth <= 0.0f)
@@ -613,8 +613,8 @@ void RenderOTW::DrawTunnelBorder(void)
 
     for (i = 0; i < NumPoints; i++)
     {
-        j1 = (i << 1) + 1;		// Index of vertex to be reused (last times inside edge)
-        j2 = j1 + 1;			// Index of vertex to replace (last times outside edge)
+        j1 = (i << 1) + 1; // Index of vertex to be reused (last times inside edge)
+        j2 = j1 + 1; // Index of vertex to replace (last times outside edge)
 
         // Alpha
         vert[j2].a = alpha;
@@ -650,9 +650,9 @@ void RenderOTW::DrawTunnelBorder(void)
 \***************************************************************************/
 void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 {
-    Tpoint	position = {0.0F};
-    int		containingList = 0;
-    float	prevFOV = 0.0F, prevLeft = 0.0F, prevRight = 0.0F, prevTop = 0.0F, prevBottom = 0.0F;
+    Tpoint position = {0.0F};
+    int containingList = 0;
+    float prevFOV = 0.0F, prevLeft = 0.0F, prevRight = 0.0F, prevTop = 0.0F, prevBottom = 0.0F;
 
     prevFOV = GetFOV();
     GetViewport(&prevLeft, &prevTop, &prevRight, &prevBottom);
@@ -660,17 +660,17 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // Reduce the viewport size to save on overdraw costs if there's a tunnel in effect
     if (tunnelSolidWidth > 0.0f)
     {
-        float	visible = (1.0f - tunnelSolidWidth) * big;
+        float visible = (1.0f - tunnelSolidWidth) * big;
 
         if (visible <= 1.0f)
         {
-            float	left, top, right, bottom;
-            float	fov;
+            float left, top, right, bottom;
+            float fov;
 
-            right	= min(visible, prevRight);
-            left	= max(-visible, prevLeft);
-            top		= min(visible, prevTop);
-            bottom	= max(-visible, prevBottom);
+            right = min(visible, prevRight);
+            left = max(-visible, prevLeft);
+            top = min(visible, prevTop);
+            bottom = max(-visible, prevBottom);
             fov = 2.0f * (float)atan(right / oneOVERtanHFOV);
 
             SetFOV(fov);
@@ -697,157 +697,157 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
     // Update the sky color based on our current attitude and position
     AdjustSkyColor();
 
-    //	float opacity = viewpoint->CloudOpacity();
-    /*	if (g_bEnableWeatherExtensions)
-    	{
-    	  if (position.z > viewpoint->GetLocalCloudTops()) // are we below clouds? -ve z's
-    		{
-    			float tvis = viewpoint->GetVisibility();
-    			visibility = 0.95f * visibility + 0.05f * tvis; // phase in new vis
-    			float train = viewpoint->GetRainFactor();
-    			rainFactor = 0.95 * rainFactor + 0.05f * train; // phase in rain
-    			float temp = RealWeather->TemperatureAt(&position);
-    			static const float TEMP_RANGE = 10;
-    			static const float TEMP_MIN = TEMP_RANGE / 2.0f;
+    // float opacity = viewpoint->CloudOpacity();
+    /* if (g_bEnableWeatherExtensions)
+     {
+       if (position.z > viewpoint->GetLocalCloudTops()) // are we below clouds? -ve z's
+     {
+     float tvis = viewpoint->GetVisibility();
+     visibility = 0.95f * visibility + 0.05f * tvis; // phase in new vis
+     float train = viewpoint->GetRainFactor();
+     rainFactor = 0.95 * rainFactor + 0.05f * train; // phase in rain
+     float temp = RealWeather->TemperatureAt(&position);
+     static const float TEMP_RANGE = 10;
+     static const float TEMP_MIN = TEMP_RANGE / 2.0f;
 
-    			if (temp < - TEMP_MIN) // all rain turns to snow
-    			{
-    				snowFactor = rainFactor;
-    				rainFactor = 0;
-    			}
-    			else if (temp < TEMP_MIN) // maybe do snow
-    			{
-    				temp += TEMP_MIN;
-    				snowFactor = rainFactor * (TEMP_RANGE - temp)/TEMP_RANGE;
-    				rainFactor = rainFactor * (temp / TEMP_RANGE);
-    			}
-    			else
-    				snowFactor = 0;
+     if (temp < - TEMP_MIN) // all rain turns to snow
+     {
+     snowFactor = rainFactor;
+     rainFactor = 0;
+     }
+     else if (temp < TEMP_MIN) // maybe do snow
+     {
+     temp += TEMP_MIN;
+     snowFactor = rainFactor * (TEMP_RANGE - temp)/TEMP_RANGE;
+     rainFactor = rainFactor * (temp / TEMP_RANGE);
+     }
+     else
+     snowFactor = 0;
 
-    			if (viewpoint->GetLightning())
-    			{
-    				thunderAndLightning = true;
-    				opacity = max(opacity, 0.97); // a flash of lightning.
-    				thundertimer = vuxRealTime + 10000.0f*PRANDFloatPos(); // in 10 seconds time
-    			}
-    			else
-    				thunderAndLightning = false;
-    		}
-    	  else
-    		{
-    			visibility = 1;
-    			rainFactor = 0;
-    			snowFactor = 0;
+     if (viewpoint->GetLightning())
+     {
+     thunderAndLightning = true;
+     opacity = max(opacity, 0.97); // a flash of lightning.
+     thundertimer = vuxRealTime + 10000.0f*PRANDFloatPos(); // in 10 seconds time
+     }
+     else
+     thunderAndLightning = false;
+     }
+       else
+     {
+     visibility = 1;
+     rainFactor = 0;
+     snowFactor = 0;
         }
 
         if (thundertimer > 0 && thundertimer < vuxRealTime)
-    		{
-    			thunder = true;
-    			thundertimer = 0;
+     {
+     thunder = true;
+     thundertimer = 0;
         }
         else
-    			thunder = false;
-    	}
+     thunder = false;
+     }
     */
-    /*	if (visibility < 1) // less than perfect.
-    	    opacity = max(opacity, 1.0 - visibility);
+    /* if (visibility < 1) // less than perfect.
+         opacity = max(opacity, 1.0 - visibility);
 
-    	// Handle the entering/inside/leaving cloud effects
-    	if (opacity <= 0.0f && !Lightning)
-    	{
-    */		// We're not being affected by a cloud, the only effect is sun glare (if any)
+     // Handle the entering/inside/leaving cloud effects
+     if (opacity <= 0.0f && !Lightning)
+     {
+    */ // We're not being affected by a cloud, the only effect is sun glare (if any)
     PreSceneCloudOcclusion(SunGlareWashout, 0xFFFFFFFF);
-    /*	}
-    	else
-    	{
-    		// We're being affected by a cloud.
-    		Tcolor		color;
-    		DWORD		c;
-    		float		scaler;
-    		float		blend;
+    /* }
+     else
+     {
+     // We're being affected by a cloud.
+     Tcolor color;
+     DWORD c;
+     float scaler;
+     float blend;
 
-    		if (thunderAndLightning) // Lightning for nuke
-    		{
-    		    color = TheTimeOfDay.GetLightningColor();
-    		}
-    		else if (Lightning)
-    		{
-    			color.r = 1.0F;
-    			color.b = 1.0F;
-    			color.g = 1.0F;
-    			lightningtimer += SimLibMajorFrameTime;
-    			if (lightningtimer > 5.0F)	// 5 seconds full white
-    				opacity = (0.97F - ((lightningtimer - 6) * 0.068F));
-    			else
-    				opacity = 0.97F;
-    			if (lightningtimer >= 20.0F)
-    			{
-    				lightningtimer = 0.0F;
-    				Lightning = false;
-    			}
-    		}
-    		else
-    		{
-    	    // Get the cloud properties
-    	    color	= viewpoint->CloudColor();
-    		}
+     if (thunderAndLightning) // Lightning for nuke
+     {
+         color = TheTimeOfDay.GetLightningColor();
+     }
+     else if (Lightning)
+     {
+     color.r = 1.0F;
+     color.b = 1.0F;
+     color.g = 1.0F;
+     lightningtimer += SimLibMajorFrameTime;
+     if (lightningtimer > 5.0F) // 5 seconds full white
+     opacity = (0.97F - ((lightningtimer - 6) * 0.068F));
+     else
+     opacity = 0.97F;
+     if (lightningtimer >= 20.0F)
+     {
+     lightningtimer = 0.0F;
+     Lightning = false;
+     }
+     }
+     else
+     {
+         // Get the cloud properties
+         color = viewpoint->CloudColor();
+     }
 
-    		// Factor in sun glare (if any)
-    		scaler	= 1.0f / (opacity + SunGlareWashout);
-    		blend	= max( opacity, SunGlareWashout );
+     // Factor in sun glare (if any)
+     scaler = 1.0f / (opacity + SunGlareWashout);
+     blend = max( opacity, SunGlareWashout );
 
-    		// Decide on the composite blending color
-    		color.r = (opacity*color.r + SunGlareWashout) * scaler;
-    		color.g = (opacity*color.g + SunGlareWashout) * scaler;
-    		color.b = (opacity*color.b + SunGlareWashout) * scaler;
+     // Decide on the composite blending color
+     color.r = (opacity*color.r + SunGlareWashout) * scaler;
+     color.g = (opacity*color.g + SunGlareWashout) * scaler;
+     color.b = (opacity*color.b + SunGlareWashout) * scaler;
 
-    		// JB 010618 vary the brightness on cloud thickness
-    		if (g_bEnableWeatherExtensions && !thunderAndLightning)
-    		{
-    			float thickness = fabs(viewpoint->GetLocalCloudTops() - position.z);
-    			if (thickness > 0)
-    			{
-    				float tbrt = max(.2, min(1, g_fCloudThicknessFactor / thickness));
-    				brightness = 0.95f * brightness + 0.05f * tbrt; // phase in new brt
-    			}
-    			else
-    				brightness = 1.0;
+     // JB 010618 vary the brightness on cloud thickness
+     if (g_bEnableWeatherExtensions && !thunderAndLightning)
+     {
+     float thickness = fabs(viewpoint->GetLocalCloudTops() - position.z);
+     if (thickness > 0)
+     {
+     float tbrt = max(.2, min(1, g_fCloudThicknessFactor / thickness));
+     brightness = 0.95f * brightness + 0.05f * tbrt; // phase in new brt
+     }
+     else
+     brightness = 1.0;
 
-    			color.r *= brightness;
-    			color.g *= brightness;
-    			color.b *= brightness;
-    		}
+     color.r *= brightness;
+     color.g *= brightness;
+     color.b *= brightness;
+     }
 
-    		// Construct a 32 bit RGB value
-    		ProcessColor( &color );
-    		c  = (FloatToInt32(color.r * 255.9f));
-    		c |= (FloatToInt32(color.g * 255.9f)) << 8;
-    		c |= (FloatToInt32(color.b * 255.9f)) << 16;
+     // Construct a 32 bit RGB value
+     ProcessColor( &color );
+     c  = (FloatToInt32(color.r * 255.9f));
+     c |= (FloatToInt32(color.g * 255.9f)) << 8;
+     c |= (FloatToInt32(color.b * 255.9f)) << 16;
 
-    		// Are we IN it our NEAR it?
-    		if (blend >= 1.0f)
-    		{
-    			// Clear the screen to cloud color
-    			context.SetState( MPR_STA_BG_COLOR, c );
-    			ClearFrame();
+     // Are we IN it our NEAR it?
+     if (blend >= 1.0f)
+     {
+     // Clear the screen to cloud color
+     context.SetState( MPR_STA_BG_COLOR, c );
+     ClearFrame();
 
-    			// Draw the tunnel vision effect if any
-    			if (tunnelSolidWidth > 0.0f)
-    			{
-    				SetFOV( prevFOV );
-    				SetViewport( prevLeft, prevTop, prevRight, prevBottom );
-    			}
+     // Draw the tunnel vision effect if any
+     if (tunnelSolidWidth > 0.0f)
+     {
+     SetFOV( prevFOV );
+     SetViewport( prevLeft, prevTop, prevRight, prevBottom );
+     }
 
-    			// And we're done!
-    			return;
+     // And we're done!
+     return;
 
-    		}
-    		else
-    		{
-    			// We're entering or leaving the cloud, so "fuzz" things
-    			PreSceneCloudOcclusion( blend, c );
-    		}
-    	}
+     }
+     else
+     {
+     // We're entering or leaving the cloud, so "fuzz" things
+     PreSceneCloudOcclusion( blend, c );
+     }
+     }
     */
     //JAM 21Nov03
     realWeather->RefreshWeather(this);
@@ -958,7 +958,7 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
 \***************************************************************************/
 void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 {
-    SpanListEntry*	span;
+    SpanListEntry* span;
 
 
 #ifdef TWO_D_MAP_AVAILABLE
@@ -966,8 +966,8 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     if (twoDmode)
     {
         // Set the clip flag for each vertex to indicate it hasn't been xformed
-        int usedLODcount	= viewpoint->GetMaxLOD() - viewpoint->GetMinLOD() + 1;
-        int LODbufferSize	= (maxSpanExtent) * (maxSpanExtent);
+        int usedLODcount = viewpoint->GetMaxLOD() - viewpoint->GetMinLOD() + 1;
+        int LODbufferSize = (maxSpanExtent) * (maxSpanExtent);
 
         for (TerrainVertex* v = vertexMemory; v <  vertexMemory + usedLODcount * LODbufferSize; v++)
         {
@@ -1002,12 +1002,12 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 
     if (twoDmode)
     {
-        ThreeDVertex	v;
-        ThreeDVertex	*vert = &v;
-        Tpoint			v1, v2;
-        int	levelCol;
-        int	levelRow;
-        int	LOD;
+        ThreeDVertex v;
+        ThreeDVertex *vert = &v;
+        Tpoint v1, v2;
+        int levelCol;
+        int levelRow;
+        int LOD;
 
         for (span = spanList; span < firstEmptySpan; span++)
         {
@@ -1122,7 +1122,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
             }
         }
 
-        //		return;
+        // return;
     }
 
 #endif
@@ -1207,21 +1207,21 @@ void RenderOTW::DrawCloudsAndObjects(ObjectDisplayList *clouds, ObjectDisplayLis
 
 /***************************************************************************\
     Transform a row or column of terrain data at the given LOD.  The row and
-	column parameters are specified in units of level posts relative to
-	the viewpoint.  The local variables "levelRow" and "levelCol" are in
-	units of level posts relative to the origin of the map.
+ column parameters are specified in units of level posts relative to
+ the viewpoint.  The local variables "levelRow" and "levelCol" are in
+ units of level posts relative to the origin of the map.
 \***************************************************************************/
 void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 {
-    register TerrainVertex	*vert;
-    register Tpost			*post;
-    int						levelRow, levelCol, levelStop;
-    float					scratch_x, scratch_y, scratch_z;
-    float					x, y, z, dz;
-    int						*pChange;
-    float					*hVector;
-    float					*zVector;
-    int						vertStep;
+    register TerrainVertex *vert;
+    register Tpost *post;
+    int levelRow, levelCol, levelStop;
+    float scratch_x, scratch_y, scratch_z;
+    float x, y, z, dz;
+    int *pChange;
+    float *hVector;
+    float *zVector;
+    int vertStep;
 
 
     // Dump out if we have nothing to do
@@ -1246,13 +1246,13 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
 
     // Find the coordinates of the first post to transform FROM
-    levelRow	 = row + LODdata[LOD].centerRow;
-    levelCol	 = col + LODdata[LOD].centerCol;
-    levelStop	= *pChange + run;
+    levelRow  = row + LODdata[LOD].centerRow;
+    levelCol  = col + LODdata[LOD].centerCol;
+    levelStop = *pChange + run;
 
 
     // Find the storage location for the first vertex to transform INTO
-    vert =	vertexBuffer[LOD] + maxSpanExtent * row + col;
+    vert = vertexBuffer[LOD] + maxSpanExtent * row + col;
 
     // Get the this post from the terrain database
     post = viewpoint->GetPost(levelRow, levelCol, LOD);
@@ -1397,19 +1397,19 @@ void RenderOTW::TransformRun(int row, int col, int run, int LOD, BOOL do_row)
 
 /***************************************************************************\
     Compute the fog percentage for the given location.
-	NOTE:  worldZ is normally negative (-Z points up)
+ NOTE:  worldZ is normally negative (-Z points up)
 \***************************************************************************/
 //JAM 26Dec03
 float RenderOTW::GetValleyFog(float distance, float worldZ)
 {
-    float	fog;
-    float	valleyFog;
+    float fog;
+    float valleyFog;
 
     // Valley fog
-    static const float	VALLEY_HAZE_TOP			= 1000.0f;
-    static const float	VALLEY_HAZE_MAX			= 0.75f;
-    static const float	VALLEY_HAZE_START_RANGE	= PERSPECTIVE_RANGE;
-    static const float	VALLEY_HAZE_FULL_RANGE	= PERSPECTIVE_RANGE + 36000.0f;
+    static const float VALLEY_HAZE_TOP = 1000.0f;
+    static const float VALLEY_HAZE_MAX = 0.75f;
+    static const float VALLEY_HAZE_START_RANGE = PERSPECTIVE_RANGE;
+    static const float VALLEY_HAZE_FULL_RANGE = PERSPECTIVE_RANGE + 36000.0f;
 
     if (worldZ > -VALLEY_HAZE_TOP)
     {
@@ -1573,7 +1573,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             {
                 alpha = GetRangeOnlyFog(distance);
 
-                if (alpha < fog)	alpha = fog;
+                if (alpha < fog) alpha = fog;
 
                 alpha = 1.f - alpha;
             }
@@ -1610,9 +1610,9 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
 \***************************************************************************/
 void RenderOTW::DrawTerrainRing(SpanListEntry *span)
 {
-    int				LOD		 = span->LOD;
-    register int	r, c;
-    int				crossOver;
+    int LOD  = span->LOD;
+    register int r, c;
+    int crossOver;
 
 
     // TOP_SPAN -- Horizontal (Sector 0 and 7)
@@ -1620,11 +1620,11 @@ void RenderOTW::DrawTerrainRing(SpanListEntry *span)
 
     crossOver = max(span->Tsector.startDraw, 0);
 
-    for (c = span->Tsector.stopDraw; c >= crossOver; c--)		DrawTerrainSquare(r, c, LOD);
+    for (c = span->Tsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
 
     crossOver = min(span->Tsector.stopDraw, -1);
 
-    for (c = span->Tsector.startDraw; c <= crossOver; c++)	DrawTerrainSquare(r, c, LOD);
+    for (c = span->Tsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
 
 
     // RIGHT_SPAN -- Vertical (Sector 1 and 2)
@@ -1632,11 +1632,11 @@ void RenderOTW::DrawTerrainRing(SpanListEntry *span)
 
     crossOver = max(span->Rsector.startDraw, 0);
 
-    for (r = span->Rsector.stopDraw; r >= crossOver; r--)		DrawTerrainSquare(r, c, LOD);
+    for (r = span->Rsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
 
     crossOver = min(span->Rsector.stopDraw, -1);
 
-    for (r = span->Rsector.startDraw; r <= crossOver; r++)	DrawTerrainSquare(r, c, LOD);
+    for (r = span->Rsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
 
 
     // BOTTOM_SPAN -- Horizontal (Sector 3 and 4)
@@ -1644,11 +1644,11 @@ void RenderOTW::DrawTerrainRing(SpanListEntry *span)
 
     crossOver = max(span->Bsector.startDraw, 0);
 
-    for (c = span->Bsector.stopDraw; c >= crossOver; c--)		DrawTerrainSquare(r, c, LOD);
+    for (c = span->Bsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
 
     crossOver = min(span->Bsector.stopDraw, -1);
 
-    for (c = span->Bsector.startDraw; c <= crossOver; c++)	DrawTerrainSquare(r, c, LOD);
+    for (c = span->Bsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
 
 
     // LEFT_SPAN -- Vertical (Sector 5 and 6)
@@ -1656,25 +1656,25 @@ void RenderOTW::DrawTerrainRing(SpanListEntry *span)
 
     crossOver = max(span->Lsector.startDraw, 0);
 
-    for (r = span->Lsector.stopDraw; r >= crossOver; r--)		DrawTerrainSquare(r, c, LOD);
+    for (r = span->Lsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
 
     crossOver = min(span->Lsector.stopDraw, -1);
 
-    for (r = span->Lsector.startDraw; r <= crossOver; r++)	DrawTerrainSquare(r, c, LOD);
+    for (r = span->Lsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
 }
 
 
 /***************************************************************************\
     Draw one ring of terrain data as described in the span list.
-	We're expecting the "outter transform" span.  That is, the first
-	span at the new higher LOD.
+ We're expecting the "outter transform" span.  That is, the first
+ span at the new higher LOD.
 \***************************************************************************/
 void RenderOTW::DrawConnectorRing(SpanListEntry *outterSpan)
 {
-    int				LOD;
-    int				crossOver;
-    register int	r, c;
-    SpanListEntry	*span;
+    int LOD;
+    int crossOver;
+    register int r, c;
+    SpanListEntry *span;
 
     LOD = outterSpan->LOD;
 
@@ -1684,11 +1684,11 @@ void RenderOTW::DrawConnectorRing(SpanListEntry *outterSpan)
 
     crossOver = max(span->Tsector.startDraw, LODdata[LOD].glueOnLeft);
 
-    for (c = span->Tsector.stopDraw; c >= crossOver; c -= 2)	DrawUpConnector(span->ring, c, LOD);
+    for (c = span->Tsector.stopDraw; c >= crossOver; c -= 2) DrawUpConnector(span->ring, c, LOD);
 
     crossOver = min(span->Tsector.stopDraw, -2 + LODdata[LOD].glueOnLeft);
 
-    for (c = span->Tsector.startDraw; c <= crossOver; c += 2)	DrawUpConnector(span->ring, c, LOD);
+    for (c = span->Tsector.startDraw; c <= crossOver; c += 2) DrawUpConnector(span->ring, c, LOD);
 
 
     // RIGHT_SPAN -- Vertical (Sector 1 and 2)
@@ -1696,11 +1696,11 @@ void RenderOTW::DrawConnectorRing(SpanListEntry *outterSpan)
 
     crossOver = max(span->Rsector.startDraw, LODdata[LOD].glueOnBottom);
 
-    for (r = span->Rsector.stopDraw; r >= crossOver; r -= 2)	DrawRightConnector(r, span->ring, LOD);
+    for (r = span->Rsector.stopDraw; r >= crossOver; r -= 2) DrawRightConnector(r, span->ring, LOD);
 
     crossOver = min(span->Rsector.stopDraw, -2 + LODdata[LOD].glueOnBottom);
 
-    for (r = span->Rsector.startDraw; r <= crossOver; r += 2)	DrawRightConnector(r, span->ring, LOD);
+    for (r = span->Rsector.startDraw; r <= crossOver; r += 2) DrawRightConnector(r, span->ring, LOD);
 
 
     // BOTTOM_SPAN -- Horizontal (Sector 3 and 4)
@@ -1708,11 +1708,11 @@ void RenderOTW::DrawConnectorRing(SpanListEntry *outterSpan)
 
     crossOver = max(span->Bsector.startDraw, LODdata[LOD].glueOnLeft);
 
-    for (c = span->Bsector.stopDraw; c >= crossOver; c -= 2)	DrawDownConnector(-span->ring + 1, c, LOD);
+    for (c = span->Bsector.stopDraw; c >= crossOver; c -= 2) DrawDownConnector(-span->ring + 1, c, LOD);
 
     crossOver = min(span->Bsector.stopDraw, -2 + LODdata[LOD].glueOnLeft);
 
-    for (c = span->Bsector.startDraw; c <= crossOver; c += 2)	DrawDownConnector(-span->ring + 1, c, LOD);
+    for (c = span->Bsector.startDraw; c <= crossOver; c += 2) DrawDownConnector(-span->ring + 1, c, LOD);
 
 
     // LEFT_SPAN -- Vertical (Sector 5 and 6)
@@ -1720,23 +1720,23 @@ void RenderOTW::DrawConnectorRing(SpanListEntry *outterSpan)
 
     crossOver = max(span->Lsector.startDraw, LODdata[LOD].glueOnBottom);
 
-    for (r = span->Lsector.stopDraw; r >= crossOver; r -= 2)	DrawLeftConnector(r, -span->ring + 1, LOD);
+    for (r = span->Lsector.stopDraw; r >= crossOver; r -= 2) DrawLeftConnector(r, -span->ring + 1, LOD);
 
     crossOver = min(span->Lsector.stopDraw, -2 + LODdata[LOD].glueOnBottom);
 
-    for (r = span->Lsector.startDraw; r <= crossOver; r += 2)	DrawLeftConnector(r, -span->ring + 1, LOD);
+    for (r = span->Lsector.startDraw; r <= crossOver; r += 2) DrawLeftConnector(r, -span->ring + 1, LOD);
 }
 
 
 /***************************************************************************\
     Draw a partial ring to fill the gaps between the rectangular connector
-	ring and the square inner rings.
+ ring and the square inner rings.
 \***************************************************************************/
 void RenderOTW::DrawGapFiller(SpanListEntry *span)
 {
-    int				LOD		= span->LOD;
-    register int	r, c;
-    int				crossOver;
+    int LOD = span->LOD;
+    register int r, c;
+    int crossOver;
 
 
     if (LODdata[span->LOD].glueOnBottom)
@@ -1746,11 +1746,11 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Bsector.startDraw, 0);
 
-        for (c = span->Bsector.stopDraw; c >= crossOver; c--)		DrawTerrainSquare(r, c, LOD);
+        for (c = span->Bsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Bsector.stopDraw, -1);
 
-        for (c = span->Bsector.startDraw; c <= crossOver; c++)	DrawTerrainSquare(r, c, LOD);
+        for (c = span->Bsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
     }
     else
     {
@@ -1759,11 +1759,11 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Tsector.startDraw, 0);
 
-        for (c = span->Tsector.stopDraw; c >= crossOver; c--)		DrawTerrainSquare(r, c, LOD);
+        for (c = span->Tsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Tsector.stopDraw, -1);
 
-        for (c = span->Tsector.startDraw; c <= crossOver; c++)	DrawTerrainSquare(r, c, LOD);
+        for (c = span->Tsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
     }
 
 
@@ -1774,11 +1774,11 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Lsector.startDraw, 0);
 
-        for (r = span->Lsector.stopDraw; r >= crossOver; r--)		DrawTerrainSquare(r, c, LOD);
+        for (r = span->Lsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Lsector.stopDraw, -1);
 
-        for (r = span->Lsector.startDraw; r <= crossOver; r++)	DrawTerrainSquare(r, c, LOD);
+        for (r = span->Lsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
     }
     else
     {
@@ -1787,11 +1787,11 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Rsector.startDraw, 0);
 
-        for (r = span->Rsector.stopDraw; r >= crossOver; r--)		DrawTerrainSquare(r, c, LOD);
+        for (r = span->Rsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Rsector.stopDraw, -1);
 
-        for (r = span->Rsector.startDraw; r <= crossOver; r++)	DrawTerrainSquare(r, c, LOD);
+        for (r = span->Rsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
     }
 }
 

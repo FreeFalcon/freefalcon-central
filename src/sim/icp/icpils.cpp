@@ -20,18 +20,18 @@ void ICPClass::ExecILSMode(void)
     if (!g_bRealisticAvionics)
     {
         //MI Original code
-        VU_ID							id;
-        VU_ID							homeid;
-        VU_ID							ilsid;
-        BOOL							isValidILS;
-        BOOL							isValidRWY;
-        int							channel;
-        char							rwyNum[4] = "";
-        TacanList::StationSet	set;
-        char							setchar;
-        char							p_signaltype[10] = "";
-        NavigationSystem::Type	type;
-        static int					frame = 0;
+        VU_ID id;
+        VU_ID homeid;
+        VU_ID ilsid;
+        BOOL isValidILS;
+        BOOL isValidRWY;
+        int channel;
+        char rwyNum[4] = "";
+        TacanList::StationSet set;
+        char setchar;
+        char p_signaltype[10] = "";
+        NavigationSystem::Type type;
+        static int frame = 0;
 
 
         if (mUpdateFlags & ILS_UPDATE)
@@ -170,12 +170,12 @@ void ICPClass::ExecILSMode(void)
     {
         ClearStrings();
         //MI modified for ICP stuff
-        VU_ID							id;
-        VU_ID							homeid;
-        VU_ID							ilsid;
-        char							rwyNum[4] = "";
-        char							p_signaltype[10] = "";
-        static int						frame = 0;
+        VU_ID id;
+        VU_ID homeid;
+        VU_ID ilsid;
+        char rwyNum[4] = "";
+        char p_signaltype[10] = "";
+        static int frame = 0;
 
         HSICourse = static_cast<int>
                     (OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS));
@@ -292,45 +292,45 @@ void ICPClass::ENTRUpdateILSMode() {}
 
 void ICPClass::FakeILSFreq(void)
 {
-    if (TacanChannel == 70)			//Kadena
+    if (TacanChannel == 70) //Kadena
         sprintf(Freq, "202.15");
-    else if (TacanChannel == 73)		//Mandumi
+    else if (TacanChannel == 73) //Mandumi
         sprintf(Freq, "125.05");
-    else if (TacanChannel == 74)		//Jeomcheon
+    else if (TacanChannel == 74) //Jeomcheon
         sprintf(Freq, "103.40");
-    else if (TacanChannel == 75)		//Pusan
+    else if (TacanChannel == 75) //Pusan
         sprintf(Freq, "100.35");
-    else if (TacanChannel == 78)		//Haemi
+    else if (TacanChannel == 78) //Haemi
         sprintf(Freq, "101.35");
-    else if (TacanChannel == 79)		//Pyeongtaeg
+    else if (TacanChannel == 79) //Pyeongtaeg
         sprintf(Freq, "120.02");
-    else if (TacanChannel == 80)		//Yecheon
+    else if (TacanChannel == 80) //Yecheon
         sprintf(Freq, "123.20");
-    else if (TacanChannel == 81)		//Chungju
+    else if (TacanChannel == 81) //Chungju
         sprintf(Freq, "114.65");
-    else if (TacanChannel == 82)		//Gangneung
+    else if (TacanChannel == 82) //Gangneung
         sprintf(Freq, "109.25");
-    else if (TacanChannel == 99)		//Taegu
+    else if (TacanChannel == 99) //Taegu
         sprintf(Freq, "107.95");
-    else if (TacanChannel == 100)	//Kwangju
+    else if (TacanChannel == 100) //Kwangju
         sprintf(Freq, "107.40");
-    else if (TacanChannel == 101)	//Kunsan
+    else if (TacanChannel == 101) //Kunsan
         sprintf(Freq, "105.90");
-    else if (TacanChannel == 102)	//Cheongju
+    else if (TacanChannel == 102) //Cheongju
         sprintf(Freq, "109.10");
-    else if (TacanChannel == 105)	//Seoul
+    else if (TacanChannel == 105) //Seoul
         sprintf(Freq, "108.65");
-    else if (TacanChannel == 106)	//Kimpo Intl
+    else if (TacanChannel == 106) //Kimpo Intl
         sprintf(Freq, "102.30");
-    else if (TacanChannel == 108)	//Suweon
+    else if (TacanChannel == 108) //Suweon
         sprintf(Freq, "115.35");
-    else if (TacanChannel == 109)	//Osan
+    else if (TacanChannel == 109) //Osan
         sprintf(Freq, "101.45");
-    else if (TacanChannel == 112)	//Kimhae Intl
+    else if (TacanChannel == 112) //Kimhae Intl
         sprintf(Freq, "100.50");
-    else if (TacanChannel == 113)	//Pohang
+    else if (TacanChannel == 113) //Pohang
         sprintf(Freq, "111.10");
-    else if (TacanChannel == 115)	//Samcheonpo
+    else if (TacanChannel == 115) //Samcheonpo
         sprintf(Freq, "108.25");
     else
         sprintf(Freq, "112.40");

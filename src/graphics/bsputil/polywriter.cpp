@@ -25,8 +25,8 @@ int StorePrimitive(Prim *prim)
             offset = StorePrimLineFC((PrimLineFC*)prim);
             break;
 
-            //	  case LtStr:
-            //		offset = StorePrimLtStr( (PrimLineFC*)prim );
+            //   case LtStr:
+            // offset = StorePrimLtStr( (PrimLineFC*)prim );
         case F:
         case AF:
             offset = StorePolyFC((PolyFC*)prim);

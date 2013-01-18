@@ -30,7 +30,7 @@ const unsigned int  VoiceMapper::default_voices[] =
     VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 10
     VOICE_AWACS | VOICE_PILOT | VOICE_SIDE_ALL, // 11
     VOICE_ATC | VOICE_SIDE_ALL, // 12
-    VOICE_ATC | VOICE_SIDE_ALL,	// 13
+    VOICE_ATC | VOICE_SIDE_ALL, // 13
 };
 const int  VoiceMapper::max_default_voices = sizeof(default_voices) / sizeof(default_voices[0]);
 

@@ -4,7 +4,7 @@
 // Converts tactics and reaction files from text to binary
 //
 
-#define __MEMMGR_H__		// Don't use the memory manager
+#define __MEMMGR_H__ // Don't use the memory manager
 #define NO_MALLOC_MACRO
 
 #include <stdio.h>
@@ -29,7 +29,7 @@ short FirstNavalTactic = 0;
 short TotalTactics = 0;
 
 TacticData *TacticsTable = NULL;
-//ReactData ReactionTable[WP_LAST];				// List of reaction priorities
+//ReactData ReactionTable[WP_LAST]; // List of reaction priorities
 
 // ===============================
 // Global functions
@@ -37,7 +37,7 @@ TacticData *TacticsTable = NULL;
 
 void ReadComments(FILE* fh)
 {
-    int					c;
+    int c;
 
     c = fgetc(fh);
 
@@ -60,23 +60,23 @@ void ReadComments(FILE* fh)
 
 /*
 int SaveReactionTable (char* filename)
-	{
-	FILE*			fp;
-	int			fc;
+ {
+ FILE* fp;
+ int fc;
 
-	fp = fopen(filename, "wb");
-	if (!fp)
-		return -1;
-	fc = fwrite(ReactionTable,sizeof(ReactData),WP_LAST,fp);
-	fclose(fp);
-	return 0;
-	}
+ fp = fopen(filename, "wb");
+ if (!fp)
+ return -1;
+ fc = fwrite(ReactionTable,sizeof(ReactData),WP_LAST,fp);
+ fclose(fp);
+ return 0;
+ }
 */
 
 int SaveTactics(char* filename)
 {
-    FILE*			fp;
-    int			fc;
+    FILE* fp;
+    int fc;
 
     fp = fopen(filename, "wb");
 
@@ -93,40 +93,40 @@ int SaveTactics(char* filename)
 
 /*
 int LoadReactionTableText (char* filename)
-	{
-	int					i,x,dez,daz,raz,fc;
-	FILE*					fh;
-	char					buffer[30],comment=0;
+ {
+ int i,x,dez,daz,raz,fc;
+ FILE* fh;
+ char buffer[30],comment=0;
 
-	fh = fopen(filename,"r");
-	if (fh==NULL)
-	  return -1;
+ fh = fopen(filename,"r");
+ if (fh==NULL)
+   return -1;
 
-	// Read Number of entries
-	fc = fscanf(fh,"%d\n",&x);
-	while (comment != '\n')
-		comment = fgetc(fh);
-	if (fc < 0 || x < 1)
-		return -1;
+ // Read Number of entries
+ fc = fscanf(fh,"%d\n",&x);
+ while (comment != '\n')
+ comment = fgetc(fh);
+ if (fc < 0 || x < 1)
+ return -1;
 
-	for (i=0; i<x; i++)
-		{
-		fc = fscanf(fh, "%s %d",buffer,&dez);
-		fc = fscanf(fh, "%d %d %d", &dez, &daz, &raz);
-		ReactionTable[i].reaction[REACT_DETECTED] = dez;
-		ReactionTable[i].reaction[REACT_DANGER] = daz;
-		ReactionTable[i].reaction[REACT_IN_RANGE] = raz;
-		}
-	fclose(fh);
-	return 1;
-	}
+ for (i=0; i<x; i++)
+ {
+ fc = fscanf(fh, "%s %d",buffer,&dez);
+ fc = fscanf(fh, "%d %d %d", &dez, &daz, &raz);
+ ReactionTable[i].reaction[REACT_DETECTED] = dez;
+ ReactionTable[i].reaction[REACT_DANGER] = daz;
+ ReactionTable[i].reaction[REACT_IN_RANGE] = raz;
+ }
+ fclose(fh);
+ return 1;
+ }
 */
 
 int LoadTacticsTableText(char* filename)
 {
-    FILE*			fh;
-    char			buffer[40];
-    int				i, j, k, l, n, m, r, a, id, fc;
+    FILE* fh;
+    char buffer[40];
+    int i, j, k, l, n, m, r, a, id, fc;
 
     fh = fopen(filename, "r");
 
@@ -140,7 +140,7 @@ int LoadTacticsTableText(char* filename)
     FirstGroundTactic = AirTactics;
     FirstNavalTactic = AirTactics + GroundTactics;
     TotalTactics = 1 + AirTactics + GroundTactics + NavalTactics;
-    //	TacticsTable = (TacticData*) malloc(sizeof(TacticData)*TotalTactics);
+    // TacticsTable = (TacticData*) malloc(sizeof(TacticData)*TotalTactics);
     TacticsTable = new TacticData[TotalTactics];
 
     for (id = 0; id < TotalTactics; id++)
@@ -198,13 +198,13 @@ void FreeTactics(void)
 
 int main()
 {
-    char			filename[80] = "Falcon4";
-    char			extname[80];
+    char filename[80] = "Falcon4";
+    char extname[80];
 
-    /*	sprintf(extname,"%s.RTT",filename);
-    	LoadReactionTableText(extname);
-    	sprintf(extname,"%s.RT",filename);
-    	SaveReactionTable(extname);
+    /* sprintf(extname,"%s.RTT",filename);
+     LoadReactionTableText(extname);
+     sprintf(extname,"%s.RT",filename);
+     SaveReactionTable(extname);
     */
 
     sprintf(extname, "%s.TTT", filename);

@@ -1,9 +1,9 @@
 /************************************************************************/
-//	Filename:	mouselook.h
-//	Date:		18Jan2004
-//	Author:		Retro
+// Filename: mouselook.h
+// Date: 18Jan2004
+// Author: Retro
 //
-//	Description;	See the .cpp
+// Description; See the .cpp
 /************************************************************************/
 #ifndef MOUSELOOK_INCLUDE_INCLUDED
 #define MOUSELOOK_INCLUDE_INCLUDED
@@ -31,13 +31,13 @@ public:
 
     void Compute(float, bool mouseMoved = false);
 private:
-    float XTotal;	// total travel values, clamped to a range..
+    float XTotal; // total travel values, clamped to a range..
     float YTotal;
 
-    float Azimuth;	// normalized view angels (+-PI in RAD)
+    float Azimuth; // normalized view angels (+-PI in RAD)
     float Elevation;
 
-    float azDir;	// directions.. -1 is right/down, 1 is left/up, 0 stops
+    float azDir; // directions.. -1 is right/down, 1 is left/up, 0 stops
     float elDir;
 };
 extern MouseView theMouseView;
@@ -72,4 +72,4 @@ private:
 };
 extern MouseWheelStuff theMouseWheelAxis;
 
-#endif	// MOUSELOOK_INCLUDE_INCLUDED
+#endif // MOUSELOOK_INCLUDE_INCLUDED

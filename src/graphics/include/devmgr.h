@@ -62,7 +62,7 @@ public:
             bool CanFilterAnisotropic();
         };
 
-        DDCAPS m_caps;	// HAL caps
+        DDCAPS m_caps; // HAL caps
         typedef std::vector<D3DDeviceInfo> D3DDEV_ARRAY;
         D3DDEV_ARRAY m_arrD3DDevices;
         typedef std::vector<DDSURFACEDESC2> SURFACEDESC_ARRAY;
@@ -95,7 +95,7 @@ public:
     DDDRVINFO_ARRAY m_arrDDDrivers;
 
 protected:
-    BOOL			ready;
+    BOOL ready;
 
 public:
     void Setup(int languageNum = 0);

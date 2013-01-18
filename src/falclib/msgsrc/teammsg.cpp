@@ -39,7 +39,7 @@ int FalconTeamMessage::Process(uchar autodisp)
             break;
 
         case teamNewMember:
-            if (dataBlock.value)			// quit
+            if (dataBlock.value) // quit
                 TeamInfo[dataBlock.team]->member[dataBlock.actor] = 0;
             else
                 TeamInfo[dataBlock.team]->member[dataBlock.actor] = 1;

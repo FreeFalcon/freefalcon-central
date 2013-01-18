@@ -19,28 +19,28 @@
 #pragma warning(disable : 4706)
 
 // The real data I have is:
-// smooth water:	-45.4 dB
-// desert:			-12.4 dB
-// wooded area:		 -7.4 dB
-// cities:			  0.6 dB
+// smooth water: -45.4 dB
+// desert: -12.4 dB
+// wooded area:  -7.4 dB
+// cities:   0.6 dB
 // I'm converting to a much more linear scale to make it "look right"
 static const float reflectivity[] =
 {
-    0.0f,	// UNUSED -- NO TYPE AVAILABLE
-    0.1f,	// COVERAGE_WATER
-    0.1f,	// COVERAGE_RIVER
-    0.3f,	// COVERAGE_SWAMP
-    0.4f,	// COVERAGE_PLAINS
-    0.4f,	// COVERAGE_BRUSH
-    0.5f,	// COVERAGE_THINFOREST
-    0.6f,	// COVERAGE_THICKFOREST
-    0.7f,	// COVERAGE_ROCKY
-    1.0f,	// COVERAGE_URBAN
-    0.1f,	// COVERAGE_ROAD
-    1.0f,	// COVERAGE_RAIL
-    1.0f,	// COVERAGE_BRIDGE
-    0.1f,	// COVERAGE_RUNWAY
-    0.1f,	// COVERAGE_STATION
+    0.0f, // UNUSED -- NO TYPE AVAILABLE
+    0.1f, // COVERAGE_WATER
+    0.1f, // COVERAGE_RIVER
+    0.3f, // COVERAGE_SWAMP
+    0.4f, // COVERAGE_PLAINS
+    0.4f, // COVERAGE_BRUSH
+    0.5f, // COVERAGE_THINFOREST
+    0.6f, // COVERAGE_THICKFOREST
+    0.7f, // COVERAGE_ROCKY
+    1.0f, // COVERAGE_URBAN
+    0.1f, // COVERAGE_ROAD
+    1.0f, // COVERAGE_RAIL
+    1.0f, // COVERAGE_BRIDGE
+    0.1f, // COVERAGE_RUNWAY
+    0.1f, // COVERAGE_STATION
 };
 
 
@@ -56,10 +56,10 @@ void RenderGMRadar::Setup(ImageBuffer *imageBuffer)
     Render3D::Setup(imageBuffer);
 
     // Start our parameters marked uninitialized
-    gain			= 1.0f;
-    LOD				= -1;
-    range			= -1.0f;
-    xformBuff		= NULL;
+    gain = 1.0f;
+    LOD = -1;
+    range = -1.0f;
+    xformBuff = NULL;
 
     // Set our field of view for 3D renderings
     SetFOV(FieldOfView);
@@ -81,18 +81,18 @@ void RenderGMRadar::Cleanup(void)
 
 
 /***************************************************************************\
-	Do start of frame housekeeping
+ Do start of frame housekeeping
 \***************************************************************************/
 void RenderGMRadar::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     Render2D::StartDraw();
 }
 
 
 void RenderGMRadar::StartScene(Tpoint *from, Tpoint *at, float upHdg)
 {
-    float		x, y, dx, dy;
+    float x, y, dx, dy;
 
     const float c = (float)cos(-upHdg);
     const float s = (float)sin(-upHdg);
@@ -109,9 +109,9 @@ void RenderGMRadar::StartScene(Tpoint *from, Tpoint *at, float upHdg)
     boxCenterCol = WORLD_TO_LEVEL_POST(at->y, LOD);
 
     // Store our new parameters
-    cameraPos		= *from;
-    centerPos		= *at;
-    SkipDraw		= FALSE;
+    cameraPos = *from;
+    centerPos = *at;
+    SkipDraw = FALSE;
 
 
     // Update our viewpoint to be at the center of attention
@@ -124,14 +124,14 @@ void RenderGMRadar::StartScene(Tpoint *from, Tpoint *at, float upHdg)
     worldToUnitScale = 1.0f / range;
 
     // Update the display rotation angle
-    rotationAngle	= -upHdg;
+    rotationAngle = -upHdg;
 
     // Compute where the COA will be drawn relative to display center
-    dx = at->x - from->x;		// This part just gets the vector
-    dy = at->y - from->y;		// from the viewer to the COA
+    dx = at->x - from->x; // This part just gets the vector
+    dy = at->y - from->y; // from the viewer to the COA
 
-    x = c * dx - s * dy;			// Then we rotate the vector into
-    y = s * dx + c * dy;			// "heading up" space
+    x = c * dx - s * dy; // Then we rotate the vector into
+    y = s * dx + c * dy; // "heading up" space
 
     vOffset = 2.0f * worldToUnitScale * (x - range);
     hOffset = 2.0f * worldToUnitScale * y;
@@ -140,13 +140,13 @@ void RenderGMRadar::StartScene(Tpoint *from, Tpoint *at, float upHdg)
 
 void RenderGMRadar::TransformScene(void)
 {
-    Tpost				*post;
-    int					r, c;
-    float				scene_x;
-    float				scene_y;
-    float				x, y;
-    GroundMapVertex		*vert;
-    int					runLength;
+    Tpost *post;
+    int r, c;
+    float scene_x;
+    float scene_y;
+    float x, y;
+    GroundMapVertex *vert;
+    int runLength;
 
     ShiAssert(viewpoint);
 
@@ -267,9 +267,9 @@ void RenderGMRadar::TransformScene(void)
 
 void RenderGMRadar::DrawScene(void)
 {
-    int					r, c;
-    GroundMapVertex		*vTop, *vBot;
-    int					runLength;
+    int r, c;
+    GroundMapVertex *vTop, *vBot;
+    int runLength;
 
 
     ShiAssert(viewpoint);
@@ -324,15 +324,15 @@ void RenderGMRadar::DrawScene(void)
 // NOTE:  We trash this renderer's 2D transformation matrix!
 void RenderGMRadar::DrawFeatures(void)
 {
-    Tpost			*post;
-    int				r, c;
-    float			scene_x;
-    float			scene_y;
-    int				drawRadius;
-    int				mask;
-    int				levelDifference;
-    TextureID		id;
-    TexPath			*path;
+    Tpost *post;
+    int r, c;
+    float scene_x;
+    float scene_y;
+    int drawRadius;
+    int mask;
+    int levelDifference;
+    TextureID id;
+    TexPath *path;
 
 
     ShiAssert(viewpoint);
@@ -375,14 +375,14 @@ void RenderGMRadar::DrawFeatures(void)
     for (r = boxCenterRow - drawRadius; r < boxCenterRow + drawRadius; r++)
     {
 
-        if (r & mask)  continue;		// Could take care of this in loop control
+        if (r & mask)  continue; // Could take care of this in loop control
 
         scene_x = LEVEL_POST_TO_WORLD(r, LOD) - centerPos.x;
 
         for (c = boxCenterCol - drawRadius; c < boxCenterCol + drawRadius; c++)
         {
 
-            if (c & mask)  continue;	// Could take care of this in loop control
+            if (c & mask)  continue; // Could take care of this in loop control
 
             scene_y = LEVEL_POST_TO_WORLD(c, LOD) - centerPos.y;
 
@@ -438,14 +438,14 @@ void RenderGMRadar::DrawFeatures(void)
 
 void RenderGMRadar::PrepareToDrawTargets(void)
 {
-    float		dx, dy;
-    Tpoint		location;
-    Trotation	down;
-    Tpoint		up, right;
+    float dx, dy;
+    Tpoint location;
+    Trotation down;
+    Tpoint up, right;
 
     // Compute where the COA will be drawn relative to display center
-    dx = centerPos.x - cameraPos.x;		// This part just gets the vector
-    dy = centerPos.y - cameraPos.y;		// from the viewer to the COA
+    dx = centerPos.x - cameraPos.x; // This part just gets the vector
+    dy = centerPos.y - cameraPos.y; // from the viewer to the COA
 
 
     // Set the 3D camera for overhead images
@@ -472,7 +472,7 @@ void RenderGMRadar::PrepareToDrawTargets(void)
     down.M32 = right.z;
     down.M33 = up.z;
 
-    //	SetFar( -2.0f * location.z );
+    // SetFar( -2.0f * location.z );
     TheStateStack.SetContext(&context);
     TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
     TheStateStack.SetLODBias(resRelativeScaler);
@@ -494,8 +494,8 @@ void RenderGMRadar::FlushDrawnTargets(void)
 
 void RenderGMRadar::DrawBlip(float worldX, float worldY)
 {
-    float			x,  y;
-    float			dx, dy;
+    float x,  y;
+    float dx, dy;
 
     // Quit now if we don't have anything to draw
     if (SkipDraw)  return;
@@ -529,9 +529,9 @@ void RenderGMRadar::DrawBlip(float worldX, float worldY)
 
 void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Shaped)
 {
-    float			x,  y;
-    float			dx, dy;
-    float			r;
+    float x,  y;
+    float dx, dy;
+    float r;
 
     // Quit now if we don't have anything to draw
     if (SkipDraw)  return;
@@ -608,23 +608,23 @@ void RenderGMRadar::SetViewport(float l, float t, float r, float b)
 {
     Render2D::SetViewport(l, t, r, b);
 
-    prevLeft	= left;
-    prevRight	= right;
-    prevTop		= top;
-    prevBottom	= bottom;
+    prevLeft = left;
+    prevRight = right;
+    prevTop = top;
+    prevBottom = bottom;
 }
 
 
 void RenderGMRadar::SetSubViewport(float l, float t, float r, float b)
 {
-    float		newLeft, newRight, newTop, newBottom;
-    const float	halfXres = xRes * 0.5f;
-    const float	halfYres = yRes * 0.5f;
+    float newLeft, newRight, newTop, newBottom;
+    const float halfXres = xRes * 0.5f;
+    const float halfYres = yRes * 0.5f;
 
-    newLeft		= (l * scaleX + shiftX - halfXres) / halfXres;
-    newRight	= (r * scaleX + shiftX - halfXres) / halfXres;
-    newTop		= -(-t * scaleY + shiftY - halfYres) / halfYres;
-    newBottom	= -(-b * scaleY + shiftY - halfYres) / halfYres;
+    newLeft = (l * scaleX + shiftX - halfXres) / halfXres;
+    newRight = (r * scaleX + shiftX - halfXres) / halfXres;
+    newTop = -(-t * scaleY + shiftY - halfYres) / halfYres;
+    newBottom = -(-b * scaleY + shiftY - halfYres) / halfYres;
 
     Render2D::SetViewport(newLeft, newTop, newRight, newBottom);
 }
@@ -639,7 +639,7 @@ void RenderGMRadar::ClearSubViewport(void)
 // Given a range and LOD, determine what if any changes we need to make to our TViewPoint
 BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
 {
-    TViewPoint	*oldViewpoint;
+    TViewPoint *oldViewpoint;
 
     // Quit now if we don't need to make a change (really shouldn't happen)
     if ((LOD == newLOD) && (newRange == range))
@@ -697,15 +697,15 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
 // point.
 void RenderGMRadar::ComputeLightAngles(Tpoint *from, Tpoint *at)
 {
-    float	dx, dy, dz, r;
+    float dx, dy, dz, r;
 
     dx = from->x - at->x;
     dy = from->y - at->y;
     dz = from->z - at->z;
     r  = (float)sqrt(dx * dx + dy * dy);
 
-    lightTheta	= (float)atan2(dy, dx);
-    lightPhi	= (float)atan2(-dz, r);
+    lightTheta = (float)atan2(dy, dx);
+    lightPhi = (float)atan2(-dz, r);
 
     ShiAssert(lightPhi <= PI * 0.5f);
 }
@@ -727,19 +727,19 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
 
     // FRB - pre-RV
     //if (LOD <= TheMap.LastNearTexLOD()) {
-    //	BYTE type = TheTerrTextures.GetTerrainType( post->texID );
-    //	I = cosAngle * reflectivity[type] * gain;
+    // BYTE type = TheTerrTextures.GetTerrainType( post->texID );
+    // I = cosAngle * reflectivity[type] * gain;
     //} else {
-    //	I = cosAngle * reflectivity[COVERAGE_WATER] * gain;
+    // I = cosAngle * reflectivity[COVERAGE_WATER] * gain;
     //}
 
 
-    //	if (LOD <= TheMap.LastNearTexLOD()) {
+    // if (LOD <= TheMap.LastNearTexLOD()) {
     BYTE type = TheTerrTextures.GetTerrainType(post->texID);
     I = cosAngle * reflectivity[type] * gain;
-    /*	} else {
-    		I = cosAngle * reflectivity[COVERAGE_WATER] * gain;
-    	}
+    /* } else {
+     I = cosAngle * reflectivity[COVERAGE_WATER] * gain;
+     }
     */
 
     // Clamp the intensity to 0 to 1
@@ -749,7 +749,7 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
     }
 
     //if (I > 1.0f) {
-    //	return 1.0f;
+    // return 1.0f;
     //}
 
     //Cobra 1.0f was too high and washed out the map
@@ -757,7 +757,7 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
         return 0.5f;
 
     //if (I > 0.25)
-    //	return 0.25f;
+    // return 0.25f;
 
     return I;
 }
@@ -765,8 +765,8 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
 
 void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, GroundMapVertex *v2, GroundMapVertex *v3)
 {
-    TwoDVertex	vert[4];
-    TwoDVertex*	vertPointers[4];
+    TwoDVertex vert[4];
+    TwoDVertex* vertPointers[4];
 
     ShiAssert(v0);
     ShiAssert(v1);

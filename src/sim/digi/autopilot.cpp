@@ -14,8 +14,8 @@
 #include "flightdata.h"
 #include "fcc.h"
 
-extern bool g_bRealisticAvionics;	//MI
-extern bool g_bINS;	//MI
+extern bool g_bRealisticAvionics; //MI
+extern bool g_bINS; //MI
 extern bool g_bTFRFixes;
 extern bool g_bCalibrateTFR_PitchCtrl;
 
@@ -149,9 +149,9 @@ void DigitalBrain::LantirnAP(void)
         //if (theLantirn->gammaCorr < 0.0F)
         desGamma += theLantirn->gammaCorr * af->GetTFR_GammaCorrMult();
         //else if (theLantirn->gammaCorr < 5.0F)
-        //	desGamma += 5.0F + (theLantirn->gammaCorr - 5.0F) / 2.0F;
+        // desGamma += 5.0F + (theLantirn->gammaCorr - 5.0F) / 2.0F;
         //else
-        //	desGamma += theLantirn->gammaCorr;
+        // desGamma += theLantirn->gammaCorr;
 
         desGamma = max(min(desGamma, theLantirn->GetGLimit() * 5.0F), -theLantirn->GetGLimit() * 4.0F);
 
@@ -269,15 +269,15 @@ void DigitalBrain::RealisticAP(void)
 #if 0  // MD -- 20031108: see "else"
 
     //Right switch
-    if (self->IsOn(AircraftClass::AltHold))	//up
+    if (self->IsOn(AircraftClass::AltHold)) //up
         AltHold();
-    else if (self->IsOn(AircraftClass::AttHold) && self->IsOn(AircraftClass::RollHold))	//down
+    else if (self->IsOn(AircraftClass::AttHold) && self->IsOn(AircraftClass::RollHold)) //down
         PitchRollHold();
     else
         AcceptManual();
 
     //Left switch
-    if (!self->IsOn(AircraftClass::AttHold))	//does nothing in ATT HOLD position
+    if (!self->IsOn(AircraftClass::AttHold)) //does nothing in ATT HOLD position
     {
         if (self->IsOn(AircraftClass::RollHold))
             RollHold();
@@ -298,7 +298,7 @@ void DigitalBrain::RealisticAP(void)
 
         //Right switch
         if (self->IsOn(AircraftClass::AltHold))
-            AltHold();	//up
+            AltHold(); //up
         else if (self->IsOn(AircraftClass::AttHold))
             PitchHold();  //down
         else
@@ -324,7 +324,7 @@ void DigitalBrain::AltHold(void)
 {
     if (CheckAPParameters())
     {
-        //	AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -381,7 +381,7 @@ void DigitalBrain::PitchRollHold(void)
 {
     if (CheckAPParameters())
     {
-        //	AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -472,7 +472,7 @@ void DigitalBrain::FollowWP(void)
 {
     if (CheckAPParameters())
     {
-        //	AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -524,7 +524,7 @@ void DigitalBrain::HDGSel(void)
 {
     if (CheckAPParameters())
     {
-        //	AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -552,7 +552,7 @@ void DigitalBrain::RollHold(void)
 {
     if (CheckAPParameters())
     {
-        //	AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
+        // AcceptManual();  MD -- 20031108: switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -608,7 +608,7 @@ void DigitalBrain::PitchHold(void)
 {
     if (CheckAPParameters())
     {
-        //	pitch switch will remain in selected pitch mode according to the dash one!
+        // pitch switch will remain in selected pitch mode according to the dash one!
         self->SetAutopilot(AircraftClass::APOff);
         return;
     }
@@ -637,7 +637,7 @@ void DigitalBrain::PitchHold(void)
 
 }
 
-#define AP_TURN 1	//faster and it oscillates
+#define AP_TURN 1 //faster and it oscillates
 void DigitalBrain::CheckForTurn(void)
 {
     //anything to do for us?

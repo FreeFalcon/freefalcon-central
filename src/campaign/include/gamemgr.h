@@ -16,8 +16,8 @@ class GameManagerClass
 private:
 
 public:
-    GameManagerClass(void)			{};
-    ~GameManagerClass()			{};
+    GameManagerClass(void) {};
+    ~GameManagerClass() {};
 
     int AllPlayersReady(VuGameEntity *game);
     int NoMorePlayers(VuGameEntity *game);
@@ -35,6 +35,6 @@ public:
     void ReleasePlayer(FalconSessionEntity *player);
 };
 
-extern GameManagerClass		GameManager;
+extern GameManagerClass GameManager;
 
 #endif

@@ -51,7 +51,7 @@ void DigitalBrain::FollowWaypoints(void)
 
     if (self->curWaypoint == NULL && self->FCC->GetStptMode() == FireControlComputer::FCCMarkpoint)
     {
-        //  	self->af->SetSimpleMode(SIMPLE_MODE_AF);
+        //   self->af->SetSimpleMode(SIMPLE_MODE_AF);
         self->SetAutopilot(AircraftClass::ThreeAxisAP);
         throtl = UserStickInputs.throttle;
         ThreeAxisAP();
@@ -69,18 +69,18 @@ void DigitalBrain::FollowWaypoints(void)
     if (isWing && (atcstatus != noATC))
     {
         // if we are a wingman and we are taking off or landing
-        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;			// don't follow formation
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
     }
     else if (isWing && !pobj)
     {
         // if we are a wingman and we can't find the leader's pointer
-        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;			// don't follow formation
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
     }
     else if (isWing && (pobj && pobj->OnGround()))
     {
         // if we are a wingman and our leader is on the ground
-        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;			// don't follow formation
-        mLeaderTookOff = FALSE;										// reset leader take off flag
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
+        mLeaderTookOff = FALSE; // reset leader take off flag
 
         if (self->curWaypoint->GetWPAction() == WP_ASSEMBLE && (onStation == Arrived || onStation == Stabalizing || onStation == OnStation))
         {
@@ -88,15 +88,15 @@ void DigitalBrain::FollowWaypoints(void)
             if (SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime() + 300000)
             {
                 // if we have time to kill
-                AddMode(LoiterMode);																	// hang out for a while
+                AddMode(LoiterMode); // hang out for a while
             }
         }
     }
     else if (isWing && mLeaderTookOff == FALSE)
     {
         // if i'm a wing and we think that the leader hasn't taken off
-        mLeaderTookOff = TRUE;										// tell ourselves that the leader tookoff.  to get here the leader must have taken off.
-        mpActionFlags[AI_FOLLOW_FORMATION] = TRUE;			// follow the leader
+        mLeaderTookOff = TRUE; // tell ourselves that the leader tookoff.  to get here the leader must have taken off.
+        mpActionFlags[AI_FOLLOW_FORMATION] = TRUE; // follow the leader
     }
 
     // check to see if we're heading at an IP waypoint
@@ -232,10 +232,10 @@ void DigitalBrain::FollowWaypoints(void)
                 fabs(trackY - self->YPos()) < g_fAIRefuelRange * NM_TO_FT &&
                 onStation == NotThereYet)
             {
-                VU_ID							TankerId = vuNullId;
-                AircraftClass				*theTanker = NULL;
-                FalconTankerMessage		*TankerMsg;
-                FlightClass					*flight;
+                VU_ID TankerId = vuNullId;
+                AircraftClass *theTanker = NULL;
+                FalconTankerMessage *TankerMsg;
+                FlightClass *flight;
 
                 onStation = Arrived;
 
@@ -255,13 +255,13 @@ void DigitalBrain::FollowWaypoints(void)
                     theTanker = (AircraftClass*) flight->GetComponentLead();
 
                 if (theTanker)
-                    TankerMsg	= new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
+                    TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
                 else
-                    TankerMsg	= new FalconTankerMessage(FalconNullId, FalconLocalGame);
+                    TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
 
-                TankerMsg->dataBlock.type	= FalconTankerMessage::RequestFuel;
+                TankerMsg->dataBlock.type = FalconTankerMessage::RequestFuel;
                 TankerMsg->dataBlock.data1  = 1;
-                TankerMsg->dataBlock.caller	= self->Id();
+                TankerMsg->dataBlock.caller = self->Id();
                 FalconSendMessage(TankerMsg);
             }
 
@@ -286,17 +286,17 @@ void DigitalBrain::FollowWaypoints(void)
 
 void DigitalBrain::SimpleGoToCurrentWaypoint(void)
 {
-    float	xerr, yerr;
+    float xerr, yerr;
     float rng;
     float desSpeed; //desSpeedAlt TJL 02/20/04
     float ttg = 1.0;
     WayPointClass* tmpWaypoint;
     long timeDelta;
     float gainCtrl;
-    int				vehInFlight;
-    int				flightIdx;
+    int vehInFlight;
+    int flightIdx;
     ACFormationData::PositionData *curPosition;
-    float				rangeFactor;
+    float rangeFactor;
     //int thisWP;
     //int nextWP;
 
@@ -305,11 +305,11 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     gainCtrl = 0.25f;
 
     // Cobra - Make sure groundAvoidNeeded is not needed
-    //		if (pullupTimer < SimLibElapsedTime)
-    //		{
-    //			groundAvoidNeeded = FALSE;
-    //			pullupTimer = 0;
-    //		}
+    // if (pullupTimer < SimLibElapsedTime)
+    // {
+    // groundAvoidNeeded = FALSE;
+    // pullupTimer = 0;
+    // }
 
     // see if we're in a ag attack mode
     if (agDoctrine == AGD_NONE)
@@ -319,14 +319,14 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
         SetTrackPoint(tx, ty, tz);
 
         // Adjust position to avoid collision near waypoint
-        vehInFlight		= ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-        flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+        vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+        flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
         if (flightIdx != 0)
         {
             if (flightIdx == AiFirstWing && vehInFlight == 2)
             {
-                curPosition	= &(acFormationData->twoposData[mFormation]);	// The four ship #2 slot position is copied in to the 2 ship formation array.
+                curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
             }
             else if (flightIdx == AiSecondWing && mSplitFlight)
             {
@@ -337,14 +337,14 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
                 curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
             }
 
-            rangeFactor		= curPosition->range * (2.0F * mFormLateralSpaceFactor);
+            rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
 
-            trackX	+= rangeFactor * (float)cos(curPosition->relAz * mFormSide + self->Yaw());
-            trackY	+= rangeFactor * (float)sin(curPosition->relAz * mFormSide + self->Yaw());
+            trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + self->Yaw());
+            trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + self->Yaw());
 
             if (curPosition->relEl)
             {
-                trackZ	+= rangeFactor * (float)sin(-curPosition->relEl);
+                trackZ += rangeFactor * (float)sin(-curPosition->relEl);
             }
             else
             {
@@ -399,9 +399,9 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     /*---------------------------*/
     /* Range to current waypoint */
     /*---------------------------*/
-    xerr	= trackX - self->XPos();
-    yerr	= trackY - self->YPos();
-    rng	= sqrtf(xerr * xerr + yerr * yerr) * FT_TO_NM;
+    xerr = trackX - self->XPos();
+    yerr = trackY - self->YPos();
+    rng = sqrtf(xerr * xerr + yerr * yerr) * FT_TO_NM;
 
     /*---------------------------*/
     /* Reached the next waypoint? */
@@ -488,7 +488,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
-                //				if (onStation == OnStation || self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
+                // if (onStation == OnStation || self->curWaypoint->GetNextWP() && self->curWaypoint->GetNextWP()->GetWPAction() != WP_LAND)
 
                 // Cobra - Don't skip the WP after target WP
                 if (GetTargetWPIndex() >= 0 && GetWaypointIndex() <= GetTargetWPIndex())
@@ -545,7 +545,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
 
     // modify p and r stick settings by gain control
     pStick *= gainCtrl;
-    //	rStick *= gainCtrl;
+    // rStick *= gainCtrl;
 }
 
 
@@ -577,7 +577,7 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     /*---------------------------*/
     /* Range to current waypoint */
     /*---------------------------*/
-    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) *	(wpY - self->YPos());
+    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) * (wpY - self->YPos());
 
     /*------------------------------------*/
     /* Heading error for current waypoint */
@@ -603,7 +603,7 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     /* Reached the next waypoint */
     /*---------------------------*/
     //            0.83 NM
-    //	if (rng < (5000.0F * 5000.0F) || (onStation != NotThereYet) ||
+    // if (rng < (5000.0F * 5000.0F) || (onStation != NotThereYet) ||
     // Cobra - Give AI plenty of leeway to reach WP
     //            1.66 NM
     if (rng < (10000.0F * 10000.0F) || (onStation != NotThereYet) ||
@@ -884,7 +884,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             SetATCFlag(ReachedIP);
         }
 
-        if (!(moreFlags & SaidSunrise))	// only say sunrise once and only insert once into FAC list
+        if (!(moreFlags & SaidSunrise)) // only say sunrise once and only insert once into FAC list
         {
             moreFlags |= SaidSunrise;
 
@@ -945,7 +945,7 @@ void DigitalBrain::SelectNextWaypoint(void)
     if (!IsSetATC(HasAGWeapon) && (missionClass == AGMission))
     {
         MissionClassEnum tmpMission = missionClass;
-        //missionClass = AAMission;		// Without this, SelectGroundWeapon might call SelectNextWaypoint which will result in a stack overflow
+        //missionClass = AAMission; // Without this, SelectGroundWeapon might call SelectNextWaypoint which will result in a stack overflow
         SelectGroundWeapon();
         missionClass = tmpMission;
     }
@@ -1023,7 +1023,7 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
             case WP_BOMB:
             case WP_SAD:
                 //TJL 11/10/03 Sounds?
-#if 0		// Retro 20May2004 - fixed logic
+#if 0 // Retro 20May2004 - fixed logic
                 if (missionType == (AMIS_OCASTRIKE || AMIS_INTSTRIKE || AMIS_STRIKE || AMIS_DEEPSTRIKE || AMIS_STSTRIKE || AMIS_STRATBOMB))
 #else
                 if ((missionType == AMIS_OCASTRIKE) ||
@@ -1032,7 +1032,7 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
                     (missionType == AMIS_DEEPSTRIKE) ||
                     (missionType == AMIS_STSTRIKE) ||
                     (missionType == AMIS_STRATBOMB))
-#endif		// Retro 20May2004 - end
+#endif // Retro 20May2004 - end
                 {
                     FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
                     radioMessage->dataBlock.from = self->Id();
@@ -1136,7 +1136,7 @@ int DigitalBrain::GetTargetWPIndex(void)
 void
 DigitalBrain::DoPickupAirdrop(void)
 {
-    float	xerr, yerr;
+    float xerr, yerr;
     float rng;
     float desSpeed, desAlt;
     float gainCtrl;
@@ -1153,9 +1153,9 @@ DigitalBrain::DoPickupAirdrop(void)
     SetTrackPoint(tx, ty, tz);
 
     // range info
-    xerr	= trackX - self->XPos();
-    yerr	= trackY - self->YPos();
-    rng	= xerr * xerr + yerr *	yerr;
+    xerr = trackX - self->XPos();
+    yerr = trackY - self->YPos();
+    rng = xerr * xerr + yerr * yerr;
 
     // if we're still far away just use the regular waypoint stuff
     if (rng > 10000.0f * 10000.0f)
@@ -1270,6 +1270,6 @@ DigitalBrain::DoPickupAirdrop(void)
 
     // modify p and r stick settings by gain control
     pStick *= gainCtrl;
-    //	rStick *= gainCtrl;
+    // rStick *= gainCtrl;
 }
 

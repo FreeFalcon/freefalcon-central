@@ -1,9 +1,9 @@
 /*******************************************************************************\
-	Original texture tile manager class -- Used by the ComposeTiles tool.
+ Original texture tile manager class -- Used by the ComposeTiles tool.
 
-	Scott Randolph
-	Spectrum HoloByte
-	May 14, 1997
+ Scott Randolph
+ Spectrum HoloByte
+ May 14, 1997
 \*******************************************************************************/
 #include <stdio.h>
 #include <io.h>
@@ -17,12 +17,12 @@
 
 void TileListManager::Setup(char *path)
 {
-    char			filename[256];
-    FILE			*listFile;
-    int				ret;
-    int				id;
-    char			basename[20];
-    TileListEntry	*newTile;
+    char filename[256];
+    FILE *listFile;
+    int ret;
+    int id;
+    char basename[20];
+    TileListEntry *newTile;
 
 
     // Note that we don't yet have the shared palette loaded
@@ -83,7 +83,7 @@ void TileListManager::Setup(char *path)
 
 void TileListManager::Cleanup(void)
 {
-    TileListEntry	*p;
+    TileListEntry *p;
 
     while (tileListHead)
     {
@@ -99,7 +99,7 @@ void TileListManager::Cleanup(void)
 
 const char* TileListManager::GetFileName(WORD texCode)
 {
-    TileListEntry	*pTileRecord;
+    TileListEntry *pTileRecord;
 
     for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
     {
@@ -114,9 +114,9 @@ const char* TileListManager::GetFileName(WORD texCode)
 }
 
 
-const BYTE*	TileListManager::GetImageData(WORD texCode)
+const BYTE* TileListManager::GetImageData(WORD texCode)
 {
-    TileListEntry	*pTileRecord;
+    TileListEntry *pTileRecord;
 
     for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
     {
@@ -133,10 +133,10 @@ const BYTE*	TileListManager::GetImageData(WORD texCode)
 
 void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 {
-    CImageFileMemory 	texFile;
-    int					result;
-    DWORD				width;
-    DWORD				height;
+    CImageFileMemory  texFile;
+    int result;
+    DWORD width;
+    DWORD height;
 
 
     ShiAssert(filename);
@@ -152,7 +152,7 @@ void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 
     if (result != 1)
     {
-        char	message[256];
+        char message[256];
         sprintf(message, "Failed to open %s", filename);
         ShiError(message);
     }
@@ -196,7 +196,7 @@ void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 
 void TileListManager::WriteSharedPaletteData(int TargetFile)
 {
-    int		result;
+    int result;
 
     ShiAssert(TargetFile != -1);
 

@@ -1,6 +1,6 @@
 // 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 #ifdef _DEBUG
-int				gDumping = 0;
+int gDumping = 0;
 #endif
 
 #ifdef CAMPTOOL
@@ -62,91 +62,91 @@ int				gDumping = 0;
 // ========================================
 
 // Map sizing Info
-#define 	MAX_XPIX	1536
-#define 	MAX_YPIX	768
+#define  MAX_XPIX 1536
+#define  MAX_YPIX 768
 
 // Mapping data
-MapData	MainMapData;
-int		MaxXSize;
-int		MaxYSize;
+MapData MainMapData;
+int MaxXSize;
+int MaxYSize;
 unsigned char ReBlt = FALSE;
 
 // Windows global handles
-HWND	hMainWnd = NULL, hToolWnd = NULL;
-HDC		hMainDC, hToolDC, hMapDC = NULL;
-HMENU	hMainMenu;
-HBITMAP	hMapBM;
-HCURSOR	hCurWait, hCurPoint, hCur = NULL;
+HWND hMainWnd = NULL, hToolWnd = NULL;
+HDC hMainDC, hToolDC, hMapDC = NULL;
+HMENU hMainMenu;
+HBITMAP hMapBM;
+HCURSOR hCurWait, hCurPoint, hCur = NULL;
 
 // Threads
-static F4THREADHANDLE	hCampaignThread;
-static DWORD			CampaignThreadID;
+static F4THREADHANDLE hCampaignThread;
+static DWORD CampaignThreadID;
 
 // CampTool Specific
-unsigned char			Drawing = FALSE;
-unsigned char			RoadsOn = TRUE;
-unsigned char			RailsOn = TRUE;
-unsigned char			PBubble = FALSE;
-unsigned char			PBubbleDrawn = FALSE;
-unsigned char			SuspendDraw = TRUE;
-unsigned char			ShowCodes = FALSE;
-unsigned char			RefreshAll = FALSE;
-unsigned char			ShowSearch = FALSE;
-unsigned char			FreshDraw = FALSE;
-unsigned char			Saved;
-unsigned char			StateEdit;
-unsigned char			Moving = FALSE;
-unsigned char			Linking = FALSE;
-unsigned char			LinkTool = FALSE;
-unsigned char			FindPath = FALSE;
-unsigned char			WPDrag = FALSE;
-unsigned char			ShowFlanks = FALSE;
-unsigned char			ShowPaths = FALSE;
-Team			ThisTeam = 0;
-char			Mode = 1, EditMode = 8;
-char			TempPriority, DrawRoad = 0, DrawRail = 0, ObjMode = 0;
-short			CellSize;
-ReliefType		DrawRelief = Flat;
-CoverType		DrawCover = Water;
-int				DrawWeather = 0;
-int				ShowReal = 1;
-GridIndex		CurX, CurY, CenX, CenY, Movx, Movy, PBx, PBy, Sel1X, Sel1Y, Sel2X, Sel2Y;
-costtype		cost;
-CampaignState	StateToEdit = NULL;
-ObjectiveType	TempType;
-Objective		OneObjective, FromObjective, ToObjective, Neighbor, GlobObj, DragObjective = NULL;
-Unit			OneUnit, MoveUnit, PathUnit, GlobUnit, WPUnit, DragUnit = NULL;
-WORD			CampHour, CampMinute, CampDay;
-WayPoint		GlobWP = NULL;
-F4PFList		GlobList;
-short			ptSelected = 0;
+unsigned char Drawing = FALSE;
+unsigned char RoadsOn = TRUE;
+unsigned char RailsOn = TRUE;
+unsigned char PBubble = FALSE;
+unsigned char PBubbleDrawn = FALSE;
+unsigned char SuspendDraw = TRUE;
+unsigned char ShowCodes = FALSE;
+unsigned char RefreshAll = FALSE;
+unsigned char ShowSearch = FALSE;
+unsigned char FreshDraw = FALSE;
+unsigned char Saved;
+unsigned char StateEdit;
+unsigned char Moving = FALSE;
+unsigned char Linking = FALSE;
+unsigned char LinkTool = FALSE;
+unsigned char FindPath = FALSE;
+unsigned char WPDrag = FALSE;
+unsigned char ShowFlanks = FALSE;
+unsigned char ShowPaths = FALSE;
+Team ThisTeam = 0;
+char Mode = 1, EditMode = 8;
+char TempPriority, DrawRoad = 0, DrawRail = 0, ObjMode = 0;
+short CellSize;
+ReliefType DrawRelief = Flat;
+CoverType DrawCover = Water;
+int DrawWeather = 0;
+int ShowReal = 1;
+GridIndex CurX, CurY, CenX, CenY, Movx, Movy, PBx, PBy, Sel1X, Sel1Y, Sel2X, Sel2Y;
+costtype cost;
+CampaignState StateToEdit = NULL;
+ObjectiveType TempType;
+Objective OneObjective, FromObjective, ToObjective, Neighbor, GlobObj, DragObjective = NULL;
+Unit OneUnit, MoveUnit, PathUnit, GlobUnit, WPUnit, DragUnit = NULL;
+WORD CampHour, CampMinute, CampDay;
+WayPoint GlobWP = NULL;
+F4PFList GlobList;
+short ptSelected = 0;
 
-extern int	asAgg;
+extern int asAgg;
 
 // Returns upper left hand corner of Cell, in window pixel coordinates
 #define POSX(X) (short)((X)*md->CellSize-md->PFX)
 #define POSY(Y) (short)(md->PLY-(Y+1)*md->CellSize)
 
 // For testing
-unsigned char			SHOWSTATS;
-int				NoInput = 1;
-int				gMoveFlags = PATH_ENEMYOK | PATH_ROADOK;
-int				gMoveType = Tracked;
-int				gMoveWho = 6;
+unsigned char SHOWSTATS;
+int NoInput = 1;
+int gMoveFlags = PATH_ENEMYOK | PATH_ROADOK;
+int gMoveType = Tracked;
+int gMoveWho = 6;
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 // Renaming tool stuff
 VU_ID_NUMBER RenameTable[65536] = { 0 };
 int gRenameIds = 0;
 
-extern int		displayCampaign;
-extern int		maxSearch;
+extern int displayCampaign;
+extern int maxSearch;
 
 extern void ShowMissionLists(void);
 
 // 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 //#ifdef _DEBUG
-//int				gDumping = 0;
+//int gDumping = 0;
 //#endif
 
 // ========================================
@@ -164,37 +164,37 @@ void SetRefresh(MapData md);
 void GetCellScreenRect(MapData md, GridIndex X, GridIndex Y, RECT *r);
 
 // ====================================================================
-// Campaign Support Functions	(These are called by the campaign itself)
+// Campaign Support Functions (These are called by the campaign itself)
 // ====================================================================
 
 void ReBltWnd(MapData md, HDC DC)
 {
-    RECT		r;
+    RECT r;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     BitBlt(md->hMapDC, r.left, r.top, r.right, r.bottom, DC, r.left, r.top, SRCCOPY);
-    //	MonoPrint("blt to storage: %d,%d:%d,%d\n",r.left,r.top,r.right-r.left,r.bottom-r.top);
+    // MonoPrint("blt to storage: %d,%d:%d,%d\n",r.left,r.top,r.right-r.left,r.bottom-r.top);
 }
 
 // This is a temporary routine for testing...
 // Shows the pattern taken with my search routine.
 void ShowWhere(MapData md, GridIndex x, GridIndex y, int color)
 {
-    RECT		r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
+    HDC DC;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetCellScreenRect(md, x, y, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -207,8 +207,8 @@ void ShowWhere(MapData md, GridIndex x, GridIndex y, int color)
 // Show the time
 void ShowTime(CampaignTime t)
 {
-    RECT			r;
-    WORD			nm, nh;
+    RECT r;
+    WORD nm, nh;
 
     if (!hToolWnd)
         return;
@@ -233,16 +233,16 @@ void ShowTime(CampaignTime t)
 
 void ShowLink(MapData md, Objective o, Objective n, int color)
 {
-    RECT		r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
-    GridIndex	x, y;
+    HDC DC;
+    GridIndex x, y;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -258,15 +258,15 @@ void ShowLink(MapData md, Objective o, Objective n, int color)
 // Draw a waypoint box
 void ShowWP(MapData md, GridIndex X, GridIndex Y, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
+    HDC DC;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetCellScreenRect(md, X, Y, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -278,15 +278,15 @@ void ShowWP(MapData md, GridIndex X, GridIndex Y, int color)
 
 void ShowWPLeg(MapData md, GridIndex x, GridIndex y, GridIndex X, GridIndex Y, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
+    HDC DC;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -301,17 +301,17 @@ void ShowWPLeg(MapData md, GridIndex x, GridIndex y, GridIndex X, GridIndex Y, i
 
 void ShowPath(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
-    int			i, d, step;
-    GridIndex	x, y;
+    HDC DC;
+    int i, d, step;
+    GridIndex x, y;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -343,17 +343,17 @@ void ShowPath(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 
 void ShowObjectivePath(MapData md, Objective o, Path p, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
-    int			i, d;
-    GridIndex	x, y;
+    HDC DC;
+    int i, d;
+    GridIndex x, y;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -379,17 +379,17 @@ void ShowObjectivePath(MapData md, Objective o, Path p, int color)
 
 void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
-    int			i, d, step;
-    GridIndex	x, y;
+    HDC DC;
+    int i, d, step;
+    GridIndex x, y;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -420,16 +420,16 @@ void ShowPathHistory(MapData md, GridIndex X, GridIndex Y, Path p, int color)
 
 void ShowRange(MapData md, GridIndex X, GridIndex Y, int range, int color)
 {
-    RECT			r;
+    RECT r;
     PAINTSTRUCT ps;
-    HDC			DC;
-    GridIndex	x, y;
+    HDC DC;
+    GridIndex x, y;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     GetClientRect(md->hMapWnd, &r);
     InvalidateRect(md->hMapWnd, &r, FALSE);
@@ -444,7 +444,7 @@ void ShowRange(MapData md, GridIndex X, GridIndex Y, int range, int color)
 
 void ShowLinkCosts(Objective f, Objective t)
 {
-    int		i, j;
+    int i, j;
 
     MonoPrint("Link Costs: ");
 
@@ -460,11 +460,11 @@ void ShowLinkCosts(Objective f, Objective t)
     MonoPrint("\n");
 }
 
-void ShowDivisions(HDC	DC, MapData md)
+void ShowDivisions(HDC DC, MapData md)
 {
-    int			t;
-    Division	d;
-    Unit		u;
+    int t;
+    Division d;
+    Unit u;
 
     for (t = 0; t < NUM_TEAMS; t++)
     {
@@ -492,11 +492,11 @@ void ShowDivisions(HDC	DC, MapData md)
 
 void RedrawUnit(Unit u)
 {
-    GridIndex 	x, y;
+    GridIndex  x, y;
     PAINTSTRUCT ps;
-    RECT		r;
-    HDC		DC;
-    MapData	md = MainMapData;
+    RECT r;
+    HDC DC;
+    MapData md = MainMapData;
 
     if (!MainMapData)
         return;
@@ -539,18 +539,18 @@ void GetCellScreenRect(MapData md, GridIndex X, GridIndex Y, RECT *r)
 
 void RedrawCell(MapData md, GridIndex X, GridIndex Y)
 {
-    RECT		r;
+    RECT r;
     PAINTSTRUCT ps;
-    Objective 	o;
-    Unit		u = NULL;
-    HDC			DC;
-    short		scale = 1;
+    Objective  o;
+    Unit u = NULL;
+    HDC DC;
+    short scale = 1;
 
     if (!md)
         md = MainMapData;
 
     if (!MainMapData)
-        return;								// Map's not open
+        return; // Map's not open
 
     if (X < md->FX || X > md->LX || Y < md->FY || Y > md->LY)
         return;
@@ -579,7 +579,7 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
         u = FindUnitByXY(InactiveList, X, Y, 0);
     else
     {
-        Division	d;
+        Division d;
         d = FindDivisionByXY(X, Y);
 
         if (d)
@@ -602,10 +602,10 @@ void RedrawCell(MapData md, GridIndex X, GridIndex Y)
 
 void ShowEmitters(MapData md, HDC DC)
 {
-    CampEntity		e;
-    GridIndex		x, y;
-    int				range;
-    VuListIterator	myit(EmitterList);
+    CampEntity e;
+    GridIndex x, y;
+    int range;
+    VuListIterator myit(EmitterList);
 
     e = GetFirstEntity(&myit);
 
@@ -625,10 +625,10 @@ void ShowEmitters(MapData md, HDC DC)
 
 void ShowSAMs(MapData md, HDC DC)
 {
-    CampEntity	e;
-    GridIndex	x, y;
-    int			range;
-    VuListIterator	myit(AirDefenseList);
+    CampEntity e;
+    GridIndex x, y;
+    int range;
+    VuListIterator myit(AirDefenseList);
 
     e = GetFirstEntity(&myit);
 
@@ -651,52 +651,52 @@ void ShowSAMs(MapData md, HDC DC)
 
 void ShowPlayerBubble(MapData md, HDC DC, int show_ok)
 {
-    //GridIndex		x=0,y=0;
-    //int				bubble_size = 20;		// This is actually a per-entity value
+    //GridIndex x=0,y=0;
+    //int bubble_size = 20; // This is actually a per-entity value
 
     //if (FalconLocalSession->Camera(0)){
-    //	// sfr: xy order
-    //	::vector pos = { FalconLocalSession->Camera(0)->XPos(), FalconLocalSession->Camera(0)->YPos() };
-    //	ConvertSimToGrid(&pos, &x, &y );
-    //	y = SimToGrid(FalconLocalSession->Camera(0)->XPos());
-    //	x = SimToGrid(FalconLocalSession->Camera(0)->YPos());
+    // // sfr: xy order
+    // ::vector pos = { FalconLocalSession->Camera(0)->XPos(), FalconLocalSession->Camera(0)->YPos() };
+    // ConvertSimToGrid(&pos, &x, &y );
+    // y = SimToGrid(FalconLocalSession->Camera(0)->XPos());
+    // x = SimToGrid(FalconLocalSession->Camera(0)->YPos());
     //}
     //else {
-    //	show_ok = FALSE;
+    // show_ok = FALSE;
     //}
 
     //if (PBubbleDrawn){
-    //	SetROP2(DC, R2_NOT);
-    //	DisplaySideRange(
-    //		DC,0,(short)(POSX(PBx)+(md->CellSize>>1)),(short)(POSY(PBy)+(md->CellSize>>1)),bubble_size*md->CellSize
-    //	);
-    //	DisplaySideRange(
-    //		DC,0,(short)(POSX(PBx)+(md->CellSize>>1)),(short)(POSY(PBy)+(md->CellSize>>1)),1*md->CellSize
-    //	);
-    //	SetROP2(DC, R2_COPYPEN);
-    //	PBubbleDrawn = FALSE;
+    // SetROP2(DC, R2_NOT);
+    // DisplaySideRange(
+    // DC,0,(short)(POSX(PBx)+(md->CellSize>>1)),(short)(POSY(PBy)+(md->CellSize>>1)),bubble_size*md->CellSize
+    // );
+    // DisplaySideRange(
+    // DC,0,(short)(POSX(PBx)+(md->CellSize>>1)),(short)(POSY(PBy)+(md->CellSize>>1)),1*md->CellSize
+    // );
+    // SetROP2(DC, R2_COPYPEN);
+    // PBubbleDrawn = FALSE;
     //}
     //if (show_ok){
-    //	SetROP2(DC, R2_NOT);
-    //	DisplaySideRange(
-    //		DC,0,(short)(POSX(x)+(md->CellSize>>1)),(short)(POSY(y)+(md->CellSize>>1)),bubble_size*md->CellSize
-    //	);
-    //	DisplaySideRange(
-    //		DC,0,(short)(POSX(x)+(md->CellSize>>1)),(short)(POSY(y)+(md->CellSize>>1)),1*md->CellSize
-    //	);
-    //	SetROP2(DC, R2_COPYPEN);
-    //	PBubbleDrawn = TRUE;
-    //	PBx = x;
-    //	PBy = y;
+    // SetROP2(DC, R2_NOT);
+    // DisplaySideRange(
+    // DC,0,(short)(POSX(x)+(md->CellSize>>1)),(short)(POSY(y)+(md->CellSize>>1)),bubble_size*md->CellSize
+    // );
+    // DisplaySideRange(
+    // DC,0,(short)(POSX(x)+(md->CellSize>>1)),(short)(POSY(y)+(md->CellSize>>1)),1*md->CellSize
+    // );
+    // SetROP2(DC, R2_COPYPEN);
+    // PBubbleDrawn = TRUE;
+    // PBx = x;
+    // PBy = y;
     //}
 }
 
 void RedrawPlayerBubble()
 {
-    RECT			r;
-    PAINTSTRUCT 	ps;
-    HDC				DC;
-    MapData			md = MainMapData;
+    RECT r;
+    PAINTSTRUCT  ps;
+    HDC DC;
+    MapData md = MainMapData;
 
 
     GetClientRect(md->hMapWnd, &r);
@@ -708,11 +708,11 @@ void RedrawPlayerBubble()
 
 void ChangeCell(GridIndex X, GridIndex Y)
 {
-    int			i;//,x,y;
+    int i;//,x,y;
     PAINTSTRUCT ps;
-    HDC			DC;
-    RECT		r;
-    MapData		md = MainMapData;
+    HDC DC;
+    RECT r;
+    MapData md = MainMapData;
 
     Trim(&X, &Y);
 
@@ -759,9 +759,9 @@ void ChangeCell(GridIndex X, GridIndex Y)
                 ShowPlayerBubble(md, DC, 0);
 
             //JAM - FIXME
-            //			for (x=X-FloatToInt32(CLOUD_CELL_SIZE); x<X+FloatToInt32(CLOUD_CELL_SIZE); x++)
-            //				for (y=Y-FloatToInt32(CLOUD_CELL_SIZE); y<Y+FloatToInt32(CLOUD_CELL_SIZE); y++)
-            //					DisplayCellData(DC,x,y,POSX(x),POSY(y),md->CellSize,Mode,0,0);
+            // for (x=X-FloatToInt32(CLOUD_CELL_SIZE); x<X+FloatToInt32(CLOUD_CELL_SIZE); x++)
+            // for (y=Y-FloatToInt32(CLOUD_CELL_SIZE); y<Y+FloatToInt32(CLOUD_CELL_SIZE); y++)
+            // DisplayCellData(DC,x,y,POSX(x),POSY(y),md->CellSize,Mode,0,0);
             ReBltWnd(md, DC);
 
             if (PBubble)
@@ -780,9 +780,9 @@ void ChangeCell(GridIndex X, GridIndex Y)
                 ShowPlayerBubble(md, DC, 0);
 
             //JAM - FIXME
-            //			for (x=X-FloatToInt32(CLOUD_CELL_SIZE); x<X+FloatToInt32(CLOUD_CELL_SIZE); x++)
-            //				for (y=Y-FloatToInt32(CLOUD_CELL_SIZE); y<Y+FloatToInt32(CLOUD_CELL_SIZE); y++)
-            //					DisplayCellData(DC,x,y,POSX(x),POSY(y),md->CellSize,Mode,0,0);
+            // for (x=X-FloatToInt32(CLOUD_CELL_SIZE); x<X+FloatToInt32(CLOUD_CELL_SIZE); x++)
+            // for (y=Y-FloatToInt32(CLOUD_CELL_SIZE); y<Y+FloatToInt32(CLOUD_CELL_SIZE); y++)
+            // DisplayCellData(DC,x,y,POSX(x),POSY(y),md->CellSize,Mode,0,0);
             ReBltWnd(md, DC);
 
             if (PBubble)
@@ -832,13 +832,13 @@ void ResizeCursor(void)
 
 void FindBorders(MapData md)
 {
-    RECT			windim;
-    short			xsize, ysize;
-    GridIndex	tx, ty;
+    RECT windim;
+    short xsize, ysize;
+    GridIndex tx, ty;
 
     GetClientRect(md->hMapWnd, &windim);
-    xsize = (short)(windim.right);				// - windim->left);
-    ysize = (short)(windim.bottom);				// - windim->top);
+    xsize = (short)(windim.right); // - windim->left);
+    ysize = (short)(windim.bottom); // - windim->top);
     tx = md->CenX - (xsize / md->CellSize) / 2;
     ty = md->CenY + (ysize / md->CellSize) / 2;
 
@@ -901,20 +901,20 @@ void FindBorders(MapData md)
 
 int CenPer(MapData md, GridIndex cen, int side)
 {
-    RECT			windim;
-    int			size, range, per;
+    RECT windim;
+    int size, range, per;
 
     GetClientRect(md->hMapWnd, &windim);
 
     if (side == XSIDE)
     {
-        size = (short)(windim.right);				// - windim->left);
+        size = (short)(windim.right); // - windim->left);
         range = 1 + Map_Max_X - (size / md->CellSize);
         per = (cen - ((size / md->CellSize) / 2)) * 100 / range;
     }
     else
     {
-        size = (short)(windim.bottom);				// - windim->top);
+        size = (short)(windim.bottom); // - windim->top);
         range = 1 + Map_Max_Y - (size / md->CellSize);
         per = ((Map_Max_Y - cen) - ((size / md->CellSize) / 2)) * 100 / range;
     }
@@ -924,10 +924,10 @@ int CenPer(MapData md, GridIndex cen, int side)
 
 F4PFList GetSquadsFlightList(VU_ID id)
 {
-    F4PFList		list = new FalconPrivateList(&AllAirFilter);
-    Unit			u;
+    F4PFList list = new FalconPrivateList(&AllAirFilter);
+    Unit u;
 
-    VuListIterator	myit(AllRealList);
+    VuListIterator myit(AllRealList);
     list->Register();
     u = GetFirstUnit(&myit);
 
@@ -944,25 +944,25 @@ F4PFList GetSquadsFlightList(VU_ID id)
     return list;
 }
 
-#define MAX_OBJ_TYPES		33				// WARNING: This should go someplace real...
+#define MAX_OBJ_TYPES 33 // WARNING: This should go someplace real...
 
 typedef struct
 {
-    short	ClassId;
-    short	stype;
+    short ClassId;
+    short stype;
 } OBJ_DATA;
 
 void MakeCampaignNew(void)
 {
     // Remove all flights, reset times, and generally do what is necessary
     // to make a campaign be "unrun"
-    Unit			u;
-    int				i, id;
-    ATMAirbaseClass	*cur;
+    Unit u;
+    int i, id;
+    ATMAirbaseClass *cur;
 
     // Clearup unit data
     {
-        VuListIterator	uit(AllUnitList);
+        VuListIterator uit(AllUnitList);
         u = (Unit)uit.GetFirst();
 
         while (u)
@@ -1024,7 +1024,7 @@ void MakeCampaignNew(void)
                 {
                     id = ((Squadron)u)->GetPilotData(i)->pilot_id;
                     // 2000-11-17 MODIFIED BY S.G. NEED TO PASS THE 'airExperience' OF THE TEAM SO I CAN USE IT AS A BASE
-                    //				((Squadron)u)->GetPilotData(i)->ResetStats();
+                    // ((Squadron)u)->GetPilotData(i)->ResetStats();
                     ((Squadron)u)->GetPilotData(i)->ResetStats(TeamInfo[((Squadron)u)->GetOwner()]->airExperience);
 
                     ((Squadron)u)->GetPilotData(i)->pilot_id = id;
@@ -1074,16 +1074,16 @@ void MakeCampaignNew(void)
 
 void MatchObjectiveTypes(void)
 {
-    char			*file, buffer[80];
-    GridIndex		x, y;
-    FILE			*fp;
-    int				i, j, k, TexIndex, id, set;
-    short			*counts, type, index, matches;
-    ObjClassDataType*		oc;
+    char *file, buffer[80];
+    GridIndex x, y;
+    FILE *fp;
+    int i, j, k, TexIndex, id, set;
+    short *counts, type, index, matches;
+    ObjClassDataType* oc;
 
-    GridIndex		*locs;					//DSP
+    GridIndex *locs; //DSP
 
-    OBJ_DATA	stypes[20];
+    OBJ_DATA stypes[20];
 
     memset(stypes, 0, sizeof(OBJ_DATA) * 20);
 
@@ -1093,7 +1093,7 @@ void MatchObjectiveTypes(void)
     counts = new short[(MaxTextureType + 1)*NumEntities];
     memset(counts, 0, sizeof(short) * (MaxTextureType + 1)*NumEntities);
 
-    locs = new GridIndex[(MaxTextureType + 1)*NumEntities * 2];			//DSP
+    locs = new GridIndex[(MaxTextureType + 1)*NumEntities * 2]; //DSP
     memset(locs, 0, sizeof(GridIndex) * (MaxTextureType + 1)*NumEntities * 2);
 
     while (FromObjective != NULL)
@@ -1137,13 +1137,13 @@ void MatchObjectiveTypes(void)
         }
 
 
-        //if (!set)		// no matching texture
+        //if (!set) // no matching texture
         if (!matches)
         {
             FromObjective->SetObjectiveSType(1);
             index = GetClassID(DOMAIN_LAND, CLASS_OBJECTIVE, (uchar)type, 1, 0, 0, 0, 0);
             counts[TexIndex * NumEntities + index]--;
-            locs[(TexIndex * NumEntities + index) * 2] = x;	//DSP
+            locs[(TexIndex * NumEntities + index) * 2] = x; //DSP
             locs[(TexIndex * NumEntities + index) * 2 + 1] = y;
         }
         else
@@ -1155,7 +1155,7 @@ void MatchObjectiveTypes(void)
             memset(stypes, 0, sizeof(OBJ_DATA) * 20);
 
             counts[TexIndex * NumEntities + index]++;
-            locs[(TexIndex * NumEntities + index) * 2] = x;	//DSP
+            locs[(TexIndex * NumEntities + index) * 2] = x; //DSP
             locs[(TexIndex * NumEntities + index) * 2 + 1] = y;
         }
 
@@ -1402,7 +1402,7 @@ void DeleteUnit(Unit unit)
     if (!unit)
         return;
 
-    Unit	E;
+    Unit E;
 
     CampEnterCriticalSection();
     E = unit->GetFirstUnitElement();
@@ -1443,7 +1443,7 @@ void StartUnitEdit(void)
     else if (ShowReal == 2)
         OneUnit = FindUnitByXY(InactiveList, X, Y, 0);
     else
-        OneUnit = NULL;		// Can't edit divisions
+        OneUnit = NULL; // Can't edit divisions
 
     if (OneUnit)
         GlobUnit = OneUnit;
@@ -1603,7 +1603,7 @@ void SetObjOwnersArea(int team)
 
 void SetRefresh(MapData md)
 {
-    RECT		r;
+    RECT r;
 
     if (!md || !md->hMapWnd)
         return;
@@ -1621,16 +1621,16 @@ void RefreshCampMap(void)
     SetRefresh(MainMapData);
 }
 
-void RefreshMap(MapData md, HDC DC, RECT	*rect)
+void RefreshMap(MapData md, HDC DC, RECT *rect)
 {
-    GridIndex	x, y, NFX = 0, NFY = 0, NLX = 0, NLY = 0;
-    int			clipx, clipy, ysize;
-    RECT		r;
-    GridIndex	xx, yy;
-    int			side = 0;
-    WayPoint	w;
+    GridIndex x, y, NFX = 0, NFY = 0, NLX = 0, NLY = 0;
+    int clipx, clipy, ysize;
+    RECT r;
+    GridIndex xx, yy;
+    int side = 0;
+    WayPoint w;
 
-    //	if (SuspendDraw)
+    // if (SuspendDraw)
     CampEnterCriticalSection();
 
     if (RefreshAll)
@@ -1655,7 +1655,7 @@ void RefreshMap(MapData md, HDC DC, RECT	*rect)
         SetCursor(hCurWait);
 
         if (PBubble)
-            ShowPlayerBubble(md, DC, 0);			// Undraw the player bubble
+            ShowPlayerBubble(md, DC, 0); // Undraw the player bubble
 
         // Update what we can with our bmap
         NFX = md->FX;
@@ -1766,11 +1766,11 @@ void RefreshMap(MapData md, HDC DC, RECT	*rect)
     if (md->ShowObjectives)
     {
 #ifdef VU_GRID_TREE_Y_MAJOR
-        VuGridIterator		oit(ObjProxList, (BIG_SCALAR)GridToSim(md->CenX), (BIG_SCALAR)GridToSim(md->CenY), (BIG_SCALAR)GridToSim((short)(Distance(md->LX, md->LY, md->CenX, md->CenY))));
+        VuGridIterator oit(ObjProxList, (BIG_SCALAR)GridToSim(md->CenX), (BIG_SCALAR)GridToSim(md->CenY), (BIG_SCALAR)GridToSim((short)(Distance(md->LX, md->LY, md->CenX, md->CenY))));
 #else
-        VuGridIterator		oit(ObjProxList, (BIG_SCALAR)GridToSim(md->CenY), (BIG_SCALAR)GridToSim(md->CenX), (BIG_SCALAR)GridToSim((short)(Distance(md->LX, md->LY, md->CenX, md->CenY))));
+        VuGridIterator oit(ObjProxList, (BIG_SCALAR)GridToSim(md->CenY), (BIG_SCALAR)GridToSim(md->CenX), (BIG_SCALAR)GridToSim((short)(Distance(md->LX, md->LY, md->CenX, md->CenY))));
 #endif
-        int					i;
+        int i;
 
         OneObjective = GetFirstObjective(&oit);
 
@@ -1779,7 +1779,7 @@ void RefreshMap(MapData md, HDC DC, RECT	*rect)
             OneObjective->GetLocation(&x, &y);
 
             if (x > md->LX || x < md->FX || y < md->FY || y > md->LY)
-                ;			// Out of window bounds
+                ; // Out of window bounds
             else
             {
                 if (md->ShowLinks)
@@ -1808,8 +1808,8 @@ void RefreshMap(MapData md, HDC DC, RECT	*rect)
 
     if (md->ShowUnits)
     {
-        VuListIterator	*uit = NULL;
-        short			scale = 1, xd = 0, yd = 0;
+        VuListIterator *uit = NULL;
+        short scale = 1, xd = 0, yd = 0;
 
         if (ShowReal == 1)
             uit = new VuListIterator(AllRealList);
@@ -1850,7 +1850,7 @@ void RefreshMap(MapData md, HDC DC, RECT	*rect)
 
                 if (ShowFlanks && OneUnit->GetDomain() == DOMAIN_LAND)
                 {
-                    GridIndex		fx, fy;
+                    GridIndex fx, fy;
                     OneUnit->GetLeftFlank(&fx, &fy);
                     _setcolor(DC, SideColor[OneUnit->GetOwner()]);
                     _moveto(DC, POSX(fx) + (md->CellSize >> 1), POSY(fy) + (md->CellSize >> 1));
@@ -1917,9 +1917,9 @@ void zoomOut(MapData md)
     MaxYSize = MAX_YPIX / md->CellSize;
     SetRefresh(md);
     ResizeCursor();
-    //	nPos = (Map_Max_Y-md->CenY)*100/Map_Max_Y;
+    // nPos = (Map_Max_Y-md->CenY)*100/Map_Max_Y;
     SetScrollPos(md->hMapWnd, SB_VERT, CenPer(MainMapData, CenY, YSIDE), TRUE);
-    //	nPos = md->CenX*100/Map_Max_X;
+    // nPos = md->CenX*100/Map_Max_X;
     SetScrollPos(md->hMapWnd, SB_HORZ, CenPer(MainMapData, CenX, XSIDE), TRUE);
 }
 
@@ -1936,9 +1936,9 @@ void zoomIn(MapData md)
     MaxYSize = MAX_YPIX / md->CellSize;
     SetRefresh(md);
     ResizeCursor();
-    //	nPos = (Map_Max_Y-md->CenY)*100/Map_Max_Y;
+    // nPos = (Map_Max_Y-md->CenY)*100/Map_Max_Y;
     SetScrollPos(md->hMapWnd, SB_VERT, CenPer(MainMapData, CenY, YSIDE), TRUE);
-    //	nPos = md->CenX*100/Map_Max_X;
+    // nPos = md->CenX*100/Map_Max_X;
     SetScrollPos(md->hMapWnd, SB_HORZ, CenPer(MainMapData, CenX, XSIDE), TRUE);
 }
 
@@ -1948,21 +1948,21 @@ void zoomIn(MapData md)
 
 LRESULT CALLBACK ToolWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    LRESULT 	retval = 0;
+    LRESULT  retval = 0;
 
     switch (message)
     {
         case WM_PAINT:
         {
             char        time[80], buffer[60];
-            RECT 		r;
+            RECT  r;
             PAINTSTRUCT ps;
-            HDC			DC;
+            HDC DC;
 
             if (GetUpdateRect(hToolWnd, &r, FALSE))
             {
                 DC = BeginPaint(hToolWnd, &ps);
-                /*		sprintf(time,"Day %2.2d, %2.2d:%2.2d x%d      ",CampDay, CampHour, CampMinute, gameCompressionRatio);*/
+                /* sprintf(time,"Day %2.2d, %2.2d:%2.2d x%d      ",CampDay, CampHour, CampMinute, gameCompressionRatio);*/
                 _moveto(DC, 1, 0);
                 _outgtext(DC, time);
                 // Theater Name
@@ -2076,8 +2076,8 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             InitTheaterTerrain();
             ((WeatherClass*)realWeather)->Init();
             // WARNING: Things could get fucked if we changed the theater size
-            //				DisposeProxLists();
-            //				InitProximityLists();
+            // DisposeProxLists();
+            // InitProximityLists();
             // WARNING: entities will not be reinserted into prox lists
             SetRefresh(MainMapData);
             break;
@@ -2086,14 +2086,14 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             OpenTheaterFile(hMainWnd);
             ((WeatherClass*)realWeather)->Init();
             // WARNING: Things could get fucked if we changed the theater size
-            //				DisposeProxLists();
-            //				InitProximityLists();
+            // DisposeProxLists();
+            // InitProximityLists();
             // WARNING: entities will not be reinserted into prox lists
             SetRefresh(MainMapData);
             break;
 
         case ID_FILE_SAVETHEATER:
-            //				SaveTheaterFile(hMainWnd);
+            // SaveTheaterFile(hMainWnd);
             break;
 
         case ID_FILE_SAVEASTHEATER:
@@ -2301,7 +2301,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_EMITTERS:
-            //				MainMapData->Emitters = !MainMapData->Emitters;
+            // MainMapData->Emitters = !MainMapData->Emitters;
             Mode = 11;
 
             if (MainMapData->Emitters)
@@ -2313,7 +2313,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             break;
 
         case ID_VIEW_SAMS:
-            //				MainMapData->SAMs = !MainMapData->SAMs;
+            // MainMapData->SAMs = !MainMapData->SAMs;
             Mode = 10;
 
             if (MainMapData->SAMs)
@@ -2417,14 +2417,14 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_RECALULATELINKS:
         {
-            int				i, done;
-            PathClass		path;
-            MSG				msg;
-            GridIndex		ox, oy;
+            int i, done;
+            PathClass path;
+            MSG msg;
+            GridIndex ox, oy;
 
             // KCK: First, I need to place roads to ports
             {
-                VuListIterator	oit(AllObjList);
+                VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
                 while (FromObjective != NULL)
@@ -2462,10 +2462,10 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             }
             // Next, do the linking
             LinkTool = TRUE;
-            //				CampEnterCriticalSection();
+            // CampEnterCriticalSection();
             memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
 
-            /*			FromObjective = GetFirstObjective(&oit);*/
+            /* FromObjective = GetFirstObjective(&oit);*/
             while (FromObjective != NULL)
             {
                 CampSearch[FromObjective->GetCampID()] = 1;
@@ -2478,13 +2478,13 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
                         LinkCampaignObjectives(&path, FromObjective, ToObjective);
                 }
 
-                /*			FromObjective = GetNextObjective(&oit);*/
+                /* FromObjective = GetNextObjective(&oit);*/
                 // Still handle window messages while we loop
                 if (GetMessage(&msg, NULL, 0, 0))
                     DispatchMessage(&msg);    // Dispatch message to window.
             }
 
-            //				CampLeaveCriticalSection();
+            // CampLeaveCriticalSection();
             LinkTool = FALSE;
         }
         break;
@@ -2503,12 +2503,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_OUTPUTREINFORCEMENTS:
         {
-            GridIndex		x, y;
-            FILE			*fp;
+            GridIndex x, y;
+            FILE *fp;
             Unit unit;
             Unit brigade;
             Objective obj;
-            char	buffer[60], domain[8], type[12], div[5], brig[5], vehicle[20], objective[40];
+            char buffer[60], domain[8], type[12], div[5], brig[5], vehicle[20], objective[40];
 
             CampEnterCriticalSection();
             fp = OpenCampFile("Reinloc", "txt", "w");
@@ -2596,12 +2596,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_OUTPUTUNITLOCATIONS:
         {
-            GridIndex		x, y;
-            FILE			*fp;
+            GridIndex x, y;
+            FILE *fp;
             Unit unit;
             Unit brigade;
             Objective obj;
-            char	buffer[60], domain[8], type[12], div[5], brig[5], vehicle[20], objective[40];
+            char buffer[60], domain[8], type[12], div[5], brig[5], vehicle[20], objective[40];
 
             CampEnterCriticalSection();
             fp = OpenCampFile("Unitloc", "txt", "w");
@@ -2689,12 +2689,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_OUTPUTOBJLOCATIONS:
         {
-            uchar			*objmap, type;
-            GridIndex		x, y;
-            FILE			*fp;
-            ObjClassDataType*		oc;
-            char			*file;
-            char			buffer[60];
+            uchar *objmap, type;
+            GridIndex x, y;
+            FILE *fp;
+            ObjClassDataType* oc;
+            char *file;
+            char buffer[60];
 
             InitConverter(TheCampaign.TheaterName);
 
@@ -2717,7 +2717,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
             // Collect data and print text file
             while (type <= NumObjectiveTypes)
             {
-                VuListIterator	oit(AllObjList);
+                VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
                 while (FromObjective != NULL)
@@ -2761,12 +2761,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_AUTOSETSAMARTSITES:
         {
-            GridIndex		x, y;
-            float			rel;
+            GridIndex x, y;
+            float rel;
 
             CampEnterCriticalSection();
             {
-                VuListIterator	oit(AllObjList);
+                VuListIterator oit(AllObjList);
                 FromObjective = GetFirstObjective(&oit);
 
                 while (FromObjective)
@@ -2832,11 +2832,11 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_PREORDERSAMARTILLERY:
         {
-            Unit			u;
-            GridIndex		x, y;
-            Objective		o;
-            int				role;
-            VuListIterator	uit(AllUnitList);
+            Unit u;
+            GridIndex x, y;
+            Objective o;
+            int role;
+            VuListIterator uit(AllUnitList);
             u = (Unit) uit.GetFirst();
 
             while (u)
@@ -2862,15 +2862,15 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_CALCULATERADARARCS:
         {
-            Objective		o;
-            float			ox, oy, oz, x, y, r;
-            float			angle, ratio, max_ratio;
-            mlTrig			sincos;
-            int				arc;
+            Objective o;
+            float ox, oy, oz, x, y, r;
+            float angle, ratio, max_ratio;
+            mlTrig sincos;
+            int arc;
 
             CampEnterCriticalSection();
             {
-                VuListIterator	oit(AllObjList);
+                VuListIterator oit(AllObjList);
                 o = GetFirstObjective(&oit);
 
                 while (o)
@@ -2928,9 +2928,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_TOOLS_GENERATEPAKMAP:
         {
-            uchar	*data = NULL;
-            ulong	size;
-            FILE	*fp;
+            uchar *data = NULL;
+            ulong size;
+            FILE *fp;
 
             size = sizeof(uchar) * (Map_Max_X / 4) * (Map_Max_Y / 4);
             RebuildObjectiveLists();
@@ -2979,9 +2979,9 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
 LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    LRESULT		retval = 0;
-    static 	int shifted;
-    HBITMAP		OldMap;
+    LRESULT retval = 0;
+    static  int shifted;
+    HBITMAP OldMap;
 
     switch (message)
     {
@@ -3021,8 +3021,8 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_HSCROLL:
         {
-            WORD		nPos, nScrollCode;
-            RECT		r;
+            WORD nPos, nScrollCode;
+            RECT r;
 
             nScrollCode = (int) LOWORD(wParam);  // scroll bar value
             nPos = (short int) HIWORD(wParam);   // scroll box position
@@ -3075,7 +3075,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                 MainMapData->CenY = CenY;
                 GetClientRect(hMainWnd, &r);
                 InvalidateRect(hMainWnd, &r, FALSE);
-                //			  		SetScrollPos(hMainWnd, SB_HORZ, nPos, TRUE);
+                //    SetScrollPos(hMainWnd, SB_HORZ, nPos, TRUE);
             }
 
             break;
@@ -3083,8 +3083,8 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_VSCROLL:
         {
-            WORD		nPos, nScrollCode;
-            RECT		r;
+            WORD nPos, nScrollCode;
+            RECT r;
 
             nScrollCode = (int) LOWORD(wParam);  // scroll bar value
             nPos = (short int) HIWORD(wParam);   // scroll box position
@@ -3144,37 +3144,37 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_MOUSEMOVE:
         {
-            WORD		fwKeys, xPos, yPos, xn, yn;
-            static int	coffx = 0, coffy = 0;
-            POINT		pt;
-            RECT		r;
+            WORD fwKeys, xPos, yPos, xn, yn;
+            static int coffx = 0, coffy = 0;
+            POINT pt;
+            RECT r;
 
-            fwKeys = wParam;        		// key flags
+            fwKeys = wParam;         // key flags
             /*
-            			if (fwKeys == MK_LBUTTON && Drawing)
-            				{
-            				xPos = LOWORD(lParam);
-            				yPos = HIWORD(lParam);
-            				ChangeCell((GridIndex)((xPos+PFX)/CellSize),(GridIndex)((PLY-yPos)/CellSize));
-            				}
+             if (fwKeys == MK_LBUTTON && Drawing)
+             {
+             xPos = LOWORD(lParam);
+             yPos = HIWORD(lParam);
+             ChangeCell((GridIndex)((xPos+PFX)/CellSize),(GridIndex)((PLY-yPos)/CellSize));
+             }
             */
-            GetCursorPos(&pt);				// Get the real mouse position
-            pt.x += coffx;						// Add old offset
+            GetCursorPos(&pt); // Get the real mouse position
+            pt.x += coffx; // Add old offset
             pt.y += coffy;
-            xPos = (WORD)(pt.x - MainMapData->WULX - MainMapData->CULX);		// Get position relative to client area
+            xPos = (WORD)(pt.x - MainMapData->WULX - MainMapData->CULX); // Get position relative to client area
             yPos = (WORD)(pt.y - MainMapData->WULY - MainMapData->CULY);
-            CurX = (WORD)(xPos + MainMapData->PFX) / MainMapData->CellSize;	// Get grid location in Campaign terms
+            CurX = (WORD)(xPos + MainMapData->PFX) / MainMapData->CellSize; // Get grid location in Campaign terms
             CurY = (MainMapData->PLY - 1 - yPos) / MainMapData->CellSize;
 
             if (fwKeys == MK_LBUTTON && Drawing)
                 ChangeCell(CurX, CurY);
 
-            coffx = xPos % CellSize;			// Find our offset, if any
+            coffx = xPos % CellSize; // Find our offset, if any
             coffy = yPos % CellSize;
-            xn = (WORD) pt.x - coffx;					// Find new grid location to snap to.
+            xn = (WORD) pt.x - coffx; // Find new grid location to snap to.
             yn = (WORD) pt.y - coffy;
             SetCursor(hCur);
-            SetCursorPos(xn, yn);				// Snap to the grid
+            SetCursorPos(xn, yn); // Snap to the grid
             retval = 0;
 
             OneObjective = GetObjectiveByXY(CurX, CurY);
@@ -3186,36 +3186,36 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             else if (ShowReal == 2)
             {
                 OneUnit = FindUnitByXY(InactiveList, CurX, CurY, 0);
-                /*				if (OneUnit && !OneUnit->Real())
-                					{
-                					int				foundone=0;
-                					GridIndex		x,y;
-                					Unit			e;
-                					VuListIterator	myit(InactiveList);
+                /* if (OneUnit && !OneUnit->Real())
+                 {
+                 int foundone=0;
+                 GridIndex x,y;
+                 Unit e;
+                 VuListIterator myit(InactiveList);
 
-                					// Next unit in stack.
-                					e = (Unit) myit.GetFirst();
-                					while (e && e != OneUnit)
-                						e = GetNextUnit(&myit);					// Get to current location in list
-                					// e should be OneUnit or be null here
-                					if (e)
-                						{
-                						e = GetNextUnit(&myit);
-                						while (e && !foundone)
-                							{
-                							e->GetLocation(&x,&y);
-                							if (x==CurX && y==CurY && e != OneUnit)
-                								foundone = 1;
-                							else
-                								e = GetNextUnit(&myit);
-                							}
-                						}
-                					OneUnit = e;
-                					}
+                 // Next unit in stack.
+                 e = (Unit) myit.GetFirst();
+                 while (e && e != OneUnit)
+                 e = GetNextUnit(&myit); // Get to current location in list
+                 // e should be OneUnit or be null here
+                 if (e)
+                 {
+                 e = GetNextUnit(&myit);
+                 while (e && !foundone)
+                 {
+                 e->GetLocation(&x,&y);
+                 if (x==CurX && y==CurY && e != OneUnit)
+                 foundone = 1;
+                 else
+                 e = GetNextUnit(&myit);
+                 }
+                 }
+                 OneUnit = e;
+                 }
                 */
             }
             else
-                OneUnit = NULL;		// Can't edit divisions
+                OneUnit = NULL; // Can't edit divisions
 
             // Post a message to Toolbar window to redraw (And show new x,y pos)
             if (hToolWnd)
@@ -3273,12 +3273,12 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_SIZE:
         {
-            WORD	nWidth, nHeight;
-            int		trunc, resize = 0;
-            RECT	r;
+            WORD nWidth, nHeight;
+            int trunc, resize = 0;
+            RECT r;
 
-            nWidth = LOWORD(lParam);  	// width of client area
-            nHeight = HIWORD(lParam); 	// height of client area
+            nWidth = LOWORD(lParam);   // width of client area
+            nHeight = HIWORD(lParam);  // height of client area
             ReBlt = TRUE;
             GetClientRect(hMainWnd, &r);
 
@@ -3305,8 +3305,8 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
             if (resize)
             {
                 // Note: This should work, but currently doesnt. MSVC++ bug?
-                //					AdjustWindowRect(&r,	WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
-                AdjustWindowRect(&r,	WS_OVERLAPPEDWINDOW, TRUE);
+                // AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+                AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW, TRUE);
                 r.right += GetSystemMetrics(SM_CXVSCROLL);
                 r.bottom += GetSystemMetrics(SM_CYHSCROLL);
                 SetWindowPos(hMainWnd, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER);
@@ -3339,14 +3339,14 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_LBUTTONDOWN:
         {
-            WORD 	fwKeys = wParam;
+            WORD  fwKeys = wParam;
 
-            //			if (fwKeys=MK_SHIFT)
-            //				;
+            // if (fwKeys=MK_SHIFT)
+            // ;
             if (MainMapData->ShowWPs && WPUnit)
             {
-                WayPoint		w;
-                GridIndex	x, y;
+                WayPoint w;
+                GridIndex x, y;
 
                 w = WPUnit->GetFirstUnitWP();
 
@@ -3384,7 +3384,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
             if (WPDrag)
             {
-                WayPoint		w;
+                WayPoint w;
                 GlobWP->SetWPLocation(CurX, CurY);
                 w = WPUnit->GetFirstUnitWP();
                 SetWPTimes(w, w->GetWPArrivalTime(), WPUnit->GetCruiseSpeed(), 0);
@@ -3455,9 +3455,9 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_PAINT:
         {
-            RECT 		r;
+            RECT  r;
             PAINTSTRUCT ps;
-            HDC			DC;
+            HDC DC;
 
             if (GetUpdateRect(hMainWnd, &r, FALSE))
             {
@@ -3499,14 +3499,14 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
     return retval;
 }
 
-//	====================================
+// ====================================
 // Keyboard Command dispatch function
-//	====================================
+// ====================================
 
 void ProcessCommand(int Key)
 {
     GridIndex   X, Y, x, y;
-    int			i;
+    int i;
 
     X = (GridIndex) CurX;
     Y = (GridIndex) CurY;
@@ -3547,8 +3547,8 @@ void ProcessCommand(int Key)
             TheCampaign.MakeCampMap(MAP_SAMCOVERAGE);
             TheCampaign.MakeCampMap(MAP_RADARCOVERAGE);
             TheCampaign.MakeCampMap(MAP_OWNERSHIP);
-            //			RecalculateBrigadePositions();
-            //			SetRefresh(MainMapData);
+            // RecalculateBrigadePositions();
+            // SetRefresh(MainMapData);
             break;
 
         case 'c':
@@ -3627,10 +3627,10 @@ void ProcessCommand(int Key)
 
         case 'H':
 
-            //			if (MainMapData->SAMs == 1)
-            //				MainMapData->SAMs = 2;
-            //			else if (MainMapData->SAMs == 2)
-            //				MainMapData->SAMs = 1;
+            // if (MainMapData->SAMs == 1)
+            // MainMapData->SAMs = 2;
+            // else if (MainMapData->SAMs == 2)
+            // MainMapData->SAMs = 1;
             if (Mode == 10)
                 Mode = 11;
             else if (Mode == 11)
@@ -3653,10 +3653,10 @@ void ProcessCommand(int Key)
 
                     ShowLinkCosts(FromObjective, ToObjective);
 
-                    //					CampEnterCriticalSection();
+                    // CampEnterCriticalSection();
                     if (!UnLinkCampaignObjectives(FromObjective, ToObjective))
                     {
-                        PathClass	path;
+                        PathClass path;
                         i = LinkCampaignObjectives(&path, FromObjective, ToObjective);
 
                         if (i < 1)
@@ -3664,10 +3664,10 @@ void ProcessCommand(int Key)
 
                         if (MainMapData->ShowLinks && i > 0)
                         {
-                            RECT		r;
+                            RECT r;
                             PAINTSTRUCT ps;
-                            HDC			DC;
-                            MapData		md = MainMapData;
+                            HDC DC;
+                            MapData md = MainMapData;
 
                             GetClientRect(hMainWnd, &r);
                             InvalidateRect(hMainWnd, &r, FALSE);
@@ -3693,7 +3693,7 @@ void ProcessCommand(int Key)
 
                     ShowLinkCosts(FromObjective, ToObjective);
 
-                    //					CampLeaveCriticalSection();
+                    // CampLeaveCriticalSection();
                     Linking = FALSE;
                     Saved = FALSE;
                 }
@@ -3757,7 +3757,7 @@ void ProcessCommand(int Key)
             }
             else
             {
-                PathClass	path;
+                PathClass path;
 
                 CampEnterCriticalSection();
                 maxSearch = GROUND_PATH_MAX;
@@ -3781,7 +3781,7 @@ void ProcessCommand(int Key)
             }
             else
             {
-                PathClass	path;
+                PathClass path;
 
                 if (OneObjective)
                 {
@@ -3793,11 +3793,11 @@ void ProcessCommand(int Key)
                 }
             }
 
-            /*			if (ShowPaths)
-            				ShowPaths = 0;
-            			else
-            				ShowPaths = 1;
-            			SetRefresh(MainMapData);
+            /* if (ShowPaths)
+             ShowPaths = 0;
+             else
+             ShowPaths = 1;
+             SetRefresh(MainMapData);
             */
             break;
 
@@ -3829,9 +3829,9 @@ void ProcessCommand(int Key)
 
         case 'T':
             //if (gameCompressionRatio < 1)
-            //	SetTimeCompression (1);
+            // SetTimeCompression (1);
             //else
-            //	SetTimeCompression *2; /*(gameCompressionRatio * 2);*/
+            // SetTimeCompression *2; /*(gameCompressionRatio * 2);*/
             break;
 
         case 'u':
@@ -3844,27 +3844,27 @@ void ProcessCommand(int Key)
                 StartUnitEdit();
                 /*
                 if (ShowReal == 1)
-                	OneUnit = FindUnitByXY(AllRealList,X,Y,0);
+                 OneUnit = FindUnitByXY(AllRealList,X,Y,0);
                 else if (ShowReal == 0)
-                	OneUnit = FindUnitByXY(AllParentList,X,Y,0);
+                 OneUnit = FindUnitByXY(AllParentList,X,Y,0);
                 else if (ShowReal == 2)
-                	OneUnit = FindUnitByXY(InactiveList,X,Y,0);
+                 OneUnit = FindUnitByXY(InactiveList,X,Y,0);
                 else
-                	OneUnit = NULL;		// Can't edit divisions
+                 OneUnit = NULL; // Can't edit divisions
                 if (OneUnit)
-                	GlobUnit = OneUnit;
+                 GlobUnit = OneUnit;
                 else
-                	GlobUnit = NULL;
+                 GlobUnit = NULL;
 
                 if (GlobUnit)
-                	DialogBox(hInst,MAKEINTRESOURCE(IDD_UNITDIALOG1),hMainWnd,(DLGPROC)EditUnit);
+                 DialogBox(hInst,MAKEINTRESOURCE(IDD_UNITDIALOG1),hMainWnd,(DLGPROC)EditUnit);
                 if (MainMapData->ShowWPs)
-                	SetRefresh(MainMapData);
+                 SetRefresh(MainMapData);
                 else
-                	{
-                	InvalidateRect(MainMapData->hMapWnd,NULL,FALSE);
-                	PostMessage(MainMapData->hMapWnd,WM_PAINT,(WPARAM)hMainDC,0);
-                	}*/
+                 {
+                 InvalidateRect(MainMapData->hMapWnd,NULL,FALSE);
+                 PostMessage(MainMapData->hMapWnd,WM_PAINT,(WPARAM)hMainDC,0);
+                 }*/
             }
 
             break;
@@ -3891,8 +3891,8 @@ void ProcessCommand(int Key)
         case 'w':
             if (WPUnit)
             {
-                WayPoint	w;
-                int			gotone = 0;
+                WayPoint w;
+                int gotone = 0;
 
                 w = WPUnit->GetFirstUnitWP();
 
@@ -3916,7 +3916,7 @@ void ProcessCommand(int Key)
 
                     if (!w)
                     {
-                        //						WPUnit->AddCurrentWP (X,Y,0,0,0.0F,0,WP_NOTHING);
+                        // WPUnit->AddCurrentWP (X,Y,0,0,0.0F,0,WP_NOTHING);
                         w = WPUnit->GetFirstUnitWP();
                         SetWPTimes(w, w->GetWPArrivalTime(), WPUnit->GetCruiseSpeed(), 0);
                     }
@@ -3925,7 +3925,7 @@ void ProcessCommand(int Key)
                         while (w->GetNextWP())
                             w = w->GetNextWP();
 
-                        //						GlobWP = WPUnit->AddWPAfter(w,X,Y,0,0,0.0F,0,WP_NOTHING);
+                        // GlobWP = WPUnit->AddWPAfter(w,X,Y,0,0,0.0F,0,WP_NOTHING);
                         w = WPUnit->GetFirstUnitWP();
                         SetWPTimes(w, w->GetWPArrivalTime(), WPUnit->GetCruiseSpeed());
                         DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
@@ -4057,8 +4057,8 @@ void ProcessCommand(int Key)
 \*************************************************************************/
 void CampMain(HINSTANCE hInstance, int nCmdShow)
 {
-    RECT				rect;
-    WNDCLASS 		mainwc;
+    RECT rect;
+    WNDCLASS  mainwc;
 
     CenX = CenY = Map_Max_X / 2;
     CellSize = 4;
@@ -4092,17 +4092,17 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
     rect.right = 320;
     rect.bottom = 256;
     // Note: This should work, but currently doesnt. MSVC++ bug?
-    //	AdjustWindowRect(&rect,	WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
-    AdjustWindowRect(&rect,	WS_OVERLAPPEDWINDOW, TRUE);
+    // AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, TRUE);
+    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
     rect.right += GetSystemMetrics(SM_CXVSCROLL);
     rect.bottom += GetSystemMetrics(SM_CYHSCROLL);
     hMainWnd = CreateWindow("CampTool",
                             "Campaign Tool",
                             WS_OVERLAPPEDWINDOW |  WS_HSCROLL | WS_VSCROLL, // | WS_MAXIMIZE,
-                            CW_USEDEFAULT,				//	 WS_CLIPCHILDREN |
+                            CW_USEDEFAULT, //  WS_CLIPCHILDREN |
                             CW_USEDEFAULT,
-                            rect.right - rect.left,	/* init. x size */
-                            rect.bottom - rect.top,	/* init. y size */
+                            rect.right - rect.left, /* init. x size */
+                            rect.bottom - rect.top, /* init. y size */
                             NULL,
                             NULL,
                             hInstance,
@@ -4117,7 +4117,7 @@ void CampMain(HINSTANCE hInstance, int nCmdShow)
 
 void CampaignWindow(HINSTANCE hInstance, int nCmdShow)
 {
-    WNDCLASS 		toolwc;
+    WNDCLASS  toolwc;
 
     // Set up the time/location window
     toolwc.style = CS_HREDRAW | CS_VREDRAW;

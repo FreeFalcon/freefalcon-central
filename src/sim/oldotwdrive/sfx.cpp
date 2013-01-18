@@ -1,9 +1,9 @@
 /*
 ** Name: SFX.CPP
 ** Description:
-**		Special Effects Class functions
+** Special Effects Class functions
 ** History:
-**		23-jul-97 (edg)  We go traipsing in....
+** 23-jul-97 (edg)  We go traipsing in....
 */
 #include "Graphics\Include\Rviewpnt.h"
 #include "Graphics\Include\drawsgmt.h"
@@ -32,14 +32,14 @@
 #include "entity.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	SfxClass::pool;
+MEM_POOL SfxClass::pool;
 #endif
 
 // a distance to use (ft) for further improving LOD on some effects
-#define SFX_LOD_DIST		( 50000.0f )
+#define SFX_LOD_DIST ( 50000.0f )
 
-#define	TRACER_VELOCITY		4000.0f
-#define MAX_TIME_TO_LIVE	( 0.8f * TRACER_VELOCITY/( GRAVITY * 0.5f ) )
+#define TRACER_VELOCITY 4000.0f
+#define MAX_TIME_TO_LIVE ( 0.8f * TRACER_VELOCITY/( GRAVITY * 0.5f ) )
 
 void CalcTransformMatrix(SimBaseClass* theObject);
 
@@ -70,24 +70,24 @@ int gSfxCount[ SFX_NUM_TYPES ] = {0};
 int gSfxHighWater[ SFX_NUM_TYPES ] = {0};
 
 // define for how often to check view distance (secs)
-#define VIEW_DIST_INTERVAL		( 0.5f )
+#define VIEW_DIST_INTERVAL ( 0.5f )
 
 // just testing some stuff for oriented billboards
 // (i.e. clouds)
 /*
 Tpoint cverts[4] =
 {
-	{ 0.0f, -250.0f, -120.0f },
-	{ 0.0f,  250.0f, -120.0f },
-	{ 0.0f,  250.0f,  120.0f },
-	{ 0.0f, -250.0f,  120.0f },
+ { 0.0f, -250.0f, -120.0f },
+ { 0.0f,  250.0f, -120.0f },
+ { 0.0f,  250.0f,  120.0f },
+ { 0.0f, -250.0f,  120.0f },
 };
 Tpoint cuvs[4] =
 {
-	{  0.15f, 	0.07f,	 0.0f },
-	{  0.73f, 	0.07f,	 0.0f },
-	{  0.73f, 	0.95f,	 0.0f },
-	{  0.15f, 	0.95f,	 0.0f },
+ {  0.15f,  0.07f,  0.0f },
+ {  0.73f,  0.07f,  0.0f },
+ {  0.73f,  0.95f,  0.0f },
+ {  0.15f,  0.95f,  0.0f },
 };
 */
 
@@ -114,10 +114,10 @@ Tpoint gWaterVerts[4] =
 };
 Tpoint gFireUvs[4] =
 {
-    {  0.0f, 	0.0f,	 0.0f },
-    {  1.0f, 	0.0f,	 0.0f },
-    {  1.0f, 	1.0f,	 0.0f },
-    {  0.0f, 	1.0f,	 0.0f },
+    {  0.0f,  0.0f,  0.0f },
+    {  1.0f,  0.0f,  0.0f },
+    {  1.0f,  1.0f,  0.0f },
+    {  0.0f,  1.0f,  0.0f },
 };
 Tpoint gShockVerts[4] =
 {
@@ -138,7 +138,7 @@ int AddParticleEffect(int SfxId, Tpoint *pos, Tpoint *vec)
             vec = &z;
         }
 
-        OTWDriver.AddSfxRequest(new SfxClass(SfxId, pos,	vec,	1,	1));
+        OTWDriver.AddSfxRequest(new SfxClass(SfxId, pos, vec, 1, 1));
         return 1;
     }
 
@@ -223,7 +223,7 @@ SfxClass::SfxClass(DrawableParticleSys *drawPartSys)
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -231,7 +231,7 @@ SfxClass::SfxClass(DrawableParticleSys *drawPartSys)
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 }
@@ -239,12 +239,12 @@ SfxClass::SfxClass(DrawableParticleSys *drawPartSys)
 /*
 ** Name: SfxClass Constructors
 ** Description:
-**		creates an effect of the appropriate type
+** creates an effect of the appropriate type
 **
 */
 
 /*
-**		Message Timer
+** Message Timer
 */
 SfxClass::SfxClass(FalconMissileEndMessage *endM,
                    FalconDamageMessage *damM)
@@ -284,7 +284,7 @@ SfxClass::SfxClass(FalconMissileEndMessage *endM,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -292,16 +292,16 @@ SfxClass::SfxClass(FalconMissileEndMessage *endM,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 
 }
 
 /*
-**		NonMoving.
+** NonMoving.
 */
-SfxClass::SfxClass(int 	typeSfx,
+SfxClass::SfxClass(int  typeSfx,
                    Tpoint *posSfx,
                    float timeToLiveSfx,
                    float scaleSfx)
@@ -791,8 +791,8 @@ SfxClass::SfxClass(int 	typeSfx,
             // be a kind of NULL effect in ACMI
             break;
 
-            //		case SFX_PILOT_SPLAT:
-            //    		obj2d = new Drawable2D( DRAW2D_GROUND_STRIKE, scale, &pos, 4, gFireVerts, gFireUvs );
+            // case SFX_PILOT_SPLAT:
+            //     obj2d = new Drawable2D( DRAW2D_GROUND_STRIKE, scale, &pos, 4, gFireVerts, gFireUvs );
         default:
             // VP_changes This should be checked and modified, frequently stops here, yeah. Oct 7, 2002
             ShiWarning("Bad SFX Type");
@@ -807,7 +807,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -815,7 +815,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 
@@ -899,7 +899,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -907,7 +907,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 }
 
@@ -1006,7 +1006,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -1014,13 +1014,13 @@ SfxClass::SfxClass(int typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 }
 
 
 /*
-**		Move an existing BSP object
+** Move an existing BSP object
 */
 SfxClass::SfxClass(int typeSfx,
                    Tpoint *posSfx,
@@ -1088,7 +1088,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -1096,12 +1096,12 @@ SfxClass::SfxClass(int typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 }
 
 /*
-**		Just a timer for when to delete the object
+** Just a timer for when to delete the object
 */
 SfxClass::SfxClass(float timeToLiveSfx,
                    DrawableTrail *trail)
@@ -1135,7 +1135,7 @@ SfxClass::SfxClass(float timeToLiveSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -1143,7 +1143,7 @@ SfxClass::SfxClass(float timeToLiveSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 }
@@ -1151,7 +1151,7 @@ SfxClass::SfxClass(float timeToLiveSfx,
 /*
 ** Moving(or not) object with rotation
 */
-SfxClass::SfxClass(int 	typeSfx,
+SfxClass::SfxClass(int  typeSfx,
                    int  flagsSfx,
                    Tpoint *posSfx,
                    Trotation *rotSfx,
@@ -1288,8 +1288,8 @@ SfxClass::SfxClass(int 	typeSfx,
 
             /*
             case SFX_MISSILE_LAUNCH:
-            	objBSP = new DrawableBSP( VIS_MISS_LAUN, &pos, &rot, scale );
-            	break;
+             objBSP = new DrawableBSP( VIS_MISS_LAUN, &pos, &rot, scale );
+             break;
             */
         case SFX_DUST1:
             objBSP = new DrawableBSP(MapVisId(VIS_DUST1), &pos, &rot, scale);
@@ -1310,7 +1310,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -1318,14 +1318,14 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 }
 
 /*
 ** Moving object
 */
-SfxClass::SfxClass(int 	typeSfx,
+SfxClass::SfxClass(int  typeSfx,
                    int  flagsSfx,
                    Tpoint *posSfx,
                    Tpoint *vecSfx,
@@ -1541,15 +1541,15 @@ SfxClass::SfxClass(int 	typeSfx,
 
             /*
             if ( gTotSfx >= gSfxLODTotCutoff ||
-            	 gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff )
+              gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff )
             {
-            	objTrail = new DrawableTrail(TRAIL_SMOKE);
-            	objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+             objTrail = new DrawableTrail(TRAIL_SMOKE);
+             objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
             }
             else
             {
-            	secondaryInterval = 1.0f * (1.0f-gSfxLOD) + 0.1f;
-            	secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
+             secondaryInterval = 1.0f * (1.0f-gSfxLOD) + 0.1f;
+             secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
             }
             */
             break;
@@ -1582,16 +1582,16 @@ SfxClass::SfxClass(int 	typeSfx,
 
             /*
             if ( gTotSfx >= gSfxLODTotCutoff ||
-            	 gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff ||
-            	 gSfxCount[ SFX_FIRE_EXPAND_NOSMOKE ] > gSfxLODCutoff )
+              gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff ||
+              gSfxCount[ SFX_FIRE_EXPAND_NOSMOKE ] > gSfxLODCutoff )
             {
-            	objTrail = new DrawableTrail(TRAIL_FIRE1);
-            	objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+             objTrail = new DrawableTrail(TRAIL_FIRE1);
+             objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
             }
             else
             {
-            	secondaryInterval = 1.0f * (1.0f-gSfxLOD) + 0.1f;
-            	secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
+             secondaryInterval = 1.0f * (1.0f-gSfxLOD) + 0.1f;
+             secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
             }
             */
             break;
@@ -1827,7 +1827,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -1835,7 +1835,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 }
@@ -1844,7 +1844,7 @@ SfxClass::SfxClass(int 	typeSfx,
 /*
 ** Moving object
 */
-SfxClass::SfxClass(int 	typeSfx,
+SfxClass::SfxClass(int  typeSfx,
                    int  flagsSfx,
                    SimBaseClass *baseobjSfx,
                    float timeToLiveSfx,
@@ -1993,7 +1993,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -2001,7 +2001,7 @@ SfxClass::SfxClass(int 	typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 }
@@ -2082,7 +2082,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gTotSfx > gTotHighWaterSfx)
     {
         gTotHighWaterSfx = gTotSfx;
-        //		MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
+        // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
     gSfxCount[ type ]++;
@@ -2090,7 +2090,7 @@ SfxClass::SfxClass(int typeSfx,
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
-        //		MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
+        // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
 
 }
@@ -2100,8 +2100,8 @@ SfxClass::SfxClass(int typeSfx,
 /*
 ** Name: SfxClass Destructor
 ** Description:
-**		Cleans up memory associated with sfx and removes objects
-**		from display lists
+** Cleans up memory associated with sfx and removes objects
+** from display lists
 */
 SfxClass::~SfxClass(void)
 {
@@ -2238,8 +2238,8 @@ SfxClass::~SfxClass(void)
 /*
 ** Name: Start
 ** Description:
-**		Starts the effect by adding it to the draw list.
-**		And sets the timetolive
+** Starts the effect by adding it to the draw list.
+** And sets the timetolive
 */
 void
 SfxClass::Start(void)
@@ -2477,19 +2477,19 @@ int SfxClass::RestPiece(float *angle, float rest, float multiplier, float min)
 }
 
 
-#define	F16CRASH_MAXSOUND	5
-#define F16CRASH_BUMPMASK	0x01
-#define F16CRASH_FLOATMASK	0x02
-#define F16CRASH_BOOMMASK	0x04
-#define F16CRASH_DRAGMASK	0x08
-#define F16CRASH_FELLMASK	0x10
+#define F16CRASH_MAXSOUND 5
+#define F16CRASH_BUMPMASK 0x01
+#define F16CRASH_FLOATMASK 0x02
+#define F16CRASH_BOOMMASK 0x04
+#define F16CRASH_DRAGMASK 0x08
+#define F16CRASH_FELLMASK 0x10
 
 void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint *pos = (Tpoint *)0)
 {
     static int timePlaying[F16CRASH_MAXSOUND];
     static int SoundIndex[F16CRASH_MAXSOUND];
     static int DelayTime[F16CRASH_MAXSOUND] = { 100, 1000, 500, 50, 50 };
-    int	i, index;
+    int i, index;
 
     if (flag)
     {
@@ -2507,7 +2507,7 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
             index++;
         }
     }
-    else  		// play sound
+    else   // play sound
     {
         index = 0;
 
@@ -2537,8 +2537,8 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
 /*
 ** Name: Exec
 ** Description:
-**		Executes the effect
-**		Returns FALSE when completed
+** Executes the effect
+** Returns FALSE when completed
 */
 BOOL
 SfxClass::Exec(void)
@@ -2687,9 +2687,9 @@ SfxClass::Exec(void)
             if (vecz < 10.0f) scale -= (10.0f - vecz);
 
             /*
-            			baseObj->SetYPRDelta(baseObj->YawDelta(),
-            								baseObj->PitchDelta(),// * 0.75f,
-            								baseObj->RollDelta());// * 0.75f);
+             baseObj->SetYPRDelta(baseObj->YawDelta(),
+             baseObj->PitchDelta(),// * 0.75f,
+             baseObj->RollDelta());// * 0.75f);
             */
             vec.x *= 0.75f;
             vec.y *= 0.75f;
@@ -2709,10 +2709,10 @@ SfxClass::Exec(void)
 
                 flags |= SFX_F16CRASH_HITGROUND;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_GROUND_STRIKE_NOFIRE,	// type
-                                 &pos,							// world pos
-                                 4.0f,			// time to live
-                                 scale));		// scale
+                    new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
+                                 &pos, // world pos
+                                 4.0f, // time to live
+                                 scale)); // scale
             }
             else
             {
@@ -2728,10 +2728,10 @@ SfxClass::Exec(void)
                     }
 
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SMALL_AIR_EXPLOSION,				// type
-                                     &pos,							// world pos
-                                     2.5f,			// time to live
-                                     scale));		// scale
+                        new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                                     &pos, // world pos
+                                     2.5f, // time to live
+                                     scale)); // scale
                 }
             }
 
@@ -2905,19 +2905,19 @@ SfxClass::Exec(void)
             baseObj->SetDelta(vec.x, vec.y, vec.z);
 
             /*
-            			if (fabs( vec.x ) > 10.0f &&
-            				fabs( vec.y ) > 10.0f &&
-            				fabs( vec.z ) > 10.0f &&
-            				curtime & 8) {
-            					OTWDriver.AddSfxRequest(
-            						new SfxClass(SFX_SMALL_AIR_EXPLOSION,				// type
-            						&pos,							// world pos
-            						1.0f,			// time to live
-            						5.0f) );		// scale
+             if (fabs( vec.x ) > 10.0f &&
+             fabs( vec.y ) > 10.0f &&
+             fabs( vec.z ) > 10.0f &&
+             curtime & 8) {
+             OTWDriver.AddSfxRequest(
+             new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+             &pos, // world pos
+             1.0f, // time to live
+             5.0f) ); // scale
 
-            				CrashSoundMask |= F16CRASH_FLOATMASK;
-            				PlayCrashSound (F16CRASH_FLOATMASK, SFX_IMPACTG6);
-            			}
+             CrashSoundMask |= F16CRASH_FLOATMASK;
+             PlayCrashSound (F16CRASH_FLOATMASK, SFX_IMPACTG6);
+             }
             */
         }
         else
@@ -3077,7 +3077,7 @@ SfxClass::Exec(void)
     pos.y += vec.y * sfxFrameTime;
     pos.z += vec.z * sfxFrameTime;
 
-    if (baseObj)		// for bsp objects
+    if (baseObj) // for bsp objects
     {
         baseObj->SetPosition(pos.x, pos.y, pos.z);
         baseObj->SetDelta(vec.x, vec.y, vec.z);
@@ -3095,8 +3095,8 @@ SfxClass::Exec(void)
 /*
 ** Name: Draw
 ** Description:
-**		Update the position
-**		Returns FALSE when completed
+** Update the position
+** Returns FALSE when completed
 */
 BOOL
 SfxClass::Draw(void)
@@ -3245,8 +3245,8 @@ SfxClass::Draw(void)
 /*
 ** Name: GetApproxViewDist
 ** Description:
-**		This function is periodically called by effects to get the
-**		distance to the viewer position.  Basically does a manhatten dist.
+** This function is periodically called by effects to get the
+** distance to the viewer position.  Basically does a manhatten dist.
 */
 void
 SfxClass::GetApproxViewDist(float currTime)
@@ -3296,8 +3296,8 @@ SfxClass::GetApproxViewDist(float currTime)
 /*
 ** Name: RunSecondarySfx
 ** Description:
-**		Basically a big switch statement by sfx type for running
-**		secondary effects.
+** Basically a big switch statement by sfx type for running
+** secondary effects.
 */
 void
 SfxClass::RunSecondarySfx(void)
@@ -3316,12 +3316,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = -20.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_WATER_CLOUD,			// type
-                             SFX_MOVES,						// flags
-                             &pos,							// world pos
-                             &mvec,							// vector
-                             2.0f,							// time to live
-                             10.5f));		// scale
+                new SfxClass(SFX_WATER_CLOUD, // type
+                             SFX_MOVES, // flags
+                             &pos, // world pos
+                             &mvec, // vector
+                             2.0f, // time to live
+                             10.5f)); // scale
             break;
 
         case SFX_MESSAGE_TIMER:
@@ -3371,20 +3371,20 @@ SfxClass::RunSecondarySfx(void)
 
             if (rand() & 1)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRESMOKE,				// type
+                    new SfxClass(SFX_FIRESMOKE, // type
                                  SFX_MOVES,
-                                 &pos,							// world pos
-                                 &mvec,							// world pos
-                                 2.5f,							// time to live
-                                 scale));		// scale
+                                 &pos, // world pos
+                                 &mvec, // world pos
+                                 2.5f, // time to live
+                                 scale)); // scale
             else
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_STEAM_CLOUD,				// type
+                    new SfxClass(SFX_STEAM_CLOUD, // type
                                  SFX_MOVES,
-                                 &pos,							// world pos
-                                 &mvec,							// world pos
-                                 2.5f,							// time to live
-                                 scale));		// scale
+                                 &pos, // world pos
+                                 &mvec, // world pos
+                                 2.5f, // time to live
+                                 scale)); // scale
 
             break;
 
@@ -3394,12 +3394,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 20.0f * PRANDFloat();
             mvec.z = -80.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_STEAM_CLOUD,				// type
+                new SfxClass(SFX_STEAM_CLOUD, // type
                              SFX_MOVES,
-                             &pos,							// world pos
-                             &mvec,							// world pos
-                             2.5f,							// time to live
-                             scale));		// scale
+                             &pos, // world pos
+                             &mvec, // world pos
+                             2.5f, // time to live
+                             scale)); // scale
             break;
 #endif
 
@@ -3420,12 +3420,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = -20.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_WATER_CLOUD,			// type
-                             SFX_MOVES,						// flags
-                             &pos,							// world pos
-                             &mvec,							// vector
-                             2.0f,							// time to live
-                             10.5f));		// scale
+                new SfxClass(SFX_WATER_CLOUD, // type
+                             SFX_MOVES, // flags
+                             &pos, // world pos
+                             &mvec, // vector
+                             2.0f, // time to live
+                             10.5f)); // scale
 
             if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff ||
                 gTotSfx >= gSfxLODTotCutoff)
@@ -3447,58 +3447,58 @@ SfxClass::RunSecondarySfx(void)
                 mvec.z = vec.z + 40.0f * PRANDFloat();
 
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_GROUNDBURST,		// type
+                    new SfxClass(SFX_GROUNDBURST, // type
                                  SFX_MOVES | SFX_USES_GRAVITY,
-                                 &pos,					// world pos
-                                 &mvec,					// vel vector
-                                 20.0f,					// time to live
-                                 1.5f));				// scale
+                                 &pos, // world pos
+                                 &mvec, // vel vector
+                                 20.0f, // time to live
+                                 1.5f)); // scale
             }
 
             /*
             // 1st time thru we do detonation
             if ( secondaryCount == 1 )
             {
-            	mpos.z = OTWDriver.GetGroundLevel( pos.x, pos.y );
+             mpos.z = OTWDriver.GetGroundLevel( pos.x, pos.y );
 
-            	// approx time to ground impact
-            	rads = (mpos.z - pos.z)/vec.z;
+             // approx time to ground impact
+             rads = (mpos.z - pos.z)/vec.z;
 
-            	for ( i = 0; i < 80; i++ )
-            	{
+             for ( i = 0; i < 80; i++ )
+             {
 
-            		// mvec.x = 1.2f * (mpos.x - pos.x) + 40.0f * PRANDFloat();
-            		// mvec.y = 1.2f * (mpos.y - pos.y) + 40.0f * PRANDFloat();
-            		// mvec.z = 1.2f * (mpos.z - pos.z) - 30.0f * PRANDFloatPos();
-            		mvec.x = vec.x + 70.0f * PRANDFloat();
-            		mvec.y = vec.y + 70.0f * PRANDFloat();
-            		mvec.z = vec.z + 20.0f * PRANDFloat();
+             // mvec.x = 1.2f * (mpos.x - pos.x) + 40.0f * PRANDFloat();
+             // mvec.y = 1.2f * (mpos.y - pos.y) + 40.0f * PRANDFloat();
+             // mvec.z = 1.2f * (mpos.z - pos.z) - 30.0f * PRANDFloatPos();
+             mvec.x = vec.x + 70.0f * PRANDFloat();
+             mvec.y = vec.y + 70.0f * PRANDFloat();
+             mvec.z = vec.z + 20.0f * PRANDFloat();
 
-            		OTWDriver.AddSfxRequest(
-            			new SfxClass( SFX_GROUNDBURST,		// type
-            			SFX_MOVES | SFX_USES_GRAVITY,
-            			&pos,					// world pos
-            			&mvec,					// vel vector
-            			20.0f,					// time to live
-            			2.5f ) );				// scale
-            	}
-            	secondaryTimer = SimLibElapsedTime / SEC_TO_MSEC + rads;
-            	pos.x += vec.x * rads;
-            	pos.y += vec.y * rads;
+             OTWDriver.AddSfxRequest(
+             new SfxClass( SFX_GROUNDBURST, // type
+             SFX_MOVES | SFX_USES_GRAVITY,
+             &pos, // world pos
+             &mvec, // vel vector
+             20.0f, // time to live
+             2.5f ) ); // scale
+             }
+             secondaryTimer = SimLibElapsedTime / SEC_TO_MSEC + rads;
+             pos.x += vec.x * rads;
+             pos.y += vec.y * rads;
             }
             // 2nd time thru, run the ground bursts
             else
             {
-            	mpos = pos;
-            	mvec.x = vec.x * 2.0f;
-            	mvec.y = vec.y * 2.0f;
-            	mvec.z = 0.0f;
-            	OTWDriver.AddSfxRequest(
-            		new SfxClass( SFX_GROUNDBURST,		// type
-            		&mpos,					// world pos
-            		&mvec,					// vel vector
-            		8,						// time to live
-            		0.3f ) );				// scale
+             mpos = pos;
+             mvec.x = vec.x * 2.0f;
+             mvec.y = vec.y * 2.0f;
+             mvec.z = 0.0f;
+             OTWDriver.AddSfxRequest(
+             new SfxClass( SFX_GROUNDBURST, // type
+             &mpos, // world pos
+             &mvec, // vel vector
+             8, // time to live
+             0.3f ) ); // scale
             }
             */
             break;
@@ -3522,12 +3522,12 @@ SfxClass::RunSecondarySfx(void)
             mpos.z = pos.z + PRANDFloat() * scale;
 
             OTWDriver.AddSfxRequest(
-            				new SfxClass( SFX_EXPLSTAR_GLOW,				// type
-            				SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY,						// flags
-            				&mpos,							// world pos
-            				&mvec,							// vector
-            				1.3f,							// time to live
-            				scale * 0.08f ) );							// scale
+             new SfxClass( SFX_EXPLSTAR_GLOW, // type
+             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+             &mpos, // world pos
+             &mvec, // vector
+             1.3f, // time to live
+             scale * 0.08f ) ); // scale
             */
 
             mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
@@ -3539,12 +3539,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = (mpos.z - pos.z) * 3.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SPARK_TRACER,				// type
-                             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY,						// flags
-                             &mpos,							// world pos
-                             &mvec,							// vector
-                             1.3f,							// time to live
-                             scale));							// scale
+                new SfxClass(SFX_SPARK_TRACER, // type
+                             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+                             &mpos, // world pos
+                             &mvec, // vector
+                             1.3f, // time to live
+                             scale)); // scale
 
             mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
             mpos.y = pos.y + PRANDFloat() * scale * 0.3f;
@@ -3555,12 +3555,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = (mpos.z - pos.z) * 3.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SPARK_TRACER,				// type
-                             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY,						// flags
-                             &mpos,							// world pos
-                             &mvec,							// vector
-                             1.3f,							// time to live
-                             scale));							// scale
+                new SfxClass(SFX_SPARK_TRACER, // type
+                             SFX_MOVES | SFX_BOUNCES | SFX_USES_GRAVITY, // flags
+                             &mpos, // world pos
+                             &mvec, // vector
+                             1.3f, // time to live
+                             scale)); // scale
             break;
 
         case SFX_BILLOWING_SMOKE:
@@ -3581,22 +3581,22 @@ SfxClass::RunSecondarySfx(void)
             if (rand() & 1)
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRESMOKE,				// type
-                                 SFX_MOVES,						// flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 3.5f,							// time to live
-                                 34.5f));							// scale
+                    new SfxClass(SFX_FIRESMOKE, // type
+                                 SFX_MOVES, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 3.5f, // time to live
+                                 34.5f)); // scale
             }
             else
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_TRAILSMOKE,				// type
-                                 SFX_MOVES,						// flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 3.5f,							// time to live
-                                 34.5f));							// scale
+                    new SfxClass(SFX_TRAILSMOKE, // type
+                                 SFX_MOVES, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 3.5f, // time to live
+                                 34.5f)); // scale
             }
 
             break;
@@ -3620,12 +3620,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.x *= 0.5f;
                 mvec.y *= 0.5f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE2,		// type
-                                 SFX_NO_GROUND_CHECK | SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,						// flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 3.5f,							// time to live
-                                 scale * 0.4f));							// scale
+                    new SfxClass(SFX_FIRE2, // type
+                                 SFX_NO_GROUND_CHECK | SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 3.5f, // time to live
+                                 scale * 0.4f)); // scale
 
             }
             else
@@ -3637,12 +3637,12 @@ SfxClass::RunSecondarySfx(void)
                     break;
 
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRESMOKE,				// type
-                                 SFX_MOVES,				 // flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 3.5f,							// time to live
-                                 scale));							// scale
+                    new SfxClass(SFX_FIRESMOKE, // type
+                                 SFX_MOVES,  // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 3.5f, // time to live
+                                 scale)); // scale
 
                 if (gSfxCount[ SFX_FIRE2 ] > gSfxLODCutoff / 2 ||
                     gTotSfx >= gSfxLODTotCutoff / 2)
@@ -3652,12 +3652,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y *= 0.5f;
                 mpos.z = pos.z - scale * 0.15f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE2,		// type
-                                 SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,						// flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 3.5f,							// time to live
-                                 scale * 0.4f));							// scale
+                    new SfxClass(SFX_FIRE2, // type
+                                 SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 3.5f, // time to live
+                                 scale * 0.4f)); // scale
             }
 
 
@@ -3669,10 +3669,10 @@ SfxClass::RunSecondarySfx(void)
             mpos.z += 15.0f;
             // mpos.z -= 15.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FIRE1,				// type
-                             &mpos,							// world pos
-                             0.2f,			// time to live
-                             30.0f));		// scale
+                new SfxClass(SFX_FIRE1, // type
+                             &mpos, // world pos
+                             0.2f, // time to live
+                             30.0f)); // scale
             break;
 
         case SFX_BURNING_PART:
@@ -3683,10 +3683,10 @@ SfxClass::RunSecondarySfx(void)
             // NOTE: we have to subtract out SimLibElapsedTime because it's
             // already been added to timeToLive
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FIRE,				// type
-                             &mpos,							// world pos
-                             timeToLive - SimLibElapsedTime / SEC_TO_MSEC,			// time to live
-                             40.0f));		// scale
+                new SfxClass(SFX_FIRE, // type
+                             &mpos, // world pos
+                             timeToLive - SimLibElapsedTime / SEC_TO_MSEC, // time to live
+                             40.0f)); // scale
             break;
 
         case SFX_FIREBALL:
@@ -3695,10 +3695,10 @@ SfxClass::RunSecondarySfx(void)
             if (mpos.x > 0.90f)
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE_HOT,				// type
-                                 &pos,							// world pos
-                                 0.4f,			// time to live
-                                 scale * 0.4f));		// scale
+                    new SfxClass(SFX_FIRE_HOT, // type
+                                 &pos, // world pos
+                                 0.4f, // time to live
+                                 scale * 0.4f)); // scale
             }
             else if (mpos.x > 0.85f)
             {
@@ -3708,20 +3708,20 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = PRANDFloat() * 25.0f;
                     mvec.z = -5.0f;
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE2,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     scale * 0.2f));		// scale
+                        new SfxClass(SFX_FIRE2, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     scale * 0.2f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE_MED,				// type
-                                     &pos,							// world pos
-                                     0.4f,			// time to live
-                                     scale * 0.4f));		// scale
+                        new SfxClass(SFX_FIRE_MED, // type
+                                     &pos, // world pos
+                                     0.4f, // time to live
+                                     scale * 0.4f)); // scale
                 }
             }
             else if (mpos.x > 0.70f)
@@ -3732,35 +3732,35 @@ SfxClass::RunSecondarySfx(void)
                     mvec.y = PRANDFloat() * 25.0f;
                     mvec.z = -5.0f;
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE2,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     scale * 0.2f));		// scale
+                        new SfxClass(SFX_FIRE2, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     scale * 0.2f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE_COOL,				// type
-                                     &pos,							// world pos
-                                     0.3f,			// time to live
-                                     scale * 0.5f));		// scale
+                        new SfxClass(SFX_FIRE_COOL, // type
+                                     &pos, // world pos
+                                     0.3f, // time to live
+                                     scale * 0.5f)); // scale
                 }
             }
             /*
             else if ( mpos.x > 0.70f )
             {
-            	mvec.x = PRANDFloat() * 25.0f;
-            	mvec.y = PRANDFloat() * 25.0f;
-            	mvec.z = -5.0f;
-            	OTWDriver.AddSfxRequest(
-            			new SfxClass (SFX_FIRE2,		// type
-            			SFX_MOVES,						// flags
-            			&pos,							// world pos
-            			&mvec,							// vector
-            			2.0f,							// time to live
-            			scale * 0.2f ));		// scale
+             mvec.x = PRANDFloat() * 25.0f;
+             mvec.y = PRANDFloat() * 25.0f;
+             mvec.z = -5.0f;
+             OTWDriver.AddSfxRequest(
+             new SfxClass (SFX_FIRE2, // type
+             SFX_MOVES, // flags
+             &pos, // world pos
+             &mvec, // vector
+             2.0f, // time to live
+             scale * 0.2f )); // scale
             }
             */
             else if (mpos.x > 0.90f)
@@ -3771,20 +3771,20 @@ SfxClass::RunSecondarySfx(void)
 
                 if ((rand() & 1))
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILSMOKE,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     5.2f));		// scale
+                        new SfxClass(SFX_TRAILSMOKE, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     5.2f)); // scale
                 else
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILDUST,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     5.2f));		// scale
+                        new SfxClass(SFX_TRAILDUST, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     5.2f)); // scale
             }
             else
             {
@@ -3794,20 +3794,20 @@ SfxClass::RunSecondarySfx(void)
 
                 if ((rand() & 3) == 3)
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILSMOKE,			// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     5.5f));		// scale
+                        new SfxClass(SFX_TRAILSMOKE, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     5.5f)); // scale
                 else
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILDUST,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     5.2f));		// scale
+                        new SfxClass(SFX_TRAILDUST, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     5.2f)); // scale
             }
 
             break;
@@ -3817,23 +3817,23 @@ SfxClass::RunSecondarySfx(void)
 
             if (mpos.x > 0.85f)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE_HOT,				// type
-                                 &pos,							// world pos
-                                 0.8f,			// time to live
-                                 scale * 0.4f));		// scale
+                    new SfxClass(SFX_FIRE_HOT, // type
+                                 &pos, // world pos
+                                 0.8f, // time to live
+                                 scale * 0.4f)); // scale
             else if (mpos.x > 0.50f)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE_MED,				// type
-                                 &pos,							// world pos
-                                 0.5f,			// time to live
-                                 scale * 0.4f));		// scale
+                    new SfxClass(SFX_FIRE_MED, // type
+                                 &pos, // world pos
+                                 0.5f, // time to live
+                                 scale * 0.4f)); // scale
             else if (mpos.x > 0.25f)
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_FIRE_COOL,				// type
-                                 &pos,							// world pos
-                                 0.3f,			// time to live
-                                 scale * 0.5f));		// scale
+                    new SfxClass(SFX_FIRE_COOL, // type
+                                 &pos, // world pos
+                                 0.3f, // time to live
+                                 scale * 0.5f)); // scale
                 mvec.x = PRANDFloat() * 25.0f;
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z = -25.0f;
@@ -3841,22 +3841,22 @@ SfxClass::RunSecondarySfx(void)
                 if ((rand() & 3) == 3)
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE3,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     10.5f));		// scale
+                        new SfxClass(SFX_FIRE3, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     10.5f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_BLUE_CLOUD,			// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     10.5f));		// scale
+                        new SfxClass(SFX_BLUE_CLOUD, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     10.5f)); // scale
                 }
             }
             else
@@ -3865,22 +3865,22 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z =  -20.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_WATER_CLOUD,			// type
-                                 SFX_MOVES,						// flags
-                                 &pos,							// world pos
-                                 &mvec,							// vector
-                                 2.0f,							// time to live
-                                 10.5f));		// scale
+                    new SfxClass(SFX_WATER_CLOUD, // type
+                                 SFX_MOVES, // flags
+                                 &pos, // world pos
+                                 &mvec, // vector
+                                 2.0f, // time to live
+                                 10.5f)); // scale
             }
 
             break;
 
         case SFX_FIRETRAIL:
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FIRE_EXPAND,				// type
-                             &pos,							// world pos
-                             2.0f,			// time to live
-                             scale * 0.2f));		// scale
+                new SfxClass(SFX_FIRE_EXPAND, // type
+                             &pos, // world pos
+                             2.0f, // time to live
+                             scale * 0.2f)); // scale
             break;
 
         case SFX_WATERTRAIL:
@@ -3894,33 +3894,33 @@ SfxClass::RunSecondarySfx(void)
 
                 if ((rand() & 3) == 3)
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE3,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     10.5f));		// scale
+                        new SfxClass(SFX_FIRE3, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     10.5f)); // scale
                 else
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_BLUE_CLOUD,				// type
-                                     &pos,							// world pos
-                                     0.8f,			// time to live
-                                     scale * 0.4f));		// scale
+                        new SfxClass(SFX_BLUE_CLOUD, // type
+                                     &pos, // world pos
+                                     0.8f, // time to live
+                                     scale * 0.4f)); // scale
             }
             else if (mpos.x > 0.50f)
             {
                 if ((rand() & 3) == 3)
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_WATER_CLOUD,				// type
-                                     &pos,							// world pos
-                                     0.5f,			// time to live
-                                     scale * 0.4f));		// scale
+                        new SfxClass(SFX_WATER_CLOUD, // type
+                                     &pos, // world pos
+                                     0.5f, // time to live
+                                     scale * 0.4f)); // scale
                 else
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_BLUE_CLOUD,				// type
-                                     &pos,							// world pos
-                                     0.5f,			// time to live
-                                     scale * 0.4f));		// scale
+                        new SfxClass(SFX_BLUE_CLOUD, // type
+                                     &pos, // world pos
+                                     0.5f, // time to live
+                                     scale * 0.4f)); // scale
             }
             else if (mpos.x > 0.25f)
             {
@@ -3931,22 +3931,22 @@ SfxClass::RunSecondarySfx(void)
                 if ((rand() & 3) == 3)
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_BLUE_CLOUD,		// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     10.5f));		// scale
+                        new SfxClass(SFX_BLUE_CLOUD, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     10.5f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_WATER_CLOUD,			// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     2.0f,							// time to live
-                                     10.5f));		// scale
+                        new SfxClass(SFX_WATER_CLOUD, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     2.0f, // time to live
+                                     10.5f)); // scale
                 }
             }
             else
@@ -3955,12 +3955,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 25.0f;
                 mvec.z =  -20.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_WATER_CLOUD,			// type
-                                 SFX_MOVES,						// flags
-                                 &pos,							// world pos
-                                 &mvec,							// vector
-                                 2.0f,							// time to live
-                                 10.5f));		// scale
+                    new SfxClass(SFX_WATER_CLOUD, // type
+                                 SFX_MOVES, // flags
+                                 &pos, // world pos
+                                 &mvec, // vector
+                                 2.0f, // time to live
+                                 10.5f)); // scale
             }
 
             break;
@@ -3983,29 +3983,29 @@ SfxClass::RunSecondarySfx(void)
                     {
                         OTWDriver.AddSfxRequest(
                             new SfxClass(
-                                21.5f,							// time to live
-                                objTrail));					// trail
+                                21.5f, // time to live
+                                objTrail)); // trail
                         objTrail = NULL;
                     }
 
                     mvec.z = -40.0f;
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILSMOKE,			// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     1.5f,							// time to live
-                                     3.5f));		// scale
+                        new SfxClass(SFX_TRAILSMOKE, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     1.5f, // time to live
+                                     3.5f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_TRAILSMOKE,			// type
-                                     SFX_MOVES,						// flags
-                                     &pos,							// world pos
-                                     &mvec,							// vector
-                                     1.0f,							// time to live
-                                     3.5f));		// scale
+                        new SfxClass(SFX_TRAILSMOKE, // type
+                                     SFX_MOVES, // flags
+                                     &pos, // world pos
+                                     &mvec, // vector
+                                     1.0f, // time to live
+                                     3.5f)); // scale
                 }
             }
 
@@ -4016,12 +4016,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = PRANDFloat() * 25.0f;
             mvec.z = PRANDFloat() * 25.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_TRAILSMOKE,			// type
-                             SFX_MOVES,						// flags
-                             &pos,							// world pos
-                             &mvec,							// vector
-                             2.0f,							// time to live
-                             3.5f));		// scale
+                new SfxClass(SFX_TRAILSMOKE, // type
+                             SFX_MOVES, // flags
+                             &pos, // world pos
+                             &mvec, // vector
+                             2.0f, // time to live
+                             3.5f)); // scale
             break;
 
         case SFX_SAM_LAUNCH:
@@ -4031,10 +4031,10 @@ SfxClass::RunSecondarySfx(void)
             pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_FLASH,			// type
-                             &pos,					// world pos
-                             1.0f,					// time to live
-                             distScale * 6300.0f));				// scale
+                new SfxClass(SFX_GROUND_FLASH, // type
+                             &pos, // world pos
+                             1.0f, // time to live
+                             distScale * 6300.0f)); // scale
 
             for (i = 0; i < 8; i++)
             {
@@ -4047,12 +4047,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = PRANDFloat() * 125.0f;
                 mvec.z = PRANDFloat() * 125.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_STEAM_CLOUD,			// type
-                                 SFX_USES_GRAVITY | SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,				 // flags
-                                 &mpos,							// world pos
-                                 &mvec,							// vector
-                                 2.0f,							// time to live
-                                 40.5f));		// scale
+                    new SfxClass(SFX_STEAM_CLOUD, // type
+                                 SFX_USES_GRAVITY | SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector
+                                 2.0f, // time to live
+                                 40.5f)); // scale
             }
 
             break;
@@ -4062,12 +4062,12 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = PRANDFloat() * 25.0f;
             mvec.z = PRANDFloat() * 25.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_TRAILDUST,			// type
-                             SFX_MOVES,						// flags
-                             &pos,							// world pos
-                             &mvec,							// vector
-                             2.0f,							// time to live
-                             3.5f));		// scale
+                new SfxClass(SFX_TRAILDUST, // type
+                             SFX_MOVES, // flags
+                             &pos, // world pos
+                             &mvec, // vector
+                             2.0f, // time to live
+                             3.5f)); // scale
             break;
 
         case SFX_AIR_HANGING_EXPLOSION:
@@ -4076,10 +4076,10 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = -20.0f;
             StartRandomDebris();
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                             &pos,							// world pos
-                             60.5f,							// time to live
-                             scale * 0.2f));							// scale
+                new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                             &pos, // world pos
+                             60.5f, // time to live
+                             scale * 0.2f)); // scale
             break;
 
         case SFX_GROUND_STRIKE_NOFIRE:
@@ -4098,22 +4098,22 @@ SfxClass::RunSecondarySfx(void)
                 {
                     case 0:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_FIRESMOKE,				// type
-                                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,				 // flags
-                                         &mpos,							// world pos
-                                         &mvec,							// vector
-                                         3.5f,							// time to live
-                                         scale * 0.2f));							// scale
+                            new SfxClass(SFX_FIRESMOKE, // type
+                                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                                         &mpos, // world pos
+                                         &mvec, // vector
+                                         3.5f, // time to live
+                                         scale * 0.2f)); // scale
                         break;
 
                     case 1:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_TRAILSMOKE,				// type
-                                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,				 // flags
-                                         &mpos,							// world pos
-                                         &mvec,							// vector
-                                         3.5f,							// time to live
-                                         scale * 0.2f));							// scale
+                            new SfxClass(SFX_TRAILSMOKE, // type
+                                         SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                                         &mpos, // world pos
+                                         &mvec, // vector
+                                         3.5f, // time to live
+                                         scale * 0.2f)); // scale
                         break;
 
                     default:
@@ -4122,19 +4122,19 @@ SfxClass::RunSecondarySfx(void)
             }
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_FLASH,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             scale * 2.0f));				// scale
+                new SfxClass(SFX_GROUND_FLASH, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             scale * 2.0f)); // scale
 
             /*
             if ( rand() & 1 )
             {
-            	OTWDriver.AddSfxRequest(
-            		new SfxClass( SFX_SHOCK_RING_SMALL,			// type
-            		&mpos,					// world pos
-            		2.2f,					// time to live
-            		scale * 0.4f ) );				// scale
+             OTWDriver.AddSfxRequest(
+             new SfxClass( SFX_SHOCK_RING_SMALL, // type
+             &mpos, // world pos
+             2.2f, // time to live
+             scale * 0.4f ) ); // scale
             }
             */
 
@@ -4151,18 +4151,18 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 0.0f;
             mvec.z = -40.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FIRESMOKE,				// type
-                             SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,				 // flags
-                             &mpos,							// world pos
-                             &mvec,							// vector
-                             3.5f,							// time to live
-                             scale * 0.2f));							// scale
+                new SfxClass(SFX_FIRESMOKE, // type
+                             SFX_MOVES | SFX_NO_DOWN_VECTOR | SFX_NO_GROUND_CHECK,  // flags
+                             &mpos, // world pos
+                             &mvec, // vector
+                             3.5f, // time to live
+                             scale * 0.2f)); // scale
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_FLASH,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             scale * 2.0f));				// scale
+                new SfxClass(SFX_GROUND_FLASH, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             scale * 2.0f)); // scale
 
             StartRandomDebris();
             break;
@@ -4173,26 +4173,26 @@ SfxClass::RunSecondarySfx(void)
 
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_BILLOWING_SMOKE,			// type
-                             &mpos,					// world pos
-                             2,					// time to live
-                             0.3f));				// scale
+                new SfxClass(SFX_BILLOWING_SMOKE, // type
+                             &mpos, // world pos
+                             2, // time to live
+                             0.3f)); // scale
 
             mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_FLASH,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             scale * 2.0f));				// scale
+                new SfxClass(SFX_GROUND_FLASH, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             scale * 2.0f)); // scale
 
             /*
             mpos.z += 15.0f;
             // mpos.z -= 15.0f;
             OTWDriver.AddSfxRequest(
-            			new SfxClass(SFX_FIRE,				// type
-            			&mpos,							// world pos
-            			35.2f,			// time to live
-            			70.0f) );		// scale
+             new SfxClass(SFX_FIRE, // type
+             &mpos, // world pos
+             35.2f, // time to live
+             70.0f) ); // scale
             */
             // StartRandomDebris();
             // if there'2 no 2d animation, we do a firetrail
@@ -4214,12 +4214,12 @@ SfxClass::RunSecondarySfx(void)
                     {
 
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_FIRE4,		// type
+                            new SfxClass(SFX_FIRE4, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                         &mpos,					// world pos
-                                         &mvec,					// vel vector
-                                         1.5,					// time to live
-                                         5.0f));				// scale
+                                         &mpos, // world pos
+                                         &mvec, // vel vector
+                                         1.5, // time to live
+                                         5.0f)); // scale
                     }
                     else
                     {
@@ -4227,24 +4227,24 @@ SfxClass::RunSecondarySfx(void)
                             gTotSfx < gSfxLODTotCutoff)
                         {
                             OTWDriver.AddSfxRequest(
-                                new SfxClass(SFX_DEBRISTRAIL,		// type
+                                new SfxClass(SFX_DEBRISTRAIL, // type
                                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                             &mpos,					// world pos
-                                             &mvec,					// vel vector
-                                             5.0,					// time to live
-                                             scale * 0.25f));				// scale
+                                             &mpos, // world pos
+                                             &mvec, // vel vector
+                                             5.0, // time to live
+                                             scale * 0.25f)); // scale
                         }
                     }
                 }
 
                 /*
                 OTWDriver.AddSfxRequest(
-                		new SfxClass( SFX_FIREBALL,		// type
-                		SFX_MOVES | SFX_NO_GROUND_CHECK,
-                		&mpos,					// world pos
-                		&mvec,					// vel vector
-                		3.0,					// time to live
-                		scale * 0.50f ) );				// scale
+                 new SfxClass( SFX_FIREBALL, // type
+                 SFX_MOVES | SFX_NO_GROUND_CHECK,
+                 &mpos, // world pos
+                 &mvec, // vel vector
+                 3.0, // time to live
+                 scale * 0.50f ) ); // scale
                 */
             }
 
@@ -4255,10 +4255,10 @@ SfxClass::RunSecondarySfx(void)
             mpos = pos;
             mpos.z += scale;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SHOCK_RING_SMALL,			// type
-                             &mpos,					// world pos
-                             1.5f,					// time to live
-                             scale * 0.3f));				// scale
+                new SfxClass(SFX_SHOCK_RING_SMALL, // type
+                             &mpos, // world pos
+                             1.5f, // time to live
+                             scale * 0.3f)); // scale
             break;
 
         case SFX_WATER_EXPLOSION:
@@ -4266,10 +4266,10 @@ SfxClass::RunSecondarySfx(void)
             mpos = pos;
             mpos.z += scale;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SHOCK_RING,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             1.0f));				// scale
+                new SfxClass(SFX_SHOCK_RING, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             1.0f)); // scale
 
             // send up some water trails
             if (obj2d == NULL)
@@ -4292,25 +4292,25 @@ SfxClass::RunSecondarySfx(void)
                     /*
                     if ( i & 1)
                     {
-                    	OTWDriver.AddSfxRequest(
-                    		new SfxClass( SFX_WATER_FIREBALL,		// type
-                    		SFX_MOVES | SFX_USES_GRAVITY,
-                    		&mpos,					// world pos
-                    		&mvec,					// vel vector
-                    		3.0,					// time to live
-                    		scale * 0.25f ) );				// scale
+                     OTWDriver.AddSfxRequest(
+                     new SfxClass( SFX_WATER_FIREBALL, // type
+                     SFX_MOVES | SFX_USES_GRAVITY,
+                     &mpos, // world pos
+                     &mvec, // vel vector
+                     3.0, // time to live
+                     scale * 0.25f ) ); // scale
 
                     }
                     else
                     */
                     {
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_WATERTRAIL,		// type
+                            new SfxClass(SFX_WATERTRAIL, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                         &mpos,					// world pos
-                                         &mvec,					// vel vector
-                                         3.0,					// time to live
-                                         scale * 0.25f));				// scale
+                                         &mpos, // world pos
+                                         &mvec, // vel vector
+                                         3.0, // time to live
+                                         scale * 0.25f)); // scale
                     }
                 }
             }
@@ -4321,10 +4321,10 @@ SfxClass::RunSecondarySfx(void)
             mpos = pos;
             StartRandomDebris();
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SHOCK_RING,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             10.0f));				// scale
+                new SfxClass(SFX_SHOCK_RING, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             10.0f)); // scale
 
 
             // send up some fire trails
@@ -4334,10 +4334,10 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_BILLOWING_SMOKE,			// type
-                             &mpos,					// world pos
-                             30,					// time to live
-                             0.3f));				// scale
+                new SfxClass(SFX_BILLOWING_SMOKE, // type
+                             &mpos, // world pos
+                             30, // time to live
+                             0.3f)); // scale
 
             for (i = 0; i < numBursts; i++)
             {
@@ -4348,32 +4348,32 @@ SfxClass::RunSecondarySfx(void)
                 if ((i & 7) == 7)
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_FIRE5,		// type
+                        new SfxClass(SFX_FIRE5, // type
                                      SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                     &mpos,					// world pos
-                                     &mvec,					// vel vector
-                                     3.0,					// time to live
-                                     scale * 0.05f));				// scale
+                                     &mpos, // world pos
+                                     &mvec, // vel vector
+                                     3.0, // time to live
+                                     scale * 0.05f)); // scale
                 }
                 else if ((rand() & 3) == 3)
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_DEBRISTRAIL_DUST,		// type
+                        new SfxClass(SFX_DEBRISTRAIL_DUST, // type
                                      SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                     &mpos,					// world pos
-                                     &mvec,					// vel vector
-                                     3.0,					// time to live
-                                     scale * 0.25f));				// scale
+                                     &mpos, // world pos
+                                     &mvec, // vel vector
+                                     3.0, // time to live
+                                     scale * 0.25f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_DEBRISTRAIL,		// type
+                        new SfxClass(SFX_DEBRISTRAIL, // type
                                      SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                     &mpos,					// world pos
-                                     &mvec,					// vel vector
-                                     8.0,					// time to live
-                                     scale * 0.25f));				// scale
+                                     &mpos, // world pos
+                                     &mvec, // vel vector
+                                     8.0, // time to live
+                                     scale * 0.25f)); // scale
                 }
             }
 
@@ -4393,12 +4393,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.z = 70.0f * PRANDFloat();
 
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_DEBRISTRAIL,		// type
+                    new SfxClass(SFX_DEBRISTRAIL, // type
                                  SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                 &mpos,					// world pos
-                                 &mvec,					// vel vector
-                                 3.0,					// time to live
-                                 scale * 0.15f));				// scale
+                                 &mpos, // world pos
+                                 &mvec, // vel vector
+                                 3.0, // time to live
+                                 scale * 0.15f)); // scale
             }
 
             break;
@@ -4411,21 +4411,21 @@ SfxClass::RunSecondarySfx(void)
                 pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
                 mpos = pos;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_SHOCK_RING,			// type
-                                 &mpos,					// world pos
-                                 2.2f,					// time to live
-                                 10.0f));				// scale
+                    new SfxClass(SFX_SHOCK_RING, // type
+                                 &mpos, // world pos
+                                 2.2f, // time to live
+                                 10.0f)); // scale
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_GROUND_FLASH,			// type
-                                 &mpos,					// world pos
-                                 2.2f,					// time to live
-                                 scale));				// scale
+                    new SfxClass(SFX_GROUND_FLASH, // type
+                                 &mpos, // world pos
+                                 2.2f, // time to live
+                                 scale)); // scale
                 mpos.z = pos.z - 25.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_BILLOWING_SMOKE,			// type
-                                 &mpos,					// world pos
-                                 3,					// time to live
-                                 0.3f));				// scale
+                    new SfxClass(SFX_BILLOWING_SMOKE, // type
+                                 &mpos, // world pos
+                                 3, // time to live
+                                 0.3f)); // scale
             }
 
             if (obj2d)
@@ -4458,20 +4458,20 @@ SfxClass::RunSecondarySfx(void)
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_FIRE_EXPAND_NOSMOKE,				// type
-                    	SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                    	&mpos,					// world pos
-                    	&mvec,					// vel vector
-                    	1.5,					// time to live
-                    	scale * PRANDFloatPos() * 0.2f ) );		// scale
+                     new SfxClass(SFX_FIRE_EXPAND_NOSMOKE, // type
+                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     &mpos, // world pos
+                     &mvec, // vel vector
+                     1.5, // time to live
+                     scale * PRANDFloatPos() * 0.2f ) ); // scale
                     */
                     if ((rand() & 3) == 3)
                     {
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE,				// type
-                                         &mpos,					// world pos
-                                         1.8f,					// time to live
-                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f));		// scale
+                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
+                                         &mpos, // world pos
+                                         1.8f, // time to live
+                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f)); // scale
                     }
 
                     mpos.x = pos.x + PRANDFloat() * scale * 0.05f;
@@ -4489,20 +4489,20 @@ SfxClass::RunSecondarySfx(void)
                     {
                         if (rand() & 1)
                             OTWDriver.AddSfxRequest(
-                                new SfxClass(SFX_FIRETRAIL,		// type
+                                new SfxClass(SFX_FIRETRAIL, // type
                                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                             &mpos,					// world pos
-                                             &mvec,					// vel vector
-                                             4.0,					// time to live
-                                             scale * 0.25f));				// scale
+                                             &mpos, // world pos
+                                             &mvec, // vel vector
+                                             4.0, // time to live
+                                             scale * 0.25f)); // scale
                         else
                             OTWDriver.AddSfxRequest(
-                                new SfxClass(SFX_DEBRISTRAIL,		// type
+                                new SfxClass(SFX_DEBRISTRAIL, // type
                                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                             &mpos,					// world pos
-                                             &mvec,					// vel vector
-                                             6.0,					// time to live
-                                             scale * 0.25f));				// scale
+                                             &mpos, // world pos
+                                             &mvec, // vel vector
+                                             6.0, // time to live
+                                             scale * 0.25f)); // scale
                     }
                 }
 
@@ -4527,27 +4527,27 @@ SfxClass::RunSecondarySfx(void)
                     {
                         mpos.z = pos.z + vec.z * 0.3F;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE,				// type
-                                         &mpos,					// world pos
-                                         1.5f,					// time to live
-                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f));		// scale
+                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f)); // scale
                     }
                     else if ((rand() & 1) == 1)
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_BIG_DUST,		// type
+                            new SfxClass(SFX_BIG_DUST, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                         &mpos,					// world pos
-                                         &mvec,					// vel vector
-                                         1.5,					// time to live
-                                         scale * 0.55f));				// scale
+                                         &mpos, // world pos
+                                         &mvec, // vel vector
+                                         1.5, // time to live
+                                         scale * 0.55f)); // scale
                     else
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_BIG_SMOKE,		// type
+                            new SfxClass(SFX_BIG_SMOKE, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                         &mpos,					// world pos
-                                         &mvec,					// vel vector
-                                         1.5,					// time to live
-                                         scale * 0.55f));				// scale
+                                         &mpos, // world pos
+                                         &mvec, // vel vector
+                                         1.5, // time to live
+                                         scale * 0.55f)); // scale
                 }
                 else
                 {
@@ -4557,10 +4557,10 @@ SfxClass::RunSecondarySfx(void)
                         mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
                         mpos.z = pos.z + vec.z * 0.3F;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE,				// type
-                                         &mpos,					// world pos
-                                         1.5f,					// time to live
-                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f));		// scale
+                            new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         scale * 0.2f + scale * PRANDFloatPos() * 0.3f)); // scale
                     }
 
                     if (approxDist < SFX_LOD_DIST &&
@@ -4580,12 +4580,12 @@ SfxClass::RunSecondarySfx(void)
                             mvec.z = -38.0f * PRANDFloatPos() * scale * 0.01f;
 
                             OTWDriver.AddSfxRequest(
-                                new SfxClass(SFX_DEBRISTRAIL,		// type
+                                new SfxClass(SFX_DEBRISTRAIL, // type
                                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                             &mpos,					// world pos
-                                             &mvec,					// vel vector
-                                             6.0,					// time to live
-                                             scale * 0.25f));				// scale
+                                             &mpos, // world pos
+                                             &mvec, // vel vector
+                                             6.0, // time to live
+                                             scale * 0.25f)); // scale
                         }
                     }
                 }
@@ -4596,16 +4596,16 @@ SfxClass::RunSecondarySfx(void)
         case SFX_AIR_EXPLOSION:
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass( SFX_EXPLCROSS_GLOW,			// type
-            	&pos,					// world pos
-            	1.2f,					// time to live
-            	0.1f ) );				// scale
+             new SfxClass( SFX_EXPLCROSS_GLOW, // type
+             &pos, // world pos
+             1.2f, // time to live
+             0.1f ) ); // scale
             */
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_EXPLCIRC_GLOW,			// type
-                             &pos,					// world pos
-                             1.8f,					// time to live
-                             scale));				// scale
+                new SfxClass(SFX_EXPLCIRC_GLOW, // type
+                             &pos, // world pos
+                             1.8f, // time to live
+                             scale)); // scale
             break;
 
         case SFX_ROCKET_BURST:
@@ -4628,24 +4628,24 @@ SfxClass::RunSecondarySfx(void)
                 /*
                 if ( (rand() & 3) == 3 )
                 {
-                	OTWDriver.AddSfxRequest(
-                		new SfxClass( SFX_EXPLCIRC_GLOW,		// type
-                		SFX_MOVES | SFX_USES_GRAVITY,
-                		&pos,					// world pos
-                		&mvec,					// vel vector
-                		3.5f,					// time to live
-                		12.0f ) );				// scale
+                 OTWDriver.AddSfxRequest(
+                 new SfxClass( SFX_EXPLCIRC_GLOW, // type
+                 SFX_MOVES | SFX_USES_GRAVITY,
+                 &pos, // world pos
+                 &mvec, // vel vector
+                 3.5f, // time to live
+                 12.0f ) ); // scale
                 }
                 else
                 */
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SPARKS,		// type
+                        new SfxClass(SFX_SPARKS, // type
                                      SFX_MOVES | SFX_USES_GRAVITY,
-                                     &pos,					// world pos
-                                     &mvec,					// vel vector
-                                     3.5f,					// time to live
-                                     12.0f));				// scale
+                                     &pos, // world pos
+                                     &mvec, // vel vector
+                                     3.5f, // time to live
+                                     12.0f)); // scale
                 }
             }
 
@@ -4656,24 +4656,24 @@ SfxClass::RunSecondarySfx(void)
             mvec.y = 0.0f;
             mvec.z = -20.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                             &pos,							// world pos
-                             30.5f,							// time to live
-                             scale * 0.5f));							// scale
+                new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                             &pos, // world pos
+                             30.5f, // time to live
+                             scale * 0.5f)); // scale
 
             // do som extra busts possibly...
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass( SFX_EXPLCROSS_GLOW,			// type
-            	&pos,					// world pos
-            	1.2f,					// time to live
-            	0.1f ) );			 	// scale
+             new SfxClass( SFX_EXPLCROSS_GLOW, // type
+             &pos, // world pos
+             1.2f, // time to live
+             0.1f ) );   // scale
             */
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_EXPLCIRC_GLOW,			// type
-                             &pos,					// world pos
-                             1.8f,					// time to live
-                             scale));			 	// scale
+                new SfxClass(SFX_EXPLCIRC_GLOW, // type
+                             &pos, // world pos
+                             1.8f, // time to live
+                             scale));   // scale
 
             numBursts = (int)(5.0f * gSfxLOD) + PRANDInt3();
 
@@ -4683,12 +4683,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y + 100.0f * PRANDFloat();
                 mvec.z = vec.z + 100.0f * PRANDFloat();
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_SMOKETRAIL,		// type
+                    new SfxClass(SFX_SMOKETRAIL, // type
                                  SFX_MOVES | SFX_USES_GRAVITY,
-                                 &pos,					// world pos
-                                 &mvec,					// vel vector
-                                 1.0,					// time to live
-                                 10.0f));				// scale
+                                 &pos, // world pos
+                                 &mvec, // vel vector
+                                 1.0, // time to live
+                                 10.0f)); // scale
             }
 
             // just some falling pieces of junk
@@ -4698,12 +4698,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = 100.0f * PRANDFloat();
                 mvec.z = 100.0f * PRANDFloat();
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_SMOKETRAIL,		// type
+                    new SfxClass(SFX_SMOKETRAIL, // type
                                  SFX_MOVES | SFX_USES_GRAVITY,
-                                 &pos,					// world pos
-                                 &mvec,					// vel vector
-                                 1.0,					// time to live
-                                 10.0f));				// scale
+                                 &pos, // world pos
+                                 &mvec, // vel vector
+                                 1.0, // time to live
+                                 10.0f)); // scale
             }
 
             break;
@@ -4716,19 +4716,19 @@ SfxClass::RunSecondarySfx(void)
 
             if (rand() & 1)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                                 &pos,							// world pos
-                                 60.5f,							// time to live
-                                 scale * 0.5f));							// scale
+                    new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                                 &pos, // world pos
+                                 60.5f, // time to live
+                                 scale * 0.5f)); // scale
 
             break;
 
         case SFX_HIT_EXPLOSION_NOSMOKE:
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_EXPLCIRC_GLOW,			// type
-                             &pos,					// world pos
-                             1.8f,					// time to live
-                             scale));				// scale
+                new SfxClass(SFX_EXPLCIRC_GLOW, // type
+                             &pos, // world pos
+                             1.8f, // time to live
+                             scale)); // scale
             break;
 
         case SFX_HIT_EXPLOSION:
@@ -4737,17 +4737,17 @@ SfxClass::RunSecondarySfx(void)
             mvec.z = -20.0f;
             StartRandomDebris();
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_EXPLCIRC_GLOW,			// type
-                             &pos,					// world pos
-                             1.8f,					// time to live
-                             scale));				// scale
+                new SfxClass(SFX_EXPLCIRC_GLOW, // type
+                             &pos, // world pos
+                             1.8f, // time to live
+                             scale)); // scale
 
             if (rand() & 1)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                                 &pos,							// world pos
-                                 60.5f,							// time to live
-                                 scale * 0.5f));							// scale
+                    new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                                 &pos, // world pos
+                                 60.5f, // time to live
+                                 scale * 0.5f)); // scale
 
             break;
 
@@ -4787,22 +4787,22 @@ SfxClass::RunSecondarySfx(void)
                     if (PRANDInt3() == 1)
                     {
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_DEBRISTRAIL,		// type
+                            new SfxClass(SFX_DEBRISTRAIL, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                         &pos,					// world pos
-                                         &mvec,					// vel vector
-                                         6.0,					// time to live
-                                         10.0f));				// scale
+                                         &pos, // world pos
+                                         &mvec, // vel vector
+                                         6.0, // time to live
+                                         10.0f)); // scale
                     }
                     else
                     {
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_FIRETRAIL,		// type
+                            new SfxClass(SFX_FIRETRAIL, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                         &pos,					// world pos
-                                         &mvec,					// vel vector
-                                         6.0,					// time to live
-                                         10.0f));				// scale
+                                         &pos, // world pos
+                                         &mvec, // vel vector
+                                         6.0, // time to live
+                                         10.0f)); // scale
                     }
                 }
             }
@@ -4834,27 +4834,27 @@ SfxClass::RunSecondarySfx(void)
                 case 0:
                 case 4:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_AIR_EXPLOSION_NOGLOW,			// type
-                                     &mpos,					// world pos
-                                     1.2f,					// time to live
-                                     600.0f * distScale));				// scale
+                        new SfxClass(SFX_AIR_EXPLOSION_NOGLOW, // type
+                                     &mpos, // world pos
+                                     1.2f, // time to live
+                                     600.0f * distScale)); // scale
                     break;
 
                 case 1:
                 case 2:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SPARKS,			// type
-                                     &mpos,					// world pos
-                                     1.2f,					// time to live
-                                     4.0f * 800.0f * distScale));				// scale
+                        new SfxClass(SFX_SPARKS, // type
+                                     &mpos, // world pos
+                                     1.2f, // time to live
+                                     4.0f * 800.0f * distScale)); // scale
                     break;
 
                 case 3:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_AIR_HANGING_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     500.0f * distScale));				// scale
+                        new SfxClass(SFX_AIR_HANGING_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     500.0f * distScale)); // scale
                     break;
             }
 
@@ -4874,34 +4874,34 @@ SfxClass::RunSecondarySfx(void)
 
                 case 1:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SMALL_AIR_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     1.3f,					// time to live
-                                     14.0f));				// scale
+                        new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     1.3f, // time to live
+                                     14.0f)); // scale
                     break;
 
                 case 4:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SMALL_AIR_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     1.3f,					// time to live
-                                     14.0f));				// scale
+                        new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     1.3f, // time to live
+                                     14.0f)); // scale
                     break;
 
                 case 2:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SMALL_HIT_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     1.4f,					// time to live
-                                     13.0f));				// scale
+                        new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     1.4f, // time to live
+                                     13.0f)); // scale
                     break;
 
                 case 3:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_SMALL_HIT_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     1.4f,					// time to live
-                                     15.0f));				// scale
+                        new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     1.4f, // time to live
+                                     15.0f)); // scale
                     break;
             }
 
@@ -4909,10 +4909,10 @@ SfxClass::RunSecondarySfx(void)
                 gTotSfx < gSfxLODTotCutoff)
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                                 &mpos,							// world pos
-                                 30.5f,							// time to live
-                                 10.0f));							// scale
+                    new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                                 &mpos, // world pos
+                                 30.5f, // time to live
+                                 10.0f)); // scale
             }
 
             // sound
@@ -4944,42 +4944,42 @@ SfxClass::RunSecondarySfx(void)
             {
                 case 0:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_FLASH,			// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     distScale * 6300.0f));				// scale
+                        new SfxClass(SFX_GROUND_FLASH, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     distScale * 6300.0f)); // scale
 
                 case 4:
                     OTWDriver.AddSfxRequest(
-                        // new SfxClass( SFX_GROUND_EXPLOSION_NO_CRATER,	// type
-                        new SfxClass(SFX_SPARKS,	// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     4.0f * 800.0f * distScale));				// scale
+                        // new SfxClass( SFX_GROUND_EXPLOSION_NO_CRATER, // type
+                        new SfxClass(SFX_SPARKS, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     4.0f * 800.0f * distScale)); // scale
                     break;
 
                 case 1:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_GLOW,			// type
-                                     &mpos,					// world pos
-                                     4.2f,					// time to live
-                                     distScale * 3300.0f));				// scale
+                        new SfxClass(SFX_GROUND_GLOW, // type
+                                     &mpos, // world pos
+                                     4.2f, // time to live
+                                     distScale * 3300.0f)); // scale
                     break;
 
                 case 2:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_ARTILLERY_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     1.2f,					// time to live
-                                     800.0f * distScale));				// scale
+                        new SfxClass(SFX_ARTILLERY_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     1.2f, // time to live
+                                     800.0f * distScale)); // scale
                     break;
 
                 case 3:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_AIR_HANGING_EXPLOSION,			// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     500.0f * distScale));				// scale
+                        new SfxClass(SFX_AIR_HANGING_EXPLOSION, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     500.0f * distScale)); // scale
                     break;
             }
 
@@ -5020,10 +5020,10 @@ SfxClass::RunSecondarySfx(void)
                 {
                     case 0:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE,	// type
-                                         &mpos,					// world pos
-                                         1.5f,					// time to live
-                                         15.0f));				// scale
+                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         break;
 
                     case 1:
@@ -5031,36 +5031,36 @@ SfxClass::RunSecondarySfx(void)
                         vec2.y = 0.0f;
                         vec2.z = -50.0f;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_FIRE4,		// type
+                            new SfxClass(SFX_FIRE4, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                         &mpos,					// world pos
-                                         &vec2,					// vel vector
-                                         1.5,					// time to live
-                                         20.25f));				// scale
+                                         &mpos, // world pos
+                                         &vec2, // vel vector
+                                         1.5, // time to live
+                                         20.25f)); // scale
                         break;
 
                     case 2:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_SMALL_HIT_EXPLOSION,				// type
-                                         &mpos,							// world pos
-                                         1.5f,			// time to live
-                                         15.0f));		// scale
+                            new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         break;
 
                     case 3:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE,	// type
-                                         &mpos,					// world pos
-                                         1.5f,					// time to live
-                                         15.0f));				// scale
+                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         break;
 
                     case 4:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_SMALL_AIR_EXPLOSION,	// type
-                                         &mpos,					// world pos
-                                         1.5f,					// time to live
-                                         15.0f));				// scale
+                            new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                                         &mpos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                 }
             }
 
@@ -5092,10 +5092,10 @@ SfxClass::RunSecondarySfx(void)
             {
                 case 0:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_FLASH,			// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     distScale * 6800.0f));				// scale
+                        new SfxClass(SFX_GROUND_FLASH, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     distScale * 6800.0f)); // scale
                     break;
 
                 case 1:
@@ -5111,12 +5111,12 @@ SfxClass::RunSecondarySfx(void)
                         mvec.y = vec.y / travelDist * TRACER_VELOCITY;
                         mvec.z = vec.z / travelDist * TRACER_VELOCITY;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_TRACER_FIRE,			// type
-                                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK ,						// flags
-                                         &mpos,					// world pos
-                                         &mvec,					// vector for movement
-                                         travelDist / TRACER_VELOCITY,					// time to live
-                                         180.0f * distScale));				// scale
+                            new SfxClass(SFX_TRACER_FIRE, // type
+                                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK , // flags
+                                         &mpos, // world pos
+                                         &mvec, // vector for movement
+                                         travelDist / TRACER_VELOCITY, // time to live
+                                         180.0f * distScale)); // scale
                     }
                     else
                     {
@@ -5124,28 +5124,28 @@ SfxClass::RunSecondarySfx(void)
                         mpos.y += vec.y;
                         mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_ARTILLERY_EXPLOSION,			// type
-                                         &mpos,					// world pos
-                                         1.2f,					// time to live
-                                         800.0f * distScale));				// scale
+                            new SfxClass(SFX_ARTILLERY_EXPLOSION, // type
+                                         &mpos, // world pos
+                                         1.2f, // time to live
+                                         800.0f * distScale)); // scale
                     }
 
                     break;
 
                 case 2:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_GLOW,			// type
-                                     &mpos,					// world pos
-                                     4.2f,					// time to live
-                                     3300.0f * distScale));				// scale
+                        new SfxClass(SFX_GROUND_GLOW, // type
+                                     &mpos, // world pos
+                                     4.2f, // time to live
+                                     3300.0f * distScale)); // scale
                     break;
 
                 case 3:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_AIR_SMOKECLOUD,			// type
-                                     &mpos,					// world pos
-                                     12.2f,					// time to live
-                                     420.0f  * distScale));				// scale
+                        new SfxClass(SFX_AIR_SMOKECLOUD, // type
+                                     &mpos, // world pos
+                                     12.2f, // time to live
+                                     420.0f  * distScale)); // scale
                     break;
             }
 
@@ -5176,10 +5176,10 @@ SfxClass::RunSecondarySfx(void)
             {
                 case 0:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_FLASH,			// type
-                                     &mpos,					// world pos
-                                     2.2f,					// time to live
-                                     distScale * 6800.0f));				// scale
+                        new SfxClass(SFX_GROUND_FLASH, // type
+                                     &mpos, // world pos
+                                     2.2f, // time to live
+                                     distScale * 6800.0f)); // scale
                     break;
 
                 case 1:
@@ -5194,12 +5194,12 @@ SfxClass::RunSecondarySfx(void)
                     if (travelDist < 12000.0f)
                     {
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_TRACER_FIRE,			// type
-                                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,						// flags
-                                         &mpos,					// world pos
-                                         &mvec,					// vector for movement
-                                         travelDist / TRACER_VELOCITY,					// time to live
-                                         180.0f * distScale));				// scale
+                            new SfxClass(SFX_TRACER_FIRE, // type
+                                         SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                                         &mpos, // world pos
+                                         &mvec, // vector for movement
+                                         travelDist / TRACER_VELOCITY, // time to live
+                                         180.0f * distScale)); // scale
                     }
                     else
                     {
@@ -5207,10 +5207,10 @@ SfxClass::RunSecondarySfx(void)
                         mpos.y += vec.y;
                         mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_ARTILLERY_EXPLOSION,			// type
-                                         &mpos,					// world pos
-                                         1.2f,					// time to live
-                                         800.0f * distScale));				// scale
+                            new SfxClass(SFX_ARTILLERY_EXPLOSION, // type
+                                         &mpos, // world pos
+                                         1.2f, // time to live
+                                         800.0f * distScale)); // scale
                     }
 
                     break;
@@ -5218,18 +5218,18 @@ SfxClass::RunSecondarySfx(void)
                 case 2:
                 case 3:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_GLOW,			// type
-                                     &mpos,					// world pos
-                                     4.2f,					// time to live
-                                     3300.0f * distScale));				// scale
+                        new SfxClass(SFX_GROUND_GLOW, // type
+                                     &mpos, // world pos
+                                     4.2f, // time to live
+                                     3300.0f * distScale)); // scale
                     break;
 
                 case 4:
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_AIR_SMOKECLOUD,			// type
-                                     &mpos,					// world pos
-                                     12.2f,					// time to live
-                                     420.0f  * distScale));				// scale
+                        new SfxClass(SFX_AIR_SMOKECLOUD, // type
+                                     &mpos, // world pos
+                                     12.2f, // time to live
+                                     420.0f  * distScale)); // scale
                     break;
             }
 
@@ -5259,21 +5259,21 @@ SfxClass::RunSecondarySfx(void)
             // start sam launch effect
             /*
             OTWDriver.AddSfxRequest(
-            	SFX_SAM_LAUNCH,			// type
-            	0,						// flags
-            	&mpos,					// world pos
-            	&rot,					// orientation matrix
-            	&mvec,					// vector for movement
-            	2.2,					// time to live
-            	52.0f );				// scale
-            	*/
+             SFX_SAM_LAUNCH, // type
+             0, // flags
+             &mpos, // world pos
+             &rot, // orientation matrix
+             &mvec, // vector for movement
+             2.2, // time to live
+             52.0f ); // scale
+             */
 
             // start missile launch from sam loc
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_AIR_SMOKECLOUD,			// type
-                             &mpos,					// world pos
-                             12.2f,					// time to live
-                             420.0f  * distScale));				// scale
+                new SfxClass(SFX_AIR_SMOKECLOUD, // type
+                             &mpos, // world pos
+                             12.2f, // time to live
+                             420.0f  * distScale)); // scale
 
 
             if (!PRANDInt3())
@@ -5286,12 +5286,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y / travelDist * 1500.0f;
                 mvec.z = vec.z / travelDist * 1500.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_MISSILE_LAUNCH,			// type
-                                 mflags,						// flags
-                                 &mpos,					// world pos
-                                 &mvec,					// vector for movement
-                                 travelDist / 1500.0f,					// time to live
-                                 420.0f * distScale));				// scale
+                    new SfxClass(SFX_MISSILE_LAUNCH, // type
+                                 mflags, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector for movement
+                                 travelDist / 1500.0f, // time to live
+                                 420.0f * distScale)); // scale
             }
             else
             {
@@ -5303,12 +5303,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y / travelDist * TRACER_VELOCITY;
                 mvec.z = vec.z / travelDist * TRACER_VELOCITY;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_TRACER_FIRE,			// type
-                                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,						// flags
-                                 &mpos,					// world pos
-                                 &mvec,					// vector for movement
-                                 travelDist / TRACER_VELOCITY,					// time to live
-                                 180.0f * distScale));				// scale
+                    new SfxClass(SFX_TRACER_FIRE, // type
+                                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector for movement
+                                 travelDist / TRACER_VELOCITY, // time to live
+                                 180.0f * distScale)); // scale
             }
 
             break;
@@ -5343,12 +5343,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y / travelDist * 1500.0f;
                 mvec.z = vec.z / travelDist * 1500.0f;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_MISSILE_LAUNCH,			// type
-                                 mflags,						// flags
-                                 &mpos,					// world pos
-                                 &mvec,					// vector for movement
-                                 travelDist / 1500.0f,					// time to live
-                                 420.0f * distScale));				// scale
+                    new SfxClass(SFX_MISSILE_LAUNCH, // type
+                                 mflags, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector for movement
+                                 travelDist / 1500.0f, // time to live
+                                 420.0f * distScale)); // scale
             }
             else
             {
@@ -5360,12 +5360,12 @@ SfxClass::RunSecondarySfx(void)
                 mvec.y = vec.y / travelDist * TRACER_VELOCITY;
                 mvec.z = vec.z / travelDist * TRACER_VELOCITY;
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_TRACER_FIRE,			// type
-                                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,						// flags
-                                 &mpos,					// world pos
-                                 &mvec,					// vector for movement
-                                 travelDist / TRACER_VELOCITY,					// time to live
-                                 180.0f * distScale));				// scale
+                    new SfxClass(SFX_TRACER_FIRE, // type
+                                 SFX_EXPLODE_WHEN_DONE | SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR, // flags
+                                 &mpos, // world pos
+                                 &mvec, // vector for movement
+                                 travelDist / TRACER_VELOCITY, // time to live
+                                 180.0f * distScale)); // scale
             }
 
             break;
@@ -5375,10 +5375,10 @@ SfxClass::RunSecondarySfx(void)
             mpos.y = pos.y;
             mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_GLOW,			// type
-                             &mpos,					// world pos
-                             obj2d->GetAlphaTimeToLive(),					// time to live
-                             scale));				// scale
+                new SfxClass(SFX_GROUND_GLOW, // type
+                             &mpos, // world pos
+                             obj2d->GetAlphaTimeToLive(), // time to live
+                             scale)); // scale
             break;
 
         case SFX_NAPALM:
@@ -5397,10 +5397,10 @@ SfxClass::RunSecondarySfx(void)
                 mpos.z = rads  - 30.0f - PRANDFloatPos() * 100.0f;
 
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_INCENDIARY_EXPLOSION,		// type
-                                 &mpos,					// world pos
-                                 2.5f,					// time to live
-                                 200.0f + 500.0f * PRANDFloatPos()));				// scale
+                    new SfxClass(SFX_INCENDIARY_EXPLOSION, // type
+                                 &mpos, // world pos
+                                 2.5f, // time to live
+                                 200.0f + 500.0f * PRANDFloatPos())); // scale
             }
 
             pos.x += vec.x * 0.2f;
@@ -5434,18 +5434,18 @@ SfxClass::RunSecondarySfx(void)
             mpos.z = pos.z;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_HIT_EXPLOSION_DEBRISTRAIL,				// type
-                             &mpos,							// world pos
-                             1.5f,			// time to live
-                             scale));		// scale
+                new SfxClass(SFX_HIT_EXPLOSION_DEBRISTRAIL, // type
+                             &mpos, // world pos
+                             1.5f, // time to live
+                             scale)); // scale
 
 
             mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_GROUND_FLASH,			// type
-                             &mpos,					// world pos
-                             2.2f,					// time to live
-                             scale * 1.4f));				// scale
+                new SfxClass(SFX_GROUND_FLASH, // type
+                             &mpos, // world pos
+                             2.2f, // time to live
+                             scale * 1.4f)); // scale
 
             // sound
             F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
@@ -5462,7 +5462,7 @@ SfxClass::RunSecondarySfx(void)
 /*
 ** Name: RunSfxCompletion
 ** Description:
-**		What happens to effect when it's done?
+** What happens to effect when it's done?
 */
 void
 //SfxClass::RunSfxCompletion( BOOL hitGround, float groundZ, int groundType )
@@ -5481,40 +5481,40 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
             {
                 F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_WATER_STRIKE,				// type
-                                 &pos,					// world pos
-                                 2.0f,							// time to live
-                                 100.0f));							// scale
+                    new SfxClass(SFX_WATER_STRIKE, // type
+                                 &pos, // world pos
+                                 2.0f, // time to live
+                                 100.0f)); // scale
             }
             else
             {
                 if (PRANDInt6())
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_GROUND_STRIKE,				// type
-                                     &pos,					// world pos
-                                     2.0f,							// time to live
-                                     100.0f));							// scale
+                        new SfxClass(SFX_GROUND_STRIKE, // type
+                                     &pos, // world pos
+                                     2.0f, // time to live
+                                     100.0f)); // scale
                 }
                 else
                 {
                     OTWDriver.AddSfxRequest(
-                        new SfxClass(SFX_ARTILLERY_EXPLOSION,				// type
-                                     &pos,					// world pos
-                                     2.0f,							// time to live
-                                     100.0f));							// scale
+                        new SfxClass(SFX_ARTILLERY_EXPLOSION, // type
+                                     &pos, // world pos
+                                     2.0f, // time to live
+                                     100.0f)); // scale
                 }
 
                 // temp craters
                 /*
                 OTWDriver.AddSfxRequest(
-                			new SfxClass( SFX_RAND_CRATER,				// type
-                			0,								// flags
-                			&pos,							// world pos
-                			(struct Trotation *)&IMatrix,						// world orientation
-                			&vec,							// vector
-                			15.0f,							// time to live
-                			50.0f + 50.0f * PRANDFloatPos() ) );							// scale
+                 new SfxClass( SFX_RAND_CRATER, // type
+                 0, // flags
+                 &pos, // world pos
+                 (struct Trotation *)&IMatrix, // world orientation
+                 &vec, // vector
+                 15.0f, // time to live
+                 50.0f + 50.0f * PRANDFloatPos() ) ); // scale
                 */
             }
         }
@@ -5524,27 +5524,27 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                  type == SFX_MISSILE_LAUNCH)
         {
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SMALL_AIR_EXPLOSION,				// type
-                             &pos,					// world pos
-                             1.2f,							// time to live
-                             40.0f));						// scale
+                new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                             &pos, // world pos
+                             1.2f, // time to live
+                             40.0f)); // scale
         }
         else if (type == SFX_TRACER_FIRE)
         {
             float distScale = max(0.1f, approxDist / 200000.0f);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SMALL_AIR_EXPLOSION,				// type
-                             &pos,					// world pos
-                             1.5f,							// time to live
-                             400.0f * distScale));						// scale
+                new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                             &pos, // world pos
+                             1.5f, // time to live
+                             400.0f * distScale)); // scale
         }
         else
         {
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_AIR_HANGING_EXPLOSION,		// type
-                             &pos,					// world pos
-                             2.0f,							// time to live
-                             250.0f));						// scale
+                new SfxClass(SFX_AIR_HANGING_EXPLOSION, // type
+                             &pos, // world pos
+                             2.0f, // time to live
+                             250.0f)); // scale
         }
 
         if (hitGround)
@@ -5562,10 +5562,10 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_WATER_STRIKE,				// type
-                             &pos,					// world pos
-                             1.5f,							// time to live
-                             20.0f));							// scale
+                new SfxClass(SFX_WATER_STRIKE, // type
+                             &pos, // world pos
+                             1.5f, // time to live
+                             20.0f)); // scale
         }
         else
         {
@@ -5575,10 +5575,10 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                 {
                     case 0:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE,	// type
-                                         &pos,					// world pos
-                                         1.5f,					// time to live
-                                         15.0f));				// scale
+                            new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
+                                         &pos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         break;
 
                     case 1:
@@ -5586,37 +5586,37 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                         vec.y = 0.0f;
                         vec.z = -50.0f;
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_FIRE4,		// type
+                            new SfxClass(SFX_FIRE4, // type
                                          SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                                         &pos,					// world pos
-                                         &vec,					// vel vector
-                                         1.5,					// time to live
-                                         20.25f));				// scale
+                                         &pos, // world pos
+                                         &vec, // vel vector
+                                         1.5, // time to live
+                                         20.25f)); // scale
                         break;
 
                     case 2:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_SMALL_HIT_EXPLOSION,				// type
-                                         &pos,							// world pos
-                                         1.5f,			// time to live
-                                         15.0f));		// scale
+                            new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
+                                         &pos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
                         break;
 
                     case 3:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_GROUND_FLASH,			// type
-                                         &pos,					// world pos
-                                         2.2f,					// time to live
-                                         75.4f));				// scale
+                            new SfxClass(SFX_GROUND_FLASH, // type
+                                         &pos, // world pos
+                                         2.2f, // time to live
+                                         75.4f)); // scale
                         break;
 
                     case 4:
                         OTWDriver.AddSfxRequest(
-                            new SfxClass(SFX_SMALL_AIR_EXPLOSION,	// type
-                                         &pos,					// world pos
-                                         1.5f,					// time to live
-                                         15.0f));				// scale
+                            new SfxClass(SFX_SMALL_AIR_EXPLOSION, // type
+                                         &pos, // world pos
+                                         1.5f, // time to live
+                                         15.0f)); // scale
                         F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
                         break;
                 }
@@ -5624,10 +5624,10 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
             else if (type == SFX_GUN_TRACER)
             {
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_SPARKS,				// type
-                                 &pos,							// world pos
-                                 0.75f,							// time to live
-                                 31.0f));						// scale
+                    new SfxClass(SFX_SPARKS, // type
+                                 &pos, // world pos
+                                 0.75f, // time to live
+                                 31.0f)); // scale
             }
         }
     }
@@ -5635,51 +5635,51 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     /*
     if ( type == SFX_FIRE1 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE2,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE2, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else if ( type == SFX_FIRE2 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE3,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE3, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else if ( type == SFX_FIRE3 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE4,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE4, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else if ( type == SFX_FIRE4 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE5,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE5, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else if ( type == SFX_FIRE5 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE6,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE6, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else if ( type == SFX_FIRE6 )
     {
-    	OTWDriver.AddSfxRequest(
-    				new SfxClass(SFX_FIRE7,				// type
-    				&pos,							// world pos
-    				0.3f,			// time to live
-    				scale * 1.1 ) );		// scale
+     OTWDriver.AddSfxRequest(
+     new SfxClass(SFX_FIRE7, // type
+     &pos, // world pos
+     0.3f, // time to live
+     scale * 1.1 ) ); // scale
     }
     else
     */
@@ -5689,8 +5689,8 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     {
         OTWDriver.AddSfxRequest(
             new SfxClass(
-                30.0f,							// time to live
-                objTrail));						// scale
+                30.0f, // time to live
+                objTrail)); // scale
         objTrail = NULL;
     }
 }
@@ -5699,7 +5699,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
 /*
 ** Name: GroundReflection
 ** Description:
-**		Reflects movement vector based on hit with the ground
+** Reflects movement vector based on hit with the ground
 */
 void
 SfxClass::GroundReflection(void)
@@ -5719,9 +5719,9 @@ SfxClass::GroundReflection(void)
 /*
 ** Name: ACMIStart
 ** Description:
-**		Starts the effect by adding it to the draw list.
-**		And sets the timetolive
-**		ACMI Version
+** Starts the effect by adding it to the draw list.
+** And sets the timetolive
+** ACMI Version
 */
 void
 SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
@@ -5783,9 +5783,9 @@ SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
 /*
 ** Name: ACMIExec
 ** Description:
-**		Executes the effect
-**		Returns FALSE when completed
-**		ACMI Version
+** Executes the effect
+** Returns FALSE when completed
+** ACMI Version
 */
 BOOL
 SfxClass::ACMIExec(float currTime)
@@ -5841,14 +5841,14 @@ SfxClass::ACMIExec(float currTime)
     /*
     if ( hitGround && (flags & SFX_BOUNCES) && groundType > 2 )
     {
-    	// calcuate the new movement vector
-    	GroundReflection();
-    	pos.z = groundZ - 4.0f;
-    	// momentum loss
-    	vec.x *= 0.50f;
-    	vec.y *= 0.50f;
-    	vec.z *= 0.50f;
-    	hitGround = FALSE;
+     // calcuate the new movement vector
+     GroundReflection();
+     pos.z = groundZ - 4.0f;
+     // momentum loss
+     vec.x *= 0.50f;
+     vec.y *= 0.50f;
+     vec.z *= 0.50f;
+     hitGround = FALSE;
     }
     */
 
@@ -5985,8 +5985,8 @@ SfxClass::ACMIExec(float currTime)
 /*
 ** Name: SetLOD
 ** Description:
-**		Sets detail level for special effects.
-**		static class function
+** Sets detail level for special effects.
+** static class function
 */
 void
 SfxClass::SetLOD(float objDetail)
@@ -6095,41 +6095,41 @@ SfxClass::StartRandomDebris(void)
             type == SFX_WATER_STRIKE)
         {
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_LIGHT_DEBRIS,		// type
+                new SfxClass(SFX_LIGHT_DEBRIS, // type
                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                             &mpos,					// world pos
-                             &mvec,					// vel vector
-                             timetl,					// time to live
-                             debrisScale));				// scale
+                             &mpos, // world pos
+                             &mvec, // vel vector
+                             timetl, // time to live
+                             debrisScale)); // scale
         }
         else if (type == SFX_SPARKS)
         {
             if ((rand() & 1) || groundHit)
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_DARK_DEBRIS,		// type
+                    new SfxClass(SFX_DARK_DEBRIS, // type
                                  SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                 &mpos,					// world pos
-                                 &mvec,					// vel vector
-                                 timetl,					// time to live
-                                 debrisScale));				// scale
+                                 &mpos, // world pos
+                                 &mvec, // vel vector
+                                 timetl, // time to live
+                                 debrisScale)); // scale
             else
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_EXPLSTAR_GLOW,		// type
+                    new SfxClass(SFX_EXPLSTAR_GLOW, // type
                                  SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                                 &mpos,					// world pos
-                                 &mvec,					// vel vector
-                                 timetl,					// time to live
-                                 debrisScale));				// scale
+                                 &mpos, // world pos
+                                 &mvec, // vel vector
+                                 timetl, // time to live
+                                 debrisScale)); // scale
         }
         else
         {
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_DARK_DEBRIS,		// type
+                new SfxClass(SFX_DARK_DEBRIS, // type
                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                             &mpos,					// world pos
-                             &mvec,					// vel vector
-                             timetl,					// time to live
-                             debrisScale));				// scale
+                             &mpos, // world pos
+                             &mvec, // vel vector
+                             timetl, // time to live
+                             debrisScale)); // scale
         }
     }
 }

@@ -2,7 +2,7 @@
 #define _SMS_H
 
 #include "hardpnt.h"
-#include "fcc.h"	//MI
+#include "fcc.h" //MI
 
 // Forward declaration of class pointers
 class SimVehicleClass;
@@ -14,7 +14,7 @@ class GunClass;
 class MissileClass;
 class BombClass;
 class AircraftClass;
-class FireControlComputer;	//MI
+class FireControlComputer; //MI
 class AirframeClass; // RV - I-Hawk
 
 // ==================================================================
@@ -57,7 +57,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
     enum JDAMtargetingMode {PB, TOO};
@@ -75,9 +75,9 @@ public:
         SPJamOnBoard            = 0x0100,
         GunOnBoard              = 0x0200,
         Trainable               = 0x0400,
-        TankJettisonFlag		 = 0x0800 // 2002-02-20 ADDED BY S.G. Flag it if we have jettisoned our tanks (mainly for digis)
+        TankJettisonFlag  = 0x0800 // 2002-02-20 ADDED BY S.G. Flag it if we have jettisoned our tanks (mainly for digis)
     };
-    BasicWeaponStation		**hardPoint;
+    BasicWeaponStation **hardPoint;
 
     SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt, int advanced = FALSE);
     virtual ~SMSBaseClass();
@@ -154,13 +154,13 @@ public:
 
     void SelectBestWeapon(uchar *dam, int mt, int range_km, int guns_only = FALSE, int alt_feet = -1);  // 2002-03-09 MODIFIED BY S.G. Added the alt_feet variable so it knows the altitude of the target as well as it range
 
-    MasterArmState masterArm;	//MI moved from protected
+    MasterArmState masterArm; //MI moved from protected
     //MI
     bool BHOT;
     bool GndJett;
     bool FEDS;
     bool DrawFEDS;
-    bool Powered;	//for mav's
+    bool Powered; //for mav's
     float MavCoolTimer;
     enum MavSubModes { PRE, VIS, BORE};
     MavSubModes MavSubMode;
@@ -248,7 +248,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 protected:
@@ -409,7 +409,7 @@ public:
 
     int  GetCurrentWeaponId(void);
     int  SetCurrentHpByWeaponId(int WeaponId); // used to find the next non-empty hardpoint carrying the the specified weaponID
-    void StepAAWeapon(void);	// MLR 2/8/2004 - revised function names, was StepWeaponClass
+    void StepAAWeapon(void); // MLR 2/8/2004 - revised function names, was StepWeaponClass
     void StepAGWeapon(void);  // MLR 2/8/2004 - new, to step AG weapons like AA weapons
     void StepWeaponByID(void); // MLR 1/31/2004 - was StepAAWeaponByID - now can step AG weapons aswell
 

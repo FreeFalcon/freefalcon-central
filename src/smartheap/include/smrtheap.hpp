@@ -24,7 +24,7 @@
 #endif
 
 #if (UINT_MAX == 0xFFFFu) && (defined(MEM_WIN16) \
-	|| defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__))
+ || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__))
 /* 16-bit X86 */
 #if defined(SYS_DLL)
 #if defined(_MSC_VER) && _MSC_VER <= 600

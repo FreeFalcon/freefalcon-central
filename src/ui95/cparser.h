@@ -5,7 +5,7 @@
 
 #define PARSE_MAX_PARAMS    (12)
 #define MAX_WINDOWS_IN_LIST (200)
-#define PARSE_HASH_SIZE		(1024)
+#define PARSE_HASH_SIZE (1024)
 
 typedef struct
 {
@@ -35,23 +35,23 @@ private:
     long P_[PARSE_MAX_PARAMS]; // used for passing parameters to Setup routines for the new windows/controls
     _TCHAR *str_; // string pointer (only 1 allowed per command)
 
-    C_Handler	*Handler_;	// pointer to Window Handler (from Setup())
-    C_Window	*Window_;	// pointer to current window (from script)
-    C_Base		*Control_;	// pointer to current control (from script)
-    C_Font		*Font_;		// Pointer to current Font (from script)
-    C_Image		*Image_;	// Pointer to current Image Mgr (from script)
-    C_Animation	*Anim_;		// Pointer to current Animation Mgr (from Script)
-    C_Sound		*Sound_;	// Pointer to current Sound Mgr (from script)
-    C_PopupMgr	*Popup_;	// Pointer to Popup Menu Manager
-    C_String	*String_;	// Pointer to String Manager (from script)
-    C_Movie		*Movie_;	// Pointer to Movie Manager (from script)
+    C_Handler *Handler_; // pointer to Window Handler (from Setup())
+    C_Window *Window_; // pointer to current window (from script)
+    C_Base *Control_; // pointer to current control (from script)
+    C_Font *Font_; // Pointer to current Font (from script)
+    C_Image *Image_; // Pointer to current Image Mgr (from script)
+    C_Animation *Anim_; // Pointer to current Animation Mgr (from Script)
+    C_Sound *Sound_; // Pointer to current Sound Mgr (from script)
+    C_PopupMgr *Popup_; // Pointer to Popup Menu Manager
+    C_String *String_; // Pointer to String Manager (from script)
+    C_Movie *Movie_; // Pointer to Movie Manager (from script)
 
     long       WindowList_[MAX_WINDOWS_IN_LIST];
 
-    C_Hash	*IDOrder_;		// Hash List in ID order... for finding tokens
-    C_Hash	*TokenOrder_;	// Hash List in "Token" order
+    C_Hash *IDOrder_; // Hash List in ID order... for finding tokens
+    C_Hash *TokenOrder_; // Hash List in "Token" order
 
-    char ValueStr[40];		// string to contain values of IDs NOT found in table
+    char ValueStr[40]; // string to contain values of IDs NOT found in table
 
     FILE *Perror_;
     // Current Token;

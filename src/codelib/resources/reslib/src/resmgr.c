@@ -2,9 +2,9 @@
 
     Resource Manager
 
-	Version 2.05                   Released 03/26/97
+ Version 2.05                   Released 03/26/97
 
-	Written by Kevin Ray (x301)	   (c) 1996 Spectrum Holobyte
+ Written by Kevin Ray (x301)    (c) 1996 Spectrum Holobyte
 
    ----------------------------------------------------------------------
 
@@ -80,12 +80,12 @@
 
          5) ResExit        shut-down the resource manager
 
-	History:
+ History:
 
-	03/18/96 KBR   Created/Thieved (unzip/inflate from Fujii via gcc).
-	04/01/96 KBR   Integrated unzip/inflate under virtual filesystem.
+ 03/18/96 KBR   Created/Thieved (unzip/inflate from Fujii via gcc).
+ 04/01/96 KBR   Integrated unzip/inflate under virtual filesystem.
 
-	TBD:  CD statistic caching (head movements, warning tracks, etc).
+ TBD:  CD statistic caching (head movements, warning tracks, etc).
 
    ---------------------------------------------------------------------- */
 #include "lists.h"         /* list manipulation functions (+list.cpp)        */
@@ -7031,7 +7031,7 @@ HASH_ENTRY * hash_add(struct _finddata_t * data, HASH_TABLE * hsh)
             return(NULL);
         }
 
-        memset(entry ->next, 0, sizeof(HASH_ENTRY));	// OW BC
+        memset(entry ->next, 0, sizeof(HASH_ENTRY)); // OW BC
 
         entry = entry -> next;
     }
@@ -7084,7 +7084,7 @@ void hash_copy(HASH_ENTRY * dst, HASH_ENTRY * src)
         dst -> next = (HASH_ENTRY *)MemMalloc(sizeof(HASH_ENTRY), "Hash entry");
 #endif
 
-        if (dst->next) memset(dst->next, 0, sizeof(HASH_ENTRY));	// OW BC
+        if (dst->next) memset(dst->next, 0, sizeof(HASH_ENTRY)); // OW BC
 
         dst = dst -> next;
     }

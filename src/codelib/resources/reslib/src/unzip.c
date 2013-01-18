@@ -24,12 +24,12 @@
     NOTE:  MSVC users - don't even bother trying to 'Update Dependencies'.
            Uggh!  06/30/96 - This should work now
 
-	Created     Mark Adler & Jean-loup Gailly (GCC)
+ Created     Mark Adler & Jean-loup Gailly (GCC)
     Modified    Roger Fujii (STTNG:AFU)
     Big Purge   Kevin Ray   (RESMGR)
 
 
-	RESMGR Library component unzip.cpp (ver: 2.05	released 03/26/97)
+ RESMGR Library component unzip.cpp (ver: 2.05 released 03/26/97)
 
    ========================================================================== */
 

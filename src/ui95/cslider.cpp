@@ -104,7 +104,7 @@ void C_Slider::SetSliderRange(const long Min, const long Max)//!
     MaxPos_ = static_cast<short>(Max);
 }
 
-void C_Slider::SetSliderPos(long Pos)	//!
+void C_Slider::SetSliderPos(long Pos) //!
 {
     long dist;
 
@@ -151,10 +151,10 @@ long C_Slider::CheckHotSpots(long relX, long relY)
 
     if (
         /*
-        		(relX < (GetX()+SX_)) ||
-        		(relX > (GetX()+(Slider_->Header->w)+SX_)) ||
-        		(relY < (GetY()+SY_)) ||
-        		(relY > (GetY()+(Slider_->Header->h)+SY_))*/
+         (relX < (GetX()+SX_)) ||
+         (relX > (GetX()+(Slider_->Header->w)+SX_)) ||
+         (relY < (GetY()+SY_)) ||
+         (relY > (GetY()+(Slider_->Header->h)+SY_))*/
         (relX < GetX()) || (relX > (GetX() + GetW())) ||
         (relY < GetY()) || (relY > (GetY() + GetH()))
     )
@@ -279,11 +279,11 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
     rect.top = GetY();
     rect.bottom = rect.top + GetH();
 
-    //	if(BgImage_)
-    //	{
-    //		BgImage_->Blit(0,0,BgImage_->Header->w,BgImage_->Header->h,rect.left,rect.top,800,dest);
-    //		//Parent_->Blit(BgImage_->Image,&BgImage_->rect,&rect,GetFlags(),GetClient());
-    //	}
+    // if(BgImage_)
+    // {
+    // BgImage_->Blit(0,0,BgImage_->Header->w,BgImage_->Header->h,rect.left,rect.top,800,dest);
+    // //Parent_->Blit(BgImage_->Image,&BgImage_->rect,&rect,GetFlags(),GetClient());
+    // }
     if (Slider_)
     {
         s.left = 0;
@@ -405,7 +405,7 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
                 SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); //!
-                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;	   //!
+                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    //!
             }
 
             if (SY_ > MaxPos_)
@@ -423,7 +423,7 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
             {
                 dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
                 SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); //!
-                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)	 + MinPos_;	 //!
+                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  //!
             }
 
             if (SX_ > MaxPos_)

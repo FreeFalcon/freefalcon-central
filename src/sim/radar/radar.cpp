@@ -24,17 +24,17 @@
 extern float g_fMoverVrValue;
 
 // 2000-09-22 MODIFIED BY S.G. PER TEO CHER MIN, LOOK DOWN ANGLE SHOULD BE 2.5 INSTEAD OF 5.0
-// static const float	LOOK_DOWN_DECISION_ANGLE	= 5 * DTR;
-static const float	LOOK_DOWN_DECISION_ANGLE	= 2.5 * DTR;
+// static const float LOOK_DOWN_DECISION_ANGLE = 5 * DTR;
+static const float LOOK_DOWN_DECISION_ANGLE = 2.5 * DTR;
 
 // main beam radar return
 // the ground/water gives where the main beam is
 
-const UInt32		RadarClass::TrackUpdateTime	= 2000;
+const UInt32 RadarClass::TrackUpdateTime = 2000;
 
-const float			RadarClass::CursorRate		= 0.15f;//me123 status ok. changed from 0.25
+const float RadarClass::CursorRate = 0.15f;//me123 status ok. changed from 0.25
 
-RadarDataType*			RadarDataTable = NULL;
+RadarDataType* RadarDataTable = NULL;
 short NumRadarEntries = 0;
 
 RadarDataSet *radarDatFileTable = NULL;
@@ -42,19 +42,19 @@ short NumRadarDatFileTable = 0;
 
 RadarClass::RadarClass(int type, SimMoverClass* parentPlatform) : SensorClass(parentPlatform)
 {
-    sensorType			= Radar;
-    dataProvided		= ExactPosition;
-    lastTargetLockSend	= 0;
-    isEmitting			= TRUE;
-    targetUnderCursor	= FalconNullId;
+    sensorType = Radar;
+    dataProvided = ExactPosition;
+    lastTargetLockSend = 0;
+    isEmitting = TRUE;
+    targetUnderCursor = FalconNullId;
     lasttargetUnderCursor = NULL;//me123
 #if !NO_REMOTE_BUGGED_TARGET
-    RemoteBuggedTarget	= NULL;
+    RemoteBuggedTarget = NULL;
 #endif
-    oldseekerElCenter	= 0.0f;
-    radarData			= &RadarDataTable[ type ];
-    digiRadarMode		= DigiRWS;		// 2002-02-09 ADDED BY S.G. Need to init the radar mode the digi will be set to by default...
-    flag				= FirstSweep;	// 2002-03-10 ADDED BY S.G. Tells the RadarDigi::Exec function that the radar is doing is first sweep since creation, don't apply TimeToLock
+    oldseekerElCenter = 0.0f;
+    radarData = &RadarDataTable[ type ];
+    digiRadarMode = DigiRWS; // 2002-02-09 ADDED BY S.G. Need to init the radar mode the digi will be set to by default...
+    flag = FirstSweep; // 2002-03-10 ADDED BY S.G. Tells the RadarDigi::Exec function that the radar is doing is first sweep since creation, don't apply TimeToLock
 
     if (!radarData->RDRDataInd) radarData->RDRDataInd = type;
 
@@ -162,9 +162,9 @@ void RadarClass::SetDesiredTarget(SimObjectType* newTarget)
 
     // If we're not interested in our locked target anymore, tell him he's off the hook
     //if (lockedTarget) // JB 010223 CTD
-    //	if (lockedTarget && !F4IsBadCodePtr((FARPROC) lockedTarget) && !F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
-    //me123 this is done in SetSensorTarget below		SendTrackMsg (lockedTarget->BaseData()->Id(), Track_Unlock);
-    //	}
+    // if (lockedTarget && !F4IsBadCodePtr((FARPROC) lockedTarget) && !F4IsBadCodePtr((FARPROC) lockedTarget->BaseData())) { // JB 010223 CTD
+    //me123 this is done in SetSensorTarget below SendTrackMsg (lockedTarget->BaseData()->Id(), Track_Unlock);
+    // }
 
     // Note our new interest
     if (newTarget)
@@ -212,11 +212,11 @@ void RadarClass::DisplayInit(ImageBuffer* newImage)
 float RadarClass::ReturnStrength(SimObjectType* target)
 {
     static const float TAN_DECISION_ANGLE = (float)tan(LOOK_DOWN_DECISION_ANGLE);
-    float	S;
-    float	dz;
-    float	Vr;
-    //	float	bottom;
-    //	float	top;
+    float S;
+    float dz;
+    float Vr;
+    // float bottom;
+    // float top;
 
     // FRB - CTD's here (bad target pointer)
     if (F4IsBadReadPtr(target, sizeof(SimObjectType)))
@@ -246,9 +246,9 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     {
         // MODIFIED BY S.G. SO ECM DEVICE ARE ONLY EFFECTIVE FROM ENEMY LOCATED AT AN az OF ±60° IN FRONT/BACK OF THE PLANE
         // AND AN el OF -30° TO +15°
-        //			S *= radarData->JammingPenalty;
+        // S *= radarData->JammingPenalty;
         float ecmAngleFactor = 1;
-        int	iAz, iEl;
+        int iAz, iEl;
 
         iAz = (int)fabs(target->localData->azFrom * RTD);
         iEl = (int)(target->localData->elFrom * RTD);
@@ -303,7 +303,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         if (campBaseObj && campBaseObj->IsFlight())
         {
             // If its the ECM flight or an ECM protected flight...
-            Flight	ecmFlight = ((FlightClass *)campBaseObj)->GetECMFlight();
+            Flight ecmFlight = ((FlightClass *)campBaseObj)->GetECMFlight();
 
             if (ecmFlight)
             {
@@ -367,7 +367,7 @@ float RadarClass::ReturnStrength(SimObjectType* target)
     else
     {
         dz = target->BaseData()->ZPos() - platform->ZPos();
-        float	mainclutter = FALSE;
+        float mainclutter = FALSE;
         float lookdown = asin(dz / target->localData->range) - radarData->BeamHalfAngle;
         float mainbeamclutterrange = -platform->ZPos() * FT_TO_NM / sin(lookdown);
         mainclutter = min(1.0f,  radarData->NominalRange * FT_TO_NM / (mainbeamclutterrange - target->localData->range * FT_TO_NM))  ;
@@ -421,11 +421,11 @@ float RadarClass::ReturnStrength(SimObjectType* target)
         S = -1.0f;
     }
 
-    /*	OTWDriver.GetAreaFloorAndCeiling (&bottom, &top);
+    /* OTWDriver.GetAreaFloorAndCeiling (&bottom, &top);
     if (target->BaseData()->ZPos() > top || platform->ZPos() > top) {
-    	if ( !OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
-    		S = 0.0f;
-    	}
+     if ( !OTWDriver.CheckLOS( platform, target->BaseData() ) ) {
+     S = 0.0f;
+     }
     }*/
 
     return S;

@@ -2,16 +2,16 @@
 #ifndef WEAPLIST_H
 #define WEAPLIST_H
 
-#define MAX_WEAPONS_IN_LIST	64	// to accomodate additional weapons
+#define MAX_WEAPONS_IN_LIST 64 // to accomodate additional weapons
 
 struct WeaponListDataType
 {
-    char		Name[16];
-    short		WeaponID[MAX_WEAPONS_IN_LIST];
-    uchar		Quantity[MAX_WEAPONS_IN_LIST];
+    char Name[16];
+    short WeaponID[MAX_WEAPONS_IN_LIST];
+    uchar Quantity[MAX_WEAPONS_IN_LIST];
 };
 
-extern WeaponListDataType*		WeaponListDataTable;
+extern WeaponListDataType* WeaponListDataTable;
 
 // Functions
 

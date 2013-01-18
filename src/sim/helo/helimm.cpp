@@ -1,12 +1,12 @@
 /*
 ** Name: HELIMM.CPP
 ** DEscription:
-**		Helicopter Math Model functions
-** 		Most of this stuff was taken originally from the NASA Technical
-**		Paper: "A Minimum-Complexity Helicopter Simulation Math Model"
+** Helicopter Math Model functions
+**  Most of this stuff was taken originally from the NASA Technical
+** Paper: "A Minimum-Complexity Helicopter Simulation Math Model"
 ** History:
-**		20-jun-97 (edg)
-**			We go dancing in......
+** 20-jun-97 (edg)
+** We go dancing in......
 */
 
 #if _MSC_VER >= 1300
@@ -29,15 +29,15 @@
 #include "helimm.h"
 
 
-float A1 = 1.5F;			// integration constant
-float A2 = 0.5F;			// integration constant
-float B1 = 1.0F - 1.5F;		// integration constant
-float B2 = 1.0F - 0.5F;		// integration constant
+float A1 = 1.5F; // integration constant
+float A2 = 0.5F; // integration constant
+float B1 = 1.0F - 1.5F; // integration constant
+float B2 = 1.0F - 0.5F; // integration constant
 
 // This cheat MM cheat is necessary to run the model in small
 // enough time increments -- essentially dividing the frame time
 // by a factor
-#define TIME_CHEAT 	(1.0F)
+#define TIME_CHEAT  (1.0F)
 
 // constant which determines number of times to iterate on
 // solution for thrust and induced velocity for both tail
@@ -50,467 +50,467 @@ const int numRotorIterations = 4;
 /*
 HELI_MODEL_DATA gModelData[NUM_MODELS] =
 {
-	// This model is for the Agusta A102
-	{
-		A109,
-		0,				// has_wing
-		4.0,			// roll damp
-		// Fuselage Data
-		{
-			132.7,		// fs cg
-			38.5,		// wl cg
-			5401.0,		// weight
-			{
-			  1590,		// IX
-			  6760,		// IY
-			  6407,		// IZ
-			},
-			800.0,		// IXZ
-			132.4,		// fs cp
-			38.2,		// wl cp
-			{
-			  -10.8,	// fe x
-			  -167,		// fe y
-			  -85,		// fe z
-			},
-		},
-		// Main rotor Data
-		{
-			132.4,		// fs
-			98.2,		// wl
-			0.11,		// is
-			0.5,		// hinge offset
-			212.0,		// moment of flap inertia
-			18.0,		// radius
-			5.7,		// lift slope
-			385,		// rpm
-			0.010,		// cd0
-			4,			// n blades
-			1.10,		// chord
-			-.105,		// twist
-			0.0,		// k1
+ // This model is for the Agusta A102
+ {
+ A109,
+ 0, // has_wing
+ 4.0, // roll damp
+ // Fuselage Data
+ {
+ 132.7, // fs cg
+ 38.5, // wl cg
+ 5401.0, // weight
+ {
+   1590, // IX
+   6760, // IY
+   6407, // IZ
+ },
+ 800.0, // IXZ
+ 132.4, // fs cp
+ 38.2, // wl cp
+ {
+   -10.8, // fe x
+   -167, // fe y
+   -85, // fe z
+ },
+ },
+ // Main rotor Data
+ {
+ 132.4, // fs
+ 98.2, // wl
+ 0.11, // is
+ 0.5, // hinge offset
+ 212.0, // moment of flap inertia
+ 18.0, // radius
+ 5.7, // lift slope
+ 385, // rpm
+ 0.010, // cd0
+ 4, // n blades
+ 1.10, // chord
+ -.105, // twist
+ 0.0, // k1
 
-		},
-		// Tail rotor Data
-		{
-			391.0,		// fs
-			70.0,		// wl
-			3.1,		// radius
-			5.0,		// lift slope
-			2080,		// rpm
-			-.137,		// twist
-			0.134,		// solidity
-			2,			// # blades
-			0.6			// chord
-		},
-		// Horiz Wing Data
-		{
-			0,			// fs
-			0,			// wl
-			0,			// zuu
-			0,			// zuw
-			0,			// zmax
-			1,			// span
-		},
-		// Horiz Tail Data
-		{
-			330,		// fs
-			54,			// wl
-			0.0,		// zuu
-			-34.0,		// zuw
-			-22.0,		// zmax
-			1,			// span
-		},
-		// Vert Tail Data
-		{
-			380,		// fs
-			80,			// wl
-			0.0,		// zuu
-			-47.0,		// zuw
-			-17.0,		// zmax
-		},
-		// trim data
-		{
-			-1.9,		// cyc_roll center
-			12.0,		// cyc_roll max
-			 -0.2,		// cyc_pitch center
-			 6.5,		// cyc_pitch max
-			 0.0,		// coll_pitch center
-			10.0,		// coll_pitch max
-			8.0,		// tr_pitch center
-			18.0,		// tr_pitch max
-		},
-	},
+ },
+ // Tail rotor Data
+ {
+ 391.0, // fs
+ 70.0, // wl
+ 3.1, // radius
+ 5.0, // lift slope
+ 2080, // rpm
+ -.137, // twist
+ 0.134, // solidity
+ 2, // # blades
+ 0.6 // chord
+ },
+ // Horiz Wing Data
+ {
+ 0, // fs
+ 0, // wl
+ 0, // zuu
+ 0, // zuw
+ 0, // zmax
+ 1, // span
+ },
+ // Horiz Tail Data
+ {
+ 330, // fs
+ 54, // wl
+ 0.0, // zuu
+ -34.0, // zuw
+ -22.0, // zmax
+ 1, // span
+ },
+ // Vert Tail Data
+ {
+ 380, // fs
+ 80, // wl
+ 0.0, // zuu
+ -47.0, // zuw
+ -17.0, // zmax
+ },
+ // trim data
+ {
+ -1.9, // cyc_roll center
+ 12.0, // cyc_roll max
+  -0.2, // cyc_pitch center
+  6.5, // cyc_pitch max
+  0.0, // coll_pitch center
+ 10.0, // coll_pitch max
+ 8.0, // tr_pitch center
+ 18.0, // tr_pitch max
+ },
+ },
 
 
-	// This model is for the Cobra
-	{
-		COBRA,
-		0,				// has_wing
-		4.0,			// roll damp
-		// Fuselage Data
-		{
-			196.0,		// fs cg
-			75.0,		// wl cg
-			9000.0,		// weight
-			{
-			  2593,		// IX
-			  14320,		// IY
-			  12330,		// IZ
-			},
-			0,		// IXZ
-			200.0,		// fs cp
-			65.0,		// wl cp
-			{
-			  -30.0,	// fe x
-			  -275,		// fe y
-			  -41,		// fe z
-			},
-		},
-		// Main rotor Data
-		{
-			200.0,		// fs
-			153.0,		// wl
-			0.0,		// is
-			0.00,		// hinge offset
-			1382.0,		// moment of flap inertia
-			22.0,		// radius
-			6.0,		// lift slope
-			324,		// rpm
-			0.010,		// cd0
-			2,			// n blades
-			2.25,		// chord
-			-.175,		// twist
-			0.0,		// k1
+ // This model is for the Cobra
+ {
+ COBRA,
+ 0, // has_wing
+ 4.0, // roll damp
+ // Fuselage Data
+ {
+ 196.0, // fs cg
+ 75.0, // wl cg
+ 9000.0, // weight
+ {
+   2593, // IX
+   14320, // IY
+   12330, // IZ
+ },
+ 0, // IXZ
+ 200.0, // fs cp
+ 65.0, // wl cp
+ {
+   -30.0, // fe x
+   -275, // fe y
+   -41, // fe z
+ },
+ },
+ // Main rotor Data
+ {
+ 200.0, // fs
+ 153.0, // wl
+ 0.0, // is
+ 0.00, // hinge offset
+ 1382.0, // moment of flap inertia
+ 22.0, // radius
+ 6.0, // lift slope
+ 324, // rpm
+ 0.010, // cd0
+ 2, // n blades
+ 2.25, // chord
+ -.175, // twist
+ 0.0, // k1
 
-		},
-		// Tail rotor Data
-		{
-			521.5,		// fs
-			119.0,		// wl
-			// 75.0,		// wl
-			4.25,		// radius
-			6.0,		// lift slope
-			1660,		// rpm
-			0.0,		// twist
-			0.105,		// solidity
-			2,			// # blades
-			0.5			// chord
-		},
-		// Horiz Wing Data
-		{
-			200,			// fs
-			65,			// wl
-			-39,			// zuu
-			-161,			// zuw
-			-65,			// zmax
-			10.75,			// span
-		},
-		// Horiz Tail Data
-		{
-			400,		// fs
-			65,			// wl
-			0.0,		// zuu
-			-80.0,		// zuw
-			-32.0,		// zmax
-			1,			// span
-		},
-		// Vert Tail Data
-		{
-			490,		// fs
-			80,			// wl
-			// 75,			// wl
-			0.0,		// zuu
-			-62.0,		// zuw
-			-50.0,		// zmax
-		},
-		// trim data
-		{
-			-0.3,		// cyc_roll center
-			10.0,		// cyc_roll max
-			-0.3,		// cyc_pitch center
-			10.0,		// cyc_pitch max
-			 0.0,		// coll_pitch center
-			14.0,		// coll_pitch max
-			 5.9,		// tr_pitch center
-			15.0,		// tr_pitch max
-		},
-	},
+ },
+ // Tail rotor Data
+ {
+ 521.5, // fs
+ 119.0, // wl
+ // 75.0, // wl
+ 4.25, // radius
+ 6.0, // lift slope
+ 1660, // rpm
+ 0.0, // twist
+ 0.105, // solidity
+ 2, // # blades
+ 0.5 // chord
+ },
+ // Horiz Wing Data
+ {
+ 200, // fs
+ 65, // wl
+ -39, // zuu
+ -161, // zuw
+ -65, // zmax
+ 10.75, // span
+ },
+ // Horiz Tail Data
+ {
+ 400, // fs
+ 65, // wl
+ 0.0, // zuu
+ -80.0, // zuw
+ -32.0, // zmax
+ 1, // span
+ },
+ // Vert Tail Data
+ {
+ 490, // fs
+ 80, // wl
+ // 75, // wl
+ 0.0, // zuu
+ -62.0, // zuw
+ -50.0, // zmax
+ },
+ // trim data
+ {
+ -0.3, // cyc_roll center
+ 10.0, // cyc_roll max
+ -0.3, // cyc_pitch center
+ 10.0, // cyc_pitch max
+  0.0, // coll_pitch center
+ 14.0, // coll_pitch max
+  5.9, // tr_pitch center
+ 15.0, // tr_pitch max
+ },
+ },
 
-	// This model is for the MD500
-	{
-		MD500,
-		0,				// has_wing
-		4.0,			// roll damp
-		// Fuselage Data
-		{
-			87.6,		// fs cg
-			66.0,		// wl cg
-			2200.0,		// weight
-			{
-			  263,		// IX
-			  1101,		// IY
-			  1000,		// IZ
-			},
-			200.0,		// IXZ
-			87.8,		// fs cp
-			66.2,		// wl cp
-			{
-			  -5.8,		// fe x
-			  -100,		// fe y
-			  -45,		// fe z
-			},
-		},
-		// Main rotor Data
-		{
-			87.6,		// fs
-			90.0,		// wl
-			0.0,		// is
-			0.42,		// hinge offset
-			150.0,		// moment of flap inertia
-			13.5,		// radius
-			6.0,		// lift slope
-			481,		// rpm
-			0.010,		// cd0
-			5,			// n blades
-			0.56,		// chord
-			-.157,		// twist
-			0.0,		// k1
+ // This model is for the MD500
+ {
+ MD500,
+ 0, // has_wing
+ 4.0, // roll damp
+ // Fuselage Data
+ {
+ 87.6, // fs cg
+ 66.0, // wl cg
+ 2200.0, // weight
+ {
+   263, // IX
+   1101, // IY
+   1000, // IZ
+ },
+ 200.0, // IXZ
+ 87.8, // fs cp
+ 66.2, // wl cp
+ {
+   -5.8, // fe x
+   -100, // fe y
+   -45, // fe z
+ },
+ },
+ // Main rotor Data
+ {
+ 87.6, // fs
+ 90.0, // wl
+ 0.0, // is
+ 0.42, // hinge offset
+ 150.0, // moment of flap inertia
+ 13.5, // radius
+ 6.0, // lift slope
+ 481, // rpm
+ 0.010, // cd0
+ 5, // n blades
+ 0.56, // chord
+ -.157, // twist
+ 0.0, // k1
 
-		},
-		// Tail rotor Data
-		{
-			271.2,		// fs
-			66.0,		// wl
-			2.3,		// radius
-			3.0,		// lift slope
-			2924,		// rpm
-			-.150,		// twist
-			0.119,		// solidity
-			2,			// # blades
-			0.44			// chord
-		},
-		// Horiz Wing Data
-		{
-			0,			// fs
-			0,			// wl
-			0,			// zuu
-			0,			// zuw
-			0,			// zmax
-			1,			// span
-		},
-		// Horiz Tail Data
-		{
-			278.0,		// fs
-			116,		// wl
-			0.0,		// zuu
-			-20.0,		// zuw
-			-12.0,		// zmax
-			1,			// span
-		},
-		// Vert Tail Data
-		{
-			265.0,		// fs
-			70,			// wl
-			0.0,		// zuu
-			-33.0,		// zuw
-			-10.0,		// zmax
-		},
-		// trim data
-		{
-			 0.0,		// cyc_roll center
-			10.0,		// cyc_roll max
-			-0.5,		// cyc_pitch center
-			 7.5,		// cyc_pitch max
-			 0.0,		// coll_pitch center
-			11.3,		// coll_pitch max
-			9.0,		// tr_pitch center
-			15.0,		// tr_pitch max
-		},
-	},
+ },
+ // Tail rotor Data
+ {
+ 271.2, // fs
+ 66.0, // wl
+ 2.3, // radius
+ 3.0, // lift slope
+ 2924, // rpm
+ -.150, // twist
+ 0.119, // solidity
+ 2, // # blades
+ 0.44 // chord
+ },
+ // Horiz Wing Data
+ {
+ 0, // fs
+ 0, // wl
+ 0, // zuu
+ 0, // zuw
+ 0, // zmax
+ 1, // span
+ },
+ // Horiz Tail Data
+ {
+ 278.0, // fs
+ 116, // wl
+ 0.0, // zuu
+ -20.0, // zuw
+ -12.0, // zmax
+ 1, // span
+ },
+ // Vert Tail Data
+ {
+ 265.0, // fs
+ 70, // wl
+ 0.0, // zuu
+ -33.0, // zuw
+ -10.0, // zmax
+ },
+ // trim data
+ {
+  0.0, // cyc_roll center
+ 10.0, // cyc_roll max
+ -0.5, // cyc_pitch center
+  7.5, // cyc_pitch max
+  0.0, // coll_pitch center
+ 11.3, // coll_pitch max
+ 9.0, // tr_pitch center
+ 15.0, // tr_pitch max
+ },
+ },
 
-	// This model is for the STABLE
-	{
-		STABLE,
-		0,				// has_wing
-		8.0,			// roll damp
-		// Fuselage Data
-		{
-			87.6,		// fs cg
-			66.0,		// wl cg
-			2200.0,		// weight
-			{
-			  263,		// IX
-			  1101,		// IY
-			  1000,		// IZ
-			},
-			200.0,		// IXZ
-			87.6,		// fs cp
-			66.0,		// wl cp
-			{
-			  -5.8,		// fe x
-			  -100,		// fe y
-			  -45,		// fe z
-			},
-		},
-		// Main rotor Data
-		{
-			87.6,		// fs
-			90.0,		// wl
-			0.0,		// is
-			0.42,		// hinge offset
-			150.0,		// moment of flap inertia
-			13.5,		// radius
-			6.0,		// lift slope
-			481,		// rpm
-			0.010,		// cd0
-			5,			// n blades
-			0.56,		// chord
-			-.157,		// twist
-			0.0,		// k1
+ // This model is for the STABLE
+ {
+ STABLE,
+ 0, // has_wing
+ 8.0, // roll damp
+ // Fuselage Data
+ {
+ 87.6, // fs cg
+ 66.0, // wl cg
+ 2200.0, // weight
+ {
+   263, // IX
+   1101, // IY
+   1000, // IZ
+ },
+ 200.0, // IXZ
+ 87.6, // fs cp
+ 66.0, // wl cp
+ {
+   -5.8, // fe x
+   -100, // fe y
+   -45, // fe z
+ },
+ },
+ // Main rotor Data
+ {
+ 87.6, // fs
+ 90.0, // wl
+ 0.0, // is
+ 0.42, // hinge offset
+ 150.0, // moment of flap inertia
+ 13.5, // radius
+ 6.0, // lift slope
+ 481, // rpm
+ 0.010, // cd0
+ 5, // n blades
+ 0.56, // chord
+ -.157, // twist
+ 0.0, // k1
 
-		},
-		// Tail rotor Data
-		{
-			271.2,		// fs
-			66.0,		// wl
-			2.3,		// radius
-			3.0,		// lift slope
-			2924,		// rpm
-			0.0,		// twist
-			0.119,		// solidity
-			2,			// # blades
-			0.44			// chord
-		},
-		// Horiz Wing Data
-		{
-			0,			// fs
-			0,			// wl
-			0,			// zuu
-			0,			// zuw
-			0,			// zmax
-			1,			// span
-		},
-		// Horiz Tail Data
-		{
-			278.0,		// fs
-			116,		// wl
-			0.0,		// zuu
-			-20.0,		// zuw
-			-12.0,		// zmax
-			1,			// span
-		},
-		// Vert Tail Data
-		{
-			265.0,		// fs
-			66.0,			// wl
-			0.0,		// zuu
-			-33.0,		// zuw
-			-50.0,		// zmax
-		},
-		// trim data
-		{
-			 0.0,		// cyc_roll center
-			 8.0,		// cyc_roll max
-			 0.0,		// cyc_pitch center
-			 16.5,		// cyc_pitch max
-			 0.0,		// coll_pitch center
-			17.3,		// coll_pitch max
-			0.0,		// tr_pitch center
-			10.0,		// tr_pitch max
-		},
-	},
-	// This model is for the SIMPLE
-	{
-		SIMPLE,
-		0,				// has_wing
-		8.0,			// roll damp
-		// Fuselage Data
-		{
-			87.6,		// fs cg
-			66.0,		// wl cg
-			2200.0,		// weight
-			{
-			  263,		// IX
-			  1101,		// IY
-			  1000,		// IZ
-			},
-			200.0,		// IXZ
-			87.6,		// fs cp
-			66.0,		// wl cp
-			{
-			  -5.8,		// fe x
-			  -100,		// fe y
-			  -45,		// fe z
-			},
-		},
-		// Main rotor Data
-		{
-			87.6,		// fs
-			90.0,		// wl
-			0.0,		// is
-			0.42,		// hinge offset
-			150.0,		// moment of flap inertia
-			13.5,		// radius
-			6.0,		// lift slope
-			481,		// rpm
-			0.010,		// cd0
-			5,			// n blades
-			0.56,		// chord
-			-.157,		// twist
-			0.0,		// k1
+ },
+ // Tail rotor Data
+ {
+ 271.2, // fs
+ 66.0, // wl
+ 2.3, // radius
+ 3.0, // lift slope
+ 2924, // rpm
+ 0.0, // twist
+ 0.119, // solidity
+ 2, // # blades
+ 0.44 // chord
+ },
+ // Horiz Wing Data
+ {
+ 0, // fs
+ 0, // wl
+ 0, // zuu
+ 0, // zuw
+ 0, // zmax
+ 1, // span
+ },
+ // Horiz Tail Data
+ {
+ 278.0, // fs
+ 116, // wl
+ 0.0, // zuu
+ -20.0, // zuw
+ -12.0, // zmax
+ 1, // span
+ },
+ // Vert Tail Data
+ {
+ 265.0, // fs
+ 66.0, // wl
+ 0.0, // zuu
+ -33.0, // zuw
+ -50.0, // zmax
+ },
+ // trim data
+ {
+  0.0, // cyc_roll center
+  8.0, // cyc_roll max
+  0.0, // cyc_pitch center
+  16.5, // cyc_pitch max
+  0.0, // coll_pitch center
+ 17.3, // coll_pitch max
+ 0.0, // tr_pitch center
+ 10.0, // tr_pitch max
+ },
+ },
+ // This model is for the SIMPLE
+ {
+ SIMPLE,
+ 0, // has_wing
+ 8.0, // roll damp
+ // Fuselage Data
+ {
+ 87.6, // fs cg
+ 66.0, // wl cg
+ 2200.0, // weight
+ {
+   263, // IX
+   1101, // IY
+   1000, // IZ
+ },
+ 200.0, // IXZ
+ 87.6, // fs cp
+ 66.0, // wl cp
+ {
+   -5.8, // fe x
+   -100, // fe y
+   -45, // fe z
+ },
+ },
+ // Main rotor Data
+ {
+ 87.6, // fs
+ 90.0, // wl
+ 0.0, // is
+ 0.42, // hinge offset
+ 150.0, // moment of flap inertia
+ 13.5, // radius
+ 6.0, // lift slope
+ 481, // rpm
+ 0.010, // cd0
+ 5, // n blades
+ 0.56, // chord
+ -.157, // twist
+ 0.0, // k1
 
-		},
-		// Tail rotor Data
-		{
-			271.2,		// fs
-			66.0,		// wl
-			2.3,		// radius
-			3.0,		// lift slope
-			2924,		// rpm
-			0.0,		// twist
-			0.119,		// solidity
-			2,			// # blades
-			0.44			// chord
-		},
-		// Horiz Wing Data
-		{
-			0,			// fs
-			0,			// wl
-			0,			// zuu
-			0,			// zuw
-			0,			// zmax
-			1,			// span
-		},
-		// Horiz Tail Data
-		{
-			278.0,		// fs
-			116,		// wl
-			0.0,		// zuu
-			-20.0,		// zuw
-			-12.0,		// zmax
-			1,			// span
-		},
-		// Vert Tail Data
-		{
-			265.0,		// fs
-			66.0,			// wl
-			0.0,		// zuu
-			-33.0,		// zuw
-			-50.0,		// zmax
-		},
-		// trim data
-		{
-			 0.0,		// cyc_roll center
-			 8.0,		// cyc_roll max
-			 0.0,		// cyc_pitch center
-			 16.5,		// cyc_pitch max
-			 0.0,		// coll_pitch center
-			17.3,		// coll_pitch max
-			0.0,		// tr_pitch center
-			10.0,		// tr_pitch max
-		},
-	},
+ },
+ // Tail rotor Data
+ {
+ 271.2, // fs
+ 66.0, // wl
+ 2.3, // radius
+ 3.0, // lift slope
+ 2924, // rpm
+ 0.0, // twist
+ 0.119, // solidity
+ 2, // # blades
+ 0.44 // chord
+ },
+ // Horiz Wing Data
+ {
+ 0, // fs
+ 0, // wl
+ 0, // zuu
+ 0, // zuw
+ 0, // zmax
+ 1, // span
+ },
+ // Horiz Tail Data
+ {
+ 278.0, // fs
+ 116, // wl
+ 0.0, // zuu
+ -20.0, // zuw
+ -12.0, // zmax
+ 1, // span
+ },
+ // Vert Tail Data
+ {
+ 265.0, // fs
+ 66.0, // wl
+ 0.0, // zuu
+ -33.0, // zuw
+ -50.0, // zmax
+ },
+ // trim data
+ {
+  0.0, // cyc_roll center
+  8.0, // cyc_roll max
+  0.0, // cyc_pitch center
+  16.5, // cyc_pitch max
+  0.0, // coll_pitch center
+ 17.3, // coll_pitch max
+ 0.0, // tr_pitch center
+ 10.0, // tr_pitch max
+ },
+ },
 };
 */
 HELI_MODEL_DATA gModelData[NUM_MODELS] =
@@ -518,92 +518,92 @@ HELI_MODEL_DATA gModelData[NUM_MODELS] =
     // This model is for the Agusta A102
     {
         A109,
-        0,				// has_wing
-        4.0F,			// roll damp
+        0, // has_wing
+        4.0F, // roll damp
         // Fuselage Data
         {
-            132.7F,		// fs cg
-            38.5F,		// wl cg
-            5401.0F,		// weight
+            132.7F, // fs cg
+            38.5F, // wl cg
+            5401.0F, // weight
             {
-                1590.0F,		// IX
-                6760.0F,		// IY
-                6407.0F,		// IZ
+                1590.0F, // IX
+                6760.0F, // IY
+                6407.0F, // IZ
             },
-            800.0F,		// IXZ
-            132.4F,		// fs cp
-            38.2F,		// wl cp
+            800.0F, // IXZ
+            132.4F, // fs cp
+            38.2F, // wl cp
             {
-                -10.8F,	// fe x
-                -167.0F,		// fe y
-                -85.0F,		// fe z
+                -10.8F, // fe x
+                -167.0F, // fe y
+                -85.0F, // fe z
             },
         },
         // Main rotor Data
         {
-            132.4F,		// fs
-            98.2F,		// wl
-            0.11F,		// is
-            0.5F,		// hinge offset
-            212.0F,		// moment of flap inertia
-            18.0F,		// radius
-            5.7F,		// lift slope
-            385.0F,		// rpm
-            0.010F,		// cd0
-            4.0F,			// n blades
-            1.10F,		// chord
-            -.105F,		// twist
-            0.0F,		// k1
+            132.4F, // fs
+            98.2F, // wl
+            0.11F, // is
+            0.5F, // hinge offset
+            212.0F, // moment of flap inertia
+            18.0F, // radius
+            5.7F, // lift slope
+            385.0F, // rpm
+            0.010F, // cd0
+            4.0F, // n blades
+            1.10F, // chord
+            -.105F, // twist
+            0.0F, // k1
 
         },
         // Tail rotor Data
         {
-            391.0F,		// fs
-            70.0F,		// wl
-            3.1F,		// radius
-            5.0F,		// lift slope
-            2080.0F,		// rpm
-            0.0f,		// twist
-            0.134F,		// solidity
-            2.0F,			// # blades
-            0.6F			// chord
+            391.0F, // fs
+            70.0F, // wl
+            3.1F, // radius
+            5.0F, // lift slope
+            2080.0F, // rpm
+            0.0f, // twist
+            0.134F, // solidity
+            2.0F, // # blades
+            0.6F // chord
         },
         // Horiz Wing Data
         {
-            0.0F,			// fs
-            0.0F,			// wl
-            0.0F,			// zuu
-            0.0F,			// zuw
-            0.0F,			// zmax
-            1.0F,			// span
+            0.0F, // fs
+            0.0F, // wl
+            0.0F, // zuu
+            0.0F, // zuw
+            0.0F, // zmax
+            1.0F, // span
         },
         // Horiz Tail Data
         {
-            330.0F,		// fs
-            54.0F,			// wl
-            0.0F,		// zuu
-            -34.0F,		// zuw
-            -22.0F,		// zmax
-            1.0F,			// span
+            330.0F, // fs
+            54.0F, // wl
+            0.0F, // zuu
+            -34.0F, // zuw
+            -22.0F, // zmax
+            1.0F, // span
         },
         // Vert Tail Data
         {
-            380.0F,		// fs
-            80.0F,			// wl
-            0.0F,		// zuu
-            -47.0F,		// zuw
-            -17.0F,		// zmax
+            380.0F, // fs
+            80.0F, // wl
+            0.0F, // zuu
+            -47.0F, // zuw
+            -17.0F, // zmax
         },
         // trim data
         {
-            -1.9F,		// cyc_roll center
-            12.0F,		// cyc_roll max
-            -0.2F,		// cyc_pitch center
-            6.5F,		// cyc_pitch max
-            0.0F,		// coll_pitch center
-            10.0F,		// coll_pitch max
-            0.0F,		// tr_pitch center
-            18.0F,		// tr_pitch max
+            -1.9F, // cyc_roll center
+            12.0F, // cyc_roll max
+            -0.2F, // cyc_pitch center
+            6.5F, // cyc_pitch max
+            0.0F, // coll_pitch center
+            10.0F, // coll_pitch max
+            0.0F, // tr_pitch center
+            18.0F, // tr_pitch max
         },
     },
 
@@ -611,369 +611,369 @@ HELI_MODEL_DATA gModelData[NUM_MODELS] =
     // This model is for the Cobra
     {
         COBRA,
-        0,				// has_wing
-        4.0F,			// roll damp
+        0, // has_wing
+        4.0F, // roll damp
         // Fuselage Data
         {
-            196.0F,		// fs cg
-            75.0F,		// wl cg
-            9000.0F,		// weight
+            196.0F, // fs cg
+            75.0F, // wl cg
+            9000.0F, // weight
             {
-                2593.0F,		// IX
-                14320.0F,		// IY
-                12330.0F,		// IZ
+                2593.0F, // IX
+                14320.0F, // IY
+                12330.0F, // IZ
             },
-            0.0F,		// IXZ
-            200.0F,		// fs cp
-            65.0F,		// wl cp
+            0.0F, // IXZ
+            200.0F, // fs cp
+            65.0F, // wl cp
             {
-                -30.0F,	// fe x
-                -275.0F,		// fe y
-                -41.0F,		// fe z
+                -30.0F, // fe x
+                -275.0F, // fe y
+                -41.0F, // fe z
             },
         },
         // Main rotor Data
         {
-            200.0F,		// fs
-            153.0F,		// wl
-            0.0F,		// is
-            0.00F,		// hinge offset
-            1382.0F,		// moment of flap inertia
-            22.0F,		// radius
-            6.0F,		// lift slope
-            324.0F,		// rpm
-            0.010F,		// cd0
-            2.0F,			// n blades
-            2.25F,		// chord
-            -.175F,		// twist
-            0.0F,		// k1
+            200.0F, // fs
+            153.0F, // wl
+            0.0F, // is
+            0.00F, // hinge offset
+            1382.0F, // moment of flap inertia
+            22.0F, // radius
+            6.0F, // lift slope
+            324.0F, // rpm
+            0.010F, // cd0
+            2.0F, // n blades
+            2.25F, // chord
+            -.175F, // twist
+            0.0F, // k1
 
         },
         // Tail rotor Data
         {
-            521.5F,		// fs
-            119.0F,		// wl
-            // 75.0,		// wl
-            4.25F,		// radius
-            6.0F,		// lift slope
-            1660.0F,		// rpm
-            0.0F,		// twist
-            0.105F,		// solidity
-            2.0F,			// # blades
-            0.5F			// chord
+            521.5F, // fs
+            119.0F, // wl
+            // 75.0, // wl
+            4.25F, // radius
+            6.0F, // lift slope
+            1660.0F, // rpm
+            0.0F, // twist
+            0.105F, // solidity
+            2.0F, // # blades
+            0.5F // chord
         },
         // Horiz Wing Data
         {
-            200.0F,			// fs
-            65.0F,			// wl
-            -39.0F,			// zuu
-            -161.0F,			// zuw
-            -65.0F,			// zmax
-            10.75F,			// span
+            200.0F, // fs
+            65.0F, // wl
+            -39.0F, // zuu
+            -161.0F, // zuw
+            -65.0F, // zmax
+            10.75F, // span
         },
         // Horiz Tail Data
         {
-            400.0F,		// fs
-            65.0F,			// wl
-            0.0F,		// zuu
-            -80.0F,		// zuw
-            -32.0F,		// zmax
-            1.0F,			// span
+            400.0F, // fs
+            65.0F, // wl
+            0.0F, // zuu
+            -80.0F, // zuw
+            -32.0F, // zmax
+            1.0F, // span
         },
         // Vert Tail Data
         {
-            490.0F,		// fs
-            80.0F,			// wl
-            // 75,			// wl
-            0.0F,		// zuu
-            -62.0F,		// zuw
-            -50.0F,		// zmax
+            490.0F, // fs
+            80.0F, // wl
+            // 75, // wl
+            0.0F, // zuu
+            -62.0F, // zuw
+            -50.0F, // zmax
         },
         // trim data
         {
-            -0.3F,		// cyc_roll center
-            10.0F,		// cyc_roll max
-            -0.3F,		// cyc_pitch center
-            10.0F,		// cyc_pitch max
-            0.0F,		// coll_pitch center
-            14.0F,		// coll_pitch max
-            0.0F,		// tr_pitch center
-            15.0F,		// tr_pitch max
+            -0.3F, // cyc_roll center
+            10.0F, // cyc_roll max
+            -0.3F, // cyc_pitch center
+            10.0F, // cyc_pitch max
+            0.0F, // coll_pitch center
+            14.0F, // coll_pitch max
+            0.0F, // tr_pitch center
+            15.0F, // tr_pitch max
         },
     },
 
     // This model is for the MD500
     {
         MD500,
-        0,				// has_wing
-        4.0F,			// roll damp
+        0, // has_wing
+        4.0F, // roll damp
         // Fuselage Data
         {
-            87.6F,		// fs cg
-            66.0F,		// wl cg
-            2200.0F,		// weight
+            87.6F, // fs cg
+            66.0F, // wl cg
+            2200.0F, // weight
             {
-                263.0F,		// IX
-                1101.0F,		// IY
-                1000.0F,		// IZ
+                263.0F, // IX
+                1101.0F, // IY
+                1000.0F, // IZ
             },
-            200.0F,		// IXZ
-            87.8F,		// fs cp
-            66.2F,		// wl cp
+            200.0F, // IXZ
+            87.8F, // fs cp
+            66.2F, // wl cp
             {
-                -5.8F,		// fe x
-                -100.0F,		// fe y
-                -45.0F,		// fe z
+                -5.8F, // fe x
+                -100.0F, // fe y
+                -45.0F, // fe z
             },
         },
         // Main rotor Data
         {
-            87.6F,		// fs
-            90.0F,		// wl
-            0.0F,		// is
-            0.42F,		// hinge offset
-            150.0F,		// moment of flap inertia
-            13.5F,		// radius
-            6.0F,		// lift slope
-            481.0F,		// rpm
-            0.010F,		// cd0
-            5.0F,			// n blades
-            0.56F,		// chord
-            -.157F,		// twist
-            0.0F,		// k1
+            87.6F, // fs
+            90.0F, // wl
+            0.0F, // is
+            0.42F, // hinge offset
+            150.0F, // moment of flap inertia
+            13.5F, // radius
+            6.0F, // lift slope
+            481.0F, // rpm
+            0.010F, // cd0
+            5.0F, // n blades
+            0.56F, // chord
+            -.157F, // twist
+            0.0F, // k1
 
         },
         // Tail rotor Data
         {
-            271.2F,		// fs
-            66.0F,		// wl
-            2.3F,		// radius
-            4.0F,		// lift slope
-            2924.0F,		// rpm
-            0.0F,		// twist
-            0.119F,		// solidity
-            2.0F,			// # blades
-            0.44F			// chord
+            271.2F, // fs
+            66.0F, // wl
+            2.3F, // radius
+            4.0F, // lift slope
+            2924.0F, // rpm
+            0.0F, // twist
+            0.119F, // solidity
+            2.0F, // # blades
+            0.44F // chord
         },
         // Horiz Wing Data
         {
-            0.0F,			// fs
-            0.0F,			// wl
-            0.0F,			// zuu
-            0.0F,			// zuw
-            0.0F,			// zmax
-            1.0F,			// span
+            0.0F, // fs
+            0.0F, // wl
+            0.0F, // zuu
+            0.0F, // zuw
+            0.0F, // zmax
+            1.0F, // span
         },
         // Horiz Tail Data
         {
-            278.0F,		// fs
-            116.0F,		// wl
-            0.0F,		// zuu
-            -20.0F,		// zuw
-            -12.0F,		// zmax
-            1.0F,			// span
+            278.0F, // fs
+            116.0F, // wl
+            0.0F, // zuu
+            -20.0F, // zuw
+            -12.0F, // zmax
+            1.0F, // span
         },
         // Vert Tail Data
         {
-            265.0F,		// fs
-            70.0F,			// wl
-            0.0F,		// zuu
-            -33.0F,		// zuw
-            -10.0F,		// zmax
+            265.0F, // fs
+            70.0F, // wl
+            0.0F, // zuu
+            -33.0F, // zuw
+            -10.0F, // zmax
         },
         // trim data
         {
-            0.0F,		// cyc_roll center
-            10.0F,		// cyc_roll max
-            -0.5F,		// cyc_pitch center
-            7.5F,		// cyc_pitch max
-            0.0F,		// coll_pitch center
-            11.3F,		// coll_pitch max
-            0.0F,		// tr_pitch center
-            15.0F,		// tr_pitch max
+            0.0F, // cyc_roll center
+            10.0F, // cyc_roll max
+            -0.5F, // cyc_pitch center
+            7.5F, // cyc_pitch max
+            0.0F, // coll_pitch center
+            11.3F, // coll_pitch max
+            0.0F, // tr_pitch center
+            15.0F, // tr_pitch max
         },
     },
 
     // This model is for the STABLE
     {
         STABLE,
-        0,				// has_wing
-        8.0F,			// roll damp
+        0, // has_wing
+        8.0F, // roll damp
         // Fuselage Data
         {
-            87.6F,		// fs cg
-            66.0F,		// wl cg
-            2200.0F,		// weight
+            87.6F, // fs cg
+            66.0F, // wl cg
+            2200.0F, // weight
             {
-                263.0F,		// IX
-                1101.0F,		// IY
-                1000.0F,		// IZ
+                263.0F, // IX
+                1101.0F, // IY
+                1000.0F, // IZ
             },
-            200.0F,		// IXZ
-            87.6F,		// fs cp
-            66.0F,		// wl cp
+            200.0F, // IXZ
+            87.6F, // fs cp
+            66.0F, // wl cp
             {
-                -5.8F,		// fe x
-                -100.0F,		// fe y
-                -45.0F,		// fe z
+                -5.8F, // fe x
+                -100.0F, // fe y
+                -45.0F, // fe z
             },
         },
         // Main rotor Data
         {
-            87.6F,		// fs
-            90.0F,		// wl
-            0.0F,		// is
-            0.42F,		// hinge offset
-            150.0F,		// moment of flap inertia
-            13.5F,		// radius
-            6.0F,		// lift slope
-            481.0F,		// rpm
-            0.010F,		// cd0
-            5.0F,			// n blades
-            0.56F,		// chord
-            -.157F,		// twist
-            0.0F,		// k1
+            87.6F, // fs
+            90.0F, // wl
+            0.0F, // is
+            0.42F, // hinge offset
+            150.0F, // moment of flap inertia
+            13.5F, // radius
+            6.0F, // lift slope
+            481.0F, // rpm
+            0.010F, // cd0
+            5.0F, // n blades
+            0.56F, // chord
+            -.157F, // twist
+            0.0F, // k1
 
         },
         // Tail rotor Data
         {
-            271.2F,		// fs
-            66.0F,		// wl
-            2.3F,		// radius
-            3.0F,		// lift slope
-            2924.0F,		// rpm
-            0.0F,		// twist
-            0.119F,		// solidity
-            2.0F,			// # blades
-            0.44F			// chord
+            271.2F, // fs
+            66.0F, // wl
+            2.3F, // radius
+            3.0F, // lift slope
+            2924.0F, // rpm
+            0.0F, // twist
+            0.119F, // solidity
+            2.0F, // # blades
+            0.44F // chord
         },
         // Horiz Wing Data
         {
-            0.0F,			// fs
-            0.0F,			// wl
-            0.0F,			// zuu
-            0.0F,			// zuw
-            0.0F,			// zmax
-            1.0F,			// span
+            0.0F, // fs
+            0.0F, // wl
+            0.0F, // zuu
+            0.0F, // zuw
+            0.0F, // zmax
+            1.0F, // span
         },
         // Horiz Tail Data
         {
-            278.0F,		// fs
-            116.0F,		// wl
-            0.0F,		// zuu
-            -20.0F,		// zuw
-            -12.0F,		// zmax
-            1.0F,			// span
+            278.0F, // fs
+            116.0F, // wl
+            0.0F, // zuu
+            -20.0F, // zuw
+            -12.0F, // zmax
+            1.0F, // span
         },
         // Vert Tail Data
         {
-            265.0F,		// fs
-            66.0F,			// wl
-            0.0F,		// zuu
-            -33.0F,		// zuw
-            -50.0F,		// zmax
+            265.0F, // fs
+            66.0F, // wl
+            0.0F, // zuu
+            -33.0F, // zuw
+            -50.0F, // zmax
         },
         // trim data
         {
-            0.0F,		// cyc_roll center
-            8.0F,		// cyc_roll max
-            0.0F,		// cyc_pitch center
-            16.5F,		// cyc_pitch max
-            0.0F,		// coll_pitch center
-            17.3F,		// coll_pitch max
-            0.0F,		// tr_pitch center
-            10.0F,		// tr_pitch max
+            0.0F, // cyc_roll center
+            8.0F, // cyc_roll max
+            0.0F, // cyc_pitch center
+            16.5F, // cyc_pitch max
+            0.0F, // coll_pitch center
+            17.3F, // coll_pitch max
+            0.0F, // tr_pitch center
+            10.0F, // tr_pitch max
         },
     },
     // This model is for the SIMPLE
     {
         SIMPLE,
-        0,				// has_wing
-        8.0F,			// roll damp
+        0, // has_wing
+        8.0F, // roll damp
         // Fuselage Data
         {
-            87.6F,		// fs cg
-            66.0F,		// wl cg
-            2200.0F,		// weight
+            87.6F, // fs cg
+            66.0F, // wl cg
+            2200.0F, // weight
             {
-                263.0F,		// IX
-                1101.0F,		// IY
-                1000.0F,		// IZ
+                263.0F, // IX
+                1101.0F, // IY
+                1000.0F, // IZ
             },
-            200.0F,		// IXZ
-            87.6F,		// fs cp
-            66.0F,		// wl cp
+            200.0F, // IXZ
+            87.6F, // fs cp
+            66.0F, // wl cp
             {
-                -5.8F,		// fe x
-                -100.0F,		// fe y
-                -45.0F,		// fe z
+                -5.8F, // fe x
+                -100.0F, // fe y
+                -45.0F, // fe z
             },
         },
         // Main rotor Data
         {
-            87.6F,		// fs
-            90.0F,		// wl
-            0.0F,		// is
-            0.42F,		// hinge offset
-            150.0F,		// moment of flap inertia
-            13.5F,		// radius
-            6.0F,		// lift slope
-            481.0F,		// rpm
-            0.010F,		// cd0
-            5.0F,			// n blades
-            0.56F,		// chord
-            -.157F,		// twist
-            0.0F,		// k1
+            87.6F, // fs
+            90.0F, // wl
+            0.0F, // is
+            0.42F, // hinge offset
+            150.0F, // moment of flap inertia
+            13.5F, // radius
+            6.0F, // lift slope
+            481.0F, // rpm
+            0.010F, // cd0
+            5.0F, // n blades
+            0.56F, // chord
+            -.157F, // twist
+            0.0F, // k1
 
         },
         // Tail rotor Data
         {
-            271.2F,		// fs
-            66.0F,		// wl
-            2.3F,		// radius
-            3.0F,		// lift slope
-            2924.0F,		// rpm
-            0.0F,		// twist
-            0.119F,		// solidity
-            2.0F,			// # blades
-            0.44F			// chord
+            271.2F, // fs
+            66.0F, // wl
+            2.3F, // radius
+            3.0F, // lift slope
+            2924.0F, // rpm
+            0.0F, // twist
+            0.119F, // solidity
+            2.0F, // # blades
+            0.44F // chord
         },
         // Horiz Wing Data
         {
-            0.0F,			// fs
-            0.0F,			// wl
-            0.0F,			// zuu
-            0.0F,			// zuw
-            0.0F,			// zmax
-            1.0F,			// span
+            0.0F, // fs
+            0.0F, // wl
+            0.0F, // zuu
+            0.0F, // zuw
+            0.0F, // zmax
+            1.0F, // span
         },
         // Horiz Tail Data
         {
-            278.0F,		// fs
-            116.0F,		// wl
-            0.0F,		// zuu
-            -20.0F,		// zuw
-            -12.0F,		// zmax
-            1.0F,			// span
+            278.0F, // fs
+            116.0F, // wl
+            0.0F, // zuu
+            -20.0F, // zuw
+            -12.0F, // zmax
+            1.0F, // span
         },
         // Vert Tail Data
         {
-            265.0F,		// fs
-            66.0F,			// wl
-            0.0F,		// zuu
-            -33.0F,		// zuw
-            -50.0F,		// zmax
+            265.0F, // fs
+            66.0F, // wl
+            0.0F, // zuu
+            -33.0F, // zuw
+            -50.0F, // zmax
         },
         // trim data
         {
-            0.0F,		// cyc_roll center
-            8.0F,		// cyc_roll max
-            0.0F,		// cyc_pitch center
-            16.5F,		// cyc_pitch max
-            0.0F,		// coll_pitch center
-            17.3F,		// coll_pitch max
-            0.0F,		// tr_pitch center
-            10.0F,		// tr_pitch max
+            0.0F, // cyc_roll center
+            8.0F, // cyc_roll max
+            0.0F, // cyc_pitch center
+            16.5F, // cyc_pitch max
+            0.0F, // coll_pitch center
+            17.3F, // coll_pitch max
+            0.0F, // tr_pitch center
+            10.0F, // tr_pitch max
         },
     },
 };
@@ -990,9 +990,9 @@ FABS(float a)
 /*
 ** Name: HeliMMClass
 ** Description:
-**		Constructor for helicopter math model.
-**		Helicopter type must be passed in in order to set the model's
-**		basis data.
+** Constructor for helicopter math model.
+** Helicopter type must be passed in in order to set the model's
+** basis data.
 */
 HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
 {
@@ -1010,38 +1010,38 @@ HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
     // reset variables
     ResetForceVars();
 
-    p_ind = 0;		// induced power
-    p_climb = 0;	// climb power
-    p_par = 0;		// parasite power
-    p_prof = 0;		// profile power
-    p_tot = 0;		// total power
-    p_mr = 0;		// main rotor power
-    p_tr = 0;		// tail rotor power
-    torque_mr = 0;	// main rotor torque
-    vr_tr	 = 0;	// air vel relative to tail rotor disk
-    vb_tr	 = 0;	// air vel relative to tail rotor blade
-    thrust_tr = 0;	// thrust tail rotor
-    vi_tr = 0;		// induced air tail rotor
-    dw_ht_pos = 0;	// downwash on horizontal tail pos
-    wa_ht = 0;		// airflow on ht
-    eps_ht = 0;		// downwash factor on ht
-    vta_ht = 0;		// total airspeed at ht
-    va_vt = 0;		// airflow on vt
-    vta_vt = 0;		// total airspeed at vt
-    coll_pitch = 0;	// collective setting in rads (at root)
-    cyc_pitch = 0;	// cyclic pitch in rads
-    cyc_roll = 0;	// cyclic roll in rads
-    tr_pitch = 0;	// tail rotor pitch
-    a_sum = 0;		// tpp temp?
-    b_sum = 0;		// tpp temp?
-    wr = 0;			// Z axis air velocity relative to rotor plane
-    wb = 0;			// Z axis air velocity relative to rotor blade
-    thrust_mr = 0;	// main rotor thrust
-    vi_mr = 0;		// main rotor induced velocity = 0;
-    wa_fus = 0;		// downwash on fuselage
-    wa_fus_pos = 0;	// position of downwash on fuselage
-    va_x_sq = 0;	// square of VA.x
-    va_y_sq = 0;	// square of VA.y
+    p_ind = 0; // induced power
+    p_climb = 0; // climb power
+    p_par = 0; // parasite power
+    p_prof = 0; // profile power
+    p_tot = 0; // total power
+    p_mr = 0; // main rotor power
+    p_tr = 0; // tail rotor power
+    torque_mr = 0; // main rotor torque
+    vr_tr  = 0; // air vel relative to tail rotor disk
+    vb_tr  = 0; // air vel relative to tail rotor blade
+    thrust_tr = 0; // thrust tail rotor
+    vi_tr = 0; // induced air tail rotor
+    dw_ht_pos = 0; // downwash on horizontal tail pos
+    wa_ht = 0; // airflow on ht
+    eps_ht = 0; // downwash factor on ht
+    vta_ht = 0; // total airspeed at ht
+    va_vt = 0; // airflow on vt
+    vta_vt = 0; // total airspeed at vt
+    coll_pitch = 0; // collective setting in rads (at root)
+    cyc_pitch = 0; // cyclic pitch in rads
+    cyc_roll = 0; // cyclic roll in rads
+    tr_pitch = 0; // tail rotor pitch
+    a_sum = 0; // tpp temp?
+    b_sum = 0; // tpp temp?
+    wr = 0; // Z axis air velocity relative to rotor plane
+    wb = 0; // Z axis air velocity relative to rotor blade
+    thrust_mr = 0; // main rotor thrust
+    vi_mr = 0; // main rotor induced velocity = 0;
+    wa_fus = 0; // downwash on fuselage
+    wa_fus_pos = 0; // position of downwash on fuselage
+    va_x_sq = 0; // square of VA.x
+    va_y_sq = 0; // square of VA.y
     isDigital = FALSE;
 
 
@@ -1067,7 +1067,7 @@ HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
 /*
 ** Name: ~HeliMMClass
 ** Description:
-**		DEstructor for helicopter math model.
+** DEstructor for helicopter math model.
 */
 
 HeliMMClass::~HeliMMClass(void)
@@ -1077,8 +1077,8 @@ HeliMMClass::~HeliMMClass(void)
 /*
 ** Name: SetControls
 ** Description:
-**		Sets up cyclic, collective and tail rotor pitches based on
-**		control inputs
+** Sets up cyclic, collective and tail rotor pitches based on
+** control inputs
 */
 void
 HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedals)
@@ -1137,8 +1137,8 @@ HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedal
 /*
 ** Name: HeliMMPreCalc
 ** Description:
-**		Precalculates some variables to be used by the flight dynamics
-**		functions.
+** Precalculates some variables to be used by the flight dynamics
+** functions.
 */
 void
 HeliMMClass::PreCalc(void)
@@ -1255,8 +1255,8 @@ HeliMMClass::PreCalc(void)
 /*
 ** Name: HeliMMDynamics
 ** Description:
-**		Runs the functions calculating the dynamic math model functions
-**		for helicopter flight.
+** Runs the functions calculating the dynamic math model functions
+** for helicopter flight.
 */
 void
 HeliMMClass::Exec(void)
@@ -1297,7 +1297,7 @@ HeliMMClass::Exec(void)
 /*
 ** Name: HeliMMDynamicsSetup
 ** Description:
-**		Caluclate setup variables for the frame
+** Caluclate setup variables for the frame
 */
 void
 HeliMMClass::Setup(void)
@@ -1319,7 +1319,7 @@ HeliMMClass::Setup(void)
 /*
 ** Name: HeliMMDynamicsTipPlanePath
 ** Description:
-**		Caluclate setup variables for the frame
+** Caluclate setup variables for the frame
 */
 void
 HeliMMClass::TipPlanePath(void)
@@ -1370,7 +1370,7 @@ HeliMMClass::TipPlanePath(void)
 /*
 ** Name: HeliMMDynamicsMainRotor
 ** Description:
-**		Calculates main rotor thrust and induced velocity
+** Calculates main rotor thrust and induced velocity
 */
 void
 HeliMMClass::MainRotor(void)
@@ -1421,19 +1421,19 @@ HeliMMClass::MainRotor(void)
     // to our inverted amount
     /*
     if ( eucos.x < 0.0f )
-    	thrust_mr *= (1.0f + eucos.x) * 0.50f;
+     thrust_mr *= (1.0f + eucos.x) * 0.50f;
     */
 
 
 
     // if ( thrust_mr < 0.0f )
-    //	thrust_mr = -thrust_mr;
+    // thrust_mr = -thrust_mr;
 }
 
 /*
 ** Name: HeliMMDynamicsFuselage
 ** Description:
-**		Calculates forces acting on fuselage
+** Calculates forces acting on fuselage
 */
 void
 HeliMMClass::Fuselage(void)
@@ -1518,7 +1518,7 @@ HeliMMClass::Fuselage(void)
     // hack -- not sure what's coming out, but torque should always
     // have same sign
     // if ( torque_mr > 0.0f )
-    // 		torque_mr = -torque_mr;
+    //  torque_mr = -torque_mr;
 
 
     mr6d.az = torque_mr;
@@ -1544,7 +1544,7 @@ HeliMMClass::Fuselage(void)
 /*
 ** Name: HeliMMDynamicsTailRotor
 ** Description:
-**		Calculates Tail rotor thrust and induced velocity
+** Calculates Tail rotor thrust and induced velocity
 */
 void
 HeliMMClass::TailRotor(void)
@@ -1623,7 +1623,7 @@ HeliMMClass::TailRotor(void)
 /*
 ** Name: HeliMMDynamicsWing
 ** Description:
-**		Calculates Tail rotor thrust and induced velocity
+** Calculates Tail rotor thrust and induced velocity
 */
 void
 HeliMMClass::Wing(void)
@@ -1681,7 +1681,7 @@ HeliMMClass::Wing(void)
 /*
 ** Name: HeliMMDynamicsHorizTail
 ** Description:
-**		Calculates Tail rotor thrust and induced velocity
+** Calculates Tail rotor thrust and induced velocity
 */
 void
 HeliMMClass::HorizTail(void)
@@ -1750,7 +1750,7 @@ HeliMMClass::HorizTail(void)
 /*
 ** Name: HeliMMDynamicsVertTail
 ** Description:
-**		Calculates Tail rotor thrust and induced velocity
+** Calculates Tail rotor thrust and induced velocity
 */
 void
 HeliMMClass::VertTail(void)
@@ -1792,7 +1792,7 @@ HeliMMClass::VertTail(void)
 /*
 ** Name: HeliMMDynamicsForceCalc
 ** Description:
-**		Calculates final forces, acclerations and velocities
+** Calculates final forces, acclerations and velocities
 */
 void
 HeliMMClass::ForceCalc(void)
@@ -1907,7 +1907,7 @@ HeliMMClass::ForceCalc(void)
 /*
 ** Name: HeliMMDynamicsResetForceVars
 ** Description:
-**		Resets the dynamic force variables
+** Resets the dynamic force variables
 */
 void
 HeliMMClass::ResetForceVars(void)
@@ -1928,7 +1928,7 @@ HeliMMClass::ResetForceVars(void)
 /*
 ** Name: SetPlatformData
 ** Description:
-**		Sets values for the platform
+** Sets values for the platform
 */
 void
 HeliMMClass::SetPlatformData(void)
@@ -2039,7 +2039,7 @@ HeliMMClass::SetPlatformData(void)
 /*
 ** Name: Init
 ** Description:
-**		Set initial position and velocity
+** Set initial position and velocity
 */
 void
 HeliMMClass::Init(float x, float y, float z)
@@ -2056,7 +2056,7 @@ HeliMMClass::Init(float x, float y, float z)
 /*
 ** Name: InitQuat
 ** Description:
-**		Set initial quaternion vals and init integration arrays
+** Set initial quaternion vals and init integration arrays
 */
 void
 HeliMMClass::InitQuat(void)
@@ -2154,8 +2154,8 @@ HeliMMClass::InitQuat(void)
 /*
 ** CalcBodyOrientation
 ** Description:
-**		Based on the angular velocities relative to body, calc the
-**		euler angles using quaternion integration
+** Based on the angular velocities relative to body, calc the
+** euler angles using quaternion integration
 */
 void
 HeliMMClass::CalcBodyOrientation(void)
@@ -2238,8 +2238,8 @@ HeliMMClass::CalcBodyOrientation(void)
 /*
 ** SimpleModel
 ** Description:
-**		Based on the angular velocities relative to body, calc the
-**		euler angles using quaternion integration
+** Based on the angular velocities relative to body, calc the
+** euler angles using quaternion integration
 */
 void
 HeliMMClass::SimpleModel(void)

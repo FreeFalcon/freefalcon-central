@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     209Nov03
 
-	- And then there was light
+ - And then there was light
 \***************************************************************************/
 
 #ifndef WEATHER_H

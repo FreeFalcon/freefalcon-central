@@ -10,10 +10,10 @@
 #include "Simbase.h"
 #include "missile.h"
 
-IRSTDataType*			IRSTDataTable = NULL;
+IRSTDataType* IRSTDataTable = NULL;
 short NumIRSTEntries = 0;
 
-static const float CM_EFFECTIVE_ANGLE	= 30.0f * DTR;	// If used, should be in class table data... me123 status test changed from 30
+static const float CM_EFFECTIVE_ANGLE = 30.0f * DTR; // If used, should be in class table data... me123 status test changed from 30
 
 IrstClass::IrstClass(int idx, SimMoverClass* self) : SensorClass(self)
 {
@@ -47,7 +47,7 @@ void IrstClass::SetDesiredTarget(SimObjectType* newTarget)
 
 SimObjectType* IrstClass::Exec(SimObjectType*)
 {
-    SimObjectType	*newLock;
+    SimObjectType *newLock;
 
     // Validate our locked target
     CheckLockedTarget();
@@ -80,9 +80,9 @@ SimObjectType* IrstClass::Exec(SimObjectType*)
     // Tell the base class where we're looking
     if (lockedTarget)
     {
-        //		SetSeekerPos (lockedTarget->localData->az,lockedTarget->localData->el);
-        //		seekerAzCenter = lockedTarget->localData->az;
-        //		seekerElCenter = lockedTarget->localData->el;
+        // SetSeekerPos (lockedTarget->localData->az,lockedTarget->localData->el);
+        // seekerAzCenter = lockedTarget->localData->az;
+        // seekerElCenter = lockedTarget->localData->el;
         lockedTarget->localData->sensorState[IRST] = SensorTrack;
         lockedTarget->localData->sensorLoopCount[IRST] = SimLibElapsedTime;
     }
@@ -93,20 +93,20 @@ SimObjectType* IrstClass::Exec(SimObjectType*)
 
 // This controls how effective countermeasures are as a function of seeker range from target
 // 2000-11-17 MODIFIED BY S.G. SO FLARES ARE EFFECTIVE MORE REALISTICALLY
-// static const float	cmRangeArray[]		= {0.0F,  5500.0f,  11000.0f,  16500.0f,  27500.0f};
-static const float	cmRangeArray[]		= {0.0F,   451.0f,   4500.0f,  16500.0f,  38000.0f};
+// static const float cmRangeArray[] = {0.0F,  5500.0f,  11000.0f,  16500.0f,  27500.0f};
+static const float cmRangeArray[] = {0.0F,   451.0f,   4500.0f,  16500.0f,  38000.0f};
 // END OF MODIFIED DATA
-static const float	cmBiteChanceArray[]	= {0.0F,     0.0F,      1.0F,      1.0F,      0.0F};
-// static const float	cmBiteChanceArray[]	= {1.0F,     1.0F,      1.0F,      1.0F,      1.0F};//me123 status ok. S.G. TO BRING IT TO RP4 STATUS
-static const int	cmArrayLength		= sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
+static const float cmBiteChanceArray[] = {0.0F,     0.0F,      1.0F,      1.0F,      0.0F};
+// static const float cmBiteChanceArray[] = {1.0F,     1.0F,      1.0F,      1.0F,      1.0F};//me123 status ok. S.G. TO BRING IT TO RP4 STATUS
+static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
 
 SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
 {
-    VU_ID			id;
-    FalconEntity	*cm;
-    float			chance;
-    int				dummy = 0;
+    VU_ID id;
+    FalconEntity *cm;
+    float chance;
+    int dummy = 0;
 
     // No counter measures deployed by campaign things
     if (!target || !target->BaseData()->IsSim())
@@ -145,9 +145,9 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
         chance /= max(0.3f , target->localData->irSignature); //me123 flares works better if the irsignature on the target is low
 
         // Player countermeasures work better
-        //		if (target->BaseData()->IsPlayer()) { //me123 status ok. don't differentiate between ai/human here
-        //			chance *= 1.15F;
-        //		}
+        // if (target->BaseData()->IsPlayer()) { //me123 status ok. don't differentiate between ai/human here
+        // chance *= 1.15F;
+        // }
         // Marco Edit - AB reduces chance of flares working quite a bit ......
         if (target->localData->irSignature > 1.29f)
         {
@@ -159,20 +159,20 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
         {
 
             // Compute some relative geometry stuff
-            const float atx	= platform->dmx[0][0];
-            const float aty	= platform->dmx[0][1];
-            const float atz	= platform->dmx[0][2];
-            const float dx	= cm->XPos() - platform->XPos();
-            const float dy	= cm->YPos() - platform->YPos();
-            const float dz	= cm->ZPos() - platform->ZPos();
-            const float range	= (float)sqrt(dx * dx + dy * dy);
-            const float cosATA	= (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+            const float atx = platform->dmx[0][0];
+            const float aty = platform->dmx[0][1];
+            const float atz = platform->dmx[0][2];
+            const float dx = cm->XPos() - platform->XPos();
+            const float dy = cm->YPos() - platform->YPos();
+            const float dz = cm->ZPos() - platform->ZPos();
+            const float range = (float)sqrt(dx * dx + dy * dy);
+            const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
 
             // Only take the bait if we can see the thing
             if (cosATA >= cos(CM_EFFECTIVE_ANGLE))
             {
 #ifdef DEBUG
-                /*	target = new SimObjectType(OBJ_TAG, platform, cm);*/
+                /* target = new SimObjectType(OBJ_TAG, platform, cm);*/
 #else
                 target = new SimObjectType(cm);
 #endif

@@ -5,9 +5,9 @@ typedef struct PopupMenuListStr POPUPMENU;
 
 struct PopupMenuListStr
 {
-    C_PopupList	*Menu;
-    long		flags;
-    POPUPMENU	*Next;
+    C_PopupList *Menu;
+    long flags;
+    POPUPMENU *Next;
 };
 
 class C_PopupMgr
@@ -26,17 +26,17 @@ public:
 #endif
 private:
     // Save from here
-    long		Flags_;
-    short		CurrentType_;
-    short		CurrentClient_;
-    short		LastX_, LastY_;
-    short		ready_;
+    long Flags_;
+    short CurrentType_;
+    short CurrentClient_;
+    short LastX_, LastY_;
+    short ready_;
 
     // Don't save from here down
-    POPUPMENU	*Root_;
-    POPUPMENU	*Current_;
-    C_Base		*Control_;
-    C_Handler	*Handler_;
+    POPUPMENU *Root_;
+    POPUPMENU *Current_;
+    C_Base *Control_;
+    C_Handler *Handler_;
     short Ready()
     {
         return(ready_);

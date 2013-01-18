@@ -27,21 +27,21 @@ public:
     };
 #endif
 private:
-    short			Allowed_; // if a bit is set... allowed to update that section
-    short			DivID_;
-    short			CampID_;
-    uchar			Type_;
-    uchar			Side_;
-    VU_ID			ID_;
+    short Allowed_; // if a bit is set... allowed to update that section
+    short DivID_;
+    short CampID_;
+    uchar Type_;
+    uchar Side_;
+    VU_ID ID_;
     GlobalPositioningSystem *Owner_;
 
 public:
-    C_Mission		*Mission_;
-    MAPICONLIST		*MapItem_;
-    C_ATO_Package	*Package_;
-    C_ATO_Flight	*ATO_;
-    C_Base			*OOB_;
-    THREAT_LIST		*Threat_;
+    C_Mission *Mission_;
+    MAPICONLIST *MapItem_;
+    C_ATO_Package *Package_;
+    C_ATO_Flight *ATO_;
+    C_Base *OOB_;
+    THREAT_LIST *Threat_;
 
 public:
     UI_Refresher();

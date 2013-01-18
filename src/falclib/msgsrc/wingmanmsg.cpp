@@ -47,9 +47,9 @@ void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_
 
 int FalconWingmanMsg::Process(uchar autodisp)
 {
-    FlightClass			*p_flight;
-    AircraftClass		*p_from;
-    int					fromIndex;
+    FlightClass *p_flight;
+    AircraftClass *p_from;
+    int fromIndex;
 
     if (autodisp)
         return 0;
@@ -57,39 +57,39 @@ int FalconWingmanMsg::Process(uchar autodisp)
     if (Entity())
     {
 
-        p_flight		= (FlightClass*) vuDatabase->Find(EntityId());
-        p_from		= (AircraftClass*) vuDatabase->Find(dataBlock.from);
+        p_flight = (FlightClass*) vuDatabase->Find(EntityId());
+        p_from = (AircraftClass*) vuDatabase->Find(dataBlock.from);
 
         if (!p_flight || !p_from)
         {
             return FALSE;
         }
 
-        fromIndex	= p_flight->GetComponentIndex(p_from);
+        fromIndex = p_flight->GetComponentIndex(p_from);
 
         if (dataBlock.to == AiAllButSender)
         {
-            SendOrder(this, p_from, p_flight, 1, 4);				// Dispatch to everyone except the guy who sent me
+            SendOrder(this, p_from, p_flight, 1, 4); // Dispatch to everyone except the guy who sent me
         }
         else if (fromIndex == AiFlightLead)
         {
 
             if (dataBlock.to == AiWingman)
             {
-                SendOrder(this, p_from, p_flight, 2, 1);			// Dispatch to 2 only
+                SendOrder(this, p_from, p_flight, 2, 1); // Dispatch to 2 only
             }
             else if (dataBlock.to == AiElement)
             {
-                SendOrder(this, p_from, p_flight, 3, 2);			// Dispatch to 3 and 4
+                SendOrder(this, p_from, p_flight, 3, 2); // Dispatch to 3 and 4
             }
             else if (dataBlock.to == AiFlight)
             {
-                SendOrder(this, p_from, p_flight, 2, 3);			// Dispatch to 2, 3 and 4
+                SendOrder(this, p_from, p_flight, 2, 3); // Dispatch to 2, 3 and 4
             }
         }
         else if (fromIndex == AiElementLead)
         {
-            SendOrder(this, p_from, p_flight, 4, 1);			// Dispatch to 4 only
+            SendOrder(this, p_from, p_flight, 4, 1); // Dispatch to 4 only
         }
     }
 

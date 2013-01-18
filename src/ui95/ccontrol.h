@@ -15,21 +15,21 @@ public:
     };
     // Save from here
 protected:
-    long		Cursor_;
-    long		DragCursor_;
-    long		MenuID_;
-    long		HelpTextID_;
-    COLORREF	MouseOverColor_;
-    long		RelX_, RelY_;
-    short		HotKey_;
-    short		MouseOver_;
-    short		MouseOverPercent_;
+    long Cursor_;
+    long DragCursor_;
+    long MenuID_;
+    long HelpTextID_;
+    COLORREF MouseOverColor_;
+    long RelX_, RelY_;
+    short HotKey_;
+    short MouseOver_;
+    short MouseOverPercent_;
     // sfr: added for mousewheel
     int         Increment_;
 
     // Don't save from here
-    C_Hash		*Sound_;
-    void	(*Callback_)(long, short, C_Base*);
+    C_Hash *Sound_;
+    void (*Callback_)(long, short, C_Base*);
 
 public:
     C_Control();

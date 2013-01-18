@@ -256,7 +256,7 @@ void C_TreeList::DeleteItem(TREELIST *item)
 
 #else
 
-    if (!F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) &&	// JB 010317 CTD
+    if (!F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) && // JB 010317 CTD
         !F4IsBadReadPtr(item->Parent->Child, sizeof(TREELIST)) && // M.N. 011209 CTD
         (item->Parent) && (item->Parent->Child == item))
     {

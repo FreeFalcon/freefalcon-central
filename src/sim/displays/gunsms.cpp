@@ -61,7 +61,7 @@ void SmsDrawable::GunDisplay(void)
         else
         {
             float x, y = 0;
-            GetButtonPos(5, &x, &y);	//button for Gun
+            GetButtonPos(5, &x, &y); //button for Gun
             sprintf(tmpStr, "%02dGUN", numRounds);
 
             if (Sms->MasterArm() == SMSBaseClass::Arm)

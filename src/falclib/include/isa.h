@@ -9,12 +9,12 @@
 // some types reported by ->IsA()
 #define BASEOBJECT              9000
 
-#define WAVEREQUESTTYPE			9001
-#define PATCHREQUESTTYPE		9002
-#define FXREQUESTTYPE			9003
+#define WAVEREQUESTTYPE 9001
+#define PATCHREQUESTTYPE 9002
+#define FXREQUESTTYPE 9003
 #define BUFSEGMENT              9004
-#define WAVETRACK		        9005
-#define MIDIPATCH		        9006
+#define WAVETRACK         9005
+#define MIDIPATCH         9006
 #define FACE3D                  9007
 #define RENDERINGOBJECT3D       9008
 #define THREEDEEVALUE           9009

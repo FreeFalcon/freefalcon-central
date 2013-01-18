@@ -1,9 +1,9 @@
 /***************************************************************************\
-	instant.cpp
-	Peter Ward
-	December 3, 1996
+ instant.cpp
+ Peter Ward
+ December 3, 1996
 
-	Main UI screen stuff for falcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -46,8 +46,8 @@
 
 enum // Instant action scoring stuff
 {
-    _A_LOW_SCORE_			= 250000,
-    _A_MEDIUM_SCORE_		= 500000,
+    _A_LOW_SCORE_ = 250000,
+    _A_MEDIUM_SCORE_ = 500000,
 };
 
 static IDirectDraw *DDraw;
@@ -157,8 +157,8 @@ void GetHighScores()
 
     if (retval != ERROR_SUCCESS)
     {
-        //		ShiAssert(strcmp("Failed Reg Load,I would Clear Here","But Not this time") == 0);
-        //		memset(&Scores[0],0,size);
+        // ShiAssert(strcmp("Failed Reg Load,I would Clear Here","But Not this time") == 0);
+        // memset(&Scores[0],0,size);
         return;
     }
 
@@ -270,7 +270,7 @@ int AddWeaponToUsageList(int ID)
 
     visID = Falcon4ClassTable[ID].visType[0];
     COST = FindCost(visID);
-    COST /= 4;	// ECTS HACK
+    COST /= 4; // ECTS HACK
 
     cur = WeaponUsage;
 
@@ -534,7 +534,7 @@ void LoadInstantActionWindows()
     if (!gInstantBites)
         gInstantBites = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
 
-    gMainParser->LoadWindowList("ia_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -1165,16 +1165,16 @@ static void SetMapStartup(C_Window *win)
 }
 
 /*
-	for(y=0;y<EVT_MESSAGE_BITS;y++)
-		mask[y]=0;
+ for(y=0;y<EVT_MESSAGE_BITS;y++)
+ mask[y]=0;
 
-	mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
-	mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
-	mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
-	mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
-	mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
-	mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
-	mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
+ mask[WeaponFireMsg >> 3] |= 0x01 << (WeaponFireMsg & 0x0007);
+ mask[DeathMessage >> 3] |= 0x01 << (DeathMessage & 0x0007);
+ mask[DamageMsg >> 3] |= 0x01 << (DamageMsg & 0x0007);
+ mask[MissileEndMsg >> 3] |= 0x01 << (MissileEndMsg & 0x0007);
+ mask[LandingMessage >> 3] |= 0x01 << (LandingMessage & 0x0007);
+ mask[EjectMsg >> 3] |= 0x01 << (EjectMsg & 0x0007);
+ mask[PlayerStatusMsg >> 3] |= 0x01 << (PlayerStatusMsg & 0x0007);
 
 */
 
@@ -1326,217 +1326,217 @@ static void ProcessKills(C_Window *win)
 
     /*
 
-    	int i,j,index;
-    	int y,fh;
-    	C_Text *txt;
-    	long UseFont;
-    	_TCHAR buffer[100];
-    	KillList *airList,*gndList;
-    	int aircnt,gndcnt;
-    	VehicleClassDataType	*vc;
+     int i,j,index;
+     int y,fh;
+     C_Text *txt;
+     long UseFont;
+     _TCHAR buffer[100];
+     KillList *airList,*gndList;
+     int aircnt,gndcnt;
+     VehicleClassDataType *vc;
 
-    	y=0;
-    	UseFont=win->Font_;
-    	fh=gFontList->GetHeight(UseFont);
-    	aircnt=0;
-    	gndcnt=0;
+     y=0;
+     UseFont=win->Font_;
+     fh=gFontList->GetHeight(UseFont);
+     aircnt=0;
+     gndcnt=0;
 
-    	if(instant_action::get_num_aa_kills ())
-    	{
-    		airList=new KillList[instant_action::get_num_air_target_types () + instant_action::get_num_air_threat_types ()];
-    		for(i=0;i<instant_action::get_num_air_target_types ();i++)
-    		{
-    			airList[aircnt].descriptionIndex=instant_action::get_air_target_description_index(0, i);
-    			airList[aircnt].numKilled=0;
-    			airList[aircnt].points=0;
-    			for(j=0;j<=instant_action::get_num_levels();j++)
-    			{
-    				airList[aircnt].numKilled+=instant_action::get_air_target_num_killed(j,i);
-    				airList[aircnt].points+=instant_action::get_air_target_points(j,i);
-    			}
-    			aircnt++;
-    		}
+     if(instant_action::get_num_aa_kills ())
+     {
+     airList=new KillList[instant_action::get_num_air_target_types () + instant_action::get_num_air_threat_types ()];
+     for(i=0;i<instant_action::get_num_air_target_types ();i++)
+     {
+     airList[aircnt].descriptionIndex=instant_action::get_air_target_description_index(0, i);
+     airList[aircnt].numKilled=0;
+     airList[aircnt].points=0;
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     airList[aircnt].numKilled+=instant_action::get_air_target_num_killed(j,i);
+     airList[aircnt].points+=instant_action::get_air_target_points(j,i);
+     }
+     aircnt++;
+     }
 
-    		for(i=0;i<instant_action::get_num_air_threat_types ();i++)
-    		{
-    			index=-1;
-    			for(j=0;j<aircnt;j++)
-    				if(airList[j].descriptionIndex == instant_action::get_air_threat_description_index (0, i))
-    					index=j;
+     for(i=0;i<instant_action::get_num_air_threat_types ();i++)
+     {
+     index=-1;
+     for(j=0;j<aircnt;j++)
+     if(airList[j].descriptionIndex == instant_action::get_air_threat_description_index (0, i))
+     index=j;
 
-    			if(index >= 0)
-    			{
-    				for(j=0;j<=instant_action::get_num_levels();j++)
-    				{
-    					airList[aircnt].numKilled+=instant_action::get_air_threat_num_killed(j, i);
-    					airList[aircnt].points+=instant_action::get_air_threat_points (j, i);
-    				}
-    			}
-    			else
-    			{
-    				airList[aircnt].descriptionIndex=instant_action::get_air_threat_description_index (0, i);
-    				airList[aircnt].numKilled=0;
-    				airList[aircnt].points=0;
-    				for(j=0;j<=instant_action::get_num_levels();j++)
-    				{
-    					airList[aircnt].numKilled+=instant_action::get_air_threat_num_killed (j,i);
-    					airList[aircnt].points+=instant_action::get_air_threat_points (j,i);
-    				}
-    				aircnt++;
-    			}
-    		}
+     if(index >= 0)
+     {
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     airList[aircnt].numKilled+=instant_action::get_air_threat_num_killed(j, i);
+     airList[aircnt].points+=instant_action::get_air_threat_points (j, i);
+     }
+     }
+     else
+     {
+     airList[aircnt].descriptionIndex=instant_action::get_air_threat_description_index (0, i);
+     airList[aircnt].numKilled=0;
+     airList[aircnt].points=0;
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     airList[aircnt].numKilled+=instant_action::get_air_threat_num_killed (j,i);
+     airList[aircnt].points+=instant_action::get_air_threat_points (j,i);
+     }
+     aircnt++;
+     }
+     }
 
-    		for(i=0;i<aircnt;i++)
-    		{
-    			if(airList[i].numKilled > 0)
-    			{
-    				_stprintf(buffer,"%1d",airList[i].numKilled);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
-    				txt->SetFixedWidth(_tcsclen(buffer)+1);
-    				txt->SetText(buffer);
-    				txt->SetXY(35,y);
-    				txt->SetFGColor(0xf0f0f0);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_RIGHT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     for(i=0;i<aircnt;i++)
+     {
+     if(airList[i].numKilled > 0)
+     {
+     _stprintf(buffer,"%1d",airList[i].numKilled);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
+     txt->SetFixedWidth(_tcsclen(buffer)+1);
+     txt->SetText(buffer);
+     txt->SetXY(35,y);
+     txt->SetFGColor(0xf0f0f0);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_RIGHT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				vc = GetVehicleClassData (airList[i].descriptionIndex);
-    				_stprintf(buffer,"%s",vc->Name);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_LEFT);
-    				txt->SetText(buffer);
-    				txt->SetXY(45,y);
-    				txt->SetFGColor(0xf0f0f0);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_LEFT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     vc = GetVehicleClassData (airList[i].descriptionIndex);
+     _stprintf(buffer,"%s",vc->Name);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_LEFT);
+     txt->SetText(buffer);
+     txt->SetXY(45,y);
+     txt->SetFGColor(0xf0f0f0);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_LEFT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				_stprintf(buffer,"%1ld",airList[i].points);
-    				AddCommas(buffer);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
-    				txt->SetFixedWidth(_tcsclen(buffer)+1);
-    				txt->SetText(buffer);
-    				txt->SetXY(215,y);
-    				txt->SetFGColor(0x00ff00);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_RIGHT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     _stprintf(buffer,"%1ld",airList[i].points);
+     AddCommas(buffer);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
+     txt->SetFixedWidth(_tcsclen(buffer)+1);
+     txt->SetText(buffer);
+     txt->SetXY(215,y);
+     txt->SetFGColor(0x00ff00);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_RIGHT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				TotalScore+=airList[i].points;
+     TotalScore+=airList[i].points;
 
-    				y+=fh;
-    			}
-    		}
-    		delete airList;
-    	}
-    	if(instant_action::get_num_ag_kills ())
-    	{
-    		gndList=new KillList[instant_action::get_num_gnd_target_types () + instant_action::get_num_gnd_threat_types ()];
-    		for(i=0;i<instant_action::get_num_gnd_target_types ();i++)
-    		{
-    			gndList[gndcnt].descriptionIndex=instant_action::get_gnd_target_description_index(0,i);
-    			gndList[gndcnt].numKilled=0;
-    			gndList[gndcnt].points=0;
-    			for(j=0;j<=instant_action::get_num_levels();j++)
-    			{
-    				gndList[gndcnt].numKilled+=instant_action::get_gnd_target_num_killed (j,i);
-    				gndList[gndcnt].points+=instant_action::get_gnd_target_points (j,i);
-    			}
-    			gndcnt++;
-    		}
+     y+=fh;
+     }
+     }
+     delete airList;
+     }
+     if(instant_action::get_num_ag_kills ())
+     {
+     gndList=new KillList[instant_action::get_num_gnd_target_types () + instant_action::get_num_gnd_threat_types ()];
+     for(i=0;i<instant_action::get_num_gnd_target_types ();i++)
+     {
+     gndList[gndcnt].descriptionIndex=instant_action::get_gnd_target_description_index(0,i);
+     gndList[gndcnt].numKilled=0;
+     gndList[gndcnt].points=0;
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     gndList[gndcnt].numKilled+=instant_action::get_gnd_target_num_killed (j,i);
+     gndList[gndcnt].points+=instant_action::get_gnd_target_points (j,i);
+     }
+     gndcnt++;
+     }
 
-    		for(i=0;i<instant_action::get_num_gnd_threat_types ();i++)
-    		{
-    			index=-1;
-    			for(j=0;j<gndcnt;j++)
-    				if(gndList[j].descriptionIndex == instant_action::get_gnd_threat_description_index(0,i))
-    					index=j;
+     for(i=0;i<instant_action::get_num_gnd_threat_types ();i++)
+     {
+     index=-1;
+     for(j=0;j<gndcnt;j++)
+     if(gndList[j].descriptionIndex == instant_action::get_gnd_threat_description_index(0,i))
+     index=j;
 
-    			if(index >= 0)
-    			{
-    				for(j=0;j<=instant_action::get_num_levels();j++)
-    				{
-    					gndList[index].numKilled+=instant_action::get_gnd_threat_num_killed (j,i);
-    					gndList[index].points+=instant_action::get_gnd_threat_points (j,i);
-    				}
-    			}
-    			else
-    			{
-    				gndList[gndcnt].descriptionIndex=instant_action::get_gnd_threat_description_index (0,i);
-    				gndList[gndcnt].numKilled=0;
-    				gndList[gndcnt].points=0;
-    				for(j=0;j<=instant_action::get_num_levels();j++)
-    				{
-    					gndList[gndcnt].numKilled+=instant_action::get_gnd_threat_num_killed (j,i);
-    					gndList[gndcnt].points+=instant_action::get_gnd_threat_points (j,i);
-    				}
-    				gndcnt++;
-    			}
-    		}
+     if(index >= 0)
+     {
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     gndList[index].numKilled+=instant_action::get_gnd_threat_num_killed (j,i);
+     gndList[index].points+=instant_action::get_gnd_threat_points (j,i);
+     }
+     }
+     else
+     {
+     gndList[gndcnt].descriptionIndex=instant_action::get_gnd_threat_description_index (0,i);
+     gndList[gndcnt].numKilled=0;
+     gndList[gndcnt].points=0;
+     for(j=0;j<=instant_action::get_num_levels();j++)
+     {
+     gndList[gndcnt].numKilled+=instant_action::get_gnd_threat_num_killed (j,i);
+     gndList[gndcnt].points+=instant_action::get_gnd_threat_points (j,i);
+     }
+     gndcnt++;
+     }
+     }
 
-    		for(i=0;i<gndcnt;i++)
-    		{
-    			if(gndList[i].numKilled > 0)
-    			{
-    				_stprintf(buffer,"%1d",gndList[i].numKilled);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
-    				txt->SetFixedWidth(_tcsclen(buffer)+1);
-    				txt->SetText(buffer);
-    				txt->SetXY(35,y);
-    				txt->SetFGColor(0xf0f0f0);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_RIGHT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     for(i=0;i<gndcnt;i++)
+     {
+     if(gndList[i].numKilled > 0)
+     {
+     _stprintf(buffer,"%1d",gndList[i].numKilled);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
+     txt->SetFixedWidth(_tcsclen(buffer)+1);
+     txt->SetText(buffer);
+     txt->SetXY(35,y);
+     txt->SetFGColor(0xf0f0f0);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_RIGHT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				vc = GetVehicleClassData (gndList[i].descriptionIndex);
-    				_stprintf(buffer,"%s",vc->Name);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_LEFT);
-    				txt->SetText(buffer);
-    				txt->SetXY(45,y);
-    				txt->SetFGColor(0xf0f0f0);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_LEFT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     vc = GetVehicleClassData (gndList[i].descriptionIndex);
+     _stprintf(buffer,"%s",vc->Name);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_LEFT);
+     txt->SetText(buffer);
+     txt->SetXY(45,y);
+     txt->SetFGColor(0xf0f0f0);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_LEFT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				_stprintf(buffer,"%1ld",gndList[i].points);
-    				AddCommas(buffer);
-    				txt=new C_Text;
-    				txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
-    				txt->SetFixedWidth(_tcsclen(buffer)+1);
-    				txt->SetText(buffer);
-    				txt->SetXY(215,y);
-    				txt->SetFGColor(0x00ff00);
-    				txt->SetFont(UseFont);
-    				txt->SetFlagBitOn(C_BIT_RIGHT);
-    				txt->SetClient(2);
-    				win->AddControl(txt);
+     _stprintf(buffer,"%1ld",gndList[i].points);
+     AddCommas(buffer);
+     txt=new C_Text;
+     txt->Setup(C_DONT_CARE,C_TYPE_RIGHT);
+     txt->SetFixedWidth(_tcsclen(buffer)+1);
+     txt->SetText(buffer);
+     txt->SetXY(215,y);
+     txt->SetFGColor(0x00ff00);
+     txt->SetFont(UseFont);
+     txt->SetFlagBitOn(C_BIT_RIGHT);
+     txt->SetClient(2);
+     win->AddControl(txt);
 
-    				TotalScore+=gndList[i].points;
+     TotalScore+=gndList[i].points;
 
-    				y+=fh;
-    			}
-    		}
-    		delete gndList;
-    	}
+     y+=fh;
+     }
+     }
+     delete gndList;
+     }
 
-    	TotalScore *= PlayerOptions.Realism;
-    	txt=(C_Text *)win->FindControl(IA_DBRF_SCORE_FIELD);
-    	if(txt)
-    	{
-    		sprintf(buffer,"%1ld",TotalScore);
-    		AddCommas(buffer);
-    		txt->SetText(buffer);
-    	}
-    	win->RefreshWindow();
+     TotalScore *= PlayerOptions.Realism;
+     txt=(C_Text *)win->FindControl(IA_DBRF_SCORE_FIELD);
+     if(txt)
+     {
+     sprintf(buffer,"%1ld",TotalScore);
+     AddCommas(buffer);
+     txt->SetText(buffer);
+     }
+     win->RefreshWindow();
     */
 }
 
@@ -1561,7 +1561,7 @@ static void ProcessWeapons(C_Window *win)
     int y, fh;
     C_Text *txt;
     _TCHAR buffer[100];
-    WeaponClassDataType		*wc;
+    WeaponClassDataType *wc;
     kill_list *cur;
     long UseFont;
 

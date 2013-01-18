@@ -1,10 +1,10 @@
 //
 //
 //
-//			TARGA.CPP
+// TARGA.CPP
 //
 //
-//			Created by Kyle Granger, October 23, 1995
+// Created by Kyle Granger, October 23, 1995
 //
 //
 //

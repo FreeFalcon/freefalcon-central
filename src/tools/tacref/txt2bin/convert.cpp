@@ -67,13 +67,13 @@ RECT  gblrect;
 int   ifh, ofh;
 long  flen;
 short toktype;
-short where;	// current chunk
-short txthd;	// 1 means text collection header created, else 0
+short where; // current chunk
+short txthd; // 1 means text collection header created, else 0
 short ttlentity, ttlstat, ttlcat, ttltxt, ttlrwr;
 short ttlcatstrhead;
-char  *trdata;	// points 2 current token
+char  *trdata; // points 2 current token
 char  *startentity, *startstat, *startcat, *starttxt, *startrwr;
-char  *startdata, *endingdata;	// start and end of database
+char  *startdata, *endingdata; // start and end of database
 char  *nextdata;
 char  *tokens[ MAXTOKEN ] =
 {
@@ -126,19 +126,19 @@ struct Text4CatString *CatInTxtptr;
 struct RWR_Data       *Rwrptr;
 
 char   *CatKeepptr;
-char   *CatKeeptxt[MAXCATKEEPTXT];		// for keeping Cat text pointers
-char   *CatHeadKeep[MAXCATKEEP];		// for keeping Cat header pointers
-char   *CatPtrKeep[MAXCATKEEP];			// for keeping Cat chunk pointers
-char   *CatStrKeep[MAXCATKEEP];			// for keeping Cat String header pointers
-char   *CatInTxtKeep[MAXCATKEEP][MAXINTXTKEEP];		// 4 keeping Cat Inside Text Str struc ptrs in 1 string header
-char   *CatInChildKeep[MAXCATKEEP][MAXINTXTKEEP];	// 4 keeping Cat string data pointers in 1 string header
+char   *CatKeeptxt[MAXCATKEEPTXT]; // for keeping Cat text pointers
+char   *CatHeadKeep[MAXCATKEEP]; // for keeping Cat header pointers
+char   *CatPtrKeep[MAXCATKEEP]; // for keeping Cat chunk pointers
+char   *CatStrKeep[MAXCATKEEP]; // for keeping Cat String header pointers
+char   *CatInTxtKeep[MAXCATKEEP][MAXINTXTKEEP]; // 4 keeping Cat Inside Text Str struc ptrs in 1 string header
+char   *CatInChildKeep[MAXCATKEEP][MAXINTXTKEEP]; // 4 keeping Cat string data pointers in 1 string header
 char   *CatInChildTxt;
 
-char   *RwrHeadKeep[MAXRWRKEEP];	// ptrs 2 RWR heads in 1 entity
-char   *RwrPtrKeep [MAXRWRKEEP];	// ptrs 2 RWR data ptrs in 1 entity
-char   *DescHeadKeep;				// ptr 2 Description header in 1 ent
-char   *DescPtrKeep [MAXDESCKEEP];	// ptrs 2 Description data ptrs in 1 ent
-char   *DescChildKeep[MAXDESCKEEP];	// ptrs 2 Desc child texts in 1 entity
+char   *RwrHeadKeep[MAXRWRKEEP]; // ptrs 2 RWR heads in 1 entity
+char   *RwrPtrKeep [MAXRWRKEEP]; // ptrs 2 RWR data ptrs in 1 entity
+char   *DescHeadKeep; // ptr 2 Description header in 1 ent
+char   *DescPtrKeep [MAXDESCKEEP]; // ptrs 2 Description data ptrs in 1 ent
+char   *DescChildKeep[MAXDESCKEEP]; // ptrs 2 Desc child texts in 1 entity
 char   *DescChildTxt;
 long   curtxtidx;
 long   currwridx;
@@ -155,7 +155,7 @@ char *SkipJunk(char *lnptr)
     char *dblslh = "//";
     char *newlnptr, *token;
 
-    token    = strtok(lnptr, backn);	// get 1st token
+    token    = strtok(lnptr, backn); // get 1st token
     newlnptr = token;
 
     /* While there are tokens in "string" */
@@ -236,18 +236,18 @@ short CheckToken(char *line)
 
     tokentype   = -1;
     len         = strlen(line);
-    line[len - 1] = '\0';	// replace a 0xD
+    line[len - 1] = '\0'; // replace a 0xD
 
     for (i = 0; i < MAXTOKEN; i++)
     {
-        if (!strcmp(tokens[i], line))  	// got it
+        if (!strcmp(tokens[i], line))   // got it
         {
             tokentype = i;
             break;
         }
     }
 
-    line[len - 1] = 0xD;	// put it back
+    line[len - 1] = 0xD; // put it back
 
     return(tokentype);
 }
@@ -267,31 +267,31 @@ void DoBegEntity()
 
     Enthead->type = tokmap[toktype];
     trdata   = nextdata;
-    trdata   = GetALine(trdata, backn);	// GroupID
+    trdata   = GetALine(trdata, backn); // GroupID
     lGroupID = Text2Long(trdata);
     Entityptr->GroupID = lGroupID;
 
     trdata      = nextdata;
-    trdata      = GetALine(trdata, backn);	// SubGroupID
+    trdata      = GetALine(trdata, backn); // SubGroupID
     lSubGroupID = Text2Long(trdata);
     Entityptr->SubGroupID = lSubGroupID;
 
     trdata    = nextdata;
-    trdata    = GetALine(trdata, backn);	// EntityID
+    trdata    = GetALine(trdata, backn); // EntityID
     lEntityID = Text2Long(trdata);
     Entityptr->EntityID = lEntityID;
 
     ttlentity += (3 * sizeof(long));
 
     trdata   = nextdata;
-    trdata   = GetALine(trdata, backn);	// ModelID
+    trdata   = GetALine(trdata, backn); // ModelID
     lModelID = Text2Short(trdata);
     Entityptr->ModelID = lModelID;
 
     ttlentity += (sizeof(short));
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// EntityName
+    trdata = GetALine(trdata, backn); // EntityName
     len    = strlen(trdata);
     tptr   = (char *)&Entityptr->Name[0];
 
@@ -302,7 +302,7 @@ void DoBegEntity()
     }
 
     *tptr = '\0';
-    ttlentity += 32;	// fix length
+    ttlentity += 32; // fix length
 }
 
 // Process End Entity token
@@ -360,8 +360,8 @@ void DoEndEntity()
     }
 
     ttlentity = ttlstat = ttlcat = ttltxt = ttlrwr = 0;
-    currwridx = 0;	// reset idx
-    InitRwrKeep();	// reset ptrs
+    currwridx = 0; // reset idx
+    InitRwrKeep(); // reset ptrs
     curdesidx = 0;
     InitDescKeep();
     curcatidx = 0;
@@ -376,7 +376,7 @@ void DoBegStat()
 {
     where     = _STATS_;
     Stathead  = new Header;
-    ttlentity += (2 * sizeof(short));	// for the header
+    ttlentity += (2 * sizeof(short)); // for the header
     Stathead->type = tokmap[toktype];
 }
 
@@ -399,12 +399,12 @@ void DoBegCat()
     CatHeadKeep[curcatidx] = (char *)Cathead;
     Catptr  = new Category;
     CatPtrKeep[curcatidx]  = (char *)Catptr;
-    ttlentity += (2 * sizeof(short));	// for the header
-    ttlstat   += (2 * sizeof(short));	// for the header
+    ttlentity += (2 * sizeof(short)); // for the header
+    ttlstat   += (2 * sizeof(short)); // for the header
     Cathead->type = tokmap[toktype];
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// CatText
+    trdata = GetALine(trdata, backn); // CatText
     len    = strlen(trdata);
     tptr   = (char *)&Catptr->Name[0];
 
@@ -415,7 +415,7 @@ void DoBegCat()
     }
 
     *tptr = '\0';
-    ttlentity += 40;	// fix length
+    ttlentity += 40; // fix length
     ttlstat += 40;
     ttlcat += 40;
 }
@@ -455,9 +455,9 @@ void DoBegText()
     char  *token;
     long  lXrefGroup, lXrefSubGroup, lEntityID;
 
-    curtxtidx  = 0;	// currently Not Used
+    curtxtidx  = 0; // currently Not Used
 
-    if (where == _CATEGORY_)  	//
+    if (where == _CATEGORY_)   //
     {
         Stringhead = new Header;
         CatStrKeep[curcatidx] = (char *)Stringhead;
@@ -467,7 +467,7 @@ void DoBegText()
         ttlcat     += (2 * sizeof(short));
 
         trdata = nextdata;
-        token  = strtok(trdata, backn);	// get 1st token
+        token  = strtok(trdata, backn); // get 1st token
         lcount = 0;
 
         /* While there are tokens in "string" */
@@ -477,9 +477,9 @@ void DoBegText()
             {
                 /* Not Endmark, Get next token: */
                 //if ( !strncmp(token,"Propulsion: 2 Gas",17)) { // just checking
-                //	len = 0;
+                // len = 0;
                 //}
-                lcount++;	// count how many text strings are inside this block of TEXT
+                lcount++; // count how many text strings are inside this block of TEXT
                 CatInTxtptr = new Text4CatString;
                 CatInTxtKeep[curcatidx][curintxtidx] = (char *)CatInTxtptr;
 
@@ -514,29 +514,29 @@ void DoBegText()
                     curintxtidx++;
                 }
             }
-            else  	// End mark found, look ahead
+            else   // End mark found, look ahead
             {
                 // get the 3 xrefs
                 trdata     = token + strlen(token) + 1;
-                trdata     = GetALine(trdata, backn);	// XrefGroup
+                trdata     = GetALine(trdata, backn); // XrefGroup
                 lXrefGroup = Text2Long(trdata);
                 CatInTxtptr->GroupID = lXrefGroup;
 
                 trdata        = nextdata;
-                trdata        = GetALine(trdata, backn);	// XrefSubGroup
+                trdata        = GetALine(trdata, backn); // XrefSubGroup
                 lXrefSubGroup = Text2Long(trdata);
                 CatInTxtptr->SubGroupID = lXrefSubGroup;
 
                 trdata    = nextdata;
-                trdata    = GetALine(trdata, backn);	// XrefVehicle or EntityID
+                trdata    = GetALine(trdata, backn); // XrefVehicle or EntityID
                 lEntityID = Text2Long(trdata);
                 CatInTxtptr->EntityID = lEntityID;
 
-                ttlentity     += (lcount * (sizeof(short) + (3 * sizeof(long))));	// 11/23/98
+                ttlentity     += (lcount * (sizeof(short) + (3 * sizeof(long)))); // 11/23/98
                 ttlstat       += (lcount * (sizeof(short) + (3 * sizeof(long))));
                 ttlcat        += (lcount * (sizeof(short) + (3 * sizeof(long))));
                 ttlcatstrhead += (lcount * (sizeof(short) + (3 * sizeof(long))));
-                lcount        = 0;	// reset
+                lcount        = 0; // reset
 
                 tptr = nextdata;
 
@@ -550,7 +550,7 @@ void DoBegText()
                 {
                     token = tptr;
                     token = strtok(token, backn);
-                    token = strtok(NULL, backn);	// points 2 text
+                    token = strtok(NULL, backn); // points 2 text
                     curintxtidx++;
                 }
             }
@@ -563,26 +563,26 @@ void DoBegText()
 
         if (!(strncmp(token, "BEGIN_CAT", 9)))
         {
-            trdata           = token;	// more Cat
+            trdata           = token; // more Cat
             nextdata         = token;
-            Cathead->size    = ttlcat;	// save previous Cat chunk size
-            ttlcat           = 0;	// reset 4 next cat
+            Cathead->size    = ttlcat; // save previous Cat chunk size
+            ttlcat           = 0; // reset 4 next cat
             Stringhead->size = ttlcatstrhead;
             ttlcatstrhead    = 0;
             catintxtidxkeep[curcatidx] = curintxtidx;
-            curintxtidx      = 0;	// NEED 2 save this first
+            curintxtidx      = 0; // NEED 2 save this first
             curcatidx++;
             return;
         }
 
         // Advance to Description text
         /* While there are tokens in "string" */
-        catintxtidxkeep[curcatidx] = curintxtidx;	// 4 the last Cat
-        Cathead->size    = ttlcat;	// save previous Cat chunk size
+        catintxtidxkeep[curcatidx] = curintxtidx; // 4 the last Cat
+        Cathead->size    = ttlcat; // save previous Cat chunk size
         ttlcat           = 0;
         Stringhead->size = ttlcatstrhead;
         ttlcatstrhead    = 0;
-        curcatidx++;	// 4 loop sake
+        curcatidx++; // 4 loop sake
 
         while (token)
         {
@@ -607,7 +607,7 @@ void DoBegText()
 
 
         // put back linefeed since it's replaced
-        len = strlen(token);	// does nothing, just 4 debugging
+        len = strlen(token); // does nothing, just 4 debugging
         //token[len] = 0x0A;
 
     } // ENDIF Category
@@ -669,28 +669,28 @@ void DoDescript()
         {
             // Get some values here
             trdata      = token + strlen(token) + 1;
-            trdata      = GetALine(trdata, backn);	// ZoomAdjust
+            trdata      = GetALine(trdata, backn); // ZoomAdjust
             lZoomAdjust = Text2Short(trdata);
             Entityptr->ZoomAdjust = lZoomAdjust;
 
             trdata    = nextdata;
-            trdata    = GetALine(trdata, backn);	// Vert Offset
+            trdata    = GetALine(trdata, backn); // Vert Offset
             lVertical = Text2Short(trdata);
             Entityptr->VerticalOffset = lVertical;
 
             trdata = nextdata;
-            trdata = GetALine(trdata, backn);	// Horiz Offset
+            trdata = GetALine(trdata, backn); // Horiz Offset
             lHoriz = Text2Short(trdata);
             Entityptr->HorizontalOffset = lHoriz;
 
             trdata   = nextdata;
-            trdata   = GetALine(trdata, backn);	// MissileFlag
+            trdata   = GetALine(trdata, backn); // MissileFlag
             lMissile = Text2Short(trdata);
             Entityptr->MissileFlag = lMissile;
 
             ttlentity += (4 * sizeof(short));
             trdata    = nextdata;
-            trdata    = GetALine(trdata, backn);	// Photo fname
+            trdata    = GetALine(trdata, backn); // Photo fname
             len       = strlen(trdata);
             tptr      = (char *)&Entityptr->PhotoFile[0];
 
@@ -701,7 +701,7 @@ void DoDescript()
             }
 
             *tptr          = '\0';
-            ttlentity      += 32;	// fix length
+            ttlentity      += 32; // fix length
             Deschead->size = ttldesctxt;
             break;
         }
@@ -739,7 +739,7 @@ void DoBegRwr()
 
     Rwrhead->type = tokmap[toktype];
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// RWRNAME
+    trdata = GetALine(trdata, backn); // RWRNAME
     len    = strlen(trdata);
     tptr   = (char *)&Rwrptr->Name[0];
 
@@ -750,32 +750,32 @@ void DoBegRwr()
     }
 
     *tptr     = '\0';
-    ttlentity += 32;	// fix length
+    ttlentity += 32; // fix length
     ttlrwr    += 32;
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// SearchSymbol
+    trdata = GetALine(trdata, backn); // SearchSymbol
     lSearchSymbol       = Text2Short(trdata);
     Rwrptr->SearchState = lSearchSymbol;
     ttlentity += (sizeof(short));
     ttlrwr    += (sizeof(short));
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// SearchTone
+    trdata = GetALine(trdata, backn); // SearchTone
     lSearchTone        = Text2Long(trdata);
     Rwrptr->SearchTone = lSearchTone;
     ttlentity += (sizeof(long));
     ttlrwr    += (sizeof(long));
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// LockSymbol
+    trdata = GetALine(trdata, backn); // LockSymbol
     lLockSymbol       = Text2Short(trdata);
     Rwrptr->LockState = lLockSymbol;
     ttlentity += (sizeof(short));
     ttlrwr    += (sizeof(short));
 
     trdata = nextdata;
-    trdata = GetALine(trdata, backn);	// LockTone
+    trdata = GetALine(trdata, backn); // LockTone
     lLockTone        = Text2Long(trdata);
     Rwrptr->LockTone = lLockTone;
     ttlentity += (sizeof(long));
@@ -787,8 +787,8 @@ void DoEndRwr()
 {
     where  = _ENDRWR_;
     Rwrhead->size = ttlrwr;
-    currwridx++;	// ready 4 next memory
-    ttlrwr = 0;	// current RWR total size
+    currwridx++; // ready 4 next memory
+    ttlrwr = 0; // current RWR total size
 }
 
 // Parse the tacref database file
@@ -936,14 +936,14 @@ void CreateBin()
     tcptr = Entityptr->Name;
     strcpy(tbuff, tcptr);
     tcptr = tbuff;
-    numwr += _write(ofh, tcptr, 32);	// fix length
+    numwr += _write(ofh, tcptr, 32); // fix length
     tcptr = Entityptr->PhotoFile;
 
     for (k = 0; k < 80; k++) tbuff[k] = '\0';
 
     strcpy(tbuff, tcptr);
     tcptr = tbuff;
-    numwr += _write(ofh, tcptr, 32);	// fix length
+    numwr += _write(ofh, tcptr, 32); // fix length
 
     // Statistics Record (only a header)
     snum  = ((struct Header *)Stathead)->type;
@@ -966,7 +966,7 @@ void CreateBin()
 
         strcpy(tbuff, tcptr);
         tcptr = tbuff;
-        numwr += _write(ofh, tcptr, 40);	// fix length
+        numwr += _write(ofh, tcptr, 40); // fix length
 
         // Category text
         snum  = ((struct Header *)CatStrKeep[i])->type;
@@ -1037,7 +1037,7 @@ void CreateBin()
     //
     snum  = _RWR_DATA_;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = currwridx * sizeof(struct RWR_Data);	// can be 0 if no RWR data
+    snum  = currwridx * sizeof(struct RWR_Data); // can be 0 if no RWR data
     numwr += _write(ofh, &snum, sizeof(short));
 
     // RWR Record
@@ -1058,17 +1058,17 @@ void CreateBin()
 
         strcpy(tbuff, tcptr);
         tcptr = tbuff;
-        numwr += _write(ofh, tcptr, 32);	// fix length
+        numwr += _write(ofh, tcptr, 32); // fix length
     }
 
-    numwr = numwr;	// just checking
+    numwr = numwr; // just checking
 }
 
 //void Conv2Bin()
 void Conv2Bin(char *ifname, char *ofname)
 {
-    //	char *ifname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.txt";
-    //	char *ofname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.bin";
+    // char *ifname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.txt";
+    // char *ofname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.bin";
     long bytesread;
 
     ifh = _open(ifname, _O_BINARY | _O_RDONLY);
@@ -1076,7 +1076,7 @@ void Conv2Bin(char *ifname, char *ofname)
     if (ifh == -1)
     {
         printf("Error: can't open input file (%s)\n", ifname);
-        return;	// Error
+        return; // Error
     }
 
     //DrawText( gblhdc, "File Opened for Reading!", -1, &gblrect, DT_SINGLELINE);
@@ -1143,40 +1143,40 @@ void Conv2Bin(char *ifname, char *ofname)
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdShow)
 {
     /*
-    	static     char szAppName[] = "convert";
-    	HWND       hwnd;
-    	MSG        msg;
-    	WNDCLASSEX wndclass;
+     static     char szAppName[] = "convert";
+     HWND       hwnd;
+     MSG        msg;
+     WNDCLASSEX wndclass;
 
-    	wndclass.cbSize        = sizeof(wndclass);
-    	wndclass.style         = CS_HREDRAW | CS_VREDRAW;
-    	wndclass.lpfnWndProc   = WinProc;
-    	wndclass.cbClsExtra    = 0;
-    	wndclass.cbWndExtra    = 0;
-    	wndclass.hInstance     = hInst;
-    	wndclass.hIcon         = LoadIcon (NULL,IDI_APPLICATION);
-    	wndclass.hCursor       = LoadCursor(NULL,IDC_ARROW);
-    	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    	wndclass.lpszMenuName  = NULL;
-    	wndclass.lpszClassName = szAppName;
-    	wndclass.hIconSm       = LoadIcon(NULL,IDI_APPLICATION);
+     wndclass.cbSize        = sizeof(wndclass);
+     wndclass.style         = CS_HREDRAW | CS_VREDRAW;
+     wndclass.lpfnWndProc   = WinProc;
+     wndclass.cbClsExtra    = 0;
+     wndclass.cbWndExtra    = 0;
+     wndclass.hInstance     = hInst;
+     wndclass.hIcon         = LoadIcon (NULL,IDI_APPLICATION);
+     wndclass.hCursor       = LoadCursor(NULL,IDC_ARROW);
+     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+     wndclass.lpszMenuName  = NULL;
+     wndclass.lpszClassName = szAppName;
+     wndclass.hIconSm       = LoadIcon(NULL,IDI_APPLICATION);
 
-    	RegisterClassEx(&wndclass);
+     RegisterClassEx(&wndclass);
 
-    	hwnd = CreateWindow(szAppName,
-    					   "Convert",
-    					   WS_OVERLAPPEDWINDOW,
-    					   CW_USEDEFAULT,
-    					   CW_USEDEFAULT,
-    					   CW_USEDEFAULT,
-    					   CW_USEDEFAULT,
-    					   NULL,
-    					   NULL,
-    					   hInst,
-    					   NULL);
+     hwnd = CreateWindow(szAppName,
+        "Convert",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        NULL,
+        NULL,
+        hInst,
+        NULL);
 
-    	ShowWindow(hwnd,iCmdShow);
-    	UpdateWindow(hwnd);
+     ShowWindow(hwnd,iCmdShow);
+     UpdateWindow(hwnd);
 
     // Reads in tac ref database file
     */
@@ -1207,54 +1207,54 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
         exit(0);
     }
 
-    //	Conv2Bin();
+    // Conv2Bin();
     Conv2Bin(infile, outfile);
     /*
-    	while(GetMessage(&msg,NULL,0,0))
-    	{
-    		TranslateMessage(&msg);
-    		DispatchMessage(&msg);
-    	}
-    	return(msg.lParam);
+     while(GetMessage(&msg,NULL,0,0))
+     {
+     TranslateMessage(&msg);
+     DispatchMessage(&msg);
+     }
+     return(msg.lParam);
     */
     return(0);
 }
 /*
 LRESULT CALLBACK WinProc (HWND hwnd, UINT message,WPARAM wParam,LPARAM lParam)
 {
-	HDC         hdc;
-	PAINTSTRUCT ps;
-	RECT        rect;
-	LRESULT     retval=1;
+ HDC         hdc;
+ PAINTSTRUCT ps;
+ RECT        rect;
+ LRESULT     retval=1;
 
-	switch(message)
-	{
-		case WM_CREATE:
-			 return(0);
-		case WM_SYSKEYDOWN:
-		case WM_CHAR:
-			 return(0);
+ switch(message)
+ {
+ case WM_CREATE:
+  return(0);
+ case WM_SYSKEYDOWN:
+ case WM_CHAR:
+  return(0);
 
-		case WM_PAINT:
-			 hdc=BeginPaint(hwnd,&ps);
-			 GetClientRect(hwnd,&rect);
+ case WM_PAINT:
+  hdc=BeginPaint(hwnd,&ps);
+  GetClientRect(hwnd,&rect);
 
-			 gblhdc  = hdc;
-			 gblhwnd = hwnd;
-			 gblrect = rect;
+  gblhdc  = hdc;
+  gblhwnd = hwnd;
+  gblrect = rect;
 
-			 DrawText(hdc, "Begin reading file", -1, &rect, DT_SINGLELINE);
+  DrawText(hdc, "Begin reading file", -1, &rect, DT_SINGLELINE);
 
-			 EndPaint(hwnd,&ps);
-			 return(0);
-		case WM_LBUTTONUP:
+  EndPaint(hwnd,&ps);
+  return(0);
+ case WM_LBUTTONUP:
 
-			 return(0);
+  return(0);
 
-		case WM_DESTROY:
-			 PostQuitMessage(0);
-			 return(0);
-	}
-	return(DefWindowProc(hwnd,message,wParam,lParam));
+ case WM_DESTROY:
+  PostQuitMessage(0);
+  return(0);
+ }
+ return(DefWindowProc(hwnd,message,wParam,lParam));
 }
 */

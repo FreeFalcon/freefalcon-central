@@ -139,8 +139,8 @@ ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void 
 {
     ComTCP *c;
     int err;
-    //	int trueValue=1;
-    //	int falseValue=0;
+    // int trueValue=1;
+    // int falseValue=0;
     SOCKET listen_sock;
     CAPIList  *listitem;
     WSADATA  wsaData;
@@ -221,7 +221,7 @@ ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void 
     /* Bind to local address -- don't really need this but Hey ... */
     if (err = CAPI_bind(listen_sock, (struct sockaddr*)&c->Addr, sizeof(c->Addr)))
     {
-        //		int error = CAPI_WSAGetLastError();
+        // int error = CAPI_WSAGetLastError();
         leave_cs();
         return NULL;
     }
@@ -229,7 +229,7 @@ ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void 
     /* now listen on this socket */
     if (err = CAPI_listen(listen_sock, MAXBACKLOG))
     {
-        //		int error = CAPI_WSAGetLastError();
+        // int error = CAPI_WSAGetLastError();
         leave_cs();
         return 0;
     }
@@ -245,7 +245,7 @@ ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void 
 
     if (c->ThreadHandle == NULL)
     {
-        //		DWORD error = GetLastError();
+        // DWORD error = GetLastError();
     }
 
     SetThreadPriority(c->ThreadHandle, THREAD_PRIORITY_IDLE);
@@ -261,8 +261,8 @@ ComAPIHandle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsi
 {
     ComTCP *c;
     int err;
-    //	int trueValue=1;
-    //	int falseValue=0;
+    // int trueValue=1;
+    // int falseValue=0;
     WSADATA wsaData;
     CAPIList *listitem;
 
@@ -357,7 +357,7 @@ ComAPIHandle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsi
 
     if (c->ThreadHandle == NULL)
     {
-        //		DWORD error = GetLastError();
+        // DWORD error = GetLastError();
         ComTCPFreeData(c);
         return NULL;
     }
@@ -477,7 +477,7 @@ static void AcceptConnection(LPVOID cvoid)
 
         RELEASE_LOCK(ctcpListen->lock);
 
-        /*	   Sleep(SLEEP_IN_ACCEPT);    */
+        /*    Sleep(SLEEP_IN_ACCEPT);    */
         err = 0;
 
         /* wait for a connection */
@@ -1154,7 +1154,7 @@ unsigned long ComTCPQuery(ComAPIHandle c, int querytype)
                 break;
 
             case COMAPI_TCP_HEADER_OVERHEAD:
-                return sizeof(tcpHeader) + 40;	// Size of underlying header.
+                return sizeof(tcpHeader) + 40; // Size of underlying header.
                 break;
 
             default:
@@ -1176,7 +1176,7 @@ int ComTCPRecv(ComAPIHandle c, int BytesToRecv)
         ComTCP *ctcp = (ComTCP *)c;
         int recverror;
         int bytesRecvd;
-        //		int flags = 0;
+        // int flags = 0;
 
         ctcp->recv_buffer.len = BytesToRecv;
 
@@ -1231,7 +1231,7 @@ int ComTCPRecv(ComAPIHandle c, int BytesToRecv)
 
 int ComTCPGetMessage(ComAPIHandle c)
 {
-    //	int retval = 0;
+    // int retval = 0;
 
     if (c)
     {
@@ -1433,7 +1433,7 @@ int ComTCPGetNbytes(ComAPIHandle c, int BytesToGet)
 
     if (c)
     {
-        //	while(BytesGotten < BytesToGet && bytesRecvd > 0)
+        // while(BytesGotten < BytesToGet && bytesRecvd > 0)
         while (BytesToGet && bytesRecvd > 0)
         {
             bytesRecvd = ComTCPRecv(c, BytesToGet);
@@ -1593,8 +1593,8 @@ CAPIList *CAPIListRemove(CAPIList * list, ComAPIHandle com)
         if (!curr)
         {
 #ifdef _DEBUG
-            //			if (list)
-            //				MonoPrint ("%08x = CAPI List Remove %08x \"%s\" %08x\n", list, start, com->name, ((ComIP*)com)->address.sin_addr.s_addr);
+            // if (list)
+            // MonoPrint ("%08x = CAPI List Remove %08x \"%s\" %08x\n", list, start, com->name, ((ComIP*)com)->address.sin_addr.s_addr);
 #endif
 
             return list;
@@ -2221,7 +2221,7 @@ int ComGROUPSend(ComAPIHandle c, int msgsize, int oob, int type)
 
                         if (ret > 0)
                         {
-                            //							oob = TRUE; // force other UDP packets to go OOB if the first one went
+                            // oob = TRUE; // force other UDP packets to go OOB if the first one went
                         }
                     }
 
@@ -2250,12 +2250,12 @@ int ComGROUPSend(ComAPIHandle c, int msgsize, int oob, int type)
             }
             /*else if
             (
-            	(curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL) ||
-            	(curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) ||
-            	(curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL)
+             (curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL) ||
+             (curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL) ||
+             (curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL)
             )
             {
-            	ret = ComDPLAYSendFromGroup(curr->com,msgsize,group->send_buffer +group->max_header);
+             ret = ComDPLAYSendFromGroup(curr->com,msgsize,group->send_buffer +group->max_header);
             }*/
             else if (curr->com->protocol == CAPI_GROUP_PROTOCOL) /* another group */
             {
@@ -2410,12 +2410,12 @@ int ComGROUPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle X
             }
             /*else if
             (
-            	curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL ||
-            	curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL ||
-            	curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL
+             curr->com->protocol == CAPI_DPLAY_TCP_PROTOCOL ||
+             curr->com->protocol == CAPI_DPLAY_MODEM_PROTOCOL ||
+             curr->com->protocol == CAPI_DPLAY_SERIAL_PROTOCOL
             )
             {
-            	ret = ComDPLAYSendFromGroup(curr->com,msgsize,group->send_buffer +group->max_header);
+             ret = ComDPLAYSendFromGroup(curr->com,msgsize,group->send_buffer +group->max_header);
             }*/
             else if (curr->com->protocol == CAPI_GROUP_PROTOCOL) /* another group */
             {

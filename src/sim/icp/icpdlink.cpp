@@ -11,13 +11,13 @@ extern bool g_bRealisticAvionics;
 void ICPClass::ExecDLINKMode(void)
 {
 
-    FalconDLinkMessage::DLinkPointType 	type;
-    int		pointNumber;
-    char		ptype[5];
-    char		ptarget[15];
-    char		pthreat[15];
-    char		pheading[4];
-    char		pdistance[5];
+    FalconDLinkMessage::DLinkPointType  type;
+    int pointNumber;
+    char ptype[5];
+    char ptarget[15];
+    char pthreat[15];
+    char pheading[4];
+    char pdistance[5];
 
     if (!g_bRealisticAvionics)
     {

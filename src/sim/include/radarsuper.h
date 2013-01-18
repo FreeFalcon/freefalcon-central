@@ -8,9 +8,9 @@ class RadarSuperClass : public RadarClass
 {
 public :
     RadarSuperClass(int index, SimMoverClass* parentPlatform);
-    virtual ~RadarSuperClass()					{};
+    virtual ~RadarSuperClass() {};
 
-    virtual	void ExecModes(int newDesignate, int newDrop);
+    virtual void ExecModes(int newDesignate, int newDrop);
     virtual void UpdateState(int cursorXCmd, int cursorYCmd);
     virtual SimObjectType* Exec(SimObjectType* targetList);
     virtual void Display(VirtualDisplay* activeDisplay);
@@ -83,25 +83,25 @@ public :
     virtual void SetMode(RadarMode cmd);
 
 protected:
-    float			rangeNM;			// How far are we looking in NM
-    float			rangeFT;			// How far are we looking in FT for convienience
-    float			invRangeFT;			// 1/how far we're looking for convienience
+    float rangeNM; // How far are we looking in NM
+    float rangeFT; // How far are we looking in FT for convienience
+    float invRangeFT; // 1/how far we're looking for convienience
 
-    float			prevRange;			// Indicate where we were before AA override
+    float prevRange; // Indicate where we were before AA override
 
     typedef enum { NOCHANGE = 0, AUTO, CURSOR, BORE, NEXT, PREV } LockCommand;
-    LockCommand		lockCmd;			// Current desired target lock operation
+    LockCommand lockCmd; // Current desired target lock operation
 
-    float			cursorX;			// radar cursor location in normalized display space
-    float			cursorY;			// (ie:  -1.0 to 1.0)
+    float cursorX; // radar cursor location in normalized display space
+    float cursorY; // (ie:  -1.0 to 1.0)
     enum {CursorMoving = 0x1};
     int flags;
 
 protected:
     // Command queues -- These store commands until we're able to process them
-    float		wantRange;
-    RadarMode	wantMode;
-    LockCommand	wantLock;
+    float wantRange;
+    RadarMode wantMode;
+    LockCommand wantLock;
 
 protected:
     void NewRange(float rangeInNM);

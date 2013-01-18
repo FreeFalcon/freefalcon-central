@@ -302,7 +302,7 @@ void F4WaitBarrier(F4BARRIERHANDLE *b)
         unsigned int idx = b->ccount - 1;
         F4LeaveCriticalSection(b->criticalSection);
         // say notifier can go ahead (if its waiting) and wait its notification
-        /*	SignalObjectAndWait(b->notifierGo[idx], b->countReached[idx], INFINITE, FALSE);*/
+        /* SignalObjectAndWait(b->notifierGo[idx], b->countReached[idx], INFINITE, FALSE);*/
     }
 }
 
@@ -351,58 +351,58 @@ int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor)
 int F4SuspendThread (F4THREADHANDLE theThread)
 {
    //F4Assert( "Don't call F4SuspendThread silly!" == NULL );
-	int retval = F4THREAD_ERROR;
-	if (F4Thread[theThread].inUse){
-		if (SuspendThread(F4Thread[theThread].handle) != 0xFFFFFFFF){
-			retval = F4THREAD_OK;
-		}
-	}
-	return (retval);
+ int retval = F4THREAD_ERROR;
+ if (F4Thread[theThread].inUse){
+ if (SuspendThread(F4Thread[theThread].handle) != 0xFFFFFFFF){
+ retval = F4THREAD_OK;
+ }
+ }
+ return (retval);
 }
 
 int F4ResumeThread (F4THREADHANDLE theThread)
 {
-	//F4Assert( "Don't call F4ResumeThread silly!" == NULL );
-	int retval = F4THREAD_ERROR;
-	if (F4Thread[theThread].inUse){
-		if (ResumeThread(F4Thread[theThread].handle) != 0xFFFFFFFF){
-			retval = F4THREAD_OK;
-		}
-	}
-	return (retval);
+ //F4Assert( "Don't call F4ResumeThread silly!" == NULL );
+ int retval = F4THREAD_ERROR;
+ if (F4Thread[theThread].inUse){
+ if (ResumeThread(F4Thread[theThread].handle) != 0xFFFFFFFF){
+ retval = F4THREAD_OK;
+ }
+ }
+ return (retval);
 }
 
 int F4DestroyThread (F4THREADHANDLE theThread, Int32 exitCode)
 {
-	int retval = F4THREAD_ERROR;
+ int retval = F4THREAD_ERROR;
 
-	//   F4Assert (FALSE);
-	if (F4Thread[theThread].inUse){
-		if (TerminateThread(F4Thread[theThread].handle, exitCode)){
-			F4Thread[theThread].inUse = FALSE;
-			retval = F4THREAD_OK;
-		}
-	}
-	return (retval);
+ //   F4Assert (FALSE);
+ if (F4Thread[theThread].inUse){
+ if (TerminateThread(F4Thread[theThread].handle, exitCode)){
+ F4Thread[theThread].inUse = FALSE;
+ retval = F4THREAD_OK;
+ }
+ }
+ return (retval);
 }
 
 int F4DestroyAllThreads (void)
 {
-	int i;
-	int retval = F4THREAD_OK;
+ int i;
+ int retval = F4THREAD_OK;
 
-	for (i=0; i<F4MAX_THREADS; i++){
-		if (F4Thread[i].inUse){
-			if (TerminateThread(F4Thread[i].handle, 0)){
-				F4Thread[i].inUse = FALSE;
-			}
-			else{
-				retval = F4THREAD_OK;
-			}
-		}
-	}
+ for (i=0; i<F4MAX_THREADS; i++){
+ if (F4Thread[i].inUse){
+ if (TerminateThread(F4Thread[i].handle, 0)){
+ F4Thread[i].inUse = FALSE;
+ }
+ else{
+ retval = F4THREAD_OK;
+ }
+ }
+ }
 
-	return (retval);
+ return (retval);
 }
 */
 #endif

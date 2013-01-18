@@ -292,7 +292,7 @@ int FalconEntity::EncodeDirty(unsigned char **stream)
 
     start = *stream;
 
-    //	MonoPrint ("SendDirty %08x%08x %08x\n", Id(), dirty_classes);
+    // MonoPrint ("SendDirty %08x%08x %08x\n", Id(), dirty_classes);
 
     *(short*)*stream = (short)dirty_classes;
     *stream += sizeof(short);

@@ -12,7 +12,7 @@ extern int g_nMissileFix;
 #define VISUAL_DIR       "sim\\sensdata\\visual"
 #define VISUAL_DATASET   "visual.lst"
 
-VisualDataType*			VisualDataTable = NULL;
+VisualDataType* VisualDataTable = NULL;
 short NumVisualEntries = 0;
 
 VisualClass::VisualClass(int idx, SimMoverClass* self) : SensorClass(self)
@@ -79,18 +79,18 @@ float VisualClass::GetSignature(SimObjectType*)
 {
 #if 0 // SCR 10/23/98:  This seems nice and all, but we don't have any data for this...
     /*
-    	SIGNATURE_DATA_TYPE* visData;
-    	Falcon4EntityClassType* classPtr;
-    	static int i, j;
+     SIGNATURE_DATA_TYPE* visData;
+     Falcon4EntityClassType* classPtr;
+     static int i, j;
 
-    	classPtr = (Falcon4EntityClassType *) obj->BaseData()->EntityType();
+     classPtr = (Falcon4EntityClassType *) obj->BaseData()->EntityType();
 
-    	visData = VisDataTable[min (classPtr->visType[0], NumSignaturesLoaded - 1)];
+     visData = VisDataTable[min (classPtr->visType[0], NumSignaturesLoaded - 1)];
 
-    	// TODO:  Factor in light level
-    	return Math.TwodInterp (obj->localData->azFrom, obj->localData->elFrom,
-    							visData->azData, visData->elData,
-    							visData->signature, visData->numAz, visData->numEl, &i, &j);
+     // TODO:  Factor in light level
+     return Math.TwodInterp (obj->localData->azFrom, obj->localData->elFrom,
+     visData->azData, visData->elData,
+     visData->signature, visData->numAz, visData->numEl, &i, &j);
     */
 #else
     // Return a unit signal strength (could/should this be based on object size?)

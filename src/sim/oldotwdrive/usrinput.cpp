@@ -4,8 +4,8 @@
 #include "otwdrive.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include "dinput.h"
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include "dinput.h"
 
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;

@@ -4,7 +4,7 @@
     January 29, 1998
 
     This is the tool which reads Multigen FLT files and writes out our
-	proprietary BSP file format.
+ proprietary BSP file format.
 \***************************************************************************/
 #include <windows.h>
 #include <io.h>
@@ -205,20 +205,20 @@ static int sstr2arg(char *srcptr, int maxpf, char *argv[], const char *dlmstr)
  */
 int main(int argc, char *argv[])
 {
-    char	basename[_MAX_PATH];
-    char	filename[_MAX_PATH];
-    char	drive[_MAX_DRIVE];
-    char	path[_MAX_DIR];
-    char	fname[_MAX_FNAME];
-    char	ext[_MAX_EXT];
-    char	msgbuf [1024];
+    char basename[_MAX_PATH];
+    char filename[_MAX_PATH];
+    char drive[_MAX_DRIVE];
+    char path[_MAX_DIR];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    char msgbuf [1024];
     char linebuf[1024 * 4];
     char *preload = NULL;
-    FILE	*IDSfile;
-    int		result;
-    int		id;
-    int		file;
-    UInt32	startTime;
+    FILE *IDSfile;
+    int result;
+    int id;
+    int file;
+    UInt32 startTime;
     int lastid = 0;
 
     // Set the FPU to 24 bit precision
@@ -276,8 +276,8 @@ int main(int argc, char *argv[])
         printf("Step 0: Preloading file %s\n", preload);
         ObjectParent::SetupTable(preload);
         //lastid = TheObjectListLength + 1;
-        //	    TheParentBuildList.SetStartPoint(lastid);
-        //	    TheParentBuildList.MergeEntries();
+        //     TheParentBuildList.SetStartPoint(lastid);
+        //     TheParentBuildList.MergeEntries();
         TheColorBuildList.MergeColors();
         ColorBankClass::Cleanup();
         ThePaletteBuildList.MergePalette();

@@ -3,7 +3,7 @@
     April 6, 1998
 
     Derived class to do special position processing for foot soldiers on the
-	ground.
+ ground.
 \***************************************************************************/
 #ifndef _DRAWGUYS_H_
 #define _DRAWGUYS_H_
@@ -15,26 +15,26 @@ class DrawableGuys : public DrawableGroundVehicle
 {
 public:
     DrawableGuys(int type, Tpoint *pos, float heading, int numGuys, float scale = 1.0f);
-    virtual ~DrawableGuys()	{};
+    virtual ~DrawableGuys() {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
-    void	SetSquadMoving(BOOL state)
+    void SetSquadMoving(BOOL state)
     {
         moving = state;
     };
-    void	SetNumInSquad(int n)
+    void SetNumInSquad(int n)
     {
         numInSquad = n;
     };
-    int		GetNumInSquad(void)
+    int GetNumInSquad(void)
     {
         return numInSquad;
     };
 
 protected:
-    BOOL			moving;
-    int				numInSquad;
+    BOOL moving;
+    int numInSquad;
 
 #ifdef USE_SH_POOLS
 public:
@@ -56,7 +56,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

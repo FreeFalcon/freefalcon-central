@@ -1,37 +1,37 @@
 /*****************************************************************************/
-//	File:			RadioSubTitle.cpp
-//	Author:			Retro
-//	Date:			Dec2003
+// File: RadioSubTitle.cpp
+// Author: Retro
+// Date: Dec2003
 //
-//	Description:	This class enables subtitles for radio messages. Radio messages
-//					are created in voicefilter.cpp in the soundthread and are displyed
-//					in otwloop.cpp in the graphics thread.
-//					One problem is that the order of created messages is not necessarily
-//					the order in which they should be played, eg is the 'Tower, inbound'
-//					reply from the Tower scheduled to play about 7 secs after the call,
-//					the messages are howver generated simultaneously. Thus, a simple
-//					FIFO like buffer is out of the question.
-//					So this class implements a linked list (derived from AList.cpp out
-//					of falclib) and inserts/removes messages according to their scheduled
-//					playtime.
-//					Works like this: on constucting the class a csv file with all the typed-up
-//					radiomessiges is read in and placed in a big table. When a messages is
-//					created (in voicefilter.cpp) it constructs the string out of the chunks
-//					read from that csv file and a new node, containing this string, its
-//					scheduled playtime and a colour representing the channel it originated from,
-//					is placed into the linked list at the correct place (time-sorted, 'earliest'
-//					message first).
-//					The graphics loop then requests a sorted list of all inputstrings+the associated
-//					colours - while doing this I also clean the linked list of messages that already
-//					have been displayed long enough - 'old messages fall out of the front of the
-//					linked list'
+// Description: This class enables subtitles for radio messages. Radio messages
+// are created in voicefilter.cpp in the soundthread and are displyed
+// in otwloop.cpp in the graphics thread.
+// One problem is that the order of created messages is not necessarily
+// the order in which they should be played, eg is the 'Tower, inbound'
+// reply from the Tower scheduled to play about 7 secs after the call,
+// the messages are howver generated simultaneously. Thus, a simple
+// FIFO like buffer is out of the question.
+// So this class implements a linked list (derived from AList.cpp out
+// of falclib) and inserts/removes messages according to their scheduled
+// playtime.
+// Works like this: on constucting the class a csv file with all the typed-up
+// radiomessiges is read in and placed in a big table. When a messages is
+// created (in voicefilter.cpp) it constructs the string out of the chunks
+// read from that csv file and a new node, containing this string, its
+// scheduled playtime and a colour representing the channel it originated from,
+// is placed into the linked list at the correct place (time-sorted, 'earliest'
+// message first).
+// The graphics loop then requests a sorted list of all inputstrings+the associated
+// colours - while doing this I also clean the linked list of messages that already
+// have been displayed long enough - 'old messages fall out of the front of the
+// linked list'
 //
-//	Issues:			I don´t have completely examined the multithreading problem, eg what happens
-//					if the graphics loop requests a list of strings while the sound loop at the
-//					same time adds a new message.. I guess I can´t use mutex thingies or such,
-//					since delaying a thread is a big nono... hrmm
-//					However I´ve never had a problem with this as of yet, and I´ve flown quite a
-//					few heavy-duty ('radio-call-wise') mission.. of course, that doesn´t prove anything..
+// Issues: I don´t have completely examined the multithreading problem, eg what happens
+// if the graphics loop requests a list of strings while the sound loop at the
+// same time adds a new message.. I guess I can´t use mutex thingies or such,
+// since delaying a thread is a big nono... hrmm
+// However I´ve never had a problem with this as of yet, and I´ve flown quite a
+// few heavy-duty ('radio-call-wise') mission.. of course, that doesn´t prove anything..
 /*****************************************************************************/
 #include "stdhdr.h"
 #include "radiosubtitle.h"
@@ -39,33 +39,33 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <comdef.h>	// Retro 23May2004
+#include <comdef.h> // Retro 23May2004
 
 #pragma warning (push,4)
 
 CRITICAL_SECTION  RadioSubTitle::cs_radiosubtitle;
 
 // default channel colours
-#define TOFROM_FLIGHT_COLOUR		0xff00ff00	// green
-#define TO_PACKAGE_COLOUR			0xff0000ff	// red
-#define TOFROM_PACKAGE_COLOUR		0xff00ffff	// yellow
-#define TO_TEAM_COLOUR				0xffff0000	// blue	- this is the guard channel, actually..
-#define IN_PROXIMITY_COLOUR			0xffffff00	// cyan
-#define TO_WORLD_COLOUR				0xff808080	// no idea, kinda dark grey :p
-#define TOFROM_TOWER_COLOUR			0xff000000	// black
-#define STANDARD_COLOUR				0xffffffff	// white
+#define TOFROM_FLIGHT_COLOUR 0xff00ff00 // green
+#define TO_PACKAGE_COLOUR 0xff0000ff // red
+#define TOFROM_PACKAGE_COLOUR 0xff00ffff // yellow
+#define TO_TEAM_COLOUR 0xffff0000 // blue - this is the guard channel, actually..
+#define IN_PROXIMITY_COLOUR 0xffffff00 // cyan
+#define TO_WORLD_COLOUR 0xff808080 // no idea, kinda dark grey :p
+#define TOFROM_TOWER_COLOUR 0xff000000 // black
+#define STANDARD_COLOUR 0xffffffff // white
 
-#define THE_INPUT_FILE_NAME			"F4Talk95v1-0-0.csv"
+#define THE_INPUT_FILE_NAME "F4Talk95v1-0-0.csv"
 
-#define MAX_READ_LEN 2048	//	max size of a single line in the csv line. since that whole file is 300k,
-//	2MB should be enough I guess
+#define MAX_READ_LEN 2048 // max size of a single line in the csv line. since that whole file is 300k,
+// 2MB should be enough I guess
 #define SEPARATOR ','
 #define SEP ","
 #define QUOTAS '"'
 
-//	#define WRITE_BACK_STRING_FILE
-//	#define SHOW_FRAG_AND_TALKER___BUT_MEM_LEAK
-//	#define DISPLAY_CHANNEL_NAME
+// #define WRITE_BACK_STRING_FILE
+// #define SHOW_FRAG_AND_TALKER___BUT_MEM_LEAK
+// #define DISPLAY_CHANNEL_NAME
 
 /*****************************************************************************/
 //
@@ -87,25 +87,25 @@ RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TT
     currentlyEditedNode = (SubTitleNode*)0;
     LinkedListCount = 0;
 
-#ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifndef DYNAMIC_LINE_NUM // Retro 11Jan2004
 
     for (int i = 0; i < MAX_FRAG_NUM; i++)
     {
         theStrings[i] = 0;
     }
 
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
 
-    colour_Flight		= TOFROM_FLIGHT_COLOUR;
-    colour_ToPackage	= TO_PACKAGE_COLOUR;
+    colour_Flight = TOFROM_FLIGHT_COLOUR;
+    colour_ToPackage = TO_PACKAGE_COLOUR;
     colour_ToFromPackage = TOFROM_PACKAGE_COLOUR;
-    colour_Team			= TO_TEAM_COLOUR;		// this is the guard channel
-    colour_Proximity	= IN_PROXIMITY_COLOUR;
-    colour_World		= TO_WORLD_COLOUR;
-    colour_Tower		= TOFROM_TOWER_COLOUR;
-    colour_Standard		= STANDARD_COLOUR;	// only used in default cases which (shouldn´t happen actually)
+    colour_Team = TO_TEAM_COLOUR; // this is the guard channel
+    colour_Proximity = IN_PROXIMITY_COLOUR;
+    colour_World = TO_WORLD_COLOUR;
+    colour_Tower = TOFROM_TOWER_COLOUR;
+    colour_Standard = STANDARD_COLOUR; // only used in default cases which (shouldn´t happen actually)
 
-#ifdef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifdef DYNAMIC_LINE_NUM // Retro 11Jan2004
     FragCount = CountLinesInFile(THE_INPUT_FILE_NAME);
 
     if (FragCount == 0)
@@ -114,7 +114,7 @@ RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TT
     }
     else
     {
-        //		theStrings = (csvLine**)calloc(sizeof(csvLine*),FragCount+100); // Retro 11Jan2004 - accounting for count-errors :p
+        // theStrings = (csvLine**)calloc(sizeof(csvLine*),FragCount+100); // Retro 11Jan2004 - accounting for count-errors :p
         theStrings = (csvLine**)calloc(sizeof(csvLine*), FragCount);
 
         if (theStrings == (csvLine**)0)
@@ -123,7 +123,7 @@ RadioSubTitle::RadioSubTitle(const int MaximumMessageNum, const unsigned long TT
         }
     }
 
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
 
     if (!ReadNewFile(THE_INPUT_FILE_NAME))
     {
@@ -156,7 +156,7 @@ RadioSubTitle::~RadioSubTitle(void)
     delete(theRadioChatterList);
     theRadioChatterList = 0;
 
-#ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifndef DYNAMIC_LINE_NUM // Retro 11Jan2004
 
     for (i = 0; i < MAX_FRAG_NUM; i++)
     {
@@ -166,7 +166,7 @@ RadioSubTitle::~RadioSubTitle(void)
         }
     }
 
-#else	// DYNAMIC_LINE_NUM
+#else // DYNAMIC_LINE_NUM
 
     if (theStrings)
     {
@@ -181,7 +181,7 @@ RadioSubTitle::~RadioSubTitle(void)
         theStrings = 0;
     }
 
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
 
     DeleteCriticalSection(&cs_radiosubtitle);
 }
@@ -203,7 +203,7 @@ void RadioSubTitle::SetTTLAndMessageNum(const int MessageNum, const unsigned lon
 }
 
 /*****************************************************************************/
-//	wipes nodes in the list but not the list itself.
+// wipes nodes in the list but not the list itself.
 /*****************************************************************************/
 void RadioSubTitle::ResetAll()
 {
@@ -220,15 +220,15 @@ void RadioSubTitle::ResetAll()
 }
 
 /*****************************************************************************/
-//	creates a new message-node, marks this node as 'editable' to enable appending
-//	of other bits
-//	the messages are kept in a time-sorted linked list, starting with the oldest
-//	this linked list gets cleaned of outdated messages in the getTimeSortedMessages()
-//	function
+// creates a new message-node, marks this node as 'editable' to enable appending
+// of other bits
+// the messages are kept in a time-sorted linked list, starting with the oldest
+// this linked list gets cleaned of outdated messages in the getTimeSortedMessages()
+// function
 /*****************************************************************************/
 void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const unsigned long thePlayTime, const char theFilter)
 {
-    EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
+    EnterCriticalSection(&cs_radiosubtitle); // locking out the graphicsthread..
 
     currentlyEditedNode = new SubTitleNode();
 
@@ -289,11 +289,11 @@ void RadioSubTitle::NewMessage(const int theTalker, const int theFrag, const uns
 }
 
 /*****************************************************************************/
-//	Appends a string chunk to an already existing message
+// Appends a string chunk to an already existing message
 /*****************************************************************************/
 void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 {
-    EnterCriticalSection(&cs_radiosubtitle);	// locking out the graphicsthread..
+    EnterCriticalSection(&cs_radiosubtitle); // locking out the graphicsthread..
 
     char* rchunk = GetRadioChunk(theTalker, theFrag);
 
@@ -308,7 +308,7 @@ void RadioSubTitle::AddToMessage(const int theTalker, const int theFrag)
 }
 
 /*****************************************************************************/
-//	should eventually look up the current string in the talkview csv file..
+// should eventually look up the current string in the talkview csv file..
 /*****************************************************************************/
 char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 {
@@ -316,7 +316,7 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 
     if ((theStrings[theFrag]) && (theTalker < MAX_VOICE_NUM))
     {
-        char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker]) + 30);	// mem leak but it´s only for test anyway
+        char* bla = (char*)malloc(strlen(theStrings[theFrag]->Voices[theTalker]) + 30); // mem leak but it´s only for test anyway
 
         if (bla)
         {
@@ -365,14 +365,14 @@ char* RadioSubTitle::GetRadioChunk(const int theTalker, const int theFrag)
 }
 
 /*****************************************************************************/
-//	Returns an array of structures containing a radiomessage and a colour
-//	representing the channel it was sent on..
-//	Also does housekeeping on the linked list (throws out outdated messages..)
+// Returns an array of structures containing a radiomessage and a colour
+// representing the channel it was sent on..
+// Also does housekeeping on the linked list (throws out outdated messages..)
 /*****************************************************************************/
 ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theTime)
 {
 
-    EnterCriticalSection(&cs_radiosubtitle);	// locking out the soundthread
+    EnterCriticalSection(&cs_radiosubtitle); // locking out the soundthread
 
     // Get the oldest message in the list..
     SubTitleNode* node = (SubTitleNode*)theRadioChatterList->GetHead();
@@ -380,7 +380,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     if (!node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
-        return 0;	// no messages to play..
+        return 0; // no messages to play..
     }
 
     // walking back in the list
@@ -405,7 +405,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
     if (!node)
     {
         LeaveCriticalSection(&cs_radiosubtitle);
-        return 0;	// no messages to play.. (all messages were outdated)
+        return 0; // no messages to play.. (all messages were outdated)
     }
 
     // the calling routine has to delete that array..
@@ -430,12 +430,12 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
 
         if ((node->messageStartTime < theTime) && (theTime < node->messageStartTime + messageTTL))
         {
-#if 0	// Retro 23May2004
+#if 0 // Retro 23May2004
             theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
 
             if (theMessages[i])
             {
-                if (node->theSpokenLine)	// Retro 28Feb2004
+                if (node->theSpokenLine) // Retro 28Feb2004
                 {
                     theMessages[i]->theString = (char*)malloc(strlen(node->theSpokenLine) + 1);
                     strcpy(theMessages[i]->theString, node->theSpokenLine);
@@ -450,9 +450,9 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
                 }
             }
 
-#else	// Retro 23May2004
+#else // Retro 23May2004
 
-            if (node->theSpokenLine)	// Retro 28Feb2004
+            if (node->theSpokenLine) // Retro 28Feb2004
             {
                 theMessages[i] = (ColouredSubTitle*)malloc(sizeof(ColouredSubTitle));
 
@@ -475,7 +475,7 @@ ColouredSubTitle** RadioSubTitle::GetTimeSortedMessages(const unsigned long theT
 #pragma warning(default:4127)
             }
 
-#endif	// Retro 23May2004
+#endif // Retro 23May2004
         }
 
         node = (SubTitleNode*)node->GetSucc();
@@ -501,7 +501,7 @@ void RadioSubTitle::WriteOut(void)
 
     if (fp)
     {
-#ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifndef DYNAMIC_LINE_NUM // Retro 11Jan2004
 
         for (int j = 0; j < MAX_FRAG_NUM; j++)
         {
@@ -541,14 +541,14 @@ void RadioSubTitle::WriteOut(void)
             }
         }
 
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
         fclose(fp);
     }
 }
-#endif	// WRITE_BACK_STRING_FILE
+#endif // WRITE_BACK_STRING_FILE
 
 /*****************************************************************************/
-//	hmm.. actually ranking is not important ? indeed it is :/
+// hmm.. actually ranking is not important ? indeed it is :/
 /*****************************************************************************/
 unsigned long RadioSubTitle::FindChannelColour(const char theChannel)
 {
@@ -600,27 +600,27 @@ void RadioSubTitle::SetChannelColours(unsigned long flight, unsigned long toPack
                                       unsigned long Team, unsigned long Proximity, unsigned long World,
                                       unsigned long Tower, unsigned long Standard)
 {
-    if (flight != 0)		colour_Flight		= flight;
+    if (flight != 0) colour_Flight = flight;
 
-    if (toPackage != 0)		colour_ToPackage	= toPackage;
+    if (toPackage != 0) colour_ToPackage = toPackage;
 
-    if (ToFromPackage != 0)	colour_ToFromPackage = ToFromPackage;
+    if (ToFromPackage != 0) colour_ToFromPackage = ToFromPackage;
 
     // 'Team' is the guard channel
-    if (Team != 0)			colour_Team			= Team;
+    if (Team != 0) colour_Team = Team;
 
-    if (Proximity != 0)		colour_Proximity	= Proximity;
+    if (Proximity != 0) colour_Proximity = Proximity;
 
-    if (World != 0)			colour_World		= World;
+    if (World != 0) colour_World = World;
 
-    if (Tower != 0)			colour_Tower		= Tower;
+    if (Tower != 0) colour_Tower = Tower;
 
-    if (Standard != 0)		colour_Standard		= Standard;
+    if (Standard != 0) colour_Standard = Standard;
 }
 
 /*****************************************************************************/
-//	Inputs should be null-terminated strings that can be read as hex-number
-//	eg "0xFF00FF00"
+// Inputs should be null-terminated strings that can be read as hex-number
+// eg "0xFF00FF00"
 /*****************************************************************************/
 void RadioSubTitle::SetChannelColours(char* flight, char* toPackage, char* ToFromPackage,
                                       char* Team, char* Proximity, char* World,
@@ -742,21 +742,21 @@ void RadioSubTitle::HandleChunk(csvLine_t* theTextString, char* theChunk, int* C
 
     switch (ChunkIndex)
     {
-        case 0:	// frag #
+        case 0: // frag #
             if (theChunk)
             {
                 theTextString->Fragment = atoi(theChunk);
-                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                free(theChunk); // Retro 3Jan2004 - gotta close that mem leak.. oops
                 theChunk = 0;
             }
 
             break;
 
-        case 1:	// maxvoice #
+        case 1: // maxvoice #
             if (theChunk)
             {
                 theTextString->VoiceCount = atoi(theChunk);
-                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                free(theChunk); // Retro 3Jan2004 - gotta close that mem leak.. oops
                 theChunk = 0;
             }
 
@@ -779,21 +779,21 @@ void RadioSubTitle::HandleChunk(csvLine_t* theTextString, char* theChunk, int* C
             theTextString->Voices[ChunkIndex - 2] = theChunk;
             break;
 
-        case 16:	// summary
+        case 16: // summary
             theTextString->Summary = theChunk;
             break;
 
-        case 17:	// eval
+        case 17: // eval
             if (theChunk)
             {
                 theTextString->Eval = atoi(theChunk);
-                free(theChunk);		// Retro 3Jan2004 - gotta close that mem leak.. oops
+                free(theChunk); // Retro 3Jan2004 - gotta close that mem leak.. oops
                 theChunk = 0;
             }
 
             break;
 
-        default:	// shoudn´t happen
+        default: // shoudn´t happen
             assert(false);
             break;
     }
@@ -911,7 +911,7 @@ void RadioSubTitle::breakDownLine(csvLine_t* theTextString, char* theLine, const
     }
     while (i < theLength);
 
-    //	assert(ChunkCount-1 == theTextString->VoiceCount);
+    // assert(ChunkCount-1 == theTextString->VoiceCount);
 }
 
 /*****************************************************************************/
@@ -932,10 +932,10 @@ bool RadioSubTitle::ReadNewFile(const char* theFileName)
             if (j == 0)
             {
                 j++;
-                continue;	// ignoring the first line
+                continue; // ignoring the first line
             }
 
-            tmp[strlen(tmp) - 1] = 0;	// getting rid of that damn newline
+            tmp[strlen(tmp) - 1] = 0; // getting rid of that damn newline
 
             theStrings[j - 1] = new csvLine_t;
             breakDownLine(theStrings[j - 1], tmp, strlen(tmp));
@@ -951,9 +951,9 @@ bool RadioSubTitle::ReadNewFile(const char* theFileName)
     }
 }
 
-#ifdef DYNAMIC_LINE_NUM		// Retro 11Jan2004
+#ifdef DYNAMIC_LINE_NUM // Retro 11Jan2004
 /*****************************************************************************/
-//	bwhahaaha.. counts lines in a file.. lol I guess this isn´t very elegant
+// bwhahaaha.. counts lines in a file.. lol I guess this isn´t very elegant
 /*****************************************************************************/
 int RadioSubTitle::CountLinesInFile(const char* theFileName)
 {
@@ -975,5 +975,5 @@ int RadioSubTitle::CountLinesInFile(const char* theFileName)
 
     return 0;
 }
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
 #pragma warning (pop)

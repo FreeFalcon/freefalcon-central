@@ -12,14 +12,14 @@
 #include "otwdrive.h"
 #include "FalcLib/include/playerop.h"
 #include "FalcLib/include/dispopts.h"
-#include "aircrft.h"	//MI
-#include "simdrive.h"	//MI
+#include "aircrft.h" //MI
+#include "simdrive.h" //MI
 
 
-extern bool g_bRealisticAvionics;	//MI
-extern bool g_bINS;	//MI
-extern bool g_bCockpitAutoScale;		//Wombat778 10-06-2003
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+extern bool g_bRealisticAvionics; //MI
+extern bool g_bINS; //MI
+extern bool g_bCockpitAutoScale; //Wombat778 10-06-2003
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 //====================================================//
 // CPAdi::CPAdi
@@ -27,72 +27,72 @@ extern bool g_bFilter2DPit;		//Wombat778 3-30-04
 CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(pobjectInitStr)
 {
 
-    int				i;
-    float				x;
-    float				y;
-    float				radiusSquared;
-    int				arraySize;
-    int				halfArraySize;
-    float				halfCockpitWidth;
-    float				halfCockpitHeight;
+    int i;
+    float x;
+    float y;
+    float radiusSquared;
+    int arraySize;
+    int halfArraySize;
+    float halfCockpitWidth;
+    float halfCockpitHeight;
 
     //MI inialize
     mPitch = 0.0F;
     mRoll = 0.0F;
 
-    mColor[0][0]	= padiInitStr->color0; //0xFF20A2C8;
-    mColor[1][0]	= CalculateNVGColor(mColor[0][0]);
-    mColor[0][1]	= padiInitStr->color1; //0xff808080;
-    mColor[1][1]	= CalculateNVGColor(mColor[0][1]);
-    mColor[0][2]	= padiInitStr->color2; //0xffffffff;
-    mColor[1][2]	= CalculateNVGColor(mColor[0][2]);
-    mColor[0][3]	= padiInitStr->color3; //0xFF6CF3F3;	ILS Bars, light yellow
-    mColor[1][3]	= CalculateNVGColor(mColor[0][3]);
-    mColor[0][4]	= padiInitStr->color4; //0xFF6CF3F3;	A/C reference symbol, light yellow
-    mColor[1][4]	= CalculateNVGColor(mColor[0][4]);
+    mColor[0][0] = padiInitStr->color0; //0xFF20A2C8;
+    mColor[1][0] = CalculateNVGColor(mColor[0][0]);
+    mColor[0][1] = padiInitStr->color1; //0xff808080;
+    mColor[1][1] = CalculateNVGColor(mColor[0][1]);
+    mColor[0][2] = padiInitStr->color2; //0xffffffff;
+    mColor[1][2] = CalculateNVGColor(mColor[0][2]);
+    mColor[0][3] = padiInitStr->color3; //0xFF6CF3F3; ILS Bars, light yellow
+    mColor[1][3] = CalculateNVGColor(mColor[0][3]);
+    mColor[0][4] = padiInitStr->color4; //0xFF6CF3F3; A/C reference symbol, light yellow
+    mColor[1][4] = CalculateNVGColor(mColor[0][4]);
 
 
-    mSrcRect			= padiInitStr->srcRect;
-    mILSLimits		= padiInitStr->ilsLimits;
+    mSrcRect = padiInitStr->srcRect;
+    mILSLimits = padiInitStr->ilsLimits;
 
-    mSrcHalfHeight	= (mSrcRect.bottom - mSrcRect.top + 1) / 2;
+    mSrcHalfHeight = (mSrcRect.bottom - mSrcRect.top + 1) / 2;
 
-    mMinPitch		= -89.9F * DTR;
-    mMaxPitch		= 89.9F * DTR;
+    mMinPitch = -89.9F * DTR;
+    mMaxPitch = 89.9F * DTR;
     mTanVisibleBallHalfAngle = (float)tan(25.0F * DTR);
 
 
     // Setup the circle limits
-    mRadius			= max(mWidth, mHeight);
-    mRadius			= (mRadius + 1) / 2;
-    arraySize		= (int)mRadius * 4;
+    mRadius = max(mWidth, mHeight);
+    mRadius = (mRadius + 1) / 2;
+    arraySize = (int)mRadius * 4;
 
 #ifdef USE_SH_POOLS
     mpADICircle = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * arraySize, FALSE);
 #else
-    mpADICircle		= new int[arraySize];
+    mpADICircle = new int[arraySize];
 #endif
 
-    radiusSquared	= (float) mRadius * mRadius;
+    radiusSquared = (float) mRadius * mRadius;
 
-    halfArraySize	= arraySize / 2;
+    halfArraySize = arraySize / 2;
 
     for (i = 0; i < halfArraySize; i++)
     {
 
-        y				= (float) abs(i - mRadius);
-        x				= (float)sqrt(radiusSquared - y * y);
-        mpADICircle[i * 2 + 1]	= mRadius + (int)x; //right
-        mpADICircle[i * 2 + 0]	= mRadius - (int)x; //left
+        y = (float) abs(i - mRadius);
+        x = (float)sqrt(radiusSquared - y * y);
+        mpADICircle[i * 2 + 1] = mRadius + (int)x; //right
+        mpADICircle[i * 2 + 0] = mRadius - (int)x; //left
     }
 
-    halfCockpitWidth	= (float) DisplayOptions.DispWidth * 0.5F;
-    halfCockpitHeight	= (float) DisplayOptions.DispHeight * 0.5F;
+    halfCockpitWidth = (float) DisplayOptions.DispWidth * 0.5F;
+    halfCockpitHeight = (float) DisplayOptions.DispHeight * 0.5F;
 
-    mLeft				= (mDestRect.left - halfCockpitWidth) / halfCockpitWidth;
-    mRight			= (mDestRect.right - halfCockpitWidth) / halfCockpitWidth;
-    mTop				= -(mDestRect.top - halfCockpitHeight) / halfCockpitHeight;
-    mBottom			= -(mDestRect.bottom - halfCockpitHeight) / halfCockpitHeight;
+    mLeft = (mDestRect.left - halfCockpitWidth) / halfCockpitWidth;
+    mRight = (mDestRect.right - halfCockpitWidth) / halfCockpitWidth;
+    mTop = -(mDestRect.top - halfCockpitHeight) / halfCockpitHeight;
+    mBottom = -(mDestRect.bottom - halfCockpitHeight) / halfCockpitHeight;
 
     mpAircraftBarData[0][0] = 0.1F;
     mpAircraftBarData[0][1] = 0.5F;
@@ -115,35 +115,35 @@ CPAdi::CPAdi(ObjectInitStr *pobjectInitStr, ADIInitStr *padiInitStr) : CPObject(
         mpAircraftBar[i][1] = (unsigned)(mpAircraftBarData[i][1] * (float) mHeight * mVScale) + mDestRect.top;
     }
 
-    mLeftLimit		= (int)(mHScale * mILSLimits.left);
-    mRightLimit		= (int)(mHScale * mILSLimits.right);
-    mTopLimit		= (int)(mVScale * mILSLimits.top);
-    mBottomLimit	= (int)(mVScale * mILSLimits.bottom);
+    mLeftLimit = (int)(mHScale * mILSLimits.left);
+    mRightLimit = (int)(mHScale * mILSLimits.right);
+    mTopLimit = (int)(mVScale * mILSLimits.top);
+    mBottomLimit = (int)(mVScale * mILSLimits.bottom);
 
-    mHorizScale		= (float)(mRightLimit - mLeftLimit) / HORIZONTAL_SCALE;
-    mVertScale		= (float)(mBottomLimit - mTopLimit) / VERTICAL_SCALE;
+    mHorizScale = (float)(mRightLimit - mLeftLimit) / HORIZONTAL_SCALE;
+    mVertScale = (float)(mBottomLimit - mTopLimit) / VERTICAL_SCALE;
 
-    mHorizCenter	= (unsigned)(abs(int(mRightLimit - mLeftLimit)) * 0.5 + mLeftLimit);
-    mVertCenter		= (unsigned)(abs(int(mBottomLimit - mTopLimit)) * 0.5 + mTopLimit);
+    mHorizCenter = (unsigned)(abs(int(mRightLimit - mLeftLimit)) * 0.5 + mLeftLimit);
+    mVertCenter = (unsigned)(abs(int(mBottomLimit - mTopLimit)) * 0.5 + mTopLimit);
 
-    mHorizBarPos	= mTopLimit;
-    mVertBarPos		= mLeftLimit;
+    mHorizBarPos = mTopLimit;
+    mVertBarPos = mLeftLimit;
 
-    mDoBackRect			= padiInitStr->doBackRect;
+    mDoBackRect = padiInitStr->doBackRect;
 
 
-    mBackSrc.top		= padiInitStr->backSrc.top;
-    mBackSrc.left		= padiInitStr->backSrc.left;
-    mBackSrc.bottom	= padiInitStr->backSrc.bottom;
-    mBackSrc.right		= padiInitStr->backSrc.right;
+    mBackSrc.top = padiInitStr->backSrc.top;
+    mBackSrc.left = padiInitStr->backSrc.left;
+    mBackSrc.bottom = padiInitStr->backSrc.bottom;
+    mBackSrc.right = padiInitStr->backSrc.right;
 
-    mBackDest.top		= (long)(mVScale * padiInitStr->backDest.top);
-    mBackDest.left		= (long)(mHScale * padiInitStr->backDest.left);
-    mBackDest.bottom	= (long)(mVScale * (padiInitStr->backDest.bottom + 1));
-    mBackDest.right		= (long)(mHScale * (padiInitStr->backDest.right + 1));
+    mBackDest.top = (long)(mVScale * padiInitStr->backDest.top);
+    mBackDest.left = (long)(mHScale * padiInitStr->backDest.left);
+    mBackDest.bottom = (long)(mVScale * (padiInitStr->backDest.bottom + 1));
+    mBackDest.right = (long)(mHScale * (padiInitStr->backDest.right + 1));
 
-    mpSourceBuffer		= padiInitStr->pBackground;
-    mpSurfaceBuffer	= NULL;
+    mpSourceBuffer = padiInitStr->pBackground;
+    mpSurfaceBuffer = NULL;
 
     //MI
     Persistant = pobjectInitStr->persistant;
@@ -189,7 +189,7 @@ CPAdi::~CPAdi(void)
         delete mpSurfaceBuffer;
     }
 
-    if (DisplayOptions.bRender2DCockpit || mDoBackRect)  		//Wombat778 3-24-04
+    if (DisplayOptions.bRender2DCockpit || mDoBackRect)   //Wombat778 3-24-04
     {
         glReleaseMemory((char*) mpSourceBuffer);
     }
@@ -221,7 +221,7 @@ void CPAdi::CreateLit(void)
     const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
 
 
-    if (DisplayOptions.bRender2DCockpit)		//Wombat778 3-24-04 we are gonna do this my way...dont know about all that crap below
+    if (DisplayOptions.bRender2DCockpit) //Wombat778 3-24-04 we are gonna do this my way...dont know about all that crap below
     {
         try
         {
@@ -245,7 +245,7 @@ void CPAdi::CreateLit(void)
                 if (!pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)(mSrcRect.right - mSrcRect.left), (UInt16)(mSrcRect.bottom - mSrcRect.top)))
                     throw _com_error(E_FAIL);
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
 
                 m_arrTex.push_back(pTex);
@@ -312,7 +312,7 @@ void CPAdi::CreateLit(void)
                     if (!pTex->Create("CPAdi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, (UInt16)mBackSrc.right, (UInt16)mBackSrc.bottom))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true))	// soon to be re-loaded by CPObject::Translate3D
+                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPObject::Translate3D
                         throw _com_error(E_FAIL);
 
                     m_arrTex.push_back(pTex);
@@ -354,22 +354,22 @@ void CPAdi::DiscardLit(void)
 
 void CPAdi::Exec(SimBaseClass *pSimBaseClass)
 {
-    float		PercentHalfXscale;
+    float PercentHalfXscale;
 
-    mpOwnship	= pSimBaseClass;
+    mpOwnship = pSimBaseClass;
 
     //MI
     if (g_bRealisticAvionics && g_bINS)
     {
         AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-        if (playerAC && Persistant == 1) 	//backup ADI, continue to function until out of energy
+        if (playerAC && Persistant == 1)  //backup ADI, continue to function until out of energy
         {
             if (playerAC->INSState(AircraftClass::BUP_ADI_OFF_IN))
             {
                 //make a check for the BUP ADI energy here when ready
-                mPitch	= cockpitFlightData.pitch;
-                mRoll	= cockpitFlightData.roll;
+                mPitch = cockpitFlightData.pitch;
+                mRoll = cockpitFlightData.roll;
                 LastBUPPitch = mPitch;
                 LastBUPRoll = mRoll;
             }
@@ -387,25 +387,25 @@ void CPAdi::Exec(SimBaseClass *pSimBaseClass)
         }
         else
         {
-            mPitch	= cockpitFlightData.pitch;
-            mRoll	= cockpitFlightData.roll;
+            mPitch = cockpitFlightData.pitch;
+            mRoll = cockpitFlightData.roll;
             LastMainADIPitch = mPitch;
             LastMainADIRoll = mRoll;
         }
     }
     else
     {
-        mPitch	= cockpitFlightData.pitch;
-        mRoll	= cockpitFlightData.roll;
+        mPitch = cockpitFlightData.pitch;
+        mRoll = cockpitFlightData.roll;
     }
 
     // Bound the pitch angle so we don't go beyond +/- 30 deg for now
-    mPitch		= max(mPitch, mMinPitch);
-    mPitch		= min(mPitch, mMaxPitch);
+    mPitch = max(mPitch, mMinPitch);
+    mPitch = min(mPitch, mMaxPitch);
 
     // Compute the slide distance based on the pitch angle
-    PercentHalfXscale		= mPitch / (25.0F * DTR); //tan(mPitch) / mTanVisibleBallHalfAngle;
-    mSlide					= mRadius * (float)PercentHalfXscale;
+    PercentHalfXscale = mPitch / (25.0F * DTR); //tan(mPitch) / mTanVisibleBallHalfAngle;
+    mSlide = mRadius * (float)PercentHalfXscale;
 
     if (gNavigationSys)
     {
@@ -421,8 +421,8 @@ void CPAdi::Exec(SimBaseClass *pSimBaseClass)
 
 void CPAdi::ExecILS()
 {
-    float		gpDeviation;
-    float		gsDeviation;
+    float gpDeviation;
+    float gsDeviation;
 
     if (mpCPManager->mHiddenFlag && (gNavigationSys->GetInstrumentMode() == NavigationSystem::TACAN || gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV))
         return;
@@ -433,23 +433,23 @@ void CPAdi::ExecILS()
     {
         gNavigationSys->GetILSAttribute(NavigationSystem::GS_DEV, &gsDeviation);
 
-        gpDeviation							= min(max(gpDeviation, -HORIZONTAL_SCALE * 0.5F), HORIZONTAL_SCALE * 0.5F);
-        gsDeviation							= min(max(gsDeviation, -VERTICAL_SCALE * 0.5F), VERTICAL_SCALE * 0.5F);
+        gpDeviation = min(max(gpDeviation, -HORIZONTAL_SCALE * 0.5F), HORIZONTAL_SCALE * 0.5F);
+        gsDeviation = min(max(gsDeviation, -VERTICAL_SCALE * 0.5F), VERTICAL_SCALE * 0.5F);
 
-        mpCPManager->ADIGpDevReading	= mpCPManager->ADIGpDevReading + 0.1F * (gpDeviation - mpCPManager->ADIGpDevReading);
-        mpCPManager->ADIGsDevReading	= mpCPManager->ADIGsDevReading + 0.1F * (gsDeviation - mpCPManager->ADIGsDevReading);
+        mpCPManager->ADIGpDevReading = mpCPManager->ADIGpDevReading + 0.1F * (gpDeviation - mpCPManager->ADIGpDevReading);
+        mpCPManager->ADIGsDevReading = mpCPManager->ADIGsDevReading + 0.1F * (gsDeviation - mpCPManager->ADIGsDevReading);
 
-        mpCPManager->ADIGpDevReading	= min(max(mpCPManager->ADIGpDevReading, -HORIZONTAL_SCALE * 0.5F), HORIZONTAL_SCALE * 0.5F);
-        mpCPManager->ADIGsDevReading	= min(max(mpCPManager->ADIGsDevReading, -VERTICAL_SCALE * 0.5F), VERTICAL_SCALE * 0.5F);
+        mpCPManager->ADIGpDevReading = min(max(mpCPManager->ADIGpDevReading, -HORIZONTAL_SCALE * 0.5F), HORIZONTAL_SCALE * 0.5F);
+        mpCPManager->ADIGsDevReading = min(max(mpCPManager->ADIGsDevReading, -VERTICAL_SCALE * 0.5F), VERTICAL_SCALE * 0.5F);
 
-        mVertBarPos							= (unsigned) abs(FloatToInt32(mHorizScale * mpCPManager->ADIGpDevReading + mHorizCenter));		// Calc location of deviation bars
-        mHorizBarPos						= (unsigned) abs(FloatToInt32(mVertScale * -mpCPManager->ADIGsDevReading + mVertCenter));
+        mVertBarPos = (unsigned) abs(FloatToInt32(mHorizScale * mpCPManager->ADIGpDevReading + mHorizCenter)); // Calc location of deviation bars
+        mHorizBarPos = (unsigned) abs(FloatToInt32(mVertScale * -mpCPManager->ADIGsDevReading + mVertCenter));
 
-        mVertBarPos							= max(mVertBarPos, mLeftLimit);						// Bound the positions
-        mVertBarPos							= min(mVertBarPos, mRightLimit);
+        mVertBarPos = max(mVertBarPos, mLeftLimit); // Bound the positions
+        mVertBarPos = min(mVertBarPos, mRightLimit);
 
-        mHorizBarPos						= min(mHorizBarPos, mBottomLimit);
-        mHorizBarPos						= max(mHorizBarPos, mTopLimit);
+        mHorizBarPos = min(mHorizBarPos, mBottomLimit);
+        mHorizBarPos = max(mHorizBarPos, mTopLimit);
 
         mpCPManager->mHiddenFlag = FALSE;
     }
@@ -461,26 +461,26 @@ void CPAdi::ExecILS()
 
         else if (mVertBarPos <= mDestRect.left && mHorizBarPos >= mDestRect.bottom)
         {
-            mpCPManager->mHiddenFlag		= TRUE;
-            mVertBarPos							= mDestRect.left;
-            mHorizBarPos						= mDestRect.bottom;
-            mpCPManager->ADIGpDevReading	=	-HORIZONTAL_SCALE;
-            mpCPManager->ADIGsDevReading	=	-VERTICAL_SCALE;
+            mpCPManager->mHiddenFlag = TRUE;
+            mVertBarPos = mDestRect.left;
+            mHorizBarPos = mDestRect.bottom;
+            mpCPManager->ADIGpDevReading = -HORIZONTAL_SCALE;
+            mpCPManager->ADIGsDevReading = -VERTICAL_SCALE;
         }
 
         else
         {
-            mpCPManager->ADIGpDevReading	= mpCPManager->ADIGpDevReading + 0.1F * (-HORIZONTAL_SCALE * 1.5F - mpCPManager->ADIGpDevReading);
-            mpCPManager->ADIGsDevReading	= mpCPManager->ADIGsDevReading + 0.1F * (-VERTICAL_SCALE * 1.5F - mpCPManager->ADIGsDevReading);
+            mpCPManager->ADIGpDevReading = mpCPManager->ADIGpDevReading + 0.1F * (-HORIZONTAL_SCALE * 1.5F - mpCPManager->ADIGpDevReading);
+            mpCPManager->ADIGsDevReading = mpCPManager->ADIGsDevReading + 0.1F * (-VERTICAL_SCALE * 1.5F - mpCPManager->ADIGsDevReading);
 
-            mVertBarPos				= (unsigned) abs(FloatToInt32(mHorizScale * mpCPManager->ADIGpDevReading + mHorizCenter));		// Calc location of deviation bars
-            mHorizBarPos			= (unsigned) abs(FloatToInt32(mVertScale * -mpCPManager->ADIGsDevReading + mVertCenter));
+            mVertBarPos = (unsigned) abs(FloatToInt32(mHorizScale * mpCPManager->ADIGpDevReading + mHorizCenter)); // Calc location of deviation bars
+            mHorizBarPos = (unsigned) abs(FloatToInt32(mVertScale * -mpCPManager->ADIGsDevReading + mVertCenter));
 
-            mVertBarPos				= max(mVertBarPos, mDestRect.left);						// Bound the positions
-            mVertBarPos				= min(mVertBarPos, mDestRect.right);
+            mVertBarPos = max(mVertBarPos, mDestRect.left); // Bound the positions
+            mVertBarPos = min(mVertBarPos, mDestRect.right);
 
-            mHorizBarPos			= min(mHorizBarPos, mDestRect.bottom);
-            mHorizBarPos			= max(mHorizBarPos, mDestRect.top);
+            mHorizBarPos = min(mHorizBarPos, mDestRect.bottom);
+            mHorizBarPos = max(mHorizBarPos, mDestRect.top);
         }
     }
 }
@@ -491,14 +491,14 @@ void CPAdi::ExecILS()
 
 void CPAdi::ExecILSNone()
 {
-    mHorizBarPos		= mTopLimit;
-    mVertBarPos			= mLeftLimit;
+    mHorizBarPos = mTopLimit;
+    mVertBarPos = mLeftLimit;
 }
 
 
 //Wombat778 3-23-04 Add support for rendered adi.  Much faster than blitting.
 
-void RenderADIPoly(tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint alpha, TextureHandle *pTex, float angle)		//Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
+void RenderADIPoly(tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint alpha, TextureHandle *pTex, float angle) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
 {
     int entry;
 
@@ -574,11 +574,11 @@ void CPAdi::DisplayBlit3D()
     if (!mDirtyFlag)
         return;
 
-    if (!DisplayOptions.bRender2DCockpit)		//handle in displayblit
+    if (!DisplayOptions.bRender2DCockpit) //handle in displayblit
         return;
 
     if (!m_arrTex.size())
-        return;		// handled in DisplayBlit
+        return; // handled in DisplayBlit
 
     if (mDoBackRect)
     {
@@ -632,20 +632,20 @@ void CPAdi::DisplayBlit3D()
     {
         RECT srcRect, DestRect = mDestRect;
         // COBRA - RED - Pit Vibrations
-        int	OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x;
-        int	OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y;
+        int OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x;
+        int OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y;
         DestRect.top += OffsetY;
         DestRect.bottom += OffsetY;
         DestRect.left += OffsetX;
         DestRect.right += OffsetX;
 
         // Build the source rectangle
-        srcRect.top			= (LONG)(mSrcRect.top + mSrcHalfHeight - mRadius - (int) mSlide);
-        srcRect.left		= (LONG)(mSrcRect.left);
-        srcRect.bottom		= (LONG)(srcRect.top + (mDestRect.bottom - mDestRect.top) / mVScale);
-        srcRect.right		= (LONG)(srcRect.left + (mDestRect.right - mDestRect.left) / mHScale);
+        srcRect.top = (LONG)(mSrcRect.top + mSrcHalfHeight - mRadius - (int) mSlide);
+        srcRect.left = (LONG)(mSrcRect.left);
+        srcRect.bottom = (LONG)(srcRect.top + (mDestRect.bottom - mDestRect.top) / mVScale);
+        srcRect.right = (LONG)(srcRect.left + (mDestRect.right - mDestRect.left) / mHScale);
 
-        if (g_bFilter2DPit)	//Wombat778 3-30-04 Add option to filter
+        if (g_bFilter2DPit) //Wombat778 3-30-04 Add option to filter
             RenderADIPoly(&mSrcRect, &srcRect, &DestRect, STATE_CHROMA_TEXTURE, m_arrTex[0], -mRoll);
         else
             RenderADIPoly(&mSrcRect, &srcRect, &DestRect, STATE_ALPHA_TEXTURE_NOFILTER, m_arrTex[0], -mRoll);
@@ -661,7 +661,7 @@ void CPAdi::DisplayBlit(void)
     if (!mDirtyFlag)
         return;
 
-    if (DisplayOptions.bRender2DCockpit)			//Handle in Displayblit3d
+    if (DisplayOptions.bRender2DCockpit) //Handle in Displayblit3d
         return;
 
     if (mDoBackRect && m_arrTex.size() == 0)
@@ -671,17 +671,17 @@ void CPAdi::DisplayBlit(void)
     }
 
     // Build the source rectangle
-    srcRect.top			= (LONG)(mSrcRect.top + mSrcHalfHeight - mRadius - (int) mSlide);
-    srcRect.left		= (LONG)(mSrcRect.left);
-    srcRect.bottom		= (LONG)(srcRect.top + (mDestRect.bottom - mDestRect.top) / mVScale);
-    srcRect.right		= (LONG)(srcRect.left + (mDestRect.right - mDestRect.left) / mHScale);
+    srcRect.top = (LONG)(mSrcRect.top + mSrcHalfHeight - mRadius - (int) mSlide);
+    srcRect.left = (LONG)(mSrcRect.left);
+    srcRect.bottom = (LONG)(srcRect.top + (mDestRect.bottom - mDestRect.top) / mVScale);
+    srcRect.right = (LONG)(srcRect.left + (mDestRect.right - mDestRect.left) / mHScale);
 
 
 
 
 
     //Wombat778 10-06-2003, modified following lines. allows ADI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mHScale != 1.0f) || (mVScale != 1.0f)))  				//dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mHScale != 1.0f) || (mVScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -691,7 +691,7 @@ void CPAdi::DisplayBlit(void)
         temprect.right = (LONG)((mDestRect.right - mDestRect.left) / mHScale);
         temprect.bottom = (LONG)((mDestRect.bottom - mDestRect.top) / mVScale);
 
-        ADIBuffer->Clear(0xFFFF0000);			//clear the temp buffer with chromakey blue;
+        ADIBuffer->Clear(0xFFFF0000); //clear the temp buffer with chromakey blue;
         ADIBuffer->ComposeRoundRot(mpTemplate, &srcRect, &temprect, -mRoll, mpADICircle); //Rotate the image from template to temp buffer
         mpOTWImage->ComposeTransparent(ADIBuffer, &temprect, &mDestRect);
 
@@ -713,8 +713,8 @@ void CPAdi::DisplayBlit(void)
 
 void CPAdi::DisplayDraw(void)
 {
-    int		i;
-    float	width = 2;
+    int i;
+    float width = 2;
 
     //MI make them a bit smaller
     if (g_bRealisticAvionics)
@@ -779,7 +779,7 @@ void CPAdi::Translate(WORD* palette16)
     {
         if (mpSurfaceBuffer)
             Translate8to16(palette16, mpSourceBuffer, mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
-    }																					// 16 bit ImageBuffers
+    } // 16 bit ImageBuffers
 }
 
 void CPAdi::Translate(DWORD* palette32)
@@ -788,5 +788,5 @@ void CPAdi::Translate(DWORD* palette32)
     {
         if (mpSurfaceBuffer)
             Translate8to32(palette32, mpSourceBuffer, mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
-    }																					// 32 bit ImageBuffers
+    } // 32 bit ImageBuffers
 }

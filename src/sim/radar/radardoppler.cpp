@@ -21,9 +21,9 @@
 #include "icp.h"
 
 extern bool g_bSmartCombatAP;
-extern bool g_bIFF;	//MI
+extern bool g_bIFF; //MI
 extern bool g_bMLU; //MI
-extern bool g_bAGRadarFixes;	//MI
+extern bool g_bAGRadarFixes; //MI
 
 RadarDopplerClass::RadarDopplerClass(int type, SimMoverClass* self) : RadarClass(type, self)
 {
@@ -60,22 +60,22 @@ RadarDopplerClass::RadarDopplerClass(int type, SimMoverClass* self) : RadarClass
     gmBarIdx = 0;
     vsBarIdx = 2;
     scanRate = 60.0F * DTR;
-    designateCmd		= FALSE;
-    dropTrackCmd		= FALSE;
-    rangeChangeCmd		= FALSE;
-    scanHeightCmd		= FALSE;
-    scanWidthCmd		= FALSE;
-    elSlewCmd			= FALSE;
-    targetAz			= 0.0F;
-    targetEl			= 0.0F;
-    curScanTop			= 0.0F;
-    curScanBottom		= 0.0F;
-    curScanLeft			= 0.0F;
-    curScanRight		= 0.0F;
-    scanCenterAlt		= 0.0F;
-    lastBars			= 1;
-    cursRange			= 0.0F;
-    subMode				= FALSE;
+    designateCmd = FALSE;
+    dropTrackCmd = FALSE;
+    rangeChangeCmd = FALSE;
+    scanHeightCmd = FALSE;
+    scanWidthCmd = FALSE;
+    elSlewCmd = FALSE;
+    targetAz = 0.0F;
+    targetEl = 0.0F;
+    curScanTop = 0.0F;
+    curScanBottom = 0.0F;
+    curScanLeft = 0.0F;
+    curScanRight = 0.0F;
+    scanCenterAlt = 0.0F;
+    lastBars = 1;
+    cursRange = 0.0F;
+    subMode = FALSE;
     lastFeatureUpdate = 0;
     reacqFlag         = 0;
     reacqEl           = 0.0F;
@@ -118,7 +118,7 @@ RadarDopplerClass::RadarDopplerClass(int type, SimMoverClass* self) : RadarClass
     mkint = 1;
     bdelay = 0.0f;
     radarmodeflags = 0;
-    fovStepCmd = 0;	//MI
+    fovStepCmd = 0; //MI
     // JPO default declutter modes
     agdclt = DefaultAgDclt;
     aadclt = DefaultAaDclt;
@@ -156,8 +156,8 @@ RadarDopplerClass::RadarDopplerClass(int type, SimMoverClass* self) : RadarClass
     InitGain = TRUE;
     lastRngKnobPos = 0;
     antElevKnob = 0.0f;//TJL 05/30/04 This fixes the -99/-99 error some are having
-    //	GMTSlowSpeedReject = 5.0F;	MN externalised
-    //	GMTHighSpeedReject = 100.0F;
+    // GMTSlowSpeedReject = 5.0F; MN externalised
+    // GMTHighSpeedReject = 100.0F;
     iffmodeflags = 0;//Cobra 11/24/04
     wipeIFF = FALSE;//Cobra 11/24/04
     iffTimer = 0.0f;//Cobra 11/24/04
@@ -306,7 +306,7 @@ void RadarDopplerClass::PushButton(int whichButton, int whichMFD)
                     break;
 
                 case OFF:
-                    //case STBY:	//MI don't think we should do anything here. (acts weird now)
+                    //case STBY: //MI don't think we should do anything here. (acts weird now)
                     OtherPushButton(whichButton, whichMFD);
                     break;
 
@@ -339,7 +339,7 @@ void RadarDopplerClass::AGPushButton(int whichButton, int whichMFD)
                 else
                     WasAutoAGRange = FALSE;
 
-                //StepAGmode();	//MI this should definately not be here
+                //StepAGmode(); //MI this should definately not be here
             }
             else if (!g_bRealisticAvionics)
                 StepAGmode();
@@ -444,7 +444,7 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
         case 1:
             if (g_bRealisticAvionics)
                 StepAAmode();
-            else if ((mode == ACM_30x20)	|| (mode == ACM_SLEW) || (mode == ACM_BORE)
+            else if ((mode == ACM_30x20) || (mode == ACM_SLEW) || (mode == ACM_BORE)
                      || (mode == ACM_10x60))
             {
                 scanWidthCmd = TRUE;
@@ -477,8 +477,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 18:
-            if ((mode != ACM_SLEW)	&& (mode != ACM_30x20)	&&
-                (mode != ACM_10x60)	&& (mode != ACM_BORE))
+            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
+                (mode != ACM_10x60) && (mode != ACM_BORE))
             {
                 rangeChangeCmd = -1;
             }
@@ -486,8 +486,8 @@ void RadarDopplerClass::AAPushButton(int whichButton, int whichMFD)
             break;
 
         case 19:
-            if ((mode != ACM_SLEW)	&& (mode != ACM_30x20)	&&
-                (mode != ACM_10x60)	&& (mode != ACM_BORE))
+            if ((mode != ACM_SLEW) && (mode != ACM_30x20) &&
+                (mode != ACM_10x60) && (mode != ACM_BORE))
             {
                 rangeChangeCmd = 1;
             }
@@ -1018,16 +1018,16 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 }
 
                 // Can we see it (either with a valid lock, a jammed or fading signal?
-                if (canSee & (SG_JAMMING | SG_FADING))						// Is it a jammed or fading signal?
-                    tmpPtr->localData->sensorState[Radar] = Detection;			// Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
+                if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
+                    tmpPtr->localData->sensorState[Radar] = Detection; // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 else
-                    tmpPtr->localData->sensorState[Radar] = SensorTrack;		// It's a valid lock, mark it as such. Even when fading, we can launch
+                    tmpPtr->localData->sensorState[Radar] = SensorTrack; // It's a valid lock, mark it as such. Even when fading, we can launch
 
-                if (!(canSee & SG_FADING))									// Is the signal fading?
+                if (!(canSee & SG_FADING)) // Is the signal fading?
                     tmpPtr->localData->rdrLastHit = SimLibElapsedTime;// No, so update the last hit field
             }
             else
-                tmpPtr->localData->sensorState[Radar] = NoTrack;				// Sorry, we lost that target...
+                tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
             //
             // 2000-10-07 S.G. POSSIBLE BUG! If we are looking at our lockedTarget and we are the only one referencing it, clearing it
@@ -1108,7 +1108,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
     // JPO - radar doesn't scan with WOW
     //if (g_bRealisticAvionics && platform->OnGround())
     //{
-    //	// do nothing
+    // // do nothing
     //}
     //else if (isEmitting) // only scans if its scanning!
 
@@ -1298,7 +1298,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
 
     // 2002-02-09 MODIFIED BY S.G. Since radarMode is sent as well and is passed to the AI, will let him make the decision to deal with us or not...
     // Tell our current target he's locked
-    /*	if (sendThisFrame && lockedTarget && (mode != TWS || IsSet(STTingTarget)))
+    /* if (sendThisFrame && lockedTarget && (mode != TWS || IsSet(STTingTarget)))
     {
     SendTrackMsg (lockedTarget, Track_Lock);
     lastTargetLockSend = SimLibElapsedTime;

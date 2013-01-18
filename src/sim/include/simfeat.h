@@ -39,7 +39,7 @@ public:
     {
         return 5.0f;
     };
-    virtual int	GetRadarType();
+    virtual int GetRadarType();
 
     DrawableObject *baseObject;
     long featureFlags;
@@ -66,7 +66,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

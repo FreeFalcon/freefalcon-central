@@ -14,13 +14,13 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int		widthTapeBitmap;
-    int		heightTapeBitmap;
-    float		maxTapeValue;
-    int		maxValPosition;
-    float		minTapeValue;
-    int		minValPosition;
-    DWORD*	TapeBitmapHandle;
+    int widthTapeBitmap;
+    int heightTapeBitmap;
+    float maxTapeValue;
+    int maxValPosition;
+    float minTapeValue;
+    int minValPosition;
+    DWORD* TapeBitmapHandle;
 } CPGaugeInitStruct;
 
 
@@ -42,20 +42,20 @@ public:
 
     CPGauge(CPObjectInitStruct *, CPGaugeInitStruct *);
 
-    int		mWidthTapeBitmap;
-    int		mHeightTapeBitmap;
-    float		mMaxTapeValue;
-    int		mMaxValPosition;
-    float		mMinTapeValue;
-    int		mMinValPosition;
-    DWORD*	mpTapeBitmapHandle;
-    float		mCurrentVal;
+    int mWidthTapeBitmap;
+    int mHeightTapeBitmap;
+    float mMaxTapeValue;
+    int mMaxValPosition;
+    float mMinTapeValue;
+    int mMinValPosition;
+    DWORD* mpTapeBitmapHandle;
+    float mCurrentVal;
 
     virtual ~CPGauge();
-    void	Exec(void);
-    void	HandleEvent(int Event) {};
-    void	Display(Render2D*, BOOL);
-    void	DrawTape(float, int, int, BOOL);
+    void Exec(void);
+    void HandleEvent(int Event) {};
+    void Display(Render2D*, BOOL);
+    void DrawTape(float, int, int, BOOL);
 
 };
 

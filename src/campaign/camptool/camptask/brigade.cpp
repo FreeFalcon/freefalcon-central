@@ -27,7 +27,7 @@
 
 extern int gDumping;
 extern int gCheckConstructFunction;
-extern char	OrderStr[GORD_LAST][15];
+extern char OrderStr[GORD_LAST][15];
 
 #include "CampStr.h"
 #endif
@@ -57,7 +57,7 @@ extern VU_ID_NUMBER RenameTable[65536];
 extern int gRenameIds;
 #endif
 
-extern int BreakNumber[4];				// none, Ground, Air, Naval unit's break number
+extern int BreakNumber[4]; // none, Ground, Air, Naval unit's break number
 extern int HDelta[7];
 
 extern int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridIndex x, GridIndex y, int owned_by_us);
@@ -95,7 +95,7 @@ extern int theirDomain;
 // =================================
 
 #ifdef USE_SH_POOLS
-MEM_POOL	BrigadeClass::pool;
+MEM_POOL BrigadeClass::pool;
 #endif
 
 // ============================================
@@ -105,7 +105,7 @@ MEM_POOL	BrigadeClass::pool;
 // KCK: ALL BRIGADE CONSTRUCTION SHOULD USE THIS FUNCTION!
 BrigadeClass* NewBrigade(int type)
 {
-    BrigadeClass	*new_brigade;
+    BrigadeClass *new_brigade;
 #ifdef DEBUG
     gCheckConstructFunction = 1;
 #endif
@@ -163,7 +163,7 @@ BrigadeClass::BrigadeClass(VU_BYTE **stream) : GroundUnitClass(stream)
     fullstrength = 0;
 
 #ifdef DEBUG
-    char	buffer[256];
+    char buffer[256];
 
     sprintf(buffer, "campaign\\save\\dump\\%d.BRI", GetCampID());
     unlink(buffer);
@@ -180,8 +180,8 @@ int BrigadeClass::SaveSize(void)
 {
 #if 0
 #ifdef DEBUG
-    int			i;
-    Unit		e;
+    int i;
+    Unit e;
 
     for (i = 0; i < elements; i++)
     {
@@ -232,10 +232,10 @@ int BrigadeClass::Handle(VuFullUpdateEvent *event)
 
 int BrigadeClass::MoveUnit(CampaignTime time)
 {
-    Unit			e;
-    int				en, me, be, te, toorder, role;
-    F4PFList		nearlist = NULL;
-    Objective		o;
+    Unit e;
+    int en, me, be, te, toorder, role;
+    F4PFList nearlist = NULL;
+    Objective o;
 
     // Check if we have a valid objective
     o = GetUnitObjective();
@@ -288,13 +288,13 @@ int BrigadeClass::MoveUnit(CampaignTime time)
     }
 
     // Check to make sure our orders are still valid.
-    //	if (!CheckTactic(GetUnitTactic()))
+    // if (!CheckTactic(GetUnitTactic()))
     ChooseTactic();
 
     // Upon new orders, reset our element's ordered flags && collect list of possible positions
     if (Ordered() || toorder)
     {
-        Objective	o;
+        Objective o;
 
         o = GetUnitObjective();
 
@@ -382,9 +382,9 @@ int BrigadeClass::MoveUnit(CampaignTime time)
     if (!me)
     {
         if (role == GRO_ATTACK)
-            SetOrders(GORD_DEFEND);				// Switch to defense orders
+            SetOrders(GORD_DEFEND); // Switch to defense orders
         else if (GetOrders() != GORD_RESERVE)
-            SetUnitObjective(FalconNullId);		// We'll pick a reserve location next time through
+            SetUnitObjective(FalconNullId); // We'll pick a reserve location next time through
     }
 
     UpdateParentStatistics();
@@ -399,7 +399,7 @@ int BrigadeClass::Reaction(CampEntity e, int zone, float range)
 
 int BrigadeClass::ChooseTactic(void)
 {
-    int			priority = 0, tid;
+    int priority = 0, tid;
 
     haveWeaps = -1;
     tid = GTACTIC_BRIG_SECURE;
@@ -415,7 +415,7 @@ int BrigadeClass::ChooseTactic(void)
     // Make Adjustments due to tactic
     if (tid == GTACTIC_BRIG_WITHDRAW)
     {
-        Objective	o;
+        Objective o;
         o = GetUnitObjective();
 
         if (!o || !o->IsSecondary())
@@ -429,8 +429,8 @@ int BrigadeClass::ChooseTactic(void)
             // KCK: This will cause the whole brigade to surrender if the first element get's
             // cutoff and we're withdrawing. So I'm axing it. Instead, we'll just wait until
             // the element surrenders.
-            //			else
-            //				CheckForSurrender();
+            // else
+            // CheckForSurrender();
             SetOrdered(1);
         }
     }
@@ -450,15 +450,15 @@ int BrigadeClass::ChooseTactic(void)
 
 int BrigadeClass::CheckTactic(int tid)
 {
-    Objective	o;
+    Objective o;
 
     if (tid < 1)
         return 0;
 
     if (haveWeaps < 0)
     {
-        FalconEntity	*e;
-        GridIndex		x, y, dx, dy;
+        FalconEntity *e;
+        GridIndex x, y, dx, dy;
 
         e = GetTarget();
 
@@ -515,21 +515,21 @@ int BrigadeClass::CheckTactic(int tid)
     if (!CheckRange(tid, ourObjDist))
         return 0;
 
-    //	if (!CheckDistToFront(tid,ourFrontDist))
-    //		return 0;
+    // if (!CheckDistToFront(tid,ourFrontDist))
+    // return 0;
     if (!CheckStatus(tid, Broken()))
         return 0;
 
-    //	if (!CheckOdds(tid,odds))
-    //		return 0;
+    // if (!CheckOdds(tid,odds))
+    // return 0;
     return GetTacticPriority(tid);
 }
 
 void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
 {
-    Objective	o, so;
-    GridIndex	x, y, dx, dy;
-    Unit		e;
+    Objective o, so;
+    GridIndex x, y, dx, dy;
+    Unit e;
 
     SetOrdered(1);
     SetUnitTactic(0);
@@ -540,10 +540,10 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
 
     if (gDumping)
     {
-        FILE	*fp;
-        int		id1;
-        char	buffer[256];
-        char	name1[80], name2[80], timestr[80];
+        FILE *fp;
+        int id1;
+        char buffer[256];
+        char name1[80], name2[80], timestr[80];
 
         sprintf(buffer, "campaign\\save\\dump\\%d.BRI", GetCampID());
 
@@ -607,7 +607,7 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
     // If this is near the front, send a low priority request for an enemy recon patrol
     if (o->IsNearfront())
     {
-        MissionRequestClass		mis;
+        MissionRequestClass mis;
         mis.tot = Camp_GetCurrentTime() + (rand() % MIN_TASK_GROUND + 30) * CampaignMinutes;
         mis.vs = GetTeam();
         mis.tot_type = TYPE_NE;
@@ -651,7 +651,7 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
 
 void BrigadeClass::SetUnitDivision(int d)
 {
-    Unit			e;
+    Unit e;
 
     SetDivision(d);
     e = GetFirstUnitElement();
@@ -666,7 +666,7 @@ void BrigadeClass::SetUnitDivision(int d)
 // This calculates the maximum speed we can travel as a whole unit
 int BrigadeClass::GetUnitSpeed(void)
 {
-    int			speed = 9999;
+    int speed = 9999;
     Battalion   e;
 
     e = (Battalion)GetFirstUnitElement();
@@ -690,8 +690,8 @@ int BrigadeClass::GetUnitSpeed(void)
 
 int BrigadeClass::GetUnitSupply(void)
 {
-    int			sup, els;
-    Unit		e;
+    int sup, els;
+    Unit e;
 
     sup = els = 0;
     e = GetFirstUnitElement();
@@ -711,8 +711,8 @@ int BrigadeClass::GetUnitSupply(void)
 
 int BrigadeClass::GetUnitMorale(void)
 {
-    int			morale, els;
-    Unit		e;
+    int morale, els;
+    Unit e;
 
     morale = els = 0;
     e = GetFirstUnitElement();
@@ -732,15 +732,15 @@ int BrigadeClass::GetUnitMorale(void)
 
 int OnValidObjective(Unit e, int role, F4PFList nearlist)
 {
-    VuListIterator	vuit(nearlist);
-    Objective		bo = GetFirstObjective(&vuit);
+    VuListIterator vuit(nearlist);
+    Objective bo = GetFirstObjective(&vuit);
 
     while (bo && bo->Id() != e->GetUnitObjectiveID())
         bo = GetNextObjective(&vuit);
 
     if (bo)
     {
-        GridIndex	x, y;
+        GridIndex x, y;
         e->GetLocation(&x, &y);
 
         if (ScorePosition(e, role, 100, bo, x, y, (bo->GetTeam() == e->GetTeam()) ? 1 : 0) < -30000)
@@ -755,8 +755,8 @@ int OnValidObjective(Unit e, int role, F4PFList nearlist)
 
 int GetNewRole(Unit e, Unit brig)
 {
-    int		brole = brig->GetUnitCurrentRole();
-    int		role = e->GetUnitNormalRole();
+    int brole = brig->GetUnitCurrentRole();
+    int role = e->GetUnitNormalRole();
 
     if (e->Broken())
         role = GRO_RESERVE;
@@ -778,9 +778,9 @@ int GetNewRole(Unit e, Unit brig)
 // It's up to the elements to determine the method of getting there.
 int BrigadeClass::OrderElement(Unit e, F4PFList nearlist)
 {
-    Objective		o, bo;
-    int				neworders = GetUnitOrders();
-    int				role;
+    Objective o, bo;
+    int neworders = GetUnitOrders();
+    int role;
 
     // Check to see if there's something more important to do
     o = GetUnitObjective();
@@ -827,7 +827,7 @@ int BrigadeClass::OrderElement(Unit e, F4PFList nearlist)
     e->SetUnitOrders(neworders, o->Id());
     e->SetAssigned(1);
 
-    //	ReorganizeUnit(e);		// This needs to only reposition element e
+    // ReorganizeUnit(e); // This needs to only reposition element e
     ReorganizeUnit();
 
 #ifdef ROBIN_GDEBUG
@@ -894,7 +894,7 @@ Unit BrigadeClass::GetUnitElementByID(int eid)
 
 void BrigadeClass::AddUnitChild(Unit e)
 {
-    int		i = 0;
+    int i = 0;
 
     while (element[i] && i < MAX_UNIT_CHILDREN)
         i++;
@@ -902,7 +902,7 @@ void BrigadeClass::AddUnitChild(Unit e)
     if (i < MAX_UNIT_CHILDREN)
     {
         element[i] = e->Id();
-        //		((Battalion)e)->SetUnitElement(i);
+        // ((Battalion)e)->SetUnitElement(i);
     }
 
     if (i >= elements)
@@ -911,7 +911,7 @@ void BrigadeClass::AddUnitChild(Unit e)
 
 void BrigadeClass::DisposeChildren(void)
 {
-    Unit		e;
+    Unit e;
 
     while (element[0])
     {
@@ -924,10 +924,10 @@ void BrigadeClass::DisposeChildren(void)
     }
 }
 
-void BrigadeClass::RemoveChild(VU_ID	eid)
+void BrigadeClass::RemoveChild(VU_ID eid)
 {
-    int		i = 0, j;
-    Unit	e;
+    int i = 0, j;
+    Unit e;
 
     while (i < elements)
     {
@@ -937,8 +937,8 @@ void BrigadeClass::RemoveChild(VU_ID	eid)
             {
                 element[j] = element[j + 1];
                 e = FindUnit(element[j]);
-                //				if (e)
-                //					((Battalion)e)->SetUnitElement(j);
+                // if (e)
+                // ((Battalion)e)->SetUnitElement(j);
             }
 
             element[j] = FalconNullId;
@@ -951,7 +951,7 @@ void BrigadeClass::RemoveChild(VU_ID	eid)
 
 int GetPriority(Unit e)
 {
-    int		ep;
+    int ep;
 
     if (!e)
         return 0;
@@ -967,8 +967,8 @@ int GetPriority(Unit e)
 // Sorts the brigade's elements by relative importance
 void BrigadeClass::ReorganizeUnit(void)
 {
-    Unit		e, ne;
-    int			i, j;
+    Unit e, ne;
+    int i, j;
 
     for (i = 0; i < elements; i++)
     {
@@ -992,223 +992,223 @@ void BrigadeClass::ReorganizeUnit(void)
 // This reorganizes a brigade's element battalions. If the unit is engaged it calls ReorganizeEngagedUnit instead.
 // Otherwise it picks the best unit for the position.
 void BrigadeClass::ReorganizeUnit (void)
-	{
-	Unit	e,te;
-	int		ce=0,i;
-	Unit	pos[GPOS_SUPPORT3+1];
+ {
+ Unit e,te;
+ int ce=0,i;
+ Unit pos[GPOS_SUPPORT3+1];
 
 #ifdef ROBIN_GDEBUG
-	MonoPrint("Reorganizing brigade %d: ",GetCampID());
+ MonoPrint("Reorganizing brigade %d: ",GetCampID());
 #endif
-	SetOrdered(1);
-	if (Engaged())
-		{
-		ReorganizeEngagedUnit();
-		return;
-		}
+ SetOrdered(1);
+ if (Engaged())
+ {
+ ReorganizeEngagedUnit();
+ return;
+ }
 
-	memset(pos,0,sizeof(Unit)*GPOS_SUPPORT3+1);
-	e = GetFirstUnitElement();
-	if (!e)
-		{
-		// Dang, we're dead.
-		SetDead(1);
-		return;
-		}
-	while (e)
-		{
-		e->SetUnitPosition(0);
-		e->SetAssigned(0);
-		e = GetNextUnitElement();
-		}
+ memset(pos,0,sizeof(Unit)*GPOS_SUPPORT3+1);
+ e = GetFirstUnitElement();
+ if (!e)
+ {
+ // Dang, we're dead.
+ SetDead(1);
+ return;
+ }
+ while (e)
+ {
+ e->SetUnitPosition(0);
+ e->SetAssigned(0);
+ e = GetNextUnitElement();
+ }
 
-	// Fill each position with the best unit for the spot
-	for (i=0,ce=0; i<=GPOS_SUPPORT3; i++)
-		{
-		e = NULL;
-		if (i >= GPOS_RECON1 && i <= GPOS_RECON3)
-			{
-			e = BestElement(this, Foot, GRO_RECON);
-			if (e && (e->GetUnitClassData())->Scores[GRO_RECON] < 5)
-				{
-				e->SetAssigned(0);
-				e = NULL;
-				}
-			if (e)
-				ce++;
-			}
-		else if (i >= GPOS_COMBAT1 && i <= GPOS_COMBAT3)
-			{
-			switch (GetUnitOrders())
-				{
-				case GORD_CAPTURE:
-					e = BestElement(this, Foot, GRO_ATTACK);
-					break;
-				default:
-					e = BestElement(this, Foot, GRO_DEFENSE);
-					break;
-				}
-			if (e)
-				ce++;
-			}
-		else if (i >= GPOS_RESERVE1 && i <= GPOS_RESERVE3)
-			{
-			e = BestElement(this, NoMove, GRO_RESERVE);
-			}
-		else if (i >= GPOS_SUPPORT1)
-			{
-			e = BestElement(this, Air, GRO_AIRDEFENSE);
-			if (!e)
-				{
-				e = BestElement(this, Foot, GRO_FIRESUPPORT);
-				if (!e)
-					e = BestElement(this, Foot, GRO_ENGINEER);
-				}
-			if (!e)
-				{
-				e = GetFirstUnitElement();
-				while (e && e->Assigned())
-					e = GetNextUnitElement();
-				}
-			}
-		pos[i] = e;
-		if (e)
-			e->SetUnitPosition(i);
-		}
+ // Fill each position with the best unit for the spot
+ for (i=0,ce=0; i<=GPOS_SUPPORT3; i++)
+ {
+ e = NULL;
+ if (i >= GPOS_RECON1 && i <= GPOS_RECON3)
+ {
+ e = BestElement(this, Foot, GRO_RECON);
+ if (e && (e->GetUnitClassData())->Scores[GRO_RECON] < 5)
+ {
+ e->SetAssigned(0);
+ e = NULL;
+ }
+ if (e)
+ ce++;
+ }
+ else if (i >= GPOS_COMBAT1 && i <= GPOS_COMBAT3)
+ {
+ switch (GetUnitOrders())
+ {
+ case GORD_CAPTURE:
+ e = BestElement(this, Foot, GRO_ATTACK);
+ break;
+ default:
+ e = BestElement(this, Foot, GRO_DEFENSE);
+ break;
+ }
+ if (e)
+ ce++;
+ }
+ else if (i >= GPOS_RESERVE1 && i <= GPOS_RESERVE3)
+ {
+ e = BestElement(this, NoMove, GRO_RESERVE);
+ }
+ else if (i >= GPOS_SUPPORT1)
+ {
+ e = BestElement(this, Air, GRO_AIRDEFENSE);
+ if (!e)
+ {
+ e = BestElement(this, Foot, GRO_FIRESUPPORT);
+ if (!e)
+ e = BestElement(this, Foot, GRO_ENGINEER);
+ }
+ if (!e)
+ {
+ e = GetFirstUnitElement();
+ while (e && e->Assigned())
+ e = GetNextUnitElement();
+ }
+ }
+ pos[i] = e;
+ if (e)
+ e->SetUnitPosition(i);
+ }
 #ifdef 0
-	// if we don't have any reserve units, but have recon or combat elements, assign one to reserve
-	for (i=GPOS_COMBAT3; ce > 1 && i>GPOS_RECON1 && !pos[GPOS_RESERVE1]; i--)
-		{
-		if (pos[i])
-			{
-			pos[GPOS_RESERVE1] = pos[i];
-			pos[i] = NULL;
-			pos[GPOS_RESERVE1]->SetUnitPosition(GPOS_RESERVE1);
-			ce--;
-			}
-		}
+ // if we don't have any reserve units, but have recon or combat elements, assign one to reserve
+ for (i=GPOS_COMBAT3; ce > 1 && i>GPOS_RECON1 && !pos[GPOS_RESERVE1]; i--)
+ {
+ if (pos[i])
+ {
+ pos[GPOS_RESERVE1] = pos[i];
+ pos[i] = NULL;
+ pos[GPOS_RESERVE1]->SetUnitPosition(GPOS_RESERVE1);
+ ce--;
+ }
+ }
 #endif
-	// Check if we're broken (ie, no combat elements) (support only units?)
-	if (!ce)
-		SetBroken(1);
+ // Check if we're broken (ie, no combat elements) (support only units?)
+ if (!ce)
+ SetBroken(1);
 
-	// Clear out current child entries
-	memset(element,0,sizeof(VU_ID)*MAX_UNIT_CHILDREN);
-	// Now assign element #s sequentially
-	for (i=1,ce=0,te=NULL; i<GPOS_SUPPORT3; i++)
-		{
-		if (pos[i])
-			{
-			element[ce] = pos[i]->Id();
-			((Battalion)pos[i])->SetUnitElement(ce);
-			te = pos[i];
+ // Clear out current child entries
+ memset(element,0,sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+ // Now assign element #s sequentially
+ for (i=1,ce=0,te=NULL; i<GPOS_SUPPORT3; i++)
+ {
+ if (pos[i])
+ {
+ element[ce] = pos[i]->Id();
+ ((Battalion)pos[i])->SetUnitElement(ce);
+ te = pos[i];
 #ifdef ROBIN_GDEBUG
-			if (i == GPOS_COMBAT1 || i == GPOS_RESERVE1 || i == GPOS_SUPPORT1)
-				MonoPrint("| ");
-			MonoPrint("%d  ",pos[i]->GetCampID());
+ if (i == GPOS_COMBAT1 || i == GPOS_RESERVE1 || i == GPOS_SUPPORT1)
+ MonoPrint("| ");
+ MonoPrint("%d  ",pos[i]->GetCampID());
 #endif
-			ce++;
-			}
-		}
-	// Special case: Only one subunit- assign it the 'zero' position
-	if (te && ce==1)
-		te->SetUnitPosition(0);
+ ce++;
+ }
+ }
+ // Special case: Only one subunit- assign it the 'zero' position
+ if (te && ce==1)
+ te->SetUnitPosition(0);
 #ifdef ROBIN_GDEBUG
-	MonoPrint("\n");
+ MonoPrint("\n");
 #endif
-	}
+ }
 */
 
 // This should move broken units to reserve, and unbroken reserves to combat positions
 /*
 void BrigadeClass::ReorganizeEngagedUnit (void)
-	{
-	Unit	e;
-	int		ce=0,be=0,i,j,f;
-	Unit	pos[GPOS_SUPPORT3+1];
+ {
+ Unit e;
+ int ce=0,be=0,i,j,f;
+ Unit pos[GPOS_SUPPORT3+1];
 
-	memset(pos,0,sizeof(Unit)*GPOS_SUPPORT3+1);
-	// Find out which positions are taken
-	e = GetFirstUnitElement();
-	while (e)
-		{
-		i = e->GetUnitPosition();
-		while(pos[i])
-			i++;
-		pos[i] = e;
-		if (i <= GPOS_COMBAT3 && !e->Broken() && !e->Retreating())
-			ce++;
-		if (i <= GPOS_COMBAT3 && (e->Broken() || e->Retreating()))
-			be++;
-		e = GetNextUnitElement();
-		}
-	if (!ce)
-		{
-		SetBroken(1);
-		return;
-		}
-	if (!be)
-		return;					// Nothing to do
+ memset(pos,0,sizeof(Unit)*GPOS_SUPPORT3+1);
+ // Find out which positions are taken
+ e = GetFirstUnitElement();
+ while (e)
+ {
+ i = e->GetUnitPosition();
+ while(pos[i])
+ i++;
+ pos[i] = e;
+ if (i <= GPOS_COMBAT3 && !e->Broken() && !e->Retreating())
+ ce++;
+ if (i <= GPOS_COMBAT3 && (e->Broken() || e->Retreating()))
+ be++;
+ e = GetNextUnitElement();
+ }
+ if (!ce)
+ {
+ SetBroken(1);
+ return;
+ }
+ if (!be)
+ return; // Nothing to do
 
-	// Move Broken units to reserve
-	for (i=0; i<=GPOS_COMBAT3; i++)
-		{
-		if (pos[i] && pos[i]->Broken())
-			{
-			for (j=GPOS_RESERVE1,f=0; j<=GPOS_RESERVE3 && !f; j++)
-				{
-				if (!pos[j])
-					{
-					pos[j] = pos[i];
-					pos[i] = (Unit)-1;
-					f = 1;
-					}
-				}
-			}
-		}
-	// Move Unbroken reserves to empty positions
-	for (i=GPOS_RESERVE1; i<=GPOS_RESERVE3; i++)
-		{
-		if (pos[i] && !pos[i]->Broken() && !pos[i]->Retreating())
-			{
-			for (j=GPOS_RECON1,f=0; j<=GPOS_COMBAT3 && !f; j++)
-				{
-				if ((int)pos[j] == -1)
-					{
-					pos[j] = pos[i];
-					pos[i] = NULL;
-					f = 1;
-					}
-				}
-			}
-		}
+ // Move Broken units to reserve
+ for (i=0; i<=GPOS_COMBAT3; i++)
+ {
+ if (pos[i] && pos[i]->Broken())
+ {
+ for (j=GPOS_RESERVE1,f=0; j<=GPOS_RESERVE3 && !f; j++)
+ {
+ if (!pos[j])
+ {
+ pos[j] = pos[i];
+ pos[i] = (Unit)-1;
+ f = 1;
+ }
+ }
+ }
+ }
+ // Move Unbroken reserves to empty positions
+ for (i=GPOS_RESERVE1; i<=GPOS_RESERVE3; i++)
+ {
+ if (pos[i] && !pos[i]->Broken() && !pos[i]->Retreating())
+ {
+ for (j=GPOS_RECON1,f=0; j<=GPOS_COMBAT3 && !f; j++)
+ {
+ if ((int)pos[j] == -1)
+ {
+ pos[j] = pos[i];
+ pos[i] = NULL;
+ f = 1;
+ }
+ }
+ }
+ }
 
-	// Clear out current child entries and re-enter in order
-	memset(element,0,sizeof(VU_ID)*MAX_UNIT_CHILDREN);
-	for (i=1,ce=0; i<GPOS_SUPPORT3; i++)
-		{
-		if (pos[i] && (int)pos[i] != -1)
-			{
-			element[ce] = pos[i]->Id();
-			((Battalion)pos[i])->SetUnitElement(ce);
-			pos[i]->SetUnitPosition(i);
+ // Clear out current child entries and re-enter in order
+ memset(element,0,sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+ for (i=1,ce=0; i<GPOS_SUPPORT3; i++)
+ {
+ if (pos[i] && (int)pos[i] != -1)
+ {
+ element[ce] = pos[i]->Id();
+ ((Battalion)pos[i])->SetUnitElement(ce);
+ pos[i]->SetUnitPosition(i);
 #ifdef ROBIN_GDEBUG
-			MonoPrint("%d  ",pos[i]->GetCampID());
+ MonoPrint("%d  ",pos[i]->GetCampID());
 #endif
-			ce++;
-			}
-		}
+ ce++;
+ }
+ }
 #ifdef ROBIN_GDEBUG
-	MonoPrint("\n");
+ MonoPrint("\n");
 #endif
-	}
+ }
 */
 
 int BrigadeClass::UpdateParentStatistics(void)
 {
-    GridIndex	nx, ny, x, y;
-    int			engaged = 0, combat = 0, loss = 0, te = 0;
-    Unit		e;
+    GridIndex nx, ny, x, y;
+    int engaged = 0, combat = 0, loss = 0, te = 0;
+    Unit e;
 
     // Update unit wide statistics. NOTE: some delay here- since elements are unmoved.
     nx = ny = te = 0;
@@ -1227,8 +1227,8 @@ int BrigadeClass::UpdateParentStatistics(void)
 
         e->GetLocation(&x, &y);
 
-        //		nx += x;
-        //		ny += y;
+        // nx += x;
+        // ny += y;
         if (!nx && !ny)
             e->GetLocation(&nx, &ny);
 
@@ -1252,9 +1252,9 @@ int BrigadeClass::UpdateParentStatistics(void)
     SetCombat(combat);
     SetLosses(loss);
     // Set our new averaged position
-    //	x = nx / te;
-    //	y = ny / te;
-    //	SetLocation(x,y);
+    // x = nx / te;
+    // y = ny / te;
+    // SetLocation(x,y);
     ShiAssert(nx && ny);
     // Set our position to our first element
     SetLocation(nx, ny);
@@ -1263,8 +1263,8 @@ int BrigadeClass::UpdateParentStatistics(void)
 
 int BrigadeClass::GetUnitSupplyNeed(int have)
 {
-    int			supply = 0;
-    Unit		u;
+    int supply = 0;
+    Unit u;
 
     u = GetFirstUnitElement();
 
@@ -1279,8 +1279,8 @@ int BrigadeClass::GetUnitSupplyNeed(int have)
 
 int BrigadeClass::GetUnitFuelNeed(int have)
 {
-    int			fuel = 0;
-    Unit		u;
+    int fuel = 0;
+    Unit u;
 
     u = GetFirstUnitElement();
 
@@ -1295,9 +1295,9 @@ int BrigadeClass::GetUnitFuelNeed(int have)
 
 void BrigadeClass::SupplyUnit(int supply, int fuel)
 {
-    Unit		u;
-    float		sr, fr;
-    int			stu, ftu;
+    Unit u;
+    float sr, fr;
+    int stu, ftu;
 
     // KCK: Actually - This function is probably never called
     // The problem is handled from within Supply.cpp -> SupplyUnit()
@@ -1317,9 +1317,9 @@ void BrigadeClass::SupplyUnit(int supply, int fuel)
 
 int BrigadeClass::RallyUnit(int minutes)
 {
-    Unit	e;
-    int		rallied = 1;
-    int		role, gotnon = 0;
+    Unit e;
+    int rallied = 1;
+    int role, gotnon = 0;
 
     role = GetUnitNormalRole();
     e = GetFirstUnitElement();

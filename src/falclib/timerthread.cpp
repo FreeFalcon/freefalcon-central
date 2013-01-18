@@ -13,7 +13,7 @@ int                 targetGameCompressionRatio = 0;
 int                 targetCompressionRatio = 0;
 
 // Requests bit array
-int					remoteCompressionRequests;
+int remoteCompressionRequests;
 
 #ifndef NO_TIMER_THREAD
 
@@ -41,10 +41,10 @@ static unsigned __stdcall timerThread(void)
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
         if (!gCompressTillTime || vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
         {
-            vuxGameTime += delta * gameCompressionRatio;		// Normal time advance
+            vuxGameTime += delta * gameCompressionRatio; // Normal time advance
         }
         else if (vuxGameTime < gCompressTillTime)
-            vuxGameTime = gCompressTillTime;					// We don't want to advance time past here
+            vuxGameTime = gCompressTillTime; // We don't want to advance time past here
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
         lastStartTime = vuxRealTime;
@@ -101,7 +101,7 @@ void SetTimeCompression(int newComp)
         // For online games, we only set our session's requested time compression.
         FalconLocalSession->SetReqCompression((short)newComp);
         // The resync is now done is SetReqCompression
-        // ResyncTimes();		// Resync immediately
+        // ResyncTimes(); // Resync immediately
         return;
     }
     else
@@ -179,13 +179,13 @@ void SetTime(unsigned long currentTime)
     TheCampaign.CurrentTime = currentTime;
     SimLibFrameElapsed = (float)currentTime;
     SimLibElapsedTime = currentTime;
-    UPDATE_SIM_ELAPSED_SECONDS;											// COBRA - RED - Scale Elapsed Seconds
+    UPDATE_SIM_ELAPSED_SECONDS; // COBRA - RED - Scale Elapsed Seconds
     SimDriver.lastRealTime = currentTime;
 
-    //	ShiAssert
-    //	(
-    //		(gameCompressionRatio == 0) ||
-    //		(TheCampaign.IsSuspended ())
-    //	);
+    // ShiAssert
+    // (
+    // (gameCompressionRatio == 0) ||
+    // (TheCampaign.IsSuspended ())
+    // );
 }
 

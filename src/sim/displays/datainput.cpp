@@ -21,15 +21,15 @@
 /* ADDED BY S.G. FOR SELECTIVE JETISSON */ #include "airframe.h"
 #include "campbase.h" // Marco for AIM9P
 #include "classtbl.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
-#include "simdrive.h"	//MI
-#include "hud.h"	//MI
-#include "fault.h"	//MI
+#include "simdrive.h" //MI
+#include "hud.h" //MI
+#include "fault.h" //MI
 
 #define FirstLineX 0.0F
 #define FirstLineY 0.2F
@@ -41,7 +41,7 @@
 #define InputLineY -0.1F
 
 extern bool g_bMLU;
-extern int maxripple;	// M.N.
+extern int maxripple; // M.N.
 
 void SmsDrawable::InputDisplay(void)
 {
@@ -128,7 +128,7 @@ void SmsDrawable::InputRS(void)
     }
 
     if (!Manual_Input)
-        //		sprintf(inputstr, "%dFT", Sms->rippleInterval);
+        // sprintf(inputstr, "%dFT", Sms->rippleInterval);
         sprintf(inputstr, "%dFT", Sms->GetAGBRippleInterval());
     else
         FillInputString();
@@ -238,21 +238,21 @@ void SmsDrawable::CNTLPage(void)
 
 
     /*
-    	if(Sms->Prof1)
-    	{
-    		sprintf(tempstr, "%.2fSEC", Sms->C1AD1 / 100);
-    		display->TextLeft(x + 0.1F, y, "AD1", Sms->Prof1NSTL == 1 ? 2 : 0);
-    		display->TextLeft(x + 0.3F, y, tempstr);
-    	}
-    	else
-    	{
-    		sprintf(tempstr, "%.2fSEC", Sms->C1AD1 / 100);
-    		if(C1Weap)
-    			display->TextLeft(x + 0.1F, y, "AD1", Sms->Prof2NSTL == 1 ? 2 : 0);
-    		else
-    			display->TextLeft(x + 0.1F, y, "AD1");
-    		display->TextLeft(x + 0.3F, y, tempstr);
-    	}
+     if(Sms->Prof1)
+     {
+     sprintf(tempstr, "%.2fSEC", Sms->C1AD1 / 100);
+     display->TextLeft(x + 0.1F, y, "AD1", Sms->Prof1NSTL == 1 ? 2 : 0);
+     display->TextLeft(x + 0.3F, y, tempstr);
+     }
+     else
+     {
+     sprintf(tempstr, "%.2fSEC", Sms->C1AD1 / 100);
+     if(C1Weap)
+     display->TextLeft(x + 0.1F, y, "AD1", Sms->Prof2NSTL == 1 ? 2 : 0);
+     else
+     display->TextLeft(x + 0.1F, y, "AD1");
+     display->TextLeft(x + 0.3F, y, tempstr);
+     }
     */
 
     y -= step;
@@ -279,18 +279,18 @@ void SmsDrawable::CNTLPage(void)
     /*
     if(Sms->Prof1)
     {
-    	sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
-    	if(C1Weap)
-    		display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL != 1 ? 2 : 0);
-    	else
-    		display->TextLeft(x + 0.1F, y, "AD2");
-    	display->TextLeft(x + 0.3F, y, tempstr);
+     sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
+     if(C1Weap)
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof1NSTL != 1 ? 2 : 0);
+     else
+     display->TextLeft(x + 0.1F, y, "AD2");
+     display->TextLeft(x + 0.3F, y, tempstr);
     }
     else
     {
-    	sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
-    	display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL != 1 ? 2 : 0);
-    	display->TextLeft(x + 0.3F, y, tempstr);
+     sprintf(tempstr, "%.2fSEC", Sms->C1AD2 / 100);
+     display->TextLeft(x + 0.1F, y, "AD2", Sms->Prof2NSTL != 1 ? 2 : 0);
+     display->TextLeft(x + 0.3F, y, tempstr);
     }*/
 }
 void SmsDrawable::ADPage(void)
@@ -773,10 +773,10 @@ void SmsDrawable::CheckInput(void)
 
                 /*
                 if(Sms->Prof1)
-                	Sms->rippleCount = Sms->Prof1RP = var - 1;
+                 Sms->rippleCount = Sms->Prof1RP = var - 1;
                 else
-                	Sms->rippleCount = Sms->Prof2RP = var - 1;
-                	*/
+                 Sms->rippleCount = Sms->Prof2RP = var - 1;
+                 */
                 CorrectInput();
             }
             else
@@ -793,9 +793,9 @@ void SmsDrawable::CheckInput(void)
             //Sms->rippleInterval = Sms->GetAGBRippleInterval();
             /*
             if(Sms->Prof1)
-            	Sms->rippleInterval = Sms->Prof1RS = var;
+             Sms->rippleInterval = Sms->Prof1RS = var;
             else
-            	Sms->rippleInterval = Sms->Prof2RS = var;
+             Sms->rippleInterval = Sms->Prof2RS = var;
             */
 
             CorrectInput();

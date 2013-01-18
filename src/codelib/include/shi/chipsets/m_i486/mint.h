@@ -18,7 +18,7 @@
 #define CHIPSET_ID_STR      "Intel i486"
 #define CHIPSET_ID_NUM      486
 
-#define CHIPSET_MAX_INT_POW 2		    /* See MINT.DOC */
+#define CHIPSET_MAX_INT_POW 2     /* See MINT.DOC */
 
 #define CHIPSET_LITTLE_ENDIAN
 

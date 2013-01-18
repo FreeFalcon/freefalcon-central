@@ -1,13 +1,13 @@
 /*******************************************************************************\
-	GIFtoAPL.cpp
+ GIFtoAPL.cpp
 
-	This tool reads a GIF file (with optional second alpha map) and writes
-	an APL file.  An APL is a palettized image with the ability to store
-	alpha values in the palette.
+ This tool reads a GIF file (with optional second alpha map) and writes
+ an APL file.  An APL is a palettized image with the ability to store
+ alpha values in the palette.
 
-	Scott Randolph
-	Spectrum HoloByte
-	June 10, 1997
+ Scott Randolph
+ Spectrum HoloByte
+ June 10, 1997
 \*******************************************************************************/
 #include <stdio.h>
 #include <io.h>
@@ -17,8 +17,8 @@
 #include "..\..\3Dlib\Image.h"
 
 
-#define NUM_ALPHAS	7		// This doesn't count the default fully transparent chroma color in slot 0
-#define NUM_COLORS	(255/NUM_ALPHAS)
+#define NUM_ALPHAS 7 // This doesn't count the default fully transparent chroma color in slot 0
+#define NUM_COLORS (255/NUM_ALPHAS)
 
 
 
@@ -26,26 +26,26 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
 
 void main(int argc, char* argv[])
 {
-    char	inName[MAX_PATH];
-    char	alphaName[MAX_PATH];
-    char	outName[MAX_PATH];
+    char inName[MAX_PATH];
+    char alphaName[MAX_PATH];
+    char outName[MAX_PATH];
 
-    DWORD	*inPalette;
-    DWORD	*alphaPalette;
-    DWORD	*outPalette;
+    DWORD *inPalette;
+    DWORD *alphaPalette;
+    DWORD *outPalette;
 
-    BYTE	*inImage;
-    BYTE	*alphaImage;
-    BYTE	*outImage;
+    BYTE *inImage;
+    BYTE *alphaImage;
+    BYTE *outImage;
 
-    int		a;
-    int		i;
+    int a;
+    int i;
 
-    int		outFile;
-    int		result;
-    WORD	width;
-    WORD	height;
-    DWORD	magic = 0x030870;
+    int outFile;
+    int result;
+    WORD width;
+    WORD height;
+    DWORD magic = 0x030870;
 
 
     // If we didn't get the right number of arguments, print a usage message
@@ -66,7 +66,7 @@ void main(int argc, char* argv[])
     // Open and read the input alpha image (if we have one)
     if (argc == 3)
     {
-        WORD	w, h;
+        WORD w, h;
         GetFullPathName(argv[2], sizeof(alphaName), alphaName, NULL);
         ReadImage(alphaName, &alphaImage, &alphaPalette, &w, &h);
 
@@ -116,7 +116,7 @@ void main(int argc, char* argv[])
     }
     else
     {
-        DWORD	alpha[NUM_ALPHAS];
+        DWORD alpha[NUM_ALPHAS];
 
         // Get the non-zero alpha values
         for (a = 0; a < NUM_ALPHAS; a++)
@@ -197,8 +197,8 @@ void main(int argc, char* argv[])
 
 void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height)
 {
-    CImageFileMemory 	texFile;
-    DWORD				result;
+    CImageFileMemory  texFile;
+    DWORD result;
 
     *image = NULL;
     *palette = NULL;
@@ -212,7 +212,7 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
 
     if (result != 1)
     {
-        char	message[256];
+        char message[256];
         sprintf(message, "Failed to open %s", filename);
         ShiError(message);
     }

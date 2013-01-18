@@ -2,7 +2,7 @@
     PlayerRWR.h
 
     This provides the special abilities required for a player's RWR.  Most
-	of the added functionality involves Display and Mode control.
+ of the added functionality involves Display and Mode control.
 \***************************************************************************/
 #ifndef _PLAYERRWR_H_
 #define _PLAYERRWR_H_
@@ -76,31 +76,31 @@ public :
 
     virtual void TogglePriority(void)
     {
-        priorityMode	= !priorityMode;
+        priorityMode = !priorityMode;
     };
     virtual void ToggleTargetSep(void);
     virtual void ToggleUnknowns(void)
     {
-        showUnknowns	= !showUnknowns;
+        showUnknowns = !showUnknowns;
     };
     virtual void ToggleNaval(void)
     {
-        showNaval		= !showNaval;
+        showNaval = !showNaval;
     };
     virtual void ToggleSearch(void)
     {
-        showSearch		= !showSearch;
+        showSearch = !showSearch;
     };
     virtual void SelectNextEmitter(void);
     virtual void ToggleLowAltPriority(void)
     {
-        lowAltPriority	= !lowAltPriority;
+        lowAltPriority = !lowAltPriority;
     };
-    virtual void ToggleAutoDrop(void)			{};
+    virtual void ToggleAutoDrop(void) {};
 
 protected:
-    int	flipFactor;		// -1 when AC is upside down, 1 when normal
-    int	mGridVisible;
+    int flipFactor; // -1 when AC is upside down, 1 when normal
+    int mGridVisible;
 
     // Button States
     int priorityMode;
@@ -112,7 +112,7 @@ protected:
     int newGuy;
 
     // Select low or high altitude priority
-    virtual void	AutoSelectAltitudePriority(void);
+    virtual void AutoSelectAltitudePriority(void);
 
     // Output Functions
     void DrawStatusSymbol(int);

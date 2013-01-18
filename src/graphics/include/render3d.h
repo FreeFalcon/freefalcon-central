@@ -4,7 +4,7 @@
     January 2, 1996
 
     This class provides 3D drawing functions specific to rendering out the
-	window views including terrain.
+ window views including terrain.
 \***************************************************************************/
 #ifndef _RENDER3D_H_
 #define _RENDER3D_H_
@@ -14,37 +14,37 @@
 
 
 // Possible values for CullFlag in DrawSquare call
-#define CULL_ALLOW_ALL	0
-#define CULL_ALLOW_CW	1
-#define CULL_ALLOW_CCW	2
+#define CULL_ALLOW_ALL 0
+#define CULL_ALLOW_CW 1
+#define CULL_ALLOW_CCW 2
 
-static const float	NEAR_CLIP = 1.0f;
-//static const float Q_SCALE = 0.001f;	// Use to keep Q in 16.16 range for MPR
+static const float NEAR_CLIP = 1.0f;
+//static const float Q_SCALE = 0.001f; // Use to keep Q in 16.16 range for MPR
 // COBRA - DX - fits more this value
-static const float Q_SCALE = 0.0008f;	// Use to keep Q in 16.16 range for MPR
+static const float Q_SCALE = 0.0008f; // Use to keep Q in 16.16 range for MPR
 
 
 typedef struct ThreeDVertex: public TwoDVertex
 {
     /* TwoDVertex provides:
-    	float	x, y;
-    	float	r, g, b, a;
-    	float	u, v, q;
-    	DWORD	clipFlag;
+     float x, y;
+     float r, g, b, a;
+     float u, v, q;
+     DWORD clipFlag;
 
        Then I add:
     */
-    float	csX, csY, csZ;		// Camera space coordinates
+    float csX, csY, csZ; // Camera space coordinates
 } ThreeDVertex;
 
 
 class Render3D : public Render2D
 {
 public:
-    Render3D()	{};
-    virtual ~Render3D()	{};
+    Render3D() {};
+    virtual ~Render3D() {};
 
-    Trotation	Tbb;				// Transformation matrix for billboards
+    Trotation Tbb; // Transformation matrix for billboards
 
     // Setup and Cleanup need to have additions here, but still call the parent versions
     virtual void Setup(ImageBuffer *imageBuffer);
@@ -101,24 +101,24 @@ public:
     };
 
     // Get the location and orientation of the camera for this renderer
-    float	X(void)
+    float X(void)
     {
         return cameraPos.x;
     };
-    float	Y(void)
+    float Y(void)
     {
         return cameraPos.y;
     };
-    float	Z(void)
+    float Z(void)
     {
         return cameraPos.z;
     };
 
-    float	Yaw(void)
+    float Yaw(void)
     {
         return yaw;
     };
-    float	Pitch(void)
+    float Pitch(void)
     {
         return pitch;
     };
@@ -127,29 +127,29 @@ public:
         return roll;
     };
 
-    void	GetAt(Tpoint *v)
+    void GetAt(Tpoint *v)
     {
         v->x = cameraRot.M11, v->y = cameraRot.M12, v->z = cameraRot.M13;
     };
-    void	GetLeft(Tpoint *v)
+    void GetLeft(Tpoint *v)
     {
         v->x = cameraRot.M21, v->y = cameraRot.M22, v->z = cameraRot.M23;
     };
-    void	GetUp(Tpoint *v)
+    void GetUp(Tpoint *v)
     {
         v->x = cameraRot.M31, v->y = cameraRot.M32, v->z = cameraRot.M33;
     };
 
 
     // Transform the given worldspace point into pixel coordinates using the current camera
-    void	TransformPoint(Tpoint* world, ThreeDVertex* pixel);
-    void	TransformPointToView(Tpoint* world, Tpoint *result);
-    void	TransformPointToViewSwapped(Tpoint *world, Tpoint *result); //JAM 03Dec03
-    void	TransformBillboardPoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
-    void	TransformTreePoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
-    void	UnTransformPoint(Tpoint* pixel, Tpoint* vector);
-    void	TransformCameraCentricPoint(Tpoint* world, ThreeDVertex* pixel);
-    float	ZDistanceFromCamera(Tpoint* p);
+    void TransformPoint(Tpoint* world, ThreeDVertex* pixel);
+    void TransformPointToView(Tpoint* world, Tpoint *result);
+    void TransformPointToViewSwapped(Tpoint *world, Tpoint *result); //JAM 03Dec03
+    void TransformBillboardPoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
+    void TransformTreePoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
+    void UnTransformPoint(Tpoint* pixel, Tpoint* vector);
+    void TransformCameraCentricPoint(Tpoint* world, ThreeDVertex* pixel);
+    float ZDistanceFromCamera(Tpoint* p);
 
 
     // Draw flat shaded geometric primitives in world space using the current camera parameters
@@ -162,15 +162,15 @@ public:
     //JAM 14Sep03
     void DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture = false, bool terrain = false);
     void DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture = false, bool terrain = false);
-    /*	void DrawSquare( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture = false );
-    	void DrawTriangle( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture = false);*/
+    /* void DrawSquare( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture = false );
+     void DrawTriangle( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture = false);*/
     //JAM
 
 protected:
     // Draw a fan which is known to require clipping
     //JAM 14Sep03
     void ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false, bool terrain = false, bool sort = false);
-    //	void ClipAndDraw3DFan( ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false );
+    // void ClipAndDraw3DFan( ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false );
     //JAM
 
 private:
@@ -181,34 +181,34 @@ private:
     void IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
 
 protected:
-    float	far_clip;
-    float	detailScaler;
-    float	resRelativeScaler;
-    BOOL	objTextureState;
+    float far_clip;
+    float detailScaler;
+    float resRelativeScaler;
+    BOOL objTextureState;
 
-    float	horizontal_half_angle;
-    float	vertical_half_angle;
-    float	diagonal_half_angle;
+    float horizontal_half_angle;
+    float vertical_half_angle;
+    float diagonal_half_angle;
 
-    float	oneOVERtanHFOV;
-    float	oneOVERtanVFOV;
+    float oneOVERtanHFOV;
+    float oneOVERtanVFOV;
 
-    float	yaw;
-    float	pitch;
-    float	roll;
+    float yaw;
+    float pitch;
+    float roll;
 
-    Tpoint		cameraPos;			// Camera position in world space
-    Trotation	cameraRot;			// Camera orientation matrix
+    Tpoint cameraPos; // Camera position in world space
+    Trotation cameraRot; // Camera orientation matrix
 
-    float		lightAmbient;
-    float		lightDiffuse;
-    float		lightSpecular;
-    Tpoint		lightVector;
+    float lightAmbient;
+    float lightDiffuse;
+    float lightSpecular;
+    Tpoint lightVector;
 
-    Tpoint		move;				// Camera space translation required to position visible objects
-    Trotation	T;					// Transformation matrix including aspect ratio and FOV effects
-    //Trotation	Tbb;				// Transformation matrix for billboards
-    Trotation	Tt;					// Transformation matrix for trees
+    Tpoint move; // Camera space translation required to position visible objects
+    Trotation T; // Transformation matrix including aspect ratio and FOV effects
+    //Trotation Tbb; // Transformation matrix for billboards
+    Trotation Tt; // Transformation matrix for trees
 };
 
 
@@ -220,9 +220,9 @@ inline DWORD GetRangeClipFlags(float z, float)
         return CLIP_NEAR;
     }
 
-    //	if ( z > far_clip ) {
-    //		return CLIP_FAR;
-    //	}
+    // if ( z > far_clip ) {
+    // return CLIP_FAR;
+    // }
     return ON_SCREEN;
 }
 

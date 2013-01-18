@@ -33,27 +33,27 @@ extern "C" {
 
     extern int MonoPrint(char *, ...);
 
-#define RUDPF_RESET	0x80
-#define RUDPF_OOB	0x40
-#define RUDPF_SEQ	0x20
-#define RUDPF_LAST	0x10
-#define RUDPF_LOOB	0x08
-#define RUDPF_MSG	0x04
+#define RUDPF_RESET 0x80
+#define RUDPF_OOB 0x40
+#define RUDPF_SEQ 0x20
+#define RUDPF_LAST 0x10
+#define RUDPF_LOOB 0x08
+#define RUDPF_MSG 0x04
 
-#define RUDP_RESEND_TIME		1500					// Time to wait for ack before resending
-#define RUDP_OOB_RESEND_TIME	 750					// Time to wait for ack before resending an OOB message
-#define RUDP_ACK_WAIT_TIME		 500					// Time to wait before acking
-#define RUDP_OOB_ACK_WAIT_TIME	  50					// Time to wait before acking
-#define RUDP_PING_TIME			2500					// Time to wait before pinging again
+#define RUDP_RESEND_TIME 1500 // Time to wait for ack before resending
+#define RUDP_OOB_RESEND_TIME  750 // Time to wait for ack before resending an OOB message
+#define RUDP_ACK_WAIT_TIME  500 // Time to wait before acking
+#define RUDP_OOB_ACK_WAIT_TIME   50 // Time to wait before acking
+#define RUDP_PING_TIME 2500 // Time to wait before pinging again
 
-#define RUDP_RESET_REQ	0
-#define RUDP_RESET_ACK	1
-#define RUDP_RESET_OK	2
-#define RUDP_PING		3
-#define RUDP_PONG		4
-#define RUDP_WORKING	5
-#define RUDP_EXIT		6
-#define RUDP_DROP		7
+#define RUDP_RESET_REQ 0
+#define RUDP_RESET_ACK 1
+#define RUDP_RESET_OK 2
+#define RUDP_PING 3
+#define RUDP_PONG 4
+#define RUDP_WORKING 5
+#define RUDP_EXIT 6
+#define RUDP_DROP 7
 
     /* List head for connection list */
     //extern CAPIList *GlobalListHead;
@@ -171,35 +171,35 @@ extern "C" {
         c->send_buffer.buf = (char *)malloc(c->buffer_size);
         c->rudp_data.real_send_buffer = (char *)malloc(c->buffer_size);
 
-        c->rudp_data.sequence_number = 0;		/* sequence number for sending */
-        c->rudp_data.oob_sequence_number = 0;		/* sequence number for sending */
-        c->rudp_data.message_number = 0;		/* message number for sending */
-        c->rudp_data.sending = 0;				/* list of sent packets */
-        c->rudp_data.oob_sending = 0;				/* list of sent packets */
-        c->rudp_data.last_sent = 0;				/* list of sent packets */
-        c->rudp_data.oob_last_sent = 0;				/* list of sent packets */
+        c->rudp_data.sequence_number = 0; /* sequence number for sending */
+        c->rudp_data.oob_sequence_number = 0; /* sequence number for sending */
+        c->rudp_data.message_number = 0; /* message number for sending */
+        c->rudp_data.sending = 0; /* list of sent packets */
+        c->rudp_data.oob_sending = 0; /* list of sent packets */
+        c->rudp_data.last_sent = 0; /* list of sent packets */
+        c->rudp_data.oob_last_sent = 0; /* list of sent packets */
 
-        c->rudp_data.reset_send = 0;			/* What reset stage are we in */
+        c->rudp_data.reset_send = 0; /* What reset stage are we in */
 
         c->rudp_data.send_ack = 0;
         c->rudp_data.send_oob_ack = 0;
-        c->rudp_data.last_sequence = 0;			/* other's last seen sequence number */
-        c->rudp_data.last_oob_sequence = 0;			/* other's last seen sequence number */
-        c->rudp_data.last_received = 0;			/* my last received sequential sequence number for ack.*/
-        c->rudp_data.last_oob_received = 0;			/* my last received sequential sequence number for ack.*/
-        c->rudp_data.last_sent_received = 0;	/* the last last_received that I acknowledged */
-        c->rudp_data.last_oob_sent_received = 0;	/* the last last_received that I acknowledged */
+        c->rudp_data.last_sequence = 0; /* other's last seen sequence number */
+        c->rudp_data.last_oob_sequence = 0; /* other's last seen sequence number */
+        c->rudp_data.last_received = 0; /* my last received sequential sequence number for ack.*/
+        c->rudp_data.last_oob_received = 0; /* my last received sequential sequence number for ack.*/
+        c->rudp_data.last_sent_received = 0; /* the last last_received that I acknowledged */
+        c->rudp_data.last_oob_sent_received = 0; /* the last last_received that I acknowledged */
 
-        c->rudp_data.last_dispatched = 0;		/* the last dispatched message */
-        c->rudp_data.last_oob_dispatched = 0;		/* the last dispatched message */
+        c->rudp_data.last_dispatched = 0; /* the last dispatched message */
+        c->rudp_data.last_oob_dispatched = 0; /* the last dispatched message */
 
-        c->rudp_data.receiving = 0;				/* list of received packets */
-        c->rudp_data.oob_receiving = 0;				/* list of received packets */
+        c->rudp_data.receiving = 0; /* list of received packets */
+        c->rudp_data.oob_receiving = 0; /* list of received packets */
 
-        c->rudp_data.sent_received = 0;			/* what the last received I sent */
-        c->rudp_data.sent_oob_received = 0;			/* what the last received I sent */
-        c->rudp_data.last_send_time = 0;		/* last time we checked for ack */
-        c->rudp_data.last_oob_send_time = 0;		/* last time we checked for ack */
+        c->rudp_data.sent_received = 0; /* what the last received I sent */
+        c->rudp_data.sent_oob_received = 0; /* what the last received I sent */
+        c->rudp_data.last_send_time = 0; /* last time we checked for ack */
+        c->rudp_data.last_oob_send_time = 0; /* last time we checked for ack */
 
         c->rudp_data.last_ping_send_time = 0;
         c->rudp_data.last_ping_recv_time = GetTickCount();
@@ -250,7 +250,7 @@ extern "C" {
     {
         ComIP *c;
         unsigned long trueValue = 1;
-        int	err, size;
+        int err, size;
         //CAPIList *listitem, *curr = 0;
         ComIP *comRUDP;
         WSADATA wsaData;
@@ -389,35 +389,35 @@ extern "C" {
         c->sendAddress.sin_addr.s_addr  = CAPI_htonl(IPaddress);
         c->sendAddress.sin_port         = CAPI_htons(remotePort);
 
-        c->rudp_data.sequence_number = 0;		/* sequence number for sending */
-        c->rudp_data.oob_sequence_number = 0;		/* sequence number for sending */
-        c->rudp_data.message_number = 0;		/* message number for sending */
-        c->rudp_data.sending = 0;				/* list of sent packets */
-        c->rudp_data.oob_sending = 0;				/* list of sent packets */
-        c->rudp_data.last_sent = 0;				/* list of sent packets */
-        c->rudp_data.oob_last_sent = 0;				/* list of sent packets */
+        c->rudp_data.sequence_number = 0; /* sequence number for sending */
+        c->rudp_data.oob_sequence_number = 0; /* sequence number for sending */
+        c->rudp_data.message_number = 0; /* message number for sending */
+        c->rudp_data.sending = 0; /* list of sent packets */
+        c->rudp_data.oob_sending = 0; /* list of sent packets */
+        c->rudp_data.last_sent = 0; /* list of sent packets */
+        c->rudp_data.oob_last_sent = 0; /* list of sent packets */
 
-        c->rudp_data.reset_send = 0;			/* I need to get a S0 or I send a reset */
+        c->rudp_data.reset_send = 0; /* I need to get a S0 or I send a reset */
 
         c->rudp_data.send_ack = 0;
         c->rudp_data.send_oob_ack = 0;
-        c->rudp_data.last_sequence = 0;			/* other's last seen sequence number */
-        c->rudp_data.last_oob_sequence = 0;			/* other's last seen sequence number */
-        c->rudp_data.last_received = 0;			/* my last received sequential sequence number for ack.*/
-        c->rudp_data.last_oob_received = 0;			/* my last received sequential sequence number for ack.*/
-        c->rudp_data.last_sent_received = 0;	/* the last last_received that I acknowledged */
-        c->rudp_data.last_oob_sent_received = 0;	/* the last last_received that I acknowledged */
+        c->rudp_data.last_sequence = 0; /* other's last seen sequence number */
+        c->rudp_data.last_oob_sequence = 0; /* other's last seen sequence number */
+        c->rudp_data.last_received = 0; /* my last received sequential sequence number for ack.*/
+        c->rudp_data.last_oob_received = 0; /* my last received sequential sequence number for ack.*/
+        c->rudp_data.last_sent_received = 0; /* the last last_received that I acknowledged */
+        c->rudp_data.last_oob_sent_received = 0; /* the last last_received that I acknowledged */
 
-        c->rudp_data.last_dispatched = 0;		/* the last dispatched message */
-        c->rudp_data.last_oob_dispatched = 0;		/* the last dispatched message */
+        c->rudp_data.last_dispatched = 0; /* the last dispatched message */
+        c->rudp_data.last_oob_dispatched = 0; /* the last dispatched message */
 
-        c->rudp_data.receiving = 0;				/* list of received packets */
-        c->rudp_data.oob_receiving = 0;				/* list of received packets */
+        c->rudp_data.receiving = 0; /* list of received packets */
+        c->rudp_data.oob_receiving = 0; /* list of received packets */
 
-        c->rudp_data.sent_received = 0;			/* what the last received I sent */
-        c->rudp_data.sent_oob_received = 0;			/* what the last received I sent */
-        c->rudp_data.last_send_time = 0;		/* last time we checked for ack */
-        c->rudp_data.last_oob_send_time = 0;		/* last time we checked for ack */
+        c->rudp_data.sent_received = 0; /* what the last received I sent */
+        c->rudp_data.sent_oob_received = 0; /* what the last received I sent */
+        c->rudp_data.last_send_time = 0; /* last time we checked for ack */
+        c->rudp_data.last_oob_send_time = 0; /* last time we checked for ack */
 
         c->rudp_data.last_ping_send_time = 0;
         c->rudp_data.last_ping_recv_time = GetTickCount();
@@ -546,35 +546,35 @@ extern "C" {
                 size += sizeof(short);
             }
 
-            //		cp = cudp->rudp_data.receiving;
-            //		count = 0;
+            // cp = cudp->rudp_data.receiving;
+            // count = 0;
             //
-            //		while (cp)
-            //		{
-            //			if ((!cp->acknowledged) && ((cudp->rudp_data.last_received - cp->sequence_number + 1) & 0x8000))
-            //			{
-            //				cudp->rudp_data.send_ack = FALSE;
+            // while (cp)
+            // {
+            // if ((!cp->acknowledged) && ((cudp->rudp_data.last_received - cp->sequence_number + 1) & 0x8000))
+            // {
+            // cudp->rudp_data.send_ack = FALSE;
             //
-            //				count ++;
-            //				cp->acknowledged = TRUE;
-            //				// *flags |= RUDPF_ACK;
-            //				*(unsigned short*)ptr = cp->sequence_number;
-            //				ptr += sizeof (short);
-            //				size += sizeof (short);
-            //			}
+            // count ++;
+            // cp->acknowledged = TRUE;
+            // // *flags |= RUDPF_ACK;
+            // *(unsigned short*)ptr = cp->sequence_number;
+            // ptr += sizeof (short);
+            // size += sizeof (short);
+            // }
             //
-            //			if (count >= 7)
-            ///			{
-            //				break;
-            //			}
+            // if (count >= 7)
+            /// {
+            // break;
+            // }
             //
-            //			cp = cp->next;
-            //		}
+            // cp = cp->next;
+            // }
             //
-            //		if (count)
-            //		{
-            //			*flags |= (count);
-            //		}
+            // if (count)
+            // {
+            // *flags |= (count);
+            // }
 
             // If we're sending a packet, we have a sequence number & data
             if (rp)
@@ -613,7 +613,7 @@ extern "C" {
                 size += rp->size;
                 assert(size < cudp->buffer_size);
 
-                //			MonoPrint ("Send RUDP Packet %08x %08x\n", cudp->address.sin_addr.s_addr, size);
+                // MonoPrint ("Send RUDP Packet %08x %08x\n", cudp->address.sin_addr.s_addr, size);
             }
         }
 
@@ -693,11 +693,11 @@ extern "C" {
                     {
                         // if (rp)
                         // {
-                        //	MonoPrint ("WouldBlock %d %d %d\n", size, get_bandwidth_available (), rp->sequence_number);
+                        // MonoPrint ("WouldBlock %d %d %d\n", size, get_bandwidth_available (), rp->sequence_number);
                         // }
                         // else
                         // {
-                        // 	MonoPrint ("WouldBlock %d %d\n", size, get_bandwidth_available ());
+                        //  MonoPrint ("WouldBlock %d %d\n", size, get_bandwidth_available ());
                         // }
                         cut_bandwidth();
                         cudp->sendwouldblockcount++;
@@ -923,7 +923,7 @@ extern "C" {
                         // TODO maybe we have to reserve its now
                         //else
                         //{
-                        //	rudp_bandwidth (lp->size * 2);
+                        // rudp_bandwidth (lp->size * 2);
                         //}
                         return 0;
                     }
@@ -950,7 +950,7 @@ extern "C" {
                         // maybe we need to reserve rudp bw
                         //else
                         //{
-                        //	rudp_bandwidth (lp->size * 2);
+                        // rudp_bandwidth (lp->size * 2);
                         //}
 
                         return 0;
@@ -980,10 +980,10 @@ extern "C" {
     static int add_to_receive_queue(ComIP *cudp, unsigned char *ptr, int size)
     {
         int count;
-        //		bytesRecvd=-1;
+        // bytesRecvd=-1;
 
-        //	unsigned short
-        //		ack;
+        // unsigned short
+        // ack;
 
         unsigned char flags;
 
@@ -998,7 +998,7 @@ extern "C" {
 
         if (flags & RUDPF_RESET)
         {
-            //		MonoPrint ("Recv %d\n", flags & RUDPF_MASK);
+            // MonoPrint ("Recv %d\n", flags & RUDPF_MASK);
 
             switch (flags & 0x0f)
             {
@@ -1086,10 +1086,10 @@ extern "C" {
             count += 2;
         }
 
-        //	if (flags & RUDPF_MASK)
-        //	{
-        //		count += 2 * (flags & RUDPF_MASK);
-        //	}
+        // if (flags & RUDPF_MASK)
+        // {
+        // count += 2 * (flags & RUDPF_MASK);
+        // }
         // 2003-09-27 Fix by Will Mulvihill - RUDPF_SEQ is a 2 byte message - see above line 694 - size = short = 2...
         if (flags & RUDPF_SEQ)
         {
@@ -1122,33 +1122,33 @@ extern "C" {
             size -= sizeof(short);
         }
 
-        //	if (flags & RUDPF_MASK)
-        //	{
-        //		count = flags & RUDPF_MASK;
+        // if (flags & RUDPF_MASK)
+        // {
+        // count = flags & RUDPF_MASK;
         //
-        //		while (count)
-        //		{
-        //			ack = *(short *) ptr;
+        // while (count)
+        // {
+        // ack = *(short *) ptr;
         //
-        //			cp = cudp->rudp_data.sending;
+        // cp = cudp->rudp_data.sending;
         //
-        //			while (cp)
-        //			{
-        //				if (cp->sequence_number == ack)
-        //				{
-        //					cp->acknowledged = TRUE;
-        //					break;
-        //				}
+        // while (cp)
+        // {
+        // if (cp->sequence_number == ack)
+        // {
+        // cp->acknowledged = TRUE;
+        // break;
+        // }
         //
-        //				cp = cp->next;
-        //			}
+        // cp = cp->next;
+        // }
         //
-        //			ptr += sizeof (short);
-        //			size -= sizeof (short);
+        // ptr += sizeof (short);
+        // size -= sizeof (short);
         //
-        //			count --;
-        //		}
-        //	}
+        // count --;
+        // }
+        // }
 
         // Trim off the sequence number
         if (flags & RUDPF_SEQ)
@@ -1360,7 +1360,7 @@ extern "C" {
 
         ComIP *curr;
         //CAPIList
-        //	*curr;
+        // *curr;
 
         // Loop until we're out of stuff to read
         while (bytesRecvd)
@@ -1431,8 +1431,8 @@ extern "C" {
 
             /*// sfr: added port info
             if (
-            	(((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
-            	((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort())
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
+             ((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort())
             ){*/
             id = ((ComAPIHeader *)cudp->recv_buffer.buf)->id;
 
@@ -1512,9 +1512,9 @@ extern "C" {
             now;
 
             Reliable_Packet
-            *lp,	// last packet
-            *cp,	// current packet
-            *np;	// next packet
+            *lp, // last packet
+            *cp, // current packet
+            *np; // next packet
 
             cudp = (ComIP *)c;
 
@@ -1605,7 +1605,7 @@ extern "C" {
                                     msg_size += np->size;
                                     needed--;
 
-                                    //								MonoPrint ("Dispatching %d\n", np->sequence_number);
+                                    // MonoPrint ("Dispatching %d\n", np->sequence_number);
 
                                     cudp->rudp_data.last_dispatched = np->sequence_number;
                                 }
@@ -1703,7 +1703,7 @@ extern "C" {
                                     msg_size += np->size;
                                     needed--;
 
-                                    //								MonoPrint ("Dispatching OOB %d\n", np->sequence_number);
+                                    // MonoPrint ("Dispatching OOB %d\n", np->sequence_number);
 
                                     cudp->rudp_data.last_oob_dispatched = np->sequence_number;
                                 }
@@ -2024,7 +2024,7 @@ extern "C" {
                 case COMAPI_BYTES_PENDING:
                 {
                     Reliable_Packet
-                    *rp;	// reliable packet
+                    *rp; // reliable packet
 
                     int
                     now,
@@ -2111,13 +2111,13 @@ extern "C" {
         int sockerror;
         CAPIList *curr = 0;
 
-        //	MonoPrint ("Closing RUDP\n");
+        // MonoPrint ("Closing RUDP\n");
 
         if (c)
         {
             ComIP *cudp = (ComIP *)c;
-            //		int trueValue = 1;
-            //		int falseValue = 0;
+            // int trueValue = 1;
+            // int falseValue = 0;
 
             if ((cudp->rudp_data.sequence_number) || (cudp->rudp_data.oob_sequence_number))
             {

@@ -9,52 +9,52 @@
 #include "grTypes.h"
 #endif
 
-#define	NEW(type)				((type *) malloc(sizeof (type)))
-#define	NEWARRAY(type,num)		((type *) malloc(sizeof (type) * num))
-#define FREE(mem)				(free ((void *) mem))
+#define NEW(type) ((type *) malloc(sizeof (type)))
+#define NEWARRAY(type,num) ((type *) malloc(sizeof (type) * num))
+#define FREE(mem) (free ((void *) mem))
 
 #ifndef MAXSTRING
-#define	MAXSTRING	300
+#define MAXSTRING 300
 #endif
 
 #ifndef PI
 #define PI 3.14159265358979323846f
 #endif
 
-#define degtorad(d)		((d)*PI/180.0f)
-#define degtohour(d)	((d)*24.0f/360.0f)
+#define degtorad(d) ((d)*PI/180.0f)
+#define degtohour(d) ((d)*24.0f/360.0f)
 
-#define hourtorad(h)	((h)*PI/12.0f)
-#define hourtodeg(h)	((h)*360.0f/24.0f)
+#define hourtorad(h) ((h)*PI/12.0f)
+#define hourtodeg(h) ((h)*360.0f/24.0f)
 
-#define radtodeg(r)		((r)*180.0f/PI)
-#define radtohour(r)	((r)*12.0f/PI)
+#define radtodeg(r) ((r)*180.0f/PI)
+#define radtohour(r) ((r)*12.0f/PI)
 
-#define radtoangle(r)	((r)*8192.0f/PI)
-#define angletorad(r)	((r)*PI/8192.0f)
+#define radtoangle(r) ((r)*8192.0f/PI)
+#define angletorad(r) ((r)*PI/8192.0f)
 
-#define	STAR_BEHIND_SUN		1
-#define	STAR_BEHIND_MOON	2
+#define STAR_BEHIND_SUN 1
+#define STAR_BEHIND_MOON 2
 
 struct StarRecord
 {
-    float	ra, dec;
-    int		color;
+    float ra, dec;
+    int color;
 };
 
 struct StarCoord
 {
-    float	x, y, z;
-    int		color;
-    float	az, alt;
-    int		flag;
+    float x, y, z;
+    int color;
+    float az, alt;
+    int flag;
 };
 
 struct StarData
 {
-    int			totalstar, totalcoord;
-    StarRecord	*star;
-    StarCoord	*coord;
+    int totalstar, totalcoord;
+    StarRecord *star;
+    StarCoord *coord;
 };
 
 class CStar
@@ -68,14 +68,14 @@ protected:
     static int Year, Month, Day, ExtraDay;
     static int mustSetLocalSiderialTime, mustSetdeltaJulian;
     static int DaysInMonth[12];
-    static StarData	*CurrentStarData;
+    static StarData *CurrentStarData;
     static float SunAz, SunAlt, MoonAz, MoonAlt;
     static float Horizon, HorizonRange, IntensityRange;
-    static int	minStarIntensity;
+    static int minStarIntensity;
 
     static void CalculateDeltaJulian();
     static void CalculateLocalSiderialTime();
-    static int	CalculateStarCoord(float ra, float dec, StarCoord *star);
+    static int CalculateStarCoord(float ra, float dec, StarCoord *star);
     static float Julian(int year, int month, float day);
     static float FixAngle(float N);
     static float Kepler(float m, float ecc);
@@ -131,7 +131,7 @@ public:
 
     static void GetSunRaDec(float *ra, float *dec);
     static void GetMoonRaDec(float *ra, float *dec);
-    static void	ConvertCoord(float ra, float dec, float *x, float *y, float *z);
+    static void ConvertCoord(float ra, float dec, float *x, float *y, float *z);
     static void ConvertPosition(float ra, float dec, float *az, float *alt);
 
     static void CalculateSunPosition(float *az, float *alt);

@@ -43,10 +43,10 @@ FalconDeathMessage::~FalconDeathMessage(void)
 
 int FalconDeathMessage::Process(uchar autodisp)
 {
-    SimBaseClass*	target = (SimBaseClass*) vuDatabase->Find(dataBlock.dEntityID);
-    SimBaseClass*	shooter = (SimBaseClass*) vuDatabase->Find(dataBlock.fEntityID);
-    CampEntity		campTarget = (CampEntity) GetEntityByCampID(dataBlock.dCampID);
-    CampEntity		campShooter = (CampEntity) GetEntityByCampID(dataBlock.fCampID);
+    SimBaseClass* target = (SimBaseClass*) vuDatabase->Find(dataBlock.dEntityID);
+    SimBaseClass* shooter = (SimBaseClass*) vuDatabase->Find(dataBlock.fEntityID);
+    CampEntity campTarget = (CampEntity) GetEntityByCampID(dataBlock.dCampID);
+    CampEntity campShooter = (CampEntity) GetEntityByCampID(dataBlock.fCampID);
 
     if (autodisp)
         return 0;
@@ -102,10 +102,10 @@ int FalconDeathMessage::Process(uchar autodisp)
                 radioMessage->dataBlock.message = rcAIRBDA;
                 //M.N. changed to 32767 which flexibly uses randomized values of available eval indexes
                 radioMessage->dataBlock.edata[2] = 32767;
-                /*				if(rand()%2)
-                					radioMessage->dataBlock.edata[2] = 1;
-                				else
-                					radioMessage->dataBlock.edata[2] = 9;*/
+                /* if(rand()%2)
+                 radioMessage->dataBlock.edata[2] = 1;
+                 else
+                 radioMessage->dataBlock.edata[2] = 9;*/
             }
             else if (target->IsUnit())
             {
@@ -134,8 +134,8 @@ int FalconDeathMessage::Process(uchar autodisp)
 // Anytime something is killed, we need to credit the kill to the appropriate sources.
 void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseClass *campShooter, SimBaseClass *simTarget, CampBaseClass *campTarget)
 {
-    int			kill_type = -1, tid, ps = PILOT_KIA;
-    Squadron	sq;
+    int kill_type = -1, tid, ps = PILOT_KIA;
+    Squadron sq;
 
     if (!campShooter || !campTarget)
         return;
@@ -156,7 +156,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     // Credit kill if shooter was a flight && target was not on our team (not nessisarily ok for RoE)
     if (campShooter->IsFlight() && campShooter->GetTeam() != campTarget->GetTeam())
     {
-        int			pilot, squadron_pilot;
+        int pilot, squadron_pilot;
 
         // Find the pilot who did the killing (or pick one)
         sq = (Squadron)((Flight)campShooter)->GetUnitSquadron();
@@ -172,7 +172,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         if (pilot < PILOTS_PER_FLIGHT)
             squadron_pilot = ((Flight)campShooter)->pilots[pilot];
         else
-            squadron_pilot = 255;		// Player kill, probably
+            squadron_pilot = 255; // Player kill, probably
 
         // Update squadron records
         if (sq && squadron_pilot >= 0 && squadron_pilot < PILOTS_PER_SQUADRON && kill_type > -1)
@@ -182,9 +182,9 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     // Determine pilot status and chalk up a loss
     if (campTarget->IsFlight())
     {
-        GridIndex	x, y;
-        PilotClass	*pc;
-        int			pilot, squadron_pilot;
+        GridIndex x, y;
+        PilotClass *pc;
+        int pilot, squadron_pilot;
 
         sq = (Squadron)((Flight)campTarget)->GetUnitSquadron();
 
@@ -199,7 +199,7 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         if (pilot < PILOTS_PER_FLIGHT)
             squadron_pilot = ((Flight)campTarget)->pilots[pilot];
         else
-            squadron_pilot = 255;		// Player kill, probably
+            squadron_pilot = 255; // Player kill, probably
 
         if (sq && squadron_pilot >= 0 && squadron_pilot < PILOTS_PER_SQUADRON)
         {

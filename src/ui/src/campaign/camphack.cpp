@@ -65,8 +65,8 @@ void CampHackButton4CB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    _TCHAR	buffer[80];
-    int		i = 0, done = 0;
+    _TCHAR buffer[80];
+    int i = 0, done = 0;
 
     GetBriefingData(GBD_PLAYER_ELEMENT, 0, buffer, 80);
     GetBriefingData(GBD_PLAYER_TASK, 0, buffer, 80);
@@ -98,7 +98,7 @@ void CampHackButton5CB(long, short hittype, C_Base *)
     // discarded mission
     if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
     {
-        //		TheCampaign.MissionEvaluator->PostMissionEval();
+        // TheCampaign.MissionEvaluator->PostMissionEval();
         BuildCampDebrief(win);
         gMainHandler->EnableWindowGroup(win->GetGroup());
     }

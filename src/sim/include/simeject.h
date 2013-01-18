@@ -7,53 +7,53 @@
 // Forward references.
 class AircraftClass;
 class FalconDeathMessage;
-//	3d vector for motion stuff.
-#define EP_VECTOR		Vector_3D<SIM_FLOAT>
+// 3d vector for motion stuff.
+#define EP_VECTOR Vector_3D<SIM_FLOAT>
 // indices for 3d vector.
-#define I_X				0
-#define I_ROLL			0
-#define I_Y				1
-#define I_PITCH		1
-#define I_Z				2
-#define I_YAW			2
+#define I_X 0
+#define I_ROLL 0
+#define I_Y 1
+#define I_PITCH 1
+#define I_Z 2
+#define I_YAW 2
 
-//	Ejection sequence physical data.
+// Ejection sequence physical data.
 // Time from start of ejection sequence to switch to next stage of data.
-#define SDPD_END_TIME_INDEX			0
+#define SDPD_END_TIME_INDEX 0
 // This is the combined constants that contribute to drag force:
 // atmospheric density * cross-sectional area * drag coefficient.
-#define SDPD_DRAG_FACTOR_INDEX		1
+#define SDPD_DRAG_FACTOR_INDEX 1
 // This is the combined mass of the seat and the pilot, or just the seat.
 // after the seat falls (in slugs).
-#define SDPD_MASS_INDEX					2
+#define SDPD_MASS_INDEX 2
 // Number of stage physical data indices.
-#define SDPD_NUM_INDICES				3
+#define SDPD_NUM_INDICES 3
 
 // Ejected pilot data that is dependent on stage.
 typedef SIM_FLOAT EP_STAGE_PHYS_DATA[SDPD_NUM_INDICES];
 
 // Stages of the ejection sequence.
-#define PD_START									-1
-#define PD_JETTISON_CANOPY						0
-#define PD_EJECT_SEAT							1
-#define PD_FREE_FALL_WITH_SEAT				2
-#define PD_CHUTE_OPENING						3
-#define PD_FREE_FALL_WITH_OPEN_CHUTE		4
-#define PD_FREE_FALL_WITH_COLLAPSED_CHUTE	5
-#define PD_SAFE_LANDING						6
-#define PD_CRASH_LANDING					7
-#define PD_NUM_STAGES							8
+#define PD_START -1
+#define PD_JETTISON_CANOPY 0
+#define PD_EJECT_SEAT 1
+#define PD_FREE_FALL_WITH_SEAT 2
+#define PD_CHUTE_OPENING 3
+#define PD_FREE_FALL_WITH_OPEN_CHUTE 4
+#define PD_FREE_FALL_WITH_COLLAPSED_CHUTE 5
+#define PD_SAFE_LANDING 6
+#define PD_CRASH_LANDING 7
+#define PD_NUM_STAGES 8
 
 // Ejected pilot non stage-dependent physical data.
 struct EP_PHYS_DATA
 {
-    EP_STAGE_PHYS_DATA	stageData[PD_NUM_STAGES];
+    EP_STAGE_PHYS_DATA stageData[PD_NUM_STAGES];
 
     // Speed of pilot & seat at ejection time.
-    SIM_FLOAT						ejectSpeed;
+    SIM_FLOAT ejectSpeed;
 
     // Thrust of seat in G's
-    SIM_FLOAT						seatThrust;
+    SIM_FLOAT seatThrust;
 
     // Angle of ejection.  This defines the ejection unit vector .
     // This is using the airplane as a point of reference.
@@ -61,36 +61,36 @@ struct EP_PHYS_DATA
     // wings lie along, with ejection in the direction that the
     // plane is facing being 0 radians, and ejection straight up
     // out of the cockpit being pi/2 radians.
-    SIM_FLOAT						ejectAngle;
+    SIM_FLOAT ejectAngle;
 
     // Pitch of pilot in free fall with chute.
     // This value must be negative.
-    SIM_FLOAT						startPitch;
+    SIM_FLOAT startPitch;
 
     // Pitch decay of pilot in free fall with chute (radians/sec)
     // This value must be positive.
-    SIM_FLOAT						pitchDecay;
+    SIM_FLOAT pitchDecay;
 
     // Delta yaw of pilot in free fall with chute (radians/sec)
-    SIM_FLOAT						yawSpeed;
+    SIM_FLOAT yawSpeed;
 
     // Offset of seat from center of plane
-    SIM_FLOAT						seatXOffset;
-    SIM_FLOAT						seatYOffset;
-    SIM_FLOAT						seatZOffset;
+    SIM_FLOAT seatXOffset;
+    SIM_FLOAT seatYOffset;
+    SIM_FLOAT seatZOffset;
 
     // Player pilot end stage time adjustment.
     // This is added to the end stage time for the player pilot.
-    SIM_FLOAT						humanPilotEndStageTimeAdjust;
+    SIM_FLOAT humanPilotEndStageTimeAdjust;
 };
 
 // Model data for a stage or sequence of stages.
 struct EP_MODEL_DATA
 {
-    int							bsp;
-    int							creationStage;
-    int							chaseMode;
-    EP_VECTOR					focusOffset;
+    int bsp;
+    int creationStage;
+    int chaseMode;
+    EP_VECTOR focusOffset;
 
     EP_MODEL_DATA
     (
@@ -103,18 +103,18 @@ struct EP_MODEL_DATA
 };
 
 // Model data stages.
-#define MD_START									-1
-#define MD_PILOT_AND_SEAT							0
-#define MD_PILOT_AND_OPEN_CHUTE						1
-#define MD_PILOT_AND_COLLAPSED_CHUTE				2
-#define MD_SAFE_LANDING								3
-#define MD_CRASH_LANDING							4
-#define MD_NUM_MODELS								5
+#define MD_START -1
+#define MD_PILOT_AND_SEAT 0
+#define MD_PILOT_AND_OPEN_CHUTE 1
+#define MD_PILOT_AND_COLLAPSED_CHUTE 2
+#define MD_SAFE_LANDING 3
+#define MD_CRASH_LANDING 4
+#define MD_NUM_MODELS 5
 
 // Ejection modes
-#define EM_F16_MODE1				0
-#define EM_F16_MODE2				1
-#define EM_NUM_MODES				2
+#define EM_F16_MODE1 0
+#define EM_F16_MODE2 1
+#define EM_NUM_MODES 2
 
 // The ejected pilot is a sim object so he can be killed.
 class EjectedPilotClass : public SimMoverClass
@@ -136,7 +136,7 @@ public:
     // Simulation methods.
     virtual void Init(SimInitDataClass *initData);
     virtual int Exec();
-    //	void ExecFromAircraft();
+    // void ExecFromAircraft();
     virtual void ApplyDamage(FalconDamageMessage *damageMsg);
     virtual void SetDead(int flag);
     virtual int Wake(void);
@@ -153,7 +153,7 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
 
     // Access methods.
     virtual void GetTransform(TransformMatrix vmat);
@@ -174,16 +174,16 @@ public:
 
     // Get the parent aircraft
     AircraftClass* GetParentAircraft(void);
-    //	// Tell me when my aircraft has died.
-    //	void NotifyOfAircraftsDeath();
+    // // Tell me when my aircraft has died.
+    // void NotifyOfAircraftsDeath();
 
     // Am I the player pilot?
     BOOL IsPlayerPilot() const;
     // Am I a digi pilot?
     BOOL IsDigiPilot() const;
 
-    //	// Can I collide with my own aircraft yet?
-    //	BOOL CanCollideWithOwnAircraft() const;
+    // // Can I collide with my own aircraft yet?
+    // BOOL CanCollideWithOwnAircraft() const;
 
 private:
     // Stage time access functions
@@ -238,8 +238,8 @@ private:
 
     // Reference the aircraft I ejected from until I am
     // done with the aircraft's data, then dereference it.
-    //	void ReferenceAircraft(AircraftClass *ac);
-    //	void DereferenceAircraft();
+    // void ReferenceAircraft(AircraftClass *ac);
+    // void DereferenceAircraft();
 
     // Calculations used in the motion model.
     void CalculateAndSetPositionAndOrientationInCockpit();
@@ -260,72 +260,72 @@ private:
     void SpewDebugData();
 
     // Aircraft I ejected from.
-    //	AircraftClass				*_aircraft;
-    VU_ID						_aircraftId;
-    VU_ID						_flightId;
+    // AircraftClass *_aircraft;
+    VU_ID _aircraftId;
+    VU_ID _flightId;
 
     // Physical data.
-    EP_PHYS_DATA				*_pd;
-    int							_stage;
+    EP_PHYS_DATA *_pd;
+    int _stage;
 
     // Model data.
-    EP_MODEL_DATA				*_md;
-    int							_model;
+    EP_MODEL_DATA *_md;
+    int _model;
 
     // Total time the ejected pilot simulation has been running.
-    SIM_FLOAT					_runTime;
-    SIM_FLOAT					_deltaTime;
-    SIM_FLOAT					_endStageTimeAdjust;
-    SIM_FLOAT					_stageTimer;
-    VU_TIME						_delayTime;
+    SIM_FLOAT _runTime;
+    SIM_FLOAT _deltaTime;
+    SIM_FLOAT _endStageTimeAdjust;
+    SIM_FLOAT _stageTimer;
+    VU_TIME _delayTime;
 
     // My position and rotation.
-    EP_VECTOR					_pos;
-    EP_VECTOR					_rot;
+    EP_VECTOR _pos;
+    EP_VECTOR _rot;
 
     // My velocity and angular velocity.
-    EP_VECTOR					_vel;
-    EP_VECTOR					_aVel;
+    EP_VECTOR _vel;
+    EP_VECTOR _aVel;
 
     // Am I a digital pilot, or a human pilot?
-    BOOL							_isDigital;
+    BOOL _isDigital;
     // Am I the player or just something else
-    BOOL							_isPlayer;
+    BOOL _isPlayer;
 
     // Have I hit the ground?
-    BOOL							_hitGround;
-    SIM_FLOAT						_hitGroundTime;
+    BOOL _hitGround;
+    SIM_FLOAT _hitGroundTime;
 
     // Has something caused my chute to collapse?
-    BOOL							_collapseChute;
-    SIM_FLOAT					_chuteCollapsedTime;
+    BOOL _collapseChute;
+    SIM_FLOAT _chuteCollapsedTime;
 
     // Current model space focus point.
-    EP_VECTOR					_focusPoint;
+    EP_VECTOR _focusPoint;
 
     // These are here so that the class type only has to
     // be looked up once (apparently it's expensive).
-    static int					_classType;
-    static BOOL					_classTypeFound;
+    static int _classType;
+    static BOOL _classTypeFound;
 
     // Hold on to the death message, I don't die when
     // I'm gunned down, I die when I hit the ground.
-    FalconDeathMessage		*_deathMsg;
+    FalconDeathMessage *_deathMsg;
 
     // Hold on to the label, since there are multiple bsp's that
     // are used in the ejection sequence.
-    char							_label[32];
-    DWORD							_labelColor;
+    char _label[32];
+    DWORD _labelColor;
 
     // Do we want the exec function to be called from my aircraft?
-    //	BOOL							_execFromAircraft;
+    // BOOL _execFromAircraft;
 
     // Was exec called from my aircraft?
-    BOOL							_execCalledFromAircraft;
+    BOOL _execCalledFromAircraft;
 
     // This is used to sync the transfer of execution control
-    SIM_UINT						_lastFrameCount;
-    int							_execCount;
+    SIM_UINT _lastFrameCount;
+    int _execCount;
 };
 
 #include "simejinl.cpp"

@@ -4,7 +4,7 @@
 /*  Application defined data, etc */
 
 /* comment/uncomment this as wished */
-/* #define DEBUG_COMMS		 */
+/* #define DEBUG_COMMS  */
 
 #define LOAD_DLLS
 
@@ -16,8 +16,8 @@
 
 // compression stuff
 #include "utils/Lzss.h"
-#define ComAPICompress		LZSS_Compress
-#define ComAPIDecompress	LZSS_Expand
+#define ComAPICompress LZSS_Compress
+#define ComAPIDecompress LZSS_Expand
 
 
 #endif

@@ -34,7 +34,7 @@ RadarDigiClass::RadarDigiClass(int type, SimMoverClass* parentPlatform) : RadarC
 
 SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 {
-    int				sendThisFrame;
+    int sendThisFrame;
 #define SAMDEBUG
 #ifdef SAMDEBUG
     char label[80] = "               ";
@@ -221,14 +221,14 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             }
 
             // Can we see it (either with a valid lock, a jammed or fading signal?
-            if (canSee & (SG_JAMMING | SG_FADING))						// Is it a jammed or fading signal?
+            if (canSee & (SG_JAMMING | SG_FADING)) // Is it a jammed or fading signal?
                 // Yep, say so (weapon can't lock on 'Detection' but digi plane can track it)
                 tmpPtr->localData->sensorState[Radar] = Detection;
             else
                 // It's a valid lock, mark it as such. Even when fading, we can launch
                 tmpPtr->localData->sensorState[Radar] = SensorTrack;
 
-            if (!(canSee & SG_FADING))  									// Is the signal fading?
+            if (!(canSee & SG_FADING))   // Is the signal fading?
             {
                 // No, so update the last hit field
                 tmpPtr->localData->rdrLastHit = SimLibElapsedTime;
@@ -237,7 +237,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
             }
         }
         else
-            tmpPtr->localData->sensorState[Radar] = NoTrack;				// Sorry, we lost that target...
+            tmpPtr->localData->sensorState[Radar] = NoTrack; // Sorry, we lost that target...
 
         // 2000-10-07 S.G. POSSIBLE BUG!
         // If we are looking at our lockedTarget and we are the only one referencing it, clearing it
@@ -331,15 +331,15 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
 
     flag &= ~FirstSweep; // 2002-03-10 ADDED BY S.G. Say we have done our first radar sweep
 
-    VU_ID			lastChaffID = FalconNullId;
-    VU_ID			id;
-    FalconEntity	*cm;
-    float			chance;
-    int				dummy = 0;
-    SimObjectType	*target = lockedTarget ;
-    static const float	cmRangeArray[]		= {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
-    static const float	cmBiteChanceArray[]	= {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
-    static const int	cmArrayLength		= sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
+    VU_ID lastChaffID = FalconNullId;
+    VU_ID id;
+    FalconEntity *cm;
+    float chance;
+    int dummy = 0;
+    SimObjectType *target = lockedTarget ;
+    static const float cmRangeArray[] = {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
+    static const float cmBiteChanceArray[] = {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
+    static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
     // No counter measures deployed by campaign things
     // countermeasures only work when tracking (for now)
@@ -364,7 +364,7 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         // Try to find the counter measure entity in the database
         cm = (FalconEntity*)vuDatabase->Find(id);
 
-        //		MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
+        // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
         if (!cm)
         {
@@ -382,26 +382,26 @@ SimObjectType* RadarDigiClass::Exec(SimObjectType* targetList)
         // 2000-11-17 REMOVED BY S.G. WHY SHOULD IT?
         // Player countermeasures work better
         //if (target->BaseData()->IsPlayer()) {
-        //	chance *= 1.15F;
+        // chance *= 1.15F;
         //}
 
         // If we've beaten the missile guidance, countermeasures work two times better
         //if (!canGuide) {
-        //	chance *= 2.0f;
+        // chance *= 2.0f;
         //}
 
         // Roll the dice
         if (chance > (float)rand() / RAND_MAX)
         {
             // Compute some relative geometry stuff
-            const float atx	= platform->dmx[0][0];
-            const float aty	= platform->dmx[0][1];
-            const float atz	= platform->dmx[0][2];
-            const float dx	= cm->XPos() - platform->XPos();
-            const float dy	= cm->YPos() - platform->YPos();
-            const float dz	= cm->ZPos() - platform->ZPos();
-            const float range	= (float)sqrt(dx * dx + dy * dy);
-            const float cosATA	= (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+            const float atx = platform->dmx[0][0];
+            const float aty = platform->dmx[0][1];
+            const float atz = platform->dmx[0][2];
+            const float dx = cm->XPos() - platform->XPos();
+            const float dy = cm->YPos() - platform->YPos();
+            const float dz = cm->ZPos() - platform->ZPos();
+            const float range = (float)sqrt(dx * dx + dy * dy);
+            const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
 
             // Only take the bait if we can see the thing
             // TODO:  Should probably use beam width instead of scan angle...
@@ -434,7 +434,7 @@ void RadarDigiClass::NewRange(float newRange)
 {
     // Round the new range to the nearest integer
     // SCR 9/23/98:  Why bother?
-    //	newRange = floor( newRange + 0.5f );
+    // newRange = floor( newRange + 0.5f );
 
     // Keep our various measures of range consistent
     rangeFT = newRange * NM_TO_FT;

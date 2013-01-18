@@ -19,23 +19,23 @@
 #include "vdial.h"
 #include "fack.h"
 #include "dofsnswitches.h"
-#include "sinput.h"		//Wombat778 10-10-2003  Added for 3d clickable cockpit
-#include "commands.h"		//Wombat778 10-10-2003  Added for 3d clickable cockpit
+#include "sinput.h" //Wombat778 10-10-2003  Added for 3d clickable cockpit
+#include "commands.h" //Wombat778 10-10-2003  Added for 3d clickable cockpit
 #include "FakeRand.h"
 #include "cphsi.h"
 
-extern bool g_bUse_DX_Engine;			// COBRA - RED
+extern bool g_bUse_DX_Engine; // COBRA - RED
 
-#include "TrackIR.h"				// Retro 24Dez2004
-extern bool g_bEnableTrackIR;		// Retro 24Dez2004
-extern bool g_bTrackIRon;		// Retro 24Dez2004
-extern bool g_bUse6DOFTir;			// Retro 24Dez2004
-extern TrackIR theTrackIRObject;	// Retro 24Dez2004
+#include "TrackIR.h" // Retro 24Dez2004
+extern bool g_bEnableTrackIR; // Retro 24Dez2004
+extern bool g_bTrackIRon; // Retro 24Dez2004
+extern bool g_bUse6DOFTir; // Retro 24Dez2004
+extern TrackIR theTrackIRObject; // Retro 24Dez2004
 extern float g_fTIRMinimumFOV; // Cobra
 extern float g_fTIRMaximumFOV; // Cobra
-extern int g_n6DOFTIR;			// Cobra
+extern int g_n6DOFTIR; // Cobra
 extern float g_fDefaultFOV;  //Wombat778 10-31-2003
-extern float g_fNarrowFOV;	 //Wombat778 2-21-2004
+extern float g_fNarrowFOV;  //Wombat778 2-21-2004
 extern int narrowFOV;
 
 extern DWORD p3DpitHilite; // Cobra - 3D pit high night lighting color
@@ -53,7 +53,7 @@ extern bool g_bRealisticAvionics ;
 //extern bool g_b3DClickableCockpit;
 extern bool g_b3DClickableCockpitDebug;
 extern bool g_b3DRTTCockpitDebug;
-extern int FindBestResolution(void);			//Wombat778 4-03-04
+extern int FindBestResolution(void); //Wombat778 4-03-04
 
 // RV - Biker - Theater switching stuff
 extern char FalconCockpitThrDirectory[];
@@ -74,7 +74,7 @@ extern float g_fDyn_Head_TiltGRateMul;
 extern float g_fDyn_Head_RollRate;
 extern float g_fDyn_Head_PanRate;
 
-extern int	gameCompressionRatio; //added to know if sim is paused to not do MoveByRate stuff
+extern int gameCompressionRatio; //added to know if sim is paused to not do MoveByRate stuff
 
 extern bool g_bUseNew3dpit;
 extern bool g_bINS;
@@ -132,7 +132,7 @@ extern int g_n3DHeadTiltRange; //Wombat778 2-21-2004
 extern void* gSharedMemPtr;
 
 using namespace std;
-extern	string RemoveInvalidChars(const string &instr);
+extern string RemoveInvalidChars(const string &instr);
 
 void OTWDriverClass::VCock_CheckStopStates(float dT)
 {
@@ -142,7 +142,7 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
         {
 
             stopState = STOP_STATE1;
-            eyePan	= min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+            eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
             F4SoundFXSetDist(SFX_CP_UGH, TRUE, 0.0f, 1.0f);
         }
         else
@@ -169,13 +169,13 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     {
         if ((azDir > 0.0F && eyePan <= -PAN_LIMIT * DTR) || (azDir < 0.0F && eyePan >= PAN_LIMIT * DTR))
         {
-            headMotion	= HEAD_TRANSISTION1;
-            initialTilt	= eyeTilt;
-            eyePan		= min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+            headMotion = HEAD_TRANSISTION1;
+            initialTilt = eyeTilt;
+            eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
 
             if (eyePan <= -PAN_LIMIT * DTR)
             {
-                snapDir	= LTOR;
+                snapDir = LTOR;
             }
             else
             {
@@ -204,19 +204,19 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
 
 void OTWDriverClass::VCock_RunNormalMotion(float dT)
 {
-    stopState	= STOP_STATE0;
+    stopState = STOP_STATE0;
 
     if (!mUseHeadTracking)
     {
-        eyePan		-= azDir * slewRate * 4.0F * dT;
-        eyeTilt		+= elDir * slewRate * 4.0F * dT;
+        eyePan -= azDir * slewRate * 4.0F * dT;
+        eyeTilt += elDir * slewRate * 4.0F * dT;
 
         //Wombat778 2-21-04 Removed this as it doesnt seem pointful
 
-        /*	   if(eyeTilt <= -90.0F * DTR) {
-        eyePan		= min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
-        eyeTilt		= min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
-        //		eyeTilt		= min(max(eyeTilt, -150.0F * DTR), 25.0F * DTR);
+        /*    if(eyeTilt <= -90.0F * DTR) {
+        eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+        eyeTilt = min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
+        // eyeTilt = min(max(eyeTilt, -150.0F * DTR), 25.0F * DTR);
         // BuildHeadMatrix(TRUE, YAW_PITCH, eyePan + 180.0F * DTR, -(eyeTilt + 180.0F * DTR), 0.0F);
         BuildHeadMatrix(TRUE, YAW_PITCH, (eyePan + 180.0F * DTR) + BobbingPan, -(eyeTilt + 180.0F * DTR) + BobbingTilt, BobbingRollRate);  //ATARIBABY dynamic head added
         }
@@ -227,50 +227,50 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
         // to be selected as more complete 3d pits get built in the future
         switch (g_n3DHeadPanRange)
         {
-            case 0:																	//MPS default pan stops
-                eyePan		= min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+            case 0: //MPS default pan stops
+                eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
                 break;
 
-            case 1:																	//Stops removed.  +-180degrees
-                eyePan		= min(max(eyePan, -180.0f * DTR), 180.0f * DTR);
+            case 1: //Stops removed.  +-180degrees
+                eyePan = min(max(eyePan, -180.0f * DTR), 180.0f * DTR);
                 break;
 
-            case 2:																	//Wraparound left/right
+            case 2: //Wraparound left/right
                 if (eyePan > 180.0f * DTR) eyePan -= 360.0f * DTR;
                 else if (eyePan < -180.0f * DTR) eyePan += 360.0f * DTR;
 
                 break;
 
             default:
-                eyePan		= min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+                eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
                 break;
         }
 
         switch (g_n3DHeadTiltRange)
         {
 
-            case 0:																	//MPS default tilt
-                eyeTilt		= min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
+            case 0: //MPS default tilt
+                eyeTilt = min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
                 break;
 
-            case 1:																	//BMS default tilt.  Takes FOV into account
-                if (GetFOV() < 60.0F * DTR)											//Wombat778 10-23-2003  Dont do anything with FOV if it is greater than 60
-                    eyeTilt		= min(max(eyeTilt, -140.0F * DTR), (35.0F + ((60.0F - (GetFOV() * RTD))) *
+            case 1: //BMS default tilt.  Takes FOV into account
+                if (GetFOV() < 60.0F * DTR) //Wombat778 10-23-2003  Dont do anything with FOV if it is greater than 60
+                    eyeTilt = min(max(eyeTilt, -140.0F * DTR), (35.0F + ((60.0F - (GetFOV() * RTD))) *
                                       0.395F) * DTR);
                 else
-                    eyeTilt		= min(max(eyeTilt, -140.0F * DTR), 40.0F * DTR);
+                    eyeTilt = min(max(eyeTilt, -140.0F * DTR), 40.0F * DTR);
 
                 break;
 
-            case 2:																	//Significantly expanded tilt range.  Can look 90 degrees down
-                eyeTilt		= min(max(eyeTilt, -140.0F * DTR), 90.0F * DTR);
+            case 2: //Significantly expanded tilt range.  Can look 90 degrees down
+                eyeTilt = min(max(eyeTilt, -140.0F * DTR), 90.0F * DTR);
                 break;
 
-            case 3:																	//Full vertical range +- 180 degrees
-                eyeTilt		= min(max(eyeTilt, -180.0F * DTR), 180.0F * DTR);
+            case 3: //Full vertical range +- 180 degrees
+                eyeTilt = min(max(eyeTilt, -180.0F * DTR), 180.0F * DTR);
                 break;
 
-            case 4:																	//Wraparound tilt
+            case 4: //Wraparound tilt
                 if (eyeTilt > 180.0f * DTR) eyeTilt -= 360.0f * DTR;
                 else if (eyeTilt < -180.0f * DTR) eyeTilt += 360.0f * DTR;
 
@@ -278,10 +278,10 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
 
             default:
                 if (GetFOV() < 60.0F * DTR)
-                    eyeTilt		= min(max(eyeTilt, -110.0F * DTR),
+                    eyeTilt = min(max(eyeTilt, -110.0F * DTR),
                                       (35.0F + ((60.0F - (GetFOV() * RTD))) * 0.395F) * DTR);
                 else
-                    eyeTilt		= min(max(eyeTilt, -110.0F * DTR), 35.0F * DTR);
+                    eyeTilt = min(max(eyeTilt, -110.0F * DTR), 35.0F * DTR);
 
                 break;
         }
@@ -300,7 +300,7 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
         else
             BuildHeadMatrix(FALSE, YAW_PITCH, eyePan + BobbingPan, eyeTilt + BobbingTilt, BobbingRollRate); //ATARIBABY dynamic head added
 
-        //	   }
+        //    }
     }
     else
     {
@@ -324,19 +324,19 @@ void OTWDriverClass::VCock_Glance(float dT)
     if (mUseHeadTracking)
         return;
 
-    if (padlockGlance == GlanceNose)  					// if player glances forward
+    if (padlockGlance == GlanceNose)   // if player glances forward
     {
 
         if (!mIsSlewInit)
         {
             mIsSlewInit = TRUE;
-            mSlewPStart				= eyePan;
-            mSlewTStart				= eyeTilt;
+            mSlewPStart = eyePan;
+            mSlewTStart = eyeTilt;
         }
 
         PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 5.0F, 0.001F, dT);
     }
-    else if (padlockGlance == GlanceTail)  			// if player glances back
+    else if (padlockGlance == GlanceTail)   // if player glances back
     {
 
         if (eyePan < 0.0F)
@@ -345,8 +345,8 @@ void OTWDriverClass::VCock_Glance(float dT)
             if (!mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
-                mSlewPStart				= eyePan;
-                mSlewTStart				= eyeTilt;
+                mSlewPStart = eyePan;
+                mSlewTStart = eyeTilt;
             }
 
             PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, -180.0F * DTR,  0.0F, 5.0F, 0.001F, dT);
@@ -357,15 +357,15 @@ void OTWDriverClass::VCock_Glance(float dT)
             if (!mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
-                mSlewPStart				= eyePan;
-                mSlewTStart				= eyeTilt;
+                mSlewPStart = eyePan;
+                mSlewTStart = eyeTilt;
             }
 
             PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 180.0F * DTR, 0.0F, 5.0F, 0.001F, dT);
         }
         else
         {
-            eyePan	= 0.001F;
+            eyePan = 0.001F;
         }
     }
     else
@@ -404,7 +404,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
             if (initialTilt <= -90.0F * DTR)
             {
                 BuildHeadMatrix(TRUE, YAW_PITCH, eyePan, eyeTilt, 0.0F);
-                headMotion	= HEAD_TRANSISTION2;
+                headMotion = HEAD_TRANSISTION2;
             }
             else if (initialTilt > -90.0F * DTR && eyeTilt > -92.0F * DTR)
             {
@@ -424,8 +424,8 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
             }
             else
             {
-                eyeTilt		= -92.0F * DTR;
-                headMotion	= HEAD_TRANSISTION2;
+                eyeTilt = -92.0F * DTR;
+                headMotion = HEAD_TRANSISTION2;
             }
         }
 
@@ -435,7 +435,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
 
             if ((snapDir == RTOL || snapDir == LTOR) && ((eyePan >= PAN_LIMIT * DTR) || (eyePan <= -PAN_LIMIT * DTR)))
             {
-                eyePan		-= snapDir * slewRate * 10.0F * dT;
+                eyePan -= snapDir * slewRate * 10.0F * dT;
 
                 if (eyePan > 180.0F * DTR)
                 {
@@ -470,7 +470,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
             }
             else
             {
-                eyePan	= max(min(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+                eyePan = max(min(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
                 headMotion = HEAD_TRANSISTION3;
             }
         }
@@ -491,7 +491,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
                     stopState = STOP_STATE3;
 
                     eyeTilt = initialTilt;
-                    headMotion	= YAW_PITCH;
+                    headMotion = YAW_PITCH;
                 }
 
                 if (eyeTilt >= -90.0F * DTR)
@@ -508,7 +508,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
                 stopState = STOP_STATE3;
 
                 eyeTilt = initialTilt;
-                headMotion	= YAW_PITCH;
+                headMotion = YAW_PITCH;
                 BuildHeadMatrix(TRUE, YAW_PITCH, eyePan, eyeTilt, 0.0F);
             }
         }
@@ -615,45 +615,45 @@ char string16[60] = "";
 
 
 //-------------------------------------------------
-Tpoint	vOILul = { 17.990f ,  7.976f, 8.823f };
-Tpoint	vOILur = { 17.990f ,  8.676f, 8.823f };
-Tpoint	vOILll = { 17.870f ,  7.976f, 9.512f };
+Tpoint vOILul = { 17.990f ,  7.976f, 8.823f };
+Tpoint vOILur = { 17.990f ,  8.676f, 8.823f };
+Tpoint vOILll = { 17.870f ,  7.976f, 9.512f };
 
-int		vOILepts		= 3;
-float		vOILvals[3] = {0.0f, 100.0f, 103.3f};
-float		vOILpts[3]	= { -0.646f, 0.723f, 0.513f};
+int vOILepts = 3;
+float vOILvals[3] = {0.0f, 100.0f, 103.3f};
+float vOILpts[3] = { -0.646f, 0.723f, 0.513f};
 //-------------------------------------------------
-Tpoint	vNOZul = { 17.800f ,  8.076f, 9.906f };
-Tpoint	vNOZur = { 17.800f ,  9.076f, 9.906f };
-Tpoint	vNOZll = { 17.627f ,  8.076f, 10.891f };
+Tpoint vNOZul = { 17.800f ,  8.076f, 9.906f };
+Tpoint vNOZur = { 17.800f ,  9.076f, 9.906f };
+Tpoint vNOZll = { 17.627f ,  8.076f, 10.891f };
 
-int		vNOZepts		= 2;
-float		vNOZvals[2] = {0.0F, 100.0F};
-float		vNOZpts[2]	= {0.944F, 2.269F};
+int vNOZepts = 2;
+float vNOZvals[2] = {0.0F, 100.0F};
+float vNOZpts[2] = {0.944F, 2.269F};
 //-------------------------------------------------
-Tpoint	vRPMul = { 17.575f ,  8.076f, 11.186f };
-Tpoint	vRPMur = { 17.575f ,  9.376f, 11.186f };
-Tpoint	vRPMll = { 17.349f ,  8.076f, 12.467f };
+Tpoint vRPMul = { 17.575f ,  8.076f, 11.186f };
+Tpoint vRPMur = { 17.575f ,  9.376f, 11.186f };
+Tpoint vRPMll = { 17.349f ,  8.076f, 12.467f };
 
-int		vRPMepts		= 4;
-float		vRPMvals[4]	= {0.0F, 60.0F, 100.0F, 110.0F};
-float		vRPMpts[4]	= {1.571F, 0.0F, 3.142F, 2.307F};
+int vRPMepts = 4;
+float vRPMvals[4] = {0.0F, 60.0F, 100.0F, 110.0F};
+float vRPMpts[4] = {1.571F, 0.0F, 3.142F, 2.307F};
 //-------------------------------------------------
-Tpoint	vFTITul = { 17.226f ,  8.675f, 13.156f };
-Tpoint	vFTITur = { 17.226f ,  9.875f, 13.156f };
-Tpoint	vFTITll = { 17.017f ,  8.675f, 14.338f };
+Tpoint vFTITul = { 17.226f ,  8.675f, 13.156f };
+Tpoint vFTITur = { 17.226f ,  9.875f, 13.156f };
+Tpoint vFTITll = { 17.017f ,  8.675f, 14.338f };
 
-int		vFTITepts	= 6;
-float		vFTITvals[6] = {2.0F, 6.0F, 8.0F, 9.0F, 10.0F, 12.0F};
-float		vFTITpts[6]	= { -0.319F, -1.445F, -2.808F, 2.412F, 1.208F, 0.621F};
+int vFTITepts = 6;
+float vFTITvals[6] = {2.0F, 6.0F, 8.0F, 9.0F, 10.0F, 12.0F};
+float vFTITpts[6] = { -0.319F, -1.445F, -2.808F, 2.412F, 1.208F, 0.621F};
 //-------------------------------------------------
 Tpoint vALTul = { 21.178f ,  0.247f, 8.934f };
 Tpoint vALTur = { 21.178f ,  2.047f, 8.934f };
 Tpoint vALTll = { 21.085f ,  0.239f, 10.732f };
 
-int		vALTepts		= 2;
-float		vALTvals[2]	= {0.0F, 1000.0F};
-float		vALTpts[2]	= {1.57F, 1.571F};
+int vALTepts = 2;
+float vALTvals[2] = {0.0F, 1000.0F};
+float vALTpts[2] = {1.57F, 1.571F};
 
 //-------------------------------------------------
 
@@ -666,7 +666,7 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
     int tLeft, tTop, tRight, tBottom;
     char cBlend = 'c';
     float cAlpha = 1.0f;
-    //	extern int txRes, tyRes, tBpp;
+    // extern int txRes, tyRes, tBpp;
     extern bool bRTTTarget;
 
     // Missing rttTarget line in 3dckpit.dat?
@@ -808,10 +808,10 @@ void
 OTWDriverClass::VCock_ParseVDial(FILE *fp)
 {
     VDialInitStr vdialInitStr;
-    static const char		pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
-    int				valuesIndex = 0;
-    int				pointsIndex = 0;
-    char			plineBuffer[MAX_LINE_BUFFER];
+    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
+    int valuesIndex = 0;
+    int pointsIndex = 0;
+    char plineBuffer[MAX_LINE_BUFFER];
     char *plinePtr, *ptoken;
     Tpoint ur, ul, ll;
 
@@ -897,7 +897,7 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
         ptoken = FindToken(&plinePtr, pseparators);
     }
 
-    vdialInitStr.pRender		= renderer;
+    vdialInitStr.pRender = renderer;
     VDial *vdial = new VDial(&vdialInitStr);
     mpVDials.push_back(vdial);
     delete [] vdialInitStr.ppoints;
@@ -909,14 +909,14 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
 {
     char strCPFile[MAX_PATH];
     static const TCHAR *pCPFile = "3dckpit.dat";
-    CP_HANDLE*			pcockpitDataFile;
-    static const char		pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
+    CP_HANDLE* pcockpitDataFile;
+    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
     extern Tpoint lMFDul, lMFDur, lMFDll;
-    extern int ltMFDleft, ltMFDtop, ltMFDright, ltMFDbottom;	// ASSO:
+    extern int ltMFDleft, ltMFDtop, ltMFDright, ltMFDbottom; // ASSO:
     extern char lcMFDblend;
     extern float lcMFDalpha;
     extern Tpoint rMFDul, rMFDur, rMFDll;
-    extern int rtMFDleft, rtMFDtop, rtMFDright, rtMFDbottom; //, txRes, tyRes, tBpp;	// ASSO:
+    extern int rtMFDleft, rtMFDtop, rtMFDright, rtMFDbottom; //, txRes, tyRes, tBpp; // ASSO:
     extern char rcMFDblend;
     extern float rcMFDalpha;
     extern bool bRTTTarget;
@@ -929,7 +929,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
     vBoresightY = 0.75f;
 
     // COBRA - RED - Default Hud Color if not assigned by DAT FILE
-    //	TheHud->SetHudColor(DEFAULT_HUD_COLOR);
+    // TheHud->SetHudColor(DEFAULT_HUD_COLOR);
 
     // RV - Biker - Use fallback for cockpit path
     //FindCockpit(pCPFile, (Vis_Types)eCPVisType, eCPName, eCPNameNCTR, strCPFile);
@@ -937,16 +937,16 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
 
     pcockpitDataFile = CP_OPEN(strCPFile, "r");
 
-    F4Assert(pcockpitDataFile);			//Error: Couldn't open file
+    F4Assert(pcockpitDataFile); //Error: Couldn't open file
     DebugLineNum = 0;
 
     while (!quitFlag)
     {
-        char			plineBuffer[MAX_LINE_BUFFER];
+        char plineBuffer[MAX_LINE_BUFFER];
         char *plinePtr, *ptoken;
-        char *presult	= fgets(plineBuffer, sizeof plineBuffer, pcockpitDataFile);
+        char *presult = fgets(plineBuffer, sizeof plineBuffer, pcockpitDataFile);
         DebugLineNum ++;
-        quitFlag	= (presult == NULL);
+        quitFlag = (presult == NULL);
 
         if (quitFlag || *plineBuffer == '/' || *plineBuffer == '\n')
             continue;
@@ -1018,7 +1018,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
         else if (!strcmpi(ptoken, PROP_MFDLEFT_STR))  // left MFD
         {
             Tpoint ul, ur, ll;
-            int tLeft, tTop, tRight, tBottom;	// ASSO:
+            int tLeft, tTop, tRight, tBottom; // ASSO:
             char cBlend = 'c';
             float cAlpha = 1.0f;
             ptoken = FindToken(&plinePtr, "=;\n");
@@ -1065,7 +1065,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
         else if (!strcmpi(ptoken, PROP_MFDRIGHT_STR))  // right MFD
         {
             Tpoint ul, ur, ll;
-            int tLeft, tTop, tRight, tBottom;	// ASSO:
+            int tLeft, tTop, tRight, tBottom; // ASSO:
             char cBlend = 'c';
             float cAlpha = 1.0f;
             ptoken = FindToken(&plinePtr, "=;\n");
@@ -1215,7 +1215,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
         }
         else if (!strcmpi(ptoken, PROP_3D_USE_NEW_3DPIT))
         {
-            int	bset = 0;
+            int bset = 0;
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &bset);
 
@@ -1254,8 +1254,8 @@ OTWDriverClass::VCock_Init(void)
 {
     VDialInitStr vdialInitStr;
 
-    mNumVDials		= 5;
-    mpVDials			= new VDial*[mNumVDials];
+    mNumVDials = 5;
+    mpVDials = new VDial*[mNumVDials];
 
     vcInfo.vHUDrenderer = new Canvas3D;
     vcInfo.vHUDrenderer->Setup(renderer);
@@ -1279,64 +1279,64 @@ OTWDriverClass::VCock_Init(void)
 
     //---------------------------------->
     // Oil Gauge
-    vdialInitStr.callback	= 43;
-    vdialInitStr.pUL			= &vOILul;
-    vdialInitStr.pUR			= &vOILur;
-    vdialInitStr.pLL			= &vOILll;
-    vdialInitStr.pRender		= renderer;
-    vdialInitStr.radius		= 0.85F;
-    vdialInitStr.color		= pVColors[0][5];
-    vdialInitStr.endPoints	= vOILepts;
-    vdialInitStr.pvalues		= vOILvals;
-    vdialInitStr.ppoints		= vOILpts;
+    vdialInitStr.callback = 43;
+    vdialInitStr.pUL = &vOILul;
+    vdialInitStr.pUR = &vOILur;
+    vdialInitStr.pLL = &vOILll;
+    vdialInitStr.pRender = renderer;
+    vdialInitStr.radius = 0.85F;
+    vdialInitStr.color = pVColors[0][5];
+    vdialInitStr.endPoints = vOILepts;
+    vdialInitStr.pvalues = vOILvals;
+    vdialInitStr.ppoints = vOILpts;
 
     mpVDials[0] = new VDial(&vdialInitStr);
     //<----------------------------------
 
     //---------------------------------->
     // Nozzle Position
-    vdialInitStr.callback	= 41;
-    vdialInitStr.pUL			= &vNOZul;
-    vdialInitStr.pUR			= &vNOZur;
-    vdialInitStr.pLL			= &vNOZll;
-    vdialInitStr.pRender		= renderer;
-    vdialInitStr.radius		= 0.85F;
-    vdialInitStr.color		= pVColors[0][5];
-    vdialInitStr.endPoints	= vNOZepts;
-    vdialInitStr.pvalues		= vNOZvals;
-    vdialInitStr.ppoints		= vNOZpts;
+    vdialInitStr.callback = 41;
+    vdialInitStr.pUL = &vNOZul;
+    vdialInitStr.pUR = &vNOZur;
+    vdialInitStr.pLL = &vNOZll;
+    vdialInitStr.pRender = renderer;
+    vdialInitStr.radius = 0.85F;
+    vdialInitStr.color = pVColors[0][5];
+    vdialInitStr.endPoints = vNOZepts;
+    vdialInitStr.pvalues = vNOZvals;
+    vdialInitStr.ppoints = vNOZpts;
 
     mpVDials[1] = new VDial(&vdialInitStr);
     //<----------------------------------
 
     //---------------------------------->
     // RPM Gauge
-    vdialInitStr.callback	= 40;
-    vdialInitStr.pUL			= &vRPMul;
-    vdialInitStr.pUR			= &vRPMur;
-    vdialInitStr.pLL			= &vRPMll;
-    vdialInitStr.pRender		= renderer;
-    vdialInitStr.radius		= 0.85F;
-    vdialInitStr.color		= pVColors[0][5];
-    vdialInitStr.endPoints	= vRPMepts;
-    vdialInitStr.pvalues		= vRPMvals;
-    vdialInitStr.ppoints		= vRPMpts;
+    vdialInitStr.callback = 40;
+    vdialInitStr.pUL = &vRPMul;
+    vdialInitStr.pUR = &vRPMur;
+    vdialInitStr.pLL = &vRPMll;
+    vdialInitStr.pRender = renderer;
+    vdialInitStr.radius = 0.85F;
+    vdialInitStr.color = pVColors[0][5];
+    vdialInitStr.endPoints = vRPMepts;
+    vdialInitStr.pvalues = vRPMvals;
+    vdialInitStr.ppoints = vRPMpts;
 
     mpVDials[2] = new VDial(&vdialInitStr);
     //<----------------------------------
 
     //---------------------------------->
     // FTIT Indicator
-    vdialInitStr.callback	= 42;
-    vdialInitStr.pUL			= &vFTITul;
-    vdialInitStr.pUR			= &vFTITur;
-    vdialInitStr.pLL			= &vFTITll;
-    vdialInitStr.pRender		= renderer;
-    vdialInitStr.radius		= 0.85F;
-    vdialInitStr.color		= pVColors[0][5];
-    vdialInitStr.endPoints	= vFTITepts;
-    vdialInitStr.pvalues		= vFTITvals;
-    vdialInitStr.ppoints		= vFTITpts;
+    vdialInitStr.callback = 42;
+    vdialInitStr.pUL = &vFTITul;
+    vdialInitStr.pUR = &vFTITur;
+    vdialInitStr.pLL = &vFTITll;
+    vdialInitStr.pRender = renderer;
+    vdialInitStr.radius = 0.85F;
+    vdialInitStr.color = pVColors[0][5];
+    vdialInitStr.endPoints = vFTITepts;
+    vdialInitStr.pvalues = vFTITvals;
+    vdialInitStr.ppoints = vFTITpts;
 
     mpVDials[3] = new VDial(&vdialInitStr);
     //<----------------------------------
@@ -1344,16 +1344,16 @@ OTWDriverClass::VCock_Init(void)
 
     //---------------------------------->
     // Altimeter
-    vdialInitStr.callback	= 44;
-    vdialInitStr.pUL			= &vALTul;
-    vdialInitStr.pUR			= &vALTur;
-    vdialInitStr.pLL			= &vALTll;
-    vdialInitStr.pRender		= renderer;
-    vdialInitStr.radius		= 0.85F;
-    vdialInitStr.color		= pVColors[0][5];
-    vdialInitStr.endPoints	= vALTepts;
-    vdialInitStr.pvalues		= vALTvals;
-    vdialInitStr.ppoints		= vALTpts;
+    vdialInitStr.callback = 44;
+    vdialInitStr.pUL = &vALTul;
+    vdialInitStr.pUR = &vALTur;
+    vdialInitStr.pLL = &vALTll;
+    vdialInitStr.pRender = renderer;
+    vdialInitStr.radius = 0.85F;
+    vdialInitStr.color = pVColors[0][5];
+    vdialInitStr.endPoints = vALTepts;
+    vdialInitStr.pvalues = vALTvals;
+    vdialInitStr.ppoints = vALTpts;
 
     mpVDials[4] = new VDial(&vdialInitStr);
     //<----------------------------------
@@ -1405,7 +1405,7 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
 // COBRA DX - Red - Head is calculated once for all
 void OTWDriverClass::VCock_HeadCalc(void)
 {
-    if ((mUseHeadTracking) && (g_n6DOFTIR))	// Retro 24Dez2004
+    if ((mUseHeadTracking) && (g_n6DOFTIR)) // Retro 24Dez2004
     {
 
         // Use TIR 6 DOF - Cobra
@@ -1426,8 +1426,8 @@ void OTWDriverClass::VCock_HeadCalc(void)
         }
         else // g_n6DOFTIR = 2 - Hold Viewpoint at 0,0,0 and use FOV zoom for forward/back movement - Cobra
         {
-            float	x = 0.0f;
-            float	fov = 0.0f;
+            float x = 0.0f;
+            float fov = 0.0f;
             headOrigin.x = headOrigin.y = headOrigin.z = 0.0f;
             headPan = headOrigin;
 
@@ -1448,7 +1448,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 narrowFOV = TRUE;
         }
     }
-    else	// Retro 24Dez2004
+    else // Retro 24Dez2004
     {
         //ATARIBABY start new dynamic head movement more like old DID EF2000 days :-)
         if (g_b3dDynamicPilotHead)
@@ -1502,20 +1502,20 @@ void OTWDriverClass::VCock_HeadCalc(void)
 
                 // my old crappy execution
                 //Head roll move damping
-                //			if (actualrollrate < BobbingRollRate && BobbingRollRate > -0.5F )
-                //				BobbingRollRate = BobbingRollRate - 0.001F;
-                //			if (actualrollrate > BobbingRollRate && BobbingRollRate < 0.5F)
-                //				BobbingRollRate = BobbingRollRate + 0.001F;
+                // if (actualrollrate < BobbingRollRate && BobbingRollRate > -0.5F )
+                // BobbingRollRate = BobbingRollRate - 0.001F;
+                // if (actualrollrate > BobbingRollRate && BobbingRollRate < 0.5F)
+                // BobbingRollRate = BobbingRollRate + 0.001F;
                 //Head tilt move damping
-                //			if (actualtilt < BobbingTilt && BobbingTilt > -0.5F)
-                //				BobbingTilt = BobbingTilt - 0.001F;
-                //			if (actualtilt > BobbingTilt && BobbingTilt < 0.5F)
-                //				BobbingTilt = BobbingTilt + 0.001F;
+                // if (actualtilt < BobbingTilt && BobbingTilt > -0.5F)
+                // BobbingTilt = BobbingTilt - 0.001F;
+                // if (actualtilt > BobbingTilt && BobbingTilt < 0.5F)
+                // BobbingTilt = BobbingTilt + 0.001F;
                 //Head pan move damping
-                //			if (actualpan < BobbingPan && BobbingPan > -0.5F)
-                //				BobbingPan = BobbingPan - 0.001F;
-                //			if (actualpan > BobbingPan && BobbingPan < 0.5F)
-                //				BobbingPan = BobbingPan + 0.001F;
+                // if (actualpan < BobbingPan && BobbingPan > -0.5F)
+                // BobbingPan = BobbingPan - 0.001F;
+                // if (actualpan > BobbingPan && BobbingPan < 0.5F)
+                // BobbingPan = BobbingPan + 0.001F;
 
                 BobbingPreviousTime = vuxGameTime;
             }
@@ -1533,7 +1533,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
             //ATARIBABY disabled now - fwd/back lean cause normals problems and i not know solution yet
             //BobbingAccel = MoveByRate(BobbingAccel,actualaccel, 30.0f); //change this to alter accel speed
 
-            //ATARIBABY disabled now - fwd/back lean cause normals pro	blems and i not know solution yet
+            //ATARIBABY disabled now - fwd/back lean cause normals pro blems and i not know solution yet
             //origin.x = max(-0.9F,min(0.9f,BobbingAccel * 2.0f));
             //origin.y = 0.0;
             //origin.z = 0.0;
@@ -1547,7 +1547,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
             headOrigin = headPan = Origin;
 
         //ATARIBABY end
-    }	// Retro 24Dez2004
+    } // Retro 24Dez2004
 
 
     // COBRA - RED - Introduced Airframe Vibrations
@@ -1556,7 +1556,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
     if (playerAC)
     {
         PitTurbulence = playerAC->GetTurbulence();
-        Tpoint	Ho;
+        Tpoint Ho;
         headPan.x += PitTurbulence.x;
         headPan.y += PitTurbulence.y;
         headPan.z += PitTurbulence.z;
@@ -1571,9 +1571,9 @@ void OTWDriverClass::VCock_HeadCalc(void)
 
 void OTWDriverClass::CockAttachWeapons(void)
 {
-    int				stationNum;
-    SMSClass		*sms = SimDriver.GetPlayerAircraft()->Sms;
-    DrawableBSP*	child;
+    int stationNum;
+    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
+    DrawableBSP* child;
 
     for (stationNum = 1; stationNum < sms->NumHardpoints(); stationNum++)
     {
@@ -1587,9 +1587,9 @@ void OTWDriverClass::CockAttachWeapons(void)
 
 void OTWDriverClass::CockDetachWeapons(void)
 {
-    int				stationNum;
-    SMSClass		*sms = SimDriver.GetPlayerAircraft()->Sms;
-    DrawableBSP*	child;
+    int stationNum;
+    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
+    DrawableBSP* child;
 
     for (stationNum = 1; stationNum < sms->NumHardpoints(); stationNum++)
     {
@@ -1603,7 +1603,7 @@ void OTWDriverClass::CockDetachWeapons(void)
 // COBRA DX - Red - The pit is draw in another call - OTW stuff (not cockpit stuff)
 void OTWDriverClass::VCock_DrawThePit(void)
 {
-    int				oldState;
+    int oldState;
 
     // COBRA - DX - if using DX Engine, PIT has to be Oriented as in 3D WORLD SPACE
     vrCockpit->orientation = OTWDriver.ownshipRot;
@@ -1621,31 +1621,31 @@ void OTWDriverClass::VCock_DrawThePit(void)
 ** DoVirtualCockpit
 */
 
-float	HudScale = 4.0f;
-float	CXX = 1.0f, CXY = 1.0f;
+float HudScale = 4.0f;
+float CXX = 1.0f, CXY = 1.0f;
 
 // SCALING FOR OFFSETTING THE RTTs IN THE PIT
-#define	RTT_POSITION_SCALING		10.35f
+#define RTT_POSITION_SCALING 10.35f
 // SCALING FOR OFFSETTING THE 3D BUTTONS IN THE PIT
-#define	B3D_POSITION_SCALING		569.0f
+#define B3D_POSITION_SCALING 569.0f
 
 void OTWDriverClass::VCock_Exec(void)
 {
 #if 1
     renderer->ChangeFontSet(&VirtualDisplay::Font3D);   // ASFO:
 
-    int				i;
-    PlayerRwrClass	*rwr;
-    float			x1, y1, x2, y2;
-    mlTrig			trig;
-    SMSClass		*sms = SimDriver.GetPlayerAircraft()->Sms;
+    int i;
+    PlayerRwrClass *rwr;
+    float x1, y1, x2, y2;
+    mlTrig trig;
+    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
     int oldFont = VirtualDisplay::CurFont();
 
     // Make sure we don't get in here when we shouldn't
     ShiAssert(otwPlatform);
     ShiAssert(otwPlatform->IsSetFlag(MOTION_OWNSHIP));
     //ShiAssert( otwPlatform == SimDriver.GetPlayerAircraft() );
-    ShiAssert(sms);	// If we legally might not have one, then we'd have to skip the ordinance...
+    ShiAssert(sms); // If we legally might not have one, then we'd have to skip the ordinance...
 
     /*
     ** Render the 3d cockpit object
@@ -1965,7 +1965,7 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 //make a check for the BUP ADI energy here when ready
                 BUPADIPitch3d = cockpitFlightData.pitch;
-                BUPADIRoll3d	= cockpitFlightData.roll;
+                BUPADIRoll3d = cockpitFlightData.roll;
                 LastBUPPitch3d = BUPADIPitch3d;
                 LastBUPRoll3d = BUPADIRoll3d;
 
@@ -1989,8 +1989,8 @@ void OTWDriverClass::VCock_Exec(void)
             }
             else
             {
-                ADIPitch3d	= cockpitFlightData.pitch;
-                ADIRoll3d	= cockpitFlightData.roll;
+                ADIPitch3d = cockpitFlightData.pitch;
+                ADIRoll3d = cockpitFlightData.roll;
                 LastMainADIPitch3d = ADIPitch3d;
                 LastMainADIRoll3d = ADIRoll3d;
             }
@@ -2139,7 +2139,7 @@ void OTWDriverClass::VCock_Exec(void)
             }
         }
 
-        if (crsToTrueFlag == TRUE)  	// to
+        if (crsToTrueFlag == TRUE)   // to
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_TO_FLAG, 1);
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_FROM_FLAG, 0);
@@ -2222,9 +2222,9 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_ASI_NEEDLE, (float)((log10(value) * 5.8F) + 0.6F));
 
         //ASI mach digital readout
-        float	machNumber;
-        int		machfirstDigit;
-        int		machsecondDigit;
+        float machNumber;
+        int machfirstDigit;
+        int machsecondDigit;
         machNumber = cockpitFlightData.mach;
         machfirstDigit = (int) machNumber;
         machsecondDigit = (int)(10.0F * (machNumber - ((float) machfirstDigit)));
@@ -2237,9 +2237,9 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_ALT_NEEDLE, (float) altneedle * (2 * PI));
 
         //ALTIMETER digital readout
-        float	alt;
-        int		altfirstDigit;
-        int		altsecondDigit;
+        float alt;
+        int altfirstDigit;
+        int altsecondDigit;
         alt = -cockpitFlightData.z;
         altfirstDigit = (int) alt / 10000;
         altsecondDigit = (int)(((alt / 10000) - altfirstDigit) * 10.0F) ;
@@ -2424,28 +2424,28 @@ void OTWDriverClass::VCock_Exec(void)
         //=======================================================
         // New 3D pit switch/knob animation - FRB
         // What time is it?
-        VU_TIME	currentTime;
-        VU_TIME	remainder;
-        VU_TIME	hours;
-        VU_TIME	minutes;
-        VU_TIME	seconds;
+        VU_TIME currentTime;
+        VU_TIME remainder;
+        VU_TIME hours;
+        VU_TIME minutes;
+        VU_TIME seconds;
         // Get current time convert from ms to secs
-        currentTime	= vuxGameTime / 1000;
-        remainder	= currentTime % 86400;		//86400 secs in a day
-        hours			= remainder / 3600;			// 3600 secs in an hour
-        remainder	= remainder - hours * 3600;
+        currentTime = vuxGameTime / 1000;
+        remainder = currentTime % 86400; //86400 secs in a day
+        hours = remainder / 3600; // 3600 secs in an hour
+        remainder = remainder - hours * 3600;
 
         if (hours > 12)
         {
             hours -= 12;
         }
 
-        minutes	= remainder / 60;
-        seconds	= remainder - minutes * 60;
+        minutes = remainder / 60;
+        seconds = remainder - minutes * 60;
         // add back fraction of hour and fraction of minutes so that hour and min hand doesn't pop
-        float Hours			= (float)hours;
-        float Minutes		= (float)minutes;
-        float Seconds		= (float)seconds;
+        float Hours = (float)hours;
+        float Minutes = (float)minutes;
+        float Seconds = (float)seconds;
         Hours += (Minutes * 0.01667F); // minutes * 1/60
         Minutes += (Seconds * 0.01667F);
         vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_HRS, Hours * 30.0F * DTR); // degrees per hour
@@ -2745,13 +2745,13 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RT_AP_SW, 1);
 
         // HUD reticle switch
-        if (TheHud->WhichMode == 1)	// PRI
+        if (TheHud->WhichMode == 1) // PRI
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 2);
 
-        if (TheHud->WhichMode == 2)	// STBY
+        if (TheHud->WhichMode == 2) // STBY
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 4);
 
-        if (TheHud->WhichMode == 0)	// Off
+        if (TheHud->WhichMode == 0) // Off
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 1);
 
         // Interior light switch
@@ -2782,12 +2782,12 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_VMS_PWR, 2);
 
         // RF emissions switch
-        if (SimDriver.GetPlayerAircraft()->RFState == 0)				//NORM
+        if (SimDriver.GetPlayerAircraft()->RFState == 0) //NORM
             vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 2);
-        else if (SimDriver.GetPlayerAircraft()->RFState == 2) 	//SILENT --> No CARA, no TFR, no Radar
+        else if (SimDriver.GetPlayerAircraft()->RFState == 2)  //SILENT --> No CARA, no TFR, no Radar
             vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 4);
         else
-            vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 1);	//QUIET --> no Radar
+            vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 1); //QUIET --> no Radar
 
         // RWR power switch
         if (theRwr && theRwr->IsOn())
@@ -2832,7 +2832,7 @@ void OTWDriverClass::VCock_Exec(void)
         // IFF query switch
         vrCockpit->SetSwitchMask(COMP_3DPIT_IFF_QUERY, 1);
 
-        // INS switch							COMP_3DPIT_IFF_PWR
+        // INS switch COMP_3DPIT_IFF_PWR
         if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_AlignNorm))
             vrCockpit->SetSwitchMask(COMP_3DPIT_INS_MODE, 2);
         else if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_Nav))
@@ -2920,7 +2920,7 @@ void OTWDriverClass::VCock_Exec(void)
 
 
     // Scale to 3D world coords the rtt positions
-    Tpoint	Pan = headPan;
+    Tpoint Pan = headPan;
     Pan.z *= RTT_POSITION_SCALING;
     Pan.y *= RTT_POSITION_SCALING;
     Pan.x *= RTT_POSITION_SCALING;
@@ -2939,7 +2939,7 @@ void OTWDriverClass::VCock_Exec(void)
         renderer->StartDraw();
         renderer->SetBackground(0x00000000);
         renderer->ClearDraw(); //588
-        //		renderer->ClearZBuffer();
+        // renderer->ClearZBuffer();
 
         //
         // Do HUD
@@ -2961,7 +2961,7 @@ void OTWDriverClass::VCock_Exec(void)
             vHUDrenderer->SetColor(TheHud->GetHudColor());
 
             // Get the RTT Canvas coords, UL / UR / LL
-            Tpoint	pt[3];
+            Tpoint pt[3];
             vHUDrenderer->GetRttCanvas(pt);
 
             // set the HUD half angle
@@ -2981,7 +2981,7 @@ void OTWDriverClass::VCock_Exec(void)
             // TheHud->SetHalfAngle(atan (hudangy/hudangx) * RTD);
 
             // hack!  move borsight height to boresighty from 3dckpit.dat. default 0.75f
-            hudWinY[BORESIGHT_CROSS_WINDOW] = vBoresightY;	// ASSO:
+            hudWinY[BORESIGHT_CROSS_WINDOW] = vBoresightY; // ASSO:
 
             TheHud->SetTarget(TheHud->Ownship()->targetPtr);
             //vcInfo.vHUDrenderer->SetFont(pCockpitManager->HudFont());
@@ -2989,8 +2989,8 @@ void OTWDriverClass::VCock_Exec(void)
 
             // infinite projection - Hud Offset - Hud is offsetted same value as Head
             // This makes Hud to be always aligned with observer center
-            float	XOffset = 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
-            float	YOffset = 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
+            float XOffset = 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
+            float YOffset = 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
 
             vHUDrenderer->AdjustOriginInViewport(XOffset, YOffset);
 
@@ -3060,7 +3060,7 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 pCockpitManager->mpIcp->Exec();
                 //MI changed for ICP Stuff
-                pCockpitManager->mpIcp->GetDEDStrings(dedStr1,	dedStr2, dedStr3);
+                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2, dedStr3);
 
                 // Check for DED/Avionics failure
                 F4Assert(SimDriver.GetPlayerAircraft());
@@ -3071,9 +3071,9 @@ void OTWDriverClass::VCock_Exec(void)
 
                 if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault))
                 {
-                    vDEDrenderer->TextLeft(-0.90F,	0.99F, dedStr1,	FALSE);
-                    vDEDrenderer->TextLeft(-0.90F,	0.33F, dedStr2,	FALSE);
-                    vDEDrenderer->TextLeft(-0.90F,	-0.33F,	dedStr3, FALSE);
+                    vDEDrenderer->TextLeft(-0.90F, 0.99F, dedStr1, FALSE);
+                    vDEDrenderer->TextLeft(-0.90F, 0.33F, dedStr2, FALSE);
+                    vDEDrenderer->TextLeft(-0.90F, -0.33F, dedStr3, FALSE);
                 }
             }
             else
@@ -3124,8 +3124,8 @@ void OTWDriverClass::VCock_Exec(void)
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() !=	0][6]);
-            VirtualDisplay::SetFont(oldFont);	// ASSO:
+            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][6]);
+            VirtualDisplay::SetFont(oldFont); // ASSO:
         }
 
         //
@@ -3151,7 +3151,7 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 pCockpitManager->mpIcp->Exec();
                 //MI changed for ICP Stuff
-                pCockpitManager->mpIcp->GetDEDStrings(dedStr1,	dedStr2, dedStr3);
+                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2, dedStr3);
 
                 // Check for DED/Avionics failure
                 F4Assert(SimDriver.GetPlayerAircraft());
@@ -3161,9 +3161,9 @@ void OTWDriverClass::VCock_Exec(void)
                 vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][7]);
 
                 {
-                    vPFLrenderer->TextLeft(-0.90F,	0.99F, dedStr1,	FALSE);
-                    vPFLrenderer->TextLeft(-0.90F,	0.33F, dedStr2,	FALSE);
-                    vPFLrenderer->TextLeft(-0.90F,	-0.33F,	dedStr3, FALSE);
+                    vPFLrenderer->TextLeft(-0.90F, 0.99F, dedStr1, FALSE);
+                    vPFLrenderer->TextLeft(-0.90F, 0.33F, dedStr2, FALSE);
+                    vPFLrenderer->TextLeft(-0.90F, -0.33F, dedStr3, FALSE);
                 }
             }
             else
@@ -3210,16 +3210,16 @@ void OTWDriverClass::VCock_Exec(void)
 
                     //ATARIBABY end
 
-                    VirtualDisplay::SetFont(oldFont);	// ASSO:
+                    VirtualDisplay::SetFont(oldFont); // ASSO:
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() !=	0][6]);
+            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() != 0][6]);
         }
 
 
         // DX - COBRA - RED - The AA texture corruption Problem?
-        //		renderer->FinishFrame();
+        // renderer->FinishFrame();
 
         //
         // Do MFDs
@@ -3245,10 +3245,10 @@ void OTWDriverClass::VCock_Exec(void)
         }
 
 
-        //		renderer->FinishFrame();
+        // renderer->FinishFrame();
         renderer->FinishRtt();
 
-        //		renderer->StartDraw();
+        // renderer->StartDraw();
 
         if (vHUDrenderer)
             vHUDrenderer->DrawRttQuad();
@@ -3314,7 +3314,7 @@ void OTWDriverClass::VCock_Exec(void)
     //So, here it is.  It is a hack, but it works.  If you don't like, then YOU fix it;-)
 
     ThreeDVertex t1;
-    gSelectedCursor = 9;				//Wombat778 10-11-2003 set the cursor to the default green cursor
+    gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
 
     if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) && !InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
@@ -3325,7 +3325,7 @@ void OTWDriverClass::VCock_Exec(void)
 
             for (i = 0 ; i < Button3DList.numbuttons ; i++)
             {
-                Tpoint	Pos = Button3DList.buttons[i].loc;
+                Tpoint Pos = Button3DList.buttons[i].loc;
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
@@ -3346,18 +3346,18 @@ void OTWDriverClass::VCock_Exec(void)
     }
 
 
-    if (Button3DList.clicked)			//Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit
+    if (Button3DList.clicked) //Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit
     {
-        float closestdistance = 9999;	//set these variables to a high value so that we know when it is uninitialized (there is a button 0)
+        float closestdistance = 9999; //set these variables to a high value so that we know when it is uninitialized (there is a button 0)
         float tempdistance = 9999;
         int closestbutton = 9999;
 
         for (i = 0 ; i < Button3DList.numbuttons ; i++)
         {
 
-            if (Button3DList.buttons[i].mousebutton == Button3DList.clicked)		//Wombat778 11-07-2003 Added so that the left and right mouse button can be differentiated
+            if (Button3DList.buttons[i].mousebutton == Button3DList.clicked) //Wombat778 11-07-2003 Added so that the left and right mouse button can be differentiated
             {
-                Tpoint	Pos = Button3DList.buttons[i].loc;
+                Tpoint Pos = Button3DList.buttons[i].loc;
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
@@ -3370,7 +3370,7 @@ void OTWDriverClass::VCock_Exec(void)
                 float td = ((float) DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
 
                 if (tempdistance < td)
-                    if (tempdistance < closestdistance)			//if the cursor is near more than 1 button, find the closest one
+                    if (tempdistance < closestdistance) //if the cursor is near more than 1 button, find the closest one
                     {
                         closestdistance = tempdistance;
                         closestbutton = i;
@@ -3405,21 +3405,21 @@ void OTWDriverClass::VCock_Exec(void)
         for (i = 0 ; i < Button3DList.numbuttons ; i++)
         {
 
-            //		if (i==Button3DList.debugbutton)
-            //			renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][7]);
-            //		else
-            //			renderer->SetColor (0x000000FF);		//RED
-            Tpoint	Pos = Button3DList.buttons[i].loc;
+            // if (i==Button3DList.debugbutton)
+            // renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][7]);
+            // else
+            // renderer->SetColor (0x000000FF); //RED
+            Tpoint Pos = Button3DList.buttons[i].loc;
             Pos.x += headPan.x * B3D_POSITION_SCALING;
             Pos.y += headPan.y * B3D_POSITION_SCALING;
             Pos.z += headPan.z * B3D_POSITION_SCALING;
 
             renderer->TransformCameraCentricPoint(&Pos, &t1);
 
-            if (t1.csZ < 0)  			//Wombat778 10-11-2003 Only show those points in front of us. Why it does this is beyond me.
+            if (t1.csZ < 0)   //Wombat778 10-11-2003 Only show those points in front of us. Why it does this is beyond me.
             {
 
-                renderer->SetColor(0x000000FF);		//RED
+                renderer->SetColor(0x000000FF); //RED
 
 
 
@@ -3434,7 +3434,7 @@ void OTWDriverClass::VCock_Exec(void)
                 renderer->Render2DPoint(t1.x + 1, t1.y + 1);
 
 
-                renderer->SetColor(0x0000ffff);		//Yellow
+                renderer->SetColor(0x0000ffff); //Yellow
 
                 //Normalize the distance so it is affected by the FOV and by the resolution
                 //Todo: add something about the SA bar.  Currently, the dist increases too much when it is active
@@ -3520,7 +3520,7 @@ void OTWDriverClass::VCock_Exec(void)
 #endif
 
     // 2001-01-31 ADDED BY S.G. SO HMS EQUIPPED PLANE HAS TWO GREEN CONCENTRIC CIRCLE IN PADLOCK VIEW
-    VehicleClassDataType	*vc	= (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
     if (vc && vc->Flags & 0x20000000)
     {
@@ -3567,7 +3567,7 @@ void OTWDriverClass::VCock_Exec(void)
 void
 OTWDriverClass::VCock_Cleanup(void)
 {
-    //		int i;
+    // int i;
 
     for (unsigned int i = 0; i < mpVDials.size(); i++)
     {
@@ -3650,8 +3650,8 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
 {
     char strCPFile[MAX_PATH];
     static const TCHAR *buttonfile = "3dbuttons.dat";
-    static const TCHAR *vcockfile = "3dckpit.dat";			//Wombat778 10-15-2003
-    FILE*			Button3DDataFile;
+    static const TCHAR *vcockfile = "3dckpit.dat"; //Wombat778 10-15-2003
+    FILE* Button3DDataFile;
     char templine[256];
     char tempfunction[256];
 
@@ -3724,12 +3724,12 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
     if (Button3DDataFile)
     {
         if (!feof(Button3DDataFile))
-            fgets(templine, 256, Button3DDataFile);				//Just read a dummy line for comments etc..
+            fgets(templine, 256, Button3DDataFile); //Just read a dummy line for comments etc..
 
         while (!feof(Button3DDataFile))
         {
             fgets(templine, 256, Button3DDataFile);
-            int matchedfields = sscanf(templine, "%s %f %f %f %f %d %d", tempfunction,				//Wombat778 11-08-2003
+            int matchedfields = sscanf(templine, "%s %f %f %f %f %d %d", tempfunction, //Wombat778 11-08-2003
                                        &Button3DList.buttons[Button3DList.numbuttons].loc.x,
                                        &Button3DList.buttons[Button3DList.numbuttons].loc.y,
                                        &Button3DList.buttons[Button3DList.numbuttons].loc.z,
@@ -3739,9 +3739,9 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
 
 
             if (matchedfields == 6)
-                Button3DList.buttons[Button3DList.numbuttons].mousebutton = 1;			//Wombat778 11-08-2003 Added so there will still be compatibility with old files. Default to left mouse button.
+                Button3DList.buttons[Button3DList.numbuttons].mousebutton = 1; //Wombat778 11-08-2003 Added so there will still be compatibility with old files. Default to left mouse button.
 
-            if (matchedfields >= 6)		//Wombat778 11-08-2003 changed to allow compatibility with old files 11-7-2003 added mousebutton field to allow LMB/RMB usage.
+            if (matchedfields >= 6) //Wombat778 11-08-2003 changed to allow compatibility with old files 11-7-2003 added mousebutton field to allow LMB/RMB usage.
             {
                 InputFunctionType tempfunc;
                 tempfunc = FindFunctionFromString(tempfunction);
@@ -3749,7 +3749,7 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
                 Button3DList.buttons[Button3DList.numbuttons].function = tempfunc;
 
                 if (tempfunc)
-                    Button3DList.buttons[Button3DList.numbuttons].buttonId = UserFunctionTable.GetButtonId(tempfunc);		//GetButtonId is a terribly slow function because it has to traverse a hash table.
+                    Button3DList.buttons[Button3DList.numbuttons].buttonId = UserFunctionTable.GetButtonId(tempfunc); //GetButtonId is a terribly slow function because it has to traverse a hash table.
 
                 Button3DList.numbuttons++;
             }

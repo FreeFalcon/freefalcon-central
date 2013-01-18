@@ -202,9 +202,9 @@ enum
 
 #ifndef TRGBA
 #define TRGBA
-typedef	struct
+typedef struct
 {
-    BYTE	rgba[4];
+    BYTE rgba[4];
 } rgba_t;
 #endif
 
@@ -430,16 +430,16 @@ typedef struct CompressionOptions
 
 
 
-    short 		TextureType;        // regular decal, cube or volume
+    short  TextureType;        // regular decal, cube or volume
     /*
         for TextureType, specify one of:
             dTextureType2D
-    	    dTextureTypeCube
+         dTextureTypeCube
             dTextureTypeImage
             dTextureTypeVolume
      */
 
-    short 		TextureFormat;
+    short  TextureFormat;
     /*
         for TextureFormat, specify any from dTextureFormatFirst to
         dTextureFormatLast

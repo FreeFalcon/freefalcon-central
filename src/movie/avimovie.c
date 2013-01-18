@@ -67,7 +67,7 @@ typedef struct tagMOVIE
     // frame
     AVISTREAMS           aviStreams;       // video and audio streams
     //   AUDIO_CHANNEL        *audioChannel;    // audio channel
-    int			        audioChannel;    // Stream ID
+    int         audioChannel;    // Stream ID
     int                  audioHandle;      // audio handle
     int                  lastError;        // last error code
 } MOVIE, *PMOVIE;

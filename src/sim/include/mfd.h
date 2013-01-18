@@ -25,14 +25,14 @@ class MaverickDisplayClass;
 extern bool g_bRealisticAvionics;
 
 //MI
-#define AGMaster	0
-#define NAVMaster	1
-#define AAMaster	2
-#define MRMMaster	3
-#define DGFTMaster	4
+#define AGMaster 0
+#define NAVMaster 1
+#define AAMaster 2
+#define MRMMaster 3
+#define DGFTMaster 4
 
-#define RightMFD AGMaster	//0
-#define LeftMFD NAVMaster	//1
+#define RightMFD AGMaster //0
+#define LeftMFD NAVMaster //1
 
 #define TRUE_NEXT 1
 #define TRUE_ABSOLUTE 2
@@ -45,11 +45,11 @@ public:
     MFDClass(int count, Render3D *r3d);
     ~MFDClass(void);
 
-    int	id;
-    char	changeMode;
+    int id;
+    char changeMode;
 
     // RV - I-Hawk - Removed HUD mode, inserted HAD mode instead for HTS targeting
-    enum	MfdMode
+    enum MfdMode
     {
         MfdOff = 0, MfdMenu = 1,
         TFRMode = 2, FLIRMode = 3,
@@ -58,10 +58,10 @@ public:
         FCCMode = 9, FCRMode, SMSMode,
         RWRMode, HADMode, /*HUDMode,*/ InputMode, MAXMODES
     };
-    MfdMode	mode;
-    MfdMode	newMode;
-    MfdMode	restoreMode;
-    MfdMode	primarySecondary[MAXMM][3]; // this ones modes
+    MfdMode mode;
+    MfdMode newMode;
+    MfdMode restoreMode;
+    MfdMode primarySecondary[MAXMM][3]; // this ones modes
     int cursel[MAXMM]; // current selection
     int curmm;
     int newmm;
@@ -116,16 +116,16 @@ public:
         TGPWarning = warning;
     }
 
-    ImageBuffer*			image;
-    ImageBuffer*			privateImage;
+    ImageBuffer* image;
+    ImageBuffer* privateImage;
 private:
     // sfr: going private (as it should be)
-    DrawableClass			*drawable;
+    DrawableClass *drawable;
     int TGPWarning; // RV - I-Hawk - The TGP warning
 public:
-    Canvas3D				*virtMFD;
-    static DrawableClass	*mfdDraw[MaxPrivMode];
-    static DrawableClass	*HadDrawable; // RV - I-Hawk - Added for HAD mode instead of HUDMode
+    Canvas3D *virtMFD;
+    static DrawableClass *mfdDraw[MaxPrivMode];
+    static DrawableClass *HadDrawable; // RV - I-Hawk - Added for HAD mode instead of HUDMode
     int Color(void);
     unsigned int GetIntensity(void);
     void IncreaseBrightness(void);
@@ -139,19 +139,19 @@ public:
     };
 
 private:
-    AircraftClass	*ownship;
-    RViewPoint	*viewPoint;
-    float			vTop, vLeft, vBottom, vRight;
-    Tpoint cUL, cUR, cLL;	// ASSO:
-    int tLeft, tTop, tRight, tBottom;		// ASSO:
-    unsigned char cBlend;		// ASSO:
-    float	cAlpha;	// ASSO:
+    AircraftClass *ownship;
+    RViewPoint *viewPoint;
+    float vTop, vLeft, vBottom, vRight;
+    Tpoint cUL, cUR, cLL; // ASSO:
+    int tLeft, tTop, tRight, tBottom; // ASSO:
+    unsigned char cBlend; // ASSO:
+    float cAlpha; // ASSO:
     int color;
     int intensity;
     static char *ModeNames[];
 
 private:
-    void			FreeDrawable(void);
+    void FreeDrawable(void);
 };
 
 class MfdDrawable : public DrawableClass

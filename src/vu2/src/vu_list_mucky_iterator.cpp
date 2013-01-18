@@ -10,12 +10,12 @@ VuListMuckyIterator::VuListMuckyIterator(VuLinkedList *coll) : VuIterator(coll)
 {
     curr_ = vuTailNode;
     last_ = 0;
-    //	vuCollectionManager->Register(this);
+    // vuCollectionManager->Register(this);
 }
 
 VuListMuckyIterator::~VuListMuckyIterator()
 {
-    //	vuCollectionManager->DeRegister(this);
+    // vuCollectionManager->DeRegister(this);
 }
 
 void VuListMuckyIterator::InsertCurrent(VuEntity *ent)
@@ -87,15 +87,15 @@ VuEntity *VuListMuckyIterator::CurrEnt()
 }
 
 /*VU_BOOL VuListMuckyIterator::IsReferenced(VuEntity* ent){
-	// 2002-02-04 MODIFIED BY S.G.
-	// If ent is false, then it can't be a valid entity, right? That's what I think too :-)
-	//	if ((last_ && last_->entity_ == ent) || curr_->entity_ == ent)
-	if (ent && ((last_ && last_->entity_.get() == ent) || curr_->entity_.get() == ent)){
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
+ // 2002-02-04 MODIFIED BY S.G.
+ // If ent is false, then it can't be a valid entity, right? That's what I think too :-)
+ // if ((last_ && last_->entity_ == ent) || curr_->entity_ == ent)
+ if (ent && ((last_ && last_->entity_.get() == ent) || curr_->entity_.get() == ent)){
+ return TRUE;
+ }
+ else {
+ return FALSE;
+ }
 }*/
 
 VU_ERRCODE VuListMuckyIterator::Cleanup()

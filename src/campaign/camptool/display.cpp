@@ -19,21 +19,21 @@
 #include "Campaign.h"
 #include "Weather.h"
 
-#define 	Cyan 			LightBrown
-#define 	LightCyan 		Orange
-#define 	LightMagenta	LightGray
+#define  Cyan  LightBrown
+#define  LightCyan  Orange
+#define  LightMagenta LightGray
 
 WORD TerrainBMap[COVER_TYPES][RELIEF_TYPES] =
 {
-    { 0,		0,      0,		0, },       // Water
-    { 12,		13,     14,     15,},    	// Bog/Swamp
-    { 32,		33,     34,     35,}, 		// Barren/Desert
-    { 8,		9,		10,		11,}, 		// Plain/Farmland
-    { 8,		9,      10,     11,},    	// Grass/Brush
-    { 16,  	17,     18,    	19,},		// LightForest
-    { 20,		21,     22,     23,},    	// HvyForest/Jungle
-    { 28,		29,     30,     31,}
-}; 	// Urban
+    { 0, 0,      0, 0, },       // Water
+    { 12, 13,     14,     15,},     // Bog/Swamp
+    { 32, 33,     34,     35,},  // Barren/Desert
+    { 8, 9, 10, 11,},  // Plain/Farmland
+    { 8, 9,      10,     11,},     // Grass/Brush
+    { 16,   17,     18,     19,}, // LightForest
+    { 20, 21,     22,     23,},     // HvyForest/Jungle
+    { 28, 29,     30,     31,}
+};  // Urban
 
 WORD ReliefBMap[RELIEF_TYPES] = { 7, 6, 5, 4 };
 
@@ -51,13 +51,13 @@ COLORREF RelCol[RELIEF_TYPES] = { RGB_LIGHTGREEN, RGB_GREEN, RGB_BROWN, RGB_WHIT
 
 COLORREF SideColRGB[NUM_COUNS] = { RGB_WHITE, RGB_GREEN, RGB_BLUE, RGB_LIGHTGRAY, RGB_CYAN, RGB_YELLOW, RGB_RED };
 
-COLORREF GradCol[8][2] = {	{ RGB_BLUE, RGB_BLUE },					{ RGB_WHITE, RGB_WHITE },
-    { RGB_WHITE, RGB_LIGHTGRAY },			{ RGB_LIGHTGRAY, RGB_LIGHTGRAY },
-    { RGB_LIGHTGRAY, RGB_GRAY },			{ RGB_GRAY, RGB_GRAY },
-    { RGB_GRAY, RGB_BLACK },				{ RGB_BLACK, RGB_BLACK }
+COLORREF GradCol[8][2] = { { RGB_BLUE, RGB_BLUE }, { RGB_WHITE, RGB_WHITE },
+    { RGB_WHITE, RGB_LIGHTGRAY }, { RGB_LIGHTGRAY, RGB_LIGHTGRAY },
+    { RGB_LIGHTGRAY, RGB_GRAY }, { RGB_GRAY, RGB_GRAY },
+    { RGB_GRAY, RGB_BLACK }, { RGB_BLACK, RGB_BLACK }
 };
 
-COLORREF CloudCol[6][4] = {	{ RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_BLUE },
+COLORREF CloudCol[6][4] = { { RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_BLUE },
     { RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_WHITE },
     { RGB_BLUE, RGB_WHITE, RGB_WHITE, RGB_BLUE },
     { RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY },
@@ -73,7 +73,7 @@ int HeavyCover    [8] = {0x55, 0xEE, 0x55, 0xBB, 0x55, 0xEE, 0x55, 0xBB};
 
 char SideColor[NUM_COUNS] = { White, Green, LightBlue, Magenta, Red, Red, Red };
 char TeamColor[NUM_TEAMS] = { White, Green, LightBlue, Magenta, Red, Red, Red };
-char TypeColor[35] = {	White, Red, Red, Red, Magenta, Magenta, LightGray, Orange, Black, Red,
+char TypeColor[35] = { White, Red, Red, Red, Magenta, Magenta, LightGray, Orange, Black, Red,
                         Orange, Orange, Magenta, Red, Magenta, LightGray, LightGray, Orange, Magenta, Red,
                         Orange, Red, LightGray, LightGray, LightGray, Orange, LightGray, Magenta, Black, Yellow,
                         Red, Red, White, White
@@ -101,75 +101,75 @@ char* GetFilename(short x, short y);
 
 void drawRoad(HDC DC, short ScreenX, short ScreenY, short Size, int i)
 {
-    short	sx = 0, sy = 0, tx = 0, ty = 0;
+    short sx = 0, sy = 0, tx = 0, ty = 0;
 
     ShiAssert(i >= 0 && i <= 7);
     i = max(0, min(i, 7));
 
     switch (i)
     {
-        case	0:
+        case 0:
             sx = ScreenX + Size / 2;
             sy = ScreenY + Size / 2;
             tx = ScreenX + Size / 2;
             ty = ScreenY - 1;
             break;
 
-        case	1:
+        case 1:
             sx = ScreenX + Size / 2;
             sy = ScreenY - 1;
             tx = ScreenX + Size;
             ty = ScreenY + Size / 2;
-            //			tx = ScreenX+Size+3;
-            //			ty = ScreenY-3;
+            // tx = ScreenX+Size+3;
+            // ty = ScreenY-3;
             break;
 
-        case	2:
+        case 2:
             sx = ScreenX + Size / 2;
             sy = ScreenY + Size / 2;
             tx = ScreenX + Size;
             ty = ScreenY + Size / 2;
             break;
 
-        case	3:
+        case 3:
             sx = ScreenX + Size / 2;
             sy = ScreenY + Size;
             tx = ScreenX + Size;
             ty = ScreenY + Size / 2;
-            //			tx = ScreenX+Size+1;
-            //			ty = ScreenY+Size+1;
+            // tx = ScreenX+Size+1;
+            // ty = ScreenY+Size+1;
             break;
 
-        case	4:
+        case 4:
             sx = ScreenX + Size / 2;
             sy = ScreenY + Size / 2;
             tx = ScreenX + Size / 2;
             ty = ScreenY + Size;
             break;
 
-        case	5:
+        case 5:
             sx = ScreenX - 1;
             sy = ScreenY + Size / 2;
             tx = ScreenX + Size / 2;
             ty = ScreenY + Size;
-            //			tx = ScreenX-3;
-            //			ty = ScreenY+Size+3;
+            // tx = ScreenX-3;
+            // ty = ScreenY+Size+3;
             break;
 
-        case	6:
+        case 6:
             sx = ScreenX + Size / 2;
             sy = ScreenY + Size / 2;
             tx = ScreenX - 1;
             ty = ScreenY + Size / 2;
             break;
 
-        case	7:
+        case 7:
             sx = ScreenX - 1;
             sy = ScreenY + Size / 2;
             tx = ScreenX + Size / 2;
             ty = ScreenY - 1;
-            //			tx = ScreenX-2;
-            //			ty = ScreenY-2;
+            // tx = ScreenX-2;
+            // ty = ScreenY-2;
             break;
     }
 
@@ -183,11 +183,11 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
 {
     ReliefType  r;
     CoverType   c;
-    CellData	TheCell;
-    int			w, sides;
-    int			i, ofx, ofy;
-    uchar		side[8];
-    int			mx, my;
+    CellData TheCell;
+    int w, sides;
+    int i, ofx, ofy;
+    uchar side[8];
+    int mx, my;
 
     // BEGIN
     TheCell = GetCell(x, y);
@@ -215,8 +215,8 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
                 case 5:
                     w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
                     //JAM - FIXME
-                    //					if (w >= FIRST_OVC_TYPE)
-                    //						w = FIRST_OVC_TYPE;
+                    // if (w >= FIRST_OVC_TYPE)
+                    // w = FIRST_OVC_TYPE;
                     i = (x & 0x01) + 2 * (y & 0x01);
                     SetPixel(DC, ScreenX, ScreenY, CloudCol[w][i]);
                     break;
@@ -267,14 +267,14 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             _drawbmap(DC, ReliefBMap[r], ScreenX, ScreenY, Size, ofx, ofy);
             break;
 
-            //		case 3:
-            //			_drawsbmap(AltitudeBMap[GetAltitudeCode(TheCell)],ScreenX,ScreenY,Size);
-            //			break;
+            // case 3:
+            // _drawsbmap(AltitudeBMap[GetAltitudeCode(TheCell)],ScreenX,ScreenY,Size);
+            // break;
         case 5:
             w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
             //JAM - FIXME
-            //			if (w >= FIRST_OVC_TYPE)
-            //				w = FIRST_OVC_TYPE;
+            // if (w >= FIRST_OVC_TYPE)
+            // w = FIRST_OVC_TYPE;
             _drawbmap(DC, CloudCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
             return;
             break;
@@ -286,7 +286,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
 
         case 9:
         {
-            char	*fn;
+            char *fn;
 
             // Texture set
             fn = GetFilename(x, y);
@@ -427,8 +427,8 @@ void DisplayObjective(HDC DC, Objective O, short ScreenX, short ScreenY, short S
     short   ULY;
     short   LRX;
     short   LRY;
-    short	off = 0;
-    char  	C;
+    short off = 0;
+    char   C;
 
     if (Size > 7)
         off = 1;
@@ -505,7 +505,7 @@ char* ObjStatusStr(Objective O)
 
 void ObjFeatureStr(Objective O, char buffer[])
 {
-    int		i;
+    int i;
 
     for (i = 0; i < O->GetTotalFeatures(); i++)
         buffer[i] = '0' + O->GetFeatureStatus(i);
@@ -517,7 +517,7 @@ void ObjFeatureStr(Objective O, char buffer[])
 // Unit Display & Edit Functions
 // ---------------------------------
 
-void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY,	short Size)
+void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
 {
     short ULX;
     short ULY;
@@ -527,7 +527,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY,	short Size)
     short centerx, centery;
     short HQ = 0, Type, SType, color;
 
-    //	BEGIN
+    // BEGIN
     ULX = ScreenX;
     ULY = ScreenY;
     LRX = ScreenX + Size + (Size >> 1);
@@ -612,7 +612,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY,	short Size)
         }
 
         /*
-        		if (Type == Airborne)
+         if (Type == Airborne)
                     {
                     _rectangle(DC,_GBORDER,ULX+(int)(ssmall*1.8),LRY-ssmall, centerx-1, LRY);
                     _rectangle(DC,_GBORDER,centerx+1, LRY-ssmall, LRX-(int)(ssmall*1.8), LRY);
@@ -765,8 +765,8 @@ char* UnitTypeStr(Unit u, int stype, char buffer[])
             sprintf(buffer, "Engineer\0");
         else if (stype == STYPE_UNIT_AIRMOBILE)
             sprintf(buffer, "Airmobile\0");
-        //		else if (stype == STYPE_UNIT_GROUND_TRANSPORT)
-        //			sprintf(buffer,"Transport\0");
+        // else if (stype == STYPE_UNIT_GROUND_TRANSPORT)
+        // sprintf(buffer,"Transport\0");
         else
             sprintf(buffer, "Other\0");
     }
@@ -815,8 +815,8 @@ char* UnitTypeStr(Unit u, int stype, char buffer[])
             sprintf(buffer, "Transport\0");
         else if (stype == STYPE_UNIT_AMPHIBIOUS)
             sprintf(buffer, "Amphibious\0");
-        //		else if (stype == STYPE_UNIT_SSN)
-        //			sprintf(buffer,"Attk Sub\0");
+        // else if (stype == STYPE_UNIT_SSN)
+        // sprintf(buffer,"Attk Sub\0");
         else
             sprintf(buffer, "Other\0");
     }

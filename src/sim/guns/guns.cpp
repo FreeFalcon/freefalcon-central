@@ -30,11 +30,11 @@
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	GunClass::pool;
+MEM_POOL GunClass::pool;
 #endif
 
 float BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact);
-#define NUM_BULLETS		11
+#define NUM_BULLETS 11
 
 ACMITracerStartRecord acmiTracer;
 
@@ -103,7 +103,7 @@ void GunClass::Init(float muzzleVel, int numRounds)
     {
         numRoundsRemaining = numRounds;
         roundsPerSecond = 1.0F;
-        //	   initBulletVelocity = muzzleVel * 0.75F;
+        //    initBulletVelocity = muzzleVel * 0.75F;
         numFirstTracers = 0;
         numTracers = 0;
     }
@@ -176,7 +176,7 @@ void GunClass::InitLocalData(int type)
     bursts = 0;
     shellTargetPtr = NULL;
     shellDetonateTime = 0;
-    gunDomain = wdNoDomain;				// air, land, both
+    gunDomain = wdNoDomain; // air, land, both
 
     // ok, try and figure out what the domain is from the
     // weapon hit chance table
@@ -459,7 +459,7 @@ int GunClass::Exec(
                 }
 
                 // loop thru each element in the objective
-                VuListIterator	featureWalker(objective->GetComponents());
+                VuListIterator featureWalker(objective->GetComponents());
                 testFeature = (SimBaseClass*) featureWalker.GetFirst();
 
                 while (testFeature)
@@ -511,84 +511,84 @@ int GunClass::Exec(
                             AddParticleEffect(PSFX_GUN_HIT_OBJECT, &pos, &vec);
 
                             //{
-                            //	// add bullet effect...
-                            //	switch( PRANDInt5() )
-                            //	{
-                            //		case 0:
-                            //			/*
-                            //			OTWDriver.AddSfxRequest(
-                            //				new SfxClass(SFX_SPARKS,				// type
-                            //				&pos,							// world pos
-                            //				0.75f,							// time to live
-                            //				21.0f));						// scale
-                            //				*/
-                            //			DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-                            //					&pos,
-                            //					&PSvec);
-                            //			break;
-                            //		case 1:
-                            //			/*
-                            //			OTWDriver.AddSfxRequest(
-                            //				new SfxClass( SFX_FIRE4,		// type
-                            //				SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                            //				&pos,					// world pos
-                            //				&vec,					// vel vector
-                            //				1.5,					// time to live
-                            //				15.0f ) );				// scale
-                            //				*/
-                            //			DrawableParticleSys::PS_AddParticleEx((SFX_FIRE4 + 1),
-                            //					&pos,
-                            //					&vec);
-                            //			break;
-                            //		case 2:
-                            //			/*
-                            //			OTWDriver.AddSfxRequest(
-                            //				new SfxClass( SFX_FIRE5,		// type
-                            //				SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                            //				&pos,					// world pos
-                            //				&vec,					// vel vector
-                            //				1.5,					// time to live
-                            //				15.0f ) );				// scale
-                            //				*/
-                            //			DrawableParticleSys::PS_AddParticleEx((SFX_FIRE5 + 1),
-                            //					&pos,
-                            //					&vec);
-                            //			break;
-                            //		case 3:
-                            //			/*
-                            //			OTWDriver.AddSfxRequest(
-                            //				new SfxClass( SFX_DEBRISTRAIL,		// type
-                            //				SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
-                            //				&pos,					// world pos
-                            //				&vec,					// vel vector
-                            //				1.5,					// time to live
-                            //				15.0f ) );				// scale
-                            //				*/
-                            //			DrawableParticleSys::PS_AddParticleEx((SFX_DEBRISTRAIL + 1),
-                            //					&pos,
-                            //					&vec);
-                            //			break;
-                            //		case 4:
-                            //		default:
-                            //			pos.x += bulptr->xdot * 0.10f;
-                            //			pos.y += bulptr->ydot * 0.10f;
-                            //			pos.z += bulptr->zdot * 0.10f;
-                            //			/*
-                            //			OTWDriver.AddSfxRequest(
-                            //				new SfxClass( SFX_BILLOWING_SMOKE,		// type
-                            //				&pos,					// world pos
-                            //				10 + PRANDInt3() * 5,					// time to live
-                            //				0.3f ) );				// scale
-                            //				*/
-                            //			DrawableParticleSys::PS_AddParticleEx((SFX_BILLOWING_SMOKE + 1),
-                            //					&pos,
-                            //					&PSvec);
-                            //			break;
-                            //	}
+                            // // add bullet effect...
+                            // switch( PRANDInt5() )
+                            // {
+                            // case 0:
+                            // /*
+                            // OTWDriver.AddSfxRequest(
+                            // new SfxClass(SFX_SPARKS, // type
+                            // &pos, // world pos
+                            // 0.75f, // time to live
+                            // 21.0f)); // scale
+                            // */
+                            // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+                            // &pos,
+                            // &PSvec);
+                            // break;
+                            // case 1:
+                            // /*
+                            // OTWDriver.AddSfxRequest(
+                            // new SfxClass( SFX_FIRE4, // type
+                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                            // &pos, // world pos
+                            // &vec, // vel vector
+                            // 1.5, // time to live
+                            // 15.0f ) ); // scale
+                            // */
+                            // DrawableParticleSys::PS_AddParticleEx((SFX_FIRE4 + 1),
+                            // &pos,
+                            // &vec);
+                            // break;
+                            // case 2:
+                            // /*
+                            // OTWDriver.AddSfxRequest(
+                            // new SfxClass( SFX_FIRE5, // type
+                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                            // &pos, // world pos
+                            // &vec, // vel vector
+                            // 1.5, // time to live
+                            // 15.0f ) ); // scale
+                            // */
+                            // DrawableParticleSys::PS_AddParticleEx((SFX_FIRE5 + 1),
+                            // &pos,
+                            // &vec);
+                            // break;
+                            // case 3:
+                            // /*
+                            // OTWDriver.AddSfxRequest(
+                            // new SfxClass( SFX_DEBRISTRAIL, // type
+                            // SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES,
+                            // &pos, // world pos
+                            // &vec, // vel vector
+                            // 1.5, // time to live
+                            // 15.0f ) ); // scale
+                            // */
+                            // DrawableParticleSys::PS_AddParticleEx((SFX_DEBRISTRAIL + 1),
+                            // &pos,
+                            // &vec);
+                            // break;
+                            // case 4:
+                            // default:
+                            // pos.x += bulptr->xdot * 0.10f;
+                            // pos.y += bulptr->ydot * 0.10f;
+                            // pos.z += bulptr->zdot * 0.10f;
+                            // /*
+                            // OTWDriver.AddSfxRequest(
+                            // new SfxClass( SFX_BILLOWING_SMOKE, // type
+                            // &pos, // world pos
+                            // 10 + PRANDInt3() * 5, // time to live
+                            // 0.3f ) ); // scale
+                            // */
+                            // DrawableParticleSys::PS_AddParticleEx((SFX_BILLOWING_SMOKE + 1),
+                            // &pos,
+                            // &PSvec);
+                            // break;
+                            // }
 
-                            //	F4SoundFXSetPos( (PRANDInt3() == 1 ) ? SFX_GRNDHIT2 : SFX_GRNDHIT1,
-                            //					TRUE,
-                            //					bulptr->x, bulptr->y, bulptr->z, 1.0f);
+                            // F4SoundFXSetPos( (PRANDInt3() == 1 ) ? SFX_GRNDHIT2 : SFX_GRNDHIT1,
+                            // TRUE,
+                            // bulptr->x, bulptr->y, bulptr->z, 1.0f);
                             //}
 
                             // VuTargetEntity* target= (VuTargetEntity*) vuDatabase->Find(testFeature->OwnerId());
@@ -649,7 +649,7 @@ int GunClass::Exec(
                 {
                     // get feature's radius -- store in vt to save another stack var
                     // 2000-11-17 MODIFIED BY S.G. NEED TO ADD THE SIZE OF THE 'blastRadius' TO THIS
-                    //			   vt = ((SimBaseClass*)testObject->BaseData())->drawPointer->Radius();
+                    //    vt = ((SimBaseClass*)testObject->BaseData())->drawPointer->Radius();
                     vt = ((SimBaseClass*)testObject->BaseData())->drawPointer->Radius() + wcPtr->BlastRadius;
                     // END OF MODIFIED SECTION
                     ((SimBaseClass*)testObject->BaseData())->drawPointer->GetPosition(&fpos);
@@ -686,27 +686,27 @@ int GunClass::Exec(
 
                             ///*
                             // OTWDriver.AddSfxRequest(
-                            //  new SfxClass(SFX_TRAILSMOKE,				// type
-                            //  SFX_MOVES,						// flags
-                            //  &pos,							// world pos
-                            //  &vec,							// vector
-                            //  1.5f,							// time to live
-                            //  1.0f));							// scale
+                            //  new SfxClass(SFX_TRAILSMOKE, // type
+                            //  SFX_MOVES, // flags
+                            //  &pos, // world pos
+                            //  &vec, // vector
+                            //  1.5f, // time to live
+                            //  1.0f)); // scale
                             //  */
                             // DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-                            //					&pos,
-                            //					&vec);
+                            // &pos,
+                            // &vec);
                             //
                             // /*
                             // OTWDriver.AddSfxRequest(
-                            //  new SfxClass(SFX_SPARKS,				// type
-                            //  &pos,							// world pos
-                            //  0.75f,							// time to live
-                            //  11.0f));						// scale
+                            //  new SfxClass(SFX_SPARKS, // type
+                            //  &pos, // world pos
+                            //  0.75f, // time to live
+                            //  11.0f)); // scale
                             //  */
                             // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-                            //					&pos,
-                            //					&PSvec);
+                            // &pos,
+                            // &PSvec);
 
 
                             // VuTargetEntity* target= (VuTargetEntity*) vuDatabase->Find(testObject->BaseData()->OwnerId());
@@ -827,54 +827,54 @@ int GunClass::Exec(
                         AddParticleEffect(PSFX_GUN_HIT_GROUND, &pos, &vec);
 
                         //{
-                        //	F4SoundFXSetPos( (PRANDInt3() == 1 ) ? SFX_GRNDHIT2 : SFX_GRNDHIT1,
-                        //		TRUE,
-                        //		bulptr->x, bulptr->y, bulptr->z, 1.0f);
+                        // F4SoundFXSetPos( (PRANDInt3() == 1 ) ? SFX_GRNDHIT2 : SFX_GRNDHIT1,
+                        // TRUE,
+                        // bulptr->x, bulptr->y, bulptr->z, 1.0f);
                         //
-                        //	if ( !PRANDInt3() )
-                        //	{
-                        //		/*
-                        //		OTWDriver.AddSfxRequest(
-                        //			new SfxClass (SFX_GROUND_DUSTCLOUD,			// type
-                        //			SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
-                        //			&pos,							// world pos
-                        //			&vec,
-                        //			1.0f,							// time to live
-                        //			8.5f ));		// scale
-                        //			*/
-                        //		DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_DUSTCLOUD + 1),
-                        //							&pos,
-                        //							&vec);
+                        // if ( !PRANDInt3() )
+                        // {
+                        // /*
+                        // OTWDriver.AddSfxRequest(
+                        // new SfxClass (SFX_GROUND_DUSTCLOUD, // type
+                        // SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
+                        // &pos, // world pos
+                        // &vec,
+                        // 1.0f, // time to live
+                        // 8.5f )); // scale
+                        // */
+                        // DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_DUSTCLOUD + 1),
+                        // &pos,
+                        // &vec);
                         //
-                        //	}
-                        //	else if ( !PRANDInt3() )
-                        //	{
-                        //		/*
-                        //		OTWDriver.AddSfxRequest(
-                        //			new SfxClass( SFX_FIRE4,		// type
-                        //			SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                        //			&pos,					// world pos
-                        //			&vec,					// vel vector
-                        //			1.5,					// time to live
-                        //			15.0f ) );				// scale
-                        //			*/
-                        //		DrawableParticleSys::PS_AddParticleEx((SFX_FIRE4 + 1),
-                        //							&pos,
-                        //							&vec);
-                        //	}
-                        //	else
-                        //	{
-                        //		/*
-                        //		OTWDriver.AddSfxRequest(
-                        //			new SfxClass(SFX_SPARKS,				// type
-                        //			&pos,							// world pos
-                        //			0.75f,							// time to live
-                        //			21.0f));						// scale
-                        //			*/
-                        //		DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
-                        //							&pos,
-                        //							&PSvec);
-                        //	}
+                        // }
+                        // else if ( !PRANDInt3() )
+                        // {
+                        // /*
+                        // OTWDriver.AddSfxRequest(
+                        // new SfxClass( SFX_FIRE4, // type
+                        // SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                        // &pos, // world pos
+                        // &vec, // vel vector
+                        // 1.5, // time to live
+                        // 15.0f ) ); // scale
+                        // */
+                        // DrawableParticleSys::PS_AddParticleEx((SFX_FIRE4 + 1),
+                        // &pos,
+                        // &vec);
+                        // }
+                        // else
+                        // {
+                        // /*
+                        // OTWDriver.AddSfxRequest(
+                        // new SfxClass(SFX_SPARKS, // type
+                        // &pos, // world pos
+                        // 0.75f, // time to live
+                        // 21.0f)); // scale
+                        // */
+                        // DrawableParticleSys::PS_AddParticleEx((SFX_SPARKS + 1),
+                        // &pos,
+                        // &PSvec);
+                        // }
                         //}
 
                     }
@@ -890,20 +890,20 @@ int GunClass::Exec(
 
                         //if(!AddParticleEffect(PSFX_GUN_HIT_WATER,&pos,&vec))
                         //{
-                        //	F4SoundFXSetPos( SFX_SPLASH,
-                        //		TRUE,
-                        //		bulptr->x, bulptr->y, bulptr->z, 1.0f);
+                        // F4SoundFXSetPos( SFX_SPLASH,
+                        // TRUE,
+                        // bulptr->x, bulptr->y, bulptr->z, 1.0f);
                         //
-                        //	/*
-                        //	OTWDriver.AddSfxRequest(
-                        //		new SfxClass(SFX_WATER_STRIKE,				// type
-                        //		&pos,							// world pos
-                        //		1.2f,			// time to live
-                        //		20.0f) );		// scale
-                        //		*/
-                        //	DrawableParticleSys::PS_AddParticleEx((SFX_WATER_STRIKE + 1),
-                        //							&pos,
-                        //							&PSvec);
+                        // /*
+                        // OTWDriver.AddSfxRequest(
+                        // new SfxClass(SFX_WATER_STRIKE, // type
+                        // &pos, // world pos
+                        // 1.2f, // time to live
+                        // 20.0f) ); // scale
+                        // */
+                        // DrawableParticleSys::PS_AddParticleEx((SFX_WATER_STRIKE + 1),
+                        // &pos,
+                        // &PSvec);
                         //}
                     }
 
@@ -1145,12 +1145,12 @@ int GunClass::Exec(
         pos.z += vec.z*SimLibMajorFrameTime;
 
         OTWDriver.AddSfxRequest(
-        	new SfxClass(SFX_GUN_TRACER,				// type
-        		SFX_MOVES | SFX_USES_GRAVITY,						// flags
-        		&pos,							// world pos
-        		&vec,							// vector
-        		3.0f,							// time to live
-        		1.0f));							// scale
+         new SfxClass(SFX_GUN_TRACER, // type
+         SFX_MOVES | SFX_USES_GRAVITY, // flags
+         &pos, // world pos
+         &vec, // vector
+         3.0f, // time to live
+         1.0f)); // scale
         */
 
         // Could make numRoundsRemaining a float, but this changed less code...
@@ -1193,9 +1193,9 @@ int GunClass::Exec(
             pos.y = parent->YPos() + dmx[0][1] * xPos + dmx[1][1] * yOffset + dmx[2][1] * zPos;
             pos.z = parent->ZPos() + dmx[0][2] * xPos + dmx[1][2] * yOffset + dmx[2][2] * zPos;
             /*OTWDriver.AddTrailHead( smokeTrail,
-            						  pos.x,
-            						  pos.y,
-            						  pos.z );*/
+               pos.x,
+               pos.y,
+               pos.z );*/
             Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailIdNew, pos.x, pos.y, pos.z);
         }
     }
@@ -1221,7 +1221,7 @@ int GunClass::Exec(
         if (TrailIdNew)
         {
             /*OTWDriver.AddSfxRequest(
-            new SfxClass ( 2.0f,		// time to live
+            new SfxClass ( 2.0f, // time to live
             smokeTrail ) );*/
             DrawableParticleSys::PS_KillTrail(Trail);
             //smokeTrail = NULL
@@ -1244,11 +1244,11 @@ int GunClass::Exec(
 /*
 ** Name: BulletSphereHit
 ** Description:
-**	Check to see if a ray  from source's initial
-**	position (sp) to end position (ep) intersects target's bounding
-**	sphere (center at tc, radius r).  Returns distance to target if
+** Check to see if a ray  from source's initial
+** position (sp) to end position (ep) intersects target's bounding
+** sphere (center at tc, radius r).  Returns distance to target if
 **  ray hits sphere, less than 0 if not.
-**	The formula was gotten from Graphics Gems Vol1 - ray-sphere interset
+** The formula was gotten from Graphics Gems Vol1 - ray-sphere interset
 */
 float
 BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
@@ -1328,10 +1328,10 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
 /*
 ** Name: BulletBoxHit
 ** Description:
-**	Check to see if a ray  from source's initial
-**	position (sp) to end position (ep) intersects target's bounding
-**	sphere (center at tc, radius r).  Returns collision point and
+** Check to see if a ray  from source's initial
+** position (sp) to end position (ep) intersects target's bounding
+** sphere (center at tc, radius r).  Returns collision point and
 **  TRUE or FALSE if hit .
-**	The formula was gotten from Graphics Gems Vol1 - ray-box interset
+** The formula was gotten from Graphics Gems Vol1 - ray-box interset
 */
 

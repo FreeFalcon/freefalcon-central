@@ -43,7 +43,7 @@ extern bool g_bRP5Comp;
 // this means that every sec, the horizontal velocity loses this much
 float BombClass::dragConstant = 140.0f;
 
-//extern bool g_bArmingDelay;//me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bArmingDelay;//me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 extern bool g_bEnableWindsAloft;
 #include "fcc.h"
@@ -52,14 +52,14 @@ extern float g_fNukeStrengthFactor;
 extern float g_fNukeDamageMod;
 extern float g_fNukeDamageRadius;
 
-extern float g_fJDAMLift;		//Wombat778 3-12-04
-extern float g_fAIJSOWmaxRange;		// Cobra
+extern float g_fJDAMLift; //Wombat778 3-12-04
+extern float g_fAIJSOWmaxRange; // Cobra
 
 void CalcTransformMatrix(SimBaseClass* theObject);
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	BombClass::pool;
+MEM_POOL BombClass::pool;
 #endif
 
 BombClass::BombClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
@@ -446,7 +446,7 @@ int BombClass::Exec(void)
         {
             mlTrig trigWind;
             float wind;
-            Tpoint			pos;
+            Tpoint pos;
             pos.x = x;
             pos.y = y;
             pos.z = z;
@@ -534,7 +534,7 @@ int BombClass::Exec(void)
             endMessage->dataBlock.dPilotID   = 0;
             endMessage->dataBlock.dIndex     = 0;
             endMessage->dataBlock.fWeaponUID = Id();
-            endMessage->dataBlock.wIndex 	 = Type();
+            endMessage->dataBlock.wIndex   = Type();
             endMessage->dataBlock.x    = XPos() + XDelta() * SimLibMajorFrameTime * 2.0f;
             endMessage->dataBlock.y    = YPos() + YDelta() * SimLibMajorFrameTime * 2.0f;
             endMessage->dataBlock.z    = ZPos() + ZDelta() * SimLibMajorFrameTime * 2.0f;
@@ -556,10 +556,10 @@ int BombClass::Exec(void)
         // realistic section would be ran. If no parent, run this
         // There is no danger of a CTD if parent is NULL because the
         // OR will have it enter the if statement without running the 'IsPlayer'.
-        //	  if(!g_bRealisticAvionics || ( parent && !((AircraftClass *)parent)->IsPlayer()))
+        //   if(!g_bRealisticAvionics || ( parent && !((AircraftClass *)parent)->IsPlayer()))
         // Cobra - Forcing all non-Player (AI) into this section causes their bombs
         // to not be guided, thus randon hit pattern
-        //	  if(!g_bRealisticAvionics || !parent)
+        //   if(!g_bRealisticAvionics || !parent)
         /////////////////////////////////////////////////////
 
         // RED -  enough enter when it's not a guided Bomb or LGB for AI
@@ -608,10 +608,10 @@ int BombClass::Exec(void)
                     // 2001-04-17 MODIFIED BY S.G. AGAIN, THEY MIXE UP DEGREES AND RADIAN BUT THIS TIME, THE OTHER WAY AROUND...
                     //            PLUS THEY FORGOT THAT atan2 RETURNS A SIGNED VALUE
                     //            END THEN, range-rx * rx is range - rx*rx which is ALWAYS NEGATIVE. CAN'T TAKE A SQUARE ROOT OF A NEGATIVE NUMBER. I'VE CODED WHAT I *THINK* THEY WERE TRYING TO DO...
-                    //				  if (atan2(sqrt(range-rx * rx),rx) < 45.0F * RTD)
+                    //   if (atan2(sqrt(range-rx * rx),rx) < 45.0F * RTD)
                     //JAM 17Apr04 - This is what they were trying to do buddy :)
                     if (Abs(acosf(rx / range)) <= 45.f * DTR)
-                        //				  if (fabs(atan2(sqrt(range*range - rx*rx),rx)) < 45.0F * DTR)
+                        //   if (fabs(atan2(sqrt(range*range - rx*rx),rx)) < 45.0F * DTR)
                     {
                         desDx = (deltaX) / tFall;
                         desDy = (deltaY) / tFall;
@@ -775,7 +775,7 @@ int BombClass::Exec(void)
         else if (((flags & IsGPS) || (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
             FalconEntity *target = NULL;
-            //				SimBaseClass *simTarg;
+            // SimBaseClass *simTarg;
 
             // Cobra - Check that we have a valid auxData->JDAMLift for JSOWs
             if (EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW && (auxData->JDAMLift <= 5.0f))
@@ -796,9 +796,9 @@ int BombClass::Exec(void)
                     /*
                     CampBaseClass *campBaseObj;
                     if (targetPtr->BaseData()->IsSim()) // If we're a SIM object, get our campaign object
-                    	campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
+                     campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
                     else
-                    	campBaseObj = (CampBaseClass *)targetPtr->BaseData();
+                     campBaseObj = (CampBaseClass *)targetPtr->BaseData();
                     // Now find out if our campaign object is aggregated
                     if ((campBaseObj && !campBaseObj->IsAggregate()))
                     {
@@ -868,8 +868,8 @@ int BombClass::Exec(void)
 
             float newxdelta = 0.8F * XDelta() + 0.2F * desDx;
             float newydelta = 0.8F * YDelta() + 0.2F * desDy;
-            //			  float newzdelta= ZDelta()-(g_fJDAMLift*SimLibMajorFrameTime*cos(Pitch()));			  //take the "lift" of the bomb into account
-            float newzdelta = ZDelta() - (auxData->JDAMLift * SimLibMajorFrameTime * cos(Pitch()));		// Cobra - Use Bombdata JDAMLift
+            //   float newzdelta= ZDelta()-(g_fJDAMLift*SimLibMajorFrameTime*cos(Pitch()));   //take the "lift" of the bomb into account
+            float newzdelta = ZDelta() - (auxData->JDAMLift * SimLibMajorFrameTime * cos(Pitch())); // Cobra - Use Bombdata JDAMLift
             float newenergy = sqrt((newxdelta * newxdelta) + (newydelta * newydelta));
 
             if (newenergy > maxenergy)
@@ -878,7 +878,7 @@ int BombClass::Exec(void)
                 newydelta *= maxenergy / newenergy;
             }
 
-            SetDelta(newxdelta, newydelta, newzdelta);												//Wombat778 3-12-04 added newzdelta
+            SetDelta(newxdelta, newydelta, newzdelta); //Wombat778 3-12-04 added newzdelta
         }
         else if ((SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
@@ -952,7 +952,7 @@ int BombClass::Exec(void)
                         hitObj = NULL;
                     }
                 }
-                //else if (!g_bArmingDelay)	MI
+                //else if (!g_bArmingDelay) MI
                 else if (!g_bRealisticAvionics)
                 {
                     SendDamageMessage(hitObj, 0, FalconDamageType::BombDamage);
@@ -1033,26 +1033,26 @@ int BombClass::Exec(void)
             endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
             endMessage->RequestReliableTransmit();
             endMessage->RequestOutOfBandTransmit();
-            endMessage->dataBlock.fEntityID		= parent->Id();
-            endMessage->dataBlock.fCampID		= parent->GetCampID();
-            endMessage->dataBlock.fSide			= (uchar)parent->GetCountry();
-            endMessage->dataBlock.fPilotID		= shooterPilotSlot;
-            endMessage->dataBlock.fIndex		= parent->Type();
-            endMessage->dataBlock.dEntityID		= FalconNullId;
-            endMessage->dataBlock.dCampID		= 0;
-            endMessage->dataBlock.dSide			= 0;
-            endMessage->dataBlock.dPilotID		= 0;
-            endMessage->dataBlock.dIndex		= 0;
-            endMessage->dataBlock.fWeaponUID	= Id();
-            endMessage->dataBlock.wIndex 		= Type();
-            endMessage->dataBlock.x				= XPos() + XDelta() * SimLibMajorFrameTime * 2.0f;
-            endMessage->dataBlock.y				= YPos() + YDelta() * SimLibMajorFrameTime * 2.0f;
-            endMessage->dataBlock.z				= ZPos() + ZDelta() * SimLibMajorFrameTime * 2.0f;
-            endMessage->dataBlock.xDelta		= XDelta();
-            endMessage->dataBlock.yDelta		= YDelta();
-            endMessage->dataBlock.zDelta		= ZDelta();
+            endMessage->dataBlock.fEntityID = parent->Id();
+            endMessage->dataBlock.fCampID = parent->GetCampID();
+            endMessage->dataBlock.fSide = (uchar)parent->GetCountry();
+            endMessage->dataBlock.fPilotID = shooterPilotSlot;
+            endMessage->dataBlock.fIndex = parent->Type();
+            endMessage->dataBlock.dEntityID = FalconNullId;
+            endMessage->dataBlock.dCampID = 0;
+            endMessage->dataBlock.dSide = 0;
+            endMessage->dataBlock.dPilotID = 0;
+            endMessage->dataBlock.dIndex = 0;
+            endMessage->dataBlock.fWeaponUID = Id();
+            endMessage->dataBlock.wIndex  = Type();
+            endMessage->dataBlock.x = XPos() + XDelta() * SimLibMajorFrameTime * 2.0f;
+            endMessage->dataBlock.y = YPos() + YDelta() * SimLibMajorFrameTime * 2.0f;
+            endMessage->dataBlock.z = ZPos() + ZDelta() * SimLibMajorFrameTime * 2.0f;
+            endMessage->dataBlock.xDelta = XDelta();
+            endMessage->dataBlock.yDelta = YDelta();
+            endMessage->dataBlock.zDelta = ZDelta();
             endMessage->dataBlock.groundType    = -1;
-            endMessage->dataBlock.endCode		= FalconMissileEndMessage::BombImpact;
+            endMessage->dataBlock.endCode = FalconMissileEndMessage::BombImpact;
 
             endMessage->SetParticleEffectName(auxData->psBombImpact); // MLR 6/26/2004 -
 
@@ -1088,9 +1088,9 @@ void BombClass::SetTarget(SimObjectType* newTarget)
         ShiAssert(newTarget->BaseData() != (FalconEntity*)0xDDDDDDDD);
 
         //#ifdef DEBUG
-        //		targetPtr = newTarget->Copy(OBJ_TAG, this);
+        // targetPtr = newTarget->Copy(OBJ_TAG, this);
         //#else
-        //		targetPtr = newTarget->Copy();
+        // targetPtr = newTarget->Copy();
         //#endif
         targetPtr->Reference();
     }
@@ -1129,8 +1129,8 @@ void BombClass::SetVuPosition(void)
 /*
  ** Name: ApplyProximityDamage
  ** Description:
- **		Cycles thru objectList check for proximity.
- **		Cycles thru all objectives, and checks vs individual features
+ ** Cycles thru objectList check for proximity.
+ ** Cycles thru all objectives, and checks vs individual features
  **        if it's within the objective's bounds.
  */
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
@@ -1172,7 +1172,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
         damageRadiusSqrd = min(lethalRadiusSqrd, lethalRadiusSqrd * HaG / 1000.0f);
 
         // COBRA _ RED- Scale strenght to have it's Max at 500 Ft, then going down
-        if (HaG < 1000)	strength = 1.0f * HaG / 1000.0f;
+        if (HaG < 1000) strength = 1.0f * HaG / 1000.0f;
         else strength = RESCALE(HaG, 1000.0f, 2000.0f, 1.0f, 0.1f);
 
         // Bomblets drops, so, always some strengt
@@ -1275,7 +1275,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
         if (objective->GetComponents())
         {
             // loop thru each element in the objective
-            VuListIterator	featureWalker(objective->GetComponents());
+            VuListIterator featureWalker(objective->GetComponents());
             testObject = (SimBaseClass*) featureWalker.GetFirst();
 
             while (testObject)
@@ -1284,9 +1284,9 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                 {
                     tmpX = testObject->XPos() - XPos();
                     tmpY = testObject->YPos() - YPos();
-                    //					tmpZ = testObject->ZPos() - ZPos();		// Features are at ground level, and so is this bomb
+                    // tmpZ = testObject->ZPos() - ZPos(); // Features are at ground level, and so is this bomb
 
-                    rangeSquare = tmpX * tmpX + tmpY * tmpY;;	// + tmpZ*tmpZ;
+                    rangeSquare = tmpX * tmpX + tmpY * tmpY;; // + tmpZ*tmpZ;
 
                     if (wc && wc->DamageType == NuclearDam)
                     {
@@ -1295,7 +1295,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
                             SendDamageMessage(testObject, rangeSquare * strength * g_fNukeStrengthFactor, FalconDamageType::ProximityDamage);
                         }
                     }
-                    else if (rangeSquare < damageRadiusSqrd * damageMod)	//MI added *damageMod
+                    else if (rangeSquare < damageRadiusSqrd * damageMod) //MI added *damageMod
                     {
                         SendDamageMessage(testObject, rangeSquare * strength, FalconDamageType::ProximityDamage);
                     } // end if within lethal radius
@@ -1324,24 +1324,24 @@ void BombClass::DoExplosion(void)
         endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
         endMessage->RequestReliableTransmit();
         endMessage->RequestOutOfBandTransmit();
-        endMessage->dataBlock.fEntityID		= parent ? parent->Id() : Id();
-        endMessage->dataBlock.fCampID		= parent ? parent->GetCampID() : 0;
-        endMessage->dataBlock.fSide			= parent ? (uchar)parent->GetCountry() : 0;
-        endMessage->dataBlock.fPilotID		= shooterPilotSlot;
-        endMessage->dataBlock.fIndex		= parent ? parent->Type() : 0;
-        endMessage->dataBlock.dEntityID		= FalconNullId;
-        endMessage->dataBlock.dCampID		= 0;
-        endMessage->dataBlock.dSide			= 0;
-        endMessage->dataBlock.dPilotID		= 0;
-        endMessage->dataBlock.dIndex		= 0;
-        endMessage->dataBlock.fWeaponUID	= Id();
-        endMessage->dataBlock.wIndex 		= Type();
-        endMessage->dataBlock.x				= XPos();
-        endMessage->dataBlock.y				= YPos();
-        endMessage->dataBlock.z				= ZPos();
-        endMessage->dataBlock.xDelta		= edeltaX;
-        endMessage->dataBlock.yDelta		= edeltaY;
-        endMessage->dataBlock.zDelta		= edeltaZ;
+        endMessage->dataBlock.fEntityID = parent ? parent->Id() : Id();
+        endMessage->dataBlock.fCampID = parent ? parent->GetCampID() : 0;
+        endMessage->dataBlock.fSide = parent ? (uchar)parent->GetCountry() : 0;
+        endMessage->dataBlock.fPilotID = shooterPilotSlot;
+        endMessage->dataBlock.fIndex = parent ? parent->Type() : 0;
+        endMessage->dataBlock.dEntityID = FalconNullId;
+        endMessage->dataBlock.dCampID = 0;
+        endMessage->dataBlock.dSide = 0;
+        endMessage->dataBlock.dPilotID = 0;
+        endMessage->dataBlock.dIndex = 0;
+        endMessage->dataBlock.fWeaponUID = Id();
+        endMessage->dataBlock.wIndex  = Type();
+        endMessage->dataBlock.x = XPos();
+        endMessage->dataBlock.y = YPos();
+        endMessage->dataBlock.z = ZPos();
+        endMessage->dataBlock.xDelta = edeltaX;
+        endMessage->dataBlock.yDelta = edeltaY;
+        endMessage->dataBlock.zDelta = edeltaZ;
 
         // add crater depending on ground type and closeness to ground
         groundZ = OTWDriver.GetGroundLevel(XPos(), YPos());
@@ -1369,7 +1369,7 @@ void BombClass::DoExplosion(void)
            ) //&&( ZPos() - groundZ ) > -40.0f ) // JB 010710 craters weren't showing up
         {
             //AddToTimedPersistantList(
-            //	VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos()
+            // VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos()
             //);
             AddToTimedPersistantList(
                 MapVisId(VIS_CRATER2 + 2), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos()

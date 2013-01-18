@@ -50,7 +50,7 @@
 
 #include "ColorBank.h"
 
-#include "SimIO.h"	// Retro 3Jan2004
+#include "SimIO.h" // Retro 3Jan2004
 #include "Drawbsp.h"// Retro 8May2004
 
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
@@ -72,16 +72,16 @@ float rollStickOffsetRate = 0.0F;
 float pitchRudderTrimRate = 0.0F;
 float pitchAileronTrimRate = 0.0f;
 float pitchElevatorTrimRate = 0.0f;
-float pitchManualTrim = 0.0F;	//MI
-float yawManualTrim = 0.0F;		//MI
-float rollManualTrim = 0.0F;	//MI
-int	UseKeyboardThrottle = FALSE;
+float pitchManualTrim = 0.0F; //MI
+float yawManualTrim = 0.0F; //MI
+float rollManualTrim = 0.0F; //MI
+int UseKeyboardThrottle = FALSE;
 extern int ShowVersion;
 extern float gSpeedyGonzales;
 int gDoOwnshipSmoke = 0;
 extern PilotInputs UserStickInputs;
-extern bool g_bEnableTrackIR;		// Retro 24Dez2004
-extern bool g_bTrackIRon;		// Retro 24Dez2004
+extern bool g_bEnableTrackIR; // Retro 24Dez2004
+extern bool g_bTrackIRon; // Retro 24Dez2004
 
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;
@@ -95,7 +95,7 @@ static int theFault = 1;
 extern int supercruise;
 extern int curColorIdx;
 
-//extern bool g_bHardCoreReal; //me123		MI replaced with g_bRealisticAvionics
+//extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 //MI for ICP stuff
 extern bool g_bRealisticAvionics;
 extern bool g_bMLU;
@@ -104,8 +104,8 @@ extern bool g_bINS;
 extern float g_fFOVIncrement;  //Wombat778 9-27-2003
 extern float g_fMaximumFOV;  //Wombat778 10-11-2003
 extern float g_fDefaultFOV;  //Wombat778 10-31-2003
-extern float g_fMinimumFOV;	 //Wombat778 1-15-2003
-extern float g_fNarrowFOV;	 //Wombat778 2-21-2004
+extern float g_fMinimumFOV;  //Wombat778 1-15-2003
+extern float g_fNarrowFOV;  //Wombat778 2-21-2004
 extern float g_fWideviewFOV; //Wombat778 2-21-2004
 extern bool g_b3DClickableCockpitDebug;
 extern int g_nMaxSimTimeAcceleration;
@@ -134,8 +134,8 @@ extern float g_frudderOffset;
 // MD -- 20040210: analog idle/cutoff
 extern bool g_bUseAnalogIdleCutoff;
 
-extern bool g_bAGRadarFixes;	//MD
-extern bool g_bExtViewOnGround;	// RAS -5Dec04- Allow external sat/orbit view while on ground
+extern bool g_bAGRadarFixes; //MD
+extern bool g_bExtViewOnGround; // RAS -5Dec04- Allow external sat/orbit view while on ground
 
 #ifdef DAVE_DBG
 int MoveBoom = FALSE;
@@ -179,17 +179,17 @@ void ToggleVtune(unsigned long, int state, void*)
         {
             doVtune = FALSE;
             pauseFn();
-            //			MonoPrint( "VTUNE PAUSED\n" );
+            // MonoPrint( "VTUNE PAUSED\n" );
         }
         else
         {
-            //			MonoPrint( "VTUNE RECORDING\n" );
+            // MonoPrint( "VTUNE RECORDING\n" );
             doVtune = TRUE;
             resumeFn();
         }
     }
 }
-#endif	// _DO_VTUNE_
+#endif // _DO_VTUNE_
 
 
 void KneeboardTogglePage(unsigned long, int state, void*)
@@ -265,7 +265,7 @@ void OTWToggleScoreDisplay(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        unsigned int	flag;
+        unsigned int flag;
 
         if (SimDriver.RunningDogfight())
         {
@@ -739,7 +739,7 @@ void SimRadarElevationUp(unsigned long, int state, void*)
         if (theRadar)
         {
             // 2001-02-21 MODIFIED BY S.G. MOVES TOO MUCH
-            //		theRadar->StepAAelvation( 8 );
+            // theRadar->StepAAelvation( 8 );
             theRadar->StepAAelvation(4);
         }
     }
@@ -947,7 +947,7 @@ void SimSpeedyGonzalesUp(unsigned long, int state, void*)
         gSpeedyGonzales = 32.0;
     }
 
-    //	MonoPrint ("Speedy Up %f\n", gSpeedyGonzales);
+    // MonoPrint ("Speedy Up %f\n", gSpeedyGonzales);
 }
 
 void SimSpeedyGonzalesDown(unsigned long, int state, void*)
@@ -962,7 +962,7 @@ void SimSpeedyGonzalesDown(unsigned long, int state, void*)
         gSpeedyGonzales = 1.0;
     }
 
-    //	MonoPrint ("Speedy Down %f\n", gSpeedyGonzales);
+    // MonoPrint ("Speedy Down %f\n", gSpeedyGonzales);
 }
 
 void SimPickle(unsigned long, int state, void*)
@@ -996,7 +996,7 @@ void SimPickle(unsigned long, int state, void*)
             if (SimDriver.GetPlayerAircraft() && // MLR 5/4/2004 - <-- THIS IS NULL!!! Fixing pickle-after-ejaculate-CTD.
                 !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered &&
                 !((AircraftClass*)SimDriver.GetPlayerAircraft())->doEjectCountdown)
-                //&& !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectCountdown)		//Wombat778 4-02-04	Removed, as the ejectcountdown value is not a stable number, and causes the laser NEVER to fire automatically
+                //&& !((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectCountdown) //Wombat778 4-02-04 Removed, as the ejectcountdown value is not a stable number, and causes the laser NEVER to fire automatically
             {
                 if (SimDriver.GetPlayerAircraft()->FCC
                     && SimDriver.GetPlayerAircraft()->FCC->LaserArm
@@ -1052,7 +1052,7 @@ void SimMissileStep(unsigned long, int state, void*)//me123 addet nosewheel stea
     {
         if (!SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::InAir))
         {
-            //if (g_bHardCoreReal)	MI
+            //if (g_bHardCoreReal) MI
             if (g_bRealisticAvionics)
             {
                 if (state & KEY_DOWN)
@@ -1092,10 +1092,10 @@ void SimMissileStep(unsigned long, int state, void*)//me123 addet nosewheel stea
                 }
 
                 if (masterMode == FireControlComputer::AirGroundBomb
-                    ||	masterMode == FireControlComputer::AirGroundMissile
-                    ||	masterMode == FireControlComputer::AirGroundHARM
-                    ||	masterMode == FireControlComputer::AirGroundLaser
-                    ||	masterMode == FireControlComputer::AirGroundRocket)
+                    || masterMode == FireControlComputer::AirGroundMissile
+                    || masterMode == FireControlComputer::AirGroundHARM
+                    || masterMode == FireControlComputer::AirGroundLaser
+                    || masterMode == FireControlComputer::AirGroundRocket)
                 {
                     SimDriver.GetPlayerAircraft()->Sms->StepAGWeapon();
                 }
@@ -1104,7 +1104,7 @@ void SimMissileStep(unsigned long, int state, void*)//me123 addet nosewheel stea
             {
                 // COBRA - RED - in Bombs Mode, step thru FCC Sub modes
                 if (masterMode == FireControlComputer::AirGroundBomb
-                    ||	masterMode == FireControlComputer::AirGroundLaser)
+                    || masterMode == FireControlComputer::AirGroundLaser)
                     SimDriver.GetPlayerAircraft()->FCC->NextSubMode();
                 else
                     SimDriver.GetPlayerAircraft()->FCC->WeaponStep();
@@ -1154,12 +1154,12 @@ void SimCursorUp(unsigned long, int state, void*)
 
                 //ACM Modes get's us directly into ACM Slew
                 //if(theRadar && (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                //	  theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
-                //	  theRadar->GetRadarMode() == RadarClass::ACM_10x60))
+                //   theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                //   theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
-                //	  SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
-                //	  theRadar->SelectACMSlew();
+                //   SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
+                //   theRadar->SelectACMSlew();
                 //}
                 //  else
                 if (
@@ -1190,7 +1190,7 @@ void SimCursorUp(unsigned long, int state, void*)
         else
         {
             //if(g_bRealisticAvionics)
-            //	  SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
+            //   SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
             pac->FCC->cursorYCmd = 0;
             pac->FCC->HSDCursorYCmd = 0;
         }
@@ -1236,12 +1236,12 @@ void SimCursorDown(unsigned long, int state, void*)
 
                 //ACM Modes get's us directly into ACM Slew
                 //if(theRadar && (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_10x60))
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
-                //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
-                //	theRadar->SelectACMSlew();
+                // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
+                // theRadar->SelectACMSlew();
                 //}
                 //else
                 if (
@@ -1272,7 +1272,7 @@ void SimCursorDown(unsigned long, int state, void*)
         else
         {
             //if(g_bRealisticAvionics)
-            //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
+            // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
             pac->FCC->cursorYCmd = 0;
             pac->FCC->HSDCursorYCmd = 0;
         }
@@ -1314,12 +1314,12 @@ void SimCursorLeft(unsigned long, int state, void*)
 
                 //ACM Modes get's us directly into ACM Slew
                 //if(theRadar && (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_10x60))
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
-                //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
-                //	theRadar->SelectACMSlew();
+                // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
+                // theRadar->SelectACMSlew();
                 //}
                 //else
                 if (
@@ -1350,7 +1350,7 @@ void SimCursorLeft(unsigned long, int state, void*)
         else
         {
             //if(g_bRealisticAvionics)
-            //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
+            // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
             pac->FCC->cursorXCmd = 0;
             pac->FCC->HSDCursorXCmd = 0;
         }
@@ -1392,12 +1392,12 @@ void SimCursorRight(unsigned long, int state, void*)
 
                 //ACM Modes get's us directly into ACM Slew
                 //if(theRadar && (theRadar->GetRadarMode() == RadarClass::ACM_30x20 ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
-                //	theRadar->GetRadarMode() == RadarClass::ACM_10x60))
+                // theRadar->GetRadarMode() == RadarClass::ACM_BORE ||
+                // theRadar->GetRadarMode() == RadarClass::ACM_10x60))
                 //{
                 //if we have a lock, break it
-                //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
-                //	theRadar->SelectACMSlew();
+                // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = TRUE;
+                // theRadar->SelectACMSlew();
                 //}
                 //else
                 if (
@@ -1428,7 +1428,7 @@ void SimCursorRight(unsigned long, int state, void*)
         else
         {
             //if(g_bRealisticAvionics)
-            //	SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
+            // SimDriver.GetPlayerAircraft()->FCC->dropTrackCmd = FALSE;
             pac->FCC->cursorXCmd = 0;
             pac->FCC->HSDCursorXCmd = 0;
         }
@@ -1481,7 +1481,7 @@ namespace
                     pac->FCC->cursorXCmd = xOff;
                     pac->FCC->cursorYCmd = yOff;
                 }
-                else if	(pFCC && pFCC->IsSOI)
+                else if (pFCC && pFCC->IsSOI)
                 {
                     pac->FCC->HSDCursorXCmd = xOff;
                     pac->FCC->HSDCursorYCmd = yOff;
@@ -1838,21 +1838,21 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
         {
             //MI modified for ICP
             /* // MLR 2/8/2004 -
-            if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) ||	// ASSOCIATOR: Added a STAF check here so we can get out of it
+            if( SimDriver.GetPlayerAircraft()->FCC->GetSubMode() == (FireControlComputer::STRAF) || // ASSOCIATOR: Added a STAF check here so we can get out of it
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::AAGun) &&
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Missile) &&
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::Dogfight) &&
                SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != (FireControlComputer::MissileOverride))
-            	  SimDriver.GetPlayerAircraft()->FCC->SetMasterMode( SimDriver.GetPlayerAircraft()->FCC->GetLastAaMasterMode() );
+               SimDriver.GetPlayerAircraft()->FCC->SetMasterMode( SimDriver.GetPlayerAircraft()->FCC->GetLastAaMasterMode() );
             */
             Sms = SimDriver.GetPlayerAircraft()->Sms;
             // MLR 2/8/2004 - renamed function
-            //Sms->StepWeaponClass();	// ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
-            Sms->StepAAWeapon();	// ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
+            //Sms->StepWeaponClass(); // ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
+            Sms->StepAAWeapon(); // ASSOCIATOR: now it steps the weapon type instead of Missile stepping each weapon
 
             // ASSOCIATOR: This whole section is redundant now and is handled in a central place in the SelectWeapon method
             /*if (Sms && SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::Dogfight &&
-            		SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::MissileOverride )
+             SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() != FireControlComputer::MissileOverride )
             {
                //Sms->GetNextWeapon(wdAir);
                Sms->curWeaponDomain = wdAir;
@@ -1864,7 +1864,7 @@ void SimNextAAWeapon(unsigned long val, int state, void* pButton)
                // Marco Edit - Dogfight check for AIM120
                //if (SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == (FireControlComputer::Dogfight) && Sms->curWeaponType == wtAim120)
                //{
-               //	SimDriver.GetPlayerAircraft()->FCC->SetDgftSubMode(FireControlComputer::Aim120);
+               // SimDriver.GetPlayerAircraft()->FCC->SetDgftSubMode(FireControlComputer::Aim120);
                //}
             }
             */
@@ -2307,9 +2307,9 @@ void AFGearToggle(unsigned long, int state, void*)
             SimDriver.GetPlayerAircraft()->af->gearHandle = -1.0F;
             /*
             F4SoundFXSetPos( SFX_GEARUP, TRUE,
-            	SimDriver.GetPlayerAircraft()->XPos(),
-            	SimDriver.GetPlayerAircraft()->YPos(),
-            	SimDriver.GetPlayerAircraft()->ZPos(), 1.0f );
+             SimDriver.GetPlayerAircraft()->XPos(),
+             SimDriver.GetPlayerAircraft()->YPos(),
+             SimDriver.GetPlayerAircraft()->ZPos(), 1.0f );
              */
         }
         else
@@ -2317,9 +2317,9 @@ void AFGearToggle(unsigned long, int state, void*)
             SimDriver.GetPlayerAircraft()->af->gearHandle = 1.0F;
             /*
             F4SoundFXSetPos( SFX_GEARDN, TRUE,
-            	SimDriver.GetPlayerAircraft()->XPos(),
-            	SimDriver.GetPlayerAircraft()->YPos(),
-            	SimDriver.GetPlayerAircraft()->ZPos(), 1.0f );
+             SimDriver.GetPlayerAircraft()->XPos(),
+             SimDriver.GetPlayerAircraft()->YPos(),
+             SimDriver.GetPlayerAircraft()->ZPos(), 1.0f );
             */
         }
     }
@@ -2442,7 +2442,7 @@ void AFThrottleDown(unsigned long, int state, void*)
             throttleOffset = UserStickInputs.throttle;
         }
 
-        //		throttleOffsetRate -= 0.01F;
+        // throttleOffsetRate -= 0.01F;
         throttleOffsetRate = -g_fAFThrottleDown;
     }
     else
@@ -2672,10 +2672,10 @@ void OTWSelectEFOVPadlockMode(unsigned long, int state, void*)
         (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
         // 20020-03-12 MODIFIED BY S.G. Not working, lets try with three different functions, one that doesn't care, one that checks for AA and one for AG
-        /*	  if (state & CTRL_KEY)
-        		 OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
-        	  else
-        		 OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
+        /*   if (state & CTRL_KEY)
+          OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
+           else
+          OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
         */
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityNone);
         // END OF MODIFIED SECTION
@@ -2712,10 +2712,10 @@ void OTWSelectF3PadlockMode(unsigned long, int state, void*)
     {
         // 20020-03-12 ADDED BY S.G. If we ask for, allow multi state padlocking by choosing what to look for
         // 20020-03-12 MODIFIED BY S.G. Not working, lets try with three different functions, one that doesn't care, one that checks for AA and one for AG
-        /*	  if (state & CTRL_KEY)
-        		 OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
-        	  else
-        		 OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
+        /*   if (state & CTRL_KEY)
+          OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAG);
+           else
+          OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityAA);
         */
         OTWDriver.Padlock_SetPriority(OTWDriverClass::PriorityNone);
         // END OF MODIFIED SECTION
@@ -3542,7 +3542,7 @@ void OTW1200DView(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(100);	//100 = id for 12:00 Down panel
+        OTWDriver.pCockpitManager->SetActivePanel(100); //100 = id for 12:00 Down panel
     }
 }
 
@@ -3550,7 +3550,7 @@ void OTW1200HUDView(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(0);	//0 = id for 12:00 hud panel
+        OTWDriver.pCockpitManager->SetActivePanel(0); //0 = id for 12:00 hud panel
     }
 }
 
@@ -3567,7 +3567,7 @@ void OTW1200View(unsigned long, int state, void*)
                 OTWDriver.pCockpitManager->SetActivePanel(1100);
         }
         else
-            OTWDriver.pCockpitManager->SetActivePanel(1100);	//1100 = id for 12:00 50-50 panel
+            OTWDriver.pCockpitManager->SetActivePanel(1100); //1100 = id for 12:00 50-50 panel
     }
 }
 
@@ -3575,7 +3575,7 @@ void OTW1200LView(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(600);	//100 = id for 12:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(600); //100 = id for 12:00 panel
     }
 }
 
@@ -3583,7 +3583,7 @@ void OTW1000View(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(500);	//101 = id for 10:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(500); //101 = id for 10:00 panel
     }
 }
 
@@ -3591,7 +3591,7 @@ void OTW200View(unsigned long, int state, void*)
 {
     if ((state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(200);	//102 = id for 2:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(200); //102 = id for 2:00 panel
     }
 }
 
@@ -3599,7 +3599,7 @@ void OTW300View(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(300);	//103 = id for 3:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(300); //103 = id for 3:00 panel
     }
 }
 
@@ -3607,7 +3607,7 @@ void OTW400View(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(400);	//104 = id for 4:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(400); //104 = id for 4:00 panel
     }
 }
 
@@ -3615,7 +3615,7 @@ void OTW800View(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(800);	//105 = id for 8:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(800); //105 = id for 8:00 panel
     }
 }
 
@@ -3623,7 +3623,7 @@ void OTW900View(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(900);	//106 = id for 9:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(900); //106 = id for 9:00 panel
     }
 }
 
@@ -3631,7 +3631,7 @@ void OTW1200RView(unsigned long, int state, void*)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        OTWDriver.pCockpitManager->SetActivePanel(700);	//106 = id for 9:00 panel
+        OTWDriver.pCockpitManager->SetActivePanel(700); //106 = id for 9:00 panel
     }
 }
 
@@ -3639,7 +3639,7 @@ void SimToggleChatMode(unsigned long, int, void*)
 {
     if (SimDriver.GetPlayerAircraft())
     {
-        //	   F4ChatToggleXmitReceive();
+        //    F4ChatToggleXmitReceive();
     }
 }
 
@@ -3783,25 +3783,25 @@ void FOVToggle(unsigned long, int state, void*)
             //degrees when it is at 60, and will set it to 60, whenever it is not at 60;
         {
             narrowFOV = TRUE;
-            OTWDriver.SetFOV(g_fNarrowFOV * DTR);		//Wombat778 2-21-2004  Changed to g_fNarrowFov
+            OTWDriver.SetFOV(g_fNarrowFOV * DTR); //Wombat778 2-21-2004  Changed to g_fNarrowFov
         }
         else
         {
             narrowFOV = FALSE;
-            OTWDriver.SetFOV(g_fDefaultFOV * DTR);		//Wombat778 10-31-2003 changed to default FOV
+            OTWDriver.SetFOV(g_fDefaultFOV * DTR); //Wombat778 10-31-2003 changed to default FOV
         }
     }
 }
 
-void FOVDecrease(unsigned long, int state, void*)		//Wombat778	9-27-2003
+void FOVDecrease(unsigned long, int state, void*) //Wombat778 9-27-2003
 {
     if (state & KEY_DOWN)
     {
-        if (OTWDriver.GetFOV() > (g_fMinimumFOV + g_fFOVIncrement) * DTR)	//Added g_fMinimumFOV //Ensure that we never set the FOV to 0 or less
+        if (OTWDriver.GetFOV() > (g_fMinimumFOV + g_fFOVIncrement) * DTR) //Added g_fMinimumFOV //Ensure that we never set the FOV to 0 or less
         {
             OTWDriver.SetFOV(OTWDriver.GetFOV()  - (g_fFOVIncrement * DTR));
 
-            if (OTWDriver.GetFOV() == g_fDefaultFOV * DTR)	//Wombat778 10-31-2003 changed to default FOV  //set narrowFOV to false if we are back to the default FOV
+            if (OTWDriver.GetFOV() == g_fDefaultFOV * DTR) //Wombat778 10-31-2003 changed to default FOV  //set narrowFOV to false if we are back to the default FOV
                 narrowFOV = FALSE;
             else
                 narrowFOV = TRUE;
@@ -3810,16 +3810,16 @@ void FOVDecrease(unsigned long, int state, void*)		//Wombat778	9-27-2003
     }
 }
 
-void FOVIncrease(unsigned long, int state, void*)		//Wombat778	9-27-2003
+void FOVIncrease(unsigned long, int state, void*) //Wombat778 9-27-2003
 {
     if (state & KEY_DOWN)
     {
-        if (OTWDriver.GetFOV() <= (g_fMaximumFOV - g_fFOVIncrement) * DTR)		//10/11/03 Ensure that we never set the FOV to greater than the max
+        if (OTWDriver.GetFOV() <= (g_fMaximumFOV - g_fFOVIncrement) * DTR) //10/11/03 Ensure that we never set the FOV to greater than the max
         {
             narrowFOV = TRUE;
             OTWDriver.SetFOV(OTWDriver.GetFOV()  + (g_fFOVIncrement * DTR));
 
-            if (OTWDriver.GetFOV() == g_fDefaultFOV * DTR)			//Wombat778 10-31-2003 changed to Default FOV //set narrowFOV to false if we are back to the default FOV
+            if (OTWDriver.GetFOV() == g_fDefaultFOV * DTR) //Wombat778 10-31-2003 changed to Default FOV //set narrowFOV to false if we are back to the default FOV
                 narrowFOV = FALSE;
             else
                 narrowFOV = TRUE;
@@ -3827,7 +3827,7 @@ void FOVIncrease(unsigned long, int state, void*)		//Wombat778	9-27-2003
     }
 }
 
-void FOVDefault(unsigned long, int state, void*)		//Wombat778 9-27-2003
+void FOVDefault(unsigned long, int state, void*) //Wombat778 9-27-2003
 {
     if (state & KEY_DOWN)
     {
@@ -3841,7 +3841,7 @@ void FOVDefault(unsigned long, int state, void*)		//Wombat778 9-27-2003
         else
         {
             narrowFOV = FALSE;
-            OTWDriver.SetFOV(g_fDefaultFOV * DTR);		//Wombat778 10-31-2003 changed to default FOV
+            OTWDriver.SetFOV(g_fDefaultFOV * DTR); //Wombat778 10-31-2003 changed to default FOV
         }
     }
 }
@@ -3976,7 +3976,7 @@ void SimECMOn(unsigned long, int state, void*)
 //Wombat778 11-3-2003 Added for the pitbuilders.  Really SimECMOn should be named SimECMToggle, but I don't want to break any keystrokes files.
 // MD -- 20031128: minor changes following up on conversation with the originator of the request for this feature.
 
-void SimECMStandby(unsigned long, int state, void*)		//Switches ECM off.  Map to HOTAS CMS hat "right"
+void SimECMStandby(unsigned long, int state, void*) //Switches ECM off.  Map to HOTAS CMS hat "right"
 {
     if (!g_bRealisticAvionics)  // not intended for anything other than realistic mode
         return;
@@ -3998,7 +3998,7 @@ void SimECMStandby(unsigned long, int state, void*)		//Switches ECM off.  Map to
 //Wombat778 11-3-2003 Added for the pitbuilders.  Really SimECMOn should be named SimECMToggle, but I don't want to break any keystrokes files.
 // MD -- 20031128: minor changes following up on conversation with the originator of the request for this feature.
 
-void SimECMConsent(unsigned long, int state, void*)		//Switches ECM on.  Map to HOTAS CMS hat "down"
+void SimECMConsent(unsigned long, int state, void*) //Switches ECM on.  Map to HOTAS CMS hat "down"
 {
     if (!g_bRealisticAvionics)  // not intended for anything other than realistic mode
         return;
@@ -4254,8 +4254,8 @@ void SimHSIIlsTcn(unsigned long, int state, void*)
     {
         if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
         {
-            SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
-            SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+            SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
+            SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
 
         gNavigationSys->SetInstrumentMode(NavigationSystem::ILS_TACAN);
@@ -4275,8 +4275,8 @@ void SimHSITcn(unsigned long, int state, void*)
     {
         if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
         {
-            SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
-            SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+            SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
+            SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
 
         gNavigationSys->SetInstrumentMode(NavigationSystem::TACAN);
@@ -4296,8 +4296,8 @@ void SimHSINav(unsigned long, int state, void*)
     {
         if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
         {
-            SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
-            SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+            SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
+            SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
 
         gNavigationSys->SetInstrumentMode(NavigationSystem::NAV);
@@ -4317,8 +4317,8 @@ void SimHSIIlsNav(unsigned long, int state, void*)
     {
         if (g_bRealisticAvionics && g_bINS && SimDriver.GetPlayerAircraft())
         {
-            SimDriver.GetPlayerAircraft()->LOCValid = TRUE;	//Flag not visible
-            SimDriver.GetPlayerAircraft()->GSValid = TRUE;	//Flag not visible
+            SimDriver.GetPlayerAircraft()->LOCValid = TRUE; //Flag not visible
+            SimDriver.GetPlayerAircraft()->GSValid = TRUE; //Flag not visible
         }
 
         gNavigationSys->SetInstrumentMode(NavigationSystem::ILS_NAV);
@@ -4347,7 +4347,7 @@ void SimCBEOSB_1R(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN && SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))   // 2002-02-15 MODIFIED BY S.G. Any cockpit stuff is valid only if the player hasn't ejected...
     {
-        OTWDriver.pCockpitManager->mMiscStates.SetMFDButtonState(1, 1, 1);			//Wombat778 4-12-04 changed from 0,1,1 to 1,1,1.  This must have been a bug.
+        OTWDriver.pCockpitManager->mMiscStates.SetMFDButtonState(1, 1, 1); //Wombat778 4-12-04 changed from 0,1,1 to 1,1,1.  This must have been a bug.
         MfdDisplay[1]->ButtonPushed(0, 1);
     }
 }
@@ -5374,34 +5374,34 @@ void SimICPLink(unsigned long, int state, void* pButton)
         FalconDLinkMessage *pmsg;
         pmsg = new FalconDLinkMessage(SimDriver.GetPlayerAircraft()->Id(), FalconLocalGame);
 
-        pmsg->dataBlock.numPoints	= 4;
-        pmsg->dataBlock.targetType	= 50;
-        pmsg->dataBlock.threatType	= 90;
+        pmsg->dataBlock.numPoints = 4;
+        pmsg->dataBlock.targetType = 50;
+        pmsg->dataBlock.threatType = 90;
 
 
-        pmsg->dataBlock.ptype[0]	= FalconDLinkMessage::IP;
-        pmsg->dataBlock.px[0]		= 300;
-        pmsg->dataBlock.py[0]		= 300;
-        pmsg->dataBlock.pz[0]		= 300;
-        pmsg->dataBlock.arrivalTime[0]	= SimLibElapsedTime;
+        pmsg->dataBlock.ptype[0] = FalconDLinkMessage::IP;
+        pmsg->dataBlock.px[0] = 300;
+        pmsg->dataBlock.py[0] = 300;
+        pmsg->dataBlock.pz[0] = 300;
+        pmsg->dataBlock.arrivalTime[0] = SimLibElapsedTime;
 
-        pmsg->dataBlock.ptype[1]	= FalconDLinkMessage::TGT;
-        pmsg->dataBlock.px[1]		= 400;
-        pmsg->dataBlock.py[1]		= 500;
-        pmsg->dataBlock.pz[1]		= 600;
-        pmsg->dataBlock.arrivalTime[1]		= SimLibElapsedTime;
+        pmsg->dataBlock.ptype[1] = FalconDLinkMessage::TGT;
+        pmsg->dataBlock.px[1] = 400;
+        pmsg->dataBlock.py[1] = 500;
+        pmsg->dataBlock.pz[1] = 600;
+        pmsg->dataBlock.arrivalTime[1] = SimLibElapsedTime;
 
-        pmsg->dataBlock.ptype[2]	= FalconDLinkMessage::EGR;
-        pmsg->dataBlock.px[2]		= 500;
-        pmsg->dataBlock.py[2]		= 800;
-        pmsg->dataBlock.pz[2]		= 400;
-        pmsg->dataBlock.arrivalTime[2]	= SimLibElapsedTime;
+        pmsg->dataBlock.ptype[2] = FalconDLinkMessage::EGR;
+        pmsg->dataBlock.px[2] = 500;
+        pmsg->dataBlock.py[2] = 800;
+        pmsg->dataBlock.pz[2] = 400;
+        pmsg->dataBlock.arrivalTime[2] = SimLibElapsedTime;
 
-        pmsg->dataBlock.ptype[3]	= FalconDLinkMessage::CP;
-        pmsg->dataBlock.px[3]		= 600;
-        pmsg->dataBlock.py[3]		= 700;
-        pmsg->dataBlock.pz[3]		= 300;
-        pmsg->dataBlock.arrivalTime[3]	= SimLibElapsedTime;
+        pmsg->dataBlock.ptype[3] = FalconDLinkMessage::CP;
+        pmsg->dataBlock.px[3] = 600;
+        pmsg->dataBlock.py[3] = 700;
+        pmsg->dataBlock.pz[3] = 300;
+        pmsg->dataBlock.arrivalTime[3] = SimLibElapsedTime;
 
         FalconSendMessage(pmsg, TRUE);
         //end test code
@@ -5756,7 +5756,7 @@ void SimICPAG(unsigned long, int state, void* pButton)
                 FireControlComputer::Dogfight || SimDriver.GetPlayerAircraft()->FCC->GetMasterMode() == FireControlComputer::MissileOverride))
             return;
 
-        if (SimDriver.GetPlayerAircraft()->Sms)	//JPO CTDfix	//Set our display mode
+        if (SimDriver.GetPlayerAircraft()->Sms) //JPO CTDfix //Set our display mode
             SimDriver.GetPlayerAircraft()->Sms->drawable->SetDisplayMode(SmsDrawable::Wpn);
 
         //MI added/modified for ICP Stuff
@@ -6367,9 +6367,9 @@ void SimTACANAATR(unsigned long, int state, void*)
 
 void SimToggleUHFMaster(unsigned long, int state, void*)
 {
-    //	if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN)) {
-    //		gNavigationSys->ToggleUHFSrc();
-    //	}
+    // if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN)) {
+    // gNavigationSys->ToggleUHFSrc();
+    // }
 }
 
 #include <dvoice.h>
@@ -7853,7 +7853,7 @@ void SimAirSourceRam(unsigned long val, int state, void *)
 }
 
 // COBRA - RED - Test feature... to switch PS from old to new engine...
-extern	bool	DebugTrail;
+extern bool DebugTrail;
 
 void SimLandingLightToggle(unsigned long val, int state, void *)
 {
@@ -8127,15 +8127,15 @@ void SimRightAPSwitch(unsigned long val, int state, void *)
         if (g_bRealisticAvionics)
         {
             //We get Altitude hold now.?
-            if (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold))	//up
+            if (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::AltHold)) //up
             {
                 //from Alt hold to Att hold
                 SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::AltHold);
                 //can't be both
-                SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::AttHold);	//down
+                SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::AttHold); //down
                 SimDriver.GetPlayerAircraft()->SetNewPitch();
 
-                //	SimDriver.GetPlayerAircraft()->SetNewRoll();  // ...but only if RollHold is selected.
+                // SimDriver.GetPlayerAircraft()->SetNewRoll();  // ...but only if RollHold is selected.
                 // Following test and set is overkill but guards against the possibility that someone entered a jet that
                 // had the right switch in something other than center position as the default.
                 if ((!SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::StrgSel)) && (!SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::StrgSel)))
@@ -8263,7 +8263,7 @@ void SimRightAPDown(unsigned long val, int state, void *)
     {
         SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::AltHold);
         //can't be both
-        SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::AttHold);	//down
+        SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::AttHold); //down
         SimDriver.GetPlayerAircraft()->SetNewPitch();
 
         // MD -- 20031108: fixing AP ATT HLD modes.  Pitch switch should not set roll unless the
@@ -8295,7 +8295,7 @@ void SimLeftAPSwitch(unsigned long val, int state, void *)
         {
             SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::RollHold);
             SimDriver.GetPlayerAircraft()->ClearAPFlag(AircraftClass::HDGSel);
-            SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::StrgSel);	//waypoint AP
+            SimDriver.GetPlayerAircraft()->SetAPFlag(AircraftClass::StrgSel); //waypoint AP
         }
         //down position
         else if (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::StrgSel))
@@ -8317,7 +8317,7 @@ void SimLeftAPSwitch(unsigned long val, int state, void *)
             if (SimDriver.GetPlayerAircraft()->IsOn(AircraftClass::RollHold))
             {
                 SimDriver.GetPlayerAircraft()->SetNewRoll();
-                //	SimDriver.GetPlayerAircraft()->SetNewPitch();  // MD -- 20031109: no, just set roll here.
+                // SimDriver.GetPlayerAircraft()->SetNewPitch();  // MD -- 20031109: no, just set roll here.
             }
         }
 
@@ -8483,23 +8483,23 @@ void SimReticleSwitch(unsigned long val, int state, void *)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        if (TheHud->WhichMode == 0)	// Off
+        if (TheHud->WhichMode == 0) // Off
         {
-            TheHud->WhichMode = 1;	// PRI
+            TheHud->WhichMode = 1; // PRI
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 2);
         }
-        else if (TheHud->WhichMode == 1)	// PRI
+        else if (TheHud->WhichMode == 1) // PRI
         {
-            TheHud->WhichMode = 2;	// STBY
+            TheHud->WhichMode = 2; // STBY
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 4);
         }
         else
         {
-            TheHud->WhichMode = 0;	// Off
+            TheHud->WhichMode = 0; // Off
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 1);
@@ -8517,7 +8517,7 @@ void SimReticlePri(unsigned long val, int state, void *)
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        TheHud->WhichMode = 1;	// PRI
+        TheHud->WhichMode = 1; // PRI
 
         if (OTWDriver.GetVirtualCockpit())
             OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 2);
@@ -8531,7 +8531,7 @@ void SimReticleStby(unsigned long val, int state, void *)
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        TheHud->WhichMode = 2;	// STBY
+        TheHud->WhichMode = 2; // STBY
 
         if (OTWDriver.GetVirtualCockpit())
             OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 4);
@@ -8545,7 +8545,7 @@ void SimReticleOff(unsigned long val, int state, void *)
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        TheHud->WhichMode = 0;	// OFF
+        TheHud->WhichMode = 0; // OFF
 
         if (OTWDriver.GetVirtualCockpit())
             OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 1);
@@ -10267,7 +10267,7 @@ void SimAVTRSwitch(unsigned long val, int state, void *pButton)
         {
             SimDriver.GetPlayerAircraft()->AVTROn(AircraftClass::AVTRStateFlags::AVTR_AUTO);
             SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_OFF);
-            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_ON);	//just in case
+            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_ON); //just in case
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_AVTR_SW, 2);
@@ -10276,7 +10276,7 @@ void SimAVTRSwitch(unsigned long val, int state, void *pButton)
         {
             SimDriver.GetPlayerAircraft()->AVTROn(AircraftClass::AVTRStateFlags::AVTR_ON);
             SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO);
-            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_OFF);	//just in case
+            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_OFF); //just in case
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_AVTR_SW, 4);
@@ -10291,7 +10291,7 @@ void SimAVTRSwitch(unsigned long val, int state, void *pButton)
         {
             SimDriver.GetPlayerAircraft()->AVTROn(AircraftClass::AVTRStateFlags::AVTR_OFF);
             SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_ON);
-            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO);	//just in case
+            SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO); //just in case
 
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_AVTR_SW, 1);
@@ -10317,7 +10317,7 @@ void SimAVTRSwitchOff(unsigned long val, int state, void *pButton)
     {
         SimDriver.GetPlayerAircraft()->AVTROn(AircraftClass::AVTRStateFlags::AVTR_OFF);
         SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_ON);
-        SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO);	//just in case
+        SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO); //just in case
 
         if (SimDriver.AVTROn() == TRUE)
         {
@@ -10355,7 +10355,7 @@ void SimAVTRSwitchOn(unsigned long val, int state, void *pButton)
     {
         SimDriver.GetPlayerAircraft()->AVTROn(AircraftClass::AVTRStateFlags::AVTR_ON);
         SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_AUTO);
-        SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_OFF);	//just in case
+        SimDriver.GetPlayerAircraft()->AVTROff(AircraftClass::AVTRStateFlags::AVTR_OFF); //just in case
 
         if (SimDriver.AVTROn() == FALSE)
         {
@@ -10903,7 +10903,7 @@ void SimStepMissileVolumeDown(unsigned long val, int state, void *)
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -10918,14 +10918,14 @@ void SimStepMissileVolumeDown(unsigned long val, int state, void *)
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_MISSILE_VOL, vall);
         }
-    }	// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimStepMissileVolumeUp(unsigned long val, int state, void *)
 {
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -10940,14 +10940,14 @@ void SimStepMissileVolumeUp(unsigned long val, int state, void *)
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_MISSILE_VOL, vall);
         }
-    }	// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimStepThreatVolumeDown(unsigned long val, int state, void *)
 {
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -10962,14 +10962,14 @@ void SimStepThreatVolumeDown(unsigned long val, int state, void *)
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_THREAT_VOL, vall);
         }
-    }	// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimStepThreatVolumeUp(unsigned long val, int state, void *)
 {
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_THREAT_VOLUME) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -10984,7 +10984,7 @@ void SimStepThreatVolumeUp(unsigned long val, int state, void *)
             if (OTWDriver.GetVirtualCockpit())
                 OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_THREAT_VOL, vall);
         }
-    }	// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimTriggerFirstDetent(unsigned long val, int state, void *)
 {
@@ -11222,7 +11222,7 @@ void SimRetUp(unsigned long, int state, void*)
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -11235,14 +11235,14 @@ void SimRetUp(unsigned long, int state, void*)
                     TheHud->ReticlePosition--;
             }
         }
-    }		// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimRetDn(unsigned long, int state, void*)
 {
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == false)	// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == false) // Retro 3Jan2004
     {
         if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
         {
@@ -11255,7 +11255,7 @@ void SimRetDn(unsigned long, int state, void*)
                     TheHud->ReticlePosition++;
             }
         }
-    }		// Retro 3Jan2004
+    } // Retro 3Jan2004
 }
 void SimCursorEnable(unsigned long, int state, void*)
 {
@@ -11409,7 +11409,7 @@ void SimSymWheelUp(unsigned long, int state, void*)
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true)	// Retro 4Jan2004
+    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true) // Retro 4Jan2004
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -11424,7 +11424,7 @@ void SimSymWheelUp(unsigned long, int state, void*)
             if ((TheHud->SymWheelPos >= 0.1F) && (!SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::HUDPower)))
             {
                 SimDriver.GetPlayerAircraft()->PowerOn(AircraftClass::HUDPower);
-                //TheHud->SymWheelPos = 1.0F;									// COBRA - RED - Power on at MAX Value
+                //TheHud->SymWheelPos = 1.0F; // COBRA - RED - Power on at MAX Value
             }
 
             TheHud->SetLightLevel();
@@ -11440,7 +11440,7 @@ void SimSymWheelDn(unsigned long, int state, void*)
     if (!g_bRealisticAvionics)
         return;
 
-    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true)	// Retro 4Jan2004
+    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true) // Retro 4Jan2004
         return;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
@@ -11472,13 +11472,13 @@ void SimRandomError(unsigned long, int state, void*)
         SimDriver.GetPlayerAircraft()->mFaults->RandomFailure();
 
         /*
-        int	failures;	//How many things can possibly fail?
+        int failures; //How many things can possibly fail?
         long failuresPossible; //which Systems are allowed to fail? (Here:All [All Bits set to 1])
 
         //failuresPossible = 1 + long((2 ^ FaultClass::NumFaultListSubSystems - 1) * rand()/(RAND_MAX + 1.0));
         failuresPossible = 134217728-1; //1 + long(134217728 * rand()/(RAND_MAX + 1.0)); //2^27
 
-        //failures = 1 + int(27 * rand()/(RAND_MAX + 1.0));	//Generate between 1 and 10 errors (theoretical max: 27)
+        //failures = 1 + int(27 * rand()/(RAND_MAX + 1.0)); //Generate between 1 and 10 errors (theoretical max: 27)
         failures = 27;
         failures = 999;
 
@@ -11517,21 +11517,21 @@ void SimToggleCockpit(unsigned long, int state, void*)
         {
             if (SimDriver.GetPlayerAircraft()->WideView)
             {
-                if (OTWDriver.pCockpitManager->SetActivePanel(1100))		//Wombat778 4-13-04 Check for the presence of the panel before changing variables
+                if (OTWDriver.pCockpitManager->SetActivePanel(1100)) //Wombat778 4-13-04 Check for the presence of the panel before changing variables
                 {
                     SimDriver.GetPlayerAircraft()->WideView = FALSE;
 
-                    if (g_fWideviewFOV)						//Wombat778 2-21-04  if g_fWideviewFOV has a value, then set FOV to default when switching to normal view
+                    if (g_fWideviewFOV) //Wombat778 2-21-04  if g_fWideviewFOV has a value, then set FOV to default when switching to normal view
                         OTWDriver.SetFOV(g_fDefaultFOV * DTR);
                 }
             }
             else
             {
-                if (OTWDriver.pCockpitManager->SetActivePanel(91100))		//Wombat778 4-13-04 Check for the presence of the panel before changing variables
+                if (OTWDriver.pCockpitManager->SetActivePanel(91100)) //Wombat778 4-13-04 Check for the presence of the panel before changing variables
                 {
                     SimDriver.GetPlayerAircraft()->WideView = TRUE;
 
-                    if (g_fWideviewFOV)						//Wombat778 2-21-04  if g_fWideviewFOV has a value, then set it when switching to wideview
+                    if (g_fWideviewFOV) //Wombat778 2-21-04  if g_fWideviewFOV has a value, then set it when switching to wideview
                         OTWDriver.SetFOV(g_fWideviewFOV * DTR);
                 }
             }
@@ -11542,7 +11542,7 @@ void SimToggleCockpit(unsigned long, int state, void*)
             {
                 SimDriver.GetPlayerAircraft()->WideView = FALSE;
 
-                if (g_fWideviewFOV)						//Wombat778 2-21-04  if g_fWideviewFOV has a value, then set FOV to default when switching to normal view
+                if (g_fWideviewFOV) //Wombat778 2-21-04  if g_fWideviewFOV has a value, then set FOV to default when switching to normal view
                     OTWDriver.SetFOV(g_fDefaultFOV * DTR);
             }
         }
@@ -11552,7 +11552,7 @@ void SimToggleCockpit(unsigned long, int state, void*)
             {
                 SimDriver.GetPlayerAircraft()->WideView = TRUE;
 
-                if (g_fWideviewFOV)						//Wombat778 2-21-04  if g_fWideviewFOV has a value, then set it when switching to wideview
+                if (g_fWideviewFOV) //Wombat778 2-21-04  if g_fWideviewFOV has a value, then set it when switching to wideview
                     OTWDriver.SetFOV(g_fWideviewFOV * DTR);
             }
         }
@@ -11587,7 +11587,7 @@ void SimFuelDump(unsigned long val, int state, void *)
 {
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
-        float fueltodump = max((SimDriver.GetPlayerAircraft()->af->Fuel() +	SimDriver.GetPlayerAircraft()->af->ExternalFuel()) / 15.0f, 100);
+        float fueltodump = max((SimDriver.GetPlayerAircraft()->af->Fuel() + SimDriver.GetPlayerAircraft()->af->ExternalFuel()) / 15.0f, 100);
         SimDriver.GetPlayerAircraft()->af->AddFuel(-fueltodump);
     }
 }
@@ -11692,9 +11692,9 @@ void SimExtFuelTrans(unsigned long val, int state, void *)
         SimDriver.GetPlayerAircraft()->af->ToggleEngineFlag(AirframeClass::WingFirst);
 }
 
-#include "Profiler.h"	// Retro 20Dec2003
+#include "Profiler.h" // Retro 20Dec2003
 
-void ToggleProfiler(unsigned long, int state, void*)	// Retro 16/10/03
+void ToggleProfiler(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11703,10 +11703,10 @@ void ToggleProfiler(unsigned long, int state, void*)	// Retro 16/10/03
         OTWDriver.ToggleProfilerActive();
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_HistoryBack(unsigned long, int state, void*)	// Retro 22May2004
+void Profiler_HistoryBack(unsigned long, int state, void*) // Retro 22May2004
 {
 #ifdef Prof_ENABLED
 
@@ -11715,10 +11715,10 @@ void Profiler_HistoryBack(unsigned long, int state, void*)	// Retro 22May2004
         Prof_move_frame(-1);
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_HistoryBackFast(unsigned long, int state, void*)	// Retro 22May2004
+void Profiler_HistoryBackFast(unsigned long, int state, void*) // Retro 22May2004
 {
 #ifdef Prof_ENABLED
 
@@ -11727,10 +11727,10 @@ void Profiler_HistoryBackFast(unsigned long, int state, void*)	// Retro 22May200
         Prof_move_frame(-10);
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_HistoryFwd(unsigned long, int state, void*)	// Retro 22May2004
+void Profiler_HistoryFwd(unsigned long, int state, void*) // Retro 22May2004
 {
 #ifdef Prof_ENABLED
 
@@ -11739,10 +11739,10 @@ void Profiler_HistoryFwd(unsigned long, int state, void*)	// Retro 22May2004
         Prof_move_frame(1);
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_HistoryFwdFast(unsigned long, int state, void*)	// Retro 22May2004
+void Profiler_HistoryFwdFast(unsigned long, int state, void*) // Retro 22May2004
 {
 #ifdef Prof_ENABLED
 
@@ -11751,10 +11751,10 @@ void Profiler_HistoryFwdFast(unsigned long, int state, void*)	// Retro 22May2004
         Prof_move_frame(10);
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void ToggleProfilerDisplay(unsigned long, int state, void*)	// Retro 16/10/03
+void ToggleProfilerDisplay(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11763,10 +11763,10 @@ void ToggleProfilerDisplay(unsigned long, int state, void*)	// Retro 16/10/03
         OTWDriver.ToggleProfilerDisplay();
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_Self(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_Self(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11778,10 +11778,10 @@ void Profiler_Self(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_Hier(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_Hier(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11793,10 +11793,10 @@ void Profiler_Hier(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_Select(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_Select(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11808,10 +11808,10 @@ void Profiler_Select(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_Parent(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_Parent(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11823,10 +11823,10 @@ void Profiler_Parent(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_CursorUp(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_CursorUp(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11840,10 +11840,10 @@ void Profiler_CursorUp(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
-void Profiler_CursorDown(unsigned long, int state, void*)	// Retro 16/10/03
+void Profiler_CursorDown(unsigned long, int state, void*) // Retro 16/10/03
 {
 #ifdef Prof_ENABLED
 
@@ -11857,7 +11857,7 @@ void Profiler_CursorDown(unsigned long, int state, void*)	// Retro 16/10/03
         }
     }
 
-#endif	// Prof_ENABLED
+#endif // Prof_ENABLED
 }
 
 void SimFuelTransNorm(unsigned long val, int state, void *)
@@ -11905,7 +11905,7 @@ void ToggleInfoBar(unsigned long, int state, void*)
 }
 // Retro 19Dec2003 end
 
-void ToggleDisplacementCam(unsigned long, int state, void*)	// Retro 24Dec2003
+void ToggleDisplacementCam(unsigned long, int state, void*) // Retro 24Dec2003
 {
     if (state & KEY_DOWN)
     {
@@ -12028,9 +12028,9 @@ void ToggleClickablePitMode(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-#if 0	// Retro 15Feb2004
+#if 0 // Retro 15Feb2004
         PlayerOptions.SetClickablePitMode(!PlayerOptions.GetClickablePitMode());
-#else	// Retro 15Feb2004
+#else // Retro 15Feb2004
         extern bool clickableMouseMode;
         clickableMouseMode = !clickableMouseMode;
 #endif

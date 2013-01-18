@@ -41,9 +41,9 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
         if (from)
         {
             int friendly = FALSE, inrange = FALSE;
-            FalconSessionEntity		*session = NULL;
-            FalconEntity			*player = NULL;
-            VuSessionsIterator		sit(FalconLocalGame);
+            FalconSessionEntity *session = NULL;
+            FalconEntity *player = NULL;
+            VuSessionsIterator sit(FalconLocalGame);
             session = (FalconSessionEntity*) sit.GetFirst();
 
             while (session && (!friendly || !inrange))
@@ -73,7 +73,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
             if (!friendly || !inrange)
             {
-                //				MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
+                // MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
                 delete theEvent;
                 return;
             }
@@ -689,8 +689,8 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     // because I'll explicitly set it to FALSE here if you're not included in the target.
     if (loopback)
     {
-        //		if (!target && !FalconLocalGame)
-        //			RequestLoopback();
+        // if (!target && !FalconLocalGame)
+        // RequestLoopback();
         if (!target)
             loopback = FALSE;
         else if (target->IsGroup() && !((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
@@ -725,13 +725,13 @@ int FalconEvent::LocalSize() const
 
 int FalconEvent::Decode(VU_BYTE **buf, long *rem)
 {
-    //	long start = (long) *buf;
+    // long start = (long) *buf;
     long init = *rem;
 
     VuMessage::Decode(buf, rem);
     memcpychk(&handlingThread, buf, sizeof(HandlingThread), rem);
 
-    //	ShiAssert ( size == (long) *buf - start );
+    // ShiAssert ( size == (long) *buf - start );
 
     return init - *rem;
 }

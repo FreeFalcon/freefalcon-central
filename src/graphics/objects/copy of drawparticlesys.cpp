@@ -10,15 +10,15 @@ struct Point
 /***************************************************************************\
     DrawParticleSys
 
-	Several Classes and data structures for creating particle effects
+ Several Classes and data structures for creating particle effects
 
-	DrawableParticleSys
-	  + ParticleNode
-	      + SubPartXXX
-		  + SubPartXXX
-		  + ...
-	  + ParticleNode
-	      + SubPartXXX
+ DrawableParticleSys
+   + ParticleNode
+       + SubPartXXX
+   + SubPartXXX
+   + ...
+   + ParticleNode
+       + SubPartXXX
 
 
     MLR
@@ -46,7 +46,7 @@ struct Point
 
 
 // for when fakerand just won't do
-#define	NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
+#define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
 #define DTR                     0.01745329F
 
 extern int g_nGfxFix;
@@ -59,8 +59,8 @@ BOOL gParticleSysGreenMode = 0;
 Tcolor gParticleSysLitColor = {1, 1, 1};
 
 /**** Static class data ***/
-BOOL    DrawableParticleSys::greenMode	= FALSE;
-char	*DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
+BOOL    DrawableParticleSys::greenMode = FALSE;
+char *DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
 {
     "$NONE",
     "$AIR_HANGING_EXPLOSION",
@@ -196,20 +196,20 @@ char	*DrawableParticleSys::nameList[SFX_NUM_TYPES + 1] =
     "$VEHICLE_DIE_INTERMITTENT_FIRE"
 };
 
-int		DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
-AList	DrawableParticleSys::textureList;
-ProtectedAList	DrawableParticleSys::paramList;
-AList	DrawableParticleSys::dpsList;
-float	DrawableParticleSys::groundLevel;
-float	DrawableParticleSys::cameraDistance;
-int		DrawableParticleSys::reloadParameters = 0;
-float	DrawableParticleSys::winddx;
-float	DrawableParticleSys::winddy;
+int DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
+AList DrawableParticleSys::textureList;
+ProtectedAList DrawableParticleSys::paramList;
+AList DrawableParticleSys::dpsList;
+float DrawableParticleSys::groundLevel;
+float DrawableParticleSys::cameraDistance;
+int DrawableParticleSys::reloadParameters = 0;
+float DrawableParticleSys::winddx;
+float DrawableParticleSys::winddy;
 
 
 /**** Macros ****/
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
-#define NRESCALE(in,outmin,outmax)			  RESCALE(in,0,1,outmin,outmax)
+#define NRESCALE(in,outmin,outmax)   RESCALE(in,0,1,outmin,outmax)
 
 /****** Basic Data Structs ******/
 struct psRGBA
@@ -287,7 +287,7 @@ public:
     //JAM 19Apr04 - Need to change these TPoints (Tpoint) to Points (defined above).
     union
     {
-        float		 param[9];
+        float  param[9];
 
         struct
         {
@@ -337,9 +337,9 @@ typedef enum
 struct ParticleEmitterParam
 {
     PSEmitterModeEnum  mode;
-    ParticleDomain	   domain;
+    ParticleDomain    domain;
     ParticleDomain     target;
-    float		   param[9];
+    float    param[9];
     int            id;
     char           name[PS_NAMESIZE];
     int            stages;
@@ -350,7 +350,7 @@ class ParticleParamNode : public ANode
 {
 public:
     char    name[PS_NAMESIZE];
-    int		id;
+    int id;
     int     subid;
 
     int     particleType; // which paritcle class to use for particles????
@@ -367,14 +367,14 @@ public:
     int       lightStages;
     timedRGB  light[10];
 
-    int			sizeStages;
-    timedFloat	size[10];
+    int sizeStages;
+    timedFloat size[10];
 
-    int			alphaStages;
-    timedFloat	alpha[10];
+    int alphaStages;
+    timedFloat alpha[10];
 
 
-    int			gravityStages;
+    int gravityStages;
     timedFloat  gravity[10]; // 0 floats, negative rises, positive sinks
 
     int         accelStages;
@@ -421,7 +421,7 @@ public:
 
 /** ParticleSys Flags **/
 #define PSF_CHARACTERS "MG"
-#define PSF_NONE	     (0) // use spacing value a a time (in seconds) instead of distance
+#define PSF_NONE      (0) // use spacing value a a time (in seconds) instead of distance
 #define PSF_MORPHATTRIBS (1<<0) // blend attributes over lifespan)
 #define PSF_GROUNDTEST   (1<<1) // enable terrain surface level check
 
@@ -436,7 +436,7 @@ int PPNCount = 0;
 
 /***********************************************************************
 
-	The ParticleNode
+ The ParticleNode
 
 ***********************************************************************/
 
@@ -477,7 +477,7 @@ float      ParticleNode::elapsedTime = 0;
 Trotation *ParticleNode::rotation    = &psIRotation;
 /***********************************************************************
 
-	SubParticle Data
+ SubParticle Data
 
 ***********************************************************************/
 
@@ -839,7 +839,7 @@ void SubEmitter::Run(RenderOTW *renderer, ParticleNode *owner)
     {
         case PSEM_IMPACT:
 
-            //			if(owner->pos.z >= DrawableParticleSys::groundLevel)
+            // if(owner->pos.z >= DrawableParticleSys::groundLevel)
             if (owner->pos.z >= OTWDriver.GetGroundLevel(owner->pos.x, owner->pos.y))
             {
                 qty += pep->rate[0].value;
@@ -1002,9 +1002,9 @@ void ParticleNode::Init(int ID, Tpoint *Pos, Tpoint *Vel, Tpoint *Aim)
     int l;
     for(l = 0; ppn->emitter[l].stages && l<PSMAX_EMITTERS; l++)
     {
-    	SubPart *sub = new SubPartEmitter(this);
-    	sub->next = firstSubPart;
-    	firstSubPart = sub;
+     SubPart *sub = new SubPartEmitter(this);
+     sub->next = firstSubPart;
+     firstSubPart = sub;
     }
     */
 
@@ -1268,7 +1268,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
 
 
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
 DrawableParticleSys::DrawableParticleSys(int particlesysType, float scale)
     : DrawableObject(scale)
@@ -1341,13 +1341,13 @@ void DrawableParticleSys::AddParticle(int Id, Tpoint *worldPos, Tpoint *v)
 /*
 void DrawableParticleSys::AddParticle( char *name, Tpoint *worldPos )
 {
-	DWORD now;
-	now = TheTimeManager.GetClockTime();
+ DWORD now;
+ now = TheTimeManager.GetClockTime();
 
-	ParticleParam *ppn;
+ ParticleParam *ppn;
 
-	ParticleNode *n = new ParticleNode(Id, worldPos);
-	particleList.AddHead(n);
+ ParticleNode *n = new ParticleNode(Id, worldPos);
+ particleList.AddHead(n);
 }
 */
 
@@ -1383,8 +1383,8 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
         float wind;
 
         // current wind
-        //		mlSinCos(&trigWind, TheWeather->GetWindHeading(&n->pos));
-        //		wind =  TheWeather->GetWindSpeedFPS(&n->pos);
+        // mlSinCos(&trigWind, TheWeather->GetWindHeading(&n->pos));
+        // wind =  TheWeather->GetWindSpeedFPS(&n->pos);
         mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&n->pos));
         wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&n->pos);
         winddx = trigWind.cos * wind;
@@ -1430,8 +1430,8 @@ void DrawableParticleSys::Exec(void)
 
     if(reloadParameters)
     {
-    	reloadParameters=0;
-    	LoadParameters();
+     reloadParameters=0;
+     LoadParameters();
     }
 
 
@@ -1441,32 +1441,32 @@ void DrawableParticleSys::Exec(void)
 
     if(n)
     {
-    	groundLevel=OTWDriver.GetGroundLevel(n->pos.x,n->pos.y);
-    	mlTrig trigWind;
-    	float wind;
+     groundLevel=OTWDriver.GetGroundLevel(n->pos.x,n->pos.y);
+     mlTrig trigWind;
+     float wind;
 
-    	// current wind
-    	mlSinCos(&trigWind, TheWeather->WindHeadingAt(&n->pos));
-    	wind =  TheWeather->WindSpeedInFeetPerSecond(&n->pos);
-    	winddx = trigWind.cos * wind;
-    	winddy = trigWind.sin * wind;
+     // current wind
+     mlSinCos(&trigWind, TheWeather->WindHeadingAt(&n->pos));
+     wind =  TheWeather->WindSpeedInFeetPerSecond(&n->pos);
+     winddx = trigWind.cos * wind;
+     winddy = trigWind.sin * wind;
 
-    	while(n)
-    	{
-    		n->Exec();
-    		// we have to get the next node after Exec, because our emitters
-    		// will add nodes directly after themselves.  Getting the next node
-    		// pointer before Exec will cause one newly emitted node to be skipped
-    		// in this loop, which then causes rendering bugs due to not having
-    		// data that was Exec'd yet.
-    		ParticleNode *n2 = (ParticleNode *)n->GetSucc();
-    		if(n->IsDead())
-    		{
-    			n->Remove();
-    			delete n;
-    		}
-    		n=n2;
-    	}
+     while(n)
+     {
+     n->Exec();
+     // we have to get the next node after Exec, because our emitters
+     // will add nodes directly after themselves.  Getting the next node
+     // pointer before Exec will cause one newly emitted node to be skipped
+     // in this loop, which then causes rendering bugs due to not having
+     // data that was Exec'd yet.
+     ParticleNode *n2 = (ParticleNode *)n->GetSucc();
+     if(n->IsDead())
+     {
+     n->Remove();
+     delete n;
+     }
+     n=n2;
+     }
     }
     paramList.Unlock();
     */
@@ -1753,16 +1753,16 @@ void DrawableParticleSys::LoadParameters(void)
                 {
                     memset(ppn, 0, sizeof(*ppn));
                     strncpy(ppn->name, n, PS_NAMESIZE);
-                    ppn->id					= -1;
-                    ppn->accel[0].value		= 1;
-                    ppn->alpha[0].value		= 1;
-                    ppn->velInherit			= 1;
-                    ppn->drawType			= PSDT_POLY;
-                    currentemitter			= -1;
-                    ppn->sndVol[0].value	= 0;
-                    ppn->sndPitch[0].value	= 1;
-                    ppn->trailId			= -1;
-                    ppn->visibleDistance	= 10000;
+                    ppn->id = -1;
+                    ppn->accel[0].value = 1;
+                    ppn->alpha[0].value = 1;
+                    ppn->velInherit = 1;
+                    ppn->drawType = PSDT_POLY;
+                    currentemitter = -1;
+                    ppn->sndVol[0].value = 0;
+                    ppn->sndPitch[0].value = 1;
+                    ppn->trailId = -1;
+                    ppn->visibleDistance = 10000;
                     paramList.AddTail(ppn);
                 }
             }
@@ -1908,8 +1908,8 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("initialVelocity")
         {
-            ppn->velInitial		= TokenF(1);
-            ppn->velVariation	= TokenF(0);
+            ppn->velInitial = TokenF(1);
+            ppn->velVariation = TokenF(0);
         }
 
         On("drawtype")
@@ -2089,7 +2089,7 @@ int DrawableParticleSys::IsValidPSId(int id)
 
 /***********************************************************************
 
-	The ParticleDomain
+ The ParticleDomain
 
 ***********************************************************************/
 

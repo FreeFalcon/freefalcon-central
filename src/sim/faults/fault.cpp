@@ -32,36 +32,36 @@ static  float sms_array[] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.9
 //TJL 01/16/04 multi-engine added ENG2
 const struct FaultClass::InitFaultData FaultClass::mpFaultData[FaultClass::TotalFaultStrings] =
 {
-    FDATA("AMUX", bus,	0.1f, parray1),
-    FDATA("BLKR", bus,	0.2f, parray1),
-    FDATA("BMUX", bus,	0.1f, parray1),
-    FDATA("CADC", bus,	0.1f, parray1),
+    FDATA("AMUX", bus, 0.1f, parray1),
+    FDATA("BLKR", bus, 0.2f, parray1),
+    FDATA("BMUX", bus, 0.1f, parray1),
+    FDATA("CADC", bus, 0.1f, parray1),
     FDATA("CMDS", chaf | flar | bus, 0.15f, cmds_array),
-    FDATA("DLNK", bus,	0.5f, parray1),
-    FDATA("DMUX", bus,	0.05, parray1),
-    FDATA("DTE",  bus,	0.2f, parray1),
+    FDATA("DLNK", bus, 0.5f, parray1),
+    FDATA("DMUX", bus, 0.05, parray1),
+    FDATA("DTE",  bus, 0.2f, parray1),
     FDATA("ENG",  a_i | a_b | pfl | efire | hydr | fl_out, 0.4f, eng_array),
     FDATA("ENG2",  a_i | a_b | pfl | efire | hydr | fl_out, 0.4f, eng_array2),
-    FDATA("EPOD", slnt,	0.2f, parray1),
-    FDATA("FCC",  bus,	0.2f, parray1),
+    FDATA("EPOD", slnt, 0.2f, parray1),
+    FDATA("FCC",  bus, 0.2f, parray1),
     FDATA("FCR",  bus | sngl | xmtr, 0.2f, fcr_array),
     FDATA("FLCS", dmux | dual | sngl | a_p, 0.3f, flcs_array),
-    FDATA("FMS",  bus,	0.1f, parray1),
-    FDATA("GEAR", ldgr,	0.5f, parray1),
-    FDATA("GPS",  bus,	0.5f, parray1),
-    FDATA("HARM", bus,	0.5f, parray1),
-    FDATA("HUD",  bus,	0.4f, parray1),
-    FDATA("IFF",  bus,	0.2f, parray1),
-    FDATA("INS",  bus,	0.2f, parray1),
-    FDATA("ISA",  all | rudr,	0.2f, rudr_array),
+    FDATA("FMS",  bus, 0.1f, parray1),
+    FDATA("GEAR", ldgr, 0.5f, parray1),
+    FDATA("GPS",  bus, 0.5f, parray1),
+    FDATA("HARM", bus, 0.5f, parray1),
+    FDATA("HUD",  bus, 0.4f, parray1),
+    FDATA("IFF",  bus, 0.2f, parray1),
+    FDATA("INS",  bus, 0.2f, parray1),
+    FDATA("ISA",  all | rudr, 0.2f, rudr_array),
     FDATA("MFDS", lfwd | rfwd, 0.3f, mfds_array),
-    FDATA("MSL",  bus,	0.0f, parray1),
-    FDATA("RALT", xmtr,	0.3f, parray1),
-    FDATA("RWR",  bus,	0.2f, parray1),
+    FDATA("MSL",  bus, 0.0f, parray1),
+    FDATA("RALT", xmtr, 0.3f, parray1),
+    FDATA("RWR",  bus, 0.2f, parray1),
     FDATA("SMS",  bus | sta1 | sta2 | sta3 | sta4 | sta5 | sta6 | sta7 | sta8 | sta9,
     0.1f, sms_array),
-    FDATA("TCN",  bus,	0.2f, parray1),
-    FDATA("UFC",  bus,	0.2f, parray1),
+    FDATA("TCN",  bus, 0.2f, parray1),
+    FDATA("UFC",  bus, 0.2f, parray1),
     FDATA("???",  bus, 0, parray1), // bogus entries
     FDATA("LAND",  bus, 0, parray1), // bogus entries
     FDATA("TOF", bus, 0, parray1), // bogus entries
@@ -107,9 +107,9 @@ const char* FaultClass::mpFFunctionNames[NumFaultFunctions] =
 
 const char* FaultClass::mpFSeverityNames[NumFaultSeverity] =
 {
-    "CNTL",	"DEGR",
-    "FAIL",	"LOW",
-    "RST",	"TEMP",
+    "CNTL", "DEGR",
+    "FAIL", "LOW",
+    "RST", "TEMP",
     "WARN",  ""
 };
 
@@ -120,16 +120,16 @@ const char* FaultClass::mpFSeverityNames[NumFaultSeverity] =
 FaultClass::FaultClass(void)
 {
 
-    int	i;
+    int i;
 
     for (i = 0; i < NumFaultListSubSystems; i++)
     {
 
-        mpFaultList[i].elFunction	= nofault;
-        mpFaultList[i].elSeverity	= no_fail;
+        mpFaultList[i].elFunction = nofault;
+        mpFaultList[i].elSeverity = no_fail;
     }
 
-    mFaultCount	= 0;
+    mFaultCount = 0;
     ZeroMemory(mMflList, sizeof mMflList);
     mLastMfl = 0;
     mStartTime = 0;
@@ -223,10 +223,10 @@ FaultClass::type_FFunction FaultClass::PickFunction(FaultClass::type_FSubSystem 
 // FaultClass::SetFault
 //-------------------------------------------------
 
-void FaultClass::SetFault(type_FSubSystem	subsystem,
-                          type_FFunction	function,
-                          type_FSeverity	severity,
-                          BOOL			doWarningMsg)
+void FaultClass::SetFault(type_FSubSystem subsystem,
+                          type_FFunction function,
+                          type_FSeverity severity,
+                          BOOL doWarningMsg)
 {
 
     if (mpFaultList[subsystem].elFunction == nofault)
@@ -241,8 +241,8 @@ void FaultClass::SetFault(type_FSubSystem	subsystem,
         }
     }
 
-    mpFaultList[subsystem].elFunction	|= function;
-    mpFaultList[subsystem].elSeverity	= severity;
+    mpFaultList[subsystem].elFunction |= function;
+    mpFaultList[subsystem].elSeverity = severity;
     AddMflList(SimLibElapsedTime, subsystem, (int)severity);
 }
 
@@ -261,12 +261,12 @@ void FaultClass::ClearFault(type_FSubSystem subsystem)
         if (mFaultCount < 0)
             mFaultCount = 0;
 
-        //		mpFaultList[subsystem].elFunction	= nofault;
+        // mpFaultList[subsystem].elFunction = nofault;
     }
 }
 
 // JPO clear individual fault bit
-void FaultClass::ClearFault(type_FSubSystem subsystem, type_FFunction	function)
+void FaultClass::ClearFault(type_FSubSystem subsystem, type_FFunction function)
 {
     mpFaultList[subsystem].elFunction &= ~ function;
 
@@ -305,9 +305,9 @@ int FaultClass::GetFault(type_FSubSystem subsystem)
 // FaultClass::GetFaultNames
 //-------------------------------------------------
 
-void FaultClass::GetFaultNames(type_FSubSystem	subsystem,
+void FaultClass::GetFaultNames(type_FSubSystem subsystem,
                                int funcNum,
-                               str_FNames*		names)
+                               str_FNames* names)
 {
 
     ShiAssert(FALSE == F4IsBadReadPtr(names, sizeof * names));
@@ -315,9 +315,9 @@ void FaultClass::GetFaultNames(type_FSubSystem	subsystem,
     ShiAssert(FALSE == F4IsBadReadPtr(mpFFunctionNames, sizeof * mpFFunctionNames));
     ShiAssert(FALSE == F4IsBadReadPtr(mpFSeverityNames, sizeof * mpFSeverityNames));
 
-    names->elpFSubSystemNames	= mpFaultData[subsystem].mpFSSName;
-    names->elpFFunctionNames	= mpFFunctionNames[funcNum];
-    names->elpFSeverityNames	= mpFSeverityNames[mpFaultList[subsystem].elSeverity];
+    names->elpFSubSystemNames = mpFaultData[subsystem].mpFSSName;
+    names->elpFFunctionNames = mpFFunctionNames[funcNum];
+    names->elpFSeverityNames = mpFSeverityNames[mpFaultList[subsystem].elSeverity];
 }
 
 // fills in the values

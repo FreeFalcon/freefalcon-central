@@ -1,5 +1,5 @@
 /***************************************************************************\
-	FLTerror.h
+ FLTerror.h
     Scott Randolph
     February 20, 1998
 
@@ -18,7 +18,7 @@ inline void FLTwarning(mgrec *rec, char *message)
 #if 1
     printf("%s %s: %s\n", dbname, name, message);
 #else
-    char	buffer[1024];
+    char buffer[1024];
     strcpy(buffer, dbname);
     strcat(buffer, " ");
     strcat(buffer, name);

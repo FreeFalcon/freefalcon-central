@@ -25,7 +25,7 @@
 
 void SendCampUIMessage(FalconCampEventMessage *message)
 {
-    FalconSendMessage(message, FALSE);			// KCK NOTE: We can miss a few of these and live
+    FalconSendMessage(message, FALSE); // KCK NOTE: We can miss a few of these and live
 }
 
 // This frees the memory for the list passed
@@ -45,7 +45,7 @@ void DisposeEventList(CampUIEventElement* root)
 
 void TrimEventList(CampUIEventElement *root, int length)
 {
-    int			i;
+    int i;
 
     for (i = 1; i < length; i++)
     {

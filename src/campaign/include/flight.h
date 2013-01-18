@@ -17,20 +17,20 @@ enum MissionTypeEnum;
 // Flight specific mission evaluation flags
 // ========================================
 
-#define FEVAL_MISSION_STARTED		0x01					// Mission is in it's 'critical section'
-#define FEVAL_GOT_TO_TARGET			0x02					// We've arrived at the target
-#define FEVAL_ON_STATION			0x04					// We're in our VOL timewise (not spacewise)
-#define FEVAL_START_COLD			0x10					// not really evaluation flag, start mission from cold, sneaked in so its transfered.... JPO
+#define FEVAL_MISSION_STARTED 0x01 // Mission is in it's 'critical section'
+#define FEVAL_GOT_TO_TARGET 0x02 // We've arrived at the target
+#define FEVAL_ON_STATION 0x04 // We're in our VOL timewise (not spacewise)
+#define FEVAL_START_COLD 0x10 // not really evaluation flag, start mission from cold, sneaked in so its transfered.... JPO
 
 // 2002-02-12 added by MN
-#define FLIGHT_ON_STATION			0x20					// this is used for player flights. Only get 
+#define FLIGHT_ON_STATION 0x20 // this is used for player flights. Only get 
 // AWACS BVR threat warnings when checked in
 
-#define AIRCRAFT_NOT_ASSIGNED		0						// planeStats values
-#define AIRCRAFT_MISSING			1
-#define AIRCRAFT_DEAD				2
-#define AIRCRAFT_RTB				3
-#define AIRCRAFT_AVAILABLE			4
+#define AIRCRAFT_NOT_ASSIGNED 0 // planeStats values
+#define AIRCRAFT_MISSING 1
+#define AIRCRAFT_DEAD 2
+#define AIRCRAFT_RTB 3
+#define AIRCRAFT_AVAILABLE 4
 
 // =========================
 // Flight Class
@@ -58,49 +58,49 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    int						dirty_flight;				// Which elements are dirty
+    int dirty_flight; // Which elements are dirty
 
-    long					fuel_burnt;					// Amount of fuel used since takeoff
-    CampaignTime			last_move;					// Time we moved last
-    CampaignTime			last_combat;				// Last time this entity fired its weapons
-    CampaignTime			time_on_target;				// Time on target
-    CampaignTime			mission_over_time;			// Time off station/target
-    CampaignTime			last_enemy_lock_time;		// Last time an enemy locked us
-    VU_ID					mission_target;				// Our target, or flight we're attached to
-    VU_ID					assigned_target;			// Target we're supposed to IMMEDIATELY attack
-    VU_ID					enemy_locker;				// ID of enemy flight which is locking us
-    WayPointClass			override_wp;				// Divert waypoint or other overriding waypoint
-    LoadoutStruct			*loadout;					// A custom loadout from the Payload window
-    uchar					loadouts;					// Number of loadouts we have recorded (1 or # of ac)
-    uchar					mission;     				// Unit's mission
-    uchar					old_mission;				// Previous mission, if we've been diverted
-    uchar					last_direction;				// Direction of last move
-    uchar					priority;					// Mission priority
-    uchar					mission_id;					// Our mission id
-    uchar					eval_flags;					// Mission evaluation flags
-    uchar					mission_context;			// Our mission context
-    VU_ID					package;					// Our parent package
-    VU_ID					squadron;					// Our parent squadron
-    VU_ID					requester;					// ID of entity requesting our mission
+    long fuel_burnt; // Amount of fuel used since takeoff
+    CampaignTime last_move; // Time we moved last
+    CampaignTime last_combat; // Last time this entity fired its weapons
+    CampaignTime time_on_target; // Time on target
+    CampaignTime mission_over_time; // Time off station/target
+    CampaignTime last_enemy_lock_time; // Last time an enemy locked us
+    VU_ID mission_target; // Our target, or flight we're attached to
+    VU_ID assigned_target; // Target we're supposed to IMMEDIATELY attack
+    VU_ID enemy_locker; // ID of enemy flight which is locking us
+    WayPointClass override_wp; // Divert waypoint or other overriding waypoint
+    LoadoutStruct *loadout; // A custom loadout from the Payload window
+    uchar loadouts; // Number of loadouts we have recorded (1 or # of ac)
+    uchar mission;      // Unit's mission
+    uchar old_mission; // Previous mission, if we've been diverted
+    uchar last_direction; // Direction of last move
+    uchar priority; // Mission priority
+    uchar mission_id; // Our mission id
+    uchar eval_flags; // Mission evaluation flags
+    uchar mission_context; // Our mission context
+    VU_ID package; // Our parent package
+    VU_ID squadron; // Our parent squadron
+    VU_ID requester; // ID of entity requesting our mission
 
 public:
-    uchar					slots[PILOTS_PER_FLIGHT];	// Which vehicle slots this flight is using
-    uchar					pilots[PILOTS_PER_FLIGHT];	// Which squadron pilots we're using
-    uchar					plane_stats[PILOTS_PER_FLIGHT];	// The status of this aircraft
-    uchar					player_slots[PILOTS_PER_FLIGHT];// Which player pilot is in this slot
-    uchar					last_player_slot;			// Slot # of last pilot in this slot
-    uchar					callsign_id;				// Index into callsign table
-    uchar					callsign_num;
+    uchar slots[PILOTS_PER_FLIGHT]; // Which vehicle slots this flight is using
+    uchar pilots[PILOTS_PER_FLIGHT]; // Which squadron pilots we're using
+    uchar plane_stats[PILOTS_PER_FLIGHT]; // The status of this aircraft
+    uchar player_slots[PILOTS_PER_FLIGHT];// Which player pilot is in this slot
+    uchar last_player_slot; // Slot # of last pilot in this slot
+    uchar callsign_id; // Index into callsign table
+    uchar callsign_num;
     // Locals
-    float					last_collision_x;			// Last point AWACS vectored us to
-    float					last_collision_y;
+    float last_collision_x; // Last point AWACS vectored us to
+    float last_collision_y;
 
-    uchar					tacan_channel;				// Support for tankers
-    uchar					tacan_band;					// Support for tankers
+    uchar tacan_channel; // Support for tankers
+    uchar tacan_band; // Support for tankers
 
     // Access Functions
     CampaignTime GetLastMove(void)
@@ -161,7 +161,7 @@ public:
         return requester;
     }
 
-    //		virtual int CombatClass (void)				{ return SimACDefTable[((Falcon4EntityClassType*)EntityType())->vehicleDataIndex].combatClass; } // 2002-02-25 ADDED BY S.G. FlightClass needs to have a combat class like aircrafts.
+    // virtual int CombatClass (void) { return SimACDefTable[((Falcon4EntityClassType*)EntityType())->vehicleDataIndex].combatClass; } // 2002-02-25 ADDED BY S.G. FlightClass needs to have a combat class like aircrafts.
     virtual int CombatClass(void);  // 2002-03-04 MODIFIED BY S.G. Moved inside Flight.cpp
     void SetLastDirection(uchar);
     void SetPackage(VU_ID);
@@ -193,7 +193,7 @@ public:
 
     // virtuals handled by flight.h
     virtual int GetDeaggregationPoint(int slot, CampEntity *ent);
-    virtual int	ShouldDeaggregate(void);
+    virtual int ShouldDeaggregate(void);
     virtual int Reaction(CampEntity what, int zone, float range);
     virtual int MoveUnit(CampaignTime time);
     virtual int DoCombat(void);
@@ -251,11 +251,11 @@ public:
     virtual void SetUnitMission(uchar mis);
     virtual void SetUnitPriority(int p)
     {
-        priority		= (uchar)p;
+        priority = (uchar)p;
     }
     virtual void SetUnitMissionID(int id)
     {
-        mission_id	= (uchar)id;
+        mission_id = (uchar)id;
     }
     virtual void SetUnitMissionTarget(VU_ID id)
     {
@@ -269,7 +269,7 @@ public:
     {
         squadron = ID;
     }
-    //		virtual void SetUnitTakeoffSlot (int ts)				{ takeoff_slot = ts; }
+    // virtual void SetUnitTakeoffSlot (int ts) { takeoff_slot = ts; }
     virtual void SimSetLocation(float x, float y, float z);
     virtual void GetRealPosition(float *x, float *y, float *z);
     virtual void SimSetOrientation(float yaw, float pitch, float roll);
@@ -327,7 +327,7 @@ public:
     }
     virtual CampEntity GetUnitAirbase(void);
     virtual VU_ID GetUnitAirbaseID(void);
-    //		virtual int GetUnitTakeoffSlot (void)					{ return (int)takeoff_slot; }
+    // virtual int GetUnitTakeoffSlot (void) { return (int)takeoff_slot; }
     virtual int LoadWeapons(void *squadron, uchar *dam, MoveType mt, int num, int type_flags, int guide_flags);
     virtual int DumpWeapons(void);
     virtual CampaignTime ETA(void);
@@ -370,16 +370,16 @@ public:
     int GetPilotID(int pilotSlot);
     int GetPilotCallNumber(int pilot_slot);
     uchar GetPilotVoiceID(int pilotSlot);
-    int GetPilotCount(void);								// Returns # of pilots in flight (including players)
-    int GetACCount(void);									// Returns # of aircraft in flight
-    int GetFlightLeadSlot(void);							// Returns slot of flightleader
-    int GetFlightLeadCallNumber(void);						// Returns the callnumber (1-36) of the flightleader
-    uchar GetFlightLeadVoiceID(void);						// Returns the voiceId of the flightleader
+    int GetPilotCount(void); // Returns # of pilots in flight (including players)
+    int GetACCount(void); // Returns # of aircraft in flight
+    int GetFlightLeadSlot(void); // Returns slot of flightleader
+    int GetFlightLeadCallNumber(void); // Returns the callnumber (1-36) of the flightleader
+    uchar GetFlightLeadVoiceID(void); // Returns the voiceId of the flightleader
     int GetAdjustedAircraftSlot(int aircraftNum);
     long CalculateFuelAvailable(int aircraftNum);
     int HasWeapons(void);
     int HasFuel(int limit = 9);  // 2002-02-20 MODIFIED BY S.G. Added 'limit' which defaults to 9 so 9/12 is the same as 3/4 used in the original code
-    int CanAbort(void);									// returns 1 if don't have enough fuel or weapons
+    int CanAbort(void); // returns 1 if don't have enough fuel or weapons
     // 2001-04-03 ADDED BY S.G. THE Standoff jammer GETTER WASN'T DEFINED
     Flight GetECMFlight(void);
     // END OF ADDED SECTION
@@ -401,9 +401,9 @@ public:
     FalconEntity *shotAt;
     AircraftClass *whoShot;
     // 2001-10-11 ADDED by M.N.
-    unsigned int	refuel;									// How much fuel has to be taken from a tanker
+    unsigned int refuel; // How much fuel has to be taken from a tanker
 };
-typedef FlightClass*	Flight;
+typedef FlightClass* Flight;
 
 // =================================
 // Support functions

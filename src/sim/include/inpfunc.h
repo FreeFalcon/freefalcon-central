@@ -1,8 +1,8 @@
 #ifndef _INPFUNC_H
 #define _INPFUNC_H
 
-//Retro_dead 15Jan2004	#define DIRECTINPUT_VERSION 0x0700
-//Retro_dead 15Jan2004	#include <dinput.h>
+//Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
+//Retro_dead 15Jan2004 #include <dinput.h>
 #include <tchar.h>
 #include "falclib\include\playerop.h"
 
@@ -16,14 +16,14 @@ typedef void (*InputFunctionType)(unsigned long, int state, void *);
 
 typedef struct
 {
-    InputFunctionType func;		  //this is the pointer to the appropriate function
-    int				  cpButtonID; //this is the ID of the associated cockpit button
+    InputFunctionType func;   //this is the pointer to the appropriate function
+    int   cpButtonID; //this is the ID of the associated cockpit button
 } joyButton;
 
 typedef struct
 {
-    InputFunctionType func[MAX_POV_DIR];	  //this is the pointer to the appropriate function
-    int		 cpButtonID[MAX_POV_DIR]; //this is the ID of the associated cockpit button
+    InputFunctionType func[MAX_POV_DIR];   //this is the pointer to the appropriate function
+    int  cpButtonID[MAX_POV_DIR]; //this is the ID of the associated cockpit button
 } POVfunc;
 
 struct FunctionPtrListEntry
@@ -51,7 +51,7 @@ public:
 private:
     struct FunctionPtrListEntry* functionTable[NumHashEntries];
     joyButton  buttonTable[NumButtons];
-    POVfunc	 POVTable[NumPOVs];
+    POVfunc  POVTable[NumPOVs];
 
 public:
     InputFunctionHashTable(void);
@@ -60,7 +60,7 @@ public:
     void RemoveFunction(int key, int flags);
     void ClearTable(void);
     InputFunctionType GetFunction(int key, int flags, int* pbuttonId, int* pmouseSide);
-    int GetButtonId(InputFunctionType funcPtr);		//Wombat778 2-05-04
+    int GetButtonId(InputFunctionType funcPtr); //Wombat778 2-05-04
     long GetControl(int key, int flags);
     BOOL SetControl(int key, int flags, long control);
     BOOL SetButtonFunction(int buttonId, InputFunctionType theFunc, int cpButtonID);

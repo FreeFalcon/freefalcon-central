@@ -171,13 +171,13 @@ void MissileClass::Launch(void)
             //changed type from LIGHT_CLOUD to MISSILE_LAUNCH
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass ( SFX_MISSILE_LAUNCH,		// type
-            	0,
-            	&pos,					// world pos
-            	&vec,					// vel vector
-            	5.3F,					// time to live
-            	5.0f ) );				// scale
-            	*/
+             new SfxClass ( SFX_MISSILE_LAUNCH, // type
+             0,
+             &pos, // world pos
+             &vec, // vel vector
+             5.3F, // time to live
+             5.0f ) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_MISSILE_LAUNCH + 1),
                                                   &pos,
                                                   &vec);
@@ -194,7 +194,7 @@ void MissileClass::Launch(void)
                 misPos.data.roll = phi;
                 misPos.data.pitch = theta;
                 misPos.data.yaw = psi;
-                // remove				misPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
+                // remove misPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
 
                 gACMIRec.MissilePositionRecord(&misPos);
             }
@@ -220,9 +220,9 @@ void MissileClass::SetLaunchData(void)
         z = ZPos();
 
         // Cobra - removed - fixed missile launching through the wing
-        //	  xdot=XDelta();
-        //	  ydot=YDelta();
-        //	  zdot=ZDelta();
+        //   xdot=XDelta();
+        //   ydot=YDelta();
+        //   zdot=ZDelta();
 
         float disp_az, disp_el; // MLR 1/17/2004 - Added random dispersion
 

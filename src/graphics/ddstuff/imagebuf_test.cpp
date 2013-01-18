@@ -4,7 +4,7 @@
     December 29, 1995
 
     This class provides management for drawing target buffers and sources
-	for blit operations.
+ for blit operations.
 \***************************************************************************/
 
 #include "stdafx.h"
@@ -48,7 +48,7 @@ ImageBuffer::ImageBuffer()
 ImageBuffer::~ImageBuffer()
 {
     ShiAssert(!IsReady());
-    Cleanup();	// OW
+    Cleanup(); // OW
 
 #ifdef _IMAGEBUFFER_PROTECT_SURF_LOCK
     DeleteCriticalSection(&m_cs);
@@ -160,7 +160,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     default:
                     {
-                        ShiAssert(false);	// illegal combination
+                        ShiAssert(false); // illegal combination
                         return FALSE;
                     }
                 }
@@ -183,19 +183,19 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                 {
                     case SystemMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case VideoMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case Flip:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
@@ -214,7 +214,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     default:
                     {
-                        ShiAssert(false);	// illegal combination
+                        ShiAssert(false); // illegal combination
                         return FALSE;
                     }
                 }
@@ -228,19 +228,19 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                 {
                     case SystemMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case VideoMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case Flip:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
@@ -273,7 +273,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     default:
                     {
-                        ShiAssert(false);	// illegal combination
+                        ShiAssert(false); // illegal combination
                         return FALSE;
                     }
                 }
@@ -288,19 +288,19 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
                 {
                     case SystemMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case VideoMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case Flip:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
@@ -339,7 +339,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     default:
                     {
-                        ShiAssert(false);	// illegal combination
+                        ShiAssert(false); // illegal combination
                         return FALSE;
                     }
                 }
@@ -348,60 +348,60 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
             }
 
             /*
-            			case Flip:
-            			{
-            				switch(back)
-            				{
-            					case SystemMem:
-            					{
-            						break;
-            					}
+             case Flip:
+             {
+             switch(back)
+             {
+             case SystemMem:
+             {
+             break;
+             }
 
-            					case VideoMem:
-            					{
-            						break;
-            					}
+             case VideoMem:
+             {
+             break;
+             }
 
-            					case Flip:
-            					{
-            						break;
-            					}
+             case Flip:
+             {
+             break;
+             }
 
-            					case None:
-            					{
-            						break;
-            					}
+             case None:
+             {
+             break;
+             }
 
-            					default:
-            					{
-            						ShiAssert(false);	// illegal combination
-            						return FALSE;
-            					}
-            				}
+             default:
+             {
+             ShiAssert(false); // illegal combination
+             return FALSE;
+             }
+             }
 
-            				break;
-            			}
+             break;
+             }
             */
 
-            case None:		// Note: This doesnt create a 3D surface and it lets the driver decide where to put it)
+            case None: // Note: This doesnt create a 3D surface and it lets the driver decide where to put it)
             {
                 switch (back)
                 {
                     case SystemMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case VideoMem:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
                     case Flip:
                     {
-                        ShiAssert(false);	// not implemented yet
+                        ShiAssert(false); // not implemented yet
                         break;
                     }
 
@@ -420,7 +420,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
                     default:
                     {
-                        ShiAssert(false);	// illegal combination
+                        ShiAssert(false); // illegal combination
                         return FALSE;
                     }
                 }
@@ -430,7 +430,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
 
             default:
             {
-                ShiAssert(false);	// illegal combination
+                ShiAssert(false); // illegal combination
                 return FALSE;
             }
         }
@@ -450,22 +450,22 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
         m_ddsdBack.dwSize = sizeof(DDSURFACEDESC2);
         CheckHR(m_pDDSBack->GetSurfaceDesc(&m_ddsdBack));
 
-        /*		#ifdef _DEBUG
-        		if(back == None)
-        //			MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory\n",
-        //				m_ddsdFront.dwWidth, m_ddsdFront.dwHeight, arrType2String[front],
-        //				m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-        //				(m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
-        		else
-        /*			MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory, back (%s) created in %s memory\n",
-        				m_ddsdFront.dwWidth, m_ddsdFront.dwHeight,
-        				arrType2String[front],
-        				m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-        				(m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"),
-        				 arrType2String[back],
-        				m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-        				(m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
-        		#endif
+        /* #ifdef _DEBUG
+         if(back == None)
+        // MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory\n",
+        // m_ddsdFront.dwWidth, m_ddsdFront.dwHeight, arrType2String[front],
+        // m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+        // (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
+         else
+        /* MonoPrint("ImageBuffer::Setup - %dx%d front (%s) created in %s memory, back (%s) created in %s memory\n",
+         m_ddsdFront.dwWidth, m_ddsdFront.dwHeight,
+         arrType2String[front],
+         m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+         (m_ddsdFront.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"),
+          arrType2String[back],
+         m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+         (m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
+         #endif
         */
         // Set blt target surface depending on wether we will page flip or not
         if (bWillCallSwapBuffer)
@@ -537,7 +537,7 @@ void ImageBuffer::Cleanup(void)
 {
     m_bReady = FALSE;
 
-    if (m_pDDSBack)	// MUST be released before releasing the front buffer
+    if (m_pDDSBack) // MUST be released before releasing the front buffer
     {
         m_pDDSBack->Release();
         m_pDDSBack = NULL;
@@ -557,7 +557,7 @@ void ImageBuffer::Cleanup(void)
 // Compute the right shifts required to get from 24 bit RGB to this pixel format
 void ImageBuffer::ComputeColorShifts(void)
 {
-    UInt32	mask;
+    UInt32 mask;
 
     // RED
     mask = m_ddsdFront.ddpfPixelFormat.dwRBitMask;
@@ -621,7 +621,7 @@ void ImageBuffer::GetColorMasks(UInt32 *r, UInt32 *g, UInt32* b)
 // Adjust the offset into the primary surface if we are windowed
 void ImageBuffer::UpdateFrontWindowRect(RECT *rect)
 {
-    // ShiAssert( frontType == Primary );	// This is only useful for the primary surface
+    // ShiAssert( frontType == Primary ); // This is only useful for the primary surface
     if (rect) m_rcFront = *rect;
 
     m_bFrontRectValid = rect && (m_rcFront.left || m_rcFront.right);
@@ -646,7 +646,7 @@ void *ImageBuffer::Lock(bool bLockMutexOnly, bool bWriteOnly)
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
 
-    //	DWORD dwFlags = DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
+    // DWORD dwFlags = DDLOCK_NOSYSLOCK | DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
     DWORD dwFlags = DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR;
 
     if (bWriteOnly) dwFlags |= DDLOCK_WRITEONLY;
@@ -718,7 +718,7 @@ void ImageBuffer::SetChromaKey(UInt32 colorKey)
     else
         m_dwColorKey |= (colorKey << -blueShift) & m_ddsdFront.ddpfPixelFormat.dwBBitMask;
 
-    DDCOLORKEY	key = { m_dwColorKey, m_dwColorKey};
+    DDCOLORKEY key = { m_dwColorKey, m_dwColorKey};
 
     // Submit the request to DirectDraw
     HRESULT hr = m_pDDSFront->SetColorKey(DDCKEY_SRCBLT, &key);
@@ -728,10 +728,10 @@ void ImageBuffer::SetChromaKey(UInt32 colorKey)
 // NOTE:  At present alpha is ignored by this call, but that could change...
 WORD ImageBuffer::Pixel32toPixel16(UInt32 ABGR)
 {
-    UInt32		color;
+    UInt32 color;
 
     // OW FIXME
-    //	ShiAssert( PixelSize() == 2 );	// Only returns 16 bit values
+    // ShiAssert( PixelSize() == 2 ); // Only returns 16 bit values
 
     // RED
     if (redShift >= 0)
@@ -768,10 +768,10 @@ WORD ImageBuffer::Pixel32toPixel16(UInt32 ABGR)
 
 DWORD ImageBuffer::Pixel32toPixel32(UInt32 ABGR)
 {
-    UInt32		color;
+    UInt32 color;
 
     // OW FIXME
-    //	ShiAssert( PixelSize() == 2 );	// Only returns 16 bit values
+    // ShiAssert( PixelSize() == 2 ); // Only returns 16 bit values
 
     // RED
     if (redShift >= 0)
@@ -811,9 +811,9 @@ DWORD ImageBuffer::Pixel32toPixel32(UInt32 ABGR)
 // NOTE:  At present alpha is always set to 0 by this call, but that could change...
 UInt32 ImageBuffer::Pixel16toPixel32(WORD pixel)
 {
-    UInt32		color;
+    UInt32 color;
 
-    ShiAssert(PixelSize() == 2);	// Only returns 16 bit values
+    ShiAssert(PixelSize() == 2); // Only returns 16 bit values
 
     // RED
     if (redShift >= 0)
@@ -1059,24 +1059,24 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
         hr = m_pDDSFront->Flip(NULL, DDFLIP_WAIT);
         // hr = m_pDDSFront->Flip(NULL, DDFLIP_NOVSYNC);
         ShiAssert(SUCCEEDED(hr));
-        /*		while(true)
-        		{
-        			HRESULT hres = m_pDDSFront->GetBltStatus(DDGBS_ISBLTDONE);
-        			if(hres != DDERR_WASSTILLDRAWING)
-        			{
-        					break;
-        			}
+        /* while(true)
+         {
+         HRESULT hres = m_pDDSFront->GetBltStatus(DDGBS_ISBLTDONE);
+         if(hres != DDERR_WASSTILLDRAWING)
+         {
+         break;
+         }
 
-        			// Let all the other threads have some CPU.
-        			Sleep(0);
-        		}*/
+         // Let all the other threads have some CPU.
+         Sleep(0);
+         }*/
         STOP_PROFILE("FLIP WAITS");
         return;
     }
 
     RECT backRect = { 0, 0, m_ddsdBack.dwWidth, m_ddsdBack.dwHeight };
 
-    if (!m_bFrontRectValid)	// assumes no clipper is attached (fullscreen) !!
+    if (!m_bFrontRectValid) // assumes no clipper is attached (fullscreen) !!
         hr = m_pDDSFront->BltFast(m_rcFront.left, m_rcFront.top, m_pDDSBack, &backRect, DDBLTFAST_WAIT | DDBLTFAST_NOCOLORKEY);
     else
         hr = m_pDDSFront->Blt(&m_rcFront, m_pDDSBack, &backRect, DDBLT_WAIT, NULL);
@@ -1093,16 +1093,16 @@ void ImageBuffer::SwapBuffers(bool bDontFlip)
 // Helpful function to drop a screen capture to disk (BACK buffer to 24 bit RAW file)
 void ImageBuffer::BackBufferToRAW(char *filename)
 {
-    char	fullname[MAX_PATH];
-    HANDLE	fileID;
-    int		r, c;
-    void	*imagePtr;
-    BYTE	*buffer;
-    BYTE	*p;
-    UInt32	bufferSize;
-    DWORD	bytes;
-    UInt32	color;
-    RECT	rect;
+    char fullname[MAX_PATH];
+    HANDLE fileID;
+    int r, c;
+    void *imagePtr;
+    BYTE *buffer;
+    BYTE *p;
+    UInt32 bufferSize;
+    DWORD bytes;
+    UInt32 color;
+    RECT rect;
 
     // Probably this will break if it is ever used on a Primary surface
     // in a window with no back buffer.  We'd need to account for the window
@@ -1176,7 +1176,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
     {
         case 2:
         {
-            WORD	*pixel;
+            WORD *pixel;
 
             // Step through each scanline
             for (r = rect.bottom - 1; r >= 0; r--)
@@ -1192,11 +1192,11 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                     color = Pixel16toPixel32(*pixel);
 
                     *p = (BYTE)((color & 0x00FF0000) >> 16);
-                    p++;	// Blue
+                    p++; // Blue
                     *p = (BYTE)((color & 0x0000FF00) >>  8);
-                    p++;	// Green
+                    p++; // Green
                     *p = (BYTE)((color & 0x000000FF) >>  0);
-                    p++;	// Red
+                    p++; // Red
                 }
 
                 // Write the scanline to disk
@@ -1216,7 +1216,7 @@ void ImageBuffer::BackBufferToRAW(char *filename)
 
         case 4:
         {
-            DWORD	*pixel;
+            DWORD *pixel;
 
             // Step through each scanline
             for (r = rect.bottom - 1; r >= 0; r--)
@@ -1233,11 +1233,11 @@ void ImageBuffer::BackBufferToRAW(char *filename)
                     color = Pixel32toPixel32(*pixel);
 
                     *p = (BYTE)((color & 0x00FF0000) >> 16);
-                    p++;	// Blue
+                    p++; // Blue
                     *p = (BYTE)((color & 0x0000FF00) >>  8);
-                    p++;	// Green
+                    p++; // Green
                     *p = (BYTE)((color & 0x000000FF) >>  0);
-                    p++;	// Red
+                    p++; // Red
                 }
 
                 // Write the scanline to disk

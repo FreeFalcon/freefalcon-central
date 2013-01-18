@@ -1,4 +1,4 @@
-#define	PICKLE_RELEASE_TIME		1000		// Time in milliSeconds for Pickle to release 
+#define PICKLE_RELEASE_TIME 1000 // Time in milliSeconds for Pickle to release 
 
 
 
@@ -25,25 +25,25 @@ public:
     float pstick;
     float rstick;
     float throttle;
-    float engineThrottle[2];			// Retro 12Jan2004 - I didn´t want to call it 'throttle' as we´d certainly get errors that way
+    float engineThrottle[2]; // Retro 12Jan2004 - I didn´t want to call it 'throttle' as we´d certainly get errors that way
     float rudder;
     float ptrim;
     float rtrim;
     float ytrim;
-    DWORD	PickleTime;
+    DWORD PickleTime;
     PilotInputs(void);
     ~PilotInputs(void);
     void Update(void);
     void Reset(void);
 
-    typedef enum			// Retro 12Jan2004
+    typedef enum // Retro 12Jan2004
     {
-        Left_Engine = 0,	// do NOT change this, it´s an array index !!!
-        Right_Engine = 1,	// do NOT change this, it´s an array index !!!
-        Both_Engines		// do with that whatever you want :p
+        Left_Engine = 0, // do NOT change this, it´s an array index !!!
+        Right_Engine = 1, // do NOT change this, it´s an array index !!!
+        Both_Engines // do with that whatever you want :p
     } Engine_t;
 
-    Engine_t currentlyActiveEngine;	// Retro 12Jan2004
+    Engine_t currentlyActiveEngine; // Retro 12Jan2004
 
     // Retro 12Jan2004 - for explanations, see the .cpp
     Engine_t getCurrentEngine()

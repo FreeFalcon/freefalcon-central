@@ -16,21 +16,21 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    short		State_;
-    short		muted_;
-    short		ignored_;
+    short State_;
+    short muted_;
+    short ignored_;
 
-    COLORREF	Color_[3];
+    COLORREF Color_[3];
 
-    O_Output	*Icon_;
-    O_Output	*Name_;
-    O_Output	*Status_;
+    O_Output *Icon_;
+    O_Output *Name_;
+    O_Output *Status_;
 
-    TREELIST	*Owner_;
+    TREELIST *Owner_;
 
-    VU_ID		vuID;
+    VU_ID vuID;
 public:
 
     C_Player();

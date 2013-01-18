@@ -15,7 +15,7 @@
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	FlareClass::pool;
+MEM_POOL FlareClass::pool;
 #endif
 
 extern bool g_bDisableMissleEngGlow; // MLR 2003-11-15
@@ -170,13 +170,13 @@ void FlareClass::ExtraGraphics()
     //RV - I-Hawk - PS flare effect call, to replace the old Flare effect
     /*
 
-    OTWDriver.AddSfxRequest(new SfxClass( SFX_LIGHT_DEBRIS,		// type
-    							SFX_MOVES,
-    							&newPoint,							// world pos
-    							&vec,
-    							1.0f,							// time to live
-    							1.0f) );		// scale
-    							*/
+    OTWDriver.AddSfxRequest(new SfxClass( SFX_LIGHT_DEBRIS, // type
+     SFX_MOVES,
+     &newPoint, // world pos
+     &vec,
+     1.0f, // time to live
+     1.0f) ); // scale
+     */
     DrawableParticleSys::PS_AddParticleEx(
         (SFX_FLARE_GFX + 1), &newPoint, &vec
     );
@@ -185,8 +185,8 @@ void FlareClass::ExtraGraphics()
     /*
     if(!g_bDisableMissleEngGlow) // MLR 2003-11-15 disable that shit-o star effect
     {
-    	OTWDriver.InsertObject(trailGlow);
-    	OTWDriver.InsertObject(trailSphere);
+     OTWDriver.InsertObject(trailGlow);
+     OTWDriver.InsertObject(trailSphere);
     }*/
 
     // I-Hawk - Removed, old flare graphics stuff
@@ -262,8 +262,8 @@ void FlareClass::InitTrail(void)
 
     //I-Hawk - Removed, old flare graphics stuff
     /*
-    	trailGlow = NULL;
-    	trailSphere = NULL;
+     trailGlow = NULL;
+     trailSphere = NULL;
     */
 
     flags |= IsFlare;
@@ -283,19 +283,19 @@ void FlareClass::InitTrail(void)
 
     // I-Hawk - Removed, old flare graphics stuff
     /*
-    	classPtr = &Falcon4ClassTable[displayIndex];
+     classPtr = &Falcon4ClassTable[displayIndex];
 
          trail = new DrawableTrail( TRAIL_FLARE );
          trail = (DrawableTrail*)DrawableParticleSys::PS_AddTrail( TRAIL_FLARE, XPos(), YPos(), ZPos());
 
-    	if (IsAwake())
-    	{
-    		OTWDriver.CreateVisualObject (this, classPtr->visType[0], OTWDriver.Scale());
-    		displayIndex = -1;
-    	}
-    	Tpoint newPoint = {0.0f, 0.0f, 0.0f};
-    	trailGlow = new Drawable2D( DRAW2D_MISSILE_GLOW, 6.0f, &newPoint );
-    	trailSphere = new Drawable2D( DRAW2D_EXPLCIRC_GLOW, 8.0f, &newPoint );
+     if (IsAwake())
+     {
+     OTWDriver.CreateVisualObject (this, classPtr->visType[0], OTWDriver.Scale());
+     displayIndex = -1;
+     }
+     Tpoint newPoint = {0.0f, 0.0f, 0.0f};
+     trailGlow = new Drawable2D( DRAW2D_MISSILE_GLOW, 6.0f, &newPoint );
+     trailSphere = new Drawable2D( DRAW2D_EXPLCIRC_GLOW, 8.0f, &newPoint );
     */
 }
 
@@ -309,14 +309,14 @@ void FlareClass::UpdateTrail(void)
 
     // I-Hawk - Removed, flare's trail isn't managed here anymore but from PS
 
-    /*	OTWDriver.AddTrailHead (trail, newPoint.x, newPoint.y, newPoint.z);
-    	 // OTWDriver.TrimTrail(trail, 25); // MLR 12/14/2003 - removed
-    //	DrawableParticleSys::PS_UpdateTrail((PS_PTR)trail, XPos(), YPos(), ZPos());
-    	//trail = (DrawableTrail*)DrawableParticleSys::PS_EmitTrail((TRAIL_HANDLE)trail, TRAIL_FLARE, XPos(), YPos(), ZPos());
+    /* OTWDriver.AddTrailHead (trail, newPoint.x, newPoint.y, newPoint.z);
+      // OTWDriver.TrimTrail(trail, 25); // MLR 12/14/2003 - removed
+    // DrawableParticleSys::PS_UpdateTrail((PS_PTR)trail, XPos(), YPos(), ZPos());
+     //trail = (DrawableTrail*)DrawableParticleSys::PS_EmitTrail((TRAIL_HANDLE)trail, TRAIL_FLARE, XPos(), YPos(), ZPos());
 
-    	trailGlow->SetPosition( &newPoint );
-    	trailSphere->SetPosition( &newPoint );
-    	((Drawable2D *)drawPointer)->SetPosition( &newPoint );
+     trailGlow->SetPosition( &newPoint );
+     trailSphere->SetPosition( &newPoint );
+     ((Drawable2D *)drawPointer)->SetPosition( &newPoint );
     */
     if (SimLibElapsedTime - timeOfDeath > 10 * SEC_TO_MSEC)
     {
@@ -341,14 +341,14 @@ void FlareClass::RemoveTrail()
     /*
     if (trailGlow)
     {
-    	OTWDriver.RemoveObject(trailGlow, TRUE);
-    	trailGlow = NULL;
+     OTWDriver.RemoveObject(trailGlow, TRUE);
+     trailGlow = NULL;
     }
 
     if (trailSphere)
     {
-    	OTWDriver.RemoveObject(trailSphere, TRUE);
-    	trailSphere = NULL;
+     OTWDriver.RemoveObject(trailSphere, TRUE);
+     trailSphere = NULL;
     }
     */
 }

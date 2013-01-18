@@ -1,5 +1,5 @@
 /***************************************************************************\
-	ColorBuildList.cpp
+ ColorBuildList.cpp
     Scott Randolph
     February 17, 1998
 
@@ -10,13 +10,13 @@
 #include "ColorBuildList.h"
 
 
-BuildTimeColorList	TheColorBuildList;
+BuildTimeColorList TheColorBuildList;
 
 
 void BuildTimeColorList::AddReference(int *target, Pcolor color, BOOL preLit)
 {
-    BuildTimeColorEntry		*entry;
-    BuildTimeColorReference	*ref;
+    BuildTimeColorEntry *entry;
+    BuildTimeColorReference *ref;
 
     // See if we've already got a matching color to share
     for (entry = head; entry; entry = entry->next)
@@ -33,8 +33,8 @@ void BuildTimeColorList::AddReference(int *target, Pcolor color, BOOL preLit)
 
             ref->next = new BuildTimeColorReference;
             ref = ref->next;
-            ref->target	= target;
-            ref->next	= NULL;
+            ref->target = target;
+            ref->next = NULL;
             *target = -1;
             return;
         }
@@ -42,14 +42,14 @@ void BuildTimeColorList::AddReference(int *target, Pcolor color, BOOL preLit)
 
     // Setup a new entry for our list
     entry = new BuildTimeColorEntry;
-    entry->color	= color;
-    entry->preLit	= preLit;
-    entry->index	= -1;
-    entry->refs		= new BuildTimeColorReference;
-    entry->refs->target	= target;
-    entry->refs->next	= NULL;
-    entry->next		= NULL;
-    entry->prev		= tail;
+    entry->color = color;
+    entry->preLit = preLit;
+    entry->index = -1;
+    entry->refs = new BuildTimeColorReference;
+    entry->refs->target = target;
+    entry->refs->next = NULL;
+    entry->next = NULL;
+    entry->prev = tail;
     *target = -1;
 
     // Add the new entry to the list
@@ -75,8 +75,8 @@ void BuildTimeColorList::AddReference(int *target, Pcolor color, BOOL preLit)
 
 void BuildTimeColorList::AddReference(int *target, int *source)
 {
-    BuildTimeColorEntry		*entry;
-    BuildTimeColorReference	*ref;
+    BuildTimeColorEntry *entry;
+    BuildTimeColorReference *ref;
 
     // Find the reference to the source color to which we want another reference
     for (entry = head; entry; entry = entry->next)
@@ -102,8 +102,8 @@ void BuildTimeColorList::AddReference(int *target, int *source)
 
         ref->next = new BuildTimeColorReference;
         ref = ref->next;
-        ref->target	= target;
-        ref->next	= NULL;
+        ref->target = target;
+        ref->next = NULL;
         *target = -1;
         return;
     }
@@ -116,23 +116,23 @@ void BuildTimeColorList::AddReference(int *target, int *source)
 
 void BuildTimeColorList::BuildPool()
 {
-    Pcolor					*preLitPtr;
-    Pcolor					*nonPreLitPtr;
+    Pcolor *preLitPtr;
+    Pcolor *nonPreLitPtr;
 
-    Pcolor					*originalPtr;
-    Pcolor					*end;
+    Pcolor *originalPtr;
+    Pcolor *end;
 
-    Pcolor					*darkened;
-    Pcolor					*greenTV;
-    Pcolor					*greenIR;
+    Pcolor *darkened;
+    Pcolor *greenTV;
+    Pcolor *greenIR;
 
-    BuildTimeColorReference	*ref;
-    BuildTimeColorEntry		*entry = head;
+    BuildTimeColorReference *ref;
+    BuildTimeColorEntry *entry = head;
 
 
     // Construct the color arrays and get pointers into it
     TheColorBank.Setup(numColors, numPrelitColors);
-    preLitPtr	 = TheColorBank.ColorBuffer;
+    preLitPtr  = TheColorBank.ColorBuffer;
     nonPreLitPtr = TheColorBank.ColorBuffer + numPrelitColors;
     ShiAssert(preLitPtr);
     ShiAssert(nonPreLitPtr);
@@ -163,10 +163,10 @@ void BuildTimeColorList::BuildPool()
 
     // Now construct the other three versions of the colors (lit, green, and unlit green)
     originalPtr = TheColorBank.ColorBuffer;
-    end			= originalPtr + numColors;
-    darkened	= TheColorBank.DarkenedBuffer;
-    greenTV		= TheColorBank.GreenTVBuffer;
-    greenIR		= TheColorBank.GreenIRBuffer;
+    end = originalPtr + numColors;
+    darkened = TheColorBank.DarkenedBuffer;
+    greenTV = TheColorBank.GreenTVBuffer;
+    greenIR = TheColorBank.GreenIRBuffer;
 
     while (originalPtr < end)
     {
@@ -186,13 +186,13 @@ void BuildTimeColorList::BuildPool()
 
 void BuildTimeColorList::WritePool(int file)
 {
-    int		result;
+    int result;
 
     printf("Writing color pool\n");
 
     // Now we store our total color and darkened color count
-    result = write(file, &TheColorBank.nColors,			sizeof(TheColorBank.nColors));
-    result = write(file, &TheColorBank.nDarkendColors,	sizeof(TheColorBank.nDarkendColors));
+    result = write(file, &TheColorBank.nColors, sizeof(TheColorBank.nColors));
+    result = write(file, &TheColorBank.nDarkendColors, sizeof(TheColorBank.nDarkendColors));
 
     // Finally, store our color array
     result = write(file, TheColorBank.ColorBuffer, TheColorBank.nColors * sizeof(*TheColorBank.ColorBuffer));

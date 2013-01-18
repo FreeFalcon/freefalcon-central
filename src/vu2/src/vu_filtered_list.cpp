@@ -6,7 +6,7 @@ int foo_x2 = 0;// only for solving warnings
 #if !VU_ALL_FILTERED
 
 
-VuFilteredList::VuFilteredList(VuFilter* filter) : VuLinkedList(), 	filter_(filter->Copy())
+VuFilteredList::VuFilteredList(VuFilter* filter) : VuLinkedList(),  filter_(filter->Copy())
 {
 }
 

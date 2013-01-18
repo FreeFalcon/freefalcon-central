@@ -123,7 +123,7 @@ void AirframeClass::Yaw(void)
 
     //error1 = nycmd + nycgb;
     //if(platform->isF16)
-    //		error1 = nycmd + (nycgs + platform->platformAngles.sinmu * platform->platformAngles.cosgam);
+    // error1 = nycmd + (nycgs + platform->platformAngles.sinmu * platform->platformAngles.cosgam);
     // else
     if (IsSet(InAir))
         error1 = nycmd + nycgs;

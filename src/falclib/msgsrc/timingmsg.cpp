@@ -35,15 +35,15 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     {
         if (vuxGameTime < gCompressTillTime)
         {
-            dataBlock.targetTime = gCompressTillTime;					// We don't want to advance time past here
+            dataBlock.targetTime = gCompressTillTime; // We don't want to advance time past here
         }
         else
         {
-            dataBlock.targetTime = vuxGameTime;							// Unless it's already to late
+            dataBlock.targetTime = vuxGameTime; // Unless it's already to late
         }
     }
 
-    //	RequestReliableTransmit ();
+    // RequestReliableTransmit ();
     RequestOutOfBandTransmit();
 }
 
@@ -84,13 +84,13 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
 
     if (!FalconLocalGame->IsLocal())
     {
-        //		MonoPrint
-        //		(
-        //			"Got timing message - %08x %08x %d\n",
-        //			vuxTargetGameTime,
-        //			dataBlock.targetTime,
-        //			vuxTargetGameTime - dataBlock.targetTime
-        //		);
+        // MonoPrint
+        // (
+        // "Got timing message - %08x %08x %d\n",
+        // vuxTargetGameTime,
+        // dataBlock.targetTime,
+        // vuxTargetGameTime - dataBlock.targetTime
+        // );
         // me123 add the static latency
         dataBlock.targetTime += F4CommsLatency;
 
@@ -111,7 +111,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
             {
                 for (int i = numberofstats; i >= 0; i--)
                 {
-                    if (i == 0)	delta[i] = vuxTargetGameTime - dataBlock.targetTime;
+                    if (i == 0) delta[i] = vuxTargetGameTime - dataBlock.targetTime;
                     else if (i > 0) delta[i] = delta[i - 1];
 
                     totaltimediff += delta[i];

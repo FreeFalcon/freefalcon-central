@@ -34,12 +34,12 @@ DigitalBrain::BVRProfileType BvrLookup[] =
 void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
 {
 
-    FalconWingmanMsg					*wingMsg;
-    FalconWingmanMsg::WingManCmd	command;
-    FlightClass							*p_flight;
-    AircraftClass						*p_from;
-    int									fromIndex;
-    short									edata[10];
+    FalconWingmanMsg *wingMsg;
+    FalconWingmanMsg::WingManCmd command;
+    FlightClass *p_flight;
+    AircraftClass *p_from;
+    int fromIndex;
+    short edata[10];
 
     if (!self->IsAwake() || self->IsDead())
         return;
@@ -51,9 +51,9 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
     wingMsg = (FalconWingmanMsg *)theEvent;
     command = (FalconWingmanMsg::WingManCmd) wingMsg->dataBlock.command;
 
-    p_flight		= (FlightClass*) vuDatabase->Find(wingMsg->EntityId());
-    p_from		= (AircraftClass*) vuDatabase->Find(wingMsg->dataBlock.from);
-    fromIndex	= p_flight->GetComponentIndex(p_from);
+    p_flight = (FlightClass*) vuDatabase->Find(wingMsg->EntityId());
+    p_from = (AircraftClass*) vuDatabase->Find(wingMsg->dataBlock.from);
+    fromIndex = p_flight->GetComponentIndex(p_from);
 
     if (curMode == GunsJinkMode || curMode == MissileDefeatMode || curMode == DefensiveModes)
     {
@@ -101,8 +101,8 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
             case FalconWingmanMsg::WMToggleSide:
             case FalconWingmanMsg::WMIncreaseRelAlt:
             case FalconWingmanMsg::WMDecreaseRelAlt:
-                edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-                edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
+                edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+                edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
                 edata[2] = -1;
                 edata[3] = -1;
                 AiMakeRadioResponse(self, rcUNABLE, edata);
@@ -263,7 +263,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 if (flightLead && ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
-                fromIndex	= self->GetCampaignObject()->GetComponentIndex(self);
+                fromIndex = self->GetCampaignObject()->GetComponentIndex(self);
 
                 if (AiIsFullResponse(fromIndex, wingMsg->dataBlock.to))
                 {
@@ -553,7 +553,7 @@ void DigitalBrain::ReceiveOrders(FalconEvent* theEvent)
                 if (flightLead && ((AircraftClass *)flightLead)->DBrain())
                     ((AircraftClass *)flightLead)->DBrain()->SetBvrCurrProfile(BvrLookup[command - FalconWingmanMsg::WMPlevel1a]);
 
-                fromIndex	= self->GetCampaignObject()->GetComponentIndex(self);
+                fromIndex = self->GetCampaignObject()->GetComponentIndex(self);
 
                 if (AiIsFullResponse(fromIndex, wingMsg->dataBlock.to))
                 {

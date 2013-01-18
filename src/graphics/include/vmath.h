@@ -32,13 +32,13 @@ namespace D3DFrame
     /////////////////////////////////////////////////////////////////////////////
 
 #undef  PI
-#define PI 					(3.1415926535897932F)
+#define PI  (3.1415926535897932F)
 #define PI_FRAC (PI / 180.0)
-#define SMALL_NUMBER		(1.e-8)
-#define KINDA_SMALL_NUMBER	(1.e-4)
+#define SMALL_NUMBER (1.e-8)
+#define KINDA_SMALL_NUMBER (1.e-4)
 
-#define THRESH_POINT_ON_PLANE			(0.10)		/* Thickness of plane for front/back/inside test */
-#define THRESH_VECTORS_ARE_PARALLEL		(0.02)		/* Vectors are parallel if dot product varies less than this */
+#define THRESH_POINT_ON_PLANE (0.10) /* Thickness of plane for front/back/inside test */
+#define THRESH_VECTORS_ARE_PARALLEL (0.02) /* Vectors are parallel if dot product varies less than this */
 
     // Vector
     /////////////////////////////////////////////////////////////////////////////
@@ -72,12 +72,12 @@ namespace D3DFrame
         }
 
         // Binary math operators.
-        Vector operator^(const Vector& V) const	// Cross product
+        Vector operator^(const Vector& V) const // Cross product
         {
             return Vector(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x);
         }
 
-        float operator|(const Vector& V) const	// Dot product
+        float operator|(const Vector& V) const // Dot product
         {
             return x * V.x + y * V.y + z * V.z;
         }
@@ -735,7 +735,7 @@ namespace D3DFrame
 
     protected:
         Vector m_vLoc;
-        Vector m_vRot;	// in degrees
+        Vector m_vRot; // in degrees
         Vector m_vScale;
         bool m_bMaxtrixDirty;
         Matrix m_mx;
@@ -804,7 +804,7 @@ namespace D3DFrame
                     mR.Rotate(m_vRot);
                     mS.Scale(m_vScale);
                     mT.Translate(m_vLoc);
-                    m_mx = mS * mR * mT;	// Note the order is reversed compared to the right-to-left rule
+                    m_mx = mS * mR * mT; // Note the order is reversed compared to the right-to-left rule
                     break;
                 }
             }
@@ -826,13 +826,13 @@ namespace D3DFrame
             return m_vScale;
         }
 
-        void SetScale(Vector& vScale)	// Sets the new Scaleition
+        void SetScale(Vector& vScale) // Sets the new Scaleition
         {
             m_vScale = vScale;
             m_bMaxtrixDirty = true;
         }
 
-        void SetScale(float x, float y, float z)	// Sets the new Scaleition
+        void SetScale(float x, float y, float z) // Sets the new Scaleition
         {
             m_vScale.x = x;
             m_vScale.y = y;
@@ -840,13 +840,13 @@ namespace D3DFrame
             m_bMaxtrixDirty = true;
         }
 
-        void SetLocation(Vector& vPos)	// Sets the new position
+        void SetLocation(Vector& vPos) // Sets the new position
         {
             m_vLoc = vPos;
             m_bMaxtrixDirty = true;
         }
 
-        void SetLocation(float x, float y, float z)	// Sets the new position
+        void SetLocation(float x, float y, float z) // Sets the new position
         {
             m_vLoc.x = x;
             m_vLoc.y = y;
@@ -854,13 +854,13 @@ namespace D3DFrame
             m_bMaxtrixDirty = true;
         }
 
-        void SetRotation(Vector& vTurn)		// Sets the new orientation (in degrees)
+        void SetRotation(Vector& vTurn) // Sets the new orientation (in degrees)
         {
             m_vRot = vTurn;
             m_bMaxtrixDirty = true;
         }
 
-        void SetRotation(float x, float y, float z)		// Sets the new orientation (in degrees)
+        void SetRotation(float x, float y, float z) // Sets the new orientation (in degrees)
         {
             m_vRot.x = x;
             m_vRot.y = y;
@@ -990,7 +990,7 @@ namespace D3DFrame
 
     inline float FSnap(FLOAT Location, FLOAT Grid)
     {
-        if (Grid == 0.0)	return Location;
+        if (Grid == 0.0) return Location;
         else return (float) appFloor((Location + 0.5 * Grid) / Grid) * Grid;
     }
 
@@ -1001,12 +1001,12 @@ namespace D3DFrame
     inline Vector LinePlaneIntersection(const Vector &Point1, const Vector &Point2,
                                         const Vector &PlaneOrigin, const Vector &PlaneNormal)
     {
-        return Point1 +	(Point2 - Point1) * (((PlaneOrigin - Point1) | PlaneNormal) / ((Point2 - Point1) | PlaneNormal));
+        return Point1 + (Point2 - Point1) * (((PlaneOrigin - Point1) | PlaneNormal) / ((Point2 - Point1) | PlaneNormal));
     }
 
-    inline Vector LinePlaneIntersection(const Vector &Point1, const Vector &Point2,	const Plane &Plane)
+    inline Vector LinePlaneIntersection(const Vector &Point1, const Vector &Point2, const Plane &Plane)
     {
-        return Point1 +	(Point2 - Point1) * ((Plane.w - (Point1 | Plane)) / ((Point2 - Point1) | Plane));
+        return Point1 + (Point2 - Point1) * ((Plane.w - (Point1 | Plane)) / ((Point2 - Point1) | Plane));
     }
 
     // Compute intersection point and direction of line joining two planes.
@@ -1079,4 +1079,4 @@ namespace D3DFrame
         return Vector(tx, ty, tz);
     }
 
-};	// namespace D3DFrame
+}; // namespace D3DFrame

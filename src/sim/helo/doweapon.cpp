@@ -52,12 +52,12 @@ void HelicopterClass::DoWeapons(void)
             vec.z = -PRANDFloatPos() * 30.0f;
 
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_LIGHT_CLOUD,		// type
+                new SfxClass(SFX_LIGHT_CLOUD, // type
                              SFX_MOVES,
-                             &pos,					// world pos
-                             &vec,					// vel vector
-                             2.3f,					// time to live
-                             2.0f));				// scale
+                             &pos, // world pos
+                             &vec, // vel vector
+                             2.3f, // time to live
+                             2.0f)); // scale
 
             if (!IsFiring())
             {
@@ -71,12 +71,12 @@ void HelicopterClass::DoWeapons(void)
                 if (targetPtr)
                 {
                     theObject = (SimVehicleClass *)targetPtr->BaseData();
-                    /*				if ( theObject->IsAirplane() )
-                    					MonoPrint( "HELO BRAIN Firing Guns at Air Unit\n" );
-                    				else if ( theObject->IsHelicopter() )
-                    					MonoPrint( "HELO BRAIN Firing Guns at Helo Unit\n" );
-                    				else if ( theObject->IsGroundVehicle() )
-                    					MonoPrint( "HELO BRAIN Firing Guns at Ground Unit\n" );
+                    /* if ( theObject->IsAirplane() )
+                     MonoPrint( "HELO BRAIN Firing Guns at Air Unit\n" );
+                     else if ( theObject->IsHelicopter() )
+                     MonoPrint( "HELO BRAIN Firing Guns at Helo Unit\n" );
+                     else if ( theObject->IsGroundVehicle() )
+                     MonoPrint( "HELO BRAIN Firing Guns at Ground Unit\n" );
                     */
                 }
 
@@ -101,29 +101,29 @@ void HelicopterClass::DoWeapons(void)
     if ( FCC->releaseConsent && Sms->curWeapon )
     {
        if (FCC->GetMasterMode() == FireControlComputer::Missile ||
-    	   FCC->GetMasterMode() == FireControlComputer::Dogfight ||
-    	   FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+        FCC->GetMasterMode() == FireControlComputer::Dogfight ||
+        FCC->GetMasterMode() == FireControlComputer::MissileOverride)
        {
-    		 theMissile = (MissileClass *)Sms->curWeapon;
-    		 if (Sms->LaunchMissile())
-    		 {
-    			SendFireMessage ((SimWeaponClass*)theMissile, FalconWeaponsFire::SRM, TRUE, targetPtr);
+      theMissile = (MissileClass *)Sms->curWeapon;
+      if (Sms->LaunchMissile())
+      {
+     SendFireMessage ((SimWeaponClass*)theMissile, FalconWeaponsFire::SRM, TRUE, targetPtr);
 
-    		   	fireMissile = FALSE;
-    		   	F4SoundFXSetPos( SFX_MISSILE1, 0, XPos(), YPos(), ZPos(), 1.0f );
-    		 }
+         fireMissile = FALSE;
+         F4SoundFXSetPos( SFX_MISSILE1, 0, XPos(), YPos(), ZPos(), 1.0f );
+      }
 
        }
        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile)
        {
-    		 theMissile = (MissileClass *)Sms->curWeapon;
-    		 if (Sms->LaunchMissile())
-    		 {
-    			SendFireMessage ((SimWeaponClass*)theMissile, FalconWeaponsFire::AGM, TRUE, targetPtr);
+      theMissile = (MissileClass *)Sms->curWeapon;
+      if (Sms->LaunchMissile())
+      {
+     SendFireMessage ((SimWeaponClass*)theMissile, FalconWeaponsFire::AGM, TRUE, targetPtr);
 
-    			fireMissile = FALSE;
-    			F4SoundFXSetPos( SFX_MISSILE2, 0, XPos(), YPos(), ZPos(), 1.0f );
-    		 }
+     fireMissile = FALSE;
+     F4SoundFXSetPos( SFX_MISSILE2, 0, XPos(), YPos(), ZPos(), 1.0f );
+      }
 
        }
        else if (FCC->GetMasterMode() == FireControlComputer::AirGroundBomb &&
@@ -134,7 +134,7 @@ void HelicopterClass::DoWeapons(void)
              // Play the sound
              F4SoundFXSetPos( SFX_RCKTLOOP, TRUE, XPos(), YPos(), ZPos(), 1.0f );
 
-    		theMissile = (MissileClass *)Sms->curWeapon;
+     theMissile = (MissileClass *)Sms->curWeapon;
 
              if (Sms->LaunchRocket())
              {

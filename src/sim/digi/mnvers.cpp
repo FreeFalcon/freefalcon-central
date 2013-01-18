@@ -18,13 +18,13 @@ extern int g_nShowDebugLabels;
 
 extern float g_fFormationBurnerDistance;
 
-extern float g_fFuelBaseProp;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fFuelMultProp;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fFuelTimeStep;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern bool g_bFuelUseVtDot;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fFuelVtClip;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern float g_fFuelVtDotMult;	// 2002-03-14 S.G. For better fuel consumption tweaking
-extern bool g_bFuelLimitBecauseVtDot;	// 2002-03-14 S.G. For better fuel consumption tweaking
+extern float g_fFuelBaseProp; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern float g_fFuelMultProp; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern float g_fFuelTimeStep; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern bool g_bFuelUseVtDot; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern float g_fFuelVtClip; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern float g_fFuelVtDotMult; // 2002-03-14 S.G. For better fuel consumption tweaking
+extern bool g_bFuelLimitBecauseVtDot; // 2002-03-14 S.G. For better fuel consumption tweaking
 extern float g_fWaypointBurnerDelta; // 2002-03-27 MN BurnerDelta in WaypointMode & WingyMode
 extern float g_fePropFactor; // 2002-04-05 MN ePr
 
@@ -321,9 +321,9 @@ float DigitalBrain::SetPstick(float pitchError , float gLimit, int commandType)
     {
         /*
         if (pitchError <= 1.0F)
-         	stickCmd = -(float)sqrt((1.0F - pitchError) / (4.0F + self->platformAngles.costhe));
+          stickCmd = -(float)sqrt((1.0F - pitchError) / (4.0F + self->platformAngles.costhe));
         else
-         	stickCmd = (float)sqrt((pitchError - 1.0F) / (gLimit - self->platformAngles.costhe));
+          stickCmd = (float)sqrt((pitchError - 1.0F) / (gLimit - self->platformAngles.costhe));
          af->SetFlag(AirframeClass::GCommand);
          */
         stickCmd = max(min(pitchError, gLimit), -gLimit);
@@ -518,12 +518,12 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
             }
 
             // no burner unless in combat
-            if ((curMode >= LoiterMode || curMode == LandingMode) &&											// 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
-                m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f &&	// JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
+            if ((curMode >= LoiterMode || curMode == LandingMode) && // 2002-02-12 MODIFIED BY S.G. Don't go in AB if you're in landing mode either
+                m2 > aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::MinVcas] * 0.9f && // JB 011018 If we can't keep our speed up, use the buner 2002-02-12 MODIFIED BY S.G. Use a percentage of MinVcas instead.
                 (!flightLead || flightLead && ((AircraftClass*)flightLead)->af) &&
-                (!flightLead || (((AircraftClass*)flightLead)->af == af || ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) &&										// JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
-                                 dist < g_fFormationBurnerDistance * NM_TO_FT) || curMode == RTBMode) ||					// allow usage of burner if lead is more than defined distance away
-                self->OnGround())																		// never use AB on ground
+                (!flightLead || (((AircraftClass*)flightLead)->af == af || ((((AircraftClass*)flightLead)->af->rpm < 1.0F)) && // JB 011025 If the lead is using his burner, we can use ours 2002-02-12 MODIFIED BY S.G. Don't look at lead's burner or g_fFormationBurnerDistance if we're RTBing...
+                                 dist < g_fFormationBurnerDistance * NM_TO_FT) || curMode == RTBMode) || // allow usage of burner if lead is more than defined distance away
+                self->OnGround()) // never use AB on ground
             {
                 // Flight lead goes even slower so wingies can catch up
                 /* 2002-02-12 MODIFIED BY S.G. Take the wings 'mInPositionFlag' flag before limiting ourself
@@ -555,10 +555,10 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
                 {
                     // While wingmen unlike look after themself...
                     // 2002-04-07 MN limit wingmen only not to use afterburner, but they may catch up with full MIL power
-                    //				if (mInPositionFlag)
+                    // if (mInPositionFlag)
                     thr = min(thr, 0.99F);
-                    //				else
-                    //					thr = min (thr, 0.975F);
+                    // else
+                    // thr = min (thr, 0.975F);
                 }
 
             }
@@ -667,19 +667,19 @@ int DigitalBrain::MachHold(float m1, float m2, int pitchStick)
 void DigitalBrain::Loiter(void)
 {
     //we don't want to loiter just above the ground
-    //	trackZ = min(max(-20000.0F, trackZ), -5000.0F);
+    // trackZ = min(max(-20000.0F, trackZ), -5000.0F);
 
     // Cobra - Use local max elevation to try and keep AI from lawndarting
     trackZ = -TheMap.GetMEA(((AircraftClass*) self)->XPos(), ((AircraftClass*) self)->YPos()) - 2000.0F;
 
-    if (((AircraftClass*) self)->af->GetSimpleMode())  		// do simple flight model
+    if (((AircraftClass*) self)->af->GetSimpleMode())   // do simple flight model
     {
 
         throtl = SimpleScaleThrottle(af->MinVcas() * KNOTS_TO_FTPSEC);
-        //pStick = 0.0F;		// level
+        //pStick = 0.0F; // level
         pStick = SimpleTrackElevation(trackZ - self->ZPos(), 10000.0F);
         pStick = min(0.2f, max(pStick, -0.3F));
-        rStick = 0.15F;	// 13.5 degree bank turn
+        rStick = 0.15F; // 13.5 degree bank turn
     }
     else
     {

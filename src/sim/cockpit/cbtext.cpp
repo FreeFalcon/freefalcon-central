@@ -12,10 +12,10 @@
 
 void CBExSpeedAlt(void* ptext)
 {
-    long	altitude;
-    int	thousands;
-    int	ones;
-    int	airspeed;
+    long altitude;
+    int thousands;
+    int ones;
+    int airspeed;
     float hat, theAlt;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -50,11 +50,11 @@ void CBExSpeedAlt(void* ptext)
         }
     }
 
-    altitude		= FloatToInt32(theAlt);
-    airspeed		= FloatToInt32(SimDriver.GetPlayerEntity()->GetKias());
+    altitude = FloatToInt32(theAlt);
+    airspeed = FloatToInt32(SimDriver.GetPlayerEntity()->GetKias());
 
     thousands = altitude / 1000;
-    ones		 = altitude % 1000;
+    ones  = altitude % 1000;
 
     if (thousands)
     {

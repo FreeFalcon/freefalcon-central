@@ -38,8 +38,8 @@ extern int gRebuildBubbleNow;
 ///////////////////////////////////////////////////////////////////////////////
 
 ulong gBumpTime = 0;
-int	gBumpFlag = FALSE;
-GameManagerClass	GameManager;
+int gBumpFlag = FALSE;
+GameManagerClass GameManager;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ GameManagerClass	GameManager;
 
 int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 {
-    VuSessionsIterator		sessionWalker(game);
-    FalconSessionEntity		*session;
-    FalconEntity			*sessent;
+    VuSessionsIterator sessionWalker(game);
+    FalconSessionEntity *session;
+    FalconEntity *sessent;
 
     int
     ok = TRUE;
@@ -81,8 +81,8 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 // Returns 1 if all players in the game are in the UI (or heading there)
 int GameManagerClass::NoMorePlayers(VuGameEntity *game)
 {
-    VuSessionsIterator		sessionWalker(game);
-    FalconSessionEntity		*session;
+    VuSessionsIterator sessionWalker(game);
+    FalconSessionEntity *session;
 
     int
     ok = TRUE;
@@ -91,7 +91,7 @@ int GameManagerClass::NoMorePlayers(VuGameEntity *game)
 
     while (session)
     {
-        //		MonoPrint ("NMP %s %d\n", session->GetPlayerCallsign (), session->GetFlyState ());
+        // MonoPrint ("NMP %s %d\n", session->GetPlayerCallsign (), session->GetFlyState ());
 
         if (session->GetFlyState() != FLYSTATE_IN_UI)
         {
@@ -112,9 +112,9 @@ int GameManagerClass::NoMorePlayers(VuGameEntity *game)
 // (i.e: is there one or more players attached to this?)
 int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
 {
-    VuSessionsIterator		sessionWalker(FalconLocalGame);
-    FalconSessionEntity		*session;
-    int						player = 0;
+    VuSessionsIterator sessionWalker(FalconLocalGame);
+    FalconSessionEntity *session;
+    int player = 0;
 
     if (!entity)
     {
@@ -162,15 +162,15 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
 void GameManagerClass::AnnounceEntry()
 {
     // Announce our entry to the other players
-    FalconPlayerStatusMessage	*msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
-    SimBaseClass				*playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
+    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
     msg->dataBlock.playerID         = playerEntity->Id();
     msg->dataBlock.campID           = ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetCampID();
     msg->dataBlock.side             = ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetOwner();
     msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
-    msg->dataBlock.vehicleID		= FalconLocalSession->GetAircraftNum();
+    msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
     msg->dataBlock.state            = PSM_STATE_ENTERED_SIM;
     FalconSendMessage(msg, TRUE);
 }
@@ -182,16 +182,16 @@ void GameManagerClass::AnnounceEntry()
 void GameManagerClass::AnnounceExit()
 {
     // Announce our exit to the other players
-    FalconPlayerStatusMessage	*msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
-    SimBaseClass				*playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
+    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
 
     if (FalconLocalSession->GetPlayerFlight())
     {
-        msg->dataBlock.campID		= FalconLocalSession->GetPlayerFlight()->GetCampID();
+        msg->dataBlock.campID = FalconLocalSession->GetPlayerFlight()->GetCampID();
     }
     else
     {
-        msg->dataBlock.campID		= 0;
+        msg->dataBlock.campID = 0;
     }
 
     if (playerEntity)
@@ -203,7 +203,7 @@ void GameManagerClass::AnnounceExit()
 
     msg->dataBlock.side             = FalconLocalSession->GetCountry();
     msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
-    msg->dataBlock.vehicleID		= FalconLocalSession->GetAircraftNum();
+    msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
     msg->dataBlock.state            = PSM_STATE_LEFT_SIM;
 
     if (FalconLocalGame->GetGameType() == game_Dogfight)
@@ -225,23 +225,23 @@ void GameManagerClass::AnnounceExit()
 void GameManagerClass::AnnounceTransfer(SimBaseClass *oldObj, SimBaseClass *newObj)
 {
     // Announce our transfer of entities to the other players
-    FalconPlayerStatusMessage	*msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
     msg->dataBlock.playerID         = newObj->Id();
-    msg->dataBlock.oldID			= oldObj->Id();
+    msg->dataBlock.oldID = oldObj->Id();
 
     if (oldObj->GetCampaignObject())
     {
-        msg->dataBlock.campID		= ((CampBaseClass*)(oldObj->GetCampaignObject()))->GetCampID();
+        msg->dataBlock.campID = ((CampBaseClass*)(oldObj->GetCampaignObject()))->GetCampID();
     }
     else
     {
-        msg->dataBlock.campID		= 0;
+        msg->dataBlock.campID = 0;
     }
 
     msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
-    msg->dataBlock.vehicleID		= FalconLocalSession->GetAircraftNum();
+    msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
     msg->dataBlock.state            = PSM_STATE_TRANSFERED;
     FalconSendMessage(msg, TRUE);
 }
@@ -264,7 +264,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
         return NULL;
     }
 
-    VuListIterator	flit(campEntity->GetComponents());
+    VuListIterator flit(campEntity->GetComponents());
 
     if ((simEntity = static_cast<SimMoverClass*>(flit.GetFirst())) == NULL)
     {
@@ -278,41 +278,41 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 
     return simEntity;
 
-    /*	int		count;
+    /* int count;
 
-    	SimMoverClass* simEntity = NULL;
+     SimMoverClass* simEntity = NULL;
 
-    	if (!campEntity)
-    		return NULL;
+     if (!campEntity)
+     return NULL;
 
-    	if (campEntity->GetComponents())
-    	{
-    		VuListIterator	flit(campEntity->GetComponents());
+     if (campEntity->GetComponents())
+     {
+     VuListIterator flit(campEntity->GetComponents());
 
-    		// Hack Hack Hack Hack HACK - This is a HACK - RH
-    		count = 0;
+     // Hack Hack Hack Hack HACK - This is a HACK - RH
+     count = 0;
 
-    		while ((!simEntity) && (count < 100))
-    		{
-    			simEntity = (SimMoverClass*) flit.GetFirst();
+     while ((!simEntity) && (count < 100))
+     {
+     simEntity = (SimMoverClass*) flit.GetFirst();
 
-    			while (simEntity && simEntity->vehicleInUnit != vehSlot)
-    			{
-    				simEntity = (SimMoverClass*) flit.GetNext();
-    			}
+     while (simEntity && simEntity->vehicleInUnit != vehSlot)
+     {
+     simEntity = (SimMoverClass*) flit.GetNext();
+     }
 
-    			count ++;
-    			Sleep (100);
-    		}
+     count ++;
+     Sleep (100);
+     }
 
-    		ShiAssert(simEntity);
-    	}
-    	else
-    	{
-    		MonoPrint ("No Components\n");
-    	}
+     ShiAssert(simEntity);
+     }
+     else
+     {
+     MonoPrint ("No Components\n");
+     }
 
-    	return simEntity;
+     return simEntity;
 
     */
 }
@@ -321,7 +321,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 // Attach passed player to this sim entity
 SimMoverClass* GameManagerClass::AttachPlayerToVehicle(FalconSessionEntity *player, SimMoverClass *simEntity, int playerSlot)
 {
-    Unit		campEntity;
+    Unit campEntity;
 
     //simEntity->ChangeOwner(player->Id());
     player->SetPlayerEntity(simEntity);
@@ -494,7 +494,7 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
 
             if (((AircraftClass *)simEntity)->DBrain()->CreateTime() + 2 * CampaignSeconds < SimLibElapsedTime)
             {
-                FalconRadioChatterMessage	*radioMessage = NULL;
+                FalconRadioChatterMessage *radioMessage = NULL;
                 ObjectiveClass *atc = (ObjectiveClass*)vuDatabase->Find(
                                           ((AircraftClass*)simEntity)->DBrain()->Airbase()
                                       );

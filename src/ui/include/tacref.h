@@ -1,7 +1,7 @@
 #ifndef _UI_TACREF_H_
 #define _UI_TACREF_H_
 
-#pragma warning ( disable: 4200 )	// Prevent the zero length array warning
+#pragma warning ( disable: 4200 ) // Prevent the zero length array warning
 #pragma pack(1)
 //TJL 12/27/03
 #include "Graphics\Include\drawbsp.h"
@@ -125,7 +125,7 @@ public:
 };
 
 #pragma pack()
-#pragma warning ( default: 4200 )	// Restore normal warning behavior
+#pragma warning ( default: 4200 ) // Restore normal warning behavior
 
 class TacticalReference
 {

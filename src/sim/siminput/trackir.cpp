@@ -1,16 +1,16 @@
 //**********************************************************************
-//	Filename:	TrackIR.c
-//	Authors:	Wolfram "Osram" Kuss (original)
-//				Lukas "Retro" Friembichler (adapted for EECH)
-//	Date:		26. Feb 2003
-//				26/09/03 adapted for falcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
-//	Update:
+// Filename: TrackIR.c
+// Authors: Wolfram "Osram" Kuss (original)
+// Lukas "Retro" Friembichler (adapted for EECH)
+// Date: 26. Feb 2003
+// 26/09/03 adapted for falcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
+// Update:
 //
-//	Description:Implements TrackIR support for EECH
-//				Commented code is from the (C++) MiG/BoB Version..
-//				This file was originally split into 2, with the API
-//				originally written by
-//				Doyle Nickless -- 13 Jan, 2003 -- for Eye Control Technology.
+// Description:Implements TrackIR support for EECH
+// Commented code is from the (C++) MiG/BoB Version..
+// This file was originally split into 2, with the API
+// originally written by
+// Doyle Nickless -- 13 Jan, 2003 -- for Eye Control Technology.
 //*********************************************************************/
 #include "stdhdr.h"
 
@@ -21,8 +21,8 @@
 //#define DEBUG_TRACKIR_STUFF 0
 
 // Retro 02/10/03
-//	enable TIR globally (tell the app to try and init it,
-//	is also a status flag if init is succesful)
+// enable TIR globally (tell the app to try and init it,
+// is also a status flag if init is succesful)
 bool g_bEnableTrackIR = false;
 bool g_bTrackIRon = false;
 
@@ -54,10 +54,10 @@ extern float g_fTIR2DPitchPercentage;
 // * Environment:
 // *   User mode
 // *
-// * Update:	Retro, Feb 2003 - Threw out the MFC stuff, made it compile in C
-// *			Mostly messed around in NPClient_Init() though..
+// * Update: Retro, Feb 2003 - Threw out the MFC stuff, made it compile in C
+// * Mostly messed around in NPClient_Init() though..
 // *
-// *			Retro 26/09/03 - moved to FalconLand =)
+// * Retro 26/09/03 - moved to FalconLand =)
 // *******************************************************************************
 
 //////////////////
@@ -68,11 +68,11 @@ extern float g_fTIR2DPitchPercentage;
 #define         VERSION_BUILD           1
 
 // magic to get the preprocessor to do what we want
-#define		lita(arg) #arg
-#define		xlita(arg) lita(arg)
-#define		cat3(w,x,z) w##.##x##.##z##\000
-#define		xcat3(w,x,z) cat3(w,x,z)
-#define		VERSION_STRING xlita(xcat3(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD))
+#define lita(arg) #arg
+#define xlita(arg) lita(arg)
+#define cat3(w,x,z) w##.##x##.##z##\000
+#define xcat3(w,x,z) cat3(w,x,z)
+#define VERSION_STRING xlita(xcat3(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD))
 
 //
 // Versioning hasn't been worked out yet...
@@ -85,40 +85,40 @@ extern float g_fTIR2DPitchPercentage;
 //   Message 1) (first parameter)NPCONTROL : (second parameter) (High Byte)NPVERSIONMAJOR (Low Byte) major version number data
 //   Message 2) (first parameter)NPCONTROL : (second parameter) (High Byte)NPVERSIONMINOR (Low Byte) minor version number data
 
-#define	NPQUERYVERSION	1040
+#define NPQUERYVERSION 1040
 
 // CONTROL DATA SUBFIELDS
-#define	NPVERSIONMAJOR	1
-#define	NPVERSIONMINOR	2
+#define NPVERSIONMAJOR 1
+#define NPVERSIONMINOR 2
 
 // DATA FIELDS
-#define	NPControl		8	// indicates a control data field
+#define NPControl 8 // indicates a control data field
 // the second parameter of a message bearing control data information contains a packed data format.
 // The High byte indicates what the data is, and the Low byte contains the actual data
 // roll, pitch, yaw
-#define	NPRoll		1	// +/- 16383 (representing +/- 180) [data = input - 16383]
-#define	NPPitch		2	// +/- 16383 (representing +/- 180) [data = input - 16383]
-#define	NPYaw		4	// +/- 16383 (representing +/- 180) [data = input - 16383]
+#define NPRoll 1 // +/- 16383 (representing +/- 180) [data = input - 16383]
+#define NPPitch 2 // +/- 16383 (representing +/- 180) [data = input - 16383]
+#define NPYaw 4 // +/- 16383 (representing +/- 180) [data = input - 16383]
 
 // x, y, z - remaining 6dof coordinates
-#define	NPX			16	// +/- 16383 [data = input - 16383]
-#define	NPY			32	// +/- 16383 [data = input - 16383]
-#define	NPZ			64	// +/- 16383 [data = input - 16383]
+#define NPX 16 // +/- 16383 [data = input - 16383]
+#define NPY 32 // +/- 16383 [data = input - 16383]
+#define NPZ 64 // +/- 16383 [data = input - 16383]
 
 // raw object position from imager
-#define	NPRawX		128	// 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
-#define	NPRawY		256  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
-#define	NPRawZ		512  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawX 128 // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawY 256  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawZ 512  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
 
 // x, y, z deltas from raw imager position
-#define	NPDeltaX		1024 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
-#define	NPDeltaY		2048 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
-#define	NPDeltaZ		4096 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaX 1024 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaY 2048 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaZ 4096 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
 
 // raw object position from imager
-#define	NPSmoothX		8192	  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
-#define	NPSmoothY		16384  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
-#define	NPSmoothZ		32768  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothX 8192   // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothY 16384  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothZ 32768  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
 
 
 //////////////////
@@ -344,13 +344,13 @@ NPRESULT __stdcall NP_StopDataTransmission()
 // NPClientInit() -- Loads the DLL and retrieves pointers to all exports
 //
 //**********************************************************************
-//	Name:		NPClient_Init
-//	Authors:	Retro
-//	Date:		26. Feb 2003
-//	Update:
+// Name: NPClient_Init
+// Authors: Retro
+// Date: 26. Feb 2003
+// Update:
 //
-//	Description:Made it work in C, some horrible code there I guess..
-//				There´s a 200byte mem-leak here too...
+// Description:Made it work in C, some horrible code there I guess..
+// There´s a 200byte mem-leak here too...
 //
 //*********************************************************************/
 NPRESULT NPClient_Init(char* csDLLPath)
@@ -393,10 +393,10 @@ char* gcsDLLPath;
 
 //**********************************************************************
 // Function:    TrackIR_2D_Map
-// Date:		26.9.2003
-// Author:		Retro
+// Date: 26.9.2003
+// Author: Retro
 //
-//	Is this code legal ?
+// Is this code legal ?
 //*********************************************************************/
 int TrackIR::TrackIR_2D_Map()
 {
@@ -414,20 +414,20 @@ int TrackIR::TrackIR_2D_Map()
 
         int retval = 0;
 
-        if (xpos > Pit_2d_Yaw)				// left
+        if (xpos > Pit_2d_Yaw) // left
         {
             retval = POV_W;
         }
-        else if (xpos > -Pit_2d_Yaw)		// middle
+        else if (xpos > -Pit_2d_Yaw) // middle
         {
-            if (ypos > Pit_2d_Pitch)		// down
+            if (ypos > Pit_2d_Pitch) // down
                 retval = POV_S;
-            else if (ypos > -Pit_2d_Pitch)	// middle
+            else if (ypos > -Pit_2d_Pitch) // middle
                 retval = -1;
-            else							// up
+            else // up
                 retval = POV_N;
         }
-        else								// right
+        else // right
         {
             retval = POV_E;
         }
@@ -455,18 +455,18 @@ void TrackIR::Poll()
     {
         if (FrameSignature != tid.wPFrameSignature)
         {
-            yaw = -tid.fNPYaw / 16383.f * PI;		// yaw is +-180 (PI) degrees
-            pitch = tid.fNPPitch / 16383.f * PI;	// see below for limit
-            roll = tid.fNPRoll / 16383.f * PI / 2;	// +-90.. bad enough imnsho
+            yaw = -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
+            pitch = tid.fNPPitch / 16383.f * PI; // see below for limit
+            roll = tid.fNPRoll / 16383.f * PI / 2; // +-90.. bad enough imnsho
             x = tid.fNPX;
             y = tid.fNPY;
             z = tid.fNPZ;
 
-            if (pitch >= PI / 4)	// limit to -45 deg
+            if (pitch >= PI / 4) // limit to -45 deg
             {
                 pitch = PI / 4;
             }
-            else if (pitch <= - 0.75f * PI)	// limit to 135deg
+            else if (pitch <= - 0.75f * PI) // limit to 135deg
             {
                 pitch = - 0.75f * PI;
             }
@@ -475,7 +475,7 @@ void TrackIR::Poll()
 
             if (isActive == false)
             {
-                OTWDriver.SetHeadTracking(TRUE);	// Retro 26/09/03
+                OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
                 isActive = true;
             }
 
@@ -488,7 +488,7 @@ void TrackIR::Poll()
             if (missedFrameCount > 100)
             {
                 isActive = false;
-                OTWDriver.SetHeadTracking(FALSE);	// Retro 26/09/03
+                OTWDriver.SetHeadTracking(FALSE); // Retro 26/09/03
             }
         }
     }
@@ -496,8 +496,8 @@ void TrackIR::Poll()
 
 //**********************************************************************
 // Function:    GetTrackIR_ViewValues
-// Date:		26.9.2003
-// Author:		Retro
+// Date: 26.9.2003
+// Author: Retro
 //*********************************************************************/
 void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 {
@@ -507,19 +507,19 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
     {
         if (FrameSignature != tid.wPFrameSignature)
         {
-            *yaw = 	-tid.fNPYaw / 16383.f * PI;		// yaw is +-180 (PI) degrees
+            *yaw =  -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
 
-            *pitch = tid.fNPPitch / 16383.f * PI;	// we limit pitch to +90 (PI/2) and -45 (PI/4) degrees
+            *pitch = tid.fNPPitch / 16383.f * PI; // we limit pitch to +90 (PI/2) and -45 (PI/4) degrees
 
-            if (*pitch >= PI / 4)	// limit to -45 deg
+            if (*pitch >= PI / 4) // limit to -45 deg
             {
                 *pitch = PI / 4;
             }
-            /*			else if (*pitch <= -PI/2)// limit to 90 deg
-            			{
-            				*pitch = -PI/2;
-            			}
-            */			else if (*pitch <= - 0.75f * PI)	// limit to 135deg
+            /* else if (*pitch <= -PI/2)// limit to 90 deg
+             {
+             *pitch = -PI/2;
+             }
+            */ else if (*pitch <= - 0.75f * PI) // limit to 135deg
             {
                 *pitch = - 0.75f * PI;
             }
@@ -528,7 +528,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 
             if ((isActive == false) && (g_bTrackIRon))
             {
-                OTWDriver.SetHeadTracking(TRUE);	// Retro 26/09/03
+                OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
                 isActive = true;
             }
 
@@ -548,7 +548,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
             if (missedFrameCount > 100)
             {
                 isActive = false;
-                OTWDriver.SetHeadTracking(FALSE);	// Retro 26/09/03
+                OTWDriver.SetHeadTracking(FALSE); // Retro 26/09/03
             }
 
 #ifdef DEBUG_TRACKIR_STUFF
@@ -562,13 +562,13 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 }
 
 //**********************************************************************
-//	Name:		GetDllLocation
-//	Authors:	wk, Retro
-//	Date:		26. Feb 2003
-//	Update:
+// Name: GetDllLocation
+// Authors: wk, Retro
+// Date: 26. Feb 2003
+// Update:
 //
-//	Description:Look in the registry for the path to the NPClient.dll..
-//				Taken form the NaturalPoint sample code
+// Description:Look in the registry for the path to the NPClient.dll..
+// Taken form the NaturalPoint sample code
 //*********************************************************************/
 char* GetDllLocation(char* loc)
 {
@@ -613,7 +613,7 @@ char* GetDllLocation(char* loc)
             if (RegQueryValueEx(pKey, "Path", NULL, NULL, szValue, &dwSize) == ERROR_SUCCESS)
             {
                 //everything worked
-                //				RegCloseKey(pKey);
+                // RegCloseKey(pKey);
 
                 retval = (char*)szValue;
             }
@@ -630,24 +630,24 @@ char* GetDllLocation(char* loc)
 //*********************************************************************/
 #define TEST_RESULT(a, b)       \
 { if(NP_OK != b)                \
-	{	/*::MessageBox(0, a, "", 0);*/\
-		return;                     \
-	}                             \
+ { /*::MessageBox(0, a, "", 0);*/\
+ return;                     \
+ }                             \
 }
 
 //**********************************************************************
-//	Name:		InitTrackIR
-//	Authors:	wk, Retro
-//	Date:		26. Feb 2003
-//	Update:
+// Name: InitTrackIR
+// Authors: wk, Retro
+// Date: 26. Feb 2003
+// Update:
 //
-//	Description:Hook up the NaturalPoint game client DLL using the wrapper module
+// Description:Hook up the NaturalPoint game client DLL using the wrapper module
 //*********************************************************************/
 void TrackIR::InitTrackIR(HWND application_window)
 {
     unsigned short wNPClientVer;
     unsigned int DataFields;
-    int TIRVersionMajor = -1, TIRVersionMinor = -1;	// not used anyway
+    int TIRVersionMajor = -1, TIRVersionMinor = -1; // not used anyway
     NPRESULT result;
 
 #ifdef DEBUG_TRACKIR_STUFF
@@ -659,14 +659,14 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     //if (g_bTrackIR2DCockpit)
     //{
-    //	fprintf(fp,"Freq %i Yaw %i Pitch %i\n",	g_nTrackIRSampleFreq/2,
-    //											(int)(g_fTIR2DYawPercentage*(float)16383),
-    //											(int)(g_fTIR2DPitchPercentage*(float)16383));
+    // fprintf(fp,"Freq %i Yaw %i Pitch %i\n", g_nTrackIRSampleFreq/2,
+    // (int)(g_fTIR2DYawPercentage*(float)16383),
+    // (int)(g_fTIR2DPitchPercentage*(float)16383));
     //}
     fclose(fp);
 #endif
 
-    g_bEnableTrackIR = false;	// only gets set back to TRUE if init succeeds..
+    g_bEnableTrackIR = false; // only gets set back to TRUE if init succeeds..
     g_bTrackIRon = false;
 
     HWND HandleGame = application_window;
@@ -691,11 +691,11 @@ void TrackIR::InitTrackIR(HWND application_window)
     if (result != NP_OK) // this happens if the user forgot to start the TrackIR GUI
     {
         // do any other error output?
-        //		::MessageBeep(-1);
+        // ::MessageBeep(-1);
         return;
     }
 
-    // 2do:	NPRESULT __stdcall
+    // 2do: NPRESULT __stdcall
     result = NP_RegisterProgramProfileID(1901); // Falcon ID, issued by Halstead York (NP PR Guru)
 
     //**********************************************************************
@@ -723,9 +723,9 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     TEST_RESULT("NP_StartDataTransmission", NP_StartDataTransmission())
 
-    g_bEnableTrackIR = true;					// Retro 26/09/03 - init successful !
+    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful !
     g_bTrackIRon = true;
-    OTWDriver.SetHeadTracking(TRUE);	// Retro 26/09/03
+    OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
 
     if (PlayerOptions.Get2dTrackIR() == true)
     {
@@ -744,10 +744,10 @@ void TrackIR::InitTrackIR(HWND application_window)
 //**********************************************************************
 //
 // Function:    ExitTrackIR
-// Date:		23.1.2003
-// Author:		WK
+// Date: 23.1.2003
+// Author: WK
 //
-// Description:		Tells TrackIR we are going...
+// Description: Tells TrackIR we are going...
 //
 //*********************************************************************/
 void TrackIR::ExitTrackIR()

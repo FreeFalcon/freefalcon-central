@@ -9,7 +9,7 @@
 #else
 // Emulates VC smart pointers
 #define COM_SMARTPTR_TYPEDEF(a, b) typedef CComQIPtr<a, &b> a##Ptr
-#endif	// USE_ATL_SMART_POINTERS
+#endif // USE_ATL_SMART_POINTERS
 
 COM_SMARTPTR_TYPEDEF(IDirectDraw, IID_IDirectDraw);
 COM_SMARTPTR_TYPEDEF(IDirectDrawPalette, IID_IDirectDrawPalette);

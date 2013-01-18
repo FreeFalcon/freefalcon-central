@@ -16,8 +16,8 @@
 #include "otwdrive.h"
 /* S.G. 2001-07-30 FOR SimDriver */ #include "Simdrive.h"
 /* S.G. 2001-07-30 FOR SimDriver */ #include "FCC.h"
-#include "radar.h"		// 2002-02-10 S.G.
-#include "campbase.h"	// 2002-02-10 S.G.
+#include "radar.h" // 2002-02-10 S.G.
+#include "campbase.h" // 2002-02-10 S.G.
 #define MANEUVER_DEBUG // MNLOOK
 #ifdef MANEUVER_DEBUG
 #include "Graphics\include\drawbsp.h"
@@ -131,8 +131,8 @@ void DigitalBrain::AiPerformManeuver(void)
 
 void DigitalBrain::AiMonitorTargets()
 {
-    FalconEntity*	pbaseData;
-    int				campX, campY;
+    FalconEntity* pbaseData;
+    int campX, campY;
 
     // 2000-09-13 MODIFIED BY S.G. HOW STUPID CAN YOU BE! WHO PROGRAMMED THIS HAS NO IDEA HOW ARRAY WORKS! NOT IN RP4
     // Cobra - The pot calling the kettle black!
@@ -147,39 +147,39 @@ void DigitalBrain::AiMonitorTargets()
     }
     // 2000-09-28 MODIFIED BY S.G. PLUS WE DO THIS ONLY FOR THE PLAYER'S FLIGHT. NOT IN RP4
     // Cobra - see above
-    //	else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_MONITOR_TARGET) {
+    // else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_MONITOR_TARGET) {
     else if (mpSearchFlags[AI_MONITOR_TARGET])
     {
-        //	else if(mpSearchFlags[AI_MONITOR_TARGET] && flightLead->IsSetFlag(MOTION_OWNSHIP)) {
+        // else if(mpSearchFlags[AI_MONITOR_TARGET] && flightLead->IsSetFlag(MOTION_OWNSHIP)) {
         if (targetPtr && vuxGameTime > mLastReportTime + 120000)
         {
 
             mLastReportTime = vuxGameTime;
-            pbaseData		= targetPtr->BaseData();
-            campY			= SimToGrid(pbaseData->XPos());
-            campX			= SimToGrid(pbaseData->YPos());
+            pbaseData = targetPtr->BaseData();
+            campY = SimToGrid(pbaseData->XPos());
+            campX = SimToGrid(pbaseData->YPos());
 
             // play radio message about target's position
             /*// 2000-09-28 ADDED BY S.G. SO THE FUNCTION IS COMPLETE. NOT IN RP4
-            			short edata[10];
-            			int numAircraft = 0;
+             short edata[10];
+             int numAircraft = 0;
 
-            			edata[0]	= self->GetCampaignObject()->GetComponentIndex(self);
-            			edata[1]	= 0;
+             edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
+             edata[1] = 0;
 
-            //			numAircraft = pbaseData->GetCampaignObject()->NumberOfComponents();
-            			//for this request we just want the BRA part
-            			if(numAircraft > 1)
-            				edata[4] = (short)((pbaseData->Type() - VU_LAST_ENTITY_TYPE)*2 + 1);	//type
-            			else
-            				edata[4] = (short)((pbaseData->Type() - VU_LAST_ENTITY_TYPE)*2);	//type
-            			edata[5] = (short)numAircraft;	//number
-            			edata[6] = (short) campX;;
-            			edata[7] = (short) campY;
-            			edata[8] = (short) -pbaseData->ZPos();
+            // numAircraft = pbaseData->GetCampaignObject()->NumberOfComponents();
+             //for this request we just want the BRA part
+             if(numAircraft > 1)
+             edata[4] = (short)((pbaseData->Type() - VU_LAST_ENTITY_TYPE)*2 + 1); //type
+             else
+             edata[4] = (short)((pbaseData->Type() - VU_LAST_ENTITY_TYPE)*2); //type
+             edata[5] = (short)numAircraft; //number
+             edata[6] = (short) campX;;
+             edata[7] = (short) campY;
+             edata[8] = (short) -pbaseData->ZPos();
 
-            			AiMakeRadioResponse( self, rcNEARESTTHREATRSP, edata );
-            	//END OF ADDED SECTION
+             AiMakeRadioResponse( self, rcNEARESTTHREATRSP, edata );
+             //END OF ADDED SECTION
             */
         }
     }
@@ -191,11 +191,11 @@ void DigitalBrain::AiMonitorTargets()
         if (targetPtr && targetPtr != mpLastTargetPtr && vuxGameTime > (mLastReportTime + 120000))
         {
 
-            mLastReportTime	= vuxGameTime;
-            pbaseData			= targetPtr->BaseData();
-            mpLastTargetPtr	= targetPtr;
-            campY					= SimToGrid(pbaseData->XPos());
-            campX					= SimToGrid(pbaseData->YPos());
+            mLastReportTime = vuxGameTime;
+            pbaseData = targetPtr->BaseData();
+            mpLastTargetPtr = targetPtr;
+            campY = SimToGrid(pbaseData->XPos());
+            campX = SimToGrid(pbaseData->YPos());
 
             // play radio message about target's postion
         }
@@ -210,8 +210,8 @@ void DigitalBrain::AiSetInPosition(void)
     int flightIdx;
 
     // Get wingman slot position relative to the leader
-    vehInFlight		= ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-    flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+    flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
     if (flightIdx == AiElementLead && vehInFlight == 4)
     {
@@ -223,7 +223,7 @@ void DigitalBrain::AiSetInPosition(void)
 //--------------------------------------------------
 // DigitalBrain::AiCheckPlayerInPosition
 //
-//	Yeah this is an odd place to put this function since it only gets called when the
+// Yeah this is an odd place to put this function since it only gets called when the
 // AI is a human player.  However, the digi has the necessary data.
 //--------------------------------------------------
 
@@ -238,33 +238,33 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
     float rangeFactor;
 
     // Get wingman slot position relative to the leader
-    vehInFlight		= ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-    flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+    flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
     if (flightIdx == AiElementLead && vehInFlight == 4)
     {
         curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-        paircraft	= (AircraftClass*) flightLead;
+        paircraft = (AircraftClass*) flightLead;
 
         ShiAssert(paircraft);
 
         if (paircraft)
         {
             // Get my leader's position
-            trkX	= paircraft->XPos();
-            trkY	= paircraft->YPos();
-            trkZ	= paircraft->ZPos();
+            trkX = paircraft->XPos();
+            trkY = paircraft->YPos();
+            trkZ = paircraft->ZPos();
 
-            rangeFactor		= curPosition->range * (2.0F * mFormLateralSpaceFactor);
+            rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
 
             // Calculate position relative to the leader
-            trkX	+= rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-            trkY	+= rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trkX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trkY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
         }
 
         if (curPosition->relEl)
         {
-            trkZ	+= rangeFactor * (float)sin(-curPosition->relEl);
+            trkZ += rangeFactor * (float)sin(-curPosition->relEl);
         }
         else
         {
@@ -295,10 +295,10 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
 void DigitalBrain::AiFollowLead(void)
 {
     ACFormationData::PositionData *curPosition;
-    float				rangeFactor;
-    float				groundZ;
-    int				vehInFlight;
-    int				flightIdx;
+    float rangeFactor;
+    float groundZ;
+    int vehInFlight;
+    int flightIdx;
     AircraftClass* paircraft;
 
     if (flightLead == self || isWing == 0 || !flightLead)
@@ -310,43 +310,43 @@ void DigitalBrain::AiFollowLead(void)
     {
 
         // Get wingman slot position relative to the leader
-        vehInFlight		= ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-        flightIdx		= ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+        vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+        flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
         if (flightIdx == AiFirstWing && vehInFlight == 2)
         {
-            curPosition	= &(acFormationData->twoposData[mFormation]);	// The four ship #2 slot position is copied in to the 2 ship formation array.
-            paircraft	= (AircraftClass*) flightLead;
+            curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
+            paircraft = (AircraftClass*) flightLead;
         }
         else if (flightIdx == AiSecondWing && mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
-            paircraft	= (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
+            paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
         }
         else
         {
             curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-            paircraft	= (AircraftClass*) flightLead;
+            paircraft = (AircraftClass*) flightLead;
         }
 
-        rangeFactor		= curPosition->range * (2.0F * mFormLateralSpaceFactor);
+        rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
 
         // Get my leader's position
         ShiAssert(paircraft);
 
         if (paircraft)
         {
-            trackX	= paircraft->XPos();
-            trackY	= paircraft->YPos();
-            trackZ	= paircraft->ZPos();
+            trackX = paircraft->XPos();
+            trackY = paircraft->YPos();
+            trackZ = paircraft->ZPos();
 
             // Calculate position relative to the leader
-            trackX	+= rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-            trackY	+= rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
 
             if (curPosition->relEl)
             {
-                trackZ	+= rangeFactor * (float)sin(-curPosition->relEl);
+                trackZ += rangeFactor * (float)sin(-curPosition->relEl);
             }
             else
             {
@@ -356,12 +356,12 @@ void DigitalBrain::AiFollowLead(void)
             AiCheckInPositionCall(trackX, trackY, trackZ);
 
             // add relative formation altitude - after check in position call !
-            if (isWing)	// only wingmen
+            if (isWing) // only wingmen
                 trackZ = trackZ + mFormRelativeAltitude;
 
             // Set track point 1NM ahead of desired location
-            trackX	+= 1.0F * NM_TO_FT * (float)cos((paircraft)->af->sigma);
-            trackY	+= 1.0F * NM_TO_FT * (float)sin((paircraft)->af->sigma);
+            trackX += 1.0F * NM_TO_FT * (float)cos((paircraft)->af->sigma);
+            trackY += 1.0F * NM_TO_FT * (float)sin((paircraft)->af->sigma);
         }
 
         // check for terrain following
@@ -439,9 +439,9 @@ void DigitalBrain::AiFollowLead(void)
 
 void DigitalBrain::AiExecBreakRL(void)
 {
-    mlTrig				trig;
-    short					edata[10];
-    VU_ID					pthreat;
+    mlTrig trig;
+    short edata[10];
+    VU_ID pthreat;
 
     mlSinCos(&trig, mHeadingOrdered);
     SetTrackPoint(self->XPos() + 1000.0F * trig.cos, self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
@@ -465,8 +465,8 @@ void DigitalBrain::AiExecBreakRL(void)
 
             if (pthreat == FalconNullId)
             {
-                edata[0]	= self->GetCampaignObject()->GetComponentIndex(self);
-                edata[1]	= 0;
+                edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
+                edata[1] = 0;
                 AiMakeRadioResponse(self, rcGENERALRESPONSEC, edata);
             }
             else
@@ -540,14 +540,14 @@ void DigitalBrain::AiExecChainsaw(void)
 void DigitalBrain::AiExecPince(void)
 {
     float dx, dy;
-    float	deltaSq;
+    float deltaSq;
 
-    dx			= trackX - self->XPos();
-    dy			= trackY - self->YPos();
-    deltaSq	= dx * dx + dy * dy;
+    dx = trackX - self->XPos();
+    dy = trackY - self->YPos();
+    deltaSq = dx * dx + dy * dy;
 
     // S.G. 1000 feet is too short. I'll make this 5000.0. This will prevent AI from turning around its maneuver point, never to reach it...
-    //	if(deltaSq <= 1000.0F * 1000.0F) {
+    // if(deltaSq <= 1000.0F * 1000.0F) {
     if (deltaSq <= 5000.0F * 5000.0F)
     {
         mPointCounter++;
@@ -559,9 +559,9 @@ void DigitalBrain::AiExecPince(void)
         mPointCounter = 0;
     }
 
-    trackX	= mpManeuverPoints[mPointCounter][0];
-    trackY	= mpManeuverPoints[mPointCounter][1];
-    trackZ	= mAltitudeOrdered;
+    trackX = mpManeuverPoints[mPointCounter][0];
+    trackY = mpManeuverPoints[mPointCounter][1];
+    trackZ = mAltitudeOrdered;
 
     mSpeedOrdered *= 1.001F;
 
@@ -575,11 +575,11 @@ void DigitalBrain::AiExecPince(void)
 void DigitalBrain::AiExecFlex(void)
 {
     float dx, dy;
-    float	deltaSq;
+    float deltaSq;
 
-    dx			= trackX - self->XPos();
-    dy			= trackY - self->YPos();
-    deltaSq	= dx * dx + dy * dy;
+    dx = trackX - self->XPos();
+    dy = trackY - self->YPos();
+    deltaSq = dx * dx + dy * dy;
 
     if (deltaSq <= 900.0F * 900.0F)
     {
@@ -591,9 +591,9 @@ void DigitalBrain::AiExecFlex(void)
         AiClearManeuver();
     }
 
-    trackX	= mpManeuverPoints[mPointCounter][0];
-    trackY	= mpManeuverPoints[mPointCounter][1];
-    trackZ	= mAltitudeOrdered;
+    trackX = mpManeuverPoints[mPointCounter][0];
+    trackY = mpManeuverPoints[mPointCounter][1];
+    trackZ = mAltitudeOrdered;
 
     mSpeedOrdered *= 1.001F;
 
@@ -610,8 +610,8 @@ void DigitalBrain::AiExecFlex(void)
 
 void DigitalBrain::AiExecClearSix(void)
 {
-    mlTrig				trig;
-    short					edata[10];
+    mlTrig trig;
+    short edata[10];
 
     mlSinCos(&trig, mHeadingOrdered);
     SetTrackPoint(self->XPos() + 1000.0F * trig.cos, self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
@@ -626,8 +626,8 @@ void DigitalBrain::AiExecClearSix(void)
         AiRestoreSearchDomain();
         AiClearManeuver();
 
-        edata[0]	= self->GetCampaignObject()->GetComponentIndex(self);
-        edata[1]	= 0;
+        edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
+        edata[1] = 0;
         AiMakeRadioResponse(self, rcGENERALRESPONSEC, edata);
     }
 }

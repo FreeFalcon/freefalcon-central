@@ -6,7 +6,7 @@
 #include "cpmanager.h"
 #include "tacan.h"
 
-#define MFD_BUTTONS	20
+#define MFD_BUTTONS 20
 
 
 #ifdef USE_SH_POOLS
@@ -33,46 +33,46 @@ public:
 
 public:
     CPMisc();
-    CockpitManager				*mpCPManager;
+    CockpitManager *mpCPManager;
 
     // Chaff/Flare Buttons
     typedef enum type_ChaffFlareMode {none, chaff_only, flare_only, both};
     typedef enum type_ChaffFlareControl {automatic, manual};
 
-    type_ChaffFlareMode		mChaffFlareMode;
-    type_ChaffFlareControl	mChaffFlareControl;
+    type_ChaffFlareMode mChaffFlareMode;
+    type_ChaffFlareControl mChaffFlareControl;
 
     // Analog Clock
-    float		mHours;
-    float		mMinutes;
-    float		mSeconds;
+    float mHours;
+    float mMinutes;
+    float mSeconds;
 
-    int				mRefuelState;
-    unsigned long	mRefuelTimer;
-    void		SetRefuelState(int);
+    int mRefuelState;
+    unsigned long mRefuelTimer;
+    void SetRefuelState(int);
 
     // Radio stuff
-    int		mUHFPosition;
-    void		StepUHFPostion(void);
-    void		DecUHFPosition(void);
+    int mUHFPosition;
+    void StepUHFPostion(void);
+    void DecUHFPosition(void);
 
 
     // MFD Button States
-    int	MFDButtonArray[MFD_BUTTONS][4];			//Wombat778 4-12-04 Changed from 2 to 4 to accomodate new MFDs
-    int	GetMFDButtonState(int, int);
-    void	SetMFDButtonState(int, int, int);
+    int MFDButtonArray[MFD_BUTTONS][4]; //Wombat778 4-12-04 Changed from 2 to 4 to accomodate new MFDs
+    int GetMFDButtonState(int, int);
+    void SetMFDButtonState(int, int, int);
 
     // Master Caution Stuff
-    int	mMasterCautionLightState;
-    BOOL	mMasterCautionEvent;
-    void	SetMasterCautionEvent(void);
-    int	GetMasterCautionLight(void);
-    void	StepMasterCautionLight(void);
+    int mMasterCautionLightState;
+    BOOL mMasterCautionEvent;
+    void SetMasterCautionEvent(void);
+    int GetMasterCautionLight(void);
+    void StepMasterCautionLight(void);
 
     // Eject Handle
-    BOOL	mEjectState;
-    void	SetEjectButtonState(BOOL);
-    BOOL	GetEjectButtonState(void);
+    BOOL mEjectState;
+    void SetEjectButtonState(BOOL);
+    BOOL GetEjectButtonState(void);
 };
 
 #endif

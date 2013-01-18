@@ -30,7 +30,7 @@ extern float g_fAIDropStoreLauncherRange;
 void DigitalBrain::MissileDefeatCheck(void)
 {
     short edata[6];
-    int	  response;
+    int   response;
 
     //Cobra Moved here before jump out of function code.
     if (targetPtr) //me123 defensive flare
@@ -159,17 +159,17 @@ void DigitalBrain::MissileDefeatCheck(void)
         VehRwrClass::DetectListElement *rwrElement;
         SensorClass *rwrSensor;
         /*
-        			// Must have a RWR or visual tally on the missile
-        			if (!((
-        					((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST &&																							// Don't test for RWR if it's a IR missile...
-        					(rwrSensor = FindSensor(self, SensorClass::RWR)) &&																															// The plane has an RWR (without it, why bother)
-        					(
-        					( (MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming ||																					// The real missile sensor is a SARH
-        					(((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar) ||					// The current sensor is a ARH (if it's a local entity)
-        					(!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch)	// There is no sensor (non local enity) but the missile is on RWR with a launch
-        				   )) ||																																										// Don't forget we take the REVERSE of the test if (!(...
-        				    missileRange < ((float)SkillLevel() + 1.5f) * NM_TO_FT))																													// Or the missile has come to visual range
-        							return;*/
+         // Must have a RWR or visual tally on the missile
+         if (!((
+         ((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST && // Don't test for RWR if it's a IR missile...
+         (rwrSensor = FindSensor(self, SensorClass::RWR)) && // The plane has an RWR (without it, why bother)
+         (
+         ( (MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming || // The real missile sensor is a SARH
+         (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar) || // The current sensor is a ARH (if it's a local entity)
+         (!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch) // There is no sensor (non local enity) but the missile is on RWR with a launch
+            )) || // Don't forget we take the REVERSE of the test if (!(...
+             missileRange < ((float)SkillLevel() + 1.5f) * NM_TO_FT)) // Or the missile has come to visual range
+         return;*/
 
         //Cobra Removed above so I can sort through this mess.  I want to know exactly how the AI
         //Is "seeing" the missile
@@ -319,34 +319,34 @@ void DigitalBrain::MissileDefeatCheck(void)
         // RV - Biker - This does not work (try something basic for now)
         //if (((MissileClass *)self->incomingMissile[0])->parent && (!self->Sms->DidEmergencyJettison()))
         //{
-        //	float launcherRange = 9999999.9F;
-        //	dx = ((MissileClass *)self->incomingMissile[0])->parent->XPos() - self->XPos();
-        //	dy = ((MissileClass *)self->incomingMissile[0])->parent->YPos() - self->YPos();
-        //	dz = ((MissileClass *)self->incomingMissile[0])->parent->ZPos() - self->ZPos();
-        //	launcherRange = SqrtF( dx*dx + dy*dy + dz*dz );
+        // float launcherRange = 9999999.9F;
+        // dx = ((MissileClass *)self->incomingMissile[0])->parent->XPos() - self->XPos();
+        // dy = ((MissileClass *)self->incomingMissile[0])->parent->YPos() - self->YPos();
+        // dz = ((MissileClass *)self->incomingMissile[0])->parent->ZPos() - self->ZPos();
+        // launcherRange = SqrtF( dx*dx + dy*dy + dz*dz );
         //
-        //	// 2002-01-01 ADDED BY S.G. From GunJinks.cpp, drop stores under some conditions...
-        //	//Cobra we modified this - me too
-        //	if (self->CombatClass() != MnvrClassBomber
-        //	&& (((launcherRange < g_fAIDropStoreLauncherRange * NM_TO_FT) && (launcherRange > 0.0f))
-        //	&& (((MissileClass *)self->incomingMissile[0])->parent
-        //	&& (!((MissileClass *)self->incomingMissile[0])->parent->OnGround())
-        //	&& (((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST)))
-        //	)
-        //	{
-        //		self->Sms->AGJettison();
-        //		SelectGroundWeapon();
-        //	}
+        // // 2002-01-01 ADDED BY S.G. From GunJinks.cpp, drop stores under some conditions...
+        // //Cobra we modified this - me too
+        // if (self->CombatClass() != MnvrClassBomber
+        // && (((launcherRange < g_fAIDropStoreLauncherRange * NM_TO_FT) && (launcherRange > 0.0f))
+        // && (((MissileClass *)self->incomingMissile[0])->parent
+        // && (!((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+        // && (((MissileClass *)self->incomingMissile[0])->GetSeekerType() != SensorClass::IRST)))
+        // )
+        // {
+        // self->Sms->AGJettison();
+        // SelectGroundWeapon();
+        // }
         // END OF ADDED SECTION
         //}
         // Have wingman say something useful when he is engaged
-        edata[0]	= isWing;
+        edata[0] = isWing;
         response = rcENGDEFENSIVEC;
         AiMakeRadioResponse(self, response, edata);
 
         // 2000-09-03 COMMENTED OUT BY S.G. SINCE THEIR BODY WERE COMMENTED OUT AS WELL
         //       }
-        //	   }
+        //    }
     }
 
     /*------*/
@@ -484,14 +484,14 @@ void DigitalBrain::MissileDefeat()
         ((AircraftClass*)self)->DropProgramed();
 
         /*if (((MissileClass *)self->incomingMissile[0])->targetPtr)
-        	if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT) &&
-        		 ((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range < ((float)(19.0f - SkillLevel()) * NM_TO_FT))
-        			missileShouldDrag = TRUE;
+         if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT) &&
+          ((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range < ((float)(19.0f - SkillLevel()) * NM_TO_FT))
+         missileShouldDrag = TRUE;
 
         if (!missileShouldDrag)
-        	MissileBeamManeuver();
+         MissileBeamManeuver();
         else
-        	MissileDragManeuver();*/
+         MissileDragManeuver();*/
 
         //Cobra
         float closure = self->GetKias() - self->incomingMissile[0]->GetKias();
@@ -512,7 +512,7 @@ void DigitalBrain::MissileDefeat()
         // 2000-09-08 ADDED BY S.G. SO WE DON'T GO IN AFTER BURNER WHEN AN IR MISSILE IS LAUNCHED AT US UNTIL WE TRY TO DITCH IT IF WE ARE VETERANS OR ACES
         // WE DO THIS AFTER THE MANEUVERS SO WE OVERIDE THE THROTTLE SETTING BY THESE MANEUVERS
         if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::IRST && SkillLevel() > 2)
-            //		    throtl = min (throtl, 0.0f);//me123 from 1.0 to 0 (we wanna go idle // S.G. RP4 COMPABILITY
+            //     throtl = min (throtl, 0.0f);//me123 from 1.0 to 0 (we wanna go idle // S.G. RP4 COMPABILITY
             throtl = min(throtl, 0.99f);
 
         // END OF ADDED SECTION
@@ -658,9 +658,9 @@ void DigitalBrain::MissileLastDitch(float xft, float yft, float zft)
 
     /*
     if (tDroll >= 0.0)
-    	roll_offset = tDroll - 90.0F;
+     roll_offset = tDroll - 90.0F;
     else
-    	roll_offset = tDroll + 90.0F;
+     roll_offset = tDroll + 90.0F;
     */
     /*------------------------*/
     /* generate new phi angle */
@@ -672,16 +672,16 @@ void DigitalBrain::MissileLastDitch(float xft, float yft, float zft)
     /*------------------------------------------*/
     /*
     if (newroll > 180.0)
-    	newroll -= 360.0F;
+     newroll -= 360.0F;
     else if (newroll < -180.0)
-    	newroll += 360.0F;
+     newroll += 360.0F;
 
     eroll = newroll - self->Roll();
 
     if (eroll > 180.0)
-    	eroll -= 360.0F;
+     eroll -= 360.0F;
     else if (eroll < -180.0)
-    	eroll += 360.0F;
+     eroll += 360.0F;
     */
     /*------------------------------*/
     /* generate roll stick commands */

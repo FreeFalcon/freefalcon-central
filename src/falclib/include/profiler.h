@@ -67,7 +67,7 @@ extern "C" {
 
     extern void Prof_set_report_mode(Prof_Report_Mode e);
 
-    extern int Prof_get_cursor();			// Retro
+    extern int Prof_get_cursor(); // Retro
 
     extern void Prof_move_cursor(int delta);
     extern void Prof_select(void);
@@ -78,8 +78,8 @@ extern "C" {
     extern void Prof_set_frame(int frame);
     extern void Prof_set_cursor(int line);
 
-    extern void Prof_dumpFile();			// Retro
-    extern char** Prof_dumpOverlay();		// Retro
+    extern void Prof_dumpFile(); // Retro
+    extern char** Prof_dumpOverlay(); // Retro
 
     typedef enum
     {

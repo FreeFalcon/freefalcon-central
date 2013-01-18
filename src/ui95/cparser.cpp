@@ -2,7 +2,7 @@
 #include "chandler.h"
 #include "ui/include/textids.h"
 
-extern bool g_bHiResUI;		// M.N.
+extern bool g_bHiResUI; // M.N.
 extern bool g_bLogUiErrors; // JPO
 
 // ALL RESMGR CODE ADDITIONS START HERE
@@ -128,185 +128,185 @@ static char *C_All_Tokens[] =
 
 static ID_TABLE UI95_Table[] =
 {
-    {"NULL",					NULL},
-    {"NID",						C_DONT_CARE},
-    {"C_DONT_CARE",				C_DONT_CARE},
-    {"C_STATE_0",				C_STATE_0},
-    {"C_STATE_1",				C_STATE_1},
-    {"C_STATE_2",				C_STATE_2},
-    {"C_STATE_3",				C_STATE_3},
-    {"C_STATE_4",				C_STATE_4},
-    {"C_STATE_5",				C_STATE_5},
-    {"C_STATE_6",				C_STATE_6},
-    {"C_STATE_7",				C_STATE_7},
-    {"C_STATE_8",				C_STATE_8},
-    {"C_STATE_9",				C_STATE_9},
-    {"C_STATE_10",				C_STATE_10},
-    {"C_STATE_11",				C_STATE_11},
-    {"C_STATE_12",				C_STATE_12},
-    {"C_STATE_13",				C_STATE_13},
-    {"C_STATE_14",				C_STATE_14},
-    {"C_STATE_15",				C_STATE_15},
-    {"C_STATE_16",				C_STATE_16},
-    {"C_STATE_17",				C_STATE_17},
-    {"C_STATE_18",				C_STATE_18},
-    {"C_STATE_19",				C_STATE_19},
-    {"C_STATE_20",				C_STATE_20},
-    {"C_STATE_UP",				C_STATE_0},
-    {"C_STATE_DOWN",			C_STATE_1},
-    {"C_STATE_DISABLED",		C_STATE_DISABLED},
-    {"C_STATE_SELECTED",		C_STATE_SELECTED},
-    {"C_STATE_MOUSE",			C_STATE_MOUSE},
-    {"C_TYPE_NOTHING",			C_TYPE_NOTHING},
-    {"C_TYPE_NORMAL",			C_TYPE_NORMAL},
-    {"C_TYPE_TOGGLE",			C_TYPE_TOGGLE},
-    {"C_TYPE_SELECT",			C_TYPE_SELECT},
-    {"C_TYPE_RADIO",			C_TYPE_RADIO},
-    {"C_TYPE_CUSTOM",			C_TYPE_CUSTOM},
-    {"C_TYPE_SIZEX",			C_TYPE_SIZEX},
-    {"C_TYPE_SIZEY",			C_TYPE_SIZEY},
-    {"C_TYPE_SIZEXY",			C_TYPE_SIZEXY},
-    {"C_TYPE_SIZEW",			C_TYPE_SIZEW},
-    {"C_TYPE_SIZEH",			C_TYPE_SIZEH},
-    {"C_TYPE_SIZEWH",			C_TYPE_SIZEWH},
-    {"C_TYPE_DRAGX",			C_TYPE_DRAGX},
-    {"C_TYPE_DRAGY",			C_TYPE_DRAGY},
-    {"C_TYPE_DRAGXY",			C_TYPE_DRAGXY},
-    {"C_TYPE_TEXT",				C_TYPE_TEXT},
-    {"C_TYPE_PASSWORD",			C_TYPE_PASSWORD},
-    {"C_TYPE_INTEGER",			C_TYPE_INTEGER},
-    {"C_TYPE_FLOAT",			C_TYPE_FLOAT},
-    {"C_TYPE_FILENAME",			C_TYPE_FILENAME},
-    {"C_TYPE_MENU",				C_TYPE_MENU},
-    {"C_TYPE_LEFT",				C_TYPE_LEFT},
-    {"C_TYPE_CENTER",			C_TYPE_CENTER},
-    {"C_TYPE_RIGHT",			C_TYPE_RIGHT},
-    {"C_TYPE_ROOT",				C_TYPE_ROOT},
-    {"C_TYPE_INFO",				C_TYPE_INFO},
-    {"C_TYPE_ITEM",				C_TYPE_ITEM},
-    {"C_TYPE_LMOUSEDOWN",		C_TYPE_LMOUSEDOWN},
-    {"C_TYPE_LMOUSEUP",			C_TYPE_LMOUSEUP},
-    {"C_TYPE_LMOUSEDBLCLK",		C_TYPE_LMOUSEDBLCLK},
-    {"C_TYPE_RMOUSEDOWN",		C_TYPE_RMOUSEDOWN},
-    {"C_TYPE_RMOUSEUP",			C_TYPE_RMOUSEUP},
-    {"C_TYPE_RMOUSEDBLCLK",		C_TYPE_RMOUSEDBLCLK},
-    {"C_TYPE_MOUSEOVER",		C_TYPE_MOUSEOVER},
-    {"C_TYPE_MOUSEREPEAT",		C_TYPE_MOUSEREPEAT},
-    {"C_TYPE_EXCLUSIVE",		C_TYPE_EXCLUSIVE},
-    {"C_TYPE_MOUSEMOVE",		C_TYPE_MOUSEMOVE},
-    {"C_TYPE_VERTICAL",			C_TYPE_VERTICAL},
-    {"C_TYPE_HORIZONTAL",		C_TYPE_HORIZONTAL},
-    {"C_TYPE_LOOP",				C_TYPE_LOOP},
-    {"C_TYPE_STOPATEND",		C_TYPE_STOPATEND},
-    {"C_TYPE_PINGPONG",			C_TYPE_PINGPONG},
-    {"C_TYPE_TIMER",			C_TYPE_TIMER},
-    {"C_TYPE_TRANSLUCENT",		C_TYPE_TRANSLUCENT},
-    {"C_TYPE_IPADDRESS",		C_TYPE_IPADDRESS},
-    {NULL,						-1},
+    {"NULL", NULL},
+    {"NID", C_DONT_CARE},
+    {"C_DONT_CARE", C_DONT_CARE},
+    {"C_STATE_0", C_STATE_0},
+    {"C_STATE_1", C_STATE_1},
+    {"C_STATE_2", C_STATE_2},
+    {"C_STATE_3", C_STATE_3},
+    {"C_STATE_4", C_STATE_4},
+    {"C_STATE_5", C_STATE_5},
+    {"C_STATE_6", C_STATE_6},
+    {"C_STATE_7", C_STATE_7},
+    {"C_STATE_8", C_STATE_8},
+    {"C_STATE_9", C_STATE_9},
+    {"C_STATE_10", C_STATE_10},
+    {"C_STATE_11", C_STATE_11},
+    {"C_STATE_12", C_STATE_12},
+    {"C_STATE_13", C_STATE_13},
+    {"C_STATE_14", C_STATE_14},
+    {"C_STATE_15", C_STATE_15},
+    {"C_STATE_16", C_STATE_16},
+    {"C_STATE_17", C_STATE_17},
+    {"C_STATE_18", C_STATE_18},
+    {"C_STATE_19", C_STATE_19},
+    {"C_STATE_20", C_STATE_20},
+    {"C_STATE_UP", C_STATE_0},
+    {"C_STATE_DOWN", C_STATE_1},
+    {"C_STATE_DISABLED", C_STATE_DISABLED},
+    {"C_STATE_SELECTED", C_STATE_SELECTED},
+    {"C_STATE_MOUSE", C_STATE_MOUSE},
+    {"C_TYPE_NOTHING", C_TYPE_NOTHING},
+    {"C_TYPE_NORMAL", C_TYPE_NORMAL},
+    {"C_TYPE_TOGGLE", C_TYPE_TOGGLE},
+    {"C_TYPE_SELECT", C_TYPE_SELECT},
+    {"C_TYPE_RADIO", C_TYPE_RADIO},
+    {"C_TYPE_CUSTOM", C_TYPE_CUSTOM},
+    {"C_TYPE_SIZEX", C_TYPE_SIZEX},
+    {"C_TYPE_SIZEY", C_TYPE_SIZEY},
+    {"C_TYPE_SIZEXY", C_TYPE_SIZEXY},
+    {"C_TYPE_SIZEW", C_TYPE_SIZEW},
+    {"C_TYPE_SIZEH", C_TYPE_SIZEH},
+    {"C_TYPE_SIZEWH", C_TYPE_SIZEWH},
+    {"C_TYPE_DRAGX", C_TYPE_DRAGX},
+    {"C_TYPE_DRAGY", C_TYPE_DRAGY},
+    {"C_TYPE_DRAGXY", C_TYPE_DRAGXY},
+    {"C_TYPE_TEXT", C_TYPE_TEXT},
+    {"C_TYPE_PASSWORD", C_TYPE_PASSWORD},
+    {"C_TYPE_INTEGER", C_TYPE_INTEGER},
+    {"C_TYPE_FLOAT", C_TYPE_FLOAT},
+    {"C_TYPE_FILENAME", C_TYPE_FILENAME},
+    {"C_TYPE_MENU", C_TYPE_MENU},
+    {"C_TYPE_LEFT", C_TYPE_LEFT},
+    {"C_TYPE_CENTER", C_TYPE_CENTER},
+    {"C_TYPE_RIGHT", C_TYPE_RIGHT},
+    {"C_TYPE_ROOT", C_TYPE_ROOT},
+    {"C_TYPE_INFO", C_TYPE_INFO},
+    {"C_TYPE_ITEM", C_TYPE_ITEM},
+    {"C_TYPE_LMOUSEDOWN", C_TYPE_LMOUSEDOWN},
+    {"C_TYPE_LMOUSEUP", C_TYPE_LMOUSEUP},
+    {"C_TYPE_LMOUSEDBLCLK", C_TYPE_LMOUSEDBLCLK},
+    {"C_TYPE_RMOUSEDOWN", C_TYPE_RMOUSEDOWN},
+    {"C_TYPE_RMOUSEUP", C_TYPE_RMOUSEUP},
+    {"C_TYPE_RMOUSEDBLCLK", C_TYPE_RMOUSEDBLCLK},
+    {"C_TYPE_MOUSEOVER", C_TYPE_MOUSEOVER},
+    {"C_TYPE_MOUSEREPEAT", C_TYPE_MOUSEREPEAT},
+    {"C_TYPE_EXCLUSIVE", C_TYPE_EXCLUSIVE},
+    {"C_TYPE_MOUSEMOVE", C_TYPE_MOUSEMOVE},
+    {"C_TYPE_VERTICAL", C_TYPE_VERTICAL},
+    {"C_TYPE_HORIZONTAL", C_TYPE_HORIZONTAL},
+    {"C_TYPE_LOOP", C_TYPE_LOOP},
+    {"C_TYPE_STOPATEND", C_TYPE_STOPATEND},
+    {"C_TYPE_PINGPONG", C_TYPE_PINGPONG},
+    {"C_TYPE_TIMER", C_TYPE_TIMER},
+    {"C_TYPE_TRANSLUCENT", C_TYPE_TRANSLUCENT},
+    {"C_TYPE_IPADDRESS", C_TYPE_IPADDRESS},
+    {NULL, -1},
 };
 
 static ID_TABLE UI95_BitTable[] =
 {
-    {"NULL",					NULL},
-    {"C_BIT_NOTHING",			C_BIT_NOTHING},
-    {"C_BIT_FIXEDSIZE",			C_BIT_FIXEDSIZE},
-    {"C_BIT_LEADINGZEROS",		C_BIT_LEADINGZEROS},
-    {"C_BIT_VERTICAL",			C_BIT_VERTICAL},
-    {"C_BIT_HORIZONTAL",		C_BIT_HORIZONTAL},
-    {"C_BIT_USEOUTLINE",		C_BIT_USEOUTLINE},
-    {"C_BIT_LEFT",				C_BIT_LEFT},
-    {"C_BIT_RIGHT",				C_BIT_RIGHT},
-    {"C_BIT_TOP",				C_BIT_TOP},
-    {"C_BIT_BOTTOM",			C_BIT_BOTTOM},
-    {"C_BIT_HCENTER",			C_BIT_HCENTER},
-    {"C_BIT_VCENTER",			C_BIT_VCENTER},
-    {"C_BIT_ENABLED",			C_BIT_ENABLED},
-    {"C_BIT_DRAGABLE",			C_BIT_DRAGABLE},
-    {"C_BIT_INVISIBLE",			C_BIT_INVISIBLE},
-    {"C_BIT_FORCEMOUSEOVER",	C_BIT_FORCEMOUSEOVER},
-    {"C_BIT_USEBGIMAGE",		C_BIT_USEBGIMAGE},
-    {"C_BIT_TIMER",				C_BIT_TIMER},
-    {"C_BIT_ABSOLUTE",			C_BIT_ABSOLUTE},
-    {"C_BIT_SELECTABLE",		C_BIT_SELECTABLE},
-    {"C_BIT_OPAQUE",			C_BIT_OPAQUE},
-    {"C_BIT_CANTMOVE",			C_BIT_CANTMOVE},
-    {"C_BIT_USELINE",			C_BIT_USELINE},
-    {"C_BIT_WORDWRAP",			C_BIT_WORDWRAP},
-    {"C_BIT_REMOVE",			C_BIT_REMOVE},
-    {"C_BIT_NOCLEANUP",			C_BIT_NOCLEANUP},
-    {"C_BIT_TRANSLUCENT",		C_BIT_TRANSLUCENT},
-    {"C_BIT_USEBGFILL",			C_BIT_USEBGFILL},
-    {"C_BIT_MOUSEOVER",			C_BIT_MOUSEOVER},
-    {"C_BIT_NOLABEL",			C_BIT_NOLABEL},
-    {NULL,						-1}, // LAST Record in this list
+    {"NULL", NULL},
+    {"C_BIT_NOTHING", C_BIT_NOTHING},
+    {"C_BIT_FIXEDSIZE", C_BIT_FIXEDSIZE},
+    {"C_BIT_LEADINGZEROS", C_BIT_LEADINGZEROS},
+    {"C_BIT_VERTICAL", C_BIT_VERTICAL},
+    {"C_BIT_HORIZONTAL", C_BIT_HORIZONTAL},
+    {"C_BIT_USEOUTLINE", C_BIT_USEOUTLINE},
+    {"C_BIT_LEFT", C_BIT_LEFT},
+    {"C_BIT_RIGHT", C_BIT_RIGHT},
+    {"C_BIT_TOP", C_BIT_TOP},
+    {"C_BIT_BOTTOM", C_BIT_BOTTOM},
+    {"C_BIT_HCENTER", C_BIT_HCENTER},
+    {"C_BIT_VCENTER", C_BIT_VCENTER},
+    {"C_BIT_ENABLED", C_BIT_ENABLED},
+    {"C_BIT_DRAGABLE", C_BIT_DRAGABLE},
+    {"C_BIT_INVISIBLE", C_BIT_INVISIBLE},
+    {"C_BIT_FORCEMOUSEOVER", C_BIT_FORCEMOUSEOVER},
+    {"C_BIT_USEBGIMAGE", C_BIT_USEBGIMAGE},
+    {"C_BIT_TIMER", C_BIT_TIMER},
+    {"C_BIT_ABSOLUTE", C_BIT_ABSOLUTE},
+    {"C_BIT_SELECTABLE", C_BIT_SELECTABLE},
+    {"C_BIT_OPAQUE", C_BIT_OPAQUE},
+    {"C_BIT_CANTMOVE", C_BIT_CANTMOVE},
+    {"C_BIT_USELINE", C_BIT_USELINE},
+    {"C_BIT_WORDWRAP", C_BIT_WORDWRAP},
+    {"C_BIT_REMOVE", C_BIT_REMOVE},
+    {"C_BIT_NOCLEANUP", C_BIT_NOCLEANUP},
+    {"C_BIT_TRANSLUCENT", C_BIT_TRANSLUCENT},
+    {"C_BIT_USEBGFILL", C_BIT_USEBGFILL},
+    {"C_BIT_MOUSEOVER", C_BIT_MOUSEOVER},
+    {"C_BIT_NOLABEL", C_BIT_NOLABEL},
+    {NULL, -1}, // LAST Record in this list
 };
 
 static ID_TABLE UI95_FontTable[] =
 {
-    {"FALSE",					FALSE},
-    {"TRUE",					TRUE},
-    {"FW_DONTCARE",				FW_DONTCARE},
-    {"FW_THIN",					FW_THIN},
-    {"FW_EXTRALIGHT",			FW_EXTRALIGHT},
-    {"FW_ULTRALIGHT",			FW_ULTRALIGHT},
-    {"FW_LIGHT",				FW_LIGHT},
-    {"FW_NORMAL",				FW_NORMAL},
-    {"FW_REGULAR",				FW_REGULAR},
-    {"FW_MEDIUM",				FW_MEDIUM},
-    {"FW_SEMIBOLD",				FW_SEMIBOLD},
-    {"FW_DEMIBOLD",				FW_DEMIBOLD},
-    {"FW_BOLD",					FW_BOLD},
-    {"FW_EXTRABOLD",			FW_EXTRABOLD},
-    {"FW_ULTRABOLD",			FW_ULTRABOLD},
-    {"FW_HEAVY",				FW_HEAVY},
-    {"FW_BLACK",				FW_BLACK},
-    {"ANSI_CHARSET",			ANSI_CHARSET},
-    {"DEFAULT_CHARSET",			DEFAULT_CHARSET},
-    {"SYMBOL_CHARSET",			SYMBOL_CHARSET},
-    {"SHIFTJIS_CHARSET",		SHIFTJIS_CHARSET},
-    {"GB2312_CHARSET",			GB2312_CHARSET},
-    {"HANGEUL_CHARSET",			HANGEUL_CHARSET},
-    {"CHINESEBIG5_CHARSET",		CHINESEBIG5_CHARSET},
-    {"OEM_CHARSET",				OEM_CHARSET},
-    {"JOHAB_CHARSET",			JOHAB_CHARSET},
-    {"HEBREW_CHARSET",			HEBREW_CHARSET},
-    {"ARABIC_CHARSET",			ARABIC_CHARSET},
-    {"GREEK_CHARSET",			GREEK_CHARSET},
-    {"TURKISH_CHARSET",			TURKISH_CHARSET},
-    {"THAI_CHARSET",			THAI_CHARSET},
-    {"EASTEUROPE_CHARSET",		EASTEUROPE_CHARSET},
-    {"RUSSIAN_CHARSET",			RUSSIAN_CHARSET},
-    {"MAC_CHARSET",				MAC_CHARSET},
-    {"BALTIC_CHARSET",			BALTIC_CHARSET},
-    {"OUT_CHARACTER_PRECIS",	OUT_CHARACTER_PRECIS},
-    {"OUT_DEFAULT_PRECIS",		OUT_DEFAULT_PRECIS},
-    {"OUT_DEVICE_PRECIS",		OUT_DEVICE_PRECIS},
-    {"OUT_OUTLINE_PRECIS",		OUT_OUTLINE_PRECIS},
-    {"OUT_RASTER_PRECIS",		OUT_RASTER_PRECIS},
-    {"OUT_STRING_PRECIS",		OUT_STRING_PRECIS},
-    {"OUT_STROKE_PRECIS",		OUT_STROKE_PRECIS},
-    {"OUT_TT_ONLY_PRECIS",		OUT_TT_ONLY_PRECIS},
-    {"OUT_TT_PRECIS",			OUT_TT_PRECIS},
-    {"CLIP_DEFAULT_PRECIS",		CLIP_DEFAULT_PRECIS},
-    {"CLIP_CHARACTER_PRECIS",	CLIP_CHARACTER_PRECIS},
-    {"CLIP_STROKE_PRECIS",		CLIP_STROKE_PRECIS},
-    {"CLIP_MASK",				CLIP_MASK},
-    {"CLIP_EMBEDDED",			CLIP_EMBEDDED},
-    {"CLIP_LH_ANGLES",			CLIP_LH_ANGLES},
-    {"CLIP_TT_ALWAYS",			CLIP_TT_ALWAYS},
-    {"DEFAULT_QUALITY",			DEFAULT_QUALITY},
-    {"DRAFT_QUALITY",			DRAFT_QUALITY},
-    {"PROOF_QUALITY",			PROOF_QUALITY},
-    {"DEFAULT_PITCH",			DEFAULT_PITCH},
-    {"FIXED_PITCH",				FIXED_PITCH},
-    {"VARIABLE_PITCH",			VARIABLE_PITCH},
-    {"FF_DECORATIVE",			FF_DECORATIVE},
-    {"FF_DONTCARE",				FF_DONTCARE},
-    {"FF_MODERN",				FF_MODERN},
-    {"FF_ROMAN",				FF_ROMAN},
-    {"FF_SCRIPT",				FF_SCRIPT},
-    {"FF_SWISS",				FF_SWISS},
-    { NULL,						-1},
+    {"FALSE", FALSE},
+    {"TRUE", TRUE},
+    {"FW_DONTCARE", FW_DONTCARE},
+    {"FW_THIN", FW_THIN},
+    {"FW_EXTRALIGHT", FW_EXTRALIGHT},
+    {"FW_ULTRALIGHT", FW_ULTRALIGHT},
+    {"FW_LIGHT", FW_LIGHT},
+    {"FW_NORMAL", FW_NORMAL},
+    {"FW_REGULAR", FW_REGULAR},
+    {"FW_MEDIUM", FW_MEDIUM},
+    {"FW_SEMIBOLD", FW_SEMIBOLD},
+    {"FW_DEMIBOLD", FW_DEMIBOLD},
+    {"FW_BOLD", FW_BOLD},
+    {"FW_EXTRABOLD", FW_EXTRABOLD},
+    {"FW_ULTRABOLD", FW_ULTRABOLD},
+    {"FW_HEAVY", FW_HEAVY},
+    {"FW_BLACK", FW_BLACK},
+    {"ANSI_CHARSET", ANSI_CHARSET},
+    {"DEFAULT_CHARSET", DEFAULT_CHARSET},
+    {"SYMBOL_CHARSET", SYMBOL_CHARSET},
+    {"SHIFTJIS_CHARSET", SHIFTJIS_CHARSET},
+    {"GB2312_CHARSET", GB2312_CHARSET},
+    {"HANGEUL_CHARSET", HANGEUL_CHARSET},
+    {"CHINESEBIG5_CHARSET", CHINESEBIG5_CHARSET},
+    {"OEM_CHARSET", OEM_CHARSET},
+    {"JOHAB_CHARSET", JOHAB_CHARSET},
+    {"HEBREW_CHARSET", HEBREW_CHARSET},
+    {"ARABIC_CHARSET", ARABIC_CHARSET},
+    {"GREEK_CHARSET", GREEK_CHARSET},
+    {"TURKISH_CHARSET", TURKISH_CHARSET},
+    {"THAI_CHARSET", THAI_CHARSET},
+    {"EASTEUROPE_CHARSET", EASTEUROPE_CHARSET},
+    {"RUSSIAN_CHARSET", RUSSIAN_CHARSET},
+    {"MAC_CHARSET", MAC_CHARSET},
+    {"BALTIC_CHARSET", BALTIC_CHARSET},
+    {"OUT_CHARACTER_PRECIS", OUT_CHARACTER_PRECIS},
+    {"OUT_DEFAULT_PRECIS", OUT_DEFAULT_PRECIS},
+    {"OUT_DEVICE_PRECIS", OUT_DEVICE_PRECIS},
+    {"OUT_OUTLINE_PRECIS", OUT_OUTLINE_PRECIS},
+    {"OUT_RASTER_PRECIS", OUT_RASTER_PRECIS},
+    {"OUT_STRING_PRECIS", OUT_STRING_PRECIS},
+    {"OUT_STROKE_PRECIS", OUT_STROKE_PRECIS},
+    {"OUT_TT_ONLY_PRECIS", OUT_TT_ONLY_PRECIS},
+    {"OUT_TT_PRECIS", OUT_TT_PRECIS},
+    {"CLIP_DEFAULT_PRECIS", CLIP_DEFAULT_PRECIS},
+    {"CLIP_CHARACTER_PRECIS", CLIP_CHARACTER_PRECIS},
+    {"CLIP_STROKE_PRECIS", CLIP_STROKE_PRECIS},
+    {"CLIP_MASK", CLIP_MASK},
+    {"CLIP_EMBEDDED", CLIP_EMBEDDED},
+    {"CLIP_LH_ANGLES", CLIP_LH_ANGLES},
+    {"CLIP_TT_ALWAYS", CLIP_TT_ALWAYS},
+    {"DEFAULT_QUALITY", DEFAULT_QUALITY},
+    {"DRAFT_QUALITY", DRAFT_QUALITY},
+    {"PROOF_QUALITY", PROOF_QUALITY},
+    {"DEFAULT_PITCH", DEFAULT_PITCH},
+    {"FIXED_PITCH", FIXED_PITCH},
+    {"VARIABLE_PITCH", VARIABLE_PITCH},
+    {"FF_DECORATIVE", FF_DECORATIVE},
+    {"FF_DONTCARE", FF_DONTCARE},
+    {"FF_MODERN", FF_MODERN},
+    {"FF_ROMAN", FF_ROMAN},
+    {"FF_SCRIPT", FF_SCRIPT},
+    {"FF_SWISS", FF_SWISS},
+    { NULL, -1},
 };
 
 #define _START_BASE_ID_ 3500000
@@ -506,7 +506,7 @@ void C_Parser::LoadIDTable(char *filename)
     char *token;
     long ID;
 
-    //	ifp=UI_OPEN(filename,"rb");
+    // ifp=UI_OPEN(filename,"rb");
     ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     if (ifp == NULL)
@@ -599,9 +599,9 @@ void C_Parser::LoadIDList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // Falcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024");		// HiResUI
+        strcat(filebuf, "\\art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art");			// LoResUI
+        strcat(filebuf, "\\art"); // LoResUI
 
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
@@ -706,7 +706,7 @@ BOOL C_Parser::LoadScript(char *filename)
 
     ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
-    //	ifp=UI_OPEN(filename,"rb");
+    // ifp=UI_OPEN(filename,"rb");
     if (ifp == NULL)
     {
         if (g_bLogUiErrors)
@@ -739,7 +739,7 @@ BOOL C_Parser::LoadScript(char *filename)
 
     script_ = new char [size + 5]; // just in case :)
 
-    if (script_) memset(script_, 0, size + 5);	// OW
+    if (script_) memset(script_, 0, size + 5); // OW
 
     if (UI_READ(script_, size, 1, ifp) != 1)
     {
@@ -784,11 +784,11 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
 
         if (g_bHiResUI)
         {
-            strcat(filebuf, "\\art1024");		// HiResUI
+            strcat(filebuf, "\\art1024"); // HiResUI
         }
         else
         {
-            strcat(filebuf, "\\art");			// LoResUI
+            strcat(filebuf, "\\art"); // LoResUI
         }
 
 #endif
@@ -814,11 +814,11 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
 
         if (g_bHiResUI)
         {
-            strcat(filebuf, "\\art1024");		// HiResUI
+            strcat(filebuf, "\\art1024"); // HiResUI
         }
         else
         {
-            strcat(filebuf, "\\art");			// LoResUI
+            strcat(filebuf, "\\art"); // LoResUI
         }
 
 #endif
@@ -1091,9 +1091,9 @@ BOOL C_Parser::LoadImageList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // Falcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024");		// HiResUI
+        strcat(filebuf, "\\art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art");			// LoResUI
+        strcat(filebuf, "\\art"); // LoResUI
 
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
@@ -1190,9 +1190,9 @@ BOOL C_Parser::LoadSoundList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // Falcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024");		// HiResUI
+        strcat(filebuf, "\\art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art");			// LoResUI
+        strcat(filebuf, "\\art"); // LoResUI
 
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
@@ -1290,9 +1290,9 @@ BOOL C_Parser::LoadStringList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // Falcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024");		// HiResUI
+        strcat(filebuf, "\\art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art");			// LoResUI
+        strcat(filebuf, "\\art"); // LoResUI
 
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
@@ -1389,9 +1389,9 @@ BOOL C_Parser::LoadMovieList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // Falcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024");		// HiResUI
+        strcat(filebuf, "\\art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art");			// LoResUI
+        strcat(filebuf, "\\art"); // LoResUI
 
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
@@ -1786,9 +1786,9 @@ C_Base *C_Parser::ControlParser()
                             break;
 
                             //case CPARSE_ACMI:
-                            //	TokenType=TOKEN_COMMON;
-                            //	Control_=new C_Acmi;
-                            //	break;
+                            // TokenType=TOKEN_COMMON;
+                            // Control_=new C_Acmi;
+                            // break;
                         case CPARSE_PANNER:
                             TokenType = TOKEN_COMMON;
 

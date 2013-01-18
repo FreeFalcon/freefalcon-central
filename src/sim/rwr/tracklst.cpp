@@ -11,7 +11,7 @@
 
 VehRwrClass::DetectListElement* VehRwrClass::IsTracked(FalconEntity* object)
 {
-    int	i;
+    int i;
     DetectListElement* retval = NULL;
 
     // Check for existing tracked object
@@ -28,8 +28,8 @@ VehRwrClass::DetectListElement* VehRwrClass::IsTracked(FalconEntity* object)
 
 VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, float lethality)
 {
-    int					i, j;
-    DetectListElement	*retval = NULL;
+    int i, j;
+    DetectListElement *retval = NULL;
     SimObjectType* tmpPtr;
 
     for (i = 0; i < numContacts; i++) // JB 010727
@@ -65,22 +65,22 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         ShiAssert(j <= i);
 
         // Initialize the new entry -- the rest of the elements will be set by the caller
-        detectionList[i].entity				= object;
-        detectionList[i].radarData			= &RadarDataTable[object->GetRadarType()];
-        detectionList[i].lastPlayed			= 0;
-        detectionList[i].isLocked			= 0;
-        detectionList[i].isAGLocked			= 0;//Cobra TJL
-        detectionList[i].missileActivity	= 0;
-        detectionList[i].missileLaunch		= 0;
+        detectionList[i].entity = object;
+        detectionList[i].radarData = &RadarDataTable[object->GetRadarType()];
+        detectionList[i].lastPlayed = 0;
+        detectionList[i].isLocked = 0;
+        detectionList[i].isAGLocked = 0;//Cobra TJL
+        detectionList[i].missileActivity = 0;
+        detectionList[i].missileLaunch = 0;
         // JB 010727 RP5 RWR
         // 2001-02-15 ADDED BY S.G. SO THE NEW cantPlay field IS ZEROED AS WELL AND playIt AS WELL
-        detectionList[i].cantPlay			= 0;
-        detectionList[i].playIt				= 0;
+        detectionList[i].cantPlay = 0;
+        detectionList[i].playIt = 0;
         // END OF ADDED SECTION
-        detectionList[i].previouslyLocked	= FALSE;
-        detectionList[i].newDetection		= TRUE;
-        detectionList[i].newDetectionDisplay		= TRUE; // JB 010727
-        detectionList[i].lethality			= lethality;
+        detectionList[i].previouslyLocked = FALSE;
+        detectionList[i].newDetection = TRUE;
+        detectionList[i].newDetectionDisplay = TRUE; // JB 010727
+        detectionList[i].lethality = lethality;
 
         VuReferenceEntity(object);
         retval = &detectionList[i];
@@ -89,13 +89,13 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         if (i != 0)
         {
             // If we didn't go into the top slot, we won't change who's selected
-            detectionList[i].selected	= 0;
+            detectionList[i].selected = 0;
         }
         else
         {
             // If we went into the top slot, we'll inherit the flag from whomever we pushed out
             // Just make sure the guy we pushed out doesn't think he still has it.
-            detectionList[1].selected	= 0;
+            detectionList[1].selected = 0;
         }
 
         // Find this object in the target list, and mark the RWR as tracking
@@ -145,8 +145,8 @@ void VehRwrClass::SortDetectionList(void)
                     if (detectionList[1].selected)
                     {
                         // Bring the selected flag back if we pushed it out of the default slot
-                        detectionList[1].selected	= 0;
-                        tmpElement.selected	= 1;
+                        detectionList[1].selected = 0;
+                        tmpElement.selected = 1;
                     }
 
                     break;
@@ -196,8 +196,8 @@ void VehRwrClass::ResortList(VehRwrClass::DetectListElement* theElement)
         // Bring the selected flag back if we pushed it out of the default slot
         if ((newId == 0) && (detectionList[1].selected))
         {
-            detectionList[1].selected	= 0;
-            detectionList[0].selected	= 1;
+            detectionList[1].selected = 0;
+            detectionList[0].selected = 1;
         }
     }
     else if (newId > thisId)
@@ -216,8 +216,8 @@ void VehRwrClass::ResortList(VehRwrClass::DetectListElement* theElement)
         // Put the selected flag back if we took it with us out of the default slot
         if ((thisId == 0) && (detectionList[newId].selected))
         {
-            detectionList[newId].selected	= 0;
-            detectionList[0].selected		= 1;
+            detectionList[newId].selected = 0;
+            detectionList[0].selected = 1;
         }
     }
 }
@@ -263,18 +263,18 @@ void VehRwrClass::DropTrack(int trackNum)
             detectionList[i] = detectionList[i + 1];
         else
         {
-            detectionList[i].entity				= NULL;
-            detectionList[i].lastHit			= 0;
-            detectionList[i].lethality			= 0.0F;
-            detectionList[i].isLocked			= 0;
-            detectionList[i].isAGLocked			= 0;//Cobra TJL
-            detectionList[i].missileActivity	= 0;
-            detectionList[i].missileLaunch		= 0;
-            detectionList[i].selected			= 0;
+            detectionList[i].entity = NULL;
+            detectionList[i].lastHit = 0;
+            detectionList[i].lethality = 0.0F;
+            detectionList[i].isLocked = 0;
+            detectionList[i].isAGLocked = 0;//Cobra TJL
+            detectionList[i].missileActivity = 0;
+            detectionList[i].missileLaunch = 0;
+            detectionList[i].selected = 0;
             // JB 010727 RP5 RWR
             // 2001-02-15 ADDED BY S.G. SO THE NEW cantPlay field IS ZEROED AS WELL AND playIt AS WELL
-            detectionList[i].cantPlay			= 0;
-            detectionList[i].playIt				= 0;
+            detectionList[i].cantPlay = 0;
+            detectionList[i].playIt = 0;
             // END OF ADDED SECTION
         }
     }

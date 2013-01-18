@@ -76,7 +76,7 @@ BOOL JoinGameProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             F4SessionUpdateMemberList(hDlg);
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -124,7 +124,7 @@ BOOL JoinGameProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 // KCK NOTE: We really don't want to do this here
                                 //                      VuMessage *req = new VuGetRequest(vuNullId); // gets all game ents
                                 //                      VuMessageQueue::PostVuMessage(req);
-                                //                      req = new VuGetRequest();	// gets all game data
+                                //                      req = new VuGetRequest(); // gets all game data
                                 //                      VuMessageQueue::PostVuMessage(req);
                                 InitSessionStuff(hDlg);
                             }
@@ -168,7 +168,7 @@ BOOL SessionManagerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             F4SessionUpdateMemberList(hDlg);
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -391,10 +391,10 @@ BOOL SessionNewProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected?        */
+                case IDOK:    /* "OK" box selected?        */
                     GetDlgItemText(hDlg, IDC_SESSION_NEW_NAME, dialogReturnString, SESSION_NAME_SIZE);
 
                 case IDCANCEL:

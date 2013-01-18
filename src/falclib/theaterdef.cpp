@@ -24,7 +24,7 @@ extern char FalconMovieDirectory[];
 extern char FalconUISoundDirectory[];
 extern char FalconObjectDataDir[];
 extern char FalconMiscTexDataDir[];
-extern char Falcon3DDataDir[];	// for Korea.* files
+extern char Falcon3DDataDir[]; // for Korea.* files
 extern char FalconSoundThrDirectory[];
 // RV - Biker - Make cockpits, zips, tacref and splash files also switchable with theater
 extern char FalconCockpitThrDirectory[];
@@ -308,8 +308,8 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     // Cobra - Add "sim" path if Korea theater
     if ((!strnicmp(td->m_name, "Korea", 5)) || (!strnicmp(td->m_name, "Eurowar", 7)))
     {
-        char	tmpPath[256];
-        sprintf(tmpPath, "%s\\sim", FalconDataDirectory);	// JPO - so we can find raw sim files
+        char tmpPath[256];
+        sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
 
         if (SimPathHandle == -1)
             SimPathHandle = ResAddPath(tmpPath, TRUE);
@@ -329,7 +329,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     if (!zipFile)
     {
-        char	string[300];
+        char string[300];
         sprintf(string, "Failed to open %s\n", tmpPath);
         OutputDebugString(string);
         ShiError(string);
@@ -342,7 +342,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
         for (int i = 0; i < numZips; i++)
         {
-            char	tmp[256];
+            char tmp[256];
             fscanf(zipFile, "%*c%s", tmp);
             sprintf(tmpPath, "%s\\%s", FalconZipsThrDirectory, tmp);
 
@@ -431,7 +431,7 @@ void TheaterList::SetPathName(char *dest, char *src, char *reldir)
 
 void TheaterList::SetCurrentTheater(TheaterDef *td)
 {
-    HKEY	theKey;
+    HKEY theKey;
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
 
     RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)td->m_name, strlen(td->m_name));
@@ -441,8 +441,8 @@ void TheaterList::SetCurrentTheater(TheaterDef *td)
 TheaterDef * TheaterList::GetCurrentTheater()
 {
     char TheaterName[_MAX_PATH];
-    HKEY	theKey;
-    DWORD	size, type;
+    HKEY theKey;
+    DWORD size, type;
 
 
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
@@ -457,7 +457,7 @@ TheaterDef * TheaterList::GetCurrentTheater()
     }
 
     //if (strnicmp(TheaterName, "Korea", 5) == 0)
-    //	strcpy(TheaterName, "Korea");
+    // strcpy(TheaterName, "Korea");
 
     RegCloseKey(theKey);
     return FindTheaterByName(TheaterName);

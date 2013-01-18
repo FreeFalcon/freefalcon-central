@@ -10,8 +10,8 @@ VuEntity
    |
    +-F4SoundPos - positional data
         |                 API interface
-		+-mlrVoiceHandle -> mlrVoice -> mlrBuffer
-		+-SoundHandleNode -> mlrVoice
+ +-mlrVoiceHandle -> mlrVoice -> mlrBuffer
+ +-SoundHandleNode -> mlrVoice
 
 
   */
@@ -34,7 +34,7 @@ public:
     bool AreYou(int SfxId, int UserID);
 
 private:
-    mlrVoice	*voice; // my baby
+    mlrVoice *voice; // my baby
     F4SoundPos  *SPos;   // my baby's daddy
 
     int   sfxid;
@@ -71,7 +71,7 @@ public:
     Tpoint listenerVelocity;
 
 private:
-    F4CSECTIONHANDLE*    mlrVoiceSection;	// Thread critical section information
+    F4CSECTIONHANDLE*    mlrVoiceSection; // Thread critical section information
     void MovePlay2Hold(void);
 };
 
@@ -109,7 +109,7 @@ private:
     bool OK;
 
     // these should only be set in the constructor.
-    IDirectSoundBuffer	  *DSoundBuffer;
+    IDirectSoundBuffer   *DSoundBuffer;
     LPDIRECTSOUND3DBUFFER  DSound3dBuffer;
 
     float x, y, z;  // the last emmitting position;

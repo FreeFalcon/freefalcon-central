@@ -8,7 +8,7 @@
 #include "debris.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DebrisClass::pool;
+MEM_POOL DebrisClass::pool;
 #endif
 
 DebrisClass::DebrisClass(VU_BYTE** stream, long *rem) : BombClass(stream, rem)

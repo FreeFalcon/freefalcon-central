@@ -10,9 +10,9 @@
 // Defines and the message include
 // ===============================
 
-#define		CUI_MD					2			// Maximum data slots
-#define		CUI_ME					2			// Maximum entity data
-#define		CUI_MS					8			// Maximum string ids
+#define CUI_MD 2 // Maximum data slots
+#define CUI_ME 2 // Maximum entity data
+#define CUI_MS 8 // Maximum string ids
 
 #include "MsgInc\CampEventMsg.h"
 
@@ -23,12 +23,12 @@
 // This is the structure we make our campaign ui event list out of
 typedef struct uieventnode
 {
-    short			x, y;					// Location of the event (if any)
-    CampaignTime	time;
-    uchar			flags;
-    Team			team;					// The team which benifited the most from this
-    _TCHAR			*eventText;				// The text output
-    uieventnode		*next;
+    short x, y; // Location of the event (if any)
+    CampaignTime time;
+    uchar flags;
+    Team team; // The team which benifited the most from this
+    _TCHAR *eventText; // The text output
+    uieventnode *next;
 } CampUIEventElement;
 
 // ============================

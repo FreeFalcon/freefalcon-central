@@ -11,7 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define		MAX_ENTITY_CAMS	50
+#define MAX_ENTITY_CAMS 50
 
 #define ACMI_VERSION 2
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,24 +42,24 @@ typedef struct
     SimBaseClass *objBase;
     DrawableTrail *objTrail;
 
-    int			flags;
+    int flags;
 
     // object orientation
-    float		x;
-    float		y;
-    float		z;
-    float		yaw;
-    float		pitch;
-    float		roll;
+    float x;
+    float y;
+    float z;
+    float yaw;
+    float pitch;
+    float roll;
 
     // average speed between 2 positions
-    float		aveSpeed;
-    float		aveTurnRate;
-    float		aveTurnRadius;
+    float aveSpeed;
+    float aveTurnRate;
+    float aveTurnRadius;
 
     // for trails, the start and end times
-    float		trailStartTime;
-    float		trailEndTime;
+    float trailStartTime;
+    float trailEndTime;
 
     // missiles need engine glow drawables
     DrawableBSP  *objBsp1;
@@ -69,14 +69,14 @@ typedef struct
     Drawable2D  *obj2d;
 
     // for wing tip trails
-    int			  wtLength;
+    int   wtLength;
     DrawableTrail *wlTrail;
     DrawableTrail *wrTrail;
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long		  leadIndex;
-    int			  slot;
+    long   leadIndex;
+    int   slot;
 
 } SimTapeEntity;
 
@@ -85,12 +85,12 @@ typedef struct
 */
 typedef struct
 {
-    float		x;
-    float		y;
-    float		z;
-    float		dx;
-    float		dy;
-    float		dz;
+    float x;
+    float y;
+    float z;
+    float dx;
+    float dy;
+    float dz;
     DrawableTracer *objTracer;
 } TracerEventData;
 
@@ -100,11 +100,11 @@ typedef struct
 */
 typedef struct _ActiveEvent
 {
-    long		eventType;
-    long		index;
-    float		time;
-    float		timeEnd;
-    void		*eventData;
+    long eventType;
+    long index;
+    float time;
+    float timeEnd;
+    void *eventData;
     struct _ActiveEvent *next;
     struct _ActiveEvent *prev;
 } ActiveEvent;
@@ -124,26 +124,26 @@ typedef struct _ActiveEvent
 #pragma pack (push, pack1, 1)
 typedef struct
 {
-    long		fileID;
-    long		fileSize;
-    long		numEntities;
-    long		numFeat;
-    long 		entityBlockOffset;
-    long 		featBlockOffset;
-    long		numEntityPositions;
-    long		timelineBlockOffset;
-    long		firstEntEventOffset;
-    long		firstGeneralEventOffset;
-    long		firstEventTrailerOffset;
-    long		firstTextEventOffset;
-    long		firstFeatEventOffset;
-    long		numEvents;
-    long		numEntEvents;
-    long		numTextEvents;
-    long		numFeatEvents;
-    float		startTime;
-    float		totPlayTime;
-    float 		todOffset;
+    long fileID;
+    long fileSize;
+    long numEntities;
+    long numFeat;
+    long  entityBlockOffset;
+    long  featBlockOffset;
+    long numEntityPositions;
+    long timelineBlockOffset;
+    long firstEntEventOffset;
+    long firstGeneralEventOffset;
+    long firstEventTrailerOffset;
+    long firstTextEventOffset;
+    long firstFeatEventOffset;
+    long numEvents;
+    long numEntEvents;
+    long numTextEvents;
+    long numFeatEvents;
+    float startTime;
+    float totPlayTime;
+    float  todOffset;
 } ACMITapeHeader;
 #pragma pack (pop, pack1)
 
@@ -154,27 +154,27 @@ typedef struct
 #pragma pack (push, pack1, 1)
 typedef struct
 {
-    long		uniqueID;
-    long		type;
-    long		count;
-    long		flags;
+    long uniqueID;
+    long type;
+    long count;
+    long flags;
 
-#define		ENTITY_FLAG_MISSILE			0x00000001
-#define		ENTITY_FLAG_FEATURE			0x00000002
-#define		ENTITY_FLAG_AIRCRAFT		0x00000004
-#define		ENTITY_FLAG_CHAFF			0x00000008
-#define		ENTITY_FLAG_FLARE			0x00000010
+#define ENTITY_FLAG_MISSILE 0x00000001
+#define ENTITY_FLAG_FEATURE 0x00000002
+#define ENTITY_FLAG_AIRCRAFT 0x00000004
+#define ENTITY_FLAG_CHAFF 0x00000008
+#define ENTITY_FLAG_FLARE 0x00000010
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long		leadIndex;
-    int			slot;
-    int			specialFlags;
+    long leadIndex;
+    int slot;
+    int specialFlags;
 
 
     // Offset from the start of the file to the start of my positional data.
-    long 		firstPositionDataOffset;
-    long 		firstEventDataOffset;
+    long  firstPositionDataOffset;
+    long  firstEventDataOffset;
 
 } ACMIEntityData;
 #pragma pack (pop, pack1)
@@ -195,8 +195,8 @@ enum
 typedef struct
 {
     // Time stamp for the positional data
-    float		time;
-    BYTE		type;
+    float time;
+    BYTE type;
 
     // dereference based on type
     union
@@ -204,35 +204,35 @@ typedef struct
         // Positional data.
         struct posTag
         {
-            float		x;
-            float		y;
-            float		z;
-            float		pitch;
-            float		roll;
-            float		yaw;
-            long	    radarTarget;
+            float x;
+            float y;
+            float z;
+            float pitch;
+            float roll;
+            float yaw;
+            long     radarTarget;
         } posData;
         // switch change
         struct switchTag
         {
-            int			switchNum;
-            int			switchVal;
-            int			prevSwitchVal;
+            int switchNum;
+            int switchVal;
+            int prevSwitchVal;
         } switchData;
         // DOF change
         struct dofTag
         {
-            int			DOFNum;
-            float		DOFVal;
-            float		prevDOFVal;
+            int DOFNum;
+            float DOFVal;
+            float prevDOFVal;
         } dofData;
     };
 
     // Although position data is a fixed size, we still want
     // this so that we can organize the data to be friendly for
     // paging.
-    long		nextPositionUpdateOffset;
-    long		prevPositionUpdateOffset;
+    long nextPositionUpdateOffset;
+    long prevPositionUpdateOffset;
 } ACMIEntityPositionData;
 #pragma pack (pop, pack1)
 
@@ -243,15 +243,15 @@ typedef struct
 
 typedef struct
 {
-    int			type;			// type of object
-    long		uniqueID;		// A unique ID for the object. Many to One correlation to Falcon Entities
-    int			flags;			// side
+    int type; // type of object
+    long uniqueID; // A unique ID for the object. Many to One correlation to Falcon Entities
+    int flags; // side
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long		leadIndex;
-    int			slot;
-    int			specialFlags;
+    long leadIndex;
+    int slot;
+    int specialFlags;
     ACMIEntityPositionData entityPosData;
 } ACMIRawPositionData;
 
@@ -263,21 +263,21 @@ typedef struct
 typedef struct
 {
     // type of event this is
-    BYTE		eventType;
-    long 		index;
+    BYTE eventType;
+    long  index;
 
     // Time stamp for this event.
-    float		time;
-    float		timeEnd;
+    float time;
+    float timeEnd;
 
     // data specific to type of event
-    long		type;
-    long		user;
-    long		flags;
-    float		scale;
-    float		x, y, z;
-    float		dx, dy, dz;
-    float		roll, pitch, yaw;
+    long type;
+    long user;
+    long flags;
+    float scale;
+    float x, y, z;
+    float dx, dy, dz;
+    float roll, pitch, yaw;
 
 } ACMIEventHeader;
 #pragma pack (pop, pack1)
@@ -289,8 +289,8 @@ typedef struct
 #pragma pack (push, pack1, 1)
 typedef struct
 {
-    float		timeEnd;
-    long 		index;		// into EventHeader
+    float timeEnd;
+    long  index; // into EventHeader
 } ACMIEventTrailer;
 #pragma pack (pop, pack1)
 
@@ -302,21 +302,21 @@ typedef struct
 typedef struct
 {
     // Time stamp for this event.
-    float		time;
+    float time;
 
     // index of feature on tape
-    long 		index;
+    long  index;
 
     // data specific to type of event
-    long		newStatus;
-    long		prevStatus;
+    long newStatus;
+    long prevStatus;
 
 } ACMIFeatEvent;
 #pragma pack (pop, pack1)
 
 typedef struct
 {
-    long		uniqueID;
+    long uniqueID;
     ACMIFeatEvent data;
 } ACMIFeatEventImportData;
 
@@ -400,9 +400,9 @@ typedef void (*ACMI_GENERAL_EVENT_CALLBACK)(ACMITape *, EventIdData, void *, voi
 
 typedef struct
 {
-    ACMI_GENERAL_EVENT_CALLBACK		forwardCallback;
-    ACMI_GENERAL_EVENT_CALLBACK		reverseCallback;
-    void									*userData;
+    ACMI_GENERAL_EVENT_CALLBACK forwardCallback;
+    ACMI_GENERAL_EVENT_CALLBACK reverseCallback;
+    void *userData;
 } ACMIGeneralEventCallback;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -412,8 +412,8 @@ typedef struct
 typedef struct
 {
 
-    long			positionDataOffset;
-    long			eventDataOffset;
+    long positionDataOffset;
+    long eventDataOffset;
 } ACMIEntityReadHead;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -562,7 +562,7 @@ public:
 
 
     // list of sim entities from the tape that are manipulated and drawn
-    SimTapeEntity						*_simTapeEntities;
+    SimTapeEntity *_simTapeEntities;
     ACMIEntityData *EntityData(int index);
 
     float GetTodOffset(void)
@@ -635,60 +635,60 @@ private:
     void UpdateTracerEvent(TracerEventData *td, float dT);
 
     // tape header
-    ACMITapeHeader						_tapeHdr;
+    ACMITapeHeader _tapeHdr;
 
-    BOOL								_screenCapturing;
+    BOOL _screenCapturing;
 
     // system info for tape file access
-    HANDLE								_tapeFileHandle;
-    HANDLE								_tapeMapHandle;
+    HANDLE _tapeFileHandle;
+    HANDLE _tapeMapHandle;
 
     // sim time / real time
-    float								_playVelocity;
-    float								_playAcceleration;
-    float								_maxPlaySpeed;
+    float _playVelocity;
+    float _playAcceleration;
+    float _maxPlaySpeed;
 
     // Current sim time
-    float								_simTime;
-    float								_stepTrail;
-    float								_deltaSimTime;
+    float _simTime;
+    float _stepTrail;
+    float _deltaSimTime;
 
     // list of sim entities from the tape that are manipulated and drawn
-    SimTapeEntity						*_simTapeFeatures;
+    SimTapeEntity *_simTapeFeatures;
 
     // viewpoint and renderer objs from acmiview
-    RViewPoint							*_viewPoint;
-    RenderOTW							*_renderer;
+    RViewPoint *_viewPoint;
+    RenderOTW *_renderer;
 
     // Current real time
-    float								_lastRealTime;
+    float _lastRealTime;
 
-    BOOL									_simulateOnly;
-    BOOL									_paused;
-    BOOL									_unpause;
+    BOOL _simulateOnly;
+    BOOL _paused;
+    BOOL _unpause;
 
-    BOOL									_wingTrails;
-    int										_wtMaxLength;
+    BOOL _wingTrails;
+    int _wtMaxLength;
 
     // Base memory address of the file mapping
     // for the tape data.
-    void									*_tape;
-    ACMIEntityReadHead				*_entityReadHeads;
-    long							_generalEventReadHeadHeader;
-    ACMIEventTrailer				*_generalEventReadHeadTrailer;
-    ACMIGeneralEventCallback		_generalEventCallbacks;
-    ACMIFeatEvent					*_featEventReadHead;
+    void *_tape;
+    ACMIEntityReadHead *_entityReadHeads;
+    long _generalEventReadHeadHeader;
+    ACMIEventTrailer *_generalEventReadHeadTrailer;
+    ACMIGeneralEventCallback _generalEventCallbacks;
+    ACMIFeatEvent *_featEventReadHead;
 
     // events
-    ActiveEvent						**_eventList;
-    ActiveEvent						*_activeEventHead;
-    ACMIEventTrailer				*_firstEventTrailer;
-    ACMIEventTrailer				*_lastEventTrailer;
-    ACMIFeatEvent					*_firstFeatEvent;
-    ACMIFeatEvent					*_lastFeatEvent;
+    ActiveEvent **_eventList;
+    ActiveEvent *_activeEventHead;
+    ACMIEventTrailer *_firstEventTrailer;
+    ACMIEventTrailer *_lastEventTrailer;
+    ACMIFeatEvent *_firstFeatEvent;
+    ACMIFeatEvent *_lastFeatEvent;
 
     // for scaling objects
-    float							_tapeObjScale;
+    float _tapeObjScale;
 };
 
 

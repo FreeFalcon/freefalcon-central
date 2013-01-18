@@ -4,7 +4,7 @@
     February 16, 1998
 
     Provides build time services for accumulating and processing
-	the list of parent objects.
+ the list of parent objects.
 \***************************************************************************/
 #ifndef _PARENTBUILDLIST_H_
 #define _PARENTBUILDLIST_H_
@@ -12,18 +12,18 @@
 #include "ObjectParent.h"
 #include "LODBuildList.h"
 
-extern class BuildTimeParentList	TheParentBuildList;
+extern class BuildTimeParentList TheParentBuildList;
 
 
 typedef struct BuildTimeParentEntry
 {
-    int					id;
-    char				filename[100];
-    BuildTimeLODEntry	**pBuildLODs;
-    int					nBuildLODs;
+    int id;
+    char filename[100];
+    BuildTimeLODEntry **pBuildLODs;
+    int nBuildLODs;
     int bflags;
-    struct BuildTimeParentEntry	*prev;
-    struct BuildTimeParentEntry	*next;
+    struct BuildTimeParentEntry *prev;
+    struct BuildTimeParentEntry *next;
 } BuildTimeParentEntry;
 
 
@@ -37,20 +37,20 @@ public:
         head = tail = NULL;
         startpoint = 0;
     };
-    ~BuildTimeParentList()	{};
+    ~BuildTimeParentList() {};
 
-    void	AddItem(int id, char *filename);
-    BOOL	BuildParentTable();
-    void	WriteVersion(int file);
-    void	WriteParentTable(int file);
-    void	ReleasePhantomReferences(void);
-    void	SetStartPoint(int n)
+    void AddItem(int id, char *filename);
+    BOOL BuildParentTable();
+    void WriteVersion(int file);
+    void WriteParentTable(int file);
+    void ReleasePhantomReferences(void);
+    void SetStartPoint(int n)
     {
         startpoint = n;
     };
 protected:
-    BuildTimeParentEntry	*head;
-    BuildTimeParentEntry	*tail;
+    BuildTimeParentEntry *head;
+    BuildTimeParentEntry *tail;
     int startpoint;
 };
 

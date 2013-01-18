@@ -33,7 +33,7 @@
 #include "playerop.h"
 #include "weather.h"
 #include "ffeedbk.h"
-#include "dofsnswitches.h"	//MI
+#include "dofsnswitches.h" //MI
 #include "IvibeData.h"
 #include "ACTurbulence.h"
 
@@ -47,7 +47,7 @@ extern float g_fCarrierStartTolerance; // JB carrier
 extern bool g_bWakeTurbulence;
 
 
-extern bool g_bNewDamageEffects;	//MI
+extern bool g_bNewDamageEffects; //MI
 
 void CalcTransformMatrix(SimBaseClass* theObject);
 void DecomposeMatrix(Trotation* matrix, float* pitch, float* roll, float* yaw);
@@ -115,7 +115,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
     float cosAta = 1.0F, sinAta = 0.0F;
     int octant = 0;
     long failuresPossible = 0;
-    int	failures = 0;
+    int failures = 0;
     int startStrength = 0, damageDone = 0;
     SimBaseClass *object = NULL;
     float dx = 0.0F;
@@ -132,15 +132,15 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
     if (object)
     {
-        dx		= object->XPos() - XPos();
-        dy		= object->YPos() - YPos();
-        dz		= object->ZPos() - ZPos();
-        range	= (float)(dx * dx + dy * dy + dz * dz);
+        dx = object->XPos() - XPos();
+        dy = object->YPos() - YPos();
+        dz = object->ZPos() - ZPos();
+        range = (float)(dx * dx + dy * dy + dz * dz);
 
         // Find relative position
-        rx		= dmx[0][0] * dx + dmx[0][1] * dy + dmx[0][2] * dz;
-        ry		= dmx[1][0] * dx + dmx[1][1] * dy + dmx[1][2] * dz;
-        rz		= dmx[2][0] * dx + dmx[2][1] * dy + dmx[2][2] * dz;
+        rx = dmx[0][0] * dx + dmx[0][1] * dy + dmx[0][2] * dz;
+        ry = dmx[1][0] * dx + dmx[1][1] * dy + dmx[1][2] * dz;
+        rz = dmx[2][0] * dx + dmx[2][1] * dy + dmx[2][2] * dz;
 
         // Find the octant
         octant = 0;
@@ -338,10 +338,10 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 if (g_bRealisticAvionics && g_bNewDamageEffects)
                 {
                     //random canopy damage
-                    if (rand() % 100 < 10)	//low chance
+                    if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT))	//25% we're taking damage
+                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -388,10 +388,10 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 //MI add LEF damage
                 if (g_bRealisticAvionics && g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 10)	//low chance
+                    if (rand() % 100 < 10) //low chance
                         CanopyDamaged = TRUE;
 
-                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT))	//25% we're taking damage
+                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -433,7 +433,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 //MI add LEF damage
                 if (g_bRealisticAvionics && g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT))	//25% we're taking damage
+                    if (rand() % 100 < 25 && !LEFState(LT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(LT_LEF_DAMAGED))
                         {
@@ -476,7 +476,7 @@ void AircraftClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 //MI add LEF damage
                 if (g_bRealisticAvionics && g_bNewDamageEffects)
                 {
-                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT))	//25% we're taking damage
+                    if (rand() % 100 < 25 && !LEFState(RT_LEF_OUT)) //25% we're taking damage
                     {
                         if (LEFState(RT_LEF_DAMAGED))
                         {
@@ -600,48 +600,48 @@ void AircraftClass::CleanupVortex()
 }
 
 //////////////////////////////////////
-#define	DAMAGEF16_NOSE_SLOTINDEX	0
-#define	DAMAGEF16_FRONT_SLOTINDEX	1
-#define	DAMAGEF16_BACK_SLOTINDEX	2
-#define	DAMAGEF16_RWING_SLOTINDEX	3
-#define	DAMAGEF16_LWING_SLOTINDEX	4
-#define	DAMAGEF16_LSTAB_SLOTINDEX	5
-#define	DAMAGEF16_RSTAB_SLOTINDEX	6
+#define DAMAGEF16_NOSE_SLOTINDEX 0
+#define DAMAGEF16_FRONT_SLOTINDEX 1
+#define DAMAGEF16_BACK_SLOTINDEX 2
+#define DAMAGEF16_RWING_SLOTINDEX 3
+#define DAMAGEF16_LWING_SLOTINDEX 4
+#define DAMAGEF16_LSTAB_SLOTINDEX 5
+#define DAMAGEF16_RSTAB_SLOTINDEX 6
 
-#define DAMAGEF16_RWING				0x01
-#define DAMAGEF16_LWING				0x02
-#define DAMAGEF16_LSTAB				0x04
-#define DAMAGEF16_RSTAB				0x08
-#define DAMAGEF16_BACK				0x10
-#define DAMAGEF16_FRONT				0x20
-#define DAMAGEF16_NOSE				0x40
-#define DAMAGEF16_ALL				0x7f
+#define DAMAGEF16_RWING 0x01
+#define DAMAGEF16_LWING 0x02
+#define DAMAGEF16_LSTAB 0x04
+#define DAMAGEF16_RSTAB 0x08
+#define DAMAGEF16_BACK 0x10
+#define DAMAGEF16_FRONT 0x20
+#define DAMAGEF16_NOSE 0x40
+#define DAMAGEF16_ALL 0x7f
 
-#define DAMAGEF16_NOLEFT			0x79
-#define DAMAGEF16_NOLEFTANDNOSE		0x39
+#define DAMAGEF16_NOLEFT 0x79
+#define DAMAGEF16_NOLEFTANDNOSE 0x39
 
-#define DAMAGEF16_NORIGHT			0x76
-#define DAMAGEF16_NORIGHTANDNOSE	0x36
+#define DAMAGEF16_NORIGHT 0x76
+#define DAMAGEF16_NORIGHTANDNOSE 0x36
 
-#define DAMAGEF16_ONLYBODY			0x70
-#define DAMAGEF16_NONOSE			0x3f
-#define DAMAGEF16_BACKWITHWING		0x1f
+#define DAMAGEF16_ONLYBODY 0x70
+#define DAMAGEF16_NONOSE 0x3f
+#define DAMAGEF16_BACKWITHWING 0x1f
 
-#define DAMAGEF16_BACKWITHRIGHT		0x19
-#define DAMAGEF16_BACKWITHLEFT		0x16
+#define DAMAGEF16_BACKWITHRIGHT 0x19
+#define DAMAGEF16_BACKWITHLEFT 0x16
 
-#define	DAMAGEF16_TOLEFT			1
-#define	DAMAGEF16_TORIGHT			2
-#define	DAMAGEF16_TOLEFTRIGHT		3
-#define	DAMAGEF16_TOFRONT			4
+#define DAMAGEF16_TOLEFT 1
+#define DAMAGEF16_TORIGHT 2
+#define DAMAGEF16_TOLEFTRIGHT 3
+#define DAMAGEF16_TOFRONT 4
 
-#define	DAMAGEF16_ID					VIS_CF16A
-#define	DAMAGEF16_SWITCH				0
-#define	DAMAGEF16_NOSEBREAK_SWITCH		1
-#define	DAMAGEF16_FRONTBREAK_SWITCH		2
-#define	DAMAGEF16_LWINGBREAK_SWITCH		3
-#define	DAMAGEF16_RWINGBREAK_SWITCH		4
-#define	DAMAGEF16_CANOPYBREAK_SWITCH	5
+#define DAMAGEF16_ID VIS_CF16A
+#define DAMAGEF16_SWITCH 0
+#define DAMAGEF16_NOSEBREAK_SWITCH 1
+#define DAMAGEF16_FRONTBREAK_SWITCH 2
+#define DAMAGEF16_LWINGBREAK_SWITCH 3
+#define DAMAGEF16_RWINGBREAK_SWITCH 4
+#define DAMAGEF16_CANOPYBREAK_SWITCH 5
 
 int AircraftClass::SetDamageF16PieceType(DamageF16PieceStructure *piece, int type, int flag, int mask, float speed)
 {
@@ -941,17 +941,17 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     float range = 5.0f * DTR;
     float range1 = 15.0f * DTR;
     float range2 = 50.0f * DTR;
-    int	damagetype = 0;
+    int damagetype = 0;
 
     if (r > range)
     {
-        damagetype |= 0x2;		// right
+        damagetype |= 0x2; // right
 
         if (r > range2) damagetype |= 0x10;
     }
     else if (r < -range)
     {
-        damagetype |= 0x1;		// left
+        damagetype |= 0x1; // left
 
         if (r < -range2) damagetype |= 0x10;
     }
@@ -975,12 +975,12 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
     }
 
     int dirflag = DAMAGEF16_TOFRONT;
-    int	numpiece = 0;
+    int numpiece = 0;
 
     if (damagetype & 0x10)
     {
         // full damage
-        if (damagetype & 0xc)  			// damage to the front
+        if (damagetype & 0xc)   // damage to the front
         {
             dirflag = DAMAGEF16_TOFRONT;
             numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -1015,7 +1015,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             // damage to the left
             dirflag = DAMAGEF16_TOLEFT;
 
-            if (damagetype & 0x4)  			// damage to the nose
+            if (damagetype & 0x4)   // damage to the nose
             {
                 dirflag |= DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -1024,7 +1024,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NOLEFTANDNOSE, dirflag, *mask, speed);
                 *mask &= DAMAGEF16_NOLEFTANDNOSE;
             }
-            else if (damagetype & 0x8)  	// damage to the front
+            else if (damagetype & 0x8)   // damage to the front
             {
                 dirflag |= DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_LWING, dirflag, *mask, speed);
@@ -1047,7 +1047,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
             // damage to the right
             dirflag = DAMAGEF16_TORIGHT;
 
-            if (damagetype & 0x4)  			// damage to the nose
+            if (damagetype & 0x4)   // damage to the nose
             {
                 dirflag |= DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
@@ -1056,7 +1056,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_NORIGHTANDNOSE, dirflag, *mask, speed);
                 *mask &= DAMAGEF16_NORIGHTANDNOSE;
             }
-            else if (damagetype & 0x8)  	// damage to the front
+            else if (damagetype & 0x8)   // damage to the front
             {
                 dirflag |= DAMAGEF16_TOFRONT;
                 numpiece += SetDamageF16PieceType(&(piece[numpiece]), DAMAGEF16_RWING, dirflag, *mask, speed);
@@ -1093,7 +1093,7 @@ int AircraftClass::CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mas
         }
     }
 
-    if (!numpiece)  	// if no damage, randomized damage parts
+    if (!numpiece)   // if no damage, randomized damage parts
     {
         int i = DAMAGEF16_BACK;
 
@@ -1176,7 +1176,7 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
                 ptr -> SetSwitchMask(DAMAGEF16_NOSEBREAK_SWITCH, 1);
             }
 
-            //			ptr -> SetSwitchMask(DAMAGEF16_CANOPYBREAK_SWITCH, 1);
+            // ptr -> SetSwitchMask(DAMAGEF16_CANOPYBREAK_SWITCH, 1);
         }
         else
         {
@@ -1201,7 +1201,7 @@ void AircraftClass::SetupDamageF16Effects(DamageF16PieceStructure *piece)
         }
 
         ptr -> SetSwitchMask(DAMAGEF16_FRONTBREAK_SWITCH, 1);
-        //		ptr -> SetSwitchMask(DAMAGEF16_CANOPYBREAK_SWITCH, 1);
+        // ptr -> SetSwitchMask(DAMAGEF16_CANOPYBREAK_SWITCH, 1);
     }
     else if (piece -> mask & DAMAGEF16_NOSE)
     {
@@ -1231,10 +1231,10 @@ int AircraftClass::CreateDamageF16Effects()
 
     float groundZ = OTWDriver.GetApproxGroundLevel(XPos(), YPos());
 
-    if (ZPos() - groundZ  < -500.0f) return 0;	// not ground explosion
+    if (ZPos() - groundZ  < -500.0f) return 0; // not ground explosion
 
     DamageF16PieceStructure piece[7];
-    int	i = DAMAGEF16_ALL;
+    int i = DAMAGEF16_ALL;
     int numpiece = CreateDamageF16Piece(piece, &i);
 
     if (!numpiece) return 0;
@@ -1250,12 +1250,12 @@ int AircraftClass::CreateDamageF16Effects()
 
 void AircraftClass::RunExplosion(void)
 {
-    int				i;
-    Tpoint			pos;
-    SimBaseClass	*tmpSimBase;
+    int i;
+    Tpoint pos;
+    SimBaseClass *tmpSimBase;
     Falcon4EntityClassType *classPtr;
-    Tpoint			tpo = Origin;
-    Trotation		tpim = IMatrix;
+    Tpoint tpo = Origin;
+    Trotation tpim = IMatrix;
 
     //RV - I-Hawk - Added a 0 vector for RV new PS calls
     Tpoint PSvec;
@@ -1289,11 +1289,11 @@ void AircraftClass::RunExplosion(void)
         SetDelta(XDelta() * 0.1f, YDelta() * 0.1f, -50.0f);
         /*
         OTWDriver.AddSfxRequest(
-        	new SfxClass (SFX_GROUND_EXPLOSION,				// type
-        	&pos,							// world pos
-        	1.2f,							// time to live
-        	100.0f ) );		// scale
-        	*/
+         new SfxClass (SFX_GROUND_EXPLOSION, // type
+         &pos, // world pos
+         1.2f, // time to live
+         100.0f ) ); // scale
+         */
 
         DrawableParticleSys::PS_AddParticleEx(
             (SFX_GROUND_EXPLOSION + 1), &pos, &PSvec
@@ -1306,11 +1306,11 @@ void AircraftClass::RunExplosion(void)
 
         /*
         OTWDriver.AddSfxRequest(
-        	new SfxClass (SFX_AC_AIR_EXPLOSION,				// type
-        	&pos,							// world pos
-        	2.0f,							// time to live
-        	200.0f + 200 * PRANDFloatPos() ) );		// scale
-        	*/
+         new SfxClass (SFX_AC_AIR_EXPLOSION, // type
+         &pos, // world pos
+         2.0f, // time to live
+         200.0f + 200 * PRANDFloatPos() ) ); // scale
+         */
 
         DrawableParticleSys::PS_AddParticleEx(
             (SFX_AC_AIR_EXPLOSION + 1), &pos, &vec
@@ -1356,12 +1356,12 @@ void AircraftClass::RunExplosion(void)
             tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
             /*
             OTWDriver.AddSfxRequest(
-            new SfxClass (SFX_FLAMING_PART,				// type
-            	SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
-            	tmpSimBase,								// sim base *
-            	3.0f + PRANDFloatPos() * 4.0F,			// time to live
-            	1.0F ) );								// scale
-            	*/
+            new SfxClass (SFX_FLAMING_PART, // type
+             SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
+             tmpSimBase, // sim base *
+             3.0f + PRANDFloatPos() * 4.0F, // time to live
+             1.0F ) ); // scale
+             */
             pos.x = XPos();
             pos.y = YPos();
             pos.z = ZPos();
@@ -1376,12 +1376,12 @@ void AircraftClass::RunExplosion(void)
                                     PRANDFloat() * 30.0F * DTR);
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_SMOKING_PART,			// type
-            	SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
-            	tmpSimBase,								// sim base *
-            	4.0f * PRANDFloatPos() + (float)((i+1)*(i+1)),	// time to live
-            	1.0 ) );								// scale
-            	*/
+             new SfxClass (SFX_SMOKING_PART, // type
+             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
+             tmpSimBase, // sim base *
+             4.0f * PRANDFloatPos() + (float)((i+1)*(i+1)), // time to live
+             1.0 ) ); // scale
+             */
             pos.x = XPos();
             pos.y = YPos();
             pos.z = ZPos();
@@ -1391,7 +1391,7 @@ void AircraftClass::RunExplosion(void)
     }
 }
 
-void	AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
+void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
 {
     // 2002-02-16 ADDED BY S.G. It's been seen that drawPointer is NULL here and &((DrawableBSP*)drawPointer)->orientation is simply drawPointer+0x2C hence why orientation is never NULL
     if (!drawPointer)
@@ -1658,8 +1658,8 @@ void AircraftClass::CancelEngineTrails(DWORD *tlist, DWORD *tlist_trail)
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
             new SfxClass (
-            21.2f,							// time to live
-            tlist[i]) );		// scale
+            21.2f, // time to live
+            tlist[i]) ); // scale
             */
             DrawableParticleSys::PS_KillTrail(tlist_trail[i]);
             tlist[i] = tlist_trail[i] = NULL;
@@ -1781,8 +1781,8 @@ void AircraftClass::ShowDamage(void)
                 /* RV - I-Hawk - RV new trails call changes
                 OTWDriver.AddSfxRequest(
                 new SfxClass (
-                15.2f,							// time to live
-                smokeTrail[i]) );		// scale
+                15.2f, // time to live
+                smokeTrail[i]) ); // scale
                 */
                 DrawableParticleSys::PS_KillTrail(smokeTrail_trail[i]);
                 smokeTrail[i] = smokeTrail_trail[i] = NULL;
@@ -1805,13 +1805,13 @@ void AircraftClass::ShowDamage(void)
 
             /*
             OTWDriver.AddSfxRequest(
-            		new SfxClass (SFX_TRAILSMOKE,			// type
-            		SFX_MOVES | SFX_NO_GROUND_CHECK,						// flags
-            		&pos,							// world pos
-            		&rearOffset,							// vector
-            		3.5f,							// time to live
-            		4.5f ));		// scale
-            		*/
+             new SfxClass (SFX_TRAILSMOKE, // type
+             SFX_MOVES | SFX_NO_GROUND_CHECK, // flags
+             &pos, // world pos
+             &rearOffset, // vector
+             3.5f, // time to live
+             4.5f )); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
                                                   &pos,
                                                   &rearOffset);
@@ -1893,12 +1893,12 @@ void AircraftClass::ShowDamage(void)
         }
 
         //RV - I-Hawk - do wingtip vortex trails based on G & AOA or based on AOA only if above certain value...
-        if ((OTWDriver.renderer				&&
+        if ((OTWDriver.renderer &&
              /*OTWDriver.renderer->GetAlphaMode() &&*/
-             -ZPos() > minwingvortexalt		&&
-             -ZPos() < maxwingvortexalt)		&&
+             -ZPos() > minwingvortexalt &&
+             -ZPos() < maxwingvortexalt) &&
 
-            ((currentAOA > wingvortexAlpha	&& currentG > wingvortexgs) ||
+            ((currentAOA > wingvortexAlpha && currentG > wingvortexgs) ||
              (currentAOA > wingvortexAlphaHigh && currentAOA < wingvortexAlphaLimit &&
               currentVCAS > vortexMinSpeedLimit)))
         {
@@ -2507,9 +2507,9 @@ void AircraftClass::ShowDamage(void)
 
                 /* RV - I-Hawk - RV new trails call changes
                    OTWDriver.AddSfxRequest(
-                	   new SfxClass (
-                	   21.2f,			// time to live
-                	   lwingvortex) );		// scale*/
+                    new SfxClass (
+                    21.2f, // time to live
+                    lwingvortex) ); // scale*/
 
                 DrawableParticleSys::PS_KillTrail(lwingvortex_trail);
                 lwingvortex = lwingvortex_trail = NULL;
@@ -2519,10 +2519,10 @@ void AircraftClass::ShowDamage(void)
             if (rwingvortex)
             {
                 /*
-                	   OTWDriver.AddSfxRequest(
-                		   new SfxClass (
-                		   21.2f,			// time to live
-                		   rwingvortex) );		// scale
+                    OTWDriver.AddSfxRequest(
+                    new SfxClass (
+                    21.2f, // time to live
+                    rwingvortex) ); // scale
                    */
                 DrawableParticleSys::PS_KillTrail(rwingvortex_trail);
                 rwingvortex = rwingvortex_trail = NULL;
@@ -2563,8 +2563,8 @@ void AircraftClass::ShowDamage(void)
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
             new SfxClass (
-            11.2f,							// time to live
-            smokeTrail[TRAIL_DAMAGE]) );		// scale
+            11.2f, // time to live
+            smokeTrail[TRAIL_DAMAGE]) ); // scale
             */
             DrawableParticleSys::PS_KillTrail(smokeTrail_trail[TRAIL_DAMAGE]);
             smokeTrail[TRAIL_DAMAGE] = smokeTrail_trail[TRAIL_DAMAGE] = NULL;
@@ -2659,7 +2659,7 @@ void AircraftClass::ShowDamage(void)
     if (!smokeTrail[TRAIL_DAMAGE])
     {
 
-        //smokeTrail[TRAIL_DAMAGE] = new DrawableTrail(TRAIL_SMOKE);	// smoke
+        //smokeTrail[TRAIL_DAMAGE] = new DrawableTrail(TRAIL_SMOKE); // smoke
         //OTWDriver.InsertObject(smokeTrail[TRAIL_DAMAGE]);
         //
         //Set smaller/larger damage trail based on the number of engines...
@@ -2749,7 +2749,7 @@ void AircraftClass::ShowDamage(void)
                 if (!smokeTrail[TRAIL_ENGINE1])
                 {
 
-                    //smokeTrail[TRAIL_ENGINE1] = new DrawableTrail(TRAIL_SMOKE);	// smoke
+                    //smokeTrail[TRAIL_ENGINE1] = new DrawableTrail(TRAIL_SMOKE); // smoke
                     //OTWDriver.InsertObject(smokeTrail[TRAIL_ENGINE1]);
 
                     //If we are here, it's a big bird, so use bigger dmage trail
@@ -2791,8 +2791,8 @@ void AircraftClass::ShowDamage(void)
         ////RV - I-Hawk - RV new trails call changes
         //if (!smokeTrail[TRAIL_ENGINE2])
         //{
-        ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_SMOKE);	// smoke
-        ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_BURNING_SMOKE);	// smoke
+        ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_SMOKE); // smoke
+        ////smokeTrail[TRAIL_ENGINE2] = new DrawableTrail(TRAIL_BURNING_SMOKE); // smoke
         ////OTWDriver.InsertObject(smokeTrail[TRAIL_ENGINE2]);
         //smokeTrail[TRAIL_ENGINE2] = TRAIL_BURNING_SMOKE;
         //}
@@ -2817,10 +2817,10 @@ void AircraftClass::ShowDamage(void)
         //{
         //sfxTimer = 0.0f;
         //OTWDriver.AddSfxRequest(
-        //	new SfxClass (SFX_TRAILSMOKE,				// type
-        //	&pos,							// world pos
-        //	2.5f,							// time to live
-        //	2.0f ) );		// scale
+        // new SfxClass (SFX_TRAILSMOKE, // type
+        // &pos, // world pos
+        // 2.5f, // time to live
+        // 2.0f ) ); // scale
         //}
         //
     }
@@ -2846,10 +2846,10 @@ void AircraftClass::CleanupDamage()
 
             /* RV - I-Hawk - RV new trails call changes
             OTWDriver.AddSfxRequest(
-            	new SfxClass (
-            	11.2f,							// time to live
-            	smokeTrail[i]) );		// scale
-            	*/
+             new SfxClass (
+             11.2f, // time to live
+             smokeTrail[i]) ); // scale
+             */
             DrawableParticleSys::PS_KillTrail(smokeTrail_trail[i]);
             smokeTrail[i] = smokeTrail_trail[i] = NULL;
         }
@@ -2862,13 +2862,13 @@ void AircraftClass::CleanupDamage()
 /*
 ** Name: CheckObjectCollision
 ** Description:
-**		Crawls thru the target list for the aircraft.  Checks the range
-**		to the target and compares it with the radii of both objects as well
-**		as the rangedot.  if rangedot is moving closer and range is less
-**		than the sum of the 2 radii, damage messages are sent to both.
+** Crawls thru the target list for the aircraft.  Checks the range
+** to the target and compares it with the radii of both objects as well
+** as the rangedot.  if rangedot is moving closer and range is less
+** than the sum of the 2 radii, damage messages are sent to both.
 **
-**		A caveat, since we're using targetList, is that non-ownships only
-**		detect collisions with the enemy.
+** A caveat, since we're using targetList, is that non-ownships only
+** detect collisions with the enemy.
 */
 // VP_changes
 //This is a problem that should be fixed, since we're using targetList, is that non-ownships only
@@ -2885,15 +2885,15 @@ void AircraftClass::CheckObjectCollision(void)
 
     // no detection on ground when not moving
     //if (!af->IsSet(AirframeClass::OnObject) && // JB carrier
-    //	OnGround() && af->vt == 0.0f )
+    // OnGround() && af->vt == 0.0f )
     //{
-    //	return;
+    // return;
     //}
     //
     //if (!af->IsSet(AirframeClass::OnObject) && // JB carrier
-    //	OnGround() && af->vcas <= 50.0f  && gCommsMgr && gCommsMgr->Online()) // JB 010107
+    // OnGround() && af->vcas <= 50.0f  && gCommsMgr && gCommsMgr->Online()) // JB 010107
     //{
-    //	return; // JB 010107
+    // return; // JB 010107
     //} //Cobra Test removal
 
     // loop thru all targets
@@ -2937,7 +2937,7 @@ void AircraftClass::CheckObjectCollision(void)
             if (IsSetFlag(I_AM_A_TANKER) || theObject->IsSetFlag(I_AM_A_TANKER))
             {
                 //if ( objData->range >  0.1f * theObject->GetGfx()->Radius()){// + GetGfx()->Radius() ) // PJW
-                //	continue;
+                // continue;
                 //}
                 if (objData->range > 0.2F * theObject->drawPointer->Radius() + theObject->drawPointer->Radius())
                 {
@@ -3030,7 +3030,7 @@ void AircraftClass::CheckObjectCollision(void)
 
             // JB 010731 Hack for unfixed hitboxes.
             //if (minB.z < -193.0f && minB.z > -194.0f)
-            //	minB.z = -72.0f;
+            // minB.z = -72.0f;
 
             // RV - Biker - Try to get the values from slot data
             Tpoint startPos;
@@ -3499,7 +3499,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
 {
     int i;
 
-    //	failures = numToBreak * (float)rand() / (float)RAND_MAX;
+    // failures = numToBreak * (float)rand() / (float)RAND_MAX;
 
     for (i = 0; i < failures; i++)
     {
@@ -3609,7 +3609,7 @@ void AircraftClass::AddFault(int failures, unsigned int failuresPossible, int, i
                 mFaults->SetFault((FaultClass::type_FSubSystem)failedThings[failedThing],
                                   (FaultClass::type_FFunction)(1 << numFunctions),
                                   (FaultClass::type_FSeverity) FaultClass::fail,
-                                  !isDigital);	// none, fail for now
+                                  !isDigital); // none, fail for now
 
                 if (failedThings[failedThing] == FaultClass::eng_fault &&
                     (1 << numFunctions) == hydr)
@@ -3668,9 +3668,9 @@ void AircraftClass::SetColorContrail(int color)
 }
 float Get3DDistance(Tpoint &a, Tpoint &b)
 {
-    float	dx = a.x - b.x;
-    float	dy = a.y - b.y;
-    float	dz = a.z - b.z;
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    float dz = a.z - b.z;
 
     return sqrtf(dx * dx + dy * dy + dz * dz);
 }

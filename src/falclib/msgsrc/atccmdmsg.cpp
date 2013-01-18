@@ -21,12 +21,12 @@
 #include "InvalidBufferException.h"
 
 
-#if 0	// Retro 15Jan2004
+#if 0 // Retro 15Jan2004
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
 #define DIRECTINPUT_VERSION 0x0700
 #include "dinput.h"
 #else
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
 #define DIRECTINPUT_VERSION 0x0700
 #else
 #define DIRECTINPUT_VERSION 0x0800
@@ -70,9 +70,9 @@ int FalconATCCmdMessage::Process(uchar autodisp)
     float
     finalX = 0.0F, finalY = 0.0F, baseX = 0.0F, baseY = 0.0F,
     x = 0.0F , y = 0.0F, z = 0.0F, dx = 0.0F, dy = 0.0F, distD = 0.0F, distA = 0.0F;
-    GridIndex	X = 0, Y = 0;
-    int	taxiPoint = 0, value = 0, rwIndex = 0;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    GridIndex X = 0, Y = 0;
+    int taxiPoint = 0, value = 0, rwIndex = 0;
+    FalconRadioChatterMessage *radioMessage = NULL;
     AtcStatusEnum status;
 
     //WayPointClass* curWaypoint;
@@ -100,7 +100,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
     if (aircraft && atc && aircraft->IsAirplane() && atc->IsObjective())
     {
         DigitalBrain *acBrain = aircraft->DBrain();
-        ATCBrain*	atcBrain = atc->brain;
+        ATCBrain* atcBrain = atc->brain;
 
         //curWaypoint = aircraft->curWaypoint;
 
@@ -451,7 +451,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                     acBrain->CalculateTaxiSpeed(10.0F);
                     acBrain->SetWaitTimer(acBrain->CalcWaitTime(atcBrain));
                     //CalcTaxiTime not working yet, it broke AI taxi
-                    //				acBrain->SetWaitTimer(acBrain->CalcTaxiTime(atcBrain));	//RAS - 11Oct04 - calc new taxi time
+                    // acBrain->SetWaitTimer(acBrain->CalcTaxiTime(atcBrain)); //RAS - 11Oct04 - calc new taxi time
                     break;
 
                 case Wait:
@@ -586,7 +586,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                         {
                             if (divertBase->GetType() == TYPE_AIRBASE)
                             {
-                                int	channel;
+                                int channel;
                                 TacanList::StationSet station;
                                 TacanList::Domain domain;
                                 int range, ttype;
@@ -618,9 +618,9 @@ int FalconATCCmdMessage::Process(uchar autodisp)
                                 radioMessage->dataBlock.edata[5] = (short)rangediv/*SimToGrid(divertBase->XPos())*/;
                                 gTacanList->GetChannelFromVUID(divertBase->Id(), &channel, &station, &domain, &range, &ttype, &ilsfreq);
 
-                                radioMessage->dataBlock.edata[6] = (short)(channel - g_nMinTacanChannel);	//right now Joe has this using the eBearing eval
+                                radioMessage->dataBlock.edata[6] = (short)(channel - g_nMinTacanChannel); //right now Joe has this using the eBearing eval
                                 //but this will be replaced by a channel eval
-                                radioMessage->dataBlock.edata[7] = (short)(station + 23);	//this uses the eAlfabet eval and stations are
+                                radioMessage->dataBlock.edata[7] = (short)(station + 23); //this uses the eAlfabet eval and stations are
                                 //either X or Y
                             }
                             else

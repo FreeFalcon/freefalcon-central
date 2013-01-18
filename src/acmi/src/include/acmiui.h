@@ -7,10 +7,10 @@
 // in seconds
 // MB
 // test comment
-#define ACMI_TRAILS_SHORT	15
-#define ACMI_TRAILS_MEDIUM	30
-#define ACMI_TRAILS_LONG	60
-#define ACMI_TRAILS_MAX		120
+#define ACMI_TRAILS_SHORT 15
+#define ACMI_TRAILS_MEDIUM 30
+#define ACMI_TRAILS_LONG 60
+#define ACMI_TRAILS_MAX 120
 
 
 void LoadACMIWindows();

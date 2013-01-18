@@ -13,18 +13,18 @@
 // #defines and forward declarations
 // =======================================
 
-#define MAX_STACK					10			// levels of #IF statements we can handle
-#define MAX_STRLEN_PER_TOKEN		256			// maximum string length of each token
-#define MAX_STRLEN_PER_PARAGRAPH	1024		// maximum size of default string buffer
+#define MAX_STACK 10 // levels of #IF statements we can handle
+#define MAX_STRLEN_PER_TOKEN 256 // maximum string length of each token
+#define MAX_STRLEN_PER_PARAGRAPH 1024 // maximum size of default string buffer
 
-#define GBD_PLAYER_ELEMENT			1
-#define GBD_PLAYER_TASK				2
-#define GBD_PACKAGE_LABEL			3
-#define GBD_PACKAGE_MISSION			4
-#define GBD_PACKAGE_ELEMENT_NAME	5
-#define GBD_PACKAGE_ELEMENT_TASK	6
-#define GBD_PACKAGE_STPTHDR	7
-#define GBD_PACKAGE_STPT	8
+#define GBD_PLAYER_ELEMENT 1
+#define GBD_PLAYER_TASK 2
+#define GBD_PACKAGE_LABEL 3
+#define GBD_PACKAGE_MISSION 4
+#define GBD_PACKAGE_ELEMENT_NAME 5
+#define GBD_PACKAGE_ELEMENT_TASK 6
+#define GBD_PACKAGE_STPTHDR 7
+#define GBD_PACKAGE_STPT 8
 
 
 class C_Window;
@@ -48,13 +48,13 @@ extern void BuildCampDebrief(_TCHAR *brief_string);
 extern int GetBriefingData(int query, int data, _TCHAR *buffer, int len = 128);
 
 // These add strings to a buffer
-extern void AddStringToBuffer(_TCHAR *string, _TCHAR *buffer);				// _tcscat();
+extern void AddStringToBuffer(_TCHAR *string, _TCHAR *buffer); // _tcscat();
 
 extern void AddIndexedStringToBuffer(int sid, _TCHAR *buffer);
 
-extern void AddNumberToBuffer(int num, _TCHAR *buffer);					// _tsprinf("%d",x);
+extern void AddNumberToBuffer(int num, _TCHAR *buffer); // _tsprinf("%d",x);
 
-extern void AddNumberToBuffer(float num, int decimals, _TCHAR *buffer);	// _tsprinf("%.df",x);
+extern void AddNumberToBuffer(float num, int decimals, _TCHAR *buffer); // _tsprinf("%.df",x);
 
 extern void AddTimeToBuffer(CampaignTime time, _TCHAR *buffer, int seconds = TRUE);
 

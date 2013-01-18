@@ -1080,8 +1080,8 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     UI95_RECT clip, tmp;
     BUTTONLIST *btn;
 
-    memset(&clip, 0, sizeof(clip));	// OW BC
-    memset(&tmp, 0, sizeof(tmp));	// OW BC
+    memset(&clip, 0, sizeof(clip)); // OW BC
+    memset(&tmp, 0, sizeof(tmp)); // OW BC
 
     if (UseHotSpot_)
     {
@@ -1257,7 +1257,7 @@ BOOL C_Button::Process(long ID, short HitType)
     BUTTONLIST *btn;
     short startstate;
     //if (state_<0)
-    //	state_=1;
+    // state_=1;
 
     startstate = state_;
 
@@ -1306,7 +1306,7 @@ BOOL C_Button::Process(long ID, short HitType)
     }
 
     //if(state_ < 0)
-    //	return(TRUE);
+    // return(TRUE);
 
     if (startstate != state_)
     {
@@ -1532,7 +1532,7 @@ void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
             break;
 
         case CBTN_SETBUTTONCOLOR:
-            SetColor((short)P[0], (P[1] | (P[2] << 8) | (P[3] << 16)));	//!
+            SetColor((short)P[0], (P[1] | (P[2] << 8) | (P[3] << 16))); //!
             break;
 
         case CBTN_TEXTFLAGON:

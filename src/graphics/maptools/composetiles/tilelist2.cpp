@@ -1,9 +1,9 @@
 /*******************************************************************************\
-	Composite texture tile manager class -- Used by the ComposeTilesMore tool.
+ Composite texture tile manager class -- Used by the ComposeTilesMore tool.
 
-	Scott Randolph
-	Spectrum HoloByte
-	July 1, 1997
+ Scott Randolph
+ Spectrum HoloByte
+ July 1, 1997
 \*******************************************************************************/
 #include <stdio.h>
 #include <io.h>
@@ -17,12 +17,12 @@
 // Read in all the previous LOD images and catalog them
 void TileListManager::Setup(char *path)
 {
-    char			filename[256];
-    int				listFile;
-    int				ret;
-    TileListEntry	*newTile;
-    BYTE			imageData[32 * 32];
-    int				r, c;
+    char filename[256];
+    int listFile;
+    int ret;
+    TileListEntry *newTile;
+    BYTE imageData[32 * 32];
+    int r, c;
 
 
     // Note that we don't yet have the shared palette loaded
@@ -76,7 +76,7 @@ void TileListManager::Setup(char *path)
 
 void TileListManager::Cleanup(void)
 {
-    TileListEntry	*p;
+    TileListEntry *p;
 
     while (tileListHead)
     {
@@ -92,7 +92,7 @@ void TileListManager::Cleanup(void)
 
 const char* TileListManager::GetFileName(WORD texCode)
 {
-    TileListEntry	*pTileRecord;
+    TileListEntry *pTileRecord;
 
     for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
     {
@@ -107,9 +107,9 @@ const char* TileListManager::GetFileName(WORD texCode)
 }
 
 
-const BYTE*	TileListManager::GetImageData(WORD texCode)
+const BYTE* TileListManager::GetImageData(WORD texCode)
 {
-    TileListEntry	*pTileRecord;
+    TileListEntry *pTileRecord;
 
     for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
     {

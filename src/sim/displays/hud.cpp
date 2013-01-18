@@ -64,44 +64,44 @@ static DWORD HUDcolor[] =
     0xffffff00,
     0xffff00ff,
     0xff00ffff,
-    //	0xff7f0000,
-    //	0xff007f00,
+    // 0xff7f0000,
+    // 0xff007f00,
     0xff00007f,
-    //	0xff7f7f00,
-    //	0xff007f7f,
-    //	0xff7f007f,
-    //	0xff7f7f7f,
+    // 0xff7f7f00,
+    // 0xff007f7f,
+    // 0xff7f007f,
+    // 0xff7f7f7f,
     0xfffffffe,
-    //	0xff222222,
-    //	0xff00bf00,
+    // 0xff222222,
+    // 0xff00bf00,
 
     /* r,g,b,a
-    	0x00ff00ff,
-    	0xff0000ff,
-    	0x0000ffff,
-    	0x00ffffff,
-    	0xff00ffff,
-    	0xffff00ff,
-    	0x00007fff,
-    	0x007f00ff,
-    	0x7f0000ff,
-    	0x007f7fff,
-    	0x7f7f00ff,
-    	0x7f007fff,
-    	0x7f7f7fff,
-    	0xfeffffff,
-    	0x222222ff,
-    	0x00bf00ff,
+     0x00ff00ff,
+     0xff0000ff,
+     0x0000ffff,
+     0x00ffffff,
+     0xff00ffff,
+     0xffff00ff,
+     0x00007fff,
+     0x007f00ff,
+     0x7f0000ff,
+     0x007f7fff,
+     0x7f7f00ff,
+     0x7f007fff,
+     0x7f7f7fff,
+     0xfeffffff,
+     0x222222ff,
+     0x00bf00ff,
     */
 };
-const int		NumHudColors = sizeof(HUDcolor) / sizeof(HUDcolor[0]);
-int					curColorIdx;
+const int NumHudColors = sizeof(HUDcolor) / sizeof(HUDcolor[0]);
+int curColorIdx;
 
-Pcolor			HudClass::hudColor;
+Pcolor HudClass::hudColor;
 
-int				HudClass::flash = FALSE;
+int HudClass::flash = FALSE;
 //MI
-int				HudClass::Warnflash = FALSE;
+int HudClass::Warnflash = FALSE;
 
 //Note: DrawWindowString decrements by 1
 //Adjust up all DrawWindowString calls by 1
@@ -111,7 +111,7 @@ float hudWinX[NUM_WIN] =
     0.55F,  -0.8F,  -0.8F,   0.0F,    0.55F,  // 5..9
     -0.0F,   -0.0F,   0.55F,  0.55F,  -0.9F,   //10..14
     0.0F,    0.0F,   0.0F,   0.65F,  -0.5F,   //15..19
-    -0.5F,   -0.5F,  -0.5F,  -0.5F,    0.55F,  //20..24	//MI tweaked
+    -0.5F,   -0.5F,  -0.5F,  -0.5F,    0.55F,  //20..24 //MI tweaked
     0.55F,  -0.3F,  -0.20F, -0.175F, -0.65F,  //25..29
     0.0F,    0.52F,  0.35F,  0.55F,  -0.7F,   //30..34
     -0.9F,    0.52F,  0.65F, -0.70F,   0.65F,  //35..39   // sfr: altitude correction (index 39, from .65 to 50) // RED - RESTORED
@@ -122,8 +122,8 @@ float hudWinX[NUM_WIN] =
 
 float hudWinY[NUM_WIN] =
 {
-    0.80F,   0.23F, -0.15F, -0.23F,   0.55F,  // 0..4	//MI value 2 from 0.20 to 0.25 and value 5 from 0.45 to 0.55
-    0.23F,  -0.31F, -0.39F,  0.0F,   -0.39F,  // 5..9		//MI value 1 from 0.19 to -0.25
+    0.80F,   0.23F, -0.15F, -0.23F,   0.55F,  // 0..4 //MI value 2 from 0.20 to 0.25 and value 5 from 0.45 to 0.55
+    0.23F,  -0.31F, -0.39F,  0.0F,   -0.39F,  // 5..9 //MI value 1 from 0.19 to -0.25
     0.2F,    0.05F, -0.47F, -0.55F,  -0.47F,  //10..14
     0.0F,    0.0F,   0.0F,   0.68F,  -0.45F,  //15..19
     -0.53F,  -0.61F, -0.69F, -0.78F,  -0.31F,  //20..24 DED stuff
@@ -191,7 +191,7 @@ HudClass::HudClass(void) : DrawableClass()
     lowAltWarning   = 300.0F;
     maxGs           = 0.0F;
 
-    SetHalfAngle((float)atan(0.25F * tan(30.0F * DTR)) * RTD);	//MI halfangle is degrees
+    SetHalfAngle((float)atan(0.25F * tan(30.0F * DTR)) * RTD); //MI halfangle is degrees
     waypointX = 0.0F;
     waypointY = 0.0F;
     waypointZ = 0.0F;
@@ -275,8 +275,8 @@ HudClass::HudClass(void) : DrawableClass()
 
     SlantRange = 0.0F;
     RET_CENTER = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
-    ReticlePosition = 0;	//for the wheel
-    RetPos = 0;	//controls where to move it
+    ReticlePosition = 0; //for the wheel
+    RetPos = 0; //controls where to move it
 
     sprintf(SpeedText, "");
     //MI init
@@ -290,8 +290,8 @@ HudClass::HudClass(void) : DrawableClass()
     altHudn = 0.0f;
     raltHud = 0.0f; //Cobra
     vvid = 0; //Cobra
-    HudBrightness = 1.0f;		// COBRA - RED -
-    AutoHudCx = 0.0f;			// COBRA - RED -
+    HudBrightness = 1.0f; // COBRA - RED -
+    AutoHudCx = 0.0f; // COBRA - RED -
 }
 
 
@@ -324,13 +324,13 @@ void HudClass::SetOwnship(AircraftClass* newOwnship)
 
         for (i = 0; i < NumEEGSFrames; i++)
         {
-            eegsFrameArray[i].time	= SimLibElapsedTime - (NumEEGSFrames - i);
-            eegsFrameArray[i].x		= newOwnship->XPos();
-            eegsFrameArray[i].y		= newOwnship->YPos();
-            eegsFrameArray[i].z		= newOwnship->ZPos();
-            eegsFrameArray[i].vx	= 0.0f;
-            eegsFrameArray[i].vy	= 0.0f;
-            eegsFrameArray[i].vz	= 0.0f;
+            eegsFrameArray[i].time = SimLibElapsedTime - (NumEEGSFrames - i);
+            eegsFrameArray[i].x = newOwnship->XPos();
+            eegsFrameArray[i].y = newOwnship->YPos();
+            eegsFrameArray[i].z = newOwnship->ZPos();
+            eegsFrameArray[i].vx = 0.0f;
+            eegsFrameArray[i].vy = 0.0f;
+            eegsFrameArray[i].vz = 0.0f;
         }
 
         for (i = 0; i < NumEEGSSegments; i++)
@@ -457,7 +457,7 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
             // Marco Edit
             if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
-                DrawHeading();		// Don't draw heading in Dogfight Mode
+                DrawHeading(); // Don't draw heading in Dogfight Mode
         }
     }
     else
@@ -468,10 +468,10 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
 
         // Marco Edit
         if (FCC && FCC->GetMasterMode() != FireControlComputer::Dogfight)
-            DrawHeading();		// Don't draw heading in Dogfight Mode
+            DrawHeading(); // Don't draw heading in Dogfight Mode
     }
 
-#if 0	// Turned off to evaluate easy mode HUD clutter level...  SCR 9/18/98
+#if 0 // Turned off to evaluate easy mode HUD clutter level...  SCR 9/18/98
 #ifdef _DEBUG
     {
         int i;
@@ -570,12 +570,12 @@ void HudClass::Display(VirtualDisplay *newDisplay, bool gTranslucent)
             /*
                case FireControlComputer::Gun:
                    if (FCC->GetSubMode() != FireControlComputer::STRAF)
-            	   {
-            		   DrawTDBox();
-            		   DrawGuns();
+                {
+                DrawTDBox();
+                DrawGuns();
                    }
                    else
-            	   DrawAirGroundGravity();
+                DrawAirGroundGravity();
                   break;
             */
 
@@ -1023,11 +1023,11 @@ void HudClass::CycleBrightnessSwitchUp(void)
     {
         // MD -- 20040108: Comment out the power control since this switch doesn't do that!
         //if(!playerAC->HasPower(AircraftClass::HUDPower))
-        //	playerAC->PowerOn(AircraftClass::HUDPower);
+        // playerAC->PowerOn(AircraftClass::HUDPower);
         switch (brightnessSwitch)
         {
                 //case OFF:  // MD -- 20040108: commented out since there's no such state
-                //	brightnessSwitch = NIGHT;
+                // brightnessSwitch = NIGHT;
                 //break;
             case NIGHT:
                 brightnessSwitch = BRIGHT_AUTO;
@@ -1061,8 +1061,8 @@ void HudClass::CycleBrightnessSwitchDown(void)
                 break;
 
                 //case NIGHT:  // MD -- 20040108: commented out since there's no such state
-                //	brightnessSwitch = OFF;
-                //	playerAC->PowerOff(AircraftClass::HUDPower);
+                // brightnessSwitch = OFF;
+                // playerAC->PowerOff(AircraftClass::HUDPower);
                 //break;
             default:
                 break;
@@ -1768,9 +1768,9 @@ void HudClass::DrawHorizonLine(void)
 
     // AdjustRotationAboutOrigin about nose marker
     display->AdjustRotationAboutOrigin(-cockpitFlightData.roll);
-    x1	= hudWinWidth[PITCH_LADDER_WINDOW] * 0.25F;
-    x2	= hudWinWidth[PITCH_LADDER_WINDOW] * 2.00F;
-    y	= -cockpitFlightData.gamma * RTD * degreesForScreen;
+    x1 = hudWinWidth[PITCH_LADDER_WINDOW] * 0.25F;
+    x2 = hudWinWidth[PITCH_LADDER_WINDOW] * 2.00F;
+    y = -cockpitFlightData.gamma * RTD * degreesForScreen;
 
     display->Line(x1, y,  x2, y);
     display->Line(-x1, y, -x2, y);
@@ -2308,7 +2308,7 @@ HudDataType::HudDataType(void)
     flags = 0;
 }
 
-#include "SimIO.h"	// Retro 4Jan2004
+#include "SimIO.h" // Retro 4Jan2004
 #include "fmath.h"
 
 // COBRA - RED - Completely rewritten
@@ -2317,10 +2317,10 @@ DWORD HudClass::GetHudColor(void)
     // COBRA - RED - Hud Cxes based on plane pitch and time o day
     AutoHudCx = ObserverPitch;
 
-    if (ObserverPitch < (-0.05f)) AutoHudCx *= 1.2f;							// if going down faster changes
+    if (ObserverPitch < (-0.05f)) AutoHudCx *= 1.2f; // if going down faster changes
 
     // a copy of the selected hud color
-    Pcolor	Color = hudColor;
+    Pcolor Color = hudColor;
 
     // if NVG change it to whiteish
     if (TheDXEngine.GetState() == DX_NVG)
@@ -2333,14 +2333,14 @@ DWORD HudClass::GetHudColor(void)
 
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000;								// mantain alpha
+    curHudColor = curHudColor & 0xff000000; // mantain alpha
     curHudColor += ((int)(Color.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(Color.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(Color.r * 255 * (0.5F + HudContrast / 2)));
     //curHudColor += (((int)(hudColor*HudContrast))<<8);
 
-    //	curHudColor = HUDcolor[curColorIdx];
-    //	CalculateBrightness(SymWheelPos, &curHudColor);
+    // curHudColor = HUDcolor[curColorIdx];
+    // CalculateBrightness(SymWheelPos, &curHudColor);
 
     return curHudColor;
 }
@@ -2372,7 +2372,7 @@ void HudClass::SetHudColor(DWORD newColor)
     hudColor.r = ((float)(HUDcolor[curColorIdx] & 0xff)) / 255.0f;
     //Set Up the Contrast, the Hud Color and the Light Level and Apply them
     SetLightLevel();
-    curHudColor = curHudColor & 0xff000000;								// mantain alpha
+    curHudColor = curHudColor & 0xff000000; // mantain alpha
     curHudColor += ((int)(hudColor.b * 255 * (0.5F + HudContrast / 2))) << 16;
     curHudColor += ((int)(hudColor.g * 255 * (0.5F + HudContrast / 2))) << 8;
     curHudColor += ((int)(hudColor.r * 255 * (0.5F + HudContrast / 2)));
@@ -2387,7 +2387,7 @@ void HudClass::HudColorStep(void)
     curColorIdx ++;
     curColorIdx %= NumHudColors;
     SetHudColor(HUDcolor[curColorIdx]);
-    //	SetLightLevel();
+    // SetLightLevel();
 }
 
 // COBRA - RED - Completely rewritten, now brigthness works on Hud Alpha Level
@@ -2400,7 +2400,7 @@ void HudClass::CalculateBrightness(float percent, DWORD* color)
 // COBRA - RED - Completely rewritten
 void HudClass::SetLightLevel(void)
 {
-    float	Value;
+    float Value;
 
     curHudColor = HUDcolor[curColorIdx];
 
@@ -2423,10 +2423,10 @@ void HudClass::SetLightLevel(void)
             HudContrast = 1.0f;
         }
 
-        return;											// if Non realistic exits here
+        return; // if Non realistic exits here
     }
 
-    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true)	// Retro 4Jan2004 (whole if)
+    if (IO.AnalogIsUsed(AXIS_HUD_BRIGHTNESS) == true) // Retro 4Jan2004 (whole if)
         Value = (float)IO.GetAxisValue(AXIS_HUD_BRIGHTNESS) / 20000.0F;
     else
         Value = SymWheelPos;
@@ -2438,23 +2438,23 @@ void HudClass::SetLightLevel(void)
     {
 
             // Auto Mode - Brightness is based on Pitch of the Plane, the higher, the brighter
-        case	BRIGHT_AUTO:
+        case BRIGHT_AUTO:
             lightLevel = hudColor.a * TheTimeOfDay.GetAmbientValue() * 0.2f;
             lightLevel += AutoHudCx * 0.5f * TheTimeOfDay.GetAmbientValue();
             lightLevel += 0.3f * Value;
 
-            if (lightLevel > HUD_MAX_BRIGHT_DAY)lightLevel = HUD_MAX_BRIGHT_DAY;					// check for limits
+            if (lightLevel > HUD_MAX_BRIGHT_DAY)lightLevel = HUD_MAX_BRIGHT_DAY; // check for limits
 
-            if (lightLevel < 0.2f)lightLevel = 0.2f;					//
+            if (lightLevel < 0.2f)lightLevel = 0.2f; //
 
-            CalculateBrightness(lightLevel, &curHudColor);		// apply
+            CalculateBrightness(lightLevel, &curHudColor); // apply
             break;
 
-        case	NIGHT:
+        case NIGHT:
             CalculateBrightness(hudColor.a * (HUD_MAX_BRIGHT_NIGHT * .25f + HUD_MAX_BRIGHT_NIGHT * .74f * Value), &curHudColor);
             break;
 
-        case	DAY:
+        case DAY:
             if (g_bBrightHUD)
                 CalculateBrightness(1.0F, &curHudColor);
             else

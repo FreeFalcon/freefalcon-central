@@ -19,9 +19,9 @@
 extern VuAntiDatabase *vuAntiDB;
 
 
-static const long  ChaffTime			=  5 * 1000;
-static const long  FlareTime			=  5 * 1000;
-static const long  ProgramDropDuration	= 30 * 1000;
+static const long  ChaffTime =  5 * 1000;
+static const long  FlareTime =  5 * 1000;
+static const long  ProgramDropDuration = 30 * 1000;
 
 
 void HelicopterClass::InitCountermeasures(void)
@@ -75,9 +75,9 @@ void HelicopterClass::DoCountermeasures(void)
 
 void HelicopterClass::DropChaff(void)
 {
-    vector		pos, posDelta;
-    short		type;
-    BombClass	*weapon;
+    vector pos, posDelta;
+    short type;
+    BombClass *weapon;
 
     if (counterMeasureStation[CHAFF_STATION].weaponCount-- > 0)
     {
@@ -110,9 +110,9 @@ void HelicopterClass::DropChaff(void)
 
 void HelicopterClass::DropFlare(void)
 {
-    vector		pos, posDelta;
-    short		type;
-    BombClass	*weapon;
+    vector pos, posDelta;
+    short type;
+    BombClass *weapon;
 
     if (counterMeasureStation[FLARE_STATION].weaponCount-- > 0)
     {

@@ -1,2 +1,2 @@
-#define TACTICAL_GROUP		3000
+#define TACTICAL_GROUP 3000
 

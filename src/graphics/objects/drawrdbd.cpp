@@ -3,13 +3,13 @@
     July 29, 1997
 
     Derived class to do special position and containment processing for
-	sections of bridges.
+ sections of bridges.
 \***************************************************************************/
 #include "DrawRdbd.h"
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableRoadbed::pool;
+MEM_POOL DrawableRoadbed::pool;
 #endif
 
 
@@ -19,13 +19,13 @@ MEM_POOL	DrawableRoadbed::pool;
 DrawableRoadbed::DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float heading, float height, float angle, float s)
     : DrawableBuilding(IDbase, pos, heading, s)
 {
-    drawClassID		= Roadbed;
-    start			= position.x + instance.BoxBack();
-    length			= instance.BoxFront() - instance.BoxBack();
+    drawClassID = Roadbed;
+    start = position.x + instance.BoxBack();
+    length = instance.BoxFront() - instance.BoxBack();
 
-    cosInvYaw		= (float)cos(-heading);
-    sinInvYaw		= (float)sin(-heading);
-    tanRampAngle	= (float)tan(angle);
+    cosInvYaw = (float)cos(-heading);
+    sinInvYaw = (float)sin(-heading);
+    tanRampAngle = (float)tan(angle);
     ramp.SetupWithVector(0.0f, height, 1.0f, tanRampAngle);
 
     // 0 is a legal VIS ID, but is currently "VIS_NOTHING", so exclude it.
@@ -59,11 +59,11 @@ DrawableRoadbed::~DrawableRoadbed()
 
 /**************************************************************************
     See if the given point is within our perview.  If so, provide the
-	height and normal of the surface at that point.
+ height and normal of the surface at that point.
 ***************************************************************************/
 BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
 {
-    float	x, y, d;
+    float x, y, d;
 
 
     // First see if the point is too far away
@@ -82,7 +82,7 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
             normal->z = -1.0f;
         }
 
-        pos->z = position.z - ramp.Y(0.0f);		// -Z is up, but height is positive up
+        pos->z = position.z - ramp.Y(0.0f); // -Z is up, but height is positive up
     }
     else
     {
@@ -102,7 +102,7 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
         }
 
         // Return the altitude of the ramp at the given point
-        pos->z = position.z - ramp.Y(d);		// -Z is up, but height is positive up
+        pos->z = position.z - ramp.Y(d); // -Z is up, but height is positive up
     }
 
     return TRUE;

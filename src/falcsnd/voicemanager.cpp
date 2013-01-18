@@ -4,10 +4,10 @@
 
     Queues conversations and decompresses sound
 
-	  Version 0.01
+   Version 0.01
 
-		Written by Jim DiZoglio (x257)       (c) 1996 Spectrum Holobyte
-		Rewritten by Dave Power (x4373)
+ Written by Jim DiZoglio (x257)       (c) 1996 Spectrum Holobyte
+ Rewritten by Dave Power (x4373)
 
 ------------------------------------------------------------------------ */
 
@@ -43,13 +43,13 @@ extern char FalconSoundThrDirectory [];
 extern int g_nSoundSwitchFix;
 
 #ifdef USE_SH_POOLS
-MEM_POOL	CONVERSATION::pool;
-MEM_POOL	VM_BUFFLIST::pool;
-MEM_POOL	VM_CONVLIST::pool;
+MEM_POOL CONVERSATION::pool;
+MEM_POOL VM_BUFFLIST::pool;
+MEM_POOL VM_CONVLIST::pool;
 #endif
 
-VM_BUFFLIST		*voiceBufferQueue = NULL;
-VM_CONVLIST		*voiceChannelQueue[NUM_VOICE_CHANNELS] = {NULL};
+VM_BUFFLIST *voiceBufferQueue = NULL;
+VM_CONVLIST *voiceChannelQueue[NUM_VOICE_CHANNELS] = {NULL};
 
 enum
 {
@@ -58,20 +58,20 @@ enum
 };
 
 
-HANDLE			VMWakeEventHandle;
-BOOL			killThread = FALSE;
-HANDLE			hThread;
+HANDLE VMWakeEventHandle;
+BOOL killThread = FALSE;
+HANDLE hThread;
 
 //FILE *debugFile = NULL;
 //FILE *debugEndFile = NULL;
 
-//int	global=0; //for debugging
+//int global=0; //for debugging
 //int MESGNUM = 0;
 
-extern VoiceManager	*VM;
+extern VoiceManager *VM;
 //extern "C"
 //{
-//	DWORD WINAPI VoiceManagementThread( LPVOID lpvThreadParm ) ;
+// DWORD WINAPI VoiceManagementThread( LPVOID lpvThreadParm ) ;
 //}
 
 VoiceManager::VoiceManager(void)
@@ -92,7 +92,7 @@ VoiceManager::~VoiceManager(void)
 
 BOOL VoiceManager::VMBegin(void)
 {
-    int	i;
+    int i;
 
 #ifdef USE_SH_POOLS
     CONVERSATION::InitializeStorage();
@@ -142,7 +142,7 @@ BOOL VoiceManager::VMBegin(void)
 
 int VoiceManager::VoiceOpen(void)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\falcon.tlk", FalconSoundThrDirectory);
 #if 0
@@ -157,7 +157,7 @@ int VoiceManager::VoiceOpen(void)
 
 void VoiceManager::CallVoiceThread(void)
 {
-    DWORD	dwIDThread;
+    DWORD dwIDThread;
 
     strcpy(VMWakeEventName, "VoiceWakeupCall");
     VMWakeEventHandle = CreateEvent(NULL, FALSE, FALSE, VMWakeEventName);
@@ -263,7 +263,7 @@ int FilterMessage(CONVERSATION *node)
                 retval = TRUE;
             else if ((TOFROM_TOWER & node->filter) && gNavigationSys)
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
 
                 if (ATCId == node->from || ATCId == node->to)
@@ -338,7 +338,7 @@ int FilterMessage(CONVERSATION *node)
                 retval = TRUE;
             else if ((TOFROM_TOWER & node->filter) && gNavigationSys && gTacanList)
             {
-                VU_ID	ATCId;
+                VU_ID ATCId;
                 gNavigationSys->GetAirbase(&ATCId);
 
                 if (ATCId == node->from || ATCId == node->to)
@@ -356,12 +356,12 @@ int FilterMessage(CONVERSATION *node)
 
 DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
 {
-    int					i, curChannel, curBuffer = 0, sleep, breakin;
+    int i, curChannel, curBuffer = 0, sleep, breakin;
     VOICE_STREAM_BUFFER *outputBuf;
-    DWORD				sleeptime;
+    DWORD sleeptime;
     static VU_TIME oldtime = 0, waketime;
     int ticks = 0;
-    ulong	holdTime;
+    ulong holdTime;
     VU_ID playerID; // sfr: player ID
     VM_CONVLIST *pVC, *best, *pVCnext;
 
@@ -684,8 +684,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
 
                 // sfr: i think we dont need this else, since state is already that and buffer is filled
                 /*else {
-                	VM->falconVoices[curChannel].BufferManager( curBuffer );
-                	VM->decompQueue[curChannel].status = MESG_IS_PROCESSING;
+                 VM->falconVoices[curChannel].BufferManager( curBuffer );
+                 VM->decompQueue[curChannel].status = MESG_IS_PROCESSING;
                 }*/
             }
             // sfr: is this really an else??? why the first one is not?
@@ -755,7 +755,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
 
 int VoiceManager::LoadCompressionData(int curChannel)
 {
-    int					playConv;
+    int playConv;
 
     /* Get Conversations file no. and index to next file no. */
     playConv = decompQueue[curChannel].conversations[decompQueue[curChannel].convIndex];
@@ -764,7 +764,7 @@ int VoiceManager::LoadCompressionData(int curChannel)
     falconVoices[curChannel].InitCompressionFile();
 
 #if 0 // jpo old code
-    long				tlkBlock;
+    long tlkBlock;
     tlkBlock = TLK_HEADER_INFO + (sizeof(long) * (playConv));
 
     ShiAssert(tlkBlock >= 0);
@@ -794,7 +794,7 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
     }
 
     //if(decompQueue[newConv->channelIndex].from == newConv->from && decompQueue[newConv->channelIndex].message == newConv->message)
-    //	return;
+    // return;
 
     // must change currConversation to a list for voice manager
     listConv = new CONVERSATION;
@@ -805,8 +805,8 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
     listConv->conversations = newConv->conversations;
 
     // if override and VCQ is not null, reomve all conv from channel
-    //	falconVoices[newConv->channelIndex].status = listConv->interupt; //convStruct->interupt;
-    //	if overRide, need to destroy current queue and start again
+    // falconVoices[newConv->channelIndex].status = listConv->interupt; //convStruct->interupt;
+    // if overRide, need to destroy current queue and start again
 
     listConv->status = SLOT_IS_AVAILABLE;
 
@@ -869,9 +869,9 @@ void VoiceManager::VMResetVoice(int channel)
     if (decompQueue[channel].conversations != NULL)
     {
         delete [] decompQueue[channel].conversations;
-        decompQueue[channel].conversations	= NULL;
-        decompQueue[channel].from				= FalconNullId;
-        decompQueue[channel].message			= -1;
+        decompQueue[channel].conversations = NULL;
+        decompQueue[channel].from = FalconNullId;
+        decompQueue[channel].message = -1;
     }
 
 
@@ -901,7 +901,7 @@ void VoiceManager::VMResetVoice(int channel)
 
 void VoiceManager::VMResetVoices(void)
 {
-    int	i;
+    int i;
 
     VMSilenceVoices();
 
@@ -918,8 +918,8 @@ void VoiceManager::VMResetVoices(void)
         F4EnterCriticalSection(vmCriticalSection);
 
         decompQueue[i].status = SLOT_IS_AVAILABLE;
-        decompQueue[i].message			= -1;
-        decompQueue[i].from				= FalconNullId;
+        decompQueue[i].message = -1;
+        decompQueue[i].from = FalconNullId;
 
         if (decompQueue[i].conversations != NULL)
         {
@@ -961,15 +961,15 @@ void VoiceManager::VMResetVoices(void)
 /*
 void VoiceManager::VMResumeVoiceStreams( void )
 {
-	int	i;
+ int i;
 
-	if ( falconVoices )
-	{
-		for ( i = 0; i < NUM_VOICE_CHANNELS; i++ )
-		{
-			falconVoices[i].FVResumeVoiceStreams();
-		}
-	}
+ if ( falconVoices )
+ {
+ for ( i = 0; i < NUM_VOICE_CHANNELS; i++ )
+ {
+ falconVoices[i].FVResumeVoiceStreams();
+ }
+ }
 }*/
 
 void VoiceManager::VMHearVoices(void)
@@ -1226,7 +1226,7 @@ int VoiceManager::IsMessagePlaying(VU_ID from, VU_ID to, int msgid)
 //always call from inside vmCriticalSection
 void VoiceManager::VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node)
 {
-    VM_CONVLIST		*curr, *next, *prev;
+    VM_CONVLIST *curr, *next, *prev;
 
     //F4EnterCriticalSection( vmCriticalSection );
 
@@ -1269,7 +1269,7 @@ void VoiceManager::VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node)
 //removes the first entry in the list and returns the new list
 VM_BUFFLIST *VoiceManager::VMListPopVMBQ(VM_BUFFLIST *list)
 {
-    VM_BUFFLIST	*next;
+    VM_BUFFLIST *next;
 
     if (!list)
         return NULL;
@@ -1292,8 +1292,8 @@ VM_BUFFLIST *VoiceManager::VMListPopVMBQ(VM_BUFFLIST *list)
 // in case the first entry was removed
 VM_BUFFLIST *VoiceManager::VMListRemoveVMBQ(VM_BUFFLIST *list)
 {
-    VMBuffQueue	*vmbqNode;
-    VM_BUFFLIST	*curr, *next;
+    VMBuffQueue *vmbqNode;
+    VM_BUFFLIST *curr, *next;
 
     if (!list)
         return NULL;
@@ -1326,17 +1326,17 @@ void VoiceManager::VMDeleteNode(VMBuffQueue* vmNode)
 /*
 int VoiceManager::VMListCount( VMLIST * list)
 {
-VMLIST	*curr;
-int		i;
+VMLIST *curr;
+int i;
 
   for( i = 0, curr = list; curr; i++, curr = curr->prev );
 
-	return( i );
+ return( i );
 }*/
 
 VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, int searchType)
 {
-    VM_BUFFLIST	*l;
+    VM_BUFFLIST *l;
 
     if (!list)
         return NULL;
@@ -1363,7 +1363,7 @@ VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, i
 
 int VoiceManager::ListCheckChannelNum(void *node_a, int channelNum)
 {
-    VMBuffQueue	*channel_a;
+    VMBuffQueue *channel_a;
 
     if (!node_a)
         return NULL;
@@ -1381,127 +1381,127 @@ int VoiceManager::ListCheckChannelNum(void *node_a, int channelNum)
 
 //AAGh!! it's a bubble sort that's using the prev? pointer
 /*
-VMLIST *VoiceManager::VMListSort( VMLIST **list, int	sortType )
+VMLIST *VoiceManager::VMListSort( VMLIST **list, int sortType )
 {
-VMLIST	**parent_a;
-VMLIST	**parent_b;
-BOOL	sortCritMet = FALSE;
+VMLIST **parent_a;
+VMLIST **parent_b;
+BOOL sortCritMet = FALSE;
 
   for( parent_a = list; *parent_a; parent_a = &(*parent_a)->prev )
   {
-		if ( !(*parent_a)->prev )
-		break;
-		for( parent_b = &(*parent_a)->prev; *parent_b; parent_b = &(*parent_b)->prev )
-		{
-		sortCritMet = FALSE;
-		switch ( sortType )
-		{
-		case SORT_PRIORITY:
-		if( VMListSortPriority(*parent_a, *parent_b) > 0 )
-		sortCritMet = TRUE;
-		break;
-		case SORT_TIME:
-		if( VMListSortTime(*parent_a, *parent_b) > 0 )
-		sortCritMet = TRUE;
-		break;
-		};
+ if ( !(*parent_a)->prev )
+ break;
+ for( parent_b = &(*parent_a)->prev; *parent_b; parent_b = &(*parent_b)->prev )
+ {
+ sortCritMet = FALSE;
+ switch ( sortType )
+ {
+ case SORT_PRIORITY:
+ if( VMListSortPriority(*parent_a, *parent_b) > 0 )
+ sortCritMet = TRUE;
+ break;
+ case SORT_TIME:
+ if( VMListSortTime(*parent_a, *parent_b) > 0 )
+ sortCritMet = TRUE;
+ break;
+ };
 
-		  if ( sortCritMet )
-		  {
-		  VMLIST *swap_a, *swap_a_child;
-		  VMLIST *swap_b, *swap_b_child;
+   if ( sortCritMet )
+   {
+   VMLIST *swap_a, *swap_a_child;
+   VMLIST *swap_b, *swap_b_child;
 
-			swap_a = *parent_a;
-			swap_a_child = (*parent_a)->prev;
-			swap_b  = *parent_b;
-			swap_b_child = (*parent_b)->prev;
+ swap_a = *parent_a;
+ swap_a_child = (*parent_a)->prev;
+ swap_b  = *parent_b;
+ swap_b_child = (*parent_b)->prev;
 
-			  (*parent_a)->prev = swap_b_child;
-			  (*parent_a) = swap_b;
+   (*parent_a)->prev = swap_b_child;
+   (*parent_a) = swap_b;
 
-				if( swap_b == swap_a_child )
-				{
-				(*parent_a)->prev = swap_a;
-				parent_b = &(*parent_a)->prev;
-				}
-				else
-				{
-				(*parent_b)->prev = swap_a_child;
-				(*parent_b) = swap_a;
-				}
-				}
-				}
-				}
+ if( swap_b == swap_a_child )
+ {
+ (*parent_a)->prev = swap_a;
+ parent_b = &(*parent_a)->prev;
+ }
+ else
+ {
+ (*parent_b)->prev = swap_a_child;
+ (*parent_b) = swap_a;
+ }
+ }
+ }
+ }
 
-				  return( *list );
+   return( *list );
 }*/
 /*
 int VoiceManager::VMListSortPriority( VMLIST *parent_a, VMLIST *parent_b )
 {
-CONVERSATION	*list_a, *list_b;
+CONVERSATION *list_a, *list_b;
 
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
-	if ((!list_a)||(!list_b))
-	return NULL;
+ if ((!list_a)||(!list_b))
+ return NULL;
 
-	  if( list_a->priority < list_b->priority )
-	  return 1;
+   if( list_a->priority < list_b->priority )
+   return 1;
 
-		return 0;
+ return 0;
 }*/
 /*
 int VoiceManager::VMListSortTime( VMLIST *parent_a, VMLIST *parent_b )
 {
-CONVERSATION	*list_a, *list_b;
+CONVERSATION *list_a, *list_b;
 
   list_a = ( CONVERSATION * )parent_a->node;
   list_b = ( CONVERSATION * )parent_b->node;
 
-	if ((!list_a)||(!list_b))
-	return NULL;
+ if ((!list_a)||(!list_b))
+ return NULL;
 
-	  if( (list_a->playTime) < (list_b->playTime ) )
-	  return 1;
+   if( (list_a->playTime) < (list_b->playTime ) )
+   return 1;
 
-		return 0;
+ return 0;
 }*/
 /*
 VMLIST *VoiceManager::VMListDestroyVCQ( VMLIST *list )
 {
-CONVERSATION	*vmVCNode;
-VMLIST			*curr, *prev;
+CONVERSATION *vmVCNode;
+VMLIST *curr, *prev;
 
   if ( !list )
-		return NULL;
+ return NULL;
 
-		  curr = list;
-		  prev = list->prev;
+   curr = list;
+   prev = list->prev;
 
-			while ( curr )
-			{
-			if ( !curr->node )
-			break;
+ while ( curr )
+ {
+ if ( !curr->node )
+ break;
 
-			  vmVCNode = ( CONVERSATION * )curr->node;
+   vmVCNode = ( CONVERSATION * )curr->node;
 
-				delete [] vmVCNode->conversations;
-				delete vmVCNode;
-				if ( curr->prev )
-				curr->prev->next = NULL;
-				delete curr;
+ delete [] vmVCNode->conversations;
+ delete vmVCNode;
+ if ( curr->prev )
+ curr->prev->next = NULL;
+ delete curr;
 
-				  curr = prev;
-				  }
-				  list = curr;
-				  return( list );
+   curr = prev;
+   }
+   list = curr;
+   return( list );
 }*/
 
 VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
 {
-    CONVERSATION	*vmVCNode;
-    VM_CONVLIST		*curr, *next;
+    CONVERSATION *vmVCNode;
+    VM_CONVLIST *curr, *next;
 
     if (!list)
         return NULL;
@@ -1527,8 +1527,8 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
 
 VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
 {
-    VMBuffQueue	*vmbqNode;
-    VM_BUFFLIST	*curr, *next;
+    VMBuffQueue *vmbqNode;
+    VM_BUFFLIST *curr, *next;
 
     if (!list)
         return NULL;
@@ -1626,7 +1626,7 @@ void VoiceManager::ChangeRadioFreq(int filter, int radio)
 }
 
 
-int	VoiceManager::IsChannelDone(int channel)
+int VoiceManager::IsChannelDone(int channel)
 {
     if (gSoundDriver)
     {
@@ -1636,7 +1636,7 @@ int	VoiceManager::IsChannelDone(int channel)
     return FALSE;
 }
 
-int	VoiceManager::ResumeChannel(int channel)
+int VoiceManager::ResumeChannel(int channel)
 {
     if (gSoundDriver)
     {
@@ -1651,7 +1651,7 @@ int	VoiceManager::ResumeChannel(int channel)
     return FALSE;
 }
 
-int	VoiceManager::PauseChannel(int channel)
+int VoiceManager::PauseChannel(int channel)
 {
     if (gSoundDriver)
     {
@@ -1663,7 +1663,7 @@ int	VoiceManager::PauseChannel(int channel)
 }
 
 
-int	VoiceManager::BuffersEmpty(int channel)
+int VoiceManager::BuffersEmpty(int channel)
 {
     return (
                VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE &&
@@ -1687,8 +1687,8 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
     float dist, dx, dy , dz;
     SimBaseClass *ownship = OTWDriver.GraphicsOwnship();
 
-    Flight	awacs = NULL;
-    Flight	flight = NULL;
+    Flight awacs = NULL;
+    Flight flight = NULL;
     nonoise = FALSE;
 
     if (SimDriver.GetPlayerEntity())
@@ -1735,7 +1735,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
             *pos = (uchar)level;
 
         //if(level < 235)
-        //	*pos += (1 - rand()%3);
+        // *pos += (1 - rand()%3);
 
         pos++;
     }

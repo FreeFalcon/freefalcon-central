@@ -4,7 +4,7 @@
 
 #include "Gndunit.h"
 
-//#define BAT_PLAN_AHEAD		16
+//#define BAT_PLAN_AHEAD 16
 
 // =========================
 // Battalion Class
@@ -32,41 +32,41 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
-    Percentage		supply;					// Unit statistics
+    Percentage supply; // Unit statistics
     Percentage      fatigue;
     Percentage      morale;
-    uchar			final_heading;			// Unit facing, at destination
-    uchar			heading;				// Formation heading
-    uchar			fullstrength;			// Number of vehicles at fullstrength
-    uchar			radar_mode;				// Radar mode
-    uchar			position;
-    uchar			search_mode;			// Radar Search mode
-    uchar			missiles_flying;		// Number of missiles being guided
+    uchar final_heading; // Unit facing, at destination
+    uchar heading; // Formation heading
+    uchar fullstrength; // Number of vehicles at fullstrength
+    uchar radar_mode; // Radar mode
+    uchar position;
+    uchar search_mode; // Radar Search mode
+    uchar missiles_flying; // Number of missiles being guided
     VU_TIME SEARCHtimer;
     VU_TIME AQUIREtimer;
-    uchar			step_search_mode;		// 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
+    uchar step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
 
-    int				dirty_battalion;
-    CampaignTime	last_resupply_time;		// Last time this unit received supplies
+    int dirty_battalion;
+    CampaignTime last_resupply_time; // Last time this unit received supplies
 
 public:
-    CampaignTime	last_move;				// Time we moved last
-    CampaignTime	last_combat;				// Last time this entity fired its weapons
-    VU_ID			parent_id;				// Brigade parent, if present
-    VU_ID			last_obj;				// The last objective this unit visited
-    VU_ID			air_target;				// The ID of any air target (in addition to regular target)
+    CampaignTime last_move; // Time we moved last
+    CampaignTime last_combat; // Last time this entity fired its weapons
+    VU_ID parent_id; // Brigade parent, if present
+    VU_ID last_obj; // The last objective this unit visited
+    VU_ID air_target; // The ID of any air target (in addition to regular target)
 #ifdef USE_FLANKS
-    GridIndex		lfx, lfy;				// Left flank
-    GridIndex		rfx, rfy;				// Right flank
+    GridIndex lfx, lfy; // Left flank
+    GridIndex rfx, rfy; // Right flank
 #endif
     // sfr: changed to pointer, because of stream functions
-    SmallPathClass	*path;					// The unit's path
-    //		uchar           element;     			// Unit's position
-    UnitDeaggregationData	*deag_data;		// Position data of previously deaggregated elements
+    SmallPathClass *path; // The unit's path
+    // uchar           element;      // Unit's position
+    UnitDeaggregationData *deag_data; // Position data of previously deaggregated elements
 
 public:
     // constructors and serial functions
@@ -115,7 +115,7 @@ public:
     }
     virtual void SetUnitOrders(int o, VU_ID oid);
     void PickFinalLocation(void);
-    //		virtual void SetUnitAction (void);
+    // virtual void SetUnitAction (void);
     virtual int GetCruiseSpeed() const;
     virtual int GetCombatSpeed() const;
     virtual int GetMaxSpeed() const;
@@ -132,8 +132,8 @@ public:
     virtual int GetUnitSupplyNeed(int total);
     virtual int GetUnitFuelNeed(int total);
     virtual void SupplyUnit(int supply, int fuel);
-    virtual int GetDetectionRange(int mt);				// Takes into account emitter status
-    virtual int GetElectronicDetectionRange(int mt);	// Max Electronic detection range, even if turned off
+    virtual int GetDetectionRange(int mt); // Takes into account emitter status
+    virtual int GetElectronicDetectionRange(int mt); // Max Electronic detection range, even if turned off
     virtual int GetRadarMode(void)
     {
         return radar_mode;
@@ -148,7 +148,7 @@ public:
     {
         radar_mode = mode;
     }
-    //		virtual void SetRadarMode (int mode)				{ radar_mode = mode; }
+    // virtual void SetRadarMode (int mode) { radar_mode = mode; }
     virtual void ReturnToSearch(void);
     // 2001-06-27 MODIFIED BY S.G. DIFFERENT DECLARATION THEN FROM FalcEnt.h RESULTS IN IT NOT BEING CALLED!
     // sfr: modified base class
@@ -156,7 +156,7 @@ public:
     {
         search_mode = mode;
     }
-    //		virtual void SetSearchMode (int mode)				{ step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
+    // virtual void SetSearchMode (int mode) { step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
     virtual int CanShootWeapon(int wid);
     virtual int StepRadar(int t, int d, float range);  //me123 modifyed to take tracking/detection range parameter
     virtual int GetVehicleDeagData(SimInitDataClass *simdata, int remote);
@@ -326,7 +326,7 @@ public:
     // END OF ADDED SECTION 2002-03-22
 };
 
-typedef BattalionClass*	Battalion;
+typedef BattalionClass* Battalion;
 
 BattalionClass* NewBattalion(int type, Unit parent);
 

@@ -62,8 +62,8 @@ SIM_FLOAT SimLibMajorFrameTime = 0.06F;
 SIM_FLOAT SimLibMajorFrameRate = 16.667F;
 SIM_FLOAT SimLibTimeOfDay;
 SIM_ULONG SimLibElapsedTime;
-float SimLibElapsedSeconds;						// COBRA - RED - Added Variable of Elasped Simulation Seconds
-float SimLibFrameElapsed, SimLibLastFrameTime;	// COBRA - RED - Added Variable of Elasped Frame Time
+float SimLibElapsedSeconds; // COBRA - RED - Added Variable of Elasped Simulation Seconds
+float SimLibFrameElapsed, SimLibLastFrameTime; // COBRA - RED - Added Variable of Elasped Frame Time
 SIM_UINT SimLibFrameCount = 0;
 SIM_INT SimLibMinorPerMajor = 3;
 

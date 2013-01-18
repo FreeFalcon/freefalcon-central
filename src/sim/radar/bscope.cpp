@@ -13,14 +13,14 @@
 #include "fcc.h"
 #include "campbase.h"
 #include "aircrft.h"
-#include "simdrive.h"	//MI
-#include "fack.h"		//MI
-#include "sms.h"		//MI
-#include "icp.h"		//MI
-#include "cpmanager.h"	//MI
-#include "hud.h"	//MI
-#include "team.h"	//MI
-//#include "fault.h"	//MI
+#include "simdrive.h" //MI
+#include "fack.h" //MI
+#include "sms.h" //MI
+#include "icp.h" //MI
+#include "cpmanager.h" //MI
+#include "hud.h" //MI
+#include "team.h" //MI
+//#include "fault.h" //MI
 //#include "campbase.h" // 2002-02-25 S.G.
 
 #define SCH_ANG_INC  11.5F      /* velocity pointer angle increment - JPG 24 Mar 04 - was 22.5, now 11.5    */
@@ -59,7 +59,7 @@ static float cursor[12][2];
 static int fpass = TRUE;
 
 extern bool g_bEPAFRadarCues, g_bRadarJamChevrons;
-extern bool g_bEnableGRCursorBullseye;	// ASSOCIATOR 3/12/03: Enables Cursor Bullseye in Ground Radar Modes
+extern bool g_bEnableGRCursorBullseye; // ASSOCIATOR 3/12/03: Enables Cursor Bullseye in Ground Radar Modes
 extern float g_fRadarScale;
 extern bool g_bnewAMRAAMdlz; //JPG 7 Apr 04
 
@@ -69,7 +69,7 @@ extern bool g_bIFF;
 extern bool g_bINS;
 void DrawBullseyeData(VirtualDisplay* display, float cursorX, float cursorY);
 
-DWORD	tmpColor = MFD_GREEN; // RV - I-Hawk
+DWORD tmpColor = MFD_GREEN; // RV - I-Hawk
 
 //MI
 void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursorY);
@@ -148,7 +148,7 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
 
     if (mode != GM && mode != GMT && mode != SEA)
     {
-        DrawAzElTicks();	// ASSOCIATOR 3/12/03: Reversed drawing order
+        DrawAzElTicks(); // ASSOCIATOR 3/12/03: Reversed drawing order
         DrawScanMarkers();
     }
 
@@ -343,8 +343,8 @@ void RadarDopplerClass::Display(VirtualDisplay* newDisplay)
 
             DrawRangeTicks();
             DrawWaterline();
-            DrawAzElTicks();	// ASSOCIATOR Added here so that it draws properly in transparent MFD view
-            DrawScanMarkers();	// ASSOCIATOR Added here so that it draws properly in transparent MFD view
+            DrawAzElTicks(); // ASSOCIATOR Added here so that it draws properly in transparent MFD view
+            DrawScanMarkers(); // ASSOCIATOR Added here so that it draws properly in transparent MFD view
             display->SetColor(GetMfdColor(MFD_BULLSEYE)); // JPO
 
             //MI we only get the bullseye readout in the corner if we selected it so
@@ -684,7 +684,7 @@ void RadarDopplerClass::DrawAzElTicks(void)
     /*----------------------------------------*/
     /* Azimuth ticks -30 deg to +30 by 10 deg */
     /*----------------------------------------*/
-    if (!g_bRealisticAvionics)	//MI this is not correct
+    if (!g_bRealisticAvionics) //MI this is not correct
     {
         posStep = (DisplayAreaViewRight - DisplayAreaViewLeft) / 6.0F;
         curPos = DisplayAreaViewLeft;
@@ -744,9 +744,9 @@ void RadarDopplerClass::DrawWaterline(void)
 {
     float yPos, theta;
 
-    static const float	InsideEdge	= 0.08f;
-    static const float	OutsideEdge	= 0.40f;
-    static const float	Height		= 0.04f;
+    static const float InsideEdge = 0.08f;
+    static const float OutsideEdge = 0.40f;
+    static const float Height = 0.04f;
 
     display->SetColor(GetMfdColor(MFD_RADAR_WATERLINE));   // RV - I-Hawk - Draw in blue
 
@@ -762,10 +762,10 @@ void RadarDopplerClass::DrawWaterline(void)
     display->AdjustOriginInViewport(0.0F, yPos);
     display->AdjustRotationAboutOrigin(-platform->Roll());
 
-    display->Line(OutsideEdge,	-Height,	OutsideEdge,	0.0f);
-    display->Line(OutsideEdge,	0.0f,		InsideEdge,		0.0f);
-    display->Line(-OutsideEdge,	-Height,	-OutsideEdge,	0.0f);
-    display->Line(-OutsideEdge,	0.0f,		-InsideEdge,	0.0f);
+    display->Line(OutsideEdge, -Height, OutsideEdge, 0.0f);
+    display->Line(OutsideEdge, 0.0f, InsideEdge, 0.0f);
+    display->Line(-OutsideEdge, -Height, -OutsideEdge, 0.0f);
+    display->Line(-OutsideEdge, 0.0f, -InsideEdge, 0.0f);
 
     display->ZeroRotationAboutOrigin();
     display->CenterOriginInViewport();
@@ -846,13 +846,13 @@ void RadarDopplerClass::DrawScanMarkers(void)
 
 void RadarDopplerClass::DrawRangeTicks(void)
 {
-    static const float Hstart	= 0.90f;
-    static const float Hstop	= 0.98f;
+    static const float Hstart = 0.90f;
+    static const float Hstop = 0.98f;
 
     display->SetColor(GetMfdColor(MFD_LABELS));
-    display->Line(Hstart,	 0.0f,	Hstop,  0.0f);
-    display->Line(Hstart,	 0.5f,	Hstop,  0.5f);
-    display->Line(Hstart,	-0.5f,	Hstop, -0.5f);
+    display->Line(Hstart,  0.0f, Hstop,  0.0f);
+    display->Line(Hstart,  0.5f, Hstop,  0.5f);
+    display->Line(Hstart, -0.5f, Hstop, -0.5f);
 }
 
 void RadarDopplerClass::DrawRange(void)
@@ -956,7 +956,7 @@ void RadarDopplerClass::RWSDisplay(void)
 
     //MI to disable it
     //if(IsSet(EXP)&& !g_bMLU)
-    //	ToggleFlag(EXP);
+    // ToggleFlag(EXP);
 
     display->SetColor(GetMfdColor(MFD_LABELS));
 
@@ -1645,7 +1645,7 @@ void RadarDopplerClass::TWSDisplay(void)
             if (fabs(xPos) < AZL && fabs(yPos) < AZL)
             {
                 if (IsSet(EXP))
-#if 0	// check if its in the box
+#if 0 // check if its in the box
                     &&
                     xPos > tgtx - brange && xPos < tgtx + brange &&
                     yPos > tgty - brange && yPos < tgty + brange
@@ -2355,20 +2355,20 @@ void RadarDopplerClass::DrawACQCursor(void)
             display->SetColor(tempcolor);
         }
 
-        //	}
+        // }
         //else
         //{
-        //	up = min ( max (up, 0.0F), 99.0F);
-        //	lw = min ( max (lw, 0.0F), 99.0F);
+        // up = min ( max (up, 0.0F), 99.0F);
+        // lw = min ( max (lw, 0.0F), 99.0F);
 
-        //	sprintf(str,"%02d",(int)up);
-        //	ShiAssert (strlen(str) < sizeof(str));
-        //	display->TextLeftVertical(TextLeftPos, 2.0F*CursorSize, str);
+        // sprintf(str,"%02d",(int)up);
+        // ShiAssert (strlen(str) < sizeof(str));
+        // display->TextLeftVertical(TextLeftPos, 2.0F*CursorSize, str);
 
-        //	sprintf(str,"%02d",(int)lw);
-        //	ShiAssert (strlen(str) < sizeof(str));
-        //	display->TextLeftVertical(TextLeftPos,-2.0F*CursorSize, str);
-        //	}
+        // sprintf(str,"%02d",(int)lw);
+        // ShiAssert (strlen(str) < sizeof(str));
+        // display->TextLeftVertical(TextLeftPos,-2.0F*CursorSize, str);
+        // }
         //Cobra 11/21/04 IFF count down hack test
         AircraftClass* self = SimDriver.GetPlayerAircraft();
         int mode = 0;
@@ -2533,7 +2533,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     // saving it and restoring after gfx Draw
     // This is the fastest and more harmless way to fix till new code
     // and works fine, as the draw is then stretched by Texture drawing...
-    float	OldScaleX = display->scaleX, OldScaleY = display->scaleY;
+    float OldScaleX = display->scaleX, OldScaleY = display->scaleY;
     display->scaleY = display->scaleX;
 
     switch (type)
@@ -2579,7 +2579,7 @@ void RadarDopplerClass::DrawSymbol(int type, float schweemLen, int age, int flas
     {
         case AimFlash: // jpo draw filled square
         case AimRel:
-            if (g_bRealisticAvionics && (type == AimRel || vuxRealTime & 0x080))  	//MI changed from || flash
+            if (g_bRealisticAvionics && (type == AimRel || vuxRealTime & 0x080))   //MI changed from || flash
             {
                 display->Tri(g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV, //tail flashes faster then flash
                              g_fRadarScale * trackTriH / 2.0f, g_fRadarScale * -trackTriV - 0.035f,
@@ -3429,7 +3429,7 @@ void RadarDopplerClass::DrawReference(VirtualDisplay* display)
 
         case FireControlComputer::Nav:
         case FireControlComputer::ILS:
-        default:	//Catch all the other stuff
+        default: //Catch all the other stuff
             if (TheHud->waypointValid)
             {
                 offset = TheHud->waypointBearing / RefAngle;

@@ -16,10 +16,10 @@ VuEntity
    |
    +-F4SoundPos - VU object interface
         |
-		+-mlrVoiceHandle - handle to mlrVoice :)
-		    +-> mlrVoice - Basic voice processing (doppler, volume)
-			      +-> mlrChannel - interface to API(DSound)?
-		+-mlrVoiceHandle -> mlrVoice
+ +-mlrVoiceHandle - handle to mlrVoice :)
+     +-> mlrVoice - Basic voice processing (doppler, volume)
+       +-> mlrChannel - interface to API(DSound)?
+ +-mlrVoiceHandle -> mlrVoice
 
 mlrVoice are kept in 2 lists own by the gVoiceManager.
 

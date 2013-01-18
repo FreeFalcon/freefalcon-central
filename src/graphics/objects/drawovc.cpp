@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     08Nov03
 
-	- Drawable stratus
+ - Drawable stratus
 \***************************************************************************/
 #include "RenderOW.h"
 #include "Matrix.h"
@@ -18,7 +18,7 @@ extern int g_nGfxFix;
 MEM_POOL Drawable2DCloud::pool;
 #endif
 
-BOOL Drawable2DCloud::greenMode	= FALSE;
+BOOL Drawable2DCloud::greenMode = FALSE;
 Tcolor Drawable2DCloud::litCloudColor = { 0.f };
 
 //static const float TEX_UV_LSB = 1.f/1024.f;

@@ -19,8 +19,8 @@ using std::memcpychk;
 
 
 FalconSendTeamInfoMessage::FalconSendTeamInfoMessage(
-	VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) :
-	FalconEvent (SendTeamInfoMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+ VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) :
+ FalconEvent (SendTeamInfoMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
    // Your Code Goes Here
 }

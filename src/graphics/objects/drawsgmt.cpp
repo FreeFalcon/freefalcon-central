@@ -38,11 +38,11 @@ extern OTWDriverClass OTWDriver;
 bool g_bNoTrails = 0;
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableTrail::pool;
-MEM_POOL	TrailElement::pool;
+MEM_POOL DrawableTrail::pool;
+MEM_POOL TrailElement::pool;
 #endif
 
-BOOL DrawableTrail::greenMode	= FALSE;
+BOOL DrawableTrail::greenMode = FALSE;
 Tcolor DrawableTrail::litCloudColor = { 0.f };
 
 // this define handles LODing each seg with
@@ -53,18 +53,18 @@ Tcolor DrawableTrail::litCloudColor = { 0.f };
 //static const float TEX_UV_MIN = TEX_UV_LSB;
 //static const float TEX_UV_MAX = 1.f-TEX_UV_LSB;
 
-#define SEG_LOD_VAL		20.0f
-#define HIGH_LOD_VAL	(SEG_LOD_VAL * 2.0f )
+#define SEG_LOD_VAL 20.0f
+#define HIGH_LOD_VAL (SEG_LOD_VAL * 2.0f )
 
-#define NUM_HIGH_LOD_VERTS	18
-#define HALF_HIGH_LOD_VERTS	(NUM_HIGH_LOD_VERTS/2)
+#define NUM_HIGH_LOD_VERTS 18
+#define HALF_HIGH_LOD_VERTS (NUM_HIGH_LOD_VERTS/2)
 
 Tpoint gCircleVerts[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gV0[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gV1[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gVHead1[5];
-extern Texture	gAplTextures[];
-extern Texture	gAplTexturesGreen[];
+extern Texture gAplTextures[];
+extern Texture gAplTexturesGreen[];
 extern char FalconObjectDataDir[];
 BOOL gHeadOn = FALSE;
 
@@ -75,33 +75,33 @@ BOOL gTextured;
 // Trail Type Flags
 // ----------------
 #define TTF_CHARACTERS "TLS"
-#define TTF_TIMESPACED		(1<<0) // use spacing value a a time (in seconds) instead of distance
-#define TTF_LINE			(1<<1) // use a simple line for the trail
-#define TTF_ACMILINE		(1<<8) // render as a line in the ACMI viewer
+#define TTF_TIMESPACED (1<<0) // use spacing value a a time (in seconds) instead of distance
+#define TTF_LINE (1<<1) // use a simple line for the trail
+#define TTF_ACMILINE (1<<8) // render as a line in the ACMI viewer
 #define TTF_SEGMENTED       (1<<2) // always render as a segmented trail
 
 typedef struct TrailTypeEntry
 {
-    //BOOL	selfIlum;
-    //float 	initLight;
+    //BOOL selfIlum;
+    //float  initLight;
 
-    float	posVariationStart;
-    float	posVariationEnd;
+    float posVariationStart;
+    float posVariationEnd;
 
-    float	spacing,
+    float spacing,
             spcVariation; // distance (or elapsed time) between nodes.
 
-    float	radiusStart,			// initial radius
+    float radiusStart, // initial radius
             radiusVariationStart,   // initial variation
             radiusChange,           // how much it grows/shrinks over it's life
             radiusChangeVariation;  // randomize above
 
-    float	lifespan; // in seconds
+    float lifespan; // in seconds
     float   trimAmt;
-    float	r, g, b, a;
-    float	rLite, gLite, bLite;
+    float r, g, b, a;
+    float rLite, gLite, bLite;
     int     texID;
-    int		flags,
+    int flags,
             linkID;
     float   lodBiasFactor;
 
@@ -132,7 +132,7 @@ void LoadTrails()
     int l;
     for(l=0;l<nTypes;l++)
     {
-    	TrailTex[l]=0;
+     TrailTex[l]=0;
     }
     */
     TrailtexIDs = 0;
@@ -155,25 +155,25 @@ void LoadTrails()
 
         types[ind].posVariationStart = TokenF(0, 0);
         types[ind].posVariationEnd  = TokenF(0, 0);
-        types[ind].spacing			= TokenF(0, 0);
-        types[ind].spcVariation		= TokenF(0, 0);
-        types[ind].radiusStart		= TokenF(0, 0);
-        types[ind].radiusVariationStart	= TokenF(0, 0);
-        types[ind].radiusChange		= TokenF(0, 0);
-        types[ind].lifespan			= TokenF(0, 0);
-        types[ind].texID			= TokenI(0, 0);
-        types[ind].r				= TokenF(0, 0);
-        types[ind].g				= TokenF(0, 0);
-        types[ind].b				= TokenF(0, 0);
-        types[ind].a				= TokenF(0, 0);
-        types[ind].rLite			= TokenF(0, 0);
-        types[ind].gLite			= TokenF(0, 0);
-        types[ind].bLite			= TokenF(0, 0);
-        types[ind].flags			= TokenFlags(0, 0, TTF_CHARACTERS); // note flags must be in low to high bit order
-        types[ind].linkID			= TokenI(0, 0);
-        types[ind].lodBiasFactor	= static_cast<float>(TokenI(0, 0));
+        types[ind].spacing = TokenF(0, 0);
+        types[ind].spcVariation = TokenF(0, 0);
+        types[ind].radiusStart = TokenF(0, 0);
+        types[ind].radiusVariationStart = TokenF(0, 0);
+        types[ind].radiusChange = TokenF(0, 0);
+        types[ind].lifespan = TokenF(0, 0);
+        types[ind].texID = TokenI(0, 0);
+        types[ind].r = TokenF(0, 0);
+        types[ind].g = TokenF(0, 0);
+        types[ind].b = TokenF(0, 0);
+        types[ind].a = TokenF(0, 0);
+        types[ind].rLite = TokenF(0, 0);
+        types[ind].gLite = TokenF(0, 0);
+        types[ind].bLite = TokenF(0, 0);
+        types[ind].flags = TokenFlags(0, 0, TTF_CHARACTERS); // note flags must be in low to high bit order
+        types[ind].linkID = TokenI(0, 0);
+        types[ind].lodBiasFactor = static_cast<float>(TokenI(0, 0));
 
-        types[ind].trimAmt			= 1.0f;
+        types[ind].trimAmt = 1.0f;
 
         if (!types[ind].lodBiasFactor)
         {
@@ -198,11 +198,11 @@ void LoadTrails()
 }
 
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
 // for when fakerand just won't do
-#define	NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
-#define NRAND	 ( 1.0f - 2.0F * NRANDPOS )
+#define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
+#define NRAND  ( 1.0f - 2.0F * NRANDPOS )
 
 class TrailNode : public ANode
 {
@@ -328,8 +328,8 @@ void DrawableTrail::ReleaseToSfx(void)
 {
     OTWDriver.AddSfxRequest(
         new SfxClass(
-            Type->lifespan,			// time to live
-            this));		// scale
+            Type->lifespan, // time to live
+            this)); // scale
 }
 
 
@@ -343,8 +343,8 @@ TrailNode *GetATrailNode(Tpoint *worldPos, TrailTypeEntry *Type)
     /* // MLR 5/4/2004 - Storage list causes CTD for some unknown reason.
     if(n=(TrailNode *)gTrailNodeStorage.RemHead())
     {
-    	n->Init(worldPos,Type);
-    	gStorageCount--;
+     n->Init(worldPos,Type);
+     gStorageCount--;
     }
     else*/
     n = new TrailNode(worldPos, Type);
@@ -611,11 +611,11 @@ void DrawableTrail::TrimTrail(int len)   // len in seconds!
         /*
         if(len)
         {
-        	//Type->trimAmt=1.0/len;
+         //Type->trimAmt=1.0/len;
         }
         else
         {
-        	Type->trimAmt=1;
+         Type->trimAmt=1;
         }
         */
     }
@@ -850,10 +850,10 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                         if (LOD < 6)
                         {
                             // setup UV mapping.
-                            /*							v0.u = TEX_UV_MIN, v0.v = TEX_UV_MIN;
-                            							v1.u = TEX_UV_MAX, v1.v = TEX_UV_MIN;
-                            							v2.u = TEX_UV_MAX, v2.v = TEX_UV_MAX;
-                            							v3.u = TEX_UV_MIN, v3.v = TEX_UV_MAX;*/
+                            /* v0.u = TEX_UV_MIN, v0.v = TEX_UV_MIN;
+                             v1.u = TEX_UV_MAX, v1.v = TEX_UV_MIN;
+                             v2.u = TEX_UV_MAX, v2.v = TEX_UV_MAX;
+                             v3.u = TEX_UV_MIN, v3.v = TEX_UV_MAX;*/
 
                             // draw billboards
                             TrailTypeEntry *prevnodetype = 0;
@@ -880,7 +880,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                                         }
                                         else
                                         {
-                                            float	PrevLite = prevnodetype->rLite;
+                                            float PrevLite = prevnodetype->rLite;
                                             v0.r = v1.r = litCloudColor.r * prevnodetype->r + PrevLite;
                                             v2.r = v3.r = litCloudColor.r * prevnodetype->r * .68f + PrevLite;
 
@@ -903,11 +903,11 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int LOD)
                                 n = (TrailNode *)n->GetSucc();
 
                                 /*
-                                								// skip some nodes based on LOD level
-                                								for(int l=0;l<LOD && n;l++)
-                                								{
-                                									n=(TrailNode *)n->GetSucc();
-                                								}
+                                 // skip some nodes based on LOD level
+                                 for(int l=0;l<LOD && n;l++)
+                                 {
+                                 n=(TrailNode *)n->GetSucc();
+                                 }
                                 */
 
                             }
@@ -999,27 +999,27 @@ void DrawableTrail::DrawNode(class RenderOTW *renderer, int LOD, TrailNode *n)
     Tpoint segpos;
     float segradius;
 
-    D3DDYNVERTEX	v[4];
+    D3DDYNVERTEX v[4];
 
     segpos    =  n->Position;
     segradius =  n->Radius * 2.0f;
 
-    /*	Tpoint os,pv;
+    /* Tpoint os,pv;
 
-    	renderer->TransformPointToView(&segpos,&pv);
+     renderer->TransformPointToView(&segpos,&pv);
 
-    	os.x =  0.f;
-    	os.y = -segradius * 2.f;
-    	os.z = -segradius * 2.f;
-    	renderer->TransformBillboardPoint(&os,&pv,&v0);*/
+     os.x =  0.f;
+     os.y = -segradius * 2.f;
+     os.z = -segradius * 2.f;
+     renderer->TransformBillboardPoint(&os,&pv,&v0);*/
     v[0].pos.x =  0.f;
     v[0].pos.y = -segradius;
     v[0].pos.z = -segradius;
 
-    /*	os.x =  0.f;
-    	os.y =  segradius * 2.f;
-    	os.z = -segradius * 2.f;
-    	renderer->TransformBillboardPoint(&os,&pv,&v1);*/
+    /* os.x =  0.f;
+     os.y =  segradius * 2.f;
+     os.z = -segradius * 2.f;
+     renderer->TransformBillboardPoint(&os,&pv,&v1);*/
     v[1].pos.x =  0.f;
     v[1].pos.y =  segradius;
     v[1].pos.z = -segradius;
@@ -1045,10 +1045,10 @@ void DrawableTrail::DrawNode(class RenderOTW *renderer, int LOD, TrailNode *n)
     v[2].tu = TEX_UV_MAX, v[2].tv = TEX_UV_MAX;
     v[3].tu = TEX_UV_MIN, v[3].tv = TEX_UV_MAX;
 
-    /*	v0.q = v0.csZ * Q_SCALE;
-    	v1.q = v1.csZ * Q_SCALE;
-    	v2.q = v2.csZ * Q_SCALE;
-    	v3.q = v3.csZ * Q_SCALE;
+    /* v0.q = v0.csZ * Q_SCALE;
+     v1.q = v1.csZ * Q_SCALE;
+     v2.q = v2.csZ * Q_SCALE;
+     v3.q = v3.csZ * Q_SCALE;
     */
 
     v[0].dwColour = F_TO_ARGB(n->Alpha, v0.r, v0.g, v0.b);
@@ -1083,10 +1083,10 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             1.0f
         };
 
-        v0.u =  1,	v0.v = 0;
-        v1.u =  1,	v1.v = .5;
-        v2.u =  0,	v2.v = .5;
-        v3.u =  0,	v3.v = 0;
+        v0.u =  1, v0.v = 0;
+        v1.u =  1, v1.v = .5;
+        v2.u =  0, v2.v = .5;
+        v3.u =  0, v3.v = 0;
 
 
         Tpoint os, pv;
@@ -1154,10 +1154,10 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             1.0f
         };
 
-        v0.u =  5,	v0.v = 0;
-        v1.u =  5,	v1.v = 1;
-        v2.u =  0,	v2.v = 1;
-        v3.u =  0,	v3.v = 0;
+        v0.u =  5, v0.v = 0;
+        v1.u =  5, v1.v = 1;
+        v2.u =  0, v2.v = 1;
+        v3.u =  0, v3.v = 0;
 
 
         Tpoint os, pv;
@@ -1361,27 +1361,27 @@ n=(TrailNode *)n->GetSucc();
 
 while(n && c>0)
 {
-	n2=n;
-	n=(TrailNode *)n->GetSucc();
-	c--;
+ n2=n;
+ n=(TrailNode *)n->GetSucc();
+ c--;
 }
 
 n=n2;
 
 if(n)
 {
-	float dt = (TheTimeManager.GetClockTime() - n->NowTime) * .001f * Type->trimAmt;
-	//renderer->TransformPointToScreen(&n->Position,&b);
-	if(dt < Type->lifespan)
-	{
-		alpha = n->Alpha * 255;
-		if(alpha>255)
-			alpha=255;
-		color = (alpha<<24) + (red<<0) + (green<<8) + (blue<<16);
+ float dt = (TheTimeManager.GetClockTime() - n->NowTime) * .001f * Type->trimAmt;
+ //renderer->TransformPointToScreen(&n->Position,&b);
+ if(dt < Type->lifespan)
+ {
+ alpha = n->Alpha * 255;
+ if(alpha>255)
+ alpha=255;
+ color = (alpha<<24) + (red<<0) + (green<<8) + (blue<<16);
 
-		renderer->SetColor(color);
-		renderer->Render3DLine(&prevpos,&n->StartPos);
-	}
+ renderer->SetColor(color);
+ renderer->Render3DLine(&prevpos,&n->StartPos);
+ }
 }
 */
 
@@ -1441,25 +1441,25 @@ if(n)
 //#include "DrawSgmt.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableTrail::pool;
-MEM_POOL	TrailElement::pool;
+MEM_POOL DrawableTrail::pool;
+MEM_POOL TrailElement::pool;
 #endif
 
 // this define handles LODing each seg with
 // more or less triangles.  It basically corresponds to a pixel
 // dimension
-#define SEG_LOD_VAL		20.0f
-#define HIGH_LOD_VAL	(SEG_LOD_VAL * 2.0f )
+#define SEG_LOD_VAL 20.0f
+#define HIGH_LOD_VAL (SEG_LOD_VAL * 2.0f )
 
-#define NUM_HIGH_LOD_VERTS	18
-#define HALF_HIGH_LOD_VERTS	(NUM_HIGH_LOD_VERTS/2)
+#define NUM_HIGH_LOD_VERTS 18
+#define HALF_HIGH_LOD_VERTS (NUM_HIGH_LOD_VERTS/2)
 
 Tpoint gCircleVerts[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gV0[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gV1[NUM_HIGH_LOD_VERTS];
 ThreeDVertex gVHead1[5];
-extern Texture	gAplTextures[];
-extern Texture	gAplTexturesGreen[];
+extern Texture gAplTextures[];
+extern Texture gAplTexturesGreen[];
 extern char FalconObjectDataDir[];
 BOOL gHeadOn = FALSE;
 
@@ -1469,18 +1469,18 @@ BOOL gTextured;
 
 typedef struct TrailTypeEntry
 {
-    BOOL	selfIlum;
-    float 	initLight;
-    float	lightFade;
-    float	tileAmt;
-    float	radiusStart;
-    float	maxRadius;
-    float	expandRate;
-    float	disipation;
-    float	r, g, b, a;
-    float	rLite, gLite, bLite;
-    Texture	*tex;
-    int		headOnTex;
+    BOOL selfIlum;
+    float  initLight;
+    float lightFade;
+    float tileAmt;
+    float radiusStart;
+    float maxRadius;
+    float expandRate;
+    float disipation;
+    float r, g, b, a;
+    float rLite, gLite, bLite;
+    Texture *tex;
+    int headOnTex;
 } TrailTypeEntry;
 
 
@@ -1494,34 +1494,34 @@ static Texture GunTrailTexture;
 // !!! Have to manually add new trail types here
 static TrailTypeEntry types[] =
 {
-    //   silum	ilight	lfade	    tile    radius   rmax	 expand	  decay/s   red    green  blue   alpha	 NA	   NA	 NA	   texture
-    {FALSE,	1.0f,	0.0040f,	3.0f,  10.0f, 20.0f,  0.018f,  0.0003f,  1.00f, 1.00f, 1.00f, 1.00f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 0 Contrail
-    {FALSE,	1.0f,	0.0040f,	3.0f,   2.0f, 20.0f,  0.000f,  0.0016f,  0.90f, 0.90f, 0.90f, 0.50f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 1 Vortex
+    //   silum ilight lfade     tile    radius   rmax  expand   decay/s   red    green  blue   alpha  NA    NA  NA    texture
+    {FALSE, 1.0f, 0.0040f, 3.0f,  10.0f, 20.0f,  0.018f,  0.0003f,  1.00f, 1.00f, 1.00f, 1.00f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 0 Contrail
+    {FALSE, 1.0f, 0.0040f, 3.0f,   2.0f, 20.0f,  0.000f,  0.0016f,  0.90f, 0.90f, 0.90f, 0.50f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 1 Vortex
 
 #if 0
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.0f,  6.0f,  0.032f,  0.00008f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 2 Missle Trail AIM120
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.0f,  6.0f,  0.032f,  0.00008f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 2 Missle Trail AIM120
 #else
     // OW - almost twice as thick, and twice the decay time
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.5f,  9.0f,  0.032f,  0.00004f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 2 Missle Trail AIM120
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.5f,  9.0f,  0.032f,  0.00004f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 2 Missle Trail AIM120
 #endif
 
-    {TRUE,	1.0f,	0.0000f,	1.0f,   0.5f,  0.5f,  0.000f,  0.0004f,  0.75f, 0.30f, 0.30f, 0.65f, 0.0f, 0.0f, 0.0f, NULL, 0 },   // 3 tracers
-    {TRUE,	1.0f,	0.0000f,	3.0f,   0.5f,  0.5f,  0.000f,  0.016f,   1.00f, 0.80f, 0.40f, 0.50f, 0.0f, 0.0f, 0.0f, NULL, 0 },				  // 4 Tracer
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.0f, 34.0f,  0.018f,  0.00016f, 0.10f, 0.10f, 0.10f, 0.60f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 5 Smoke
-    {TRUE,	1.0f,	0.0000f,	1.0f,   4.0f, 44.0f,  0.002f,  0.0007f,  0.75f, 0.30f, 0.30f, 0.80f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0  },  // 6 Fire
-    {FALSE,	1.0f,	0.0040f,	3.0f,   5.0f, 35.0f,  0.002f,  0.00016f, 0.20f, 0.20f, 0.20f, 0.80f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 }, // 7 Exploding piece trail
-    {TRUE,	1.0f,	0.0000f,	3.0f,   4.0f,  4.0f,  0.000f,  0.0004f,  0.75f, 0.30f, 0.30f, 0.80f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0 },   // 8 Thinner Fire
-    {TRUE,	1.0f,	0.0000f,	3.0f,  50.0f, 50.0f,  0.000f,  0.00008f, 0.90f, 0.90f, 0.90f, 1.00f, 0.0f, 0.0f, 0.0f, NULL }, // 9 Missle Trail distant
-    {FALSE,	1.0f,	0.0040f,	1.0f,  6.0f,  34.0f,  0.0025f, 0.00008f, 0.40f, 0.40f, 0.30f, 1.00f, 0.0f, 0.0f, 0.0f, NULL }, // 10 Dust
-    {FALSE,	1.0f,	0.0040f,	2.0f,  1.0f,  24.0f,  0.022f,  0.00173f, 0.60f, 0.60f, 0.60f, 0.90f, 0.0f, 0.0f, 0.0f, &GunTrailTexture, 10 }, // 11 Gun fire
-    {TRUE,	1.0f,	0.0000f,	1.0f,   .1f,    .1f,  0.000f,  0.00000f, 1.00f, 0.00f, 0.00f, 1.00f, 0.0f, 0.0f, 0.0f, NULL, 0 }, // 12 left ACMI wing trail
-    {TRUE,	1.0f,	0.0000f,	1.0f,   .1f,    .1f,  0.000f,  0.00000f, 0.00f, 1.00f, 0.00f, 1.00f, 0.0f, 0.0f, 0.0f, NULL, 0 }, // 13 right ACMI wing trail
-    {FALSE,	1.0f,	0.0040f,	3.0f,   1.0f,  1.0f,  0.000f,  0.00168f, 0.90f, 0.90f, 0.90f, 0.60f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 14 Rocket Trail
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.0f, 20.0f,  0.038f,  0.00004f, 0.50f, 0.50f, 0.50f, 0.70f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 15 Missile Smoke
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.0f,  2.0f,  0.032f,  0.00008f, 0.90f, 0.90f, 0.90f, 0.70f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 16 Generic Missle Trail
-    {FALSE,	1.0f,	0.0040f,	1.0f,   1.0f, 34.0f,  0.018f,  0.00012f, 0.10f, 0.10f, 0.10f, 1.00f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 17 Darker Smoke
-    {TRUE,	1.0f,	0.0000f,	1.0f,   3.0f, 26.0f,  0.010f,  0.00040f,  0.75f, 0.30f, 0.30f, 1.00f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0 },   // 18 Fire
-    {FALSE,	1.0f,	0.0040f,	1.0f,   0.5f,  2.0f,  0.032f,  0.00004f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 19 wing tip vortex
+    {TRUE, 1.0f, 0.0000f, 1.0f,   0.5f,  0.5f,  0.000f,  0.0004f,  0.75f, 0.30f, 0.30f, 0.65f, 0.0f, 0.0f, 0.0f, NULL, 0 },   // 3 tracers
+    {TRUE, 1.0f, 0.0000f, 3.0f,   0.5f,  0.5f,  0.000f,  0.016f,   1.00f, 0.80f, 0.40f, 0.50f, 0.0f, 0.0f, 0.0f, NULL, 0 },   // 4 Tracer
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.0f, 34.0f,  0.018f,  0.00016f, 0.10f, 0.10f, 0.10f, 0.60f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 5 Smoke
+    {TRUE, 1.0f, 0.0000f, 1.0f,   4.0f, 44.0f,  0.002f,  0.0007f,  0.75f, 0.30f, 0.30f, 0.80f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0  },  // 6 Fire
+    {FALSE, 1.0f, 0.0040f, 3.0f,   5.0f, 35.0f,  0.002f,  0.00016f, 0.20f, 0.20f, 0.20f, 0.80f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 }, // 7 Exploding piece trail
+    {TRUE, 1.0f, 0.0000f, 3.0f,   4.0f,  4.0f,  0.000f,  0.0004f,  0.75f, 0.30f, 0.30f, 0.80f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0 },   // 8 Thinner Fire
+    {TRUE, 1.0f, 0.0000f, 3.0f,  50.0f, 50.0f,  0.000f,  0.00008f, 0.90f, 0.90f, 0.90f, 1.00f, 0.0f, 0.0f, 0.0f, NULL }, // 9 Missle Trail distant
+    {FALSE, 1.0f, 0.0040f, 1.0f,  6.0f,  34.0f,  0.0025f, 0.00008f, 0.40f, 0.40f, 0.30f, 1.00f, 0.0f, 0.0f, 0.0f, NULL }, // 10 Dust
+    {FALSE, 1.0f, 0.0040f, 2.0f,  1.0f,  24.0f,  0.022f,  0.00173f, 0.60f, 0.60f, 0.60f, 0.90f, 0.0f, 0.0f, 0.0f, &GunTrailTexture, 10 }, // 11 Gun fire
+    {TRUE, 1.0f, 0.0000f, 1.0f,   .1f,    .1f,  0.000f,  0.00000f, 1.00f, 0.00f, 0.00f, 1.00f, 0.0f, 0.0f, 0.0f, NULL, 0 }, // 12 left ACMI wing trail
+    {TRUE, 1.0f, 0.0000f, 1.0f,   .1f,    .1f,  0.000f,  0.00000f, 0.00f, 1.00f, 0.00f, 1.00f, 0.0f, 0.0f, 0.0f, NULL, 0 }, // 13 right ACMI wing trail
+    {FALSE, 1.0f, 0.0040f, 3.0f,   1.0f,  1.0f,  0.000f,  0.00168f, 0.90f, 0.90f, 0.90f, 0.60f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 14 Rocket Trail
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.0f, 20.0f,  0.038f,  0.00004f, 0.50f, 0.50f, 0.50f, 0.70f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 15 Missile Smoke
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.0f,  2.0f,  0.032f,  0.00008f, 0.90f, 0.90f, 0.90f, 0.70f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 16 Generic Missle Trail
+    {FALSE, 1.0f, 0.0040f, 1.0f,   1.0f, 34.0f,  0.018f,  0.00012f, 0.10f, 0.10f, 0.10f, 1.00f, 0.0f, 0.0f, 0.0f, &SmokeTrailTexture, 10 },  // 17 Darker Smoke
+    {TRUE, 1.0f, 0.0000f, 1.0f,   3.0f, 26.0f,  0.010f,  0.00040f,  0.75f, 0.30f, 0.30f, 1.00f, 0.0f, 0.0f, 0.0f, &FireTrailTexture, 0 },   // 18 Fire
+    {FALSE, 1.0f, 0.0040f, 1.0f,   0.5f,  2.0f,  0.032f,  0.00004f, 0.90f, 0.90f, 0.90f, 0.95f, 0.0f, 0.0f, 0.0f, &MissleTrailTexture, 7 }, // 19 wing tip vortex
 };
 static const int nTypes = sizeof(types) / sizeof(types[0]);
 static const char TRAILFILE[] = "trail.dat";
@@ -1530,14 +1530,14 @@ extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 void LoadTrails()
 {
     int ind;
-    float 	initLight;
-    float	lightFade;
-    float	tileAmt;
-    float	radiusStart;
-    float	maxRadius;
-    float	expandRate;
-    float	disipation;
-    float	r, g, b, a;
+    float  initLight;
+    float lightFade;
+    float tileAmt;
+    float radiusStart;
+    float maxRadius;
+    float expandRate;
+    float disipation;
+    float r, g, b, a;
 
     TrailTypeEntry *tp;
     char path[_MAX_PATH];
@@ -1613,11 +1613,11 @@ static const Texture* liteTextures[] =
 };
 static const int nLiteTextures = sizeof(liteTextures) / sizeof(liteTextures[0]);
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
 // for when fakerand just won't do
-#define	NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
-#define NRAND	 ( 1.0f - 2.0F * NRANDPOS )
+#define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
+#define NRAND  ( 1.0f - 2.0F * NRANDPOS )
 
 
 
@@ -1655,7 +1655,7 @@ DrawableTrail::DrawableTrail(int trailType, float scale)
 DrawableTrail::~DrawableTrail(void)
 {
     // Delete this object's trail
-    delete head;	// (recursively deletes entire trail in TrailElement destructor)
+    delete head; // (recursively deletes entire trail in TrailElement destructor)
     head = NULL;
 }
 
@@ -1744,8 +1744,8 @@ int DrawableTrail::RewindTrail(DWORD now)
 \***************************************************************************/
 void DrawableTrail::TrimTrail(int len)
 {
-    int				i = 0;
-    TrailElement*	t = head;
+    int i = 0;
+    TrailElement* t = head;
 
     if (len == 0)
     {
@@ -1760,7 +1760,7 @@ void DrawableTrail::TrimTrail(int len)
 
             if (i == len)
             {
-                delete t->next;	// Recursivly deletes the rest of the trail
+                delete t->next; // Recursivly deletes the rest of the trail
                 t->next = NULL;
                 break;
             }
@@ -1778,18 +1778,18 @@ void DrawableTrail::TrimTrail(int len)
 //void DrawableTrail::Draw( class RenderOTW *renderer, int LOD )
 void DrawableTrail::Draw(class RenderOTW *renderer, int)
 {
-    ThreeDVertex		v0, v1, v2, v3;
-    TrailElement		*current;
-    float				alpha;
-    float				tile;
-    int					i = 0;
-    int					dT;
-    ThreeDVertex		vS, vE;
-    Tpoint				cpos, cend;
-    int					lineColor = 0;
-    float 				width1, width2;
-    float				lightIntensity;
-    float				dx, dy;
+    ThreeDVertex v0, v1, v2, v3;
+    TrailElement *current;
+    float alpha;
+    float tile;
+    int i = 0;
+    int dT;
+    ThreeDVertex vS, vE;
+    Tpoint cpos, cend;
+    int lineColor = 0;
+    float  width1, width2;
+    float lightIntensity;
+    float dx, dy;
 
     gTextured = FALSE;
 
@@ -1809,33 +1809,33 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         gTextured = TRUE;
 
         // Do texturing
-        //		if(renderer->GetAlphaMode()) //JAM - FIXME
+        // if(renderer->GetAlphaMode()) //JAM - FIXME
         renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
-        //		else
-        //			renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
+        // else
+        // renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
 
         if (renderer->GetFilteringMode())
         {
             renderer->context.SetState(MPR_STA_TEX_FILTER, MPR_TX_BILINEAR);
-            //			renderer->context.InvalidateState();
+            // renderer->context.InvalidateState();
         }
 
         renderer->context.SelectTexture1(types[type].tex->TexHandle());
     }
     else
     {
-        //		if(renderer->GetSmoothShadingMode())
+        // if(renderer->GetSmoothShadingMode())
         renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
-        //		else
-        //			renderer->context.RestoreState(STATE_SOLID);
+        // else
+        // renderer->context.RestoreState(STATE_SOLID);
     }
 
     renderer->context.SetState(MPR_STA_ALPHA_OP_FUNCTION, MPR_TO_MODULATE); //JAM 18Oct03
 
     // Start at the head of the trail
-    current	= head;
+    current = head;
     dT = (TheTimeManager.GetClockTime() - head->time);
-    alpha	= types[type].a
+    alpha = types[type].a
               - types[type].disipation * dT;
 
     if (alpha < 0.001f)
@@ -1849,8 +1849,8 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
         return;
     }
 
-    radius	= types[type].radiusStart;
-    lightIntensity	= types[type].initLight - types[type].lightFade * dT;
+    radius = types[type].radiusStart;
+    lightIntensity = types[type].initLight - types[type].lightFade * dT;
 
     if (lightIntensity > 1.0f)
         lightIntensity = 1.0f;
@@ -1987,7 +1987,7 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             // Somehow the next line can CTD.  Wacky!  Let's do more checks and see if the CTD moves.
             alpha  -= types[type].disipation * current->next->time;
 
-        radius	+= types[type].expandRate * current->next->time;
+        radius += types[type].expandRate * current->next->time;
         radius = min(radius, types[type].maxRadius);
 
         if (gTextured && !types[type].selfIlum)
@@ -2072,15 +2072,15 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             {
                 if (!sGreenMode)
                 {
-                    lineColor =	((unsigned int)(alpha * 255.0f) << 24) +	// alpha
-                                ((unsigned int)(types[type].bLite * 255.0f) << 16) +	// blue
-                                ((unsigned int)(types[type].gLite * 255.0f) << 8)  +	// green
-                                ((unsigned int)(types[type].rLite * 255.0f));		 	// red
+                    lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
+                                ((unsigned int)(types[type].bLite * 255.0f) << 16) + // blue
+                                ((unsigned int)(types[type].gLite * 255.0f) << 8)  + // green
+                                ((unsigned int)(types[type].rLite * 255.0f));   // red
                 }
                 else
                 {
                     vE.g = (types[type].gLite + types[type].rLite + types[type].bLite) * 0.33f;
-                    lineColor =	((unsigned int)(alpha * 255.0f) << 24) +	// alpha
+                    lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
                                 ((unsigned int)(vE.g * 255.0f) << 8); // green
                 }
             }
@@ -2099,12 +2099,12 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
                 if (keepStaleSegs == FALSE)
                 {
                     if (current->next && current->next->next && !F4IsBadReadPtr(current->next, sizeof(TrailElement)) && !F4IsBadReadPtr(current->next->next, sizeof(TrailElement))) // JB 010220 CTD
-                        delete current->next->next;	// Recursivly deletes the rest of the trail
+                        delete current->next->next; // Recursivly deletes the rest of the trail
 
-                    current->next->next = NULL;	// Terminate the trail at the current point
+                    current->next->next = NULL; // Terminate the trail at the current point
                 }
 
-                alpha = 0.001f;				// Clamp alpha to not less than 0
+                alpha = 0.001f; // Clamp alpha to not less than 0
             }
 
             current = current->next;
@@ -2120,12 +2120,12 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             if (keepStaleSegs == FALSE)
             {
                 if (!F4IsBadWritePtr(current->next, sizeof(TrailElement))) // JB 010222 CTD
-                    delete current->next->next;	// Recursivly deletes the rest of the trail
+                    delete current->next->next; // Recursivly deletes the rest of the trail
 
-                current->next->next = NULL;	// Terminate the trail at the current point
+                current->next->next = NULL; // Terminate the trail at the current point
             }
 
-            alpha = 0.001f;				// Clamp alpha to not less than 0
+            alpha = 0.001f; // Clamp alpha to not less than 0
         }
 
         // Update the MPR verticies for the two new end points
@@ -2209,8 +2209,8 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
             DWORD color;
 
             color = 0xFF000000 |
-                    ((FloatToInt32(vS.r * 255.9f) & 0xFF))			|
-                    ((FloatToInt32(vS.g * 255.9f) & 0xFF) << 8)		|
+                    ((FloatToInt32(vS.r * 255.9f) & 0xFF)) |
+                    ((FloatToInt32(vS.g * 255.9f) & 0xFF) << 8) |
                     ((FloatToInt32(vS.b * 255.9f) & 0xFF) << 16);
 
             renderer->context.SelectForegroundColor(~color);
@@ -2401,15 +2401,15 @@ void DrawableTrail::Draw(class RenderOTW *renderer, int)
 
 /***************************************************************************\
     Help function to compute the transformed locations of the corners of
-	a segment end given the world space location of the end point
+ a segment end given the world space location of the end point
 \***************************************************************************/
 void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoint *end, ThreeDVertex *xformLeft, ThreeDVertex *xformRight)
 {
-    Tpoint	left, right;
-    Tpoint	UP, AT, LEFT, LOOK;
-    float	dx, dy;
-    float	widthX, widthY, widthZ;
-    float	mag, normalizer;
+    Tpoint left, right;
+    Tpoint UP, AT, LEFT, LOOK;
+    float dx, dy;
+    float widthX, widthY, widthZ;
+    float mag, normalizer;
     int i;
 
     gHeadOn = FALSE;
@@ -2621,7 +2621,7 @@ void DrawableTrail::ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoi
 
 /***************************************************************************\
     This function is called from the miscellanious texture loader function.
-	It must be hardwired into that function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void DrawableTrail::SetupTexturesOnDevice( DWORD rc )
 void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
@@ -2799,7 +2799,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
 
 /***************************************************************************\
     This function is called from the miscellanious texture cleanup function.
-	It must be hardwired into that function.
+ It must be hardwired into that function.
 \***************************************************************************/
 //void DrawableTrail::ReleaseTexturesOnDevice( DWORD rc )
 void DrawableTrail::ReleaseTexturesOnDevice(DXContext *rc)
@@ -2818,13 +2818,13 @@ void DrawableTrail::ReleaseTexturesOnDevice(DXContext *rc)
 
 /***************************************************************************\
     Update the light level on the smoke and vapor trails.
-	NOTE:  Since the textures are static, this function can also
-		   be static, so the self parameter is ignored.
+ NOTE:  Since the textures are static, this function can also
+    be static, so the self parameter is ignored.
 \***************************************************************************/
 //void DrawableTrail::TimeUpdateCallback( void *self )
 void DrawableTrail::TimeUpdateCallback(void *)
 {
-    int		i;
+    int i;
 
     // Get the light level from the time of day manager
     TheTimeOfDay.GetTextureLightingColor(&gLight);
@@ -2840,7 +2840,7 @@ void DrawableTrail::TimeUpdateCallback(void *)
     // Update all the textures which aren't self illuminating
     /*
     for (i=0; i<nLiteTextures; i++) {
-    	liteTextures[i]->palette->LightTexturePalette( &light );
+     liteTextures[i]->palette->LightTexturePalette( &light );
     }
     */
 }

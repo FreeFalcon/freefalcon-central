@@ -20,7 +20,7 @@
 #ifndef SUPPLY_H
 #define SUPPLY_H
 
-#define SUPPLY_PT_FUEL		10000			// How many lbs of fuel each point of supply fuel is worth
+#define SUPPLY_PT_FUEL 10000 // How many lbs of fuel each point of supply fuel is worth
 
 // ==================
 // Supply functions

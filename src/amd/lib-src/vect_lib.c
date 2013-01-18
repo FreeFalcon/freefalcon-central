@@ -18,10 +18,10 @@
  * VECT_LIB.C
  *
  * AMD3D 3D library code: Vector math
- *	The majority of these routines are in vect.asm - this file only
- *	provides a C wrapper for functions needing to return a float value.
+ * The majority of these routines are in vect.asm - this file only
+ * provides a C wrapper for functions needing to return a float value.
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 
@@ -42,20 +42,20 @@ float _mag_vect(float *a)
     __asm
     {
         femms
-        mov			eax, a
-        movq		mm0, [eax]
-        movd		mm1, [eax+8]
+        mov eax, a
+        movq mm0, [eax]
+        movd mm1, [eax+8]
         pfmul(mm0, mm0)
         pfmul(mm1, mm1)
         pfacc(mm0, mm0)
         pfadd(mm0, mm1)
         pfrsqrt(mm1, mm0)
-        movq		mm2, mm1
+        movq mm2, mm1
         pfmul(mm1, mm1)
         pfrsqit1(mm1, mm0)
         pfrcpit2(mm1, mm2)
         pfmul(mm0, mm1)
-        movd		r, mm0
+        movd r, mm0
         femms
     }
     return r;
@@ -73,15 +73,15 @@ float _dot_vect(float *a, float *b)
     __asm
     {
         femms
-        mov			eax, a
-        mov			edx, b
-        movq		mm0, [eax]
-        movd		mm1, [eax+8]
+        mov eax, a
+        mov edx, b
+        movq mm0, [eax]
+        movd mm1, [eax+8]
         pfmul(mm0, edx)
         pfacc(mm0, mm0)
         pfmulm(mm1, edx, 0x8)
         pfadd(mm0, mm1)
-        movd		r, mm0
+        movd r, mm0
         femms
     }
     return r;

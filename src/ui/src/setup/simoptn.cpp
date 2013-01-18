@@ -121,7 +121,7 @@ BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             retval = TRUE;
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:

@@ -21,7 +21,7 @@ FalconFlightPlanMessage::FalconFlightPlanMessage(VU_ID entityId, VuTargetEntity 
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
-    //me123	RequestOutOfBandTransmit ();
+    //me123 RequestOutOfBandTransmit ();
     RequestReliableTransmit();
 }
 
@@ -55,7 +55,7 @@ int FalconFlightPlanMessage::Decode(VU_BYTE **buf, long *rem)
     FalconEvent::Decode(buf, rem);
     memcpychk(&dataBlock.type, buf, sizeof(uchar), rem);
     memcpychk(&dataBlock.size, buf, sizeof(long), rem);
-    //	ShiAssert ( dataBlock.size >= 0 );
+    // ShiAssert ( dataBlock.size >= 0 );
     dataBlock.data = new uchar[dataBlock.size];
     memcpychk(dataBlock.data, buf, dataBlock.size, rem);
     return init - *rem;
@@ -81,10 +81,10 @@ int FalconFlightPlanMessage::Encode(VU_BYTE **buf)
 
 int FalconFlightPlanMessage::Process(uchar autodisp)
 {
-    Unit		unit = (Unit) Entity();
-    VU_BYTE		*buffer = dataBlock.data;
-    long		rem	= dataBlock.size;
-    long		lbsfuel, planes;
+    Unit unit = (Unit) Entity();
+    VU_BYTE *buffer = dataBlock.data;
+    long rem = dataBlock.size;
+    long lbsfuel, planes;
     //sfr: added rem for checks
 
 
@@ -96,7 +96,7 @@ int FalconFlightPlanMessage::Process(uchar autodisp)
     switch (dataBlock.type)
     {
         case squadronStores:
-            short		weapon[HARDPOINT_MAX];
+            short weapon[HARDPOINT_MAX];
             unsigned char weapons[HARDPOINT_MAX];
 
             memcpychk(weapon, &buffer, HARDPOINT_MAX * sizeof(short), &rem);
@@ -105,13 +105,13 @@ int FalconFlightPlanMessage::Process(uchar autodisp)
             memcpychk(&planes, &buffer, sizeof(long), &rem);
             ((Squadron)unit)->UpdateSquadronStores(weapon, weapons, lbsfuel, planes);
             ((Squadron)unit)->MakeSquadronDirty(DIRTY_SQUAD_STORES, DDP[149].priority);
-            //	((Squadron)unit)->MakeSquadronDirty (DIRTY_SQUAD_STORES, SEND_EVENTUALLY);
+            // ((Squadron)unit)->MakeSquadronDirty (DIRTY_SQUAD_STORES, SEND_EVENTUALLY);
             break;
 
         case loadoutData:
-            uchar				ac;
-            LoadoutStruct		*loadout;
-            int					i;
+            uchar ac;
+            LoadoutStruct *loadout;
+            int i;
 
             memcpychk(&lbsfuel, &buffer, sizeof(long), &rem);
             memcpychk(&ac, &buffer, sizeof(uchar), &rem);

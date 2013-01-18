@@ -51,10 +51,10 @@ C_Handler::C_Handler()
     FrontRect_.top = 0;
     FrontRect_.right = 0;
     FrontRect_.bottom = 0;
-    //	PrimaryRect_.left=0;
-    //	PrimaryRect_.top=0;
-    //	PrimaryRect_.right=0;
-    //	PrimaryRect_.bottom=0;
+    // PrimaryRect_.left=0;
+    // PrimaryRect_.top=0;
+    // PrimaryRect_.right=0;
+    // PrimaryRect_.bottom=0;
     surface_.mem = NULL;
     surface_.width = 0;
     surface_.height = 0;
@@ -113,7 +113,7 @@ RECT m_rcMouseImage;
 void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
 {
     Primary_ = Primary;
-    //	PrimaryRect_=PrimaryRect;
+    // PrimaryRect_=PrimaryRect;
     AppWindow_ = hwnd;
 
     int dispXres = 800, dispYres = 600;
@@ -166,8 +166,8 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
             if (m_pMouseImage->Setup(&FalconDisplay.theDisplayDevice, nWidth, nHeight, SystemMem, None, AppWindow_, FALSE, FALSE))
             {
                 WORD *pSurface = (WORD *) m_pMouseImage->Lock();
-                int nStride	= m_pMouseImage->targetStride() / m_pMouseImage->PixelSize();
-                int nHeight	= m_pMouseImage->targetYres();
+                int nStride = m_pMouseImage->targetStride() / m_pMouseImage->PixelSize();
+                int nHeight = m_pMouseImage->targetYres();
 
                 ShiAssert(pSurface);
 
@@ -259,10 +259,10 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
     // This will be correct UNLESS the work surface is a FLIPPING backbuffer of the primary
     // AND the application is running in a window.  Not likly...
     // By the way, this means this rect could really go away entirely...
-    FrontRect_.top		= 0;;
-    FrontRect_.left		= 0;;
-    FrontRect_.bottom	= Front_->targetYres();
-    FrontRect_.right	= Front_->targetXres();
+    FrontRect_.top = 0;;
+    FrontRect_.left = 0;;
+    FrontRect_.bottom = Front_->targetYres();
+    FrontRect_.right = Front_->targetXres();
 
     Root_ = NULL;
     rectcount_ = 0;
@@ -347,12 +347,12 @@ void *C_Handler::Lock()
 {
     if (Front_)
     {
-        surface_.mem	= (WORD *)Front_->Lock();
+        surface_.mem = (WORD *)Front_->Lock();
 
-        //		surface_.width	= (short)Front_->targetXres();	//!
-        surface_.width	= (short)Front_->targetStride() / Front_->PixelSize();	// OW
+        // surface_.width = (short)Front_->targetXres(); //!
+        surface_.width = (short)Front_->targetStride() / Front_->PixelSize(); // OW
 
-        surface_.height	= (short)Front_->targetYres();	//!
+        surface_.height = (short)Front_->targetYres(); //!
         //XX
         surface_.bpp = Front_->PixelSize() << 3;//bytes->bits
         surface_.owner = Front_;
@@ -830,11 +830,11 @@ void C_Handler::CheckTranslucentWindows()
 
 enum
 {
-    _CHR_ClipLeft		= 0x01,
-    _CHR_ClipTop		= 0x02,
-    _CHR_ClipRight		= 0x04,
-    _CHR_ClipBottom		= 0x08,
-    _CHR_RemoveAll		= _CHR_ClipLeft | _CHR_ClipTop | _CHR_ClipRight | _CHR_ClipBottom,
+    _CHR_ClipLeft = 0x01,
+    _CHR_ClipTop = 0x02,
+    _CHR_ClipRight = 0x04,
+    _CHR_ClipBottom = 0x08,
+    _CHR_RemoveAll = _CHR_ClipLeft | _CHR_ClipTop | _CHR_ClipRight | _CHR_ClipBottom,
 };
 
 BOOL C_Handler::ClipRect(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClientArea)
@@ -1125,9 +1125,9 @@ void C_Handler::Update()
     if (!surface_.mem)
         return;
 
-    //	CheckDrawThrough();
+    // CheckDrawThrough();
     CheckTranslucentWindows();
-    //	ClearAllHiddenRects();
+    // ClearAllHiddenRects();
 
     cur = Root_;
 
@@ -1224,7 +1224,7 @@ void C_Handler::CopyToPrimary()
     {
         if (FalconDisplay.displayFullScreen && rectcount_ <= 1)
         {
-            Primary_->SwapBuffers(true);	// dont flip, it would interfere with our clipping / update mechanics
+            Primary_->SwapBuffers(true); // dont flip, it would interfere with our clipping / update mechanics
             rectcount_ = 0;
             UpdateFlag = 0;
             return;
@@ -1259,23 +1259,23 @@ void C_Handler::CopyToPrimary()
 
         dest = src;
         // ImageBuf should handle this...
-        //		dest.left+=PrimaryRect_.left;
-        //		dest.right+=PrimaryRect_.left;
-        //		dest.top+=PrimaryRect_.top;
-        //		dest.bottom+=PrimaryRect_.top;
+        // dest.left+=PrimaryRect_.left;
+        // dest.right+=PrimaryRect_.left;
+        // dest.top+=PrimaryRect_.top;
+        // dest.bottom+=PrimaryRect_.top;
 
-        //			ShowCursor(FALSE);
+        // ShowCursor(FALSE);
         if (src.left < src.right && src.top < src.bottom)
             Primary_->Compose(Front_, &src, &dest);
 
-        //			ShowCursor(TRUE);
-        //			MonoPrint("CopyToPrimary(%1d,%1d,%1d,%1d)\n",dest.left,dest.top,dest.right,dest.bottom);
+        // ShowCursor(TRUE);
+        // MonoPrint("CopyToPrimary(%1d,%1d,%1d,%1d)\n",dest.left,dest.top,dest.right,dest.bottom);
     }
 
     rectcount_ = 0;
 
     UpdateFlag = 0;
-    //	MonoPrint("HDNLR->CopyToPrimary() Done\n");
+    // MonoPrint("HDNLR->CopyToPrimary() Done\n");
 
     // OW now handled by running in software mode on V1 and V2
 #if 0
@@ -1916,10 +1916,10 @@ long C_Handler::GetDragY(WORD MouseY) //!
 BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType)
 //!BOOL C_Handler::GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType)
 {
-    Grab_.Control_	= overme->GetControl(&Grab_.ID_, MouseX - overme->GetX(), MouseY - overme->GetY());
-    Grab_.StartX_	= MouseX;
-    Grab_.StartY_	= MouseY;
-    Grab_.GrabType_	= GrabType;
+    Grab_.Control_ = overme->GetControl(&Grab_.ID_, MouseX - overme->GetX(), MouseY - overme->GetY());
+    Grab_.StartX_ = MouseX;
+    Grab_.StartY_ = MouseY;
+    Grab_.GrabType_ = GrabType;
 
     if (Grab_.Control_)
     {
@@ -2041,24 +2041,24 @@ void C_Handler::BlitWindowNow(C_Window *win)
     dest.top += win->GetY();
     dest.bottom += win->GetY();
     // ImageBuf should handle this...
-    //	dest.left+=PrimaryRect_.left;
-    //	dest.right+=PrimaryRect_.left;
-    //	dest.top+=PrimaryRect_.top;
-    //	dest.bottom+=PrimaryRect_.top;
+    // dest.left+=PrimaryRect_.left;
+    // dest.right+=PrimaryRect_.left;
+    // dest.top+=PrimaryRect_.top;
+    // dest.bottom+=PrimaryRect_.top;
 
     Primary_->Compose(win->GetSurface(), &src, &dest);
 }
 
 void C_Handler::PostUpdate()
 {
-    //	UpdateFlag |= C_DRAW_UPDATE;
-    //	PostMessage(AppWindow_,C_WM_UPDATE,0,0);
+    // UpdateFlag |= C_DRAW_UPDATE;
+    // PostMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
 void C_Handler::SendUpdate()
 {
-    //	UpdateFlag |= C_DRAW_UPDATE;
-    //	SendMessage(AppWindow_,C_WM_UPDATE,0,0);
+    // UpdateFlag |= C_DRAW_UPDATE;
+    // SendMessage(AppWindow_,C_WM_UPDATE,0,0);
 }
 
 // Check to make sure message post time < 1 second for mouse/keyboard input... if not... ignore it :)
@@ -2288,7 +2288,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (MouseCallback_ && Grab_.Control_)
                 {
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType);	//!
+                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //!
                 }
                 else
                 {
@@ -2321,11 +2321,11 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         );
                     }
 
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType);	//!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
 
                     if (DblClk && Grab_.Control_)
                     {
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk);	//!
+                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //!
                     }
                 }
 
@@ -2343,7 +2343,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (MouseCallback_)
                 {
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType);	//!
+                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
                 }
 
                 if (ret)
@@ -2558,7 +2558,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             }
 
             if (MouseCallback_)
-                (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType);	//!
+                (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //!
 
             retval = 0;
             break;
@@ -2606,7 +2606,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 {
                     overme->SetControl(Grab_.ID_);
                     WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType);	//!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
                 }
             }
             else
@@ -2618,8 +2618,8 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 else
                     ret = TRUE;
 
-                //				if(ret)
-                //					WindowToFront(overme);
+                // if(ret)
+                // WindowToFront(overme);
                 Grab_.Window_ = NULL;
             }
 
@@ -2666,10 +2666,10 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 if (ret && overme->IsMenu())
                 {
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType);	//!
+                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //!
 
                     if (DblClk && Grab_.Control_)
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk);	//!
+                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //!
 
                     Grab_.Control_ = NULL;
                 }
@@ -2782,8 +2782,8 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
                             if (Drag_.Window_ != NULL && Drag_.Control_ != NULL)
                             {
-                                DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()),	//!
-                                         (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()),		//!
+                                DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()), //!
+                                         (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()), //!
                                          Drag_.Window_);
                                 Grab_.Control_->Process(Grab_.ID_, C_TYPE_LDROP);
                             }
@@ -2833,7 +2833,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             Repeat = lParam & 0xffff;
 
-            Key = (uchar)(((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80));	//!
+            Key = (uchar)(((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80)); //!
 
             if (GetKeyState(VK_SHIFT) & 0x80)
                 ShiftStates |= _SHIFT_DOWN_;
@@ -2874,22 +2874,22 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             /////////////////
             break;
 
-            /*		case WM_CHAR: // NOLONGER USED
-            			retval=0;
-            			if(OldInputMessage())
-            				break;
-            			// Handle Hot Keys & Keyboard input
-            			if(CurWindow_ == NULL)
-            				break;
+            /* case WM_CHAR: // NOLONGER USED
+             retval=0;
+             if(OldInputMessage())
+             break;
+             // Handle Hot Keys & Keyboard input
+             if(CurWindow_ == NULL)
+             break;
 
-            			if(!CurWindow_->CheckKeyboard(message,wParam,lParam))
-            				CheckHotKeys(message,wParam,lParam);
-            			retval=0;
-            			break;
+             if(!CurWindow_->CheckKeyboard(message,wParam,lParam))
+             CheckHotKeys(message,wParam,lParam);
+             retval=0;
+             break;
             */
         case C_WM_UPDATE:
                 //if(UpdateFlag & C_DRAW_REFRESH)
-                //	SetEvent(WakeOutput_);
+                // SetEvent(WakeOutput_);
                 retval = 0;
             break;
 
@@ -2941,7 +2941,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         RefreshAll(&upme);
                         LeaveCritical();
                         //if(UpdateFlag & C_DRAW_REFRESH)
-                        //	SetEvent(WakeOutput_);
+                        // SetEvent(WakeOutput_);
                     }
                 }
 

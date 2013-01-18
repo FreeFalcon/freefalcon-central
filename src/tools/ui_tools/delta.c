@@ -96,9 +96,9 @@ int ParseCommandLine(LPSTR  lpCmdLine)
 }
 
 // Compression Types
-#define PREV_FRAME				1
-#define PREV_NEXT_FRAME		2
-#define RLE_ONLY				3
+#define PREV_FRAME 1
+#define PREV_NEXT_FRAME 2
+#define RLE_ONLY 3
 #define SPECIAL_FRAME      4
 
 void DeltaImage(char *Image, char *Cmp1, long w, long h, long BytesPerPixel);
@@ -254,14 +254,14 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
                            AnimData->Width,
                            AnimData->Height,
                            AnimData->BytesPerPixel);
-                //				PrevFrame=i-1;
-                //				if(PrevFrame < 0)
-                //					PrevFrame=AnimData->Frames-1;
-                //				DeltaImage(WorkImage,
-                //						   &AnimData->Start[sizeof(long)+(sizeof(long) + Size)*PrevFrame],
-                //						   AnimData->Width,
-                //						   AnimData->Height,
-                //						   AnimData->BytesPerPixel);
+                // PrevFrame=i-1;
+                // if(PrevFrame < 0)
+                // PrevFrame=AnimData->Frames-1;
+                // DeltaImage(WorkImage,
+                //    &AnimData->Start[sizeof(long)+(sizeof(long) + Size)*PrevFrame],
+                //    AnimData->Width,
+                //    AnimData->Height,
+                //    AnimData->BytesPerPixel);
                 NextFrame = i + 1;
 
                 if (NextFrame >= AnimData->Frames)
@@ -272,14 +272,14 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
                            AnimData->Width,
                            AnimData->Height,
                            AnimData->BytesPerPixel);
-                //				NextFrame=i+2;
-                //				if(NextFrame >= AnimData->Frames)
-                //					NextFrame=0;
-                //				DeltaImage(WorkImage,
-                //						   &AnimData->Start[sizeof(long)+(sizeof(long) + Size)*NextFrame],
-                //						   AnimData->Width,
-                //						   AnimData->Height,
-                //						   AnimData->BytesPerPixel);
+                // NextFrame=i+2;
+                // if(NextFrame >= AnimData->Frames)
+                // NextFrame=0;
+                // DeltaImage(WorkImage,
+                //    &AnimData->Start[sizeof(long)+(sizeof(long) + Size)*NextFrame],
+                //    AnimData->Width,
+                //    AnimData->Height,
+                //    AnimData->BytesPerPixel);
                 OutputSize = Compress16BitImage((WORD *)WorkImage, (WORD *)OutputBuf, StartX, StartY, StartW, StartH, AnimData->Width, AnimData->Height);
                 WriteFile(ofp, &OutputSize, sizeof(long), &bytesread, NULL);
                 WriteFile(ofp, OutputBuf, OutputSize, &bytesread, NULL);

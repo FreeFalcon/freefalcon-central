@@ -17,15 +17,15 @@
 class Edge
 {
 public:
-    Edge()	{};
-    ~Edge()	{};
+    Edge() {};
+    ~Edge() {};
 
 private:
-    float	A, B, C;
+    float A, B, C;
 
 public:
     // Initialize an edge using the exact coefficient values
-    void	SetupWithABC(float a, float b, float c)
+    void SetupWithABC(float a, float b, float c)
     {
         A = a;
         B = b;
@@ -33,7 +33,7 @@ public:
     };
 
     // Initialize an edge using two points (use instead of a constructor)
-    void	SetupWithPoints(float x1, float y1, float x2, float y2)
+    void SetupWithPoints(float x1, float y1, float x2, float y2)
     {
         A = y2 - y1;
         B = x1 - x2;
@@ -41,7 +41,7 @@ public:
     };
 
     // Initialize an edge using a point and a direction (use instead of a constructor)
-    void	SetupWithVector(float x, float y, float dx, float dy)
+    void SetupWithVector(float x, float y, float dx, float dy)
     {
         A = dy;
         B = -dx;
@@ -49,14 +49,14 @@ public:
     };
 
     // Normalize the coefficients so that vector A,B is a unit vector
-    void	Normalize(void)
+    void Normalize(void)
     {
         float mag = (float)sqrt(A * A + B * B);
         A /= mag, B /= mag, C /= mag;
     };
 
     // Swap the sense of "LeftOf" and "RightOf" by reorienting the normal vector
-    void	Reverse(void)
+    void Reverse(void)
     {
         A = -A;
         B = -B;
@@ -64,13 +64,13 @@ public:
     };
 
     // Returns true if the Edge is strictly horizontal (slope=0).
-    BOOL	Horizontal(void)
+    BOOL Horizontal(void)
     {
         return (B == 0.0f);
     };
 
     // Returns true if the Edge is strictly vertical (slope=infinity).
-    BOOL	ConstantY(void)
+    BOOL ConstantY(void)
     {
         return (A == 0.0f);
     };
@@ -79,7 +79,7 @@ public:
     // Assuming the line equation is normalized, returns the distance of the line
     // from the point.  (looking FROM the first point given to define the line
     // TO the second point.)
-    float	DistanceFrom(float x, float y)
+    float DistanceFrom(float x, float y)
     {
         return (A * x + B * y + C);
     };
@@ -87,7 +87,7 @@ public:
     // Returns true if the Edge is
     // LeftOf the provided point (looking FROM the first point given to define
     // the line TO the second point.)
-    BOOL	LeftOf(float x, float y)
+    BOOL LeftOf(float x, float y)
     {
         return DistanceFrom(x, y) < 0.0f;
     };
@@ -95,21 +95,21 @@ public:
     // Returns true if the Edge is
     // RightOf the provided point (looking FROM the first point given to define
     // the line TO the second point.)
-    BOOL	RightOf(float x, float y)
+    BOOL RightOf(float x, float y)
     {
         return DistanceFrom(x, y) > 0.0f;
     };
 
 
     // Returns the X for the given Y
-    float	X(float y)
+    float X(float y)
     {
         if (A == 0.0f) return 0.0f;
         else return -(B * y + C) / A;
     };
 
     // Returns the Y for the given X
-    float	Y(float x)
+    float Y(float x)
     {
         if (B == 0.0f) return 0.0f;
         else return -(A * x + C) / B;
@@ -118,7 +118,7 @@ public:
 
     // Returns the number of the octant in which this line falls (looking FROM the first
     // point given to define the line TO the second point.)
-    int		Quadrant(void)
+    int Quadrant(void)
     {
         if (A > 0.0f)
 

@@ -19,18 +19,18 @@
 #include "otwdrive.h"
 //#include "cpmanager.h"
 #include "Falclib/include/dispcfg.h"
-#include "flightdata.h"	//MI
-#include "aircrft.h"	//MI
-#include "phyconst.h"	//MI
-//#include "simdrive.h"	//MI
-//#include "navsystem.h"	//MI
+#include "flightdata.h" //MI
+#include "aircrft.h" //MI
+#include "phyconst.h" //MI
+//#include "simdrive.h" //MI
+//#include "navsystem.h" //MI
 #include "f4find.h"
 #include "weather.h"
 #include "tod.h"
 
-static const char	KNEEBOARD_MAP_NAME[]		= "art\\ckptart\\KneeMap.gif";
-static const char	THR_KNEEBOARD_MAP_NAME[]		= "KneeMap.gif";
-//static const int	KNEEBOARD_MAP_KM_PER_TEXEL	= 2;		// Property of source art on disk
+static const char KNEEBOARD_MAP_NAME[] = "art\\ckptart\\KneeMap.gif";
+static const char THR_KNEEBOARD_MAP_NAME[] = "KneeMap.gif";
+//static const int KNEEBOARD_MAP_KM_PER_TEXEL = 2; // Property of source art on disk
 
 // sfr: removed jb voodoo checks
 

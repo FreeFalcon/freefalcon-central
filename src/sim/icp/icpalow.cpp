@@ -41,11 +41,11 @@ void ICPClass::ExecALOWMode(void)
     if (!g_bRealisticAvionics)
     {
         //MI Original code
-        char	tmpstr[5] = "";
-        long	alt;
-        int	alt1, alt2;
+        char tmpstr[5] = "";
+        long alt;
+        int alt1, alt2;
 
-        //	if(mUpdateFlags & ALOW_UPDATE) {
+        // if(mUpdateFlags & ALOW_UPDATE) {
 
         mUpdateFlags &= !ALOW_UPDATE;
 
@@ -83,7 +83,7 @@ void ICPClass::ExecALOWMode(void)
         }
 
         *mpLine3 = NULL;
-        //	}
+        // }
     }
     else
     {
@@ -100,9 +100,9 @@ void ICPClass::ExecALOWMode(void)
         }
         else
         {
-            long	alt;
-            int	alt1, alt2;
-            char	tmpstr[5] = "";
+            long alt;
+            int alt1, alt2;
+            char tmpstr[5] = "";
             alt = (long)TheHud->lowAltWarning;
 
             alt1 = (int) alt / 1000;

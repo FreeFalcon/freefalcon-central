@@ -4,7 +4,7 @@
     October 9, 1998
 
     This module handles the conversion of camp to sim and sim to camp
-	object when they cross the player bubble boundry.
+ object when they cross the player bubble boundry.
 \***************************************************************************/
 #include "CampBase.h"
 #include "SimBase.h"
@@ -68,7 +68,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
         else
         {
             // Lets look for our sim children...
-            SimBaseClass	*simobj;
+            SimBaseClass *simobj;
 
             switch (style)
             {
@@ -76,9 +76,9 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
                 {
                     // If we're a HARM, we've got to find a radar vehicle
                     // Get the list of sim entities in our battalion
-                    VuListIterator	componentIterator(((CampBaseClass*)current)->GetComponents());
-                    simobj				= (SimBaseClass*)componentIterator.GetFirst();
-                    int campRadarType	= current->GetRadarType();
+                    VuListIterator componentIterator(((CampBaseClass*)current)->GetComponents());
+                    simobj = (SimBaseClass*)componentIterator.GetFirst();
+                    int campRadarType = current->GetRadarType();
 
                     // Make sure we didn't get asked to find a radar in a non-radar unit
                     ShiAssert(campRadarType);
@@ -105,7 +105,7 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
 
                     if (vehs)
                     {
-                        int	i = rand() % vehs;
+                        int i = rand() % vehs;
                         simobj = ((CampBaseClass*)current)->GetComponentEntity(i);
 
                         // Just in case a component vehicle died but the vehicle count hadn't been updated yet
@@ -151,9 +151,9 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
 // function.
 SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList, HandOffType style)
 {
-    CampBaseClass	*campobj;
-    SimBaseClass	*simobj;
-    SimObjectType	*t;
+    CampBaseClass *campobj;
+    SimBaseClass *simobj;
+    SimObjectType *t;
 
     // if no target, nothing to validate
     if (current == NULL)
@@ -228,9 +228,9 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
                 {
                     // If we're a HARM, we've got to find a radar vehicle
                     // Get the list of sim entities in our battalion
-                    VuListIterator	componentIterator(campobj->GetComponents());
-                    simobj				= (SimBaseClass*)componentIterator.GetFirst();
-                    int campRadarType	= campobj->GetRadarType();
+                    VuListIterator componentIterator(campobj->GetComponents());
+                    simobj = (SimBaseClass*)componentIterator.GetFirst();
+                    int campRadarType = campobj->GetRadarType();
 
                     // Make sure we didn't get asked to find a radar in a non-radar unit
                     ShiAssert(campRadarType);
@@ -255,7 +255,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
                     if (vehs)
                     {
-                        int	i = rand() % vehs;
+                        int i = rand() % vehs;
                         simobj = campobj->GetComponentEntity(i);
 
                         // Just in case a component vehicle died but the vehicle count hadn't been updated yet

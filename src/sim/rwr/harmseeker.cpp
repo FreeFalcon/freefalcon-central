@@ -11,29 +11,29 @@
 
 
 // How fast will the missile target point drift without a signal (ft/sec)
-static const float	MAX_DRIFT_RATE	= 20.0f;
+static const float MAX_DRIFT_RATE = 20.0f;
 
 
 HarmSeekerClass::HarmSeekerClass(int type, SimMoverClass* parentPlatform) : RwrClass(type, parentPlatform)
 {
-    dataProvided	= ExactPosition;
+    dataProvided = ExactPosition;
 
-    couldGuide		= TRUE;
+    couldGuide = TRUE;
 
     // Pick a random drift rate for this instance
     driftRateX = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
     driftRateY = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
 
-    launched		= false;
+    launched = false;
     launchedInPOS   = false;
-    handedoff		= false;
+    handedoff = false;
 }
 
 
 SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
 {
-    BOOL			canGuide	= false;
-    float			z;
+    BOOL canGuide = false;
+    float z;
 
     SimMoverClass* theParent;
     FireControlComputer* FCC;
@@ -135,5 +135,5 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
         }
     }
 
-    return NULL;	// Indicate that we can't see our target
+    return NULL; // Indicate that we can't see our target
 }

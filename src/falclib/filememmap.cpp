@@ -86,7 +86,7 @@ BYTE *FileMemMap::GetData(int offset, int len)
 // abstraction for seek/read behaviour
 BOOL FileMemMap::ReadDataAt(DWORD offset, void *buffer, DWORD size)
 {
-    int	result = SetFilePointer(m_hFile, offset, NULL, FILE_BEGIN);
+    int result = SetFilePointer(m_hFile, offset, NULL, FILE_BEGIN);
 
     if (result == -1) return FALSE;
 

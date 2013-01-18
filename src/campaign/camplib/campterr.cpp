@@ -22,15 +22,15 @@
 // Campaign Terrain ADT - Private Implementation
 // =============================================
 
-CellDataType 	*TheaterCells = NULL;
-unsigned char	EastLongitude;
-unsigned char	SouthLatitude;
-float    		Latitude;
-float    		Longitude;
-float    		CellSizeInKilometers;
+CellDataType  *TheaterCells = NULL;
+unsigned char EastLongitude;
+unsigned char SouthLatitude;
+float     Latitude;
+float     Longitude;
+float     CellSizeInKilometers;
 
-short			Map_Max_X = 0;
-short			Map_Max_Y = 0;
+short Map_Max_X = 0;
+short Map_Max_Y = 0;
 
 // -------------------------
 // Local Function Prototypes
@@ -96,7 +96,7 @@ int LoadTheaterTerrain(char* name)
 
 int LoadTheaterTerrainLight(char* name)
 {
-    FILE	*fp;
+    FILE *fp;
 
     FreeTheaterTerrain();
 
@@ -111,7 +111,7 @@ int LoadTheaterTerrainLight(char* name)
 
 int SaveTheaterTerrain(char* name)
 {
-    FILE		*fp;
+    FILE *fp;
 
     if (!TheaterCells)
         return 0;

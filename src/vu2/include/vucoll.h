@@ -9,13 +9,13 @@
 #include "vuentity.h"
 #include "vumath.h"
 
-#define VU_DEFAULT_HASH_KEY	59
+#define VU_DEFAULT_HASH_KEY 59
 
 /** database types */
 typedef enum
 {
     VU_UNKNOWN_COLLECTION             = 0x000,
-    VU_HASH_TABLE_COLLECTION          =	0x101,
+    VU_HASH_TABLE_COLLECTION          = 0x101,
     VU_FILTERED_HASH_TABLE_COLLECTION = 0x102,
     VU_DATABASE_COLLECTION            = 0x103,
     VU_ANTI_DATABASE_COLLECTION       = 0x104,
@@ -329,7 +329,7 @@ public:
 
 
 /** an associative hash table. The key is the entity ID.i
-*	Adds insertion and query functions using Id to vucoll public interface.
+* Adds insertion and query functions using Id to vucoll public interface.
  */
 #if VU_ALL_FILTERED
 class VuHashTable : public VuCollection
@@ -488,7 +488,7 @@ private:
     */
     void ReallyRemove(VuEntity *e);
 
-    /** common part of all removes in DB (except the real removal).	*/
+    /** common part of all removes in DB (except the real removal). */
     VU_ERRCODE CommonRemove(VuEntity *entity);
 
     /** just like purge, but calls removalCallback for entities removed. */
@@ -557,7 +557,7 @@ private:
     */
     void ReallyRemove(VuEntity *e);
 
-    /** common part of all removes in DB (except the real removal).	*/
+    /** common part of all removes in DB (except the real removal). */
     VU_ERRCODE CommonRemove(VuEntity *entity);
 
     /** just like purge, but calls removalCallback for entities removed. */

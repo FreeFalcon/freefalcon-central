@@ -24,7 +24,7 @@ private:
     C_Hash *Root_;  // All strings here
     long   *IDTable_; // All Userdefined IDs here (array points to Hash Table)
     long    IDSize_;
-    long	LastID_;
+    long LastID_;
 
 public:
     C_String();

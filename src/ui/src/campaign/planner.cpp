@@ -173,7 +173,7 @@ void LoadPlannerWindows()
         gMainParser->LoadImageList("pln_art.lst");
 
     gMainParser->LoadSoundList("pln_snd.lst");
-    gMainParser->LoadWindowList("pln_scf.lst");		// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("pln_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -1005,8 +1005,8 @@ static void UseStoresCB(long, short hittype, C_Base *control)
     // KCK: We need to update the mission evaluation stuff if this is the selected flight
     if (gLoadoutFlightID == gPlayerFlightID)
     {
-        Flight	flight = (Flight) vuDatabase->Find(gLoadoutFlightID);
-        int		pilotSlot = 255;
+        Flight flight = (Flight) vuDatabase->Find(gLoadoutFlightID);
+        int pilotSlot = 255;
 
         if (!flight)
             return;

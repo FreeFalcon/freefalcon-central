@@ -17,7 +17,7 @@ void HeliBrain::MissileEngageCheck(void)
     {
         if (curMode == MissileEngageMode)
         {
-            //		 MonoPrint( "HELO BRAIN Exiting Missile Engange 1\n" );
+            //  MonoPrint( "HELO BRAIN Exiting Missile Engange 1\n" );
         }
 
         return;
@@ -28,7 +28,7 @@ void HeliBrain::MissileEngageCheck(void)
     /*-------*/
     if (curMode != MissileEngageMode && curMissile)
     {
-        //	  MonoPrint( "HELO BRAIN ENTERING Missile Engange 1\n" );
+        //   MonoPrint( "HELO BRAIN ENTERING Missile Engange 1\n" );
         AddMode(MissileEngageMode);
     }
     /*------*/
@@ -36,7 +36,7 @@ void HeliBrain::MissileEngageCheck(void)
     /*------*/
     else if (curMissile == NULL)
     {
-        //	  MonoPrint( "HELO BRAIN Exiting Missile Engange 2\n" );
+        //   MonoPrint( "HELO BRAIN Exiting Missile Engange 2\n" );
     }
 }
 
@@ -48,7 +48,7 @@ void HeliBrain::MissileEngage(void)
 
     if (!targetPtr || !curMissile)
     {
-        //	  MonoPrint( "HELO BRAIN Exiting Missile Engange 3\n" );
+        //   MonoPrint( "HELO BRAIN Exiting Missile Engange 3\n" );
         return;
     }
 

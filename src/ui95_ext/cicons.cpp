@@ -498,7 +498,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
     F4CSECTIONHANDLE *Leave;
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it
-    //	if(!Ready() || (GetFlags() & C_BIT_INVISIBLE) || (!icon) || (Parent_ == NULL))
+    // if(!Ready() || (GetFlags() & C_BIT_INVISIBLE) || (!icon) || (Parent_ == NULL))
     if (!Ready() || (!icon) || (Parent_ == NULL))
         return;
 
@@ -553,7 +553,7 @@ void C_MapIcon::Refresh()
     F4CSECTIONHANDLE *Leave;
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it
-    //	if(!Ready() || (GetFlags() & C_BIT_INVISIBLE) || (Parent_ == NULL))
+    // if(!Ready() || (GetFlags() & C_BIT_INVISIBLE) || (Parent_ == NULL))
     if (!Ready() || (Parent_ == NULL))
         return;
 
@@ -570,7 +570,7 @@ void C_MapIcon::Refresh()
             cur->Icon->Refresh();
         }
 
-        //		if (!(!(gShowUnknown && cur->ImageID == ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        // if (!(!(gShowUnknown && cur->ImageID == ICON_UKN) && (GetFlags() & C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         if ((gShowUnknown && cur->ImageID == ICON_UKN) || !(GetFlags() & C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
@@ -620,7 +620,7 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
     long HashIdx;
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it if we ask for unknown to be seen
-    //	if(!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL) return;
+    // if(!Ready() || GetFlags() & C_BIT_INVISIBLE || Parent_ == NULL) return;
     if (!Ready() || (!gShowUnknown && (GetFlags() & C_BIT_INVISIBLE)) || Parent_ == NULL)
         return;
 

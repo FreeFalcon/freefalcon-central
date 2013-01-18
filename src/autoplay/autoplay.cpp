@@ -1,16 +1,16 @@
 /*****************************************************************************************\
-	Auto play front end for Falcon 4.0
+ Auto play front end for Falcon 4.0
 
-	Scott Randolph
-	January 29, 1998
-	Microprose
+ Scott Randolph
+ January 29, 1998
+ Microprose
 
   Assumptions:
     The Disk ID and Setup program are in the root directory of the CD
-	The Disk ID files are named "DISK.ID"
-	The disk id file on the CD will be copied to the HDD at install time for version comparison
-	The file names in the list of global strings below is correct.
-	The WindowTitle string exactly matches the title of the main window of the game.
+ The Disk ID files are named "DISK.ID"
+ The disk id file on the CD will be copied to the HDD at install time for version comparison
+ The file names in the list of global strings below is correct.
+ The WindowTitle string exactly matches the title of the main window of the game.
 
 \*****************************************************************************************/
 #include <stdio.h>
@@ -19,34 +19,34 @@
 
 
 // Global strings used to centralize filename and arugment dependencies
-char	*disk_id		= "DISK.ID";
-char	*executable		= "FALCON4.EXE";
-char	*installer		= "SETUP.EXE";
-char	*WindowTitle	= "Falcon 4.0";
+char *disk_id = "DISK.ID";
+char *executable = "FALCON4.EXE";
+char *installer = "SETUP.EXE";
+char *WindowTitle = "Falcon 4.0";
 
 
 // String array used to decend the registry tree to find our one entry
 // (NOTE:  We always start from HKEY_LOCAL_MACHINE)
-char	*keyStrings[] = { "Software", "Microprose", "Falcon", "4.0" };
-char	*dirString      = "baseDir";
-char	*disableString  = "disableAutoplay";
+char *keyStrings[] = { "Software", "Microprose", "Falcon", "4.0" };
+char *dirString      = "baseDir";
+char *disableString  = "disableAutoplay";
 
 
 // Global resource used to ensure a single instance of this application
-ATOM	exclusionAtom;
+ATOM exclusionAtom;
 
 
 // Used to tell the dialog box if it should offer "Play" as an option
-BOOL	GamePlayable;
+BOOL GamePlayable;
 
 // Used to store the path to the installed game (if available)
-char	TargetDir[_MAX_PATH];
+char TargetDir[_MAX_PATH];
 
 
 // Convert a windows error number into a printable string
-#define PutErrorString(buf)  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,					\
-                                           NULL, GetLastError(),       					\
-                                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	\
+#define PutErrorString(buf)  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, \
+                                           NULL, GetLastError(),        \
+                                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), \
                                            buf, sizeof(buf), NULL)
 
 
@@ -55,10 +55,10 @@ char	TargetDir[_MAX_PATH];
 //
 BOOL GetKeyHandle(HKEY *pKey)
 {
-    HKEY		child;
-    HKEY		parent;
+    HKEY child;
+    HKEY parent;
 
-    LONG		retval;
+    LONG retval;
 
 
     parent = HKEY_LOCAL_MACHINE;
@@ -98,11 +98,11 @@ BOOL GetKeyHandle(HKEY *pKey)
 //
 BOOL CreateKeyHandle(HKEY *pKey)
 {
-    HKEY		child;
-    HKEY		parent;
+    HKEY child;
+    HKEY parent;
 
-    LONG		retval;
-    DWORD		result;
+    LONG retval;
+    DWORD result;
 
     parent = HKEY_LOCAL_MACHINE;
 
@@ -139,24 +139,24 @@ BOOL CreateKeyHandle(HKEY *pKey)
 
 
 //
-//	Compare the ID file on HDD with that on the CD and
+// Compare the ID file on HDD with that on the CD and
 //  return a value indicating their relationship
 //
 BOOL MatchDiskID(char *HDDpath)
 {
-    FILE	*HDDfile;
-    FILE	*CDfile;
+    FILE *HDDfile;
+    FILE *CDfile;
 
-    char	HDDfilename[MAX_PATH];
+    char HDDfilename[MAX_PATH];
 
-    char	HDDverString[256];
-    char	HDDid[256];
+    char HDDverString[256];
+    char HDDid[256];
 
-    char	CDid[256];
-    char	CDverString[256];
+    char CDid[256];
+    char CDverString[256];
 
-    char	*c;
-    int		result;
+    char *c;
+    int result;
 
 
     // Construct the fully qualified pathname for the id file of interest
@@ -225,11 +225,11 @@ BOOL MatchDiskID(char *HDDpath)
 
 
 //
-//	The dialog procedure used to ask the user if they want to install, disable, or cancel
+// The dialog procedure used to ask the user if they want to install, disable, or cancel
 //
 BOOL CALLBACK DialogProcedure(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM  lParam)
 {
-    HWND	control;
+    HWND control;
 
     switch (uMsg)
     {
@@ -259,14 +259,14 @@ BOOL CALLBACK DialogProcedure(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM  lP
 
 
 //
-//	 See if we think the game is already installed and playable.  Return FALSE if it
+//  See if we think the game is already installed and playable.  Return FALSE if it
 //   couldn't be found.
 //
 BOOL Validate()
 {
-    HKEY	key;
-    DWORD	targetDirLen;
-    DWORD	retval;
+    HKEY key;
+    DWORD targetDirLen;
+    DWORD retval;
 
 
     // Get the game's path entry from the registry (if its there)
@@ -294,13 +294,13 @@ BOOL Validate()
 
 
 //
-//	Call the setup program
+// Call the setup program
 //
 BOOL Install()
 {
-    char					fullPath[_MAX_PATH];
-    PROCESS_INFORMATION		procInfo;
-    STARTUPINFO				startInfo;
+    char fullPath[_MAX_PATH];
+    PROCESS_INFORMATION procInfo;
+    STARTUPINFO startInfo;
 
 
     // Construct a fully qualifed path to the setup program
@@ -339,13 +339,13 @@ BOOL Install()
 
 
 //
-//	Call the game program
+// Call the game program
 //
 BOOL Play()
 {
-    PROCESS_INFORMATION		procInfo;
-    STARTUPINFO				startInfo;
-    char					fullPath[_MAX_PATH];
+    PROCESS_INFORMATION procInfo;
+    STARTUPINFO startInfo;
+    char fullPath[_MAX_PATH];
 
 
     // Make sure we HAVE a path to the installed game
@@ -385,13 +385,13 @@ BOOL Play()
 
 
 //
-//	Callback function to handel each window we are told about
+// Callback function to handel each window we are told about
 //
 BOOL CALLBACK EnumWindowsProc(HWND win, BOOL* found)
 {
     char title[256];
 
-    // Get the title of this window	and see if it matches our magic value
+    // Get the title of this window and see if it matches our magic value
     if (GetWindowText(win, title, sizeof(title) - 1) > 0)
     {
         if (strncmp(title, WindowTitle, strlen(WindowTitle)) == 0)
@@ -407,7 +407,7 @@ BOOL CALLBACK EnumWindowsProc(HWND win, BOOL* found)
 
 
 //
-//	Ensure that this AutoPlay application or the game is not already running
+// Ensure that this AutoPlay application or the game is not already running
 //
 BOOL EnsureExclusion(void)
 {
@@ -436,7 +436,7 @@ BOOL EnsureExclusion(void)
 
     // We're the first, so create the global atom to dissuade any others from following...
     // NOTE:  These is a potential race condition here.  If two copies of the app hit FindAtom
-    //		  before either hit AddAtom, we'de end up with two copies running.
+    //   before either hit AddAtom, we'de end up with two copies running.
     exclusionAtom = GlobalAddAtom(WindowTitle);
 
     if (!exclusionAtom)
@@ -466,8 +466,8 @@ void ReleaseExclusion(void)
  */
 int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdshow)
 {
-    int		done;
-    int		retval;
+    int done;
+    int retval;
 
 
     // Quit if the game or this AutoRun app is already running
@@ -500,12 +500,12 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
         {
 
             case IDC_PLAY:
-                if (Play())		done = 3;
+                if (Play()) done = 3;
 
                 break;
 
             case IDC_SETUP:
-                if (Install())	done = 4;
+                if (Install()) done = 4;
 
                 break;
 

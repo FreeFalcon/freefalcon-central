@@ -20,15 +20,15 @@
 // ===============================
 
 /*
-ReactData	AirReactionTable[WP_LAST][REACT_LAST_BASIC + ARO_OTHER];
-ReactData	GroundReactionTable[GORD_LAST][REACT_LAST_BASIC + GORD_LAST];
-ReactData	NavalReactionTable[NORD_OTHER][REACT_LAST_BASIC + NORD_OTHER];
-ReactData	ObjReactionTable[REACT_LAST_BASIC];
+ReactData AirReactionTable[WP_LAST][REACT_LAST_BASIC + ARO_OTHER];
+ReactData GroundReactionTable[GORD_LAST][REACT_LAST_BASIC + GORD_LAST];
+ReactData NavalReactionTable[NORD_OTHER][REACT_LAST_BASIC + NORD_OTHER];
+ReactData ObjReactionTable[REACT_LAST_BASIC];
 */
-#define CHECK_ANY		255
+#define CHECK_ANY 255
 
-//ReactData ReactionTable[WP_LAST][WP_LAST];	// List of reaction priorities
-ReactData ReactionTable[WP_LAST];	// List of reaction priorities
+//ReactData ReactionTable[WP_LAST][WP_LAST]; // List of reaction priorities
+ReactData ReactionTable[WP_LAST]; // List of reaction priorities
 
 // =========================
 // Tactics Indexes and Table
@@ -60,8 +60,8 @@ int CheckReaction(int awp, int zone)
 
 int LoadTactics(char* name)
 {
-    FILE*			fp;
-    char			filename[MAX_PATH];
+    FILE* fp;
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\%s.tt", FalconCampaignSaveDirectory, name);
 
@@ -133,7 +133,7 @@ int CheckDistToFront(int tid, int dist)
 
 int CheckAction(int tid, int act)
 {
-    int		i;
+    int i;
 
     if (TacticsTable[tid].actionList[0] == CHECK_ANY)
         return 1;
@@ -231,7 +231,7 @@ int CheckOwned(int tid, int o)
     return 1;
 }
 
-int CheckAirborne(int tid, int airborne)		// These two need some thought
+int CheckAirborne(int tid, int airborne) // These two need some thought
 {
     if (TacticsTable[tid].airborne == CHECK_ANY)
         return 1;
@@ -245,7 +245,7 @@ int CheckAirborne(int tid, int airborne)		// These two need some thought
     return 1;
 }
 
-int CheckMarine(int tid, int marine)			//
+int CheckMarine(int tid, int marine) //
 {
     if (TacticsTable[tid].marine == CHECK_ANY)
         return 1;

@@ -13,7 +13,7 @@
 #define VU_UNKNOWN_ENTITY_TYPE              0
 #define VU_SESSION_ENTITY_TYPE              1
 #define VU_GROUP_ENTITY_TYPE                2
-#define VU_GLOBAL_GROUP_ENTITY_TYPE	        3
+#define VU_GLOBAL_GROUP_ENTITY_TYPE         3
 #define VU_GAME_ENTITY_TYPE                 4
 #define VU_PLAYER_POOL_GROUP_ENTITY_TYPE    5
 #define VU_LAST_ENTITY_TYPE                 100
@@ -44,7 +44,7 @@ struct VuEntityType
     VU_BYTE classInfo_[CLASS_NUM_BYTES];
     VU_TIME updateRate_;
     VU_TIME updateTolerance_;
-    SM_SCALAR bubbleRange_;	// max distance to send position updates
+    SM_SCALAR bubbleRange_; // max distance to send position updates
     SM_SCALAR fineUpdateForceRange_; // distance to force position updates, sfr: seems this is not used at all...
     SM_SCALAR fineUpdateMultiplier_; // multiplier for noticing position updates
     VU_DAMAGE damageSeed_;
@@ -87,7 +87,7 @@ enum VU_MEM
     VU_MEM_CREATED        = 0x01, ///< entity has been created (constructor called)
     VU_MEM_TO_BE_INSERTED = 0x02, ///< entity was added to birth list, will be inserted soon
     VU_MEM_ACTIVE         = 0x03, ///< entity inserted into vuDB
-    VU_MEM_INACTIVE	      = 0x04, ///< entity marked for collection
+    VU_MEM_INACTIVE       = 0x04, ///< entity marked for collection
     VU_MEM_REMOVED        = 0x05, ///< entity garbage collected or purged from collection
     VU_MEM_DELETED        = 0xDD  ///< happens just before entity deletion by unreferencing
 };
@@ -96,7 +96,7 @@ class VuEntity
 {
 
     friend int VuReferenceEntity(VuEntity *ent);
-    friend int VuDeReferenceEntity(VuEntity *ent);	// note: may free ent
+    friend int VuDeReferenceEntity(VuEntity *ent); // note: may free ent
     friend class VuDatabase;
     friend class VuCollectionManager;
     friend class VuCreateEvent;
@@ -221,7 +221,7 @@ public:
         return share_.entityType_;
     }
     VU_BOOL IsLocal() const;
-    VU_ID Association()	const
+    VU_ID Association() const
     {
         return share_.assoc_;
     }
@@ -230,11 +230,11 @@ public:
     {
         return pos_.x_;
     }
-    BIG_SCALAR YPos()	const
+    BIG_SCALAR YPos() const
     {
         return pos_.y_;
     }
-    BIG_SCALAR ZPos()	const
+    BIG_SCALAR ZPos() const
     {
         return pos_.z_;
     }
@@ -298,12 +298,12 @@ public:
     }
 
     // entity driver
-    VU_TIME DriveEntity(VU_TIME currentTime);	// returns TIME of next update
+    VU_TIME DriveEntity(VU_TIME currentTime); // returns TIME of next update
     VuDriver *EntityDriver()
     {
         return driver_;
     }
-    VuDriver *SetDriver(VuDriver *newdriver);	// returns old driver (for del)
+    VuDriver *SetDriver(VuDriver *newdriver); // returns old driver (for del)
     // sfr: these 2 functions avoid position update duplication
     /** returns if unit is enquened for a positional update. */
     bool EnqueuedForPositionUpdate() const
@@ -316,28 +316,28 @@ public:
         enqueuedForPositionUpdate = val;
     }
 
-    VU_BOOL CollisionCheck(VuEntity *other, SM_SCALAR deltatime);	// uses built-in
+    VU_BOOL CollisionCheck(VuEntity *other, SM_SCALAR deltatime); // uses built-in
     virtual VU_BOOL CustomCollisionCheck(VuEntity *other, SM_SCALAR deltatime);
-    virtual VU_BOOL TerrainCollisionCheck();		// default returns false
+    virtual VU_BOOL TerrainCollisionCheck(); // default returns false
     VU_BOOL LineCollisionCheck(
         BIG_SCALAR x1, BIG_SCALAR y1, BIG_SCALAR z1,
         BIG_SCALAR x2, BIG_SCALAR y2, BIG_SCALAR z2,
         SM_SCALAR timeDelta, SM_SCALAR sizeFactor
     );
     // virtual VU type getters
-    virtual VU_BOOL IsTarget();	// returns FALSE
-    virtual VU_BOOL IsSession();	// returns FALSE
-    virtual VU_BOOL IsGroup();	// returns FALSE
-    virtual VU_BOOL IsGame();	// returns FALSE
+    virtual VU_BOOL IsTarget(); // returns FALSE
+    virtual VU_BOOL IsSession(); // returns FALSE
+    virtual VU_BOOL IsGroup(); // returns FALSE
+    virtual VU_BOOL IsGame(); // returns FALSE
     // not really a type, but a utility nonetheless
-    virtual VU_BOOL IsCamera() const;	// returns FALSE
+    virtual VU_BOOL IsCamera() const; // returns FALSE
 
 
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     // event handlers
     virtual VU_ERRCODE Handle(VuErrorMessage *error);
@@ -378,15 +378,15 @@ protected:
     // shared data
     struct ShareData
     {
-        ushort entityType_;	// id (table index)
+        ushort entityType_; // id (table index)
         union
         {
             ushort value_;
             VuFlagBits breakdown_;
         } flags_;
         VU_ID id_;
-        VU_ID ownerId_;	// owning session
-        VU_ID assoc_;	// id of ent which must be local to this ent
+        VU_ID ownerId_; // owning session
+        VU_ID assoc_; // id of ent which must be local to this ent
     } share_;
     struct PositionData
     {

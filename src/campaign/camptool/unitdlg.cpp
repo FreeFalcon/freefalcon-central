@@ -48,22 +48,22 @@ extern float bubbleRatio;
 
 #ifdef CAMPTOOL
 
-int	asAgg = 1;
+int asAgg = 1;
 
-int	eldlgs[5][6] = {  { IDC_STATIC_U0, IDC_STATIC_U00, IDC_STATIC_U01, IDC_STATIC_U02, IDC_STATIC_U03, IDC_STATIC_U04 },
+int eldlgs[5][6] = {  { IDC_STATIC_U0, IDC_STATIC_U00, IDC_STATIC_U01, IDC_STATIC_U02, IDC_STATIC_U03, IDC_STATIC_U04 },
     { IDC_STATIC_U1, IDC_STATIC_U10, IDC_STATIC_U11, IDC_STATIC_U12, IDC_STATIC_U13, IDC_STATIC_U14 },
     { IDC_STATIC_U2, IDC_STATIC_U20, IDC_STATIC_U21, IDC_STATIC_U22, IDC_STATIC_U23, IDC_STATIC_U24 },
     { IDC_STATIC_U3, IDC_STATIC_U30, IDC_STATIC_U31, IDC_STATIC_U32, IDC_STATIC_U33, IDC_STATIC_U34 },
     { IDC_STATIC_U4, IDC_STATIC_U40, IDC_STATIC_U41, IDC_STATIC_U42, IDC_STATIC_U43, IDC_STATIC_U44 }
 };
-int	SPTable[50];
+int SPTable[50];
 
 extern int inButton(RECT *but, WORD xPos, WORD yPos);
 
 #endif CAMPTOOL
 
-char	*BSP;
-char	*BTP;
+char *BSP;
+char *BTP;
 
 // ========================================================
 // External prototypes
@@ -96,7 +96,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 // the correct integer value. Could also be done by compairing strings...
 int GetAdjustedSP(HWND hDlg, int SPType)
 {
-    int		i, j;
+    int i, j;
 
     j = SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_GETCOUNT, 0, 0);
 
@@ -133,10 +133,10 @@ void SetSizeCombo(HWND hDlg, Unit u)
 
 void SetTypeCombo(HWND hDlg, Unit u)
 {
-    int	i, j, k;
-    char	buffer[30];
-    UnitClassDataType*			uc;
-    VehicleClassDataType*		vc;
+    int i, j, k;
+    char buffer[30];
+    UnitClassDataType* uc;
+    VehicleClassDataType* vc;
 
     // Set the possible types
     SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_RESETCONTENT, 0, 0);
@@ -148,9 +148,9 @@ void SetTypeCombo(HWND hDlg, Unit u)
 
         if (j)
         {
-            //			uc = (UnitClassDataType*) Falcon4ClassTable[j].dataPtr;
-            //			if (uc)
-            //				SendMessage(GetDlgItem(hDlg,IDC_UNIT_TYPECOMBO),CB_ADDSTRING,0,(LPARAM)uc->Name);
+            // uc = (UnitClassDataType*) Falcon4ClassTable[j].dataPtr;
+            // if (uc)
+            // SendMessage(GetDlgItem(hDlg,IDC_UNIT_TYPECOMBO),CB_ADDSTRING,0,(LPARAM)uc->Name);
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0, (LPARAM)GetSTypeName(u->GetDomain(), u->GetType(), i, buffer));
         }
         else
@@ -208,7 +208,7 @@ void SetOptionalBoxes(HWND hDlg, int edit, int combo)
 
 void ResetDialogStats(HWND hDlg, int domain, int type)
 {
-    int		i, j;
+    int i, j;
 
     // Clear all optional windows first
     SetWindowText(GetDlgItem(hDlg, IDC_STATIC_OPT1), "Orders:");
@@ -301,15 +301,15 @@ void ResetDialogStats(HWND hDlg, int domain, int type)
 
 void SetOptionalValues(HWND hDlg, Unit u)
 {
-    char		buffer[80];
-    int		i, j;
+    char buffer[80];
+    int i, j;
 
     sprintf(buffer, "%d", u->Type() - VU_LAST_ENTITY_TYPE);
     SetWindowText(GetDlgItem(hDlg, IDC_INDEX), buffer);
 
     if (u->GetDomain() == DOMAIN_LAND)
     {
-        Objective		o;
+        Objective o;
         // Set up orders combo box
         SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
 
@@ -339,8 +339,8 @@ void SetOptionalValues(HWND hDlg, Unit u)
     {
         if (u->GetType() == TYPE_SQUADRON)
         {
-            GridIndex		x, y;
-            int				min, max, cur;
+            GridIndex x, y;
+            int min, max, cur;
 
             // Set up the mission role combo box
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
@@ -364,10 +364,10 @@ void SetOptionalValues(HWND hDlg, Unit u)
 
             sprintf(buffer, "%d", j);
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT5EDIT), buffer);
-            //			sprintf(buffer,"%d",u->GetUnitMorale());
-            //			SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT4EDIT),buffer);
-            //			sprintf(buffer,"%d",u->GetUnitSupply());
-            //			SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT5EDIT),buffer);
+            // sprintf(buffer,"%d",u->GetUnitMorale());
+            // SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT4EDIT),buffer);
+            // sprintf(buffer,"%d",u->GetUnitSupply());
+            // SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT5EDIT),buffer);
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT6EDIT), "Blank");
         }
         else if (u->GetType() == TYPE_FLIGHT)
@@ -384,7 +384,7 @@ void SetOptionalValues(HWND hDlg, Unit u)
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_RESETCONTENT, 0, 0);
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_ADDSTRING, 0, (LPARAM)"Standard");
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_SETCURSEL, 0, 0);
-            //		SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT3VAL),GetLoadoutName(u->GetUnitLoadout()));
+            // SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT3VAL),GetLoadoutName(u->GetUnitLoadout()));
             // Now the rest
             sprintf(buffer, "%d", u->GetUnitMissionTarget());
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT3EDIT), buffer);
@@ -405,7 +405,7 @@ void SetOptionalValues(HWND hDlg, Unit u)
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)"General");
             SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, 0, 0);
-            //			sprintf(buffer,"%d",u->GetUnitPackage());
+            // sprintf(buffer,"%d",u->GetUnitPackage());
             sprintf(buffer, "%d", u->GetUnitPriority());
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT2EDIT), buffer);
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT3EDIT), "");
@@ -434,8 +434,8 @@ void SetOptionalValues(HWND hDlg, Unit u)
 
 void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
 {
-    int		i;
-    char		buffer[80];
+    int i;
+    char buffer[80];
 
     switch (button)
     {
@@ -455,8 +455,8 @@ void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
                     ((Package)u)->SetPackageType(i);
                 else
                 {
-                    GridIndex		x, y;
-                    Objective		o;
+                    GridIndex x, y;
+                    Objective o;
 
                     u->GetLocation(&x, &y);
                     o = FindNearestObjective(x, y, NULL);
@@ -478,8 +478,8 @@ void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
                 if (i < 0)
                     return;
 
-                //				if (u->GetType() == TYPE_FLIGHT && u->GetDomain() == DOMAIN_AIR)
-                //					; // u->SetUnitLoadout(i);
+                // if (u->GetType() == TYPE_FLIGHT && u->GetDomain() == DOMAIN_AIR)
+                // ; // u->SetUnitLoadout(i);
             }
 
             break;
@@ -591,8 +591,8 @@ void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
 
 void SetButtons(HWND hDlg, RECT buttons[10], RECT ebuttons[5][6], int ulx, int uly)
 {
-    int		i, j;
-    RECT		r;
+    int i, j;
+    RECT r;
 
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_MAIN), &r);
     SetRect(&buttons[0], r.left - ulx, r.top - uly + 8, r.right - ulx, r.bottom - uly);
@@ -621,11 +621,11 @@ void SetButtons(HWND hDlg, RECT buttons[10], RECT ebuttons[5][6], int ulx, int u
 
 void DisplayNextInStack(HWND hDlg, Unit u)
 {
-    int				foundone = 0;
-    GridIndex		x, y, tx, ty;
-    Unit			e;
+    int foundone = 0;
+    GridIndex x, y, tx, ty;
+    Unit e;
 
-    VuListIterator	*myit;
+    VuListIterator *myit;
 
     if (ShowReal == 2)
     {
@@ -641,12 +641,12 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     }
 
     // Next unit in stack.
-    u->GetLocation(&x, &y);						// Current in stack
+    u->GetLocation(&x, &y); // Current in stack
     e = GetFirstUnit(myit);
 
     while (e && e != u)
     {
-        e = GetNextUnit(myit);					// Get to current location in list
+        e = GetNextUnit(myit); // Get to current location in list
     }
 
     // e should be u or be null here
@@ -686,8 +686,8 @@ void ShowSubunitInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 {
     Unit  E;
     short j = 0;
-    HWND	hEWnd;
-    HDC	EDC;
+    HWND hEWnd;
+    HDC EDC;
     PAINTSTRUCT ps;
 
     E = U->GetFirstUnitElement();
@@ -725,9 +725,9 @@ void ShowSubunitInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 
 void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 {
-    short	j = 0;
-    short	Rost;
-    char	buffer[20];
+    short j = 0;
+    short Rost;
+    char buffer[20];
 
     if ((!asagg || !U->Father()) && Set == 1)
     {
@@ -808,39 +808,39 @@ int GetNextType(Unit u)
 
 BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    WORD 	button;
-    RECT	rect;
-    int		aggmode, shifted = 0;
-    //!	int		Shift=0,
-    int		None = 0; //!,Size=0;		// Size determines which button to display
-    //!	int		Change=-1;
+    WORD  button;
+    RECT rect;
+    int aggmode, shifted = 0;
+    //! int Shift=0,
+    int None = 0; //!,Size=0; // Size determines which button to display
+    //! int Change=-1;
     int     i, j, ulx, uly;
-    Unit	E, U = GlobUnit;
-    static 	Unit 	C1;
-    char	buffer[128];
+    Unit E, U = GlobUnit;
+    static  Unit  C1;
+    char buffer[128];
 
     // Private buttons:
     /*
-    	static 	RECT		elbuts[6][6] = {	{{10,195,60,230}, {70,195,100,210}, {105,195,130,210}, {135,195,165,210}, {170,195,195,210}, {200,195,230,210}},
-    												 	{{10,235,60,270}, {70,235,100,250}, {105,235,130,250}, {135,235,165,250}, {170,235,195,250}, {200,235,230,250}},
-    													{{10,280,60,310}, {70,280,100,295}, {105,280,130,295}, {135,280,165,295}, {170,280,195,295}, {200,280,230,295}},
-    													{{10,320,60,350}, {70,320,100,335}, {105,320,130,335}, {135,320,165,335}, {170,320,195,335}, {200,320,230,335}},
-    													{{10,360,60,390}, {70,360,100,375}, {105,360,130,375}, {135,360,165,375}, {170,360,195,375}, {200,360,230,375}},
-    													{{10,420,60,450}, {70,405,100,420}, {105,405,130,420}, {135,405,165,420}, {170,405,195,420}, {200,405,230,420}}};
-    	static	RECT		contbuts[10] = { 	{120,10,190,55}, {60,22,90,35},
-    													{200,22,225,35}, {10,140,145,150},
-    													{10,155,145,170},{10,120,145,130},
-    													{0,0,0,0},       {0,0,0,0},
-    													{0,0,0,0},       {0,0,0,0} };
+     static  RECT elbuts[6][6] = { {{10,195,60,230}, {70,195,100,210}, {105,195,130,210}, {135,195,165,210}, {170,195,195,210}, {200,195,230,210}},
+       {{10,235,60,270}, {70,235,100,250}, {105,235,130,250}, {135,235,165,250}, {170,235,195,250}, {200,235,230,250}},
+     {{10,280,60,310}, {70,280,100,295}, {105,280,130,295}, {135,280,165,295}, {170,280,195,295}, {200,280,230,295}},
+     {{10,320,60,350}, {70,320,100,335}, {105,320,130,335}, {135,320,165,335}, {170,320,195,335}, {200,320,230,335}},
+     {{10,360,60,390}, {70,360,100,375}, {105,360,130,375}, {135,360,165,375}, {170,360,195,375}, {200,360,230,375}},
+     {{10,420,60,450}, {70,405,100,420}, {105,405,130,420}, {135,405,165,420}, {170,405,195,420}, {200,405,230,420}}};
+     static RECT contbuts[10] = {  {120,10,190,55}, {60,22,90,35},
+     {200,22,225,35}, {10,140,145,150},
+     {10,155,145,170},{10,120,145,130},
+     {0,0,0,0},       {0,0,0,0},
+     {0,0,0,0},       {0,0,0,0} };
     */
-    RECT		buttons[10];
-    RECT		ebuttons[5][6];
+    RECT buttons[10];
+    RECT ebuttons[5][6];
 
     if (!U || U->CountUnitElements() == 0)
         None = 1;
 
     GetWindowRect(hDlg, &rect);
-    ulx = rect.left + 2;					// Upper left of dialog box client are in screen coords
+    ulx = rect.left + 2; // Upper left of dialog box client are in screen coords
     uly = rect.top + 2;
     SetButtons(hDlg, buttons, ebuttons, ulx, uly);
 
@@ -848,8 +848,8 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
-            GridIndex	x, y;
+        case WM_INITDIALOG:              /* message: initialize dialog box */
+            GridIndex x, y;
 
             U->GetLocation(&x, &y);
 
@@ -876,8 +876,8 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_SPOTVAL), buffer);
 
             // Initialize our buttons
-            //			if (GlobUnit->PlayerOk())
-            //				PostMessage(GetDlgItem(hDlg,IDC_CHECKPLAYEROK),BM_SETCHECK,1,0);
+            // if (GlobUnit->PlayerOk())
+            // PostMessage(GetDlgItem(hDlg,IDC_CHECKPLAYEROK),BM_SETCHECK,1,0);
             if (GlobUnit->Scripted())
                 PostMessage(GetDlgItem(hDlg, IDC_CHECKSCRIPTED), BM_SETCHECK, 1, 0);
 
@@ -905,10 +905,10 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            HDC			hDC, DC;
+            HDC hDC, DC;
             PAINTSTRUCT ps, nps;
-            HWND		hCWnd;
-            //!			int			c=0;
+            HWND hCWnd;
+            //! int c=0;
 
             if (!U || U->IsDead())
             {
@@ -920,7 +920,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
             {
-                GridIndex		x, y;
+                GridIndex x, y;
 
                 hDC = BeginPaint(hDlg, &ps);
                 SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OWN2VAL), Side[U->GetOwner()]);
@@ -969,10 +969,10 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (button)
             {
-                case IDOK:				   		/* "OK" box selected?        */
+                case IDOK:     /* "OK" box selected?        */
                 case IDCANCEL:
                     TeamInfo[GlobUnit->GetTeam()]->SetActive(1);
                     EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
@@ -1153,10 +1153,10 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     break;
 
                 case IDC_CHECKPLAYEROK:
-                    //					if (GlobUnit->PlayerOk())
-                    //						GlobUnit->SetPlayerOk(0);
-                    //					else
-                    //						GlobUnit->SetPlayerOk(1);
+                    // if (GlobUnit->PlayerOk())
+                    // GlobUnit->SetPlayerOk(0);
+                    // else
+                    // GlobUnit->SetPlayerOk(1);
                     break;
 
                 case IDC_CHECKSCRIPTED:
@@ -1196,7 +1196,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_RBUTTONDOWN:
         case WM_LBUTTONDBLCLK:
         {
-            WORD		xPos, yPos;
+            WORD xPos, yPos;
 
             xPos = LOWORD(lParam);  // horizontal position of cursor
             yPos = HIWORD(lParam);  // vertical position of cursor
@@ -1207,7 +1207,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     if (inButton(&ebuttons[i][j], xPos, yPos))
                     {
-                        int	k, l;
+                        int k, l;
 
                         SetFocus(GetDlgItem(hDlg, IDOK));
                         E = NULL;
@@ -1252,9 +1252,9 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (message == WM_LBUTTONDBLCLK && !E && !U->Real())
                         {
-                            GridIndex		x, y;
+                            GridIndex x, y;
 
-                            if (!j)				// Primary child
+                            if (!j) // Primary child
                             {
                                 if (U->GetType() == TYPE_BRIGADE)
                                     E = NewUnit(U->GetDomain(), GetNextType(U), U->GetSType(), 2, U);
@@ -1265,18 +1265,18 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 E->SetUnitNameID(i + 1);
                             }
 
-                            /*							else if (U->GetType() == TYPE_DIVISION)
-                            								{
-                            								E = GlobUnit->GetFirstUnitElement();
-                            								k=i;
-                            								while (E && k)
-                            									{
-                            									E = GetNextUnit(E);
-                            									k--;
-                            									}
-                            								if (E)
-                            									E = CreateUnit(E->GetOwner(), E->GetDomain(), GetNextType(E), E->GetSType(), E->GetSPType(), E);
-                            								}
+                            /* else if (U->GetType() == TYPE_DIVISION)
+                             {
+                             E = GlobUnit->GetFirstUnitElement();
+                             k=i;
+                             while (E && k)
+                             {
+                             E = GetNextUnit(E);
+                             k--;
+                             }
+                             if (E)
+                             E = CreateUnit(E->GetOwner(), E->GetDomain(), GetNextType(E), E->GetSType(), E->GetSPType(), E);
+                             }
                             */
                             U->GetLocation(&x, &y);
                             E->SetLocation(x, y);
@@ -1287,12 +1287,12 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         {
 
                             /*
-                            							if (!E)
-                            								; 		// Add the unit
-                            							else if (E==C1)
-                            								C1->SetUnitSType((char)(C1->GetSType()-1));
-                            							else
-                            								C1 = E;
+                             if (!E)
+                             ;  // Add the unit
+                             else if (E==C1)
+                             C1->SetUnitSType((char)(C1->GetSType()-1));
+                             else
+                             C1 = E;
                             */
                         }
 
@@ -1362,20 +1362,20 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    WayPoint			nw, w = GlobWP;
-    RECT				rect;
-    GridIndex		x, y;
-    static int		targettype, targetid, firstwpa, lastwpa;
-    int				i;
-    char				buffer[40];
-    CampEntity		e;
+    WayPoint nw, w = GlobWP;
+    RECT rect;
+    GridIndex x, y;
+    static int targettype, targetid, firstwpa, lastwpa;
+    int i;
+    char buffer[40];
+    CampEntity e;
 
     if (!w)
     {
@@ -1385,7 +1385,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
             e = GlobWP->GetWPTarget();
 
             if (e)
@@ -1472,7 +1472,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            HDC			hDC;
+            HDC hDC;
             PAINTSTRUCT ps;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
@@ -1490,10 +1490,10 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
-                case IDOK:   						/* "OK" box selected?        */
+                case IDOK:    /* "OK" box selected?        */
                 case IDCANCEL:
                     EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
                     return (TRUE);
@@ -1562,7 +1562,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (targettype == 1)
                         {
-                            Objective		o;
+                            Objective o;
                             targettype = CLASS_OBJECTIVE;
                             o = GetObjectiveByXY(CurX, CurY);
 
@@ -1577,7 +1577,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         }
                         else if (targettype == 2)
                         {
-                            Unit				u;
+                            Unit u;
                             targettype = CLASS_UNIT;
 
                             u = FindUnitByXY(AllRealList, CurX, CurY, 0);
@@ -1612,7 +1612,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1623,10 +1623,10 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
 {
-    char			buffer[120];
-    Unit			u;
-    GridIndex	x, y;
-    RECT			rect;
+    char buffer[120];
+    Unit u;
+    GridIndex x, y;
+    RECT rect;
 
     if (!squadron)
         return NULL;
@@ -1638,7 +1638,7 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
     flights->Purge();
 
     {
-        VuListIterator	myit(AllAirList);
+        VuListIterator myit(AllAirList);
         u = GetFirstUnit(&myit);
 
         while (u)
@@ -1663,18 +1663,18 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
 
 BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    RECT			rect;
-    Unit			u;
-    static Unit		squadron = NULL, flight = NULL;
-    int				i;
-    GridIndex		x, y;
-    char			buffer[120];
-    static FalconPrivateList	*squadrons;
-    static FalconPrivateList	*flights;
+    RECT rect;
+    Unit u;
+    static Unit squadron = NULL, flight = NULL;
+    int i;
+    GridIndex x, y;
+    char buffer[120];
+    static FalconPrivateList *squadrons;
+    static FalconPrivateList *flights;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
         {
             squadrons = new FalconPrivateList(&AllAirFilter);
             squadrons->Register();
@@ -1686,7 +1686,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             squadron = flight = NULL;
             {
-                VuListIterator	myit(AllAirList);
+                VuListIterator myit(AllAirList);
                 u = GetFirstUnit(&myit);
 
                 while (u)
@@ -1704,7 +1704,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             squadron = (Unit)FalconLocalSession->GetPlayerSquadron();
 
             {
-                VuListIterator	sit(squadrons);
+                VuListIterator sit(squadrons);
                 u = GetFirstUnit(&sit);
                 i = 0;
 
@@ -1735,16 +1735,16 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
         {
-            PAINTSTRUCT		ps;
-            HDC				DC;
-            WayPoint		w;
-            int				radio, text, target, tot, cs;
-            CampaignTime	dt;
+            PAINTSTRUCT ps;
+            HDC DC;
+            WayPoint w;
+            int radio, text, target, tot, cs;
+            CampaignTime dt;
             VehicleClassDataType *vc;
 
             if (GetUpdateRect(hDlg, &rect, FALSE) && flights)
             {
-                VuListIterator	fit(flights);
+                VuListIterator fit(flights);
                 DC = BeginPaint(hDlg, &ps);
                 u = GetFirstUnit(&fit);
                 i = 0;
@@ -1785,7 +1785,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         if (w->GetWPFlags() & WPF_TARGET)
                         {
-                            CampEntity		e;
+                            CampEntity e;
                             w->GetWPLocation(&x, &y);
                             e = w->GetWPTarget();
 
@@ -1826,7 +1826,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -1849,7 +1849,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                         if (i)
                         {
-                            VuListIterator	sit(squadrons);
+                            VuListIterator sit(squadrons);
                             squadron = GetFirstUnit(&sit);
                             i--;
 
@@ -1886,7 +1886,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_MISS_MISSION15:
                 case IDC_MISS_MISSION16:
                 {
-                    VuListIterator	fit(flights);
+                    VuListIterator fit(flights);
                     i = LOWORD(wParam) - IDC_MISS_MISSION1;
                     flight = GetFirstUnit(&fit);
 
@@ -1914,8 +1914,8 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_DEBRIEF:
                     if (flight)
                     {
-                        _TCHAR	brief_string[16384];
-                        char	btitle[40] = "Mission Debrief";
+                        _TCHAR brief_string[16384];
+                        char btitle[40] = "Mission Debrief";
 
                         BuildCampDebrief(brief_string);
                         BSP = brief_string;
@@ -1929,8 +1929,8 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 case IDC_BRIEF:
                     if (flight)
                     {
-                        _TCHAR	brief_string[8192];
-                        char	btitle[40] = "Mission Brief";
+                        _TCHAR brief_string[8192];
+                        char btitle[40] = "Mission Brief";
 
                         BuildCampBrief(brief_string);
                         BSP = brief_string;
@@ -1951,7 +1951,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1961,23 +1961,23 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-    RECT			rect;
-    Unit			u;
-    static Unit		squadron = NULL;
-    int				i;
-    GridIndex		x, y;
-    char			buffer[120];
-    static FalconPrivateList	*squadrons = NULL;
+    RECT rect;
+    Unit u;
+    static Unit squadron = NULL;
+    int i;
+    GridIndex x, y;
+    char buffer[120];
+    static FalconPrivateList *squadrons = NULL;
 
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
+        case WM_INITDIALOG:              /* message: initialize dialog box */
         {
             squadrons = new FalconPrivateList(&AllAirFilter);
             squadrons->Register();
             squadron = NULL;
             {
-                VuListIterator	airit(AllAirList);
+                VuListIterator airit(AllAirList);
                 u = GetFirstUnit(&airit);
 
                 while (u)
@@ -1993,7 +1993,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
             SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)"None");
             SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 0, 0);
             {
-                VuListIterator	sit(squadrons);
+                VuListIterator sit(squadrons);
                 u = GetFirstUnit(&sit);
 
                 while (u)
@@ -2007,7 +2007,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
             if (!squadron)
             {
-                /*		squadron = GetFirstUnit(&sit);*/
+                /* squadron = GetFirstUnit(&sit);*/
                 SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 1, 0);
             }
 
@@ -2017,7 +2017,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
         case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC			DC;
+            HDC DC;
 
             if (GetUpdateRect(hDlg, &rect, FALSE))
             {
@@ -2043,7 +2043,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
             }
         }
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -2070,7 +2070,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
                         if (i)
                         {
-                            VuListIterator	sit(squadrons);
+                            VuListIterator sit(squadrons);
                             squadron = GetFirstUnit(&sit);
                             i--;
 
@@ -2101,7 +2101,7 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
             break;
     }
 
-    return (FALSE);                   		/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -2110,8 +2110,8 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-        case WM_INITDIALOG:             		/* message: initialize dialog box */
-            //			SetTitle(BTP);
+        case WM_INITDIALOG:              /* message: initialize dialog box */
+            // SetTitle(BTP);
             SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BSP);
             return (TRUE);
             break;
@@ -2119,7 +2119,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_PAINT:
             break;
 
-        case WM_COMMAND:                		/* message: received a command */
+        case WM_COMMAND:                 /* message: received a command */
             switch (LOWORD(wParam))
             {
                 case IDOK:
@@ -2136,7 +2136,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             break;
     }
 
-    return (FALSE);                   			/* Didn't process a message    */
+    return (FALSE);                    /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }

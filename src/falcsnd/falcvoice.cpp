@@ -24,14 +24,14 @@
 #include "playerop.h"
 #include "soundgroups.h"
 
-extern VoiceManager	*VM;
-extern HANDLE		VMWakeEventHandle;
+extern VoiceManager *VM;
+extern HANDLE VMWakeEventHandle;
 extern WAVEFORMATEX mono_16bit_8k;
 
 extern FILE *debugFile;
 extern FILE *debugEndFile;
 
-extern BOOL	killThread;
+extern BOOL killThread;
 DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length);
 
 FalcVoice::FalcVoice(void)
@@ -61,8 +61,8 @@ void FalcVoice::CreateVoice(void)
     /* Initialize Flag Sets */
     voiceStruct->streamBuffer = 0;
     voiceStruct->status = QUEUE_CONV;
-    //	voiceStruct->currConv = 0;
-    //	voiceStruct->convQCount = 0;
+    // voiceStruct->currConv = 0;
+    // voiceStruct->convQCount = 0;
 }
 
 void FalcVoice::InitCompressionData(void)
@@ -127,7 +127,7 @@ void FalcVoice::FVResumeVoiceStreams(void)
 
 void FalcVoice::InitializeVoiceBuffers(void)
 {
-    int	i;
+    int i;
 
     for (i = 0; i < MAX_VOICE_BUFFERS; i++)
     {
@@ -164,7 +164,7 @@ void FalcVoice::InitializeVoiceStruct(int bufferNum)
     voiceBuffers[bufferNum].waveBufferRead = 0;
 }
 
-void FalcVoice::InitWaveFormatEXData(WAVEFORMATEX	*waveFormat)
+void FalcVoice::InitWaveFormatEXData(WAVEFORMATEX *waveFormat)
 {
     waveFormat->wFormatTag = 0x0001;
     waveFormat->nChannels = 0x0001;
@@ -235,7 +235,7 @@ void FalcVoice::DebugStatus(void)
 
     for (i = 0; i < MAX_VOICE_BUFFERS; i++)
     {
-        //		fprintf( dbgSndFile, "Status:: buffer%d: %d\n", i, voiceBuffers[i].status );
+        // fprintf( dbgSndFile, "Status:: buffer%d: %d\n", i, voiceBuffers[i].status );
     }
 }
 
@@ -270,7 +270,7 @@ void FalcVoice::BufferEmpty(int buffer)
 
 void FalcVoice::ResetBufferStatus(void)
 {
-    int	i;
+    int i;
 
     for (i = 0; i < MAX_VOICE_BUFFERS; i++)
         voiceBuffers[i].status = BUFFER_NOT_IN_QUEUE;
@@ -278,10 +278,10 @@ void FalcVoice::ResetBufferStatus(void)
 
 DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
 {
-    int					fillerSize, dataToCopy, filler;
-    VOICE_STREAM_BUFFER	*streams;
-    unsigned char		*ptr, *dsb;
-    FalcVoice			*thisFV;
+    int fillerSize, dataToCopy, filler;
+    VOICE_STREAM_BUFFER *streams;
+    unsigned char *ptr, *dsb;
+    FalcVoice *thisFV;
 
     thisFV = (FalcVoice *)me;
 
@@ -300,7 +300,7 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
             // sfr: i think this is causing the buffer to stop being consumed
             /*if(gSoundDriver && (thisFV->silenceWritten > 16000) )
             {
-            	gSoundDriver->PauseStream(thisFV->FalcVoiceHandle);
+             gSoundDriver->PauseStream(thisFV->FalcVoiceHandle);
             }*/
             memset(soundBuffer, SILENCE_KEY, length);
             thisFV->silenceWritten += length;

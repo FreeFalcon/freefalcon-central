@@ -78,8 +78,8 @@ public:
     BSPLIST *LoadBSP(long ID, long objID);
     BSPLIST *LoadBridge(long ID, long objID);
     BSPLIST *LoadBuilding(long ID, long objID, Tpoint *pos, float heading);
-    BSPLIST *CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc);
-    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc, Tpoint *objPos, BSPLIST *Parent);
+    BSPLIST *CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc);
+    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent);
     BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype);
     BSPLIST *Find(long ID)
     {

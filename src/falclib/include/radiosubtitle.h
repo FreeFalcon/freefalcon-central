@@ -1,17 +1,17 @@
 /*****************************************************************************/
-//	File:			RadioSubTitle.h
-//	Author:			Retro
-//	Date:			Dec2003
+// File: RadioSubTitle.h
+// Author: Retro
+// Date: Dec2003
 //
-//	Description:	Please see the .cpp
+// Description: Please see the .cpp
 /*****************************************************************************/
-#define MESSAGE_TTL 0x4e20 //20 secs 0x1350	// about 5 seconds (value is in ms)
+#define MESSAGE_TTL 0x4e20 //20 secs 0x1350 // about 5 seconds (value is in ms)
 
-#define DYNAMIC_LINE_NUM	// Retro 11Jan2004 - no static array for subtitles any more
+#define DYNAMIC_LINE_NUM // Retro 11Jan2004 - no static array for subtitles any more
 
 #define MAX_VOICE_NUM 14
 
-#ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifndef DYNAMIC_LINE_NUM // Retro 11Jan2004
 #define MAX_FRAG_NUM 3000
 #endif
 
@@ -68,7 +68,7 @@ public:
         }
     };
 
-    static CRITICAL_SECTION	cs_radiosubtitle;
+    static CRITICAL_SECTION cs_radiosubtitle;
 private:
     AList* theRadioChatterList;
 
@@ -97,7 +97,7 @@ private:
 
     typedef struct csvLine
     {
-        int Fragment;	// actually this could be the index in the array I guess ???
+        int Fragment; // actually this could be the index in the array I guess ???
         int VoiceCount;
         char* Voices[MAX_VOICE_NUM];
         char* Summary;
@@ -131,13 +131,13 @@ private:
         }
     } csvLine_t;
 
-#ifndef DYNAMIC_LINE_NUM	// Retro 11Jan2004
+#ifndef DYNAMIC_LINE_NUM // Retro 11Jan2004
     csvLine_t* theStrings[MAX_FRAG_NUM];
 #else
     csvLine_t** theStrings;
     int CountLinesInFile(const char* theFileName);
     int FragCount;
-#endif	// DYNAMIC_LINE_NUM
+#endif // DYNAMIC_LINE_NUM
 
     bool ReadNewFile(const char* theFileName);
     void breakDownLine(csvLine_t* theTextString, char* theLine, const int theLength);
@@ -156,11 +156,11 @@ private:
     unsigned long colour_Flight;
     unsigned long colour_ToPackage;
     unsigned long colour_ToFromPackage;
-    unsigned long colour_Team;		// this is the guard channel
+    unsigned long colour_Team; // this is the guard channel
     unsigned long colour_Proximity;
     unsigned long colour_World;
     unsigned long colour_Tower;
-    unsigned long colour_Standard;	// only used in default cases which (shouldn´t happen actually)
+    unsigned long colour_Standard; // only used in default cases which (shouldn´t happen actually)
 };
 
 extern RadioSubTitle* radioLabel;

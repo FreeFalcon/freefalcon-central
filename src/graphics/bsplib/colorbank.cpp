@@ -13,19 +13,19 @@
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
 // Color counts
-int		ColorBankClass::nColors			= 0;	// Total number of colors in each set
-int		ColorBankClass::nDarkendColors	= 0;	// Number of colors which are staticly lit
+int ColorBankClass::nColors = 0; // Total number of colors in each set
+int ColorBankClass::nDarkendColors = 0; // Number of colors which are staticly lit
 
 // This is the publicly used pointer to a color array
-Pcolor	*ColorBankClass::ColorPool		= NULL;
+Pcolor *ColorBankClass::ColorPool = NULL;
 
 // These are the color pools for each mode
-Pcolor	*ColorBankClass::ColorBuffer	= NULL;	// Normal (original) colors
-Pcolor	*ColorBankClass::DarkenedBuffer	= NULL;	// Processed for static lighting on some colors
-Pcolor	*ColorBankClass::GreenIRBuffer	= NULL;	// Processed for green without lighting
-Pcolor	*ColorBankClass::GreenTVBuffer	= NULL;	// Processed for green with static lighting on some colors
-DWORD	ColorBankClass::TODcolor		= NULL; // JAM 12Oct03
-int	ColorBankClass::PitLightLevel = 0;
+Pcolor *ColorBankClass::ColorBuffer = NULL; // Normal (original) colors
+Pcolor *ColorBankClass::DarkenedBuffer = NULL; // Processed for static lighting on some colors
+Pcolor *ColorBankClass::GreenIRBuffer = NULL; // Processed for green without lighting
+Pcolor *ColorBankClass::GreenTVBuffer = NULL; // Processed for green with static lighting on some colors
+DWORD ColorBankClass::TODcolor = NULL; // JAM 12Oct03
+int ColorBankClass::PitLightLevel = 0;
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
@@ -39,49 +39,49 @@ void ColorBankClass::Setup(int nclrs, int ndarkclrs)
     ShiAssert(ColorBuffer == NULL);
 
     // Record how many colors we've got total and prelit
-    nColors				= nclrs;
-    nDarkendColors		= ndarkclrs;
+    nColors = nclrs;
+    nDarkendColors = ndarkclrs;
 
     // Allocate space for the colors
 #ifdef USE_SH_POOLS
     ColorBuffer = (Pcolor *)MemAllocPtr(gBSPLibMemPool, sizeof(Pcolor) * 4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS), 0);
 #else
-    ColorBuffer		= new Pcolor[4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS)];
+    ColorBuffer = new Pcolor[4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS)];
 #endif
-    DarkenedBuffer	= ColorBuffer    + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
-    GreenIRBuffer	= DarkenedBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
-    GreenTVBuffer	= GreenIRBuffer  + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    DarkenedBuffer = ColorBuffer    + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    GreenIRBuffer = DarkenedBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    GreenTVBuffer = GreenIRBuffer  + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
 }
 
 
 void ColorBankClass::Cleanup(void)
 {
-    nColors				= 0;
-    nDarkendColors		= 0;
+    nColors = 0;
+    nDarkendColors = 0;
 #ifdef USE_SH_POOLS
     MemFreePtr(ColorBuffer);
 #else
     delete[] ColorBuffer;
 #endif
-    ColorBuffer			= NULL;
-    DarkenedBuffer		= NULL;
-    GreenIRBuffer		= NULL;
-    GreenTVBuffer		= NULL;
+    ColorBuffer = NULL;
+    DarkenedBuffer = NULL;
+    GreenIRBuffer = NULL;
+    GreenTVBuffer = NULL;
 }
 
 
 void ColorBankClass::ReadPool(int file)
 {
-    int		result;
-    Pcolor	*src;
-    Pcolor	*end;
-    Pcolor	*dst1;
+    int result;
+    Pcolor *src;
+    Pcolor *end;
+    Pcolor *dst1;
     Pcolor  *dst2;
     Pcolor  *dst3;
 
     // Read our total color and darkened color count
-    result = read(file, &nColors,			sizeof(nColors));
-    result = read(file, &nDarkendColors,	sizeof(nDarkendColors));
+    result = read(file, &nColors, sizeof(nColors));
+    result = read(file, &nDarkendColors, sizeof(nDarkendColors));
 
     // Setup our internal storage
     Setup(nColors, nDarkendColors);
@@ -126,10 +126,10 @@ void ColorBankClass::ReadPool(int file)
 
 void ColorBankClass::SetLight(float red, float green, float blue)
 {
-    Pcolor	*src;
-    Pcolor	*end;
-    Pcolor	*dst;
-    Pcolor	*greenTv;
+    Pcolor *src;
+    Pcolor *end;
+    Pcolor *dst;
+    Pcolor *greenTv;
 
     ShiAssert(red   <= 1.0f);
     ShiAssert(green <= 1.0f);

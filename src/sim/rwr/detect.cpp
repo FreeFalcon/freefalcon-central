@@ -78,42 +78,42 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
 
     // JB 010727 RP5 RWR end
     /*
-    	if (0) //me123 test (rwrObj->BaseData()->IsSim())
-    	{
-    		float scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
-    		float scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();
+     if (0) //me123 test (rwrObj->BaseData()->IsSim())
+     {
+     float scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
+     float scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();
 
-    		// TODO:  Use the search volumes correctly
-    		// RdrAzCenter()
-    		// RdrElCenter()
+     // TODO:  Use the search volumes correctly
+     // RdrAzCenter()
+     // RdrElCenter()
 
-    		if ((scanAz > fabs(rwrObj->localData->azFrom)) &&
-    			(scanEl > fabs(rwrObj->localData->elFrom)))
-    		{
-    			return TRUE;
-    		}
-    		else
-    		{
-    			return FALSE;
-    		}
-    	}
-    	else
-    	{
-    		// TODO:  Can we use localData here?  Not sure, so lets be safe in the short term
-    		float dx = rwrObj->BaseData()->XPos() - platform->XPos();
-    		float dy = rwrObj->BaseData()->YPos() - platform->YPos();
-    		float brg = (float)atan2( dx, dy );//me123 switched x and y
-    		float angleOff = (float)fmod( fabs( brg - rwrObj->BaseData()->Yaw() ), PI );
+     if ((scanAz > fabs(rwrObj->localData->azFrom)) &&
+     (scanEl > fabs(rwrObj->localData->elFrom)))
+     {
+     return TRUE;
+     }
+     else
+     {
+     return FALSE;
+     }
+     }
+     else
+     {
+     // TODO:  Can we use localData here?  Not sure, so lets be safe in the short term
+     float dx = rwrObj->BaseData()->XPos() - platform->XPos();
+     float dy = rwrObj->BaseData()->YPos() - platform->YPos();
+     float brg = (float)atan2( dx, dy );//me123 switched x and y
+     float angleOff = (float)fmod( fabs( brg - rwrObj->BaseData()->Yaw() ), PI );
 
-    		if (angleOff < RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle)
-    		{
-    			return TRUE;
-    		}
-    		else
-    		{
-    			return FALSE;
-    		}
-    	}
+     if (angleOff < RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle)
+     {
+     return TRUE;
+     }
+     else
+     {
+     return FALSE;
+     }
+     }
     */
 }
 

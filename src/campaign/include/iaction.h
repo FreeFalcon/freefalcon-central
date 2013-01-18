@@ -125,25 +125,25 @@ enum instant_action_unit_type
 
 struct ia_data
 {
-    float						distance;
-    float						aspect;
-    float						altitude;
-    instant_action_unit_type	type;
-    int							size: 4;
-    int							side: 8;
-    int							kill: 1;
-    int							dumb: 1;
-    int							skill: 4;
-    int							guns: 1;
-    int							radar: 1;
-    int							heat: 1;
-    int							ground: 1;
-    int							num_vector: 8;
+    float distance;
+    float aspect;
+    float altitude;
+    instant_action_unit_type type;
+    int size: 4;
+    int side: 8;
+    int kill: 1;
+    int dumb: 1;
+    int skill: 4;
+    int guns: 1;
+    int radar: 1;
+    int heat: 1;
+    int ground: 1;
+    int num_vector: 8;
 
-    float						vector[32];
-    float						v_dist[32];
-    float						v_alt[32];
-    float						v_kts[32];
+    float vector[32];
+    float v_dist[32];
+    float v_alt[32];
+    float v_kts[32];
 };
 
 class instant_action
@@ -151,45 +151,45 @@ class instant_action
 
 protected:
 
-    static long		start_time;
-    static float	start_x;
-    static float	start_y;
+    static long start_time;
+    static float start_x;
+    static float start_y;
 
-    static FlightClass		*player_flight;
+    static FlightClass *player_flight;
 
-    static int		generic_skill;
-    static int		current_wave;
-    static char		current_mode;
-    static unsigned long	wave_time;
-    static int		wave_created;
+    static int generic_skill;
+    static int current_wave;
+    static char current_mode;
+    static unsigned long wave_time;
+    static int wave_created;
 
-    static void		create_unit(ia_data &data);
-    static void		create_flight(ia_data &data);
-    static void		create_battalion(ia_data &data);
+    static void create_unit(ia_data &data);
+    static void create_flight(ia_data &data);
+    static void create_battalion(ia_data &data);
 
 public:
 
-    static void		create_player_flight(void);
-    static void		move_player_flight(void);
-    static void		create_wave(void);
-    static void		check_next_wave(void);
-    static void		create_more_stuff(void);
+    static void create_player_flight(void);
+    static void move_player_flight(void);
+    static void create_wave(void);
+    static void check_next_wave(void);
+    static void create_more_stuff(void);
 
-    static int		is_fighter_sweep(void);
-    static int		is_moving_mud(void);
+    static int is_fighter_sweep(void);
+    static int is_moving_mud(void);
 
-    static void		set_start_wave(int wave);
-    static void		set_start_mode(char ch);
+    static void set_start_wave(int wave);
+    static void set_start_mode(char ch);
 
-    static void		set_start_position(float x, float y);
-    static void		get_start_position(float &x, float &y);
+    static void set_start_position(float x, float y);
+    static void get_start_position(float &x, float &y);
 
-    static void		set_start_time(long t);
-    static long		get_start_time(void);
+    static void set_start_time(long t);
+    static long get_start_time(void);
 
-    static long		get_wave_timeout(void);
+    static long get_wave_timeout(void);
 
-    static void		set_campaign_time(void);
+    static void set_campaign_time(void);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

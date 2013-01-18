@@ -29,7 +29,7 @@ extern float OffsetToMiddle;
 // =============================
 
 #ifdef USE_SH_POOLS
-MEM_POOL	SimPersistantClass::pool;
+MEM_POOL SimPersistantClass::pool;
 #endif
 
 #ifdef DEBUG
@@ -38,7 +38,7 @@ int Persistant_Craters = 0;
 int Persistant_Runway_Craters = 0;
 #endif
 
-SimPersistantClass*	PersistantObjects;
+SimPersistantClass* PersistantObjects;
 int persistantListTail = 0;
 
 // =============================
@@ -56,9 +56,9 @@ SimPersistantClass::SimPersistantClass(void)
 SimPersistantClass::~SimPersistantClass(void)
 {
     ShiAssert(!drawPointer);
-    //	if (drawPointer)
-    //		OTWDriver.RemoveObject(drawPointer, TRUE);
-    //	drawPointer = NULL;
+    // if (drawPointer)
+    // OTWDriver.RemoveObject(drawPointer, TRUE);
+    // drawPointer = NULL;
 }
 
 // function interface
@@ -171,7 +171,7 @@ FalconEntity *SimPersistantClass::GetCampObject(void)
         return NULL;
     else
     {
-        VU_ID	vuid;
+        VU_ID vuid;
         vuid.creator_ = unionData.campObject.creator_;
         vuid.creator_ = unionData.campObject.num_;
         return (FalconEntity*) vuDatabase->Find(vuid);
@@ -210,7 +210,7 @@ void CleanupPersistantDatabase(void)
 // This is the correct way to add a timed persistant object
 void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x, float y)
 {
-    FalconAddSFXMessage*	msg = new FalconAddSFXMessage(FalconNullId, FalconLocalGame);
+    FalconAddSFXMessage* msg = new FalconAddSFXMessage(FalconNullId, FalconLocalGame);
     msg->dataBlock.type = SFX_TIMED_PERSISTANT;
     msg->dataBlock.visType = (short)vistype;
     msg->dataBlock.xLoc = x;
@@ -225,7 +225,7 @@ void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx, 
 {
     ShiAssert(campObj);
 
-    FalconAddSFXMessage*	msg = new FalconAddSFXMessage(campObj->Id(), FalconLocalGame);
+    FalconAddSFXMessage* msg = new FalconAddSFXMessage(campObj->Id(), FalconLocalGame);
     msg->dataBlock.type = SFX_LINKED_PERSISTANT;
     msg->dataBlock.visType = (short)vistype;
     msg->dataBlock.xLoc = x;
@@ -237,7 +237,7 @@ void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx, 
 
 void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, float y)
 {
-    int		i, ds, slot = -1;
+    int i, ds, slot = -1;
 
     i = persistantListTail + 1;
 
@@ -270,7 +270,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
 
 void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float x, float y)
 {
-    int		i, ds, slot = -1;
+    int i, ds, slot = -1;
 
     i = persistantListTail + 1;
 
@@ -305,8 +305,8 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
 
 void SavePersistantList(char* scenario)
 {
-    int		i, count = 0;
-    FILE*	fp;
+    int i, count = 0;
+    FILE* fp;
 
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
@@ -331,8 +331,8 @@ void SavePersistantList(char* scenario)
 
 void LoadPersistantList(char* scenario)
 {
-    int			i, count = 0;
-    FILE*		fp;
+    int i, count = 0;
+    FILE* fp;
 
     if (gCampDataVersion < 69)
     {
@@ -362,7 +362,7 @@ void LoadPersistantList(char* scenario)
 
 int EncodePersistantList(VU_BYTE** stream, int maxSize)
 {
-    int	i, count = 0, size;
+    int i, count = 0, size;
 
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
@@ -391,7 +391,7 @@ int EncodePersistantList(VU_BYTE** stream, int maxSize)
 
 void DecodePersistantList(VU_BYTE** stream, long *rem)
 {
-    short	i, count = 0;
+    short i, count = 0;
 
     CleanupPersistantList();
 
@@ -420,7 +420,7 @@ void DecodePersistantList(VU_BYTE** stream, long *rem)
 
 int SizePersistantList(int maxSize)
 {
-    int		i, count = 0, size;
+    int i, count = 0, size;
 
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
@@ -448,9 +448,9 @@ void CleanupPersistantList(void)
 void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignTime now)
 {
     SimPersistantClass* persist;
-    int		i;
-    float	dsq, rsq = range * range;
-    //	float	lasty = py+range;
+    int i;
+    float dsq, rsq = range * range;
+    // float lasty = py+range;
 
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
@@ -464,7 +464,7 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
                 if (!persist->drawPointer)
                     persist->Deaggregate();
             }
-            else if (persist->drawPointer && dsq > rsq * 1.2F)	// Reaggregate 20% further than we deaggregate
+            else if (persist->drawPointer && dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
                 persist->Reaggregate();
             else if (persist->IsTimed() && now > persist->unionData.removeTime)
                 persist->Cleanup();
@@ -475,8 +475,8 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
 void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index, int newVis, int ratio)
 {
     SimPersistantClass* persist;
-    int					i, converted = 0;
-    VU_ID				vuid = campObject->Id();
+    int i, converted = 0;
+    VU_ID vuid = campObject->Id();
 
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
@@ -521,10 +521,10 @@ void AddRunwayCraters(Objective o, int f, int craters)
 {
     // Add a few linked craters
     // NOTE: These need to be deterministically generated
-    int		i, tp, rp;
-    float	x1, y1, x, y, xd, yd, r;
-    int		rwindex, runway = 0;
-    ObjClassDataType	*oc;
+    int i, tp, rp;
+    float x1, y1, x, y, xd, yd, r;
+    int rwindex, runway = 0;
+    ObjClassDataType *oc;
 
     // Find the runway header this feature belongs to
     oc = o->GetObjectiveClassData();
@@ -608,9 +608,9 @@ void AddHulk(FalconEntity *e, int hulkVisId)
 void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
 {
     // Traverse the list of asleep detached objects and wake those in range
-    float			dsq, rsq = range * range;
-    SimBaseClass	*object;
-    VuListIterator	dit(SimDriver.ObjsWithNoCampaignParentList);
+    float dsq, rsq = range * range;
+    SimBaseClass *object;
+    VuListIterator dit(SimDriver.ObjsWithNoCampaignParentList);
     object = (SimBaseClass*)dit.GetFirst();
 
     while (object)

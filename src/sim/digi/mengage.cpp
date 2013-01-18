@@ -77,7 +77,7 @@ void DigitalBrain::MissileEngageCheck(void)
             if (!targetPtr ||
                 !curMissile ||
                 targetData->range > maxAAWpnRange * 1.09F ||
-                //						(targetData->range < 3000.0f * NM_TO_FT && (((AircraftClass *)self)->Guns)) && // Cobra - < 3000 NM??!!
+                // (targetData->range < 3000.0f * NM_TO_FT && (((AircraftClass *)self)->Guns)) && // Cobra - < 3000 NM??!!
                 (targetData->range < 3000.0f && (((AircraftClass *)self)->Guns)) &&
                 targetData->ata > angLimit * 1.09F)//me123 from 1.5
             {
@@ -140,15 +140,15 @@ void DigitalBrain::MissileEngage(void)
     /*if (SimLibElapsedTime > radarModeTest) {
       RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
       if (theRadar) {
-    	  RadarDataSet* radarData = &radarDatFileTable[self->GetRadarType()];
-    	  if (radarData->MaxTwstargets == 0) // Must be equipped with a radar capable of doing TWS...
-    		  theRadar->digiRadarMode = RadarClass::DigiSTT;
-    	  else if (SpikeCheck(self, targetPtr->BaseData())) // If our target is locked onto us, do the same to him
-    		  theRadar->digiRadarMode = RadarClass::DigiSTT;
-    	  else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) || (curMissile && curMissile && curMissile->sensorArray &&curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
-    		  theRadar->digiRadarMode = RadarClass::DigiSTT;
-    	  else
-    		  theRadar->digiRadarMode = RadarClass::DigiTWS;
+       RadarDataSet* radarData = &radarDatFileTable[self->GetRadarType()];
+       if (radarData->MaxTwstargets == 0) // Must be equipped with a radar capable of doing TWS...
+       theRadar->digiRadarMode = RadarClass::DigiSTT;
+       else if (SpikeCheck(self, targetPtr->BaseData())) // If our target is locked onto us, do the same to him
+       theRadar->digiRadarMode = RadarClass::DigiSTT;
+       else if (self->GetCampaignObject()->GetSpotted(self->GetTeam()) || (curMissile && curMissile && curMissile->sensorArray &&curMissile->sensorArray[0]->Type() == SensorClass::RadarHoming))
+       theRadar->digiRadarMode = RadarClass::DigiSTT;
+       else
+       theRadar->digiRadarMode = RadarClass::DigiTWS;
       }
       radarModeTest = SimLibElapsedTime + (4 + (4 - SkillLevel())) * SEC_TO_MSEC;
     }
@@ -232,7 +232,7 @@ void DigitalBrain::MissileEngage(void)
             /* -100.0 Kts <= desired closure <= 300 Kts                    */
             /*-------------------------------------------------------------*/
             rdes = 0.40F * rMax;
-            //		  desiredClosure = 0.1F * (targetData->range - rdes);
+            //   desiredClosure = 0.1F * (targetData->range - rdes);
             desiredClosure = ((targetData->range - 3000  / 1000.0F) * 50.0F); //me123
             desiredClosure = min(max(desiredClosure, -100.0F),
                                  2300.0F);
@@ -278,7 +278,7 @@ void DigitalBrain::MissileEngage(void)
             rngdot = (targetData->rangedot) * FTPSEC_TO_KNOTS;
             desSpeed = self->GetKias() + desiredClosure ;//me123 - rngdot;
 
-            //me123	  if (desSpeed < cornerSpeed) desSpeed = cornerSpeed;
+            //me123   if (desSpeed < cornerSpeed) desSpeed = cornerSpeed;
         }
 
         /*----------*/
@@ -363,7 +363,7 @@ void DigitalBrain::WeaponSelection(void)
         if (theMissile)
         {
             // get maximum range
-            rmax =	theMissile->GetRMax(-self->ZPos(),
+            rmax = theMissile->GetRMax(-self->ZPos(),
                                         self->GetVt(),
                                         targetData->az,
                                         targetPtr->BaseData()->GetVt(),
@@ -378,11 +378,11 @@ void DigitalBrain::WeaponSelection(void)
             /*
             ** edg: we don't seem to need this
             thisASE      = DTR *
-            				theMissile->GetASE(-self->ZPos(),
-            				self->GetVt(),
-            	   			targetData->ataFrom,
-            				targetPtr->BaseData()->GetVt(),
-            				targetData->range);
+             theMissile->GetASE(-self->ZPos(),
+             self->GetVt(),
+                 targetData->ataFrom,
+             targetPtr->BaseData()->GetVt(),
+             targetData->range);
             */
             if (targetPtr)
             {
@@ -398,7 +398,7 @@ void DigitalBrain::WeaponSelection(void)
                 thisRmin = 2000;//me123 0.01F * rmax;
 
                 //me123 if ir missile pick the missile with greatest range becourse it also also best seeker)
-                if	(theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::IRST &&
+                if (theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::IRST &&
                      curMissile && curMissile->sensorArray[0]->Type() == SensorClass::IRST &&
                      thisPctRange > pctRange && thisPctRange > 0.0F
                    )

@@ -17,14 +17,14 @@ public:
 #endif
 private:
 #ifdef _UI95_PARSER_
-    long	LastID_;
+    long LastID_;
 #endif
-    C_Hash	*Root_;
-    C_Hash	*Finder_;
-    C_Hash	*ColorOrder_;
-    C_Hash	*IDOrder_;
-    WORD	ColorKey_;
-    short	red_shift_, green_shift_, blue_shift_;
+    C_Hash *Root_;
+    C_Hash *Finder_;
+    C_Hash *ColorOrder_;
+    C_Hash *IDOrder_;
+    WORD ColorKey_;
+    short red_shift_, green_shift_, blue_shift_;
 
 
     long BuildColorTable(WORD *, long , long , long);

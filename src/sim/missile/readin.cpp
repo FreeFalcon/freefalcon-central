@@ -17,7 +17,7 @@ int numMissileDatasets = 0;
 
 void MissileClass::ReadInput(int idx)
 {
-    inputData =	missileDataset[min(idx, numMissileDatasets - 1)].inputData;
+    inputData = missileDataset[min(idx, numMissileDatasets - 1)].inputData;
     weight = inputData->wm0 + inputData->wp0;
     wprop = inputData->wp0;
     mass = weight / GRAVITY;
@@ -369,12 +369,12 @@ static const InputDataDesc AuxMissileDataDesc[] =
 
     { "maxGTerminal", InputDataDesc::ID_FLOAT, OFFSET(maxGTerminal), "100"},
     { "maxGNormal", InputDataDesc::ID_FLOAT, OFFSET(maxGNormal), "40"},
-    { "MinEngagementRange", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementRange), "0"},	//  moved to radar data 2002-03-08 S.G. Reinstated here so it's more granular
-    { "MinEngagementAlt", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementAlt), "-1.0"},	//  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular. Default to -1 so if it's not set in the dat file, it will use the Falcon4.WCD value instead.
+    { "MinEngagementRange", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementRange), "0"}, //  moved to radar data 2002-03-08 S.G. Reinstated here so it's more granular
+    { "MinEngagementAlt", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementAlt), "-1.0"}, //  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular. Default to -1 so if it's not set in the dat file, it will use the Falcon4.WCD value instead.
     { "ProximityfuseChange", InputDataDesc::ID_FLOAT, OFFSET(ProximityfuseChange), "75"},
     { "SecondStageTimer", InputDataDesc::ID_FLOAT, OFFSET(SecondStageTimer), "0" },
     { "SecondStageWeight", InputDataDesc::ID_FLOAT, OFFSET(SecondStageWeight), "0"},
-    { "deployableWingsTime", InputDataDesc::ID_FLOAT, OFFSET(deployableWingsTime), "0"},	// A.S.
+    { "deployableWingsTime", InputDataDesc::ID_FLOAT, OFFSET(deployableWingsTime), "0"}, // A.S.
     { "mistrail", InputDataDesc::ID_INT, OFFSET(mistrail), "0"},
     { "misengGlow", InputDataDesc::ID_INT, OFFSET(misengGlow), "0"},
     { "misengGlowBSP", InputDataDesc::ID_INT, OFFSET(misengGlowBSP), "0"},
@@ -384,20 +384,20 @@ static const InputDataDesc AuxMissileDataDesc[] =
     { "engLocation", InputDataDesc::ID_VECTOR, OFFSET(misengLocation), "0,0,0"}, // MLR 2003-10-11
     { "EngineSound", InputDataDesc::ID_INT, OFFSET(EngineSound), "267"}, // MLR 2003-11-06 missles now have a sound when lit.
     { "rocketDispersionConeAngle", InputDataDesc::ID_FLOAT, OFFSET(rocketDispersionConeAngle), "0"}, // MLR 1/17/2004 -
-    { "rocketSalvoSize",			InputDataDesc::ID_INT,   OFFSET(rocketSalvoSize),		"-1"},			// MLR 1/17/2004 -
-    { "sndAim9Growl",				InputDataDesc::ID_INT,   OFFSET(sndAim9Growl),			"6"},	// SFX_GROWL // MLR 2/29/2004 -
-    { "sndAim9GrowlLock",           InputDataDesc::ID_INT,   OFFSET(sndAim9GrowlLock),		"7"},	// SFX_GROWLLOCK
-    { "sndAim9Uncaged",				InputDataDesc::ID_INT,   OFFSET(sndAim9Uncaged),		"182"},	// SFX_NO_CAGE
-    { "sndAim9EnviroSky",           InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroSky),		"186"},	// SFX_AIM9_ENVIRO_SKY
-    { "sndAim9EnviroGround",        InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroGround),	"187"},	// SFX_AIM9_ENVIRO_GND
+    { "rocketSalvoSize", InputDataDesc::ID_INT,   OFFSET(rocketSalvoSize), "-1"}, // MLR 1/17/2004 -
+    { "sndAim9Growl", InputDataDesc::ID_INT,   OFFSET(sndAim9Growl), "6"}, // SFX_GROWL // MLR 2/29/2004 -
+    { "sndAim9GrowlLock",           InputDataDesc::ID_INT,   OFFSET(sndAim9GrowlLock), "7"}, // SFX_GROWLLOCK
+    { "sndAim9Uncaged", InputDataDesc::ID_INT,   OFFSET(sndAim9Uncaged), "182"}, // SFX_NO_CAGE
+    { "sndAim9EnviroSky",           InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroSky), "186"}, // SFX_AIM9_ENVIRO_SKY
+    { "sndAim9EnviroGround",        InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroGround), "187"}, // SFX_AIM9_ENVIRO_GND
 
-    { "pickleTimeDelay",			InputDataDesc::ID_INT,   OFFSET(pickleTimeDelay),	"0"},	// msec time pickle must be held for missile to launch
-    { "psGroundImpact",				InputDataDesc::ID_STRING,   OFFSET(psGroundImpact),	""},
-    { "psMissileKill",				InputDataDesc::ID_STRING,   OFFSET(psMissileKill),		""},
-    { "psFeatureImpact",			InputDataDesc::ID_STRING,   OFFSET(psFeatureImpact),	""},
-    { "psBombImpact",				InputDataDesc::ID_STRING,   OFFSET(psBombImpact),		""},
-    { "psArmingDelay",				InputDataDesc::ID_STRING,   OFFSET(psArmingDelay),		""},
-    { "psExceedFOV",				InputDataDesc::ID_STRING,   OFFSET(psExceedFOV),		""},
+    { "pickleTimeDelay", InputDataDesc::ID_INT,   OFFSET(pickleTimeDelay), "0"}, // msec time pickle must be held for missile to launch
+    { "psGroundImpact", InputDataDesc::ID_STRING,   OFFSET(psGroundImpact), ""},
+    { "psMissileKill", InputDataDesc::ID_STRING,   OFFSET(psMissileKill), ""},
+    { "psFeatureImpact", InputDataDesc::ID_STRING,   OFFSET(psFeatureImpact), ""},
+    { "psBombImpact", InputDataDesc::ID_STRING,   OFFSET(psBombImpact), ""},
+    { "psArmingDelay", InputDataDesc::ID_STRING,   OFFSET(psArmingDelay), ""},
+    { "psExceedFOV", InputDataDesc::ID_STRING,   OFFSET(psExceedFOV), ""},
 
     //RV - I-Hawk - Get heat seeker gimbal tracking factor and launch sound ID from missile FMs
     { "gimbalTrackFactor", InputDataDesc::ID_FLOAT, OFFSET(gimbalTrackFactor), "1.0f"},
@@ -414,7 +414,7 @@ MissileAuxData *MissileAuxAeroRead(SimlibFileClass* inputFile)
 
     // RV - Biker - Why check when do nothing
     //if (ParseSimlibFile(auxmissileData, AuxMissileDataDesc, inputFile) == false) {
-    ////	F4Assert(!"Bad parsing of aux aero data");
+    //// F4Assert(!"Bad parsing of aux aero data");
     //}
 
     ParseSimlibFile(auxmissileData, AuxMissileDataDesc, inputFile);

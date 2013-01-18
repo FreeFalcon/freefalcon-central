@@ -43,34 +43,34 @@ enum TeamDataEnum
     NUM_TEAMS,
 };
 
-#define MAX_TEAM_NAME_SIZE		20
-#define MAX_MOTTO_SIZE			200
-#define MAX_AIR_ACTIONS			14
-#define ACTION_TIME_MIN			30		// Time per action, in minutes
+#define MAX_TEAM_NAME_SIZE 20
+#define MAX_MOTTO_SIZE 200
+#define MAX_AIR_ACTIONS 14
+#define ACTION_TIME_MIN 30 // Time per action, in minutes
 
 // Team flags
 enum TeamFlagEnum
 {
-    TEAM_ACTIVE         = 0x01,	// Set if team is being used
-    TEAM_HASSATS        = 0x02,	// Has satelites
-    TEAM_UPDATED        = 0x04,	// We've gotten remote data for this team
+    TEAM_ACTIVE         = 0x01, // Set if team is being used
+    TEAM_HASSATS        = 0x02, // Has satelites
+    TEAM_UPDATED        = 0x04, // We've gotten remote data for this team
 };
 
 // Rules of engagement query types, add as needed.
 enum ROEEngagementQueryTypeEnum
 {
-    ROE_GROUND_FIRE     = 1,		// Fire on their ground troops?
-    ROE_GROUND_MOVE     = 2,		// Move through their territory?
-    ROE_GROUND_CAPTURE  = 3,		// Capture their territory?
-    ROE_AIR_ENGAGE      = 4,		// Maneuver against their aircraft?
-    ROE_AIR_FIRE        = 5,		// Fire at their aircraft? (any range)
-    ROE_AIR_FIRE_BVR    = 6,		// Fire at their aircraft BVR
-    ROE_AIR_OVERFLY     = 7,		// Fly over their territory?
-    ROE_AIR_ATTACK      = 8,		// Bomb/attack their territory?
-    ROE_AIR_USE_BASES   = 9,		// Can we based aircraft at their airbases?
-    ROE_NAVAL_FIRE      = 10,		// Attack their shipping?
-    ROE_NAVAL_MOVE      = 11,		// Move into/through their harbors/straights?
-    ROE_NAVAL_BOMBARD   = 12,		// Bombard them messily?
+    ROE_GROUND_FIRE     = 1, // Fire on their ground troops?
+    ROE_GROUND_MOVE     = 2, // Move through their territory?
+    ROE_GROUND_CAPTURE  = 3, // Capture their territory?
+    ROE_AIR_ENGAGE      = 4, // Maneuver against their aircraft?
+    ROE_AIR_FIRE        = 5, // Fire at their aircraft? (any range)
+    ROE_AIR_FIRE_BVR    = 6, // Fire at their aircraft BVR
+    ROE_AIR_OVERFLY     = 7, // Fly over their territory?
+    ROE_AIR_ATTACK      = 8, // Bomb/attack their territory?
+    ROE_AIR_USE_BASES   = 9, // Can we based aircraft at their airbases?
+    ROE_NAVAL_FIRE      = 10, // Attack their shipping?
+    ROE_NAVAL_MOVE      = 11, // Move into/through their harbors/straights?
+    ROE_NAVAL_BOMBARD   = 12, // Bombard them messily?
 };
 
 enum ROEAllowedEnum
@@ -79,9 +79,9 @@ enum ROEAllowedEnum
     ROE_NOT_ALLOWED     = 0,
 };
 
-#define MAX_BONUSES				20		// Number of SOs which can receive bonuses at one time
-#define MAX_TGTTYPE				36
-#define MAX_UNITTYPE			20
+#define MAX_BONUSES 20 // Number of SOs which can receive bonuses at one time
+#define MAX_TGTTYPE 36
+#define MAX_UNITTYPE 20
 
 // Ground Action types
 enum GroundActionTypeEnum
@@ -110,7 +110,7 @@ enum AirTacticTypeEnum
     TAT_OFFENSIVE          = 2,
     TAT_INTERDICT          = 3,
     TAT_ATTRITION          = 4,
-    TAT_CAS                = 5,		// CAS must always be last tactic
+    TAT_CAS                = 5, // CAS must always be last tactic
 };
 
 enum table_of_equipment_manufacturers
@@ -127,9 +127,9 @@ enum table_of_equipment_manufacturers
 // Priority tables
 // =======================================
 
-extern uchar	DefaultObjtypePriority[TAT_CAS][MAX_TGTTYPE];		// AI's suggested settings
-extern uchar	DefaultUnittypePriority[TAT_CAS][MAX_UNITTYPE];		//
-extern uchar	DefaultMissionPriority[TAT_CAS][AMIS_OTHER];		//
+extern uchar DefaultObjtypePriority[TAT_CAS][MAX_TGTTYPE]; // AI's suggested settings
+extern uchar DefaultUnittypePriority[TAT_CAS][MAX_UNITTYPE]; //
+extern uchar DefaultMissionPriority[TAT_CAS][AMIS_OTHER]; //
 
 // =======================================
 // Local classes
@@ -148,37 +148,37 @@ Team GetTeam(Control country);
 #pragma pack(1) // place on byte boundary
 struct TeamStatusType
 {
-    ushort			airDefenseVehs;
-    ushort			aircraft;
-    ushort			groundVehs;
-    ushort			ships;
-    ushort			supply;
-    ushort			fuel;
-    ushort			airbases;
-    uchar			supplyLevel;							// Supply in terms of pecentage
-    uchar			fuelLevel;								// fuel in terms of pecentage
+    ushort airDefenseVehs;
+    ushort aircraft;
+    ushort groundVehs;
+    ushort ships;
+    ushort supply;
+    ushort fuel;
+    ushort airbases;
+    uchar supplyLevel; // Supply in terms of pecentage
+    uchar fuelLevel; // fuel in terms of pecentage
 };
 #pragma pack()
 
 #pragma pack(1) // place on byte boundary
 struct TeamGndActionType
 {
-    CampaignTime	actionTime;								// When we start.
-    CampaignTime	actionTimeout;							// Our action will fail if not completed by this time
-    VU_ID			actionObjective;						// Primary objective this is all about
-    uchar			actionType;
-    uchar			actionTempo;							// How "active" we want the action to be
-    uchar			actionPoints;							// Countdown of how much longer it will go on
+    CampaignTime actionTime; // When we start.
+    CampaignTime actionTimeout; // Our action will fail if not completed by this time
+    VU_ID actionObjective; // Primary objective this is all about
+    uchar actionType;
+    uchar actionTempo; // How "active" we want the action to be
+    uchar actionPoints; // Countdown of how much longer it will go on
 };
 #pragma pack()
 
 struct TeamAirActionType
 {
-    CampaignTime	actionStartTime;						// When we start.
-    CampaignTime	actionStopTime;							// When we are supposed to be done by.
-    VU_ID			actionObjective;						// Primary objective this is all about
-    VU_ID			lastActionObjective;
-    uchar			actionType;
+    CampaignTime actionStartTime; // When we start.
+    CampaignTime actionStopTime; // When we are supposed to be done by.
+    VU_ID actionObjective; // Primary objective this is all about
+    VU_ID lastActionObjective;
+    uchar actionType;
 };
 
 class TeamDoctrine
@@ -226,49 +226,49 @@ public:
 class TeamClass : public FalconEntity
 {
 private:
-    short				initiative;
-    ushort				supplyAvail;
-    ushort				fuelAvail;
-    ushort				replacementsAvail;
-    TeamStatusType		currentStats;
-    short				reinforcement;
-    uchar				objtype_priority[MAX_TGTTYPE];		// base priority, based on target type (obj)
-    uchar				unittype_priority[MAX_UNITTYPE];	// base priority for unit types (cmbt/AD)
-    uchar				mission_priority[AMIS_OTHER];		// bonus by mission type
-    TeamGndActionType	groundAction;						// Team's current ground action
-    TeamAirActionType	defensiveAirAction;					// Current defensive air action
-    TeamAirActionType	offensiveAirAction;					// Current offensive air action
-    int					dirty_team;
+    short initiative;
+    ushort supplyAvail;
+    ushort fuelAvail;
+    ushort replacementsAvail;
+    TeamStatusType currentStats;
+    short reinforcement;
+    uchar objtype_priority[MAX_TGTTYPE]; // base priority, based on target type (obj)
+    uchar unittype_priority[MAX_UNITTYPE]; // base priority for unit types (cmbt/AD)
+    uchar mission_priority[AMIS_OTHER]; // bonus by mission type
+    TeamGndActionType groundAction; // Team's current ground action
+    TeamAirActionType defensiveAirAction; // Current defensive air action
+    TeamAirActionType offensiveAirAction; // Current offensive air action
+    int dirty_team;
 
 public:
-    Team 				who;
-    Team				cteam;								// The team this relative is on (for quick reference)
-    short				flags;
-    _TCHAR				name[MAX_TEAM_NAME_SIZE];
-    _TCHAR				teamMotto[MAX_MOTTO_SIZE];
-    uchar				member[NUM_COUNS];
-    short				stance[NUM_TEAMS];
-    short				firstColonel;						// Pilot ID indexies for this country
-    short				firstCommander;
-    short				firstWingman;
-    short				lastWingman;
-    float				playerRating;						// Average player rating over last 5 player missions
-    CampaignTime		lastPlayerMission;					// Last player mission flown
-    uchar				airExperience;						// Experience for aircraft (affects pilot's skill)
-    uchar				airDefenseExperience;				// Experience for air defenses
-    uchar				groundExperience;					// Experience for ground troops
-    uchar				navalExperience;					// Experience for ships
-    TeamStatusType		startStats;
-    VU_ID				bonusObjs[MAX_BONUSES];
-    CampaignTime		bonusTime[MAX_BONUSES];
-    uchar				max_vehicle[4];						// Max vehicle slot by air/ground/airdefense/naval
-    ATM					atm;
-    GTM					gtm;
-    NTM					ntm;
-    uchar				teamFlag;							// This team's flag (as in cloth)
-    uchar				teamColor;							// This team's color [Index into color table for TE]
-    uchar				equipment;							// What equipment table to use
-    TeamDoctrine		doctrine;
+    Team  who;
+    Team cteam; // The team this relative is on (for quick reference)
+    short flags;
+    _TCHAR name[MAX_TEAM_NAME_SIZE];
+    _TCHAR teamMotto[MAX_MOTTO_SIZE];
+    uchar member[NUM_COUNS];
+    short stance[NUM_TEAMS];
+    short firstColonel; // Pilot ID indexies for this country
+    short firstCommander;
+    short firstWingman;
+    short lastWingman;
+    float playerRating; // Average player rating over last 5 player missions
+    CampaignTime lastPlayerMission; // Last player mission flown
+    uchar airExperience; // Experience for aircraft (affects pilot's skill)
+    uchar airDefenseExperience; // Experience for air defenses
+    uchar groundExperience; // Experience for ground troops
+    uchar navalExperience; // Experience for ships
+    TeamStatusType startStats;
+    VU_ID bonusObjs[MAX_BONUSES];
+    CampaignTime bonusTime[MAX_BONUSES];
+    uchar max_vehicle[4]; // Max vehicle slot by air/ground/airdefense/naval
+    ATM atm;
+    GTM gtm;
+    NTM ntm;
+    uchar teamFlag; // This team's flag (as in cloth)
+    uchar teamColor; // This team's color [Index into color table for TE]
+    uchar equipment; // What equipment table to use
+    TeamDoctrine doctrine;
 
 public:
     // Constructors
@@ -462,7 +462,7 @@ public:
     {
         return &doctrine;
     }
-    //		int OnOffensive(void)						{ return offensiveLoss; }
+    // int OnOffensive(void) { return offensiveLoss; }
     uchar GetGroundActionType(void)
     {
         return groundAction.actionType;
@@ -483,7 +483,7 @@ public:
     void ReadDirty(unsigned char **stream, long *rem);
 };
 
-extern TeamClass*	TeamInfo[NUM_TEAMS];
+extern TeamClass* TeamInfo[NUM_TEAMS];
 
 // =============================================
 // Global functions

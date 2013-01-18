@@ -23,7 +23,7 @@ void ICPClass::CNISwitch(int mode)
             else
             {
                 // MD -- 20040204: actually the UHF entry is always on line one
-                //if(WhichRadio == 0)	//COMM1 is active
+                //if(WhichRadio == 0) //COMM1 is active
                 //{
                 if (IsICPSet(ICPClass::EDIT_STPT))
                 {
@@ -42,23 +42,23 @@ void ICPClass::CNISwitch(int mode)
                 }
 
                 //}
-                //else	//COMM2 is active
+                //else //COMM2 is active
                 //{
-                //	if(IsICPSet(ICPClass::EDIT_STPT))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_STPT);
-                //		SetICPFlag(ICPClass::EDIT_UHF);
-                //	}
-                //	else if(IsICPSet(ICPClass::EDIT_UHF))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_UHF);
-                //		SetICPFlag(ICPClass::EDIT_VHF);
-                //	}
-                //	else if(IsICPSet(ICPClass::EDIT_VHF))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_VHF);
-                //		SetICPFlag(ICPClass::EDIT_STPT);
-                //	}
+                // if(IsICPSet(ICPClass::EDIT_STPT))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_STPT);
+                // SetICPFlag(ICPClass::EDIT_UHF);
+                // }
+                // else if(IsICPSet(ICPClass::EDIT_UHF))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_UHF);
+                // SetICPFlag(ICPClass::EDIT_VHF);
+                // }
+                // else if(IsICPSet(ICPClass::EDIT_VHF))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_VHF);
+                // SetICPFlag(ICPClass::EDIT_STPT);
+                // }
                 //}
             }
         }
@@ -274,7 +274,7 @@ void ICPClass::CNISwitch(int mode)
             else
             {
                 // MD -- 20040204: actually the UHF entry is always on line one
-                //if(WhichRadio == 0)	//COMM1 active
+                //if(WhichRadio == 0) //COMM1 active
                 //{
                 if (IsICPSet(ICPClass::EDIT_STPT))
                 {
@@ -293,23 +293,23 @@ void ICPClass::CNISwitch(int mode)
                 }
 
                 //}
-                //else	//COMM2 active
+                //else //COMM2 active
                 //{
-                //	if(IsICPSet(ICPClass::EDIT_STPT))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_STPT);
-                //		SetICPFlag(ICPClass::EDIT_VHF);
-                //	}
-                //	else if(IsICPSet(ICPClass::EDIT_VHF))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_VHF);
-                //		SetICPFlag(ICPClass::EDIT_UHF);
-                //	}
-                //	else if(IsICPSet(ICPClass::EDIT_UHF))
-                //	{
-                //		ClearICPFlag(ICPClass::EDIT_UHF);
-                //		SetICPFlag(ICPClass::EDIT_STPT);
-                //	}
+                // if(IsICPSet(ICPClass::EDIT_STPT))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_STPT);
+                // SetICPFlag(ICPClass::EDIT_VHF);
+                // }
+                // else if(IsICPSet(ICPClass::EDIT_VHF))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_VHF);
+                // SetICPFlag(ICPClass::EDIT_UHF);
+                // }
+                // else if(IsICPSet(ICPClass::EDIT_UHF))
+                // {
+                // ClearICPFlag(ICPClass::EDIT_UHF);
+                // SetICPFlag(ICPClass::EDIT_STPT);
+                // }
                 //}
             }
         }

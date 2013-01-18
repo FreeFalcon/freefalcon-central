@@ -12,18 +12,18 @@
 // Pilot defines
 // =======================
 
-#define PILOT_AVAILABLE			0
-#define PILOT_KIA				1
-#define PILOT_MIA				2
-#define PILOT_RESCUED			3
-#define PILOT_IN_USE			4
+#define PILOT_AVAILABLE 0
+#define PILOT_KIA 1
+#define PILOT_MIA 2
+#define PILOT_RESCUED 3
+#define PILOT_IN_USE 4
 
-#define PILOTS_PER_FLIGHT		4						// Maximum pilots/ac per flight
-#define PILOTS_PER_SQUADRON		48						// Maximum pilots per squadron
-#define	NUM_PILOT_VOICES		12
-#define PILOT_SKILL_RANGE		5						// # of different AI models
+#define PILOTS_PER_FLIGHT 4 // Maximum pilots/ac per flight
+#define PILOTS_PER_SQUADRON 48 // Maximum pilots per squadron
+#define NUM_PILOT_VOICES 12
+#define PILOT_SKILL_RANGE 5 // # of different AI models
 
-#define NO_PILOT				255						// No pilot is assigned
+#define NO_PILOT 255 // No pilot is assigned
 
 // ===========================
 // Pilot name index structure
@@ -32,19 +32,19 @@
 class PilotClass
 {
 public:
-    short		pilot_id;							// Index into the PilotInfoClass table
-    uchar		pilot_skill_and_rating;				// LowByte: Skill, HiByte: Rating
-    uchar		pilot_status;
-    uchar		aa_kills;
-    uchar		ag_kills;
-    uchar		as_kills;
-    uchar		an_kills;
-    short		missions_flown;
+    short pilot_id; // Index into the PilotInfoClass table
+    uchar pilot_skill_and_rating; // LowByte: Skill, HiByte: Rating
+    uchar pilot_status;
+    uchar aa_kills;
+    uchar ag_kills;
+    uchar as_kills;
+    uchar an_kills;
+    short missions_flown;
 
 public:
     PilotClass();
     // 2000-11-17 MODIFIED BY S.G. I NEED TO PASS THE 'airExperience'.
-    //		void ResetStats(void);
+    // void ResetStats(void);
     void ResetStats(uchar airExperience);
     // 2001-11-19 ADDED by M.N. for TE squad change pilots rating
     void SetTEPilotRating(uchar rating);
@@ -65,9 +65,9 @@ public:
 class PilotInfoClass
 {
 public:
-    short		usage;								// How many times this pilot is being used
-    uchar		voice_id;							// Which voice data to use
-    uchar		photo_id;							// Assigned through the UI
+    short usage; // How many times this pilot is being used
+    uchar voice_id; // Which voice data to use
+    uchar photo_id; // Assigned through the UI
 public:
     PilotInfoClass();
     void ResetStats(void);

@@ -46,7 +46,7 @@
 #include "visual.h"
 
 #ifdef DEBUG
-int SimEntities	= 0;
+int SimEntities = 0;
 #endif
 
 #ifdef DEBUG
@@ -104,7 +104,7 @@ SimBaseClass::SimBaseClass(FILE* filePtr) : FalconEntity(filePtr)
 
     fread(&callsignIdx, sizeof(int), 1, filePtr);
     dirty_simbase = 0;
-    nonLocalData = NULL;		// OW
+    nonLocalData = NULL; // OW
 }
 
 SimBaseClass::SimBaseClass(VU_BYTE** stream, long *rem) : FalconEntity(stream, rem)
@@ -116,7 +116,7 @@ SimBaseClass::SimBaseClass(VU_BYTE** stream, long *rem) : FalconEntity(stream, r
     }
 #endif
     InitLocalData();
-    VU_ID	camp_object;
+    VU_ID camp_object;
     char flag;
     //platformAngles = NULL;
     reinitData = NULL;
@@ -136,7 +136,7 @@ SimBaseClass::SimBaseClass(VU_BYTE** stream, long *rem) : FalconEntity(stream, r
 
     memcpychk(&callsignIdx, stream, sizeof(int), rem);
     dirty_simbase = 0;
-    nonLocalData = NULL;		// OW
+    nonLocalData = NULL; // OW
 }
 
 SimBaseClass::SimBaseClass(ushort type) : FalconEntity(type, GetIdFromNamespace(VolatileNS))
@@ -151,7 +151,7 @@ SimBaseClass::SimBaseClass(ushort type) : FalconEntity(type, GetIdFromNamespace(
     reinitData = NULL;
     campaignObject.reset();
     dirty_simbase = 0;
-    nonLocalData = NULL;		// OW
+    nonLocalData = NULL; // OW
     InitLocalData();
 }
 
@@ -178,8 +178,8 @@ void SimBaseClass::InitLocalData()
     callsignIdx = 0;
     SetTypeFlag(FalconSimEntity);
     lastShooter = FalconNullId;
-    lastChaff	= 0;
-    lastFlare	= 0;
+    lastChaff = 0;
+    lastFlare = 0;
     dmx[0][0] = 1.0F;
     dmx[0][1] = 0.0F;
     dmx[0][2] = 0.0F;
@@ -204,7 +204,7 @@ void SimBaseClass::InitLocalData()
     campaignFlags = 0;
     localFlags = 0;
     // 2000-11-17 MODIFIED BY S.G. SO THE WHOLE incomingMissile ARRAY IS INITIALIZED
-    //	incomingMissile = NULL;
+    // incomingMissile = NULL;
     memset(incomingMissile, 0, sizeof(incomingMissile));
     // END OF MODIFIED SECTION
 
@@ -221,8 +221,8 @@ void SimBaseClass::InitLocalData()
     SetCallsign(0);
     SetTypeFlag(FalconSimEntity);
     lastShooter = FalconNullId;
-    lastChaff	= 0;
-    lastFlare	= 0;
+    lastChaff = 0;
+    lastFlare = 0;
     dmx[0][0] = 1.0F;
     dmx[0][1] = 0.0F;
     dmx[0][2] = 0.0F;
@@ -293,7 +293,7 @@ void SimBaseClass::CleanupLocalData()
     }
 
     //if ( platformAngles ){
-    //	delete platformAngles;
+    // delete platformAngles;
     //}
     //platformAngles = NULL;
 
@@ -332,14 +332,14 @@ void SimBaseClass::ChangeOwner(VU_ID new_owner)
 
     if (new_owner == OwnerId())
     {
-        return;		// Nothing to do!
+        return; // Nothing to do!
     }
 
     if (IsVehicle())
     {
-        Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)this->EntityType();
-        char					label[40] = {0};
-        CampEntity				campObj;
+        Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)this->EntityType();
+        char label[40] = {0};
+        CampEntity campObj;
 
         campObj = GetCampaignObject();
 
@@ -473,19 +473,19 @@ int SimBaseClass::Sleep(void)
         drawPointer = NULL;
     }
 
-#if 0	// The code screws up IA by violently removing vehicles from the campaign unit prior to reagg, thus "losing" them.
+#if 0 // The code screws up IA by violently removing vehicles from the campaign unit prior to reagg, thus "losing" them.
     /*
-    	if (SimDriver.RunningInstantAction() && !IsSetFlag(MOTION_OWNSHIP))
-    		{
-    		// This is an instant action game - We want to remove the object
-    		// and regenate a new one
-    		//if (Strength() < MaxStrength())
-    			//SimDriver.UpdateIAStats(this);
-    		//else
-    			//InstantAction.RegenTarget (this);
-    		if (!IsSetRemoveFlag())
-    			SetRemoveFlag();
-    		}
+     if (SimDriver.RunningInstantAction() && !IsSetFlag(MOTION_OWNSHIP))
+     {
+     // This is an instant action game - We want to remove the object
+     // and regenate a new one
+     //if (Strength() < MaxStrength())
+     //SimDriver.UpdateIAStats(this);
+     //else
+     //InstantAction.RegenTarget (this);
+     if (!IsSetRemoveFlag())
+     SetRemoveFlag();
+     }
     */
 #endif
     return retval;
@@ -496,7 +496,7 @@ MoveType SimBaseClass::GetMovementType(void)
     if (campaignObject)
         return campaignObject->GetMovementType();
     else
-        return NoMove;		// This should eventually never happen, but probably doesn't matter in IA or Dogfight
+        return NoMove; // This should eventually never happen, but probably doesn't matter in IA or Dogfight
 }
 
 // KCK: This actually removes the sim entity from the game,
@@ -511,7 +511,7 @@ void SimBaseClass::SetRemoveFlag()
     SetThreat(NULL, THREAT_NONE);
 
     // OW commented out after fixing feature memory leak (features now using this function too)
-    //	ShiAssert(!IsStatic());
+    // ShiAssert(!IsStatic());
 
     if (IsAwake())
     {
@@ -643,12 +643,12 @@ void SimBaseClass::SetDead(int flag)
         // Pdromote another flight member, if this is the lead
         if (campaignObject && campaignObject->GetComponents() && campaignObject->GetComponentLead() == this)
         {
-            FalconWingmanMsg* wingCommand			=
+            FalconWingmanMsg* wingCommand =
                 new FalconWingmanMsg(campaignObject->Id(), vuLocalSessionEntity.get());
-            wingCommand->dataBlock.from			= Id();
-            wingCommand->dataBlock.to				= AiAllButSender;
-            wingCommand->dataBlock.command		= FalconWingmanMsg::WMPromote;
-            wingCommand->dataBlock.newTarget		= FalconNullId;
+            wingCommand->dataBlock.from = Id();
+            wingCommand->dataBlock.to = AiAllButSender;
+            wingCommand->dataBlock.command = FalconWingmanMsg::WMPromote;
+            wingCommand->dataBlock.newTarget = FalconNullId;
 
             FalconSendMessage(wingCommand, TRUE);
         }
@@ -734,7 +734,7 @@ int SimBaseClass::Save(VU_BYTE **stream)
 
     memcpy(*stream, SpecialData(), sizeof(SimBaseSpecialData));
     *stream += sizeof(SimBaseSpecialData);
-    VU_ID	camp_object;
+    VU_ID camp_object;
 
     if ((int)campaignObject > MAX_IA_CAMP_UNIT)
     {
@@ -764,7 +764,7 @@ int SimBaseClass::Save(VU_BYTE **stream)
 int SimBaseClass::Save(FILE *file)
 {
     int saveSize = FalconEntity::Save(file);
-    VU_ID	camp_object;
+    VU_ID camp_object;
     char flag;
 
     fwrite(SpecialData(), sizeof(SimBaseSpecialData), 1, file);
@@ -819,9 +819,9 @@ void SimBaseClass::ApplyDeathMessage(FalconDeathMessage* deathMessage)
         pctStrength = deathMessage->dataBlock.deathPctStrength;
 
     //    MonoPrint ("Entity %d Got Death Msg! Local: %s, Show Explode: %s\n",
-    //		   		Id().num_,
-    //				IsLocal() ? "TRUE" : "FALSE",
-    //				IsSetFlag( SHOW_EXPLOSION ) ? "TRUE" : "FALSE" );
+    //     Id().num_,
+    // IsLocal() ? "TRUE" : "FALSE",
+    // IsSetFlag( SHOW_EXPLOSION ) ? "TRUE" : "FALSE" );
 
     if (VM)
         VM->RemoveRadioCalls(Id());
@@ -829,7 +829,7 @@ void SimBaseClass::ApplyDeathMessage(FalconDeathMessage* deathMessage)
     // debug non local
     if (!IsLocal())
     {
-        //	 	MonoPrint( "NonLocal Apply Death Message: Pct Strength now: %f\n", pctStrength );
+        //   MonoPrint( "NonLocal Apply Death Message: Pct Strength now: %f\n", pctStrength );
 
         // OK, this is a big hack for the time being.  Explosions aren't
         // showing for nonlocal entities.  Let's force them right now:
@@ -938,10 +938,10 @@ int SimBaseClass::GetFlightCallsign(void)
 /*
 ** Name: SetIncomingMissile
 ** Description:
-**		Called by FalconWeaponsFire message.  Sets and references an
-**		incoming missile shot at us.  If there's one already set and
-**		it's not dead, do nothing.  If it's dead or arg is NULL deref
-**		the missile.
+** Called by FalconWeaponsFire message.  Sets and references an
+** incoming missile shot at us.  If there's one already set and
+** it's not dead, do nothing.  If it's dead or arg is NULL deref
+** the missile.
 **
 ** Used to inform the player of missile launches with a wingman message
 **
@@ -950,7 +950,7 @@ int SimBaseClass::GetFlightCallsign(void)
 //void SimBaseClass::SetIncomingMissile (SimBaseClass *missile )
 void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
 {
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
     short mesgType = 0;
     short data0 = -1, data1 = -1, data2 = -1;
     SimBaseClass* speaker = NULL;
@@ -980,10 +980,10 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
             dz = speaker->ZPos() - missile->ZPos();
             rangeSquare = dx * dx + dy * dy + dz * dz;
 
-            if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT &&				// Range is below 6 NM AND
-                (SimDriver.RunningInstantAction() ||							// We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
-                 ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 ||		// Skill of wingman is ace OR
-                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() != DigitalBrain::GunsJinkMode &&		// Wingman not defensive
+            if (rangeSquare < 6.0f * NM_TO_FT * 6.0f * NM_TO_FT && // Range is below 6 NM AND
+                (SimDriver.RunningInstantAction() || // We're in instant action (in thise case rangeSquare will be 0 because it's the player) OR
+                 ((SimVehicleClass *)speaker)->Brain()->SkillLevel() == 4 || // Skill of wingman is ace OR
+                 (((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode() != DigitalBrain::GunsJinkMode && // Wingman not defensive
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::MissileDefeatMode &&
                   ((DigitalBrain *)((SimVehicleClass *)speaker)->Brain())->GetCurrentMode()  != DigitalBrain::DefensiveModes)))
             {
@@ -1037,7 +1037,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                     radioMessage->dataBlock.edata[0] = data0;
                     radioMessage->dataBlock.edata[1] = data1;
                     radioMessage->dataBlock.edata[2] = data2;
-                    //				 radioMessage->dataBlock.voice_id = (uchar)speaker->GetPilotVoiceId();
+                    //  radioMessage->dataBlock.voice_id = (uchar)speaker->GetPilotVoiceId();
                     radioMessage->dataBlock.voice_id = ((FlightClass*)(((AircraftClass*)speaker)->GetCampaignObject()))->GetPilotVoiceID(((AircraftClass*)speaker)->GetCampaignObject()->GetComponentIndex(((AircraftClass*)speaker)));
                     radioMessage->dataBlock.from = speaker->GetCampaignObject()->Id();
                     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
@@ -1136,7 +1136,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
                         {
                             // We are looking at someone, limit our field of view to 50 to 90 degrees (both side)
                             ourFOV = (((SimVehicleClass *)this)->Brain()->SkillLevel() + 5.0f) * 10.0f * DTR;
-                            ourCenter = ((SimMoverClass *)this)->targetPtr->localData->ata;	// Where we are looking
+                            ourCenter = ((SimMoverClass *)this)->targetPtr->localData->ata; // Where we are looking
                         }
                         else
                         {
@@ -1253,7 +1253,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
 /*
 ** Name: SetThreat
 ** Description:
-**		Called by FalconWeaponsFire message.
+** Called by FalconWeaponsFire message.
 **
 */
 //void SimBaseClass::SetThreat (FalconEntity *threat, int type )
@@ -1349,7 +1349,7 @@ void SimBaseClass::WriteDirty(uchar **stream)
 ///////////////////////////////////////////////////////////////////////////////
 void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 {
-    short	bits;
+    short bits;
 
     memcpychk(&bits, stream, sizeof(short), rem);
 
@@ -1380,7 +1380,7 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 
     if (bits & DIRTY_SIM_POWER_OUTPUT)
     {
-        //	MonoPrint ("ReadDirty DIRTY_SIM_POWER_OUTPUT");
+        // MonoPrint ("ReadDirty DIRTY_SIM_POWER_OUTPUT");
         // MLR 3/24/2004 - Copy to both pwr levels
         unsigned char ponTemp;
         memcpychk(&ponTemp, stream, sizeof(unsigned char), rem);
@@ -1388,9 +1388,9 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 
         specialData.powerOutput2    = specialData.powerOutput = (float)ponTemp * 1.5f / 255.0f;
         // 2000-11-17 ADDED BY S.G. I NEED TO READ THE ENGINE TEMP AS WELL
-        //		specialData.engineHeatOutputNet = *(unsigned char*)*stream;
-        //		specialData.engineHeatOutput = (float)specialData.engineHeatOutputNet * 1.6f/255.0f;
-        //		*stream += sizeof(specialData.engineHeatOutputNet);
+        // specialData.engineHeatOutputNet = *(unsigned char*)*stream;
+        // specialData.engineHeatOutput = (float)specialData.engineHeatOutputNet * 1.6f/255.0f;
+        // *stream += sizeof(specialData.engineHeatOutputNet);
         // END OF ADDED SECTION
     }
 
@@ -1400,10 +1400,10 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
         memcpychk(&specialData.rdrAz, stream, sizeof(float), rem);
         memcpychk(&specialData.rdrEl, stream, sizeof(float), rem);
         // This _SHOULD_ be used by the RWR but isn't currently...
-        //		specialData.rdrAzCenter = *(float*)*stream;
-        //		*stream += sizeof(specialData.rdrAzCenter);
-        //		specialData.rdrElCenter = *(float*)*stream;
-        //		*stream += sizeof(specialData.rdrElCenter);
+        // specialData.rdrAzCenter = *(float*)*stream;
+        // *stream += sizeof(specialData.rdrAzCenter);
+        // specialData.rdrElCenter = *(float*)*stream;
+        // *stream += sizeof(specialData.rdrElCenter);
     }
 
     if (bits & DIRTY_SIM_RADAR_SLOW)
@@ -1415,7 +1415,7 @@ void SimBaseClass::ReadDirty(uchar **stream, long *rem)
 
     if (bits & DIRTY_SIM_AFTERBURNER)
     {
-        //	MonoPrint ("ReadDirty DIRTY_SIM_AFTERBURNER");
+        // MonoPrint ("ReadDirty DIRTY_SIM_AFTERBURNER");
         memcpychk(&specialData.afterburner_stage, stream, sizeof(unsigned char), rem);
     }
 
@@ -1576,7 +1576,7 @@ void SimBaseClass::ClearStatusBit(int status)
 
 void SimBaseClass::SetPowerOutput(float powerOutput)
 {
-    int	diff, value;
+    int diff, value;
 
     value = FloatToInt32(powerOutput / 1.5f * 255.0f);
 
@@ -1588,14 +1588,14 @@ void SimBaseClass::SetPowerOutput(float powerOutput)
     diff = specialData.powerOutputNet - value;
 
     // 2000-11-17 ADDED BY S.G. SO OTHER VEHICLE USES THE RPM IN THEIR ENGINE TEMP
-    //	specialData.engineHeatOutput = powerOutput;
+    // specialData.engineHeatOutput = powerOutput;
     // END OF ADDED SECTION
 
     if ((diff < -g_nMPPowerXmitThreshold) || (diff > g_nMPPowerXmitThreshold))
     {
         specialData.powerOutputNet = static_cast<uchar>(value);
         // 2000-11-17 ADDED BY S.G. SO OTHER VEHICLE USES THE RPM IN THEIR ENGINE TEMP
-        //		specialData.engineHeatOutputNet = static_cast<uchar>(value);
+        // specialData.engineHeatOutputNet = static_cast<uchar>(value);
         // END OF ADDED SECTION
         //MakeSimBaseDirty (DIRTY_SIM_POWER_OUTPUT, DDP[171].priority);
         MakeSimBaseDirty(DIRTY_SIM_POWER_OUTPUT, SEND_SOMETIME);
@@ -1637,10 +1637,10 @@ void SimBaseClass::SetRdrEl(float el)
 void SimBaseClass::SetRdrAzCenter(float az)
 {
     // This _SHOULD_ be used by the RWR but isn't currently...
-    //	if (specialData.rdrAzCenter != az)
-    //	{
-    //		MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
-    //	}
+    // if (specialData.rdrAzCenter != az)
+    // {
+    // MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
+    // }
 
     specialData.rdrAzCenter = az;
 }
@@ -1652,10 +1652,10 @@ void SimBaseClass::SetRdrAzCenter(float az)
 void SimBaseClass::SetRdrElCenter(float el)
 {
     // This _SHOULD_ be used by the RWR but isn't currently...
-    //	if (specialData.rdrElCenter != el)
-    //	{
-    //		MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
-    //	}
+    // if (specialData.rdrElCenter != el)
+    // {
+    // MakeSimBaseDirty (DIRTY_SIM_RADAR, SEND_SOON);
+    // }
 
     specialData.rdrElCenter = el;
 }
@@ -1688,12 +1688,12 @@ void SimBaseClass::SetRdrRng(float rng)
 /** sfr: removed these setters
 void SimBaseClass::SetVt (float)
 {
-	// empty
+ // empty
 }
 
 void SimBaseClass::SetKias (float)
 {
-	// empty
+ // empty
 }*/
 
 ///////////////////////////////////////////////////////////////////////////////

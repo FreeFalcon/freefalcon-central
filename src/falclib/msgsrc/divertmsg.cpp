@@ -29,14 +29,14 @@
 //sfr: added here for checks
 #include "InvalidBufferException.h"
 
-#define RESEND_DIVERT_TIME			25		// In seconds
+#define RESEND_DIVERT_TIME 25 // In seconds
 
 // ==============================
 // Globals
 // ==============================
 
-VU_ID	gInterceptersId;
-extern	int doUI;
+VU_ID gInterceptersId;
+extern int doUI;
 
 // ==============================
 // Statics
@@ -83,8 +83,8 @@ FalconDivertMessage::~FalconDivertMessage(void)
 
 int FalconDivertMessage::Process(uchar autodisp)
 {
-    Flight		flight = (Flight)FindUnit(EntityId());
-    CampEntity	target = NULL;
+    Flight flight = (Flight)FindUnit(EntityId());
+    CampEntity target = NULL;
 
     if (autodisp || !flight || !TheCampaign.IsLoaded())
         return 0;
@@ -109,7 +109,7 @@ int FalconDivertMessage::Process(uchar autodisp)
         // Return receipt
         if (flight->IsLocal() && (dataBlock.flags & REQF_NEEDRESPONSE))
         {
-            CampEntity	e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
+            CampEntity e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
 
             if (e->IsUnit())
                 ((Unit)e)->SendUnitMessage(dataBlock.targetID, FalconUnitMessage::unitRequestMet, dataBlock.mission, flight->GetTeam(), 0);
@@ -126,7 +126,7 @@ int FalconDivertMessage::Process(uchar autodisp)
             sDivertFlight = flight->Id();
             sLastReply = DIVERT_WAIT_FOR_REPLY;
             sNextRepost = vuxGameTime + RESEND_DIVERT_TIME * CampaignSeconds;
-            flight->SetDiverted(1);		// Set diverted to prevent additional calls
+            flight->SetDiverted(1); // Set diverted to prevent additional calls
             return 0;
         }
 
@@ -150,8 +150,8 @@ int CheckDivertStatus(int reply)
         return -1;
     else if (sNextRepost < vuxGameTime || reply != DIVERT_NO_DIVERT)
     {
-        Flight		flight = (Flight) vuDatabase->Find(sDivertFlight);
-        CampEntity	target = NULL;
+        Flight flight = (Flight) vuDatabase->Find(sDivertFlight);
+        CampEntity target = NULL;
 
         // Clear repost time
         sNextRepost = 0;
@@ -190,7 +190,7 @@ int CheckDivertStatus(int reply)
             PlayDivertRadioCalls(target, sLastDivert.dataBlock.mission, flight, TRUE);
             sNextRepost = vuxGameTime + RESEND_DIVERT_TIME * CampaignSeconds;
             // TJL 12/21/03 No need to keep setting Divert 0 when asking for a response to a divert call
-            //flight->SetDiverted(0);		// Unset diverted to allow re-diverts
+            //flight->SetDiverted(0); // Unset diverted to allow re-diverts
 
         }
     }
@@ -200,14 +200,14 @@ int CheckDivertStatus(int reply)
 
 void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 {
-    int			oldmission;
+    int oldmission;
 
     oldmission = flight->GetUnitMission();
 
     if (flight->IsLocal())
     {
         // Build the divert mission (only for local entity)
-        MissionRequestClass		mis;
+        MissionRequestClass mis;
 
         mis.tot = fdm->dataBlock.tot;
         mis.mission = fdm->dataBlock.mission;
@@ -242,10 +242,10 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
 void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int broadcast)
 {
-    FalconRadioChatterMessage	*msg;
-    VuTargetEntity				*to;
-    short						newTarget = 1;
-    GridIndex					x = 0, y = 0;
+    FalconRadioChatterMessage *msg;
+    VuTargetEntity *to;
+    short newTarget = 1;
+    GridIndex x = 0, y = 0;
 
     if (broadcast)
         to = FalconLocalGame;
@@ -256,19 +256,19 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     {
         // 2002-01-04 M.N. this is BS - we want to know the position of the target, not of an imaginary "Collision point"
         // Furthermore the FindCollisionPoint function in 2D seems to be rather erroreous (600 miles distance calculations...)
-        /*		vector	collPoint;
-        		if(flight)
-        		{
-        		flight->FindCollisionPoint(target,&collPoint,TRUE);
-        		x = SimToGrid(collPoint.y);
-        		y = SimToGrid(collPoint.x);
-        		}
-        		else
-        		{*/
+        /* vector collPoint;
+         if(flight)
+         {
+         flight->FindCollisionPoint(target,&collPoint,TRUE);
+         x = SimToGrid(collPoint.y);
+         y = SimToGrid(collPoint.x);
+         }
+         else
+         {*/
         x = SimToGrid(target->YPos());
         y = SimToGrid(target->XPos());
 
-        //		}
+        // }
         if (flight->GetAssignedTarget() == target->Id())
             newTarget = 0;
     }
@@ -276,11 +276,11 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     if (mission <= 0 || !target)
     {
         if (mission == DIVERT_DENIGNED)
-            SendCallFromAwacs(flight, rcNOTASKING, to);				// Divert denigned
+            SendCallFromAwacs(flight, rcNOTASKING, to); // Divert denigned
         else if (mission == DIVERT_CANCLED)
-            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to);		// Divert canceled
+            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to); // Divert canceled
         else if (mission == DIVERT_SUCCEEDED)
-            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to);		// Divert over
+            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to); // Divert over
 
         return;
     }
@@ -289,7 +289,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         // Just a position update
         if (target->GetDomain() == DOMAIN_AIR)
         {
-            GridIndex		fx, fy;
+            GridIndex fx, fy;
             flight->GetLocation(&fx, &fy);
 
             if (DistSqu(x, y, fx, fy) < 25)
@@ -321,7 +321,7 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     else if (mission == AMIS_INTERCEPT)
     {
         ShiAssert(target->IsFlight());
-        GridIndex		fx, fy;
+        GridIndex fx, fy;
         flight->GetLocation(&fx, &fy);
         msg = CreateCallFromAwacs(flight, rcENGAGEDIRECTIVE, to);
         msg->dataBlock.edata[4] = (short)((((Unit)target)->GetUnitClassData()->VehicleType[0]) * 2);
@@ -341,9 +341,9 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         msg = CreateCallFromAwacs(flight, rcATTACKMYTARGET, to);
 
         if (target->IsUnit() && ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
-            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 1);		// "X column"
+            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 1); // "X column"
         else
-            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 2);		// "X unit"
+            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 2); // "X unit"
 
         msg->dataBlock.edata[5] = x;
         msg->dataBlock.edata[6] = y;

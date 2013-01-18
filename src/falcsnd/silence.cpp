@@ -3,7 +3,7 @@
     silence.cpp
 
     Used to decompressed conversation files, compile with the
-	conv.dll, sndmgr.lib
+ conv.dll, sndmgr.lib
 
     STANDALONE application.
 
@@ -187,10 +187,10 @@ void CompressFile(FILE *input, BIT_FILE *output, int, char*[])
 //void ExpandFile( BIT_FILE *input, FILE *output, int argc, char *argv[] )
 void ExpandFile(BIT_FILE *input, FILE *output, int, char*[])
 {
-    int		c;
-    int		run_count;
-    int		bits;
-    long	count;
+    int c;
+    int run_count;
+    int bits;
+    long count;
 
     //Update so Silence and Compand do not conflict
     int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
@@ -234,14 +234,14 @@ void ExpandFile(BIT_FILE *input, FILE *output, int, char*[])
 
 }
 
-unsigned char *ExpandBuffer(compression_buf_t *compBuf, long	*actSize)
+unsigned char *ExpandBuffer(compression_buf_t *compBuf, long *actSize)
 {
-    unsigned char	*ptr,
+    unsigned char *ptr,
                *ouputBuffer;
-    int				bits,
+    int bits,
                     c;
-    long			count;
-    int				run_count;
+    long count;
+    int run_count;
 
     //Update so Silence and Compand do not conflict
     int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
@@ -251,7 +251,7 @@ unsigned char *ExpandBuffer(compression_buf_t *compBuf, long	*actSize)
     bits = 5;//(int) InputCompBits( compBuf, 8 );
 
     count = *actSize = 0x2800;//InputCompBits( compBuf, 32 );//387576
-    //	ptr = ouputBuffer = ( unsigned char * )malloc( *actSize );
+    // ptr = ouputBuffer = ( unsigned char * )malloc( *actSize );
     ptr = ouputBuffer = new unsigned char[*actSize];
     memset(ptr, 0x80, *actSize);
 
@@ -297,80 +297,80 @@ unsigned char *ExpandBuffer(compression_buf_t *compBuf, long	*actSize)
     return(ouputBuffer);
 }
 /*
-long ExpandCompressionBuffer( long	bytesRead, compression_buf_t *compBuf, unsigned char *buffer )
-	{
-	unsigned char	*ptr;
-    int				bits,
-     				c;
-    long			count;
-    int				run_count;
+long ExpandCompressionBuffer( long bytesRead, compression_buf_t *compBuf, unsigned char *buffer )
+ {
+ unsigned char *ptr;
+    int bits,
+      c;
+    long count;
+    int run_count;
 
-	//Update so Silence and Compand do not conflict
+ //Update so Silence and Compand do not conflict
     int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
-	int inputBuff[6];
-	int i;
+ int inputBuff[6];
+ int i;
 
-	bits = 5;
+ bits = 5;
 
-	count = bytesRead;
-	ptr = buffer;
-	memset( ptr, 0x80, count );
+ count = bytesRead;
+ ptr = buffer;
+ memset( ptr, 0x80, count );
 
     while ( count > 0 )
-		{
-		c = (int) InputCompBits( compBuf, bits );
+ {
+ c = (int) InputCompBits( compBuf, bits );
 
-		if ( c == 31 )
-			{
-			inputBuff[0] = c;
+ if ( c == 31 )
+ {
+ inputBuff[0] = c;
 
-			for(i = 1; i < 6; i++ )
-				{
-				inputBuff[i] = (int) InputCompBits( compBuf, bits );
-				}
+ for(i = 1; i < 6; i++ )
+ {
+ inputBuff[i] = (int) InputCompBits( compBuf, bits );
+ }
 
-			if( memcmp( &inputBuff, &silence_match, 6 ) )
-				{
-				for(i = 0; i < 6; i++ )
-					{
-					*ptr = ( unsigned char )expand[ inputBuff[i] ];
-					ptr++;
-					count--;
-					}
-				}
-			else
-				{
-				run_count = (int) InputCompBits( compBuf, 8 );
-				memset( ptr, 0x80, run_count );
-				ptr+=run_count;
-				count-=run_count;
-				run_count = 0;
-				}
-			}
-		else
-			{
-			*ptr = ( unsigned char )expand[ c ];
-			ptr++;
-			count--;
-			}
-		}
-	return( count );
-	}
+ if( memcmp( &inputBuff, &silence_match, 6 ) )
+ {
+ for(i = 0; i < 6; i++ )
+ {
+ *ptr = ( unsigned char )expand[ inputBuff[i] ];
+ ptr++;
+ count--;
+ }
+ }
+ else
+ {
+ run_count = (int) InputCompBits( compBuf, 8 );
+ memset( ptr, 0x80, run_count );
+ ptr+=run_count;
+ count-=run_count;
+ run_count = 0;
+ }
+ }
+ else
+ {
+ *ptr = ( unsigned char )expand[ c ];
+ ptr++;
+ count--;
+ }
+ }
+ return( count );
+ }
 */
-long ExpandCompressionBuffer(long	bytesToRead, compression_buf_t *compbuf, unsigned char **buffer)
+long ExpandCompressionBuffer(long bytesToRead, compression_buf_t *compbuf, unsigned char **buffer)
 {
-    unsigned char	*ptr;
-    int				bits = COMPRESSION_BITS,
+    unsigned char *ptr;
+    int bits = COMPRESSION_BITS,
                     c;
-    long			count;
-    long			bytesLeft;
-    long			byteMax;
+    long count;
+    long bytesLeft;
+    long byteMax;
     //Update so Silence and Compand do not conflict
-    int				silence_match[6] = { 31, 0, 31, 0, 30, 0 };
-    int				inputBuff[6];
-    int				i;
-    short			silence_used;
-    static short	silence_run = 0;
+    int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
+    int inputBuff[6];
+    int i;
+    short silence_used;
+    static short silence_run = 0;
 
 
     if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
@@ -458,26 +458,26 @@ long ExpandCompressionBuffer(long	bytesToRead, compression_buf_t *compbuf, unsig
         return bytesToRead;
 }
 /*
-long ExpandCompressionBuffer( long	bytesToRead, compression_buf_t *compbuf, unsigned char **buffer )
-	{
-	unsigned char	*ptr;
-    int				bits = COMPRESSION_BITS,
-     				c;
-    long			count;
-    long			bytesLeft;
-    long			byteMax;
-	//Update so Silence and Compand do not conflict
-    int				silence_match[6] = { 31, 0, 31, 0, 30, 0 };
-	int				inputBuff[6];
-	int				i;
-    int				silence_used;
-    static int		silence_run = 0;
+long ExpandCompressionBuffer( long bytesToRead, compression_buf_t *compbuf, unsigned char **buffer )
+ {
+ unsigned char *ptr;
+    int bits = COMPRESSION_BITS,
+      c;
+    long count;
+    long bytesLeft;
+    long byteMax;
+ //Update so Silence and Compand do not conflict
+    int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
+ int inputBuff[6];
+ int i;
+    int silence_used;
+    static int silence_run = 0;
 
 
     if (compbuf->fileLength && (compbuf->fileLength == compbuf->bytesRead))
-		{
+ {
         return 0L;
-		}
+ }
 
     ptr = *buffer;
     bytesLeft = compbuf->fileLength - compbuf->bytesRead;
@@ -490,40 +490,40 @@ long ExpandCompressionBuffer( long	bytesToRead, compression_buf_t *compbuf, unsi
     count = 0;
 
     if (silence_run > 0)
-		{
-		memset( ptr, SILENCE_KEY, silence_run );
-		ptr += silence_run;
+ {
+ memset( ptr, SILENCE_KEY, silence_run );
+ ptr += silence_run;
         count = count + silence_run;
         silence_run = 0;
-		}
+ }
 
     while (count < byteMax)
-		{
-		c = (int) InputCompBits( compbuf, bits );
+ {
+ c = (int) InputCompBits( compbuf, bits );
 
-		if ( c == 31 )
-			{
-			inputBuff[0] = c;
+ if ( c == 31 )
+ {
+ inputBuff[0] = c;
 
-			for(i = 1; i < 6; i++ )
-				{
-				inputBuff[i] = (int) InputCompBits( compbuf, bits );
-				}
+ for(i = 1; i < 6; i++ )
+ {
+ inputBuff[i] = (int) InputCompBits( compbuf, bits );
+ }
 
-			if( memcmp( &inputBuff, &silence_match, 6 ) )
-				{
-				for(i = 0; i < 6; i++ )
-					{
-					c = inputBuff[i];
-					*ptr = ( unsigned char )expand[ inputBuff[i] ];
-					ptr++;
-					count++;
-					}
-				}
-			else
-				{
-				silence_run = (int) InputCompBits( compbuf, 8 );
-			//	silence_run += 1;
+ if( memcmp( &inputBuff, &silence_match, 6 ) )
+ {
+ for(i = 0; i < 6; i++ )
+ {
+ c = inputBuff[i];
+ *ptr = ( unsigned char )expand[ inputBuff[i] ];
+ ptr++;
+ count++;
+ }
+ }
+ else
+ {
+ silence_run = (int) InputCompBits( compbuf, 8 );
+ // silence_run += 1;
 
                 if (silence_run + count > (int)byteMax) {
                     silence_used = (int)byteMax - count;
@@ -534,18 +534,18 @@ long ExpandCompressionBuffer( long	bytesToRead, compression_buf_t *compbuf, unsi
                     silence_run = 0;
                 }
 
-				memset( ptr, 0x80, silence_used );
-				ptr+=silence_used;
-				count+=silence_used;
-				}
-			}
-		else
-			{
-			*ptr = ( unsigned char )expand[ c ];
-			ptr++;
-			count++;
-			}
-		}
+ memset( ptr, 0x80, silence_used );
+ ptr+=silence_used;
+ count+=silence_used;
+ }
+ }
+ else
+ {
+ *ptr = ( unsigned char )expand[ c ];
+ ptr++;
+ count++;
+ }
+ }
 
     compbuf->bytesRead = compbuf->bytesRead + byteMax;
 
@@ -553,15 +553,15 @@ long ExpandCompressionBuffer( long	bytesToRead, compression_buf_t *compbuf, unsi
         return bytesLeft;
     else
         return bytesToRead;
-	}
+ }
 */
-long ExpandCompSilenceBuff(long	bytesRead, compression_buf_t *compBuf, VOICE_STREAM_BUFFER *voice)
+long ExpandCompSilenceBuff(long bytesRead, compression_buf_t *compBuf, VOICE_STREAM_BUFFER *voice)
 {
-    unsigned char	*ptr;
-    int				bits,
+    unsigned char *ptr;
+    int bits,
                     c;
-    long			count;
-    int				run_count;
+    long count;
+    int run_count;
 
     int silence_match[6] = { 31, 0, 31, 0, 30, 0 };
     int inputBuff[6];
@@ -600,7 +600,7 @@ long ExpandCompSilenceBuff(long	bytesRead, compression_buf_t *compBuf, VOICE_STR
                 run_count = (int) InputCompBits(compBuf, 8);
                 memset(ptr, 0x80, run_count);
                 ptr += run_count;
-                //				count-=run_count;
+                // count-=run_count;
                 run_count = 0;
             }
         }
@@ -612,10 +612,10 @@ long ExpandCompSilenceBuff(long	bytesRead, compression_buf_t *compBuf, VOICE_STR
         }
     }
 
-    //	voice->waveBufferRead += bytesRead;
+    // voice->waveBufferRead += bytesRead;
     voice->dataInWaveBuffer = ptr - voice->waveBuffer;//bytesRead;
     voice->waveBufferLen = ptr - voice->waveBuffer;//bytesRead;
-    //	voice->fill_level = ptr;
+    // voice->fill_level = ptr;
     return(count);
 }
 

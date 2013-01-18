@@ -9,17 +9,17 @@
 // Path finding flags
 // =============================
 
-#define FIND_FINDFRIENDLY		0x01					// Find friendly stuff (default is enemy)
-#define FIND_FINDCOUNT			0x02
-#define FIND_NOAIR				0x04					// Ignore air units
-#define FIND_NODETECT			0x08					// Ignore detection only units
-#define FIND_NOMOVERS			0x10					// Ignore moving units
-#define FIND_CAUTIOUS			0x20					// Assume slightly larger enemy ranges
-#define FIND_AD_ONLY			0x40					// Find only dedicated AD assets
-#define FIND_FINDUNSPOTTED		0x80					// Returns somewhat lesser score for unspotted stuff
-#define	FIND_THISOBJONLY		0x100					// Find children within this secondary objective only
-#define FIND_SECONDARYONLY		0x200					// Find secondary objectives only
-#define FIND_STANDARDONLY		0x400					// Find only standard (non secondary) objectives
+#define FIND_FINDFRIENDLY 0x01 // Find friendly stuff (default is enemy)
+#define FIND_FINDCOUNT 0x02
+#define FIND_NOAIR 0x04 // Ignore air units
+#define FIND_NODETECT 0x08 // Ignore detection only units
+#define FIND_NOMOVERS 0x10 // Ignore moving units
+#define FIND_CAUTIOUS 0x20 // Assume slightly larger enemy ranges
+#define FIND_AD_ONLY 0x40 // Find only dedicated AD assets
+#define FIND_FINDUNSPOTTED 0x80 // Returns somewhat lesser score for unspotted stuff
+#define FIND_THISOBJONLY 0x100 // Find children within this secondary objective only
+#define FIND_SECONDARYONLY 0x200 // Find secondary objectives only
+#define FIND_STANDARDONLY 0x400 // Find only standard (non secondary) objectives
 
 #define ALT_LEVELS 5
 
@@ -30,7 +30,7 @@ extern int MinAltAtLevel[ALT_LEVELS];
 // Globals
 // ==========================================
 
-// extern uchar ThreatSearch[MAX_CAMP_ENTITIES];			// Search data
+// extern uchar ThreatSearch[MAX_CAMP_ENTITIES]; // Search data
 
 // =============================
 // Global function headers

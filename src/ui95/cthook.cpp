@@ -1,10 +1,10 @@
 //
 //
-//			cthook.CPP
+// cthook.CPP
 //
-//			Use this to add timer based things into the Event Timer
+// Use this to add timer based things into the Event Timer
 //
-//			Created by Peter Ward, April 1997
+// Created by Peter Ward, April 1997
 //
 //
 //

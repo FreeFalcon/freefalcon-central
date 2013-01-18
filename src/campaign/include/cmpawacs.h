@@ -5,8 +5,8 @@
 // Defines
 // ========================
 
-#define AWACS_FIND_TARGET	0
-#define AWACS_FIND_THREAT	1
+#define AWACS_FIND_TARGET 0
+#define AWACS_FIND_THREAT 1
 
 // ========================
 // AWACS related functions

@@ -37,9 +37,9 @@ void HeliBrain::FollowWaypoints(void)
     {
        case WP_LAND:
          if ( onStation == Arrived || onStation == Stabilizing )
-    	 	LandMe();
-    	else if ( !(onStation == OnStation) )
-          	GoToCurrentWaypoint();
+       LandMe();
+     else if ( !(onStation == OnStation) )
+           GoToCurrentWaypoint();
        break;
 
        default:

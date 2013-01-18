@@ -21,34 +21,34 @@ char TheaterName[80];
 
 // TextureEntry *ConversionTable;
 
-extern	CellDataType 	*TheaterCells;
+extern CellDataType  *TheaterCells;
 
-//	Reg	Road
-// 0		16		Water
-// 1		17		Bog
-// 2		18		Barren
-// 3		19		Plain
-// 4		20		Brush
-// 5		21		LightForest
-// 6		22		HeavyForest
-// 7		23		Urban
+// Reg Road
+// 0 16 Water
+// 1 17 Bog
+// 2 18 Barren
+// 3 19 Plain
+// 4 20 Brush
+// 5 21 LightForest
+// 6 22 HeavyForest
+// 7 23 Urban
 
 
 // =============================================
 // Campaign Terrain ADT - Private Implementation
 // =============================================
 
-CellDataType 	*TheaterCells = NULL;
-boolean  		EastLongitude;
-boolean  		SouthLatitude;
-float    		Latitude;
-float    		Longitude;
-float    		CellSizeInKilometers;
+CellDataType  *TheaterCells = NULL;
+boolean   EastLongitude;
+boolean   SouthLatitude;
+float     Latitude;
+float     Longitude;
+float     CellSizeInKilometers;
 
-short			Map_Max_X;
-short			Map_Max_Y;
+short Map_Max_X;
+short Map_Max_Y;
 
-#define			ROADMAP_SIZE		4				// Pixels per km of roadmap/rivermap
+#define ROADMAP_SIZE 4 // Pixels per km of roadmap/rivermap
 
 // -------------------------
 // Local Function Prototypes
@@ -68,7 +68,7 @@ short			Map_Max_Y;
 
 FILE* OpenCampFile(char* name, char* ext, char *mode)
 {
-    char	filename[MAX_PATH];
+    char filename[MAX_PATH];
 
     sprintf(filename, "%s\\%s.%s", baseDirectory, name, ext);
     return fopen(filename, mode);
@@ -97,7 +97,7 @@ void FreeTheaterTerrain(void)
 
 int LoadTheaterTerrain(char* name)
 {
-    FILE	*fp;
+    FILE *fp;
 
     FreeTheaterTerrain();
 
@@ -114,7 +114,7 @@ int LoadTheaterTerrain(char* name)
 
 int LoadTheaterTerrainLight(char* name)
 {
-    FILE	*fp;
+    FILE *fp;
 
     FreeTheaterTerrain();
 
@@ -129,7 +129,7 @@ int LoadTheaterTerrainLight(char* name)
 
 int SaveTheaterTerrain(char* name)
 {
-    FILE		*fp;
+    FILE *fp;
 
     if (!TheaterCells)
         return 0;
@@ -208,7 +208,7 @@ void SetRail(int i, int rail)
 
 void ReadComments(FILE* fh)
 {
-    int					c;
+    int c;
 
     c = fgetc(fh);
 
@@ -231,11 +231,11 @@ void ReadComments(FILE* fh)
 
 void ProcessTextureFile(void)
 {
-    FILE		*fp;
-    uchar		*texture;
-    short		tex;
-    int			x, y, i, j;
-    char		name[80];
+    FILE *fp;
+    uchar *texture;
+    short tex;
+    int x, y, i, j;
+    char name[80];
 
     printf("\nProcessing Texture file...  ");
     texture = (uchar*) malloc(Map_Max_X * Map_Max_Y * sizeof(short));
@@ -283,10 +283,10 @@ void ProcessTextureFile(void)
 
 void ProcessReliefFile(void)
 {
-    FILE		*fp;
-    uchar		*normals;
-    char		name[80];
-    int			x, y, ulx, uly, xx, yy, i, relief;
+    FILE *fp;
+    uchar *normals;
+    char name[80];
+    int x, y, ulx, uly, xx, yy, i, relief;
 
     printf("\nProcessing Relief file...");
     normals = (uchar*) malloc(Map_Max_X * Map_Max_Y * 16 * sizeof(short));
@@ -432,12 +432,12 @@ void DoConnections(uchar *data, int i, int n, int s, int e, int w, int val, int 
 
 void BuildMapData(char* name)
 {
-    uchar		*MapData;
-    GridIndex	x, y, rx, ry;
-    CoverType	cov, wcov, ncov, ecov, scov;
-    int			i;
-    char		fname[80];
-    FILE		*fp;
+    uchar *MapData;
+    GridIndex x, y, rx, ry;
+    CoverType cov, wcov, ncov, ecov, scov;
+    int i;
+    char fname[80];
+    FILE *fp;
 
     printf("\nBuilding map data...");
     MapData = (uchar*)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
@@ -508,13 +508,13 @@ void BuildMapData(char* name)
 
                 int tot = 0;
 
-                if (ncov == Water)	tot++;
+                if (ncov == Water) tot++;
 
-                if (scov == Water)	tot++;
+                if (scov == Water) tot++;
 
-                if (wcov == Water)	tot++;
+                if (wcov == Water) tot++;
 
-                if (ecov == Water)	tot++;
+                if (ecov == Water) tot++;
 
                 if (tot < 3)
                     DoConnections(MapData, i, ncov, scov, ecov, wcov, Water, 1);
@@ -533,23 +533,23 @@ void BuildMapData(char* name)
 }
 
 /*
-typedef enum {	Water,                           // Cover types
-				Bog,
-				Barren,
-				Plain,
-				Brush,
-				LightForest,
-				HeavyForest,
-				Urban } CoverType;
+typedef enum { Water,                           // Cover types
+ Bog,
+ Barren,
+ Plain,
+ Brush,
+ LightForest,
+ HeavyForest,
+ Urban } CoverType;
 */
 
 int SaveRoadData(char* name)
 {
-    FILE		*fp;
-    uchar		*RoadData;
-    GridIndex	x, y, rx, ry;
-    int			i;
-    char		fname[80];
+    FILE *fp;
+    uchar *RoadData;
+    GridIndex x, y, rx, ry;
+    int i;
+    char fname[80];
 
     printf("\nBuilding road data...");
     RoadData = (uchar*)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
@@ -698,8 +698,8 @@ int SaveRoadData(char* name)
 int main(int argc, char **argv)
 {
     int     i, x, y;
-    char	*args;
-    char	*baseDirectory, *baseFileName;
+    char *args;
+    char *baseDirectory, *baseFileName;
 
     if (argc >= 4)
     {

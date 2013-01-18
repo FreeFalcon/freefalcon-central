@@ -12,7 +12,7 @@
 
 
 /***************************************************************************\
-	Setup the rendering context for this view
+ Setup the rendering context for this view
 \***************************************************************************/
 void RenderWire::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 {
@@ -20,21 +20,21 @@ void RenderWire::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     RenderOTW::Setup(imageBuffer, vp);
 
     // Set our drawing properties
-    //	SetSmoothShadingMode( FALSE );
-    SetObjectTextureState(TRUE);	// Start with object textures ON
-    SetHazeMode(TRUE);			// Start with hazing turned ON
+    // SetSmoothShadingMode( FALSE );
+    SetObjectTextureState(TRUE); // Start with object textures ON
+    SetHazeMode(TRUE); // Start with hazing turned ON
 
     // Use a black terrain filler
-    haze_ground_color.r	= haze_ground_color.g	= haze_ground_color.b	= 0.0f;
-    earth_end_color.r	= earth_end_color.g		= earth_end_color.b		= 0.0f;
+    haze_ground_color.r = haze_ground_color.g = haze_ground_color.b = 0.0f;
+    earth_end_color.r = earth_end_color.g = earth_end_color.b = 0.0f;
 
     // Use a midnight blue sky
-    sky_color.r			= 0.0f;
-    sky_color.g			= 0.0f;
-    sky_color.b			= 0.125f;
-    haze_sky_color.r	= 0.0f;
-    haze_sky_color.g	= 0.0f;
-    haze_sky_color.b	= 0.25f;
+    sky_color.r = 0.0f;
+    sky_color.g = 0.0f;
+    sky_color.b = 0.125f;
+    haze_sky_color.r = 0.0f;
+    haze_sky_color.g = 0.0f;
+    haze_sky_color.b = 0.25f;
 
     // Use only moderate ambient lighting on the objects
     lightAmbient = 0.8f;
@@ -47,7 +47,7 @@ void RenderWire::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 
 
 /***************************************************************************\
-	Do end of frame housekeeping
+ Do end of frame housekeeping
 \***************************************************************************/
 void RenderWire::StartFrame(void)
 {
@@ -58,15 +58,15 @@ void RenderWire::StartFrame(void)
 
 
 
-#define BLEND_MIN	0.25f
-#define BLEND_MAX	0.95f
+#define BLEND_MIN 0.25f
+#define BLEND_MAX 0.95f
 /***************************************************************************\
     Compute the color and texture blend value for a single terrain vertex.
 \***************************************************************************/
 //void RenderWire::ComputeVertexColor( TerrainVertex *vert, Tpost *post, float distance )
 void RenderWire::ComputeVertexColor(TerrainVertex *vert, Tpost *, float distance)
 {
-    //	float	alpha;
+    // float alpha;
 
     // Set all verts to black
     vert->r = 0.0f;
@@ -74,21 +74,21 @@ void RenderWire::ComputeVertexColor(TerrainVertex *vert, Tpost *, float distance
     vert->b = 0.0f;
 
     // Blend out the textures in the distance
-    /*	if ( hazed && (distance > blend_start)) {
-    		alpha = (distance - blend_start) / blend_depth;
-    		if (alpha < BLEND_MIN)	alpha = BLEND_MIN;
-    		if (alpha > BLEND_MAX)	alpha = BLEND_MAX;
+    /* if ( hazed && (distance > blend_start)) {
+     alpha = (distance - blend_start) / blend_depth;
+     if (alpha < BLEND_MIN) alpha = BLEND_MIN;
+     if (alpha > BLEND_MAX) alpha = BLEND_MAX;
 
-    		vert->a = 1.0f - alpha;
-    		vert->RenderingStateHandle = state_mid;
+     vert->a = 1.0f - alpha;
+     vert->RenderingStateHandle = state_mid;
 
-    	} else {
-    		vert->a = BLEND_MAX;
+     } else {
+     vert->a = BLEND_MAX;
 
-    		if (distance < PERSPECTIVE_RANGE) {
-    			vert->RenderingStateHandle = state_fore;
-    		} else {
-    			vert->RenderingStateHandle = state_near;
-    		}
-    	}*/
+     if (distance < PERSPECTIVE_RANGE) {
+     vert->RenderingStateHandle = state_fore;
+     } else {
+     vert->RenderingStateHandle = state_near;
+     }
+     }*/
 }

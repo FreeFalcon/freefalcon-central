@@ -549,7 +549,7 @@ void C_ListBox::SetItemUserData(long ID, short idx, long value)
 
 short C_ListBox::GetListHeight()
 {
-    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);	   //!
+    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);    //!
 
     return sResult;
 }

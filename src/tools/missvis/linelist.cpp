@@ -1,14 +1,14 @@
 /***************************************************************************\
-	LineList.cpp
-	Scott Randolph
-	December 4, 1997
+ LineList.cpp
+ Scott Randolph
+ December 4, 1997
 
-	Keep a list of colored line segments and draw them.
+ Keep a list of colored line segments and draw them.
 \***************************************************************************/
 #include "LineList.h"
 
 
-LineListClass	TheLineList;
+LineListClass TheLineList;
 
 
 void LineListClass::AddLine(Tpoint *p1, Tpoint *p2, DWORD color)

@@ -19,12 +19,12 @@ private:
     // Save from here
     long DefaultFlags_;
 
-    COLORREF	FgColor_;
-    long		Font_;
+    COLORREF FgColor_;
+    long Font_;
 
     // Don't save from here
-    O_Output	*Picture_;
-    O_Output	*Text_;
+    O_Output *Picture_;
+    O_Output *Text_;
 
 public:
     C_Help();

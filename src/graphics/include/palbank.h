@@ -15,7 +15,7 @@
 // The one and only palette bank.  This would need to be replaced
 // by pointers to instances of PaletteBankClass passed to each call
 // if more than one color store were to be simultaniously maintained.
-extern class PaletteBankClass		ThePaletteBank;
+extern class PaletteBankClass ThePaletteBank;
 
 
 class PaletteBankClass
@@ -26,7 +26,7 @@ public:
         nPalettes = 0;
         PalettePool = NULL;
     };
-    ~PaletteBankClass()	{};
+    ~PaletteBankClass() {};
 
     // Management functions
     static void Setup(int nEntries);
@@ -43,7 +43,7 @@ public:
     static BOOL IsValidIndex(int id);
 
 public:
-    static Palette		*PalettePool;
-    static int			nPalettes;
+    static Palette *PalettePool;
+    static int nPalettes;
 };
 #endif // _PALBANK_H_

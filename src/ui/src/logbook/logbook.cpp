@@ -116,13 +116,13 @@ void LogBookData::Initialize(void)
     Pilot.voice = 0;
 
     SYSTEMTIME systime;
-    //	_TCHAR buf[COMM_LEN + 1];
-    //	time_t ltime;
-    //	struct tm *today;
+    // _TCHAR buf[COMM_LEN + 1];
+    // time_t ltime;
+    // struct tm *today;
 
-    //	time( &ltime );
-    //	today = localtime( &ltime );
-    //	strftime( buf, COMM_LEN, "%x", today);
+    // time( &ltime );
+    // today = localtime( &ltime );
+    // strftime( buf, COMM_LEN, "%x", today);
     // german hack... no time
     GetSystemTime(&systime);
 
@@ -150,8 +150,8 @@ void LogBookData::Clear(void)
     _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, Pilot.Callsign);
     remove(path);
     //JAM 29Dec03 - Duh.
-    //	_stprintf(path,_T("%s\\config\\%s.pop"),FalconDataDirectory,Pilot.Callsign);
-    //	remove(path);
+    // _stprintf(path,_T("%s\\config\\%s.pop"),FalconDataDirectory,Pilot.Callsign);
+    // remove(path);
     _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, Pilot.Callsign);
     remove(path);
     _stprintf(path, _T("%s\\config\\%s.plc"), FalconDataDirectory, Pilot.Callsign);
@@ -184,8 +184,8 @@ int LogBookData::LoadData(_TCHAR *callsign)
 {
     DWORD size;
     FILE *fp;
-    size_t		success = 0;
-    _TCHAR		path[_MAX_PATH];
+    size_t success = 0;
+    _TCHAR path[_MAX_PATH];
 
     ShiAssert(callsign);
 
@@ -279,8 +279,8 @@ int LogBookData::LoadData(LB_PILOT *NewPilot)
 
 int LogBookData::SaveData(void)
 {
-    FILE		*fp;
-    _TCHAR		path[_MAX_PATH];
+    FILE *fp;
+    _TCHAR path[_MAX_PATH];
 
     _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, Pilot.Callsign);
 
@@ -339,12 +339,12 @@ int LogBookData::SaveData(void)
 
 
 
-short	LogBookData::TotalKills(void)
+short LogBookData::TotalKills(void)
 {
     return static_cast<short>(Pilot.Campaign.Kills + Pilot.Dogfight.Kills);
 }
 
-short	LogBookData::TotalKilled(void)
+short LogBookData::TotalKilled(void)
 {
     return static_cast<short>(Pilot.Campaign.Killed + Pilot.Dogfight.Killed);
 }
@@ -626,12 +626,12 @@ void LogBookData::CalcRank(void)
     {
         NewRank = COLONEL;
     }
-    else if ((Pilot.Campaign.TotalScore > 1600) &&	\
+    else if ((Pilot.Campaign.TotalScore > 1600) && \
              (Pilot.Campaign.GamesWon || Pilot.Campaign.GamesTied))
     {
         NewRank = LT_COL;
     }
-    else if ((Pilot.Campaign.TotalScore > 800) &&	\
+    else if ((Pilot.Campaign.TotalScore > 800) && \
              (Pilot.Campaign.GamesWon || Pilot.Campaign.GamesTied || Pilot.Campaign.GamesLost))
     {
         NewRank = MAJOR;
@@ -688,7 +688,7 @@ float LogBookData::MissionComplexity(CAMP_MISS_STRUCT *MissStats)
 }
 
 //returns value from 16 to 20
-float	LogBookData::CampaignDifficulty(void)
+float LogBookData::CampaignDifficulty(void)
 {
     return ((13.0F - TheCampaign.GroundRatio - TheCampaign.AirRatio -
              TheCampaign.AirDefenseRatio - TheCampaign.NavalRatio / 4.0F) / 39.0F  +
@@ -710,7 +710,7 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
         if (!MissStats->WingmenLost)
             MedalPts++;
 
-        MedalPts +=	MissStats->NavalUnitsKilled + MissStats->Kills +
+        MedalPts += MissStats->NavalUnitsKilled + MissStats->Kills +
                     min(10, MissStats->FeaturesDestroyed / 2) + min(10, MissStats->GroundUnitsKilled / 2);
 
         MedalPts = FloatToInt32(PlayerOptions.Realism * MedalPts * CampaignDifficulty() * MissStats->Score * MissionComplexity(MissStats));

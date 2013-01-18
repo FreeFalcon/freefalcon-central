@@ -30,15 +30,15 @@ int FalconGndTaskingMessage::Process(uchar autodisp)
     switch (dataBlock.messageType)
     {
         case gtmSupportRequest:
-            //			TeamInfo[dataBlock.team]->gtm->RequestSupport(dataBlock.enemy,dataBlock.data1);
+            // TeamInfo[dataBlock.team]->gtm->RequestSupport(dataBlock.enemy,dataBlock.data1);
             break;
 
         case gtmEngineerRequest:
-            //			TeamInfo[dataBlock.team]->gtm->RequestEngineer(dataBlock.data1,dataBlock.data2,dataBlock.enemy.num_);
+            // TeamInfo[dataBlock.team]->gtm->RequestEngineer(dataBlock.data1,dataBlock.data2,dataBlock.enemy.num_);
             break;
 
         case gtmAirDefenseRequest:
-            //			TeamInfo[dataBlock.team]->gtm->RequestAirDefense(dataBlock.data1,dataBlock.data2,dataBlock.enemy.num_);
+            // TeamInfo[dataBlock.team]->gtm->RequestAirDefense(dataBlock.data1,dataBlock.data2,dataBlock.enemy.num_);
             break;
 
         default:

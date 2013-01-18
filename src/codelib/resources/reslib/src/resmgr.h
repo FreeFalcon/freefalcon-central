@@ -3,7 +3,7 @@
 
    Version 2.00                    Released 03/09/97
 
-   Written by Kevin Ray (x301)	   (c) 1996 Spectrum Holobyte
+   Written by Kevin Ray (x301)    (c) 1996 Spectrum Holobyte
    ----------------------------------------------------------------------
 
    ResInit              - start up the resource manager
@@ -628,17 +628,17 @@ enum
 #  define _O_RAW                _O_BINARY   /* msvc 2.0 compatability                                       */
 #endif   /* _O_APPEND */
 
-#ifndef O_RDONLY							/* Yes, there was fcntl.h before Microsoft (even if not ansi)	*/
-#  define O_RDONLY				_O_RDONLY   /* and... #define O_RDONLY 0x0000 will complain because MS.SUX	*/
-#  define O_WRONLY				_O_WRONLY
-#  define O_RDWR				_O_RDWR
-#  define O_APPEND				_O_APPEND
-#  define O_CREAT				_O_CREAT
-#  define O_TRUNC				_O_TRUNC
-#  define O_EXCL				_O_EXCL
-#  define O_TEXT				_O_TEXT
-#  define O_BINARY				_O_BINARY
-#  define O_RAW					_O_BINARY
+#ifndef O_RDONLY /* Yes, there was fcntl.h before Microsoft (even if not ansi) */
+#  define O_RDONLY _O_RDONLY   /* and... #define O_RDONLY 0x0000 will complain because MS.SUX */
+#  define O_WRONLY _O_WRONLY
+#  define O_RDWR _O_RDWR
+#  define O_APPEND _O_APPEND
+#  define O_CREAT _O_CREAT
+#  define O_TRUNC _O_TRUNC
+#  define O_EXCL _O_EXCL
+#  define O_TEXT _O_TEXT
+#  define O_BINARY _O_BINARY
+#  define O_RAW _O_BINARY
 #endif
 
 #define READ_ONLY_MODE          _O_RDONLY

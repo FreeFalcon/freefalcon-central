@@ -19,7 +19,7 @@
  *
  * AMD3D 3D library code: Digital Signal Processing
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
  *****************************************************************************/
 
@@ -34,7 +34,7 @@
 
 #define ITER 2
 #define EPS  1.E-9f
-#define PI	3.141592653589
+#define PI 3.141592653589
 
 static float zero[2] = {0.0f, 0.0f};
 
@@ -45,12 +45,12 @@ float _rms(int n, float *v)
     __asm
     {
         FEMMS
-        push	ecx
-        mov		eax, v
-        mov		ecx, n
-        call	a_rms
-        pop		ecx
-        movd	res, mm0
+        push ecx
+        mov eax, v
+        mov ecx, n
+        call a_rms
+        pop ecx
+        movd res, mm0
         FEMMS
     }
     return res;
@@ -62,12 +62,12 @@ float _average(int n, float *v)
     __asm
     {
         FEMMS
-        push	ecx
-        mov		eax, v
-        mov		ecx, n
-        call	a_average
-        pop		ecx
-        movd	res, mm0
+        push ecx
+        mov eax, v
+        mov ecx, n
+        call a_average
+        pop ecx
+        movd res, mm0
         FEMMS
     }
     return res;
@@ -78,15 +78,15 @@ void _v_mult(int n, float *input1, float *input2, float *output)
     __asm
     {
         FEMMS
-        push	ecx
-        push	ebx
-        mov		ecx, n
-        mov		eax, input1
-        mov		ebx, input2
-        mov		edi, output
-        call	a_v_mult
-        pop		ebx
-        pop		ecx
+        push ecx
+        push ebx
+        mov ecx, n
+        mov eax, input1
+        mov ebx, input2
+        mov edi, output
+        call a_v_mult
+        pop ebx
+        pop ecx
         FEMMS
     }
 }
@@ -96,13 +96,13 @@ void _minmax(int n, float *input, float *output)
     __asm
     {
         FEMMS
-        push	ecx
-        mov		ecx, n
-        mov		eax, input
-        call	a_minmax
-        mov		eax, output
-        pop		ecx
-        movq	eax, mm0
+        push ecx
+        mov ecx, n
+        mov eax, input
+        call a_minmax
+        mov eax, output
+        pop ecx
+        movq eax, mm0
         FEMMS
     }
 }
@@ -114,15 +114,15 @@ float _bessel(float v)
     __asm
     {
         FEMMS
-        movd	mm0, v
-        call	a_bessel
-        movd	res, mm0
+        movd mm0, v
+        call a_bessel
+        movd res, mm0
         FEMMS
     }
     return res;
 }
 
-/*	_a_iir - Compute the output of an infinite impulse response filter
+/* _a_iir - Compute the output of an infinite impulse response filter
  *      input   - the current sample
  *      n       - the number of coefficients (must be even)
  *      coef    - the filter coefficients (must have 4*n+1 elements)
@@ -142,36 +142,36 @@ float _iir(float input, int n, float *coef, float *history)
     __asm
     {
         FEMMS;
-        movq	mm1, tmp;
-        movq	mm0, zero;
-        mov		eax, coef;
-        mov		edx, history;
+        movq mm1, tmp;
+        movq mm0, zero;
+        mov eax, coef;
+        mov edx, history;
     }
 
     for (j = 0; j < h; j++)
     {
         __asm
         {
-            movq	mm2, [eax];
-            sub		eax, 0x8;
+            movq mm2, [eax];
+            sub eax, 0x8;
 
-            punpckldq	mm3, mm2;
-            punpckhdq 	mm2, mm3;
+            punpckldq mm3, mm2;
+            punpckhdq  mm2, mm3;
 
-            movq	mm3, mm1;
+            movq mm3, mm1;
             pfmul(mm1, mm2)
             pfadd(mm0, mm1)
 
-            movq	mm1, [edx+4]
-            movq	[edx], mm3
-            add		edx, 8
+            movq mm1, [edx+4]
+            movq [edx], mm3
+            add edx, 8
         }
     }
 
     __asm
     {
         pfacc(mm0, mm0)
-        movd	tmp, mm0;
+        movd tmp, mm0;
         FEMMS;
     }
     return tmp[0];
@@ -179,7 +179,7 @@ float _iir(float input, int n, float *coef, float *history)
 
 
 /* _fftInit - initialize a FFT
- *      m	    -
+ *      m     -
  *      v       - values
  *      forward - direction of the transformation
  */
@@ -206,44 +206,44 @@ void _fftInit(int m, COMPLEX *w, int forward)
 
     for (i = 0; i < le; i += ITER)
     {
-        //		_sincos((float) arg*(i+1), wr);
-        //		wr[1] *= -1;
-        //		__asm movq	mm0,wr
+        // _sincos((float) arg*(i+1), wr);
+        // wr[1] *= -1;
+        // __asm movq mm0,wr
 
         __asm
         {
-            mov		eax, i
-            movd	mm0, arg
-            add		eax, 1
-            pi2fd(mm1, eax)	// really pi2fd mm1,[eax]
+            mov eax, i
+            movd mm0, arg
+            add eax, 1
+            pi2fd(mm1, eax) // really pi2fd mm1,[eax]
             pfmul(mm0, mm1)
-            call	a_sincos
-            movq	mm1, negate	// Just the sign bit of the [1] value
-            pxor	mm0, mm1		// Negate the number (very fast)
-            mov		eax, xj;
-            movq	[eax], mm0;
-            add		eax, 8;
-            movq	mm1, wrx;
-            mov		xj, eax;
-            movq	mm0, wrm;
+            call a_sincos
+            movq mm1, negate // Just the sign bit of the [1] value
+            pxor mm0, mm1 // Negate the number (very fast)
+            mov eax, xj;
+            movq [eax], mm0;
+            add eax, 8;
+            movq mm1, wrx;
+            mov xj, eax;
+            movq mm0, wrm;
         }
 
         for (j = 1; j < ITER; j++)
         {
             __asm
             {
-                mov		eax, xj
-                movq	mm3, [eax-8]
-                movq	mm4, mm3
+                mov eax, xj
+                movq mm3, [eax-8]
+                movq mm4, mm3
                 pfmul(mm3, mm0)
                 pfmul(mm4, mm1)
-                pfacc(mm3, mm3)	// real
-                pfacc(mm4, mm4)	// imag
-                punpckldq	mm3, mm4
-                movq	[eax], mm3
+                pfacc(mm3, mm3) // real
+                pfacc(mm4, mm4) // imag
+                punpckldq mm3, mm4
+                movq [eax], mm3
 
-                add		eax, 8
-                mov		xj, eax
+                add eax, 8
+                mov xj, eax
             }
         }
     }
@@ -273,7 +273,7 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
     __asm
     {
         FEMMS;
-        movq	mm6, pm;
+        movq mm6, pm;
     }
 
     for (l = 0 ; l < m ; l++)
@@ -287,15 +287,15 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
 
             __asm
             {
-                mov		eax, xi
-                mov		edi, xip
-                movq	mm0, [eax]
-                movq	mm1, [edi]
-                movq	mm2, mm0
+                mov eax, xi
+                mov edi, xip
+                movq mm0, [eax]
+                movq mm1, [edi]
+                movq mm2, mm0
                 pfadd(mm0, mm1)
                 pfsub(mm2, mm1)
-                movq	[eax], mm0
-                movq	[edi], mm2
+                movq [eax], mm0
+                movq [edi], mm2
             }
         }
 
@@ -306,7 +306,7 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
             u = *wptr;
             ux.real = wptr->imag;
             ux.imag = wptr->real;
-            __asm movq	mm7, ux;
+            __asm movq mm7, ux;
 
             for (i = j ; i < n ; i = i + 2 * le)
             {
@@ -314,24 +314,24 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
                 xip = xi + le;
                 __asm
                 {
-                    mov		eax, xi
-                    mov		edi, xip
-                    movq	mm0, [eax]
-                    movq	mm1, [edi]
-                    movq	mm2, mm0
+                    mov eax, xi
+                    mov edi, xip
+                    movq mm0, [eax]
+                    movq mm1, [edi]
+                    movq mm2, mm0
                     pfadd(mm0, mm1)
                     pfsub(mm2, mm1)
-                    movq	mm3, u
-                    movq	[eax], mm0
-                    movq	mm4, mm3
+                    movq mm3, u
+                    movq [eax], mm0
+                    movq mm4, mm3
                     pfmul(mm3, mm2)
                     pfmul(mm3, mm6)
                     pfacc(mm3, mm3)
-                    movd	[edi], mm3
+                    movd [edi], mm3
 
                     pfmul(mm2, mm7)
                     pfacc(mm2, mm2)
-                    movd	[edi+4], mm2
+                    movd [edi+4], mm2
                 }
             }
 
@@ -361,12 +361,12 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
             xj = x + j;
             __asm
             {
-                mov		eax, xi;
-                movq	mm0, [eax];
-                mov		ecx, xj;
-                movq	mm1, [ecx];
-                movq	[ecx], mm0;
-                movq	[eax], mm1;
+                mov eax, xi;
+                movq mm0, [eax];
+                mov ecx, xj;
+                movq mm1, [ecx];
+                movq [ecx], mm0;
+                movq [eax], mm1;
             }
         }
     }
@@ -398,36 +398,36 @@ float _fir(float input, int n, float *coef, float *history)
     __asm
     {
         FEMMS;
-        movq	mm1, tmp;
-        movq	mm0, zero;
-        mov		eax, coef;
-        mov		ebx, history;
+        movq mm1, tmp;
+        movq mm0, zero;
+        mov eax, coef;
+        mov ebx, history;
     }
 
     for (j = 0; j < h; j++)
     {
         __asm
         {
-            movq	mm2, [eax]
-            sub		eax, 8
+            movq mm2, [eax]
+            sub eax, 8
 
-            punpckldq	mm3, mm2
-            punpckhdq 	mm2, mm3
+            punpckldq mm3, mm2
+            punpckhdq  mm2, mm3
 
-            movq	mm3, mm1
+            movq mm3, mm1
             pfmul(mm1, mm2)
             pfadd(mm0, mm1)
 
-            movq	mm1, [ebx+4]
-            movq	[ebx], mm3
-            add		ebx, 8
+            movq mm1, [ebx+4]
+            movq [ebx], mm3
+            add ebx, 8
         }
     }
 
     __asm
     {
         pfacc(mm0, mm0)
-        movd	tmp, mm0
+        movd tmp, mm0
         FEMMS
     }
     return tmp[0];
@@ -445,17 +445,17 @@ void _firBlock(int n, float *input, float *output, int m, float *coef)
     __asm
     {
         FEMMS;
-        movq	mm0, zero;
+        movq mm0, zero;
     }
 
     for (i = 0; i < h; i++)
     {
         __asm
         {
-            mov		eax, output;
-            movq	[eax], mm0;
-            add		eax, 0x8;
-            mov		output, eax;
+            mov eax, output;
+            movq [eax], mm0;
+            add eax, 0x8;
+            mov output, eax;
         }
     }
 
@@ -465,37 +465,37 @@ void _firBlock(int n, float *input, float *output, int m, float *coef)
         coef = tmpx;
         __asm
         {
-            movq	mm0, zero;
+            movq mm0, zero;
         }
 
         for (j = 0; j < h; j++)
         {
             __asm
             {
-                mov		eax, input
-                mov		ebx, coef
-                movq	mm1, [eax]
-                movq	mm2, [ebx]
+                mov eax, input
+                mov ebx, coef
+                movq mm1, [eax]
+                movq mm2, [ebx]
 
-                punpckldq	mm3, mm2
-                punpckhdq 	mm2, mm3
+                punpckldq mm3, mm2
+                punpckhdq  mm2, mm3
 
-                add		eax, 8
+                add eax, 8
                 pfmul(mm1, mm2)
-                sub		ebx, 8
+                sub ebx, 8
                 pfadd(mm0, mm1)
-                mov		input, eax
-                mov		coef, ebx
+                mov input, eax
+                mov coef, ebx
             }
         }
 
         __asm
         {
             pfacc(mm0, mm0)
-            mov		eax, output
-            movd	[eax], mm0
-            add		eax, 4
-            mov		output, eax
+            mov eax, output
+            movd [eax], mm0
+            add eax, 4
+            mov output, eax
         }
     }
 
@@ -529,22 +529,22 @@ void _convolve(int n, float *input1, float *input2, float *output)
         input2 = tmpx;
         __asm
         {
-            movq	mm0, zero;
+            movq mm0, zero;
         }
 
         for (j = 0; j < n / 4; j++)
         {
             __asm
             {
-                mov		eax, input1
-                mov		ebx, input2
-                movq	mm1, [eax]
-                movq	mm2, [ebx]
-                add		eax, 8
-                add		ebx, 8
+                mov eax, input1
+                mov ebx, input2
+                movq mm1, [eax]
+                movq mm2, [ebx]
+                add eax, 8
+                add ebx, 8
                 pfmul(mm1, mm2)
-                mov		input1, eax
-                mov		input2, ebx
+                mov input1, eax
+                mov input2, ebx
                 pfadd(mm0, mm1)
             }
         }
@@ -552,10 +552,10 @@ void _convolve(int n, float *input1, float *input2, float *output)
         __asm
         {
             pfacc(mm0, mm0)
-            mov		eax, output
-            movd	[eax], mm0
-            add		eax, 4
-            mov		output, eax
+            mov eax, output
+            movd [eax], mm0
+            add eax, 4
+            mov output, eax
         }
     }
 

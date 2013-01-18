@@ -20,7 +20,7 @@ private:
 
 public:
     MaverickDisplayClass(SimMoverClass* newPlatform);
-    virtual ~MaverickDisplayClass()	{};
+    virtual ~MaverickDisplayClass() {};
 
     virtual void DisplayInit(ImageBuffer*);
     virtual void Display(VirtualDisplay *newDisplay);

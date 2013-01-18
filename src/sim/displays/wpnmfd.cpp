@@ -350,7 +350,7 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
         }
     }
 
-    else	// Now handle the HARM mode
+    else // Now handle the HARM mode
     {
         switch (harmPod->GetSubMode())
         {
@@ -671,7 +671,7 @@ char WpnMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 {
     if (Sms->hardPoint[n] == NULL) return ' '; // empty hp
 
-    if (Sms->hardPoint[n]->weaponCount <= 0) return ' ';	//MI don't bother drawing empty hardpoints
+    if (Sms->hardPoint[n]->weaponCount <= 0) return ' '; //MI don't bother drawing empty hardpoints
 
     if (Sms->StationOK(n) == FALSE) return 'F'; // malfunction on  HP
 

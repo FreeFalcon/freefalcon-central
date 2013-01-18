@@ -6,14 +6,14 @@
 
 
 /*VU_SESSION_ID::VU_SESSION_ID(unsigned long ip, unsigned long value) {
-	unsigned int seed = (unsigned int)clock();
-	ip_ = ip;
-	value_ = rand();
-	ports_[0] = ports_[1] = 0;
+ unsigned int seed = (unsigned int)clock();
+ ip_ = ip;
+ value_ = rand();
+ ports_[0] = ports_[1] = 0;
 }
 
 int VU_SESSION_ID::operator == (VU_SESSION_ID rhs) {
-	return (value_ == rhs.value_ ? TRUE : FALSE);
+ return (value_ == rhs.value_ ? TRUE : FALSE);
 }
 */
 
@@ -62,11 +62,11 @@ VU_SESSION_ID::operator unsigned long()
 
 /*
 void VU_SESSION_ID::SetIP(unsigned long  ip){
-	ip_ = ip;
+ ip_ = ip;
 }
 
 void VU_SESSION_ID::SetValue(unsigned long value){
-	value_ = value;
+ value_ = value;
 }*/
 
 

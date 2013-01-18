@@ -14,20 +14,20 @@
 #include "falclib\include\mlTrig.h"
 
 // Some handy constants to get things into units of ms and Radians
-static const float	Seconds				= 1.0f / 1000.0f;
-static const float	Minutes				= Seconds / (60.0f);
-static const float	Hours				= Minutes / (60.0f);
-static const float	Degrees				= (PI / 180.0f);
-static const float	DegreesPerSecond	= Degrees * Seconds;
+static const float Seconds = 1.0f / 1000.0f;
+static const float Minutes = Seconds / (60.0f);
+static const float Hours = Minutes / (60.0f);
+static const float Degrees = (PI / 180.0f);
+static const float DegreesPerSecond = Degrees * Seconds;
 
 
 
 /********************************************\
-	These are the bodies of the custom
-	objects scripts.
-	MAKE SURE TO ADD REFERENCES to any new
-	scripts to the list at the end of this
-	file and to ScriptNames.CPP.
+ These are the bodies of the custom
+ objects scripts.
+ MAKE SURE TO ADD REFERENCES to any new
+ scripts to the list at the end of this
+ file and to ScriptNames.CPP.
 \********************************************/
 
 // Apache main rotor and tail rotor rotation
@@ -39,9 +39,9 @@ static void AH64(void)
 
     if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 4) return;
 
-    TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;		// Main rotor
-    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f;	// Tail rotor
-    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f;	// Muzzle flash
+    TheStateStack.CurrentInstance->DOFValues[2].rotation += delta; // Main rotor
+    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f; // Tail rotor
+    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f; // Muzzle flash
 }
 
 // Four propellors spinning
@@ -70,11 +70,11 @@ static void VASIF(void)
 
     if (angle > 4.0f * Degrees)
     {
-        TheStateStack.CurrentInstance->SetSwitch(0, 2);	// White
+        TheStateStack.CurrentInstance->SetSwitch(0, 2); // White
     }
     else
     {
-        TheStateStack.CurrentInstance->SetSwitch(0, 1);	// Red
+        TheStateStack.CurrentInstance->SetSwitch(0, 1); // Red
     }
 }
 
@@ -89,11 +89,11 @@ static void VASIN(void)
 
     if (angle > 2.0f * Degrees)
     {
-        TheStateStack.CurrentInstance->SetSwitch(0, 2);	// White
+        TheStateStack.CurrentInstance->SetSwitch(0, 2); // White
     }
     else
     {
-        TheStateStack.CurrentInstance->SetSwitch(0, 1);	// Red
+        TheStateStack.CurrentInstance->SetSwitch(0, 1); // Red
     }
 }
 
@@ -110,24 +110,24 @@ static void Chaff(void)
         TheStateStack.CurrentInstance->SwitchValues[0] = 1;
     }
 
-    //	else if (TheStateStack.CurrentInstance->SwitchValues[0] < 0x80)
-    //	{
-    //		TheStateStack.CurrentInstance->SwitchValues[0] <<= 1;
-    //	}
+    // else if (TheStateStack.CurrentInstance->SwitchValues[0] < 0x80)
+    // {
+    // TheStateStack.CurrentInstance->SwitchValues[0] <<= 1;
+    // }
 }
 
 // Military rotating beacon script
 // Assume model has green pointing north, and two whites 30 degrees apart pointing southward
 // switch bits:
-//		1	0   degree green dim
-//		2	0   degree green flash
-//		3	0   degree green has flashed flag
-//		5	165 degree white dim
-//		6	165 degree white flash
-//		7	165 degree white has flashed flag
-//		9	195 degree white dim
-//		10	195 degree white flash
-//		11	195 degree white has flashed flag
+// 1 0   degree green dim
+// 2 0   degree green flash
+// 3 0   degree green has flashed flag
+// 5 165 degree white dim
+// 6 165 degree white flash
+// 7 165 degree white has flashed flag
+// 9 195 degree white dim
+// 10 195 degree white flash
+// 11 195 degree white has flashed flag
 static void Beacon(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 1);
@@ -139,13 +139,13 @@ static void Beacon(void)
 
     DWORD sw = TheStateStack.CurrentInstance->SwitchValues[1];
     float delta = TheTimeManager.GetDeltaTime() * 36.0f * DegreesPerSecond;
-    float rot;			// Rotation of beacon head
-    float dx, dy;		// Eye vector in light beam space
-    float da;			// Signed angle between light beam and vector to the eye point
+    float rot; // Rotation of beacon head
+    float dx, dy; // Eye vector in light beam space
+    float da; // Signed angle between light beam and vector to the eye point
     mlTrig trig;
 
 
-    //	delta = 0.0f;
+    // delta = 0.0f;
 
     // Compute the beacon's orientation and angle away from the viewer
     rot = TheStateStack.CurrentInstance->DOFValues[0].rotation + delta;
@@ -158,7 +158,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFFF8;				// All off
+        sw &= 0xFFFFFFF8; // All off
     }
     else
     {
@@ -166,16 +166,16 @@ static void Beacon(void)
         {
             if ((sw & 0x4) == 0)
             {
-                sw |= 0x7;				// Flash on, has flashed, visible
+                sw |= 0x7; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFFFD;		// Flash off
+                sw &= 0xFFFFFFFD; // Flash off
             }
         }
         else
         {
-            sw |= 0x1;					// Visible
+            sw |= 0x1; // Visible
         }
     }
 
@@ -187,7 +187,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFFF8F;				// All off
+        sw &= 0xFFFFFF8F; // All off
     }
     else
     {
@@ -195,16 +195,16 @@ static void Beacon(void)
         {
             if ((sw & 0x40) == 0)
             {
-                sw |= 0x70;				// Flash on, has flashed, visible
+                sw |= 0x70; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFFDF;		// Flash off
+                sw &= 0xFFFFFFDF; // Flash off
             }
         }
         else
         {
-            sw |= 0x10;					// Visible
+            sw |= 0x10; // Visible
         }
     }
 
@@ -216,7 +216,7 @@ static void Beacon(void)
 
     if (fabs(da) > 5.0f * Degrees)
     {
-        sw &= 0xFFFFF8FF;				// All off
+        sw &= 0xFFFFF8FF; // All off
     }
     else
     {
@@ -224,16 +224,16 @@ static void Beacon(void)
         {
             if ((sw & 0x400) == 0)
             {
-                sw |= 0x700;			// Flash on, has flashed, visible
+                sw |= 0x700; // Flash on, has flashed, visible
             }
             else
             {
-                sw &= 0xFFFFFDFF;		// Flash off
+                sw &= 0xFFFFFDFF; // Flash off
             }
         }
         else
         {
-            sw |= 0x100;				// Visible
+            sw |= 0x100; // Visible
         }
     }
 
@@ -304,10 +304,10 @@ static void LongBow(void)
 
     if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 5) return;
 
-    TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;			// Main rotor
-    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f;	// Tail rotor
-    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f;	// Muzzle flash
-    TheStateStack.CurrentInstance->DOFValues[5].rotation += delta * 0.1f;	// Radar
+    TheStateStack.CurrentInstance->DOFValues[2].rotation += delta; // Main rotor
+    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f; // Tail rotor
+    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f; // Muzzle flash
+    TheStateStack.CurrentInstance->DOFValues[5].rotation += delta * 0.1f; // Radar
 }
 
 // Hokum main rotor rotations
@@ -475,11 +475,11 @@ static void ComplexProp(void)
         TheStateStack.CurrentInstance->DOFValues[i].rotation += delta;
 }
 /********************************************\
-	These are the two publicly visible
-	elements of the custom script utility.
+ These are the two publicly visible
+ elements of the custom script utility.
 
-	MAKE SURE TO ADD SCRIPTS HERE
-	AND IN ScriptNames.cpp
+ MAKE SURE TO ADD SCRIPTS HERE
+ AND IN ScriptNames.cpp
 \********************************************/
 ScriptFunctionPtr ScriptArray[] =
 {
@@ -504,4 +504,4 @@ ScriptFunctionPtr ScriptArray[] =
     ComplexProp,
 };
 
-int	ScriptArrayLength = sizeof(ScriptArray) / sizeof(*ScriptArray);
+int ScriptArrayLength = sizeof(ScriptArray) / sizeof(*ScriptArray);

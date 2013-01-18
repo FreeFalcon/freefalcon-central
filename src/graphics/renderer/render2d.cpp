@@ -13,25 +13,25 @@
 #include "GraphicsRes.h"
 #include "Tex.h"
 #include "GraphicsRes.h"
-#include "falclib\include\dispopts.h"	//Wombat778 12-12-2003
+#include "falclib\include\dispopts.h" //Wombat778 12-12-2003
 
 //#ifdef USE_TEXTURE_FONT
 //Texture Font2D.fontTexture[NUM_FONT_RESOLUTIONS];
 //#endif
 
-extern bool g_bAutoScaleFonts;		//Wombat778 12-12-2003
-extern bool g_bOldFontTexelFix;		//Wombat777 4-01-04
+extern bool g_bAutoScaleFonts; //Wombat778 12-12-2003
+extern bool g_bOldFontTexelFix; //Wombat777 4-01-04
 
-int FindBestResolution();			//Wombat778 4-03-04
+int FindBestResolution(); //Wombat778 4-03-04
 
 //Texture Render2D::Font.FontTexture[NUM_FONT_RESOLUTIONS]; //JAM 22Dec03
 
 /***************************************************************************\
-	Setup the rendering context for this display
+ Setup the rendering context for this display
 \***************************************************************************/
 void Render2D::Setup(ImageBuffer *imageBuffer)
 {
-    BOOL	result;
+    BOOL result;
 
     image = imageBuffer;
 
@@ -91,7 +91,7 @@ void Render2D::SetImageBuffer(ImageBuffer *imageBuffer)
     context.NewImageBuffer((DWORD)imageBuffer->targetSurface());
 
     // This shouldn't be required, but _might_ be
-    //	context.InvalidateState();
+    // context.InvalidateState();
     context.RestoreState(STATE_SOLID);
 
     // Store key properties of our target buffer
@@ -121,8 +121,8 @@ void Render2D::SetImageBuffer(ImageBuffer *imageBuffer)
 \***************************************************************************/
 void Render2D::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
-    //	ShiAssert(image);
+    // DX - YELLOW BUG FIX - RED
+    // ShiAssert(image);
     context.StartDraw();
 }
 
@@ -131,13 +131,13 @@ void Render2D::StartDraw(void)
 \***************************************************************************/
 void Render2D::EndDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
-    //	ShiAssert(image);
+    // DX - YELLOW BUG FIX - RED
+    // ShiAssert(image);
     context.EndDraw();
 }
 
 /***************************************************************************\
-	Set the dimensions and location of the viewport.
+ Set the dimensions and location of the viewport.
 \***************************************************************************/
 void Render2D::SetViewport(float l, float t, float r, float b)
 {
@@ -147,16 +147,16 @@ void Render2D::SetViewport(float l, float t, float r, float b)
     // Send the new clipping region to MPR
     // (top/right inclusive, bottom/left exclusive)
     context.SetState(MPR_STA_ENABLES, MPR_SE_SCISSORING);
-    context.SetState(MPR_STA_SCISSOR_TOP,		FloatToInt32((float)floor(topPixel)));
-    context.SetState(MPR_STA_SCISSOR_LEFT,		FloatToInt32((float)floor(leftPixel)));
-    context.SetState(MPR_STA_SCISSOR_RIGHT,	FloatToInt32((float)ceil(rightPixel)));
-    context.SetState(MPR_STA_SCISSOR_BOTTOM,	FloatToInt32((float)ceil(bottomPixel)));
+    context.SetState(MPR_STA_SCISSOR_TOP, FloatToInt32((float)floor(topPixel)));
+    context.SetState(MPR_STA_SCISSOR_LEFT, FloatToInt32((float)floor(leftPixel)));
+    context.SetState(MPR_STA_SCISSOR_RIGHT, FloatToInt32((float)ceil(rightPixel)));
+    context.SetState(MPR_STA_SCISSOR_BOTTOM, FloatToInt32((float)ceil(bottomPixel)));
 }
 
 
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void Render2D::Render2DPoint(float x1, float y1)
 {
@@ -168,11 +168,11 @@ void Render2D::Render2DPoint(float x1, float y1)
 
 
 /***************************************************************************\
-	Put a straight line on the display.
+ Put a straight line on the display.
 \***************************************************************************/
 void Render2D::Render2DLine(float x1, float y1, float x2, float y2)
 {
-    if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2);						// COBRA - RED - Alpha Option
+    if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
 
     context.Draw2DLine(x1 + (int)OffsetX, y1 + (int)OffsetY, x2 + (int)OffsetX, y2 + (int)OffsetY);
 }
@@ -180,17 +180,17 @@ void Render2D::Render2DLine(float x1, float y1, float x2, float y2)
 
 
 /***************************************************************************\
-	Put a mono-colored screen space triangle on the display.
+ Put a mono-colored screen space triangle on the display.
 \***************************************************************************/
 void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, float y3)
 {
-    MPRVtx_t	verts[3];
+    MPRVtx_t verts[3];
 
     //Clip test
     if (
-        (max(max(x1, x2), x3) > rightPixel)		||
-        (min(min(x1, x2), x3) < leftPixel)		||
-        (max(max(y1, y2), y3) > bottomPixel)	||
+        (max(max(x1, x2), x3) > rightPixel) ||
+        (min(min(x1, x2), x3) < leftPixel) ||
+        (max(max(y1, y2), y3) > bottomPixel) ||
         (min(min(y1, y2), y3) < topPixel)
     )
         return;
@@ -204,8 +204,8 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
     verts[2].y = y3 + OffsetY;
 
     // Draw the triangle
-    //	context.RestoreState( STATE_ALPHA_SOLID );
-    if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2);						// COBRA - RED - Alpha Option
+    // context.RestoreState( STATE_ALPHA_SOLID );
+    if (ForceAlpha) context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
 
     context.DrawPrimitive(MPR_PRM_TRIANGLES, 0, 3, verts, sizeof(verts[0]));
 }
@@ -213,13 +213,13 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
 
 
 /***************************************************************************\
-	Put a portion of a caller supplied 32 bit bitmap on the display.
-	The pixels should be of the form 0x00BBGGRR
-	Chroma keying is not supported
+ Put a portion of a caller supplied 32 bit bitmap on the display.
+ The pixels should be of the form 0x00BBGGRR
+ Chroma keying is not supported
 \***************************************************************************/
 void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int totalWidth, DWORD *source, bool Fit)
 {
-    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID);							// COBRA - RED - Alpha Option
+    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID); // COBRA - RED - Alpha Option
 
     context.Render2DBitmap(sX, sY, dX + (int)OffsetX, dY + (int)OffsetY, w, h, totalWidth, source, Fit);
 }
@@ -227,15 +227,15 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int 
 
 
 /***************************************************************************\
-	Put a portion of a bitmap from a file on disk on the display.
-	Chroma keying is not supported
+ Put a portion of a bitmap from a file on disk on the display.
+ Chroma keying is not supported
 \***************************************************************************/
 void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char *filename, bool Fit)
 {
-    int					result;
-    CImageFileMemory 	texFile;
-    int					totalWidth;
-    DWORD				*dataptr;
+    int result;
+    CImageFileMemory  texFile;
+    int totalWidth;
+    DWORD *dataptr;
 
 
     // Make sure we recognize this file type
@@ -272,7 +272,7 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char
     glReleaseMemory((char*)texFile.image.image);
 
     // Pass the bitmap data into the bitmap display function
-    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID);							// COBRA - RED - Alpha Option
+    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID); // COBRA - RED - Alpha Option
 
     Render2DBitmap(sX, sY, dX + (int)OffsetX, dY + (int)OffsetY, w, h, totalWidth, dataptr, Fit);
 
@@ -281,8 +281,8 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char
 }
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display in screen space.
-	(The location given is used as the upper left corner of the text in units of pixels)
+ Put a mono-colored string of text on the display in screen space.
+ (The location given is used as the upper left corner of the text in units of pixels)
 \***************************************************************************/
 //JAM 22Dec03 - Don't they teach people how to format code?
 void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed)
@@ -328,16 +328,16 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         r = 0.0F;
         g = 0.0F;
         b = 0.0F;
-        vert[0].x = x - 1.8F;	//MI changed from - 2.0F
+        vert[0].x = x - 1.8F; //MI changed from - 2.0F
         vert[0].y = y;
         vert[1].x = vert[0].x;
         vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight - 1; //MI added -1
-        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F;	//MI changed from +4.0F
+        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F; //MI changed from +4.0F
         vert[2].y = vert[1].y;
         vert[3].x = vert[2].x;
         vert[3].y = vert[0].y;
 
-        if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID);							// COBRA - RED - Alpha Option
+        if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID); // COBRA - RED - Alpha Option
         else context.RestoreState(STATE_SOLID);
 
         context.DrawPrimitive(MPR_PRM_TRIFAN, 0, 4, vert, sizeof(vert[0]));
@@ -350,16 +350,16 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         DWORD tempcolor = Color();
         SetColor(0x00000000);
 
-        vert[0].x = x - 1.8F;	//MI changed from - 2.0F
+        vert[0].x = x - 1.8F; //MI changed from - 2.0F
         vert[0].y = y;
         vert[1].x = vert[0].x;
         vert[1].y = vert[0].y + pFontSet->fontData[pFontSet->fontNum][32].pixelHeight - 1; //MI added -1
-        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F;	//MI changed from +4.0F
+        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F; //MI changed from +4.0F
         vert[2].y = vert[1].y;
         vert[3].x = vert[2].x;
         vert[3].y = vert[0].y;
 
-        if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID);							// COBRA - RED - Alpha Option
+        if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID); // COBRA - RED - Alpha Option
         else context.RestoreState(STATE_SOLID);
 
         context.DrawPrimitive(MPR_PRM_TRIFAN, 0, 4, vert, sizeof(vert[0]));
@@ -373,7 +373,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     if (ForceAlpha)
     {
         // force the Hud mode & text gets color from the Vertices
-        context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2);						// COBRA - RED - Alpha Option
+        context.RestoreState(STATE_CHROMA_TEXTURE_GOURAUD2); // COBRA - RED - Alpha Option
         context.TexColorDiffuse();
     }
     else context.RestoreState(STATE_TEXTURE_TEXT);   //JAM 18Oct03
@@ -393,7 +393,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[0].g = g;
         pVtx[0].b = b;
         pVtx[0].a = a;
-        //		pVtx[0].a = 1.0F;
+        // pVtx[0].a = 1.0F;
         pVtx[0].u = pFontSet->fontData[pFontSet->fontNum][*string].left;
         pVtx[0].v = pFontSet->fontData[pFontSet->fontNum][*string].top;
         pVtx[0].q = 1.0F;
@@ -405,7 +405,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[1].g = g;
         pVtx[1].b = b;
         pVtx[1].a = a;
-        //		pVtx[1].a = 1.0F;
+        // pVtx[1].a = 1.0F;
         pVtx[1].u = pFontSet->fontData[pFontSet->fontNum][*string].left + pFontSet->fontData[pFontSet->fontNum][*string].width;
         pVtx[1].v = pFontSet->fontData[pFontSet->fontNum][*string].top;
         pVtx[1].q = 1.0F;
@@ -417,7 +417,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[2].g = g;
         pVtx[2].b = b;
         pVtx[2].a = a;
-        //		pVtx[2].a = 1.0F;
+        // pVtx[2].a = 1.0F;
         pVtx[2].u = pFontSet->fontData[pFontSet->fontNum][*string].left;
         pVtx[2].v = pFontSet->fontData[pFontSet->fontNum][*string].top + pFontSet->fontData[pFontSet->fontNum][*string].height;
         pVtx[2].q = 1.0F;
@@ -435,7 +435,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
         pVtx[5].g = g;
         pVtx[5].b = b;
         pVtx[5].a = a;
-        //		pVtx[5].a = 1.0F;
+        // pVtx[5].a = 1.0F;
         pVtx[5].u = pFontSet->fontData[pFontSet->fontNum][*string].left + pFontSet->fontData[pFontSet->fontNum][*string].width;
         pVtx[5].v = pFontSet->fontData[pFontSet->fontNum][*string].top + pFontSet->fontData[pFontSet->fontNum][*string].height;
         pVtx[5].q = 1.0F;
@@ -464,7 +464,7 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string, int boxed
     if (n)
         context.DrawPrimitive(MPR_PRM_TRIANGLES, MPR_VI_COLOR | MPR_VI_TEXTURE, n * 6, vert, sizeof(vert[0]));
 
-    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID);							// COBRA - RED - Alpha Option
+    if (ForceAlpha) context.RestoreState(STATE_ALPHA_SOLID); // COBRA - RED - Alpha Option
     else context.RestoreState(STATE_SOLID);
 
     // Go back and box the string if necessary
@@ -1103,8 +1103,8 @@ int FontSet::ReadFontMetrics(int index, char*fileName) // JPO return status
 
             //JAM 22Dec03 - Not anymore, all modern video cards do automatic biasing.
             //TODO: Add global cfg variable for older cards.
-            //			if(DisplayOptions.bFontTexelAlignment)
-            if (g_bOldFontTexelFix)		//Wombat778 4-01-04	 complete fix in drawprimitive
+            // if(DisplayOptions.bFontTexelAlignment)
+            if (g_bOldFontTexelFix) //Wombat778 4-01-04  complete fix in drawprimitive
             {
                 // OW: shift u,v by a half texel. if you dont do that and the card filters it fetches the wrong texels
                 // because if you specify 1.0 you're saying that you want the far-right edge of this texel

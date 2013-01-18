@@ -13,7 +13,7 @@
 #include "ascii.h"
 #include "popmenu.h"
 
-#include "sinput.h"	// Retro 15Jan2004
+#include "sinput.h" // Retro 15Jan2004
 
 InputFunctionHashTable UserFunctionTable;
 
@@ -159,13 +159,13 @@ void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId, int m
 #else
     tmpEntry = new struct FunctionPtrListEntry;
 #endif
-    tmpEntry->mouseSide	= mouseSide;
-    tmpEntry->buttonId		= buttonId;
-    tmpEntry->flags		= flags;
-    tmpEntry->theFunc		= funcPtr;
-    tmpEntry->controlID		= 0;
-    tmpEntry->next			= functionTable[key];
-    functionTable[key]	= tmpEntry;
+    tmpEntry->mouseSide = mouseSide;
+    tmpEntry->buttonId = buttonId;
+    tmpEntry->flags = flags;
+    tmpEntry->theFunc = funcPtr;
+    tmpEntry->controlID = 0;
+    tmpEntry->next = functionTable[key];
+    functionTable[key] = tmpEntry;
 }
 
 void InputFunctionHashTable::RemoveFunction(int key, int flags)
@@ -231,13 +231,13 @@ InputFunctionType InputFunctionHashTable::GetFunction(int key, int flags, int* p
 }
 
 
-//Wombat778 2-05-04	 Find a function's buttonid from a pointer
+//Wombat778 2-05-04  Find a function's buttonid from a pointer
 
 int InputFunctionHashTable::GetButtonId(InputFunctionType funcPtr)
 {
     struct FunctionPtrListEntry* tmpEntry;
 
-    for (int i = 0; i < NumHashEntries; i++)			//Wombat778 2-05-04 I will burn in hell for doing this to a hash table
+    for (int i = 0; i < NumHashEntries; i++) //Wombat778 2-05-04 I will burn in hell for doing this to a hash table
     {
         tmpEntry = functionTable[i];
 
@@ -379,12 +379,12 @@ void CleanupInputFunctions(void)
 void
 CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
 {
-    //	if (!TrainingScript->IsBlocked(theFunc,NULL))		//Wombat778 3-09-04 Check if this function is being blocked by the training script
-    //	{
-    //		if (TrainingScript->IsCapturing())
-    //			TrainingScript->CaptureCommand(theFunc, NULL);
+    // if (!TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
+    // {
+    // if (TrainingScript->IsCapturing())
+    // TrainingScript->CaptureCommand(theFunc, NULL);
     theFunc(val, state, pButton);
-    //	}
+    // }
 }
 
 
@@ -436,13 +436,13 @@ void CallInputFunction(unsigned long val, int state)
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
         if (
-        	CommandsKeyCombo && keyDown && theFunc != ScreenShot &&
-        	theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep && theFunc != OTWRadioMenuStepBack
+         CommandsKeyCombo && keyDown && theFunc != ScreenShot &&
+         theFunc != RadioMessageSend && theFunc != OTWRadioMenuStep && theFunc != OTWRadioMenuStepBack
         ){
-        	CommandsKeyCombo = 0;
-        	CommandsKeyComboMod = 0;
+         CommandsKeyCombo = 0;
+         CommandsKeyComboMod = 0;
 
-        		OTWDriver.pMenuManager->DeActivate();
+         OTWDriver.pMenuManager->DeActivate();
         }*/
 
 

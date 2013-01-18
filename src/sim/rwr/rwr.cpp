@@ -2,8 +2,8 @@
     Rwr.cpp
 
     This provides the basis for all radar dector sensors.  This is the
-	class that receives track messages.  It also has some basic helper
-	functions to be shared by two or more cousin classes.
+ class that receives track messages.  It also has some basic helper
+ functions to be shared by two or more cousin classes.
 \***************************************************************************/
 #include "stdhdr.h"
 #include "simfile.h"
@@ -14,14 +14,14 @@
 #include "Graphics\Include\render2d.h"
 #include "rwr.h"
 
-const int	RwrClass::GUIDANCE_CYCLE	= 1500; //me123 from 500
-const int	RwrClass::TRACK_CYCLE		= 3500;//me123 from 500
+const int RwrClass::GUIDANCE_CYCLE = 1500; //me123 from 500
+const int RwrClass::TRACK_CYCLE = 3500;//me123 from 500
 // 2001-02-17 MODIFIED BY S.G. SO 2D (AND DEAD) CONTACTS STAYS FOR 6 SECONDS LIKE SIM CONTACTS
-//const int	RwrClass::RADIATE_CYCLE		= 10000;
-const int	RwrClass::RADIATE_CYCLE		= 6000;
-//const int	RwrClass::RADIATE_CYCLE		= 8000;//me123 from 10000
+//const int RwrClass::RADIATE_CYCLE = 10000;
+const int RwrClass::RADIATE_CYCLE = 6000;
+//const int RwrClass::RADIATE_CYCLE = 8000;//me123 from 10000
 
-RwrDataType*			RwrDataTable = NULL;
+RwrDataType* RwrDataTable = NULL;
 short NumRwrEntries;
 
 //MI
@@ -99,7 +99,7 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
 
     display->ZeroRotationAboutOrigin(); // me123 make sure we are not rotated
 
-    static const float	basicAir[][2] =
+    static const float basicAir[][2] =
     {
         { 0.00F,  0.06F},
         { 0.09F, -0.03F},
@@ -107,9 +107,9 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
         { -0.09F, -0.03F},
         { 0.00F,  0.06F}
     };
-    static const int	NUM_BASIC_AIR_POINTS = sizeof(basicAir) / sizeof(basicAir[0]);
+    static const int NUM_BASIC_AIR_POINTS = sizeof(basicAir) / sizeof(basicAir[0]);
 
-    static const float	advAir[][2] =
+    static const float advAir[][2] =
     {
         { 0.00F,  0.09F},
         { 0.09F, -0.01F},
@@ -119,9 +119,9 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
         { -0.09F, -0.01F},
         { 0.00F,  0.09F}
     };
-    static const int	NUM_ADV_AIR_POINTS = sizeof(advAir) / sizeof(advAir[0]);
+    static const int NUM_ADV_AIR_POINTS = sizeof(advAir) / sizeof(advAir[0]);
 
-    static const float	theBoat[][2] =
+    static const float theBoat[][2] =
     {
         { -0.06F, -0.04F},
         { -0.08F,  0.00F},
@@ -133,10 +133,10 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
         { 0.06F, -0.04F},
         { -0.06F, -0.04F}
     };
-    static const int	NUM_BOAT_POINTS = sizeof(theBoat) / sizeof(theBoat[0]);
+    static const int NUM_BOAT_POINTS = sizeof(theBoat) / sizeof(theBoat[0]);
 
-    int		i;
-    float	verticalTextCenter = 0.5f * display->TextHeight();
+    int i;
+    float verticalTextCenter = 0.5f * display->TextHeight();
 
     switch (symbolID)
     {

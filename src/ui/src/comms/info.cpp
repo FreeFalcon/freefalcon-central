@@ -1,8 +1,8 @@
 /****************************************************
 *
-*	Restrictions Information Window
-*	David Power (x4373)
-*	2/2/98
+* Restrictions Information Window
+* David Power (x4373)
+* 2/2/98
 *
 *****************************************************/
 #include <windows.h>
@@ -39,11 +39,11 @@ _TCHAR GameName[19] = "Uninitialized";
 
 void INFOSetupRulesControls(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_Button *button;
+    C_ListBox *lbox;
+    C_Slider *slider;
+    C_EditBox *ebox;
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
@@ -57,13 +57,13 @@ void INFOSetupRulesControls(void)
     //if this is true, we are the host
     /*
     if( FalconLocalGameEntity && FalconLocalSession &&
-    	FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
-    		host = TRUE;
+     FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id() )
+     host = TRUE;
     else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
-    	host = TRUE;
+     host = TRUE;
 
     if(gCommsMgr->GetSettings()->Rules.GameStatus != GAME_WAITING)
-    	host = FALSE;*/
+     host = FALSE;*/
 
     ebox = (C_EditBox *)win->FindControl(INFO_GAMENAME);
 
@@ -74,9 +74,9 @@ void INFOSetupRulesControls(void)
         else
             ebox->SetFlagBitOff(C_BIT_ENABLED);
 
-        //		if(FalconLocalGame != vuPlayerPoolGroup)
-        //			ebox->SetText(FalconLocalGameEntity->GameName());
-        //		else
+        // if(FalconLocalGame != vuPlayerPoolGroup)
+        // ebox->SetText(FalconLocalGameEntity->GameName());
+        // else
         if (gCommsMgr->GetTargetGame())
             ebox->SetText(gCommsMgr->GetTargetGame()->GameName());
         else
@@ -253,8 +253,8 @@ void INFOSetupRulesControls(void)
                 lbox->SetValue(PADLOCK_2);
                 break;
                 //case PDSuper:
-                //	lbox->SetValue(PADLOCK_3);
-                //	break;
+                // lbox->SetValue(PADLOCK_3);
+                // break;
         }
 
         lbox->Refresh();
@@ -384,11 +384,11 @@ void INFOSetupRulesControls(void)
 ///in the PlayerOptions structure
 void INFOSetupControls(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_Button *button;
+    C_ListBox *lbox;
+    C_Slider *slider;
+    C_EditBox *ebox;
 
 
     win = gMainHandler->FindWindow(INFO_WIN);
@@ -535,8 +535,8 @@ void INFOSetupControls(void)
                 lbox->SetValue(PADLOCK_2);
                 break;
                 //case PDSuper:
-                //	lbox->SetValue(PADLOCK_3);
-                //	break;
+                // lbox->SetValue(PADLOCK_3);
+                // break;
         }
 
         lbox->Refresh();
@@ -730,17 +730,17 @@ void ComplyCB(long ID, short hittype, C_Base *control)
     }
 
     INFOSaveValues();/*
-	if( PlayerOptions.InCompliance(CurrRules.GetRules()) )
-	{
-		PlayerOptions.SaveOptions();
-		CloseWindowCB(ID,hittype,control);
-	}
-	else
-	{
-		PlayerOptions.ComplyWRules(CurrRules.GetRules());
-		PlayerOptions.SaveOptions();
-		INFOSetupControls();
-	}*/
+ if( PlayerOptions.InCompliance(CurrRules.GetRules()) )
+ {
+ PlayerOptions.SaveOptions();
+ CloseWindowCB(ID,hittype,control);
+ }
+ else
+ {
+ PlayerOptions.ComplyWRules(CurrRules.GetRules());
+ PlayerOptions.SaveOptions();
+ INFOSetupControls();
+ }*/
     ebox = (C_EditBox*)control->Parent_->FindControl(INFO_PASSWORD);
 
     if (ebox)
@@ -842,7 +842,7 @@ void CheckCompliance(void)
         switch (lbox->GetTextID())
         {
             case RADAR_1:
-                if (CurrRules.SimAvionicsType > ATRealistic)		// we've now a fourth setting
+                if (CurrRules.SimAvionicsType > ATRealistic) // we've now a fourth setting
                 {
                     InCompliance = FALSE;
                     MakeRed++;
@@ -1021,13 +1021,13 @@ void CheckCompliance(void)
 
                 break;
 
-                /*	case PADLOCK_3:
-                		if(CurrRules.SimPadlockMode > PDSuper)
-                		{
-                			InCompliance = FALSE;
-                			MakeRed++;
-                		}
-                		break;*/
+                /* case PADLOCK_3:
+                 if(CurrRules.SimPadlockMode > PDSuper)
+                 {
+                 InCompliance = FALSE;
+                 MakeRed++;
+                 }
+                 break;*/
             default:
                 break;
         }
@@ -1162,13 +1162,13 @@ void CheckCompliance(void)
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button != NULL)
     {
-    	if(!CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
-    		InCompliance = FALSE;
+     if(!CheckButtonCompliance(button,!CurrRules.InvulnerableOn()) )
+     InCompliance = FALSE;
 
-    	if(button->GetState() == C_STATE_1)
-    		PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
-    	else
-    		PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
+     else
+     PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
     }*/
 
 
@@ -1231,8 +1231,8 @@ void SliderChangeCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_MOUSEMOVE)
         return;
 
-    C_Slider	*slider;
-    int			scale;
+    C_Slider *slider;
+    int scale;
 
     slider = (C_Slider *)control;
     scale = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F);
@@ -1270,7 +1270,7 @@ void ButtonChangeCB(long, short hittype, C_Base *control)
     else
     {
         btn->SetState(C_STATE_1);
-        btn->Refresh();		// MN was missed
+        btn->Refresh(); // MN was missed
     }
 
     CheckCompliance();
@@ -1287,8 +1287,8 @@ static void SliderRuleControlCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_MOUSEMOVE)
         return;
 
-    C_Slider	*slider;
-    int			scale;
+    C_Slider *slider;
+    int scale;
 
     slider = (C_Slider *)control;
     scale = static_cast<int>(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F));
@@ -1348,10 +1348,10 @@ static void CloseInfoWindowCB(long ID, short hittype, C_Base *control)
 
 void INFOHookupControls()
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
+    C_Window *win;
+    C_Button *button;
+    C_ListBox *lbox;
+    C_Slider *slider;
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
@@ -1471,10 +1471,10 @@ void INFOHookupControls()
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button != NULL)
     {
-    	if(button->GetState() == C_STATE_1)
-    		PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
-    	else
-    		PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
+     else
+     PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
     }*/
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
@@ -1563,10 +1563,10 @@ void INFOHookupControls()
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button != NULL)
     {
-    	if(button->GetState() == C_STATE_1)
-    		PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
-    	else
-    		PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
+     else
+     PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
     }*/
 
 
@@ -1593,11 +1593,11 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
     }
 
     /*if(FalconLocalGame != vuPlayerPoolGroup)
-    	CurrRules = &FalconLocalGameEntity->rules;
+     CurrRules = &FalconLocalGameEntity->rules;
     else if(gCommsMgr->GetTargetGame())
-    	CurrRules = &((FalconGameEntity *)gCommsMgr->GetTargetGame())->rules;
+     CurrRules = &((FalconGameEntity *)gCommsMgr->GetTargetGame())->rules;
     else
-    	CurrRules = &gRules[RuleMode];*/
+     CurrRules = &gRules[RuleMode];*/
     game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
     if (game)
@@ -1645,11 +1645,11 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
 static void INFOSaveRules(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_Button *button;
+    C_ListBox *lbox;
+    C_Slider *slider;
+    C_EditBox *ebox;
     RulesClass  tempRules;
 
     tempRules.Initialize();
@@ -1664,10 +1664,10 @@ static void INFOSaveRules(void)
 
     int host = FALSE;
     /*
-    	if(FalconLocalGameEntity && FalconLocalSession && FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
-    		host = TRUE;
-    	else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
-    	*/
+     if(FalconLocalGameEntity && FalconLocalSession && FalconLocalGameEntity->OwnerId() == FalconLocalSession->Id())
+     host = TRUE;
+     else if(!gCommsMgr->GetTargetGame() && !FalconLocalGameEntity)
+     */
     host = modify;
 
     if (host)
@@ -1677,7 +1677,7 @@ static void INFOSaveRules(void)
         if (ebox)
         {
             //if(FalconLocalGame && _tcscmp( FalconLocalGame->GameName(),ebox->GetText() ) )
-            //	FalconLocalGame->SetGameName(ebox->GetText());
+            // FalconLocalGame->SetGameName(ebox->GetText());
             _tcscpy(GameName, ebox->GetText());
         }
 
@@ -1792,8 +1792,8 @@ static void INFOSaveRules(void)
                     tempRules.SimPadlockMode = PDEnhanced;
                     break;
                     //case PADLOCK_3:
-                    //	tempRules.SimPadlockMode = PDSuper;
-                    //	break;
+                    // tempRules.SimPadlockMode = PDSuper;
+                    // break;
             }
         }
 
@@ -1904,10 +1904,10 @@ static void INFOSaveRules(void)
         button=(C_Button *)win->FindControl(AUTO_SCALE);
         if(button != NULL)
         {
-        	if(button->GetState() == C_STATE_1)
-        		PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
-        	else
-        		PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
+         if(button->GetState() == C_STATE_1)
+         PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
+         else
+         PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
         }*/
 
         slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_REQ);
@@ -1917,19 +1917,19 @@ static void INFOSaveRules(void)
             tempRules.ObjMagnification = static_cast<float>((int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f));
         }
 
-        //		if(FalconLocalGameEntity)
-        //			FalconLocalGameEntity->UpdateRules(tempRules.GetRules());
-        //		else
+        // if(FalconLocalGameEntity)
+        // FalconLocalGameEntity->UpdateRules(tempRules.GetRules());
+        // else
         gRules[RuleMode].LoadRules(tempRules.GetRules());
     }
 }
 
 static void INFOSaveValues(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
+    C_Window *win;
+    C_Button *button;
+    C_ListBox *lbox;
+    C_Slider *slider;
 
 
     win = gMainHandler->FindWindow(INFO_WIN);
@@ -2043,8 +2043,8 @@ static void INFOSaveValues(void)
                 PlayerOptions.SimPadlockMode = PDEnhanced;
                 break;
                 //case PADLOCK_3:
-                //	PlayerOptions.SimPadlockMode = PDSuper;
-                //	break;
+                // PlayerOptions.SimPadlockMode = PDSuper;
+                // break;
         }
 
         lbox->Refresh();
@@ -2149,10 +2149,10 @@ static void INFOSaveValues(void)
     button=(C_Button *)win->FindControl(AUTO_SCALE);
     if(button != NULL)
     {
-    	if(button->GetState() == C_STATE_1)
-    		PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
-    	else
-    		PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.SetObjFlag(DISP_OBJ_DYN_SCALING);
+     else
+     PlayerOptions.ClearObjFlag(DISP_OBJ_DYN_SCALING);
     }*/
 
 

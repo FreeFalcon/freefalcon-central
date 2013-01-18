@@ -5,15 +5,15 @@
 
 // KCK: This class in placeholder until I get around to actually coding this stuff
 
-#define	NUM_RADAR_ARCS					8			// How many arcs each radar data will store
-#define ALT_FOR_RANGE_DETERMINATION		2500.0F		// when we return range, it'll be how far we can
+#define NUM_RADAR_ARCS 8 // How many arcs each radar data will store
+#define ALT_FOR_RANGE_DETERMINATION 2500.0F // when we return range, it'll be how far we can
 // see something at this altitude
-#define MINIMUM_RADAR_RATIO				0.022F		// Minimum ratio (about 1 deg angle)
+#define MINIMUM_RADAR_RATIO 0.022F // Minimum ratio (about 1 deg angle)
 
 class RadarRangeClass
 {
 public:
-    float		detect_ratio[NUM_RADAR_ARCS];	// tan(detection_angle)- basically, ratio of
+    float detect_ratio[NUM_RADAR_ARCS]; // tan(detection_angle)- basically, ratio of
     // altitude to distance above which we can see
 
 public:
@@ -26,7 +26,7 @@ public:
         return detect_ratio[anum];
     };
     // 2001-03-14 MODIFIED BY S.G. detect_ratio[anum] CAN BE ZERO. NEED TO CHECK FOR THAT FIRST
-    //		float GetArcRange (int anum)						{ return ALT_FOR_RANGE_DETERMINATION/detect_ratio[anum]; };
+    // float GetArcRange (int anum) { return ALT_FOR_RANGE_DETERMINATION/detect_ratio[anum]; };
     float GetArcRange(int anum)
     {
         return detect_ratio[anum] != 0.0f ? ALT_FOR_RANGE_DETERMINATION / detect_ratio[anum] : 0.0f;

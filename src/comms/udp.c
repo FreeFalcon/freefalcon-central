@@ -192,7 +192,7 @@ ComAPIHandle ComUDPOpen(
 
     if (c->recv_sock == INVALID_SOCKET)
     {
-        //		int error = CAPI_WSAGetLastError();
+        // int error = CAPI_WSAGetLastError();
         leave_cs();
         return 0;
     }
@@ -363,8 +363,8 @@ void ComUDPClose(ComAPIHandle c)
     if (c)
     {
         ComIP *cudp = (ComIP *)c;
-        //		int trueValue = 1;
-        //		int falseValue = 0;
+        // int trueValue = 1;
+        // int falseValue = 0;
 
         if (cudp->parent != NULL)
         {
@@ -398,7 +398,7 @@ void ComUDPClose(ComAPIHandle c)
         MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((ComAPIHandle)cudp)->name);
 #endif
 
-        //		GlobalListHead = CAPIListRemove(GlobalListHead,(ComAPIHandle)cudp);
+        // GlobalListHead = CAPIListRemove(GlobalListHead,(ComAPIHandle)cudp);
         comListRemove(cudp);
 
         if (sockerror = CAPI_closesocket(cudp->recv_sock))
@@ -631,11 +631,11 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
         {
             case WSAEWOULDBLOCK:
             {
-                //				MonoPrint ("WouldBlock %d %d\n", cudp->send_buffer.len, get_bandwidth_available ());
+                // MonoPrint ("WouldBlock %d %d\n", cudp->send_buffer.len, get_bandwidth_available ());
                 cudp->sendwouldblockcount++;
                 cut_bandwidth();
                 /* The socket is marked as non-blocking and the send
-                		operation would block. */
+                 operation would block. */
                 return COMAPI_WOULDBLOCK;
             }
 
@@ -664,10 +664,10 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
 
     if (now > laststatcound + 1000)
     {
-        /*	MonoPrint("UDP Bytes pr sec %d, OOB %d, Posupds %d",
-        		(int)(totalbwused*1000/(now-laststatcound)),
-        		(int)(oobbwused *1000/(now-laststatcound)),
-        		(int)(Posupdbwused*1000/(now-laststatcound)));*/
+        /* MonoPrint("UDP Bytes pr sec %d, OOB %d, Posupds %d",
+         (int)(totalbwused*1000/(now-laststatcound)),
+         (int)(oobbwused *1000/(now-laststatcound)),
+         (int)(Posupdbwused*1000/(now-laststatcound)));*/
         laststatcound = now;
         totalbwused = 0;
         oobbwused = 0;
@@ -747,7 +747,7 @@ int ComUDPGet(ComAPIHandle c)
                 case WSAEFAULT:
 
                     /* The buf argument is not totally contained in a valid part
-                    	 of the user address space. */
+                      of the user address space. */
                 case WSAENOTCONN:
 
                     /* The socket is not connected. */
@@ -757,60 +757,60 @@ int ComUDPGet(ComAPIHandle c)
                 case WSAEINPROGRESS:
 
                     /* A blocking Windows Sockets 1.1 call is in progress, or
-                    	 the service provider is still processing a callback
-                    	 function. */
+                      the service provider is still processing a callback
+                      function. */
                 case WSAENETRESET:
 
                     /* The connection has been broken due to the remote host
-                    	 resetting. */
+                      resetting. */
                 case WSAENOTSOCK:
 
                     /* The descriptor is not a socket. */
                 case WSAEOPNOTSUPP:
 
                     /* MSG_OOB was specified, but the socket is not stream style
-                    	 such as type SOCK_STREAM, out-of-band data is not supported
-                    	 in the communication domain associated with this socket,
-                    	 or the socket is unidirectional and supports only send
-                    	 operations. */
+                      such as type SOCK_STREAM, out-of-band data is not supported
+                      in the communication domain associated with this socket,
+                      or the socket is unidirectional and supports only send
+                      operations. */
                 case WSAESHUTDOWN:
 
                     /* The socket has been shutdown; it is not possible to recv
-                    	 on a socket after shutdown has been invoked with how set
-                    	 to SD_RECEIVE or SD_BOTH. */
+                      on a socket after shutdown has been invoked with how set
+                      to SD_RECEIVE or SD_BOTH. */
 
                 case WSAEWOULDBLOCK:
                     /* The socket is marked as non-blocking and the receive
-                    	 operation would block. */
+                      operation would block. */
                     cudp->recvwouldblockcount++;
                     return 0;
 
                 case WSAEMSGSIZE:
 
                     /* The message was too large to fit into the specified buffer
-                    	 and was truncated. */
+                      and was truncated. */
                 case WSAEINVAL:
 
                     /* The socket has not been bound with bind, or an unknown flag
-                    	 was specified, or MSG_OOB was specified for a socket with
-                    	 SO_OOBINLINE enabled or (for byte stream sockets only) len
-                    	 was 0 or negative. */
+                      was specified, or MSG_OOB was specified for a socket with
+                      SO_OOBINLINE enabled or (for byte stream sockets only) len
+                      was 0 or negative. */
                 case WSAECONNABORTED:
 
                     /* The virtual circuit was aborted due to timeout or other
-                    	 failure. The application should close the socket as it
-                    	 is no longer useable. */
+                      failure. The application should close the socket as it
+                      is no longer useable. */
                 case WSAETIMEDOUT:
 
                     /* The connection has been dropped because of a network
-                    	 failure or because the peer system failed to respond. */
+                      failure or because the peer system failed to respond. */
                 case WSAECONNRESET:
 
                     /* The virtual circuit was reset by the remote side executing
-                    	 a "hard" or "abortive" close. The application should close
-                    	 the socket as it is no longer useable. On a UDP datagram
-                    	 socket this error would indicate that a previous send
-                    	 operation resulted in an ICMP "Port Unreachable" message. */
+                      a "hard" or "abortive" close. The application should close
+                      the socket as it is no longer useable. On a UDP datagram
+                      socket this error would indicate that a previous send
+                      operation resulted in an ICMP "Port Unreachable" message. */
                 default :
                     return 0;
             }
@@ -836,10 +836,10 @@ int ComUDPGet(ComAPIHandle c)
 
             // ignore messages from me
             //sfr: added port info
-            /*			if (!(
-            				(((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
-            				(((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
-            			)){*/
+            /* if (!(
+             (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
+             (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
+             )){*/
             if (((ComAPIHeader *)cudp->recv_buffer.buf)->id != cudp->whoami)
             {
                 // sets lastsender
@@ -987,7 +987,7 @@ char *ComIPSendBufferGet(ComAPIHandle c)
 char *ComIPRecvBufferGet(ComAPIHandle c)
 {
     ComIP *cudp = (ComIP *)c;
-    //	char *recvbuf=NULL;
+    // char *recvbuf=NULL;
 
     cudp = GETActiveCOMHandle(c) ;
     return cudp->recv_buffer.buf + sizeof(ComAPIHeader);

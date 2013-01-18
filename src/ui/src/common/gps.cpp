@@ -20,9 +20,9 @@ extern C_Handler *gMainHandler;
 
 extern BOOL gMoviePlaying;
 
-extern VU_ID gSelectedFlightID;	// Last flight Selected (in ATO,Mission)
-extern VU_ID gSelectedPackage;	// Current Package Selected (ATO)
-extern VU_ID gSelectedEntity;	// Current Entity (Squadron/Unit/Objective) in OOB
+extern VU_ID gSelectedFlightID; // Last flight Selected (in ATO,Mission)
+extern VU_ID gSelectedPackage; // Current Package Selected (ATO)
+extern VU_ID gSelectedEntity; // Current Entity (Squadron/Unit/Objective) in OOB
 
 void RemoveMissionCB(TREELIST *item);
 

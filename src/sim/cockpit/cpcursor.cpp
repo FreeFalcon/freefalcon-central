@@ -10,14 +10,14 @@
 CPCursor::CPCursor(CursorInitStr* pcursorInitStr)
 {
 
-    mIdNum		= pcursorInitStr->idNum;
-    mSrcRect		= pcursorInitStr->srcRect;
+    mIdNum = pcursorInitStr->idNum;
+    mSrcRect = pcursorInitStr->srcRect;
 
-    mxHotspot	= pcursorInitStr->xhotSpot;
-    myHotspot	= pcursorInitStr->yhotSpot;
+    mxHotspot = pcursorInitStr->xhotSpot;
+    myHotspot = pcursorInitStr->yhotSpot;
 
-    mpOTWImage	= pcursorInitStr->pOtwImage;
-    mpTemplate	= pcursorInitStr->pTemplate;
+    mpOTWImage = pcursorInitStr->pOtwImage;
+    mpTemplate = pcursorInitStr->pTemplate;
 }
 
 void CPCursor::Display(void)

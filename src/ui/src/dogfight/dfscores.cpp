@@ -1,6 +1,6 @@
 /*
 
-	Dogfight Scoring routines
+ Dogfight Scoring routines
 
 */
 
@@ -60,25 +60,25 @@ long DFTeamNameStrIDs[] =
 COLORREF DFTeamColors[] = // COLORREF format is BGR)
 {
     // Neutral Team
-    0x00ffffff,	// (RGB 255,255,255)
+    0x00ffffff, // (RGB 255,255,255)
     // Crimson Team
     0x002303c1, // (RGB 193,3,35)
     // Shark Team
     0x00918316, // (RGB 22,131,151)
     // USA Team
-    0x00ffffff,	// (RGB 255,255,255)
-    //	// Viper Team
-    //	0x00179f05, // (RGB 5,159,23)
+    0x00ffffff, // (RGB 255,255,255)
+    // // Viper Team
+    // 0x00179f05, // (RGB 5,159,23)
     // Tiger Team
     0x0003c0e8, // (RGB 232,192,3)
 };
 
 void TallyTeamKills(void)
 {
-    int		i;
-    short	kills[MAX_DOGFIGHT_TEAMS];
-    short	deaths[MAX_DOGFIGHT_TEAMS];
-    short	score[MAX_DOGFIGHT_TEAMS];
+    int i;
+    short kills[MAX_DOGFIGHT_TEAMS];
+    short deaths[MAX_DOGFIGHT_TEAMS];
+    short score[MAX_DOGFIGHT_TEAMS];
 
     memset(TeamTotals, 0, sizeof(short)*MAX_DOGFIGHT_TEAMS * 3);
     memset(TeamUsed, 0, sizeof(short)*MAX_DOGFIGHT_TEAMS);
@@ -98,7 +98,7 @@ void TallyTeamKills(void)
 
 void AddtoSortedList(PilotDataClass *pilot_ptr, int team)
 {
-    PilotSortClass	*cur, *last = NULL, *newone;
+    PilotSortClass *cur, *last = NULL, *newone;
 
     newone = new PilotSortClass(pilot_ptr);
     newone->team = static_cast<short>(team);
@@ -141,11 +141,11 @@ void ClearSortedPilotList()
 
 long FigureOutHowIDid()
 {
-    long			HowIDid = 0;
-    short			place = 0, playerrank = 0;
-    int				team = 0, kills = 0;
-    int				MostKills = 0, LeastKills = 0, MostDeaths = 0, MostFrags = 0;
-    PilotSortClass	*cur = NULL, *player = NULL, *MKills = NULL, *LKills = NULL, *MDeaths = NULL, *MFrags = NULL;
+    long HowIDid = 0;
+    short place = 0, playerrank = 0;
+    int team = 0, kills = 0;
+    int MostKills = 0, LeastKills = 0, MostDeaths = 0, MostFrags = 0;
+    PilotSortClass *cur = NULL, *player = NULL, *MKills = NULL, *LKills = NULL, *MDeaths = NULL, *MFrags = NULL;
 
     team = FalconLocalSession->GetCountry();
 
@@ -171,11 +171,11 @@ long FigureOutHowIDid()
 
         kills = cur->pilot_data->aa_kills;
 
-        /*		for(i=0;i<MAX_DOGFIGHT_TEAMS;i++)
-        			{
-        			if(i != cur->team)
-        				kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
-        			}
+        /* for(i=0;i<MAX_DOGFIGHT_TEAMS;i++)
+         {
+         if(i != cur->team)
+         kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
+         }
         */
 
         if (kills > MostKills)
@@ -191,11 +191,11 @@ long FigureOutHowIDid()
         }
 
         /*
-        		if((cur->pilot_data->kills[cur->team][VS_AI] + cur->pilot_data->kills[cur->team][VS_HUMAN]) > MostFrags)
-        			{
-        			MFrags = cur;
-        			MostFrags = cur->pilot_data->kills[cur->team][VS_AI] + cur->pilot_data->kills[cur->team][VS_HUMAN];
-        			}
+         if((cur->pilot_data->kills[cur->team][VS_AI] + cur->pilot_data->kills[cur->team][VS_HUMAN]) > MostFrags)
+         {
+         MFrags = cur;
+         MostFrags = cur->pilot_data->kills[cur->team][VS_AI] + cur->pilot_data->kills[cur->team][VS_HUMAN];
+         }
         */
         if ((cur->pilot_data->deaths[VS_AI] + cur->pilot_data->deaths[VS_HUMAN]) > MostDeaths)
         {
@@ -333,15 +333,15 @@ void PlayDogfightBite()
 
 void DisplayDogfightResults()
 {
-    C_Window	*win;
-    C_Text		*txt;
-    int			Y, i, j, kills, human_only = 0;
-    BOOL		ShowTeams;
-    long		PlayerClient;
-    _TCHAR		buffer[80];
-    PilotSortClass		*cur;
-    FlightDataClass		*flight_data;
-    PilotDataClass		*pilot_data;
+    C_Window *win;
+    C_Text *txt;
+    int Y, i, j, kills, human_only = 0;
+    BOOL ShowTeams;
+    long PlayerClient;
+    _TCHAR buffer[80];
+    PilotSortClass *cur;
+    FlightDataClass *flight_data;
+    PilotDataClass *pilot_data;
 
     for (i = 0; i < MAX_DOGFIGHT_TEAMS; i++)
         TeamRank[i] = static_cast<short>(i);
@@ -485,8 +485,8 @@ void DisplayDogfightResults()
 
             kills = cur->pilot_data->aa_kills;
 
-            //			for (i=0,kills=0;i<MAX_DOGFIGHT_TEAMS;i++)
-            //				kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
+            // for (i=0,kills=0;i<MAX_DOGFIGHT_TEAMS;i++)
+            // kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
 
             _stprintf(buffer, "%1d/%1d", kills, cur->pilot_data->deaths[VS_AI] + cur->pilot_data->deaths[VS_HUMAN]);
 

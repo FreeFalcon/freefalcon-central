@@ -45,8 +45,8 @@ public:
     }
 
     static void slow_campaign(void);
-    static void	fast_campaign(void);
-    static void	very_fast_campaign(void);
+    static void fast_campaign(void);
+    static void very_fast_campaign(void);
 
 private:
     static ThreadInfo campaign_thread, sim_thread;

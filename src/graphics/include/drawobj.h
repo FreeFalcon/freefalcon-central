@@ -4,7 +4,7 @@
     May 3, 1996
 
     Abstract base class used to interact with drawable objects which need
-	to be drawn sorted with terrain in an out the window view.
+ to be drawn sorted with terrain in an out the window view.
 ***************************************************************************/
 #ifndef _DRAWOBJ_H_
 #define _DRAWOBJ_H_
@@ -26,7 +26,7 @@ public:
     };
 
     // RED- Object volume, used for Radar stuff
-    virtual	float	GetRadarSign(void)
+    virtual float GetRadarSign(void)
     {
         return 0.0f;
     }
@@ -58,19 +58,19 @@ public:
         return position.z;
     }
 
-    void		SetScale(float s)
+    void SetScale(float s)
     {
         radius *= s / scale;
         scale = s;
     };
-    float		GetScale(void)
+    float GetScale(void)
     {
         return scale;
     };
 
-    virtual void SetLabel(char*, DWORD)	{};
+    virtual void SetLabel(char*, DWORD) {};
 
-    virtual void SetInhibitFlag(BOOL)				{};
+    virtual void SetInhibitFlag(BOOL) {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD) = 0;
     virtual void Draw(class Render3D*) {};
@@ -82,28 +82,28 @@ public:
         return FALSE;
     } ;
 
-    BOOL	InDisplayList(void)
+    BOOL InDisplayList(void)
     {
         return (parentList != NULL);
     };
 
 
 protected:
-    Tpoint					position;
-    float					radius;
-    float					scale;
-    DrawClass				drawClassID;
+    Tpoint position;
+    float radius;
+    float scale;
+    DrawClass drawClassID;
 
     // NOTE:  Each instance can be managed by only ONE OBJECT LIST
-    class ObjectDisplayList	*parentList;
-    DrawableObject			*prev;
-    DrawableObject			*next;
+    class ObjectDisplayList *parentList;
+    DrawableObject *prev;
+    DrawableObject *next;
 
     // NOTE:  This field is set by our parent list during UpdateMetrics
-    float					distance;
+    float distance;
 
 protected:
-    virtual	void SetParentList(ObjectDisplayList *list)
+    virtual void SetParentList(ObjectDisplayList *list)
     {
         parentList = list;
     };
@@ -114,7 +114,7 @@ protected:
     friend class ObjectDisplayList;
     friend class RViewPoint;
     friend class DrawablePlatform;  // This one is weird -- DrawablePlatform isa DrawableObject,
-    friend class DrawableBridge;	// but the compiler complains.  Apparently, a second order
+    friend class DrawableBridge; // but the compiler complains.  Apparently, a second order
     // inheritance doesn't get to see "protected" members of its
     // grand parent.
 public:

@@ -26,8 +26,8 @@ extern int gRebuildBubbleNow;
 
 FalconWeaponsFire::FalconWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(WeaponFireMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
-    //	RequestReliableTransmit ();
-    //	RequestOutOfBandTransmit ();
+    // RequestReliableTransmit ();
+    // RequestOutOfBandTransmit ();
     // Your Code Goes Here
 }
 
@@ -81,7 +81,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
                 FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(simEntity->Id(), FalconLocalSession);
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
                 radioMessage->dataBlock.from = theEntity->Id();
-                //	radioMessage->dataBlock.voice_id = (uchar)((SimBaseClass*)theEntity)->GetPilotVoiceId();
+                // radioMessage->dataBlock.voice_id = (uchar)((SimBaseClass*)theEntity)->GetPilotVoiceId();
                 radioMessage->dataBlock.voice_id = ((FlightClass*)(((AircraftClass*)theEntity)->GetCampaignObject()))->GetPilotVoiceID(((AircraftClass*)theEntity)->GetCampaignObject()->GetComponentIndex(((AircraftClass*)theEntity)));
 
                 // JPO - special case AMRAAM call
@@ -115,7 +115,7 @@ int FalconWeaponsFire::Process(uchar autodisp)
 
                     //Total Fucking HACK!!!
                     if (dataBlock.weaponType == FalconWeaponsFire::Rocket)
-                        radioMessage->dataBlock.edata[0] = 887;		// 2001-09-16 M.N. "Rockets" EVAL INDEX = 887, NOT 163
+                        radioMessage->dataBlock.edata[0] = 887; // 2001-09-16 M.N. "Rockets" EVAL INDEX = 887, NOT 163
                     else
                         radioMessage->dataBlock.edata[0] = WeaponDataTable[GetWeaponIdFromDescriptionIndex(dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE)].Index;
                 }

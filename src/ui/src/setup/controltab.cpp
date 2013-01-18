@@ -17,9 +17,9 @@
 
 bool JoyEffectPlaying = false;
 
-#include "sim/include/ffeedbk.h"	// Retro 25Dec2003 for instant FFB feedback
+#include "sim/include/ffeedbk.h" // Retro 25Dec2003 for instant FFB feedback
 
-#pragma warning (disable : 4706)	// assignment within conditional expression
+#pragma warning (disable : 4706) // assignment within conditional expression
 
 extern C_Handler *gMainHandler;
 extern C_Parser *gMainParser;
@@ -34,23 +34,23 @@ extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 
 typedef struct
 {
-    InputFunctionType	func;
-    int					buttonId;
-    int					mouseSide;
-    int					key2;
-    int					mod2;
-    int					key1;
-    int					mod1;
-    int					editable;
-    char				descrip[_MAX_PATH];
+    InputFunctionType func;
+    int buttonId;
+    int mouseSide;
+    int key2;
+    int mod2;
+    int key1;
+    int mod1;
+    int editable;
+    char descrip[_MAX_PATH];
 } KeyMap;
 
 typedef struct
 {
-    int		X;
-    int		Y;
-    int		W;
-    int		H;
+    int X;
+    int Y;
+    int W;
+    int H;
 } HotSpotStruct;
 
 enum
@@ -64,27 +64,27 @@ enum
 };
 
 KeyVars KeyVar = {FALSE, 0, 0, 0, 0, FALSE, FALSE};
-KeyMap	UndisplayedKeys[300] = {NULL, 0, 0, 0, 0, 0, 0, 0};
-int	NumUndispKeys = 0;
-int	NumDispKeys = 0;
+KeyMap UndisplayedKeys[300] = {NULL, 0, 0, 0, 0, 0, 0, 0};
+int NumUndispKeys = 0;
+int NumDispKeys = 0;
 extern int NoRudder;
 extern long mHelmetIsUR; // hack for Italian 1.06 version - Only gets set to true IF UR Helmet detected
 extern long mHelmetID;
 
 extern int setABdetent;
-extern int setIdleCutoff;	// Retro 1Feb2004
+extern int setIdleCutoff; // Retro 1Feb2004
 
-extern unsigned int NumberOfPOVs;	// Retro 26Dec2003
-int InitializeValueBars = 1;		// Retro 26Dec2003, pulled up
+extern unsigned int NumberOfPOVs; // Retro 26Dec2003
+int InitializeValueBars = 1; // Retro 26Dec2003, pulled up
 //CalibrateStruct Calibration = {FALSE,1,0,TRUE};
-extern int hasForceFeedback;		// Retro 27Dec2003
+extern int hasForceFeedback; // Retro 27Dec2003
 
-void SetThrottleAndRudderBars(C_Base* control);	// Retro 17Jan2004
+void SetThrottleAndRudderBars(C_Base* control); // Retro 17Jan2004
 
 /************************************************************************/
-//	Retro Macro/Define definitions
+// Retro Macro/Define definitions
 /************************************************************************/
-#define SATURATION_NONE -1			// no axis saturation
+#define SATURATION_NONE -1 // no axis saturation
 extern int g_nSaturationSmall;
 extern int g_nSaturationMedium;
 extern int g_nSaturationLarge;
@@ -103,10 +103,10 @@ extern int g_nMouseWheelSensMin;
 extern int g_nKeyPOVSensMax;
 extern int g_nKeyPOVSensMin;
 
-//	macro out of soundtab.cpp
+// macro out of soundtab.cpp
 #define RESCALE(in,inmin,inmax,outmin,outmax) ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin)
 /************************************************************************/
-//	Retro Macro/Define definitions end
+// Retro Macro/Define definitions end
 /************************************************************************/
 
 //defined in this file
@@ -186,7 +186,7 @@ void RecenterJoystickCB(long, short hittype, C_Base *)
 // Retro
 ///////////**************************************/////////////////
 extern AxisMapping AxisMap;
-extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8];	/* '8' is defined by dinput: 8 axis maximum per device */
+extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8]; /* '8' is defined by dinput: 8 axis maximum per device */
 extern void SetupGameAxis();
 extern int CheckForForceFeedback(const int theJoyIndex);
 extern GameAxisSetup_t AxisSetup[AXIS_MAX];
@@ -208,34 +208,34 @@ typedef struct
 
 UIInputStuff_t UIInputStuff[AXIS_MAX] =
 {
-    //	  InGameAxis			Axis Listbox					Value Bar						Deadzone Listbox						Saturation Listbox				Reverse Button						DeviceAxis Struct
-    { AXIS_PITCH,			0,								SETUP_ADVANCED_PITCH_VAL,		SETUP_ADVANCED_PITCH_DEADZONE,			SETUP_ADVANCED_SAT_PITCH,		0,									&AxisMap.Pitch },
-    { AXIS_ROLL,			0,								SETUP_ADVANCED_BANK_VAL,		SETUP_ADVANCED_BANK_DEADZONE,			SETUP_ADVANCED_SAT_BANK,		0,									&AxisMap.Bank },
-    { AXIS_FOV,				SETUP_ADVANCED_FOV,				SETUP_ADVANCED_FOV_VAL,			0,										SETUP_ADVANCED_SAT_FOV,			SETUP_ADVANCED_REVERSE_FOV,			&AxisMap.FOV },
-    { AXIS_YAW,				SETUP_ADVANCED_RUDDER_AXIS,		SETUP_ADVANCED_RUDDER_VAL,		SETUP_ADVANCED_RUDDER_AXIS_DEADZONE,	SETUP_ADVANCED_SAT_YAW,			SETUP_ADVANCED_REVERSE_RUDDER,		&AxisMap.Yaw },
-    { AXIS_THROTTLE,		SETUP_ADVANCED_THROTTLE_AXIS,	SETUP_ADVANCED_THROTTLE_VAL,	0,										SETUP_ADVANCED_SAT_THROTTLE,	0,									&AxisMap.Throttle },
-    { AXIS_THROTTLE2,		SETUP_ADVANCED_THROTTLE2_AXIS,	SETUP_ADVANCED_THROTTLE2_VAL,	0,										SETUP_ADVANCED_SAT_THROTTLE2,	0,									&AxisMap.Throttle2 },
-    { AXIS_TRIM_ROLL,		SETUP_ADVANCED_AILERON_TRIM,	SETUP_ADVANCED_BANK_TRIM_VAL,	SETUP_ADVANCED_AILERON_TRIM_DEADZONE,	SETUP_ADVANCED_SAT_BANKTRIM,	SETUP_ADVANCED_REVERSE_BANK_TRIM,	&AxisMap.BankTrim },
-    { AXIS_TRIM_PITCH,		SETUP_ADVANCED_TRIM_PITCH,		SETUP_ADVANCED_PITCH_TRIM_VAL,	SETUP_ADVANCED_TRIM_PITCH_DEADZONE,		SETUP_ADVANCED_SAT_PITCHTRIM,	SETUP_ADVANCED_REVERSE_PITCH_TRIM,	&AxisMap.PitchTrim },
-    { AXIS_TRIM_YAW,		SETUP_ADVANCED_TRIM_YAW,		SETUP_ADVANCED_YAW_TRIM_VAL,	SETUP_ADVANCED_TRIM_YAW_DEADZONE,		SETUP_ADVANCED_SAT_YAWTRIM,		SETUP_ADVANCED_REVERSE_YAW_TRIM,	&AxisMap.YawTrim },
-    { AXIS_BRAKE_LEFT,		SETUP_ADVANCED_BRAKE_LEFT,		SETUP_ADVANCED_BRAKE_LEFT_VAL,	0,										SETUP_ADVANCED_SAT_BRAKELEFT,	SETUP_ADVANCED_REVERSE_BRAKE_LEFT,	&AxisMap.BrakeLeft },
-    //	{ AXIS_BRAKE_RIGHT,		SETUP_ADVANCED_BRAKE_RIGHT,		SETUP_ADVANCED_BRAKE_RIGHT_VAL,	0,										SETUP_ADVANCED_SAT_BRAKERIGHT,	SETUP_ADVANCED_REVERSE_BRAKE_RIGHT,	&AxisMap.BrakeRight },
-    { AXIS_ANT_ELEV,		SETUP_ADVANCED_ANT_ELEV,		SETUP_ADVANCED_ANT_ELEV_VAL,	SETUP_ADVANCED_ANT_ELEV_DEADZONE,		SETUP_ADVANCED_SAT_ANT_ELEV,	SETUP_ADVANCED_REVERSE_ANT_ELEV,	&AxisMap.AntElev },
-    { AXIS_CURSOR_X,		SETUP_ADVANCED_CURSOR_X,		SETUP_ADVANCED_CURSOR_X_VAL,	SETUP_ADVANCED_CURSOR_X_DEADZONE,		SETUP_ADVANCED_SAT_CURSOR_X,	SETUP_ADVANCED_REVERSE_CURSOR_X,	&AxisMap.CursorX },
-    { AXIS_CURSOR_Y,		SETUP_ADVANCED_CURSOR_Y,		SETUP_ADVANCED_CURSOR_Y_VAL,	SETUP_ADVANCED_CURSOR_Y_DEADZONE,		SETUP_ADVANCED_SAT_CURSOR_Y,	SETUP_ADVANCED_REVERSE_CURSOR_Y,	&AxisMap.CursorY },
-    { AXIS_RANGE_KNOB,		SETUP_ADVANCED_RANGE_KNOB,		SETUP_ADVANCED_RANGE_KNOB_VAL,	SETUP_ADVANCED_RANGE_KNOB_DEADZONE,		SETUP_ADVANCED_SAT_RNG_KNOB,	SETUP_ADVANCED_REVERSE_RANGE_KNOB,	&AxisMap.RngKnob },
-    { AXIS_COMM_VOLUME_1,	SETUP_ADVANCED_COMM1_VOL,		SETUP_ADVANCED_COMM1_VOL_VAL,	0,										SETUP_ADVANCED_SAT_COMM1_VOL,	SETUP_ADVANCED_REVERSE_COMM1_VOL,	&AxisMap.Comm1Vol },
-    { AXIS_COMM_VOLUME_2,	SETUP_ADVANCED_COMM2_VOL,		SETUP_ADVANCED_COMM2_VOL_VAL,	0,										SETUP_ADVANCED_SAT_COMM2_VOL,	SETUP_ADVANCED_REVERSE_COMM2_VOL,	&AxisMap.Comm2Vol },
-    { AXIS_MSL_VOLUME,		SETUP_ADVANCED_MSL_VOL,			SETUP_ADVANCED_MSL_VOL_VAL,		0,										SETUP_ADVANCED_SAT_MSL_VOL,		SETUP_ADVANCED_REVERSE_MSL_VOL,		&AxisMap.MSLVol },
-    { AXIS_THREAT_VOLUME,	SETUP_ADVANCED_THREAT_VOL,		SETUP_ADVANCED_THREAT_VOL_VAL,	0,										SETUP_ADVANCED_SAT_THREAT_VOL,	SETUP_ADVANCED_REVERSE_THREAT_VOL,	&AxisMap.ThreatVol },
-    { AXIS_HUD_BRIGHTNESS,	SETUP_ADVANCED_HUD_BRIGHT,		SETUP_ADVANCED_HUD_BRIGHT_VAL,	0,										SETUP_ADVANCED_SAT_HUD_BRT,		SETUP_ADVANCED_REVERSE_HUD_BRIGHT,	&AxisMap.HudBrt },
-    { AXIS_RET_DEPR,		SETUP_ADVANCED_RET_DEPR,		SETUP_ADVANCED_RET_DEPR_VAL,	0,										SETUP_ADVANCED_SAT_RET_DEPR,	SETUP_ADVANCED_REVERSE_RET_DEPR,	&AxisMap.RetDepr },
-    { AXIS_ZOOM,			SETUP_ADVANCED_ZOOM,			SETUP_ADVANCED_ZOOM_VAL,		0,										SETUP_ADVANCED_SAT_ZOOM,		SETUP_ADVANCED_REVERSE_ZOOM,		&AxisMap.Zoom },
-    { AXIS_INTERCOM_VOLUME,	SETUP_ADVANCED_INTERCOM_VOL,	SETUP_ADVANCED_INTERCOM_VOL_VAL, 0,										SETUP_ADVANCED_SAT_INTERCOM_VOL, SETUP_ADVANCED_REVERSE_INTERCOM_VOL, &AxisMap.InterComVol },
+    //   InGameAxis Axis Listbox Value Bar Deadzone Listbox Saturation Listbox Reverse Button DeviceAxis Struct
+    { AXIS_PITCH, 0, SETUP_ADVANCED_PITCH_VAL, SETUP_ADVANCED_PITCH_DEADZONE, SETUP_ADVANCED_SAT_PITCH, 0, &AxisMap.Pitch },
+    { AXIS_ROLL, 0, SETUP_ADVANCED_BANK_VAL, SETUP_ADVANCED_BANK_DEADZONE, SETUP_ADVANCED_SAT_BANK, 0, &AxisMap.Bank },
+    { AXIS_FOV, SETUP_ADVANCED_FOV, SETUP_ADVANCED_FOV_VAL, 0, SETUP_ADVANCED_SAT_FOV, SETUP_ADVANCED_REVERSE_FOV, &AxisMap.FOV },
+    { AXIS_YAW, SETUP_ADVANCED_RUDDER_AXIS, SETUP_ADVANCED_RUDDER_VAL, SETUP_ADVANCED_RUDDER_AXIS_DEADZONE, SETUP_ADVANCED_SAT_YAW, SETUP_ADVANCED_REVERSE_RUDDER, &AxisMap.Yaw },
+    { AXIS_THROTTLE, SETUP_ADVANCED_THROTTLE_AXIS, SETUP_ADVANCED_THROTTLE_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE, 0, &AxisMap.Throttle },
+    { AXIS_THROTTLE2, SETUP_ADVANCED_THROTTLE2_AXIS, SETUP_ADVANCED_THROTTLE2_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE2, 0, &AxisMap.Throttle2 },
+    { AXIS_TRIM_ROLL, SETUP_ADVANCED_AILERON_TRIM, SETUP_ADVANCED_BANK_TRIM_VAL, SETUP_ADVANCED_AILERON_TRIM_DEADZONE, SETUP_ADVANCED_SAT_BANKTRIM, SETUP_ADVANCED_REVERSE_BANK_TRIM, &AxisMap.BankTrim },
+    { AXIS_TRIM_PITCH, SETUP_ADVANCED_TRIM_PITCH, SETUP_ADVANCED_PITCH_TRIM_VAL, SETUP_ADVANCED_TRIM_PITCH_DEADZONE, SETUP_ADVANCED_SAT_PITCHTRIM, SETUP_ADVANCED_REVERSE_PITCH_TRIM, &AxisMap.PitchTrim },
+    { AXIS_TRIM_YAW, SETUP_ADVANCED_TRIM_YAW, SETUP_ADVANCED_YAW_TRIM_VAL, SETUP_ADVANCED_TRIM_YAW_DEADZONE, SETUP_ADVANCED_SAT_YAWTRIM, SETUP_ADVANCED_REVERSE_YAW_TRIM, &AxisMap.YawTrim },
+    { AXIS_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT_VAL, 0, SETUP_ADVANCED_SAT_BRAKELEFT, SETUP_ADVANCED_REVERSE_BRAKE_LEFT, &AxisMap.BrakeLeft },
+    // { AXIS_BRAKE_RIGHT, SETUP_ADVANCED_BRAKE_RIGHT, SETUP_ADVANCED_BRAKE_RIGHT_VAL, 0, SETUP_ADVANCED_SAT_BRAKERIGHT, SETUP_ADVANCED_REVERSE_BRAKE_RIGHT, &AxisMap.BrakeRight },
+    { AXIS_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV_VAL, SETUP_ADVANCED_ANT_ELEV_DEADZONE, SETUP_ADVANCED_SAT_ANT_ELEV, SETUP_ADVANCED_REVERSE_ANT_ELEV, &AxisMap.AntElev },
+    { AXIS_CURSOR_X, SETUP_ADVANCED_CURSOR_X, SETUP_ADVANCED_CURSOR_X_VAL, SETUP_ADVANCED_CURSOR_X_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_X, SETUP_ADVANCED_REVERSE_CURSOR_X, &AxisMap.CursorX },
+    { AXIS_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y_VAL, SETUP_ADVANCED_CURSOR_Y_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_Y, SETUP_ADVANCED_REVERSE_CURSOR_Y, &AxisMap.CursorY },
+    { AXIS_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB_VAL, SETUP_ADVANCED_RANGE_KNOB_DEADZONE, SETUP_ADVANCED_SAT_RNG_KNOB, SETUP_ADVANCED_REVERSE_RANGE_KNOB, &AxisMap.RngKnob },
+    { AXIS_COMM_VOLUME_1, SETUP_ADVANCED_COMM1_VOL, SETUP_ADVANCED_COMM1_VOL_VAL, 0, SETUP_ADVANCED_SAT_COMM1_VOL, SETUP_ADVANCED_REVERSE_COMM1_VOL, &AxisMap.Comm1Vol },
+    { AXIS_COMM_VOLUME_2, SETUP_ADVANCED_COMM2_VOL, SETUP_ADVANCED_COMM2_VOL_VAL, 0, SETUP_ADVANCED_SAT_COMM2_VOL, SETUP_ADVANCED_REVERSE_COMM2_VOL, &AxisMap.Comm2Vol },
+    { AXIS_MSL_VOLUME, SETUP_ADVANCED_MSL_VOL, SETUP_ADVANCED_MSL_VOL_VAL, 0, SETUP_ADVANCED_SAT_MSL_VOL, SETUP_ADVANCED_REVERSE_MSL_VOL, &AxisMap.MSLVol },
+    { AXIS_THREAT_VOLUME, SETUP_ADVANCED_THREAT_VOL, SETUP_ADVANCED_THREAT_VOL_VAL, 0, SETUP_ADVANCED_SAT_THREAT_VOL, SETUP_ADVANCED_REVERSE_THREAT_VOL, &AxisMap.ThreatVol },
+    { AXIS_HUD_BRIGHTNESS, SETUP_ADVANCED_HUD_BRIGHT, SETUP_ADVANCED_HUD_BRIGHT_VAL, 0, SETUP_ADVANCED_SAT_HUD_BRT, SETUP_ADVANCED_REVERSE_HUD_BRIGHT, &AxisMap.HudBrt },
+    { AXIS_RET_DEPR, SETUP_ADVANCED_RET_DEPR, SETUP_ADVANCED_RET_DEPR_VAL, 0, SETUP_ADVANCED_SAT_RET_DEPR, SETUP_ADVANCED_REVERSE_RET_DEPR, &AxisMap.RetDepr },
+    { AXIS_ZOOM, SETUP_ADVANCED_ZOOM, SETUP_ADVANCED_ZOOM_VAL, 0, SETUP_ADVANCED_SAT_ZOOM, SETUP_ADVANCED_REVERSE_ZOOM, &AxisMap.Zoom },
+    { AXIS_INTERCOM_VOLUME, SETUP_ADVANCED_INTERCOM_VOL, SETUP_ADVANCED_INTERCOM_VOL_VAL, 0, SETUP_ADVANCED_SAT_INTERCOM_VOL, SETUP_ADVANCED_REVERSE_INTERCOM_VOL, &AxisMap.InterComVol },
 };
 
 /************************************************************************/
-//	Yuck.. you know, this should actually go into the listbox class methinks
+// Yuck.. you know, this should actually go into the listbox class methinks
 /************************************************************************/
 bool SetListBoxItemData(C_ListBox* theLB, const long ID, const short theItemIndex, const long theItemData)
 {
@@ -252,9 +252,9 @@ bool SetListBoxItemData(C_ListBox* theLB, const long ID, const short theItemInde
 }
 
 /************************************************************************/
-//	Yuck.. you know, this should actually go into the listbox class methinks
-//	return values only valid if >= -1 (of course THAT should NOT get into
-//	the class in anyone volunteers to do that)
+// Yuck.. you know, this should actually go into the listbox class methinks
+// return values only valid if >= -1 (of course THAT should NOT get into
+// the class in anyone volunteers to do that)
 /************************************************************************/
 long GetListBoxItemData(C_ListBox* theLB, const int theItemIndex, const long theIndex = 0)
 {
@@ -275,7 +275,7 @@ long GetListBoxItemData(C_ListBox* theLB, const int theItemIndex, const long the
             return item->Label_->GetUserNumber(theItemIndex);
     }
 
-    return -2;	// return values only valid if >= -1
+    return -2; // return values only valid if >= -1
 }
 
 /************************************************************************/
@@ -324,8 +324,8 @@ void SaveAxisMappings(C_Window* win)
 }
 
 /************************************************************************/
-//	This callback function doesn´t do much, it just hides the other
-//	tabs
+// This callback function doesn´t do much, it just hides the other
+// tabs
 /************************************************************************/
 void SetupControlTabsCB(long, short hittype, C_Base *control)
 {
@@ -348,8 +348,8 @@ void SetupControlTabsCB(long, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	Called when the user presses either the 'Apply' or the 'OK' button
-//	in the advanced controller sheet
+// Called when the user presses either the 'Apply' or the 'OK' button
+// in the advanced controller sheet
 /************************************************************************/
 void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 {
@@ -357,7 +357,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
         return;
 
     /* pointer to mommy */
-    C_Window	*win;
+    C_Window *win;
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
@@ -368,7 +368,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     if (!win) return;
 
     /* array of pointers to all axis listboxes in this sheet */
-    C_ListBox	*listbox;
+    C_ListBox *listbox;
 
     // check contents of axis listboxes and saves..
     SaveAxisMappings(win);
@@ -391,26 +391,26 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
             if (index >= 0)
             {
-                switch (index)	// not every axis used the deadzone though.. only bipolar ones !
+                switch (index) // not every axis used the deadzone though.. only bipolar ones !
                 {
                     case SETUP_ADVANCED_DZ_SMALL:
                         UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneSmall;
-                        break;	// 1%
+                        break; // 1%
 
                     default:
-                        ShiAssert(false);	// fallthrough intentional to give me 5% deadzone in these cases..
+                        ShiAssert(false); // fallthrough intentional to give me 5% deadzone in these cases..
 
                     case SETUP_ADVANCED_DZ_MEDIUM:
                         UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneMedium;
-                        break;	// 5%
+                        break; // 5%
 
                     case SETUP_ADVANCED_DZ_LARGE:
                         UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneLarge;
-                        break;	// 10%
+                        break; // 10%
 
                     case SETUP_ADVANCED_DZ_HUGE:
                         UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneHuge;
-                        break;	// 50%
+                        break; // 50%
                 }
             }
         }
@@ -467,7 +467,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     C_Button* button = (C_Button*)0;
     // check 'reversed' buttons..
 
-    for (int j = 0; j < AXIS_MAX; j++)	// Retro 15Jan2004
+    for (int j = 0; j < AXIS_MAX; j++) // Retro 15Jan2004
     {
         if (UIInputStuff[j].ReverseBtn == 0)
             continue;
@@ -505,8 +505,8 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	Called when the user presses 'OK'. Calls the Apply CB to make changes
-//	to mappings, then shut down the window
+// Called when the user presses 'OK'. Calls the Apply CB to make changes
+// to mappings, then shut down the window
 /************************************************************************/
 void AdvancedControlOKCB(long ID, short hittype, C_Base *control)
 {
@@ -521,9 +521,9 @@ void AdvancedControlOKCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	Called when the user presses 'Cancel' (the widget in the upper right
-//	corner. Just leaves the window without making changes (provided the
-//	user didn´t press APPLY first..
+// Called when the user presses 'Cancel' (the widget in the upper right
+// corner. Just leaves the window without making changes (provided the
+// user didn´t press APPLY first..
 /************************************************************************/
 void AdvancedControlCancelCB(long ID, short hittype, C_Base *control)
 {
@@ -535,7 +535,7 @@ void AdvancedControlCancelCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	"Enable Mouse Look" Callback function
+// "Enable Mouse Look" Callback function
 /************************************************************************/
 void MouseLookCB(long ID, short hittype, C_Base *control)
 {
@@ -548,7 +548,7 @@ void MouseLookCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	"Enable Touch-buddy" callback function
+// "Enable Touch-buddy" callback function
 /************************************************************************/
 void TouchBuddyCB(long ID, short hittype, C_Base *control)
 {
@@ -562,9 +562,9 @@ void TouchBuddyCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	"Enable Force Feedback" callback function. If no FFB device is present
-//	(or no FFB device mapped as flight control device) then the button
-//	stays always "unlit"
+// "Enable Force Feedback" callback function. If no FFB device is present
+// (or no FFB device mapped as flight control device) then the button
+// stays always "unlit"
 /************************************************************************/
 void EnableFFBCB(long ID, short hittype, C_Base *control)
 {
@@ -581,10 +581,10 @@ void EnableFFBCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	Retro 14Feb2004
-//	Toggle Clickable Mode in 3d cockpit
-//	FALSE if player should enter 3d pit in 'panning mode' (ie mouse slews the
-//	view), TRUE if mouse can manipulate cockpit controls
+// Retro 14Feb2004
+// Toggle Clickable Mode in 3d cockpit
+// FALSE if player should enter 3d pit in 'panning mode' (ie mouse slews the
+// view), TRUE if mouse can manipulate cockpit controls
 /************************************************************************/
 void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
 {
@@ -598,9 +598,9 @@ void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	"Enable 2D TrackIR" callback function. If no TIR present, or if NP
-//	software was not active at startup, the button stays always unlit
-//	and the user won´t be able to make a change to that option.
+// "Enable 2D TrackIR" callback function. If no TIR present, or if NP
+// software was not active at startup, the button stays always unlit
+// and the user won´t be able to make a change to that option.
 /************************************************************************/
 void TrackIR2dCB(long ID, short hittype, C_Base *control)
 {
@@ -617,9 +617,9 @@ void TrackIR2dCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	"Enable 3D TrackIR" callback function. If no TIR present, or if NP
-//	software was not active at startup, the button stays always unlit
-//	and the user won´t be able to make a change to that option.
+// "Enable 3D TrackIR" callback function. If no TIR present, or if NP
+// software was not active at startup, the button stays always unlit
+// and the user won´t be able to make a change to that option.
 /************************************************************************/
 void TrackIR3dCB(long ID, short hittype, C_Base *control)
 {
@@ -652,7 +652,7 @@ void AxisShapingCB(long ID, short hittype, C_Base *control)
 
             if (result == TRUE)
                 PlayerOptions.SetAxisShaping(true);
-            else	// don´t change the options but set the button back to 'unlit'
+            else // don´t change the options but set the button back to 'unlit'
                 button->SetState(C_STATE_0);
         }
         else
@@ -661,8 +661,8 @@ void AxisShapingCB(long ID, short hittype, C_Base *control)
 
 /************************************************************************/
 // Retro 15Jan2004
-//	Callback function for the mouselook axis sensitivity slider
-//	this applies equally to mouse x and mouse y axis
+// Callback function for the mouselook axis sensitivity slider
+// this applies equally to mouse x and mouse y axis
 /************************************************************************/
 void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
 {
@@ -698,7 +698,7 @@ void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
 
 /************************************************************************/
 // Retro 17Jan2004
-//	Callback function for the mousewheel (z) axis sensitivity slider
+// Callback function for the mousewheel (z) axis sensitivity slider
 /************************************************************************/
 void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
 {
@@ -730,7 +730,7 @@ void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
 
 /************************************************************************/
 // Retro 18Jan2004
-//	Callback function for the POV / Keyboard panning sensitivity slider
+// Callback function for the POV / Keyboard panning sensitivity slider
 /************************************************************************/
 void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 {
@@ -753,8 +753,8 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 }
 
 /************************************************************************/
-//	Marks already mapped axis so that they don´t get drawn in other
-//	axis listboxes than the one they are mapped to
+// Marks already mapped axis so that they don´t get drawn in other
+// axis listboxes than the one they are mapped to
 /************************************************************************/
 void MarkMappedAxis()
 {
@@ -781,8 +781,8 @@ void MarkMappedAxis()
             }
         }
 
-        //	flight control axis are not selectable in the advanced control
-        //	screen, however they are of course mapped.
+        // flight control axis are not selectable in the advanced control
+        // screen, however they are of course mapped.
         if (DIAxisNames[i].DXDeviceID == AxisMap.FlightControlDevice)
         {
             if (DIAxisNames[i].DXAxisID == AxisMap.Pitch.Axis)
@@ -801,10 +801,10 @@ void MarkMappedAxis()
 }
 
 /************************************************************************/
-//	Fills axis listboxes with only unused axis. Plus the one axis they are
-//	mapped to of course.
-//	the listbox itemdata contains the index of this axis in the array of
-//	enumerated axis. I need this for saving.
+// Fills axis listboxes with only unused axis. Plus the one axis they are
+// mapped to of course.
+// the listbox itemdata contains the index of this axis in the array of
+// enumerated axis. I need this for saving.
 /************************************************************************/
 void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
 {
@@ -827,8 +827,8 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
                     theLB->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_INVISIBLE);
                 }
 
-                //	this one is the axis that is mapped to the axis the listbox is about
-                //	it is of course mapped so we have to do some fancy coding..
+                // this one is the axis that is mapped to the axis the listbox is about
+                // it is of course mapped so we have to do some fancy coding..
                 if (DIAxisNames[i].DXDeviceID == UIInputStuff[theUIAxisIndex].theDeviceAxis->Device)
                 {
                     if (DIAxisNames[i].DXAxisID == UIInputStuff[theUIAxisIndex].theDeviceAxis->Axis)
@@ -851,16 +851,16 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
 }
 
 /************************************************************************/
-//	Clear all axis listboxes and refill them. Only axis that are unmapped
-//	(plus the one that´s mapped to this axis) get listed.
+// Clear all axis listboxes and refill them. Only axis that are unmapped
+// (plus the one that´s mapped to this axis) get listed.
 //
-//	SHOULD ONLY BE DONE ONCE !!!!!!!!!!!!!!
+// SHOULD ONLY BE DONE ONCE !!!!!!!!!!!!!!
 /************************************************************************/
 void PopulateAllListBoxes(C_Window* win)
 {
     if (win)
     {
-        C_ListBox	*listbox;
+        C_ListBox *listbox;
 
         for (int UIAxisIndex = 0; UIAxisIndex < AXIS_MAX; UIAxisIndex++)
         {
@@ -899,15 +899,15 @@ void PopulateAllListBoxes(C_Window* win)
 }
 
 /************************************************************************/
-//	Clear all axis listboxes and refill them. Only axis that are unmapped
-//	(plus the one that´s mapped to this axis) get listed.
+// Clear all axis listboxes and refill them. Only axis that are unmapped
+// (plus the one that´s mapped to this axis) get listed.
 //
 /************************************************************************/
 void RePopulateAllListBoxes(C_Window* win)
 {
     if (win)
     {
-        C_ListBox	*listbox;
+        C_ListBox *listbox;
 
         for (int UIAxisIndex = 0; UIAxisIndex < AXIS_MAX; UIAxisIndex++)
         {
@@ -926,7 +926,7 @@ void RePopulateAllListBoxes(C_Window* win)
                     {
                         if (DIAxisNames[i].isMapped == false)
                         {
-                            //							SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
+                            // SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
                             listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_ENABLED);
                         }
                         else
@@ -934,15 +934,15 @@ void RePopulateAllListBoxes(C_Window* win)
                             listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_INVISIBLE);
                         }
 
-                        //	this one is the axis that is mapped to the axis the listbox is about
-                        //	it is of course mapped so we have to do some fancy coding..
+                        // this one is the axis that is mapped to the axis the listbox is about
+                        // it is of course mapped so we have to do some fancy coding..
                         if (DIAxisNames[i].DXDeviceID == UIInputStuff[UIAxisIndex].theDeviceAxis->Device)
                         {
                             if (DIAxisNames[i].DXAxisID == UIInputStuff[UIAxisIndex].theDeviceAxis->Axis)
                             {
                                 // Add the axis and hilight it
                                 listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_ENABLED);
-                                //								SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
+                                // SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
                                 listbox->SetValue(i + SIM_JOYSTICK1);
                                 ShiAssert(DIAxisNames[i].isMapped == true);
                             }
@@ -965,14 +965,14 @@ void RePopulateAllListBoxes(C_Window* win)
 }
 
 /************************************************************************/
-//	Shared callback function for the axis listboxes
-//	I find out in what listbox I am by querying the SECOND itemdata
-//	of the 'keyboard' listbox entry (which ALWAYS is at index 1)
-//	then I look if an axis actually changed (or if the user clicked on the
-//	currently mapped one, and only then I handle the whole housekeeping
-//	stuff like setting 'activation' flags etc. At the end, I cause ALL
-//	axis listboxes to refresh so that only currently unmapped listboxes
-//	are shown.
+// Shared callback function for the axis listboxes
+// I find out in what listbox I am by querying the SECOND itemdata
+// of the 'keyboard' listbox entry (which ALWAYS is at index 1)
+// then I look if an axis actually changed (or if the user clicked on the
+// currently mapped one, and only then I handle the whole housekeeping
+// stuff like setting 'activation' flags etc. At the end, I cause ALL
+// axis listboxes to refresh so that only currently unmapped listboxes
+// are shown.
 /************************************************************************/
 void AxisChangeCB(long, short hittype, C_Base *me)
 {
@@ -988,7 +988,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         return;
 
     /* pointer to mommy */
-    C_Window	*win;
+    C_Window *win;
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
@@ -1003,18 +1003,18 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     // looking in the keyboard itemdata for the index of the Axis I am in..
     int i = GetListBoxItemData(listbox, 1, 1);
 
-    if (i == -2)	// whoops, error in the above routine..
+    if (i == -2) // whoops, error in the above routine..
         return;
 
     // now I know in which axis box I am !
     long index = GetListBoxItemData(listbox, 0);
 
-    if (index == -2)	// whoops, error in the above routine..
+    if (index == -2) // whoops, error in the above routine..
         return;
 
     if ((index == -1) && (UIInputStuff[i].theDeviceAxis->Device == -1) && (UIInputStuff[i].theDeviceAxis->Axis == -1))
     {
-        return;	// no change
+        return; // no change
     }
     else if (index == -1)
     {
@@ -1031,7 +1031,7 @@ void AxisChangeCB(long, short hittype, C_Base *me)
                 UIInputStuff[i].theDeviceAxis->Device = -1;
                 UIInputStuff[i].theDeviceAxis->Axis = -1;
 
-                AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0);	// Retro 27Mar2004
+                AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0); // Retro 27Mar2004
 
                 RePopulateAllListBoxes(win);
             }
@@ -1059,8 +1059,8 @@ void AxisChangeCB(long, short hittype, C_Base *me)
                     (UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE2_AXIS))
                 {
                     // NEED TO RESET THE OLD NAME HERE !!!
-                    RePopulateAllListBoxes(win);	// no change !
-                    return;	// tadaa !
+                    RePopulateAllListBoxes(win); // no change !
+                    return; // tadaa !
                 }
             }
 
@@ -1080,14 +1080,14 @@ void AxisChangeCB(long, short hittype, C_Base *me)
             UIInputStuff[i].theDeviceAxis->Device = DIAxisNames[index].DXDeviceID;
             UIInputStuff[i].theDeviceAxis->Axis = DIAxisNames[index].DXAxisID;
 
-            AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0);	// Retro 27Mar2004
+            AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0); // Retro 27Mar2004
 
             RePopulateAllListBoxes(win);
             return;
         }
     }
 
-    ShiAssert(false);	// should never come here
+    ShiAssert(false); // should never come here
 }
 
 /************************************************************************/
@@ -1100,10 +1100,10 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         return;
 
     /* pointer to mommy */
-    C_Window	*win;
+    C_Window *win;
 
     /* array of pointers to all axis listboxes in this sheet */
-    C_ListBox	*listbox;
+    C_ListBox *listbox;
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
@@ -1131,13 +1131,13 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         {
             int theDead = UIInputStuff[j].theDeviceAxis->Deadzone;
 
-            if (theDead <= g_nDeadzoneSmall)			// 1%
+            if (theDead <= g_nDeadzoneSmall) // 1%
                 listbox->SetValue(SETUP_ADVANCED_DZ_SMALL);
-            else if (theDead <= g_nDeadzoneMedium)		// 5%
+            else if (theDead <= g_nDeadzoneMedium) // 5%
                 listbox->SetValue(SETUP_ADVANCED_DZ_MEDIUM);
-            else if (theDead <= g_nDeadzoneLarge)		// 10%
+            else if (theDead <= g_nDeadzoneLarge) // 10%
                 listbox->SetValue(SETUP_ADVANCED_DZ_LARGE);
-            else										// whatever (greater than 10%)
+            else // whatever (greater than 10%)
                 listbox->SetValue(SETUP_ADVANCED_DZ_HUGE);
         }
         else
@@ -1159,23 +1159,23 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         {
             int theSat = UIInputStuff[j].theDeviceAxis->Saturation;
 
-            if (theSat == SATURATION_NONE)					// no saturation. this value is -1 !!!! (do not use unsigned with this !)
+            if (theSat == SATURATION_NONE) // no saturation. this value is -1 !!!! (do not use unsigned with this !)
                 listbox->SetValue(SETUP_ADVANCED_SAT_NONE);
-            else if (theSat >= g_nSaturationSmall)			// 1% saturation, I 'borrowed' the DZ item for this
+            else if (theSat >= g_nSaturationSmall) // 1% saturation, I 'borrowed' the DZ item for this
                 listbox->SetValue(SETUP_ADVANCED_DZ_SMALL);
             else if (theSat >= g_nSaturationMedium)
                 listbox->SetValue(SETUP_ADVANCED_DZ_MEDIUM);// 5% saturation, I 'borrowed' the DZ item for this
-            else	// whatever (smaller than 9500) (MEDIUM)
-                listbox->SetValue(SETUP_ADVANCED_DZ_LARGE);	// 10% saturation, I 'borrowed' the DZ item for this
+            else // whatever (smaller than 9500) (MEDIUM)
+                listbox->SetValue(SETUP_ADVANCED_DZ_LARGE); // 10% saturation, I 'borrowed' the DZ item for this
         }
         else
             ShiAssert(false);
     }
 
-    C_Button	*button;
+    C_Button *button;
 
     // 'reversed' buttons..
-    for (int j = 0; j < AXIS_MAX; j++)	// Retro 15Jan2004
+    for (int j = 0; j < AXIS_MAX; j++) // Retro 15Jan2004
     {
 
         if (UIInputStuff[j].ReverseBtn == 0)
@@ -1201,7 +1201,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button != NULL)
     {
-        button->SetState(C_STATE_0);	// 'unpress' this tab
+        button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
     }
     else
@@ -1211,7 +1211,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button != NULL)
     {
-        button->SetState(C_STATE_0);	// 'unpress' this tab
+        button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
     }
     else
@@ -1221,7 +1221,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button != NULL)
     {
-        button->SetState(C_STATE_0);	// 'unpress' this tab
+        button->SetState(C_STATE_0); // 'unpress' this tab
         button->SetCallback(SetupControlTabsCB);
     }
     else
@@ -1231,7 +1231,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     if (button != NULL)
     {
-        button->SetState(C_STATE_1);	// fudging the 'General' tab to be pressed
+        button->SetState(C_STATE_1); // fudging the 'General' tab to be pressed
         button->SetCallback(SetupControlTabsCB);
 
         //make sure general tab is selected on entering
@@ -1339,12 +1339,12 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         ShiAssert(false);
 
     // Retro 14Feb2004 - this button governs if mouselook or 3d clickable cockpit
-    //	is activated when entering the 3d cockpit the first time.
+    // is activated when entering the 3d cockpit the first time.
     button = (C_Button*)win->FindControl(SETUP_ADVANCED_3DCOCKPIT_DEFAULT);
 
     if (button != NULL)
     {
-        if (PlayerOptions.GetClickablePitMode())	// if TRUE then we´re in 'clickable mode'
+        if (PlayerOptions.GetClickablePitMode()) // if TRUE then we´re in 'clickable mode'
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -1448,25 +1448,25 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // Retro 18Jan2004 ends
 
     // register callbacks for the buttons found on this sheet..
-#define NO_EXTRA_WIDGETS	// Retro 27Mar2004
+#define NO_EXTRA_WIDGETS // Retro 27Mar2004
 
-    button = (C_Button*)win->FindControl(AAPPLY);	// this is actually the OK button
+    button = (C_Button*)win->FindControl(AAPPLY); // this is actually the OK button
 
     if (button)
         button->SetCallback(AdvancedControlOKCB);
 
-#ifndef NO_EXTRA_WIDGETS	// Retro 27Mar2004
-    button = (C_Button*)win->FindControl(APPLY);	// the 'real' apply button
+#ifndef NO_EXTRA_WIDGETS // Retro 27Mar2004
+    button = (C_Button*)win->FindControl(APPLY); // the 'real' apply button
 
     if (button)
         button->SetCallback(AdvancedControlApplyCB);
 
-    button = (C_Button*)win->FindControl(CANCEL);	// the 'x' widget in the upper left corner
+    button = (C_Button*)win->FindControl(CANCEL); // the 'x' widget in the upper left corner
 
     if (button)
         button->SetCallback(AdvancedControlCancelCB);
 
-#endif	// NO_EXTRA_WIDGETS
+#endif // NO_EXTRA_WIDGETS
 
     // register callbacks for the axis listboxes..
     for (int j = 0; j < AXIS_MAX; j++)
@@ -1482,7 +1482,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
             ShiAssert(false);
     }
 
-    InitializeValueBars = 1;	// Retro 26Dec2003
+    InitializeValueBars = 1; // Retro 26Dec2003
 
     /* make it official */
     gMainHandler->ShowWindow(win);
@@ -1505,7 +1505,7 @@ void SetABDetentCB(long, short hittype, C_Base *)
     }
     else
     {
-        return;	// do nothing
+        return; // do nothing
     }
 }
 
@@ -1513,14 +1513,14 @@ void RefreshJoystickCB(long, short, C_Base *)
 {
 
     static SIM_FLOAT JoyXPrev, JoyYPrev, RudderPrev, ThrottlePrev, ABDetentPrev;
-    static SIM_FLOAT IdleCutoffPrev;	// Retro 1Feb2004
-    static DWORD ButtonPrev[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES], POVPrev;	// Retro 31Dec2003
+    static SIM_FLOAT IdleCutoffPrev; // Retro 1Feb2004
+    static DWORD ButtonPrev[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES], POVPrev; // Retro 31Dec2003
 
-    static int state = 1;	// Retro 26Dec2003
-    C_Bitmap	*bmap;
-    C_Window	*win;
-    C_Line		*line;
-    C_Button	*button;
+    static int state = 1; // Retro 26Dec2003
+    C_Bitmap *bmap;
+    C_Window *win;
+    C_Line *line;
+    C_Button *button;
 
     GetJoystickInput();
 
@@ -1530,16 +1530,16 @@ void RefreshJoystickCB(long, short, C_Base *)
         JoystickPlayEffect(JoyAutoCenter, 10000);
     }
 
-#define UPDATE_ALWAYS	// Retro 13Jan2004
+#define UPDATE_ALWAYS // Retro 13Jan2004
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
     if (win != NULL)
     {
-#ifndef UPDATE_ALWAYS	// Retro 13Jan2004
+#ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
         //test to see if joystick moved, if so update the control
-        if ((IO.analog[AXIS_ROLL].engrValue != JoyXPrev) || (IO.analog[AXIS_PITCH].engrValue != JoyYPrev) || InitializeValueBars)	// Retro 31Dec2003
+        if ((IO.analog[AXIS_ROLL].engrValue != JoyXPrev) || (IO.analog[AXIS_PITCH].engrValue != JoyYPrev) || InitializeValueBars) // Retro 31Dec2003
 #endif
         {
             bmap = (C_Bitmap *)win->FindControl(JOY_INDICATOR);
@@ -1547,19 +1547,19 @@ void RefreshJoystickCB(long, short, C_Base *)
             if (bmap != NULL)
             {
                 bmap->Refresh();
-                bmap->SetX((int)(JoyScale + IO.analog[AXIS_ROLL].engrValue * JoyScale));	// Retro 31Dec2003
-                bmap->SetY((int)(JoyScale + IO.analog[AXIS_PITCH].engrValue * JoyScale));	// Retro 31Dec2003
+                bmap->SetX((int)(JoyScale + IO.analog[AXIS_ROLL].engrValue * JoyScale)); // Retro 31Dec2003
+                bmap->SetY((int)(JoyScale + IO.analog[AXIS_PITCH].engrValue * JoyScale)); // Retro 31Dec2003
                 bmap->Refresh();
                 win->RefreshClient(1);
             }
         }
 
-        if (IO.AnalogIsUsed(AXIS_YAW))	// Retro 31Dec2003
+        if (IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
         {
-#ifndef UPDATE_ALWAYS	// Retro 13Jan2004
+#ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
             //test to see if rudder moved, if so update the control
-            if (((IO.analog[AXIS_YAW].engrValue != RudderPrev) || InitializeValueBars) && state)	// Retro 31Dec2003
+            if (((IO.analog[AXIS_YAW].engrValue != RudderPrev) || InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(RUDDER);
@@ -1567,7 +1567,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line != NULL)
                 {
                     line->Refresh();
-                    line->SetY((int)(Rudder.top + RudderScale - IO.analog[AXIS_YAW].engrValue * RudderScale + .5));	// Retro 31Dec2003
+                    line->SetY((int)(Rudder.top + RudderScale - IO.analog[AXIS_YAW].engrValue * RudderScale + .5)); // Retro 31Dec2003
 
                     if (line->GetY() < Rudder.top)
                         line->SetY(Rudder.top);
@@ -1581,11 +1581,11 @@ void RefreshJoystickCB(long, short, C_Base *)
             }
         }
 
-        if (IO.AnalogIsUsed(AXIS_THROTTLE))	// Retro 31Dec2003
+        if (IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
         {
             //test to see if throttle moved, if so update the control
-#ifndef UPDATE_ALWAYS	// Retro 13Jan2004
-            if (((IO.analog[AXIS_THROTTLE].engrValue != ThrottlePrev) || InitializeValueBars) && state)	// Retro 31Dec2003
+#ifndef UPDATE_ALWAYS // Retro 13Jan2004
+            if (((IO.analog[AXIS_THROTTLE].engrValue != ThrottlePrev) || InitializeValueBars) && state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(THROTTLE);
@@ -1593,7 +1593,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line != NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5)));	// Retro 31Dec2003
+                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
 
                     if (line->GetY() < Throttle.top)
                         line->SetY(Throttle.top);
@@ -1614,9 +1614,9 @@ void RefreshJoystickCB(long, short, C_Base *)
                 line->Refresh();
 
                 if (IO.AnalogIsUsed(AXIS_THROTTLE2))
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE2].ioVal / 15000.0F * ThrottleScale + .5)));	// Retro 31Dec2003
+                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE2].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
                 else
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5)));	// Retro 31Dec2003
+                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
 
                 if (line->GetY() < Throttle.top)
                     line->SetY(Throttle.top);
@@ -1630,9 +1630,9 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             // Retro 13Jan2004 end
 
-#ifndef UPDATE_ALWAYS	// Retro 13Jan2004
+#ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (ABDetentPrev != IO.analog[AXIS_THROTTLE].center || InitializeValueBars)	// Retro 31Dec2003
+            if (ABDetentPrev != IO.analog[AXIS_THROTTLE].center || InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(AB_DETENT);
@@ -1640,7 +1640,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line != NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].center / 15000.0F * ThrottleScale + .5)));	// Retro 31Dec2003
+                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].center / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
 
                     if (line->GetY() <= Throttle.top - 1)
                         line->SetY(Throttle.top);
@@ -1652,9 +1652,9 @@ void RefreshJoystickCB(long, short, C_Base *)
                 }
             }
 
-#ifndef UPDATE_ALWAYS	// Retro 13Jan2004
+#ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (IdleCutoffPrev != IO.analog[AXIS_THROTTLE].cutoff || InitializeValueBars)	// Retro 31Dec2003
+            if (IdleCutoffPrev != IO.analog[AXIS_THROTTLE].cutoff || InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(SETUP_IDLE_CUTOFF);
@@ -1662,7 +1662,7 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line != NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].cutoff / 15000.0F * ThrottleScale + .5)));	// Retro 31Dec2003
+                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].cutoff / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
 
                     if (line->GetY() <= Throttle.top - 1)
                         line->SetY(Throttle.top);
@@ -1678,7 +1678,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
         unsigned long i;
 
-        for (i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES; i++)	// Retro 31Dec2003
+        for (i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES; i++) // Retro 31Dec2003
         {
             // Retro 31Dec2003:
             // actually I only want to show the buttons on the flight control device here..
@@ -1805,7 +1805,7 @@ void RefreshJoystickCB(long, short, C_Base *)
         int Direction;
         int flags = 0;
 
-        for (i = 0; i < NumberOfPOVs; i++)	// Retro 26Dec2003
+        for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
         {
             Direction = 0;
 
@@ -1970,20 +1970,20 @@ void RefreshJoystickCB(long, short, C_Base *)
             button->Refresh();
         }
 
-        InitializeValueBars = 0;	// Retro 26Dec2003
+        InitializeValueBars = 0; // Retro 26Dec2003
 
         JoyXPrev = IO.analog[AXIS_ROLL].engrValue;
         JoyYPrev = IO.analog[AXIS_PITCH].engrValue;
         ThrottlePrev = IO.analog[AXIS_THROTTLE].engrValue;
         RudderPrev = IO.analog[AXIS_YAW].engrValue;
         ABDetentPrev = static_cast<float>(IO.analog[AXIS_THROTTLE].center);
-        IdleCutoffPrev = static_cast<float>(IO.analog[AXIS_THROTTLE].cutoff);	// Retro 1Feb2004
+        IdleCutoffPrev = static_cast<float>(IO.analog[AXIS_THROTTLE].cutoff); // Retro 1Feb2004
 
         POVPrev = IO.povHatAngle[0];
     }
 
     //if(Calibration.calibrating)
-    //	Calibrate();
+    // Calibrate();
 
     // Retro - trying to get some of this shit into my advanced controller window..
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
@@ -2064,336 +2064,336 @@ SIM_INT CalibrateFile(void)
 /*
 void StopCalibrating(C_Base *control)
 {
-	C_Text *text;
-	C_Button *button;
+ C_Text *text;
+ C_Button *button;
 
-	Calibration.calibrating = FALSE;
-	Calibration.step = 0;
-	Calibration.disp_text = TRUE;
-	Calibration.state = 1;
+ Calibration.calibrating = FALSE;
+ Calibration.step = 0;
+ Calibration.disp_text = TRUE;
+ Calibration.state = 1;
 
-	Calibration.calibrated = CalibrateFile();
+ Calibration.calibrated = CalibrateFile();
 
-	text=(C_Text *)control->Parent_->FindControl(CAL_TEXT);
-	text->Refresh();
-	text->SetFlagBitOn(C_BIT_INVISIBLE);
-	text->Refresh();
+ text=(C_Text *)control->Parent_->FindControl(CAL_TEXT);
+ text->Refresh();
+ text->SetFlagBitOn(C_BIT_INVISIBLE);
+ text->Refresh();
 
-	text=(C_Text *)control->Parent_->FindControl(CAL_TEXT2);
-	text->Refresh();
-	text->SetFlagBitOn(C_BIT_INVISIBLE);
-	text->Refresh();
+ text=(C_Text *)control->Parent_->FindControl(CAL_TEXT2);
+ text->Refresh();
+ text->SetFlagBitOn(C_BIT_INVISIBLE);
+ text->Refresh();
 
-	button = (C_Button *)control->Parent_->FindControl(CALIBRATE);
-	button->SetState(C_STATE_0);
-	button->Refresh();
+ button = (C_Button *)control->Parent_->FindControl(CALIBRATE);
+ button->SetState(C_STATE_0);
+ button->Refresh();
 }*/
 
 /*
 SIM_INT Calibrate ( void )
 {
-	int retval;
+ int retval;
 
-	if (S_joyret == JOYERR_NOERROR)
-	{
-		retval = SIMLIB_OK;
-		int size;
-		FILE* filePtr;
-		C_Base	*control;
-		C_Window	*win;
-		C_Text		*text,*text2;
-		C_Button	*button;
-		RECT		client;
+ if (S_joyret == JOYERR_NOERROR)
+ {
+ retval = SIMLIB_OK;
+ int size;
+ FILE* filePtr;
+ C_Base *control;
+ C_Window *win;
+ C_Text *text,*text2;
+ C_Button *button;
+ RECT client;
 
-		if(Calibration.state)
-		{
-			Calibration.state = 0;
-			Calibration.disp_text = TRUE;
-			//waiting for user to let go of all buttons
-			for(int i =0;i < S_joycaps.wNumButtons;i++)
-			{
-				if(IO.digital[i]) //button pressed
-				{
-					Calibration.state = 1;
-					break;
-				}
-			}
-		}
-		else
-		{
-			win = gMainHandler->FindWindow(SETUP_WIN);
-			control = win->FindControl(JOY_INDICATOR);
+ if(Calibration.state)
+ {
+ Calibration.state = 0;
+ Calibration.disp_text = TRUE;
+ //waiting for user to let go of all buttons
+ for(int i =0;i < S_joycaps.wNumButtons;i++)
+ {
+ if(IO.digital[i]) //button pressed
+ {
+ Calibration.state = 1;
+ break;
+ }
+ }
+ }
+ else
+ {
+ win = gMainHandler->FindWindow(SETUP_WIN);
+ control = win->FindControl(JOY_INDICATOR);
 
-			text=(C_Text *)win->FindControl(CAL_TEXT);
-			text2=(C_Text *)win->FindControl(CAL_TEXT2);
+ text=(C_Text *)win->FindControl(CAL_TEXT);
+ text2=(C_Text *)win->FindControl(CAL_TEXT2);
 
-			switch(Calibration.step)
-			{
-			int i;
+ switch(Calibration.step)
+ {
+ int i;
 
-			case 0:
+ case 0:
 
-				if(Calibration.disp_text)
-				{
-					MonoPrint ("Center the joystick, throttle, and rudder and push a button.\n");
-					if(text != NULL)
-					{
-						text->Refresh();
-						text->SetFlagBitOff(C_BIT_INVISIBLE);
-						text->SetText(TXT_CTR_JOY);
-						text->Refresh();
-					}
+ if(Calibration.disp_text)
+ {
+ MonoPrint ("Center the joystick, throttle, and rudder and push a button.\n");
+ if(text != NULL)
+ {
+ text->Refresh();
+ text->SetFlagBitOff(C_BIT_INVISIBLE);
+ text->SetText(TXT_CTR_JOY);
+ text->Refresh();
+ }
 
-					if(text2)
-					{
-						text2->Refresh();
-						text2->SetFlagBitOff(C_BIT_INVISIBLE);
-						text2->Refresh();
-					}
+ if(text2)
+ {
+ text2->Refresh();
+ text2->SetFlagBitOff(C_BIT_INVISIBLE);
+ text2->Refresh();
+ }
 
-					if(!Calibration.calibrated)
-					{
-						IO.analog[0].mUp = IO.analog[0].mDown = IO.analog[0].bUp = IO.analog[0].bDown = 0.0F;
-						IO.analog[1].mUp = IO.analog[1].mDown = IO.analog[1].bUp = IO.analog[1].bDown = 1.1F;
-						IO.analog[2].mUp = IO.analog[2].mDown = IO.analog[2].bUp = IO.analog[2].bDown = 2.2F;
-						IO.analog[3].mUp = IO.analog[3].mDown = IO.analog[3].bUp = IO.analog[3].bDown = 3.3F;
-					}
+ if(!Calibration.calibrated)
+ {
+ IO.analog[0].mUp = IO.analog[0].mDown = IO.analog[0].bUp = IO.analog[0].bDown = 0.0F;
+ IO.analog[1].mUp = IO.analog[1].mDown = IO.analog[1].bUp = IO.analog[1].bDown = 1.1F;
+ IO.analog[2].mUp = IO.analog[2].mDown = IO.analog[2].bUp = IO.analog[2].bDown = 2.2F;
+ IO.analog[3].mUp = IO.analog[3].mDown = IO.analog[3].bUp = IO.analog[3].bDown = 3.3F;
+ }
 
-					IO.analog[0].min = IO.analog[1].min = IO.analog[2].min = IO.analog[3].min = 65536.0F;
-					IO.analog[0].max = IO.analog[1].max = IO.analog[2].max = IO.analog[3].max = 0.0F;
+ IO.analog[0].min = IO.analog[1].min = IO.analog[2].min = IO.analog[3].min = 65536.0F;
+ IO.analog[0].max = IO.analog[1].max = IO.analog[2].max = IO.analog[3].max = 0.0F;
 
-					IO.analog[0].isUsed = IO.analog[1].isUsed = TRUE;
+ IO.analog[0].isUsed = IO.analog[1].isUsed = TRUE;
 
-					if (!(S_joycaps.wCaps & JOYCAPS_HASZ))
-					{
-						IO.analog[2].isUsed = FALSE;
-						IO.analog[2].max = 0;
-						IO.analog[2].min = -1;
-						IO.analog[2].engrValue = 1.0F;
-					}
-					else
-					{
-						IO.analog[2].isUsed = TRUE;
-					}
+ if (!(S_joycaps.wCaps & JOYCAPS_HASZ))
+ {
+ IO.analog[2].isUsed = FALSE;
+ IO.analog[2].max = 0;
+ IO.analog[2].min = -1;
+ IO.analog[2].engrValue = 1.0F;
+ }
+ else
+ {
+ IO.analog[2].isUsed = TRUE;
+ }
 
-					if (!(S_joycaps.wCaps & JOYCAPS_HASR))
-					{
-						IO.analog[3].isUsed= FALSE;
-						IO.analog[3].max = 1;
-						IO.analog[3].min = -1;
-						IO.analog[3].engrValue = 0.0F;
-					}
-					else
-					{
-						IO.analog[3].isUsed = TRUE;
-					}
+ if (!(S_joycaps.wCaps & JOYCAPS_HASR))
+ {
+ IO.analog[3].isUsed= FALSE;
+ IO.analog[3].max = 1;
+ IO.analog[3].min = -1;
+ IO.analog[3].engrValue = 0.0F;
+ }
+ else
+ {
+ IO.analog[3].isUsed = TRUE;
+ }
 
-					IO.analog[2].center = 32768;
+ IO.analog[2].center = 32768;
 
-					Calibration.disp_text = FALSE;
-				}
+ Calibration.disp_text = FALSE;
+ }
 
-				IO.analog[0].center = IO.analog[0].ioVal;
-				IO.analog[1].center = IO.analog[1].ioVal;
-				IO.analog[3].center = IO.analog[3].ioVal;
+ IO.analog[0].center = IO.analog[0].ioVal;
+ IO.analog[1].center = IO.analog[1].ioVal;
+ IO.analog[3].center = IO.analog[3].ioVal;
 
-				for(i =0;i < S_joycaps.wNumButtons;i++)
-				{
-					if(IO.digital[i])
-						Calibration.state = 1;		//button pressed
-				}
+ for(i =0;i < S_joycaps.wNumButtons;i++)
+ {
+ if(IO.digital[i])
+ Calibration.state = 1; //button pressed
+ }
 
-				if(Calibration.state)
-					Calibration.step++;
+ if(Calibration.state)
+ Calibration.step++;
 
-				break;
+ break;
 
-			case 1:
+ case 1:
 
-				if(Calibration.disp_text)
-				{
-					MonoPrint ("Move the joystick to the corners and push a button.\n");
-					if(text != NULL)
-					{
-						text->Refresh();
-						text->SetText(TXT_MV_JOY);
-						text->Refresh();
-					}
-					Calibration.disp_text = FALSE;
-				}
+ if(Calibration.disp_text)
+ {
+ MonoPrint ("Move the joystick to the corners and push a button.\n");
+ if(text != NULL)
+ {
+ text->Refresh();
+ text->SetText(TXT_MV_JOY);
+ text->Refresh();
+ }
+ Calibration.disp_text = FALSE;
+ }
 
-				IO.analog[0].max = max(IO.analog[0].max, IO.analog[0].ioVal);
-				IO.analog[1].max = max(IO.analog[1].max, IO.analog[1].ioVal);
-				IO.analog[0].min = min(IO.analog[0].min, IO.analog[0].ioVal);
-				IO.analog[1].min = min(IO.analog[1].min, IO.analog[1].ioVal);
+ IO.analog[0].max = max(IO.analog[0].max, IO.analog[0].ioVal);
+ IO.analog[1].max = max(IO.analog[1].max, IO.analog[1].ioVal);
+ IO.analog[0].min = min(IO.analog[0].min, IO.analog[0].ioVal);
+ IO.analog[1].min = min(IO.analog[1].min, IO.analog[1].ioVal);
 
-				for(i =0;i < S_joycaps.wNumButtons;i++)
-				{
-					if(IO.digital[i])
-						Calibration.state = 1;		//button pressed
-				}
+ for(i =0;i < S_joycaps.wNumButtons;i++)
+ {
+ if(IO.digital[i])
+ Calibration.state = 1; //button pressed
+ }
 
-				if(Calibration.state)
-					Calibration.step++;
+ if(Calibration.state)
+ Calibration.step++;
 
-				break;
+ break;
 
-			case 2:
+ case 2:
 
-				if (S_joycaps.wCaps & JOYCAPS_HASZ)
-				{
-					if(Calibration.disp_text)
-					{
-						MonoPrint ("Move the throttle to the ends and push a button\n");
-						if(text != NULL && IO.analog[2].isUsed)
-						{
-							text->Refresh();
-							text->SetText(TXT_MV_THR);
-							text->Refresh();
-						}
-						Calibration.disp_text = FALSE;
-					}
+ if (S_joycaps.wCaps & JOYCAPS_HASZ)
+ {
+ if(Calibration.disp_text)
+ {
+ MonoPrint ("Move the throttle to the ends and push a button\n");
+ if(text != NULL && IO.analog[2].isUsed)
+ {
+ text->Refresh();
+ text->SetText(TXT_MV_THR);
+ text->Refresh();
+ }
+ Calibration.disp_text = FALSE;
+ }
 
-					IO.analog[2].max = max(IO.analog[2].max, IO.analog[2].ioVal);
-					IO.analog[2].min = min(IO.analog[2].min, IO.analog[2].ioVal);
+ IO.analog[2].max = max(IO.analog[2].max, IO.analog[2].ioVal);
+ IO.analog[2].min = min(IO.analog[2].min, IO.analog[2].ioVal);
 
-					for(i =0;i < S_joycaps.wNumButtons;i++)
-					{
-						if(IO.digital[i])
-							Calibration.state = 1;		//button pressed
-					}
+ for(i =0;i < S_joycaps.wNumButtons;i++)
+ {
+ if(IO.digital[i])
+ Calibration.state = 1; //button pressed
+ }
 
-					if(Calibration.state)
-						Calibration.step++;
-				}
-				else
-				{
-					Calibration.step++;
-					Calibration.state = 1;
-				}
-				break;
+ if(Calibration.state)
+ Calibration.step++;
+ }
+ else
+ {
+ Calibration.step++;
+ Calibration.state = 1;
+ }
+ break;
 
-			case 3:
-				if (S_joycaps.wCaps & JOYCAPS_HASR)
-				{
-					if(Calibration.disp_text)
-					{
-						MonoPrint ("Move the rudder to the ends and push a button\n");
-						if(text != NULL && IO.analog[3].isUsed)
-						{
-							text->Refresh();
-							text->SetText(TXT_MV_RUD);
-							text->Refresh();
-						}
-						Calibration.disp_text = FALSE;
-					}
+ case 3:
+ if (S_joycaps.wCaps & JOYCAPS_HASR)
+ {
+ if(Calibration.disp_text)
+ {
+ MonoPrint ("Move the rudder to the ends and push a button\n");
+ if(text != NULL && IO.analog[3].isUsed)
+ {
+ text->Refresh();
+ text->SetText(TXT_MV_RUD);
+ text->Refresh();
+ }
+ Calibration.disp_text = FALSE;
+ }
 
-					IO.analog[3].max = max(IO.analog[3].max, IO.analog[3].ioVal);
-					IO.analog[3].min = min(IO.analog[3].min, IO.analog[3].ioVal);
+ IO.analog[3].max = max(IO.analog[3].max, IO.analog[3].ioVal);
+ IO.analog[3].min = min(IO.analog[3].min, IO.analog[3].ioVal);
 
-					for(int i =0;i < S_joycaps.wNumButtons;i++)
-					{
-						if(IO.digital[i])
-							Calibration.state = 1;		//button pressed
-					}
+ for(int i =0;i < S_joycaps.wNumButtons;i++)
+ {
+ if(IO.digital[i])
+ Calibration.state = 1; //button pressed
+ }
 
-					if(Calibration.state)
-						Calibration.step++;
+ if(Calibration.state)
+ Calibration.step++;
 
-				}
-				else
-				{
-					Calibration.step++;
-					Calibration.state = 1;
-				}
-				break;
+ }
+ else
+ {
+ Calibration.step++;
+ Calibration.state = 1;
+ }
+ break;
 
-			case 4:
-				for (i=0; i<S_joycaps.wNumAxes; i++)
-				{
-					if (IO.analog[i].isUsed)
-					{
-						IO.analog[i].mUp = 1.0F /(IO.analog[i].max - IO.analog[i].center);
-						IO.analog[i].bUp = -IO.analog[i].mUp * IO.analog[i].center;
-						IO.analog[i].mDown = 1.0F / (IO.analog[i].center - IO.analog[i].min);
-						IO.analog[i].bDown = -IO.analog[i].mDown * IO.analog[i].center;
-					}
-					else
-					{
-						IO.analog[i].mUp = IO.analog[i].mDown = 0.0F;
-						IO.analog[i].bUp = IO.analog[i].bDown = 0.0F;
-					}
-				}
+ case 4:
+ for (i=0; i<S_joycaps.wNumAxes; i++)
+ {
+ if (IO.analog[i].isUsed)
+ {
+ IO.analog[i].mUp = 1.0F /(IO.analog[i].max - IO.analog[i].center);
+ IO.analog[i].bUp = -IO.analog[i].mUp * IO.analog[i].center;
+ IO.analog[i].mDown = 1.0F / (IO.analog[i].center - IO.analog[i].min);
+ IO.analog[i].bDown = -IO.analog[i].mDown * IO.analog[i].center;
+ }
+ else
+ {
+ IO.analog[i].mUp = IO.analog[i].mDown = 0.0F;
+ IO.analog[i].bUp = IO.analog[i].bDown = 0.0F;
+ }
+ }
 
-				char filename[_MAX_PATH];
-				sprintf(filename,"%s\\config\\joystick.dat",FalconDataDirectory);
-				filePtr = fopen (filename, "wb");
-				if(filePtr)
-				{
-					fwrite (&S_joycaps.wNumAxes, sizeof(int), 1, filePtr);
+ char filename[_MAX_PATH];
+ sprintf(filename,"%s\\config\\joystick.dat",FalconDataDirectory);
+ filePtr = fopen (filename, "wb");
+ if(filePtr)
+ {
+ fwrite (&S_joycaps.wNumAxes, sizeof(int), 1, filePtr);
 
-					for (i=0; i<S_joycaps.wNumAxes; i++)
-					{
-						fwrite (&(IO.analog[i]), sizeof(SIMLIB_ANALOG_TYPE), 1, filePtr);
-					}
-					fclose (filePtr);
-				}
-				else
-				{
-					ShiAssert(filePtr == NULL);
-				}
+ for (i=0; i<S_joycaps.wNumAxes; i++)
+ {
+ fwrite (&(IO.analog[i]), sizeof(SIMLIB_ANALOG_TYPE), 1, filePtr);
+ }
+ fclose (filePtr);
+ }
+ else
+ {
+ ShiAssert(filePtr == NULL);
+ }
 
-				button = (C_Button *)win->FindControl(CALIBRATE);
-				button->SetState(C_STATE_0);
-				button->Refresh();
+ button = (C_Button *)win->FindControl(CALIBRATE);
+ button->SetState(C_STATE_0);
+ button->Refresh();
 
 
 
-				if(text != NULL)
-				{
-					text->Refresh();
-					text->SetFlagBitOn(C_BIT_INVISIBLE);
-					text->Refresh();
-				}
+ if(text != NULL)
+ {
+ text->Refresh();
+ text->SetFlagBitOn(C_BIT_INVISIBLE);
+ text->Refresh();
+ }
 
-				if(text2)
-				{
-					text2->Refresh();
-					text2->SetFlagBitOn(C_BIT_INVISIBLE);
-					text2->Refresh();
-				}
+ if(text2)
+ {
+ text2->Refresh();
+ text2->SetFlagBitOn(C_BIT_INVISIBLE);
+ text2->Refresh();
+ }
 
-				client = win->GetClientArea(1);
+ client = win->GetClientArea(1);
 
-				if(control)
-				{
-					size = ((C_Bitmap *)control)->GetH();
-				}
+ if(control)
+ {
+ size = ((C_Bitmap *)control)->GetH();
+ }
 
-				JoyScale = (float)(client.right - client.left - size)/2.0F;
-				RudderScale = (Rudder.bottom - Rudder.top )/2.0F;
-				ThrottleScale = (Throttle.bottom - Throttle.top )/2.0F;
+ JoyScale = (float)(client.right - client.left - size)/2.0F;
+ RudderScale = (Rudder.bottom - Rudder.top )/2.0F;
+ ThrottleScale = (Throttle.bottom - Throttle.top )/2.0F;
 
-				Calibration.calibrated = TRUE;
-				Calibration.calibrating = FALSE;
-				Calibration.step = 0;
-				Calibration.state = 1;
-			}
-		}
+ Calibration.calibrated = TRUE;
+ Calibration.calibrating = FALSE;
+ Calibration.step = 0;
+ Calibration.state = 1;
+ }
+ }
 
-	}
-	else if (S_joyret == MMSYSERR_NODRIVER)
-	{
-		SimLibPrintError ("MMSYSERR No Driver");
-		return SIMLIB_ERR;
-	}
-	else if (S_joyret == MMSYSERR_INVALPARAM)
-	{
-		SimLibPrintError ("MMSYSERR Invalid Parameter");
-		return SIMLIB_ERR;
-	}
+ }
+ else if (S_joyret == MMSYSERR_NODRIVER)
+ {
+ SimLibPrintError ("MMSYSERR No Driver");
+ return SIMLIB_ERR;
+ }
+ else if (S_joyret == MMSYSERR_INVALPARAM)
+ {
+ SimLibPrintError ("MMSYSERR Invalid Parameter");
+ return SIMLIB_ERR;
+ }
 
-	return retval;
+ return retval;
 }
 
 
@@ -2401,11 +2401,11 @@ SIM_INT Calibrate ( void )
 
 void CalibrateCB(long ID,short hittype,C_Base *control)
 {
-	if((hittype != C_TYPE_LMOUSEUP))
-		return;
+ if((hittype != C_TYPE_LMOUSEUP))
+ return;
 
-	Calibration.calibrating = 1;
-	//Calibrate();
+ Calibration.calibrating = 1;
+ //Calibrate();
 
 }//CalibrateCB
 
@@ -2458,9 +2458,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
     if (Cluster == 8004)
     {
-        if (DKScanCode == DIK_LSHIFT	|| DKScanCode == DIK_RSHIFT		|| \
-            DKScanCode == DIK_LCONTROL	|| DKScanCode == DIK_RCONTROL	|| \
-            DKScanCode == DIK_LMENU		|| DKScanCode == DIK_RMENU		|| \
+        if (DKScanCode == DIK_LSHIFT || DKScanCode == DIK_RSHIFT || \
+            DKScanCode == DIK_LCONTROL || DKScanCode == DIK_RCONTROL || \
+            DKScanCode == DIK_LMENU || DKScanCode == DIK_RMENU || \
             DKScanCode == 0x45)
             return TRUE;
 
@@ -2622,7 +2622,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             KeyVar.EditKey = FALSE;
         }
 
-        C_Text	*text;
+        C_Text *text;
 
         if (DKScanCode == 0xC5)
             DKScanCode = 0x45;
@@ -3007,13 +3007,13 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
 
         if (line)
         {
-            UI95_RECT	client;
+            UI95_RECT client;
             client = win->GetClientArea(3);
 
             line->Setup(KEYCODES - count, 0);
-            //line->SetXYWH(	Keycodes->GetX() + HotX,
-            //				Keycodes->GetY() + Vline->GetH()*count + HotY,
-            //				HotW,HotH);
+            //line->SetXYWH( Keycodes->GetX() + HotX,
+            // Keycodes->GetY() + Vline->GetH()*count + HotY,
+            // HotW,HotH);
             line->SetXYWH(Keycodes->GetX() + HotSpot.X,
                           Keycodes->GetY() + Vline->GetH()*count + HotSpot.Y,
                           client.right - client.left, HotSpot.H);
@@ -3320,15 +3320,15 @@ int UpdateKeyMapList(char *fname, int flag)
     LoadFunctionTables(fname);
 
     char keydescrip[_MAX_PATH];
-    C_Button	*button;
-    C_Text		*text;
+    C_Button *button;
+    C_Text *text;
 
     keydescrip[0] = 0;
 
     int count = 0;
     int key1, mod1;
     int key2, mod2, editable;
-    //	int flags =0,
+    // int flags =0,
     int buttonId, mouseSide;
     InputFunctionType theFunc;
     char buff[_MAX_PATH];
@@ -3517,7 +3517,7 @@ int CreateKeyMapList(char *filename)
     int count = 0;
     int key1, mod1;
     int key2, mod2;
-    //	int flags =0,
+    // int flags =0,
     int buttonId, mouseSide, editable;
     InputFunctionType theFunc;
     char buff[_MAX_PATH];
@@ -3526,8 +3526,8 @@ int CreateKeyMapList(char *filename)
     char descrip[_MAX_PATH];
     char *parsed;
     HotSpotStruct HotSpot;
-    //int	 HotX,HotY,HotW,HotH;
-    UI95_RECT	client;
+    //int  HotX,HotY,HotW,HotH;
+    UI95_RECT client;
 
     C_Button *Keycodes;
     C_Text *Mapping;
@@ -3646,13 +3646,13 @@ void SetKeyDefaultCB(long, short, C_Base *)
 }
 
 /************************************************************************/
-//	Hides/Shows the POV HAT for controllers that feature them
+// Hides/Shows the POV HAT for controllers that feature them
 /************************************************************************/
 void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
 {
     const int POVSymbols[] = { LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT };
     const int POVSymbolCount = sizeof(POVSymbols) / sizeof(int);
-    C_Button	*button = NULL;
+    C_Button *button = NULL;
 
     for (int i = 0; i < POVSymbolCount; i++)
     {
@@ -3679,7 +3679,7 @@ void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
 /************************************************************************/
 void SetThrottleAndRudderBars(C_Base *control)
 {
-    C_Line		*line = NULL;
+    C_Line *line = NULL;
 
     // Retro 17Jan2004 - have to cater for 2 throttles now !
     /* do throttle mumbo-jumbo */
@@ -3687,7 +3687,7 @@ void SetThrottleAndRudderBars(C_Base *control)
 
     if (line != NULL)
     {
-        //		line->Refresh();
+        // line->Refresh();
         if (!IO.AnalogIsUsed(AXIS_THROTTLE))
         {
             line->SetColor(RGB(130, 130, 130)); //grey
@@ -3771,14 +3771,14 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
     newcontroller = lbox->GetTextID() - 1;
 
-    if (newcontroller == AxisMap.FlightControlDevice)	// nothing changed, so no action required
+    if (newcontroller == AxisMap.FlightControlDevice) // nothing changed, so no action required
     {
         return;
     }
 
-    IO.Reset();	// set all axis (real and game) back to nada (off)
+    IO.Reset(); // set all axis (real and game) back to nada (off)
 
-    if (AxisMap.FlightControlDevice == SIM_KEYBOARD)	// hrmmm... no sure what´s up here
+    if (AxisMap.FlightControlDevice == SIM_KEYBOARD) // hrmmm... no sure what´s up here
     {
         SaveKeyMapList("laptop");
         UpdateKeyMapList(PlayerOptions.GetKeyfile(), TRUE);
@@ -3789,18 +3789,18 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         // ??? not allowed !
         ShiAssert(false);
     }
-    else if (newcontroller == SIM_KEYBOARD)	// hrmmm... no sure what´s up here
+    else if (newcontroller == SIM_KEYBOARD) // hrmmm... no sure what´s up here
     {
         SaveKeyMapList(PlayerOptions.GetKeyfile());
         UpdateKeyMapList("laptop", TRUE);
 
-        SetJoystickAndPOVSymbols(false, control);	// kill POV symbol (the keyboard has none)
+        SetJoystickAndPOVSymbols(false, control); // kill POV symbol (the keyboard has none)
     }
-    else	// at last, a reasonable user
+    else // at last, a reasonable user
     {
-        C_Line		*line = NULL;
-        C_Button	*button = NULL;
-        int			hasPOV = FALSE;
+        C_Line *line = NULL;
+        C_Button *button = NULL;
+        int hasPOV = FALSE;
 
 
         // Retro 27Jan2004 - disable custon axis shaping first
@@ -3813,11 +3813,11 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         CurJoyCaps.dwSize = sizeof(DIDEVCAPS);
         gpDIDevice[newcontroller]->GetCapabilities(&CurJoyCaps);
 
-        //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0;	// Retro 26Dec2003
-        NumberOfPOVs = CurJoyCaps.dwPOVs;			// Wombat778 4-27-04 Dont limit to 1 POV
+        //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0; // Retro 26Dec2003
+        NumberOfPOVs = CurJoyCaps.dwPOVs; // Wombat778 4-27-04 Dont limit to 1 POV
 
-        if (NumberOfPOVs > 0)						// Retro 26Dec2003
-            hasPOV = TRUE;							// Retro 26Dec2003
+        if (NumberOfPOVs > 0) // Retro 26Dec2003
+            hasPOV = TRUE; // Retro 26Dec2003
 
         int POVSymbols[] = { LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT };
         const int POVSymbolCount = sizeof(POVSymbols) / sizeof(int);
@@ -3857,14 +3857,14 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
                 // I only allow complete 'sets' for the flight control device..
                 AxisMap.FlightControlDevice = newcontroller;
                 AxisMap.Bank.Axis = DX_XAXIS;
-                AxisMap.Bank.Device = newcontroller;	// also not really necessary but nice for sanity..
+                AxisMap.Bank.Device = newcontroller; // also not really necessary but nice for sanity..
                 AxisMap.Pitch.Axis = DX_YAXIS;
-                AxisMap.Pitch.Device = newcontroller;	// also not really necessary but nice for sanity..
+                AxisMap.Pitch.Device = newcontroller; // also not really necessary but nice for sanity..
             }
         }
 
         /* now check if device has a throttle */
-        bool weHaveACougerUser = false;	// ahh... that dumb metal POS has the throttle on RZ since it has no rudder.. or whatever..
+        bool weHaveACougerUser = false; // ahh... that dumb metal POS has the throttle on RZ since it has no rudder.. or whatever..
 
         if (gDIDevNames[newcontroller])
         {
@@ -3897,7 +3897,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         }
 
         /* now check if device has a rudder */
-        if (weHaveACougerUser == false)		// cougar has no rudder and the RZ is taken anyways..
+        if (weHaveACougerUser == false) // cougar has no rudder and the RZ is taken anyways..
         {
             hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_RZ, DIPH_BYOFFSET);
 
@@ -3919,14 +3919,14 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
     // this function draws/hides the rudder/throttle bars, depending on if they´re mapped..
     SetThrottleAndRudderBars(control);
     IO.WriteAxisMappingFile();
-    IO.SaveFile();	// for centering and ABDetent info
+    IO.SaveFile(); // for centering and ABDetent info
 
-    InitializeValueBars = 1;	// Retro 26Dec2003
+    InitializeValueBars = 1; // Retro 26Dec2003
 }
 
 /************************************************************************/
-//	fills the controller listbox in the setup->controller tab
-//	there´s a strange 'thrustmaster-only' hack there, dunno why..
+// fills the controller listbox in the setup->controller tab
+// there´s a strange 'thrustmaster-only' hack there, dunno why..
 /************************************************************************/
 void BuildControllerList(C_ListBox *lbox)
 {

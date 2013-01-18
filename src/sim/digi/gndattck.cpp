@@ -91,7 +91,7 @@ int DigitalBrain::IsNotMainTargetSEAD()
 // END OF ADDED SECTION
 
 
-SimObjectType	**TP = NULL;
+SimObjectType **TP = NULL;
 
 void DigitalBrain::GroundAttackMode(void)
 {
@@ -401,7 +401,7 @@ void DigitalBrain::GroundAttackMode(void)
 
     // NOTES ON MODES (in approximate order):
     // 1) NotThereYet: Initial setup for ground run.  Track to IP.
-    //	  Also determine if another run is to be made, or end ground run.
+    //   Also determine if another run is to be made, or end ground run.
     // 2) CrossWind: head to IP
     // 3) HoldInPlace: Track Towards target
     // 4) Final: ready weapons and fire when within parms.
@@ -547,7 +547,7 @@ DownwindBypass:
                 }
 
                 // 2001-06-18 MODIFIED BY S.G. I'LL USE THIS TO HAVE THE AI FORCE A RETARGET AND 15 SECONDS IS TOO HIGH
-                //				nextAGTargetTime = SimLibElapsedTime + 15000;
+                // nextAGTargetTime = SimLibElapsedTime + 15000;
                 nextAGTargetTime = SimLibElapsedTime + 5000;
 
                 // 2001-07-12 ADDED BY S.G. SINCE WE'RE GOING AFTER SOMETHING NEW, GET A NEW TARGET RIGHT NOW SO agDoctrine DOESN'T GET SET TO AGD_NONE WHICH WILL END UP SetupAGMode BEING CALLED BEFORE THE AI HAS A CHANCE TO REACH ITS TURN POINT
@@ -621,7 +621,7 @@ DownwindBypass:
             approxRange = (float)sqrt(dx * dx + dy * dy);
 
             //  Cobra - SEAD attack mode is high to get the SAM radar to turn on
-            //			if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
+            // if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
             if (agApproach == AGA_LOW)
             {
                 // see if we're too close to set up the ground run
@@ -702,7 +702,7 @@ DownwindBypass:
             {
                 Sms->SetAGBPair(FALSE);//Cobra
             }
-            else	// bombs dropped in pairs
+            else // bombs dropped in pairs
             {
                 Sms->SetAGBPair(TRUE);
             }
@@ -717,7 +717,7 @@ DownwindBypass:
 
             //TJL 11/09/03 Changed to Corner speed to allow for variety of AI
             desSpeed = cornerSpeed * 1.3f;
-            //desSpeed = max(200.0F, min (desSpeed, 700.0F));	// Knots
+            //desSpeed = max(200.0F, min (desSpeed, 700.0F)); // Knots
             TrackPoint(0.0F, desSpeed);
 
             break;
@@ -788,8 +788,8 @@ DownwindBypass:
                 self->FCC->SetMasterMode(FireControlComputer::AirGroundMissile);
                 self->FCC->SetSubMode(FireControlComputer::SLAVE);
                 //Cobra test
-                //	self->FCC->SetMasterMode (FireControlComputer::AirGroundMissile);
-                //	self->FCC->SetSubMode (FireControlComputer::SLAVE);
+                // self->FCC->SetMasterMode (FireControlComputer::AirGroundMissile);
+                // self->FCC->SetSubMode (FireControlComputer::SLAVE);
                 FCC->preDesignate = TRUE;
                 //MonoPrint ("Setup For Maverick\n");
             }
@@ -840,7 +840,7 @@ DownwindBypass:
             }
 
             //  Cobra - SEAD attack mode is high to get the SAM radar to turn on
-            //			if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
+            // if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
             if (agApproach == AGA_LOW)
             {
                 trackZ = OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(),
@@ -956,7 +956,7 @@ DownwindBypass:
             // Terrain follow around 1000 ft
             // 2001-07-12 MODIFIED BY S.G. SO SEAD STAY LOW UNTIL READY TO ATTACK
             //  Cobra - SEAD attack mode is high to get the SAM radar to turn on
-            //			if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
+            // if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
             if (agApproach == AGA_DIVE)
             {
                 trackZ = OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(),
@@ -1042,7 +1042,7 @@ DownwindBypass:
 
             // are we about at our IP?
             // 2001-07-23 MODIFIED BY S.G. IF NO WEAPON AVAIL FOR TARGET, SWITCH TO FINAL RIGHT AWAY
-            //			if ( approxRange < 1.3f * NM_TO_FT)
+            // if ( approxRange < 1.3f * NM_TO_FT)
             //cobra removed because SEAD was looping around target
             //if ( approxRange < 1.3f * NM_TO_FT /*|| !IsSetATC(HasCanUseAGWeapon)*/)
             // Cobra - Added JSOW stand-off weapon launching
@@ -1382,7 +1382,7 @@ DownwindBypass:
                     break;
                 }
 
-#else		// FRB
+#else // FRB
                 // Check for remaining AG weapons
                 SelectGroundWeapon();
 
@@ -1487,11 +1487,11 @@ DownwindBypass:
             //dx = self->GetKias();
             //if (slowMover)
             //{
-            //	if (approxRange < 1.0f * NM_TO_FT)
-            //	{
-            //		waitingForShot = SimLibElapsedTime + 5000;
-            //		onStation = Final1;
-            //	}
+            // if (approxRange < 1.0f * NM_TO_FT)
+            // {
+            // waitingForShot = SimLibElapsedTime + 5000;
+            // onStation = Final1;
+            // }
             //}
             // FRB
             if (slowMover || agApproach == AGA_LOW)  // HD bombs
@@ -1728,13 +1728,13 @@ DownwindBypass:
                 DropGBU(approxSlantRange, 0.0F, theRadar);
             }
 
-            /*				else if (SimLibElapsedTime > waitingForShot || !hasWeapons)
-               			{
-            					// this takes us back to 1st state
-            					SetGroundTarget( NULL );
-            					onStation = NotThereYet;
-            					break;
-               			} */
+            /* else if (SimLibElapsedTime > waitingForShot || !hasWeapons)
+                {
+             // this takes us back to 1st state
+             SetGroundTarget( NULL );
+             onStation = NotThereYet;
+             break;
+                } */
 
             TrackPoint(0.0F, desSpeed/* KNOTS_TO_FTPSEC*/); // Cobra - aerial TrackPoint speed is in knots
 
@@ -2106,8 +2106,8 @@ DownwindBypass:
 /*
  ** Name: SetGroundTarget
  ** Description:
- **		Creates a SimObjectType struct for the entity, sets the groundTargetPtr,
- **		References the target.  Any pre-existing target is dereferenced.
+ ** Creates a SimObjectType struct for the entity, sets the groundTargetPtr,
+ ** References the target.  Any pre-existing target is dereferenced.
  */
 void DigitalBrain::SetGroundTarget(FalconEntity *obj)
 {
@@ -2146,7 +2146,7 @@ void DigitalBrain::SetGroundTarget(FalconEntity *obj)
 /*
  ** Name: SetGroundTargetPtr
  ** Description:
- **	Sets GroundTargetPtr witch supplied SimObjectType
+ ** Sets GroundTargetPtr witch supplied SimObjectType
  */
 void DigitalBrain::SetGroundTargetPtr(SimObjectType *obj)
 {
@@ -2343,7 +2343,7 @@ void DigitalBrain::SelectGroundWeapon(void)
         {
             hasGBU = TRUE;
         }
-        else if (!hasRocket	&&
+        else if (!hasRocket &&
                  Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn  &&
                  Sms->hardPoint[i]->GetWeaponType()  == wtLAU)
         {
@@ -2396,7 +2396,7 @@ void DigitalBrain::SelectGroundWeapon(void)
 
         // 2001-05-27 ADDED BY S.G. IF WE HAVE HARMS AND OUR TARGET IS NOT EMITTING, CLEAR hasHARM ONLY IF WE HAVE SOMETHING ELSE ON BOARD
         // 2001-06-20 MODIFIED BY S.G. EVEN IF ONLY HAVE HARMS, DO THIS. HOPEFULLY WING WILL REJOIN AND LEAD WILL TERMINATE IF ON SEAD STRIKES
-        //	  if (hasHARM && groundTargetPtr && (hasAGMissile | hasBomb | hasRocket | hasGBU)) {
+        //   if (hasHARM && groundTargetPtr && (hasAGMissile | hasBomb | hasRocket | hasGBU)) {
         if (hasHARM && groundTargetPtr)
         {
             // If it's a sim entity, look at its radar type)
@@ -2404,8 +2404,8 @@ void DigitalBrain::SelectGroundWeapon(void)
             {
                 // 2001-06-20 MODIFIED BY S.G. IT DOESN'T MATTER AT THIS POINT IF IT'S EMITTING OR NOT. ALL THAT MATTERS IS - IS IT A RADAR VEHICLE/FEATURE FOR A SIM OR DOES IT HAVE A RADAR VEHICLE IF A CAMPAIGN ENTITY
                 // No need to check if they exists because if they got selected, it's because they exists. Only check if they have a radar
-                if (!((groundTargetPtr->BaseData()->IsVehicle() && ((SimVehicleClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR) ||	// It's a vehicle and it has a radar
-                      (groundTargetPtr->BaseData()->IsStatic()  && ((SimStaticClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR)))	// It's a feature and it has a radar
+                if (!((groundTargetPtr->BaseData()->IsVehicle() && ((SimVehicleClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR) || // It's a vehicle and it has a radar
+                      (groundTargetPtr->BaseData()->IsStatic()  && ((SimStaticClass *)groundTargetPtr->BaseData())->GetRadarType() != RDR_NO_RADAR))) // It's a feature and it has a radar
                     hasHARM = FALSE;
             }
             // NOPE - It's a campaign object, if it's aggregated, can't use HARM unless no one has chosen it yet.
@@ -2502,7 +2502,7 @@ void DigitalBrain::SelectGroundWeapon(void)
         // no AG weapons, next waypoint....
         agDoctrine = AGD_NONE;
         // 2001-08-04 MODIFIED BY S.G. SET missionComplete ONLY ONCE WE TEST IT (ADDED THAT TEST FOR THE IF AS WELL)
-        //		missionComplete = TRUE;
+        // missionComplete = TRUE;
         self->FCC->SetMasterMode(FireControlComputer::Nav);
         self->FCC->preDesignate = TRUE;
         SetGroundTarget(NULL);
@@ -2545,7 +2545,7 @@ void DigitalBrain::SelectGroundWeapon(void)
 /*
  ** Name: SelectCampGroundTarget
  ** Description:
- **		Uses the campaign functions to set ground targets
+ ** Uses the campaign functions to set ground targets
  */
 void DigitalBrain::SelectCampGroundTarget(void)
 {
@@ -2556,7 +2556,7 @@ void DigitalBrain::SelectCampGroundTarget(void)
     WayPointClass *dwp;
 
     // 2001-07-15 REMOVED BY S.G. THIS IS CLEARED IN THE 'Final' STAGE ONLY
-    //	madeAGPass = FALSE;
+    // madeAGPass = FALSE;
 
     agImprovise = FALSE;
 
@@ -2603,13 +2603,13 @@ void DigitalBrain::SelectCampGroundTarget(void)
         // the campaign object is now deaggregated, choose a sim entity
         // to target on it
         // 2001-04-11 MODIFIED BY S.G. SO LEAD USES THE ASSIGNED TARGET IF IT'S AN OBJECTIVE AND MAKES A BETTER SELECTION ON MOVERS
-        /*		numComponents = ((CampBaseClass*)target)->NumberOfComponents();
+        /* numComponents = ((CampBaseClass*)target)->NumberOfComponents();
 
-        		for ( i = 0; i < numComponents; i++ )
-        		{
-        		simTarg = ((CampBaseClass*)target)->GetComponentEntity( rand() % numComponents );
-        		if ( !simTarg ) //sanity check
-        		continue;
+         for ( i = 0; i < numComponents; i++ )
+         {
+         simTarg = ((CampBaseClass*)target)->GetComponentEntity( rand() % numComponents );
+         if ( !simTarg ) //sanity check
+         continue;
 
         // don't target runways (yet)
         if ( // !simTarg->IsSetCampaignFlag (FEAT_FLAT_CONTAINER) &&
@@ -2699,8 +2699,8 @@ void DigitalBrain::SelectCampGroundTarget(void)
 
     // choose target.  I assume if this returns 0, no target....
     // 2001-06-09 MODIFIED BY S.G. NEED TO SEE IF WE ARE CHANGING CAMPAIGN TARGET AND ON A SEAD ESCORT MISSION. IF SO, DEAL WITH IT
-    /*	if ( !campUnit->ChooseTarget() )
-    	{
+    /* if ( !campUnit->ChooseTarget() )
+     {
     // alternately try and choose the waypoint's target
     // SetGroundTarget( self->curWaypoint->GetWPTarget() );
     return;
@@ -2717,15 +2717,15 @@ void DigitalBrain::SelectCampGroundTarget(void)
     // If ChooseTarget returned FALSE or we changed campaign target and we're the lead  (but we must had a previous campaign target first)
     if (!isWing && lastGndCampTarget && (!ret || target != lastGndCampTarget))
     {
-        agDoctrine = AGD_NONE;														// Need to setup our next ground attack
-        onStation = NotThereYet;													// Need to do a new pass next time
-        sentWingAGAttack = AG_ORDER_NONE;											// Next time, direct wingmen on target
-        lastGndCampTarget = NULL;													// No previous campaign target
+        agDoctrine = AGD_NONE; // Need to setup our next ground attack
+        onStation = NotThereYet; // Need to do a new pass next time
+        sentWingAGAttack = AG_ORDER_NONE; // Next time, direct wingmen on target
+        lastGndCampTarget = NULL; // No previous campaign target
 
         if (self->GetCampaignObject()->NumberOfComponents() > 1)
         {
-            AiSendCommand(self, FalconWingmanMsg::WMWedge, AiFlight, FalconNullId);	// Ask wingmen to resume a wedge formation
-            AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId);	// Ask wingmen to rejoin
+            AiSendCommand(self, FalconWingmanMsg::WMWedge, AiFlight, FalconNullId); // Ask wingmen to resume a wedge formation
+            AiSendCommand(self, FalconWingmanMsg::WMRejoin, AiFlight, FalconNullId); // Ask wingmen to rejoin
             AiSendCommand(self, FalconWingmanMsg::WMCoverMode, AiFlight, FalconNullId); // And stop what they were doing
         }
     }
@@ -2760,17 +2760,17 @@ void DigitalBrain::SelectCampGroundTarget(void)
 /*
  ** Name: SetupAGMode
  ** Description:
- **		Prior to entering an air to ground attack mode, we do some
- **		setup to determine what our attack doctrine is going to be and
- **		how we will approach the target.
- **		When agDoctrine is set to other than AGD_NONE, this signals that
- **		Setup has been completed for the AG attack.
- **		SEAD and CASCP waypoints are special cases in that targets aren't
- **		necessarily tied to the waypoint but the entire flight route -- we
- **		check for these targets periodically.
+ ** Prior to entering an air to ground attack mode, we do some
+ ** setup to determine what our attack doctrine is going to be and
+ ** how we will approach the target.
+ ** When agDoctrine is set to other than AGD_NONE, this signals that
+ ** Setup has been completed for the AG attack.
+ ** SEAD and CASCP waypoints are special cases in that targets aren't
+ ** necessarily tied to the waypoint but the entire flight route -- we
+ ** check for these targets periodically.
  **
- **		The 1st arg is current waypoint (should be an IP)
- **		2nd arg is next WP (presumably where action is)
+ ** The 1st arg is current waypoint (should be an IP)
+ ** 2nd arg is next WP (presumably where action is)
  */
 // 2001-07-11 REDONE BY S.G.
 // This routine is called until an attack profile can be established, then it is no longer call unless agDoctrine is reset to AGD_NONE
@@ -2972,7 +2972,7 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
                     {
                         SetGroundTarget(NULL);
                         gndTargetHistory[0] = NULL;
-                        SelectGroundTarget(TARGET_ANYTHING);	// choose something else
+                        SelectGroundTarget(TARGET_ANYTHING); // choose something else
                     }
 
                     // END of added section
@@ -3024,14 +3024,14 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
         SelectGroundTarget(TARGET_ANYTHING);
 
     // do we have any ground weapons?
-    /*		SelectGroundWeapon();
-    		if (!IsSetATC(HasAGWeapon))
-    		{
-    			// Nope, can't really attack can't we? so bail out
-    			SetGroundTarget(NULL);
-    			agDoctrine = AGD_NONE;
-    			return;
-    		}
+    /* SelectGroundWeapon();
+     if (!IsSetATC(HasAGWeapon))
+     {
+     // Nope, can't really attack can't we? so bail out
+     SetGroundTarget(NULL);
+     agDoctrine = AGD_NONE;
+     return;
+     }
     */
     // Better be safe than sory...
     if (groundTargetPtr == NULL)
@@ -3051,7 +3051,7 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
     {
         // Cobra - SEAD escort or strike do not fly in low.  They want the radars to see them and turn on.
         agApproach = AGA_HIGH;
-        //		agApproach = AGA_LOW;
+        // agApproach = AGA_LOW;
         //ipZ = 0.0f;
         //TJL 10/28/03 HARM Altitude
         ipZ = -self->GetA2GHarmAlt();
@@ -3111,7 +3111,7 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
         {
             // Cobra - SEAD escort or strike do not fly in low.  They want the radars to see them and turn on.
             agApproach = AGA_HIGH;
-            //		agApproach = AGA_LOW;
+            // agApproach = AGA_LOW;
             agDoctrine = AGD_LOOK_SHOOT_LOOK;
             ipX = self->XPos();
             ipY = self->YPos();
@@ -3138,25 +3138,25 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
         }
         else if (hasBomb)
         {
-            if (hasBomb == TRUE + 1) 		// It's a durandal
+            if (hasBomb == TRUE + 1)  // It's a durandal
             {
-                agApproach = AGA_HIGH;		// Because if 'low', he will 'pop up' on final...
+                agApproach = AGA_HIGH; // Because if 'low', he will 'pop up' on final...
                 ipZ = -self->GetA2GGenericBombAlt();
                 //ipZ = -250.0f;
             }
-            else if (hasBomb == TRUE + 2) 	// It's a cluster bomb
+            else if (hasBomb == TRUE + 2)  // It's a cluster bomb
             {
                 agApproach = AGA_HIGH;
                 ipZ = -self->GetA2GClusterAlt();
                 //ipZ = -5000.0f;
             }
-            else if (hasBomb == TRUE + 3) 	// It's a JDAM bomb
+            else if (hasBomb == TRUE + 3)  // It's a JDAM bomb
             {
                 agApproach = AGA_HIGH;
                 ipZ = -self->GetA2GJDAMAlt();
                 //ipZ = -5000.0f;
             }
-            else if (hasBomb == TRUE + 4) 	// It's a JSOW bomb
+            else if (hasBomb == TRUE + 4)  // It's a JSOW bomb
             {
                 ipX = self->XPos();
                 ipY = self->YPos();
@@ -3286,8 +3286,8 @@ void DigitalBrain::IPCheck(void)
                 }
                 //Cobra - Attempt to let JSOW flights target earlier
                 //else if (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
-                //					(((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)) ||
-                else if	(hasBomb == TRUE + 4)
+                // (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW)) ||
+                else if (hasBomb == TRUE + 4)
                 {
                     if ((FabsF(rangeSq) < FabsF((25.0F * NM_TO_FT) * (25.0F * NM_TO_FT))) &&
                         (FabsF(tgtrangeSq) < (g_fAIJSOWMaxRange * NM_TO_FT) * (g_fAIJSOWMaxRange * NM_TO_FT)))
@@ -3322,8 +3322,8 @@ void DigitalBrain::IPCheck(void)
 
                 // Ask for permission to engage
                 SetATCFlag(AskedToEngage);
-                edata[0]	= ((FlightClass*)self->GetCampaignObject())->callsign_id;
-                edata[1]	= (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing + 1;
+                edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
+                edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + isWing + 1;
                 response = rcREQUESTTOENGAGE;
                 AiMakeRadioResponse(self, response, edata);
             }
@@ -3372,15 +3372,15 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 
 
     // Check for JDAM/JSOW ready-to-drop
-    /*	if ((self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP) && (Sms->GetCurrentHardpoint() > 0) &&
-    	((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
-    	(((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
-    	((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))) &&
-    	(!Sms->JDAMPowered))
-    	return;*/
+    /* if ((self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP) && (Sms->GetCurrentHardpoint() > 0) &&
+     ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
+     (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
+     ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))) &&
+     (!Sms->JDAMPowered))
+     return;*/
 
     if ((self->IsPlayer() && self->AutopilotType() != AircraftClass::CombatAP) && TheBomb &&
-        (TheBomb->IsSetBombFlag(BombClass::IsGPS) || TheBomb->IsSetBombFlag(BombClass::IsJSOW)) &&	(!Sms->JDAMPowered))
+        (TheBomb->IsSetBombFlag(BombClass::IsGPS) || TheBomb->IsSetBombFlag(BombClass::IsJSOW)) && (!Sms->JDAMPowered))
         return;
 
 
@@ -3513,9 +3513,9 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
             {
                 // COBRA - RED - FIXING POSSIBLE CTDs
                 // Cobra - rippling pair only for GPS JDAM/JSOW
-                /*				if ((Sms->GetCurrentHardpoint() > 0) && ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
-                				(((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
-                				((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
+                /* if ((Sms->GetCurrentHardpoint() > 0) && ((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType()==wtGPS) ||
+                 (((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer) &&
+                 ((BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer)->IsSetBombFlag(BombClass::IsJSOW))))*/
                 if (TheBomb && (TheBomb->IsSetBombFlag(BombClass::IsJSOW) || TheBomb->IsSetBombFlag(BombClass::IsGPS)))
                     Sms->SetAGBRippleCount(2);
                 else if (wt >= 1900) // 2000 lb'ers one at a time
@@ -3693,8 +3693,8 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
         if (SimLibElapsedTime > waitingForShot)
         {
             // 2001-08-31 REMOVED BY S.G. NOT USED ANYWAY AND I NEED THE FLAG FOR SOMETHING ELSE
-            //			if (approxRange < 1.2F * FCC->airGroundRange)
-            //				SetATCFlag(InhibitDefensive);
+            // if (approxRange < 1.2F * FCC->airGroundRange)
+            // SetATCFlag(InhibitDefensive);
 
             // Check for too close
             if (approxRange < 0.5F * FCC->airGroundRange)
@@ -3865,7 +3865,7 @@ void DigitalBrain::FireAGMissile(float approxRange, float ata)
 
     // Check Timer
     // 2001-07-12 MODIFIED BY S.G. DON'T LAUNCH UNTIL CLOSE TO OUR ATTACK ALTITUDE
-    //	if ( SimLibElapsedTime >= waitingForShot )
+    // if ( SimLibElapsedTime >= waitingForShot )
     if (SimLibElapsedTime >= waitingForShot && self->ZPos() - trackZ >= -500.0f)
     {
         SetFlag(MslFireFlag);
@@ -3902,7 +3902,7 @@ void DigitalBrain::FireAGMissile(float approxRange, float ata)
         // continue with guns/rockets only -- reset
         // agDoctrine if this is the case
         // 2001-05-03 MODIFIED BY S.G. WE STOP FIRING WHEN WE HAVE AN ODD NUMBER OF MISSILE LEFT (MEANT WE FIRED ONE ALREADY) THIS WILL LIMIT IT TO 2 MISSILES PER TARGET
-        //		if (Sms->NumCurrentWpn() == 1 )
+        // if (Sms->NumCurrentWpn() == 1 )
 
         if ((hasBomb != TRUE + 4) && Sms->NumCurrentWpn() & 1)
         {
@@ -4001,7 +4001,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
     }
 
     // put pipper on target
-    if (groundTargetPtr)//			&&
+    if (groundTargetPtr)// &&
         //ata < 45 * DTR)
     {
         static float azRough = 10 * DTR;
@@ -4021,7 +4021,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
         TargetAzEl(self, tx, ty, tz, taz, tel);
 
         float tgtAltDelta = self->ZPos() - groundTargetPtr->BaseData()->ZPos();
-        float selfAlt	  = self->ZPos() - OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
+        float selfAlt   = self->ZPos() - OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
 
 
         float iaz, iel; // predicted impact
@@ -4247,7 +4247,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
 
                 //else
                 //fprintf(fp,"*WING* hdg %f ata %f pitch %f tel %f  taz %f  dtaz %f  iel %f  iaz %f  diaz %f  ang %f  Rng %f  rStk %f  pStk %f \n",
-                //		self->Yaw()*RTD, ata*RTD, self->Pitch()*RTD, tel*RTD, taz*RTD, dtaz, iel*RTD, iaz*RTD, diaz, angle*RTD, approxRange / NM_TO_FT, rStick*RTD, pStick*RTD );
+                // self->Yaw()*RTD, ata*RTD, self->Pitch()*RTD, tel*RTD, taz*RTD, dtaz, iel*RTD, iaz*RTD, diaz, angle*RTD, approxRange / NM_TO_FT, rStick*RTD, pStick*RTD );
                 fflush(fp);
             }
 
@@ -4320,7 +4320,7 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
 
             // bad pass, flyout and re-lineup
             if (approxRange < 1500 && rocketMnvr == RocketFlyToTgt) //&&
-                //fabs(taz)	> 45 * DTR	)
+                //fabs(taz) > 45 * DTR )
             {
                 if (fp && self->IsPlayer())
                     fprintf(fp, "Too Close\n");
@@ -4436,13 +4436,13 @@ int DigitalBrain::MaverickSetup(float rx, float ry, float ata, float approxRange
                 // that will be used in sms launch missile
                 FCC->SetTarget(groundTargetPtr);
 
-                az	= (float)atan2(ry, rx);
+                az = (float)atan2(ry, rx);
                 ShiAssert(Sms->curWeapon->IsMissile());
                 rMax = ((MissileClass*)Sms->GetCurrentWeapon())->GetRMax(-self->ZPos(), self->GetVt(), az, 0.0f, 0.0f);
 
                 // 2001-08-31 REMOVED BY S.G. NOT USED ANYWAY AND I NEED THE FLAG FOR SOMETHING ELSE
-                //				if (approxRange < rMax)
-                //					SetATCFlag(InhibitDefensive);
+                // if (approxRange < rMax)
+                // SetATCFlag(InhibitDefensive);
 
                 // rmin is just a percent of rmax
                 rMin = rMax * 0.1f;
@@ -4475,24 +4475,24 @@ int DigitalBrain::MaverickSetup(float rx, float ry, float ata, float approxRange
                 // Check for Min Range
                 //if (approxRange < 1.1F * rMin || ata > 165.0F * DTR)
                 //{
-                //	// Bail and try again
-                //	dx = ( self->XPos() - trackX );
-                //	dy = ( self->YPos() - trackY );
-                //	approxRange = (float)sqrt( dx * dx + dy * dy );
-                //	dx /= approxRange;
-                //	dy /= approxRange;
+                // // Bail and try again
+                // dx = ( self->XPos() - trackX );
+                // dy = ( self->YPos() - trackY );
+                // approxRange = (float)sqrt( dx * dx + dy * dy );
+                // dx /= approxRange;
+                // dy /= approxRange;
 
-                //	// COBRA - RED - Calculate minimum range for a nice ATA
-                //	float r=rMax * 0.75f + (rMax) * PRANDFloatPos() * 0.25f;
-                //	ipX = trackX + dx * r ;
-                //	ipY = trackY + dy * r ;
+                // // COBRA - RED - Calculate minimum range for a nice ATA
+                // float r=rMax * 0.75f + (rMax) * PRANDFloatPos() * 0.25f;
+                // ipX = trackX + dx * r ;
+                // ipY = trackY + dy * r ;
 
-                //	ShiAssert (ipX > 0.0F);
+                // ShiAssert (ipX > 0.0F);
 
-                //	// Start again
-                //	onStation = Crosswind;
-                //	//MonoPrint ("Too close to Maverick, head to IP and try again\n");
-                //	retval = FALSE;
+                // // Start again
+                // onStation = Crosswind;
+                // //MonoPrint ("Too close to Maverick, head to IP and try again\n");
+                // retval = FALSE;
                 //}
 
                 // FRB
@@ -4525,7 +4525,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
     SMSClass* Sms = self->Sms;
     float /*dx, dy,*/ az, rMin, rMax;
     int retval = TRUE;
-    HarmTargetingPod	*theHTS;
+    HarmTargetingPod *theHTS;
 
     theHTS = (HarmTargetingPod*)FindSensor(self, SensorClass::HTS);
 
@@ -4543,7 +4543,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
     // that will be used in sms launch missile
     FCC->SetTarget(groundTargetPtr);
 
-    az	= (float)atan2(ry, rx);
+    az = (float)atan2(ry, rx);
 
     // Got this null in multiplayer - RH
     ShiAssert(Sms->curWeapon);
@@ -4615,16 +4615,16 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
 
         // END OF ADDED SECTION
         // 2001-05-27 MODIFIED BY S.G. LAUNCH AT A CLOSER RANGE IF NOT EMITTING (AND IT'S THE ONLY WEAPONS ON BOARD - TESTED SOMEWHERE ELSE)
-        //		if ( !((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting() && approxRange > 0.5F * rMax)
-        //			retval = FALSE;
+        // if ( !((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting() && approxRange > 0.5F * rMax)
+        // retval = FALSE;
         // 2002-01-20 MODIFIED BY S.G. If RdrRng() is zero, this means the radar is off. Can't fire at it if it's off! (only valid for sim object)
-        //		if ( !((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting())
+        // if ( !((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting())
         if (!((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->IsEmitting() || ((SimBaseClass *)groundTargetPtr->BaseData())->RdrRng() == 0)
         {
             retval = FALSE;
 
             // 2001-07-02 MODIFIED BY S.G. IT'S NOW 0.25 SO TWICE AS CLOSE AS BEFORE
-            //			if (approxRange < 0.5F * rMax)
+            // if (approxRange < 0.5F * rMax)
             if (approxRange < 0.25F * rMax)
             {
                 // 2001-06-24 ADDED BY S.G. TRY WITH SOMETHING ELSE IF YOU CAN
@@ -4684,8 +4684,8 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
 
         // END OF ADDED SECTION
         // 2001-05-27 MODIFIED BY S.G. LAUNCH AT A CLOSER RANGE IF NOT EMITTING (AND IT'S THE ONLY WEAPONS ON BOARD - TESTED SOMEWHERE ELSE)
-        //		if ( !groundTargetPtr->BaseData()->IsEmitting() && approxRange > 0.5F * rMax)
-        //			retval = FALSE;
+        // if ( !groundTargetPtr->BaseData()->IsEmitting() && approxRange > 0.5F * rMax)
+        // retval = FALSE;
         // 2001-06-05 MODIFIED BY S.G. THAT'S IT IF YOU CAN CONNECT WITH IT...
         // 2001-06-21 MODIFIED BY S.G. EVEN IF EMITTING, IF IT'S NOT AGGREGATED, DON'T FIRE (IE retval = FALSE)
         if (!groundTargetPtr->BaseData()->IsEmitting() || !((CampBaseClass *)groundTargetPtr->BaseData())->IsAggregate())
@@ -4693,7 +4693,7 @@ int DigitalBrain::HARMSetup(float rx, float ry, float ata, float approxRange)
             retval = FALSE;
 
             // 2001-07-02 MODIFIED BY S.G. IT'S NOW 0.25 SO TWICE AS CLOSE AS BEFORE
-            //			if (approxRange < 0.5F * rMax) {
+            // if (approxRange < 0.5F * rMax) {
             if (approxRange < 0.25F * rMax)
             {
                 // 2001-06-24 ADDED BY S.G. TRY WITH SOMETHING ELSE IF YOU CAN
@@ -4761,7 +4761,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
     // that will be used in sms launch
     FCC->SetTarget(groundTargetPtr);
 
-    az	= (float)atan2(ry, rx);
+    az = (float)atan2(ry, rx);
 
     // Got this null in multiplayer - RH
     ShiAssert(Sms->curWeapon);

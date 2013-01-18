@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     16Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #include "stdafx.h"
 #include <stdio.h>
@@ -19,7 +19,7 @@
 
 extern bool g_bEnableStaticTerrainTextures;
 extern bool g_bUseMappedFiles;
-extern int	fileout;
+extern int fileout;
 extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
 extern void ReadDTXnFile(unsigned long count, void * buffer);
 extern void WriteDTXnFile(unsigned long count, void *buffer);
@@ -33,8 +33,8 @@ MEM_POOL gFartexMemPool;
 // OW avoid having the TextureHandle maintaining a copy of the texture bitmaps
 #define _DONOT_COPY_BITS
 
-#define	ARGB_TEXEL_SIZE 4
-#define	ARGB_TEXEL_BITS 32
+#define ARGB_TEXEL_SIZE 4
+#define ARGB_TEXEL_BITS 32
 
 #define MAX(a,b)            ((a>b)?a:b)
 #define MIN(a,b)            ((a<b)?a:b)
@@ -43,18 +43,18 @@ MEM_POOL gFartexMemPool;
 //#define MINIMUM(a,b,c)      ((a<b)?MIN(a,c):MIN(b,c))
 
 
-FarTexDB			TheFarTextures;
-static const DWORD	INVALID_TEXID = 0xFFFFFFFF;
+FarTexDB TheFarTextures;
+static const DWORD INVALID_TEXID = 0xFFFFFFFF;
 
 // Setup the texture database
 BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 {
-    char	filename[MAX_PATH];
-    HANDLE	listFile;
-    BOOL	result;
-    DWORD	bytesRead;
-    int		i;
-    DWORD	tilesAtLOD;
+    char filename[MAX_PATH];
+    HANDLE listFile;
+    BOOL result;
+    DWORD bytesRead;
+    int i;
+    DWORD tilesAtLOD;
 
 
     ShiAssert(hrc);
@@ -226,9 +226,9 @@ void FarTexDB::TimeUpdateCallback(void *self)
 
 void FarTexDB::SetLightLevel(void)
 {
-    Tcolor	lightColor;			// Current light color
-    DWORD	scratchPal[256];	// Scratch palette for doing lighting calculations
-    BYTE	*to, *from, *stop;	// Pointers used to walk through the palette
+    Tcolor lightColor; // Current light color
+    DWORD scratchPal[256]; // Scratch palette for doing lighting calculations
+    BYTE *to, *from, *stop; // Pointers used to walk through the palette
     FLOAT tmpR, tmpG, tmpB, h, s, v;
 
     ShiAssert(palette);
@@ -237,7 +237,7 @@ void FarTexDB::SetLightLevel(void)
     // Decide what color to use for lighting
     if (TheTimeOfDay.GetNVGmode())
     {
-        lightLevel	 = NVG_LIGHT_LEVEL;
+        lightLevel  = NVG_LIGHT_LEVEL;
         lightColor.r = 0.0f;
         lightColor.g = NVG_LIGHT_LEVEL;
         lightColor.b = 0.0f;
@@ -252,41 +252,41 @@ void FarTexDB::SetLightLevel(void)
     {
         // Apply the current lighting
         from = (BYTE *)palette;
-        to	 = (BYTE *)scratchPal;
+        to  = (BYTE *)scratchPal;
         stop = to + 256 * 4;
 
         while (to < stop)
         {
-            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.r)); to++, from++;	// Red
-            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.g)); to++, from++;	// Green
-            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.b)); to++, from++;	// Blue
+            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.r)); to++, from++; // Red
+            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.g)); to++, from++; // Green
+            //*to = static_cast<BYTE>(FloatToInt32(*from * lightColor.b)); to++, from++; // Blue
             tmpR = *from * 1.0f;
-            from++;	// Red
+            from++; // Red
             tmpG = *from * 1.0f;
-            from++;	// Green
+            from++; // Green
             tmpB = *from * 1.0f;
-            from++;	// Blue
+            from++; // Blue
             from++; // Alpha
 
             // 0:Summer, 1:Fall, 2:Winter, 3:Spring
 
-            if (PlayerOptions.Season == 1)	//Autumn
+            if (PlayerOptions.Season == 1) //Autumn
             {
-                if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225))	//Not Greyscale / green / not very bright
+                if (!((tmpR == tmpG && tmpG == tmpB) || tmpG < 60 || (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (h >= 30 && h <= 165) 	//Green
+                    if (h >= 30 && h <= 165)  //Green
                     {
-                        //h *= 0.6f;	// min27 (yellow/orange/terracota/brown)
-                        h = h * 0.33f + 15;	//Shift to brown
-                        s *= 1.2f;	//more saturated (intenser brown, just mudy green otherwise
-                        v *= 0.9f;	//darker
+                        //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
+                        h = h * 0.33f + 15; //Shift to brown
+                        s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
+                        v *= 0.9f; //darker
                     }
-                    else if (!(v > 0.9 && s > 0.9))	//Not a strong green, but neither very bright
+                    else if (!(v > 0.9 && s > 0.9)) //Not a strong green, but neither very bright
                     {
-                        s *= 0.9f;	//less saturated
-                        v *= 0.85f;	//darken a bit
+                        s *= 0.9f; //less saturated
+                        v *= 0.85f; //darken a bit
                     }
 
                     if (s > 255) s = 255;
@@ -296,42 +296,42 @@ void FarTexDB::SetLightLevel(void)
                     HSVtoRGB(&tmpR, &tmpG, &tmpB, h, s, v);
                 }
             }
-            else if (PlayerOptions.Season == 2)	//Winter
+            else if (PlayerOptions.Season == 2) //Winter
             {
-                if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60)	//((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255)))	//Greyscale //or pure color
+                if (!(tmpR == tmpG && tmpR == tmpB) || tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //|| (tmpR == 255 && tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
                     if (!(s <= 0.2 || h == -1))  //If Not Greyscale
                     {
-                        if (h >= 45 && h <= 150)	//If Green
+                        if (h >= 45 && h <= 150) //If Green
                         {
                             s = 0;
-                            v = 255;	//Make white
+                            v = 255; //Make white
                         }
                     }
                     else
                     {
-                        v *= 1.3f;	//Make brighter
+                        v *= 1.3f; //Make brighter
                     }
 
-                    //else if (v<=200) v *= 0.9f;	//Greyscale, but not white: darken a bit (to increase contrast)
-                    //else if (v>=200) v *= 1.2f;	//bright...make even brighter
+                    //else if (v<=200) v *= 0.9f; //Greyscale, but not white: darken a bit (to increase contrast)
+                    //else if (v>=200) v *= 1.2f; //bright...make even brighter
 
-                    //if (s==0 && v < 240) v *= 0.85f;	//Greyscale, but not white: darken a bit (to increase contrast)
-                    //if (s>230) s = 255;					//bright...make even brighter
+                    //if (s==0 && v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
+                    //if (s>230) s = 255; //bright...make even brighter
                     if (v > 255) v = 255;
 
                     HSVtoRGB(&tmpR, &tmpG, &tmpB, h, s, v);
                 }
             }
-            else if (PlayerOptions.Season == 3)	//Spring
+            else if (PlayerOptions.Season == 3) //Spring
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
                 if (!(s <= 0.1 || h == -1))  //Not Greyscale
                 {
-                    if (h >= 45 && h <= 160)	//Green
+                    if (h >= 45 && h <= 160) //Green
                     {
                         s *= 0.8f;
                         v *= 1.2f;
@@ -364,87 +364,87 @@ void FarTexDB::SetLightLevel(void)
             if (TheTimeOfDay.GetNVGmode())
             {
                 *to = 0;
-                to++;	// Red
+                to++; // Red
                 *to = 255;
-                to++;	// Green
+                to++; // Green
                 *to = 0;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 0;
-                to++;	// Red
+                to++; // Red
                 *to = 255;
-                to++;	// Green
+                to++; // Green
                 *to = 0;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 0;
-                to++;	// Red
+                to++; // Red
                 *to = 255;
-                to++;	// Green
+                to++; // Green
                 *to = 0;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 0;
-                to++;	// Red
+                to++; // Red
                 *to = 255;
-                to++;	// Green
+                to++; // Green
                 *to = 0;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
             }
             else
             {
                 *to = 115;
-                to++;	// Red
+                to++; // Red
                 *to = 171;
-                to++;	// Green
+                to++; // Green
                 *to = 155;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 183;
-                to++;	// Red
+                to++; // Red
                 *to = 127;
-                to++;	// Green
+                to++; // Green
                 *to = 83;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 171;
-                to++;	// Red
+                to++; // Red
                 *to = 179;
-                to++;	// Green
+                to++; // Green
                 *to = 139;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
 
                 *to = 171;
-                to++;	// Red
+                to++; // Red
                 *to = 171;
-                to++;	// Green
+                to++; // Green
                 *to = 171;
-                to++;	// Blue
+                to++; // Blue
                 *to = 255;
-                to++;	// Alpha
+                to++; // Alpha
             }
         }
 
         // Update MPR's palette
         palHandle->Load(
-            MPR_TI_PALETTE,	// Palette info
-            32,				// Bits per entry
-            0,				// Start index
-            256,			// Number of entries
+            MPR_TI_PALETTE, // Palette info
+            32, // Bits per entry
+            0, // Start index
+            256, // Number of entries
             (BYTE *)&scratchPal);
     }
 }
@@ -761,12 +761,12 @@ void FarTexDB::FlushHandles()
 
 bool FarTexDB::SyncDDSTextures(bool bForce)
 {
-    DDSURFACEDESC2	ddsd;
-    DWORD			dwMagic;
-    BYTE			*pBuf;
-    char			szRawName[256], szDDSName[256];
-    bool			bOnce = false;
-    FILE			*fpRaw, *fpDDS;
+    DDSURFACEDESC2 ddsd;
+    DWORD dwMagic;
+    BYTE *pBuf;
+    char szRawName[256], szDDSName[256];
+    bool bOnce = false;
+    FILE *fpRaw, *fpDDS;
 
     fartexDDSFile.Close();
 
@@ -829,10 +829,10 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
 
 bool FarTexDB::DumpImageToFile(DWORD offset)
 {
-    DWORD	dwSize, *pal, dwTmp, n, i;
-    BYTE	*pSrc, *pDst;
-    char	szFileName[256];
-    FILE	*fp;
+    DWORD dwSize, *pal, dwTmp, n, i;
+    BYTE *pSrc, *pDst;
+    char szFileName[256];
+    FILE *fp;
 
 
     ShiAssert(IsReady());
@@ -902,7 +902,7 @@ bool FarTexDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
 
 // r,g,b values are from 0 to 1
 // h = [0,360], s = [0,1], v = [0,1]
-//		if s == 0, then h = -1 (undefined)
+// if s == 0, then h = -1 (undefined)
 void FarTexDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
 {
     float delta;
@@ -931,14 +931,14 @@ void FarTexDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
     else
     {
         if (r == *v)
-            *h = (g - b) / delta;		// between yellow & magenta
+            *h = (g - b) / delta; // between yellow & magenta
         else if (g == *v)
-            *h = 2 + (b - r) / delta;	// between cyan & yellow
+            *h = 2 + (b - r) / delta; // between cyan & yellow
         else
-            *h = 4 + (r - g) / delta;	// between magenta & cyan
+            *h = 4 + (r - g) / delta; // between magenta & cyan
     }
 
-    *h *= 60;				// degrees
+    *h *= 60; // degrees
 
     if (*h < 0) *h += 360;
 }
@@ -955,9 +955,9 @@ void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
         return;
     }
 
-    h /= 60.0f;			// sector 0 to 5
+    h /= 60.0f; // sector 0 to 5
     i = (int)floor(h);
-    f = h - i;			// factorial part of h
+    f = h - i; // factorial part of h
     p = v * (1 - s);
     q = v * (1 - s * f);
     t = v * (1 - s * (1 - f));
@@ -994,7 +994,7 @@ void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
             *b = v;
             break;
 
-        default:		// case 5:
+        default: // case 5:
             *r = v;
             *g = p;
             *b = q;

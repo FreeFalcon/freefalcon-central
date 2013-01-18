@@ -17,7 +17,7 @@
 #include "atcbrain.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	SimFeatureClass::pool;
+MEM_POOL SimFeatureClass::pool;
 #endif
 
 void CalcTransformMatrix(SimBaseClass* theObject);
@@ -70,7 +70,7 @@ void SimFeatureClass::InitData(void)
 
 SimFeatureClass::~SimFeatureClass(void)
 {
-    ShiAssert(!baseObject);	// This should be cleaned up in SimulationDriver::SleepCampaignFlight!
+    ShiAssert(!baseObject); // This should be cleaned up in SimulationDriver::SleepCampaignFlight!
 
     if (baseObject)
     {
@@ -135,7 +135,7 @@ int SimFeatureClass::Wake(void)
     //if (viewpoint)
     z = OTWDriver.GetApproxGroundLevel(XPos(), YPos());
     //else
-    //	z = 0.0;
+    // z = 0.0;
 
     SetPosition(XPos(), YPos(), z);
 
@@ -157,11 +157,11 @@ int SimFeatureClass::Wake(void)
             {
                 // TODO:  Shouldn't this stay tied to the feature so it lives until reaggrigation???
                 OTWDriver.AddSfxRequest(
-                    new SfxClass(SFX_SMOKING_FEATURE,	// type
-                                 i,									// slot #
-                                 this,								// world pos
-                                 2.0f,								// time to live
-                                 40.0f));							// scale
+                    new SfxClass(SFX_SMOKING_FEATURE, // type
+                                 i, // slot #
+                                 this, // world pos
+                                 2.0f, // time to live
+                                 40.0f)); // scale
             }
         }
 
@@ -267,24 +267,24 @@ VU_ERRCODE SimFeatureClass::InsertionCallback(void)
           // KCK: If this is an element of a campaign unit or objective, it was sent
           // to us during startup - I need to synthisize a deaggregation event.
           if (GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT)  // KCK: Leon's hack - assumes 1-100 is dogfight slot #
-    	   {
-    	      // Synthisize a deaggregation (NOTE: not a Wake())
-    	      ((CampEntity)GetCampaignObject())->SetAggregate(0);
-    	      if (!((CampEntity)GetCampaignObject())->components)
-    		   {
-    		      DeaggregateList->ForcedInsert(GetCampaignObject());
-    		      ((CampEntity)GetCampaignObject())->components = new TailInsertList();
-    		      ((CampEntity)GetCampaignObject())->components->Init();
-    		   }
-    	      // Add the element to the components list
-    	      ((CampEntity)GetCampaignObject())->components->ForcedInsert(this);
-    	   }
+        {
+           // Synthisize a deaggregation (NOTE: not a Wake())
+           ((CampEntity)GetCampaignObject())->SetAggregate(0);
+           if (!((CampEntity)GetCampaignObject())->components)
+        {
+           DeaggregateList->ForcedInsert(GetCampaignObject());
+           ((CampEntity)GetCampaignObject())->components = new TailInsertList();
+           ((CampEntity)GetCampaignObject())->components->Init();
+        }
+           // Add the element to the components list
+           ((CampEntity)GetCampaignObject())->components->ForcedInsert(this);
+        }
           else
-    	   {
-    	      // KCK: All other objects will get woken now if possible, or during sim startup.
-    	      if (OTWDriver.IsActive())
-    		      Wake();
-    	   }
+        {
+           // KCK: All other objects will get woken now if possible, or during sim startup.
+           if (OTWDriver.IsActive())
+           Wake();
+        }
        }
     */
     return SimStaticClass::InsertionCallback();

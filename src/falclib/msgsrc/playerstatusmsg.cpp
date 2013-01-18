@@ -34,9 +34,9 @@ FalconPlayerStatusMessage::~FalconPlayerStatusMessage()
 
 int FalconPlayerStatusMessage::Process(uchar autodisp)
 {
-    FalconSessionEntity		*session = (FalconSessionEntity*) Entity();
-    SimMoverClass			*mover = (SimMoverClass*) vuDatabase->Find(dataBlock.playerID);
-    SimBaseClass			*theObject;
+    FalconSessionEntity *session = (FalconSessionEntity*) Entity();
+    SimMoverClass *mover = (SimMoverClass*) vuDatabase->Find(dataBlock.playerID);
+    SimBaseClass *theObject;
 
     if (autodisp)
     {
@@ -50,13 +50,13 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
 
     if (!mover)
     {
-        FalconPlayerStatusMessage	*msg = new FalconPlayerStatusMessage(session->Id(), FalconLocalSession);
+        FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(session->Id(), FalconLocalSession);
         _tcscpy(msg->dataBlock.callsign, dataBlock.callsign);
         msg->dataBlock.playerID         = dataBlock.playerID;
         msg->dataBlock.campID           = dataBlock.campID;
         msg->dataBlock.side             = dataBlock.side;
         msg->dataBlock.pilotID          = dataBlock.pilotID;
-        msg->dataBlock.vehicleID		= dataBlock.vehicleID;
+        msg->dataBlock.vehicleID = dataBlock.vehicleID;
         msg->dataBlock.state            = dataBlock.state;
 
         VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msg);
@@ -65,10 +65,10 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         return 0;
     }
 
-    //	MonoPrint ("Player Status Message\n");
-    //	MonoPrint ("  session %08x\n", session->Id().creator_);
-    //	MonoPrint ("  mover %08x\n", mover);
-    //	MonoPrint ("  pilotID %08x\n", dataBlock.pilotID);
+    // MonoPrint ("Player Status Message\n");
+    // MonoPrint ("  session %08x\n", session->Id().creator_);
+    // MonoPrint ("  mover %08x\n", mover);
+    // MonoPrint ("  pilotID %08x\n", dataBlock.pilotID);
 
     // Update this player's state and the state of the vehicle they entered/exited
     if (dataBlock.state == PSM_STATE_ENTERED_SIM)
@@ -147,8 +147,8 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         //MonoPrint ("  State Transfered\n");
         if (mover && session)
         {
-            SimMoverClass	*oldMover = (SimMoverClass*) vuDatabase->Find(dataBlock.oldID);
-            uchar			oldpslot = 255;
+            SimMoverClass *oldMover = (SimMoverClass*) vuDatabase->Find(dataBlock.oldID);
+            uchar oldpslot = 255;
 
             //MonoPrint ("  old %08x\n", oldMover);
             if (oldMover)

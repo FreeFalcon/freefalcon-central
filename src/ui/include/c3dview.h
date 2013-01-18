@@ -18,14 +18,14 @@ private:
     Trotation currentRot_; // Camera angles for ALL viewing
     C_BSPList *objects_; // loaded objects list
 
-    ImageBuffer *m_pImgGray;		// OW
+    ImageBuffer *m_pImgGray; // OW
 
 
     float CameraHeading_, CameraPitch_, CameraRoll_;
     float ViewDistance_;
     unsigned long Time_;
-    //		long TextureLevel_;
-    //		long SmoothShading_;
+    // long TextureLevel_;
+    // long SmoothShading_;
     long MinTexture_, MaxTexture_;
     float l, t, r, b; // Viewport borders
     float sw, sh; // ImageBuffer W,H
@@ -59,12 +59,12 @@ public:
         MinTexture_ = 0;
         MaxTexture_ = 1;
         Weather_ = 0;
-        //			TextureLevel_=2;
-        //			SmoothShading_=TRUE;
+        // TextureLevel_=2;
+        // SmoothShading_=TRUE;
         sw = 800;
         sh = 600;
         LockOnView_ = 0;
-        m_pImgGray = NULL;	// OW
+        m_pImgGray = NULL; // OW
     }
     ~C_3dViewer()
     {
@@ -90,8 +90,8 @@ public:
     // VERY IMPORTANT: Camera Position is RELATIVE to Position
     // for Object Viewing: 0,0,0 is the assumed object position... camera is relative to that
     void SetCamera(float x, float y, float z, float heading, float climb, float roll);
-    //		void SetTextureLevel(long tl) { TextureLevel_=tl; }
-    //		void SetSmoothShading(long ss) { SmoothShading_=ss; }
+    // void SetTextureLevel(long tl) { TextureLevel_=tl; }
+    // void SetSmoothShading(long ss) { SmoothShading_=ss; }
     void SetTextureLevels(long min, long max)
     {
         MinTexture_ = min;
@@ -163,7 +163,7 @@ public:
     BSPLIST *LoadBSP(long ID, int objID, BOOL aircraft = FALSE);
     BSPLIST *LoadBuilding(long ID, int objID, Tpoint *pos, float heading);
     BSPLIST *LoadBridge(long ID, int objID);
-    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc, Tpoint *objPos, BSPLIST *Parent);
+    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent);
     BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype);
     BOOL Remove(long ID);
     BOOL RemoveAll();

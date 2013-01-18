@@ -17,28 +17,28 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    short		Section_;
-    short		State_;
-    TREELIST	*Owner_;
-    short		IconX_, IconY_;
-    short		TaskX_, TaskY_;
-    long		DefaultFlags_;
+    short Section_;
+    short State_;
+    TREELIST *Owner_;
+    short IconX_, IconY_;
+    short TaskX_, TaskY_;
+    long DefaultFlags_;
 
-    COLORREF	IconBgColor_[2];
-    COLORREF	FlightBgColor_[2];
+    COLORREF IconBgColor_[2];
+    COLORREF FlightBgColor_[2];
 
-    UI95_RECT	IconBg_;
-    UI95_RECT	FlightBg_;
-    C_ListBox	*Task_;
-    O_Output	*Icon_;
-    O_Output	*Callsign_;
-    O_Output	*Planes_;
-    O_Output	*Airbase_;
-    O_Output	*Status_;
+    UI95_RECT IconBg_;
+    UI95_RECT FlightBg_;
+    C_ListBox *Task_;
+    O_Output *Icon_;
+    O_Output *Callsign_;
+    O_Output *Planes_;
+    O_Output *Airbase_;
+    O_Output *Status_;
 
-    VU_ID		vuID;
+    VU_ID vuID;
 public:
 
     enum

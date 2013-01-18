@@ -51,19 +51,19 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     int             hpId;          // parent's harpoint id
     /*
-    short			rocketId;      // MLR 1/11/2004 - weapon is in this pod
+    short rocketId;      // MLR 1/11/2004 - weapon is in this pod
     int             rocketSalvoSize;  // MLR 2/2/2004 -
     short           rocketsPerPod; // MLR 1/11/2004 -
     */
-    short			weaponId;
-    short			weaponCount;
+    short weaponId;
+    short weaponCount;
     VuBin<SimWeaponClass> weaponPointer;
-    DrawableBSP		*theParent;
+    DrawableBSP *theParent;
 
 
 public:
@@ -77,45 +77,45 @@ public:
     {
         hpId = id;
     };
-    //		void SetPodId(int id) {podId = id;};
-    //		int  GetPodId(int id) {return(podId);};
-    virtual void SetPosition(float, float, float)				{};
-    virtual void SetRotation(float, float)						{};
-    virtual void GetPosition(float*, float*, float*)				{};
-    virtual void GetRotation(float*, float*)						{};
-    virtual void SetSubPosition(int, float, float, float)		{};
-    virtual void SetSubRotation(int, float, float)				{};
-    virtual void GetSubPosition(int, float*, float*, float*)	{};
-    virtual void GetSubRotation(int, float*, float*)			{};
-    virtual void SetupPoints(int)									{};
+    // void SetPodId(int id) {podId = id;};
+    // int  GetPodId(int id) {return(podId);};
+    virtual void SetPosition(float, float, float) {};
+    virtual void SetRotation(float, float) {};
+    virtual void GetPosition(float*, float*, float*) {};
+    virtual void GetRotation(float*, float*) {};
+    virtual void SetSubPosition(int, float, float, float) {};
+    virtual void SetSubRotation(int, float, float) {};
+    virtual void GetSubPosition(int, float*, float*, float*) {};
+    virtual void GetSubRotation(int, float*, float*) {};
+    virtual void SetupPoints(int) {};
     virtual int NumPoints(void)
     {
         return 0;
     };
 
-    virtual void SetSMS(SMSClass *Sms)						{};
+    virtual void SetSMS(SMSClass *Sms) {};
     void SetParentDrawPtr(DrawableBSP* Parent);
 
-    virtual void AttachPylonBSP(void)						{};
+    virtual void AttachPylonBSP(void) {};
     virtual DrawableBSP* DetachPylonBSP(void)
     {
         return NULL;
     };
-    virtual void DeletePylonBSP(void)						{};
+    virtual void DeletePylonBSP(void) {};
 
-    virtual void AttachRackBSP(void)						{};
+    virtual void AttachRackBSP(void) {};
     virtual DrawableBSP* DetachRackBSP(void)
     {
         return NULL;
     };
-    virtual void DeleteRackBSP(void)						{};
+    virtual void DeleteRackBSP(void) {};
 
     virtual void AttachAllWeaponBSP(void);
     virtual void AttachWeaponBSP(SimWeaponClass *weapPtr);
     virtual void DetachAllWeaponBSP(void);
     virtual void DetachWeaponBSP(SimWeaponClass *weapPtr);
-    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void);		// remove weapon ptr and bsp
-    virtual void DeleteAllWeaponBSP(void);		// detaches and deletes
+    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void); // remove weapon ptr and bsp
+    virtual void DeleteAllWeaponBSP(void); // detaches and deletes
 
     virtual int DetermineRackData(int HPGroup, int WeaponId, int WeaponCount);
     virtual int GetRackDataFlags(void);
@@ -134,32 +134,32 @@ public:
     {
         return NULL;
     };
-    virtual void SetRack(DrawableBSP*)							{};
+    virtual void SetRack(DrawableBSP*) {};
     virtual DrawableBSP* GetPylon(void)
     {
         return NULL;
     };
-    virtual void SetPylon(DrawableBSP*)							{};
+    virtual void SetPylon(DrawableBSP*) {};
     virtual int GetRackId(void)
     {
         return 0;
     };
-    virtual void SetRackId(int)										{};
+    virtual void SetRackId(int) {};
     virtual int GetPylonId(void)
     {
         return 0;
     };
-    virtual void SetPylonId(int)										{};
+    virtual void SetPylonId(int) {};
     virtual WeaponData* GetWeaponData(void)
     {
         return NULL;
     };
-    virtual void SetWeaponData(WeaponData)							{};
+    virtual void SetWeaponData(WeaponData) {};
     virtual WeaponType GetWeaponType(void)
     {
         return (WeaponType)0;
     };
-    virtual void SetWeaponType(WeaponType)							{};
+    virtual void SetWeaponType(WeaponType) {};
     virtual WeaponClass GetWeaponClass(void)
     {
         return (WeaponClass)0;
@@ -168,9 +168,9 @@ public:
     {
         return wdNoDomain;
     };
-    virtual void SetWeaponClass(WeaponClass)						{};
+    virtual void SetWeaponClass(WeaponClass) {};
     virtual GunClass* GetGun(void);
-    virtual void SetGun(GunClass*)									{};
+    virtual void SetGun(GunClass*) {};
 
     virtual char *GetPylonMnemonic(void)
     {
@@ -211,7 +211,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 private:
     float xPos;
@@ -318,8 +318,8 @@ public:
     virtual void AttachWeaponBSP(SimWeaponClass *weapPtr);
     virtual void DetachAllWeaponBSP(void);
     virtual void DetachWeaponBSP(SimWeaponClass *weapPtr);
-    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void);		// remove weapon ptr and bsp
-    virtual void DeleteAllWeaponBSP(void);		// detaches and deletes
+    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void); // remove weapon ptr and bsp
+    virtual void DeleteAllWeaponBSP(void); // detaches and deletes
 
     virtual int DetermineRackData(int HPGroup, int WeaponId, int WeaponCount);
     virtual int GetRackDataFlags(void);

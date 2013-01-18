@@ -22,7 +22,7 @@ float AirframeClass::GetOptimumCruise(void)
 
     float Cl;
     float OptimumAirspeed;
-    float	OptimumMach;
+    float OptimumMach;
     float pressureRatio;
 
     Cl = Math.TwodInterp(0.7F,
@@ -35,20 +35,20 @@ float AirframeClass::GetOptimumCruise(void)
                          &curMachBreak,
                          &curAlphaBreak) * aeroData->clFactor;
     //me13 RHOASL from rho
-    OptimumAirspeed	= (float)sqrt(2.0F * weight / (RHOASL * area * Cl)) * FTPSEC_TO_KNOTS;
-    pressureRatio		= rho / RHOASL;
-    OptimumMach			= CalcMach(OptimumAirspeed, pressureRatio);
+    OptimumAirspeed = (float)sqrt(2.0F * weight / (RHOASL * area * Cl)) * FTPSEC_TO_KNOTS;
+    pressureRatio = rho / RHOASL;
+    OptimumMach = CalcMach(OptimumAirspeed, pressureRatio);
 
     return OptimumMach;
 }
 
-float	AirframeClass::GetOptimumAltitude(void)
+float AirframeClass::GetOptimumAltitude(void)
 {
 
     float optimum_altitude;
 
     // note: must find the drag index for either aim120 or f16
-    optimum_altitude =	OPTIMUM_ALT_M1 * dragIndex * 3 + // me123 take drag into acount
+    optimum_altitude = OPTIMUM_ALT_M1 * dragIndex * 3 + // me123 take drag into acount
                         OPTIMUM_ALT_M2 * weight +
                         OPTIMUM_ALT_B;
 
@@ -72,11 +72,11 @@ float AirframeClass::GetOptKias(int mode)
                          &curMachBreak,
                          &curAlphaBreak) * aeroData->clFactor;
     //me13 RHOASL from rho
-    OptimumAirspeed	= (float)sqrt(2.0F * weight / (RHOASL * area * Cl)) * FTPSEC_TO_KNOTS;
+    OptimumAirspeed = (float)sqrt(2.0F * weight / (RHOASL * area * Cl)) * FTPSEC_TO_KNOTS;
 
-    if (mode == 0) OptimumAirspeed	+= 100.0f;
+    if (mode == 0) OptimumAirspeed += 100.0f;
 
-    if (mode == 2) OptimumAirspeed	+= 30.0f;
+    if (mode == 2) OptimumAirspeed += 30.0f;
 
     if (1)
     {

@@ -105,18 +105,18 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(OTWStepPrevAC)
     USER_FUNCTION(OTWStepNextPadlock)
     USER_FUNCTION(OTWStepPrevPadlock)
-    USER_FUNCTION(OTWStepNextPadlockAA)		// 2002-03-12 S.G.
-    USER_FUNCTION(OTWStepPrevPadlockAA)		// 2002-03-12 S.G.
-    USER_FUNCTION(OTWStepNextPadlockAG)		// 2002-03-12 S.G.
-    USER_FUNCTION(OTWStepPrevPadlockAG)		// 2002-03-12 S.G.
+    USER_FUNCTION(OTWStepNextPadlockAA) // 2002-03-12 S.G.
+    USER_FUNCTION(OTWStepPrevPadlockAA) // 2002-03-12 S.G.
+    USER_FUNCTION(OTWStepNextPadlockAG) // 2002-03-12 S.G.
+    USER_FUNCTION(OTWStepPrevPadlockAG) // 2002-03-12 S.G.
     USER_FUNCTION(OTWToggleNames)
     USER_FUNCTION(OTWToggleCampNames)
     USER_FUNCTION(OTWSelectF3PadlockMode)
-    USER_FUNCTION(OTWSelectF3PadlockModeAA)		// 2002-03-12 S.G.
-    USER_FUNCTION(OTWSelectF3PadlockModeAG)		// 2002-03-12 S.G.
+    USER_FUNCTION(OTWSelectF3PadlockModeAA) // 2002-03-12 S.G.
+    USER_FUNCTION(OTWSelectF3PadlockModeAG) // 2002-03-12 S.G.
     USER_FUNCTION(OTWSelectEFOVPadlockMode)
-    USER_FUNCTION(OTWSelectEFOVPadlockModeAA)	// 2002-03-12 S.G.
-    USER_FUNCTION(OTWSelectEFOVPadlockModeAG)	// 2002-03-12 S.G.
+    USER_FUNCTION(OTWSelectEFOVPadlockModeAA) // 2002-03-12 S.G.
+    USER_FUNCTION(OTWSelectEFOVPadlockModeAG) // 2002-03-12 S.G.
     USER_FUNCTION(OTWRadioMenuStep)
     USER_FUNCTION(OTWRadioMenuStepBack)
     USER_FUNCTION(OTWStepMFD1)
@@ -153,7 +153,7 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(OTWToggleLocationDisplay)
     USER_FUNCTION(OTWToggleAeroDisplay) // JPO
     USER_FUNCTION(OTWToggleFlapDisplay) // TJL 11/09/03 On/Off Flap display
-    USER_FUNCTION(OTWToggleEngineDisplay)	// Retro 1Feb2004
+    USER_FUNCTION(OTWToggleEngineDisplay) // Retro 1Feb2004
     USER_FUNCTION(OTWScaleDown)
     USER_FUNCTION(OTWScaleUp)
     USER_FUNCTION(OTWSetObjDetail)
@@ -202,19 +202,19 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(SimToggleChatMode)
     USER_FUNCTION(SimMotionFreeze)
     USER_FUNCTION(ScreenShot)
-    USER_FUNCTION(PrettyScreenShot)	// Retro 7May2004
+    USER_FUNCTION(PrettyScreenShot) // Retro 7May2004
     USER_FUNCTION(FOVToggle)
-    USER_FUNCTION(FOVDecrease)	//Wombat778 9-27-2003
-    USER_FUNCTION(FOVIncrease)	//Wombat778 9-27-2003
-    USER_FUNCTION(FOVDefault)	//Wombat778 9-27-2003
+    USER_FUNCTION(FOVDecrease) //Wombat778 9-27-2003
+    USER_FUNCTION(FOVIncrease) //Wombat778 9-27-2003
+    USER_FUNCTION(FOVDefault) //Wombat778 9-27-2003
     //JAM 01Dec03 - Removing this USER_FUNCTION(OTWToggleAlpha)
     USER_FUNCTION(SimAVTRToggle)
     USER_FUNCTION(SimSelectiveJettison)
     USER_FUNCTION(SimEmergencyJettison)
     USER_FUNCTION(SimWheelBrakes)
     USER_FUNCTION(SimECMOn)
-    USER_FUNCTION(SimECMStandby)	//Wombat778 11-3-2003 + MD 20031128
-    USER_FUNCTION(SimECMConsent)	//Wombat778 11-3-2003 + MD 20031128
+    USER_FUNCTION(SimECMStandby) //Wombat778 11-3-2003 + MD 20031128
+    USER_FUNCTION(SimECMConsent) //Wombat778 11-3-2003 + MD 20031128
     USER_FUNCTION(SimRadarElevationCenter)
     USER_FUNCTION(SimHsiCourseInc)
     USER_FUNCTION(SimHsiCourseDec)
@@ -362,8 +362,8 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(SimHUDBrtDay)  // MD
     USER_FUNCTION(SimHUDBrtAuto)  // MD
     USER_FUNCTION(SimHUDBrtNight)  // MD
-    USER_FUNCTION(SimHUDBrightnessUp)	//MI
-    USER_FUNCTION(SimHUDBrightnessDown)	//MI
+    USER_FUNCTION(SimHUDBrightnessUp) //MI
+    USER_FUNCTION(SimHUDBrightnessDown) //MI
     USER_FUNCTION(SimCycleRadioChannel)
     USER_FUNCTION(SimDecRadioChannel)  // MD
     USER_FUNCTION(SimToggleRadioVolume)
@@ -865,10 +865,10 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(Profiler_Self)
     USER_FUNCTION(ToggleProfilerDisplay)
     USER_FUNCTION(ToggleProfiler)
-    //USER_FUNCTION(Profiler_HistoryBack)	// Retro 22May2004
-    //USER_FUNCTION(Profiler_HistoryFwd)	// Retro 22May2004
-    //USER_FUNCTION(Profiler_HistoryBackFast)	// Retro 22May2004
-    //USER_FUNCTION(Profiler_HistoryFwdFast)	// Retro 22May2004
+    //USER_FUNCTION(Profiler_HistoryBack) // Retro 22May2004
+    //USER_FUNCTION(Profiler_HistoryFwd) // Retro 22May2004
+    //USER_FUNCTION(Profiler_HistoryBackFast) // Retro 22May2004
+    //USER_FUNCTION(Profiler_HistoryFwdFast) // Retro 22May2004
     // end Retro
 
     // Retro 21Dec2003
@@ -877,7 +877,7 @@ static struct UserFunctionListEntry UserFunctionList[] =
     // end Retro
 
     // Retro 24Dec2003
-    USER_FUNCTION(ToggleDisplacementCam)	// a dumb name for a dumb function implemented by a dumbass...
+    USER_FUNCTION(ToggleDisplacementCam) // a dumb name for a dumb function implemented by a dumbass...
     // end Retro
 
     // Retro 4Jan2004
@@ -898,9 +898,9 @@ static struct UserFunctionListEntry UserFunctionList[] =
     // Retro 12Jan2004 end
 
     USER_FUNCTION(ToggleTIR)
-    USER_FUNCTION(ToggleClickablePitMode)	//Wombat778 1-22-2004
-    USER_FUNCTION(SimToggleRearView)	//Wombat778 4-13-2004
-    USER_FUNCTION(SimToggleAltView)	//Wombat778 4-13-2004
+    USER_FUNCTION(ToggleClickablePitMode) //Wombat778 1-22-2004
+    USER_FUNCTION(SimToggleRearView) //Wombat778 4-13-2004
+    USER_FUNCTION(SimToggleAltView) //Wombat778 4-13-2004
 
 
 #ifdef _DO_VTUNE_

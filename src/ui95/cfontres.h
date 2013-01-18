@@ -3,7 +3,7 @@
 
 enum
 {
-    _FNT_CHECK_KERNING_		= 0x40,
+    _FNT_CHECK_KERNING_ = 0x40,
 };
 
 #pragma pack(1)
@@ -67,23 +67,23 @@ public:
     };
 #endif
 private:
-    long		ID_;
+    long ID_;
 
-    char		name_[32];
-    long		height_;
-    long		bytesperline_;
+    char name_[32];
+    long height_;
+    long bytesperline_;
 
-    long		fNumChars_;
-    CharStr		*fontTable_;
+    long fNumChars_;
+    CharStr *fontTable_;
 
-    long		dSize_;
-    char		*fontData_;
+    long dSize_;
+    char *fontData_;
 
-    long		kNumKerns_;
-    KerningStr	*kernList_;
+    long kNumKerns_;
+    KerningStr *kernList_;
 
-    short		first_;
-    short		last_;
+    short first_;
+    short last_;
 
 public:
 
@@ -127,11 +127,11 @@ public:
     // no cliping version (except for screen)
     void Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y);
     void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y);
-    //!		void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y);
+    //! void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y);
     void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y);
     void _DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
     void _DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD color, DWORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
-    //!		void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y);
+    //! void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y);
     void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y);
 
     // clipping version (use cliprect)
@@ -140,9 +140,9 @@ public:
     void _Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect); //XX
     void _Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect); //XX
 
-    //!		void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
+    //! void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
     void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
-    //!		void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);
+    //! void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);
     void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
 
     // Font creation Functions (for converting winders fonts to my BFT format)

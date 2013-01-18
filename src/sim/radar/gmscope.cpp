@@ -14,13 +14,13 @@
 #include "sms.h"
 #include "smsdraw.h"
 #include "aircrft.h"
-#include "fack.h"	//MI
+#include "fack.h" //MI
 #include "classtbl.h" // JB carrier
-#include "fcc.h"	//MI
-#include "laserpod.h"	//MI
-#include "mavdisp.h"	//MI
-#include "sms.h"	//MI
-#include "missile.h"	//MI
+#include "fcc.h" //MI
+#include "laserpod.h" //MI
+#include "mavdisp.h" //MI
+#include "sms.h" //MI
+#include "missile.h" //MI
 #include "profiler.h" // MLR 5/21/2004 - 
 #include "FastMath.h"
 
@@ -33,7 +33,7 @@ extern SIMLIB_IO_CLASS IO;
 
 #define  DEFAULT_OBJECT_RADIUS        50.0F
 
-SensorClass* FindLaserPod(SimMoverClass* theObject);	//MI
+SensorClass* FindLaserPod(SimMoverClass* theObject); //MI
 extern float g_fCursorSpeed;
 extern bool g_bRealisticAvionics;
 extern bool g_bAGRadarFixes;
@@ -174,7 +174,7 @@ int RadarDopplerClass::GMTObjectContactTest(FalconEntity *contact)
         else
         {
             //if(contact->GetVt() > 1.0f)
-            //	return 1;
+            // return 1;
             return 0;
         }
     }
@@ -205,7 +205,7 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
         {
 
             //if(contact->GetVt() > 1.0F)
-            //	return 0.0f;
+            // return 0.0f;
             if (((SimBaseClass*)contact)->drawPointer &&
                 ((SimBaseClass*)contact)->drawPointer->GetClass() == DrawableObject::Guys)
             {
@@ -216,11 +216,11 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
         /*
         else // is camp object
         {
-        	// 2002-04-03 MN contact is a CAMPAIGN object now !!! We can't do SimBaseClass stuff here.
-        	// Speed test however is valid, as it checks U_MOVING flag of unit
-        	// As there are no campaign units that consist only of soldiers, no need to check for them here
-        	if(contact->GetVt() > 1.0F )
-        		return 0.0f;
+         // 2002-04-03 MN contact is a CAMPAIGN object now !!! We can't do SimBaseClass stuff here.
+         // Speed test however is valid, as it checks U_MOVING flag of unit
+         // As there are no campaign units that consist only of soldiers, no need to check for them here
+         if(contact->GetVt() > 1.0F )
+         return 0.0f;
         }
         */
     }
@@ -229,21 +229,21 @@ int RadarDopplerClass::GMObjectContactTest(FalconEntity *contact)
 }
 
 /*
-	Concept: Iterate the vu lists, determine if a contact should be
-	on/off the contact list.  If the contact should be on the list, check to see
-	if it is already marked as 'on the list', if not, create a new GMList
-	node, and add it to the contact list.  If the contact should be 'off the list'
-	clear the flag.
+ Concept: Iterate the vu lists, determine if a contact should be
+ on/off the contact list.  If the contact should be on the list, check to see
+ if it is already marked as 'on the list', if not, create a new GMList
+ node, and add it to the contact list.  If the contact should be 'off the list'
+ clear the flag.
 
     After iterating both vu lists, purge the contact lists of entities where
-	the 'on the list' flag has been cleared.
+ the 'on the list' flag has been cleared.
 */
 
 #ifdef USE_HASH_TABLES
 
 void RadarDopplerClass::GMMode(void)
 {
-    VuListIterator *walker = NULL;	//MI
+    VuListIterator *walker = NULL; //MI
 
     FalconEntity* testFeature = NULL;
 
@@ -752,7 +752,7 @@ int RadarDopplerClass::CheckGMBump(void)
     switch (range)
     {
         case 10:
-            if (flags & SP)	//SnowPlow
+            if (flags & SP) //SnowPlow
             {
                 topfactor = 1.6F;
                 bottomfactor = 0.0F;
@@ -766,7 +766,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 20:
-            if (flags & SP)	//SnowPlow
+            if (flags & SP) //SnowPlow
             {
                 topfactor = 1.7F;
                 bottomfactor = 0.0078F;
@@ -780,7 +780,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 40:
-            if (flags & SP)	//SnowPlow
+            if (flags & SP) //SnowPlow
             {
                 topfactor = 1.7F;
                 bottomfactor = 0.0088F;
@@ -794,7 +794,7 @@ int RadarDopplerClass::CheckGMBump(void)
             break;
 
         case 80:
-            if (flags & SP)	//SnowPlow
+            if (flags & SP) //SnowPlow
             {
                 topfactor = 2.0F;
                 bottomfactor = 0.014497F;
@@ -1037,7 +1037,7 @@ void RadarDopplerClass::SetGMScan(void)
             groundMapLOD = 3;
         }
 
-        //azScan = 60.0F * DTR;		// Radar still scans full volume, but only displays a subset...
+        //azScan = 60.0F * DTR; // Radar still scans full volume, but only displays a subset...
         //MI az is set thru the OSB now
         if (!g_bRealisticAvionics || !g_bAGRadarFixes)
             azScan = 60.0F * DTR;
@@ -1064,7 +1064,7 @@ void RadarDopplerClass::SetGMScan(void)
             groundMapLOD = 2;
         }
 
-        //	  azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
+        //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 15.0F * DTR;
         //MI az is set thru the OSB now
         if (!g_bRealisticAvionics || !g_bAGRadarFixes)
@@ -1097,7 +1097,7 @@ void RadarDopplerClass::SetGMScan(void)
             groundMapLOD = 1;
         }
 
-        //	  azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
+        //   azScan = atan2( TwoRootTwo*groundMapRange, distance from platform to GMat );
         //azScan = 5.0F * DTR;
         //MI az is set thru the OSB now
         if (!g_bRealisticAvionics || !g_bAGRadarFixes)
@@ -1112,9 +1112,9 @@ void RadarDopplerClass::SetGMScan(void)
             azScan = rwsAzs[curAzIdx];
         }
     }
-    else	// NORM
+    else // NORM
     {
-        ShiAssert(flags & NORM);	// If not, then what mode is this???
+        ShiAssert(flags & NORM); // If not, then what mode is this???
         groundMapRange = tdisplayRange * 0.5F;
 
         if (displayRange <= 20.1f)
@@ -1161,7 +1161,7 @@ void RadarDopplerClass::SetGMScan(void)
     {
         ((RenderGMComposite*)privateDisplay)->SetRange(groundMapRange, groundMapLOD);
 
-        //		((RenderGMComposite*)privateDisplay)->SetGimbalLimit( azScan );
+        // ((RenderGMComposite*)privateDisplay)->SetGimbalLimit( azScan );
         //MI take the azimuth we've selected thru the OSB
         if (!g_bRealisticAvionics || !g_bAGRadarFixes)
             ((RenderGMComposite*)privateDisplay)->SetGimbalLimit(MAX_ANT_EL);
@@ -1174,16 +1174,16 @@ void RadarDopplerClass::SetGMScan(void)
 void RadarDopplerClass::GMDisplay(void)
 {
     //START_PROFILE("GMDISPLAY");
-    Tpoint			center;
-    int				i = 0;
-    float			len = 0.0F;
-    int				curFov = 0;
-    float			dx = 0.0F, dy = 0.0F, dz = 0.0F, cosAz = 0.0F, sinAz = 0.0F, rx = 0.0F, ry = 0.0F;
-    float			groundLookEl = 0.0F, baseAz = 0.0F, baseEl = 0.0F;
-    int				beamPercent = 0;
-    mlTrig			trig = {0.0F};
-    float			vpLeft = 0.0F, vpTop = 0.0F, vpRight = 0.0F, vpBottom = 0.0F;
-    int				tmpColor = display->Color();
+    Tpoint center;
+    int i = 0;
+    float len = 0.0F;
+    int curFov = 0;
+    float dx = 0.0F, dy = 0.0F, dz = 0.0F, cosAz = 0.0F, sinAz = 0.0F, rx = 0.0F, ry = 0.0F;
+    float groundLookEl = 0.0F, baseAz = 0.0F, baseEl = 0.0F;
+    int beamPercent = 0;
+    mlTrig trig = {0.0F};
+    float vpLeft = 0.0F, vpTop = 0.0F, vpRight = 0.0F, vpBottom = 0.0F;
+    int tmpColor = display->Color();
 
     // Mode Step ?
     if (fovStepCmd)
@@ -1500,15 +1500,15 @@ void RadarDopplerClass::GMDisplay(void)
                 ((RenderGMComposite*)display)->DrawComposite(&center, headingForDisplay);
 
 
-            //						((RenderGMComposite*)display)->FinishFrame();
-            //						((RenderGMComposite*)display)->DebugDrawRadarImage( OTWDriver.OTWImage );
-            //						((RenderGMComposite*)display)->StartFrame();
-            //						((RenderGMComposite*)display)->DebugDrawLeftTexture( OTWDriver.renderer );
+            // ((RenderGMComposite*)display)->FinishFrame();
+            // ((RenderGMComposite*)display)->DebugDrawRadarImage( OTWDriver.OTWImage );
+            // ((RenderGMComposite*)display)->StartFrame();
+            // ((RenderGMComposite*)display)->DebugDrawLeftTexture( OTWDriver.renderer );
 
 #if 0
             {
-                float	dx, dy;
-                char	string[80];
+                float dx, dy;
+                char string[80];
 
                 dx = GMat.x - viewFrom.x;
                 dy = GMat.y - viewFrom.y;
@@ -1979,11 +1979,11 @@ void RadarDopplerClass::AddTargetReturnCallback(void* self, RenderGMRadar* rende
 
 void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
 {
-    float			dx, dy;
-    float			rx, ry, GainScale = 1.0f;
-    float			cosAz, sinAz;
-    mlTrig			trig;
-    GMList			*curNode;
+    float dx, dy;
+    float rx, ry, GainScale = 1.0f;
+    float cosAz, sinAz;
+    mlTrig trig;
+    GMList *curNode;
     float       minDist = 0.05F;
 
     mlSinCos(&trig, headingForDisplay);
@@ -2013,7 +2013,7 @@ void RadarDopplerClass::AddTargetReturns(RenderGMRadar* renderer, bool Shaping)
         curNode = GMFeatureListRoot;
         GainScale = 1.0f;
     }
-    else  	// GMT or SEA
+    else   // GMT or SEA
     {
         curNode = GMMoverListRoot;
         GainScale = 4.0f;
@@ -2499,7 +2499,7 @@ void RadarDopplerClass::AGBottomRow()
 
         if (IsAGDclt(Fmt1) == FALSE) DefaultLabel(11);
 
-        //if (IsAGDclt(Fmt2) == FALSE) DefaultLabel(12);	MI moved downwards
+        //if (IsAGDclt(Fmt2) == FALSE) DefaultLabel(12); MI moved downwards
         if (IsAGDclt(Fmt3) == FALSE) DefaultLabel(13);
 
         if (IsAGDclt(Swap) == FALSE) DefaultLabel(14);
@@ -2567,7 +2567,7 @@ void RadarDopplerClass::GMMode(void)
     float ownZ = 0.0F;
     FalconEntity* testFeature = NULL;
     SimBaseClass* testObject = NULL;
-    VuListIterator *walker = NULL;	//MI
+    VuListIterator *walker = NULL; //MI
     GMList* curNode = GMFeatureListRoot;
     GMList* tmpList = NULL;
     GMList* tmp2 = NULL;
@@ -2697,8 +2697,8 @@ void RadarDopplerClass::GMMode(void)
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
-															((SimBaseClass*)testFeature)->drawPointer &&
-															((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
+ ((SimBaseClass*)testFeature)->drawPointer &&
+ ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
                                 {
                                     radius = 0.0F;
@@ -2706,7 +2706,7 @@ void RadarDopplerClass::GMMode(void)
                                     canSee = 0.0F;//radius/range * tdisplayRange/groundMapRange;
                                 }
                                 // 2002-04-03 MN a campaign unit only has two speed states - 0.0f and 40.0f for not moving/moving.
-                                //else if(testFeature->GetVt() < -1.0F)	//should never happen really.
+                                //else if(testFeature->GetVt() < -1.0F) //should never happen really.
                                 else if (!testFeature->GetVt())
                                 {
                                     radius = DEFAULT_OBJECT_RADIUS;
@@ -3001,8 +3001,8 @@ void RadarDopplerClass::GMMode(void)
                                 // Speed test however is valid, as it checks U_MOVING flag of unit
                                 // As there are no campaign units that consist only of soldiers, no need to check for them here
                                 if (testFeature->GetVt() > g_fGMTMinSpeed /*||
-														  ((SimBaseClass*)testFeature)->drawPointer &&
-														  ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
+   ((SimBaseClass*)testFeature)->drawPointer &&
+   ((SimBaseClass*)testFeature)->drawPointer->GetClass() == DrawableObject::Guys*/
                                    )
                                 {
                                     radius = 0.0F;
@@ -3010,7 +3010,7 @@ void RadarDopplerClass::GMMode(void)
                                     canSee = 0.0F;//radius/range * tdisplayRange/groundMapRange;
                                 }
                                 // 2002-04-03 MN a campaign unit only has two speed states - 0.0f and 40.0f for not moving/moving.
-                                //else if(testFeature->GetVt() < -1.0F)	//should never happen really.
+                                //else if(testFeature->GetVt() < -1.0F) //should never happen really.
                                 else if (!testFeature->GetVt())
                                 {
                                     radius = DEFAULT_OBJECT_RADIUS;
@@ -3460,7 +3460,7 @@ void RadarDopplerClass::GMMode(void)
                             {
                                 GMMoverListRoot = curNode->next;
 
-                                if (GMMoverListRoot)	// Don't point the thing before the end of the list to nothing if there isn't anything after this list - RH
+                                if (GMMoverListRoot) // Don't point the thing before the end of the list to nothing if there isn't anything after this list - RH
                                 {
                                     GMMoverListRoot->prev = NULL;
                                 }

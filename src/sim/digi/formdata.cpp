@@ -19,7 +19,7 @@ ACFormationData::ACFormationData(void)
     /*---------------------*/
     /* open formation file */
     /*---------------------*/
-    formFile	= SimlibFileClass::Open(FORMATION_DATA_FILE, SIMLIB_READ);
+    formFile = SimlibFileClass::Open(FORMATION_DATA_FILE, SIMLIB_READ);
     F4Assert(formFile);
     numFormations = atoi(formFile->GetNext());
 
@@ -27,18 +27,18 @@ ACFormationData::ACFormationData(void)
     positionData = (PositionData **)MemAllocPtr(gReadInMemPool, sizeof(PositionData*)*numFormations, 0);
     twoposData = (PositionData *)MemAllocPtr(gReadInMemPool, sizeof(PositionData) * numFormations, 0);
 #else
-    positionData	= new PositionData*[numFormations];
-    twoposData		= new PositionData[numFormations];
+    positionData = new PositionData*[numFormations];
+    twoposData = new PositionData[numFormations];
 #endif
 
 
     for (i = 0; i < numFormations; i++)
     {
-        num4Slots	= atoi(formFile->GetNext());
-        num2Slots	= atoi(formFile->GetNext());
-        formNum		= atoi(formFile->GetNext());
+        num4Slots = atoi(formFile->GetNext());
+        num2Slots = atoi(formFile->GetNext());
+        formNum = atoi(formFile->GetNext());
 
-        formFile->GetNext();	// Skip the formation name
+        formFile->GetNext(); // Skip the formation name
 
 #ifdef USE_SH_POOLS
         positionData[i] = (PositionData *)MemAllocPtr(gReadInMemPool, sizeof(PositionData) * num4Slots, 0);
@@ -56,9 +56,9 @@ ACFormationData::ACFormationData(void)
 
         if (num2Slots)
         {
-            twoposData[i].relAz	= (float)atof(formFile->GetNext()) * DTR;
-            twoposData[i].relEl	= (float)atof(formFile->GetNext()) * DTR;
-            twoposData[i].range	= (float)atof(formFile->GetNext()) * NM_TO_FT;
+            twoposData[i].relAz = (float)atof(formFile->GetNext()) * DTR;
+            twoposData[i].relEl = (float)atof(formFile->GetNext()) * DTR;
+            twoposData[i].range = (float)atof(formFile->GetNext()) * NM_TO_FT;
             twoposData[i].formNum = formNum;
         }
         else
@@ -109,6 +109,6 @@ int ACFormationData::FindFormation(int msgNum)
     if (i == numFormations)
         i = 1;
 
-    F4Assert(done == TRUE);	// invalid msgNum or formation file needs updating
+    F4Assert(done == TRUE); // invalid msgNum or formation file needs updating
     return i;
 }

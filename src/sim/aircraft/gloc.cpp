@@ -18,8 +18,8 @@
 //#define BLACKOUT_ONSET     195.0F
 // JB 000807
 //#define AWAKEN_RATE        (1.0F/30.0F) // Awakening is too slow with the new values below.
-//#define GREYOUT_ONSET      200.0F		// 27 seconds before starting to blackout
-//#define BLACKOUT_ONSET     283.0F		// to 33 seconds for a complete blackout
+//#define GREYOUT_ONSET      200.0F // 27 seconds before starting to blackout
+//#define BLACKOUT_ONSET     283.0F // to 33 seconds for a complete blackout
 //#define G0Plus             5.5F
 // END OF MODIFIED SECTION
 //#define REDOUT_ONSET       -55.0F

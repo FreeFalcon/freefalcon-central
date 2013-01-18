@@ -1,4 +1,4 @@
-/* RESMGR Library component inflate.c (ver: 2.05	released 03/26/97) */
+/* RESMGR Library component inflate.c (ver: 2.05 released 03/26/97) */
 
 
 /* inflate.cpp -- Not copyrighted 1992-94 by Mark Adler

@@ -12,29 +12,29 @@
 
 // Global storage used to build the packed node store prior to writing it
 // to disk.
-static const int	MAX_NODE_STORE_SIZE		= 256 * 1024;	// Bytes (arbitrary)
-static const int	MAX_NODE_STORE_COUNT	= 10000;		// Nodes (arbitrary)
+static const int MAX_NODE_STORE_SIZE = 256 * 1024; // Bytes (arbitrary)
+static const int MAX_NODE_STORE_COUNT = 10000; // Nodes (arbitrary)
 
-static BYTE			NodeStoreBuffer[MAX_NODE_STORE_SIZE];
-static void			*NodeStore;
-static BNodeType	TagListBuffer[MAX_NODE_STORE_COUNT];
-static BNodeType	*TagList;
-static int			MaxTagListLength = -1;
+static BYTE NodeStoreBuffer[MAX_NODE_STORE_SIZE];
+static void *NodeStore;
+static BNodeType TagListBuffer[MAX_NODE_STORE_COUNT];
+static BNodeType *TagList;
+static int MaxTagListLength = -1;
 
 
-void	InitNodeStore(void)
+void InitNodeStore(void)
 {
-    NodeStore	= NodeStoreBuffer;
-    TagList		= TagListBuffer;
+    NodeStore = NodeStoreBuffer;
+    TagList = TagListBuffer;
 }
 
 
-void	WriteNodeStore(int file)
+void WriteNodeStore(int file)
 {
     int result;
-    int	size;
+    int size;
 
-    //	printf( "TODO:  Compress BSP tree!!!\n" );
+    // printf( "TODO:  Compress BSP tree!!!\n" );
 
     // Write the tag list length
     size = (TagList - TagListBuffer);
@@ -60,8 +60,8 @@ void	WriteNodeStore(int file)
 // Publicly called exploder function.
 int StoreBNode(BNode *node)
 {
-    int	offset;
-    int	siblingOffset;
+    int offset;
+    int siblingOffset;
 
 
     // Record the type of this record for later decoding
@@ -221,8 +221,8 @@ int StoreBDofNode(BDofNode *node)
 
 int StoreBSwitchNode(BSwitchNode *node)
 {
-    int			subTreesOffset;
-    BSubTree	**subTrees;
+    int subTreesOffset;
+    BSubTree **subTrees;
 
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -250,8 +250,8 @@ int StoreBSplitterNode(BSplitterNode *node)
     node = (BSplitterNode*)PtrFromOffset(offset);
 
     // Now store each of our children
-    node->front	= (BNode*)StoreBNode(node->front);
-    node->back	= (BNode*)StoreBNode(node->back);
+    node->front = (BNode*)StoreBNode(node->front);
+    node->back = (BNode*)StoreBNode(node->back);
 
     return offset;
 }
@@ -264,7 +264,7 @@ int StoreBPrimitiveNode(BPrimitiveNode *node)
     node = (BPrimitiveNode*)PtrFromOffset(offset);
 
     // Now store our polygon
-    node->prim		= (Prim*)StorePrimitive(node->prim);
+    node->prim = (Prim*)StorePrimitive(node->prim);
 
     return offset;
 }
@@ -277,8 +277,8 @@ int StoreBLitPrimitiveNode(BLitPrimitiveNode *node)
     node = (BLitPrimitiveNode*)PtrFromOffset(offset);
 
     // Now store our polygon
-    node->poly		= (Poly*)StorePrimitive(node->poly);
-    node->backpoly	= (Poly*)StorePrimitive(node->backpoly);
+    node->poly = (Poly*)StorePrimitive(node->poly);
+    node->backpoly = (Poly*)StorePrimitive(node->backpoly);
 
     return offset;
 }
@@ -291,7 +291,7 @@ int StoreBCulledPrimitiveNode(BCulledPrimitiveNode *node)
     node = (BCulledPrimitiveNode*)PtrFromOffset(offset);
 
     // Now store our polygon
-    node->poly		= (Poly*)StorePrimitive(node->poly);
+    node->poly = (Poly*)StorePrimitive(node->poly);
 
     return offset;
 }
@@ -304,7 +304,7 @@ int StoreBLightStringNode(BLightStringNode *node)
     node = (BLightStringNode*)PtrFromOffset(offset);
 
     // Now store our polygon
-    node->prim		= (Prim*)StorePrimitive(node->prim);
+    node->prim = (Prim*)StorePrimitive(node->prim);
 
     return offset;
 }

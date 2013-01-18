@@ -36,7 +36,7 @@ extern DWProc_t CAPI_TimeStamp;
 static HINSTANCE hDPLAYDLL = 0;
 static HINSTANCE hOLE32DLL = 0;
 
-#define NAMEMAX			200			// string size
+#define NAMEMAX 200 // string size
 #define SEND 0
 #define RECV 1
 
@@ -52,8 +52,8 @@ extern void leave_cs(void);
 
 typedef struct
 {
-    LPDIRECTPLAY3A		lpDPlay;
-    GUID				guidInstance;
+    LPDIRECTPLAY3A lpDPlay;
+    GUID guidInstance;
     int                 timeouts;
 } STATUSCONTEXT, *LPSTATUSCONTEXT;
 
@@ -75,57 +75,57 @@ DEFINE_GUID(DPCHAT_GUID,
 
 
 
-void				ComDPLAYClose(ComAPIHandle c);
-int					ComDPLAYSend(ComAPIHandle c, int msgsize, int oob);
-int					ComDPLAYSendX(ComAPIHandle c, int msgsize, ComAPIHandle Xcom);
-char				*ComDPLAYSendBufferGet(ComAPIHandle c);
-char				*ComDPLAYRecvBufferGet(ComAPIHandle c);
-int					ComDPLAYRecv(ComAPIHandle c);
-unsigned long		ComDPLAYQuery(ComAPIHandle c, int querytype);
-int					ComDPLAYHostIDGet(ComAPIHandle c, char *buf, int reset);
-char				*ComErrorString(HRESULT hr);
-static void			ComSetSerialData(LPDPCOMPORTADDRESS ComPortAddress, char *datastring);
+void ComDPLAYClose(ComAPIHandle c);
+int ComDPLAYSend(ComAPIHandle c, int msgsize, int oob);
+int ComDPLAYSendX(ComAPIHandle c, int msgsize, ComAPIHandle Xcom);
+char *ComDPLAYSendBufferGet(ComAPIHandle c);
+char *ComDPLAYRecvBufferGet(ComAPIHandle c);
+int ComDPLAYRecv(ComAPIHandle c);
+unsigned long ComDPLAYQuery(ComAPIHandle c, int querytype);
+int ComDPLAYHostIDGet(ComAPIHandle c, char *buf, int reset);
+char *ComErrorString(HRESULT hr);
+static void ComSetSerialData(LPDPCOMPORTADDRESS ComPortAddress, char *datastring);
 
 
-HRESULT				InitializeOverride(ComDPLAY *c);
+HRESULT InitializeOverride(ComDPLAY *c);
 
-HRESULT				DoHostOrJoin(ComDPLAY *c);
+HRESULT DoHostOrJoin(ComDPLAY *c);
 
-BOOL FAR PASCAL		DirectPlayEnumerateCallback(LPGUID lpSPGuid,
+BOOL FAR PASCAL DirectPlayEnumerateCallback(LPGUID lpSPGuid,
         LPTSTR lpszSPName,
         DWORD dwMajorVersion,
         DWORD dwMinorVersion, LPVOID lpContext);
 
-HRESULT				GetModemNames(LPDIRECTPLAYLOBBY2A lpDPlayLobby, ComDPLAY *c);
+HRESULT GetModemNames(LPDIRECTPLAYLOBBY2A lpDPlayLobby, ComDPLAY *c);
 
-BOOL FAR PASCAL		EnumSessionsCallback(LPCDPSESSIONDESC2	lpSessionDesc,
-        LPDWORD				lpdwTimeOut,
-        DWORD				dwFlags,
-        LPVOID				lpContext);
+BOOL FAR PASCAL EnumSessionsCallback(LPCDPSESSIONDESC2 lpSessionDesc,
+        LPDWORD lpdwTimeOut,
+        DWORD dwFlags,
+        LPVOID lpContext);
 
 
-int					HandleApplicationMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg,
+int HandleApplicationMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg,
         DWORD dwMsgSize, DPID idFrom, DPID idTo);
 
-int					HandleSystemMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg,
+int HandleSystemMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg,
                                         DWORD dwMsgSize, DPID idFrom, DPID idTo);
 
-int					ReceiveMessage(ComDPLAY *lpDPInfo);
+int ReceiveMessage(ComDPLAY *lpDPInfo);
 
-DWORD WINAPI		ReceiveThread(LPVOID lpThreadParameter);
+DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter);
 
-int					d3dDbgLevel = 0;
+int d3dDbgLevel = 0;
 
-HANDLE				ghKillReceiveEvent = 0;
+HANDLE ghKillReceiveEvent = 0;
 
 
 #define DEBUGSTDOUTALSO       // define to also send debug to stdout a
 // when DEBUGTODEBUGGER is on
 
-static   LPDIRECTPLAY3A			lpDPlayCOMM = NULL;            /* IDirectPlay3A interface pointer */
-static   LPDIRECTPLAYLOBBY2A	lpDPlayLobbyCOMM = NULL;
+static   LPDIRECTPLAY3A lpDPlayCOMM = NULL;            /* IDirectPlay3A interface pointer */
+static   LPDIRECTPLAYLOBBY2A lpDPlayLobbyCOMM = NULL;
 
-static void			UnLoadDLLs(void)
+static void UnLoadDLLs(void)
 {
 
 #ifdef LOAD_DLLS
@@ -274,7 +274,7 @@ ComAPIHandle ComDPLAYOpenHost(int protocol, char *address, int buffersize, void 
 
 ComAPIHandle ComDPLAYOpen(int protocol, int mode, char *address, int buffersize, void *guid, void (*ConnectCallback)(ComAPIHandle c, int ret), int timeoutsecs)
 {
-    //		int			iResult = 0;
+    // int iResult = 0;
     ComDPLAY    *c;
 
     if (!LoadDLLs()) return NULL;
@@ -292,11 +292,11 @@ ComAPIHandle ComDPLAYOpen(int protocol, int mode, char *address, int buffersize,
 
     if (protocol == CAPI_DPLAY_MODEM_PROTOCOL)
     {
-        if (strlen(address) < MAXADDRESS)	strcpy(c->phonenumber, address);
+        if (strlen(address) < MAXADDRESS) strcpy(c->phonenumber, address);
     }
     else if (protocol == CAPI_DPLAY_TCP_PROTOCOL)
     {
-        if (strlen(address) < MAXADDRESS)	strcpy(c->IPAddress, address);
+        if (strlen(address) < MAXADDRESS) strcpy(c->IPAddress, address);
     }
     else if (protocol == CAPI_DPLAY_SERIAL_PROTOCOL)
     {
@@ -304,44 +304,44 @@ ComAPIHandle ComDPLAYOpen(int protocol, int mode, char *address, int buffersize,
     }
 
 
-    c->lpDPlay							= NULL;
-    c->lpDPlayLobby						= NULL;
-    c->buffer_size						= sizeof(modemHeader) + buffersize;
-    c->bIsHost							= mode;
+    c->lpDPlay = NULL;
+    c->lpDPlayLobby = NULL;
+    c->buffer_size = sizeof(modemHeader) + buffersize;
+    c->bIsHost = mode;
     memcpy(&(c->guidApplication), guid, sizeof(GUID));
 
 
     /* initialize header data */
-    c->apiheader.protocol				= protocol;
-    c->apiheader.send_func				= ComDPLAYSend;
-    c->apiheader.sendX_func				= ComDPLAYSendX;
-    c->apiheader.recv_func				= ComDPLAYRecv;
-    c->apiheader.send_buf_func			= ComDPLAYSendBufferGet;
-    c->apiheader.recv_buf_func			= ComDPLAYRecvBufferGet;
-    c->apiheader.addr_func				= ComDPLAYHostIDGet;
-    c->apiheader.close_func				= ComDPLAYClose;
-    c->apiheader.query_func				= ComDPLAYQuery;
+    c->apiheader.protocol = protocol;
+    c->apiheader.send_func = ComDPLAYSend;
+    c->apiheader.sendX_func = ComDPLAYSendX;
+    c->apiheader.recv_func = ComDPLAYRecv;
+    c->apiheader.send_buf_func = ComDPLAYSendBufferGet;
+    c->apiheader.recv_buf_func = ComDPLAYRecvBufferGet;
+    c->apiheader.addr_func = ComDPLAYHostIDGet;
+    c->apiheader.close_func = ComDPLAYClose;
+    c->apiheader.query_func = ComDPLAYQuery;
 #ifdef TIMESTAMP
     c->apiheader.get_timestamp_func     = ComDPLAYGetTimeStamp;
 #endif
-    c->connect_callback_func			= ConnectCallback;
+    c->connect_callback_func = ConnectCallback;
 
-    c->recv_buffer						= (char*)malloc(buffersize + 1);
-    c->send_buffer						= (char*)malloc(buffersize + 1);
-    c->state							= COMAPI_STATE_CONNECTION_PENDING;
-    c->close_status 					= 0;
-    c->closer		 					= 0;
+    c->recv_buffer = (char*)malloc(buffersize + 1);
+    c->send_buffer = (char*)malloc(buffersize + 1);
+    c->state = COMAPI_STATE_CONNECTION_PENDING;
+    c->close_status  = 0;
+    c->closer   = 0;
     c->timeoutsecs                      = (short) timeoutsecs;
 
     doing_host_or_join = TRUE;
 
-    c->ghConnectThread					= CreateThread(NULL, 0,
+    c->ghConnectThread = CreateThread(NULL, 0,
 
                                           (LPTHREAD_START_ROUTINE)DoHostOrJoin, (LPVOID)c, 0, &c->gidConnectThread);
 
     if (c->ghConnectThread == NULL)
     {
-        //		    DWORD error = GetLastError();
+        //     DWORD error = GetLastError();
     }
 
     leave_cs();
@@ -442,9 +442,9 @@ void ComDPLAYClose(ComAPIHandle c)
 
 HRESULT InitializeOverride(ComDPLAY *c)
 {
-    LPDIRECTPLAYLOBBYA	lpDPlayLobbyA = NULL;
-    LPDIRECTPLAYLOBBY2A	lpDPlayLobby2A = NULL;
-    HRESULT				hr;
+    LPDIRECTPLAYLOBBYA lpDPlayLobbyA = NULL;
+    LPDIRECTPLAYLOBBY2A lpDPlayLobby2A = NULL;
+    HRESULT hr;
 
     // get ANSI DirectPlayLobby interface
     hr = CAPI_DirectPlayLobbyCreate(NULL, &lpDPlayLobbyA, NULL, NULL, 0);
@@ -491,26 +491,26 @@ FAILURE:
 // DirectPlayEnumerateCallback
 // ---------------------------------------------------------------------------
 // Description:             Enumeration callback called by DirectPlay.
-//							Enumerates service providers registered with DirectPlay.
+// Enumerates service providers registered with DirectPlay.
 // Arguments:
-//  LPGUID					[in] GUID of service provider
-//  LPTSTR					[in] name of service provider
-//  DWORD					[in] major version of DirectPlay
-//  DWORD					[in] minor version of DirectPlay
-//  LPVOID				    [in] user-defined context
+//  LPGUID [in] GUID of service provider
+//  LPTSTR [in] name of service provider
+//  DWORD [in] major version of DirectPlay
+//  DWORD [in] minor version of DirectPlay
+//  LPVOID     [in] user-defined context
 // Returns:
-//  BOOL					TRUE to continue enumerating
+//  BOOL TRUE to continue enumerating
 BOOL FAR PASCAL DirectPlayEnumerateCallback(
-    LPGUID		lpSPGuid,
-    LPTSTR		lpszSPName,
-    DWORD		   dwMajorVersion,
-    DWORD		   dwMinorVersion,
-    LPVOID		lpContext)
+    LPGUID lpSPGuid,
+    LPTSTR lpszSPName,
+    DWORD    dwMajorVersion,
+    DWORD    dwMinorVersion,
+    LPVOID lpContext)
 {
-    ComDPLAY 			*c = (ComDPLAY *) lpContext;
+    ComDPLAY  *c = (ComDPLAY *) lpContext;
 
     dwMajorVersion;
-    dwMinorVersion;	// eliminate warnings;
+    dwMinorVersion; // eliminate warnings;
 
     if (c->apiheader.protocol == ENUMERATE_PROTOCOLS)
     {
@@ -578,13 +578,13 @@ BOOL FAR PASCAL DirectPlayEnumerateCallback(
 
 
 BOOL FAR PASCAL EnumSessionsCallback(
-    LPCDPSESSIONDESC2	lpSessionDesc,
-    LPDWORD				lpdwTimeOut,
-    DWORD				dwFlags,
-    LPVOID				lpContext)
+    LPCDPSESSIONDESC2 lpSessionDesc,
+    LPDWORD lpdwTimeOut,
+    DWORD dwFlags,
+    LPVOID lpContext)
 {
-    HWND			hWnd = (HWND) lpContext;
-    LPGUID			lpGuid;
+    HWND hWnd = (HWND) lpContext;
+    LPGUID lpGuid;
     STATUSCONTEXT   *lpstatusContext;
 
     hWnd;  // eliminate warning
@@ -631,7 +631,7 @@ BOOL WINAPI EnumPlayersCallback2(
     ComDPLAY *c = (ComDPLAY *)lpContext;
 
     dwPlayerType;
-    lpName;		   //eliminate warnings
+    lpName;    //eliminate warnings
     dwFlags;
 
     c->dpidPlayerRemote = dpId;
@@ -641,19 +641,19 @@ BOOL WINAPI EnumPlayersCallback2(
 
 
 
-HRESULT	CreateServiceProviderAddress(LPDIRECTPLAYLOBBY2A lpDPlayLobby,
+HRESULT CreateServiceProviderAddress(LPDIRECTPLAYLOBBY2A lpDPlayLobby,
                                      LPVOID *lplpAddress, LPDWORD
                                      lpdwAddressSize, void *comhandle)
 {
-    DPCOMPOUNDADDRESSELEMENT	addressElements[3];
-    CHAR						szIPAddressString[NAMEMAX];
-    CHAR						szPhoneNumberString[NAMEMAX];
-    CHAR						szModemString[NAMEMAX];
-    LPVOID						lpAddress = NULL;
-    DWORD						dwAddressSize = 0;
-    DWORD						dwElementCount;
+    DPCOMPOUNDADDRESSELEMENT addressElements[3];
+    CHAR szIPAddressString[NAMEMAX];
+    CHAR szPhoneNumberString[NAMEMAX];
+    CHAR szModemString[NAMEMAX];
+    LPVOID lpAddress = NULL;
+    DWORD dwAddressSize = 0;
+    DWORD dwElementCount;
 
-    HRESULT						hr;
+    HRESULT hr;
     DPCOMPORTADDRESS            ComPortAddress;
 
     ComDPLAY  *c = (ComDPLAY *) comhandle;
@@ -792,18 +792,18 @@ FAILURE:
     return hr;
 }
 
-HRESULT	DoHostOrJoin(ComDPLAY *c)
+HRESULT DoHostOrJoin(ComDPLAY *c)
 {
-    LPDIRECTPLAY3A	lpDPlay = NULL;
-    LPVOID			lpAddress = NULL;
-    MSG				msg;
-    DWORD			dwAddressSize = 0;
-    DPSESSIONDESC2	sessionDesc;
-    STATUSCONTEXT	statusContext;
-    HRESULT			hr;
-    int				firstmessage = 1;
-    //		int				ReturnCode = 0;
-    int				AttemptOpen;
+    LPDIRECTPLAY3A lpDPlay = NULL;
+    LPVOID lpAddress = NULL;
+    MSG msg;
+    DWORD dwAddressSize = 0;
+    DPSESSIONDESC2 sessionDesc;
+    STATUSCONTEXT statusContext;
+    HRESULT hr;
+    int firstmessage = 1;
+    // int ReturnCode = 0;
+    int AttemptOpen;
     int             bIsHost;
 
 
@@ -911,7 +911,7 @@ HRESULT	DoHostOrJoin(ComDPLAY *c)
         sessionDesc.dwSize = sizeof(DPSESSIONDESC2);
         sessionDesc.dwFlags = DPSESSION_MIGRATEHOST | DPSESSION_KEEPALIVE;
         sessionDesc.guidApplication = c->guidApplication;
-        //		sessionDesc.guidApplication = OVERRIDE_GUID;
+        // sessionDesc.guidApplication = OVERRIDE_GUID;
         sessionDesc.dwMaxPlayers = 0;
         sessionDesc.lpszSessionNameA = "Override";
 
@@ -972,8 +972,8 @@ HRESULT	DoHostOrJoin(ComDPLAY *c)
         // enum sessions
         ZeroMemory(&sessionDesc, sizeof(DPSESSIONDESC2));
         sessionDesc.dwSize = sizeof(DPSESSIONDESC2);
-        //			sessionDesc.guidApplication = OVERRIDE_GUID;
-        //			sessionDesc.guidApplication = c->guidApplication;
+        // sessionDesc.guidApplication = OVERRIDE_GUID;
+        // sessionDesc.guidApplication = c->guidApplication;
         sessionDesc.guidApplication = GUID_NULL;
 
         starttime2 = starttime = clock();
@@ -985,7 +985,7 @@ HRESULT	DoHostOrJoin(ComDPLAY *c)
             hr = lpDPlay->lpVtbl->EnumSessions(lpDPlay, &sessionDesc, 0,
                                                EnumSessionsCallback, &statusContext,
                                                DPENUMSESSIONS_AVAILABLE
-                                               //									| DPENUMSESSIONS_ASYNC
+                                               // | DPENUMSESSIONS_ASYNC
                                                | DPENUMSESSIONS_RETURNSTATUS);
 
             if (hr == DPERR_CONNECTING)
@@ -1018,7 +1018,7 @@ HRESULT	DoHostOrJoin(ComDPLAY *c)
         // open the session selected by the use
         ZeroMemory(&sessionDesc, sizeof(DPSESSIONDESC2));
         sessionDesc.dwSize = sizeof(DPSESSIONDESC2);
-        //		sessionDesc.guidApplication = OVERRIDE_GUID;
+        // sessionDesc.guidApplication = OVERRIDE_GUID;
         sessionDesc.guidApplication = c->guidApplication;
         sessionDesc.guidInstance = statusContext.guidInstance;
 
@@ -1133,20 +1133,20 @@ FAILURE:
 // EnumModemAddress
 // ---------------------------------------------------------------------------
 // Description:             Enumeration callback called by DirectPlayLobby.
-//							Enumerates the DirectPlay address chunks. If the
-//							chunk contains modem strings, add them to the control.
+// Enumerates the DirectPlay address chunks. If the
+// chunk contains modem strings, add them to the control.
 // Arguments:
 //  REFGUID                 [in] GUID of the address type
-//  DWORD					[in] size of chunk
-//  LPVOID				    [in] pointer to chunk
-//  LPVOID				    [in] user-defined context
+//  DWORD [in] size of chunk
+//  LPVOID     [in] pointer to chunk
+//  LPVOID     [in] user-defined context
 // Returns:
-//  BOOL					FALSE to stop enumerating after the first callback
+//  BOOL FALSE to stop enumerating after the first callback
 BOOL FAR PASCAL EnumModemAddress(REFGUID lpguidDataType, DWORD dwDataSize,
                                  LPCVOID lpData, LPVOID lpContext)
 {
 
-    LPSTR	lpszStr = (LPSTR) lpData;
+    LPSTR lpszStr = (LPSTR) lpData;
     ComDPLAY *c = (ComDPLAY *)lpContext;
 
     // modem
@@ -1177,17 +1177,17 @@ BOOL FAR PASCAL EnumModemAddress(REFGUID lpguidDataType, DWORD dwDataSize,
 // Arguments:
 //  HWND                    [in]  Window handle.
 //  LPDIRECTPLAYLOBBY2A     [in]  DirectPlay Lobby interface to use
-//  LPGUID					[out] GUID of service provider to use
+//  LPGUID [out] GUID of service provider to use
 // Returns:
-//  HRESULT					any error
+//  HRESULT any error
 HRESULT GetModemNames(LPDIRECTPLAYLOBBY2A lpDPlayLobby, ComDPLAY *c)
 {
-    LPDIRECTPLAY		lpDPlay1 = NULL;
-    LPDIRECTPLAY3A		lpDPlay3A = NULL;
-    LPVOID				lpAddress = NULL;
-    DWORD				dwAddressSize = 0;
-    GUID				guidServiceProvider = DPSPGUID_MODEM;
-    HRESULT				hr;
+    LPDIRECTPLAY lpDPlay1 = NULL;
+    LPDIRECTPLAY3A lpDPlay3A = NULL;
+    LPVOID lpAddress = NULL;
+    DWORD dwAddressSize = 0;
+    GUID guidServiceProvider = DPSPGUID_MODEM;
+    HRESULT hr;
 
     // get a DirectPlay interface for this service provider
     hr = CAPI_DirectPlayCreate(&guidServiceProvider, &lpDPlay1, NULL);
@@ -1273,8 +1273,8 @@ char *ComDPLAYRecvBufferGet(ComAPIHandle c)
 
 DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter)
 {
-    ComDPLAY	   *lpDPInfo = (ComDPLAY *) lpThreadParameter;
-    HANDLE		eventHandles[2];
+    ComDPLAY    *lpDPInfo = (ComDPLAY *) lpThreadParameter;
+    HANDLE eventHandles[2];
 
     eventHandles[0] = lpDPInfo->hPlayerEvent;
     eventHandles[1] = lpDPInfo->ghKillReceiveEvent;
@@ -1294,10 +1294,10 @@ DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter)
 
 int ReceiveMessage(ComDPLAY *lpDPInfo)
 {
-    DPID				idFrom, idTo;
-    LPVOID			lpvMsgBuffer;
-    DWORD				dwMsgBufferSize;
-    HRESULT			hr;
+    DPID idFrom, idTo;
+    LPVOID lpvMsgBuffer;
+    DWORD dwMsgBufferSize;
+    HRESULT hr;
 
     lpvMsgBuffer = NULL;
     dwMsgBufferSize = 0;
@@ -1324,21 +1324,21 @@ int ReceiveMessage(ComDPLAY *lpDPInfo)
 
             // not enough room, so resize buffer
             /*
-            			if (hr == DPERR_BUFFERTOOSMALL)
-            			{
-            				if (lpvMsgBuffer)
-            					free(lpvMsgBuffer);
-            				lpvMsgBuffer = malloc(dwMsgBufferSize);
-            				if (lpvMsgBuffer == NULL)
-            					hr = DPERR_OUTOFMEMORY;
-            			}
+             if (hr == DPERR_BUFFERTOOSMALL)
+             {
+             if (lpvMsgBuffer)
+             free(lpvMsgBuffer);
+             lpvMsgBuffer = malloc(dwMsgBufferSize);
+             if (lpvMsgBuffer == NULL)
+             hr = DPERR_OUTOFMEMORY;
+             }
             */
         }
         while (hr == DPERR_BUFFERTOOSMALL);
 
 
-        if ((SUCCEEDED(hr)) &&							// successfully read a message
-            (dwMsgBufferSize >= sizeof(DPMSG_GENERIC)))	// and it is big enough
+        if ((SUCCEEDED(hr)) && // successfully read a message
+            (dwMsgBufferSize >= sizeof(DPMSG_GENERIC))) // and it is big enough
         {
             // check for system message
             if (idFrom == DPID_SYSMSG)
@@ -1367,8 +1367,8 @@ int ReceiveMessage(ComDPLAY *lpDPInfo)
     while (SUCCEEDED(hr));
 
     // free any memory we created
-    //	if (lpvMsgBuffer)
-    //		free(lpvMsgBuffer);
+    // if (lpvMsgBuffer)
+    // free(lpvMsgBuffer);
 
     return (hr);
 }
@@ -1389,10 +1389,10 @@ int ComDPLAYRecv(ComAPIHandle c)
 
 int ComDPLAYRecv(ComAPIHandle c)
 {
-    DPID				idFrom, idTo;
-    LPVOID			lpvMsgBuffer;
-    DWORD				dwMsgBufferSize;
-    HRESULT			hr;
+    DPID idFrom, idTo;
+    LPVOID lpvMsgBuffer;
+    DWORD dwMsgBufferSize;
+    HRESULT hr;
     ComDPLAY *lpDPInfo = (ComDPLAY *)c;
 
     lpvMsgBuffer = NULL;
@@ -1412,8 +1412,8 @@ int ComDPLAYRecv(ComAPIHandle c)
     }
 
 
-    if ((SUCCEEDED(hr)) &&							// successfully read a message
-        (dwMsgBufferSize >= sizeof(DPMSG_GENERIC)))	// and it is big enough
+    if ((SUCCEEDED(hr)) && // successfully read a message
+        (dwMsgBufferSize >= sizeof(DPMSG_GENERIC))) // and it is big enough
     {
         // check for system message
         if (idFrom == DPID_SYSMSG)
@@ -1455,25 +1455,25 @@ static count = 0;
 int HandleSystemMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg, DWORD dwMsgSize,
                         DPID idFrom, DPID idTo)
 {
-    LPSTR		lpszStr = NULL;
+    LPSTR lpszStr = NULL;
     HRESULT  hr = 0;
 
     dwMsgSize;
-    idTo;		 // to get rid of warnings
+    idTo;  // to get rid of warnings
     idFrom;
 
     // The body of each case is there so you can set a breakpoint and examine
     // the contents of the message received.
-    //	MessageBox(NULL,"HandleSystemMessage"," ",MB_OK);
+    // MessageBox(NULL,"HandleSystemMessage"," ",MB_OK);
 
 
     switch (lpMsg->dwType)
     {
         case DPSYS_CREATEPLAYERORGROUP:
         {
-            LPDPMSG_CREATEPLAYERORGROUP		lp = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
-            LPSTR							lpszPlayerName;
-            LPSTR							szDisplayFormat = "\"%s\" has joined\r\n";
+            LPDPMSG_CREATEPLAYERORGROUP lp = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
+            LPSTR lpszPlayerName;
+            LPSTR szDisplayFormat = "\"%s\" has joined\r\n";
 
 
             lpDPInfo->dpidPlayerRemote = lp->dpId;
@@ -1501,8 +1501,8 @@ int HandleSystemMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg, DWORD dwMsgSi
 
         case DPSYS_DESTROYPLAYERORGROUP:
         {
-            LPDPMSG_DESTROYPLAYERORGROUP	lp = (LPDPMSG_DESTROYPLAYERORGROUP)lpMsg;
-            //			LPSTR							szDisplayFormat = "\"%s\" has left\r\n";
+            LPDPMSG_DESTROYPLAYERORGROUP lp = (LPDPMSG_DESTROYPLAYERORGROUP)lpMsg;
+            // LPSTR szDisplayFormat = "\"%s\" has left\r\n";
 
 
             lpDPInfo->dpidPlayerRemote = 0;
@@ -1530,8 +1530,8 @@ int HandleSystemMessage(ComDPLAY *lpDPInfo, LPDPMSG_GENERIC lpMsg, DWORD dwMsgSi
 
         case DPSYS_HOST:
         {
-            LPDPMSG_HOST	lp = (LPDPMSG_HOST)lpMsg;
-            LPSTR			szDisplayFormat = "You have become the host\r\n";
+            LPDPMSG_HOST lp = (LPDPMSG_HOST)lpMsg;
+            LPSTR szDisplayFormat = "You have become the host\r\n";
 
             // allocate space for string
             lpszStr = (LPSTR) malloc(lstrlen(szDisplayFormat) + 1);

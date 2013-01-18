@@ -38,7 +38,7 @@ enum
     _FORCE_RADAR_OFF_ = 60,
 };
 
-uchar CampSearch[MAX_CAMP_ENTITIES];			// Search data
+uchar CampSearch[MAX_CAMP_ENTITIES]; // Search data
 
 #ifdef CAMPTOOL
 short CampIDRenameTable[MAX_CAMP_ENTITIES] = { 0 };
@@ -53,19 +53,19 @@ VU_ID_NUMBER lastFlightId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
 VU_ID_NUMBER lastPackageId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
 VU_ID_NUMBER lastVolatileId = FIRST_VOLATILE_VU_ID_NUMBER;*/
 
-#define FIRST_OBJECTIVE_VU_ID_NUMBER	  (VU_FIRST_ENTITY_ID)
-#define LAST_OBJECTIVE_VU_ID_NUMBER		  (VU_FIRST_ENTITY_ID+MAX_NUMBER_OF_OBJECTIVES)
-#define FIRST_NON_VOLATILE_VU_ID_NUMBER	  (LAST_OBJECTIVE_VU_ID_NUMBER+1)
-#define LAST_NON_VOLATILE_VU_ID_NUMBER	  (FIRST_NON_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_UNITS))
+#define FIRST_OBJECTIVE_VU_ID_NUMBER   (VU_FIRST_ENTITY_ID)
+#define LAST_OBJECTIVE_VU_ID_NUMBER   (VU_FIRST_ENTITY_ID+MAX_NUMBER_OF_OBJECTIVES)
+#define FIRST_NON_VOLATILE_VU_ID_NUMBER   (LAST_OBJECTIVE_VU_ID_NUMBER+1)
+#define LAST_NON_VOLATILE_VU_ID_NUMBER   (FIRST_NON_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_UNITS))
 // divided low volatilies in 2 halfs
-//#define FIRST_LOW_VOLATILE_VU_ID_NUMBER	(LAST_NON_VOLATILE_VU_ID_NUMBER+1)
-//#define LAST_LOW_VOLATILE_VU_ID_NUMBER	(FIRST_LOW_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_VOLITILE_UNITS))
+//#define FIRST_LOW_VOLATILE_VU_ID_NUMBER (LAST_NON_VOLATILE_VU_ID_NUMBER+1)
+//#define LAST_LOW_VOLATILE_VU_ID_NUMBER (FIRST_LOW_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_VOLITILE_UNITS))
 #define FIRST_PACKAGE_ID_NUMBER           (LAST_NON_VOLATILE_VU_ID_NUMBER+1)
 #define LAST_PACKAGE_ID_NUMBER            (FIRST_PACKAGE_ID_NUMBER + (MAX_NUMBER_OF_VOLATILE_UNITS/2))
 #define FIRST_FLIGHT_ID_NUMBER            (LAST_PACKAGE_ID_NUMBER + 1)
 #define LAST_FLIGHT_ID_NUMBER             (FIRST_PACKAGE_ID_NUMBER + MAX_NUMBER_OF_VOLATILE_UNITS)
-#define FIRST_VOLATILE_VU_ID_NUMBER		  (LAST_FLIGHT_ID_NUMBER+1)
-#define LAST_VOLATILE_VU_ID_NUMBER		  (~((VU_ID_NUMBER)0))
+#define FIRST_VOLATILE_VU_ID_NUMBER   (LAST_FLIGHT_ID_NUMBER+1)
+#define LAST_VOLATILE_VU_ID_NUMBER   (~((VU_ID_NUMBER)0))
 
 IdNamespace ObjectiveNS(FIRST_OBJECTIVE_VU_ID_NUMBER, LAST_OBJECTIVE_VU_ID_NUMBER);
 IdNamespace NonVolatileNS(FIRST_NON_VOLATILE_VU_ID_NUMBER, LAST_NON_VOLATILE_VU_ID_NUMBER);
@@ -92,7 +92,7 @@ CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST
 {
     InitLocalData();
 
-    GridIndex	x, y;
+    GridIndex x, y;
     short tmp;
 
     if (load_log)
@@ -227,7 +227,7 @@ int CampBaseClass::SaveSize(void)
 
 int CampBaseClass::Save(VU_BYTE **stream)
 {
-    GridIndex	x, y;
+    GridIndex x, y;
     short tmp;
 
     GetLocation(&x, &y);
@@ -253,14 +253,14 @@ int CampBaseClass::Save(VU_BYTE **stream)
     // Now save our stuff
     memcpy(*stream, &spotTime, sizeof(CampaignTime));
     *stream += sizeof(CampaignTime);
-    memcpy(*stream, &spotted,	sizeof(short));
+    memcpy(*stream, &spotted, sizeof(short));
     *stream += sizeof(short);
     tmp = base_flags;
-    memcpy(*stream, &tmp,	sizeof(short));
+    memcpy(*stream, &tmp, sizeof(short));
     *stream += sizeof(short);
-    memcpy(*stream, &owner,	sizeof(Control));
+    memcpy(*stream, &owner, sizeof(Control));
     *stream += sizeof(Control);
-    memcpy(*stream, &camp_id,	sizeof(short));
+    memcpy(*stream, &camp_id, sizeof(short));
     *stream += sizeof(short);
 
     return CampBaseClass::SaveSize();
@@ -274,7 +274,7 @@ int CampBaseClass::Handle(VuEvent *event)
 
 int CampBaseClass::Handle(VuFullUpdateEvent *event)
 {
-    GridIndex		x, y;
+    GridIndex x, y;
 
     // copy data from temp entity to current entity
     CampBaseClass* tmp_ent = (CampBaseClass*)(event->expandedData_.get());
@@ -285,7 +285,7 @@ int CampBaseClass::Handle(VuFullUpdateEvent *event)
     // In the case of force on force TE, this is actually ok -
     // The host will receive the full update and MAKE this entity
     // local in the line above
-    //	ShiAssert ( !IsLocal() );
+    // ShiAssert ( !IsLocal() );
 
     memcpy(&share_.entityType_, &tmp_ent->share_.entityType_, sizeof(ushort));
     tmp_ent->GetLocation(&x, &y);
@@ -370,7 +370,7 @@ int CampBaseClass::GetSpotted(Team t)
         return 1;
     }
 
-    MoveType	mt = GetMovementType();
+    MoveType mt = GetMovementType();
 
     if (mt > 8 || mt <= 0)
         return 1;
@@ -405,15 +405,15 @@ int CampBaseClass::GetSpotted(Team t)
             if (TeamInfo[t] && TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
             {
                 // Check for cloud cover
-                GridIndex	x, y;
+                GridIndex x, y;
                 GetLocation(&x, &y);
 
                 //JAM 20Nov03 - FIXME
-                //				if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
-                //					{
+                // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
+                // {
                 SetSpotted(t, Camp_GetCurrentTime());
                 return 1;
-                //					}
+                // }
             }
 
             break;
@@ -426,15 +426,15 @@ int CampBaseClass::GetSpotted(Team t)
             else if (TeamInfo[t] && TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
             {
                 // Check for cloud cover
-                GridIndex	x, y;
+                GridIndex x, y;
                 GetLocation(&x, &y);
 
                 //JAM 20Nov03 - FIXME
-                //				if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
-                //					{
+                // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
+                // {
                 SetSpotted(t, Camp_GetCurrentTime());
                 return 1;
-                //					}
+                // }
             }
 
             break;
@@ -446,14 +446,14 @@ int CampBaseClass::GetSpotted(Team t)
 // Setters
 void CampBaseClass::SetLocation(GridIndex x, GridIndex y)
 {
-    GridIndex	cx, cy;
+    GridIndex cx, cy;
 
     // Check if flight has moved, and evaluate current situation if so
     GetLocation(&cx, &cy);
 
     if (cx != x || cy != y)
     {
-        vector		v;
+        vector v;
 
         //ShiAssert (x >= 0 && y >= 0 && x < Map_Max_X && y < Map_Max_Y)
         if ((x < 1) || (x >= Map_Max_X - 1) || (y < 1) || (y >= Map_Max_Y - 1))
@@ -529,13 +529,13 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 
 void CampBaseClass::SetEmitting(int e)
 {
-    //	if (IsObjective())
-    //	{
-    //		if(((Objective)this)->GetObjectiveStatus() < _FORCE_RADAR_OFF_)
-    //		{
-    //			e=0;
-    //		}
-    //	}
+    // if (IsObjective())
+    // {
+    // if(((Objective)this)->GetObjectiveStatus() < _FORCE_RADAR_OFF_)
+    // {
+    // e=0;
+    // }
+    // }
     if (e)
     {
         if (!IsEmitting())
@@ -561,7 +561,7 @@ void CampBaseClass::SetEmitting(int e)
             if (GetRadarMode() == FEC_RADAR_OFF)
             {
                 SetRadarMode(FEC_RADAR_SEARCH_1);//me123 + rand()%3);
-                //			ReturnToSearch();
+                // ReturnToSearch();
             }
         }
     }
@@ -594,9 +594,9 @@ void CampBaseClass::SetAggregate(bool agg)
 }
 /*void CampBaseClass::SetAggregate (int a)
 {
-	local_flags |= CBC_AGGREGATE;
-	if (!a)
-		local_flags ^= CBC_AGGREGATE;
+ local_flags |= CBC_AGGREGATE;
+ if (!a)
+ local_flags ^= CBC_AGGREGATE;
 }
 */
 void CampBaseClass::SetJammed(int j)
@@ -713,15 +713,15 @@ int CampBaseClass::ReSpot()
 }
 
 // Component accessers (Sim Flight emulators)
-int CampBaseClass::GetComponentIndex(VuEntity* me)							// My call
+int CampBaseClass::GetComponentIndex(VuEntity* me) // My call
 {
     if (!components)
         return 0;
     else
     {
-        VuListIterator	cit(components);
-        int				idx = 0;
-        VuEntity		*cur;
+        VuListIterator cit(components);
+        int idx = 0;
+        VuEntity *cur;
 
         cur = cit.GetFirst();
 
@@ -735,13 +735,13 @@ int CampBaseClass::GetComponentIndex(VuEntity* me)							// My call
     }
 }
 
-SimBaseClass* CampBaseClass::GetComponentEntity(int idx)					// My call
+SimBaseClass* CampBaseClass::GetComponentEntity(int idx) // My call
 {
     if (components)
     {
-        VuListIterator	cit(components);
-        int				count = 0;
-        VuEntity		*cur;
+        VuListIterator cit(components);
+        int count = 0;
+        VuEntity *cur;
 
         cur = cit.GetFirst();
 
@@ -758,11 +758,11 @@ SimBaseClass* CampBaseClass::GetComponentEntity(int idx)					// My call
     return NULL;
 }
 
-SimBaseClass* CampBaseClass::GetComponentLead(void)							// My call
+SimBaseClass* CampBaseClass::GetComponentLead(void) // My call
 {
     if (components)
     {
-        VuListIterator	cit(components);
+        VuListIterator cit(components);
         return (SimBaseClass*) cit.GetFirst();
     }
 
@@ -774,8 +774,8 @@ SimBaseClass* CampBaseClass::GetComponentNumber(int component)
     // components shouldn't be null if this camp unit is deagg'd!
     if (components)
     {
-        VuListIterator	cit(components);
-        SimBaseClass	*entity;
+        VuListIterator cit(components);
+        SimBaseClass *entity;
 
         entity = (SimBaseClass *)cit.GetFirst();
 
@@ -798,16 +798,16 @@ SimBaseClass* CampBaseClass::GetComponentNumber(int component)
     return NULL;
 }
 
-int CampBaseClass::NumberOfComponents(void)									// My call
+int CampBaseClass::NumberOfComponents(void) // My call
 {
-    int					count = 0;
+    int count = 0;
 
     // I hate to do this - but it's next to impossible to keep an accurate count
     // when VU can pull these guys out from under me.
     if (components)
     {
-        VuEntity*			cur;
-        VuListIterator		cit(components);
+        VuEntity* cur;
+        VuListIterator cit(components);
 
         cur = cit.GetFirst();
 
@@ -832,7 +832,7 @@ FalconSessionEntity* CampBaseClass::GetDeaggregateOwner(void)
 
 CampEntity GetFirstEntity(F4LIt l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetFirst();
 
@@ -852,7 +852,7 @@ CampEntity GetFirstEntity(F4LIt l)
 
 CampEntity GetNextEntity(F4LIt l)
 {
-    VuEntity*	e;
+    VuEntity* e;
 
     e = l->GetNext();
 
@@ -912,12 +912,12 @@ Objective GetEntityObjective(VuEntity* e)
 
 
 // My global for last assigned id
-short	gLastId = 32767;
+short gLastId = 32767;
 
 short FindUniqueID()
 {
-    CampEntity		e;
-    short			id, eid;
+    CampEntity e;
+    short id, eid;
 
     if (gLastId < MAX_CAMP_ENTITIES - 1)
     {
@@ -929,10 +929,10 @@ short FindUniqueID()
     else
     {
         // more complex algorythm if we're out of space
-        short		highest = 0;
+        short highest = 0;
         memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
         {
-            VuListIterator	myit(AllCampList);
+            VuListIterator myit(AllCampList);
             e = (CampEntity) myit.GetFirst();
 
             while (e)
@@ -965,13 +965,13 @@ short FindUniqueID()
 
 void ResetNamespaces()
 {
-    /*	VuEnterCriticalSection();
-    	lastObjectiveId = FIRST_OBJECTIVE_VU_ID_NUMBER;
-    	lastNonVolatileId = FIRST_NON_VOLATILE_VU_ID_NUMBER;
-    	lastPackageId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
-    	lastFlightId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
-    	lastVolatileId = FIRST_VOLATILE_VU_ID_NUMBER;
-    	VuExitCriticalSection();*/
+    /* VuEnterCriticalSection();
+     lastObjectiveId = FIRST_OBJECTIVE_VU_ID_NUMBER;
+     lastNonVolatileId = FIRST_NON_VOLATILE_VU_ID_NUMBER;
+     lastPackageId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
+     lastFlightId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
+     lastVolatileId = FIRST_VOLATILE_VU_ID_NUMBER;
+     VuExitCriticalSection();*/
     ObjectiveNS.Reset();
     NonVolatileNS.Reset();
     PackageNS.Reset();
@@ -995,7 +995,7 @@ VU_ID_NUMBER GetIdFromNamespace(IdNamespace &ns)
 
 int GetVisualDetectionRange(int mt)
 {
-    int		dr;
+    int dr;
 
     dr = VisualDetectionRange[mt];
 
@@ -1022,17 +1022,17 @@ int GetVisualDetectionRange(int mt)
 
     //end cobra
     //Cobra below is the old code
-    /*switch (TimeOfDayGeneral())		// Time of day modifiers
-    	{
-    	case TOD_NIGHT:
-    		dr = (dr+3)/4;
-    		break;
-    	case TOD_DAWNDUSK:
-    		dr = (dr+1)/2;
-    		break;
-    	default:
-    		break;
-    	}*/
+    /*switch (TimeOfDayGeneral()) // Time of day modifiers
+     {
+     case TOD_NIGHT:
+     dr = (dr+3)/4;
+     break;
+     case TOD_DAWNDUSK:
+     dr = (dr+1)/2;
+     break;
+     default:
+     break;
+     }*/
     //return dr;
 }
 

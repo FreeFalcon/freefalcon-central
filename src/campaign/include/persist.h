@@ -13,11 +13,11 @@ typedef ObjectiveClass* Objective;
 // Defines and Flags
 // =============================
 
-#define MAX_PERSISTANT_OBJECTS		5000				// Max number of persistant objects
+#define MAX_PERSISTANT_OBJECTS 5000 // Max number of persistant objects
 
-#define SPLF_IS_LINKED				0x01				// Linked persistant object
-#define SPLF_IS_TIMED				0x02				// Timed persistant object
-#define SPLF_IN_USE					0x04				// This entry is being used
+#define SPLF_IS_LINKED 0x01 // Linked persistant object
+#define SPLF_IS_TIMED 0x02 // Timed persistant object
+#define SPLF_IN_USE 0x04 // This entry is being used
 
 // =============================
 // Packed VU_ID & index data
@@ -26,9 +26,9 @@ typedef ObjectiveClass* Objective;
 class PackedVUIDClass
 {
 public:
-    unsigned long	creator_;
-    unsigned long	num_;
-    unsigned char	index_;
+    unsigned long creator_;
+    unsigned long num_;
+    unsigned char index_;
 };
 
 // =============================
@@ -58,19 +58,19 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
-    float				x, y;
-    DrawableBSP*		drawPointer;
+    float x, y;
+    DrawableBSP* drawPointer;
     union
     {
-        CampaignTime	removeTime;
-        PackedVUIDClass	campObject;
-    }				unionData;
-    short				visType;
-    short				flags;
+        CampaignTime removeTime;
+        PackedVUIDClass campObject;
+    } unionData;
+    short visType;
+    short flags;
 
 public:
     // constructors/destructors
@@ -81,13 +81,13 @@ public:
     void Load(VU_BYTE** stream);
     void Load(FILE* filePtr);
     int SaveSize();
-    int Save(VU_BYTE **stream);									// returns bytes written
-    int Save(FILE *file);										// returns bytes written
+    int Save(VU_BYTE **stream); // returns bytes written
+    int Save(FILE *file); // returns bytes written
 
     // function interface
-    void Init(int, float, float);								// Sets up initial data
-    void Deaggregate(void);									// Makes this drawable
-    void Reaggregate(void);									// Cleans up the drawable object
+    void Init(int, float, float); // Sets up initial data
+    void Deaggregate(void); // Makes this drawable
+    void Reaggregate(void); // Cleans up the drawable object
     int IsTimed(void)
     {
         return flags & SPLF_IS_TIMED;
@@ -110,8 +110,8 @@ public:
 // Default timeout values
 // =============================
 
-#define CRATER_REMOVAL_TIME		3600000			// Removal time, in campaign time
-#define HULK_REMOVAL_TIME		7200000			// Removal time, in campaign time
+#define CRATER_REMOVAL_TIME 3600000 // Removal time, in campaign time
+#define HULK_REMOVAL_TIME 7200000 // Removal time, in campaign time
 
 // =============================
 // Global access functions

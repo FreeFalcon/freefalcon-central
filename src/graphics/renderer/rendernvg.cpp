@@ -26,7 +26,7 @@ void RenderNVG::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 
 void RenderNVG::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     RenderOTW::StartDraw();
     Drawable2D::SetGreenMode(TRUE);
     realWeather->SetGreenMode(TRUE);
@@ -99,7 +99,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             {
                 alpha = GetRangeOnlyFog(distance);
 
-                if (alpha < fog)	alpha = fog;
+                if (alpha < fog) alpha = fog;
 
                 alpha = 1.f - alpha;
             }
@@ -129,18 +129,18 @@ void RenderNVG::SetTimeOfDayColor(void)
     lightSpecular = 0.f;
     TheTimeOfDay.GetLightDirection(&lightVector);
 
-    sky_color.r			= 0.f;
-    sky_color.g			= NVG_SKY_LEVEL;
-    sky_color.b			= 0.f;
-    haze_sky_color.r	= 0.f;
-    haze_sky_color.g	= NVG_SKY_LEVEL;
-    haze_sky_color.b	= 0.f;
-    earth_end_color.r	= 0.f;
-    earth_end_color.g	= NVG_SKY_LEVEL;
-    earth_end_color.b	= 0.f;
-    haze_ground_color.r	= 0.f;
-    haze_ground_color.g	= NVG_SKY_LEVEL;
-    haze_ground_color.b	= 0.f;
+    sky_color.r = 0.f;
+    sky_color.g = NVG_SKY_LEVEL;
+    sky_color.b = 0.f;
+    haze_sky_color.r = 0.f;
+    haze_sky_color.g = NVG_SKY_LEVEL;
+    haze_sky_color.b = 0.f;
+    earth_end_color.r = 0.f;
+    earth_end_color.g = NVG_SKY_LEVEL;
+    earth_end_color.b = 0.f;
+    haze_ground_color.r = 0.f;
+    haze_ground_color.g = NVG_SKY_LEVEL;
+    haze_ground_color.b = 0.f;
 
     DWORD ground_haze = (FloatToInt32(haze_ground_color.g * 255.9f) << 8) + 0xff000000;
     context.SetState(MPR_STA_FOG_COLOR, ground_haze);

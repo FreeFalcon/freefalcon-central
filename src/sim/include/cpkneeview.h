@@ -40,9 +40,9 @@ public:
     // Runtime Member Functions
     //====================================================//
 
-    virtual void	Exec(SimBaseClass*);
-    virtual void	DisplayBlit(void);
-    virtual void	DisplayDraw(void);
+    virtual void Exec(SimBaseClass*);
+    virtual void DisplayBlit(void);
+    virtual void DisplayDraw(void);
     virtual void Refresh(SimVehicleClass *platform);
 
     virtual void Setup(DisplayDevice *device, int top, int left, int bottom, int right);
@@ -58,17 +58,17 @@ public:
     // sfr: moved some information from kneeboard to kneeview to allow
     // multiple kneeview in the same pit
 private:
-    RECT		srcRect;
-    RECT		dstRect;
+    RECT srcRect;
+    RECT dstRect;
 
     // image buffer from kneeboard map
-    ImageBuffer	*mapImageBuffer;
+    ImageBuffer *mapImageBuffer;
     // Real world map dimensions (R/O externally)
-    float		wsVcenter;	//vertical center
-    float		wsHcenter;	//horizontal center
-    float		wsHsize;	//horizontal size
-    float		wsVsize;	//vertical size
-    int			pixelMag;
+    float wsVcenter; //vertical center
+    float wsHcenter; //horizontal center
+    float wsHsize; //horizontal size
+    float wsVsize; //vertical size
+    int pixelMag;
     float m_pixel2nmX, m_pixel2nmY;
 
     // Internal worker functions for the text page
@@ -81,7 +81,7 @@ private:
     void DrawWaypoints(SimVehicleClass *platform);
     void DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *renderer, SimVehicleClass *platform);
     void MapWaypointToDisplay(WayPointClass *curWaypoint, float *x, float *y);
-    //	void ApplyLighting(DWORD *inColor, DWORD *outColor);
+    // void ApplyLighting(DWORD *inColor, DWORD *outColor);
 };
 
 #endif

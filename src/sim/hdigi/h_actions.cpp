@@ -17,7 +17,7 @@ void HeliBrain::Actions(void)
     if (self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT))
     {
         // if ( modeStack.curMode == GunsEngageMode )
-        //	GunsEngage();
+        // GunsEngage();
         // else
         FollowLead();
     }

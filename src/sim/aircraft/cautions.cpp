@@ -25,12 +25,12 @@
 
 /*!GetFault(obs_wrn) && //never get's set currently*/
 
-//extern bool g_bEnableAircraftLimits; //me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bEnableAircraftLimits; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 
 //MI
 bool Warned = FALSE;
-//extern bool g_bEnableCATIIIExtension;	//MI replaced with g_bRealisticAvionics
+//extern bool g_bEnableCATIIIExtension; //MI replaced with g_bRealisticAvionics
 void AircraftClass::CautionCheck(void)
 {
     if (!isDigital)
@@ -67,7 +67,7 @@ void AircraftClass::CautionCheck(void)
 
                     //Smeg 27-Oct-2003 - added ! to play Bingo when not alrady being played. Probably a typo.
                     //if(!F4SoundFXPlaying( af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
-                    //	  F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
+                    //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
                     if (!SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBBingo);
                 }
@@ -87,7 +87,7 @@ void AircraftClass::CautionCheck(void)
                 mFaults->SetMasterCaution();
 
                 //if(!F4SoundFXPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
-                //	  F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
+                //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
                 if (!SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                     SoundPos.Sfx(af->auxaeroData->sndBBBingo);
 
@@ -149,8 +149,8 @@ void AircraftClass::CautionCheck(void)
                         mFaults->SetWarning(fuel_home);
 
                     //Make noise
-                    //				  if(!F4SoundFXPlaying(af->auxaeroData->sndBBBingo))
-                    //					  F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
+                    //   if(!F4SoundFXPlaying(af->auxaeroData->sndBBBingo))
+                    //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
                     if (!SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBBingo);
 
@@ -162,10 +162,10 @@ void AircraftClass::CautionCheck(void)
 
         /////////////me123 let's brake something if we fly too fast
         //me123 OWLOOK switch here to enable aircraft limits (overg and max speed)
-        //if (g_bEnableAircraftLimits) {	MI
+        //if (g_bEnableAircraftLimits) { MI
         if (g_bRealisticAvionics)
         {
-            // Marco Edit - OverG DOES NOT affect		!!!
+            // Marco Edit - OverG DOES NOT affect !!!
             // (at least not before the aircraft falls apart)
             //MI put back in after discussing with Marco
             CheckForOverG();
@@ -447,7 +447,7 @@ void AircraftClass::CautionCheck(void)
     }
 
     //MI new home of the wrong/correct CAT stuff
-    //if(af->platform->IsPlayer() && g_bEnableCATIIIExtension)	MI
+    //if(af->platform->IsPlayer() && g_bEnableCATIIIExtension) MI
     if (IsPlayer() && g_bRealisticAvionics)
     {
         float MaxG = af->curMaxGs;
@@ -495,7 +495,7 @@ void AircraftClass::CautionCheck(void)
     {
         //MI WARN Reset stuff
         //me123 loopign warnign sound is just T_LCFG i think
-        if (cockpitFlightData.IsSet(FlightData::T_L_CFG))	//this one gives continous warning
+        if (cockpitFlightData.IsSet(FlightData::T_L_CFG)) //this one gives continous warning
         {
             //sound
             if (mFaults->WarnReset())
@@ -505,7 +505,7 @@ void AircraftClass::CautionCheck(void)
                     if (!SoundPos.IsPlaying(SFX_BB_WARNING)) // MLR 5/16/2004 -
                         SoundPos.Sfx(SFX_BB_WARNING);
 
-                    //			   F4SoundFXSetDist(SFX_BB_WARNING, FALSE, 0.0f, 1.0f );
+                    //    F4SoundFXSetDist(SFX_BB_WARNING, FALSE, 0.0f, 1.0f );
                 }
             }
         }
@@ -525,8 +525,8 @@ void AircraftClass::CautionCheck(void)
             {
                 if (mFaults->MasterCaution())
                 {
-                    //			   if(!F4SoundFXPlaying( af->auxaeroData->sndBBCaution))
-                    //			       F4SoundFXSetDist( af->auxaeroData->sndBBCaution, TRUE, 0.0f, 1.0f );
+                    //    if(!F4SoundFXPlaying( af->auxaeroData->sndBBCaution))
+                    //        F4SoundFXSetDist( af->auxaeroData->sndBBCaution, TRUE, 0.0f, 1.0f );
                     if (!SoundPos.IsPlaying(af->auxaeroData->sndBBCaution)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBCaution);
 
@@ -543,8 +543,8 @@ void AircraftClass::CautionCheck(void)
             {
                 if (mFaults->WarnReset())
                 {
-                    //				   if(!F4SoundFXPlaying(af->auxaeroData->sndBBWarning))
-                    //					   F4SoundFXSetDist(af->auxaeroData->sndBBWarning, TRUE, 0.0f, 1.0f );
+                    //    if(!F4SoundFXPlaying(af->auxaeroData->sndBBWarning))
+                    //    F4SoundFXSetDist(af->auxaeroData->sndBBWarning, TRUE, 0.0f, 1.0f );
                     if (!SoundPos.IsPlaying(af->auxaeroData->sndBBWarning)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBWarning);
 
@@ -1152,15 +1152,15 @@ void AircraftClass::SetExternalData(void)
         cockpitFlightData.lightBits3 = FlightData::AllLampBits3On;  // All current lamp related lightBits3 to ON
         cockpitFlightData.hsiBits = FlightData::AllLampHsiBitsOn;   // All current lamp related HsiBits to ON
         //if(!F4SoundFXPlaying(SFX_BB_ALLWORDS))
-        //	F4SoundFXSetDist(SFX_BB_ALLWORDS, TRUE, 0.0f, 1.0f );
+        // F4SoundFXSetDist(SFX_BB_ALLWORDS, TRUE, 0.0f, 1.0f );
         SoundPos.Sfx(SFX_BB_ALLWORDS); // MLR 5/16/2004 -
         return;
     }
 
     /* // MLR 5/16/2004 -
     else {
-    	if (F4SoundFXPlaying(SFX_BB_ALLWORDS))  // stop the littany if player lets up on the MAL/IND switch
-    		F4StopSound(SFX_DEF[SFX_BB_ALLWORDS].handle);
+     if (F4SoundFXPlaying(SFX_BB_ALLWORDS))  // stop the littany if player lets up on the MAL/IND switch
+     F4StopSound(SFX_DEF[SFX_BB_ALLWORDS].handle);
     }
     */
 
@@ -1260,9 +1260,9 @@ void AircraftClass::SetExternalData(void)
     //MI only operational with gear down
     /*if(g_bRealisticAvionics && af && af->gearPos < 0.8F)
     {
-    	cockpitFlightData.ClearLightBit(FlightData::AOAOn);
-    	cockpitFlightData.ClearLightBit(FlightData::AOABelow);
-    	cockpitFlightData.ClearLightBit(FlightData::AOAAbove);
+     cockpitFlightData.ClearLightBit(FlightData::AOAOn);
+     cockpitFlightData.ClearLightBit(FlightData::AOABelow);
+     cockpitFlightData.ClearLightBit(FlightData::AOAAbove);
     }*/
 
     // Nose Wheel Steering
@@ -1679,10 +1679,10 @@ void AircraftClass::SSounds(void)
             /*
             v = (GetKias() - af->curMaxStoreSpeed) / 50 ;
             if(v<0)
-            	v=0;
+             v=0;
             else
-            	if(v>1)
-            		v=1;
+             if(v>1)
+             v=1;
 
             v=(1-v) * -2000;
             */
@@ -1710,7 +1710,7 @@ void AircraftClass::AdjustTankSpeed(int level)
             break;
 
         case 3:
-            SpeedToleranceTanks = 100;	//No more damage
+            SpeedToleranceTanks = 100; //No more damage
             break;
 
         default:
@@ -1732,7 +1732,7 @@ void AircraftClass::AdjustBombSpeed(int level)
             break;
 
         case 3:
-            SpeedToleranceBombs = 100;	//No more damage
+            SpeedToleranceBombs = 100; //No more damage
             break;
 
         default:
@@ -1754,7 +1754,7 @@ void AircraftClass::AdjustTankG(int level)
             break;
 
         case 3:
-            GToleranceTanks = 100;	//No more damage
+            GToleranceTanks = 100; //No more damage
             break;
 
         default:
@@ -1776,7 +1776,7 @@ void AircraftClass::AdjustBombG(int level)
             break;
 
         case 3:
-            GToleranceBombs = 100;	//No more damage
+            GToleranceBombs = 100; //No more damage
             break;
 
         default:

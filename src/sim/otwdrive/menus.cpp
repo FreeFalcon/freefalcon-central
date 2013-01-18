@@ -13,7 +13,7 @@
 #include "aircrft.h"
 #include "falclib\include\f4find.h"
 
-#include "simio.h"	// Retro 25Mar2004
+#include "simio.h" // Retro 25Mar2004
 #include "Graphics\DXEngine\DXEngine.h"
 #include "Graphics\DXEngine\DXVBManager.h"
 
@@ -34,20 +34,20 @@ extern int MinorVersion;
 extern int BuildNumber;
 extern int ShowVersion;
 extern int ShowFrameRate;
-extern int endAbort;	// From OTWdrive.cpp
+extern int endAbort; // From OTWdrive.cpp
 extern DrawableBSP *endDialogObject;
 int endsAvail[3] = {0};
-int	start = 0;
+int start = 0;
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;
 static int exitMenuDesired = 0;
 
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 int tactical_is_training(void);
 
 extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 
-#define EXITMENU_POPUP_TIME		15000			// Exit menu will pop up 15 seconds after death
+#define EXITMENU_POPUP_TIME 15000 // Exit menu will pop up 15 seconds after death
 
 void ResetVoices(void);
 
@@ -90,9 +90,9 @@ void OTWDriverClass::ShowPosition(void)
 
 
 
-Tpoint	OTWDriverClass::GetEyePosition(void)
+Tpoint OTWDriverClass::GetEyePosition(void)
 {
-    Tpoint	pos;
+    Tpoint pos;
 
     pos.x = flyingEye->XPos();
     pos.y = flyingEye->YPos();
@@ -175,17 +175,17 @@ void OTWDriverClass::ShowFlaps(void)
         }
         else
         {
-            showFlaps = true;	// Retro 1Feb2004 so that we don´t enter here if the ac has no flaps anyway
+            showFlaps = true; // Retro 1Feb2004 so that we don´t enter here if the ac has no flaps anyway
         }
     }
 }
 
 // Retro 1Feb2004 start
-//	display some dual-throttle debug stuff
+// display some dual-throttle debug stuff
 #include "PilotInputs.h"
 void OTWDriverClass::ShowEngine(void)
 {
-    if	(otwPlatform.get() &&
+    if (otwPlatform.get() &&
          otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
          otwPlatform->IsAirplane())
     {
@@ -216,7 +216,7 @@ void OTWDriverClass::ShowEngine(void)
                     break;
             }
 
-            //			renderer->TextLeft(0.1F,0.9F,tmp);
+            // renderer->TextLeft(0.1F,0.9F,tmp);
             renderer->TextLeft(-0.95F, 0.88F, tmp);
 
         }
@@ -229,7 +229,7 @@ void OTWDriverClass::ShowEngine(void)
 // RV - Biker - This is for showing AC is attached to carrier catapult
 void OTWDriverClass::ShowCatMessage(void)
 {
-    if	(otwPlatform.get() && otwPlatform.get() == SimDriver.GetPlayerAircraft() && otwPlatform->IsAirplane())
+    if (otwPlatform.get() && otwPlatform.get() == SimDriver.GetPlayerAircraft() && otwPlatform->IsAirplane())
     {
         AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
 
@@ -250,28 +250,28 @@ struct
     char* theText;
 } Axis2Text[] =
 {
-    { AXIS_PITCH,			"AXIS_PITCH" },
-    { AXIS_ROLL,			"AXIS_ROLL" },
-    { AXIS_YAW,				"AXIS_YAW" },
-    { AXIS_THROTTLE,		"AXIS_THROTTLE" },
-    { AXIS_THROTTLE2,		"AXIS_THROTTLE2" },
-    { AXIS_TRIM_PITCH,		"AXIS_TRIM_PITCH" },
-    { AXIS_TRIM_YAW,		"AXIS_TRIM_YAW" },
-    { AXIS_TRIM_ROLL,		"AXIS_TRIM_ROLL" },
-    { AXIS_BRAKE_LEFT,		"AXIS_BRAKE_LEFT" },
-    { AXIS_FOV,				"AXIS_FOV" },
-    { AXIS_ANT_ELEV,		"AXIS_ANT_ELEV" },
-    { AXIS_CURSOR_X,		"AXIS_CURSOR_X" },
-    { AXIS_CURSOR_Y,		"AXIS_CURSOR_Y" },
-    { AXIS_RANGE_KNOB,		"AXIS_RANGE_KNOB" },
-    { AXIS_COMM_VOLUME_1,	"AXIS_COMM_VOLUME_1" },
-    { AXIS_COMM_VOLUME_2,	"AXIS_COMM_VOLUME_2" },
-    { AXIS_MSL_VOLUME,		"AXIS_MSL_VOLUME" },
-    { AXIS_THREAT_VOLUME,	"AXIS_THREAT_VOLUME" },
-    { AXIS_HUD_BRIGHTNESS,	"AXIS_HUD_BRIGHTNESS" },
-    { AXIS_RET_DEPR,		"AXIS_RET_DEPR" },
-    { AXIS_ZOOM,			"AXIS_ZOOM" }
-    //	{ AXIS_INTERCOM_VOLUME,	"AXIS_INTERCOM_VOLUME" }
+    { AXIS_PITCH, "AXIS_PITCH" },
+    { AXIS_ROLL, "AXIS_ROLL" },
+    { AXIS_YAW, "AXIS_YAW" },
+    { AXIS_THROTTLE, "AXIS_THROTTLE" },
+    { AXIS_THROTTLE2, "AXIS_THROTTLE2" },
+    { AXIS_TRIM_PITCH, "AXIS_TRIM_PITCH" },
+    { AXIS_TRIM_YAW, "AXIS_TRIM_YAW" },
+    { AXIS_TRIM_ROLL, "AXIS_TRIM_ROLL" },
+    { AXIS_BRAKE_LEFT, "AXIS_BRAKE_LEFT" },
+    { AXIS_FOV, "AXIS_FOV" },
+    { AXIS_ANT_ELEV, "AXIS_ANT_ELEV" },
+    { AXIS_CURSOR_X, "AXIS_CURSOR_X" },
+    { AXIS_CURSOR_Y, "AXIS_CURSOR_Y" },
+    { AXIS_RANGE_KNOB, "AXIS_RANGE_KNOB" },
+    { AXIS_COMM_VOLUME_1, "AXIS_COMM_VOLUME_1" },
+    { AXIS_COMM_VOLUME_2, "AXIS_COMM_VOLUME_2" },
+    { AXIS_MSL_VOLUME, "AXIS_MSL_VOLUME" },
+    { AXIS_THREAT_VOLUME, "AXIS_THREAT_VOLUME" },
+    { AXIS_HUD_BRIGHTNESS, "AXIS_HUD_BRIGHTNESS" },
+    { AXIS_RET_DEPR, "AXIS_RET_DEPR" },
+    { AXIS_ZOOM, "AXIS_ZOOM" }
+    // { AXIS_INTERCOM_VOLUME, "AXIS_INTERCOM_VOLUME" }
 };
 
 void OTWDriverClass::DisplayAxisValues()
@@ -317,8 +317,8 @@ void OTWDriverClass::DisplayAxisValues()
                 }
             }
 
-            //			sprintf(tmp,"%i",IO.analog[i].smoothingFactor);
-            //			OTWDriver.renderer->TextLeft(-0.15F,0.85F-(i*0.05F),tmp);
+            // sprintf(tmp,"%i",IO.analog[i].smoothingFactor);
+            // OTWDriver.renderer->TextLeft(-0.15F,0.85F-(i*0.05F),tmp);
         }
     }
 }
@@ -359,8 +359,8 @@ void OTWDriverClass::DrawExitMenu(void)
 {
     Tpoint origin = {0.0f, 0.0f, 0.0f};
 
-    float tempFOV = GetFOV();		//Wombat778 3-26-04 Save the current FOV;
-    SetFOV(45.0f * DTR);				//Wombat778 3-26-04 Set the FOV to 45 degrees to make it not dark (temporary fix till jam comes up with the real solution, then change to 60.0f)
+    float tempFOV = GetFOV(); //Wombat778 3-26-04 Save the current FOV;
+    SetFOV(45.0f * DTR); //Wombat778 3-26-04 Set the FOV to 45 degrees to make it not dark (temporary fix till jam comes up with the real solution, then change to 60.0f)
 
 
     if (exitMenuOn != exitMenuDesired)
@@ -443,7 +443,7 @@ void OTWDriverClass::DrawExitMenu(void)
 
     }
 
-    SetFOV(tempFOV);			//Wombat778 3-26-04 Restore the FOV
+    SetFOV(tempFOV); //Wombat778 3-26-04 Restore the FOV
 }
 
 void OTWDriverClass::Timeout(void)
@@ -484,7 +484,7 @@ void OTWDriverClass::Timeout(void)
     {
         if (otwPlatform.get() != NULL)
         {
-            //			MonoPrint ("Panning exit\n");
+            // MonoPrint ("Panning exit\n");
             SetEndFlightPoint(otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f,
                               otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f,
                               otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f - 20.0f);
@@ -540,7 +540,7 @@ void OTWDriverClass::ExitMenu(unsigned long i)
         {
             if (otwPlatform)
             {
-                //			   MonoPrint ("Panning exit\n");
+                //    MonoPrint ("Panning exit\n");
                 SetEndFlightPoint(otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f,
                                   otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f,
                                   otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f - 20.0f);
@@ -586,7 +586,7 @@ int OTWDriverClass::HandleMouseClick(long x, long y)
     float xRes = (float)renderer->GetXRes();
     float yRes = (float)renderer->GetYRes();
     float logicalX, logicalY;
-    int	passThru = TRUE;
+    int passThru = TRUE;
 
     if (InExitMenu())
     {
@@ -622,8 +622,8 @@ int OTWDriverClass::HandleMouseClick(long x, long y)
     return passThru;
 }
 
-bool MouseMenuActive = false;	// Retro 15Feb2004 - see simouse.cpp for explanation
-extern bool clickableMouseMode;	// Retro 15Feb2004
+bool MouseMenuActive = false; // Retro 15Feb2004 - see simouse.cpp for explanation
+extern bool clickableMouseMode; // Retro 15Feb2004
 
 void OTWDriverClass::SetExitMenu(int newVal)
 {
@@ -634,16 +634,16 @@ void OTWDriverClass::SetExitMenu(int newVal)
 
 
         //Wombat778 3-26-04 Moved all this crap to DrawExitMenu and made the change ONLY affect the drawing of the exit menu.
-        //Retro25Mar2004		OTWDriver.SetFOV( 60.0f * DTR );									//Wombat778 11-2-2003	Added so that exit dialog box is the right size on exit
-        //OTWDriver.SetFOV( 45.0f * DTR );	// Retro 25Mar2004 - nailed it down to 45 for now, so that text is readable again
+        //Retro25Mar2004 OTWDriver.SetFOV( 60.0f * DTR ); //Wombat778 11-2-2003 Added so that exit dialog box is the right size on exit
+        //OTWDriver.SetFOV( 45.0f * DTR ); // Retro 25Mar2004 - nailed it down to 45 for now, so that text is readable again
         lastclickablepitmode = clickableMouseMode;
         clickableMouseMode = true;
-        MouseMenuActive = true;	// Retro 15Feb2004
+        MouseMenuActive = true; // Retro 15Feb2004
     }
     else
     {
         clickableMouseMode = lastclickablepitmode;
-        MouseMenuActive = false;	// Retro 15Feb2004
+        MouseMenuActive = false; // Retro 15Feb2004
     }
 
     exitMenuDesired = newVal;
@@ -664,7 +664,7 @@ void OTWDriverClass::ChangeExitMenu(int newVal)
         }
         else if (!endDialogObject)
         {
-            Tpoint	pos = {4.0f, 0.f, 0.0f };
+            Tpoint pos = {4.0f, 0.f, 0.0f };
             pos.x *= (60.0F * DTR) / GetFOV();
             endDialogObject = new DrawableBSP(MapVisId(VIS_END_MISSION), &pos, &IMatrix, 1.0f);
 
@@ -724,7 +724,7 @@ void OTWDriverClass::CancelExitMenuCountdown(void)
 
 void OTWDriverClass::ShowThrustReverse(void)
 {
-    if	(otwPlatform &&
+    if (otwPlatform &&
          otwPlatform.get() == SimDriver.GetPlayerAircraft() &&
          otwPlatform->IsAirplane())
     {

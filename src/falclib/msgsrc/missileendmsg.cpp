@@ -29,8 +29,8 @@ static int random = 0;
 
 FalconMissileEndMessage::FalconMissileEndMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(MissileEndMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
-    //	RequestReliableTransmit ();
-    //	RequestOutOfBandTransmit ();
+    // RequestReliableTransmit ();
+    // RequestOutOfBandTransmit ();
     // Your Code Goes Here
     dataBlock.sfxPartSysName[0] = 0;
 }
@@ -122,10 +122,10 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             F4SoundFXSetPos(SFX_IMPACTG1 + PRANDInt6(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_GROUND_STRIKE,				// type
-            	&pos,							// world pos
-            	2.0f,							// time to live
-            	100.0f ) );		// scale
+             new SfxClass (SFX_GROUND_STRIKE, // type
+             &pos, // world pos
+             2.0f, // time to live
+             100.0f ) ); // scale
             */
             DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_STRIKE + 1),
                                                   &pos,
@@ -138,10 +138,10 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_WATER_STRIKE,				// type
-            	&pos,							// world pos
-            	2.0f,							// time to live
-            	100.0f ) );		// scale
+             new SfxClass (SFX_WATER_STRIKE, // type
+             &pos, // world pos
+             2.0f, // time to live
+             100.0f ) ); // scale
             */
             DrawableParticleSys::PS_AddParticleEx((SFX_WATER_STRIKE + 1),
                                                   &pos,
@@ -157,21 +157,21 @@ int FalconMissileEndMessage::Process(uchar autodisp)
     /*
     if ( type == TYPE_MISSILE && stype == STYPE_ROCKET  )
     {
-    	// try and "back up" the placement for explosion so that
-    	// it will sort before the feature
-    	pos.x -= dataBlock.xDelta * 0.22f;
-    	pos.y -= dataBlock.yDelta * 0.22f;
-    	pos.z -= dataBlock.zDelta * 0.22f;
-    	vec.x = dataBlock.xDelta * 1.0f;
-    	vec.y = dataBlock.yDelta * 1.0f;
-    	vec.z = dataBlock.zDelta * 1.0f;
-    	OTWDriver.AddSfxRequest(
-    		new SfxClass (SFX_ROCKET_BURST,				// type
-    		0,								// flags
-    		&pos,							// world pos
-    		&vec,							// movement
-    		1.5f,							// time to live
-    		20.0f ) );		// scale
+     // try and "back up" the placement for explosion so that
+     // it will sort before the feature
+     pos.x -= dataBlock.xDelta * 0.22f;
+     pos.y -= dataBlock.yDelta * 0.22f;
+     pos.z -= dataBlock.zDelta * 0.22f;
+     vec.x = dataBlock.xDelta * 1.0f;
+     vec.y = dataBlock.yDelta * 1.0f;
+     vec.z = dataBlock.zDelta * 1.0f;
+     OTWDriver.AddSfxRequest(
+     new SfxClass (SFX_ROCKET_BURST, // type
+     0, // flags
+     &pos, // world pos
+     &vec, // movement
+     1.5f, // time to live
+     20.0f ) ); // scale
     }
     */
     if (type == TYPE_MISSILE)
@@ -187,10 +187,10 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_AIR_PENETRATION,				// type
-                    	&pos,							// world pos
-                    	1.5f,							// time to live
-                    	60.0f ) );		// scale
+                     new SfxClass (SFX_AIR_PENETRATION, // type
+                     &pos, // world pos
+                     1.5f, // time to live
+                     60.0f ) ); // scale
                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_AIR_PENETRATION + 1),
                                                           &pos,
@@ -200,13 +200,13 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_MISSILE_BURST,				// type
-                    	0,								// flags
-                    	&pos,							// world pos
-                    	&vec,							// movement
-                    	1.5f,							// time to live
-                    	40.0f ) );		// scale
-                    	*/
+                     new SfxClass (SFX_MISSILE_BURST, // type
+                     0, // flags
+                     &pos, // world pos
+                     &vec, // movement
+                     1.5f, // time to live
+                     40.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_MISSILE_BURST + 1),
                                                           &pos,
                                                           &vec);
@@ -225,11 +225,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 pos.z -= dataBlock.zDelta * 0.12f;
                 /*
                 OTWDriver.AddSfxRequest(
-                		new SfxClass (SFX_AIR_PENETRATION,				// type
-                		&pos,							// world pos
-                		1.5f,							// time to live
-                		60.0f ) );		// scale
-                		*/
+                 new SfxClass (SFX_AIR_PENETRATION, // type
+                 &pos, // world pos
+                 1.5f, // time to live
+                 60.0f ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_AIR_PENETRATION + 1),
                                                       &pos,
                                                       &PSvec);
@@ -252,11 +252,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                     case KineticDam:
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass(SFX_GROUND_PENETRATION,				// type
-                        		&pos,							// world pos
-                        		2.0f,							// time to live
-                        		(float)wc->BlastRadius ) );		// scale
-                        		*/
+                         new SfxClass(SFX_GROUND_PENETRATION, // type
+                         &pos, // world pos
+                         2.0f, // time to live
+                         (float)wc->BlastRadius ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_PENETRATION + 1),
                                                               &pos,
                                                               &PSvec);
@@ -267,11 +267,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                     case HighExplosiveDam:
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-                        		&pos,							// world pos
-                        		2.0f,							// time to live
-                        		(float)wc->BlastRadius ) );		// scale
-                        		*/
+                         new SfxClass(SFX_GROUND_EXPLOSION, // type
+                         &pos, // world pos
+                         2.0f, // time to live
+                         (float)wc->BlastRadius ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_EXPLOSION + 1),
                                                               &pos,
                                                               &PSvec);
@@ -283,12 +283,12 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                         vec.z = 0.0f;
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass (SFX_NAPALM,				// type
-                        	&pos,							// world pos
-                        	&vec,
-                        	4,				// # rings
-                        	0.2f ) );		// interval
-                        	*/
+                         new SfxClass (SFX_NAPALM, // type
+                         &pos, // world pos
+                         &vec,
+                         4, // # rings
+                         0.2f ) ); // interval
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_NAPALM + 1),
                                                               &pos,
                                                               &vec);
@@ -304,11 +304,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                         //a missile default destruct in PS file, if none other explos is used
                         /*
                         OTWDriver.AddSfxRequest(
-                        		new SfxClass (SFX_SHAPED_FIRE_DEBRIS,				// type
-                        		&pos,							// world pos
-                        		1.5f,							// time to live
-                        		40.0f ) );		// scale
-                        		*/
+                         new SfxClass (SFX_SHAPED_FIRE_DEBRIS, // type
+                         &pos, // world pos
+                         1.5f, // time to live
+                         40.0f ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_SHAPED_FIRE_DEBRIS + 1),
                                                               &pos,
                                                               &PSvec);
@@ -328,11 +328,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 //a missile default destruct in PS file, if none other explos is used
                 /*
                 OTWDriver.AddSfxRequest(
-                		new SfxClass (SFX_SHAPED_FIRE_DEBRIS,				// type
-                		&pos,							// world pos
-                		1.5f,							// time to live
-                		40.0f ) );		// scale
-                		*/
+                 new SfxClass (SFX_SHAPED_FIRE_DEBRIS, // type
+                 &pos, // world pos
+                 1.5f, // time to live
+                 40.0f ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_SHAPED_FIRE_DEBRIS + 1),
                                                       &pos,
                                                       &PSvec);
@@ -357,49 +357,49 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         vec.z = dataBlock.zDelta * 1.0f;
         /*
         OTWDriver.AddSfxRequest(
-        	new SfxClass (SFX_ROCKET_BURST,				// type
-        	0,								// flags
-        	&pos,							// world pos
-        	&vec,							// movement
-        	1.5f,							// time to live
-        	20.0f ) );		//
-        	*/
+         new SfxClass (SFX_ROCKET_BURST, // type
+         0, // flags
+         &pos, // world pos
+         &vec, // movement
+         1.5f, // time to live
+         20.0f ) ); //
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_ROCKET_BURST + 1),
                                               &pos,
                                               &vec);
         /*
         switch( dataBlock.endCode )
         {
-        	case FeatureImpact:
-        		pos.x -= dataBlock.xDelta * 0.32f;
-        		pos.y -= dataBlock.yDelta * 0.32f;
-        		pos.z -= dataBlock.zDelta * 0.32f;
-        	case MissileKill:
-        		OTWDriver.AddSfxRequest(
-        				new SfxClass (SFX_AIR_PENETRATION,				// type
-        				&pos,							// world pos
-        				1.5f,							// time to live
-        				60.0f ) );		// scale
-        		// sound effect
-        		F4SoundFXSetPos( SFX_IMPACTA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid );
-        		break;
-        	case ExceedFOV:
-        	case ExceedGimbal:
-        	case GroundImpact:
-        	case MinTime:
-        	case Missed:
-        	case MinSpeed:
-        	case ExceedTime:
-        	default:
-        		OTWDriver.AddSfxRequest(
-        				new SfxClass (SFX_SMALL_HIT_EXPLOSION,				// type
-        				&pos,							// world pos
-        				1.5f,							// time to live
-        				40.0f ) );		// scale
+         case FeatureImpact:
+         pos.x -= dataBlock.xDelta * 0.32f;
+         pos.y -= dataBlock.yDelta * 0.32f;
+         pos.z -= dataBlock.zDelta * 0.32f;
+         case MissileKill:
+         OTWDriver.AddSfxRequest(
+         new SfxClass (SFX_AIR_PENETRATION, // type
+         &pos, // world pos
+         1.5f, // time to live
+         60.0f ) ); // scale
+         // sound effect
+         F4SoundFXSetPos( SFX_IMPACTA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid );
+         break;
+         case ExceedFOV:
+         case ExceedGimbal:
+         case GroundImpact:
+         case MinTime:
+         case Missed:
+         case MinSpeed:
+         case ExceedTime:
+         default:
+         OTWDriver.AddSfxRequest(
+         new SfxClass (SFX_SMALL_HIT_EXPLOSION, // type
+         &pos, // world pos
+         1.5f, // time to live
+         40.0f ) ); // scale
 
-        		// sound effect
-        		F4SoundFXSetPos( SFX_IMPACTA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid );
-        		break;
+         // sound effect
+         F4SoundFXSetPos( SFX_IMPACTA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid );
+         break;
         }
         */
     }
@@ -414,11 +414,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             F4SoundFXSetPos(SFX_IMPACTG4 + PRANDInt3(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_WATER_EXPLOSION,				// type
-            	&pos,							// world pos
-            	2.0f,							// time to live
-            	50.0f ) );		// scale
-            	*/
+             new SfxClass (SFX_WATER_EXPLOSION, // type
+             &pos, // world pos
+             2.0f, // time to live
+             50.0f ) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_WATER_EXPLOSION + 1),
                                                   &pos,
                                                   &PSvec);
@@ -435,11 +435,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_ARTILLERY_EXPLOSION,				// type
-                    		&pos,							// world pos
-                    		2.0f,							// time to live
-                    		100.0f ) );		// scale
-                    		*/
+                     new SfxClass(SFX_ARTILLERY_EXPLOSION, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     100.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_ARTILLERY_EXPLOSION + 1),
                                                           &pos,
                                                           &PSvec);
@@ -452,44 +452,44 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_AIR_PENETRATION,				// type
-                    		&pos,							// world pos
-                    		2.0f,							// time to live
-                    		40.0f ) );		// scale
+                     new SfxClass(SFX_AIR_PENETRATION, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     40.0f ) ); // scale
 
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_AIRBURST,				// type
-                    	&pos,							// world pos
-                    	10,							// time to live
-                    	0.4f ) );		// scale
+                     new SfxClass(SFX_AIRBURST, // type
+                     &pos, // world pos
+                     10, // time to live
+                     0.4f ) ); // scale
 
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_SPARKS,				// type
-                    		&pos,							// world pos
-                    		2.0f,							// time to live
-                    		40.0f ) );		// scale
+                     new SfxClass(SFX_SPARKS, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     40.0f ) ); // scale
                     */
                     //RV - I-Hawk - Replaced type to SFX_SHAPED_FIRE_DEBRIS, this will be
                     //a missile default destruct in PS file, if none other explos is used
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_SHAPED_FIRE_DEBRIS,				// type
-                    	&pos,							// world pos
-                    	1.5f,							// time to live
-                    	40.0f ) );		// scale
-                    	*/
+                     new SfxClass (SFX_SHAPED_FIRE_DEBRIS, // type
+                     &pos, // world pos
+                     1.5f, // time to live
+                     40.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_SHAPED_FIRE_DEBRIS + 1),
                                                           &pos,
                                                           &PSvec);
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-                    		&pos,							// world pos
-                    		20.0f,							// time to live
-                    		14.0f ) );		// scale
-                    		*/
+                     new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+                     &pos, // world pos
+                     20.0f, // time to live
+                     14.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_LONG_HANGING_SMOKE2 + 1),
                                                           &pos,
                                                           &PSvec);
@@ -507,11 +507,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_GROUND_STRIKE_NOFIRE,				// type
-                    	&pos,							// world pos
-                    	2.0f,							// time to live
-                    	min( 100.0f, (float)wc->BlastRadius ) ) );		// scale
-                    	*/
+                     new SfxClass(SFX_GROUND_STRIKE_NOFIRE, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     min( 100.0f, (float)wc->BlastRadius ) ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_STRIKE_NOFIRE + 1),
                                                           &pos,
                                                           &PSvec);
@@ -522,11 +522,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_AIRBURST,				// type
-                    	&pos,							// world pos
-                    	16,							// time to live
-                    	0.3f ) );		// scale
-                    	*/
+                     new SfxClass(SFX_AIRBURST, // type
+                     &pos, // world pos
+                     16, // time to live
+                     0.3f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_AIRBURST + 1),
                                                           &pos,
                                                           &PSvec);
@@ -547,11 +547,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 //the large effects with AAA fire
                 /*
                 OTWDriver.AddSfxRequest(
-                		new SfxClass (SFX_SMALL_HIT_EXPLOSION,				// type
-                		&pos,							// world pos
-                		1.5f,							// time to live
-                		40.0f ) );		// scale
-                		*/
+                 new SfxClass (SFX_SMALL_HIT_EXPLOSION, // type
+                 &pos, // world pos
+                 1.5f, // time to live
+                 40.0f ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_SMALL_HIT_EXPLOSION + 1),
                                                       &pos,
                                                       &PSvec);
@@ -570,182 +570,182 @@ int FalconMissileEndMessage::Process(uchar autodisp)
         {
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_NUKE,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
-            	*/
+             new SfxClass(SFX_NUKE, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_NUKE + 1),
                                                   &pos,
                                                   &PSvec);
 
             //Cobra TJL 11/06/04 comment out the old Nuke Effect per Steve and new PS
             /*OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-            	&pos,							// world pos
-            	50.0f,							// time to live
-            	(float)wc->BlastRadius * 50.0F) );		// scale
+             new SfxClass(SFX_GROUND_EXPLOSION, // type
+             &pos, // world pos
+             50.0f, // time to live
+             (float)wc->BlastRadius * 50.0F) ); // scale
 
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             OTWDriver.AddSfxRequest(
-            	new SfxClass(SFX_LONG_HANGING_SMOKE2,				// type
-            	&pos,							// world pos
-            	2000.0f,							// time to live
-            	20.0f ) );		// scale
+             new SfxClass(SFX_LONG_HANGING_SMOKE2, // type
+             &pos, // world pos
+             2000.0f, // time to live
+             20.0f ) ); // scale
             vec.x = -dataBlock.xDelta * 1.0f;
             vec.y = dataBlock.yDelta * 1.0f;
             vec.z = dataBlock.zDelta * 1.0f;
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             vec.x = dataBlock.xDelta * 1.0f;
             vec.y = dataBlock.yDelta * 1.0f;
             vec.z = dataBlock.zDelta * 1.0f;
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             vec.x = dataBlock.xDelta * 1.0f;
             vec.y = -dataBlock.yDelta * 1.0f;
             vec.z = dataBlock.zDelta * 1.0f;
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             vec.x = -dataBlock.xDelta * 1.0f;
             vec.y = -dataBlock.yDelta * 1.0f;
             vec.z = dataBlock.zDelta * 1.0f;
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_NAPALM,				// type
-            	&pos,							// world pos
-            	&vec,
-            	20,				// # rings
-            	0.2f ) );		// interval*/
+             new SfxClass (SFX_NAPALM, // type
+             &pos, // world pos
+             &vec,
+             20, // # rings
+             0.2f ) ); // interval*/
 
             // play sound
             F4SoundFXSetPos(SFX_IMPACTG4 + PRANDInt3(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
@@ -760,11 +760,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             F4SoundFXSetPos(SFX_IMPACTG4 + PRANDInt3(), TRUE, pos.x, pos.y, pos.z, 1.0f, 0, sid);
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_WATER_EXPLOSION,				// type
-            	&pos,							// world pos
-            	2.0f,							// time to live
-            	(float)wc->BlastRadius ) );		// scale
-            	*/
+             new SfxClass (SFX_WATER_EXPLOSION, // type
+             &pos, // world pos
+             2.0f, // time to live
+             (float)wc->BlastRadius ) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_WATER_EXPLOSION + 1),
                                                   &pos,
                                                   &PSvec);
@@ -779,11 +779,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             pos.z -= dataBlock.zDelta * 0.32f;
             /*
             OTWDriver.AddSfxRequest(
-            		new SfxClass (SFX_AIR_PENETRATION,				// type
-            		&pos,							// world pos
-            		1.5f,							// time to live
-            		60.0f ) );		// scale
-            		*/
+             new SfxClass (SFX_AIR_PENETRATION, // type
+             &pos, // world pos
+             1.5f, // time to live
+             60.0f ) ); // scale
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_AIR_PENETRATION + 1),
                                                   &pos,
                                                   &PSvec);
@@ -802,13 +802,13 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 vec.z = dataBlock.zDelta ;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_DURANDAL,				// type
-                	SFX_MOVES,								// flags
-                	&pos,							// world pos
-                	&vec,
-                	15.0f,			// time to live
-                	20.1f ) );		// scale
-                	*/
+                 new SfxClass (SFX_DURANDAL, // type
+                 SFX_MOVES, // flags
+                 &pos, // world pos
+                 &vec,
+                 15.0f, // time to live
+                 20.1f ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_DURANDAL + 1),
                                                       &pos,
                                                       &vec);
@@ -817,11 +817,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             {
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass(SFX_GROUND_PENETRATION,				// type
-                	&pos,							// world pos
-                	2.0f,							// time to live
-                	(float)wc->BlastRadius ) );		// scale
-                	*/
+                 new SfxClass(SFX_GROUND_PENETRATION, // type
+                 &pos, // world pos
+                 2.0f, // time to live
+                 (float)wc->BlastRadius ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_PENETRATION + 1),
                                                       &pos,
                                                       &PSvec);
@@ -843,24 +843,24 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 vec.y = dataBlock.yDelta * 2.0f;
                 vec.z = 0.0f;
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_GROUNDBURST,				// type
-                	&pos,							// world pos
-                	&vec,
-                	8,
-                	0.1f ) );		// interval
+                 new SfxClass (SFX_GROUNDBURST, // type
+                 &pos, // world pos
+                 &vec,
+                 8,
+                 0.1f ) ); // interval
                 */
                 vec.x = dataBlock.xDelta ;
                 vec.y = dataBlock.yDelta ;
                 vec.z = dataBlock.zDelta ;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_CLUSTER_BOMB,				// type
-                	0,								// flags
-                	&pos,							// world pos
-                	&vec,
-                	15.0f,			// time to live
-                	20.1f ) );		// scale
-                	*/
+                 new SfxClass (SFX_CLUSTER_BOMB, // type
+                 0, // flags
+                 &pos, // world pos
+                 &vec,
+                 15.0f, // time to live
+                 20.1f ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_CLUSTER_BOMB + 1),
                                                       &pos,
                                                       &vec);
@@ -870,11 +870,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
             {
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass(SFX_GROUND_PENETRATION,				// type
-                		&pos,							// world pos
-                		2.0f,							// time to live
-                		(float)wc->BlastRadius ) );		// scale
-                		*/
+                 new SfxClass(SFX_GROUND_PENETRATION, // type
+                 &pos, // world pos
+                 2.0f, // time to live
+                 (float)wc->BlastRadius ) ); // scale
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_PENETRATION + 1),
                                                       &pos,
                                                       &PSvec);
@@ -888,11 +888,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 case KineticDam:
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_GROUND_PENETRATION,				// type
-                    		&pos,							// world pos
-                    		2.0f,							// time to live
-                    		(float)wc->BlastRadius ) );		// scale
-                    		*/
+                     new SfxClass(SFX_GROUND_PENETRATION, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     (float)wc->BlastRadius ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_PENETRATION + 1),
                                                           &pos,
                                                           &PSvec);
@@ -902,11 +902,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                 case HighExplosiveDam:
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass(SFX_GROUND_EXPLOSION,				// type
-                    		&pos,							// world pos
-                    		2.0f,							// time to live
-                    		(float)wc->BlastRadius ) );		// scale
-                    		*/
+                     new SfxClass(SFX_GROUND_EXPLOSION, // type
+                     &pos, // world pos
+                     2.0f, // time to live
+                     (float)wc->BlastRadius ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_EXPLOSION + 1),
                                                           &pos,
                                                           &PSvec);
@@ -918,12 +918,12 @@ int FalconMissileEndMessage::Process(uchar autodisp)
                     vec.z = 0.0f;
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_NAPALM,				// type
-                    	&pos,							// world pos
-                    	&vec,
-                    	4,				// # rings
-                    	0.2f ) );		// interval
-                    	*/
+                     new SfxClass (SFX_NAPALM, // type
+                     &pos, // world pos
+                     &vec,
+                     4, // # rings
+                     0.2f ) ); // interval
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_NAPALM + 1),
                                                           &pos,
                                                           &vec);
@@ -940,11 +940,11 @@ int FalconMissileEndMessage::Process(uchar autodisp)
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_SHAPED_FIRE_DEBRIS,				// type
-                    	&pos,							// world pos
-                    	1.5f,							// time to live
-                    	40.0f ) );		// scale
-                    	*/
+                     new SfxClass (SFX_SHAPED_FIRE_DEBRIS, // type
+                     &pos, // world pos
+                     1.5f, // time to live
+                     40.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_SHAPED_FIRE_DEBRIS + 1),
                                                           &pos,
                                                           &PSvec);

@@ -13,11 +13,11 @@ inline void mlSinCos(mlTrig* trig, Float32 angle)
 #if defined(_MSC_VER)
     __asm
     {
-        __asm	mov     ecx, trig;
-        __asm	fld     dword ptr [angle];
-        __asm	fsincos;
-        __asm	fstp    dword ptr [ecx]trig.cos;
-        __asm	fstp    dword ptr [ecx]trig.sin;
+        __asm mov     ecx, trig;
+        __asm fld     dword ptr [angle];
+        __asm fsincos;
+        __asm fstp    dword ptr [ecx]trig.cos;
+        __asm fstp    dword ptr [ecx]trig.sin;
     }
 #else
     trig->sin = (Float32)sin(angle);
@@ -38,7 +38,7 @@ atan2(0,0) is undefined and should give an error.
 #define DPI 3.1415926535897932384626433832795
 #endif
 #ifndef HALF_DPI
-#define HALF_DPI	(DPI/2.0)
+#define HALF_DPI (DPI/2.0)
 #endif
 #pragma function(atan2)
 #define atan2(x,y) checked_atan2(x,y)

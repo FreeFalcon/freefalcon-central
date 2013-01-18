@@ -63,4 +63,4 @@ namespace D3DFrame
         return A + Alpha * (B - A);
     }
 
-};	// namespace D3DFrame
+}; // namespace D3DFrame

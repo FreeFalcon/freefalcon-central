@@ -44,7 +44,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     enum DigiMode
@@ -106,7 +106,7 @@ public:
     int flyingMissileEid;
     int flyingMissileHid;
     float mslCheckTimer;
-    float maxWpnRange;	// M.N.
+    float maxWpnRange; // M.N.
 
     BOOL anyWeapons;
 

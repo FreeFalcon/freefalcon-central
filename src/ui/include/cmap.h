@@ -11,21 +11,21 @@
 
 enum // Draw Flags
 {
-    _MAP_TEAM_0				= 0x00000001, // Calculation= (1 << i) (where i>=0 && i < _MAX_TEAMS_)
-    _MAP_TEAM_1				= 0x00000002,
-    _MAP_TEAM_2				= 0x00000004,
-    _MAP_TEAM_3				= 0x00000008,
-    _MAP_TEAM_4				= 0x00000010,
-    _MAP_TEAM_5				= 0x00000020,
-    _MAP_TEAM_6				= 0x00000040,
-    _MAP_TEAM_7				= 0x00000080,
-    _MAP_OBJECTIVES_		= 0x01000000, // Objectives on/off bit
-    _MAP_UNITS_				= 0x02000000, // Units on/off bit
-    _MAP_AIR_UNITS_			= 0x04000000, // Air Units on/off bit
-    _MAP_NAVAL_UNITS_		= 0x08000000, // Naval Units on/off
-    _MAP_WAYPOINTS_			= 0x10000000,
-    _MAP_THREATS_			= 0x20000000,
-    _MAP_BULLSEYE_			= 0x40000000, // Show Bullseye
+    _MAP_TEAM_0 = 0x00000001, // Calculation= (1 << i) (where i>=0 && i < _MAX_TEAMS_)
+    _MAP_TEAM_1 = 0x00000002,
+    _MAP_TEAM_2 = 0x00000004,
+    _MAP_TEAM_3 = 0x00000008,
+    _MAP_TEAM_4 = 0x00000010,
+    _MAP_TEAM_5 = 0x00000020,
+    _MAP_TEAM_6 = 0x00000040,
+    _MAP_TEAM_7 = 0x00000080,
+    _MAP_OBJECTIVES_ = 0x01000000, // Objectives on/off bit
+    _MAP_UNITS_ = 0x02000000, // Units on/off bit
+    _MAP_AIR_UNITS_ = 0x04000000, // Air Units on/off bit
+    _MAP_NAVAL_UNITS_ = 0x08000000, // Naval Units on/off
+    _MAP_WAYPOINTS_ = 0x10000000,
+    _MAP_THREATS_ = 0x20000000,
+    _MAP_BULLSEYE_ = 0x40000000, // Show Bullseye
 };
 
 typedef struct

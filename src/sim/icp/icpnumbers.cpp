@@ -313,9 +313,9 @@ void ICPClass::ZeroButton(int mode)
     }
     else if (IsICPSet(ICPClass::MISC_MODE))
     {
-        extern bool g_bPilotEntertainment;	// Retro 3Jan2004
+        extern bool g_bPilotEntertainment; // Retro 3Jan2004
 
-        // ORIGINAL STUFF	// Retro 3Jan2004
+        // ORIGINAL STUFF // Retro 3Jan2004
         if (g_bPilotEntertainment == false)
         {
             if (!CheckForHARM())
@@ -328,7 +328,7 @@ void ICPClass::ZeroButton(int mode)
             //Once we got here, only modechange will get us back
             SetICPFlag(ICPClass::BLOCK_MODE);
         }
-        // RETRO STUFF	// Retro 3Jan2004
+        // RETRO STUFF // Retro 3Jan2004
         else
         {
             LastMode = LIST_MODE;
@@ -360,7 +360,7 @@ void ICPClass::ExecTimeMode(void)
     //Line3
     FillDEDMatrix(2, 5, "SYSTEM");
     // Format Line 2: Current Time
-    FormatTime(vuxGameTime / 1000, timeStr);		// Get game time and convert to secs
+    FormatTime(vuxGameTime / 1000, timeStr); // Get game time and convert to secs
     sprintf(tempstr, "%8s", timeStr);
     FillDEDMatrix(2, 13, "\x02", 2);
     FillDEDMatrix(2, 14, tempstr);

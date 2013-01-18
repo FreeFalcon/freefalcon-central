@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     06Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #ifndef _DISPLAY_OPTIONS_
 #define _DISPLAY_OPTIONS_
@@ -12,20 +12,20 @@
 class DisplayOptionsClass
 {
 public:
-    unsigned short	DispWidth;
-    unsigned short	DispHeight;
-    unsigned char	DispVideoCard;
-    unsigned char	DispVideoDriver;
-    int				DispDepth;
-    bool			bRender2Texture;
-    bool			bAnisotropicFiltering;
-    bool			bLinearMipFiltering;
-    bool			bMipmapping;
-    bool			bZBuffering;
-    bool			bRender2DCockpit;
-    bool			bFontTexelAlignment;
-    bool			bSpecularLighting;
-    bool			bScreenCoordinateBiasFix;		//Wombat778 4-01-04
+    unsigned short DispWidth;
+    unsigned short DispHeight;
+    unsigned char DispVideoCard;
+    unsigned char DispVideoDriver;
+    int DispDepth;
+    bool bRender2Texture;
+    bool bAnisotropicFiltering;
+    bool bLinearMipFiltering;
+    bool bMipmapping;
+    bool bZBuffering;
+    bool bRender2DCockpit;
+    bool bFontTexelAlignment;
+    bool bSpecularLighting;
+    bool bScreenCoordinateBiasFix; //Wombat778 4-01-04
 
     enum TEXMODE
     {

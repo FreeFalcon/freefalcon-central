@@ -3,13 +3,13 @@
 
 enum
 {
-    SOUND_STREAM		= 0x00000001,
-    SOUND_STOPONEXIT	= 0x00000002,
-    SOUND_LOOP			= 0x00000004,
-    SOUND_FADE_IN		= 0x00000008,
-    SOUND_FADE_OUT		= 0x00000010,
-    SOUND_IN_RES		= 0x10000000,
-    SOUND_RES_STREAM	= 0x20000000,
+    SOUND_STREAM = 0x00000001,
+    SOUND_STOPONEXIT = 0x00000002,
+    SOUND_LOOP = 0x00000004,
+    SOUND_FADE_IN = 0x00000008,
+    SOUND_FADE_OUT = 0x00000010,
+    SOUND_IN_RES = 0x10000000,
+    SOUND_RES_STREAM = 0x20000000,
 };
 
 class SOUND_RES
@@ -60,11 +60,11 @@ public:
     };
 #endif
 private:
-    int		Stereo_;
-    int		Mono_;
-    C_Hash	*ResList_;
-    C_Hash	*SoundList_;
-    C_Hash	*IDTable_; // ptr to cParser's Token list
+    int Stereo_;
+    int Mono_;
+    C_Hash *ResList_;
+    C_Hash *SoundList_;
+    C_Hash *IDTable_; // ptr to cParser's Token list
 
 public:
     C_Sound();

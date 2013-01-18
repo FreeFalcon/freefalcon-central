@@ -16,19 +16,19 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    short			Section_;
-    short		State_;
-    short		WPState_;
-    TREELIST	*Owner_;
-    long		DefaultFlags_;
-    IMAGE_RSC	*Image_[2];
+    short Section_;
+    short State_;
+    short WPState_;
+    TREELIST *Owner_;
+    long DefaultFlags_;
+    IMAGE_RSC *Image_[2];
 
-    COLORREF	Color_[2];
-    O_Output	*Title_;
-    O_Output	*ShowWP_;
-    VU_ID		vuID;
+    COLORREF Color_[2];
+    O_Output *Title_;
+    O_Output *ShowWP_;
+    VU_ID vuID;
 
 public:
 

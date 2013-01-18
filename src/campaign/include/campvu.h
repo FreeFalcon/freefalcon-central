@@ -11,46 +11,46 @@
 extern "C" {
 #endif
 
-#define U_AVAILABLE	0x1
+#define U_AVAILABLE 0x1
 
     /*
     typedef struct {
-    	CdbStaticHeader				entity;
-    	UnitTransmitDataType			transmitData;
-    	UnitClass						*UnitData;
-    	} FalconUnitType;
+     CdbStaticHeader entity;
+     UnitTransmitDataType transmitData;
+     UnitClass *UnitData;
+     } FalconUnitType;
 
     typedef struct {
-    	CdbStaticHeader				entity;
-    	CommandTransmitDataType		transmitData;
-    	CommandClass					*CommandData;
-    	} FalconCommandType;
+     CdbStaticHeader entity;
+     CommandTransmitDataType transmitData;
+     CommandClass *CommandData;
+     } FalconCommandType;
 
     typedef struct {
-    	CdbStaticHeader				entity;
-    	HQTransmitDataType			transmitData;
-    	HQClass							*HQData;
-    	} FalconHQType;
+     CdbStaticHeader entity;
+     HQTransmitDataType transmitData;
+     HQClass *HQData;
+     } FalconHQType;
 
     // OR...
 
     typedef struct {
-    	CdbStaticHeader				entity;
-    	TransmitDataType				transmitData;
-    	union	{
-    		UnitClass						*UnitData;
-    		CommandClass					*CommandData;
-    		HQClass							*HQData;
-    		};
-    	} FalconUnitType;
+     CdbStaticHeader entity;
+     TransmitDataType transmitData;
+     union {
+     UnitClass *UnitData;
+     CommandClass *CommandData;
+     HQClass *HQData;
+     };
+     } FalconUnitType;
 
     */
 
     typedef struct
     {
-        CdbStaticHeader				entity;
-        ObjectiveTransmitDataType	transmitData;
-        ObjectiveClass					*ObjectiveData;
+        CdbStaticHeader entity;
+        ObjectiveTransmitDataType transmitData;
+        ObjectiveClass *ObjectiveData;
     } FalconObjectiveType;
 
 #ifdef __cplusplus

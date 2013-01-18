@@ -54,22 +54,22 @@ public:
 protected:
     // variables
     // Save from here
-    long		DefaultFlags_;
-    long		Font_;
-    short		SortType_;
-    long		xoffset_, yoffset_;
+    long DefaultFlags_;
+    long Font_;
+    short SortType_;
+    long xoffset_, yoffset_;
     // changes as branches are opened/closed (for scrolling)
-    short		CheckFlag_;	// used for determining which part of a tree was selected
+    short CheckFlag_; // used for determining which part of a tree was selected
     // (Plus/Minus, Icon, Text part)
 
     // Don't save from here down
-    long		treew_, treeh_; // Width/height of tree as it is currently drawn
-    C_Hash		*Hash_;
-    TREELIST	*Root_; // Very beginning of tree
-    TREELIST	*LastFound_; // Item found in CheckHotSpot
-    TREELIST	*LastActive_;
-    TREELIST	*MouseFound_; // Item found in CheckHotSpot
-    IMAGE_RSC	*ChildImage_[3];
+    long treew_, treeh_; // Width/height of tree as it is currently drawn
+    C_Hash *Hash_;
+    TREELIST *Root_; // Very beginning of tree
+    TREELIST *LastFound_; // Item found in CheckHotSpot
+    TREELIST *LastActive_;
+    TREELIST *MouseFound_; // Item found in CheckHotSpot
+    IMAGE_RSC *ChildImage_[3];
 
     void (*DelCallback_)(TREELIST *);
     BOOL (*SortCB_)(TREELIST*, TREELIST*);

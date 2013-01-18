@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     10Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #include "stdafx.h"
 #include <io.h>
@@ -21,24 +21,24 @@
 #include "FalcLib/include/dispopts.h"
 
 // Static data members (used to avoid requiring "this" to be passed to every access function)
-int					TextureBankClass::nTextures			= 0;
-TexBankEntry*		TextureBankClass::TexturePool		= NULL;
-TempTexBankEntry*	TextureBankClass::TempTexturePool	= NULL;
-BYTE*				TextureBankClass::CompressedBuffer	= NULL;
-int					TextureBankClass::deferredLoadState	= 0;
-char				TextureBankClass::baseName[256];
-FileMemMap			TextureBankClass::TexFileMap;
+int TextureBankClass::nTextures = 0;
+TexBankEntry* TextureBankClass::TexturePool = NULL;
+TempTexBankEntry* TextureBankClass::TempTexturePool = NULL;
+BYTE* TextureBankClass::CompressedBuffer = NULL;
+int TextureBankClass::deferredLoadState = 0;
+char TextureBankClass::baseName[256];
+FileMemMap TextureBankClass::TexFileMap;
 #ifdef _DEBUG
-int					TextureBankClass::textureCount		= 0;
+int TextureBankClass::textureCount = 0;
 #endif
-TexFlagsType		*TextureBankClass::TexFlags;
-BYTE*				TextureBankClass::TexBuffer;
-DWORD				TextureBankClass::TexBufferSize;
-bool				TextureBankClass::RatedLoad;
-short				*TextureBankClass::CacheLoad, *TextureBankClass::CacheRelease;
-short				TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
+TexFlagsType *TextureBankClass::TexFlags;
+BYTE* TextureBankClass::TexBuffer;
+DWORD TextureBankClass::TexBufferSize;
+bool TextureBankClass::RatedLoad;
+short *TextureBankClass::CacheLoad, *TextureBankClass::CacheRelease;
+short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
 
-DWORD	gDebugTextureID;
+DWORD gDebugTextureID;
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
@@ -59,7 +59,7 @@ void TextureBankClass::Setup(int nEntries)
         TexturePool = (TexBankEntry *)MemAllocPtr(gBSPLibMemPool, sizeof(TexBankEntry) * nEntries, 0);
         TempTexturePool = (TempTexBankEntry *)MemAllocPtr(gBSPLibMemPool, sizeof(TempTexBankEntry) * nEntries, 0);
 #else
-        TexturePool	= new TexBankEntry[nEntries];
+        TexturePool = new TexBankEntry[nEntries];
         TempTexturePool = new TempTexBankEntry[nEntries];
 #endif
 
@@ -127,7 +127,7 @@ void TextureBankClass::Cleanup(void)
 void TextureBankClass::ReadPool(int file, char *basename)
 {
     int result;
-    int	maxCompressedSize;
+    int maxCompressedSize;
 
     ZeroMemory(baseName, sizeof(baseName));
     sprintf(baseName, "%s", basename);
@@ -246,7 +246,7 @@ void TextureBankClass::CloseTextureFile(void)
 
 void TextureBankClass::Reference(int id)
 {
-    int	 isLoaded;
+    int  isLoaded;
 
     gDebugTextureID = id;
 
@@ -332,9 +332,9 @@ void TextureBankClass::Release(int id)
 
 void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 {
-    int		retval;
-    int		size;
-    BYTE	*cdata;
+    int retval;
+    int size;
+    BYTE *cdata;
     //sfr: added for more control
     int cdataSize;
 
@@ -389,7 +389,7 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
 void TextureBankClass::SetDeferredLoad(BOOL state)
 {
-    LoaderQ	*request;
+    LoaderQ *request;
 
     // Allocate space for the async request
     request = new LoaderQ;
@@ -398,10 +398,10 @@ void TextureBankClass::SetDeferredLoad(BOOL state)
         ShiError("Failed to allocate memory for a object texture load state change request");
 
     // Build the data transfer request to get the required object data
-    request->filename	= NULL;
-    request->fileoffset	= 0;
-    request->callback	= LoaderCallBack;
-    request->parameter	= (void*)state;
+    request->filename = NULL;
+    request->fileoffset = 0;
+    request->callback = LoaderCallBack;
+    request->parameter = (void*)state;
 
     // Submit the request to the asynchronous loader
     TheLoader.EnqueueRequest(request);
@@ -416,7 +416,7 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
     // If we're turning deferred loads off, go back and do all the loads we held up
     if (deferredLoadState && !state)
     {
-        DWORD	Count = 5;
+        DWORD Count = 5;
 
         // Check each texture
         for (int id = 0; id < nTextures; id++)
@@ -547,10 +547,10 @@ void TextureBankClass::UnpackPalettizedTexture(DWORD id)
 
 void TextureBankClass::ReadImageDDS(DWORD id)
 {
-    DDSURFACEDESC2	ddsd;
-    DWORD			dwSize, dwMagic;
-    char			szFile[256];
-    FILE			*fp;
+    DDSURFACEDESC2 ddsd;
+    DWORD dwSize, dwMagic;
+    char szFile[256];
+    FILE *fp;
 
     TexturePool[id].tex.flags |= MPR_TI_DDS;
     TexturePool[id].tex.flags &= ~MPR_TI_PALETTE;
@@ -658,10 +658,10 @@ void TextureBankClass::ReadImageDDS(DWORD id)
 
 void TextureBankClass::ReadImageDDSN(DWORD id)
 {
-    DDSURFACEDESC2	ddsd;
-    DWORD			dwSize, dwMagic;
-    char			szFile[256];
-    FILE			*fp;
+    DDSURFACEDESC2 ddsd;
+    DWORD dwSize, dwMagic;
+    char szFile[256];
+    FILE *fp;
 
     sprintf(szFile, "%s\\%dN.dds", baseName, id);
     fp = fopen(szFile, "rb");
@@ -790,7 +790,7 @@ DWORD TextureBankClass::GetHandle(DWORD id)
     if (TexFlags[id].OnRelease) return NULL;
 
     // if the Handle is prsent, return it
-    if (IsValidIndex(id) && TexturePool[id].tex.TexHandle())	return TexturePool[id].tex.TexHandle();
+    if (IsValidIndex(id) && TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
 
     // return  a null pointer that means BLANK SURFACE
     return NULL;
@@ -799,9 +799,9 @@ DWORD TextureBankClass::GetHandle(DWORD id)
 
 
 // RED - This function manages to load and create requested textures
-bool	TextureBankClass::UpdateBank(void)
+bool TextureBankClass::UpdateBank(void)
 {
-    DWORD	id;
+    DWORD id;
 
     // till when data to update into caches
     while (LoadIn != LoadOut || ReleaseIn != ReleaseOut)

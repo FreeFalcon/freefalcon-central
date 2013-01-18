@@ -173,7 +173,7 @@ public:
     BOOL CheckChar(unsigned char key);
     BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long);
     BOOL Process(long, short HitType);
-    //		BOOL MouseOver(long relX,long relY,C_Base *me);
+    // BOOL MouseOver(long relX,long relY,C_Base *me);
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
     void HighLite(SCREEN *surface, UI95_RECT *cliprect);

@@ -24,23 +24,23 @@
 
 #define XDOF_ISDOF   (1<<31)
 
-bool	ShadowBSPRendering;										// COBRA - RED - this is to inform we r rendering a shadow,
-float	ShadowAlphaLevel;										// that may be affected by TOD Light level
+bool ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
+float ShadowAlphaLevel; // that may be affected by TOD Light level
 
 /***************************************************************\
-	To improve performance, these classes use several global
-	variables to store command data instead of passing it
-	through the call stack.
-	The global variables are maintained by the StackState
-	module.
+ To improve performance, these classes use several global
+ variables to store command data instead of passing it
+ through the call stack.
+ The global variables are maintained by the StackState
+ module.
 \***************************************************************/
 
 // Determine the type of an encoded node and intialize and contruct
 // it appropriatly.
 BNode* BNode::RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr)
 {
-    BNode		*node;
-    BNodeType	tag;
+    BNode *node;
+    BNodeType tag;
 
     // Get this record's tag then advance the pointer to the next tag we'll need
     tag = **tagListPtr;
@@ -142,11 +142,11 @@ BSubTree::BSubTree(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Fixup our dependents
-    subTree		= RestorePointers(baseAddress, (int)subTree, tagListPtr);
+    subTree = RestorePointers(baseAddress, (int)subTree, tagListPtr);
 
     // Fixup our data pointers
-    pCoords		= (Ppoint *)(baseAddress + (int)pCoords);
-    pNormals	= (Pnormal *)(baseAddress + (int)pNormals);
+    pCoords = (Ppoint *)(baseAddress + (int)pCoords);
+    pNormals = (Pnormal *)(baseAddress + (int)pNormals);
 }
 
 
@@ -155,7 +155,7 @@ BRoot::BRoot(BYTE *baseAddress, BNodeType **tagListPtr)
     : BSubTree(baseAddress, tagListPtr)
 {
     // Fixup our extra data pointers
-    pTexIDs		= (int*)(baseAddress + (int)pTexIDs);
+    pTexIDs = (int*)(baseAddress + (int)pTexIDs);
 }
 
 
@@ -164,10 +164,10 @@ BSpecialXform::BSpecialXform(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Fixup our dependents
-    subTree		= RestorePointers(baseAddress, (int)subTree, tagListPtr);
+    subTree = RestorePointers(baseAddress, (int)subTree, tagListPtr);
 
     // Fixup our data pointers
-    pCoords		= (Tpoint *)(baseAddress + (int)pCoords);
+    pCoords = (Tpoint *)(baseAddress + (int)pCoords);
 }
 
 
@@ -239,8 +239,8 @@ BSplitterNode::BSplitterNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Fixup our dependents
-    front	= RestorePointers(baseAddress, (int)front, tagListPtr);
-    back	= RestorePointers(baseAddress, (int)back,  tagListPtr);
+    front = RestorePointers(baseAddress, (int)front, tagListPtr);
+    back = RestorePointers(baseAddress, (int)back,  tagListPtr);
 }
 
 
@@ -249,7 +249,7 @@ BPrimitiveNode::BPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Now fixup our polygon
-    prim		= RestorePrimPointers(baseAddress, (int)prim);
+    prim = RestorePrimPointers(baseAddress, (int)prim);
 }
 
 
@@ -258,8 +258,8 @@ BLitPrimitiveNode::BLitPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Now fixup our polygons
-    poly		= (Poly*)RestorePrimPointers(baseAddress, (int)poly);
-    backpoly	= (Poly*)RestorePrimPointers(baseAddress, (int)backpoly);
+    poly = (Poly*)RestorePrimPointers(baseAddress, (int)poly);
+    backpoly = (Poly*)RestorePrimPointers(baseAddress, (int)backpoly);
 }
 
 
@@ -268,7 +268,7 @@ BCulledPrimitiveNode::BCulledPrimitiveNode(BYTE *baseAddress, BNodeType **tagLis
     : BNode(baseAddress, tagListPtr)
 {
     // Now fixup our polygon
-    poly		= (Poly*)RestorePrimPointers(baseAddress, (int)poly);
+    poly = (Poly*)RestorePrimPointers(baseAddress, (int)poly);
 }
 
 
@@ -361,9 +361,9 @@ void BSlotNode::Draw(void)
 
 void BDofNode::Draw(void)
 {
-    Pmatrix	dofRot;
-    Pmatrix	R;
-    Ppoint	T;
+    Pmatrix dofRot;
+    Pmatrix R;
+    Ppoint T;
     mlTrig trig;
 
     ShiAssert(dofNumber < TheStateStack.CurrentInstance->ParentObject->nDOFs);
@@ -448,9 +448,9 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
 
 void BXDofNode::Draw(void)
 {
-    Pmatrix	dofRot;
-    Pmatrix	R;
-    Ppoint	T;
+    Pmatrix dofRot;
+    Pmatrix R;
+    Ppoint T;
     mlTrig trig;
 
     ShiAssert(dofNumber < TheStateStack.CurrentInstance->ParentObject->nDOFs);
@@ -473,9 +473,9 @@ void BXDofNode::Draw(void)
     if(flags & XDOF_MINMAX)
     {
       if(dofrot<min)
-    	dofrot=min;
+     dofrot=min;
       if(dofrot>max)
-    	dofrot=max;
+     dofrot=max;
     }
 
     if(flags & XDOF_SUBRANGE && min!=max)
@@ -525,44 +525,44 @@ void BXDofNode::Draw(void)
 }
 /*
 #define BNF_REVERSED_EFFECT     (1<<0) // the effect is reverse (node specific)
-#define BNF_NEGATE				(1<<1)
-#define BNF_POSITIVE_ONLY		(1<<2)
-#define BNF_NEGATIVE_ONLY		(1<<3)
-#define BNF_CLAMP				(1<<4)
+#define BNF_NEGATE (1<<1)
+#define BNF_POSITIVE_ONLY (1<<2)
+#define BNF_NEGATIVE_ONLY (1<<3)
+#define BNF_CLAMP (1<<4)
 
 // MLR - my little helper function
 float Process_a(float dofRotScalar, int, int Flags);
 
 float Process_a(float dofRotScalar, int DofID, int flags)
 {
-	float a=0;
+ float a=0;
 
-	if(dofRotScalar)
-	{
-		a = TheStateStack.CurrentInstance->DOFValues[DofID].rotation / dofRotScalar;
+ if(dofRotScalar)
+ {
+ a = TheStateStack.CurrentInstance->DOFValues[DofID].rotation / dofRotScalar;
 
-		if(flags & BNF_NEGATE)
-		{
-			a=-a;
-		}
+ if(flags & BNF_NEGATE)
+ {
+ a=-a;
+ }
 
-		if(flags  & BNF_POSITIVE_ONLY)
-		{
-		  if(a<0) a=0;
-		}
+ if(flags  & BNF_POSITIVE_ONLY)
+ {
+   if(a<0) a=0;
+ }
 
-		if(flags  & BNF_NEGATIVE_ONLY)
-		{
-		  if(a>0) a=0;
-		}
+ if(flags  & BNF_NEGATIVE_ONLY)
+ {
+   if(a>0) a=0;
+ }
 
-		if(flags  & BNF_CLAMP)
-		{
-		  if(a>1) a=1;
-		  if(a<-1) a=-1;
-		}
-	}
-	return (a);
+ if(flags  & BNF_CLAMP)
+ {
+   if(a>1) a=1;
+   if(a<-1) a=-1;
+ }
+ }
+ return (a);
 }
 */
 
@@ -570,9 +570,9 @@ float Process_a(float dofRotScalar, int DofID, int flags)
 // MLR 2003-10-10 New Translator Node
 void BTransNode::Draw(void)
 {
-    Ppoint	T;
+    Ppoint T;
 
-    Pmatrix	dofRot; // just a dummy to pass to CompoundTransform()
+    Pmatrix dofRot; // just a dummy to pass to CompoundTransform()
     dofRot.M11 = 1.0f;
     dofRot.M12 = 0.0f;
     dofRot.M13 = 0.0f;
@@ -612,7 +612,7 @@ void BTransNode::Draw(void)
 //   only scales along axii
 void BScaleNode::Draw(void)
 {
-    Ppoint	T;
+    Ppoint T;
 
     float a = 0, dx = 1, dy = 1, dz = 1;
 
@@ -627,7 +627,7 @@ void BScaleNode::Draw(void)
     dy = 1.0F - (1.0f - scale.y) * a;
     dz = 1.0F - (1.0f - scale.z) * a;
 
-    Pmatrix	dofRot; // just a dummy to pass to CompoundTransform()
+    Pmatrix dofRot; // just a dummy to pass to CompoundTransform()
     dofRot.M11 = dx;
     dofRot.M12 = 0.0f;
     dofRot.M13 = 0.0f;
@@ -653,8 +653,8 @@ void BScaleNode::Draw(void)
 
 void BSwitchNode::Draw(void)
 {
-    UInt32		mask;
-    int			i = 0;
+    UInt32 mask;
+    int i = 0;
 
     ShiAssert(switchNumber < TheStateStack.CurrentInstance->ParentObject->nSwitches);
 
@@ -663,12 +663,12 @@ void BSwitchNode::Draw(void)
 
     mask = TheStateStack.CurrentInstance->SwitchValues[switchNumber];
 
-#if 0	// This will generally be faster due to early termination
+#if 0 // This will generally be faster due to early termination
 
     // Go until all ON switch children have been drawn.
     while (mask)
     {
-#else	// This will work even if the mask is set for non-existent children
+#else // This will work even if the mask is set for non-existent children
 
     // Go until all children have been considered for drawing.
     while (i < numChildren)
@@ -698,8 +698,8 @@ void BSwitchNode::Draw(void)
 // MLR 2003-10-12 New Node, this switch is on opposite of the normal switch.
 void BXSwitchNode::Draw(void)
 {
-    UInt32		mask;
-    int			i = 0;
+    UInt32 mask;
+    int i = 0;
 
     ShiAssert(switchNumber < TheStateStack.CurrentInstance->ParentObject->nSwitches);
 
@@ -733,7 +733,7 @@ void BXSwitchNode::Draw(void)
 
 void BSplitterNode::Draw(void)
 {
-    BNode	*child;
+    BNode *child;
 
     ShiAssert(front);
     ShiAssert(back);

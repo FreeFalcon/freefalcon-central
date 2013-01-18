@@ -2,16 +2,16 @@
 #include "Graphics\Include\display.h"
 #include "cmpclass.h"
 #include "flightData.h"
-#include "radardoppler.h"	//MI
-#include "simdrive.h"	//MI
-#include "aircrft.h"	//MI
-#include "simdrive.h"	//MI
+#include "radardoppler.h" //MI
+#include "simdrive.h" //MI
+#include "aircrft.h" //MI
+#include "simdrive.h" //MI
 #include "simobj.h"
 #include "object.h"
 
 extern bool g_bIFF;
 extern bool g_bINS;
-extern bool g_bSmallerBullseye;				//Wombat778 11-12-2003
+extern bool g_bSmallerBullseye; //Wombat778 11-12-2003
 
 void DrawBullseyeData(VirtualDisplay* display, float cursorX, float cursorY)
 {
@@ -130,7 +130,7 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
     display->AdjustOriginInViewport(-0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
 
     /*if(range * FT_TO_NM > 99)
-    	range = 99 * NM_TO_FT;*/
+     range = 99 * NM_TO_FT;*/
     sprintf(str, "%03.0f %02.0f", azFrom, range * FT_TO_NM);
     ShiAssert(strlen(str) < sizeof(str));
 
@@ -201,7 +201,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
         display->AdjustOriginInViewport(-0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
 
         /*if(range * FT_TO_NM > 99)
-        	range = 99 * NM_TO_FT;*/
+         range = 99 * NM_TO_FT;*/
         sprintf(str, "%03.0f %02.0f", azFrom, range * FT_TO_NM);
         ShiAssert(strlen(str) < sizeof(str));
 
@@ -251,7 +251,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIFF
     // Offset for Bullseye symbology
-    if (/*g_bIFF||*/g_bSmallerBullseye)				//Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
+    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
         display->AdjustOriginInViewport(-0.90F, -0.80F); //me123 from .80 to .75 and .65 to .62 to move the data
     else
         display->AdjustOriginInViewport(-0.85F, -0.70F); //me123 from .80 to .75 and .65 to .62 to move the data
@@ -275,14 +275,14 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIff
     // Draw the circle symbol
-    if (/*g_bIFF||*/g_bSmallerBullseye)			//Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003		Smaller bullseye is more realistic
+    if (/*g_bIFF||*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
     {
         //set a smaller font (needed)
         int ofont = display->CurFont();
         display->SetFont(0);
         display->Circle(0.0F, 0.0F, 0.06F);
 
-        //Add Range	but only if it's less then 99 miles, otherwise we don't see it
+        //Add Range but only if it's less then 99 miles, otherwise we don't see it
         if ((range * FT_TO_NM) > 99)
             sprintf(str, "");
         else
@@ -319,7 +319,7 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
         // Draw the circle symbol
         display->Circle(0.0F, 0.0F, 0.1F);
 
-        //Add Range	but only if it's less then 99 miles, otherwise we don't see it
+        //Add Range but only if it's less then 99 miles, otherwise we don't see it
         if ((range * FT_TO_NM) > 99)
             sprintf(str, "");
         else

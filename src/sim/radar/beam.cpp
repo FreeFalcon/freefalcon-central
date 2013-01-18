@@ -32,15 +32,15 @@ void RadarDopplerClass::MoveBeam(void)
         case GM:
             if (flags & DBS1)
             {
-                curScanRate = scanRate * g_fDBS1ScanRateFactor;//0.25F;	// We're fudging -- Up the scan rate to reduce the latency
+                curScanRate = scanRate * g_fDBS1ScanRateFactor;//0.25F; // We're fudging -- Up the scan rate to reduce the latency
             }
             else if (flags & DBS2)
             {
-                curScanRate = scanRate * g_fDBS2ScanRateFactor;//0.05F;	// We're fudging -- Up the scan rate to reduce the latency
+                curScanRate = scanRate * g_fDBS2ScanRateFactor;//0.05F; // We're fudging -- Up the scan rate to reduce the latency
             }
             else
             {
-                curScanRate = scanRate * 2.0f;	// We're fudging -- Up the scan rate to reduce the latency
+                curScanRate = scanRate * 2.0f; // We're fudging -- Up the scan rate to reduce the latency
             }
 
             break;
@@ -335,10 +335,10 @@ void RadarDopplerClass::MoveBeam(void)
                 curScanBottom = beamEl - beamWidth;
 
                 // These get added back in later for all modes
-                //	         curScanLeft   -= seekerAzCenter;
-                //	         curScanRight  -= seekerAzCenter;
-                //	         curScanTop    -= seekerElCenter;
-                //	         curScanBottom -= seekerElCenter;
+                //          curScanLeft   -= seekerAzCenter;
+                //          curScanRight  -= seekerAzCenter;
+                //          curScanTop    -= seekerElCenter;
+                //          curScanBottom -= seekerElCenter;
             }
             else
             {
@@ -412,7 +412,7 @@ void RadarDopplerClass::MoveBeam(void)
             if (scanDir == ScanFwd &&
                 (beamAz > azScan || beamAz + seekerAzCenter > MAX_ANT_EL))
             {
-#if 0	// This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
+#if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
 
                 // In GM DBS modes, the beam always sweeps from left to right
                 if ((mode == GM) && ((flags & DBS1) || (flags & DBS2)))

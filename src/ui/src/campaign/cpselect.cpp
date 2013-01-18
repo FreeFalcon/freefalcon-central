@@ -1,9 +1,9 @@
 /***************************************************************************\
-	UI_cpsel.cpp
-	Peter Ward
-	December 3, 1996
+ UI_cpsel.cpp
+ Peter Ward
+ December 3, 1996
 
-	Main UI screen stuff for falcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -157,28 +157,28 @@ enum
     SND_NICE          = 500009,
     SND_BAD2          = 500010,
     SND_YOUSUCK       = 500011,
-    SND_AMBIENT		  = 500033,
+    SND_AMBIENT   = 500033,
     SND_CAMPAIGNMUSIC = 500050,
 };
 
 enum
 {
-    BLUE_TEAM_ICONS				= 565120000,
-    BLUE_TEAM_ICONS_W			= 565120001,
-    BROWN_TEAM_ICONS			= 565120002,	// M.N.
-    BROWN_TEAM_ICONS_W			= 565120003,
-    GREEN_TEAM_ICONS			= 565120004,
-    GREEN_TEAM_ICONS_W			= 565120005,
-    GREY_TEAM_ICONS				= 565120006,
-    GREY_TEAM_ICONS_W			= 565120007,
-    ORANGE_TEAM_ICONS			= 565120008,
-    ORANGE_TEAM_ICONS_W			= 565120009,
-    RED_TEAM_ICONS				= 565120010,
-    RED_TEAM_ICONS_W			= 565120011,
-    WHITE_TEAM_ICONS			= 565120012,
-    WHITE_TEAM_ICONS_W			= 565120013,
-    YELLOW_TEAM_ICONS			= 565120014,
-    YELLOW_TEAM_ICONS_W			= 565120015,
+    BLUE_TEAM_ICONS = 565120000,
+    BLUE_TEAM_ICONS_W = 565120001,
+    BROWN_TEAM_ICONS = 565120002, // M.N.
+    BROWN_TEAM_ICONS_W = 565120003,
+    GREEN_TEAM_ICONS = 565120004,
+    GREEN_TEAM_ICONS_W = 565120005,
+    GREY_TEAM_ICONS = 565120006,
+    GREY_TEAM_ICONS_W = 565120007,
+    ORANGE_TEAM_ICONS = 565120008,
+    ORANGE_TEAM_ICONS_W = 565120009,
+    RED_TEAM_ICONS = 565120010,
+    RED_TEAM_ICONS_W = 565120011,
+    WHITE_TEAM_ICONS = 565120012,
+    WHITE_TEAM_ICONS_W = 565120013,
+    YELLOW_TEAM_ICONS = 565120014,
+    YELLOW_TEAM_ICONS_W = 565120015,
     CAMP_AIR_BASE_ICON          = 10003,
 };
 
@@ -267,7 +267,7 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     res = new C_Resmgr;
     res->Setup(ID);
     res->SetColorKey(UI95_RGB24Bit(0x00ff00ff));
-    //!	UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
+    //! UI95_GetScreenColorInfo(&r_mask,&r_shift,&g_mask,&g_shift,&b_mask,&b_shift);
     UI95_GetScreenColorInfo(r_mask, r_shift, g_mask, g_shift, b_mask, b_shift);
     res->SetScreenFormat(r_shift, g_shift, b_shift);
 
@@ -325,18 +325,18 @@ void SetupMapWindow()
 
         if (bmp)
         {
-            /*			if(gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
-            			{
-            				// Create Occupation map...
-            				gOccupationMap=CreateOccupationMap(1,TheCampaign.TheaterSizeX/MAP_RATIO,TheCampaign.TheaterSizeY/MAP_RATIO,16);*/
+            /* if(gOccupationMap == NULL && (TheCampaign.TheaterSizeX && TheCampaign.TheaterSizeY))
+             {
+             // Create Occupation map...
+             gOccupationMap=CreateOccupationMap(1,TheCampaign.TheaterSizeX/MAP_RATIO,TheCampaign.TheaterSizeY/MAP_RATIO,16);*/
             if (g_bHiResUI)
                 bmp->SetImage(gBigOccupationMap);
             else
                 bmp->SetImage(gOccupationMap);
 
-            /*			}
-            //			if(gOccupationMap)
-            				MakeOccupationMap(gOccupationMap);*/
+            /* }
+            // if(gOccupationMap)
+             MakeOccupationMap(gOccupationMap);*/
         }
     }
 }
@@ -430,7 +430,7 @@ void AddSquadronsToMap()
                 x = x / (FEET_PER_KM * mapratio);
                 y = (maxy - y) / (FEET_PER_KM * mapratio);
 
-                //				IconID=TheCampaign.CampaignSquadronData[i].airbaseIcon; // too big
+                // IconID=TheCampaign.CampaignSquadronData[i].airbaseIcon; // too big
                 IconID = 10003;
 
                 if (i == gSelectedSquadronID || savex == -1 || savey == -1)
@@ -614,8 +614,8 @@ void LoadSquadronInfo()
 
         if (SquadPtr)
         {
-            UnitClassDataType*		uc = (UnitClassDataType*)(Falcon4ClassTable[SquadPtr->dIndex].dataPtr);
-            VehicleClassDataType*	vc = NULL;
+            UnitClassDataType* uc = (UnitClassDataType*)(Falcon4ClassTable[SquadPtr->dIndex].dataPtr);
+            VehicleClassDataType* vc = NULL;
             ShiAssert(uc);
 
             if (uc)
@@ -637,9 +637,9 @@ void LoadSquadronInfo()
                 if (CampSelMode == 2 && gCommsMgr && gCommsMgr->GetTargetGame())
                 {
                     // Online game - Count # of players
-                    int		players = 0;
-                    FalconSessionEntity		*session;
-                    VuSessionsIterator		sit(gCommsMgr->GetTargetGame());
+                    int players = 0;
+                    FalconSessionEntity *session;
+                    VuSessionsIterator sit(gCommsMgr->GetTargetGame());
 
                     session = (FalconSessionEntity*) sit.GetFirst();
 
@@ -659,7 +659,7 @@ void LoadSquadronInfo()
                 else if (!CampSelMode)
                 {
                     // # of aircraft based on ratio setting for new games
-                    int		aircraft = 0, mv, i;
+                    int aircraft = 0, mv, i;
                     mv = max_veh[PlayerOptions.CampAirRatio];
 
                     for (i = 0; i < mv; i++)
@@ -907,7 +907,7 @@ void SelectScenarioButtons(long ID)
 
 void SelectScenarioCB(long ID, short hittype, C_Base *control)
 {
-    int	i;
+    int i;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -1107,12 +1107,12 @@ static void CommitCB(long, short hittype, C_Base *)
 
                 if (ebox)
                 {
-                    //					if(!PlayerOptions.InCompliance(game->GetRules()) || !game->CheckPassword(ebox->GetText()))
-                    //						{
+                    // if(!PlayerOptions.InCompliance(game->GetRules()) || !game->CheckPassword(ebox->GetText()))
+                    // {
                     SetupInfoWindow(ReallyJoinCB, CancelJoinCB);
-                    //						}
-                    //					else
-                    //						ReallyJoinCB();
+                    // }
+                    // else
+                    // ReallyJoinCB();
                 }
             }
         }
@@ -1159,7 +1159,7 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
     TREELIST *item;
     C_Button   *btn;
 
-    int	i;
+    int i;
 
     if (hittype != C_TYPE_LMOUSEUP)
         return;
@@ -2047,28 +2047,28 @@ join_status_bits = 0;
 /*
 static void UpdateJoinStatusWindow (C_Window *win)
 {
-	short
-		x,
-		y;
+ short
+ x,
+ y;
 
-	char
-		buffer[10];
+ char
+ buffer[10];
 
-	sprintf (buffer, "%08x", join_status_bits);
+ sprintf (buffer, "%08x", join_status_bits);
 
-	x=0; y=0;
-	DeleteGroupList(win->GetID());
-	AddWordWrapTextToWindow
-	(
-		win,
-		&x,
-		&y,
-		0,
-		win->ClientArea_[1].right-win->ClientArea_[1].left,
-		0xe0e0e0,
-		buffer,
-		1
-	);
+ x=0; y=0;
+ DeleteGroupList(win->GetID());
+ AddWordWrapTextToWindow
+ (
+ win,
+ &x,
+ &y,
+ 0,
+ win->ClientArea_[1].right-win->ClientArea_[1].left,
+ 0xe0e0e0,
+ buffer,
+ 1
+ );
 }
 */
 ///////////////////////////////////////////////////////////////////////////////

@@ -6,25 +6,25 @@
 
 GLint CFileIO::openread(const char *filename)
 {
-    ShiAssert(file == -1);	// Make sure we're not double opening this file
+    ShiAssert(file == -1); // Make sure we're not double opening this file
 
     file = GR_OPEN(filename, O_BINARY | O_RDONLY);
 
-    return (file >= 0);	// Return FALSE if we got a negative number
+    return (file >= 0); // Return FALSE if we got a negative number
 }
 
 GLint CFileIO::openwrite(const char *filename, GLint binary)
 {
-    ShiAssert(file == -1);	// Make sure we're not double opening this file
+    ShiAssert(file == -1); // Make sure we're not double opening this file
 
-    int	mode = O_RDWR | O_CREAT | O_TRUNC;
+    int mode = O_RDWR | O_CREAT | O_TRUNC;
 
     if (binary) mode |= O_BINARY;
     else mode |= O_TEXT;
 
     file = GR_OPEN(filename, mode);
 
-    return (file >= 0);	// Return FALSE if we got a negative number
+    return (file >= 0); // Return FALSE if we got a negative number
 }
 
 void CFileIO::closefile()
@@ -51,13 +51,13 @@ GLint CFileIO::getfilesize()
 #ifdef GRAPHICS_USE_RES_MGR
     return ResSizeFile(file);
 #else
-    GLint	size;
-    GLint	pos;
+    GLint size;
+    GLint pos;
 
-    pos = tell(file);				// Remember where we are in the file
-    lseek(file, 0, SEEK_END);		// Go to the end
-    size = size = tell(file);		// Get the length of the file
-    lseek(file, pos, SEEK_SET);	// Go back to our starting point
+    pos = tell(file); // Remember where we are in the file
+    lseek(file, 0, SEEK_END); // Go to the end
+    size = size = tell(file); // Get the length of the file
+    lseek(file, pos, SEEK_SET); // Go back to our starting point
     return size;
 #endif
 }

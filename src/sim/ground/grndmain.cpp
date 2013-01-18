@@ -42,7 +42,7 @@
 #include "weather.h"
 #include "AIInput.h"
 #ifdef USE_SH_POOLS
-MEM_POOL	GroundClass::pool;
+MEM_POOL GroundClass::pool;
 #endif
 
 void CalcTransformMatrix(SimBaseClass* theObject);
@@ -70,9 +70,9 @@ extern bool g_bSAM2D3DHandover;
 // Re-written by KCK 2/11/98
 void GroundClass::SetupGNDAI(SimInitDataClass *idata)
 {
-    BOOL	isFirst		= (idata->vehicleInUnit == 0);
-    int		position	= idata->campSlot * 3 + idata->inSlot;
-    int		skill		= idata->skill;
+    BOOL isFirst = (idata->vehicleInUnit == 0);
+    int position = idata->campSlot * 3 + idata->inSlot;
+    int skill = idata->skill;
 
     gai = NewGroundAI(this, position, isFirst, skill);
 }
@@ -162,13 +162,13 @@ void GroundClass::Init(SimInitDataClass* initData)
     vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
 
     // dustTrail = new DrawableTrail(TRAIL_DUST);
-    isFootSquad		= FALSE;
-    isEmitter		= FALSE;
-    needKeepAlive	= FALSE;
+    isFootSquad = FALSE;
+    isEmitter = FALSE;
+    needKeepAlive = FALSE;
 
-    hasCrew			= (vc->Flags & VEH_HAS_CREW)		? TRUE : FALSE;
-    isTowed			= (vc->Flags & VEH_IS_TOWED)		? TRUE : FALSE;
-    isShip			= (GetDomain() == DOMAIN_SEA)		? TRUE : FALSE;
+    hasCrew = (vc->Flags & VEH_HAS_CREW) ? TRUE : FALSE;
+    isTowed = (vc->Flags & VEH_IS_TOWED) ? TRUE : FALSE;
+    isShip = (GetDomain() == DOMAIN_SEA) ? TRUE : FALSE;
 
     // RV - Biker
     radarDown = false;
@@ -208,7 +208,7 @@ void GroundClass::Init(SimInitDataClass* initData)
                 // 2002-03-21 ADDED BY S.G. In addition, we need to set our radar's target RFN
                 //(right f*cking now) and run a sensor sweep on it so it's valid by the
                 //time TargetProcessing is called.
-                FalconEntity	*campTargetEntity = ((UnitClass *)GetCampaignObject())->GetAirTarget();
+                FalconEntity *campTargetEntity = ((UnitClass *)GetCampaignObject())->GetAirTarget();
 
                 if (campTargetEntity)
                 {
@@ -223,7 +223,7 @@ void GroundClass::Init(SimInitDataClass* initData)
     }
 
     SetFlag(ON_GROUND);
-    SetPowerOutput(1.0F);	// Assume our motor is running all the time
+    SetPowerOutput(1.0F); // Assume our motor is running all the time
 
     SetPosition(initData->x, initData->y, OTWDriver.GetGroundLevel(initData->x, initData->y));
     SetYPR(initData->heading, 0.0F, 0.0F);
@@ -399,8 +399,8 @@ int GroundClass::Exec(void)
     Tpoint vec;
     float speedScale;
     float groundZ;
-    float	labelLOD;
-    float	drawLOD;
+    float labelLOD;
+    float drawLOD;
     RadarClass *radar = NULL;
 
     SoundPos.UpdatePos((SimBaseClass *)this);
@@ -414,7 +414,7 @@ int GroundClass::Exec(void)
     pos.x = XPos();
     pos.y = YPos();
     pos.z = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
-    //	pos.z = -10.0f;//Cobra trying to fix the stupid uninit CTD
+    // pos.z = -10.0f;//Cobra trying to fix the stupid uninit CTD
     SetPosition(pos.x, pos.y, pos.z);
 
     // dead? -- we do nothing
@@ -440,16 +440,16 @@ int GroundClass::Exec(void)
 
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass(
-            		SFX_TRAILSMOKE,			// type
-            		SFX_MOVES | SFX_NO_GROUND_CHECK,						// flags
-            		&pos,							// world pos
-            		&vec,							// vector
-            		3.5f,							// time to live
-            		4.5f					// scale
-            	)
+             new SfxClass(
+             SFX_TRAILSMOKE, // type
+             SFX_MOVES | SFX_NO_GROUND_CHECK, // flags
+             &pos, // world pos
+             &vec, // vector
+             3.5f, // time to live
+             4.5f // scale
+             )
             );
-            		*/
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
                                                   &pos,
                                                   &vec);
@@ -489,48 +489,48 @@ int GroundClass::Exec(void)
 
             /*
             if ( rand() & 1 ){
-            	destroyedPtr = new DrawableGroundVehicle(
-            		classPtr->visType[3],
-            		&pos,
-            		Yaw(),
-            		1.0f
-            	);
+             destroyedPtr = new DrawableGroundVehicle(
+             classPtr->visType[3],
+             &pos,
+             Yaw(),
+             1.0f
+             );
 
-            	groundZ = PRANDFloatPos() * 60.0f + 15.0f;
+             groundZ = PRANDFloatPos() * 60.0f + 15.0f;
 
-            	/*
-            	OTWDriver.AddSfxRequest(
-            		new SfxClass (
-            			SFX_BURNING_PART,				// type
-            			&pos,							// world pos
-            			&vec,							//
-            			(DrawableBSP *)destroyedPtr,
-            			groundZ,							// time to live
-            			1.0f 	// scale
-            		)
-            	);
-            			*/
+             /*
+             OTWDriver.AddSfxRequest(
+             new SfxClass (
+             SFX_BURNING_PART, // type
+             &pos, // world pos
+             &vec, //
+             (DrawableBSP *)destroyedPtr,
+             groundZ, // time to live
+             1.0f  // scale
+             )
+             );
+             */
             /*
-            	DrawableParticleSys::PS_AddParticleEx((SFX_BURNING_PART + 1),
-            						&pos,
-            						&vec);
+             DrawableParticleSys::PS_AddParticleEx((SFX_BURNING_PART + 1),
+             &pos,
+             &vec);
 
 
-            	pos.z += 10.0f;
-            	/*
-            	OTWDriver.AddSfxRequest(
-            		new SfxClass(
-            			SFX_FEATURE_EXPLOSION,				// type
-            			&pos,							// world pos
-            			groundZ,							// time to live
-            			100.0f 		// scale
-            		)
-            	);
-            			*/
+             pos.z += 10.0f;
+             /*
+             OTWDriver.AddSfxRequest(
+             new SfxClass(
+             SFX_FEATURE_EXPLOSION, // type
+             &pos, // world pos
+             groundZ, // time to live
+             100.0f  // scale
+             )
+             );
+             */
             /*
-            	DrawableParticleSys::PS_AddParticleEx((SFX_FEATURE_EXPLOSION + 1),
-            						&pos,
-            						&PSvec);
+             DrawableParticleSys::PS_AddParticleEx((SFX_FEATURE_EXPLOSION + 1),
+             &pos,
+             &PSvec);
 
             }
             */
@@ -542,14 +542,14 @@ int GroundClass::Exec(void)
                 //pos.z -= 20.0f;
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass(
-                		SFX_VEHICLE_EXPLOSION,				// type
-                		&pos,							// world pos
-                		1.5f,							// time to live
-                		100.0f 		// scale
-                	)
+                 new SfxClass(
+                 SFX_VEHICLE_EXPLOSION, // type
+                 &pos, // world pos
+                 1.5f, // time to live
+                 100.0f  // scale
+                 )
                 );
-                	*/
+                 */
                 DrawableParticleSys::PS_AddParticleEx((SFX_VEHICLE_EXPLOSION + 1),
                                                       &pos,
                                                       &PSvec);
@@ -586,7 +586,7 @@ int GroundClass::Exec(void)
     }
 
     //JAM 27Sep03 - Let's try this
-    groundZ = pos.z;		// - 0.7f; KCK: WTF is this?
+    groundZ = pos.z; // - 0.7f; KCK: WTF is this?
 
     //VP_changes Sept 25
     groundZ = OTWDriver.GetGroundLevel(pos.x, pos.y);
@@ -618,7 +618,7 @@ int GroundClass::Exec(void)
             }
             else if (GetVt() > 1.0f)
             {
-                VuListIterator	vehicleWalker(SimDriver.combinedList);
+                VuListIterator vehicleWalker(SimDriver.combinedList);
                 FalconEntity* object = (FalconEntity*)vehicleWalker.GetFirst();
                 bool hasThreat = false;
                 float range = 999.9f * NM_TO_FT;
@@ -682,7 +682,7 @@ int GroundClass::Exec(void)
         {
             if (GetVt() > 1.0f)
             {
-                VuListIterator	vehicleWalker(SimDriver.combinedList);
+                VuListIterator vehicleWalker(SimDriver.combinedList);
                 FalconEntity* object = (FalconEntity*)vehicleWalker.GetFirst();
                 bool hasThreat = false;
                 float range = 999.9f * NM_TO_FT;
@@ -921,8 +921,8 @@ int GroundClass::Exec(void)
         // Biker's version
         //if(SimLibElapsedTime > nextSamFireTime  && !allowSamFire)
         //{
-        //	if (radarDown == false || (theWeapon && theWeapon->IsMissile() && theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
-        //		allowSamFire = TRUE;
+        // if (radarDown == false || (theWeapon && theWeapon->IsMissile() && theWeapon->sensorArray[0]->Type() == SensorClass::IRST))
+        // allowSamFire = TRUE;
         //}
 
         // Move and update delta;
@@ -986,7 +986,7 @@ int GroundClass::Exec(void)
         {
             if (!IsSetLocalFlag(NOT_LABELED))
             {
-                drawPointer->SetLabel("", 0xff00ff00);		// Don't label
+                drawPointer->SetLabel("", 0xff00ff00); // Don't label
                 SetLocalFlag(NOT_LABELED);
             }
         }
@@ -997,8 +997,8 @@ int GroundClass::Exec(void)
         }
 
         //if (IsSetLocalFlag(NOT_LABELED)) {
-        //	SetLabel(this);
-        //	UnSetLocalFlag(NOT_LABELED);
+        // SetLabel(this);
+        // UnSetLocalFlag(NOT_LABELED);
         //}
     }
 
@@ -1069,7 +1069,7 @@ int GroundClass::Exec(void)
 
         // RV - Biker - Don't do this
         //else
-        //	SetDOF(AIRDEF_AZIMUTH, 0.0F);
+        // SetDOF(AIRDEF_AZIMUTH, 0.0F);
     }
 
     // Special shit by ground type
@@ -1100,7 +1100,7 @@ int GroundClass::Exec(void)
     // We're not a foot squad, so do the vehicle stuff
     else if (!IsSetLocalFlag(IS_HIDDEN) && speedScale > 300.0f)
     {
-        // speedScale /= ( 900.0f * KPH_TO_FPS * KPH_TO_FPS);		// essentially 1.0F at 30 mph
+        // speedScale /= ( 900.0f * KPH_TO_FPS * KPH_TO_FPS); // essentially 1.0F at 30 mph
 
         // JPO - for engine noise
         VehicleClassDataType *vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
@@ -1136,7 +1136,7 @@ int GroundClass::Exec(void)
                 pos.z = groundZ;
 
                 // RV - Biker - Move that smoke more behind the vehicle
-                mlTrig		trig;
+                mlTrig trig;
                 mlSinCos(&trig, Yaw());
 
                 pos.x -= 15.0f * trig.cos;
@@ -1151,14 +1151,14 @@ int GroundClass::Exec(void)
                 {
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_VEHICLE_DUST,				// type //JAM 03Oct03
-                    //					new SfxClass (SFX_GROUND_DUSTCLOUD,			// type
-                    		SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
-                    		&pos,							// world pos
-                    		&vec,
-                    		1.0f,							// time to live
-                    		1.f)); //JAM 03Oct03 8.5f ));		// scale
-                    		*/
+                     new SfxClass (SFX_VEHICLE_DUST, // type //JAM 03Oct03
+                    // new SfxClass (SFX_GROUND_DUSTCLOUD, // type
+                     SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR | SFX_MOVES | SFX_NO_GROUND_CHECK,
+                     &pos, // world pos
+                     &vec,
+                     1.0f, // time to live
+                     1.f)); //JAM 03Oct03 8.5f )); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_VEHICLE_DUST + 1),
                                                           &pos,
                                                           &vec);
@@ -1169,8 +1169,8 @@ int GroundClass::Exec(void)
             if (truckDrawable)
             {
                 // Keep truck 20 feet behind us (HACK HACK)
-                Tpoint		truckPos;
-                mlTrig		trig;
+                Tpoint truckPos;
+                mlTrig trig;
                 mlSinCos(&trig, Yaw());
                 truckPos.x = XPos() - 20.0F * trig.cos;
                 truckPos.y = YPos() - 20.0F * trig.sin;
@@ -1296,7 +1296,7 @@ int GroundClass::Exec(void)
         genPos.data.roll = Roll();
         genPos.data.pitch = Pitch();
         genPos.data.yaw = Yaw();
-        // Remove		genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
+        // Remove genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
         gACMIRec.GenPositionRecord(&genPos);
     }
 
@@ -1356,9 +1356,9 @@ int GroundClass::Wake(void)
     if (drawPointer && isTowed)
     {
         // Place truck 20 feet behind us
-        Tpoint		simView;
-        int			vistype;
-        mlTrig		trig;
+        Tpoint simView;
+        int vistype;
+        mlTrig trig;
         int tracktorType;
 
         // RV - Biker - Make the tracktor random
@@ -1402,7 +1402,7 @@ int GroundClass::Wake(void)
     // it's the main guy
     if (drawPointer && gai->rank != GNDAI_BATTALION_COMMANDER)
     {
-        drawPointer->SetLabel("", 0xff00ff00);		// Don't label
+        drawPointer->SetLabel("", 0xff00ff00); // Don't label
         SetLocalFlag(NOT_LABELED);
     }
 

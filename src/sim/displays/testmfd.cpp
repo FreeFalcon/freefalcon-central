@@ -8,11 +8,11 @@
 #include "hud.h"
 #include "aircrft.h"
 #include "fack.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
 
 //MI

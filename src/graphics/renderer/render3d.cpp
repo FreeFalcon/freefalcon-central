@@ -12,17 +12,17 @@
 #include "Matrix.h"
 #include "Render3D.h"
 
-extern float g_fDefaultFOV;			//Wombat778 10-31-2003
+extern float g_fDefaultFOV; //Wombat778 10-31-2003
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXTools.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 /***************************************************************************\
-	Setup the rendering context for thiw view
+ Setup the rendering context for thiw view
 \***************************************************************************/
 void Render3D::Setup(ImageBuffer *imageBuffer)
 {
-    Tpoint		pos;
+    Tpoint pos;
 
     horizontal_half_angle = PI / 180.0f; // this is used in the 2d setup call
     detailScaler = 1.0f;
@@ -54,11 +54,11 @@ void Render3D::Setup(ImageBuffer *imageBuffer)
 
 
 /***************************************************************************\
-	Do start of frame housekeeping
+ Do start of frame housekeeping
 \***************************************************************************/
 void Render3D::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     Render2D::StartDraw();
 
     TheStateStack.SetContext(&context);
@@ -70,7 +70,7 @@ void Render3D::StartDraw(void)
 }
 
 /***************************************************************************\
-	Set the dimensions and location of the viewport.
+ Set the dimensions and location of the viewport.
 \***************************************************************************/
 void Render3D::SetViewport(float l, float t, float r, float b)
 {
@@ -112,13 +112,13 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
     // NOTE:  (Computation of vertical and diagonal ASSUMES SQUARE PIXELS)
     if (scaleX)
     {
-        vertical_half_angle	= (float)atan2(scaleY * tan(horizontal_half_angle), scaleX);
-        diagonal_half_angle	= (float)atan2(sqrt(scaleX * scaleX + scaleY * scaleY) * tan(horizontal_half_angle), scaleX);
+        vertical_half_angle = (float)atan2(scaleY * tan(horizontal_half_angle), scaleX);
+        diagonal_half_angle = (float)atan2(sqrt(scaleX * scaleX + scaleY * scaleY) * tan(horizontal_half_angle), scaleX);
     }
     else
     {
-        vertical_half_angle	= (float)atan2(3.0f * tan(horizontal_half_angle), 4.0f);
-        diagonal_half_angle	= (float)atan2(5.0f * tan(horizontal_half_angle), 4.0f);
+        vertical_half_angle = (float)atan2(3.0f * tan(horizontal_half_angle), 4.0f);
+        diagonal_half_angle = (float)atan2(5.0f * tan(horizontal_half_angle), 4.0f);
     }
 
     oneOVERtanHFOV = 1.0f / (float)tan(horizontal_half_angle);
@@ -146,7 +146,7 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         matProj.m01 *= oneOVERtanHFOV;
         matProj.m02 *= oneOVERtanHFOV;
 
-        D3DXMATRIX	Flip;
+        D3DXMATRIX Flip;
         ZeroMemory(&Flip, sizeof(Flip));
         Flip.m02 = -1.0f;
         Flip.m21 = -1.0f;
@@ -162,12 +162,12 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
 
 /***************************************************************************\
     Set the position and orientation of the camera in world space.
-	(Note:  we're storing the inverse of the camera rotation)
+ (Note:  we're storing the inverse of the camera rotation)
 \***************************************************************************/
 void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
 {
-    float	sinRoll,  cosRoll;
-    float	sinPitch, cosPitch;
+    float sinRoll,  cosRoll;
+    float sinPitch, cosPitch;
 
 
     // Store the provided position and orientation
@@ -178,13 +178,13 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     }
 
     // Back compute the roll, pitch, and yaw of the viewer
-    pitch	= (float) - asin(cameraRot.M13);
-    roll	= (float)atan2(cameraRot.M23, cameraRot.M33);
-    yaw		= (float)atan2(cameraRot.M12, cameraRot.M11);
+    pitch = (float) - asin(cameraRot.M13);
+    roll = (float)atan2(cameraRot.M23, cameraRot.M33);
+    yaw = (float)atan2(cameraRot.M12, cameraRot.M11);
 
     if (yaw < 0.0f)
     {
-        yaw += 2.0f * PI;		// Convert from +/-180 to 0-360 degrees
+        yaw += 2.0f * PI; // Convert from +/-180 to 0-360 degrees
     }
 
 
@@ -242,7 +242,7 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     // Send relevant stuff to the BSP object library
     if (g_bUse_DX_Engine)
     {
-        D3DXMATRIX	a, c;
+        D3DXMATRIX a, c;
         Pmatrix b;
         D3DXMatrixRotationY(&a, pitch);
         D3DXMatrixRotationZ(&c, yaw);
@@ -270,7 +270,7 @@ void Render3D::SetObjectDetail(float scaler)
     // art work.  Specificly, 60 degree field of view
     // on a display 640 pixels across.  This is our reference display
     // precision, or LOD scale 1.0.
-    static const float	RadiansPerPixel = (60.0f * PI / 180.0f) / 640;
+    static const float RadiansPerPixel = (60.0f * PI / 180.0f) / 640;
 
     // Ignor invalid parameters
     if (scaler <= 0.0f)
@@ -288,7 +288,7 @@ void Render3D::SetObjectDetail(float scaler)
 
 /***************************************************************************\
     Set the lighting direction
-	(based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a Falcon 4 X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::SetLightDirection(const Tpoint* dir)
 {
@@ -300,7 +300,7 @@ void Render3D::SetLightDirection(const Tpoint* dir)
 
 /***************************************************************************\
     Get the lighting direction
-	(based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a Falcon 4 X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::GetLightDirection(Tpoint* dir)
 {
@@ -310,7 +310,7 @@ void Render3D::GetLightDirection(Tpoint* dir)
 
 
 /***************************************************************************\
-	Select the amount of textureing employed
+ Select the amount of textureing employed
 \***************************************************************************/
 void Render3D::SetObjectTextureState(BOOL state)
 {
@@ -332,10 +332,10 @@ void Render3D::SetObjectTextureState(BOOL state)
 \***************************************************************************/
 void Render3D::TransformPoint(Tpoint* p, ThreeDVertex* result)
 {
-    register float		scratch_x;
-    register float		scratch_y;
-    register float		scratch_z;
-    register DWORD		clipFlag;
+    register float scratch_x;
+    register float scratch_y;
+    register float scratch_z;
+    register DWORD clipFlag;
 
 
     // This part does rotation, translation, and scaling
@@ -363,18 +363,18 @@ void Render3D::TransformPoint(Tpoint* p, ThreeDVertex* result)
 
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
-	The point should be camera-centric: ie has the camera XYZ subtracted
-	out of its world space XYZ.  Why have this function?  Because of
-	floating point roundoff error.  We may want a high-precision transform
-	of a world space point that would otherwise get rounded off if the
-	world space point had high-range XYZ values.
+ The point should be camera-centric: ie has the camera XYZ subtracted
+ out of its world space XYZ.  Why have this function?  Because of
+ floating point roundoff error.  We may want a high-precision transform
+ of a world space point that would otherwise get rounded off if the
+ world space point had high-range XYZ values.
 \***************************************************************************/
 void Render3D::TransformCameraCentricPoint(Tpoint* p, ThreeDVertex* result)
 {
-    register float		scratch_x;
-    register float		scratch_y;
-    register float		scratch_z;
-    register DWORD		clipFlag;
+    register float scratch_x;
+    register float scratch_y;
+    register float scratch_z;
+    register DWORD clipFlag;
 
 
     // This part does rotation, translation, and scaling
@@ -426,23 +426,23 @@ void Render3D::TransformPointToViewSwapped(Tpoint *p, Tpoint *result)
 
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
-	Uses billboard matrix.  Most of this is just duplicatcion of
-	TransformPoint and perhaps should be condensed into 1 function
+ Uses billboard matrix.  Most of this is just duplicatcion of
+ TransformPoint and perhaps should be condensed into 1 function
 \***************************************************************************/
 void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* result)
 {
-    register float		scratch_x;
-    register float		scratch_y;
-    register float		scratch_z;
-    register DWORD		clipFlag;
+    register float scratch_x;
+    register float scratch_y;
+    register float scratch_z;
+    register DWORD clipFlag;
 
     // This part does rotation, translation, and scaling
     // Note, we're swapping the x and z axes here to get from z up/down to z far/near
     // then we're swapping the x and y axes to get into conventional screen pixel coordinates
     // Note: since this is a billboard we don't have to do the full:
-    // 	scratch_z = T.M11 * p->x + T.M12 * p->y + T.M13 * p->z + move.x;
-    // 	scratch_x = T.M21 * p->x + T.M22 * p->y + T.M23 * p->z + move.y;
-    // 	scratch_y = T.M31 * p->x + T.M32 * p->y + T.M33 * p->z + move.z;
+    //  scratch_z = T.M11 * p->x + T.M12 * p->y + T.M13 * p->z + move.x;
+    //  scratch_x = T.M21 * p->x + T.M22 * p->y + T.M23 * p->z + move.y;
+    //  scratch_y = T.M31 * p->x + T.M32 * p->y + T.M33 * p->z + move.z;
     // since we know where some 1's and 0's are
 
     scratch_z =  p->x + viewOffset->x;
@@ -468,15 +468,15 @@ void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVert
 
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
-	Uses tree matrix.  Most of this is just duplicatcion of
-	TransformPoint and perhaps should be condensed into 1 function
+ Uses tree matrix.  Most of this is just duplicatcion of
+ TransformPoint and perhaps should be condensed into 1 function
 \***************************************************************************/
 void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* result)
 {
-    register float		scratch_x;
-    register float		scratch_y;
-    register float		scratch_z;
-    register DWORD		clipFlag;
+    register float scratch_x;
+    register float scratch_y;
+    register float scratch_z;
+    register DWORD clipFlag;
 
 
     // This part does rotation, translation, and scaling
@@ -534,16 +534,16 @@ void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
     // Lets normalize just to be kind
     mag = x * x + y * y + z * z;
     mag = 1.0f / (float)sqrt(mag);
-    result->x =	x * mag;
-    result->y =	y * mag;
-    result->z =	z * mag;
+    result->x = x * mag;
+    result->y = y * mag;
+    result->z = z * mag;
 }
 
 
 
 /***************************************************************************\
     Return the distance of the world space point from the camera plane.
-	A negative result indicates the point is behind the camera.
+ A negative result indicates the point is behind the camera.
 \***************************************************************************/
 float Render3D::ZDistanceFromCamera(Tpoint* p)
 {
@@ -557,12 +557,12 @@ float Render3D::ZDistanceFromCamera(Tpoint* p)
 
 
 /*******************************************************************************************\
-	Immediatly draw the specified object.
-	Warning:  Going this route causes the specfied object to be loaded/unloaded each
-	time it is drawn.  Besides being wasteful, this may result in too simple an LOD, no
-	textures, or nothing being drawn because the data will not have arrived from disk
-	by the time the Draw call happens.  A prior LockAndLoad() call could avoid
-	these problems.
+ Immediatly draw the specified object.
+ Warning:  Going this route causes the specfied object to be loaded/unloaded each
+ time it is drawn.  Besides being wasteful, this may result in too simple an LOD, no
+ textures, or nothing being drawn because the data will not have arrived from disk
+ by the time the Draw call happens.  A prior LockAndLoad() call could avoid
+ these problems.
 \*******************************************************************************************/
 void Render3D::Render3DObject(int id, Tpoint* pos, const Trotation* orientation)
 {
@@ -576,8 +576,8 @@ void Render3D::Render3DObject(int id, Tpoint* pos, const Trotation* orientation)
 
 
 /***************************************************************************\
-	Draw a colored pixel in worldspace using the current camera.
-	For now, we don't try to draw primitives with any verticies off screen.
+ Draw a colored pixel in worldspace using the current camera.
+ For now, we don't try to draw primitives with any verticies off screen.
 \***************************************************************************/
 void Render3D::Render3DPoint(Tpoint* p1)
 {
@@ -595,7 +595,7 @@ void Render3D::Render3DPoint(Tpoint* p1)
 
 
 /***************************************************************************\
-	Draw a colored one pixel line in worldspace using the current camera.
+ Draw a colored one pixel line in worldspace using the current camera.
 \***************************************************************************/
 void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
 {
@@ -665,9 +665,9 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
 
 
 /***************************************************************************\
-	Draw a flat shaded triangle in worldspace using the current camera.
-	For now, we don't try to draw primitives with any verticies inside the
-	near plane.
+ Draw a flat shaded triangle in worldspace using the current camera.
+ For now, we don't try to draw primitives with any verticies inside the
+ near plane.
 \***************************************************************************/
 void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
 {
@@ -688,8 +688,8 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
     // edg: always draw irregardless of backfacing
     /*
     if ( (ps2.y - ps1.y)*(ps3.x - ps1.x) >
-    	 (ps2.x - ps1.x)*(ps3.y - ps1.y)   ) {
-    	return;
+      (ps2.x - ps1.x)*(ps3.y - ps1.y)   ) {
+     return;
     }
     */
 
@@ -704,9 +704,9 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
 \***************************************************************************/
 void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture, bool terrain) //JAM 14Sep03
 {
-    unsigned short		count;
-    BOOL				useFirst = TRUE;
-    BOOL				useLast = TRUE;
+    unsigned short count;
+    BOOL useFirst = TRUE;
+    BOOL useLast = TRUE;
 
     // Check the clipping flags on the verteces which bound this region
     if (v0->clipFlag | v1->clipFlag | v2->clipFlag | v3->clipFlag)

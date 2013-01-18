@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     09Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 \***************************************************************************/
 #ifndef _TEXBANK_H_
 #define _TEXBANK_H_
@@ -16,28 +16,28 @@ extern class TextureBankClass TheTextureBank;
 
 typedef struct TexBankEntry
 {
-    long	 	fileOffset;		// How far into the .TEX file does the compressed data start?
-    long	 	fileSize;		// How big is the compressed data on disk?
-    Texture		tex;			// The container class which manages the texture data
-    Texture		texN;			// The container class which manages the texture data
-    int			palID;			// The offset into ThePaletteBank to use with this texture
-    int			refCount;		// How many objects want this texture right now
+    long   fileOffset; // How far into the .TEX file does the compressed data start?
+    long   fileSize; // How big is the compressed data on disk?
+    Texture tex; // The container class which manages the texture data
+    Texture texN; // The container class which manages the texture data
+    int palID; // The offset into ThePaletteBank to use with this texture
+    int refCount; // How many objects want this texture right now
 } TexBankEntry;
 
 typedef struct TempTexBankEntry
 {
-    long	 	fileOffset;		// How far into the .TEX file does the compressed data start?
-    long	 	fileSize;		// How big is the compressed data on disk?
-    Texture		tex;			// The container class which manages the texture data
-    int			palID;			// The offset into ThePaletteBank to use with this texture
-    int			refCount;		// How many objects want this texture right now
+    long   fileOffset; // How far into the .TEX file does the compressed data start?
+    long   fileSize; // How big is the compressed data on disk?
+    Texture tex; // The container class which manages the texture data
+    int palID; // The offset into ThePaletteBank to use with this texture
+    int refCount; // How many objects want this texture right now
 } TempTexBankEntry;
 
-typedef	struct
+typedef struct
 {
-    char	OnOrder;
-    char	OnRelease;
-} TexFlagsType	;
+    char OnOrder;
+    char OnRelease;
+} TexFlagsType ;
 
 class TextureBankClass
 {
@@ -52,7 +52,7 @@ public:
 public:
     static int nTextures;
     static TexBankEntry *TexturePool;
-    static TempTexBankEntry	*TempTexturePool;
+    static TempTexBankEntry *TempTexturePool;
 
 #ifdef _DEBUG
     static int textureCount;
@@ -62,9 +62,9 @@ protected:
     static char baseName[256];
     static int deferredLoadState;
     static FileMemMap TexFileMap;
-    static BYTE	*CompressedBuffer;
-    static BYTE		*TexBuffer;
-    static DWORD	TexBufferSize;
+    static BYTE *CompressedBuffer;
+    static BYTE *TexBuffer;
+    static DWORD TexBufferSize;
 
 
 public:
@@ -97,23 +97,23 @@ protected:
 
     // New texture management...
     static TexFlagsType *TexFlags;
-    static void	CreateCallBack(LoaderQ* request);
-    static bool	  RatedLoad;									// This flag makes textures loaded once x loader frame
+    static void CreateCallBack(LoaderQ* request);
+    static bool   RatedLoad; // This flag makes textures loaded once x loader frame
     static short  *CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
 
 public:
-    static bool	UpdateBank(void);
-    static void	WaitUpdates(void);
-    static void	ReferenceTexSet(DWORD *TexList, DWORD Nr);
-    static void	ReleaseTexSet(DWORD *TexList, DWORD Nr);
-    static void	SetRatedLoad(bool Status)
+    static bool UpdateBank(void);
+    static void WaitUpdates(void);
+    static void ReferenceTexSet(DWORD *TexList, DWORD Nr);
+    static void ReleaseTexSet(DWORD *TexList, DWORD Nr);
+    static void SetRatedLoad(bool Status)
     {
         RatedLoad = false;
     }
 };
 
-#define	TEX_ON_ORDER	0x00000001
-#define	TEX_ON_RELEASE	0x00000002
-#define	CACHE_MARGIN		32
+#define TEX_ON_ORDER 0x00000001
+#define TEX_ON_RELEASE 0x00000002
+#define CACHE_MARGIN 32
 
 #endif // _TEXBANK_H_

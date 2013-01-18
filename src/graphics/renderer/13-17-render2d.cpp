@@ -13,22 +13,22 @@
 #include "GraphicsRes.h"
 #include "Tex.h"
 #include "GraphicsRes.h"
-#include "falclib\include\dispopts.h"	//Wombat778 12-12-2003
+#include "falclib\include\dispopts.h" //Wombat778 12-12-2003
 
 //#ifdef USE_TEXTURE_FONT
 //Texture FontTexture[NUM_FONT_RESOLUTIONS];
 //#endif
 
-extern bool g_bAutoScaleFonts;		//Wombat778 12-12-2003
+extern bool g_bAutoScaleFonts; //Wombat778 12-12-2003
 
 Texture Render2D::FontTexture[NUM_FONT_RESOLUTIONS]; //JAM 22Dec03
 
 /***************************************************************************\
-	Setup the rendering context for this display
+ Setup the rendering context for this display
 \***************************************************************************/
 void Render2D::Setup(ImageBuffer *imageBuffer)
 {
-    BOOL	result;
+    BOOL result;
 
     image = imageBuffer;
 
@@ -80,7 +80,7 @@ void Render2D::SetImageBuffer(ImageBuffer *imageBuffer)
     context.NewImageBuffer((DWORD)imageBuffer->targetSurface());
 
     // This shouldn't be required, but _might_ be
-    //	context.InvalidateState();
+    // context.InvalidateState();
     context.RestoreState(STATE_SOLID);
 
     // Store key properties of our target buffer
@@ -115,7 +115,7 @@ void Render2D::FinishFrame(void)
 }
 
 /***************************************************************************\
-	Set the dimensions and location of the viewport.
+ Set the dimensions and location of the viewport.
 \***************************************************************************/
 void Render2D::SetViewport(float l, float t, float r, float b)
 {
@@ -125,23 +125,23 @@ void Render2D::SetViewport(float l, float t, float r, float b)
     // Send the new clipping region to MPR
     // (top/right inclusive, bottom/left exclusive)
     context.SetState(MPR_STA_ENABLES, MPR_SE_SCISSORING);
-    context.SetState(MPR_STA_SCISSOR_TOP,		FloatToInt32((float)floor(topPixel)));
-    context.SetState(MPR_STA_SCISSOR_LEFT,		FloatToInt32((float)floor(leftPixel)));
-    context.SetState(MPR_STA_SCISSOR_RIGHT,	FloatToInt32((float)ceil(rightPixel)));
-    context.SetState(MPR_STA_SCISSOR_BOTTOM,	FloatToInt32((float)ceil(bottomPixel)));
+    context.SetState(MPR_STA_SCISSOR_TOP, FloatToInt32((float)floor(topPixel)));
+    context.SetState(MPR_STA_SCISSOR_LEFT, FloatToInt32((float)floor(leftPixel)));
+    context.SetState(MPR_STA_SCISSOR_RIGHT, FloatToInt32((float)ceil(rightPixel)));
+    context.SetState(MPR_STA_SCISSOR_BOTTOM, FloatToInt32((float)ceil(bottomPixel)));
 }
 
 
 
 /***************************************************************************\
-	Put a pixel on the display.
+ Put a pixel on the display.
 \***************************************************************************/
 void Render2D::Render2DPoint(float x1, float y1)
 {
 #if 1
     context.Draw2DPoint(x1, y1);
 #else
-    MPRVtx_t	vert;
+    MPRVtx_t vert;
 
 #if 0 // This should be here, but I need to do some fixes first...
 
@@ -174,14 +174,14 @@ void Render2D::Render2DPoint(float x1, float y1)
 
 
 /***************************************************************************\
-	Put a straight line on the display.
+ Put a straight line on the display.
 \***************************************************************************/
 void Render2D::Render2DLine(float x1, float y1, float x2, float y2)
 {
 #if 1
     context.Draw2DLine(x1, y1, x2, y2);
 #else
-    MPRVtx_t	verts[2];
+    MPRVtx_t verts[2];
 
 #if 0 // This should be here, but I need to do some fixes first...
 
@@ -216,17 +216,17 @@ void Render2D::Render2DLine(float x1, float y1, float x2, float y2)
 
 
 /***************************************************************************\
-	Put a mono-colored screen space triangle on the display.
+ Put a mono-colored screen space triangle on the display.
 \***************************************************************************/
 void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, float y3)
 {
-    MPRVtx_t	verts[3];
+    MPRVtx_t verts[3];
 
     //Clip test
     if (
-        (max(max(x1, x2), x3) > rightPixel)		||
-        (min(min(x1, x2), x3) < leftPixel)		||
-        (max(max(y1, y2), y3) > bottomPixel)	||
+        (max(max(x1, x2), x3) > rightPixel) ||
+        (min(min(x1, x2), x3) < leftPixel) ||
+        (max(max(y1, y2), y3) > bottomPixel) ||
         (min(min(y1, y2), y3) < topPixel)
     )
         return;
@@ -240,16 +240,16 @@ void Render2D::Render2DTri(float x1, float y1, float x2, float y2, float x3, flo
     verts[2].y = y3;
 
     // Draw the triangle
-    //	context.RestoreState( STATE_ALPHA_SOLID );
+    // context.RestoreState( STATE_ALPHA_SOLID );
     context.DrawPrimitive(MPR_PRM_TRIANGLES, 0, 3, verts, sizeof(verts[0]));
 }
 
 
 
 /***************************************************************************\
-	Put a portion of a caller supplied 32 bit bitmap on the display.
-	The pixels should be of the form 0x00BBGGRR
-	Chroma keying is not supported
+ Put a portion of a caller supplied 32 bit bitmap on the display.
+ The pixels should be of the form 0x00BBGGRR
+ Chroma keying is not supported
 \***************************************************************************/
 void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int totalWidth, DWORD *source)
 {
@@ -274,15 +274,15 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int 
 
 
 /***************************************************************************\
-	Put a portion of a bitmap from a file on disk on the display.
-	Chroma keying is not supported
+ Put a portion of a bitmap from a file on disk on the display.
+ Chroma keying is not supported
 \***************************************************************************/
 void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char *filename)
 {
-    int					result;
-    CImageFileMemory 	texFile;
-    int					totalWidth;
-    DWORD				*dataptr;
+    int result;
+    CImageFileMemory  texFile;
+    int totalWidth;
+    DWORD *dataptr;
 
 
     // Make sure we recognize this file type
@@ -326,8 +326,8 @@ void Render2D::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, char
 }
 
 /***************************************************************************\
-	Put a mono-colored string of text on the display in screen space.
-	(The location given is used as the upper left corner of the text in units of pixels)
+ Put a mono-colored string of text on the display in screen space.
+ (The location given is used as the upper left corner of the text in units of pixels)
 \***************************************************************************/
 //JAM 22Dec03 - Don't they teach people how to format code?
 void Render2D::ScreenText(float xLeft, float yTop, char *string, int boxed)
@@ -369,11 +369,11 @@ void Render2D::ScreenText(float xLeft, float yTop, char *string, int boxed)
         r = 0.0F;
         g = 0.0F;
         b = 0.0F;
-        vert[0].x = x - 1.8F;	//MI changed from - 2.0F
+        vert[0].x = x - 1.8F; //MI changed from - 2.0F
         vert[0].y = y;
         vert[1].x = vert[0].x;
         vert[1].y = vert[0].y + FontData[FontNum][32].pixelHeight - 1; //MI added -1
-        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F;	//MI changed from +4.0F
+        vert[2].x = vert[0].x + ScreenTextWidth(string) + 1.8F; //MI changed from +4.0F
         vert[2].y = vert[1].y;
         vert[3].x = vert[2].x;
         vert[3].y = vert[0].y;

@@ -21,8 +21,8 @@
 
 BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int ac_type, int player)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
 
@@ -66,8 +66,8 @@ BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int
 
 void LeaveACSlot(Flight flight, uchar plane_slot)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;
@@ -83,8 +83,8 @@ void LeaveACSlot(Flight flight, uchar plane_slot)
 
 void RequestFlightDelete(Flight flight)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;
@@ -99,8 +99,8 @@ void RequestFlightDelete(Flight flight)
 
 void RequestTeamChange(Flight flight, int newteam)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;
@@ -116,8 +116,8 @@ void RequestTeamChange(Flight flight, int newteam)
 
 void RequestTypeChange(Flight flight, int newtype)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;
@@ -133,8 +133,8 @@ void RequestTypeChange(Flight flight, int newtype)
 
 void RequestCallsignChange(Flight flight, int newcallsign)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;
@@ -151,8 +151,8 @@ void RequestCallsignChange(Flight flight, int newcallsign)
 
 void RequestSkillChange(Flight flight, int plane_slot, int newskill)
 {
-    UI_RequestAircraftSlot	*msg;
-    VuTargetEntity			*target;
+    UI_RequestAircraftSlot *msg;
+    VuTargetEntity *target;
 
     if (!flight)
         return;

@@ -31,26 +31,26 @@ public:
         float range, vt;
     } SensorUpdateType;
 
-    SensorData		dataProvided;
-    SimMoverClass*	platform;
+    SensorData dataProvided;
+    SimMoverClass* platform;
 
 public:
-    SensorType	Type(void)
+    SensorType Type(void)
     {
         return sensorType;
     }
-    virtual void	SetType(SensorType senstype)
+    virtual void SetType(SensorType senstype)
     {
         sensorType = senstype;
     }
 
-    virtual void	SetPower(BOOL state)
+    virtual void SetPower(BOOL state)
     {
         isOn = state;
 
         if (!isOn) ClearSensorTarget();
     }
-    virtual BOOL			IsOn(void)
+    virtual BOOL IsOn(void)
     {
         return isOn;
     }
@@ -65,8 +65,8 @@ public:
     };
 
     virtual SimObjectType* Exec(SimObjectType* curTargetList) = 0;
-    virtual void ExecModes(int, int)						{}
-    virtual void UpdateState(int, int)						{}
+    virtual void ExecModes(int, int) {}
+    virtual void UpdateState(int, int) {}
     virtual void SetSeekerPos(float newAz, float newEl)
     {
         seekerAzCenter = newAz;
@@ -78,15 +78,15 @@ public:
         return targetUnderCursor;
     }
 
-    VirtualDisplay*	GetDisplay(void)
+    VirtualDisplay* GetDisplay(void)
     {
         return privateDisplay;
     }
-    float			SeekerAz(void)
+    float SeekerAz(void)
     {
         return seekerAzCenter;
     }
-    float			SeekerEl(void)
+    float SeekerEl(void)
     {
         return seekerElCenter;
     }
@@ -103,21 +103,21 @@ protected:
     // Handle sim/camp handoff and target death
     virtual void CheckLockedTarget(void);
 
-    SimObjectType	*FindNextDetected(SimObjectType*);
-    SimObjectType	*FindPrevDetected(SimObjectType*);
+    SimObjectType *FindNextDetected(SimObjectType*);
+    SimObjectType *FindPrevDetected(SimObjectType*);
     // ID of the target under the player's cursors
-    VU_ID					targetUnderCursor;
+    VU_ID targetUnderCursor;
     // target under the player's cursors last scan
-    SimObjectType*		lasttargetUnderCursor;
+    SimObjectType* lasttargetUnderCursor;
 
     // Targeting
     // Current "primary" target -- who we're locked onto
-    SimObjectType	*lockedTarget;
+    SimObjectType *lockedTarget;
     // Is this sensor turned on?
-    int				isOn;
+    int isOn;
     // Sensor state
-    float		seekerAzCenter, seekerElCenter, oldseekerElCenter;
-    SensorType	sensorType;
+    float seekerAzCenter, seekerElCenter, oldseekerElCenter;
+    SensorType sensorType;
 };
 
 SensorClass* FindSensor(SimMoverClass* theObject, int sensorType);

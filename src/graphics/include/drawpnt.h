@@ -1,9 +1,9 @@
 /***************************************************************************\
     DrawPNT.h
 
-	Derived calss from DrawableObject which will just draw a pixel at its
-	given location and will draw a label for it (if turned on).  In general,
-	this can be used to draw an object that's very far away.
+ Derived calss from DrawableObject which will just draw a pixel at its
+ given location and will draw a label for it (if turned on).  In general,
+ this can be used to draw an object that's very far away.
 \***************************************************************************/
 #ifndef _DRAWPNT_H_
 #define _DRAWPNT_H_
@@ -37,7 +37,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     DrawablePoint(DWORD color, BOOL grnd, const Tpoint *pos, float scale = 1.0f);
@@ -69,15 +69,15 @@ public:
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
 public:
-    static BOOL			drawLabels;		// Shared by ALL drawable points (now just labels, of course)
+    static BOOL drawLabels; // Shared by ALL drawable points (now just labels, of course)
 
 protected:
-    char				label[32];
-    int					labelLen;
-    DWORD				labelColor;
-    DWORD				pointColor;
-    int					previousLOD;
-    BOOL				onGround;
+    char label[32];
+    int labelLen;
+    DWORD labelColor;
+    DWORD pointColor;
+    int previousLOD;
+    BOOL onGround;
 };
 
 #endif // _DRAWPNT_H_

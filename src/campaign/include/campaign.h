@@ -18,8 +18,8 @@ typedef struct
 // Map Deltas
 // ============
 
-extern GridIndex 	dx[17];     // dx per direction
-extern GridIndex	dy[17];     // dy per direction
+extern GridIndex  dx[17];     // dx per direction
+extern GridIndex dy[17];     // dy per direction
 
 // ============
 // Placeholders
@@ -43,7 +43,7 @@ extern uchar DefaultDamageMods[OtherDam + 1];
 // Defines & macros
 // ================
 
-#define InfiniteCost 				32000
+#define InfiniteCost  32000
 
 // sfr: start removing locks
 #define NO_CAMP_LOCK 1

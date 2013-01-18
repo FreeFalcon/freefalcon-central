@@ -173,7 +173,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
 
                 for (i = 0; i < MyHeader.Height; i++)
                 {
-                    //					printf("%1X\n",(long)&Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel]);
+                    // printf("%1X\n",(long)&Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel]);
                     WriteFile(ofp, &Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel], MyHeader.Width * MyHeader.BytesPerPixel, &bytesread, NULL);
                 }
             }
@@ -192,7 +192,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
 
                     for (i = 0; i < MyHeader.Height; i++)
                     {
-                        //						printf("%1X\n",(long)&Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel]);
+                        // printf("%1X\n",(long)&Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel]);
                         WriteFile(ofp, &Image[(MyHeader.Height - i - 1) * MyHeader.Width * MyHeader.BytesPerPixel], MyHeader.Width * MyHeader.BytesPerPixel, &bytesread, NULL);
                     }
 

@@ -269,20 +269,20 @@ BSPLIST *LoadFeature(long ID, int visID, Tpoint *pos, float facing)
 
 int UI_Deaggregate(ObjectiveClass* objective)
 {
-    int						f, fid;
-    VehicleID				classID;
+    int f, fid;
+    VehicleID classID;
     Falcon4EntityClassType* classPtr;
-    float					x, y, z;
-    FeatureClassDataType*	fc;
-    ObjClassDataType*		oc;
-    BSPLIST					*drawptr;
-    Tpoint					objPos;
-    C_Window				*win;
-    C_Text					*txt;
-    C_TreeList				*tree;
-    TREELIST				*item, *parent, *root;
-    C_Entity				*recon_ent;
-    C_Feature				*feat;
+    float x, y, z;
+    FeatureClassDataType* fc;
+    ObjClassDataType* oc;
+    BSPLIST *drawptr;
+    Tpoint objPos;
+    C_Window *win;
+    C_Text *txt;
+    C_TreeList *tree;
+    TREELIST *item, *parent, *root;
+    C_Entity *recon_ent;
+    C_Feature *feat;
 
     if (gUIViewer == NULL)
         return(0);
@@ -353,8 +353,8 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
                 if (drawptr != NULL)
                 {
-                    //					if(objective->GetFeatureValue(f))
-                    //					{
+                    // if(objective->GetFeatureValue(f))
+                    // {
                     ((DrawableObject*)drawptr)->GetPosition(&objPos);
 
                     feat = BuildFeature(objective, f, &objPos);
@@ -367,7 +367,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
                             tree->AddChildItem(parent, item);
                     }
 
-                    //					}
+                    // }
                 }
             }
         }

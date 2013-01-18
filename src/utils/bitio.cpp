@@ -21,13 +21,13 @@
 #endif
 
 /* Add for the buffer io */
-#define PACIFIER_COUNT	2047
+#define PACIFIER_COUNT 2047
 
 BIT_FILE *OpenOutputBitFile(char *name)
 {
     BIT_FILE *bit_file;
 
-    //	bit_file = (BIT_FILE *) malloc( sizeof( BIT_FILE ) );
+    // bit_file = (BIT_FILE *) malloc( sizeof( BIT_FILE ) );
     bit_file = new BIT_FILE;
 
     if (bit_file == NULL)
@@ -44,7 +44,7 @@ BIT_FILE *OpenInputBitFile(char *name)
 {
     BIT_FILE *bit_file;
 
-    //	bit_file = (BIT_FILE *) malloc( sizeof( BIT_FILE ) );
+    // bit_file = (BIT_FILE *) malloc( sizeof( BIT_FILE ) );
     bit_file = new BIT_FILE;
 
     if (bit_file == NULL)
@@ -151,7 +151,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
 {
     unsigned long mask;
     unsigned long return_value;
-    size_t	numRead;
+    size_t numRead;
 
     mask = 1L << (bit_count - 1);
     return_value = 0;
@@ -168,7 +168,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
 
             numRead = fread(&bit_file->rack, sizeof(char), 1, bit_file->file);
 
-            //	bit_file->rack = getc( bit_file->file );
+            // bit_file->rack = getc( bit_file->file );
             if (bit_file->rack == EOF)
                 return (unsigned long)EOF;
         }

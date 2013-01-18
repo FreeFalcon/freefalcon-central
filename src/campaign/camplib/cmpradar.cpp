@@ -7,7 +7,7 @@
 
 int RadarRangeClass::CanDetect(float dx, float dy, float dz)
 {
-    int		oct;
+    int oct;
 
     oct = OctantTo(0.0F, 0.0F, dx, dy);
 
@@ -19,7 +19,7 @@ int RadarRangeClass::CanDetect(float dx, float dy, float dz)
 
 float RadarRangeClass::GetRadarRange(float dx, float dy, float dz)
 {
-    int		oct;
+    int oct;
 
     oct = OctantTo(0.0F, 0.0F, dx, dy);
     return dz / detect_ratio[oct];

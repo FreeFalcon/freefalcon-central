@@ -4,8 +4,8 @@
 #define _USE_MATH_DEFINES
 #include "math.h"
 
-#define VU_PI		((SM_SCALAR)3.1415927)
-#define VU_TWOPI	((SM_SCALAR)6.2831853)
+#define VU_PI ((SM_SCALAR)3.1415927)
+#define VU_TWOPI ((SM_SCALAR)6.2831853)
 
 typedef float BIG_SCALAR;
 typedef float SM_SCALAR;

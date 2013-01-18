@@ -25,8 +25,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
     float x1, x2;
     float y1, y2, y3, y4;
 
-    pan	= liftInitStr->pan;
-    tilt	= liftInitStr->tilt;
+    pan = liftInitStr->pan;
+    tilt = liftInitStr->tilt;
     mDoLabel = liftInitStr->doLabel;
     ostringstream oss;
 
@@ -72,8 +72,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
 
         if (tilt == -30.0F)
         {
-            mLineSegments	= 2;
-            mCheverons		= 1;
+            mLineSegments = 2;
+            mCheverons = 1;
 
             center = 0.33F;
             offset = 0.03F;
@@ -86,10 +86,10 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             mLineSegment[0][0] = 0.0F;
             mLineSegment[0][1] = 1.0F;
             mLineSegment[1][0] = 0.0F;
-            mLineSegment[1][1] = center + offset;		// 0.33 is cheveron center
+            mLineSegment[1][1] = center + offset; // 0.33 is cheveron center
 
             mLineSegment[2][0] = 0.0F;
-            mLineSegment[2][1] = center - offset;		// 0.33 is cheveron center
+            mLineSegment[2][1] = center - offset; // 0.33 is cheveron center
             mLineSegment[3][0] = 0.0F;
             mLineSegment[3][1] = 0.0F;
 
@@ -130,8 +130,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             y3 = -y2;
             y4 = -y1;
 
-            mLineSegments	= 3;
-            mCheverons		= 3;
+            mLineSegments = 3;
+            mCheverons = 3;
 
             mLineSegment[0][0] = 0.0F;
             mLineSegment[0][1] = 1.0F;
@@ -196,8 +196,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             y1 = center + offset;
             y2 = center - offset;
 
-            mLineSegments	= 2;
-            mCheverons		= 2;
+            mLineSegments = 2;
+            mCheverons = 2;
 
             mLineSegment[0][0] = 0.0F;
             mLineSegment[0][1] = 2.0F;
@@ -250,16 +250,16 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
 
             for (i = 0; i <= 7; i++)
             {
-                x1 =	mCheveron[i][0] * panCos + mCheveron[i][1] * panSin;
+                x1 = mCheveron[i][0] * panCos + mCheveron[i][1] * panSin;
                 y1 = mCheveron[i][1] * panCos - mCheveron[i][0] * panSin;
-                mCheveron[i][0] =	x1;
+                mCheveron[i][0] = x1;
                 mCheveron[i][1] = y1;
             }
         }
 
-        //		else {
-        //			F4Assert(FALSE);		// Bad parameter
-        //		}
+        // else {
+        // F4Assert(FALSE); // Bad parameter
+        // }
     }
 }
 
@@ -272,8 +272,8 @@ void CPLiftLine::DisplayDraw(void)
     int i;
     int oldFont = VirtualDisplay::CurFont();
 
-    //	OTWDriver.renderer->SetColor(0xFF0096FF);
-    OTWDriver.renderer->SetColor(OTWDriver.GetLiftLineColor());	// from 3D pit readin
+    // OTWDriver.renderer->SetColor(0xFF0096FF);
+    OTWDriver.renderer->SetColor(OTWDriver.GetLiftLineColor()); // from 3D pit readin
 
     if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
     {

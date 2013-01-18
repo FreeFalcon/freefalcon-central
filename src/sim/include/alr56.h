@@ -16,13 +16,13 @@ public :
     // State Control Functions
     virtual void ToggleAutoDrop(void)
     {
-        dropPattern	= !dropPattern;
+        dropPattern = !dropPattern;
     };
 
 protected:
     // Helper functions
-    virtual float	GetLethality(FalconEntity* theObject);
-    virtual void	AutoSelectAltitudePriority(void)
+    virtual float GetLethality(FalconEntity* theObject);
+    virtual void AutoSelectAltitudePriority(void)
     {
         /* leave this to the player to do. */
     };

@@ -11,7 +11,7 @@ class LantirnClass : public DrawableClass
 public:
     enum { FLIR_ON = 0x1, AVAILABLE = 0x2, CONH = 0x4, };
 private:
-    VirtualDisplay*      display;	// The renderer we are to draw upon
+    VirtualDisplay*      display; // The renderer we are to draw upon
 public:
     void GetCameraPos(Tpoint *pos);
     bool IsEnabled()
@@ -52,17 +52,17 @@ public:
     LantirnClass(); // constructor
     ~LantirnClass(); // desctructor
 
-    VirtualDisplay*	GetDisplay(void)
+    VirtualDisplay* GetDisplay(void)
     {
         return privateDisplay;
     };
-    void			Display(VirtualDisplay*);
-    void			DisplayInit(ImageBuffer*);
+    void Display(VirtualDisplay*);
+    void DisplayInit(ImageBuffer*);
     void    SetTFRAlt(int n)
     {
         m_tfr_alt = n;
     };
-    int	    GetTFRAlt(void)
+    int     GetTFRAlt(void)
     {
         return m_tfr_alt;
     };
@@ -94,15 +94,15 @@ public:
     // debug stuff
     float gdist;    // distance to ground intersection
     int evasize;    // are we being evasize
-    float holdheight;	// what height we want to be at
-    float turnradius;	// what turn radius we can do
+    float holdheight; // what height we want to be at
+    float turnradius; // what turn radius we can do
     float pitch; // desired pitch angle
     float GetHoldHeight()
     {
         return holdheight;
     };
     float GetGLimit();
-    void Exec(AircraftClass* self);	// do whats necessary
+    void Exec(AircraftClass* self); // do whats necessary
 
     //new variables
     float PID_MX, PID_lastErr, PID_error, PID_Output;

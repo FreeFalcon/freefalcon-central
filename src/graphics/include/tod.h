@@ -12,23 +12,23 @@
 #include "grtypes.h"
 #include "star.h"
 
-#define	GL_TIME_OF_DAY_USE_SUN			0x001
-#define	GL_TIME_OF_DAY_USE_MOON			0x002
-#define	GL_TIME_OF_DAY_USE_STAR			0x004
+#define GL_TIME_OF_DAY_USE_SUN 0x001
+#define GL_TIME_OF_DAY_USE_MOON 0x002
+#define GL_TIME_OF_DAY_USE_STAR 0x004
 
-#define	GL_TIME_OF_DAY_HAS_SUNBITMAP	0x100
-#define	GL_TIME_OF_DAY_HAS_MOONBITMAP	0x200
+#define GL_TIME_OF_DAY_HAS_SUNBITMAP 0x100
+#define GL_TIME_OF_DAY_HAS_MOONBITMAP 0x200
 
-#define	GL_STAR_NEW_COLOR				0x2
-#define	GL_STAR_END_OF_LIST				0x4
+#define GL_STAR_NEW_COLOR 0x2
+#define GL_STAR_END_OF_LIST 0x4
 
-#define NVG_SKY_LEVEL					0.390625f	// 100 256ths
-#define NVG_LIGHT_LEVEL					0.703125f	// 180 256ths
+#define NVG_SKY_LEVEL 0.390625f // 100 256ths
+#define NVG_LIGHT_LEVEL 0.703125f // 180 256ths
 
-#define	MOON_PHASE_SIZE					128			// max is 128
-#define	NEW_MOON_PHASE					(MOON_PHASE_SIZE/2)
+#define MOON_PHASE_SIZE 128 // max is 128
+#define NEW_MOON_PHASE (MOON_PHASE_SIZE/2)
 
-//#define	USE_TRANSPARENT_MOON
+//#define USE_TRANSPARENT_MOON
 
 typedef struct TimeOfDayStruct
 {
@@ -43,7 +43,7 @@ typedef struct TimeOfDayStruct
     float Diffuse;
     float Specular;
 
-    int	Flag;
+    int Flag;
     float SunPitch;
     float MoonPitch;
     float StarIntensity;
@@ -65,7 +65,7 @@ public:
     };
     ~CTimeOfDay()
     {
-        if (IsReady())	Cleanup();
+        if (IsReady()) Cleanup();
     };
 
     void Setup(char *dataPath);
@@ -76,15 +76,15 @@ public:
     {
         return NVGmode;
     };
-    void	SetScaleFactor(float factor)
+    void SetScaleFactor(float factor)
     {
         scaleFactor = factor;
     };
-    float	GetScaleFactor(void)
+    float GetScaleFactor(void)
     {
         return scaleFactor;
     };
-    BOOL	IsReady()
+    BOOL IsReady()
     {
         return (TimeOfDay != NULL);
     };
@@ -226,7 +226,7 @@ public:
         return yaw & 0x3fff;
     };
 
-    int	CalculateMoonPercent();
+    int CalculateMoonPercent();
     float CalculateMoonBlend(float glare);
     void CreateMoonPhase(unsigned char *src, unsigned char *dest);
 
@@ -259,41 +259,41 @@ public:
 protected:
     Tpoint SunCoord;
     Tpoint MoonCoord;
-    int	MoonPhase;
+    int MoonPhase;
     unsigned lastMoonTime;
     StarData *TheStarData;
     TimeOfDayStruct *TimeOfDay;
-    int	TotalTimeOfDay;
+    int TotalTimeOfDay;
 
     //***************************************************
     // RED - The LOCAL MEMBER VALUES
-    Tcolor	m_SkyColor;
-    Tcolor	m_HazeSkyColor;
-    Tcolor	m_GroundColor;
-    Tcolor	m_HazeGroundColor;
-    Tcolor	m_TextureLighting;
-    Tcolor	m_BadWeatherLighting;
-    float	m_Ambient;
-    float	m_Diffuse;
-    float	m_Specular;
-    Tcolor	m_VisColor;
-    float	m_MinVis;
-    float	m_StarIntensity;
+    Tcolor m_SkyColor;
+    Tcolor m_HazeSkyColor;
+    Tcolor m_GroundColor;
+    Tcolor m_HazeGroundColor;
+    Tcolor m_TextureLighting;
+    Tcolor m_BadWeatherLighting;
+    float m_Ambient;
+    float m_Diffuse;
+    float m_Specular;
+    Tcolor m_VisColor;
+    float m_MinVis;
+    float m_StarIntensity;
 
     // RED - The corresponding updated values for public access
     // by functions
-    Tcolor	SkyColor;
-    Tcolor	HazeSkyColor;
-    Tcolor	GroundColor;
-    Tcolor	HazeGroundColor;
-    Tcolor	TextureLighting;
-    Tcolor	BadWeatherLighting;
-    float	Ambient;
-    float	Diffuse;
-    float	Specular;
-    Tcolor	VisColor;
-    float	MinVis;
-    float	StarIntensity;
+    Tcolor SkyColor;
+    Tcolor HazeSkyColor;
+    Tcolor GroundColor;
+    Tcolor HazeGroundColor;
+    Tcolor TextureLighting;
+    Tcolor BadWeatherLighting;
+    float Ambient;
+    float Diffuse;
+    float Specular;
+    Tcolor VisColor;
+    float MinVis;
+    float StarIntensity;
 
     Tcolor CurrentSkyColor;
     Tcolor HazeSunriseColor;
@@ -303,18 +303,18 @@ protected:
     DWORD RainColor;
     DWORD SnowColor;
     int Flag;
-    int	ISunYaw;
+    int ISunYaw;
     int IMoonYaw;
-    int	ISunTilt;
+    int ISunTilt;
     int IMoonTilt;
-    int	ISunPitch;
+    int ISunPitch;
     int IMoonPitch;
     float scaleFactor;
     float SunGlareCosine;
     float SunGlareFactor;
     BOOL NVGmode;
 
-    static BYTE	MoonPhaseMask[8 * 64];
+    static BYTE MoonPhaseMask[8 * 64];
     static BYTE CurrentMoonPhaseMask[8 * 64];
 
 protected:

@@ -13,12 +13,12 @@ struct F4CSECTIONHANDLE;
 // Vu Class heirarchy defines
 // ==============================
 
-#define	VU_DOMAIN		0
-#define	VU_CLASS		1
-#define	VU_TYPE			2
-#define	VU_STYPE		3
-#define	VU_SPTYPE		4
-#define	VU_OWNER		5
+#define VU_DOMAIN 0
+#define VU_CLASS 1
+#define VU_TYPE 2
+#define VU_STYPE 3
+#define VU_SPTYPE 4
+#define VU_OWNER 5
 
 // ========================
 // These never change
@@ -38,26 +38,26 @@ struct F4CSECTIONHANDLE;
 // Vis type defines
 // ========================
 
-#define VIS_NORMAL		0
-#define VIS_REPAIRED	1
-#define VIS_DAMAGED		2
-#define VIS_DESTROYED	3
-#define VIS_LEFT_DEST	4
-#define VIS_RIGHT_DEST	5
-#define VIS_BOTH_DEST	6
+#define VIS_NORMAL 0
+#define VIS_REPAIRED 1
+#define VIS_DAMAGED 2
+#define VIS_DESTROYED 3
+#define VIS_LEFT_DEST 4
+#define VIS_RIGHT_DEST 5
+#define VIS_BOTH_DEST 6
 
 // ========================
 // Filter Defines
 // ========================
 
-#define VU_FILTERANY	255
-#define VU_FILTERSTOP	0
+#define VU_FILTERANY 255
+#define VU_FILTERSTOP 0
 
 // ========================
 // Default values
 // ========================
 
-#define F4_EVENT_QUEUE_SIZE				2000		// How many events we can have on the queue at one time
+#define F4_EVENT_QUEUE_SIZE 2000 // How many events we can have on the queue at one time
 
 // ====================
 // extern global defs
@@ -74,16 +74,16 @@ extern F4CSECTIONHANDLE* vuCritical;
 
 struct vector
 {
-    float		x;
-    float		y;
-    float		z;
+    float x;
+    float y;
+    float z;
 };
 
 struct euler
 {
-    float		yaw;
-    float		pitch;
-    float		roll;
+    float yaw;
+    float pitch;
+    float roll;
 };
 
 // =========================

@@ -3,7 +3,7 @@
     Scott Randolph
     October 2, 1995
 
-	Hold information on all the terrain texture tiles.
+ Hold information on all the terrain texture tiles.
 \***************************************************************************/
 #ifndef _TERRTEX_H_
 #define _TERRTEX_H_
@@ -16,22 +16,22 @@
 typedef DWORD TextureID;
 
 // Terrain and feature types defined in the the visual basic tile tool
-const int COVERAGE_NODATA		= 0;
-const int COVERAGE_WATER		= 1;
-const int COVERAGE_RIVER		= 2;
-const int COVERAGE_SWAMP		= 3;
-const int COVERAGE_PLAINS		= 4;
-const int COVERAGE_BRUSH		= 5;
-const int COVERAGE_THINFOREST	= 6;
-const int COVERAGE_THICKFOREST	= 7;
-const int COVERAGE_ROCKY		= 8;
-const int COVERAGE_URBAN		= 9;
-const int COVERAGE_ROAD			= 10;
-const int COVERAGE_RAIL			= 11;
-const int COVERAGE_BRIDGE		= 12;
-const int COVERAGE_RUNWAY		= 13;
-const int COVERAGE_STATION		= 14;
-const int COVERAGE_OBJECT		= 15; // JB carrier
+const int COVERAGE_NODATA = 0;
+const int COVERAGE_WATER = 1;
+const int COVERAGE_RIVER = 2;
+const int COVERAGE_SWAMP = 3;
+const int COVERAGE_PLAINS = 4;
+const int COVERAGE_BRUSH = 5;
+const int COVERAGE_THINFOREST = 6;
+const int COVERAGE_THICKFOREST = 7;
+const int COVERAGE_ROCKY = 8;
+const int COVERAGE_URBAN = 9;
+const int COVERAGE_ROAD = 10;
+const int COVERAGE_RAIL = 11;
+const int COVERAGE_BRIDGE = 12;
+const int COVERAGE_RUNWAY = 13;
+const int COVERAGE_STATION = 14;
+const int COVERAGE_OBJECT = 15; // JB carrier
 
 extern class TextureDB TheTerrTextures;
 
@@ -39,50 +39,50 @@ enum { H = 0, M, L, TEX_LEVELS };
 
 typedef struct TexArea
 {
-    int			type;
-    float		radius;
-    float		x;
-    float		y;
+    int type;
+    float radius;
+    float x;
+    float y;
 } TexArea;
 
 typedef struct TexPath
 {
-    int			type;
-    float		width;
-    float		x1, y1;
-    float		x2, y2;
+    int type;
+    float width;
+    float x1, y1;
+    float x2, y2;
 } TexPath;
 
 typedef struct TileEntry
 {
-    char 		filename[20];			// Source filename of the bitmap (extension, but no path)
+    char  filename[20]; // Source filename of the bitmap (extension, but no path)
 
-    int			nAreas;
-    TexArea		*Areas;					// List of special areas (NULL if none)
-    int			nPaths;
-    TexPath		*Paths;					// List of paths (NULL if none)
+    int nAreas;
+    TexArea *Areas; // List of special areas (NULL if none)
+    int nPaths;
+    TexPath *Paths; // List of paths (NULL if none)
 
-    int			width[TEX_LEVELS];		// texture width in pixels
-    int			height[TEX_LEVELS];		// texture height in pixels
-    BYTE		*bits[TEX_LEVELS];		// Pixel data (NULL if not loaded)
-    UInt		handle[TEX_LEVELS];		// Texture handle (NULL if not available)
-    int			widthN[TEX_LEVELS];     // sfr: night texture width in pixels
-    int			heightN[TEX_LEVELS];    // sfr: night texture height in pixels
-    BYTE		*bitsN[TEX_LEVELS];		// Pixel data for Night tiles (NULL if not loaded)
-    UInt		handleN[TEX_LEVELS];	// Texture handle for Night tiles (NULL if not available)
-    int			refCount[TEX_LEVELS];	// Reference count
+    int width[TEX_LEVELS]; // texture width in pixels
+    int height[TEX_LEVELS]; // texture height in pixels
+    BYTE *bits[TEX_LEVELS]; // Pixel data (NULL if not loaded)
+    UInt handle[TEX_LEVELS]; // Texture handle (NULL if not available)
+    int widthN[TEX_LEVELS];     // sfr: night texture width in pixels
+    int heightN[TEX_LEVELS];    // sfr: night texture height in pixels
+    BYTE *bitsN[TEX_LEVELS]; // Pixel data for Night tiles (NULL if not loaded)
+    UInt handleN[TEX_LEVELS]; // Texture handle for Night tiles (NULL if not available)
+    int refCount[TEX_LEVELS]; // Reference count
 } TileEntry;
 
 typedef struct SetEntry
 {
-    int			refCount;				// Reference count
+    int refCount; // Reference count
 
-    DWORD		*palette;				// 32 bit palette entries (NULL if not loaded)
-    UInt		palHandle;				// Rasterization engine palette handle (NULL if not available)
+    DWORD *palette; // 32 bit palette entries (NULL if not loaded)
+    UInt palHandle; // Rasterization engine palette handle (NULL if not available)
 
-    BYTE		terrainType;			// Terrain coverage type represented by this texture set
-    int			numTiles;				// How many tiles in this set?
-    TileEntry	*tiles;					// Array of tiles in this set
+    BYTE terrainType; // Terrain coverage type represented by this texture set
+    int numTiles; // How many tiles in this set?
+    TileEntry *tiles; // Array of tiles in this set
 } SetEntry;
 
 // fwd declaration of csection pointer
@@ -130,13 +130,13 @@ protected:
     char texturePath[MAX_PATH];
     char texturePathD[MAX_PATH];
 
-    int	totalTiles;
-    int	numSets;
-    SetEntry *TextureSets;	// Array of texture set records
+    int totalTiles;
+    int numSets;
+    SetEntry *TextureSets; // Array of texture set records
 
-    UInt overrideHandle;	// If nonNull, use this handle for ALL texture selects
+    UInt overrideHandle; // If nonNull, use this handle for ALL texture selects
 
-    Tcolor lightColor;		// Current light color
+    Tcolor lightColor; // Current light color
 
     DXContext *private_rc;
 
@@ -151,15 +151,15 @@ protected:
     void Free(SetEntry* pSet, TileEntry* pTile, int res);
 
     // Extract set, tile, and resolution from a texID
-    int	ExtractSet(TextureID texID)
+    int ExtractSet(TextureID texID)
     {
         return (texID >> 4) & 0xFF;
     };
-    int	ExtractTile(TextureID texID)
+    int ExtractTile(TextureID texID)
     {
         return texID & 0xF;
     };
-    int	ExtractRes(TextureID texID)
+    int ExtractRes(TextureID texID)
     {
         return (texID >> 12) & 0xF;
     };
@@ -185,9 +185,9 @@ public:
 
 #ifdef _DEBUG
 public:
-    int	LoadedSetCount;
-    int	LoadedTextureCount;
-    int	ActiveTextureCount;
+    int LoadedSetCount;
+    int LoadedTextureCount;
+    int ActiveTextureCount;
 #endif
 };
 

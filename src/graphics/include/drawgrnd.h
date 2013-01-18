@@ -3,9 +3,9 @@
     July 10, 1996
 
     Derived class to do special position processing for vehicals on the
-	ground.  (More precisly, any object which is to be placed on the
-	ground and reoriented so that it's "up" vector is aligned with the
-	terrain normal.)
+ ground.  (More precisly, any object which is to be placed on the
+ ground and reoriented so that it's "up" vector is aligned with the
+ terrain normal.)
 \***************************************************************************/
 #ifndef _DRAWGRND_H_
 #define _DRAWGRND_H_
@@ -36,16 +36,16 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
     DrawableGroundVehicle(int type, Tpoint *pos, float heading, float scale = 1.0f);
-    virtual ~DrawableGroundVehicle()	{};
+    virtual ~DrawableGroundVehicle() {};
 
-    virtual	void	SetParentList(ObjectDisplayList *list);
-    void			Update(Tpoint *pos, float heading);
-    void			SetUpon(DrawableBridge *bridge)
+    virtual void SetParentList(ObjectDisplayList *list);
+    void Update(Tpoint *pos, float heading);
+    void SetUpon(DrawableBridge *bridge)
     {
         drivingOn = bridge;
         previousLOD = -1;
@@ -53,17 +53,17 @@ public:
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
-    float	GetHeading(void)
+    float GetHeading(void)
     {
         return yaw;
     };
 
 protected:
-    int				previousLOD;
-    float			yaw;
-    float			cosYaw;
-    float			sinYaw;
-    DrawableBridge	*drivingOn;
+    int previousLOD;
+    float yaw;
+    float cosYaw;
+    float sinYaw;
+    DrawableBridge *drivingOn;
 };
 
 #endif // _DRAWGRND_H_

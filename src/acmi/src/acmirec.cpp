@@ -1,10 +1,10 @@
 /*
 ** Name: ACMIREC.CPP
 ** Description:
-**		Member functions and globals for the ACMIRecorder Class
+** Member functions and globals for the ACMIRecorder Class
 ** History:
-**		13-oct-97 (edg)
-**			We go dancing in.....
+** 13-oct-97 (edg)
+** We go dancing in.....
 */
 #pragma optimize( "", off )
 #include <windows.h>
@@ -25,7 +25,7 @@
 
 
 // the global recorder
-ACMIRecorder		gACMIRec;
+ACMIRecorder gACMIRec;
 
 // no more recording once an error is hit
 BOOL gACMIRecError = FALSE;
@@ -54,7 +54,7 @@ ACMIRecorder::ACMIRecorder(void)
 #if 1
     HANDLE handle = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATA FindFileData;
-    char	path[MAX_PATH] = "";
+    char path[MAX_PATH] = "";
 
     handle = FindFirstFile("acmibin\\*.flt", &FindFileData);
 
@@ -77,7 +77,7 @@ ACMIRecorder::ACMIRecorder(void)
 #else
     HANDLE handle = INVALID_HANDLE_VALUE;
     LPWIN32_FIND_DATA lpFindFileData = NULL;
-    char	path[MAX_PATH] = "";
+    char path[MAX_PATH] = "";
 
     handle = FindFirstFile("acmibin\\*.flt", lpFindFileData);
 
@@ -285,7 +285,7 @@ ACMIRecorder::GenPositionRecord(ACMIGenPositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecGenPosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    // FIX	*(recp->data.label) = NULL;
+    // FIX *(recp->data.label) = NULL;
 
     if (!fwrite(recp, sizeof(ACMIGenPositionRecord), 1, _fd))
     {
@@ -399,7 +399,7 @@ ACMIRecorder::MissilePositionRecord(ACMIMissilePositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecMissilePosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    // FIX	*(recp->data.label) = NULL;
+    // FIX *(recp->data.label) = NULL;
 
     if (!fwrite(recp, sizeof(ACMIMissilePositionRecord), 1, _fd))
     {
@@ -626,7 +626,7 @@ ACMIRecorder::ToggleRecording(void)
 
 /*
 ** PercentTapeFull
-**		Returns a number in the 0 - 10 range
+** Returns a number in the 0 - 10 range
 */
 int
 ACMIRecorder::PercentTapeFull(void)
@@ -651,8 +651,8 @@ ACMIRecorder::ChaffPositionRecord(ACMIChaffPositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecChaffPosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    // FIX	*(recp->data.label) = NULL;
-    // FIX	recp->data.teamColor = 0x0;
+    // FIX *(recp->data.label) = NULL;
+    // FIX recp->data.teamColor = 0x0;
 
     if (!fwrite(recp, sizeof(ACMIChaffPositionRecord), 1, _fd))
     {
@@ -691,8 +691,8 @@ ACMIRecorder::FlarePositionRecord(ACMIFlarePositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecFlarePosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    // FIX	*(recp->data.label) = NULL;
-    // FIX	recp->data.teamColor = 0x0;
+    // FIX *(recp->data.label) = NULL;
+    // FIX recp->data.teamColor = 0x0;
 
     if (!fwrite(recp, sizeof(ACMIFlarePositionRecord), 1, _fd))
     {

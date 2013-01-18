@@ -97,7 +97,7 @@ int FalconSimCampMessage::Process(uchar autodisp)
     VuBin<VuEntity> esafe(vuDatabase->Find(EntityId()));
     VuBin<VuEntity> ssafe(vuDatabase->Find(dataBlock.from));
     CampBaseClass *ent = static_cast<CampBaseClass*>(esafe.get());
-    FalconSessionEntity	*session = static_cast<FalconSessionEntity*>(ssafe.get());
+    FalconSessionEntity *session = static_cast<FalconSessionEntity*>(ssafe.get());
 
     if (autodisp || !ent || !session || !FalconLocalGame)
     {

@@ -9,9 +9,9 @@
 #define _DISPLAY_H_
 
 #include "Ttypes.h"
-#include "ImageBuf.h"	// ASSO:
-#include "Context.h"	// ASSO:
-#include "Tex.h"		// ASSO:
+#include "ImageBuf.h" // ASSO:
+#include "Context.h" // ASSO:
+#include "Tex.h" // ASSO:
 
 
 //#define USE_ORIGINAL_FONT
@@ -43,14 +43,14 @@ struct FontSet
     ~FontSet() {}
 
     int ReadFontMetrics(int indx, char* fileName);
-    Texture	fontTexture[NUM_FONT_RESOLUTIONS];
+    Texture fontTexture[NUM_FONT_RESOLUTIONS];
     FontDataType fontData[NUM_FONT_RESOLUTIONS][256];
     //int fontSpacing[NUM_FONT_RESOLUTIONS];
     int fontNum;
     int totalFont;
 };
 
-//int 	ReadFontMetrics(int indx, char*fileName);
+//int  ReadFontMetrics(int indx, char*fileName);
 //extern FontDataType pFontSet->fontData[NUM_FONT_RESOLUTIONS][256];
 //extern int fontSpacing[NUM_FONT_RESOLUTIONS];
 
@@ -61,29 +61,29 @@ struct FontSet
 
 
 // Clipping flags.  Some of these are only used in 3D clipping, but I want to keep them together.
-static const DWORD	ON_SCREEN			= 0x00;
-static const DWORD	CLIP_LEFT			= 0x01;
-static const DWORD	CLIP_RIGHT			= 0x02;
-static const DWORD	CLIP_TOP			= 0x04;
-static const DWORD	CLIP_BOTTOM			= 0x08;
-static const DWORD	CLIP_NEAR			= 0x10;
-static const DWORD	CLIP_FAR			= 0x20;
-static const DWORD	OFF_SCREEN			= 0xFF;
+static const DWORD ON_SCREEN = 0x00;
+static const DWORD CLIP_LEFT = 0x01;
+static const DWORD CLIP_RIGHT = 0x02;
+static const DWORD CLIP_TOP = 0x04;
+static const DWORD CLIP_BOTTOM = 0x08;
+static const DWORD CLIP_NEAR = 0x10;
+static const DWORD CLIP_FAR = 0x20;
+static const DWORD OFF_SCREEN = 0xFF;
 
-static const int	CircleStep = 4;							// In units of degrees
-static const int	CircleSegments = 360 / CircleStep + 1;	// How many segments (plus one)?
-extern float		CircleX[];
-extern float		CircleY[];
+static const int CircleStep = 4; // In units of degrees
+static const int CircleSegments = 360 / CircleStep + 1; // How many segments (plus one)?
+extern float CircleX[];
+extern float CircleY[];
 
 struct DisplayMatrix   // JPO - how a display is oriented
 {
-    float	translationX, translationY;
-    float	rotation00,	rotation01;
-    float	rotation10,	rotation11;
+    float translationX, translationY;
+    float rotation00, rotation01;
+    float rotation10, rotation11;
 };
 
 
-class Render3D;		// ASSO:
+class Render3D; // ASSO:
 
 
 class VirtualDisplay
@@ -105,7 +105,7 @@ public:
     // Parents Setup() must set xRes and yRes before call this...
     virtual void Setup(void);
     virtual void Cleanup(void);
-    BOOL	IsReady(void)
+    BOOL IsReady(void)
     {
         return ready;
     };
@@ -141,11 +141,11 @@ public:
     virtual float TextWidth(char *string)
     {
         return ScreenTextWidth(string) / scaleX;
-    };	// normalized screen space
+    }; // normalized screen space
     virtual float TextHeight(void)
     {
         return ScreenTextHeight() / scaleY;
-    };		// normalized screen space
+    }; // normalized screen space
 
     //JAM 22Dec03
     virtual void SetColor(DWORD) = 0;
@@ -249,46 +249,46 @@ protected:
 
 protected:
     // Store the currently selected resolution
-    int		xRes;
-    int		yRes;
+    int xRes;
+    int yRes;
 
     // The viewport properties in normalized screen space (-1 to 1)
-    float	left, right;
-    float	top, bottom;
+    float left, right;
+    float top, bottom;
 
     // The parameters required to get from normalized screen space to pixel space
     // TEMPORARILY PUBLIC TO GET THINGS GOING...
 public:
-    float	scaleX;
-    float	scaleY;
-    float	shiftX;
-    float	shiftY;
+    float scaleX;
+    float scaleY;
+    float shiftX;
+    float shiftY;
 
 protected:
     ImageBuffer* image;
 
     // Store the pixel space boundries of the current viewport
     // (top/right inclusive, bottom/left exclusive)
-    float	topPixel;
-    float	bottomPixel;
-    float	leftPixel;
-    float	rightPixel;
+    float topPixel;
+    float bottomPixel;
+    float leftPixel;
+    float rightPixel;
 
     // The 2D rotation/translation settings
     DisplayMatrix dmatrix; // JPO - now in a sub structure so you can save/restore
-    //float	translationX, translationY;
-    //float	rotation00,	rotation01;
-    //float	rotation10,	rotation11;
+    //float translationX, translationY;
+    //float rotation00, rotation01;
+    //float rotation10, rotation11;
 
     // The font information for drawing text
     static const unsigned char FontLUT[256];
     static const unsigned char *Font[];
     static const unsigned int  FontLength;
     static unsigned char       InvFont[][8];
-    BOOL	ready;
+    BOOL ready;
 
 public:
-    bool	ForceAlpha;							// COBRA - RED - To force translucent displays
+    bool ForceAlpha; // COBRA - RED - To force translucent displays
     // ASSO: BEGIN
     // Window and rendering context handles
     ContextMPR context;

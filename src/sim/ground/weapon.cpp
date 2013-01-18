@@ -40,13 +40,13 @@ extern bool g_bFireOntheMove; // FRB - Test
 
 void GroundClass::WeaponKeepAlive(void)
 {
-    static const int	numToFly = 3;
-    Tpoint				pos, vec;
-    int					i;
-    int					fire;
-    int					whatWasHit;
-    GunClass			*Gun;
-    BOOL				keepAliveCheck = FALSE;
+    static const int numToFly = 3;
+    Tpoint pos, vec;
+    int i;
+    int fire;
+    int whatWasHit;
+    GunClass *Gun;
+    BOOL keepAliveCheck = FALSE;
 
     // Rewritten by Kevin on 6/22
     // loop thru all weapons looking for guns
@@ -67,7 +67,7 @@ void GroundClass::WeaponKeepAlive(void)
                 // downward or level, allow only 1 shot to fly.  This will prevent
                 // shots that go into the ground causing continual fire
                 // if ( gunDmx[0][2] >= 0.0f )
-                // 	numToFly = 1;
+                //  numToFly = 1;
 
                 // edg NOTE: I think it will work out better to keep tracer fire going
                 // once they've started firing until the next process cycle.  This logic
@@ -102,13 +102,13 @@ void GroundClass::WeaponKeepAlive(void)
                         // to more appropriate GUNSMOKE effect
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass ( SFX_GUNSMOKE,		// type
-                        	SFX_MOVES,
-                        	&pos,					// world pos
-                        	&vec,					// vel vector
-                        	2.3F,					// time to live
-                        	2.0f ) );				// scale
-                        	*/
+                         new SfxClass ( SFX_GUNSMOKE, // type
+                         SFX_MOVES,
+                         &pos, // world pos
+                         &vec, // vel vector
+                         2.3F, // time to live
+                         2.0f ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_GUNSMOKE + 1),
                                                               &pos,
                                                               &vec);
@@ -217,13 +217,13 @@ BOOL GroundClass::DoWeapons(void)
                 // 2000-10-27 ADDED BY S.G.
                 // SO GUNS CAN HAVE DIFFERENT FIRE RATE... BUT NOT IN RP4 SO REMOVED FROM HERE AS WELL
                 //if (Gun->wcPtr->Flags & 0x80)
-                return TRUE + 1;			// Slow fire rate gun
+                return TRUE + 1; // Slow fire rate gun
                 //else
-                //	return TRUE + 2;			// Fast fire rate gun
+                // return TRUE + 2; // Fast fire rate gun
                 // END OF MODIFIED SECTION
             }
 
-            return TRUE;	// We took a shot
+            return TRUE; // We took a shot
         }
         else
         {
@@ -343,12 +343,12 @@ BOOL GroundClass::DoWeapons(void)
             // Add a glow arround the launcher
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass ( SFX_GROUND_FLASH,	// type
-            	&pos,								// world pos
-            	1.0f,								// time to live
-            	201.5f ) );							// scale
-            	*/
-            DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_FLASH + 1),	&pos, &PSvec);
+             new SfxClass ( SFX_GROUND_FLASH, // type
+             &pos, // world pos
+             1.0f, // time to live
+             201.5f ) ); // scale
+             */
+            DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_FLASH + 1), &pos, &PSvec);
 
             // RV - Biker - Add some smoke to the launcher
             Tpoint vec;
@@ -357,19 +357,19 @@ BOOL GroundClass::DoWeapons(void)
             vec.z = 0.0f;
             /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_SAM_LAUNCH,
-            					SFX_MOVES | SFX_NO_GROUND_CHECK,
-            					&pos,
-            					&vec,
-            					2.0f,
-            					1.0f ) );
-            					*/
+             SFX_MOVES | SFX_NO_GROUND_CHECK,
+             &pos,
+             &vec,
+             2.0f,
+             1.0f ) );
+             */
             DrawableParticleSys::PS_AddParticleEx((SFX_SAM_LAUNCH + 1), &pos, &vec);
 
-            return TRUE;	// We took a shot
+            return TRUE; // We took a shot
         }
     }
 
-    return FALSE;	// We didn't take a shot
+    return FALSE; // We didn't take a shot
 }
 
 void GroundClass::RotateTurret(void)
@@ -442,7 +442,7 @@ void GroundClass::RotateTurret(void)
 
         // RV - Biker - Don't do this
         //else
-        //	SetDOF(AIRDEF_AZIMUTH, newAz);
+        // SetDOF(AIRDEF_AZIMUTH, newAz);
     }
 
 }
@@ -451,12 +451,12 @@ int GroundClass::GunTrack(void)
 {
     float xft, yft, zft;
     float az, el, tof;
-    FalconEntity	*target;
+    FalconEntity *target;
     int fire = FALSE;
     float realRange, delta;
     Tpoint pos, vec;
     mlTrig trigtha, trigpsi;
-    SimWeaponClass	*theWeapon;
+    SimWeaponClass *theWeapon;
     WeaponClassDataType *wc;
 
     //RV - I-Hawk - Added a 0 vector for RV new PS calls
@@ -473,7 +473,7 @@ int GroundClass::GunTrack(void)
 
 
     // point to Gun Class
-    GunClass	*Gun = (GunClass*)theWeapon;
+    GunClass *Gun = (GunClass*)theWeapon;
 
     wc = &WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId];
 
@@ -484,7 +484,7 @@ int GroundClass::GunTrack(void)
 
     // make guns less accurate by randomizing target position when in air, unless its AAA
     // 2000-10-19 MODIFIED BY S.G. NEW TEST FOR AAA AND REGULAR GUNS. IF FIRST BIT OF NEW FIELD IS A 1, IT'S AN AAA GUN.
-    //	if (!target->OnGround() && !isAirDefense)
+    // if (!target->OnGround() && !isAirDefense)
     float tracerError; // JB 010106
 
     if ((((unsigned char *)Gun->wcPtr)[31] & 1) == (g_bToggleAAAGunFlag & 1) && !target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
@@ -492,8 +492,8 @@ int GroundClass::GunTrack(void)
         //float tracerError; // JB 010106
         tracerError = PRANDFloatPos() / (float)(gai->skillLevel + 1);
         // 2000-10-19 MODIFIED BY S.G. THE TRACE ERROR WILL BE BASED ON THE GUN'S PERFORMANCE WHICH IS STORED IN THE LAST BYTE OF THE NAME OF THE WEAPON IN VAL / 4 FORMAT
-        //		tracerError = (5.0f + tracerError) * 360.0f;
-        //		tracerError = (5.0f + tracerError) * (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2);
+        // tracerError = (5.0f + tracerError) * 360.0f;
+        // tracerError = (5.0f + tracerError) * (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2);
         // 2002-03-12 MODIFIED BY S.G. Looking at the assembly of RP5, this was coded wrong here :-(
         tracerError = 5.0f + (tracerError * (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2));
 
@@ -505,8 +505,8 @@ int GroundClass::GunTrack(void)
     else
     {
         // 2000-10-12 MODIFIED BY S.G. isAirDefense VEHICLE NEEDS TO VARIATE A BIT AS WELL
-        //		xft = target->XPos();
-        //		yft = target->YPos();
+        // xft = target->XPos();
+        // yft = target->YPos();
         // 2000-10-19 MODIFIED BY S.G. THE TRACE ERROR WILL BE BASED ON THE GUN'S PERFORMANCE WHICH IS STORED IN THE LAST BYTE OF THE NAME OF THE WEAPON IN VAL / 4 FORMAT
         tracerError = (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2); // JB 010106
 
@@ -531,8 +531,8 @@ int GroundClass::GunTrack(void)
 
     // Correct for gravity
     // 2000-10-24 I'LL CALCULATE THE GRAVITY THE 'RIGHT' WAY (NOT IN RP4 SO REMOVED - IN FACT, zft IS NOT ADJUSTED IN RP4)
-    //	zft += 0.5F * GRAVITY * tof * tof;
-    //	zft -= (tof * tof + tof) / 2 * GRAVITY;
+    // zft += 0.5F * GRAVITY * tof * tof;
+    // zft -= (tof * tof + tof) / 2 * GRAVITY;
 
     // KCK : Copy these values into our targetPtr.
     // Note: This factors our induced error and target's vector into the Rel Geometry data,
@@ -601,18 +601,18 @@ int GroundClass::GunTrack(void)
         {
             needKeepAlive = TRUE;
             SoundPos.Sfx(SFX_MCGUN, 0, 1.0, 0);
-            //			MonoPrint( "Ground Unit Firing tracers at %s, flying = %d, rounds = %d, unlim = %d\n",
-            //					   target->OnGround() ? "Ground Unit" : "Air Unit",
-            //					   Gun->numFlying,
-            //					   Gun->numRoundsRemaining,
-            //					   Gun->unlimitedAmmo );
+            // MonoPrint( "Ground Unit Firing tracers at %s, flying = %d, rounds = %d, unlim = %d\n",
+            //    target->OnGround() ? "Ground Unit" : "Air Unit",
+            //    Gun->numFlying,
+            //    Gun->numRoundsRemaining,
+            //    Gun->unlimitedAmmo );
         }
         else
         {
-            //			MonoPrint( "Ground Unit unable to fire tracer flying = %d, rounds = %d, unlim = %d\n",
-            //					   Gun->numFlying,
-            //					   Gun->numRoundsRemaining,
-            //					   Gun->unlimitedAmmo );
+            // MonoPrint( "Ground Unit unable to fire tracer flying = %d, rounds = %d, unlim = %d\n",
+            //    Gun->numFlying,
+            //    Gun->numRoundsRemaining,
+            //    Gun->unlimitedAmmo );
         }
     }
     // RV - Biker check max firing height for AAA (flak)
@@ -646,8 +646,8 @@ int GroundClass::GunTrack(void)
         needKeepAlive = TRUE;
         Gun->FireShell(targetPtr);
 
-        //		MonoPrint( "Ground Unit Firing shell at %s\n",
-        //				   target->OnGround() ? "Ground Unit" : "Air Unit" );
+        // MonoPrint( "Ground Unit Firing shell at %s\n",
+        //    target->OnGround() ? "Ground Unit" : "Air Unit" );
 
         // sound effect
         if (rand() & 1)
@@ -665,64 +665,64 @@ int GroundClass::GunTrack(void)
         //Cobra TJL Change this to SFX_GUN_SMOKE
         /*
         OTWDriver.AddSfxRequest(
-        	new SfxClass ( SFX_GUN_SMOKE,		// type
-        	SFX_MOVES,
-        	&pos,					// world pos
-        	&vec,					// world pos
-        	1.3f,					// time to live
-        	7.0f ) );				// scale
-        	*/
+         new SfxClass ( SFX_GUN_SMOKE, // type
+         SFX_MOVES,
+         &pos, // world pos
+         &vec, // world pos
+         1.3f, // time to live
+         7.0f ) ); // scale
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_GUN_SMOKE + 1),
                                               &pos,
                                               &vec);
         /*
-        		pos.x = XPos() + gunDmx[0][0] * 8.0f;
-        		pos.y = YPos() + gunDmx[0][1] * 8.0f;
-        		pos.z = ZPos() - 5.0f + gunDmx[0][2] * 8.0f;
+         pos.x = XPos() + gunDmx[0][0] * 8.0f;
+         pos.y = YPos() + gunDmx[0][1] * 8.0f;
+         pos.z = ZPos() - 5.0f + gunDmx[0][2] * 8.0f;
 
-        		vec.z = -10.0f;*/
+         vec.z = -10.0f;*/
         /* Cobra TJL 11/06/04 Removed per Steve for new PS file.
-        		OTWDriver.AddSfxRequest(
-        			new SfxClass ( SFX_LIGHT_CLOUD,		// type
-        			SFX_MOVES,
-        			&pos,					// world pos
-        			&vec,					// vel vector
-        			4.3f,					// time to live
-        			0.5f ) );				// scale
+         OTWDriver.AddSfxRequest(
+         new SfxClass ( SFX_LIGHT_CLOUD, // type
+         SFX_MOVES,
+         &pos, // world pos
+         &vec, // vel vector
+         4.3f, // time to live
+         0.5f ) ); // scale
 
-        		pos.x = XPos() + gunDmx[0][0] * 13.0f;
-        		pos.y = YPos() + gunDmx[0][1] * 13.0f;
-        		pos.z = ZPos() - 5.0f + gunDmx[0][2] * 13.0f;
+         pos.x = XPos() + gunDmx[0][0] * 13.0f;
+         pos.y = YPos() + gunDmx[0][1] * 13.0f;
+         pos.z = ZPos() - 5.0f + gunDmx[0][2] * 13.0f;
 
-        		OTWDriver.AddSfxRequest(
-        			new SfxClass ( SFX_LIGHT_CLOUD,		// type
-        			SFX_MOVES,
-        			&pos,					// world pos
-        			&vec,					// vel vector
-        			4.3f,					// time to live
-        			1.0f ) );				// scale
+         OTWDriver.AddSfxRequest(
+         new SfxClass ( SFX_LIGHT_CLOUD, // type
+         SFX_MOVES,
+         &pos, // world pos
+         &vec, // vel vector
+         4.3f, // time to live
+         1.0f ) ); // scale
 
-        		pos.x = XPos() + gunDmx[0][0] * 20.0f;
-        		pos.y = YPos() + gunDmx[0][1] * 20.0f;
-        		pos.z = ZPos() - 5.0f + gunDmx[0][2] * 20.0f;
+         pos.x = XPos() + gunDmx[0][0] * 20.0f;
+         pos.y = YPos() + gunDmx[0][1] * 20.0f;
+         pos.z = ZPos() - 5.0f + gunDmx[0][2] * 20.0f;
 
-        		OTWDriver.AddSfxRequest(
-        			new SfxClass ( SFX_LIGHT_CLOUD,		// type
-        			SFX_MOVES,
-        			&pos,					// world pos
-        			&vec,					// vel vector
-        			4.3f,					// time to live
-        			1.5f ) );				// scale
+         OTWDriver.AddSfxRequest(
+         new SfxClass ( SFX_LIGHT_CLOUD, // type
+         SFX_MOVES,
+         &pos, // world pos
+         &vec, // vel vector
+         4.3f, // time to live
+         1.5f ) ); // scale
 
-        		pos.x = XPos();
-        		pos.y = YPos();
-        		pos.z = ZPos();
+         pos.x = XPos();
+         pos.y = YPos();
+         pos.z = ZPos();
 
-        		OTWDriver.AddSfxRequest(
-        			new SfxClass ( SFX_GROUND_FLASH,		// type
-        			&pos,					// world pos
-        			4.3f,					// time to live
-        			201.5f ) );				// scale */
+         OTWDriver.AddSfxRequest(
+         new SfxClass ( SFX_GROUND_FLASH, // type
+         &pos, // world pos
+         4.3f, // time to live
+         201.5f ) ); // scale */
     }
 
     return (fire);
@@ -730,12 +730,12 @@ int GroundClass::GunTrack(void)
 
 int GroundClass::MissileTrack(void)
 {
-    float				zft;
-    float				az, el;
-    FalconEntity		*target;
-    MissileClass		*theMissile;
-    WeaponClassDataType	*wc;
-    float				minAlt, maxAlt;
+    float zft;
+    float az, el;
+    FalconEntity *target;
+    MissileClass *theMissile;
+    WeaponClassDataType *wc;
+    float minAlt, maxAlt;
 
     theMissile = (MissileClass*)Sms->GetCurrentWeapon();
 
@@ -818,7 +818,7 @@ int GroundClass::MissileTrack(void)
         float xft, yft, zft, rx_t;
         float range;
         FalconEntity* theObject;
-        mlTrig	psi;
+        mlTrig psi;
 
         theObject = targetPtr->BaseData();
 
@@ -836,22 +836,22 @@ int GroundClass::MissileTrack(void)
 
         range = (float)(xft * xft + yft * yft + zft * zft);
 
-        targetPtr->localData->range	= (float)sqrt(range);
-        targetPtr->localData->ataFrom	= (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
-        targetPtr->localData->az		= (float)atan2(yft, xft);
-        targetPtr->localData->el		= (float)atan2(-zft, sqrt(range - zft * zft));
+        targetPtr->localData->range = (float)sqrt(range);
+        targetPtr->localData->ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
+        targetPtr->localData->az = (float)atan2(yft, xft);
+        targetPtr->localData->el = (float)atan2(-zft, sqrt(range - zft * zft));
     }
-    else 	// KCK: Do our ground version of CalcRelGeometry to get needed info
+    else  // KCK: Do our ground version of CalcRelGeometry to get needed info
         CalcRelAzElRangeAta(this, targetPtr);
 
     // edg: get real range.  Since we don't update targets every frame
     // anymore, we should get a current range for more accuracy
     // KCK: all but zft are calculated in the CalRelAzElRangeAta function, so this doesn't
     // need to be done anymore
-    //	xft = target->XPos() - XPos();
-    //	yft = target->YPos() - YPos();
+    // xft = target->XPos() - XPos();
+    // yft = target->YPos() - YPos();
     zft = target->ZPos() - ZPos();
-    //	realRange = sqrt( xft * xft + yft * yft + zft * zft );
+    // realRange = sqrt( xft * xft + yft * yft + zft * zft );
 
     wc = theMissile->GetWCD(); // MLR
     //wc = &WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId];
@@ -867,17 +867,17 @@ int GroundClass::MissileTrack(void)
 
     // edg: wc->maxAlt is a value in the range of 0 - 100
     // I'm going to assume:
-    //		1) 100 is equivalent to 100000 ft
-    //		2) 0 has no air capability
-    //		3) not 0 has no surf-surf capability
+    // 1) 100 is equivalent to 100000 ft
+    // 2) 0 has no air capability
+    // 3) not 0 has no surf-surf capability
     maxAlt = -1000.0f * wc->MaxAlt;
 
     // 2001-02-18 MODIFIED BY S.G. SO minAlt IS NO LONGER BASED ON maxAlt
     //  minAlt = max(-1500.0F, maxAlt * 0.1f);
-    //	minAlt = (float)(wc->Name[18]) * -32.0F;
+    // minAlt = (float)(wc->Name[18]) * -32.0F;
     // 2002-02-26 MN the radar data now decides on that
     // 2002-03-09 MN mea culpa - minAlt above put back in - this makes is weapon dependant !!
-    //	minAlt = (float)-(radarData->MinEngagementAlt);
+    // minAlt = (float)-(radarData->MinEngagementAlt);
     // 2002-03-09 MODIFIED BY S.G. Uses the new missile auxiliary data file instead of the radar file so it's more granular
     if (auxData)
         minAlt = (float) - auxData->MinEngagementAlt;
@@ -898,8 +898,8 @@ int GroundClass::MissileTrack(void)
         if (zft < maxAlt || zft > minAlt)
             return FALSE;
 
-        //		if (targetPtr->localData->range > wc->Range*KM_TO_FT /*|| targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
-        //			return FALSE;
+        // if (targetPtr->localData->range > wc->Range*KM_TO_FT /*|| targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
+        // return FALSE;
         if (targetPtr->localData->range > theMissile->GetRMax(-target->ZPos(), 0,
                 targetPtr->localData->az, targetPtr->BaseData()->GetVt(), targetPtr->localData->ataFrom))
             return FALSE;
@@ -912,11 +912,11 @@ int GroundClass::MissileTrack(void)
 
         // SCR 11/20/98  Lets let the seeker and kinematics deal with this...
         /*
-        		// Check for aspect (KCK WARNING: This assumes ataFrom is -PI to PI, not 0 to 2*PI
-        		if (wc->Flags & WEAP_FRONT_ASPECT && fabs(targetPtr->localData->ataFrom) > 90*DTR)
-        			return FALSE;
-        		if (wc->Flags & WEAP_REAR_ASPECT && fabs(targetPtr->localData->ataFrom) < 90*DTR)
-        			return FALSE;
+         // Check for aspect (KCK WARNING: This assumes ataFrom is -PI to PI, not 0 to 2*PI
+         if (wc->Flags & WEAP_FRONT_ASPECT && fabs(targetPtr->localData->ataFrom) > 90*DTR)
+         return FALSE;
+         if (wc->Flags & WEAP_REAR_ASPECT && fabs(targetPtr->localData->ataFrom) < 90*DTR)
+         return FALSE;
         */
     }
     // target on ground
@@ -929,20 +929,20 @@ int GroundClass::MissileTrack(void)
     el = targetPtr->localData->el - Pitch();
 
     // Bump up elevation to account for gravity, etc.
-    /*	static const float BUMP_AMOUNT = 30.0f*DTR;
-    	if (el < 45.0f*DTR - BUMP_AMOUNT) {
-    		el = 45.0f*DTR;
-    	}
-    	else if (el < 60.0f*DTR)
-    	{
-    		el += BUMP_AMOUNT;
-    	}*/
+    /* static const float BUMP_AMOUNT = 30.0f*DTR;
+     if (el < 45.0f*DTR - BUMP_AMOUNT) {
+     el = 45.0f*DTR;
+     }
+     else if (el < 60.0f*DTR)
+     {
+     el += BUMP_AMOUNT;
+     }*/
 
     //static const float BUMP_AMOUNT = 15.0f*DTR;
     //if (el < 45.0f*DTR) {
     float BUMP;
 
-    if (GetCampaignObject()		&&   // MLR 5/27/2004 - CTD ?
+    if (GetCampaignObject() &&   // MLR 5/27/2004 - CTD ?
         /*!((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
         !GetCampaignObject()->GetMissilesFlying())
@@ -993,15 +993,15 @@ int GroundClass::MissileTrack(void)
 /*
 ** Name: FindBattalionFireControl
 ** Description:
-**		Find vehicle in unit who can emit (preferentially ourselves), and
-**		set them as our fire controller
+** Find vehicle in unit who can emit (preferentially ourselves), and
+** set them as our fire controller
 */
 void
 GroundClass::FindBattalionFireControl(void)
 {
-    GroundClass		*firectl;
-    CampBaseClass	*batt;
-    int				battRadarType;
+    GroundClass *firectl;
+    CampBaseClass *batt;
+    int battRadarType;
 
     // do we already have one?
     if (battalionFireControl)
@@ -1029,8 +1029,8 @@ GroundClass::FindBattalionFireControl(void)
 
     // Get the type of radar the battalion thinks it has
     batt = GetCampaignObject();
-    ShiAssert(batt);					// We'de better belong to a battalion
-    ShiAssert(batt->GetComponents());	// If there aren't components, then WHAT ARE WE???
+    ShiAssert(batt); // We'de better belong to a battalion
+    ShiAssert(batt->GetComponents()); // If there aren't components, then WHAT ARE WE???
 
     if (!batt || batt->GetComponents() == NULL)  // Should never have been changed...
         return;
@@ -1040,13 +1040,13 @@ GroundClass::FindBattalionFireControl(void)
     // If the battalion is blind, so are we...
     if (!battRadarType)
     {
-        ShiAssert(battalionFireControl == NULL);	// Should never have been changed...
+        ShiAssert(battalionFireControl == NULL); // Should never have been changed...
         return;
     }
 
 
     // Get the list of sim entities in our battalion
-    VuListIterator	battalionIterator(batt->GetComponents());
+    VuListIterator battalionIterator(batt->GetComponents());
     firectl = (GroundClass*) battalionIterator.GetFirst();
 
     // Search the list for a battalion radar vehicle

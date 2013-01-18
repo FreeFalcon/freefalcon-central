@@ -511,18 +511,18 @@ static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID, BSPLIST 
             /*case SUB_CAT_AIRCRAFT_FIGHTERS: // Fighters
             case SUB_CAT_AIRCRAFT_ATTACK: // Attack
             case SUB_CAT_AIRCRAFT_HELICOPTERS: // Helicopters
-            	if(ModelID == MapVisId(VIS_AC130))
-            		TACREF_Object.Distance=350.0f;
-            	else
-            		TACREF_Object.Distance=150.0f;
-            	break;
+             if(ModelID == MapVisId(VIS_AC130))
+             TACREF_Object.Distance=350.0f;
+             else
+             TACREF_Object.Distance=150.0f;
+             break;
             case SUB_CAT_AIRCRAFT_BOMBERS: // Bombers
-            	TACREF_Object.Distance=440.0f;
-            	break;
+             TACREF_Object.Distance=440.0f;
+             break;
             case SUB_CAT_AIRCRAFT_EW: // EW
             case SUB_CAT_AIRCRAFT_SUPPORT: // Support
-            	TACREF_Object.Distance=350.0f;
-            	break;*/ //Cobra test
+             TACREF_Object.Distance=350.0f;
+             break;*/ //Cobra test
             //default:
             //TACREF_Object.Distance=((DrawableBSP*)Vehicle->object)->Radius()*4;
             //break;
@@ -563,15 +563,15 @@ static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID, BSPLIST 
                 default:
                     switch (ModelID)
                     {
-                        case VIS_SA2R:	// Fan Song
-                        case VIS_SA3R:	// Low Blow
+                        case VIS_SA2R: // Fan Song
+                        case VIS_SA3R: // Low Blow
                             TACREF_Object.Distance = 130.0f;
                             TACREF_Object.MinDistance = max(90.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
                             TACREF_Object.PosZ = 14;
                             break;
 
-                        case VIS_SA5R:	// Barlock
-                        case VIS_SA4R:	// Long Track
+                        case VIS_SA5R: // Barlock
+                        case VIS_SA4R: // Long Track
                             TACREF_Object.Distance = 110.0f;
                             TACREF_Object.MinDistance = max(80.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
                             TACREF_Object.PosZ = 10;
@@ -598,14 +598,14 @@ static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID, BSPLIST 
                             TACREF_Object.PosZ = 1;
                             break;
 
-                        case VIS_SA2L:	// sorting problem, need fixing in 3D models
+                        case VIS_SA2L: // sorting problem, need fixing in 3D models
                         case VIS_SA5L:
                             TACREF_Object.Distance = 110.0f;
                             TACREF_Object.MinDistance = max(100.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
                             TACREF_Object.PosZ = 5;
                             break;
 
-                        case VIS_M88:	// M-88/A2 IRV, sorting problem need fixing
+                        case VIS_M88: // M-88/A2 IRV, sorting problem need fixing
                             TACREF_Object.Distance = 135.0f;
                             TACREF_Object.MinDistance = max(50.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
                             TACREF_Object.PosZ = 14;
@@ -688,9 +688,9 @@ static void Load3dModel(Entity *ent)
         modelid = 1225; // LANTIRN Pod -> no CT record
 
     if (ent->EntityID == 531)
-        modelid = 875;	// M-2A2/ADATS -> this vehicle doesn't exist in the datafiles (huh ?)
+        modelid = 875; // M-2A2/ADATS -> this vehicle doesn't exist in the datafiles (huh ?)
 
-    //	if(ent->ModelID)
+    // if(ent->ModelID)
     if (modelid)
     {
         Helicopter = FALSE;
@@ -698,10 +698,10 @@ static void Load3dModel(Entity *ent)
         // Load Current Model
         if (ent->GroupID == CAT_AIRCRAFT) // Aircraft
         {
-            //			obj=TAC_Viewer->LoadBSP(ent->ModelID,ent->ModelID,TRUE);
+            // obj=TAC_Viewer->LoadBSP(ent->ModelID,ent->ModelID,TRUE);
             obj = TAC_Viewer->LoadBSP(modelid, modelid, TRUE);
 
-            //			if (ent->ModelID == MapVisId(VIS_F16C))
+            // if (ent->ModelID == MapVisId(VIS_F16C))
             if (modelid == MapVisId(VIS_F16C) || ((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10)
             {
                 ((DrawableBSP*)obj->object)->SetSwitchMask(10, 1); // Afterburner
@@ -717,7 +717,7 @@ static void Load3dModel(Entity *ent)
             }
         }
         else
-            //			obj=TAC_Viewer->LoadBSP(ent->ModelID,ent->ModelID,FALSE);
+            // obj=TAC_Viewer->LoadBSP(ent->ModelID,ent->ModelID,FALSE);
             obj = TAC_Viewer->LoadBSP(modelid, modelid, FALSE);
 
         if (obj)
@@ -730,9 +730,9 @@ static void Load3dModel(Entity *ent)
                 if (vc)
                 {
                     visFlag = vc->VisibleFlags;
-                    //					Weapon = TAC_Viewer->LoadBSP(ent->ModelID+1,ent->MissileFlag);
+                    // Weapon = TAC_Viewer->LoadBSP(ent->ModelID+1,ent->MissileFlag);
                     Weapon = TAC_Viewer->LoadBSP(modelid + 1, ent->MissileFlag);
-                    //					CurrentWeapon=ent->ModelID+1;
+                    // CurrentWeapon=ent->ModelID+1;
                     CurrentWeapon = modelid + 1;
 
                     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -746,8 +746,8 @@ static void Load3dModel(Entity *ent)
                 }
             }
 
-            //			CustomPosStuff(ent->GroupID,ent->SubGroupID,ent->ModelID,obj);
-            //			CurrentModel=ent->ModelID;
+            // CustomPosStuff(ent->GroupID,ent->SubGroupID,ent->ModelID,obj);
+            // CurrentModel=ent->ModelID;
             CustomPosStuff(ent->GroupID, ent->SubGroupID, modelid, obj);
             CurrentModel = modelid;
             //TJL 12/28/03 This code allows for the texture set to be cycled by reselecting the model
@@ -1136,7 +1136,7 @@ static void HookupTacticalReferenceControls(long ID)
 {
     C_Window *winme;
     C_Button *ctrl;
-    C_Panner	*panner;
+    C_Panner *panner;
     C_ListBox *lbox;
     C_TimerHook *drawTimer;
 

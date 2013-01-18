@@ -74,16 +74,16 @@ void DigitalBrain::GunsJinkCheck(void)
                             twoSeconds = TRUE;
                         }
 
-                        //		  else if (localData->elFrom > (-2.0F *DTR) && localData->elFromdot < 0.0F)
-                        //		  {
-                        //			 if (localData->elFrom + z* localData->elFromdot < (-2.0F *DTR))
-                        //				twoSeconds = TRUE;
-                        //		  }
-                        //		  else if (localData->elFrom < (-13.0F * DTR) && localData->elFromdot > 0.0F)
-                        //		  {
-                        //			 if (localData->elFrom + z* localData->elFromdot > (-13.0F * DTR))
-                        //				twoSeconds = TRUE;
-                        //		  }
+                        //   else if (localData->elFrom > (-2.0F *DTR) && localData->elFromdot < 0.0F)
+                        //   {
+                        //  if (localData->elFrom + z* localData->elFromdot < (-2.0F *DTR))
+                        // twoSeconds = TRUE;
+                        //   }
+                        //   else if (localData->elFrom < (-13.0F * DTR) && localData->elFromdot > 0.0F)
+                        //   {
+                        //  if (localData->elFrom + z* localData->elFromdot > (-13.0F * DTR))
+                        // twoSeconds = TRUE;
+                        //   }
 
                         /*-------------------------------------------------*/
                         /* estimate time to be targeted and time to attack */
@@ -101,7 +101,7 @@ void DigitalBrain::GunsJinkCheck(void)
                         tgt_time = ((localData->ataFrom / localData->ataFromdot) * timeDelta);
 
                         //  if (tgt_time < 0.0F)//me123 status test,
-                        //	 tgt_time = 99.0F;//me123 status test,
+                        //  tgt_time = 99.0F;//me123 status test,
                         if (localData->ataFrom > -13.0f * DTR && localData->ataFrom < 13.0f * DTR)
                         {
                             tgt_time = 0.0f;   //me123 status test,
@@ -113,7 +113,7 @@ void DigitalBrain::GunsJinkCheck(void)
                         att_time = (localData->ata / localData->atadot) * timeDelta;
 
                         // if (att_time < 0.0F)//me123 status test,
-                        //	 att_time = 99.0F;//me123 status test,
+                        //  att_time = 99.0F;//me123 status test,
                         if (localData->ata > -13.0f * DTR && localData->ata < 13.0f * DTR)
                         {
                             att_time = 0.0f;   //me123 status test,

@@ -9,7 +9,7 @@
 
 #pragma pack (1)
 
-#define STRENGTH_PCT_FOR_EMERG_LDG	0.4f
+#define STRENGTH_PCT_FOR_EMERG_LDG 0.4f
 
 /*
  * Message Type ATCMsg
@@ -28,7 +28,7 @@ public:
         AbortApproach,
         TrafficInSight,
         RequestHotpitRefuel
-    };	// M.N.
+    }; // M.N.
     //TrafficInSight RAS-22Jan04-Acknowledge Traffic calls
     //Cobra 10/31/04 TJL
 

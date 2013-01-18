@@ -8,16 +8,16 @@ class RadarMissileClass : public RadarClass
 {
 public :
     RadarMissileClass(int type, SimMoverClass* parentPlatform);
-    virtual ~RadarMissileClass()	{};
+    virtual ~RadarMissileClass() {};
 
     virtual SimObjectType* Exec(SimObjectType* targetList);
 
 protected:
     virtual SimObjectType* ConsiderDecoy(SimObjectType *target, BOOL canGuide);
 
-    VU_ID	lastChaffID;	// ID of chaff bundle our target most recently dropped (or FalconNullId)
+    VU_ID lastChaffID; // ID of chaff bundle our target most recently dropped (or FalconNullId)
 
-    BOOL	couldGuide;		// Were we detecting the target last frame?
+    BOOL couldGuide; // Were we detecting the target last frame?
 };
 
 #endif // _RADARMISSILE_H_

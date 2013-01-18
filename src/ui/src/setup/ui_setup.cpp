@@ -46,17 +46,17 @@ extern C_Handler *gMainHandler;
 extern C_Parser *gMainParser;
 extern char **KeyDescrips;
 
-extern C_3dViewer	*SetupViewer;
-extern RViewPoint	*tmpVpoint;
-extern ObjectPos	*Objects;
-extern FeaturePos	*Features;
-extern Drawable2D	*Smoke;
+extern C_3dViewer *SetupViewer;
+extern RViewPoint *tmpVpoint;
+extern ObjectPos *Objects;
+extern FeaturePos *Features;
+extern Drawable2D *Smoke;
 
 int GraphicSettingMult = 1;
 
 //M.N.
-//int			skycolortime;
-//extern int	NumberOfSkyColors;
+//int skycolortime;
+//extern int NumberOfSkyColors;
 //extern SkyColorDataType* skycolor;
 
 long Cluster = 8001;
@@ -114,10 +114,10 @@ void ControllerSelectCB(long ID, short hittype, C_Base *control);
 void BuildControllerList(C_ListBox *lbox);
 void HideKeyStatusLines(C_Window *win);
 void RecenterJoystickCB(long ID, short hittype, C_Base *control);
-void AdvancedControlCB(long ID, short hittype, C_Base *control);			// Retro 31Dec2003
-void AdvancedControlApplyCB(long ID, short hittype, C_Base *control);		// Retro 31Dec2003
-void AdvancedControlOKCB(long ID, short hittype, C_Base *control);		// Retro 31Dec2003
-void AdvancedControlCancelCB(long ID, short hittype, C_Base *control);	// Retro 31Dec2003
+void AdvancedControlCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
+void AdvancedControlApplyCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
+void AdvancedControlOKCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
+void AdvancedControlCancelCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
 void SetJoystickAndPOVSymbols(const bool, C_Base *control);
 void SetThrottleAndRudderBars(C_Base *control);
 
@@ -155,7 +155,7 @@ void PlayerBubbleCB(long ID, short hittype, C_Base *control);
 void AdvancedCB(long ID, short hittype, C_Base *control);
 void SetAdvanced();
 void AdvancedGameCB(long ID, short hittype, C_Base *control);
-void SubTitleCB(long ID, short hittype, C_Base *control);	// Retro 25Dec2003
+void SubTitleCB(long ID, short hittype, C_Base *control); // Retro 25Dec2003
 void SeasonCB(long ID, short hittype, C_Base *control); //THW 2004-01-17
 
 //JAM 21Nov03
@@ -184,14 +184,14 @@ float AxisValueBoxWScale;
 
 void LoadSetupWindows()
 {
-    long		ID = 0;
-    int			size = 0;
-    C_Button	*ctrl = NULL;
-    C_Window	*win = NULL;
+    long ID = 0;
+    int size = 0;
+    C_Button *ctrl = NULL;
+    C_Window *win = NULL;
     C_TimerHook *tmr = NULL;
-    C_Line		*line = NULL;
-    C_Bitmap	*bmap = NULL;
-    UI95_RECT	client;
+    C_Line *line = NULL;
+    C_Bitmap *bmap = NULL;
+    UI95_RECT client;
 
     //if setup is already loaded, we only need to make sure all the control
     //settings are up to date
@@ -215,7 +215,7 @@ void LoadSetupWindows()
         gMainParser->LoadImageList("st_art.lst");
 
     gMainParser->LoadSoundList("st_snd.lst");
-    gMainParser->LoadWindowList("st_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("st_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -280,13 +280,13 @@ void LoadSetupWindows()
         //else
         //JoyScale = (float)(client.right - client.left - size)/65536.0F;
 
-#if 0	// Retro 17Jan2004
+#if 0 // Retro 17Jan2004
         //setup scale for manipulating rudder control on controls tab
         line = (C_Line *)win->FindControl(RUDDER);
 
         if (line != NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_YAW))	// Retro 31Dec2003
+            if (!IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -305,7 +305,7 @@ void LoadSetupWindows()
 
         if (line != NULL)
         {
-            if (!IO.AnalogIsUsed(AXIS_THROTTLE))	// Retro 31Dec2003
+            if (!IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
                 line->SetColor(RGB(130, 130, 130)); //grey
 
             //if(Calibration.calibrated)
@@ -403,12 +403,12 @@ void SetupOpenLogBookCB(long ID, short hittype, C_Base *control)
 ///in the PlayerOptions structure
 void STPSetupControls(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_Text		*text;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_Button *button;
+    C_Text *text;
+    C_ListBox *lbox;
+    C_Slider *slider;
+    C_EditBox *ebox;
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
@@ -538,8 +538,8 @@ void STPSetupControls(void)
                 lbox->SetValue(SET_PADLOCK_2);
                 break;
                 //case PDSuper:
-                //	lbox->SetValue(SET_PADLOCK_3);
-                //	break;
+                // lbox->SetValue(SET_PADLOCK_3);
+                // break;
         }
 
         lbox->Refresh();
@@ -642,14 +642,14 @@ void STPSetupControls(void)
 
     //JAM
     /*
-    	//THW 2004-01-18
-    	lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
-    	if(lbox != NULL)
-    	{
-    		lbox->SetValue(PlayerOptions.Season+70313);
-    		lbox->Refresh();
-    	}
-    	//THW
+     //THW 2004-01-18
+     lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
+     if(lbox != NULL)
+     {
+     lbox->SetValue(PlayerOptions.Season+70313);
+     lbox->Refresh();
+     }
+     //THW
     */
     button = (C_Button *)win->FindControl(SET_LOGBOOK);
 
@@ -853,15 +853,15 @@ void STPSetupControls(void)
         button->Refresh();
     }
 
-    /*	button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-    	if(button != NULL)
-    	{
-    		if(PlayerOptions.ObjectTexturesOn())
-    			button->SetState(C_STATE_1);
-    		else
-    			button->SetState(C_STATE_0);
-    		button->Refresh();
-    	}
+    /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
+     if(button != NULL)
+     {
+     if(PlayerOptions.ObjectTexturesOn())
+     button->SetState(C_STATE_1);
+     else
+     button->SetState(C_STATE_0);
+     button->Refresh();
+     }
     */
     // M.N.
     button = (C_Button *)win->FindControl(PLAYERVOICE);
@@ -962,18 +962,18 @@ void STPSetupControls(void)
         }
     }
 
-    /*	slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-    	if(slider != NULL)
-    	{
-    		ebox = (C_EditBox *)win->FindControl(TEX_DISTANCE_READOUT);
-    		if(ebox)
-    		{
-    			ebox->SetInteger(PlayerOptions.DispTextureLevel + 1);
-    			ebox->Refresh();
-    			slider->SetUserNumber(0,TEX_DISTANCE_READOUT);
-    		}
-    		slider->SetSliderPos((slider->GetSliderMax()-slider->GetSliderMin())*(PlayerOptions.DispTextureLevel)/4);
-    	}
+    /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
+     if(slider != NULL)
+     {
+     ebox = (C_EditBox *)win->FindControl(TEX_DISTANCE_READOUT);
+     if(ebox)
+     {
+     ebox->SetInteger(PlayerOptions.DispTextureLevel + 1);
+     ebox->Refresh();
+     slider->SetUserNumber(0,TEX_DISTANCE_READOUT);
+     }
+     slider->SetSliderPos((slider->GetSliderMax()-slider->GetSliderMin())*(PlayerOptions.DispTextureLevel)/4);
+     }
     */
     slider = (C_Slider *)win->FindControl(PLAYER_BUBBLE_SLIDER);
 
@@ -1025,13 +1025,13 @@ void STPSetupControls(void)
     {
         BuildControllerList(lbox);
 
-        extern AxisMapping AxisMap;									// Retro 31Dec2003
-        lbox->SetValue(AxisMap.FlightControlDevice + 1);		// Retro 31Dec2003
+        extern AxisMapping AxisMap; // Retro 31Dec2003
+        lbox->SetValue(AxisMap.FlightControlDevice + 1); // Retro 31Dec2003
         lbox->Refresh();
     }
 
     //if (S_joycaps.wCaps & JOYCAPS_HASZ)
-    if (IO.AnalogIsUsed(AXIS_THROTTLE))	// Retro 31Dec2003
+    if (IO.AnalogIsUsed(AXIS_THROTTLE)) // Retro 31Dec2003
     {
         button = (C_Button *)win->FindControl(THROTTLE_CHECK);
 
@@ -1043,7 +1043,7 @@ void STPSetupControls(void)
         }
     }
 
-    if (IO.AnalogIsUsed(AXIS_YAW))	// Retro 31Dec2003
+    if (IO.AnalogIsUsed(AXIS_YAW)) // Retro 31Dec2003
     {
         button = (C_Button *)win->FindControl(RUDDER_CHECK);
 
@@ -1057,36 +1057,36 @@ void STPSetupControls(void)
 
     SetRealism(win);
 
-    /*	// M.N. Sky Color Stuff
+    /* // M.N. Sky Color Stuff
     #if 0
-    	win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-    	if (!win)
-    		return;
-    	lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
-    	if (lbox)
-    	{
-    		lbox->SetValue(PlayerOptions.skycol);
-    		lbox->Refresh();
-    	}
+     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     if (!win)
+     return;
+     lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
+     if (lbox)
+     {
+     lbox->SetValue(PlayerOptions.skycol);
+     lbox->Refresh();
+     }
     #else
-    	win=gMainHandler->FindWindow(SETUP_SKY_WIN);
-    	if(!win) return;
-    	lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
-    	if (lbox)
-    	{
-    		for (int i = 0; i < NumberOfSkyColors; i++)
-    		{
-    			lbox->AddItem(i+1,C_TYPE_ITEM,skycolor[i].name);
-    		}
-    		lbox->SetValue(PlayerOptions.skycol);
-    		lbox->Refresh();
-    	}
+     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     if(!win) return;
+     lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
+     if (lbox)
+     {
+     for (int i = 0; i < NumberOfSkyColors; i++)
+     {
+     lbox->AddItem(i+1,C_TYPE_ITEM,skycolor[i].name);
+     }
+     lbox->SetValue(PlayerOptions.skycol);
+     lbox->Refresh();
+     }
     #endif
     */
 
     SetAdvanced();
 
-    //	SetSkyColor();
+    // SetSkyColor();
 
     if (!SetupCritSection)
         SetupCritSection = F4CreateCriticalSection("SetupCrit");
@@ -1104,10 +1104,10 @@ void SetupRadioCB(long, short hittype, C_Base *control)
         return;
 
     /*
-    	if(Calibration.calibrating)
-    	{
-    		StopCalibrating(control);
-    	}*/
+     if(Calibration.calibrating)
+     {
+     StopCalibrating(control);
+     }*/
 
     ready = FALSE;
 
@@ -1115,7 +1115,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
     if (SetupViewer)
     {
         F4EnterCriticalSection(SetupCritSection);
-        RViewPoint	*viewpt;
+        RViewPoint *viewpt;
         viewpt = SetupViewer->GetVP();
         viewpt->RemoveObject(Smoke);
         delete Smoke;
@@ -1157,7 +1157,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
 
         if ((gTotalJoy) && (AxisMap.FlightControlDevice != -1))
         {
-            DIDEVCAPS				devcaps;
+            DIDEVCAPS devcaps;
             devcaps.dwSize = sizeof(DIDEVCAPS);
 
             ShiAssert(FALSE == F4IsBadReadPtr(gpDIDevice[AxisMap.FlightControlDevice], sizeof * gpDIDevice[AxisMap.FlightControlDevice])); // JPO CTD
@@ -1205,12 +1205,12 @@ void RestartCB(long, short hittype, C_Base *control)
 
 static void SaveValues(void)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_Text		*text;
-    C_ListBox	*lbox;
-    C_Slider	*slider;
-    C_EditBox	*ebox;
+    C_Window *win;
+    C_Button *button;
+    C_Text *text;
+    C_ListBox *lbox;
+    C_Slider *slider;
+    C_EditBox *ebox;
 
 
     win = gMainHandler->FindWindow(SETUP_WIN);
@@ -1319,8 +1319,8 @@ static void SaveValues(void)
                 PlayerOptions.SimPadlockMode = PDEnhanced;
                 break;
                 //case SET_PADLOCK_3:
-                //	PlayerOptions.SimPadlockMode = PDSuper;
-                //	break;
+                // PlayerOptions.SimPadlockMode = PDSuper;
+                // break;
         }
 
         lbox->Refresh();
@@ -1405,13 +1405,13 @@ static void SaveValues(void)
         DisplayOptions.DispDepth = nDepth;
 
         ShiAssert(DisplayOptions.DispWidth <= 1600);
-        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);	// OW
+        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
 #else
         DisplayOptions.DispWidth = static_cast<short>(lbox->GetTextID());
         DisplayOptions.DispHeight = static_cast<ushort>(FloatToInt32(lbox->GetTextID() * 0.75F));
 
         ShiAssert(DisplayOptions.DispWidth <= 1600);
-        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);	// OW
+        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
 #endif
 
         lbox->Refresh();
@@ -1433,13 +1433,13 @@ static void SaveValues(void)
     //JAM
 
     //THW 2004-01-17
-    /*	lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
-    	if(lbox != NULL)
-    	{
-    		//PlayerOptions.Season = lbox->GetTextID()-70312;
-    		lbox->Refresh();
-    	}
-    	//THW
+    /* lbox=(C_ListBox *)win->FindControl(SETUP_SEASON);
+     if(lbox != NULL)
+     {
+     //PlayerOptions.Season = lbox->GetTextID()-70312;
+     lbox->Refresh();
+     }
+     //THW
     */
     button = (C_Button *)win->FindControl(SET_ORDNANCE);
 
@@ -1594,23 +1594,23 @@ static void SaveValues(void)
             DisplayOptions.bSpecularLighting = FALSE;
     }
 
-    /*	button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-    	if(button != NULL)
-    	{
-    		if(button->GetState() == C_STATE_1)
-    			PlayerOptions.SetDispFlag(DISP_BILINEAR);
-    		else
-    			PlayerOptions.ClearDispFlag(DISP_BILINEAR);
-    	}
+    /* button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
+     if(button != NULL)
+     {
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.SetDispFlag(DISP_BILINEAR);
+     else
+     PlayerOptions.ClearDispFlag(DISP_BILINEAR);
+     }
     */
-    /*	button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-    	if(button != NULL)
-    	{
-    		if(button->GetState() == C_STATE_1)
-    			PlayerOptions.ObjFlags |= DISP_OBJ_TEXTURES;
-    		else
-    			PlayerOptions.ObjFlags &= ~DISP_OBJ_TEXTURES;
-    	}
+    /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
+     if(button != NULL)
+     {
+     if(button->GetState() == C_STATE_1)
+     PlayerOptions.ObjFlags |= DISP_OBJ_TEXTURES;
+     else
+     PlayerOptions.ObjFlags &= ~DISP_OBJ_TEXTURES;
+     }
     */
     slider = (C_Slider *)win->FindControl(OBJECT_DETAIL);
 
@@ -1649,11 +1649,11 @@ static void SaveValues(void)
         PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F));
     }
 
-    /*	slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-    	if(slider != NULL)
-    	{
-    		PlayerOptions.DispTextureLevel = FloatToInt32((float)slider->GetSliderPos()/(slider->GetSliderMax()-slider->GetSliderMin()) * 4.0F + 0.5F);
-    	}
+    /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
+     if(slider != NULL)
+     {
+     PlayerOptions.DispTextureLevel = FloatToInt32((float)slider->GetSliderPos()/(slider->GetSliderMax()-slider->GetSliderMin()) * 4.0F + 0.5F);
+     }
     */
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
 
@@ -1724,10 +1724,10 @@ static void SaveValues(void)
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
-    if (button) DisplayOptions.bScreenCoordinateBiasFix = button->GetState() == C_STATE_1;		//Wombat778 4-01-04
+    if (button) DisplayOptions.bScreenCoordinateBiasFix = button->GetState() == C_STATE_1; //Wombat778 4-01-04
 
-    //	button = (C_Button *)win->FindControl(SETUP_ADVANCED_SPECULAR_LIGHTING);
-    //	if(button) DisplayOptions.bSpecularLighting = button->GetState() == C_STATE_1;
+    // button = (C_Button *)win->FindControl(SETUP_ADVANCED_SPECULAR_LIGHTING);
+    // if(button) DisplayOptions.bSpecularLighting = button->GetState() == C_STATE_1;
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING);
 
@@ -1747,7 +1747,7 @@ static void SaveValues(void)
     // FRB - Force Specular Lighting
     //     DisplayOptions.bSpecularLighting = TRUE;
     // DDS textures only
-    //		 DisplayOptions.m_texMode = TEX_MODE_DDS;
+    //  DisplayOptions.m_texMode = TEX_MODE_DDS;
     //========================================
 
 
@@ -1784,7 +1784,7 @@ void ShutdownSetup()
         ready = FALSE;
         F4EnterCriticalSection(SetupCritSection);
 
-        RViewPoint	*viewpt;
+        RViewPoint *viewpt;
         viewpt = SetupViewer->GetVP();
         viewpt->RemoveObject(Smoke);
         delete Smoke;
@@ -1825,8 +1825,8 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
     InitSoundSetup();
 
     /*
-    	if(Calibration.calibrating)
-    		StopCalibrating(control);*/
+     if(Calibration.calibrating)
+     StopCalibrating(control);*/
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
@@ -1844,34 +1844,34 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
 //JAM 27Oct03
 void DoSyncWindowCB(long ID, short hittype, C_Base *control)
 {
-    //	C_Window *win;
+    // C_Window *win;
     /*
-    	if(hittype != C_TYPE_LMOUSEUP)
-    		return;
+     if(hittype != C_TYPE_LMOUSEUP)
+     return;
 
-    	if( DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS )
-    	{
-    		TheTextureBank.FlushHandles();
-    		TheTextureBank.RestoreTexturePool();
-    		TheTerrTextures.FlushHandles();
-    		TheFarTextures.FlushHandles();
+     if( DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS )
+     {
+     TheTextureBank.FlushHandles();
+     TheTextureBank.RestoreTexturePool();
+     TheTerrTextures.FlushHandles();
+     TheFarTextures.FlushHandles();
 
 
-    		win = gMainHandler->FindWindow(SYNC_WIN);
-    		if( win )
-    		{
-    			gMainHandler->ShowWindow(win);
-    			gMainHandler->WindowToFront(win);
-    		}
+     win = gMainHandler->FindWindow(SYNC_WIN);
+     if( win )
+     {
+     gMainHandler->ShowWindow(win);
+     gMainHandler->WindowToFront(win);
+     }
 
-    		TheTextureBank.SyncDDSTextures();
-    		TheTerrTextures.SyncDDSTextures();
-    		TheFarTextures.SyncDDSTextures();
+     TheTextureBank.SyncDDSTextures();
+     TheTerrTextures.SyncDDSTextures();
+     TheFarTextures.SyncDDSTextures();
 
-    		TheTerrTextures.FlushHandles();
-    		TheFarTextures.FlushHandles();
-    //			gMainHandler->HideWindow(win);
-    	}
+     TheTerrTextures.FlushHandles();
+     TheFarTextures.FlushHandles();
+    // gMainHandler->HideWindow(win);
+     }
     */
 }
 //JAM
@@ -1892,8 +1892,8 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
     ShutdownSetup();
 
     /*
-    	if(Calibration.calibrating)
-    		StopCalibrating(control);*/
+     if(Calibration.calibrating)
+     StopCalibrating(control);*/
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
@@ -1943,7 +1943,7 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 
     /*
     if(Calibration.calibrating)
-    	StopCalibrating(control);*/
+     StopCalibrating(control);*/
 
     button = (C_Button *)control->Parent_->FindControl(RENDER);
 
@@ -1961,10 +1961,10 @@ void CancelSetupCB(long ID, short hittype, C_Base *control)
 
 static void HookupSetupControls(long ID)
 {
-    C_Window	*win;
-    C_Button	*button;
-    C_Slider	*slider;
-    C_ListBox	*listbox;
+    C_Window *win;
+    C_Button *button;
+    C_Slider *slider;
+    C_ListBox *listbox;
 
     win = gMainHandler->FindWindow(ID);
 
@@ -1985,9 +1985,9 @@ static void HookupSetupControls(long ID)
         button->SetCallback(CloseSetupWindowCB);
 
     //JAM 24Oct03
-    //	button=(C_Button *)win->FindControl(DO_SYNC);
-    //	if(button != NULL)
-    //		button->SetCallback(DoSyncWindowCB);
+    // button=(C_Button *)win->FindControl(DO_SYNC);
+    // if(button != NULL)
+    // button->SetCallback(DoSyncWindowCB);
 
     button = (C_Button *)win->FindControl(OK);
 
@@ -2101,7 +2101,7 @@ static void HookupSetupControls(long ID)
 
     //button=(C_Button *)win->FindControl(SET_DEFAULTS);
     //if(button != NULL)
-    //	button->SetCallback(SetKeyDefaultCB);
+    // button->SetCallback(SetKeyDefaultCB);
 
     button = (C_Button *)win->FindControl(CALIBRATE);
 
@@ -2256,7 +2256,7 @@ static void HookupSetupControls(long ID)
         tmr->SetDrawCallback(STPDisplayCB);
         tmr->SetFlagBitOff(C_BIT_TIMER);
         tmr->SetCluster(8002);
-        //	tmr->SetUserNumber(1,2);
+        // tmr->SetUserNumber(1,2);
         tmr->SetReady(1);
         win->AddControl(tmr);
         win->SetDragCallback(STPMoveRendererCB);
@@ -2285,11 +2285,11 @@ static void HookupSetupControls(long ID)
 
     //JAM
     /*
-    	//THW 2004-01-17
-    	listbox = (C_ListBox *)win->FindControl(SETUP_SEASON);
-    	if(listbox != NULL)
-    		listbox->SetCallback(SeasonCB);
-    	//THW
+     //THW 2004-01-17
+     listbox = (C_ListBox *)win->FindControl(SETUP_SEASON);
+     if(listbox != NULL)
+     listbox->SetCallback(SeasonCB);
+     //THW
     */
     button = (C_Button *)win->FindControl(SET_GRAPHICS_DEFAULTS);
 
@@ -2315,11 +2315,11 @@ static void HookupSetupControls(long ID)
     }
 
     // M.N.
-    /*	button=(C_Button *)win->FindControl(SET_SKY_COLOR);
-    	if(button != NULL)
-    	{
-    		button->SetCallback(SkyColorCB);
-    	}
+    /* button=(C_Button *)win->FindControl(SET_SKY_COLOR);
+     if(button != NULL)
+     {
+     button->SetCallback(SkyColorCB);
+     }
     */
     button = (C_Button *)win->FindControl(RENDER);
 
@@ -2345,11 +2345,11 @@ static void HookupSetupControls(long ID)
 
     // ..ends
 
-    /*	button=(C_Button *)win->FindControl(70136);//GOUROUD
-    	if(button != NULL)
-    	{
-    		button->SetCallback(GouraudCB);
-    	}
+    /* button=(C_Button *)win->FindControl(70136);//GOUROUD
+     if(button != NULL)
+     {
+     button->SetCallback(GouraudCB);
+     }
     */
     button = (C_Button *)win->FindControl(HAZING);
 
@@ -2366,17 +2366,17 @@ static void HookupSetupControls(long ID)
     }
 
     /*
-    	button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
-    	if(button != NULL)
-    	{
-    		button->SetCallback(BilinearFilterCB);
-    	}
+     button=(C_Button *)win->FindControl(BILINEAR_FILTERING);
+     if(button != NULL)
+     {
+     button->SetCallback(BilinearFilterCB);
+     }
     */
-    /*	button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
-    	if(button != NULL)
-    	{
-    		button->SetCallback(ObjectTextureCB);
-    	}
+    /* button=(C_Button *)win->FindControl(OBJECT_TEXTURES);
+     if(button != NULL)
+     {
+     button->SetCallback(ObjectTextureCB);
+     }
     */
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
 
@@ -2413,11 +2413,11 @@ static void HookupSetupControls(long ID)
         slider->SetCallback(TerrainDetailCB);
     }
 
-    /*	slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
-    	if(slider != NULL)
-    	{
-    		slider->SetCallback(TextureDistanceCB);
-    	}
+    /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
+     if(slider != NULL)
+     {
+     slider->SetCallback(TextureDistanceCB);
+     }
     */
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
 
@@ -2444,28 +2444,28 @@ static void HookupSetupControls(long ID)
 
 
     // M.N. SkyColor stuff
-    /*	win = gMainHandler->FindWindow(SETUP_SKY_WIN);
-    	if(!win) return;
+    /* win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+     if(!win) return;
 
-    	// disable parent notification for close and cancel button
-    	listbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
-    	if(listbox) listbox->SetCallback(SelectSkyColorCB);
+     // disable parent notification for close and cancel button
+     listbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
+     if(listbox) listbox->SetCallback(SelectSkyColorCB);
 
-    	button=(C_Button *)win->FindControl(CANCEL);
-    	if(button) button->SetCallback(CloseWindowCB);
+     button=(C_Button *)win->FindControl(CANCEL);
+     if(button) button->SetCallback(CloseWindowCB);
 
-    	button=(C_Button *)win->FindControl(SKY_COLOR_TIME_1);
-    	if(button) button->SetCallback(SkyColTimeCB);
+     button=(C_Button *)win->FindControl(SKY_COLOR_TIME_1);
+     if(button) button->SetCallback(SkyColTimeCB);
 
-    	button=(C_Button *)win->FindControl(SKY_COLOR_TIME_2);
-    	if(button) button->SetCallback(SkyColTimeCB);
+     button=(C_Button *)win->FindControl(SKY_COLOR_TIME_2);
+     if(button) button->SetCallback(SkyColTimeCB);
 
-    	button=(C_Button *)win->FindControl(SKY_COLOR_TIME_3);
-    	if(button) button->SetCallback(SkyColTimeCB);
+     button=(C_Button *)win->FindControl(SKY_COLOR_TIME_3);
+     if(button) button->SetCallback(SkyColTimeCB);
 
-    	button=(C_Button *)win->FindControl(SKY_COLOR_TIME_4);
-    	if(button) button->SetCallback(SkyColTimeCB);
-    	// M.N. end SkyColor stuff
+     button=(C_Button *)win->FindControl(SKY_COLOR_TIME_4);
+     if(button) button->SetCallback(SkyColTimeCB);
+     // M.N. end SkyColor stuff
     */
     // disable parent notification for close and cancel button
 

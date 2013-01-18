@@ -68,7 +68,7 @@ void CPMirror::RenderMirror(float left, float top, float right, float bottom)
     Trotation pan = IMatrix;
     pan.M11 = -1.0f;
     pan.M12 = 0.0f;
-    pan.M21	= 0.0f;
+    pan.M21 = 0.0f;
     pan.M22 = -1.0f;
     MatrixMult(&prot, &pan, &mview);
     memcpy(&prot, &mview, sizeof(prot));

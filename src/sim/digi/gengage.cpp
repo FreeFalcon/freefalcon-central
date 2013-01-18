@@ -42,8 +42,8 @@ void DigitalBrain::GunsEngageCheck(void)
     if (curMode != GunsEngageMode)
     {
         if (targetPtr && targetData->range <= 3500.0F && //targetData->range >= 1000.0F &&//me123 let's bfm to 4000 before gunning changed from 10000
-            // JB		!(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
-            // JB		self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
+            // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
+            // JB self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
             ((AircraftClass *)self)->Guns &&
             ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 &&
             targetData->ata < angleLimit && IsSetATC(AceGunsEngage))
@@ -57,8 +57,8 @@ void DigitalBrain::GunsEngageCheck(void)
     else if (curMode == GunsEngageMode)
     {
         if (targetData->range < 3500.0f && //targetData->range > 1000.0f &&
-            // JB		!(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
-            // JB		self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
+            // JB !(self->YawDelta() > 0 && targetPtr->BaseData()->YawDelta() < 0 ||// not nose to nose
+            // JB self->YawDelta() < 0 && targetPtr->BaseData()->YawDelta() > 0) &&
             ((AircraftClass *)self)->Guns->numRoundsRemaining > 0 &&
             (targetPtr->BaseData()->IsAirplane() || targetPtr->BaseData()->IsHelicopter()) // 2002-03-05 MODIFIED BY S.G. airplane, choppers and fligth are ok in here (choppers only makes it here if it passed the SensorFusion test first)
             //&& targetData->ata < 135.0f * DTR)
@@ -149,7 +149,7 @@ void DigitalBrain::GunsEngage(void)
                     //{ // JB 010212
                     RollAndPull();
 
-                //	return; // JB 010212
+                // return; // JB 010212
                 //} // JB 010212
                 FineGunsTrack(min(targetPtr->BaseData()->GetKias(), self->GetKias() + (desiredClosure - actualClosure)), &lagAngle); //me123 erhh don't use corner here, it's not good you might overshoot.(max (cornerSpeed, self->GetKias()+(desiredClosure - actualClosure)),&lagAngle); // JB 010212
 
@@ -373,7 +373,7 @@ float DigitalBrain::GunsAutoTrack(float trackGs)
 
     // JB 010210 Start
     SimObjectType* localTarget;
-    FalconEntity	*target;
+    FalconEntity *target;
 
     if (targetPtr)
         localTarget = targetPtr;
@@ -491,7 +491,7 @@ void DigitalBrain::TrainableGunsEngage(void)
             if (angles && SimLibElapsedTime % 2000 < 500)
             {
                 // JB 010210 Start
-                FalconEntity	*target;
+                FalconEntity *target;
                 float realRange;
                 float az, el, tof;
 
@@ -524,19 +524,19 @@ void DigitalBrain::TrainableGunsEngage(void)
 
                 /*
 
-                						dt = localTarget->localData->range / (3000.0F - localTarget->localData->rangedot);
+                 dt = localTarget->localData->range / (3000.0F - localTarget->localData->rangedot);
 
-                						xft = localTarget->BaseData()->XPos() + localTarget->BaseData()->XDelta() * dt - self->XPos();
-                						yft = localTarget->BaseData()->YPos() + localTarget->BaseData()->YDelta() * dt - self->YPos();
-                						zft = localTarget->BaseData()->ZPos() + localTarget->BaseData()->ZDelta() * dt - self->ZPos();
-                						zft += 0.5F * GRAVITY * dt * dt;
+                 xft = localTarget->BaseData()->XPos() + localTarget->BaseData()->XDelta() * dt - self->XPos();
+                 yft = localTarget->BaseData()->YPos() + localTarget->BaseData()->YDelta() * dt - self->YPos();
+                 zft = localTarget->BaseData()->ZPos() + localTarget->BaseData()->ZDelta() * dt - self->ZPos();
+                 zft += 0.5F * GRAVITY * dt * dt;
 
-                						az = (float)atan2(yft,xft);
-                						// sqrt returns positive, so this is cool
-                						el = (float)atan2(-zft,sqrt(xft*xft+yft*yft));
+                 az = (float)atan2(yft,xft);
+                 // sqrt returns positive, so this is cool
+                 el = (float)atan2(-zft,sqrt(xft*xft+yft*yft));
 
-                						mlSinCos (&trigAz, az);
-                						mlSinCos (&trigEl, el);
+                 mlSinCos (&trigAz, az);
+                 mlSinCos (&trigEl, el);
                 */
                 // JB 010210 End
 

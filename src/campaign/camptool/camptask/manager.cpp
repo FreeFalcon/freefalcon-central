@@ -68,7 +68,7 @@ CampManagerClass::CampManagerClass(FILE *file) : FalconEntity(VU_LAST_ENTITY_TYP
 
     if (gRenameIds)
     {
-        VU_ID		new_id = FalconNullId;
+        VU_ID new_id = FalconNullId;
 
         // Rename this ID
         for (new_id.num_ = FIRST_NON_VOLITILE_VU_ID_NUMBER; new_id.num_ < LAST_NON_VOLITILE_VU_ID_NUMBER; new_id.num_++)
@@ -99,7 +99,7 @@ CampManagerClass::CampManagerClass(FILE *file) : FalconEntity(VU_LAST_ENTITY_TYP
 CampManagerClass::~CampManagerClass(void)
 {
     // KCK HACK: Try to get rid of any managers which leaked through
-    int			t;
+    int t;
 
     for (t = 0; t < NUM_TEAMS; t++)
     {
@@ -154,7 +154,7 @@ int CampManagerClass::Save(VU_BYTE **stream)
 
 int CampManagerClass::Save(FILE *file)
 {
-    int	retval = 0;
+    int retval = 0;
 
     if (!file)
         return 0;
@@ -170,8 +170,8 @@ int CampManagerClass::Save(FILE *file)
 
 void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, short d3)
 {
-    VuTargetEntity				*target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconCampTaskingMessage	*message = new FalconCampTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
+    FalconCampTaskingMessage *message = new FalconCampTaskingMessage(Id(), target);
 
     if (managerFlags & CTM_MUST_BE_OWNED && !IsLocal())
         return;
@@ -258,7 +258,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
 
 VU_ERRCODE CampManagerClass::RemovalCallback(void)
 {
-    //	ShiAssert(TeamInfo[owner]);
+    // ShiAssert(TeamInfo[owner]);
     if (TeamInfo[owner])
     {
         if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_AIR)
@@ -283,7 +283,7 @@ VuEntity* NewManager(short type, VU_BYTE *stream)
     VuEntityType* classPtr = VuxType(type);
 
     //#ifndef NDEBUG
-    //	MonoPrint ("Got manager type %d.\n",classPtr->classInfo_[VU_DOMAIN]);
+    // MonoPrint ("Got manager type %d.\n",classPtr->classInfo_[VU_DOMAIN]);
     //#endif
 
     CampEnterCriticalSection();

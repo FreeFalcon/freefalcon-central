@@ -15,21 +15,21 @@ extern MEM_POOL gCockMemPool;
 // Normal Light States
 //====================================================//
 
-#define CPLIGHT_OFF			0
-#define CPLIGHT_ON			1
+#define CPLIGHT_OFF 0
+#define CPLIGHT_ON 1
 
 //====================================================//
 // Special Light States
 //====================================================//
-#define CPLIGHT_AOA_OFF		0
-#define CPLIGHT_AOA_FAST	1
-#define CPLIGHT_AOA_ON		2
-#define CPLIGHT_AOA_SLOW	3
+#define CPLIGHT_AOA_OFF 0
+#define CPLIGHT_AOA_FAST 1
+#define CPLIGHT_AOA_ON 2
+#define CPLIGHT_AOA_SLOW 3
 
-#define CPLIGHT_AR_NWS_OFF		0;
-#define CPLIGHT_AR_NWS_RDY		1;
-#define CPLIGHT_AR_NWS_ON		2;
-#define CPLIGHT_AR_NWS_DISC	3;
+#define CPLIGHT_AR_NWS_OFF 0;
+#define CPLIGHT_AR_NWS_RDY 1;
+#define CPLIGHT_AR_NWS_ON 2;
+#define CPLIGHT_AR_NWS_DISC 3;
 
 //====================================================//
 // Initialization Structures
@@ -37,8 +37,8 @@ extern MEM_POOL gCockMemPool;
 
 typedef struct
 {
-    int				states;
-    RECT				*psrcRect;
+    int states;
+    RECT *psrcRect;
 } LightInitStr;
 
 //====================================================//
@@ -65,21 +65,21 @@ public:
     // State Information
     //====================================================//
 
-    int		mStates;
-    int		mState;
+    int mStates;
+    int mState;
 
     //====================================================//
     // Source Locations for Template Surface
     //====================================================//
 
-    RECT		*mpSrcRect;
+    RECT *mpSrcRect;
 
     //====================================================//
     // Runtime Member Functions
     //====================================================//
 
-    void	Exec(SimBaseClass*);
-    void	Display(void);
+    void Exec(SimBaseClass*);
+    void Display(void);
 
     //====================================================//
     // Constructors and Destructors

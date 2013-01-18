@@ -10,9 +10,9 @@
 #endif
 
 typedef int VU_ERRCODE;
-#define VU_ERROR	-1
-#define VU_NO_OP	0
-#define VU_SUCCESS	1
+#define VU_ERROR -1
+#define VU_NO_OP 0
+#define VU_SUCCESS 1
 
 typedef void *VuMutex;
 typedef unsigned int uint;
@@ -29,7 +29,7 @@ typedef unsigned long VU_TIME;
 
 typedef unsigned char VU_BYTE;
 typedef unsigned char VU_BOOL;
-typedef signed char VU_TRI_STATE;	// TRUE, FALSE, or DONT_CARE
+typedef signed char VU_TRI_STATE; // TRUE, FALSE, or DONT_CARE
 
 #ifndef TRUE
 #define TRUE 1
@@ -42,8 +42,8 @@ typedef signed char VU_TRI_STATE;	// TRUE, FALSE, or DONT_CARE
 #endif
 
 typedef unsigned char VU_MSG_TYPE;
-typedef	unsigned long VU_KEY;
-typedef	unsigned long VU_ID_NUMBER;
+typedef unsigned long VU_KEY;
+typedef unsigned long VU_ID_NUMBER;
 
 // sfr: back to inline for efficiency
 class VU_SESSION_ID
@@ -99,7 +99,7 @@ private:
 
     // DATA
 public:
-    unsigned long 	value_;
+    unsigned long  value_;
 };
 
 class VU_ID
@@ -210,8 +210,8 @@ private:
 
     // DATA
 public:
-    VU_ID_NUMBER		num_;
-    VU_SESSION_ID 	creator_;
+    VU_ID_NUMBER num_;
+    VU_SESSION_ID  creator_;
 };
 
 /** Represents an entity address. All entities are composed of

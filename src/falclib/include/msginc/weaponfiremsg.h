@@ -29,7 +29,7 @@ public:
     enum WeaponType
     {
         GUN,
-        //       LRM,	// I don't think this is used (or handled)  SCR 10/7/98
+        //       LRM, // I don't think this is used (or handled)  SCR 10/7/98
         MRM,
         SRM,
         BMB,

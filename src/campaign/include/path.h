@@ -18,16 +18,16 @@ extern int moveAlt;
 // Path flags
 // =============================
 
-#define PATH_ROADOK		0x01			// Use road movement bonuses (private implimentation)
-#define PATH_RAILOK		0x02			// Use rail movement bonuses (private implimentation)
-#define PATH_ENEMYOK	0x04			// Ok to move through enemy territory (private implimentation)
-#define PATH_ENEMYCOST	0x08			// Additional cost for moving through enemy territory
-#define PATH_AIRBORNE	0x10			// Use best of lowair/foot movement
-#define PATH_MARINE		0x20			// Use best of naval/tracked movement
-#define PATH_BASIC		0x40			// Ignore any enemy/threat movement costs
-#define PATH_ENGINEER	0x80			// Allows engineers to move into tiles with broken bridges
+#define PATH_ROADOK 0x01 // Use road movement bonuses (private implimentation)
+#define PATH_RAILOK 0x02 // Use rail movement bonuses (private implimentation)
+#define PATH_ENEMYOK 0x04 // Ok to move through enemy territory (private implimentation)
+#define PATH_ENEMYCOST 0x08 // Additional cost for moving through enemy territory
+#define PATH_AIRBORNE 0x10 // Use best of lowair/foot movement
+#define PATH_MARINE 0x20 // Use best of naval/tracked movement
+#define PATH_BASIC 0x40 // Ignore any enemy/threat movement costs
+#define PATH_ENGINEER 0x80 // Allows engineers to move into tiles with broken bridges
 
-#define MAX_COST		50				// The highest cost we're willing to pay for any given move
+#define MAX_COST 50 // The highest cost we're willing to pay for any given move
 
 // =============================
 // Global functions

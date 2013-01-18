@@ -21,22 +21,22 @@
 FILE* F4EventFile;
 
 #define HOSTNAMEPACKET                  1
-#define HOSTLISTREJECTPACKET       		2
-#define PROPOSEHOSTNAMEPACKET      		3
+#define HOSTLISTREJECTPACKET        2
+#define PROPOSEHOSTNAMEPACKET       3
 #define NEWGROUPPACKET                  4
-#define PROPOSEGROUPNAMEPACKET   		5
+#define PROPOSEGROUPNAMEPACKET    5
 #define GROUPREJECTPACKET               6
 #define JOINGROUPPACKET                 7
 #define LEAVEGROUPPACKET                8
-#define CLOSESESSIONPACKET       		9
-#define CLOSEGROUPPACKET         		10
+#define CLOSESESSIONPACKET        9
+#define CLOSEGROUPPACKET          10
 #define OPENGROUPPACKET                 11
 #define DELETEGROUPPACKET               12
 
 #define SESSIONUPDATEPACKET             1024
 
-//#define F4_ENTITY_TABLE_SIZE			5000		// Size of vu's hash table
-const int F4_ENTITY_TABLE_SIZE = 10529;			// Size of vu's hash table	 - this is a prime number // JB 010718
+//#define F4_ENTITY_TABLE_SIZE 5000 // Size of vu's hash table
+const int F4_ENTITY_TABLE_SIZE = 10529; // Size of vu's hash table  - this is a prime number // JB 010718
 
 // =========================
 // Some external functions
@@ -71,8 +71,8 @@ VU_TIME vuxDeadReconTime = 0;
 VU_TIME vuxCurrentTime = 0;
 VU_TIME lastTimingMessage = 0;
 VU_TIME vuxTransmitTime = 0;
-//ulong vuxLocalDomain = 1;	// range = 1-31
-ulong vuxLocalDomain = 0xffffffff;	// range = 1-31 // JB 010718
+//ulong vuxLocalDomain = 1; // range = 1-31
+ulong vuxLocalDomain = 0xffffffff; // range = 1-31 // JB 010718
 VU_BYTE vuxLocalSession = 1;
 #define EBS_BASE_NAME    "EBS"
 char *vuxWorldName = 0;
@@ -90,8 +90,8 @@ Falcon4EntityClassType* Falcon4ClassTable;
 F4CSECTIONHANDLE* vuCritical = NULL;
 int NumEntities;
 VU_ID FalconNullId;
-//FalconAllFilterType		FalconAllFilter;
-FalconNothingFilterType	FalconNothingFilter;
+//FalconAllFilterType FalconAllFilter;
+FalconNothingFilterType FalconNothingFilter;
 
 #define VU_VERSION_USED    3
 #define VU_REVISION_USED   1
@@ -141,7 +141,7 @@ void InitVU(void)
 
     // OW FIXME
     // strcpy (tmpStr, "F527");
-    //	strcpy(tmpStr, "F552");		//  according to REVISOR this will allow connections to 1.08 servers. we'll see
+    // strcpy(tmpStr, "F552"); //  according to REVISOR this will allow connections to 1.08 servers. we'll see
     //strcpy(tmpStr, "E109newmp"); //me123 we are not interested in 108 conections anymore since they'll ctd us
     strcpy(tmpStr, g_strWorldName);
 
@@ -274,7 +274,7 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
         case (CLASS_GROUP):
         {
-            retval = (VuEntity*) new FalconGameEntity(data, &rem);			// FalconGroupEntity at some point..
+            retval = (VuEntity*) new FalconGameEntity(data, &rem); // FalconGroupEntity at some point..
             break;
         }
 
@@ -296,71 +296,71 @@ VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *dataPtr)
 
     /*if (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE)
     {
-    	retval = SimVUCreateVehicle (type, size, data);
+     retval = SimVUCreateVehicle (type, size, data);
     }
     else if (classPtr->classInfo_[VU_TYPE] == TYPE_EJECT)
     {
-    	retval = SimVUCreateVehicle (type, size, data);
+     retval = SimVUCreateVehicle (type, size, data);
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
     {
-    	ShiWarning ("We shouldn't be creating features this way");
-    	retval = NULL;
+     ShiWarning ("We shouldn't be creating features this way");
+     retval = NULL;
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_UNIT)
     {
-    	retval = (VuEntity*) NewUnit (type, &data);
-    	// This is a valid creation call only if this entity is still owned by
-    	// the owner of our game
-    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-    	{
-    		VuReferenceEntity(retval);
-    		VuDeReferenceEntity(retval);
-    		retval = NULL;
-    	}
+     retval = (VuEntity*) NewUnit (type, &data);
+     // This is a valid creation call only if this entity is still owned by
+     // the owner of our game
+     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     {
+     VuReferenceEntity(retval);
+     VuDeReferenceEntity(retval);
+     retval = NULL;
+     }
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_MANAGER)
     {
-    	retval = (VuEntity*) NewManager (type, data);
-    	// This is a valid creation call only if this entity is still owned by
-    	// the owner of our game
-    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-    	{
-    		VuReferenceEntity(retval);
-    		VuDeReferenceEntity(retval);
-    		retval = NULL;
-    	}
+     retval = (VuEntity*) NewManager (type, data);
+     // This is a valid creation call only if this entity is still owned by
+     // the owner of our game
+     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     {
+     VuReferenceEntity(retval);
+     VuDeReferenceEntity(retval);
+     retval = NULL;
+     }
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_OBJECTIVE)
     {
-    	retval = (VuEntity*) NewObjective (type, &data);
-    	// This is a valid creation call only if this entity is still owned by
-    	// the owner of our game
-    	if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
-    	{
-    		VuReferenceEntity(retval);
-    		VuDeReferenceEntity(retval);
-    		retval = NULL;
-    	}
+     retval = (VuEntity*) NewObjective (type, &data);
+     // This is a valid creation call only if this entity is still owned by
+     // the owner of our game
+     if (!FalconLocalGame || FalconLocalGame->OwnerId() != retval->OwnerId())
+     {
+     VuReferenceEntity(retval);
+     VuDeReferenceEntity(retval);
+     retval = NULL;
+     }
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_SESSION)
     {
-    	retval = (VuEntity*) new FalconSessionEntity(&data);
-    	((VuSessionEntity*)retval)->SetKeepaliveTime (vuxRealTime);
+     retval = (VuEntity*) new FalconSessionEntity(&data);
+     ((VuSessionEntity*)retval)->SetKeepaliveTime (vuxRealTime);
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_GROUP)
     {
-    	retval = (VuEntity*) new FalconGameEntity(&data);			// FalconGroupEntity at some point..
+     retval = (VuEntity*) new FalconGameEntity(&data); // FalconGroupEntity at some point..
     }
     else if (classPtr->classInfo_[VU_CLASS] == CLASS_GAME)
     {
-    	retval = (VuEntity*) new FalconGameEntity(&data);
+     retval = (VuEntity*) new FalconGameEntity(&data);
     }
     else
     {
-    	// This is not a class table entry so to speak, but it is a ground spot
-    	//retval = (VuEntity*) new GroundSpotEntity(type);
-    	retval = (VuEntity*) new GroundSpotEntity(&data, &rem); // JB 010718
+     // This is not a class table entry so to speak, but it is a ground spot
+     //retval = (VuEntity*) new GroundSpotEntity(type);
+     retval = (VuEntity*) new GroundSpotEntity(&data, &rem); // JB 010718
     }
     return retval;*/
 }
@@ -427,67 +427,67 @@ VU_ID_NUMBER VuxGetId()
 /*
 void VuxGetIdAndWraps(const VuEntity *ce, VU_ID_NUMBER &id, VU_ID_NUMBER &low, VU_ID_NUMBER &hi){
 
-	//VuScopeLock lock(idMutex);
+ //VuScopeLock lock(idMutex);
 
-	// sigh. I have to const cast to get the IsXXX functions
-	// @todo make them const
-	VuEntity *e = const_cast<VuEntity*>(ce);
-	VU_ID_NUMBER *idp;
-	ushort type = e->Type();
-	if (
-		(type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) ||
-		(type < VU_SESSION_ENTITY_TYPE)
-	){
-		FalconEntity *fe = static_cast<FalconEntity*>(e);
-		if (fe->IsPackage()){
-			idp = &++lastPackageId;
-			low = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
-			hi = LAST_LOW_VOLATILE_VU_ID_NUMBER_1;
-			goto end;
-		}
-		else if (fe->IsFlight()){
-			idp = &++lastFlightId;
-			low = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
-			hi = LAST_LOW_VOLATILE_VU_ID_NUMBER_2;
-			goto end;
-		}
-		else if (fe->IsSquadron()){
-			idp = &++lastNonVolatileId;
-			low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
-			hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
-			goto end;
-		}
-		else if (fe->IsBrigade() || fe->IsBattalion()){
-			idp = &++lastNonVolatileId;
-			low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
-			hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
-			goto end;
-		}
-		else if (fe->IsTaskForce()){
-			idp = &++lastNonVolatileId;
-			low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
-			hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
-			goto end;
-		}
-		else if (fe->IsObjective()){
-			idp = &++lastObjectiveId;
-			low = FIRST_OBJECTIVE_VU_ID_NUMBER;
-			hi = LAST_OBJECTIVE_VU_ID_NUMBER;
-			goto end;
-		}
-	}
-	// default values
-	idp = &++lastVolatileId;
-	low = FIRST_VOLATILE_VU_ID_NUMBER;
-	hi = LAST_VOLATILE_VU_ID_NUMBER;
+ // sigh. I have to const cast to get the IsXXX functions
+ // @todo make them const
+ VuEntity *e = const_cast<VuEntity*>(ce);
+ VU_ID_NUMBER *idp;
+ ushort type = e->Type();
+ if (
+ (type > VU_PLAYER_POOL_GROUP_ENTITY_TYPE) ||
+ (type < VU_SESSION_ENTITY_TYPE)
+ ){
+ FalconEntity *fe = static_cast<FalconEntity*>(e);
+ if (fe->IsPackage()){
+ idp = &++lastPackageId;
+ low = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
+ hi = LAST_LOW_VOLATILE_VU_ID_NUMBER_1;
+ goto end;
+ }
+ else if (fe->IsFlight()){
+ idp = &++lastFlightId;
+ low = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
+ hi = LAST_LOW_VOLATILE_VU_ID_NUMBER_2;
+ goto end;
+ }
+ else if (fe->IsSquadron()){
+ idp = &++lastNonVolatileId;
+ low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
+ hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
+ goto end;
+ }
+ else if (fe->IsBrigade() || fe->IsBattalion()){
+ idp = &++lastNonVolatileId;
+ low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
+ hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
+ goto end;
+ }
+ else if (fe->IsTaskForce()){
+ idp = &++lastNonVolatileId;
+ low = FIRST_NON_VOLATILE_VU_ID_NUMBER;
+ hi = LAST_NON_VOLATILE_VU_ID_NUMBER;
+ goto end;
+ }
+ else if (fe->IsObjective()){
+ idp = &++lastObjectiveId;
+ low = FIRST_OBJECTIVE_VU_ID_NUMBER;
+ hi = LAST_OBJECTIVE_VU_ID_NUMBER;
+ goto end;
+ }
+ }
+ // default values
+ idp = &++lastVolatileId;
+ low = FIRST_VOLATILE_VU_ID_NUMBER;
+ hi = LAST_VOLATILE_VU_ID_NUMBER;
 
 end:
-	// cover wrap
-	if ((*idp < low) || (*idp > hi)){
-		*idp = low;
-	}
-	// return the id
-	id = *idp;
+ // cover wrap
+ if ((*idp < low) || (*idp > hi)){
+ *idp = low;
+ }
+ // return the id
+ id = *idp;
 }
 */
 

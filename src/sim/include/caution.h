@@ -46,7 +46,7 @@ typedef enum type_CSubSystem
     seat_notarmed_fault,
     equip_host_fault,
     elec_fault,
-    lef_fault,	//MI
+    lef_fault, //MI
     eng2_fire, //TJL 01/24/04 multi-engine
 
     lastFault
@@ -58,16 +58,16 @@ typedef enum type_CSubSystem
 
 typedef enum type_TWSubSystem
 {
-    handoff,			missile_launch,
-    pri_mode,		sys_test,
-    tgt_t,			unk,
-    search,			activate_power,
-    system_power,	low_altitude
+    handoff, missile_launch,
+    pri_mode, sys_test,
+    tgt_t, unk,
+    search, activate_power,
+    system_power, low_altitude
 };
 
 #define BITS_PER_VECTOR    32
 
-const int	NumVectors = (lastFault / BITS_PER_VECTOR) + 1;
+const int NumVectors = (lastFault / BITS_PER_VECTOR) + 1;
 
 
 //-------------------------------------------------
@@ -80,23 +80,23 @@ class CautionClass
 
     unsigned int mpBitVector[NumVectors];
 
-    void			SetCaution(int);
-    void			ClearCaution(int);
-    BOOL			GetCaution(int);
+    void SetCaution(int);
+    void ClearCaution(int);
+    BOOL GetCaution(int);
 
 public:
 
-    BOOL			IsFlagSet();
-    void			ClearFlag();
+    BOOL IsFlagSet();
+    void ClearFlag();
 
-    void			SetCaution(type_CSubSystem);
-    void			SetCaution(type_TWSubSystem);
+    void SetCaution(type_CSubSystem);
+    void SetCaution(type_TWSubSystem);
 
-    void			ClearCaution(type_CSubSystem);
-    void			ClearCaution(type_TWSubSystem);
+    void ClearCaution(type_CSubSystem);
+    void ClearCaution(type_TWSubSystem);
 
-    BOOL			GetCaution(type_CSubSystem);
-    BOOL			GetCaution(type_TWSubSystem);
+    BOOL GetCaution(type_CSubSystem);
+    BOOL GetCaution(type_TWSubSystem);
 
     CautionClass();
 };

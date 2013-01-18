@@ -6,33 +6,33 @@
 
 typedef enum
 {
-    ltLine		= 0,
-    ltValue		= 1,
-    ltPercent	= 2,
-    ltThreePt	= 3,
-    ltMinMax	= 4,
+    ltLine = 0,
+    ltValue = 1,
+    ltPercent = 2,
+    ltThreePt = 3,
+    ltMinMax = 4,
 } LimiterType;
 
 enum
 {
-    NegGLimiter				= 0,
-    PosGLimiter				= 1,
-    RollRateLimiter			= 2,
-    YawAlphaLimiter			= 3,
-    YawRollRateLimiter		= 4,
-    CatIIICommandType		= 5,
-    CatIIIAOALimiter		= 6,
-    CatIIIRollRateLimiter	= 7,
-    CatIIIYawAlphaLimiter	= 8,
+    NegGLimiter = 0,
+    PosGLimiter = 1,
+    RollRateLimiter = 2,
+    YawAlphaLimiter = 3,
+    YawRollRateLimiter = 4,
+    CatIIICommandType = 5,
+    CatIIIAOALimiter = 6,
+    CatIIIRollRateLimiter = 7,
+    CatIIIYawAlphaLimiter = 8,
     CatIIIYawRollRateLimiter = 9,
-    PitchYawControlDamper	= 10,
-    RollControlDamper		= 11,
-    CommandType				= 12,
-    LowSpeedOmega			= 13,
-    StoresDrag				= 14,
-    LowSpeedPitchDown		= 15,
-    CatIIIMaxGs				= 16,
-    AOALimiter				= 17,
+    PitchYawControlDamper = 10,
+    RollControlDamper = 11,
+    CommandType = 12,
+    LowSpeedOmega = 13,
+    StoresDrag = 14,
+    LowSpeedPitchDown = 15,
+    CatIIIMaxGs = 16,
+    AOALimiter = 17,
     NumLimiterTypes
 };
 
@@ -79,7 +79,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 protected:
     float upperX;
@@ -115,7 +115,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 protected:
     float upperX;
@@ -152,7 +152,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 protected:
     float value;
@@ -185,7 +185,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 protected:
     float minimum;
@@ -219,7 +219,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 protected:
     float percent;
@@ -232,22 +232,22 @@ public:
 
 typedef struct LimiterLink
 {
-    Limiter			*limiter;
-    int				key;
-    LimiterLink		*next;
+    Limiter *limiter;
+    int key;
+    LimiterLink *next;
 } LimiterLink;
 
 class LimiterMgrClass
 {
 protected:
-    Limiter		**limiterDatasets;
-    int			numDatasets;
+    Limiter **limiterDatasets;
+    int numDatasets;
 public:
     LimiterMgrClass(int numDatasets);
     ~LimiterMgrClass(void);
-    int		ReadLimiters(SimlibFileClass *file, int dataset);
+    int ReadLimiters(SimlibFileClass *file, int dataset);
     Limiter *GetLimiter(int key, int dataset);
-    int		HasLimiter(int key, int dataset);
+    int HasLimiter(int key, int dataset);
 };
 
 extern LimiterMgrClass *gLimiterMgr;

@@ -9,7 +9,7 @@
 // Manager flags
 // ===================================
 
-#define	CTM_MUST_BE_OWNED		0x01				// Do this action only if tasker owner by this machine
+#define CTM_MUST_BE_OWNED 0x01 // Do this action only if tasker owner by this machine
 
 // ===================================
 // Manager class
@@ -22,8 +22,8 @@ class CampManagerClass : public FalconEntity
 {
 private:
 public:
-    short			managerFlags;				// Various user flags
-    Team			owner;						// Controlling country/team
+    short managerFlags; // Various user flags
+    Team owner; // Controlling country/team
 
 public:
     // Constructors

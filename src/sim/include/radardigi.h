@@ -8,7 +8,7 @@ class RadarDigiClass : public RadarClass
 {
 public :
     RadarDigiClass(int index, SimMoverClass* parentPlatform);
-    virtual ~RadarDigiClass()					{};
+    virtual ~RadarDigiClass() {};
 
     virtual SimObjectType* Exec(SimObjectType* targetList);
 
@@ -21,19 +21,19 @@ public :
     virtual void StepAAmode(void)
     {
         mode = AA;
-    };	// Enter AA mode
+    }; // Enter AA mode
     virtual void StepAGmode(void)
     {
         mode = GM;
-    };	// Enter AG mode
+    }; // Enter AG mode
     virtual void SetMode(RadarMode cmd);
-    virtual int   IsAG(void);		// Is radar in A/G mode
-    virtual void  GetAGCenter(float* x, float* y);	// Center of radar ground search
+    virtual int   IsAG(void); // Is radar in A/G mode
+    virtual void  GetAGCenter(float* x, float* y); // Center of radar ground search
 
 protected:
-    float			rangeNM;			// How far are we looking in NM
-    float			rangeFT;			// How far are we looking in FT for convienience
-    float			invRangeFT;			// 1/how far we're looking for convienience
+    float rangeNM; // How far are we looking in NM
+    float rangeFT; // How far are we looking in FT for convienience
+    float invRangeFT; // 1/how far we're looking for convienience
 
 protected:
     void NewRange(float rangeInNM);

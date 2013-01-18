@@ -46,7 +46,7 @@ struct kbstr default_desc[] =
     { 0xCB, TXT_KBD_LEFTARROW },
     { 0xDB, TXT_KBD_LEFTWIN },
     { 0x7B, TXT_KBD_NOCONV },
-    // 	// JB 011212 { 0x45,TXT_KBD_NUMLOCK },
+    //  // JB 011212 { 0x45,TXT_KBD_NUMLOCK },
     { 0xC5, TXT_KBD_NUMLOCK },
     { 0x52, TXT_KBD_NUM0 },
     { 0x4F, TXT_KBD_NUM1 },

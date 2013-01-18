@@ -17,7 +17,7 @@
 #include "FalcLib\include\playerop.h"
 #include "Graphics\DXEngine\DXEngine.h"
 
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
 
@@ -33,7 +33,7 @@ void RenderTV::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 
 void RenderTV::StartDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     RenderOTW::StartDraw();
     //Drawable2D::SetGreenMode(TRUE); // RV - I-Hawk - Do not force green
     TheColorBank.SetColorMode(ColorBankClass::NormalMode);
@@ -47,7 +47,7 @@ void RenderTV::StartDraw(void)
 
 void RenderTV::EndDraw(void)
 {
-    //	DX - YELLOW BUG FIX - RED
+    // DX - YELLOW BUG FIX - RED
     RenderOTW::EndDraw();
     Drawable2D::SetGreenMode(FALSE);
 

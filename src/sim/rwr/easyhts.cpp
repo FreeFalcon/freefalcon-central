@@ -17,12 +17,12 @@
 
 void HarmTargetingPod::Display(VirtualDisplay* activeDisplay)
 {
-    /*float			 displayY;*/
-    //float			x2, y2;
-    //float			cosAng, sinAng;
-    //mlTrig			trig;
-    //int				boxed;
-    //UInt32			color;
+    /*float  displayY;*/
+    //float x2, y2;
+    //float cosAng, sinAng;
+    //mlTrig trig;
+    //int boxed;
+    //UInt32 color;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 }
 
@@ -39,13 +39,13 @@ EasyHarmTargetingPod::~EasyHarmTargetingPod(void)
 
 void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
 {
-    float			displayX, displayY;
-    float			x2, y2;
-    float			cosAng, sinAng;
-    GroundListElement*	tmpElement;
-    mlTrig			trig;
-    int				boxed;
-    UInt32			color;
+    float displayX, displayY;
+    float x2, y2;
+    float cosAng, sinAng;
+    GroundListElement* tmpElement;
+    mlTrig trig;
+    int boxed;
+    UInt32 color;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
 
 
@@ -101,15 +101,15 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         // Set the symbols draw color based on its team
         if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == War)
         {
-            color &= 0x000000FF;		// Red means at war
+            color &= 0x000000FF; // Red means at war
         }
         else if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == Allied)
         {
-            color &= 0x00FF0000;		// Blue means our team
+            color &= 0x00FF0000; // Blue means our team
         }
         else
         {
-            color &= 0x0000FF00;		// Green means everyone else
+            color &= 0x0000FF00; // Green means everyone else
         }
 
 

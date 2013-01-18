@@ -48,8 +48,8 @@ void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, float objectSca
 void OTWDriverClass::CreateVisualObject(SimBaseClass* theObject, int visType, Tpoint *simView, Trotation *viewRotation, float objectScale)
 {
     ShiAssert(IsActive());
-    ShiAssert(simView);							// KCK: Change default parameters to avoid this
-    ShiAssert(viewRotation);						// when Scott is done with his change
+    ShiAssert(simView); // KCK: Change default parameters to avoid this
+    ShiAssert(viewRotation); // when Scott is done with his change
 
     theObject->drawPointer = new DrawableBSP(visType, simView, viewRotation, objectScale);
 }
@@ -91,10 +91,10 @@ void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
         viewPoint->InsertObject(theObject->drawPointer);
 
         /*    No longer used
-        	  if (theObject->IsGroundVehicle() &&
+           if (theObject->IsGroundVehicle() &&
                  ((GroundClass*)theObject)->crewDrawable &&
-        		 !((GroundClass*)theObject)->crewDrawable->InDisplayList())
-        		 viewPoint->InsertObject(((GroundClass*)theObject)->crewDrawable);
+          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+          viewPoint->InsertObject(((GroundClass*)theObject)->crewDrawable);
         */
         if (theObject->IsGroundVehicle() &&
             ((GroundClass*)theObject)->truckDrawable &&
@@ -103,14 +103,14 @@ void OTWDriverClass::InsertObjectIntoDrawList(SimBaseClass* theObject)
 
         /*
               InsertObject(theObject->drawPointer);
-        	  if (theObject->IsGroundVehicle() &&
+           if (theObject->IsGroundVehicle() &&
                  ((GroundClass*)theObject)->crewDrawable &&
-        		 !((GroundClass*)theObject)->crewDrawable->InDisplayList())
-        		 InsertObject(((GroundClass*)theObject)->crewDrawable);
-        	  if (theObject->IsGroundVehicle() &&
+          !((GroundClass*)theObject)->crewDrawable->InDisplayList())
+          InsertObject(((GroundClass*)theObject)->crewDrawable);
+           if (theObject->IsGroundVehicle() &&
                  ((GroundClass*)theObject)->truckDrawable &&
-        		 !((GroundClass*)theObject)->truckDrawable->InDisplayList())
-        		 InsertObject(((GroundClass*)theObject)->truckDrawable);
+          !((GroundClass*)theObject)->truckDrawable->InDisplayList())
+          InsertObject(((GroundClass*)theObject)->truckDrawable);
         */
     }
 }
@@ -153,9 +153,9 @@ void OTWDriverClass::RescaleAllObjects(void)
        theObject = (SimBaseClass*)persistWalker.GetFirst();
        while (theObject)
        {
-    	   if (theObject->drawPointer) {
-    			theObject->drawPointer->SetScale(objectScale);
-    	   }
+        if (theObject->drawPointer) {
+     theObject->drawPointer->SetScale(objectScale);
+        }
           theObject = (SimBaseClass*)persistWalker.GetNext();
        }
     */
@@ -217,14 +217,14 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
             else if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_FEATURE)
             {
                 // A feature thingy..
-                SimBaseClass	*prevObj = NULL, *nextObj = NULL;
+                SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
                 // In many cases, our visType should be modified by our neighbors.
                 if ((theObject->Status() & VIS_TYPE_MASK) != VIS_DESTROYED && (((SimFeatureClass*)theObject)->featureFlags & FEAT_NEXT_NORM || ((SimFeatureClass*)theObject)->featureFlags & FEAT_PREV_NORM))
                 {
                     // KCK: Can we just use our slot number? Or will this break something?
-                    //					int	idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
-                    int	idx = theObject->GetSlot();
+                    // int idx = theObject->GetCampaignObject()->GetComponentIndex (theObject);
+                    int idx = theObject->GetSlot();
 
                     prevObj = theObject->GetCampaignObject()->GetComponentEntity(idx - 1);
                     nextObj = theObject->GetCampaignObject()->GetComponentEntity(idx + 1);
@@ -362,13 +362,13 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
             if (classPtr->vuClassData.classInfo_[VU_CLASS] == CLASS_SFX)
             {
                 // Hmm.. Special effect. Better leave this one alone..
-                //				if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
-                //					((EjectedPilotClass*)theObject)->SetModel()
+                // if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
+                // ((EjectedPilotClass*)theObject)->SetModel()
                 return;
             }
             else
                 // TODO:  Might want to remove shadows from missiles/bombs for performance reasons...
-                //				if (classPtr->vuClassData.classInfo_[VU_TYPE] != TYPE_MISSILE)
+                // if (classPtr->vuClassData.classInfo_[VU_TYPE] != TYPE_MISSILE)
             {
                 // We may still be on the ground
                 theObject->drawPointer = new DrawableShadowed(visType, &simView, &viewRotation, objectScale, classPtr->visType[1]);
@@ -379,24 +379,24 @@ void CreateDrawable(SimBaseClass* theObject, float objectScale)
     }
 }
 
-long TeamSimColorList[NUM_TEAMS] = {	0xfffffffe,		// Thunderbird		// White  not quite white so color is steady
-                                        0xff008000,		// US				// Green
-                                        0xffff0000,		// ROK/Shark		// Blue
-                                        0xff3771B2,		// Japan			// Brown
-                                        0xff00ffff,		// China			// Yellow
-                                        0xff00adff,		// Russia/Tiger		// Orange
-                                        0xff0000ff,		// DPRK/Crimson		// Red
+long TeamSimColorList[NUM_TEAMS] = { 0xfffffffe, // Thunderbird // White  not quite white so color is steady
+                                        0xff008000, // US // Green
+                                        0xffff0000, // ROK/Shark // Blue
+                                        0xff3771B2, // Japan // Brown
+                                        0xff00ffff, // China // Yellow
+                                        0xff00adff, // Russia/Tiger // Orange
+                                        0xff0000ff, // DPRK/Crimson // Red
                                         0xff000000
-                                   };	// No one			// Black
+                                   }; // No one // Black
 
 void SetLabel(SimBaseClass* theObject)
 {
-    Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)theObject->EntityType();
-    CampEntity				campObj;
-    char					label[40] = {0};
-    long					labelColor = 0xff0000ff;
+    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
+    CampEntity campObj;
+    char label[40] = {0};
+    long labelColor = 0xff0000ff;
 
-    ShiAssert(theObject);	// try to catch when this happens (2nd crash BT #955)
+    ShiAssert(theObject); // try to catch when this happens (2nd crash BT #955)
 
     if (!theObject)
         return;
@@ -405,7 +405,7 @@ void SetLabel(SimBaseClass* theObject)
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
-            FlightClass		*flight;
+            FlightClass *flight;
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
@@ -414,7 +414,7 @@ void SetLabel(SimBaseClass* theObject)
                 // 2001-10-31 M.N. show flight names of our team
                 && flight && (flight->GetTeam() == campObj->GetTeam()))
             {
-                char		temp[40];
+                char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
                 sprintf(label, "%s%d", temp, ((SimVehicleClass*)theObject)->vehicleInUnit + 1);
             }
@@ -433,8 +433,8 @@ void SetLabel(SimBaseClass* theObject)
     if (theObject->IsSetFalcFlag(FEC_HASPLAYERS))
     {
         // Find the player's callsign
-        VuSessionsIterator		sessionWalker(FalconLocalGame);
-        FalconSessionEntity		*session;
+        VuSessionsIterator sessionWalker(FalconLocalGame);
+        FalconSessionEntity *session;
 
         session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -458,7 +458,7 @@ void SetLabel(SimBaseClass* theObject)
 
     // KCK: This uses the UI's colors. For a while these didn't work well in Sim
     // They may be ok now, though - KCK: As of 10/25, still looked bad
-    //	labelColor = TeamColorList[TeamInfo[theObject->GetTeam()]->GetColor()];
+    // labelColor = TeamColorList[TeamInfo[theObject->GetTeam()]->GetColor()];
 
     if (theObject->drawPointer)
         theObject->drawPointer->SetLabel(label, labelColor);
@@ -492,7 +492,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
 
         if (campObj && campObj->IsFlight() && campObj->InPackage())
         {
-            char		temp[40];
+            char temp[40];
 
             GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
             sprintf(flight, "%s%d", temp, ((SimVehicleClass*)theObject)->vehicleInUnit + 1);
@@ -506,8 +506,8 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
     if (theObject->IsSetFalcFlag(FEC_HASPLAYERS))
     {
         // Find the player's callsign
-        VuSessionsIterator		sessionWalker(FalconLocalGame);
-        FalconSessionEntity		*session;
+        VuSessionsIterator sessionWalker(FalconLocalGame);
+        FalconSessionEntity *session;
 
         session = (FalconSessionEntity*)sessionWalker.GetFirst();
 

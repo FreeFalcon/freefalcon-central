@@ -18,10 +18,10 @@
 #include "graphics/include/grtypes.h"
 #endif
 
-#define OPTIMUM_ALPHA	7.0F//ME123 FROM 6
-#define OPTIMUM_ALT_M1	-20.1225F
-#define OPTIMUM_ALT_M2	-0.6774F
-#define OPTIMUM_ALT_B	59784.5713F
+#define OPTIMUM_ALPHA 7.0F//ME123 FROM 6
+#define OPTIMUM_ALT_M1 -20.1225F
+#define OPTIMUM_ALT_M2 -0.6774F
+#define OPTIMUM_ALT_B 59784.5713F
 
 class SimBaseClass;
 class HeliMMClass;
@@ -31,7 +31,7 @@ class AircraftClass;
 /* Aerodynamics Data type */
 /*------------------------*/
 #ifdef USE_SH_POOLS
-extern MEM_POOL	AirframeDataPool;
+extern MEM_POOL AirframeDataPool;
 #endif
 
 class AeroData
@@ -86,8 +86,8 @@ struct DecoyDispenser
 class AuxAeroData
 {
 public:
-    /*	AuxAeroData () {	JSBSimScript = 0; rollMomentum = 1; pitchMomentum = 1; yawMomentum = 1; pitchElasticity = 1; sinkRate = 15.0f; }
-    	~AuxAeroData() { free(JSBSimScript); }*/
+    /* AuxAeroData () { JSBSimScript = 0; rollMomentum = 1; pitchMomentum = 1; yawMomentum = 1; pitchElasticity = 1; sinkRate = 15.0f; }
+     ~AuxAeroData() { free(JSBSimScript); }*/
 
     //engine
     float fuelFlowFactorNormal; // fuel flow rate for normal engine rates
@@ -104,15 +104,15 @@ public:
     float mainGenRpm; // rpm that main generator starts operating at
     float stbyGenRpm; // rpm that standby generator starts operating at.
     float epuBurnTime; // time the epu can burn fuel for in total
-    float jfsSpinTime;	//MI how long the JFS runs with the hydraulic enegery
+    float jfsSpinTime; //MI how long the JFS runs with the hydraulic enegery
     int DeepStallEngineStall;
     int engineDamageStopThreshold; // 2002-04-11 ADDED BY S.G. Externalized the 13% chance of engine stop
     int engineDamageNoRestartThreshold; // 2002-04-11 ADDED BY S.G. Externalized the 50% chance of engine not able to restart
     int engineDamageHitThreshold; // 2002-04-11 ADDED BY S.G. Externalized the hitPoints 'theshold' being more than 0
 
-#define AUX_LEFTEF_NONE	0
+#define AUX_LEFTEF_NONE 0
 #define AUX_LEFTEF_MANUAL 1
-#define AUX_LEFTEF_AOA	2
+#define AUX_LEFTEF_AOA 2
 #define AUX_LEFTEF_MACH 3
 #define AUX_LEFTEF_TEF 4
     //airframe
@@ -204,7 +204,7 @@ public:
     // RV - I-Hawk - Added HTS ability for the advanced HTS code
     int HtsAble;
 
-    float MeanTimeBetweenFailures;	//Wombat778 2-24-04
+    float MeanTimeBetweenFailures; //Wombat778 2-24-04
 
     // sounds
     int sndInt; // MLR 2003-11-7 Internal engine sound - replaces Engine Noise in F4Browse if >0
@@ -282,7 +282,7 @@ public:
     float decelDistance; // 2002-03-05 MN different deceleration distances at refuel for each aircraft
     float followRate; // 2002-03-06 MN different follow rates for each aircraft
     float desiredClosureFactor; // 2002-03-08 MN another important factor for a smooth approach to the tanker
-    //	float IL78Factor; // 2002-03-09 MN for fixing "GivingGas" range factor
+    // float IL78Factor; // 2002-03-09 MN for fixing "GivingGas" range factor
     float longLeg; // 2002-03-13 MN long leg for tanker track pattern
     float shortLeg; // 2002-03-13 MN short leg for tanker track pattern
     float refuelRate; // 2002-03-15 MN different aircraft have different refuel rates
@@ -291,11 +291,11 @@ public:
     float jokerFactor; // 2002-03-12 MN default 2.0
     float bingoFactor; // 2002-03-12 MN default 5.0
     float fumesFactor; // 2002-03-12 MN default 15.0
-    int	numBooms; // 18NOV03 - FRB  1 = has boom service
-    int	numDrogues; // 18NOV03 - FRB >=1 = has drogue service	and how many stations
-    int	activeDrogue; // 26NOV03 - FRB Slot number of drogue used for refueling
-    float	DrogueExt; // 26NOV03 - FRB Drogue extension length (feet).
-    float	BoomStoredAngle; // 12DEC03 - FRB Angle of boom in the stored position (deg. + = up)
+    int numBooms; // 18NOV03 - FRB  1 = has boom service
+    int numDrogues; // 18NOV03 - FRB >=1 = has drogue service and how many stations
+    int activeDrogue; // 26NOV03 - FRB Slot number of drogue used for refueling
+    float DrogueExt; // 26NOV03 - FRB Drogue extension length (feet).
+    float BoomStoredAngle; // 12DEC03 - FRB Angle of boom in the stored position (deg. + = up)
     Tpoint DrogueRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position relative to drogue pack (Slot)
     Tpoint BoomRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position adjustments for different booms boom
 
@@ -326,36 +326,36 @@ public:
 
     //MI TFR stuff
     int Has_TFR;
-    float PID_K;			//Proportianal gain in TFR PID pitch controler.
-    float PID_KI;			//Intergral gain in TFR PID pitch controler
-    float PID_KD;			//Differential gain in TFR PID pitch controler
-    int TFR_LimitMX;	//Limit PID Integrator internal value so it doesn't get stuck in exteme.
-    float TFR_Corner;	//Corner speed used in TFR calculations
-    float TFR_Gain;		//Gain for calculating pitch error based on alt. difference
-    float EVA_Gain;		//Pitch setpoint gain in EVA (evade) code
-    float TFR_MaxRoll;	//Do not pull the stick in TFR if roll exceeds this value
-    float TFR_SoftG;		//Max TFR G pull in soft mode
-    float TFR_MedG;		//Max TFR G pull in medium mode
-    float TFR_HardG;		//Max TFR G pull in hard mode
-    float TFR_Clearance;	//Minimum clearance above the top of any obstacle [ft]
-    float SlowPercent;		//Flash SLOW when airspeed is lower then this percentage of corner speed
-    float TFR_lookAhead;	//Distance from ground directly under a/c used to measure ground inclination [ft]
-    float EVA1_SoftFactor;	//Turnradius multiplier to get safe distance from ground for FLY_UP in SLOW
-    float EVA2_SoftFactor;	//Turnradius multiplier to get safe distance from ground for OBSTACLE in SLOW
-    float EVA1_MedFactor;	//Turnradius multiplier to get safe distance from ground for FLY_UP in MED
-    float EVA2_MedFactor;	//Turnradius multiplier to get safe distance from ground for OBSTACLE in MED
-    float EVA1_HardFactor;	//Turnradius multiplier to get safe distance from ground for FLY_UP in HARD
-    float EVA2_HardFactor;	//Turnradius multiplier to get safe distance from ground for FLY_UP in MED
-    float TFR_GammaCorrMult;	//Turnradius multiplier to get safe distance from ground for OBSTACLE in HARD
-    float LantirnCameraX;	//Position of the camera
+    float PID_K; //Proportianal gain in TFR PID pitch controler.
+    float PID_KI; //Intergral gain in TFR PID pitch controler
+    float PID_KD; //Differential gain in TFR PID pitch controler
+    int TFR_LimitMX; //Limit PID Integrator internal value so it doesn't get stuck in exteme.
+    float TFR_Corner; //Corner speed used in TFR calculations
+    float TFR_Gain; //Gain for calculating pitch error based on alt. difference
+    float EVA_Gain; //Pitch setpoint gain in EVA (evade) code
+    float TFR_MaxRoll; //Do not pull the stick in TFR if roll exceeds this value
+    float TFR_SoftG; //Max TFR G pull in soft mode
+    float TFR_MedG; //Max TFR G pull in medium mode
+    float TFR_HardG; //Max TFR G pull in hard mode
+    float TFR_Clearance; //Minimum clearance above the top of any obstacle [ft]
+    float SlowPercent; //Flash SLOW when airspeed is lower then this percentage of corner speed
+    float TFR_lookAhead; //Distance from ground directly under a/c used to measure ground inclination [ft]
+    float EVA1_SoftFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in SLOW
+    float EVA2_SoftFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in SLOW
+    float EVA1_MedFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
+    float EVA2_MedFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in MED
+    float EVA1_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in HARD
+    float EVA2_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
+    float TFR_GammaCorrMult; //Turnradius multiplier to get safe distance from ground for OBSTACLE in HARD
+    float LantirnCameraX; //Position of the camera
     float LantirnCameraY;
     float LantirnCameraZ;
-    float minTGTMAR;		// 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
-    float maxMARIdedStart;	// 2002-03-22 ADDED BY S.G. Max MAR for this type of aicraft when target is ID'ed and below 28K
-    float addMARIded5k;		// 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 5K
-    float addMARIded18k;	// 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 18K
-    float addMARIded28k;	// 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 28K
-    float addMARIdedSpike;	// 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and spiked
+    float minTGTMAR; // 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
+    float maxMARIdedStart; // 2002-03-22 ADDED BY S.G. Max MAR for this type of aicraft when target is ID'ed and below 28K
+    float addMARIded5k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 5K
+    float addMARIded18k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 18K
+    float addMARIded28k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 28K
+    float addMARIdedSpike; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and spiked
 
     // 2003-09-30 added by MLR to support Aircraft animations
     float animEngineRPMMult;  // Prop/Turbine multiplier.
@@ -404,7 +404,7 @@ public:
     2 F16C/D
     3 F15A/B
     4 F15C/D
-    5	F15E
+    5 F15E
     6 F14A
     7 F14B/D
     8 F18A
@@ -434,8 +434,8 @@ public:
     float A2GCameraAlt;// = 7000.0f; //TJL 10/27/03 Sets AI BDA/Recon altitude
     float A2GBombMissileAlt;//
     //Cobra 10/30/04 TJL
-    //    6,702.0	59,144.0	63,137.7	0.0			848.6		0.0  //f-16c slug/ft^2
-    //float ixx,		iyy,		izz,		ixy,		ixz,		iyz;
+    //    6,702.0 59,144.0 63,137.7 0.0 848.6 0.0  //f-16c slug/ft^2
+    //float ixx, iyy, izz, ixy, ixz, iyz;
 
     struct animIntakeData
     {
@@ -525,18 +525,18 @@ class GearData
 public:
     enum GearFlags
     {
-        GearStuck	= 0x01,
-        GearBroken	= 0x02,
-        DoorStuck	= 0x04,
-        DoorBroken	= 0x08,
+        GearStuck = 0x01,
+        GearBroken = 0x02,
+        DoorStuck = 0x04,
+        DoorBroken = 0x08,
         GearProblem = 0x0F,
     };
     GearData(void);
     ~GearData(void) {}
-    float	strength;	//how many hitpoints it has left
-    float	vel;		//at what rate is it currently compressing/extending in ft/s
-    float	obstacle;	//rock height/rut depth
-    uint	flags;		//gear stuck/broken, door stuck/broken,
+    float strength; //how many hitpoints it has left
+    float vel; //at what rate is it currently compressing/extending in ft/s
+    float obstacle; //rock height/rut depth
+    uint flags; //gear stuck/broken, door stuck/broken,
     float   WheelAngle; // the current angle the wheel is rotated. Used to position DOF
     float   WheelRPS;   // Wheel spins at Radians Per Sec. Used to spin wheel when not touching ground
     // sfr: not needed anymore
@@ -581,13 +581,13 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 private:
     // Airframe/Engine data
     AeroData          *aeroData;
-    AuxAeroData		  *auxaeroData; // JB 010714
+    AuxAeroData   *auxaeroData; // JB 010714
     EngineData        *engineData;
     RollData          *rollCmd;
     float area, fuel, fuelFlow, fuelFlow2, externalFuel, epuFuel;//TJL 01/11/04 Added fuelFlow2 Engine 2
@@ -595,14 +595,14 @@ private:
     float gsAvail, maxGs, maxRoll, maxRollDelta, startRoll;
     float minVcas, maxVcas, cornerVcas;
     unsigned int flags;
-    short	vehicleIndex;
+    short vehicleIndex;
     float fuelFlowSS, fuelFlowSS2; //TJL 04/25/04
     float ftitLeft;//TJL 09/11/04 //Cobra 10/30/04 TJL
     float ftitRight;//TJL 09/11/04
 
     // A bit of a trick to get ground handling to be smooth at low speed
-    float	groundAnchorX,	groundAnchorY;
-    float	groundDeltaX,	groundDeltaY;
+    float groundAnchorX, groundAnchorY;
+    float groundDeltaX, groundDeltaY;
 
     // RV - Biker - Flag for carrier takeoff position taken
     int carrierStartPosEngaged;
@@ -696,10 +696,10 @@ private:
     int curRollAlphaBreak, curRollQbarBreak;
     int curEngMachBreak, curEngAltBreak;
 
-    VU_TIME NextFailure;				//Wombat778 2-24-04
+    VU_TIME NextFailure; //Wombat778 2-24-04
 
     // Simple flight model
-    int simpleMode;	// 0 = no
+    int simpleMode; // 0 = no
     // Functions
     int ReadData(int idx);
     void SuperSimpleFCS(void);
@@ -797,11 +797,11 @@ public:
         return auxaeroData->addMARIdedSpike;
     }; // 2002-03-22 ADDED BY S.G.
 
-    int	GetEngineDamageStopThreshold()
+    int GetEngineDamageStopThreshold()
     {
         return auxaeroData->engineDamageStopThreshold;
     }; // 2002-04-11 ADDED BY S.G.
-    int	GetEngineDamageNoRestartThreshold()
+    int GetEngineDamageNoRestartThreshold()
     {
         return auxaeroData->engineDamageNoRestartThreshold;
     }; // 2002-04-11 ADDED BY S.G.
@@ -1029,8 +1029,8 @@ public:
         return auxaeroData->LantirnCameraZ;
     };
 
-    float lastRStick;	//RAS 02Apr04 to improve grnd steering
-    float lastYPedal;	//RAS 02Apr04
+    float lastRStick; //RAS 02Apr04 to improve grnd steering
+    float lastYPedal; //RAS 02Apr04
 
     void EngineModel(float dt);
     //TJL 01/11/04 Multi Engine Code
@@ -1075,7 +1075,7 @@ public:
     float FTITMax;
 
 
-    void RandomFailureModel();	//Wombat778 2-24-04
+    void RandomFailureModel(); //Wombat778 2-24-04
 
     float Cd()
     {
@@ -1175,18 +1175,18 @@ public:
     int TheRoutine[5][10]; // Cobra - Array of pilot actions (PilotAction) (5 routines)
     enum PilotAction
     {
-        PA_None					= 0,
-        PA_Forward			= 1,
-        PA_ForwardDown	=	2,
-        PA_Left					= 3,
-        PA_Right				=	4,
-        PA_LeftBack			=	5,
-        PA_RightBack		=	6,
-        PA_LeftBackUp		=	7,
-        PA_RightBackUp	=	8,
-        PA_ForwardUp		=	9,
-        PA_BackUp				=	10,
-        PA_End					=	11
+        PA_None = 0,
+        PA_Forward = 1,
+        PA_ForwardDown = 2,
+        PA_Left = 3,
+        PA_Right = 4,
+        PA_LeftBack = 5,
+        PA_RightBack = 6,
+        PA_LeftBackUp = 7,
+        PA_RightBackUp = 8,
+        PA_ForwardUp = 9,
+        PA_BackUp = 10,
+        PA_End = 11
     };
 
 
@@ -1213,14 +1213,14 @@ public:
         EngineOff     = 0x8000,
         ThrottleCheck = 0x10000,
         SuperSimple   = 0x20000,
-        MPOverride	  = 0x40000,
-        LowSpdHorn	  = 0x80000,
+        MPOverride   = 0x40000,
+        LowSpdHorn   = 0x80000,
         HornSilenced  = 0x100000,
         CATLimiterIII = 0x200000,
-        NoseSteerOn	  = 0x400000,
-        OverRunway	  = 0x800000,
+        NoseSteerOn   = 0x400000,
+        OverRunway   = 0x800000,
         HasComplexGear = 0x1000000,
-        GearDamaged	  = 0x2000000,
+        GearDamaged   = 0x2000000,
         OverAirStrip  = 0x4000000,
         EngineStopped = 0x8000000,
         JfsStart = 0x10000000,
@@ -1266,13 +1266,13 @@ public:
     float tefFactor;
     float lefFactor;
     float curMaxGs;
-    StallMode	stallMode;
+    StallMode stallMode;
     float strFactor;//Cobra 10/30/04 TJL
 
-    GearData	*gear;
+    GearData *gear;
     int groundType;
-    float	grndphi, grndthe, groundZ;
-    float	bumpphi, bumpthe, bumpyaw;
+    float grndphi, grndthe, groundZ;
+    float bumpphi, bumpthe, bumpyaw;
     Tpoint  gndNormal;
 
     // Geometry Stuff
@@ -1422,12 +1422,12 @@ public:
     void HydrRestore(int sys);
 
     float jfsaccumulator;
-    float JFSSpinTime;	//MI
+    float JFSSpinTime; //MI
     void JfsEngineStart(void);
     void QuickEngineStart();
     float curMaxStoreSpeed;//me123
     bool /*LLON,*/ PBON; //MI for LandingLight and Parkingbrake, sfr: removed LLON, aircraft has a flag for it
-    bool BrakesToggle;	//MI for new Speedbrake
+    bool BrakesToggle; //MI for new Speedbrake
     void ToggleLL(void);
     void TogglePB(void);
     void ToggleHook(void); // JB carrier
@@ -1581,12 +1581,12 @@ public:
     float CheckHeight(void) const;
     void CheckGroundImpact(float dt);
 
-    float	GetOptimumCruise(void);
-    float	GetOptimumAltitude(void);
-    float	CalcThrotlPos(float speed);
-    float	CalcMuFric(int groundType);
-    float	CalcDesAlpha(float desGs);
-    float	CalcDesSpeed(float desAlpha);
+    float GetOptimumCruise(void);
+    float GetOptimumAltitude(void);
+    float CalcThrotlPos(float speed);
+    float CalcMuFric(int groundType);
+    float CalcDesAlpha(float desGs);
+    float CalcDesSpeed(float desAlpha);
     void SetPStick(float newStick)
     {
         pstick = newStick;
@@ -1696,7 +1696,7 @@ public:
     {
         return area;
     };
-    int	VehicleIndex(void)
+    int VehicleIndex(void)
     {
         return vehicleIndex;
     }
@@ -1777,9 +1777,9 @@ public:
     {
         return auxaeroData->sndBBAltitude;
     };
-#define	SIMPLE_MODE_OFF	0
-#define	SIMPLE_MODE_AF	1
-#define	SIMPLE_MODE_HF	2
+#define SIMPLE_MODE_OFF 0
+#define SIMPLE_MODE_AF 1
+#define SIMPLE_MODE_HF 2
 
     // easter egg -- helicopter flight model.....
     void RunHeliModel(void);
@@ -1812,7 +1812,7 @@ public:
     {
         return auxaeroData->desiredClosureFactor;
     }
-    //	float GetIL78Factor(void) {return auxaeroData->IL78Factor; }
+    // float GetIL78Factor(void) {return auxaeroData->IL78Factor; }
     float GetBingoReturnDistance(void)
     {
         return auxaeroData->BingoReturnDistance;

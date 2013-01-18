@@ -15,7 +15,7 @@
 
 
 // The global terrain database used by everyone
-extern class TMap	TheMap;
+extern class TMap TheMap;
 
 
 class TMap
@@ -30,104 +30,104 @@ public:
         initialized = FALSE;
     };
 
-    int		Setup(const char *mapPath);
-    void	Cleanup(void);
+    int Setup(const char *mapPath);
+    void Cleanup(void);
 
     // Flag to indicate that this map has or has not been initialized
-    BOOL	IsReady(void)
+    BOOL IsReady(void)
     {
         return initialized;
     };
 
     // Provide access to the levels which make up this map
-    TLevel*	Level(int level)
+    TLevel* Level(int level)
     {
         ShiAssert(level < nLevels);
         return (&Levels[level]);
     };
-    int		NumLevels(void)
+    int NumLevels(void)
     {
         return nLevels;
     }
-    int		LastNearTexLOD(void)
+    int LastNearTexLOD(void)
     {
         return lastNearTexturedLOD;
     };
-    int		LastFarTexLOD(void)
+    int LastFarTexLOD(void)
     {
         return lastFarTexturedLOD;
     };
 
     // Return the world space dimensions of this map
-    float	NorthEdge()
+    float NorthEdge()
     {
         ShiAssert(IsReady());
         return Levels->BlocksHigh() * Levels->FTperBLOCK();
     };
-    float	EastEdge()
+    float EastEdge()
     {
         ShiAssert(IsReady());
         return Levels->BlocksWide() * Levels->FTperBLOCK();
     };
-    float	WestEdge()
+    float WestEdge()
     {
         ShiAssert(IsReady());
         return 0.0f;
     };
-    float	SouthEdge()
+    float SouthEdge()
     {
         ShiAssert(IsReady());
         return 0.0f;
     };
-    UINT	BlocksHigh()
+    UINT BlocksHigh()
     {
         ShiAssert(IsReady());
         return Levels->BlocksHigh();
     };
-    UINT	BlocksWide()
+    UINT BlocksWide()
     {
         ShiAssert(IsReady());
         return Levels->BlocksWide();
     };
-    float	FeetPerBlock()
+    float FeetPerBlock()
     {
         ShiAssert(IsReady());
         return Levels->FTperBLOCK();
     };
     // Return a course appoximation of terrain height (should be max, positive up)
-    float	GetMEA(float FTnorth, float FTeast);
+    float GetMEA(float FTnorth, float FTeast);
 
     // Probably should be protected, but things are easier (faster?) this way...
-    Tcolor	ColorTable[ 256 ];
-    Tcolor	DarkColorTable[ 256 ];
-    Tcolor	GreenTable[ 256 ];
-    Tcolor	DarkGreenTable[ 256 ];
+    Tcolor ColorTable[ 256 ];
+    Tcolor DarkColorTable[ 256 ];
+    Tcolor GreenTable[ 256 ];
+    Tcolor DarkGreenTable[ 256 ];
 
 protected:
-    BOOL	initialized;
+    BOOL initialized;
 
-    int		lastNearTexturedLOD;
-    int		lastFarTexturedLOD;
+    int lastNearTexturedLOD;
+    int lastFarTexturedLOD;
 
-    int		nLevels;
-    TLevel	*Levels;
+    int nLevels;
+    TLevel *Levels;
 
-    Int16	*MEAarray;		// Array of height values
-    int		MEAwidth;		// Width of MEA array
-    int		MEAheight;		// Height of MEA array
-    float	FTtoMEAcell;	// Conversion factor for indexing into the array
+    Int16 *MEAarray; // Array of height values
+    int MEAwidth; // Width of MEA array
+    int MEAheight; // Height of MEA array
+    float FTtoMEAcell; // Conversion factor for indexing into the array
     enum
     {
         TMAP_LARGETERRAIN = 0x1, // using larger terrain maps
         TMAP_LARGEUIMAP = 0x2, // double sized squad selection map
     };
-    int	flags; // misc flags
+    int flags; // misc flags
 protected:
-    void	LoadMEAtable(const char *mapPath);
-    void	LoadColorTable(HANDLE inputFile);
+    void LoadMEAtable(const char *mapPath);
+    void LoadColorTable(HANDLE inputFile);
 
     static void TimeUpdateCallback(void *self);
-    void	UpdateLighting(void);
+    void UpdateLighting(void);
 };
 
 #endif // _TMAP_H_

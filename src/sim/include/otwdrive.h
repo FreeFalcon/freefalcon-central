@@ -8,7 +8,7 @@
 #include "falclib/include/f4thread.h"
 #include "falclib/include/f4vu.h"
 #include "Graphics/Include/TerrTex.h"
-#include "inpFunc.h"		//Wombat778 10-10-2003	added for 3d clickable cockpit
+#include "inpFunc.h" //Wombat778 10-10-2003 added for 3d clickable cockpit
 //#include "cpmanager.h" //sfr: dependencies: other files may include this
 #include "simbase.h"
 
@@ -43,21 +43,21 @@ class TViewPoint;
 enum
 {
     // enums for CHAT Messages
-    MAX_CHAT_LINES		= 10,
-    MAX_CHAT_LENGTH		= 100,
+    MAX_CHAT_LINES = 10,
+    MAX_CHAT_LENGTH = 100,
 
     // flags for Displaying at the very end if the display loop
-    SHOW_CHATBOX		= 0x00000001,
-    SHOW_MESSAGES		= 0x00000002,
-    SHOW_PAUSE			= 0x00000010,
-    SHOW_X2				= 0x00000020,
-    SHOW_X4				= 0x00000040,
-    SHOW_TE_SCORES		= 0x00000100,
+    SHOW_CHATBOX = 0x00000001,
+    SHOW_MESSAGES = 0x00000002,
+    SHOW_PAUSE = 0x00000010,
+    SHOW_X2 = 0x00000020,
+    SHOW_X4 = 0x00000040,
+    SHOW_TE_SCORES = 0x00000100,
     SHOW_DOGFIGHT_SCORES = 0x00000200,
 };
 
 // The time to enable the Big load
-#define	BIG_LOAD_TIMEOUT	5 * 1000
+#define BIG_LOAD_TIMEOUT 5 * 1000
 
 
 // Defines for Virtual Cockpit Head Motion
@@ -68,18 +68,18 @@ enum
 #define HEAD_TRANSISTION2 3
 #define HEAD_TRANSISTION3 4
 
-#define STOP_STATE0	0
-#define STOP_STATE1	1
-#define STOP_STATE2	2
-#define STOP_STATE3	3
+#define STOP_STATE0 0
+#define STOP_STATE1 1
+#define STOP_STATE2 2
+#define STOP_STATE3 3
 
 #define LTOR 1
 #define RTOL -1
 
-#define PAN_AND_TILT		0
-#define PAN_ONLY			1
-#define TILT_ONLY			2
-#define NO_PAN_OR_TILT	3
+#define PAN_AND_TILT 0
+#define PAN_ONLY 1
+#define TILT_ONLY 2
+#define NO_PAN_OR_TILT 3
 // End V Cockpit Defines
 
 class displayList
@@ -114,21 +114,21 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 
 class drawPtrList
 {
 public:
-    drawPtrList(void)	{};
-    ~drawPtrList(void)	{};
+    drawPtrList(void) {};
+    ~drawPtrList(void) {};
 
-    DrawableObject	*drawPointer;
-    float			value;
+    DrawableObject *drawPointer;
+    float value;
 
-    drawPtrList	*prev;
-    drawPtrList	*next;
+    drawPtrList *prev;
+    drawPtrList *next;
 
 #ifdef USE_SH_POOLS
 public:
@@ -150,7 +150,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 
@@ -176,14 +176,14 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     sfxRequest(void);
     ~sfxRequest(void);
 
-    sfxRequest *next;		// next in Q
-    SfxClass *sfx;		// pointer to sfx object
+    sfxRequest *next; // next in Q
+    SfxClass *sfx; // pointer to sfx object
 };
 
 // this structire is used for the virtual cockpit instrumentation
@@ -203,8 +203,8 @@ typedef struct
     float dist;
     InputFunctionType function;
     int sound;
-    int mousebutton;			//Wombat778 11-7-2003
-    int buttonId;				//Wombat778 03-06-04
+    int mousebutton; //Wombat778 11-7-2003
+    int buttonId; //Wombat778 03-06-04
 } Button3D;
 
 #define MAX_3D_BUTTONS 1000
@@ -215,7 +215,7 @@ typedef struct
     Button3D buttons[MAX_3D_BUTTONS];
     int numbuttons;
     int debugbutton;
-    int clicked;	 //Wombat778 10-15-2003 removed clickx and clicky because gxPos and gyPos should do just as well
+    int clicked;  //Wombat778 10-15-2003 removed clickx and clicky because gxPos and gyPos should do just as well
 } Button3DListType;
 
 
@@ -241,11 +241,11 @@ public:
     void ServerSetviewPoint(void);//me123 alow the server to set the viewpoint even in ui
 #endif
 
-    void Enter(void);	// Called when going from UI to SIM
-    int  Exit(void);	// Called when going from SIM to UI
+    void Enter(void); // Called when going from UI to SIM
+    int  Exit(void); // Called when going from SIM to UI
 
-    void Exec(void);	// Main graphics loop (will go away with thread unification)
-    void Cycle(void);	// Set up and draw one frame of graphics
+    void Exec(void); // Main graphics loop (will go away with thread unification)
+    void Cycle(void); // Set up and draw one frame of graphics
 
     void Reset3DParameters(void);
     void RenderFirstFrame(void);
@@ -277,7 +277,7 @@ public:
         ModeCount
     };
 
-    Button3DListType Button3DList;			//Wombat778 10-10-2003 list of 3d buttons for clickable cockpit;
+    Button3DListType Button3DList; //Wombat778 10-10-2003 list of 3d buttons for clickable cockpit;
 
     // this function can be used to determine if we're a 1st person or
     // other camera view
@@ -305,11 +305,11 @@ public:
     int LabelState;
     // Retro 7-8May2004 end
 
-    void	SetOTWDisplayMode(OTWDisplayMode);
+    void SetOTWDisplayMode(OTWDisplayMode);
     OTWDisplayMode GetOTWDisplayMode(void);
     void CleanupDisplayMode(OTWDisplayMode);
-    void SelectDisplayMode(OTWDisplayMode, OTWDisplayMode = ModeNone);		//Wombat778 11-17-04
-    void Select2DCockpitMode(bool = true);									//Wombat778 added argument
+    void SelectDisplayMode(OTWDisplayMode, OTWDisplayMode = ModeNone); //Wombat778 11-17-04
+    void Select2DCockpitMode(bool = true); //Wombat778 added argument
     void Select3DCockpitMode(void);
     void SelectF3PadlockMode(void);
 
@@ -338,7 +338,7 @@ public:
 
     enum ViewFindMode
     {
-        NEXT_AIR_FRIEND 	= 0,
+        NEXT_AIR_FRIEND  = 0,
         NEXT_GROUND_FRIEND,
         NEXT_AIR_ENEMY,
         NEXT_GROUND_ENEMY,
@@ -346,7 +346,7 @@ public:
         NEXT_TARGETING_ME,
         NEXT_WEAPON,
         NEXT_WINGMAN,
-        NEXT_ENEMY	// 2002-02-16 ADDED BY S.G. So we can differentiate from ModeTarget and ModeTargetToSelf to ModeGroundEnemy and ModeAirEnemy. That way, we can restrict ModeGroundEnemy to ground enemy and activate ModeAirEnemy
+        NEXT_ENEMY // 2002-02-16 ADDED BY S.G. So we can differentiate from ModeTarget and ModeTargetToSelf to ModeGroundEnemy and ModeAirEnemy. That way, we can restrict ModeGroundEnemy to ground enemy and activate ModeAirEnemy
     };
     SimBaseClass *FindNextViewObject(FalconEntity *focusObj, SimBaseClass *currObj, ViewFindMode mode);
 
@@ -384,7 +384,7 @@ public:
     void InitViewpoint(void);  // JB 010616
     void CleanViewpoint(void); // JB 010616
     int headMotion;
-    //			F4CSECTIONHANDLE* objectCriticalSection;
+    // F4CSECTIONHANDLE* objectCriticalSection;
     //      void LockObject (void) {F4EnterCriticalSection (objectCriticalSection);};
     //      void UnLockObject (void) {F4LeaveCriticalSection (objectCriticalSection);};
 
@@ -425,15 +425,15 @@ public:
     void ShowMessage(char* msg);
     void DisplayChatBox(void);
 private:
-    void DisplayInfoBar(void);	// Retro 16Dec2003
-    void DrawSubTitles(void);		// Retro 16Dec2003
-    void DisplayProfilerText(void);	// Retro 21Dec2003
-    bool ProfilerActive;			// Retro 16/10/03
-    bool DisplayProfiler;			// Retro 16/10/03
-    bool CameraChange;			// RED - Camera Changed, preload All
+    void DisplayInfoBar(void); // Retro 16Dec2003
+    void DrawSubTitles(void); // Retro 16Dec2003
+    void DisplayProfilerText(void); // Retro 21Dec2003
+    bool ProfilerActive; // Retro 16/10/03
+    bool DisplayProfiler; // Retro 16/10/03
+    bool CameraChange; // RED - Camera Changed, preload All
 public:
-    void ToggleProfilerDisplay(void);	// Retro 21Dec2003
-    void ToggleProfilerActive(void);	// Retro 21Dec2003
+    void ToggleProfilerDisplay(void); // Retro 21Dec2003
+    void ToggleProfilerActive(void); // Retro 21Dec2003
     bool IsProfilerDisplaying()
     {
         return DisplayProfiler;    // Retro 21Dec2003
@@ -458,7 +458,7 @@ public:
     void ViewReset(void);
     void ViewZoomIn(void);
     void ViewZoomOut(void);
-    int  ViewRelativePanTilt(float, float);		//Wombat778 10-08-2003
+    int  ViewRelativePanTilt(float, float); //Wombat778 10-08-2003
     void NVGToggle(void);
     void IDTagToggle(void);
     void CampTagToggle(void);
@@ -476,7 +476,7 @@ public:
     void ToggleLocationDisplay(void);
     void ToggleAeroDisplay(void);
     void ToggleFlapDisplay(void);//TJL 11/09/03 On/Off Flap display
-    void ToggleEngineDisplay(void);	// Retro 1Feb2004
+    void ToggleEngineDisplay(void); // Retro 1Feb2004
     void StartLocationEntry(void);
     void ToggleRoof(void);
     void ToggleFrameRate(void);
@@ -509,7 +509,7 @@ public:
     void GetCameraPanTilt(float *pan, float *tilt)
     {
         *pan = eyePan, *tilt = eyeTilt;
-    };	//Wombat778 3-19-04
+    }; //Wombat778 3-19-04
     void DoSfxActiveList(void);
     void DoSfxDrawList(void);
     void ClearSfxLists(void);
@@ -572,18 +572,18 @@ public:
 
 private:
     // Require to keep track of things that need time of day updates
-    drawPtrList	*litObjectRoot;
+    drawPtrList *litObjectRoot;
 
     // Required to keep track of the special case drawables which are closer than our object of interest
-    drawPtrList	*nearObjectRoot;
+    drawPtrList *nearObjectRoot;
 
     // special effects stuff
     sfxRequest *sfxRequestRoot;
     sfxRequest *sfxActiveRoot;
 
     float initialTilt;
-    float	snapDir;
-    int	stopState;
+    float snapDir;
+    int stopState;
 
     int popupHas[NumPopups];
     int otwResolution;
@@ -603,9 +603,9 @@ private:
     // Retro 23Dec2003 Start
     struct CamDisplacement
     {
-        float direction;	// are we going left or righ ? up or down ?
-        float maxDispl;		// how far are we going ?
-        float scale;		// how fast are we going ?
+        float direction; // are we going left or righ ? up or down ?
+        float maxDispl; // how far are we going ?
+        float scale; // how fast are we going ?
         float Displ;
         CamDisplacement(float dir, float max, float scal)
         {
@@ -617,14 +617,14 @@ private:
     };
 
     CamDisplacement *xDir, *yDir, *zDir;
-    float cameraDisplacementRate;	// this should be a const actually, but I dunno how to change it..
+    float cameraDisplacementRate; // this should be a const actually, but I dunno how to change it..
 
-    void DisplaceTheCamera(float dT);						// Retro 23Dec2003
-    void ReInitDisplacement(CamDisplacement* theDisp);	// Retro 23Dec2003
+    void DisplaceTheCamera(float dT); // Retro 23Dec2003
+    void ReInitDisplacement(CamDisplacement* theDisp); // Retro 23Dec2003
     bool displaceCamera;
 public:
-    void toggleDisplaceCamera(void);						// Retro 23Dec2003
-    Tpoint	OTWDriverClass::GetEyePosition(void);		// COBRA - RED -
+    void toggleDisplaceCamera(void); // Retro 23Dec2003
+    Tpoint OTWDriverClass::GetEyePosition(void); // COBRA - RED -
 
 private:
     // Retro 23Dec2003 End
@@ -640,8 +640,8 @@ private:
     void ShowPosition(void);
     void ShowAerodynamics(void);
     void ShowFlaps(void);
-    void ShowEngine(void);	// Retro 1Feb2004
-    void ShowCatMessage(void);	// RV - Biker - Show AC is attached to catapult
+    void ShowEngine(void); // Retro 1Feb2004
+    void ShowCatMessage(void); // RV - Biker - Show AC is attached to catapult
     void EyeFly(void);
     void FindNearestBuilding(void);
     void TakeScreenShot(void);
@@ -668,7 +668,7 @@ private:
     int showAero;
     //TJL 11/09/03 Flaps On/Off
     int showFlaps;
-    int showEngine;	// Retro 1Feb2004
+    int showEngine; // Retro 1Feb2004
     int getNewCameraPos;
     int eyeFly;
     int weatherCmd;
@@ -687,14 +687,14 @@ private:
     float azDir;
     float elDir;
     float slewRate;
-    Tpoint chaseCamPos;		// desired position for chase Camera
-    float  chaseCamRoll;		// current roll for chase camera
+    Tpoint chaseCamPos; // desired position for chase Camera
+    float  chaseCamRoll; // current roll for chase camera
 
     void DrawTracers(void);
     float currentFPS;//Cobra
 
 private:
-    OTWDisplayMode	mOTWDisplayMode;
+    OTWDisplayMode mOTWDisplayMode;
     // track platform is used by some of the view modes
     // sfr: container for simbase
     typedef VuBin<SimBaseClass> SimBaseBin;
@@ -729,7 +729,7 @@ public:
 private:
     Tpoint pilotEyePos;  // MLR 12/1/2003 - Support placement of pilots skull
 
-    bool		SkipSwap;								// RED - Skip swapping, this is 1st frame...
+    bool SkipSwap; // RED - Skip swapping, this is 1st frame...
     // these vars are used when the sim is ending
     Tpoint endFlightPoint;
     Tpoint endFlightVec;
@@ -754,15 +754,15 @@ public:
 private:
 
     //Wombat778 end
-    BOOL drawInfoBar;			// Retro 16Dec2003
-    BOOL drawSubTitles;		// Retro 16Dec2003
+    BOOL drawInfoBar; // Retro 16Dec2003
+    BOOL drawSubTitles; // Retro 16Dec2003
 
-public:							// Retro 16Dec2003
-    void ToggleInfoBar();		// Retro 16Dec2003
-    void ToggleSubTitles();	// Retro 16Dec2003
-    void DisplayAxisValues();	// Retro 1Jan2004
+public: // Retro 16Dec2003
+    void ToggleInfoBar(); // Retro 16Dec2003
+    void ToggleSubTitles(); // Retro 16Dec2003
+    void DisplayAxisValues(); // Retro 1Jan2004
 
-private:						// Retro 16Dec2003
+private: // Retro 16Dec2003
     // For external camera views
     void DrawExternalViewTarget(void);
     // ---------------------------------
@@ -770,23 +770,23 @@ private:						// Retro 16Dec2003
     // ---------------------------------
 
 public:
-    RenderOTW*			renderer;
-    Trotation			ownshipRot;
-    Trotation			headMatrix;
-    Tpoint				headOrigin, headPan;
+    RenderOTW* renderer;
+    Trotation ownshipRot;
+    Trotation headMatrix;
+    Tpoint headOrigin, headPan;
 
     // ---------------------------------
     // Menu Pointers
     // ---------------------------------
-    MenuManager*		pMenuManager;
+    MenuManager* pMenuManager;
     //
 
     // ---------------------------------
     // 2D Cockpit Pointers
     // ---------------------------------
-    ImageBuffer*		cockpitImage;
-    CockpitManager*	pCockpitManager;
-    CockpitManager*	pPadlockCPManager;
+    ImageBuffer* cockpitImage;
+    CockpitManager* pCockpitManager;
+    CockpitManager* pPadlockCPManager;
     //
 
 private:
@@ -794,8 +794,8 @@ private:
     //JAM 10May04
     BOOL bVCockZBuffering;
 
-    // [0][?] daycolor	[?][0] padlock background
-    // [1][?] nvgcolor	[?][1] padlock liftline
+    // [0][?] daycolor [?][0] padlock background
+    // [1][?] nvgcolor [?][1] padlock liftline
     // [?][2] padlock viewport box 3 sides
     // [?][3] padlock viewport top
     // [?][4] padlock zero level tickmark
@@ -829,25 +829,25 @@ private:
     // ---------------------------------
     // General Padlocking Member Variables
     // ---------------------------------
-    SimBaseClass*		mpPadlockCandidate;
+    SimBaseClass* mpPadlockCandidate;
     // MN
-    VU_TIME				sunlooktimer;
+    VU_TIME sunlooktimer;
     // 2000-11-15 MADE PUBLIC BY S.G. SO FindAircraftTarget CAN RETURN THE PADLOCKED OBJECT AS WELL
 
 public:
-    SimBaseClass*		mpPadlockPriorityObject;
-    SimObjectType* simObjectPtr;	// moved from function into the class - used to check if pilot can "see" the padlocked object
+    SimBaseClass* mpPadlockPriorityObject;
+    SimObjectType* simObjectPtr; // moved from function into the class - used to check if pilot can "see" the padlocked object
 
 private:
     VU_ID             mPadlockCandidateID;
-    float					mPadlockTimeout;
-    float					mTDTimeout;
-    float					PadlockOccludedTime;
-    PadlockPriority	padlockPriority;
-    BOOL					mIsSlewInit;
-    float					mSlewPStart;
-    float					mSlewTStart;
-    BOOL					mObjectOccluded;
+    float mPadlockTimeout;
+    float mTDTimeout;
+    float PadlockOccludedTime;
+    PadlockPriority padlockPriority;
+    BOOL mIsSlewInit;
+    float mSlewPStart;
+    float mSlewTStart;
+    BOOL mObjectOccluded;
 
 public:
 
@@ -855,36 +855,36 @@ public:
     // General Padlocking Routines
     // ---------------------------------
     // 2001-01-29 ADD BY S.G. SO HMS HAS A TARGET TO LOOK AT
-    void				SetmpPadlockPriorityObject(SimBaseClass* newObject);
+    void SetmpPadlockPriorityObject(SimBaseClass* newObject);
     // END OF ADDED FUNCTION
-    void	Padlock_SetPriority(PadlockPriority newPriority);
+    void Padlock_SetPriority(PadlockPriority newPriority);
     long GetLiftLineColor(void)
     {
         return liftlinecolor;
     }
 
 private:
-    void	Padlock_FindNextPriority(BOOL);
-    void	Padlock_FindRealisticPriority(BOOL);
-    void	Padlock_FindEnhancedPriority(BOOL);
+    void Padlock_FindNextPriority(BOOL);
+    void Padlock_FindRealisticPriority(BOOL);
+    void Padlock_FindEnhancedPriority(BOOL);
 
-    BOOL	Padlock_ConsiderThisObject(SimBaseClass*, BOOL, float, float, float);
-    BOOL	Padlock_DetermineRelativePriority(SimBaseClass*, float, BOOL, SimBaseClass*, float, BOOL);
-    void	Padlock_CheckPadlock(float);
-    BOOL	Padlock_CheckOcclusion(float, float);
-    int	Padlock_RankAGPriority(SimBaseClass*, BOOL);
-    int	Padlock_RankAAPriority(SimBaseClass*, BOOL);
-    int	Padlock_RankNAVPriority(SimBaseClass*, BOOL);
-    void	Padlock_DrawSquares(BOOL);
+    BOOL Padlock_ConsiderThisObject(SimBaseClass*, BOOL, float, float, float);
+    BOOL Padlock_DetermineRelativePriority(SimBaseClass*, float, BOOL, SimBaseClass*, float, BOOL);
+    void Padlock_CheckPadlock(float);
+    BOOL Padlock_CheckOcclusion(float, float);
+    int Padlock_RankAGPriority(SimBaseClass*, BOOL);
+    int Padlock_RankAAPriority(SimBaseClass*, BOOL);
+    int Padlock_RankNAVPriority(SimBaseClass*, BOOL);
+    void Padlock_DrawSquares(BOOL);
     //
 
     // ---------------------------------
     // Variables for F3Padlock Diagram
     // ---------------------------------
-    BOOL	mDoSidebar;
+    BOOL mDoSidebar;
 
     GlanceDirection padlockGlance;
-    SnapStatus	snapStatus;
+    SnapStatus snapStatus;
 
     float mMaxPadTilt;
     float mMinPadTilt;
@@ -897,7 +897,7 @@ private:
     float m30LineRadius;
     float m45LineRadius;
     float m60LineRadius;
-    float	mMaxTiltLineRadius;
+    float mMaxTiltLineRadius;
 
     float mWedgeTipX;
     float mWedgeTipY;
@@ -946,19 +946,19 @@ private:
     // ---------------------------------
     // Virtual Cockpit variables
     // ---------------------------------
-    float vBoresightY;		// ASSO:
-    VirtualCockpitInfo	vcInfo;	// ASSO: old canvas
+    float vBoresightY; // ASSO:
+    VirtualCockpitInfo vcInfo; // ASSO: old canvas
 
-    Render2D* vHUDrenderer;	// ASSO:
-    Render2D* vRWRrenderer;	// ASSO:
-    Render2D* vDEDrenderer;	// ASSO:
-    Render2D* vPFLrenderer;	// ASSO:
+    Render2D* vHUDrenderer; // ASSO:
+    Render2D* vRWRrenderer; // ASSO:
+    Render2D* vDEDrenderer; // ASSO:
+    Render2D* vPFLrenderer; // ASSO:
 
-    DrawableBSP*			vrCockpit;
+    DrawableBSP* vrCockpit;
     int vrCockpitModel[4]; // the models to use. cockpit, df cockpit, f15, damaged f16
     int                  mUseHeadTracking;
     std::vector<VDial*> mpVDials;
-    long						liftlinecolor;
+    long liftlinecolor;
 
     // ---------------------------------
     // Virtual Cockpit Functions
@@ -973,12 +973,12 @@ private:
     void VCock_Cleanup(void);
     void VCock_ParseVDial(FILE *fp);
     bool VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR);
-    bool VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp);	// ASSO: old cancas
+    bool VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp); // ASSO: old cancas
     bool VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, int dev); // ASSO: new RTT canvas
     float MoveByRate(float oldval, float newval, float rate); //ATARIBABY move to target value by defined rate (Borrowed MOVEDOF from surface.cpp);
 
-    Tpoint	PitTurbulence;
-    DWORD	BigLoadTimeOut;
+    Tpoint PitTurbulence;
+    DWORD BigLoadTimeOut;
     // ---------------------------------
     // Padlock and Virtual Cock Access
     // ---------------------------------
@@ -1004,7 +1004,7 @@ public:
 
     //
     // ---------------------------------
-    // Clickable Cockpit Functions			//Wombat778 10-10-2003
+    // Clickable Cockpit Functions //Wombat778 10-10-2003
     // ---------------------------------
     bool Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR);
 
@@ -1019,7 +1019,7 @@ public:
     void ShowSimpleWaitScreen(char *name);
 
 private:
-    F4CSECTIONHANDLE*	cs_update; // JB 010616
+    F4CSECTIONHANDLE* cs_update; // JB 010616
     BOOL bKeepClean; // JB 010616
 
 #if NEW_SERVER_VIEWPOINT
@@ -1044,8 +1044,8 @@ extern OTWDriverClass OTWDriver;
 //**************************************************************************************************
 // COBRA - RED - Updated by the OTW Observer Position and Rotation
 // These values are Public to be use all over the sources
-extern	Tpoint		ObserverPosition;
-extern	float	ObserverYaw, ObserverPitch, ObserverRoll;
+extern Tpoint ObserverPosition;
+extern float ObserverYaw, ObserverPitch, ObserverRoll;
 // COBRA - RED - End
 //**************************************************************************************************
 

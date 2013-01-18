@@ -25,7 +25,7 @@ float HeliBrain::AutoTrack(float)
     rollLoad = 0.0f;
 
     // Range to current waypoint
-    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) *	(trackY - self->YPos());
+    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
 
     // Heading error for current waypoint
     desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) - self->Yaw();
@@ -156,16 +156,16 @@ void HeliBrain::MachHold(float speedSet, float altSet, int groundAvoid)
 //int HeliBrain::MachHold (float m1, float, int)
 //{
 //
-//	m1 = -m1;
-//	if ( m1 > 1.0f )
-//		m1 = 1.0f;
-//	else if ( m1 < -1.0f )
-//		m1 = -1.0f;
+// m1 = -m1;
+// if ( m1 > 1.0f )
+// m1 = 1.0f;
+// else if ( m1 < -1.0f )
+// m1 = -1.0f;
 //
-//	pStick = m1;
+// pStick = m1;
 //
 //
-//	return TRUE;
+// return TRUE;
 //
 //}
 
@@ -189,48 +189,48 @@ void HeliBrain::LevelTurn(float load_factor, float turnDir, int)
 
 //int HeliBrain::AltitudeHold (float desAlt)
 //{
-//	float alterr;
-//	// float altdamp;
-//	int retval = 0;
+// float alterr;
+// // float altdamp;
+// int retval = 0;
 //
 //
-//	/*
-//	// get altitude difference and normalize to 5000 ft
-//	alterr = (desAlt - self->ZPos()) * 0.0001;
+// /*
+// // get altitude difference and normalize to 5000 ft
+// alterr = (desAlt - self->ZPos()) * 0.0001;
 //
-//	// damp normalized to 50ft/sec
-//	altdamp = (self->ZDelta() * 0.05) * ( 1.0 - fabs(alterr) );
+// // damp normalized to 50ft/sec
+// altdamp = (self->ZDelta() * 0.05) * ( 1.0 - fabs(alterr) );
 //
-//	throtl += -(5000.0 * alterr) + altdamp;
+// throtl += -(5000.0 * alterr) + altdamp;
 //
-//   	if ( throtl > 1.0 )
-//   	{
-//		   throtl = 1.0;
-//   	}
-//   	else if ( throtl < 0.0 )
-//   	{
-//		   throtl = 0.0;
-//   	}
-//	*/
+//    if ( throtl > 1.0 )
+//    {
+//    throtl = 1.0;
+//    }
+//    else if ( throtl < 0.0 )
+//    {
+//    throtl = 0.0;
+//    }
+// */
 //
-//	// normalized to 1000ft
-//	alterr = (desAlt - self->ZPos()) * 0.001F;
+// // normalized to 1000ft
+// alterr = (desAlt - self->ZPos()) * 0.001F;
 //
-//	// 0.5 throtl is neutral, 1.0 if full up, 0.0 is full down
-//	// if we want to move up, alterr will be negative
-//	throtl = 0.5F - (alterr * 0.5F);
+// // 0.5 throtl is neutral, 1.0 if full up, 0.0 is full down
+// // if we want to move up, alterr will be negative
+// throtl = 0.5F - (alterr * 0.5F);
 //
-//	// check throttle between 0 and 1
-//   	if ( throtl > 1.0 )
-//   	{
-//		   throtl = 1.0;
-//   	}
-//   	else if ( throtl < 0.0 )
-//   	{
-//		   throtl = 0.0;
-//   	}
+// // check throttle between 0 and 1
+//    if ( throtl > 1.0 )
+//    {
+//    throtl = 1.0;
+//    }
+//    else if ( throtl < 0.0 )
+//    {
+//    throtl = 0.0;
+//    }
 //
-//	return (retval);
+// return (retval);
 //}
 
 void HeliBrain::GammaHold(float desGamma)

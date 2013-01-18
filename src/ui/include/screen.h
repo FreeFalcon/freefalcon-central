@@ -1,14 +1,14 @@
 #ifndef _SPLASH_SCREEN_H
 #define _SPLASH_SCREEN_H_
 
-#define SPL_UPDATE		0x0003 // Combined Page1 & Page2
-#define SPL_UPDATE_PG1	0x0001
-#define SPL_UPDATE_PG2	0x0002
+#define SPL_UPDATE 0x0003 // Combined Page1 & Page2
+#define SPL_UPDATE_PG1 0x0001
+#define SPL_UPDATE_PG2 0x0002
 
-#define SPL_MOUSEOVER	0x0004
+#define SPL_MOUSEOVER 0x0004
 
-#define MAX_KEYSIZE	20
-#define MAX_TITLESIZE	20
+#define MAX_KEYSIZE 20
+#define MAX_TITLESIZE 20
 
 typedef struct ButtonData
 {
@@ -22,10 +22,10 @@ typedef struct ButtonData
 
 typedef enum ButtonState
 {
-    Off,	// button is at normal state
-    On,	// button is at selecting state
-    Dim,	// button is currently disabled
-    Selected	// button was last selected
+    Off, // button is at normal state
+    On, // button is at selecting state
+    Dim, // button is currently disabled
+    Selected // button was last selected
 };
 
 typedef struct ButtonInfo
@@ -77,9 +77,9 @@ public:
     int UpdateAnims(void);
     void RefreshScreen(ImageBuffer *Image);
 
-    int selector;	// button ID that is last selected.
+    int selector; // button ID that is last selected.
     HCURSOR hCursor;
-    int defaultESC;	// the command id for ESC key
+    int defaultESC; // the command id for ESC key
 
     BOOL AddAnimButton(ButtonData *Button);
     BOOL DelAnimButton(int ID);

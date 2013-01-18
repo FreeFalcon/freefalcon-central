@@ -6,7 +6,7 @@ typedef struct C_HashNode C_HASHNODE;
 
 enum
 {
-    HSH_REMOVE			= 0x00001,
+    HSH_REMOVE = 0x00001,
 };
 
 struct C_HashNode

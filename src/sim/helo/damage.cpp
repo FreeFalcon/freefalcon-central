@@ -48,7 +48,7 @@ void HelicopterClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
 void HelicopterClass::InitDamageStation(void)
 {
-#if 0		// KCK Removed on 6/23 - This stuff isn't really necessary and breaks a unification assumption
+#if 0 // KCK Removed on 6/23 - This stuff isn't really necessary and breaks a unification assumption
     Falcon4EntityClassType* classPtr;
     VuEntityType* eclassPtr = NULL;
     int i, debrisvis;
@@ -56,9 +56,9 @@ void HelicopterClass::InitDamageStation(void)
     Trotation viewRotation = IMatrix;
 
     // current parts are:
-    //		fuselage
-    //		2 wings
-    //		tail
+    // fuselage
+    // 2 wings
+    // tail
     numBodyParts = 4;
 
     damageStation = new WeaponStation;
@@ -83,12 +83,12 @@ void HelicopterClass::InitDamageStation(void)
     /*
     classPtr = &(Falcon4ClassTable[
        GetClassID(
-      		eclassPtr->classInfo_[VU_DOMAIN],
-    		eclassPtr->classInfo_[VU_CLASS],
-    		eclassPtr->classInfo_[VU_TYPE],
-    		eclassPtr->classInfo_[VU_STYPE],
-       		classPtr->visType[3],
-    		VU_ANY, VU_ANY, VU_ANY)
+       eclassPtr->classInfo_[VU_DOMAIN],
+     eclassPtr->classInfo_[VU_CLASS],
+     eclassPtr->classInfo_[VU_TYPE],
+     eclassPtr->classInfo_[VU_STYPE],
+        classPtr->visType[3],
+     VU_ANY, VU_ANY, VU_ANY)
       ]);
     */
 
@@ -101,8 +101,8 @@ void HelicopterClass::InitDamageStation(void)
         /*
         if ( i > 0 )
         {
-        	((DrawableBSP*)(damageStation->onRail[0]->drawPointer))->GetChildOffset(i, &simView);
-        	((DrawableBSP*)(damageStation->onRail[0]->drawPointer))->AttachChild(((DrawableBSP*)(damageStation->onRail[i]->drawPointer)), i);
+         ((DrawableBSP*)(damageStation->onRail[0]->drawPointer))->GetChildOffset(i, &simView);
+         ((DrawableBSP*)(damageStation->onRail[0]->drawPointer))->AttachChild(((DrawableBSP*)(damageStation->onRail[i]->drawPointer)), i);
         }
         damageStation->SetSubPosition(i, simView.x, simView.y, simView.z);
         damageStation->SetSubRotation(i, 0.0F, 0.0F);
@@ -129,7 +129,7 @@ void HelicopterClass::RunExplosion(void)
     int i;
     Tpoint    pos;
     Falcon4EntityClassType *classPtr;
-    SimBaseClass	*tmpSimBase;
+    SimBaseClass *tmpSimBase;
     Tpoint tp = Origin;
     Trotation tr = IMatrix;
 
@@ -147,18 +147,18 @@ void HelicopterClass::RunExplosion(void)
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 4.0f;
         SetDelta(XDelta() * 0.1f, YDelta() * 0.1f, -50.0f);
         OTWDriver.AddSfxRequest(
-            new SfxClass(SFX_GROUND_EXPLOSION,				// type
-                         &pos,							// world pos
-                         1.2f,							// time to live
-                         100.0f));		// scale
+            new SfxClass(SFX_GROUND_EXPLOSION, // type
+                         &pos, // world pos
+                         1.2f, // time to live
+                         100.0f)); // scale
     }
     else
     {
         OTWDriver.AddSfxRequest(
-            new SfxClass(SFX_AIR_HANGING_EXPLOSION,				// type
-                         &pos,							// world pos
-                         2.0f,							// time to live
-                         200.0f + 200 * PRANDFloatPos()));		// scale
+            new SfxClass(SFX_AIR_HANGING_EXPLOSION, // type
+                         &pos, // world pos
+                         2.0f, // time to live
+                         200.0f + 200 * PRANDFloatPos())); // scale
     }
 
     classPtr = (Falcon4EntityClassType*)EntityType();
@@ -197,11 +197,11 @@ void HelicopterClass::RunExplosion(void)
             // First peice is more steady and is flaming
             tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FLAMING_PART,				// type
+                new SfxClass(SFX_FLAMING_PART, // type
                              SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
-                             tmpSimBase,								// sim base *
-                             3.0f + PRANDFloatPos() * 4.0F,			// time to live
-                             1.0F));								// scale
+                             tmpSimBase, // sim base *
+                             3.0f + PRANDFloatPos() * 4.0F, // time to live
+                             1.0F)); // scale
         }
         else
         {
@@ -210,11 +210,11 @@ void HelicopterClass::RunExplosion(void)
                                     PRANDFloat() * 30.0F * DTR,
                                     PRANDFloat() * 30.0F * DTR);
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_SMOKING_PART,			// type
+                new SfxClass(SFX_SMOKING_PART, // type
                              SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
-                             tmpSimBase,								// sim base *
-                             4.0f * PRANDFloatPos() + (float)((i + 1) * (i + 1)),	// time to live
-                             1.0));								// scale
+                             tmpSimBase, // sim base *
+                             4.0f * PRANDFloatPos() + (float)((i + 1) * (i + 1)), // time to live
+                             1.0)); // scale
         }
     }
 }
@@ -237,12 +237,12 @@ void HelicopterClass::ShowDamage(void)
             vec.y = PRANDFloat() * 40.0f;
             vec.z = PRANDFloat() * 40.0f;
             OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_TRAILSMOKE,				// type
-                             SFX_MOVES,						// flags
-                             &pos,							// world pos
-                             &vec,							// vector
-                             2.5f,							// time to live
-                             10.5f + (1.0F - pctStrength) * 30.0f));		// scale
+                new SfxClass(SFX_TRAILSMOKE, // type
+                             SFX_MOVES, // flags
+                             &pos, // world pos
+                             &vec, // vector
+                             2.5f, // time to live
+                             10.5f + (1.0F - pctStrength) * 30.0f)); // scale
         }
     }
 }

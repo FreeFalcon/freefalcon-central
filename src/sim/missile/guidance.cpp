@@ -84,10 +84,10 @@ void MissileClass::CheckGuidePhase(void)
         //tgt=theFCC->TargetPtr();
         //
         //if(tgt != targetPtr)
-        //	SetTarget(tgt);
+        // SetTarget(tgt);
         //
         //if(!tgt)
-        //	return;
+        // return;
         //}
     }
 
@@ -267,9 +267,9 @@ void MissileClass::CommandGuide(void)
                 dxdoti = (targetPtr->BaseData()->XDelta() * LeadB) - (xdot * LeadA);
                 dydoti = (targetPtr->BaseData()->YDelta() * LeadB) - (ydot * LeadA);
                 dzdoti = (targetPtr->BaseData()->ZDelta() * LeadB) - (zdot * LeadA);
-                targetX	= targetPtr->BaseData()->XPos();
-                targetY	= targetPtr->BaseData()->YPos();
-                targetZ	= targetPtr->BaseData()->ZPos();
+                targetX = targetPtr->BaseData()->XPos();
+                targetY = targetPtr->BaseData()->YPos();
+                targetZ = targetPtr->BaseData()->ZPos();
                 targetDX = targetPtr->BaseData()->XDelta();
                 targetDY = targetPtr->BaseData()->YDelta();
                 targetDZ = targetPtr->BaseData()->ZDelta();
@@ -291,9 +291,9 @@ void MissileClass::CommandGuide(void)
                 else
                 {
                     float var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
-                    targetX	+= var;
+                    targetX += var;
                     var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
-                    targetY	+= var;
+                    targetY += var;
                     var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
                     targetZ   += var;
                 }
@@ -388,11 +388,11 @@ void MissileClass::CommandGuide(void)
         // Lofting Bias
         if (runTime > inputData->guidanceDelay && runTime < inputData->guidanceDelay + inputData->mslLoftTime)
         {
-            loftBias = -inputData->mslBiasn - 1.0F;	// In units of G
+            loftBias = -inputData->mslBiasn - 1.0F; // In units of G
         }
         else
         {
-            loftBias = -1.0F;							// In units of G
+            loftBias = -1.0F; // In units of G
         }
 
         // Desired wind axis rates
@@ -467,11 +467,11 @@ void MissileClass::CommandGuide(void)
 
     if (sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RWR && launchState == InFlight)
     {
-        static int			file = -1;
-        static int			binfile = -1;
-        static char			buffer[256];
-        static unsigned		now;
-        static MissileClass	*theOne = NULL;
+        static int file = -1;
+        static int binfile = -1;
+        static char buffer[256];
+        static unsigned now;
+        static MissileClass *theOne = NULL;
 
         now = SimLibElapsedTime;
 
@@ -505,52 +505,52 @@ void MissileClass::CommandGuide(void)
 
         typedef struct DataPoint
         {
-            unsigned	time;
-            float		x, y, z;
-            float		dx, dy, dz;
-            float		yawCmd, pitchCmd;
-            int			targetState;
-            float		range;
-            float		timeToImpact;
-            float		groundZ;
-            float		targetX, targetY, targetZ;
+            unsigned time;
+            float x, y, z;
+            float dx, dy, dz;
+            float yawCmd, pitchCmd;
+            int targetState;
+            float range;
+            float timeToImpact;
+            float groundZ;
+            float targetX, targetY, targetZ;
         } DataPoint;
 
-        DataPoint	data;
-        data.time			= now;
-        data.x				= x;
-        data.y				= y;
-        data.z				= z;
-        data.dx				= xdot;
-        data.dy				= ydot;
-        data.dz				= zdot;
-        data.yawCmd			= ifd->augCommand.yaw;
-        data.pitchCmd		= ifd->augCommand.pitch;
-        data.range			= range;
-        data.timeToImpact	= timpct;
-        data.groundZ		= groundZ;
+        DataPoint data;
+        data.time = now;
+        data.x = x;
+        data.y = y;
+        data.z = z;
+        data.dx = xdot;
+        data.dy = ydot;
+        data.dz = zdot;
+        data.yawCmd = ifd->augCommand.yaw;
+        data.pitchCmd = ifd->augCommand.pitch;
+        data.range = range;
+        data.timeToImpact = timpct;
+        data.groundZ = groundZ;
 
         if (hasTarget)
         {
             if (targetPtr)
             {
-                data.targetState	= 2;
+                data.targetState = 2;
             }
             else
             {
-                data.targetState	= 1;
+                data.targetState = 1;
             }
         }
         else
         {
-            data.targetState		= 0;
+            data.targetState = 0;
         }
 
         if (targetPtr)
         {
-            data.targetX		= targetPtr->BaseData()->XPos();
-            data.targetY		= targetPtr->BaseData()->YPos();
-            data.targetZ		= targetPtr->BaseData()->ZPos();
+            data.targetX = targetPtr->BaseData()->XPos();
+            data.targetY = targetPtr->BaseData()->YPos();
+            data.targetZ = targetPtr->BaseData()->ZPos();
 
             if (targetPtr->BaseData()->IsCampaign())
             {
@@ -563,9 +563,9 @@ void MissileClass::CommandGuide(void)
         }
         else
         {
-            data.targetX		= targetX;
-            data.targetY		= targetY;
-            data.targetZ		= targetZ;
+            data.targetX = targetX;
+            data.targetY = targetY;
+            data.targetZ = targetZ;
         }
 
         write(binfile, &data, sizeof(data));

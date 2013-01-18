@@ -10,10 +10,10 @@
 #include "otwdrive.h"
 #include "sinput.h"
 #include "dispcfg.h"
-#include "stdafx.h"			//Wombat778 3-24-04
+#include "stdafx.h" //Wombat778 3-24-04
 
-#include "renderow.h"		//Wombat778 3-24-04
-#include "dispopts.h"		//Wombat778 3-30-04
+#include "renderow.h" //Wombat778 3-24-04
+#include "dispopts.h" //Wombat778 3-30-04
 
 
 // ALL RESMGR CODE ADDITIONS START HERE
@@ -47,17 +47,17 @@ extern "C"
 
 #define NUM_FIELDS 5
 
-SimCursor*			gpSimCursors;
-int					gTotalCursors;
+SimCursor* gpSimCursors;
+int gTotalCursors;
 
 
 BOOL CreateSimCursors()
 {
-    SI_HANDLE*	pCursorFile;
-    char			pFileName[MAX_PATH] = "";
-    char			pFilePath[MAX_PATH] = "";
-    BOOL			Result = TRUE;
-    int				i;
+    SI_HANDLE* pCursorFile;
+    char pFileName[MAX_PATH] = "";
+    char pFilePath[MAX_PATH] = "";
+    BOOL Result = TRUE;
+    int i;
 
     sprintf(pFilePath, "%s%s%s", FalconDataDirectory, SIM_CURSOR_DIR, SIM_CURSOR_FILE);
     pCursorFile = SI_OPEN(pFilePath, "r");
@@ -91,13 +91,13 @@ BOOL CreateSimCursors()
         gpSimCursors[i].CursorBuffer->SetChromaKey(0xFFFF0000);
 
         // OW FIXME: fix it :)
-#if 1	// This avoids using MPR since the bitmap function is broken at the moment...  SCR 5/14/98
-        int					r, c;
-        BYTE				*p;
-        void				*imgPtr;
+#if 1 // This avoids using MPR since the bitmap function is broken at the moment...  SCR 5/14/98
+        int r, c;
+        BYTE *p;
+        void *imgPtr;
 
-        int					result;
-        CImageFileMemory 	texFile;
+        int result;
+        CImageFileMemory  texFile;
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(pFilePath);
@@ -185,7 +185,7 @@ BOOL CreateSimCursors()
                     if (!pTex->Create("CPHsi", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     gpSimCursors[i].CursorRenderTexture.push_back(pTex);
@@ -208,7 +208,7 @@ BOOL CreateSimCursors()
 
         glReleaseMemory((char*)texFile.image.palette);
 #else
-        Render2D		CursorRenderer;
+        Render2D CursorRenderer;
         CursorRenderer.Setup(gpSimCursors[i].CursorBuffer);
         CursorRenderer.StartFrame();
         CursorRenderer.ClearFrame();
@@ -231,7 +231,7 @@ BOOL CreateSimCursors()
 
 void CleanupSimCursors()
 {
-    int	i;
+    int i;
 
     for (i = 0; i < gTotalCursors; i++)
     {
@@ -251,7 +251,7 @@ void CleanupSimCursors()
             gpSimCursors[i].CursorRenderTexture.clear();
             glReleaseMemory(gpSimCursors[i].CursorRenderBuffer);
 
-            if (gpSimCursors[i].CursorRenderPalette)		//Wombat78 5-14-04 avoid a possible ctd
+            if (gpSimCursors[i].CursorRenderPalette) //Wombat78 5-14-04 avoid a possible ctd
                 delete gpSimCursors[i].CursorRenderPalette;
 
             gpSimCursors[i].CursorRenderBuffer = NULL;
@@ -275,15 +275,15 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         return;
     }
 
-    CursorSrc.top		= 0;
-    CursorSrc.left		= 0;
-    CursorSrc.bottom	= gpSimCursors[gSelectedCursor].Height;
-    CursorSrc.right	= gpSimCursors[gSelectedCursor].Width;
+    CursorSrc.top = 0;
+    CursorSrc.left = 0;
+    CursorSrc.bottom = gpSimCursors[gSelectedCursor].Height;
+    CursorSrc.right = gpSimCursors[gSelectedCursor].Width;
 
-    CursorDest.top		=	gyPos - gpSimCursors[gSelectedCursor].yHotspot;
-    CursorDest.left	=	gxPos - gpSimCursors[gSelectedCursor].xHotspot;
-    CursorDest.bottom	=	CursorDest.top	+ gpSimCursors[gSelectedCursor].Height;
-    CursorDest.right	=	CursorDest.left + gpSimCursors[gSelectedCursor].Width;
+    CursorDest.top = gyPos - gpSimCursors[gSelectedCursor].yHotspot;
+    CursorDest.left = gxPos - gpSimCursors[gSelectedCursor].xHotspot;
+    CursorDest.bottom = CursorDest.top + gpSimCursors[gSelectedCursor].Height;
+    CursorDest.right = CursorDest.left + gpSimCursors[gSelectedCursor].Width;
 
     gyLast = gyPos;
     gxLast = gxPos;

@@ -8,7 +8,7 @@
 #include "FalcSess.h"
 #include "aircrft.h"
 
-#include "objectiv.h"		// RAS - 16Jan04 - include for traffic call code
+#include "objectiv.h" // RAS - 16Jan04 - include for traffic call code
 
 
 #define MAX_IA_CAMP_UNIT 0x10000
@@ -149,34 +149,34 @@ public:
 
     // list access function, see list names for each meaning
     //FalconPrivateOrderedList * GetMoverList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(moverList);
+    // return const_cast<FalconPrivateOrderedList*>(moverList);
     //}
     //FalconPrivateOrderedList * GetFeatureList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(featureList);
+    // return const_cast<FalconPrivateOrderedList*>(featureList);
     //}
     //FalconPrivateOrderedList * GetCampUnitList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(campUnitList);
+    // return const_cast<FalconPrivateOrderedList*>(campUnitList);
     //}
     //FalconPrivateOrderedList * GetCampObjList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(campObjList);
+    // return const_cast<FalconPrivateOrderedList*>(campObjList);
     //}
     //FalconPrivateOrderedList * GetCombinedList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(combinedList);
+    // return const_cast<FalconPrivateOrderedList*>(combinedList);
     //}
     //FalconPrivateOrderedList * GetCombinedFeatureList() const {
-    //	return const_cast<FalconPrivateOrderedList*>(combinedFeatureList);
+    // return const_cast<FalconPrivateOrderedList*>(combinedFeatureList);
     //}
     //FalconPrivateList * GetObjsWithNoCampaignParentList() const {
-    //	return const_cast<FalconPrivateList*>(objsWithNoCampaignParentList);
+    // return const_cast<FalconPrivateList*>(objsWithNoCampaignParentList);
     //}
     //FalconPrivateList * GetFacList() const {
-    //	return const_cast<FalconPrivateList*>(facList) ;
+    // return const_cast<FalconPrivateList*>(facList) ;
     //}
     //VuLinkedList * GetAtcList() const {
-    //	return const_cast<VuLinkedList*>(atcList);
+    // return const_cast<VuLinkedList*>(atcList);
     //}
     //VuLinkedList * GetTankerList() const {
-    //	return const_cast<VuLinkedList*>(tankerList);
+    // return const_cast<VuLinkedList*>(tankerList);
     //}
 
     // others
@@ -204,12 +204,12 @@ public:
     }
 
     /// sfr: @todo make private
-    FalconPrivateOrderedList* objectList;		// List of locally deaggregated sim vehicles
-    FalconPrivateOrderedList* featureList;		// List of locally deaggregated sim features
-    FalconPrivateOrderedList* campUnitList;		// List of nearby aggregated campaign units
-    FalconPrivateOrderedList* campObjList;		// List of nearby aggregated campaign objectives
-    FalconPrivateOrderedList* combinedList;		// List of everything nearby
-    FalconPrivateOrderedList* combinedFeatureList;	// List of everything nearby
+    FalconPrivateOrderedList* objectList; // List of locally deaggregated sim vehicles
+    FalconPrivateOrderedList* featureList; // List of locally deaggregated sim features
+    FalconPrivateOrderedList* campUnitList; // List of nearby aggregated campaign units
+    FalconPrivateOrderedList* campObjList; // List of nearby aggregated campaign objectives
+    FalconPrivateOrderedList* combinedList; // List of everything nearby
+    FalconPrivateOrderedList* combinedFeatureList; // List of everything nearby
     FalconPrivateList *ObjsWithNoCampaignParentList; // ??
     FalconPrivateList *facList; // ??
     VuFilteredList *atcList; // ??
@@ -218,7 +218,7 @@ public:
     int doFile;
     int doEvent;
     uint eventReadPointer;
-    unsigned long	lastRealTime;
+    unsigned long lastRealTime;
 
 
 private:
@@ -232,11 +232,11 @@ private:
     bool inCycle;
     bool cycleAgain;
 
-    unsigned long	last_elapsedTime;
-    int			lastFlyState;
-    int			curFlyState;
-    BOOL 		doExit;
-    BOOL 		doGraphicsExit;
+    unsigned long last_elapsedTime;
+    int lastFlyState;
+    int curFlyState;
+    BOOL  doExit;
+    BOOL  doGraphicsExit;
 
     /** responsible for getting vu messages directed to the simloop thread. */
     VuThread* vuThread;

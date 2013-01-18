@@ -5,7 +5,7 @@
 #include "Sim/Include/Fcc.h"
 
 PilotInputs UserStickInputs;
-extern int	UseKeyboardThrottle;
+extern int UseKeyboardThrottle;
 extern float throttleOffset;
 extern float rudderOffset;
 extern float rudderOffsetRate;
@@ -19,9 +19,9 @@ extern int keyboardTriggerOverride;
 extern float pitchElevatorTrimRate;
 extern float pitchAileronTrimRate;
 extern float pitchRudderTrimRate;
-extern float pitchManualTrim;	//MI
-extern float yawManualTrim;		//MI
-extern float rollManualTrim;	//MI
+extern float pitchManualTrim; //MI
+extern float yawManualTrim; //MI
+extern float rollManualTrim; //MI
 int PickleOverride;
 int TriggerOverride;
 
@@ -61,21 +61,21 @@ PilotInputs::PilotInputs(void)
     trigger = Center;
     pickleButton = Off;
 
-    for (int i = 0; i < 2; i++)	// Retro 12Jan2004
+    for (int i = 0; i < 2; i++) // Retro 12Jan2004
     {
         engineThrottle[i] = 0.0f;
     }
 
-    currentlyActiveEngine = Both_Engines;	// Retro 12Jan2004
+    currentlyActiveEngine = Both_Engines; // Retro 12Jan2004
 }
 
 PilotInputs::~PilotInputs(void)
 {
 }
 
-#include "SimDrive.h"	 // Retro 31Dec2003 - needed for TrimAPDisc stuff
-#include "aircrft.h"	 // Retro 31Dec2003 - ditto
-#include "airframe.h"	 // Retro 7Feb2004
+#include "SimDrive.h"  // Retro 31Dec2003 - needed for TrimAPDisc stuff
+#include "aircrft.h"  // Retro 31Dec2003 - ditto
+#include "airframe.h"  // Retro 7Feb2004
 
 
 
@@ -86,7 +86,7 @@ void PilotInputs::Update()
     // Retro 31Dec2003
     if (IO.AnalogIsUsed(AXIS_PITCH))
     {
-        pstick = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * 1.05F; 	// Retro 31Dec2003
+        pstick = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * 1.05F;  // Retro 31Dec2003
     }
     else
     {
@@ -124,28 +124,28 @@ void PilotInputs::Update()
     rstick = max(min(rstick, 1.0F), -1.0F);
 
     /*******************************************************************************/
-    //	Retro 12Jan2004 - featuring left/right throttle axis =)
-    //	=======================================================
+    // Retro 12Jan2004 - featuring left/right throttle axis =)
+    // =======================================================
     //
-    //	New dual throttle pilotinput code:
-    //	Operates like this: the throttle values are stored in an arry
-    //	engineThrottle[2], index into it with enum Engine_t, (Left_Engine/Right_Engine)
+    // New dual throttle pilotinput code:
+    // Operates like this: the throttle values are stored in an arry
+    // engineThrottle[2], index into it with enum Engine_t, (Left_Engine/Right_Engine)
     //
-    //	Now if a user has 2 throttles everything is peachy.. one throttle per axis
-    //	If the user has 1 throttle a three-state variable (currentlyActiveEngine)
-    //	controls which throttle receives the update: left/right or both
+    // Now if a user has 2 throttles everything is peachy.. one throttle per axis
+    // If the user has 1 throttle a three-state variable (currentlyActiveEngine)
+    // controls which throttle receives the update: left/right or both
     //
-    //	If the user does NOT have a throttle, this 3-state variable controls which
-    //	axis gets updated BY THE KEYBOARD
+    // If the user does NOT have a throttle, this 3-state variable controls which
+    // axis gets updated BY THE KEYBOARD
     //
-    //	Stuff like having one axis controls one throttle and the keyboard controlling
-    //	the other is not considered.
+    // Stuff like having one axis controls one throttle and the keyboard controlling
+    // the other is not considered.
     //
-    //	This 3-state variable should also control various other avionics-related
-    //	operations so that we don´t have to introduce 6.23*10^23 new keypresses
+    // This 3-state variable should also control various other avionics-related
+    // operations so that we don´t have to introduce 6.23*10^23 new keypresses
     //
-    //	Access functions to get the current controlled axis and to set it are provided
-    //	insider the pilotinput class. The enum is within the class scope !
+    // Access functions to get the current controlled axis and to set it are provided
+    // insider the pilotinput class. The enum is within the class scope !
     /*******************************************************************************/
     if (playerAC)
     {
@@ -154,7 +154,7 @@ void PilotInputs::Update()
         if ((af) && (af->GetNumberEngines() == 2))
         {
             /*******************************************************************************/
-            //	keyboard only, right engine axis is not even evalutated !
+            // keyboard only, right engine axis is not even evalutated !
             /*******************************************************************************/
             if ((!IO.AnalogIsUsed(AXIS_THROTTLE)) || (UseKeyboardThrottle))
             {
@@ -205,10 +205,10 @@ void PilotInputs::Update()
         }
         else   // end Retro 12Jan2004 (this is the old, single-engine code)
         {
-            if (IO.AnalogIsUsed(AXIS_THROTTLE) && !UseKeyboardThrottle) 	// Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_THROTTLE) && !UseKeyboardThrottle)  // Retro 31Dec2003
             {
                 //throttle = 1.5F - (IO.ReadAnalog(2) * 1.05F + 1.0F) * 0.75F;
-                throttle = IO.ReadAnalog(AXIS_THROTTLE);	// Retro 31Dec2003
+                throttle = IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003
             }
             else
             {
@@ -217,10 +217,10 @@ void PilotInputs::Update()
                 throttle = throttleOffset;
             }
 
-            engineThrottle[Left_Engine] = engineThrottle[Right_Engine] = 0;	// Retro 7Feb2004
+            engineThrottle[Left_Engine] = engineThrottle[Right_Engine] = 0; // Retro 7Feb2004
             throttle = max(min(throttle, 1.5F), 0.0F);
         }
-    }	// Retro 12Jan2004
+    } // Retro 12Jan2004
 
     if (IO.AnalogIsUsed(AXIS_YAW))
     {
@@ -246,18 +246,18 @@ void PilotInputs::Update()
     // Retro 31Dec2003 - trimming with analogue axis
     //
     // OK.. trying to make sense of that trim issue
-    //	there are two ways.. the trim hat on the stick and the 3 dials on the left console
+    // there are two ways.. the trim hat on the stick and the 3 dials on the left console
     //
-    //	) with the TrimAPDisc(onnected) switch set to DISC ONLY the dial-input is considered
-    //	) else, the sum of the two inputs is considered
+    // ) with the TrimAPDisc(onnected) switch set to DISC ONLY the dial-input is considered
+    // ) else, the sum of the two inputs is considered
     /*******************************************************************************/
     extern bool g_bRealisticAvionics;
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_PITCH) == false) 	// trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_PITCH) == false)  // trimming with keyboard (as before)
     {
         ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
-        ptrim += pitchManualTrim * SimLibMajorFrameTime;	//MI
-        pitchManualTrim = 0.0F;	//MI
+        ptrim += pitchManualTrim * SimLibMajorFrameTime; //MI
+        pitchManualTrim = 0.0F; //MI
         ptrim = max(min(ptrim, 0.5f), -0.5f);
     }
     else
@@ -274,17 +274,17 @@ void PilotInputs::Update()
         ptrim = max(min(ptrim, 0.5f), -0.5f);
     }
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_ROLL) == false) 	// trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_ROLL) == false)  // trimming with keyboard (as before)
     {
         rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
-        rtrim += rollManualTrim * SimLibMajorFrameTime;	//MI
-        rollManualTrim = 0.0F;	//MI
+        rtrim += rollManualTrim * SimLibMajorFrameTime; //MI
+        rollManualTrim = 0.0F; //MI
         rtrim = max(min(rtrim, 0.5f), -0.5f);
     }
     else
     {
         if (
-            (!g_bRealisticAvionics) ||	// TrimAPDisc only works in realistic avionics..
+            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
             ((playerAC) && (!playerAC->TrimAPDisc))
         )
         {
@@ -295,17 +295,17 @@ void PilotInputs::Update()
         rtrim = max(min(rtrim, 0.5f), -0.5f);
     }
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_YAW) == false) 	// trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_YAW) == false)  // trimming with keyboard (as before)
     {
         ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
-        ytrim += yawManualTrim * SimLibMajorFrameTime;	//MI
-        yawManualTrim = 0.0F;	//MI
+        ytrim += yawManualTrim * SimLibMajorFrameTime; //MI
+        yawManualTrim = 0.0F; //MI
         ytrim = max(min(ytrim, 0.5f), -0.5f);
     }
     else
     {
         if (
-            (!g_bRealisticAvionics) ||	// TrimAPDisc only works in realistic avionics..
+            (!g_bRealisticAvionics) || // TrimAPDisc only works in realistic avionics..
             ((playerAC) && (!playerAC->TrimAPDisc))
         )
         {
@@ -373,18 +373,18 @@ void PilotInputs::Reset(void)
     trigger = Center;
     pickleButton = Off;
 
-    for (int i = 0; i < 2; i++)		// Retro 12Jan2004
+    for (int i = 0; i < 2; i++) // Retro 12Jan2004
     {
         engineThrottle[i] = 0.0f;
     }
 
-    currentlyActiveEngine = Both_Engines;	// Retro 12Jan2004
+    currentlyActiveEngine = Both_Engines; // Retro 12Jan2004
 }
 
 /*******************************************************************************/
-//	Retro 12Jan2004 (all)
-//	Access method to cycle the 3-state variable that controls the engine that should
-//	receive updates from axis/keyboard
+// Retro 12Jan2004 (all)
+// Access method to cycle the 3-state variable that controls the engine that should
+// receive updates from axis/keyboard
 /*******************************************************************************/
 void PilotInputs::cycleCurrentEngine()
 {

@@ -6,9 +6,9 @@ RulesModes RuleMode = rINSTANT_ACTION;
 
 int LoadAllRules(char *filename)
 {
-    size_t		success = 0;
-    _TCHAR		path[_MAX_PATH];
-    long		size;
+    size_t success = 0;
+    _TCHAR path[_MAX_PATH];
+    long size;
     FILE *fp;
 
     _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
@@ -55,14 +55,14 @@ int LoadAllRules(char *filename)
     {
         char dataFileName[_MAX_PATH];
         sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-        tempRules[i].BumpTimer		= max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
-        tempRules[i].BumpTimer		*= 60000;
-        tempRules[i].AiPullTime		= max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
-        tempRules[i].AiPullTime		*= 60000;
-        tempRules[i].AiPatience		= max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
-        tempRules[i].AiPatience		*= 1000;
-        tempRules[i].AtcPatience	= max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
-        tempRules[i].AtcPatience	*= 1000;
+        tempRules[i].BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+        tempRules[i].BumpTimer *= 60000;
+        tempRules[i].AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+        tempRules[i].AiPullTime *= 60000;
+        tempRules[i].AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+        tempRules[i].AiPatience *= 1000;
+        tempRules[i].AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+        tempRules[i].AtcPatience *= 1000;
     }
 
     memcpy(&gRules, &tempRules, sizeof(RulesStruct)*rNUM_MODES);
@@ -77,34 +77,34 @@ RulesClass::RulesClass(void)
 void RulesClass::Initialize(void)
 {
     memset(Password, 0, sizeof(_TCHAR)*RUL_PW_LEN);
-    MaxPlayers			= 16;
-    ObjMagnification	= 5;
-    SimFlags			= SIM_RULES_FLAGS;		// Sim flags
-    SimFlightModel		= FMSimplified;			// Flight model type
-    SimWeaponEffect		= WEExaggerated;
-    SimAvionicsType		= ATEasy;
-    SimAutopilotType	= APIntelligent;
-    SimAirRefuelingMode	= ARSimplistic;
-    SimPadlockMode		= PDEnhanced;
-    GeneralFlags		= GEN_RULES_FLAGS;
+    MaxPlayers = 16;
+    ObjMagnification = 5;
+    SimFlags = SIM_RULES_FLAGS; // Sim flags
+    SimFlightModel = FMSimplified; // Flight model type
+    SimWeaponEffect = WEExaggerated;
+    SimAvionicsType = ATEasy;
+    SimAutopilotType = APIntelligent;
+    SimAirRefuelingMode = ARSimplistic;
+    SimPadlockMode = PDEnhanced;
+    GeneralFlags = GEN_RULES_FLAGS;
 
     char dataFileName[_MAX_PATH];
     sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-    BumpTimer		= max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
-    BumpTimer		*= 60000;
-    AiPullTime		= max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
-    AiPullTime		*= 60000;
-    AiPatience		= max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
-    AiPatience		*= 1000;
-    AtcPatience		= max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
-    AtcPatience		*= 1000;
+    BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+    BumpTimer *= 60000;
+    AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+    AiPullTime *= 60000;
+    AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+    AiPatience *= 1000;
+    AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+    AtcPatience *= 1000;
 }
 
 int RulesClass::LoadRules(char *filename)
 {
-    size_t		success = 0;
-    _TCHAR		path[_MAX_PATH];
-    long		size;
+    size_t success = 0;
+    _TCHAR path[_MAX_PATH];
+    long size;
     FILE *fp;
 
     _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
@@ -150,14 +150,14 @@ int RulesClass::LoadRules(char *filename)
 
     char dataFileName[_MAX_PATH];
     sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-    tempRules[RuleMode].BumpTimer		= max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
-    tempRules[RuleMode].BumpTimer		*= 60000;
-    tempRules[RuleMode].AiPullTime		= max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
-    tempRules[RuleMode].AiPullTime		*= 60000;
-    tempRules[RuleMode].AiPatience		= max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
-    tempRules[RuleMode].AiPatience		*= 1000;
-    tempRules[RuleMode].AtcPatience		= max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
-    tempRules[RuleMode].AtcPatience		*= 1000;
+    tempRules[RuleMode].BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+    tempRules[RuleMode].BumpTimer *= 60000;
+    tempRules[RuleMode].AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+    tempRules[RuleMode].AiPullTime *= 60000;
+    tempRules[RuleMode].AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+    tempRules[RuleMode].AiPatience *= 1000;
+    tempRules[RuleMode].AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+    tempRules[RuleMode].AtcPatience *= 1000;
 
     memcpy(this, &(tempRules[RuleMode]), sizeof(RulesStruct));
     return TRUE;
@@ -170,23 +170,23 @@ void RulesClass::LoadRules(RulesStruct *rules)
 
     /*
     _tcscpy(Password,rules->Password);
-    MaxPlayers			= rules->MaxPlayers;
-    ObjMagnification	= rules->ObjMagnification;
-    SimFlags			= rules->SimFlags;					// Sim flags
-    SimFlightModel		= rules->SimFlightModel;			// Flight model type
-    SimWeaponEffect		= rules->SimWeaponEffect;
-    SimAvionicsType		= rules->SimAvionicsType;
-    SimAutopilotType	= rules->SimAutopilotType;
-    SimAirRefuelingMode	= rules->SimAirRefuelingMode;
-    SimPadlockMode		= rules->SimPadlockMode;
-    GeneralFlags		= rules->GeneralFlags;*/
+    MaxPlayers = rules->MaxPlayers;
+    ObjMagnification = rules->ObjMagnification;
+    SimFlags = rules->SimFlags; // Sim flags
+    SimFlightModel = rules->SimFlightModel; // Flight model type
+    SimWeaponEffect = rules->SimWeaponEffect;
+    SimAvionicsType = rules->SimAvionicsType;
+    SimAutopilotType = rules->SimAutopilotType;
+    SimAirRefuelingMode = rules->SimAirRefuelingMode;
+    SimPadlockMode = rules->SimPadlockMode;
+    GeneralFlags = rules->GeneralFlags;*/
 }
 
 int RulesClass::SaveRules(_TCHAR *filename)
 {
-    FILE		*fp;
-    _TCHAR		path[_MAX_PATH];
-    size_t		success = 0;
+    FILE *fp;
+    _TCHAR path[_MAX_PATH];
+    size_t success = 0;
 
     _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, filename);
 

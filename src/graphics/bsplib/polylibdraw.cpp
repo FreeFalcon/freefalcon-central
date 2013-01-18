@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     06Oct03
 
-	- Begin Major Rewrite (Fat-free version)
+ - Begin Major Rewrite (Fat-free version)
 \***************************************************************************/
 #include "stdafx.h"
 #include "StateStack.h"
@@ -25,23 +25,23 @@ static inline void SetSpecularFog()
 
 static inline void SelectState(GLint state)
 {
-    /*	if(DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS && TheTerrTextures.lightLevel < 0.5f)
-    	{
-    		TheStateStack.context->RestoreState(STATE_MULTITEXTURE_ALPHA);
-    	}
-    	else*/
+    /* if(DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS && TheTerrTextures.lightLevel < 0.5f)
+     {
+     TheStateStack.context->RestoreState(STATE_MULTITEXTURE_ALPHA);
+     }
+     else*/
     TheStateStack.context->RestoreState(state);
 }
 
 // This helper function is used for all non-interpolated primitives. Gouraud shaded primitives do their own thing.
 static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
 {
-    Pcolor		*rgba;
-    Pintensity	I;
-    DWORD		color = 0;
+    Pcolor *rgba;
+    Pintensity I;
+    DWORD color = 0;
 
 #ifdef DEBUG
-    int	colorSet = TRUE;
+    int colorSet = TRUE;
 #endif
 
 
@@ -55,18 +55,18 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
             ShiAssert(IIdx >= 0);
             I = TheStateStack.IntensityPool[IIdx];
 
-            color	 = FloatToInt32(rgba->r * I * 255.9f);
-            color	|= FloatToInt32(rgba->g * I * 255.9f) << 8;
-            color	|= FloatToInt32(rgba->b * I * 255.9f) << 16;
+            color  = FloatToInt32(rgba->r * I * 255.9f);
+            color |= FloatToInt32(rgba->g * I * 255.9f) << 8;
+            color |= FloatToInt32(rgba->b * I * 255.9f) << 16;
         }
         else
         {
-            color	 = FloatToInt32(rgba->r * 255.9f);
-            color	|= FloatToInt32(rgba->g * 255.9f) << 8;
-            color	|= FloatToInt32(rgba->b * 255.9f) << 16;
+            color  = FloatToInt32(rgba->r * 255.9f);
+            color |= FloatToInt32(rgba->g * 255.9f) << 8;
+            color |= FloatToInt32(rgba->b * 255.9f) << 16;
         }
 
-        if (ShadowBSPRendering) 							// COBRA - RED - if rendering a shadow, alpha applied here
+        if (ShadowBSPRendering)  // COBRA - RED - if rendering a shadow, alpha applied here
             color |= FloatToInt32(rgba->a * 255.9f * ShadowAlphaLevel) << 24;
         else
             color |= FloatToInt32(rgba->a * 255.9f) << 24;
@@ -75,9 +75,9 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
     {
         ShiAssert(IIdx >= 0);
 
-        color	 = FloatToInt32(TheStateStack.IntensityPool[IIdx] * 255.9f);
-        color	|= color << 8;
-        color	|= color << 8;
+        color  = FloatToInt32(TheStateStack.IntensityPool[IIdx] * 255.9f);
+        color |= color << 8;
+        color |= color << 8;
     }
 
     ShiAssert(colorSet);

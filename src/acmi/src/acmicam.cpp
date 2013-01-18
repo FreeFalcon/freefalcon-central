@@ -25,7 +25,7 @@
 #include "debuggr.h"
 #include "AcmiCam.h"
 
-#define TRACKING_OFFSET	0.15F
+#define TRACKING_OFFSET 0.15F
 //FILE *debugData = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ ACMICamera::ACMICamera()
     _objectAz = _pannerAz = 0.0f;
     _objectEl = _pannerEl = 0.0f;
 
-    //	debugData = fopen("debugData.txt", "wb");
+    // debugData = fopen("debugData.txt", "wb");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ ACMICamera::ACMICamera()
 
 ACMICamera::~ACMICamera()
 {
-    //	fclose(debugData);
+    // fclose(debugData);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -235,46 +235,46 @@ void ACMICamera::DoAction()
                 {
                     SetAzDir(0.0F);
                     SetElDir(0.0F);
-                    //		SetRotateType(OBJECT_ROTATION);
+                    // SetRotateType(OBJECT_ROTATION);
                     break;
                 }
 
-                /*				case ZOOM_IN:
-                				{
-                			//		SetObjectRange(0.0F, ZOOM_IN);
-                					SetRotateType(NO_ROTATION);
-                					break;
-                				}
-                				case ZOOM_OUT:
-                				{
-                			//		SetObjectRange(10.0F, ZOOM_OUT);
-                					SetRotateType(NO_ROTATION);
-                					break;
-                				}
-                				case LOCAL_RIGHT_ROT:
-                				{
-                					SetRotateType(NO_ROTATION);
-                			//		SetAzDir(1.0F);
-                					break;
-                				}
-                				case LOCAL_LEFT_ROT:
-                				{
-                					SetRotateType(NO_ROTATION);
-                		//			SetAzDir(-1.0F);
-                					break;
-                				}
-                				case LOCAL_UP_ROT:
-                				{
-                					SetRotateType(NO_ROTATION);
-                		//			SetElDir(1.0F);
-                					break;
-                				}
-                				case LOCAL_DOWN_ROT:
-                				{
-                					SetRotateType(NO_ROTATION);
-                		//			SetElDir(-1.0F);
-                					break;
-                				} */
+                /* case ZOOM_IN:
+                 {
+                 // SetObjectRange(0.0F, ZOOM_IN);
+                 SetRotateType(NO_ROTATION);
+                 break;
+                 }
+                 case ZOOM_OUT:
+                 {
+                 // SetObjectRange(10.0F, ZOOM_OUT);
+                 SetRotateType(NO_ROTATION);
+                 break;
+                 }
+                 case LOCAL_RIGHT_ROT:
+                 {
+                 SetRotateType(NO_ROTATION);
+                 // SetAzDir(1.0F);
+                 break;
+                 }
+                 case LOCAL_LEFT_ROT:
+                 {
+                 SetRotateType(NO_ROTATION);
+                 // SetAzDir(-1.0F);
+                 break;
+                 }
+                 case LOCAL_UP_ROT:
+                 {
+                 SetRotateType(NO_ROTATION);
+                 // SetElDir(1.0F);
+                 break;
+                 }
+                 case LOCAL_DOWN_ROT:
+                 {
+                 SetRotateType(NO_ROTATION);
+                 // SetElDir(-1.0F);
+                 break;
+                 } */
                 case OBJECT_RIGHT_ROT:
                 {
                     SetRotateType(LOCAL_ROTATION);
@@ -509,18 +509,18 @@ void ACMICamera::TrackPoint(const Tpoint &trackingPt)
     /*
     switch(_tracking)
     {
-    	case LOCAL_TRACKING:
-    	{
-    		SetLocalAz((float)trackingAz);
-    		SetLocalEl((float)trackingEl);
-    		break;
-    	}
-    	case GLOBAL_TRACKING:
-    	{
-    		SetObjectAz((float)trackingAz);
-    		SetObjectEl((float)trackingEl - TRACKING_OFFSET);
-    		break;
-    	}
+     case LOCAL_TRACKING:
+     {
+     SetLocalAz((float)trackingAz);
+     SetLocalEl((float)trackingEl);
+     break;
+     }
+     case GLOBAL_TRACKING:
+     {
+     SetObjectAz((float)trackingAz);
+     SetObjectEl((float)trackingEl - TRACKING_OFFSET);
+     break;
+     }
     }
     */
     SetLocalAz((float)trackingAz);
@@ -564,14 +564,14 @@ void ACMICamera::UpdateChasePosition(float dT)
 
     /*
     if ( _tracking )
-    	Rotate(_localEl, 0.0F, _localAz, &_rot);
+     Rotate(_localEl, 0.0F, _localAz, &_rot);
     else
-    	Rotate(_objectEl, _objectRoll, _objectAz, &_rot);
+     Rotate(_objectEl, _objectRoll, _objectAz, &_rot);
     */
 
     // "spring" constants for camera roll and move
-#define KMOVE			0.29f
-#define KROLL			0.30f
+#define KMOVE 0.29f
+#define KROLL 0.30f
 
     // convert frame loop time to secs from ms
     // dT = (float)frameTime * 0.001;
@@ -616,8 +616,8 @@ void ACMICamera::UpdateChasePosition(float dT)
 
     // now get yaw and pitch based on look at vector
     dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-    _objectEl	= (float) - asin(dPos.z / dist);
-    _objectAz	= (float)atan2(dPos.y, dPos.x);
+    _objectEl = (float) - asin(dPos.z / dist);
+    _objectAz = (float)atan2(dPos.y, dPos.x);
     Rotate(_objectEl, _chaseRoll, _objectAz, &_rot);
 
 }

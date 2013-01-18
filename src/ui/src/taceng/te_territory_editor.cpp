@@ -36,14 +36,14 @@ extern GlobalPositioningSystem *gGps;
 
 enum
 {
-    SMFLGS_USA 		= 52012,
-    SMFLGS_NKOREA 	= 52013,
-    SMFLGS_CHINA 	= 52014,
-    SMFLGS_FRANCE 	= 52015,
-    SMFLGS_CIS 		= 52016,
-    SMFLGS_SKOREA  	= 52017,
-    SMFLGS_JAPAN 	= 52018,
-    SMFLGS_GERMAN 	= 52019,
+    SMFLGS_USA  = 52012,
+    SMFLGS_NKOREA  = 52013,
+    SMFLGS_CHINA  = 52014,
+    SMFLGS_FRANCE  = 52015,
+    SMFLGS_CIS  = 52016,
+    SMFLGS_SKOREA   = 52017,
+    SMFLGS_JAPAN  = 52018,
+    SMFLGS_GERMAN  = 52019,
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ extern int MRX;
 extern int MRY;
 extern uchar gSelectedTeam;
 extern long gDrawTeam;
-extern void RebuildFLOTList(void);	// 2001-10-31 M.N.
+extern void RebuildFLOTList(void); // 2001-10-31 M.N.
 extern int RebuildFrontList(void);  // 2001-10-31 M.N.
 
 long OwnershipChanged = 0;
@@ -480,8 +480,8 @@ void save_territory_editor(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tryx[20] = { 1, -1, 0, 0, 1, 1, -1, -1,		2, -2, 0, 0, 2, 2, -2, -2, 1, -1, 1, -1 };
-int tryy[20] = { 0, 0, 1, -1, 1, -1, 1, -1,		0, 0, 2, -2, 1, -1, 1, -1, 2, 2, -2, -2 };
+int tryx[20] = { 1, -1, 0, 0, 1, 1, -1, -1, 2, -2, 0, 0, 2, 2, -2, -2, 1, -1, 1, -1 };
+int tryy[20] = { 0, 0, 1, -1, 1, -1, 1, -1, 0, 0, 2, -2, 1, -1, 1, -1, 2, 2, -2, -2 };
 
 short GetMapTeam(short x, short y)
 {
@@ -525,7 +525,7 @@ short GetMapTeam(short x, short y)
 void UpdateObjectiveOwnership()
 {
     VuListIterator myit(AllObjList);
-    Objective	obj;
+    Objective obj;
     GridIndex   x, y;
     Team team;
 
@@ -571,7 +571,7 @@ void UpdateUnitOwnership(void)
 #if 0
     int team;
     short unitX, unitY;
-    VuListIterator	myit(AllUnitList);
+    VuListIterator myit(AllUnitList);
     UnitClass* theUnit;
 
 

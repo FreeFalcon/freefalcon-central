@@ -1,16 +1,16 @@
 
 // ------------------------------------------------------------------------------
 //
-//	File: padefov.cpp
+// File: padefov.cpp
 //
-//	This file contains code that is specific to the Extended Field of View padlock
+// This file contains code that is specific to the Extended Field of View padlock
 // scheme.  Note that the code in this file can call the general padlock sorting
 // functions.  On Gilman's orders, I stripped out code relating to the Hawkeye
 // padlock.  See otwdrive\padhawk.cpp for the original unmolested Hawkeye code.
 //
 // List of Contents:
-//		OTWDriverClass::PadlockEFOV_Draw()
-//		OTWDriverClass::PadlockEFOV_DrawBox()
+// OTWDriverClass::PadlockEFOV_Draw()
+// OTWDriverClass::PadlockEFOV_DrawBox()
 //
 // ------------------------------------------------------------------------------
 
@@ -30,15 +30,15 @@
 
 // ------------------------------------------------------------------------------
 //
-//	OTWDriverClass::PadlockEFOV_Draw()
+// OTWDriverClass::PadlockEFOV_Draw()
 //
-//	Arguments:
-//		NONE
+// Arguments:
+// NONE
 //
-//	Returns:
-//		NONE
+// Returns:
+// NONE
 //
-//	This function checks if the player has requested to step thru the list of
+// This function checks if the player has requested to step thru the list of
 // objects. If so it calls Padlock_FindNextPriority() to step to the next
 // padlock candidate.  Then the function searches the target list for the currently
 // padlock object.  If we find it in the target list, we can just copy the ATA and
@@ -50,20 +50,20 @@
 
 void OTWDriverClass::PadlockEFOV_Draw(void)
 {
-    SimObjectType*	visObj = NULL;
-    //	int				tmpTexLevel=0;
-    int				tmpObjTex = 0;
-    //	int				tmpShade=0;
-    float			tmpFov = 0.0F;
-    float			viewLimit = 0.0F;
-    float			viewDelta = 0.0F;
-    float			efovBoxSize = 0.0F;
-    float			ata = 0.0F;
-    float			droll = 0.0F;
-    float			ataFrom = 0.0F;
-    float			az = 0.0F;
-    float			el = 0.0F;
-    BOOL			found = FALSE;
+    SimObjectType* visObj = NULL;
+    // int tmpTexLevel=0;
+    int tmpObjTex = 0;
+    // int tmpShade=0;
+    float tmpFov = 0.0F;
+    float viewLimit = 0.0F;
+    float viewDelta = 0.0F;
+    float efovBoxSize = 0.0F;
+    float ata = 0.0F;
+    float droll = 0.0F;
+    float ataFrom = 0.0F;
+    float az = 0.0F;
+    float el = 0.0F;
+    BOOL found = FALSE;
 
     // If the player is requesting a change of target,
     // find the the candidate with the next lowest priority
@@ -73,7 +73,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     }
 
     // Get the head of the target list.
-    visObj		= ((SimMoverClass*)otwPlatform.get())->targetList;
+    visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
 
     // Walk the target list and search for the padlock priority object
     while (visObj != NULL && found == FALSE)
@@ -82,15 +82,15 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
         // If the padlock priority object is in the list safe some important angle values.
         if (visObj->BaseData() == mpPadlockPriorityObject)
         {
-            ata		= visObj->localData->ata;
-            ataFrom	= visObj->localData->ataFrom;
-            droll		= visObj->localData->droll;
-            az			= visObj->localData->az;
-            el			= visObj->localData->el;
-            found		= TRUE;
+            ata = visObj->localData->ata;
+            ataFrom = visObj->localData->ataFrom;
+            droll = visObj->localData->droll;
+            az = visObj->localData->az;
+            el = visObj->localData->el;
+            found = TRUE;
         }
 
-        visObj	= visObj->next;
+        visObj = visObj->next;
     }
 
     // If we have a padlock priority object, but didn't find it in the target list,
@@ -104,10 +104,10 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     }
 
     // Calculate the limits of our padlock view
-    tmpFov			= renderer->GetFOV();
-    efovBoxSize		= 0.25F;
-    viewLimit		= 0.75F * tmpFov * 0.5F;
-    viewDelta		= (tmpFov * 0.5F) - viewLimit;
+    tmpFov = renderer->GetFOV();
+    efovBoxSize = 0.25F;
+    viewLimit = 0.75F * tmpFov * 0.5F;
+    viewDelta = (tmpFov * 0.5F) - viewLimit;
 
     // If I have something to draw and it's off screen
     if (found == TRUE && (ata > viewLimit + viewDelta * (float)sin(fabs(droll))))
@@ -119,16 +119,16 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
         }
 
         // Save our current renderer settings
-        //		tmpTexLevel = renderer->GetTerrainTextureLevel();
-        tmpObjTex	= renderer->GetObjectTextureState();
-        //		tmpShade    = TRUE;//renderer->GetSmoothShadingMode();
+        // tmpTexLevel = renderer->GetTerrainTextureLevel();
+        tmpObjTex = renderer->GetObjectTextureState();
+        // tmpShade    = TRUE;//renderer->GetSmoothShadingMode();
 
         // Get the renderer ready to draw the padlocked object
         renderer->SetFOV(25.0F * DTR);
-        //		renderer->SetTerrainTextureLevel( 0 );
+        // renderer->SetTerrainTextureLevel( 0 );
         renderer->SetObjectTextureState(FALSE);
 
-        //		renderer->SetSmoothShadingMode( FALSE );
+        // renderer->SetSmoothShadingMode( FALSE );
         // Draw the contents of the Padlock window
         if (mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim())
         {
@@ -137,9 +137,9 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
 
         // Restore the renderer's original settings
         renderer->SetFOV(tmpFov);
-        //		renderer->SetTerrainTextureLevel( tmpTexLevel );
+        // renderer->SetTerrainTextureLevel( tmpTexLevel );
         renderer->SetObjectTextureState(tmpObjTex);
-        //		renderer->SetSmoothShadingMode( tmpShade );
+        // renderer->SetSmoothShadingMode( tmpShade );
     }
     else if (found == TRUE)
     {
@@ -152,16 +152,16 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
 #if 0
 // ------------------------------------------------------------------------------
 //
-//	OTWDriverClass::PadlockEFOV_EasyDraw()
+// OTWDriverClass::PadlockEFOV_EasyDraw()
 //
-//	Arguments:
-//		NONE
+// Arguments:
+// NONE
 //
-//	Returns:
-//		NONE
+// Returns:
+// NONE
 //
 // This is essentially the original
-//	This function checks if the player has requested to step thru the list of
+// This function checks if the player has requested to step thru the list of
 // objects. If so it calls Padlock_FindNextPriority() to step to the next
 // padlock candidate.  Then the function searches the target list for the currently
 // padlock object.  If we find it in the target list, we can just copy the ATA and
@@ -173,23 +173,23 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
 
 void OTWDriverClass::PadlockEFOV_EasyDraw(void)
 {
-    SimObjectType*	visObj;
-    SimObjectType*	priorityObj;
-    //	int				tmpTexLevel;
-    int				tmpObjTex;
-    //	int				tmpShade;
-    float				tmpFov;
-    float				viewLimit;
-    float				viewDelta;
-    float				efovBoxSize;
+    SimObjectType* visObj;
+    SimObjectType* priorityObj;
+    // int tmpTexLevel;
+    int tmpObjTex;
+    // int tmpShade;
+    float tmpFov;
+    float viewLimit;
+    float viewDelta;
+    float efovBoxSize;
 
-    visObj		= ((SimMoverClass*)otwPlatform)->targetList;
+    visObj = ((SimMoverClass*)otwPlatform)->targetList;
     priorityObj = NULL;
 
-    tmpFov		= renderer->GetFOV();
-    //	tmpTexLevel = renderer->GetTerrainTextureLevel();
-    tmpObjTex	= renderer->GetObjectTextureState();
-    //	tmpShade    = TRUE;//renderer->GetSmoothShadingMode();
+    tmpFov = renderer->GetFOV();
+    // tmpTexLevel = renderer->GetTerrainTextureLevel();
+    tmpObjTex = renderer->GetObjectTextureState();
+    // tmpShade    = TRUE;//renderer->GetSmoothShadingMode();
 
     renderer->SetFOV(25.0F * DTR);
     //   renderer->SetTerrainTextureLevel( 0 );
@@ -197,8 +197,8 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
     //   renderer->SetSmoothShadingMode( FALSE );
 
     efovBoxSize = 0.25F;
-    viewLimit	= 0.75F * tmpFov * 0.5F;
-    viewDelta	= (tmpFov * 0.5F) - viewLimit;
+    viewLimit = 0.75F * tmpFov * 0.5F;
+    viewDelta = (tmpFov * 0.5F) - viewLimit;
 
     // Find a new target
     if (tgtStep)
@@ -214,7 +214,7 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
             priorityObj = visObj;
         }
 
-        visObj	= visObj->next;
+        visObj = visObj->next;
     }
 
     // If found the thing to draw
@@ -229,7 +229,7 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
     }
     else
     {
-        tgtStep	= 1;
+        tgtStep = 1;
     }
 
     renderer->SetFOV(tmpFov);
@@ -244,15 +244,15 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
 
 // ------------------------------------------------------------------------------
 //
-//	OTWDriverClass::PadlockEFOV_DrawBox()
+// OTWDriverClass::PadlockEFOV_DrawBox()
 //
-//	Arguments:
-//		NONE
+// Arguments:
+// NONE
 //
-//	Returns:
-//		NONE
+// Returns:
+// NONE
 //
-//	This function handles all the steps necessary to render the padlocked object,
+// This function handles all the steps necessary to render the padlocked object,
 // display it into a viewport, and draw visual cues (arrow) for the play.
 // ------------------------------------------------------------------------------
 
@@ -278,15 +278,15 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
 
     // Save off the current renderer info
     renderer->GetViewport(&prevLeft, &prevTop, &prevRight, &prevBottom);
-    prevFOV		= renderer->GetFOV();
+    prevFOV = renderer->GetFOV();
 
     // Set position of the EFOV box
-    xPos			= 0.0F;
-    yPos			= -0.75F;
+    xPos = 0.0F;
+    yPos = -0.75F;
 
     // Calculate the edges of the screen
-    viewLimit	= 0.75F * renderer->GetFOV() * 0.5F;
-    viewDelta	= (renderer->GetFOV() * 0.5F) - viewLimit;
+    viewLimit = 0.75F * renderer->GetFOV() * 0.5F;
+    viewDelta = (renderer->GetFOV() * 0.5F) - viewLimit;
 
     // Draw a big arrow
     renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -300,33 +300,33 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
     ObjectSetData(otwPlatform.get(), &simView, &viewRotation);
 
     // Spin for azimuth
-    tilt			= IMatrix;
+    tilt = IMatrix;
     mlSinCos(&trig, az);
 
-    tilt.M11		= trig.cos;
-    tilt.M12		= -trig.sin;
-    tilt.M21		= -tilt.M12;
-    tilt.M22		= tilt.M11;
+    tilt.M11 = trig.cos;
+    tilt.M12 = -trig.sin;
+    tilt.M21 = -tilt.M12;
+    tilt.M22 = tilt.M11;
 
     MatrixMult(&viewRotation, &tilt, &view);
     memcpy(&viewRotation, &view, sizeof(view));
 
     // Look up or down as required
-    tilt			= IMatrix;
+    tilt = IMatrix;
     mlSinCos(&trig, el);
 
-    tilt.M11		= trig.cos;
-    tilt.M13		= trig.sin;
-    tilt.M31		= -tilt.M13;
-    tilt.M33		= tilt.M11;
+    tilt.M11 = trig.cos;
+    tilt.M13 = trig.sin;
+    tilt.M31 = -tilt.M13;
+    tilt.M33 = tilt.M11;
 
     MatrixMult(&viewRotation, &tilt, &view);
     memcpy(&viewRotation, &view, sizeof(view));
 
     renderer->SetViewport(xPos - efovBoxSize, yPos + efovBoxSize, xPos + efovBoxSize, yPos - efovBoxSize);
 
-    simLabelState	= DrawableBSP::drawLabels;
-    campLabelState	= DrawablePoint::drawLabels;
+    simLabelState = DrawableBSP::drawLabels;
+    campLabelState = DrawablePoint::drawLabels;
     DrawableBSP::drawLabels = FALSE;
     DrawablePoint::drawLabels = FALSE;
 
@@ -340,8 +340,8 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
 
     //renderer->PostSceneCloudOcclusion();
 
-    DrawableBSP::drawLabels		= simLabelState;
-    DrawablePoint::drawLabels	= campLabelState;
+    DrawableBSP::drawLabels = simLabelState;
+    DrawablePoint::drawLabels = campLabelState;
 
     renderer->SetColor(0xff00ff00);
 
@@ -357,9 +357,9 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
     // Add the tag if needed
     if (PlayerOptions.NameTagsOn())
     {
-        tmpStr[0]	= 0;
+        tmpStr[0] = 0;
 
-        if ((bcBSP	= (DrawableBSP *)base->drawPointer) != NULL)
+        if ((bcBSP = (DrawableBSP *)base->drawPointer) != NULL)
         {
             sprintf(tmpStr, "%s", bcBSP->Label());
         }

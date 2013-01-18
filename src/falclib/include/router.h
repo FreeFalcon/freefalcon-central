@@ -15,48 +15,48 @@
 // =========================================================
 
 // Protocols available to Router
-#define RTR_UDP_AVAILABLE		0x01			// We have UDP available
-#define RTR_TCP_AVAILABLE		0x02			// We have TCP available
+#define RTR_UDP_AVAILABLE 0x01 // We have UDP available
+#define RTR_TCP_AVAILABLE 0x02 // We have TCP available
 
 // Virtual connection types available to Router
-#define RTR_PTOP_AVAILABLE		0x01			// We can send point to point messages
-#define RTR_BCAST_AVAILABLE		0x02			// We can send broadcast (to world) messages
-#define RTR_SERVER_AVAILABLE	0x04			// We are connecting to an exploder server
+#define RTR_PTOP_AVAILABLE 0x01 // We can send point to point messages
+#define RTR_BCAST_AVAILABLE 0x02 // We can send broadcast (to world) messages
+#define RTR_SERVER_AVAILABLE 0x04 // We are connecting to an exploder server
 
 // Virtual connection type equivalencies
-#define RTR_LAN					0x03			// PtoP and Bcast are available
-#define RTR_INET				0x01			// PtoP only
-#define RTR_INET_SERVER			0x04			// Server only
-#define RTR_NULL_MODEM			0x01			// PtoP only
-#define RTR_MODEM_MODEM			0x01			// PtoP only
-#define RTR_MODEM_INET			0x01			// PtoP only
-#define RTR_MODEM_SERVER		0x04			// Server only
+#define RTR_LAN 0x03 // PtoP and Bcast are available
+#define RTR_INET 0x01 // PtoP only
+#define RTR_INET_SERVER 0x04 // Server only
+#define RTR_NULL_MODEM 0x01 // PtoP only
+#define RTR_MODEM_MODEM 0x01 // PtoP only
+#define RTR_MODEM_INET 0x01 // PtoP only
+#define RTR_MODEM_SERVER 0x04 // Server only
 
-#define RTR_NAME_SIZE			8				// Size, in bytes, of group's unique ids
+#define RTR_NAME_SIZE 8 // Size, in bytes, of group's unique ids
 
-#define RTR_RELIABLE			1
-#define RTR_NORMAL				0
+#define RTR_RELIABLE 1
+#define RTR_NORMAL 0
 
-#define CAPI_UDP_PORT			2934			// Note: This unfortunately needs to match the value in comms\mcast.h
-#define CAPI_TCP_PORT			2935
+#define CAPI_UDP_PORT 2934 // Note: This unfortunately needs to match the value in comms\mcast.h
+#define CAPI_TCP_PORT 2935
 
 // =========================================================
 // Return values
 // =========================================================
 
-#define RTR_OK							1
-#define RTR_ERROR       				0
+#define RTR_OK 1
+#define RTR_ERROR        0
 
-#define RTR_INVALID_HANDLE				-1
-#define RTR_PROTOCOL_NOT_AVAILABLE		-2
-#define RTR_OVERFLOW_ERROR		        -3		// Send buffer is full
-#define RTR_CONNECTION_CLOSED			-5		// Connection is no longer available
-#define RTR_MESSAGE_TOO_BIG				-6
-#define RTR_CONNECTION_PENDING			-7
-#define RTR_WOULDBLOCK					-8
-#define RTR_EMPTYGROUP					-9
-#define RTR_NOTHING_TO_SEND				-10
-#define RTR_WRONG_ADDRESS				-11
+#define RTR_INVALID_HANDLE -1
+#define RTR_PROTOCOL_NOT_AVAILABLE -2
+#define RTR_OVERFLOW_ERROR         -3 // Send buffer is full
+#define RTR_CONNECTION_CLOSED -5 // Connection is no longer available
+#define RTR_MESSAGE_TOO_BIG -6
+#define RTR_CONNECTION_PENDING -7
+#define RTR_WOULDBLOCK -8
+#define RTR_EMPTYGROUP -9
+#define RTR_NOTHING_TO_SEND -10
+#define RTR_WRONG_ADDRESS -11
 #define RTR_NOTHING_READ                -12
 
 // =========================================================
@@ -65,16 +65,16 @@
 
 typedef struct comapihandle *ComAPIHandle;      // defined in CAPI.h
 
-typedef unsigned long	RtrAddress;				// IP Address or similar way to get to a physical machine
-typedef unsigned char	uchar;
+typedef unsigned long RtrAddress; // IP Address or similar way to get to a physical machine
+typedef unsigned char uchar;
 
 class RouterAddressNode
 {
 public:
-    RtrAddress			machine_address;	// Physical address of the machine
-    ComAPIHandle		normalHandle;		// UDP or unreliable transport handle (if any)
-    ComAPIHandle		reliableHandle;		// TCP or reliable transport handle (if any)
-    RouterAddressNode	*next;				// Next node in the delivery list
+    RtrAddress machine_address; // Physical address of the machine
+    ComAPIHandle normalHandle; // UDP or unreliable transport handle (if any)
+    ComAPIHandle reliableHandle; // TCP or reliable transport handle (if any)
+    RouterAddressNode *next; // Next node in the delivery list
 public:
     RouterAddressNode(RtrAddress pa, ComAPIHandle remote_socket);
     ~RouterAddressNode(void);
@@ -90,9 +90,9 @@ typedef RouterAddressNode* RtrAddressNode;
 class RouterHandle
 {
 public:
-    RtrAddressNode		delivery_list;		// List of physical addresses to deliver to
-    uchar				name[RTR_NAME_SIZE];// The handle's name
-    RouterHandle		*next;				// Next handle in list
+    RtrAddressNode delivery_list; // List of physical addresses to deliver to
+    uchar name[RTR_NAME_SIZE];// The handle's name
+    RouterHandle *next; // Next handle in list
 public:
     RouterHandle(void);
     ~RouterHandle(void);
@@ -106,17 +106,17 @@ typedef RouterHandle* RtrHandle;
 class RouterInfoClass
 {
 public:
-    uchar				type;				// type of virtual connection we have
-    uchar				protocols;			// protocols available to us
-    RtrAddressNode		server_info;		// server address && connections, if one exists
-    RtrHandle			server_handle;
-    RtrAddressNode		broadcast_info;		// broadcast information, if any exists
-    RtrHandle			broadcast_handle;
-    RtrHandle			group_list;			// list of virtual groups we know about
-    RtrAddressNode		connection_list;	// list of all current connections
-    RtrAddress			our_address;		// who we are
-    short				max_message_size;	// Biggest message we're allowed to send
-    char*				game_name;			// Name of the game - duh!
+    uchar type; // type of virtual connection we have
+    uchar protocols; // protocols available to us
+    RtrAddressNode server_info; // server address && connections, if one exists
+    RtrHandle server_handle;
+    RtrAddressNode broadcast_info; // broadcast information, if any exists
+    RtrHandle broadcast_handle;
+    RtrHandle group_list; // list of virtual groups we know about
+    RtrAddressNode connection_list; // list of all current connections
+    RtrAddress our_address; // who we are
+    short max_message_size; // Biggest message we're allowed to send
+    char* game_name; // Name of the game - duh!
 public:
     RouterInfoClass(void);
 };

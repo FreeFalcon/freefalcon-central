@@ -4,7 +4,7 @@
     February 5, 1996
 
     This class provides 2D drawing functions for a Hercules monochrome
-	display.
+ display.
 \***************************************************************************/
 #ifndef _MONO2D_H_
 #define _MONO2D_H_
@@ -16,13 +16,13 @@
 class MonochromeDisplay : public VirtualDisplay
 {
 public:
-    MonochromeDisplay()					{};
-    virtual ~MonochromeDisplay()		{};
+    MonochromeDisplay() {};
+    virtual ~MonochromeDisplay() {};
 
-    void Setup(void);	// Setup the display is graphics mode
+    void Setup(void); // Setup the display is graphics mode
     virtual void Cleanup(void);
 
-    virtual void StartDraw(void)		{};
+    virtual void StartDraw(void) {};
     virtual void ClearDraw(void);
     virtual void EndDraw(void);
 
@@ -38,8 +38,8 @@ public:
     void ClearTextOnly(void);
 
 protected:
-    int				textX;
-    int				textY;
+    int textX;
+    int textY;
 
 protected:
     unsigned char *NewLineTextOnly(void);

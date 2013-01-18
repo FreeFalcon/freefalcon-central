@@ -9,8 +9,8 @@
 
 #pragma pack (1)
 
-#define REQUEST_RESULT_SUCCESS		1
-#define REQUEST_RESULT_DENIED		2
+#define REQUEST_RESULT_SUCCESS 1
+#define REQUEST_RESULT_DENIED 2
 
 /*
  * Message Type Send aircraft Slot

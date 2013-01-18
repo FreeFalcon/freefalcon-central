@@ -14,16 +14,16 @@
 #include "RadarDoppler.h" // 2002-03-13 S.G.
 
 
-static const float CM_EFFECTIVE_ANGLE	= 30.0f * DTR;	// If used, should be in class table data...
+static const float CM_EFFECTIVE_ANGLE = 30.0f * DTR; // If used, should be in class table data...
 
 
 BeamRiderClass::BeamRiderClass(int, SimMoverClass *body) : SensorClass(body)
 {
-    sensorType			= RadarHoming;
-    dataProvided		= ExactPosition;
-    radarPlatform		= NULL;
-    lastChaffID			= FalconNullId;
-    lastTargetLockSend	= 0;
+    sensorType = RadarHoming;
+    dataProvided = ExactPosition;
+    radarPlatform = NULL;
+    lastChaffID = FalconNullId;
+    lastTargetLockSend = 0;
     chafftime = SimLibElapsedTime - 5000;
 }
 
@@ -36,7 +36,7 @@ BeamRiderClass::~BeamRiderClass(void)
 
 SimObjectType* BeamRiderClass::Exec(SimObjectType*)
 {
-    SensorClass	*radar;
+    SensorClass *radar;
 
     // Validate our locked target
     CheckLockedTarget();
@@ -59,19 +59,19 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
         /*RadarClass* platformradar = NULL;
         if (radarPlatform->IsSim())
         {
-        	platformradar = (RadarClass*)FindSensor( (SimMoverClass*) radarPlatform, SensorClass::Radar );
-        	int mode;
-        	if (((SimBaseClass*)radarPlatform)->IsSim() && ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject()))
-        		mode = ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject())->GetRadarMode();
-        	else
-        		mode = ((SimBaseClass*)radarPlatform)->GetRadarMode();
+         platformradar = (RadarClass*)FindSensor( (SimMoverClass*) radarPlatform, SensorClass::Radar );
+         int mode;
+         if (((SimBaseClass*)radarPlatform)->IsSim() && ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject()))
+         mode = ((BattalionClass*)((SimBaseClass*)radarPlatform)->GetCampaignObject())->GetRadarMode();
+         else
+         mode = ((SimBaseClass*)radarPlatform)->GetRadarMode();
 
-        	if (mode == FEC_RADAR_GUIDE && platformradar)
-        	{
-        		SetSensorTarget( platformradar->CurrentTarget());
-        		CalcRelGeom ((MissileClass *)platform, lockedTarget, NULL, 1.0F);
-        	}
-        	else return NULL;
+         if (mode == FEC_RADAR_GUIDE && platformradar)
+         {
+         SetSensorTarget( platformradar->CurrentTarget());
+         CalcRelGeom ((MissileClass *)platform, lockedTarget, NULL, 1.0F);
+         }
+         else return NULL;
         }*/
         if (radarPlatform->IsSim() && radarPlatform->OnGround())
         {
@@ -153,9 +153,9 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (stat)
                 {
                     //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    //		radarPlatform->IsDead() ||
-                    //		radarPlatform->IsExploding() ||
-                    //		!radarPlatform->IsEmitting())
+                    // radarPlatform->IsDead() ||
+                    // radarPlatform->IsExploding() ||
+                    // !radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {
@@ -221,9 +221,9 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
                 if (stat)
                 {
                     //if (lockedTarget->BaseData()->IsSPJamming() ||
-                    //		radarPlatform->IsDead() ||
-                    //		radarPlatform->IsExploding() ||
-                    //		!radarPlatform->IsEmitting())
+                    // radarPlatform->IsDead() ||
+                    // radarPlatform->IsExploding() ||
+                    // !radarPlatform->IsEmitting())
                     //{
                     if (lockedTarget)
                     {
@@ -323,13 +323,13 @@ SimObjectType* BeamRiderClass::Exec(SimObjectType*)
     //there were no limit before !!
     // it's on purpose that this is placed after the send trach msg !!
     //ME123 I GUES THIS WAS A BIT TOO HACKY...IT BRAKES MP..FLOODING TRACK LOCK/UNLOCK/LAUNCH MESSAGES
-    /*	if (lockedTarget && lockedTarget->localData->ata > 60.0f*DTR)
-    	{
-    		if (lockedTarget)
-    			SendTrackMsg( lockedTarget, Track_Unlock );
-    		ClearSensorTarget();
-    		return NULL;
-    	}
+    /* if (lockedTarget && lockedTarget->localData->ata > 60.0f*DTR)
+     {
+     if (lockedTarget)
+     SendTrackMsg( lockedTarget, Track_Unlock );
+     ClearSensorTarget();
+     return NULL;
+     }
     */
     return lockedTarget;
 }
@@ -340,12 +340,12 @@ void BeamRiderClass::SetGuidancePlatform(FalconEntity* rdrPlat)
         return;
 
     // 2002-03-10 REMOVED BY S.G. Needs to be done AFTER we send a Track_Unlock otherwise it will NEVER send it because radarPlatform will be NULL
-    //	if (radarPlatform)
-    //	{
-    //		VuDeReferenceEntity( radarPlatform );
-    //	}
+    // if (radarPlatform)
+    // {
+    // VuDeReferenceEntity( radarPlatform );
+    // }
 
-    //	radarPlatform = rdrPlat;
+    // radarPlatform = rdrPlat;
 
     if (rdrPlat) // 2002-03-10 MODIFIED BY S.G. Used rdrPlat instead of radarPlatform since I move the line above
     {
@@ -414,7 +414,7 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
     }
 
     countb ++;
-    //	 MonoPrint ("BeamriderClass::SendTrackMsg %d %d %d %08x %08x %08x%08x, %d\n",reliable,count,countb, this, platform, id, trackType);
+    //  MonoPrint ("BeamriderClass::SendTrackMsg %d %d %d %08x %08x %08x%08x, %d\n",reliable,count,countb, this, platform, id, trackType);
 
     FalconTrackMessage* trackMsg = new FalconTrackMessage(reliable, radarPlatform->Id(), FalconLocalGame);
 
@@ -430,18 +430,18 @@ void BeamRiderClass::SendTrackMsg(SimObjectType* tgtptr , unsigned int trackType
 //me123 changes to chaff effectivenes original 0.0 0.1 0.5 0.5 0.2 0.1
 //me123 from 0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f
 // This controls how effective countermeasures are as a function of seeker range from target
-static const float	cmRangeArray[]		= {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
-static const float	cmBiteChanceArray[]	= {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
-static const int	cmArrayLength		= sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
+static const float cmRangeArray[] = {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
+static const float cmBiteChanceArray[] = {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
+static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
 
 // TODO:  Consider how this affects and is affected by the radar platform...
 void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
 {
-    VU_ID			id;
-    FalconEntity	*cm;
-    float			chance;
-    int				dummy = 0;
+    VU_ID id;
+    FalconEntity *cm;
+    float chance;
+    int dummy = 0;
 
     // No counter measures deployed by campaign things
     if (!target || !target->BaseData()->IsSim())
@@ -451,7 +451,7 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
 
     // Get the ID of the most recently launched counter measure from our target
     // 2000-11-24 REMOVED BY S.G. TO BRING IT TO RP4 LEVEL
-    //	if (chafftime + 5000 <= SimLibElapsedTime)	//me123 let's give the chaff that worked some effective time
+    // if (chafftime + 5000 <= SimLibElapsedTime) //me123 let's give the chaff that worked some effective time
     id = ((SimBaseClass*)target->BaseData())->NewestChaffID();
 
     // If we have a new chaff bundle to deal with
@@ -481,29 +481,29 @@ void BeamRiderClass::ConsiderDecoy(SimObjectType *target)
         chance *= Math.OnedInterp(target->localData->range, cmRangeArray, cmBiteChanceArray, cmArrayLength, &dummy);
 
         // Player countermeasures work better //no thins is crap
-        //		if (target->BaseData()->IsPlayer()) {
-        //			chance *= 1.15F;
-        //		}
+        // if (target->BaseData()->IsPlayer()) {
+        // chance *= 1.15F;
+        // }
 
         // Roll the dice
         if (chance > (float)rand() / RAND_MAX)
         {
 
             // Compute some relative geometry stuff
-            const float atx	= platform->dmx[0][0];
-            const float aty	= platform->dmx[0][1];
-            const float atz	= platform->dmx[0][2];
-            const float dx	= cm->XPos() - platform->XPos();
-            const float dy	= cm->YPos() - platform->YPos();
-            const float dz	= cm->ZPos() - platform->ZPos();
-            const float range	= (float)sqrt(dx * dx + dy * dy);
-            const float cosATA	= (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+            const float atx = platform->dmx[0][0];
+            const float aty = platform->dmx[0][1];
+            const float atz = platform->dmx[0][2];
+            const float dx = cm->XPos() - platform->XPos();
+            const float dy = cm->YPos() - platform->YPos();
+            const float dz = cm->ZPos() - platform->ZPos();
+            const float range = (float)sqrt(dx * dx + dy * dy);
+            const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
 
             // Only take the bait if we can see the thing
             if (cosATA >= cos(CM_EFFECTIVE_ANGLE))
             {
 #ifdef DEBUG
-                /*			SetSensorTarget( new SimObjectType(OBJ_TAG, platform, cm) );*/
+                /* SetSensorTarget( new SimObjectType(OBJ_TAG, platform, cm) );*/
 #else
 
                 SetSensorTarget(new SimObjectType(cm));

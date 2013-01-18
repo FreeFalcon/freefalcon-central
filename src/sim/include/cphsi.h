@@ -10,12 +10,12 @@ extern MEM_POOL gCockMemPool;
 #endif
 
 
-const float	COMPASS_X_CENTER		= 0.0F;
-const float	COMPASS_Y_CENTER		= -0.1F;
-const float	HALFPI					= 1.5708F;
-const float	TWOPI						= 6.2832F;
-const int	NORMAL_HSI_CRS_STATE = 7;
-const int	NORMAL_HSI_HDG_STATE = 7;
+const float COMPASS_X_CENTER = 0.0F;
+const float COMPASS_Y_CENTER = -0.1F;
+const float HALFPI = 1.5708F;
+const float TWOPI = 6.2832F;
+const int NORMAL_HSI_CRS_STATE = 7;
+const int NORMAL_HSI_HDG_STATE = 7;
 
 enum HSIColors
 {
@@ -45,15 +45,15 @@ class CPHsi;
 
 typedef struct
 {
-    int	compassTransparencyType;
-    RECT	compassSrc;
-    RECT	compassDest;
-    RECT	devSrc;
-    RECT	devDest;
-    RECT	warnFlag;
-    CPHsi	*pHsi;
-    long	colors[HSI_COLOR_TOTAL];
-    BYTE *sourcehsi;	//Wombat778 3-24-04
+    int compassTransparencyType;
+    RECT compassSrc;
+    RECT compassDest;
+    RECT devSrc;
+    RECT devDest;
+    RECT warnFlag;
+    CPHsi *pHsi;
+    long colors[HSI_COLOR_TOTAL];
+    BYTE *sourcehsi; //Wombat778 3-24-04
 
 } HsiInitStr;
 
@@ -133,19 +133,19 @@ public:
     // Runtime Public Member Functions
     //====================================================
 
-    void	Exec(void);
+    void Exec(void);
 
     //====================================================
     // Access Functions
     //====================================================
 
-    void	IncState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
-    void	DecState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
-    int	GetState(HSIButtonStates);
-    float	GetValue(HSIValues);
-    BOOL	GetFlag(HSIFlags);
+    void IncState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
+    void DecState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
+    int GetState(HSIButtonStates);
+    float GetValue(HSIValues);
+    BOOL GetFlag(HSIFlags);
 
-    //	long		mColor[2][HSI_COLOR_TOTAL];
+    // long mColor[2][HSI_COLOR_TOTAL];
 
     //MI 02/02/02
     float LastHSIHeading;
@@ -156,15 +156,15 @@ private:
     // Internal Data
     //====================================================
 
-    CockpitManager	*mpCPManager;
+    CockpitManager *mpCPManager;
 
 
-    int	mpHsiStates[HSI_STA_TOTAL_STATES];
-    float	mpHsiValues[HSI_VAL_TOTAL_VALUES];
-    BOOL	mpHsiFlags[HSI_FLAG_TOTAL_FLAGS];
+    int mpHsiStates[HSI_STA_TOTAL_STATES];
+    float mpHsiValues[HSI_VAL_TOTAL_VALUES];
+    BOOL mpHsiFlags[HSI_FLAG_TOTAL_FLAGS];
 
-    NavigationSystem::Instrument_Mode	mLastMode;
-    WayPointClass*	mLastWaypoint;
+    NavigationSystem::Instrument_Mode mLastMode;
+    WayPointClass* mLastWaypoint;
     VU_TIME lastCheck;
     BOOL lastResult;
 
@@ -172,14 +172,14 @@ private:
     // Calculation Routines
     //====================================================
 
-    void	ExecNav(void);
-    void	ExecTacan(void);
-    void	ExecILSNav(void);
-    void	ExecILSTacan(void);
-    void	ExecBeaconProximity(float, float, float, float);
-    void	CalcTCNCrsDev(float course);
-    void	CalcILSCrsDev(float);
-    BOOL	BeaconInRange(float rangeToBeacon, float nominalBeaconRange);
+    void ExecNav(void);
+    void ExecTacan(void);
+    void ExecILSNav(void);
+    void ExecILSTacan(void);
+    void ExecBeaconProximity(float, float, float, float);
+    void CalcTCNCrsDev(float course);
+    void CalcILSCrsDev(float);
+    BOOL BeaconInRange(float rangeToBeacon, float nominalBeaconRange);
 };
 
 
@@ -209,63 +209,63 @@ private:
     // Pointers to the Outside World
     //====================================================
 
-    CPHsi		*mpHsi;
+    CPHsi *mpHsi;
 
     //====================================================
     // Viewport Dimension Data
     //====================================================
 
-    float		mTop;
-    float		mLeft;
-    float		mBottom;
-    float		mRight;
+    float mTop;
+    float mLeft;
+    float mBottom;
+    float mRight;
 
     //====================================================
     // Compass Dial Data
     //====================================================
 
-    int		mRadius;
+    int mRadius;
 
-    RECT		mDevSrc;
-    RECT		mDevDest;
+    RECT mDevSrc;
+    RECT mDevDest;
 
-    RECT		mCompassSrc;
-    RECT		mCompassDest;
-    RECT		mWarnFlag;
+    RECT mCompassSrc;
+    RECT mCompassDest;
+    RECT mWarnFlag;
 
-    int		mCompassTransparencyType;
+    int mCompassTransparencyType;
 
-    int		*mpCompassCircle;
-    int		mCompassXCenter;
-    int		mCompassYCenter;
-    int		mCompassWidth;
-    int		mCompassHeight;
+    int *mpCompassCircle;
+    int mCompassXCenter;
+    int mCompassYCenter;
+    int mCompassWidth;
+    int mCompassHeight;
 
-    ImageBuffer *CompassBuffer;				//Wombat778 10-06-2003   Added to hold temporary buffer for HSI autoscaling/rotation
+    ImageBuffer *CompassBuffer; //Wombat778 10-06-2003   Added to hold temporary buffer for HSI autoscaling/rotation
 
-    ulong		mColor[2][HSI_COLOR_TOTAL];
+    ulong mColor[2][HSI_COLOR_TOTAL];
 
     //====================================================
     // Position Routines
     //====================================================
 
-    void		MoveToCompassCenter(void);
+    void MoveToCompassCenter(void);
 
     //====================================================
     // Draw Routines for Needles
     //====================================================
 
-    void		DrawCourse(float, float);
-    void		DrawStationBearing(float);
-    void		DrawAircraftSymbol(void);
+    void DrawCourse(float, float);
+    void DrawStationBearing(float);
+    void DrawAircraftSymbol(void);
 
     //====================================================
     // Draw Routines for Flags
     //====================================================
 
-    void		DrawHeadingMarker(float);
-    void		DrawCourseWarning(void);
-    void		DrawToFrom(void);
+    void DrawHeadingMarker(float);
+    void DrawCourseWarning(void);
+    void DrawToFrom(void);
 
 public:
 
@@ -278,8 +278,8 @@ public:
     virtual void Exec(SimBaseClass*);
 
     //Wombat778 3-24-04 Stuff for rendered hsi
-    void		DisplayBlit3D();
-    GLubyte		*mpSourceBuffer;
+    void DisplayBlit3D();
+    GLubyte *mpSourceBuffer;
     virtual void CreateLit(void);
     //Wombat778 End
 

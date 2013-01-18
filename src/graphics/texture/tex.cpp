@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     10Oct03
 
-	- Begin Major Rewrite
+ - Begin Major Rewrite
 ***************************************************************************/
 #include "stdafx.h"
 #include "Image.h"
@@ -17,18 +17,18 @@
 MEM_POOL Palette::pool;
 #endif
 
-static char			TexturePath[256] = {'\0'};
-static DXContext	*rc = NULL;
+static char TexturePath[256] = {'\0'};
+static DXContext *rc = NULL;
 
-extern bool	g_bEnableNonPersistentTextures;
-extern bool	g_bShowMipUsage;
-extern int	fileout;
+extern bool g_bEnableNonPersistentTextures;
+extern bool g_bShowMipUsage;
+extern int fileout;
 extern void ConvertToNormalMap(int kerneltype, int colorcnv, int alpha, float scale, int minz, bool wrap, bool bInvertX, bool bInvertY, int w, int h, int bits, void * data);
 extern void ReadDTXnFile(unsigned long count, void * buffer);
 extern void WriteDTXnFile(unsigned long count, void *buffer);
 
-#define	ARGB_TEXEL_SIZE 4
-#define	ARGB_TEXEL_BITS 32
+#define ARGB_TEXEL_SIZE 4
+#define ARGB_TEXEL_BITS 32
 
 static HRESULT WINAPI MipLoadCallback(LPDIRECTDRAWSURFACE7 lpDDSurface, LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext);
 
@@ -109,9 +109,9 @@ static int FindMsb(DWORD val)
 }
 
 #ifdef _DEBUG
-DWORD Texture::m_dwNumHandles = 0;		// Number of instances
-DWORD Texture::m_dwBitmapBytes = 0;		// Bytes allocated for bitmap copies
-DWORD Texture::m_dwTotalBytes = 0;		// Total number of bytes allocated (including bitmap copies and object size)
+DWORD Texture::m_dwNumHandles = 0; // Number of instances
+DWORD Texture::m_dwBitmapBytes = 0; // Bytes allocated for bitmap copies
+DWORD Texture::m_dwTotalBytes = 0; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
 Texture::Texture()
@@ -124,7 +124,7 @@ Texture::Texture()
     //paletteFromBank = thFromBank = false;
 
 #ifdef _DEBUG
-    InterlockedIncrement((long *)&m_dwNumHandles);		// Number of instances
+    InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     InterlockedExchangeAdd((long *)&m_dwTotalBytes, sizeof(*this));
 #endif
 };
@@ -132,7 +132,7 @@ Texture::Texture()
 Texture::~Texture()
 {
 #ifdef _DEBUG
-    //InterlockedIncrement((long *)&m_dwNumHandles);		// Number of instances
+    //InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
 #endif
 
@@ -173,18 +173,18 @@ void Texture::CleanupForDevice(DXContext *texRC)
     TextureHandle::StaticCleanup();
 }
 
-//	This is called to check whether the device is setup.
+// This is called to check whether the device is setup.
 bool Texture::IsSetup()
 {
     return rc != NULL;
 }
 
-//	Read a data file and store its information.
+// Read a data file and store its information.
 BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
 {
-    char				fullname[MAX_PATH];
-    CImageFileMemory 	texFile;
-    int					result;
+    char fullname[MAX_PATH];
+    CImageFileMemory  texFile;
+    int result;
 
 
     ShiAssert(filename);
@@ -496,13 +496,13 @@ void Texture::MemoryUsageReport()
 
 // TextureHandle
 struct _DDPIXELFORMAT TextureHandle::m_arrPF[TEX_CAT_MAX];
-IDirect3DDevice7 *TextureHandle::m_pD3DD = NULL;	// Warning: Not addref'd
+IDirect3DDevice7 *TextureHandle::m_pD3DD = NULL; // Warning: Not addref'd
 struct _D3DDeviceDesc7 *TextureHandle::m_pD3DHWDeviceDesc = NULL;
 
 #ifdef _DEBUG
-DWORD TextureHandle::m_dwNumHandles = 0;			// Number of instances
-DWORD TextureHandle::m_dwBitmapBytes = 0;			// Bytes allocated for bitmap copies
-DWORD TextureHandle::m_dwTotalBytes = 0;			// Total number of bytes allocated (including bitmap copies and object size)
+DWORD TextureHandle::m_dwNumHandles = 0; // Number of instances
+DWORD TextureHandle::m_dwBitmapBytes = 0; // Bytes allocated for bitmap copies
+DWORD TextureHandle::m_dwTotalBytes = 0; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
 TextureHandle::TextureHandle()
@@ -518,7 +518,7 @@ TextureHandle::TextureHandle()
     m_nImageDataStride = -1;
 
 #ifdef _DEBUG
-    InterlockedIncrement((long *)&m_dwNumHandles);	// Number of instances
+    InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     InterlockedExchangeAdd((long *)&m_dwTotalBytes, sizeof(*this));
 #endif
 }
@@ -526,7 +526,7 @@ TextureHandle::TextureHandle()
 TextureHandle::~TextureHandle()
 {
 #ifdef _DEBUG
-    InterlockedDecrement((long *)&m_dwNumHandles);	// Number of instances
+    InterlockedDecrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-m_strName.size());
 
@@ -547,8 +547,8 @@ TextureHandle::~TextureHandle()
     if (m_pImageData && m_bImageDataOwned)
     {
         DWORD dwSize = m_nImageDataStride * m_nHeight;
-        /*		InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
-        		InterlockedExchangeAdd((long *)&m_dwBitmapBytes,-dwSize);	*/
+        /* InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
+         InterlockedExchangeAdd((long *)&m_dwBitmapBytes,-dwSize); */
     }
 
 #endif
@@ -608,8 +608,8 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
         // JB 010326 CTD
         //if( F4IsBadReadPtr(m_pD3DHWDeviceDesc,sizeof(_D3DDeviceDesc7)) )
         //{
-        //	ReportTextureLoadError("Bad Read Pointer");
-        //	return false;
+        // ReportTextureLoadError("Bad Read Pointer");
+        // return false;
         //}
 
         // Force power of 2
@@ -1059,7 +1059,7 @@ bool TextureHandle::Reload()
 
             memcpy(pDst, pSrc, m_nImageDataStride);
             /*for(int i = 0; i < m_nImageDataStride; i++){
-            	*pDst++ = *pSrc++;
+             *pDst++ = *pSrc++;
             }*/
         }
         // sfr: weird.. added {} around switch
@@ -1488,19 +1488,19 @@ void TextureHandle::StaticInit(IDirect3DDevice7 *pD3DD)
     TEXTURESEARCHINFO tsi_16[6] =
     {
         //bpp,alpha,pal
-        { 16, 0, FALSE, FALSE, &m_arrPF[0] },	//DEFAULT		(DXT1)
-        { 16, 1, FALSE, FALSE, &m_arrPF[1] },	//CHROMA		(DXT1)
-        { 16, 4, FALSE, FALSE, &m_arrPF[2] },	//ALPHA			(DXT3)
-        { 16, 4, FALSE, FALSE, &m_arrPF[3] },	//CHROMA_ALPHA	(DXT3)
+        { 16, 0, FALSE, FALSE, &m_arrPF[0] }, //DEFAULT (DXT1)
+        { 16, 1, FALSE, FALSE, &m_arrPF[1] }, //CHROMA (DXT1)
+        { 16, 4, FALSE, FALSE, &m_arrPF[2] }, //ALPHA (DXT3)
+        { 16, 4, FALSE, FALSE, &m_arrPF[3] }, //CHROMA_ALPHA (DXT3)
     };
 
     TEXTURESEARCHINFO tsi_32[6] =
     {
         //bpp,alpha,pal
-        { 32, 0, FALSE, FALSE, &m_arrPF[0] },	//DEFAULT		(DXT1)
-        { 32, 8, FALSE, FALSE, &m_arrPF[1] },	//CHROMA		(DXT1)
-        { 32, 8, FALSE, FALSE, &m_arrPF[2] },	//ALPHA			(DXT3)
-        { 32, 8, FALSE, FALSE, &m_arrPF[3] },	//CHROMA_ALPHA	(DXT3)
+        { 32, 0, FALSE, FALSE, &m_arrPF[0] }, //DEFAULT (DXT1)
+        { 32, 8, FALSE, FALSE, &m_arrPF[1] }, //CHROMA (DXT1)
+        { 32, 8, FALSE, FALSE, &m_arrPF[2] }, //ALPHA (DXT3)
+        { 32, 8, FALSE, FALSE, &m_arrPF[3] }, //CHROMA_ALPHA (DXT3)
     };
 
     TEXTURESEARCHINFO *ptsi;
@@ -1881,74 +1881,74 @@ bool Texture::DumpImageToFile(char *szFile, int palID)
     delete[] pDst;
 
     // Night texture
-    /*	if(palID == 3)
-    	{
-    		BYTE *from;
-    		DWORD npal[256],*to,*stop;
+    /* if(palID == 3)
+     {
+     BYTE *from;
+     DWORD npal[256],*to,*stop;
 
-    		sprintf(szFileName,"%sN.dds",szFile);
+     sprintf(szFileName,"%sN.dds",szFile);
 
-    		to = npal+1;
-    		from = (BYTE *)pal+1;
-    		stop = npal + 248;
-    		npal[0] = pal[0];
+     to = npal+1;
+     from = (BYTE *)pal+1;
+     stop = npal + 248;
+     npal[0] = pal[0];
 
-    		//FIXME
-    		while(to < stop)
-    		{
-    			*to  =    (FloatToInt32(*(from)   * 0.f))		// Red
-    					| (FloatToInt32(*(from+1) * 0.f) << 8)	// Green
-    					| (FloatToInt32(*(from+2) * 0.f) << 16)	// Blue
-    					| ((*(from+3)) << 24);					// Alpha
-    			from += 4;
-    			to++;
-    		}
+     //FIXME
+     while(to < stop)
+     {
+     *to  =    (FloatToInt32(*(from)   * 0.f)) // Red
+     | (FloatToInt32(*(from+1) * 0.f) << 8) // Green
+     | (FloatToInt32(*(from+2) * 0.f) << 16) // Blue
+     | ((*(from+3)) << 24); // Alpha
+     from += 4;
+     to++;
+     }
 
-    		*to	= 0xFF0000FF; to++;
-    		*to	= 0xFF0F30BE; to++;
-    		*to	= 0xFFFF0000; to++;
-    		*to	= 0xFFAD0000; to++;
-    		*to	= 0xFFABD34C; to++;
-    		*to	= 0xFF9BB432; to++;
-    		*to	= 0xFF87C5F0; to++;
-    		*to	= 0xFF61B2EA; to++;
+     *to = 0xFF0000FF; to++;
+     *to = 0xFF0F30BE; to++;
+     *to = 0xFFFF0000; to++;
+     *to = 0xFFAD0000; to++;
+     *to = 0xFFABD34C; to++;
+     *to = 0xFF9BB432; to++;
+     *to = 0xFF87C5F0; to++;
+     *to = 0xFF61B2EA; to++;
 
-    		pDst = new BYTE[dwSize * ARGB_TEXEL_SIZE];
+     pDst = new BYTE[dwSize * ARGB_TEXEL_SIZE];
 
-    		n = 0;
+     n = 0;
 
-    		for(i = 0, n = 0; i < dwSize; i++, n += ARGB_TEXEL_SIZE)
-    		{
-    			dwTmp = npal[pSrc[i]];
+     for(i = 0, n = 0; i < dwSize; i++, n += ARGB_TEXEL_SIZE)
+     {
+     dwTmp = npal[pSrc[i]];
 
-    			if(dwTmp == chromaKey)
-    			{
-    				dwTmp = 0;
-    			}
+     if(dwTmp == chromaKey)
+     {
+     dwTmp = 0;
+     }
 
-    			if(dwTmp & 0x00FFFFFF)
-    			{
-    				bSave = TRUE;
-    				dwTmp &= 0x00FFFFFF;
-    				dwTmp |= 0xFF000000;
-    			}
-    			else
-    				dwTmp = 0;
+     if(dwTmp & 0x00FFFFFF)
+     {
+     bSave = TRUE;
+     dwTmp &= 0x00FFFFFF;
+     dwTmp |= 0xFF000000;
+     }
+     else
+     dwTmp = 0;
 
-    			//ABGR to ARGB, Lowendian
-    			BYTE *p = (BYTE *)(&dwTmp);
+     //ABGR to ARGB, Lowendian
+     BYTE *p = (BYTE *)(&dwTmp);
 
-    			pDst[n+0] = p[2];//B
-    			pDst[n+1] = p[1];//G
-    			pDst[n+2] = p[0];//R
-    			pDst[n+3] = p[3];//A
-    		}
+     pDst[n+0] = p[2];//B
+     pDst[n+1] = p[1];//G
+     pDst[n+2] = p[0];//R
+     pDst[n+3] = p[3];//A
+     }
 
-    		if(bSave)
-    			SaveDDS_DXTn(szFileName,pDst,this->dimensions,this->flags);
+     if(bSave)
+     SaveDDS_DXTn(szFileName,pDst,this->dimensions,this->flags);
 
-    		delete[] pDst;
-    	}
+     delete[] pDst;
+     }
     */
     // Filter out fake chroma textures
     if (!bChroma)

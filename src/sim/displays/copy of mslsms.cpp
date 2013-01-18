@@ -22,7 +22,7 @@
 #include "Fsound.h" // MN
 #include "SoundFX.h" // MN
 
-extern short NumRocketTypes;	// M.N.
+extern short NumRocketTypes; // M.N.
 extern int g_nMissileFix; // MN
 
 void CreateDrawable(SimBaseClass* theObject, float objectScale);
@@ -134,12 +134,12 @@ int SMSClass::LaunchMissile(void)
             }
 
             /* 2001-03-02 MOVED BY S.G. ABOVE THE ABOVE IF. I NEED radarPlatform TO BE SET BEFORE I CAN CALL theMissile->Start SINCE I'LL CALL THE BeamRiderClass SendTrackMsg MESSAGE WHICH REQUIRES IT
-            			// Need to give beam riders a pointer to the illuminating radar platform
-            			if ( theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming )
-            			{
-            				// Have the missile use the launcher's radar for guidance
-            				((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform( ownship );
-            			}
+             // Need to give beam riders a pointer to the illuminating radar platform
+             if ( theMissile->sensorArray && theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming )
+             {
+             // Have the missile use the launcher's radar for guidance
+             ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform( ownship );
+             }
             */
 
             // 2001-04-14 MN moved here from AircraftClass::DoWeapons - play bomb drop sound when flag is set and we are an AG missile
@@ -169,7 +169,7 @@ int SMSClass::LaunchMissile(void)
                             wc = (WeaponClassDataType*)classPtr->dataPtr; // this is important
                         }
 
-                        if (wc && (wc->Flags & WEAP_BOMBDROPSOUND))	// for JSOW, JDAM...
+                        if (wc && (wc->Flags & WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
                         {
                             sfxid = SFX_BOMBDROP;
                         }
@@ -213,9 +213,9 @@ int SMSClass::LaunchMissile(void)
 
             lastWeapon = curWeapon.get();
             isCaged = theMissile->isCaged;
-            isSpot = theMissile->isSpot;	// Marco Edit - SPOT/SCAN Support
-            isSlave = theMissile->isSlave;	// Marco Edit - BORE/SLAVE Support
-            isTD = theMissile->isTD;		// Marco Edit - TD/BP Support
+            isSpot = theMissile->isSpot; // Marco Edit - SPOT/SCAN Support
+            isSlave = theMissile->isSlave; // Marco Edit - BORE/SLAVE Support
+            isTD = theMissile->isTD; // Marco Edit - TD/BP Support
 
             wpnStation = curHardpoint;
             wpnNum     = curWpnNum;
@@ -249,11 +249,11 @@ int SMSClass::LaunchMissile(void)
                 /*
                 if (hardPoint[wpnStation]->GetRackOrPylon()) // MLR 2/20/2004 - added OrPylon
                 {
-                	OTWDriver.DetachObject(hardPoint[wpnStation]->GetRackOrPylon(),	(DrawableBSP*)(theMissile->drawPointer), theMissile->GetRackSlot());// MLR 2/20/2004 - added OrPylon
+                 OTWDriver.DetachObject(hardPoint[wpnStation]->GetRackOrPylon(), (DrawableBSP*)(theMissile->drawPointer), theMissile->GetRackSlot());// MLR 2/20/2004 - added OrPylon
                 }
                 else if (ownship->drawPointer && wpnStation)
                 {
-                	OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theMissile->drawPointer), wpnStation-1);
+                 OTWDriver.DetachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(theMissile->drawPointer), wpnStation-1);
                 }
                 */
             }
@@ -316,8 +316,8 @@ int SMSClass::LaunchMissile(void)
 void SMSBaseClass::ReplaceMissile(int station, MissileClass *theMissile)
 {
     VuBin<SimWeaponClass> weapPtr, newMissile, lastPtr;
-    int	visFlag;
-    int	slotId;
+    int visFlag;
+    int slotId;
 
     if (IsSet(GunOnBoard))
     {
@@ -347,10 +347,10 @@ void SMSBaseClass::ReplaceMissile(int station, MissileClass *theMissile)
 
         /*
         if (hardPoint[station]->GetRackOrPylon())// MLR 2/20/2004 - added OrPylon
-        	OTWDriver.AttachObject(hardPoint[station]->GetRackOrPylon(), (DrawableBSP*)(newMissile->drawPointer), theMissile->GetRackSlot());// MLR 2/20/2004 - added OrPylon
+         OTWDriver.AttachObject(hardPoint[station]->GetRackOrPylon(), (DrawableBSP*)(newMissile->drawPointer), theMissile->GetRackSlot());// MLR 2/20/2004 - added OrPylon
         else if (ownship->drawPointer)
-        	OTWDriver.AttachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(newMissile->drawPointer), slotId );
-        	*/
+         OTWDriver.AttachObject((DrawableBSP*)(ownship->drawPointer), (DrawableBSP*)(newMissile->drawPointer), slotId );
+         */
     }
 
     weapPtr = hardPoint[station]->weaponPointer;
@@ -476,7 +476,7 @@ int SMSClass::LaunchRocket(void)
         // Make Wake() not assign new drawables if one exists?
         theMissile->Wake();
 
-        //		MonoPrint ("Inserting rocket %p\n", theMissile);
+        // MonoPrint ("Inserting rocket %p\n", theMissile);
         FCC->lastMissileImpactTime = FCC->nextMissileImpactTime;
 
         // Remove it from the parent
@@ -485,10 +485,10 @@ int SMSClass::LaunchRocket(void)
         /* // MLR 5/17/2004 - Was testing something
         if(theMissile->drawPointer)
         {
-        	vector3 pos;
+         vector3 pos;
 
-        	theMissile->drawPointer->GetPosition(&pos);
-        	theMissile->SetLaunchPosition (pos.x, pos.y, pos.z);
+         theMissile->drawPointer->GetPosition(&pos);
+         theMissile->SetLaunchPosition (pos.x, pos.y, pos.z);
 
         }
         */
@@ -497,7 +497,7 @@ int SMSClass::LaunchRocket(void)
         // Only the last rocket has a nametag
         // MLR label all rockets
         //if (hardPoint[curHardpoint]->weaponPointer)
-        //	theMissile->drawPointer->SetLabel("", 0xff00ff00);
+        // theMissile->drawPointer->SetLabel("", 0xff00ff00);
         // End TYPE_ROCKET section
     }
 
@@ -581,8 +581,8 @@ int SMSClass::LaunchRocket(void)
 void SMSBaseClass::ReplaceRocket(int station, MissileClass *theMissile)
 {
     /*
-    	hardPoint[station]->weaponCount = 19;
-    	hardPoint[station]->weaponPointer = InitWeaponList (ownship, hardPoint[station]->weaponId,
+     hardPoint[station]->weaponCount = 19;
+     hardPoint[station]->weaponPointer = InitWeaponList (ownship, hardPoint[station]->weaponId,
           hardPoint[station]->GetWeaponClass(), hardPoint[station]->weaponCount, InitAMissile);
     */
 
@@ -602,7 +602,7 @@ void SMSBaseClass::ReplaceRocket(int station, MissileClass *theMissile)
         }
     }
 
-    if (!entryfound)	// use generic 2.75mm rocket
+    if (!entryfound) // use generic 2.75mm rocket
     {
         hardPoint[station]->weaponCount = 19;
         hardPoint[station]->weaponPointer = InitWeaponList(ownship, hardPoint[station]->weaponId,
@@ -803,15 +803,15 @@ int SMSClass::SubLaunchRocket(int hpId)
         return 1;
 
     tmpTargetPtr = FCC->TargetPtr();
-    //	ShiAssert(hardPoint[hpId]->weaponPointer->IsMissile());
+    // ShiAssert(hardPoint[hpId]->weaponPointer->IsMissile());
 
     // MLR 1/27/2004 - For gun pods, we won't allocate 1200 (or whatever) rounds of ammo
     //                 that would be silly.  We will allocate them as needed.
     /*
     if(hardPoint[hpId]->weaponCount && !hardPoint[hpId]->weaponPointer)
     {
-    	hardPoint[hpId]->weaponPointer = InitWeaponList (ownship, hardPoint[hpId]->weaponId,
-    					hardPoint[hpId]->GetWeaponClass(), min( 10, hardPoint[hpId]->weaponCount ), InitAMissile);
+     hardPoint[hpId]->weaponPointer = InitWeaponList (ownship, hardPoint[hpId]->weaponId,
+     hardPoint[hpId]->GetWeaponClass(), min( 10, hardPoint[hpId]->weaponCount ), InitAMissile);
 
     }
     */
@@ -855,7 +855,7 @@ int SMSClass::SubLaunchRocket(int hpId)
         // Make Wake() not assign new drawables if one exists?
         theMissile->Wake();
 
-        //		MonoPrint ("Inserting rocket %p\n", theMissile);
+        // MonoPrint ("Inserting rocket %p\n", theMissile);
         FCC->lastMissileImpactTime = FCC->nextMissileImpactTime;
     }
 

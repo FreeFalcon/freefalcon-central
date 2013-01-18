@@ -20,8 +20,8 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode);
 
 VU_ID FalconNullId;
 
-extern EventClass**	CampEvents;
-extern short		CE_Events;
+extern EventClass** CampEvents;
+extern short CE_Events;
 
 // =====================
 // Main
@@ -36,7 +36,7 @@ int main(void)
 
 void ReadComments(FILE* fh)
 {
-    int					c;
+    int c;
 
     c = fgetc(fh);
 
@@ -78,16 +78,16 @@ char* ReadName(FILE *fp, char name[], int len)
 
 int LoadCampaignEventsText(char* filename)
 {
-    FILE*		fp;
-    int			i, j, events, done, trignum;
-    char		trigtype[20];
+    FILE* fp;
+    int i, j, events, done, trignum;
+    char trigtype[20];
 
     if (CampEvents != NULL)
         F4FreeMemory(CampEvents);
 
     CE_Events = 0;
 
-    //	sprintf(eventfile,"%s.evt",filename);
+    // sprintf(eventfile,"%s.evt",filename);
     if ((fp = fopen(filename, "r+")) == NULL)
         return 0;
 

@@ -33,7 +33,7 @@ int FalconRegenerationMessage::Process(uchar autodisp)
     if (autodisp)
         return 0;
 
-    SimBaseClass		*theObject = (SimBaseClass*) Entity();
+    SimBaseClass *theObject = (SimBaseClass*) Entity();
 
     if (theObject)
     {

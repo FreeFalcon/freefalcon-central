@@ -43,31 +43,31 @@ public:
 #endif
 protected:
     // Save from here down
-    long			DefaultFlags_;
-    long			LabelVal_;
-    long			Font_;
-    short			WinType_;
-    short			Selected_;
-    short			Count_;
-    short			ScrollCount_; // sfr: added for scrollbar control
-    float			Opaque_;
-    UI95_RECT		BgRect_;
-    COLORREF		NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_, LabelColor_;
+    long DefaultFlags_;
+    long LabelVal_;
+    long Font_;
+    short WinType_;
+    short Selected_;
+    short Count_;
+    short ScrollCount_; // sfr: added for scrollbar control
+    float Opaque_;
+    UI95_RECT BgRect_;
+    COLORREF NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_, LabelColor_;
 
     // Don't save from here down
-    LISTBOX			*Root_;
-    O_Output		*BgImage_;
-    O_Output		*Label_;
-    C_ScrollBar		*ScrollBar_;
-    O_Output		*DropDown_;
+    LISTBOX *Root_;
+    O_Output *BgImage_;
+    O_Output *Label_;
+    C_ScrollBar *ScrollBar_;
+    O_Output *DropDown_;
 
-    C_Window		*Window_;
-    C_Window		*SaveParent_;
-    C_Handler		*Handler_;
-    void	(*OpenCallback_)(C_Base *);
+    C_Window *Window_;
+    C_Window *SaveParent_;
+    C_Handler *Handler_;
+    void (*OpenCallback_)(C_Base *);
 
-    short			GetListHeight();
-    BOOL			OpenWindow(short x, short y, short w, short h);
+    short GetListHeight();
+    BOOL OpenWindow(short x, short y, short w, short h);
 
 public:
 #ifdef _UI95_PARSER_
@@ -136,7 +136,7 @@ public:
     {
         return(Root_);
     }
-    LISTBOX	*FindID(long ID);
+    LISTBOX *FindID(long ID);
     long GetFont()
     {
         return(Font_);

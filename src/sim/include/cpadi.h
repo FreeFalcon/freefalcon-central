@@ -8,10 +8,10 @@
 extern MEM_POOL gCockMemPool;
 #endif
 
-#define NUM_AC_BAR_POINTS	7
+#define NUM_AC_BAR_POINTS 7
 #define NUM_ILS_BAR_POINTS 2
-#define VERTICAL_SCALE		(2.0F * DTR)
-#define HORIZONTAL_SCALE	(10.0F * DTR)
+#define VERTICAL_SCALE (2.0F * DTR)
+#define HORIZONTAL_SCALE (10.0F * DTR)
 
 typedef struct
 {
@@ -22,7 +22,7 @@ typedef struct
     RECT ilsLimits;
     BYTE* pBackground;
     long color0, color1, color2, color3, color4;
-    BYTE *sourceadi;	//Wombat778 3-24-04
+    BYTE *sourceadi; //Wombat778 3-24-04
 } ADIInitStr;
 
 
@@ -48,51 +48,51 @@ public:
     // Aircraft Parameters
     //====================================================//
 
-    float		mPitch;
-    float		mRoll;
-    float		mMaxPitch;
-    float		mMinPitch;
-    float		mTanVisibleBallHalfAngle;
+    float mPitch;
+    float mRoll;
+    float mMaxPitch;
+    float mMinPitch;
+    float mTanVisibleBallHalfAngle;
 
-    long		mColor[2][5];
+    long mColor[2][5];
     //====================================================//
     // ADI Dimensions, BitTape Dimensions and Positioning Data
     //====================================================//
 
-    int		mRadius;
-    float		mSlide;
-    RECT		mSrcRect;
-    int		mSrcHalfHeight;
-    RECT		mILSLimits;
-    RECT		mBackSrc;
-    RECT		mBackDest;
-    BOOL		mDoBackRect;
+    int mRadius;
+    float mSlide;
+    RECT mSrcRect;
+    int mSrcHalfHeight;
+    RECT mILSLimits;
+    RECT mBackSrc;
+    RECT mBackDest;
+    BOOL mDoBackRect;
 
     //====================================================//
     // Line Drawing Data, Aircraft Bar, Viewport
     //====================================================//
 
-    float			mLeft;
-    float			mRight;
-    float			mTop;
-    float			mBottom;
+    float mLeft;
+    float mRight;
+    float mTop;
+    float mBottom;
 
-    unsigned		mpAircraftBar[NUM_AC_BAR_POINTS][2];
-    float			mpAircraftBarData[NUM_AC_BAR_POINTS][2]; //x, y
+    unsigned mpAircraftBar[NUM_AC_BAR_POINTS][2];
+    float mpAircraftBarData[NUM_AC_BAR_POINTS][2]; //x, y
 
-    int      		mTopLimit;
-    int      		mLeftLimit;
-    int      		mBottomLimit;
-    int      		mRightLimit;
+    int       mTopLimit;
+    int       mLeftLimit;
+    int       mBottomLimit;
+    int       mRightLimit;
 
-    float			mHorizScale;
-    float			mVertScale;
+    float mHorizScale;
+    float mVertScale;
 
-    int      		mHorizCenter;
-    int      		mVertCenter;
+    int       mHorizCenter;
+    int       mVertCenter;
 
-    int      		mHorizBarPos;
-    int      		mVertBarPos;
+    int       mHorizBarPos;
+    int       mVertBarPos;
 
     //MI
     int Persistant;
@@ -105,10 +105,10 @@ public:
     // Pointer to Rotated Blit Data
     //====================================================//
 
-    int*				mpADICircle;
-    GLubyte*			mpSourceBuffer;
-    ImageBuffer*	mpSurfaceBuffer;
-    ImageBuffer*	ADIBuffer;					//Wombat778 10-06-2003		temporary buffer for ADI for use when scaling
+    int* mpADICircle;
+    GLubyte* mpSourceBuffer;
+    ImageBuffer* mpSurfaceBuffer;
+    ImageBuffer* ADIBuffer; //Wombat778 10-06-2003 temporary buffer for ADI for use when scaling
 
 
     //====================================================//
@@ -116,8 +116,8 @@ public:
     //====================================================//
 
     virtual void Exec(SimBaseClass*);
-    void			 ExecILS(void);
-    void			 ExecILSNone(void);
+    void  ExecILS(void);
+    void  ExecILSNone(void);
     virtual void DisplayBlit(void);
     virtual void DisplayDraw(void);
     virtual void CreateLit(void);

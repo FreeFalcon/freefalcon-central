@@ -4,11 +4,11 @@
 #include "simdrive.h"
 #include "camp2sim.h"
 #include "Graphics\Include\render2d.h"
-#include "otwdrive.h"	//MI
-#include "cpmanager.h"	//MI
-#include "icp.h"		//MI
-#include "aircrft.h"	//MI
-#include "fcc.h"		//MI
+#include "otwdrive.h" //MI
+#include "cpmanager.h" //MI
+#include "icp.h" //MI
+#include "aircrft.h" //MI
+#include "fcc.h" //MI
 #include "radardoppler.h" //MI
 
 //MI
@@ -36,12 +36,12 @@ static const MfdMenuButtons mainpage[20] =
     {NULL, NULL, MFDClass::HADMode}, // RV - I-Hawk
     {NULL, NULL, MFDClass::RWRMode},
     {"RCCE", NULL, MfdMenuButtons::ModeNoop},
-    {"RESET", "MENU", MfdMenuButtons::ModeReset},	// 5
+    {"RESET", "MENU", MfdMenuButtons::ModeReset}, // 5
     {NULL, NULL, MFDClass::SMSMode},
     {NULL, NULL, MFDClass::FCCMode},
     {NULL, NULL, MFDClass::DTEMode},
     {NULL, NULL, MFDClass::TestMode},
-    {NULL, NULL, MFDClass::FLCSMode},	//10
+    {NULL, NULL, MFDClass::FLCSMode}, //10
     PARENT,
     PARENT,
     PARENT,
@@ -51,7 +51,7 @@ static const MfdMenuButtons mainpage[20] =
     {NULL, NULL, MFDClass::TFRMode},
     {NULL, NULL, MFDClass::WPNMode},
     {NULL, NULL, MFDClass::TGPMode},
-    {NULL, NULL, MFDClass::FCRMode},	// 20
+    {NULL, NULL, MFDClass::FCRMode}, // 20
 };
 
 

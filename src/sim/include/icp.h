@@ -12,93 +12,93 @@
 // General Mode Information
 // ================================= \\
 
-#define ICP_NAV_BUTTON_ID		1012	//
-#define ICP_AA_BUTTON_ID		1013	//	These must match the values in the cockpit
-#define ICP_AG_BUTTON_ID		1014	//	script files...
-#define ICP_ILS_BUTTON_ID		1015	//
+#define ICP_NAV_BUTTON_ID 1012 //
+#define ICP_AA_BUTTON_ID 1013 // These must match the values in the cockpit
+#define ICP_AG_BUTTON_ID 1014 // script files...
+#define ICP_ILS_BUTTON_ID 1015 //
 
 #define ICP_MODE_NAME_LEN 7
 //MI changed for ICP Stuff
-//#define NUM_ICP_MODES	13
+//#define NUM_ICP_MODES 13
 //#else
-#define NUM_ICP_MODES	16
+#define NUM_ICP_MODES 16
 //#endif
 
 extern char *ICPModeNames[NUM_ICP_MODES];
 
-#define NONE_MODE			0
-#define STPT_MODE			1
-#define DLINK_MODE			2
-#define MARK_MODE			3
-#define ILS_MODE			4
-#define CRUS_MODE			5
-#define COMM1_MODE			6
-#define COMM2_MODE			7
-#define FACK_MODE			8
-#define ALOW_MODE			9
-#define NAV_MODE			10
-#define AA_MODE				11
-#define AG_MODE				12
+#define NONE_MODE 0
+#define STPT_MODE 1
+#define DLINK_MODE 2
+#define MARK_MODE 3
+#define ILS_MODE 4
+#define CRUS_MODE 5
+#define COMM1_MODE 6
+#define COMM2_MODE 7
+#define FACK_MODE 8
+#define ALOW_MODE 9
+#define NAV_MODE 10
+#define AA_MODE 11
+#define AG_MODE 12
 //MI added for ICP Stuff
-#define IFF_MODE			20
-#define LIST_MODE			21
-#define THREE_MODE			22
-#define SIX_MODE			23
-#define EIGHT_MODE			24
-#define NINE_MODE			25
-#define ZERO_MODE			26
-#define CNI_MODE			27
-#define UP_MODE				28
-#define DOWN_MODE			29
-#define CLEAR_MODE			30
-#define SEQ_MODE			31
-#define EWS_MODE			55
+#define IFF_MODE 20
+#define LIST_MODE 21
+#define THREE_MODE 22
+#define SIX_MODE 23
+#define EIGHT_MODE 24
+#define NINE_MODE 25
+#define ZERO_MODE 26
+#define CNI_MODE 27
+#define UP_MODE 28
+#define DOWN_MODE 29
+#define CLEAR_MODE 30
+#define SEQ_MODE 31
+#define EWS_MODE 55
 
-#define NONE_UPDATE		0x00
-#define STPT_UPDATE		0x01
-#define DLINK_UPDATE	0x02
-#define MARK_UPDATE		0x04
-#define ILS_UPDATE		0x08
-#define CRUS_UPDATE		0x10
-#define COMM_UPDATE		0x20
-#define FACK_UPDATE		0x40
-#define ALOW_UPDATE		0x80
-#define CNI_UPDATE		0x100
+#define NONE_UPDATE 0x00
+#define STPT_UPDATE 0x01
+#define DLINK_UPDATE 0x02
+#define MARK_UPDATE 0x04
+#define ILS_UPDATE 0x08
+#define CRUS_UPDATE 0x10
+#define COMM_UPDATE 0x20
+#define FACK_UPDATE 0x40
+#define ALOW_UPDATE 0x80
+#define CNI_UPDATE 0x100
 
-#define NONE_BUTTON		NONE_MODE
-#define STPT_BUTTON		STPT_MODE
-#define DLINK_BUTTON	DLINK_MODE
-#define MARK_BUTTON		MARK_MODE
-#define ILS_BUTTON		ILS_MODE
-#define CRUS_BUTTON		CRUS_MODE
-#define COMM1_BUTTON	COMM1_MODE
-#define COMM2_BUTTON	COMM2_MODE
-#define FACK_BUTTON		FACK_MODE
-#define ALOW_BUTTON		ALOW_MODE
-#define NAV_BUTTON		NAV_MODE
-#define AA_BUTTON		AA_MODE
-#define AG_BUTTON		AG_MODE
-#define PREV_BUTTON		AG_MODE + 1
-#define NEXT_BUTTON		AG_MODE + 2
-#define ENTR_BUTTON		AG_MODE + 3
+#define NONE_BUTTON NONE_MODE
+#define STPT_BUTTON STPT_MODE
+#define DLINK_BUTTON DLINK_MODE
+#define MARK_BUTTON MARK_MODE
+#define ILS_BUTTON ILS_MODE
+#define CRUS_BUTTON CRUS_MODE
+#define COMM1_BUTTON COMM1_MODE
+#define COMM2_BUTTON COMM2_MODE
+#define FACK_BUTTON FACK_MODE
+#define ALOW_BUTTON ALOW_MODE
+#define NAV_BUTTON NAV_MODE
+#define AA_BUTTON AA_MODE
+#define AG_BUTTON AG_MODE
+#define PREV_BUTTON AG_MODE + 1
+#define NEXT_BUTTON AG_MODE + 2
+#define ENTR_BUTTON AG_MODE + 3
 //MI added for ICP Stuff
-#define IFF_BUTTON		IFF_MODE
-#define LIST_BUTTON		LIST_MODE
-#define ONE_BUTTON		ILS_MODE
-#define TWO_BUTTON		ALOW_MODE
-#define THREE_BUTTON	THREE_MODE
-#define FOUR_BUTTON		STPT_MODE
-#define FIFE_BUTTON		CRUS_MODE
-#define SIX_BUTTON		SIX_MODE
-#define SEVEN_BUTTON	MARK_MODE
-#define EIGHT_BUTTON	EIGHT_MODE
-#define NINE_BUTTON		NINE_MODE
-#define ZERO_BUTTON		ZERO_MODE
-#define CNI_BUTTON		CNI_MODE
-#define UP_BUTTON		UP_MODE
-#define DOWN_BUTTON		DOWN_MODE
-#define CLEAR_BUTTON	CLEAR_MODE
-#define SEQ_BUTTON		SEQ_MODE
+#define IFF_BUTTON IFF_MODE
+#define LIST_BUTTON LIST_MODE
+#define ONE_BUTTON ILS_MODE
+#define TWO_BUTTON ALOW_MODE
+#define THREE_BUTTON THREE_MODE
+#define FOUR_BUTTON STPT_MODE
+#define FIFE_BUTTON CRUS_MODE
+#define SIX_BUTTON SIX_MODE
+#define SEVEN_BUTTON MARK_MODE
+#define EIGHT_BUTTON EIGHT_MODE
+#define NINE_BUTTON NINE_MODE
+#define ZERO_BUTTON ZERO_MODE
+#define CNI_BUTTON CNI_MODE
+#define UP_BUTTON UP_MODE
+#define DOWN_BUTTON DOWN_MODE
+#define CLEAR_BUTTON CLEAR_MODE
+#define SEQ_BUTTON SEQ_MODE
 
 #define MAX_DED_LEN 26
 #define MAX_PFL_LEN 26
@@ -107,14 +107,14 @@ extern char *ICPModeNames[NUM_ICP_MODES];
 // Steerpoint Specific Information
 // ================================= \\
 
-#define ICP_TOS_STR	0
-#define ICP_FT_STR	1
-#define ICP_ETA_STR	2
-#define ICP_KTS_STR	3
+#define ICP_TOS_STR 0
+#define ICP_FT_STR 1
+#define ICP_ETA_STR 2
+#define ICP_KTS_STR 3
 
-#define ICP_STPT_NAME_LEN	9
-#define NUM_WAY_TYPES		3
-#define NUM_ACTION_TYPES	31
+#define ICP_STPT_NAME_LEN 9
+#define NUM_WAY_TYPES 3
+#define NUM_ACTION_TYPES 31
 
 #define MAX_PGMS 5 //Maximum number of EWS progs (4)
 
@@ -127,7 +127,7 @@ class ImageBuffer;
 class CPButtonObject;
 
 
-extern char	*ICPWayPtNames[NUM_WAY_TYPES];
+extern char *ICPWayPtNames[NUM_WAY_TYPES];
 extern char *ICPWayPtActionTable[NUM_ACTION_TYPES];
 
 typedef enum ICPWayPtType
@@ -138,11 +138,11 @@ typedef enum ICPWayPtType
 };
 
 // ================================= \\
-//	Datalink Specific Information
+// Datalink Specific Information
 // ================================= \\
 
 
-#define NUM_DLINK_TYPES		4
+#define NUM_DLINK_TYPES 4
 extern char *ICPDLINKNames[NUM_DLINK_TYPES];
 
 typedef enum ICPDLINKType
@@ -154,59 +154,59 @@ typedef enum ICPDLINKType
 };
 
 // ================================= \\
-//	Mark Specific Information
+// Mark Specific Information
 // ================================= \\
 
 class ICPClass
 {
 
     // Pointers to the Outside World
-    AircraftClass		*mpOwnship;
-    WayPointClass		*mpWayPoints;
+    AircraftClass *mpOwnship;
+    WayPointClass *mpWayPoints;
 
 
     // General Mode Variables
-    long					mICPPrimaryMode;
-    long					mICPSecondaryMode;
-    long					mICPTertiaryMode;
-    char					mpSelectedModeName[ICP_MODE_NAME_LEN];
-    int					mUpdateFlags;
-    int					mDirtyFlag;
+    long mICPPrimaryMode;
+    long mICPSecondaryMode;
+    long mICPTertiaryMode;
+    char mpSelectedModeName[ICP_MODE_NAME_LEN];
+    int mUpdateFlags;
+    int mDirtyFlag;
 
     // Output Strings for DED
-    char					mpLine1[60];
-    char					mpLine2[60];
-    char					mpLine3[60];
+    char mpLine1[60];
+    char mpLine2[60];
+    char mpLine3[60];
     //MI added for ICP Stuff
-    char					TacanBand;
-    char					timeStr[16];
+    char TacanBand;
+    char timeStr[16];
 
     // Pointer to Exclusive Buttons
-    CPButtonObject		*mpTertiaryExclusiveButton;
-    CPButtonObject		*mpSecondaryExclusiveButton;
-    CPButtonObject		*mpPrimaryExclusiveButton;
+    CPButtonObject *mpTertiaryExclusiveButton;
+    CPButtonObject *mpSecondaryExclusiveButton;
+    CPButtonObject *mpPrimaryExclusiveButton;
 
     // Steer Point Mode Specific
-    WayPointClass		*mpPreviousWayPt;
-    int					mNumWayPts;
-    int					mWPIndex;
+    WayPointClass *mpPreviousWayPt;
+    int mNumWayPts;
+    int mWPIndex;
 
     // Fault Mode Specific
-    int					mFaultNum;
-    int					mFaultFunc;
+    int mFaultNum;
+    int mFaultFunc;
 
     // Mark Mode Specific
-    int					mMarkIndex;
+    int mMarkIndex;
 
     // DLink Mode Specific
-    int					mDLinkIndex;
+    int mDLinkIndex;
 
     // Cruise Mode Specific
-    int					mCruiseMarkIndex;
-    int					mCruiseDLinkIndex;
-    int					mCruiseWPIndex;
-    WayPointClass		*mpCruiseWP;
-    enum					{STPT_LIST, MARK_LIST, DLINK_LIST} mList;
+    int mCruiseMarkIndex;
+    int mCruiseDLinkIndex;
+    int mCruiseWPIndex;
+    WayPointClass *mpCruiseWP;
+    enum {STPT_LIST, MARK_LIST, DLINK_LIST} mList;
 
 public:
     //Main Stuff
@@ -297,7 +297,7 @@ public:
     void ExecBullMode(void);
     void ExecWPTMode(void);
     void ExecHARMMode(void);
-    void ExecWinAmpMode(void);	// Retro 3Jan2004
+    void ExecWinAmpMode(void); // Retro 3Jan2004
     BOOL CheckForHARM(void);
     bool ShowBullseyeInfo;
     bool transmitingvoicecom1;
@@ -339,7 +339,7 @@ public:
 
     //STPT and DEST stuff
     float latitude, cosLatitude, longitude;
-    int	latDeg, longDeg, heading;
+    int latDeg, longDeg, heading;
     float latMin, longMin, xCurr, yCurr, zCurr;
     char latStr[40];
     char longStr[40];
@@ -442,8 +442,8 @@ public:
     unsigned int flash;
 public:
 
-    int					mIdNum;
-    int					mCycleBits;
+    int mIdNum;
+    int mCycleBits;
 
     char DEDLines[5][MAX_DED_LEN];
     char Invert[5][MAX_DED_LEN];
@@ -481,27 +481,27 @@ public:
     enum ModeFlags
     {
         //Master Modes
-        MODE_A_A		= 0x1,
-        MODE_A_G		= 0x2,
-        MODE_LIST		= 0x4,
-        MISC_MODE		= 0x8,
-        MODE_IFF		= 0x10,
-        MODE_COMM1		= 0x20,
-        MODE_COMM2		= 0x40,
-        MODE_CNI		= 0x80,
-        MODE_DLINK		= 0x100,
-        BLOCK_MODE		= 0x200,
-        CHAFF_BINGO		= 0x400,
-        FLARE_BINGO		= 0x800,
-        FLASH_FLAG		= 0x1000,
-        MODE_FACK		= 0x2000,
-        EDIT_LAT		= 0x4000,
-        EDIT_LONG		= 0x8000,
-        EDIT_JAMMER		= 0x10000,
+        MODE_A_A = 0x1,
+        MODE_A_G = 0x2,
+        MODE_LIST = 0x4,
+        MISC_MODE = 0x8,
+        MODE_IFF = 0x10,
+        MODE_COMM1 = 0x20,
+        MODE_COMM2 = 0x40,
+        MODE_CNI = 0x80,
+        MODE_DLINK = 0x100,
+        BLOCK_MODE = 0x200,
+        CHAFF_BINGO = 0x400,
+        FLARE_BINGO = 0x800,
+        FLASH_FLAG = 0x1000,
+        MODE_FACK = 0x2000,
+        EDIT_LAT = 0x4000,
+        EDIT_LONG = 0x8000,
+        EDIT_JAMMER = 0x10000,
         EWS_EDIT_BINGO  = 0x20000,
-        EDIT_VHF		= 0x40000,
-        EDIT_UHF		= 0x80000,
-        EDIT_STPT		= 0x100000,
+        EDIT_VHF = 0x40000,
+        EDIT_UHF = 0x80000,
+        EDIT_STPT = 0x100000,
     };
 
     //Functions for our Flags
@@ -522,14 +522,14 @@ public:
     unsigned int IFFModes;
     enum IFFFlags
     {
-        MODE_1		= 0x1,
-        MODE_2		= 0x2,
-        MODE_3		= 0x4,
-        MODE_4		= 0x8,
-        MODE_4B		= 0x10,
-        MODE_4OUT	= 0x20,
-        MODE_4LIT	= 0x40,
-        MODE_C		= 0x80,
+        MODE_1 = 0x1,
+        MODE_2 = 0x2,
+        MODE_3 = 0x4,
+        MODE_4 = 0x8,
+        MODE_4B = 0x10,
+        MODE_4OUT = 0x20,
+        MODE_4LIT = 0x40,
+        MODE_C = 0x80,
     };
     void SetIFFFlag(int newFlag)
     {
@@ -555,7 +555,7 @@ public:
 
     //INS stuff
     float INSTime;
-    int INSLine;	//which line we are editing
+    int INSLine; //which line we are editing
     char INSLong[20];
     char INSLat[20];
     void GetINSInfo(void);
@@ -594,9 +594,9 @@ public:
     void DisplayDraw(void);
     void SetOwnship(void);
     CPButtonObject* GetTertiaryExclusiveButton(void);
-    //	void SetSecondaryExclusiveButton(CPButtonObject *);
+    // void SetSecondaryExclusiveButton(CPButtonObject *);
     CPButtonObject* GetSecondaryExclusiveButton(void);
-    //	void SetPrimaryExclusiveButton(CPButtonObject *);
+    // void SetPrimaryExclusiveButton(CPButtonObject *);
     void InitPrimaryExclusiveButton(CPButtonObject *);
     void InitTertiaryExclusiveButton(CPButtonObject *);
     CPButtonObject* GetPrimaryExclusiveButton(void);

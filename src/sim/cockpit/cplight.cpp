@@ -5,8 +5,8 @@
 #include "aircrft.h"
 #include "simdrive.h"
 
-#include "Graphics/Include/grinline.h"	//Wombat778 3-22-04
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 
 //====================================================//
@@ -16,9 +16,9 @@ extern bool g_bFilter2DPit;		//Wombat778 3-30-04
 CPLight::CPLight(ObjectInitStr *pobjectInitStr, LightButtonInitStr *plightInitStr) : CPObject(pobjectInitStr)
 {
 
-    mStates		= plightInitStr->states;
-    mpSrcRect	= plightInitStr->psrcRect;
-    mState		= plightInitStr->initialState;
+    mStates = plightInitStr->states;
+    mpSrcRect = plightInitStr->psrcRect;
+    mState = plightInitStr->initialState;
     //MI
     WasPersistant = FALSE;
 
@@ -29,8 +29,8 @@ CPLight::CPLight(ObjectInitStr *pobjectInitStr, LightButtonInitStr *plightInitSt
 
         for (int i = 0; i < mStates; i++)
         {
-            mpSourceBuffer[i].mWidth		= mpSrcRect[i].right - mpSrcRect[i].left;
-            mpSourceBuffer[i].mHeight		= mpSrcRect[i].bottom - mpSrcRect[i].top;
+            mpSourceBuffer[i].mWidth = mpSrcRect[i].right - mpSrcRect[i].left;
+            mpSourceBuffer[i].mHeight = mpSrcRect[i].bottom - mpSrcRect[i].top;
         }
     }
 
@@ -93,7 +93,7 @@ void CPLight::DisplayBlit(void)
         mState = 0;
     }
 
-    if (DisplayOptions.bRender2DCockpit)			//Handle these in displayblit3d
+    if (DisplayOptions.bRender2DCockpit) //Handle these in displayblit3d
         return;
 
     //F4Assert(mState < mStates);
@@ -177,7 +177,7 @@ void CPLight::DisplayBlit(void)
     mDirtyFlag = FALSE;
 }
 
-void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha)		//Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
+void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
 {
 
     OTWDriver.renderer->CenterOriginInViewport();
@@ -227,7 +227,7 @@ void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha)		//Wom
 }
 
 
-void CPLight::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered lights.  Much faster than blitting.
+void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered lights.  Much faster than blitting.
 {
     mDirtyFlag = TRUE;
 
@@ -241,7 +241,7 @@ void CPLight::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered light
         mState = 0;
     }
 
-    if (!DisplayOptions.bRender2DCockpit)			//Handle these in displayblit
+    if (!DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
 
@@ -256,14 +256,14 @@ void CPLight::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered light
         {
             if (mTransparencyType == CPTRANSPARENT)
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
                 else
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
                 else
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
@@ -290,14 +290,14 @@ void CPLight::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered light
         {
             if (mTransparencyType == CPTRANSPARENT)
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
                 else
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
                 else
                     RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
@@ -324,14 +324,14 @@ void CPLight::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered light
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
-            if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+            if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                 RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
             else
                 RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
         }
         else
         {
-            if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+            if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                 RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
             else
                 RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
@@ -378,7 +378,7 @@ void CPLight::CreateLit(void)
                     if (!pTex->Create("CPLight", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].light, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].light, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
@@ -400,14 +400,14 @@ void CPLight::DiscardLit(void)
     {
         for (int i2 = 0; i2 < mStates; i2++)
         {
-            for (unsigned int i = 0; i < mpSourceBuffer[i2].m_arrTex.size(); i++)	//delete the textures for each light
+            for (unsigned int i = 0; i < mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each light
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();
         }
     }
 
-    for (unsigned int i = 0; i < m_arrTex.size(); i++) delete m_arrTex[i];	//delete the local textures
+    for (unsigned int i = 0; i < m_arrTex.size(); i++) delete m_arrTex[i]; //delete the local textures
 
     m_arrTex.clear();
 

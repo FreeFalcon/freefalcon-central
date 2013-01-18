@@ -18,8 +18,8 @@ ObjectInstance::ObjectInstance(int tid)
     id = tid;
 
     ShiAssert(TheObjectList);
-    ShiAssert(id < TheObjectListLength);	// Make sure the requested object ID is in
-    ShiAssert(TheObjectList[tid].nLODs);		// the current object set (IDS.TXT, etc).
+    ShiAssert(id < TheObjectListLength); // Make sure the requested object ID is in
+    ShiAssert(TheObjectList[tid].nLODs); // the current object set (IDS.TXT, etc).
 
     ParentObject = &TheObjectList[tid];
 
@@ -36,7 +36,7 @@ ObjectInstance::ObjectInstance(int tid)
         ParentObject->radius = 40.0;
     }
 
-    if (tid == 1329)		// B1
+    if (tid == 1329) // B1
     {
         ParentObject->radius = 100.0;
     }
@@ -103,15 +103,15 @@ ObjectInstance::ObjectInstance(int tid)
                sizeof(*DynamicCoords)*ParentObject->nDynamicCoords);
     }
 
-    TextureSet		= 0;
+    TextureSet = 0;
     TexSetReferenced = false;
 
     /*// Setup RadarSign
     RadarSignal = BoxTop() - BoxBottom();
     if(abs(RadarSignal) <= 1.0f) RadarSignal = 200.0f;
     else {
-    	RadarSignal *= BoxFront() - BoxBack();
-    	RadarSignal *= BoxRight() - BoxLeft();
+     RadarSignal *= BoxFront() - BoxBack();
+     RadarSignal *= BoxRight() - BoxLeft();
     }
     RadarSignal = sqrtf(fabs(RadarSignal));*/
 
@@ -171,7 +171,7 @@ ObjectInstance::~ObjectInstance()
 
 void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
 {
-    Ppoint	*original;
+    Ppoint *original;
 
     ShiAssert(id < ParentObject->nDynamicCoords);
 
@@ -188,7 +188,7 @@ void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
 #ifdef _DEBUG
     float r2 = DynamicCoords[id].x * DynamicCoords[id].x + DynamicCoords[id].y * DynamicCoords[id].y + DynamicCoords[id].z * DynamicCoords[id].z;
 
-    ShiAssert(r2 <= r1 + 0.00001f);	// Illegal for dynamic verts to exceed object bounding volume
+    ShiAssert(r2 <= r1 + 0.00001f); // Illegal for dynamic verts to exceed object bounding volume
     // so we require movement to be only toward the origin.
 #endif
 }
@@ -196,7 +196,7 @@ void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
 
 void ObjectInstance::GetDynamicVertex(int id, float *dx, float *dy, float *dz)
 {
-    Ppoint	*original;
+    Ppoint *original;
 
     ShiAssert(id < ParentObject->nDynamicCoords);
 
@@ -217,7 +217,7 @@ void ObjectInstance::GetDynamicCoords(int id, float *dx, float *dy, float *dz)
 
 
 
-void	ObjectInstance::SetTextureSet(int id)
+void ObjectInstance::SetTextureSet(int id)
 {
     // edg: sanity check texture setting
     if (id >= ParentObject->nTextureSets) id = 0;

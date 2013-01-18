@@ -22,12 +22,12 @@ void CBEAOA(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
+    pCPIndicator = (CPIndicator*) pObject;
 
     if (!g_bIFlyMirage)
-        pCPIndicator->mpTapeValues[0]	= cockpitFlightData.alpha;
+        pCPIndicator->mpTapeValues[0] = cockpitFlightData.alpha;
     else
-        pCPIndicator->mpTapeValues[0]	= -cockpitFlightData.alpha;
+        pCPIndicator->mpTapeValues[0] = -cockpitFlightData.alpha;
 }
 
 void CBDAOA(void *)
@@ -39,8 +39,8 @@ void CBEVVI(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= -cockpitFlightData.zDot * 60.0F;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = -cockpitFlightData.zDot * 60.0F;
 }
 
 void CBDVVI(void *)
@@ -53,21 +53,21 @@ void CBESpeedBreaks(void * pObject)
 
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= ((AircraftClass *)pCPIndicator->mpOwnship)->af->dbrake;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = ((AircraftClass *)pCPIndicator->mpOwnship)->af->dbrake;
 }
 
 void CBEFuelFlow(void * pObject)
 {
 
-    CPIndicator*	pCPIndicator;
-    long				flowRate;
-    char				digitString[FUEL_FLOW_DIGITS + 1];
-    int				i, j;
+    CPIndicator* pCPIndicator;
+    long flowRate;
+    char digitString[FUEL_FLOW_DIGITS + 1];
+    int i, j;
     int            len;
 
-    pCPIndicator	= (CPIndicator*) pObject;
-    flowRate			= (long)((AircraftClass *)pCPIndicator->mpOwnship)->af->FuelFlow();
+    pCPIndicator = (CPIndicator*) pObject;
+    flowRate = (long)((AircraftClass *)pCPIndicator->mpOwnship)->af->FuelFlow();
 
     if (flowRate > MAX_FUEL_FLOW_VAL)
     {
@@ -99,11 +99,11 @@ void CBEFuelFlow(void * pObject)
 void CBEMagneticCompass(void * pObject)
 {
 
-    CPIndicator*	pCPIndicator;
-    float				yaw;
+    CPIndicator* pCPIndicator;
+    float yaw;
 
-    pCPIndicator	= (CPIndicator*) pObject;
-    yaw				= cockpitFlightData.yaw;
+    pCPIndicator = (CPIndicator*) pObject;
+    yaw = cockpitFlightData.yaw;
 
     if (yaw < 0.0F)
     {
@@ -116,14 +116,14 @@ void CBEMagneticCompass(void * pObject)
 void CBEAltInd(void * pObject)
 {
 
-    CPIndicator*	pCPIndicator;
-    long				altitude;
-    char				digitString[10];
-    int				i, j;
-    int				len;
+    CPIndicator* pCPIndicator;
+    long altitude;
+    char digitString[10];
+    int i, j;
+    int len;
 
-    pCPIndicator	= (CPIndicator*) pObject;
-    altitude			= (long) - cockpitFlightData.z;
+    pCPIndicator = (CPIndicator*) pObject;
+    altitude = (long) - cockpitFlightData.z;
 
     if (altitude > MAX_ALTITUDE_VALUE)
     {
@@ -156,8 +156,8 @@ void CBEFlapPos(void * pObject)
 
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= ((AircraftClass *)pCPIndicator->mpOwnship)->af->tefPos;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = ((AircraftClass *)pCPIndicator->mpOwnship)->af->tefPos;
 }
 
 void CBELEFPos(void * pObject)
@@ -165,8 +165,8 @@ void CBELEFPos(void * pObject)
 
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= ((AircraftClass *)pCPIndicator->mpOwnship)->af->lefPos;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = ((AircraftClass *)pCPIndicator->mpOwnship)->af->lefPos;
 }
 
 //TJL 01/04/04 RPM Tape
@@ -174,8 +174,8 @@ void CBERPMTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= 100.0F * ((AircraftClass *)pCPIndicator->mpOwnship)->af->rpm;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = 100.0F * ((AircraftClass *)pCPIndicator->mpOwnship)->af->rpm;
 }
 
 //TJL 01/16/04 RPM Tape Engine 2
@@ -183,8 +183,8 @@ void CBERPM2Tape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= 100.0F * ((AircraftClass *)pCPIndicator->mpOwnship)->af->rpm2;
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = 100.0F * ((AircraftClass *)pCPIndicator->mpOwnship)->af->rpm2;
 }
 
 //TJL 01/04/04 WingSweep
@@ -192,20 +192,20 @@ void CBEWingSweepTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= (((AircraftClass *)pCPIndicator->mpOwnship)->wingSweep * RTD);
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = (((AircraftClass *)pCPIndicator->mpOwnship)->wingSweep * RTD);
 }
 
 //TJL 01/07/04
 void CBETotalFuelTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
-    pCPIndicator						= (CPIndicator*) pObject;
+    pCPIndicator = (CPIndicator*) pObject;
 
     float  fwd, aft, total;
     ((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFuel(&fwd, &aft, &total);
 
-    pCPIndicator->mpTapeValues[0]	= total;
+    pCPIndicator->mpTapeValues[0] = total;
 }
 
 //TJL 04/25/04
@@ -213,8 +213,8 @@ void CBEFuelFlowLeftTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFuelFlowLeft());
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFuelFlowLeft());
 }
 
 //TJL 04/25/04
@@ -222,38 +222,38 @@ void CBEFuelFlowRightTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFuelFlowRight());
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFuelFlowRight());
 }
 //TJL 09/11/04 //Cobra 10/30/04 TJL all below
 void CBEFTITLeftTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFTITLeft());
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFTITLeft());
 }
 //TJL 09/11/04
 void CBEFTITRightTape(void * pObject)
 {
     CPIndicator* pCPIndicator;
 
-    pCPIndicator						= (CPIndicator*) pObject;
-    pCPIndicator->mpTapeValues[0]	= (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFTITRight());
+    pCPIndicator = (CPIndicator*) pObject;
+    pCPIndicator->mpTapeValues[0] = (((AircraftClass *)pCPIndicator->mpOwnship)->af->GetFTITRight());
 }
 
 //TJL 09/16/04
 void CBERoundsRemaining(void * pObject)
 {
 
-    CPIndicator*	pCPIndicator;
-    long			rounds;
-    char			digitString[5];
-    int				i, j;
+    CPIndicator* pCPIndicator;
+    long rounds;
+    char digitString[5];
+    int i, j;
     int             len;
 
-    pCPIndicator	= (CPIndicator*) pObject;
-    rounds			= (long)((AircraftClass *)pCPIndicator->mpOwnship)->Guns->numRoundsRemaining;
+    pCPIndicator = (CPIndicator*) pObject;
+    rounds = (long)((AircraftClass *)pCPIndicator->mpOwnship)->Guns->numRoundsRemaining;
 
     if (rounds > 9999)
     {

@@ -74,7 +74,7 @@ void OTWDriverClass::PadlockF3_DrawSidebar(float pan, float tilt, float roll, Re
 
     mlTrig rotTrig;
 
-    renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][4]);	// Red
+    renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][4]); // Red
 
     // Zero Line
     //   pRenderer->Line (spacing1, mZeroLineRadius, -spacing1, mZeroLineRadius);
@@ -195,8 +195,8 @@ void OTWDriverClass::PadlockF3_DrawSidebar(float pan, float tilt, float roll, Re
     br_y = y + aspect * (((-0.4F) * rotTrig.cos - (0.6F) * rotTrig.sin));
 
     pRenderer->Line(tr_x, tr_y, br_x, br_y);  // Right Line
-    pRenderer->Line(br_x, br_y, bl_x, bl_y);	// Bottom Line
-    pRenderer->Line(bl_x, bl_y, tl_x, tl_y);	// Left Line
+    pRenderer->Line(br_x, br_y, bl_x, bl_y); // Bottom Line
+    pRenderer->Line(bl_x, bl_y, tl_x, tl_y); // Left Line
 
 
     renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() != 0][3]);  // White
@@ -210,32 +210,32 @@ void OTWDriverClass::PadlockF3_InitSidebar(void)
 
     mlTrig tiltTrig;
 
-    mPadRho		= 1.0F;
+    mPadRho = 1.0F;
     mMinPadTilt = -150.0F * DTR;
     mMaxPadTilt = 25.0F * DTR;
     mMaxPadPan  = 140.0F * DTR;
-    mMinPadPan	= -140.0F * DTR;
+    mMinPadPan = -140.0F * DTR;
 
     mlSinCos(&tiltTrig, mMaxPadTilt);
 
-    mMaxPadC		= mPadRho * (2.0F - tiltTrig.cos);
+    mMaxPadC = mPadRho * (2.0F - tiltTrig.cos);
 
-    PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, -30.0F * DTR, &mWedgeTipY, &m30LineRadius);	//mWedgeTipY is used a dummy variable here
-    m30LineRadius			= -m30LineRadius;
+    PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, -30.0F * DTR, &mWedgeTipY, &m30LineRadius); //mWedgeTipY is used a dummy variable here
+    m30LineRadius = -m30LineRadius;
 
-    PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, -60.0F * DTR, &mWedgeTipY, &m60LineRadius);	//mWedgeTipY is used a dummy variable here
-    m60LineRadius			= -m60LineRadius;
+    PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, -60.0F * DTR, &mWedgeTipY, &m60LineRadius); //mWedgeTipY is used a dummy variable here
+    m60LineRadius = -m60LineRadius;
 
-    mZeroLineRadius		= mPadRho / mMaxPadC;
-    m45LineRadius			= (float)fabs((mPadRho * 1.41421F) / (2 * mMaxPadC));
-    mMaxTiltLineRadius	= 1.0F;
+    mZeroLineRadius = mPadRho / mMaxPadC;
+    m45LineRadius = (float)fabs((mPadRho * 1.41421F) / (2 * mMaxPadC));
+    mMaxTiltLineRadius = 1.0F;
 
     PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, mMinPadTilt, &mWedgeTipX, &mWedgeTipY);
     PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, mMinPadPan, mMaxPadTilt, &mWedgeLeftX, &mWedgeY);
 
     PadlockF3_MapAnglesToSidebar(mPadRho, mMaxPadC, 0.0F, mMinPadTilt, &mWedgeTipX, &mWedgeTipY);
 
-    //	MapAnglesToDiagram(mPadRho, mMaxPadC, 55.547 * DTR, 0.0, &mWedgeTipX, &mWedgeTipY);
+    // MapAnglesToDiagram(mPadRho, mMaxPadC, 55.547 * DTR, 0.0, &mWedgeTipX, &mWedgeTipY);
 
     // This stuff inits values for the blindspot cone behind the pilot's seat
     hBlindArc = 80.0F * DTR;
@@ -256,12 +256,12 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
     float tiltLimit;
     float term;
 
-    //	if(snapStatus == POSTSNAP && mPadlockTimeout > 0.0F) {
-    //		return;
-    //	}
+    // if(snapStatus == POSTSNAP && mPadlockTimeout > 0.0F) {
+    // return;
+    // }
 
     // 2000-11-13 MODIFIED BY S.G. NEED TO CHECK THE RETURN VALUE. IF TRUE, CALC NEW HEAD POSITION. IF FALSE, NOTHING CHANGED SO DON'T MESS AROUND WITH MY HEAD :-) REMAINING OF FUNCTION INCLUDED IN IF BODY.
-    //	PadlockF3_SetCamera(dT);
+    // PadlockF3_SetCamera(dT);
     if (PadlockF3_SetCamera(dT))
     {
 
@@ -277,7 +277,7 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
             }
         }
 
-        eyeTilt	= min(max(eyeTilt, -90.0F * DTR), 25.0F * DTR);
+        eyeTilt = min(max(eyeTilt, -90.0F * DTR), 25.0F * DTR);
 
         eyeHeadRoll = 0.0F;
 
@@ -319,20 +319,20 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
 
 // ----------------------------------------------------------------------------------------------------
 //
-//	OTWDriverClass::PadlockF3_SlamCamera()
+// OTWDriverClass::PadlockF3_SlamCamera()
 //
 // Arguements:
-//		desPan		The desired camera pan angle									(+/- pi)
-//		desTilt		The desired camera tilt angle									(+/- pi/2)
-//		lagFactor	Rate at which the camera will slew							(0.0 < lagFactor < 1.0)
-//		stopCritera	Percentage error at which the camera will stop slewing (0.0 < stop criteria < 1.0)
-//		dT				Delta Time in seconds
+// desPan The desired camera pan angle (+/- pi)
+// desTilt The desired camera tilt angle (+/- pi/2)
+// lagFactor Rate at which the camera will slew (0.0 < lagFactor < 1.0)
+// stopCritera Percentage error at which the camera will stop slewing (0.0 < stop criteria < 1.0)
+// dT Delta Time in seconds
 //
-//	Returns:
-//		done					done == PAN_AND_TILT;	if both the pan and tilt angles meet the stopCritera
-//								done == PAN_ONLY;			if only the pan angle meets the stopCritera
-//								done == TILT_ONLY;		if only the tilt angle meets the stopCritera
-//								done == NO_PAN_OR_TILT;	if neither pan or tilt meet the stop Critera
+// Returns:
+// done done == PAN_AND_TILT; if both the pan and tilt angles meet the stopCritera
+// done == PAN_ONLY; if only the pan angle meets the stopCritera
+// done == TILT_ONLY; if only the tilt angle meets the stopCritera
+// done == NO_PAN_OR_TILT; if neither pan or tilt meet the stop Critera
 //
 // This function slew the padlock camera from moving object to moving object.  It tries to maintain
 // a constant slew rate by comparing the current error with the previous error.  If the current error is
@@ -344,8 +344,8 @@ void OTWDriverClass::PadlockF3_CalcCamera(float dT)
 int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* prevPError, float* prevTRate, float desTilt, float* prevTError, float momentum, float stopCritera, float dT)
 {
 
-    BOOL panDone	= FALSE;
-    BOOL tiltDone	= FALSE;
+    BOOL panDone = FALSE;
+    BOOL tiltDone = FALSE;
 
     float curPError;
     float curTError;
@@ -353,27 +353,27 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
 
     if (*prevPError > stopCritera && stopCritera != 0.0F)
     {
-        curPError	= desPan - eyePan;
+        curPError = desPan - eyePan;
         currentRate = (curPError / (*prevPError)) * momentum * *prevPRate;
 
         if (desPan > eyePan)
         {
             currentRate = (float)fabs(currentRate);
-            eyePan			+= currentRate * dT;
-            *prevPRate	= currentRate;
-            *prevPError	= curPError;
+            eyePan += currentRate * dT;
+            *prevPRate = currentRate;
+            *prevPError = curPError;
         }
         else if (desPan < eyePan)
         {
             currentRate = -(float)fabs(currentRate);
-            eyePan			+= currentRate * dT;
-            *prevPRate	= currentRate;
-            *prevPError	= curPError;
+            eyePan += currentRate * dT;
+            *prevPRate = currentRate;
+            *prevPError = curPError;
         }
         else
         {
-            panDone	= TRUE;
-            eyePan		= desPan;
+            panDone = TRUE;
+            eyePan = desPan;
         }
     }
     else
@@ -384,27 +384,27 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
 
     if (*prevTError > stopCritera && stopCritera != 0.0F)
     {
-        curTError	= desTilt - eyeTilt;
+        curTError = desTilt - eyeTilt;
         currentRate = (curTError / (*prevTError)) * momentum * *prevTRate;
 
         if (desTilt > eyeTilt)
         {
             currentRate = (float)fabs(currentRate);
-            eyeTilt		+= currentRate * dT;
-            *prevTRate	= currentRate;
-            *prevTError	= curTError;
+            eyeTilt += currentRate * dT;
+            *prevTRate = currentRate;
+            *prevTError = curTError;
         }
         else if (desTilt < eyeTilt)
         {
             currentRate = -(float)fabs(currentRate);
-            eyeTilt		+= currentRate * dT;
-            *prevTRate	= currentRate;
-            *prevTError	= curTError;
+            eyeTilt += currentRate * dT;
+            *prevTRate = currentRate;
+            *prevTError = curTError;
         }
         else
         {
-            tiltDone	= TRUE;
-            eyeTilt	= desTilt;
+            tiltDone = TRUE;
+            eyeTilt = desTilt;
         }
     }
     else
@@ -421,20 +421,20 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
 
 // ----------------------------------------------------------------------------------------------------
 //
-//	OTWDriverClass::PadlockF3_SlewCamera()
+// OTWDriverClass::PadlockF3_SlewCamera()
 //
 // Arguements:
-//		desPan		The desired camera pan angle									(+/- pi)
-//		desTilt		The desired camera tilt angle									(+/- pi/2)
-//		lagFactor	Rate at which the camera will slew							(0.0 < lagFactor < 1.0)
-//		stopCritera	Percentage error at which the camera will stop slewing (0.0 < stop criteria < 1.0)
-//		dT				Delta Time in seconds
+// desPan The desired camera pan angle (+/- pi)
+// desTilt The desired camera tilt angle (+/- pi/2)
+// lagFactor Rate at which the camera will slew (0.0 < lagFactor < 1.0)
+// stopCritera Percentage error at which the camera will stop slewing (0.0 < stop criteria < 1.0)
+// dT Delta Time in seconds
 //
-//	Returns:
-//		done					done == PAN_AND_TILT;	if both the pan and tilt angles meet the stopCritera
-//								done == PAN_ONLY;			if only the pan angle meets the stopCritera
-//								done == TILT_ONLY;		if only the tilt angle meets the stopCritera
-//								done == NO_PAN_OR_TILT;	if neither pan or tilt meet the stop Critera
+// Returns:
+// done done == PAN_AND_TILT; if both the pan and tilt angles meet the stopCritera
+// done == PAN_ONLY; if only the pan angle meets the stopCritera
+// done == TILT_ONLY; if only the tilt angle meets the stopCritera
+// done == NO_PAN_OR_TILT; if neither pan or tilt meet the stop Critera
 //
 // This nice function moves the padlock camera to from the current pan and tilt angles to the desired
 // the desired pan and tilt angles.  This occurs by gradually slewing the camera in continuous
@@ -445,17 +445,17 @@ int OTWDriverClass::PadlockF3_SlamCamera(float* prevPRate, float desPan, float* 
 
 int OTWDriverClass::PadlockF3_SlewCamera(float startPan, float startTilt, float desPan, float desTilt, float lagFactor, float stopCritera, float dT)
 {
-    BOOL				done			= FALSE;
-    static float	oldDesPan	= 0.0F;
-    static float	oldDesTilt	= 0.0F;
-    float				panErr;
-    float				tiltErr;
-    float				percentPanErr;
-    float				percentTiltErr;
-    BOOL				condA;
-    BOOL				condB;
-    BOOL				condC;
-    BOOL				condD;
+    BOOL done = FALSE;
+    static float oldDesPan = 0.0F;
+    static float oldDesTilt = 0.0F;
+    float panErr;
+    float tiltErr;
+    float percentPanErr;
+    float percentTiltErr;
+    BOOL condA;
+    BOOL condB;
+    BOOL condC;
+    BOOL condD;
 
     // If we are tilted up more than 90 degrees
     if (eyeTilt < -90.0F * DTR)
@@ -476,10 +476,10 @@ int OTWDriverClass::PadlockF3_SlewCamera(float startPan, float startTilt, float 
 
     // Calculate the errors between where we are and where we want to be.
     // Percentage error is how far we have yet to travel divided by total distance.
-    panErr			= desPan - eyePan;
-    percentPanErr	= (desPan - eyePan) / (startPan - desPan);
-    tiltErr			= desTilt - eyeTilt;
-    percentTiltErr	= (desTilt - eyeTilt) / (startTilt - desTilt);
+    panErr = desPan - eyePan;
+    percentPanErr = (desPan - eyePan) / (startPan - desPan);
+    tiltErr = desTilt - eyeTilt;
+    percentTiltErr = (desTilt - eyeTilt) / (startTilt - desTilt);
 
     // Handle the discontinuity for the pan at +/- pi
     if (panErr > 180.0F * DTR)
@@ -499,21 +499,21 @@ int OTWDriverClass::PadlockF3_SlewCamera(float startPan, float startTilt, float 
     // If both pan and tilt are less than the stopCritera
     if ((condB && condD) || (condB && condC) || (condA && condD) || (condA && condC))
     {
-        eyePan	= desPan;		// Close enough, Force the new pan and tilt to be the desired pan and tilt
-        eyeTilt	= desTilt;
-        done		= PAN_AND_TILT;
+        eyePan = desPan; // Close enough, Force the new pan and tilt to be the desired pan and tilt
+        eyeTilt = desTilt;
+        done = PAN_AND_TILT;
     } // If just the pan is at the stop critera, then make note of it
     else if (condA || condB)
     {
-        done		= PAN_ONLY;
+        done = PAN_ONLY;
     } // If just the tilt is at the stop critera, then make note of it
     else if (condC || condD)
     {
-        done		= TILT_ONLY;
+        done = TILT_ONLY;
     }
     else   // If still not there yet
     {
-        done		= NO_PAN_OR_TILT;
+        done = NO_PAN_OR_TILT;
     }
 
     // If still slewing
@@ -555,20 +555,20 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
     BOOL haveObj = FALSE;
     float az = 0.0F, el = 0.0F;
 
-    if (padlockGlance == GlanceNose)  					// if player glances forward
+    if (padlockGlance == GlanceNose)   // if player glances forward
     {
 
         if (!mIsSlewInit)
         {
             mIsSlewInit = TRUE;
-            mSlewPStart				= eyePan;
-            mSlewTStart				= eyeTilt;
+            mSlewPStart = eyePan;
+            mSlewTStart = eyeTilt;
         }
 
         snapStatus = PRESNAP;
         PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 5.0F, 0.001F, dT);
     }
-    else if (padlockGlance == GlanceTail)  			// if player glances back
+    else if (padlockGlance == GlanceTail)   // if player glances back
     {
 
         snapStatus = PRESNAP;
@@ -579,8 +579,8 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
             if (!mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
-                mSlewPStart				= eyePan;
-                mSlewTStart				= eyeTilt;
+                mSlewPStart = eyePan;
+                mSlewTStart = eyeTilt;
             }
 
             PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, -180.0F * DTR,  0.0F, 5.0F, 0.001F, dT);
@@ -591,15 +591,15 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
             if (!mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
-                mSlewPStart				= eyePan;
-                mSlewTStart				= eyeTilt;
+                mSlewPStart = eyePan;
+                mSlewTStart = eyeTilt;
             }
 
             PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 180.0F * DTR, 0.0F, 5.0F, 0.001F, dT);
         }
         else
         {
-            eyePan	= 0.001F;
+            eyePan = 0.001F;
         }
     }
     else
@@ -620,14 +620,14 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
         {
             // find relative location
             CalcRelAzEl(SimDriver.playerEntity, mpPadlockPriorityObject->XPos(), mpPadlockPriorityObject->YPos(), mpPadlockPriorityObject->ZPos(), &az, &el);
-            el			= -el;
-            haveObj	= TRUE;
+            el = -el;
+            haveObj = TRUE;
         }
         else if (mpPadlockPriorityObject)
         {
             CalcRelAzEl(SimDriver.playerEntity, mpPadlockPriorityObject->XPos(), mpPadlockPriorityObject->YPos(), mpPadlockPriorityObject->ZPos(), &az, &el);
-            el			= -el;
-            haveObj	= TRUE;
+            el = -el;
+            haveObj = TRUE;
         }
 
         if (haveObj)
@@ -641,19 +641,19 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                 case PRESNAP:
                     int result;
                     //VWF 2/15/99
-                    /*					if(mObjectOccluded) {
-                    						PadlockOccludedTime += dT;
-                    						if(PadlockOccludedTime >= 5.0F) {
-                    							PadlockOccludedTime = 0.0F;
-                    							VuDeReferenceEntity(mpPadlockPriorityObject);
-                    							mpPadlockPriorityObject = NULL;
-                    							snapStatus = SNAPPING;
-                    						}
-                    						else {
-                    						result = PadlockF3_SlamCamera(&mPrevPRate, az, &mPrevPError, &mPrevTRate, el, &mPrevTError, 1.1F, 0.1F, dT);
-                    						}
-                    					}
-                    					else {
+                    /* if(mObjectOccluded) {
+                     PadlockOccludedTime += dT;
+                     if(PadlockOccludedTime >= 5.0F) {
+                     PadlockOccludedTime = 0.0F;
+                     VuDeReferenceEntity(mpPadlockPriorityObject);
+                     mpPadlockPriorityObject = NULL;
+                     snapStatus = SNAPPING;
+                     }
+                     else {
+                     result = PadlockF3_SlamCamera(&mPrevPRate, az, &mPrevPError, &mPrevTRate, el, &mPrevTError, 1.1F, 0.1F, dT);
+                     }
+                     }
+                     else {
                     */
                     PadlockOccludedTime = 0.0F;
                     result = PadlockF3_SlamCamera(&mPrevPRate, az, &mPrevPError, &mPrevTRate, el, &mPrevTError, 1.1F, 0.1F, dT);
@@ -664,7 +664,7 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                         //MonoPrint("Switch to TRACKING!\n");
                     }
 
-                    //					}
+                    // }
                     break;
 
                 case TRACKING:
@@ -675,17 +675,17 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                     {
                         PadlockOccludedTime += dT;
 
-                        //	well, you're able to keep a "virtual" padlock for some seconds I'd say...
-                        //						float timer = 5.0F;
-                        //						if (PlayerOptions.GetAvionicsType() == ATRealisticAV)
-                        //							timer = 0.0F;	// in realistic mode, we will instantly loose lock on the target if view is occluded
-                        //						if(PadlockOccludedTime >= timer) {
+                        // well, you're able to keep a "virtual" padlock for some seconds I'd say...
+                        // float timer = 5.0F;
+                        // if (PlayerOptions.GetAvionicsType() == ATRealisticAV)
+                        // timer = 0.0F; // in realistic mode, we will instantly loose lock on the target if view is occluded
+                        // if(PadlockOccludedTime >= timer) {
                         if (PadlockOccludedTime >= 5.0F)
                         {
                             PadlockOccludedTime = 0.0F;
                             /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject
-                            							VuDeReferenceEntity(mpPadlockPriorityObject);
-                            							mpPadlockPriorityObject = NULL;
+                             VuDeReferenceEntity(mpPadlockPriorityObject);
+                             mpPadlockPriorityObject = NULL;
                             */
                             SetmpPadlockPriorityObject(NULL);
                             snapStatus = SNAPPING;
@@ -703,58 +703,58 @@ int OTWDriverClass::PadlockF3_SetCamera(float dT)
                     // 2000-11-06 REMOVED BY S.G. NO YOU DON'T THIS CODE MAKES THE PADLOCK MOVE TO THE 12h POSITION SOMETIMES WHEN THEIR IS A VALID PADLOCKED OBJECT!
                     // WE WILL FALL TRHOUGH TO THE NEXT STEP, POSTSNAP WHICH WILL FORCE A PRESNAP (WHICH WILL MAKE IT SNAP IN PLACE)
                     /*
-                    					if(!mIsSlewInit) {
-                    						mIsSlewInit = TRUE;
-                    						mSlewPStart	= eyePan;
-                    						mSlewTStart	= eyeTilt;
-                    					}
+                     if(!mIsSlewInit) {
+                     mIsSlewInit = TRUE;
+                     mSlewPStart = eyePan;
+                     mSlewTStart = eyeTilt;
+                     }
 
 
-                    					if(PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 2.0F, 0.01F, dT) == PAN_AND_TILT) {
-                    						snapStatus = POSTSNAP;
-                    					}
-                    				break;
+                     if(PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 2.0F, 0.01F, dT) == PAN_AND_TILT) {
+                     snapStatus = POSTSNAP;
+                     }
+                     break;
                     */
 
                 case POSTSNAP:
                 default:
                     mIsSlewInit = FALSE;
                     snapStatus = PRESNAP;
-                    //eyePan		= 0.0F;
-                    //eyeTilt		= 0.0F;
+                    //eyePan = 0.0F;
+                    //eyeTilt = 0.0F;
                     break;
             }
         }
         else
         {
             // 2000-11-06 MODIFIED BY S.G. SO IT DOESN'T SLEW BACK TO CENTER VIEW BUT STAYS AT THE SAME POSITION IF NOTHING IS PADLOCKED
-            /*			if(snapStatus == PRESNAP || snapStatus == TRACKING) {	// we lost visible object
-            				snapStatus = SNAPPING;
-            			}
+            /* if(snapStatus == PRESNAP || snapStatus == TRACKING) { // we lost visible object
+             snapStatus = SNAPPING;
+             }
 
-            			if(snapStatus == SNAPPING) {
+             if(snapStatus == SNAPPING) {
 
-            				if(!mIsSlewInit) {
-            					mIsSlewInit = TRUE;
-            					mSlewPStart	= eyePan;
-            					mSlewTStart	= eyeTilt;
-            				}
+             if(!mIsSlewInit) {
+             mIsSlewInit = TRUE;
+             mSlewPStart = eyePan;
+             mSlewTStart = eyeTilt;
+             }
 
-            				if(PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 2.0F, 0.01F, dT) == PAN_AND_TILT) {
-            					snapStatus	= POSTSNAP;
-            					mIsSlewInit = FALSE;
-            				}
-            			}
+             if(PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 2.0F, 0.01F, dT) == PAN_AND_TILT) {
+             snapStatus = POSTSNAP;
+             mIsSlewInit = FALSE;
+             }
+             }
 
 
-            			if(snapStatus == POSTSNAP) {
+             if(snapStatus == POSTSNAP) {
 
-            				mIsSlewInit = FALSE;
-            				eyePan	= 0.0F;
-            				eyeTilt	= 0.0F;
+             mIsSlewInit = FALSE;
+             eyePan = 0.0F;
+             eyeTilt = 0.0F;
 
-            				SetOTWDisplayMode(OTWDriverClass::Mode3DCockpit);
-            			}
+             SetOTWDisplayMode(OTWDriverClass::Mode3DCockpit);
+             }
             */
             // Since SetOTWDisplayMode will reset eyePan, eyeTilt and eyeHeadRoll to zero, I need to keep a copy so I can restore them after the switch to plane 3D
             float tmpEyePan  = eyePan;

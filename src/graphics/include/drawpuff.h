@@ -32,11 +32,11 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     DrawablePuff(int ID, int texSetNum, Tpoint *pos);
-    virtual ~DrawablePuff()	{};
+    virtual ~DrawablePuff() {};
 
     void UpdateForDrift(float x, float y);
 };

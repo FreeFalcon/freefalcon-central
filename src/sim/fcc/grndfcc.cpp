@@ -12,9 +12,9 @@
 #include "misslist.h"
 #include "flightData.h"
 #include "weather.h"
-#include "hud.h"	//MI
+#include "hud.h" //MI
 
-#include "classtbl.h"		//Wombat778 3-12-04
+#include "classtbl.h" //Wombat778 3-12-04
 
 /* 2001-04-12 S.G. BOMBING INACURACY */#include "aircrft.h"
 /* 2001-04-12 S.G. BOMBING INACURACY */#include "simbrain.h"
@@ -32,8 +32,8 @@ extern float g_fGroundImpactMod;
 extern float g_fBombTimeStep;
 extern bool g_bBombNumLoopOnly;
 extern float g_fHighDragGravFactor;
-extern float g_fJDAMLift;			//Wombat778 3-12-04
-extern float g_fAIJSOWmaxRange;		// Cobra
+extern float g_fJDAMLift; //Wombat778 3-12-04
+extern float g_fAIJSOWmaxRange; // Cobra
 //MI check for pickle
 bool Released = FALSE;
 
@@ -49,7 +49,7 @@ BombClass *FireControlComputer::GetTheBomb()
         Sms->CurHardpoint() >= 0 &&
         Sms->hardPoint[Sms->CurHardpoint()] &&
         Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer &&
-        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer->IsBomb())			//be EXTRA careful
+        Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
         return (BombClass *)Sms->hardPoint[Sms->CurHardpoint()]->weaponPointer.get();
     else
         return NULL;
@@ -224,18 +224,18 @@ void FireControlComputer::CalculateRocketImpactPoint(void)
                 if(lau->LauGetWeaponId() != rocketWeaponId)
                 {
 
-                	if(rocketPointer)
-                		delete rocketPointer;
+                 if(rocketPointer)
+                 delete rocketPointer;
 
-                	if(lau->LauGetWeaponId())
-                	{
-                		rocketPointer = (MissileClass *)InitAMissile(Sms->Ownship(), lau->LauGetWeaponId(), 0);
-                	}
-                	else
-                	{
-                		rocketPointer = 0;
-                	}
-                	rocketWeaponId = lau->LauGetWeaponId();
+                 if(lau->LauGetWeaponId())
+                 {
+                 rocketPointer = (MissileClass *)InitAMissile(Sms->Ownship(), lau->LauGetWeaponId(), 0);
+                 }
+                 else
+                 {
+                 rocketPointer = 0;
+                 }
+                 rocketWeaponId = lau->LauGetWeaponId();
                 }
                 */
 
@@ -266,18 +266,18 @@ float calcgrav(FireControlComputer *FCC)
     if (FCC && FCC->PlayerFCC() && FCC->Sms && FCC->Sms->CurHardpoint() >= 0 &&
         FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()] &&
         FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer &&
-        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer->IsBomb())			//be EXTRA careful
+        FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer->IsBomb()) //be EXTRA careful
     {
         theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
 
         if (
-            theBomb && !(F4IsBadReadPtr(theBomb, sizeof(BombClass))) &&															//be EXTRA EXTRA careful
+            theBomb && !(F4IsBadReadPtr(theBomb, sizeof(BombClass))) && //be EXTRA EXTRA careful
             (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_GPS) ||
             (theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
         )
         {
             // RV - Biker - Never give neg. gravity
-            return max(GRAVITY - theBomb->GetJDAMLift(), 0.0f);		//The 0.6 value was derived from testing to prevent the CCRP from dropping when the bomb cant actually get to the target
+            return max(GRAVITY - theBomb->GetJDAMLift(), 0.0f); //The 0.6 value was derived from testing to prevent the CCRP from dropping when the bomb cant actually get to the target
         }
     }
 
@@ -303,7 +303,7 @@ void FireControlComputer::CalculateImpactPoint(void)
     BombClass *theBomb;
     bool isJSOW = false;
 
-    float grav = calcgrav(this);		//Wombat778 3-12-04
+    float grav = calcgrav(this); //Wombat778 3-12-04
 
     // For now, assume a perfect world, with zero drag, and no wind
     // height = h0 + v0*t + 0.5*a*t*t
@@ -329,7 +329,7 @@ void FireControlComputer::CalculateImpactPoint(void)
     }
 
 
-    if (!preDesignate && GetMasterMode() != AirGroundLaser)	//MI added check for Laser
+    if (!preDesignate && GetMasterMode() != AirGroundLaser) //MI added check for Laser
     {
 
         a = 0.5F * grav;
@@ -385,7 +385,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
         //dz += zDot + 0.5f * GRAVITY;
         //zDot += GRAVITY;
-        dz += zDot + 0.5f * calcgrav(this);			//Wombat778 3-12-04
+        dz += zDot + 0.5f * calcgrav(this); //Wombat778 3-12-04
         zDot += calcgrav(this);
 
 
@@ -538,7 +538,7 @@ void FireControlComputer::CalculateImpactPoint(void)
         {
             mlTrig trigWind;
             float wind;
-            Tpoint			pos;
+            Tpoint pos;
             pos.x = platform->XPos();
             pos.y = platform->YPos();
             pos.z = platform->ZPos();
@@ -551,7 +551,7 @@ void FireControlComputer::CalculateImpactPoint(void)
 
 
 
-            /*		//wind at 1/3 the altitude
+            /* //wind at 1/3 the altitude
             pos.z = platform->ZPos()/3f;
             mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
             wind =  ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
@@ -576,7 +576,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
     float rx, ry, rz;
     float a, b, c, t;
     //float grav = GRAVITY;
-    float grav = calcgrav(this);		//Wombat778 3-12-04
+    float grav = calcgrav(this); //Wombat778 3-12-04
     float zDot = platform->ZDelta();
     float winddx = 0.0F;
     float winddy = 0.0F;
@@ -596,7 +596,7 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         t = (-b + (float)sqrt(b * b - 4 * a * c)) / (2.0F * a);
 
 
-        Tpoint			pos;
+        Tpoint pos;
         pos.x = platform->XPos();
         pos.y = platform->YPos();
         pos.z = platform->ZPos();
@@ -658,18 +658,18 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         }
     }
 
-    //	groundPipperAz = max ( min ( groundPipperAz, 10.0F * DTR), -10.0F * DTR);
+    // groundPipperAz = max ( min ( groundPipperAz, 10.0F * DTR), -10.0F * DTR);
 }
 
 
 // Used only by CCIP when in the predesignate state
 void FireControlComputer::DelayModePipperCorrection(void)
 {
-    float	dRoll;
-    mlTrig	rollTrig;
-    static const float	LIMIT_PIPPER_EL_MAX	=   3.0f * DTR;
-    static const float	LIMIT_PIPPER_EL_MIN	= -13.0f * DTR;
-    static const float	LIMIT_PIPPER_AZ		=   180.0f * DTR;//me123 from 9
+    float dRoll;
+    mlTrig rollTrig;
+    static const float LIMIT_PIPPER_EL_MAX =   3.0f * DTR;
+    static const float LIMIT_PIPPER_EL_MIN = -13.0f * DTR;
+    static const float LIMIT_PIPPER_AZ =   180.0f * DTR;//me123 from 9
 
     // Compute the angle to the pipper from the boresight cross
     dRoll = (float)atan2(sin(groundPipperAz), sin(groundPipperEl));
@@ -679,13 +679,13 @@ void FireControlComputer::DelayModePipperCorrection(void)
     // See if the pipper falls out of bounds in elevation
     if (groundPipperEl > LIMIT_PIPPER_EL_MAX)
     {
-        //		groundPipperAz = atan2( tan(LIMIT_PIPPER_EL_MAX) * tan(groundPipperAz), tan(groundPipperEl) );
+        // groundPipperAz = atan2( tan(LIMIT_PIPPER_EL_MAX) * tan(groundPipperAz), tan(groundPipperEl) );
         groundPipperEl = LIMIT_PIPPER_EL_MAX;
         groundPipperOnHud = FALSE;
     }
     else if (groundPipperEl < LIMIT_PIPPER_EL_MIN)
     {
-        //		groundPipperAz = atan2( tan(-LIMIT_PIPPER_EL_MIN) * tan(groundPipperAz), tan(-groundPipperEl) );
+        // groundPipperAz = atan2( tan(-LIMIT_PIPPER_EL_MIN) * tan(groundPipperAz), tan(-groundPipperEl) );
         groundPipperEl = LIMIT_PIPPER_EL_MIN;
         groundPipperOnHud = FALSE;
     }
@@ -695,12 +695,12 @@ void FireControlComputer::DelayModePipperCorrection(void)
     {
         if (groundPipperAz > LIMIT_PIPPER_AZ)
         {
-            //			groundPipperEl = atan2( tan(LIMIT_PIPPER_AZ) * tan(groundPipperEl), tan(groundPipperAz) );
+            // groundPipperEl = atan2( tan(LIMIT_PIPPER_AZ) * tan(groundPipperEl), tan(groundPipperAz) );
             groundPipperAz = LIMIT_PIPPER_AZ;
         }
         else
         {
-            //			groundPipperEl = atan2( tan(LIMIT_PIPPER_AZ) * tan(groundPipperEl), tan(-groundPipperAz) );
+            // groundPipperEl = atan2( tan(LIMIT_PIPPER_AZ) * tan(groundPipperEl), tan(-groundPipperAz) );
             groundPipperAz = -LIMIT_PIPPER_AZ;
         }
 
@@ -791,7 +791,7 @@ void FireControlComputer::FindTargetError(void)
     mlTrig trig;
     float hdg, vel;
 
-    Tpoint			pos;
+    Tpoint pos;
 
     pos.x = platform->XPos();
     pos.y = platform->YPos();
@@ -971,7 +971,7 @@ void FireControlComputer::CalculateReleaseRange(void)
         }
     }
 
-    Tpoint			pos;
+    Tpoint pos;
     pos.x = platform->XPos();
     pos.y = platform->YPos();
     pos.z = platform->ZPos();
@@ -1036,7 +1036,7 @@ void FireControlComputer::CalculateReleaseRange(void)
         // 4 G pull-up to release
 
         //radius = platform->GetVt() * platform->GetVt() / (4.0F * GRAVITY);
-        radius = platform->GetVt() * platform->GetVt() / (4.0F * calcgrav(this));		//Wombat778 3-12-04
+        radius = platform->GetVt() * platform->GetVt() / (4.0F * calcgrav(this)); //Wombat778 3-12-04
 
 
 #ifdef NODRAG
@@ -1046,7 +1046,7 @@ void FireControlComputer::CalculateReleaseRange(void)
         zDot = -platform->GetVt() * trig.sin;
 
         //a = 0.5F * GRAVITY;
-        a = 0.5F * calcgrav(this);			//Wombat778 3-12-04
+        a = 0.5F * calcgrav(this); //Wombat778 3-12-04
 
 
         // Calculate level release range
@@ -1406,7 +1406,7 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
         //Let's find out big our radius is
         // 4 G pull-up to release
         //radius = platform->GetVt() * platform->GetVt() / (4.0F * GRAVITY);
-        radius = platform->GetVt() * platform->GetVt() / (4.0F * calcgrav(this));		//Wombat778 3-12-04
+        radius = platform->GetVt() * platform->GetVt() / (4.0F * calcgrav(this)); //Wombat778 3-12-04
 
         //Let's get the distance from the TGT to where we should release out weapons
         float ReleaseRange = curRange - SafetyDistance; //SafetyDistance should be settable thru the MFD

@@ -23,8 +23,8 @@ RadarAGOnlyClass::RadarAGOnlyClass(int type, SimMoverClass* parentPlatform) : Ra
 //SimObjectType* RadarAGOnlyClass::Exec (SimObjectType* unusedTargetList)
 SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 {
-    int				sendThisFrame;
-    int				canSee;
+    int sendThisFrame;
+    int canSee;
 
     // Validate our locked target
     CheckLockedTarget();

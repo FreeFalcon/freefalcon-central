@@ -16,30 +16,30 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
-    long		Font_;
+    long Defaultflags_;
+    long Font_;
 
-    short		Section_; // 1=Team control... 5=Points control
+    short Section_; // 1=Team control... 5=Points control
 
-    short		State_;
-    short		NumberX_;
-    short		TeamX_;
-    short		ActionX_;
-    short		TargetX_;
-    short		ArgsX_;
-    short		PointsX_;
+    short State_;
+    short NumberX_;
+    short TeamX_;
+    short ActionX_;
+    short TargetX_;
+    short ArgsX_;
+    short PointsX_;
 
-    COLORREF	Color_[3];
+    COLORREF Color_[3];
 
-    C_Text		*Number_;
-    C_ListBox	*Team_;
-    C_ListBox	*Action_;
-    C_Button	*Target_;
-    C_ListBox	*Args_;
-    C_EditBox	*Points_;
+    C_Text *Number_;
+    C_ListBox *Team_;
+    C_ListBox *Action_;
+    C_Button *Target_;
+    C_ListBox *Args_;
+    C_EditBox *Points_;
 
-    TREELIST	*Owner_;
-    void		*ptr_;
+    TREELIST *Owner_;
+    void *ptr_;
 
 public:
 

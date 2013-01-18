@@ -29,7 +29,7 @@ NoFlyZoneClass::NoFlyZoneClass(void)
 
 int NoFlyZoneClass::InZone(GridIndex x, GridIndex y, Team who, int flags)
 {
-    float			d;
+    float d;
 
     d = Distance(x, y, zonex, zoney);
 
@@ -65,7 +65,7 @@ void NoFlyZoneClass::SetNFZ(Team who, int t)
 
 NFZ AddNFZ(GridIndex x, GridIndex y, short radius)
 {
-    NFZ		zone;
+    NFZ zone;
 
     zone = new NoFlyZoneClass();
     zone->zonex = x;
@@ -91,7 +91,7 @@ void RemoveNFZ(NFZ zone, NFZ prev)
 
 void RemoveNFZ(NFZ zone)
 {
-    NFZ		curr;
+    NFZ curr;
 
     curr = NFZList;
 
@@ -111,7 +111,7 @@ void RemoveNFZ(NFZ zone)
 
 void DeleteZones(void)
 {
-    NFZ		zone, next;
+    NFZ zone, next;
 
     zone = NFZList;
 
@@ -125,9 +125,9 @@ void DeleteZones(void)
 
 int LoadNFZs(char *name)
 {
-    FILE*		fp;
-    short		entries;
-    NFZ			zone, last = NULL;
+    FILE* fp;
+    short entries;
+    NFZ zone, last = NULL;
 
     if ((fp = OpenCampFile(name, "nfz", "rb")) == NULL)
         return 0;
@@ -154,9 +154,9 @@ int LoadNFZs(char *name)
 
 int SaveNFZs(char *name)
 {
-    FILE*		fp;
-    short		zones = 0;
-    NFZ			zone;
+    FILE* fp;
+    short zones = 0;
+    NFZ zone;
 
     if ((fp = OpenCampFile(name, "nfz", "wb")) == NULL)
         return 0;
@@ -187,7 +187,7 @@ int SaveNFZs(char *name)
 // Checks all zones to see if x,y is in one
 int CheckZones(GridIndex x, GridIndex y, Team who)
 {
-    NFZ	zone;
+    NFZ zone;
 
     zone = NFZList;
 
@@ -204,7 +204,7 @@ int CheckZones(GridIndex x, GridIndex y, Team who)
 
 int CheckZones(GridIndex x, GridIndex y, Team who, int flags)
 {
-    NFZ	zone;
+    NFZ zone;
 
     zone = NFZList;
 

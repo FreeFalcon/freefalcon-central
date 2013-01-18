@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     29Dec03
 
-	Fast Math
+ Fast Math
 \***************************************************************************/
 
 #ifndef _FMATH_H_
@@ -84,19 +84,19 @@ inline float Atan(const float o, float a)
 /*
 inline void SinCos(const float a, float *s, float *c)
 {
-	_asm
-	{
-		push edx;
-		push ebx;
-		mov edx,s;
-		fld a;
-		fsincos;
-		mov ebx,c;
-		fstp [dword ptr ebx];
-		fstp [dword ptr edx];
-		pop ebx;
-		pop edx;
-	}
+ _asm
+ {
+ push edx;
+ push ebx;
+ mov edx,s;
+ fld a;
+ fsincos;
+ mov ebx,c;
+ fstp [dword ptr ebx];
+ fstp [dword ptr edx];
+ pop ebx;
+ pop edx;
+ }
 }
 */
 #endif // _FMATH_H_

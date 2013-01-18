@@ -65,7 +65,7 @@ extern costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor,
 // Globals
 // =================================
 
-// uchar ThreatSearch[MAX_CAMP_ENTITIES];			// Search data
+// uchar ThreatSearch[MAX_CAMP_ENTITIES]; // Search data
 
 // =====================================
 // Global functions
@@ -98,7 +98,7 @@ float DistanceToFront(GridIndex x, GridIndex y)
     float       d, lowest = 999.0F;
     GridIndex   fx, fy;
     Objective   f;
-    VuListIterator	myit(FrontList);
+    VuListIterator myit(FrontList);
     f = GetFirstObjective(&myit);
 
     while (f != NULL)
@@ -129,7 +129,7 @@ float DirectionToFront(GridIndex x, GridIndex y)
 
     r = -1.0F;
     {
-        VuListIterator	myit(FrontList);
+        VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
         while (f != NULL)
@@ -154,13 +154,13 @@ float DirectionToFront(GridIndex x, GridIndex y)
     // Problem - this breaks down if we're to near the front. Try another algorythm for close in stuff:
     if (lowest < 5)
     {
-        int		i;
+        int i;
 
         f = FindNearestObjective(x, y, NULL);
 
         if (!f->IsFrontline())
         {
-            return r;		// This won't work unless we find a frontline objective. So just use the value from above
+            return r; // This won't work unless we find a frontline objective. So just use the value from above
         }
 
         for (i = 0, lowest = 999.0F; i < f->static_data.links; i++)
@@ -195,7 +195,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
 
     r = -1.0F;
     {
-        VuListIterator	myit(FrontList);
+        VuListIterator myit(FrontList);
         f = GetFirstObjective(&myit);
 
         while (f != NULL)
@@ -225,7 +225,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
     // Problem - this breaks down if we're to near the front. Try another algorythm for close in stuff:
     if (lowest < 5)
     {
-        int		i;
+        int i;
 
         f = FindNearestObjective(x, y, NULL);
 
@@ -261,7 +261,7 @@ float DirectionTowardFriendly(GridIndex x, GridIndex y, int team)
 
 int GetBearingDeg(float x, float y, float tx, float ty)
 {
-    float		theta;
+    float theta;
     theta = (float)atan((tx - x) / (ty - y));
     return FloatToInt32(theta * RTD);
 }
@@ -302,8 +302,8 @@ void Trim(GridIndex* x, GridIndex* y)
 
 float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
 {
-    int		dx, dy;
-    float	deg;
+    int dx, dy;
+    float deg;
 
     dx = tx - ox;
     dy = ty - oy;
@@ -321,9 +321,9 @@ float AngleTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
 
 CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty)
 {
-    int		dx, dy;
-    float	deg;
-    CampaignHeading	h;
+    int dx, dy;
+    float deg;
+    CampaignHeading h;
 
     dx = tx - ox;
     dy = ty - oy;
@@ -340,16 +340,16 @@ CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex 
         deg += 2.0F * (float)PI;
     }
 
-    deg += .3839F;												// Shift by 22 degress;
-    h = (CampaignHeading)(FloatToInt32((deg * 1.273F)) % 8);		// convert from 6.28 = 360 (2 PI) to 8=360;
+    deg += .3839F; // Shift by 22 degress;
+    h = (CampaignHeading)(FloatToInt32((deg * 1.273F)) % 8); // convert from 6.28 = 360 (2 PI) to 8=360;
     return h;
 }
 
 CampaignHeading DirectionTo(GridIndex ox, GridIndex oy, GridIndex tx, GridIndex ty, GridIndex cx, GridIndex cy)
 {
-    int				dx, dy;
-    GridIndex		nx, ny;
-    float			d, td;
+    int dx, dy;
+    GridIndex nx, ny;
+    float d, td;
 
     dx = tx - ox;
     dy = ty - oy;
@@ -487,7 +487,7 @@ MoveType AltToMoveType(int alt)
         return LowAir;
     }
 
-    return Wheeled;				// Default movement type
+    return Wheeled; // Default movement type
 }
 
 int GetAltitudeLevel(int alt)
@@ -565,7 +565,7 @@ CampaignTime TimeBetweenO(Objective o1, Objective o2, int speed)
 
 Objective FindObjective(VU_ID id)
 {
-    VuEntity*		e;
+    VuEntity* e;
     e = vuDatabase->Find(id);
 
     if (e && GetEntityClass(e) == CLASS_OBJECTIVE)
@@ -578,7 +578,7 @@ Objective FindObjective(VU_ID id)
 
 Unit FindUnit(VU_ID id)
 {
-    VuEntity*		e;
+    VuEntity* e;
     e = vuDatabase->Find(id);
 
     if (e && GetEntityClass(e) == CLASS_UNIT)
@@ -591,7 +591,7 @@ Unit FindUnit(VU_ID id)
 
 CampEntity FindEntity(VU_ID id)
 {
-    VuEntity*		e;
+    VuEntity* e;
     e = vuDatabase->Find(id);
 
     if (e && (GetEntityClass(e) == CLASS_OBJECTIVE || GetEntityClass(e) == CLASS_UNIT))
@@ -604,8 +604,8 @@ CampEntity FindEntity(VU_ID id)
 
 CampEntity GetEntityByCampID(int id)
 {
-    VuListIterator	myit(AllCampList);
-    CampEntity		e;
+    VuListIterator myit(AllCampList);
+    CampEntity e;
     e = (CampEntity) myit.GetFirst();
 
     while (e)
@@ -624,14 +624,14 @@ CampEntity GetEntityByCampID(int id)
 // Finds nearest supply source
 Objective FindNearestSupplySource(Objective o)
 {
-    Objective		c;
-    int				n, who;
-    float			cost;
+    Objective c;
+    int n, who;
+    float cost;
 
     // Reset search array
     memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
 
-    FalconPrivateList	looklist(&AllObjFilter);
+    FalconPrivateList looklist(&AllObjFilter);
     looklist.ForcedInsert(o);
     who = o->GetTeam();
 
@@ -666,7 +666,7 @@ Objective FindNearestSupplySource(Objective o)
     }
 
 #endif
-    VuListIterator		myit(&looklist);
+    VuListIterator myit(&looklist);
     o = GetFirstObjective(&myit);
 
     while (o)
@@ -700,9 +700,9 @@ Objective FindNearestSupplySource(Objective o)
 
 Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
 {
-    GridIndex	max_dist = MAX_GROUND_SEARCH;
+    GridIndex max_dist = MAX_GROUND_SEARCH;
     int         d, nd, ld = 0;
-    Unit		u, n = NULL;
+    Unit u, n = NULL;
     GridIndex   x, y;
 
     if (max_dist)
@@ -714,9 +714,9 @@ Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(max_dist));
+    VuGridIterator myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(max_dist));
 #else
-    VuGridIterator	myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(max_dist));
+    VuGridIterator myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(max_dist));
 #endif
 
     nd = max_dist * 2;
@@ -741,9 +741,9 @@ Unit FindNearestEnemyUnit(GridIndex X, GridIndex Y, GridIndex mx)
 
 Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
 {
-    GridIndex	max_dist = MAX_GROUND_SEARCH;
-    float		lds, ds, nds = FLT_MAX;
-    Unit		u, n = NULL;
+    GridIndex max_dist = MAX_GROUND_SEARCH;
+    float lds, ds, nds = FLT_MAX;
+    Unit u, n = NULL;
     GridIndex   x, y;
 
     if (mx)
@@ -764,9 +764,9 @@ Unit FindNearestRealUnit(GridIndex X, GridIndex Y, float *last, GridIndex mx)
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(max_dist));
+    VuGridIterator myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(max_dist));
 #else
-    VuGridIterator	myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(max_dist));
+    VuGridIterator myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(max_dist));
 #endif
     u = (Unit) myit.GetFirst();
 
@@ -796,7 +796,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
 {
     Unit        u, n = NULL;
     GridIndex   x, y;
-    float		ds, nds = FLT_MAX, lds;
+    float ds, nds = FLT_MAX, lds;
 
     if (last == NULL || *last < 0)
     {
@@ -807,7 +807,7 @@ Unit FindNearestUnit(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
         lds = (float)(*last * *last) + 0.1F;
     }
 
-    VuListIterator	myit(l);
+    VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
     while (u != NULL)
@@ -843,7 +843,7 @@ Unit FindUnitByXY(VuFilteredList* l, GridIndex X, GridIndex Y, int domain)
     Unit        u;
     GridIndex   x, y;
 
-    VuListIterator	myit(l);
+    VuListIterator myit(l);
     u = GetFirstUnit(&myit);
 
     while (u != NULL)
@@ -873,7 +873,7 @@ Unit GetUnitByXY(GridIndex X, GridIndex Y)
     Unit        u;
     GridIndex   x, y;
 
-    VuListIterator	myit(AllUnitList);
+    VuListIterator myit(AllUnitList);
     u = GetFirstUnit(&myit);
 
     while (u != NULL)
@@ -893,7 +893,7 @@ Unit GetUnitByXY(GridIndex X, GridIndex Y)
 
 Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, float *last)
 {
-    float		ds, nds = FLT_MAX, lds;
+    float ds, nds = FLT_MAX, lds;
     Objective   o, n = NULL;
     GridIndex   x, y;
 
@@ -906,7 +906,7 @@ Objective FindNearestObjective(VuFilteredList* l, GridIndex X, GridIndex Y, floa
         lds = (float)(*last * *last);
     }
 
-    VuListIterator	myit(l);
+    VuListIterator myit(l);
     o = GetFirstObjective(&myit);
 
     while (o != NULL)
@@ -937,12 +937,12 @@ Objective FindNearestObjective(GridIndex X, GridIndex Y, float *last, GridIndex 
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(maxdist));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(maxdist));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(maxdist));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(maxdist));
 #endif
 
-    float		ds, lds, nds = FLT_MAX;
+    float ds, lds, nds = FLT_MAX;
     Objective   o, n = NULL;
     GridIndex   x, y;
 
@@ -990,9 +990,9 @@ Objective FindNearestAirbase(GridIndex X, GridIndex Y)
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(100));
 #endif
 
     int         d, nd;
@@ -1033,9 +1033,9 @@ Objective FindNearbyAirbase(GridIndex X, GridIndex Y)
 
     // sfr: from 5 to 9 because of seoul airbase
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(5));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(5));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(5));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(5));
 #endif
 
     int         d, nd;
@@ -1076,7 +1076,7 @@ Objective FindNearestFriendlyAirbase(Team who, GridIndex X, GridIndex Y)
 
     nd =  9999; //100 km (in ft)
 
-    VuListIterator	myit(AllObjList);
+    VuListIterator myit(AllObjList);
     o = (Objective) myit.GetFirst();
 
     while (o != NULL)
@@ -1109,9 +1109,9 @@ Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y)
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(100));
 #endif
 
     int         d, nd;
@@ -1150,17 +1150,17 @@ Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y)
 // This is a find objective routine optimized for friendly objectives
 Objective FindNearestFriendlyObjective(Team who, GridIndex *x, GridIndex *y, int flags)
 {
-    Objective	o, bo = NULL;
-    GridIndex	ox, oy, tx, ty;
-    Int32		d, bd = 999;
+    Objective o, bo = NULL;
+    GridIndex ox, oy, tx, ty;
+    Int32 d, bd = 999;
 
     ::vector p;
     ConvertGridToSim(*x, *y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
 #endif
 
     ox = *x;
@@ -1198,13 +1198,13 @@ Objective FindNearestFriendlyObjective(Team who, GridIndex *x, GridIndex *y, int
 // This is a find objective routine optimized for friendly objectives
 Objective FindNearestFriendlyObjective(VuFilteredList* l, Team who, GridIndex *x, GridIndex *y, int flags)
 {
-    Objective	o, bo = NULL;
-    GridIndex	ox, oy, tx, ty;
-    Int32		d, bd = 999;
+    Objective o, bo = NULL;
+    GridIndex ox, oy, tx, ty;
+    Int32 d, bd = 999;
     ox = *x;
     oy = *y;
 
-    VuListIterator	myit(l);
+    VuListIterator myit(l);
     o = GetFirstObjective(&myit);
 
     while (o)
@@ -1238,9 +1238,9 @@ Objective FindNearestFriendlyObjective(VuFilteredList* l, Team who, GridIndex *x
 // This is a find objective routine optimized for friendly power stations
 Objective FindNearestFriendlyPowerStation(VuFilteredList* l, Team who, GridIndex x, GridIndex y)
 {
-    Objective	o, bo = NULL;
-    GridIndex	tx, ty;
-    Int32		d, bd = 999;
+    Objective o, bo = NULL;
+    GridIndex tx, ty;
+    Int32 d, bd = 999;
 
     VuListIterator myit(l);
 
@@ -1273,9 +1273,9 @@ Objective GetObjectiveByXY(GridIndex X, GridIndex Y)
     ::vector p;
     ConvertGridToSim(X, Y, &p);
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(1));
+    VuGridIterator myit(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(1));
 #else
-    VuGridIterator	myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(1));
+    VuGridIterator myit(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(1));
 #endif
     Objective o;
     GridIndex x, y;
@@ -1301,8 +1301,8 @@ Objective GetObjectiveByXY(GridIndex X, GridIndex Y)
 // Will return 0, 15, 30, 40, 45, 60, 70, 90 or 100 - Roughly % chance to hit.
 int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
 {
-    int		i, ix, score = 0;
-    Team	own;
+    int i, ix, score = 0;
+    Team own;
 
     // Check vs territory ownership
     own = GetOwner(TheCampaign.CampMapData, X, Y);
@@ -1322,7 +1322,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
 
     if (i < 0 || i > TheCampaign.SamMapSize)
     {
-        return 100;			// Off the map
+        return 100; // Off the map
     }
 
     if (who == FalconLocalSession->GetTeam())
@@ -1346,7 +1346,7 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
 
             //score += ((TheCampaign.RadarMapData[i] >> ix) & 0x03) * 3;
             if (own && own != 0xF && GetRoE(who, own, ROE_AIR_FIRE))
-                score += 10;		// 'General' threat for flying over enemy territory
+                score += 10; // 'General' threat for flying over enemy territory
 
             break;
 
@@ -1374,23 +1374,23 @@ int ScoreThreatFast(GridIndex X, GridIndex Y, int altlevel, Team who)
 
 int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check, Team who, int flags)
 {
-    Int32		d, da;
-    int			threats = 0;
-    float		af;
+    Int32 d, da;
+    int threats = 0;
+    float af;
     GridIndex   x, y;
-    CampEntity	e;
+    CampEntity e;
 
     ::vector p;
     ConvertGridToSim(X, Y, &p);
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator	myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+    VuGridIterator myit(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #else
-    VuGridIterator	myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+    VuGridIterator myit(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #endif
 
-    af = alt * 0.000303F * 3;	// Convert feet to km * 3 (weight altitude heavy)
-    af = af * af;						// square it
+    af = alt * 0.000303F * 3; // Convert feet to km * 3 (weight altitude heavy)
+    af = af * af; // square it
     e = (CampEntity) myit.GetFirst();
 
     while (e)
@@ -1410,11 +1410,11 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
                 !(flags & FIND_NOMOVERS && ((Unit)e)->Moving())
             )
             {
-                d = d;		// placeholder. This unit is valid
+                d = d; // placeholder. This unit is valid
             }
             else if (e->IsObjective() && ((Objective)e)->GetObjectiveStatus() > 30)
             {
-                d = d;		// placeholder. This objective is valid
+                d = d; // placeholder. This objective is valid
             }
             else
             {
@@ -1446,87 +1446,87 @@ int AnalyseThreats(GridIndex X, GridIndex Y, MoveType mt, int alt, int roe_check
 
 /*int CollectThreats(GridIndex X, GridIndex Y, int Z, Team who, int flags, F4PFList foundlist)
 {
-	Int32		d,hc,got,found=0,alt=0,pass=0;
-	float		temp;
-	MoveType	mt;
-	GridIndex   x,y;
-	CampEntity	e;
-	uchar		tteam[NUM_TEAMS];
-	VuGridIterator*	myit;
+ Int32 d,hc,got,found=0,alt=0,pass=0;
+ float temp;
+ MoveType mt;
+ GridIndex   x,y;
+ CampEntity e;
+ uchar tteam[NUM_TEAMS];
+ VuGridIterator* myit;
 
-	::vector p;
-	ConvertGridToSim(X, Y, &p);
+ ::vector p;
+ ConvertGridToSim(X, Y, &p);
 
-	if (Z > 3300.0F){						// Over 1 km altitude
-		temp = Z * 0.000303F;				// Convert feet to km
-		alt = FloatToInt32(temp*temp)/2;	// Adjust alt, to be checked against range
-	}
-	mt = Air;
-	if (Z < LOW_ALTITUDE_CUTOFF)
-		mt = LowAir;
+ if (Z > 3300.0F){ // Over 1 km altitude
+ temp = Z * 0.000303F; // Convert feet to km
+ alt = FloatToInt32(temp*temp)/2; // Adjust alt, to be checked against range
+ }
+ mt = Air;
+ if (Z < LOW_ALTITUDE_CUTOFF)
+ mt = LowAir;
 
-	// Set up roe checks
-	for (d=0; d<NUM_TEAMS && TeamInfo[d]; d++){
-		tteam[d] = (uchar)GetRoE((uchar)d,who,ROE_AIR_ENGAGE);
-	}
+ // Set up roe checks
+ for (d=0; d<NUM_TEAMS && TeamInfo[d]; d++){
+ tteam[d] = (uchar)GetRoE((uchar)d,who,ROE_AIR_ENGAGE);
+ }
 
-	// Check lists
-	while (pass < 2){
-		if (!pass){
+ // Check lists
+ while (pass < 2){
+ if (!pass){
 #ifdef VU_GRID_TREE_Y_MAJOR
-			myit = new VuGridIterator(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+ myit = new VuGridIterator(RealUnitProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #else
-			myit = new VuGridIterator(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+ myit = new VuGridIterator(RealUnitProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #endif
-		}
-		else {
+ }
+ else {
 #ifdef VU_GRID_TREE_Y_MAJOR
-			myit = new VuGridIterator(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+ myit = new VuGridIterator(ObjProxList, p.y, p.x, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #else
-			myit = new VuGridIterator(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
+ myit = new VuGridIterator(ObjProxList, p.x, p.y, (BIG_SCALAR)GridToSim(MAX_AIR_SEARCH));
 #endif
-		}
-		e = (CampEntity) myit->GetFirst();
-		while (e)
-		{
-			got = 0;
-			if (tteam[e->GetTeam()])
-			{
-				if (e->IsUnit() &&
-					!(flags & FIND_NOMOVERS && ((Unit)e)->Moving()) &&
-					!(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
-					(flags & FIND_FINDUNSPOTTED || e->GetSpotted(who)))
-					d = d;		// placeholder. This unit is valid
-				else if (e->IsObjective())
-					d = d;		// placeholder. This objective is valid
-				else
-				{
-					e = (CampEntity) myit->GetNext();
-					continue;
-				}
-				e->GetLocation(&x,&y);
-				d = FloatToInt32(Distance(X,Y,x,y));
-				if (flags & FIND_CAUTIOUS)
-					d = FloatToInt32(0.8F*d);
-				if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
-					got++;
-				hc = e->GetAproxHitChance(mt,d);
-				if (hc > 0){
-					if (alt > d)
-						hc = e->GetAproxHitChance(mt,alt);
-					if (hc > 0)
-						got = 1;
-				}
-				if (got && foundlist)
-					foundlist->ForcedInsert(e);
-				found += got;
-			}
-			e = (CampEntity) myit->GetNext();
-		}
-		delete myit;
-		pass++;
-	}
-	return found;
+ }
+ e = (CampEntity) myit->GetFirst();
+ while (e)
+ {
+ got = 0;
+ if (tteam[e->GetTeam()])
+ {
+ if (e->IsUnit() &&
+ !(flags & FIND_NOMOVERS && ((Unit)e)->Moving()) &&
+ !(flags & FIND_NOAIR && e->GetDomain() == DOMAIN_AIR) &&
+ (flags & FIND_FINDUNSPOTTED || e->GetSpotted(who)))
+ d = d; // placeholder. This unit is valid
+ else if (e->IsObjective())
+ d = d; // placeholder. This objective is valid
+ else
+ {
+ e = (CampEntity) myit->GetNext();
+ continue;
+ }
+ e->GetLocation(&x,&y);
+ d = FloatToInt32(Distance(X,Y,x,y));
+ if (flags & FIND_CAUTIOUS)
+ d = FloatToInt32(0.8F*d);
+ if (!(flags & FIND_NODETECT) && e->GetDetectionRange(mt) > d)
+ got++;
+ hc = e->GetAproxHitChance(mt,d);
+ if (hc > 0){
+ if (alt > d)
+ hc = e->GetAproxHitChance(mt,alt);
+ if (hc > 0)
+ got = 1;
+ }
+ if (got && foundlist)
+ foundlist->ForcedInsert(e);
+ found += got;
+ }
+ e = (CampEntity) myit->GetNext();
+ }
+ delete myit;
+ pass++;
+ }
+ return found;
 }
 */
 
@@ -1537,11 +1537,11 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
     if (F4IsBadReadPtr(foundlist, sizeof * foundlist)) // JB 010304 CTD
         return 0; // JB 010304 CTD
 
-    Int32		d, retval = 0, pass = 0;
-    MoveType	mt;
+    Int32 d, retval = 0, pass = 0;
+    MoveType mt;
     GridIndex   x, y;
-    CampEntity	e;
-    int		tteam[NUM_TEAMS];
+    CampEntity e;
+    int tteam[NUM_TEAMS];
     VuListIterator* myit;
 
     if (altlevel < HighAltitude)
@@ -1613,7 +1613,7 @@ int CollectThreatsFast(GridIndex X, GridIndex Y, int altlevel, Team who, int fla
 
         if (flags & FIND_NODETECT)
         {
-            pass = 10;		// Skip detector pass, essentially
+            pass = 10; // Skip detector pass, essentially
         }
 
         pass++;
@@ -1629,12 +1629,12 @@ void FillDistanceList(List list, Team who, int  i, int j)
     int         good;
     Team        own;
     GridIndex   x, y, lx, ly;
-    void*			loc;
-    ListNode		lp;
+    void* loc;
+    ListNode lp;
 
     list->Purge();
 
-    VuListIterator	myit1(AllObjList);
+    VuListIterator myit1(AllObjList);
     o = GetFirstObjective(&myit1);
 
     while (o != NULL)
@@ -1683,7 +1683,7 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum)
 {
     if (flight)
     {
-        VuSessionsIterator	sessionWalker(FalconLocalGame);
+        VuSessionsIterator sessionWalker(FalconLocalGame);
         FalconSessionEntity *curSession;
 
         curSession = (FalconSessionEntity*)sessionWalker.GetFirst();
@@ -1712,7 +1712,7 @@ FalconSessionEntity* FindPlayer(Flight flight, uchar planeNum, uchar pilotSlot)
 {
     if (flight)
     {
-        VuSessionsIterator	sessionWalker(FalconLocalGame);
+        VuSessionsIterator sessionWalker(FalconLocalGame);
         FalconSessionEntity *curSession;
 
         curSession = (FalconSessionEntity*)sessionWalker.GetFirst();

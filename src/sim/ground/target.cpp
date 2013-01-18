@@ -30,7 +30,7 @@ void GroundClass::RunSensors()
 void GroundClass::SelectWeapon(int gun_only)
 {
     Falcon4EntityClassType* classPtr;
-    VehicleClassDataType*	vd;
+    VehicleClassDataType* vd;
     uchar *dam;
     MoveType mt;
     int range;
@@ -61,7 +61,7 @@ void GroundClass::SelectWeapon(int gun_only)
             ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()
         )
         {
-            UnitClassDataType	*ud;
+            UnitClassDataType *ud;
             classPtr = (Falcon4EntityClassType*)
                        ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()->EntityType()
                        ;
@@ -70,19 +70,19 @@ void GroundClass::SelectWeapon(int gun_only)
         }
         else
         {
-            mt = NoMove;		// Choose NoMove for a generic ground vehicle hitchance (probably not good)
+            mt = NoMove; // Choose NoMove for a generic ground vehicle hitchance (probably not good)
         }
     }
     else if (targetPtr->BaseData()->IsUnit())
     {
-        UnitClassDataType	*ud;
+        UnitClassDataType *ud;
         ud = (UnitClassDataType*) classPtr->dataPtr;
         ShiAssert(ud);
         dam = ud->DamageMod;
 
         if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)
         {
-            mt = LowAir;		// Choose low air for a generic vs air hitchance
+            mt = LowAir; // Choose low air for a generic vs air hitchance
         }
         else
         {
@@ -91,7 +91,7 @@ void GroundClass::SelectWeapon(int gun_only)
     }
     else if (targetPtr->BaseData()->IsObjective())
     {
-        ObjClassDataType	*od;
+        ObjClassDataType *od;
         od = (ObjClassDataType*) classPtr->dataPtr;
         ShiAssert(od);
         dam = od->DamageMod;
@@ -103,7 +103,7 @@ void GroundClass::SelectWeapon(int gun_only)
     }
 
     //range = FloatToInt32(
-    //	Distance(XPos(),YPos(),targetPtr->BaseData()->XPos(),targetPtr->BaseData()->YPos()) * FT_TO_KM + 0.5F
+    // Distance(XPos(),YPos(),targetPtr->BaseData()->XPos(),targetPtr->BaseData()->YPos()) * FT_TO_KM + 0.5F
     //);
     float dx, dy, dz;
     dx = XPos() - targetPtr->BaseData()->XPos();

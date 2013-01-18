@@ -94,17 +94,17 @@ void GunClass::UpdateTracers(int firing)
             firstTracer[i]->Update(&muzzleEnd[i], &muzzleLoc[i]);
         }
 
-        /*	   }
-        	   else
-        	   {
-        		   if ( firstTracer[0]->InDisplayList() )
-        		   {
-        				for ( i = 0; i < numFirstTracers; i++ )
-        				{
-        					OTWDriver.RemoveObject(firstTracer[i]);
-        				}
-        		   }
-        	   }*/
+        /*    }
+            else
+            {
+            if ( firstTracer[0]->InDisplayList() )
+            {
+         for ( i = 0; i < numFirstTracers; i++ )
+         {
+         OTWDriver.RemoveObject(firstTracer[i]);
+         }
+            }
+            }*/
     }
 
     for (i = 0; i < numTracers; i++)

@@ -155,7 +155,7 @@ void HeliBrain::CollisionAvoid(void)
     /*---------------------------*/
     /* Range to current track */
     /*---------------------------*/
-    // rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) *	(trackY - self->YPos());
+    // rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
 
     /*------------------------------------*/
     /* Heading error for current waypoint */

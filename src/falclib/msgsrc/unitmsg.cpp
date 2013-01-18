@@ -34,8 +34,8 @@ FalconUnitMessage::~FalconUnitMessage(void)
 
 int FalconUnitMessage::Process(uchar autodisp)
 {
-    Unit		u = FindUnit(EntityId());
-    int			i;
+    Unit u = FindUnit(EntityId());
+    int i;
 
     if (autodisp || !u)
         return 0;
@@ -81,7 +81,7 @@ int FalconUnitMessage::Process(uchar autodisp)
                 {
                     // KCK HACK: Fake # of losses to make them look more like what you'd expect
                     // in real life..
-                    int		losses = rand() % (dataBlock.data2 + 1);
+                    int losses = rand() % (dataBlock.data2 + 1);
 
                     if (losses)
                         ((Squadron)u)->SetTotalLosses((uchar)(((Squadron)u)->GetTotalLosses() + losses));
@@ -122,7 +122,7 @@ int FalconUnitMessage::Process(uchar autodisp)
 
         case unitSupport:
         {
-            Unit	tar = FindUnit(dataBlock.from);
+            Unit tar = FindUnit(dataBlock.from);
 
             if (!tar)
                 return 0;
@@ -145,7 +145,7 @@ int FalconUnitMessage::Process(uchar autodisp)
                 return 0;
 
             // Get Flight from the from data.
-            Flight	flight = (Flight) FindUnit(dataBlock.from);
+            Flight flight = (Flight) FindUnit(dataBlock.from);
 
             if (dataBlock.data2 == ASTAT_MISSIONS)
             {
@@ -155,7 +155,7 @@ int FalconUnitMessage::Process(uchar autodisp)
                 {
                     for (i = 0; i < PILOTS_PER_FLIGHT; i++)
                     {
-                        PilotClass	*pc = flight->GetPilotData(i);
+                        PilotClass *pc = flight->GetPilotData(i);
 
                         if (pc)
                             pc->missions_flown++;
@@ -176,13 +176,13 @@ int FalconUnitMessage::Process(uchar autodisp)
             if (((Flight)u)->GetUnitMission() != AMIS_ALERT)
                 return 0;
 
-            Flight			enemy = (Flight) FindUnit(dataBlock.from);
-            Squadron		squadron = (Squadron)((Flight)u)->GetUnitSquadron();
+            Flight enemy = (Flight) FindUnit(dataBlock.from);
+            Squadron squadron = (Squadron)((Flight)u)->GetUnitSquadron();
 
             if (!squadron || !enemy)
                 return 0;
 
-            MissionRequest	mis = new MissionRequestClass;
+            MissionRequest mis = new MissionRequestClass;
 
             mis->targetID = enemy->Id();
             mis->who = squadron->GetTeam();

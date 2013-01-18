@@ -43,9 +43,9 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
         return 0;
     }
 
-    VuGameEntity		*game = (VuGameEntity*) vuDatabase->Find(dataBlock.game_id);
-    FalconSessionEntity	*session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.requesting_session);
-    Flight				oldflight, flight = (Flight) Entity();
+    VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game_id);
+    FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.requesting_session);
+    Flight oldflight, flight = (Flight) Entity();
 
     if (flight == 0)
     {

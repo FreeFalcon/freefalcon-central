@@ -8,7 +8,7 @@
 #include "campBase.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL		HeliBrain::pool;
+MEM_POOL HeliBrain::pool;
 #endif
 
 HeliBrain::HeliBrain(SimVehicleClass *myPlatform)

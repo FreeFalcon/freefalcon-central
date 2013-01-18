@@ -52,7 +52,7 @@ public:
 
         return(0);
     }
-    MAPICONLIST	*GetLastItem()
+    MAPICONLIST *GetLastItem()
     {
         return(Last_);
     }

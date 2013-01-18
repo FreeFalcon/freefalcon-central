@@ -87,7 +87,7 @@ void C_ATO_Flight::InitFlight(C_Handler *Handler)
     Task_->Setup(GetID(), 0, Handler);
     Task_->SetFlags(Flags_);
     Task_->SetWH(110, 15);
-    //	Task_->AddScrollBar(BID_SCROLLCAP_TOP_OFF,BID_SCROLLCAP_TOP_ON,BID_SCROLLCAP_BOTTOM_OFF,BID_SCROLLCAP_BOTTOM_ON);
+    // Task_->AddScrollBar(BID_SCROLLCAP_TOP_OFF,BID_SCROLLCAP_TOP_ON,BID_SCROLLCAP_BOTTOM_OFF,BID_SCROLLCAP_BOTTOM_ON);
     Task_->SetDropDown(BID_DROPDOWN);
     Task_->SetNormColor(0xe0e0e0);
     Task_->SetSelColor(0xe0e0e0);

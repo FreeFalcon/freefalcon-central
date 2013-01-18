@@ -25,8 +25,8 @@ public:
         return panningAllowed;
     }
 
-    void GetTrackIR_ViewValues(float*, float*);	// for 3d cockpit panning, gets yaw/pitch values in radians
-    int TrackIR_2D_Map();						// for 2d cockpit panning, returns POV_N, POV_S, POV_E, POV_W values, -1 for neutral
+    void GetTrackIR_ViewValues(float*, float*); // for 3d cockpit panning, gets yaw/pitch values in radians
+    int TrackIR_2D_Map(); // for 2d cockpit panning, returns POV_N, POV_S, POV_E, POV_W values, -1 for neutral
 
     float getYaw()
     {
@@ -61,7 +61,7 @@ private:
 
     bool panningAllowed;
 
-    bool isActive;	// flag indicating if the TIR receives updates.. eg when the user hits F9 (stop TIR) then this one gets false after
+    bool isActive; // flag indicating if the TIR receives updates.. eg when the user hits F9 (stop TIR) then this one gets false after
     // a set time of frames (100 for now). This is used to give control back to keyboard/mouse in case tir is switched off
     // ONLY FOR THE 3d PIT THOUGHT - 2D pit just returns -1 ("don´t pan")
 

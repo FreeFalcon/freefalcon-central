@@ -31,7 +31,7 @@ EyeballClass::EyeballClass(int idx, SimMoverClass* self) : VisualClass(idx, self
 
 SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
 {
-    SimObjectType	*newLock;
+    SimObjectType *newLock;
     SimObjectType* tmpPtr = newTargetList;
 
 
@@ -64,7 +64,7 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     int retentionTime = 32 * SEC_TO_MSEC;
 
     // Now look if we (ourself) are a vehicle. Only vehicle have a brain.
-    Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)platform->EntityType();
+    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
 
     // If we are, get our skill and from it, calculate the 'retention time'
     if (classPtr->dataType == DTYPE_VEHICLE && ((SimVehicleClass *)platform) && ((SimVehicleClass *)platform)->Brain())
@@ -322,26 +322,26 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     float visualSignature = 1.0f;
 
     // Now look if we (ourself) are a vehicle. Only vehicle have a brain.
-    Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)platform->EntityType();
+    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
     // If we are, get our skill + 1
     if (classPtr->dataType == DTYPE_VEHICLE &&
-    	// S.G. SHOULDN'T BE REQUIRED, ALL VEHICLES ARE ASSIGNED A BRAIN...
-    	// O.W. WRONG ASSUMPTION DUDE >:)
-    	((SimVehicleClass *)platform) && ((SimVehicleClass *)platform)->Brain())//me123 addet brain check to avoid CTD
-    	skill = ((SimVehicleClass *)platform)->Brain()->SkillLevel() + 1;
+     // S.G. SHOULDN'T BE REQUIRED, ALL VEHICLES ARE ASSIGNED A BRAIN...
+     // O.W. WRONG ASSUMPTION DUDE >:)
+     ((SimVehicleClass *)platform) && ((SimVehicleClass *)platform)->Brain())//me123 addet brain check to avoid CTD
+     skill = ((SimVehicleClass *)platform)->Brain()->SkillLevel() + 1;
 
     // Now if we have a locked target and that target is a vehicle, get his signature.
     // The visual signature is stored as a byte at offset 0x9D of the falcon4.vcd structure.
     // This byte, as well as 0x9E and 0x9F are used for padding originally.
     // The value range will be 0 to 4 with increments of 0.015625
     if (lockedTarget) {
-    	classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
-    	if (classPtr->dataType == DTYPE_VEHICLE) {
-    		unsigned char *pVisSign = (unsigned char *)classPtr->dataPtr;
-    		int iVisSign = (unsigned)pVisSign[0x9D];
-    		if (iVisSign)
-    			visualSignature = (float)iVisSign / 64.0f;
-    	}
+     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
+     if (classPtr->dataType == DTYPE_VEHICLE) {
+     unsigned char *pVisSign = (unsigned char *)classPtr->dataPtr;
+     int iVisSign = (unsigned)pVisSign[0x9D];
+     if (iVisSign)
+     visualSignature = (float)iVisSign / 64.0f;
+     }
     }
 
 
@@ -351,25 +351,25 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     */
 
 
-    /*	if (g_bEnableWeatherExtensions) {
-    	    int wx = realWeather->WorldToTile( obj->BaseData()->XPos() - realWeather->xOffset);
-    	    int wy = realWeather->WorldToTile( obj->BaseData()->YPos() - realWeather->yOffset);
-    	    if (obj->BaseData()->ZPos() > realWeather->TopsAt(wx, wy) )
-    		visualSignature *= realWeather->VisRangeAt(wx, wy);
-    	}
+    /* if (g_bEnableWeatherExtensions) {
+         int wx = realWeather->WorldToTile( obj->BaseData()->XPos() - realWeather->xOffset);
+         int wy = realWeather->WorldToTile( obj->BaseData()->YPos() - realWeather->yOffset);
+         if (obj->BaseData()->ZPos() > realWeather->TopsAt(wx, wy) )
+     visualSignature *= realWeather->VisRangeAt(wx, wy);
+     }
     */
     // M.N. Factor in the radius value of the draw pointer as representation of overall aircraft size
     /*if (g_bAddACSizeVisual)
     {
-    	if (object->IsSim() && object->IsAirplane())
-    	{
-    		theObject = (SimBaseClass*) vuDatabase->Find(object->Id());
-    		if (theObject && theObject->drawPointer)
-    		{
-    			float radius = theObject->drawPointer->Radius();
-    			visualSignature *= (radius / g_fVisualNormalizeFactor);	// normalize on F-16 drawpointer radius
-    		}
-    	}
+     if (object->IsSim() && object->IsAirplane())
+     {
+     theObject = (SimBaseClass*) vuDatabase->Find(object->Id());
+     if (theObject && theObject->drawPointer)
+     {
+     float radius = theObject->drawPointer->Radius();
+     visualSignature *= (radius / g_fVisualNormalizeFactor); // normalize on F-16 drawpointer radius
+     }
+     }
     }
 
     // Visual acuity is proportional to light level

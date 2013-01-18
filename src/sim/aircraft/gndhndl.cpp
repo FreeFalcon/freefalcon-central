@@ -157,7 +157,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
         }
         else
         {
-            if (groundType == COVERAGE_WATER	|| groundType == COVERAGE_RIVER)
+            if (groundType == COVERAGE_WATER || groundType == COVERAGE_RIVER)
                 message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
                                                         af->vt * af->vt * impactAngle * impactAngle * 0.02F);
             else
@@ -224,7 +224,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (af->gearPos > 0.8F && af->IsSet(AirframeClass::IsDigital))
     {
 
-        //		if(!af->auxaeroData->animWheelRadius[0]) // only play the sound of the radius is 0, otherwise it'll be played in airframe::RunLandingGear()
+        // if(!af->auxaeroData->animWheelRadius[0]) // only play the sound of the radius is 0, otherwise it'll be played in airframe::RunLandingGear()
         SoundPos.Sfx(af->auxaeroData->sndTouchDown);
 
         pos.x = XPos();
@@ -236,13 +236,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         /*
         OTWDriver.AddSfxRequest(
-        		new SfxClass ( SFX_LANDING_SMOKE,		// type
-        		SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
-        		&pos,					// world pos
-        		&vec,					// vel vector
-        		5.3f,					// time to live
-        		5.0f ) );				// scale
-        		*/
+         new SfxClass ( SFX_LANDING_SMOKE, // type
+         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         &pos, // world pos
+         &vec, // vel vector
+         5.3f, // time to live
+         5.0f ) ); // scale
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
                                               &pos,
                                               &vec);
@@ -270,13 +270,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         /*
         OTWDriver.AddSfxRequest(
-        		new SfxClass ( SFX_LANDING_SMOKE,		// type
-        		SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
-        		&pos,					// world pos
-        		&vec,					// vel vector
-        		5.3f,					// time to live
-        		5.0f ) );				// scale
-        		*/
+         new SfxClass ( SFX_LANDING_SMOKE, // type
+         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         &pos, // world pos
+         &vec, // vel vector
+         5.3f, // time to live
+         5.0f ) ); // scale
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
                                               &pos,
                                               &vec);
@@ -305,13 +305,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         /*
         OTWDriver.AddSfxRequest(
-        		new SfxClass ( SFX_LANDING_SMOKE,		// type
-        		SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
-        		&pos,					// world pos
-        		&vec,					// vel vector
-        		5.3f,					// time to live
-        		5.0f ) );				// scale
-        		*/
+         new SfxClass ( SFX_LANDING_SMOKE, // type
+         SFX_MOVES | SFX_NO_GROUND_CHECK | SFX_NO_DOWN_VECTOR | SFX_USES_GRAVITY,
+         &pos, // world pos
+         &vec, // vel vector
+         5.3f, // time to live
+         5.0f ) ); // scale
+         */
         DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
                                               &pos,
                                               &vec);
@@ -440,12 +440,12 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 /*
 ** Name: GroundFeatureCheck
 ** Description:
-**		Checks to see if we've hit a building (or something).
-**		Ignores runways (groundcheck should handle this?)
-**		If hit, then we're dead and send a message
+** Checks to see if we've hit a building (or something).
+** Ignores runways (groundcheck should handle this?)
+** If hit, then we're dead and send a message
 **
-**		TODO: we probably also need to send the feature a damage
-**		message saying its been hit.
+** TODO: we probably also need to send the feature a damage
+** message saying its been hit.
 */
 void
 AircraftClass::GroundFeatureCheck(float groundZ)
@@ -527,7 +527,7 @@ AircraftClass::GroundFeatureCheck(float groundZ)
 
 // okay -- this is ugly....
 // used by persistant list collision check
-extern SimPersistantClass*	PersistantObjects;
+extern SimPersistantClass* PersistantObjects;
 extern int persistantListTail;
 
 /*

@@ -16,21 +16,21 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    short		State_;
-    uchar		Operational_;
-    uchar		FeatureValue_;
-    long		featureID_;
+    short State_;
+    uchar Operational_;
+    uchar FeatureValue_;
+    long featureID_;
 
-    O_Output	*Name_;
-    O_Output	*Status_;
-    O_Output	*Value_;
+    O_Output *Name_;
+    O_Output *Status_;
+    O_Output *Value_;
 
-    COLORREF	Color_[2];
-    TREELIST	*Owner_;
+    COLORREF Color_[2];
+    TREELIST *Owner_;
 
-    VU_ID		vuID;
+    VU_ID vuID;
 
 public:
 

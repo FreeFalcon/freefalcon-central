@@ -683,7 +683,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         if (prev->y > rect.bottom)
             rect.bottom = prev->y;
 
-        //		prev->Icon->Refresh();
+        // prev->Icon->Refresh();
     }
 
     if (next)
@@ -700,10 +700,10 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         if (next->y > rect.bottom)
             rect.bottom = next->y;
 
-        //		next->Icon->Refresh();
+        // next->Icon->Refresh();
     }
 
-    //	Waypoint->Icon->Refresh();
+    // Waypoint->Icon->Refresh();
 #endif
     Dragging_ = 1;
 

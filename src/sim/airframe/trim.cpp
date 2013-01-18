@@ -151,7 +151,7 @@ void AirframeClass::TrimModel(void)
             mach *= 1.1F;
             Atmosphere();
 
-            //			MonoPrint ("Trimmed to slow, trying %.2f\n", mach);
+            // MonoPrint ("Trimmed to slow, trying %.2f\n", mach);
         }
         else
         {

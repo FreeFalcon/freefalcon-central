@@ -41,7 +41,7 @@ extern "C" {
     extern HINSTANCE  hWinSockDLL;
 #endif
 
-    typedef			 unsigned long(*DWProc_t)();
+    typedef  unsigned long(*DWProc_t)();
 
     // sfr: added ID information
     typedef struct comapiheader
@@ -50,12 +50,12 @@ extern "C" {
         unsigned long id; ///< this is the ID of the sender
     } ComAPIHeader;
 
-#define MAX_RUDP_HEADER_SIZE	(sizeof(ComAPIHeader)+9)		// Maximum amount of crap we'll take on our packets
+#define MAX_RUDP_HEADER_SIZE (sizeof(ComAPIHeader)+9) // Maximum amount of crap we'll take on our packets
 
     typedef struct capilist
     {
         struct capilist      *next;
-        char				 *name;
+        char  *name;
         ComAPIHandle          com;
 #ifdef CAPI_NET_DEBUG_FEATURES
         void                 *data;
@@ -88,7 +88,7 @@ extern "C" {
 
     typedef struct reliable_packet
     {
-        unsigned long last_sent_at;				/* time this packet was last sent */
+        unsigned long last_sent_at; /* time this packet was last sent */
         unsigned short sequence_number;
         unsigned short message_number;
         unsigned short size;
@@ -96,8 +96,8 @@ extern "C" {
         unsigned char oob;
         unsigned char message_slot;
         unsigned char message_parts;
-        unsigned char dispatched;				/* has the application seen us yet? */
-        unsigned char acknowledged;				/* have we sent the ack out of sequence */
+        unsigned char dispatched; /* has the application seen us yet? */
+        unsigned char acknowledged; /* have we sent the ack out of sequence */
 
         char *data;
 
@@ -107,43 +107,43 @@ extern "C" {
 
     typedef struct reliable_data
     {
-        unsigned short sequence_number;		/* sequence number for sending */
-        unsigned short oob_sequence_number;	/* sequence number for sending */
+        unsigned short sequence_number; /* sequence number for sending */
+        unsigned short oob_sequence_number; /* sequence number for sending */
 
-        short message_number;				/* message number for sending */
-        Reliable_Packet *sending;			/* list of sent packets */
-        Reliable_Packet *last_sent;			/* last of the sending packets */
+        short message_number; /* message number for sending */
+        Reliable_Packet *sending; /* list of sent packets */
+        Reliable_Packet *last_sent; /* last of the sending packets */
 
-        int reset_send;						/* What is the reset stage we are in */
+        int reset_send; /* What is the reset stage we are in */
 
-        int last_sequence;					/* other's last seen sequence number */
-        int last_received;					/* my last received sequential sequence number for ack.*/
-        int last_sent_received;				/* the last last_received that I acknowledged */
-        int send_ack;						/* we need to send an ack packet */
+        int last_sequence; /* other's last seen sequence number */
+        int last_received; /* my last received sequential sequence number for ack.*/
+        int last_sent_received; /* the last last_received that I acknowledged */
+        int send_ack; /* we need to send an ack packet */
 
-        int last_dispatched;				/* the last packet that I dispatched */
-        Reliable_Packet *receiving;			/* list of received packets */
+        int last_dispatched; /* the last packet that I dispatched */
+        Reliable_Packet *receiving; /* list of received packets */
 
-        int sent_received;					/* what the last received I sent */
-        unsigned long last_send_time;		/* last time we checked for ack */
+        int sent_received; /* what the last received I sent */
+        unsigned long last_send_time; /* last time we checked for ack */
 
-        Reliable_Packet *oob_sending;		/* list of sent packets */
-        Reliable_Packet *oob_last_sent;			/* last of the sending packets */
+        Reliable_Packet *oob_sending; /* list of sent packets */
+        Reliable_Packet *oob_last_sent; /* last of the sending packets */
 
-        int last_oob_sequence;				/* other's last seen sequence number */
-        int last_oob_received;				/* my last received sequential sequence number for ack.*/
-        int last_oob_sent_received;			/* the last last_received that I acknowledged */
-        int send_oob_ack;					/* we need to send an ack packet */
+        int last_oob_sequence; /* other's last seen sequence number */
+        int last_oob_received; /* my last received sequential sequence number for ack.*/
+        int last_oob_sent_received; /* the last last_received that I acknowledged */
+        int send_oob_ack; /* we need to send an ack packet */
 
-        int last_oob_dispatched;			/* the last packet that I dispatched */
-        Reliable_Packet *oob_receiving;		/* list of received packets */
+        int last_oob_dispatched; /* the last packet that I dispatched */
+        Reliable_Packet *oob_receiving; /* list of received packets */
 
-        int sent_oob_received;				/* what the last received I sent */
-        unsigned long last_oob_send_time;	/* last time we checked for ack */
+        int sent_oob_received; /* what the last received I sent */
+        unsigned long last_oob_send_time; /* last time we checked for ack */
 
-        long last_ping_send_time;			/* when was the last time I sent a ping */
-        long last_ping_recv_time;			/* the time we received on a ping */
-        char *real_send_buffer;				/* buffer actually sent down the wire (after encoding) */
+        long last_ping_send_time; /* when was the last time I sent a ping */
+        long last_ping_recv_time; /* the time we received on a ping */
+        char *real_send_buffer; /* buffer actually sent down the wire (after encoding) */
     } Reliable_Data;
 
 

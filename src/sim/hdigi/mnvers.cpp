@@ -27,7 +27,7 @@ float HeliBrain::AutoTrack(float)
     /*---------------------------*/
     /* Range to current waypoint */
     /*---------------------------*/
-    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) *	(trackY - self->YPos());
+    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
 
     /*------------------------------------*/
     /* Heading error for current waypoint */
@@ -125,11 +125,11 @@ int HeliBrain::AltitudeHold(float desAlt)
 
     if ( throtl > 1.0 )
     {
-    	   throtl = 1.0;
+        throtl = 1.0;
     }
     else if ( throtl < 0.0 )
     {
-    	   throtl = 0.0;
+        throtl = 0.0;
     }
     */
 

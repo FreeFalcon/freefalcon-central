@@ -23,21 +23,21 @@ extern bool g_bRealisticAvionics;
 extern bool g_bINS;
 extern bool g_bCockpitAutoScale;
 
-#include "Graphics/Include/grinline.h"	//Wombat778 3-24-04
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-24-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 
 
 CPHsi::CPHsi()
 {
 
-    mpHsiStates[HSI_STA_CRS_STATE]				= NORMAL_HSI_CRS_STATE;
-    mpHsiStates[HSI_STA_HDG_STATE]				= NORMAL_HSI_HDG_STATE;
+    mpHsiStates[HSI_STA_CRS_STATE] = NORMAL_HSI_CRS_STATE;
+    mpHsiStates[HSI_STA_HDG_STATE] = NORMAL_HSI_HDG_STATE;
 
-    mpHsiFlags[HSI_FLAG_TO_TRUE]					= FALSE;
-    mpHsiFlags[HSI_FLAG_ILS_WARN]					= FALSE;
-    mpHsiFlags[HSI_FLAG_CRS_WARN]					= FALSE;
-    mpHsiFlags[HSI_FLAG_INIT]						= FALSE;
+    mpHsiFlags[HSI_FLAG_TO_TRUE] = FALSE;
+    mpHsiFlags[HSI_FLAG_ILS_WARN] = FALSE;
+    mpHsiFlags[HSI_FLAG_CRS_WARN] = FALSE;
+    mpHsiFlags[HSI_FLAG_INIT] = FALSE;
     lastCheck = 0;
     lastResult = FALSE;
 
@@ -50,26 +50,26 @@ CPHsi::CPHsi()
         SimDriver.GetPlayerEntity() &&
         !strcmpi(current_tactical_mission->get_title(), "10 Instrument Landing"))
     {
-        mpHsiValues[HSI_VAL_DESIRED_CRS]			= 340.0F;
+        mpHsiValues[HSI_VAL_DESIRED_CRS] = 340.0F;
     }
     else
     {
-        mpHsiValues[HSI_VAL_DESIRED_CRS]			= 0.0F;
+        mpHsiValues[HSI_VAL_DESIRED_CRS] = 0.0F;
     }
 
-    mpHsiValues[HSI_VAL_CRS_DEVIATION]			= 0.0F;
-    mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]	= 0.0F;
-    mpHsiValues[HSI_VAL_BEARING_TO_BEACON]		= 0.0F;
-    mpHsiValues[HSI_VAL_CURRENT_HEADING]		= 0.0;
-    mpHsiValues[HSI_VAL_DESIRED_HEADING]		= 0.0F;
-    mpHsiValues[HSI_VAL_DEV_LIMIT]				= 10.0F;
-    mpHsiValues[HSI_VAL_HALF_DEV_LIMIT]			= mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
-    mpHsiValues[HSI_VAL_LOCALIZER_CRS]			= 0.0F;
-    mpHsiValues[HSI_VAL_AIRBASE_X]				= 0.0F;
-    mpHsiValues[HSI_VAL_AIRBASE_Y]				= 0.0F;
+    mpHsiValues[HSI_VAL_CRS_DEVIATION] = 0.0F;
+    mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] = 0.0F;
+    mpHsiValues[HSI_VAL_BEARING_TO_BEACON] = 0.0F;
+    mpHsiValues[HSI_VAL_CURRENT_HEADING] = 0.0;
+    mpHsiValues[HSI_VAL_DESIRED_HEADING] = 0.0F;
+    mpHsiValues[HSI_VAL_DEV_LIMIT] = 10.0F;
+    mpHsiValues[HSI_VAL_HALF_DEV_LIMIT] = mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
+    mpHsiValues[HSI_VAL_LOCALIZER_CRS] = 0.0F;
+    mpHsiValues[HSI_VAL_AIRBASE_X] = 0.0F;
+    mpHsiValues[HSI_VAL_AIRBASE_Y] = 0.0F;
 
-    mLastWaypoint										= NULL;
-    mLastMode											= NavigationSystem::TOTAL_MODES;
+    mLastWaypoint = NULL;
+    mLastMode = NavigationSystem::TOTAL_MODES;
 
     //MI 02/02/02
     LastHSIHeading = 0.0F;
@@ -100,17 +100,17 @@ BOOL CPHsi::GetFlag(HSIFlags flagIndex)
 void CPHsi::IncState(HSIButtonStates state, float step)
 {
 
-    HSIValues	valueIndex;
-    int			normalState;
+    HSIValues valueIndex;
+    int normalState;
 
     if (state == HSI_STA_CRS_STATE)
     {
-        valueIndex	= HSI_VAL_DESIRED_CRS;
+        valueIndex = HSI_VAL_DESIRED_CRS;
         normalState = NORMAL_HSI_CRS_STATE;
     }
     else
     {
-        valueIndex	= HSI_VAL_DESIRED_HEADING;
+        valueIndex = HSI_VAL_DESIRED_HEADING;
         normalState = NORMAL_HSI_HDG_STATE;
     }
 
@@ -135,17 +135,17 @@ void CPHsi::IncState(HSIButtonStates state, float step)
 void CPHsi::DecState(HSIButtonStates state, float step)
 {
 
-    HSIValues	valueIndex;
-    int			normalState;
+    HSIValues valueIndex;
+    int normalState;
 
     if (state == HSI_STA_CRS_STATE)
     {
-        valueIndex	= HSI_VAL_DESIRED_CRS;
+        valueIndex = HSI_VAL_DESIRED_CRS;
         normalState = NORMAL_HSI_CRS_STATE;
     }
     else
     {
-        valueIndex	= HSI_VAL_DESIRED_HEADING;
+        valueIndex = HSI_VAL_DESIRED_HEADING;
         normalState = NORMAL_HSI_HDG_STATE;
     }
 
@@ -170,19 +170,19 @@ void CPHsi::DecState(HSIButtonStates state, float step)
 void CPHsi::ExecNav(void)
 {
 
-    float				x;
-    float				y;
-    float				z;
-    WayPointClass	*pcurrentWaypoint;
+    float x;
+    float y;
+    float z;
+    WayPointClass *pcurrentWaypoint;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (mpHsiFlags[HSI_FLAG_INIT] == FALSE)
     {
 
-        mpHsiValues[HSI_VAL_DEV_LIMIT]		= 10.0F;
-        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT]	= mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
-        mpHsiFlags[HSI_FLAG_INIT]				= TRUE;
-        mpHsiFlags[HSI_FLAG_TO_TRUE]			= FALSE;
+        mpHsiValues[HSI_VAL_DEV_LIMIT] = 10.0F;
+        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT] = mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
+        mpHsiFlags[HSI_FLAG_INIT] = TRUE;
+        mpHsiFlags[HSI_FLAG_TO_TRUE] = FALSE;
     }
 
     if (playerAC == NULL)
@@ -190,18 +190,18 @@ void CPHsi::ExecNav(void)
         return;
     }
 
-    pcurrentWaypoint	= playerAC->curWaypoint;
+    pcurrentWaypoint = playerAC->curWaypoint;
 
     // sfr TODO remove jb hack
     if (F4IsBadReadPtr(pcurrentWaypoint, sizeof * pcurrentWaypoint)) // JPO CTD check
     {
-        mpHsiFlags[HSI_FLAG_CRS_WARN]			= TRUE;
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = TRUE;
         ExecBeaconProximity(SimDriver.GetPlayerEntity()->XPos(), playerAC->YPos(), 0.0F, 0.0F);
         CalcTCNCrsDev(mpHsiValues[HSI_VAL_DESIRED_CRS]);
     }
     else
     {
-        mpHsiFlags[HSI_FLAG_CRS_WARN]			= FALSE;
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = FALSE;
         pcurrentWaypoint->GetLocation(&x, &y, &z);
         ExecBeaconProximity(playerAC->XPos(), playerAC->YPos(), x, y);
         CalcTCNCrsDev(mpHsiValues[HSI_VAL_DESIRED_CRS]);
@@ -223,20 +223,20 @@ void CPHsi::ExecNav(void)
 void CPHsi::ExecTacan(void)
 {
 
-    float							ownshipX;
-    float							ownshipY;
-    float							tacanX;
-    float							tacanY, tacanZ;
-    float							tacanRange;
+    float ownshipX;
+    float ownshipY;
+    float tacanX;
+    float tacanY, tacanZ;
+    float tacanRange;
 
     if (mpHsiFlags[HSI_FLAG_INIT] == FALSE)
     {
 
-        mpHsiValues[HSI_VAL_DEV_LIMIT]		= 10.0F;
-        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT]	= mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
-        mpHsiFlags[HSI_FLAG_INIT]				= TRUE;
-        mpHsiFlags[HSI_FLAG_ILS_WARN]			= TRUE;
-        mpHsiFlags[HSI_FLAG_TO_TRUE]			= TRUE;
+        mpHsiValues[HSI_VAL_DEV_LIMIT] = 10.0F;
+        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT] = mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
+        mpHsiFlags[HSI_FLAG_INIT] = TRUE;
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = TRUE;
+        mpHsiFlags[HSI_FLAG_TO_TRUE] = TRUE;
     }
 
     if (SimDriver.GetPlayerEntity())
@@ -245,16 +245,16 @@ void CPHsi::ExecTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN]	= !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &tacanRange);
 
-        if (gNavigationSys->IsTCNTanker() || gNavigationSys->IsTCNAirbase() || gNavigationSys->IsTCNCarrier())  	// now Carrier support
+        if (gNavigationSys->IsTCNTanker() || gNavigationSys->IsTCNAirbase() || gNavigationSys->IsTCNCarrier())   // now Carrier support
         {
-            mpHsiFlags[HSI_FLAG_ILS_WARN]			= FALSE;
+            mpHsiFlags[HSI_FLAG_ILS_WARN] = FALSE;
         }
         else
         {
-            mpHsiFlags[HSI_FLAG_ILS_WARN]			= 	mpHsiFlags[HSI_FLAG_CRS_WARN];
+            mpHsiFlags[HSI_FLAG_ILS_WARN] =  mpHsiFlags[HSI_FLAG_CRS_WARN];
         }
 
         ExecBeaconProximity(ownshipX, ownshipY, tacanX, tacanY);
@@ -267,8 +267,8 @@ void CPHsi::ExecTacan(void)
         {
             mpHsiValues[HSI_VAL_BEARING_TO_BEACON] = 90; // fix at 90 deg off
             mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] = 0;
-            mpHsiFlags[HSI_FLAG_ILS_WARN]			= TRUE;
-            mpHsiFlags[HSI_FLAG_CRS_WARN]			= TRUE;
+            mpHsiFlags[HSI_FLAG_ILS_WARN] = TRUE;
+            mpHsiFlags[HSI_FLAG_CRS_WARN] = TRUE;
         }
 
         if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 270 && mpHsiValues[HSI_VAL_CRS_DEVIATION] > 90)
@@ -281,23 +281,23 @@ void CPHsi::ExecTacan(void)
 
 void CPHsi::ExecILSNav(void)
 {
-    float						ownshipX;
-    float						ownshipY;
-    WayPointClass			*pcurrentWaypoint;
-    float						waypointX;
-    float						waypointY;
-    float						waypointZ;
-    float						gpDew;
-    VU_ID						ilsObj;
+    float ownshipX;
+    float ownshipY;
+    WayPointClass *pcurrentWaypoint;
+    float waypointX;
+    float waypointY;
+    float waypointZ;
+    float gpDew;
+    VU_ID ilsObj;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (mpHsiFlags[HSI_FLAG_INIT] == FALSE)
     {
 
-        mpHsiValues[HSI_VAL_DEV_LIMIT]		= 10.0F;
-        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT]	= mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
-        mpHsiFlags[HSI_FLAG_INIT]				= TRUE;
-        mpHsiFlags[HSI_FLAG_TO_TRUE]			= FALSE;
+        mpHsiValues[HSI_VAL_DEV_LIMIT] = 10.0F;
+        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT] = mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
+        mpHsiFlags[HSI_FLAG_INIT] = TRUE;
+        mpHsiFlags[HSI_FLAG_TO_TRUE] = FALSE;
     }
 
     if (playerAC == NULL)
@@ -305,13 +305,13 @@ void CPHsi::ExecILSNav(void)
         return;
     }
 
-    pcurrentWaypoint	= playerAC->curWaypoint;
+    pcurrentWaypoint = playerAC->curWaypoint;
     ownshipX = playerAC->XPos();
     ownshipY = playerAC->YPos();
 
     if (pcurrentWaypoint == NULL)
     {
-        mpHsiFlags[HSI_FLAG_CRS_WARN]			= TRUE;
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = TRUE;
         ExecBeaconProximity(ownshipX, ownshipY, 0.0F, 0.0F);
     }
     else
@@ -343,28 +343,28 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
         return;
     }
 
-    double	xdiff, ydiff;
-    double	bearingToBeacon;
+    double xdiff, ydiff;
+    double bearingToBeacon;
 
     xdiff = x2 - x1;
     ydiff = y2 - y1;
 
-    bearingToBeacon	= atan2(xdiff, ydiff); // radians +-pi, xaxis = 0deg
+    bearingToBeacon = atan2(xdiff, ydiff); // radians +-pi, xaxis = 0deg
 
-    mpHsiValues[HSI_VAL_BEARING_TO_BEACON]		= ConvertRadtoNav((float)bearingToBeacon);
-    mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]	= (float)sqrt((float)(xdiff * xdiff + ydiff * ydiff)) * 0.0001666F; // in nautical miles (1 / 6000)
+    mpHsiValues[HSI_VAL_BEARING_TO_BEACON] = ConvertRadtoNav((float)bearingToBeacon);
+    mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] = (float)sqrt((float)(xdiff * xdiff + ydiff * ydiff)) * 0.0001666F; // in nautical miles (1 / 6000)
 
     if (mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] > 999.0F)
     {
-        mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]	= 999.0F;
+        mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] = 999.0F;
     }
     else if ((mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] - (float)floor(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON])) > 0.5F
             )
     {
-        mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]	= (float)ceil(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]);
+        mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON] = (float)ceil(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON]);
     }
 
-    mpHsiValues[HSI_VAL_CURRENT_HEADING]		= playerAC->af->psi * RTD;
+    mpHsiValues[HSI_VAL_CURRENT_HEADING] = playerAC->af->psi * RTD;
 
     //update our value
     if (playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
@@ -374,7 +374,7 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
 
     if (g_bRealisticAvionics && g_bINS && !playerAC->INSState(AircraftClass::INS_HSI_OFF_IN))
     {
-        mpHsiValues[HSI_VAL_CURRENT_HEADING]		= LastHSIHeading;
+        mpHsiValues[HSI_VAL_CURRENT_HEADING] = LastHSIHeading;
     }
 
     if (mpHsiValues[HSI_VAL_CURRENT_HEADING] < 0.0F)
@@ -387,11 +387,11 @@ void CPHsi::ExecBeaconProximity(float x1, float y1, float x2, float y2)
 void CPHsi::CalcTCNCrsDev(float course)
 {
 
-    mpHsiValues[HSI_VAL_CRS_DEVIATION]	= course - mpHsiValues[HSI_VAL_BEARING_TO_BEACON]; // in degrees
+    mpHsiValues[HSI_VAL_CRS_DEVIATION] = course - mpHsiValues[HSI_VAL_BEARING_TO_BEACON]; // in degrees
 
     if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 0.0F)
     {
-        mpHsiValues[HSI_VAL_CRS_DEVIATION]		+= 360.0F;
+        mpHsiValues[HSI_VAL_CRS_DEVIATION] += 360.0F;
     }
 }
 
@@ -412,15 +412,15 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
     // Purpose:  reception of TACAN based on altitude of aircraft
     // Note:  This added code combines both the range code and altitude code
 
-    int alt = 0;									// Aircrafts altitude
-    double radioHorizon = 0.0;						// Set radio horizon to 0
-    float rndNum = PRANDFloatPos();					// number picked from 4x4 array to add intermitant reception
+    int alt = 0; // Aircrafts altitude
+    double radioHorizon = 0.0; // Set radio horizon to 0
+    float rndNum = PRANDFloatPos(); // number picked from 4x4 array to add intermitant reception
 
-    alt = SimDriver.GetPlayerEntity()->GetAltitude();	// Get current altitude (AGL)
+    alt = SimDriver.GetPlayerEntity()->GetAltitude(); // Get current altitude (AGL)
 
-    if (alt <= 0)  alt = 1;							// Prevent taking the sqrt of 0 (may not be needed)
+    if (alt <= 0)  alt = 1; // Prevent taking the sqrt of 0 (may not be needed)
 
-    radioHorizon = 1.06f * sqrt((float)alt);			// Simplified equation for radio line-of-site  //JPG 18 Apr 04 - Replaced sqrt(2*alt) w/ better equation
+    radioHorizon = 1.06f * sqrt((float)alt); // Simplified equation for radio line-of-site  //JPG 18 Apr 04 - Replaced sqrt(2*alt) w/ better equation
 
     // Ensure there is no divide by 0
     if (nominalBeaconrange == 0) nominalBeaconrange = 1;
@@ -438,7 +438,7 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
     //MonoPrint("alt = %i\n\n", alt);
 
     // above radio horizon and within detection range - good reception
-    if ((rangeToBeacon < radioHorizon) && (detectionChanceRange > 1) && (detectionChanceAlt > 1))			// definite receive
+    if ((rangeToBeacon < radioHorizon) && (detectionChanceRange > 1) && (detectionChanceAlt > 1)) // definite receive
         lastResult = TRUE;
     // outside of radio horizon or detection range or altitude detection range to low for reception - no reception
     else if ((rangeToBeacon > radioHorizon) || (detectionChanceRange <= 0) || (detectionChanceAlt <= 0.5))
@@ -469,11 +469,11 @@ BOOL CPHsi::BeaconInRange(float rangeToBeacon, float nominalBeaconrange)
 void CPHsi::CalcILSCrsDev(float dev)
 {
 
-    mpHsiValues[HSI_VAL_CRS_DEVIATION]	= -dev * RTD;
+    mpHsiValues[HSI_VAL_CRS_DEVIATION] = -dev * RTD;
 
     if (mpHsiValues[HSI_VAL_CRS_DEVIATION] < 0.0F)
     {
-        mpHsiValues[HSI_VAL_CRS_DEVIATION]		+= 360.0F;
+        mpHsiValues[HSI_VAL_CRS_DEVIATION] += 360.0F;
     }
 }
 
@@ -481,7 +481,7 @@ void CPHsi::CalcILSCrsDev(float dev)
 void CPHsi::Exec(void)
 {
 
-    NavigationSystem::Instrument_Mode	mode;
+    NavigationSystem::Instrument_Mode mode;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -540,21 +540,21 @@ void CPHsi::Exec(void)
 void CPHsi::ExecILSTacan(void)
 {
 
-    float							ownshipX;
-    float							ownshipY;
-    float							tacanX;
-    float							tacanY, tacanZ;
-    float							gpDew;
-    float							range;
+    float ownshipX;
+    float ownshipY;
+    float tacanX;
+    float tacanY, tacanZ;
+    float gpDew;
+    float range;
 
     if (mpHsiFlags[HSI_FLAG_INIT] == FALSE)
     {
 
-        mpHsiValues[HSI_VAL_DEV_LIMIT]		= 10.0F;
-        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT]	= mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
-        mpHsiFlags[HSI_FLAG_INIT]				= TRUE;
-        mpHsiFlags[HSI_FLAG_ILS_WARN]			= FALSE;
-        mpHsiFlags[HSI_FLAG_TO_TRUE]			= FALSE;
+        mpHsiValues[HSI_VAL_DEV_LIMIT] = 10.0F;
+        mpHsiValues[HSI_VAL_HALF_DEV_LIMIT] = mpHsiValues[HSI_VAL_DEV_LIMIT] * 0.5F;
+        mpHsiFlags[HSI_FLAG_INIT] = TRUE;
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = FALSE;
+        mpHsiFlags[HSI_FLAG_TO_TRUE] = FALSE;
     }
 
     if (SimDriver.GetPlayerEntity())
@@ -563,10 +563,10 @@ void CPHsi::ExecILSTacan(void)
         ownshipX = SimDriver.GetPlayerEntity()->XPos();
         ownshipY = SimDriver.GetPlayerEntity()->YPos();
 
-        mpHsiFlags[HSI_FLAG_CRS_WARN]	= !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
+        mpHsiFlags[HSI_FLAG_CRS_WARN] = !gNavigationSys->GetTCNPosition(&tacanX, &tacanY, &tacanZ);
         gNavigationSys->GetTCNAttribute(NavigationSystem::RANGE, &range);
 
-        mpHsiFlags[HSI_FLAG_ILS_WARN]	= !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
+        mpHsiFlags[HSI_FLAG_ILS_WARN] = !gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &gpDew);
         ExecBeaconProximity(ownshipX, ownshipY, tacanX, tacanY);
 
         if (BeaconInRange(mpHsiValues[HSI_VAL_DISTANCE_TO_BEACON], range))
@@ -594,77 +594,77 @@ void CPHsi::ExecILSTacan(void)
 CPHsiView::CPHsiView(ObjectInitStr *pobjectInitStr, HsiInitStr *phsiInitStr) : CPObject(pobjectInitStr)
 {
 
-    int	radiusSquared;
-    int	arraySize, halfArraySize;
-    int	i;
-    float	x, y;
-    int	halfHeight;
-    int	halfWidth;
+    int radiusSquared;
+    int arraySize, halfArraySize;
+    int i;
+    float x, y;
+    int halfHeight;
+    int halfWidth;
 
-    mWarnFlag.top					= (long)(phsiInitStr->warnFlag.top * mVScale);
-    mWarnFlag.left					= (long)(phsiInitStr->warnFlag.left * mHScale);
-    mWarnFlag.bottom				= (long)(phsiInitStr->warnFlag.bottom * mVScale);
-    mWarnFlag.right					= (long)(phsiInitStr->warnFlag.right * mHScale);
+    mWarnFlag.top = (long)(phsiInitStr->warnFlag.top * mVScale);
+    mWarnFlag.left = (long)(phsiInitStr->warnFlag.left * mHScale);
+    mWarnFlag.bottom = (long)(phsiInitStr->warnFlag.bottom * mVScale);
+    mWarnFlag.right = (long)(phsiInitStr->warnFlag.right * mHScale);
 
-    mpHsi								= phsiInitStr->pHsi;
+    mpHsi = phsiInitStr->pHsi;
 
-    mCompassTransparencyType	= phsiInitStr->compassTransparencyType;
+    mCompassTransparencyType = phsiInitStr->compassTransparencyType;
 
-    mCompassSrc						= phsiInitStr->compassSrc;
+    mCompassSrc = phsiInitStr->compassSrc;
 
-    mCompassDest					= phsiInitStr->compassDest;
-    mCompassDest.top				= (long)(mCompassDest.top * mVScale);
-    mCompassDest.left				= (long)(mCompassDest.left * mHScale);
-    mCompassDest.bottom				= (long)(mCompassDest.bottom * mVScale);
-    mCompassDest.right				= (long)(mCompassDest.right * mHScale);
+    mCompassDest = phsiInitStr->compassDest;
+    mCompassDest.top = (long)(mCompassDest.top * mVScale);
+    mCompassDest.left = (long)(mCompassDest.left * mHScale);
+    mCompassDest.bottom = (long)(mCompassDest.bottom * mVScale);
+    mCompassDest.right = (long)(mCompassDest.right * mHScale);
 
-    mDevSrc							= phsiInitStr->devSrc;
+    mDevSrc = phsiInitStr->devSrc;
 
-    mDevDest							= phsiInitStr->devDest;
-    mDevDest.top					= (long)(mDevDest.top * mVScale);
-    mDevDest.left					= (long)(mDevDest.left * mHScale);
-    mDevDest.bottom					= (long)(mDevDest.bottom * mVScale);
-    mDevDest.right					= (long)(mDevDest.right * mHScale);
+    mDevDest = phsiInitStr->devDest;
+    mDevDest.top = (long)(mDevDest.top * mVScale);
+    mDevDest.left = (long)(mDevDest.left * mHScale);
+    mDevDest.bottom = (long)(mDevDest.bottom * mVScale);
+    mDevDest.right = (long)(mDevDest.right * mHScale);
 
-    mCompassWidth					= mCompassSrc.right - mCompassSrc.left;
-    mCompassHeight					= mCompassSrc.bottom - mCompassSrc.top;
+    mCompassWidth = mCompassSrc.right - mCompassSrc.left;
+    mCompassHeight = mCompassSrc.bottom - mCompassSrc.top;
 
-    //	mCompassWidth					= mCompassDest.right - mCompassDest.left;
-    //	mCompassHeight					= mCompassDest.bottom - mCompassDest.top;
+    // mCompassWidth = mCompassDest.right - mCompassDest.left;
+    // mCompassHeight = mCompassDest.bottom - mCompassDest.top;
 
-    mCompassXCenter				= mCompassDest.left + mCompassWidth / 2;
-    mCompassYCenter				= mCompassDest.top + mCompassHeight / 2;
+    mCompassXCenter = mCompassDest.left + mCompassWidth / 2;
+    mCompassYCenter = mCompassDest.top + mCompassHeight / 2;
 
     // Setup the compass circle limits
-    mRadius							= max(mCompassWidth, mCompassHeight);
-    mRadius							= (mRadius + 1) / 2;
-    arraySize						= mRadius * 4;
+    mRadius = max(mCompassWidth, mCompassHeight);
+    mRadius = (mRadius + 1) / 2;
+    arraySize = mRadius * 4;
 
 #ifdef USE_SH_POOLS
     mpCompassCircle = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * arraySize, FALSE);
 #else
-    mpCompassCircle				= new int[arraySize];
+    mpCompassCircle = new int[arraySize];
 #endif
 
-    radiusSquared					= mRadius * mRadius;
+    radiusSquared = mRadius * mRadius;
 
-    halfArraySize					= arraySize / 2;
+    halfArraySize = arraySize / 2;
 
     for (i = 0; i < halfArraySize; i++)
     {
 
-        y								= (float)fabs((float)i - mRadius);
-        x								= (float)sqrt(radiusSquared - y * y);
-        mpCompassCircle[i * 2 + 1]	= mRadius + (int)x; //right
-        mpCompassCircle[i * 2 + 0]	= mRadius - (int)x; //left
+        y = (float)fabs((float)i - mRadius);
+        x = (float)sqrt(radiusSquared - y * y);
+        mpCompassCircle[i * 2 + 1] = mRadius + (int)x; //right
+        mpCompassCircle[i * 2 + 0] = mRadius - (int)x; //left
     }
 
-    halfHeight						= DisplayOptions.DispHeight / 2;
-    halfWidth						= DisplayOptions.DispWidth / 2;
-    mTop								=	(float)(halfHeight - mDevDest.top) / halfHeight;
-    mLeft								=	(float)(mDevDest.left - halfWidth) / halfWidth;
-    mBottom							=	(float)(halfHeight - mDevDest.bottom) / halfHeight;
-    mRight							=	(float)(mDevDest.right - halfWidth) / halfWidth;
+    halfHeight = DisplayOptions.DispHeight / 2;
+    halfWidth = DisplayOptions.DispWidth / 2;
+    mTop = (float)(halfHeight - mDevDest.top) / halfHeight;
+    mLeft = (float)(mDevDest.left - halfWidth) / halfWidth;
+    mBottom = (float)(halfHeight - mDevDest.bottom) / halfHeight;
+    mRight = (float)(mDevDest.right - halfWidth) / halfWidth;
 
     for (i = 0; i < HSI_COLOR_TOTAL; i++)
     {
@@ -735,8 +735,8 @@ void CPHsiView::DisplayBlit()
         return;
     }
 
-    float	angle;
-    float	currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+    float angle;
+    float currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
 
     angle = currentHeading + 90.0F;
 
@@ -748,7 +748,7 @@ void CPHsiView::DisplayBlit()
     // Make the rotating blt call
 
     //Wombat778 10-06-2003, modified following lines. allows HSI to scale properly when using cockpit auto scaling
-    if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))  			//dont run this code if the var is set but no scaling is occuring
+    if (g_bCockpitAutoScale && ((mVScale != 1.0f) || (mHScale != 1.0f)))   //dont run this code if the var is set but no scaling is occuring
     {
 
         RECT temprect;
@@ -758,7 +758,7 @@ void CPHsiView::DisplayBlit()
         temprect.right = mCompassWidth;
         temprect.bottom = mCompassHeight;
 
-        CompassBuffer->Clear(0xFFFF0000);			//clear the temp buffer with chromakey blue;
+        CompassBuffer->Clear(0xFFFF0000); //clear the temp buffer with chromakey blue;
         CompassBuffer->ComposeRoundRot(mpTemplate, &mCompassSrc, &temprect, ConvertNavtoRad(angle), mpCompassCircle); //Rotate the image from template to temp buffer
         mpOTWImage->ComposeTransparent(CompassBuffer, &temprect, &mCompassDest);
 
@@ -842,8 +842,8 @@ void CPHsiView::DisplayBlit3D()
         return;
     }
 
-    float	angle;
-    float	currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+    float angle;
+    float currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
 
     angle = currentHeading + 90.0F;
 
@@ -854,8 +854,8 @@ void CPHsiView::DisplayBlit3D()
 
     RECT DestRect = mCompassDest;
     // COBRA - RED - Pit Vibrations
-    int	OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x;
-    int	OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y;
+    int OffsetX = (int)OTWDriver.pCockpitManager->PitTurbulence.x;
+    int OffsetY = (int)OTWDriver.pCockpitManager->PitTurbulence.y;
     DestRect.top += OffsetY;
     DestRect.bottom += OffsetY;
     DestRect.left += OffsetX;
@@ -903,11 +903,11 @@ void CPHsiView::DisplayDraw()
         return;
     }
 
-    float	desiredCourse		= mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS);
-    float	desiredHeading		= mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING);
-    float	courseDeviation		= mpHsi->GetValue(CPHsi::HSI_VAL_CRS_DEVIATION);
-    float	bearingToBeacon		= mpHsi->GetValue(CPHsi::HSI_VAL_BEARING_TO_BEACON);
-    BOOL	crsWarnFlag			= mpHsi->GetFlag(CPHsi::HSI_FLAG_CRS_WARN);
+    float desiredCourse = mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS);
+    float desiredHeading = mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING);
+    float courseDeviation = mpHsi->GetValue(CPHsi::HSI_VAL_CRS_DEVIATION);
+    float bearingToBeacon = mpHsi->GetValue(CPHsi::HSI_VAL_BEARING_TO_BEACON);
+    BOOL crsWarnFlag = mpHsi->GetFlag(CPHsi::HSI_FLAG_CRS_WARN);
 
 
     if (monoYes)
@@ -936,13 +936,13 @@ void CPHsiView::DisplayDraw()
 void CPHsiView::DrawToFrom(void)
 {
 
-    static const float	toArrow[3][2] =
+    static const float toArrow[3][2] =
     {
         { 0.055F,  0.12F - 0.25f},
         { 0.157F,  0.00F - 0.25f},
         { 0.055F, -0.12F - 0.25f},
     };
-    BOOL	crsToTrueFlag		= mpHsi->GetFlag(CPHsi::HSI_FLAG_TO_TRUE);
+    BOOL crsToTrueFlag = mpHsi->GetFlag(CPHsi::HSI_FLAG_TO_TRUE);
 
     //MI
     if (g_bRealisticAvionics)
@@ -1017,12 +1017,12 @@ void CPHsiView::DrawCourseWarning(void)
 void CPHsiView::DrawHeadingMarker(float desiredHeading)
 {
 
-    static const float	headingMarker[2][2] =
+    static const float headingMarker[2][2] =
     {
         {0.56F, 0.04F},
         {0.61F, 0.04F},
     };
-    float	currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+    float currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
 
     MoveToCompassCenter();
 
@@ -1042,17 +1042,17 @@ void CPHsiView::DrawHeadingMarker(float desiredHeading)
 void CPHsiView::DrawStationBearing(float bearing)   // in nav units
 {
 
-    static const float	bearingArrow[2][2] =
+    static const float bearingArrow[2][2] =
     {
         {0.69F, 0.05F},
         {0.80F, 0.0F},
     };
-    static const float	bearingTail[2][2] =
+    static const float bearingTail[2][2] =
     {
         { -0.80F, 0.02F},
         { -0.69F, 0.02F},
     };
-    float	currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+    float currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
 
 
     MoveToCompassCenter();
@@ -1068,64 +1068,64 @@ void CPHsiView::DrawStationBearing(float bearing)   // in nav units
 
     // draw tail
     //MI this is not here in real
-    //	if(!g_bRealisticAvionics)					//Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
-    //	{
+    // if(!g_bRealisticAvionics) //Wombat778 10-19-2003   Re-enabled in all avionics modes for realism as per MIRV
+    // {
     OTWDriver.renderer->Tri(bearingTail[0][0], bearingTail[0][1], bearingTail[1][0], bearingTail[1][1],
                             bearingTail[1][0], -bearingTail[1][1]);
     OTWDriver.renderer->Tri(bearingTail[0][0], bearingTail[0][1], bearingTail[1][0], -bearingTail[1][1],
                             bearingTail[0][0], -bearingTail[0][1]);
-    //	}
+    // }
 }
 
 void CPHsiView::DrawCourse(float desiredCourse, float deviaiton)
 {
 
-    static const float	courseArrow[4][2] =
+    static const float courseArrow[4][2] =
     {
         {0.610F, 0.000F},
         {0.50F, 0.050F},
         {0.50F, 0.020F},
         {0.25F, 0.020F},
     };
-    static const float	courseTail[2][2] =
+    static const float courseTail[2][2] =
     {
         { -0.40F, 0.020F},
         { -0.60F, 0.020F},
     };
-    static const float	courseDevScale[3] = {0.0000F, 0.24F, 0.04F };
-    static const float	courseDevBar[2][2] =
+    static const float courseDevScale[3] = {0.0000F, 0.24F, 0.04F };
+    static const float courseDevBar[2][2] =
     {
         { -0.39F, 0.020F},
         { 0.24F, 0.020F},
     };
-    static const float	courseDevWarn[2] = { -0.04F, 0.08F};
+    static const float courseDevWarn[2] = { -0.04F, 0.08F};
 
-    float				devBarCenter[2];
-    float				startPoint;
-    float				r;
-    float				theta;
-    int				i;
-    float				currentHeading			= mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
-    float				deviationLimit			= mpHsi->GetValue(CPHsi::HSI_VAL_DEV_LIMIT);
-    float				halfDeviationLimit	= mpHsi->GetValue(CPHsi::HSI_VAL_HALF_DEV_LIMIT);
-    BOOL				ilsWarnFlag			= mpHsi->GetFlag(CPHsi::HSI_FLAG_ILS_WARN);
+    float devBarCenter[2];
+    float startPoint;
+    float r;
+    float theta;
+    int i;
+    float currentHeading = mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+    float deviationLimit = mpHsi->GetValue(CPHsi::HSI_VAL_DEV_LIMIT);
+    float halfDeviationLimit = mpHsi->GetValue(CPHsi::HSI_VAL_HALF_DEV_LIMIT);
+    BOOL ilsWarnFlag = mpHsi->GetFlag(CPHsi::HSI_FLAG_ILS_WARN);
     mlTrig         trig;
 
     MoveToCompassCenter();
-    desiredCourse	= 360.0F - currentHeading + desiredCourse;
+    desiredCourse = 360.0F - currentHeading + desiredCourse;
 
     if (desiredCourse > 360.0F)
     {
         desiredCourse -= 360.0F;
     }
 
-    desiredCourse	= ConvertNavtoRad(desiredCourse);
+    desiredCourse = ConvertNavtoRad(desiredCourse);
 
 
     // Draw Arrow
     OTWDriver.renderer->AdjustRotationAboutOrigin(-desiredCourse);
 
-    //	BOOL	toFromFlag			= mpHsi->GetFlag(CPHsi::HSI_FLAG_TO_TRUE);
+    // BOOL toFromFlag = mpHsi->GetFlag(CPHsi::HSI_FLAG_TO_TRUE);
 
     DrawToFrom();
 
@@ -1168,20 +1168,20 @@ void CPHsiView::DrawCourse(float desiredCourse, float deviaiton)
     // If the deviaion is > 10% or < -10%, the bar will be pinned
     if (deviaiton > deviationLimit)
     {
-        startPoint		= 2.0F * courseDevScale[1];
+        startPoint = 2.0F * courseDevScale[1];
     }
     else if (deviaiton < -deviationLimit)
     {
-        startPoint		= -2.0F * courseDevScale[1];
+        startPoint = -2.0F * courseDevScale[1];
     }
     else
     {
-        startPoint		= deviaiton / halfDeviationLimit * courseDevScale[1];
+        startPoint = deviaiton / halfDeviationLimit * courseDevScale[1];
     }
 
     mlSinCos(&trig, HALFPI + desiredCourse);
-    devBarCenter[0]	= startPoint * trig.cos;
-    devBarCenter[1]	= startPoint * trig.sin;
+    devBarCenter[0] = startPoint * trig.cos;
+    devBarCenter[1] = startPoint * trig.sin;
 
     MoveToCompassCenter();
 
@@ -1226,7 +1226,7 @@ void CPHsiView::MoveToCompassCenter(void)
 void CPHsiView::DrawAircraftSymbol(void)
 {
 
-    static const float	aircraftSymbol[10][2] =
+    static const float aircraftSymbol[10][2] =
     {
         {0.017F, 0.133F},
         {0.133F, 0.017F},

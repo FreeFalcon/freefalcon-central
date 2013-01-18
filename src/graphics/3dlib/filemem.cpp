@@ -40,7 +40,7 @@ GLint CFileMemory::glOpenFileMem(const char *filename)
     bufferEnd = buffer + bytesLeft;
 
     return (1);
-}	/* glOpenFileMem */
+} /* glOpenFileMem */
 
 void CFileMemory::glReadFileMem()
 {
@@ -54,7 +54,7 @@ void CFileMemory::glCloseFileMem()
     glReleaseMemory((char *)buffer);
     buffer = NULL;
     bytesLeft = 0;
-}	/* glCloseFileMem */
+} /* glCloseFileMem */
 
 GLuint CFileMemory::glReadCharMem()
 {
@@ -63,7 +63,7 @@ GLuint CFileMemory::glReadCharMem()
 
     bytesLeft--;
     return *CurrentMemoryPointer++;
-}	/* glReadCharMem */
+} /* glReadCharMem */
 
 GLint CFileMemory::glReadMem(void *target, GLint total)
 {
@@ -76,7 +76,7 @@ GLint CFileMemory::glReadMem(void *target, GLint total)
     bytesLeft -= total;
 
     return (total);
-}	/* glReadMem */
+} /* glReadMem */
 
 GLint CFileMemory::glSetFilePosMem(GLint offset, GLint mode)
 {
@@ -102,5 +102,5 @@ GLint CFileMemory::glSetFilePosMem(GLint offset, GLint mode)
     if (CurrentMemoryPointer >= bufferEnd) return 1;
 
     return 0;
-}	/* glSetFilePosMem */
+} /* glSetFilePosMem */
 

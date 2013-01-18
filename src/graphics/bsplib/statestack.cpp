@@ -21,7 +21,7 @@
 #include "Graphics\DXEngine\DXDefines.h"
 #include "Graphics\DXEngine\DXEngine.h"
 #include "Graphics\DXEngine\DXVBManager.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 
 extern "C" {
@@ -33,57 +33,57 @@ extern "C" {
 extern bool g_bSlowButSafe;
 extern int g_nFogRenderState;
 
-StateStackClass	TheStateStack;
+StateStackClass TheStateStack;
 
 int verts = 0;
 
 // Create the global storage for our static members.
-TransformFp	StateStackClass::Transform;
-float		StateStackClass::LODRange;
-float		StateStackClass::LODBiasInv;
-float		StateStackClass::fogValue;
-Pmatrix		StateStackClass::Rotation;
-Ppoint		StateStackClass::Xlation;
+TransformFp StateStackClass::Transform;
+float StateStackClass::LODRange;
+float StateStackClass::LODBiasInv;
+float StateStackClass::fogValue;
+Pmatrix StateStackClass::Rotation;
+Ppoint StateStackClass::Xlation;
 
 D3DFrame::Matrix StateStackClass::mV;
 D3DFrame::Matrix StateStackClass::mW;
 D3DFrame::Matrix StateStackClass::mP;
 
-Ppoint		StateStackClass::ObjSpaceEye;
-Ppoint		StateStackClass::ObjSpaceLight;
-ContextMPR	*StateStackClass::context;
-const int	*StateStackClass::CurrentTextureTable;
-Spoint		*StateStackClass::XformedPosPool;
-Spoint		*StateStackClass::XformedPosPoolNext;
-Pintensity	*StateStackClass::IntensityPool;
-Pintensity	*StateStackClass::IntensityPoolNext;
+Ppoint StateStackClass::ObjSpaceEye;
+Ppoint StateStackClass::ObjSpaceLight;
+ContextMPR *StateStackClass::context;
+const int *StateStackClass::CurrentTextureTable;
+Spoint *StateStackClass::XformedPosPool;
+Spoint *StateStackClass::XformedPosPoolNext;
+Pintensity *StateStackClass::IntensityPool;
+Pintensity *StateStackClass::IntensityPoolNext;
 
-PclipInfo	*StateStackClass::ClipInfoPool;
-PclipInfo	*StateStackClass::ClipInfoPoolNext;
+PclipInfo *StateStackClass::ClipInfoPool;
+PclipInfo *StateStackClass::ClipInfoPoolNext;
 class ObjectInstance *StateStackClass::CurrentInstance;
 const class ObjectLOD *StateStackClass::CurrentLOD;
 StateStackFrame StateStackClass::stack[MAX_STATE_STACK_DEPTH];
-int			StateStackClass::stackDepth;
-float		StateStackClass::hAspectWidthCorrection;
-float		StateStackClass::hAspectDepthCorrection;
-float		StateStackClass::vAspectWidthCorrection;
-float		StateStackClass::vAspectDepthCorrection;
-float		StateStackClass::scaleX;
-float		StateStackClass::scaleY;
-float		StateStackClass::shiftX;
-float		StateStackClass::shiftY;
-int			StateStackClass::LODused;
-Pmatrix		*StateStackClass::Tt;
-Pmatrix		*StateStackClass::Tb;
-float		StateStackClass::lightAmbient = .3f;
-float		StateStackClass::lightDiffuse = .6f;
-float		StateStackClass::lightSpecular = .6f;
-Ppoint		StateStackClass::lightVector;
+int StateStackClass::stackDepth;
+float StateStackClass::hAspectWidthCorrection;
+float StateStackClass::hAspectDepthCorrection;
+float StateStackClass::vAspectWidthCorrection;
+float StateStackClass::vAspectDepthCorrection;
+float StateStackClass::scaleX;
+float StateStackClass::scaleY;
+float StateStackClass::shiftX;
+float StateStackClass::shiftY;
+int StateStackClass::LODused;
+Pmatrix *StateStackClass::Tt;
+Pmatrix *StateStackClass::Tb;
+float StateStackClass::lightAmbient = .3f;
+float StateStackClass::lightDiffuse = .6f;
+float StateStackClass::lightSpecular = .6f;
+Ppoint StateStackClass::lightVector;
 
 // Reserved storage space for computed values.
-static Spoint		XformedPosPoolBuffer[MAX_VERT_POOL_SIZE];
-static Pintensity	IntensityPoolBuffer[MAX_VERT_POOL_SIZE];
-static PclipInfo	ClipInfoPoolBuffer[MAX_VERT_POOL_SIZE];
+static Spoint XformedPosPoolBuffer[MAX_VERT_POOL_SIZE];
+static Pintensity IntensityPoolBuffer[MAX_VERT_POOL_SIZE];
+static PclipInfo ClipInfoPoolBuffer[MAX_VERT_POOL_SIZE];
 
 inline void normalizeVector(Ppoint *v)
 {
@@ -96,11 +96,11 @@ inline void normalizeVector(Ppoint *v)
 // Functions used to maintain the states above.
 StateStackClass::StateStackClass()
 {
-    stackDepth			= 0;
-    XformedPosPoolNext	= XformedPosPoolBuffer;
-    IntensityPoolNext		= IntensityPoolBuffer;
-    ClipInfoPoolNext	= ClipInfoPoolBuffer;
-    LODBiasInv			= 1.0f;
+    stackDepth = 0;
+    XformedPosPoolNext = XformedPosPoolBuffer;
+    IntensityPoolNext = IntensityPoolBuffer;
+    ClipInfoPoolNext = ClipInfoPoolBuffer;
+    LODBiasInv = 1.0f;
     SetTextureState(TRUE);
     SetFog(1.f, NULL);
 }
@@ -126,7 +126,7 @@ void StateStackClass::SetLight(float a, float d, float s, Ppoint *atLight)
         TheDXEngine.SetSunLight(a, d , s);
 
         // Setup Light Vector - Light direction has to be reversed
-        D3DVECTOR	Dir;
+        D3DVECTOR Dir;
         Dir.x = -ObjSpaceLight.x;
         Dir.y = -ObjSpaceLight.y;
         Dir.z = -ObjSpaceLight.z;
@@ -137,7 +137,7 @@ void StateStackClass::SetLight(float a, float d, float s, Ppoint *atLight)
 
 void StateStackClass::SetCameraProperties(float ooTanHHAngle, float ooTanVHAngle, float sclx, float scly, float shftx, float shfty)
 {
-    float	rx2;
+    float rx2;
 
     rx2 = (ooTanHHAngle * ooTanHHAngle);
     hAspectDepthCorrection = 1.f / (float)sqrt(rx2 + 1.0f);
@@ -158,30 +158,30 @@ void StateStackClass::SetTextureState(BOOL state)
 {
     if (state)
     {
-        RenderStateTablePC				= RenderStateTableWithPCTex;
-        RenderStateTableNPC				= RenderStateTableWithNPCTex;
+        RenderStateTablePC = RenderStateTableWithPCTex;
+        RenderStateTableNPC = RenderStateTableWithNPCTex;
 
-        DrawPrimNoFogNoClipJumpTable	= DrawPrimNoClipWithTexJumpTable;
-        ClipPrimNoFogJumpTable			= ClipPrimWithTexJumpTable;
+        DrawPrimNoFogNoClipJumpTable = DrawPrimNoClipWithTexJumpTable;
+        ClipPrimNoFogJumpTable = ClipPrimWithTexJumpTable;
 
-        DrawPrimFogNoClipJumpTable		= DrawPrimFogNoClipWithTexJumpTable;
-        ClipPrimFogJumpTable			= ClipPrimFogWithTexJumpTable;
+        DrawPrimFogNoClipJumpTable = DrawPrimFogNoClipWithTexJumpTable;
+        ClipPrimFogJumpTable = ClipPrimFogWithTexJumpTable;
     }
     else
     {
-        RenderStateTablePC				= RenderStateTableNoTex;
-        RenderStateTableNPC				= RenderStateTableNoTex;
+        RenderStateTablePC = RenderStateTableNoTex;
+        RenderStateTableNPC = RenderStateTableNoTex;
 
-        DrawPrimNoFogNoClipJumpTable	= DrawPrimNoClipNoTexJumpTable;
-        ClipPrimNoFogJumpTable			= ClipPrimNoTexJumpTable;
+        DrawPrimNoFogNoClipJumpTable = DrawPrimNoClipNoTexJumpTable;
+        ClipPrimNoFogJumpTable = ClipPrimNoTexJumpTable;
 
-        DrawPrimFogNoClipJumpTable		= DrawPrimFogNoClipNoTexJumpTable;
-        ClipPrimFogJumpTable			= ClipPrimFogNoTexJumpTable;
+        DrawPrimFogNoClipJumpTable = DrawPrimFogNoClipNoTexJumpTable;
+        ClipPrimFogJumpTable = ClipPrimFogNoTexJumpTable;
     }
 
     // FIXME
-    DrawPrimNoClipJumpTable				= DrawPrimFogNoClipJumpTable;
-    ClipPrimJumpTable					= ClipPrimFogJumpTable;
+    DrawPrimNoClipJumpTable = DrawPrimFogNoClipJumpTable;
+    ClipPrimJumpTable = ClipPrimFogJumpTable;
 }
 
 void StateStackClass::SetFog(float alpha, Pcolor *color)
@@ -194,7 +194,7 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
         c |= FloatToInt32(color->g * 255.9f) << 8;
         c |= FloatToInt32(color->b * 255.9f) << 16;
         context->SetState(MPR_STA_FOG_COLOR, c);
-        D3DCOLORVALUE	cx;
+        D3DCOLORVALUE cx;
         cx.dvR = color->r;
         cx.dvG = color->g;
         cx.dvB = color->b;
@@ -207,7 +207,7 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
 
     // FIXME
     DrawPrimNoClipJumpTable = DrawPrimFogNoClipJumpTable;
-    ClipPrimJumpTable		= ClipPrimFogJumpTable;
+    ClipPrimJumpTable = ClipPrimFogJumpTable;
 }
 
 void StateStackClass::SetView(const Ppoint *pos, Pmatrix *cameraRot)
@@ -224,10 +224,10 @@ void StateStackClass::SetView(const Ppoint *pos, Pmatrix *cameraRot)
 
     mV.SetViewMatrix(pitch, roll, yaw, vP);
 
-    /*	if(g_bUse_DX_Engine){
-    		D3DXMATRIX Camera,p;
-    		D3DXMatrixIdentity(&Camera);
-    	}*/
+    /* if(g_bUse_DX_Engine){
+     D3DXMATRIX Camera,p;
+     D3DXMatrixIdentity(&Camera);
+     }*/
 }
 
 void StateStackClass::SetWorld(const Pmatrix *rot, const Ppoint *pos)
@@ -250,8 +250,8 @@ void StateStackClass::SetWorld(const Pmatrix *rot, const Ppoint *pos)
 
 void StateStackClass::SetProjection(float fov, float aspect)
 {
-    //	if(context)
-    //		mW.SetProjectionMatrix(fov,aspect,context->ZNEAR,context->ZFAR);
+    // if(context)
+    // mW.SetProjectionMatrix(fov,aspect,context->ZNEAR,context->ZFAR);
 }
 
 void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pmatrix *Bill, Pmatrix *Tree)
@@ -270,7 +270,7 @@ void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pm
         Temp.M12=1.0;*/
         Temp.M11 = Temp.M22 = Temp.M33 = 1.0f;
         MatrixMult(&Temp, rotWaspect, &Rotation);
-        D3DXMATRIX	Rot, BB;
+        D3DXMATRIX Rot, BB;
         D3DVECTOR DXPos;
         DXPos.x = pos->x;
         DXPos.y = pos->y;
@@ -324,9 +324,9 @@ void StateStackClass::CompoundTransform(const Pmatrix *rot, const Ppoint *pos)
 // The asymetric scale factors MUST be <= 1.0f.
 // The global scale factor can be any positive value.
 // The effects of the scales are multiplicative.
-static const UInt32	OP_NONE	= 0;
-static const UInt32	OP_FOG	= 1;
-static const UInt32	OP_WARP	= 2;
+static const UInt32 OP_NONE = 0;
+static const UInt32 OP_FOG = 1;
+static const UInt32 OP_WARP = 2;
 
 
 /*inline*/
@@ -349,8 +349,8 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     if ((operation & OP_WARP) || (scale != 1.f))
     {
-        Pmatrix	tempM;
-        float	cx, cy, cz;
+        Pmatrix tempM;
+        float cx, cy, cz;
         cx = cz = cy = scale;
 
         if (operation & OP_WARP)
@@ -364,9 +364,9 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         ShiAssert((sy > 0.0f) && (sy <= 1.0f));
         ShiAssert((sz > 0.0f) && (sz <= 1.0f));
 
-        Pmatrix	stretchM = {	cx,		0.f,	0.f,
-                                0.f,	cy,		0.f,
-                                0.f,	0.f,	cz
+        Pmatrix stretchM = { cx, 0.f, 0.f,
+                                0.f, cy, 0.f,
+                                0.f, 0.f, cz
                            };
 
         tempM = Rotation;
@@ -381,23 +381,23 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         mW = mS * mT;
     }
 
-    /*	if(scale != 1.f)
-    	{
-    		Pmatrix	tempM;
+    /* if(scale != 1.f)
+     {
+     Pmatrix tempM;
 
-    		Pmatrix scaleM = {	scale,	0.f,	0.f,
-    							0.f,	scale,	0.f,
-    							0.f,	0.f,	scale };
+     Pmatrix scaleM = { scale, 0.f, 0.f,
+     0.f, scale, 0.f,
+     0.f, 0.f, scale };
 
-    		tempM = Rotation;
-    		MatrixMult(&tempM,&scaleM,&Rotation);
+     tempM = Rotation;
+     MatrixMult(&tempM,&scaleM,&Rotation);
 
-    		D3DFrame::Matrix mS,mT;
-    		mT = mW;
-    		mS.InitIdentity();
-    		mS.m[0][0]=scale; mS.m[1][1]=scale; mS.m[2][2]=scale;
-    		mW = mS*mT;
-    	}*/
+     D3DFrame::Matrix mS,mT;
+     mT = mW;
+     mS.InitIdentity();
+     mS.m[0][0]=scale; mS.m[1][1]=scale; mS.m[2][2]=scale;
+     mW = mS*mT;
+     }*/
 
     // Store the adjusted range for LOD determinations
     LODRange = Xlation.x * LODBiasInv;
@@ -439,15 +439,15 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 }
 
                 // Choose perspective correction or not
-                //			if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) &&
-                //				!(CurrentLOD->flags & ObjectLOD::PERSP_CORR))
-                //			{
-                //				RenderStateTable = RenderStateTableNPC;
-                //			}
-                //			else
-                //			{
+                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) &&
+                // !(CurrentLOD->flags & ObjectLOD::PERSP_CORR))
+                // {
+                // RenderStateTable = RenderStateTableNPC;
+                // }
+                // else
+                // {
                 RenderStateTable = RenderStateTablePC;
-                //			}
+                // }
 
                 in ++;
 
@@ -459,13 +459,13 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 // Draw the object
                 CurrentLOD->Draw();
 
-                //				if (in == 1)
-                //				{
-                //					if (verts)
-                //					{
-                //						MonoPrint ("Obj %d:%d %d : %d\n", objInst->id, LODused, (int) MaxLODRange, verts);
-                //					}
-                //				}
+                // if (in == 1)
+                // {
+                // if (verts)
+                // {
+                // MonoPrint ("Obj %d:%d %d : %d\n", objInst->id, LODused, (int) MaxLODRange, verts);
+                // }
+                // }
 
                 in --;
             }
@@ -485,7 +485,7 @@ void StateStackClass::DrawObject(ObjectInstance *objInst, const Pmatrix *rot, co
     if (g_bUse_DX_Engine)
     {
         //START_PROFILE(DX_ENGINE_PROF);
-        D3DXMATRIX	Rot;
+        D3DXMATRIX Rot;
         AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
         TheDXEngine.DrawObject(objInst, &Rot, pos, 1.f, 1.f, 1.f, scale, false, NULL);
         //STOP_PROFILE(DX_ENGINE_PROF);
@@ -501,7 +501,7 @@ void StateStackClass::DrawSubObject(ObjectInstance *objInst, const Pmatrix *rot,
     if (g_bUse_DX_Engine)
     {
         //START_PROFILE(DX_ENGINE_PROF);
-        D3DXMATRIX	Rot;
+        D3DXMATRIX Rot;
         AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
         TheDXEngine.DrawObject(objInst, &Rot, pos, 1.f, 1.f, 1.f, 1.f);
         //STOP_PROFILE(DX_ENGINE_PROF);
@@ -518,7 +518,7 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     if (g_bUse_DX_Engine)
     {
         //START_PROFILE(DX_ENGINE_PROF);
-        D3DXMATRIX	Rot;
+        D3DXMATRIX Rot;
         AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
         TheDXEngine.DrawObject(objInst, &Rot, pos, sx, sy, sz, scale);
         //STOP_PROFILE(DX_ENGINE_PROF);
@@ -531,22 +531,22 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
 {
     // Decide if we need clipping, or if the object is totally off screen
     // REMEMBER:  Xlation is camera oriented, but still X front, Y right, Z down
-    //			  so range from viewer is in the X term.
+    //   so range from viewer is in the X term.
     // NOTE:  We compute "d", the distance from the viewer at which the bounding
-    //		  sphere should intersect the view frustum.  We use .707 since the
-    //		  rotation matrix already normalized us to a 45 degree half angle.
-    //		  We do have to adjust the radius shift by the FOV correction factors,
-    //		  though, since it didn't go through the matix.
+    //   sphere should intersect the view frustum.  We use .707 since the
+    //   rotation matrix already normalized us to a 45 degree half angle.
+    //   We do have to adjust the radius shift by the FOV correction factors,
+    //   though, since it didn't go through the matix.
     // NOTE2: We could develop the complete set of clip flags here by continuing to
     //        check other edges instead of returning in the clipped cases.  For now,
     //        we only need to know if it IS clipped or not, so we terminate early.
     // TODO:  We should roll the radius of any attached slot children into the check radius
-    //		  to ensure that we don't reject a parent object whose _children_ may be on screen.
+    //   to ensure that we don't reject a parent object whose _children_ may be on screen.
     //        (though this should be fairly rare in practice)
-    float	rd;
-    float	rh;
-    float	rx;
-    //	UInt32	clipFlag = ON_SCREEN;
+    float rd;
+    float rh;
+    float rx;
+    // UInt32 clipFlag = ON_SCREEN;
 
     rx = CurrentInstance->Radius();
     rd = rx * vAspectDepthCorrection;
@@ -556,10 +556,10 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     {
         if (-(Xlation.z + rh) > Xlation.x + rd)
         {
-            return OFF_SCREEN;			// Trivial reject top
+            return OFF_SCREEN; // Trivial reject top
         }
 
-        //		clipFlag = CLIP_TOP;
+        // clipFlag = CLIP_TOP;
         return CLIP_TOP;
     }
 
@@ -567,10 +567,10 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     {
         if (Xlation.z - rh > Xlation.x + rd)
         {
-            return OFF_SCREEN;			// Trivial reject bottom
+            return OFF_SCREEN; // Trivial reject bottom
         }
 
-        //		clipFlag |= CLIP_BOTTOM;
+        // clipFlag |= CLIP_BOTTOM;
         return CLIP_BOTTOM;
     }
 
@@ -581,10 +581,10 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     {
         if (-(Xlation.x + rh) > Xlation.x + rd)
         {
-            return OFF_SCREEN;			// Trivial reject left
+            return OFF_SCREEN; // Trivial reject left
         }
 
-        //		clipFlag |= CLIP_LEFT;
+        // clipFlag |= CLIP_LEFT;
         return CLIP_LEFT;
     }
 
@@ -592,10 +592,10 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     {
         if (Xlation.y - rh > Xlation.x + rd)
         {
-            return OFF_SCREEN;			// Trivial reject right
+            return OFF_SCREEN; // Trivial reject right
         }
 
-        //		clipFlag |= CLIP_RIGHT;
+        // clipFlag |= CLIP_RIGHT;
         return CLIP_RIGHT;
     }
 
@@ -605,14 +605,14 @@ void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *r
     {
         if (Xlation.x + rh < NEAR_CLIP_DISTANCE)
         {
-            return OFF_SCREEN;			// Trivial reject near
+            return OFF_SCREEN; // Trivial reject near
         }
 
-        //		clipFlag |= CLIP_NEAR;
+        // clipFlag |= CLIP_NEAR;
         return CLIP_NEAR;
     }
 
-    //	return clipFlag;
+    // return clipFlag;
     return ON_SCREEN;
 }
 
@@ -620,26 +620,26 @@ void StateStackClass::PushAll(void)
 {
     ShiAssert(stackDepth < MAX_STATE_STACK_DEPTH);
 
-    stack[stackDepth].XformedPosPool		= XformedPosPool;
-    stack[stackDepth].IntensityPool			= IntensityPool;
-    stack[stackDepth].ClipInfoPool			= ClipInfoPool;
+    stack[stackDepth].XformedPosPool = XformedPosPool;
+    stack[stackDepth].IntensityPool = IntensityPool;
+    stack[stackDepth].ClipInfoPool = ClipInfoPool;
 
-    stack[stackDepth].Rotation				= Rotation;
-    stack[stackDepth].Xlation				= Xlation;
+    stack[stackDepth].Rotation = Rotation;
+    stack[stackDepth].Xlation = Xlation;
 
-    stack[stackDepth].ObjSpaceEye			= ObjSpaceEye;
-    stack[stackDepth].ObjSpaceLight			= ObjSpaceLight;
+    stack[stackDepth].ObjSpaceEye = ObjSpaceEye;
+    stack[stackDepth].ObjSpaceLight = ObjSpaceLight;
 
-    stack[stackDepth].CurrentInstance		= CurrentInstance;
-    stack[stackDepth].CurrentLOD			= CurrentLOD;
-    stack[stackDepth].CurrentTextureTable	= CurrentTextureTable;
+    stack[stackDepth].CurrentInstance = CurrentInstance;
+    stack[stackDepth].CurrentLOD = CurrentLOD;
+    stack[stackDepth].CurrentTextureTable = CurrentTextureTable;
 
-    stack[stackDepth].DrawPrimJumpTable		= DrawPrimJumpTable;
-    stack[stackDepth].Transform				= Transform;
+    stack[stackDepth].DrawPrimJumpTable = DrawPrimJumpTable;
+    stack[stackDepth].Transform = Transform;
 
-    XformedPosPool							= XformedPosPoolNext;
-    IntensityPool								= IntensityPoolNext;
-    ClipInfoPool							= ClipInfoPoolNext;
+    XformedPosPool = XformedPosPoolNext;
+    IntensityPool = IntensityPoolNext;
+    ClipInfoPool = ClipInfoPoolNext;
 
     stackDepth++;
 }
@@ -648,39 +648,39 @@ void StateStackClass::PopAll(void)
 {
     stackDepth--;
 
-    XformedPosPoolNext	= XformedPosPool;
-    IntensityPoolNext		= IntensityPool;
-    ClipInfoPoolNext	= ClipInfoPool;
+    XformedPosPoolNext = XformedPosPool;
+    IntensityPoolNext = IntensityPool;
+    ClipInfoPoolNext = ClipInfoPool;
 
-    XformedPosPool		= stack[stackDepth].XformedPosPool;
-    IntensityPool			= stack[stackDepth].IntensityPool;
-    ClipInfoPool		= stack[stackDepth].ClipInfoPool;
+    XformedPosPool = stack[stackDepth].XformedPosPool;
+    IntensityPool = stack[stackDepth].IntensityPool;
+    ClipInfoPool = stack[stackDepth].ClipInfoPool;
 
-    Rotation			= stack[stackDepth].Rotation;
-    Xlation				= stack[stackDepth].Xlation;
+    Rotation = stack[stackDepth].Rotation;
+    Xlation = stack[stackDepth].Xlation;
 
-    ObjSpaceEye			= stack[stackDepth].ObjSpaceEye;
-    ObjSpaceLight		= stack[stackDepth].ObjSpaceLight;
+    ObjSpaceEye = stack[stackDepth].ObjSpaceEye;
+    ObjSpaceLight = stack[stackDepth].ObjSpaceLight;
 
-    CurrentInstance		= stack[stackDepth].CurrentInstance;
-    CurrentLOD			= stack[stackDepth].CurrentLOD;
-    CurrentTextureTable	= stack[stackDepth].CurrentTextureTable;
+    CurrentInstance = stack[stackDepth].CurrentInstance;
+    CurrentLOD = stack[stackDepth].CurrentLOD;
+    CurrentTextureTable = stack[stackDepth].CurrentTextureTable;
 
-    DrawPrimJumpTable	= stack[stackDepth].DrawPrimJumpTable;
-    Transform			= stack[stackDepth].Transform;
+    DrawPrimJumpTable = stack[stackDepth].DrawPrimJumpTable;
+    Transform = stack[stackDepth].Transform;
 }
 
 void StateStackClass::PushVerts(void)
 {
     ShiAssert(stackDepth < MAX_STATE_STACK_DEPTH);
 
-    stack[stackDepth].XformedPosPool	= XformedPosPool;
-    stack[stackDepth].IntensityPool		= IntensityPool;
-    stack[stackDepth].ClipInfoPool		= ClipInfoPool;
+    stack[stackDepth].XformedPosPool = XformedPosPool;
+    stack[stackDepth].IntensityPool = IntensityPool;
+    stack[stackDepth].ClipInfoPool = ClipInfoPool;
 
-    XformedPosPool						= XformedPosPoolNext;
-    IntensityPool							= IntensityPoolNext;
-    ClipInfoPool						= ClipInfoPoolNext;
+    XformedPosPool = XformedPosPoolNext;
+    IntensityPool = IntensityPoolNext;
+    ClipInfoPool = ClipInfoPoolNext;
 
     stackDepth++;
 }
@@ -690,13 +690,13 @@ void StateStackClass::PopVerts(void)
 {
     stackDepth--;
 
-    XformedPosPoolNext	= XformedPosPool;
-    IntensityPoolNext		= IntensityPool;
-    ClipInfoPoolNext	= ClipInfoPool;
+    XformedPosPoolNext = XformedPosPool;
+    IntensityPoolNext = IntensityPool;
+    ClipInfoPoolNext = ClipInfoPool;
 
-    XformedPosPool		= stack[stackDepth].XformedPosPool;
-    IntensityPool			= stack[stackDepth].IntensityPool;
-    ClipInfoPool		= stack[stackDepth].ClipInfoPool;
+    XformedPosPool = stack[stackDepth].XformedPosPool;
+    IntensityPool = stack[stackDepth].IntensityPool;
+    ClipInfoPool = stack[stackDepth].ClipInfoPool;
 }
 
 // Cobra - RED - This function is now about 2 times faster that it was before with following changes...!!!
@@ -712,10 +712,10 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
     {
         // Cobra - RED - If Poly Normal facing other side dnt calculate light,
         // just assign last calculated light to avoid dark spots on near polys
-        //if((double)(ObjSpaceEye.x*n->i+ObjSpaceEye.y*n->j+ObjSpaceEye.z*n->k)<(double)0.0){		// Operations are following the Normal check to keep the pocessor
-        //	*IntensityPoolNext = LastLight;											// cache still online and execute a backaward cache call
-        //	n++; p++; IntensityPoolNext++;											// which is faster than a forward call for a P Class processor
-        //	continue;
+        //if((double)(ObjSpaceEye.x*n->i+ObjSpaceEye.y*n->j+ObjSpaceEye.z*n->k)<(double)0.0){ // Operations are following the Normal check to keep the pocessor
+        // *IntensityPoolNext = LastLight; // cache still online and execute a backaward cache call
+        // n++; p++; IntensityPoolNext++; // which is faster than a forward call for a P Class processor
+        // continue;
         //}
         // Cobra - RED - End
 
@@ -723,7 +723,7 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
         iDiff = max(n->i * ObjSpaceLight.x + n->j * ObjSpaceLight.y + n->k * ObjSpaceLight.z, 0.f) * lightDiffuse;
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
-        //	...........(lightSpecular).........................................
+        // ...........(lightSpecular).........................................
         if (!LODused && ((*(long*)&lightSpecular) & 0x7fffffff) && DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
@@ -737,11 +737,11 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             // iDiff to have not dark spots on near polys, however avoiding iSpec calculations
             if ((viewVector.x * n->i + viewVector.y * n->j + viewVector.z * n->k) < 0.0)
             {
-                *IntensityPoolNext = min(lightAmbient + iDiff, 1.f);			// Operations are following the Normal check to keep the pocessor
+                *IntensityPoolNext = min(lightAmbient + iDiff, 1.f); // Operations are following the Normal check to keep the pocessor
                 n++;
                 p++;
-                IntensityPoolNext++;								// cache still online and execute a backaward cache call
-                continue;													// which is faster than a forward call for a P Class processor
+                IntensityPoolNext++; // cache still online and execute a backaward cache call
+                continue; // which is faster than a forward call for a P Class processor
             }
 
             halfVector.x = ObjSpaceLight.x + viewVector.x;
@@ -756,11 +756,11 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             if (iSpec <= 0) iSpec = 0;
             else
             {
-                iSpec = iSpec * iSpec;					//	iSpec^2;
-                iSpec = iSpec * iSpec;					//	iSpec^4;
-                iSpec = iSpec * iSpec;					//	iSpec^8;
-                iSpec = iSpec * iSpec;					//	iSpec^16;
-                iSpec = iSpec * iSpec;					//	iSpec^32;
+                iSpec = iSpec * iSpec; // iSpec^2;
+                iSpec = iSpec * iSpec; // iSpec^4;
+                iSpec = iSpec * iSpec; // iSpec^8;
+                iSpec = iSpec * iSpec; // iSpec^16;
+                iSpec = iSpec * iSpec; // iSpec^32;
                 iSpec *= lightSpecular;
             }
 
@@ -842,8 +842,8 @@ void StateStackClass::TransformWithClip(Ppoint *p, int n)
 
 void StateStackClass::TransformBillboardWithClip(Ppoint *p, int n, BTransformType type)
 {
-    float	scratch_x, scratch_y, scratch_z;
-    Pmatrix	*T;
+    float scratch_x, scratch_y, scratch_z;
+    Pmatrix *T;
 
     // Make sure we've got enough room in the transformed position pool
     ShiAssert(IsValidPosIndex(n - 1));

@@ -10,12 +10,12 @@ typedef struct bit_file
     FILE *file;
     unsigned char mask;
     int rack;
-    long bytesRead;					/* uncompressed lzss bytes */
+    long bytesRead; /* uncompressed lzss bytes */
     int match_length;
     int match_position;
     int current_position;
-    long fileLength;				/* uncompressed file size, not actual file size */
-    int pacifier_counter;			/* added for book bitio to work for file compressions */
+    long fileLength; /* uncompressed file size, not actual file size */
+    int pacifier_counter; /* added for book bitio to work for file compressions */
 } BIT_FILE;
 
 /*
@@ -24,15 +24,15 @@ typedef struct bit_file
  */
 typedef struct
 {
-    unsigned char	*buf;			/* the compression buffer */
-    unsigned char	*bufptr;		/* marker to move around the buffer */
-    unsigned char	mask;
-    int				rack;
-    long			bufferSize;
-    long			bytesRead;      /* bytesRead in relation to uncompressed file size */
-    long			fileLength;     /* uncompressed file size, not actual file size */
-    long			compFileLength; /* compressed file size */
-    unsigned char	*fill_level;	/* last place in the buffer to be filled */
+    unsigned char *buf; /* the compression buffer */
+    unsigned char *bufptr; /* marker to move around the buffer */
+    unsigned char mask;
+    int rack;
+    long bufferSize;
+    long bytesRead;      /* bytesRead in relation to uncompressed file size */
+    long fileLength;     /* uncompressed file size, not actual file size */
+    long compFileLength; /* compressed file size */
+    unsigned char *fill_level; /* last place in the buffer to be filled */
 } compression_buf_t;
 
 BIT_FILE     *OpenInputBitFile(char *name);
@@ -47,10 +47,10 @@ void          CloseOutputBitFile(BIT_FILE *bit_file);
 void          FilePrintBinary(FILE *file, unsigned int code, int bits);
 
 /* Bitio on buffers */
-BIT_FILE					*openTalkFile(char *name);
-unsigned long				InputCompBits(compression_buf_t *compbuf, int bit_count);
-void						initSegment(BIT_FILE *bit_file);
-compression_buf_t			*FillCompressionBuffer(BIT_FILE *bit_file);
+BIT_FILE *openTalkFile(char *name);
+unsigned long InputCompBits(compression_buf_t *compbuf, int bit_count);
+void initSegment(BIT_FILE *bit_file);
+compression_buf_t *FillCompressionBuffer(BIT_FILE *bit_file);
 
 #endif  /* _BITIO_H */
 

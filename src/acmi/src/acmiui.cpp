@@ -25,7 +25,7 @@
 #include "AcmiView.h"
 
 #include "Graphics\DXEngine\DXVBManager.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
 void SetDeleteCallback(void (*cb)(long, short, C_Base*));
@@ -61,7 +61,7 @@ extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 int TESTBUTTONPUSH = 0;
 
 // we need synchronization between ui events and callbacks for exec processing
-F4CSECTIONHANDLE*	gUICriticalSection = NULL;
+F4CSECTIONHANDLE* gUICriticalSection = NULL;
 
 
 typedef struct
@@ -227,8 +227,8 @@ void InitACMIMenus()
 
     if (menu)
     {
-        menu->SetItemState(OPT_ALT_POLE,	(short)DrawablePoled::drawPole);
-        menu->SetItemState(OPT_LOCK_LINE,	(short)gDoLockLines);
+        menu->SetItemState(OPT_ALT_POLE, (short)DrawablePoled::drawPole);
+        menu->SetItemState(OPT_LOCK_LINE, (short)gDoLockLines);
         menu->SetItemState(OPT_WIRE_TERRAIN, (short)gDoWireFrame);
 
         menu->SetItemState(WING_TRAILS_NONE, 0);
@@ -254,15 +254,15 @@ void InitACMIMenus()
                 menu->SetItemState(WING_TRAILS_MAX, 1);
         }
 
-        menu->SetItemState(LABEL_NAME,	(short)DrawableBSP::drawLabels);
-        menu->SetItemState(LABEL_AIRSPEED,	(short)DrawablePoled::drawSpeed);
-        menu->SetItemState(LABEL_ALTITUDE,	(short)DrawablePoled::drawAlt);
-        menu->SetItemState(LABEL_HEADING,	(short)DrawablePoled::drawHeading);
-        menu->SetItemState(LABEL_LOCK_RANGE,	(short)DrawablePoled::drawlockrange);
-        //		menu->SetItemState(LABEL_PITCH,0);
-        //		menu->SetItemState(LABEL_G,0);
-        menu->SetItemState(LABEL_TURN_RATE,	(short)DrawablePoled::drawTurnRate);
-        menu->SetItemState(LABEL_TURN_RADIUS,	(short)DrawablePoled::drawTurnRadius);
+        menu->SetItemState(LABEL_NAME, (short)DrawableBSP::drawLabels);
+        menu->SetItemState(LABEL_AIRSPEED, (short)DrawablePoled::drawSpeed);
+        menu->SetItemState(LABEL_ALTITUDE, (short)DrawablePoled::drawAlt);
+        menu->SetItemState(LABEL_HEADING, (short)DrawablePoled::drawHeading);
+        menu->SetItemState(LABEL_LOCK_RANGE, (short)DrawablePoled::drawlockrange);
+        // menu->SetItemState(LABEL_PITCH,0);
+        // menu->SetItemState(LABEL_G,0);
+        menu->SetItemState(LABEL_TURN_RATE, (short)DrawablePoled::drawTurnRate);
+        menu->SetItemState(LABEL_TURN_RADIUS, (short)DrawablePoled::drawTurnRadius);
 
         menu->SetItemState(VEH_SIZE_1, 0);
         menu->SetItemState(VEH_SIZE_2, 0);
@@ -318,9 +318,9 @@ void CloseACMI()
 /*
 ** FindUITextEvent
 ** Description:
-**		Returns The Text control in the event list based on the time
-**		we've passed in.  These times were set up when loading the text
-**		events.  slot should always be 0 in our case.
+** Returns The Text control in the event list based on the time
+** we've passed in.  These times were set up when loading the text
+** events.  slot should always be 0 in our case.
 */
 C_Base *FindUITextEvent(C_Window *win, long slot, long time)
 {
@@ -433,7 +433,7 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
 
         // stop the tape
         acmiView->Tape()->Pause();
-        //		ACMITransportButton( STOP_BUTTON );
+        // ACMITransportButton( STOP_BUTTON );
 
         acmiView->UnloadTape(TRUE);
         acmiView->ExitGraphics();
@@ -559,11 +559,11 @@ void ToggleWingTrailsCB(long ID, short, C_Base*)
 void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 {
 
-    //	C_Button *btn;
+    // C_Button *btn;
     C_Window *win;
 
     win = control->Parent_;
-    //	int buttonstate=0;
+    // int buttonstate=0;
     int temp = 0;
 
 
@@ -745,10 +745,10 @@ void ACMItoggleLABELSCB(long, short hittype, C_Base *control)
         y = g_nACMIOptionsPopupLowResY;
     }
 
-    //	x = 500; // btn->GetX()-w+20;
-    //	y = 500; //btn->GetY()-h+5;
-    //	x = btn->GetX()-w+20;
-    //	y = btn->GetY()-h+5;
+    // x = 500; // btn->GetX()-w+20;
+    // y = 500; //btn->GetY()-h+5;
+    // x = btn->GetX()-w+20;
+    // y = btn->GetY()-h+5;
 
     gPopupMgr->OpenMenu(ACMI_OPTION_POPUP, x, y, control);
 
@@ -783,34 +783,34 @@ void ACMItoggleLABELSCB(long, short hittype, C_Base *control)
 
 
 /*
-	C_Button *btn;
-	C_Window *win;
+ C_Button *btn;
+ C_Window *win;
 
-	win=control->Parent_;
-	int buttonstate=0;
-	int temp=0;
+ win=control->Parent_;
+ int buttonstate=0;
+ int temp=0;
 
-	btn=(C_Button *)win->FindControl(ACMI_LABELS);
-	if(btn != NULL)
-	{
-		temp = ((C_Button *)btn)->GetState();
+ btn=(C_Button *)win->FindControl(ACMI_LABELS);
+ if(btn != NULL)
+ {
+ temp = ((C_Button *)btn)->GetState();
 
-		if(temp > 0)
-		{
-			if(acmiView != NULL)
-			{
-				acmiView->ToggleLabel(temp);
-			}
-		}
-		else
-		{
-			if(acmiView != NULL)
-			{
-				acmiView->ToggleLabel(temp);
-			}
-		}
+ if(temp > 0)
+ {
+ if(acmiView != NULL)
+ {
+ acmiView->ToggleLabel(temp);
+ }
+ }
+ else
+ {
+ if(acmiView != NULL)
+ {
+ acmiView->ToggleLabel(temp);
+ }
+ }
 
-	}
+ }
 */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1287,7 +1287,7 @@ void ACMIButtonCB(long, short hittype, C_Base*)
     // create the critical sect
     /*
     if ( gUICriticalSection == NULL )
-    	gUICriticalSection = F4CreateCriticalSection();
+     gUICriticalSection = F4CreateCriticalSection();
     */
 
     if (!ACMILoaded)
@@ -1330,9 +1330,9 @@ void LoadACMIWindows()
     if (!ACMILoaded)
     {
         gMainParser->LoadImageList("ac_art.lst");
-        //		gImageMgr->SetAllKeys(UI95_RGB24Bit(0x00ff00ff));
+        // gImageMgr->SetAllKeys(UI95_RGB24Bit(0x00ff00ff));
         gMainParser->LoadSoundList("ac_snd.lst");
-        gMainParser->LoadWindowList("ac_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+        gMainParser->LoadWindowList("ac_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
         id = gMainParser->GetFirstWindowLoaded();
 
@@ -1389,7 +1389,7 @@ void FindACMIFLTFiles()
     fileinfo = new _finddata_t;
     handle = _findfirst("acmibin\\*.vhs", fileinfo);
     //handle = _findfirst("Campaign\\save\\fltfiles\\*.vhs", fileinfo );
-    //	handle = _findfirst("acmibin\\*.vhs", fileinfo );
+    // handle = _findfirst("acmibin\\*.vhs", fileinfo );
 
     if (handle > 0)
     {
@@ -1473,23 +1473,23 @@ void HookupACMIControls(long ID)
 
     ////////////////////////////////////////////////////////////////////////////
     /*
-    	C_PopupList *menu;
+     C_PopupList *menu;
 
 
-    //	caller=gPopupMgr->GetCallingControl();
-    //	if(menu == NULL)
-    //		return;
+    // caller=gPopupMgr->GetCallingControl();
+    // if(menu == NULL)
+    // return;
 
-    	menu=gPopupMgr->GetMenu(ACMI_OPTION_POPUP);
+     menu=gPopupMgr->GetMenu(ACMI_OPTION_POPUP);
 
-    	if(menu)
-    	{
-    		// Legend stuff
-    		menu->SetCallback(OPT_LABELS,ToggleNamesCB);
-    		//		menu->SetCallback(MID_LEG_CIRCLES,MenuToggleCirclesCB);
-    		//		menu->SetCallback(MID_LEG_BOUND,MenuToggleTroupBoundariesCB);
-    		//		menu->SetCallback(MID_LEG_MOVE,MenuToggleMovementArrowsCB);
-    	}
+     if(menu)
+     {
+     // Legend stuff
+     menu->SetCallback(OPT_LABELS,ToggleNamesCB);
+     // menu->SetCallback(MID_LEG_CIRCLES,MenuToggleCirclesCB);
+     // menu->SetCallback(MID_LEG_BOUND,MenuToggleTroupBoundariesCB);
+     // menu->SetCallback(MID_LEG_MOVE,MenuToggleMovementArrowsCB);
+     }
     */
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -1587,23 +1587,23 @@ void HookupACMIControls(long ID)
         ctrl->SetCallback(ACMITrackingCB);
     }
 
-    //	ctrl = (C_Button *)winme->FindControl(TRAIL_CTRL);
-    //	if(ctrl != NULL)
-    //	{
-    //		ctrl->SetCallback(ACMIWingTrailCB);
-    //	}
+    // ctrl = (C_Button *)winme->FindControl(TRAIL_CTRL);
+    // if(ctrl != NULL)
+    // {
+    // ctrl->SetCallback(ACMIWingTrailCB);
+    // }
     //
-    //	ctrl = (C_Button *)winme->FindControl(TRAIL_INC);
-    //	if(ctrl != NULL)
-    //	{
-    //		ctrl->SetCallback(ACMIWingTrailIncCB);
-    //	}
+    // ctrl = (C_Button *)winme->FindControl(TRAIL_INC);
+    // if(ctrl != NULL)
+    // {
+    // ctrl->SetCallback(ACMIWingTrailIncCB);
+    // }
 
-    //	ctrl = (C_Button *)winme->FindControl(TRAIL_DEC);
-    //	if(ctrl != NULL)
-    //	{
-    //		ctrl->SetCallback(ACMIWingTrailDecCB);
-    //	}
+    // ctrl = (C_Button *)winme->FindControl(TRAIL_DEC);
+    // if(ctrl != NULL)
+    // {
+    // ctrl->SetCallback(ACMIWingTrailDecCB);
+    // }
 
     panner = (C_Panner *)winme->FindControl(YAW_PITCH_ARROWS);
 
@@ -1732,7 +1732,7 @@ void HookupACMIControls(long ID)
     tctrl = (C_Text *)winme->FindControl(TRAIL_FIELD);
     if(tctrl != NULL)
     {
-    	gTrailLenCtrl = tctrl;
+     gTrailLenCtrl = tctrl;
     }
     */
 
@@ -1791,11 +1791,11 @@ void HookupACMIControls(long ID)
 
 static void ViewTimerCB(long, short, C_Base *control)
 {
-    //	F4EnterCriticalSection( gUICriticalSection );
+    // F4EnterCriticalSection( gUICriticalSection );
     control->SetReady(1);
     control->Parent_->update_ |= C_DRAW_REFRESHALL;
     control->Parent_->RefreshWindow();
-    //	F4LeaveCriticalSection( gUICriticalSection );
+    // F4LeaveCriticalSection( gUICriticalSection );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1812,7 +1812,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
     int newpos;
     int mins, secs, msecs, hrs;
 
-    float Simseconds	= 0.0f;
+    float Simseconds = 0.0f;
 
     // F4EnterCriticalSection( gUICriticalSection );
 
@@ -1940,7 +1940,7 @@ void ACMILoadCB(long, short hittype, C_Base *control)
     C_Window
     *win;
 
-    //	F4EnterCriticalSection( gUICriticalSection );
+    // F4EnterCriticalSection( gUICriticalSection );
     if (hittype == C_TYPE_LMOUSEUP)
     {
         acmiDraw = FALSE;
@@ -1955,7 +1955,7 @@ void ACMILoadCB(long, short hittype, C_Base *control)
         gMainHandler->EnableWindowGroup(control->GetGroup());
     }
 
-    //	F4LeaveCriticalSection( gUICriticalSection );
+    // F4LeaveCriticalSection( gUICriticalSection );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2012,9 +2012,9 @@ void ACMICloseCB(long, short hittype, C_Base *control)
 
     UI_Leave(Leave);
 
-    // RV - RED	- We r leaving ACMI... why still true?
-    //	acmiDraw = TRUE;
-    //	renderACMI = TRUE;
+    // RV - RED - We r leaving ACMI... why still true?
+    // acmiDraw = TRUE;
+    // renderACMI = TRUE;
 
 }
 
@@ -2030,7 +2030,7 @@ void ACMIStopCB(long, short hittype, C_Base *control)
     if (hittype == C_TYPE_LMOUSEUP && ACMIViewIsReady())
     {
         acmiView->Tape()->Pause();
-        //		ACMITransportButton( STOP_BUTTON );
+        // ACMITransportButton( STOP_BUTTON );
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -2052,7 +2052,7 @@ void ACMIPlayCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetPlayAcceleration(0.0);
         acmiView->Tape()->SetMaxPlaySpeed(1.0);
         acmiView->Tape()->Play();
-        //		ACMITransportButton( PLAY_BUTTON );
+        // ACMITransportButton( PLAY_BUTTON );
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -2075,7 +2075,7 @@ void ACMIPlayBackwardsCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetPlayAcceleration(0.0);
         acmiView->Tape()->SetMaxPlaySpeed(1.0);
         acmiView->Tape()->Play();
-        //		ACMITransportButton( REV_BUTTON );
+        // ACMITransportButton( REV_BUTTON );
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -2142,7 +2142,7 @@ void ACMIRewindCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetPlayAcceleration(-1.0);
         acmiView->Tape()->SetMaxPlaySpeed(8.0);
         acmiView->Tape()->Play();
-        //		ACMITransportButton( REV_BUTTON );
+        // ACMITransportButton( REV_BUTTON );
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -2165,7 +2165,7 @@ void ACMIFastForwardCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetPlayAcceleration(1.0);
         acmiView->Tape()->SetMaxPlaySpeed(8.0);
         acmiView->Tape()->Play();
-        //		ACMITransportButton( FF_BUTTON );
+        // ACMITransportButton( FF_BUTTON );
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -2625,7 +2625,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     *camFilter;
 
 
-    C_Text		*text;
+    C_Text *text;
 
 
     char

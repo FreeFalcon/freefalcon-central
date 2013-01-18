@@ -58,11 +58,11 @@ VuDriver::~VuDriver()
 
 /*
 void VuDriver::AlignTimeAdd(VU_TIME dt){
-	lastUpdateGameTime_ += dt;
+ lastUpdateGameTime_ += dt;
 }
 
 void VuDriver::AlignTimeSubtract(VU_TIME dt){
-	lastUpdateGameTime_ -= dt;
+ lastUpdateGameTime_ -= dt;
 }
 */
 
@@ -179,34 +179,34 @@ void VuDeadReckon::ExecDR(VU_TIME timestamp)
     entity_->SetYPRDelta(d_dryaw_, d_drpitch_, d_drroll_);
 
     /*
-    	val = bu = drx_;
-    	inc = dt*d_drx_;
-    	drx_ = val + inc;
-    	if (bu == drx_){ d_drx_ = 0; } // if increment was not enough to update, set speed to 0
+     val = bu = drx_;
+     inc = dt*d_drx_;
+     drx_ = val + inc;
+     if (bu == drx_){ d_drx_ = 0; } // if increment was not enough to update, set speed to 0
 
-    	val = bu = dry_;
-    	inc = dt*d_dry_;
-    	dry_ = val + inc;
-    	if (bu == dry_){ d_dry_ = 0; }
+     val = bu = dry_;
+     inc = dt*d_dry_;
+     dry_ = val + inc;
+     if (bu == dry_){ d_dry_ = 0; }
 
-    	val = bu = drz_;
-    	inc = dt*d_drz_;
-    	drz_ = val + inc;
-    	if (bu == drz_){ d_drz_ = 0; }
+     val = bu = drz_;
+     inc = dt*d_drz_;
+     drz_ = val + inc;
+     if (bu == drz_){ d_drz_ = 0; }
 
-    	// sfr: we should use AGL instead of 0 here, since some places can be below 0...
-    	//if (drz_ > 0.0f){
-    	//	// z is inverted (- is up)
-    	//	drz_ = 0.0f;
-    	//}
-    	//entity update
-    	entity_->SetPosition(
-    		static_cast<SM_SCALAR>(drx_),
-    		static_cast<SM_SCALAR>(dry_),
-    		static_cast<SM_SCALAR>(drz_)
-    	);
-    	entity_->SetDelta(d_drx_, d_dry_, d_drz_);
-    	*/
+     // sfr: we should use AGL instead of 0 here, since some places can be below 0...
+     //if (drz_ > 0.0f){
+     // // z is inverted (- is up)
+     // drz_ = 0.0f;
+     //}
+     //entity update
+     entity_->SetPosition(
+     static_cast<SM_SCALAR>(drx_),
+     static_cast<SM_SCALAR>(dry_),
+     static_cast<SM_SCALAR>(drz_)
+     );
+     entity_->SetDelta(d_drx_, d_dry_, d_drz_);
+     */
     ResetLastUpdateTime(timestamp);
 }
 

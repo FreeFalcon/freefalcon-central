@@ -11,75 +11,75 @@
 
 class AircraftClass;
 
-//	==========================================
+// ==========================================
 // Orders and roles available to ground units
 // ==========================================
 
-#define GORD_RESERVE			0
-#define GORD_CAPTURE			1
-#define GORD_SECURE				2			// Secure all objectives around the assigned objective
-#define GORD_ASSAULT			3			// Amphibious assault
-#define GORD_AIRBORNE			4			// Airborne assault
-#define GORD_COMMANDO			5			// Commando raid - Land behind lines and cause damage
-#define GORD_DEFEND				6
-#define GORD_SUPPORT			7
-#define GORD_REPAIR				8
-#define GORD_AIRDEFENSE			9
-#define GORD_RECON				10
-#define GORD_RADAR				11			// Generally radar units just detecting stuff
-#define GORD_LAST				12
+#define GORD_RESERVE 0
+#define GORD_CAPTURE 1
+#define GORD_SECURE 2 // Secure all objectives around the assigned objective
+#define GORD_ASSAULT 3 // Amphibious assault
+#define GORD_AIRBORNE 4 // Airborne assault
+#define GORD_COMMANDO 5 // Commando raid - Land behind lines and cause damage
+#define GORD_DEFEND 6
+#define GORD_SUPPORT 7
+#define GORD_REPAIR 8
+#define GORD_AIRDEFENSE 9
+#define GORD_RECON 10
+#define GORD_RADAR 11 // Generally radar units just detecting stuff
+#define GORD_LAST 12
 
-extern int OrderPriority[GORD_LAST];		// Update this if new orders are added
+extern int OrderPriority[GORD_LAST]; // Update this if new orders are added
 
-#define GRO_RESERVE				0
-#define GRO_ATTACK				1
-#define GRO_ASSAULT				2
-#define GRO_AIRBORNE			3
-#define GRO_DEFENSE				4
-#define GRO_AIRDEFENSE			5
-#define GRO_FIRESUPPORT			6
-#define GRO_ENGINEER			7
-#define GRO_RECON				8
-#define GRO_LAST				9
+#define GRO_RESERVE 0
+#define GRO_ATTACK 1
+#define GRO_ASSAULT 2
+#define GRO_AIRBORNE 3
+#define GRO_DEFENSE 4
+#define GRO_AIRDEFENSE 5
+#define GRO_FIRESUPPORT 6
+#define GRO_ENGINEER 7
+#define GRO_RECON 8
+#define GRO_LAST 9
 
 // =========================
 // Ground Formations
 // =========================
 
 //sfr: this is defined only once, at Gndai.h
-/*#define GFORM_DISPERSED			0			// Scattered / Disorganized
-#define GFORM_COLUMN			1			// Your standard column
-#define GFORM_OVERWATCH			3			// Cautious column
-#define GFORM_WEDGE				4
-#define GFORM_ECHELON			5
-#define GFORM_LINE				6*/
+/*#define GFORM_DISPERSED 0 // Scattered / Disorganized
+#define GFORM_COLUMN 1 // Your standard column
+#define GFORM_OVERWATCH 3 // Cautious column
+#define GFORM_WEDGE 4
+#define GFORM_ECHELON 5
+#define GFORM_LINE 6*/
 
-#define FF_SECONDLINE			0x01
-#define FF_LOSTOK				0x02
+#define FF_SECONDLINE 0x01
+#define FF_LOSTOK 0x02
 
 // ============================================
 // Ground unit positions
 // ============================================
 
-#define GPOS_NONE		0
-#define GPOS_RECON1		1
-#define GPOS_RECON2		2
-#define GPOS_RECON3		3
-#define GPOS_COMBAT1	4
-#define GPOS_COMBAT2	5
-#define GPOS_COMBAT3	6
-#define GPOS_RESERVE1	7
-#define GPOS_RESERVE2	8
-#define GPOS_RESERVE3	9
-#define GPOS_SUPPORT1	10
-#define GPOS_SUPPORT2	11
-#define GPOS_SUPPORT3	12
+#define GPOS_NONE 0
+#define GPOS_RECON1 1
+#define GPOS_RECON2 2
+#define GPOS_RECON3 3
+#define GPOS_COMBAT1 4
+#define GPOS_COMBAT2 5
+#define GPOS_COMBAT3 6
+#define GPOS_RESERVE1 7
+#define GPOS_RESERVE2 8
+#define GPOS_RESERVE3 9
+#define GPOS_SUPPORT1 10
+#define GPOS_SUPPORT2 11
+#define GPOS_SUPPORT3 12
 
-#define WPA_FINAL		0
-#define WPA_ENROUTE		1
+#define WPA_FINAL 0
+#define WPA_ENROUTE 1
 
-#define MAX_SUPPORT_DIST	20
-#define MAX_NORMAL_DIST		20
+#define MAX_SUPPORT_DIST 20
+#define MAX_NORMAL_DIST 20
 
 // =========================
 // Ground Unit Class
@@ -88,13 +88,13 @@ extern int OrderPriority[GORD_LAST];		// Update this if new orders are added
 class GroundUnitClass : public UnitClass
 {
 private:
-    uchar				orders;    		// Current orders
-    short				division;		// What division it belongs to (abstract)
-    VU_ID				pobj;			// Primary objective we're assigned to
-    VU_ID				sobj;			// Secondary objective we're attached to
-    VU_ID				aobj;			// Actual objective we're assigned to do something with
+    uchar orders;     // Current orders
+    short division; // What division it belongs to (abstract)
+    VU_ID pobj; // Primary objective we're assigned to
+    VU_ID sobj; // Secondary objective we're attached to
+    VU_ID aobj; // Actual objective we're assigned to do something with
 
-    int					dirty_ground_unit;
+    int dirty_ground_unit;
 
 public:
     // constructors and serial functions

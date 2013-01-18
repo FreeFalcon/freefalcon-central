@@ -38,8 +38,8 @@
 NavalTaskingManagerClass::NavalTaskingManagerClass(ushort type, Team t) : CampManagerClass(type, t)
 {
     flags = 0;
-    //	unitList = new FalconPrivateList(&AllNavalFilter);
-    //	unitList->Init();
+    // unitList = new FalconPrivateList(&AllNavalFilter);
+    // unitList->Init();
     unitList = NULL;
     tod = 0;
     topPriority = 0;
@@ -50,8 +50,8 @@ NavalTaskingManagerClass::NavalTaskingManagerClass(VU_BYTE **stream) : CampManag
 {
     memcpy(&flags, *stream, sizeof(short));
     *stream += sizeof(short);
-    //	unitList = new FalconPrivateList(&AllNavalFilter);
-    //	unitList->Init();
+    // unitList = new FalconPrivateList(&AllNavalFilter);
+    // unitList->Init();
     unitList = NULL;
     tod = 0;
     topPriority = 0;
@@ -61,8 +61,8 @@ NavalTaskingManagerClass::NavalTaskingManagerClass(VU_BYTE **stream) : CampManag
 NavalTaskingManagerClass::NavalTaskingManagerClass(FILE *file) : CampManagerClass(file)
 {
     fread(&flags, sizeof(short), 1, file);
-    //	unitList = new FalconPrivateList(&AllNavalFilter);
-    //	unitList->Init();
+    // unitList = new FalconPrivateList(&AllNavalFilter);
+    // unitList->Init();
     unitList = NULL;
     tod = 0;
     topPriority = 0;
@@ -94,7 +94,7 @@ int NavalTaskingManagerClass::Save(VU_BYTE **stream)
 
 int NavalTaskingManagerClass::Save(FILE *file)
 {
-    int	retval = 0;
+    int retval = 0;
 
     if (!file)
         return 0;
@@ -111,11 +111,11 @@ int NavalTaskingManagerClass::Task(void)
 
 void NavalTaskingManagerClass::DoCalculations(void)
 {
-    MissionRequestClass	mis;
-    Unit				unit;
-    CAMPREGLIST_ITERATOR		mit(AllRealList);
-    int					j;
-    Objective			o;
+    MissionRequestClass mis;
+    Unit unit;
+    CAMPREGLIST_ITERATOR mit(AllRealList);
+    int j;
+    Objective o;
 
     // Target all naval units
     unit = (Unit) mit.GetFirst();
@@ -158,8 +158,8 @@ void NavalTaskingManagerClass::DoCalculations(void)
 // Sends a message to the NTM
 void NavalTaskingManagerClass::SendNTMMessage(VU_ID from, short message, short data1, short data2, VU_ID data3)
 {
-    VuTargetEntity				*target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconNavalTaskingMessage*		tontm = new FalconNavalTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
+    FalconNavalTaskingMessage* tontm = new FalconNavalTaskingMessage(Id(), target);
 
     if (this)
     {

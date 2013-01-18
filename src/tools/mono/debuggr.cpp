@@ -51,8 +51,8 @@ static int page = 0;
 static unsigned char *MonoNewline(void);
 static unsigned char monoPenattribute = 0x07, monoPenX = 0, monoPenY = 0;
 
-static char	mono_memory[80 * 25 * 2];
-static char	mono_buffer[80 * 25 * 2];
+static char mono_memory[80 * 25 * 2];
+static char mono_buffer[80 * 25 * 2];
 
 void WriteDebugPixel(int, int);
 
@@ -1067,7 +1067,7 @@ void MonoPrint(char *string, ...)
     check = vsprintf(_mono_buffer, string, params);
     va_end(params);
 
-    //	FileOutput (_mono_buffer);
+    // FileOutput (_mono_buffer);
 
 #if defined _TEXT_TGT_CONSOLE
     COORD dwCursorPosition = { monoPenX, monoPenY };

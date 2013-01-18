@@ -10,7 +10,7 @@ public:
     EasyHarmTargetingPod(int idx, SimMoverClass* newPlatform);
     virtual ~EasyHarmTargetingPod(void);
 
-    virtual void			Display(VirtualDisplay *newDisplay);
+    virtual void Display(VirtualDisplay *newDisplay);
 };
 
 #endif // _EASYHARMPOD_H

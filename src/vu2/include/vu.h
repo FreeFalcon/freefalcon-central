@@ -9,9 +9,9 @@
 // The following three #defines are used to identify the Vu release number.
 // VU_VERSION is defined as 2 for this architecture of Vu.
 // VU_REVISION will be incremented each time a significant change is made
-// 	(such as changing composition or organization of class data)
+//  (such as changing composition or organization of class data)
 // VU_PATCH will be begin at 0 for each Revision, and be incremented by 1
-// 	each time any change is made to Vu2
+//  each time any change is made to Vu2
 // VU_REVISION_DATE is a string which indicates the date of the latest revision
 // VU_PATCH_DATE is a string which indicates the date of the latest patch
 //-------------------------------------------------------------------------

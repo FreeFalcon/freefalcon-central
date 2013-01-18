@@ -191,24 +191,24 @@ extern void CBEBatteryFail(void *pObject);
 extern void CBEEpuAir(void *pObject);
 extern void CBEEpuHydrazine(void *pObject);
 extern void CBECautionElectric(void *pObject);
-extern void CBETFFail(void *pObject);	//MI
+extern void CBETFFail(void *pObject); //MI
 extern void CBEEwsPanelPower(void *pObject); //MI
 extern void CBECanopyLight(void *pObject); //MI
 extern void CBEInstrumentLight(void *);
 extern void CBESpotLight(void *);
-extern void CBETFRLight(void *pObject);	//MI
-extern void CBEGearHandleLight(void *pObject);	//MI
-extern void CBEADIOff(void *pObject);	//MI
-extern void CBEADIAux(void *pObject);	//MI
-extern void CBEHSIOff(void *pObject);	//MI
-extern void CBELEFLight(void *pObject);	//MI
-extern void CBECanopyDamage(void *pObject);	//MI
-extern void CBEBUPADIFlag(void *pObject);	//MI
-extern void CBEAVTRRunLight(void *pObject);	//MI
-extern void CBEGSFlag(void *pObject);	//MI
-extern void CBELOCFlag(void *pObject);	//MI
-extern void CBEVVIOFF(void *pObject);	//MI
-extern void CBECockpitFeatures(void *pObject);	//MI
+extern void CBETFRLight(void *pObject); //MI
+extern void CBEGearHandleLight(void *pObject); //MI
+extern void CBEADIOff(void *pObject); //MI
+extern void CBEADIAux(void *pObject); //MI
+extern void CBEHSIOff(void *pObject); //MI
+extern void CBELEFLight(void *pObject); //MI
+extern void CBECanopyDamage(void *pObject); //MI
+extern void CBEBUPADIFlag(void *pObject); //MI
+extern void CBEAVTRRunLight(void *pObject); //MI
+extern void CBEGSFlag(void *pObject); //MI
+extern void CBELOCFlag(void *pObject); //MI
+extern void CBEVVIOFF(void *pObject); //MI
+extern void CBECockpitFeatures(void *pObject); //MI
 extern void CBECkptWingLight(void *pObject);
 extern void CBECkptStrobeLight(void *pObject);
 
@@ -382,22 +382,22 @@ extern void CBExAutoPilot(void *, int);
 extern void CBEAutoPilot(void *, int);
 extern void CBEMasterCaution(void *, int);
 
-extern void	CBExAuxCommLeft(void *, int);
+extern void CBExAuxCommLeft(void *, int);
 extern void CBEAuxCommLeft(void *, int);
-extern void	CBExAuxCommCenter(void *, int);
+extern void CBExAuxCommCenter(void *, int);
 extern void CBEAuxCommCenter(void *, int);
-extern void	CBExAuxCommRight(void *, int);
+extern void CBExAuxCommRight(void *, int);
 extern void CBEAuxCommRight(void *, int);
-extern void	CBExAuxCommBand(void *, int);
+extern void CBExAuxCommBand(void *, int);
 extern void CBEAuxCommBand(void *, int);
-extern void	CBExAuxCommMaster(void *, int);
-extern void	CBEAuxCommMaster(void *, int);
-extern void	CBExAuxCommAATR(void *, int);
-extern void	CBEAuxCommAATR(void *, int);
-extern void	CBExUHFMaster(void *, int);
-extern void	CBEUHFMaster(void *, int);
-extern void	CBExExteriorLite(void *, int);
-extern void	CBEExteriorLite(void *, int);
+extern void CBExAuxCommMaster(void *, int);
+extern void CBEAuxCommMaster(void *, int);
+extern void CBExAuxCommAATR(void *, int);
+extern void CBEAuxCommAATR(void *, int);
+extern void CBExUHFMaster(void *, int);
+extern void CBEUHFMaster(void *, int);
+extern void CBExExteriorLite(void *, int);
+extern void CBEExteriorLite(void *, int);
 
 
 extern void CBEHandoffB(void *, int);
@@ -417,21 +417,21 @@ extern void CBEKneeboardMap(void *, int);
 extern void CBEKneeboardBrief(void *, int);
 extern void CBEKneeboardStpt(void *, int);
 
-extern void	CBExMasterArm(void *, int);
-extern void	CBEMasterArm(void *, int);
+extern void CBExMasterArm(void *, int);
+extern void CBEMasterArm(void *, int);
 extern void CBERightGainUp(void *, int);
 extern void CBERightGainDown(void *, int);
 extern void CBELeftGainUp(void *, int);
 extern void CBELeftGainDown(void *, int);
-extern void	CBExCatIII(void *, int);
-extern void	CBECatIII(void *, int);
-extern void	CBExAltLGear(void *, int);
-extern void	CBEAltLGear(void *, int); // JPO
-extern void	CBEAltLGearReset(void *, int); // JPO
-extern void	CBExJfs(void *, int);
-extern void	CBEJfs(void *, int); // JPO
-extern void	CBExEpu(void *, int);
-extern void	CBEEpu(void *, int); // JPO
+extern void CBExCatIII(void *, int);
+extern void CBECatIII(void *, int);
+extern void CBExAltLGear(void *, int);
+extern void CBEAltLGear(void *, int); // JPO
+extern void CBEAltLGearReset(void *, int); // JPO
+extern void CBExJfs(void *, int);
+extern void CBEJfs(void *, int); // JPO
+extern void CBExEpu(void *, int);
+extern void CBEEpu(void *, int); // JPO
 //MI
 extern void CBEICPIFF(void *, int);
 extern void CBEICPLIST(void *, int);
@@ -525,16 +525,16 @@ extern void CBExMissileVol(void*, int);
 extern void CBEMissileVol(void*, int);
 extern void CBExThreatVol(void*, int);
 extern void CBEThreatVol(void*, int);
-extern void	CBETFRButton(void*, int);
-extern void	CBExComm1Vol(void*, int);
-extern void	CBEComm1Vol(void*, int);
+extern void CBETFRButton(void*, int);
+extern void CBExComm1Vol(void*, int);
+extern void CBEComm1Vol(void*, int);
 extern void CBExComm2Vol(void*, int);
 extern void CBEComm2Vol(void*, int);
 extern void CBExSymWheel(void*, int);
 extern void CBESymWheel(void*, int);
 extern void CBEThrRevButton(void *, int);
 // sfr: commented out
-//extern void	CBExSetNightPanel(void*, int); extern void CBESetNightPanel(void*, int);
+//extern void CBExSetNightPanel(void*, int); extern void CBESetNightPanel(void*, int);
 //MI
 void CBExSmsPower(void * pButton, int);
 extern void CBESmsPower(void *pButton, int);

@@ -128,7 +128,7 @@ void C_ScaleBitmap::InitOverlay()
     {
 
         Parent_->GetRGBValues(tmp, r_shift_, tmp, g_shift_, tmp, b_shift_);
-        //!		Parent_->GetRGBValues(&tmp,&r_shift_,&tmp,&g_shift_,&tmp,&b_shift_);
+        //! Parent_->GetRGBValues(&tmp,&r_shift_,&tmp,&g_shift_,&tmp,&b_shift_);
         memset(Overlay_, 0, sizeof(BYTE) * (img->Header->w * img->Header->h));
     }
 }

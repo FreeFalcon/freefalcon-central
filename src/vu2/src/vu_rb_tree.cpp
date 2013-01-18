@@ -128,8 +128,8 @@ unsigned int VuRedBlackTree::Count() const
 }
 
 /*VU_KEY VuRedBlackTree::Key(VuEntity *ent) const {
-	VuKeyFilter *kf = GetKeyFilter();
-	return kf ? kf->Key(ent) : (VU_KEY)ent->Id();
+ VuKeyFilter *kf = GetKeyFilter();
+ return kf ? kf->Key(ent) : (VU_KEY)ent->Id();
 }*/
 
 VuKeyFilter *VuRedBlackTree::GetKeyFilter() const

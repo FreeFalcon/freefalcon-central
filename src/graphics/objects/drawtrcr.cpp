@@ -14,7 +14,7 @@
 
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableTracer::pool;
+MEM_POOL DrawableTracer::pool;
 #endif
 
 // bleh
@@ -103,9 +103,9 @@ void DrawableTracer::Update(Tpoint *head, Tpoint *tail)
 //void DrawableTracer::Draw( class RenderOTW *renderer, int LOD )
 void DrawableTracer::Draw(class RenderOTW *renderer, int)
 {
-    ThreeDVertex		v0, v1, v2, v3, v4, v5;
-    Tpoint				cpos, cend;
-    int					lineColor;
+    ThreeDVertex v0, v1, v2, v3, v4, v5;
+    Tpoint cpos, cend;
+    int lineColor;
 
     // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
     // if no more 'driven' by the gun EXEC... they appear stopped at midair
@@ -169,10 +169,10 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
             renderer->SetColor(0xFF00FF00);
         else
         {
-            lineColor =	((unsigned int)255 << 24) 	     +	// alpha
-                        ((unsigned int)(b * 255.0f) << 16) +	// blue
-                        ((unsigned int)(g * 255.0f) << 8)  +	// green
-                        ((unsigned int)(r * 255.0f));		 	// red
+            lineColor = ((unsigned int)255 << 24)       + // alpha
+                        ((unsigned int)(b * 255.0f) << 16) + // blue
+                        ((unsigned int)(g * 255.0f) << 8)  + // green
+                        ((unsigned int)(r * 255.0f));   // red
 
             renderer->SetColor(lineColor);
         }
@@ -183,24 +183,24 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
 
         if (fabs(v0.x - v1.x) * fabs(v0.y - v1.y) < 0.9f)
         {
-            //			if ( v0.clipFlag == ON_SCREEN )
-            //				renderer->Render2DPoint( (UInt16)v0.x, (UInt16)v0.y );
-            int lineColor =	((unsigned int)(alpha * 255.0f) << 24) 	     +	// alpha
-                            ((unsigned int)(r * 255.0f) << 16) +	// blue
-                            ((unsigned int)(g * 255.0f) << 8)  +	// green
-                            ((unsigned int)(b * 255.0f));		 	// red
+            // if ( v0.clipFlag == ON_SCREEN )
+            // renderer->Render2DPoint( (UInt16)v0.x, (UInt16)v0.y );
+            int lineColor = ((unsigned int)(alpha * 255.0f) << 24)       + // alpha
+                            ((unsigned int)(r * 255.0f) << 16) + // blue
+                            ((unsigned int)(g * 255.0f) << 8)  + // green
+                            ((unsigned int)(b * 255.0f));   // red
             TheDXEngine.Draw3DPoint((D3DVECTOR*)&position, lineColor, EMISSIVE);
         }
         else
         {
-            int lineColor =	((unsigned int)(alpha * 255.0f) << 24) 	     +	// alpha
-                            ((unsigned int)(r * 255.0f) << 16) +	// blue
-                            ((unsigned int)(g * 255.0f) << 8)  +	// green
-                            ((unsigned int)(b * 255.0f));		 	// red
-            int LineEndColor =	((unsigned int)(alpha * 64.0f) << 24) 	     +	// alpha
-                                ((unsigned int)(r * 255.0f) << 16) +	// blue
-                                ((unsigned int)(g * 255.0f) << 8)  +	// green
-                                ((unsigned int)(b * 255.0f));		 	// red
+            int lineColor = ((unsigned int)(alpha * 255.0f) << 24)       + // alpha
+                            ((unsigned int)(r * 255.0f) << 16) + // blue
+                            ((unsigned int)(g * 255.0f) << 8)  + // green
+                            ((unsigned int)(b * 255.0f));   // red
+            int LineEndColor = ((unsigned int)(alpha * 64.0f) << 24)       + // alpha
+                                ((unsigned int)(r * 255.0f) << 16) + // blue
+                                ((unsigned int)(g * 255.0f) << 8)  + // green
+                                ((unsigned int)(b * 255.0f));   // red
             TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
             //renderer->Render3DLine( &position, &tailEnd );
         }
@@ -209,8 +209,8 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     }
 
     // Set up our drawing mode
-    //	if ( renderer->GetAlphaMode() )
-    //	{
+    // if ( renderer->GetAlphaMode() )
+    // {
     renderer->context.RestoreState(STATE_ALPHA_GOURAUD);
     // renderer->context.SelectTexture( TracerTrailTexture.TexHandle() );
     // renderer->context.RestoreState( STATE_ALPHA_TEXTURE_GOURAUD_TRANSPARENCY_PERSPECTIVE );
@@ -218,14 +218,14 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     v3.a = v2.a = 0.0f;
     v4.a = v5.a = 0.0f;
     v1.a = alpha * 0.2f;
-    /*	}
-    	else
-    	{
-    		renderer->context.RestoreState( STATE_GOURAUD );
-    		v0.a = v1.a = 1.0f;
-    		v3.a = v2.a = 1.0f;
-    		v4.a = v5.a = 1.0f;
-    	}
+    /* }
+     else
+     {
+     renderer->context.RestoreState( STATE_GOURAUD );
+     v0.a = v1.a = 1.0f;
+     v3.a = v2.a = 1.0f;
+     v4.a = v5.a = 1.0f;
+     }
     */
     // get 2 points for width at other end
     // ConstructWidth( renderer, &tailEnd, &position, &v4, &v5 );
@@ -315,8 +315,8 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
 
 /***************************************************************************\
     Help function to compute the "width points" of the tracer
-	Returns TRUE when we should do polygon.
-	FALSE just do line.
+ Returns TRUE when we should do polygon.
+ FALSE just do line.
 \***************************************************************************/
 BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
                                     Tpoint *start,
@@ -326,11 +326,11 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
                                     ThreeDVertex *xformLefte,
                                     ThreeDVertex *xformRighte)
 {
-    Tpoint	left, right, wloc;
-    Tpoint	UP;
-    float	dx, dy, dz;
-    float	widthX, widthY, widthZ;
-    float	mag, normalizer;
+    Tpoint left, right, wloc;
+    Tpoint UP;
+    float dx, dy, dz;
+    float widthX, widthY, widthZ;
+    float mag, normalizer;
 
 
     // Compute the direction of this segment in world space

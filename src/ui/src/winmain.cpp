@@ -144,7 +144,7 @@ char bottom_space[] = "                                                         
 
 extern int voice_;
 extern int GraphicSettingMult;
-extern char	gUI_CampaignFile[];
+extern char gUI_CampaignFile[];
 extern char gUI_AutoSaveName[];
 extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
 static int i_am(char *with);
@@ -167,8 +167,8 @@ extern void DisplayJoinStatusWindow(int);
 extern void ServerBrowserExit();
 extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern char	*BSP;
-extern char	*BTP;
+extern char *BSP;
+extern char *BTP;
 extern long MovieCount;
 extern int MainLastGroup;
 extern int flag_keep_smoke_trails;
@@ -249,7 +249,7 @@ char FalconZipsThrDirectory[_MAX_PATH];
 char FalconTacrefThrDirectory[_MAX_PATH];
 char FalconSplashThrDirectory[_MAX_PATH];
 
-extern ulong gCampJoinLastData;		// Last vuxRealtime we received data about this game
+extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
 
 extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 extern void LoadTheaterList(); // JPO
@@ -406,7 +406,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
         wc.cbWndExtra = sizeof(DWORD);
         wc.hInstance = hInstance;
         //      wc.hIcon = LoadIcon (hInstance, "ICON1.ICO");
-        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));	// OW BC
+        wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)); // OW BC
         wc.hCursor = NULL;
         wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
         wc.lpszMenuName = MAKEINTRESOURCE(F4_DEMO_MENU);
@@ -586,7 +586,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
     sprintf(tmpPath, "%s\\Config", FalconDataDirectory);
     ResAddPath(tmpPath, FALSE);
-    sprintf(tmpPath, "%s\\Art", FalconDataDirectory);	// This one can go if zips are always used
+    sprintf(tmpPath, "%s\\Art", FalconDataDirectory); // This one can go if zips are always used
     ResAddPath(tmpPath, TRUE);
     sprintf(tmpPath, "%s", FalconPictureDirectory);  // JB 010623
     ResAddPath(tmpPath, TRUE);  // JB 010623
@@ -1324,8 +1324,8 @@ void SystemLevelInit()
 
         if (((!strnicmp(td->m_name, "Korea", 5)) || (!strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
         {
-            char	tmpPath[256];
-            sprintf(tmpPath, "%s\\sim", FalconDataDirectory);	// JPO - so we can find raw sim files
+            char tmpPath[256];
+            sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
             SimPathHandle = ResAddPath(tmpPath, TRUE);
         }
 
@@ -1335,7 +1335,7 @@ void SystemLevelInit()
     }
     else
     {
-        sprintf(tmpPath, "%s\\sim", FalconDataDirectory);	// JPO - so we can find raw sim files
+        sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
 
         if (SimPathHandle == -1)
             SimPathHandle = ResAddPath(tmpPath, TRUE);
@@ -1360,7 +1360,7 @@ void SystemLevelInit()
         LoadTrails();
     }
 
-#ifndef		NO_TIMER_THREAD
+#ifndef NO_TIMER_THREAD
     beginTimer();
 #endif
 
@@ -1390,14 +1390,14 @@ void SystemLevelInit()
     // Retro 20Dec2003
     extern int g_nNumberOfSubTitles;
     extern int g_nSubTitleTTL;
-    extern char g_strRadioflightCol[0x40];			// Retro 27Dec2003
-    extern char g_strRadiotoPackageCol[0x40];		// Retro 27Dec2003
-    extern char g_strRadioToFromPackageCol[0x40];	// Retro 27Dec2003
-    extern char g_strRadioTeamCol[0x40];			// Retro 27Dec2003
-    extern char g_strRadioProximityCol[0x40];		// Retro 27Dec2003
-    extern char g_strRadioWorldCol[0x40];			// Retro 27Dec2003
-    extern char g_strRadioTowerCol[0x40];			// Retro 27Dec2003
-    extern char g_strRadioStandardCol[0x40];		// Retro 27Dec2003
+    extern char g_strRadioflightCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadiotoPackageCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioToFromPackageCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioTeamCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioProximityCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioWorldCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioTowerCol[0x40]; // Retro 27Dec2003
+    extern char g_strRadioStandardCol[0x40]; // Retro 27Dec2003
 
     if (PlayerOptions.getSubtitles())
     {
@@ -1421,7 +1421,7 @@ void SystemLevelInit()
 
     // Retro 20Dec2003 ends
 
-    theTrackIRObject.InitTrackIR(mainAppWnd);	// Retro 26/09/03
+    theTrackIRObject.InitTrackIR(mainAppWnd); // Retro 26/09/03
 
     if (PlayerOptions.Get3dTrackIR() == false)
         OTWDriver.SetHeadTracking(FALSE); // Cobra - Make 3D pit mouselook work when TIR is user-selected "off".
@@ -1463,7 +1463,7 @@ void SystemLevelExit(void)
     StopVoice(); //me123
     CleanupDIAll();
     DrawableParticleSys::UnloadParameters(); // MLR 1/31/2004 -
-    theTrackIRObject.ExitTrackIR();	// Retro 26/09/03
+    theTrackIRObject.ExitTrackIR(); // Retro 26/09/03
 
     // Retro 3Jan2004
     if (winamp)
@@ -1772,7 +1772,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 // Join a campaign here
                 if (gCommsMgr)
                 {
-                    FalconGameEntity	*game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+                    FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
                     if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
                     {
@@ -1784,17 +1784,17 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     // wParam determines phase of loading we'd like to perform:
                     switch (wParam)
                     {
-                        case JOIN_PRELOAD_ONLY:			// Preload only
+                        case JOIN_PRELOAD_ONLY: // Preload only
                             MonoPrint("Requesting campaign preload.\n");
                             retval = TheCampaign.RequestScenarioStats(game);
                             break;
 
-                        case JOIN_REQUEST_ALL_DATA:		// Request all game data
+                        case JOIN_REQUEST_ALL_DATA: // Request all game data
                             MonoPrint("Requesting all campaign data.\n");
                             retval = TheCampaign.RequestScenarioStats(game);
                             break;
 
-                        case JOIN_CAMP_DATA_ONLY:		// Request only non-preload data (Called by Campaign only)
+                        case JOIN_CAMP_DATA_ONLY: // Request only non-preload data (Called by Campaign only)
                             MonoPrint("Requesting campaign data.\n");
                             retval = TheCampaign.JoinCampaign((FalconGameType)lParam, game);
                             break;
@@ -2302,7 +2302,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
             if (!GetMessage(&msg, NULL, 0, 0))
                 break;
 
-            if (msg.message == WM_KEYUP)	// any key press will stop the movie
+            if (msg.message == WM_KEYUP) // any key press will stop the movie
                 stopMovie = TRUE;
             else if (msg.message == WM_LBUTTONUP) // lmouse click stops it,too
                 stopMovie = TRUE;
@@ -2355,7 +2355,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
             InvalidateRect(hwnd, &theRect, FALSE);
             break;
         }
-    }		// end while (1)
+    } // end while (1)
 
     ShowCursor(TRUE);
     F4HearVoices();

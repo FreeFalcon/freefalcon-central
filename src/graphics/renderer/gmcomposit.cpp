@@ -4,7 +4,7 @@
     August 5, 1998
 
     This class provides the ground mapping radar image composition and
-	beam sweep.
+ beam sweep.
 \***************************************************************************/
 #include <math.h>
 #include "Edge.h"
@@ -18,40 +18,40 @@
 extern bool g_bRealisticAvionics;
 extern bool g_bAGRadarFixes;
 
-static const int	MAX_CLIP_EDGES			= 3;
-static const int	MAX_CONSTRUCTION_VERTS	= 2 * MAX_CLIP_EDGES;	// Create 2 per edge
-static const int	MAX_VERTEX_LIST			= 4 + MAX_CLIP_EDGES;	// Add 2 remove at least 1 per edge
+static const int MAX_CLIP_EDGES = 3;
+static const int MAX_CONSTRUCTION_VERTS = 2 * MAX_CLIP_EDGES; // Create 2 per edge
+static const int MAX_VERTEX_LIST = 4 + MAX_CLIP_EDGES; // Add 2 remove at least 1 per edge
 
 // These are global to save some parameter passing, etc.
 // This implies that only one thread can call DrawOutput at a time.
 // (which is true anyway because MPR is single threaded)
-static	Edge		beam;
-static	Edge		leftLimit;
-static	Edge		rightLimit;
-static	TwoDVertex	v0, v1, v2, v3;
-static	TwoDVertex	*vertArray[MAX_VERTEX_LIST];
-static	TwoDVertex	c[MAX_CONSTRUCTION_VERTS];
-static	int			NumCverts;
+static Edge beam;
+static Edge leftLimit;
+static Edge rightLimit;
+static TwoDVertex v0, v1, v2, v3;
+static TwoDVertex *vertArray[MAX_VERTEX_LIST];
+static TwoDVertex c[MAX_CONSTRUCTION_VERTS];
+static int NumCverts;
 
 
 // This list controls the distribution of work to generate each new
 // frame of radar return imagery.
-enum	OpName		{ Start, Xform, Ground, Features, Targets, Finish, Replace };
-struct	OpRecord
+enum OpName { Start, Xform, Ground, Features, Targets, Finish, Replace };
+struct OpRecord
 {
-    enum OpName	operation;
+    enum OpName operation;
     int percent;
 };
 
-static const struct	OpRecord	OperationList[] =
+static const struct OpRecord OperationList[] =
 {
-    {Start,		15},
-    {Xform,		30},
-    {Ground,	45},
-    {Features,	50},
-    {Targets,	75},
-    {Finish,	90},
-    {Replace,	101}
+    {Start, 15},
+    {Xform, 30},
+    {Ground, 45},
+    {Features, 50},
+    {Targets, 75},
+    {Finish, 90},
+    {Replace, 101}
 };
 
 
@@ -63,9 +63,9 @@ static int ClipToBeamAndLimits(void);
 static int random;
 static inline BYTE Noise(int input)
 {
-    //	return input;
+    // return input;
 
-    random = random * 214013L + 2531011L;	// Stolen from C Runtime RAND() function
+    random = random * 214013L + 2531011L; // Stolen from C Runtime RAND() function
 
     input = input + ((random >> 16) & 0x3F);
 
@@ -90,10 +90,10 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     Render2D::Setup(output);
 
     // Set some default values
-    range			= 0.0f;
-    gimbalLimit		= 60.0f * PI / 180.0f;
-    prevBeamPercent	= 0;
-    prevBeamRight	= FALSE;
+    range = 0.0f;
+    gimbalLimit = 60.0f * PI / 180.0f;
+    prevBeamPercent = 0;
+    prevBeamRight = FALSE;
     lOriginX = lOriginY = 0;
     rOriginX = rOriginY = 0;
     rAngle = lAngle = 0;
@@ -125,8 +125,8 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
         // versions of the detonator drivers) is broken ;(
 
         // Use primary
-        //		m_pRenderTarget = new ImageBuffer;
-        //		m_pRenderTarget->AttachSurfaces(output->GetDisplayDevice(), output->targetSurface(), NULL);
+        // m_pRenderTarget = new ImageBuffer;
+        // m_pRenderTarget->AttachSurfaces(output->GetDisplayDevice(), output->targetSurface(), NULL);
         m_pRenderTarget = output;
         m_bRenderTargetOwned = false;
 
@@ -191,10 +191,10 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     }
 
     // initialize the texture but do not load bits
-    nTexHandle->Load(0, 0, pBuf, true);		// Chromakey 0 = black
+    nTexHandle->Load(0, 0, pBuf, true); // Chromakey 0 = black
 
     // this will eventually load (indirectly) the texture for the first and last time
-    paletteHandle->Load(MPR_TI_PALETTE,	32, 0, 256, (BYTE*) paletteData);
+    paletteHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*) paletteData);
 
     // texture owns a copy of the image data
     delete[] pBuf;
@@ -265,16 +265,16 @@ void RenderGMComposite::Cleanup(void)
 
 void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float platformHdg, float beamAngle, int beamPercent, float cursorAngle, BOOL movingRight, bool Shaped)
 {
-    float		Px, Py;
-    float		dx, dy;
-    float		hdg;
+    float Px, Py;
+    float dx, dy;
+    float hdg;
 
     ShiAssert(rTexHandle);
     ShiAssert(lTexHandle);
 
     // Convert our location to use as the origion of the radar beam
-    Px	= (from->x - center->x) * worldToUnitScale;		// Normalize for display range
-    Py	= (from->y - center->y) * worldToUnitScale;		// Normalize for display range
+    Px = (from->x - center->x) * worldToUnitScale; // Normalize for display range
+    Py = (from->y - center->y) * worldToUnitScale; // Normalize for display range
 
     // Set up the edge with separates the old and new parts of the sweep
     hdg = platformHdg + beamAngle;
@@ -337,10 +337,10 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
 
 void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
 {
-    float		Px, Py, x, y, dx, dy;
-    float		sinRot, cosRot;
-    int			num = 0;
-    int			i;
+    float Px, Py, x, y, dx, dy;
+    float sinRot, cosRot;
+    int num = 0;
+    int i;
 
     ShiAssert(rTexHandle);
     ShiAssert(lTexHandle);
@@ -352,8 +352,8 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     }
 
     // Normalize the current center of attention position for display range
-    Px	= center->x * worldToUnitScale;
-    Py	= center->y * worldToUnitScale;
+    Px = center->x * worldToUnitScale;
+    Py = center->y * worldToUnitScale;
 
     // Determine translation and rotation parameters for the right side
     dx = rOriginX - Px;
@@ -369,28 +369,28 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     v0.x = x * cosRot - y * sinRot + dx;
     v0.y = x * sinRot + y * cosRot + dy;
     v0.u = 0.0f;
-    v0.v = 1.0f;	// Lower left
+    v0.v = 1.0f; // Lower left
 
     x = -1.0f;
     y =  GM_OVERSCAN_H;
     v1.x = x * cosRot - y * sinRot + dx;
     v1.y = x * sinRot + y * cosRot + dy;
     v1.u = 1.0f;
-    v1.v = 1.0f;	// Lower right
+    v1.v = 1.0f; // Lower right
 
     x =  GM_OVERSCAN_V;
     y =  GM_OVERSCAN_H;
     v2.x = x * cosRot - y * sinRot + dx;
     v2.y = x * sinRot + y * cosRot + dy;
     v2.u = 1.0f;
-    v2.v = 0.0f;	// Upper right
+    v2.v = 0.0f; // Upper right
 
     x =  GM_OVERSCAN_V;
     y = -GM_OVERSCAN_H;
     v3.x = x * cosRot - y * sinRot + dx;
     v3.y = x * sinRot + y * cosRot + dy;
     v3.u = 0.0f;
-    v3.v = 0.0f;	// Upper left
+    v3.v = 0.0f; // Upper left
 
     num = ClipToBeamAndLimits();
 
@@ -435,28 +435,28 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     v0.x = x * cosRot - y * sinRot + dx;
     v0.y = x * sinRot + y * cosRot + dy;
     v0.u = 0.0f;
-    v0.v = 1.0f;	// Lower left
+    v0.v = 1.0f; // Lower left
 
     x = -1.0f;
     y =  GM_OVERSCAN_H;
     v1.x = x * cosRot - y * sinRot + dx;
     v1.y = x * sinRot + y * cosRot + dy;
     v1.u = 1.0f;
-    v1.v = 1.0f;	// Lower right
+    v1.v = 1.0f; // Lower right
 
     x =  GM_OVERSCAN_V;
     y =  GM_OVERSCAN_H;
     v2.x = x * cosRot - y * sinRot + dx;
     v2.y = x * sinRot + y * cosRot + dy;
     v2.u = 1.0f;
-    v2.v = 0.0f;	// Upper right
+    v2.v = 0.0f; // Upper right
 
     x =  GM_OVERSCAN_V;
     y = -GM_OVERSCAN_H;
     v3.x = x * cosRot - y * sinRot + dx;
     v3.y = x * sinRot + y * cosRot + dy;
     v3.u = 0.0f;
-    v3.v = 0.0f;	// Upper left
+    v3.v = 0.0f; // Upper left
 
     num = ClipToBeamAndLimits();
 
@@ -507,8 +507,8 @@ void RenderGMComposite::SetRange(float newRange, int newLOD)
     }
 
     // Store our scale factor
-    range				= newRange;
-    worldToUnitScale	= 1.0f / newRange;
+    range = newRange;
+    worldToUnitScale = 1.0f / newRange;
 
     // We need to force a full cycle of the GMRadar redraw loop
     // to generate the first sweeps data all at once.
@@ -523,9 +523,9 @@ void RenderGMComposite::SetRange(float newRange, int newLOD)
 
 bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float platformHdg, int beamPercent, BOOL movingRight, bool Shaped)
 {
-    OpName	operation;
-    float	dx, dy;
-    Tpoint	center;
+    OpName operation;
+    float dx, dy;
+    Tpoint center;
 
     ShiAssert(prevBeamPercent <= 101);
     ShiAssert(beamPercent <= 101);
@@ -627,23 +627,23 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     ShiAssert(lTexHandle);
     ShiAssert(rTexHandle);
 
-    //	nTexHandle->PreLoad();	// it will be used soon
+    // nTexHandle->PreLoad(); // it will be used soon
 
     // Change target textures each time we get called
     if (replaceRight)
     {
-        rOriginX		= at->x * worldToUnitScale;	// Normalize for display range
-        rOriginY		= at->y * worldToUnitScale;	// Normalize for display range
-        rAngle			= platformHdg;
-        targetHandle	= rTexHandle;
+        rOriginX = at->x * worldToUnitScale; // Normalize for display range
+        rOriginY = at->y * worldToUnitScale; // Normalize for display range
+        rAngle = platformHdg;
+        targetHandle = rTexHandle;
     }
 
     else
     {
-        lOriginX		= at->x * worldToUnitScale;	// Normalize for display range
-        lOriginY		= at->y * worldToUnitScale;	// Normalize for display range
-        lAngle			= platformHdg;
-        targetHandle	= lTexHandle;
+        lOriginX = at->x * worldToUnitScale; // Normalize for display range
+        lOriginY = at->y * worldToUnitScale; // Normalize for display range
+        lAngle = platformHdg;
+        targetHandle = lTexHandle;
     }
 
     // Render Noise overlay
@@ -653,7 +653,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
         radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
     }
 
-    float	Alpha = 0.3f;
+    float Alpha = 0.3f;
 
     if (Shaped) Alpha = 0.7f;
 
@@ -698,7 +698,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     //MI TEST
     radar.context.SelectTexture1((GLint) nTexHandle);
     radar.context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR | MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
-    //	radar.context.InvalidateState();
+    // radar.context.InvalidateState();
 
     radar.EndDraw();
 
@@ -736,12 +736,12 @@ static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c, floa
 
 static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, int inCount)
 {
-    int				i;
-    int				num;
-    BOOL			amOut, wasOut, startedOut;
-    float			d1, d2, t;
-    TwoDVertex		*p;
-    TwoDVertex		*v;
+    int i;
+    int num;
+    BOOL amOut, wasOut, startedOut;
+    float d1, d2, t;
+    TwoDVertex *p;
+    TwoDVertex *v;
 
 
     // Stop now if we don't have enough verts to continue
@@ -819,8 +819,8 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
 
 static int ClipToBeamAndLimits(void)
 {
-    int			num = 4;
-    TwoDVertex	*inArray[MAX_VERTEX_LIST];
+    int num = 4;
+    TwoDVertex *inArray[MAX_VERTEX_LIST];
 
     inArray[0] = &v0;
     inArray[1] = &v1;
@@ -841,8 +841,8 @@ static int ClipToBeamAndLimits(void)
 
 void RenderGMComposite::DebugDrawLeftTexture(Render2D *renderer)
 {
-    char	string[80];
-    int		num = 0;
+    char string[80];
+    int num = 0;
 
     ShiAssert(lTexHandle);
 
@@ -853,19 +853,19 @@ void RenderGMComposite::DebugDrawLeftTexture(Render2D *renderer)
     v0.x = 1.0f;
     v0.y = 1.0f;
     v0.u = 0.0f;
-    v0.v = 0.0f;	// UL
+    v0.v = 0.0f; // UL
     v1.x = GM_TEXTURE_SIZE;
     v1.y = 1.0f;
     v1.u = 1.0f;
-    v1.v = 0.0f;	// UR
+    v1.v = 0.0f; // UR
     v2.x = GM_TEXTURE_SIZE;
     v2.y = GM_TEXTURE_SIZE;
     v2.u = 1.0f;
-    v2.v = 1.0f;	// BR
+    v2.v = 1.0f; // BR
     v3.x = 1.0f;
     v3.y = GM_TEXTURE_SIZE;
     v3.u = 0.0f;
-    v3.v = 1.0f;	// BL
+    v3.v = 1.0f; // BL
 
     vertArray[num++] = &v0;
     SetClipFlags(&v0);
@@ -889,18 +889,18 @@ void RenderGMComposite::DebugDrawLeftTexture(Render2D *renderer)
 
 void RenderGMComposite::DebugDrawRadarImage(ImageBuffer *target)
 {
-    RECT	srcRect;
-    RECT	dstRect;
+    RECT srcRect;
+    RECT dstRect;
 
-    srcRect.top		= 0;
-    srcRect.left	= 0;
-    srcRect.bottom	= GM_TEXTURE_SIZE;
-    srcRect.right	= GM_TEXTURE_SIZE;
+    srcRect.top = 0;
+    srcRect.left = 0;
+    srcRect.bottom = GM_TEXTURE_SIZE;
+    srcRect.right = GM_TEXTURE_SIZE;
 
-    dstRect.top		= 0;
-    dstRect.left	= GM_TEXTURE_SIZE + 2;
-    dstRect.bottom	= dstRect.top + GM_TEXTURE_SIZE;
-    dstRect.right	= dstRect.left + GM_TEXTURE_SIZE;
+    dstRect.top = 0;
+    dstRect.left = GM_TEXTURE_SIZE + 2;
+    dstRect.bottom = dstRect.top + GM_TEXTURE_SIZE;
+    dstRect.right = dstRect.left + GM_TEXTURE_SIZE;
 
     target->Compose(m_pRenderTarget, &srcRect, &dstRect);
 

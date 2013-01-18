@@ -32,20 +32,20 @@ extern int g_nMiniDump;//Cobra
 // Globals
 //
 // VP_changes the segment is important for creation og ClassTable
-UnitClassDataType*		UnitDataTable = NULL;
-ObjClassDataType*		ObjDataTable = NULL;
-FeatureEntry*			FeatureEntryDataTable = NULL;
-WeaponClassDataType*	WeaponDataTable = NULL;
-FeatureClassDataType*	FeatureDataTable = NULL;
-VehicleClassDataType*	VehicleDataTable = NULL;
-WeaponListDataType*		WeaponListDataTable = NULL;
+UnitClassDataType* UnitDataTable = NULL;
+ObjClassDataType* ObjDataTable = NULL;
+FeatureEntry* FeatureEntryDataTable = NULL;
+WeaponClassDataType* WeaponDataTable = NULL;
+FeatureClassDataType* FeatureDataTable = NULL;
+VehicleClassDataType* VehicleDataTable = NULL;
+WeaponListDataType* WeaponListDataTable = NULL;
 SquadronStoresDataType* SquadronStoresDataTable = NULL;
-PtHeaderDataType*		PtHeaderDataTable = NULL;
-PtDataType*				PtDataTable = NULL;
-SimWeaponDataType*		SimWeaponDataTable = NULL;
+PtHeaderDataType* PtHeaderDataTable = NULL;
+PtDataType* PtDataTable = NULL;
+SimWeaponDataType* SimWeaponDataTable = NULL;
 SimACDefType*           SimACDefTable;
-RocketClassDataType*	RocketDataTable = NULL;	// 2001-11-05 Added by M.N.
-DirtyDataClassType*		DDP = NULL; // 2002-04-20 Added by M.N.
+RocketClassDataType* RocketDataTable = NULL; // 2001-11-05 Added by M.N.
+DirtyDataClassType* DDP = NULL; // 2002-04-20 Added by M.N.
 
 RackGroup *RackGroupTable ;
 RackObject *RackObjectTable;
@@ -62,7 +62,7 @@ short NumPtHeaders;
 short NumPts;
 short NumSimWeaponEntries;
 short NumACDefEntries;
-short NumRocketTypes;			// 2001-11-05 Added by M.N.
+short NumRocketTypes; // 2001-11-05 Added by M.N.
 short NumDirtyDataPriorities;   // 2002-04-20 Added by M.N.
 
 bool fedtree;
@@ -109,7 +109,7 @@ void ReadClassTable();
 void LoadVisIdMap();
 
 //
-//	Functions
+// Functions
 //
 
 void WriteClassTable(void)
@@ -136,9 +136,9 @@ FILE *ErrorFH; // MLR 5/15/2004 -
 
 int LoadClassTable(char *filename)
 {
-    int		i;
-    char	*objSet;
-    char	*newstr;
+    int i;
+    char *objSet;
+    char *newstr;
 
     ErrorFH = 0L;
 
@@ -146,8 +146,8 @@ int LoadClassTable(char *filename)
         ErrorFH = fopen("C:\\Objective-Errors.txt", "w"); // MLR 5/15/2004 -
 
 #if 0 // not required JPO?
-    HKEY	theKey;
-    DWORD	size, type;
+    HKEY theKey;
+    DWORD size, type;
     // Get the path data from the registry
     RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS, &theKey);
 
@@ -164,7 +164,7 @@ int LoadClassTable(char *filename)
     }
 
     // Check file integrity
-    //	FileVerify();
+    // FileVerify();
 
     InitClassTableAndData(filename, objSet);
     ReadClassTable();
@@ -172,41 +172,41 @@ int LoadClassTable(char *filename)
 #ifndef ACMI
 #ifndef IACONVERT
 
-    if (!LoadUnitData(filename))			ShiError("Failed to load unit data");
+    if (!LoadUnitData(filename)) ShiError("Failed to load unit data");
 
-    if (!LoadFeatureEntryData(filename))	ShiError("Failed to load feature entries");
+    if (!LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
 
-    if (!LoadObjectiveData(filename))		ShiError("Failed to load objective data");
+    if (!LoadObjectiveData(filename)) ShiError("Failed to load objective data");
 
-    if (!LoadWeaponData(filename))			ShiError("Failed to load weapon data");
+    if (!LoadWeaponData(filename)) ShiError("Failed to load weapon data");
 
-    if (!LoadFeatureData(filename))			ShiError("Failed to load feature data");
+    if (!LoadFeatureData(filename)) ShiError("Failed to load feature data");
 
-    if (!LoadVehicleData(filename))			ShiError("Failed to load vehicle data");
+    if (!LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
 
-    if (!LoadWeaponListData(filename))		ShiError("Failed to load weapon list");
+    if (!LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
 
-    if (!LoadPtHeaderData(filename))		ShiError("Failed to load point headers");
+    if (!LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
 
-    if (!LoadPtData(filename))				ShiError("Failed to load point data");
+    if (!LoadPtData(filename)) ShiError("Failed to load point data");
 
-    if (!LoadRadarData(filename))			ShiError("Failed to load radar data");
+    if (!LoadRadarData(filename)) ShiError("Failed to load radar data");
 
-    if (!LoadIRSTData(filename))			ShiError("Failed to load IRST data");
+    if (!LoadIRSTData(filename)) ShiError("Failed to load IRST data");
 
-    if (!LoadRwrData(filename))				ShiError("Failed to load Rwr data");
+    if (!LoadRwrData(filename)) ShiError("Failed to load Rwr data");
 
-    if (!LoadVisualData(filename))			ShiError("Failed to load Visual data");
+    if (!LoadVisualData(filename)) ShiError("Failed to load Visual data");
 
-    if (!LoadSimWeaponData(filename))		ShiError("Failed to load SimWeapon data");
+    if (!LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
 
-    if (!LoadACDefData(filename))			ShiError("Failed to load AC Definition data");
+    if (!LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
 
-    if (!LoadSquadronStoresData(filename))	ShiError("Failed to load Squadron stores data");
+    if (!LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
 
-    if (!LoadRocketData(filename))			ShiError("Failed to load Rocket data");	// added by M.N.
+    if (!LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
 
-    if (!LoadDirtyData(filename))			ShiError("Failed to load Dirty data priorities");   // added by M.N.
+    if (!LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
 
     LoadMissionData();
     LoadVisIdMap();
@@ -223,8 +223,8 @@ int LoadClassTable(char *filename)
         {
             if (Falcon4ClassTable[i].dataType == DTYPE_UNIT)
             {
-                //				if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR && Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] == TYPE_SQUADRON)
-                //					NumSquadTypes++;
+                // if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR && Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] == TYPE_SQUADRON)
+                // NumSquadTypes++;
                 ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumUnitEntries);
                 UnitDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
                 Falcon4ClassTable[i].dataPtr = (void*) &UnitDataTable[(int)Falcon4ClassTable[i].dataPtr];
@@ -264,10 +264,10 @@ int LoadClassTable(char *filename)
     ReadClassTable();
     // Update some precalculated statistics
     // KCK: I do these precalculations in the classtable builder now..
-    //	UpdateVehicleCombatStatistics();
-    //	UpdateFeatureCombatStatistics();
-    //	UpdateUnitCombatStatistics();
-    //	UpdateObjectiveCombatStatistics();
+    // UpdateVehicleCombatStatistics();
+    // UpdateFeatureCombatStatistics();
+    // UpdateUnitCombatStatistics();
+    // UpdateObjectiveCombatStatistics();
     // Set our special indices;
     SFXType = GetClassID(DOMAIN_ABSTRACT, CLASS_SFX, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
     F4SessionType = GetClassID(DOMAIN_ABSTRACT, CLASS_SESSION, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
@@ -275,10 +275,10 @@ int LoadClassTable(char *filename)
     F4GameType = GetClassID(DOMAIN_ABSTRACT, CLASS_GAME, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
     F4FlyingEyeType = GetClassID(DOMAIN_ABSTRACT, CLASS_ABSTRACT, TYPE_FLYING_EYE, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
     F4GenericTruckType = GetClassID(DOMAIN_LAND, CLASS_VEHICLE, TYPE_WHEELED, STYPE_WHEELED_TRANSPORT, SPTYPE_KrAz255B, VU_ANY, VU_ANY, VU_ANY);
-    //	KCK: Temporary until the classtable gets rebuilt - then replace with the commented out line
+    // KCK: Temporary until the classtable gets rebuilt - then replace with the commented out line
     // F4GenericUSTruckType = GetClassID(DOMAIN_LAND,CLASS_VEHICLE,TYPE_WHEELED,STYPE_WHEELED_TRANSPORT,SPTYPE_HUMMVCARGO,VU_ANY,VU_ANY,VU_ANY);
     F4GenericUSTruckType = 534;
-    //	F4GenericCrewType = GetClassID(DOMAIN_LAND,CLASS_VEHICLE,TYPE_FOOT,STYPE_FOOT_SQUAD,SPTYPE_DPRKARTSQD,VU_ANY,VU_ANY,VU_ANY);
+    // F4GenericCrewType = GetClassID(DOMAIN_LAND,CLASS_VEHICLE,TYPE_FOOT,STYPE_FOOT_SQUAD,SPTYPE_DPRKARTSQD,VU_ANY,VU_ANY,VU_ANY);
     // Set our special rack Ids
     i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_SINGLE, VU_ANY, VU_ANY, VU_ANY);
     gRackId_Single_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
@@ -311,9 +311,9 @@ int LoadClassTable(char *filename)
     else
     {
 #ifdef DEBUG
-        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = 30000;			// MS before a session times out
+        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = 30000; // MS before a session times out
 #else
-        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = g_nSessionTimeout * 1000;			// MS before a session times out
+        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = g_nSessionTimeout * 1000; // MS before a session times out
 #endif
     }
 
@@ -323,7 +323,7 @@ int LoadClassTable(char *filename)
     }
     else
     {
-        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ = g_nSessionUpdateRate * 1000;				// MS before a session update
+        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ = g_nSessionUpdateRate * 1000; // MS before a session update
     }
 
     Falcon4ClassTable[F4GroupType].vuClassData.updateRate_ = Falcon4ClassTable[F4SessionType].vuClassData.updateRate_;
@@ -366,8 +366,8 @@ int UnloadClassTable(void)
     delete [] VisualDataTable;
     delete [] SimWeaponDataTable;
     delete [] SimACDefTable;
-    delete [] RocketDataTable;			// Added by M.N.
-    delete [] DDP;						// Added by M.N.
+    delete [] RocketDataTable; // Added by M.N.
+    delete [] DDP; // Added by M.N.
     delete [] RackGroupTable;
     delete [] RackObjectTable;
     MaxRackObjects = 0;
@@ -381,8 +381,8 @@ int UnloadClassTable(void)
 #ifndef IACONVERT
 int LoadUnitData(char *filename)
 {
-    FILE*		fp;
-    short		entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "UCD", "rb")) == NULL)
         return 0;
@@ -395,11 +395,11 @@ int LoadUnitData(char *filename)
     //fread(&entries,sizeof(short),1,fp);
     //fseek(fp, 0, SEEK_SET);
     //if (entries == 0)
-    //	g_bFFDBC = true;
+    // g_bFFDBC = true;
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -433,25 +433,25 @@ int LoadUnitData(char *filename)
 
 int LoadObjectiveData(char *filename)
 {
-    FILE*		fp;
-    //	int			i,j,fid;
-    short		entries;
-    //char	fname[64];
+    FILE* fp;
+    // int i,j,fid;
+    short entries;
+    //char fname[64];
 
 
 
-    //strcpy (fname, filename);	// M.N. switch between objectives with and without trees
+    //strcpy (fname, filename); // M.N. switch between objectives with and without trees
     //if (g_bDisplayTrees)
-    //	strcat(fname,"tree");
+    // strcat(fname,"tree");
 
     //if ((fp = OpenCampFile(fname, "OCD", "rb")) == NULL)
     //{
-    //	if (g_bDisplayTrees && fedtree)	// we've loaded a fedtree previously, so we also need a ocdtree version
-    //	{
-    //		ShiError( "Failed to load objective data" );
-    //		return 0;
-    //	}
-    if ((fp = OpenCampFile(filename, "OCD", "rb")) == NULL)	// if we have no "tree" version, just load the standard one
+    // if (g_bDisplayTrees && fedtree) // we've loaded a fedtree previously, so we also need a ocdtree version
+    // {
+    // ShiError( "Failed to load objective data" );
+    // return 0;
+    // }
+    if ((fp = OpenCampFile(filename, "OCD", "rb")) == NULL) // if we have no "tree" version, just load the standard one
         return 0;
 
     //}
@@ -462,7 +462,7 @@ int LoadObjectiveData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -486,9 +486,9 @@ int LoadObjectiveData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(ObjClassDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     ObjDataTable = new ObjClassDataType[entries];
     fread(ObjDataTable, sizeof(ObjClassDataType), entries, fp);
     fclose(fp);
@@ -514,8 +514,8 @@ int LoadObjectiveData(char *filename)
 
 int LoadWeaponData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "WCD", "rb")) == NULL)
         return 0;
@@ -527,7 +527,7 @@ int LoadWeaponData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -551,9 +551,9 @@ int LoadWeaponData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(WeaponClassDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     WeaponDataTable = new WeaponClassDataType[entries];
     fread(WeaponDataTable, sizeof(WeaponClassDataType), entries, fp);
     fclose(fp);
@@ -565,8 +565,8 @@ int LoadWeaponData(char *filename)
 
 int LoadRocketData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "RKT", "rb")) == NULL)
         return 0;
@@ -578,7 +578,7 @@ int LoadRocketData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -602,9 +602,9 @@ int LoadRocketData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(RocketClassDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     RocketDataTable = new RocketClassDataType[entries];
     fread(RocketDataTable, sizeof(RocketClassDataType), entries, fp);
     fclose(fp);
@@ -618,8 +618,8 @@ int LoadRocketData(char *filename)
 
 int LoadDirtyData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "DDP", "rb")) == NULL)
         return 0;
@@ -631,7 +631,7 @@ int LoadDirtyData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -655,9 +655,9 @@ int LoadDirtyData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(DirtyDataClassType) * entries + 2)
-    //	return 0;
+    // return 0;
     DDP = new DirtyDataClassType[entries];
     fread(DDP, sizeof(DirtyDataClassType), entries, fp);
     fclose(fp);
@@ -672,8 +672,8 @@ int LoadDirtyData(char *filename)
 
 int LoadFeatureData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "FCD", "rb")) == NULL)
         return 0;
@@ -685,7 +685,7 @@ int LoadFeatureData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -709,9 +709,9 @@ int LoadFeatureData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(FeatureClassDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     FeatureDataTable = new FeatureClassDataType[entries];
     fread(FeatureDataTable, sizeof(FeatureClassDataType), entries, fp);
     fclose(fp);
@@ -721,8 +721,8 @@ int LoadFeatureData(char *filename)
 
 int LoadVehicleData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "VCD", "rb")) == NULL)
         return 0;
@@ -734,7 +734,7 @@ int LoadVehicleData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -758,9 +758,9 @@ int LoadVehicleData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(VehicleClassDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     VehicleDataTable = new VehicleClassDataType[entries];
     fread(VehicleDataTable, sizeof(VehicleClassDataType), entries, fp);
     fclose(fp);
@@ -770,8 +770,8 @@ int LoadVehicleData(char *filename)
 
 int LoadWeaponListData(char *filename)
 {
-    FILE*			fp;
-    short			entries;
+    FILE* fp;
+    short entries;
 
     if ((fp = OpenCampFile(filename, "WLD", "rb")) == NULL)
         return 0;
@@ -783,7 +783,7 @@ int LoadWeaponListData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -807,9 +807,9 @@ int LoadWeaponListData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&entries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(WeaponListDataType) * entries + 2)
-    //	return 0;
+    // return 0;
     WeaponListDataTable = new WeaponListDataType[entries];
     fread(WeaponListDataTable, sizeof(WeaponListDataType), entries, fp);
     fclose(fp);
@@ -818,7 +818,7 @@ int LoadWeaponListData(char *filename)
 
 int LoadPtHeaderData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "PHD", "rb")) == NULL)
     {
@@ -895,7 +895,7 @@ int LoadPtHeaderData(char *filename)
 
 int LoadPtData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "PD", "rb")) == NULL)
     {
@@ -924,11 +924,11 @@ int LoadPtData(char *filename)
 
 int LoadFeatureEntryData(char *filename)
 {
-    FILE*		fp;
-    char	fname[64];
+    FILE* fp;
+    char fname[64];
 
     fedtree = false;
-    strcpy(fname, filename);	// M.N. switch between objectives with and without trees
+    strcpy(fname, filename); // M.N. switch between objectives with and without trees
 
     if (g_bDisplayTrees)
     {
@@ -940,7 +940,7 @@ int LoadFeatureEntryData(char *filename)
     {
         fedtree = false;
 
-        if ((fp = OpenCampFile(filename, "FED", "rb")) == NULL)	// if we have no "tree" version, just load the standard one
+        if ((fp = OpenCampFile(filename, "FED", "rb")) == NULL) // if we have no "tree" version, just load the standard one
             return 0;
     }
 
@@ -951,7 +951,7 @@ int LoadFeatureEntryData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0;
+        short iknt = 0;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -975,9 +975,9 @@ int LoadFeatureEntryData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumObjFeatEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(FeatureEntry) * NumObjFeatEntries + 2)
-    //	return 0;
+    // return 0;
     FeatureEntryDataTable = new FeatureEntry[NumObjFeatEntries];
     fread(FeatureEntryDataTable, sizeof(FeatureEntry), NumObjFeatEntries, fp);
     fclose(fp);
@@ -986,7 +986,7 @@ int LoadFeatureEntryData(char *filename)
 
 int LoadRadarData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "RCD", "rb")) == NULL)
         return 0;
@@ -998,7 +998,7 @@ int LoadRadarData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1022,9 +1022,9 @@ int LoadRadarData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumRadarEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(RadarDataType) * NumRadarEntries + 2)
-    //	return 0;
+    // return 0;
     RadarDataTable = new RadarDataType[NumRadarEntries];
     ShiAssert(RadarDataTable);
     fread(RadarDataTable, sizeof(RadarDataType), NumRadarEntries, fp);
@@ -1034,7 +1034,7 @@ int LoadRadarData(char *filename)
 
 int LoadIRSTData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "ICD", "rb")) == NULL)
         return 0;
@@ -1046,7 +1046,7 @@ int LoadIRSTData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1070,9 +1070,9 @@ int LoadIRSTData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumIRSTEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(IRSTDataType) * NumIRSTEntries + 2)
-    //	return 0;
+    // return 0;
     IRSTDataTable = new IRSTDataType[NumIRSTEntries];
     ShiAssert(IRSTDataTable);
     fread(IRSTDataTable, sizeof(IRSTDataType), NumIRSTEntries, fp);
@@ -1082,7 +1082,7 @@ int LoadIRSTData(char *filename)
 
 int LoadRwrData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "rwd", "rb")) == NULL)
         return 0;
@@ -1094,7 +1094,7 @@ int LoadRwrData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1118,9 +1118,9 @@ int LoadRwrData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumRwrEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(RwrDataType) * NumRwrEntries + 2)
-    //	return 0;
+    // return 0;
     RwrDataTable = new RwrDataType[NumRwrEntries];
     ShiAssert(RwrDataTable);
     fread(RwrDataTable, sizeof(RwrDataType), NumRwrEntries, fp);
@@ -1130,7 +1130,7 @@ int LoadRwrData(char *filename)
 
 int LoadVisualData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "vsd", "rb")) == NULL)
         return 0;
@@ -1142,7 +1142,7 @@ int LoadVisualData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1166,9 +1166,9 @@ int LoadVisualData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumVisualEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(VisualDataType) * NumVisualEntries + 2)
-    //	return 0;
+    // return 0;
     VisualDataTable = new VisualDataType[NumVisualEntries];
     ShiAssert(VisualDataTable);
     fread(VisualDataTable, sizeof(VisualDataType), NumVisualEntries, fp);
@@ -1178,7 +1178,7 @@ int LoadVisualData(char *filename)
 
 int LoadSimWeaponData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "SWD", "rb")) == NULL)
         return 0;
@@ -1190,7 +1190,7 @@ int LoadSimWeaponData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1214,9 +1214,9 @@ int LoadSimWeaponData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumSimWeaponEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(SimWeaponDataType) * NumSimWeaponEntries + 2)
-    //	return 0;
+    // return 0;
     SimWeaponDataTable = new SimWeaponDataType[NumSimWeaponEntries];
     ShiAssert(SimWeaponDataTable);
     fread(SimWeaponDataTable, sizeof(SimWeaponDataType), NumSimWeaponEntries, fp);
@@ -1226,7 +1226,7 @@ int LoadSimWeaponData(char *filename)
 
 int LoadACDefData(char *filename)
 {
-    FILE*		fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(filename, "ACD", "rb")) == NULL)
         return 0;
@@ -1238,7 +1238,7 @@ int LoadACDefData(char *filename)
     if (g_bFFDBC)
     {
         // FF - get real count of entries
-        short	iknt = 0, entries;
+        short iknt = 0, entries;
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
         fread(&iknt, sizeof(short), 1, fp);
@@ -1262,9 +1262,9 @@ int LoadACDefData(char *filename)
 
     //fseek(fp, 0, SEEK_SET);
     //if (fread(&NumACDefEntries,sizeof(short),1,fp) < 1)
-    //	return 0;
+    // return 0;
     //if (size != sizeof(SimACDefType) * NumACDefEntries + 2)
-    //	return 0;
+    // return 0;
     SimACDefTable = new SimACDefType[NumACDefEntries];
     ShiAssert(SimACDefTable);
     fread(SimACDefTable, sizeof(SimACDefType), NumACDefEntries, fp);
@@ -1274,7 +1274,7 @@ int LoadACDefData(char *filename)
 
 int LoadSquadronStoresData(char *filename)
 {
-    FILE		*fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "SSD", "rb")) == NULL)
         return 0;
@@ -1285,7 +1285,7 @@ int LoadSquadronStoresData(char *filename)
     // FF - DB Control
     if (g_bFFDBC)
     {
-        short	iknt = 0, entries = 0;
+        short iknt = 0, entries = 0;
         // FF - get real count of entries
         fseek(fp, 0, SEEK_END);
         fseek(fp, -2, SEEK_CUR);
@@ -1306,16 +1306,16 @@ int LoadSquadronStoresData(char *filename)
             return 0;
 
         if (size != sizeof(SquadronStoresDataType) * NumSquadTypes + 2)
-            //	MAXIMUM_WEAPTYPES = 600;
+            // MAXIMUM_WEAPTYPES = 600;
             return 0;
     }
 
     // Check for FF new record size
     //if ((size == sizeof(SquadronStoresDataType) * NumSquadTypes + 2)
-    //				&& (sizeof(SquadronStoresDataType)-3 == FF_MAXIMUM_WEAPTYPES))
-    //	MAXIMUM_WEAPTYPES = FF_MAXIMUM_WEAPTYPES;
+    // && (sizeof(SquadronStoresDataType)-3 == FF_MAXIMUM_WEAPTYPES))
+    // MAXIMUM_WEAPTYPES = FF_MAXIMUM_WEAPTYPES;
     //else
-    //	MAXIMUM_WEAPTYPES = SP_MAXIMUM_WEAPTYPES;
+    // MAXIMUM_WEAPTYPES = SP_MAXIMUM_WEAPTYPES;
 
     SquadronStoresDataTable = new SquadronStoresDataType[NumSquadTypes];
     ShiAssert(SquadronStoresDataTable);
@@ -1339,7 +1339,7 @@ void UpdateVehicleCombatStatistics(void)
         {
             // KCK: HitChance is now the inherent hitchance only!
             // Units will use the calculated hitchance
-            //			VehicleDataTable[id].HitChance[mt] += CalculateVehicleHitChance(VehicleDataTable[id].Index,mt);
+            // VehicleDataTable[id].HitChance[mt] += CalculateVehicleHitChance(VehicleDataTable[id].Index,mt);
             VehicleDataTable[id].Range[mt] = CalculateVehicleRange(VehicleDataTable[id].Index, mt);
             VehicleDataTable[id].Strength[mt] = CalculateVehicleCombatStrength(VehicleDataTable[id].Index, mt);
         }
@@ -1348,17 +1348,17 @@ void UpdateVehicleCombatStatistics(void)
 
 void UpdateFeatureCombatStatistics(void)
 {
-    /*	int id,mt;
+    /* int id,mt;
 
-    	for (id=1; id < NumFeatureEntries; id++)
-    	{
-    	for (mt=0; mt<MOVEMENT_TYPES; mt++)
-    	{
-    	FeatureDataTable[id].HitChance[mt] = CalculateFeatureHitChance(FeatureDataTable[id].Index,mt);
-    	FeatureDataTable[id].Range[mt] = CalculateFeatureRange(FeatureDataTable[id].Index,mt);
-    	FeatureDataTable[id].Strength[mt] = CalculateFeatureCombatStrength(FeatureDataTable[id].Index,mt);
-    	}
-    	}
+     for (id=1; id < NumFeatureEntries; id++)
+     {
+     for (mt=0; mt<MOVEMENT_TYPES; mt++)
+     {
+     FeatureDataTable[id].HitChance[mt] = CalculateFeatureHitChance(FeatureDataTable[id].Index,mt);
+     FeatureDataTable[id].Range[mt] = CalculateFeatureRange(FeatureDataTable[id].Index,mt);
+     FeatureDataTable[id].Strength[mt] = CalculateFeatureCombatStrength(FeatureDataTable[id].Index,mt);
+     }
+     }
      */
 }
 
@@ -1366,14 +1366,14 @@ void UpdateUnitCombatStatistics(void)
 {
     int mt, i, j, id, vid, rng, mr, str, det, mdet, hc, mhc, dv, mspeed;
     int dam[OtherDam], tv, squads = 0;
-    VehicleClassDataType*	vc;
+    VehicleClassDataType* vc;
     uchar *vhc = new uchar[NumVehicleEntries * MOVEMENT_TYPES];
 
     SquadronStoresDataTable = new SquadronStoresDataType[NumSquadTypes];
     memset(SquadronStoresDataTable, 0, sizeof(SquadronStoresDataType)*NumSquadTypes);
 
     // Calculate vehicle hit chances - to copy into unit slots.
-    memset(vhc, 0, MOVEMENT_TYPES);				// Set 0th entry to zeros
+    memset(vhc, 0, MOVEMENT_TYPES); // Set 0th entry to zeros
 
     for (id = 1; id < NumVehicleEntries; id++)
     {
@@ -1463,8 +1463,8 @@ void UpdateUnitCombatStatistics(void)
 
             if (vc && squads < NumSquadTypes)
             {
-                uchar	baaweap = 0, bagweap = 0;
-                short	score, baascore = 9999, bagscore = 9999;
+                uchar baaweap = 0, bagweap = 0;
+                short score, baascore = 9999, bagscore = 9999;
 
                 // Total weapon usage
                 for (i = 0; i < HARDPOINT_MAX; i++)
@@ -1540,9 +1540,9 @@ void UpdateUnitCombatStatistics(void)
 
 void UpdateObjectiveCombatStatistics(void)
 {
-    int	mt, id, str, i, mr, det, mdet, mhc, df; // rng,hc;
-    int	dam[OtherDam], tf, j, fid;
-    FeatureClassDataType*	fc;
+    int mt, id, str, i, mr, det, mdet, mhc, df; // rng,hc;
+    int dam[OtherDam], tf, j, fid;
+    FeatureClassDataType* fc;
 
     for (id = 1; id < NumObjectiveEntries; id++)
     {
@@ -1625,8 +1625,8 @@ int CheckClassEntry(int id, uchar filter[CLASS_NUM_BYTES])
 
 int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp, uchar owner, uchar c6, uchar c7)
 {
-    int		id;
-    uchar		filter[CLASS_NUM_BYTES];
+    int id;
+    uchar filter[CLASS_NUM_BYTES];
 
     filter[0] = domain;
     filter[1] = eclass;
@@ -1655,12 +1655,12 @@ char *GetClassName(int ID)
 
     union
     {
-        void					*ptr;
-        FeatureClassDataType	*fc;
-        ObjClassDataType		*oc;
-        UnitClassDataType		*uc;
-        VehicleClassDataType	*vc;
-        WeaponClassDataType		*wc;
+        void *ptr;
+        FeatureClassDataType *fc;
+        ObjClassDataType *oc;
+        UnitClassDataType *uc;
+        VehicleClassDataType *vc;
+        WeaponClassDataType *wc;
     }
     ptr;
 
@@ -1942,8 +1942,8 @@ class RDHardpointNode : public ANode
 {
 public:
     ~RDHardpointNode();
-    int		groupId;
-    AList	pylonList;
+    int groupId;
+    AList pylonList;
 };
 
 /*************************************/
@@ -1962,7 +1962,7 @@ RDRackNode::RDRackNode()
     any = 0;
     wClassCount = 0;
     wClass = 0;
-    flags =	RDF_EMERGENCY_JETT_RACK   | RDF_SELECTIVE_JETT_RACK  |
+    flags = RDF_EMERGENCY_JETT_RACK   | RDF_SELECTIVE_JETT_RACK  |
             RDF_EMERGENCY_JETT_WEAPON | RDF_SELECTIVE_JETT_WEAPON;
 }
 
@@ -2037,8 +2037,8 @@ void RDLoadRackData(void)
     FILE *fp;
     char buffer[1024];
     RDHardpointNode *hpn = 0;
-    RDPylonNode		*pn = 0;
-    RDRackNode		*rn = 0;
+    RDPylonNode *pn = 0;
+    RDRackNode *rn = 0;
 
     RDUnloadRackData(); // just incase
 
@@ -2227,7 +2227,7 @@ void RDLoadRackData(void)
 
             On("addwclass")
             {
-                char *enums[] = {	"aim", "rocket", "bomb", "gun", "ecm", "tank", "agm", "harm", "sam", "gbu", "camera", 0 };
+                char *enums[] = { "aim", "rocket", "bomb", "gun", "ecm", "tank", "agm", "harm", "sam", "gbu", "camera", 0 };
                 int l = 0;
                 int i[100];
                 int ok = 1;
@@ -2368,8 +2368,8 @@ int RDFindBestRack(int GroupId, int WeaponId, int WeaponCount, struct RDRackData
 
 void RDCopyRackData(int count, RDPylonNode *pn, RDRackNode *rn, RDRackData *rd)
 {
-    rd->rackCT		  = rn->rackCT;
-    rd->pylonCT		  = pn->pylonCT;
+    rd->rackCT   = rn->rackCT;
+    rd->pylonCT   = pn->pylonCT;
     rd->rackStations  = rn->stations;
     rd->flags         = pn->flags | rn->flags | RDF_BMSDEFINITION;
     rd->pylonmnemonic = pn->mnemonic;

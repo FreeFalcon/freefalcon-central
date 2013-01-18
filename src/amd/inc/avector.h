@@ -42,8 +42,8 @@ extern "C" {
     void _cross_vect(float *res, float *a, float *b);
 
     /* fastcall routines */
-    void a_mag_vect();      /* eax -> mm0		*/
-    void a_dot_vect();      /* eax * edx -> mm0	*/
+    void a_mag_vect();      /* eax -> mm0 */
+    void a_dot_vect();      /* eax * edx -> mm0 */
 
 #ifdef __cplusplus
 }

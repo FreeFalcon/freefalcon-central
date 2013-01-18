@@ -3,7 +3,7 @@
 
 enum
 {
-    _FNT_CHECK_KERNING_		= 0x40,
+    _FNT_CHECK_KERNING_ = 0x40,
 };
 
 struct KerningStr
@@ -25,23 +25,23 @@ struct CharStr
 class C_Fontmgr
 {
 private:
-    long		ID_;
+    long ID_;
 
-    char		name_[32];
-    long		pitch_;
-    short		first_;
-    short		last_;
+    char name_[32];
+    long pitch_;
+    short first_;
+    short last_;
 
-    long		bytesperline_;
+    long bytesperline_;
 
-    long		fNumChars_;
-    CharStr		*fontTable_;
+    long fNumChars_;
+    CharStr *fontTable_;
 
-    long		dSize_;
-    char		*fontData_;
+    long dSize_;
+    char *fontData_;
 
-    long		kNumKerns_;
-    KerningStr	*kernList_;
+    long kNumKerns_;
+    KerningStr *kernList_;
 
 public:
 

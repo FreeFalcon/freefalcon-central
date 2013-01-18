@@ -151,7 +151,7 @@ int VuReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
     //if (ent && ent == debugPtr){
-    //	printf("bla");
+    // printf("bla");
     //}
     if (ent)
     {
@@ -168,7 +168,7 @@ int VuDeReferenceEntity(VuEntity* ent)
 {
     // sfr: temp test
     //if (ent && ent == debugPtr){
-    //	printf("bla");
+    // printf("bla");
     //}
     if (ent == NULL)
     {
@@ -220,7 +220,7 @@ VuEntity::VuEntity(ushort typeindex, VU_ID_NUMBER eid)
     share_.assoc_       = vuNullId;
     share_.ownerId_     = vuLocalSession; // need to fill in from id structure
     share_.id_.creator_ = share_.ownerId_.creator_;
-    share_.id_.num_	= eid;
+    share_.id_.num_ = eid;
 
 
     lastUpdateTime_         = vuxGameTime;
@@ -540,23 +540,23 @@ int VuEntity::Save(VU_BYTE** stream)
 }
 
 /*void VuEntity::ChangeId(VuEntity* other){
-	VuEnterCriticalSection();
-	VuMessageQueue::FlushAllQueues();
-	VuReferenceEntity(this);
-	vuDatabase->Remove(this);
-	VuMessageQueue::FlushAllQueues();
+ VuEnterCriticalSection();
+ VuMessageQueue::FlushAllQueues();
+ VuReferenceEntity(this);
+ vuDatabase->Remove(this);
+ VuMessageQueue::FlushAllQueues();
 
-	if (vuAssignmentId < vuLowWrapNumber || vuAssignmentId > vuHighWrapNumber)
-		vuAssignmentId = vuLowWrapNumber; // cover wrap
-	share_.id_.num_ = vuAssignmentId++;
+ if (vuAssignmentId < vuLowWrapNumber || vuAssignmentId > vuHighWrapNumber)
+ vuAssignmentId = vuLowWrapNumber; // cover wrap
+ share_.id_.num_ = vuAssignmentId++;
 
-	while (vuDatabase->Find(Id()) || vuAntiDB->Find(Id()) || Id() == other->Id())
-		share_.id_.num_ = vuAssignmentId++;
+ while (vuDatabase->Find(Id()) || vuAntiDB->Find(Id()) || Id() == other->Id())
+ share_.id_.num_ = vuAssignmentId++;
 
-	SetVuState(VU_MEM_ACTIVE);
-	vuDatabase->QuickInsert(this);
-	VuDeReferenceEntity(this);
-	VuExitCriticalSection();
+ SetVuState(VU_MEM_ACTIVE);
+ vuDatabase->QuickInsert(this);
+ VuDeReferenceEntity(this);
+ VuExitCriticalSection();
 }
 */
 

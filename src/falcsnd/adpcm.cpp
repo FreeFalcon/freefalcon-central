@@ -1,7 +1,7 @@
 /*************************************************************************
-	$Header: /home/cvsroot/RedCobra/FalcSnd/adpcm.cpp,v 1.1.1.1 2003/09/26 20:20:44 Red Exp $
+ $Header: /home/cvsroot/RedCobra/FalcSnd/adpcm.cpp,v 1.1.1.1 2003/09/26 20:20:44 Red Exp $
 
-	decode a buffer containing IMA ADPCM into a MS PCM
+ decode a buffer containing IMA ADPCM into a MS PCM
 
 *************************************************************************/
 
@@ -96,11 +96,11 @@ long CSoundMgr::MemStreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
 //decodes ima adpcm into mono 16-bit pcm
 long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
 {
-    short	stepSize;
-    IMA_BLOCK	*header;
-    long		didx;
+    short stepSize;
+    IMA_BLOCK *header;
+    long didx;
 
-    short	encSample;
+    short encSample;
 
     didx = 0;
 
@@ -109,14 +109,14 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
     {
         if (!Info->blockLength)
         {
-            Info->blockLength 	= min(Info->slen, SND_ADPCM_MBLOCK_ALIGN);
+            Info->blockLength  = min(Info->slen, SND_ADPCM_MBLOCK_ALIGN);
             Info->blockLength    -= sizeof(IMA_BLOCK) * SND_WAV_MCHAN;
 
             //get the block header
-            header				 = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
-            Info->sidx			+= sizeof(IMA_BLOCK);
-            Info->predSampleL	 = header->iSamp0;
-            Info->stepIndexL	 = (short)header->bStepTableIndex;
+            header  = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
+            Info->sidx += sizeof(IMA_BLOCK);
+            Info->predSampleL  = header->iSamp0;
+            Info->stepIndexL  = (short)header->bStepTableIndex;
 
             if (!IMA_ValidStepIndex(Info->stepIndexL))
             {
@@ -136,7 +136,7 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
         {
             if (!Info->count)
             {
-                Info->leftSamples 	= Info->src[Info->sidx % Info->srcsize];
+                Info->leftSamples  = Info->src[Info->sidx % Info->srcsize];
                 Info->sidx++;
 
                 Info->blockLength--;
@@ -146,10 +146,10 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
 
             while (Info->count && didx < dlen && Info->didx < Info->dlen)
             {
-                encSample	= (short)(Info->leftSamples & 0x0F);
-                stepSize	= step[Info->stepIndexL];
+                encSample = (short)(Info->leftSamples & 0x0F);
+                stepSize = step[Info->stepIndexL];
                 Info->predSampleL  = IMA_SampleDecode(encSample, Info->predSampleL, stepSize);
-                Info->stepIndexL	= IMA_NextStepIndex(encSample, Info->stepIndexL);
+                Info->stepIndexL = IMA_NextStepIndex(encSample, Info->stepIndexL);
 
                 *(short *)&dBuff[didx] = (short)Info->predSampleL;
                 didx += sizeof(short);
@@ -174,12 +174,12 @@ long CSoundMgr::StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen)
 //
 long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
 {
-    short		stepSize;
-    IMA_BLOCK	*header;
-    long		didx;
+    short stepSize;
+    IMA_BLOCK *header;
+    long didx;
 
-    short	encSampleL;
-    short	encSampleR;
+    short encSampleL;
+    short encSampleR;
 
     didx = 0;
 
@@ -199,10 +199,10 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             Info->blockLength -= sizeof(IMA_BLOCK) * SND_WAV_SCHAN;
 
             //get the left header
-            header				 = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
-            Info->sidx			+= sizeof(IMA_BLOCK);
-            Info->predSampleL	 = header->iSamp0;
-            Info->stepIndexL	 = (short)header->bStepTableIndex;
+            header  = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
+            Info->sidx += sizeof(IMA_BLOCK);
+            Info->predSampleL  = header->iSamp0;
+            Info->stepIndexL  = (short)header->bStepTableIndex;
 
             if (!IMA_ValidStepIndex(Info->stepIndexL))
             {
@@ -211,10 +211,10 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             }
 
             //get the right header
-            header				 = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
-            Info->sidx			+= sizeof(IMA_BLOCK);
-            Info->predSampleR	 = header->iSamp0;
-            Info->stepIndexR	 = (short)header->bStepTableIndex;
+            header  = (IMA_BLOCK *)&Info->src[Info->sidx % Info->srcsize];
+            Info->sidx += sizeof(IMA_BLOCK);
+            Info->predSampleR  = header->iSamp0;
+            Info->stepIndexR  = (short)header->bStepTableIndex;
 
             if (!IMA_ValidStepIndex(Info->stepIndexR))
             {
@@ -245,10 +245,10 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             {
                 Info->blockLength    -= 8;
 
-                Info->leftSamples 	 = *(long *)&Info->src[Info->sidx % Info->srcsize];
-                Info->sidx	  		+= sizeof(long);
-                Info->rightSamples 	 = *(long *)&Info->src[Info->sidx % Info->srcsize];
-                Info->sidx			+= sizeof(long);
+                Info->leftSamples   = *(long *)&Info->src[Info->sidx % Info->srcsize];
+                Info->sidx    += sizeof(long);
+                Info->rightSamples   = *(long *)&Info->src[Info->sidx % Info->srcsize];
+                Info->sidx += sizeof(long);
 
                 Info->count = 8;
             }
@@ -256,16 +256,16 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
             while (Info->count && didx < dlen && Info->didx < Info->dlen)
             {
                 //left channel
-                encSampleL			= (short)(Info->leftSamples & 0x0F);
-                stepSize			= step[Info->stepIndexL];
-                Info->predSampleL	= IMA_SampleDecode(encSampleL, Info->predSampleL, stepSize);
-                Info->stepIndexL	= IMA_NextStepIndex(encSampleL, Info->stepIndexL);
+                encSampleL = (short)(Info->leftSamples & 0x0F);
+                stepSize = step[Info->stepIndexL];
+                Info->predSampleL = IMA_SampleDecode(encSampleL, Info->predSampleL, stepSize);
+                Info->stepIndexL = IMA_NextStepIndex(encSampleL, Info->stepIndexL);
 
                 //right channel
-                encSampleR 			= (short)(Info->rightSamples & 0x0F);
-                stepSize			= step[Info->stepIndexR];
-                Info->predSampleR	= IMA_SampleDecode(encSampleR, Info->predSampleR, stepSize);
-                Info->stepIndexR 	= IMA_NextStepIndex(encSampleR, Info->stepIndexR);
+                encSampleR  = (short)(Info->rightSamples & 0x0F);
+                stepSize = step[Info->stepIndexR];
+                Info->predSampleR = IMA_SampleDecode(encSampleR, Info->predSampleR, stepSize);
+                Info->stepIndexR  = IMA_NextStepIndex(encSampleR, Info->stepIndexR);
 
                 //write out the sample
                 *(long *)&dBuff[didx] = MAKELONG(Info->predSampleL, Info->predSampleR);
@@ -273,8 +273,8 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
                 Info->didx++;
 
                 //shift the next input ssample into the low-order 4 bits
-                Info->leftSamples 	>>= 4;
-                Info->rightSamples	>>= 4;
+                Info->leftSamples  >>= 4;
+                Info->rightSamples >>= 4;
                 Info->count--;
             }
         }
@@ -288,29 +288,29 @@ long CSoundMgr::StreamImaS16(IMA_STREAM *Info, char *dBuff, long dlen)
 //decodes ima adpcm into stereo 16-bit pcm
 long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
 {
-    short	blockHeaderSize;
-    int		blockAlignment;
-    int		blockLength;
-    char	*dBuffStart;
-    long	leftSamples;
-    long	rightSamples;
-    short	stepSize;
-    short	i;
-    IMA_BLOCK	header;
+    short blockHeaderSize;
+    int blockAlignment;
+    int blockLength;
+    char *dBuffStart;
+    long leftSamples;
+    long rightSamples;
+    short stepSize;
+    short i;
+    IMA_BLOCK header;
 
-    short	predSampleL;
-    short	stepIndexL;
-    short	encSampleL;
+    short predSampleL;
+    short stepIndexL;
+    short encSampleL;
 
-    short	predSampleR;
-    short	stepIndexR;
-    short	encSampleR;
+    short predSampleR;
+    short stepIndexR;
+    short encSampleR;
 
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(IMA_BLOCK) * SND_WAV_SCHAN;
-    blockAlignment 	= SND_ADPCM_SBLOCK_ALIGN;
-    dBuffStart		= dBuff;
+    blockAlignment  = SND_ADPCM_SBLOCK_ALIGN;
+    dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
     while (bufferLength)
@@ -322,15 +322,15 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
             return 0;
         }
 
-        blockLength 	= blockAlignment;
+        blockLength  = blockAlignment;
         bufferLength   -= blockLength;
         blockLength    -= blockHeaderSize;
 
         //get the left header
-        header		= *(IMA_BLOCK *)sBuff;
-        sBuff		= sBuff + sizeof(IMA_BLOCK);
+        header = *(IMA_BLOCK *)sBuff;
+        sBuff = sBuff + sizeof(IMA_BLOCK);
         predSampleL = header.iSamp0;
-        stepIndexL	= (short)header.bStepTableIndex;
+        stepIndexL = (short)header.bStepTableIndex;
 
         if (!IMA_ValidStepIndex(stepIndexL))
         {
@@ -339,10 +339,10 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         }
 
         //get the right header
-        header		= *(IMA_BLOCK *)sBuff;
-        sBuff		= sBuff + sizeof(IMA_BLOCK);
-        predSampleR	= header.iSamp0;
-        stepIndexR	= (short)header.bStepTableIndex;
+        header = *(IMA_BLOCK *)sBuff;
+        sBuff = sBuff + sizeof(IMA_BLOCK);
+        predSampleR = header.iSamp0;
+        stepIndexR = (short)header.bStepTableIndex;
 
         if (!IMA_ValidStepIndex(stepIndexR))
         {
@@ -352,7 +352,7 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
 
         //write out the first sample
         *(long *)dBuff = MAKELONG(predSampleL, predSampleR);
-        dBuff			= dBuff + sizeof(long);
+        dBuff = dBuff + sizeof(long);
 
         //the first long contains 4 left samples the second long
         //contains 4 right samples.  Will process the source in 8-byte
@@ -367,32 +367,32 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
         {
             blockLength    -= 8;
 
-            leftSamples 	= *(long *)sBuff;
-            sBuff	  		= sBuff + sizeof(long);
-            rightSamples 	= *(long *)sBuff;
-            sBuff			= sBuff + sizeof(long);
+            leftSamples  = *(long *)sBuff;
+            sBuff    = sBuff + sizeof(long);
+            rightSamples  = *(long *)sBuff;
+            sBuff = sBuff + sizeof(long);
 
             for (i = 8; i > 0; i--)
             {
                 //left channel
-                encSampleL	= (short)(leftSamples & 0x0F);
-                stepSize	= step[stepIndexL];
+                encSampleL = (short)(leftSamples & 0x0F);
+                stepSize = step[stepIndexL];
                 predSampleL = IMA_SampleDecode(encSampleL, predSampleL, stepSize);
-                stepIndexL	= IMA_NextStepIndex(encSampleL, stepIndexL);
+                stepIndexL = IMA_NextStepIndex(encSampleL, stepIndexL);
 
                 //right channel
-                encSampleR 	= (short)(rightSamples & 0x0F);
-                stepSize	= step[stepIndexR];
+                encSampleR  = (short)(rightSamples & 0x0F);
+                stepSize = step[stepIndexR];
                 predSampleR = IMA_SampleDecode(encSampleR, predSampleR, stepSize);
-                stepIndexR 	= IMA_NextStepIndex(encSampleR, stepIndexR);
+                stepIndexR  = IMA_NextStepIndex(encSampleR, stepIndexR);
 
                 //write out the sample
                 *(long *)dBuff = MAKELONG(predSampleL, predSampleR);
-                dBuff			= dBuff + sizeof(long);
+                dBuff = dBuff + sizeof(long);
 
                 //shift the next input ssample into the low-order 4 bits
-                leftSamples 	>>= 4;
-                rightSamples	>>= 4;
+                leftSamples  >>= 4;
+                rightSamples >>= 4;
             } //loop of i=8 decrement to 0
         } //0 != blockLength
     } //while 0 != bufferLength
@@ -405,38 +405,38 @@ long CSoundMgr::ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength)
 //------------------------------------------------------------------------
 //function ImaDecodeM16
 //decodes ima adpcm into mono 16-bit pcm
-long CSoundMgr::ImaDecodeM16(char *sBuff, char	*dBuff,	long bufferLength)
+long CSoundMgr::ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 {
-    short	blockHeaderSize;
-    int		blockAlignment;
-    int		blockLength;
-    char	*dBuffStart;
-    long	sample;
-    short	stepSize;
-    IMA_BLOCK	header;
+    short blockHeaderSize;
+    int blockAlignment;
+    int blockLength;
+    char *dBuffStart;
+    long sample;
+    short stepSize;
+    IMA_BLOCK header;
 
-    short	predSample;
-    short	stepIndex;
-    short	encSample;
+    short predSample;
+    short stepIndex;
+    short encSample;
 
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(IMA_BLOCK) * SND_WAV_MCHAN;
-    blockAlignment 	= SND_ADPCM_MBLOCK_ALIGN;
-    dBuffStart		= dBuff;
+    blockAlignment  = SND_ADPCM_MBLOCK_ALIGN;
+    dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
     while (bufferLength >= blockHeaderSize)
     {
-        blockLength 	= (UINT)min(bufferLength, blockAlignment);
+        blockLength  = (UINT)min(bufferLength, blockAlignment);
         bufferLength   -= blockLength;
         blockLength    -= blockHeaderSize;
 
         //get the block header
-        header		= *(IMA_BLOCK *)sBuff;
-        sBuff		= sBuff + sizeof(IMA_BLOCK);
+        header = *(IMA_BLOCK *)sBuff;
+        sBuff = sBuff + sizeof(IMA_BLOCK);
         predSample  = header.iSamp0;
-        stepIndex 	= (short)header.bStepTableIndex;
+        stepIndex  = (short)header.bStepTableIndex;
 
         if (!IMA_ValidStepIndex(stepIndex))
         {
@@ -446,29 +446,29 @@ long CSoundMgr::ImaDecodeM16(char *sBuff, char	*dBuff,	long bufferLength)
 
         //write out the first sample
         *(short *)dBuff = (short)predSample;
-        dBuff			= dBuff + sizeof(short);
+        dBuff = dBuff + sizeof(short);
 
         while (blockLength--)
         {
-            sample	 	= *sBuff++;
+            sample   = *sBuff++;
 
             //sample 1
-            encSample	= (short)(sample & 0x0F);
-            stepSize	= step[stepIndex];
+            encSample = (short)(sample & 0x0F);
+            stepSize = step[stepIndex];
             predSample  = IMA_SampleDecode(encSample, predSample, stepSize);
-            stepIndex	= IMA_NextStepIndex(encSample, stepIndex);
+            stepIndex = IMA_NextStepIndex(encSample, stepIndex);
 
             *(short *)dBuff = (short)predSample;
-            dBuff			= dBuff + sizeof(short);
+            dBuff = dBuff + sizeof(short);
 
             //sample 2
-            encSample	= (short)(sample >> 4);
-            stepSize	= step[stepIndex];
-            predSample	= IMA_SampleDecode(encSample, predSample, stepSize);
-            stepIndex 	= IMA_NextStepIndex(encSample, stepIndex);
+            encSample = (short)(sample >> 4);
+            stepSize = step[stepIndex];
+            predSample = IMA_SampleDecode(encSample, predSample, stepSize);
+            stepIndex  = IMA_NextStepIndex(encSample, stepIndex);
 
-            *(short *)dBuff	= (short)predSample;
-            dBuff			= dBuff + sizeof(short);
+            *(short *)dBuff = (short)predSample;
+            dBuff = dBuff + sizeof(short);
         } //0 != blockLength
     } //while bufferLength >= blockHeaderSize
 

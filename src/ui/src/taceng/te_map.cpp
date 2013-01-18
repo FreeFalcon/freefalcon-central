@@ -340,9 +340,9 @@ void SelectTargetCB(long ID, short hittype, C_Base *ctrl)
                     tactical_add_squadron(urec->GetID());
                     break;
 
-                    /*				case ADD_TASKFORCE: // Click on an airbase to add a squadron
-                    					tactical_add_taskforce(urec->GetID(),ctrl);
-                    					break;
+                    /* case ADD_TASKFORCE: // Click on an airbase to add a squadron
+                     tactical_add_taskforce(urec->GetID(),ctrl);
+                     break;
                     */
                 default:
                     break;
@@ -793,7 +793,7 @@ void gMapMgr_menu(long ID, short hittype, C_Base *control)
         {
             zoom = gMapMgr->GetZoomLevel();
 
-            if (zoom >= 64)	// MAX_ZOOM_LEVEL
+            if (zoom >= 64) // MAX_ZOOM_LEVEL
             {
                 return;
             }
@@ -813,7 +813,7 @@ void gMapMgr_menu(long ID, short hittype, C_Base *control)
         {
             zoom = gMapMgr->GetZoomLevel();
 
-            if (zoom <= 1)	// MAX_ZOOM_LEVEL
+            if (zoom <= 1) // MAX_ZOOM_LEVEL
             {
                 return;
             }

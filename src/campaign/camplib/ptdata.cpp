@@ -25,7 +25,7 @@ int GetTaxiPosition(int point, int rwindex)
 
     while (pt && pt != point)
     {
-        if (pt > point) break;	 // 24JAN04 - FRB - Cover case of a/c on parking spot (not TaxiPt)
+        if (pt > point) break;  // 24JAN04 - FRB - Cover case of a/c on parking spot (not TaxiPt)
 
         pt = GetNextTaxiPt(pt);
         count++;
@@ -169,7 +169,7 @@ void TranslatePointData(CampEntity e, int ptindex, float *x, float *y)
         // SCR 11/29/98  I don't think objectives HAVE headings, so this is correct.
         *x = e->XPos();
         *y = e->YPos();
-        *x += PtDataTable[ptindex].yOffset;	 // KCK NOTE: axis' are reversed
+        *x += PtDataTable[ptindex].yOffset;  // KCK NOTE: axis' are reversed
         *y += PtDataTable[ptindex].xOffset;
     }
 }
@@ -177,7 +177,7 @@ void TranslatePointData(CampEntity e, int ptindex, float *x, float *y)
 // This will return the lowest status of the features this header is dependent on
 int CheckHeaderStatus(CampEntity e, int index)
 {
-    int		status = VIS_NORMAL, i = 0, fs;
+    int status = VIS_NORMAL, i = 0, fs;
 
     while (status != VIS_DESTROYED && i < MAX_FEAT_DEPEND)
     {
@@ -186,7 +186,7 @@ int CheckHeaderStatus(CampEntity e, int index)
             if (e && e->IsObjective())
             {
                 fs = ((Objective)e)->GetFeatureStatus(PtHeaderDataTable[index].features[i]);
-                //				ShiAssert(((Objective)e)->GetFeatureValue(PtHeaderDataTable[index].features[i]) > 0);
+                // ShiAssert(((Objective)e)->GetFeatureValue(PtHeaderDataTable[index].features[i]) > 0);
             }
             else
                 fs = VIS_NORMAL;
@@ -218,7 +218,7 @@ int GetFirstParkPt(int headerindex)
         if (PtDataTable[pt].flags & PT_LAST)
             return 0; // examined all
 
-        pt ++;	// FRB - Should pt be incremented????	I added pt++;	 fn() not used :^(
+        pt ++; // FRB - Should pt be incremented???? I added pt++;  fn() not used :^(
     }
 
     return 0;

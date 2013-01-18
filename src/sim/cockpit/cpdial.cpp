@@ -3,48 +3,48 @@
 #include "Graphics/Include/renderow.h"
 #include "otwdrive.h"
 
-#include "Graphics/Include/grinline.h"	//Wombat778 3-26-04
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-26-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr* pdialInitStr) : CPObject(pobjectInitStr)
 {
-    int	i;
+    int i;
     mlTrig trig;
 
-    mSrcRect			= pdialInitStr->srcRect;
-    mRadius0			= pdialInitStr->radius0;
-    mRadius1			= pdialInitStr->radius1;
-    mRadius2			= pdialInitStr->radius2;
+    mSrcRect = pdialInitStr->srcRect;
+    mRadius0 = pdialInitStr->radius0;
+    mRadius1 = pdialInitStr->radius1;
+    mRadius2 = pdialInitStr->radius2;
 
-    mColor[0][0]		= pdialInitStr->color0;
-    mColor[0][1]		= pdialInitStr->color1;
-    mColor[0][2]		= pdialInitStr->color2;
+    mColor[0][0] = pdialInitStr->color0;
+    mColor[0][1] = pdialInitStr->color1;
+    mColor[0][2] = pdialInitStr->color2;
 
-    mColor[1][0]		= CalculateNVGColor(pdialInitStr->color0);
-    mColor[1][1]		= CalculateNVGColor(pdialInitStr->color1);
-    mColor[1][2]		= CalculateNVGColor(pdialInitStr->color2);
+    mColor[1][0] = CalculateNVGColor(pdialInitStr->color0);
+    mColor[1][1] = CalculateNVGColor(pdialInitStr->color1);
+    mColor[1][2] = CalculateNVGColor(pdialInitStr->color2);
 
-    mxCenter			= mSrcRect.left + mWidth / 2;
-    myCenter			= mSrcRect.top	+ mHeight / 2;
+    mxCenter = mSrcRect.left + mWidth / 2;
+    myCenter = mSrcRect.top + mHeight / 2;
 
-    mEndPoints			= pdialInitStr->endPoints;
-    mpValues			= pdialInitStr->pvalues;
-    mpPoints			= pdialInitStr->ppoints;
+    mEndPoints = pdialInitStr->endPoints;
+    mpValues = pdialInitStr->pvalues;
+    mpPoints = pdialInitStr->ppoints;
 
-    mDialValue			= 0.0F;
+    mDialValue = 0.0F;
 
 #ifdef USE_SH_POOLS
     mpCosPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
     mpSinPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
 #else
-    mpCosPoints			= new float[mEndPoints];
-    mpSinPoints			= new float[mEndPoints];
+    mpCosPoints = new float[mEndPoints];
+    mpSinPoints = new float[mEndPoints];
 #endif
 
     for (i = 0; i < mEndPoints; i++)
     {
         mlSinCos(&trig, mpPoints[i]);
-        mpCosPoints[i]	= trig.cos;
+        mpCosPoints[i] = trig.cos;
         mpSinPoints[i] = trig.sin;
     }
 
@@ -56,9 +56,9 @@ CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr* pdialInitStr) : CPObj
         //if the needle has the rendering line, use destrect for the center
         // instead of the source(because now the src is actually used for something)
         //Wombat778 3-30-04 remove scaling that gets inserted by cpobject
-        mxCenter				= (int)((mDestRect.left / mHScale) + (mWidth / 2));
+        mxCenter = (int)((mDestRect.left / mHScale) + (mWidth / 2));
         //Wombat778 3-30-04 remove scaling that gets inserted by cpobject
-        myCenter				= (int)((mDestRect.top / mVScale) + (mHeight / 2));
+        myCenter = (int)((mDestRect.top / mVScale) + (mHeight / 2));
 
         if (DisplayOptions.bRender2DCockpit)
         {
@@ -86,23 +86,23 @@ CPDial::~CPDial()
 
 void CPDial::Exec(SimBaseClass* pOwnship)
 {
-    BOOL	found = FALSE;
-    int		i = 0;
-    int		xOffset0 = 0;
-    int		yOffset0 = 0;
-    int		xOffset1 = 0;
-    int		yOffset1 = 0;
-    int		xOffset2 = 0;
-    int		yOffset2 = 0;
-    int		xOffset3 = 0;
-    int		yOffset3 = 0;
-    float	delta = 0.0F;
-    float	slope = 0.0F;
-    float	deflection = 0.0F;
-    float	cosDeflection = 0.0F;
-    float	sinDeflection = 0.0F;
-    float	cosSecondDeflection = 0.0F;
-    float	sinSecondDeflection = 0.0F;
+    BOOL found = FALSE;
+    int i = 0;
+    int xOffset0 = 0;
+    int yOffset0 = 0;
+    int xOffset1 = 0;
+    int yOffset1 = 0;
+    int xOffset2 = 0;
+    int yOffset2 = 0;
+    int xOffset3 = 0;
+    int yOffset3 = 0;
+    float delta = 0.0F;
+    float slope = 0.0F;
+    float deflection = 0.0F;
+    float cosDeflection = 0.0F;
+    float sinDeflection = 0.0F;
+    float cosSecondDeflection = 0.0F;
+    float sinSecondDeflection = 0.0F;
     mlTrig  trig;
 
     mpOwnship = pOwnship;
@@ -117,11 +117,11 @@ void CPDial::Exec(SimBaseClass* pOwnship)
     {
         if (mDialValue <= mpValues[0])
         {
-            found		= TRUE;
-            xOffset0	= FloatToInt32(mRadius0 * mpCosPoints[0]);
-            yOffset0	= -FloatToInt32(mRadius0 * mpSinPoints[0]);
-            xOffset1	= FloatToInt32(mRadius1 * mpCosPoints[0]);
-            yOffset1	= -FloatToInt32(mRadius1 * mpSinPoints[0]);
+            found = TRUE;
+            xOffset0 = FloatToInt32(mRadius0 * mpCosPoints[0]);
+            yOffset0 = -FloatToInt32(mRadius0 * mpSinPoints[0]);
+            xOffset1 = FloatToInt32(mRadius1 * mpCosPoints[0]);
+            yOffset1 = -FloatToInt32(mRadius1 * mpSinPoints[0]);
 
             mlSinCos(&trig, mpPoints[0] + 0.7854F);
             cosSecondDeflection = trig.cos;
@@ -134,15 +134,15 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             xOffset3 = FloatToInt32(mRadius2 * trig.cos);
             yOffset3 = -FloatToInt32(mRadius2 * trig.sin);
 
-            angle = mpPoints[0];		//Wombat778 7-09-04
+            angle = mpPoints[0]; //Wombat778 7-09-04
         }
         else if (mDialValue >= mpValues[mEndPoints - 1])
         {
-            found		= TRUE;
-            xOffset0	= FloatToInt32(mRadius0 * mpCosPoints[mEndPoints - 1]);
-            yOffset0	= -FloatToInt32(mRadius0 * mpSinPoints[mEndPoints - 1]);
-            xOffset1	= FloatToInt32(mRadius1 * mpCosPoints[mEndPoints - 1]);
-            yOffset1	= -FloatToInt32(mRadius1 * mpSinPoints[mEndPoints - 1]);
+            found = TRUE;
+            xOffset0 = FloatToInt32(mRadius0 * mpCosPoints[mEndPoints - 1]);
+            yOffset0 = -FloatToInt32(mRadius0 * mpSinPoints[mEndPoints - 1]);
+            xOffset1 = FloatToInt32(mRadius1 * mpCosPoints[mEndPoints - 1]);
+            yOffset1 = -FloatToInt32(mRadius1 * mpSinPoints[mEndPoints - 1]);
 
             mlSinCos(&trig, mpPoints[mEndPoints - 1] + 0.7854F);
             cosSecondDeflection = trig.cos;
@@ -155,7 +155,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             xOffset3 = FloatToInt32(mRadius2 * trig.cos);
             yOffset3 = -FloatToInt32(mRadius2 * trig.sin);
 
-            angle = mpPoints[mEndPoints - 1];		//Wombat778 7-09-04
+            angle = mpPoints[mEndPoints - 1]; //Wombat778 7-09-04
         }
         else if ((mDialValue >= mpValues[i]) && (mDialValue < mpValues[i + 1]))
         {
@@ -173,8 +173,8 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             }
 
 
-            slope			= delta / (mpValues[i + 1] - mpValues[i]);
-            deflection	= (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
+            slope = delta / (mpValues[i + 1] - mpValues[i]);
+            deflection = (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
             //Wombat778 3-26-04  Make a copy of the angle to be used when using rendered needles
             angle = deflection;
 
@@ -188,11 +188,11 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             }
 
             mlSinCos(&trig, deflection);
-            cosDeflection	= trig.cos;
-            sinDeflection	= trig.sin;
+            cosDeflection = trig.cos;
+            sinDeflection = trig.sin;
             mlSinCos(&trig, deflection + 0.7854F);
-            cosSecondDeflection	= trig.cos;
-            sinSecondDeflection	= trig.sin;
+            cosSecondDeflection = trig.cos;
+            sinSecondDeflection = trig.sin;
 
 
             xOffset0 = FloatToInt32(mRadius0 * cosDeflection);

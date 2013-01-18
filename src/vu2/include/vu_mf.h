@@ -61,13 +61,13 @@ public:
 /*
 class VuMessageTypeFilter : public VuMessageFilter {
 public:
-	VuMessageTypeFilter(ulong bitfield) : msgTypeBitfield_(bitfield){}
-	virtual ~VuMessageTypeFilter(){}
-	virtual VU_BOOL Test(VuMessage *event) const;
-	virtual VuMessageFilter *Copy() const { return new VuMessageTypeFilter(msgTypeBitfield_); }
+ VuMessageTypeFilter(ulong bitfield) : msgTypeBitfield_(bitfield){}
+ virtual ~VuMessageTypeFilter(){}
+ virtual VU_BOOL Test(VuMessage *event) const;
+ virtual VuMessageFilter *Copy() const { return new VuMessageTypeFilter(msgTypeBitfield_); }
 
 protected:
-	ulong msgTypeBitfield_;
+ ulong msgTypeBitfield_;
 };
 */
 

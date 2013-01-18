@@ -19,9 +19,9 @@
  *
  * AMD3D 3D library code: Matrix math
  *
- *	BETA RELEASE
+ * BETA RELEASE
  *
- *	WARNING!  THE ROUTINES IN THIS FILE HAVE NOT BEEN TESTED!
+ * WARNING!  THE ROUTINES IN THIS FILE HAVE NOT BEEN TESTED!
  *
  *****************************************************************************/
 

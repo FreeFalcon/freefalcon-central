@@ -31,7 +31,7 @@ UI Comms Driver stuff (ALL of it which is NOT part of VU)
 DWORD gUI_Tracking_Flag = 0;
 
 extern F4CSECTIONHANDLE* campCritical;
-ulong			gStartConnectTime = 0;
+ulong gStartConnectTime = 0;
 short ViewLogBook = 0;
 
 void StartUITracking();
@@ -54,7 +54,7 @@ UIComms::UIComms()
     InCampaign_ = 0;
     RemoteLogbooks_ = NULL;
 
-    User_[0] = '\0';	// OW
+    User_[0] = '\0'; // OW
 
     for (i = 0; i < game_MaxGameTypes; i++)
     {
@@ -149,8 +149,8 @@ void UIComms::StopComms()
     EndCommsStuff();
     TheCampaign.CurrentGame.reset();
     //if (TheCampaign.CurrentGame){
-    //	VuDeReferenceEntity(TheCampaign.CurrentGame);
-    //	TheCampaign.CurrentGame = NULL;
+    // VuDeReferenceEntity(TheCampaign.CurrentGame);
+    // TheCampaign.CurrentGame = NULL;
     //}
     TargetGame_ = FalconNullId;
 
@@ -201,8 +201,8 @@ BOOL UIComms::LookAtGame(VuGameEntity* game)
         TargetGame_ = FalconNullId;
         TheCampaign.CurrentGame.reset();
         //if (TheCampaign.CurrentGame){
-        //	VuDeReferenceEntity(TheCampaign.CurrentGame);
-        //	TheCampaign.CurrentGame = NULL;
+        // VuDeReferenceEntity(TheCampaign.CurrentGame);
+        // TheCampaign.CurrentGame = NULL;
         //}
     }
     else

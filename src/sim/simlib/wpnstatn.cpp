@@ -30,8 +30,8 @@ extern short gRocketId;
 // ========================================
 
 #ifdef USE_SH_POOLS
-MEM_POOL	BasicWeaponStation::pool;
-MEM_POOL	AdvancedWeaponStation::pool;
+MEM_POOL BasicWeaponStation::pool;
+MEM_POOL AdvancedWeaponStation::pool;
 #endif
 
 BasicWeaponStation::BasicWeaponStation(void)
@@ -223,10 +223,10 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent					&&
-        !thePylon					&&
-        pylonId > 0					&&
-        pylonId < NumWeaponTypes	&&
+    if (theParent &&
+        !thePylon &&
+        pylonId > 0 &&
+        pylonId < NumWeaponTypes &&
         WeaponDataTable[pylonId].Index >= 0)
     {
         thePylon = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[pylonId].Index].visType[0],
@@ -275,10 +275,10 @@ void AdvancedWeaponStation::AttachRackBSP(void)
         zPos += hpPos.z;
     }
 
-    if (theParent				&&
-        !theRack					&&
-        rackId > 0				&&
-        rackId < NumWeaponTypes	&&
+    if (theParent &&
+        !theRack &&
+        rackId > 0 &&
+        rackId < NumWeaponTypes &&
         WeaponDataTable[rackId].Index >= 0)
     {
         theRack = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[rackId].Index].visType[0],
@@ -453,9 +453,9 @@ void BasicWeaponStation::AttachAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     if (weapPtr)
@@ -470,9 +470,9 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     while (weapPtr)
@@ -545,20 +545,20 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 
     if( theParent )
     {
-    	theParent->GetChildOffset(hpId-1, &hpPos);
-    	xPos += hpPos.x;		yPos += hpPos.y;		zPos += hpPos.z;
+     theParent->GetChildOffset(hpId-1, &hpPos);
+     xPos += hpPos.x; yPos += hpPos.y; zPos += hpPos.z;
     }
 
     if( thePylon )
     {
-    	thePylon->GetChildOffset(0, &hpPos);
-    	xPos += hpPos.x;		yPos += hpPos.y;		zPos += hpPos.z;
+     thePylon->GetChildOffset(0, &hpPos);
+     xPos += hpPos.x; yPos += hpPos.y; zPos += hpPos.z;
     }
 
     if( theRack )
     {
-    	theRack->GetChildOffset(weapslot, &hpPos);
-    	xPos += hpPos.x;		yPos += hpPos.y;		zPos += hpPos.z;
+     theRack->GetChildOffset(weapslot, &hpPos);
+     xPos += hpPos.x; yPos += hpPos.y; zPos += hpPos.z;
     }
     */
 
@@ -598,13 +598,13 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
     {
         // RV - Biker - switch texture set for weapons
         //if (theParent) {
-        //	int t = theParent->GetTextureSet();
-        //	int nt = weapBSP->GetNTextureSet()-1;
-        //	weapBSP->SetTextureSet(max(min(t, nt), 0));
+        // int t = theParent->GetTextureSet();
+        // int nt = weapBSP->GetNTextureSet()-1;
+        // weapBSP->SetTextureSet(max(min(t, nt), 0));
         //}
 
         //if(theSMS)
-        //	theSMS->AddStore(hpId, weaponId, 1);
+        // theSMS->AddStore(hpId, weaponId, 1);
         Tpoint pos;
 
         pos.x = xPos;
@@ -670,9 +670,9 @@ void BasicWeaponStation::DetachAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     if (weapPtr) // basics only load the 1st BSP
@@ -686,9 +686,9 @@ void AdvancedWeaponStation::DetachAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     while (weapPtr)
@@ -702,9 +702,9 @@ void BasicWeaponStation::DeleteAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     while (weapPtr)
@@ -724,9 +724,9 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 {
     SimWeaponClass *weapPtr;
 
-    //	if(podPointer)
-    //		weapPtr = podPointer;
-    //	else
+    // if(podPointer)
+    // weapPtr = podPointer;
+    // else
     weapPtr = weaponPointer.get();
 
     while (weapPtr)
@@ -799,25 +799,25 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
     Tpoint pos = {0, 0, 0}, p = {0, 0, 0};
 
     /*
-    	if(thePylon)
-    	{
-    		memcpy(&pos,&thePylon->instance.ParentObject->pSlotAndDynamicPositions[0],sizeof(Tpoint));
-    	}
+     if(thePylon)
+     {
+     memcpy(&pos,&thePylon->instance.ParentObject->pSlotAndDynamicPositions[0],sizeof(Tpoint));
+     }
 
-    	if(theRack)
-    	{
-    		memcpy(&p,&theRack->instance.ParentObject->pSlotAndDynamicPositions[weapPtr->GetRackSlot()],sizeof(Tpoint));
-    		pos.x+=p.x;
-    		pos.y+=p.y;
-    		pos.z+=p.z;
-    	}
+     if(theRack)
+     {
+     memcpy(&p,&theRack->instance.ParentObject->pSlotAndDynamicPositions[weapPtr->GetRackSlot()],sizeof(Tpoint));
+     pos.x+=p.x;
+     pos.y+=p.y;
+     pos.z+=p.z;
+     }
 
-    	if(theParent)
-    	{
-    		memcpy(&p,&theParent->instance.ParentObject->pSlotAndDynamicPositions[hpId-1],sizeof(Tpoint));
-    		pos.x+=p.x;
-    		pos.y+=p.y;
-    		pos.z+=p.z;
+     if(theParent)
+     {
+     memcpy(&p,&theParent->instance.ParentObject->pSlotAndDynamicPositions[hpId-1],sizeof(Tpoint));
+     pos.x+=p.x;
+     pos.y+=p.y;
+     pos.z+=p.z;
     */
     if (theSMS) // for UI
     {
@@ -834,7 +834,7 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 
     weapBSP->SetPosition(&p);
     weapBSP->orientation = theParent->orientation;
-    //	}
+    // }
 }
 
 int BasicWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int WeaponCount)
@@ -854,13 +854,13 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
     rackId = 0;
     pylonId = 0;
 
-    WeaponClassDataType*	wc;
+    WeaponClassDataType* wc;
     Falcon4EntityClassType* classPtr;
-    SimWeaponDataType*		wpnDefinition;
+    SimWeaponDataType* wpnDefinition;
 
-    wc				= &WeaponDataTable[weaponId];
-    classPtr		= &(Falcon4ClassTable[wc->Index]);
-    wpnDefinition	= &SimWeaponDataTable[classPtr->vehicleDataIndex];
+    wc = &WeaponDataTable[weaponId];
+    classPtr = &(Falcon4ClassTable[wc->Index]);
+    wpnDefinition = &SimWeaponDataTable[classPtr->vehicleDataIndex];
 
 
     SetWeaponClass((WeaponClass)wpnDefinition->weaponClass);
@@ -905,8 +905,8 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         case wcCamera:
         case wcECM:
 
-            //		rackDataFlags = RDF_SELECTIVE_JETT_RACK | RDF_SELECTIVE_JETT_WEAPON;
-            //		break;
+            // rackDataFlags = RDF_SELECTIVE_JETT_RACK | RDF_SELECTIVE_JETT_WEAPON;
+            // break;
         case wcAimWpn:
             rackDataFlags = 0;
             break;

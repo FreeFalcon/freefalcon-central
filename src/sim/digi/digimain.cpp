@@ -27,7 +27,7 @@
 #include "sms.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DigitalBrain::pool;
+MEM_POOL DigitalBrain::pool;
 extern MEM_POOL gReadInMemPool;
 #endif
 extern float g_fAGSlowMoverSpeed; // Cobra
@@ -41,17 +41,17 @@ FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *d
 int WingmanTable[] = {1, 0, 3, 2};
 
 
-int	DigitalBrain::IsMyWingman(SimBaseClass* testEntity)
+int DigitalBrain::IsMyWingman(SimBaseClass* testEntity)
 {
     return self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]) == testEntity;
 }
 
-SimBaseClass*	DigitalBrain::MyWingman(void)
+SimBaseClass* DigitalBrain::MyWingman(void)
 {
     return self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]);
 }
 
-int	DigitalBrain::IsMyWingman(VU_ID testId)
+int DigitalBrain::IsMyWingman(VU_ID testId)
 {
     SimBaseClass *testEntity;
     testEntity = self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]);
@@ -110,8 +110,8 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
     if (airbase == FalconNullId)
     {
-        GridIndex	x, y;
-        vector		pos;
+        GridIndex x, y;
+        vector pos;
         pos.x = self->XPos();
         pos.y = self->YPos();
         //find nearest airbase
@@ -212,12 +212,12 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
     sentWingAGAttack = AG_ORDER_NONE;
     nextAttackCommandToSend = 0; // 2002-01-20 ADED BY S.G. Make sure it's initialized to something we can handle
     jinkTime         = 0;
-    jammertime		 = FALSE;//ME123
+    jammertime  = FALSE;//ME123
     holdlongrangeshot = 0; //0.0f;
     cornerSpeed      = af->CornerVcas();
     rangeToIP        = FLT_MAX;
     madeAGPass       = FALSE;
-    AGattackAlt			= self->GetA2GDumbLDAlt();
+    AGattackAlt = self->GetA2GDumbLDAlt();
     // 2001-05-21 ADDED BY S.G. INIT waitingForShot SO IT'S NOT GARBAGE TO START WITH
     waitingForShot = 0;
     // END OF ADDED SECTION
@@ -242,44 +242,44 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
     if (self->OnGround())
     {
-        mpActionFlags[AI_FOLLOW_FORMATION]		= FALSE;
+        mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
     }
     else
     {
-        mpActionFlags[AI_FOLLOW_FORMATION]		= TRUE;
+        mpActionFlags[AI_FOLLOW_FORMATION] = TRUE;
     }
 
-    mLeaderTookOff									= FALSE;
-    mpActionFlags[AI_ENGAGE_TARGET]			= AI_NONE;
-    mpActionFlags[AI_EXECUTE_MANEUVER]		= FALSE;
+    mLeaderTookOff = FALSE;
+    mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE;
+    mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
     mpActionFlags[AI_USE_COMPLEX]          = FALSE;
-    mpActionFlags[AI_RTB]					   = FALSE;
-    mpActionFlags[AI_LANDING]		         = FALSE;
+    mpActionFlags[AI_RTB]    = FALSE;
+    mpActionFlags[AI_LANDING]          = FALSE;
 
-    mpSearchFlags[AI_SEARCH_FOR_TARGET]		= FALSE;
-    mpSearchFlags[AI_MONITOR_TARGET]			= FALSE;
-    mpSearchFlags[AI_FIXATE_ON_TARGET]		= FALSE;
+    mpSearchFlags[AI_SEARCH_FOR_TARGET] = FALSE;
+    mpSearchFlags[AI_MONITOR_TARGET] = FALSE;
+    mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
 
-    mCurrentManeuver								= FalconWingmanMsg::WMTotalMsg;
-    mDesignatedObject								= FalconNullId;
-    mFormation										= acFormationData->FindFormation(FalconWingmanMsg::WMWedge);
-    mDesignatedType								= AI_NO_DESIGNATED;
-    mSearchDomain									= DOMAIN_ABSTRACT;
-    mWeaponsAction									= AI_WEAPONS_HOLD;
+    mCurrentManeuver = FalconWingmanMsg::WMTotalMsg;
+    mDesignatedObject = FalconNullId;
+    mFormation = acFormationData->FindFormation(FalconWingmanMsg::WMWedge);
+    mDesignatedType = AI_NO_DESIGNATED;
+    mSearchDomain = DOMAIN_ABSTRACT;
+    mWeaponsAction = AI_WEAPONS_HOLD;
     // RV - Biker - Better init this too
-    mSavedWeapons								= AI_WEAPONS_HOLD;
-    mInPositionFlag								= FALSE;
+    mSavedWeapons = AI_WEAPONS_HOLD;
+    mInPositionFlag = FALSE;
 
-    mFormRelativeAltitude						= 0.0F;
-    mFormSide										= 1;
-    mFormLateralSpaceFactor						= 1.0F;
-    mSplitFlight									= FALSE;
+    mFormRelativeAltitude = 0.0F;
+    mFormSide = 1;
+    mFormLateralSpaceFactor = 1.0F;
+    mSplitFlight = FALSE;
 
-    mLastReportTime								= 0;
-    mpLastTargetPtr								= NULL;
+    mLastReportTime = 0;
+    mpLastTargetPtr = NULL;
 
-    mAzErrInt										= 0.0F;
-    mLeadGearDown									= -1;
+    mAzErrInt = 0.0F;
+    mLeadGearDown = -1;
     groundAvoidNeeded = FALSE;
 
     groundTargetPtr = NULL;
@@ -488,10 +488,10 @@ DigitalBrain::~DigitalBrain(void)
         // sfr: cleanup camera mess
         FalconLocalSession->RemoveCamera(targetSpotFlight);
         //for (int i = 0; i < FalconLocalSession->CameraCount(); i++) {
-        //	if (FalconLocalSession->GetCameraEntity(i) == targetSpotFlight) {
-        //		FalconLocalSession->RemoveCamera(targetSpotFlight);
-        //		break;
-        //	}
+        // if (FalconLocalSession->GetCameraEntity(i) == targetSpotFlight) {
+        // FalconLocalSession->RemoveCamera(targetSpotFlight);
+        // break;
+        // }
         //}
         vuDatabase->Remove(targetSpotFlight); // Takes care of deleting the allocated memory and the driver allocation as well.
 
@@ -512,10 +512,10 @@ DigitalBrain::~DigitalBrain(void)
         // sfr: cleanup camera mess
         FalconLocalSession->RemoveCamera(targetSpotElement);
         //for (int i = 0; i < FalconLocalSession->CameraCount(); i++) {
-        //	if (FalconLocalSession->GetCameraEntity(i) == targetSpotElement) {
-        //		FalconLocalSession->RemoveCamera(targetSpotElement);
-        //		break;
-        //	}
+        // if (FalconLocalSession->GetCameraEntity(i) == targetSpotElement) {
+        // FalconLocalSession->RemoveCamera(targetSpotElement);
+        // break;
+        // }
         //}
         vuDatabase->Remove(targetSpotElement);  // Takes care of deleting the allocated memory and the driver allocation as well.
 
@@ -535,10 +535,10 @@ DigitalBrain::~DigitalBrain(void)
         // sfr: cleanup camera mess
         FalconLocalSession->RemoveCamera(targetSpotWing);
         //for (int i = 0; i < FalconLocalSession->CameraCount(); i++) {
-        //	if (FalconLocalSession->GetCameraEntity(i) == targetSpotWing) {
-        //		FalconLocalSession->RemoveCamera(targetSpotWing);
-        //		break;
-        //	}
+        // if (FalconLocalSession->GetCameraEntity(i) == targetSpotWing) {
+        // FalconLocalSession->RemoveCamera(targetSpotWing);
+        // break;
+        // }
         //}
         vuDatabase->Remove(targetSpotWing);  // Takes care of deleting the allocated memory and the driver allocation as well.
 
@@ -703,8 +703,8 @@ void DigitalBrain::CheckLead(void)
     SimBaseClass *pobj;
     SimBaseClass* newLead = NULL;
 
-    BOOL	done = FALSE;
-    int	i = 0;
+    BOOL done = FALSE;
+    int i = 0;
 
     if (flightLead &&
         flightLead->VuState() == VU_MEM_ACTIVE &&
@@ -715,7 +715,7 @@ void DigitalBrain::CheckLead(void)
     }
 
     {
-        VuListIterator	cit(self->GetCampaignObject()->GetComponents());
+        VuListIterator cit(self->GetCampaignObject()->GetComponents());
         pobj = (SimBaseClass*)cit.GetFirst();
 
         while (!done)
@@ -917,14 +917,14 @@ void DigitalBrain::GetTrackPoint(float &x, float &y, float &z)
 /*
 void DigitalBrain::SetTrackPoint(float x, float y)
 {
-	trackX = x;
-	trackY = y;
+ trackX = x;
+ trackY = y;
 }
 
 void DigitalBrain::SetTrackPoint(float x, float y, float z)
 {
-	SetTrackPoint(x, y);
-	trackZ = z;
+ SetTrackPoint(x, y);
+ trackZ = z;
 }
 */
 
@@ -937,29 +937,29 @@ void DigitalBrain::SetTrackPoint(SimObjectType *object)
 void DigitalBrain::SetRunwayInfo(VU_ID Airbase, int rwindex, unsigned long time)
 {
 
-    airbase	= Airbase;
-    rwIndex	= rwindex;
-    rwtime	= time;
+    airbase = Airbase;
+    rwIndex = rwindex;
+    rwtime = time;
 
     // MD -- 20040605: make this a noop now for players -- the ILS info is set from
     // TACAN functions now.
     //if(self == SimDriver.GetPlayerEntity()) { // vwf
-    //	gNavigationSys->SetIlsData(airbase, rwIndex);
+    // gNavigationSys->SetIlsData(airbase, rwIndex);
     //}
 }
 
 void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
 {
-    Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)theObject->EntityType();
-    CampEntity				campObj;
-    char					label[40] = {0};
-    long					labelColor = 0xff0000ff;
+    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
+    CampEntity campObj;
+    char label[40] = {0};
+    long labelColor = 0xff0000ff;
 
     if (!theObject->IsExploding() && !theObject->IsDead())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
-            FlightClass		*flight;
+            FlightClass *flight;
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
@@ -967,7 +967,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
                 // 2001-10-31 M.N. show flight names of our team
                 && flight && flight->GetTeam() == campObj->GetTeam())
             {
-                char		temp[40];
+                char temp[40];
                 GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
                 sprintf(label, "%s%d", temp, ((SimVehicleClass*)theObject)->vehicleInUnit + 1);
             }
@@ -982,8 +982,8 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     if (theObject->IsSetFalcFlag(FEC_HASPLAYERS))
     {
         // Find the player's callsign
-        VuSessionsIterator		sessionWalker(FalconLocalGame);
-        FalconSessionEntity		*session;
+        VuSessionsIterator sessionWalker(FalconLocalGame);
+        FalconSessionEntity *session;
 
         session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -1002,7 +1002,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
 
     // KCK: This uses the UI's colors. For a while these didn't work well in Sim
     // They may be ok now, though - KCK: As of 10/25, still looked bad
-    //	labelColor = TeamColorList[TeamInfo[theObject->GetTeam()]->GetColor()];
+    // labelColor = TeamColorList[TeamInfo[theObject->GetTeam()]->GetColor()];
 
     if (theObject->drawPointer)
         theObject->drawPointer->SetLabel(label, ((DrawableBSP*)theObject->drawPointer)->LabelColor());

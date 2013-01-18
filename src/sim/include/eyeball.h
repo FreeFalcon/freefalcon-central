@@ -12,7 +12,7 @@ public :
     virtual SimObjectType* Exec(SimObjectType* targetList);
 
 protected :
-    virtual float	GetSignature(SimObjectType*);
+    virtual float GetSignature(SimObjectType*);
 };
 
 #endif

@@ -15,8 +15,8 @@
 class RenderWire : public RenderOTW
 {
 public:
-    RenderWire()			{};
-    virtual ~RenderWire()	{};
+    RenderWire() {};
+    virtual ~RenderWire() {};
 
     virtual void Setup(ImageBuffer *imageBuffer, RViewPoint *vp);
 
@@ -24,17 +24,17 @@ public:
 
 protected:
     // Overloaded to provide appropriate sky effects
-    virtual void DrawSun(void)	{};
-    virtual void DrawMoon(void)	{};
-    virtual void DrawStars(void)	{};
+    virtual void DrawSun(void) {};
+    virtual void DrawMoon(void) {};
+    virtual void DrawStars(void) {};
     virtual void ComputeHorizonEffect(HorizonRecord *pHorizon)
     {
         pHorizon->horeffect = 0;
     };
 
     // Overloaded to prevent the ambient light level and sky color from changing
-    virtual void SetTimeOfDayColor(void)	{};
-    virtual void AdjustSkyColor(void)		{};
+    virtual void SetTimeOfDayColor(void) {};
+    virtual void AdjustSkyColor(void) {};
 
     virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance);
 };

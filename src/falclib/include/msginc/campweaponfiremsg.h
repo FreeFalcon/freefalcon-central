@@ -27,7 +27,7 @@
 
 #pragma pack (1)
 
-#define MAX_TYPES_PER_CAMP_FIRE_MESSAGE		8
+#define MAX_TYPES_PER_CAMP_FIRE_MESSAGE 8
 
 class SimBaseClass;
 
@@ -69,7 +69,7 @@ extern uchar *gDamageStatusPtr;
 extern SimBaseClass* GetSimTarget(CampEntity target, uchar targetId);
 extern void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uchar shots[], uchar targetId = 255);
 extern void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId);
-extern void SendSimDamageMessage(CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType,	int weapId);
+extern void SendSimDamageMessage(CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType, int weapId);
 
 #pragma pack ()
 

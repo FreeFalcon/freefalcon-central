@@ -17,21 +17,21 @@
 
 struct GroundDoctrineType
 {
-    uchar			stance[NUM_COUNS];					// Our air stance towards them: allied/friendly/neutral/alert/hostile/war
-    uchar			loss_ratio;							// Acceptable loss ratio
-    uchar			loss_score;							// Score loss for each friendly air loss
+    uchar stance[NUM_COUNS]; // Our air stance towards them: allied/friendly/neutral/alert/hostile/war
+    uchar loss_ratio; // Acceptable loss ratio
+    uchar loss_score; // Score loss for each friendly air loss
 };
 
 class GroundTaskingManagerClass : public CampManagerClass
 {
 private:
 public:
-    short			flags;
+    short flags;
     // These don't need to be transmitted
-    GODNode			objList[GORD_LAST];				// Sorted lists of objectives we want to assign to
-    USNode			canidateList[GORD_LAST];		// List of all possible canidate units for each order
-    short			topPriority;					// Highest PO priority (for scaling)
-    short			priorityObj;					// CampID of highest priority objective
+    GODNode objList[GORD_LAST]; // Sorted lists of objectives we want to assign to
+    USNode canidateList[GORD_LAST]; // List of all possible canidate units for each order
+    short topPriority; // Highest PO priority (for scaling)
+    short priorityObj; // CampID of highest priority objective
 public:
     // constructors
     GroundTaskingManagerClass(ushort type, Team t);
@@ -58,7 +58,7 @@ public:
     void AddToLists(Unit u, int to_collect);
     int IsValidObjective(int orders, Objective o);
 
-    int	AssignUnit(Unit u, int orders, Objective o, int score);
+    int AssignUnit(Unit u, int orders, Objective o, int score);
     int AssignUnits(int orders, int mode);
     int AssignObjective(GODNode curo, int orders, int mode);
 

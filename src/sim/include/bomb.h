@@ -35,7 +35,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 
 public:
@@ -43,18 +43,18 @@ public:
 
     enum
     {
-        FirstFrame = 	0x00000001,
-        NeedTrail = 	0x00000002,
-        IsChaff = 		0x00000004,
-        IsDebris = 		0x00000008,
-        IsFlare = 		0x00000010,
-        IsLGB =   		0x00000020,
+        FirstFrame =  0x00000001,
+        NeedTrail =  0x00000002,
+        IsChaff =  0x00000004,
+        IsDebris =  0x00000008,
+        IsFlare =  0x00000010,
+        IsLGB =    0x00000020,
         IsDurandal =    0x00000040,
         FireDurandal =  0x00000080,
         IsGPS =         0x00000100, //MI GPS
         IsJSOW =        0x00000200, //Cobra GPS-JSOW
     };
-#define	GUIDED_BOMB	( IsLGB | IsGPS | IsJSOW )			// RED 
+#define GUIDED_BOMB ( IsLGB | IsGPS | IsJSOW ) // RED 
 
     static float dragConstant;
 
@@ -90,14 +90,14 @@ private:
     void CleanupLocalData();
 public:
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     virtual int Wake(void);
     virtual int Sleep(void);
     float x, y, z;
     float edeltaX, edeltaY, edeltaZ;
-    float gpsx, gpsy, gpsz;				//Wombat778 3-09-04
+    float gpsx, gpsy, gpsz; //Wombat778 3-09-04
     int JSOWtgtID; // Cobra - JSOW target feature Index
     Tpoint JSOWtgtPos; // Cobra - JSOW target feature Index
     int isJSOW;

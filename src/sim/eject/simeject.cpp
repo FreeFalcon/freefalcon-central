@@ -40,30 +40,30 @@ void CalcTransformMatrix(SimBaseClass *theObject);
 GridIndex SimToGrid(float x);
 
 // Defines.
-#define GRAVITY_ACCEL	32.2F			// ft/(sec*sec)
-#define KG_TO_SLUGS		0.06852F		// kilogram to slugs conversion factor
-#define AIR_DENSITY		0.0025026F	// air density at sea level in slugs/(ft*ft*ft)
+#define GRAVITY_ACCEL 32.2F // ft/(sec*sec)
+#define KG_TO_SLUGS 0.06852F // kilogram to slugs conversion factor
+#define AIR_DENSITY 0.0025026F // air density at sea level in slugs/(ft*ft*ft)
 
-#define DEBUG_EJECTION_SEQUENCE		FALSE
+#define DEBUG_EJECTION_SEQUENCE FALSE
 
 // Statics.
-int		EjectedPilotClass::_classType = 0;
-BOOL		EjectedPilotClass::_classTypeFound = FALSE;
+int EjectedPilotClass::_classType = 0;
+BOOL EjectedPilotClass::_classTypeFound = FALSE;
 
 // NOTE : The motion model is pretty unoptimized
-//		Once it's fully tweaked, we can add the following optimizations (and probably more).
-//		Get rid of run-time divides, by storing both mass and 1/mass for each stage of the sequence.
-//		Get rid of some of the function call overhead, either by making functions inline or by
-//			the handy old cut-n-paste job.
+// Once it's fully tweaked, we can add the following optimizations (and probably more).
+// Get rid of run-time divides, by storing both mass and 1/mass for each stage of the sequence.
+// Get rid of some of the function call overhead, either by making functions inline or by
+// the handy old cut-n-paste job.
 //
-//		Physical and model data can be added for new ejection modes (for different planes, for instance).
-//		To add a new mode, add a new #define for the mode in simeject.h, add a EP_PHYS_DATA structure
+// Physical and model data can be added for new ejection modes (for different planes, for instance).
+// To add a new mode, add a new #define for the mode in simeject.h, add a EP_PHYS_DATA structure
 //    (see F16Mode1PhysicalData below), and add an EP_MODEL_DATA structure (see F16ModelData below), and
-//		add a new case to the switch statement in SetMode(), to handle pointing at the data for the new
-//		ejection mode data.
+// add a new case to the switch statement in SetMode(), to handle pointing at the data for the new
+// ejection mode data.
 
 // F-16 mode 1 player ejected pilot aero data.
-EP_PHYS_DATA	F16Mode1PhysicalData =
+EP_PHYS_DATA F16Mode1PhysicalData =
 {
     // Stage-dependent data.
     {
@@ -108,7 +108,7 @@ EP_PHYS_DATA	F16Mode1PhysicalData =
             // End stage time (in seconds).
             10000.0F,
             // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 150.0F * 50.2F,	//MI make chute slower, was *1.2F
+            AIR_DENSITY * 150.0F * 50.2F, //MI make chute slower, was *1.2F
             // Mass (in slugs).
             100.0F * KG_TO_SLUGS
         },
@@ -149,7 +149,7 @@ EP_PHYS_DATA	F16Mode1PhysicalData =
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-EP_MODEL_DATA	F16ModelData[MD_NUM_MODELS] =
+EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
 {
     // pilot and seat.
     EP_MODEL_DATA
@@ -292,8 +292,8 @@ void EjectedPilotClass::InitData()
 
 void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
 {
-    DrawableBSP		*acBSP;
-    int				labelLen;
+    DrawableBSP *acBSP;
+    int labelLen;
 
     _delayTime = SimLibElapsedTime + no * 2 * CampaignSeconds;
 
@@ -302,7 +302,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
     {
         _pos = EP_VECTOR(ac->XPos(), ac->YPos(), ac->ZPos());
 
-        _rot[I_ROLL] =	ac->Roll();
+        _rot[I_ROLL] = ac->Roll();
         _rot[I_PITCH] = ac->Pitch();
         _rot[I_YAW] = ac->Yaw();
 
@@ -317,7 +317,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
 
         _pos = EP_VECTOR(XPos(), YPos(), ZPos());
 
-        _rot[I_ROLL] =	Roll();
+        _rot[I_ROLL] = Roll();
         _rot[I_PITCH] = Pitch();
         _rot[I_YAW] = Yaw();
 
@@ -453,7 +453,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
 
     // Update exec transfer synching data.
     _lastFrameCount = 0;
-    //	_execCount = 0;
+    // _execCount = 0;
 
     // Act like a bomb, so nobody sees you
     // edg: yuck, we now have an eject pilot motion
@@ -572,7 +572,7 @@ int EjectedPilotClass::Exec()
 
             float percent = (_runTime             - StageEndTime(_stage - 1)) /
                             (StageEndTime(_stage) - StageEndTime(_stage - 1));
-            int	frame = FloatToInt32(percent * (NUM_FRAMES - 0.5f));
+            int frame = FloatToInt32(percent * (NUM_FRAMES - 0.5f));
 
             if (frame < 0)
                 frame = 0;
@@ -582,7 +582,7 @@ int EjectedPilotClass::Exec()
             percent = ((_runTime  - _deltaTime)           - StageEndTime(_stage - 1)) /
                       (StageEndTime(_stage) - StageEndTime(_stage - 1));
 
-            int	prevframe = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
+            int prevframe = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
 
             if (prevframe < 0)
                 prevframe = 0;
@@ -628,7 +628,7 @@ int EjectedPilotClass::Exec()
 
             static const int NUM_FRAMES = 13;
             float percent = _stageTimer / 2.0f;
-            int	frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
+            int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
 
             if (frame < 0)
                 frame = 0;
@@ -649,7 +649,7 @@ int EjectedPilotClass::Exec()
 
             static const int NUM_FRAMES = 12;
             float percent = _stageTimer / 2.0f;
-            int	frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
+            int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
 
             if (frame < 0)
                 frame = 0;
@@ -688,7 +688,7 @@ int EjectedPilotClass::Exec()
         genPos.data.roll = Roll();
         genPos.data.pitch = Pitch();
         genPos.data.yaw = Yaw();
-        // remove			genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
+        // remove genPos.data.teamColor = TeamInfo[GetTeam()]->GetColor();
         gACMIRec.GenPositionRecord(&genPos);
     }
 
@@ -704,7 +704,7 @@ int EjectedPilotClass::Exec()
     ** (by calling HitGround() )
     if (HasHitGround())
     {
-    	HitGround();
+     HitGround();
     }
     */
 
@@ -889,23 +889,23 @@ void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &
     return;
     switch(_stage)
     {
-    	case PD_FREE_FALL_WITH_OPEN_CHUTE :
-    	case PD_FREE_FALL_WITH_COLLAPSED_CHUTE :
-    	case PD_SAFE_LANDING :
-    	case PD_CRASH_LANDING :
-    		x = XPos() + _md[_model].focusOffset[I_X];
-    		y = YPos() + _md[_model].focusOffset[I_Y];
-    		z = ZPos() + _md[_model].focusOffset[I_Z];
-    		break;
-    	case PD_JETTISON_CANOPY :
-    	case PD_EJECT_SEAT :
-    	case PD_FREE_FALL_WITH_SEAT :
-    	case PD_CHUTE_OPENING :
-    	default :
-    		x = XPos();
-    		y = YPos();
-    		z = ZPos();
-    		break;
+     case PD_FREE_FALL_WITH_OPEN_CHUTE :
+     case PD_FREE_FALL_WITH_COLLAPSED_CHUTE :
+     case PD_SAFE_LANDING :
+     case PD_CRASH_LANDING :
+     x = XPos() + _md[_model].focusOffset[I_X];
+     y = YPos() + _md[_model].focusOffset[I_Y];
+     z = ZPos() + _md[_model].focusOffset[I_Z];
+     break;
+     case PD_JETTISON_CANOPY :
+     case PD_EJECT_SEAT :
+     case PD_FREE_FALL_WITH_SEAT :
+     case PD_CHUTE_OPENING :
+     default :
+     x = XPos();
+     y = YPos();
+     z = ZPos();
+     break;
     }
 
     return;
@@ -934,7 +934,7 @@ void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &
     }
     else if (_runTime > startTime)
     {
-        //XX		deltaFocusPoint = finalFocus - _focusPoint;
+        //XX deltaFocusPoint = finalFocus - _focusPoint;
         deltaFocusPoint = finalFocus;
         deltaFocusPoint -= _focusPoint;
 
@@ -1021,7 +1021,7 @@ void EjectedPilotClass::AdvanceTime()
         );
 
     // Update position.
-    //XX	_pos += _vel * _deltaTime;
+    //XX _pos += _vel * _deltaTime;
     EP_VECTOR p;
     p = _vel;
     p *= _deltaTime;
@@ -1032,7 +1032,7 @@ void EjectedPilotClass::AdvanceTime()
     // Set pitch velocity to -pitch angle, tilt back towards the sun
     _aVel[I_PITCH] = -_rot[I_PITCH] * 1.5F;
     _aVel[I_ROLL] = -_rot[I_ROLL] * 1.5F;
-    //XX	_rot += _aVel * _deltaTime;
+    //XX _rot += _aVel * _deltaTime;
     p = _aVel;
     p *= _deltaTime;
     _rot += p;
@@ -1157,7 +1157,7 @@ void EjectedPilotClass::SetModel(int model)
     ** edg: better to show nothing than the crappy oval shadow
     else if ( _md[_model].bsp == VIS_EJECT1  )
     {
-    	drawPointer = new DrawableShadowed(_md[_model].bsp, &pos, &rot, 1.0, VIS_PCHUTESH);
+     drawPointer = new DrawableShadowed(_md[_model].bsp, &pos, &rot, 1.0, VIS_PCHUTESH);
     }
     */
     else
@@ -1177,7 +1177,7 @@ void EjectedPilotClass::SetModel(int model)
 
 void EjectedPilotClass::InitJettisonCanopy()
 {
-    AircraftClass	*aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
+    AircraftClass *aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
 
     _stageTimer = 0.0f;
 
@@ -1221,7 +1221,7 @@ void EjectedPilotClass::InitEjectSeat()
 
     // Apply initial velocity of n ft/sec, at eject angle.
     // Add the velocity of the plane.
-    //XX	_vel += ejectVec * EjectSpeed();
+    //XX _vel += ejectVec * EjectSpeed();
     EP_VECTOR p;
     p = ejectVec;
     p *= EjectSpeed();
@@ -1649,7 +1649,7 @@ void EjectedPilotClass::CalculateAndSetPositionAndOrientationInCockpit()
     modelOffset,
     worldOffset;
 
-    AircraftClass	*aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
+    AircraftClass *aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
 
     if (!aircraft)
         return;
@@ -1726,7 +1726,7 @@ void EjectedPilotClass::CalculateDragVector(EP_VECTOR &result) const
     EP_VECTOR
     windVelocity;
 
-    Tpoint			pos;
+    Tpoint pos;
     pos.x = _pos[I_X];
     pos.y = _pos[I_Y];
     pos.z = _pos[I_Z];
@@ -1889,149 +1889,149 @@ void EjectedPilotClass::SpewDebugData()
 {
     return;
     /*
-    	unsigned char
-    		monoX,
-    		monoY;
+     unsigned char
+     monoX,
+     monoY;
 
-    	if(_isDigital)
-    	{
-    		return;
-    	}
+     if(_isDigital)
+     {
+     return;
+     }
 
-    	monoX = 0;
-    	monoY = 0;
+     monoX = 0;
+     monoY = 0;
 
-    	// Output miscellaneous data for aircraft.
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint("Ejection Stage: ");
-    	switch(_stage)
-    	{
-    		case PD_JETTISON_CANOPY :
-    		{
-    			MonoPrint("Jettison Canopy                                           \n");
+     // Output miscellaneous data for aircraft.
+     MonoLocate(monoX, monoY++);
+     MonoPrint("Ejection Stage: ");
+     switch(_stage)
+     {
+     case PD_JETTISON_CANOPY :
+     {
+     MonoPrint("Jettison Canopy                                           \n");
 
-    			break;
-    		}
-    		case PD_EJECT_SEAT :
-    		{
-    			MonoPrint("Eject Seat                                                \n");
+     break;
+     }
+     case PD_EJECT_SEAT :
+     {
+     MonoPrint("Eject Seat                                                \n");
 
-    			break;
-    		}
-    		case PD_FREE_FALL_WITH_SEAT :
-    		{
-    			MonoPrint("Free Fall 1                                               \n");
+     break;
+     }
+     case PD_FREE_FALL_WITH_SEAT :
+     {
+     MonoPrint("Free Fall 1                                               \n");
 
-    			break;
-    		}
-    		case PD_CHUTE_OPENING :
-    		{
-    			MonoPrint("Chute Opening                                             \n");
+     break;
+     }
+     case PD_CHUTE_OPENING :
+     {
+     MonoPrint("Chute Opening                                             \n");
 
-    			break;
-    		}
-    		case PD_FREE_FALL_WITH_OPEN_CHUTE :
-    		{
-    			MonoPrint("Free Fall 2                                               \n");
+     break;
+     }
+     case PD_FREE_FALL_WITH_OPEN_CHUTE :
+     {
+     MonoPrint("Free Fall 2                                               \n");
 
-    			break;
-    		}
-    		default :
-    		{
-    			MonoPrint("Unknown Stage                                             \n");
-    		}
-    	}
+     break;
+     }
+     default :
+     {
+     MonoPrint("Unknown Stage                                             \n");
+     }
+     }
 
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"Run Time: %14.4f Delta Time : %14.4f                          \n",
-    		_runTime,
-    		_deltaTime
-    	);
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"Mass    : %14.4f Drag Factor: %14.4f                          \n",
-    		Mass(),
-    		DragFactor()
-    	);
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "Run Time: %14.4f Delta Time : %14.4f                          \n",
+     _runTime,
+     _deltaTime
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "Mass    : %14.4f Drag Factor: %14.4f                          \n",
+     Mass(),
+     DragFactor()
+     );
 
-    	// Output motion data for aircraft.
-    	if(_aircraft != NULL)
-    	{
-    		MonoLocate(monoX, monoY++);
-    		MonoPrint("Aircraft                                                    \n");
-    		MonoLocate(monoX, monoY++);
-    		MonoPrint
-    		(
-    			"    location        : x:%14.4f  y:%14.4f  z:%14.4f\n",
-    			_aircraft->XPos(),
-    			_aircraft->YPos(),
-    			_aircraft->ZPos()
-    		);
-    		MonoLocate(monoX, monoY++);
-    		MonoPrint
-    		(
-    			"    velocity        : x:%14.4f  y:%14.4f  z:%14.4f\n",
-    			_aircraft->XDelta(),
-    			_aircraft->YDelta(),
-    			_aircraft->ZDelta()
-    		);
-    		MonoLocate(monoX, monoY++);
-    		MonoPrint
-    		(
-    			"    angle           : y:%14.10f  p:%14.10f  r:%14.10f\n",
-    			_aircraft->Roll(),
-    			_aircraft->Pitch(),
-    			_aircraft->Yaw()
-    		);
-    		MonoLocate(monoX, monoY++);
-    		MonoPrint
-    		(
-    			"    angular velocity: y:%14.10f  p:%14.10f  r:%14.10f\n",
-    			_aircraft->RollDelta(),
-    			_aircraft->PitchDelta(),
-    			_aircraft->YawDelta()
-    		);
-    	}
+     // Output motion data for aircraft.
+     if(_aircraft != NULL)
+     {
+     MonoLocate(monoX, monoY++);
+     MonoPrint("Aircraft                                                    \n");
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    location        : x:%14.4f  y:%14.4f  z:%14.4f\n",
+     _aircraft->XPos(),
+     _aircraft->YPos(),
+     _aircraft->ZPos()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    velocity        : x:%14.4f  y:%14.4f  z:%14.4f\n",
+     _aircraft->XDelta(),
+     _aircraft->YDelta(),
+     _aircraft->ZDelta()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    angle           : y:%14.10f  p:%14.10f  r:%14.10f\n",
+     _aircraft->Roll(),
+     _aircraft->Pitch(),
+     _aircraft->Yaw()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    angular velocity: y:%14.10f  p:%14.10f  r:%14.10f\n",
+     _aircraft->RollDelta(),
+     _aircraft->PitchDelta(),
+     _aircraft->YawDelta()
+     );
+     }
 
-    	// Output motion data for pilot.
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint("Pilot                                                       \n");
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"    location        : x:%14.4f  y:%14.4f  z:%14.4f\n",
-    		XPos(),
-    		YPos(),
-    		ZPos()
-    	);
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"    velocity        : x:%14.4f  y:%14.4f  z:%14.4f\n",
-    		XDelta(),
-    		YDelta(),
-    		ZDelta()
-    	);
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"    angle           : y:%14.10f  p:%14.10f  r:%14.10f\n",
-    		Roll(),
-    		Pitch(),
-    		Yaw()
-    	);
-    	MonoLocate(monoX, monoY++);
-    	MonoPrint
-    	(
-    		"    angular velocity: y:%14.10f  p:%14.10f  r:%14.10f\n",
-    		RollDelta(),
-    		PitchDelta(),
-    		YawDelta()
-    	);
-    	MonoLocate(monoX, monoY);
+     // Output motion data for pilot.
+     MonoLocate(monoX, monoY++);
+     MonoPrint("Pilot                                                       \n");
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    location        : x:%14.4f  y:%14.4f  z:%14.4f\n",
+     XPos(),
+     YPos(),
+     ZPos()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    velocity        : x:%14.4f  y:%14.4f  z:%14.4f\n",
+     XDelta(),
+     YDelta(),
+     ZDelta()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    angle           : y:%14.10f  p:%14.10f  r:%14.10f\n",
+     Roll(),
+     Pitch(),
+     Yaw()
+     );
+     MonoLocate(monoX, monoY++);
+     MonoPrint
+     (
+     "    angular velocity: y:%14.10f  p:%14.10f  r:%14.10f\n",
+     RollDelta(),
+     PitchDelta(),
+     YawDelta()
+     );
+     MonoLocate(monoX, monoY);
     */
 }
 

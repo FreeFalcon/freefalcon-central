@@ -295,7 +295,7 @@ void SimHUDOff(unsigned long val, int state, void *);  // MD
 
 void SimRwrPower(unsigned long val, int state, void *);
 
-void SendRadioMenuMsg(int, int, int);	// not an actual command, but is called by RadioMessageSend
+void SendRadioMenuMsg(int, int, int); // not an actual command, but is called by RadioMessageSend
 
 void BreakToggle(unsigned long val, int state, void *);
 
@@ -414,19 +414,19 @@ void OTWTimeOfDayStep(unsigned long val, int state, void *);
 void OTWStepNextAC(unsigned long val, int state, void *);
 void OTWStepPrevAC(unsigned long val, int state, void *);
 void OTWStepNextPadlock(unsigned long val, int state, void *);
-void OTWStepNextPadlockAA(unsigned long val, int state, void *);		// 2002-03-12 S.G.
-void OTWStepNextPadlockAG(unsigned long val, int state, void *);		// 2002-03-12 S.G.
+void OTWStepNextPadlockAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWStepNextPadlockAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
 void OTWStepPrevPadlock(unsigned long val, int state, void *);
-void OTWStepPrevPadlockAA(unsigned long val, int state, void *);		// 2002-03-12 S.G.
-void OTWStepPrevPadlockAG(unsigned long val, int state, void *);		// 2002-03-12 S.G.
+void OTWStepPrevPadlockAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWStepPrevPadlockAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
 void OTWToggleNames(unsigned long val, int state, void *);
 void OTWToggleCampNames(unsigned long val, int state, void *);
 void OTWSelectF3PadlockMode(unsigned long val, int state, void *);
-void OTWSelectF3PadlockModeAA(unsigned long val, int state, void *);	// 2002-03-12 S.G.
-void OTWSelectF3PadlockModeAG(unsigned long val, int state, void *);	// 2002-03-12 S.G.
+void OTWSelectF3PadlockModeAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWSelectF3PadlockModeAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
 void OTWSelectEFOVPadlockMode(unsigned long val, int state, void *);
-void OTWSelectEFOVPadlockModeAA(unsigned long val, int state, void *);	// 2002-03-12 S.G.
-void OTWSelectEFOVPadlockModeAG(unsigned long val, int state, void *);	// 2002-03-12 S.G.
+void OTWSelectEFOVPadlockModeAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWSelectEFOVPadlockModeAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
 void OTWRadioMenuStep(unsigned long val, int state, void *);
 void OTWRadioMenuStepBack(unsigned long val, int state, void *);
 void OTWStepMFD1(unsigned long val, int state, void *);
@@ -522,7 +522,7 @@ void RadioMessageSend(unsigned long val, int state, void *);
 void SimToggleChatMode(unsigned long val, int state, void *);
 void SimMotionFreeze(unsigned long val, int state, void *);
 void ScreenShot(unsigned long val, int state, void *);
-void PrettyScreenShot(unsigned long val, int state, void*);	// Retro 7May2004
+void PrettyScreenShot(unsigned long val, int state, void*); // Retro 7May2004
 void FOVToggle(unsigned long val, int state, void *);
 void FOVDecrease(unsigned long val, int state, void *);   //Wombat778 9-27-2003
 void FOVIncrease(unsigned long val, int state, void *);   //Wombat778 9-27-2003
@@ -533,9 +533,9 @@ void SimSelectiveJettison(unsigned long val, int state, void *);
 void SimEmergencyJettison(unsigned long val, int state, void *);
 void SimWheelBrakes(unsigned long val, int state, void *);
 void SimECMOn(unsigned long val, int state, void *);
-void SimECMStandby(unsigned long val, int state, void *);	//Wombat778	11-3-2003 + MD 20031128
-void SimECMConsent(unsigned long val, int state, void *);		//Wombat778 11-3-2003 + MD 20031128
-void SimRandomError(unsigned long val, int state, void *);	//THW 2003-11-16
+void SimECMStandby(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
+void SimECMConsent(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
+void SimRandomError(unsigned long val, int state, void *); //THW 2003-11-16
 
 void SoundOff(unsigned long val, int state, void * pButton);
 void SimStepMasterArm(unsigned long val, int state, void * pButton);
@@ -1042,7 +1042,7 @@ void ToggleVtune(unsigned long val, int state, void *);
 
 #endif
 
-//	Retro 16/10/03
+// Retro 16/10/03
 void Profiler_CursorDown(unsigned long val, int state, void *);
 void Profiler_CursorUp(unsigned long val, int state, void *);
 void Profiler_Parent(unsigned long val, int state, void *);
@@ -1062,7 +1062,7 @@ void ToggleSubTitles(unsigned long val, int state, void *);
 void ToggleInfoBar(unsigned long val, int state, void *);
 // end Retro
 
-void ToggleDisplacementCam(unsigned long val, int state, void *);	// Retro 24Dec2003
+void ToggleDisplacementCam(unsigned long val, int state, void *); // Retro 24Dec2003
 
 // Retro 4Jan2004
 void WinAmpNextTrack(unsigned long val, int state, void *);
@@ -1074,7 +1074,7 @@ void WinAmpVolumeUp(unsigned long val, int state, void *);
 void WinAmpVolumeDown(unsigned long val, int state, void *);
 
 // Retro 12Jan2004
-void CycleEngine(unsigned long val, int state, void*);	// Retro 12Jan2004
+void CycleEngine(unsigned long val, int state, void*); // Retro 12Jan2004
 void selectLeftEngine(unsigned long, int state, void*);
 void selectRightEngine(unsigned long, int state, void*);
 void selectBothEngines(unsigned long, int state, void*);
@@ -1082,8 +1082,8 @@ void selectBothEngines(unsigned long, int state, void*);
 
 void ToggleTIR(unsigned long, int state, void*); //Keyboard/Cockpit toggle for TIR mode
 void ToggleClickablePitMode(unsigned long, int state, void*); //Wombat778 1-22-04 Keyboard toggle for mouselook mode
-void SimToggleRearView(unsigned long, int state, void*);	//Wombat778 4-13-04
-void SimToggleAltView(unsigned long, int state, void*);		//Wombat778 4-13-04
+void SimToggleRearView(unsigned long, int state, void*); //Wombat778 4-13-04
+void SimToggleAltView(unsigned long, int state, void*); //Wombat778 4-13-04
 
 
 void OTWStepHudContrastDn(unsigned long, int state, void*);

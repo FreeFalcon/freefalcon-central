@@ -84,21 +84,21 @@ public:
 class UIComms
 {
 private:
-    _TCHAR			User_[64];
-    BOOL			Online_;
-    BOOL			Update_;
-    char			Status_;
-    char			InCampaign_;
-    VU_ID			TargetGame_;		// The game we're interested in
+    _TCHAR User_[64];
+    BOOL Online_;
+    BOOL Update_;
+    char Status_;
+    char InCampaign_;
+    VU_ID TargetGame_; // The game we're interested in
 
-    PlayerStats		*GameStats_;
+    PlayerStats *GameStats_;
 
-    UI_Hash			*RemoteLogbooks_;
+    UI_Hash *RemoteLogbooks_;
 
     void (*Callback_[game_MaxGameTypes])(short uptype, VU_ID game, VU_ID session);
 
 public:
-    HWND			AppWnd_;
+    HWND AppWnd_;
 
     UIComms();
     ~UIComms();

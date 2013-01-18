@@ -5,7 +5,7 @@
 
 VuFifoQueue::VuFifoQueue(VuFilter* filter) : VuFilteredList(filter)
 {
-    //	last_ = head_;
+    // last_ = head_;
 }
 
 VuFifoQueue::~VuFifoQueue()
@@ -136,7 +136,7 @@ VuEntity *VuFifoQueue::Peek()
 {
     VuScopeLock l(GetMutex());
     return l_.empty() ? NULL : l_.back().get();
-    //	return head_->entity_.get();
+    // return head_->entity_.get();
 }
 
 VuEntity *VuFifoQueue::Pop()

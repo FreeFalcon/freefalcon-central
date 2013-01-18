@@ -38,7 +38,7 @@ int UI_SendDogfightInfo::Process(uchar autodisp)
 
     if (gCommsMgr != NULL)
     {
-        VuGameEntity	*game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
+        VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
         gCommsMgr->LookAtGame(game);
 
         if (dataBlock.from != vuLocalSessionEntity->Id())

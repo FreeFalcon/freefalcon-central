@@ -6,7 +6,7 @@
 #define _DRAWTRCR_H_
 
 #include "DrawObj.h"
-#define	 TRACER_VISIBLE_DISTANCE	20000.0f
+#define  TRACER_VISIBLE_DISTANCE 20000.0f
 
 
 class DrawableTracer : public DrawableObject
@@ -31,7 +31,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     DrawableTracer(void);
@@ -85,9 +85,9 @@ protected:
     float alpha;
     float r, g, b;
     int type;
-    Tpoint	LastPos;
-#define TRACER_TYPE_TRACER		0
-#define TRACER_TYPE_BALL		1
+    Tpoint LastPos;
+#define TRACER_TYPE_TRACER 0
+#define TRACER_TYPE_BALL 1
 
 };
 
@@ -117,7 +117,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     DXDrawableTracer(void);
@@ -129,29 +129,29 @@ public:
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
-    void	SetAlpha(float a)
+    void SetAlpha(float a)
     {
         alpha = a;
     };
-    float	GetAlpha(void)
+    float GetAlpha(void)
     {
         return alpha;
     };
-    void	GetRGB(float *R, float *G, float *B)
+    void GetRGB(float *R, float *G, float *B)
     {
         *R = r;
         *G = g;
         *B = b;
     };
-    void	SetWidth(float w)
+    void SetWidth(float w)
     {
         width = w;
     };
-    void	SetType(int t)
+    void SetType(int t)
     {
         type = t;
     };
-    void	SetRGB(float R, float G, float B)
+    void SetRGB(float R, float G, float B)
     {
         r = R;
         g = G;
@@ -170,10 +170,10 @@ protected:
     float width;
     float alpha;
     float r, g, b;
-    Tpoint	LastPos;
+    Tpoint LastPos;
     int type;
-#define TRACER_TYPE_TRACER		0
-#define TRACER_TYPE_BALL		1
+#define TRACER_TYPE_TRACER 0
+#define TRACER_TYPE_BALL 1
 
 };
 

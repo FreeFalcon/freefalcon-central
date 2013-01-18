@@ -68,16 +68,16 @@ public:
     {
         return malloc(n);
     };
-    void operator delete(void *)			{ };
-    //	void operator delete(void *, void *) { };
+    void operator delete(void *) { };
+    // void operator delete(void *, void *) { };
 
     // Function to identify the type of an encoded node and call the appropriate constructor
     static BNode* RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr);
 
-    BNode	*sibling;
+    BNode *sibling;
 
-    virtual void		Draw(void) = 0;
-    virtual BNodeType	Type(void)
+    virtual void Draw(void) = 0;
+    virtual BNodeType Type(void)
     {
         return tagBNode;
     };
@@ -96,20 +96,20 @@ public:
         delete subTree;
     };
 
-    Ppoint	*pCoords;
-    int		nCoords;
+    Ppoint *pCoords;
+    int nCoords;
 
-    int		nDynamicCoords;
-    int		DynamicCoordOffset;
+    int nDynamicCoords;
+    int DynamicCoordOffset;
 
-    Pnormal	*pNormals;
-    int		nNormals;
+    Pnormal *pNormals;
+    int nNormals;
 
 
-    BNode	*subTree;
+    BNode *subTree;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSubTree;
     };
@@ -125,17 +125,17 @@ public:
         nTexIDs = -1;
         ScriptNumber = -1;
     };
-    virtual ~BRoot()	{};
+    virtual ~BRoot() {};
 
-    void	LoadTextures(void);
-    void	UnloadTextures(void);
+    void LoadTextures(void);
+    void UnloadTextures(void);
 
-    int		*pTexIDs;
-    int		nTexIDs;
-    int		ScriptNumber;
+    int *pTexIDs;
+    int nTexIDs;
+    int ScriptNumber;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBRoot;
     };
@@ -154,15 +154,15 @@ public:
         delete subTree;
     };
 
-    Ppoint			*pCoords;
-    int				nCoords;
+    Ppoint *pCoords;
+    int nCoords;
 
-    BTransformType	type;
+    BTransformType type;
 
-    BNode			*subTree;
+    BNode *subTree;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSpecialXform;
     };
@@ -176,14 +176,14 @@ public:
     {
         slotNumber = -1;
     };
-    virtual ~BSlotNode()	{};
+    virtual ~BSlotNode() {};
 
-    Pmatrix			rotation;
-    Ppoint			origin;
-    int				slotNumber;
+    Pmatrix rotation;
+    Ppoint origin;
+    int slotNumber;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSlotNode;
     };
@@ -197,14 +197,14 @@ public:
     {
         dofNumber = -1;
     };
-    virtual ~BDofNode()		{};
+    virtual ~BDofNode() {};
 
-    int			dofNumber;
-    Pmatrix		rotation;
-    Ppoint		translation;
+    int dofNumber;
+    Pmatrix rotation;
+    Ppoint translation;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBDofNode;
     };
@@ -219,16 +219,16 @@ public:
     {
         dofNumber = -1;
     };
-    virtual ~BXDofNode()		{};
+    virtual ~BXDofNode() {};
 
-    int			dofNumber;
-    float		min, max, multiplier, future;
-    int			flags;
-    Pmatrix		rotation;
-    Ppoint		translation;
+    int dofNumber;
+    float min, max, multiplier, future;
+    int flags;
+    Pmatrix rotation;
+    Ppoint translation;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBDofNode;
     };
@@ -243,15 +243,15 @@ public:
     {
         dofNumber = -1;
     };
-    virtual ~BTransNode()		{};
+    virtual ~BTransNode() {};
 
-    int			dofNumber;
-    float		min, max, multiplier, future;
+    int dofNumber;
+    float min, max, multiplier, future;
     int         flags;
-    Ppoint		translation;
+    Ppoint translation;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBTransNode;
     };
@@ -267,17 +267,17 @@ public:
     {
         dofNumber = -1;
     };
-    virtual ~BScaleNode()		{};
+    virtual ~BScaleNode() {};
 
-    int			dofNumber;
-    float		min, max, multiplier, future;
+    int dofNumber;
+    float min, max, multiplier, future;
     int         flags;
-    Ppoint		scale;
-    Ppoint		translation;
+    Ppoint scale;
+    Ppoint translation;
 
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBTransNode;
     };
@@ -299,12 +299,12 @@ public:
         while (numChildren--) delete subTrees[numChildren];
     };
 
-    int			switchNumber;
-    int			numChildren;
-    BSubTree	**subTrees;
+    int switchNumber;
+    int numChildren;
+    BSubTree **subTrees;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSwitchNode;
     };
@@ -325,13 +325,13 @@ public:
         while (numChildren--) delete subTrees[numChildren];
     };
 
-    int			switchNumber;
+    int switchNumber;
     int         flags;
-    int			numChildren;
-    BSubTree	**subTrees;
+    int numChildren;
+    BSubTree **subTrees;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSwitchNode;
     };
@@ -351,12 +351,12 @@ public:
         delete back;
     };
 
-    float	A, B, C, D;
-    BNode	*front;
-    BNode	*back;
+    float A, B, C, D;
+    BNode *front;
+    BNode *back;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBSplitterNode;
     };
@@ -370,12 +370,12 @@ public:
     {
         prim = NULL;
     };
-    virtual ~BPrimitiveNode()	{};
+    virtual ~BPrimitiveNode() {};
 
-    Prim		*prim;
+    Prim *prim;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBPrimitiveNode;
     };
@@ -390,13 +390,13 @@ public:
         poly = NULL;
         backpoly = NULL;
     };
-    virtual ~BLitPrimitiveNode()	{};
+    virtual ~BLitPrimitiveNode() {};
 
-    Poly		*poly;
-    Poly		*backpoly;
+    Poly *poly;
+    Poly *backpoly;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBLitPrimitiveNode;
     };
@@ -410,12 +410,12 @@ public:
     {
         poly = NULL;
     };
-    virtual~BCulledPrimitiveNode()	{};
+    virtual~BCulledPrimitiveNode() {};
 
-    Poly		*poly;
+    Poly *poly;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBCulledPrimitiveNode;
     };
@@ -431,15 +431,15 @@ public:
         rgbaBack = -1;
         A = B = C = D = 0.0f;
     };
-    virtual~BLightStringNode()	{};
+    virtual~BLightStringNode() {};
 
     // For directional lights
-    float		A, B, C, D;
-    int			rgbaFront;
-    int			rgbaBack;
+    float A, B, C, D;
+    int rgbaFront;
+    int rgbaBack;
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBLightStringNode;
     };
@@ -454,21 +454,21 @@ public:
     {
         Control = rcNoOp;
     };
-    virtual ~BRenderControlNode()	{};
+    virtual ~BRenderControlNode() {};
 
     BRenderControlType Control;
     int IArg[4];
     float FArg[4];
 
-    virtual void		Draw(void);
-    virtual BNodeType	Type(void)
+    virtual void Draw(void);
+    virtual BNodeType Type(void)
     {
         return tagBRenderControlNode;
     };
 };
 
-extern	bool	ShadowBSPRendering;						// COBRA - RED - this is to inform we r rendering a shadow,
-extern	float	ShadowAlphaLevel;						// that may be affected by TOD Light level
+extern bool ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
+extern float ShadowAlphaLevel; // that may be affected by TOD Light level
 
 
 #endif //_BSPNODES_H_

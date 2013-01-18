@@ -181,7 +181,7 @@ public:
     VuOpaqueFilter();
     virtual ~VuOpaqueFilter();
 
-    virtual VU_BOOL Test(VuEntity *ent);		// returns FALSE
+    virtual VU_BOOL Test(VuEntity *ent); // returns FALSE
     virtual int Compare(VuEntity *ent1, VuEntity *ent2);
     // returns ent2->Id() - ent1->Id()
     virtual VuFilter *Copy();

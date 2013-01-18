@@ -46,8 +46,8 @@ extern bool bNVGmode;
 
 extern float g_f3DHeadTilt; // Cobra
 extern float g_f3DPitFOV; // Cobra
-extern bool g_bSync2D3DPit;		//Wombat778 11-17-04
-extern bool g_bEnableTrackIR;	//Wombat778 11-18-04
+extern bool g_bSync2D3DPit; //Wombat778 11-17-04
+extern bool g_bEnableTrackIR; //Wombat778 11-18-04
 
 #ifdef DAVE_DBG
 extern float boomAzTest, boomElTest, boomExtTest;
@@ -58,7 +58,7 @@ extern int MoveBoom;
 extern IntellivibeData g_intellivibeData;
 
 #include "Graphics\DXEngine\DXEngine.h"
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
 void OTWDriverClass::ToggleSidebar(void)
 {
@@ -107,7 +107,7 @@ void OTWDriverClass::TargetStepPrev(void)
 
 void OTWDriverClass::NVGToggle(void)
 {
-    //	RenderOTW	*newRenderer;
+    // RenderOTW *newRenderer;
     ShiAssert(renderer);
 
     TheTimeOfDay.SetNVGmode(!TheTimeOfDay.GetNVGmode());
@@ -117,7 +117,7 @@ void OTWDriverClass::NVGToggle(void)
     //JAM 12Oct03, sfr fixed stuff
     if (TheTimeOfDay.GetNVGmode())
     {
-        //		newRenderer = new RenderNVG;
+        // newRenderer = new RenderNVG;
         renderer->context.SetNVGmode(TRUE);
         //TheDXEngine.SetState(DX_NVG);
         renderer->SetGreenMode(true); //sfr
@@ -125,7 +125,7 @@ void OTWDriverClass::NVGToggle(void)
     }
     else
     {
-        //		newRenderer = new RenderOTW;
+        // newRenderer = new RenderOTW;
         renderer->context.SetNVGmode(FALSE);
         //TheDXEngine.SetState(DX_OTW);
         renderer->SetGreenMode(false); //sfr
@@ -136,22 +136,22 @@ void OTWDriverClass::NVGToggle(void)
 
     //renderer->context.FinishFrame(NULL);
 
-    /*	ShiAssert( newRenderer );
+    /* ShiAssert( newRenderer );
 
-    	// Setup the new renderer
-    	newRenderer->Setup( OTWImage, viewPoint );
+     // Setup the new renderer
+     newRenderer->Setup( OTWImage, viewPoint );
 
-    	// Copy the previous renderer's settings
-    	newRenderer->SetFOV( renderer->GetFOV() );
-    //	newRenderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel() );
-    	newRenderer->SetHazeMode( renderer->GetHazeMode() );
-    //	newRenderer->SetAlphaMode( TRUE /*renderer->GetAlphaMode()*//* );
-//	newRenderer->SetRoofMode( renderer->GetRoofMode() );
-//	newRenderer->SetSmoothShadingMode( TRUE /*renderer->GetSmoothShadingMode()*//* );
-//	newRenderer->SetDitheringMode( renderer->GetDitheringMode() );
-//	newRenderer->SetFilteringMode( renderer->GetFilteringMode() );
+     // Copy the previous renderer's settings
+     newRenderer->SetFOV( renderer->GetFOV() );
+    // newRenderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel() );
+     newRenderer->SetHazeMode( renderer->GetHazeMode() );
+    // newRenderer->SetAlphaMode( TRUE /*renderer->GetAlphaMode()*//* );
+// newRenderer->SetRoofMode( renderer->GetRoofMode() );
+// newRenderer->SetSmoothShadingMode( TRUE /*renderer->GetSmoothShadingMode()*//* );
+// newRenderer->SetDitheringMode( renderer->GetDitheringMode() );
+// newRenderer->SetFilteringMode( renderer->GetFilteringMode() );
 // Now swap in the new renderer
-/*	renderer->Cleanup();
+/* renderer->Cleanup();
 delete renderer;
 renderer = newRenderer;
 renderer->context.StartFrame();
@@ -168,7 +168,7 @@ void OTWDriverClass::IDTagToggle(void)
         if (DrawableBSP::drawLabels)
         {
             DrawableBSP::drawLabels = FALSE;
-            //			DrawablePoint::drawLabels = FALSE;
+            // DrawablePoint::drawLabels = FALSE;
         }
         else
         {
@@ -188,7 +188,7 @@ void OTWDriverClass::CampTagToggle(void)
         else
         {
             DrawablePoint::drawLabels = TRUE;
-            //			DrawableBSP::drawLabels = TRUE;
+            // DrawableBSP::drawLabels = TRUE;
         }
     }
 }
@@ -205,7 +205,7 @@ void OTWDriverClass::SelectF3PadlockMode()
 ////////////////////////
 ////////////////////////
 ////////////////////////
-void OTWDriverClass::Select2DCockpitMode(bool viewreset)		//Wombat778 11-18-04  added viewreset argument
+void OTWDriverClass::Select2DCockpitMode(bool viewreset) //Wombat778 11-18-04  added viewreset argument
 {
     if (pCockpitManager)
     {
@@ -226,8 +226,8 @@ void OTWDriverClass::Cleanup2DCockpitMode()
     if (pCockpitManager)
         pCockpitManager->SetActivePanel(PANELS_INACTIVE);
 
-    //	MfdDisplay[0]->SetImageBuffer(NULL, -1.0F, 1.0F, 1.0F, -1.0F);
-    //	MfdDisplay[1]->SetImageBuffer(NULL, -1.0F, 1.0F, 1.0F, -1.0F);
+    // MfdDisplay[0]->SetImageBuffer(NULL, -1.0F, 1.0F, 1.0F, -1.0F);
+    // MfdDisplay[1]->SetImageBuffer(NULL, -1.0F, 1.0F, 1.0F, -1.0F);
     MfdDisplay[0]->SetImageBuffer(OTWImage, 0.0F, 0.0F, 0.0F, 0.0F);
     MfdDisplay[1]->SetImageBuffer(OTWImage, 0.0F, 0.0F, 0.0F, 0.0F);
 
@@ -244,8 +244,8 @@ void OTWDriverClass::Select3DCockpitMode()
     if (!g_bSync2D3DPit)
     {
         ViewReset();
-        eyePan	= 0.0F;
-        eyeTilt	= g_f3DHeadTilt * DTR; // Cobra
+        eyePan = 0.0F;
+        eyeTilt = g_f3DHeadTilt * DTR; // Cobra
     }
 
     SetFOV(g_f3DPitFOV * DTR);   // Cobra
@@ -462,7 +462,7 @@ void OTWDriverClass::ToggleHybridPitMode(void)
     if (!HybridPitModeEnabled)
     {
         if (g_bSync2D3DPit)
-            if (g_bEnableTrackIR && PlayerOptions.Get3dTrackIR() == true)	//added check for 3d TIR being enabled
+            if (g_bEnableTrackIR && PlayerOptions.Get3dTrackIR() == true) //added check for 3d TIR being enabled
                 HybridPitModeEnabled = 1;
             else
                 HybridPitModeEnabled = 2;
@@ -490,9 +490,9 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
     }
 
     // reset our chase ranges etc to default or zero out slew stuff
-    //	if(!(mode == mOTWDisplayMode && mode == ModePadlockF3)) {
-    //		ViewReset();
-    //	}
+    // if(!(mode == mOTWDisplayMode && mode == ModePadlockF3)) {
+    // ViewReset();
+    // }
 
     /*
     if((mode != ModePadlockF3) &&
@@ -500,23 +500,23 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
        (mode != ModeTarget) &&
        (mode != ModeTargetToSelf) )
     {
-    	if(mpPadlockPriorityObject) {
-    		VuDeReferenceEntity(mpPadlockPriorityObject);
-    		mpPadlockPriorityObject = NULL;
-    	}
-    	mpPadlockCandidate		= NULL;
+     if(mpPadlockPriorityObject) {
+     VuDeReferenceEntity(mpPadlockPriorityObject);
+     mpPadlockPriorityObject = NULL;
+     }
+     mpPadlockCandidate = NULL;
     }
     */
     if ((mode != ModePadlockF3) &&
         (mode != ModePadlockEFOV))
     {
         /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject
-        		if(mpPadlockPriorityObject) {
-        			VuDeReferenceEntity(mpPadlockPriorityObject);
-        			mpPadlockPriorityObject = NULL;
-        */		SetmpPadlockPriorityObject(NULL);
-        //		}
-        mpPadlockCandidate		= NULL;
+         if(mpPadlockPriorityObject) {
+         VuDeReferenceEntity(mpPadlockPriorityObject);
+         mpPadlockPriorityObject = NULL;
+        */ SetmpPadlockPriorityObject(NULL);
+        // }
+        mpPadlockCandidate = NULL;
         mPadlockCandidateID  = FalconNullId;
     }
 
@@ -651,42 +651,42 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate )
                 {
-                	if ( mpPadlockPriorityObject &&
-                		 mpPadlockPriorityObject != mpPadlockCandidate )
-                	{
-                		VuDeReferenceEntity(mpPadlockPriorityObject);
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	else if ( !mpPadlockPriorityObject )
-                	{
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	mpPadlockCandidate = NULL;
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
                 }
 
                 if ( mpPadlockPriorityObject )
                 {
-                	SetTrackPlatform( mpPadlockPriorityObject );
+                 SetTrackPlatform( mpPadlockPriorityObject );
                 }
                 if ( tgtStep == 0 )
                 {
-                	newObject = otwTrackPlatform;
+                 newObject = otwTrackPlatform;
 
-                	SetTrackPlatform( otwPlatform );
-                	SetGraphicsOwnship( newObject );
+                 SetTrackPlatform( otwPlatform );
+                 SetGraphicsOwnship( newObject );
 
-                	chaseRange *= 2.5f;
+                 chaseRange *= 2.5f;
                 }
                 else
                 {
-                	newObject = FindNextViewObject( otwPlatform, otwTrackPlatform, NEXT_AIR_ENEMY  );
-                	if ( newObject )
-                	{
-                		SetTrackPlatform( newObject );
-                		chaseRange *= 2.5f;
-                	}
+                 newObject = FindNextViewObject( otwPlatform, otwTrackPlatform, NEXT_AIR_ENEMY  );
+                 if ( newObject )
+                 {
+                 SetTrackPlatform( newObject );
+                 chaseRange *= 2.5f;
+                 }
                 }
                 */
 
@@ -697,7 +697,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                 // any target?
                 if ( targetPtr == NULL || targetPtr->BaseData() == NULL || !targetPtr->BaseData()->IsSim())
-                	return;
+                 return;
 
                 // set graphics focus to the target
                 SetGraphicsOwnship( (SimBaseClass*)targetPtr->BaseData() );
@@ -735,25 +735,25 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
                 {
-                	if ( mpPadlockPriorityObject &&
-                		 mpPadlockPriorityObject != mpPadlockCandidate )
-                	{
-                		VuDeReferenceEntity(mpPadlockPriorityObject);
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	else if ( !mpPadlockPriorityObject )
-                	{
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	mpPadlockCandidate = NULL;
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
                 }
 
                 if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
                 {
-                	SetGraphicsOwnship( mpPadlockPriorityObject );
-                	SetTrackPlatform( SimDriver.GetPlayerAircraft() );
+                 SetGraphicsOwnship( mpPadlockPriorityObject );
+                 SetTrackPlatform( SimDriver.GetPlayerAircraft() );
                 }
                 */
 
@@ -928,7 +928,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                 /*
                 if ( !SimDriver.GetPlayerAircraft() )
-                	return;
+                 return;
 
                 // ownship is always the focus
                 SetGraphicsOwnship( SimDriver.GetPlayerAircraft() );
@@ -936,60 +936,60 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate )
                 {
-                	if ( mpPadlockPriorityObject &&
-                		 mpPadlockPriorityObject != mpPadlockCandidate )
-                	{
-                		VuDeReferenceEntity(mpPadlockPriorityObject);
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	else if ( !mpPadlockPriorityObject )
-                	{
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	mpPadlockCandidate = NULL;
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
                 }
 
                 if ( mpPadlockPriorityObject )
                 {
-                	SetTrackPlatform( mpPadlockPriorityObject );
-                	chaseRange *= 2.5f;
+                 SetTrackPlatform( mpPadlockPriorityObject );
+                 chaseRange *= 2.5f;
                 }
                 else
                 {
 
-                	// use the enhanced padlock priority to cycle thru appro-
-                	// priate objects
-                	Padlock_FindEnhancedPriority( TRUE );
+                 // use the enhanced padlock priority to cycle thru appro-
+                 // priate objects
+                 Padlock_FindEnhancedPriority( TRUE );
 
-                	if ( mpPadlockCandidate )
-                	{
-                		if ( mpPadlockPriorityObject &&
-                			 mpPadlockPriorityObject != mpPadlockCandidate )
-                		{
-                			VuDeReferenceEntity(mpPadlockPriorityObject);
-                			mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                			VuReferenceEntity(mpPadlockPriorityObject);
-                		}
-                		else if ( !mpPadlockPriorityObject )
-                		{
-                			mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                			VuReferenceEntity(mpPadlockPriorityObject);
-                		}
-                		mpPadlockCandidate = NULL;
-                	}
+                 if ( mpPadlockCandidate )
+                 {
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
+                 }
 
-                	if ( mpPadlockPriorityObject )
-                	{
-                		SetTrackPlatform( mpPadlockPriorityObject );
-                		chaseRange *= 2.5f;
-                	}
+                 if ( mpPadlockPriorityObject )
+                 {
+                 SetTrackPlatform( mpPadlockPriorityObject );
+                 chaseRange *= 2.5f;
+                 }
 
                 }
 
                 if ( !otwPlatform || otwPlatform->IsSimObjective())
-                	return;
+                 return;
 
                 // get the target (if any) of the current platform
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
@@ -997,27 +997,27 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 // any target?
                 if ( targetPtr == NULL || targetPtr->BaseData() == NULL || !targetPtr->BaseData()->IsSim())
                 {
-                	// no target, look for air threat
-                	newObject = FindNextViewObject( otwPlatform, NULL, NEXT_AIR_ENEMY  );
+                 // no target, look for air threat
+                 newObject = FindNextViewObject( otwPlatform, NULL, NEXT_AIR_ENEMY  );
 
-                	if ( newObject )
-                	{
-                		// set graphics focus to the target
-                		SetGraphicsOwnship( otwPlatform );
+                 if ( newObject )
+                 {
+                 // set graphics focus to the target
+                 SetGraphicsOwnship( otwPlatform );
 
-                		// set the track platform to view platform
-                		SetTrackPlatform( newObject );
-                		chaseRange *= 2.5f;
-                	}
+                 // set the track platform to view platform
+                 SetTrackPlatform( newObject );
+                 chaseRange *= 2.5f;
+                 }
                 }
                 else
                 {
-                	// set graphics focus to the target
-                	SetGraphicsOwnship( otwPlatform );
+                 // set graphics focus to the target
+                 SetGraphicsOwnship( otwPlatform );
 
-                	// set the track platform to view platform
-                	SetTrackPlatform( (SimBaseClass*)targetPtr->BaseData() );
-                	chaseRange *= 2.5f;
+                 // set the track platform to view platform
+                 SetTrackPlatform( (SimBaseClass*)targetPtr->BaseData() );
+                 chaseRange *= 2.5f;
                 }
                 */
 
@@ -1041,71 +1041,71 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 
                 /*
                 if ( !SimDriver.GetPlayerAircraft() )
-                	return;
+                 return;
 
 
                 // if we got a candidate we use that
                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
                 {
-                	if ( mpPadlockPriorityObject &&
-                		 mpPadlockPriorityObject != mpPadlockCandidate )
-                	{
-                		VuDeReferenceEntity(mpPadlockPriorityObject);
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	else if ( !mpPadlockPriorityObject )
-                	{
-                		mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                		VuReferenceEntity(mpPadlockPriorityObject);
-                	}
-                	mpPadlockCandidate = NULL;
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
                 }
 
                 if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
                 {
-                	SetGraphicsOwnship( mpPadlockPriorityObject );
-                	SetTrackPlatform( SimDriver.GetPlayerAircraft() );
-                	chaseRange *= 2.5f;
+                 SetGraphicsOwnship( mpPadlockPriorityObject );
+                 SetTrackPlatform( SimDriver.GetPlayerAircraft() );
+                 chaseRange *= 2.5f;
                 }
                 else
                 {
 
-                	// use the enhanced padlock priority to cycle thru appro-
-                	// priate objects
+                 // use the enhanced padlock priority to cycle thru appro-
+                 // priate objects
 
-                	// we need to have the player be otwPlatform for
-                	// the Padlock_FindEnhancedPriority
-                	SetGraphicsOwnship( SimDriver.GetPlayerAircraft() );
-                	Padlock_FindEnhancedPriority( TRUE );
+                 // we need to have the player be otwPlatform for
+                 // the Padlock_FindEnhancedPriority
+                 SetGraphicsOwnship( SimDriver.GetPlayerAircraft() );
+                 Padlock_FindEnhancedPriority( TRUE );
 
-                	if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
-                	{
-                		if ( mpPadlockPriorityObject &&
-                			 mpPadlockPriorityObject != mpPadlockCandidate )
-                		{
-                			VuDeReferenceEntity(mpPadlockPriorityObject);
-                			mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                			VuReferenceEntity(mpPadlockPriorityObject);
-                		}
-                		else if ( !mpPadlockPriorityObject )
-                		{
-                			mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
-                			VuReferenceEntity(mpPadlockPriorityObject);
-                		}
-                		mpPadlockCandidate = NULL;
-                	}
+                 if ( mpPadlockCandidate && mpPadlockCandidate->IsSim() )
+                 {
+                 if ( mpPadlockPriorityObject &&
+                  mpPadlockPriorityObject != mpPadlockCandidate )
+                 {
+                 VuDeReferenceEntity(mpPadlockPriorityObject);
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 else if ( !mpPadlockPriorityObject )
+                 {
+                 mpPadlockPriorityObject = (SimBaseClass*) mpPadlockCandidate;
+                 VuReferenceEntity(mpPadlockPriorityObject);
+                 }
+                 mpPadlockCandidate = NULL;
+                 }
 
-                	if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
-                	{
-                		SetGraphicsOwnship( mpPadlockPriorityObject );
-                		SetTrackPlatform( SimDriver.GetPlayerAircraft() );
-                		chaseRange *= 2.5f;
-                	}
-                	else
-                	{
-                		return;
-                	}
+                 if ( mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() )
+                 {
+                 SetGraphicsOwnship( mpPadlockPriorityObject );
+                 SetTrackPlatform( SimDriver.GetPlayerAircraft() );
+                 chaseRange *= 2.5f;
+                 }
+                 else
+                 {
+                 return;
+                 }
 
                 }
                 */
@@ -1170,9 +1170,9 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
         }
 
         CleanupDisplayMode(mOTWDisplayMode);
-        OTWDisplayMode lastmode = mOTWDisplayMode;		//Wombat778 11-17-04
+        OTWDisplayMode lastmode = mOTWDisplayMode; //Wombat778 11-17-04
         mOTWDisplayMode = mode;
-        SelectDisplayMode(mode, lastmode);				//Wombat778 11-17-04 added lastmode
+        SelectDisplayMode(mode, lastmode); //Wombat778 11-17-04 added lastmode
     }
 
     CameraChange = true;
@@ -1188,7 +1188,7 @@ void OTWDriverClass::CleanupDisplayMode(OTWDisplayMode mode)
 }
 
 
-void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastmode)	//Wombat778 11-17-04 added lastmode
+void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastmode) //Wombat778 11-17-04 added lastmode
 {
 
     // since we're doing a new mode reset any view timers
@@ -1204,12 +1204,12 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             //Wombat778 11-18-04 Move view resetting stuff here
 
         case ModeNone:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             break;
 
         case ModeHud:
         case ModePadlockEFOV:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
 
             if (PlayerOptions.GetPadlockMode() != PDDisabled)
             {
@@ -1229,7 +1229,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
         case ModeAirEnemy:
         case ModeGroundEnemy:
         case ModeWeapon:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             SelectExternal();
             chaseRange *= 2.5;
             break;
@@ -1253,7 +1253,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             if (otwPlatform.get() != SimDriver.GetPlayerAircraft())
                 SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
-            if (g_bSync2D3DPit && lastmode == Mode3DCockpit)	//consider adding padlock modes
+            if (g_bSync2D3DPit && lastmode == Mode3DCockpit) //consider adding padlock modes
                 Select2DCockpitMode(0);
             else
             {
@@ -1267,11 +1267,11 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
 
             // this mode restores to player's f16
 
-            if (!g_bSync2D3DPit || lastmode != Mode2DCockpit)		//Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
+            if (!g_bSync2D3DPit || lastmode != Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
             {
                 ViewReset();
                 eyePan = 0.0f;
-                eyeTilt	= g_f3DHeadTilt * DTR; // Cobra
+                eyeTilt = g_f3DHeadTilt * DTR; // Cobra
                 SetFOV(g_f3DPitFOV * DTR);   // Cobra
             }
             else if (g_bSync2D3DPit && lastmode == Mode2DCockpit)
@@ -1279,7 +1279,7 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
                 if (eyePan == 0.0f && fabs(eyeTilt) < 0.3f)  // Cobra - Default 3D pit view when 2D pit view is straight forward view (panel 1100)
                 {
                     eyePan = 0.0f;
-                    eyeTilt	= g_f3DHeadTilt * DTR; // Cobra
+                    eyeTilt = g_f3DHeadTilt * DTR; // Cobra
                     SetFOV(g_f3DPitFOV * DTR);   // Cobra
                 }
             }
@@ -1291,27 +1291,27 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
             break;
 
         case ModeChase:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             SelectExternal();
             break;
 
         case ModeOrbit:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             SelectExternal();
             break;
 
         case ModeSatellite:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             SelectExternal();
             break;
 
         case ModeFlyby:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             SelectExternal();
             break;
 
         default:
-            ViewReset();		//Wombat778
+            ViewReset(); //Wombat778
             ShiWarning("Bad Viewing mode");
     }
 }
@@ -1491,20 +1491,20 @@ void OTWDriverClass::DetailUp(void)
 
 /*void OTWDriverClass::TextureUp(void)
 {
-	if ( renderer->GetObjectTextureState() ) {
-		renderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel()+1 );
-	} else {
-		renderer->SetObjectTextureState( TRUE );
-	}
+ if ( renderer->GetObjectTextureState() ) {
+ renderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel()+1 );
+ } else {
+ renderer->SetObjectTextureState( TRUE );
+ }
 }
 
 void OTWDriverClass::TextureDown(void)
 {
-	if ( renderer->GetTerrainTextureLevel() ) {
-		renderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel()-1 );
-	} else {
-		renderer->SetObjectTextureState( FALSE );
-	}
+ if ( renderer->GetTerrainTextureLevel() ) {
+ renderer->SetTerrainTextureLevel( renderer->GetTerrainTextureLevel()-1 );
+ } else {
+ renderer->SetObjectTextureState( FALSE );
+ }
 }
 */
 void OTWDriverClass::ToggleWeather(void)
@@ -1613,7 +1613,7 @@ void OTWDriverClass::EndFlight(void)
     SetExitMenu(TRUE);
 }
 
-#include "mouselook.h"	// Retro 18Jan2004
+#include "mouselook.h" // Retro 18Jan2004
 
 void OTWDriverClass::ViewTiltUp(void)
 {
@@ -1634,7 +1634,7 @@ void OTWDriverClass::ViewTiltUp(void)
 
         elDir = -1.0F;
 
-        if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
             theMouseView.BumpViewUp(-1.);
 
 #endif
@@ -1660,7 +1660,7 @@ void OTWDriverClass::ViewTiltDown(void)
 #else
         elDir = 1.0F;
 
-        if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
             theMouseView.BumpViewUp(1.);
 
 #endif
@@ -1674,7 +1674,7 @@ void OTWDriverClass::ViewTiltHold(void)
         {
             elDir = 0.0F;
 
-            if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+            if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
                 theMouseView.BumpViewUp(0);
         }
     }
@@ -1698,7 +1698,7 @@ void OTWDriverClass::ViewSpinLeft(void)
 #else
         azDir = 1.0F;
 
-        if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
             theMouseView.BumpViewLeft(1);
 
 #endif
@@ -1723,7 +1723,7 @@ void OTWDriverClass::ViewSpinRight(void)
 #else
         azDir = -1.0F;
 
-        if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+        if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
             theMouseView.BumpViewLeft(-1);
 
 #endif
@@ -1737,7 +1737,7 @@ void OTWDriverClass::ViewSpinHold(void)
         {
             azDir = 0.0F;
 
-            if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+            if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
                 theMouseView.BumpViewLeft(0);
         }
     }
@@ -1748,18 +1748,18 @@ void OTWDriverClass::ViewReset(void)
     if (!otwPlatform)
         return;
 
-    azDir			= 0.0F;
-    elDir			= 0.0F;
+    azDir = 0.0F;
+    elDir = 0.0F;
 
-    if (PlayerOptions.GetMouseLook())	// Retro 18Jan2004
+    if (PlayerOptions.GetMouseLook()) // Retro 18Jan2004
     {
         theMouseView.BumpViewUp(0);
         theMouseView.BumpViewLeft(0);
     }
 
-    chaseAz		= 0.0F;
-    chaseEl		= 0.0F;
-    chaseRange	= -75.0F;
+    chaseAz = 0.0F;
+    chaseEl = 0.0F;
+    chaseRange = -75.0F;
 
     eyeHeadRoll = 0.0F;
 
@@ -1767,8 +1767,8 @@ void OTWDriverClass::ViewReset(void)
         GetOTWDisplayMode() == ModeHud ||
         GetOTWDisplayMode() == ModePadlockF3)
     {
-        eyePan	= 0.0F;
-        eyeTilt	= 0.35F;
+        eyePan = 0.0F;
+        eyeTilt = 0.35F;
     }
 }
 
@@ -1793,7 +1793,7 @@ void OTWDriverClass::ViewZoomIn(void)
     /*
     sfxDist += 10000.0f;
     if (sfxDist > 250000.0f )
-    		sfxDist = 30000.0f;
+     sfxDist = 30000.0f;
     */
 }
 
@@ -1816,75 +1816,75 @@ void OTWDriverClass::ViewZoomOut(void)
     float dist;
     if ( otwPlatform )
     {
-    		vec.x = otwPlatform->dmx[0][0];
-    		vec.y = otwPlatform->dmx[0][1];
-    	dist = sqrt( vec.x * vec.x + vec.y * vec.y );
-    	vec.x /= dist;
-    	vec.y /= dist;
-    	sfxpos.x = otwPlatform->XPos() + vec.x * sfxDist;
-    	sfxpos.y = otwPlatform->YPos() + vec.y * sfxDist;
-    	sfxpos.z = otwPlatform->ZPos();
-    	if ( (sfxCtr)  == 0 )
-    	{
-    			vec.x = otwPlatform->dmx[2][0];
-    			vec.y = otwPlatform->dmx[2][1];
-    			vec.z = -fabs(otwPlatform->dmx[2][2]);
-    		AddSfxRequest( new SfxClass( SFX_DIST_SAMLAUNCHES,
-    						 &sfxpos,
-    						 &vec,
-    						 20,
-    						 1.0f ) );
-    	}
-    	else if ( (sfxCtr ) == 1 )
-    	{
-    		AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
-    						 &sfxpos,
-    						 20,
-    						 1.0f ) );
-    	}
-    	else if ( (sfxCtr ) == 2 )
-    	{
-    			vec.x = otwPlatform->dmx[2][0];
-    			vec.y = otwPlatform->dmx[2][1];
-    			vec.z = -fabs(otwPlatform->dmx[2][2]);
-    		AddSfxRequest( new SfxClass(SFX_DIST_ARMOR,
-    						 &sfxpos,
-    						 &vec,
-    						 20,
-    						 1.0f ) );
-    	}
-    	else if ( (sfxCtr) == 3 )
-    	{
-    			vec.x = otwPlatform->dmx[2][0];
-    			vec.y = otwPlatform->dmx[2][1];
-    			vec.z = -fabs(otwPlatform->dmx[2][2]);
-    		AddSfxRequest( new SfxClass(SFX_DIST_INFANTRY,
-    						 &sfxpos,
-    						 &vec,
-    						 20,
-    						 1.0f ) );
-    	}
-    	else if ( (sfxCtr) == 4 )
-    	{
-    			vec.x = otwPlatform->dmx[1][0];
-    			vec.y = otwPlatform->dmx[1][1];
-    			vec.z = otwPlatform->dmx[1][2];
-    		AddSfxRequest( new SfxClass(SFX_DIST_AALAUNCHES,
-    						 &sfxpos,
-    						 &vec,
-    						 20,
-    						 1.0f ) );
-    	}
-    	else if ( (sfxCtr) == 5 )
-    	{
-    		AddSfxRequest( new SfxClass(SFX_DIST_AIRBURSTS,
-    						 &sfxpos,
-    						 20,
-    						 1.0f ) );
-    	}
+     vec.x = otwPlatform->dmx[0][0];
+     vec.y = otwPlatform->dmx[0][1];
+     dist = sqrt( vec.x * vec.x + vec.y * vec.y );
+     vec.x /= dist;
+     vec.y /= dist;
+     sfxpos.x = otwPlatform->XPos() + vec.x * sfxDist;
+     sfxpos.y = otwPlatform->YPos() + vec.y * sfxDist;
+     sfxpos.z = otwPlatform->ZPos();
+     if ( (sfxCtr)  == 0 )
+     {
+     vec.x = otwPlatform->dmx[2][0];
+     vec.y = otwPlatform->dmx[2][1];
+     vec.z = -fabs(otwPlatform->dmx[2][2]);
+     AddSfxRequest( new SfxClass( SFX_DIST_SAMLAUNCHES,
+      &sfxpos,
+      &vec,
+      20,
+      1.0f ) );
+     }
+     else if ( (sfxCtr ) == 1 )
+     {
+     AddSfxRequest( new SfxClass( SFX_DIST_GROUNDBURSTS,
+      &sfxpos,
+      20,
+      1.0f ) );
+     }
+     else if ( (sfxCtr ) == 2 )
+     {
+     vec.x = otwPlatform->dmx[2][0];
+     vec.y = otwPlatform->dmx[2][1];
+     vec.z = -fabs(otwPlatform->dmx[2][2]);
+     AddSfxRequest( new SfxClass(SFX_DIST_ARMOR,
+      &sfxpos,
+      &vec,
+      20,
+      1.0f ) );
+     }
+     else if ( (sfxCtr) == 3 )
+     {
+     vec.x = otwPlatform->dmx[2][0];
+     vec.y = otwPlatform->dmx[2][1];
+     vec.z = -fabs(otwPlatform->dmx[2][2]);
+     AddSfxRequest( new SfxClass(SFX_DIST_INFANTRY,
+      &sfxpos,
+      &vec,
+      20,
+      1.0f ) );
+     }
+     else if ( (sfxCtr) == 4 )
+     {
+     vec.x = otwPlatform->dmx[1][0];
+     vec.y = otwPlatform->dmx[1][1];
+     vec.z = otwPlatform->dmx[1][2];
+     AddSfxRequest( new SfxClass(SFX_DIST_AALAUNCHES,
+      &sfxpos,
+      &vec,
+      20,
+      1.0f ) );
+     }
+     else if ( (sfxCtr) == 5 )
+     {
+     AddSfxRequest( new SfxClass(SFX_DIST_AIRBURSTS,
+      &sfxpos,
+      20,
+      1.0f ) );
+     }
 
-    	sfxCtr++;
-    	if ( sfxCtr > 5 ) sfxCtr = 0;
+     sfxCtr++;
+     if ( sfxCtr > 5 ) sfxCtr = 0;
     }
     */
 }

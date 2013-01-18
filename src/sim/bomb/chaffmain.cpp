@@ -11,7 +11,7 @@
 #include "Graphics/Include/drawparticlesys.h" //I-Hawk
 
 #ifdef USE_SH_POOLS
-MEM_POOL	ChaffClass::pool;
+MEM_POOL ChaffClass::pool;
 #endif
 
 ChaffClass::ChaffClass(VU_BYTE** stream, long *rem) : BombClass(stream, rem)
@@ -190,37 +190,37 @@ void ChaffClass::SpecialGraphics()
 
     //// OW
     //#if 1
-    //	// OW: GetGfx() will be zero if we are sleeping
-    //	/*
-    //	if (IsAwake()){
-    //		int mask, frame;
+    // // OW: GetGfx() will be zero if we are sleeping
+    // /*
+    // if (IsAwake()){
+    // int mask, frame;
     //
-    //		frame = (SimLibElapsedTime - timeOfDeath) / 250;
+    // frame = (SimLibElapsedTime - timeOfDeath) / 250;
     //
-    //		if (frame > 15)
-    //		{
-    //			frame = 15;
-    //		}
+    // if (frame > 15)
+    // {
+    // frame = 15;
+    // }
     //
-    //		mask = 1 << frame;
+    // mask = 1 << frame;
     //
-    //		((DrawableBSP*)GetGfx())->SetSwitchMask (0, mask);
-    //	}
+    // ((DrawableBSP*)GetGfx())->SetSwitchMask (0, mask);
+    // }
     //
     //#else
-    //	int mask, frame;
+    // int mask, frame;
     //
-    //	frame = (SimLibElapsedTime - timeOfDeath) / 250;
+    // frame = (SimLibElapsedTime - timeOfDeath) / 250;
     //
-    //	if (frame > 15)
-    //	{
-    //		frame = 15;
-    //	}
+    // if (frame > 15)
+    // {
+    // frame = 15;
+    // }
     //
-    //	mask = 1 << frame;
+    // mask = 1 << frame;
     //
-    //	((DrawableBSP*)GetGfx())->SetSwitchMask(0, mask);
-    //	*/
+    // ((DrawableBSP*)GetGfx())->SetSwitchMask(0, mask);
+    // */
     //#endif
 }
 

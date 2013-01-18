@@ -55,10 +55,10 @@ void InitVoiceRecognitionEngine(void)
     if (!InitRecoEngine())
         ShiAssert(!"Error initializing speech engine\nPlease check your registry entries.");
 
-    //	int iNumTopics = CompileTopics(true);
+    // int iNumTopics = CompileTopics(true);
 
-    //	if (iNumTopics == 0)
-    //		ShiAssert(!"Application error. Unable to compile topic (*.tpc) files.");
+    // if (iNumTopics == 0)
+    // ShiAssert(!"Application error. Unable to compile topic (*.tpc) files.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ void InitVoiceRecognitionEngine(void)
 
 void InitVoiceRecognitionTopicsFiles(char *path)
 {
-    //	int iNumTopics = CompileTopics(true);
+    // int iNumTopics = CompileTopics(true);
     int iNumTopics = CompileTopics(true, path);
 
     if (iNumTopics == 0)
@@ -204,7 +204,7 @@ void DoVoiceRecognitionInput(void)
 
             break;
 
-        case 10000:	// radio check
+        case 10000: // radio check
             MonoPrint("Radio Check\n");
             F4PlaySound(tower5);
             break;
@@ -277,13 +277,13 @@ void DoVoiceRecognitionInput(void)
             if (iRecoResult >= WINGMEN_COMMANDS && iRecoResult < LAST_COMMAND)
             {
                 MenuSendWingman(iRecoResult - WINGMEN_COMMANDS, AiAllButSender);
-                //				MenuSendWingman(iRecoResult - WINGMEN_COMMANDS, AiWingman);
-                //				MenuSendWingman(iRecoResult - WINGMEN_COMMANDS, AiElement);
+                // MenuSendWingman(iRecoResult - WINGMEN_COMMANDS, AiWingman);
+                // MenuSendWingman(iRecoResult - WINGMEN_COMMANDS, AiElement);
             }
 
             break;
 
-            /*		case MSG_EXIT:
+            /* case MSG_EXIT:
             MonoPrint("Exiting application");
             break;
 
@@ -291,11 +291,11 @@ void DoVoiceRecognitionInput(void)
               StreamTopics();
               break;
 
-            	case MSG_HELP:
-            	MonoPrint("\nSay 'SHOW PHRASES' to see a list of phrases\n");
-            	MonoPrint("Speaking any of the phrases will display its associated value\n");
-            	MonoPrint("Say 'EXIT APPLICATION' to quit\n");
-            	break;
+             case MSG_HELP:
+             MonoPrint("\nSay 'SHOW PHRASES' to see a list of phrases\n");
+             MonoPrint("Speaking any of the phrases will display its associated value\n");
+             MonoPrint("Say 'EXIT APPLICATION' to quit\n");
+             break;
             */
     }
 }

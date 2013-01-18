@@ -32,16 +32,16 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     DrawableShadowed(int ID, const Tpoint *pos, const Trotation *rot, float s, int ShadowID);
-    virtual ~DrawableShadowed()			{};
+    virtual ~DrawableShadowed() {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
 protected:
-    ObjectInstance		shadowInstance;
+    ObjectInstance shadowInstance;
 };
 
 #endif // _DRAWSHDW_H_

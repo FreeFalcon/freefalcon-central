@@ -28,5 +28,5 @@ int VuKeyFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 
 /*
 ulong VuKeyFilter::Key(VuEntity* ent){
-	return (ulong)ent->Id();
+ return (ulong)ent->Id();
 }*/

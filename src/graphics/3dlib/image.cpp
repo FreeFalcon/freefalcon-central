@@ -7,7 +7,7 @@
 +---------------------------------------------------------------------------+
 |    Created by Erick Jap                               January 12, 1994    |
 +---------------------------------------------------------------------------+
-		 Copyright (c) 1994  Spectrum Holobyte, Inc.
+  Copyright (c) 1994  Spectrum Holobyte, Inc.
 */
 
 //___________________________________________________________________________
@@ -25,12 +25,12 @@
 // return ptr to new bmp if successful
 GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
 {
-    GLuint		i, j, r, g, b, a;
-    GLuint		totalsize, sizebmp = 1, rgbval[256];
-    GLubyte		*bmpptr;
-    GLubyte		*ptr;
-    GLushort	*sptr;
-    GLulong		*lptr;
+    GLuint i, j, r, g, b, a;
+    GLuint totalsize, sizebmp = 1, rgbval[256];
+    GLubyte *bmpptr;
+    GLubyte *ptr;
+    GLushort *sptr;
+    GLulong *lptr;
 
     switch (mode)
     {
@@ -54,7 +54,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
 
     if (!bmpptr) return (0);
 
-    if (fi -> palette)  				// bitmap has palette
+    if (fi -> palette)   // bitmap has palette
     {
         lptr = fi -> palette;
 
@@ -69,15 +69,15 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
 
             switch (mode)
             {
-                case COLOR_32K:	// 555 16 bit color
+                case COLOR_32K: // 555 16 bit color
                     j = ((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3);
                     break;
 
-                case COLOR_64K:	// 565 16 bit color
+                case COLOR_64K: // 565 16 bit color
                     j = ((r >> 3) << 11) + ((g >> 2) << 5) + (b >> 3);
                     break;
 
-                case COLOR_16M:	// RGBA 32 bit color
+                case COLOR_16M: // RGBA 32 bit color
                     j = (a << 24) | (b << 16) | (g << 8) | r;
                     break;
             }
@@ -177,7 +177,7 @@ GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey)
 // Only 24 bit, no colormap and uncompressed TGA file supported
 GLint ReadTGA(CImageFileMemory *fi)
 {
-    TGA_HEADER	tgaheader;
+    TGA_HEADER tgaheader;
 
     fi -> glReadMem(&tgaheader, sizeof(tgaheader));
 
@@ -252,12 +252,12 @@ GLint ReadDDS(CImageFileMemory *fi)
 // Read an 8 bit or 24 bit BMP file
 GLint ReadBMP(CImageFileMemory *fi)
 {
-    BMP_HEADER	bmpheader;
-    BMP_INFO	bmpinfo;
-    BMP_RGBQUAD	bmprgb;
-    GLubyte		*ptr, paddings[4];
-    GLulong		*palptr;
-    GLint		i, j, padBytes;
+    BMP_HEADER bmpheader;
+    BMP_INFO bmpinfo;
+    BMP_RGBQUAD bmprgb;
+    GLubyte *ptr, paddings[4];
+    GLulong *palptr;
+    GLint i, j, padBytes;
 
     fi -> glReadMem(&bmpheader, sizeof(bmpheader));
     fi -> glReadMem(&bmpinfo, sizeof(bmpinfo));
@@ -323,7 +323,7 @@ GLint ReadBMP(CImageFileMemory *fi)
 +---------------------------------------------------------------------------+
 |    ReadAPL                                                                |
 +---------------------------------------------------------------------------+
-|    Description:  Read a custom file format used to store alpha in each	|
+|    Description:  Read a custom file format used to store alpha in each |
 |                  palette entry.                                           |
 |                                                                           |
 |    Parameters:   fi   = output structure                                  |
@@ -333,8 +333,8 @@ GLint ReadBMP(CImageFileMemory *fi)
 */
 GLint ReadAPL(CImageFileMemory *fi)
 {
-    APL_HEADER	aplheader;
-    int			imageSize;
+    APL_HEADER aplheader;
+    int imageSize;
 
     // Read and validate the image header
     fi -> glReadMem(&aplheader, sizeof(aplheader));
@@ -393,9 +393,9 @@ GLint UnpackGIF(CImageFileMemory *fi)
     GIFHEADER       gh;
     IMAGEBLOCK      iblk;
     GLint           t, b, c;
-    GLulong			*palOut, *palStop;
-    GLubyte			*palIn;
-    GLubyte			tempPalette[768];
+    GLulong *palOut, *palStop;
+    GLubyte *palIn;
+    GLubyte tempPalette[768];
 
     // make sure it's a GIF file
     if (fi -> glReadMem((GLubyte *)&gh, sizeof(gh)) != sizeof(gh) || memcmp(gh.sig, "GIF", 3))
@@ -523,36 +523,36 @@ GLint UnpackGIF(CImageFileMemory *fi)
 GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 {
     GLbyte  linebuffer[4096];
-    GLubyte	firstcodestack[4096];	/* Stack for first codes */
-    GLubyte	lastcodestack[4096];  	/* Stack for previous code */
-    GLuint 	codestack[4096];     	/* Stack for links */
-    GLuint 	wordmasktable[] =
+    GLubyte firstcodestack[4096]; /* Stack for first codes */
+    GLubyte lastcodestack[4096];   /* Stack for previous code */
+    GLuint  codestack[4096];      /* Stack for links */
+    GLuint  wordmasktable[] =
     {
         0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f,
         0x00ff, 0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff
     };
-    GLuint 	inctable[] = { 8, 8, 4, 2, 0 };
-    GLuint 	startable[] = { 0, 4, 2, 1, 0 };
+    GLuint  inctable[] = { 8, 8, 4, 2, 0 };
+    GLuint  startable[] = { 0, 4, 2, 1, 0 };
 
-    GLuint	offset;
-    GLuint 	bits2;			/* Bits plus 1 */
-    GLuint 	codesize;      	/* Current code size in bits */
-    GLuint 	codesize2;     	/* Next codesize */
-    GLuint 	nextcode;      	/* Next available table entry */
-    GLuint 	thiscode;      	/* Code being expanded */
-    GLuint 	oldtoken;      	/* Last symbol decoded */
-    GLuint 	currentcode;   	/* Code just read */
-    GLuint 	oldcode;       	/* Code read before this one */
-    GLuint 	bitsleft;      	/* Number of bits left in *p */
-    GLuint 	blocksize;     	/* Bytes in next block */
-    GLuint 	line = 0;        	/* next line to write */
-    GLuint 	byte = 0;        	/* next byte to write */
-    GLuint 	pass = 0;        	/* pass number for interlaced pictures */
-    GLubyte 	*p;            	/* Pointer to current byte in read buffer */
-    GLubyte 	*q;             /* Pointer past last byte in read buffer */
-    GLubyte 	b[256];         /* Read buffer */
-    GLubyte 	*u;             /* Stack pointer into firstcodestack */
-    GLubyte 	*buffer;        /* Pointer to image buffer */
+    GLuint offset;
+    GLuint  bits2; /* Bits plus 1 */
+    GLuint  codesize;       /* Current code size in bits */
+    GLuint  codesize2;      /* Next codesize */
+    GLuint  nextcode;       /* Next available table entry */
+    GLuint  thiscode;       /* Code being expanded */
+    GLuint  oldtoken;       /* Last symbol decoded */
+    GLuint  currentcode;    /* Code just read */
+    GLuint  oldcode;        /* Code read before this one */
+    GLuint  bitsleft;       /* Number of bits left in *p */
+    GLuint  blocksize;      /* Bytes in next block */
+    GLuint  line = 0;         /* next line to write */
+    GLuint  byte = 0;         /* next byte to write */
+    GLuint  pass = 0;         /* pass number for interlaced pictures */
+    GLubyte  *p;             /* Pointer to current byte in read buffer */
+    GLubyte  *q;             /* Pointer past last byte in read buffer */
+    GLubyte  b[256];         /* Read buffer */
+    GLubyte  *u;             /* Stack pointer into firstcodestack */
+    GLubyte  *buffer;        /* Pointer to image buffer */
 
     if (bits < 2 || bits > 8) return(BAD_SYMBOLSIZE);
 
@@ -806,10 +806,10 @@ void GIF_SkipExtension(CImageFileMemory *fi)
 */
 GLint UnpackLBM(CImageFileMemory *fi)
 {
-    GLbyte		header [12];
-    GLint		size;
-    LBM_BMHD	*lpHeader;
-    GLint 		doIFF;
+    GLbyte header [12];
+    GLint size;
+    LBM_BMHD *lpHeader;
+    GLint  doIFF;
 
     fi->glSetFilePosMem(0, SEEK_SET);
     fi->glReadMem((GLubyte *) header, 12);
@@ -831,7 +831,7 @@ GLint UnpackLBM(CImageFileMemory *fi)
     fi->image.width = (GLshort) motr2inti(lpHeader->width);
     fi->image.height = (GLshort) motr2inti(lpHeader->height);
 
-    GLulong	*lpPalette;
+    GLulong *lpPalette;
     lpPalette = ReadLBMColorMap(fi);
 
     if (lpPalette == NULL)
@@ -842,7 +842,7 @@ GLint UnpackLBM(CImageFileMemory *fi)
 
     fi->image.palette = lpPalette;
 
-    GLubyte	*lpBitmap;
+    GLubyte *lpBitmap;
     lpBitmap = ReadLBMBody(fi, lpHeader, doIFF);
 
     if (lpBitmap == NULL)
@@ -859,13 +859,13 @@ GLint UnpackLBM(CImageFileMemory *fi)
 
 GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 {
-    GLint	CMAP;
-    GLint 	size;
-    GLubyte	header [4];
-    GLubyte	LBMPalette[768];
-    GLubyte	*palIn;
-    GLulong	*finalPalette;
-    GLulong	*palOut, *palStop;
+    GLint CMAP;
+    GLint  size;
+    GLubyte header [4];
+    GLubyte LBMPalette[768];
+    GLubyte *palIn;
+    GLulong *finalPalette;
+    GLulong *palOut, *palStop;
 
     CMAP = 0;
     fi->glSetFilePosMem(12L, SEEK_SET);   // Jump to the first Chunk
@@ -910,14 +910,14 @@ GLulong *ReadLBMColorMap(CImageFileMemory *fi)
 GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 {
     GLbyte  linebuffer[4096];
-    GLint	BODY;
-    GLint	size;
-    GLint	imageSize;
-    GLint	offset;
-    GLint	bytes, i;
-    GLbyte	header [4];
-    GLbyte 	*lpLine;
-    GLubyte	*lpBmp;
+    GLint BODY;
+    GLint size;
+    GLint imageSize;
+    GLint offset;
+    GLint bytes, i;
+    GLbyte header [4];
+    GLbyte  *lpLine;
+    GLubyte *lpBmp;
     GLubyte *LBMBody;
 
     BODY = 0;
@@ -963,8 +963,8 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
             fi->glReadMem(lpLine, bytes);
         else
         {
-            GLbyte 	*p;
-            GLint 	c, j, n;
+            GLbyte  *p;
+            GLint  c, j, n;
             p = lpLine;
             n = 0;
 
@@ -997,10 +997,10 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
             memcpy(lpBmp, lpLine, (size_t) offset);
         else
         {
-            GLint	masktable[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
-            GLint  	bittable[8]  = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-            GLint 	k, l, m;
-            GLbyte	*line;
+            GLint masktable[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+            GLint   bittable[8]  = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+            GLint  k, l, m;
+            GLbyte *line;
 
             m = fi->image.width >> 3;
 
@@ -1040,17 +1040,17 @@ GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF)
 */
 GLint UnpackPCX(CImageFileMemory *fi)
 {
-    PCXHEAD		pcx;
-    GLint		bytes;
-    GLint		i;
-    GLint		totalsize;
-    GLubyte		*image;
-    GLubyte		pcxPalette[768];
-    GLubyte		*palIn;
-    GLulong		*palOut, *palStop;
+    PCXHEAD pcx;
+    GLint bytes;
+    GLint i;
+    GLint totalsize;
+    GLubyte *image;
+    GLubyte pcxPalette[768];
+    GLubyte *palIn;
+    GLulong *palOut, *palStop;
 
-    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) != sizeof(PCXHEAD))	||
-        (pcx.manufacturer != 10)												||
+    if ((fi->glReadMem((GLubyte *)&pcx, sizeof(PCXHEAD)) != sizeof(PCXHEAD)) ||
+        (pcx.manufacturer != 10) ||
         (pcx.version != 5))
     {
 
@@ -1076,8 +1076,8 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
     for (i = 0; i < fi->image.height; i++)
     {
-        GLint	n, j;
-        GLubyte	c;
+        GLint n, j;
+        GLubyte c;
         n = 0;
 
         do
@@ -1132,36 +1132,36 @@ GLint UnpackPCX(CImageFileMemory *fi)
 
 
 /***************************************************************************\
-	WritePCX
-	Scott Randolph 6/1/98
+ WritePCX
+ Scott Randolph 6/1/98
 \***************************************************************************/
-GLint	WritePCX(int fileHandle, GLImageInfo *image)
+GLint WritePCX(int fileHandle, GLImageInfo *image)
 {
-    int			result;
-    PCXHEAD		pcxHeader;
-    BYTE		*RLLdata;
-    int			maxRLLdata;
-    BYTE		palette24[1 + 3 * 256];
-    BYTE		*outP;
-    BYTE		*inP;
-    int			i;
-    int			c;
-    BYTE		value;
-    int			run;
+    int result;
+    PCXHEAD pcxHeader;
+    BYTE *RLLdata;
+    int maxRLLdata;
+    BYTE palette24[1 + 3 * 256];
+    BYTE *outP;
+    BYTE *inP;
+    int i;
+    int c;
+    BYTE value;
+    int run;
 
     // Write the PCX header
     memset(&pcxHeader, 0, sizeof(pcxHeader));
-    pcxHeader.manufacturer		= 10;
-    pcxHeader.version			= 5;
-    pcxHeader.encoding			= 1;
-    pcxHeader.bits_per_pixel	= 8;
-    pcxHeader.xmax				= (short)(image->width - 1);
-    pcxHeader.ymax				= (short)(image->height - 1);
-    pcxHeader.hres				= (short)image->width;
-    pcxHeader.vres				= (short)image->height;
-    pcxHeader.colour_planes		= 1;
-    pcxHeader.bytes_per_line	= (short)image->width;
-    pcxHeader.palette_type		= 1;
+    pcxHeader.manufacturer = 10;
+    pcxHeader.version = 5;
+    pcxHeader.encoding = 1;
+    pcxHeader.bits_per_pixel = 8;
+    pcxHeader.xmax = (short)(image->width - 1);
+    pcxHeader.ymax = (short)(image->height - 1);
+    pcxHeader.hres = (short)image->width;
+    pcxHeader.vres = (short)image->height;
+    pcxHeader.colour_planes = 1;
+    pcxHeader.bytes_per_line = (short)image->width;
+    pcxHeader.palette_type = 1;
     result = write(fileHandle, &pcxHeader, sizeof(pcxHeader));
     ShiAssert(result == sizeof(pcxHeader));
 
@@ -1173,14 +1173,14 @@ GLint	WritePCX(int fileHandle, GLImageInfo *image)
     // Counts are written with top two bits set.  Image bytes are written
     // with the top two bits clear.  If an image byte has the top two bits set, it
     // must be preceeded by a count byte even if the count is 1.
-    inP		= image->image;
-    outP	= RLLdata;
+    inP = image->image;
+    outP = RLLdata;
 
     for (i = 0; i < image->height; i++)
     {
 
-        run		= 0;
-        c		= 0;
+        run = 0;
+        c = 0;
 
         ShiAssert(inP - image->image == i * image->width + c);
 
@@ -1194,9 +1194,9 @@ GLint	WritePCX(int fileHandle, GLImageInfo *image)
             ShiAssert(inP - image->image == i * image->width + c);
 
             // Add to the current run
-            while ((value == *inP)		&&	// Must have same value
-                   (c < image->width)	&&	// Must not cross row boundries
-                   (run + 1 < 64))  	// Run less than 64 bytes
+            while ((value == *inP) && // Must have same value
+                   (c < image->width) && // Must not cross row boundries
+                   (run + 1 < 64))   // Run less than 64 bytes
             {
                 inP++;
                 run++;
@@ -1231,13 +1231,13 @@ GLint	WritePCX(int fileHandle, GLImageInfo *image)
     delete[] RLLdata;
 
     // Convert the palette to 24 bit and write it
-    palette24[0] = 0xC;		// Palette signature
+    palette24[0] = 0xC; // Palette signature
 
     for (i = 0; i < 256; i++)
     {
-        palette24[i * 3 + 1] = (BYTE)(image->palette[i]);				// Red
-        palette24[i * 3 + 2] = (BYTE)(image->palette[i] >> 8);		// Green
-        palette24[i * 3 + 3] = (BYTE)(image->palette[i] >> 16);		// Blue
+        palette24[i * 3 + 1] = (BYTE)(image->palette[i]); // Red
+        palette24[i * 3 + 2] = (BYTE)(image->palette[i] >> 8); // Green
+        palette24[i * 3 + 3] = (BYTE)(image->palette[i] >> 16); // Blue
     }
 
     result = write(fileHandle, palette24, sizeof(palette24));
@@ -1248,13 +1248,13 @@ GLint	WritePCX(int fileHandle, GLImageInfo *image)
 
 
 /***************************************************************************\
-	WriteAPL
-	Scott Randolph 6/1/98
+ WriteAPL
+ Scott Randolph 6/1/98
 \***************************************************************************/
-GLint	WriteAPL(int fileHandle, GLImageInfo *image)
+GLint WriteAPL(int fileHandle, GLImageInfo *image)
 {
-    int					result;
-    static const UInt32	magic = 0x030870;
+    int result;
+    static const UInt32 magic = 0x030870;
 
     // Write the magic number and the width and height to the file
     result = write(fileHandle, &magic, sizeof(magic));

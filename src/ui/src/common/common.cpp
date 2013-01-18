@@ -38,20 +38,20 @@ void EditFlightInPackage(long ID, short hittype, C_Base *control);
 
 enum
 {
-    CDECAFCE	= 400116,
-    CDECAFLE	= 400117,
-    CDECAME		= 400118,
-    CDECDFCE	= 400119,
-    CDECKFME	= 400120,
-    CDECSSE		= 400121,
-    CMCLE		= 400122,
-    CMEE		= 400123,
-    CMFF1E		= 400124,
-    CMFF2E		= 400125,
-    CMFF3E		= 400126,
-    SND_GAVEL	= 500041,
-    SND_MEDAL_FANFARE	= 500042,
-    SND_PROMO_FANFARE	= 500043,
+    CDECAFCE = 400116,
+    CDECAFLE = 400117,
+    CDECAME = 400118,
+    CDECDFCE = 400119,
+    CDECKFME = 400120,
+    CDECSSE = 400121,
+    CMCLE = 400122,
+    CMEE = 400123,
+    CMFF1E = 400124,
+    CMFF2E = 400125,
+    CMFF3E = 400126,
+    SND_GAVEL = 500041,
+    SND_MEDAL_FANFARE = 500042,
+    SND_PROMO_FANFARE = 500043,
 };
 int lastSound = 0;
 void AwardWindow(void);
@@ -327,13 +327,13 @@ void HookupCommonControls(long ID)
         btn = (C_Button *)win->FindControl(CANCEL);
 
         if (btn)
-            btn->SetCallback(Cancel_Scramble_CB);			// KCK: This callback is in campaign.cpp
+            btn->SetCallback(Cancel_Scramble_CB); // KCK: This callback is in campaign.cpp
 
         // Scramble... Intercept incoming bogeys
         btn = (C_Button *)win->FindControl(INTERCEPT);
 
         if (btn)
-            btn->SetCallback(Scramble_Intercept_CB);		// KCK: This callback is in campaign.cpp
+            btn->SetCallback(Scramble_Intercept_CB); // KCK: This callback is in campaign.cpp
 
         // TOTIME... Wait until mission is ready
         btn = (C_Button *)win->FindControl(WAIT);
@@ -424,7 +424,7 @@ void LoadCommonWindows()
     if (!gCampaignBites)
         gCampaignBites = gMainParser->ParseSoundBite("art\\common\\uidcp.scf");
 
-    gMainParser->LoadWindowList("cmn_scf.lst");	// Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList("cmn_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 

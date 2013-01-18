@@ -11,7 +11,7 @@
 #include "lantirn.h"
 
 extern RECT VirtualMFD[OTWDriverClass::NumPopups + 1];
-ViewportBounds	hudViewportBounds;
+ViewportBounds hudViewportBounds;
 
 void OTWDriverClass::DoPopUps(void)
 {
@@ -68,7 +68,7 @@ void OTWDriverClass::Draw2DHud(void)
 
                 theLantirn->SetFOV(renderer->GetFOV() * (hudViewportBounds.right - hudViewportBounds.left) / 2.0f); //Wombat778 10-18-2003 changed 60.0f * DTR to getfov()
                 theLantirn->Display(theLantirn->GetDisplay());
-                renderer->StartFrame();														//Wombat778 10-18-2003 set pitch back to the original.
+                renderer->StartFrame(); //Wombat778 10-18-2003 set pitch back to the original.
                 theLantirn->SetDPitch(temppitch);
 
             }
@@ -92,7 +92,7 @@ void OTWDriverClass::Draw2DHud(void)
         if (pCockpitManager->GetViewportBounds(&hudViewportBounds, BOUNDS_HUD))
         {
             oldFont = VirtualDisplay::CurFont();
-            ShiAssert(otwPlatform);		// If we don't have this we could pass NULL for TheHud target...
+            ShiAssert(otwPlatform); // If we don't have this we could pass NULL for TheHud target...
 
             if (TheHud->Ownship())
                 TheHud->SetTarget(TheHud->Ownship()->targetPtr);
@@ -101,7 +101,7 @@ void OTWDriverClass::Draw2DHud(void)
 
             //Wombat778 11-12-2003 Prevents hud from getting shifted incorrectly in 1.25 ratio modes in full screen hud mode
 
-            if ((mOTWDisplayMode == ModeHud) && ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25)		//Check for hud mode and 1.25 ratio
+            if ((mOTWDisplayMode == ModeHud) && ((float) DisplayOptions.DispWidth / (float) DisplayOptions.DispHeight) == 1.25) //Check for hud mode and 1.25 ratio
                 //Wombat778 11-25-2003 Shift the viewport down by 1/16 (1/32 was not enough)
                 renderer->SetViewport(hudViewportBounds.left, hudViewportBounds.top + ((float)(hudViewportBounds.bottom - hudViewportBounds.top) * 0.0625), hudViewportBounds.right, hudViewportBounds.bottom + ((float)(hudViewportBounds.bottom - hudViewportBounds.top) * 0.0625F));
             else
@@ -129,7 +129,7 @@ void OTWDriverClass::Draw2DHud(void)
     }
     else
     {
-        ShiAssert(otwPlatform);		// If we don't have this we could pass NULL for TheHud target...
+        ShiAssert(otwPlatform); // If we don't have this we could pass NULL for TheHud target...
         TheHud->SetTarget(TheHud->Ownship()->targetPtr);
 
         renderer->SetViewport(-0.4675F, 0.25F, 0.47F, -1.0F);

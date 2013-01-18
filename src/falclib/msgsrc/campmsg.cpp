@@ -49,7 +49,7 @@ FalconCampMessage::~FalconCampMessage(void)
 
 int FalconCampMessage::Process(uchar autodisp)
 {
-    CampEntity			e;
+    CampEntity e;
 
     if (autodisp)
         return 0;

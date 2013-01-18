@@ -16,7 +16,7 @@
 
 // Provide the one and only terrain database object.  It will be up to the
 // application to initialize and cleanup this object by calling Setup and Cleanup.
-Loader	TheLoader;
+Loader TheLoader;
 
 
 #ifdef _DEBUG
@@ -25,35 +25,35 @@ Loader	TheLoader;
 
 
 #ifdef LOADER_INSTRUMENT
-static	LoaderQ	lastActive;
-static	DWORD	lastActiveCalledAt	= 0;
-static	DWORD	lastSleptAt			= 0;
-static	DWORD	lastEnquedAt		= 0;
-static	DWORD	lastDequeueAt		= 0;
-static	DWORD	lastCanceledAt		= 0;
-static	int		forceWakeEvent		= 0;
+static LoaderQ lastActive;
+static DWORD lastActiveCalledAt = 0;
+static DWORD lastSleptAt = 0;
+static DWORD lastEnquedAt = 0;
+static DWORD lastDequeueAt = 0;
+static DWORD lastCanceledAt = 0;
+static int forceWakeEvent = 0;
 #endif
 
 
 void Loader::Setup(void)
 {
     // Setup the starting state for the main loop
-    head			      = NULL;
-    tail			      = NULL;
-    shutDown		      = FALSE;
-    stopped			   = FALSE;
-    paused			   = RUNNING;
-    queueIsEmpty	   = TRUE;
+    head       = NULL;
+    tail       = NULL;
+    shutDown       = FALSE;
+    stopped    = FALSE;
+    paused    = RUNNING;
+    queueIsEmpty    = TRUE;
     queueStatus       = QUEUE_FIFO;
 
 #ifdef LOADER_INSTRUMENT
     memset(&lastActive, 0, sizeof(lastActive));
-    lastActiveCalledAt	= 0;
-    lastSleptAt			= 0;
-    lastEnquedAt		= 0;
-    lastDequeueAt		= 0;
-    lastCanceledAt		= 0;
-    forceWakeEvent		= 0;
+    lastActiveCalledAt = 0;
+    lastSleptAt = 0;
+    lastEnquedAt = 0;
+    lastDequeueAt = 0;
+    lastCanceledAt = 0;
+    forceWakeEvent = 0;
 #endif
 
 
@@ -118,8 +118,8 @@ DWORD Loader::MainLoopWrapper(LPVOID myself)
 // The actual main loader service loop.  Won't return until flagged to stop
 DWORD Loader::MainLoop(void)
 {
-    LoaderQ	*Active;
-    DWORD	retval;
+    LoaderQ *Active;
+    DWORD retval;
 
     while (!shutDown)
     {
@@ -151,8 +151,8 @@ DWORD Loader::MainLoop(void)
                 {
 
 #ifdef LOADER_INSTRUMENT
-                    lastActive			= *Active;
-                    lastActiveCalledAt	= GetTickCount();
+                    lastActive = *Active;
+                    lastActiveCalledAt = GetTickCount();
 #endif
 
                     // Make the callback to notify the requestor
@@ -224,7 +224,7 @@ void Loader::Dequeue(LoaderQ *Old)
     }
 
 #ifdef LOADER_INSTRUMENT
-    lastDequeueAt	= GetTickCount();
+    lastDequeueAt = GetTickCount();
 #endif
 
     if (!head)
@@ -240,16 +240,16 @@ void Loader::Enqueue(LoaderQ *New)
 {
     // This is debug code -- should go once I'm done testing.
 #ifdef _DEBUG
-    LoaderQ	*p = head;
+    LoaderQ *p = head;
 
     while (p)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset	== New->fileoffset) &&
-            (p->filename	== New->filename) &&
-            (p->parameter	== New->parameter) &&
-            (p->callback	== New->callback))
+        if ((p->fileoffset == New->fileoffset) &&
+            (p->filename == New->filename) &&
+            (p->parameter == New->parameter) &&
+            (p->callback == New->callback))
         {
 
             return;
@@ -321,7 +321,7 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
 
 LoaderQ* Loader::GetNextRequest(void)
 {
-    LoaderQ	*request;
+    LoaderQ *request;
 
 
     EnterCriticalSection(&cs_loaderQ);
@@ -345,7 +345,7 @@ LoaderQ* Loader::GetNextRequest(void)
 // Cancel (if possible) the request to load data into the specified target buffer
 BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *filename, DWORD fileoffset)
 {
-    LoaderQ	*p;
+    LoaderQ *p;
 
     EnterCriticalSection(&cs_loaderQ);
 
@@ -355,10 +355,10 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename	== filename) &&
-            (p->fileoffset	== fileoffset) &&
-            (p->parameter	== parameter) &&
-            (p->callback	== callback))
+        if ((p->filename == filename) &&
+            (p->fileoffset == fileoffset) &&
+            (p->parameter == parameter) &&
+            (p->callback == callback))
         {
 
             Dequeue(p);

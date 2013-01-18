@@ -8,10 +8,10 @@ char FileList[200], OutputFile[200];
 
 typedef struct
 {
-    char *data;				// actual file data (All except for 1st 8 bytes,free this)
+    char *data; // actual file data (All except for 1st 8 bytes,free this)
     long Size;
     WAVEFORMATEX *Header;
-    long Headersize;			// ptr to start of sample in data
+    long Headersize; // ptr to start of sample in data
 } RIFF_FILE;
 
 typedef struct

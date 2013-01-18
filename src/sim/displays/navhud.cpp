@@ -44,7 +44,7 @@ void HudClass::DrawAirspeed(void)
 {
     char tmpStr[12] = {0};
     float rightEdge = 0.0F;
-    float leftEdge = 0.0F;	//MI
+    float leftEdge = 0.0F; //MI
     float bigTickLen = 0.0F;
     float smallTickLen = 0.0F;
     float tickInc = 0.0F, delta = 0.0F;
@@ -54,7 +54,7 @@ void HudClass::DrawAirspeed(void)
     int i = 0, a = 0;
     int origfont = 0;//TJL 03/07/04
 
-    if (!ownship)  	// VWF added 10/20/98 to avoid crash
+    if (!ownship)   // VWF added 10/20/98 to avoid crash
     {
         return;
     }
@@ -319,7 +319,7 @@ void HudClass::DrawAltitude(void)
     char lowFormat[] = "%d%02d";
 
 
-    if (ownship == NULL)  	// vwf: to avoid crash after ownship gets destroyed.
+    if (ownship == NULL)   // vwf: to avoid crash after ownship gets destroyed.
     {
         return;
     }
@@ -780,7 +780,7 @@ void HudClass::DrawAltitude(void)
 
         }
     }
-    else	//Scales OFF
+    else //Scales OFF
     {
 
         // Choose the right scale
@@ -950,7 +950,7 @@ void HudClass::DrawHeading(void)
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
         }
         else
-            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) +	//use this to make it always follow FPM
+            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) + //use this to make it always follow FPM
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
 
         // MI
@@ -991,8 +991,8 @@ void HudClass::DrawHeading(void)
                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
                  alphaHudUnits - 0.12f;
 
-            if (dy < HEADING_BOTTOM)	//don't fall off of the HUD. This can be seen in some of the vids
-                dy = HEADING_BOTTOM;	//not sure if the position is right, but I think you should always see it
+            if (dy < HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
+                dy = HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
 
             //so let's keep it above the projector thingie
             if (dy < headingTop)
@@ -1039,7 +1039,7 @@ void HudClass::DrawHeading(void)
 #if 1
 
     // ADDED BY S.G. SO 3 DIGIT ARE DISPLAYED FOR THE HEADING WHEN IN 'SS_OFF' MODE
-    if (scalesSwitch == SS_OFF || scalesSwitch == VAH)  	//MI changed VV_VAH to VAH
+    if (scalesSwitch == SS_OFF || scalesSwitch == VAH)   //MI changed VV_VAH to VAH
     {
         // a is multiplied by ten above, we don't need that here
         //MI 16/2/02 give us a 180 heading
@@ -1196,7 +1196,7 @@ void HudClass::DrawHeading(void)
                         {
                             sprintf(tmpStr, "%3d", ((a + 74) * 10) >> 1);
 
-                            if (atoi(tmpStr) == 370)	//MI HACK to prevent "37" beeing written
+                            if (atoi(tmpStr) == 370) //MI HACK to prevent "37" beeing written
                                 sprintf(tmpStr, "010");
                         }
                         else
@@ -1208,7 +1208,7 @@ void HudClass::DrawHeading(void)
                         {
                             sprintf(tmpStr, "%02d", (a + 74) >> 1);
 
-                            if (atoi(tmpStr) == 37)	//MI HACK to prevent "37" beeing written
+                            if (atoi(tmpStr) == 37) //MI HACK to prevent "37" beeing written
                                 sprintf(tmpStr, "01");
                         }
                         else
@@ -1524,7 +1524,7 @@ void HudClass::DrawWaypoint(void)
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
         }
         else
-            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) +	//use this to make it always follow FPM
+            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) + //use this to make it always follow FPM
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
 
         // MI
@@ -1565,8 +1565,8 @@ void HudClass::DrawWaypoint(void)
                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
                  alphaHudUnits - 0.12f;
 
-            if (dy < HEADING_BOTTOM)	//don't fall off of the HUD. This can be seen in some of the vids
-                dy = HEADING_BOTTOM;	//not sure if the position is right, but I think you should always see it
+            if (dy < HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
+                dy = HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
 
             //so let's keep it above the projector thingie
 
@@ -1601,11 +1601,11 @@ void HudClass::DrawWaypoint(void)
         {
             //Here we get a inverted arrow  // JPG 17 Dec 03 NOT HERE IN REAL JET YOU DOPE!!
             //   display->Line(headingError, headingTop + tickLen * 0.1F,
-            //	    headingError + 0.3F * tickLen, headingTop + tickLen * 0.8F);
+            //     headingError + 0.3F * tickLen, headingTop + tickLen * 0.8F);
             //   display->Line(headingError + 0.25F * tickLen, headingTop + tickLen * 0.8F,
-            //	   headingError - 0.3F * tickLen, headingTop + tickLen * 0.8F);
+            //    headingError - 0.3F * tickLen, headingTop + tickLen * 0.8F);
             //   display->Line(headingError, headingTop + tickLen * 0.1F,
-            //	    headingError - 0.3F * tickLen, headingTop + tickLen * 0.8F);
+            //     headingError - 0.3F * tickLen, headingTop + tickLen * 0.8F);
         }
     }
 
@@ -1854,7 +1854,7 @@ void HudClass::TimeToSteerpoint(void)
                 break;
         }
     }
-    else									// JPG
+    else // JPG
     {
 
         sprintf(tmpStr1, "%s", tmpStr);
@@ -1914,7 +1914,7 @@ void HudClass::RangeToSteerpoint(void)
         // Range and Number
         //MI      JPG 1 Feb 04  - Why would you do this??  ugh
         // if(!g_bRealisticAvionics)
-        //	sprintf (tmpStr, "%03.0f > %02d", waypointRange * FT_TO_NM, waypointNum + 1);
+        // sprintf (tmpStr, "%03.0f > %02d", waypointRange * FT_TO_NM, waypointNum + 1);
         // else
         sprintf(tmpStr, "%03.0f>%02d", waypointRange * FT_TO_NM, waypointNum + 1);
 
@@ -2923,13 +2923,13 @@ void HudClass::DrawCruiseIndexes(void)
 
     switch (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex())
     {
-        case 0:	//Cruise TOS
+        case 0: //Cruise TOS
             //Speed
             DrawAirSpeedCarret(waypointSpeed);
             sprintf(SpeedText, "%.0f", max(min(waypointSpeed, 9999.0F), 0.0F));
             break;
 
-        case 1:	//Cruise RNG
+        case 1: //Cruise RNG
 
             //Speed
             if (playerAC &&  playerAC->af)
@@ -2940,7 +2940,7 @@ void HudClass::DrawCruiseIndexes(void)
 
             break;
 
-        case 2:	//Cruise Home
+        case 2: //Cruise Home
 
             //opt speed and alt with climb profile and such
             if (OTWDriver.pCockpitManager && OTWDriver.pCockpitManager->mpIcp && playerAC)
@@ -2952,9 +2952,9 @@ void HudClass::DrawCruiseIndexes(void)
                 if (wp)
                 {
                     wp->GetLocation(&xCurr, &yCurr, &zCurr);
-                    float deltaX			= xCurr - playerAC->XPos();
-                    float deltaY			= yCurr - playerAC->YPos();
-                    float distanceToSta	= (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+                    float deltaX = xCurr - playerAC->XPos();
+                    float deltaY = yCurr - playerAC->YPos();
+                    float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
 
                     if (playerAC->af)
                     {
@@ -2992,7 +2992,7 @@ void HudClass::DrawCruiseIndexes(void)
             //opt speed and alt with climb profile and such
             break;
 
-        case 3:	//Cruise Edr
+        case 3: //Cruise Edr
 
             //Speed
             if (playerAC &&  playerAC->af)

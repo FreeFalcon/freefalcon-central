@@ -222,7 +222,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
 {
     // idx is the index into the start of the string
     int count, space;
-    long w;	//!
+    long w; //!
 
     if (!Label_[idx])
         return(0);
@@ -233,7 +233,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
         w = Owner_->GetW();
 
     if (!w)
-        return((short)_tcsclen(&Label_[idx]));	   //!
+        return((short)_tcsclen(&Label_[idx]));    //!
 
     space = 0;
     count = 1;
@@ -261,7 +261,7 @@ int O_Output::FitString(int idx) // returns # characters to keep on this line
         return(space);
 
     if (count > 1)
-        return((short)(count - 1));	//!
+        return((short)(count - 1)); //!
 
     return(1);
 }
@@ -329,9 +329,9 @@ void O_Output::WordWrap()
 
             while ((idx + len) < lenstr)
             {
-                Wrap_[count].Index = (short)idx;				//!
-                Wrap_[count].Length = (short)len;				//!
-                Wrap_[count].y = (short)(count * fontheight);	//!
+                Wrap_[count].Index = (short)idx; //!
+                Wrap_[count].Length = (short)len; //!
+                Wrap_[count].y = (short)(count * fontheight); //!
 
                 count++;
                 idx += len;
@@ -346,9 +346,9 @@ void O_Output::WordWrap()
                     maxw = linew;
             }
 
-            Wrap_[count].Index	= (short)idx;					//!
-            Wrap_[count].Length	= (short)len;					//!
-            Wrap_[count].y		= (short)(count * fontheight);	//!
+            Wrap_[count].Index = (short)idx; //!
+            Wrap_[count].Length = (short)len; //!
+            Wrap_[count].y = (short)(count * fontheight); //!
         }
         else
         {
@@ -1280,7 +1280,7 @@ void O_Output::ExtractAnim(SCREEN *surface, long FrameNo, long x, long y, UI95_R
 
 void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long destx, long desty, UI95_RECT *src, UI95_RECT *clip)
 {
-    src;		//!	Unused
+    src; //! Unused
 
     ShiAssert(surface->bpp != 32);  //XX
 

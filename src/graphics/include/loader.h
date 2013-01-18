@@ -13,12 +13,12 @@
 
 
 
-#define	DEFAULT_LOADER_DELAY	100				// Default value of delay in mSeconds
-#define	FAST_LOADER_DELAY		5				// Fast value of delay in mSeconds
+#define DEFAULT_LOADER_DELAY 100 // Default value of delay in mSeconds
+#define FAST_LOADER_DELAY 5 // Fast value of delay in mSeconds
 
 
 // The global asynchronous loader used by everyone
-extern class Loader	TheLoader;
+extern class Loader TheLoader;
 
 
 
@@ -26,11 +26,11 @@ extern class Loader	TheLoader;
 typedef struct LoaderQ
 {
     char            *filename;
-    DWORD			fileoffset;
-    void	(*callback)(LoaderQ*);
-    void			*parameter;
-    LoaderQ		*prev;		// Modified by loader
-    LoaderQ		*next;		// Modified by loader
+    DWORD fileoffset;
+    void (*callback)(LoaderQ*);
+    void *parameter;
+    LoaderQ *prev; // Modified by loader
+    LoaderQ *next; // Modified by loader
 } LoaderQ;
 
 
@@ -41,8 +41,8 @@ typedef enum { QUEUE_FIFO, QUEUE_SORTING, QUEUE_STORING } QueueMode;
 class Loader
 {
 public:
-    Loader()	{};
-    ~Loader()	{};
+    Loader() {};
+    ~Loader() {};
 
     void Setup(void);
     void Cleanup(void);
@@ -73,7 +73,7 @@ public:
     {
         return queueIsEmpty;
     };
-    void WaitForLoader(void);										// no more used - use WaitLoader instead
+    void WaitForLoader(void); // no more used - use WaitLoader instead
     void WaitLoader(void);
 
     void SetQueueStatusStoring(void);
@@ -84,32 +84,32 @@ public:
     };
 
 private:
-    HANDLE	threadHandle;
-    DWORD	threadID;
-    bool	actionDone;
+    HANDLE threadHandle;
+    DWORD threadID;
+    bool actionDone;
 
-    char	WakeEventName[30];
-    HANDLE	WakeEventHandle;
+    char WakeEventName[30];
+    HANDLE WakeEventHandle;
 
-    CRITICAL_SECTION	cs_loaderQ;
+    CRITICAL_SECTION cs_loaderQ;
 
-    LoaderQ*	head;
-    LoaderQ*	tail;
+    LoaderQ* head;
+    LoaderQ* tail;
 
-    volatile BOOL				shutDown;
-    volatile BOOL				stopped;
-    volatile LoaderPauseMode	paused;
-    volatile BOOL				queueIsEmpty;
+    volatile BOOL shutDown;
+    volatile BOOL stopped;
+    volatile LoaderPauseMode paused;
+    volatile BOOL queueIsEmpty;
     volatile QueueMode      queueStatus;
-    volatile	DWORD			TickDelay;
+    volatile DWORD TickDelay;
 
-    DWORD	static	MainLoopWrapper(LPVOID myself);
-    DWORD			MainLoop(void);
+    DWORD static MainLoopWrapper(LPVOID myself);
+    DWORD MainLoop(void);
     void SortLoaderQueue(void);
-    LoaderQ*		GetNextRequest(void);
+    LoaderQ* GetNextRequest(void);
 
-    void			Enqueue(LoaderQ *New);
-    void			Dequeue(LoaderQ *Old);
+    void Enqueue(LoaderQ *New);
+    void Dequeue(LoaderQ *Old);
     void        ReplaceHeadEntry(LoaderQ *New);
 };
 

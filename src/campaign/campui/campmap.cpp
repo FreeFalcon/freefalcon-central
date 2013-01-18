@@ -19,11 +19,11 @@
 
 extern void UI_UpdateOccupationMap();
 
-#define MAP_RADIUS				20
+#define MAP_RADIUS 20
 
 // 2001-03-14 MODIFIED BY S.G. SO IT USES THE SAME VALUE AS GetArcRange
-//int ALT_TO_BUILD_RANGES_TO = 5000;		// What altitude we should draw our low alt detection ranges to
-int ALT_TO_BUILD_RANGES_TO = 2500;		// What altitude we should draw our low alt detection ranges to
+//int ALT_TO_BUILD_RANGES_TO = 5000; // What altitude we should draw our low alt detection ranges to
+int ALT_TO_BUILD_RANGES_TO = 2500; // What altitude we should draw our low alt detection ranges to
 
 // =================================
 // Prototypes
@@ -48,9 +48,9 @@ int MAXOI;
 
 uchar* MakeCampMap(int type, uchar* map_data, int csize)
 {
-    GridIndex	x, y, rx, ry;
-    int			i, hi, size, team;
-    Objective	o;
+    GridIndex x, y, rx, ry;
+    int i, hi, size, team;
+    Objective o;
 
     team = FalconLocalSession->GetTeam();
 
@@ -60,28 +60,28 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
     switch (type)
     {
         case MAP_SAMCOVERAGE:
-            //			MRX = Map_Max_X/MAP_RATIO;
-            //			MRY = Map_Max_Y/MAP_RATIO;
+            // MRX = Map_Max_X/MAP_RATIO;
+            // MRY = Map_Max_Y/MAP_RATIO;
             size = sizeof(uchar) * MRX * MRY;
             break;
 
         case MAP_RADARCOVERAGE:
-            //			MRX = Map_Max_X/MAP_RATIO;
-            //			MRY = Map_Max_Y/MAP_RATIO;
+            // MRX = Map_Max_X/MAP_RATIO;
+            // MRY = Map_Max_Y/MAP_RATIO;
             size = sizeof(uchar) * MRX * MRY;
             break;
 
         case MAP_PAK:
         case MAP_PAK_BUILD:
-            //			PMRX = Map_Max_X/PAK_MAP_RATIO;
-            //			PMRY = Map_Max_Y/PAK_MAP_RATIO;
+            // PMRX = Map_Max_X/PAK_MAP_RATIO;
+            // PMRY = Map_Max_Y/PAK_MAP_RATIO;
             size = sizeof(uchar) * PMRX * PMRY;
             break;
 
         case MAP_OWNERSHIP:
         default:
-            //			MRX = Map_Max_X/MAP_RATIO;
-            //			MRY = Map_Max_Y/MAP_RATIO;
+            // MRX = Map_Max_X/MAP_RATIO;
+            // MRY = Map_Max_Y/MAP_RATIO;
             size = sizeof(uchar) * MRX * MRY / 2;
             break;
     }
@@ -104,8 +104,8 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
     {
         case MAP_RADARCOVERAGE:
         {
-            VuListIterator	uit(EmitterList);
-            CampEntity		e;
+            VuListIterator uit(EmitterList);
+            CampEntity e;
             e = (CampEntity) uit.GetFirst();
 
             while (e)
@@ -118,7 +118,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
         case MAP_SAMCOVERAGE:
         {
-            VuListIterator	uit(AirDefenseList);
+            VuListIterator uit(AirDefenseList);
             Unit e;
             e = (Unit) uit.GetFirst();
 
@@ -136,7 +136,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
         case MAP_PAK:
         {
-            FILE		*fp = OpenCampFile(TheCampaign.TheaterName, "pak", "rb");
+            FILE *fp = OpenCampFile(TheCampaign.TheaterName, "pak", "rb");
             int got = fread(map_data, 1, size, fp);
             ShiAssert(got == size);
             fclose(fp);
@@ -145,8 +145,8 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
         case MAP_PAK_BUILD:
         {
-            VU_ID			pakTable[50];
-            int				p, done, own;
+            VU_ID pakTable[50];
+            int p, done, own;
 
             // Build our table
             for (p = 0; p < 50; p++)
@@ -154,7 +154,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
             p = 1;
             {
-                VuListIterator	poit(POList);
+                VuListIterator poit(POList);
                 o = (Objective) poit.GetFirst();
 
                 while (o)
@@ -179,7 +179,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
                     // GetCover(rx,ry+PAK_MAP_RATIO-1) != Water)
                     if (own)
                     {
-                        float	last = -1.0F;
+                        float last = -1.0F;
                         o = FindNearestObjective(POList, rx, ry, &last);
 
                         while (o && o->GetTeam() != own)
@@ -255,9 +255,9 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 // This will update a 20 km radius area around cx,cy
 uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
 {
-    GridIndex	x, y, rx, ry, fx, fy, lx, ly;
-    int			i, hi;
-    Objective	o;
+    GridIndex x, y, rx, ry, fx, fy, lx, ly;
+    int i, hi;
+    Objective o;
 
     if (!map_data)
         return NULL;
@@ -338,7 +338,7 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
 
 uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
 {
-    int		i, hi;
+    int i, hi;
 
     if (!map_data)
         return 0;
@@ -362,13 +362,13 @@ int FriendlyTerritory(GridIndex x, GridIndex y, int team)
 
 int GetAproxDetection(Team who, GridIndex x, GridIndex y)
 {
-    int		i, ix;
+    int i, ix;
 
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
     if (i < 0 || i > TheCampaign.RadarMapSize)
-        return 0;				// Off the map
+        return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())
         ix = 4;
@@ -380,13 +380,13 @@ int GetAproxDetection(Team who, GridIndex x, GridIndex y)
 
 int GetAproxThreat(Team who, GridIndex x, GridIndex y)
 {
-    int		i, ix;
+    int i, ix;
 
     // Find our indexes
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
 
     if (i < 0 || i > TheCampaign.RadarMapSize)
-        return 0;				// Off the map
+        return 0; // Off the map
 
     if (who == FalconLocalSession->GetTeam())
         ix = 4;
@@ -410,8 +410,8 @@ void FreeCampMap(uchar *map_data)
 int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 {
     GridIndex   x, y, X, Y;
-    int			fx, lx, fy, ly, bd, li, hi, i, c;
-    float		d, ld, hd;
+    int fx, lx, fy, ly, bd, li, hi, i, c;
+    float d, ld, hd;
 
     e->GetLocation(&X, &Y);
     X /= MAP_RATIO;
@@ -465,8 +465,8 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 {
     GridIndex   x, y, X, Y;
-    int			fx, lx, fy, ly, li, hi, i, c, oct, bdi;
-    float		d, hd, bd, ld[NUM_RADAR_ARCS] /* 2001-03-13 S.G. */, ld0;
+    int fx, lx, fy, ly, li, hi, i, c, oct, bdi;
+    float d, hd, bd, ld[NUM_RADAR_ARCS] /* 2001-03-13 S.G. */, ld0;
 
     if (!e->GetNumberOfArcs())
         return 0;
@@ -483,7 +483,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
     for (i = 0; i < NUM_RADAR_ARCS; i++)
     {
         // 2001-03-09 MODIFIEDED BY S.G. e->GetArcRatio(i) CAN BE ZERO! IF THAT HAPPENS, The for (x=... LOOP BELOW IS SQUIPPED SO HIGH ALTITUDE IS NOT MAPPED!
-        //		ld[i] = (float) (((ALT_TO_BUILD_RANGES_TO / e->GetArcRatio(i)) * FT_TO_KM)/MAP_RATIO);
+        // ld[i] = (float) (((ALT_TO_BUILD_RANGES_TO / e->GetArcRatio(i)) * FT_TO_KM)/MAP_RATIO);
         if (float arcRatio = e->GetArcRatio(i))
         {
             ld[i] = (float)(((ALT_TO_BUILD_RANGES_TO / arcRatio) * FT_TO_KM) / MAP_RATIO);
@@ -504,7 +504,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
     if (hd > bd)
         bd = hd;
 
-    //	bd = MAX(FloatToInt32(hd),FloatToInt32(ld));
+    // bd = MAX(FloatToInt32(hd),FloatToInt32(ld));
     bdi = FloatToInt32(bd);
     fx = MAX(X - bdi - 1, 0);
     lx = MIN(X + bdi + 1, MRX - 1);

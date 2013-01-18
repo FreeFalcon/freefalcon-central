@@ -13,14 +13,14 @@
 #include "FalcLib\include\playerop.h"
 
 // The pixel depth is hardwired for now
-static const int BITS_PER_PIXEL	= 16;
+static const int BITS_PER_PIXEL = 16;
 
 
 // Initialize our member variables
 DisplayDevice::DisplayDevice()
 {
-    appWin			= NULL;
-    driverNumber	= -1;
+    appWin = NULL;
+    driverNumber = -1;
 
     m_DXCtx = NULL;
 }
@@ -37,11 +37,11 @@ DisplayDevice::~DisplayDevice()
 // are constructed.
 void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
 {
-    RECT		rect;
-    DWORD		style;
-    WNDCLASS	wc;
-    int			resNum;
-    UInt		w, h, d;
+    RECT rect;
+    DWORD style;
+    WNDCLASS wc;
+    int resNum;
+    UInt w, h, d;
 
     ShiAssert(!IsReady());
 
@@ -61,7 +61,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
 #endif
 
     // OW: always create flipping chain in fullscreen (even if we dont flip - we dont)
-    dblBuffer = fullScreen;	// warning: C_Handler::Setup relies on this behaviour
+    dblBuffer = fullScreen; // warning: C_Handler::Setup relies on this behaviour
 
     // For now, we go figure out the number for the resolution we want
     // TODO:  Change the DisplayDevice API to require the resNum to be passed in?
@@ -139,19 +139,19 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         rect.top = rect.left = 0;
         rect.right = width;
         rect.bottom = height;
-        AdjustWindowRect(&rect,	style, FALSE);
+        AdjustWindowRect(&rect, style, FALSE);
         appWin = CreateWindow(
-                     "RenderTarget",			/* class */
-                     "Falcon 4.0 Demo",		/* caption */
-                     style,					/* style */
-                     50,			/* init. x pos */
-                     50,			/* init. y pos */
-                     rect.right - rect.left,	/* init. x size */
-                     rect.bottom - rect.top,	/* init. y size */
-                     NULL,					/* parent window */
-                     NULL,					/* menu handle */
-                     NULL,					/* program handle */
-                     NULL					/* create parms */
+                     "RenderTarget", /* class */
+                     "Falcon 4.0 Demo", /* caption */
+                     style, /* style */
+                     50, /* init. x pos */
+                     50, /* init. y pos */
+                     rect.right - rect.left, /* init. x size */
+                     rect.bottom - rect.top, /* init. y size */
+                     NULL, /* parent window */
+                     NULL, /* menu handle */
+                     NULL, /* program handle */
+                     NULL /* create parms */
                  );
 
         if (!appWin)
@@ -188,9 +188,9 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         image.Setup(this, width, height, Primary, IsHardware() ? VideoMem : SystemMem, appWin, TRUE, FALSE, bWillCallSwapBuffer);
 
     // Make sure we haven't gotten confused about how many contexts we have
-    //	ShiAssert( ContextMPR::StateSetupCounter == 0 );
+    // ShiAssert( ContextMPR::StateSetupCounter == 0 );
     if (ContextMPR::StateSetupCounter != 0)
-        ContextMPR::StateSetupCounter = 0;	// Force it for now.  Shouldn't be required.
+        ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
 
     // Create a rendering context for the primary surface
     m_DXCtx->SetRenderTarget(image.targetSurface());
@@ -216,10 +216,10 @@ void DisplayDevice::Cleanup(void)
     image.Cleanup();
 
     // Make sure we haven't gotten confused about how many contexts we have
-    //	ShiAssert( ContextMPR::StateSetupCounter == 0 );
+    // ShiAssert( ContextMPR::StateSetupCounter == 0 );
     if (ContextMPR::StateSetupCounter != 0)
     {
-        ContextMPR::StateSetupCounter = 0;	// Force it for now.  Shouldn't be required.
+        ContextMPR::StateSetupCounter = 0; // Force it for now.  Shouldn't be required.
     }
 
     // Destroy the application window if we created it

@@ -34,16 +34,16 @@ public:
 
 protected:
     // Stuff for interactive music
-    short		StreamUsed_;
-    short		GroupRepeat_;
-    short		RepeatCount_;
-    long		Section_;
-    long		Group_;
-    long		CurPiece_;
-    long		SectionCount_;
-    long		GroupCount_;
-    long		Count_[NUM_SECTIONS][NUM_GROUPS];
-    C_Hash		*Music_;
+    short StreamUsed_;
+    short GroupRepeat_;
+    short RepeatCount_;
+    long Section_;
+    long Group_;
+    long CurPiece_;
+    long SectionCount_;
+    long GroupCount_;
+    long Count_[NUM_SECTIONS][NUM_GROUPS];
+    C_Hash *Music_;
     // End of stuff for interactive music
 
     long Volume_;

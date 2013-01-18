@@ -1,9 +1,9 @@
 /*******************************************************************************\
-	Unique ID list manager class -- Used by the ComposeTiles tool.
+ Unique ID list manager class -- Used by the ComposeTiles tool.
 
-	Scott Randolph
-	Spectrum HoloByte
-	May 12, 1997
+ Scott Randolph
+ Spectrum HoloByte
+ May 12, 1997
 \*******************************************************************************/
 #include <stdio.h>
 #include <io.h>
@@ -19,7 +19,7 @@ static const int TILE_SIZE = 16;
 
 void IDListManager::Setup(char *path, TileListManager *tileListmgr)
 {
-    char	filename[256];
+    char filename[256];
 
     // Save the pointer to our helper class
     pTileListMgr = tileListmgr;
@@ -44,8 +44,8 @@ void IDListManager::Cleanup(void)
 
 WORD IDListManager::GetIDforCode(__int64 code)
 {
-    DWORD	i;
-    WORD	ID;
+    DWORD i;
+    WORD ID;
 
     // Look for an existing match in the code list
     for (i = 0; i < numCodes; i++)
@@ -65,10 +65,10 @@ WORD IDListManager::GetIDforCode(__int64 code)
     ID = (WORD)(i + startID);
 
     // Create the composite image in the tileFile
-    WORD	NWcode = (WORD)((code >> 48) & 0xFFFF);
-    WORD	NEcode = (WORD)((code >> 32) & 0xFFFF);
-    WORD	SWcode = (WORD)((code >> 16) & 0xFFFF);
-    WORD	SEcode = (WORD)((code >> 0)  & 0xFFFF);
+    WORD NWcode = (WORD)((code >> 48) & 0xFFFF);
+    WORD NEcode = (WORD)((code >> 32) & 0xFFFF);
+    WORD SWcode = (WORD)((code >> 16) & 0xFFFF);
+    WORD SEcode = (WORD)((code >> 0)  & 0xFFFF);
 
     printf("Compositing image at offset %0d (code %4X %4X %4X %4X)\n", ID, NWcode, NEcode, SWcode, SEcode);
     WriteCompositeTile(NWcode, NEcode, SWcode, SEcode);
@@ -79,14 +79,14 @@ WORD IDListManager::GetIDforCode(__int64 code)
 
 void IDListManager::WriteCompositeTile(WORD NWcode, WORD NEcode, WORD SWcode, WORD SEcode)
 {
-    BYTE		outBuffer[32 * 32];
-    BYTE		*out = outBuffer;
-    const BYTE	*NWin = pTileListMgr->GetImageData(NWcode);
-    const BYTE	*NEin = pTileListMgr->GetImageData(NEcode);
-    const BYTE	*SWin = pTileListMgr->GetImageData(SWcode);
-    const BYTE	*SEin = pTileListMgr->GetImageData(SEcode);
-    int			row;
-    int			result;
+    BYTE outBuffer[32 * 32];
+    BYTE *out = outBuffer;
+    const BYTE *NWin = pTileListMgr->GetImageData(NWcode);
+    const BYTE *NEin = pTileListMgr->GetImageData(NEcode);
+    const BYTE *SWin = pTileListMgr->GetImageData(SWcode);
+    const BYTE *SEin = pTileListMgr->GetImageData(SEcode);
+    int row;
+    int result;
 
 
     ShiAssert(tileFile != -1);

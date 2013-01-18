@@ -81,7 +81,7 @@ C_Resmgr::C_Resmgr()
 
     name_[0] = 0;
 
-    reds = greens = blues = 0;	// OW
+    reds = greens = blues = 0; // OW
 }
 
 C_Resmgr::~C_Resmgr()

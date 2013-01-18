@@ -74,8 +74,8 @@ C_EditBox::C_EditBox() : C_Control()
     OrigText_ = NULL;
     DefaultFlags_ = C_BIT_ENABLED | C_BIT_REMOVE | C_BIT_SELECTABLE | C_BIT_MOUSEOVER;
 
-    Font_ = NULL;	// OW
-    Text_ = NULL;	// OW
+    Font_ = NULL; // OW
+    Text_ = NULL; // OW
 }
 
 C_EditBox::C_EditBox(char **stream) : C_Control(stream)
@@ -194,7 +194,7 @@ BOOL C_EditBox::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, uns
 
 BOOL C_EditBox::CheckKeyDown(unsigned char key, unsigned char)
 {
-    int i;							//!
+    int i; //!
     _TCHAR *EditText_;
 
     if (Text_ == NULL)

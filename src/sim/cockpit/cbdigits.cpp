@@ -9,7 +9,7 @@
 #include "navsystem.h"
 #include "fsound.h"
 #include "falcsnd\voicemanager.h"
-#include "flightdata.h"	//MI
+#include "flightdata.h" //MI
 #include "guns.h"
 
 #define FUEL_INTANK_DIGITS 5
@@ -21,7 +21,7 @@ extern bool g_bRealisticAvionics;
 void CBEChaffCount(void * pObject)
 {
 
-    CPDigits*		pCPDigits	= (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
 
     if (g_bRealisticAvionics)
     {
@@ -38,7 +38,7 @@ void CBEChaffCount(void * pObject)
 void CBEFlareCount(void * pObject)
 {
 
-    CPDigits*	pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
 
     if (g_bRealisticAvionics)
     {
@@ -54,7 +54,7 @@ void CBEFlareCount(void * pObject)
 void CBEHSIRange(void * pObject)
 {
 
-    CPDigits*	pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
 
     pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DISTANCE_TO_BEACON)));
 }
@@ -62,7 +62,7 @@ void CBEHSIRange(void * pObject)
 void CBEHSISelectedCourse(void * pObject)
 {
 
-    CPDigits*	pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
 
     pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS)));
 }
@@ -71,11 +71,11 @@ void CBEHSISelectedCourse(void * pObject)
 void CBETotalFuel(void * pObject)
 {
 
-    CPDigits*		pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
 #if 0
-    float				totalFuel;
+    float totalFuel;
 
-    totalFuel		= ((AircraftClass *)pCPDigits->mpOwnship)->af->ExternalFuel() + ((AircraftClass *)pCPDigits->mpOwnship)->af->Fuel();
+    totalFuel = ((AircraftClass *)pCPDigits->mpOwnship)->af->ExternalFuel() + ((AircraftClass *)pCPDigits->mpOwnship)->af->Fuel();
 
     if (totalFuel > MAX_INTANKS_VAL)
     {
@@ -93,7 +93,7 @@ void CBETotalFuel(void * pObject)
     // MD -- 20021011: Moved to otwloop.cpp to make sure the updates are done to shared memory even
     // when the player isn't looking directly at the gauge
     // ((AircraftClass *)pCPDigits->mpOwnship)->af->GetFuel(&cockpitFlightData.fwd,
-    //	&cockpitFlightData.aft, &cockpitFlightData.total);
+    // &cockpitFlightData.aft, &cockpitFlightData.total);
     pCPDigits->SetDigitValues((long) total);
 #endif
 }
@@ -104,9 +104,9 @@ void CBETotalFuel(void * pObject)
 void CBEUHFDigit(void * pObject)
 {
 
-    CPDigits*		pCPDigits = (CPDigits*) pObject;
-    long				channel;
-    long				filter;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
+    long channel;
+    long filter;
 
 #if 0
 
@@ -150,10 +150,10 @@ void CBEUHFDigit(void * pObject)
 void CBERoundsRemainingDigits(void * pObject)
 {
 
-    CPDigits*		pCPDigits = (CPDigits*) pObject;
-    float				rounds;
+    CPDigits* pCPDigits = (CPDigits*) pObject;
+    float rounds;
 
-    rounds		= (float)(((AircraftClass *)pCPDigits->mpOwnship)->Guns->numRoundsRemaining);
+    rounds = (float)(((AircraftClass *)pCPDigits->mpOwnship)->Guns->numRoundsRemaining);
 
     if (rounds > 9999)
     {

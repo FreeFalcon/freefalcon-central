@@ -4,7 +4,7 @@
     February 16, 1998
 
     Provides build time services for sharing LODs among parent
-	objects.
+ objects.
 \***************************************************************************/
 #include <io.h>
 #include "FLTreader.h"
@@ -12,13 +12,13 @@
 #include "LODBuildList.h"
 
 
-BuildTimeLODList	TheLODBuildList;
+BuildTimeLODList TheLODBuildList;
 
 
 BuildTimeLODEntry* BuildTimeLODList::AddReference(char *filename)
 {
-    BuildTimeLODEntry	*entry;
-    int					index;
+    BuildTimeLODEntry *entry;
+    int index;
 
     // See if we've already got an instance of this LOD
     index = 0;
@@ -39,17 +39,17 @@ BuildTimeLODEntry* BuildTimeLODList::AddReference(char *filename)
     entry = new BuildTimeLODEntry;
     ShiAssert(strlen(filename) < sizeof(entry->filename));
     strcpy(entry->filename, filename);
-    entry->nSwitches				= -1;
-    entry->nDOFs					= -1;
-    entry->nSlots					= -1;
-    entry->nDynamicCoords			= -1;
-    entry->nTextureSets				= -1;
-    entry->flags					= 0;
-    entry->pSlotAndDynamicPositions	= NULL;
-    entry->index					= index;
-    entry->bflags					= 0;
-    entry->next						= NULL;
-    entry->prev						= tail;
+    entry->nSwitches = -1;
+    entry->nDOFs = -1;
+    entry->nSlots = -1;
+    entry->nDynamicCoords = -1;
+    entry->nTextureSets = -1;
+    entry->flags = 0;
+    entry->pSlotAndDynamicPositions = NULL;
+    entry->index = index;
+    entry->bflags = 0;
+    entry->next = NULL;
+    entry->prev = tail;
 
     // Add the new entry to the list
     if (tail)
@@ -68,7 +68,7 @@ BuildTimeLODEntry* BuildTimeLODList::AddReference(char *filename)
 
 BOOL BuildTimeLODList::BuildLODTable()
 {
-    BuildTimeLODEntry	*entry = head;
+    BuildTimeLODEntry *entry = head;
 
     // Quit right now if we don't have any parent objects in our list to process
     if (!head)
@@ -114,8 +114,8 @@ BOOL BuildTimeLODList::BuildLODTable()
 // Write each LOD object to disk and record its position and size in the file
 void BuildTimeLODList::WriteLODData(int file)
 {
-    BuildTimeLODEntry	*entry;
-    int					index;
+    BuildTimeLODEntry *entry;
+    int index;
 
     entry = head;
 
@@ -149,9 +149,9 @@ void BuildTimeLODList::WriteLODData(int file)
 // Write the LOD headers to disk
 void BuildTimeLODList::WriteLODHeaders(int file)
 {
-    int		length;
-    int		result;
-    int		i;
+    int length;
+    int result;
+    int i;
 
     printf("Writing LOD headers\n");
 
@@ -167,7 +167,7 @@ void BuildTimeLODList::WriteLODHeaders(int file)
     {
 
         // Make sure we're saving in a clean state
-        //		ShiAssert( TheObjectLODs[i].root == NULL );
+        // ShiAssert( TheObjectLODs[i].root == NULL );
 
         result = write(file, &TheObjectLODs[i], sizeof(TheObjectLODs[i]));
     }
@@ -181,8 +181,8 @@ void BuildTimeLODList::WriteLODHeaders(int file)
 
 BuildTimeLODEntry * BuildTimeLODList::AddExisiting(ObjectLOD *op, ObjectParent *parent)
 {
-    BuildTimeLODEntry	*entry;
-    int			index;
+    BuildTimeLODEntry *entry;
+    int index;
 
     // Count objects
     index = 0;
@@ -203,20 +203,20 @@ BuildTimeLODEntry * BuildTimeLODList::AddExisiting(ObjectLOD *op, ObjectParent *
     entry->maxY = parent->maxY;
     entry->minZ = parent->minZ;
     entry->maxZ = parent->maxZ;
-    entry->nSwitches				= parent->nSwitches;
-    entry->nDOFs					= parent->nDOFs;
-    entry->nSlots					= parent->nSlots;
-    entry->nDynamicCoords				= parent->nDynamicCoords;
-    entry->nTextureSets				= parent->nTextureSets;
-    entry->flags					= 0;
+    entry->nSwitches = parent->nSwitches;
+    entry->nDOFs = parent->nDOFs;
+    entry->nSlots = parent->nSlots;
+    entry->nDynamicCoords = parent->nDynamicCoords;
+    entry->nTextureSets = parent->nTextureSets;
+    entry->flags = 0;
     entry->pSlotAndDynamicPositions = new Ppoint[entry->nDynamicCoords + entry->nSlots];
     memcpy(entry->pSlotAndDynamicPositions, parent->pSlotAndDynamicPositions,
            sizeof(Ppoint) * (entry->nDynamicCoords + entry->nSlots));
 
-    entry->index					= index;
-    entry->bflags					= 1;
-    entry->next					= NULL;
-    entry->prev					= tail;
+    entry->index = index;
+    entry->bflags = 1;
+    entry->next = NULL;
+    entry->prev = tail;
 
     // Add the new entry to the list
     if (tail)

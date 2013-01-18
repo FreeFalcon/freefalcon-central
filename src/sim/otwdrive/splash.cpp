@@ -13,30 +13,30 @@
 
 // RV - Biker - Theater switching stuff
 extern char FalconSplashThrDirectory[];
-int	lastframe;
+int lastframe;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 // Properties of the animation image palette layout
-static const int	NUM_SPLASH_FRAMES	= 5;
-static const int	PAL_FRAME_LENGTH	= 32;
+static const int NUM_SPLASH_FRAMES = 5;
+static const int PAL_FRAME_LENGTH = 32;
 
 // location and dimensions of the radar thing (which we want to cover up)
-static const int	COVER_TOP	= 246;
-static const int	COVER_LEFT	= 159;
+static const int COVER_TOP = 246;
+static const int COVER_LEFT = 159;
 
 // Pointers to the global resources used while the loading screen is up
-BYTE			*originalImage		= NULL;
-unsigned long	*originalPalette	= NULL;
-int				origImageType	= IMAGE_TYPE_UNKNOWN;
+BYTE *originalImage = NULL;
+unsigned long *originalPalette = NULL;
+int origImageType = IMAGE_TYPE_UNKNOWN;
 
 // Some data about the source image
-static int	originalWidth	= 0;
-static int	originalHeight	= 0;
-static int	coverWidth		= 0;
-static int	coverHeight		= 0;
+static int originalWidth = 0;
+static int originalHeight = 0;
+static int coverWidth = 0;
+static int coverHeight = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,10 +50,10 @@ static int	coverHeight		= 0;
 
 void OTWDriverClass::SetupSplashScreen(void)
 {
-    int					result;
-    CImageFileMemory 	texFile;
-    char				filename[MAX_PATH];
-    FILE*				tmpFile;
+    int result;
+    CImageFileMemory  texFile;
+    char filename[MAX_PATH];
+    FILE* tmpFile;
 
 
     lastframe = -1;
@@ -156,10 +156,10 @@ void OTWDriverClass::SetupSplashScreen(void)
     }
 
     // Store the image data
-    originalWidth	= texFile.image.width;
-    originalHeight	= texFile.image.height;
-    originalImage	= texFile.image.image;
-    originalPalette	= texFile.image.palette;
+    originalWidth = texFile.image.width;
+    originalHeight = texFile.image.height;
+    originalImage = texFile.image.image;
+    originalPalette = texFile.image.palette;
     origImageType = texFile.imageType;//XX
     ShiAssert(originalImage);
     ShiAssert(originalPalette);
@@ -199,12 +199,12 @@ void OTWDriverClass::CleanupSplashScreen(void)
 
 void OTWDriverClass::SplashScreenUpdate(int frame)
 {
-    BYTE				*imagePtr = NULL;
-    void				*buffer = NULL;
-    int					x, y;
-    unsigned long		tweakedPalette[256];
-    unsigned long		*srcPal = NULL, *dstPal = NULL;
-    unsigned long		*startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
+    BYTE *imagePtr = NULL;
+    void *buffer = NULL;
+    int x, y;
+    unsigned long tweakedPalette[256];
+    unsigned long *srcPal = NULL, *dstPal = NULL;
+    unsigned long *startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
 
 
     // RED - Consistency check
@@ -231,7 +231,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
     // RED - Allocating a buffer to work into, instead of Image Buffer
     // The buffer will be same size of the Original Image with 32bit Pixel Size
-    DWORD	*WorkBuffer = (DWORD*)malloc(originalHeight * originalWidth * sizeof(DWORD));
+    DWORD *WorkBuffer = (DWORD*)malloc(originalHeight * originalWidth * sizeof(DWORD));
 
     // Clear the back buffer to black to erase anything that might already be there
     renderer->context.StartFrame();
@@ -243,12 +243,12 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
 
     // Darken all but the specified frame in the palette
-    srcPal		= originalPalette;
-    dstPal		= tweakedPalette;
-    startLit	= originalPalette + frame * PAL_FRAME_LENGTH;
-    stopLit		= startLit + PAL_FRAME_LENGTH;
-    startInvar	= originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
-    stop		= originalPalette + 256;
+    srcPal = originalPalette;
+    dstPal = tweakedPalette;
+    startLit = originalPalette + frame * PAL_FRAME_LENGTH;
+    stopLit = startLit + PAL_FRAME_LENGTH;
+    startInvar = originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
+    stop = originalPalette + 256;
 
     ShiAssert(srcPal <= startLit);
     ShiAssert(startLit <= stopLit);
@@ -262,7 +262,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     while (srcPal < stopLit) *dstPal++ = *srcPal++;
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startInvar)	*dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
+    while (srcPal < startInvar) *dstPal++ = (*srcPal++ & 0x00FCFCFC) >> 1;
 
     // Copy the invariant high portion of the palette
     while (srcPal < stop) *dstPal++ = *srcPal++;
@@ -270,7 +270,7 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     // Point to the originalImage
     imagePtr = originalImage;
 
-    DWORD	*pixel;
+    DWORD *pixel;
 
     // Now, build image based on tweaked palette
     for (y = 0; y < originalHeight; y ++)
@@ -303,11 +303,11 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
 void OTWDriverClass::ShowSimpleWaitScreen(char *name)
 {
-    //int		top, left;
-    int		width, height;
-    char	filename[MAX_PATH];
-    CImageFileMemory 	texFile;	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
-    FILE*				tmpFile;
+    //int top, left;
+    int width, height;
+    char filename[MAX_PATH];
+    CImageFileMemory  texFile; //THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
+    FILE* tmpFile;
 
     // RV - RED - Rewritten with Image Scaling
     // Always look for 1600 x 1200 Image

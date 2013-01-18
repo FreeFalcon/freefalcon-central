@@ -13,7 +13,7 @@ class C_Parser;
 
 #define WIN_MAX_CLIENTS (8)
 #define WIN_MAX_RECTS   (200)
-#define WIN_HASH_SIZE	(50)
+#define WIN_HASH_SIZE (50)
 
 #define MAX_CURSORS (30)
 
@@ -26,7 +26,7 @@ public:
     WORD *mem;
     short width;
     short height;
-    //		short pitch;	// OW
+    // short pitch; // OW
 
     //XX
     BYTE bpp;
@@ -55,7 +55,7 @@ typedef struct
     long ID_;
     long StartX_, StartY_;
     long ItemX_, ItemY_;
-    //!	short GrabType_;
+    //! short GrabType_;
     long GrabType_;
     C_Window *Window_;
     C_Base *Control_;
@@ -137,83 +137,83 @@ private:
     };
 
     // Save stuff starting here
-    long		ID_;
-    long		Flags_; // Flags for window
-    long		Section_; // Used for sections of the game
-    long		Group_; // Group ID
-    long		Cluster_; // Cluster ID (Similar use as group)
-    long		DefaultFlags_;
-    long		MenuID_;
-    long		RemoveImage_;
-    long		CursorID_;
-    long		MenuFlags_;
-    long		ClientMenuID_[WIN_MAX_CLIENTS];
-    long		ClientFlags_[WIN_MAX_CLIENTS];
+    long ID_;
+    long Flags_; // Flags for window
+    long Section_; // Used for sections of the game
+    long Group_; // Group ID
+    long Cluster_; // Cluster ID (Similar use as group)
+    long DefaultFlags_;
+    long MenuID_;
+    long RemoveImage_;
+    long CursorID_;
+    long MenuFlags_;
+    long ClientMenuID_[WIN_MAX_CLIENTS];
+    long ClientFlags_[WIN_MAX_CLIENTS];
 
 public:
-    long		update_;
-    long		Font_;
-    UI95_RECT	Area_;
+    long update_;
+    long Font_;
+    UI95_RECT Area_;
 
-    COLORREF	BorderLite;	// Brightest color for border line
-    COLORREF	BorderMedium;	// normal color
-    COLORREF	BorderDark;	// Shadow color
-    COLORREF	BGColor;		// Background of client area color
-    COLORREF	SelectBG;		// Background color if selected
-    COLORREF	NormalText;	// Normal Text Color
-    COLORREF	ReverseText;	// Reverse color for text (when drawn over SelColor?)
-    COLORREF	DisabledText;	// Normal Text Color
-    COLORREF	TextColor_;
-    COLORREF	BgColor_;
+    COLORREF BorderLite; // Brightest color for border line
+    COLORREF BorderMedium; // normal color
+    COLORREF BorderDark; // Shadow color
+    COLORREF BGColor; // Background of client area color
+    COLORREF SelectBG; // Background color if selected
+    COLORREF NormalText; // Normal Text Color
+    COLORREF ReverseText; // Reverse color for text (when drawn over SelColor?)
+    COLORREF DisabledText; // Normal Text Color
+    COLORREF TextColor_;
+    COLORREF BgColor_;
 
     // Client Areas (upto WIN_MAX_CLIENTS (8) supported)
-    UI95_RECT	ClientArea_[WIN_MAX_CLIENTS];
-    UI95_RECT	FullClientArea_[WIN_MAX_CLIENTS]; // Used to restore client area when scrollbars are used
+    UI95_RECT ClientArea_[WIN_MAX_CLIENTS];
+    UI95_RECT FullClientArea_[WIN_MAX_CLIENTS]; // Used to restore client area when scrollbars are used
 
 
 protected:
-    short		Type_; // 0=Unknown,1=Window,2=Toolbar...
-    short		Depth_; // used to determine which windows are in front of which
-    short		x_, y_, w_, h_; // User Setable
-    short		MinX_, MinY_, MaxX_, MaxY_; // Min/Max values of WindowX,WindowY
-    short		MinW_, MinH_, MaxW_, MaxH_;
-    short		DragH_; // Used to determine whether we can drag this window or not
+    short Type_; // 0=Unknown,1=Window,2=Toolbar...
+    short Depth_; // used to determine which windows are in front of which
+    short x_, y_, w_, h_; // User Setable
+    short MinX_, MinY_, MaxX_, MaxY_; // Min/Max values of WindowX,WindowY
+    short MinW_, MinH_, MaxW_, MaxH_;
+    short DragH_; // Used to determine whether we can drag this window or not
 
     // Don't save from here down
     //XX
-    //WORD		r_mask_,r_shift_,r_max_; // AND flag,shift values to convert 16bit RGB to usable value
-    //WORD		g_mask_,g_shift_,g_max_;
-    //WORD		b_mask_,b_shift_,b_max_;
+    //WORD r_mask_,r_shift_,r_max_; // AND flag,shift values to convert 16bit RGB to usable value
+    //WORD g_mask_,g_shift_,g_max_;
+    //WORD b_mask_,b_shift_,b_max_;
 
-    DWORD		r_mask_;
-    WORD		r_shift_, r_max_; // AND flag,shift values to convert 16bit RGB to usable value
-    DWORD		g_mask_;
-    WORD		g_shift_, g_max_;
-    DWORD		b_mask_;
-    WORD		b_shift_, b_max_;
+    DWORD r_mask_;
+    WORD r_shift_, r_max_; // AND flag,shift values to convert 16bit RGB to usable value
+    DWORD g_mask_;
+    WORD g_shift_, g_max_;
+    DWORD b_mask_;
+    WORD b_shift_, b_max_;
 
 public:
-    long		VX_[WIN_MAX_CLIENTS], VY_[WIN_MAX_CLIENTS]; // x,y relative to scrollbar (Use for drawing EVERYTHING in client area)
-    long		VW_[WIN_MAX_CLIENTS], VH_[WIN_MAX_CLIENTS]; // w,h relative to scrollbar
+    long VX_[WIN_MAX_CLIENTS], VY_[WIN_MAX_CLIENTS]; // x,y relative to scrollbar (Use for drawing EVERYTHING in client area)
+    long VW_[WIN_MAX_CLIENTS], VH_[WIN_MAX_CLIENTS]; // w,h relative to scrollbar
 
 private:
-    short		Width_, Height_; // DDraw surface w/h
-    short		FontHeight_;
-    short		ControlCount_;
+    short Width_, Height_; // DDraw surface w/h
+    short FontHeight_;
+    short ControlCount_;
 public:
-    short		rectflag_[WIN_MAX_RECTS];
-    short		rectcount_;
-    UI95_RECT	rectlist_[WIN_MAX_RECTS];
+    short rectflag_[WIN_MAX_RECTS];
+    short rectcount_;
+    UI95_RECT rectlist_[WIN_MAX_RECTS];
 
 private:
-    POINT		Cursor_;
+    POINT Cursor_;
     C_ScrollBar *VScroll_[WIN_MAX_CLIENTS], *HScroll_[WIN_MAX_CLIENTS];
     ImageBuffer *imgBuf_;
-    C_Base		*Owner_;
-    C_Hash		*Hash_;
+    C_Base *Owner_;
+    C_Hash *Hash_;
     CONTROLLIST *Controls_;
     CONTROLLIST *Last_;
-    C_Base		*CurControl_;
+    C_Base *CurControl_;
     void (*DragCallback_)(C_Window *win);
     F4CSECTIONHANDLE* Critical;
     BOOL (*KBCallback_)(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
@@ -225,7 +225,7 @@ private:
     void Fill(SCREEN *surface, WORD Color, UI95_RECT *rect);
 
 public:
-    C_Handler	*Handler_; // Pointer to Handler class
+    C_Handler *Handler_; // Pointer to Handler class
 
     C_Window();
     C_Window(char **)

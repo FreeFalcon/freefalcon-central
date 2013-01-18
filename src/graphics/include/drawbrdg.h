@@ -3,7 +3,7 @@
     July 29, 1997
 
     Derived class to do special position and containment processing for
-	bridges (platforms upon which ground vehicles can drive).
+ bridges (platforms upon which ground vehicles can drive).
 \***************************************************************************/
 #ifndef _DRAWBRDG_H_
 #define _DRAWBRDG_H_
@@ -28,25 +28,25 @@ public:
     virtual void Draw(class Render3D *renderer);
 
 protected:
-    int						previousLOD;
-    float					InclusionRadiusSquared;
-    float					maxX, minX, maxY, minY;
+    int previousLOD;
+    float InclusionRadiusSquared;
+    float maxX, minX, maxY, minY;
 
-    ObjectDisplayList		roadbedObjects;
-    ObjectDisplayList		dynamicObjects;
+    ObjectDisplayList roadbedObjects;
+    ObjectDisplayList dynamicObjects;
 
-    UpdateCallBack			updateCBstruct;
-    SortCallBack			sortCBstruct;
+    UpdateCallBack updateCBstruct;
+    SortCallBack sortCBstruct;
 
 protected:
-    BOOL			ObjectInside(DrawableObject *object);
-    virtual	void	SetParentList(ObjectDisplayList *list);
+    BOOL ObjectInside(DrawableObject *object);
+    virtual void SetParentList(ObjectDisplayList *list);
 
     static void UpdateMetrics(void *self, long listNo, const Tpoint *pos, TransportStr *transList);
-    void		UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
+    void UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
 
     static void SortForViewpoint(void *self);
-    void		SortForViewpoint(void);
+    void SortForViewpoint(void);
 
 #ifdef USE_SH_POOLS
 public:
@@ -68,7 +68,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

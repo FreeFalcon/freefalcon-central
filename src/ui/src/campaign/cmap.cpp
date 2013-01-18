@@ -1,7 +1,7 @@
 /***************************************************************************\
     Cmap.cpp
     Peter Ward
-	July 15, 1996
+ July 15, 1996
 
     This code handles drawing the Campaign Map with/without units (user selectable)
 \***************************************************************************/
@@ -426,7 +426,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
 
                     for (i = 0; i < 8; i++)
                         // 2001-03-14 MODIFIED BY S.G. SO IF THERE IS NO RADAR RANGE DATA, THE radar_short VALUE IS USED INSTEAD
-                        //						Team_[ent->GetTeam()].Threats->Type[_THREAT_RADAR_LOW_]->SetRadius(ent->GetCampID(),i,static_cast<long>(min(ent->GetArcRange(i)*FT_TO_KM,radar_short)));
+                        // Team_[ent->GetTeam()].Threats->Type[_THREAT_RADAR_LOW_]->SetRadius(ent->GetCampID(),i,static_cast<long>(min(ent->GetArcRange(i)*FT_TO_KM,radar_short)));
                         Team_[ent->GetTeam()].Threats->Type[_THREAT_RADAR_LOW_]->SetRadius(ent->GetCampID(), i, static_cast<long>(((ObjectiveClass *)ent)->HasRadarRanges() ? (min(ent->GetArcRange(i)*FT_TO_KM, radar_short)) : radar_short));
 
                     threat->RadarLow = Team_[ent->GetTeam()].Threats->Type[_THREAT_RADAR_LOW_]->GetThreat(ent->GetCampID());
@@ -438,12 +438,12 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     }
 
     // 2001-05-08 MODIFIED BY S.G. UNITS CAN STILL FIRE AT YOU, EVEN IF NOT EMITING THEMSELF SO RESERVE THE 'IsEmitting' FOR THREAT_RADAR_* CODE
-    //	if(ent->IsUnit() && ent->IsEmitting())
+    // if(ent->IsUnit() && ent->IsEmitting())
     if (ent->IsUnit())
         // THIS IS WHAT I DO IN 1.08i2 BUT NOT REQUIRED IN 1.07 (SEE AT END OF FUNCTION FOR DETAIL)
-        //	if(ent->IsUnit() && !((Unit)ent)->Inactive() && (FindUnitType(ent) & (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
-        //	UI_Refresher *gpsItem=NULL;
-        //	if(ent->IsUnit() && (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) && gpsItem->MapItem_ && !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE))
+        // if(ent->IsUnit() && !((Unit)ent)->Inactive() && (FindUnitType(ent) & (_UNIT_AIR_DEFENSE | _UNIT_BATTALION)))
+        // UI_Refresher *gpsItem=NULL;
+        // if(ent->IsUnit() && (gpsItem=(UI_Refresher*)gGps->Find(ent->GetCampID())) && gpsItem->MapItem_ && !(gpsItem->MapItem_->Flags & C_BIT_INVISIBLE))
     {
         ent->GetLocation(&x, &y);
         ShiAssert(Map_Max_Y > 0);
@@ -522,7 +522,7 @@ THREAT_LIST *C_Map::AddThreat(CampEntity ent)
     // 2001-05-09 MODIFIED BY S.G. WHY NOT RETURNING THAT STRUCTURE WE FILLED UP? CAN WE SAY 'MEMORY LEAK' HERE? PLUS WITHOUT THIS, THREAT CIRCLES ARE APPEARING FOR ANY UNITS WITH A 'Range' AGAINST 'Air' MOVEMENT TYPE...
     return(NULL);
     // THIS IS DIFFERENT THAN WHAT I DO IN 1.08i2 AND IS THE PREFERED WAY. I CAN'T DO IT IN 1.08i2 BEFORE TOO MUCH CODE WAS OPTOMIZED OUT BY THE COMPILER :-(
-    //	return (threat);
+    // return (threat);
 }
 
 

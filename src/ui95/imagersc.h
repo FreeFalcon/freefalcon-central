@@ -51,9 +51,9 @@ public:
     };
 #endif
 public:
-    long		ID;
-    C_Resmgr	*Owner;
-    ImageHeader	*Header;
+    long ID;
+    C_Resmgr *Owner;
+    ImageHeader *Header;
 
 private:
     // I have a BUNCH of VERY SIMILAR routines to speed up drawing

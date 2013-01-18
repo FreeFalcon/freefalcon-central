@@ -11,12 +11,12 @@ inline void CheckHR(HRESULT hr);
 
 //inline void CheckHR(HRESULT hr)
 //{
-//	//if(FAILED(hr))
-//	//{
-//	//	IErrorInfo *pEI = NULL;
-//	//	::GetErrorInfo(NULL, &pEI);
-//	//	throw _com_error(hr, pEI);
-//	//}
+// //if(FAILED(hr))
+// //{
+// // IErrorInfo *pEI = NULL;
+// // ::GetErrorInfo(NULL, &pEI);
+// // throw _com_error(hr, pEI);
+// //}
 //}
 
 namespace ComSup
@@ -140,7 +140,7 @@ namespace ComSup
 
     inline HRESULT RegisterServer(LPCTSTR lpszServername)
     {
-        HINSTANCE hInst = LoadLibrary(lpszServername);	// retry
+        HINSTANCE hInst = LoadLibrary(lpszServername); // retry
 
         if (!hInst) return E_FAIL;
 
@@ -163,7 +163,7 @@ namespace ComSup
 
     inline HRESULT UnregisterServer(LPCTSTR lpszServername)
     {
-        HINSTANCE hInst = LoadLibrary(lpszServername);	// retry
+        HINSTANCE hInst = LoadLibrary(lpszServername); // retry
 
         if (!hInst) return E_FAIL;
 

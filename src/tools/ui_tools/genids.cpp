@@ -52,7 +52,7 @@ void SortIDList()
     for (i = 1; i < IDCount; i++)
         for (j = 0; j < i; j++)
 
-            //			if(stricmp(UserIDs[i].Label,UserIDs[j].Label) < 0)
+            // if(stricmp(UserIDs[i].Label,UserIDs[j].Label) < 0)
             if (UserIDs[i].Value < UserIDs[j].Value)
             {
                 memcpy(&temp, &UserIDs[i], sizeof(IDLIST));

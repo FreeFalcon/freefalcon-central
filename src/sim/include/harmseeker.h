@@ -8,7 +8,7 @@ class HarmSeekerClass : public RwrClass
 {
 public :
     HarmSeekerClass(int type, SimMoverClass* parentPlatform);
-    virtual ~HarmSeekerClass()	{};
+    virtual ~HarmSeekerClass() {};
 
     virtual SimObjectType* Exec(SimObjectType* targetList);
 
@@ -18,15 +18,15 @@ public :
     }; // 2002-02-09 MODIFIED BY S.G. Added the unused dummy var
 
 protected:
-    float	driftRateX;		// What is the drift rate if signal is lost
-    float	driftRateY;		// (in units of feet/second)
+    float driftRateX; // What is the drift rate if signal is lost
+    float driftRateY; // (in units of feet/second)
 
-    bool	launched;
-    bool	launchedInPOS;
-    bool	handedoff;
+    bool launched;
+    bool launchedInPOS;
+    bool handedoff;
 
 
-    BOOL	couldGuide;		// Were we detecting the target last frame?
+    BOOL couldGuide; // Were we detecting the target last frame?
 };
 
 #endif // _HARMSEEKER_H_

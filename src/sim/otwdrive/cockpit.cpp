@@ -11,7 +11,7 @@
 #include "lantirn.h"
 
 extern RECT VirtualMFD[OTWDriverClass::NumPopups + 1];
-ViewportBounds	hudViewportBounds;
+ViewportBounds hudViewportBounds;
 
 // sfr: WTF is this???
 void OTWDriverClass::DoPopUps(void)
@@ -23,7 +23,7 @@ void OTWDriverClass::DoPopUps(void)
         /*
         if (popupHas[i] == 2)
         {
-        	// Draw RWR Here
+         // Draw RWR Here
         }
         else
         */
@@ -38,8 +38,8 @@ void OTWDriverClass::DoPopUps(void)
 
 void OTWDriverClass::Draw2DHud(void)
 {
-    int		oldFont;
-    BOOL	DoHud;
+    int oldFont;
+    BOOL DoHud;
 
     // COBRA - RED - Add the Vibration Offset, reverting the monitor Scaling...
     Tpoint PitTurbulence = SimDriver.GetPlayerAircraft()->GetTurbulence();
@@ -76,7 +76,7 @@ void OTWDriverClass::Draw2DHud(void)
 
                 theLantirn->SetFOV(renderer->GetFOV() * (hudViewportBounds.right - hudViewportBounds.left) / 2.0f); //Wombat778 10-18-2003 changed 60.0f * DTR to getfov()
                 theLantirn->Display(theLantirn->GetDisplay());
-                renderer->StartDraw();														//Wombat778 10-18-2003 set pitch back to the original.
+                renderer->StartDraw(); //Wombat778 10-18-2003 set pitch back to the original.
                 theLantirn->SetDPitch(temppitch);
 
             }
@@ -100,7 +100,7 @@ void OTWDriverClass::Draw2DHud(void)
         if (DoHud)
         {
             oldFont = VirtualDisplay::CurFont();
-            ShiAssert(otwPlatform);		// If we don't have this we could pass NULL for TheHud target...
+            ShiAssert(otwPlatform); // If we don't have this we could pass NULL for TheHud target...
 
             if (TheHud->Ownship())
                 TheHud->SetTarget(TheHud->Ownship()->targetPtr);
@@ -139,7 +139,7 @@ void OTWDriverClass::Draw2DHud(void)
 
             if (TheHud->Ownship())
             {
-                TheHud->Display(renderer, true);				// COBRA - RED - Translucent Hud
+                TheHud->Display(renderer, true); // COBRA - RED - Translucent Hud
             }
 
             VirtualDisplay::SetFont(oldFont);
@@ -147,7 +147,7 @@ void OTWDriverClass::Draw2DHud(void)
     }
     else
     {
-        ShiAssert(otwPlatform);		// If we don't have this we could pass NULL for TheHud target...
+        ShiAssert(otwPlatform); // If we don't have this we could pass NULL for TheHud target...
         TheHud->SetTarget(TheHud->Ownship()->targetPtr);
 
         renderer->SetViewport(-0.4675F, 0.25F, 0.47F, -1.0F);
@@ -157,7 +157,7 @@ void OTWDriverClass::Draw2DHud(void)
         hudViewportBounds.bottom = -1.0F;
 
         TheHud->SetHalfAngle(15.1434F);
-        TheHud->Display(renderer, true);				// COBRA - RED - Translucent Hud
+        TheHud->Display(renderer, true); // COBRA - RED - Translucent Hud
     }
 
     renderer->SetColor(0xff00ff00);

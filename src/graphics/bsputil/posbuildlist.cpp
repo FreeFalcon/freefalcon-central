@@ -1,36 +1,36 @@
 /***************************************************************************\
-	PosBuildList.cpp
+ PosBuildList.cpp
     Scott Randolph
     April 8, 1998
 
     Provides build time services for sharing positions among all polygons
-	in an object.
+ in an object.
 \***************************************************************************/
 #include "PosBuildList.h"
 
 
 BuildTimePosList::BuildTimePosList()
 {
-    head			= NULL;
+    head = NULL;
 
-    numTotal		= 0;
-    numStatic		= 0;
-    numDynamic		= 0;
+    numTotal = 0;
+    numStatic = 0;
+    numDynamic = 0;
 
-    SizeInfo.radiusSquared	= -1.0f;
-    SizeInfo.maxX			= -1e12f;
-    SizeInfo.maxY			= -1e12f;
-    SizeInfo.maxZ			= -1e12f;
-    SizeInfo.minX			= 1e12f;
-    SizeInfo.minY			= 1e12f;
-    SizeInfo.minZ			= 1e12f;
+    SizeInfo.radiusSquared = -1.0f;
+    SizeInfo.maxX = -1e12f;
+    SizeInfo.maxY = -1e12f;
+    SizeInfo.maxZ = -1e12f;
+    SizeInfo.minX = 1e12f;
+    SizeInfo.minY = 1e12f;
+    SizeInfo.minZ = 1e12f;
 }
 
 
 void BuildTimePosList::AddReference(int *target, float x, float y, float z, BuildTimePosType type)
 {
-    BuildTimePosEntry		*entry;
-    BuildTimePosReference	*ref;
+    BuildTimePosEntry *entry;
+    BuildTimePosReference *ref;
 
     // See if we've already got a matching color to share
     for (entry = head; entry; entry = entry->next)
@@ -46,27 +46,27 @@ void BuildTimePosList::AddReference(int *target, float x, float y, float z, Buil
 
             ref->next = new BuildTimePosReference;
             ref = ref->next;
-            ref->target	= target;
-            ref->next	= NULL;
-            *target		= -1;
+            ref->target = target;
+            ref->next = NULL;
+            *target = -1;
             return;
         }
     }
 
     // Setup a new entry for our list
     entry = new BuildTimePosEntry;
-    entry->pos.x		= x;
-    entry->pos.y		= y;
-    entry->pos.z		= z;
-    entry->type			= type;
-    entry->index		= -1;
-    entry->refs			= new BuildTimePosReference;
-    entry->refs->target	= target;
-    entry->refs->next	= NULL;
+    entry->pos.x = x;
+    entry->pos.y = y;
+    entry->pos.z = z;
+    entry->type = type;
+    entry->index = -1;
+    entry->refs = new BuildTimePosReference;
+    entry->refs->target = target;
+    entry->refs->next = NULL;
     *target = -1;
 
     // Add the new entry to the head of the list
-    entry->next		= head;
+    entry->next = head;
     head = entry;
 
     // Keep a count of how many static and dynamic positions we've got
@@ -88,20 +88,20 @@ void BuildTimePosList::AddReference(int *target, float x, float y, float z, Buil
     }
 
     // Maintain statistics about all our positions
-    SizeInfo.radiusSquared	= max(SizeInfo.radiusSquared, x * x + y * y + z * z);
-    SizeInfo.maxX			= max(SizeInfo.maxX, x);
-    SizeInfo.maxY			= max(SizeInfo.maxY, y);
-    SizeInfo.maxZ			= max(SizeInfo.maxZ, z);
-    SizeInfo.minX			= min(SizeInfo.minX, x);
-    SizeInfo.minY			= min(SizeInfo.minY, y);
-    SizeInfo.minZ			= min(SizeInfo.minZ, z);
+    SizeInfo.radiusSquared = max(SizeInfo.radiusSquared, x * x + y * y + z * z);
+    SizeInfo.maxX = max(SizeInfo.maxX, x);
+    SizeInfo.maxY = max(SizeInfo.maxY, y);
+    SizeInfo.maxZ = max(SizeInfo.maxZ, z);
+    SizeInfo.minX = min(SizeInfo.minX, x);
+    SizeInfo.minY = min(SizeInfo.minY, y);
+    SizeInfo.minZ = min(SizeInfo.minZ, z);
 }
 
 
 void BuildTimePosList::AddReference(int *target, int *source)
 {
-    BuildTimePosEntry		*entry;
-    BuildTimePosReference	*ref;
+    BuildTimePosEntry *entry;
+    BuildTimePosReference *ref;
 
     // Find the reference to the source position to which we want another reference
     for (entry = head; entry; entry = entry->next)
@@ -127,8 +127,8 @@ void BuildTimePosList::AddReference(int *target, int *source)
 
         ref->next = new BuildTimePosReference;
         ref = ref->next;
-        ref->target	= target;
-        ref->next	= NULL;
+        ref->target = target;
+        ref->next = NULL;
         *target = -1;
         return;
     }
@@ -139,10 +139,10 @@ void BuildTimePosList::AddReference(int *target, int *source)
 }
 
 
-Ppoint*	BuildTimePosList::GetPosFromTarget(int *target)
+Ppoint* BuildTimePosList::GetPosFromTarget(int *target)
 {
-    BuildTimePosEntry		*entry;
-    BuildTimePosReference	*ref;
+    BuildTimePosEntry *entry;
+    BuildTimePosReference *ref;
 
     // Find the reference to the target position we want to retrieve
     for (entry = head; entry; entry = entry->next)
@@ -175,17 +175,17 @@ Ppoint*	BuildTimePosList::GetPosFromTarget(int *target)
 
 Ppoint* BuildTimePosList::GetPool()
 {
-    Ppoint					*pool;
-    Ppoint					*staticPtr;
-    Ppoint					*dynamicPtr;
-    BuildTimePosReference	*ref;
-    BuildTimePosEntry		*entry = head;
+    Ppoint *pool;
+    Ppoint *staticPtr;
+    Ppoint *dynamicPtr;
+    BuildTimePosReference *ref;
+    BuildTimePosEntry *entry = head;
 
 
     // Construct the position array and get pointers into it
-    pool		= new Ppoint[ numStatic + numDynamic ];
-    staticPtr	= pool;
-    dynamicPtr	= pool + numStatic;
+    pool = new Ppoint[ numStatic + numDynamic ];
+    staticPtr = pool;
+    dynamicPtr = pool + numStatic;
     ShiAssert(staticPtr);
     ShiAssert(dynamicPtr);
 

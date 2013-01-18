@@ -1,9 +1,9 @@
 /***************************************************************************\
-	LineList.h
-	Scott Randolph
-	December 4, 1997
+ LineList.h
+ Scott Randolph
+ December 4, 1997
 
-	Keep a list of colored line segments and draw them.
+ Keep a list of colored line segments and draw them.
 \***************************************************************************/
 #ifndef _LINELIST_H_
 #define _LINELIST_H_
@@ -11,15 +11,15 @@
 #include "Renderer\Render3D.h"
 
 
-extern class LineListClass	TheLineList;
+extern class LineListClass TheLineList;
 
 
 typedef struct LineSegment
 {
-    Tpoint		p1;
-    Tpoint		p2;
-    DWORD		color;
-    LineSegment	*next;
+    Tpoint p1;
+    Tpoint p2;
+    DWORD color;
+    LineSegment *next;
 } LineSegment;
 
 
@@ -49,8 +49,8 @@ public:
     };
 
 private:
-    LineSegment	*head;
-    int			numLines;
+    LineSegment *head;
+    int numLines;
 };
 
 

@@ -36,11 +36,11 @@ FalconEjectMessage::~FalconEjectMessage(void)
 int FalconEjectMessage::Process(uchar autodisp)
 {
     FalconEntity*   falcEnt;
-    Flight			flight;
-    Squadron		sq;
-    GridIndex		x, y;
-    int				squadron_pilot = 255, ps = PILOT_MIA;
-    PilotClass		*pc;
+    Flight flight;
+    Squadron sq;
+    GridIndex x, y;
+    int squadron_pilot = 255, ps = PILOT_MIA;
+    PilotClass *pc;
 
     if (autodisp)
     {

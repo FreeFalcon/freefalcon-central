@@ -11,8 +11,8 @@ extern bool g_bRealisticAvionics;
 const unsigned long AircraftClass::systemStates[PowerMaxState] =
 {
     NoPower, // PowerNone state
-    systemStates[0],	//  PowerFlcs,
-    systemStates[1],	//   PowerBattery,
+    systemStates[0], //  PowerFlcs,
+    systemStates[1], //   PowerBattery,
     systemStates[2] |
     HUDPower | InteriorLightPower, // PowerEmergencyBus,
     systemStates[3] |

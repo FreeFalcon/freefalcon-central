@@ -3,7 +3,7 @@
     Miro "Jammer" Torrielli
     09Nov03
 
-	Volumetric cloud class
+ Volumetric cloud class
 \***************************************************************************/
 #ifndef _REAL2DCLOUD_H_
 #define _REAL2DCLOUD_H_
@@ -20,7 +20,7 @@ public:
     void Cleanup();
 
 public:
-    Drawable2DCloud	*drawable2DCloud;
+    Drawable2DCloud *drawable2DCloud;
 
 protected:
     static ObjectDisplayList* objMgr;

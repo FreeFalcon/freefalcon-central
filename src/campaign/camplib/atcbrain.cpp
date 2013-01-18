@@ -26,7 +26,7 @@
 #include "dinput.h"
 #else
 #define USE_DINPUT_8
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
 #define DIRECTINPUT_VERSION 0x0700
 #else
 #define DIRECTINPUT_VERSION 0x0800
@@ -43,8 +43,8 @@
 
 //ATCBrain::atcList = NULL;
 #ifdef USE_SH_POOLS
-MEM_POOL	runwayQueueStruct::pool;
-MEM_POOL	ATCBrain::pool;
+MEM_POOL runwayQueueStruct::pool;
+MEM_POOL ATCBrain::pool;
 #endif
 
 #ifdef DEBUG
@@ -53,7 +53,7 @@ extern DWORD gSimThreadID;
 
 extern float get_air_speed(float, int);
 extern ulong gBumpTime;
-extern int	gBumpFlag;
+extern int gBumpFlag;
 extern short NumPtHeaders;
 extern short NumPts;
 
@@ -64,7 +64,7 @@ extern int g_nATCTaxiOrderFix;
 ATCBrain::ATCBrain(ObjectiveClass* mySelf)
 {
     int i, rwindex, count, shortest, ptindex;
-    ObjClassDataType	*oc;
+    ObjClassDataType *oc;
 
     self = mySelf;
 
@@ -137,7 +137,7 @@ ATCBrain::ATCBrain(ObjectiveClass* mySelf)
                     count++;
                 }
 
-                if (count < shortest)	// FRB - shortest, longest or mean - could effect time to start taxiing (minDeagTime)????
+                if (count < shortest) // FRB - shortest, longest or mean - could effect time to start taxiing (minDeagTime)????
                     shortest = count;
 
 #if 0 // JPO - I don't see why its rewriting all these. I think this is what screws up Osan.
@@ -177,7 +177,7 @@ ATCBrain::ATCBrain(ObjectiveClass* mySelf)
     }
 
     if (shortest > 1)
-        minDeagTime = (shortest - 1) * 15 * CampaignSeconds + 1;	 // FRB - checkpoint
+        minDeagTime = (shortest - 1) * 15 * CampaignSeconds + 1;  // FRB - checkpoint
     else
         minDeagTime = 0;
 
@@ -241,8 +241,8 @@ ATCBrain::~ATCBrain(void)
 void ATCBrain::Exec(void)
 {
     /* 2002-04-08 MN fix for taxiing order:
-    	we had AI taking off at 09:37, us at 09:36, and AI waiting in front of us. Reversing
-    	ProcessPlayers and ProcessRunways fixes that.	*/
+     we had AI taking off at 09:37, us at 09:36, and AI waiting in front of us. Reversing
+     ProcessPlayers and ProcessRunways fixes that. */
 
     if (g_nATCTaxiOrderFix & 0x01)
     {
@@ -290,7 +290,7 @@ void ATCBrain::ProcessInbound(void)
         {
             dx = inbound->XPos() - self->XPos();
             dy = inbound->YPos() - self->YPos();
-            distSq = dx * dx + dy * dy;						//distSq in feet
+            distSq = dx * dx + dy * dy; //distSq in feet
 
             inboundInfo = inboundInfo->next;
 
@@ -323,7 +323,7 @@ void ATCBrain::ProcessInbound(void)
 void ATCBrain::ProcessRunways(void)
 {
     int i, rwindex;
-    runwayQueueStruct	*nextLand[4]; //room for bigger airbases :)
+    runwayQueueStruct *nextLand[4]; //room for bigger airbases :)
 
     for (i = 0; i < numRwys; i++)
     {
@@ -331,13 +331,13 @@ void ATCBrain::ProcessRunways(void)
         nextLand[i] = NextToLand(i);
     }
 
-    runwayQueueStruct	*info;
-    FalconSessionEntity	*session;
-    AircraftClass		*player;
-    AircraftClass		*aircraft;
-    int					queue = 0;
+    runwayQueueStruct *info;
+    FalconSessionEntity *session;
+    AircraftClass *player;
+    AircraftClass *aircraft;
+    int queue = 0;
 
-    VuSessionsIterator		sit(FalconLocalGame);
+    VuSessionsIterator sit(FalconLocalGame);
     session = (FalconSessionEntity*) sit.GetFirst();
 
     while (session)
@@ -391,13 +391,13 @@ void ATCBrain::ProcessRunways(void)
         {
             unsigned long deltaTime;
 
-            if (nextLand[i]->schedTime < SimLibElapsedTime)	//If aircraft is scheduled to land
-                deltaTime = SimLibElapsedTime - nextLand[i]->schedTime;	//how much time do we have
+            if (nextLand[i]->schedTime < SimLibElapsedTime) //If aircraft is scheduled to land
+                deltaTime = SimLibElapsedTime - nextLand[i]->schedTime; //how much time do we have
             else
-                deltaTime = nextLand[i]->schedTime - SimLibElapsedTime;	//land time passed
+                deltaTime = nextLand[i]->schedTime - SimLibElapsedTime; //land time passed
 
             //if acft crashed, or schedule to takerwy or takeoff, and aircraft scheduled to land is less than LAND_TIME_DELTA/2 = 30sec away
-            //if(	info->status == lCrashed || ((info->status == tTakeRunway || info->status == tTakeoff) && deltaTime < LAND_TIME_DELTA/2))
+            //if( info->status == lCrashed || ((info->status == tTakeRunway || info->status == tTakeoff) && deltaTime < LAND_TIME_DELTA/2))
             //cobra
             if (info->status == lCrashed || info->status == tTakeRunway || info->status == tTakeoff)
             {
@@ -437,15 +437,15 @@ void ATCBrain::ProcessRunways(void)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::ProcessQueue(int queue)
 {
-    AircraftClass		*aircraft = NULL;
-    runwayQueueStruct	*info = NULL;
-    runwayQueueStruct	*deleteInfo = NULL;
-    runwayQueueStruct	*nextTakeoff = NULL;
-    runwayQueueStruct	*nextLand = NULL;
-    runwayQueueStruct	*temp = NULL;
-    AircraftClass		*pNTOAircraft = NULL;
-    AircraftClass		*pNLAircraft = NULL;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    AircraftClass *aircraft = NULL;
+    runwayQueueStruct *info = NULL;
+    runwayQueueStruct *deleteInfo = NULL;
+    runwayQueueStruct *nextTakeoff = NULL;
+    runwayQueueStruct *nextLand = NULL;
+    runwayQueueStruct *temp = NULL;
+    AircraftClass *pNTOAircraft = NULL;
+    AircraftClass *pNLAircraft = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
     int waitforlanding = FALSE;
     int accelerateTakeoffs = FALSE;
 
@@ -642,7 +642,7 @@ void ATCBrain::ProcessQueue(int queue)
                         //and acft is going less than 5 kts (should that be conferted to ft/sec??), and T/O time has passed
                         //and next acft to T/O is not current obj???, and next acft to T/O is not on rwy, then
                         else if (pNTOAircraft && pNTOAircraft->IsAirplane() && nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  &&
-                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC &&	info->schedTime < SimLibElapsedTime  &&
+                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC && info->schedTime < SimLibElapsedTime  &&
                                  pNTOAircraft->GetCampaignObject() != aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
                         {
                             //RAS - no aircraft on final and past T/O time + delta(60sec)
@@ -703,7 +703,7 @@ void ATCBrain::ProcessQueue(int queue)
                             }
                         }
                         else if (pNTOAircraft && pNTOAircraft->IsAirplane() && nextTakeoff->schedTime + FalconLocalGame->rules.AtcPatience < SimLibElapsedTime  &&
-                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC &&	info->schedTime < SimLibElapsedTime &&
+                                 pNTOAircraft->af->vt < 5.0F * KNOTS_TO_FTPSEC && info->schedTime < SimLibElapsedTime &&
                                  pNTOAircraft->GetCampaignObject() != aircraft->GetCampaignObject() && !IsOnRunway(pNTOAircraft))
                         {
                             if (!nextLand || SimLibElapsedTime + LAND_TIME_DELTA > nextLand->schedTime)
@@ -965,15 +965,15 @@ void ATCBrain::ProcessQueue(int queue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::ProcessPlayers(void)
 {
-    float				dx, dy, cosAngle;
-    int					queue;
-    runwayQueueStruct	*playerInfo;
-    FalconSessionEntity	*session;
-    ulong				min, max;
-    AircraftClass		*player;
-    FalconRadioChatterMessage	*radioMessage;
+    float dx, dy, cosAngle;
+    int queue;
+    runwayQueueStruct *playerInfo;
+    FalconSessionEntity *session;
+    ulong min, max;
+    AircraftClass *player;
+    FalconRadioChatterMessage *radioMessage;
 
-    VuSessionsIterator		sit(FalconLocalGame);
+    VuSessionsIterator sit(FalconLocalGame);
     session = (FalconSessionEntity*) sit.GetFirst();
 
     while (session)
@@ -1032,12 +1032,12 @@ void ATCBrain::ProcessPlayers(void)
                             {
                                 if (cosAngle < 0.0F)
                                 {
-                                    playerInfo->status 	= lToBase;
+                                    playerInfo->status  = lToBase;
                                     SendCmdMessage(player, playerInfo);
                                 }
                                 else
                                 {
-                                    playerInfo->status 	= lToFinal;
+                                    playerInfo->status  = lToFinal;
                                     SendCmdMessage(player, playerInfo);
                                 }
                             }
@@ -1053,7 +1053,7 @@ void ATCBrain::ProcessPlayers(void)
                         case lFirstLeg:
                         case lToBase:
                         case lToFinal:
-                            CheckForTraffic(player, playerInfo);		//RAS - 20Jan04 -  traffic calls
+                            CheckForTraffic(player, playerInfo); //RAS - 20Jan04 -  traffic calls
 
                             if (CheckLanding(player, playerInfo))
                                 break;
@@ -1064,14 +1064,14 @@ void ATCBrain::ProcessPlayers(void)
                             break;
 
                         case lEmergencyOnFinal:
-                            CheckForTraffic(player, playerInfo);	//RAS - 20Jan04 -  traffic calls
+                            CheckForTraffic(player, playerInfo); //RAS - 20Jan04 -  traffic calls
                             CheckLanding(player, playerInfo);
                             break;
 
                         case lOnFinal:
                         case lClearToLand:
 
-                            //						CheckForTraffic(player, playerInfo);	//RAS - 20Jan04 -  add later
+                            // CheckForTraffic(player, playerInfo); //RAS - 20Jan04 -  add later
                             if (CheckLanding(player, playerInfo))
                                 break;
 
@@ -1160,18 +1160,18 @@ void ATCBrain::ProcessPlayers(void)
                             }
                             else if (!player->af->IsSet(AirframeClass::GearBroken) && playerInfo->lastContacted + 60 * CampaignSeconds < SimLibElapsedTime)
                             {
-                                if (SimLibElapsedTime > playerInfo->schedTime + 4 * CampaignMinutes)	 // 06FEB04 - FRB - was 2 minutes
+                                if (SimLibElapsedTime > playerInfo->schedTime + 4 * CampaignMinutes)  // 06FEB04 - FRB - was 2 minutes
                                 {
                                     if (rand() % 3)
                                         SendCallFromATC(self, player, rcDISRUPTINGTRAFFIC, FalconLocalGame);
                                     else
                                         SendCallFromATC(self, player, rcHURRYUP, FalconLocalGame);
                                 }
-                                else if (SimLibElapsedTime > playerInfo->schedTime + 2 * CampaignMinutes)	 // 06FEB04 - FRB - was 1 minute
+                                else if (SimLibElapsedTime > playerInfo->schedTime + 2 * CampaignMinutes)  // 06FEB04 - FRB - was 1 minute
                                 {
                                     SendCallFromATC(self, player, rcHURRYUP, FalconLocalGame);
                                 }
-                                else if (SimLibElapsedTime > playerInfo->schedTime + 60 * CampaignSeconds)	 // 06FEB04 - FRB - was 15 seconds
+                                else if (SimLibElapsedTime > playerInfo->schedTime + 60 * CampaignSeconds)  // 06FEB04 - FRB - was 15 seconds
                                 {
                                     //yell to hurry up
                                     radioMessage = CreateCallFromATC(self, player, rcEXPEDITEDEPARTURE, FalconLocalGame);
@@ -1414,10 +1414,10 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
     {
         //all runways destroyed, divert 'em
         FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(approaching->Id(), FalconLocalGame);
-        ATCCmdMessage->dataBlock.from		= self->Id();
-        ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Divert;
-        ATCCmdMessage->dataBlock.rwindex	= 0;
-        FalconSendMessage(ATCCmdMessage, FALSE);						// Send it
+        ATCCmdMessage->dataBlock.from = self->Id();
+        ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Divert;
+        ATCCmdMessage->dataBlock.rwindex = 0;
+        FalconSendMessage(ATCCmdMessage, FALSE); // Send it
         return;
     }
 
@@ -1455,14 +1455,14 @@ void ATCBrain::RequestClearance(AircraftClass* approaching, int addflight)
     }
     else
     {
-        AircraftClass			*aircraft = NULL;
-        Flight					flight = (Flight)approaching->GetCampaignObject();
+        AircraftClass *aircraft = NULL;
+        Flight flight = (Flight)approaching->GetCampaignObject();
 
         // protect against no components
         if (!flight->GetComponents())
             return;
 
-        VuListIterator			flightIter(flight->GetComponents());
+        VuListIterator flightIter(flight->GetComponents());
         aircraft = (AircraftClass*) flightIter.GetFirst();
 
         while (aircraft)
@@ -1511,7 +1511,7 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
     float cosAngle;
     ulong min, max, landTime;
     AtcStatusEnum status;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
 
     if (!approaching || !self || approaching->OnGround())
         return;
@@ -1562,10 +1562,10 @@ void ATCBrain::RequestEmerClearance(AircraftClass* approaching)
     {
         //all runways destroyed, divert 'em
         FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(approaching->Id(), FalconLocalGame);
-        ATCCmdMessage->dataBlock.from		= self->Id();
-        ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Divert;
-        ATCCmdMessage->dataBlock.rwindex	= 0;
-        FalconSendMessage(ATCCmdMessage, FALSE);						// Send it
+        ATCCmdMessage->dataBlock.from = self->Id();
+        ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Divert;
+        ATCCmdMessage->dataBlock.rwindex = 0;
+        FalconSendMessage(ATCCmdMessage, FALSE); // Send it
         return;
     }
 
@@ -1639,17 +1639,17 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
     }
     else
     {
-        ulong					takeoffTime = 0, time;
-        int						queue = 0, rwindex = 0;
-        AircraftClass			*aircraft = NULL;
-        FalconRadioChatterMessage	*radioMessage = NULL;
-        Flight					flight = (Flight)departing->GetCampaignObject();
+        ulong takeoffTime = 0, time;
+        int queue = 0, rwindex = 0;
+        AircraftClass *aircraft = NULL;
+        FalconRadioChatterMessage *radioMessage = NULL;
+        Flight flight = (Flight)departing->GetCampaignObject();
 
         info = InList(departing->Id());
 
         if (info)
         {
-            if (info->schedTime + 60 * CampaignSeconds > SimLibElapsedTime ||	//RAS - Change to 60sec prior to takeoff???
+            if (info->schedTime + 60 * CampaignSeconds > SimLibElapsedTime || //RAS - Change to 60sec prior to takeoff???
                 (info->status == tTakeoff))
             {
                 int takeoffNum;
@@ -1657,7 +1657,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
                 switch (info->status)
                 {
                     case tTakeoff:
-                        if (info->schedTime + 120 * CampaignSeconds < SimLibElapsedTime)	 // 06FEB04 - FRB - was 60 seconds
+                        if (info->schedTime + 120 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 60 seconds
                         {
                             radioMessage = CreateCallFromATC(self, departing, rcEXPEDITEDEPARTURE, FalconLocalGame);
 
@@ -1745,7 +1745,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
 
         {
             // destroy iterator here
-            VuListIterator	flightIter(flight->GetComponents());
+            VuListIterator flightIter(flight->GetComponents());
             aircraft = (AircraftClass*) flightIter.GetFirst();
 
             while (aircraft)
@@ -1764,7 +1764,7 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
         if (!takeoffTime)
             takeoffTime = FindFlightTakeoffTime(flight, queue);
 
-        VuListIterator	flightIter(flight->GetComponents());
+        VuListIterator flightIter(flight->GetComponents());
         aircraft = (AircraftClass*) flightIter.GetFirst();
 
         while (aircraft)
@@ -1796,8 +1796,8 @@ void ATCBrain::RequestTakeoff(AircraftClass* departing)
                 if (UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), rwindex))
                 {
                     if (aircraft->vehicleInUnit > 1)
-                        //						time = takeoffTime + SLOT_TIME * 2;
-                        time = takeoffTime + SLOT_TIME;	 // 30JAN04 - FRB
+                        // time = takeoffTime + SLOT_TIME * 2;
+                        time = takeoffTime + SLOT_TIME;  // 30JAN04 - FRB
                     else
                         time = takeoffTime;
                 }
@@ -1876,7 +1876,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
     Flight flight;
     runwayQueueStruct *info = NULL;
     runwayQueueStruct *nextTakeoff = NULL;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
 
     if (!departing || !self || !departing->OnGround())
         return;
@@ -1896,7 +1896,7 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
             switch (info->status)
             {
                 case tTakeoff:
-                    if (info->schedTime + 120 * CampaignSeconds < SimLibElapsedTime)	 // 06FEB04 - FRB - was 60 seconds
+                    if (info->schedTime + 120 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 60 seconds
                     {
                         radioMessage = CreateCallFromATC(self, departing, rcEXPEDITEDEPARTURE, FalconLocalGame);
 
@@ -2003,13 +2003,13 @@ void ATCBrain::RequestTaxi(AircraftClass* departing)
     {
         if (!takeoffTime)
         {
-            //			takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA*2);
-            takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA);	  // 27JAN04 - FRB - Bunch flight TO's closer together
+            // takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA*2);
+            takeoffTime = GetNextAvailRunwayTime(queue, flight->GetCurrentUnitWP()->GetWPDepartureTime(), TAKEOFF_TIME_DELTA);   // 27JAN04 - FRB - Bunch flight TO's closer together
         }
         else
         {
-            //			takeoffTime = takeoffTime + TAKEOFF_TIME_DELTA * departing->vehicleInUnit;
-            takeoffTime = takeoffTime + (TAKEOFF_TIME_DELTA / 2) * departing->vehicleInUnit;	 // 27JAN04 - FRB - Bunch flight TO's closer together
+            // takeoffTime = takeoffTime + TAKEOFF_TIME_DELTA * departing->vehicleInUnit;
+            takeoffTime = takeoffTime + (TAKEOFF_TIME_DELTA / 2) * departing->vehicleInUnit;  // 27JAN04 - FRB - Bunch flight TO's closer together
         }
 
         info = AddTraffic(departing->Id(), tTaxi, rwindex, takeoffTime);
@@ -2093,11 +2093,11 @@ void ATCBrain::AbortApproach(AircraftClass* approaching)
     radioMessage = CreateCallFromATC(self, approaching, rcRESUMEOWNNAV, FalconLocalSession);
     FalconSendMessage(radioMessage, FALSE);
 
-    /*	radioMessage = CreateCallFromATC (self, , rcROGER, FalconLocalGame);
-    	radioMessage->dataBlock.edata[0] = -1;
-    	radioMessage->dataBlock.edata[1] = 1;	// just "Roger"
-    	radioMessage->dataBlock.time_to_play= 2*CampaignSeconds;
-    	FalconSendMessage(radioMessage, FALSE);
+    /* radioMessage = CreateCallFromATC (self, , rcROGER, FalconLocalGame);
+     radioMessage->dataBlock.edata[0] = -1;
+     radioMessage->dataBlock.edata[1] = 1; // just "Roger"
+     radioMessage->dataBlock.time_to_play= 2*CampaignSeconds;
+     FalconSendMessage(radioMessage, FALSE);
     */
 }
 
@@ -2106,7 +2106,7 @@ void ATCBrain::AbortApproach(AircraftClass* approaching)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::FindNextEmergency(int queue)
 {
-    runwayQueueStruct	*info = runwayQueue[queue];
+    runwayQueueStruct *info = runwayQueue[queue];
 
     runwayStats[queue].nextEmergency = FalconNullId;
 
@@ -2125,11 +2125,11 @@ void ATCBrain::FindNextEmergency(int queue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::SetEmergency(int queue)
 {
-    AircraftClass		*aircraft = NULL;
-    runwayQueueStruct	*info = NULL;
-    runwayQueueStruct	*list = NULL;
-    runwayQueueStruct	*listPtr = NULL;
-    runwayQueueStruct	*emer = NULL;
+    AircraftClass *aircraft = NULL;
+    runwayQueueStruct *info = NULL;
+    runwayQueueStruct *list = NULL;
+    runwayQueueStruct *listPtr = NULL;
+    runwayQueueStruct *emer = NULL;
 
     emer = runwayQueue[queue];
 
@@ -2189,10 +2189,10 @@ void ATCBrain::SetEmergency(int queue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::ReschedulePlanes(int queue)
 {
-    AircraftClass		*aircraft = NULL;
-    runwayQueueStruct	*info = NULL;
-    runwayQueueStruct	*deleteInfo = NULL;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    AircraftClass *aircraft = NULL;
+    runwayQueueStruct *info = NULL;
+    runwayQueueStruct *deleteInfo = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
 
     deleteInfo = info = runwayQueue[queue];
 
@@ -2236,9 +2236,9 @@ void ATCBrain::ReschedulePlanes(int queue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
 {
-    AircraftClass		*aircraft = NULL;
-    runwayQueueStruct	*info = NULL;
-    runwayQueueStruct	*deleteInfo = NULL;
+    AircraftClass *aircraft = NULL;
+    runwayQueueStruct *info = NULL;
+    runwayQueueStruct *deleteInfo = NULL;
     int rwindex = 0;
 
     deleteInfo = info = runwayQueue[queue];
@@ -2265,7 +2265,7 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
 
     ulong takeoffTime = FindFlightTakeoffTime(flight, queue);
 
-    VuListIterator	flightIter(flight->GetComponents());
+    VuListIterator flightIter(flight->GetComponents());
     aircraft = (AircraftClass*) flightIter.GetFirst();
 
     while (aircraft)
@@ -2275,8 +2275,8 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
             if (UseSectionTakeoff((Flight)aircraft->GetCampaignObject(), rwindex))
             {
                 if (aircraft->vehicleInUnit == 2)
-                    //					takeoffTime += SLOT_TIME * 2;
-                    takeoffTime += SLOT_TIME;	 // 30JAN04 - FRB
+                    // takeoffTime += SLOT_TIME * 2;
+                    takeoffTime += SLOT_TIME;  // 30JAN04 - FRB
             }
             else if (aircraft->vehicleInUnit)
             {
@@ -2305,9 +2305,9 @@ void ATCBrain::RescheduleFlightTakeoff(int queue, Flight flight)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::ReorderFlight(int queue, Flight flight, AtcStatusEnum status)
 {
-    AircraftClass		*aircraft = NULL;
-    runwayQueueStruct	*info = NULL;
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    AircraftClass *aircraft = NULL;
+    runwayQueueStruct *info = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
 
     info = runwayQueue[queue];
 
@@ -2338,7 +2338,7 @@ void ATCBrain::ReorderFlight(int queue, Flight flight, AtcStatusEnum status)
 int ATCBrain::FindBestTakeoffRunway(int checklist)
 {
     int i, j;
-    int	delta, best = 91, windheading = 0;
+    int delta, best = 91, windheading = 0;
     runwayQueueStruct *info = NULL;
 
     // Find windheading in degrees (add 180 if we want opposite direction)
@@ -2367,7 +2367,7 @@ int ATCBrain::FindBestTakeoffRunway(int checklist)
                 if (delta > 180)
                     delta = 360 - delta;  // Cobra - simplify angle adjustment
 
-                //					delta = abs(PtHeaderDataTable[runwayStats[i].rwIndexes[j]].data - 360 + windheading);
+                // delta = abs(PtHeaderDataTable[runwayStats[i].rwIndexes[j]].data - 360 + windheading);
                 if (delta < best)
                 {
                     best = delta;
@@ -2463,7 +2463,7 @@ void ATCBrain::CalculateMinMaxTime(AircraftClass* aircraft, int rwindex, AtcStat
                 dx *= norm;
                 dy *= norm;
 
-                finAngle =	dx * PtHeaderDataTable[rwindex].cosHeading +
+                finAngle = dx * PtHeaderDataTable[rwindex].cosHeading +
                             dy * PtHeaderDataTable[rwindex].sinHeading;
 
                 if (finAngle > 0.707F)
@@ -2656,8 +2656,8 @@ void ATCBrain::CalcRunwayDimensions(int index)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int ATCBrain::IsOnRunway(float x, float y)
 {
-    float	dx, dy, relx, rely;
-    int		i;
+    float dx, dy, relx, rely;
+    int i;
 
     int retval = 0;
 
@@ -2695,7 +2695,7 @@ int ATCBrain::IsOnRunway(int taxipoint)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::IsOverRunway(AircraftClass* aircraft)
+int ATCBrain::IsOverRunway(AircraftClass* aircraft)
 {
     return IsOnRunway(aircraft->XPos(), aircraft->YPos());;
 }
@@ -2703,7 +2703,7 @@ int	ATCBrain::IsOverRunway(AircraftClass* aircraft)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 float ATCBrain::DetermineAngle(AircraftClass* aircraft, int rwindex, AtcStatusEnum status)
 {
-    float	px = 0.0F, py = 0.0F, dx = 0.0F, dy = 0.0F, norm = 0.0F, cosAngle = 1.0F;
+    float px = 0.0F, py = 0.0F, dx = 0.0F, dy = 0.0F, norm = 0.0F, cosAngle = 1.0F;
 
     switch (status)
     {
@@ -2768,7 +2768,7 @@ float ATCBrain::DetermineAngle(AircraftClass* aircraft, int rwindex, AtcStatusEn
         dx *= norm;
         dy *= norm;
 
-        cosAngle =	dx * PtHeaderDataTable[rwindex].cosHeading +
+        cosAngle = dx * PtHeaderDataTable[rwindex].cosHeading +
                     dy * PtHeaderDataTable[rwindex].sinHeading;
     }
 
@@ -2930,7 +2930,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
     }
 
     int i, j, ptindex;
-    int	delta, best = 91, sbest = 91, windheading, score1, score2;
+    int delta, best = 91, sbest = 91, windheading, score1, score2;
     int rwindex = 0, queue = 0, rwindex2 = 0, queue2 = 0;
     float dist1, dist2, px, py, dx, dy;
     runwayQueueStruct* info;
@@ -2950,7 +2950,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
                 if (delta > 180)
                 {
                     delta = 360 - delta;  // Cobra - simplify angle adjustment
-                    //					delta = abs(PtHeaderDataTable[runwayStats[i].rwIndexes[j]].data - 360 + windheading);
+                    // delta = abs(PtHeaderDataTable[runwayStats[i].rwIndexes[j]].data - 360 + windheading);
                 }
 
                 if (delta < best)
@@ -3091,7 +3091,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
 void ATCBrain::FindEmergencyLandingRunway(int *queue, int *rwindex, FalconEntity* landing)
 {
     int i, j, ptindex;
-    int	delta, best = 91, sbest = 91, rwindex2, queue2, score1, score2;
+    int delta, best = 91, sbest = 91, rwindex2, queue2, score1, score2;
     float dist1, dist2, px, py, dx, dy, headingfrom;
     runwayQueueStruct* info;
 
@@ -3287,11 +3287,11 @@ runwayQueueStruct* ATCBrain::NextToLand(int queue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
 {
-    float	x, y, z, dx, dy, cosAngle, dist;
-    float	norm, vt, cosHdg, sinHdg, relx, rely;
-    float	turnDist, speed, deltaTime;
-    float	baseX, baseY, finalX, finalY;
-    ulong	turnTime;
+    float x, y, z, dx, dy, cosAngle, dist;
+    float norm, vt, cosHdg, sinHdg, relx, rely;
+    float turnDist, speed, deltaTime;
+    float baseX, baseY, finalX, finalY;
+    ulong turnTime;
 
     speed = aircraft->af->MinVcas() * KNOTS_TO_FTPSEC;
     aircraft->DBrain()->GetTrackPoint(x, y, z);
@@ -3327,7 +3327,7 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
                 dx *= norm;
                 dy *= norm;
 
-                cosAngle =	dx * aircraft->XDelta() / vt +
+                cosAngle = dx * aircraft->XDelta() / vt +
                             dy * aircraft->YDelta() / vt;
 
                 if (cosAngle < 0.0F)
@@ -3453,21 +3453,21 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
     dx *= norm;
     dy *= norm;
 
-    cosAngle =	dx * aircraft->XDelta() / vt +
+    cosAngle = dx * aircraft->XDelta() / vt +
                 dy * aircraft->YDelta() / vt;
 
     // RAS - 3Oct04 - Verify this information
     // Old information - Broken out to make easier to debug
     /*
     if( (info->lastContacted + 30 * CampaignSeconds < SimLibElapsedTime && dist > 4.0F*turnDist &&
-    	(cosAngle < 0.965925F || info->status < lLanded && fabs(speed - vt) > 30.0F))	||
-    	(info->lastContacted + 15 * CampaignSeconds < SimLibElapsedTime && cosAngle < 0.5F && dist > 3.0F*turnDist)	||
-    	(info->lastContacted + 8 * CampaignSeconds < SimLibElapsedTime && cosAngle < -0.866F )||
-    	info->lastContacted + 2 * CampaignMinutes < SimLibElapsedTime && dist > 4.0F*turnDist)
+     (cosAngle < 0.965925F || info->status < lLanded && fabs(speed - vt) > 30.0F)) ||
+     (info->lastContacted + 15 * CampaignSeconds < SimLibElapsedTime && cosAngle < 0.5F && dist > 3.0F*turnDist) ||
+     (info->lastContacted + 8 * CampaignSeconds < SimLibElapsedTime && cosAngle < -0.866F )||
+     info->lastContacted + 2 * CampaignMinutes < SimLibElapsedTime && dist > 4.0F*turnDist)
     {
-    	//we're not heading for our track point
-    	MakeVectorCall(aircraft, FalconLocalGame);
-    	info->lastContacted = SimLibElapsedTime;
+     //we're not heading for our track point
+     MakeVectorCall(aircraft, FalconLocalGame);
+     info->lastContacted = SimLibElapsedTime;
     }
     */
 
@@ -3485,7 +3485,7 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
     //RAS-3Oct04-added airspeed check every 20 seconds instead of every time
     else if (info->lastContacted + 20 * CampaignSeconds < SimLibElapsedTime)
     {
-        if (info->status < lLanded && fabs(speed - vt) > 30.0F)	//haven't landed and speed is off by > 30kts
+        if (info->status < lLanded && fabs(speed - vt) > 30.0F) //haven't landed and speed is off by > 30kts
         {
             //we're not heading for our track point
             MakeVectorCall(aircraft, FalconLocalGame);
@@ -3534,8 +3534,8 @@ int ATCBrain::CheckVector(AircraftClass *aircraft, runwayQueueStruct* info)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::FindFinalPt(AircraftClass* approaching, int rwindex, float *x, float *y)
 {
-    float	dist;
-    float	px, py;
+    float dist;
+    float px, py;
 
     TranslatePointData(self, GetFirstPt(rwindex), &px, &py);
 
@@ -3550,7 +3550,7 @@ void ATCBrain::FindFinalPt(AircraftClass* approaching, int rwindex, float *x, fl
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 AtcStatusEnum ATCBrain::FindBasePt(AircraftClass* approaching, int rwindex, float finalX, float finalY, float *x, float *y)
 {
-    float	dist, cosAngle, sinAngle, dx, dy, norm;
+    float dist, cosAngle, sinAngle, dx, dy, norm;
 
     dx = dy = 0.0F;
 
@@ -3589,12 +3589,12 @@ AtcStatusEnum ATCBrain::FindBasePt(AircraftClass* approaching, int rwindex, floa
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-AtcStatusEnum	ATCBrain::FindFirstLegPt(AircraftClass* approaching, int rwindex, ulong schedTime, float pointX, float pointY, int usebase, float *x, float *y)
+AtcStatusEnum ATCBrain::FindFirstLegPt(AircraftClass* approaching, int rwindex, ulong schedTime, float pointX, float pointY, int usebase, float *x, float *y)
 {
-    float	dist = 0.0F, totalDist = 0.0F, legAngle = 0.0F, legHeading = 0.0F, hdgToPt = 0.0F;
-    float	dx = 0.0F, dy = 0.0F, PatternSpd = 0.0F, decelTime = 0.0F, avgDecelSpd = 0.0F;
-    float	deltaTime = 0.0F;
-    mlTrig	Trig;
+    float dist = 0.0F, totalDist = 0.0F, legAngle = 0.0F, legHeading = 0.0F, hdgToPt = 0.0F;
+    float dx = 0.0F, dy = 0.0F, PatternSpd = 0.0F, decelTime = 0.0F, avgDecelSpd = 0.0F;
+    float deltaTime = 0.0F;
+    mlTrig Trig;
 
     PatternSpd = approaching->af->MinVcas() * KNOTS_TO_FTPSEC;
 
@@ -3631,9 +3631,9 @@ AtcStatusEnum	ATCBrain::FindFirstLegPt(AircraftClass* approaching, int rwindex, 
     //cobra this fixes aborts not ever being allowed to come back
     /*if(deltaTime < decelTime)
     {
-    	*x = approaching->XPos();
-    	*y = approaching->YPos();
-    	return lHolding;
+     *x = approaching->XPos();
+     *y = approaching->YPos();
+     return lHolding;
     }*/
 
     totalDist = decelTime * avgDecelSpd + PatternSpd * (deltaTime - decelTime);
@@ -3695,9 +3695,9 @@ AtcStatusEnum	ATCBrain::FindFirstLegPt(AircraftClass* approaching, int rwindex, 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int ATCBrain::FindTakeoffPt(FlightClass* flight, int vehicleInUnit, int rwindex, float *x, float *y)
 {
-    int		point;
-    float	heading, dir;
-    mlTrig	Trig;
+    int point;
+    float heading, dir;
+    mlTrig Trig;
     Falcon4EntityClassType* classPtr;
 
     point = GetNextPtLoop(GetFirstPt(rwindex));
@@ -3736,9 +3736,9 @@ int ATCBrain::FindTakeoffPt(FlightClass* flight, int vehicleInUnit, int rwindex,
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int ATCBrain::FindRunwayPt(FlightClass* flight, int vehicleInUnit, int rwindex, float *x, float *y)
 {
-    int		point;
-    float	heading, dir;
-    mlTrig	Trig;
+    int point;
+    float heading, dir;
+    mlTrig Trig;
 
     point = GetFirstPt(rwindex);
     TranslatePointData(self, point, x, y);
@@ -3769,11 +3769,11 @@ float ATCBrain::GetAltitude(AircraftClass* aircraft, AtcStatusEnum status)
 {
     float alt = 0.0F;
     Tpoint pos;
-    SimBaseClass*	entity = NULL;
+    SimBaseClass* entity = NULL;
 
     {
         // destroy iterator here
-        VuListIterator	cit(self->GetComponents());
+        VuListIterator cit(self->GetComponents());
         entity = (SimBaseClass*)cit.GetFirst();
 
         while (entity && !entity->drawPointer)
@@ -3948,7 +3948,7 @@ runwayQueueStruct* ATCBrain::InList(VU_ID aircraftID)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-runwayQueueStruct*	ATCBrain::AddToList(runwayQueueStruct* list, runwayQueueStruct* info)
+runwayQueueStruct* ATCBrain::AddToList(runwayQueueStruct* list, runwayQueueStruct* info)
 {
     runwayQueueStruct* listPtr = list;
     runwayQueueStruct* listPrev = NULL;
@@ -4047,7 +4047,7 @@ runwayQueueStruct * ATCBrain::AddTraffic(VU_ID aircraftID, AtcStatusEnum status,
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-runwayQueueStruct*	ATCBrain::RemoveFromList(runwayQueueStruct* list, runwayQueueStruct* info)
+runwayQueueStruct* ATCBrain::RemoveFromList(runwayQueueStruct* list, runwayQueueStruct* info)
 {
     if (info->prev)
     {
@@ -4137,31 +4137,31 @@ void ATCBrain::AddInbound(AircraftClass *aircraft)
     if (inboundQueue && F4IsBadReadPtr(inboundQueue, sizeof(runwayQueueStruct))) // JB 010326 CTD
         inboundQueue = NULL; // JB 010326 CTD
 
-    info->aircraftID	= aircraft->Id();			//which plane is it
-    info->status		= lTakingPosition;			//at what point in the landing/takeoff process
-    info->schedTime		= 0;						//when scheduled to be on runway
-    info->lastContacted = 0;						//time last talked to
-    info->rwindex		= 0;						//what runway I'm supposed to use
-    info->prev			= NULL;
-    info->next			= inboundQueue;
+    info->aircraftID = aircraft->Id(); //which plane is it
+    info->status = lTakingPosition; //at what point in the landing/takeoff process
+    info->schedTime = 0; //when scheduled to be on runway
+    info->lastContacted = 0; //time last talked to
+    info->rwindex = 0; //what runway I'm supposed to use
+    info->prev = NULL;
+    info->next = inboundQueue;
 
     if (inboundQueue)
-        inboundQueue->prev	= info;
+        inboundQueue->prev = info;
 
-    inboundQueue		= info;
+    inboundQueue = info;
     SendCmdMessage(aircraft, info);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::AddInboundFlight(FlightClass *flight)
 {
-    AircraftClass		*aircraft;
+    AircraftClass *aircraft;
 
     // protect against no components
     if (!flight->GetComponents())
         return;
 
-    VuListIterator		flightIter(flight->GetComponents());
+    VuListIterator flightIter(flight->GetComponents());
     aircraft = (AircraftClass*) flightIter.GetFirst();
 
     while (aircraft)
@@ -4201,8 +4201,8 @@ void ATCBrain::RemoveInbound(runwayQueueStruct* info)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::GiveOrderToWingman(AircraftClass *us, AtcStatusEnum status)
 {
-    runwayQueueStruct	*wingmanInfo = NULL;
-    AircraftClass		*wingman = NULL;
+    runwayQueueStruct *wingmanInfo = NULL;
+    AircraftClass *wingman = NULL;
 
     if (!us)
         return;
@@ -4233,9 +4233,9 @@ void ATCBrain::GiveOrderToWingman(AircraftClass *us, AtcStatusEnum status)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::GiveOrderToSection(AircraftClass *us, AtcStatusEnum status, int section)
 {
-    runwayQueueStruct	*info = NULL;
-    AircraftClass		*aircraft = NULL;
-    int					i;
+    runwayQueueStruct *info = NULL;
+    AircraftClass *aircraft = NULL;
+    int i;
 
     if (!us)
         return;
@@ -4263,130 +4263,130 @@ void ATCBrain::SendCmdMessage(AircraftClass* aircraft, runwayQueueStruct* info)
     if (F4IsBadReadPtr(self, sizeof(ObjectiveClass))) // JB 010408 CTD
         return;
 
-    FalconATCCmdMessage* ATCCmdMessage	= new FalconATCCmdMessage(aircraft->Id(), FalconLocalSession/*me123 from localgame*/);
-    ATCCmdMessage->dataBlock.from		= self->Id();
+    FalconATCCmdMessage* ATCCmdMessage = new FalconATCCmdMessage(aircraft->Id(), FalconLocalSession/*me123 from localgame*/);
+    ATCCmdMessage->dataBlock.from = self->Id();
     //I am sending an actual time instead of a delta, because of the huge time differences between different
     //machines at startup
     ATCCmdMessage->dataBlock.rwtime = info->schedTime;
-    ATCCmdMessage->dataBlock.rwindex	= (short)info->rwindex;
+    ATCCmdMessage->dataBlock.rwindex = (short)info->rwindex;
 
     switch (info->status)
     {
         case lIngressing:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::TakePosition;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::TakePosition;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lTakingPosition:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::TakePosition;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::TakePosition;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lAborted:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Abort;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Abort;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lEmerHold:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::EmergencyHold;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::EmergencyHold;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lHolding:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Hold;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Hold;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lFirstLeg:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::ToFirstLeg;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::ToFirstLeg;
             break;
 
         case lToBase:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::ToBase;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::ToBase;
             break;
 
         case lToFinal:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::ToFinal;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::ToFinal;
             break;
 
         case lOnFinal:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::OnFinal;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::OnFinal;
             info->lastContacted = SimLibElapsedTime + 30 * CampaignSeconds;
             break;
 
         case lClearToLand:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::ClearToLand;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::ClearToLand;
             info->lastContacted = SimLibElapsedTime + 30 * CampaignSeconds;
             break;
 
         case lLanded:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Landed;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Landed;
             info->lastContacted = SimLibElapsedTime + 30 * CampaignSeconds;
             break;
 
         case lTaxiOff:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::TaxiOff;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::TaxiOff;
             break;
 
         case lEmergencyToBase:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::EmerToBase;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::EmerToBase;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lEmergencyToFinal:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::EmerToFinal;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::EmerToFinal;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case lEmergencyOnFinal:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::EmerOnFinal;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::EmerOnFinal;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tEmerStop:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::EmergencyStop;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::EmergencyStop;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tWait:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Wait;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Wait;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tTaxi:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Taxi;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Taxi;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tHoldShort:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::HoldShort;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::HoldShort;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tPrepToTakeRunway:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::PrepToTakeRunway;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::PrepToTakeRunway;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tTakeRunway:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::TakeRunway;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::TakeRunway;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case tTakeoff:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Takeoff;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Takeoff;
             info->lastContacted = SimLibElapsedTime;
             break;
 
         case noATC:
         case tFlyOut:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::Release;
-            ATCCmdMessage->dataBlock.rwtime		= 0;
-            ATCCmdMessage->dataBlock.rwindex	= 0;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::Release;
+            ATCCmdMessage->dataBlock.rwtime = 0;
+            ATCCmdMessage->dataBlock.rwindex = 0;
             break;
 
         case tTaxiBack:
-            ATCCmdMessage->dataBlock.type		= FalconATCCmdMessage::TaxiBack;
+            ATCCmdMessage->dataBlock.type = FalconATCCmdMessage::TaxiBack;
             info->lastContacted = SimLibElapsedTime;
             break;
 
@@ -4562,11 +4562,11 @@ int ATCBrain::GetRunwayName(int rwindex)
 
     // JB 010508 Fix from Schumi
     /*
-    	//hack for unexpected 23L/R and 05L/R
-    	if(index >= 43)
-    		index = 27;
-    	else if(index >= 40)
-    		index = 5;
+     //hack for unexpected 23L/R and 05L/R
+     if(index >= 43)
+     index = 27;
+     else if(index >= 40)
+     index = 5;
     */
 
     return index;
@@ -4576,7 +4576,7 @@ int ATCBrain::GetRunwayName(int rwindex)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 {
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
     int rwindex, index;
     float x, y, z, speed, cosAngle;
     AtcStatusEnum status;
@@ -4611,11 +4611,11 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 
     /*
     if(fabs(aircraft->ZPos() - desAlt) < 100.0F)
-    	index = 2;
+     index = 2;
     else if(aircraft->ZPos() < desAlt)
-    	index = 0;
+     index = 0;
     else
-    	index = 1;
+     index = 1;
     */
 
     //radioMessage->dataBlock.edata[2] = index;
@@ -4659,24 +4659,24 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 
             }
 
-            desAlt = GetAltitude(aircraft, lToBase);	//RAS-3Oct04-Changed from lToFinal to lToBase
+            desAlt = GetAltitude(aircraft, lToBase); //RAS-3Oct04-Changed from lToFinal to lToBase
 
-            if (fabs(aircraft->ZPos() - desAlt) < 800.0F)	//RAS-23Jan04-changed from 100 to 800
-                index = -1;									//RAS-3Oct04-Maintain Altitude-changed from 2 to -1
+            if (fabs(aircraft->ZPos() - desAlt) < 800.0F) //RAS-23Jan04-changed from 100 to 800
+                index = -1; //RAS-3Oct04-Maintain Altitude-changed from 2 to -1
             //no climb/descend/maintain call if within 800
             //feet of alt
             else if (aircraft->ZPos() < desAlt)
-                index = 1;									// Descend
+                index = 1; // Descend
             else
-                index = 0;									// Climb
+                index = 0; // Climb
 
 
             //RAS-3Oct04- Set index to -1 if don't need to make altitude call
             radioMessage->dataBlock.edata[2] = (short)index;
 
-            if (index == -1)								//if on altitude, don't say climb,descend or maintain
+            if (index == -1) //if on altitude, don't say climb,descend or maintain
                 radioMessage->dataBlock.edata[3] = -1;
-            else										// if on altitude, don't say altitude
+            else // if on altitude, don't say altitude
                 radioMessage->dataBlock.edata[3] = (short)(-1 * FloatToInt32(desAlt)); //altitude in feet
 
             if (fabs(aircraft->af->vcas - speed) > 10.0F)
@@ -4699,7 +4699,7 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
                 aircraft->DBrain()->lastVectorTypeCall = SimLibElapsedTime + 2 * CampaignMinutes;
 
                 if (radioMessage->dataBlock.edata[3] == -1 && radioMessage->dataBlock.edata[4] == -1)
-                    radioMessage->dataBlock.edata[7] = -1;	//RAS-3Oct04-no vector type if no alt and airspeed call
+                    radioMessage->dataBlock.edata[7] = -1; //RAS-3Oct04-no vector type if no alt and airspeed call
                 else
                 {
                     if (PtHeaderDataTable[rwindex].ltrt > 0)
@@ -4745,21 +4745,21 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 
             desAlt = GetAltitude(aircraft, lToFinal);
 
-            if (fabs(aircraft->ZPos() - desAlt) < 500.0F)	//RAS-23Jan04- changed from 100 to 500
-                index = -1;									//RAS-3Oct04-Maintain Altitude-changed from 2 to -1
+            if (fabs(aircraft->ZPos() - desAlt) < 500.0F) //RAS-23Jan04- changed from 100 to 500
+                index = -1; //RAS-3Oct04-Maintain Altitude-changed from 2 to -1
             //no climb/descend/maintain call if within 500
             //feet of alt
             else if (aircraft->ZPos() < desAlt)
-                index = 1;									//Descend
+                index = 1; //Descend
             else
-                index = 0;									//Climb
+                index = 0; //Climb
 
             //RAS-3Oct04- Set index to -1 if don't need to make altitude call
             radioMessage->dataBlock.edata[2] = (short)index;
 
-            if (index == -1)								//if on altitude, don't say climb,descend or maintain
+            if (index == -1) //if on altitude, don't say climb,descend or maintain
                 radioMessage->dataBlock.edata[3] = -1;
-            else											// if on altitude, don't say altitude
+            else // if on altitude, don't say altitude
                 radioMessage->dataBlock.edata[3] = (short)(-1 * FloatToInt32(desAlt)); //altitude in feet
 
             if (fabs(aircraft->af->vcas - speed) > 10.0F)
@@ -4770,7 +4770,7 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
             radioMessage->dataBlock.edata[5] = (short)CalculateStandRateTurnToPt(aircraft, x, y, &finalHdg); //turn direction
 
             if (radioMessage->dataBlock.edata[5] >= 0)
-                radioMessage->dataBlock.edata[6] = (short)FloatToInt32(finalHdg);	//heading
+                radioMessage->dataBlock.edata[6] = (short)FloatToInt32(finalHdg); //heading
             else
                 radioMessage->dataBlock.edata[6] = -1;
 
@@ -4783,7 +4783,7 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 
                 if (radioMessage->dataBlock.edata[3] == -1 && radioMessage->dataBlock.edata[4] == -1)
                 {
-                    radioMessage->dataBlock.edata[7] = -1;	//RAS-3Oct04-no vector type if no alt and airspeed call
+                    radioMessage->dataBlock.edata[7] = -1; //RAS-3Oct04-no vector type if no alt and airspeed call
                     radioMessage->dataBlock.edata[8] = -1;
                 }
                 else
@@ -4795,8 +4795,8 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
             }
             else
             {
-                radioMessage->dataBlock.edata[7] = -1;	//vector type
-                radioMessage->dataBlock.edata[8] = -1;	//active rwy
+                radioMessage->dataBlock.edata[7] = -1; //vector type
+                radioMessage->dataBlock.edata[8] = -1; //active rwy
             }
 
             //End vector type code
@@ -4826,7 +4826,7 @@ void ATCBrain::MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::GetLandingNumber(runwayQueueStruct* landInfo)
+int ATCBrain::GetLandingNumber(runwayQueueStruct* landInfo)
 {
     int pos = 0;
 
@@ -4850,7 +4850,7 @@ int	ATCBrain::GetLandingNumber(runwayQueueStruct* landInfo)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::GetTakeoffNumber(runwayQueueStruct* takeoffInfo)
+int ATCBrain::GetTakeoffNumber(runwayQueueStruct* takeoffInfo)
 {
     int pos = 0;
 
@@ -4877,7 +4877,7 @@ int	ATCBrain::GetTakeoffNumber(runwayQueueStruct* takeoffInfo)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::GetOppositeRunway(int rwindex)
+int ATCBrain::GetOppositeRunway(int rwindex)
 {
     // 2002-04-08 MN CTD fix
     int runway = 0;
@@ -4912,14 +4912,14 @@ SimBaseClass* CheckPointGlobal(AircraftClass *self, float x, float y)
         myRad = 40.0f;
     }
 
-    VuListIterator	unitWalker(SimDriver.objectList);
+    VuListIterator unitWalker(SimDriver.objectList);
     testObject = (SimBaseClass*) unitWalker.GetFirst();
 
     while (testObject)
     {
         // ignore objects under these conditions:
-        //		Ourself
-        //		Not on ground
+        // Ourself
+        // Not on ground
         if (!testObject->OnGround() ||
             testObject == self)
         {
@@ -4931,7 +4931,7 @@ SimBaseClass* CheckPointGlobal(AircraftClass *self, float x, float y)
         tmpY = testObject->YPos() - y;
 
         if (testObject->drawPointer)
-            testRad = testObject->drawPointer->Radius() + myRad ;	// FRB - Increase search dist. due to new parking spot locations ????
+            testRad = testObject->drawPointer->Radius() + myRad ; // FRB - Increase search dist. due to new parking spot locations ????
         else
             testRad = 40.0f + myRad;
 
@@ -4958,14 +4958,14 @@ SimBaseClass* CheckPointGlobal(CampBaseClass *unit, float x, float y)
 
     {
         // destroy iterator here
-        VuListIterator	unitWalker(SimDriver.objectList);
+        VuListIterator unitWalker(SimDriver.objectList);
         testObject = (SimBaseClass*) unitWalker.GetFirst();
 
         while (testObject)
         {
             // ignore objects under these conditions:
-            //		Ourself
-            //		Not on ground
+            // Ourself
+            // Not on ground
             if (!testObject->OnGround())
             {
                 testObject = (SimBaseClass*) unitWalker.GetNext();
@@ -4992,7 +4992,7 @@ SimBaseClass* CheckPointGlobal(CampBaseClass *unit, float x, float y)
 
     if (unit)
     {
-        VuListIterator	cit(unit->GetComponents());
+        VuListIterator cit(unit->GetComponents());
         testObject = (SimBaseClass*)cit.GetFirst();
 
         while (testObject)
@@ -5038,14 +5038,14 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
     if (BigBoy)
         myRad = 10.f;
 
-    VuListIterator	unitWalker(SimDriver.objectList);
+    VuListIterator unitWalker(SimDriver.objectList);
     testObject = (SimBaseClass*) unitWalker.GetFirst();
 
     while (testObject)
     {
         // ignore objects under these conditions:
-        //		Ourself
-        //		Not on ground
+        // Ourself
+        // Not on ground
         if (!testObject->OnGround() ||
             testObject == self)
         {
@@ -5066,7 +5066,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
         }
 
         if (testObject->drawPointer)
-            testRad = testObject->drawPointer->Radius() + myRad + AVOID_RANGE;	// FRB - decreased AVOID_RANGE
+            testRad = testObject->drawPointer->Radius() + myRad + AVOID_RANGE; // FRB - decreased AVOID_RANGE
         else
             testRad = 40.0f + myRad + AVOID_RANGE;
 
@@ -5080,7 +5080,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
             }
             else if (testDist < minDist)
             {
-                //				if(testDist <  10000.0F) // 100'
+                // if(testDist <  10000.0F) // 100'
                 if (testDist <  2500.0F) // 30JAN04 - FRB - 50'
                     return testObject;
 
@@ -5096,7 +5096,7 @@ SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::NumOperableRunways(void)
+int ATCBrain::NumOperableRunways(void)
 {
     int num = 0, i;
 
@@ -5117,12 +5117,12 @@ int	ATCBrain::NumOperableRunways(void)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
+int ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
 {
     ShiAssert(landInfo);
-    FalconRadioChatterMessage	*radioMessage;
-    int							queue = PtHeaderDataTable[landInfo->rwindex].runwayNum;
-    runwayQueueStruct*			next = NextToLand(queue);
+    FalconRadioChatterMessage *radioMessage;
+    int queue = PtHeaderDataTable[landInfo->rwindex].runwayNum;
+    runwayQueueStruct* next = NextToLand(queue);
 
     //ShiAssert(runwayQueue[queue]);
 
@@ -5151,7 +5151,7 @@ int	ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
             if (landInfo->status != lLanded)
             {
                 landInfo->status = lLanded;
-                //				landInfo->timer = SimLibElapsedTime + 15 * CampaignSeconds;
+                // landInfo->timer = SimLibElapsedTime + 15 * CampaignSeconds;
                 SendCmdMessage(aircraft, landInfo);
             }
         }
@@ -5164,32 +5164,32 @@ int	ATCBrain::CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
+int ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
 {
-    FalconRadioChatterMessage	*radioMessage;
+    FalconRadioChatterMessage *radioMessage;
 
     if (!aircraft->OnGround() && aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
     {
         if (info)
         {
             // RAS - 29Jan04 - This section changed because when you would do a touch and go, ATC would
-            //					still think you were on the ground.  I could not see any reason to leave
-            //					this the way it was.  If you are in this routine, then you are airborne because
-            //					!aircraft->OnGround() means you are flying.  if you are flying, then you should
-            //					be removed from the ATC list unless you call inbound again.
+            // still think you were on the ground.  I could not see any reason to leave
+            // this the way it was.  If you are in this routine, then you are airborne because
+            // !aircraft->OnGround() means you are flying.  if you are flying, then you should
+            // be removed from the ATC list unless you call inbound again.
 
-            //			if(info->status == lLanded)
-            //			{
-            //				aircraft->DBrain()->ClearATCFlag(DigitalBrain::Landed);
-            //			}
-            //			else
-            //			{
+            // if(info->status == lLanded)
+            // {
+            // aircraft->DBrain()->ClearATCFlag(DigitalBrain::Landed);
+            // }
+            // else
+            // {
             info->lastContacted = SimLibElapsedTime;
             info->status = tFlyOut;
-            //				info->timer = SimLibElapsedTime + 60 * CampaignSeconds;
+            // info->timer = SimLibElapsedTime + 60 * CampaignSeconds;
             SendCmdMessage(aircraft, info);
             RemoveTraffic(info->aircraftID, PtHeaderDataTable[info->rwindex].runwayNum);
-            //			}
+            // }
         }
 
         if (!aircraft->DBrain()->IsSetATC(DigitalBrain::PermitTakeoff) && aircraft->DBrain()->IsSetATC(DigitalBrain::Landed))
@@ -5220,8 +5220,8 @@ int	ATCBrain::CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ATCBrain::CheckFinalApproach(AircraftClass *aircraft, runwayQueueStruct *info)
 {
-    int			curTaxiPoint, queue;
-    float		x, y, dx, dy, dist, cosAngle;
+    int curTaxiPoint, queue;
+    float x, y, dx, dy, dist, cosAngle;
 
     queue = PtHeaderDataTable[info->rwindex].runwayNum;
 
@@ -5238,7 +5238,7 @@ void ATCBrain::CheckFinalApproach(AircraftClass *aircraft, runwayQueueStruct *in
     dx /= dist;
     dy /= dist;
 
-    cosAngle =	dx * PtHeaderDataTable[info->rwindex].cosHeading +
+    cosAngle = dx * PtHeaderDataTable[info->rwindex].cosHeading +
                 dy * PtHeaderDataTable[info->rwindex].sinHeading;
 
     if (dist > 500.0F && cosAngle > -0.7071F && cosAngle < 0.939692F)
@@ -5268,7 +5268,7 @@ void ATCBrain::CheckFinalApproach(AircraftClass *aircraft, runwayQueueStruct *in
     }
 
     //Cobra let's have some fun.  Check for gear down, give warning, then abort them of they still don't have the gear down
-    FalconRadioChatterMessage	*radioMessage = NULL;
+    FalconRadioChatterMessage *radioMessage = NULL;
 
     if (aircraft->IsPlayer() && (dist < 12000.0f && dist > 6000.0f) && aircraft->af->gearPos < 0.5f)
     {
@@ -5288,15 +5288,15 @@ void ATCBrain::CheckFinalApproach(AircraftClass *aircraft, runwayQueueStruct *in
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* info)
+int ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* info)
 {
     if (aircraft->af->IsSet(AirframeClass::GearBroken) || aircraft->af->Fuel() <= 0.0F)
         return FALSE;
 
     int queue;
-    runwayQueueStruct	*nextTakeoff = NULL;
-    runwayQueueStruct	*nextLand = NULL;
-    runwayQueueStruct	*nextOnRunway = NULL;
+    runwayQueueStruct *nextTakeoff = NULL;
+    runwayQueueStruct *nextLand = NULL;
+    runwayQueueStruct *nextOnRunway = NULL;
     int waitforlanding = FALSE;
 
 
@@ -5336,9 +5336,9 @@ int	ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
             info->status = lTaxiOff;
 #endif
 
-            //			info->timer = SimLibElapsedTime + 15 * CampaignSeconds;
+            // info->timer = SimLibElapsedTime + 15 * CampaignSeconds;
         }
-        else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime &&	 // 06FEB04 - FRB - was 45 seconds
+        else if (info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime &&  // 06FEB04 - FRB - was 45 seconds
                  (SimLibElapsedTime > LAND_TIME_DELTA + info->schedTime ||
                   (rwindex != info->rwindex && GetOppositeRunway(rwindex) != info->rwindex)))
         {
@@ -5354,7 +5354,7 @@ int	ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
             return TRUE;
         }
     }
-    else if (rwindex && !info && aircraft->DBrain()->WaitTime() + 90 * CampaignSeconds < SimLibElapsedTime)	 // 06FEB04 - FRB - was 45 seconds
+    else if (rwindex && !info && aircraft->DBrain()->WaitTime() + 90 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 45 seconds
     {
         //yell at them to get off runway
         if (!nextOnRunway)
@@ -5367,7 +5367,7 @@ int	ATCBrain::CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* 
         aircraft->DBrain()->SetWaitTimer(SimLibElapsedTime);
         return TRUE;
     }
-    else if (rwindex && info && info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime)	 // 06FEB04 - FRB - was 45 seconds
+    else if (rwindex && info && info->lastContacted + 90 * CampaignSeconds < SimLibElapsedTime)  // 06FEB04 - FRB - was 45 seconds
     {
         //yell at them to get off runway
         if (!nextOnRunway)
@@ -5462,12 +5462,12 @@ void ATCBrain::RemoveFromAllATCs(AircraftClass *aircraft)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int	ATCBrain::UseSectionTakeoff(FlightClass *flight, int rwindex)
+int ATCBrain::UseSectionTakeoff(FlightClass *flight, int rwindex)
 {
     //TJL 10/31/03 Changing to 40 from 80
     if (runwayStats[PtHeaderDataTable[rwindex].runwayNum].halfwidth > 40.0F &&
-        (flight->GetSType() == STYPE_UNIT_ATTACK		||
-         flight->GetSType() == STYPE_UNIT_FIGHTER		||
+        (flight->GetSType() == STYPE_UNIT_ATTACK ||
+         flight->GetSType() == STYPE_UNIT_FIGHTER ||
          flight->GetSType() == STYPE_UNIT_FIGHTER_BOMBER) &&
         flight->GetTotalVehicles() > 1)
         return TRUE;
@@ -5485,12 +5485,12 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
     int count;
 
 #ifdef DEBUG
-    /*	if(GetCurrentThreadId() != gSimThreadID)
-    	{
-    		ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
-    		ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
-    		//*((unsigned int *) 0x00) = 0; //told you not to ignore it
-    	}*/
+    /* if(GetCurrentThreadId() != gSimThreadID)
+     {
+     ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+     ShiAssert(!"Tell Dave Power you hit the ATC assert (x4373) Don't ignore this!");
+     //*((unsigned int *) 0x00) = 0; //told you not to ignore it
+     }*/
 
     while (list)
     {
@@ -5571,10 +5571,10 @@ void ATCBrain::CheckList(runwayQueueStruct *list)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ulong ATCBrain::RemovePlaceHolders(VU_ID id)
 {
-    runwayQueueStruct	*info = NULL;
-    runwayQueueStruct	*deleteInfo = NULL;
-    ulong				takeoffTime = 0;
-    int					i;
+    runwayQueueStruct *info = NULL;
+    runwayQueueStruct *deleteInfo = NULL;
+    ulong takeoffTime = 0;
+    int i;
 
     for (i = 0; i < numRwys; i++)
     {
@@ -5608,37 +5608,37 @@ void ATCBrain::CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playe
         self->brain->checkTrafficTime = SimLibElapsedTime + 10 * CampaignSeconds;
 
         //setup variables
-        FalconRadioChatterMessage	*radioMessage = NULL;
-        float altitude = 0.0F;				// altitude of traffic
-        float oldTrafficRange = 0.0F;		// hold range of last traffic call
-        float xdiff;				// difference in x coord between us and traffic
-        float ydiff;				// difference in y coord between us and traffic
-        float angle;				// computed angle in radians to traffic
-        int navangle;				// computed degrees off nose
+        FalconRadioChatterMessage *radioMessage = NULL;
+        float altitude = 0.0F; // altitude of traffic
+        float oldTrafficRange = 0.0F; // hold range of last traffic call
+        float xdiff; // difference in x coord between us and traffic
+        float ydiff; // difference in y coord between us and traffic
+        float angle; // computed angle in radians to traffic
+        int navangle; // computed degrees off nose
 
 
         if (self->brain->pLastTraffic != NULL)
-            self->brain->oldTrafficRange = self->brain->trafficRange;	//store range of last traffic call
+            self->brain->oldTrafficRange = self->brain->trafficRange; //store range of last traffic call
 
         // Check for Traffic
         SimBaseClass *traffic = SimDriver.FindNearestTraffic(aircraft, self, &altitude);
 
         if (traffic == NULL)
-            self->brain->trafficCheck = noTraffic;		//if no traffic set status to none
+            self->brain->trafficCheck = noTraffic; //if no traffic set status to none
 
         switch (self->brain->trafficCheck)
         {
             case noTraffic:
-                self->brain->trafficInSightFlag = FALSE;	// no traffic to see
+                self->brain->trafficInSightFlag = FALSE; // no traffic to see
                 break;
 
-            case priorityTraffic:		// not used right now, but may use it later
-            case newTraffic:			// traffic not called out last time
+            case priorityTraffic: // not used right now, but may use it later
+            case newTraffic: // traffic not called out last time
                 radioMessage = CreateCallFromATC(self, aircraft, rcATCTRAFFICWARNING, FalconLocalGame);
-                self->brain->trafficInSightFlag = FALSE;		// not in sight since it's first call
+                self->brain->trafficInSightFlag = FALSE; // not in sight since it's first call
                 break;
 
-            case oldTraffic:			// Same traffic called last time
+            case oldTraffic: // Same traffic called last time
                 radioMessage = CreateCallFromATC(self, aircraft, rcATCTRAFFICWARNING2, FalconLocalGame);
                 break;
 
@@ -5660,13 +5660,13 @@ void ATCBrain::CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playe
 
             angle = (float)atan2(ydiff, xdiff);
             angle = angle - aircraft->Yaw();
-            navangle	=  FloatToInt32(RTD * angle);
+            navangle =  FloatToInt32(RTD * angle);
 
             if (navangle < 0)
                 navangle = 360 + navangle;
 
 
-            radioMessage->dataBlock.edata[3] = navangle / 30;	// scale compass angle for radio eData
+            radioMessage->dataBlock.edata[3] = navangle / 30; // scale compass angle for radio eData
 
             if (radioMessage->dataBlock.edata[3] >= 12)
                 radioMessage->dataBlock.edata[3] = 0;

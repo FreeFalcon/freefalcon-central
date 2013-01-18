@@ -70,9 +70,9 @@ FalconDisplayConfiguration::~FalconDisplayConfiguration(void)
 
 void FalconDisplayConfiguration::Setup(int languageNum)
 {
-    WNDCLASS	wc;
+    WNDCLASS wc;
 
-    // Setup the graphics databases	- M.N. changed to Falcon3DDataDir for theater switching
+    // Setup the graphics databases - M.N. changed to Falcon3DDataDir for theater switching
     DeviceIndependentGraphicsSetup(FalconTerrainDataDir, Falcon3DDataDir, FalconMiscTexDataDir);
 
     // set up and register window class
@@ -82,7 +82,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
     wc.cbWndExtra = sizeof(DWORD);
     wc.hInstance = NULL;
     //   wc.hIcon = NULL;
-    wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(105));	// OW BC
+    wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(105)); // OW BC
     wc.hCursor = NULL;
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName = NULL;
@@ -108,19 +108,19 @@ void FalconDisplayConfiguration::Setup(int languageNum)
     rect.top = rect.left = 0;
     rect.right = width[Movie];
     rect.bottom = height[Movie];
-    AdjustWindowRect(&rect,	windowStyle, FALSE);
+    AdjustWindowRect(&rect, windowStyle, FALSE);
     appWin = CreateWindow(
-                 "FalconDisplay",			/* class */
-                 "3D Output",				/* caption */
-                 windowStyle,					/* style */
-                 50,			/* init. x pos */
-                 50,			/* init. y pos */
-                 rect.right - rect.left,	/* init. x size */
-                 rect.bottom - rect.top,	/* init. y size */
-                 NULL,					/* parent window */
-                 NULL,					/* menu handle */
-                 NULL,					/* program handle */
-                 NULL					/* create parms */
+                 "FalconDisplay", /* class */
+                 "3D Output", /* caption */
+                 windowStyle, /* style */
+                 50, /* init. x pos */
+                 50, /* init. y pos */
+                 rect.right - rect.left, /* init. x size */
+                 rect.bottom - rect.top, /* init. y size */
+                 NULL, /* parent window */
+                 NULL, /* menu handle */
+                 NULL, /* program handle */
+                 NULL /* create parms */
              );
 
     if (!appWin)
@@ -146,7 +146,7 @@ void FalconDisplayConfiguration::Cleanup(void)
 
 void FalconDisplayConfiguration::MakeWindow(void)
 {
-    RECT		rect;
+    RECT rect;
 
     // Choose an appropriate window style
     if (displayFullScreen)
@@ -166,19 +166,19 @@ void FalconDisplayConfiguration::MakeWindow(void)
     rect.top = rect.left = 0;
     rect.right = width[Movie];
     rect.bottom = height[Movie];
-    AdjustWindowRect(&rect,	windowStyle, FALSE);
+    AdjustWindowRect(&rect, windowStyle, FALSE);
     appWin = CreateWindow(
-                 "FalconDisplay",			/* class */
-                 "F4 3D Output",				/* caption */
-                 windowStyle,					/* style */
-                 xOffset,			/* init. x pos */
-                 yOffset,			/* init. y pos */
-                 rect.right - rect.left,	/* init. x size */
-                 rect.bottom - rect.top,	/* init. y size */
-                 NULL,					/* parent window */
-                 NULL,					/* menu handle */
-                 NULL,					/* program handle */
-                 NULL					/* create parms */
+                 "FalconDisplay", /* class */
+                 "F4 3D Output", /* caption */
+                 windowStyle, /* style */
+                 xOffset, /* init. x pos */
+                 yOffset, /* init. y pos */
+                 rect.right - rect.left, /* init. x size */
+                 rect.bottom - rect.top, /* init. y size */
+                 NULL, /* parent window */
+                 NULL, /* menu handle */
+                 NULL, /* program handle */
+                 NULL /* create parms */
              );
 
     if (!appWin)
@@ -192,7 +192,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
     tme.dwFlags = TME_LEAVE;
     tme.hwndTrack = appWin;
     //if (!TrackMouseEvent(&tme)) {
-    //	ShiError( "Failed to track mouseleave");
+    // ShiError( "Failed to track mouseleave");
     //}
 
 
@@ -225,7 +225,7 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     RECT rect;
 
 #ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL));	// Make sure this is called by the main thread
+    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
     // sfr: only after we are finished!
@@ -242,11 +242,11 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     if (newMode == Sim && !displayFullScreen)
     {
 
-        int	wx = GetSystemMetrics(SM_CXSCREEN);
-        int	wy = GetSystemMetrics(SM_CYSCREEN);
+        int wx = GetSystemMetrics(SM_CXSCREEN);
+        int wy = GetSystemMetrics(SM_CYSCREEN);
 
-        int	NewXOffset = 0;
-        int	NewYOffset = 0;
+        int NewXOffset = 0;
+        int NewYOffset = 0;
 
         if ((rect.right > wx) || (rect.bottom > wy))
         {
@@ -273,29 +273,29 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
 
     if (pDI)
     {
-        /*JAM 01Dec03		if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
-        		{
+        /*JAM 01Dec03 if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
+         {
         #if 1
-        			// V1, V2 workaround - use primary display adapter with RGB Renderer
-        			int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
-        			ShiAssert(nIndexPrimary != -1);
+         // V1, V2 workaround - use primary display adapter with RGB Renderer
+         int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
+         ShiAssert(nIndexPrimary != -1);
 
-        			if(nIndexPrimary != -1)
-        			{
-        				DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nIndexPrimary);
-        				int nIndexRGBRenderer = pDI->FindRGBRenderer();
-        				ShiAssert(nIndexRGBRenderer != -1);
+         if(nIndexPrimary != -1)
+         {
+         DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(nIndexPrimary);
+         int nIndexRGBRenderer = pDI->FindRGBRenderer();
+         ShiAssert(nIndexRGBRenderer != -1);
 
-        				if(nIndexRGBRenderer != -1)
-        				{
-        					Driver = nIndexPrimary;
-        					theDevice = nIndexRGBRenderer;
-        				}
-        			}
+         if(nIndexRGBRenderer != -1)
+         {
+         Driver = nIndexPrimary;
+         theDevice = nIndexRGBRenderer;
+         }
+         }
         #else
-        			displayFullScreen = TRUE;	// force fullscreen
+         displayFullScreen = TRUE; // force fullscreen
         #endif
-        		}*/
+         }*/
 
         if (!pDI->SupportsSRT() && DisplayOptions.bRender2Texture)
             DisplayOptions.bRender2Texture = false;
@@ -331,7 +331,7 @@ void FalconDisplayConfiguration::LeaveMode(void)
 #endif
 {
 #ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL));	// Make sure this is called by the main thread
+    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
     theDisplayDevice.Cleanup();
@@ -361,7 +361,7 @@ void FalconDisplayConfiguration::ToggleFullScreen(void)
 #endif
 {
 #ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL));	// Make sure this is called by the main thread
+    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
     LeaveMode();

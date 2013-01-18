@@ -4,8 +4,8 @@
     April 2, 1997
 
     This is a one stop source for the terrain/weather/graphics system
-	startup and shutdown sequences.  Just call these functions and you're
-	set.
+ startup and shutdown sequences.  Just call these functions and you're
+ set.
 \***************************************************************************/
 #include "PalBank.h"
 #include "TexBank.h"
@@ -29,32 +29,32 @@
 #include "Setup.h"
 #include "Falclib\Include\openfile.h"
 
-static char	theaterPath[_MAX_PATH];
-static char	objectPath[_MAX_PATH];
-static char	misctexPath[_MAX_PATH];
+static char theaterPath[_MAX_PATH];
+static char objectPath[_MAX_PATH];
+static char misctexPath[_MAX_PATH];
 
 
 #ifdef GRAPHICS_USE_RES_MGR
-static int	ResHandleTerrainTex		= -1;
-static char	*TerrainTexArchiveName	= "Texture.zip";
+static int ResHandleTerrainTex = -1;
+static char *TerrainTexArchiveName = "Texture.zip";
 #endif
 
 #ifdef USE_SH_POOLS
-MEM_POOL glMemPool;					// 3dlib stuff
+MEM_POOL glMemPool; // 3dlib stuff
 #endif
 
 //extern void Load2DFontTextures();
 //extern void Release2DFontTextures();
 
 /***************************************************************************\
-	Load all data and create all structures which do not depend on a
-	specific graphics device.  This should be done only once.  This must
-	be done before any of the other setup calls are made.
+ Load all data and create all structures which do not depend on a
+ specific graphics device.  This should be done only once.  This must
+ be done before any of the other setup calls are made.
 \***************************************************************************/
 void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
 {
-    char	fullPath[_MAX_PATH];
-    char	zipName[_MAX_PATH];
+    char fullPath[_MAX_PATH];
+    char zipName[_MAX_PATH];
 
 
     // Store the data path and the map name
@@ -100,8 +100,8 @@ void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
     TheLoader.Setup();
 
     // Setup the environmental time manager object
-    TheTimeManager.Setup(2004, 300);		// TODO:  Get a day of the month in here or somewhere
-    TheTimeManager.SetTime(0);			// TODO:  Get a time of day in here or somewhere
+    TheTimeManager.Setup(2004, 300); // TODO:  Get a day of the month in here or somewhere
+    TheTimeManager.SetTime(0); // TODO:  Get a time of day in here or somewhere
 
     // Setup the time of day manager
     sprintf(fullPath, "%s\\weather", theaterPath);
@@ -118,14 +118,14 @@ void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
 
 
 /***************************************************************************\
-	Load all data and create all structures which require a specific
-	graphics device to be identified.  For now, this can only be done
-	for one device at a time.  In the future, we might allow multiple
-	simultanious graphics devices through this interface.
+ Load all data and create all structures which require a specific
+ graphics device to be identified.  For now, this can only be done
+ for one device at a time.  In the future, we might allow multiple
+ simultanious graphics devices through this interface.
 \***************************************************************************/
 void DeviceDependentGraphicsSetup(DisplayDevice *device)
 {
-    char	fullPath[_MAX_PATH];
+    char fullPath[_MAX_PATH];
 
     // OW - must initialize Textures first for pools to work
 #if 1
@@ -160,7 +160,7 @@ void DeviceDependentGraphicsSetup(DisplayDevice *device)
 
 
 /***************************************************************************\
-	Clean up all graphics device dependent data and structures.
+ Clean up all graphics device dependent data and structures.
 \***************************************************************************/
 void DeviceDependentGraphicsCleanup(DisplayDevice *device)
 {
@@ -187,9 +187,9 @@ void DeviceDependentGraphicsCleanup(DisplayDevice *device)
 
 
 /***************************************************************************\
-	Clean up all graphics device independent data and structures.
-	This should not be done until all device dependent stuff has been
-	cleaned up.
+ Clean up all graphics device independent data and structures.
+ This should not be done until all device dependent stuff has been
+ cleaned up.
 \***************************************************************************/
 void DeviceIndependentGraphicsCleanup(void)
 {

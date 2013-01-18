@@ -35,7 +35,7 @@
 #include "simdrive.h" // MN check for player aircraft
 
 extern VU_TIME vuxGameTime;
-//extern bool g_bEnableAircraftLimits;//me123	MI replaced with g_bRealisticAvionics
+//extern bool g_bEnableAircraftLimits;//me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 /********************************************************************/
 /*                                                                  */
@@ -148,9 +148,9 @@ void AirframeClass::Pitch(void)
                 //major issues in the AI floating point calculations
                 //but I don't know why.  Possibly even missing aircraft!
                 /*
-                	limiter = gLimiterMgr->GetLimiter(PosGLimiter, vehicleIndex);
-                	if (limiter)
-                		maxGs = limiter->Limit(alpha);
+                 limiter = gLimiterMgr->GetLimiter(PosGLimiter, vehicleIndex);
+                 if (limiter)
+                 maxGs = limiter->Limit(alpha);
                 */
 
 
@@ -266,7 +266,7 @@ void AirframeClass::Pitch(void)
 
         maxNegGs = -3.0F;
         //me123 OWLOOK switch needet to enable overg's
-        //if (g_bEnableAircraftLimits)	MI
+        //if (g_bEnableAircraftLimits) MI
 
         // 2003-03-12 MN changed to check for player and F-16
         // guys, this code is also used by ALL AI planes in complex mode (having a TU-16 with 9G limit !!!)
@@ -467,7 +467,7 @@ void AirframeClass::Pitch(void)
     }
 
     //if(!IsSet(InAir) && aoacmd < 0.0F)
-    //	aoacmd = 0.0F;
+    // aoacmd = 0.0F;
 
     PitchIt(aoacmd, SimLibMinorFrameTime);
 

@@ -29,7 +29,7 @@ using namespace std;
 
 extern void MarkObjectives(void);
 //TJL 11/14/03 Variable moved here from the RebuildFrontList function to allow lastRequest to stay set
-static CampaignTime	lastRequest = 0;
+static CampaignTime lastRequest = 0;
 
 // ==================================
 // Unit specific filters
@@ -246,14 +246,14 @@ VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
     return TRUE;
 }
 
-UnitFilter			AllUnitFilter(0, 0, 0, 0);
-AirUnitFilter		AllAirFilter(0, 0, 0);
-GroundUnitFilter	AllGroundFilter(0, 0, 0);
-NavalUnitFilter		AllNavalFilter(0, 0, 0);
-UnitFilter			AllParentFilter(TRUE, 0, 0, 0);
-UnitFilter			AllRealFilter(0, TRUE, 0, 0);
-UnitFilter			InactiveFilter(0, 0, 0, 1);
-VuOpaqueFilter		AllOpaqueFilter;
+UnitFilter AllUnitFilter(0, 0, 0, 0);
+AirUnitFilter AllAirFilter(0, 0, 0);
+GroundUnitFilter AllGroundFilter(0, 0, 0);
+NavalUnitFilter AllNavalFilter(0, 0, 0);
+UnitFilter AllParentFilter(TRUE, 0, 0, 0);
+UnitFilter AllRealFilter(0, TRUE, 0, 0);
+UnitFilter InactiveFilter(0, 0, 0, 1);
+VuOpaqueFilter AllOpaqueFilter;
 
 #if GRID_CORRECTION
 #else
@@ -261,8 +261,8 @@ UnitProxFilter::UnitProxFilter(int r) : VuBiKeyFilter()
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    //	VU_KEY	max = ~0;
-    VU_KEY	max = 0xFFFF;
+    // VU_KEY max = ~0;
+    VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     real = (uchar) r;
 }
@@ -271,8 +271,8 @@ UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r) : VuBiKeyFilt
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    //	VU_KEY	max = ~0;
-    VU_KEY	max = 0xFFFF;
+    // VU_KEY max = ~0;
+    VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     real = (uchar) r;
 }
@@ -314,8 +314,8 @@ VU_BOOL UnitProxFilter::RemoveTest(VuEntity *ent)
     return TRUE;
 }
 
-UnitProxFilter*	AllUnitProxFilter = NULL;
-UnitProxFilter*	RealUnitProxFilter = NULL;
+UnitProxFilter* AllUnitProxFilter = NULL;
+UnitProxFilter* RealUnitProxFilter = NULL;
 
 // ==============================
 // Objective specific filters
@@ -349,7 +349,7 @@ VU_BOOL ObjFilter::RemoveTest(VuEntity *e)
     return TRUE;
 }
 
-ObjFilter		AllObjFilter(0);
+ObjFilter AllObjFilter(0);
 
 // Proximity Objective Filter
 #if GRID_CORRECTION
@@ -358,8 +358,8 @@ ObjProxFilter::ObjProxFilter(void) : VuBiKeyFilter()
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    //	VU_KEY	max = ~0;
-    VU_KEY	max = 0xFFFF;
+    // VU_KEY max = ~0;
+    VU_KEY max = 0xFFFF;
     xStep = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     yStep = (float)(max / (GRID_SIZE_FT * (Map_Max_X + 1)));
 }
@@ -368,8 +368,8 @@ ObjProxFilter::ObjProxFilter(const ObjProxFilter *other) : VuBiKeyFilter(other)
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
-    //	VU_KEY	max = ~0;
-    VU_KEY	max = 0xFFFF;
+    // VU_KEY max = ~0;
+    VU_KEY max = 0xFFFF;
     xStep = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
     yStep = (float)(max / (GRID_SIZE_FT * (Map_Max_X + 1)));
 }
@@ -395,7 +395,7 @@ VU_BOOL ObjProxFilter::RemoveTest(VuEntity *ent)
     return TRUE;
 }
 
-ObjProxFilter*	AllObjProxFilter = NULL;
+ObjProxFilter* AllObjProxFilter = NULL;
 
 // ==============================
 // General Filters
@@ -428,21 +428,21 @@ CampBaseFilter CampFilter;
 // ==============================
 
 #if VU_ALL_FILTERED
-VuLinkedList* AllUnitList = NULL;		// All units
-VuLinkedList* AllAirList = NULL;		// All air units
-VuLinkedList* AllParentList = NULL;	// All parent units
-VuLinkedList* AllRealList = NULL;		// All real units
-VuLinkedList* AllObjList = NULL;		// All objectives
-VuLinkedList* AllCampList = NULL;		// All campaign entities
-VuLinkedList* InactiveList = NULL;	// Inactive units (reinforcements)
+VuLinkedList* AllUnitList = NULL; // All units
+VuLinkedList* AllAirList = NULL; // All air units
+VuLinkedList* AllParentList = NULL; // All parent units
+VuLinkedList* AllRealList = NULL; // All real units
+VuLinkedList* AllObjList = NULL; // All objectives
+VuLinkedList* AllCampList = NULL; // All campaign entities
+VuLinkedList* InactiveList = NULL; // Inactive units (reinforcements)
 #else
-VuFilteredList* AllUnitList = NULL;		// All units
-VuFilteredList* AllAirList = NULL;		// All air units
-VuFilteredList* AllParentList = NULL;	// All parent units
-VuFilteredList* AllRealList = NULL;		// All real units
-VuFilteredList* AllObjList = NULL;		// All objectives
-VuFilteredList* AllCampList = NULL;		// All campaign entities
-VuFilteredList* InactiveList = NULL;	// Inactive units (reinforcements)
+VuFilteredList* AllUnitList = NULL; // All units
+VuFilteredList* AllAirList = NULL; // All air units
+VuFilteredList* AllParentList = NULL; // All parent units
+VuFilteredList* AllRealList = NULL; // All real units
+VuFilteredList* AllObjList = NULL; // All objectives
+VuFilteredList* AllCampList = NULL; // All campaign entities
+VuFilteredList* InactiveList = NULL; // Inactive units (reinforcements)
 #endif
 
 // ==============================
@@ -475,12 +475,12 @@ const CampBaseMap::iterator CampBaseMap::end()
 }
 #endif
 
-F4PFList FrontList = NULL;				// Frontline objectives
-F4POList POList = NULL;					// Primary objective list
-F4PFList SOList = NULL;					// Secondary objective list
-F4PFList AirDefenseList = NULL;			// All air defenses
-F4PFList EmitterList = NULL;			// All emitters
-//F4PFList DeaggregateList = NULL;		// All deaggregated units
+F4PFList FrontList = NULL; // Frontline objectives
+F4POList POList = NULL; // Primary objective list
+F4PFList SOList = NULL; // Secondary objective list
+F4PFList AirDefenseList = NULL; // All air defenses
+F4PFList EmitterList = NULL; // All emitters
+//F4PFList DeaggregateList = NULL; // All deaggregated units
 #if USE_VU_COLL_FOR_CAMPAIGN
 #if VU_ALL_FILTERED
 VuHashTable *deaggregatedEntities = NULL;
@@ -507,14 +507,14 @@ F4CSECTIONHANDLE *simDirtyMutexes[MAX_DIRTY_BUCKETS];
 // ==============================
 
 List PODataList = NULL;
-List FLOTList = NULL;					// A List of PackXY points defining the Forward Line Of Troops.
+List FLOTList = NULL; // A List of PackXY points defining the Forward Line Of Troops.
 
 // ==============================
 // Proximity Lists
 // ==============================
 
-VuGridTree* ObjProxList = NULL;			// Proximity list of all objectives
-VuGridTree* RealUnitProxList = NULL;	// Proximity list of all units
+VuGridTree* ObjProxList = NULL; // Proximity list of all objectives
+VuGridTree* RealUnitProxList = NULL; // Proximity list of all units
 
 // ==============================
 // List maintenance routines
@@ -533,13 +533,13 @@ void InitBaseLists(void)
     //DeaggregateList->Init();
     /* sfr: these are initialized with campaign now
     for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop ++){
-    	// sfr: new dirty buckets
-    	//DirtyBucket[loop] = new TailInsertList (&AllOpaqueFilter);
-    	//DirtyBucket[loop]->Init();
-    	campDirtyBuckets[loop] = new list<FalconEntityBin>;
-    	campDirtyMutexes[loop] = F4CreateCriticalSection("camp dirty mutex");
-    	simDirtyBuckets[loop] = new list<FalconEntityBin>;
-    	simDirtyMutexes[loop] = F4CreateCriticalSection("sim dirty mutex");
+     // sfr: new dirty buckets
+     //DirtyBucket[loop] = new TailInsertList (&AllOpaqueFilter);
+     //DirtyBucket[loop]->Init();
+     campDirtyBuckets[loop] = new list<FalconEntityBin>;
+     campDirtyMutexes[loop] = F4CreateCriticalSection("camp dirty mutex");
+     simDirtyBuckets[loop] = new list<FalconEntityBin>;
+     simDirtyMutexes[loop] = F4CreateCriticalSection("sim dirty mutex");
     }
     */
     EmitterList = new FalconPrivateList(&CampFilter);
@@ -665,14 +665,14 @@ void DisposeBaseLists(void)
     //delete DeaggregateList;
     /* sfr: finalized with campaign now
     for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop ++){
-    	// sfr: new dirty bucket
-    	//DirtyBucket[loop]->DeInit();
-    	//delete DirtyBucket[loop];
-    	//DirtyBucket[loop] = NULL;
-    	delete simDirtyBuckets[loop];
-    	F4DestroyCriticalSection(simDirtyMutexes[loop]);
-    	delete campDirtyBuckets[loop];
-    	F4DestroyCriticalSection(campDirtyMutexes[loop]);
+     // sfr: new dirty bucket
+     //DirtyBucket[loop]->DeInit();
+     //delete DirtyBucket[loop];
+     //DirtyBucket[loop] = NULL;
+     delete simDirtyBuckets[loop];
+     F4DestroyCriticalSection(simDirtyMutexes[loop]);
+     delete campDirtyBuckets[loop];
+     F4DestroyCriticalSection(campDirtyMutexes[loop]);
     }*/
     EmitterList->Unregister();
     delete EmitterList;
@@ -825,12 +825,12 @@ void DisposeTheaterLists(void)
 
 int RebuildFrontList(int do_barcaps, int incremental)
 {
-    MissionRequestClass	mis;
-    Objective			o, n;
-    ulong				fseed;
-    //static CampaignTime	lastRequest=0;
+    MissionRequestClass mis;
+    Objective o, n;
+    ulong fseed;
+    //static CampaignTime lastRequest=0;
     //CampaignTime testLast;
-    int					i, front, isolated, bok = 0, dirty = 0;
+    int i, front, isolated, bok = 0, dirty = 0;
 
     // HACK to allow furball to work
     if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Dogfight)
@@ -857,7 +857,7 @@ int RebuildFrontList(int do_barcaps, int incremental)
     }
 
     {
-        VuListIterator		myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o)
@@ -892,8 +892,8 @@ int RebuildFrontList(int do_barcaps, int incremental)
             if (front && isolated && !o->IsSecondary())
             {
                 // This objective has been cut off
-                Unit		u;
-                GridIndex	x, y;
+                Unit u;
+                GridIndex x, y;
                 o->GetLocation(&x, &y);
                 u = FindNearestRealUnit(x, y, NULL, 5);
 
@@ -991,16 +991,16 @@ int RebuildFrontList(int do_barcaps, int incremental)
 
 void RebuildFLOTList(void)
 {
-    Objective			o, n;
-    int					i, found;
-    ListElementClass	*lp;
-    void				*data;
-    GridIndex			ox, oy, nx, ny, fx, fy, x, y;
+    Objective o, n;
+    int i, found;
+    ListElementClass *lp;
+    void *data;
+    GridIndex ox, oy, nx, ny, fx, fy, x, y;
 
     // KCK WARNING: This list sorts for WEST TO EAST. This will look very bad in some situations.
     // I need to think of an algorythm to sort based on the relative geometry between frontline objectives.
     FLOTList->Purge();
-    VuListIterator		frontit(FrontList);
+    VuListIterator frontit(FrontList);
     o = (Objective) frontit.GetFirst();
 
     while (o)
@@ -1024,7 +1024,7 @@ void RebuildFLOTList(void)
                 {
                     UnpackXY(lp->GetUserData(), &x, &y);
 
-                    if (DistSqu(x, y, fx, fy) < 900.0F)		// Min 30 km between points
+                    if (DistSqu(x, y, fx, fy) < 900.0F) // Min 30 km between points
                         found = 1;
 
                     lp = lp->GetNext();
@@ -1049,13 +1049,13 @@ void MarkObjectives(void)
 {
     FalconPrivateList secondlist(&AllObjFilter);
 
-    Objective		o, n;
-    int				i;
+    Objective o, n;
+    int i;
 
     // KCK: It seems like this should be able to be avoided - but I can't
     // think of another way to clear out old secondline and thirdline flags
     {
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o != NULL)
@@ -1066,7 +1066,7 @@ void MarkObjectives(void)
     }
 
     {
-        VuListIterator	frontit(FrontList);
+        VuListIterator frontit(FrontList);
         o = GetFirstObjective(&frontit);
 
         while (o != NULL)
@@ -1090,7 +1090,7 @@ void MarkObjectives(void)
     }
 
     {
-        VuListIterator	secondit(&secondlist);
+        VuListIterator secondit(&secondlist);
         o = GetFirstObjective(&secondit);
 
         while (o != NULL)
@@ -1117,14 +1117,14 @@ void MarkObjectives(void)
 // or if any new objectives have been added
 int RebuildObjectiveLists(void)
 {
-    Objective		o;
+    Objective o;
 
     POList->Purge();
     SOList->Purge();
 
     {
         // destroy iterator here
-        VuListIterator	myit(AllObjList);
+        VuListIterator myit(AllObjList);
         o = GetFirstObjective(&myit);
 
         while (o != NULL)
@@ -1146,8 +1146,8 @@ int RebuildObjectiveLists(void)
 // Assumes RebuildObjectiveLists has been called
 int RebuildParentsList(void)
 {
-    Objective			o;
-    VuListIterator		myit(AllObjList);
+    Objective o;
+    VuListIterator myit(AllObjList);
     o = GetFirstObjective(&myit);
 
     while (o)
@@ -1162,15 +1162,15 @@ int RebuildParentsList(void)
 // Sets up Emitting flag for entities with detection capibilities
 int RebuildEmitterList()
 {
-    CampEntity	e, a;
-    int			range, d, r, emit, team, rl, change = 0;
-    MoveType	mt;
-    GridIndex	x, y, ex, ey;
+    CampEntity e, a;
+    int range, d, r, emit, team, rl, change = 0;
+    MoveType mt;
+    GridIndex x, y, ex, ey;
 
     EmitterList->Purge();
     AirDefenseList->Purge();
 
-    VuListIterator		campit(AllCampList);
+    VuListIterator campit(AllCampList);
     e = (CampEntity)campit.GetFirst();
 
     while (e)
@@ -1227,7 +1227,7 @@ int RebuildEmitterList()
                 }
 
                 if (e->IsBattalion() && e->GetSType() == STYPE_UNIT_AIR_DEFENSE)
-                    //				if (e->GetAproxHitChance(LowAir,0) > 0)
+                    // if (e->GetAproxHitChance(LowAir,0) > 0)
                     AirDefenseList->ForcedInsert(e);
 
                 if (!change && ((emit && !e->IsEmitting()) || (!emit && e->IsEmitting())))
@@ -1238,7 +1238,7 @@ int RebuildEmitterList()
                 if (emit && e->GetRadarMode() < FEC_RADAR_AQUIRE)
                     e->SetSearchMode(FEC_RADAR_SEARCH_1);//me123 + rand()%3);
                 else if (!emit)
-                    e->SetSearchMode(FEC_RADAR_OFF);			// Our "search mode" is off
+                    e->SetSearchMode(FEC_RADAR_OFF); // Our "search mode" is off
             }
         }
 
@@ -1251,7 +1251,7 @@ int RebuildEmitterList()
 // This will rebuild all changing lists
 void StandardRebuild(void)
 {
-    static int	build = 0;
+    static int build = 0;
     RebuildFrontList(TRUE, FALSE);
     RebuildEmitterList();
 
@@ -1288,7 +1288,7 @@ int CheckObjProxyOK(int X, int Y)
 #else
     VuGridIterator myit(ObjProxList, (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(100));
 #endif
-    Objective	o;
+    Objective o;
 
     for (
         o = (Objective) myit.GetFirst();

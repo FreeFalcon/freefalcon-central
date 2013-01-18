@@ -1,9 +1,9 @@
 /**********************s*****************************************************\
-	JoyInput.h
-	Scott Randolph
-	February 18, 1998
+ JoyInput.h
+ Scott Randolph
+ February 18, 1998
 
-	Provide interaction through a joystick.
+ Provide interaction through a joystick.
 \***************************************************************************/
 #ifndef _JOYINPUT_H_
 #define _JOYINPUT_H_
@@ -15,7 +15,7 @@
 #include "Matrix.h"
 
 
-extern class JoyInputClass	TheJoystick;
+extern class JoyInputClass TheJoystick;
 
 
 class JoyInputClass
@@ -32,26 +32,26 @@ public:
     };
 
 protected:
-    DWORD		lastTime;
-    BOOL		ready;
-    BOOL		haveJoystick;
-    JOYINFOEX	joyInfoEx;
-    JOYCAPS		joyCaps;
+    DWORD lastTime;
+    BOOL ready;
+    BOOL haveJoystick;
+    JOYINFOEX joyInfoEx;
+    JOYCAPS joyCaps;
 
 public:
-    float		throttleIIR;
-    float		throttle;
+    float throttleIIR;
+    float throttle;
 
-    float		pitchRate;
-    float		yawRate;
-    float		rollRate;
-    Trotation	deltaMatrix;
+    float pitchRate;
+    float yawRate;
+    float rollRate;
+    Trotation deltaMatrix;
 
-    float		headPitchRate;
-    float		headYawRate;
-    Trotation	headDeltaMatrix;
+    float headPitchRate;
+    float headYawRate;
+    Trotation headDeltaMatrix;
 
-    DWORD		buttons;
+    DWORD buttons;
 
     void Setup(void);
     void Cleanup(void);

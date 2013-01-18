@@ -38,7 +38,7 @@
 // ==============================================
 
 DEFINE_GUID(OVERRIDE_GUID, 0x126e6180, 0xd307, 0x11d0, 0x9c, 0x4f, 0x0, 0xa0, 0xc9, 0x5, 0x42, 0x5e);
-GUID	gOurGUID = OVERRIDE_GUID;
+GUID gOurGUID = OVERRIDE_GUID;
 
 // ========================================================================
 // Some defines
@@ -46,15 +46,15 @@ GUID	gOurGUID = OVERRIDE_GUID;
 
 #define F4COMMS_CONNECTION_TIMEOUT_SECS 8
 
-#define F4COMMS_CONNECTED_TO_NO_ONE		0
-#define F4COMMS_PARTIALLY_CONNECTED		1
-#define F4COMMS_FULLY_CONNECTED			2
+#define F4COMMS_CONNECTED_TO_NO_ONE 0
+#define F4COMMS_PARTIALLY_CONNECTED 1
+#define F4COMMS_FULLY_CONNECTED 2
 
 // KCK: These really need to come from comms itself!!
-#define COMMS_TCP_OVERHEAD				40
-#define COMMS_UDP_OVERHEAD				12
+#define COMMS_TCP_OVERHEAD 40
+#define COMMS_UDP_OVERHEAD 12
 
-#define F4COMMS_MAX_PACKETS				32
+#define F4COMMS_MAX_PACKETS 32
 
 // ====================================
 // Globals
@@ -91,7 +91,7 @@ extern bool g_bF4CommsMTU; // Unz switch for MTU
 // ========================================================================
 
 // Ideal packet size we'll send over the wire;
-int	F4CommsIdealPacketSize;
+int F4CommsIdealPacketSize;
 // Corrisponding content sizes
 int F4CommsIdealTCPPacketSize;
 int F4CommsIdealUDPPacketSize;
@@ -121,10 +121,10 @@ int F4VuMaxUDPPackSize;
 // tcpListenHandle is a listen handle where we can recieve tcp connection requests.
 //
 // InitCommsStuff takes the following parameters:
-// int GameType:				Nonzero if a game is currently running and needs to
-//								Attach to a group immediately.
-// FalconConnectionType fct:	FalconConnectionType enumerated type
-// ulong IPAddress:				IPAddress of server or other machine, if any.
+// int GameType: Nonzero if a game is currently running and needs to
+// Attach to a group immediately.
+// FalconConnectionType fct: FalconConnectionType enumerated type
+// ulong IPAddress: IPAddress of server or other machine, if any.
 //
 // Returns < 0 on error.
 char* g_ipadress = NULL;
@@ -146,9 +146,9 @@ int InitCommsStuff(ComDataClass *comData)
     FalconTCPListenHandle = NULL;
     FalconGlobalUDPHandle = NULL;
     FalconGlobalTCPHandle = NULL;
-    //	FalconInitialUDPHandle = NULL;
+    // FalconInitialUDPHandle = NULL;
     FalconServerTCPStatus = VU_CONN_INACTIVE;
-    //	DanglingConnections = NULL;
+    // DanglingConnections = NULL;
 
     // Shutdown any current games/connections
     SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
@@ -282,13 +282,13 @@ int CleanupComms(void)
     if (FalconTCPListenHandle)
         ComAPIClose(FalconTCPListenHandle);
 
-    //	if (FalconInitialUDPHandle)
-    //		ComAPIClose(FalconInitialUDPHandle);
+    // if (FalconInitialUDPHandle)
+    // ComAPIClose(FalconInitialUDPHandle);
 
     // Kill off any dangling sessions
     CleanupDanglingList();
 
-    //	FalconInitialUDPHandle = NULL;
+    // FalconInitialUDPHandle = NULL;
     FalconTCPListenHandle = NULL;
     FalconGlobalUDPHandle = NULL;
     FalconGlobalTCPHandle = NULL;
@@ -304,12 +304,12 @@ int EndCommsStuff(void)
     }
 
     // KCK HACK: To avoid vu's problem with shutting down comms when remote sessions are active
-    VuSessionsIterator	siter(vuGlobalGroup);
-    FalconSessionEntity	*cs;
+    VuSessionsIterator siter(vuGlobalGroup);
+    FalconSessionEntity *cs;
 
     for (cs = (FalconSessionEntity*) siter.GetFirst(); cs != NULL;)
     {
-        FalconSessionEntity	*oldCs = cs;
+        FalconSessionEntity *oldCs = cs;
         cs = (FalconSessionEntity*) siter.GetNext();
         oldCs->JoinGame(NULL);
     }
@@ -359,22 +359,22 @@ void SetupMessageSizes(int protocol)
 
 void InitDanglingList(void)
 {
-    //	VuEnterCriticalSection();
-    VuSessionFilter		DanglingSessionFilter(FalconNullId);
+    // VuEnterCriticalSection();
+    VuSessionFilter DanglingSessionFilter(FalconNullId);
     DanglingSessionsList = new FalconPrivateList(&DanglingSessionFilter);
-    //	VuExitCriticalSection();
+    // VuExitCriticalSection();
 }
 
 void CleanupDanglingList(void)
 {
-    //	VuEnterCriticalSection();
+    // VuEnterCriticalSection();
     if (DanglingSessionsList)
     {
         delete DanglingSessionsList;
     }
 
     DanglingSessionsList = NULL;
-    //	VuExitCriticalSection();
+    // VuExitCriticalSection();
 }
 
 //sfr: converts
@@ -383,7 +383,7 @@ void CleanupDanglingList(void)
 bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 {
     VuEnterCriticalSection();
-    FalconSessionEntity	*tempSess = NULL;
+    FalconSessionEntity *tempSess = NULL;
 
     // first time in dangling session, why not use a default constructor
     if (!DanglingSessionsList)
@@ -396,7 +396,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
         VuListIterator dsit(DanglingSessionsList);
 
         for (
-            FalconSessionEntity	*session = (FalconSessionEntity*)dsit.GetFirst();
+            FalconSessionEntity *session = (FalconSessionEntity*)dsit.GetFirst();
             session != NULL;
             session = (FalconSessionEntity*)dsit.GetNext()
         )
@@ -472,10 +472,10 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
 
     VuEnterCriticalSection();
     // iterate over dangling sessions
-    VuListIterator		dsit(DanglingSessionsList);
+    VuListIterator dsit(DanglingSessionsList);
 
     for (
-        VuSessionEntity	*session = (VuSessionEntity*)dsit.GetFirst();
+        VuSessionEntity *session = (VuSessionEntity*)dsit.GetFirst();
         session != NULL;
         session = (VuSessionEntity*)dsit.GetNext()
     )
@@ -531,9 +531,9 @@ int UpdateDanglingSessions(void)
     if (gConnectionStatus)
     {
         VuEnterCriticalSection();
-        VuListIterator		dsit(DanglingSessionsList);
-        VuSessionEntity		*session;
-        int					count = 0;
+        VuListIterator dsit(DanglingSessionsList);
+        VuSessionEntity *session;
+        int count = 0;
 
         for (session = (VuSessionEntity*)dsit.GetFirst(); session; session = (VuSessionEntity*)dsit.GetNext())
         {
@@ -558,9 +558,9 @@ int UpdateDanglingSessions(void)
 #if 0
 void TcpAcceptCallback(ComAPIHandle ch)
 {
-    ulong				ipaddr;
-    VuSessionEntity*	s;
-    VuSessionsIterator	siter(vuGlobalGroup);
+    ulong ipaddr;
+    VuSessionEntity* s;
+    VuSessionsIterator siter(vuGlobalGroup);
 
     // need to find session...
     ipaddr = ComAPIQuery(ch, COMAPI_CONNECTION_ADDRESS);
@@ -589,7 +589,7 @@ void TcpAcceptCallback(ComAPIHandle ch)
 // ret == 0 means success
 void TcpConnectCallback(ComAPIHandle ch, int ret)
 {
-    ulong				ipaddr;
+    ulong ipaddr;
 
     ipaddr = ComAPIQuery(ch, COMAPI_CONNECTION_ADDRESS);
 
@@ -615,7 +615,7 @@ void TcpConnectCallback(ComAPIHandle ch, int ret)
         }
         else
         {
-            FalconServerTCPStatus = VU_CONN_INACTIVE;	// This would be bad..
+            FalconServerTCPStatus = VU_CONN_INACTIVE; // This would be bad..
             F4CommsConnectionCallback(F4COMMS_ERROR_COULDNT_CONNECT_TO_SERVER);
         }
 
@@ -624,8 +624,8 @@ void TcpConnectCallback(ComAPIHandle ch, int ret)
 
     // Otherwise, look for the correct session
     VuEnterCriticalSection();
-    VuSessionEntity*	s;
-    VuSessionsIterator	siter(vuGlobalGroup);
+    VuSessionEntity* s;
+    VuSessionsIterator siter(vuGlobalGroup);
 
     for (s = siter.GetFirst(); s; s = siter.GetNext())
     {
@@ -667,16 +667,16 @@ void TcpConnectCallback(ComAPIHandle ch, int ret)
 // ret == 0 means success
 void ModemConnectCallback(ComAPIHandle ch, int ret)
 {
-    ulong				ipaddr;
+    ulong ipaddr;
 
     ipaddr = ComAPIQuery(ch, COMAPI_CONNECTION_ADDRESS);
 
-    ShiAssert(ch == FalconGlobalUDPHandle);		// We should only have one connection!
+    ShiAssert(ch == FalconGlobalUDPHandle); // We should only have one connection!
 
     // need to find session... There should be only two (us and them)
     VuEnterCriticalSection();
-    VuSessionEntity*	s;
-    VuSessionsIterator	siter(vuGlobalGroup);
+    VuSessionEntity* s;
+    VuSessionsIterator siter(vuGlobalGroup);
 
     for (s = siter.GetFirst(); s; s = siter.GetNext())
     {
@@ -726,10 +726,10 @@ void ModemConnectCallback(ComAPIHandle ch, int ret)
 //why are we taking force as a parameter when we aren't using it?
 void ResyncTimes()
 {
-    int count, 	best_comp;
+    int count,  best_comp;
     VuGroupEntity *g = FalconLocalGame;
     VuEnterCriticalSection();
-    VuSessionsIterator	sit(g);
+    VuSessionsIterator sit(g);
     FalconSessionEntity *session;
 
     best_comp = 1;
@@ -814,7 +814,7 @@ void ResyncTimes()
         targetCompressionRatio = best_comp;
 
         //MonoPrint ("Sending Timing Message %08x %d\n", vuxGameTime, targetCompressionRatio);
-        FalconTimingMessage	*msg = new FalconTimingMessage(FalconNullId, FalconLocalGame);
+        FalconTimingMessage *msg = new FalconTimingMessage(FalconNullId, FalconLocalGame);
         msg->RequestOutOfBandTransmit();
         FalconSendMessage(msg, TRUE);
     }
@@ -868,19 +868,19 @@ int VuxGroupConnect(VuGroupEntity *group)
         }
         else if (FalconConnectionType & FCT_SERIAL_AVAILABLE)
         {
-            group->SetCommsHandle(NULL);		// We'll inherit from our global group
+            group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
         else if (FalconConnectionType & FCT_SERVER_AVAILABLE && FalconGlobalUDPHandle)
         {
             // Point us to our server's UDP connection
-            group->SetCommsHandle(NULL);		// We'll inherit from our global group
+            group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
         else if (FalconConnectionType & FCT_BCAST_AVAILABLE && FalconGlobalUDPHandle)
         {
             // Since we have broadcast available, pass our broadcast handle
-            group->SetCommsHandle(NULL);		// We'll inherit from our global group
+            group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
         else if (FalconConnectionType & FCT_PTOP_AVAILABLE)
@@ -888,7 +888,7 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s UDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            ComAPIHandle	gh = ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
+            ComAPIHandle gh = ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
             group->SetCommsHandle(gh, F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize);
 
             if (gh)
@@ -914,13 +914,13 @@ int VuxGroupConnect(VuGroupEntity *group)
         }
         else if (FalconConnectionType & FCT_SERIAL_AVAILABLE)
         {
-            group->SetCommsHandle(NULL);		// We'll inherit from our global group
+            group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
         else if (FalconConnectionType & FCT_SERVER_AVAILABLE && FalconGlobalTCPHandle)
         {
             // Point us to our server's tcp connection
-            group->SetCommsHandle(NULL);		// We'll inherit from our global group
+            group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetReliableCommsStatus(VU_CONN_ACTIVE);
         }
         else if (FalconConnectionType & FCT_PTOP_AVAILABLE)
@@ -928,7 +928,7 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s RUDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            ComAPIHandle	gh = ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
+            ComAPIHandle gh = ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
             group->SetReliableCommsHandle(gh, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize);
 
             if (gh)
@@ -986,7 +986,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
 
 int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 {
-    ComAPIHandle	gh, sh;
+    ComAPIHandle gh, sh;
 
     if (g_bVoiceCom)
     {
@@ -1023,7 +1023,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
                 switch (game->gameType)
                 {
                         //case game_PlayerPool:
-                        //	ComAPIBWEnterState(CAPI_LOBBY_ST);
+                        // ComAPIBWEnterState(CAPI_LOBBY_ST);
                         //break;
                     case game_Dogfight:
                         ComAPIBWEnterState(CAPI_DF_ST);
@@ -1127,8 +1127,8 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
         ComAPIDeleteFromGroup(gh, sh);
     }
 
-    //	if (sh == FalconInitialUDPHandle && gh == FalconGlobalUDPHandle)
-    //		FalconInitialUDPHandle = NULL;
+    // if (sh == FalconInitialUDPHandle && gh == FalconGlobalUDPHandle)
+    // FalconInitialUDPHandle = NULL;
     gh = group->GetReliableCommsHandle();
     sh = session->GetReliableCommsHandle();
 
@@ -1174,7 +1174,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 // Set up a handle to communicate this session.
 int VuxSessionConnect(VuSessionEntity *session)
 {
-    //	char buffer[100];
+    // char buffer[100];
     int wait_for_connection = 0;
 
     // We only want to connect here during our initial insertion
@@ -1266,25 +1266,25 @@ void VuxSessionDisconnect(VuSessionEntity *session)
 
     if (g_bACPlayerCTDFix && playerFlight && FalconLocalGame->IsLocal()) // only the host...
     {
-        FalconPlayerStatusMessage	*msg = new FalconPlayerStatusMessage(((FalconSessionEntity*)session)->Id(), FalconLocalGame);
-        SimBaseClass				*playerEntity = (SimBaseClass*)((FalconSessionEntity*)session)->GetPlayerEntity();
+        FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(((FalconSessionEntity*)session)->Id(), FalconLocalGame);
+        SimBaseClass *playerEntity = (SimBaseClass*)((FalconSessionEntity*)session)->GetPlayerEntity();
 
         // first change the deag owner of our disconnected player back to the host
-        /*	if (playerEntity)
-        	{
-        	FalconSimCampMessage	*simmsg = new FalconSimCampMessage (playerEntity->Id(), FalconLocalGame); // target);
-        	simmsg->dataBlock.from = FalconLocalGame->OwnerId();
-        	simmsg->dataBlock.message = FalconSimCampMessage::simcampChangeOwner;
-        	FalconSendMessage(simmsg);
-        	}
-        	*/
+        /* if (playerEntity)
+         {
+         FalconSimCampMessage *simmsg = new FalconSimCampMessage (playerEntity->Id(), FalconLocalGame); // target);
+         simmsg->dataBlock.from = FalconLocalGame->OwnerId();
+         simmsg->dataBlock.message = FalconSimCampMessage::simcampChangeOwner;
+         FalconSendMessage(simmsg);
+         }
+         */
         if (((FalconSessionEntity*)session)->GetPlayerFlight())
         {
-            msg->dataBlock.campID		= ((FalconSessionEntity*)session)->GetPlayerFlight()->GetCampID();
+            msg->dataBlock.campID = ((FalconSessionEntity*)session)->GetPlayerFlight()->GetCampID();
         }
         else
         {
-            msg->dataBlock.campID		= 0;
+            msg->dataBlock.campID = 0;
         }
 
         if (playerEntity)
@@ -1296,7 +1296,7 @@ void VuxSessionDisconnect(VuSessionEntity *session)
 
         msg->dataBlock.side             = ((FalconSessionEntity*)session)->GetCountry();
         msg->dataBlock.pilotID          = ((FalconSessionEntity*)session)->GetPilotSlot();
-        msg->dataBlock.vehicleID		= ((FalconSessionEntity*)session)->GetAircraftNum();
+        msg->dataBlock.vehicleID = ((FalconSessionEntity*)session)->GetAircraftNum();
         msg->dataBlock.state            = PSM_STATE_LEFT_SIM;
 
         FalconSendMessage(msg, TRUE);
@@ -1352,6 +1352,6 @@ void VuxSessionDisconnect(VuSessionEntity *session)
 void VuxAdjustLatency(VU_TIME, VU_TIME)
 {
     // KCK NOTE: This is stubbed 'cause we're not using VU's latency checking
-    //	SynchronizeTime(vuLocalSessionEntity->Group());
-    //	MonoPrint("Called VuxAdjustLatency(%d, %d)\n", t1, t2);
+    // SynchronizeTime(vuLocalSessionEntity->Group());
+    // MonoPrint("Called VuxAdjustLatency(%d, %d)\n", t1, t2);
 }

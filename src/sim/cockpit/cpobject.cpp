@@ -9,50 +9,50 @@
 CPObject::CPObject(const ObjectInitStr* pobjectInitStr)
 {
 
-    mIdNum				= pobjectInitStr->idNum;
-    mHScale				= pobjectInitStr->hScale;
-    mVScale				= pobjectInitStr->vScale;
-    mPersistant			= pobjectInitStr->persistant;
-    mBSurface			= pobjectInitStr->bsurface;
-    mBSrcRect			= pobjectInitStr->bsrcRect;
-    mBDestRect			= pobjectInitStr->bdestRect;
+    mIdNum = pobjectInitStr->idNum;
+    mHScale = pobjectInitStr->hScale;
+    mVScale = pobjectInitStr->vScale;
+    mPersistant = pobjectInitStr->persistant;
+    mBSurface = pobjectInitStr->bsurface;
+    mBSrcRect = pobjectInitStr->bsrcRect;
+    mBDestRect = pobjectInitStr->bdestRect;
     mpBackgroundSurface = NULL; //VWF May be able to remove later
 
-    mDestRect.top		= pobjectInitStr->destRect.top;
-    mDestRect.left		= pobjectInitStr->destRect.left;
-    mDestRect.bottom	= (pobjectInitStr->destRect.bottom + 1);
-    mDestRect.right	= (pobjectInitStr->destRect.right + 1);
+    mDestRect.top = pobjectInitStr->destRect.top;
+    mDestRect.left = pobjectInitStr->destRect.left;
+    mDestRect.bottom = (pobjectInitStr->destRect.bottom + 1);
+    mDestRect.right = (pobjectInitStr->destRect.right + 1);
 
-    mTransparencyType	= pobjectInitStr->transparencyType;
+    mTransparencyType = pobjectInitStr->transparencyType;
 
-    mWidth				= mDestRect.right - mDestRect.left;
-    mHeight				= mDestRect.bottom - mDestRect.top;
+    mWidth = mDestRect.right - mDestRect.left;
+    mHeight = mDestRect.bottom - mDestRect.top;
 
-    mDestRect.top		= (long)(mVScale * mDestRect.top);
-    mDestRect.left		= (long)(mHScale * mDestRect.left);
-    mDestRect.bottom	= (long)(mVScale * mDestRect.bottom);
-    mDestRect.right		= (long)(mHScale * mDestRect.right);
+    mDestRect.top = (long)(mVScale * mDestRect.top);
+    mDestRect.left = (long)(mHScale * mDestRect.left);
+    mDestRect.bottom = (long)(mVScale * mDestRect.bottom);
+    mDestRect.right = (long)(mHScale * mDestRect.right);
 
-    mpOTWImage			= pobjectInitStr->pOTWImage;
-    mpTemplate			= pobjectInitStr->pTemplate;
-    mpCPManager			= pobjectInitStr->pCPManager;
+    mpOTWImage = pobjectInitStr->pOTWImage;
+    mpTemplate = pobjectInitStr->pTemplate;
+    mpCPManager = pobjectInitStr->pCPManager;
 
-    mCycleBits			= pobjectInitStr->cycleBits;
-    mDirtyFlag			= TRUE;
-    mCallbackSlot		= pobjectInitStr->callbackSlot;
+    mCycleBits = pobjectInitStr->cycleBits;
+    mDirtyFlag = TRUE;
+    mCallbackSlot = pobjectInitStr->callbackSlot;
 
     // JPO - test the limits.
     if (mCallbackSlot < 0 || mCallbackSlot >= TOTAL_CPCALLBACK_SLOTS)
     {
-        mExecCallback		= NULL;
-        mDisplayCallback	= NULL;
-        mEventCallback		= NULL;
+        mExecCallback = NULL;
+        mDisplayCallback = NULL;
+        mEventCallback = NULL;
     }
     else
     {
-        mExecCallback		= CPCallbackArray[mCallbackSlot].ExecCallback;
-        mDisplayCallback	= CPCallbackArray[mCallbackSlot].DisplayCallback;
-        mEventCallback		= CPCallbackArray[mCallbackSlot].EventCallback;
+        mExecCallback = CPCallbackArray[mCallbackSlot].ExecCallback;
+        mDisplayCallback = CPCallbackArray[mCallbackSlot].DisplayCallback;
+        mEventCallback = CPCallbackArray[mCallbackSlot].EventCallback;
     }
 
     // OW

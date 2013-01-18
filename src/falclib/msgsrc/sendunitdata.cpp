@@ -20,15 +20,15 @@ using namespace std;
 
 extern C_Handler *gMainHandler;
 
-#define	DEBUG_STARTUP			1
+#define DEBUG_STARTUP 1
 
 extern void CampaignJoinKeepAlive(void);
-extern uchar	gCampJoinTries;
+extern uchar gCampJoinTries;
 
 // Maximum size data block we can send per message
 // Since this needs an instance of the message to really be sized correctly,
 // I wait and calculate it the first chance I get.
-ulong	gUnitBlockSize = 0;
+ulong gUnitBlockSize = 0;
 
 FalconSendUnitData::FalconSendUnitData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendUnitData, FalconEvent::CampaignThread, entityId, target, loopback)
 {
@@ -87,8 +87,8 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
 
     CampaignJoinKeepAlive();
 
-    uchar				*bufptr;
-    FalconSessionEntity	*session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
+    uchar *bufptr;
+    FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
 
     MonoPrint("RecvUnitData %08x:%08x %d %d %d\n",
               dataBlock.owner,
@@ -144,7 +144,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
-            //		if (!StillNeeded(dataBlock.block, session->unitDataReceived))
+            // if (!StillNeeded(dataBlock.block, session->unitDataReceived))
             if (!(session->unitDataReceived[i / 8] & (1 << (i % 8))))
             {
                 //return size;
@@ -206,15 +206,15 @@ int FalconSendUnitData::Process(uchar autodisp)
 
 void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded)
 {
-    int			blocks, curBlock = 0, blocksize;
-    ulong		sizeleft;
-    uchar		*buffer, *bufptr;
-    FalconSendUnitData	*msg;
+    int blocks, curBlock = 0, blocksize;
+    ulong sizeleft;
+    uchar *buffer, *bufptr;
+    FalconSendUnitData *msg;
     //CampBaseClass *ent;
 
     if (!blocksNeeded)
     {
-        int		set = rand();
+        int set = rand();
 
         if (!set)
             set++;
@@ -224,7 +224,7 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
 
         // Encode the unit data
         session->unitDataSendSize = EncodeUnitData((VU_BYTE**)&buffer, FalconLocalSession);
-        session->unitDataSendBuffer	= buffer;
+        session->unitDataSendBuffer = buffer;
         session->unitDataSendSet = (short)set;
     }
 
@@ -232,7 +232,7 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
     if (!gUnitBlockSize)
     {
         // This is a temporary message, purely for sizing purposes
-        FalconSendUnitData	tmpmsg(session->Id(), target);
+        FalconSendUnitData tmpmsg(session->Id(), target);
         gUnitBlockSize = F4VuMaxTCPMessageSize - tmpmsg.Size() - 16;
     }
 

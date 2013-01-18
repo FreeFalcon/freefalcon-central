@@ -12,14 +12,14 @@
 #include "find.h"
 #include "airframe.h"
 
-#define PosA		1
-#define PosB		2
-#define PosC		7
-#define PosD		8
-#define PosE		13
-#define PosF		14
-#define PosG		20
-#define PosH		21
+#define PosA 1
+#define PosB 2
+#define PosC 7
+#define PosD 8
+#define PosE 13
+#define PosF 14
+#define PosG 20
+#define PosH 21
 
 extern bool g_bINS;
 extern bool g_bIFF;
@@ -77,18 +77,18 @@ void ICPClass::ExecDESTMode(void)
     if (playerAC && playerAC->curWaypoint)
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
-    latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
+    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
 
-    latitude	*= RTD;
-    longitude	*= RTD;
+    latitude *= RTD;
+    longitude *= RTD;
 
-    longDeg		= FloatToInt32(longitude);
-    longMin		= (float)fabs(longitude - longDeg) * DEG_TO_MIN;
+    longDeg = FloatToInt32(longitude);
+    longMin = (float)fabs(longitude - longDeg) * DEG_TO_MIN;
 
-    latDeg		= FloatToInt32(latitude);
-    latMin		= (float)fabs(latitude - latDeg) * DEG_TO_MIN;
+    latDeg = FloatToInt32(latitude);
+    latMin = (float)fabs(latitude - latDeg) * DEG_TO_MIN;
 
     // format lat/long here
     if (latMin < 10.0F)
@@ -375,7 +375,7 @@ void ICPClass::ExecINSMode(void)
     //Line1
     if (g_bINS)
     {
-        GetINSInfo();					//Wombat778 10-17-2003  Update the INS info.  Was static before.
+        GetINSInfo(); //Wombat778 10-17-2003  Update the INS info.  Was static before.
         FillDEDMatrix(0, 5, "INS");
         AddSTPT(0, 22);
         char tempstr1[10] = "";
@@ -479,7 +479,7 @@ void ICPClass::ExecINSMode(void)
             {
                 if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
-                    FillDEDMatrix(3, 21 - (strlen(altStr)), " ");	//Wombat778 10-17-2003 make sure that old digit doesnt show below 10000ft
+                    FillDEDMatrix(3, 21 - (strlen(altStr)), " "); //Wombat778 10-17-2003 make sure that old digit doesnt show below 10000ft
                     FillDEDMatrix(3, 22 - (strlen(altStr)), altStr);
                 }
 
@@ -549,18 +549,18 @@ void ICPClass::ExecINSMode(void)
         AddSTPT(0, 22);
         //Display some bogus INS info here, along with the current
         //coords of the plane
-        latitude	= (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+        latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
         cosLatitude = (float)cos(latitude);
-        longitude	= ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+        longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
 
-        latitude	*= RTD;
-        longitude	*= RTD;
+        latitude *= RTD;
+        longitude *= RTD;
 
-        longDeg		= FloatToInt32(longitude);
-        longMin		= (float)fabs(longitude - longDeg) * DEG_TO_MIN;
+        longDeg = FloatToInt32(longitude);
+        longMin = (float)fabs(longitude - longDeg) * DEG_TO_MIN;
 
-        latDeg		= FloatToInt32(latitude);
-        latMin		= (float)fabs(latitude - latDeg) * DEG_TO_MIN;
+        latDeg = FloatToInt32(latitude);
+        latMin = (float)fabs(latitude - latDeg) * DEG_TO_MIN;
 
         // format lat/long here
         if (latMin < 10.0F)

@@ -712,7 +712,7 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_ScrollBar::Wheel(int increment, WORD MouseX, WORD MouseY)
 {
-    //	long x,y;
+    // long x,y;
     F4CSECTIONHANDLE* Leave;
 
     if (GetFlags() & C_BIT_INVISIBLE)

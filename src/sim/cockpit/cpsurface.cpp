@@ -9,8 +9,8 @@
 #include "FalcLib/include/dispopts.h"
 #include "Graphics/Include/renderow.h"
 
-extern bool g_bCrackFix;		//Wombat778 3-22-04 REMOVED 4-01-04
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+extern bool g_bCrackFix; //Wombat778 3-22-04 REMOVED 4-01-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 //====================================================//
 // CPSurface::CPSurface
@@ -18,21 +18,21 @@ extern bool g_bFilter2DPit;		//Wombat778 3-30-04
 CPSurface::CPSurface(SurfaceInitStr *psurfaceInitStr)
 {
 
-    mIdNum				= psurfaceInitStr->idNum;
+    mIdNum = psurfaceInitStr->idNum;
 
-    mPersistant			= psurfaceInitStr->persistant;
+    mPersistant = psurfaceInitStr->persistant;
 
-    mSrcRect.top		= psurfaceInitStr->srcRect.top;
-    mSrcRect.left		= psurfaceInitStr->srcRect.left;
-    mSrcRect.bottom	= psurfaceInitStr->srcRect.bottom;
-    mSrcRect.right		= psurfaceInitStr->srcRect.right;
+    mSrcRect.top = psurfaceInitStr->srcRect.top;
+    mSrcRect.left = psurfaceInitStr->srcRect.left;
+    mSrcRect.bottom = psurfaceInitStr->srcRect.bottom;
+    mSrcRect.right = psurfaceInitStr->srcRect.right;
 
-    mWidth				= psurfaceInitStr->srcRect.right - psurfaceInitStr->srcRect.left;
-    mHeight				= psurfaceInitStr->srcRect.bottom - psurfaceInitStr->srcRect.top;
+    mWidth = psurfaceInitStr->srcRect.right - psurfaceInitStr->srcRect.left;
+    mHeight = psurfaceInitStr->srcRect.bottom - psurfaceInitStr->srcRect.top;
 
-    mpOTWImage			= psurfaceInitStr->pOtwImage;
-    mpSourceBuffer		= psurfaceInitStr->psrcBuffer;
-    mpSurfaceBuffer	= NULL;
+    mpOTWImage = psurfaceInitStr->pOtwImage;
+    mpSourceBuffer = psurfaceInitStr->psrcBuffer;
+    mpSurfaceBuffer = NULL;
 
     // OW
     m_pPalette = NULL;
@@ -74,7 +74,7 @@ void CPSurface::CreateLit(void)
         mpSurfaceBuffer = new ImageBuffer;
 
         // OW
-        //	mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
+        // mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
 
         MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() && DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
 
@@ -118,7 +118,7 @@ void CPSurface::CreateLit(void)
                 if (!pTex->Create("CPSurface", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
                     throw _com_error(E_FAIL);
 
-                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
 
                 m_arrTex.push_back(pTex);
@@ -167,7 +167,7 @@ void CPSurface::CreateLit(void)
                         DWORD dwOffset = (y * dwMaxTextureHeight) * mWidth;
                         dwOffset += x * dwMaxTextureWidth;
 
-                        if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer + dwOffset, true, true, mWidth))	// soon to be re-loaded by CPSurface::Translate3D
+                        if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer + dwOffset, true, true, mWidth)) // soon to be re-loaded by CPSurface::Translate3D
                             throw _com_error(E_FAIL);
 
                         m_arrTex.push_back(pTex);
@@ -219,25 +219,25 @@ void CPSurface::DiscardLit(void)
 void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, int xPanelOffset, int yPanelOffset)
 {
     if (m_arrTex.size())
-        return;		// handled in DisplayBlit3D
+        return; // handled in DisplayBlit3D
 
     RECT blitRect;
     RECT destRect;
 
-    destRect.top		= pDestRect->top;
-    destRect.left		= pDestRect->left;
-    destRect.bottom	= pDestRect->bottom;
-    destRect.right		= pDestRect->right;
+    destRect.top = pDestRect->top;
+    destRect.left = pDestRect->left;
+    destRect.bottom = pDestRect->bottom;
+    destRect.right = pDestRect->right;
 
-    blitRect.top		= 0;
-    blitRect.left		= 0;
-    blitRect.bottom	= mHeight;
-    blitRect.right		= mWidth;
+    blitRect.top = 0;
+    blitRect.left = 0;
+    blitRect.bottom = mHeight;
+    blitRect.right = mWidth;
 
-    destRect.top		= (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
-    destRect.left		= (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
-    destRect.bottom		= (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
-    destRect.right		= (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
+    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
+    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
+    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
+    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
 
     if (Persistance == NONPERSISTANT)
     {
@@ -257,29 +257,29 @@ void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, in
 void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, int xPanelOffset, int yPanelOffset)
 {
     if (!m_arrTex.size())
-        return;		// handled in DisplayBlit
+        return; // handled in DisplayBlit
 
     RECT destRect;
 
-    destRect.top		= pDestRect->top;
-    destRect.left		= pDestRect->left;
-    destRect.bottom	= pDestRect->bottom;
-    destRect.right		= pDestRect->right;
+    destRect.top = pDestRect->top;
+    destRect.left = pDestRect->left;
+    destRect.bottom = pDestRect->bottom;
+    destRect.right = pDestRect->right;
 
-    destRect.top		= (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
-    destRect.left		= (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
-    destRect.bottom		= (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
-    destRect.right		= (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
+    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
+    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
+    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
+    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
 
     //Wombat778 3-22-04 Improves "cracked" cockpit. By expanding the target rectangles by 0.5 on each side, the directx texel alignment issue is reduced.
     // COBRA - RED - Wombat... Do u know what a Long Type is...?
-    /*	if (g_bCrackFix)
-    	{
-    		destRect.top	-= 0.5f;
-    		destRect.left	-= 0.5f;
-    		destRect.bottom	+= 0.5f;
-    		destRect.right	+= 0.5f;
-    	}
+    /* if (g_bCrackFix)
+     {
+     destRect.top -= 0.5f;
+     destRect.left -= 0.5f;
+     destRect.bottom += 0.5f;
+     destRect.right += 0.5f;
+     }
     */
 
     if (Persistance == NONPERSISTANT)
@@ -327,7 +327,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
             // Setup state
             if (blitType == TRANSPARENT)
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_CHROMA_TEXTURE);
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
@@ -335,7 +335,7 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
 
             else
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
@@ -354,14 +354,14 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
             // Setup state
             if (blitType == TRANSPARENT)
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_CHROMA_TEXTURE);
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
-                if (g_bFilter2DPit)		//Wombat778 3-30-04 Added option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
@@ -456,7 +456,7 @@ void CPSurface::Translate(WORD* palette16)
 {
     if (mpSurfaceBuffer)
         Translate8to16(palette16, mpSourceBuffer, mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
-}																					// 16 bit ImageBuffers
+} // 16 bit ImageBuffers
 
 // OW
 void CPSurface::Translate(DWORD* palette32)

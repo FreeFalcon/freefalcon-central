@@ -21,8 +21,8 @@
 #include "drawsgmt.h"
 
 // for when fakerand just won't do
-#define	NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
-#define NRAND	 ( 1.0f - 2.0F * NRANDPOS )
+#define NRANDPOS ((float)( (float)rand()/(float)RAND_MAX ))
+#define NRAND  ( 1.0f - 2.0F * NRANDPOS )
 
 
 extern int g_nGfxFix;
@@ -36,8 +36,8 @@ BOOL gParticleSysGreenMode = 0;
 Tcolor gParticleSysLitColor = {1, 1, 1};
 
 /**** Static class data ***/
-BOOL    DrawableParticleSys::greenMode	= FALSE;
-char	*DrawableParticleSys::nameList[] =
+BOOL    DrawableParticleSys::greenMode = FALSE;
+char *DrawableParticleSys::nameList[] =
 {
     "$NONE",
     "$AIR_HANGING_EXPLOSION",
@@ -160,12 +160,12 @@ char	*DrawableParticleSys::nameList[] =
     "$SPARK_TRACER",
     "$WATER_WAKE"
 };
-int		DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
-AList	DrawableParticleSys::textureList;
-AList	DrawableParticleSys::paramList;
-AList	DrawableParticleSys::dpsList;
-float	DrawableParticleSys::groundLevel;
-float	DrawableParticleSys::cameraDistance;
+int DrawableParticleSys::nameListCount = sizeof(DrawableParticleSys::nameList) / sizeof(char *);
+AList DrawableParticleSys::textureList;
+AList DrawableParticleSys::paramList;
+AList DrawableParticleSys::dpsList;
+float DrawableParticleSys::groundLevel;
+float DrawableParticleSys::cameraDistance;
 
 /****** Jams stuff ******/
 static const float TEX_UV_LSB = 1.f / 1024.f;
@@ -175,7 +175,7 @@ static const float TEX_UV_MAX = 1.f - TEX_UV_LSB;
 
 /**** Macros ****/
 #define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
-#define NRESCALE(in,outmin,outmax)			  RESCALE(in,0,1,outmin,outmax)
+#define NRESCALE(in,outmin,outmax)   RESCALE(in,0,1,outmin,outmax)
 
 /****** Basic Data Structs ******/
 struct psRGBA
@@ -249,7 +249,7 @@ public:
 
     union
     {
-        float		 param[9];
+        float  param[9];
 
         struct
         {
@@ -293,7 +293,7 @@ class ParticleParamNode : public ANode
 {
 public:
     char    name[PS_NAMESIZE];
-    int		id;
+    int id;
     int     subid;
 
     int     particleType; // which paritcle class to use for particles????
@@ -310,14 +310,14 @@ public:
     int       lightStages;
     timedRGB  light[10];
 
-    int			sizeStages;
-    timedFloat	size[10];
+    int sizeStages;
+    timedFloat size[10];
 
-    int			alphaStages;
-    timedFloat	alpha[10];
+    int alphaStages;
+    timedFloat alpha[10];
 
 
-    int			gravityStages;
+    int gravityStages;
     timedFloat  gravity[10]; // 0 floats, negative rises, positive sinks
 
     int         accelStages;
@@ -344,9 +344,9 @@ public:
     struct
     {
         PSEmitterModeEnum  mode;
-        ParticleDomain	   domain;
+        ParticleDomain    domain;
         ParticleDomain     target;
-        float		   param[9];
+        float    param[9];
         int            id;
         char           name[PS_NAMESIZE];
         int            stages;
@@ -361,7 +361,7 @@ public:
 
 /** ParticleSys Flags **/
 #define PSF_CHARACTERS "MG"
-#define PSF_NONE	     (0) // use spacing value a a time (in seconds) instead of distance
+#define PSF_NONE      (0) // use spacing value a a time (in seconds) instead of distance
 #define PSF_MORPHATTRIBS (1<<0) // blend attributes over lifespan)
 #define PSF_GROUNDTEST   (1<<1) // enable terrain surface level check
 
@@ -644,7 +644,7 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("acceleration")
         {
-            ppn->accelStages	= i + 1;
+            ppn->accelStages = i + 1;
             ppn->accel[i].value = TokenF(1);
             ppn->accel[i].time  = TokenF(0);
         }
@@ -656,8 +656,8 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("initialVelocity")
         {
-            ppn->velInitial		= TokenF(1);
-            ppn->velVariation	= TokenF(0);
+            ppn->velInitial = TokenF(1);
+            ppn->velVariation = TokenF(0);
         }
 
         On("drawtype")
@@ -678,14 +678,14 @@ void DrawableParticleSys::LoadParameters(void)
 
         On("soundVolume")
         {
-            ppn->sndVolStages	= i + 1;
+            ppn->sndVolStages = i + 1;
             ppn->sndVol[i].value = (TokenF(0) - 1) * -10000;
             ppn->sndVol[i].time  = TokenF(0);
         }
 
         On("soundPitch")
         {
-            ppn->sndPitchStages	= i + 1;
+            ppn->sndPitchStages = i + 1;
             ppn->sndPitch[i].value = TokenF(1);
             ppn->sndPitch[i].time  = TokenF(0);
         }
@@ -805,7 +805,7 @@ int DrawableParticleSys::IsValidPSId(int id)
 
 /***********************************************************************
 
-	The ParticleNode
+ The ParticleNode
 
 ***********************************************************************/
 
@@ -830,7 +830,7 @@ public:
 
     int    birthTime; //
     float  lifespan;  // in seconds
-    float  age;		  // in seconds
+    float  age;   // in seconds
     float  life;      // normalized
     float  plife;     // life value for the previous exec
 
@@ -1266,7 +1266,7 @@ void ParticleNode::Draw(class RenderOTW *renderer, int LOD)
 
 
 
-static	Tcolor	gLight;
+static Tcolor gLight;
 
 /***************************************************************************\
     Initialize a segmented trial object.
@@ -1341,13 +1341,13 @@ void DrawableParticleSys::AddParticle(int Id, Tpoint *worldPos, Tpoint *v)
 /*
 void DrawableParticleSys::AddParticle( char *name, Tpoint *worldPos )
 {
-	DWORD now;
-	now = TheTimeManager.GetClockTime();
+ DWORD now;
+ now = TheTimeManager.GetClockTime();
 
-	ParticleParam *ppn;
+ ParticleParam *ppn;
 
-	ParticleNode *n = new ParticleNode(Id, worldPos);
-	particleList.AddHead(n);
+ ParticleNode *n = new ParticleNode(Id, worldPos);
+ particleList.AddHead(n);
 }
 */
 

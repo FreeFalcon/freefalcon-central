@@ -15,24 +15,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // Properties of the animation image palette layout
-static const int	NUM_SPLASH_FRAMES	= 5;
-static const int	PAL_FRAME_LENGTH	= 32;
+static const int NUM_SPLASH_FRAMES = 5;
+static const int PAL_FRAME_LENGTH = 32;
 
 // location and dimensions of the radar thing (which we want to cover up)
-static const int	COVER_TOP	= 246;
-static const int	COVER_LEFT	= 159;
+static const int COVER_TOP = 246;
+static const int COVER_LEFT = 159;
 
 // Pointers to the global resources used while the loading screen is up
-BYTE			*originalImage		= NULL;
-unsigned long	*originalPalette	= NULL;
-ImageBuffer		*coverImage			= NULL;
-int				origImageType	= IMAGE_TYPE_UNKNOWN;
+BYTE *originalImage = NULL;
+unsigned long *originalPalette = NULL;
+ImageBuffer *coverImage = NULL;
+int origImageType = IMAGE_TYPE_UNKNOWN;
 
 // Some data about the source image
-static int	originalWidth	= 0;
-static int	originalHeight	= 0;
-static int	coverWidth		= 0;
-static int	coverHeight		= 0;
+static int originalWidth = 0;
+static int originalHeight = 0;
+static int coverWidth = 0;
+static int coverHeight = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,23 +45,23 @@ static int	coverHeight		= 0;
 
 void OTWDriverClass::SetupSplashScreen(void)
 {
-    int					result;
-    CImageFileMemory 	texFile;
-    BYTE				*imagePtr;
-    char				*filename;
-    unsigned long		*palPtr;
-    void				*buffer;
-    int					r, c;
-    char				string[MAX_PATH];
-    int					imageType;
-    FILE*				tmpFile;
+    int result;
+    CImageFileMemory  texFile;
+    BYTE *imagePtr;
+    char *filename;
+    unsigned long *palPtr;
+    void *buffer;
+    int r, c;
+    char string[MAX_PATH];
+    int imageType;
+    FILE* tmpFile;
 
     //********************************
     // Load the primary source image
     //********************************
     // Make sure we recognize this file type
 
-    if (OTWImage->targetXres() >= 1600)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
+    if (OTWImage->targetXres() >= 1600) //THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
     {
         filename = "art\\splash\\load16.gif";
         tmpFile = fopen(filename, "r");
@@ -73,7 +73,7 @@ void OTWDriverClass::SetupSplashScreen(void)
         else
             filename = "art\\splash\\load10.gif";
     }
-    else if (OTWImage->targetXres() >= 1280)	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
+    else if (OTWImage->targetXres() >= 1280) //THW 2003-11-15 Allow 1600x1200 and 1280x1024 load screens
     {
         filename = "art\\splash\\load12.gif";
         tmpFile = fopen(filename, "r");
@@ -126,10 +126,10 @@ void OTWDriverClass::SetupSplashScreen(void)
     }
 
     // Store the image data
-    originalWidth	= texFile.image.width;
-    originalHeight	= texFile.image.height;
-    originalImage	= texFile.image.image;
-    originalPalette	= texFile.image.palette;
+    originalWidth = texFile.image.width;
+    originalHeight = texFile.image.height;
+    originalImage = texFile.image.image;
+    originalPalette = texFile.image.palette;
     origImageType = texFile.imageType;//XX
     ShiAssert(originalImage);
     ShiAssert(originalPalette);
@@ -167,11 +167,11 @@ void OTWDriverClass::SetupSplashScreen(void)
     }
 
     // Store the image data
-    coverWidth	= texFile.image.width;
-    coverHeight	= texFile.image.height;
-    imagePtr	= texFile.image.image;
-    palPtr		= texFile.image.palette;
-    imageType	= texFile.imageType;//XX
+    coverWidth = texFile.image.width;
+    coverHeight = texFile.image.height;
+    imagePtr = texFile.image.image;
+    palPtr = texFile.image.palette;
+    imageType = texFile.imageType;//XX
     ShiAssert(imagePtr);
     ShiAssert(palPtr);
 
@@ -213,19 +213,19 @@ void OTWDriverClass::SetupSplashScreen(void)
 
             if (imageType == IMAGE_TYPE_TGA)
             {
-                /*				for (r=0; r<coverHeight; r++)
-                				{
-                					pixel = (DWORD*)coverImage->Pixel( buffer, r, 0 );
-                					for (c=0; c<coverWidth; c++)
-                					{
-                						DWORD r,g,b;
-                						r = *imagePtr++;
-                						g = *imagePtr++;
-                						b = *imagePtr++;
+                /* for (r=0; r<coverHeight; r++)
+                 {
+                 pixel = (DWORD*)coverImage->Pixel( buffer, r, 0 );
+                 for (c=0; c<coverWidth; c++)
+                 {
+                 DWORD r,g,b;
+                 r = *imagePtr++;
+                 g = *imagePtr++;
+                 b = *imagePtr++;
 
-                						*pixel++ = coverImage->Pixel32toPixel32( (r<<16) | (g<<8) | b );
-                					}
-                				}
+                 *pixel++ = coverImage->Pixel32toPixel32( (r<<16) | (g<<8) | b );
+                 }
+                 }
                 */
             }
             else
@@ -293,15 +293,15 @@ void OTWDriverClass::CleanupSplashScreen(void)
 
 void OTWDriverClass::SplashScreenUpdate(int frame)
 {
-    int					top, left;
-    BYTE				*imagePtr = NULL;
-    void				*buffer = NULL;
-    int					x, y;
-    unsigned long		tweakedPalette[256];
-    unsigned long		*srcPal = NULL, *dstPal = NULL;
-    unsigned long		*startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
-    RECT				srcRect, dstRect;
-    int	imageType = IMAGE_TYPE_UNKNOWN;;
+    int top, left;
+    BYTE *imagePtr = NULL;
+    void *buffer = NULL;
+    int x, y;
+    unsigned long tweakedPalette[256];
+    unsigned long *srcPal = NULL, *dstPal = NULL;
+    unsigned long *startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
+    RECT srcRect, dstRect;
+    int imageType = IMAGE_TYPE_UNKNOWN;;
 
     // Validate our parameter
     if (frame >= NUM_SPLASH_FRAMES)
@@ -316,8 +316,8 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     }
 
     // Get the upper left corner of the target area
-    top		= (OTWImage->targetYres() - originalHeight) / 2;
-    left	= (OTWImage->targetXres() - originalWidth) / 2;
+    top = (OTWImage->targetYres() - originalHeight) / 2;
+    left = (OTWImage->targetXres() - originalWidth) / 2;
 
     if ((top < 0) || (left < 0))
     {
@@ -338,12 +338,12 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     if (imageType != IMAGE_TYPE_TGA) //XX
     {
         // Darken all but the specified frame in the palette
-        srcPal		= originalPalette;
-        dstPal		= tweakedPalette;
-        startLit	= originalPalette + frame * PAL_FRAME_LENGTH;
-        stopLit		= startLit + PAL_FRAME_LENGTH;
-        startInvar	= originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
-        stop		= originalPalette + 256;
+        srcPal = originalPalette;
+        dstPal = tweakedPalette;
+        startLit = originalPalette + frame * PAL_FRAME_LENGTH;
+        stopLit = startLit + PAL_FRAME_LENGTH;
+        startInvar = originalPalette + NUM_SPLASH_FRAMES * PAL_FRAME_LENGTH;
+        stop = originalPalette + 256;
 
         ShiAssert(srcPal <= startLit);
         ShiAssert(startLit <= stopLit);
@@ -458,15 +458,15 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     OTWImage->Unlock();
 
     // Cover up the old radar wheel
-    srcRect.top		= 0;
-    srcRect.left	= 0;
-    srcRect.bottom	= coverHeight;
-    srcRect.right	= coverWidth;
-    dstRect.top		= srcRect.top  + top + COVER_TOP;
-    dstRect.left	= srcRect.left + left + COVER_LEFT;
-    dstRect.bottom	= dstRect.top  + coverHeight;
-    dstRect.right	= dstRect.left + coverWidth;
-    //	OTWImage->ComposeTransparent (coverImage, &srcRect, &dstRect);
+    srcRect.top = 0;
+    srcRect.left = 0;
+    srcRect.bottom = coverHeight;
+    srcRect.right = coverWidth;
+    dstRect.top = srcRect.top  + top + COVER_TOP;
+    dstRect.left = srcRect.left + left + COVER_LEFT;
+    dstRect.bottom = dstRect.top  + coverHeight;
+    dstRect.right = dstRect.left + coverWidth;
+    // OTWImage->ComposeTransparent (coverImage, &srcRect, &dstRect);
 
     // flip the surface
     OTWImage->SwapBuffers(NULL);
@@ -479,13 +479,13 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
 
 void OTWDriverClass::ShowSimpleWaitScreen(char *name)
 {
-    int		top, left;
-    int		width, height;
-    char	filename[MAX_PATH];
-    CImageFileMemory 	texFile;	//THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
-    FILE*				tmpFile;
+    int top, left;
+    int width, height;
+    char filename[MAX_PATH];
+    CImageFileMemory  texFile; //THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
+    FILE* tmpFile;
 
-    if (OTWImage->targetXres() >= 1600)	//THW 2003-11-15 Allow 1600x1200 exit screen
+    if (OTWImage->targetXres() >= 1600) //THW 2003-11-15 Allow 1600x1200 exit screen
     {
         sprintf(filename, "art\\splash\\%s16.gif", name);
         tmpFile = fopen(filename, "r");
@@ -503,7 +503,7 @@ void OTWDriverClass::ShowSimpleWaitScreen(char *name)
             height = 768;
         }
     }
-    else if (OTWImage->targetXres() >= 1280)	//THW 2003-11-15 Allow 1280x1024 exit screen
+    else if (OTWImage->targetXres() >= 1280) //THW 2003-11-15 Allow 1280x1024 exit screen
     {
         sprintf(filename, "art\\splash\\%s12.gif", name);
         tmpFile = fopen(filename, "r");
@@ -541,8 +541,8 @@ void OTWDriverClass::ShowSimpleWaitScreen(char *name)
     }
 
     // Get the upper left corner of the target area
-    top		= (OTWImage->targetYres() - height) / 2;
-    left	= (OTWImage->targetXres() - width) / 2;
+    top = (OTWImage->targetYres() - height) / 2;
+    left = (OTWImage->targetXres() - width) / 2;
 
     if ((top < 0) || (left < 0))
     {

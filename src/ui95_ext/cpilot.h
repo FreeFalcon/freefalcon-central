@@ -26,7 +26,7 @@ private:
     short slot_;
     short isplayer_;
 
-    VU_ID	 vuID;
+    VU_ID  vuID;
 
     O_Output *Callsign_;
 

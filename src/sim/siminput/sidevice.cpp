@@ -2,12 +2,12 @@
 #include "sinput.h"
 #include "simio.h"
 
-int		gTotalJoy = 0;
-_TCHAR*	gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1] = {NULL};
+int gTotalJoy = 0;
+_TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1] = {NULL};
 
 //********************************************************************
 //
-//	void AcquireDeviceInput()
+// void AcquireDeviceInput()
 //
 // Acquires and releases control of the mouse to the system.
 //
@@ -22,7 +22,7 @@ void AcquireDeviceInput(int DeviceIndex, BOOL Flag)
         if (Flag)
         {
             gpDeviceAcquired[DeviceIndex] = SUCCEEDED(gpDIDevice[DeviceIndex]->Acquire());
-            //			MonoPrint("Device Acquired\n");
+            // MonoPrint("Device Acquired\n");
         }
         else
         {
@@ -56,7 +56,7 @@ BOOL CheckDeviceAcquisition(int DeviceIndex)
 }
 
 //***********************************
-//	BOOL CleanupDIDevice()
+// BOOL CleanupDIDevice()
 //***********************************
 
 BOOL CleanupDIDevice(int DeviceIndex)
@@ -101,15 +101,15 @@ BOOL CleanupDIDevice(int DeviceIndex)
 }
 
 //***********************************
-//	BOOL SetupDIDevice()
+// BOOL SetupDIDevice()
 //***********************************
 
 BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
                    REFGUID pGUID, LPCDIDATAFORMAT pFormat, DIPROPDWORD* pDIPDW)
 {
 
-    BOOL	SetupResult = TRUE;
-    DWORD	CooperationFlags = DISCL_FOREGROUND;
+    BOOL SetupResult = TRUE;
+    DWORD CooperationFlags = DISCL_FOREGROUND;
 
     gpDIDevice[DeviceIndex] = NULL;
 
@@ -125,7 +125,7 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     // Obtain an interface to the system mouse device
     if (SetupResult)
     {
-#ifndef USE_DINPUT_8	// Retro 15Jan2004
+#ifndef USE_DINPUT_8 // Retro 15Jan2004
         SetupResult = VerifyResult(gpDIObject->CreateDeviceEx(pGUID, IID_IDirectInputDevice7, (void **) &gpDIDevice[DeviceIndex], NULL));
 #else
         HRESULT hr = gpDIObject->CreateDevice(pGUID, &gpDIDevice[DeviceIndex], NULL);

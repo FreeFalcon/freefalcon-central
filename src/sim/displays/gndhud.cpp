@@ -6,15 +6,15 @@
 #include "simmover.h"
 #include "flightData.h"
 #include "sms.h"// status ok.
-#include "laserpod.h"	//MI
-#include "simdrive.h"	//MI
+#include "laserpod.h" //MI
+#include "simdrive.h" //MI
 
-#include "simWeapn.h"		//Wombat778 3-09-04
-#include "classtbl.h"		//Wombat778 3-09-04
+#include "simWeapn.h" //Wombat778 3-09-04
+#include "classtbl.h" //Wombat778 3-09-04
 
 #include "harmpod.h" // RV - I-Hawk
 
-extern SensorClass* FindLaserPod(SimMoverClass* theObject);	//MI
+extern SensorClass* FindLaserPod(SimMoverClass* theObject); //MI
 
 static const float PIPPER_SIZE = 0.05f;
 //MI
@@ -23,7 +23,7 @@ static const float INNER_RETICLE_SIZE = 0.1F;
 static const float TICK_LEN = 0.04F;
 static const float RET_MIN = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
 static const float RET_MAX = -0.55F;
-static const float MAX_STEPS = 12;	//how many steps that we can move the reticle
+static const float MAX_STEPS = 12; //how many steps that we can move the reticle
 
 extern bool g_bRealisticAvionics;
 extern float g_fReconCameraOffset;
@@ -35,11 +35,11 @@ void HudClass::DrawAirGroundRocket(void) // MLR 4/3/2004 -
     /*
     if(g_bRealisticAvionics)
     {
-    	DrawMANReticle();
+     DrawMANReticle();
     }
     else
     {
-    	DrawRCKT();
+     DrawRCKT();
     }
     */
 }
@@ -199,7 +199,7 @@ void HudClass::DrawCCIP(void)
             puacY =  FCC->groundImpactTime / 4;
 
             // draw the puac on the bomb fall line
-            //		 x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
+            //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
             //MI vids show it stays below the FPM
             if (!g_bRealisticAvionics)
                 x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
@@ -267,7 +267,7 @@ void HudClass::DrawRCKT(void)
 
     // draw the pipper
     //display->AdjustOriginInViewport(
-    //	0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F
+    // 0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F
     //);
 
     vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
@@ -464,7 +464,7 @@ void HudClass::DrawStrafe(void)
         puacY =  FCC->groundImpactTime / 4;
 
         // draw the puac on the bomb fall line
-        //		 x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
+        //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
         //MI vids show it stays below the FPM
         if (!g_bRealisticAvionics)
             x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
@@ -490,7 +490,7 @@ void HudClass::DrawStrafe(void)
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
     //MI
-    if (!g_bRealisticAvionics)	//done in the routines below
+    if (!g_bRealisticAvionics) //done in the routines below
         DrawWindowString(10, tmpStr);
 
     //else
@@ -704,7 +704,7 @@ void HudClass::DrawSteeringToRelease(void)
                 // draw the puac on the bomb fall line
                 //MI vids show it stays below the FPM
                 /*if(!g_bRealisticAvionics)
-                	x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
+                 x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
                 else*/ //Cobra removed (droll not initialized and why do this for non-realistic?)
                 x = betaHudUnits;
 
@@ -724,10 +724,10 @@ void HudClass::DrawSteeringToRelease(void)
                 puacY =  FCC->groundImpactTime / 4;
 
                 // draw the puac on the bomb fall line
-                //		 x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
+                //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
                 //MI vids show it stays below the FPM
                 /*if(!g_bRealisticAvionics)
-                	x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
+                 x = ((puacY-1) * drollTrig.sin  + betaHudUnits);
                 else*/ //Cobra removed (droll not initialized and why do this for non-realistic?)
                 x = betaHudUnits;
                 // draw the Puac
@@ -919,7 +919,7 @@ void HudClass::DrawRPod(void)
     }
 }
 
-#include "SimIO.h"	// Retro 3Jan2004
+#include "SimIO.h" // Retro 3Jan2004
 
 void HudClass::DrawMANReticle(void)
 {
@@ -931,7 +931,7 @@ void HudClass::DrawMANReticle(void)
     float Diff = 140 / MAX_STEPS;
     float CurPos;
 
-    if (IO.AnalogIsUsed(AXIS_RET_DEPR))		// Retro 3Jan2004
+    if (IO.AnalogIsUsed(AXIS_RET_DEPR)) // Retro 3Jan2004
     {
         float axisVal = (float)IO.GetAxisValue(AXIS_RET_DEPR) / 15000.F;
         CurPos = axisVal * (-12.F) * Diff;
@@ -940,7 +940,7 @@ void HudClass::DrawMANReticle(void)
     else // another part of that 'else' to this is in MoveRetCenter()
     {
         CurPos = ReticlePosition * Diff;
-    }	// Retro 3Jan2004
+    } // Retro 3Jan2004
 
 
     if (WhichMode == 1)
@@ -1130,7 +1130,7 @@ void HudClass::DrawSteeringToReleaseLADD(void)
 }
 void HudClass::MoveRetCenter(void)
 {
-    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == true)	// Retro 3Jan2004, doing this in another place (DrawMANReticle()) an analogue
+    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == true) // Retro 3Jan2004, doing this in another place (DrawMANReticle()) an analogue
         return;
 
     RET_CENTER = RET_CENTER + (RetPos * 0.1F);

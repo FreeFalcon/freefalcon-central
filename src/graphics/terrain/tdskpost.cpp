@@ -9,7 +9,7 @@
     multiple versions of posts (ie: textured vs. not textured).  For now,
     only one.
 
-	This is version that is used to store the map in the disk file.
+ This is version that is used to store the map in the disk file.
 \***************************************************************************/
 #include "Tpost.h"
 #include "TdskPost.h"
@@ -18,9 +18,9 @@
 //void DiskblockToMemblock( Tpost *memPost, TdiskPost *diskPost, int LOD, float lightLevel, float *minZ, float *maxZ )
 void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost, int LOD, float, float *minZ, float *maxZ)
 {
-    int		i;
-    float	minZvalue	= 1e6f;
-    float	maxZvalue	= -1e6f;
+    int i;
+    float minZvalue = 1e6f;
+    float maxZvalue = -1e6f;
 
     ShiAssert(memPost);
     ShiAssert(diskPost);
@@ -35,53 +35,53 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost, int LOD, float, fl
         // Scale from integer feet (Z up) to floating point feet (Z down)
         memPost->z = -(float)(diskPost->z);
 
-        memPost->texID	= diskPost->texID;
+        memPost->texID = diskPost->texID;
 
         // Compute the texture coordinates for this post
         // The "& 0x3" and 0.25 terms are because we have 4 posts (0,1,2,3) accross each
         // texture at LOD 0.
 
-#if 0	// This way burns a pixel at each edge to improve bi-linear filtering without clamp mode.
+#if 0 // This way burns a pixel at each edge to improve bi-linear filtering without clamp mode.
         static const float start = 1.0f / 128.0f;
-#else	// This way uses the whole texture -- requires clamp mode for bilinear filtering.
+#else // This way uses the whole texture -- requires clamp mode for bilinear filtering.
         static const float start = 0.00001f;
 #endif
 
         static const float stop = 1.0f - start;
         static const float minStep = (stop - start) * 0.25f;
 
-        memPost->u		= start + ((i << LOD) & 0x3) * minStep;
-        memPost->v		= stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
+        memPost->u = start + ((i << LOD) & 0x3) * minStep;
+        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
 
         if (LOD < TheMap.LastNearTexLOD())
         {
-            memPost->d	= (1 << LOD) * minStep;
+            memPost->d = (1 << LOD) * minStep;
         }
         else
         {
-            memPost->d	= stop;
+            memPost->d = stop;
         }
 
         // Copy the color index
         memPost->colorIndex = diskPost->color;
 
         // See MapDice for the details of this conversion
-        static const double thetaInStart	= 0.0;
-        static const double thetaInStop		= PI * 2.0;
-        static const double thetaInRange	= thetaInStop - thetaInStart;
-        static const double thetaOutScale	= 255.99;
+        static const double thetaInStart = 0.0;
+        static const double thetaInStop = PI * 2.0;
+        static const double thetaInRange = thetaInStop - thetaInStart;
+        static const double thetaOutScale = 255.99;
         memPost->theta = (float)((diskPost->theta * thetaInRange / thetaOutScale) + thetaInStart);
 
-        static const double phiInStart	= 0.0;
-        static const double phiInStop	= PI / 2.0;
-        static const double phiInRange	= phiInStop - phiInStart;
-        static const double phiOutScale	= 63.99;
+        static const double phiInStart = 0.0;
+        static const double phiInStop = PI / 2.0;
+        static const double phiInRange = phiInStop - phiInStart;
+        static const double phiOutScale = 63.99;
         memPost->phi = (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
 
-        /*		ShiAssert( memPost->theta > -0.001f );
-        		ShiAssert( memPost->theta < 2.00f * PI + 0.001f );
-        		ShiAssert( memPost->phi > -0.001f );
-        		ShiAssert( memPost->phi < PI / 2.0f + 0.001f );
+        /* ShiAssert( memPost->theta > -0.001f );
+         ShiAssert( memPost->theta < 2.00f * PI + 0.001f );
+         ShiAssert( memPost->phi > -0.001f );
+         ShiAssert( memPost->phi < PI / 2.0f + 0.001f );
         */
         // Request the texture used by this post (if any)
         if (LOD <= TheMap.LastNearTexLOD())
@@ -110,9 +110,9 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost, int LOD, float, fl
 // have time now to check it all out.
 void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, float, float *minZ, float *maxZ)
 {
-    int		i;
-    float	minZvalue	= 1e6f;
-    float	maxZvalue	= -1e6f;
+    int i;
+    float minZvalue = 1e6f;
+    float maxZvalue = -1e6f;
 
     ShiAssert(memPost);
     ShiAssert(diskPost);
@@ -127,53 +127,53 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         // Scale from integer feet (Z up) to floating point feet (Z down)
         memPost->z = -(float)(diskPost->z);
 
-        memPost->texID	= diskPost->texID;
+        memPost->texID = diskPost->texID;
 
         // Compute the texture coordinates for this post
         // The "& 0x3" and 0.25 terms are because we have 4 posts (0,1,2,3) accross each
         // texture at LOD 0.
 
-#if 0	// This way burns a pixel at each edge to improve bi-linear filtering without clamp mode.
+#if 0 // This way burns a pixel at each edge to improve bi-linear filtering without clamp mode.
         static const float start = 1.0f / 128.0f;
-#else	// This way uses the whole texture -- requires clamp mode for bilinear filtering.
+#else // This way uses the whole texture -- requires clamp mode for bilinear filtering.
         static const float start = 0.00001f;
 #endif
 
         static const float stop = 1.0f - start;
         static const float minStep = (stop - start) * 0.25f;
 
-        memPost->u		= start + ((i << LOD) & 0x3) * minStep;
-        memPost->v		= stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
+        memPost->u = start + ((i << LOD) & 0x3) * minStep;
+        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) & 0x3) * minStep;
 
         if (LOD < TheMap.LastNearTexLOD())
         {
-            memPost->d	= (1 << LOD) * minStep;
+            memPost->d = (1 << LOD) * minStep;
         }
         else
         {
-            memPost->d	= stop;
+            memPost->d = stop;
         }
 
         // Copy the color index
         memPost->colorIndex = diskPost->color;
 
         // See MapDice for the details of this conversion
-        static const double thetaInStart	= 0.0;
-        static const double thetaInStop		= PI * 2.0;
-        static const double thetaInRange	= thetaInStop - thetaInStart;
-        static const double thetaOutScale	= 255.99;
+        static const double thetaInStart = 0.0;
+        static const double thetaInStop = PI * 2.0;
+        static const double thetaInRange = thetaInStop - thetaInStart;
+        static const double thetaOutScale = 255.99;
         memPost->theta = (float)((diskPost->theta * thetaInRange / thetaOutScale) + thetaInStart);
 
-        static const double phiInStart	= 0.0;
-        static const double phiInStop	= PI / 2.0;
-        static const double phiInRange	= phiInStop - phiInStart;
-        static const double phiOutScale	= 63.99;
+        static const double phiInStart = 0.0;
+        static const double phiInStop = PI / 2.0;
+        static const double phiInRange = phiInStop - phiInStart;
+        static const double phiOutScale = 63.99;
         memPost->phi = (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
 
-        /*		ShiAssert( memPost->theta > -0.001f );
-        		ShiAssert( memPost->theta < 2.00f * PI + 0.001f );
-        		ShiAssert( memPost->phi > -0.001f );
-        		ShiAssert( memPost->phi < PI / 2.0f + 0.001f );
+        /* ShiAssert( memPost->theta > -0.001f );
+         ShiAssert( memPost->theta < 2.00f * PI + 0.001f );
+         ShiAssert( memPost->phi > -0.001f );
+         ShiAssert( memPost->phi < PI / 2.0f + 0.001f );
         */
         // Request the texture used by this post (if any)
         if (LOD <= TheMap.LastNearTexLOD())

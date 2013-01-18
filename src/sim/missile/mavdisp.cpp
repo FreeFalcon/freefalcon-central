@@ -25,8 +25,8 @@ extern bool g_bGreyScaleMFD;
 extern bool bNVGmode;
 
 extern bool g_bRealisticAvionics;
-extern float g_fMavEXPLevel;					//Wombat778 9-27-2003
-extern float g_fMavFOVLevel;					//Wombat778 9-27-2003
+extern float g_fMavEXPLevel; //Wombat778 9-27-2003
+extern float g_fMavFOVLevel; //Wombat778 9-27-2003
 
 MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : MissileDisplayClass(newPlatform)
 {
@@ -41,7 +41,7 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
     //curFOV   = 6.0F * DTR;
 
     // RV - Biker - New FOV data from missile FMs
-    //curFOV = g_fMavFOVLevel * DTR;						//Wombat778 9-28-2003
+    //curFOV = g_fMavFOVLevel * DTR; //Wombat778 9-28-2003
     if ((MissileClass*)platform && ((MissileClass*)platform)->GetFOVLevel() > 0)
         curFOV = 12.0f / ((MissileClass*)platform)->GetFOVLevel() * DTR;
     else
@@ -104,7 +104,7 @@ void MaverickDisplayClass::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     // SCR  9/1/98  Is it every legal to have viewPoint NULL???
-    ShiAssert(viewPoint);	// If we don't hit this after a while, get rid of onMainScreen...
+    ShiAssert(viewPoint); // If we don't hit this after a while, get rid of onMainScreen...
 
     if (viewPoint)
         onMainScreen = TRUE;
@@ -149,20 +149,20 @@ void MaverickDisplayClass::DrawDisplay(void)
         {
             toggleFOV = FALSE;
 
-            /*if (curFOV > 3.0F * DTR)						//Wombat778 9-27-2003 Removed and replaced with values for EXP and FOV from cfg file
+            /*if (curFOV > 3.0F * DTR) //Wombat778 9-27-2003 Removed and replaced with values for EXP and FOV from cfg file
             // JB 010120 Fixed Mav FOV
-            //	curFOV = 0.5F * DTR;
-            	curFOV = 3.0F * DTR;
+            // curFOV = 0.5F * DTR;
+             curFOV = 3.0F * DTR;
             // JB 010120
             else
-            	curFOV = 6.0F * DTR;
+             curFOV = 6.0F * DTR;
             */
 
             // RV - Biker - New FOV calculation (decrease curFOV -> increase zoom)
-            //if (curFOV > g_fMavEXPLevel * DTR)				//Wombat778 9-28-2003 (reversed EXP and FOV...DOH!)
-            //	 curFOV = g_fMavEXPLevel * DTR;
+            //if (curFOV > g_fMavEXPLevel * DTR) //Wombat778 9-28-2003 (reversed EXP and FOV...DOH!)
+            //  curFOV = g_fMavEXPLevel * DTR;
             //else
-            //	 curFOV = g_fMavFOVLevel * DTR;
+            //  curFOV = g_fMavFOVLevel * DTR;
 
             if (curFOV > 12.0f / ZoomMax * DTR)
                 curFOV = 12.0f / ZoomMax * DTR;
@@ -469,22 +469,22 @@ void MaverickDisplayClass::DrawTerrain(void)
 
     // RV - RED - ZBuffer Enabled
     ((RenderTV*)display)->context.SetZBuffering(TRUE);
-    /*	if (displayType == AGM65_IR)
-    	{*/
+    /* if (displayType == AGM65_IR)
+     {*/
     ((RenderIR*)display)->StartDraw();
     ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
 
     ((RenderIR*)display)->context.FlushPolyLists();
     ((RenderIR*)display)->PostSceneCloudOcclusion();
     ((RenderIR*)display)->EndDraw();
-    /*	}
-    	else if (displayType == AGM65_TV)
-    	{
-    	  ((RenderTV*)display)->StartDraw();
-    	  ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+    /* }
+     else if (displayType == AGM65_TV)
+     {
+       ((RenderTV*)display)->StartDraw();
+       ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
 
-    	  ((RenderTV*)display)->EndDraw();
-    	}*/
+       ((RenderTV*)display)->EndDraw();
+     }*/
 }
 
 void MaverickDisplayClass::LockTarget(void)

@@ -13,14 +13,14 @@
 
 // Provide the one and only terrain database object.  It will be up to the
 // application to initialize and cleanup this object by calling Setup and Cleanup.
-TMap	TheMap;
+TMap TheMap;
 
 void SetLatLong(float latitude, float longitude);
 void ResetLatLong(void);
 void GetLatLong(float *latitude, float *longitude);
 
 // Number of feet between posts at highest detail - since we have one map, we can have on of these
-float	FeetPerPost;
+float FeetPerPost;
 bool g_LargeTerrainFormat;
 float g_MaximumTheaterAltitude;
 bool g_LargeTheater;
@@ -29,12 +29,12 @@ extern float g_fLatitude;
 
 int TMap::Setup(const char *mapPath)
 {
-    int		i = 0;
-    int		width = 0, height = 0;
-    char	filename[MAX_PATH] = {0};
-    HANDLE	headerFile = 0;
-    DWORD	bytesRead = 0;
-    BOOL	retval = 0;
+    int i = 0;
+    int width = 0, height = 0;
+    char filename[MAX_PATH] = {0};
+    HANDLE headerFile = 0;
+    DWORD bytesRead = 0;
+    BOOL retval = 0;
 
 
     // Construct the filename for the map description file and open it
@@ -44,8 +44,8 @@ int TMap::Setup(const char *mapPath)
 
     if (headerFile == INVALID_HANDLE_VALUE)
     {
-        //char	string[80];
-        //char	message[120];
+        //char string[80];
+        //char message[120];
         //PutErrorString( string );
         //sprintf( message, "%s:  Couldn't open terrain header - disk error?", string );
         //int len = strlen( message );
@@ -60,14 +60,14 @@ int TMap::Setup(const char *mapPath)
 
     if ((!retval) || (bytesRead != sizeof(FeetPerPost)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (feet) - CD Error?", string);
         ShiError(message);
     }
 
-    ShiAssert((FeetPerPost > 0.0f) && (FeetPerPost < 50000.0f));		// 50,000 is arbitrary, just want to check reasonableness here.
+    ShiAssert((FeetPerPost > 0.0f) && (FeetPerPost < 50000.0f)); // 50,000 is arbitrary, just want to check reasonableness here.
 
 
     // Read the width and height of the MEA table
@@ -77,8 +77,8 @@ int TMap::Setup(const char *mapPath)
 
     if ((!retval) || (bytesRead != sizeof(FTtoMEAcell)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (MEAsize) - CD Error?", string);
         ShiError(message);
@@ -90,14 +90,14 @@ int TMap::Setup(const char *mapPath)
 
     if ((!retval) || (bytesRead != sizeof(nLevels)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (levels)", string);
         ShiError(message);
     }
 
-    ShiAssert((nLevels > 0) && (nLevels < 9));		// 9 is arbitrary, just want to check reasonableness here.
+    ShiAssert((nLevels > 0) && (nLevels < 9)); // 9 is arbitrary, just want to check reasonableness here.
 
 
     // Read the number of the last level which has conventional textures applied
@@ -105,8 +105,8 @@ int TMap::Setup(const char *mapPath)
 
     if ((!retval) || (bytesRead != sizeof(lastNearTexturedLOD)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (near textured LOD)", string);
         ShiError(message);
@@ -120,8 +120,8 @@ int TMap::Setup(const char *mapPath)
 
     if ((!retval) || (bytesRead != sizeof(lastFarTexturedLOD)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (far textured LOD)", string);
         ShiError(message);
@@ -157,15 +157,15 @@ int TMap::Setup(const char *mapPath)
 
         if ((!retval) || (bytesRead != sizeof(nLevels)))
         {
-            char	string[80];
-            char	message[120];
+            char string[80];
+            char message[120];
             PutErrorString(string);
             sprintf(message, "%s:  Bad terrain header read - CD Error?", string);
             ShiError(message);
         }
 
-        ShiAssert((width  > 0) && (width  < 5000));	// 1000 is arbitrary, just want to check reasonableness here.
-        ShiAssert((height > 0) && (height < 5000));	// 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((width  > 0) && (width  < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
+        ShiAssert((height > 0) && (height < 5000)); // 1000 is arbitrary, just want to check reasonableness here.
 
         // Setup the level
         Levels[i].Setup(i, width, height, mapPath);
@@ -265,19 +265,19 @@ void TMap::Cleanup(void)
 
 void TMap::LoadColorTable(HANDLE inputFile)
 {
-    UInt32	bytesRead;
-    BOOL	retval;
-    UInt32	*packedSrc;
-    Tcolor	*src, *dst, *end;
-    UInt32	palette[256];
+    UInt32 bytesRead;
+    BOOL retval;
+    UInt32 *packedSrc;
+    Tcolor *src, *dst, *end;
+    UInt32 palette[256];
 
     // Read the original color data
     retval = ReadFile(inputFile, palette, sizeof(palette), &bytesRead, NULL);
 
     if ((!retval) || (bytesRead != sizeof(palette)))
     {
-        char	string[80];
-        char	message[120];
+        char string[80];
+        char message[120];
         PutErrorString(string);
         sprintf(message, "%s:  Bad terrain header read (color table)", string);
         ShiError(message);
@@ -317,12 +317,12 @@ void TMap::LoadColorTable(HANDLE inputFile)
 
 void TMap::LoadMEAtable(const char *mapPath)
 {
-    char	filename[MAX_PATH];
-    HANDLE	dataFile;
-    DWORD	bytesRead;
-    BOOL	retval;
-    Int16	*target;
-    int		row;
+    char filename[MAX_PATH];
+    HANDLE dataFile;
+    DWORD bytesRead;
+    BOOL retval;
+    Int16 *target;
+    int row;
 
 
     // Constuct the storage for the array
@@ -336,8 +336,8 @@ void TMap::LoadMEAtable(const char *mapPath)
 
     if (dataFile == INVALID_HANDLE_VALUE)
     {
-        //char	string[80];
-        //char	message[120];
+        //char string[80];
+        //char message[120];
         //PutErrorString( string );
         //sprintf( message, "%s:  Couldn't open MEA table - disk error?", string );
         //int len = strlen( message );
@@ -354,8 +354,8 @@ void TMap::LoadMEAtable(const char *mapPath)
 
         if ((!retval) || (bytesRead != MEAwidth * sizeof(*MEAarray)))
         {
-            char	string[80];
-            char	message[120];
+            char string[80];
+            char message[120];
             PutErrorString(string);
             sprintf(message, "%s:  Bad MEA table read - CD Error?", string);
             ShiError(message);
@@ -394,8 +394,8 @@ void TMap::TimeUpdateCallback(void *self)
 }
 void TMap::UpdateLighting(void)
 {
-    Tcolor	lightColor;
-    Tcolor	*src, *dst, *end;
+    Tcolor lightColor;
+    Tcolor *src, *dst, *end;
 
     // Get the light level from the time of day manager
     TheTimeOfDay.GetTextureLightingColor(&lightColor);

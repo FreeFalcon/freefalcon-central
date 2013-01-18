@@ -63,8 +63,8 @@ void AirframeClass::Atmosphere(void)
     float qpasl1, oper, pa, qc;
     pdelta = CalcPressureRatio(-z, &ttheta, &rsigma);
 
-    sound	= (float)sqrt(ttheta) * AASL;
-    rho		= rsigma * RHOASL;
+    sound = (float)sqrt(ttheta) * AASL;
+    rho = rsigma * RHOASL;
     pa      = pdelta * PASL;
 
     if (IsSet(Trimming))
@@ -125,24 +125,24 @@ void AirframeClass::Atmosphere(void)
     /*
        if (platform == SimDriver.GetPlayerEntity())
        {
-          if (g_bFFCenterFix) JoystickPlayEffect (JoyAutoCenter, 20000);		//Wombat778 11-26-2003 Changed method of FFCenterfix.  Added because of some reports that centering cuts out after an effect is played
-    	   {
+          if (g_bFFCenterFix) JoystickPlayEffect (JoyAutoCenter, 20000); //Wombat778 11-26-2003 Changed method of FFCenterfix.  Added because of some reports that centering cuts out after an effect is played
+        {
              if (qbar < 250)
              {
                 if (fabs (qbar - lastqBar) > 5.0F)
                 {
-    			   if (!g_bFFCenterFix)				//Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
-    				   JoystickPlayEffect (JoyAutoCenter, FloatToInt32((qbar/250.0F * 0.5F + 0.5F) * 10000.0F));
+        if (!g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
+        JoystickPlayEffect (JoyAutoCenter, FloatToInt32((qbar/250.0F * 0.5F + 0.5F) * 10000.0F));
 
                    //lastqBar = qbar; // JB 010301 FF would cut out < 250
                 }
-    						lastqBar = qbar; // JB 010301 FF would cut out < 250
+     lastqBar = qbar; // JB 010301 FF would cut out < 250
              }
              else
              {
                 if (fabs (qbar - lastqBar) > 5.0F)
-    				if (!g_bFFCenterFix)				//Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
-    					JoystickPlayEffect (JoyAutoCenter, 10000);
+     if (!g_bFFCenterFix) //Wombat778 9-29-2003  Allows user to have the fixed centering force for FF sticks
+     JoystickPlayEffect (JoyAutoCenter, 10000);
                 lastqBar = qbar;
              }
           }
@@ -177,7 +177,7 @@ float AirframeClass::CalcTASfromCAS(float cas)
     pdelta = CalcPressureRatio(-z, &ttheta, &rsigma);
     desMach = CalcMach(cas, pdelta);
 
-    sound	= (float)sqrt(ttheta) * AASL;
+    sound = (float)sqrt(ttheta) * AASL;
 
     return desMach * sound * 3600.0F / 6080.0F;
 }

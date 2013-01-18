@@ -42,19 +42,19 @@ void OTWDriverClass::SetEyeFlyCameraPosition(float dT)
     //if (IO.ReadDigital(0))
     if (keyboardTriggerOverride) //THW 2003-11-11 fixed
     {
-        p = Math.DeadBand(IO.ReadAnalog(AXIS_ROLL), -0.05F, 0.05F) * (1.0F / 0.95F); 	// Retro 31Dec2003
+        p = Math.DeadBand(IO.ReadAnalog(AXIS_ROLL), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
         p = max(min(p, 1.0F), -1.0F) * dT * 1.0f;
 
-        q = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * (1.0F / 0.95F); 		// Retro 31Dec2003
+        q = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
         q = max(min(q, 1.0F), -1.0F) * dT * 1.0f;
 
-        r = -Math.DeadBand(-IO.ReadAnalog(AXIS_YAW), -0.05F, 0.05F) * (1.0F / 0.95F); 	// Retro 31Dec2003
+        r = -Math.DeadBand(-IO.ReadAnalog(AXIS_YAW), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
         r = max(min(r, 1.0F), -1.0F) * dT * 1.0f;
 
-        if (IO.AnalogIsUsed(AXIS_THROTTLE)) 	// Retro 31Dec2003
+        if (IO.AnalogIsUsed(AXIS_THROTTLE))  // Retro 31Dec2003
         {
             //throttle = (1.0F - Math.DeadBand(IO.ReadAnalog(2), -0.03F, 0.03F)) * 0.5F;
-            throttle = 0.66666F * IO.ReadAnalog(AXIS_THROTTLE); 	// Retro 31Dec2003
+            throttle = 0.66666F * IO.ReadAnalog(AXIS_THROTTLE);  // Retro 31Dec2003
             throttle *= throttle;
         }
         else

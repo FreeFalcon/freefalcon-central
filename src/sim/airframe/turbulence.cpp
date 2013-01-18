@@ -67,22 +67,22 @@ float AirframeClass::Turbulence(float turb)
     //MonoPrint("Ground Type %d\n",groundType);
 
     /*
-    COVERAGE_NODATA		= 0;
-    COVERAGE_WATER		= 1;
-    COVERAGE_RIVER		= 2;
-    COVERAGE_SWAMP		= 3;
-    COVERAGE_PLAINS		= 4;
-    COVERAGE_BRUSH		= 5;
-    COVERAGE_THINFOREST	= 6;
-    COVERAGE_THICKFOREST	= 7;
-    COVERAGE_ROCKY		= 8;
-    COVERAGE_URBAN		= 9;
-    COVERAGE_ROAD			= 10;
-    COVERAGE_RAIL			= 11;
-    COVERAGE_BRIDGE		= 12;
-    COVERAGE_RUNWAY		= 13;
-    COVERAGE_STATION		= 14;
-    COVERAGE_OBJECT		= 15; // JB carrier
+    COVERAGE_NODATA = 0;
+    COVERAGE_WATER = 1;
+    COVERAGE_RIVER = 2;
+    COVERAGE_SWAMP = 3;
+    COVERAGE_PLAINS = 4;
+    COVERAGE_BRUSH = 5;
+    COVERAGE_THINFOREST = 6;
+    COVERAGE_THICKFOREST = 7;
+    COVERAGE_ROCKY = 8;
+    COVERAGE_URBAN = 9;
+    COVERAGE_ROAD = 10;
+    COVERAGE_RAIL = 11;
+    COVERAGE_BRIDGE = 12;
+    COVERAGE_RUNWAY = 13;
+    COVERAGE_STATION = 14;
+    COVERAGE_OBJECT = 15; // JB carrier
 
     */
 
@@ -356,7 +356,7 @@ float AirframeClass::Turbulence(float turb)
     {
         //Clouds
         float cloudRadius, cloudDist, xx, yy, zz;
-        //		cloudRadius = 4000.0F * 2.0f;
+        // cloudRadius = 4000.0F * 2.0f;
         cloudRadius = 4000.0F * 2.3f * 2.0f; // Cobra - FRB - need larger radius due to z-fighting fix
         int drawCell = DRAWABLECELL;
         int numCells = NUMCELLS;
@@ -702,7 +702,7 @@ float AirframeClass::Turbulence(float turb)
 
     /*else //Inclement
     {
-    	//General Atmospherics: mech, convection, shear (greater intensity)
+     //General Atmospherics: mech, convection, shear (greater intensity)
 
     }//End Inclement*/
 

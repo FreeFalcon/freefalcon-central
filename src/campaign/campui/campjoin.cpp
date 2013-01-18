@@ -60,11 +60,11 @@ extern void ChooseBullseye(void); // 2002-04-18 MN
 // Globals
 // ============================
 
-int		gCampJoinStatus = 0;		// This stores what stage of loading we're currently in
-ulong	gCampJoinLastData = 0;		// Last vuxRealtime we received data about this game
-ulong	gCampJoinTimeout = 0;		// How long we're willing to wait for the next set of data
-uchar	gCampJoinTries = 0;			// How many times we've re-requested campaign data
-int		gCampJoinGameType = 0;		// Type of game we're joining (Campaign/TacEng/Dogfight)
+int gCampJoinStatus = 0; // This stores what stage of loading we're currently in
+ulong gCampJoinLastData = 0; // Last vuxRealtime we received data about this game
+ulong gCampJoinTimeout = 0; // How long we're willing to wait for the next set of data
+uchar gCampJoinTries = 0; // How many times we've re-requested campaign data
+int gCampJoinGameType = 0; // Type of game we're joining (Campaign/TacEng/Dogfight)
 
 // ============================
 // Prototypes
@@ -217,9 +217,9 @@ void CampaignJoinSuccess(void)
     }
     else if (FalconLocalGame->GetGameType() == game_Campaign)
     {
-        C_Window	*win;
-        C_EditBox	*ebox;
-        CampEntity	ps;
+        C_Window *win;
+        C_EditBox *ebox;
+        CampEntity ps;
 
         ps = (CampEntity) FindUnit(gPlayerSquadronId);
 
@@ -281,7 +281,7 @@ void CampaignJoinSuccess(void)
                     {
                         TeamInfo[t]->atm->DoCalculations();
                         TeamInfo[t]->gtm->DoCalculations();
-                        //						TeamInfo[t]->ntm->DoCalculations(); // don't plan naval stuff at the beginning
+                        // TeamInfo[t]->ntm->DoCalculations(); // don't plan naval stuff at the beginning
                     }
                 }
 
@@ -359,7 +359,7 @@ void CampaignJoinKeepAlive(void)
 // This is the timer routine which runs during the campaign join process
 void CampaignConnectionTimer(void)
 {
-    ulong	elapsedTime = vuxRealTime - gCampJoinLastData;
+    ulong elapsedTime = vuxRealTime - gCampJoinLastData;
 
     // Abort entire load process if we've waited to long
     if (elapsedTime > gCampJoinTimeout)
@@ -376,11 +376,11 @@ void CampaignConnectionTimer(void)
 
         gCampJoinLastData = vuxRealTime;
 
-        /*		Don't repost messages - these are now sent reliably
-        		if (!TheCampaign.IsPreLoaded())
-        			PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_REQUEST_ALL_DATA,gCampJoinGameType);
-        		else
-        			PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_CAMP_DATA_ONLY,gCampJoinGameType);
+        /* Don't repost messages - these are now sent reliably
+         if (!TheCampaign.IsPreLoaded())
+         PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_REQUEST_ALL_DATA,gCampJoinGameType);
+         else
+         PostMessage(FalconDisplay.appWin,FM_JOIN_CAMPAIGN,JOIN_CAMP_DATA_ONLY,gCampJoinGameType);
         */
     }
 }

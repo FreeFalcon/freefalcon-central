@@ -17,82 +17,82 @@ class PlayerOptionsClass
 {
 private:
 public:
-    int DispFlags;							// Display Options
-    //	int DispTextureLevel;					//0-4 (to what level do we display textures)
-    float DispTerrainDist;					//sets max range at which textures are displayed
-    int DispMaxTerrainLevel;				//should 0-2 can be up to 4
+    int DispFlags; // Display Options
+    // int DispTextureLevel; //0-4 (to what level do we display textures)
+    float DispTerrainDist; //sets max range at which textures are displayed
+    int DispMaxTerrainLevel; //should 0-2 can be up to 4
 
-    int		ObjFlags;						// Object Display Options
-    float	ObjDetailLevel;					// (.5 - 2) (modifies LOD switching distance)
-    float	ObjMagnification;				// 1-5
-    int		ObjDeaggLevel;					// 0-100 (Percentage of vehicles deaggregated per unit)
-    int		BldDeaggLevel;					// 0-5 (determines which buildings get deaggregated)
-    int		ACMIFileSize;					// 1-? MB's (determines the largest size a single acmi tape will be)
-    float	SfxLevel;						// 1.0-5.0
-    float	PlayerBubble;					// 0.5 - 2 multiplier for player bubble size
+    int ObjFlags; // Object Display Options
+    float ObjDetailLevel; // (.5 - 2) (modifies LOD switching distance)
+    float ObjMagnification; // 1-5
+    int ObjDeaggLevel; // 0-100 (Percentage of vehicles deaggregated per unit)
+    int BldDeaggLevel; // 0-5 (determines which buildings get deaggregated)
+    int ACMIFileSize; // 1-? MB's (determines the largest size a single acmi tape will be)
+    float SfxLevel; // 1.0-5.0
+    float PlayerBubble; // 0.5 - 2 multiplier for player bubble size
 
-    int weatherCondition;					//JAM 18Nov03
-    int Season;								//THW 2004-01-17
+    int weatherCondition; //JAM 18Nov03
+    int Season; //THW 2004-01-17
 
-    int					SimFlags;			// Sim flags
-    FlightModelType		SimFlightModel;		// FlightModelType
-    WeaponEffectType	SimWeaponEffect;	// WeaponEffectType
-    AvionicsType		SimAvionicsType;	// Avionics Difficulty
-    AutopilotModeType   SimAutopilotType;	// AutopilotModeType
-    RefuelModeType		SimAirRefuelingMode;// RefuelModeType
-    PadlockModeType		SimPadlockMode;		// PadlockModeType
-    VisualCueType		SimVisualCueMode;	// VisualCueType
+    int SimFlags; // Sim flags
+    FlightModelType SimFlightModel; // FlightModelType
+    WeaponEffectType SimWeaponEffect; // WeaponEffectType
+    AvionicsType SimAvionicsType; // Avionics Difficulty
+    AutopilotModeType   SimAutopilotType; // AutopilotModeType
+    RefuelModeType SimAirRefuelingMode;// RefuelModeType
+    PadlockModeType SimPadlockMode; // PadlockModeType
+    VisualCueType SimVisualCueMode; // VisualCueType
 
-    int GeneralFlags;						// General stuff
+    int GeneralFlags; // General stuff
 
-    int CampGroundRatio;					// Default force ratio values
+    int CampGroundRatio; // Default force ratio values
     int CampAirRatio;
     int CampAirDefenseRatio;
     int CampNavalRatio;
 
-    int CampEnemyAirExperience;			// 0-4	Green - Ace
-    int CampEnemyGroundExperience;		// 0-4	Green - Ace
-    int CampEnemyStockpile;				// 0-100 % of max
-    int CampFriendlyStockpile;			// 0-100 % of max
+    int CampEnemyAirExperience; // 0-4 Green - Ace
+    int CampEnemyGroundExperience; // 0-4 Green - Ace
+    int CampEnemyStockpile; // 0-100 % of max
+    int CampFriendlyStockpile; // 0-100 % of max
 
-    int	  GroupVol[NUM_SOUND_GROUPS];		// Values are 0 to -3600 in dBs
+    int   GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
 
-    float Realism;							// stores last realism value saved less the value
+    float Realism; // stores last realism value saved less the value
     // from UnlimitedAmmo (this is used to modify scores in
     // Instant Action.)
-    _TCHAR  keyfile[PL_FNAME_LEN];			// name of keystrokes file to use
-    // Retro_dead 15Jan2004	GUID	joystick;						// unique identifier for which joystick to use
+    _TCHAR  keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
+    // Retro_dead 15Jan2004 GUID joystick; // unique identifier for which joystick to use
 
     enum StartFlag
     {
         START_RUNWAY,
         START_TAXI,
         START_RAMP,
-    } SimStartFlags;		// Where to start the whole thing (taxi/runway etc)
+    } SimStartFlags; // Where to start the whole thing (taxi/runway etc)
     enum { RAMP_MINUTES = 20 }; // how long before take off MI increased from 8
 
     // M.N.
-    char skycol;	// ID of chosen skyfix (256 should be enough)
+    char skycol; // ID of chosen skyfix (256 should be enough)
     bool PlayerRadioVoice; // Turn on/off all player radio voices
-    bool UIComms;	// Turn on/off random UI radio chatter
+    bool UIComms; // Turn on/off random UI radio chatter
 
-private:	// Retro
-    bool infoBar;				// Retro 25Dec2003
-    bool subTitles;				// Retro 25Dec2003
-    bool TrackIR_2d;			// Retro 27Dec2003
-    bool TrackIR_3d;			// Retro 27Dec2003
-    bool enableFFB;				// Retro 27Dec2003
-    bool enableMouseLook;		// Retro 28Dec2003
-    float MouseLookSensitivity;	// Retro 15Jan2004
-    int MouseWheelSensitivity;	// Retro 17Jan2004
+private: // Retro
+    bool infoBar; // Retro 25Dec2003
+    bool subTitles; // Retro 25Dec2003
+    bool TrackIR_2d; // Retro 27Dec2003
+    bool TrackIR_3d; // Retro 27Dec2003
+    bool enableFFB; // Retro 27Dec2003
+    bool enableMouseLook; // Retro 28Dec2003
+    float MouseLookSensitivity; // Retro 15Jan2004
+    int MouseWheelSensitivity; // Retro 17Jan2004
     int KeyboardPOVPanningSensitivity; // Retro 18Jan2004
-    bool clickablePitMode;		// Wombat778 1-22-04 moved here from simouse.cpp
+    bool clickablePitMode; // Wombat778 1-22-04 moved here from simouse.cpp
     // Retro 22Jan2004 - flag that shows if clickable pit or mouselook is active
-    //	should also be used to decide if cursor is drawn. Shoul go into clickable pit class
-    bool enableAxisShaping;		// Retro 27Jan2004
+    // should also be used to decide if cursor is drawn. Shoul go into clickable pit class
+    bool enableAxisShaping; // Retro 27Jan2004
 
     // sfr: todo make this private. I CARE
-public:	// Retro
+public: // Retro
     int SoundFlags; // MLR 12/13/2003 - I could give access functions, but really, who cares?
     int SoundExtAttenuation; // MLR 12/13/2003 -
 private:
@@ -108,8 +108,8 @@ public:
     int SaveOptions(char* filename = LogBook.Callsign());
     void ApplyOptions(void);
 
-    int InCompliance(RulesStruct *rules);	// returns TRUE if in FULL compliance w/rules
-    void ComplyWRules(RulesStruct *rules);	// forces all settings not in compliance to minimum settings
+    int InCompliance(RulesStruct *rules); // returns TRUE if in FULL compliance w/rules
+    void ComplyWRules(RulesStruct *rules); // forces all settings not in compliance to minimum settings
 
     // Nifty Access functions
     int GouraudOn(void)
@@ -135,8 +135,8 @@ public:
         return (DispFlags & DISP_SHADOWS) && TRUE;
     }
 
-    //	void SetTextureLevel(int level)							{ DispTextureLevel = level;}
-    //	int TextureLevel (void)									{ return DispTextureLevel; }
+    // void SetTextureLevel(int level) { DispTextureLevel = level;}
+    // int TextureLevel (void) { return DispTextureLevel; }
     void SetTerrainDistance(float distance)
     {
         DispTerrainDist = distance;
@@ -158,8 +158,8 @@ public:
     {
         return (ObjFlags & DISP_OBJ_DYN_SCALING) && TRUE;
     }
-    //	int ObjectTexturesOn (void)								{ return (ObjFlags & DISP_OBJ_TEXTURES) && TRUE; }
-    //	int ObjectShadingOn (void)								{ return (ObjFlags & DISP_OBJ_SHADING) && TRUE; }
+    // int ObjectTexturesOn (void) { return (ObjFlags & DISP_OBJ_TEXTURES) && TRUE; }
+    // int ObjectShadingOn (void) { return (ObjFlags & DISP_OBJ_SHADING) && TRUE; }
     float ObjectDetailLevel(void)
     {
         return ObjDetailLevel;
@@ -261,7 +261,7 @@ public:
     {
         return (SimFlags & SIM_BULLSEYE_CALLS) && TRUE;
     }
-    int	InvulnerableOn(void)
+    int InvulnerableOn(void)
     {
         return (SimFlags & SIM_INVULNERABLE) && TRUE;
     }
@@ -421,8 +421,8 @@ public:
         return keyfile;
     }
 
-    // Retro_dead 15Jan2004	void SetJoystick (GUID newID)							{ joystick=newID; }
-    // Retro_dead 15Jan2004	GUID GetJoystick (void)									{ return joystick; }
+    // Retro_dead 15Jan2004 void SetJoystick (GUID newID) { joystick=newID; }
+    // Retro_dead 15Jan2004 GUID GetJoystick (void) { return joystick; }
 
     void SetCampEnemyAirExperience(int exp)
     {
@@ -541,19 +541,19 @@ extern PlayerOptionsClass PlayerOptions;
 
 typedef struct
 {
-    _TCHAR		name[50];			// To display in UI
-    _TCHAR		todname[MAX_PATH];	// Filename of tod file
-    _TCHAR		image1[MAX_PATH];	// screenshot 5:00
-    _TCHAR		image2[MAX_PATH];   // screenshot 10:00
-    _TCHAR		image3[MAX_PATH];	// screenshot 15:00
-    _TCHAR		image4[MAX_PATH];   // screenshot 20:00
+    _TCHAR name[50]; // To display in UI
+    _TCHAR todname[MAX_PATH]; // Filename of tod file
+    _TCHAR image1[MAX_PATH]; // screenshot 5:00
+    _TCHAR image2[MAX_PATH];   // screenshot 10:00
+    _TCHAR image3[MAX_PATH]; // screenshot 15:00
+    _TCHAR image4[MAX_PATH];   // screenshot 20:00
 } SkyColorDataType;
 
 typedef struct
 {
-    _TCHAR		name[50];			// To display in UI
-    _TCHAR		filename[MAX_PATH]; // accompagnied filename
-    _TCHAR		picfname[MAX_PATH];	// picture of weather distribution
+    _TCHAR name[50]; // To display in UI
+    _TCHAR filename[MAX_PATH]; // accompagnied filename
+    _TCHAR picfname[MAX_PATH]; // picture of weather distribution
 } WeatherPatternDataType;
 
 

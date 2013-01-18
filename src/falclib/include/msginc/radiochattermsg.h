@@ -25,20 +25,20 @@
 
 #pragma pack (1)
 
-#define MESSAGE_FOR_WORLD		0
-#define MESSAGE_FOR_TEAM		1
-#define MESSAGE_FOR_PACKAGE		2
-#define MESSAGE_FOR_FLIGHT		3
-#define MESSAGE_FOR_AIRCRAFT	4
-#define MESSAGE_FOR_ENEMY		5
+#define MESSAGE_FOR_WORLD 0
+#define MESSAGE_FOR_TEAM 1
+#define MESSAGE_FOR_PACKAGE 2
+#define MESSAGE_FOR_FLIGHT 3
+#define MESSAGE_FOR_AIRCRAFT 4
+#define MESSAGE_FOR_ENEMY 5
 
 extern uchar GetDefaultAwacsVoice();
 extern void ResetDefaultAwacsVoice();
 extern short gDefaultAWACSCallSign;
 extern short gDefaultAWACSFlightNum;
 
-#define MAX_EVALS_PER_RADIO_MESSAGE		10
-extern float MAX_RADIO_RANGE;	// Radio range, in feet (300nm)(maximum range at which you hear any calls)
+#define MAX_EVALS_PER_RADIO_MESSAGE 10
+extern float MAX_RADIO_RANGE; // Radio range, in feet (300nm)(maximum range at which you hear any calls)
 
 /*
  * Message Type Radio Chatter Message
@@ -57,12 +57,12 @@ public:
 
     struct DATA_BLOCK
     {
-        VU_ID	from;
-        ulong	time_to_play;		// Time to play (from now)
-        uchar	to;
-        uchar	voice_id;
-        short	message;
-        short	edata[MAX_EVALS_PER_RADIO_MESSAGE];
+        VU_ID from;
+        ulong time_to_play; // Time to play (from now)
+        uchar to;
+        uchar voice_id;
+        short message;
+        short edata[MAX_EVALS_PER_RADIO_MESSAGE];
     } dataBlock;
 
 protected:

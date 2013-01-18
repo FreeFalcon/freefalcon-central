@@ -89,7 +89,7 @@ FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuS
 
 FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long *rem) : VuSessionEntity(stream, rem)
 {
-    uchar			size;
+    uchar size;
 
     memcpychk(&size, stream, sizeof(uchar), rem);
     //name = new _TCHAR[size+1];
@@ -173,13 +173,13 @@ FalconSessionEntity::FalconSessionEntity(FILE* filePtr) : VuSessionEntity(filePt
 VU_ERRCODE FalconSessionEntity::InsertionCallback(void)
 {
     // This entity was inserted, so we'd better make these calls for real:
-    Squadron	ps = (Squadron) vuDatabase->Find(playerSquadron);
-    Flight		pf = (Flight) vuDatabase->Find(playerFlight);
+    Squadron ps = (Squadron) vuDatabase->Find(playerSquadron);
+    Flight pf = (Flight) vuDatabase->Find(playerFlight);
     FalconEntity*pe = (FalconEntity*)vuDatabase->Find(playerEntity);
-    playerSquadronPtr.reset();// = NULL;				// Clear current pointers
+    playerSquadronPtr.reset();// = NULL; // Clear current pointers
     playerFlightPtr.reset();// = NULL;
     playerEntityPtr.reset();// = NULL;
-    SetPlayerSquadron(ps);					// Force them to be reassigned and referenced
+    SetPlayerSquadron(ps); // Force them to be reassigned and referenced
     SetPlayerFlight(pf);
     SetPlayerEntity(pe);
     SetPlayerSquadronID(playerSquadron);
@@ -217,7 +217,7 @@ FalconSessionEntity::~FalconSessionEntity(void)
 
 int FalconSessionEntity::Save(VU_BYTE** stream)
 {
-    uchar		size;
+    uchar size;
 
     VuSessionEntity::Save(stream);
     size = (uchar) _tcslen(name);
@@ -304,26 +304,26 @@ int FalconSessionEntity::SaveSize(void)
     int size, saveSize = VuSessionEntity::SaveSize();
 
     size = _tcslen(name);
-    saveSize += sizeof(uchar);			// name size
-    saveSize += sizeof(_TCHAR) * size;	// name
+    saveSize += sizeof(uchar); // name size
+    saveSize += sizeof(_TCHAR) * size; // name
     size = _tcslen(callSign);
-    saveSize += sizeof(uchar);			// callsign size
-    saveSize += sizeof(_TCHAR) * size;	// callsign
-    saveSize += sizeof(VU_ID);			// playerSquadron
-    saveSize += sizeof(VU_ID);			// playerFlight
-    saveSize += sizeof(VU_ID);			// playerEntity
-    saveSize += sizeof(float);			// AceFactor
-    saveSize += sizeof(float);			// initAceFactor
-    saveSize += sizeof(float);			// bubbleRatio
-    saveSize += sizeof(uchar);			// country
-    saveSize += sizeof(uchar);			// aircraftNum
-    saveSize += sizeof(uchar);			// pilotSlot
-    saveSize += sizeof(uchar);			// flyState
-    saveSize += sizeof(short);			// reqCompression
-    saveSize += sizeof(kills);			// kills
-    saveSize += sizeof(uchar);			// rating
-    saveSize += sizeof(uchar);			// voiceID
-    saveSize += sizeof(ushort);		// missions
+    saveSize += sizeof(uchar); // callsign size
+    saveSize += sizeof(_TCHAR) * size; // callsign
+    saveSize += sizeof(VU_ID); // playerSquadron
+    saveSize += sizeof(VU_ID); // playerFlight
+    saveSize += sizeof(VU_ID); // playerEntity
+    saveSize += sizeof(float); // AceFactor
+    saveSize += sizeof(float); // initAceFactor
+    saveSize += sizeof(float); // bubbleRatio
+    saveSize += sizeof(uchar); // country
+    saveSize += sizeof(uchar); // aircraftNum
+    saveSize += sizeof(uchar); // pilotSlot
+    saveSize += sizeof(uchar); // flyState
+    saveSize += sizeof(short); // reqCompression
+    saveSize += sizeof(kills); // kills
+    saveSize += sizeof(uchar); // rating
+    saveSize += sizeof(uchar); // voiceID
+    saveSize += sizeof(ushort); // missions
 #if FINE_INT
     // sfr: we transmit as a list of IDs
     saveSize += sizeof(char) + (fineInterestList.size() * sizeof(VU_ID));
@@ -340,7 +340,7 @@ uchar FalconSessionEntity::GetTeam(void)
 // setters
 void FalconSessionEntity::SetPlayerName(_TCHAR* pname)
 {
-    //	MonoPrint ("SetPlayerName\n");
+    // MonoPrint ("SetPlayerName\n");
     SetDirty();
     /*if (name)
       delete name;
@@ -357,10 +357,10 @@ void FalconSessionEntity::SetPlayerName(_TCHAR* pname)
 
 void FalconSessionEntity::SetPlayerCallsign(_TCHAR* pcallsign)
 {
-    //	MonoPrint ("SetPlayerCallsign\n");
+    // MonoPrint ("SetPlayerCallsign\n");
     SetDirty();
     //if (callSign)
-    //	delete callSign;
+    // delete callSign;
     //callSign = new _TCHAR[_tcslen(pcallsign)+1];
     _tcscpy(callSign, pcallsign);
     callSign[_CALLSIGN_LEN_] = 0;
@@ -373,8 +373,8 @@ void FalconSessionEntity::SetPlayerCallsign(_TCHAR* pcallsign)
 }
 
 /*_TCHAR* FalconSessionEntity::GetPlayerCallsign(void){
-	_TCHAR *aux = callSign;
-	return aux;
+ _TCHAR *aux = callSign;
+ return aux;
 }*/
 
 void FalconSessionEntity::SetPlayerSquadronID(VU_ID id)
@@ -453,7 +453,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
 
     if (gCompressTillTime && IsLocal())
     {
-        gCompressTillTime = 0;		// Cancle our current takeoff flight.
+        gCompressTillTime = 0; // Cancle our current takeoff flight.
         SetTimeCompression(1);
     }
 
@@ -498,7 +498,7 @@ void FalconSessionEntity::SetAssignedPlayerFlight(FlightClass* ent)
     }
 
     CampEnterCriticalSection();
-    //	MonoPrint ("SetAssignedPlayerFlight\n");
+    // MonoPrint ("SetAssignedPlayerFlight\n");
     SetDirty();
 
     oldPlayerPtr = assignedPlayerFlightPtr;
@@ -591,7 +591,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
 // This is an extention to the above - if we need to distinguish between countries
 void FalconSessionEntity::SetCountry(uchar c)
 {
-    //	MonoPrint ("SetCountry\n");
+    // MonoPrint ("SetCountry\n");
     SetDirty();
     country = c;
     ShiAssert(country > 0);
@@ -605,27 +605,27 @@ void FalconSessionEntity::SetCountry(uchar c)
 
 void FalconSessionEntity::SetAceFactor(float af)
 {
-    //	MonoPrint ("SetAceFactor\n");
+    // MonoPrint ("SetAceFactor\n");
     SetDirty();
     AceFactor = af;
 }
 
 void FalconSessionEntity::SetInitAceFactor(float af)
 {
-    //	MonoPrint ("SetInitAceFactor\n");
+    // MonoPrint ("SetInitAceFactor\n");
     SetDirty();
     initAceFactor = af;
 }
 
 void FalconSessionEntity::SetAceFactorKill(float opponent)
 {
-    //	MonoPrint ("SetAceFactorKill\n");
+    // MonoPrint ("SetAceFactorKill\n");
     SetDirty();
-    /*	double Raw;
+    /* double Raw;
 
-    	Raw = exp((double)AceFactor) + opponent;
+     Raw = exp((double)AceFactor) + opponent;
 
-    	AceFactor = log(Raw);
+     AceFactor = log(Raw);
 
     #define ACE_KILL(x,y) (log(exp(x) + y))
      */
@@ -638,15 +638,15 @@ void FalconSessionEntity::SetAceFactorKill(float opponent)
 
 void FalconSessionEntity::SetAceFactorDeath(float opponent)
 {
-    //	MonoPrint ("SetAceFactorDeath\n");
+    // MonoPrint ("SetAceFactorDeath\n");
     SetDirty();
-    /*	double Raw,temp;
-    	Raw = exp((double)AceFactor);
+    /* double Raw,temp;
+     Raw = exp((double)AceFactor);
 
-    	temp = AceFactor * (AceFactor - opponent);
+     temp = AceFactor * (AceFactor - opponent);
 
-    	Raw = Raw - ((temp>AceFactor)?temp:AceFactor);
-    	AceFactor = log(Raw);
+     Raw = Raw - ((temp>AceFactor)?temp:AceFactor);
+     AceFactor = log(Raw);
 
     #define ACE_DEATH(x,y) (log(exp(x) - (((x * (x - y))>x*0.5F)?(x * (x - y)):x*0.5F)))
      */
@@ -660,14 +660,14 @@ void FalconSessionEntity::SetAceFactorDeath(float opponent)
 
 void FalconSessionEntity::SetAircraftNum(uchar an)
 {
-    //	MonoPrint ("SetAircraftNum\n");
+    // MonoPrint ("SetAircraftNum\n");
     SetDirty();
     aircraftNum = an;
 }
 
 void FalconSessionEntity::SetPilotSlot(uchar ps)
 {
-    //	MonoPrint ("SetPilotSlot\n");
+    // MonoPrint ("SetPilotSlot\n");
     SetDirty();
     pilotSlot = ps;
 
@@ -675,14 +675,14 @@ void FalconSessionEntity::SetPilotSlot(uchar ps)
 
 void FalconSessionEntity::SetAssignedAircraftNum(uchar an)
 {
-    //	MonoPrint ("SetAssignedAircraftNum\n");
+    // MonoPrint ("SetAssignedAircraftNum\n");
     SetDirty();
     assignedAircraftNum = an;
 }
 
 void FalconSessionEntity::SetAssignedPilotSlot(uchar ps)
 {
-    //	MonoPrint ("SetAssignedPilotSlot\n");
+    // MonoPrint ("SetAssignedPilotSlot\n");
     SetDirty();
     assignedPilotSlot = ps;
 }
@@ -703,14 +703,14 @@ void FalconSessionEntity::SetReqCompression(short rc)
     }
 }
 
-//#define		CAMPAIGN_BUBBLE_MULTIPLIER	3.0F
+//#define CAMPAIGN_BUBBLE_MULTIPLIER 3.0F
 
-// Returns:	0 if not in bubble
-//			1 if in bubble
+// Returns: 0 if not in bubble
+// 1 if in bubble
 int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multiplier)
 {
-    float	ent_bubble_range;
-    int		i;
+    float ent_bubble_range;
+    int i;
 
     if (CameraCount() == 0 || bubble_multiplier < 0.01F)
     {
@@ -721,7 +721,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     // Get the entity's bubble range
     if (ent->IsObjective())
     {
-        ent_bubble_range = ent->EntityType()->bubbleRange_;			// We don't adjust objective's bubble
+        ent_bubble_range = ent->EntityType()->bubbleRange_; // We don't adjust objective's bubble
     }
     else if (ent->IsFlight() && gGameType == game_Dogfight)
     {
@@ -760,7 +760,7 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
 
 void FalconSessionEntity::DoFullUpdate(void)
 {
-    //	MonoPrint ("FalconSessionEntity::DoFullUpdate\n");
+    // MonoPrint ("FalconSessionEntity::DoFullUpdate\n");
     VuEvent *event = new VuFullUpdateEvent(this, vuGlobalGroup);
     event->RequestReliableTransmit();
     VuMessageQueue::PostVuMessage(event);
@@ -770,7 +770,7 @@ void FalconSessionEntity::DoFullUpdate(void)
 VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 {
     FalconSessionEntity* tmpSess = (FalconSessionEntity*)(event->expandedData_.get());
-    short	dirty = 0;
+    short dirty = 0;
     unsigned int size;
 
     if (IsLocal())
@@ -810,8 +810,8 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // a flight in another game.. Probably not good. If he's in
     // a flight in this game, the playerFlightPtr should dirty the
     // session just dandily..
-    //	if(playerFlight != tmpSess->playerFlight)
-    //		dirty |= 0x0004;
+    // if(playerFlight != tmpSess->playerFlight)
+    // dirty |= 0x0004;
     if (country != tmpSess->country)
     {
         dirty |= 0x0008;
@@ -853,7 +853,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     SetPlayerFlightID(tmpSess->playerFlight);
     SetPlayerEntityID(tmpSess->playerEntity);
 
-    tmpSess->playerSquadronPtr.reset();// = NULL;				// Clear temporary pointers
+    tmpSess->playerSquadronPtr.reset();// = NULL; // Clear temporary pointers
     tmpSess->playerFlightPtr.reset();// = NULL;
     tmpSess->playerEntityPtr.reset();// = NULL;
 
@@ -866,7 +866,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     // Tell the flight to hold short if this guy is coming into the sim.
     // sfr: taking this out. This prevents flights from taking off
     //if (flyState == FLYSTATE_LOADING && playerFlightPtr && playerFlightPtr->IsLocal())
-    //	playerFlightPtr->SetFalcFlag(FEC_HOLDSHORT);
+    // playerFlightPtr->SetFalcFlag(FEC_HOLDSHORT);
 
     memcpy(&reqCompression, &tmpSess->reqCompression, sizeof(short));
 
@@ -875,7 +875,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         JoinGame(tmpSess->Game());
     }
 
-    //	MonoPrint("Got info for session: %s - team %d - #%d\n", name, country, reqCompression);
+    // MonoPrint("Got info for session: %s - team %d - #%d\n", name, country, reqCompression);
 
     if (gUICommsQ && (dirty & 0x00ff) && Game())
     {
@@ -897,33 +897,33 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
             assignedPlayerFlightPtr != playerFlightPtr
         )
         {
-            //Flight					flight = GetAssignedPlayerFlight();
+            //Flight flight = GetAssignedPlayerFlight();
             MonoPrint("Invalid Session Info %d:%d %d:%d %08x:%08x\n",
                       assignedAircraftNum, aircraftNum,
                       assignedPilotSlot, pilotSlot,
                       assignedPlayerFlightPtr, playerFlightPtr);
             /*
-            			if (flight)
-            			{
-            			msg = new UI_SendAircraftSlot(flight->Id(), FalconLocalGame);
-            			msg->dataBlock.team = flight->GetTeam();
-            			}
-            			else
-            			{
-            			msg = new UI_SendAircraftSlot(FalconNullId, FalconLocalGame);
-            			msg->dataBlock.team = 255;
-            			}
-            			msg->dataBlock.requesting_session = Id();
-            			msg->dataBlock.host_id = FalconLocalSession->Id();
-            			msg->dataBlock.game_id = FalconLocalGame->Id();
-            			msg->dataBlock.game_type = FalconLocalGame->GetGameType();
-            			msg->dataBlock.got_pilot_slot = assignedPilotSlot;
-            			msg->dataBlock.got_slot = assignedAircraftNum;
-            			msg->dataBlock.got_pilot_skill = 0;
-            			if (msg->dataBlock.got_pilot_slot != NO_PILOT)
-            			msg->dataBlock.result = REQUEST_RESULT_SUCCESS;
-            			else
-            			msg->dataBlock.result = REQUEST_RESULT_DENIED;
+             if (flight)
+             {
+             msg = new UI_SendAircraftSlot(flight->Id(), FalconLocalGame);
+             msg->dataBlock.team = flight->GetTeam();
+             }
+             else
+             {
+             msg = new UI_SendAircraftSlot(FalconNullId, FalconLocalGame);
+             msg->dataBlock.team = 255;
+             }
+             msg->dataBlock.requesting_session = Id();
+             msg->dataBlock.host_id = FalconLocalSession->Id();
+             msg->dataBlock.game_id = FalconLocalGame->Id();
+             msg->dataBlock.game_type = FalconLocalGame->GetGameType();
+             msg->dataBlock.got_pilot_slot = assignedPilotSlot;
+             msg->dataBlock.got_slot = assignedAircraftNum;
+             msg->dataBlock.got_pilot_skill = 0;
+             if (msg->dataBlock.got_pilot_slot != NO_PILOT)
+             msg->dataBlock.result = REQUEST_RESULT_SUCCESS;
+             else
+             msg->dataBlock.result = REQUEST_RESULT_DENIED;
             //FalconSendMessage(msg,TRUE); - may be causing a drop to flyby cam - RH
              */
         }

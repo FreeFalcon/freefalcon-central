@@ -18,8 +18,8 @@
 static int didDesignate = FALSE;
 static int didDroptargetCmd = FALSE;
 // 2001-02-21 MODIFIED BY S.G. APG68_BAR_WIDTH IS 2.2
-//static const float APG68_BAR_WIDTH		= (2.0f * DTR);		// Here and in State.cpp
-static const float APG68_BAR_WIDTH		= (2.2f * DTR);		// Here and in State.cpp
+//static const float APG68_BAR_WIDTH = (2.0f * DTR); // Here and in State.cpp
+static const float APG68_BAR_WIDTH = (2.2f * DTR); // Here and in State.cpp
 extern bool g_bMLU;
 
 extern bool g_bAntElevKnobFix;  // MD -- 20031222: antenna elevation knob fixes
@@ -388,12 +388,12 @@ void RadarDopplerClass::SAMMode(void)
         /* Auto Range Scale */
         /*------------------*/
         //me123 don't autorange in SAM MODE
-        //	   if (lockedTargetData->range > 0.9F * tdisplayRange &&
-        //		    curRangeIdx < NUM_RANGES - 1)
-        //		   rangeChangeCmd = 1;
-        //	   else if (lockedTargetData->range < 0.4F * tdisplayRange &&
-        //		    curRangeIdx > 0)
-        //		   rangeChangeCmd = -1;
+        //    if (lockedTargetData->range > 0.9F * tdisplayRange &&
+        //     curRangeIdx < NUM_RANGES - 1)
+        //    rangeChangeCmd = 1;
+        //    else if (lockedTargetData->range < 0.4F * tdisplayRange &&
+        //     curRangeIdx > 0)
+        //    rangeChangeCmd = -1;
         if (!dropTrackCmd)
             justdidSTT = FALSE;
 
@@ -490,7 +490,7 @@ void RadarDopplerClass::TWSMode(void)
             seekerElCenter = lockedTargetData->el;
             beamAz   = 0.0F;
             beamEl   = 0.0F;
-            //			      ClearFlagBit (SpaceStabalized);
+            //       ClearFlagBit (SpaceStabalized);
             beamWidth = radarData->BeamHalfAngle;
             lastSAMAzScan = azScan;
             lastSAMBars = bars;
@@ -1072,7 +1072,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
             // it seems to work how Mirv wants it ;)
 
             if (mode == RadarClass::ACM_30x20 || mode == RadarClass::ACM_SLEW ||
-                mode == RadarClass::ACM_BORE ||	mode == RadarClass::ACM_10x60)
+                mode == RadarClass::ACM_BORE || mode == RadarClass::ACM_10x60)
             {
                 ClearSensorTarget();
                 ChangeMode(mode);
@@ -1147,7 +1147,7 @@ void RadarDopplerClass::STTMode(void)//me123 status test. multible changes
 
         if (((SimLibElapsedTime - lockedTarget->localData->rdrLastHit) > radarData->CoastTime) || dropTrackCmd)
         {
-            //me123	rangeChangeCmd = 0;
+            //me123 rangeChangeCmd = 0;
             reacqFlag = (int)(ReacqusitionCount / SEC_TO_MSEC * SimLibMajorFrameRate);
             reacqEl = lockedTargetData->el;
 
@@ -1374,10 +1374,10 @@ void RadarDopplerClass::ACMMode(void)
 
     /*else if (didDroptargetCmd)
     {
-    	SetEmitting(FALSE);
+     SetEmitting(FALSE);
     }
     else {
-    	didDroptargetCmd = FALSE;
+     didDroptargetCmd = FALSE;
     } */
 }
 
@@ -1464,7 +1464,7 @@ void RadarDopplerClass::VSMode(void)
                     seekerElCenter = lockedTargetData->el;
                     beamAz   = 0.0F;
                     beamEl   = 0.0F;
-                    //			      ClearFlagBit (SpaceStabalized);
+                    //       ClearFlagBit (SpaceStabalized);
                     beamWidth = radarData->BeamHalfAngle;
                     azScan = 0.0F * DTR;
                     bars = 1;
@@ -1636,7 +1636,7 @@ void RadarDopplerClass::SetHistory(SimObjectType* ptr, int sy)
 
     if (sy != None)
     {
-        //	  UpdateObjectData(ptr);
+        //   UpdateObjectData(ptr);
     }
 }
 
@@ -1645,7 +1645,7 @@ void RadarDopplerClass::SetHistory(SimObjectType* ptr, int sy)
 
 int RadarDopplerClass::HitsOnTrack(SimObjectLocalData* rdrData)
 {
-    int	totHits = 0, i = 0;
+    int totHits = 0, i = 0;
     unsigned long detect = rdrData->rdrDetect;
 
     if (!rdrData)

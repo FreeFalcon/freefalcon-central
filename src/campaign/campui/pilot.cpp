@@ -24,10 +24,10 @@
 // Defines
 // ===========================
 
-#define NUM_CALLSIGNS		160
-#define NUM_PILOTS			686
-#define FIRST_PILOT_ID		2300
-#define FIRST_CALLSIGN_ID	2000
+#define NUM_CALLSIGNS 160
+#define NUM_PILOTS 686
+#define FIRST_PILOT_ID 2300
+#define FIRST_CALLSIGN_ID 2000
 
 // =======================
 // The pilot array
@@ -64,7 +64,7 @@ void PilotClass::ResetStats(uchar airExperience)
     pilot_id = 0;
     pilot_status = PILOT_AVAILABLE;
     // MODIFIED BY S.G. SO PILOT SKILL ARE NOT JUST VETERAN AND ACE BUT BASED ON THE SQUADRON SKILL +-1
-    //	pilot_skill_and_rating = 0x03 | (rand()%PILOT_SKILL_RANGE);
+    // pilot_skill_and_rating = 0x03 | (rand()%PILOT_SKILL_RANGE);
     airExperience -= 60; // From 60 to 100 (recruit to ace) down to 0 to 40
     airExperience /= 10; // Now from 0 to 4 like 'pilot_skill_and_rating' likes it
     pilot_skill_and_rating = 0x30 | ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
@@ -76,10 +76,10 @@ void PilotClass::ResetStats(uchar airExperience)
     missions_flown = 0;
 }
 
-void PilotClass::SetTEPilotRating(uchar rating)		// M.N. for TE
+void PilotClass::SetTEPilotRating(uchar rating) // M.N. for TE
 {
     int skill;
-    skill = ((rand() % 2 - 1) + rating);	// randomize the squad's pilots a bit
+    skill = ((rand() % 2 - 1) + rating); // randomize the squad's pilots a bit
 
     if (skill > 4)
         skill = 4;
@@ -151,8 +151,8 @@ void NewPilotInfo(void)
 
 int LoadPilotInfo(char* scenario)
 {
-    char	/* *data,*/ *data_ptr;
-    short	max;
+    char /* *data,*/ *data_ptr;
+    short max;
 
     if (gCampDataVersion < 60)
     {
@@ -201,7 +201,7 @@ int LoadPilotInfo(char* scenario)
 
 void SavePilotInfo(char* scenario)
 {
-    FILE	*fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(scenario, "plt", "wb")) == NULL)
         return;
@@ -230,8 +230,8 @@ void DisposePilotInfo(void)
 
 int GetAvailablePilot(int first, int last, int owner)
 {
-    int		best_pilot = -1;
-    ushort	best = ~0;
+    int best_pilot = -1;
+    ushort best = ~0;
 
     if (last > NumPilots)
         last = NumPilots;
@@ -258,42 +258,42 @@ int GetAvailablePilot(int first, int last, int owner)
 
 /*
 int PilotAvailable (int pn)
-	{
-	if (pn >= NumPilots)
-		return 0;
-	if (!PilotData[pn].flags)
-		return 1;
-	return 0;
-	}
+ {
+ if (pn >= NumPilots)
+ return 0;
+ if (!PilotData[pn].flags)
+ return 1;
+ return 0;
+ }
 
 int GetPilotStatus (int pn)
-	{
-	if (pn >= NumPilots)
-		return PILOT_KIA;
-	return PilotData[pn].flags;
-	}
+ {
+ if (pn >= NumPilots)
+ return PILOT_KIA;
+ return PilotData[pn].flags;
+ }
 
 int GetPilotVoiceId (int pn)
-	{
-	if (pn >= NumPilots)
-		return 0;
-	return PilotData[pn].voice_id;
-	}
+ {
+ if (pn >= NumPilots)
+ return 0;
+ return PilotData[pn].voice_id;
+ }
 
 void SetPilotStatus (int pn, int f)
-	{
-	if (pn >= NumPilots)
-		return;
-	PilotData[pn].flags |= f;
-	}
+ {
+ if (pn >= NumPilots)
+ return;
+ PilotData[pn].flags |= f;
+ }
 
 void UnsetPilotStatus (int pn, int f)
-	{
-	if (pn >= NumPilots)
-		return;
-	PilotData[pn].flags |= f;
-	PilotData[pn].flags ^= f;
-	}
+ {
+ if (pn >= NumPilots)
+ return;
+ PilotData[pn].flags |= f;
+ PilotData[pn].flags ^= f;
+ }
 */
 
 void GetPilotName(int id, _TCHAR* name, int size)
@@ -303,7 +303,7 @@ void GetPilotName(int id, _TCHAR* name, int size)
 
 void GetCallsignID(uchar* id, uchar* num, int range)
 {
-    int			i, j;
+    int i, j;
 
     for (j = 1; j < 9; j++)
     {
@@ -333,19 +333,19 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 
 void SetCallsignID(int id, int num)
 {
-    int		temp = (0x01 << (num - 1));
+    int temp = (0x01 << (num - 1));
     CallsignData[id] |= (uchar)(temp);
 }
 
 void UnsetCallsignID(int id, int num)
 {
-    int		temp = (0x01 << (num - 1));
+    int temp = (0x01 << (num - 1));
     CallsignData[id] &= (uchar)(~temp);
 }
 
 void GetCallsign(int id, int num, _TCHAR* callsign)
 {
-    _TCHAR		wname[30];
+    _TCHAR wname[30];
 
     if (num)
     {
@@ -357,8 +357,8 @@ void GetCallsign(int id, int num, _TCHAR* callsign)
 
 void GetCallsign(Flight fl, _TCHAR* callsign)
 {
-    _TCHAR		wname[30];
-    int			id, num;
+    _TCHAR wname[30];
+    int id, num;
 
     id = fl->callsign_id;
     num = fl->callsign_num;
@@ -379,7 +379,7 @@ void GetCallsign(Flight fl, _TCHAR* callsign)
 
 void GetDogfightCallsign(Flight flight)
 {
-    int	num, i, checkid;
+    int num, i, checkid;
 
     for (num = 1; num < 9; num++)
     {

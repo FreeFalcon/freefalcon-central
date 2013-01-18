@@ -16,24 +16,24 @@ public:
     };
 #endif
 private:
-    long		Defaultflags_;
+    long Defaultflags_;
 
-    short		State_;
-    short		IconX_, IconY_;
-    uchar		Operational_;
+    short State_;
+    short IconX_, IconY_;
+    uchar Operational_;
 
-    COLORREF	IconBgColor_[2];
-    COLORREF	InfoBgColor_[2];
+    COLORREF IconBgColor_[2];
+    COLORREF InfoBgColor_[2];
 
-    UI95_RECT	IconBg_;
-    UI95_RECT	InfoBg_;
-    O_Output	*Icon_;
-    O_Output	*Name_;
-    O_Output	*Status_;
+    UI95_RECT IconBg_;
+    UI95_RECT InfoBg_;
+    O_Output *Icon_;
+    O_Output *Name_;
+    O_Output *Status_;
 
-    TREELIST	*Owner_;
+    TREELIST *Owner_;
 
-    VU_ID		vuID;
+    VU_ID vuID;
 public:
 
     C_Entity();

@@ -17,38 +17,38 @@
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
 
-extern	bool g_bUse_DX_Engine;
+extern bool g_bUse_DX_Engine;
 
-extern	DWORD	gDebugLodID;
+extern DWORD gDebugLodID;
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
 #endif
 
-ObjectLOD			*TheObjectLODs = NULL;
-int					TheObjectLODsCount = 0;
+ObjectLOD *TheObjectLODs = NULL;
+int TheObjectLODsCount = 0;
 #ifdef _DEBUG
-int		    ObjectLOD::lodsLoaded = 0;
+int     ObjectLOD::lodsLoaded = 0;
 #endif
 FileMemMap  ObjectLOD::ObjectLodMap;
-BYTE		*ObjectLOD::LodBuffer;
-DWORD		ObjectLOD::LodBufferSize;
-bool		ObjectLOD::RatedLoad;
-short		*ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
+BYTE *ObjectLOD::LodBuffer;
+DWORD ObjectLOD::LodBufferSize;
+bool ObjectLOD::RatedLoad;
+short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
 
 
-CRITICAL_SECTION	ObjectLOD::cs_ObjectLOD;
-static 	int		maxTagList;
-extern bool		g_bUseMappedFiles;
+CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;
+static  int maxTagList;
+extern bool g_bUseMappedFiles;
 
 
 ObjectLOD::ObjectLOD()
 {
-    root		= NULL;
-    refCount	= 0;
+    root = NULL;
+    refCount = 0;
     OnRelease = OnOrder = false;
     RatedLoad = true;
-    TexBank	  = NULL;
+    TexBank   = NULL;
 
 }
 
@@ -84,7 +84,7 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
     CacheRelease = (short*) malloc(sizeof(short) * (numEntries + CACHE_MARGIN));
     LoadIn = LoadOut = ReleaseIn = ReleaseOut = 0;
 
-    DWORD	  Count = TheObjectLODsCount;
+    DWORD   Count = TheObjectLODsCount;
     ObjectLOD *Lod = &TheObjectLODs[0];
 
     while (Count--)
@@ -97,14 +97,14 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
     InitializeCriticalSection(&cs_ObjectLOD);
 }
 
-DWORD	LODsLoaded;
+DWORD LODsLoaded;
 
 
 
 void ObjectLOD::SetupTable(int file, char *basename)
 {
-    char	filename[_MAX_PATH];
-    int		result;
+    char filename[_MAX_PATH];
+    int result;
 
 
 #ifdef USE_SMART_HEAP
@@ -144,8 +144,8 @@ void ObjectLOD::SetupTable(int file, char *basename)
 
     // RED - Read serialization... finally... Stupid JAM...
     ObjectLOD *Lod = &TheObjectLODs[0];
-    DWORD	  Count = TheObjectLODsCount;
-    char	  Spare[12];
+    DWORD   Count = TheObjectLODsCount;
+    char   Spare[12];
 
     while (Count--)
     {
@@ -312,11 +312,11 @@ void ObjectLOD::Unload(void)
 
 
 // Privatly used static members
-//int			ObjectLOD::objectFile = -1;
-BNodeType*	ObjectLOD::tagListBuffer = NULL;
+//int ObjectLOD::objectFile = -1;
+BNodeType* ObjectLOD::tagListBuffer = NULL;
 
 #ifdef USE_SMART_HEAP
-MEM_POOL	ObjectLOD::pool;
+MEM_POOL ObjectLOD::pool;
 #endif
 
 
@@ -333,8 +333,8 @@ void ObjectLOD::ReleaseLodList(void)
 
 DWORD ObjectLOD::Load(void)
 {
-    DxDbHeader		*Header;
-    DWORD			DxID;
+    DxDbHeader *Header;
+    DWORD DxID;
 
     ////////////// COBRA - DX - The DX Load Procedure //////////////////////////////////////////
 
@@ -407,9 +407,9 @@ bool ObjectLOD::UpdateLods(void)
         if (LoadOut != LoadIn)
         {
             // the amount of data loaded
-            DWORD	LoadSize = 0;
-            //			while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut != LoadIn){
-            ObjectLOD	&Lod = TheObjectLODs[CacheLoad[LoadOut++]];
+            DWORD LoadSize = 0;
+            // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut != LoadIn){
+            ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
             if (!Lod.root && Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
 
@@ -419,14 +419,14 @@ bool ObjectLOD::UpdateLods(void)
             // ring the done pointer
             if (LoadOut >= (TheObjectLODsCount + CACHE_MARGIN)) LoadOut = 0;
 
-            //			}
+            // }
             // * MANAGE ONLY 1 LOD PER CALL FRAME *
             if (RatedLoad) return true;
         }
 
         if (ReleaseIn != ReleaseOut)
         {
-            ObjectLOD	&Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
+            ObjectLOD &Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
 
             if (Lod.root && Lod.OnRelease) Lod.Free();
 
@@ -469,7 +469,7 @@ void ObjectLOD::WaitUpdates(void)
 }
 
 
-void	ObjectLOD::ReferenceTexSet(DWORD TexSetNr, DWORD TexSetMax)
+void ObjectLOD::ReferenceTexSet(DWORD TexSetNr, DWORD TexSetMax)
 {
     gDebugLodID = WhoAmI();
 
@@ -477,7 +477,7 @@ void	ObjectLOD::ReferenceTexSet(DWORD TexSetNr, DWORD TexSetMax)
     if (NrTextures)
     {
         // calculate the bank size
-        DWORD	BankSize = NrTextures / TexSetMax;
+        DWORD BankSize = NrTextures / TexSetMax;
         // reference the bank textures
         TheTextureBank.ReferenceTexSet(&TexBank[BankSize * TexSetNr], BankSize);
     }
@@ -485,7 +485,7 @@ void	ObjectLOD::ReferenceTexSet(DWORD TexSetNr, DWORD TexSetMax)
     gDebugLodID = -1;
 }
 
-void	ObjectLOD::ReleaseTexSet(DWORD TexSetNr, DWORD TexSetMax)
+void ObjectLOD::ReleaseTexSet(DWORD TexSetNr, DWORD TexSetMax)
 {
     gDebugLodID = WhoAmI();
 
@@ -494,7 +494,7 @@ void	ObjectLOD::ReleaseTexSet(DWORD TexSetNr, DWORD TexSetMax)
     if (NrTextures)
     {
         // calculate the bank size
-        DWORD	BankSize = NrTextures / TexSetMax;
+        DWORD BankSize = NrTextures / TexSetMax;
         // reference the bank textures
         TheTextureBank.ReleaseTexSet(&TexBank[BankSize * TexSetNr], BankSize);
     }
@@ -503,13 +503,13 @@ void	ObjectLOD::ReleaseTexSet(DWORD TexSetNr, DWORD TexSetMax)
 }
 
 
-void	ObjectLOD::Reference(void)
+void ObjectLOD::Reference(void)
 {
     // Reference the object
     refCount++;
 }
 
-void	ObjectLOD::Release(void)
+void ObjectLOD::Release(void)
 {
     // Dereference the object, and eventually uload
     refCount--;

@@ -20,19 +20,19 @@
 // ===================================
 
 // Transmittable
-#define CBC_EMITTING		0x01
-#define CBC_JAMMED			0x04
+#define CBC_EMITTING 0x01
+#define CBC_JAMMED 0x04
 
 // Local
-#define CBC_CHECKED			0x001			// Used by mission planning to prevent repeated targetting
-#define CBC_AWAKE			0x002			// Deaggregated on local machine
-#define CBC_IN_PACKAGE		0x004			// This item is in our local package (only applicable to flights)
-#define CBC_HAS_DELTA		0x008
-#define CBC_IN_SIM_LIST		0x010			// In the sim's nearby campaign entity lists
-#define CBC_INTEREST		0x020			// Some session still is interested in this entity
-#define CBC_RESERVED_ONLY	0x040			// This entity is here only in order to reserve namespace
-#define CBC_AGGREGATE		0x080
-#define CBC_HAS_TACAN		0x100
+#define CBC_CHECKED 0x001 // Used by mission planning to prevent repeated targetting
+#define CBC_AWAKE 0x002 // Deaggregated on local machine
+#define CBC_IN_PACKAGE 0x004 // This item is in our local package (only applicable to flights)
+#define CBC_HAS_DELTA 0x008
+#define CBC_IN_SIM_LIST 0x010 // In the sim's nearby campaign entity lists
+#define CBC_INTEREST 0x020 // Some session still is interested in this entity
+#define CBC_RESERVED_ONLY 0x040 // This entity is here only in order to reserve namespace
+#define CBC_AGGREGATE 0x080
+#define CBC_HAS_TACAN 0x100
 
 // ===================================
 // Name space shit
@@ -117,7 +117,7 @@ void ResetNamespaces();
 // Camp base globals
 // ===================================
 
-extern uchar CampSearch[MAX_CAMP_ENTITIES];	// Search data - Could reduce to bitwise
+extern uchar CampSearch[MAX_CAMP_ENTITIES]; // Search data - Could reduce to bitwise
 
 // ===================================
 // Camp base class
@@ -138,17 +138,17 @@ class SimBaseClass;
 class CampBaseClass : public FalconEntity
 {
 private:
-    CampaignTime		spotTime;		// Last time this entity was spotted
-    short				spotted;		// Bitwise array of spotting data, by team
-    volatile short		base_flags;		// Various user flags
-    short				camp_id;		// Unique campaign id
-    Control          	owner;			// Controlling Country
+    CampaignTime spotTime; // Last time this entity was spotted
+    short spotted; // Bitwise array of spotting data, by team
+    volatile short base_flags; // Various user flags
+    short camp_id; // Unique campaign id
+    Control           owner; // Controlling Country
     // Don't transmit below this line
-    volatile short		local_flags;	// Non transmitted flags
-    TailInsertList		*components;	// List of deaggregated sim entities
-    VU_ID				deag_owner;		// Owner of deaggregated components
-    VU_ID				new_deag_owner;	// Who is most interrested in this guy
-    int					dirty_camp_base;
+    volatile short local_flags; // Non transmitted flags
+    TailInsertList *components; // List of deaggregated sim entities
+    VU_ID deag_owner; // Owner of deaggregated components
+    VU_ID new_deag_owner; // Who is most interrested in this guy
+    int dirty_camp_base;
 
 public:
     // Access Functions
@@ -277,12 +277,12 @@ public:
         return 0;
     }
     virtual void InsertInSimLists(float , float) {}
-    virtual void RemoveFromSimLists(void)						{}
-    //virtual void DeaggregateFromData (int, uchar*)	{	return; }
+    virtual void RemoveFromSimLists(void) {}
+    //virtual void DeaggregateFromData (int, uchar*) { return; }
     virtual void DeaggregateFromData(VU_BYTE *buffer, long size) = 0;
-    //virtual void ReaggregateFromData (int, uchar*)	{	return; }
+    //virtual void ReaggregateFromData (int, uchar*) { return; }
     virtual void ReaggregateFromData(VU_BYTE *buffer, long size) = 0;
-    //virtual void TransferOwnershipFromData (int, uchar*)		{	return; }
+    //virtual void TransferOwnershipFromData (int, uchar*) { return; }
     virtual void TransferOwnershipFromData(VU_BYTE *buffer, long size) = 0;
     virtual int ApplyDamage(FalconCampWeaponsFire *, uchar)
     {
@@ -450,7 +450,7 @@ public:
     {
         return local_flags & CBC_INTEREST;
     }
-    int	IsReserved(void)
+    int IsReserved(void)
     {
         return local_flags & CBC_RESERVED_ONLY;
     }
@@ -473,19 +473,19 @@ public:
     }
 
     // Getters
-    uchar GetDomain(void)	const
+    uchar GetDomain(void) const
     {
         return (EntityType())->classInfo_[VU_DOMAIN];
     }
-    uchar GetClass(void)	const
+    uchar GetClass(void) const
     {
         return (EntityType())->classInfo_[VU_CLASS];
     }
-    uchar GetType()	const
+    uchar GetType() const
     {
         return (EntityType())->classInfo_[VU_TYPE];
     }
-    uchar GetSType(void)	const
+    uchar GetSType(void) const
     {
         return (EntityType())->classInfo_[VU_STYPE];
     }

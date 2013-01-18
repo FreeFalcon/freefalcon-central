@@ -11,19 +11,19 @@
 #include "radar.h"
 #include "fack.h"
 #include "aircrft.h"
-//extern bool g_bHardCoreReal; //me123		MI replaced with g_bRealisticAvionics
+//extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 #include "campbase.h"
 #include "classtbl.h"
 #include "simdrive.h" // MLR to give access to SimDriver for Aim9 volume
 
 
 // Angle off sun at which sun effect goes to zero
-static const float	COS_SUN_EFFECT_HALF_ANGLE	= (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
 
 extern bool g_bRealisticAvionics;
 extern int g_nRNESpeed;
 
-#include "SimIO.h"	// Retro 3Jan2004
+#include "SimIO.h" // Retro 3Jan2004
 
 void FireControlComputer::AirAirMode(void)
 {
@@ -37,7 +37,7 @@ void FireControlComputer::AirAirMode(void)
     static bool bAzReversed = false;
     // Marco - set if there is a target under the diamond but missile slave/caged and radar not locked up
     bool bCageSound = false ;
-    float irSigTDBP = 0.0F ;	// Marco - storage for irSig
+    float irSigTDBP = 0.0F ; // Marco - storage for irSig
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (!(Sms->curWeaponType == wtAim120 || Sms->curWeaponType == wtAim9)) return; //me123
@@ -150,7 +150,7 @@ void FireControlComputer::AirAirMode(void)
                 // UNCAGED IR MISSILE DOESN'T GO FIND A TARGET BY THEMSELF.
                 // THIS IS FOUND BY QUERYING BIT 20000000
                 // OF Flags OF THE VEHICLE. A 1 THERE MEANS THIS VEHICLE IS HMS EQUIPPED AND SHOULD SKIP THIS CODE
-                VehicleClassDataType	*vc	=
+                VehicleClassDataType *vc =
                     (VehicleClassDataType *)Falcon4ClassTable[platform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
 
                 if (!playerFCC || ( // don't do this check for ai
@@ -204,11 +204,11 @@ void FireControlComputer::AirAirMode(void)
                     {
                         theMissile->SetTarget(targetPtr);
                         theMissile->SetSeekerPos(&theMissile->targetPtr->localData->az, &theMissile->targetPtr->localData->el);
-                        theMissile->RunSeeker();	// We still need to run the seeker even if slaved to radar ! How to get new irSig otherwise ??
-                        /*** old code				irSig = targetPtr->localData->irSignature;
-                        						theMissile->SetTarget(targetPtr);
-                        						targetPtr->localData->irSignature = irSig;
-                        						theMissile->SetSeekerPos (&theMissile->targetPtr->localData->az, &theMissile->targetPtr->localData->el);*/
+                        theMissile->RunSeeker(); // We still need to run the seeker even if slaved to radar ! How to get new irSig otherwise ??
+                        /*** old code irSig = targetPtr->localData->irSignature;
+                         theMissile->SetTarget(targetPtr);
+                         targetPtr->localData->irSignature = irSig;
+                         theMissile->SetSeekerPos (&theMissile->targetPtr->localData->az, &theMissile->targetPtr->localData->el);*/
                     }
                     else
                     {
@@ -259,9 +259,9 @@ void FireControlComputer::AirAirMode(void)
                                     * ((0.02f - (float)fabs(theMissile->targetPtr->localData->az - missileSeekerAz)) / 0.01f)
                                     / 2.0f + 0.75f;
 
-                            //							missileSeekerAz = theMissile->targetPtr->localData->az;
-                            //							missileSeekerEl = theMissile->targetPtr->localData->el;
-                            //							theMissile->SetSeekerPos (&missileSeekerAz, &missileSeekerEl);
+                            // missileSeekerAz = theMissile->targetPtr->localData->az;
+                            // missileSeekerEl = theMissile->targetPtr->localData->el;
+                            // theMissile->SetSeekerPos (&missileSeekerAz, &missileSeekerEl);
                         }
                         else
                         {
@@ -333,18 +333,18 @@ void FireControlComputer::AirAirMode(void)
 
                     if (playerAC) // CTD exiting mission
                     {
-                        if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false)						// Retro 3Jan2004
+                        if (IO.AnalogIsUsed(AXIS_MSL_VOLUME) == false) // Retro 3Jan2004
                         {
                             if (playerAC->MissileVolume == 8)
                                 aim9Vol = -10000;
                             else
                                 aim9Vol = -(float)playerAC->MissileVolume * 250;
                         }
-                        else																// Retro 3Jan2004
+                        else // Retro 3Jan2004
                         {
                             // Retro 26Jan2004 - the axis is now reversed on default and scales linear to the axis
-                            //					- the user will have to shape it to logarithmic to use the throw efficiently
-                            aim9Vol = -(float)(/*15000-*/IO.GetAxisValue(AXIS_MSL_VOLUME)) / 1.5F;		// Retro 26Jan2004
+                            // - the user will have to shape it to logarithmic to use the throw efficiently
+                            aim9Vol = -(float)(/*15000-*/IO.GetAxisValue(AXIS_MSL_VOLUME)) / 1.5F; // Retro 26Jan2004
                         }
                     }
 
@@ -431,7 +431,7 @@ void FireControlComputer::AirAirMode(void)
                         irSig = max(2.0F, min(irSig, 4.5F));
 
                         // IIR filtered
-                        static const float TC = 1.0f;	// Seconds...
+                        static const float TC = 1.0f; // Seconds...
 
                         if (SimLibMajorFrameTime < TC)
                         {
@@ -444,7 +444,7 @@ void FireControlComputer::AirAirMode(void)
 
                         if (OTWDriver.DisplayInCockpit())
                         {
-                            //							MonoPrint ("%f\n", lastIrSig);
+                            // MonoPrint ("%f\n", lastIrSig);
                             // 1000000.0f = max distance
                             // lastIrSig between 2.0 and 4.5
                             //F4SoundFXSetDist (SFX_GROWL, 0, aim9Vol, lastIrSig / 4.5F);
@@ -455,7 +455,7 @@ void FireControlComputer::AirAirMode(void)
                     else if (irSig)
                     {
                         irSig = 16;
-                        static const float TC = 1.0f;	// Seconds...
+                        static const float TC = 1.0f; // Seconds...
 
                         if (SimLibMajorFrameTime < TC)
                         {
@@ -468,10 +468,10 @@ void FireControlComputer::AirAirMode(void)
 
                         if (OTWDriver.DisplayInCockpit())
                         {
-                            //							MonoPrint ("%f\n", lastIrSig);
+                            // MonoPrint ("%f\n", lastIrSig);
                             //MI Changed for new sound
                             //F4SoundFXSetDist (SFX_GROWL, 0, 0.0f, lastIrSig / 4.5F);
-                            //							F4SoundFXSetDist (SFX_NO_CAGE, 0, aim9Vol, lastIrSig / 16);
+                            // F4SoundFXSetDist (SFX_NO_CAGE, 0, aim9Vol, lastIrSig / 16);
                             F4SoundFXSetDist(theMissile->GetSndAim9Uncaged(), 0, aim9Vol, lastIrSig / 16);
 
                         }
@@ -482,7 +482,7 @@ void FireControlComputer::AirAirMode(void)
                         irSig = 2.0f;
 
                         // IIR filtered
-                        static const float TC = 1.0f;	// Seconds...
+                        static const float TC = 1.0f; // Seconds...
 
                         if (SimLibMajorFrameTime < TC)
                         {
@@ -496,8 +496,8 @@ void FireControlComputer::AirAirMode(void)
                         if (OTWDriver.DisplayInCockpit())
                         {
 
-                            //							MonoPrint ("%f\n", lastIrSig);
-                            //							F4SoundFXSetDist (SFX_GROWL, 0, aim9Vol, lastIrSig / 4.5f);
+                            // MonoPrint ("%f\n", lastIrSig);
+                            // F4SoundFXSetDist (SFX_GROWL, 0, aim9Vol, lastIrSig / 4.5f);
                             F4SoundFXSetDist(theMissile->GetSndAim9Growl(), 0, aim9Vol, lastIrSig / 4.5f);
 
                         }
@@ -515,7 +515,7 @@ void FireControlComputer::AirAirMode(void)
                     irSig = 0.0f;
                 }
             }
-            else	//not DF or Aim9
+            else //not DF or Aim9
             {
                 if (playerFCC)
                 {
@@ -535,14 +535,14 @@ void FireControlComputer::AirAirMode(void)
                 missileMaxTof = theMissile->GetmaxTof()  ;//me123
                 theMissile->SetSeekerPos(&targetPtr->localData->az, &targetPtr->localData->el);
 
-                //if (g_bHardCoreReal && (	MI
+                //if (g_bHardCoreReal && ( MI
                 if (g_bRealisticAvionics && (
                         theMissile->sensorArray[0]->Type() == SensorClass::Radar
                         //|| theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming
                     ))
                 {
                     static const float MISSILE_ALTITUDE_BONUS = 23.0f; // JB 010215 changed from 24 to 23
-                    static const float	MISSILE_SPEED = 1500.0f; // JB 010215 changed from 1300 to 1500
+                    static const float MISSILE_SPEED = 1500.0f; // JB 010215 changed from 1300 to 1500
                     static const float MISSILE_TEORY_SPEED = 2900.0f;
                     float missileTeoryRMax   = theMissile->GetRMax(30000.0f, 400.0f * KNOTS_TO_FTPSEC , 0.0f, 400.0f * KNOTS_TO_FTPSEC, 0.0f);
 
@@ -554,10 +554,10 @@ void FireControlComputer::AirAirMode(void)
                     missileteoryMaxTof += -5.0F * (float) sin(.07F * missileteoryMaxTof); // JB 010215
                     // digi's don't shoot semi's if agregate now, so this is ok
                     /*if (((AircraftClass *)theMissile->parent)->isDigital &&
-                    		(theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
-                    		theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming &&
-                    		overtake * missileteoryMaxTof < missileRMax))
-                    	missileRMax   = overtake * missileteoryMaxTof;// missileMaxTof;
+                     (theMissile->sensorArray[0]->Type() == SensorClass::Radar ||
+                     theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming &&
+                     overtake * missileteoryMaxTof < missileRMax))
+                     missileRMax   = overtake * missileteoryMaxTof;// missileMaxTof;
 
                     else if (!((AircraftClass *)theMissile->parent)->isDigital) */
                     missileRMax   = overtake * missileteoryMaxTof;
@@ -664,7 +664,7 @@ void FireControlComputer::AirAirMode(void)
                 theMissile->SetSeekerPos(&missileSeekerAz, &missileSeekerEl);
             }
         }
-        else	//not prelaunch
+        else //not prelaunch
         {
             missileTarget   = FALSE;
 

@@ -234,11 +234,11 @@
 #define FalconDivertMessageStrIDS6                          223
 #define FalconDivertMessageStrIDS7                          224
 
-#define FalconWeatherMessageStrIDS0							225
-#define FalconWeatherMessageStrIDS1							226
-#define FalconWeatherMessageStrIDS2							227
-#define FalconWeatherMessageStrIDS3							228
-#define FalconWeatherMessageStrIDS4							229
+#define FalconWeatherMessageStrIDS0 225
+#define FalconWeatherMessageStrIDS1 226
+#define FalconWeatherMessageStrIDS2 227
+#define FalconWeatherMessageStrIDS3 228
+#define FalconWeatherMessageStrIDS4 229
 #define FalconWeatherMessageStrIDS5                         230
 #define FalconWeatherMessageStrIDS6                         231
 #define FalconWeatherMessageStrIDS7                         232

@@ -10,16 +10,16 @@ class AircraftClass;
 class TailInsertList;
 
 // Dogfight flags
-#define	DF_UNLIMITED_GUNS	0x01
-#define DF_ECM_AVAIL		0x02
-#define DF_GAME_OVER		0x04
+#define DF_UNLIMITED_GUNS 0x01
+#define DF_ECM_AVAIL 0x02
+#define DF_GAME_OVER 0x04
 
 // Local Dogfight flags
-#define DF_VIEWED_SCORES	0x01			// User has viewed the scores, and is ready to reset
-#define DF_PLAYER_REQ_REGEN	0x02			// The player has requested regeneration (by keystroke)
+#define DF_VIEWED_SCORES 0x01 // User has viewed the scores, and is ready to reset
+#define DF_PLAYER_REQ_REGEN 0x02 // The player has requested regeneration (by keystroke)
 
 // Other defines
-#define	MAX_DOGFIGHT_TEAMS	5
+#define MAX_DOGFIGHT_TEAMS 5
 
 // Dogfight game types
 enum DogfightType  { dog_Furball, dog_TeamFurball, dog_TeamMatchplay };
@@ -35,31 +35,31 @@ enum DogfightStatus { dog_Waiting, dog_Starting, dog_Flying, dog_EndRound };
 class DogfightClass
 {
 public:
-    DogfightType		gameType;
-    DogfightStatus		gameStatus;
-    DogfightStatus		localGameStatus;
-    CampaignTime		startTime;
-    float				startRange;
-    float				startAltitude;
-    float				startX;
-    float				startY;
-    float				xRatio;
-    float				yRatio;
-    short				flags;
-    short				localFlags;
-    uchar				rounds;
-    uchar				currentRound;
+    DogfightType gameType;
+    DogfightStatus gameStatus;
+    DogfightStatus localGameStatus;
+    CampaignTime startTime;
+    float startRange;
+    float startAltitude;
+    float startX;
+    float startY;
+    float xRatio;
+    float yRatio;
+    short flags;
+    short localFlags;
+    uchar rounds;
+    uchar currentRound;
     // sfr: hiding these members
 private:
-    uchar				numRadarMissiles;
-    uchar				numRearAspectMissiles;
-    uchar				numAllAspectMissiles;
+    uchar numRadarMissiles;
+    uchar numRearAspectMissiles;
+    uchar numAllAspectMissiles;
 public:
-    static char			settings_filename[MAX_PATH];
+    static char settings_filename[MAX_PATH];
 
 private:
-    CampaignTime		lastUpdateTime;
-    TailInsertList		*regenerationQueue;
+    CampaignTime lastUpdateTime;
+    TailInsertList *regenerationQueue;
 
 public:
     DogfightClass(void);

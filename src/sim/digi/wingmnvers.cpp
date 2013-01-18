@@ -9,17 +9,17 @@
 extern float SimLibLastMajorFrameTime;
 extern int gameCompressionRatio;
 
-#include "Arfrmdat.h"				// 2002-01-30 S.G.
+#include "Arfrmdat.h" // 2002-01-30 S.G.
 #define MAX_AF_PITCH ( DTR * 89.0f )// 2002-01-30 S.G.
-extern AeroDataSet *aeroDataset;	// 2002-01-30 S.G.
-extern bool g_bPitchLimiterForAI;	// 2002-01-30 S.G.
-extern AuxAeroData *auxaeroData;	// 2002-01-30 S.G.
+extern AeroDataSet *aeroDataset; // 2002-01-30 S.G.
+extern bool g_bPitchLimiterForAI; // 2002-01-30 S.G.
+extern AuxAeroData *auxaeroData; // 2002-01-30 S.G.
 extern float g_fTankerRStick; // 2002-03-13 MN
 extern float g_fTankerPStick; // 2002-03-13 MN
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimplePullUp
+// DigitalBrain::SimplePullUp
 //
 //--------------------------------------------------
 
@@ -35,7 +35,7 @@ void DigitalBrain::SimplePullUp(void)
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleTrack
+// DigitalBrain::SimpleTrack
 //
 //--------------------------------------------------
 
@@ -44,9 +44,9 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
     float xft;
     float yft;
     float zft;
-    float	rx;
-    float	ry;
-    float	rz;
+    float rx;
+    float ry;
+    float rz;
 
     if (!self->OnGround())
     {
@@ -65,7 +65,7 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
                     //            yft += flightLead->YDelta()*SimLibLastMajorFrameTime;
                 }
 
-                SimpleTrackDistance(flightLead->GetVt(), (float)sqrt(xft * xft + yft * yft));	// Get Leader's speed, relative position
+                SimpleTrackDistance(flightLead->GetVt(), (float)sqrt(xft * xft + yft * yft)); // Get Leader's speed, relative position
             }
 
             rStick = SimpleTrackAzimuth(rx, ry, self->GetVt());
@@ -75,7 +75,7 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
         {
             CalculateRelativePos(&xft, &yft, &zft, &rx, &ry, &rz);
 
-            SimpleTrackSpeed(value);											// value = desired speed (ft/sec)
+            SimpleTrackSpeed(value); // value = desired speed (ft/sec)
 
             rStick = SimpleTrackAzimuth(rx + 1000.0F, ry, self->GetVt());
             pStick = SimpleTrackElevation(zft, 5000.0F);
@@ -97,7 +97,7 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
             if (self->TBrain() && self->TBrain()->ReachedFirstTrackPoint())
                 sticklimitation = true; // tanker is entering the track pattern
 
-            SimpleTrackSpeed(value);											// value = desired speed (ft/sec)
+            SimpleTrackSpeed(value); // value = desired speed (ft/sec)
 
             CalculateRelativePos(&xft, &yft, &zft, &rx, &ry, &rz);
 
@@ -140,29 +140,29 @@ void DigitalBrain::SimpleTrack(SimpleTrackMode mode, float value)
 
 //--------------------------------------------------
 //
-//	DigitalBrain::CalculateRelativePos
+// DigitalBrain::CalculateRelativePos
 //
 //--------------------------------------------------
 void DigitalBrain::CalculateRelativePos(float* xft, float* yft, float* zft, float* rx, float* ry, float* rz)
 {
 
     // Calculate relative position and range to track point
-    *xft			= trackX - self->XPos();
-    *yft			= trackY - self->YPos();
-    *zft			= trackZ - self->ZPos();
+    *xft = trackX - self->XPos();
+    *yft = trackY - self->YPos();
+    *zft = trackZ - self->ZPos();
 
-    *rx			= self->dmx[0][0] * *xft + self->dmx[0][1] * *yft + self->dmx[0][2] * *zft;
-    *ry			= self->dmx[1][0] * *xft + self->dmx[1][1] * *yft + self->dmx[1][2] * *zft;
-    *rz			= self->dmx[2][0] * *xft + self->dmx[2][1] * *yft + self->dmx[2][2] * *zft;
+    *rx = self->dmx[0][0] * *xft + self->dmx[0][1] * *yft + self->dmx[0][2] * *zft;
+    *ry = self->dmx[1][0] * *xft + self->dmx[1][1] * *yft + self->dmx[1][2] * *zft;
+    *rz = self->dmx[2][0] * *xft + self->dmx[2][1] * *yft + self->dmx[2][2] * *zft;
 }
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleScaleThrottle
+// DigitalBrain::SimpleScaleThrottle
 //
 //--------------------------------------------------
 
-float	DigitalBrain::SimpleScaleThrottle(float v)
+float DigitalBrain::SimpleScaleThrottle(float v)
 {
     return  1.0F + (v - (450.0F * KNOTS_TO_FTPSEC)) / (450.0F * KNOTS_TO_FTPSEC);
 }
@@ -171,10 +171,10 @@ float	DigitalBrain::SimpleScaleThrottle(float v)
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleTrackDistance
+// DigitalBrain::SimpleTrackDistance
 //
 //--------------------------------------------------
-float	DigitalBrain::SimpleTrackDistance(float, float rx)
+float DigitalBrain::SimpleTrackDistance(float, float rx)
 {
     float desiredClosure, actualClosure;
 
@@ -194,15 +194,15 @@ float	DigitalBrain::SimpleTrackDistance(float, float rx)
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleTrackSpeed
+// DigitalBrain::SimpleTrackSpeed
 //
 //--------------------------------------------------
 //TJL 02/20/04 Severe confusion in the code with v (in KNOTS) and vt (FPS)
-float	DigitalBrain::SimpleTrackSpeed(float v)
+float DigitalBrain::SimpleTrackSpeed(float v)
 {
     //TJL 02/20/04 They had v here in knots comparing to vt in FPS. I have commented this out
     //if(af->Qsom()*af->Cnalpha() < 1.55F && v < af->vt + 5.0F)
-    //	v = af->vt /* * */ + 5.0F;	// 2001-10-27 M.N. removed "*", caused af->vt * 5
+    // v = af->vt /* * */ + 5.0F; // 2001-10-27 M.N. removed "*", caused af->vt * 5
     // Lets Try MachHold on velocity (TJL) Again, more confusion with v in knots being converted to knots
     //MachHold (v * FTPSEC_TO_KNOTS , af->vt * FTPSEC_TO_KNOTS , FALSE);
     MachHold(v, af->vt * FTPSEC_TO_KNOTS , FALSE);
@@ -246,11 +246,11 @@ float  DigitalBrain::SimpleGroundTrackSpeed(float v)
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleTrackAzimuth
+// DigitalBrain::SimpleTrackAzimuth
 //
 //--------------------------------------------------
 
-float	DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
+float DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
 {
     float azErr;
 
@@ -259,7 +259,7 @@ float	DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
     if (!self->OnGround())
     {
         // Calculate azimuth error
-        azErr			= (float) atan2(ry, rx);
+        azErr = (float) atan2(ry, rx);
 
         if (rx < 0.0F && (fabs(rx) < 3.0F * NM_TO_FT))
         {
@@ -269,13 +269,13 @@ float	DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
             {
 
                 // Change the azErr to be infront so that we don't backtrack
-                azErr		= (180 * DTR) - azErr;
+                azErr = (180 * DTR) - azErr;
             }
-            else if ((azErr < 0.0F) && (azErr < -90 * DTR))  	// else to the left and behind
+            else if ((azErr < 0.0F) && (azErr < -90 * DTR))   // else to the left and behind
             {
 
                 // Change the azErr to be infrom so that we don't backtrack
-                azErr		= (-180 * DTR) - azErr;
+                azErr = (-180 * DTR) - azErr;
             }
         }
 
@@ -284,11 +284,11 @@ float	DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
         // rotation.  Let's make this 180 deg
 
         // 2002-01-31 ADDED BY S.G. Lets limit the roll of an AI controlled plane when going from one waypoint to the next
-        if (g_bPitchLimiterForAI &&														// We are asking to limit AI's turn agressiveness when flying to waypoints
-            !groundAvoidNeeded &&														// We're not trying to avoid the ground
+        if (g_bPitchLimiterForAI && // We are asking to limit AI's turn agressiveness when flying to waypoints
+            !groundAvoidNeeded && // We're not trying to avoid the ground
             (curMode == WingyMode || curMode == WaypointMode || curMode == RTBMode) &&  // Following waypoint or lead
-            agDoctrine == AGD_NONE &&													// Not doing any A2G attack (since it's in FollowWaypoints during that time)
-            (!flightLead || !flightLead->IsSetFlag(MOTION_OWNSHIP)))  					// The lead isn't the player (we must follow him whatever he does)
+            agDoctrine == AGD_NONE && // Not doing any A2G attack (since it's in FollowWaypoints during that time)
+            (!flightLead || !flightLead->IsSetFlag(MOTION_OWNSHIP)))   // The lead isn't the player (we must follow him whatever he does)
         {
 
             azErr /= ((180.0f) * DTR);
@@ -315,22 +315,22 @@ float	DigitalBrain::SimpleTrackAzimuth(float rx, float ry, float)
     else
     {
         // Calculate azimuth error
-        azErr	= (float) atan2(ry, rx);
+        azErr = (float) atan2(ry, rx);
     }
 
 
-    return max(-1.0F, min(1.0F, azErr));		// return the roll command
+    return max(-1.0F, min(1.0F, azErr)); // return the roll command
 }
 
 
 
 //--------------------------------------------------
 //
-//	DigitalBrain::SimpleTrackElevation
+// DigitalBrain::SimpleTrackElevation
 //
 //--------------------------------------------------
 
-float	DigitalBrain::SimpleTrackElevation(float zft, float scale)
+float DigitalBrain::SimpleTrackElevation(float zft, float scale)
 {
     float altErr;
 
@@ -339,7 +339,7 @@ float	DigitalBrain::SimpleTrackElevation(float zft, float scale)
         return pStick;
 
     // Scale and limit the altitude error
-    altErr		= -zft / scale; 					// Use 5000ft for error slope
+    altErr = -zft / scale;  // Use 5000ft for error slope
 
     if (fabs(zft) > 2000.0f)
         altErr *= 0.5f;
@@ -351,10 +351,10 @@ float	DigitalBrain::SimpleTrackElevation(float zft, float scale)
     }
 
     // 2002-01-30 ADDED BY S.G. Lets limit the pitch when we're at max climb angle
-    if (g_bPitchLimiterForAI &&	!groundAvoidNeeded &&
+    if (g_bPitchLimiterForAI && !groundAvoidNeeded &&
         (curMode == WingyMode || curMode == WaypointMode || curMode == RTBMode) &&
-        /*agDoctrine == AGD_NONE &&	*///Cobra removed this												// Not doing any A2G attack (since it's in FollowWaypoints during that time)
-        (!flightLead || !flightLead->IsSetFlag(MOTION_OWNSHIP) || ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) &&	// The lead isn't the player (we must follow him whatever he does)
+        /*agDoctrine == AGD_NONE && *///Cobra removed this // Not doing any A2G attack (since it's in FollowWaypoints during that time)
+        (!flightLead || !flightLead->IsSetFlag(MOTION_OWNSHIP) || ((AircraftClass *)flightLead)->autopilotType == AircraftClass::CombatAP) && // The lead isn't the player (we must follow him whatever he does)
         altErr > 0.0f && self->Pitch() > 0.0f)
     {
         float maxPitch = min(MAX_AF_PITCH, aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::ThetaMax]);
@@ -393,7 +393,7 @@ float	DigitalBrain::SimpleTrackElevation(float zft, float scale)
 
     // END OF ADDED SECTION 2002-01-30
 
-    return max(-0.5F, min(0.5F, altErr));		// Return the pitch command
+    return max(-0.5F, min(0.5F, altErr)); // Return the pitch command
 }
 
 

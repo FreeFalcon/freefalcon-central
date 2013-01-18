@@ -3,7 +3,7 @@
     July 29, 1997
 
     Derived class to do special position and containment processing for
-	sections of bridges.
+ sections of bridges.
 \***************************************************************************/
 #ifndef _DRAWRDBD_H_
 #define _DRAWRDBD_H_
@@ -33,16 +33,16 @@ public:
     };
 
 protected:
-    DrawableBSP		*superStructure;
+    DrawableBSP *superStructure;
 
-    float			start;
-    float			length;
+    float start;
+    float length;
 
-    float			cosInvYaw;
-    float			sinInvYaw;
+    float cosInvYaw;
+    float sinInvYaw;
 
-    float			tanRampAngle;
-    Edge			ramp;
+    float tanRampAngle;
+    Edge ramp;
 
 #ifdef USE_SH_POOLS
 public:
@@ -64,7 +64,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 };
 

@@ -32,27 +32,27 @@ FalconWeaponUsageMessage::~FalconWeaponUsageMessage(void)
 }
 
 int FalconWeaponUsageMessage::Process(uchar autodisp)
-	{
-	Squadron	sq = (Squadron)FindUnit(EntityId());
-	int			i,n;
-	long		f;
+ {
+ Squadron sq = (Squadron)FindUnit(EntityId());
+ int i,n;
+ long f;
 
-	if (autodisp || !sq)
-		return 0;
+ if (autodisp || !sq)
+ return 0;
 
-	for (i=0; i<HARDPOINT_MAX; i++)
-		{
-		n = sq->GetStores(dataBlock.ids[i]) - dataBlock.num[i]*dataBlock.vehicles;
-		if (n < 0)
-			n = 0;
-		sq->SetStores(dataBlock.ids[i], n);
-		}
-	f = sq->GetFuel() - ((dataBlock.fuel * dataBlock.vehicles) / 100);
-	if (f < 0)
-		f = 0;
-	sq->SetFuel (f);
-	return 1;
-	}
+ for (i=0; i<HARDPOINT_MAX; i++)
+ {
+ n = sq->GetStores(dataBlock.ids[i]) - dataBlock.num[i]*dataBlock.vehicles;
+ if (n < 0)
+ n = 0;
+ sq->SetStores(dataBlock.ids[i], n);
+ }
+ f = sq->GetFuel() - ((dataBlock.fuel * dataBlock.vehicles) / 100);
+ if (f < 0)
+ f = 0;
+ sq->SetFuel (f);
+ return 1;
+ }
 
 */
 #endif

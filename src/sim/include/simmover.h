@@ -12,7 +12,7 @@ private:
     int* switchData;
     int* switchChange;
     // velocity module and kias are dynamically computed from speed
-    //float	vt, kias;
+    //float vt, kias;
 
 protected:
 
@@ -44,8 +44,8 @@ public:
     SimObjectType* targetList;
 
     // Other Data
-    unsigned char vehicleInUnit;		// The (vehicleSlot)th vehicle in the unit
-    unsigned char pilotSlot;			// The (pilotSlot)th pilot in the unit
+    unsigned char vehicleInUnit; // The (vehicleSlot)th vehicle in the unit
+    unsigned char pilotSlot; // The (pilotSlot)th pilot in the unit
 
     // if we've hit a flat feature (ie for landing)
     // use this pointer to record the fact
@@ -114,8 +114,8 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);	// returns bytes written
-    virtual int Save(FILE *file);		// returns bytes written
+    virtual int Save(VU_BYTE **stream); // returns bytes written
+    virtual int Save(FILE *file); // returns bytes written
 
     // event handlers
     virtual int Handle(VuFullUpdateEvent *event);
@@ -126,7 +126,7 @@ public:
     virtual SimBaseClass *FeatureCollision(float groundZ);
     virtual int CheckLOS(SimObjectType *obj);
     virtual int CheckCompositeLOS(SimObjectType *obj);
-    void	UpdateLOS(SimObjectType *obj);
+    void UpdateLOS(SimObjectType *obj);
 
     void SetDOFs(float*);
     void SetSwitches(int*);

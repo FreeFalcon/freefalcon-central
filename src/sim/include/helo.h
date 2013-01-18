@@ -5,9 +5,9 @@
 #include "hardPnt.h"
 #include "fsound.h"
 
-#define FLARE_STATION	0
-#define CHAFF_STATION	1
-#define DEBRIS_STATION	2
+#define FLARE_STATION 0
+#define CHAFF_STATION 1
+#define DEBRIS_STATION 2
 
 // Class pointers used
 class GunClass;
@@ -41,7 +41,7 @@ public:
     {
         MemPoolFree(pool);
     };
-    static MEM_POOL	pool;
+    static MEM_POOL pool;
 #endif
 public:
     HelicopterClass(VU_BYTE** stream, long *rem);

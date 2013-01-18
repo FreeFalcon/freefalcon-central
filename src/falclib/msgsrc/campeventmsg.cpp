@@ -74,7 +74,7 @@ FalconCampEventMessage::~FalconCampEventMessage(void)
 
 int FalconCampEventMessage::Process(uchar autodisp)
 {
-    _TCHAR		text[512];
+    _TCHAR text[512];
 
     // KCK: This critical section can be removed if we can keep the camaign from
     // dispatching messages during an EndCampaign() call
@@ -95,7 +95,7 @@ int FalconCampEventMessage::Process(uchar autodisp)
     // Do Visual effects here (only air explosion on losses, right now)
     if (dataBlock.eventType == campLosses && InterestingSFX(GridToSim(dataBlock.data.yLoc), GridToSim(dataBlock.data.xLoc)))
     {
-        VehicleClassDataType	*vc;
+        VehicleClassDataType *vc;
         vc = GetVehicleClassData(-1 * dataBlock.data.textIds[2]);
 
         if (vc && Falcon4ClassTable[vc->Index].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)

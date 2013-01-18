@@ -89,28 +89,28 @@ private:
 
     friend tactical_mission;
 
-    tactical_mission	*mission;
+    tactical_mission *mission;
 
-    int			active;
+    int active;
 
-    victory_condition	*pred;
-    victory_condition	*succ;
+    victory_condition *pred;
+    victory_condition *succ;
 
-    int			team; // Team # of team who can benefit from this VC
+    int team; // Team # of team who can benefit from this VC
 
-    victory_type		type;
+    victory_type type;
 
-    VU_ID	id;
+    VU_ID id;
 
-    int				feature_id; // this is the Feature ID (if vu_id is an Objective)
+    int feature_id; // this is the Feature ID (if vu_id is an Objective)
 
-    int				tolerance; // this is the % for degrade/attrit or # for intercept (if vu_id is flight or unit)
+    int tolerance; // this is the % for degrade/attrit or # for intercept (if vu_id is flight or unit)
 
-    int				points; // This is the # points you get for doing the VC
+    int points; // This is the # points you get for doing the VC
 
-    int				number; // this is the VC ID
+    int number; // this is the VC ID
 
-    int				max_vehicles;	// number of aircraft in intercept
+    int max_vehicles; // number of aircraft in intercept
 
 public:
 
@@ -196,10 +196,10 @@ enum victory_condition_filter
 
 enum tac_flags
 {
-    tf_hide_enemy		= 0x01,
-    tf_lock_ato			= 0x02,
-    tf_lock_oob			= 0x04,
-    tf_start_paused		= 0x08
+    tf_hide_enemy = 0x01,
+    tf_lock_ato = 0x02,
+    tf_lock_oob = 0x04,
+    tf_start_paused = 0x08
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -213,31 +213,31 @@ private:
 
     friend victory_condition;
 
-    char				*filename;
+    char *filename;
 
-    int					is_new;
-    int					is_online;
+    int is_new;
+    int is_online;
 
-    int					number_teams;
-    char				*team_name[8];
-    char				team_flag[8];
-    int					number_aircraft[8];
-    int					number_players[8];
-    int					number_f16s[8];
+    int number_teams;
+    char *team_name[8];
+    char team_flag[8];
+    int number_aircraft[8];
+    int number_players[8];
+    int number_f16s[8];
 
-    victory_condition	*conditions;
-    victory_condition	*current_vc;
+    victory_condition *conditions;
+    victory_condition *current_vc;
 
-    int					team;
-    int					team_pts[8];
+    int team;
+    int team_pts[8];
 
     victory_condition_filter filter;
 
-    int					points_required;
+    int points_required;
 
-    int					game_over;
-    //	static tactical_mode		search_mode;
-    //	static tactical_mission		*search_mission;
+    int game_over;
+    // static tactical_mode search_mode;
+    // static tactical_mission *search_mission;
 
     char *read_te_file(char *filename, int *size);
     void process_load(char *data, int size, int full_load);
@@ -245,7 +245,7 @@ private:
 public:
 
     tactical_mission(char *filename);
-    tactical_mission(void);		// Online
+    tactical_mission(void); // Online
     ~tactical_mission(void);
 
     void load(void);
@@ -311,8 +311,8 @@ public:
     void setup_victory_condition(char *data);
 
     void evaluate_victory_conditions(void);
-    //	NOT supported... some variables have been removed or changed
-    //	void evaluate_parameters (void *wp, double x, double y, double z, double s);
+    // NOT supported... some variables have been removed or changed
+    // void evaluate_parameters (void *wp, double x, double y, double z, double s);
 
     void calculate_victory_points(void);
     int  determine_victor(void);

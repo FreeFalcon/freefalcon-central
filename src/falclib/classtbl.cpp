@@ -54,7 +54,7 @@ void InitClassTableAndData(char *name, char *objset)
         if (g_bFFDBC)
         {
             // FF - get real count of entries
-            short	iknt = 0;
+            short iknt = 0;
             fseek(filePtr, 0, SEEK_END);
             fseek(filePtr, -2, SEEK_CUR);
             fread(&iknt, sizeof(short), 1, filePtr);

@@ -34,7 +34,7 @@ int FalconDamageMessage::Process(uchar autodisp)
         return 0;
     }
 
-    FalconEntity	*theEntity, *shooter;
+    FalconEntity *theEntity, *shooter;
     theEntity = (FalconEntity*) vuDatabase->Find(dataBlock.dEntityID);
 
     if (theEntity)
@@ -51,8 +51,8 @@ int FalconDamageMessage::Process(uchar autodisp)
         }
         else if (theEntity->IsCampaign())
         {
-            CampEntity		campTarget = (CampEntity)theEntity;
-            CampEntity		campShooter = NULL;
+            CampEntity campTarget = (CampEntity)theEntity;
+            CampEntity campShooter = NULL;
 
             shooter = (FalconEntity*)vuDatabase->Find(dataBlock.fEntityID);
 
@@ -86,7 +86,7 @@ int FalconDamageMessage::Process(uchar autodisp)
 
                 if (campTarget->IsLocal())
                 {
-                    FalconCampWeaponsFire	*cwfm = new FalconCampWeaponsFire(campTarget->Id(), FalconLocalGame);
+                    FalconCampWeaponsFire *cwfm = new FalconCampWeaponsFire(campTarget->Id(), FalconLocalGame);
                     cwfm->dataBlock.shooterID = campShooter->Id();
                     cwfm->dataBlock.fPilotId = dataBlock.fPilotID;
                     cwfm->dataBlock.dPilotId = dataBlock.dPilotID;
@@ -101,8 +101,8 @@ int FalconDamageMessage::Process(uchar autodisp)
             // KCK: Currently Apply Damage calls register hit (sometimes multiple times). Theoretically,
             // it should be possible to call it here, like we do for sim entities - but this is a task
             // for another time.
-            //			if (TheCampaign.MissionEvaluator && (!theEntity || !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
-            //				TheCampaign.MissionEvaluator->RegisterHit(this);
+            // if (TheCampaign.MissionEvaluator && (!theEntity || !theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            // TheCampaign.MissionEvaluator->RegisterHit(this);
         }
     }
 
@@ -116,8 +116,8 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
     if (FalconLocalSession && vehicle == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
-    FalconEntity	*lastToHit = (SimVehicleClass*)vuDatabase->Find(vehicle->LastShooter());
-    CampBaseClass	*campUnit = NULL;
+    FalconEntity *lastToHit = (SimVehicleClass*)vuDatabase->Find(vehicle->LastShooter());
+    CampBaseClass *campUnit = NULL;
 
     FalconDamageMessage* message;
     message = new FalconDamageMessage(vehicle->Id(), target);
@@ -129,29 +129,29 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
 
         if (lastToHit->IsSim())
         {
-            message->dataBlock.fPilotID	= ((SimVehicleClass*)lastToHit)->pilotSlot;
-            message->dataBlock.fCampID	= ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
-            message->dataBlock.fSide	= ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
+            message->dataBlock.fPilotID = ((SimVehicleClass*)lastToHit)->pilotSlot;
+            message->dataBlock.fCampID = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
+            message->dataBlock.fSide = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
             campUnit = ((SimBaseClass*)lastToHit)->GetCampaignObject();
         }
         else
         {
-            message->dataBlock.fPilotID	= 0;
-            message->dataBlock.fCampID	= ((CampBaseClass*)lastToHit)->GetCampID();
-            message->dataBlock.fSide	= ((CampBaseClass*)lastToHit)->GetOwner();
+            message->dataBlock.fPilotID = 0;
+            message->dataBlock.fCampID = ((CampBaseClass*)lastToHit)->GetCampID();
+            message->dataBlock.fSide = ((CampBaseClass*)lastToHit)->GetOwner();
             campUnit = (CampBaseClass*)lastToHit;
         }
 
-        message->dataBlock.fCampID	= campUnit->GetCampID();
-        message->dataBlock.fSide	= campUnit->GetOwner();
+        message->dataBlock.fCampID = campUnit->GetCampID();
+        message->dataBlock.fSide = campUnit->GetOwner();
     }
     else
     {
-        message->dataBlock.fEntityID	= vehicle->Id();
-        message->dataBlock.fCampID		= vehicle->GetCampaignObject()->GetCampID();
-        message->dataBlock.fSide		= vehicle->GetCampaignObject()->GetOwner();
-        message->dataBlock.fPilotID		= vehicle->pilotSlot;
-        message->dataBlock.fIndex		= vehicle->Type();
+        message->dataBlock.fEntityID = vehicle->Id();
+        message->dataBlock.fCampID = vehicle->GetCampaignObject()->GetCampID();
+        message->dataBlock.fSide = vehicle->GetCampaignObject()->GetOwner();
+        message->dataBlock.fPilotID = vehicle->pilotSlot;
+        message->dataBlock.fIndex = vehicle->Type();
     }
 
     message->dataBlock.fWeaponID  = vehicle->Type();

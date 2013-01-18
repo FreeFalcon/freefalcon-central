@@ -14,10 +14,10 @@
 
 typedef struct ClipVert
 {
-    int			xyz;
-    int			rgba;
-    int			I;
-    Ptexcoord	uv;
+    int xyz;
+    int rgba;
+    int I;
+    Ptexcoord uv;
 } ClipVert;
 
 
@@ -25,7 +25,7 @@ typedef struct ClipVert
 // This function is expected to be called first in the clipping chain
 static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
 {
-    float	x, y, z, t;
+    float x, y, z, t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     t = (NEAR_CLIP_DISTANCE                      - TheStateStack.ClipInfoPool[v1->xyz].csZ) /
@@ -79,7 +79,7 @@ static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, B
 
 // Compute the parametric location of the intersection of the ray with the edge indicated
 // by the flag parameter
-static inline float	ComputeT(float x, float y, float z, float dx, float dy, float dz, UInt32 flag)
+static inline float ComputeT(float x, float y, float z, float dx, float dy, float dz, UInt32 flag)
 {
     switch (flag)
     {
@@ -105,8 +105,8 @@ static inline float	ComputeT(float x, float y, float z, float dx, float dy, floa
 // Helper function which clips the segment against the edge indicated by the flag argument
 static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex, UInt32 flag)
 {
-    float	x, y, z, t;
-    float	dx, dy, dz;
+    float x, y, z, t;
+    float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
     dx = TheStateStack.ClipInfoPool[v2->xyz].csX - TheStateStack.ClipInfoPool[v1->xyz].csX;
@@ -123,8 +123,8 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
 
     // Compute the camera space intersection point
     TheStateStack.ClipInfoPool[v->xyz].csZ = z = TheStateStack.ClipInfoPool[v1->xyz].csZ + t * (dz);
-    TheStateStack.ClipInfoPool[v->xyz].csX = x = TheStateStack.ClipInfoPool[v1->xyz].csX + t * (dx);	// Note: either dx or dy is used only once, so could
-    TheStateStack.ClipInfoPool[v->xyz].csY = y = TheStateStack.ClipInfoPool[v1->xyz].csY + t * (dy);	// be avoided, but this way, the code is more standardized...
+    TheStateStack.ClipInfoPool[v->xyz].csX = x = TheStateStack.ClipInfoPool[v1->xyz].csX + t * (dx); // Note: either dx or dy is used only once, so could
+    TheStateStack.ClipInfoPool[v->xyz].csY = y = TheStateStack.ClipInfoPool[v1->xyz].csY + t * (dy); // be avoided, but this way, the code is more standardized...
 
     // Now interpolate any other vertex parameters required
     if (color)
@@ -206,14 +206,14 @@ static void IntersectLeft(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, B
 
 
 /***************************************************************************\
-	Here begin the functions which are actually used to populate the
-	clipping jump table.
+ Here begin the functions which are actually used to populate the
+ clipping jump table.
 \***************************************************************************/
 static inline void pvtClipPrimPoint(PrimPointFC *point, DrawPrimFp drawFn)
 {
-    PrimPointFC	newPoint;
-    int			xyz[MAX_VERTS_PER_POLYGON];
-    int			*xyzIdxPtr, *end;
+    PrimPointFC newPoint;
+    int xyz[MAX_VERTS_PER_POLYGON];
+    int *xyzIdxPtr, *end;
 
     ShiAssert(point->nVerts > 0);
 
@@ -238,9 +238,9 @@ static inline void pvtClipPrimPoint(PrimPointFC *point, DrawPrimFp drawFn)
 
     if (newPoint.nVerts)
     {
-        newPoint.type	= PointF;
-        newPoint.rgba	= point->rgba;
-        newPoint.xyz	= xyz;
+        newPoint.type = PointF;
+        newPoint.rgba = point->rgba;
+        newPoint.xyz = xyz;
         drawFn(&newPoint);
     }
 }
@@ -260,34 +260,34 @@ void ClipPrimFPoint(PrimPointFC *point, UInt32)
 
 static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
 {
-    PrimLineFC	newLine;
-    ClipVert	v0, v1;
-    int			xyz[2];
-    int			*xyzIdxPtr, *end;
+    PrimLineFC newLine;
+    ClipVert v0, v1;
+    int xyz[2];
+    int *xyzIdxPtr, *end;
 
     ShiAssert(line->nVerts > 1);
 
     // Set up our temporary primitive
-    newLine.type	= LineF;
-    newLine.rgba	= line->rgba;
-    newLine.xyz		= xyz;
-    newLine.nVerts	= 2;
+    newLine.type = LineF;
+    newLine.rgba = line->rgba;
+    newLine.xyz = xyz;
+    newLine.nVerts = 2;
 
     xyzIdxPtr = line->xyz;
     end = xyzIdxPtr + line->nVerts - 1;
 
     xyz[0] = TheStateStack.XformedPosPoolNext - TheStateStack.XformedPosPool;
     xyz[1] = xyz[0] + 1;
-    v0.xyz	= xyz[0];
-    v1.xyz	= xyz[1];
+    v0.xyz = xyz[0];
+    v1.xyz = xyz[1];
 
     do
     {
         // Copy the relevant data to avoid clobbering it for any other lines which share it
-        TheStateStack.XformedPosPool[v0.xyz]	= TheStateStack.XformedPosPool[xyzIdxPtr[0]];
-        TheStateStack.ClipInfoPool[v0.xyz]		= TheStateStack.ClipInfoPool[xyzIdxPtr[0]];
-        TheStateStack.XformedPosPool[v1.xyz]	= TheStateStack.XformedPosPool[xyzIdxPtr[1]];
-        TheStateStack.ClipInfoPool[v1.xyz]		= TheStateStack.ClipInfoPool[xyzIdxPtr[1]];
+        TheStateStack.XformedPosPool[v0.xyz] = TheStateStack.XformedPosPool[xyzIdxPtr[0]];
+        TheStateStack.ClipInfoPool[v0.xyz] = TheStateStack.ClipInfoPool[xyzIdxPtr[0]];
+        TheStateStack.XformedPosPool[v1.xyz] = TheStateStack.XformedPosPool[xyzIdxPtr[1]];
+        TheStateStack.ClipInfoPool[v1.xyz] = TheStateStack.ClipInfoPool[xyzIdxPtr[1]];
 
         // Clip near
         if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag & CLIP_NEAR)
@@ -390,41 +390,41 @@ void ClipPrimFLine(PrimLineFC *line, UInt32)
 // which pointers are in use so that the tests can be evaulated at compile time in all cases.
 inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *I, Ptexcoord *uv)
 {
-    ClipVert		*v, *p, *lastIn,  *nextOut;
-    ClipVert		*inList, *outList, *temp;
-    ClipVert		vertList1[MAX_VERTS_PER_CLIPPED_POLYGON];
-    ClipVert		vertList2[MAX_VERTS_PER_CLIPPED_POLYGON];
-    ClipVert		extraVertIdx;
-    int				i;
+    ClipVert *v, *p, *lastIn,  *nextOut;
+    ClipVert *inList, *outList, *temp;
+    ClipVert vertList1[MAX_VERTS_PER_CLIPPED_POLYGON];
+    ClipVert vertList2[MAX_VERTS_PER_CLIPPED_POLYGON];
+    ClipVert extraVertIdx;
+    int i;
 
     ShiAssert(xyz);
     ShiAssert(*nVerts >= 3);
     ShiAssert(*nVerts <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
     // Intialize the vertex buffers
-    outList	= vertList1;
-    nextOut	= outList;
+    outList = vertList1;
+    nextOut = outList;
     i = 0;
 
     do
     {
-        nextOut->xyz				= xyz[i];
+        nextOut->xyz = xyz[i];
 
-        if (rgba)	nextOut->rgba	= rgba[i];
+        if (rgba) nextOut->rgba = rgba[i];
 
-        if (I)		nextOut->I		= I[i];
+        if (I) nextOut->I = I[i];
 
-        if (uv)		nextOut->uv		= uv[i];
+        if (uv) nextOut->uv = uv[i];
 
         i++;
         nextOut++;
     }
     while (i < *nVerts);
 
-    inList				= vertList2;
-    extraVertIdx.xyz	= TheStateStack.XformedPosPoolNext - TheStateStack.XformedPosPool;
-    extraVertIdx.rgba	= TheColorBank.nColors;
-    extraVertIdx.I		= TheStateStack.IntensityPoolNext - TheStateStack.IntensityPool;
+    inList = vertList2;
+    extraVertIdx.xyz = TheStateStack.XformedPosPoolNext - TheStateStack.XformedPosPool;
+    extraVertIdx.rgba = TheColorBank.nColors;
+    extraVertIdx.I = TheStateStack.IntensityPoolNext - TheStateStack.IntensityPool;
 
 
     // Clip to the near plane
@@ -446,9 +446,9 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba)	extraVertIdx.rgba++;
+                if (rgba) extraVertIdx.rgba++;
 
-                if (I)		extraVertIdx.I++;
+                if (I) extraVertIdx.I++;
 
                 IntersectNear(p, v, nextOut, rgba != NULL, I != NULL, uv != NULL);
                 clipTest |= TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
@@ -494,9 +494,9 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba)	extraVertIdx.rgba++;
+                if (rgba) extraVertIdx.rgba++;
 
-                if (I)		extraVertIdx.I++;
+                if (I) extraVertIdx.I++;
 
                 IntersectBottom(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
             }
@@ -535,9 +535,9 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba)	extraVertIdx.rgba++;
+                if (rgba) extraVertIdx.rgba++;
 
-                if (I)		extraVertIdx.I++;
+                if (I) extraVertIdx.I++;
 
                 IntersectTop(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
             }
@@ -576,9 +576,9 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba)	extraVertIdx.rgba++;
+                if (rgba) extraVertIdx.rgba++;
 
-                if (I)		extraVertIdx.I++;
+                if (I) extraVertIdx.I++;
 
                 IntersectRight(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
             }
@@ -617,9 +617,9 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba)	extraVertIdx.rgba++;
+                if (rgba) extraVertIdx.rgba++;
 
-                if (I)		extraVertIdx.I++;
+                if (I) extraVertIdx.I++;
 
                 IntersectLeft(p, v, nextOut++, rgba != NULL, I != NULL, uv != NULL);
             }
@@ -646,13 +646,13 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
     while (i)
     {
         i--;
-        xyz[i]				= outList->xyz;
+        xyz[i] = outList->xyz;
 
-        if (rgba)	rgba[i]	= outList->rgba;
+        if (rgba) rgba[i] = outList->rgba;
 
-        if (I)		I[i]	= outList->I;
+        if (I) I[i] = outList->I;
 
-        if (uv)		uv[i]	= outList->uv;
+        if (uv) uv[i] = outList->uv;
 
         outList++;
     }
@@ -663,15 +663,15 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
 void ClipPoly(PolyFC *poly, UInt32 clipTest)
 {
-    PolyFC	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.rgba	= poly->rgba;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
+    newPoly.type = poly->type;
+    newPoly.rgba = poly->rgba;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
@@ -688,15 +688,15 @@ void ClipPoly(PolyFC *poly, UInt32 clipTest)
 
 void ClipPolyF(PolyFC *poly, UInt32 clipTest)
 {
-    PolyFC	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.rgba	= poly->rgba;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
+    newPoly.type = poly->type;
+    newPoly.rgba = poly->rgba;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
@@ -713,16 +713,16 @@ void ClipPolyF(PolyFC *poly, UInt32 clipTest)
 
 void ClipPolyL(PolyFCN *poly, UInt32 clipTest)
 {
-    PolyFCN	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.rgba	= poly->rgba;
-    newPoly.I		= poly->I;
-    newPoly.xyz		= xyz;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
@@ -739,16 +739,16 @@ void ClipPolyL(PolyFCN *poly, UInt32 clipTest)
 
 void ClipPolyFL(PolyFCN *poly, UInt32 clipTest)
 {
-    PolyFCN	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.rgba	= poly->rgba;
-    newPoly.I		= poly->I;
-    newPoly.xyz		= xyz;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
@@ -765,21 +765,21 @@ void ClipPolyFL(PolyFCN *poly, UInt32 clipTest)
 
 void ClipPolyG(PolyVC *poly, UInt32 clipTest)
 {
-    PolyVC	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
-    newPoly.rgba	= rgba;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -792,21 +792,21 @@ void ClipPolyG(PolyVC *poly, UInt32 clipTest)
 
 void ClipPolyFG(PolyVC *poly, UInt32 clipTest)
 {
-    PolyVC	newPoly;
-    int		xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int		i;
+    PolyVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
-    newPoly.rgba	= rgba;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -819,24 +819,24 @@ void ClipPolyFG(PolyVC *poly, UInt32 clipTest)
 
 void ClipPolyGL(PolyVCN *poly, UInt32 clipTest)
 {
-    PolyVCN		newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
-    newPoly.rgba	= rgba;
-    newPoly.I		= I;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.I = I;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        I[i]	= poly->I[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        I[i] = poly->I[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -849,24 +849,24 @@ void ClipPolyGL(PolyVCN *poly, UInt32 clipTest)
 
 void ClipPolyFGL(PolyVCN *poly, UInt32 clipTest)
 {
-    PolyVCN		newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type	= poly->type;
-    newPoly.nVerts	= poly->nVerts;
-    newPoly.xyz		= xyz;
-    newPoly.rgba	= rgba;
-    newPoly.I		= I;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.I = I;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        I[i]	= poly->I[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        I[i] = poly->I[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -879,22 +879,22 @@ void ClipPolyFGL(PolyVCN *poly, UInt32 clipTest)
 
 void ClipPolyT(PolyTexFC *poly, UInt32 clipTest)
 {
-    PolyTexFC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -907,22 +907,22 @@ void ClipPolyT(PolyTexFC *poly, UInt32 clipTest)
 
 void ClipPolyFT(PolyTexFC *poly, UInt32 clipTest)
 {
-    PolyTexFC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -935,23 +935,23 @@ void ClipPolyFT(PolyTexFC *poly, UInt32 clipTest)
 
 void ClipPolyAT(PolyTexFC *poly, UInt32 clipTest)
 {
-    PolyTexFC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.rgba		= poly->rgba;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -965,23 +965,23 @@ void ClipPolyAT(PolyTexFC *poly, UInt32 clipTest)
 //JAM 09Sep03
 void ClipPolyFAT(PolyTexFC *poly, UInt32 clipTest)
 {
-    PolyTexFC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.rgba		= poly->rgba;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -995,23 +995,23 @@ void ClipPolyFAT(PolyTexFC *poly, UInt32 clipTest)
 
 void ClipPolyTL(PolyTexFCN *poly, UInt32 clipTest)
 {
-    PolyTexFCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.I			= poly->I;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1024,23 +1024,23 @@ void ClipPolyTL(PolyTexFCN *poly, UInt32 clipTest)
 
 void ClipPolyFTL(PolyTexFCN *poly, UInt32 clipTest)
 {
-    PolyTexFCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.I			= poly->I;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1053,24 +1053,24 @@ void ClipPolyFTL(PolyTexFCN *poly, UInt32 clipTest)
 
 void ClipPolyATL(PolyTexFCN *poly, UInt32 clipTest)
 {
-    PolyTexFCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.rgba		= poly->rgba;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.I			= poly->I;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1084,24 +1084,24 @@ void ClipPolyATL(PolyTexFCN *poly, UInt32 clipTest)
 //JAM 09Sep03
 void ClipPolyFATL(PolyTexFCN *poly, UInt32 clipTest)
 {
-    PolyTexFCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexFCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.rgba		= poly->rgba;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.I			= poly->I;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.rgba = poly->rgba;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.I = poly->I;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1115,22 +1115,22 @@ void ClipPolyFATL(PolyTexFCN *poly, UInt32 clipTest)
 
 void ClipPolyTG(PolyTexVC *poly, UInt32 clipTest)
 {
-    PolyTexVC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1143,22 +1143,22 @@ void ClipPolyTG(PolyTexVC *poly, UInt32 clipTest)
 
 void ClipPolyFTG(PolyTexVC *poly, UInt32 clipTest)
 {
-    PolyTexVC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1171,25 +1171,25 @@ void ClipPolyFTG(PolyTexVC *poly, UInt32 clipTest)
 
 void ClipPolyATG(PolyTexVC *poly, UInt32 clipTest)
 {
-    PolyTexVC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.rgba		= rgba;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1203,25 +1203,25 @@ void ClipPolyATG(PolyTexVC *poly, UInt32 clipTest)
 //JAM 09Sep03
 void ClipPolyFATG(PolyTexVC *poly, UInt32 clipTest)
 {
-    PolyTexVC	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVC newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.rgba		= rgba;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1235,25 +1235,25 @@ void ClipPolyFATG(PolyTexVC *poly, UInt32 clipTest)
 
 void ClipPolyTGL(PolyTexVCN *poly, UInt32 clipTest)
 {
-    PolyTexVCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.I			= I;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.I = I;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        I[i]	= poly->I[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        I[i] = poly->I[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1266,25 +1266,25 @@ void ClipPolyTGL(PolyTexVCN *poly, UInt32 clipTest)
 
 void ClipPolyFTGL(PolyTexVCN *poly, UInt32 clipTest)
 {
-    PolyTexVCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.I			= I;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.I = I;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        I[i]	= poly->I[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        I[i] = poly->I[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1297,28 +1297,28 @@ void ClipPolyFTGL(PolyTexVCN *poly, UInt32 clipTest)
 
 void ClipPolyATGL(PolyTexVCN *poly, UInt32 clipTest)
 {
-    PolyTexVCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.rgba		= rgba;
-    newPoly.I			= I;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.I = I;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        I[i]	= poly->I[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        I[i] = poly->I[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)
@@ -1332,28 +1332,28 @@ void ClipPolyATGL(PolyTexVCN *poly, UInt32 clipTest)
 //JAM 09Sep03
 void ClipPolyFATGL(PolyTexVCN *poly, UInt32 clipTest)
 {
-    PolyTexVCN	newPoly;
-    int			xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			I[MAX_VERTS_PER_CLIPPED_POLYGON];
-    Ptexcoord	uv[MAX_VERTS_PER_CLIPPED_POLYGON];
-    int			i;
+    PolyTexVCN newPoly;
+    int xyz[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int rgba[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int I[MAX_VERTS_PER_CLIPPED_POLYGON];
+    Ptexcoord uv[MAX_VERTS_PER_CLIPPED_POLYGON];
+    int i;
 
     // Initialize our temporary polygon
-    newPoly.type		= poly->type;
-    newPoly.nVerts		= poly->nVerts;
-    newPoly.texIndex	= poly->texIndex;
-    newPoly.xyz			= xyz;
-    newPoly.rgba		= rgba;
-    newPoly.I			= I;
-    newPoly.uv			= uv;
+    newPoly.type = poly->type;
+    newPoly.nVerts = poly->nVerts;
+    newPoly.texIndex = poly->texIndex;
+    newPoly.xyz = xyz;
+    newPoly.rgba = rgba;
+    newPoly.I = I;
+    newPoly.uv = uv;
 
     for (i = 0; i < newPoly.nVerts; i++)
     {
-        xyz[i]	= poly->xyz[i];
-        rgba[i]	= poly->rgba[i];
-        I[i]	= poly->I[i];
-        uv[i]	= poly->uv[i];
+        xyz[i] = poly->xyz[i];
+        rgba[i] = poly->rgba[i];
+        I[i] = poly->I[i];
+        uv[i] = poly->uv[i];
     }
 
     // Clip the temporary polygon (destructive)

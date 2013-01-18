@@ -3,7 +3,7 @@
     April 6, 1998
 
     Derived class to do special position processing for foot soldiers on the
-	ground.
+ ground.
 \***************************************************************************/
 #include "TimeMgr.h"
 #include "Matrix.h"
@@ -12,34 +12,34 @@
 #include "DrawGuys.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	DrawableGuys::pool;
+MEM_POOL DrawableGuys::pool;
 #endif
 
 // table of offsets for squads
 static Tpoint sSquadOffsets[] =
 {
-    {  0.0f, 	0.0f,		0.0f },
-    { -5.0f,    5.0f,		0.0f },
-    {  5.0f,   12.0f,		0.0f },
-    {  8.0f,   -5.0f,		0.0f },
-    { -6.0f,  -10.0f,		0.0f },
-    {  0.0f,   20.0f,		0.0f },
-    { 20.0f,    0.0f,		0.0f },
-    {  0.0f,  -20.0f,		0.0f },
-    { -20.0f,    0.0f,		0.0f },
+    {  0.0f,  0.0f, 0.0f },
+    { -5.0f,    5.0f, 0.0f },
+    {  5.0f,   12.0f, 0.0f },
+    {  8.0f,   -5.0f, 0.0f },
+    { -6.0f,  -10.0f, 0.0f },
+    {  0.0f,   20.0f, 0.0f },
+    { 20.0f,    0.0f, 0.0f },
+    {  0.0f,  -20.0f, 0.0f },
+    { -20.0f,    0.0f, 0.0f },
 };
 /* KCK: Randomized more. Would be nice to specify this ourselves..
 static Tpoint sSquadOffsets[] =
 {
-	{  0.0f, 	0.0f,		0.0f },
-	{-15.0f,   15.0f,		0.0f },
-	{ 15.0f,   15.0f,		0.0f },
-	{ 15.0f,  -15.0f,		0.0f },
-	{-15.0f,  -15.0f,		0.0f },
-	{  0.0f,   20.0f,		0.0f },
-	{ 20.0f,    0.0f,		0.0f },
-	{  0.0f,  -20.0f,		0.0f },
-	{-20.0f,    0.0f,		0.0f },
+ {  0.0f,  0.0f, 0.0f },
+ {-15.0f,   15.0f, 0.0f },
+ { 15.0f,   15.0f, 0.0f },
+ { 15.0f,  -15.0f, 0.0f },
+ {-15.0f,  -15.0f, 0.0f },
+ {  0.0f,   20.0f, 0.0f },
+ { 20.0f,    0.0f, 0.0f },
+ {  0.0f,  -20.0f, 0.0f },
+ {-20.0f,    0.0f, 0.0f },
 };
 */
 
@@ -68,7 +68,7 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     int mask;
     BOOL saveLabels;
     float relYaw;
-    int	animFrame;
+    int animFrame;
     int animShift;
 
 
@@ -76,10 +76,10 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     if (LOD != previousLOD)
     {
 
-        Tpoint	normal;
-        float	s;
-        float	Nx, Ny, Nz;
-        float	x, y, z;
+        Tpoint normal;
+        float s;
+        float Nx, Ny, Nz;
+        float x, y, z;
 
         if (drivingOn)
         {
@@ -121,10 +121,10 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
     }
 
 
-    //	1) determine which switch to set based on our relative heading
-    //	   with view heading.
-    //	2) If moving, determine which switch to set to cycle animation
-    //	3) If more than 1 unit in squad position and draw several of them
+    // 1) determine which switch to set based on our relative heading
+    //    with view heading.
+    // 2) If moving, determine which switch to set to cycle animation
+    // 3) If more than 1 unit in squad position and draw several of them
 
     // figure out which orientation to use....
     // calculate the relative headings

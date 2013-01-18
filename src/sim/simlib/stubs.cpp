@@ -10,8 +10,8 @@ extern "C"
 
 int _CrtDbgReport(int reportType, const char *filename, int linenumber, const char *moduleName, const char *format, ...)
 {
-    char	buffer[80];
-    int		choice = IDRETRY;
+    char buffer[80];
+    int choice = IDRETRY;
 
     sprintf(buffer, "Assertion at %0d  %s", linenumber, filename);
 

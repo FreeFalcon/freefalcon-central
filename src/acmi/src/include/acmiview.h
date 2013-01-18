@@ -10,12 +10,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define EXTERNAL	0
-#define CHASE		1
-#define SATELLITE	8
-#define REPLAY		9
-#define FREE		10
-#define STARTPOS	15
+#define EXTERNAL 0
+#define CHASE 1
+#define SATELLITE 8
+#define REPLAY 9
+#define FREE 10
+#define STARTPOS 15
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ public:
     void ToggleScreenShot();
 
     // An array of sim entity pointers.
-    ACMIEntityUIMap	*_entityUIMappings;
+    ACMIEntityUIMap *_entityUIMappings;
 
 
     // display toggles
@@ -144,62 +144,62 @@ public:
 
 
 public:
-    int					_initialGraphicsLoad;
+    int _initialGraphicsLoad;
 
     int IsFinished()
     {
         return _drawingFinished;
     };
 
-    char				_fileName[MAX_PATH];
-    int					_cameraState;
-    RViewPoint			*_viewPoint;
-    RenderOTW			*_renderer;
-    Texture				wireTexture;
-    HWND					_win;
+    char _fileName[MAX_PATH];
+    int _cameraState;
+    RViewPoint *_viewPoint;
+    RenderOTW *_renderer;
+    Texture wireTexture;
+    HWND _win;
 
     // currentCam is the object we're attached to
     // currentEntityCam is the object we're tracking
-    int					_currentCam;
-    int					_currentEntityCam;
+    int _currentCam;
+    int _currentEntityCam;
 
-    float				_objectScale;
+    float _objectScale;
 
-    int					_drawing;
-    int					_drawingFinished;
-    int					_isReady;
-    int					_tapeHasLoaded;
+    int _drawing;
+    int _drawingFinished;
+    int _isReady;
+    int _tapeHasLoaded;
 
-    int					_doWeather;
+    int _doWeather;
 
-    int					_takeScreenShot;
+    int _takeScreenShot;
 
-    SimBaseClass		*_platform;
+    SimBaseClass *_platform;
 
-    ACMITape			*_tape;
+    ACMITape *_tape;
 
     // camera view controls
-    float				_pannerX;
-    float				_pannerY;
-    float				_pannerZ;
-    float				_pannerAz;
-    float				_pannerEl;
-    float				_chaseX;
-    float				_chaseY;
-    float				_chaseZ;
-    BOOL				_tracking;
-    float				_camYaw;
-    float				_camPitch;
-    float				_camRoll;
-    float				_camRange;
+    float _pannerX;
+    float _pannerY;
+    float _pannerZ;
+    float _pannerAz;
+    float _pannerEl;
+    float _chaseX;
+    float _chaseY;
+    float _chaseZ;
+    BOOL _tracking;
+    float _camYaw;
+    float _camPitch;
+    float _camRoll;
+    float _camRange;
 
-    int					_doWireFrame;
-    int					_doLockLine;
+    int _doWireFrame;
+    int _doLockLine;
 
     // view position and rotation of camera
-    Trotation			_camRot;
-    Tpoint				_camPos;
-    Tpoint				_camWorldPos;
+    Trotation _camRot;
+    Tpoint _camPos;
+    Tpoint _camWorldPos;
 
     // Initialize, used by constructor and destructor.
     void Init();

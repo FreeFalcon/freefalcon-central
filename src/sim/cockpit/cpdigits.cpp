@@ -1,37 +1,37 @@
 #include "stdafx.h"
 #include "cpdigits.h"
 
-#include "Graphics\Include\grinline.h"	//Wombat778 3-22-04
+#include "Graphics\Include\grinline.h" //Wombat778 3-22-04
 
 //MI
 extern bool g_bRealisticAvionics;
-extern bool g_bFilter2DPit;		//Wombat778 3-30-04
+extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 
 CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr* pdigitsInitStr) : CPObject(pobjectInitStr)
 {
     int i;
 
-    mDestDigits		= pdigitsInitStr->numDestDigits;
-    mpSrcRects		= pdigitsInitStr->psrcRects;
-    mpDestRects		= pdigitsInitStr->pdestRects;
+    mDestDigits = pdigitsInitStr->numDestDigits;
+    mpSrcRects = pdigitsInitStr->psrcRects;
+    mpDestRects = pdigitsInitStr->pdestRects;
 
     for (i = 0; i < mDestDigits; i++)
     {
-        mpDestRects[i].top		= (LONG)(mVScale * mpDestRects[i].top);
-        mpDestRects[i].left		= (LONG)(mHScale * mpDestRects[i].left);
-        mpDestRects[i].bottom	= (LONG)(mVScale * mpDestRects[i].bottom);
-        mpDestRects[i].right	= (LONG)(mHScale * mpDestRects[i].right);
+        mpDestRects[i].top = (LONG)(mVScale * mpDestRects[i].top);
+        mpDestRects[i].left = (LONG)(mHScale * mpDestRects[i].left);
+        mpDestRects[i].bottom = (LONG)(mVScale * mpDestRects[i].bottom);
+        mpDestRects[i].right = (LONG)(mHScale * mpDestRects[i].right);
     }
 
-    mValue			= 0;
+    mValue = 0;
 
 #ifdef USE_SH_POOLS
     mpValues = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mDestDigits, FALSE);
     mpDestString = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * (mDestDigits + 1), FALSE);
 #else
-    mpValues			= new int[mDestDigits];
-    mpDestString	= new char[mDestDigits + 1];
+    mpValues = new int[mDestDigits];
+    mpDestString = new char[mDestDigits + 1];
 #endif
 
     memset(mpValues, 0, mDestDigits * sizeof(int));
@@ -46,8 +46,8 @@ CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr* pdigitsInitStr)
 
         for (i = 0; i < 10; i++)
         {
-            mpSourceBuffer[i].mWidth		= pdigitsInitStr->psrcRects[i].right - pdigitsInitStr->psrcRects[i].left;
-            mpSourceBuffer[i].mHeight		= pdigitsInitStr->psrcRects[i].bottom - pdigitsInitStr->psrcRects[i].top;
+            mpSourceBuffer[i].mWidth = pdigitsInitStr->psrcRects[i].right - pdigitsInitStr->psrcRects[i].left;
+            mpSourceBuffer[i].mHeight = pdigitsInitStr->psrcRects[i].bottom - pdigitsInitStr->psrcRects[i].top;
         }
     }
 
@@ -65,7 +65,7 @@ CPDigits::~CPDigits()
     //Wombat778 3-22-04 clean up buffers
     if (DisplayOptions.bRender2DCockpit)
     {
-        for (int i = 0; i < 10; i++)		//Assume 10 digits, which is how big the number of source rectangles is
+        for (int i = 0; i < 10; i++) //Assume 10 digits, which is how big the number of source rectangles is
             glReleaseMemory((char*) mpSourceBuffer[i].digit);
 
         delete [] mpSourceBuffer;
@@ -89,13 +89,13 @@ void CPDigits::Exec(SimBaseClass* pOwnship)
 
 void CPDigits::DisplayBlit()
 {
-    int	i;
+    int i;
     mDirtyFlag = TRUE;
 
     if (!mDirtyFlag)
         return;
 
-    if (DisplayOptions.bRender2DCockpit)			//Wombat778 3-22-04 Handle drawing in DisplayBlit3D
+    if (DisplayOptions.bRender2DCockpit) //Wombat778 3-22-04 Handle drawing in DisplayBlit3D
         return;
 
     //MI
@@ -118,15 +118,15 @@ void CPDigits::DisplayBlit()
 
 
 
-void CPDigits::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered digits.  Much faster than blitting.
+void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digits.  Much faster than blitting.
 {
-    int	i;
+    int i;
     mDirtyFlag = TRUE;
 
     if (!mDirtyFlag)
         return;
 
-    if (!DisplayOptions.bRender2DCockpit)		//Handle drawing in DisplayBlit
+    if (!DisplayOptions.bRender2DCockpit) //Handle drawing in DisplayBlit
         return;
 
     //Wombat778 new rendering code. Taken from cpsurface.cpp
@@ -175,7 +175,7 @@ void CPDigits::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered digi
                 // COBRA - RED - Pit Vibrations
                 OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
-                if (g_bFilter2DPit)			//Wombat778 3-30-04 Add option to filter
+                if (g_bFilter2DPit) //Wombat778 3-30-04 Add option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
@@ -192,8 +192,8 @@ void CPDigits::DisplayBlit3D()	//Wombat778 3-22-04 Add support for rendered digi
 
 void CPDigits::SetDigitValues(long value)
 {
-    int	i, j;
-    int	fieldlen;
+    int i, j;
+    int fieldlen;
 
     if (mValue != value)
     {
@@ -254,7 +254,7 @@ void CPDigits::CreateLit(void)
                     if (!pTex->Create("CPDigit", MPR_TI_PALETTE | MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].digit, true, true))	// soon to be re-loaded by CPSurface::Translate3D
+                    if (!pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].digit, true, true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
@@ -276,14 +276,14 @@ void CPDigits::DiscardLit(void)
     {
         for (int i2 = 0; i2 < 10; i2++)
         {
-            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++)	//delete the textures for each digit
+            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each digit
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();
         }
     }
 
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i];	//delete the local textures
+    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i]; //delete the local textures
 
     m_arrTex.clear();
 

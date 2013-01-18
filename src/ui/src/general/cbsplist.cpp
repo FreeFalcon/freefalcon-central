@@ -37,7 +37,7 @@ void PositandOrientSetData(float x, float y, float z, float pitch, float roll, f
 
 long GetFeatureFlags(Objective obj, short featno)
 {
-    FeatureClassDataType*	fc;
+    FeatureClassDataType* fc;
     long classID;
 
     if (featno < 0 || featno >= obj->GetObjectiveClassData()->Features)
@@ -101,16 +101,16 @@ void C_BSPList::RemoveList(BSPLIST **list)
         {
             delete cur->object;
             cur->object = NULL;
-            //			if(cur->owner->type == FEAT_ELEV_CONTAINER)
-            //			{
-            //				((DrawableBridge*)cur->owner->object)->Remove(cur->object);
-            //				cur->owner=NULL;
-            //			}
-            //			else if(cur->owner->type == FEAT_FLAT_CONTAINER)
-            //			{
-            //				((DrawablePlatform*)cur->owner->object)->Remove(cur->object);
-            //				cur->owner=NULL;
-            //			}
+            // if(cur->owner->type == FEAT_ELEV_CONTAINER)
+            // {
+            // ((DrawableBridge*)cur->owner->object)->Remove(cur->object);
+            // cur->owner=NULL;
+            // }
+            // else if(cur->owner->type == FEAT_FLAT_CONTAINER)
+            // {
+            // ((DrawablePlatform*)cur->owner->object)->Remove(cur->object);
+            // cur->owner=NULL;
+            // }
         }
 
         cur = cur->Next;
@@ -274,28 +274,28 @@ BSPLIST *C_BSPList::LoadBSP(long ID, long objID)
 
 BSPLIST *C_BSPList::LoadBridge(long, long)
 {
-    //	BSPLIST *obj;
-    //	Tpoint objPos;
-    //	Trotation objRot;
+    // BSPLIST *obj;
+    // Tpoint objPos;
+    // Trotation objRot;
 
-    //	obj=new BSPLIST;
-    //	if(obj == NULL)
+    // obj=new BSPLIST;
+    // if(obj == NULL)
     return(NULL);
 
-    //	if(!FindLock(objID))
-    //		Lock(objID);
+    // if(!FindLock(objID))
+    // Lock(objID);
 
-    //	obj->ID=ID;
-    //	obj->type=BSP_DRAWBRIDGE;
-    //	obj->owner=NULL;
-    //	obj->object=new DrawableBridge(objID,&objPos,&objRot,1.0f);
-    //	if(obj->object == NULL)
-    //	{
-    //		delete obj;
-    //		return(NULL);
-    //	}
-    //	obj->Next=NULL;
-    //	return(obj);
+    // obj->ID=ID;
+    // obj->type=BSP_DRAWBRIDGE;
+    // obj->owner=NULL;
+    // obj->object=new DrawableBridge(objID,&objPos,&objRot,1.0f);
+    // if(obj->object == NULL)
+    // {
+    // delete obj;
+    // return(NULL);
+    // }
+    // obj->Next=NULL;
+    // return(obj);
 }
 
 BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos, float heading)
@@ -325,7 +325,7 @@ BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos, float heading
     return(obj);
 }
 
-BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc)
+BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc)
 {
     short    visType = -1;
     long prevFlags, nextFlags;
@@ -394,7 +394,7 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     return(bspobj);
 }
 
-BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType*	fc, Tpoint *objPos, BSPLIST *Parent)
+BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent)
 {
     short    visType = -1;
     long prevFlags, nextFlags;

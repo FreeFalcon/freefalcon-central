@@ -4,8 +4,8 @@
 #include "listadt.h"
 
 #ifdef USE_SH_POOLS
-MEM_POOL	ListElementClass::pool;
-MEM_POOL	ListClass::pool;
+MEM_POOL ListElementClass::pool;
+MEM_POOL ListClass::pool;
 #endif
 
 // =============================
@@ -91,7 +91,7 @@ void ListClass::Insert(ListElementClass *newElement)
         // Insert somewhere in the middle
         else
         {
-            ListNode	current = front;
+            ListNode current = front;
 
             while (current && current->key < newElement->key)
                 current = current->next;

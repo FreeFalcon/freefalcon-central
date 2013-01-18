@@ -70,14 +70,14 @@ public:
 class SimSurfaceFilter : public VuFilter
 {
    public:
-      uchar	domain;			// KCK Eventually, we'll probably want to separate Naval and Ground units
+      uchar domain; // KCK Eventually, we'll probably want to separate Naval and Ground units
       SimSurfaceFilter(uchar domain_to_filter);
       virtual ~SimSurfaceFilter();
 
       virtual VU_BOOL Test(VuEntity *ent);
       virtual VU_BOOL RemoveTest(VuEntity *ent);
       virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
+      // returns ent2->Id() - ent1->Id()
       virtual VuFilter *Copy();
 };
 */

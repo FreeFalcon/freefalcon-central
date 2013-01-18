@@ -10,11 +10,11 @@ extern ComAPIHandle tcpListenHandle;
 enum FalconConnectionTypes
 {
     FCT_NoConnection = 0,
-    FCT_ModemToModem,						// Modem to modem only
+    FCT_ModemToModem, // Modem to modem only
     FCT_NullModem,
-    FCT_LAN,								// LAN or simulated LAN (kali)
-    FCT_WAN,								// Internet or modem to ISP
-    FCT_Server,							// Internet,modem or LAN to server
+    FCT_LAN, // LAN or simulated LAN (kali)
+    FCT_WAN, // Internet or modem to ISP
+    FCT_Server, // Internet,modem or LAN to server
     FCT_TEN,
     FCT_JetNet,
 };
@@ -50,26 +50,26 @@ extern int F4CommsMTU;  // More of Unz and  Boosters stuff
 // ========================================================================
 
 // Protocols available to Falcon
-#define FCP_UDP_AVAILABLE		0x01	// We have UDP available
-#define FCP_TCP_AVAILABLE		0x02	// We have TCP available
-#define FCP_SERIAL_AVAILABLE	0x04	// We have a serial (via modem or null modem) connection
-#define FCP_MULTICAST_AVAILABLE	0x08	// True multicast is available
-#define FCP_RUDP_AVAILABLE		0x10	// We have RUDP available
+#define FCP_UDP_AVAILABLE 0x01 // We have UDP available
+#define FCP_TCP_AVAILABLE 0x02 // We have TCP available
+#define FCP_SERIAL_AVAILABLE 0x04 // We have a serial (via modem or null modem) connection
+#define FCP_MULTICAST_AVAILABLE 0x08 // True multicast is available
+#define FCP_RUDP_AVAILABLE 0x10 // We have RUDP available
 
 // Virtual connection types available to Falcon
-#define FCT_PTOP_AVAILABLE		0x01	// We can send point to point messages to multiple machines
-#define FCT_BCAST_AVAILABLE		0x02	// We can send broadcast (to world) messages
-#define FCT_SERVER_AVAILABLE	0x04	// We are connecting to an exploder server
-#define FCT_SERIAL_AVAILABLE	0x08	// We are connected via modem or null modem to one other machine
+#define FCT_PTOP_AVAILABLE 0x01 // We can send point to point messages to multiple machines
+#define FCT_BCAST_AVAILABLE 0x02 // We can send broadcast (to world) messages
+#define FCT_SERVER_AVAILABLE 0x04 // We are connecting to an exploder server
+#define FCT_SERIAL_AVAILABLE 0x08 // We are connected via modem or null modem to one other machine
 
 // Error codes returned from InitCommsStuff()
 #define F4COMMS_CONNECTED                        1
-#define F4COMMS_PENDING							 2		// Seems successfull, but we're waiting for a connection
-#define	F4COMMS_ERROR_TCP_NOT_AVAILABLE			-1
-#define F4COMMS_ERROR_UDP_NOT_AVAILABLE			-2
-#define F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE	-3
-#define F4COMMS_ERROR_FAILED_TO_CREATE_GAME		-4
-#define F4COMMS_ERROR_COULDNT_CONNECT_TO_SERVER	-5
+#define F4COMMS_PENDING  2 // Seems successfull, but we're waiting for a connection
+#define F4COMMS_ERROR_TCP_NOT_AVAILABLE -1
+#define F4COMMS_ERROR_UDP_NOT_AVAILABLE -2
+#define F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE -3
+#define F4COMMS_ERROR_FAILED_TO_CREATE_GAME -4
+#define F4COMMS_ERROR_COULDNT_CONNECT_TO_SERVER -5
 
 class ComDataClass;
 

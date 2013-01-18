@@ -330,7 +330,7 @@ void HeliBrain::GunsEngage(void)
     pedalLoad = 0.0f;
 
     // Range to target
-    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) *	(wpY - self->YPos());
+    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) * (wpY - self->YPos());
     rz = wpZ - self->ZPos();
 
     // Heading error for current waypoint
@@ -375,7 +375,7 @@ void HeliBrain::GunsEngage(void)
     //desSpeed = min( 1.0f, (float)fabs( rng - 6000.0f ) * 0.01f );
     //
     //if ( desSpeed < 0.2f )
-    //	desSpeed = elerr / MAX_HELI_PITCH;
+    // desSpeed = elerr / MAX_HELI_PITCH;
 
     // Defaults to full speed ahead
     desSpeed = 1.0f;
@@ -457,20 +457,20 @@ void HeliBrain::FireControl(void)
     if ( theObject->OnGround() )
     {
        if ( targetData->range < 1000.0f ||
-       		targetData->range > 10000.0f)
-       		return;
+        targetData->range > 10000.0f)
+        return;
     }
     else
     {
-    	if ( targetData->range < self->FCC->missileRneMin ||
-       		 targetData->range > self->FCC->missileRneMax  )
-    	   {
-    		   return;
-    	   }
+     if ( targetData->range < self->FCC->missileRneMin ||
+         targetData->range > self->FCC->missileRneMax  )
+        {
+        return;
+        }
     }
 
     if ( targetData->range < self->FCC->missileRneMin ||
-       	 targetData->range > self->FCC->missileRneMax  )
+         targetData->range > self->FCC->missileRneMax  )
     {
        return;
     }
@@ -485,7 +485,7 @@ void HeliBrain::FireControl(void)
     // 2001-07-06 ADDED BY S.G. SO ROCKETS WORKS
     else //if ( self->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb &&
 
-        //	 self->FCC->GetSubMode() == FireControlComputer::RCKT )
+        //  self->FCC->GetSubMode() == FireControlComputer::RCKT )
         if (self->FCC->GetMasterMode() == FireControlComputer::AirGroundRocket) // MLR 4/3/2004 -
         {
             if (targetData->range < 1000.0f || targetData->range > maxWpnRange)
@@ -611,7 +611,7 @@ void HeliBrain::FireControl(void)
 
     if (theObject->IsSim())
     {
-        Falcon4EntityClassType	*classPtr = (Falcon4EntityClassType*)theObject->EntityType();
+        Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
         //MonoPrint("Name: %s",((VehicleClassDataType*)(classPtr->dataPtr))->Name);
     }
 
@@ -627,7 +627,7 @@ void HeliBrain::FireControl(void)
     az = (float)atan2(yft, xft) - self->Yaw();
     el = (float)atan(-zft / (float)sqrt(xft * xft + yft * yft + 0.1F)) - self->Pitch();
 
-    self->Sms->SetMasterArm(SMSBaseClass::Arm);	// M.N. This prevented helicopters from firing their missiles
+    self->Sms->SetMasterArm(SMSBaseClass::Arm); // M.N. This prevented helicopters from firing their missiles
 
     if (curMissile->targetPtr)
         CalcRelGeom(self, curMissile->targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
@@ -705,19 +705,19 @@ void HeliBrain::FireControl(void)
 //         {
 //            theMissile   = (MissileClass *)(self->Sms->curWeapon);
 //
-//			thisRmax	 = theMissile->GetRMax(-self->ZPos(), self->GetVt(), targetData->az, targetPtr->BaseData()->GetVt(), targetData->ataFrom);
-//			thisRmin	 = 0.1F * thisRmax;		// Shouldn't we call GetRMin???
-//			thisPctRange = targetData->range / thisRmax;
-//			thisASE		 = DTR * theMissile->GetASE(-self->ZPos(), self->GetVt(), targetData->ataFrom, targetPtr->BaseData()->GetVt(), targetData->range);
+// thisRmax  = theMissile->GetRMax(-self->ZPos(), self->GetVt(), targetData->az, targetPtr->BaseData()->GetVt(), targetData->ataFrom);
+// thisRmin  = 0.1F * thisRmax; // Shouldn't we call GetRMin???
+// thisPctRange = targetData->range / thisRmax;
+// thisASE  = DTR * theMissile->GetASE(-self->ZPos(), self->GetVt(), targetData->ataFrom, targetPtr->BaseData()->GetVt(), targetData->range);
 //
 //            if (thisPctRange < pctRange && thisRmin < targetData->range)
 //            {
-//			   theMissile->SetTarget( targetPtr );
+//    theMissile->SetTarget( targetPtr );
 //               pctRange = thisPctRange;
 //               curMissile = (MissileClass *)(self->Sms->curWeapon);
 //               curMissileStation = self->Sms->curWpnStation;
 //               curMissileNum     = self->Sms->curWpnNum;
-////	  		   MonoPrint( "HELO BRAIN Missile Selected!\n" );
+////       MonoPrint( "HELO BRAIN Missile Selected!\n" );
 //            }
 //         }
 //         self->Sms->FindWeaponClass (SMSClass::AimWpn);
@@ -730,239 +730,239 @@ void HeliBrain::FireControl(void)
 //
 //void HeliBrain::WeaponSelection (void)
 //{
-//	int i;
+// int i;
 //    SimVehicleClass *target=NULL;
-//	MissileClass *curAA=NULL, *curAG=NULL, *curRock=NULL, *theMissile=NULL;
-//	int curAAStation=0, curAGStation=0, curRockStation=0;
-//	int curAANum=0, curAGNum=0, curRockNum=0;
-//	GunClass *curGun=NULL;
-//	float rmax;
+// MissileClass *curAA=NULL, *curAG=NULL, *curRock=NULL, *theMissile=NULL;
+// int curAAStation=0, curAGStation=0, curRockStation=0;
+// int curAANum=0, curAGNum=0, curRockNum=0;
+// GunClass *curGun=NULL;
+// float rmax;
 //
-//	anyWeapons = FALSE;
+// anyWeapons = FALSE;
 //
-//	curAA = NULL;
-//	curAG = NULL;
-//	curRock = NULL;
-//	curGun = NULL;
+// curAA = NULL;
+// curAG = NULL;
+// curRock = NULL;
+// curGun = NULL;
 //
-//   	curMissile = NULL;
-//   	curMissileStation = -1;
-//   	curMissileNum     = -1;
+//    curMissile = NULL;
+//    curMissileStation = -1;
+//    curMissileNum     = -1;
 //
-//	if ( targetPtr )
-//    	target = (SimVehicleClass *)targetPtr->BaseData();
-//	else
-//    	target = NULL;
+// if ( targetPtr )
+//     target = (SimVehicleClass *)targetPtr->BaseData();
+// else
+//     target = NULL;
 //
-//	for (i=0; i<self->Sms->NumHardpoints(); i++)
-//	{
-//		// Do I have AA Missiles?
-//		if ( curAA == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAimWpn )
-//		{
-//			self->Sms->curWeapon = NULL;
+// for (i=0; i<self->Sms->NumHardpoints(); i++)
+// {
+// // Do I have AA Missiles?
+// if ( curAA == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAimWpn )
+// {
+// self->Sms->curWeapon = NULL;
 //// 2001-07-05 MODIFIED BY S.G. SO THEY ACTUALLY CHOOSE A WEAPON
-////			self->Sms->SetCurHardpoint(-1);
-////			self->Sms->curWpnNum = 0;
-//			self->Sms->SetCurHardpoint(i);
-//			self->Sms->curWpnNum = -1;
+//// self->Sms->SetCurHardpoint(-1);
+//// self->Sms->curWpnNum = 0;
+// self->Sms->SetCurHardpoint(i);
+// self->Sms->curWpnNum = -1;
 //
-//			self->Sms->WeaponStep();
-//			if (self->Sms->curWeapon)
-//			{
-//				//MonoPrint( "Helo found AA Missile.  Class = %d\n",
-//							self->Sms->hardPoint[i]->GetWeaponClass() );
+// self->Sms->WeaponStep();
+// if (self->Sms->curWeapon)
+// {
+// //MonoPrint( "Helo found AA Missile.  Class = %d\n",
+// self->Sms->hardPoint[i]->GetWeaponClass() );
 //
-//				curAA = (MissileClass *)(self->Sms->curWeapon);
-//				curAAStation = self->Sms->CurHardpoint();
-//				curAANum     = self->Sms->curWpnNum;
-//				if (curAA->launchState != MissileClass::PreLaunch )
-//				{
-//					curAA = NULL;
-//					continue;
-//				}
-//			}
-//		}
-//		else if ( curAG == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn )
-//		{
-//			self->Sms->curWeapon = NULL;
+// curAA = (MissileClass *)(self->Sms->curWeapon);
+// curAAStation = self->Sms->CurHardpoint();
+// curAANum     = self->Sms->curWpnNum;
+// if (curAA->launchState != MissileClass::PreLaunch )
+// {
+// curAA = NULL;
+// continue;
+// }
+// }
+// }
+// else if ( curAG == NULL && self->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn )
+// {
+// self->Sms->curWeapon = NULL;
 //// 2001-07-05 MODIFIED BY S.G. SO THEY ACTUALLY CHOOSE A WEAPON
-////			self->Sms->SetCurHardpoint(-1);
-////			self->Sms->curWpnNum = 0;
-//			self->Sms->SetCurHardpoint(i);
-//			self->Sms->curWpnNum = -1;
+//// self->Sms->SetCurHardpoint(-1);
+//// self->Sms->curWpnNum = 0;
+// self->Sms->SetCurHardpoint(i);
+// self->Sms->curWpnNum = -1;
 //
-//			self->Sms->WeaponStep();
-//			if (self->Sms->curWeapon)
-//			{
-////				MonoPrint( "Helo found AG Missile.  Class = %d\n",
-////							self->Sms->hardPoint[i]->GetWeaponClass() );
+// self->Sms->WeaponStep();
+// if (self->Sms->curWeapon)
+// {
+//// MonoPrint( "Helo found AG Missile.  Class = %d\n",
+//// self->Sms->hardPoint[i]->GetWeaponClass() );
 //
-//				curAG = (MissileClass *)(self->Sms->curWeapon);
-//				curAGStation = self->Sms->CurHardpoint();
-//				curAGNum     = self->Sms->curWpnNum;
-//				if (curAG->launchState != MissileClass::PreLaunch )
-//				{
-//					curAG = NULL;
-//					continue;
-//				}
-//			}
-//		}
-//		/*
-//		** edg: forget about rockets.   The SMS is fucked up and
-//		** there's no time to fix since it seems o cause a crash.
-//		*/
-//		else if ( curRock == NULL &&
-//				  (self->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn &&
-//				  self->Sms->hardPoint[i]->weaponCount >= 0 ) )
-//		{
-//			self->Sms->curWeapon = NULL;
+// curAG = (MissileClass *)(self->Sms->curWeapon);
+// curAGStation = self->Sms->CurHardpoint();
+// curAGNum     = self->Sms->curWpnNum;
+// if (curAG->launchState != MissileClass::PreLaunch )
+// {
+// curAG = NULL;
+// continue;
+// }
+// }
+// }
+// /*
+// ** edg: forget about rockets.   The SMS is fucked up and
+// ** there's no time to fix since it seems o cause a crash.
+// */
+// else if ( curRock == NULL &&
+//   (self->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn &&
+//   self->Sms->hardPoint[i]->weaponCount >= 0 ) )
+// {
+// self->Sms->curWeapon = NULL;
 //// 2001-07-05 MODIFIED BY S.G. SO THEY ACTUALLY CHOOSE A WEAPON
-////			self->Sms->SetCurHardpoint(-1);
-////			self->Sms->curWpnNum = 0;
-//			self->Sms->SetCurHardpoint(i);
-//			self->Sms->curWpnNum = -1;
+//// self->Sms->SetCurHardpoint(-1);
+//// self->Sms->curWpnNum = 0;
+// self->Sms->SetCurHardpoint(i);
+// self->Sms->curWpnNum = -1;
 //
-//			self->Sms->WeaponStep();
-//			if (self->Sms->curWeapon)
-//			{
-////				MonoPrint( "Helo found Rocket.  Class = %d\n",
-////							self->Sms->hardPoint[i]->GetWeaponClass() );
+// self->Sms->WeaponStep();
+// if (self->Sms->curWeapon)
+// {
+//// MonoPrint( "Helo found Rocket.  Class = %d\n",
+//// self->Sms->hardPoint[i]->GetWeaponClass() );
 //
-//				curRock = (MissileClass *)(self->Sms->curWeapon);
+// curRock = (MissileClass *)(self->Sms->curWeapon);
 //
-//				curRockStation = self->Sms->CurHardpoint();
-//				curRockNum     = self->Sms->curWpnNum;
-//				if (curRock->launchState != MissileClass::PreLaunch )
-//				{
-//					curRock = NULL;
-//					continue;
-//				}
-//			}
-//		}
-//	} // hardpoint loop
-//
-//
-//	maxWpnRange = 6000.0F;
-//	if (curRock)
-//		theMissile = curRock;
-//	else if (curAA)
-//		theMissile = curAA;
-//	else if (curAG)
-//		theMissile = curAG;
-//
-//		if ( theMissile )
-//		{
-//			// get maximum range
-//			rmax =	theMissile->GetRMax(-self->ZPos(),
-//								self->GetVt(),
-//								targetData->az,
-//				    			targetPtr->BaseData()->GetVt(),
-//								targetData->ataFrom);
-//
-//			// set our max weapon range
-//			if ( rmax > maxWpnRange )
-//				maxWpnRange = rmax;
-//		}
+// curRockStation = self->Sms->CurHardpoint();
+// curRockNum     = self->Sms->curWpnNum;
+// if (curRock->launchState != MissileClass::PreLaunch )
+// {
+// curRock = NULL;
+// continue;
+// }
+// }
+// }
+// } // hardpoint loop
 //
 //
-//	// finally look for guns
-//	if ( self->Guns &&
-//		 self->Guns->numRoundsRemaining )
-//	{
-//		curGun = self->Guns;
-//	}
+// maxWpnRange = 6000.0F;
+// if (curRock)
+// theMissile = curRock;
+// else if (curAA)
+// theMissile = curAA;
+// else if (curAG)
+// theMissile = curAG;
 //
-//	if ( target )
-//	{
-//		if ( !target->OnGround() )
-//		{
-//			if ( curAA )
-//			{
-//				anyWeapons = TRUE;
-//   			curMissile = curAA;
-//   			curMissileStation = curAAStation;
-//   			curMissileNum     = curAANum;
-//				self->Sms->curWeapon = curAA;
-//				self->Sms->SetCurHardpoint(curAAStation);
-//				self->Sms->curWpnNum = curAANum;
-//				self->FCC->SetMasterMode(FireControlComputer::Missile);
-//				/*
-//				if (self->Sms->hardPoint[curMissileStation]->GetWeaponType() == wtAim120 )
-//					self->FCC->SetSubMode(FireControlComputer::Aim120);
-//				else
-//					self->FCC->SetSubMode(FireControlComputer::Aim9);
-//				*/
-//				// self->FCC->Exec(targetPtr, self->targetList, self->theInputs);
-//			}
-//			else
-//			{
-//				self->Sms->curWeapon = NULL;
-//				self->Sms->SetCurHardpoint(-1);
-//				self->Sms->curWpnNum = -1;
-//				self->FCC->SetMasterMode(FireControlComputer::Nav);
-//   				curMissile = NULL;
-//   				curMissileStation = -1;
-//   				curMissileNum     = -1;
-//				if ( curGun )
-//					anyWeapons = TRUE;
-//			}
-//		}
-//		else
-//		{
-//			if ( curAG )
-//			{
-//				anyWeapons = TRUE;
-//   				curMissile = curAG;
-//   				curMissileStation = curAGStation;
-//   				curMissileNum     = curAGNum;
-//				self->Sms->curWeapon = curAG;
-//				self->Sms->SetCurHardpoint(curAGStation);
-//				self->Sms->curWpnNum = curAGNum;
-//				self->FCC->SetMasterMode (FireControlComputer::AirGroundMissile);
-//				self->FCC->SetSubMode (FireControlComputer::SLAVE);
-//			}
-//			else if ( curRock )
-//			{
-//				anyWeapons = TRUE;
-//   				curMissile = curRock;
-//   				curMissileStation = curRockStation;
-//   				curMissileNum     = curRockNum;
-//				self->Sms->curWeapon = curRock;
-//				self->Sms->SetCurHardpoint(curRockStation);
-//				self->Sms->curWpnNum = curRockNum;
-//				self->FCC->SetMasterMode (FireControlComputer::AirGroundRocket); // MLR 4/3/2004 -
-//				//self->FCC->SetMasterMode (FireControlComputer::AirGroundBomb);
-//				//self->FCC->SetSubMode (FireControlComputer::RCKT);
-//			}
-//			else
-//			{
-//				self->Sms->curWeapon = NULL;
-//				self->Sms->SetCurHardpoint(-1);
-//				self->Sms->curWpnNum = -1;
-//				self->FCC->SetMasterMode(FireControlComputer::Nav);
-//   				curMissile = NULL;
-//   				curMissileStation = -1;
-//   				curMissileNum     = -1;
-//				if ( curGun )
-//					anyWeapons = TRUE;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		self->Sms->curWeapon = NULL;
-//		self->Sms->SetCurHardpoint(-1);
-//		self->Sms->curWpnNum = 0;
-//		self->FCC->SetMasterMode(FireControlComputer::Nav);
-//   		curMissile = NULL;
-//   		curMissileStation = -1;
-//   		curMissileNum     = -1;
-//	}
+// if ( theMissile )
+// {
+// // get maximum range
+// rmax = theMissile->GetRMax(-self->ZPos(),
+// self->GetVt(),
+// targetData->az,
+//      targetPtr->BaseData()->GetVt(),
+// targetData->ataFrom);
 //
-//	/*
-//	if ( curAA || curAG || curRock || curGun )
-//		anyWeapons = TRUE;
-//	*/
+// // set our max weapon range
+// if ( rmax > maxWpnRange )
+// maxWpnRange = rmax;
+// }
+//
+//
+// // finally look for guns
+// if ( self->Guns &&
+//  self->Guns->numRoundsRemaining )
+// {
+// curGun = self->Guns;
+// }
+//
+// if ( target )
+// {
+// if ( !target->OnGround() )
+// {
+// if ( curAA )
+// {
+// anyWeapons = TRUE;
+//    curMissile = curAA;
+//    curMissileStation = curAAStation;
+//    curMissileNum     = curAANum;
+// self->Sms->curWeapon = curAA;
+// self->Sms->SetCurHardpoint(curAAStation);
+// self->Sms->curWpnNum = curAANum;
+// self->FCC->SetMasterMode(FireControlComputer::Missile);
+// /*
+// if (self->Sms->hardPoint[curMissileStation]->GetWeaponType() == wtAim120 )
+// self->FCC->SetSubMode(FireControlComputer::Aim120);
+// else
+// self->FCC->SetSubMode(FireControlComputer::Aim9);
+// */
+// // self->FCC->Exec(targetPtr, self->targetList, self->theInputs);
+// }
+// else
+// {
+// self->Sms->curWeapon = NULL;
+// self->Sms->SetCurHardpoint(-1);
+// self->Sms->curWpnNum = -1;
+// self->FCC->SetMasterMode(FireControlComputer::Nav);
+//    curMissile = NULL;
+//    curMissileStation = -1;
+//    curMissileNum     = -1;
+// if ( curGun )
+// anyWeapons = TRUE;
+// }
+// }
+// else
+// {
+// if ( curAG )
+// {
+// anyWeapons = TRUE;
+//    curMissile = curAG;
+//    curMissileStation = curAGStation;
+//    curMissileNum     = curAGNum;
+// self->Sms->curWeapon = curAG;
+// self->Sms->SetCurHardpoint(curAGStation);
+// self->Sms->curWpnNum = curAGNum;
+// self->FCC->SetMasterMode (FireControlComputer::AirGroundMissile);
+// self->FCC->SetSubMode (FireControlComputer::SLAVE);
+// }
+// else if ( curRock )
+// {
+// anyWeapons = TRUE;
+//    curMissile = curRock;
+//    curMissileStation = curRockStation;
+//    curMissileNum     = curRockNum;
+// self->Sms->curWeapon = curRock;
+// self->Sms->SetCurHardpoint(curRockStation);
+// self->Sms->curWpnNum = curRockNum;
+// self->FCC->SetMasterMode (FireControlComputer::AirGroundRocket); // MLR 4/3/2004 -
+// //self->FCC->SetMasterMode (FireControlComputer::AirGroundBomb);
+// //self->FCC->SetSubMode (FireControlComputer::RCKT);
+// }
+// else
+// {
+// self->Sms->curWeapon = NULL;
+// self->Sms->SetCurHardpoint(-1);
+// self->Sms->curWpnNum = -1;
+// self->FCC->SetMasterMode(FireControlComputer::Nav);
+//    curMissile = NULL;
+//    curMissileStation = -1;
+//    curMissileNum     = -1;
+// if ( curGun )
+// anyWeapons = TRUE;
+// }
+// }
+// }
+// else
+// {
+// self->Sms->curWeapon = NULL;
+// self->Sms->SetCurHardpoint(-1);
+// self->Sms->curWpnNum = 0;
+// self->FCC->SetMasterMode(FireControlComputer::Nav);
+//    curMissile = NULL;
+//    curMissileStation = -1;
+//    curMissileNum     = -1;
+// }
+//
+// /*
+// if ( curAA || curAG || curRock || curGun )
+// anyWeapons = TRUE;
+// */
 //
 //}
 //

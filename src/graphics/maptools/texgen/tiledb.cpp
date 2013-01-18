@@ -1,11 +1,11 @@
 /*******************************************************************************\
-	TileDB.cpp
-	Provides an interface to the tile database written by the tile tool.  At
-	present this is only used by the TexGen tool.
+ TileDB.cpp
+ Provides an interface to the tile database written by the tile tool.  At
+ present this is only used by the TexGen tool.
 
-	Scott Randolph
-	Spectrum HoloByte
-	October 8, 1996
+ Scott Randolph
+ Spectrum HoloByte
+ October 8, 1996
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
@@ -14,28 +14,28 @@
 
 // Terrain and feature types defined in the the visual basic tile tool
 // (Not all are features, but we have the whole list here for completeness sake)
-const int COVERAGE_WATER		= 1;
-const int COVERAGE_RIVER		= 2;
-const int COVERAGE_SWAMP		= 3;
-const int COVERAGE_PLAINS		= 4;
-const int COVERAGE_BRUSH		= 5;
-const int COVERAGE_THINFOREST	= 6;
-const int COVERAGE_THICKFOREST	= 7;
-const int COVERAGE_ROCKY		= 8;
-const int COVERAGE_URBAN		= 9;
-const int COVERAGE_ROAD			= 10;
-const int COVERAGE_RAIL			= 11;
-const int COVERAGE_BRIDGE		= 12;
-const int COVERAGE_RUNWAY		= 13;
-const int COVERAGE_STATION		= 14;
+const int COVERAGE_WATER = 1;
+const int COVERAGE_RIVER = 2;
+const int COVERAGE_SWAMP = 3;
+const int COVERAGE_PLAINS = 4;
+const int COVERAGE_BRUSH = 5;
+const int COVERAGE_THINFOREST = 6;
+const int COVERAGE_THICKFOREST = 7;
+const int COVERAGE_ROCKY = 8;
+const int COVERAGE_URBAN = 9;
+const int COVERAGE_ROAD = 10;
+const int COVERAGE_RAIL = 11;
+const int COVERAGE_BRIDGE = 12;
+const int COVERAGE_RUNWAY = 13;
+const int COVERAGE_STATION = 14;
 
 
 void TileDatabase::Load(char *filename)
 {
-    HANDLE		inputFile;
-    DWORD		bytes;
-    char		message[80];
-    int			tile;
+    HANDLE inputFile;
+    DWORD bytes;
+    char message[80];
+    int tile;
 
 
     // Open the texture tile database for reading
@@ -121,12 +121,12 @@ void TileDatabase::Free(void)
 
 void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
 {
-    DWORD	bytes;
-    char	string[8];
-    char	message[80];
-    char	codeString[8];
-    int		feature;
-    DWORD	arraySize;
+    DWORD bytes;
+    char string[8];
+    char message[80];
+    char codeString[8];
+    int feature;
+    DWORD arraySize;
 
 
     // Read the tile record header
@@ -289,8 +289,8 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
 
 void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
 {
-    DWORD	bytes;
-    char	message[80];
+    DWORD bytes;
+    char message[80];
 
 
     // Read the feature record header
@@ -328,8 +328,8 @@ void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
 
 void TileDatabase::SortArray(FeatureRecord **array, int numElements)
 {
-    int				i, j, k;
-    FeatureRecord	*p;
+    int i, j, k;
+    FeatureRecord *p;
 
 
     for (i = 1; i < numElements; i++)

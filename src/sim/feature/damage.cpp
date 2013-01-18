@@ -183,7 +183,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 ((Objective)GetCampaignObject())->SetFeatureStatus(slotNumber, VIS_DESTROYED);
             }
 
-            //			MonoPrint ("Feature %d DEAD at %8ld\n", Id().num_, SimLibElapsedTime);
+            // MonoPrint ("Feature %d DEAD at %8ld\n", Id().num_, SimLibElapsedTime);
 
             // Kill off any critical links
             damageMessage->dataBlock.damageType = FalconDamageType::FODDamage;
@@ -221,7 +221,7 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
     }
     else if (pctStrength <= 0.75F && (Status() & VIS_TYPE_MASK) != VIS_DAMAGED)
     {
-        //		MonoPrint ("Feature %d DAMAGED at %8ld\n", Id().num_, SimLibElapsedTime);
+        // MonoPrint ("Feature %d DAMAGED at %8ld\n", Id().num_, SimLibElapsedTime);
 
         ((Objective)GetCampaignObject())->SetFeatureStatus(slotNumber, VIS_DAMAGED);
 
@@ -298,10 +298,10 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     //for Damaged features to produce different effect than destroyed features
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_FIRE6,				// type
-                    	&ppos,							// world pos
-                    	timeToLive,
-                    	fireScale) );		// scale
+                     new SfxClass (SFX_FIRE6, // type
+                     &ppos, // world pos
+                     timeToLive,
+                     fireScale) ); // scale
                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_FIRE6 + 1),
                                                           &ppos,
@@ -309,11 +309,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     ppos.z = pos.z;
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_FEATURE_EXPLOSION,				// type
-                    	&ppos,							// world pos
-                    	timeToLive,
-                    	fireScale * 2.0f) );		// scale
-                    	*/
+                     new SfxClass (SFX_FEATURE_EXPLOSION, // type
+                     &ppos, // world pos
+                     timeToLive,
+                     fireScale * 2.0f) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_FEATURE_EXPLOSION + 1),
                                                           &ppos,
                                                           &PSvec);
@@ -327,11 +327,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_BILLOWING_SMOKE,				// type
-                    	&ppos,							// world pos
-                    	10 + PRANDInt3() * 10,		// count
-                    	0.5f ) );		// interval
-                    	*/
+                     new SfxClass (SFX_BILLOWING_SMOKE, // type
+                     &ppos, // world pos
+                     10 + PRANDInt3() * 10, // count
+                     0.5f ) ); // interval
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_BILLOWING_SMOKE + 1),
                                                           &ppos,
                                                           &PSvec);
@@ -349,18 +349,18 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
             ppos.y = pos.y + PRANDFloat() * y1;
             /*
             OTWDriver.AddSfxRequest(
-            	new SfxClass (SFX_VEHICLE_EXPLOSION,				// type
-            	&ppos,							// world pos
-            	3.0f,								// time to live
-            	0.3f ) );		// scale
-            	*/
+             new SfxClass (SFX_VEHICLE_EXPLOSION, // type
+             &ppos, // world pos
+             3.0f, // time to live
+             0.3f ) ); // scale
+             */
 
             //I-Hawk - Removing this call to prevent features with "CAN EXPLODE" flags to overload
             // the PS engine... they have enough other PS generated from other calls.
             /*
             DrawableParticleSys::PS_AddParticleEx((SFX_VEHICLE_EXPLOSION + 1),
-            						&ppos,
-            						&PSvec);
+             &ppos,
+             &PSvec);
             */
 
             //F4SoundFXSetPos( SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f );
@@ -385,10 +385,10 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 vec.x = x1 * 0.8f;
                 vec.y = y1 * 0.8f;
 
-                //				MonoPrint( "Feature Exploding:  x = %f, y = %f, z = %f \n",
-                //					vec.x,
-                //					vec.y,
-                //					vec.z  );
+                // MonoPrint( "Feature Exploding:  x = %f, y = %f, z = %f \n",
+                // vec.x,
+                // vec.y,
+                // vec.z  );
 
                 // number to do is based on LOD
                 if (fc->Flags & (FEAT_CAN_EXPLODE))
@@ -399,12 +399,12 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                 // test explosion
                 /*
                 OTWDriver.AddSfxRequest(
-                	new SfxClass (SFX_RISING_GROUNDHIT_EXPLOSION_DEBR,				// type
-                	&ppos,							// world pos
-                	&vec,
-                	i,							// number to generate
-                	0.8f ) );						// interval
-                	*/
+                 new SfxClass (SFX_RISING_GROUNDHIT_EXPLOSION_DEBR, // type
+                 &ppos, // world pos
+                 &vec,
+                 i, // number to generate
+                 0.8f ) ); // interval
+                 */
 
                 DrawableParticleSys::PS_AddParticleEx((SFX_RISING_GROUNDHIT_EXPLOSION_DEBR + 1),
                                                       &pos,
@@ -419,12 +419,12 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_FEATURE_CHAIN_REACTION,				// type
-                    	&pos,							// world pos
-                    	&vec,
-                    	1,							// number to generate
-                    	2.8f + PRANDFloatPos() * 4.0f ) );						// interval
-                    	*/
+                     new SfxClass (SFX_FEATURE_CHAIN_REACTION, // type
+                     &pos, // world pos
+                     &vec,
+                     1, // number to generate
+                     2.8f + PRANDFloatPos() * 4.0f ) ); // interval
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_FEATURE_CHAIN_REACTION + 1),
                                                           &pos,
                                                           &vec);
@@ -447,22 +447,22 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                         if (!(fc->Flags & (FEAT_CAN_EXPLODE)))
                             /*
                             OTWDriver.AddSfxRequest(
-                            	new SfxClass (SFX_FIRE,		// type
-                            	&ppos,					// world pos
-                            	timeToLive,
-                            	fireScale ) );		// scale
-                            	*/
+                             new SfxClass (SFX_FIRE, // type
+                             &ppos, // world pos
+                             timeToLive,
+                             fireScale ) ); // scale
+                             */
                             DrawableParticleSys::PS_AddParticleEx((SFX_FIRE + 1),
                                                                   &ppos,
                                                                   &PSvec);
                         else
                             /*
                             OTWDriver.AddSfxRequest(
-                            	new SfxClass (SFX_FIRE_HOT,				// type
-                            	&ppos,							// world pos
-                            	timeToLive,
-                            	fireScale ) );		// scale
-                            	*/
+                             new SfxClass (SFX_FIRE_HOT, // type
+                             &ppos, // world pos
+                             timeToLive,
+                             fireScale ) ); // scale
+                             */
                             DrawableParticleSys::PS_AddParticleEx((SFX_FIRE_HOT + 1),
                                                                   &ppos,
                                                                   &PSvec);
@@ -472,11 +472,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     {
                         /*
                         OTWDriver.AddSfxRequest(
-                        	new SfxClass (SFX_FIRE_NOSMOKE,				// type
-                        	&ppos,							// world pos
-                        	timeToLive,
-                        	fireScale ) );		// scale
-                        	*/
+                         new SfxClass (SFX_FIRE_NOSMOKE, // type
+                         &ppos, // world pos
+                         timeToLive,
+                         fireScale ) ); // scale
+                         */
                         DrawableParticleSys::PS_AddParticleEx((SFX_FIRE_NOSMOKE + 1),
                                                               &ppos,
                                                               &PSvec);
@@ -485,11 +485,11 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
                     ppos.z = pos.z;
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass (SFX_FEATURE_EXPLOSION,				// type
-                    	&ppos,							// world pos
-                    	timeToLive,
-                    	fireScale * 2.0f) );		// scale
-                    	*/
+                     new SfxClass (SFX_FEATURE_EXPLOSION, // type
+                     &ppos, // world pos
+                     timeToLive,
+                     fireScale * 2.0f) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_FEATURE_EXPLOSION + 1),
                                                           &ppos,
                                                           &PSvec);
@@ -509,13 +509,13 @@ void SimFeatureClass::ApplyDamage(FalconDamageMessage* damageMessage)
 
                     /*
                     OTWDriver.AddSfxRequest(
-                    	new SfxClass( SFX_FIRE5,		// type
-                    	SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
-                    	&ppos,					// world pos
-                    	&vec,					// vel vector
-                    	3.0,					// time to live
-                    	5.0f ) );				// scale
-                    	*/
+                     new SfxClass( SFX_FIRE5, // type
+                     SFX_MOVES | SFX_USES_GRAVITY | SFX_NO_DOWN_VECTOR,
+                     &ppos, // world pos
+                     &vec, // vel vector
+                     3.0, // time to live
+                     5.0f ) ); // scale
+                     */
                     DrawableParticleSys::PS_AddParticleEx((SFX_FIRE5 + 1),
                                                           &ppos,
                                                           &vec);
@@ -550,14 +550,14 @@ void UpdateDrawableObject(SimFeatureClass *theFeature)
 /*
 ** Name: ApplyChainReaction
 ** Description:
-**		Used when a feature is exploding and damages other features around
-**		it.   This is called by the special effects since we want to
-**		delay the times on the chain reaction.
-**		Cycles thru objectList check for proximity.
-**		Cycles thru all objectives, and checks vs individual features
+** Used when a feature is exploding and damages other features around
+** it.   This is called by the special effects since we want to
+** delay the times on the chain reaction.
+** Cycles thru objectList check for proximity.
+** Cycles thru all objectives, and checks vs individual features
 **        if it's within the objective's bounds.
 **
-**		Returns FALSE when nothing found to destroy
+** Returns FALSE when nothing found to destroy
 */
 BOOL
 SimFeatureClass::ApplyChainReaction(Tpoint *pos, float radius)
@@ -593,7 +593,7 @@ SimFeatureClass::ApplyChainReaction(Tpoint *pos, float radius)
         if (objective->GetComponents())
         {
             // loop thru each element in the objective
-            VuListIterator	featureWalker(objective->GetComponents());
+            VuListIterator featureWalker(objective->GetComponents());
             testObject = (SimBaseClass*) featureWalker.GetFirst();
 
             while (testObject)
@@ -616,7 +616,7 @@ SimFeatureClass::ApplyChainReaction(Tpoint *pos, float radius)
                 tmpX = testObject->XPos() - pos->x;
                 tmpY = testObject->YPos() - pos->y;
 
-                rangeSquare = tmpX * tmpX + tmpY * tmpY;;	// + tmpZ*tmpZ;
+                rangeSquare = tmpX * tmpX + tmpY * tmpY;; // + tmpZ*tmpZ;
 
                 // is object within lethal explosion radius?
                 if (rangeSquare < radius)
@@ -660,7 +660,7 @@ SimFeatureClass::ApplyChainReaction(Tpoint *pos, float radius)
         message->dataBlock.damageRandomFact = 1.0f;
         message->dataBlock.damageType = FalconDamageType::DebrisDamage;
         message->dataBlock.damageStrength = 1.0f;
-        //me123		message->RequestOutOfBandTransmit ();
+        //me123 message->RequestOutOfBandTransmit ();
         FalconSendMessage(message, TRUE);
     }
 

@@ -35,17 +35,17 @@ protected:
         NUM_SECTIONS,
     };
     // Save from here
-    long	ID_;
-    long	Section_[NUM_SECTIONS];
-    long	Flags_;
-    short	_CType_;
-    short	Type_;
-    long	x_, y_, w_, h_;
-    short	Client_;
+    long ID_;
+    long Section_[NUM_SECTIONS];
+    long Flags_;
+    short _CType_;
+    short Type_;
+    long x_, y_, w_, h_;
+    short Client_;
 
     // Don't save
-    short	Ready_;
-    C_Hash	*User_;
+    short Ready_;
+    C_Hash *User_;
 
 public:
     C_Window *Parent_;
@@ -71,7 +71,7 @@ public:
         Flags_ = 0;
         Parent_ = NULL;
         User_ = NULL;
-        Ready_ = 0;		// OW
+        Ready_ = 0; // OW
     }
 
     C_Base(char **stream);
@@ -163,9 +163,9 @@ public:
         w_ = w;
         h_ = h;
     }
-    virtual void SetRelX(long x)							{}
-    virtual void SetRelY(long y)							{}
-    virtual void SetRelXY(long x, long y)					{}
+    virtual void SetRelX(long x) {}
+    virtual void SetRelY(long y) {}
+    virtual void SetRelXY(long x, long y) {}
     void EnableGroup(long ID)
     {
         SetFlags(Flags_ & ~C_BIT_INVISIBLE);
@@ -185,17 +185,17 @@ public:
     void SetUserNumber(long idx, long value);
     void SetUserPtr(long idx, void *value);
     void SetUserCleanupPtr(long idx, void *value);
-    virtual void SetState(short state)						{}
-    virtual void SetHotKey(short key)						{}
-    virtual void SetMenu(long ID)							{}
-    virtual void SetFont(long ID)							{}
-    virtual void SetSound(long ID, short type)				{}
-    virtual void SetCursorID(long id)						{}
-    virtual void SetDragCursorID(long id)					{}
-    virtual void SetHelpText(long id)						{}
-    virtual void SetMouseOver(short state)					{}
-    virtual void SetMouseOverColor(COLORREF color)			{}
-    virtual void SetMouseOverPerc(short perc)				{}
+    virtual void SetState(short state) {}
+    virtual void SetHotKey(short key) {}
+    virtual void SetMenu(long ID) {}
+    virtual void SetFont(long ID) {}
+    virtual void SetSound(long ID, short type) {}
+    virtual void SetCursorID(long id) {}
+    virtual void SetDragCursorID(long id) {}
+    virtual void SetHelpText(long id) {}
+    virtual void SetMouseOver(short state) {}
+    virtual void SetMouseOverColor(COLORREF color) {}
+    virtual void SetMouseOverPerc(short perc) {}
     virtual void SetCallback(void (*cb)(long, short, C_Base*)) {}
 
     // Querry Functions
@@ -311,17 +311,17 @@ public:
     {
         return(FALSE);
     }
-    virtual void Refresh()							{}
-    virtual void Draw(SCREEN *surface, UI95_RECT *cliprect)			{}
-    virtual void HighLite(SCREEN *surface, UI95_RECT *cliprect)		{}
-    virtual void SetSubParents(C_Window *Parent)	{}
-    virtual void Cleanup()							{}
+    virtual void Refresh() {}
+    virtual void Draw(SCREEN *surface, UI95_RECT *cliprect) {}
+    virtual void HighLite(SCREEN *surface, UI95_RECT *cliprect) {}
+    virtual void SetSubParents(C_Window *Parent) {}
+    virtual void Cleanup() {}
     virtual BOOL TimerUpdate()
     {
         return(FALSE);
     }
-    virtual void Activate()							{}
-    virtual void Deactivate()						{}
+    virtual void Activate() {}
+    virtual void Deactivate() {}
     virtual long CheckHotSpots(long relx, long rely)
     {
         return(0);
@@ -350,7 +350,7 @@ public:
     {
         return(FALSE);
     }
-    virtual void GetItemXY(long ID, long *x, long *y)	{}
+    virtual void GetItemXY(long ID, long *x, long *y) {}
     virtual BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     {
         return(FALSE);

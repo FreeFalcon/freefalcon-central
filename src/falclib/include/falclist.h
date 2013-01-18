@@ -17,8 +17,8 @@ extern int SimCompare(VuEntity* ent1, VuEntity*ent2);
 class FalconAllFilterType : public VuFilter
 {
 public:
-    FalconAllFilterType(void)							{}
-    virtual ~FalconAllFilterType(void)					{}
+    FalconAllFilterType(void) {}
+    virtual ~FalconAllFilterType(void) {}
 
     virtual VU_BOOL Test(VuEntity *)
     {
@@ -43,8 +43,8 @@ public:
 class FalconNothingFilterType : public VuFilter
 {
 public:
-    FalconNothingFilterType(void)						{}
-    virtual ~FalconNothingFilterType(void)				{}
+    FalconNothingFilterType(void) {}
+    virtual ~FalconNothingFilterType(void) {}
 
     virtual VU_BOOL Test(VuEntity *)
     {
@@ -64,8 +64,8 @@ public:
     }
 };
 
-//extern FalconAllFilterType		FalconAllFilter;
-extern FalconNothingFilterType	FalconNothingFilter;
+//extern FalconAllFilterType FalconAllFilter;
+extern FalconNothingFilterType FalconNothingFilter;
 
 // =================================
 // Falcon's Private lists
@@ -153,9 +153,9 @@ public:
     virtual ~TailInsertList(void);
 
     /** does nothing, so collection manager doesnt mess with us. */
-    int Insert(VuEntity *entity);				// WARNING: DO NOT CALL THIS INSERT FUNCTION
+    int Insert(VuEntity *entity); // WARNING: DO NOT CALL THIS INSERT FUNCTION
     /** real insertion. */
-    int ForcedInsert(VuEntity *entity);		// Call ForcedInsert instead.
+    int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
     /** removes first element. */
     VuEntity *PopHead();
 };
@@ -167,8 +167,8 @@ public:
     HeadInsertList(VuFilter *filter = &FalconNothingFilter);
     virtual ~HeadInsertList(void);
 
-    int Insert(VuEntity *entity);				// WARNING: DO NOT CALL THIS INSERT FUNCTION
-    int ForcedInsert(VuEntity *entity);		// Call ForcedInsert instead.
+    int Insert(VuEntity *entity); // WARNING: DO NOT CALL THIS INSERT FUNCTION
+    int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
 };
 
 // Falcon FalconPrivateList is simply a Falcon-Private vu entity storage list
@@ -178,8 +178,8 @@ public:
     FalconPrivateList(VuFilter *filter = &FalconNothingFilter);
     virtual ~FalconPrivateList();
 
-    int Insert(VuEntity *entity);				// WARNING: DO NOT CALL THIS INSERT FUNCTION
-    int ForcedInsert(VuEntity *entity);		// Call ForcedInsert instead.
+    int Insert(VuEntity *entity); // WARNING: DO NOT CALL THIS INSERT FUNCTION
+    int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
 };
 
 // Falcon PrivateFilteredList is identical to above but sorts entries
@@ -189,8 +189,8 @@ public:
     FalconPrivateOrderedList(VuFilter *filter = &FalconNothingFilter);
     virtual ~FalconPrivateOrderedList();
 
-    int Insert(VuEntity *entity);				// WARNING: DO NOT CALL THIS INSERT FUNCTION
-    int ForcedInsert(VuEntity *entity);		// Call ForcedInsert instead.
+    int Insert(VuEntity *entity); // WARNING: DO NOT CALL THIS INSERT FUNCTION
+    int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
 };
 #endif
 
