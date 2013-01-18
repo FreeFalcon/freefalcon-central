@@ -1,11 +1,3 @@
-//#include "stdafx.h"
-//#define _USE_SECRET_CODE_ 1
-//#pragma warning(disable:4100)
-//#pragma warning(disable:4663)
-//#pragma warning(disable:4511)
-//#pragma warning(disable:4512)
-//#pragma warning(disable:4018)
-//#pragma warning(disable:4245)
 #include "f4version.h"
 #include <winsock2.h>
 #include <windows.h>
@@ -49,11 +41,6 @@
 #include "feature.h"
 #include "falcmem.h"
 #include "Graphics/Include/drawparticlesys.h"
-
-//#ifdef USE_SH_POOLS
-//#include "SmartHeap/Include/smrtheap.h"
-//#endif
-
 #include "Weather.h"
 #include "Campaign.h"
 #include "playerop.h"
@@ -74,38 +61,25 @@
 #include "Theaterdef.h"
 #include "Graphics/Include/texbank.h"
 #include "token.h" // default value Unz
-extern "C" {
-#include "amdlib.h"
+
+extern "C"
+{
+	#include "amdlib.h"
 }
 
 
-//JAM 18Nov03
 int weatherCondition = SUNNY;
-//sfr: init to NULL
 RealWeather *realWeather = NULL;
 
-
-
 #include "ddraw.h"
-//#include <crtdbg.h>
 
-/* Retro TrackIR stuff.. */
-#include "TrackIR.h"			// Retro 26/09/03
-TrackIR theTrackIRObject;		// Retro 27/09/03
-/* ..ends */
+#include "TrackIR.h"
+TrackIR theTrackIRObject;
 
-#include "falcsnd\winampfrontend.h"	// Retro 3Jan2004
-WinAmpFrontEnd* winamp = 0;			// Retro 3Jan2004
-extern bool g_bPilotEntertainment;	// Retro 3Jan2004
+#include "falcsnd\winampfrontend.h"
+WinAmpFrontEnd* winamp = 0;
+extern bool g_bPilotEntertainment;
 
-//#pragma warning(default:4100)
-//#pragma warning(default:4663)
-//#pragma warning(default:4511)
-//#pragma warning(default:4512)
-//#pragma warning(default:4018)
-//#pragma warning(default:4245)
-
-// OW
 bool g_bHas3DNow = false;
 extern bool g_bEnumSoftwareDevices;
 bool g_bEnableCockpitVerifier = false;
@@ -131,10 +105,8 @@ END_OBJECT_MAP()
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 GNETCORELib::IUplinkPtr m_pUplink;
 
-//#include <winsock2.h>
 WSADATA wsadata;
 extern "C" int InitWS2(WSADATA *wsaData);
-
 
 extern bool g_bEnableUplink;
 extern char g_strMasterServerName[0x40];
@@ -149,10 +121,9 @@ extern char g_strServerAdminEmail[0x40];
 extern "C" char g_strLgbk[20];
 char g_strLgbk[20];
 
-
 void DoRecoShit(void);
 
-extern int HighResolutionHackFlag;		// From Graphics\DDStuff\DevMgr.cpp
+extern int HighResolutionHackFlag;
 extern uchar gCampJoinTries;
 
 // Campaign tool includes
@@ -164,14 +135,14 @@ extern uchar gCampJoinTries;
 #undef fopen
 #undef fclose
 
-#pragma warning (disable : 4127)	// Conditional Expression is Constant
-// VP_changes this is important
+#pragma warning (disable : 4127) // Conditional Expression is Constant
+
 char top_space[] = "                                                                               ";
 char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
 char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
 char bottom_space[] = "                                                                               ";
 
-extern int	voice_;
+extern int voice_;
 extern int GraphicSettingMult;
 extern char	gUI_CampaignFile[];
 extern char gUI_AutoSaveName[];
@@ -215,12 +186,13 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
 //!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
 extern void PlayUIMovieQ(); // defined in UI_Main.cpp
 extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
+
 #ifdef DEBUG
 extern int gCampPlayerInput;
 #endif
+
 extern C_SoundBite *gInstantBites, *gDogfightBites, *gCampaignBites;
 extern long CampEventSoundID;
-//extern void TAC_REF_XrefCB2(long ID);
 extern void UpdateMissionWindow(long ID);
 extern void update_tactical_flight_information(void);
 extern void CopyDFSettingsToWindow(void);
@@ -271,18 +243,16 @@ char FalconUIArtThrDirectory[_MAX_PATH];
 char FalconUISoundDirectory[_MAX_PATH];
 char FalconSoundThrDirectory[_MAX_PATH];
 
-// RV - Biker - Theater switching stuff
+// Theater switching stuff
 char FalconCockpitThrDirectory[_MAX_PATH];
 char FalconZipsThrDirectory[_MAX_PATH];
 char FalconTacrefThrDirectory[_MAX_PATH];
 char FalconSplashThrDirectory[_MAX_PATH];
 
-extern ulong	gCampJoinLastData;		// Last vuxRealtime we received data about this game
+extern ulong gCampJoinLastData;		// Last vuxRealtime we received data about this game
 
 extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 extern void LoadTheaterList(); // JPO
-
-//int tactical_enable_motion = TRUE;
 
 #ifdef NDEBUG
 int auto_start = TRUE;
@@ -296,7 +266,7 @@ int intro_movie = FALSE;
 #ifdef DEBUG
 int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
 int shiAssertsOn = TRUE,
-    shiWarningsOn = TRUE, // JB 010325
+    shiWarningsOn = TRUE,
     shiHardCrashOn = FALSE;
 #endif
 
@@ -308,9 +278,9 @@ static int numProcessors;
 static HACCEL hAccel;
 HWND mainMenuWnd;
 HWND mainAppWnd;
-int doNetwork = FALSE;	// referred in splash.cpp
+int doNetwork = FALSE; // referred in splash.cpp
 
-// RV - Biker - Theater switching stuff
+// Theater switching stuff
 int numZips = 0;
 int* resourceHandle;
 int SimPathHandle = -1;
@@ -358,12 +328,11 @@ char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
 char lTestVarString[] = "JustForGilman1";
 #ifdef _USE_SECRET_CODE_
 BOOL VersionData = FALSE;
-char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwords)
+char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
 #endif // _USE_SECRET_CODE_
 
 int MajorVersion = F4MajorVersion;
 int MinorVersion = F4MinorVersion;
-//int BuildNumber  = Charmaker(F4BuildNumber);
 int BuildNumber  = F4BuildNumber;
 
 extern BOOL SaveSFXTable();
@@ -371,10 +340,6 @@ extern BOOL WriteMissionData();
 
 //used to display version number in game (not part of version system)
 int ShowVersion  = 0;
-
-// RV - Biker - Define moved to TheaterDef.cpp
-//#define ZIPFILE_NAME    "ziplist.fil"
-//#define ZIPFILE_NAME    "ziplist.lst"
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
@@ -403,7 +368,7 @@ void BuildAscii()
             if (kbd)
             {
                 shiftstates = static_cast<short>((vkey >> 8) & 0x07);
-                scan		= static_cast<short>(MapVirtualKey(vkey, 0) & 0xff);
+                scan = static_cast<short>(MapVirtualKey(vkey, 0) & 0xff);
 
                 Key_Chart[scan].Ascii[shiftstates] = static_cast<char>(i);
                 Key_Chart[scan].Flags[shiftstates] |= _IS_ASCII_;
@@ -420,8 +385,9 @@ void BuildAscii()
 
 static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int)
 {
-    WNDCLASS    wc;
+    WNDCLASS wc;
     BOOL rc;
+
 #ifdef _USE_SECRET_CODE_
     struct tm expirationDate = { 0, 0, 0, 16, 7, 97 };
     time_t expirationTime = mktime(&expirationDate);
@@ -467,85 +433,31 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 
 #ifndef NDEBUG
     ShowWindow(mainMenuWnd, SW_SHOW);
-
-    if (auto_start)
-    {
-        // OW this causes some strange behaviour when the escape key is pressed for the first time
-        //	   ShowWindow (mainMenuWnd, SW_MINIMIZE);
-    }
-
 #endif
 
     hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_FALCON4_ACC1));
-
-    /*
-    	// OW
-    	if(FAILED(CoInitialize(NULL))
-    		return FALSE;
-
-    	_Module.Init(ObjectMap, hInstance);
-    	_Module.dwThreadID = GetCurrentThreadId();
-    */
     return TRUE;
 
-} /* initApplication */
+}
 
-#include "RadioSubTitle.h"						// Retro 20Dec2003
-RadioSubTitle* radioLabel = (RadioSubTitle*)0;	// Retro 20Dec2003
+#include "RadioSubTitle.h"
+RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 
-/*************************************************************************\
-*
-*  FUNCTION: WinMain(HANDLE, HANDLE, LPSTR, int)
-*
-*  PURPOSE: calls initialization function, processes message loop
-*
-*  COMMENTS:
-*
-\*************************************************************************/
-int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLine,
-                         int nCmdShow)
+int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	                     LPSTR lpCmdLine, int nCmdShow)
 {
-
-
-
     char tmpPath[_MAX_PATH];
     MSG  msg;
     char buf[60], title[60];
     char fileName[_MAX_PATH];
     FILE *testopen;
 
-
-
-
-
-    //	#ifdef _DEBUG
-    ////	_CrtSetBreakAlloc(739752);
-    //	// JPO in Debug - set up to check lots of memory
-    //	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF| // Check for memory leaks
-    //	    _CRTDBG_ALLOC_MEM_DF| // debug heap allocations
-    //	    // _CRTDBG_DELAY_FREE_MEM_DF| // Check for use of free memory - expensive
-    //	    0 // just so it looks nice.
-    //	    );
-    //	#endif
-
-    //_Module.Init(ObjectMap, hInstance, &LIBID_SIMPLECLIENTLib);
     _Module.Init(ObjectMap, hInstance);
-    // _Module.dwThreadID = GetCurrentThreadId();
 
-    InitWS2(&wsadata);	// OW init Winsock now, we need it for GNet
+    InitWS2(&wsadata); // Init Winsock now, we need it for GNet
 
     char strVersion[0x20];
     sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
-
-    // OW
-    //g_bHas3DNow = has3DNow() ? true : false;		// detect 3dnow support
-
-    //#ifdef _DEBUG
-    //if(g_bHas3DNow)
-    //	MonoPrint("3DNow detected\n");
-    //#endif
-
-    //	ReadFalcon4Config();	// OW: read config file  // Cobra - moved further down
 
     HRESULT hr = CoInitialize(NULL);
 
@@ -562,9 +474,6 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
             ComSup::RegisterServer("GNCorePS.dll");
             ComSup::RegisterServer("GNShared.dll");
 
-            // Create Uplink service object
-            /*		CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));*/
-
             m_pUplink->PutMasterServerName(g_strMasterServerName);
             m_pUplink->PutMasterServerPort(g_nMasterServerPort);
             m_pUplink->PutQueryPort(7778);
@@ -577,7 +486,6 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
             m_pUplink->PutGameMode("openplaying");
         }
     }
-
     catch (_com_error e)
     {
         MonoPrint("HandleWinMain: Error 0x%X occured during JetNet initialization!", e.Error());
@@ -585,9 +493,9 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
 
     // End - Uplink stuff
 
-    /*
-    * set up data associated with this window
-    */
+    /**
+     * Set up data associated with this window
+    **/
 
 #ifdef USE_SMART_HEAP
     MemRegisterTask();
@@ -601,24 +509,11 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    /* OW
-    	// Kus Kludge...
-
-    	HINSTANCE	gr3dfx, mprp2, mprd3d, gen;
-
-    	gr3dfx = LoadLibrary( "gr3dfx.mpr" );
-    	gen = LoadLibrary( "gen.mpr" );
-    	mprd3d = LoadLibrary( "mprd3d.mpr" );
-    	mprp2 = LoadLibrary( "mprp2.mpr" );
-    */
-
     hInst = hInstance;
-    //!	int Done=0;
-
 
     ParseCommandLine(lpCmdLine);
 
-    ReadFalcon4Config();	// OW: read config file
+    ReadFalcon4Config();
 
     lTestVar = !strncmp(lTestVarString, "JustForGilman", 13);
 
@@ -641,28 +536,14 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
 
         sprintf(title, "FreeFalcon 6.1 - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
-        //#ifdef NDEBUG
-        //		strcpy(buf,"Release Mode");
-        //#else
-        //		strcpy(buf,"Debug Mode");
-        //#endif // NDEBUG
-
-        //#ifdef _USE_SECRET_CODE_
-        //		if(VersionData)
-        //		{
-        //			int i;
-        //			for(i=0;i<18;i++)
-        //				sprintf(&buf[i*2],"%02x\n",SecretCode[i]);
-        //		}
-        //#endif // _USE_SECRET_CODE_
         printf("%s:%s\n", title, buf);
         return(FALSE);
     }
 
     realWeather = new WeatherClass();
 
-    // This SHOULD NOT BE REQUIRED -- IT IS _VERY_ EASY TO BREAK CODE THAT DEPENDS ON THIS
-    // I'd like to make it go away soon....
+    // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
+    // I'd like to make it go away soon...
     SetCurrentDirectory(FalconDataDirectory);
 
     FileVerify();
@@ -670,12 +551,12 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
     sprintf(FalconCampaignSaveDirectory, "%s\\Campaign\\Save", FalconDataDirectory);
     sprintf(FalconCampUserSaveDirectory, "%s\\Campaign\\Save", FalconDataDirectory);
 
-    // RV - Biker - Initialize this
+    // Initialize this
     sprintf(FalconMiscTexDataDir, "%s\\terrdata\\misctex", FalconDataDirectory);
 
-    sprintf(FalconPictureDirectory, "%s\\Pictures", FalconDataDirectory);  // JB 010623
+    sprintf(FalconPictureDirectory, "%s\\Pictures", FalconDataDirectory);
 
-    // MN Create PictureDir if not present
+    // Create PictureDir if not present
     _mkdir(FalconPictureDirectory);
 
     // Test for CD stuff
@@ -697,32 +578,21 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
             exit(-1);
 
         fclose(testopen);
-        /*		sprintf(buffer,"%s\\smoketrail.gif",FalconMiscTexDataDir);
-        		testopen=FILE_Open(buffer,"r");
-        		if(!testopen)
-        			exit(-1);
-        		fclose(testopen);
-        */
         DisableOpenTest();
     }
 
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
-    //sprintf (tmpPath, "%s\\Zips", FalconDataDirectory);
-    //ResAddPath (tmpPath, FALSE);
     sprintf(tmpPath, "%s\\Config", FalconDataDirectory);
     ResAddPath(tmpPath, FALSE);
     sprintf(tmpPath, "%s\\Art", FalconDataDirectory);	// This one can go if zips are always used
     ResAddPath(tmpPath, TRUE);
     sprintf(tmpPath, "%s", FalconPictureDirectory);  // JB 010623
     ResAddPath(tmpPath, TRUE);  // JB 010623
-    // RV - Biker
-    //sprintf (tmpPath, "%s\\sim", FalconDataDirectory);	// JPO - so we can find raw sim files
-    //ResAddPath (tmpPath, TRUE);
 
-    // This SHOULD NOT BE REQUIRED -- IT IS _VERY_ EASY TO BREAK CODE THAT DEPENDS ON THIS
-    // I'd like to make it go away soon....
+    // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
+    // I'd like to make it go away soon...
     ResSetDirectory(FalconDataDirectory);
 
 #ifdef __WATCOMC__
@@ -734,13 +604,8 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
 
     gLangIDNum = GetPrivateProfileInt("Lang", "Id", 0, fileName);
 
-    // Init movie player before the windows
-    // OW now called by Device::Setup
-    //	movieInit(2, NULL);
-
     UI_LoadSkyWeatherData();
 
-    //JAM 30Sep03
     DisplayOptions.LoadOptions("display");
 
     FalconDisplay.Setup(gLangIDNum);
@@ -748,20 +613,13 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
     mainAppWnd = FalconDisplay.appWin;
 
     if (g_writeSndTbl)
-    {
         SaveSFXTable();
-    }
 
     if (g_writeMissionTbl)
-    {
         WriteMissionData();
-    }
 
-    if (gSoundFlags & FSND_SOUND)
-    {
-        // switch for turning on/off sound stuff
+    if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
         InitSoundManager(FalconDisplay.appWin, 0, FalconDataDirectory);
-    }
 
     g_voicemap.LoadVoices();
 
@@ -770,34 +628,27 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lp
 
     while (GetMessage(&msg, NULL, 0, 0) != 0)
     {
-        //if (!TranslateAccelerator (msg.hwnd, hAccel, &msg))
-        //TranslateMessage(&msg);
-        DispatchMessage(&msg);    // Dispatch message to window.
+        DispatchMessage(&msg);
     }
 
     SystemLevelExit();
 
-    // sfr: since its initialized here, finalize here
+    // Since its initialized here, finalize here
     delete realWeather;
 
     _Module.Term();
 
-
     if (m_pUplink)
-    {
         m_pUplink.Release();
-    }
 
     CoUninitialize();
 
     ExitProcess(0);
-
-    //return (msg.wParam);      // Returns value from PostQuitMessage.
 }
 
 // set up structured exception handling here
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLine,
-                   int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	               LPSTR lpCmdLine, int nCmdShow)
 {
     int Result = -1;
 
@@ -828,9 +679,7 @@ void EndUI(void)
     TheCampaign.Resume();
 
     if (auto_start)
-    {
         SetFocus(mainMenuWnd);
-    }
 }
 
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -841,46 +690,24 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
 
-
-    //#ifdef _USE_SECRET_CODE_
-    //	int i;
-    //
-    //	for(i=0;i<18;i++)
-    //		if(PetersSecretCode[17-i] != SecretCode[i])
-    //			break;
-    //
-    //	if(i != 18)
-    //		message=WM_DESTROY;
-    //#endif // _USE_SECRET_CODE_
-
     switch (message)
     {
-
         case WM_CREATE :
             SetFocus(hwnd);
             retval = 0;
             break;
 
-
-#ifdef _DEBUG	// We only care about these in debug mode
+#ifdef _DEBUG // We only care about these in debug mode
 
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
                 case ID_SHOW_VERSION:
-                    if (ShowVersion != 2)
-                        ShowVersion = 2;
-                    else
-                        ShowVersion = 0;
-
+					ShowVersion = ShowVersion != 2 ? 2 : 0;
                     break;
 
                 case ID_SHOW_MAJOR_VERSION:
-                    if (ShowVersion != 1)
-                        ShowVersion = 1;
-                    else
-                        ShowVersion = 0;
-
+					ShowVersion = ShowVersion != 1 ? 1 : 0;
                     break;
 
                 case ID_FILE_EXIT:
@@ -908,10 +735,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     DisableCampaignMenus();
                     TheCampaign.EndCampaign();
 #if CAMPTOOL
-
                     if (hMainWnd)
                         PostMessage(hMainWnd, WM_CLOSE, 0, 0);
-
 #endif
                     DisableCampaignMenus();
                     break;
@@ -997,7 +822,6 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             break;
 #endif // Debug stuff...
 
-
         case WM_DESTROY :
             PostMessage(hwnd, WM_COMMAND, ID_FILE_EXIT, 0);
             retval = 0;
@@ -1011,7 +835,6 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             retval = 0;
             break;
 
-            // OW
         case FM_DISP_ENTER_MODE:
         {
             FalconDisplay._EnterMode((FalconDisplayConfiguration::DisplayMode) wParam, LOWORD(lParam), HIWORD(lParam));
@@ -1053,17 +876,15 @@ int get_ip(char *str)
 
     while (*src)
     {
-        if (*src == '.')
+        if (*src != '.')
+			++src;
+		else
         {
             *src = 0;
             addr = addr * 256 + atoi(str);
             *src = '.';
-            src ++;
+            ++src;
             str = src;
-        }
-        else
-        {
-            src ++;
         }
     }
 
@@ -1074,38 +895,6 @@ int get_ip(char *str)
 
 void ParseCommandLine(LPSTR cmdLine)
 {
-
-    FILE *fp1;
-    int i1;
-
-
-
-    //fp1 = fopen("f:\\temp\\testfile.txt", "w");
-
-    //if(fp1 == NULL) {
-    //	printf("cannot create file.\n");
-    //}else {
-    //	for(i1=0; i1<26; i1++) {
-    //		fputc(i1+65, fp1);
-    //	}
-    //	fputc(10, fp1);
-    //	fclose(fp1);
-    //}
-
-    //FILE *fp2;
-    //int temp;
-    //fp2 = fopen("f:\\temp\\testfile.txt", "r");
-
-    //if(fp2 == NULL) {
-    //	printf("cannot open file.\n");
-    //}else {
-    //	while((temp = fgetc(fp2))!=EOF) {
-    //		printf("%c ", temp);
-    //	}
-    //	fclose(fp2);
-    //}
-
-
     char* arg;
     LONG retval = ERROR_SUCCESS;
     DWORD value;
@@ -1115,13 +904,9 @@ void ParseCommandLine(LPSTR cmdLine)
     if (i_am("rheydon"))
     {
         InitDebug(DEBUGGER_TEXT_MODE);
-        //		gSoundFlags = 0;
         FalconDisplay.displayFullScreen = FALSE;
-        //		wait_for_loaded = FALSE;
         auto_start = TRUE;
         F4SetAsserts(TRUE);
-        //		F4SetHardCrash(TRUE);
-        //		ShiSetHardCrash(TRUE);
         ShiSetAsserts(TRUE);
     }
 
@@ -1150,14 +935,12 @@ void ParseCommandLine(LPSTR cmdLine)
     else if (i_am("dpower"))
     {
         InitDebug(DEBUGGER_TEXT_MODE);
-        //auto_start = TRUE;
         FalconDisplay.displayFullScreen = FALSE;
         RepairObjective = 1;
         intro_movie = FALSE;
         eyeFlyEnabled = TRUE;
         ShiSetAsserts(TRUE);
         F4SetAsserts(TRUE);
-        //wait_for_loaded = FALSE;
     }
     else if (i_am("ericg") || i_am("chrisw"))
     {
@@ -1169,7 +952,6 @@ void ParseCommandLine(LPSTR cmdLine)
         auto_start = TRUE;
         FalconDisplay.displayFullScreen = FALSE;
         intro_movie = TRUE;
-        //      gUnlimitedAmmo = 3;
     }
     else if (i_am("vincentf"))
     {
@@ -1179,7 +961,6 @@ void ParseCommandLine(LPSTR cmdLine)
         wait_for_loaded = FALSE;
         auto_start = TRUE;
     }
-
     else
     {
         InitDebug(DEBUGGER_TEXT_MODE);
@@ -1187,10 +968,6 @@ void ParseCommandLine(LPSTR cmdLine)
     }
 
 #endif
-
-    // HACK HACK HACK - stuff
-    //	F4SetAsserts(FALSE);
-    //	ShiSetAsserts(FALSE);
 
     size = sizeof(FalconDataDirectory);
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
@@ -1231,27 +1008,16 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-log") == 0)
                 log_frame_rate = TRUE;
 
-
             if (strnicmp(arg, "-C", 2) == 0)
                 ClearObjManualFlags = 1;
-
 
             if (strnicmp(arg, "-UA", 3) == 0)
                 gUnlimitedAmmo ++;
 
-            //if (!strncmp (arg, "-g", 2))
-            //   FalconDisplay.deviceNumber = 1 - FalconDisplay.deviceNumber;
-
             if (!strnicmp(arg, "-g", 2))
             {
-                ///if(sscanf(arg,"-g%d",GraphicSettingMult) != 1)
-                //	GraphicSettingMult = 1;
                 int temp = atoi(&arg[2]);
-
-                if (temp >= 1)
-                    GraphicSettingMult = temp;
-                else
-                    GraphicSettingMult = 1;
+				GraphicSettingMult = temp >= 1 ? temp : 1;
             }
 
             if (!stricmp(arg, "-full"))
@@ -1272,12 +1038,8 @@ void ParseCommandLine(LPSTR cmdLine)
                 DisableSmoothing = TRUE;
 
             if (!stricmp(arg, "-numhats"))
-            {
-                if ((arg = strtok(NULL, " ")) != NULL)
-                {
-                    NumHats = atoi(arg);
-                }
-            }
+				if ((arg = strtok(NULL, " ")) != NULL)
+					NumHats = atoi(arg);
 
             if (strnicmp(arg, "-nosound", 8) == 0)
                 gSoundFlags &= (0xffffffff ^ FSND_SOUND);
@@ -1286,7 +1048,6 @@ void ParseCommandLine(LPSTR cmdLine)
                 gSoundFlags &= (0xffffffff ^ FSND_REPETE);
 
 #ifdef DEBUG
-
             if (strnicmp(arg, "-noassert", 9) == 0)
             {
                 F4SetAsserts(FALSE);
@@ -1311,7 +1072,6 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (stricmp(arg, "-resetpilots") == 0)
                 gClearPilotInfo = 1;
-
 #endif
 
             if (stricmp(arg, "-tacedit") == 0)
@@ -1324,50 +1084,29 @@ void ParseCommandLine(LPSTR cmdLine)
                 _LOAD_ART_RESOURCES_ = 1;
 
             if (strnicmp(arg, "-auto", 5) == 0)
-            {
                 auto_start = TRUE;
-            }
 
             if (strnicmp(arg, "-nomovie", 8) == 0)
-            {
                 intro_movie = FALSE;
-            }
 
             if (strnicmp(arg, "-noUIcomms", 8) == 0)
-            {
                 noUIcomms = TRUE;
-            }
-
-            /* MN 020104 always allow UI screenshots
-            		if (strnicmp (arg, "-screen", 8) == 0)
-            		{
-            			gScreenShotEnabled = 1;
-            		}*/
 
             if (strnicmp(arg, "-time", 5) == 0)
-            {
                 gTimeModeServer = 1;
-            }
 
             if (strnicmp(arg, "-movie", 6) == 0)
-            {
                 intro_movie = TRUE;
-            }
 
             if (strnicmp(arg, "-noloader", 9) == 0)
-            {
                 wait_for_loaded = FALSE;
-            }
 
 #ifdef DEBUG
-
             if (strnicmp(arg, "-campinput", 10) == 0)
                 gCampPlayerInput = atoi(arg + 10);
-
 #endif
 
             if (!stricmp(arg, "-bandwidth") || !stricmp(arg, "-bandwith") || !stricmp(arg, "-bw"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4CommsBandwidth = atoi(arg);
@@ -1375,22 +1114,20 @@ void ParseCommandLine(LPSTR cmdLine)
                     if (F4CommsBandwidth < -1)
                         F4CommsBandwidth *= -1;
                 }
-            }
 
             if (!stricmp(arg, "-urview"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     UR_HEAD_VIEW = (float)atoi(arg);
 
-                    if (UR_HEAD_VIEW < 50) UR_HEAD_VIEW = 50;
+                    if (UR_HEAD_VIEW < 50)
+						UR_HEAD_VIEW = 50;
 
-                    if (UR_HEAD_VIEW > 160) UR_HEAD_VIEW = 160;
+                    if (UR_HEAD_VIEW > 160)
+						UR_HEAD_VIEW = 160;
                 }
-            }
 
             if (!stricmp(arg, "-latency"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4CommsLatency = atoi(arg);
@@ -1398,10 +1135,8 @@ void ParseCommandLine(LPSTR cmdLine)
                     if (F4CommsLatency < 0)
                         F4CommsLatency *= -1;
                 }
-            }
 
             if (!stricmp(arg, "-drop"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4CommsDropInterval = atoi(arg);
@@ -1409,49 +1144,35 @@ void ParseCommandLine(LPSTR cmdLine)
                     if (F4CommsDropInterval < 0)
                         F4CommsDropInterval *= -1;
                 }
-            }
 
             if (!stricmp(arg, "-session"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4SessionUpdateTime = atoi(arg);
                 }
-            }
 
             if ((!stricmp(arg, "-hostidx")) || (!stricmp(arg, "-hostid")))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     ComIPGetHostIDIndex = atoi(arg);
                 }
-            }
 
             if (!stricmp(arg, "-alive"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4SessionAliveTimeout = atoi(arg);
                 }
-            }
 
             if (!stricmp(arg, "-mono")) // turn on MONOCHROME support
-            {
                 InitDebug(DEBUGGER_TEXT_MODE);
-            }
 
             if (!stricmp(arg, "-nomono")) // turn off MONOCHROME support
-            {
                 InitDebug(-1);
-            }
 
             if (!stricmp(arg, "-head")) // turn on head tracking support
-            {
                 OTWDriver.SetHeadTracking(TRUE);
-            }
 
             if (!stricmp(arg, "-swap"))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     F4CommsLatency = atoi(arg);
@@ -1459,7 +1180,6 @@ void ParseCommandLine(LPSTR cmdLine)
                     if (F4CommsSwapInterval < 0)
                         F4CommsSwapInterval *= -1;
                 }
-            }
 
             if (!stricmp(arg, "-mtu"))  // Booster and Unz At work
             {
@@ -1469,25 +1189,17 @@ void ParseCommandLine(LPSTR cmdLine)
 
                     if (F4CommsMTU < 0)
                         F4CommsMTU *= -1;
-
                 }
             }
-            else
-                F4CommsMTU = 500; // Unz Ugly...but it works
-
-
+            else F4CommsMTU = 500; // Unz Ugly...but it works
 
             if (!stricmp(arg, "-ef"))
-            {
                 eyeFlyEnabled = 1 - eyeFlyEnabled;
-            }
 
             if (!stricmp(arg, "-ip"))
             {
                 if ((arg = strtok(NULL, " ")) != NULL)
-                {
                     force_ip_address = atoi(arg);
-                }
 
                 MonoPrint("Force IP Address to %08x\n", force_ip_address);
             }
@@ -1495,42 +1207,26 @@ void ParseCommandLine(LPSTR cmdLine)
             //sfr converts
             // added for ports
             if (!strnicmp(arg, "-port", 5))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
-                {
                     force_port = (unsigned short)atoi(arg);
-                }
-            }
 
             // sfr: no T&L checks
             // added for server and notebooks
             if (!stricmp(arg, "-notnl"))
-            {
                 // exclude emulation devices drivers
                 DisplayOptionsClass::SetDevCaps(D3DDEVCAPS_HWRASTERIZATION);
-            }
 
             // force logbook
             if (!strnicmp(arg, "-lgbk", 5))
-            {
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     // select a given logbook if it exists
                     sprintf(g_strLgbk, "%.19s", arg);
 
                 }
-            }
-
 
             if (!stricmp(arg, "-smoke"))
-            {
                 flag_keep_smoke_trails = TRUE;
-            }
-
-            //#ifdef _USE_SECRET_CODE_
-            //		 if(!stricmp(arg,"-versiondata"))
-            //			 VersionData=TRUE;
-            //#endif // _USE_SECRET_CODE_
 
             // OW
             if (!stricmp(arg, "-enumswdev"))
@@ -1567,14 +1263,6 @@ void ParseCommandLine(LPSTR cmdLine)
     strcpy(Falcon3DDataDir, FalconObjectDataDir);
     size = sizeof(FalconMiscTexDataDir);
 
-    // RV - Biker - Don't read movies from registry
-    //size = sizeof (FalconMovieDirectory);
-    //retval = RegQueryValueEx(theKey, "movieDir", 0, &type, (LPBYTE)FalconMovieDirectory, &size);
-    //if(retval != ERROR_SUCCESS)
-    //{
-    //	   strcpy(FalconMovieDirectory,FalconDataDirectory);
-    //}
-
     size = sizeof(FalconMovieMode);
     retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)FalconMovieMode, &size);
 
@@ -1607,9 +1295,6 @@ void ParseCommandLine(LPSTR cmdLine)
 
 void SystemLevelInit()
 {
-
-
-
     SimDriver.InitializeSimMemoryPools();
 
     ASD = new AS_DataClass();
@@ -1620,8 +1305,6 @@ void SystemLevelInit()
     ResSetDirectory(FalconDataDirectory);
 
     DrawableParticleSys::LoadParameters(); // MLR 1/31/2004 -
-
-
 
     // FRB - Restore access to \sim folder files before \zips\Simdata.zip
     char tmpPath[512];
@@ -1750,9 +1433,6 @@ void SystemLevelInit()
 
     // ..ends
 
-    // sfr: SimLoop must begin before campaign
-    //SimulationLoopControl::StartSim();
-
 #if !NEW_SOUND_STARTUP_ORDER
     F4SoundStart();
 #endif
@@ -1800,30 +1480,21 @@ void SystemLevelExit(void)
     gCommsMgr = NULL;
 
 #if !NEW_SOUND_STARTUP_ORDER
-    // OW now called by Device::Cleanup
-    // movieUnInit();
     ExitSoundManager();
 #endif
     FalconDisplay.Cleanup();
 
-    // sfr: simloop ends after campaign
-    //SimulationLoopControl::StopSim();
     Camp_Exit();
     Camp_FreeMemory();
     // do this so simthread can leave
     SimulationLoopControl::StopSim();
 
 #if NEW_SOUND_STARTUP_ORDER
-    // OW now called by Device::Cleanup
-    // movieUnInit();
     ExitSoundManager();
 #endif
 
-
     UserFunctionTable.ClearTable();
 
-    // ExitReal-Time Loop;
-    //ThreadManager::cleanup();
 #ifndef NO_TIMER_THREAD
     endTimer();
 #endif
@@ -1844,13 +1515,6 @@ void SystemLevelExit(void)
 
     // Make sure there is no keytrapping
     CtrlAltDelMask(FALSE);
-
-    /*
-    // OW
-    _Module.RevokeClassObjects();
-    _Module.Term();
-    CoUninitialize();
-     */
 }
 
 void CampaignAutoSave(FalconGameType gametype)
@@ -1883,7 +1547,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     LRESULT retval = 0;
     static int InTimer = 0;
 
-
     // Looking for multiplayer stomp...
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
@@ -1896,21 +1559,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-#ifdef DEBUG
-    //static int in = 0;
-    //static UINT lastFive[5];
-    //gDispatchThreadID = (HANDLE)GetCurrentThreadId();
-    //for (int i=0; i<4; i++)
-    //	lastFive[i] = lastFive[i+1];
-    //if (campCritical && campCritical->owningThread == (HANDLE)GetCurrentThreadId() && campCritical->count)
-    //	MonoPrint("We got game.\n");
-    //lastFive[4] = message;
-    //in ++;
-#endif
-
     switch (message)
     {
-
 #ifdef NDEBUG
 
         case WM_NCACTIVATE:
@@ -1962,20 +1612,13 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_START_GAME:
-            // RV - Biker - Start intro movie after we know which theater we are on
-            //if (intro_movie)
-            //	SendMessage(hwnd,FM_PLAY_INTRO_MOVIE,0,0); // Play Movie
             SystemLevelInit();
 
             if (intro_movie)
-            {
                 SendMessage(hwnd, FM_PLAY_INTRO_MOVIE, 0, 0); // Play Movie
-            }
 
             if (auto_start)
-            {
                 PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
-            }
 
             break;
 
@@ -2057,16 +1700,12 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_TACREF_BUTTON_HANDLER:
-            //			if(gMainHandler != NULL)
-            //			{
-            //				TAC_REF_XrefCB2(lParam);
-            //	  		}
-
             break;
-            // =========================================================
-            // KCK: These are used for loading/joining/ending a campaign
-            // and are called under all four game sections.
-            // =========================================================
+
+		// =========================================================
+		// KCK: These are used for loading/joining/ending a campaign
+		// and are called under all four game sections.
+		// =========================================================
 
         case FM_LOAD_CAMPAIGN:
             if (lTestVar)
@@ -2135,7 +1774,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                         PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
                         return 0;
                     }
-
 
                     // wParam determines phase of loading we'd like to perform:
                     switch (wParam)
@@ -2206,19 +1844,13 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             ShutdownCampaign();
             break;
 
-            // ==========================================================
-            // KCK: These are for sim entry/exit from the varios sections
-            // ==========================================================
+		// ==========================================================
+		// KCK: These are for sim entry/exit from the varios sections
+		// ==========================================================
 
         case FM_START_INSTANTACTION:
             // Mark us as loading
             FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-
-
-
-            //InstantAction.SetAgBiasFlag(InstantActionSettings.MissionType); // 0=A-A,1=A-G
-            //InstantAction.SetSamFlag(InstantActionSettings.SamSites);
-            //InstantAction.SetAAAFlag(InstantActionSettings.AAASites);
 
             instant_action::set_campaign_time();
             instant_action::move_player_flight();
@@ -2232,10 +1864,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_END_INSTANTACTION:
-            /*
-            			SendMessage(hwnd,FM_SHUTDOWN_CAMPAIGN,wParam,lParam);
-            			PostMessage(hwnd,FM_START_UI,0,0);
-            */
             break;
 
         case FM_START_DOGFIGHT:
@@ -2277,9 +1905,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_GOT_CAMPAIGN_DATA:
             switch (wParam)
             {
-                    // KCK: This is the data we just got - In case Peter wants to check off the
-                    // data in some sort of "Getting campaign data" dialog or otherwise do something
-                    // with it.
+				// KCK: This is the data we just got - In case Peter wants to check off the
+				// data in some sort of "Getting campaign data" dialog or otherwise do something
+				// with it.
                 case CAMP_NEED_PRELOAD:
                     MonoPrint("Got Scenario Stats.\n");
                     gCampJoinTries = 0;
@@ -2384,12 +2012,11 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             break;
 
-            // =========================================================
-            // KCK: Campaign triggered events
-            // =========================================================
+		// =========================================================
+		// KCK: Campaign triggered events
+		// =========================================================
 
         case FM_CAMPAIGN_OVER:
-
             // This is called when the campaign is over (endgame triggered)
             // wParam is the win result (win/lose/draw)
             // lParam is TRUE if this is our first attempt at calling this
@@ -2527,8 +2154,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case WM_USER:
             break;
 
-
-            // OW
         case FM_DISP_ENTER_MODE:
         {
             FalconDisplay._EnterMode((FalconDisplayConfiguration::DisplayMode) wParam, LOWORD(lParam), HIWORD(lParam));
@@ -2608,45 +2233,14 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
 
-
-#ifndef DAVE_DBG
-    //#ifdef DEBUG
-    //	if (campCritical)
-    //	{
-    //		if ((campCritical->owningThread == (HANDLE)GetCurrentThreadId()) && (campCritical->count) && (in == 1))
-    //		{
-    //			// OW
-    //			// *((unsigned int *) 0x00) = 0;
-    //
-    //		//	MonoPrint ("FATAL - Campaign Critical Section Still Held - Place a BREAKPOINT here - Msg %08x %d - Robin\n", GetCurrentThreadId (), campCritical->count);
-    //		}
-    //	}
-    //	if (vuCritical)
-    //	{
-    //		if ((vuCritical->owningThread == (HANDLE)GetCurrentThreadId()) && (vuCritical->count) && (in == 1))
-    //		{
-    //			// OW
-    //			// *((unsigned int *) 0x00) = 0;
-    //
-    //			/*MonoPrint ("FATAL - Vu Critical Section Still Held - Place a BREAKPOINT here - Msg %08x %d - Robin\n", GetCurrentThreadId (), vuCritical->count);*/
-    //		}
-    //	}
-    //
-    //	in --;
-    //#endif
-#endif
-
-
     // Looking for multiplayer stomp...
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
-
 
     return retval;
 }
 
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface)
-//void PlayMovie(char *filename, short left, short top, short w, short h, UInt theSurface)
 {
     HWND hwnd;
     int hMovie = -1, mode;
@@ -2824,7 +2418,6 @@ void ConsoleWrite(char* str)
 
     if (hStdIn == INVALID_HANDLE_VALUE)
     {
-
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
             NULL,
@@ -2845,10 +2438,8 @@ void CtrlAltDelMask(int state)
 
     if (state)
         SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &was, 0);
-    else
-        SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &was, 0);
+    else SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &was, 0);
 }
-
 
 int i_am(char *with)
 {
@@ -2865,13 +2456,10 @@ int i_am(char *with)
         RegQueryValueEx(key, "Username", 0, &type, (uchar*)&name, &size);
 
         if (stricmp(name, with) == 0)
-        {
             return TRUE;
-        }
 
         RegCloseKey(key);
     }
 
     return FALSE;
 }
-
