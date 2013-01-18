@@ -401,10 +401,9 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
         }
         else if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSRWRPower))
         {
-            if (SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::EWSPGMSwitch::Off &&
-                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::EWSPGMSwitch::Stby &&
-                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::EWSPGMSwitch::Man)
-                //SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::EWSPGMSwitch::Semi)
+            if (SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Off &&
+                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Stby &&
+                SimDriver.GetPlayerAircraft()->EWSPGM() != AircraftClass::Man)
                 CheckEWS();
         }
     }
@@ -1141,12 +1140,12 @@ void PlayerRwrClass::CheckEWS(void)
         SimDriver.GetPlayerAircraft()->IsExploding())
         return;
 
-    if (LaunchIndication() && /*!InEWSLoop &&*/ !LaunchDetected)
+    if (LaunchIndication() && !LaunchDetected)
     {
         //F4SoundFXSetDist(SFX_BB_COUNTER, TRUE, 0.0f, 1.0f );
         PlayRWRSoundFX(SFX_BB_COUNTER, TRUE, 0.0f, 1.0f);
 
-        if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Auto)
+        if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
         {
             InEWSLoop = TRUE;
             SimDriver.GetPlayerAircraft()->DropEWS();
@@ -1225,12 +1224,12 @@ void PlayerRwrClass::CheckEWS(void)
                     if (!SimDriver.GetPlayerAircraft()->IsSetFlag(ECM_ON))
                     {
                         //Only if fully auto
-                        if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Auto)
+                        if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
                         {
                             SimDriver.GetPlayerAircraft()->SetFlag(ECM_ON);
                         }
 
-                        else if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Semi)	//ask if we want turn it on
+                        else if (SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Semi)	//ask if we want turn it on
                         {
                             if (!SaidJammer)
                             {
@@ -1245,7 +1244,7 @@ void PlayerRwrClass::CheckEWS(void)
         }
         else
         {
-            if (!SimDriver.GetPlayerAircraft()->ManualECM && SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::EWSPGMSwitch::Auto)
+            if (!SimDriver.GetPlayerAircraft()->ManualECM && SimDriver.GetPlayerAircraft()->EWSPGM() == AircraftClass::Auto)
             {
                 // Can't turn off ECM w/ ECM pod broken
                 if (!SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::epod_fault))

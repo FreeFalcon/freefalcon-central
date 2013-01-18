@@ -77,26 +77,26 @@ void RwrClass::DrawEmitterSymbol(int symbolID, int boxed)
 
 void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
 {
-    static int flash = FALSE;
+    static int flash = false;
     // Do we draw flashing things this frame?
     flash = vuxRealTime & 0x200;
     static int show = 0;
-    static bool oldcount = FALSE;
+    static bool oldcount = false;
 
-    if (flash && oldcount == show)
+    if (flash && ((oldcount && show != 0) || (!oldcount && show == 0)))
     {
-        show++;
-
-        if (show > 3) show = oldcount = 0;
+        ++show;
+        if (show > 3)
+			show = oldcount = 0;
     }
 
-    if (!flash && show != oldcount)
+    if (!flash && ((oldcount && show == 0) || (!oldcount && show != 0)))
     {
-        show++;
-        oldcount = show;
+        ++show;
+        oldcount = show != 0;
     }
 
-    display->ZeroRotationAboutOrigin();//me123 make sure we are not rotated
+    display->ZeroRotationAboutOrigin(); // me123 make sure we are not rotated
 
     static const float	basicAir[][2] =
     {
