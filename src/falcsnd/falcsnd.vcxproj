@@ -134,7 +134,6 @@
     <ClCompile Include="psound.cpp" />
     <ClCompile Include="silence.cpp" />
     <ClCompile Include="Soundfx.cpp" />
-    <ClCompile Include="Talkio.cpp" />
     <ClCompile Include="transprt.cpp" />
     <ClCompile Include="voiceFilter.cpp" />
     <ClCompile Include="VoiceManager.cpp" />
@@ -153,15 +152,11 @@
     <ClInclude Include="..\Falclib\Include\SoundFX.h" />
     <ClInclude Include="..\Falclib\Include\SoundGroups.h" />
     <ClInclude Include="SoundPos.h" />
-    <ClInclude Include="Talkio.h" />
     <ClInclude Include="transprt.h" />
     <ClInclude Include="VoiceFilter.h" />
     <ClInclude Include="VoiceManager.h" />
     <ClInclude Include="VoiceMapper.h" />
     <ClInclude Include="winampfrontend.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Obsolete.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

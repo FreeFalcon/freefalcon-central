@@ -7,7 +7,6 @@
 #include "falclib.h"
 #include "dsound.h"
 #include "psound.h"
-#include "talkio.h"
 #include "grTypes.h"
 #include "matrix.h"
 #include "SoundFX.h"

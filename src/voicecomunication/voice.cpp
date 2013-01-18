@@ -2327,7 +2327,7 @@ start:
 
     // now all groups should exsist
     // lets join the requested groups and leave the rest
-    for (int i = 0; i < dwCount; i++)
+    for (unsigned i = 0; i < dwCount; i++)
     {
         DWORD dwGroupNumber;
 

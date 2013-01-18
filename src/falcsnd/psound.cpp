@@ -5,16 +5,12 @@
 #include "falclib.h"
 #include "dsound.h"
 #include "psound.h"
-#include "talkio.h"
 #include "grTypes.h"
 #include "matrix.h"
 #include "SoundFX.h"
-//#include "sim\include\otwdrive.h"
 
 
 #include "sim/include/simlib.h" // MLR needed for SetVelocity since objects set there Delta values per frame
-
-//#define _USE_RES_MGR_ 1
 
 #define CUSTOM_DOPPLER
 

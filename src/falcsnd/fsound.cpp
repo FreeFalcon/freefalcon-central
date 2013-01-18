@@ -25,7 +25,6 @@
 #include "sim\include\aircrft.h"
 extern bool g_bRealisticAvionics;
 extern const char *FALCONSNDTABLETXT;
-//extern float g_fSoundDopplerBlend; // MLR 12/3/2003 - OBSOLETE
 extern int g_nSoundUpdateMS;
 extern bool g_bSoundHearVMSExternal;
 extern bool g_bEnableDopplerSound, g_bSoundDistanceEffect, g_bNewEngineSounds;
@@ -36,19 +35,10 @@ bool g_bNoSound = false;
 AList sndPurgeList;
 F4CSECTIONHANDLE*    SoundPosSection;	// Thread critical section information
 
-
-
-//#include "codelib\tools\lists\lists.h"
-//#include "codelib\sound\sndlib\SndMgr.h"
-
-//#include "comp.h"
 #include "conv.h"
 #include "VoiceManager.h"
-#include "talkio.h"
-//#include "lookuptable.h"
 
 LookupTable SonicBoomTable;
-
 
 // ALL RESMGR CODE ADDITIONS START HERE
 #define _USE_RES_MGR_ 1

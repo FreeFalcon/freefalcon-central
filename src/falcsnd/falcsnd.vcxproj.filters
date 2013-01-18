@@ -38,9 +38,6 @@
     <ClCompile Include="Soundfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Talkio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="transprt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,9 +88,6 @@
     <ClInclude Include="SoundPos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Talkio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="transprt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -109,8 +103,5 @@
     <ClInclude Include="winampfrontend.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Obsolete.txt" />
   </ItemGroup>
 </Project>
