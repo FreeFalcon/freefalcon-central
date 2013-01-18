@@ -2644,11 +2644,11 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ALT_GEAR, 1);
 
         // HUD Radar altitude switch
-        if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RaltStatus::ROFF)
+        if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::ROFF)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 1);
-        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RaltStatus::RON)
+        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RON)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 4);
-        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RaltStatus::RSTANDBY)
+        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RSTANDBY)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 1);
@@ -2796,38 +2796,33 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PWR, 1);
 
         // External light power switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::ExtlLightFlags::Extl_Main_Power))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Main_Power))
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_LITE_MSTR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_LITE_MSTR, 1);
 
-        //int LightPwr = 0;
-        //if(SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::ExtlLightFlags::Extl_Main_Power))
-        //	LightPwr = 1;
-        //else
-        //	LightPwr = 0;
         // External collision light switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::ExtlLightFlags::Extl_Anti_Coll))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Anti_Coll))
             vrCockpit->SetSwitchMask(COMP_3DPIT_ANTI_COLL, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ANTI_COLL, 1);
 
         // External light flash switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::ExtlLightFlags::Extl_Flash))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Flash))
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_FLASH, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_FLASH, 1);
 
         // External collision wing/tail switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::ExtlLightFlags::Extl_Wing_Tail))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Wing_Tail))
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_WING, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_WING, 1);
 
         // AVTR SWITCH
-        if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTRStateFlags::AVTR_AUTO))
+        if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTR_AUTO))
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 2);
-        else if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTRStateFlags::AVTR_ON))
+        else if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTR_ON))
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 4);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 1);
