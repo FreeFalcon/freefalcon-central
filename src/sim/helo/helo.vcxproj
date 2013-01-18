@@ -128,7 +128,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="h_chafflare.cpp" />
     <ClCompile Include="h_Damage.cpp" />
     <ClCompile Include="h_Doweapon.cpp" />
     <ClCompile Include="h_Inputs.cpp" />

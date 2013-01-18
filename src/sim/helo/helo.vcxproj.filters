@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="h_chafflare.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="h_Damage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
