@@ -540,17 +540,17 @@ static const struct RadarMenus
     RadarClass::RadarMode mode;
 } rmenu[20] =
 {
-#define NoLabel {NULL, NULL, RadarClass::RadarMode::OFF}
+#define NoLabel {NULL, NULL, RadarClass::OFF}
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
-    {"GM", NULL, RadarClass::RadarMode::GM}, // 5
-    {"GMT", NULL, RadarClass::RadarMode::GMT},
-    {"SEA", NULL, RadarClass::RadarMode::SEA},
-    {"BCN", NULL, RadarClass::RadarMode::BCN},
-    {"STBY", NULL, RadarClass::RadarMode::STBY}, // 9
+    {"GM", NULL, RadarClass::GM}, // 5
+    {"GMT", NULL, RadarClass::GMT},
+    {"SEA", NULL, RadarClass::SEA},
+    {"BCN", NULL, RadarClass::BCN},
+    {"STBY", NULL, RadarClass::STBY}, // 9
     NoLabel,
     NoLabel,
     NoLabel,
@@ -559,8 +559,8 @@ static const struct RadarMenus
     NoLabel,
     NoLabel,
     NoLabel,
-    {"ACM", NULL, RadarClass::RadarMode::ACM_30x20},
-    {"CRM", NULL, RadarClass::RadarMode::RWS}, //20
+    {"ACM", NULL, RadarClass::ACM_30x20},
+    {"CRM", NULL, RadarClass::RWS}, //20
 };
 //MI
 static const struct RadarMenusAA
@@ -569,7 +569,7 @@ static const struct RadarMenusAA
     RadarClass::RadarMode mode;
 } rmenuaa[20] =
 {
-#define NoLabel {NULL, NULL, RadarClass::RadarMode::OFF}
+#define NoLabel {NULL, NULL, RadarClass::OFF}
     NoLabel,
     NoLabel,
     NoLabel,
@@ -579,7 +579,7 @@ static const struct RadarMenusAA
     NoLabel,
     NoLabel,
     NoLabel,
-    {"STBY", NULL, RadarClass::RadarMode::STBY}, // 9
+    {"STBY", NULL, RadarClass::STBY}, // 9
     NoLabel,
     NoLabel,
     NoLabel,
@@ -588,8 +588,8 @@ static const struct RadarMenusAA
     NoLabel,
     NoLabel,
     NoLabel,
-    {"ACM", NULL, RadarClass::RadarMode::ACM_30x20},
-    {"CRM", NULL, RadarClass::RadarMode::RWS}, //20
+    {"ACM", NULL, RadarClass::ACM_30x20},
+    {"CRM", NULL, RadarClass::RWS}, //20
 };
 static const struct RadarMenusAG
 {
@@ -597,17 +597,17 @@ static const struct RadarMenusAG
     RadarClass::RadarMode mode;
 } rmenuag[20] =
 {
-#define NoLabel {NULL, NULL, RadarClass::RadarMode::OFF}
+#define NoLabel {NULL, NULL, RadarClass::OFF}
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
-    {"GM", NULL, RadarClass::RadarMode::GM}, // 5
-    {"GMT", NULL, RadarClass::RadarMode::GMT},
-    {"SEA", NULL, RadarClass::RadarMode::SEA},
-    {"BCN", NULL, RadarClass::RadarMode::BCN},
-    {"STBY", NULL, RadarClass::RadarMode::STBY}, // 9
+    {"GM", NULL, RadarClass::GM}, // 5
+    {"GMT", NULL, RadarClass::GMT},
+    {"SEA", NULL, RadarClass::SEA},
+    {"BCN", NULL, RadarClass::BCN},
+    {"STBY", NULL, RadarClass::STBY}, // 9
     NoLabel,
     NoLabel,
     NoLabel,
@@ -616,8 +616,8 @@ static const struct RadarMenusAG
     NoLabel,
     NoLabel,
     NoLabel,
-    {"ACM", NULL, RadarClass::RadarMode::ACM_30x20}, // ASSOCIATOR: Added these 2 modes to AG Radar Menu
-    {"CRM", NULL, RadarClass::RadarMode::RWS}, //20
+    {"ACM", NULL, RadarClass::ACM_30x20}, // ASSOCIATOR: Added these 2 modes to AG Radar Menu
+    {"CRM", NULL, RadarClass::RWS}, //20
 };
 
 static const struct RadarMenus cmenu[20] =
@@ -627,21 +627,21 @@ static const struct RadarMenus cmenu[20] =
     NoLabel,
     NoLabel,
     NoLabel,
-    {"CHAN", "2", RadarClass::RadarMode::OFF}, // 5
-    {"MK INT", "3", RadarClass::RadarMode::OFF},
-    {"BAND", "NARO", RadarClass::RadarMode::OFF},
-    {"BCN DLY", "00.0", RadarClass::RadarMode::OFF},
-    /*{"PM", "OFF", RadarClass::RadarMode::OFF},*/
+    {"CHAN", "2", RadarClass::OFF}, // 5
+    {"MK INT", "3", RadarClass::OFF},
+    {"BAND", "NARO", RadarClass::OFF},
+    {"BCN DLY", "00.0", RadarClass::OFF},
+    /*{"PM", "OFF", RadarClass::OFF},*/
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
     NoLabel,
-    {"LVL", "1", RadarClass::RadarMode::OFF},
-    {"TGT HIS", "3", RadarClass::RadarMode::OFF},
-    {"ALT TRK", "OFF", RadarClass::RadarMode::OFF},
-    {"MTR", "LO", RadarClass::RadarMode::OFF}, //20
+    {"LVL", "1", RadarClass::OFF},
+    {"TGT HIS", "3", RadarClass::OFF},
+    {"ALT TRK", "OFF", RadarClass::OFF},
+    {"MTR", "LO", RadarClass::OFF}, //20
 };
 
 void RadarDopplerClass::MENUDisplay(void)
