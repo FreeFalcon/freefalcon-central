@@ -2,7 +2,7 @@
 #include "digi.h"
 #include "mesg.h"
 #include "simveh.h"
-#include "MsgInc\WingmanMsg.h"
+#include "MsgInc/WingmanMsg.h"
 #include "find.h"
 #include "flight.h"
 #include "wingorder.h"

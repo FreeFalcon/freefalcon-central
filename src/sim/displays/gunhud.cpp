@@ -12,7 +12,7 @@
 #include "guns.h"
 #include "object.h"
 #include "airframe.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "icp.h"
 #include "otwdrive.h"
 #include "cpmanager.h"

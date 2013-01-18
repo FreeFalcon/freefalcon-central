@@ -1,8 +1,8 @@
 #include <windows.h>
 #include "resource.h"
 #include "f4vu.h"
-#include "sim\include\stdhdr.h"
-#include "Falclib\Include\ui.h"
+#include "sim/include/stdhdr.h"
+#include "Falclib/Include/ui.h"
 
 static int F4SessionManagerOn = FALSE;
 

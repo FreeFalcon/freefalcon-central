@@ -45,7 +45,7 @@
 #include "division.h"
 #include "cmap.h"
 #include "ui_cmpgn.h"
-#include "MsgInc\RequestAircraftSlot.h"
+#include "MsgInc/RequestAircraftSlot.h"
 #include "vu2.h"
 #include "F4Find.h"
 #include "F4Error.h"

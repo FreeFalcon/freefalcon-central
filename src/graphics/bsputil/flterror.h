@@ -9,7 +9,7 @@
 #define _FLTERROR_H_
 
 #include <MgAPIall.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 
 inline void FLTwarning(mgrec *rec, char *message)
 {

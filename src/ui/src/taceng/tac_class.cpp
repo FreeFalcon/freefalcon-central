@@ -20,7 +20,7 @@
 #include "textids.h"
 #include "F4Error.h"
 #include "F4Find.h"
-//#include "sim\include\simbase.h"
+//#include "sim/include/simbase.h"
 #include "cmpclass.h"
 #include "tac_class.h"
 #include "te_defs.h"
@@ -43,7 +43,7 @@
 #include "gps.h"
 #include "teamdata.h"
 #include "Dispcfg.h"
-#include "msginc\senduimsg.h"
+#include "msginc/senduimsg.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

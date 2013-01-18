@@ -7,24 +7,24 @@
 #include "resource.h"
 #include "ui95/chandler.h"
 #include "ui95/cthook.h"
-#include "Graphics\Include\loader.h"
+#include "Graphics/Include/loader.h"
 #include "ACMIUI.h"
-#include "ui\include\userids.h"
-#include "ui\include\textids.h"
-#include "sim\include\misctemp.h"
+#include "ui/include/userids.h"
+#include "ui/include/textids.h"
+#include "sim/include/misctemp.h"
 
-#include "graphics\include\renderow.h"
-#include "graphics\include\drawbsp.h"
-#include "graphics\include\drawpole.h"
-#include "graphics\include\drawbsp.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawpole.h"
+#include "graphics/include/drawbsp.h"
 #include "Acmihash.h"
 
 
-#include "codelib\tools\lists\lists.h"
+#include "codelib/tools/lists/lists.h"
 #include "AcmiTape.h"
 #include "AcmiView.h"
 
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 extern bool g_bUse_DX_Engine;
 
 void DelVHSFileCB(long ID, short hittype, C_Base *control);

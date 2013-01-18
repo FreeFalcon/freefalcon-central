@@ -4,7 +4,7 @@
 #pragma warning ( disable: 4200 ) // Prevent the zero length array warning
 #pragma pack(1)
 //TJL 12/27/03
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 
 enum
 {

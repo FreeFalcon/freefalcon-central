@@ -31,7 +31,7 @@
 #include "simbase.h"
 #include "f4thread.h"
 #include "otwdrive.h"
-#include "Graphics\Include\render2d.h"
+#include "Graphics/Include/render2d.h"
 #include "CampStr.h"
 #include "MissEval.h"
 #include "dispcfg.h"
@@ -42,7 +42,7 @@
 #include "brief.h"
 
 // Vu private stuff
-#include "vu2\src\vu_priv.h"
+#include "vu2/src/vu_priv.h"
 #include "vucoll.h"
 extern float bubbleRatio;
 

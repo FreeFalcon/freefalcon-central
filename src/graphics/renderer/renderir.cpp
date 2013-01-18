@@ -12,8 +12,8 @@
 #include "RenderIR.h"
 #include "TOD.h"
 #include "RealWeather.h"
-#include "FalcLib\include\playerop.h"
-#include "Graphics\DXEngine\DXEngine.h"
+#include "FalcLib/include/playerop.h"
+#include "Graphics/DXEngine/DXEngine.h"
 
 extern bool g_bUse_DX_Engine;
 extern bool g_bGreyMFD;

@@ -8,7 +8,7 @@
 \***************************************************************************/
 #include <io.h>
 #include <fcntl.h>
-#include <SYS\STAT.H>
+#include <SYS/STAT.H>
 #include <MgAPIall.h>
 #include "ObjectParent.h"
 #include "FLTreader.h"

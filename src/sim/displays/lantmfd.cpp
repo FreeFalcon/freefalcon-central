@@ -8,16 +8,16 @@
 #include "fcc.h"
 #include "otwdrive.h"
 #include "playerop.h"
-#include "Graphics\Include\render2d.h"
-#include "Graphics\Include\canvas3d.h"
-#include "Graphics\Include\tviewpnt.h"
-#include "Graphics\Include\renderir.h"
+#include "Graphics/Include/render2d.h"
+#include "Graphics/Include/canvas3d.h"
+#include "Graphics/Include/tviewpnt.h"
+#include "Graphics/Include/renderir.h"
 #include "dispcfg.h"
 #include "simdrive.h"
 #include "camp2sim.h"
 #include "digi.h"
 #include "lantirn.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/dispopts.h"
 
 static int flash = FALSE;
 static int lantdebug = FALSE;

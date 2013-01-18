@@ -3,14 +3,14 @@
 #include "RenderOW.h"
 #include "RViewPnt.h"
 #include "Tex.h"
-#include "falclib\include\fakerand.h"
+#include "falclib/include/fakerand.h"
 #include "Drawtrcr.h"
 #include "Draw2d.h"
 
-#include "Graphics\DXEngine\DXTools.h"
-#include "Graphics\DXEngine\DXDefines.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXTools.h"
+#include "Graphics/DXEngine/DXDefines.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 
 
 #ifdef USE_SH_POOLS

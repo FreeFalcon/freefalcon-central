@@ -41,7 +41,7 @@
 #include "F4Thread.h"
 #include "cmpclass.h"
 extern "C" {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 };
 
 void SwapCRLF(char *buf);

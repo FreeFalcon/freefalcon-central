@@ -9,7 +9,7 @@
 #include "campterr.h"
 #include "phyconst.h"
 #include "find.h"
-#include "msginc\atcmsg.h"
+#include "msginc/atcmsg.h"
 #include "atcbrain.h"
 /* 2001-06-07 S.G. */ #include "Classtbl.h"
 /* 2001-06-07 S.G. */ #include "simstatc.h"

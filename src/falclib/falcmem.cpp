@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #ifdef USE_HEAPAGENT
-#include "SmartHeap\Include\heapagnt.h"
-#include "SmartHeap\Include\smrtheap.hpp"
+#include "SmartHeap/Include/heapagnt.h"
+#include "SmartHeap/Include/smrtheap.hpp"
 
 MEM_BOOL MEM_CALLBACK errPrint(MEM_ERROR_INFO *errorInfo);
 MEM_ERROR_FN lastErrorFn = NULL;

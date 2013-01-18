@@ -7,7 +7,7 @@
 #include "stdhdr.h"
 #include "F4Vu.h"
 #include "missile.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "simveh.h"
 #include "airunit.h"
 #include "simdrive.h"

@@ -5,7 +5,7 @@
 #include "simMover.h"
 #include "SimMath.h"
 #include "entity.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "irst.h"
 #include "Simbase.h"
 #include "missile.h"

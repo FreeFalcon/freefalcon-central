@@ -27,11 +27,11 @@
 #include "simfeat.h"
 #include "tod.h"
 #include "RealWeather.h"
-#include "acmi\src\include\acmirec.h"
+#include "acmi/src/include/acmirec.h"
 #include "falcmesg.h"
 #include "mesg.h"
-#include "MsgInc\MissileEndMsg.h"
-#include "MsgInc\DamageMsg.h"
+#include "MsgInc/MissileEndMsg.h"
+#include "MsgInc/DamageMsg.h"
 #include "entity.h"
 
 extern bool g_bUse_DX_Engine;

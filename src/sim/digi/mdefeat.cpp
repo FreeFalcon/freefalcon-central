@@ -7,7 +7,7 @@
 #include "simbase.h"
 #include "airframe.h"
 #include "aircrft.h"
-#include "Graphics\Include\tmap.h"
+#include "Graphics/Include/tmap.h"
 /* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */#include "Missile.h"
 /* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */#include "vehrwr.h"
 /* S.G. 2001-06-29 */#include "CampBase.h"

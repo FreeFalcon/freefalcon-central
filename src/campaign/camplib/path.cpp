@@ -24,7 +24,7 @@
 #include "GndUnit.h"
 #include "AIInput.h"
 #include "GTM.h"
-#include "MsgInc\GndTaskingMsg.h"
+#include "MsgInc/GndTaskingMsg.h"
 
 void debugprintf(LPSTR dbgFormat, ...)
 {

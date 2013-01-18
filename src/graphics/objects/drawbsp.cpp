@@ -13,11 +13,11 @@
 #include "RenderOW.h"
 #include "DrawBSP.h"
 #include "DrawPNT.h"
-#include "FalcLib\include\PlayerOp.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/PlayerOp.h"
+#include "FalcLib/include/dispopts.h"
 
-#include "Graphics\DXEngine\DXTools.h"
-#include "Graphics\DXEngine\DXEngine.h"
+#include "Graphics/DXEngine/DXTools.h"
+#include "Graphics/DXEngine/DXEngine.h"
 
 //JAM 09Dec03
 #include "RealWeather.h"

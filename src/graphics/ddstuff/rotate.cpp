@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "shi\ConvFtoI.h"
+#include "shi/ConvFtoI.h"
 #include "grmath.h"
 #include "rotate.h"
-#include "Falclib\Include\IsBad.h"
+#include "Falclib/Include/IsBad.h"
 
 
 // Rotation with fixed point

@@ -14,13 +14,13 @@
 #include "context.h"
 #include "vmath.h"
 #include "fmath.h"
-#include "FalcLib\include\playerop.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/playerop.h"
+#include "FalcLib/include/dispopts.h"
 
-#include "Graphics\DXEngine\DXTools.h"
-#include "Graphics\DXEngine\DXDefines.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXTools.h"
+#include "Graphics/DXEngine/DXDefines.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 extern bool g_bUse_DX_Engine;
 
 

@@ -1,7 +1,7 @@
 #include "falclib.h"
 #include "f4error.h"
-#include "Graphics\Include\imagebuf.h"
-#include "Graphics\Include\render2d.h"
+#include "Graphics/Include/imagebuf.h"
+#include "Graphics/Include/render2d.h"
 #include "vu2.h"
 #include "entity.h"
 #include "fcc.h"
@@ -14,8 +14,8 @@
 #include "camp2sim.h"
 #include "navsystem.h"
 #include "fsound.h"
-#include "falcsnd\voicemanager.h"
-#include "falcsnd\voicefilter.h"
+#include "falcsnd/voicemanager.h"
+#include "falcsnd/voicefilter.h"
 #include "airframe.h"
 #include "fack.h"
 #include "cmpclass.h"
@@ -210,7 +210,7 @@ void ICPClass::SetOwnship(void)
     }
 }
 
-#include "falcsnd\winampfrontend.h" // Retro 3Jan2004
+#include "falcsnd/winampfrontend.h" // Retro 3Jan2004
 extern bool g_bPilotEntertainment; // Retro 3Jan2004
 
 //==================================================//

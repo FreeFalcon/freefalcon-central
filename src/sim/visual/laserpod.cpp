@@ -1,19 +1,19 @@
 #include "stdhdr.h"
 #include "object.h"
 #include "laserpod.h"
-#include "Graphics\Include\renderir.h"
+#include "Graphics/Include/renderir.h"
 #include "simmover.h"
 #include "entity.h"
 #include "simmath.h"
 #include "otwdrive.h"
-#include "msginc\LaserDesignateMsg.h"
+#include "msginc/LaserDesignateMsg.h"
 #include "falcmesg.h"
 #include "falcsess.h"
 #include "sms.h"
 #include "aircrft.h"
 #include "simdrive.h" //MI
 #include "fcc.h" //MI
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/dispopts.h"
 #include "airframe.h"
 
 /* 2001-09-07 S.G. */ extern bool g_bRP5Comp;

@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include "stdhdr.h"
-#include "Graphics\Include\device.h"
-#include "Graphics\Include\Filemem.h"
-#include "Graphics\Include\Image.h"
-#include "Graphics\Include\render2d.h"
+#include "Graphics/Include/device.h"
+#include "Graphics/Include/Filemem.h"
+#include "Graphics/Include/Image.h"
+#include "Graphics/Include/render2d.h"
 #include "f4thread.h"
 #include "f4find.h"
 #include "otwdrive.h"
@@ -33,7 +33,7 @@
 #include "cmpclass.h"
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 #define SI_HANDLE FILE

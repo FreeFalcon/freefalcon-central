@@ -10,9 +10,9 @@ MLR
 #include "context.h"
 #include "Tex.h"
 #include "falclib/include/alist.h"
-#include "Graphics\Include\Drawbsp.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/Include/Drawbsp.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 #include "FakeRand.h"
 #include "falclib/include/fsound.h"
 

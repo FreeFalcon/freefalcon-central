@@ -13,29 +13,29 @@
 #include "falclib.h"
 #include "f4vu.h"
 #include "Mesg.h"
-#include "msginc\sendchatmessage.h"
-#include "msginc\requestlogbook.h"
+#include "msginc/sendchatmessage.h"
+#include "msginc/requestlogbook.h"
 #include "falcmesg.h"
-#include "sim\include\otwdrive.h"
+#include "sim/include/otwdrive.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "uicomms.h"
 #include "userids.h"
 #include "textids.h"
-#include "sim\include\commands.h"
+#include "sim/include/commands.h"
 #include "CmpClass.h"
 #include "flight.h"
 #include "queue.h"
 #include "Dispcfg.h"
-#include "FalcSnd\voicemanager.h"
-#include "FalcSnd\voicefilter.h"
+#include "FalcSnd/voicemanager.h"
+#include "FalcSnd/voicefilter.h"
 #include "remotelb.h"
 
-#include "include\comsup.h"
+#include "include/comsup.h"
 extern CComModule _Module;
 #include <atlbase.h>
 #include <atlcom.h>
-#include "..\..\..\gnet\include\core.h"       // main symbols
+#include "../../../gnet/include/core.h"       // main symbols
 
 // Imports
 extern C_Handler *gMainHandler;

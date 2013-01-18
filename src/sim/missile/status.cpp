@@ -2,7 +2,7 @@
 #include "missile.h"
 #include "otwdrive.h"
 #include "playerop.h"
-#include "MsgInc\DamageMsg.h"
+#include "MsgInc/DamageMsg.h"
 #include "camp2sim.h"
 #include "object.h"
 // Marco addition for missile arming delay

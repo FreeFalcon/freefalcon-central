@@ -67,10 +67,10 @@ enum // GAME Status Message Types
 #include "falcsess.h"
 #endif
 
-#include "ui\include\uihash.h"
+#include "ui/include/uihash.h"
 
-#include "ui\include\logbook.h"
-#include "ui\include\stats.h"
+#include "ui/include/logbook.h"
+#include "ui/include/stats.h"
 
 class CHATSTR
 {

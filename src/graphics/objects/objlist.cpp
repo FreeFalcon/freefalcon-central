@@ -11,10 +11,10 @@
 #include "Matrix.h"
 #include "ObjList.h"
 #include "RenderOW.h"
-#include "Falclib\Include\IsBad.h"
-#include "FalcLib\include\dispopts.h" //JAM 04Oct03
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Falclib/Include/IsBad.h"
+#include "FalcLib/include/dispopts.h" //JAM 04Oct03
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 #include "DrawBsp.h"
 
 #define _USE_OLD_SORT_ 1 // turn this off to make the sort 10 times slower...

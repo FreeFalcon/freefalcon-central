@@ -22,14 +22,14 @@
 #include "soundgroups.h"
 #include "vutypes.h"
 #include "psound.h"
-#include "sim\include\aircrft.h"
-#include "sim\include\navsystem.h"
-#include "sim\include\tacan.h"
-#include "sim\include\otwdrive.h"
+#include "sim/include/aircrft.h"
+#include "sim/include/navsystem.h"
+#include "sim/include/tacan.h"
+#include "sim/include/otwdrive.h"
 #include "playerop.h"
 #include "flight.h"
-#include "sim\include\simdrive.h"
-#include "MsgInc\RadioChatterMsg.h"
+#include "sim/include/simdrive.h"
+#include "MsgInc/RadioChatterMsg.h"
 
 void *map_file(char *filename, long bytestomap = 0);
 

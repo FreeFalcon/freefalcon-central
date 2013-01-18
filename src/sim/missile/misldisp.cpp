@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "misldisp.h"
-#include "Graphics\Include\render2d.h"
-#include "Graphics\Include\Mono2D.h"
+#include "Graphics/Include/render2d.h"
+#include "Graphics/Include/Mono2D.h"
 
 MissileDisplayClass::MissileDisplayClass(SimMoverClass* newPlatform) : DrawableClass()
 {

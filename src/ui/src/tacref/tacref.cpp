@@ -19,7 +19,7 @@
 #include "cmpclass.h"
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 #define UI_HANDLE FILE *

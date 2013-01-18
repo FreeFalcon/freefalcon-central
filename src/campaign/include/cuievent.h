@@ -14,7 +14,7 @@
 #define CUI_ME 2 // Maximum entity data
 #define CUI_MS 8 // Maximum string ids
 
-#include "MsgInc\CampEventMsg.h"
+#include "MsgInc/CampEventMsg.h"
 
 // ============================
 // CampUI Event Structure

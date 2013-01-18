@@ -10,8 +10,8 @@
 #include "aircrft.h"
 #include "guns.h"
 #include "cmpclass.h"
-#include "ui\include\tac_class.h"
-#include "ui\include\te_defs.h"
+#include "ui/include/tac_class.h"
+#include "ui/include/te_defs.h"
 #include "simdrive.h"
 #include "radar.h" // 2002-02-09 S.G.
 /* S.G. SO ACES ARE NOT THAT SCARED */ #include "flight.h"

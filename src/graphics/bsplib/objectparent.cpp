@@ -15,7 +15,7 @@
 #include "ObjectParent.h"
 #include "falclib/include/IsBad.h"
 
-#include "Graphics\DXEngine\DXDefines.h"
+#include "Graphics/DXEngine/DXDefines.h"
 extern bool g_bUse_DX_Engine;
 unsigned long DXver = 0xFEEF;
 extern int nVer;

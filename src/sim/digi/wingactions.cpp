@@ -2,7 +2,7 @@
 #include "digi.h"
 #include "mesg.h"
 #include "simveh.h"
-#include "MsgInc\WingmanMsg.h"
+#include "MsgInc/WingmanMsg.h"
 #include "find.h"
 #include "flight.h"
 #include "camp2sim.h"
@@ -10,8 +10,8 @@
 #include "object.h"
 #include "airframe.h"
 #include "classtbl.h"
-#include "msginc\radiochattermsg.h"
-#include "msginc\wingmanmsg.h"
+#include "msginc/radiochattermsg.h"
+#include "msginc/wingmanmsg.h"
 #include "wingorder.h"
 #include "otwdrive.h"
 /* S.G. 2001-07-30 FOR SimDriver */ #include "Simdrive.h"
@@ -20,7 +20,7 @@
 #include "campbase.h" // 2002-02-10 S.G.
 #define MANEUVER_DEBUG // MNLOOK
 #ifdef MANEUVER_DEBUG
-#include "Graphics\include\drawbsp.h"
+#include "Graphics/include/drawbsp.h"
 extern int g_nShowDebugLabels;
 extern float g_fAIMinAlt;
 #endif

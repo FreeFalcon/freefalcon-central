@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <windows.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 #include "texmunge.h"
 
 

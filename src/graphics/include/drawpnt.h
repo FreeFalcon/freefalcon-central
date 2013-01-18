@@ -11,7 +11,7 @@
 #include "DrawObj.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\smrtheap.h"
+#include "SmartHeap/Include/smrtheap.h"
 #endif
 
 

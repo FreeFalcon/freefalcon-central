@@ -2,8 +2,8 @@
 #define _WINGORDER_H
 
 #include "aircrft.h"
-#include "msginc\wingmanmsg.h"
-#include "msginc\radiochattermsg.h"
+#include "msginc/wingmanmsg.h"
+#include "msginc/radiochattermsg.h"
 
 
 #define CALLSIGN_NUM_OFFSET 36

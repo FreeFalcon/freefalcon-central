@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc\CampMsg.h"
+#include "MsgInc/CampMsg.h"
 #include "mesg.h"
 #include "Find.h"
 #include "CampBase.h"

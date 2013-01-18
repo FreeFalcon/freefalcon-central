@@ -2,7 +2,7 @@
 #define _TANKBRAIN_H
 
 #include "digi.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 #include "object.h"
 
 class TailInsertList;

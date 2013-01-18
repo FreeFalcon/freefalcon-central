@@ -3,7 +3,7 @@
 
 #include <tchar.h>
 //#include "stdhdr.h"
-#include "ui\include\campmiss.h"
+#include "ui/include/campmiss.h"
 
 //define value identifying medals for array index
 typedef enum

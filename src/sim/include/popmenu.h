@@ -2,7 +2,7 @@
 #define _POPMENU_H
 
 #include "stdhdr.h"
-#include "msginc\wingmanmsg.h"
+#include "msginc/wingmanmsg.h"
 #include "mesg.h"
 #include "wingorder.h"
 

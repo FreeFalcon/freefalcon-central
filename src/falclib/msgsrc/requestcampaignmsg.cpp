@@ -7,8 +7,8 @@
 /*
 
 //sfr: this is not used, and does not compile
-#include "MsgInc\RequestCampaignMsg.h"
-#include "MsgInc\SendCampaignMsg.h"
+#include "MsgInc/RequestCampaignMsg.h"
+#include "MsgInc/SendCampaignMsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"

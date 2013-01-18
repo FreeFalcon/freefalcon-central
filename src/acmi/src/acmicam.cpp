@@ -20,8 +20,8 @@
 #include <direct.h>
 #include <math.h>
 
-#include "Graphics\Include\grTypes.h"
-#include "codelib\tools\lists\lists.h"
+#include "Graphics/Include/grTypes.h"
+#include "codelib/tools/lists/lists.h"
 #include "debuggr.h"
 #include "AcmiCam.h"
 

@@ -1,10 +1,10 @@
 #include "falclib.h"
-#include "Graphics\Include\grtypes.h"
+#include "Graphics/Include/grtypes.h"
 #include "vdial.h"
 #include "cpmanager.h"
-#include "Graphics\Include\renderow.h"
-#include "Graphics\Include\Canvas3d.h"
-#include "Graphics\Include\tod.h"
+#include "Graphics/Include/renderow.h"
+#include "Graphics/Include/Canvas3d.h"
+#include "Graphics/Include/tod.h"
 
 VDial::VDial(VDialInitStr* pInit)
 {

@@ -4,7 +4,7 @@
 //Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
 //Retro_dead 15Jan2004 #include <dinput.h>
 #include <tchar.h>
-#include "falclib\include\playerop.h"
+#include "falclib/include/playerop.h"
 
 
 #define STARTDAT_MOUSE_LEFT 0

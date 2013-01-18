@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cpindicator.h"
 
-#include "Graphics\Include\grinline.h" //Wombat778 3-22-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindicatorInitStr) : CPObject(pobjectInitStr)

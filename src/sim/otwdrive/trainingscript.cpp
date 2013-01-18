@@ -6,14 +6,14 @@
  -Script interpreter for training scripts
 \***************************************************************************/
 
-#include "Graphics\Include\renderow.h"
+#include "Graphics/Include/renderow.h"
 #include "stdhdr.h"
 #include "soundfx.h"
 #include "cpmanager.h"
 #include "otwdrive.h"
 #include "dispopts.h"
-#include "ui95\chandler.h"
-#include "falcsnd\psound.h"
+#include "ui95/chandler.h"
+#include "falcsnd/psound.h"
 
 #include "sinput.h"
 #include "commands.h"

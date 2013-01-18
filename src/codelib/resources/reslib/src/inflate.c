@@ -197,7 +197,7 @@ found in <string.h> and <stdlib.h>. */
 #undef MemFree
 #undef MemFreePtr
 #undef MemMalloc
-#include "Smartheap\Include\smrtheap.h"
+#include "Smartheap/Include/smrtheap.h"
 extern MEM_POOL gResmgrMemPool;
 #endif
 

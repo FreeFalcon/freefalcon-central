@@ -13,7 +13,7 @@
 #define   NETAPI_H
 
 #include "apitypes.h"
-#include "vu2\comms\comcore.h"
+#include "vu2/comms/comcore.h"
 
 #ifdef API_VERSION
 #define NET_VERSION API_VERSION

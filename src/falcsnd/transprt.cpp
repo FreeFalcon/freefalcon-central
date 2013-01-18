@@ -7,7 +7,7 @@
 \***************************************************************************/
 #include <windows.h>
 #include <winsock.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 #include "Transprt.h"
 
 

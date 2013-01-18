@@ -14,10 +14,10 @@
 //
 // ------------------------------------------------------------------------------
 
-#include "Graphics\Include\grtypes.h"
-#include "Graphics\Include\drawbsp.h"
-#include "Graphics\Include\drawpnt.h"
-#include "Graphics\Include\renderow.h"
+#include "Graphics/Include/grtypes.h"
+#include "Graphics/Include/drawbsp.h"
+#include "Graphics/Include/drawpnt.h"
+#include "Graphics/Include/renderow.h"
 #include "vehicle.h"
 #include "simmover.h"
 #include "stdhdr.h"
@@ -26,7 +26,7 @@
 #include "playerop.h"
 #include "simdrive.h"
 #include "aircrft.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/dispopts.h"
 
 // ------------------------------------------------------------------------------
 //

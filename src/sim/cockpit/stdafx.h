@@ -32,9 +32,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "graphics\include\smart.h"
-#include "falclib\include\falclib.h"
+#include "graphics/include/smart.h"
+#include "falclib/include/falclib.h"
 #include "dispopts.h"
 #include "playerop.h"
-#include "Graphics\Include/renderow.h"
+#include "Graphics/Include/renderow.h"
 #include "otwdrive.h"

@@ -10,9 +10,9 @@
 #include "Edge.h"
 #include "GMRadar.h"
 #include "GMComposit.h"
-#include "Falclib\include\dispcfg.h"
-#include "FalcLib\include\playerop.h"
-#include "FalcLib\include\dispopts.h"
+#include "Falclib/include/dispcfg.h"
+#include "FalcLib/include/playerop.h"
+#include "FalcLib/include/dispopts.h"
 
 //MI
 extern bool g_bRealisticAvionics;

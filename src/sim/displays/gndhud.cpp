@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "hud.h"
 #include "fcc.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "aircrft.h"
 #include "simmover.h"
 #include "flightData.h"

@@ -4,7 +4,7 @@
 #include "simveh.h"
 #include "mesg.h"
 #include "object.h"
-#include "MsgInc\WingmanMsg.h"
+#include "MsgInc/WingmanMsg.h"
 #include "campBase.h"
 
 #ifdef USE_SH_POOLS

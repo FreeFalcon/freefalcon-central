@@ -9,9 +9,9 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "shi\ShiError.h"
-#include "..\..\Terrain\Ttypes.h"
-#include "..\..\3Dlib\Image.h"
+#include "shi/ShiError.h"
+#include "../../Terrain/Ttypes.h"
+#include "../../3Dlib/Image.h"
 #include "TileList.h"
 
 // Read in all the previous LOD images and catalog them

@@ -1,21 +1,21 @@
 #include <time.h>
 #include "stdhdr.h"
 #include "otwdrive.h"
-#include "Graphics\Include\renderow.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/renderow.h"
+#include "Graphics/Include/drawbsp.h"
 #include "simdrive.h"
 #include "mesg.h"
-#include "MsgInc\AWACSMsg.h"
-#include "MsgInc\ATCMsg.h"
-#include "MsgInc\FACMsg.h"
-#include "MsgInc\TankerMsg.h"
+#include "MsgInc/AWACSMsg.h"
+#include "MsgInc/ATCMsg.h"
+#include "MsgInc/FACMsg.h"
+#include "MsgInc/TankerMsg.h"
 #include "falcmesg.h"
 #include "aircrft.h"
-#include "falclib\include\f4find.h"
+#include "falclib/include/f4find.h"
 
 #include "simio.h" // Retro 25Mar2004
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 
 #include "fsound.h"
 #include "fakerand.h"
@@ -25,7 +25,7 @@
 #include "classtbl.h"
 #include "TimerThread.h"
 #include "F4Version.h"
-#include "ui\include\uicomms.h"
+#include "ui/include/uicomms.h"
 #include "entity.h"
 #include "airframe.h"
 
@@ -51,7 +51,7 @@ extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 
 void ResetVoices(void);
 
-#include "sim\include\IVibeData.h"
+#include "sim/include/IVibeData.h"
 extern IntellivibeData g_intellivibeData;
 extern void *gSharedIntellivibe;
 extern bool g_bShowFlaps;

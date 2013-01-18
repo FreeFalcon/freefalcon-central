@@ -1,15 +1,15 @@
 #include "stdhdr.h"
 #include "misslist.h"
 #include "missile.h"
-#include "acmi\src\include\acmirec.h"
+#include "acmi/src/include/acmirec.h"
 #include "otwdrive.h"
 #include "simdrive.h"
 #include "sfx.h"
-#include "terrain\tviewpnt.h"
+#include "terrain/tviewpnt.h"
 #include "mvrdef.h"
 #include "f4find.h"
 extern "C" {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 #include "classtbl.h"
 #include "entity.h"

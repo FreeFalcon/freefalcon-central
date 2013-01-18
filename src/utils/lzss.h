@@ -1,7 +1,7 @@
 #ifndef LZSS_H
 #define LZSS_H
 
-#include "utils\LZSSopt.h"
+#include "utils/LZSSopt.h"
 
 #ifdef INCLUDE_FILE_COMPRESSION
 #include "bitio.h"

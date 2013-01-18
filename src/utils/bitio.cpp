@@ -17,7 +17,7 @@
 
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\smrtheap.hpp"
+#include "SmartHeap/Include/smrtheap.hpp"
 #endif
 
 /* Add for the buffer io */

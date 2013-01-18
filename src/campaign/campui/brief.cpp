@@ -22,14 +22,14 @@
 #include "Campaign.h"
 #include "WinGraph.h"
 #include "classtbl.h"
-#include "ui95\CHandler.h"
-#include "..\ui\include\tac_class.h"
-#include "..\ui\include\te_defs.h"
+#include "ui95/CHandler.h"
+#include "../ui/include/tac_class.h"
+#include "../ui/include/te_defs.h"
 #include "Weather.h"
 #include "atm.h"
 #include "FalcSess.h"
 #include "userids.h"
-#include "ui95\CWindow.h"
+#include "ui95/CWindow.h"
 #include "F4Version.h"
 
 #ifdef DEBUG

@@ -9,10 +9,10 @@
 #include "aircrft.h"
 #include "objectiv.h"
 #include "simdrive.h"
-#include "Graphics\Include\tmap.h"
+#include "Graphics/Include/tmap.h"
 #define MANEUVER_DEBUG
 #ifdef MANEUVER_DEBUG
-#include "Graphics\include\drawbsp.h"
+#include "Graphics/include/drawbsp.h"
 extern int g_nShowDebugLabels;
 #endif
 

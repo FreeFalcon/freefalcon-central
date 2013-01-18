@@ -18,7 +18,7 @@
 #include "AIInput.h"
 #include "F4Thread.h"
 #include "CmpClass.h"
-#include "MsgInc\WeatherMsg.h"
+#include "MsgInc/WeatherMsg.h"
 #include "falcsess.h"
 #include "F4Comms.h"
 #include "otwdrive.h"

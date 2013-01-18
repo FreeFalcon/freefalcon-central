@@ -17,7 +17,7 @@
 //#include "stdhdr.h"
 #include "vu2.h"
 #include "acmirec.h"
-#include "sim\include\simdrive.h"
+#include "sim/include/simdrive.h"
 #include "timerthread.h"
 //#include "simlib.h"
 //#include "otwdrive.h"

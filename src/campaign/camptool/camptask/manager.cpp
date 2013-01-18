@@ -9,7 +9,7 @@
 #include "Team.h"
 #include "weather.h"
 #include "Manager.h"
-#include "MsgInc\CampTaskingMsg.h"
+#include "MsgInc/CampTaskingMsg.h"
 #include "classtbl.h"
 #include "falcsess.h"
 #include "campaign.h"

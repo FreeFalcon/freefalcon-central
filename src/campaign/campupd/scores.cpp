@@ -12,9 +12,9 @@
 #include "mission.h"
 #include "classtbl.h"
 #include "otwdrive.h"
-#include "MsgInc\SendDogfightInfo.h"
-#include "MsgInc\RequestDogfightInfo.h"
-#include "MsgInc\RegenerationMsg.h"
+#include "MsgInc/SendDogfightInfo.h"
+#include "MsgInc/RequestDogfightInfo.h"
+#include "MsgInc/RegenerationMsg.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
 //Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700

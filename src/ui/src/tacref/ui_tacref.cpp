@@ -1,17 +1,17 @@
 #include <windows.h>
-#include "Graphics\Include\TimeMgr.h"
-#include "Graphics\Include\imagebuf.h"
-#include "dxutil\ddutil.h"
+#include "Graphics/Include/TimeMgr.h"
+#include "Graphics/Include/imagebuf.h"
+#include "dxutil/ddutil.h"
 #include "dispcfg.h"
-#include "Graphics\Include\renderow.h"
-#include "Graphics\Include\RViewPnt.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/renderow.h"
+#include "Graphics/Include/RViewPnt.h"
+#include "Graphics/Include/drawbsp.h"
 #include "unit.h"
 #include "classtbl.h"
 #include "cmpclass.h"
 #include "chandler.h"
 #include "cbsplist.h"
-#include "Graphics\Include\loader.h"
+#include "Graphics/Include/loader.h"
 #include "c3dview.h"
 #include "soundfx.h"
 #include "fsound.h"
@@ -19,7 +19,7 @@
 #include "userids.h"
 #include "textids.h"
 //TJL 12/27/03
-#include "sim\include\otwdrive.h"
+#include "sim/include/otwdrive.h"
 //#include "simbase.h"
 
 enum

@@ -18,7 +18,7 @@
 #include "debuggr.h"
 #include "F4Find.h"
 #pragma pack(1)
-//#include "landh\include\st80.h"
+//#include "landh/include/st80.h"
 #pragma pack()
 #include "LHSP.h"
 

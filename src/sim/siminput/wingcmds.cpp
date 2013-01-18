@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "aircrft.h"
 #include "simdrive.h"
-#include "falcsnd\conv.h"
+#include "falcsnd/conv.h"
 #include "commands.h"
 #include "wingorder.h"
 #include "radar.h"

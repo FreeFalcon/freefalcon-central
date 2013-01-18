@@ -24,7 +24,7 @@
 #include "draw2d.h"
 #include "RViewPnt.h"
 #include "RenderOW.h"
-#include "FalcLib\include\dispopts.h" //JAM 04Oct03
+#include "FalcLib/include/dispopts.h" //JAM 04Oct03
 #include "RenderTV.h"
 
 //JAM 18Nov03

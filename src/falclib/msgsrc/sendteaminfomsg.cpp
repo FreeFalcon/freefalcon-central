@@ -6,7 +6,7 @@
  */
 //sfr: took it out, not used!!
 /*
-#include "MsgInc\SendTeamInfoMsg.h"
+#include "MsgInc/SendTeamInfoMsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"

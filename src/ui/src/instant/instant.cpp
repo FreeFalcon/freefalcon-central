@@ -8,8 +8,8 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "dxutil\ddutil.h"
-#include "Graphics\Include\imagebuf.h"
+#include "dxutil/ddutil.h"
+#include "Graphics/Include/imagebuf.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "entity.h"
@@ -17,14 +17,14 @@
 #include "vehicle.h"
 #include "evtparse.h"
 #include "Mesg.h"
-#include "MsgInc\DamageMsg.h"
-#include "MsgInc\WeaponFireMsg.h"
-#include "MsgInc\DeathMessage.h"
-#include "MsgInc\MissileEndMsg.h"
-#include "MsgInc\LandingMessage.h"
-#include "MsgInc\EjectMsg.h"
+#include "MsgInc/DamageMsg.h"
+#include "MsgInc/WeaponFireMsg.h"
+#include "MsgInc/DeathMessage.h"
+#include "MsgInc/MissileEndMsg.h"
+#include "MsgInc/LandingMessage.h"
+#include "MsgInc/EjectMsg.h"
 #include "falcuser.h"
-#include "falclib\include\f4find.h"
+#include "falclib/include/f4find.h"
 #include "f4error.h"
 #include "uicomms.h"
 #include "ui_ia.h"
@@ -35,7 +35,7 @@
 #include "PlayerOp.h"
 #include "classtbl.h"
 #include "iaction.h"
-#include "Graphics\Include\TMap.h" // JPO for map sizes
+#include "Graphics/Include/TMap.h" // JPO for map sizes
 #include "fakerand.h" //THW for random startup position
 
 //JAM 21Nov03

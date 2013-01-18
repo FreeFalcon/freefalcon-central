@@ -7,9 +7,9 @@
  It is a bit messy still, but at least its not one giant linear file
  anymore...
  \***************************************************************************/
-#include "Graphics\Include\RViewPnt.h"
-#include "Graphics\Include\RenderOW.h"
-#include "Graphics\Include\DrawBSP.h"
+#include "Graphics/Include/RViewPnt.h"
+#include "Graphics/Include/RenderOW.h"
+#include "Graphics/Include/DrawBSP.h"
 #include "stdhdr.h"
 #include "simbase.h"
 #include "simdrive.h"
@@ -562,7 +562,7 @@ void OTWDriverClass::DisplaceTheCamera(float dT)
     cameraPos.z += zDir->Displ;
 }
 #ifdef USE_WING_SPAN // doesn´t work properly now.
-#include "Sim\Include\Airframe.h" // needed for wing span
+#include "Sim/Include/Airframe.h" // needed for wing span
 #endif
 /*****************************************************************************/
 // Retro 23Dec2003

@@ -2,8 +2,8 @@
 #include "simfile.h"
 #include "object.h"
 #include "eyeball.h"
-#include "Graphics\Include\display.h"
-#include "Graphics\Include\tod.h"
+#include "Graphics/Include/display.h"
+#include "Graphics/Include/tod.h"
 #include "simbase.h"
 #include "entity.h"
 #include "simmath.h"
@@ -15,7 +15,7 @@
 /* S.G. FOR SKILL LEVEL */ #include "digi.h"
 /* S.G. FOR SKILL LEVEL */ #include "Classtbl.h"
 
-/* M.N. for draw radius */ #include "Graphics\Include\Drawobj.h"
+/* M.N. for draw radius */ #include "Graphics/Include/Drawobj.h"
 
 extern bool g_bEnableWeatherExtensions;
 extern bool g_bAddACSizeVisual;

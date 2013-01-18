@@ -9,8 +9,8 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "shi\ShiError.h"
-#include "..\..\Terrain\Ttypes.h"
+#include "shi/ShiError.h"
+#include "../../Terrain/Ttypes.h"
 #include "IDlist.h"
 
 

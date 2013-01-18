@@ -5,7 +5,7 @@
 #include "simdrive.h"
 #include "f4error.h"
 #include "tacan.h"
-#include "msginc\dlinkmsg.h"
+#include "msginc/dlinkmsg.h"
 
 extern char* mpPointTypeNames[];
 

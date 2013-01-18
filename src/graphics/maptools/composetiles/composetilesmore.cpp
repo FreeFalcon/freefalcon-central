@@ -13,11 +13,11 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <crtdbg.h>
-#include <shi\ShiError.h>
-#include "..\..\Terrain\Ttypes.h"
-#include "..\..\Terrain\TPost.h"
-#include "..\..\Terrain\TDskPost.h"
-#include "..\..\3Dlib\Image.h"
+#include <shi/ShiError.h>
+#include "../../Terrain/Ttypes.h"
+#include "../../Terrain/TPost.h"
+#include "../../Terrain/TDskPost.h"
+#include "../../3Dlib/Image.h"
 #include "IDlist.h"
 #include "TileList.h"
 

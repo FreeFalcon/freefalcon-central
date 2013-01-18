@@ -11915,7 +11915,7 @@ void ToggleDisplacementCam(unsigned long, int state, void*) // Retro 24Dec2003
 
 // Retro 4Jan2004 - winamp commands
 extern bool g_bPilotEntertainment;
-#include "falcsnd\winampfrontend.h"
+#include "falcsnd/winampfrontend.h"
 void WinAmpNextTrack(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)

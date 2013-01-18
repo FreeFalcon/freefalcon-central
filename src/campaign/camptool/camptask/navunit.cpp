@@ -25,7 +25,7 @@
 #include "tactics.h"
 #include "Tacan.h"
 #include "ClassTbl.h"
-#include "Graphics\Include\TMap.h"
+#include "Graphics/Include/TMap.h"
 #include "PtData.h"
 #include "Camp2Sim.h"
 #include "Aircrft.h"

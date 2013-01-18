@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include "f4vu.h"
-#include "ui95\chandler.h" //for some reason my compiler insists upon this. DSP
+#include "ui95/chandler.h" //for some reason my compiler insists upon this. DSP
 #include "logbook.h"
 #include "userids.h"
 #include "remotelb.h"

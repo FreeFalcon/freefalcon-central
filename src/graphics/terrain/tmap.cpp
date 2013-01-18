@@ -9,7 +9,7 @@
 #include "TimeMgr.h"
 #include "TOD.h"
 #include "TMap.h"
-#include "falclib\include\openfile.h"
+#include "falclib/include/openfile.h"
 
 // Provide the one and only terrain database object.  It will be up to the
 // application to initialize and cleanup this object by calling Setup and Cleanup.

@@ -1,12 +1,12 @@
 // Targetting Code goes here
 #include <windows.h>
-#include "Graphics\Include\TimeMgr.h"
-#include "Graphics\Include\imagebuf.h"
-#include "Graphics\Include\renderow.h"
-#include "Graphics\Include\RViewPnt.h"
-#include "Graphics\Include\drawbrdg.h"
-#include "Graphics\Include\drawplat.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/TimeMgr.h"
+#include "Graphics/Include/imagebuf.h"
+#include "Graphics/Include/renderow.h"
+#include "Graphics/Include/RViewPnt.h"
+#include "Graphics/Include/drawbrdg.h"
+#include "Graphics/Include/drawplat.h"
+#include "Graphics/Include/drawbsp.h"
 #include "vu2.h"
 #include "F4vu.h"
 #include "team.h"
@@ -22,8 +22,8 @@
 #include "feature.h"
 #include "find.h"
 #include "dispcfg.h"
-#include "Graphics\Include\setup.h"
-#include "Graphics\Include\loader.h"
+#include "Graphics/Include/setup.h"
+#include "Graphics/Include/loader.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "cmap.h"
@@ -36,7 +36,7 @@
 #include "classtbl.h"
 #include "PtData.h"
 
-#include "FalcLib\include\playerop.h" // OW
+#include "FalcLib/include/playerop.h" // OW
 
 void CenterOnFeatureCB(long ID, short hittype, C_Base *control);
 void SetBullsEye(C_Window *);
@@ -424,7 +424,7 @@ void AddUnitToTargetTree(Unit unit)
     }
 }
 
-#include "..\..\..\Sim\Include\Atcbrain.h" // 2002-02-28 S.G.
+#include "../../../Sim/Include/Atcbrain.h" // 2002-02-28 S.G.
 
 void AddObjectiveToTargetTree(Objective obj)
 {

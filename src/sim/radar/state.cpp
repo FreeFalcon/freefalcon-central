@@ -10,7 +10,7 @@
 #include "sms.h"
 #include "fcc.h" //MI
 #include "aircrft.h" //MI
-#include "Graphics\Include\gmComposit.h"
+#include "Graphics/Include/gmComposit.h"
 
 // MD -- 20031231: added for analog Antenna Elevation Controls
 #include "simio.h"

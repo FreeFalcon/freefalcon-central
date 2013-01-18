@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <math.h>
-#include "sim\include\phyconst.h"
+#include "sim/include/phyconst.h"
 
 C_Waypoint::C_Waypoint() : C_Control()
 {

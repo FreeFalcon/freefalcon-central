@@ -1,9 +1,9 @@
 #include "f4vu.h"
 #include "fsound.h"
-#include "falcsnd\voicemanager.h"
+#include "falcsnd/voicemanager.h"
 #include "CmpClass.h"
 #include "flight.h"
-#include "sim\include\simdrive.h"
+#include "sim/include/simdrive.h"
 #define _WIN32_DCOM
 #include <stdio.h>
 #include <dplay8.h>
@@ -11,7 +11,7 @@
 #include <dvoice.h>
 #include "debuggr.h"
 
-#include "sim\include\navsystem.h"
+#include "sim/include/navsystem.h"
 #include <tchar.h>
 
 //-----------------------------------------------------------------------------

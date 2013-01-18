@@ -1,7 +1,7 @@
 #ifndef _ACMIUI_H
 #define _ACMIUI_H
 
-#include "ui\include\userids.h"
+#include "ui/include/userids.h"
 
 // MLR 12/22/2003 - Defined, because the code had bug WRT these values no being updated everywhere.
 // in seconds

@@ -15,8 +15,8 @@
 #include "falclib.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\shmalloc.h"
-#include "SmartHeap\Include\smrtheap.hpp"
+#include "SmartHeap/Include/shmalloc.h"
+#include "SmartHeap/Include/smrtheap.hpp"
 #endif
 
 #include "targa.h"
@@ -41,7 +41,7 @@
 #include "cmpclass.h"
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 #define UI_HANDLE FILE *

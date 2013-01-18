@@ -3,7 +3,7 @@
 #include "inpFunc.h"
 #include "otwdrive.h"
 #include "cpmanager.h"
-#include "falclib\include\f4find.h"
+#include "falclib/include/f4find.h"
 #include "simfile.h"
 #include "f4find.h"
 #include "PlayerOp.h"

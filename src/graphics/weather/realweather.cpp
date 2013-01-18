@@ -7,8 +7,8 @@
 \***************************************************************************/
 #include "d3d.h"
 #include "polylib.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 #include "TimeMgr.h"
 #include "simdrive.h"
 #include "aircrft.h"

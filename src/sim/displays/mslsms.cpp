@@ -13,12 +13,12 @@
 #include "BeamRider.h"
 #include "fcc.h"
 #include "falcsess.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 #include "Vehicle.h"
 #include "aircrft.h"
 #include "fack.h"
 #include "falcmesg.h"
-#include "MsgInc\TrackMsg.h"
+#include "MsgInc/TrackMsg.h"
 #include "Fsound.h" // MN
 #include "SoundFX.h" // MN
 

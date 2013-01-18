@@ -6,10 +6,10 @@
  *
  **********************/
 
-#include "Graphics\Include\TimeMgr.h"
-#include "Graphics\Include\RViewPnt.h"
-#include "Graphics\Include\render3d.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/TimeMgr.h"
+#include "Graphics/Include/RViewPnt.h"
+#include "Graphics/Include/render3d.h"
+#include "Graphics/Include/drawbsp.h"
 #include "vu2.h"
 #include "F4Thread.h"
 #include "cmpclass.h"
@@ -29,11 +29,11 @@
 #include "userids.h"
 #include "textids.h"
 #include "classtbl.h"
-#include "MsgInc\FalconFlightPlanMsg.h"
+#include "MsgInc/FalconFlightPlanMsg.h"
 #include "Campaign.h"
 #include "railinfo.h"
-#include "sim\include\airframe.h"
-#include "sim\include\simweapn.h"
+#include "sim/include/airframe.h"
+#include "sim/include/simweapn.h"
 
 #pragma warning(disable : 4244)  // for +=
 

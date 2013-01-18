@@ -10,10 +10,10 @@
 #include "otwdrive.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics\Include\tmap.h"
-#include "Graphics\Include\rviewpnt.h"  // to get ground type
-#include "MsgInc\DamageMsg.h"
-#include "Graphics\Include\terrtex.h"
+#include "Graphics/Include/tmap.h"
+#include "Graphics/Include/rviewpnt.h"  // to get ground type
+#include "MsgInc/DamageMsg.h"
+#include "Graphics/Include/terrtex.h"
 #include "fack.h"
 #include "fsound.h"
 #include "soundfx.h"

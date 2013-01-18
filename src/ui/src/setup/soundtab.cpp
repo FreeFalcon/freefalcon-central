@@ -2,18 +2,18 @@
 #include "chandler.h"
 #include "userids.h"
 #include "PlayerOp.h"
-#include "sim\include\stdhdr.h"
+#include "sim/include/stdhdr.h"
 #include "ui_setup.h"
-#include "falclib\include\fsound.h"
-#include "falclib\include\soundfx.h"
+#include "falclib/include/fsound.h"
+#include "falclib/include/soundfx.h"
 #include <tchar.h>
 #include "cmusic.h"
 #include "f4find.h"
 
-#include "falcsnd\VoiceManager.h"
-#include "falcsnd\conv.h"
-#include "falclib\include\soundgroups.h"
-#include "falcsnd\psound.h"
+#include "falcsnd/VoiceManager.h"
+#include "falcsnd/conv.h"
+#include "falclib/include/soundgroups.h"
+#include "falcsnd/psound.h"
 
 extern C_Handler *gMainHandler;
 extern C_Music *gMusic;

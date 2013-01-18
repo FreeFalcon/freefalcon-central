@@ -1,9 +1,9 @@
 #include "stdhdr.h"
 #include "atcbrain.h"
 #include "campbase.h"
-#include "MsgInc\ATCCmdMsg.h"
-#include "MsgInc\RadioChatterMsg.h"
-#include "falcsnd\conv.h"
+#include "MsgInc/ATCCmdMsg.h"
+#include "MsgInc/RadioChatterMsg.h"
+#include "falcsnd/conv.h"
 #include "simveh.h"
 #include "falcsess.h"
 #include "squadron.h"
@@ -15,7 +15,7 @@
 #include "Weather.h"
 #include "airframe.h"
 #include "ptdata.h"
-#include "Graphics\Include\drawobj.h"
+#include "Graphics/Include/drawobj.h"
 #include "classtbl.h"
 #include "otwdrive.h"
 #include "falcsnd/voicemapper.h"
@@ -38,7 +38,7 @@
 #include "tacan.h"
 #include "cmpglobl.h"
 #include "team.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 
 
 //ATCBrain::atcList = NULL;

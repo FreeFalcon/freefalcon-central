@@ -2,7 +2,7 @@
 #define _C_MUSIC_MANAGER_H_
 
 #ifndef _SOUND_LIB_
-#include "falcsnd\psound.h"
+#include "falcsnd/psound.h"
 #endif
 
 #ifndef gSoundDriver

@@ -1,6 +1,6 @@
 #include <windows.h>
-#include "falclib\include\fsound.h"
-#include "falcsnd\psound.h"
+#include "falclib/include/fsound.h"
+#include "falcsnd/psound.h"
 #include "chandler.h"
 
 #ifdef _UI95_PARSER_

@@ -2,7 +2,7 @@
 #include "sms.h"
 #include "hardpnt.h"
 #include "guns.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "SmsDraw.h"
 #include "aircrft.h"
 #include "airframe.h"

@@ -1,5 +1,5 @@
 #include <float.h>
-#include "Graphics\Include\drawBSP.h"
+#include "Graphics/Include/drawBSP.h"
 #include "stdhdr.h"
 #include "hdigi.h"
 #include "simdrive.h"

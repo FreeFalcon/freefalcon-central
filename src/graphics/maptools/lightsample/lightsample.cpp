@@ -12,8 +12,8 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <shi\ShiError.h>
-#include "..\..\3Dlib\Image.h"
+#include <shi/ShiError.h>
+#include "../../3Dlib/Image.h"
 
 
 #define NUM_LIGHT_COLORS 4

@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "mathlib\math.h"
-#include "shi\ConvFtoI.h"
+#include "mathlib/math.h"
+#include "shi/ConvFtoI.h"
 #include "define.h"
 
 #ifdef USE_SH_POOLS

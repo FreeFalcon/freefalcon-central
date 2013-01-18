@@ -23,8 +23,8 @@
 #include "Tblock.h"
 #include "Tpost.h"
 #include "TdskPost.h"
-#include "falclib\include\openfile.h"
-#include "Falclib\Include\IsBad.h"
+#include "falclib/include/openfile.h"
+#include "Falclib/Include/IsBad.h"
 
 //#define DEBUG_TLEVEL
 extern bool g_bUseMappedFiles;

@@ -12,7 +12,7 @@
 #include "DrawOvc.h"
 #include "RViewPnt.h"
 #include "context.h"
-#include "FalcLib\include\dispopts.h" //JAM 04Oct03
+#include "FalcLib/include/dispopts.h" //JAM 04Oct03
 
 //JAM 18Nov03
 #include "RealWeather.h"

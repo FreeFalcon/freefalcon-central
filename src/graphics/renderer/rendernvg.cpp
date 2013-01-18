@@ -14,7 +14,7 @@
 #include "ColorBank.h"
 #include "RenderNVG.h"
 #include "RealWeather.h"
-#include "FalcLib\include\playerop.h"
+#include "FalcLib/include/playerop.h"
 
 extern bool g_bGreyMFD;
 extern bool bNVGmode;

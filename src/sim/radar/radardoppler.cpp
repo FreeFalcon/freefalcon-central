@@ -9,10 +9,10 @@
 #include "fcc.h"
 #include "mfd.h"
 #include "sms.h"
-#include "Graphics\Include\gmComposit.h"
-#include "Graphics\Include\Mono2d.h"
+#include "Graphics/Include/gmComposit.h"
+#include "Graphics/Include/Mono2d.h"
 #include "camp2sim.h"
-#include "MsgInc\TrackMsg.h"
+#include "MsgInc/TrackMsg.h"
 #include "team.h"
 #include "hud.h"
 //MI for master mode

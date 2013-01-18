@@ -28,7 +28,7 @@
 
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 #define GR_OPEN   ResOpenFile

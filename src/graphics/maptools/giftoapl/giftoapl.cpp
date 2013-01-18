@@ -13,8 +13,8 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <shi\ShiError.h>
-#include "..\..\3Dlib\Image.h"
+#include <shi/ShiError.h>
+#include "../../3Dlib/Image.h"
 
 
 #define NUM_ALPHAS 7 // This doesn't count the default fully transparent chroma color in slot 0

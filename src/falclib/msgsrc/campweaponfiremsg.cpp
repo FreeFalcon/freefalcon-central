@@ -5,12 +5,12 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc\CampWeaponFireMsg.h"
-#include "MsgInc\WeaponFireMsg.h"
-#include "MsgInc\RadioChatterMsg.h"
-#include "MsgInc\MissileEndMsg.h"
-#include "MsgInc\TrackMsg.h"
-#include "MsgInc\DamageMsg.h"
+#include "MsgInc/CampWeaponFireMsg.h"
+#include "MsgInc/WeaponFireMsg.h"
+#include "MsgInc/RadioChatterMsg.h"
+#include "MsgInc/MissileEndMsg.h"
+#include "MsgInc/TrackMsg.h"
+#include "MsgInc/DamageMsg.h"
 #include "MissEval.h"
 #include "flight.h"
 #include "mesg.h"
@@ -23,7 +23,7 @@
 #include "Dispcfg.h"
 #include "FalcUser.h"
 #include "simbase.h"
-#include "Graphics\include\rviewpnt.h"
+#include "Graphics/include/rviewpnt.h"
 #include "fakerand.h"
 #include "missile.h"
 #include "object.h"

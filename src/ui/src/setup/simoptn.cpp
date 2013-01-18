@@ -4,7 +4,7 @@
 #include <dlgs.h>       // includes common dialog template defines
 #include "resource.h"
 #include "f4vu.h"
-#include "sim\include\stdhdr.h"
+#include "sim/include/stdhdr.h"
 #include "PlayerOp.h"
 
 void InitSimOptionStuff(HWND hDlg)

@@ -3,8 +3,8 @@
 #include "datafile.h"
 #include "simfile.h" // to read in the extra data
 #include "graphics/include/grtypes.h"
-#include <falclib\include\lookuptable.h>
-#include <falclib\include\token.h>
+#include <falclib/include/lookuptable.h>
+#include <falclib/include/token.h>
 
 // The hard work of assigning stuff to a field.
 // converts the value to the right format (int, char, float string etc)

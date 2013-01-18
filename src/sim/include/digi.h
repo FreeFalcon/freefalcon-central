@@ -5,7 +5,7 @@
 #include "simmath.h"
 #include "simbrain.h"
 #include "geometry.h"
-#include "MsgInc\WingmanMsg.h"
+#include "MsgInc/WingmanMsg.h"
 #include "atcbrain.H"
 
 // Forward declarations for class pointers

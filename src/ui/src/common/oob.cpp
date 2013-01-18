@@ -28,7 +28,7 @@
 #include "gps.h"
 #include "logbook.h"
 #include "remotelb.h"
-#include "msginc\requestlogbook.h"
+#include "msginc/requestlogbook.h"
 #include "ui_cmpgn.h"
 #include "filters.h"
 #include "urefresh.h"

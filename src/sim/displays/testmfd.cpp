@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "camplib.h"
 #include "mfd.h"
-#include "Graphics\Include\render2d.h"
+#include "Graphics/Include/render2d.h"
 #include "dispcfg.h"
 #include "simdrive.h"
 #include "camp2sim.h"

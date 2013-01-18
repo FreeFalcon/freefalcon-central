@@ -36,7 +36,7 @@
 #include "simbase.h"
 #include "aircrft.h"
 #include "limiters.h"
-#include "Graphics\Include\tmap.h"
+#include "Graphics/Include/tmap.h"
 #include "otwdrive.h"
 #include "dofsnswitches.h"
 

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
-#include "..\delta\anim.h"
+#include "../delta/anim.h"
 
 char FileList[200], OutputFile[200];
 

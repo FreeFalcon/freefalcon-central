@@ -3,9 +3,9 @@
 
 #ifndef BINARY_TOOL
 #include "f4thread.h"
-#include "sim\include\stdhdr.h"
-#include "falcsnd\falcvoice.h"
-#include "falcsnd\lhsp.h"
+#include "sim/include/stdhdr.h"
+#include "falcsnd/falcvoice.h"
+#include "falcsnd/lhsp.h"
 #include "FileMemMap.h"
 
 class CONVERSATION
@@ -49,7 +49,7 @@ public:
 #endif
 };
 
-#include "falcsnd\voicefilter.h"
+#include "falcsnd/voicefilter.h"
 
 extern VU_TIME vuxGameTime;
 #endif

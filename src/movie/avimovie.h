@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <vfw.h>
 #include "riffio.h"
-#include "include\avimem.h"
+#include "include/avimem.h"
 #include "surface.h"
 
 #ifdef   __cplusplus

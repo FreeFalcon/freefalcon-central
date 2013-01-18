@@ -15,7 +15,7 @@
 #include "c3dview.h"
 #include "playerop.h"
 #include "TexBank.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/dispopts.h"
 
 #include "Sim/Include/navsystem.h" //Wombat778 11-3-2003
 

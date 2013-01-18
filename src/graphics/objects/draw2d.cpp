@@ -11,11 +11,11 @@
 #include "RenderOW.h"
 #include "RViewPnt.h"
 #include "Tex.h"
-#include "falclib\include\fakerand.h"
+#include "falclib/include/fakerand.h"
 #include "Draw2d.h"
-#include "FalcLib\include\dispopts.h" //JAM 04Oct03
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "FalcLib/include/dispopts.h" //JAM 04Oct03
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 
 //JAM 18Nov03
 #include "RealWeather.h"

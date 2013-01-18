@@ -1,6 +1,6 @@
 #include "stdhdr.h"
-#include "Renderer\RenderOW.h"
-#include "3Dlib\3d.h"
+#include "Renderer/RenderOW.h"
+#include "3Dlib/3d.h"
 #include "f4vu.h"
 
 extern "C"

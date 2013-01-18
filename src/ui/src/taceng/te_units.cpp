@@ -40,8 +40,8 @@
 #include "urefresh.h"
 #include "teamdata.h"
 #include "brief.h"
-#include "shi\float.h"
-#include "MsgInc\CampDataMsg.h"
+#include "shi/float.h"
+#include "MsgInc/CampDataMsg.h"
 
 enum
 {

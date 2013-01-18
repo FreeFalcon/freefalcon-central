@@ -27,7 +27,7 @@
 #include "RenderOW.h"
 #include "GraphicsRes.h"
 #include "Setup.h"
-#include "Falclib\Include\openfile.h"
+#include "Falclib/Include/openfile.h"
 
 static char theaterPath[_MAX_PATH];
 static char objectPath[_MAX_PATH];

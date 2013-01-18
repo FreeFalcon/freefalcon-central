@@ -1,4 +1,4 @@
-#include "3dlib\inline.h"
+#include "3dlib/inline.h"
 
 #include "cpmanager.h"
 #include "cpgauge.h"

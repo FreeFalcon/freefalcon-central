@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "fsound.h"
-#include "FalcSnd\psound.h"
+#include "FalcSnd/psound.h"
 #include "chandler.h"
 #include "userids.h"
 #include "textids.h"

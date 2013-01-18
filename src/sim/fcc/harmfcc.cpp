@@ -6,7 +6,7 @@
 #include "object.h"
 #include "geometry.h"
 #include "simveh.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 #include "otwdrive.h"
 #include "radar.h"
 

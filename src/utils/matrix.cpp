@@ -8,8 +8,8 @@
 #include "matrix.h"
 
 // OW
-#include "..\..\amd\inc\amatrix.h"
-#include "..\..\amd\inc\atrans.h"
+#include "../../amd/inc/amatrix.h"
+#include "../../amd/inc/atrans.h"
 
 void MatrixMult_Generic(const Trotation* S1, const Trotation* S2, Trotation* T);
 void MatrixMult_3DNow(const Trotation* S1, const Trotation* S2, Trotation* T);

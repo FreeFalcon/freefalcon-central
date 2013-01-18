@@ -21,7 +21,7 @@
 
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\smrtheap.h"
+#include "SmartHeap/Include/smrtheap.h"
 #endif
 
 #include "context.h"
@@ -197,10 +197,10 @@ public:
 #define _DRAWSGMT_H_
 
 #include "DrawObj.h"
-#include "Falclib\Include\IsBad.h"
+#include "Falclib/Include/IsBad.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\smrtheap.h"
+#include "SmartHeap/Include/smrtheap.h"
 #endif
 
 #include "context.h"

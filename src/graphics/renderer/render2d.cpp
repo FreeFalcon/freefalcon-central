@@ -6,14 +6,14 @@
     This class provides 2D drawing functions.
 \***************************************************************************/
 #include <math.h>
-#include "falclib\include\debuggr.h"
+#include "falclib/include/debuggr.h"
 #include "Image.h"
 #include "Device.h"
 #include "Render2D.h"
 #include "GraphicsRes.h"
 #include "Tex.h"
 #include "GraphicsRes.h"
-#include "falclib\include\dispopts.h" //Wombat778 12-12-2003
+#include "falclib/include/dispopts.h" //Wombat778 12-12-2003
 
 //#ifdef USE_TEXTURE_FONT
 //Texture Font2D.fontTexture[NUM_FONT_RESOLUTIONS];

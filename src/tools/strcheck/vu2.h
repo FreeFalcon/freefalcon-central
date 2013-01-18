@@ -11,7 +11,7 @@
 #define VU_DEFAULT_GROUP_SIZE 6
 
 #ifdef VU_USE_COMMS
-#include "comms\capi.h"
+#include "comms/capi.h"
 #endif // VU_USE_COMMS
 
 #include "apitypes.h"

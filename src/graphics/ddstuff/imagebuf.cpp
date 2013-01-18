@@ -11,8 +11,8 @@
 #include "Rotate.h"
 #include "Device.h"
 #include "ImageBuf.h"
-#include "FalcLib\include\debuggr.h"
-#include "Falclib\Include\IsBad.h"
+#include "FalcLib/include/debuggr.h"
+#include "Falclib/Include/IsBad.h"
 //#define _IMAGEBUFFER_PROTECT_SURF_LOCK
 extern bool g_bCheckBltStatusBeforeFlip;
 

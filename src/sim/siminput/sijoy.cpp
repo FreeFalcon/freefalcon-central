@@ -8,7 +8,7 @@
 #include "ffeedbk.h"
 #include "datadir.h"
 #include "flightData.h"
-#include "ui\include\logbook.h"
+#include "ui/include/logbook.h"
 #include "aircrft.h"
 #include "weather.h"
 

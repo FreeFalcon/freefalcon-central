@@ -76,7 +76,7 @@ RealWeather *realWeather = NULL;
 #include "TrackIR.h"
 TrackIR theTrackIRObject;
 
-#include "falcsnd\winampfrontend.h"
+#include "falcsnd/winampfrontend.h"
 WinAmpFrontEnd* winamp = 0;
 extern bool g_bPilotEntertainment;
 
@@ -88,7 +88,7 @@ bool g_writeMissionTbl = false;
 extern void ReadFalcon4Config();
 
 // Begin - Uplink stuff
-#include "include\comsup.h"
+#include "include/comsup.h"
 
 #pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"

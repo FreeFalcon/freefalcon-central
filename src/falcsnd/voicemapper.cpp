@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "VoiceMapper.h"
-#include "sim\include\stdhdr.h"
+#include "sim/include/stdhdr.h"
 #include "fakerand.h"
 
 extern FILE* OpenCampFile(char *filename, char *ext, char *mode);

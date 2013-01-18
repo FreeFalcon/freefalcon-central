@@ -13,7 +13,7 @@
 #include "Ttypes.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\smrtheap.h"
+#include "SmartHeap/Include/smrtheap.h"
 #endif
 
 class TListEntry

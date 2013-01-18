@@ -11,7 +11,7 @@
 #include <float.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 #include "Matrix.h"
 #include "Loader.h"
 #include "TimeMgr.h"
@@ -20,11 +20,11 @@
 #include "Tex.h"
 #include "ObjectInstance.h"
 #include "StateStack.h"
-#include "..\BspUtil\ParentBuildList.h"
+#include "../BspUtil/ParentBuildList.h"
 #include "JoyInput.h"
 #include "resource.h"
-#include "..\BSPBuild\PlayerOp.h"
-#include "falclib\include\dispcfg.h"
+#include "../BSPBuild/PlayerOp.h"
+#include "falclib/include/dispcfg.h"
 #include "debuggr.h"
 
 #define DTR  0.01745329F

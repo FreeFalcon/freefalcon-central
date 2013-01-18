@@ -4,8 +4,8 @@
 #include <windows.h>
 #include <vfw.h>
 #include <process.h>
-#include "include\avifile.h"
-#include "include\avimem.h"
+#include "include/avifile.h"
+#include "include/avimem.h"
 
 #ifdef    __cplusplus
 extern   "C"

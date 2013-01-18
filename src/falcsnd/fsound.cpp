@@ -22,7 +22,7 @@
 #include "profiler.h"
 
 //MI for disabling VMS
-#include "sim\include\aircrft.h"
+#include "sim/include/aircrft.h"
 extern bool g_bRealisticAvionics;
 extern const char *FALCONSNDTABLETXT;
 extern int g_nSoundUpdateMS;
@@ -57,7 +57,7 @@ LookupTable SonicBoomTable;
 // #include "cmpclass.h"
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 #define FS_HANDLE FILE *

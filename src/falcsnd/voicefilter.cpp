@@ -7,22 +7,22 @@
 #include "conv.h"
 #include "VoiceManager.h"
 #include "F4Find.h"
-#include "sim\include\Phyconst.h"
+#include "sim/include/Phyconst.h"
 #include "playerop.h"
-#include "campaign\include\cmpclass.h"
-#include "campaign\include\find.h"
+#include "campaign/include/cmpclass.h"
+#include "campaign/include/find.h"
 #include "vutypes.h"
 #include "dispcfg.h"
-#include "ui\include\falcuser.h"
-#include "sim\include\simdrive.h"
+#include "ui/include/falcuser.h"
+#include "sim/include/simdrive.h"
 #include "fsound.h"
-#include "sim\include\aircrft.h"
+#include "sim/include/aircrft.h"
 #include "flight.h"
 #include "squadron.h"
 #include "falcsess.h"
 
 #include "radiosubtitle.h" // Retro 20Dec2003 for subtitles
-#include "sim\include\navsystem.h" // Retro 20Dec2003 for subtitles
+#include "sim/include/navsystem.h" // Retro 20Dec2003 for subtitles
 
 extern BOOL killThread;
 extern float MAX_RADIO_RANGE;

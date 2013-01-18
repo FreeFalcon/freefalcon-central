@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <windows.h>
 #include "falclib.h"
-#include "sim\include\phyconst.h"
+#include "sim/include/phyconst.h"
 #include "twoddraw.h"
 
 #define MAX_STYLE    1

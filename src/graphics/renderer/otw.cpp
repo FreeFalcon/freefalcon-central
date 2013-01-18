@@ -53,7 +53,7 @@ int TWODSCALE = 5;
 #endif
 
 #ifdef DAVE_DBG
-#include "sim\include\simdrive.h"
+#include "sim/include/simdrive.h"
 #endif
 
 #ifdef CHECK_PROC_TIMES

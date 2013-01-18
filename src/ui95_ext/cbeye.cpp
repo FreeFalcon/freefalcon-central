@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "campaign\include\team.h"
-#include "campaign\include\package.h"
-#include "ui\include\filters.h"
+#include "campaign/include/team.h"
+#include "campaign/include/package.h"
+#include "ui/include/filters.h"
 
 C_BullsEye::C_BullsEye() : C_Base()
 {

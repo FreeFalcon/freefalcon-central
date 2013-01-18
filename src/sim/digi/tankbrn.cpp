@@ -5,15 +5,15 @@
 #include "simdrive.h"
 #include "object.h"
 #include "falcmesg.h"
-#include "MsgInc\TankerMsg.h"
+#include "MsgInc/TankerMsg.h"
 #include "falcsess.h"
 #include "Aircrft.h"
-#include "Graphics\Include\drawbsp.h"
+#include "Graphics/Include/drawbsp.h"
 #include "classtbl.h"
-#include "Graphics\Include\matrix.h"
+#include "Graphics/Include/matrix.h"
 #include "airframe.h"
 #include "playerop.h"
-#include "MsgInc\SimCampMsg.h"//me123
+#include "MsgInc/SimCampMsg.h"//me123
 #include "Find.h"
 #include "Flight.h"
 

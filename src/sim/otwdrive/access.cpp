@@ -1,10 +1,10 @@
-#include "Graphics\Include\TOD.h"
-#include "Graphics\Include\RenderOW.h"
-#include "Graphics\Include\RenderNVG.h"
-#include "Graphics\Include\Canvas3D.h"
-#include "Graphics\Include\RViewPnt.h"
-#include "Graphics\Include\Drawbsp.h"
-#include "Graphics\Include\Drawpnt.h"
+#include "Graphics/Include/TOD.h"
+#include "Graphics/Include/RenderOW.h"
+#include "Graphics/Include/RenderNVG.h"
+#include "Graphics/Include/Canvas3D.h"
+#include "Graphics/Include/RViewPnt.h"
+#include "Graphics/Include/Drawbsp.h"
+#include "Graphics/Include/Drawpnt.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "hud.h"
@@ -57,7 +57,7 @@ extern int MoveBoom;
 #include "IVibeData.h"
 extern IntellivibeData g_intellivibeData;
 
-#include "Graphics\DXEngine\DXEngine.h"
+#include "Graphics/DXEngine/DXEngine.h"
 extern bool g_bUse_DX_Engine;
 
 void OTWDriverClass::ToggleSidebar(void)

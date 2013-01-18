@@ -27,10 +27,10 @@
 #include "RenderOW.h"
 #include "GraphicsRes.h"
 #include "Setup.h"
-#include "Falclib\Include\openfile.h"
-#include "FalcLib\include\dispopts.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Falclib/Include/openfile.h"
+#include "FalcLib/include/dispopts.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 
 //JAM 18Nov03
 #include "RealWeather.h"

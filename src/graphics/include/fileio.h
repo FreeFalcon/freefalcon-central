@@ -5,7 +5,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <io.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include "define.h"
 
 #define FILEIO_SEEK_SET 0

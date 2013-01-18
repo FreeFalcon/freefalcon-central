@@ -6,7 +6,7 @@
     Provides build time services for sharing textures among all objects.
 \***************************************************************************/
 #include <io.h>
-#include "utils\lzss.h"
+#include "utils/lzss.h"
 #include "PalBuildList.h"
 #include "TexBuildList.h"
 #include "GraphicsRes.h"

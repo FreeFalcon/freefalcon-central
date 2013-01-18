@@ -7,7 +7,7 @@
 #include "fcc.h"
 #include "unit.h"
 #include "helimm.h"
-#include "Graphics\Include\drawBSP.h"
+#include "Graphics/Include/drawBSP.h"
 
 // Brain Choices
 #define GENERIC_BRAIN     0

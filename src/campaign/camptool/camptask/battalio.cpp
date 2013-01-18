@@ -21,17 +21,17 @@
 #include "Battalion.h"
 #include "Debuggr.h"
 #include "Gtmobj.h"
-#include "MsgInc\GndTaskingMsg.h"
+#include "MsgInc/GndTaskingMsg.h"
 #include "classtbl.h"
 #include "AIInput.h"
 #include "PtData.h"
-#include "Graphics\Include\TMap.h"
+#include "Graphics/Include/TMap.h"
 #include "Camp2Sim.h"
 #include "FalcSess.h"
 #include "radar.h"
 
-#include "graphics\include\drawpnt.h"
-#include "Graphics\Include\TMap.h"
+#include "graphics/include/drawpnt.h"
+#include "Graphics/Include/TMap.h"
 
 #define ROBIN_GDEBUG
 

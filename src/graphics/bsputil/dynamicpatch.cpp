@@ -8,7 +8,7 @@
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 #include "DynamicPatch.h"
 
 

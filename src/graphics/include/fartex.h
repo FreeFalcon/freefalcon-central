@@ -9,7 +9,7 @@
 #define _FARRTEX_H_
 
 #include "TerrTex.h"
-#include "Falclib\Include\FileMemMap.h"
+#include "Falclib/Include/FileMemMap.h"
 
 struct IDirectDrawPalette;
 

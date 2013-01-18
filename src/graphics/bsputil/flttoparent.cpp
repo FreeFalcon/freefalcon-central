@@ -9,7 +9,7 @@
 \***************************************************************************/
 #include <stdlib.h>
 #include <MgAPIall.h>
-#include "shi\ShiError.h"
+#include "shi/ShiError.h"
 #include "StateStack.h"
 #include "ObjectParent.h"
 #include "LODBuildList.h"

@@ -9,7 +9,7 @@
 #ifndef WEATHER_H
 #define WEATHER_H
 
-#include "MsgInc\WeatherMsg.h"
+#include "MsgInc/WeatherMsg.h"
 #include "CmpGlobl.h"
 #include "CampCell.h"
 #include "CampTerr.h"

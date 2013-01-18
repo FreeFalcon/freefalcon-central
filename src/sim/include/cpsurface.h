@@ -1,8 +1,8 @@
 #ifndef _CPSURFACE_H
 #define _CPSURFACE_H
 
-#include "Graphics\Include\imagebuf.h"
-#include "Graphics\Include\define.h"
+#include "Graphics/Include/imagebuf.h"
+#include "Graphics/Include/define.h"
 
 #include <vector>
 

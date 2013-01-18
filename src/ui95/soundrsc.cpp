@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "chandler.h"
-#include "FalcSnd\psound.h"
+#include "FalcSnd/psound.h"
 
 void *FLAT_RSC::GetData()
 {

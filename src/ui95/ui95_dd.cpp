@@ -1,6 +1,6 @@
 #include <windows.h>
 //#include <ddraw.h>
-//#include "..\3Dlib\Image.h"
+//#include "../3Dlib/Image.h"
 #include "chandler.h"
 #include "ui95_dd.h"
 

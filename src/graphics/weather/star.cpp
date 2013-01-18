@@ -1,5 +1,5 @@
 #include "Star.h"
-#include "Falclib\Include\openfile.h"
+#include "Falclib/Include/openfile.h"
 #define EPSILON 1e-6f
 #define elonge      278.833540f     /* Ecliptic longitude of the Sun at epoch 1980.0 */
 #define elongp      282.596403f     /* Ecliptic longitude of the Sun at perigee */

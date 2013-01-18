@@ -2,7 +2,7 @@
 #include "missile.h"
 #include "otwdrive.h"
 #include "sfx.h"
-#include "acmi\src\include\acmirec.h"
+#include "acmi/src/include/acmirec.h"
 #include "simveh.h"
 #include "team.h"
 #include "Graphics/Include/drawparticlesys.h"

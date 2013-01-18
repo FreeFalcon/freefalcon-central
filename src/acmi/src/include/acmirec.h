@@ -12,7 +12,7 @@
 
 #include "f4thread.h"
 #include "tchar.h"
-#include "acmi\src\include\acmihash.h"
+#include "acmi/src/include/acmihash.h"
 
 #define RECORD_DIR "acmibin\\"
 //#define RECORD_DIR "campaign\\save\\fltfiles\\"

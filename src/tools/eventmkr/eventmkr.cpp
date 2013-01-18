@@ -12,7 +12,7 @@
 #include "CmpEvent.h"
 #include "Team.h"
 #include "F4Find.h"
-#include "..\..\Campaign\CampUpd\CmpEvent.cpp"
+#include "../../Campaign/CampUpd/CmpEvent.cpp"
 
 int LoadCampaignEventsText(char* filename);
 int SaveCampaignEvents(char* filename);

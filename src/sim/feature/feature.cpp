@@ -1,4 +1,4 @@
-#include "Graphics\Include\drawbldg.h"
+#include "Graphics/Include/drawbldg.h"
 #include "stdhdr.h"
 #include "simfeat.h"
 #include "initdata.h"
@@ -13,7 +13,7 @@
 #include "PlayerOp.h"
 #include "Feature.h"
 #include "sfx.h"
-#include "Graphics\Include\RViewPnt.h"
+#include "Graphics/Include/RViewPnt.h"
 #include "atcbrain.h"
 
 #ifdef USE_SH_POOLS

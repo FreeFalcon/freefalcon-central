@@ -20,7 +20,7 @@
 #include "gndunit.h"
 #include "gtmobj.h"
 #include "Manager.h"
-#include "MsgInc\NavalTaskingMsg.h"
+#include "MsgInc/NavalTaskingMsg.h"
 #include "FalcSess.h"
 #include "ClassTbl.h"
 

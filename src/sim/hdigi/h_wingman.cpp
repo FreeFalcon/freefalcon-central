@@ -2,7 +2,7 @@
 #include "hdigi.h"
 #include "mesg.h"
 #include "simbase.h"
-#include "MsgInc\WingmanMsg.h"
+#include "MsgInc/WingmanMsg.h"
 #include "simveh.h"
 #include "campBase.h"
 #include "otwdrive.h"
@@ -10,7 +10,7 @@
 #include "helo.h"
 #include "fcc.h"
 #include "sms.h"
-#include "Graphics\Include\drawBSP.h"
+#include "Graphics/Include/drawBSP.h"
 
 void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
 {

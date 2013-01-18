@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cpdigits.h"
 
-#include "Graphics\Include\grinline.h" //Wombat778 3-22-04
+#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
 
 //MI
 extern bool g_bRealisticAvionics;

@@ -4,7 +4,7 @@
 #include "object.h"
 #include "aircrft.h"
 #include "playerop.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "simbase.h"
 #include "sms.h"
 #include "simweapn.h"

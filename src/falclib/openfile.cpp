@@ -10,7 +10,7 @@
 
 extern "C"
 {
-#include "codelib\resources\reslib\src\resmgr.h"
+#include "codelib/resources/reslib/src/resmgr.h"
 }
 
 char *InsertCD[] =

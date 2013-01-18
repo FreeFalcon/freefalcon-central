@@ -1,8 +1,8 @@
 #include "stdhdr.h"
-#include "Graphics\Include\drawbsp.h"
-#include "Graphics\Include\drawsgmt.h"
-#include "Graphics\Include\drawpuff.h"
-#include "Graphics\Include\RenderOW.h"
+#include "Graphics/Include/drawbsp.h"
+#include "Graphics/Include/drawsgmt.h"
+#include "Graphics/Include/drawpuff.h"
+#include "Graphics/Include/RenderOW.h"
 #include "DrawParticleSys.h" //RV - I-Hawk - Added to support RV new trails
 #include "falcmesg.h"
 #include "aircrft.h"
@@ -40,7 +40,7 @@
 extern void *gSharedIntellivibe;
 
 extern bool g_bDisableFunkyChicken; // JB 010104
-#include "ui\include\uicomms.h" // JB 010107
+#include "ui/include/uicomms.h" // JB 010107
 extern UIComms *gCommsMgr; // JB 010107
 #include "terrtex.h" // JB carrier
 extern float g_fCarrierStartTolerance; // JB carrier

@@ -310,7 +310,7 @@ BOOL ICPClass::CheckForHARM(void)
  hasHARM += sms->hardPoint[hp]->weaponCount;
 }*/
 // Retro 3Jan2004 from here...
-#include "falcsnd\winampfrontend.h"
+#include "falcsnd/winampfrontend.h"
 extern bool g_bPilotEntertainment; // Retro 3Jan2004
 
 void ICPClass::ExecWinAmpMode(void)

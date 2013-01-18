@@ -8,9 +8,9 @@
 #include "stdafx.h"
 #include "Device.h"
 #include "context.h"
-#include "falclib\include\dispcfg.h"
-#include "movie\avimovie.h"
-#include "FalcLib\include\playerop.h"
+#include "falclib/include/dispcfg.h"
+#include "movie/avimovie.h"
+#include "FalcLib/include/playerop.h"
 
 // The pixel depth is hardwired for now
 static const int BITS_PER_PIXEL = 16;

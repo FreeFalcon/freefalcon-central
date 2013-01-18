@@ -12,7 +12,7 @@
 #include "PolyLib.h"
 #include "context.h"
 #include "TerrTex.h"
-#include "FalcLib\include\dispopts.h"
+#include "FalcLib/include/dispopts.h"
 
 extern int verts;
 

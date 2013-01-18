@@ -35,7 +35,7 @@
 /*****************************************************************************/
 #include "stdhdr.h"
 #include "radiosubtitle.h"
-#include "falcsnd\voicefilter.h"
+#include "falcsnd/voicefilter.h"
 #include <string.h>
 #include <stdio.h>
 

@@ -12,7 +12,7 @@
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "falcsess.h"
-#include "falclib\include\f4find.h"
+#include "falclib/include/f4find.h"
 #include "userids.h"
 #include "iconids.h"
 #include "textids.h"

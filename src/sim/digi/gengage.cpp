@@ -10,7 +10,7 @@
 #include "sms.h"
 #include "guns.h"
 #include "classtbl.h"
-#include "MsgInc\WeaponFireMsg.h"
+#include "MsgInc/WeaponFireMsg.h"
 #include "radar.h" // 2002-02-10 S.G.
 /* S.G. for WeaponClassDataType */#include "entity.h"
 #include "campbase.h" // 2002-02-10 S.G.

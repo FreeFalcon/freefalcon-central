@@ -12,7 +12,7 @@
 #include "cpmanager.h"
 #include "navsystem.h"
 #include "fsound.h"
-#include "falcsnd\voicemanager.h"
+#include "falcsnd/voicemanager.h"
 #include "weather.h"
 
 //MI for ICP stuff

@@ -18,8 +18,8 @@
 
 #include "tchar.h"
 #include "stdhdr.h"
-#include "Graphics\Include\grtypes.h"
-#include "Graphics\Include\imagebuf.h"
+#include "Graphics/Include/grtypes.h"
+#include "Graphics/Include/imagebuf.h"
 #include "vu2.h"
 
 #define SI_MOUSE_TIME_DELTA 1500 //in ms

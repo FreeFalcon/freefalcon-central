@@ -32,12 +32,12 @@
 #include "radar.h"
 #include "sms.h"
 #include "digi.h"
-#include "Graphics\Include\grtypes.h"
-#include "Graphics\Include\renderow.h"
+#include "Graphics/Include/grtypes.h"
+#include "Graphics/Include/renderow.h"
 #include "flight.h"
 #include "playerop.h"
 #include "falcsess.h"
-/* S.G. PADLOCKING LABEL COLOR */#include "Graphics\Include\drawbsp.h"
+/* S.G. PADLOCKING LABEL COLOR */#include "Graphics/Include/drawbsp.h"
 
 /* S.G. FOR HMS CODE */ #include "hardpnt.h"
 /* S.G. FOR HMS CODE */ #include "missile.h"
@@ -47,7 +47,7 @@
 
 #include "wpndef.h" // 2002-01-27 S.G.
 
-/* M.N. for padlock break */ #include "Graphics\Include\Tod.h"
+/* M.N. for padlock break */ #include "Graphics/Include/Tod.h"
 #include "sensclas.h"
 #include "visual.h"
 #include "Hud.h"

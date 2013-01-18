@@ -9,22 +9,22 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
-//#include "mathlib\math.h"
-//#include "mathlib\vector.h"
-//#include "mathlib\matrix.h"
-//#include "mathlib\color.h"
+//#include "mathlib/math.h"
+//#include "mathlib/vector.h"
+//#include "mathlib/matrix.h"
+//#include "mathlib/color.h"
 //#include "context.h"
 
 // Convienient values to have arround
 
 #include "../../codelib/include/shi/ConvFtoI.h"
 
-//#include "shi\ConvFtoI.h"
+//#include "shi/ConvFtoI.h"
 #include "../../codelib/include/shi/ShiError.h"
 
 #ifdef USE_SMART_HEAP
 #include <stdlib.h>
-#include "SmartHeap\Include\smrtheap.hpp"
+#include "SmartHeap/Include/smrtheap.hpp"
 #endif
 
 #include "Constant.h"

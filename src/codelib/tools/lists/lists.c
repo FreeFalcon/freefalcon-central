@@ -30,7 +30,7 @@
 #undef MemFree
 #undef MemFreePtr
 #undef MemMalloc
-#include "Smartheap\Include\smrtheap.h"
+#include "Smartheap/Include/smrtheap.h"
 extern MEM_POOL gResmgrMemPool;
 #  define LIST_ALLOC()  MemAllocPtr( gResmgrMemPool, sizeof(LIST), 0 )
 #  define LIST_FREE(a)  MemFreePtr(a)

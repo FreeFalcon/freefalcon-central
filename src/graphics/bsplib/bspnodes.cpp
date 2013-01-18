@@ -12,8 +12,8 @@
 #include "ObjectInstance.h"
 #include "Scripts.h"
 #include "BSPnodes.h"
-#include "falclib\include\mltrig.h"
-#include "falclib\include\IsBad.h"
+#include "falclib/include/mltrig.h"
+#include "falclib/include/IsBad.h"
 
 #pragma warning(disable : 4291)
 

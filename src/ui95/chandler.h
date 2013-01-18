@@ -21,7 +21,7 @@ class C_Handler;
 #include <dinput.h>
 #include "f4error.h"
 #include "f4thread.h"
-#include "Graphics\Include\imagebuf.h"
+#include "Graphics/Include/imagebuf.h"
 #include "fsound.h"
 #include "ui95_dd.h"
 #include "ui95defs.h" // BIG Enum for all internal IDs
@@ -32,13 +32,13 @@ extern MEM_POOL UI_Pools[UI_MAX_POOLS];
 #endif
 
 #include "cwindow.h"
-#include "ui\include\falcuser.h"
+#include "ui/include/falcuser.h"
 #include "stdlib.h"
 #include "debuggr.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap\Include\shmalloc.h"
-#include "SmartHeap\Include\smrtheap.hpp"
+#include "SmartHeap/Include/shmalloc.h"
+#include "SmartHeap/Include/smrtheap.hpp"
 #endif
 
 #define _SHIFT_DOWN_ (0x01)

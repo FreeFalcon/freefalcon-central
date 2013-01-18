@@ -41,7 +41,7 @@
 #include "urefresh.h"
 #include "te_defs.h"
 #include "teamdata.h"
-#include "sim\include\otwdrive.h"
+#include "sim/include/otwdrive.h"
 #include "campmap.h"
 
 ///////////////////////////////////////////////////////////////////////////////

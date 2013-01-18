@@ -8,8 +8,8 @@
 #ifndef _SIM_H_
 #define _SIM_H_
 
-#include "Utils\Types.h"
-#include "Utils\Matrix.h"
+#include "Utils/Types.h"
+#include "Utils/Matrix.h"
 
 
 class SimClass

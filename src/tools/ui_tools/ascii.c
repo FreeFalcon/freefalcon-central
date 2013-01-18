@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-#include "..\..\sim\include\ascii.h"
+#include "../../sim/include/ascii.h"
 
 
 // [0] = NOT SHIFT, [1] = SHIFT

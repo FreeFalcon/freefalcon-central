@@ -19,7 +19,7 @@
 #include "gndunit.h"
 #include "team.h"
 #include "GTM.h"
-#include "MsgInc\GndTaskingMsg.h"
+#include "MsgInc/GndTaskingMsg.h"
 #include "AIInput.h"
 #include "Mission.h"
 #include "classtbl.h"

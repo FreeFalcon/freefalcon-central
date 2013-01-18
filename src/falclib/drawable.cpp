@@ -1,8 +1,8 @@
-#include "Renderer\Render2d.h"
-#include "sim\include\stdhdr.h"
+#include "Renderer/Render2d.h"
+#include "sim/include/stdhdr.h"
 #include "drawable.h"
-#include "sim\include\otwdrive.h"
-#include "sim\include\cppanel.h"
+#include "sim/include/otwdrive.h"
+#include "sim/include/cppanel.h"
 
 void DrawableClass::DisplayExit(void)
 {

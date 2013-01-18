@@ -116,7 +116,7 @@ MSVC SETTINGS                */
 #undef MemFree
 #undef MemFreePtr
 #undef MemMalloc
-#include "Smartheap\Include\smrtheap.h"
+#include "Smartheap/Include/smrtheap.h"
 MEM_POOL gResmgrMemPool = NULL;
 #endif
 

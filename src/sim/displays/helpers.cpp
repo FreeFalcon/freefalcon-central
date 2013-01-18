@@ -1,5 +1,5 @@
 #include "stdhdr.h"
-#include "Graphics\Include\display.h"
+#include "Graphics/Include/display.h"
 #include "cmpclass.h"
 #include "flightData.h"
 #include "radardoppler.h" //MI

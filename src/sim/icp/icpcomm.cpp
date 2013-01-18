@@ -2,7 +2,7 @@
 #include "simdrive.h"
 #include "aircrft.h"
 #include "fsound.h"
-#include "falcsnd\voicemanager.h"
+#include "falcsnd/voicemanager.h"
 #include "navsystem.h"
 
 //MI for ICP stuff

@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc\CampEventDataMsg.h"
+#include "MsgInc/CampEventDataMsg.h"
 #include "mesg.h"
 #include "brief.h"
 #include "CmpEvent.h"

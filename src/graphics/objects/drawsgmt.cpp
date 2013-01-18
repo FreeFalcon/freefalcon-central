@@ -27,8 +27,8 @@
 #include "Sim/Include/Simbase.h"
 #include "sfx.h"
 #include "OTWDrive.h"
-#include "Graphics\DXEngine\DXEngine.h"
-#include "Graphics\DXEngine\DXVBManager.h"
+#include "Graphics/DXEngine/DXEngine.h"
+#include "Graphics/DXEngine/DXVBManager.h"
 
 extern int g_nGfxFix;
 extern char FalconDataDirectory[];
@@ -245,7 +245,7 @@ public:
 
 AList gTrailNodeStorage; // need to clean this up!
 int   gStorageCount = 0;
-#include <falclib\include\debuggr.h>
+#include <falclib/include/debuggr.h>
 
 
 /***************************************************************************\

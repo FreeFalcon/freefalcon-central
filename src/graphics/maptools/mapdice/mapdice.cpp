@@ -7,10 +7,10 @@
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "..\..\Terrain\Ttypes.h"
-#include "..\..\Terrain\TPost.h"
-#include "..\..\Terrain\TDskPost.h"
-#include "..\..\3Dlib\Image.h"
+#include "../../Terrain/Ttypes.h"
+#include "../../Terrain/TPost.h"
+#include "../../Terrain/TDskPost.h"
+#include "../../3Dlib/Image.h"
 
 
 #define  MAX_LEVELS 6 // How many levels of detail to generate

@@ -11,7 +11,7 @@
 #include "StateStack.h"
 #include "ObjectInstance.h"
 #include "Scripts.h"
-#include "falclib\include\mlTrig.h"
+#include "falclib/include/mlTrig.h"
 
 // Some handy constants to get things into units of ms and Radians
 static const float Seconds = 1.0f / 1000.0f;
