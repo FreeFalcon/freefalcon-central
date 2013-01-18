@@ -40,10 +40,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/4fcompress/</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/4fcompress/</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/4fcompress/</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/4fcompress/</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/f4compress/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/f4compress/</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/f4compress/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/f4compress/</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -71,9 +71,9 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>../../build/x86/release_win32/4fcompress/</AssemblerListingLocation>
-      <ObjectFileName>../../build/x86/release_win32/4fcompress/</ObjectFileName>
-      <ProgramDataBaseFileName>../../build/x86/release_win32/4fcompress/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>../../build/x86/release_win32/f4compress/</AssemblerListingLocation>
+      <ObjectFileName>../../build/x86/release_win32/f4compress/</ObjectFileName>
+      <ProgramDataBaseFileName>../../build/x86/release_win32/f4compress/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -82,7 +82,7 @@
       </PrecompiledHeaderFile>
     </ClCompile>
     <Lib>
-      <OutputFile>../../build/x86/release_win32/4fcompress/f4compress.lib</OutputFile>
+      <OutputFile>../../build/x86/release_win32/f4compress/f4compress.lib</OutputFile>
     </Lib>
     <Midl>
       <TypeLibraryName>.\Release/F4Compress.tlb</TypeLibraryName>
@@ -103,9 +103,9 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>../../build/x86/debug_win32/4fcompress/</AssemblerListingLocation>
-      <ObjectFileName>../../build/x86/debug_win32/4fcompress/</ObjectFileName>
-      <ProgramDataBaseFileName>../../build/x86/debug_win32/4fcompress/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>../../build/x86/debug_win32/f4compress/</AssemblerListingLocation>
+      <ObjectFileName>../../build/x86/debug_win32/f4compress/</ObjectFileName>
+      <ProgramDataBaseFileName>../../build/x86/debug_win32/f4compress/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
