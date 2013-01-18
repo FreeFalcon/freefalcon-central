@@ -135,8 +135,6 @@ extern uchar gCampJoinTries;
 #undef fopen
 #undef fclose
 
-#pragma warning (disable : 4127) // Conditional Expression is Constant
-
 char top_space[] = "                                                                               ";
 char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
 char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
