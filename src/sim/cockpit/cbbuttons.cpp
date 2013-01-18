@@ -2019,7 +2019,7 @@ void CBExEpu(void * pButton, int)
 
     switch (playerAC->af->GetEpuSwitch())
     {
-		case AirframeClass::OFF:
+        case AirframeClass::OFF:
             pCPButton->SetCurrentState(0);
             break;
 

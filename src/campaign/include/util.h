@@ -14,7 +14,7 @@
 #define CPU486          0
 #define CPUPENTIUM      1
 
-#define MONO_NORMAL  0x07                  
+#define MONO_NORMAL  0x07
 #define MONO_INTENSE 0x08
 #define MONO_UNDER   0x01
 #define MONO_REVERSE 0x70
@@ -30,18 +30,18 @@
 #define MonoColor( attribute ) ((void) 0)
 #else
 #define MonoPrint(x)    MonPrint x
-extern void MonPrint( const char *string, ... );
-extern void MonoLocate( unsigned char x, unsigned char y );
-extern void MonoCls( void );
-extern void MonoScroll( void );
-extern void MonoColor( char attribute );
+extern void MonPrint(const char *string, ...);
+extern void MonoLocate(unsigned char x, unsigned char y);
+extern void MonoCls(void);
+extern void MonoScroll(void);
+extern void MonoColor(char attribute);
 #endif
 
 #define cos(x) (((float) IGetCosine((short) (((x))*2607.5))) * 0.000000059604)
 #define sin(x) (((float) IGetSine((short) (((x))*2607.5))) * 0.000000059604)
 
 int UnzipFile(char *zipfile, char *filename, char **retbuf, long *size,
-        int *zipID);
+              int *zipID);
 void FreeZipFile(int zipID, char *retbuf);
 int OpenZipFile(char *zipfile, int *zipID);
 void CloseZipFile(int zipID);
@@ -54,7 +54,7 @@ void ShutdownZipFile(void);
 int OpenMemFile(int zipID, char *filename, FILE *fptr);
 void CloseMemFile(FILE *fptr);
 char *fgetsMem(char *linebuff, size_t n, FILE *fptr);
-size_t freadMem (void *buffer, size_t elsize, size_t nelem, FILE *fptr);
+size_t freadMem(void *buffer, size_t elsize, size_t nelem, FILE *fptr);
 int fseekMem(FILE *fptr, long offset, int where);
 long ftellMem(FILE *fptr);
 void rewindMem(FILE *fptr);

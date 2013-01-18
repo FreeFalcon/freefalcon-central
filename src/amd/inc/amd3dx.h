@@ -3,17 +3,17 @@
  * Copyright (c) 1998 ADVANCED MICRO DEVICES, INC.
  * All Rights reserved.
  *
- * This software is unpublished and contains the trade 
- * secrets and confidential proprietary information of 
- * AMD.  Unless otherwise provided in the Software 
- * Agreement associated herewith, it is licensed in 
- * confidence "AS IS" and is not to be reproduced in 
- * whole or part by any means except for backup.  Use, 
- * duplication, or disclosure by the Government is 
- * subject to the restrictions in paragraph(b)(3)(B)of 
- * the Rights in Technical Data and Computer Software 
- * clause in DFAR 52.227-7013(a)(Oct 1988).  Software 
- * owned by Advanced Micro Devices Inc., One AMD Place, 
+ * This software is unpublished and contains the trade
+ * secrets and confidential proprietary information of
+ * AMD.  Unless otherwise provided in the Software
+ * Agreement associated herewith, it is licensed in
+ * confidence "AS IS" and is not to be reproduced in
+ * whole or part by any means except for backup.  Use,
+ * duplication, or disclosure by the Government is
+ * subject to the restrictions in paragraph(b)(3)(B)of
+ * the Rights in Technical Data and Computer Software
+ * clause in DFAR 52.227-7013(a)(Oct 1988).  Software
+ * owned by Advanced Micro Devices Inc., One AMD Place,
  * P.O. Box 3453, Sunnyvale, CA 94088-3453.
  *
  ******************************************************
@@ -48,8 +48,8 @@
  *     _ebx, _esi, or _edi that contains effective address.
  *      ex) _asm PREFETCH (_edi)
  *
- * For WATCOM C/C++ users, when using #pragma aux instead if 
- * _asm, all macro names should be prefixed by a p_ or P_. 
+ * For WATCOM C/C++ users, when using #pragma aux instead if
+ * _asm, all macro names should be prefixed by a p_ or P_.
  * Macros should not be enclosed in quotes.
  *              ex) p_pfrcp (MM7,MM6)
  *
@@ -123,7 +123,7 @@
 
 // The WATCOM C/C++ version of the 3DNow! macros.
 //
-// The older, compbined register style for WATCOM C/C++ macros is not 
+// The older, compbined register style for WATCOM C/C++ macros is not
 // supported.
 
 /* Operand defines for instructions two operands */
@@ -545,9 +545,9 @@
 #define _K3D__esi 0x06
 #define _K3D__edi 0x07
 
-// General 3DNow! instruction format that is supported by 
-// these macros. Note that only the most basic form of memory 
-// operands are supported by these macros. 
+// General 3DNow! instruction format that is supported by
+// these macros. Note that only the most basic form of memory
+// operands are supported by these macros.
 
 #define InjK3DOps(dst,src,inst)                         \
 {                                                       \

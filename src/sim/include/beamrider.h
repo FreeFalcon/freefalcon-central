@@ -10,25 +10,30 @@ class SimMoverClass;
 
 class BeamRiderClass : public SensorClass
 {
-  public :
-	BeamRiderClass( int type, SimMoverClass* body );
-	virtual ~BeamRiderClass( void );
-	
-	virtual SimObjectType* Exec( SimObjectType *targetList );
-	void SetGuidancePlatform (FalconEntity*);
-	FalconEntity* Getplatform (void) {return radarPlatform;};
-  protected:
-	FalconEntity			*radarPlatform;			// The platform mounting our illumination radar
+public :
+    BeamRiderClass(int type, SimMoverClass* body);
+    virtual ~BeamRiderClass(void);
 
-	VU_ID					lastChaffID;			// ID of last chaff we dealt with
+    virtual SimObjectType* Exec(SimObjectType *targetList);
+    void SetGuidancePlatform(FalconEntity*);
+    FalconEntity* Getplatform(void)
+    {
+        return radarPlatform;
+    };
+protected:
+    FalconEntity			*radarPlatform;			// The platform mounting our illumination radar
 
-	UInt32					lastTargetLockSend;		// When did we last send a lock message?
+    VU_ID					lastChaffID;			// ID of last chaff we dealt with
 
-	unsigned long chafftime;//me123
-	virtual void	ConsiderDecoy( SimObjectType *target );
+    UInt32					lastTargetLockSend;		// When did we last send a lock message?
 
-	// Target notification function (triggers RWR and Digi responses)
-/* S.G. I NEED IT PUBLIC  */ public :	void			SendTrackMsg (SimObjectType* tgtptr, unsigned int trackType, unsigned int hardpoint = 0);		// Send a track message
+    unsigned long chafftime;//me123
+    virtual void	ConsiderDecoy(SimObjectType *target);
+
+    // Target notification function (triggers RWR and Digi responses)
+    /* S.G. I NEED IT PUBLIC  */
+public :
+    void			SendTrackMsg(SimObjectType* tgtptr, unsigned int trackType, unsigned int hardpoint = 0);		// Send a track message
 };
 
 #endif // _BEAMRIDER_H

@@ -24,23 +24,24 @@
 #define DarkGray		14
 #define White			15
 
-struct MapWindowType {
-		HWND			hMapWnd;				// Handle to the window
-		HDC				hMapDC;
-		short			FX,FY,LX,LY;			// GridIndex window bounds
-		short			PFX,PFY,PLX,PLY;		// Pixel window bounds
-		short			PMFX,PMFY,PMLX,PMLY;	// Pixelmap bounds
-		short			CenX,CenY;				// GridIndex center
-		short			WULX,WULY;				// Window's upper left screen coordinates
-		short			CULX,CULY;				// Client's upper left offset from window
-		short			CellSize;				// Pixel size per cell
-		unsigned char	Emitters;
-		unsigned char	SAMs;
-		unsigned char	ShowObjectives;
-		unsigned char	ShowLinks;
-		unsigned char	ShowUnits;
-		unsigned char	ShowWPs;
-		};
+struct MapWindowType
+{
+    HWND			hMapWnd;				// Handle to the window
+    HDC				hMapDC;
+    short			FX, FY, LX, LY;			// GridIndex window bounds
+    short			PFX, PFY, PLX, PLY;		// Pixel window bounds
+    short			PMFX, PMFY, PMLX, PMLY;	// Pixelmap bounds
+    short			CenX, CenY;				// GridIndex center
+    short			WULX, WULY;				// Window's upper left screen coordinates
+    short			CULX, CULY;				// Client's upper left offset from window
+    short			CellSize;				// Pixel size per cell
+    unsigned char	Emitters;
+    unsigned char	SAMs;
+    unsigned char	ShowObjectives;
+    unsigned char	ShowLinks;
+    unsigned char	ShowUnits;
+    unsigned char	ShowWPs;
+};
 typedef MapWindowType* MapData;
 
 // Map sizing Info

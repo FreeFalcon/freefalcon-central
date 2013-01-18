@@ -45,15 +45,17 @@ typedef UINT32			DWORD;
 
 
 // Three by three rotation matrix
-typedef struct Trotation {
-	float	M11, M12, M13;
-	float	M21, M22, M23;
-	float	M31, M32, M33;
+typedef struct Trotation
+{
+    float	M11, M12, M13;
+    float	M21, M22, M23;
+    float	M31, M32, M33;
 } Trotation;
 
 // Three space point// Three space point
-typedef struct Tpoint {
-	float x, y, z;
+typedef struct Tpoint
+{
+    float x, y, z;
 } Tpoint;
 
 //typedef struct vector3 {
@@ -61,30 +63,31 @@ typedef struct Tpoint {
 //} vector3;
 
 // RGB color
-typedef struct Tcolor {
-	float	r;
-	float	g;
-	float	b;
+typedef struct Tcolor
+{
+    float	r;
+    float	g;
+    float	b;
 
-	// Pack Functions
-	inline unsigned int Pack()
-	{
-		return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
-	}
-	inline unsigned int Pack(float fScale)
-	{
-		return (((long)((1.0f) * 255)) << 24) | (((long)((r*fScale) * 255)) << 16) | (((long)((g*fScale) * 255)) << 8) | (long)((b*fScale) * 255);
-	}
+    // Pack Functions
+    inline unsigned int Pack()
+    {
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
+    }
+    inline unsigned int Pack(float fScale)
+    {
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r * fScale) * 255)) << 16) | (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
+    }
 
-	// Static Pack Functions
-	static unsigned int PackRGBA(float r,float g,float b, float)
-	{
-		return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
-	}
-	static unsigned int PackRGBA(float r,float g,float b, float, float fScale)
-	{
-		return (((long)((1.0f) * 255)) << 24) | (((long)((r*fScale) * 255)) << 16) | (((long)((g*fScale) * 255)) << 8) | (long)((b*fScale) * 255);
-	}
+    // Static Pack Functions
+    static unsigned int PackRGBA(float r, float g, float b, float)
+    {
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
+    }
+    static unsigned int PackRGBA(float r, float g, float b, float, float fScale)
+    {
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r * fScale) * 255)) << 16) | (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
+    }
 
 } Tcolor;
 

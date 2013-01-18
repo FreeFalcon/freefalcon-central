@@ -17,12 +17,12 @@ public:
     nVector3EnvelopeCurve();
     /// constructor 2
     nVector3EnvelopeCurve(const vector3& keyFrameValue0, const vector3& keyFrameValue1,
-        const vector3& keyFrameValue2, const vector3& keyFrameValue3,
-        const float keyFramePos1, const float keyFramePos2);
+                          const vector3& keyFrameValue2, const vector3& keyFrameValue3,
+                          const float keyFramePos1, const float keyFramePos2);
     // set all parameters
     void SetParameters(const vector3& keyFrameValue0, const vector3& keyFrameValue1,
-        const vector3& keyFrameValue2, const vector3& keyFrameValue3,
-        const float keyFramePos1, const float keyFramePos2);
+                       const vector3& keyFrameValue2, const vector3& keyFrameValue3,
+                       const float keyFramePos1, const float keyFramePos2);
     // assign to other color envelope curve
     void SetParameters(const nVector3EnvelopeCurve& src);
     /// get the function value; pos must be between 0 and 1
@@ -51,7 +51,7 @@ nVector3EnvelopeCurve::nVector3EnvelopeCurve() :
 /**
 */
 inline
-nVector3EnvelopeCurve::nVector3EnvelopeCurve(const vector3& keyFrameValue0, 
+nVector3EnvelopeCurve::nVector3EnvelopeCurve(const vector3& keyFrameValue0,
         const vector3& keyFrameValue1, const vector3& keyFrameValue2,
         const vector3& keyFrameValue3, const float keyFramePos1,
         const float keyFramePos2) :
@@ -69,8 +69,8 @@ nVector3EnvelopeCurve::nVector3EnvelopeCurve(const vector3& keyFrameValue0,
 */
 inline
 void nVector3EnvelopeCurve::SetParameters(const vector3& keyFrameValue0, const vector3& keyFrameValue1,
-    const vector3& keyFrameValue2, const vector3& keyFrameValue3,
-    const float keyFramePos1, const float keyFramePos2)
+        const vector3& keyFrameValue2, const vector3& keyFrameValue3,
+        const float keyFramePos1, const float keyFramePos2)
 {
     this->keyFrameValues[0] = keyFrameValue0;
     this->keyFrameValues[1] = keyFrameValue1;
@@ -107,20 +107,20 @@ vector3 nVector3EnvelopeCurve::GetValue(float pos) const
     if (pos < this->keyFramePos1)
     {
         linearValue = this->keyFrameValues[1];
-        linearValue.lerp(this->keyFrameValues[0], 
-            (pos / this->keyFramePos1));
+        linearValue.lerp(this->keyFrameValues[0],
+                         (pos / this->keyFramePos1));
     }
     else if (pos < this->keyFramePos2)
     {
         linearValue = this->keyFrameValues[2];
-        linearValue.lerp(this->keyFrameValues[1], 
-            (pos-this->keyFramePos1) / (this->keyFramePos2-this->keyFramePos1));
+        linearValue.lerp(this->keyFrameValues[1],
+                         (pos - this->keyFramePos1) / (this->keyFramePos2 - this->keyFramePos1));
     }
     else
     {
         linearValue = this->keyFrameValues[3];
         linearValue.lerp(this->keyFrameValues[2],
-            (pos-this->keyFramePos2) / (1.0f-this->keyFramePos2));
+                         (pos - this->keyFramePos2) / (1.0f - this->keyFramePos2));
     }
 
     return linearValue;

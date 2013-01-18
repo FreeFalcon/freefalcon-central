@@ -30,31 +30,32 @@
 extern "C" {
 #endif
 
-typedef struct X {
-	float real;
-	float imag;
-} COMPLEX, *COMPLEX_PTR;
+    typedef struct X
+    {
+        float real;
+        float imag;
+    } COMPLEX, *COMPLEX_PTR;
 
-float	_iir(float input, int n, float *coef, float *history);
-void	_fftInit(int, COMPLEX *, int);
-void	_fft(int, COMPLEX *, COMPLEX *, int);
-float	_average(int, float *);
-float	_rms(int, float *);
-void	_bias(int n, float *data, float bias);
-void	_v_mult(int n, float *input1, float *input2, float *output);
-void	_minmax(int n, float *input, float *output);
-float	_bessel(float);
-float	_fir(float input, int n, float *coef, float *history);
-void	_firBlock(int n, float *input, float *output, int m, float *history);
-void	_convolve(int n, float *input1, float *input2, float *output);
+    float	_iir(float input, int n, float *coef, float *history);
+    void	_fftInit(int, COMPLEX *, int);
+    void	_fft(int, COMPLEX *, COMPLEX *, int);
+    float	_average(int, float *);
+    float	_rms(int, float *);
+    void	_bias(int n, float *data, float bias);
+    void	_v_mult(int n, float *input1, float *input2, float *output);
+    void	_minmax(int n, float *input, float *output);
+    float	_bessel(float);
+    float	_fir(float input, int n, float *coef, float *history);
+    void	_firBlock(int n, float *input, float *output, int m, float *history);
+    void	_convolve(int n, float *input1, float *input2, float *output);
 
-// fastcall routines
-// (registers are in same order as corresponding parameters above)
-void a_average();	// ecx * eax -> mm0
-void a_rms();		// ecx * eax -> mm0
-void a_v_mult();	// ecx * eax * ebx * edi -> ()
-void a_minmax();	// ecx * eax -> mm0 (max|min)
-void a_bessel();	// mm0 -> mm0
+    // fastcall routines
+    // (registers are in same order as corresponding parameters above)
+    void a_average();	// ecx * eax -> mm0
+    void a_rms();		// ecx * eax -> mm0
+    void a_v_mult();	// ecx * eax * ebx * edi -> ()
+    void a_minmax();	// ecx * eax -> mm0 (max|min)
+    void a_bessel();	// mm0 -> mm0
 
 #ifdef __cplusplus
 }

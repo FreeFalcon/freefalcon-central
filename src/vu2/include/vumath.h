@@ -16,7 +16,7 @@ typedef SM_SCALAR VU_VECT[3];
 #ifdef __cplusplus
 inline float vuabs(float val)
 {
-  return (float)fabs(val);
+    return (float)fabs(val);
 }
 #else
 #define vuabs(val) ((val) > 0 ? (val) : -(val))
@@ -25,11 +25,11 @@ inline float vuabs(float val)
 #ifdef __cplusplus
 inline float vumax(float val1, float val2)
 {
-	return (val1 > val2 ? val1 : val2);
+    return (val1 > val2 ? val1 : val2);
 }
 inline float vumin(float val1, float val2)
 {
-	return (val1 < val2 ? val1 : val2);
+    return (val1 < val2 ? val1 : val2);
 }
 #else
 #define vumax(val1, val2) ((val1) > (val2) ? (val1) : (val2))

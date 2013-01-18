@@ -26,38 +26,41 @@ using std::memcpychk;
  */
 class FalconRequestTeamInfoMessage : public FalconEvent
 {
-   public:
-      FalconRequestTeamInfoMessage(VU_ID entityId, VU_ID dest, VU_BYTE routing);
-      FalconRequestTeamInfoMessage(VU_ID entityId, VU_BYTE routing);
-      ~FalconRequestTeamInfoMessage(void);
-      int Size (void) { return sizeof(dataBlock) + FalconEvent::Size();};
-	  int Decode (VU_BYTE **buf, long *rem)
-	  {
-		  long init = *rem;
+public:
+    FalconRequestTeamInfoMessage(VU_ID entityId, VU_ID dest, VU_BYTE routing);
+    FalconRequestTeamInfoMessage(VU_ID entityId, VU_BYTE routing);
+    ~FalconRequestTeamInfoMessage(void);
+    int Size(void)
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-            ulong campTime;
-            ushort whoDidIt;
-      } dataBlock;
+        ulong campTime;
+        ushort whoDidIt;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

@@ -22,27 +22,27 @@
  */
 class FalconSendCampaign : public FalconEvent
 {
-   public:
-      FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconSendCampaign(void);
-      virtual int Size (void) const;
-	  //sfr: changed to long *
-      virtual int Decode (VU_BYTE **buf, long  *rem);
-      virtual int Encode (VU_BYTE **buf);
+public:
+    FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconSendCampaign(void);
+    virtual int Size(void) const;
+    //sfr: changed to long *
+    virtual int Decode(VU_BYTE **buf, long  *rem);
+    virtual int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
+    class DATA_BLOCK
+    {
+    public:
 
-            ulong campTime;
-            VU_ID from;
-			short dataSize;
-            uchar* campInfo;
-      } dataBlock;
+        ulong campTime;
+        VU_ID from;
+        short dataSize;
+        uchar* campInfo;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

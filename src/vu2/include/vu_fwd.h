@@ -14,111 +14,111 @@ struct VuCommsContext;
 // Threads
 //========
 class VuBaseThread;
-	class VuThread;
-	class VuMainThread;
+class VuThread;
+class VuMainThread;
 
 //==========
-// Messages 
+// Messages
 //==========
 // messages and derived classes
 class VuMessage;
-	class VuTimingMessage;
-	class VuUnknownMessage;
-	class VuErrorMessage;
-	class VuRequestMessage;
-		class VuGetRequest;
-		class VuPushRequest;
-		class VuPullRequest;
-	class VuEvent;
-		class VuDeleteEvent;
-		//class VuUnmanageEvent;
-		//class VuReleaseEvent;
-		class VuTransferEvent;
-		class VuPositionUpdateEvent;
-		class VuBroadcastGlobalEvent;
-		class VuEntityCollisionEvent;
-		class VuGroundCollisionEvent;
-		class VuSessionEvent;
-		class VuTimerEvent;
-		class VuShutdownEvent;
-		class VuCreateEvent;
-			class VuManageEvent;
-			class VuFullUpdateEvent;
+class VuTimingMessage;
+class VuUnknownMessage;
+class VuErrorMessage;
+class VuRequestMessage;
+class VuGetRequest;
+class VuPushRequest;
+class VuPullRequest;
+class VuEvent;
+class VuDeleteEvent;
+//class VuUnmanageEvent;
+//class VuReleaseEvent;
+class VuTransferEvent;
+class VuPositionUpdateEvent;
+class VuBroadcastGlobalEvent;
+class VuEntityCollisionEvent;
+class VuGroundCollisionEvent;
+class VuSessionEvent;
+class VuTimerEvent;
+class VuShutdownEvent;
+class VuCreateEvent;
+class VuManageEvent;
+class VuFullUpdateEvent;
 
 // message filters
 class VuMessageFilter;
-	class VuNullMessageFilter;
-	//class VuMessageTypeFilter;
-	class VuStandardMsgFilter;
-	class VuResendMsgFilter;
+class VuNullMessageFilter;
+//class VuMessageTypeFilter;
+class VuStandardMsgFilter;
+class VuResendMsgFilter;
 
 // message queues
 class VuMessageQueue;
-	class VuMainMessageQueue;
-	class VuPendingSendQueue;
+class VuMainMessageQueue;
+class VuPendingSendQueue;
 
 //==========
-// Entities 
+// Entities
 //==========
 class VuEntity;
-	class VuTargetEntity;
-		class VuSessionEntity;
-		class VuGroupEntity;
-			class VuGlobalGroup;
-			class VuGameEntity;
-				class VuPlayerPoolGame;
+class VuTargetEntity;
+class VuSessionEntity;
+class VuGroupEntity;
+class VuGlobalGroup;
+class VuGameEntity;
+class VuPlayerPoolGame;
 
 //==========
-// VuDriver	
-//==========	
+// VuDriver
+//==========
 class VuDriver;
-	class VuDeadReckon;
-		class VuMaster;
-		class VuDelaySlave;
+class VuDeadReckon;
+class VuMaster;
+class VuDelaySlave;
 
 //==========
 // database
 //==========
 // DBs
 class VuCollection;
-	class VuRedBlackTree;
-	class VuGridTree;
-	class VuLinkedList;
+class VuRedBlackTree;
+class VuGridTree;
+class VuLinkedList;
 #if VU_ALL_FILTERED
-		class VuFilteredList;
-			class VuOrderedList;
+class VuFilteredList;
+class VuOrderedList;
 #else
-		class VuOrderedList;
+class VuOrderedList;
 #endif
-	class VuHashTable;
+class VuHashTable;
 #if !VU_ALL_FILTERED
-		class VuFilteredHashTable;
+class VuFilteredHashTable;
 #endif
-		class VuDatabase;
-		
+class VuDatabase;
+
 // db filters
 class VuFilter;
-	class VuSessionFilter;
-	class VuStandardFilter;
-	class VuAssociationFilter;
-	class VuTypeFilter;
-	class VuOpaqueFilter;
-	class VuKeyFilter;
-		class VuBiKeyFilter;
-		class VuTransmissionFilter;
-	
+class VuSessionFilter;
+class VuStandardFilter;
+class VuAssociationFilter;
+class VuTypeFilter;
+class VuOpaqueFilter;
+class VuKeyFilter;
+class VuBiKeyFilter;
+class VuTransmissionFilter;
 
-// iterator	
+
+// iterator
 class VuIterator;
-	class VuSessionsIterator;
-	class VuListIterator;
-	class VuHashIterator;
-		class VuDatabaseIterator;
-	class VuRBIterator;
-		class VuGridIterator;
-		class VuFullGridIterator;
-		class VuLineIterator;
-		
+class VuSessionsIterator;
+class VuListIterator;
+class VuHashIterator;
+class VuDatabaseIterator;
+class VuRBIterator;
+class VuGridIterator;
+class VuFullGridIterator;
+class VuLineIterator;
+
 
 #endif
 

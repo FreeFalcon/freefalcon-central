@@ -12,7 +12,7 @@
 
 #include <windows.h>
 
-void *BMPread( const char *filename, BITMAPINFO *info, BOOL packLines );
-void  BMPfree( void *buffer );
+void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines);
+void  BMPfree(void *buffer);
 
 #endif // _BMP_H_

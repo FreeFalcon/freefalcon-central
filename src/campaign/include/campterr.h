@@ -23,33 +23,33 @@
 
 typedef Int16 GridIndex;
 
-typedef struct gridloctype 
-	{
-	GridIndex		x;
-	GridIndex		y;
-	} GridLocation;
+typedef struct gridloctype
+{
+    GridIndex		x;
+    GridIndex		y;
+} GridLocation;
 
 extern short				Map_Max_X;							// World Size, in grid coordinates
 extern short				Map_Max_Y;
 
-extern void InitTheaterTerrain (void);
+extern void InitTheaterTerrain(void);
 
-extern void FreeTheaterTerrain (void);
+extern void FreeTheaterTerrain(void);
 
-extern int LoadTheaterTerrain (char* FileName);
+extern int LoadTheaterTerrain(char* FileName);
 
-extern int LoadTheaterTerrainLight (char* name);
+extern int LoadTheaterTerrainLight(char* name);
 
-extern int SaveTheaterTerrain (char* FileName);
+extern int SaveTheaterTerrain(char* FileName);
 
-extern CellData GetCell (GridIndex x, GridIndex y);
+extern CellData GetCell(GridIndex x, GridIndex y);
 
-extern ReliefType GetRelief (GridIndex x, GridIndex y);
+extern ReliefType GetRelief(GridIndex x, GridIndex y);
 
-extern CoverType GetCover (GridIndex x, GridIndex y);
+extern CoverType GetCover(GridIndex x, GridIndex y);
 
-extern char GetRoad (GridIndex x, GridIndex y);
+extern char GetRoad(GridIndex x, GridIndex y);
 
-extern char GetRail (GridIndex x, GridIndex y);
+extern char GetRail(GridIndex x, GridIndex y);
 
 #endif

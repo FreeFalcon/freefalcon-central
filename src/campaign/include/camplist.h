@@ -16,71 +16,97 @@
 // Unit specific filters
 // ==================================
 
-class UnitFilter : public VuFilter {
-public:
-	uchar		parent;					// Set if parents only
-	uchar		real;					// Set if real only
-	ushort		host;					// Set if this host only
-	uchar		inactive;				// active or inactive units only
-
-public:
-	UnitFilter(uchar p, uchar r, ushort h, uchar a);
-	virtual ~UnitFilter(void)			{}
-
-	virtual VU_BOOL Test(VuEntity *ent);	
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new UnitFilter(parent,real,host,inactive); }
-};
-
-class AirUnitFilter : public VuFilter {
-public:
-	uchar		parent;					// Set if parents only
-	uchar		real;					// Set if real only
-	ushort		host;					// Set if this host only
-
-public:
-	AirUnitFilter(uchar p, uchar r, ushort h);
-	virtual ~AirUnitFilter(void)		{}
-
-	virtual VU_BOOL Test(VuEntity *ent);	
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new AirUnitFilter(parent,real,host); }
-};
-
-class GroundUnitFilter : public VuFilter 
+class UnitFilter : public VuFilter
 {
 public:
-	uchar		parent;					// Set if parents only
-	uchar		real;					// Set if real only
-	ushort		host;					// Set if this host only
+    uchar		parent;					// Set if parents only
+    uchar		real;					// Set if real only
+    ushort		host;					// Set if this host only
+    uchar		inactive;				// active or inactive units only
 
 public:
-	GroundUnitFilter(uchar p, uchar r, ushort h);
-	virtual ~GroundUnitFilter(void)		{}
+    UnitFilter(uchar p, uchar r, ushort h, uchar a);
+    virtual ~UnitFilter(void)			{}
 
-	virtual VU_BOOL Test(VuEntity *ent);	
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new GroundUnitFilter(parent,real,host); }
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new UnitFilter(parent, real, host, inactive);
+    }
 };
 
-class NavalUnitFilter : public VuFilter 
+class AirUnitFilter : public VuFilter
 {
 public:
-	uchar		parent;					// Set if parents only
-	uchar		real;					// Set if real only
-	ushort		host;					// Set if this host only
+    uchar		parent;					// Set if parents only
+    uchar		real;					// Set if real only
+    ushort		host;					// Set if this host only
 
 public:
-	NavalUnitFilter(uchar p, uchar r, ushort h);
-	virtual ~NavalUnitFilter(void)		{}
+    AirUnitFilter(uchar p, uchar r, ushort h);
+    virtual ~AirUnitFilter(void)		{}
 
-	virtual VU_BOOL Test(VuEntity *ent);	
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new NavalUnitFilter(parent,real,host); }
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new AirUnitFilter(parent, real, host);
+    }
+};
+
+class GroundUnitFilter : public VuFilter
+{
+public:
+    uchar		parent;					// Set if parents only
+    uchar		real;					// Set if real only
+    ushort		host;					// Set if this host only
+
+public:
+    GroundUnitFilter(uchar p, uchar r, ushort h);
+    virtual ~GroundUnitFilter(void)		{}
+
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new GroundUnitFilter(parent, real, host);
+    }
+};
+
+class NavalUnitFilter : public VuFilter
+{
+public:
+    uchar		parent;					// Set if parents only
+    uchar		real;					// Set if real only
+    ushort		host;					// Set if this host only
+
+public:
+    NavalUnitFilter(uchar p, uchar r, ushort h);
+    virtual ~NavalUnitFilter(void)		{}
+
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new NavalUnitFilter(parent, real, host);
+    }
 };
 
 extern UnitFilter			AllUnitFilter;
@@ -99,19 +125,25 @@ class UnitProxFilter : public VuBiKeyFilter
 {
 public:
 #if GRID_CORRECTION
-	/** filter that converts from max to res. Used in grids. */
-	UnitProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max){}
-	UnitProxFilter(const UnitProxFilter &other) : VuBiKeyFilter(other){}
-	virtual ~UnitProxFilter(){}
-	virtual VuFilter *Copy(){ return new UnitProxFilter(*this); }
+    /** filter that converts from max to res. Used in grids. */
+    UnitProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max) {}
+    UnitProxFilter(const UnitProxFilter &other) : VuBiKeyFilter(other) {}
+    virtual ~UnitProxFilter() {}
+    virtual VuFilter *Copy()
+    {
+        return new UnitProxFilter(*this);
+    }
 #else
-	UnitProxFilter(int r);
-	UnitProxFilter(const UnitProxFilter *other, int r);
-	virtual VuFilter *Copy(){ return new UnitProxFilter(real); }
+    UnitProxFilter(int r);
+    UnitProxFilter(const UnitProxFilter *other, int r);
+    virtual VuFilter *Copy()
+    {
+        return new UnitProxFilter(real);
+    }
 #endif
 
-	virtual VU_BOOL Test(VuEntity *ent);
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
 };
 
 extern UnitProxFilter*	AllUnitProxFilter;
@@ -129,40 +161,53 @@ extern UnitProxFilter*	RealUnitProxFilter;
 // ==============================
 
 // Standard Objective filter
-class ObjFilter : public VuFilter 
+class ObjFilter : public VuFilter
 {
 public:
-	ushort		host;					// Set if this host only
+    ushort		host;					// Set if this host only
 
 public:
-	ObjFilter(ushort h);
-	virtual ~ObjFilter(void)			{}
+    ObjFilter(ushort h);
+    virtual ~ObjFilter(void)			{}
 
-	virtual VU_BOOL Test(VuEntity *ent);	
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new ObjFilter(host); }
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new ObjFilter(host);
+    }
 };
 
 extern ObjFilter  AllObjFilter;
 
 // Objective Proximity filter
-class ObjProxFilter : public VuBiKeyFilter {
+class ObjProxFilter : public VuBiKeyFilter
+{
 public:
 #if GRID_CORRECTION
-	/** creates a filter which converts from max to res. Used in grids. */
-	ObjProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max){}
-	ObjProxFilter(const ObjProxFilter &other) : VuBiKeyFilter(other){}
-	virtual ~ObjProxFilter(){}
-	virtual VuFilter *Copy(){ return new ObjProxFilter(*this); }
+    /** creates a filter which converts from max to res. Used in grids. */
+    ObjProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max) {}
+    ObjProxFilter(const ObjProxFilter &other) : VuBiKeyFilter(other) {}
+    virtual ~ObjProxFilter() {}
+    virtual VuFilter *Copy()
+    {
+        return new ObjProxFilter(*this);
+    }
 #else
-	ObjProxFilter();
-	ObjProxFilter(const ObjProxFilter *other);
-	virtual VuFilter *Copy(){ return new ObjProxFilter(); }
+    ObjProxFilter();
+    ObjProxFilter(const ObjProxFilter *other);
+    virtual VuFilter *Copy()
+    {
+        return new ObjProxFilter();
+    }
 #endif
 
-	virtual VU_BOOL Test(VuEntity *ent);
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
 };
 
 extern ObjProxFilter* AllObjProxFilter;
@@ -171,18 +216,24 @@ extern ObjProxFilter* AllObjProxFilter;
 // General Filters
 // ==============================
 
-class CampBaseFilter : public VuFilter 
+class CampBaseFilter : public VuFilter
 {
 public:
 
 public:
-	CampBaseFilter(void)				{}
-	virtual ~CampBaseFilter(void)		{}
+    CampBaseFilter(void)				{}
+    virtual ~CampBaseFilter(void)		{}
 
-	virtual VU_BOOL Test(VuEntity *ent);
-	virtual VU_BOOL RemoveTest(VuEntity *ent);
-	virtual int Compare(VuEntity *ent1, VuEntity *ent2)	{ return (SimCompare (ent1, ent2)); }
-	virtual VuFilter *Copy()			{ return new CampBaseFilter(); }
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2)
+    {
+        return (SimCompare(ent1, ent2));
+    }
+    virtual VuFilter *Copy()
+    {
+        return new CampBaseFilter();
+    }
 };
 
 extern CampBaseFilter CampFilter;
@@ -236,27 +287,31 @@ extern FalconEntityList *simDirtyBuckets[MAX_DIRTY_BUCKETS];
 #endif
 
 #if USE_VU_COLL_FOR_CAMPAIGN
-	#if VU_ALL_FILTERED
+#if VU_ALL_FILTERED
 extern VuHashTable *deaggregatedEntities;
-	#else
+#else
 extern VuFilteredHashTable *deaggregatedEntities;
-	#endif
+#endif
 #else
 /** associative container for CampBase */
 typedef std::map<VU_ID, CampBaseBin> StdCampBaseMap;
-class CampBaseMap : private StdCampBaseMap {
+class CampBaseMap : private StdCampBaseMap
+{
 public:
-	typedef StdCampBaseMap::iterator iterator;
-	// constructor and destructors
-	explicit CampBaseMap(const std::string &name);
-	~CampBaseMap();
-	void insert(CampBaseBin cb);
-	void remove(const VU_ID &id);
-	const iterator begin();
-	const iterator end();
-	F4CSECTIONHANDLE *getMutex(){ return mutex; }
+    typedef StdCampBaseMap::iterator iterator;
+    // constructor and destructors
+    explicit CampBaseMap(const std::string &name);
+    ~CampBaseMap();
+    void insert(CampBaseBin cb);
+    void remove(const VU_ID &id);
+    const iterator begin();
+    const iterator end();
+    F4CSECTIONHANDLE *getMutex()
+    {
+        return mutex;
+    }
 private:
-	F4CSECTIONHANDLE *mutex;
+    F4CSECTIONHANDLE *mutex;
 };
 extern CampBaseMap *deaggregatedMap;     // All deaggregated entities
 #endif
@@ -289,27 +344,27 @@ extern VuGridTree* RealUnitProxList;	// Proximity list of all real units
 // List maintenance routines
 // ==============================
 
-extern void InitLists (void);
+extern void InitLists(void);
 
-extern void InitProximityLists (void);
+extern void InitProximityLists(void);
 
-extern void InitIALists (void);
+extern void InitIALists(void);
 
-extern void DisposeLists (void);
+extern void DisposeLists(void);
 
-extern void DisposeProxLists (void);
+extern void DisposeProxLists(void);
 
-extern void DisposeIALists (void);
+extern void DisposeIALists(void);
 
-extern int RebuildFrontList (int do_barcaps, int incremental);
+extern int RebuildFrontList(int do_barcaps, int incremental);
 
 extern int RebuildObjectiveLists(void);
 
-extern int RebuildParentsList (void);
+extern int RebuildParentsList(void);
 
-extern int RebuildEmitterList (void);
+extern int RebuildEmitterList(void);
 
-extern void StandardRebuild (void);
+extern void StandardRebuild(void);
 
 void InactivateUnit(UnitClass *unit);
 

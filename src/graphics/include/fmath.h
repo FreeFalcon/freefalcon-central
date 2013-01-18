@@ -11,75 +11,75 @@
 
 inline float Sin(float a)
 {
-	_asm
-	{
-		fld a;
-		fsin;
-		fstp a;
-	}
+    _asm
+    {
+        fld a;
+        fsin;
+        fstp a;
+    }
 
-	return a;
+    return a;
 }
 
 inline float Cos(float a)
 {
-	_asm
-	{
-		fld a;
-		fcos;
-		fstp a;
-	}
+    _asm
+    {
+        fld a;
+        fcos;
+        fstp a;
+    }
 
-	return a;
+    return a;
 }
 
 inline float FabsF(float f)
 {
-	_asm
-	{
-		fld f;
-		fabs;
-		fstp f;
-	}
+    _asm
+    {
+        fld f;
+        fabs;
+        fstp f;
+    }
 
-	return f;
+    return f;
 }
 
 inline float SqrtF(float f)
 {
-	_asm
-	{
-		fld f;
-		fsqrt;
-		fstp f;
-	}
+    _asm
+    {
+        fld f;
+        fsqrt;
+        fstp f;
+    }
 
-	return f;
+    return f;
 }
 
 inline float Tan(const float a)
 {
-	_asm
-	{
-		fld a;
-		fptan;
-		fstp a;
-	}
+    _asm
+    {
+        fld a;
+        fptan;
+        fstp a;
+    }
 
-	return a;
+    return a;
 }
 
 inline float Atan(const float o, float a)
 {
-	_asm
-	{
-		fld o;
-		fld a;
-		fpatan;
-		fstp a;
-	}
+    _asm
+    {
+        fld o;
+        fld a;
+        fpatan;
+        fstp a;
+    }
 
-	return a;
+    return a;
 }
 /*
 inline void SinCos(const float a, float *s, float *c)

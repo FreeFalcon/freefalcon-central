@@ -26,8 +26,8 @@
 // Supply functions
 // ==================
 
-extern int ProduceSupplies (CampaignTime delta);
+extern int ProduceSupplies(CampaignTime delta);
 
-extern int SupplyUnits (Team who, CampaignTime delta);
+extern int SupplyUnits(Team who, CampaignTime delta);
 
 #endif

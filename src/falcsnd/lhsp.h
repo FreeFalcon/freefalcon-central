@@ -11,20 +11,20 @@
 
 
 class LHSP
-	{
-	public:
-		HANDLE			hAccess;
-		long			PMSIZE, CODESIZE;
-//		unsigned char	*lpInputUncoded;
+{
+public:
+    HANDLE			hAccess;
+    long			PMSIZE, CODESIZE;
+    //		unsigned char	*lpInputUncoded;
 
-		LHSP( void );
-		~LHSP( void );
-		void InitializeLHSP( void );
-//		FILE *VoiceOpen( void );
-		long ReadLHSPFile( COMPRESSION_DATA *input, unsigned char **buffer );
-		void CleanupLHSP( void );
-//		void VoiceClose( FILE	*falconVoiceFile );
+    LHSP(void);
+    ~LHSP(void);
+    void InitializeLHSP(void);
+    //		FILE *VoiceOpen( void );
+    long ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer);
+    void CleanupLHSP(void);
+    //		void VoiceClose( FILE	*falconVoiceFile );
 
-	};
+};
 
 #endif  /* _LHSP_H */

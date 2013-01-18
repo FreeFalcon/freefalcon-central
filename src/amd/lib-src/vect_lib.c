@@ -36,28 +36,29 @@
  *      a       - input vector
  *      return  - the magnitude of 'a'
  */
-float _mag_vect (float *a)
+float _mag_vect(float *a)
 {
-	float r;
-	__asm {
-		femms
-		mov			eax,a
-		movq		mm0,[eax]
-		movd		mm1,[eax+8]
-		pfmul		(mm0,mm0)
-		pfmul		(mm1,mm1)
-		pfacc		(mm0,mm0)
-		pfadd		(mm0,mm1)
-		pfrsqrt		(mm1,mm0)
-		movq		mm2,mm1
-		pfmul		(mm1,mm1)
-		pfrsqit1	(mm1,mm0)
-		pfrcpit2	(mm1,mm2)
-		pfmul		(mm0,mm1)
-		movd		r,mm0
-		femms
-	}
-	return r;
+    float r;
+    __asm
+    {
+        femms
+        mov			eax, a
+        movq		mm0, [eax]
+        movd		mm1, [eax+8]
+        pfmul(mm0, mm0)
+        pfmul(mm1, mm1)
+        pfacc(mm0, mm0)
+        pfadd(mm0, mm1)
+        pfrsqrt(mm1, mm0)
+        movq		mm2, mm1
+        pfmul(mm1, mm1)
+        pfrsqit1(mm1, mm0)
+        pfrcpit2(mm1, mm2)
+        pfmul(mm0, mm1)
+        movd		r, mm0
+        femms
+    }
+    return r;
 }
 
 
@@ -66,23 +67,24 @@ float _mag_vect (float *a)
  *      b       - input vector 2
  *      return  - the dot product
  */
-float _dot_vect (float *a, float *b)
+float _dot_vect(float *a, float *b)
 {
-	float r;
-	__asm {
-		femms
-		mov			eax,a
-		mov			edx,b
-		movq		mm0,[eax]
-		movd		mm1,[eax+8]
-		pfmul		(mm0,edx)
-		pfacc		(mm0,mm0)
-		pfmulm		(mm1,edx,0x8)
-		pfadd		(mm0,mm1)
-		movd		r,mm0
-		femms
-	}
-	return r;
+    float r;
+    __asm
+    {
+        femms
+        mov			eax, a
+        mov			edx, b
+        movq		mm0, [eax]
+        movd		mm1, [eax+8]
+        pfmul(mm0, edx)
+        pfacc(mm0, mm0)
+        pfmulm(mm1, edx, 0x8)
+        pfadd(mm0, mm1)
+        movd		r, mm0
+        femms
+    }
+    return r;
 }
 
 // eof

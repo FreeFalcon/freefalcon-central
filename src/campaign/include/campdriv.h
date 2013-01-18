@@ -9,18 +9,18 @@ extern	HMENU	hMainMenu;
 
 extern	MapData	MainMapData;
 extern	short   CellSize;
-extern 	short   WULX,WULY,CULX,CULY;
+extern 	short   WULX, WULY, CULX, CULY;
 
 extern 	F4PFList	GlobList;
-extern 	Unit		GlobUnit,WPUnit;
+extern 	Unit		GlobUnit, WPUnit;
 extern	Objective	GlobObj;
 extern	WayPoint	GlobWP;
 
-extern	F4PFList GetSquadsFlightList (int id);
+extern	F4PFList GetSquadsFlightList(int id);
 
-extern	GridIndex CurX,CurY;
+extern	GridIndex CurX, CurY;
 
 // For testing
 extern	unsigned char  SHOWSTATS;
-	
+
 

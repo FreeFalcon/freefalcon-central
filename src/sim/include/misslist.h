@@ -6,10 +6,10 @@ class SimWeaponClass;
 class FalconEntity;
 
 // Helper Functions
-SimWeaponClass** InitMissile (FalconEntity* parent, ushort type, int num, int side);
-SimWeaponClass* InitAMissile (FalconEntity* parent, ushort type, int slot);
-void FreeFlyingMissile (SimBaseClass* flier);
-void FreeRailMissile (SimBaseClass* railer);
+SimWeaponClass** InitMissile(FalconEntity* parent, ushort type, int num, int side);
+SimWeaponClass* InitAMissile(FalconEntity* parent, ushort type, int slot);
+void FreeFlyingMissile(SimBaseClass* flier);
+void FreeRailMissile(SimBaseClass* railer);
 
 #endif
 

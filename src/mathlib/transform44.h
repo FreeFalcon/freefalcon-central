@@ -36,8 +36,8 @@ public:
 private:
     enum
     {
-        Dirty = (1<<0),
-        UseEuler = (1<<1),
+        Dirty = (1 << 0),
+        UseEuler = (1 << 1),
     };
     vector3 translation;
     vector3 euler;
@@ -168,8 +168,10 @@ transform44::getmatrix()
             this->matrix.mult_simple(matrix44(this->quat));
             this->matrix.translate(this->translation);
         }
+
         this->flags &= ~Dirty;
     }
+
     return this->matrix;
 }
 
@@ -196,5 +198,4 @@ transform44::isdirty() const
 //------------------------------------------------------------------------------
 #endif
 
-    
-    
+

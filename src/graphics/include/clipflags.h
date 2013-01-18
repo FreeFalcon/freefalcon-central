@@ -24,35 +24,47 @@ static const UInt32	OFF_SCREEN			= 0xFF;
 
 
 /* Helper functions to compute the horizontal, vertical, and near clip flags */
-static inline UInt32 GetRangeClipFlags( float z, float )
+static inline UInt32 GetRangeClipFlags(float z, float)
 {
-	if ( z < NEAR_CLIP_DISTANCE ) {
-		return CLIP_NEAR;
-	}
-	return ON_SCREEN;
+    if (z < NEAR_CLIP_DISTANCE)
+    {
+        return CLIP_NEAR;
+    }
+
+    return ON_SCREEN;
 }
 
-static inline UInt32 GetHorizontalClipFlags( float x, float z )
+static inline UInt32 GetHorizontalClipFlags(float x, float z)
 {
-	if ( fabs(x) > z ) {
-		if ( x > z ) {
-			return CLIP_RIGHT;
-		} else {
-			return CLIP_LEFT;
-		}
-	}
-	return ON_SCREEN;
+    if (fabs(x) > z)
+    {
+        if (x > z)
+        {
+            return CLIP_RIGHT;
+        }
+        else
+        {
+            return CLIP_LEFT;
+        }
+    }
+
+    return ON_SCREEN;
 }
 
-static inline UInt32 GetVerticalClipFlags( float y, float z )
+static inline UInt32 GetVerticalClipFlags(float y, float z)
 {
-	if ( fabs(y) > z ) {
-		if ( y > z ) {
-			return CLIP_BOTTOM;
-		} else {
-			return CLIP_TOP;
-		}
-	}
-	return ON_SCREEN;
+    if (fabs(y) > z)
+    {
+        if (y > z)
+        {
+            return CLIP_BOTTOM;
+        }
+        else
+        {
+            return CLIP_TOP;
+        }
+    }
+
+    return ON_SCREEN;
 }
 #endif // _CLIPFLAGS_H_

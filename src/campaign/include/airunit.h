@@ -1,4 +1,4 @@
-// 
+//
 // This includes the Flight and Squadron classes. See Package.cpp for Package class
 //
 
@@ -27,37 +27,49 @@ class AircraftClass;
 #define ROLE_ELINT		25
 
 // =========================
-// Air unit Class 
+// Air unit Class
 // =========================
 
 class AirUnitClass : public UnitClass
 {
 public:
-		// constructors and serial functions
-		AirUnitClass(ushort type, VU_ID_NUMBER id);
-		AirUnitClass(VU_BYTE **stream, long *rem);
-		virtual ~AirUnitClass();
-		virtual int SaveSize (void);
-		virtual int Save (VU_BYTE **stream);
+    // constructors and serial functions
+    AirUnitClass(ushort type, VU_ID_NUMBER id);
+    AirUnitClass(VU_BYTE **stream, long *rem);
+    virtual ~AirUnitClass();
+    virtual int SaveSize(void);
+    virtual int Save(VU_BYTE **stream);
 
-		// event Handlers
-		virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
+    // event Handlers
+    virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
 
-		// Required pure virtuals handled by AirUnitClass
-		virtual MoveType GetMovementType (void);
-		virtual int GetUnitSpeed() const;
+    // Required pure virtuals handled by AirUnitClass
+    virtual MoveType GetMovementType(void);
+    virtual int GetUnitSpeed() const;
 #if HOTSPOT_FIX
-		virtual CampaignTime MaxUpdateTime() const			{ return AIR_UPDATE_CHECK_INTERVAL*CampaignSeconds; }
+    virtual CampaignTime MaxUpdateTime() const
+    {
+        return AIR_UPDATE_CHECK_INTERVAL * CampaignSeconds;
+    }
 #else
-		virtual CampaignTime UpdateTime (void)				{ return AIR_UPDATE_CHECK_INTERVAL*CampaignSeconds; }
+    virtual CampaignTime UpdateTime(void)
+    {
+        return AIR_UPDATE_CHECK_INTERVAL * CampaignSeconds;
+    }
 #endif
-		// pure virtual implementation
-		virtual float GetVt() const							{ return GetUnitSpeed() * KPH_TO_FPS; }
-		virtual float GetKias()	const 						{ return GetVt() * FTPSEC_TO_KNOTS; }
+    // pure virtual implementation
+    virtual float GetVt() const
+    {
+        return GetUnitSpeed() * KPH_TO_FPS;
+    }
+    virtual float GetKias()	const
+    {
+        return GetVt() * FTPSEC_TO_KNOTS;
+    }
 
-		// core functions
-		virtual int IsHelicopter (void) const;
-		virtual int OnGround (void);
+    // core functions
+    virtual int IsHelicopter(void) const;
+    virtual int OnGround(void);
 };
 
 #include "Flight.h"
@@ -69,6 +81,6 @@ public:
 // Air Unit functions
 // =========================================
 
-int GetUnitScore (Unit u, MoveType mt);
+int GetUnitScore(Unit u, MoveType mt);
 
 #endif

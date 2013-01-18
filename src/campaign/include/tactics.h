@@ -44,43 +44,45 @@
 #define GILMANS_BEAM_TACTIC
 
 // The bit field definition
-struct ReactData {
-	uchar		reaction[3];				// reaction (or 0 for ignore)
-	};
+struct ReactData
+{
+    uchar		reaction[3];				// reaction (or 0 for ignore)
+};
 
 // =========================
 // Tactics Structure
 // =========================
-	 
+
 struct TacticData;
 typedef TacticData *Tactic;
 
-struct TacticData {
-	short		id;
-	char		name[30];				// Tactic name
-	uchar		team;					// Teams which are allowed to use this tactic
-	uchar		domainType;				// Domain of units which can use this tactic
-	uchar		unitSize;				// Size of units which can use this tactic
-	short		minRangeToDest;			// How far from our target we gotta be (no target, mission dest)
-	short		maxRangeToDest;			// How far from out target we can be
-	short		distToFront;			// Minimum distance to the front
-	uchar		actionList[10];			// Actions/orders this tactic's ok with (0 in slot 0 = any)
-	uchar		broken;					// Can we do this while broken?
-	uchar		engaged;				// Can we do this while engaged?
-	uchar		combat;					// Can we do this while in combat?
-	uchar		losses;					// Can we do this while taking losses?
-	uchar		retreating;				// Can we do this while retreating?
-	uchar		owned;					// Is our assigned objective owned by us?
-	uchar		airborne;				// Is our unit air-mobile?
-	uchar		marine;					// Is our unit marine-capibile?
-	uchar		minOdds;				// Minimum odds we're willing to do this with (minOdds:10)
-	uchar		role;					// Any special role we need to do this.
-	uchar		fuel;					// How much extra fuel we gotta have
-	uchar		weapons;				// 0 = none req, 1 = req for target, 2 = req for target and mission obj
-	uchar		priority;				// Relative ranking of this tactic
-	uchar		formation;				// Formation to do this in
-	uchar		special;				// Any private stuff we want to check
-	};
+struct TacticData
+{
+    short		id;
+    char		name[30];				// Tactic name
+    uchar		team;					// Teams which are allowed to use this tactic
+    uchar		domainType;				// Domain of units which can use this tactic
+    uchar		unitSize;				// Size of units which can use this tactic
+    short		minRangeToDest;			// How far from our target we gotta be (no target, mission dest)
+    short		maxRangeToDest;			// How far from out target we can be
+    short		distToFront;			// Minimum distance to the front
+    uchar		actionList[10];			// Actions/orders this tactic's ok with (0 in slot 0 = any)
+    uchar		broken;					// Can we do this while broken?
+    uchar		engaged;				// Can we do this while engaged?
+    uchar		combat;					// Can we do this while in combat?
+    uchar		losses;					// Can we do this while taking losses?
+    uchar		retreating;				// Can we do this while retreating?
+    uchar		owned;					// Is our assigned objective owned by us?
+    uchar		airborne;				// Is our unit air-mobile?
+    uchar		marine;					// Is our unit marine-capibile?
+    uchar		minOdds;				// Minimum odds we're willing to do this with (minOdds:10)
+    uchar		role;					// Any special role we need to do this.
+    uchar		fuel;					// How much extra fuel we gotta have
+    uchar		weapons;				// 0 = none req, 1 = req for target, 2 = req for target and mission obj
+    uchar		priority;				// Relative ranking of this tactic
+    uchar		formation;				// Formation to do this in
+    uchar		special;				// Any private stuff we want to check
+};
 
 // =========================
 // Tactics Lists
@@ -100,11 +102,11 @@ extern TacticData *TacticsTable;
 // Functions
 // =========================
 
-int LoadTactics (char* filename);
+int LoadTactics(char* filename);
 
-void FreeTactics (void);
+void FreeTactics(void);
 
-int CheckTeam (int tid, int team);
+int CheckTeam(int tid, int team);
 
 int CheckUnitType(int tid, int domain, int type);
 

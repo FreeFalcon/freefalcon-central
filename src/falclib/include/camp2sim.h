@@ -18,7 +18,7 @@ class SimInitDataClass;
 #define WORLD_X_CENTER   (-65.0F * 5280.0F)
 #define WORLD_Y_CENTER   ( 80.0F * 5280.0F)
 
-SimBaseClass* AddObjectToSim (SimInitDataClass* init_data, int motion_type);
+SimBaseClass* AddObjectToSim(SimInitDataClass* init_data, int motion_type);
 
 #endif
 

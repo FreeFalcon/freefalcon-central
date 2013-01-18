@@ -12,25 +12,27 @@
 extern class DynamicPatchClass		TheDynamicPatchList;
 
 
-typedef struct DynamicPatchRecord {
-	char	name[256];
+typedef struct DynamicPatchRecord
+{
+    char	name[256];
 
-	DynamicPatchRecord *next;
+    DynamicPatchRecord *next;
 } DynamicPatchRecord;
 
-class DynamicPatchClass {
+class DynamicPatchClass
+{
 public:
-	DynamicPatchClass()	{};
-	~DynamicPatchClass()	{};
+    DynamicPatchClass()	{};
+    ~DynamicPatchClass()	{};
 
-	void Setup(void);
-	void Load( char *filename );
-	void Cleanup(void);
-	
-	void	AddPatch( char *name );
-	BOOL	IsDynamic( char *name );
+    void Setup(void);
+    void Load(char *filename);
+    void Cleanup(void);
 
-	DynamicPatchRecord	*PatchList;
+    void	AddPatch(char *name);
+    BOOL	IsDynamic(char *name);
+
+    DynamicPatchRecord	*PatchList;
 };
 
 #endif // _ALPHAPATCH_H_

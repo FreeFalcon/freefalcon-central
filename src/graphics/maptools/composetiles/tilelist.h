@@ -9,36 +9,47 @@
 #define _TILELIST_H_
 
 
-typedef struct TileListEntry {
-	WORD			texCode;
-	char			name[20];
-	BYTE			data[16*16];
-	TileListEntry	*next;
+typedef struct TileListEntry
+{
+    WORD			texCode;
+    char			name[20];
+    BYTE			data[16 * 16];
+    TileListEntry	*next;
 } TileListEntry;
 
-class TileListManager {
-  public:
-	TileListManager()						{ totalTiles = 0; };
-	~TileListManager()						{};
+class TileListManager
+{
+public:
+    TileListManager()
+    {
+        totalTiles = 0;
+    };
+    ~TileListManager()						{};
 
-	void			Setup( char *path );
-	void			Cleanup( void );
+    void			Setup(char *path);
+    void			Cleanup(void);
 
-	const char*		GetFileName( WORD texCode );
-	const BYTE*		GetImageData( WORD texCode );
-	const DWORD*	GetSharedPalette( void )		{ return palette; };
-	const int		GetTileCount( void )			{ return totalTiles; };
+    const char*		GetFileName(WORD texCode);
+    const BYTE*		GetImageData(WORD texCode);
+    const DWORD*	GetSharedPalette(void)
+    {
+        return palette;
+    };
+    const int		GetTileCount(void)
+    {
+        return totalTiles;
+    };
 
-	void			WriteSharedPaletteData( int TargetFile );
+    void			WriteSharedPaletteData(int TargetFile);
 
-  protected:
-	void			ReadImageData( char *filename, BYTE *target, DWORD size );
+protected:
+    void			ReadImageData(char *filename, BYTE *target, DWORD size);
 
-  protected:
-	TileListEntry	*tileListHead;
-	int				totalTiles;
+protected:
+    TileListEntry	*tileListHead;
+    int				totalTiles;
 
-	DWORD		*palette;
+    DWORD		*palette;
 };
 
 #endif // _TILELIST_H_

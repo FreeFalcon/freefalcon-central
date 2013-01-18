@@ -64,7 +64,7 @@
 
 extern "C"
 {
-	#include "amdlib.h"
+#include "amdlib.h"
 }
 
 
@@ -444,7 +444,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 
 int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	                     LPSTR lpCmdLine, int nCmdShow)
+                         LPSTR lpCmdLine, int nCmdShow)
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
@@ -648,7 +648,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 // set up structured exception handling here
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	               LPSTR lpCmdLine, int nCmdShow)
+                   LPSTR lpCmdLine, int nCmdShow)
 {
     int Result = -1;
 
@@ -703,11 +703,11 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             switch (LOWORD(wParam))
             {
                 case ID_SHOW_VERSION:
-					ShowVersion = ShowVersion != 2 ? 2 : 0;
+                    ShowVersion = ShowVersion != 2 ? 2 : 0;
                     break;
 
                 case ID_SHOW_MAJOR_VERSION:
-					ShowVersion = ShowVersion != 1 ? 1 : 0;
+                    ShowVersion = ShowVersion != 1 ? 1 : 0;
                     break;
 
                 case ID_FILE_EXIT:
@@ -735,8 +735,10 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     DisableCampaignMenus();
                     TheCampaign.EndCampaign();
 #if CAMPTOOL
+
                     if (hMainWnd)
                         PostMessage(hMainWnd, WM_CLOSE, 0, 0);
+
 #endif
                     DisableCampaignMenus();
                     break;
@@ -877,8 +879,8 @@ int get_ip(char *str)
     while (*src)
     {
         if (*src != '.')
-			++src;
-		else
+            ++src;
+        else
         {
             *src = 0;
             addr = addr * 256 + atoi(str);
@@ -1017,7 +1019,7 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!strnicmp(arg, "-g", 2))
             {
                 int temp = atoi(&arg[2]);
-				GraphicSettingMult = temp >= 1 ? temp : 1;
+                GraphicSettingMult = temp >= 1 ? temp : 1;
             }
 
             if (!stricmp(arg, "-full"))
@@ -1038,8 +1040,8 @@ void ParseCommandLine(LPSTR cmdLine)
                 DisableSmoothing = TRUE;
 
             if (!stricmp(arg, "-numhats"))
-				if ((arg = strtok(NULL, " ")) != NULL)
-					NumHats = atoi(arg);
+                if ((arg = strtok(NULL, " ")) != NULL)
+                    NumHats = atoi(arg);
 
             if (strnicmp(arg, "-nosound", 8) == 0)
                 gSoundFlags &= (0xffffffff ^ FSND_SOUND);
@@ -1048,6 +1050,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 gSoundFlags &= (0xffffffff ^ FSND_REPETE);
 
 #ifdef DEBUG
+
             if (strnicmp(arg, "-noassert", 9) == 0)
             {
                 F4SetAsserts(FALSE);
@@ -1072,6 +1075,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (stricmp(arg, "-resetpilots") == 0)
                 gClearPilotInfo = 1;
+
 #endif
 
             if (stricmp(arg, "-tacedit") == 0)
@@ -1102,8 +1106,10 @@ void ParseCommandLine(LPSTR cmdLine)
                 wait_for_loaded = FALSE;
 
 #ifdef DEBUG
+
             if (strnicmp(arg, "-campinput", 10) == 0)
                 gCampPlayerInput = atoi(arg + 10);
+
 #endif
 
             if (!stricmp(arg, "-bandwidth") || !stricmp(arg, "-bandwith") || !stricmp(arg, "-bw"))
@@ -1121,10 +1127,10 @@ void ParseCommandLine(LPSTR cmdLine)
                     UR_HEAD_VIEW = (float)atoi(arg);
 
                     if (UR_HEAD_VIEW < 50)
-						UR_HEAD_VIEW = 50;
+                        UR_HEAD_VIEW = 50;
 
                     if (UR_HEAD_VIEW > 160)
-						UR_HEAD_VIEW = 160;
+                        UR_HEAD_VIEW = 160;
                 }
 
             if (!stricmp(arg, "-latency"))
@@ -1702,10 +1708,10 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_TACREF_BUTTON_HANDLER:
             break;
 
-		// =========================================================
-		// KCK: These are used for loading/joining/ending a campaign
-		// and are called under all four game sections.
-		// =========================================================
+            // =========================================================
+            // KCK: These are used for loading/joining/ending a campaign
+            // and are called under all four game sections.
+            // =========================================================
 
         case FM_LOAD_CAMPAIGN:
             if (lTestVar)
@@ -1844,9 +1850,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             ShutdownCampaign();
             break;
 
-		// ==========================================================
-		// KCK: These are for sim entry/exit from the varios sections
-		// ==========================================================
+            // ==========================================================
+            // KCK: These are for sim entry/exit from the varios sections
+            // ==========================================================
 
         case FM_START_INSTANTACTION:
             // Mark us as loading
@@ -1905,9 +1911,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_GOT_CAMPAIGN_DATA:
             switch (wParam)
             {
-				// KCK: This is the data we just got - In case Peter wants to check off the
-				// data in some sort of "Getting campaign data" dialog or otherwise do something
-				// with it.
+                    // KCK: This is the data we just got - In case Peter wants to check off the
+                    // data in some sort of "Getting campaign data" dialog or otherwise do something
+                    // with it.
                 case CAMP_NEED_PRELOAD:
                     MonoPrint("Got Scenario Stats.\n");
                     gCampJoinTries = 0;
@@ -2012,11 +2018,12 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             break;
 
-		// =========================================================
-		// KCK: Campaign triggered events
-		// =========================================================
+            // =========================================================
+            // KCK: Campaign triggered events
+            // =========================================================
 
         case FM_CAMPAIGN_OVER:
+
             // This is called when the campaign is over (endgame triggered)
             // wParam is the win result (win/lose/draw)
             // lParam is TRUE if this is our first attempt at calling this

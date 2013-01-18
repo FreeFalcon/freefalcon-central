@@ -3,13 +3,13 @@
 
 typedef struct
 {
-	char Type;
-	char SType;
-	char SPType;
-	char UnitSType;
-	long ID;
-	long TextID;
-	long IconID;
+    char Type;
+    char SType;
+    char SPType;
+    char UnitSType;
+    long ID;
+    long TextID;
+    long IconID;
 } DF_AIRPLANE_TYPE;
 
 #endif

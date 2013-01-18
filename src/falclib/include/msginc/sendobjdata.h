@@ -22,33 +22,33 @@
  */
 class FalconSendObjData : public FalconEvent
 {
-   public:
-      FalconSendObjData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconSendObjData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconSendObjData(void);
-      virtual int Size (void) const;
-		//sfr: changed to long *
-	  virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
+public:
+    FalconSendObjData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSendObjData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconSendObjData(void);
+    virtual int Size(void) const;
+    //sfr: changed to long *
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
+    class DATA_BLOCK
+    {
+    public:
 
-			VU_ID owner;
-			short set;
-            short size;
-			ulong totalSize;
-            uchar block;
-            uchar totalBlocks;
-            void* objData;
-      } dataBlock;
+        VU_ID owner;
+        short set;
+        short size;
+        ulong totalSize;
+        uchar block;
+        uchar totalBlocks;
+        void* objData;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
-void SendObjectiveDeltas (FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded);
+void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded);
 
 #pragma pack ()
 

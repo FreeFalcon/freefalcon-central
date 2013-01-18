@@ -5,7 +5,8 @@
 #include <windows.h>
 
 
-class FileMemMap {
+class FileMemMap
+{
     HANDLE m_hFile; // the open file
     HANDLE m_hMap; // the mapping handle
     BYTE *m_Data; // the mapped data
@@ -18,9 +19,15 @@ public:
     BOOL Open(const char *filename, BOOL rw = FALSE, BOOL nomap = FALSE); // open it
     void Close(); // release stoarage and stuff
     BYTE *GetData(int offset, int len); // access data at given offset
-    HANDLE GetFileHandle() { return m_hFile; };
+    HANDLE GetFileHandle()
+    {
+        return m_hFile;
+    };
     BOOL ReadDataAt(DWORD offset, void *buffer, DWORD size);
-    BOOL IsReady() { return m_hFile != INVALID_HANDLE_VALUE; };
+    BOOL IsReady()
+    {
+        return m_hFile != INVALID_HANDLE_VALUE;
+    };
 };
 
 #endif

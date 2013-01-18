@@ -1,6 +1,6 @@
 //
 // Brief and Debrief reading functions.
-// 
+//
 // These read scripted brief and debrief files, and evaluate their instructions
 //
 
@@ -37,29 +37,29 @@ class C_Window;
 // Access functions
 // =======================================
 
-extern void BuildCampBrief (C_Window *win);
+extern void BuildCampBrief(C_Window *win);
 
-extern void BuildCampDebrief (C_Window *win);
+extern void BuildCampDebrief(C_Window *win);
 
-extern void BuildCampBrief (_TCHAR *brief_string);
+extern void BuildCampBrief(_TCHAR *brief_string);
 
-extern void BuildCampDebrief (_TCHAR *brief_string);
+extern void BuildCampDebrief(_TCHAR *brief_string);
 
-extern int GetBriefingData (int query, int data, _TCHAR *buffer, int len = 128);
+extern int GetBriefingData(int query, int data, _TCHAR *buffer, int len = 128);
 
 // These add strings to a buffer
-extern void AddStringToBuffer (_TCHAR *string, _TCHAR *buffer);				// _tcscat();
+extern void AddStringToBuffer(_TCHAR *string, _TCHAR *buffer);				// _tcscat();
 
-extern void AddIndexedStringToBuffer (int sid, _TCHAR *buffer);
+extern void AddIndexedStringToBuffer(int sid, _TCHAR *buffer);
 
-extern void AddNumberToBuffer (int num, _TCHAR *buffer);					// _tsprinf("%d",x);
+extern void AddNumberToBuffer(int num, _TCHAR *buffer);					// _tsprinf("%d",x);
 
-extern void AddNumberToBuffer (float num, int decimals, _TCHAR *buffer);	// _tsprinf("%.df",x);
+extern void AddNumberToBuffer(float num, int decimals, _TCHAR *buffer);	// _tsprinf("%.df",x);
 
-extern void AddTimeToBuffer (CampaignTime time, _TCHAR *buffer, int seconds = TRUE);
+extern void AddTimeToBuffer(CampaignTime time, _TCHAR *buffer, int seconds = TRUE);
 
-extern void AddLocationToBuffer (char type, GridIndex x, GridIndex y, _TCHAR *buffer);
+extern void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer);
 
-extern void ConstructOrderedSentence (short maxlen,_TCHAR *buffer, _TCHAR *format, ... );
+extern void ConstructOrderedSentence(short maxlen, _TCHAR *buffer, _TCHAR *format, ...);
 
 #endif

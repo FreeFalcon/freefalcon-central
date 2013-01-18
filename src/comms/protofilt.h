@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 
-int UseProtocol(IN LPWSAPROTOCOL_INFO Proto);
+    int UseProtocol(IN LPWSAPROTOCOL_INFO Proto);
 
 
 #ifdef __cplusplus

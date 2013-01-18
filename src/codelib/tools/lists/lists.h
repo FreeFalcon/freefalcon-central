@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
     LISTS.H
    ----------------------------------------------------
-  
+
 	Written by Kevin Ray	(c) 1994 Spectrum Holobyte.
    ---------------------------------------------------- */
 
@@ -13,7 +13,7 @@
 
 
 /*  -----------------------------------
-         Configuration Options 
+         Configuration Options
     -----------------------------------  */
 
 #ifndef USE_LIST_ALLOCATIONS              /* should the list allocs be globbed into a pre-alloc'd table ? */
@@ -25,7 +25,7 @@
 #endif
 
 
-/*  ---------------------------------- 
+/*  ----------------------------------
             Build as a DLL ?
     ----------------------------------  */
 
@@ -37,8 +37,8 @@
 
 
 
-/*  ---------------------------------- 
-       For convenient type coercion 
+/*  ----------------------------------
+       For convenient type coercion
     ----------------------------------  */
 
 #define LIST_APPEND(a,b)         ListAppend( (LIST*)(a), (void*)(b) )
@@ -57,7 +57,7 @@
 
 
 
-/*  -------------------------------------------------- 
+/*  --------------------------------------------------
        All singly linked lists have this structure
     --------------------------------------------------  */
 
@@ -73,53 +73,53 @@ typedef struct LIST
 
 #if( USE_LIST_ALLOCATIONS )
 
-   LST_EXPORT void 
-      ListValidate( void );
+LST_EXPORT void
+ListValidate(void);
 
-   LST_EXPORT void
-      ListGlobalFree( void );
+LST_EXPORT void
+ListGlobalFree(void);
 
 #endif /* USE_LIST_ALLOCATIONS */
 
 
 
 LST_EXPORT LIST *
-   ListAppend( LIST * list, void * node );
+ListAppend(LIST * list, void * node);
 
 LST_EXPORT LIST *
-   ListAppendEnd( LIST * list, void * node );
+ListAppendEnd(LIST * list, void * node);
 
 LST_EXPORT LIST *
-   ListAppendSecond( LIST * list, void * node );
+ListAppendSecond(LIST * list, void * node);
 
 LST_EXPORT LIST *
-   ListCatenate( LIST * l1, LIST * l2 );
+ListCatenate(LIST * l1, LIST * l2);
 
 LST_EXPORT LIST *
-   ListNth( LIST * list, int n );
-
-LST_EXPORT int 
-   ListCount( LIST * list );
-
-LST_EXPORT LIST *
-   ListRemove( LIST * list, void * node );
-
-LST_EXPORT LIST *
-   ListFind( LIST * list, void * node );
-
-LST_EXPORT void 
-   ListDestroy( LIST * list, PFV destructor );
+ListNth(LIST * list, int n);
 
 LST_EXPORT int
-   ListWhere( LIST * list, void * node );
+ListCount(LIST * list);
 
 LST_EXPORT LIST *
-   ListSearch( LIST * list, void * node, PFI func_ptr );
+ListRemove(LIST * list, void * node);
 
 LST_EXPORT LIST *
-   ListDup( LIST * list );
+ListFind(LIST * list, void * node);
+
+LST_EXPORT void
+ListDestroy(LIST * list, PFV destructor);
+
+LST_EXPORT int
+ListWhere(LIST * list, void * node);
 
 LST_EXPORT LIST *
-   ListSort( LIST ** list, PFI func_ptr );
+ListSearch(LIST * list, void * node, PFI func_ptr);
+
+LST_EXPORT LIST *
+ListDup(LIST * list);
+
+LST_EXPORT LIST *
+ListSort(LIST ** list, PFI func_ptr);
 
 #endif /* __LISTS_H_INCLUDED */

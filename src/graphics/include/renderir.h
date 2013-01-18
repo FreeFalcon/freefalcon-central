@@ -12,27 +12,28 @@
 
 
 
-class RenderIR : public RenderTV {
-  public:
-	RenderIR()			{};
-	virtual ~RenderIR()	{};
+class RenderIR : public RenderTV
+{
+public:
+    RenderIR()			{};
+    virtual ~RenderIR()	{};
 
-	virtual void Setup( ImageBuffer *imageBuffer, RViewPoint *vp );
+    virtual void Setup(ImageBuffer *imageBuffer, RViewPoint *vp);
 
-	//JAM 30Dec03
-	virtual void StartDraw(void);
-	virtual void EndDraw(void);
+    //JAM 30Dec03
+    virtual void StartDraw(void);
+    virtual void EndDraw(void);
 
-  protected:
-	// Overloaded to provide appropriate sky effects
-	virtual void DrawMoon( GLint )		{};
-	virtual void DrawStars ( void )			{};
+protected:
+    // Overloaded to provide appropriate sky effects
+    virtual void DrawMoon(GLint)		{};
+    virtual void DrawStars(void)			{};
 
-	// Overloaded to prevent the ambient light level and sky color from changing
-	virtual void SetTimeOfDayColor( void )	{};
-	virtual void AdjustSkyColor( void )		{};
+    // Overloaded to prevent the ambient light level and sky color from changing
+    virtual void SetTimeOfDayColor(void)	{};
+    virtual void AdjustSkyColor(void)		{};
 
-	virtual void ComputeVertexColor(TerrainVertex *vert,Tpost *post,float distance,float x,float y);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y);
 };
 
 

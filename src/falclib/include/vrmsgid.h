@@ -1,5 +1,5 @@
 #ifndef __MSGID_H__
-#define __MSGID_H__ 
+#define __MSGID_H__
 
 const int MSG_EXIT				= -10;
 const int MSG_HELP				= -11;

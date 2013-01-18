@@ -8,12 +8,12 @@
 // Option Setting Functions
 // ========================
 
-void AdjustCampaignOptions (void);
+void AdjustCampaignOptions(void);
 
-void AdjustExperienceLevels (void);
+void AdjustExperienceLevels(void);
 
-void AdjustForceRatios (void);
+void AdjustForceRatios(void);
 
-void ChopCompany (Unit u, int crating);
+void ChopCompany(Unit u, int crating);
 
 #endif

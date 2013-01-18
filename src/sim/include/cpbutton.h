@@ -34,51 +34,58 @@ extern MEM_POOL gCockMemPool;
 // CPLight Class Definition
 //====================================================//
 
-class CPButton : public CPObject {
+class CPButton : public CPObject
+{
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(gCockMemPool,size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(gCockMemPool, size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
 public:
 
-	//====================================================//
-	// State Information
-	//====================================================//
+    //====================================================//
+    // State Information
+    //====================================================//
 
-	int		mStates;
-	int		mState;
-	int		mInitialState;
-	int		mType;
-	int		mMomentaryCount; // for momentary buttons only
+    int		mStates;
+    int		mState;
+    int		mInitialState;
+    int		mType;
+    int		mMomentaryCount; // for momentary buttons only
 
-	//====================================================//
-	// Source Locations for Template Surface
-	//====================================================//
+    //====================================================//
+    // Source Locations for Template Surface
+    //====================================================//
 
-	RECT			*mpSrcRect;
+    RECT			*mpSrcRect;
 
-	//====================================================//
-	// Pointer to Cursor Information
-	//====================================================//
+    //====================================================//
+    // Pointer to Cursor Information
+    //====================================================//
 
-	int			mCursorId;
-	int			mCursorIndex;
+    int			mCursorId;
+    int			mCursorIndex;
 
-	//====================================================//
-	// Runtime Member Functions
-	//====================================================//
+    //====================================================//
+    // Runtime Member Functions
+    //====================================================//
 
-	void			DisplayBlit(void);
-	BOOL			HandleEvent(int*, int, int, int);
+    void			DisplayBlit(void);
+    BOOL			HandleEvent(int*, int, int, int);
 
-	//====================================================//
-	// Constructors and Destructors
-	//====================================================//
+    //====================================================//
+    // Constructors and Destructors
+    //====================================================//
 
-	CPButton(ObjectInitStr*, LightButtonInitStr*);
-	virtual ~CPButton();
+    CPButton(ObjectInitStr*, LightButtonInitStr*);
+    virtual ~CPButton();
 };
 
 #endif

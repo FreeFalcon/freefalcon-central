@@ -14,16 +14,16 @@
 class Real3DCloud
 {
 public:
-	Real3DCloud();        
-	~Real3DCloud();
-	void Setup(ObjectDisplayList* objList);
-	void Cleanup();
+    Real3DCloud();
+    ~Real3DCloud();
+    void Setup(ObjectDisplayList* objList);
+    void Cleanup();
 
 public:
-	Drawable3DCloud	*drawable3DClouds;
+    Drawable3DCloud	*drawable3DClouds;
 
 protected:
-	static ObjectDisplayList* objMgr;
+    static ObjectDisplayList* objMgr;
 };
 
 #endif // _REAL3DCLOUD_H_

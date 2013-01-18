@@ -3,17 +3,17 @@
 
 enum
 {
-	_IS_ASCII_			=0x01, // ANY printable
-	_IS_ALPHA_			=0x02, // A-Z (upper or lower case)
-	_IS_DIGIT_			=0x04, // 0-9
+    _IS_ASCII_			= 0x01, // ANY printable
+    _IS_ALPHA_			= 0x02, // A-Z (upper or lower case)
+    _IS_DIGIT_			= 0x04, // 0-9
 };
 
 // [0] = NOT SHIFT, [1] = SHIFT
 // Otherwise ALWAYS NOT ASCII
 struct ASCII_TABLE
 {
-	char Ascii[8];
-	unsigned char Flags[8];
+    char Ascii[8];
+    unsigned char Flags[8];
 };
 
 // Ascii[0]= Lower case, Ascii[1]=Upper case, flags ... see above

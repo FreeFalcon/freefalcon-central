@@ -25,36 +25,37 @@
 
 #include <amdlib.h>
 
-int has3DNow (void)
+int has3DNow(void)
 {
-	__asm {
-		pushfd					// save EFLAGS to stack.
-		pop		eax				// store EFLAGS in EAX.
-		mov		edx, eax		// save in EBX for testing later.
-		xor		eax, 0x200000	// switch bit 21.
-		push	eax				// copy "changed" value to stack.
-		popfd					// save "changed" EAX to EFLAGS.
-		pushfd
-		pop		eax
-		cmp		eax, edx		// See if bit changeable.
-		jz		No3DNow			// CPU doesn't support CPUID instruction.
+    __asm
+    {
+        pushfd					// save EFLAGS to stack.
+        pop		eax				// store EFLAGS in EAX.
+        mov		edx, eax		// save in EBX for testing later.
+        xor		eax, 0x200000	// switch bit 21.
+        push	eax				// copy "changed" value to stack.
+        popfd					// save "changed" EAX to EFLAGS.
+        pushfd
+        pop		eax
+        cmp		eax, edx		// See if bit changeable.
+        jz		No3DNow			// CPU doesn't support CPUID instruction.
 
-		mov		eax,0x80000000	// Check for support of extended functions.
-		CPUID
-		cmp		eax,0x80000001	// Make sure function 0x80000001 supported.
-		jb		No3DNow
-                                // Now we know extended functions are supported.
-		mov		eax,0x80000001	// Get extended features.
-		xor		edx, edx		// Clear edx - not really necessary.
-		CPUID
-        test    edx,0x80000000	// edx contains extended feature flags
-		jz		No3DNow			// bit 31 = 1 => 3DNow!
-	}
+        mov		eax, 0x80000000	// Check for support of extended functions.
+        CPUID
+        cmp		eax, 0x80000001	// Make sure function 0x80000001 supported.
+        jb		No3DNow
+        // Now we know extended functions are supported.
+        mov		eax, 0x80000001	// Get extended features.
+        xor		edx, edx		// Clear edx - not really necessary.
+        CPUID
+        test    edx, 0x80000000	// edx contains extended feature flags
+        jz		No3DNow			// bit 31 = 1 => 3DNow!
+    }
 
-	return 1;
+    return 1;
 
-No3DNow:
-	return 0;
+    No3DNow:
+    return 0;
 }
 
 // eof

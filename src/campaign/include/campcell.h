@@ -12,22 +12,22 @@
 typedef	uchar			CellDataType;
 typedef CellDataType	*CellData;
 
-extern void SetReliefType (CellData TheCell, ReliefType NewReliefType);
+extern void SetReliefType(CellData TheCell, ReliefType NewReliefType);
 
-extern void SetGroundCover (CellData TheCell, CoverType NewGroundCover);
+extern void SetGroundCover(CellData TheCell, CoverType NewGroundCover);
 
-extern void SetRoadCell (CellData TheCell, char Road);
+extern void SetRoadCell(CellData TheCell, char Road);
 
-extern void SetRailCell (CellData TheCell, char Rail);
+extern void SetRailCell(CellData TheCell, char Rail);
 
-extern char GetAltitudeCode (CellData TheCell);
+extern char GetAltitudeCode(CellData TheCell);
 
-extern ReliefType GetReliefType (CellData TheCell);
+extern ReliefType GetReliefType(CellData TheCell);
 
-extern CoverType GetGroundCover (CellData TheCell);
+extern CoverType GetGroundCover(CellData TheCell);
 
-extern char GetRoadCell (CellData TheCell);
+extern char GetRoadCell(CellData TheCell);
 
-extern char GetRailCell (CellData TheCell);
+extern char GetRailCell(CellData TheCell);
 
 #endif

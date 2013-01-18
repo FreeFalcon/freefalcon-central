@@ -33,9 +33,9 @@ extern _TCHAR gUnitNameFormat[40];
 extern _TCHAR* GetSTypeName(int domain, int type, int stype, _TCHAR buffer[]);
 extern _TCHAR* GetNumberName(int nameid, _TCHAR *buffer);
 extern _TCHAR* GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds = TRUE);
-extern void ReadIndex (char* filename);
-extern void FreeIndex (void);
-extern void ReadIndexedString (int sid, _TCHAR *wstr, int len);
+extern void ReadIndex(char* filename);
+extern void FreeIndex(void);
+extern void ReadIndexedString(int sid, _TCHAR *wstr, int len);
 extern void ConvertChToWCh(_TCHAR *wstr, char *str, int len);
 
 #endif

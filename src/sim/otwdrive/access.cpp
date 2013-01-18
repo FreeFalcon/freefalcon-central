@@ -150,12 +150,12 @@ void OTWDriverClass::NVGToggle(void)
 //	newRenderer->SetSmoothShadingMode( TRUE /*renderer->GetSmoothShadingMode()*//* );
 //	newRenderer->SetDitheringMode( renderer->GetDitheringMode() );
 //	newRenderer->SetFilteringMode( renderer->GetFilteringMode() );
-	// Now swap in the new renderer
+// Now swap in the new renderer
 /*	renderer->Cleanup();
-	delete renderer;
-	renderer = newRenderer;
-	renderer->context.StartFrame();
-	renderer->StartDraw();*/
+delete renderer;
+renderer = newRenderer;
+renderer->context.StartFrame();
+renderer->StartDraw();*/
     //sfr: update 2D cockpit
     pCockpitManager->UpdatePalette();
     DrawableClass::SetGreenMode(renderer->GetGreenMode());

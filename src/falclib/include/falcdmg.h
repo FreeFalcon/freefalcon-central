@@ -4,19 +4,20 @@
 class FalconDamageType
 {
 public:
-   enum {
-      BulletDamage,
-      MissileDamage,
-      CollisionDamage,
-      BombDamage,
-      FODDamage,
-      GroundCollisionDamage,
-      ObjectCollisionDamage,
-      FeatureCollisionDamage,
-      DebrisDamage,
-      ProximityDamage,
-	  OtherDamage,		// KCK: Use if you don't want any messages/scoring to occur
-   };
+    enum
+    {
+        BulletDamage,
+        MissileDamage,
+        CollisionDamage,
+        BombDamage,
+        FODDamage,
+        GroundCollisionDamage,
+        ObjectCollisionDamage,
+        FeatureCollisionDamage,
+        DebrisDamage,
+        ProximityDamage,
+        OtherDamage,		// KCK: Use if you don't want any messages/scoring to occur
+    };
 };
 
 #endif

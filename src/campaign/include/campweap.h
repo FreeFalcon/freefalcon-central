@@ -1,6 +1,6 @@
-// 
+//
 // Campweap.h
-// 
+//
 // Deals with weapon information
 //
 // Kevin Klemmick, 1996
@@ -50,10 +50,10 @@
 #define WEAP_ONETENTH			0x8000				// # listed is actually 1/10th the # of shots
 
 #define WEAP_BAI_LOADOUT		0x10000				// special loadout for BAI type missions:
-													// only Mavericks and dumb bombs, GBU only
-													// GBU-12 (wid 68) and GBU-22 (wid 310)
-													// this flag is NOT used in the WeaponClassDataType,
-													// only for loading specific weapons only
+// only Mavericks and dumb bombs, GBU only
+// GBU-12 (wid 68) and GBU-22 (wid 310)
+// this flag is NOT used in the WeaponClassDataType,
+// only for loading specific weapons only
 
 // RV - Biker - Some more loadout flags
 #define WEAP_DEAD_LOADOUT		0x20000				// Give long range weapons higher prio
@@ -70,17 +70,17 @@
 // ===================================
 
 typedef enum {	NoDamage,
-				PenetrationDam,						// Hardened structures, tanks, ships
-				HighExplosiveDam,					// Soft targets, area targets
-				HeaveDam,							// Runways
-				IncendairyDam,						// Burn baby, burn!
-				ProximityDam,						// AA missiles, etc.
-				KineticDam,							// Guns, small arms fire
-				HydrostaticDam,						// Submarines
-				ChemicalDam,
-				NuclearDam,					
-				OtherDam 
-} DamageDataType;
+                PenetrationDam,						// Hardened structures, tanks, ships
+                HighExplosiveDam,					// Soft targets, area targets
+                HeaveDam,							// Runways
+                IncendairyDam,						// Burn baby, burn!
+                ProximityDam,						// AA missiles, etc.
+                KineticDam,							// Guns, small arms fire
+                HydrostaticDam,						// Submarines
+                ChemicalDam,
+                NuclearDam,
+                OtherDam
+             } DamageDataType;
 
 typedef DamageDataType DamType;
 
@@ -88,34 +88,34 @@ typedef DamageDataType DamType;
 // Functions
 // ===================================
 
-extern int LoadWeaponTable (char *filename);
+extern int LoadWeaponTable(char *filename);
 
-extern int GetWeaponStrength (int w);
+extern int GetWeaponStrength(int w);
 
-extern int GetWeaponRange (int w, int mt);
-	
-extern int GetWeaponFireRate (int w);
+extern int GetWeaponRange(int w, int mt);
 
-extern int GetWeaponHitChance (int w, int mt);
+extern int GetWeaponFireRate(int w);
 
-extern int GetWeaponHitChance (int w, int mt, int range);
+extern int GetWeaponHitChance(int w, int mt);
 
-extern int GetWeaponHitChance (int w, int mt, int range, int wrange);
+extern int GetWeaponHitChance(int w, int mt, int range);
 
-extern int GetWeaponScore (int w, int mt, int range);
+extern int GetWeaponHitChance(int w, int mt, int range, int wrange);
 
-extern int GetWeaponScore (int w, int mt, int range, int wrange);
+extern int GetWeaponScore(int w, int mt, int range);
 
-extern int GetWeaponScore (int w, uchar* dam, int m, int range);
+extern int GetWeaponScore(int w, int mt, int range, int wrange);
 
-extern int GetWeaponScore (int w, uchar* dam, int mt, int range, int wrange);
+extern int GetWeaponScore(int w, uchar* dam, int m, int range);
 
-extern int GetWeaponDamageType (int w);
+extern int GetWeaponScore(int w, uchar* dam, int mt, int range, int wrange);
 
-extern int GetWeaponDescriptionIndex (int w);
+extern int GetWeaponDamageType(int w);
 
-extern int GetWeaponIdFromDescriptionIndex (int index);
+extern int GetWeaponDescriptionIndex(int w);
 
-extern int GetWeaponFlags (int w);
+extern int GetWeaponIdFromDescriptionIndex(int index);
+
+extern int GetWeaponFlags(int w);
 
 #endif

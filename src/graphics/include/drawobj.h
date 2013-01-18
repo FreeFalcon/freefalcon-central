@@ -12,69 +12,116 @@
 #include <math.h>
 #include "grTypes.h"
 
-class DrawableObject {
+class DrawableObject
+{
 public:
-	DrawableObject( float s )	{ drawClassID = Default, scale = s, parentList = NULL, prev = next = NULL;  };
-	// sfr: update parent list before destroying...
-	virtual ~DrawableObject()	{ ShiAssert( parentList == NULL ) };
+    DrawableObject(float s)
+    {
+        drawClassID = Default, scale = s, parentList = NULL, prev = next = NULL;
+    };
+    // sfr: update parent list before destroying...
+    virtual ~DrawableObject()
+    {
+        ShiAssert(parentList == NULL)
+    };
 
-	// RED- Object volume, used for Radar stuff
-	virtual	float	GetRadarSign(void)		{ return 0.0f; }
+    // RED- Object volume, used for Radar stuff
+    virtual	float	GetRadarSign(void)
+    {
+        return 0.0f;
+    }
 
-	enum DrawClass { Default, BSP, GroundVehicle, Guys, Building, Platform, Bridge, Roadbed, Overcast, Puffy, Trail, realClouds }; //JAM 09Nov03
+    enum DrawClass { Default, BSP, GroundVehicle, Guys, Building, Platform, Bridge, Roadbed, Overcast, Puffy, Trail, realClouds }; //JAM 09Nov03
 
-	DrawClass GetClass() const { return drawClassID; }
-	float Radius() const { return radius; }
-	void GetPosition(Tpoint* pos){ *pos = position; }
-	float X() const	{ return position.x; }
-	float Y() const	{ return position.y; }
-	float Z() const { return position.z; }
+    DrawClass GetClass() const
+    {
+        return drawClassID;
+    }
+    float Radius() const
+    {
+        return radius;
+    }
+    void GetPosition(Tpoint* pos)
+    {
+        *pos = position;
+    }
+    float X() const
+    {
+        return position.x;
+    }
+    float Y() const
+    {
+        return position.y;
+    }
+    float Z() const
+    {
+        return position.z;
+    }
 
-	void		SetScale( float s )			{ radius *= s/scale; scale = s; };
-	float		GetScale( void )			{ return scale; };
+    void		SetScale(float s)
+    {
+        radius *= s / scale;
+        scale = s;
+    };
+    float		GetScale(void)
+    {
+        return scale;
+    };
 
-	virtual void SetLabel( char*, DWORD )	{};
+    virtual void SetLabel(char*, DWORD)	{};
 
-	virtual void SetInhibitFlag( BOOL )				{};
+    virtual void SetInhibitFlag(BOOL)				{};
 
-	virtual void Draw( class RenderOTW *renderer, int LOD ) = 0;
-	virtual void Draw( class Render3D* ) {};
+    virtual void Draw(class RenderOTW *renderer, int LOD) = 0;
+    virtual void Draw(class Render3D*) {};
 
 
-	// ray hit not implemented yet for object
-	virtual BOOL GetRayHit( const Tpoint*, const Tpoint*, Tpoint*, float = 1.0f ) { return FALSE; } ;
+    // ray hit not implemented yet for object
+    virtual BOOL GetRayHit(const Tpoint*, const Tpoint*, Tpoint*, float = 1.0f)
+    {
+        return FALSE;
+    } ;
 
-	BOOL	InDisplayList( void )	{ return (parentList != NULL); };
+    BOOL	InDisplayList(void)
+    {
+        return (parentList != NULL);
+    };
 
 
 protected:
-	Tpoint					position;
-	float					radius;
-	float					scale;
-	DrawClass				drawClassID;
+    Tpoint					position;
+    float					radius;
+    float					scale;
+    DrawClass				drawClassID;
 
-	// NOTE:  Each instance can be managed by only ONE OBJECT LIST
-	class ObjectDisplayList	*parentList;
-	DrawableObject			*prev;
-	DrawableObject			*next;
+    // NOTE:  Each instance can be managed by only ONE OBJECT LIST
+    class ObjectDisplayList	*parentList;
+    DrawableObject			*prev;
+    DrawableObject			*next;
 
-	// NOTE:  This field is set by our parent list during UpdateMetrics
-	float					distance;
+    // NOTE:  This field is set by our parent list during UpdateMetrics
+    float					distance;
 
 protected:
-	virtual	void SetParentList( ObjectDisplayList *list )	{ parentList = list; };
+    virtual	void SetParentList(ObjectDisplayList *list)
+    {
+        parentList = list;
+    };
 #define NEW_DRAWABLE_DESTRUCTION 1
 #if NEW_DRAWABLE_DESTRUCTION
-	friend class OTWDriverClass;
+    friend class OTWDriverClass;
 #endif
-	friend class ObjectDisplayList;
-	friend class RViewPoint;
-	friend class DrawablePlatform;  // This one is weird -- DrawablePlatform isa DrawableObject, 
-	friend class DrawableBridge;	// but the compiler complains.  Apparently, a second order
-									// inheritance doesn't get to see "protected" members of its
-									// grand parent.
+    friend class ObjectDisplayList;
+    friend class RViewPoint;
+    friend class DrawablePlatform;  // This one is weird -- DrawablePlatform isa DrawableObject,
+    friend class DrawableBridge;	// but the compiler complains.  Apparently, a second order
+    // inheritance doesn't get to see "protected" members of its
+    // grand parent.
 public:
-	  void SetPosition(Tpoint *pos) {position=*pos;};
+    void SetPosition(Tpoint *pos)
+    {
+        position = *pos;
+    };
 };
 
 #endif // _DRAWOBJ_H_

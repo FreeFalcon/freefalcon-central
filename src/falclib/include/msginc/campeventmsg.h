@@ -18,18 +18,18 @@
 #include "InvalidBufferException.h"
 
 class EventDataClass
-	{
-	public:
-		EventDataClass(void);
+{
+public:
+    EventDataClass(void);
 
-	public:
-		short formatId;
-		short xLoc;
-		short yLoc;
-		VU_ID vuIds[CUI_ME];
-		short owners[CUI_MD];
-		short textIds[CUI_MS];
-	};
+public:
+    short formatId;
+    short xLoc;
+    short yLoc;
+    VU_ID vuIds[CUI_ME];
+    short owners[CUI_MD];
+    short textIds[CUI_MS];
+};
 
 #pragma pack (1)
 
@@ -38,55 +38,60 @@ class EventDataClass
  */
 class FalconCampEventMessage : public FalconEvent
 {
-   public:
-      enum CampEventType {
-         campGroundAttack,
-         campStrike,
-         campAirCombat,
-         campCombat,
-         campLosses,
-         unitWithdrawing,
-         unitDestroyed,
-         unitReinforcement,
-         objectiveCaptured,
-         relationsChange,
-         triggeredEvent };
+public:
+    enum CampEventType
+    {
+        campGroundAttack,
+        campStrike,
+        campAirCombat,
+        campCombat,
+        campLosses,
+        unitWithdrawing,
+        unitDestroyed,
+        unitReinforcement,
+        objectiveCaptured,
+        relationsChange,
+        triggeredEvent
+    };
 
-      FalconCampEventMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconCampEventMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconCampEventMessage(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-		//sfr: changed to long *
-		int Decode (VU_BYTE **buf,  long *rem)
-		{
-			long init = *rem;
-			FalconEvent::Decode (buf, rem);
-			memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-			return init  - *rem;
-		};
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+    FalconCampEventMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampEventMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconCampEventMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed to long *
+    int Decode(VU_BYTE **buf,  long *rem)
+    {
+        long init = *rem;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init  - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-            unsigned int eventType;
-            uchar flags;
-            uchar team;
-            short size;
-			EventDataClass data;
-      } dataBlock;
+        unsigned int eventType;
+        uchar flags;
+        uchar team;
+        short size;
+        EventDataClass data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

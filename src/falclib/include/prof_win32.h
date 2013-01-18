@@ -4,20 +4,21 @@
 typedef __int64 Prof_Int64;
 
 #ifdef __cplusplus
-  inline
+inline
 #elif _MSC_VER >= 1200
-  __forceinline
+__forceinline
 #else
-  static
+static
 #endif
-      void Prof_get_timestamp(Prof_Int64 *result)
-      {
-         __asm {
-            rdtsc;
-            mov    ebx, result
-            mov    [ebx], eax
-            mov    [ebx+4], edx
-         }
-      }
+void Prof_get_timestamp(Prof_Int64 *result)
+{
+    __asm
+    {
+        rdtsc;
+        mov    ebx, result
+        mov    [ebx], eax
+        mov    [ebx+4], edx
+    }
+}
 
 #endif

@@ -40,29 +40,29 @@
 // External Function Declarations
 // ---------------------------------------
 
-extern FeatureClassDataType* GetFeatureClassData (int index);
+extern FeatureClassDataType* GetFeatureClassData(int index);
 
-extern int GetFeatureRepairTime (int index);
+extern int GetFeatureRepairTime(int index);
 
-extern int GetFeatureHitChance (int id, int mt, int range, int hitflags);
+extern int GetFeatureHitChance(int id, int mt, int range, int hitflags);
 
-extern int GetAproxFeatureHitChance (int id, int mt, int range);
+extern int GetAproxFeatureHitChance(int id, int mt, int range);
 
-extern int CalculateFeatureHitChance (int id, int mt);
+extern int CalculateFeatureHitChance(int id, int mt);
 
-extern int GetFeatureCombatStrength (int id, int mt, int range);
+extern int GetFeatureCombatStrength(int id, int mt, int range);
 
-extern int GetAproxFeatureCombatStrength (int id, int mt, int range);
+extern int GetAproxFeatureCombatStrength(int id, int mt, int range);
 
-extern int CalculateFeatureCombatStrength (int id, int mt);
+extern int CalculateFeatureCombatStrength(int id, int mt);
 
-extern int GetAproxFeatureRange (int id, int mt);
+extern int GetAproxFeatureRange(int id, int mt);
 
-extern int GetFeatureRange (int id, int mt);
+extern int GetFeatureRange(int id, int mt);
 
-extern int CalculateFeatureRange (int id, int mt);
+extern int CalculateFeatureRange(int id, int mt);
 
-extern int GetFeatureDetectionRange (int id, int mt);
+extern int GetFeatureDetectionRange(int id, int mt);
 
 extern int GetBestFeatureWeapon(int id, uchar* dam, MoveType m, int range);
 

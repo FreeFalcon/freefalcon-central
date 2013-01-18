@@ -13,7 +13,7 @@
 #define VU_GRID_TREE_Y_MAJOR	1
 
 // sfr: I think cameras can be viewed as areas of interest
-#define VU_MAX_SESSION_CAMERAS	8 
+#define VU_MAX_SESSION_CAMERAS	8
 
 // Set this if you don't want to auto-dispatch
 #define REALLOC_QUEUES			1

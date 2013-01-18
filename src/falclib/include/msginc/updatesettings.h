@@ -26,40 +26,44 @@ using std::memcpychk;
  */
 class UI_UpdateSettings : public FalconEvent
 {
-		public:
-				UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-				UI_UpdateSettings(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-				~UI_UpdateSettings(void);
-				int Size (void) { return sizeof(dataBlock) + FalconEvent::Size();};
-				//sfr: changed to long *
-				int Decode (VU_BYTE **buf, long *rem) {
-					long init = *rem;
+public:
+    UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_UpdateSettings(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~UI_UpdateSettings(void);
+    int Size(void)
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed to long *
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-					FalconEvent::Decode (buf, rem);
-					memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-					return init - *rem;
-				};
-				int Encode (VU_BYTE **buf)
-				{
-					int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-					size = FalconEvent::Encode (buf);
-					memcpy (*buf, &dataBlock, sizeof (dataBlock));
-					*buf += sizeof (dataBlock);
-					size += sizeof (dataBlock);
-					return size;
-				};
-				class DATA_BLOCK
-				{
-						public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-								VU_ID from;
-								short setting;
-								long value;
-				} dataBlock;
+        VU_ID from;
+        short setting;
+        long value;
+    } dataBlock;
 
-		protected:
-				int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

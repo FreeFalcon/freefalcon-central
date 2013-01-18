@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------
  * NetApi.h -- Network Include File
  * ---------------------------------------------------------------------
- * Data structures and protoypes used by the game `applications' or 
- * higher-level subsystems in accessing the network subsystem. 
+ * Data structures and protoypes used by the game `applications' or
+ * higher-level subsystems in accessing the network subsystem.
  * ---------------------------------------------------------------------
  * David Sarnoff Research Center - PROPRIETARY INFORMATION
  * Copyright 1993-94, David Sarnoff Research Center, All Rights Reserved
  * ---------------------------------------------------------------------
- */ 
+ */
 
 #ifndef   NETAPI_H
 #define   NETAPI_H
@@ -44,27 +44,31 @@
 #define  NET_TO_ALL_STATIONS               -1
 #define  NET_TO_GAME_STATIONS              16
 
-typedef  struct {
+typedef  struct
+{
     int    stationId;
     char   gameId[VU_GAME_IDENTIFICATION_LENGTH];
     int    maxMessageSize;
 }  NetOpenRequest;
 
-typedef  struct {
+typedef  struct
+{
     int    messageDestination;
     VU_BYTE  *messageDataBuffer;
     int    messageDataCount;
     int    messagePriority;
 }  NetSendRequest;
 
-typedef  struct {
+typedef  struct
+{
     int    messageOriginator;
     VU_BYTE  *messageDataBuffer;
     int    messageDataCount;
     int    messageCount;
 }  NetPollRequest;
 
-typedef  struct {
+typedef  struct
+{
     int              stationCount;
     ComStationDesc  *stationTablePtr;
 }  NetInqRequest;
@@ -88,7 +92,7 @@ int NetOpen(NetOpenRequest *openReq);
 /**************************************************
  * NetSend request structure typedef and prototype:
  *
- *    messageDestination  is the desired routing of this message; the permitted 
+ *    messageDestination  is the desired routing of this message; the permitted
  *                         routings are:
  *                             to a specific station
  *                                 (1 <= messageDestination <= 6)
@@ -124,7 +128,7 @@ int NetPoll(NetPollRequest *pollReq);
  * NetInquire request structure typedef and prototype:
  *
  *     stationCount        is the returned count of the active stations; i.e.,
- *                         the number of elements copied to the station table; 
+ *                         the number of elements copied to the station table;
  *     stationTablePtr     is a pointer to the table into which the active
  *                         station descriptors will be copied;
  */
@@ -135,6 +139,6 @@ int NetOpen(NetOpenRequest *openReq);
 int  NetEnd(void);
 int  NetClose(void);
 
-ushort GetTempStationID( ushort );
+ushort GetTempStationID(ushort);
 
 #endif   /* NETAPI_H */

@@ -67,14 +67,14 @@ extern VuMutex VuxCreateMutex(const char *name);
 extern void VuxDestroyMutex(VuMutex);
 extern void VuxLockMutex(VuMutex);
 extern void VuxUnlockMutex(VuMutex);
-extern bool VuxAddDanglingSession (VU_ID owner, VU_ADDRESS address);
-extern bool VuxAddDanglingSession (VU_ID owner, VU_ADDRESS add);
+extern bool VuxAddDanglingSession(VU_ID owner, VU_ADDRESS address);
+extern bool VuxAddDanglingSession(VU_ID owner, VU_ADDRESS add);
 extern int VuxSessionConnect(VuSessionEntity *session);
 extern void VuxSessionDisconnect(VuSessionEntity *session);
 extern int VuxGroupConnect(VuGroupEntity *group);
 extern void VuxGroupDisconnect(VuGroupEntity *group);
 extern int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session);
-extern int VuxGroupRemoveSession(VuGroupEntity *group,VuSessionEntity *session);
+extern int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session);
 extern void VuxAdjustLatency(VU_TIME, VU_TIME);
 extern VU_ID_NUMBER VuxGetId();
 
@@ -86,12 +86,19 @@ extern void VuExitCriticalSection();
 extern bool VuHasCriticalSection();
 
 /** class used to lock a given scope with a mutex */
-class VuScopeLock {
+class VuScopeLock
+{
 public:
-	explicit VuScopeLock(VuMutex m) : m(m){ VuxLockMutex(m); }
-	~VuScopeLock(){ VuxUnlockMutex(m); }
+    explicit VuScopeLock(VuMutex m) : m(m)
+    {
+        VuxLockMutex(m);
+    }
+    ~VuScopeLock()
+    {
+        VuxUnlockMutex(m);
+    }
 private:
-	VuMutex m;
+    VuMutex m;
 };
 
 // virtual constructors (factories)

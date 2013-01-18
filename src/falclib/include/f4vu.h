@@ -74,23 +74,23 @@ extern F4CSECTIONHANDLE* vuCritical;
 
 struct vector
 {
-	float		x;
-	float		y;
-	float		z;
+    float		x;
+    float		y;
+    float		z;
 };
 
 struct euler
 {
-	float		yaw;
-	float		pitch;
-	float		roll;
+    float		yaw;
+    float		pitch;
+    float		roll;
 };
 
 // =========================
 // Function Prototypes
 // =========================
 
-void InitVU (void);
-void ExitVU (void);
+void InitVU(void);
+void ExitVU(void);
 
 #endif // _VU_TEST_H_

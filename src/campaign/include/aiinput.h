@@ -82,7 +82,7 @@ extern long CONSOLIDATE_REINFORCEMENT_TIME;		// How often we get reinforcements 
 extern long ACTION_PREP_TIME;					// How far in advance to plan any offensives
 
 // NTM Inputs
-extern short MIN_TASK_NAVAL;					// Retask time, in minutes	
+extern short MIN_TASK_NAVAL;					// Retask time, in minutes
 extern short MIN_PLAN_NAVAL;					// Replan time, in minutes
 extern short NAVAL_MOVE_CHECK_INTERVAL;			// How often to check a task force for movement (in seconds)
 extern short NAVAL_COMBAT_CHECK_INTERVAL;		// How often to fire naval units (in seconds)
@@ -110,10 +110,10 @@ extern short MIN_REINFORCE_TIME;				// Value, in minutes, of each reinforcement 
 extern float SIM_BUBBLE_SIZE;					// Radius (in feet) of the Sim's campaign lists.
 extern short INITIATIVE_LEAK_PER_HOUR;			// How much initiative is adjusted automatically per hour
 extern int F4_GENERIC_US_TRUCK_TYPE_SMALL;		// Small US tractor vehicle
-extern int F4_GENERIC_US_TRUCK_TYPE_LARGE;		// Large US tractor vehicle   
+extern int F4_GENERIC_US_TRUCK_TYPE_LARGE;		// Large US tractor vehicle
 extern int F4_GENERIC_US_TRUCK_TYPE_TRAILER;	// Tractor US for trailers
 extern int F4_GENERIC_OPFOR_TRUCK_TYPE_SMALL;	// Small OPFOR tractor vehicle
-extern int F4_GENERIC_OPFOR_TRUCK_TYPE_LARGE;	// Large OPFOR tractor vehicle 
+extern int F4_GENERIC_OPFOR_TRUCK_TYPE_LARGE;	// Large OPFOR tractor vehicle
 extern int F4_GENERIC_OPFOR_TRUCK_TYPE_TRAILER;	// Tractor OPFOR for trailers
 extern int SWITCH_TRACTORS_IN_TE;				// Because in standard Korea we have switched teams in TE
 
@@ -139,6 +139,6 @@ extern int FLOTSortDirection;					// to sort FLOT by x or y objective coordinate
 extern int TheaterXPosition;					// central theater x/y position for calculating new bullseye posit
 extern int TheaterYPosition;					// central theater x/y position for calculating new bullseye posit
 
-void ReadCampAIInputs (char * name);
+void ReadCampAIInputs(char * name);
 
 

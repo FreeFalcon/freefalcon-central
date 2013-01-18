@@ -10,12 +10,12 @@
 // This is the primitive used to draw a dynamic Oobject
 class	CDynamicPrimitive
 {
-	public:
-		CDynamicPrimitive		*Next;
-		LPDIRECT3DVERTEXBUFFER7 Vb;					// Assigned VB address
-		DWORD					Offset;					// The Offset in the Vertex Buffer when loaded
-		DWORD					Number;					// The Number of vertices
-		DWORD					TexID;				// Texture ID
+public:
+    CDynamicPrimitive		*Next;
+    LPDIRECT3DVERTEXBUFFER7 Vb;					// Assigned VB address
+    DWORD					Offset;					// The Offset in the Vertex Buffer when loaded
+    DWORD					Number;					// The Number of vertices
+    DWORD					TexID;				// Texture ID
 };
 
 
@@ -24,10 +24,15 @@ class	CDynamicPrimitive
 class	CTextureItem
 {
 public:
-	CTextureItem(void)	{ Next=NULL; Name[0]=0; memset(TuTv, 0, sizeof(TuTv)); }
-	CTextureItem	*Next;
-	char			Name[32];
-	float			TuTv[4][2];
+    CTextureItem(void)
+    {
+        Next = NULL;
+        Name[0] = 0;
+        memset(TuTv, 0, sizeof(TuTv));
+    }
+    CTextureItem	*Next;
+    char			Name[32];
+    float			TuTv[4][2];
 };
 
 
@@ -35,11 +40,16 @@ public:
 class	CTextureSurface
 {
 public:
-	CTextureSurface(void)	{ Next=NULL; FileName[0]=0; ItemList=NULL; }
-	CTextureSurface	*Next;
-	Texture			Tex;
-	char			FileName[32];
-	CTextureItem	*ItemList;
+    CTextureSurface(void)
+    {
+        Next = NULL;
+        FileName[0] = 0;
+        ItemList = NULL;
+    }
+    CTextureSurface	*Next;
+    Texture			Tex;
+    char			FileName[32];
+    CTextureItem	*ItemList;
 };
 
 
@@ -59,12 +69,12 @@ public:
 #define	POLY_CREATE						0x00000002		// create vertices flag
 //***************************************************************************************************************************
 #define	POLY_VISIBLE					0x00000004		// Force rendering ( used when Visibility check is already performed )
-														// WARNING - GetDistance must be performed before to have the engine
-														// to store the item Distance to be used, as it is not calculated
-														// in the draw function
+// WARNING - GetDistance must be performed before to have the engine
+// to store the item Distance to be used, as it is not calculated
+// in the draw function
 //***************************************************************************************************************************
 #define	CAMERA_VERTICES					0x00000008		// The verices passed to the Drawing function are CAMERA SPACE Coordinates
-														// so, not relative to object center
+// so, not relative to object center
 //***************************************************************************************************************************
 #define	CALC_DISTANCE					0x00000010		// Recalc the distance of the passed object
 //***************************************************************************************************************************
@@ -80,7 +90,7 @@ public:
 #define	POLY_3DOBJECT					0x1000000		// this is a 3D object coming from DX Engine
 
 
-// Layers Flags	
+// Layers Flags
 #define	LAYER_SORT						0x00000001		// sorting Layer Flag
 
 // The layers used in drawing 2D stuff
@@ -95,15 +105,16 @@ public:
 
 
 // The structure used to map & sort 2D Quads
-typedef	struct	{
-	DWORD			Next;								// Next Item in sorting
-	DWORD			Dist256;							// Distance integer scaled up to 256
-	LPDIRECT3DVERTEXBUFFER7	Vb;							// Assigned Vb;
-	DWORD			Index, Index2;						// The indexes in the VBuffer
-	DWORD			NrVertices;							// vertices
-	DWORD			TexHandle;							// The Texture Handle
-	DWORD			Flags;
-	float			Height;
+typedef	struct
+{
+    DWORD			Next;								// Next Item in sorting
+    DWORD			Dist256;							// Distance integer scaled up to 256
+    LPDIRECT3DVERTEXBUFFER7	Vb;							// Assigned Vb;
+    DWORD			Index, Index2;						// The indexes in the VBuffer
+    DWORD			NrVertices;							// vertices
+    DWORD			TexHandle;							// The Texture Handle
+    DWORD			Flags;
+    float			Height;
 } DrawItemType;
 
 
@@ -112,26 +123,29 @@ typedef	struct	{
 // The structure of a layer manager
 // In falcon 2D Alpha Objects are divided into layers btw the 2 Cloud Layers...
 // This to give the right draw order
-typedef	struct	{
-	DWORD	Start, End;
-	DWORD	Flags;
+typedef	struct
+{
+    DWORD	Start, End;
+    DWORD	Flags;
 } LayerItemType;
 
 
 
 // The structure of items  pointing a vertex buffer
-typedef	struct	{
-	LPDIRECT3DVERTEXBUFFER7	Vb;
-	D3DDYNVERTEX			*VbPtr;				// The pointer in the VB
-	DWORD					LastIndex;			// last assigned index in the buffer
-	DWORD					LastTapeIndex;		// the Last Tape Index
-}	Dyn2DBufferType;	
+typedef	struct
+{
+    LPDIRECT3DVERTEXBUFFER7	Vb;
+    D3DDYNVERTEX			*VbPtr;				// The pointer in the VB
+    DWORD					LastIndex;			// last assigned index in the buffer
+    DWORD					LastTapeIndex;		// the Last Tape Index
+}	Dyn2DBufferType;
 
 
 
 // Structure of a sorting item
-typedef	struct	{
-	DWORD	Index, Next;
+typedef	struct
+{
+    DWORD	Index, Next;
 } SortItemType;
 
 

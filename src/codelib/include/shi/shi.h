@@ -25,49 +25,49 @@ extern "C" {
 #endif
 
 
-/*  Load in the standard SHI headers that are generic  */
+    /*  Load in the standard SHI headers that are generic  */
 
 #include "../../codelib/include/shi/targets.h"
 #include "../../codelib/include/shi/types.h"
 #include "../../codelib/include/shi/xyzzy.h"
 
 
-/****************************************************/
-/*  CHIPSET_INCLUDE                                 */
-/*                                                  */
-/*  PARAMS: THE_CHIP - Chipset designator           */
-/*          THE_FILE - The include file             */
-/*                                                  */
-/*  FUNCTIONS: Builds the approrate include for     */
-/*  the desired chipset-specific header file.       */
-/*                                                  */
-/****************************************************/
+    /****************************************************/
+    /*  CHIPSET_INCLUDE                                 */
+    /*                                                  */
+    /*  PARAMS: THE_CHIP - Chipset designator           */
+    /*          THE_FILE - The include file             */
+    /*                                                  */
+    /*  FUNCTIONS: Builds the approrate include for     */
+    /*  the desired chipset-specific header file.       */
+    /*                                                  */
+    /****************************************************/
 
-  /* Temp hack to make Proton compile */
+    /* Temp hack to make Proton compile */
 
 #if defined (__ICL)
 #define CHIPSET_INCLUDE(CHIP,FILE)  <shi/chipsets/m_i586/ ## FILE ##>
-#else 
+#else
 #define CHIPSET_INCLUDE(CHIP,FILE)  <shi/chipsets/ ## CHIP ##  / ## FILE ##>
 #endif
 
-/****************************************************/
-/*  BUILDING_FOR_CHIP                               */
-/*                                                  */
-/*  PARAMS: HIP - Chipset designator                */
-/*                                                  */
-/*  FUNCTIONS: Builds a comparison for chipset      */
-/*  specific code.                                  */
-/*                                                  */
-/****************************************************/
+    /****************************************************/
+    /*  BUILDING_FOR_CHIP                               */
+    /*                                                  */
+    /*  PARAMS: HIP - Chipset designator                */
+    /*                                                  */
+    /*  FUNCTIONS: Builds a comparison for chipset      */
+    /*  specific code.                                  */
+    /*                                                  */
+    /****************************************************/
 
 #define BUILDING_FOR_CHIP(CHIP)  (CHIPSET_ID == (SHI_CS_ ## THE_CHIP))
 
 
 
-/*  Load in the remainder of SHI header files.   */
-/*  (i.e. those dependant on one or more macros  */
-/*  defined above.                               */
+    /*  Load in the remainder of SHI header files.   */
+    /*  (i.e. those dependant on one or more macros  */
+    /*  defined above.                               */
 
 
 #include "../../codelib/include/shi/int.h"

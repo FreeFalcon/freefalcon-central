@@ -7,15 +7,16 @@
 extern ComAPIHandle vuxComHandle;
 extern ComAPIHandle tcpListenHandle;
 
-enum FalconConnectionTypes {
-  FCT_NoConnection=0,
-  FCT_ModemToModem,						// Modem to modem only
-  FCT_NullModem,
-  FCT_LAN,								// LAN or simulated LAN (kali)
-  FCT_WAN,								// Internet or modem to ISP
-  FCT_Server,							// Internet,modem or LAN to server
-  FCT_TEN,
-  FCT_JetNet,
+enum FalconConnectionTypes
+{
+    FCT_NoConnection = 0,
+    FCT_ModemToModem,						// Modem to modem only
+    FCT_NullModem,
+    FCT_LAN,								// LAN or simulated LAN (kali)
+    FCT_WAN,								// Internet or modem to ISP
+    FCT_Server,							// Internet,modem or LAN to server
+    FCT_TEN,
+    FCT_JetNet,
 };
 
 // ========================================================================
@@ -45,7 +46,7 @@ extern int F4SessionUpdateTime;
 extern int F4SessionAliveTimeout;
 extern int F4CommsMTU;  // More of Unz and  Boosters stuff
 // ========================================================================
-// Some defines 
+// Some defines
 // ========================================================================
 
 // Protocols available to Falcon
@@ -97,13 +98,13 @@ extern char* g_ipadress;
 // Function prototypes
 // ========================================================================
 
-int InitCommsStuff (ComDataClass *comData);
+int InitCommsStuff(ComDataClass *comData);
 
-int EndCommsStuff (void);
+int EndCommsStuff(void);
 
-BOOL SessionManagerProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam);
+BOOL SessionManagerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-void SetupMessageSizes (int protocol);
+void SetupMessageSizes(int protocol);
 
 void ResyncTimes();
 
@@ -112,13 +113,13 @@ void CleanupDanglingList(void);
 //void AddDanglingSession(ComAPIHandle ch1, ComAPIHandle ch2, VU_SESSION_ID id, VU_ADDRESS add);
 // returns true if dangling session sucessfully created
 bool AddDanglingSession(VU_ID owner, VU_ADDRESS add);
-int RemoveDanglingSession (VuSessionEntity *newSess);
-int F4CommsConnectionCallback (int result);
+int RemoveDanglingSession(VuSessionEntity *newSess);
+int F4CommsConnectionCallback(int result);
 //void FillSerialDataString(char serial_data[], ComDataClass *comData);
 //void ModemConnectCallback(ComAPIHandle ch, int ret);
 //void TcpConnectCallback(ComAPIHandle ch, int ret);
-int CleanupComms (void);
-void ShutdownCampaign (void);
-ulong TimeStampFunction (void);
+int CleanupComms(void);
+void ShutdownCampaign(void);
+ulong TimeStampFunction(void);
 
 #endif

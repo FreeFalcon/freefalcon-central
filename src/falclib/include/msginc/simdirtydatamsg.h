@@ -24,20 +24,21 @@
 class SimDirtyData : public FalconEvent
 {
 public:
-	SimDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-	SimDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-	~SimDirtyData(void);
-	virtual int Size() const ;
-	//sfr: long *
-	virtual int Decode (VU_BYTE **, long *rem);
-	virtual int Encode (VU_BYTE **);
-	struct DATA_BLOCK {
-		long size;
-		uchar* data;
-	} dataBlock;
+    SimDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    SimDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~SimDirtyData(void);
+    virtual int Size() const ;
+    //sfr: long *
+    virtual int Decode(VU_BYTE **, long *rem);
+    virtual int Encode(VU_BYTE **);
+    struct DATA_BLOCK
+    {
+        long size;
+        uchar* data;
+    } dataBlock;
 
 protected:
-	int Process(uchar autodisp);
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

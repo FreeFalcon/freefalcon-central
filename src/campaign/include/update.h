@@ -27,11 +27,11 @@
 class FlightClass;
 typedef FlightClass*	Flight;
 
-extern int UpdateUnit (Unit U, CampaignTime DeltaTime);
+extern int UpdateUnit(Unit U, CampaignTime DeltaTime);
 
-extern int DoWPAction (Flight u);
+extern int DoWPAction(Flight u);
 
-extern CampaignTime TimeToMove (Unit u, CampaignHeading h);
+extern CampaignTime TimeToMove(Unit u, CampaignHeading h);
 
 extern int EngageParent(Unit u, FalconEntity *e);
 
@@ -39,6 +39,6 @@ extern int Detected(Unit u, FalconEntity *e, float *range);
 
 extern int DoCombat(CampEntity u, FalconEntity *e);
 
-extern void UpdateLocation (GridIndex *x, GridIndex *y, Path path, int start, int end);
+extern void UpdateLocation(GridIndex *x, GridIndex *y, Path path, int start, int end);
 
 #endif

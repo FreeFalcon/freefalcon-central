@@ -13,48 +13,51 @@
  */
 class FalconAddSFXMessage : public FalconEvent
 {
-   public:
-      FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconAddSFXMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconAddSFXMessage(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();}
+public:
+    FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconAddSFXMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconAddSFXMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    }
 
-	  int Decode (VU_BYTE **buf, long *rem)
-	  {
-		  int init = *rem;
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        int init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-            short type;
-            short visType;
-            short flags;
-            CampaignTime time;
-            float xLoc;
-            float yLoc;
-            float zLoc;
-            float xVel;
-            float yVel;
-            float zVel;
-      } dataBlock;
+        short type;
+        short visType;
+        short flags;
+        CampaignTime time;
+        float xLoc;
+        float yLoc;
+        float zLoc;
+        float xVel;
+        float yVel;
+        float zVel;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

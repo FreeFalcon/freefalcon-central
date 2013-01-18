@@ -5,33 +5,33 @@ enum
     dSaveButton = 1,
     dCancelButton = 2,
 
-	dDXT1 = 10,
-	dTextureFormatFirst = dDXT1,
+    dDXT1 = 10,
+    dTextureFormatFirst = dDXT1,
 
-	dDXT1a = 11,  // DXT1 with one bit alpha
-	dDXT3 = 12,   // explicit alpha
-	dDXT5 = 13,   // interpolated alpha
+    dDXT1a = 11,  // DXT1 with one bit alpha
+    dDXT3 = 12,   // explicit alpha
+    dDXT5 = 13,   // interpolated alpha
 
-	d4444 = 14,   // a4 r4 g4 b4
-	d1555 = 15,   // a1 r5 g5 b5
-	d565 = 16,    // a0 r5 g6 b5
-	d8888 = 17,   // a8 r8 g8 b8
-	d888 = 18,    // a0 r8 g8 b8
-	d555 = 19,    // a0 r5 g5 b5
+    d4444 = 14,   // a4 r4 g4 b4
+    d1555 = 15,   // a1 r5 g5 b5
+    d565 = 16,    // a0 r5 g6 b5
+    d8888 = 17,   // a8 r8 g8 b8
+    d888 = 18,    // a0 r8 g8 b8
+    d555 = 19,    // a0 r5 g5 b5
     d8   = 20,   // paletted
 
-    dV8U8 = 21,   // DuDv 
+    dV8U8 = 21,   // DuDv
     dCxV8U8 = 22,   // normal map
     dA8 = 23,            // alpha only
 
 
-	dTextureFormatLast = dA8,
+    dTextureFormatLast = dA8,
 
     dSaveTextureFormatCombo = 600,
 
 
     // 3d viewing options
-    d3DPreviewButton = 300, 
+    d3DPreviewButton = 300,
 
     dViewDXT1 = 200,
     dViewDXT2 = 201,
@@ -45,9 +45,9 @@ enum
 
     dGenerateMipMaps = 30,
     dMIPMapSourceFirst = dGenerateMipMaps,
-	//dSpecifyMipMaps = 31,
-	dUseExistingMipMaps = 31,
-	dNoMipMaps = 32,
+    //dSpecifyMipMaps = 31,
+    dUseExistingMipMaps = 31,
+    dNoMipMaps = 32,
     dMIPMapSourceLast = dNoMipMaps,
 
     dSpecifiedMipMapsCombo = 39,
@@ -102,7 +102,7 @@ enum
     dAlphaBorder = 61,
     dBorder = 62,
     dBorderColorButton = 63,
-	dNormalMap = 64,
+    dNormalMap = 64,
 
     dDitherEachMIPLevel = 66,
     dGreyScale = 67,
@@ -123,12 +123,12 @@ enum
 
 
 
-	dTextureType2D = 80,
-	dTextureTypeFirst = dTextureType2D,
-	dTextureTypeCube = 81,
-	dTextureTypeImage = 82,
-	dTextureTypeVolume = 83,  
-	dTextureTypeLast = dTextureTypeVolume,
+    dTextureType2D = 80,
+    dTextureTypeFirst = dTextureType2D,
+    dTextureTypeCube = 81,
+    dTextureTypeImage = 82,
+    dTextureTypeVolume = 83,
+    dTextureTypeLast = dTextureTypeVolume,
 
     dFadeAmount = 90,
     dFadeToAlpha = 91,
@@ -202,9 +202,9 @@ enum
 
 #ifndef TRGBA
 #define TRGBA
-typedef	struct	
+typedef	struct
 {
-	BYTE	rgba[4];
+    BYTE	rgba[4];
 } rgba_t;
 #endif
 
@@ -212,8 +212,8 @@ typedef	struct
 #define TPIXEL
 union tPixel
 {
-  unsigned long u;
-  rgba_t c;
+    unsigned long u;
+    rgba_t c;
 };
 #endif
 
@@ -237,7 +237,7 @@ typedef struct CompressionOptions
     CompressionOptions()
     {
 
-        bRescaleImageToPower2 = RESCALE_NONE; 
+        bRescaleImageToPower2 = RESCALE_NONE;
         preScaleX = 1;
         preScaleY = 1;
 
@@ -247,28 +247,28 @@ typedef struct CompressionOptions
         SpecifiedMipMaps = 0;   // if dSpecifyMipMaps or dUseExistingMipMaps is set (number of mipmaps to generate)
 
         MIPFilterType = dMIPFilterBox;      // for MIP maps
-        /* 
+        /*
         for MIPFilterType, specify one of:
-        dMIPFilterBox 
-        dMIPFilterCubic 
-        dMIPFilterFullDFT 
-        dMIPFilterKaiser 
-        dMIPFilterLinearLightKaiser 
+        dMIPFilterBox
+        dMIPFilterCubic
+        dMIPFilterFullDFT
+        dMIPFilterKaiser
+        dMIPFilterLinearLightKaiser
         */
 
 
         bBinaryAlpha = false;       // zero or one alpha channel
 
-        bNormalMap= false;         // Is a normal Map
-        bDuDvMap= false;           // Is a DuDv (EMBM) map
+        bNormalMap = false;        // Is a normal Map
+        bDuDvMap = false;          // Is a DuDv (EMBM) map
 
-        bAlphaBorder= false;       // make an alpha border
-        bBorder= false;            // make a color border
+        bAlphaBorder = false;      // make an alpha border
+        bBorder = false;           // make a color border
         BorderColor.u = 0;        // color of border
 
 
         bFadeColor = false;         // fade color over MIP maps
-        bFadeAlpha= false;         // fade alpha over MIP maps
+        bFadeAlpha = false;        // fade alpha over MIP maps
 
         FadeToColor.u = 0;        // color to fade to
         FadeToAlpha = 0;        // alpha value to fade to (0-255)
@@ -290,8 +290,8 @@ typedef struct CompressionOptions
         // sharpening after creating each MIP map level
         // warp sharp filter parameters
         // look here for details:
-        //          
-        // "Enhancement by Image-Dependent Warping", 
+        //
+        // "Enhancement by Image-Dependent Warping",
         // IEEE Transactions on Image Processing, 1999, Vol. 8, No. 8, S. 1063
         // Nur Arad and Craig Gotsman
         // http://www.cs.technion.ac.il/~gotsman/AmendedPubl/EnhancementByImage/EnhancementByI-D.pdf
@@ -314,32 +314,32 @@ typedef struct CompressionOptions
         // width of filter
         FilterWidth = 10;
 
-        TextureType = dTextureType2D;        // regular decal, cube or volume  
+        TextureType = dTextureType2D;        // regular decal, cube or volume
         /*
         for TextureType, specify one of:
-        dTextureType2D 
-        dTextureTypeCube 
-        dTextureTypeImage 
+        dTextureType2D
+        dTextureTypeCube
+        dTextureTypeImage
         dTextureTypeVolume
         */
 
-        TextureFormat = dDXT1;	    
-        /* 
-        for TextureFormat, specify any from dTextureFormatFirst to 
+        TextureFormat = dDXT1;
+        /*
+        for TextureFormat, specify any from dTextureFormatFirst to
         dTextureFormatLast
 
-        dDXT1, 
-        dDXT1a, 
-        dDXT3, 
-        dDXT5, 
-        d4444, 
-        d1555, 	
-        d565,	
-        d8888, 	
-        d888, 
-        d555, 
-        dV8U8, 
-        dCxV8U8, 
+        dDXT1,
+        dDXT1a,
+        dDXT3,
+        dDXT5,
+        d4444,
+        d1555,
+        d565,
+        d8888,
+        d888,
+        d555,
+        dV8U8,
+        dCxV8U8,
 
         d8,   // paletted
         dA8,            // alpha only
@@ -350,7 +350,7 @@ typedef struct CompressionOptions
 
     };
 
-    RescaleOption   bRescaleImageToPower2; 
+    RescaleOption   bRescaleImageToPower2;
     float   preScaleX;
     float   preScaleY;
 
@@ -360,13 +360,13 @@ typedef struct CompressionOptions
     short           SpecifiedMipMaps;   // if dSpecifyMipMaps or dUseExistingMipMaps is set (number of mipmaps to generate)
 
     short           MIPFilterType;      // for MIP maps
-    /* 
+    /*
         for MIPFilterType, specify one of:
-            dMIPFilterBox 
-            dMIPFilterCubic 
-            dMIPFilterFullDFT 
-            dMIPFilterKaiser 
-            dMIPFilterLinearLightKaiser 
+            dMIPFilterBox
+            dMIPFilterCubic
+            dMIPFilterFullDFT
+            dMIPFilterKaiser
+            dMIPFilterLinearLightKaiser
     */
 
 
@@ -403,8 +403,8 @@ typedef struct CompressionOptions
     // sharpening after creating each MIP map level
     // warp sharp filter parameters
     // look here for details:
-    //          
-    // "Enhancement by Image-Dependent Warping", 
+    //
+    // "Enhancement by Image-Dependent Warping",
     // IEEE Transactions on Image Processing, 1999, Vol. 8, No. 8, S. 1063
     // Nur Arad and Craig Gotsman
     // http://www.cs.technion.ac.il/~gotsman/AmendedPubl/EnhancementByImage/EnhancementByI-D.pdf
@@ -430,33 +430,33 @@ typedef struct CompressionOptions
 
 
 
-	short 		TextureType;        // regular decal, cube or volume  
-	/*
+    short 		TextureType;        // regular decal, cube or volume
+    /*
         for TextureType, specify one of:
-            dTextureType2D 
-    	    dTextureTypeCube 
-            dTextureTypeImage 
+            dTextureType2D
+    	    dTextureTypeCube
+            dTextureTypeImage
             dTextureTypeVolume
      */
 
-	short 		TextureFormat;	    
-    /* 
-        for TextureFormat, specify any from dTextureFormatFirst to 
+    short 		TextureFormat;
+    /*
+        for TextureFormat, specify any from dTextureFormatFirst to
         dTextureFormatLast
 
-            dDXT1, 
-            dDXT1a, 
-            dDXT3, 
-            dDXT5, 
-            d4444, 
-	        d1555, 	
-            d565,	
-            d8888, 	
-            d888, 
-            d555, 
-            dV8U8, 
-            dCxV8U8, 
-            
+            dDXT1,
+            dDXT1a,
+            dDXT3,
+            dDXT5,
+            d4444,
+            d1555,
+            d565,
+            d8888,
+            d888,
+            d555,
+            dV8U8,
+            dCxV8U8,
+
             d8,   // paletted
             dA8,            // alpha only
 

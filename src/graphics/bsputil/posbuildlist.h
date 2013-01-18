@@ -14,50 +14,54 @@
 
 typedef enum BuildTimePosType { Static, Dynamic };
 
-typedef struct BuildTimePosReference {
-	int								*target;
-	struct BuildTimePosReference	*next;
+typedef struct BuildTimePosReference
+{
+    int								*target;
+    struct BuildTimePosReference	*next;
 } BuildTimePosReference;
 
 
-typedef struct BuildTimePosEntry {
-	Ppoint						pos;
-	BuildTimePosType			type;
-	int							index;
-	BuildTimePosReference		*refs;
+typedef struct BuildTimePosEntry
+{
+    Ppoint						pos;
+    BuildTimePosType			type;
+    int							index;
+    BuildTimePosReference		*refs;
 
-	struct BuildTimePosEntry	*next;
+    struct BuildTimePosEntry	*next;
 } BuildTimePosEntry;
 
 
-typedef struct SzInfo_t {
-	float	radiusSquared;
-	float	minX, maxX;
-	float	minY, maxY;
-	float	minZ, maxZ;
+typedef struct SzInfo_t
+{
+    float	radiusSquared;
+    float	minX, maxX;
+    float	minY, maxY;
+    float	minZ, maxZ;
 } SzInfo_t;
 
 
-class BuildTimePosList {
-  public:
-	BuildTimePosList();
-	~BuildTimePosList()	{};
+class BuildTimePosList
+{
+public:
+    BuildTimePosList();
+    ~BuildTimePosList()	{};
 
-	void	AddReference(int *target, float x, float y, float z, BuildTimePosType type);
-	void	AddReference(int *target, int *source);
+    void	AddReference(int *target, float x, float y, float z, BuildTimePosType type);
+    void	AddReference(int *target, int *source);
 
-	Ppoint*	GetPosFromTarget(int *target);
+    Ppoint*	GetPosFromTarget(int *target);
 
-	Ppoint*	GetPool();
+    Ppoint*	GetPool();
 
-	int					numTotal;
-	int					numStatic;
-	int					numDynamic;
+    int					numTotal;
+    int					numStatic;
+    int					numDynamic;
 
-	SzInfo_t			SizeInfo;
+    SzInfo_t			SizeInfo;
 
-  protected:
-	BuildTimePosEntry	*head;
+protected:
+    BuildTimePosEntry	*head;
 };
 
 #endif //_POSBUILDLIST_H_

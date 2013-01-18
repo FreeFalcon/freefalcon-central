@@ -10,7 +10,7 @@
 
 
 // This function retrieves the script number for a given index and verifies that the script exists
-int GetScriptNumberFromName( char *name );
+int GetScriptNumberFromName(char *name);
 
 
 #endif // _SCRIPTNAMES_H_

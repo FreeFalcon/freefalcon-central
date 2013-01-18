@@ -82,128 +82,154 @@ extern const int DRAW2D_MAXTYPES;
 // table entry to control the animation seq for different types of objects
 typedef struct _TYPES2D
 {
-	int flags;			// controls sequencing
-		#define	ANIM_STOP			0x00000001		// stop when end reached
-		#define	ANIM_HOLD_LAST		0x00000002		// hold last frame
-		#define	ANIM_LOOP			0x00000004		// loop over again
-		#define	ANIM_LOOP_PING		0x00000008		// fwd-back loop
-		#define	FADE_LAST			0x00000010		// fade only on last frame
-		#define	FADE_START			0x00000020		// start fade immediately
-		#define	HAS_ORIENTATION		0x00000040		// uses rot matrix
-		#define	ALPHA_BRIGHTEN		0x00000080		// use brighten blending
-		#define	USES_BB_MATRIX		0x00000100		// use billboard (roll) matrix
-		#define	USES_TREE_MATRIX	0x00000200		// use tree (roll+pitch) matrix
-		#define	GLOW_SPHERE			0x00000400		// special type
-		#define	GLOW_RAND_POINTS	0x00000800		// randomize points of star
-		#define	ANIM_HALF_RATE		0x00001000		// animate 8 frames/sec
-		#define	FIRE_SCATTER_PLOT	0x00002000		// kind of a particle effect
-		#define	SMOKE_SCATTER_PLOT	0x00004000		// kind of a particle effect
-		#define	TEXTURED_CONE		0x00008000		// "shaped" effect
-		#define	EXPLODE_SCATTER_PLOT 0x00010000		// kind of a particle effect
-		#define	SEQ_SCATTER_ANIM	0x00020000		// sequence animation frames in scatter plots
-		#define	ANIM_NO_CLAMP		0x00040000		// don't clamp maximum texid -- used in scatter
-		#define	GOURAUD_TRI			0x00080000		// just a solid color tri
-		#define	ALPHA_DAYLIGHT		0x00100000		// do alpha in daylight
-		#define	DO_FIVE_POINTS		0x00200000		// do dark alpha in center
-		#define	NO_RANDOM_BLEND		0x00400000		// don't randomly blend rgb's
-		#define	ALPHA_PER_TEXEL		0x00800000		// use APL texture set
-		#define	NO_FIVE_POINTS		0x01000000		// disable 5 point
-		#define	RAND_START_FRAME	0x02000000		// randomize scatter start
-		#define	GROUND_GLOW			0x04000000		// align with ground
+    int flags;			// controls sequencing
+#define	ANIM_STOP			0x00000001		// stop when end reached
+#define	ANIM_HOLD_LAST		0x00000002		// hold last frame
+#define	ANIM_LOOP			0x00000004		// loop over again
+#define	ANIM_LOOP_PING		0x00000008		// fwd-back loop
+#define	FADE_LAST			0x00000010		// fade only on last frame
+#define	FADE_START			0x00000020		// start fade immediately
+#define	HAS_ORIENTATION		0x00000040		// uses rot matrix
+#define	ALPHA_BRIGHTEN		0x00000080		// use brighten blending
+#define	USES_BB_MATRIX		0x00000100		// use billboard (roll) matrix
+#define	USES_TREE_MATRIX	0x00000200		// use tree (roll+pitch) matrix
+#define	GLOW_SPHERE			0x00000400		// special type
+#define	GLOW_RAND_POINTS	0x00000800		// randomize points of star
+#define	ANIM_HALF_RATE		0x00001000		// animate 8 frames/sec
+#define	FIRE_SCATTER_PLOT	0x00002000		// kind of a particle effect
+#define	SMOKE_SCATTER_PLOT	0x00004000		// kind of a particle effect
+#define	TEXTURED_CONE		0x00008000		// "shaped" effect
+#define	EXPLODE_SCATTER_PLOT 0x00010000		// kind of a particle effect
+#define	SEQ_SCATTER_ANIM	0x00020000		// sequence animation frames in scatter plots
+#define	ANIM_NO_CLAMP		0x00040000		// don't clamp maximum texid -- used in scatter
+#define	GOURAUD_TRI			0x00080000		// just a solid color tri
+#define	ALPHA_DAYLIGHT		0x00100000		// do alpha in daylight
+#define	DO_FIVE_POINTS		0x00200000		// do dark alpha in center
+#define	NO_RANDOM_BLEND		0x00400000		// don't randomly blend rgb's
+#define	ALPHA_PER_TEXEL		0x00800000		// use APL texture set
+#define	NO_FIVE_POINTS		0x01000000		// disable 5 point
+#define	RAND_START_FRAME	0x02000000		// randomize scatter start
+#define	GROUND_GLOW			0x04000000		// align with ground
 
-	float initAlpha;	// starting alpha value
-	float fadeRate;		// rate of alpha fade/ms (i.e. 1 sec total fade = .001)
-	int texId;			// array of texure Ids in sequence
-	int startTexture;	// staring texture in sheet
-	int numTextures;	// number of textures in sequence
-	float expandRate;	// rate radius explands in ft/sec
-	Tpoint *glowVerts;	// glowing "sphere" type objs
-	int numGlowVerts;	// number of verts
-	float maxExpand;	// maximum expand size
+    float initAlpha;	// starting alpha value
+    float fadeRate;		// rate of alpha fade/ms (i.e. 1 sec total fade = .001)
+    int texId;			// array of texure Ids in sequence
+    int startTexture;	// staring texture in sheet
+    int numTextures;	// number of textures in sequence
+    float expandRate;	// rate radius explands in ft/sec
+    Tpoint *glowVerts;	// glowing "sphere" type objs
+    int numGlowVerts;	// number of verts
+    float maxExpand;	// maximum expand size
 } TYPES2D;
 
 
 class Texture;
 
-class Drawable2D : public DrawableObject {
+class Drawable2D : public DrawableObject
+{
 
 #ifdef USE_SH_POOLS
-  public:
-      // Overload new/delete to use a SmartHeap fixed size pool
-      void *operator new(size_t size) { ShiAssert( size == sizeof(Drawable2D) ); return MemAllocFS(pool);	};
-      void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-      static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(Drawable2D), 400, 0 ); };
-      static void ReleaseStorage()	{ MemPoolFree( pool ); };
-      static MEM_POOL	pool;
+public:
+    // Overload new/delete to use a SmartHeap fixed size pool
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(Drawable2D));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(Drawable2D), 400, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
+    static MEM_POOL	pool;
 #endif
 
-  public:
-	Drawable2D( int type, float scale, Tpoint *p );
-	Drawable2D( int type, float scale, Tpoint *p, Trotation *rot );
-	Drawable2D( int type, float scale, Tpoint *p, int nVerts, Tpoint *verts, Tpoint *uvs );
-	virtual ~Drawable2D();
+public:
+    Drawable2D(int type, float scale, Tpoint *p);
+    Drawable2D(int type, float scale, Tpoint *p, Trotation *rot);
+    Drawable2D(int type, float scale, Tpoint *p, int nVerts, Tpoint *verts, Tpoint *uvs);
+    virtual ~Drawable2D();
 
-	virtual void Draw( class RenderOTW *renderer, int LOD );
-	virtual void Update( const Tpoint *pos, const Trotation *rot );
-	void SetPosition( Tpoint *p );
-	void SetStartTime ( DWORD start, DWORD now );
-	void SetScale2D( float s ) { scale2d = s; };
-	void SetRadius( float r ) { initRadius = radius = realRadius = r; };
-	void SetAlpha( float a ) { initAlpha = alpha = a; };
-	float GetScale2D( void ) { return scale2d; };
-	float GetAlphaTimeToLive( void );
-	static void SetLOD( float LOD );
-	static void SetGreenMode( BOOL mode );
-	static void DrawGlowSphere( class RenderOTW *renderer, Tpoint *pos, float radius, float alpha  );
+    virtual void Draw(class RenderOTW *renderer, int LOD);
+    virtual void Update(const Tpoint *pos, const Trotation *rot);
+    void SetPosition(Tpoint *p);
+    void SetStartTime(DWORD start, DWORD now);
+    void SetScale2D(float s)
+    {
+        scale2d = s;
+    };
+    void SetRadius(float r)
+    {
+        initRadius = radius = realRadius = r;
+    };
+    void SetAlpha(float a)
+    {
+        initAlpha = alpha = a;
+    };
+    float GetScale2D(void)
+    {
+        return scale2d;
+    };
+    float GetAlphaTimeToLive(void);
+    static void SetLOD(float LOD);
+    static void SetGreenMode(BOOL mode);
+    static void DrawGlowSphere(class RenderOTW *renderer, Tpoint *pos, float radius, float alpha);
 
-  protected:
+protected:
     int	type;				// type
-  	float alpha;			// global alpha value for the object
-  	float initAlpha;		// global alpha value for the object
-  	float initRadius;		// radius value for the object
-	int curFrame;			// current frame we're showing
-	int curSFrame;			// current scatter frame we're showing
-	int firstFrame;			// current frame we're showing
-	int curBFrame;			// current base frame we're showing
-	unsigned int startTime; // in ms
-	unsigned int alphaStartTime; // in ms
-	unsigned int expandStartTime; // in ms
-	unsigned int startSFrame; // in ms
-	TYPES2D typeData;		// data for anim type
-	BOOL startFade;			// start fading?
-	BOOL explicitStartTime;	// caller set start time
-	Texture *curTex;		// last valid texture we got
-	Tpoint oVerts[4];		// object space verts
-	Tpoint uvCoords[4];		// x = u, y = v
-	int numObjVerts;		// number of obj space verts ( = 3 or 4 )
-	float scale2d;			// scale of the object
-	float realRadius;		// real radius of poly, we may want radius
-							// to be larger for better sorting
+    float alpha;			// global alpha value for the object
+    float initAlpha;		// global alpha value for the object
+    float initRadius;		// radius value for the object
+    int curFrame;			// current frame we're showing
+    int curSFrame;			// current scatter frame we're showing
+    int firstFrame;			// current frame we're showing
+    int curBFrame;			// current base frame we're showing
+    unsigned int startTime; // in ms
+    unsigned int alphaStartTime; // in ms
+    unsigned int expandStartTime; // in ms
+    unsigned int startSFrame; // in ms
+    TYPES2D typeData;		// data for anim type
+    BOOL startFade;			// start fading?
+    BOOL explicitStartTime;	// caller set start time
+    Texture *curTex;		// last valid texture we got
+    Tpoint oVerts[4];		// object space verts
+    Tpoint uvCoords[4];		// x = u, y = v
+    int numObjVerts;		// number of obj space verts ( = 3 or 4 )
+    float scale2d;			// scale of the object
+    float realRadius;		// real radius of poly, we may want radius
+    // to be larger for better sorting
 
-	// TODO:  Move this to a subclass???
-	BOOL hasOrientation;	// uses orientation matrix
-	Trotation orientation;	// orientation
+    // TODO:  Move this to a subclass???
+    BOOL hasOrientation;	// uses orientation matrix
+    Trotation orientation;	// orientation
 
-	void DrawGlowSphere( class RenderOTW *renderer, int LOD );
-	void DrawGouraudTri( class RenderOTW *renderer, int LOD );
-	void DrawTexturedCone( class RenderOTW *renderer, int LOD );
+    void DrawGlowSphere(class RenderOTW *renderer, int LOD);
+    void DrawGouraudTri(class RenderOTW *renderer, int LOD);
+    void DrawTexturedCone(class RenderOTW *renderer, int LOD);
 
-	int GetAnimFrame( int dT, DWORD start );
+    int GetAnimFrame(int dT, DWORD start);
 
-	void ScatterPlot( class RenderOTW *renderer );
-	void APLScatterPlot( class RenderOTW *renderer );
+    void ScatterPlot(class RenderOTW *renderer);
+    void APLScatterPlot(class RenderOTW *renderer);
 
-	// Handle time of day notifications
-	static void TimeUpdateCallback( void *unused );
+    // Handle time of day notifications
+    static void TimeUpdateCallback(void *unused);
 
-  public:
-	static void SetupTexturesOnDevice( DXContext *rc );
-	static void ReleaseTexturesOnDevice( DXContext *rc );
+public:
+    static void SetupTexturesOnDevice(DXContext *rc);
+    static void ReleaseTexturesOnDevice(DXContext *rc);
 };
 
 
 // external proto for lens flare function
-void Draw2DLensFlare( class RenderOTW *renderer );
-void Draw2DSunGlowEffect( class RenderOTW *renderer, Tpoint *cntr, float dist, float alpha );
+void Draw2DLensFlare(class RenderOTW *renderer);
+void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, float alpha);
 
 #endif // _DRAW2D_H_

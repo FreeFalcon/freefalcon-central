@@ -21,24 +21,24 @@
  */
 class FalconSendVC : public FalconEvent
 {
-   public:
-      FalconSendVC(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconSendVC(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconSendVC(void);
-      virtual int Size() const;
-		//sfr long*
-	  virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
-      class DATA_BLOCK
-      {
-         public:
+public:
+    FalconSendVC(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSendVC(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconSendVC(void);
+    virtual int Size() const;
+    //sfr long*
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
+    class DATA_BLOCK
+    {
+    public:
 
-            long size;
-            uchar* data;
-      } dataBlock;
+        long size;
+        uchar* data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

@@ -30,20 +30,20 @@
 extern "C" {
 #endif
 
-void _add_vect(float *res, float *a, float *b);
-void _add_vects(float *res, float *a, float b);
-void _sub_vect(float *res, float *a, float *b);
-void _sub_vects(float *res, float *a, float b);
-void _mult_vect(float *res, float *a, float *b);
-void _mult_vects(float *res, float *a, float b);
-void _norm_vect(float *res, float *a);
-float _mag_vect(float *a);
-float _dot_vect(float *a, float *b);
-void _cross_vect(float *res, float *a, float *b);
+    void _add_vect(float *res, float *a, float *b);
+    void _add_vects(float *res, float *a, float b);
+    void _sub_vect(float *res, float *a, float *b);
+    void _sub_vects(float *res, float *a, float b);
+    void _mult_vect(float *res, float *a, float *b);
+    void _mult_vects(float *res, float *a, float b);
+    void _norm_vect(float *res, float *a);
+    float _mag_vect(float *a);
+    float _dot_vect(float *a, float *b);
+    void _cross_vect(float *res, float *a, float *b);
 
-/* fastcall routines */
-void a_mag_vect();      /* eax -> mm0		*/
-void a_dot_vect();      /* eax * edx -> mm0	*/
+    /* fastcall routines */
+    void a_mag_vect();      /* eax -> mm0		*/
+    void a_dot_vect();      /* eax * edx -> mm0	*/
 
 #ifdef __cplusplus
 }

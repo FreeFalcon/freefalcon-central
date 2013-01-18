@@ -85,77 +85,138 @@ extern int OrderPriority[GORD_LAST];		// Update this if new orders are added
 // Ground Unit Class
 // =========================
 
-class GroundUnitClass : public UnitClass {
+class GroundUnitClass : public UnitClass
+{
 private:
-	uchar				orders;    		// Current orders
-	short				division;		// What division it belongs to (abstract)
-	VU_ID				pobj;			// Primary objective we're assigned to
-	VU_ID				sobj;			// Secondary objective we're attached to
-	VU_ID				aobj;			// Actual objective we're assigned to do something with
+    uchar				orders;    		// Current orders
+    short				division;		// What division it belongs to (abstract)
+    VU_ID				pobj;			// Primary objective we're assigned to
+    VU_ID				sobj;			// Secondary objective we're attached to
+    VU_ID				aobj;			// Actual objective we're assigned to do something with
 
-	int					dirty_ground_unit;
+    int					dirty_ground_unit;
 
 public:
-	// constructors and serial functions
-	GroundUnitClass(ushort type, VU_ID_NUMBER id);
-	GroundUnitClass(VU_BYTE **stream, long *rem);
-	virtual ~GroundUnitClass();
-	virtual int SaveSize (void);
-	virtual int Save (VU_BYTE **stream);
+    // constructors and serial functions
+    GroundUnitClass(ushort type, VU_ID_NUMBER id);
+    GroundUnitClass(VU_BYTE **stream, long *rem);
+    virtual ~GroundUnitClass();
+    virtual int SaveSize(void);
+    virtual int Save(VU_BYTE **stream);
 
-	// event Handlers
-	virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
+    // event Handlers
+    virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
 
-	// Required pure virtuals handled by GroundUnitClass
-	virtual MoveType GetMovementType (void);
-	virtual MoveType GetObjMovementType (Objective o, int n);
-	virtual int DetectOnMove (void);
-	virtual int ChooseTarget (void);
+    // Required pure virtuals handled by GroundUnitClass
+    virtual MoveType GetMovementType(void);
+    virtual MoveType GetObjMovementType(Objective o, int n);
+    virtual int DetectOnMove(void);
+    virtual int ChooseTarget(void);
 #if HOTSPOT_FIX
-	virtual CampaignTime MaxUpdateTime() const		{ return GROUND_UPDATE_CHECK_INTERVAL*CampaignSeconds; }
+    virtual CampaignTime MaxUpdateTime() const
+    {
+        return GROUND_UPDATE_CHECK_INTERVAL * CampaignSeconds;
+    }
 #else
-	virtual CampaignTime UpdateTime (void)			{ return GROUND_UPDATE_CHECK_INTERVAL*CampaignSeconds; }
+    virtual CampaignTime UpdateTime(void)
+    {
+        return GROUND_UPDATE_CHECK_INTERVAL * CampaignSeconds;
+    }
 #endif
-    virtual int OnGround (void)						{ return TRUE; }
-    virtual float GetVt() const						{ return (Moving() ? 40.0F : 0.0F);}
-    virtual float GetKias() const					{ return GetVt()*FTPSEC_TO_KNOTS; }
+    virtual int OnGround(void)
+    {
+        return TRUE;
+    }
+    virtual float GetVt() const
+    {
+        return (Moving() ? 40.0F : 0.0F);
+    }
+    virtual float GetKias() const
+    {
+        return GetVt() * FTPSEC_TO_KNOTS;
+    }
 
-	// Access functions
-	uchar GetOrders (void) { return orders; }
-	short GetDivision (void) { return division; }
+    // Access functions
+    uchar GetOrders(void)
+    {
+        return orders;
+    }
+    short GetDivision(void)
+    {
+        return division;
+    }
 
-	void SetOrders (uchar);
-	void SetDivision (short);
-	void SetPObj (VU_ID);
-	void SetSObj (VU_ID);
-	void SetAObj (VU_ID);
+    void SetOrders(uchar);
+    void SetDivision(short);
+    void SetPObj(VU_ID);
+    void SetSObj(VU_ID);
+    void SetAObj(VU_ID);
 
-	// Core functions
-	int DetectVs (AircraftClass *ac, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
-	int DetectVs (CampEntity e, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
-	virtual void SetUnitOrders (uchar o)			{ orders = o; }
-	virtual void SetUnitDivision (short d)			{ division = d; }
-	void SetUnitPrimaryObj (VU_ID id)				{ pobj = id; }
-	void SetUnitSecondaryObj (VU_ID id)				{ sobj = id; }
-	void SetUnitObjective (VU_ID id)				{ aobj = id; }
-	virtual int GetUnitOrders (void)				{ return (int)orders; }
-	virtual int GetUnitDivision (void)				{ return (int)division; }
-	Objective GetUnitPrimaryObj (void)				{ return (Objective)vuDatabase->Find(pobj); }
-	Objective GetUnitSecondaryObj (void)			{ return (Objective)vuDatabase->Find(sobj); }
-	Objective GetUnitObjective (void)				{ return (Objective)vuDatabase->Find(aobj); }
-	VU_ID GetUnitPrimaryObjID (void)				{ return pobj; }
-	VU_ID GetUnitSecondaryObjID (void)				{ return sobj; }
-	VU_ID GetUnitObjectiveID (void)					{ return aobj; }
+    // Core functions
+    int DetectVs(AircraftClass *ac, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
+    int DetectVs(CampEntity e, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
+    virtual void SetUnitOrders(uchar o)
+    {
+        orders = o;
+    }
+    virtual void SetUnitDivision(short d)
+    {
+        division = d;
+    }
+    void SetUnitPrimaryObj(VU_ID id)
+    {
+        pobj = id;
+    }
+    void SetUnitSecondaryObj(VU_ID id)
+    {
+        sobj = id;
+    }
+    void SetUnitObjective(VU_ID id)
+    {
+        aobj = id;
+    }
+    virtual int GetUnitOrders(void)
+    {
+        return (int)orders;
+    }
+    virtual int GetUnitDivision(void)
+    {
+        return (int)division;
+    }
+    Objective GetUnitPrimaryObj(void)
+    {
+        return (Objective)vuDatabase->Find(pobj);
+    }
+    Objective GetUnitSecondaryObj(void)
+    {
+        return (Objective)vuDatabase->Find(sobj);
+    }
+    Objective GetUnitObjective(void)
+    {
+        return (Objective)vuDatabase->Find(aobj);
+    }
+    VU_ID GetUnitPrimaryObjID(void)
+    {
+        return pobj;
+    }
+    VU_ID GetUnitSecondaryObjID(void)
+    {
+        return sobj;
+    }
+    VU_ID GetUnitObjectiveID(void)
+    {
+        return aobj;
+    }
 
-	virtual int CheckForSurrender (void);
-	virtual int GetUnitNormalRole (void);
-	virtual int GetUnitCurrentRole() const;
-	virtual int BuildMission(void);
+    virtual int CheckForSurrender(void);
+    virtual int GetUnitNormalRole(void);
+    virtual int GetUnitCurrentRole() const;
+    virtual int BuildMission(void);
 
-	void MakeGndUnitDirty (Dirty_Ground_Unit bits, Dirtyness score);
-	void WriteDirty (unsigned char **stream);
-	//sfr: changed here
-	void ReadDirty (unsigned char **stream, long *rem);
+    void MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score);
+    void WriteDirty(unsigned char **stream);
+    //sfr: changed here
+    void ReadDirty(unsigned char **stream, long *rem);
 };
 
 #include "Battalion.h"
@@ -165,25 +226,25 @@ public:
 // Global functions
 // ============================
 
-extern char* DirectionToEnemy (char* buf, GridIndex x, GridIndex y, Team who);
+extern char* DirectionToEnemy(char* buf, GridIndex x, GridIndex y, Team who);
 
-extern void ReorderRallied (Unit u);
+extern void ReorderRallied(Unit u);
 
 extern Unit BestElement(Unit u, int at, int role);
 
-extern int FindNextBest (int d, int pos[]);
+extern int FindNextBest(int d, int pos[]);
 
-extern void ReorganizeUnit (Unit u);
+extern void ReorganizeUnit(Unit u);
 
-extern int BuildGroundWP (Unit u);
+extern int BuildGroundWP(Unit u);
 
-extern void GetCombatPos (Unit e, int positions[], char ed[], GridIndex* tx, GridIndex *ty);
+extern void GetCombatPos(Unit e, int positions[], char ed[], GridIndex* tx, GridIndex *ty);
 
-extern int GetActionFromOrders (int orders);
+extern int GetActionFromOrders(int orders);
 
-extern int CheckUnitStatus (Unit u);
+extern int CheckUnitStatus(Unit u);
 
-extern int CheckReady (Unit u);
+extern int CheckReady(Unit u);
 
 extern int CalculateOpposingStrength(Unit u, F4PFList list);
 
@@ -191,32 +252,32 @@ extern int SOSecured(Objective o, Team who);
 
 extern int GetActionFromOrders(int orders);
 
-extern CampaignHeading GetAlternateHeading (Unit u, GridIndex x, GridIndex y, GridIndex nx, GridIndex ny, CampaignHeading h);
+extern CampaignHeading GetAlternateHeading(Unit u, GridIndex x, GridIndex y, GridIndex nx, GridIndex ny, CampaignHeading h);
 
-extern int ScorePosition (GridIndex x, GridIndex y, GridIndex px, GridIndex py, int position, int ours);
+extern int ScorePosition(GridIndex x, GridIndex y, GridIndex px, GridIndex py, int position, int ours);
 
 extern Objective FindBestPosition(Unit u, Unit e, F4PFList nearlist);
 
-extern void ClassifyUnitElements (Unit u, int *recon, int *combat, int *reserve, int *support);
+extern void ClassifyUnitElements(Unit u, int *recon, int *combat, int *reserve, int *support);
 
-extern int GetPositionOrders (Unit e);
+extern int GetPositionOrders(Unit e);
 
-extern void FindBestCover (GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, GridIndex *cy, int roadok);
+extern void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, GridIndex *cy, int roadok);
 
 extern Objective FindRetreatPath(Unit u, int depth, int flags);
 
-extern Unit RequestArtillerySupport (Unit req, Unit target);
+extern Unit RequestArtillerySupport(Unit req, Unit target);
 
-extern int RequestCAS (int Team, Unit target);
+extern int RequestCAS(int Team, Unit target);
 
-extern int RequestSupport (Unit req, Unit target);
+extern int RequestSupport(Unit req, Unit target);
 
-extern void RequestOCCAS (Unit u, GridIndex x, GridIndex y, CampaignTime time);
+extern void RequestOCCAS(Unit u, GridIndex x, GridIndex y, CampaignTime time);
 
-extern void RequestBAI (Unit u, GridIndex x, GridIndex y, CampaignTime time);
+extern void RequestBAI(Unit u, GridIndex x, GridIndex y, CampaignTime time);
 
-extern int GetGroundRole (int orders);
+extern int GetGroundRole(int orders);
 
-extern int GetGroundOrders (int role);
+extern int GetGroundOrders(int role);
 
 #endif

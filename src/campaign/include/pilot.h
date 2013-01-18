@@ -30,40 +30,49 @@
 // ===========================
 
 class PilotClass
-	{
-	public:
-		short		pilot_id;							// Index into the PilotInfoClass table
-		uchar		pilot_skill_and_rating;				// LowByte: Skill, HiByte: Rating
-		uchar		pilot_status;
-		uchar		aa_kills;
-		uchar		ag_kills;
-		uchar		as_kills;
-		uchar		an_kills;
-		short		missions_flown;
+{
+public:
+    short		pilot_id;							// Index into the PilotInfoClass table
+    uchar		pilot_skill_and_rating;				// LowByte: Skill, HiByte: Rating
+    uchar		pilot_status;
+    uchar		aa_kills;
+    uchar		ag_kills;
+    uchar		as_kills;
+    uchar		an_kills;
+    short		missions_flown;
 
-	public:
-		PilotClass();
-// 2000-11-17 MODIFIED BY S.G. I NEED TO PASS THE 'airExperience'.
-//		void ResetStats(void);
-		void ResetStats(uchar airExperience);
-// 2001-11-19 ADDED by M.N. for TE squad change pilots rating
-		void SetTEPilotRating (uchar rating);
-		int GetPilotSkill(void)		{ return (pilot_skill_and_rating & 0xF); }
-		int GetPilotRating(void)	{ return ((uchar)((pilot_skill_and_rating & 0xF0) >> 4)); }
-		void SetPilotSR(uchar skill, uchar rating)	{ pilot_skill_and_rating = (uchar)((rating << 4) | skill); }
-	};
+public:
+    PilotClass();
+    // 2000-11-17 MODIFIED BY S.G. I NEED TO PASS THE 'airExperience'.
+    //		void ResetStats(void);
+    void ResetStats(uchar airExperience);
+    // 2001-11-19 ADDED by M.N. for TE squad change pilots rating
+    void SetTEPilotRating(uchar rating);
+    int GetPilotSkill(void)
+    {
+        return (pilot_skill_and_rating & 0xF);
+    }
+    int GetPilotRating(void)
+    {
+        return ((uchar)((pilot_skill_and_rating & 0xF0) >> 4));
+    }
+    void SetPilotSR(uchar skill, uchar rating)
+    {
+        pilot_skill_and_rating = (uchar)((rating << 4) | skill);
+    }
+};
 
 class PilotInfoClass
-	{
-	public:
-		short		usage;								// How many times this pilot is being used
-		uchar		voice_id;							// Which voice data to use
-		uchar		photo_id;							// Assigned through the UI
-	public:
-		PilotInfoClass();
-		void ResetStats (void);
-		void AssignVoice(int owner); // JPO
-	};
+{
+public:
+    short		usage;								// How many times this pilot is being used
+    uchar		voice_id;							// Which voice data to use
+    uchar		photo_id;							// Assigned through the UI
+public:
+    PilotInfoClass();
+    void ResetStats(void);
+    void AssignVoice(int owner); // JPO
+};
 
 // ================
 // Data
@@ -82,28 +91,28 @@ extern int NumCallsigns;
 class FlightClass;
 typedef FlightClass *Flight;
 
-extern void NewPilotInfo (void);
+extern void NewPilotInfo(void);
 
-extern int LoadPilotInfo (char* filename);
+extern int LoadPilotInfo(char* filename);
 
-extern void SavePilotInfo (char* filename);
+extern void SavePilotInfo(char* filename);
 
-extern void DisposePilotInfo (void);
+extern void DisposePilotInfo(void);
 
-extern int GetAvailablePilot (int first, int last, int owner);
+extern int GetAvailablePilot(int first, int last, int owner);
 
-extern void GetPilotName (int id, _TCHAR* name, int size);
+extern void GetPilotName(int id, _TCHAR* name, int size);
 
-extern void GetCallsignID (uchar* id, uchar* num, int range);
+extern void GetCallsignID(uchar* id, uchar* num, int range);
 
-extern void SetCallsignID (int id, int num);
+extern void SetCallsignID(int id, int num);
 
-extern void UnsetCallsignID (int id, int num);
+extern void UnsetCallsignID(int id, int num);
 
-extern void GetCallsign (int id, int num, _TCHAR* callsign);
+extern void GetCallsign(int id, int num, _TCHAR* callsign);
 
-extern void GetCallsign (Flight fl, _TCHAR* callsign);
+extern void GetCallsign(Flight fl, _TCHAR* callsign);
 
-extern void GetDogfightCallsign (Flight flight);
+extern void GetDogfightCallsign(Flight flight);
 
 #endif

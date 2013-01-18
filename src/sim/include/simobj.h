@@ -7,9 +7,9 @@ class SimObjectType;
 class SimMoverClass;
 class FalconPrivateOrderedList;
 
-SimObjectType* UpdateTargetList (SimObjectType* inUseList, SimMoverClass* self,
-                       FalconPrivateOrderedList* thisObjectList);
-void ReleaseTargetList (SimObjectType* InUseList);
+SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self,
+                                FalconPrivateOrderedList* thisObjectList);
+void ReleaseTargetList(SimObjectType* InUseList);
 
 #endif
 

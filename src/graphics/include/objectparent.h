@@ -21,83 +21,86 @@ extern int					TheObjectListLength;
 
 
 // RED - this is the single record stucture in the parents file
-typedef	struct {
+typedef	struct
+{
 
-	float				radius;
-	float				minX, maxX;
-	float				minY, maxY;
-	float				minZ, maxZ;
+    float				radius;
+    float				minX, maxX;
+    float				minY, maxY;
+    float				minZ, maxZ;
 
-	float				RadarSign;
-	float				IRSign;
+    float				RadarSign;
+    float				IRSign;
 
-	short				nTextureSets;
-	short				nDynamicCoords;
-	unsigned char		nLODs;
-	unsigned char		nSwitch;
-	unsigned char		nDOF;
-	unsigned char		nSlots;
-	short				nSwitches;
-	short				nDOFs;
+    short				nTextureSets;
+    short				nDynamicCoords;
+    unsigned char		nLODs;
+    unsigned char		nSwitch;
+    unsigned char		nDOF;
+    unsigned char		nSlots;
+    short				nSwitches;
+    short				nDOFs;
 
-	//DWORD				Unused_2;
+    //DWORD				Unused_2;
 
 }	ParentFileRecord;
 
 
 
-typedef struct LODrecord {
-	ObjectLOD	*objLOD;
-	float		maxRange;
+typedef struct LODrecord
+{
+    ObjectLOD	*objLOD;
+    float		maxRange;
 } LODrecord;
 
 
-class ObjectParent {
-  public:
-	ObjectParent();
-	~ObjectParent();
+class ObjectParent
+{
+public:
+    ObjectParent();
+    ~ObjectParent();
 
-	static void	SetupTable( char *filename );
-	static void CleanupTable( void );
-	static void FlushReferences( void );
+    static void	SetupTable(char *filename);
+    static void CleanupTable(void);
+    static void FlushReferences(void);
 
-	void		ReferenceWithFetch(void);
-	void		Reference(void);
-	void		Release(bool Unlock = false);
+    void		ReferenceWithFetch(void);
+    void		Reference(void);
+    void		Release(bool Unlock = false);
 
-	void		ReferenceTexSet(DWORD TexSet = 0, DWORD MaxTexSet = 0);
-	void		ReleaseTexSet(DWORD TexSet = 0, DWORD MaxTexSet = 0);
+    void		ReferenceTexSet(DWORD TexSet = 0, DWORD MaxTexSet = 0);
+    void		ReleaseTexSet(DWORD TexSet = 0, DWORD MaxTexSet = 0);
 
-  protected:
-	static void ReadParentList( int file );
-	static void VerifyVersion( int file );
+protected:
+    static void ReadParentList(int file);
+    static void VerifyVersion(int file);
 
-  public:
-	ObjectLOD	*ChooseLOD(float range, int *lod_used, float *max_range);
+public:
+    ObjectLOD	*ChooseLOD(float range, int *lod_used, float *max_range);
 
-	float				radius;
-	float				minX, maxX;
-	float				minY, maxY;
-	float				minZ, maxZ;
-	float				RadarSign, IRSign;
+    float				radius;
+    float				minX, maxX;
+    float				minY, maxY;
+    float				minZ, maxZ;
+    float				RadarSign, IRSign;
 
-	LODrecord			*pLODs;
-	Ppoint				*pSlotAndDynamicPositions;
+    LODrecord			*pLODs;
+    Ppoint				*pSlotAndDynamicPositions;
 
-	short				nTextureSets;
-	short				nDynamicCoords;
-	unsigned char		nLODs;
-	//unsigned char		nSwitches; // need 2 bytes for Switches
-	//unsigned char		nDOFs; // need 2 bytes for DOFs
-	unsigned char		nSwitch;
-	unsigned char		nDOF;
-	unsigned char		nSlots;
-	short				nSwitches;
-	short				nDOFs;
+    short				nTextureSets;
+    short				nDynamicCoords;
+    unsigned char		nLODs;
+    //unsigned char		nSwitches; // need 2 bytes for Switches
+    //unsigned char		nDOFs; // need 2 bytes for DOFs
+    unsigned char		nSwitch;
+    unsigned char		nDOF;
+    unsigned char		nSlots;
+    short				nSwitches;
+    short				nDOFs;
 
-  protected:
-	bool				Locked;							// RED - The object is locked, can not be released
-	int					refCount;
+protected:
+    bool				Locked;							// RED - The object is locked, can not be released
+    int					refCount;
 };
 
 #endif // _OBJECTPARENT_H_

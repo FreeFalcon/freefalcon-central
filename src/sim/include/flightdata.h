@@ -5,10 +5,11 @@
 
 #define OSB_STRING_LENGTH 8  // currently strings appear to be max 7 printing chars
 
-typedef struct {
-	char line1[OSB_STRING_LENGTH];
-	char line2[OSB_STRING_LENGTH];
-	bool inverted;
+typedef struct
+{
+    char line1[OSB_STRING_LENGTH];
+    char line2[OSB_STRING_LENGTH];
+    bool inverted;
 } OsbLabel;
 
 class FlightData
@@ -200,7 +201,7 @@ public:
     int   lightBits;    // Cockpit Indicator Lights, one bit per bulb. See enum
 
     // These are inputs. Use them carefully
-	// NB: these do not work when TrackIR device is enabled
+    // NB: these do not work when TrackIR device is enabled
     float headPitch;    // Head pitch offset from design eye (radians)
     float headRoll;     // Head roll offset from design eye (radians)
     float headYaw;      // Head yaw offset from design eye (radians)
@@ -271,26 +272,62 @@ public:
     //fuel values
     float fwd, aft, total;
 
-    void SetLightBit (int newBit) {lightBits |= newBit;};
-    void ClearLightBit (int newBit) {lightBits &= ~newBit;};
-    int  IsSet (int newBit) {return ((lightBits & newBit) ? TRUE : FALSE);};
+    void SetLightBit(int newBit)
+    {
+        lightBits |= newBit;
+    };
+    void ClearLightBit(int newBit)
+    {
+        lightBits &= ~newBit;
+    };
+    int  IsSet(int newBit)
+    {
+        return ((lightBits & newBit) ? TRUE : FALSE);
+    };
 
-    void SetLightBit2 (int newBit) {lightBits2 |= newBit;};
-    void ClearLightBit2 (int newBit) {lightBits2 &= ~newBit;};
-    int  IsSet2 (int newBit) {return ((lightBits2 & newBit) ? TRUE : FALSE);};
+    void SetLightBit2(int newBit)
+    {
+        lightBits2 |= newBit;
+    };
+    void ClearLightBit2(int newBit)
+    {
+        lightBits2 &= ~newBit;
+    };
+    int  IsSet2(int newBit)
+    {
+        return ((lightBits2 & newBit) ? TRUE : FALSE);
+    };
 
-    void SetLightBit3 (int newBit) {lightBits3 |= newBit;};
-    void ClearLightBit3 (int newBit) {lightBits3 &= ~newBit;};
-    int  IsSet3 (int newBit) {return ((lightBits3 & newBit) ? TRUE : FALSE);};
+    void SetLightBit3(int newBit)
+    {
+        lightBits3 |= newBit;
+    };
+    void ClearLightBit3(int newBit)
+    {
+        lightBits3 &= ~newBit;
+    };
+    int  IsSet3(int newBit)
+    {
+        return ((lightBits3 & newBit) ? TRUE : FALSE);
+    };
 
-    void SetHsiBit (int newBit) {hsiBits |= newBit;};
-    void ClearHsiBit (int newBit) {hsiBits &= ~newBit;};
-    int  IsSetHsi (int newBit) {return ((hsiBits & newBit) ? TRUE : FALSE);};
+    void SetHsiBit(int newBit)
+    {
+        hsiBits |= newBit;
+    };
+    void ClearHsiBit(int newBit)
+    {
+        hsiBits &= ~newBit;
+    };
+    int  IsSetHsi(int newBit)
+    {
+        return ((hsiBits & newBit) ? TRUE : FALSE);
+    };
 
     int VersionNum;    //Version of Mem area
 
-	OsbLabel leftMFD[20];
-	OsbLabel rightMFD[20];
+    OsbLabel leftMFD[20];
+    OsbLabel rightMFD[20];
 };
 
 extern FlightData cockpitFlightData;

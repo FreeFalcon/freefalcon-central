@@ -14,24 +14,28 @@
 */
 //namespace std {
 
-class InvalidBufferException: public std::out_of_range {
+class InvalidBufferException: public std::out_of_range
+{
 public:
-	InvalidBufferException(const std::string &msg) : out_of_range(msg){}
+    InvalidBufferException(const std::string &msg) : out_of_range(msg) {}
 };
 
-/** this function is a memcpy just a little modified, the difference is: 
+/** this function is a memcpy just a little modified, the difference is:
 * it throws InvalidBufferException if rem < size
 */
-inline void memcpychk(void *dst, VU_BYTE **src, size_t size, long *rem){
-	if ((size_t)*rem < size){
-		char err[100];
-		sprintf(err, "Trying to write %lu bytes to %ld buffer", static_cast<unsigned long>(size), *rem);
-		std::string s(err);
-		throw InvalidBufferException(s);
-	}
-	memcpy(dst, *src, size);
-	*rem -= size;
-	*src += size;
+inline void memcpychk(void *dst, VU_BYTE **src, size_t size, long *rem)
+{
+    if ((size_t)*rem < size)
+    {
+        char err[100];
+        sprintf(err, "Trying to write %lu bytes to %ld buffer", static_cast<unsigned long>(size), *rem);
+        std::string s(err);
+        throw InvalidBufferException(s);
+    }
+
+    memcpy(dst, *src, size);
+    *rem -= size;
+    *src += size;
 }
 //}
 

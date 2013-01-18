@@ -14,7 +14,7 @@ extern int	log_frame_rate;
 void InitializeStatistics(void);
 void CloseStatistics(void);
 void WriteStatistics(void);
-void PrintMemUsage (void);
-void WriteMemUsage (void);
+void PrintMemUsage(void);
+void WriteMemUsage(void);
 
 #endif // _STATISTICS_H_

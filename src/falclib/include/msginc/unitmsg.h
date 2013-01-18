@@ -25,56 +25,61 @@
  */
 class FalconUnitMessage : public FalconEvent
 {
-   public:
-      enum UnitMsgType {
-         unitDetach,
-         unitSupply,
-         unitNewOrders,
-         unitRequestMet,
-         unitScheduleAC,
-         unitSchedulePilots,
-         unitSetVehicles,
-         unitActivate,
-         unitSupport,
-         unitRatings,
-         unitStatistics,
-		 unitScramble };
+public:
+    enum UnitMsgType
+    {
+        unitDetach,
+        unitSupply,
+        unitNewOrders,
+        unitRequestMet,
+        unitScheduleAC,
+        unitSchedulePilots,
+        unitSetVehicles,
+        unitActivate,
+        unitSupport,
+        unitRatings,
+        unitStatistics,
+        unitScramble
+    };
 
-      FalconUnitMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconUnitMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconUnitMessage(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: changed long*
-	  int Decode (VU_BYTE **buf, long *rem)
-	  {
-		  long init = *rem;
-		  
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+    FalconUnitMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconUnitMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconUnitMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed long*
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
-            VU_ID from;
-            ushort message;
-            short data1;
-            short data2;
-            short data3;
-      } dataBlock;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-   protected:
-      int Process(uchar autodisp);
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
+        VU_ID from;
+        ushort message;
+        short data1;
+        short data2;
+        short data3;
+    } dataBlock;
+
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

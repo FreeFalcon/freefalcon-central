@@ -11,13 +11,13 @@
 
 extern float CostTable[COVER_TYPES][MOVEMENT_TYPES];
 extern float ReliefCost[RELIEF_TYPES];
-extern int QuickSearch;	
+extern int QuickSearch;
 extern int moveAlt;
 
 // =============================
 // Path flags
 // =============================
-	
+
 #define PATH_ROADOK		0x01			// Use road movement bonuses (private implimentation)
 #define PATH_RAILOK		0x02			// Use rail movement bonuses (private implimentation)
 #define PATH_ENEMYOK	0x04			// Ok to move through enemy territory (private implimentation)
@@ -32,22 +32,22 @@ extern int moveAlt;
 // =============================
 // Global functions
 // =============================
-	
-extern int GetGridPath (Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags);
 
-extern costtype GetPathCost (GridIndex x, GridIndex y, Path path, MoveType mt, int flags);
+extern int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags);
 
-extern costtype GetPathCost (Objective o, Path path, MoveType mt, int flags);
+extern costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags);
 
-extern int GetObjectivePath (Path p, Objective o, Objective t, int type, int who, int flags);
+extern costtype GetPathCost(Objective o, Path path, MoveType mt, int flags);
 
-extern int GetObjectivePath (Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags);
+extern int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int flags);
 
-extern int FindLinkPath (Path p, Objective O1, Objective O2, MoveType mt);
+extern int GetObjectivePath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags);
 
-extern float GetMovementCost (GridIndex x, GridIndex y, MoveType move, int flags, CampaignHeading h);
+extern int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt);
 
-extern float GetObjectiveMovementCost (Objective o, int neighbor, MoveType type, Team team, int flags);
+extern float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, CampaignHeading h);
+
+extern float GetObjectiveMovementCost(Objective o, int neighbor, MoveType type, Team team, int flags);
 
 #endif
 

@@ -8,41 +8,56 @@
 
 //___________________________________________________________________________
 
-class CFileMemory {
-  public:
-	CFileMemory()			{ buffer = NULL; bytesLeft = 0; };
-	virtual ~CFileMemory()	{};
+class CFileMemory
+{
+public:
+    CFileMemory()
+    {
+        buffer = NULL;
+        bytesLeft = 0;
+    };
+    virtual ~CFileMemory()	{};
 
-	GLint		glOpenFileMem (const char *filename);
-	void		glReadFileMem ();
-	void		glCloseFileMem ();
+    GLint		glOpenFileMem(const char *filename);
+    void		glReadFileMem();
+    void		glCloseFileMem();
 
-	GLuint		glReadCharMem ();
-	GLint		glReadMem (void *target, GLint totalbytes);
-	GLint		glSetFilePosMem (GLint offset, GLint mode);
+    GLuint		glReadCharMem();
+    GLint		glReadMem(void *target, GLint totalbytes);
+    GLint		glSetFilePosMem(GLint offset, GLint mode);
 
-	GLint		glBytesLeft ()		{ return bytesLeft; };
-	void		*glBufferAddress ()	{ return buffer; };
-	int			glFileHandle ()	{ return CurrentFile.getfilehandle(); };
+    GLint		glBytesLeft()
+    {
+        return bytesLeft;
+    };
+    void		*glBufferAddress()
+    {
+        return buffer;
+    };
+    int			glFileHandle()
+    {
+        return CurrentFile.getfilehandle();
+    };
 
-  protected:
-	GLubyte		*buffer;
-	GLubyte		*bufferEnd;
-	GLubyte		*CurrentMemoryPointer;
-	GLint		bytesLeft;
+protected:
+    GLubyte		*buffer;
+    GLubyte		*bufferEnd;
+    GLubyte		*CurrentMemoryPointer;
+    GLint		bytesLeft;
 
-	CFileIO		CurrentFile;
+    CFileIO		CurrentFile;
 };
 
 //___________________________________________________________________________
 
-class CImageFileMemory : public CFileMemory {
+class CImageFileMemory : public CFileMemory
+{
 public:
-	CImageFileMemory();
-	virtual ~CImageFileMemory() {};
-	GLint		imageType;
-	GLImageInfo	image;
-	GLbyte		fileName[_MAX_PATH];
+    CImageFileMemory();
+    virtual ~CImageFileMemory() {};
+    GLint		imageType;
+    GLImageInfo	image;
+    GLbyte		fileName[_MAX_PATH];
 };
 
 #endif

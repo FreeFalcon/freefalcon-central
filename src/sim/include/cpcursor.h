@@ -10,60 +10,68 @@ extern MEM_POOL gCockMemPool;
 // Initialization Structures
 //====================================================//
 
-typedef struct {
-					int				idNum;
-					RECT				srcRect;
-					int				xhotSpot;
-					int				yhotSpot;
-					ImageBuffer*	pOtwImage;
-					ImageBuffer*	pTemplate;
-					} CursorInitStr;
+typedef struct
+{
+    int				idNum;
+    RECT				srcRect;
+    int				xhotSpot;
+    int				yhotSpot;
+    ImageBuffer*	pOtwImage;
+    ImageBuffer*	pTemplate;
+} CursorInitStr;
 
 //====================================================//
 // CPCursor Class Defintion
 //====================================================//
 
-class CPCursor {
+class CPCursor
+{
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(gCockMemPool,size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(gCockMemPool, size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
 public:
 
-	//====================================================//
-	// ID Tag
-	//====================================================//
+    //====================================================//
+    // ID Tag
+    //====================================================//
 
-	int				mIdNum;
+    int				mIdNum;
 
-	//====================================================//
-	// Source Location in Template Buffer and Hotspot Offsets
-	//====================================================//
+    //====================================================//
+    // Source Location in Template Buffer and Hotspot Offsets
+    //====================================================//
 
-	RECT				mSrcRect;
-	int				mxHotspot;
-	int				myHotspot;
+    RECT				mSrcRect;
+    int				mxHotspot;
+    int				myHotspot;
 
-	//====================================================//
-	// Pointer's to Outside Image Buffers
-	//====================================================//
+    //====================================================//
+    // Pointer's to Outside Image Buffers
+    //====================================================//
 
-	ImageBuffer		*mpOTWImage;
-	ImageBuffer		*mpTemplate;	
+    ImageBuffer		*mpOTWImage;
+    ImageBuffer		*mpTemplate;
 
-	//====================================================//
-	// Runtime Member Functions
-	//====================================================//
+    //====================================================//
+    // Runtime Member Functions
+    //====================================================//
 
-	void Display(void);
+    void Display(void);
 
-	//====================================================//
-	// Constructors and Destructors
-	//====================================================//
-	
-	CPCursor(CursorInitStr*);
+    //====================================================//
+    // Constructors and Destructors
+    //====================================================//
+
+    CPCursor(CursorInitStr*);
 };
 
 #endif

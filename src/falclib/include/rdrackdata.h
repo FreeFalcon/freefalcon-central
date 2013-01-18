@@ -9,17 +9,21 @@
 #define RDF_EMERGENCY_JETT_PYLON  ((1<<5))// | RDF_EMERGENCY_JETT_RACK)
 #define RDF_SELECTIVE_JETT_PYLON  ((1<<6))// | RDF_SELECTIVE_JETT_RACK)
 
-struct RDRackData 
+struct RDRackData
 {
-	RDRackData() { memset (this, 0, sizeof (*this)); flags = RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;};
-	char *pylonmnemonic;
-	char *rackmnemonic;
-	int pylonCT;
-	int rackCT;
-	int rackStations;
-	int flags;
-	int count;
-	int *loadOrder;
+    RDRackData()
+    {
+        memset(this, 0, sizeof(*this));
+        flags = RDF_EMERGENCY_JETT_RACK | RDF_SELECTIVE_JETT_RACK;
+    };
+    char *pylonmnemonic;
+    char *rackmnemonic;
+    int pylonCT;
+    int rackCT;
+    int rackStations;
+    int flags;
+    int count;
+    int *loadOrder;
 };
 
 

@@ -25,62 +25,67 @@
  */
 class FalconWeaponsFire : public FalconEvent
 {
-		public:
-				enum WeaponType {
-					GUN,
-					//       LRM,	// I don't think this is used (or handled)  SCR 10/7/98
-					MRM,
-					SRM,
-					BMB,
-					ARM,
-					AGM,
-					Rocket,
-					Recon};
+public:
+    enum WeaponType
+    {
+        GUN,
+        //       LRM,	// I don't think this is used (or handled)  SCR 10/7/98
+        MRM,
+        SRM,
+        BMB,
+        ARM,
+        AGM,
+        Rocket,
+        Recon
+    };
 
-				FalconWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-				FalconWeaponsFire(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-				~FalconWeaponsFire(void);
-				virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-				//sfr: added long *
-				int Decode (VU_BYTE **buf, long *rem)
-				{
-					long init = *rem;
+    FalconWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconWeaponsFire(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconWeaponsFire(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: added long *
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-					FalconEvent::Decode (buf, rem);
-					memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-					return init - *rem;
-				};
-				int Encode (VU_BYTE **buf)
-				{
-					int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-					size = FalconEvent::Encode (buf);
-					memcpy (*buf, &dataBlock, sizeof (dataBlock));
-					*buf += sizeof (dataBlock);
-					size += sizeof (dataBlock);
-					return size;
-				};
-				class DATA_BLOCK
-				{
-						public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-								unsigned int weaponType;
-								VU_ID fEntityID;
-								ushort fCampID;
-								uchar fPilotID;
-								ushort fIndex;
-								uchar fSide;
-								ushort fWeaponID;
-								VU_ID fWeaponUID;
-								VU_ID targetId;
-								float dx;
-								float dy;
-								float dz;
-								unsigned int gameTime;
-				} dataBlock;
+        unsigned int weaponType;
+        VU_ID fEntityID;
+        ushort fCampID;
+        uchar fPilotID;
+        ushort fIndex;
+        uchar fSide;
+        ushort fWeaponID;
+        VU_ID fWeaponUID;
+        VU_ID targetId;
+        float dx;
+        float dy;
+        float dz;
+        unsigned int gameTime;
+    } dataBlock;
 
-		protected:
-				int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

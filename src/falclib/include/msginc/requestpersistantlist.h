@@ -26,38 +26,42 @@ using std::memcpychk;
  */
 class FalconRequestPersistantList : public FalconEvent
 {
-   public:
-      FalconRequestPersistantList(VU_ID entityId, VU_ID dest, VU_BYTE routing);
-      FalconRequestPersistantList(VU_ID entityId, VU_BYTE routing);
-      ~FalconRequestPersistantList(void);
-      int Size (void) { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: long *
-	  int Decode (VU_BYTE **buf, long *rem){
-		  long init = *rem;
+public:
+    FalconRequestPersistantList(VU_ID entityId, VU_ID dest, VU_BYTE routing);
+    FalconRequestPersistantList(VU_ID entityId, VU_BYTE routing);
+    ~FalconRequestPersistantList(void);
+    int Size(void)
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: long *
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
 
-            VU_ID who;
-      } dataBlock;
+        VU_ID who;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

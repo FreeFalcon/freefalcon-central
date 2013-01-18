@@ -29,19 +29,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
-void _add_m3x3(float *res, float *a, float *b);
-void _add_m4x4(float *res, float *a, float *b);
-void _sub_m3x3(float *res, float *a, float *b);
-void _sub_m4x4(float *res, float *a, float *b);
-void _mul_m3x3(float *res, float *a, float *b);
-void _mul_m4x4(float *res, float *a, float *b);
-void _add_m3x3s(float *res, float *a, float b);
-void _add_m4x4s(float *res, float *a, float b);
-void _sub_m3x3s(float *res, float *a, float b);
-void _sub_m4x4s(float *res, float *a, float b);
-void _mul_m3x3s(float *res, float *a, float b);
-void _mul_m4x4s(float *res, float *a, float b);
+
+    void _add_m3x3(float *res, float *a, float *b);
+    void _add_m4x4(float *res, float *a, float *b);
+    void _sub_m3x3(float *res, float *a, float *b);
+    void _sub_m4x4(float *res, float *a, float *b);
+    void _mul_m3x3(float *res, float *a, float *b);
+    void _mul_m4x4(float *res, float *a, float *b);
+    void _add_m3x3s(float *res, float *a, float b);
+    void _add_m4x4s(float *res, float *a, float b);
+    void _sub_m3x3s(float *res, float *a, float b);
+    void _sub_m4x4s(float *res, float *a, float b);
+    void _mul_m3x3s(float *res, float *a, float b);
+    void _mul_m4x4s(float *res, float *a, float b);
 
 #ifdef __cplusplus
 }

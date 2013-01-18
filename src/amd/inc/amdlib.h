@@ -37,7 +37,7 @@
 #ifndef _AMD_LIB_H
 #define _AMD_LIB_H
 
-int has3DNow (void);
+int has3DNow(void);
 
 #endif
 

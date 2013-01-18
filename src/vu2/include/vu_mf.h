@@ -9,12 +9,13 @@ class VuMessage;
 // filters used
 
 /** base message filter. */
-class VuMessageFilter {
+class VuMessageFilter
+{
 public:
-	VuMessageFilter() { }
-	virtual ~VuMessageFilter() { }
-	virtual VU_BOOL Test(VuMessage *event) const = 0;
-	virtual VuMessageFilter *Copy() const = 0;
+    VuMessageFilter() { }
+    virtual ~VuMessageFilter() { }
+    virtual VU_BOOL Test(VuMessage *event) const = 0;
+    virtual VuMessageFilter *Copy() const = 0;
 };
 
 // provided default filters
@@ -28,25 +29,33 @@ public:
 * - All update events on local entities
 * - All non-event messages (though this can be overridden)
 */
-class VuStandardMsgFilter : public VuMessageFilter {
+class VuStandardMsgFilter : public VuMessageFilter
+{
 public:
-	VuStandardMsgFilter();
-	VuStandardMsgFilter(ulong bitfield);
-	virtual ~VuStandardMsgFilter(){}
-	virtual VU_BOOL Test(VuMessage *event) const;
-	virtual VuMessageFilter *Copy() const { return new VuStandardMsgFilter(msgTypeBitfield_); }
+    VuStandardMsgFilter();
+    VuStandardMsgFilter(ulong bitfield);
+    virtual ~VuStandardMsgFilter() {}
+    virtual VU_BOOL Test(VuMessage *event) const;
+    virtual VuMessageFilter *Copy() const
+    {
+        return new VuStandardMsgFilter(msgTypeBitfield_);
+    }
 
 protected:
-	ulong msgTypeBitfield_;
+    ulong msgTypeBitfield_;
 };
 
 /** allows only messages for which send failed and are reliable or keep alive. */
-class VuResendMsgFilter : public VuMessageFilter {
+class VuResendMsgFilter : public VuMessageFilter
+{
 public:
-	VuResendMsgFilter(){}
-	virtual ~VuResendMsgFilter(){}
-	virtual VU_BOOL Test(VuMessage *message) const;
-	virtual VuMessageFilter *Copy() const { return new VuResendMsgFilter; }
+    VuResendMsgFilter() {}
+    virtual ~VuResendMsgFilter() {}
+    virtual VU_BOOL Test(VuMessage *message) const;
+    virtual VuMessageFilter *Copy() const
+    {
+        return new VuResendMsgFilter;
+    }
 };
 
 /*
@@ -63,12 +72,19 @@ protected:
 */
 
 /** filter that lets everything goes through. */
-class VuNullMessageFilter : public VuMessageFilter {
+class VuNullMessageFilter : public VuMessageFilter
+{
 public:
-	VuNullMessageFilter() : VuMessageFilter() { }
-	virtual ~VuNullMessageFilter() { }
-	virtual VU_BOOL Test(VuMessage *) const { return TRUE; }
-	virtual VuMessageFilter *Copy() const { return new VuNullMessageFilter; }
+    VuNullMessageFilter() : VuMessageFilter() { }
+    virtual ~VuNullMessageFilter() { }
+    virtual VU_BOOL Test(VuMessage *) const
+    {
+        return TRUE;
+    }
+    virtual VuMessageFilter *Copy() const
+    {
+        return new VuNullMessageFilter;
+    }
 };
 
 

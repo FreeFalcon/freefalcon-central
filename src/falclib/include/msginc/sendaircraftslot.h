@@ -18,31 +18,34 @@
 
 class UI_SendAircraftSlot : public FalconEvent
 {
-   public:
-      UI_SendAircraftSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      UI_SendAircraftSlot(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~UI_SendAircraftSlot(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-	  int Decode (VU_BYTE **buf, long *rem);
-      int Encode (VU_BYTE **buf);
+public:
+    UI_SendAircraftSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendAircraftSlot(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~UI_SendAircraftSlot(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    int Decode(VU_BYTE **buf, long *rem);
+    int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
+    class DATA_BLOCK
+    {
+    public:
 
-            VU_ID requesting_session;
-			VU_ID game_id;
-			VU_ID host_id;
-			uchar result;
-            uchar game_type;
-            uchar team;
-            uchar got_slot;
-			uchar got_pilot_slot;
-			uchar got_pilot_skill;
-      } dataBlock;
+        VU_ID requesting_session;
+        VU_ID game_id;
+        VU_ID host_id;
+        uchar result;
+        uchar game_type;
+        uchar team;
+        uchar got_slot;
+        uchar got_pilot_slot;
+        uchar got_pilot_skill;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

@@ -4,7 +4,7 @@
 
     Console i/o interface to test resource manager
 
-    Written by Kevin Ray    (c) 1996 Spectrum Holobyte          
+    Written by Kevin Ray    (c) 1996 Spectrum Holobyte
 
    ------------------------------------------------------------------------ */
 
@@ -20,7 +20,7 @@
 #include <io.h>
 #include <direct.h>
 #include <process.h>       /* _beginthread()    MUST SET C++ OPTIONS UNDER 
-                                                MSVC SETTINGS                */
+MSVC SETTINGS                */
 
 #include <windows.h>       /* all this for MessageBox (may move to debug.cpp)*/
 #endif
@@ -79,7 +79,7 @@ char * command[] =
 char * help[] =
 {
     "Prints the contents of a directory that is in the search path.",
-    "Exit the program.", 
+    "Exit the program.",
     "Attach an archive file to the search path.",
     "Detach an archive file that has already been added to the\n\t\tsearch path",
     "Display an analysis of the hash table for the specified\n\t\tdirectory [blank pathname = GLOBAL_HASH_TABLE].",
@@ -147,11 +147,11 @@ extern int          GLOBAL_SEARCH_INDEX;                    /* number of entries
 
 extern DEVICE_ENTRY * RES_DEVICES;                          /* array of device_entry structs        */
 
-extern HASH_ENTRY * hash_find( const char *, HASH_TABLE * );
+extern HASH_ENTRY * hash_find(const char *, HASH_TABLE *);
 
-extern char * res_fullpath( char * abs_buffer, const char * rel_buffer, int maxlen );
-extern void dbg_analyze_hash( HASH_TABLE * );
-extern void dbg_device( DEVICE_ENTRY * ); 
+extern char * res_fullpath(char * abs_buffer, const char * rel_buffer, int maxlen);
+extern void dbg_analyze_hash(HASH_TABLE *);
+extern void dbg_device(DEVICE_ENTRY *);
 
 
 
@@ -168,7 +168,7 @@ extern void dbg_device( DEVICE_ENTRY * );
 
    ======================================================= */
 
-int parse_args( char * cmd, char ** argv )
+int parse_args(char * cmd, char ** argv)
 {
     int quote_flag,
         writing_flag,
@@ -178,25 +178,36 @@ int parse_args( char * cmd, char ** argv )
     writing_flag = FALSE;
     argc = 0;
 
-    while( *cmd ) {
+    while (*cmd)
+    {
 
-        if( quote_flag ) {
-            if( *cmd == ASCII_QUOTE ) {
+        if (quote_flag)
+        {
+            if (*cmd == ASCII_QUOTE)
+            {
                 quote_flag = 0;
                 *cmd = 0x00;
             }
-        } else {
-            if( *cmd == ASCII_SPACE ) {
+        }
+        else
+        {
+            if (*cmd == ASCII_SPACE)
+            {
                 *cmd = 0x00;
                 writing_flag = 0;
-            } else {
-                if( !writing_flag ) {
-                    if( *cmd == ASCII_QUOTE ) {
+            }
+            else
+            {
+                if (!writing_flag)
+                {
+                    if (*cmd == ASCII_QUOTE)
+                    {
                         argv[ argc++ ] = ++cmd;
                         quote_flag = 1;
                     }
                     else
                         argv[ argc++ ] = cmd;
+
                     writing_flag = 1;
                 }
             }
@@ -205,53 +216,57 @@ int parse_args( char * cmd, char ** argv )
         cmd++;
     }
 
-    return( argc );
+    return(argc);
 }
 
 
-void print_bytes( char * buffer )
+void print_bytes(char * buffer)
 {
     int count;
 
-    for( count = 0; count < 16; count++ )
-        printf( "%02X ", (unsigned char)(buffer[ count ]));
-    printf( "  " );
+    for (count = 0; count < 16; count++)
+        printf("%02X ", (unsigned char)(buffer[ count ]));
 
-    for( count = 0; count < 16; count++ )
-        if( (buffer[ count ] > 0x1f) && (buffer[ count ] < 0x7f))
-            printf( "%c", (unsigned char)(buffer[ count ]));
+    printf("  ");
+
+    for (count = 0; count < 16; count++)
+        if ((buffer[ count ] > 0x1f) && (buffer[ count ] < 0x7f))
+            printf("%c", (unsigned char)(buffer[ count ]));
         else
-            printf( "." );
+            printf(".");
 }
 
-void print_heading( void )
+void print_heading(void)
 {
-    printf( "\n\n" );
-    printf( "+-------------------------------------------------------------------------+\n" );
-    printf( "|  COMMANDS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::   |\n" );
-    printf( "|                                                                         |\n" );
-    printf( "|   dir  exit  attach  detach  analyze  dump  find  cd  add  read  path   |\n" );
-    printf( "|   map  stream  extract  run  help                                       |\n" );
-    printf( "+-------------------------------------------------------------------------+\n" );
+    printf("\n\n");
+    printf("+-------------------------------------------------------------------------+\n");
+    printf("|  COMMANDS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::   |\n");
+    printf("|                                                                         |\n");
+    printf("|   dir  exit  attach  detach  analyze  dump  find  cd  add  read  path   |\n");
+    printf("|   map  stream  extract  run  help                                       |\n");
+    printf("+-------------------------------------------------------------------------+\n");
 }
 
-void show_help( int cmd )
+void show_help(int cmd)
 {
-    printf( " syntax      :  %s\n", syntax[ cmd ] );
-    printf( " description :  %s\n", help[ cmd ] );
+    printf(" syntax      :  %s\n", syntax[ cmd ]);
+    printf(" description :  %s\n", help[ cmd ]);
 }
 
-int is_bool( char * string )
+int is_bool(char * string)
 {
-    if( !stricmp( string, "false" )) return( 0 );
-    if( !stricmp( string, "true"  )) return( 1 );
+    if (!stricmp(string, "false")) return(0);
 
-    if( strlen( string ) == 1 ) {
-        if( strchr( "nNfF0", *string )) return(0);
-        if( strchr( "yYTt1", *string )) return(1);
-    }        
+    if (!stricmp(string, "true")) return(1);
 
-    return( -1 ); /* can't determine */
+    if (strlen(string) == 1)
+    {
+        if (strchr("nNfF0", *string)) return(0);
+
+        if (strchr("yYTt1", *string)) return(1);
+    }
+
+    return(-1);   /* can't determine */
 }
 
 
@@ -267,23 +282,24 @@ int is_bool( char * string )
 
    ======================================================= */
 
-void cmd_read( char * argv )
+void cmd_read(char * argv)
 {
     unsigned int size;
 
     char * inbuf,
          * ptr;
 
-    inbuf = ptr = ResLoadFile( argv, NULL, &size );
+    inbuf = ptr = ResLoadFile(argv, NULL, &size);
 
-    if( !inbuf ) {
-        printf( "File not found (%s).\n", argv );
+    if (!inbuf)
+    {
+        printf("File not found (%s).\n", argv);
         return;
     }
 
-    fwrite( inbuf, 1, size, stdout );
+    fwrite(inbuf, 1, size, stdout);
 
-    ResUnloadFile( inbuf );
+    ResUnloadFile(inbuf);
 }
 
 
@@ -303,34 +319,44 @@ void cmd_read( char * argv )
    ======================================================= */
 
 
-void cmd_map( char * argv )
+void cmd_map(char * argv)
 {
     int id,
         check;
 
-    if( !argv ) {
-        printf( "No device id specified.\n" );
+    if (!argv)
+    {
+        printf("No device id specified.\n");
         return;
     }
 
     id = toupper(toupper(argv[0])) - 'A';
 
-    if( id < 0 || id > 25 ) {
-        printf( "Can't decipher drive.  Use A-Z\n" );
+    if (id < 0 || id > 25)
+    {
+        printf("Can't decipher drive.  Use A-Z\n");
         return;
     }
-    else {    
-        check = ResCheckMedia( id );
+    else
+    {
+        check = ResCheckMedia(id);
 
-        switch( check ) {
-            case 0: 
+        switch (check)
+        {
+            case 0:
 #if( RES_DEBUG_VERSION )
-               dbg_device( &RES_DEVICES[ id ]); 
+                dbg_device(&RES_DEVICES[ id ]);
 #endif
-               break;
-            case 1: printf( "Media has not changed.\n" ); break;
-            case -1: printf( "Media not available.\n" ); break;
-        }                       
+                break;
+
+            case 1:
+                printf("Media has not changed.\n");
+                break;
+
+            case -1:
+                printf("Media not available.\n");
+                break;
+        }
     }
 }
 
@@ -348,43 +374,46 @@ void cmd_map( char * argv )
 
    ======================================================= */
 
-void cmd_dir( char * argv )
+void cmd_dir(char * argv)
 {
     RES_DIR * dir;
     char * file;
     char   fullpath[_MAX_PATH];
     int    ct = 0;
 
-    if( !GLOBAL_SEARCH_INDEX ) {
-        printf( "No path.\n" );
+    if (!GLOBAL_SEARCH_INDEX)
+    {
+        printf("No path.\n");
         return;
     }
 
-    if( !argv )
-        ResGetDirectory( fullpath );
+    if (!argv)
+        ResGetDirectory(fullpath);
     else
-        res_fullpath( fullpath, argv, _MAX_PATH );
-    
-    dir = ResOpenDirectory( fullpath );
+        res_fullpath(fullpath, argv, _MAX_PATH);
 
-    if( !dir )
-        printf( "Directory not found.\n" );
-    else {
-        printf( "Directory of %s\n", fullpath );
+    dir = ResOpenDirectory(fullpath);
 
-        file = ResReadDirectory( dir );
+    if (!dir)
+        printf("Directory not found.\n");
+    else
+    {
+        printf("Directory of %s\n", fullpath);
 
-        for( ct = 0; ct < dir -> num_entries; ct++ ) {
-            printf( "%-17s", file );
-    
-            if( !((ct+1) % 4 ))
+        file = ResReadDirectory(dir);
+
+        for (ct = 0; ct < dir -> num_entries; ct++)
+        {
+            printf("%-17s", file);
+
+            if (!((ct + 1) % 4))
                 printf("\n");
 
-            file = ResReadDirectory( dir );
+            file = ResReadDirectory(dir);
         }
     }
 
-    ResCloseDirectory( dir );
+    ResCloseDirectory(dir);
 }
 
 
@@ -402,7 +431,7 @@ void cmd_dir( char * argv )
 
    ======================================================= */
 
-void cmd_find( char * fullpath )
+void cmd_find(char * fullpath)
 {
     RES_STAT stat;
     DEVICE_ENTRY dev;
@@ -410,73 +439,94 @@ void cmd_find( char * fullpath )
     char path[_MAX_PATH],
          arcname[_MAX_PATH];
 
-    if( ResStatusFile( fullpath, &stat )) {
-        ResGetPath( stat.directory, path );
-        ResGetArchive( stat.archive, arcname );
+    if (ResStatusFile(fullpath, &stat))
+    {
+        ResGetPath(stat.directory, path);
+        ResGetArchive(stat.archive, arcname);
 
-        printf( "\n----------------\n" );
-        printf( "File Information\n" );
-        printf( "----------------\n" );
-        printf( "name      : %s\n", fullpath );
-        printf( "size      : %d\n", stat.size );
-        printf( "csize     : %d\n", stat.csize );
-        printf( "directory : %s\n", path, stat.directory );
-        printf( "volume    : %c\n", stat.volume + 'A' );
-        if( *arcname )
-            printf( "archive   : %s\n", arcname );
+        printf("\n----------------\n");
+        printf("File Information\n");
+        printf("----------------\n");
+        printf("name      : %s\n", fullpath);
+        printf("size      : %d\n", stat.size);
+        printf("csize     : %d\n", stat.csize);
+        printf("directory : %s\n", path, stat.directory);
+        printf("volume    : %c\n", stat.volume + 'A');
+
+        if (*arcname)
+            printf("archive   : %s\n", arcname);
         else
-            printf( "archive   : NOT IN AN ARCHIVE\n" );
-        printf( "attributes: %0x ", stat.attributes );
+            printf("archive   : NOT IN AN ARCHIVE\n");
 
-        if( stat.attributes & _A_NORMAL ) printf( " NORMAL BIT," );
-        if( stat.attributes & _A_RDONLY ) printf( " READ ONLY BIT," );
-        if( stat.attributes & _A_HIDDEN ) printf( " HIDDEN BIT," );
-        if( stat.attributes & _A_SYSTEM ) printf( " SYSTEM BIT," );
-        if( stat.attributes & _A_SUBDIR ) printf( " DIRECTORY BIT," );
-        if( stat.attributes & _A_ARCH   ) printf( " ARCHIVE BIT " );
-        printf( "\n" );
+        printf("attributes: %0x ", stat.attributes);
 
-        flag = ResWhereIs( fullpath, NULL );
+        if (stat.attributes & _A_NORMAL) printf(" NORMAL BIT,");
 
-        printf( "\n------------------\n" );
-        printf( "Volume information\n" );
-        printf( "------------------\n" );
-        if( flag != -1 ) {
-            printf( "media     : " );
-            if( flag & RES_HD      ) printf( "HARD DRIVE, " );
-            if( flag & RES_CD      ) printf( "CD-ROM, " );
-            if( flag & RES_NET     ) printf( "NETWORK, " );
-            if( flag & RES_ARCHIVE ) printf( "ARCHIVE FILE, " );
-            if( flag & RES_FLOPPY  ) printf( "REMOVEABLE MEDIA " );
-            printf( "\n" );
+        if (stat.attributes & _A_RDONLY) printf(" READ ONLY BIT,");
+
+        if (stat.attributes & _A_HIDDEN) printf(" HIDDEN BIT,");
+
+        if (stat.attributes & _A_SYSTEM) printf(" SYSTEM BIT,");
+
+        if (stat.attributes & _A_SUBDIR) printf(" DIRECTORY BIT,");
+
+        if (stat.attributes & _A_ARCH) printf(" ARCHIVE BIT ");
+
+        printf("\n");
+
+        flag = ResWhereIs(fullpath, NULL);
+
+        printf("\n------------------\n");
+        printf("Volume information\n");
+        printf("------------------\n");
+
+        if (flag != -1)
+        {
+            printf("media     : ");
+
+            if (flag & RES_HD) printf("HARD DRIVE, ");
+
+            if (flag & RES_CD) printf("CD-ROM, ");
+
+            if (flag & RES_NET) printf("NETWORK, ");
+
+            if (flag & RES_ARCHIVE) printf("ARCHIVE FILE, ");
+
+            if (flag & RES_FLOPPY) printf("REMOVEABLE MEDIA ");
+
+            printf("\n");
         }
 
-        flag = ResDevice( stat.volume, &dev );
+        flag = ResDevice(stat.volume, &dev);
 
-        if( flag ) {
-            printf( "name      : %s\n", dev.name );
-            printf( "serial    : %x-%x\n", HI_WORD(dev.serial), LO_WORD(dev.serial));
+        if (flag)
+        {
+            printf("name      : %s\n", dev.name);
+            printf("serial    : %x-%x\n", HI_WORD(dev.serial), LO_WORD(dev.serial));
         }
 
-        printf( "\n------------\n" );
-        printf( "Header bytes\n" );
-        printf( "------------\n" );
+        printf("\n------------\n");
+        printf("Header bytes\n");
+        printf("------------\n");
 
-        flag = ResOpenFile( fullpath, _O_RDONLY | _O_BINARY );
-        if( flag != -1 ) {
-            ResReadFile( flag, path, _MAX_PATH );
+        flag = ResOpenFile(fullpath, _O_RDONLY | _O_BINARY);
 
-            for( count = 0; count < 5; count++ ) {
-                printf( "          : " );
-                print_bytes( &path[16*count] );
-                printf( "\n" );
+        if (flag != -1)
+        {
+            ResReadFile(flag, path, _MAX_PATH);
+
+            for (count = 0; count < 5; count++)
+            {
+                printf("          : ");
+                print_bytes(&path[16 * count]);
+                printf("\n");
             }
- 
-            ResCloseFile( flag );
+
+            ResCloseFile(flag);
         };
     }
     else
-        printf( "File not found.\n" );
+        printf("File not found.\n");
 }
 
 
@@ -494,31 +544,31 @@ void cmd_find( char * fullpath )
    NOTE:   If you want to test your own throw-away,
            do so here.
 
-           Within the the console app, if you 
-           type 'run <params ...>', you'll execute 
-           this function with the familiar arguments 
+           Within the the console app, if you
+           type 'run <params ...>', you'll execute
+           this function with the familiar arguments
            from main().
 
-   ================================================ */ 
+   ================================================ */
 
-void cmd_run( int argc, char ** argv )
+void cmd_run(int argc, char ** argv)
 {
     FILE * fp;
-	FILE *fp1;
+    FILE *fp1;
 
     char buffer[1024];
     //  ALL OF THE CODE WITHIN THIS FUNCTION CAN BE
     //  (AND SHOULD BE) DELETED AND REPLACED WITH
     //  WHATEVER THROW-AWAY CODE YOU WANT TO TEST!!
- 
+
     /* here's a simple example */
 
     /* --- Show arguments --- */
     int i;
-	int ret;
+    int ret;
 
-    for( i=0; i<argc; i++ )
-        printf( "%02d: %s\n", i, argv[i] );
+    for (i = 0; i < argc; i++)
+        printf("%02d: %s\n", i, argv[i]);
 
 
     /* here's a more likely example */
@@ -527,148 +577,152 @@ void cmd_run( int argc, char ** argv )
 
     /* --- Test fseek, ftell --- */
 
-    if( argc < 3 ) {
-        printf( "useage: RUN <file> <mode>\n" );
+    if (argc < 3)
+    {
+        printf("useage: RUN <file> <mode>\n");
         return;
     }
 
-    fp = fopen( argv[1], argv[2] );
+    fp = fopen(argv[1], argv[2]);
 
-    if( !fp ) {
-        printf( "Could not open %s\n", argv[1] );
+    if (!fp)
+    {
+        printf("Could not open %s\n", argv[1]);
         return;
     }
 
-    fread( buffer, 1, 1, fp );
-    printf( "buffer[0] = %d\n", buffer[0] );
-    
-    fseek( fp, 64, SEEK_SET );
-    fread( buffer, 1, 1, fp );
-    printf( "buffer[64] = %d\n", buffer[0] );
+    fread(buffer, 1, 1, fp);
+    printf("buffer[0] = %d\n", buffer[0]);
 
-    fseek( fp, 512, SEEK_SET );
-    fread( buffer, 18, 1, fp );
-    printf( "buffer[512] = %s\n", buffer );
+    fseek(fp, 64, SEEK_SET);
+    fread(buffer, 1, 1, fp);
+    printf("buffer[64] = %d\n", buffer[0]);
 
-    printf( "pos = %d\n", RES_FTELL(fp));
+    fseek(fp, 512, SEEK_SET);
+    fread(buffer, 18, 1, fp);
+    printf("buffer[512] = %s\n", buffer);
 
-    fseek( fp, -15, SEEK_END );
-    fread( buffer, 1, 1, fp );
-    printf( "buffer[1009] = %d\n", buffer[0] );
+    printf("pos = %d\n", RES_FTELL(fp));
 
-    printf( "pos = %d\n", RES_FTELL(fp));
+    fseek(fp, -15, SEEK_END);
+    fread(buffer, 1, 1, fp);
+    printf("buffer[1009] = %d\n", buffer[0]);
 
-    fseek( fp, -1024, SEEK_END );
-    fread( buffer, 1, 1, fp );
-    printf( "buffer[0] = %d\n", buffer[0] );
+    printf("pos = %d\n", RES_FTELL(fp));
 
-    printf( "pos = %d\n", RES_FTELL(fp));
+    fseek(fp, -1024, SEEK_END);
+    fread(buffer, 1, 1, fp);
+    printf("buffer[0] = %d\n", buffer[0]);
 
-    fseek( fp, -896, SEEK_END );
-    fread( buffer, 1, 1, fp );
-    printf( "buffer[128] = %d\n", buffer[0] );
+    printf("pos = %d\n", RES_FTELL(fp));
 
-    printf( "pos = %d\n", RES_FTELL(fp));
+    fseek(fp, -896, SEEK_END);
+    fread(buffer, 1, 1, fp);
+    printf("buffer[128] = %d\n", buffer[0]);
 
-    fseek( fp, 0, SEEK_SET );
-    fscanf( fp, "%s", buffer );
-    printf( "fscanf = %s\n", buffer );
+    printf("pos = %d\n", RES_FTELL(fp));
 
-    printf( "size = %d\n", fseek( fp, 0, SEEK_END ));
+    fseek(fp, 0, SEEK_SET);
+    fscanf(fp, "%s", buffer);
+    printf("fscanf = %s\n", buffer);
+
+    printf("size = %d\n", fseek(fp, 0, SEEK_END));
 
 
 
-	if(argc > 3 )
-	{
-	/* open second file */
-    fp1 = fopen( argv[3], argv[2] );
+    if (argc > 3)
+    {
+        /* open second file */
+        fp1 = fopen(argv[3], argv[2]);
 
-    if( !fp1 ) {
-        printf( "Could not open %s %s\n", argv[3],argv[2] );
-        return;
+        if (!fp1)
+        {
+            printf("Could not open %s %s\n", argv[3], argv[2]);
+            return;
+        }
+
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[0] = %d\n", buffer[0]);
+
+
+        fseek(fp1, 512, SEEK_SET);
+        fread(buffer, 18, 1, fp1);
+        printf("buffer[512] = %s\n", buffer);
+
+        printf("pos = %d\n", RES_FTELL(fp));
+
+        fseek(fp1, -15, SEEK_END);
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[1009] = %d\n", buffer[0]);
+
+        printf("pos = %d\n", RES_FTELL(fp));
+
+        fseek(fp1, -1024, SEEK_END);
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[0] = %d\n", buffer[0]);
+
+        printf("pos = %d\n", RES_FTELL(fp));
+
+
+        fseek(fp1, 0, SEEK_SET);
+        fscanf(fp1, "%s", buffer);
+        printf("fscanf = %s\n", buffer);
+
+        printf("size = %d\n", fseek(fp, 0, SEEK_END));
+        fclose(fp1);
     }
 
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[0] = %d\n", buffer[0] );
-    
-
-    fseek( fp1, 512, SEEK_SET );
-    fread( buffer, 18, 1, fp1 );
-    printf( "buffer[512] = %s\n", buffer );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
-
-    fseek( fp1, -15, SEEK_END );
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[1009] = %d\n", buffer[0] );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
-
-    fseek( fp1, -1024, SEEK_END );
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[0] = %d\n", buffer[0] );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
 
 
-    fseek( fp1, 0, SEEK_SET );
-    fscanf( fp1, "%s", buffer );
-    printf( "fscanf = %s\n", buffer );
+    /* open third file */
+    if (argc > 4)
+    {
+        fp1 = fopen(argv[4], argv[2]);
 
-    printf( "size = %d\n", fseek( fp, 0, SEEK_END ));
-	fclose(fp1);
-	}
+        if (!fp1)
+        {
+            printf("Could not open %s\n", argv[4]);
+            return;
+        }
+
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[0] = %d\n", buffer[0]);
 
 
+        fseek(fp1, 512, SEEK_SET);
+        fread(buffer, 18, 1, fp1);
+        printf("buffer[512] = %s\n", buffer);
 
-	/* open third file */
-	if(argc > 4)
-	{
-    fp1 = fopen( argv[4], argv[2] );
+        printf("pos = %d\n", RES_FTELL(fp));
 
-    if( !fp1 ) {
-        printf( "Could not open %s\n", argv[4] );
-        return;
+        fseek(fp1, -15, SEEK_END);
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[1009] = %d\n", buffer[0]);
+
+        printf("pos = %d\n", RES_FTELL(fp));
+
+        fseek(fp1, -1024, SEEK_END);
+        fread(buffer, 1, 1, fp1);
+        printf("buffer[0] = %d\n", buffer[0]);
+
+        printf("pos = %d\n", RES_FTELL(fp));
+
+
+        fseek(fp1, 0, SEEK_SET);
+        fscanf(fp1, "%s", buffer);
+        printf("fscanf = %s\n", buffer);
+
+        printf("size = %d\n", fseek(fp, 0, SEEK_END));
+        fclose(fp1);
+
     }
 
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[0] = %d\n", buffer[0] );
-    
+    ret = fseek(fp, 0, SEEK_SET);
+    printf("fseek: ret = %d\n", ret);
+    fscanf(fp, "%s", buffer);
+    printf("fscanf = %s\n", buffer);
 
-    fseek( fp1, 512, SEEK_SET );
-    fread( buffer, 18, 1, fp1 );
-    printf( "buffer[512] = %s\n", buffer );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
-
-    fseek( fp1, -15, SEEK_END );
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[1009] = %d\n", buffer[0] );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
-
-    fseek( fp1, -1024, SEEK_END );
-    fread( buffer, 1, 1, fp1 );
-    printf( "buffer[0] = %d\n", buffer[0] );
-
-    printf( "pos = %d\n", RES_FTELL(fp));
-
-
-    fseek( fp1, 0, SEEK_SET );
-    fscanf( fp1, "%s", buffer );
-    printf( "fscanf = %s\n", buffer );
-
-    printf( "size = %d\n", fseek( fp, 0, SEEK_END ));
-	fclose(fp1);
-
-	}
-
-    ret = fseek( fp, 0, SEEK_SET );
-    printf( "fseek: ret = %d\n", ret );
-    fscanf( fp, "%s", buffer );
-    printf( "fscanf = %s\n", buffer );
-
-    printf( "size = %d\n", fseek( fp, 0, SEEK_END ));
+    printf("size = %d\n", fseek(fp, 0, SEEK_END));
 
 
 
@@ -682,7 +736,7 @@ void cmd_run( int argc, char ** argv )
 
    ================================================ */
 
-int main( int argc, char ** argv )
+int main(int argc, char ** argv)
 {
     char path[_MAX_PATH];
 
@@ -697,76 +751,85 @@ int main( int argc, char ** argv )
 
     int i, cmd;
 
-    if( !ResInit( NULL )) 
-        return( 1 );            /* ResInit failed */
+    if (!ResInit(NULL))
+        return(1);              /* ResInit failed */
 
-    
+
     /* these would be called after parsing an .ini file or similar */
 
-    IF_DEBUG( ResDbgLogOpen( "resource.log" ));
+    IF_DEBUG(ResDbgLogOpen("resource.log"));
 
     print_heading();
 
-    _getcwd( path, _MAX_PATH );
-    printf( "PATH: %s\n", path );
+    _getcwd(path, _MAX_PATH);
+    printf("PATH: %s\n", path);
 
-    do {
-        do {
+    do
+    {
+        do
+        {
 #if( !RES_USE_FLAT_MODEL )
-            printf( "\n%s> ", GLOBAL_CURRENT_PATH );
+            printf("\n%s> ", GLOBAL_CURRENT_PATH);
 #else
-            printf( "\nRoot > " );
+            printf("\nRoot > ");
 #endif
-    _getcwd( path, _MAX_PATH );
-    printf( "[SD: %s]>", path );
+            _getcwd(path, _MAX_PATH);
+            printf("[SD: %s]>", path);
 
-            result = GETS( buffer );  /* Input a line of text */
-            
-        } while( !buffer[1] );
+            result = GETS(buffer);    /* Input a line of text */
+
+        }
+        while (!buffer[1]);
 
 
-        if( !stricmp( result, "exit" ))
+        if (!stricmp(result, "exit"))
             break;
 
-        _argc = parse_args( result, _argv );
+        _argc = parse_args(result, _argv);
 
         cmd = COMMAND_ERROR;
 
-        for( i=0; i<COMMAND_COUNT; i++ ) {
-            if( !stricmp( result, command[i] )) {
+        for (i = 0; i < COMMAND_COUNT; i++)
+        {
+            if (!stricmp(result, command[i]))
+            {
                 cmd = i;
                 break;
             }
         }
 
-        if( cmd == COMMAND_EXIT && !_argc )
+        if (cmd == COMMAND_EXIT && !_argc)
             break;
 
-        if( _argc > 1 ) {
-            if( !stricmp( _argv[1], "?" ) || !stricmp( _argv[1], "help" )) {
-                show_help( cmd );
+        if (_argc > 1)
+        {
+            if (!stricmp(_argv[1], "?") || !stricmp(_argv[1], "help"))
+            {
+                show_help(cmd);
                 continue;
             }
+            else if (strchr(_argv[1], ASCII_BACKSLASH))
+            {
+                res_fullpath(path, _argv[1], _MAX_PATH);
+                fullpath = path;
+            }
             else
-                if( strchr( _argv[1], ASCII_BACKSLASH )) {
-                    res_fullpath( path, _argv[1], _MAX_PATH );
-                    fullpath = path;
-                }
-                else
-                    fullpath = _argv[1];
+                fullpath = _argv[1];
         }
 
-        switch( cmd ) 
+        switch (cmd)
         {
             case COMMAND_DIR:
 #if( RES_USE_FLAT_MODEL )
-                printf( "This function is only meaningful when using the hierarchical model.\n" );
+                printf("This function is only meaningful when using the hierarchical model.\n");
                 break;
 #endif
-                if( _argc > 1 )
-                    cmd_dir( _argv[1] );
+
+                if (_argc > 1)
+                    cmd_dir(_argv[1]);
                 else
-                    cmd_dir( NULL );
+                    cmd_dir(NULL);
+
                 break;
 
 
@@ -775,63 +838,70 @@ int main( int argc, char ** argv )
 #if( !RES_USE_FLAT_MODEL )
                 HASH_ENTRY * entry;
 
-                if( _argc == 1 )
-                    entry = hash_find( GLOBAL_CURRENT_PATH, GLOBAL_HASH_TABLE );
+                if (_argc == 1)
+                    entry = hash_find(GLOBAL_CURRENT_PATH, GLOBAL_HASH_TABLE);
                 else
-                    entry = hash_find( fullpath, GLOBAL_HASH_TABLE );
+                    entry = hash_find(fullpath, GLOBAL_HASH_TABLE);
 
-                if( entry ) {
+                if (entry)
+                {
 #if( RES_DEBUG_VERSION )
-                    if( entry -> dir )
-                        dbg_analyze_hash( (HASH_TABLE *)entry -> dir );
+
+                    if (entry -> dir)
+                        dbg_analyze_hash((HASH_TABLE *)entry -> dir);
                     else
-                        printf( "No directory table for this directory.\n" );
+                        printf("No directory table for this directory.\n");
+
 #endif /* RES_DEBUG_VERSION */
                 }
                 else
-                    printf( "Directory not found.\n" );
+                    printf("Directory not found.\n");
+
 #else
-                printf( "This command only meaningful when using the hierarchical model!\n" );
+                printf("This command only meaningful when using the hierarchical model!\n");
 #endif
                 break;
             }
 
             case COMMAND_RUN:
-                cmd_run( _argc, _argv );
+                cmd_run(_argc, _argv);
                 break;
 
             case COMMAND_CD:
-                if( _argc > 1 ) {
-                    if( !ResSetDirectory( fullpath ))
-                        printf( "Error changing to directory %s\n", fullpath );
+                if (_argc > 1)
+                {
+                    if (!ResSetDirectory(fullpath))
+                        printf("Error changing to directory %s\n", fullpath);
                 }
                 else
-                    printf( "Current directory is: %s\n", GLOBAL_CURRENT_PATH );
+                    printf("Current directory is: %s\n", GLOBAL_CURRENT_PATH);
 
                 break;
 
 
             case COMMAND_ADD:
-                if( _argc > 1 ) {
+                if (_argc > 1)
+                {
                     int test = FALSE,
                         flag = -1;
 
-                    if( _argc > 2 )
-                        flag = is_bool( _argv[2] );
-                    
-                    if( flag == -1 )
+                    if (_argc > 2)
+                        flag = is_bool(_argv[2]);
+
+                    if (flag == -1)
                         flag = TRUE;
 
-                    if( !GLOBAL_SEARCH_INDEX )
-                        test = ResCreatePath( fullpath, flag );
+                    if (!GLOBAL_SEARCH_INDEX)
+                        test = ResCreatePath(fullpath, flag);
                     else
-                        test = ResAddPath( fullpath, flag );
+                        test = ResAddPath(fullpath, flag);
 
-                    if( !test )
-                        printf( "Error adding %s to search path\n", fullpath );
+                    if (!test)
+                        printf("Error adding %s to search path\n", fullpath);
                 }
                 else
                     show_help(cmd);
+
                 break;
 
 
@@ -841,28 +911,32 @@ int main( int argc, char ** argv )
                 char   c;
                 int    test;
 
-                if( _argc < 2 ) {
+                if (_argc < 2)
+                {
                     show_help(cmd);
                     break;
                 }
 
-                fptr = fopen( _argv[1], "r" );
+                fptr = fopen(_argv[1], "r");
 
-                if( fptr ) {
-                    while( (test = fscanf( fptr, "%c", &c )) != EOF )
-                        printf( "%c", c );
+                if (fptr)
+                {
+                    while ((test = fscanf(fptr, "%c", &c)) != EOF)
+                        printf("%c", c);
 
-                    printf( "\n\n\n\n ************** REWINDING ****************** \n\n\n\n\n\n\n" );
+                    printf("\n\n\n\n ************** REWINDING ****************** \n\n\n\n\n\n\n");
 
-                    fseek( fptr, 0, SEEK_SET );
+                    fseek(fptr, 0, SEEK_SET);
 
-                    while( (test = fscanf( fptr, "%c", &c )) != EOF )
-                        printf( "%c", c );
+                    while ((test = fscanf(fptr, "%c", &c)) != EOF)
+                        printf("%c", c);
 
-                    fclose( fptr );
+                    fclose(fptr);
 
-                } else {
-                    printf( "Error opening file %s\n", _argv[1] );
+                }
+                else
+                {
+                    printf("Error opening file %s\n", _argv[1]);
                 }
 
                 break;
@@ -871,16 +945,17 @@ int main( int argc, char ** argv )
 
             case COMMAND_PATH:
             {
-                int x=0;
+                int x = 0;
                 char b[_MAX_PATH];
 
-                if( GLOBAL_PATH_LIST ) {
+                if (GLOBAL_PATH_LIST)
+                {
 
-                    while( ResGetPath( x++, b ))
-                        printf( "%s\n", b );
+                    while (ResGetPath(x++, b))
+                        printf("%s\n", b);
                 }
                 else
-                    printf( "No path created.\n" );
+                    printf("No path created.\n");
 
                 break;
             }
@@ -889,18 +964,20 @@ int main( int argc, char ** argv )
             {
                 /* extracts the archive to the local directory with the same filename */
 
-                if( _argc < 3 )
+                if (_argc < 3)
                     show_help(cmd);
-                else              
-                    ResExtractFile( _argv[1], _argv[2] );
+                else
+                    ResExtractFile(_argv[1], _argv[2]);
+
                 break;
-            }            
+            }
 
             case COMMAND_READ:
-                if( _argc >= 2 )
-                    cmd_read( _argv[1] );
+                if (_argc >= 2)
+                    cmd_read(_argv[1]);
                 else
                     show_help(cmd);
+
                 break;
 
 
@@ -909,63 +986,69 @@ int main( int argc, char ** argv )
                 char dst[_MAX_PATH];
                 int  flag = -1;
 
-                if( _argc < 2 ) {
+                if (_argc < 2)
+                {
                     show_help(cmd);
                     break;
                 }
 
-                if( _argc >= 3 )
-                    flag = is_bool( _argv[ _argc - 1 ] );
+                if (_argc >= 3)
+                    flag = is_bool(_argv[ _argc - 1 ]);
 
-                if( _argc >= 3 ) res_fullpath( dst, _argv[2], _MAX_PATH );
+                if (_argc >= 3) res_fullpath(dst, _argv[2], _MAX_PATH);
 
-                if( _argc == 2 )
-                    archive_handle = ResAttach( GLOBAL_CURRENT_PATH, fullpath, FALSE );
-                else
-                    if( _argc == 3 ) {
-                        if( flag != -1 )
-                            archive_handle = ResAttach( GLOBAL_CURRENT_PATH, fullpath, flag );
-                        else
-                            archive_handle = ResAttach( fullpath, dst, FALSE );
-                    } else
-                        if( _argc == 4 )
-                            archive_handle = ResAttach( fullpath, dst, flag == -1 ? 0 : flag );
-                
-                if( archive_handle == -1 )
-                    printf( "Error attaching zip file %s\n", fullpath );
+                if (_argc == 2)
+                    archive_handle = ResAttach(GLOBAL_CURRENT_PATH, fullpath, FALSE);
+                else if (_argc == 3)
+                {
+                    if (flag != -1)
+                        archive_handle = ResAttach(GLOBAL_CURRENT_PATH, fullpath, flag);
+                    else
+                        archive_handle = ResAttach(fullpath, dst, FALSE);
+                }
+                else if (_argc == 4)
+                    archive_handle = ResAttach(fullpath, dst, flag == -1 ? 0 : flag);
+
+                if (archive_handle == -1)
+                    printf("Error attaching zip file %s\n", fullpath);
 
                 break;
             }
 
             case COMMAND_DUMP:
                 ResDbgDump();
-                MemDump();          printf("\n");
-                MemFindLevels();    printf("\n");
+                MemDump();
+                printf("\n");
+                MemFindLevels();
+                printf("\n");
                 MemFindUsage();
                 break;
 
             case COMMAND_DETACH:
-                if( archive_handle != -1 )
+                if (archive_handle != -1)
                 {
-                    ResDetach( archive_handle );
+                    ResDetach(archive_handle);
                     archive_handle = -1;
                 }
                 else
-                    printf( "No archives currently attached.\n" );
+                    printf("No archives currently attached.\n");
+
                 break;
 
             case COMMAND_MAP:
-                if( _argc < 2 )
+                if (_argc < 2)
                     show_help(cmd);
                 else
-                    cmd_map( _argv[1] );
+                    cmd_map(_argv[1]);
+
                 break;
 
             case COMMAND_FIND:
-                if( _argc < 2 )
+                if (_argc < 2)
                     show_help(cmd);
                 else
-                    cmd_find( fullpath );
+                    cmd_find(fullpath);
+
                 break;
 
             case COMMAND_HELP:
@@ -975,16 +1058,17 @@ int main( int argc, char ** argv )
 
             case COMMAND_ERROR:
             default:
-                printf( "Syntax error\n" );
+                printf("Syntax error\n");
                 break;
         }
 
-    } while( TRUE );
-    
+    }
+    while (TRUE);
+
     ResExit();
     MemDump();
-    _getcwd( path, _MAX_PATH );
-    printf( "PATH: %s\n", path );
+    _getcwd(path, _MAX_PATH);
+    printf("PATH: %s\n", path);
 
     return(0);
 }

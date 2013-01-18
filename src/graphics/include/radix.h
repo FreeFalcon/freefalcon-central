@@ -5,7 +5,7 @@
 
 typedef struct radix_sort_s
 {
-	struct radix_sort_s *pNext;
+    struct radix_sort_s *pNext;
 }
 radix_sort_t;
 
@@ -13,9 +13,9 @@ radix_sort_t;
 extern "C" {
 #endif
 
-extern void RadixReset(void);
-extern radix_sort_t *RadixSortAscending(radix_sort_t*, int);
-extern radix_sort_t *RadixSortDescending(radix_sort_t*, int);
+    extern void RadixReset(void);
+    extern radix_sort_t *RadixSortAscending(radix_sort_t*, int);
+    extern radix_sort_t *RadixSortDescending(radix_sort_t*, int);
 
 #ifdef __cplusplus
 }

@@ -36,7 +36,7 @@
 // ShiAssert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
 
-extern int shiAssertsOn,shiHardCrashOn;
+extern int shiAssertsOn, shiHardCrashOn;
 
 #define ShiAssert( expr )																	\
 	if (shiAssertsOn && !(expr)) {	/*														\
@@ -82,13 +82,13 @@ extern int shiAssertsOn,shiHardCrashOn;
 {																					\
 	shiHardCrashOn = expr;															\
 }																					\
-
+ 
 #else
 #define ShiAssert( expr )
 
 #define ShiWarning( string )
 
-#define ShiSetAsserts( expr )														
+#define ShiSetAsserts( expr )
 
 #define ShiSetHardCrash( expr )
 

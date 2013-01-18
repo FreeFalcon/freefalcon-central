@@ -23,12 +23,12 @@ extern int MRX;
 extern int MRY;
 
 // Functions
-extern uchar* MakeCampMap (int type, uchar* map_data, int csize);
+extern uchar* MakeCampMap(int type, uchar* map_data, int csize);
 
-extern uchar* UpdateCampMap (int type, uchar* map_data, GridIndex cx, GridIndex cy);
+extern uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy);
 
-extern uchar GetOwner (uchar* map_data, GridIndex x, GridIndex y);
+extern uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y);
 
-extern void FreeCampMap (uchar* map_data);
+extern void FreeCampMap(uchar* map_data);
 
 #endif

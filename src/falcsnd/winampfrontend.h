@@ -17,44 +17,45 @@
 // because I start at DED pos 1 with my strings
 #define MY_MAX_DED_LEN (MAX_DED_LEN-1)
 
-class WinAmpFrontEnd {
+class WinAmpFrontEnd
+{
 public:
-	WinAmpFrontEnd();
-	~WinAmpFrontEnd();
+    WinAmpFrontEnd();
+    ~WinAmpFrontEnd();
 
-	void InitWinAmp();
+    void InitWinAmp();
 
-	void StopAndFadeout();
-	void Previous();
-	void Start();
-	void Stop();
-	void Next();
-	void VolUp();
-	void VolDown();
-	void TogglePlayback();
+    void StopAndFadeout();
+    void Previous();
+    void Start();
+    void Stop();
+    void Next();
+    void VolUp();
+    void VolDown();
+    void TogglePlayback();
 
-	char* getCurTitle();
-	char* getDEDTitle(const int theLine);
-	int getVolume();
+    char* getCurTitle();
+    char* getDEDTitle(const int theLine);
+    int getVolume();
 
-	void Refresh(unsigned long timer);
+    void Refresh(unsigned long timer);
 
 private:
-	HWND winamp_win;
-	bool ampexists;
+    HWND winamp_win;
+    bool ampexists;
 
-	void copyCurTitle();
+    void copyCurTitle();
 
-	char* currentTrackTitle;
+    char* currentTrackTitle;
 
-	// the title track in the DED - split into 2 lines,
-	// if the title is longer it´s cut off
-	char DEDString[2][MY_MAX_DED_LEN];
+    // the title track in the DED - split into 2 lines,
+    // if the title is longer it´s cut off
+    char DEDString[2][MY_MAX_DED_LEN];
 
-	int volume;			// value between 0-255
+    int volume;			// value between 0-255
 
-	unsigned long myTimer;
-	int WinAmpAlive;
+    unsigned long myTimer;
+    int WinAmpAlive;
 };
 extern WinAmpFrontEnd* winamp;
 

@@ -4,23 +4,26 @@
 #define _EulerAngles_H
 
 /*** Definitions ***/
-typedef struct {float x, y, z, w;} QuatX; /* Quaternion */
+typedef struct
+{
+    float x, y, z, w;
+} QuatX; /* Quaternion */
 enum QuatPart {X, Y, Z, W};
 typedef float HMatrix[4][4]; /* Right-handed, for column vectors */
 typedef QuatX EulerAngles;    /* (x,y,z)=ang 1,2,3, w=order code  */
 
 /*** Order type constants, constructors, extractors ***/
-    /* There are 24 possible conventions, designated by:    */
-    /*    o EulAxI = axis used initially                    */
-    /*    o EulPar = parity of axis permutation             */
-    /*    o EulRep = repetition of initial axis as last     */
-    /*    o EulFrm = frame from which axes are taken        */
-    /* Axes I,J,K will be a permutation of X,Y,Z.           */
-    /* Axis H will be either I or K, depending on EulRep.   */
-    /* Frame S takes axes from initial static frame.        */
-    /* If ord = (AxI=X, Par=Even, Rep=No, Frm=S), then      */
-    /* {a,b,c,ord} means Rz(c)Ry(b)Rx(a), where Rz(c)v      */
-    /* rotates v around Z by c radians.                     */
+/* There are 24 possible conventions, designated by:    */
+/*    o EulAxI = axis used initially                    */
+/*    o EulPar = parity of axis permutation             */
+/*    o EulRep = repetition of initial axis as last     */
+/*    o EulFrm = frame from which axes are taken        */
+/* Axes I,J,K will be a permutation of X,Y,Z.           */
+/* Axis H will be either I or K, depending on EulRep.   */
+/* Frame S takes axes from initial static frame.        */
+/* If ord = (AxI=X, Par=Even, Rep=No, Frm=S), then      */
+/* {a,b,c,ord} means Rz(c)Ry(b)Rx(a), where Rz(c)v      */
+/* rotates v around Z by c radians.                     */
 #define EulFrmS      0
 #define EulFrmR      1
 #define EulFrm(ord)  ((unsigned)(ord)&1)
@@ -36,12 +39,12 @@ typedef QuatX EulerAngles;    /* (x,y,z)=ang 1,2,3, w=order code  */
 #define EulAxJ(ord)  ((int)(EulNext[EulAxI(ord)+(EulPar(ord)==EulParOdd)]))
 #define EulAxK(ord)  ((int)(EulNext[EulAxI(ord)+(EulPar(ord)!=EulParOdd)]))
 #define EulAxH(ord)  ((EulRep(ord)==EulRepNo)?EulAxK(ord):EulAxI(ord))
-    /* EulGetOrd unpacks all useful information about order simultaneously. */
+/* EulGetOrd unpacks all useful information about order simultaneously. */
 #define EulGetOrd(ord,i,j,k,h,n,s,f) {unsigned o=ord;f=o&1;o>>=1;s=o&1;o>>=1;\
     n=o&1;o>>=1;i=EulSafe[o&3];j=EulNext[i+n];k=EulNext[i+1-n];h=s?k:i;}
-    /* EulOrd creates an order value between 0 and 23 from 4-tuple choices. */
+/* EulOrd creates an order value between 0 and 23 from 4-tuple choices. */
 #define EulOrd(i,p,r,f)    (((((((i)<<1)+(p))<<1)+(r))<<1)+(f))
-    /* Static axes */
+/* Static axes */
 #define EulOrdXYZs    EulOrd(X,EulParEven,EulRepNo,EulFrmS)
 #define EulOrdXYXs    EulOrd(X,EulParEven,EulRepYes,EulFrmS)
 #define EulOrdXZYs    EulOrd(X,EulParOdd,EulRepNo,EulFrmS)
@@ -54,7 +57,7 @@ typedef QuatX EulerAngles;    /* (x,y,z)=ang 1,2,3, w=order code  */
 #define EulOrdZXZs    EulOrd(Z,EulParEven,EulRepYes,EulFrmS)
 #define EulOrdZYXs    EulOrd(Z,EulParOdd,EulRepNo,EulFrmS)
 #define EulOrdZYZs    EulOrd(Z,EulParOdd,EulRepYes,EulFrmS)
-    /* Rotating axes */
+/* Rotating axes */
 #define EulOrdZYXr    EulOrd(X,EulParEven,EulRepNo,EulFrmR)
 #define EulOrdXYXr    EulOrd(X,EulParEven,EulRepYes,EulFrmR)
 #define EulOrdYZXr    EulOrd(X,EulParOdd,EulRepNo,EulFrmR)

@@ -2,7 +2,7 @@
 color.h
 
 	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004 
+	Last Update: 21 April 2004
 */
 
 #ifndef _COLOR_H
@@ -18,302 +18,323 @@ color.h
 
 struct color
 {
-	color()
-	{
-		r = g = b = h = s = v = X = Y = Z = x = y = L = 0.f;
-	}
+    color()
+    {
+        r = g = b = h = s = v = X = Y = Z = x = y = L = 0.f;
+    }
 
-	color(float _r,float _g,float _b)
-	{
-		r = _r;
-		g = _g;
-		b = _b;
-	}
+    color(float _r, float _g, float _b)
+    {
+        r = _r;
+        g = _g;
+        b = _b;
+    }
 
-	void SetRGB(float _r,float _g,float _b)
-	{
-		r = _r;
-		g = _g;
-		b = _b;
-	}
+    void SetRGB(float _r, float _g, float _b)
+    {
+        r = _r;
+        g = _g;
+        b = _b;
+    }
 
-	void SetHSV(float _h,float _s,float _v)
-	{
-		h = _h;
-		s = _s;
-		v = _v;
-	}
+    void SetHSV(float _h, float _s, float _v)
+    {
+        h = _h;
+        s = _s;
+        v = _v;
+    }
 
-	void SetXYZ(float _x,float _y,float _z)
-	{
-		X = _x;
-		Y = _y;
-		Z = _z;
-	}
+    void SetXYZ(float _x, float _y, float _z)
+    {
+        X = _x;
+        Y = _y;
+        Z = _z;
+    }
 
-	void SetxyL(float _x,float _y,float _L)
-	{
-		x = _x;
-		y = _y;
-		L = _L;
-	}
+    void SetxyL(float _x, float _y, float _L)
+    {
+        x = _x;
+        y = _y;
+        L = _L;
+    }
 
-	void XYZtoRGB()
-	{
-		//CIE XYZ tristimulus to Rec. 709 (D65 Whitepoint) RGB
-		r =  3.240479f*X - 1.537150f*Y - 0.498535f*Z;
-		g = -0.969256f*X + 1.875991f*Y + 0.041556f*Z;
-		b =  0.055648f*X - 0.204043f*Y + 1.057311f*Z;
-	}
+    void XYZtoRGB()
+    {
+        //CIE XYZ tristimulus to Rec. 709 (D65 Whitepoint) RGB
+        r =  3.240479f * X - 1.537150f * Y - 0.498535f * Z;
+        g = -0.969256f * X + 1.875991f * Y + 0.041556f * Z;
+        b =  0.055648f * X - 0.204043f * Y + 1.057311f * Z;
+    }
 
-	void RGBtoXYZ()
-	{
-	    X =  0.412453f*r + 0.357580f*g + 0.180423f*b;
-	    Y =  0.212671f*r + 0.715160f*g + 0.072169f*b;
-	    Z =  0.019334f*r + 0.119193f*g + 0.950227f*b;
-	}
+    void RGBtoXYZ()
+    {
+        X =  0.412453f * r + 0.357580f * g + 0.180423f * b;
+        Y =  0.212671f * r + 0.715160f * g + 0.072169f * b;
+        Z =  0.019334f * r + 0.119193f * g + 0.950227f * b;
+    }
 
-	void RGBtoHSV()
-	{
-	    float max = MAXIMUM(r,g,b);
-		float min = MINIMUM(r,g,b);
-		v = max;
-		s = (v != 0.f) ? ((max-min)/max) : 0.f;
+    void RGBtoHSV()
+    {
+        float max = MAXIMUM(r, g, b);
+        float min = MINIMUM(r, g, b);
+        v = max;
+        s = (v != 0.f) ? ((max - min) / max) : 0.f;
 
-		if(s == 0.f) h = 0.f;
-		else
-		{
-			float delta = max-min;
+        if (s == 0.f) h = 0.f;
+        else
+        {
+            float delta = max - min;
 
-			if(r == max)
-				h = (g-b)/delta;
-			else if(g == max)
-				h = 2.f+(b-r)/delta;
-			else if(b == max)
-				h = 4.f+(r-g)/delta;
+            if (r == max)
+                h = (g - b) / delta;
+            else if (g == max)
+                h = 2.f + (b - r) / delta;
+            else if (b == max)
+                h = 4.f + (r - g) / delta;
 
-			h *= 60;
-			if(h < 0.f) h += 360.f;
-			h /= 360.f;
-		}
-	}
+            h *= 60;
 
-	void HSVtoRGB()
-	{
-		if(s == 0.f || h == -1.f)
-		{
-			r = g = b = v;
-			return;
-		}
+            if (h < 0.f) h += 360.f;
 
-		h *= 360.f;
-		h /= 60.f;
-		int i = (int)floorf(h);
-		float f = h-i;
-		float p = v*(1-s);
-		float q = v*(1-s*f);
-		float t = v*(1-s*(1.f-f));
+            h /= 360.f;
+        }
+    }
 
-		switch(i)
-		{
-			case 0:
-				r = v;
-				g = t;
-				b = p;
-				break;
-			case 1:
-				r = q;
-				g = v;
-				b = p;
-				break;
-			case 2:
-				r = p;
-				g = v;
-				b = t;
-				break;
-			case 3:
-				r = p;
-				g = q;
-				b = v;
-				break;
-			case 4:
-				r = t;
-				g = p;
-				b = v;
-				break;
-			default:
-				r = v;
-				g = p;
-				b = q;
-		}
+    void HSVtoRGB()
+    {
+        if (s == 0.f || h == -1.f)
+        {
+            r = g = b = v;
+            return;
+        }
 
-	}
+        h *= 360.f;
+        h /= 60.f;
+        int i = (int)floorf(h);
+        float f = h - i;
+        float p = v * (1 - s);
+        float q = v * (1 - s * f);
+        float t = v * (1 - s * (1.f - f));
 
-	void xyLtoXYZ()
-	{
-		X = x * (L / y);
-		Y = L;
-		Z = (1.f - x - y)*(Y/y);
-	}
+        switch (i)
+        {
+            case 0:
+                r = v;
+                g = t;
+                b = p;
+                break;
 
-	void xyLtoRGB()
-	{
-		xyLtoXYZ();
-		XYZtoRGB();
-	}
+            case 1:
+                r = q;
+                g = v;
+                b = p;
+                break;
 
-	void XYZtoHSV()
-	{
-		XYZtoRGB();
-		RGBtoHSV();
-	}
+            case 2:
+                r = p;
+                g = v;
+                b = t;
+                break;
 
-	void GammaCorrectRGB(float R, float G, float B)
-	{
-		r = powf(r,1.f/R);
-		g = powf(g,1.f/G);
-		b = powf(b,1.f/B);
-	}
+            case 3:
+                r = p;
+                g = q;
+                b = v;
+                break;
 
-	void ExposureRGB(float exposure)
-	{
-		r = 1.f-expf(r*exposure);
-		g = 1.f-expf(g*exposure);
-		b = 1.f-expf(b*exposure);
-	}
+            case 4:
+                r = t;
+                g = p;
+                b = v;
+                break;
 
-	void ExposureV(float exposure)
-	{
-		v = 1.f-expf(v*exposure);
-	}
+            default:
+                r = v;
+                g = p;
+                b = q;
+        }
 
-	void ExposureL(float exposure)
-	{
-		L = 1.f-expf(L*exposure);
-	}
+    }
 
-	void ClampRGB()
-	{
-		r = Clamp(r,0.f,1.f);
-		g = Clamp(g,0.f,1.f);
-		b = Clamp(b,0.f,1.f);
-	}
+    void xyLtoXYZ()
+    {
+        X = x * (L / y);
+        Y = L;
+        Z = (1.f - x - y) * (Y / y);
+    }
 
-	DWORD MakeARGB()
-	{
-		BYTE A = 0xFF;
-		BYTE R = (BYTE)FloatToInt32(r*255.9f);
-		BYTE G = (BYTE)FloatToInt32(g*255.9f);
-		BYTE B = (BYTE)FloatToInt32(b*255.9f);
+    void xyLtoRGB()
+    {
+        xyLtoXYZ();
+        XYZtoRGB();
+    }
 
-		return MAKEARGB(A,R,G,B);
-	}
+    void XYZtoHSV()
+    {
+        XYZtoRGB();
+        RGBtoHSV();
+    }
 
-	bool Normalize()
-	{
-		float squareSum = r*r+g*g+b*b;
+    void GammaCorrectRGB(float R, float G, float B)
+    {
+        r = powf(r, 1.f / R);
+        g = powf(g, 1.f / G);
+        b = powf(b, 1.f / B);
+    }
 
-		if(squareSum >= SMALL_NUMBER)
-		{
-			float scale = 1.f/(float)sqrt(squareSum);
-			r *= scale; g *= scale; b *= scale;
-			return 1;
-		}
-		else return 0;
-	}
+    void ExposureRGB(float exposure)
+    {
+        r = 1.f - expf(r * exposure);
+        g = 1.f - expf(g * exposure);
+        b = 1.f - expf(b * exposure);
+    }
 
-	friend color operator *(float Scale,const color& V)
-	{
-		return color(V.r * Scale,V.g * Scale,V.b * Scale);
-	}
+    void ExposureV(float exposure)
+    {
+        v = 1.f - expf(v * exposure);
+    }
 
-	color operator +(const color& V) const
-	{
-		return color(r + V.r,g + V.g,b + V.b);
-	}
+    void ExposureL(float exposure)
+    {
+        L = 1.f - expf(L * exposure);
+    }
 
-	color operator -(const color& V) const
-	{
-		return color(r - V.r,g - V.g,b - V.b);
-	}
+    void ClampRGB()
+    {
+        r = Clamp(r, 0.f, 1.f);
+        g = Clamp(g, 0.f, 1.f);
+        b = Clamp(b, 0.f, 1.f);
+    }
 
-	color operator *(float Scale) const
-	{
-		return color(r * Scale,g * Scale,b * Scale);
-	}
+    DWORD MakeARGB()
+    {
+        BYTE A = 0xFF;
+        BYTE R = (BYTE)FloatToInt32(r * 255.9f);
+        BYTE G = (BYTE)FloatToInt32(g * 255.9f);
+        BYTE B = (BYTE)FloatToInt32(b * 255.9f);
 
-	color operator /(float Scale) const
-	{
-		float RScale = 1.f / Scale;
-		return color(r * RScale,g * RScale,b * RScale);
-	}
+        return MAKEARGB(A, R, G, B);
+    }
 
-	color operator *(const color& V) const
-	{
-		return color(r * V.r,g * V.g,b * V.b);
-	}
+    bool Normalize()
+    {
+        float squareSum = r * r + g * g + b * b;
 
-	color operator /(const color& V) const
-	{
-		return color(r / V.r,g / V.g,b / V.b);
-	}
+        if (squareSum >= SMALL_NUMBER)
+        {
+            float scale = 1.f / (float)sqrt(squareSum);
+            r *= scale;
+            g *= scale;
+            b *= scale;
+            return 1;
+        }
+        else return 0;
+    }
 
-	bool operator ==(const color& V) const
-	{
-		return r == V.r && g==V.g && b==V.b;
-	}
+    friend color operator *(float Scale, const color& V)
+    {
+        return color(V.r * Scale, V.g * Scale, V.b * Scale);
+    }
 
-	bool operator !=(const color& V) const
-	{
-		return r != V.r || g!=V.g || b!=V.b;
-	}
+    color operator +(const color& V) const
+    {
+        return color(r + V.r, g + V.g, b + V.b);
+    }
 
-	color operator -() const
-	{
-		return color(-r,-g,-b);
-	}
+    color operator -(const color& V) const
+    {
+        return color(r - V.r, g - V.g, b - V.b);
+    }
 
-	color operator +=(const color& V)
-	{
-		r += V.r; g += V.g; b += V.b;
-		return *this;
-	}
+    color operator *(float Scale) const
+    {
+        return color(r * Scale, g * Scale, b * Scale);
+    }
 
-	color operator -=(const color& V)
-	{
-		r -= V.r; g -= V.g; b -= V.b;
-		return *this;
-	}
+    color operator /(float Scale) const
+    {
+        float RScale = 1.f / Scale;
+        return color(r * RScale, g * RScale, b * RScale);
+    }
 
-	color operator *=(float Scale)
-	{
-		r *= Scale; g *= Scale; b *= Scale;
-		return *this;
-	}
+    color operator *(const color& V) const
+    {
+        return color(r * V.r, g * V.g, b * V.b);
+    }
 
-	color operator /=(float V)
-	{
-		float RV = 1.f / V;
-		r *= RV; g *= RV; b *= RV;
-		return *this;
-	}
+    color operator /(const color& V) const
+    {
+        return color(r / V.r, g / V.g, b / V.b);
+    }
 
-	color operator *=(const color& V)
-	{
-		r *= V.r; g *= V.g; b *= V.b;
-		return *this;
-	}
+    bool operator ==(const color& V) const
+    {
+        return r == V.r && g == V.g && b == V.b;
+    }
 
-	color operator /=(const color& V)
-	{
-		r /= V.r; g /= V.g; b /= V.b;
-		return *this;
-	}
+    bool operator !=(const color& V) const
+    {
+        return r != V.r || g != V.g || b != V.b;
+    }
 
-	float r,g,b;
-	float h,s,v;
-	float X,Y,Z;
-	float x,y,L;
+    color operator -() const
+    {
+        return color(-r, -g, -b);
+    }
+
+    color operator +=(const color& V)
+    {
+        r += V.r;
+        g += V.g;
+        b += V.b;
+        return *this;
+    }
+
+    color operator -=(const color& V)
+    {
+        r -= V.r;
+        g -= V.g;
+        b -= V.b;
+        return *this;
+    }
+
+    color operator *=(float Scale)
+    {
+        r *= Scale;
+        g *= Scale;
+        b *= Scale;
+        return *this;
+    }
+
+    color operator /=(float V)
+    {
+        float RV = 1.f / V;
+        r *= RV;
+        g *= RV;
+        b *= RV;
+        return *this;
+    }
+
+    color operator *=(const color& V)
+    {
+        r *= V.r;
+        g *= V.g;
+        b *= V.b;
+        return *this;
+    }
+
+    color operator /=(const color& V)
+    {
+        r /= V.r;
+        g /= V.g;
+        b /= V.b;
+        return *this;
+    }
+
+    float r, g, b;
+    float h, s, v;
+    float X, Y, Z;
+    float x, y, L;
 };
 
 #endif

@@ -26,7 +26,7 @@ Comments:
 
 
 typedef void (*MIPFiltercallback)(int miplevel, int TotalMIPs);
-typedef HRESULT (*MIPcallback)(void * data, int miplevel, DWORD size);
+typedef HRESULT(*MIPcallback)(void * data, int miplevel, DWORD size);
 void set_mip_filter_callback(MIPFiltercallback callback);
 
 // call back
@@ -34,16 +34,16 @@ void set_mip_filter_callback(MIPFiltercallback callback);
 // mip level
 // size of chunk
 
-     
+
 
 
 
 
 #ifndef TRGBA
 #define TRGBA
-typedef	struct	
+typedef	struct
 {
-	BYTE	rgba[4];
+    BYTE	rgba[4];
 } rgba_t;
 #endif
 
@@ -51,21 +51,21 @@ typedef	struct
 #define TPIXEL
 union tPixel
 {
-  unsigned long u;
-  rgba_t c;
+    unsigned long u;
+    rgba_t c;
 };
 #endif
 
 #ifndef ISPOWER2
 inline bool IsPower2(unsigned int x)
-{              
-    if ( x < 1 )
+{
+    if (x < 1)
         return false;
 
     if (x == 1)
         return true;
 
-    if ( x & (x-1) )        
+    if (x & (x - 1))
         return false;
 
     return true;
@@ -83,14 +83,14 @@ inline bool IsPower2(unsigned int x)
 extern "C" {
 #endif
 
-NVDXTDLL_API
-HRESULT nvDXTcompress(unsigned char * raw_data, // pointer to data (24 or 32 bit)
-                unsigned long w, // width in texels
-                unsigned long h, // height in texels
-                DWORD byte_pitch,
-                CompressionOptions * options,
-                DWORD planes, // 3 or 4
-                MIPcallback callback = 0);   // callback for generated levels
+    NVDXTDLL_API
+    HRESULT nvDXTcompress(unsigned char * raw_data, // pointer to data (24 or 32 bit)
+                          unsigned long w, // width in texels
+                          unsigned long h, // height in texels
+                          DWORD byte_pitch,
+                          CompressionOptions * options,
+                          DWORD planes, // 3 or 4
+                          MIPcallback callback = 0);   // callback for generated levels
 
 #ifdef  NVDXTC
 }
@@ -101,7 +101,7 @@ HRESULT nvDXTcompress(unsigned char * raw_data, // pointer to data (24 or 32 bit
 // You must write the routines (or provide stubs)
 // void WriteDTXnFile(count, buffer);
 // void ReadDTXnFile(count, buffer);
-// 
+//
 //
 #ifdef  NVDXTDLL
 
@@ -111,8 +111,8 @@ typedef void (*DXTDataTransfer)(DWORD count, void *buffer);
 extern "C" {
 #endif
 
-NVDXTDLL_API void SetReadDTXnFile(DXTDataTransfer UserReadDTXnFile);
-NVDXTDLL_API void SetWriteDTXnFile(DXTDataTransfer UserWriteDTXnFile);
+    NVDXTDLL_API void SetReadDTXnFile(DXTDataTransfer UserReadDTXnFile);
+    NVDXTDLL_API void SetWriteDTXnFile(DXTDataTransfer UserWriteDTXnFile);
 
 
 #ifdef  NVDXTC
@@ -127,33 +127,33 @@ void ReadDTXnFile(DWORD count, void * buffer);
 
 #if _MSC_VER >=1300
 
- #ifdef _MT
-  #ifdef _DLL
-   #pragma message("Note: including lib: nvDXTlibMTDLL7.lib") 
-   #pragma comment(lib, "nvDXTlibMTDLL7.lib")
-  #else
-   #pragma message("Note: including lib: nvDXTlibMT7.lib") 
-   #pragma comment(lib, "nvDXTlibMT7.lib")
-  #endif //_DLL
- #else
-  #pragma message("Note: including lib: nvDXTlib7.lib") 
-  #pragma comment(lib, "nvDXTlib7.lib")
- #endif
+#ifdef _MT
+#ifdef _DLL
+#pragma message("Note: including lib: nvDXTlibMTDLL7.lib")
+#pragma comment(lib, "nvDXTlibMTDLL7.lib")
+#else
+#pragma message("Note: including lib: nvDXTlibMT7.lib")
+#pragma comment(lib, "nvDXTlibMT7.lib")
+#endif //_DLL
+#else
+#pragma message("Note: including lib: nvDXTlib7.lib")
+#pragma comment(lib, "nvDXTlib7.lib")
+#endif
 
 #else
 
- #ifdef _MT
-  #ifdef _DLL                         
-   #pragma message("Note: including lib: nvDXTlibMTDLL6.lib") 
-   #pragma comment(lib, "nvDXTlibMTDLL6.lib")
-  #else
-   #pragma message("Note: including lib: nvDXTlibMT6.lib") 
-   #pragma comment(lib, "nvDXTlibMT6.lib")
-  #endif //_DLL
- #else
-  #pragma message("Note: including lib: nvDXTlib6.lib") 
-  #pragma comment(lib, "nvDXTlib6.lib")
- #endif
+#ifdef _MT
+#ifdef _DLL
+#pragma message("Note: including lib: nvDXTlibMTDLL6.lib")
+#pragma comment(lib, "nvDXTlibMTDLL6.lib")
+#else
+#pragma message("Note: including lib: nvDXTlibMT6.lib")
+#pragma comment(lib, "nvDXTlibMT6.lib")
+#endif //_DLL
+#else
+#pragma message("Note: including lib: nvDXTlib6.lib")
+#pragma comment(lib, "nvDXTlib6.lib")
+#endif
 
 #endif
 
@@ -173,7 +173,7 @@ void ReadDTXnFile(DWORD count, void * buffer);
 
 /* example
 
-LPDIRECT3DTEXTURE8 pCurrentTexture = 0; 
+LPDIRECT3DTEXTURE8 pCurrentTexture = 0;
 
 HRESULT LoadAllMipSurfaces(void * data, int iLevel)
 {
@@ -181,27 +181,27 @@ HRESULT LoadAllMipSurfaces(void * data, int iLevel)
     LPDIRECT3DSURFACE8 psurf;
     D3DSURFACE_DESC sd;
     D3DLOCKED_RECT lr;
-       
+
     hr = pCurrentTexture->GetSurfaceLevel(iLevel, &psurf);
-    
+
     if (FAILED(hr))
         return hr;
     psurf->GetDesc(&sd);
-    
-    
+
+
     hr = pCurrentTexture->LockRect(iLevel, &lr, NULL, 0);
     if (FAILED(hr))
         return hr;
-    
+
     memcpy(lr.pBits, data, sd.Size);
-    
+
     hr = pCurrentTexture->UnlockRect(iLevel);
-    
+
     ReleasePpo(&psurf);
-    
+
     return 0;
 }
-       
+
 
     hr = D3DXCreateTexture(m_pd3dDevice, Width, Height, nMips,  0,   D3DFMT_DXT3,  D3DPOOL_MANAGED, &pCurrentTexture);
     nvDXTcompress(raw_data, Width, Height, DXT3, true, 4, LoadAllMipSurfaces);
@@ -209,32 +209,32 @@ HRESULT LoadAllMipSurfaces(void * data, int iLevel)
 */
 
 
-	/*
-    src_format
-    dDXT1 
-	dDXT1a  // DXT1 with one bit alpha
-	dDXT3    // explicit alpha
-	dDXT5    // interpolated alpha
+/*
+src_format
+dDXT1
+dDXT1a  // DXT1 with one bit alpha
+dDXT3    // explicit alpha
+dDXT5    // interpolated alpha
 
-	d4444   // a4 r4 g4 b4
-	d1555   // a1 r5 g5 b5
-	d565    // a0 r5 g6 b5
-	d8888   // a8 r8 g8 b8
-	d888    // a0 r8 g8 b8
-	d555    // a0 r5 g5 b5
-    d8      // paletted
-    dV8U8   // DuDv
-    dCxV8U8   // normal map
-    dA8       // A8
+d4444   // a4 r4 g4 b4
+d1555   // a1 r5 g5 b5
+d565    // a0 r5 g6 b5
+d8888   // a8 r8 g8 b8
+d888    // a0 r8 g8 b8
+d555    // a0 r5 g5 b5
+d8      // paletted
+dV8U8   // DuDv
+dCxV8U8   // normal map
+dA8       // A8
 
-      */
+  */
 
 #ifdef NVDXTC
 extern "C" {
 #endif
 
-NVDXTDLL_API
-unsigned char * nvDXTdecompress(int & w, int & h, int & depth, int & total_width, int & rowBytes, int & src_format);
+    NVDXTDLL_API
+    unsigned char * nvDXTdecompress(int & w, int & h, int & depth, int & total_width, int & rowBytes, int & src_format);
 
 
 #ifdef NVDXTC
@@ -243,12 +243,12 @@ unsigned char * nvDXTdecompress(int & w, int & h, int & depth, int & total_width
 
 enum ColorFormat
 {
-	COLOR_RGB,
-	COLOR_ARGB,
-	COLOR_BGR,
-	COLOR_BGRA,
-	COLOR_RGBA,
-	COLOR_ABGR,
+    COLOR_RGB,
+    COLOR_ARGB,
+    COLOR_BGR,
+    COLOR_BGRA,
+    COLOR_RGBA,
+    COLOR_ABGR,
 };
 
 #endif

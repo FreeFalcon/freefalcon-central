@@ -21,13 +21,13 @@ class CCriticalSection
 {
 public      :
 
-    CCriticalSection ( void )
+    CCriticalSection(void)
     {
-        InitializeCriticalSection ( &m_CritSec ) ;
+        InitializeCriticalSection(&m_CritSec) ;
     }
-    ~CCriticalSection ( )
+    ~CCriticalSection()
     {
-        DeleteCriticalSection ( &m_CritSec ) ;
+        DeleteCriticalSection(&m_CritSec) ;
     }
 
     friend CUseCriticalSection ;
@@ -42,20 +42,20 @@ private     :
 class CUseCriticalSection
 {
 public      :
-    CUseCriticalSection ( const CCriticalSection & cs )
+    CUseCriticalSection(const CCriticalSection & cs)
     {
         m_cs = &cs ;
-        EnterCriticalSection ( ( LPCRITICAL_SECTION)&(m_cs->m_CritSec));
+        EnterCriticalSection((LPCRITICAL_SECTION) & (m_cs->m_CritSec));
     }
 
-    ~CUseCriticalSection ( )
+    ~CUseCriticalSection()
     {
-        LeaveCriticalSection ( (LPCRITICAL_SECTION)&(m_cs->m_CritSec) );
+        LeaveCriticalSection((LPCRITICAL_SECTION) & (m_cs->m_CritSec));
         m_cs = NULL ;
     }
 
 private     :
-    CUseCriticalSection ( void )
+    CUseCriticalSection(void)
     {
         m_cs = NULL ;
     }

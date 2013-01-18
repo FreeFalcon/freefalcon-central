@@ -13,28 +13,29 @@
 // byte alignment
 #pragma pack (1)
 
-class SendSimMoverPosition : public FalconEvent {
+class SendSimMoverPosition : public FalconEvent
+{
 public:
-	// sender constructor
-	SendSimMoverPosition(SimMoverClass *mover, VuTargetEntity *target);
-	// receiver constructor
-	SendSimMoverPosition(VU_ID senderID, VU_ID target);
-	// destructor
-	~SendSimMoverPosition();
+    // sender constructor
+    SendSimMoverPosition(SimMoverClass *mover, VuTargetEntity *target);
+    // receiver constructor
+    SendSimMoverPosition(VU_ID senderID, VU_ID target);
+    // destructor
+    ~SendSimMoverPosition();
 
-	// stream functions
-	virtual int Size() const;
-	virtual int Decode(VU_BYTE **buf, long *rem);
-	virtual int Encode(VU_BYTE **buf);
+    // stream functions
+    virtual int Size() const;
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
 
 protected:
-	int Process(uchar autodisp);
+    int Process(uchar autodisp);
 
-	// position info
-	SM_SCALAR yaw_, pitch_, roll_;
-	SM_SCALAR dyaw_, dpitch_, droll_;
-	BIG_SCALAR x_, y_, z_;
-	SM_SCALAR dx_, dy_, dz_;
+    // position info
+    SM_SCALAR yaw_, pitch_, roll_;
+    SM_SCALAR dyaw_, dpitch_, droll_;
+    BIG_SCALAR x_, y_, z_;
+    SM_SCALAR dx_, dy_, dz_;
 
 };
 #pragma pack ()

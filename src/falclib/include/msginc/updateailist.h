@@ -22,26 +22,26 @@
  */
 class UI_UpdateAIList : public FalconEvent
 {
-   public:
-      UI_UpdateAIList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      UI_UpdateAIList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~UI_UpdateAIList(void);
-      int Size (void);
-		//sfr: long *
-	  int Decode (VU_BYTE **buf, long *rem);
-      int Encode (VU_BYTE **buf);
-      class DATA_BLOCK
-      {
-         public:
+public:
+    UI_UpdateAIList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_UpdateAIList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~UI_UpdateAIList(void);
+    int Size(void);
+    //sfr: long *
+    int Decode(VU_BYTE **buf, long *rem);
+    int Encode(VU_BYTE **buf);
+    class DATA_BLOCK
+    {
+    public:
 
-            VU_ID gameID;
-            ushort count;
-            ushort size;
-            uchar* data;
-      } dataBlock;
+        VU_ID gameID;
+        ushort count;
+        ushort size;
+        uchar* data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

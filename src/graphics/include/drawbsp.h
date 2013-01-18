@@ -18,107 +18,179 @@
 #include "context.h"
 
 
-class DrawableBSP : public DrawableObject {
-  public:
-	DrawableBSP( int type, const Tpoint *pos, const Trotation *rot, float scale = 1.0f );
-	virtual ~DrawableBSP();
-  protected:
-	// This constructor is used only by derived classes who do their own setup
-	DrawableBSP( float s, int ID ): DrawableObject( s ), instance(ID) { inhibitDraw = FALSE; labelLen = 0; id = ID; radius = instance.Radius(); RadarSign = instance.RadarSign(); };
+class DrawableBSP : public DrawableObject
+{
+public:
+    DrawableBSP(int type, const Tpoint *pos, const Trotation *rot, float scale = 1.0f);
+    virtual ~DrawableBSP();
+protected:
+    // This constructor is used only by derived classes who do their own setup
+    DrawableBSP(float s, int ID): DrawableObject(s), instance(ID)
+    {
+        inhibitDraw = FALSE;
+        labelLen = 0;
+        id = ID;
+        radius = instance.Radius();
+        RadarSign = instance.RadarSign();
+    };
 
-  public:
-	void Update( const Tpoint *pos, const Trotation *rot );
-	void SetRadius(float r)	{ instance.ParentObject->radius = r; }
+public:
+    void Update(const Tpoint *pos, const Trotation *rot);
+    void SetRadius(float r)
+    {
+        instance.ParentObject->radius = r;
+    }
 
-	BOOL IsLegalEmptySlot( int slotNumber )	{ return (slotNumber < instance.ParentObject->nSlots) && (instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL); };
+    BOOL IsLegalEmptySlot(int slotNumber)
+    {
+        return (slotNumber < instance.ParentObject->nSlots) && (instance.SlotChildren) && (instance.SlotChildren[slotNumber] == NULL);
+    };
 
-	int	GetNumSlots( void )				{ return instance.ParentObject->nSlots; };
-	int	GetNumDOFs( void )				{ return instance.ParentObject->nDOFs; };
-	int	GetNumSwitches( void )			{ return instance.ParentObject->nSwitches; };
-	int	GetNumDynamicVertices( void )	{ return instance.ParentObject->nDynamicCoords; };
+    int	GetNumSlots(void)
+    {
+        return instance.ParentObject->nSlots;
+    };
+    int	GetNumDOFs(void)
+    {
+        return instance.ParentObject->nDOFs;
+    };
+    int	GetNumSwitches(void)
+    {
+        return instance.ParentObject->nSwitches;
+    };
+    int	GetNumDynamicVertices(void)
+    {
+        return instance.ParentObject->nDynamicCoords;
+    };
 
-	void AttachChild( DrawableBSP *child, int slotNumber );
-	void DetachChild( DrawableBSP *child, int slotNumber );
-	void GetChildOffset( int slotNumber, Tpoint *offset );
+    void AttachChild(DrawableBSP *child, int slotNumber);
+    void DetachChild(DrawableBSP *child, int slotNumber);
+    void GetChildOffset(int slotNumber, Tpoint *offset);
 
-	bool SetupVisibility(RenderOTW *renderer);
-	void SetDOFangle( int DOF, float radians );
-	void SetDOFoffset( int DOF, float offset );
-	void SetDynamicVertex( int vertID, float dx, float dy, float dz );
-	void SetSwitchMask( int switchNumber, UInt32 mask );
-	void SetTextureSet( UInt32 set )	{ instance.SetTextureSet( set ); };
-	int GetNTextureSet() { return instance.GetNTextureSet(); };
+    bool SetupVisibility(RenderOTW *renderer);
+    void SetDOFangle(int DOF, float radians);
+    void SetDOFoffset(int DOF, float offset);
+    void SetDynamicVertex(int vertID, float dx, float dy, float dz);
+    void SetSwitchMask(int switchNumber, UInt32 mask);
+    void SetTextureSet(UInt32 set)
+    {
+        instance.SetTextureSet(set);
+    };
+    int GetNTextureSet()
+    {
+        return instance.GetNTextureSet();
+    };
 
-	float	GetDOFangle( int DOF );
-	float	GetDOFoffset( int DOF );
-	void	GetDynamicVertex( int vertID, float *dx, float *dy, float *dz );
+    float	GetDOFangle(int DOF);
+    float	GetDOFoffset(int DOF);
+    void	GetDynamicVertex(int vertID, float *dx, float *dy, float *dz);
 
-	// RV - Biker
-	void	GetDynamicCoords( int vertID, float *dx, float *dy, float *dz );
+    // RV - Biker
+    void	GetDynamicCoords(int vertID, float *dx, float *dy, float *dz);
 
-	UInt32	GetSwitchMask( int switchNumber );
-	UInt32	GetTextureSet( void)	{ return instance.TextureSet; };
+    UInt32	GetSwitchMask(int switchNumber);
+    UInt32	GetTextureSet(void)
+    {
+        return instance.TextureSet;
+    };
 
-	char *Label()											{ return label; }
-	DWORD LabelColor()										{ return labelColor; }
-	virtual void SetLabel( char *labelString, DWORD color );
-	virtual void SetInhibitFlag( BOOL state )				{ inhibitDraw = state; };
+    char *Label()
+    {
+        return label;
+    }
+    DWORD LabelColor()
+    {
+        return labelColor;
+    }
+    virtual void SetLabel(char *labelString, DWORD color);
+    virtual void SetInhibitFlag(BOOL state)
+    {
+        inhibitDraw = state;
+    };
 
-	virtual BOOL GetRayHit( const Tpoint *from, const Tpoint *vector, Tpoint *collide, float boxScale = 1.0f );
-	
-	virtual void Draw( class RenderOTW *renderer, int LOD );
-	virtual void Draw( class Render3D *renderer );
+    virtual BOOL GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *collide, float boxScale = 1.0f);
 
-	int  GetID( void )			{ return id; };
+    virtual void Draw(class RenderOTW *renderer, int LOD);
+    virtual void Draw(class Render3D *renderer);
 
-	// These two functions are used to handle preloading BSP objects for quick drawing later
-	static void	LockAndLoad( int id )		{ TheObjectList[id].ReferenceWithFetch(); };
-	static void	Unlock( int id )			{ TheObjectList[id].Release();  };
+    int  GetID(void)
+    {
+        return id;
+    };
 
-	// get object's bounding box
-	void GetBoundingBox( Tpoint *minB, Tpoint *maxB );
+    // These two functions are used to handle preloading BSP objects for quick drawing later
+    static void	LockAndLoad(int id)
+    {
+        TheObjectList[id].ReferenceWithFetch();
+    };
+    static void	Unlock(int id)
+    {
+        TheObjectList[id].Release();
+    };
 
-	// This one is for internal use only.  Don't use it or you'll break things...
-	void ForceZ( float z )		{ position.z = z; };
+    // get object's bounding box
+    void GetBoundingBox(Tpoint *minB, Tpoint *maxB);
 
-  public:
-	Trotation			orientation;
-	static BOOL			drawLabels;		// Shared by ALL drawable BSPs
+    // This one is for internal use only.  Don't use it or you'll break things...
+    void ForceZ(float z)
+    {
+        position.z = z;
+    };
 
-	ObjectInstance		instance;
-	// RED - Object volume, used for Radar stuff
-	float	GetRadarSign(void)		{ return RadarSign; }
+public:
+    Trotation			orientation;
+    static BOOL			drawLabels;		// Shared by ALL drawable BSPs
 
-  protected:
-	int					id;				// TODO: With the new BSP lib, this id could go...
-	//ObjectInstance		instance;
+    ObjectInstance		instance;
+    // RED - Object volume, used for Radar stuff
+    float	GetRadarSign(void)
+    {
+        return RadarSign;
+    }
 
-	BOOL				inhibitDraw;	// When TRUE, the Draw function just returns
+protected:
+    int					id;				// TODO: With the new BSP lib, this id could go...
+    //ObjectInstance		instance;
 
-	char				label[32];
-	int					labelLen;
-	DWORD				labelColor;
-	float				RadarSign;
+    BOOL				inhibitDraw;	// When TRUE, the Draw function just returns
 
-	// Handle time of day notifications
-	static void TimeUpdateCallback( void *unused );
+    char				label[32];
+    int					labelLen;
+    DWORD				labelColor;
+    float				RadarSign;
 
-  public:
-	static void SetupTexturesOnDevice( DXContext *rc );
-	static void ReleaseTexturesOnDevice( DXContext *rc );
+    // Handle time of day notifications
+    static void TimeUpdateCallback(void *unused);
+
+public:
+    static void SetupTexturesOnDevice(DXContext *rc);
+    static void ReleaseTexturesOnDevice(DXContext *rc);
 
 
-  protected:
-	void DrawBoundingBox( class Render3D *renderer );
+protected:
+    void DrawBoundingBox(class Render3D *renderer);
 
 #ifdef USE_SH_POOLS
-  public:
-	// Overload new/delete to use a SmartHeap fixed size pool
-	void *operator new(size_t size) { ShiAssert( size == sizeof(DrawableBSP) ); return MemAllocFS(pool);	};
-	void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-	static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(DrawableBSP), 50, 0 ); };
-	static void ReleaseStorage()	{ MemPoolFree( pool ); };
-	static MEM_POOL	pool;
+public:
+    // Overload new/delete to use a SmartHeap fixed size pool
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(DrawableBSP));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(DrawableBSP), 50, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
+    static MEM_POOL	pool;
 #endif
 };
 

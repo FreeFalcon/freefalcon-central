@@ -22,23 +22,23 @@
 
 // This is the structure we make our campaign ui event list out of
 typedef struct uieventnode
-	{
-	short			x,y;					// Location of the event (if any)
-	CampaignTime	time;
-	uchar			flags;
-	Team			team;					// The team which benifited the most from this
-	_TCHAR			*eventText;				// The text output
-	uieventnode		*next;
-	} CampUIEventElement;
+{
+    short			x, y;					// Location of the event (if any)
+    CampaignTime	time;
+    uchar			flags;
+    Team			team;					// The team which benifited the most from this
+    _TCHAR			*eventText;				// The text output
+    uieventnode		*next;
+} CampUIEventElement;
 
 // ============================
 // Functions
 // ============================
 
-extern void DisposeEventList (CampUIEventElement* root);
+extern void DisposeEventList(CampUIEventElement* root);
 
-extern void SendCampUIMessage (FalconCampEventMessage *message);
+extern void SendCampUIMessage(FalconCampEventMessage *message);
 
-extern void TrimEventList (CampUIEventElement *root, int length);
+extern void TrimEventList(CampUIEventElement *root, int length);
 
 #endif

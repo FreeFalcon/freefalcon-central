@@ -16,21 +16,21 @@
 
 typedef struct
 {
-	char  Header[4];
-	long  Version;
-	long  Width;
-	long  Height;
-	long  Frames;
-	short Compression;
-	short BytesPerPixel;
-	long  Background;
-	char  Start[];
+    char  Header[4];
+    long  Version;
+    long  Width;
+    long  Height;
+    long  Frames;
+    short Compression;
+    short BytesPerPixel;
+    long  Background;
+    char  Start[];
 } ANIMATION;
 
 typedef struct
 {
-	long Size;
-	char Data[];
+    long Size;
+    char Data[];
 } ANIM_FRAME;
 
 #endif // _ANIM_H_

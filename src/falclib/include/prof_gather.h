@@ -2,45 +2,45 @@
 #define INC_PROFILER_LOWLEVEL_H
 
 #ifdef __cplusplus
-  #define Prof_C               "C"
-  #define Prof_extern_C        extern "C"
-  #define Prof_dummy_declare
+#define Prof_C               "C"
+#define Prof_extern_C        extern "C"
+#define Prof_dummy_declare
 #else
-  #define Prof_C
-  #define Prof_extern_C
-  #define Prof_dummy_declare   int Prof_dummy_dec =
+#define Prof_C
+#define Prof_extern_C
+#define Prof_dummy_declare   int Prof_dummy_dec =
 #endif
 
 #ifdef WIN32
-  #include "prof_win32.h"
+#include "prof_win32.h"
 #else
-  #error "need to define Prof_get_timestamp() and Prof_Int64"
+#error "need to define Prof_get_timestamp() and Prof_Int64"
 #endif
 
 
 typedef struct
 {
-   char * name;
-   void * highlevel;
-   char   initialized;
-   char   visited;
-   char   pad0,pad1;
+    char * name;
+    void * highlevel;
+    char   initialized;
+    char   visited;
+    char   pad0, pad1;
 } Prof_Zone;
 
 typedef struct Prof_Zone_Stack
 {
-   Prof_Int64               t_self_start;
+    Prof_Int64               t_self_start;
 
-   Prof_Int64               total_self_ticks;
-   Prof_Int64               total_hier_ticks;
+    Prof_Int64               total_self_ticks;
+    Prof_Int64               total_hier_ticks;
 
-   unsigned int             total_entry_count;
+    unsigned int             total_entry_count;
 
-   struct Prof_Zone_Stack * parent;
-   Prof_Zone              * zone;
-   int                      recursion_depth;
+    struct Prof_Zone_Stack * parent;
+    Prof_Zone              * zone;
+    int                      recursion_depth;
 
-   void                   * highlevel;
+    void                   * highlevel;
 } Prof_Zone_Stack;
 
 
@@ -110,24 +110,27 @@ static Prof_Int64 Prof_time;
 
 #ifdef __cplusplus
 
-   #define Prof(x)        static Prof_Define(x); Prof_Scope(x)
- 
-   #define Prof_Scope(x)   \
+#define Prof(x)        static Prof_Define(x); Prof_Scope(x)
+
+#define Prof_Scope(x)   \
       Prof_Begin_Cache(x); \
       Prof_Scope_Var Prof_scope_var(Prof_region_ ## x, Prof_cache)
 
-   struct Prof_Scope_Var {
-      inline Prof_Scope_Var(Prof_Zone &zone, Prof_Zone_Stack * &Prof_cache);
-      inline ~Prof_Scope_Var();
-   };
+struct Prof_Scope_Var
+{
+    inline Prof_Scope_Var(Prof_Zone &zone, Prof_Zone_Stack * &Prof_cache);
+    inline ~Prof_Scope_Var();
+};
 
-   inline Prof_Scope_Var::Prof_Scope_Var(Prof_Zone &zone, Prof_Zone_Stack * &Prof_cache) {
-      Prof_Begin_Code(zone);
-   }
+inline Prof_Scope_Var::Prof_Scope_Var(Prof_Zone &zone, Prof_Zone_Stack * &Prof_cache)
+{
+    Prof_Begin_Code(zone);
+}
 
-   inline Prof_Scope_Var::~Prof_Scope_Var() {
-      Prof_End_Raw();
-   }
+inline Prof_Scope_Var::~Prof_Scope_Var()
+{
+    Prof_End_Raw();
+}
 
 #endif
 

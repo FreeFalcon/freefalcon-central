@@ -2,7 +2,7 @@
 matrix.h
 
 	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004 
+	Last Update: 21 April 2004
 */
 
 #ifndef _MATRIX_H

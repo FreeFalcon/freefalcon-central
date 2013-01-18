@@ -55,23 +55,23 @@ typedef char   SimlibFileName[SIMLIB_MAX_FILE_NAME_LENGTH];
 /*-----------------*/
 class SimlibFileClass
 {
-	private:
-	   FILE           *fptr;
-	   int            rights;
-	   int            lastOp;
-	   SimlibFileName fName;
+private:
+    FILE           *fptr;
+    int            rights;
+    int            lastOp;
+    SimlibFileName fName;
 
-	public:
-		SimlibFileClass (void);
-		static SimlibFileClass* Open (char *fname, int flags);
-		int ReadLine (char *buf, int maxLen);
-		int WriteLine (char *buf);
-		int Read (void *buffer, unsigned int maxLen);
-		int Write (void *buffer, int maxLen);
-		char *GetNext (void);
-		int Close(void);
-      int Position (int offset, int origin);
-      int GetPosition (void);
+public:
+    SimlibFileClass(void);
+    static SimlibFileClass* Open(char *fname, int flags);
+    int ReadLine(char *buf, int maxLen);
+    int WriteLine(char *buf);
+    int Read(void *buffer, unsigned int maxLen);
+    int Write(void *buffer, int maxLen);
+    char *GetNext(void);
+    int Close(void);
+    int Position(int offset, int origin);
+    int GetPosition(void);
 };
 
 #endif

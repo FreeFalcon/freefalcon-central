@@ -3,7 +3,7 @@
 
 class SimBaseClass;
 
-SimWeaponClass** InitGun (SimBaseClass* parent, ushort type, int num, int side);
-SimWeaponClass* InitAGun (SimBaseClass* parent, ushort type, int rounds);
+SimWeaponClass** InitGun(SimBaseClass* parent, ushort type, int num, int side);
+SimWeaponClass* InitAGun(SimBaseClass* parent, ushort type, int rounds);
 
 #endif

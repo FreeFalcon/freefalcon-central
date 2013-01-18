@@ -5,7 +5,7 @@
 
 #define TOTAL_POPCALLBACK_SLOTS 10
 
-typedef BOOL (*MenuCallback) (int, int, int, BOOL, VU_ID);
+typedef BOOL (*MenuCallback)(int, int, int, BOOL, VU_ID);
 extern MenuCallback MenuCallbackArray[];
 
 extern BOOL CBPopTestTrue(int, int, int, BOOL, VU_ID);

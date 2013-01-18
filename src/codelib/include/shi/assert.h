@@ -76,7 +76,7 @@
 /*  PARAMS: X - Truth to assert                     */
 /*          Y - Debug string (not always used)      */
 /*                                                  */
-/*  FUNCTIONS: Exact function is machine dependant. */ 
+/*  FUNCTIONS: Exact function is machine dependant. */
 /*  If no macro is defined in the machine specific  */
 /*  assert.h, we attempt to generate a memory       */
 /*  exception.                                      */
@@ -91,7 +91,7 @@
 #define SHI_ASSERT(X,Y) if (!(X)) { *((unsigned int *) 0x00) = 0; }
 #endif
 
-#else 
+#else
 
 #ifndef DEBUG
 #undef  SHI_ASSERT
@@ -106,7 +106,7 @@
 /*                                                  */
 /*  PARAMS: X - standard printf parameters          */
 /*                                                  */
-/*  FUNCTIONS: Wrapper a debugging printf.          */ 
+/*  FUNCTIONS: Wrapper a debugging printf.          */
 /*                                                  */
 /****************************************************/
 

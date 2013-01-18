@@ -38,43 +38,44 @@
 // ==================================
 
 enum PointTypes {	NoPt			= 0,
-					RunwayPt,
-					TakeoffPt,
-					TaxiPt,
-					SAMPt,
-					ArtilleryPt,
-					AAAPt,
-					RadarPt,
-					RunwayDimPt,
-					SupportPt,
-					StaticRadarPt,
-					SmallParkPt,
-					LargeParkPt,
-					SmallDockPt,
-					LargeDockPt,
-					TakeRunwayPt,
-					HelicopterPt,
-					FollowMePt,
-					TrackPt,
-					CritTaxiPt
-				};
+                    RunwayPt,
+                    TakeoffPt,
+                    TaxiPt,
+                    SAMPt,
+                    ArtilleryPt,
+                    AAAPt,
+                    RadarPt,
+                    RunwayDimPt,
+                    SupportPt,
+                    StaticRadarPt,
+                    SmallParkPt,
+                    LargeParkPt,
+                    SmallDockPt,
+                    LargeDockPt,
+                    TakeRunwayPt,
+                    HelicopterPt,
+                    FollowMePt,
+                    TrackPt,
+                    CritTaxiPt
+                };
 
-enum PointListTypes {
-					NoList				= 0,
-					RunwayListType		= 1,
-					SAMListType			= 4,
-					ArtListType			= 5,
-					AAAListType			= 6,
-					RnwyDimListType		= 8,
-					StaticRadarListType	= 10,
-					ParkListType		= 11,
-					RnwyListLtType		= 12,
-					RnwyListRtType		= 13,
-					HeliListType		= 14,
-					FollowListType		= 15,
-					DockListType		= 16,
-					TrackListType		= 17,
-				};
+enum PointListTypes
+{
+    NoList				= 0,
+    RunwayListType		= 1,
+    SAMListType			= 4,
+    ArtListType			= 5,
+    AAAListType			= 6,
+    RnwyDimListType		= 8,
+    StaticRadarListType	= 10,
+    ParkListType		= 11,
+    RnwyListLtType		= 12,
+    RnwyListRtType		= 13,
+    HeliListType		= 14,
+    FollowListType		= 15,
+    DockListType		= 16,
+    TrackListType		= 17,
+};
 
 // ==================================
 // Point functions
@@ -84,39 +85,39 @@ enum PointListTypes {
 
 int GetTaxiPosition(int point, int rwindex);
 
-extern int GetCritTaxiPt (int headerindex);
+extern int GetCritTaxiPt(int headerindex);
 
-extern int GetFirstPt (int headerindex);
+extern int GetFirstPt(int headerindex);
 
-extern int GetNextPt (int ptindex);
+extern int GetNextPt(int ptindex);
 
-extern int GetNextTaxiPt (int ptindex);
+extern int GetNextTaxiPt(int ptindex);
 
-extern int GetNextPtLoop (int ptindex);
+extern int GetNextPtLoop(int ptindex);
 
-extern int GetNextPtCrit (int ptindex);
+extern int GetNextPtCrit(int ptindex);
 
-extern int GetPrevPt (int ptindex);
+extern int GetPrevPt(int ptindex);
 
-extern int GetPrevTaxiPt (int ptindex);
+extern int GetPrevTaxiPt(int ptindex);
 
-extern int GetPrevPtLoop (int ptindex);
+extern int GetPrevPtLoop(int ptindex);
 
-extern int GetPrevPtCrit (int ptindex);
+extern int GetPrevPtCrit(int ptindex);
 
-extern void TranslatePointData (CampEntity e, int ptindex, float *x, float *y);
+extern void TranslatePointData(CampEntity e, int ptindex, float *x, float *y);
 
-extern int FindRunways (CampEntity airbase, int usage, int *rw1, int *rw2, int findall);
+extern int FindRunways(CampEntity airbase, int usage, int *rw1, int *rw2, int findall);
 
-extern int CheckHeaderStatus (CampEntity e, int index);
+extern int CheckHeaderStatus(CampEntity e, int index);
 
 int GetQueue(int rwindex);
 
-int GetFirstParkPt (int headerindex);
-int GetNextParkPt (int pt);
-int GetPrevParkPt (int pt);
-int GetNextParkTypePt (int pt, int type);
-int GetPrevParkTypePt (int pt, int type);
+int GetFirstParkPt(int headerindex);
+int GetNextParkPt(int pt);
+int GetPrevParkPt(int pt);
+int GetNextParkTypePt(int pt, int type);
+int GetPrevParkTypePt(int pt, int type);
 
 
 #endif

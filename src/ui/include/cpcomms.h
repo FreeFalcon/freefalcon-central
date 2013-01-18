@@ -3,15 +3,15 @@
 
 class CampaignComms
 {
-	private:
+private:
 
-	public:
+public:
 
-		CampaignComms();
-		~CampaignComms();
+    CampaignComms();
+    ~CampaignComms();
 
-		void Setup();
-		void Cleanup();
+    void Setup();
+    void Cleanup();
 };
 
 #endif

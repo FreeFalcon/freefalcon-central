@@ -47,7 +47,7 @@ documentation and/or software.
 
 #ifndef lint
 static const char rcsid[] =
-	"$Id: mddriver.c,v 1.1.1.1 2003/09/26 20:20:46 Red Exp $";
+    "$Id: mddriver.c,v 1.1.1.1 2003/09/26 20:20:46 Red Exp $";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -61,117 +61,121 @@ static const char rcsid[] =
  * Length of test block, number of test blocks.
  */
 
-int EncodeFiles (char* fileList);
-int TestFiles (char* fileList);
-void PrintHelp (void);
+int EncodeFiles(char* fileList);
+int TestFiles(char* fileList);
+void PrintHelp(void);
 
 /* Main driver.*/
 int main(int argc, char* argv[])
 {
-int retval = 0;
+    int retval = 0;
 
-	if (argc != 3)
-	{
-		PrintHelp();
-	}
-	else
-	{
-		if (!strcmp (argv[1], "-e"))
-		{
-			retval = EncodeFiles (argv[2]);
-		}
-		else if (!strcmp (argv[1], "-t"))
-		{
-			retval = TestFiles (argv[2]);
-		}
-		else
-		{
-			PrintHelp();
-		}
-	}
+    if (argc != 3)
+    {
+        PrintHelp();
+    }
+    else
+    {
+        if (!strcmp(argv[1], "-e"))
+        {
+            retval = EncodeFiles(argv[2]);
+        }
+        else if (!strcmp(argv[1], "-t"))
+        {
+            retval = TestFiles(argv[2]);
+        }
+        else
+        {
+            PrintHelp();
+        }
+    }
 
-	exit(0);
+    exit(0);
 }
 
-int EncodeFiles (char* fileList)
+int EncodeFiles(char* fileList)
 {
-FILE* filePtr;
-int retval = 0;
-char fileName[1024];
-char buf[33];
-char* p;
-int count = 0;
+    FILE* filePtr;
+    int retval = 0;
+    char fileName[1024];
+    char buf[33];
+    char* p;
+    int count = 0;
 
-	printf ("char* fileList[] = {\n");
-	filePtr = fopen (fileList, "r");
-	while (fgets (fileName, 1024, filePtr))
-	{
-		fileName[strlen(fileName)-1] = 0;
-		p = MD5File(fileName, buf);
-		if (p)
-			printf ("\"%s = %s\",\n", fileName, p);
-	}
-	printf ("\"LASTFILE = 0\",\n");
-	printf ("};\n");
-	retval = -1;
+    printf("char* fileList[] = {\n");
+    filePtr = fopen(fileList, "r");
 
-	return retval;
+    while (fgets(fileName, 1024, filePtr))
+    {
+        fileName[strlen(fileName) - 1] = 0;
+        p = MD5File(fileName, buf);
+
+        if (p)
+            printf("\"%s = %s\",\n", fileName, p);
+    }
+
+    printf("\"LASTFILE = 0\",\n");
+    printf("};\n");
+    retval = -1;
+
+    return retval;
 }
 
-int TestFiles (char* fileList)
+int TestFiles(char* fileList)
 {
-FILE* filePtr;
-int retval = 0;
-char fileName[1024];
-char buf[33];
-char checksum[33];
-char* p;
-struct _stat statBuf;
-int result;
+    FILE* filePtr;
+    int retval = 0;
+    char fileName[1024];
+    char buf[33];
+    char checksum[33];
+    char* p;
+    struct _stat statBuf;
+    int result;
 
-	filePtr = fopen (fileList, "r");
+    filePtr = fopen(fileList, "r");
 
-	while (fgets (fileName, 1024, filePtr))
-	{
-		strcpy (checksum, strchr(fileName, '=') + 2);
-		checksum[strlen(checksum)-1] = 0;
-		*(strchr (fileName, '=') - 1) = 0;
+    while (fgets(fileName, 1024, filePtr))
+    {
+        strcpy(checksum, strchr(fileName, '=') + 2);
+        checksum[strlen(checksum) - 1] = 0;
+        *(strchr(fileName, '=') - 1) = 0;
 
-		printf ("Checking %s - ", fileName);
+        printf("Checking %s - ", fileName);
 
-		result = _stat( fileName, &statBuf );
-			
-		if (result == 0)
-		{
-			p = MD5File(fileName, buf);
+        result = _stat(fileName, &statBuf);
 
-			if (strcmp (p, checksum))
-			{
-				printf ("FAILED\n");
-				retval++;
-			}
-			else
-			{
-				printf ("OK\n");
-			}
-		}
-		else
-		{
-			printf ("NOT FOUND\n");
-			retval++;
-		}
-	}
+        if (result == 0)
+        {
+            p = MD5File(fileName, buf);
 
-	if (retval > 0)
-		printf ("%d Errors found !!!!!\n", retval);
-	else if (retval == 0)
-		printf ("No Errors found :)\n");
-	return (retval);
+            if (strcmp(p, checksum))
+            {
+                printf("FAILED\n");
+                retval++;
+            }
+            else
+            {
+                printf("OK\n");
+            }
+        }
+        else
+        {
+            printf("NOT FOUND\n");
+            retval++;
+        }
+    }
+
+    if (retval > 0)
+        printf("%d Errors found !!!!!\n", retval);
+    else if (retval == 0)
+        printf("No Errors found :)\n");
+
+    return (retval);
 }
 
-void PrintHelp (void)
+void PrintHelp(void)
 {
-	printf ("Usage: checksum [-e filename] [-t filename]\n");
-	printf ("    -e filename       compute checksum on all files in filname\n");
-	printf ("    -t filename       test checksum on all files in filname\n");
+    printf("Usage: checksum [-e filename] [-t filename]\n");
+    printf("    -e filename       compute checksum on all files in filname\n");
+    printf("    -t filename       test checksum on all files in filname\n");
 }

@@ -22,7 +22,7 @@
 #define SFX_AIR_SMOKECLOUD2			16
 #define SFX_GUNFIRE					17 //was NOTRAIL_FLARE 
 #define SFX_FEATURE_CHAIN_REACTION	18
-#define SFX_WATER_EXPLOSION			19			
+#define SFX_WATER_EXPLOSION			19
 #define SFX_SAM_LAUNCH				20
 #define SFX_MISSILE_LAUNCH			21
 #define SFX_DUST1					22
@@ -125,9 +125,9 @@
 #define SFX_PARTICLE_KLUDGE         119 // <--- never use this in a constructor - it's a kludge 
 // particle special effects, no original effect
 // use with AddParticleEffect()
-#define PSFX_GUN_HIT_GROUND         120 
-#define PSFX_GUN_HIT_OBJECT         121 
-#define PSFX_GUN_HIT_WATER          122 
+#define PSFX_GUN_HIT_GROUND         120
+#define PSFX_GUN_HIT_OBJECT         121
+#define PSFX_GUN_HIT_WATER          122
 #define PSFX_VEHICLE_DIEING		    123
 #define PSFX_AC_EARLY_BURNING       124 //was VEHICLE_TAIL_SCRAPE
 #define PSFX_AC_BURNING_1		    125 //was VEHICLE_DIE_SMOKE
@@ -183,172 +183,188 @@ class SfxClass
 {
 
 #ifdef USE_SH_POOLS
-   public:
-      // Overload new/delete to use a SmartHeap fixed size pool
-      void *operator new(size_t size) { ShiAssert( size == sizeof(SfxClass) ); return MemAllocFS(pool);	};
-      void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-      static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(SfxClass), 200, 0 ); };
-      static void ReleaseStorage()	{ MemPoolFree( pool ); };
-      static MEM_POOL	pool;
+public:
+    // Overload new/delete to use a SmartHeap fixed size pool
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(SfxClass));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(SfxClass), 200, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
+    static MEM_POOL	pool;
 #endif
 
 
-/////////////
-// f16 crash landing
-	protected:
-	float RestPitch, RestRoll;
-	Tpoint CrashSlot, CrashPos;
+    /////////////
+    // f16 crash landing
+protected:
+    float RestPitch, RestRoll;
+    Tpoint CrashSlot, CrashPos;
 
-	static void CalculateRestingObjectMatrix (float pitch, float roll, float mat[3][3]);
-	static void CalculateGroundMatrix (Tpoint *normal, float yaw, float mat[3][3]);
-	static void MultiplyMatrix (float result[3][3], float mat[3][3], float mat1[3][3]);
-	static void TransformPoint (Tpoint *result, Tpoint *point, float mat[3][3]);
-	static void CopyMatrix (float result[3][3], float mat[3][3]);
-	static void GetOrientation (float mat[3][3], float *yaw, float *pitch, float *roll);
-	static float AdjustAngle180 (float angle);
-	static int RestPiece (float *angle, float rest, float multiplier=0.125f, float min=0.02f );
+    static void CalculateRestingObjectMatrix(float pitch, float roll, float mat[3][3]);
+    static void CalculateGroundMatrix(Tpoint *normal, float yaw, float mat[3][3]);
+    static void MultiplyMatrix(float result[3][3], float mat[3][3], float mat1[3][3]);
+    static void TransformPoint(Tpoint *result, Tpoint *point, float mat[3][3]);
+    static void CopyMatrix(float result[3][3], float mat[3][3]);
+    static void GetOrientation(float mat[3][3], float *yaw, float *pitch, float *roll);
+    static float AdjustAngle180(float angle);
+    static int RestPiece(float *angle, float rest, float multiplier = 0.125f, float min = 0.02f);
 
-   	public:
-	int TryParticleEffect(void);
-	SfxClass (	int typeSfx, int flagsSfx,SimBaseClass *baseobjSfx, 
-				float timeToLiveSfx, float scaleSfx, 
-				Tpoint *slot, float restpitch, float restroll);
-/////////////
+public:
+    int TryParticleEffect(void);
+    SfxClass(int typeSfx, int flagsSfx, SimBaseClass *baseobjSfx,
+             float timeToLiveSfx, float scaleSfx,
+             Tpoint *slot, float restpitch, float restroll);
+    /////////////
 
-	protected:
+protected:
 
-	int	type;					// type of special effect
-	int 	flags;				// modifiers
-	Tpoint pos;					// world position
-	Tpoint vec;					// world movement vector
-	Trotation rot;				// orientation
-	float timeToLive;			// in seconds
-	float scale;				// size of effect
-	float travelDist;			// distance to travel used by some sfx
-	int secondaryCount;			// effects may start other effects
-	int initSecondaryCount;		// initial count of secondaries
-	float secondaryInterval;	// in seconds
-	float secondaryTimer;		// in seconds
-	float distTimer;			// in seconds
-	float approxDist;			// to viewer position
-	float lastACMItime;			// in seconds
-	float startACMItime;			// in seconds
-	FalconMissileEndMessage *endMessage;
-	FalconDamageMessage *damMessage;
-	// effect may be composed of one or more objects
-	Drawable2D 	 *obj2d; 		// the object to draw
-	DrawableTrail	 *objTrail; // the object to draw
-	DrawableBSP	 *objBSP; 		// the object to draw
-	DrawableTracer	 *objTracer; 	// the object to draw
-	DrawableParticleSys *objParticleSys; // MLR 2/3/2004 - 
+    int	type;					// type of special effect
+    int 	flags;				// modifiers
+    Tpoint pos;					// world position
+    Tpoint vec;					// world movement vector
+    Trotation rot;				// orientation
+    float timeToLive;			// in seconds
+    float scale;				// size of effect
+    float travelDist;			// distance to travel used by some sfx
+    int secondaryCount;			// effects may start other effects
+    int initSecondaryCount;		// initial count of secondaries
+    float secondaryInterval;	// in seconds
+    float secondaryTimer;		// in seconds
+    float distTimer;			// in seconds
+    float approxDist;			// to viewer position
+    float lastACMItime;			// in seconds
+    float startACMItime;			// in seconds
+    FalconMissileEndMessage *endMessage;
+    FalconDamageMessage *damMessage;
+    // effect may be composed of one or more objects
+    Drawable2D 	 *obj2d; 		// the object to draw
+    DrawableTrail	 *objTrail; // the object to draw
+    DrawableBSP	 *objBSP; 		// the object to draw
+    DrawableTracer	 *objTracer; 	// the object to draw
+    DrawableParticleSys *objParticleSys; // MLR 2/3/2004 -
 
-	// sfr: smartpointer
-	VuBin<SimBaseClass> baseObj; 	// the object to draw
+    // sfr: smartpointer
+    VuBin<SimBaseClass> baseObj; 	// the object to draw
 
-	//RV - I-Hawk 
-	// ********** NEW TRAIL STUFF *************
+    //RV - I-Hawk
+    // ********** NEW TRAIL STUFF *************
     DWORD		TrailNew;
-	DWORD		TrailIdNew;
-	// ****************************************
+    DWORD		TrailIdNew;
+    // ****************************************
 
-	RViewPoint* viewPoint;
-	BOOL		inACMI;			// running from ACMI
+    RViewPoint* viewPoint;
+    BOOL		inACMI;			// running from ACMI
 
-	void GetApproxViewDist( float currTime );
-	void RunSecondarySfx( void );
-	void RunSfxCompletion( BOOL hitGround, float groundZ, int groundType );
-	void GroundReflection( void );
-	void StartRandomDebris( void );
+    void GetApproxViewDist(float currTime);
+    void RunSecondarySfx(void);
+    void RunSfxCompletion(BOOL hitGround, float groundZ, int groundType);
+    void GroundReflection(void);
+    void StartRandomDebris(void);
 
-   	public:
+public:
 
-	  /*
-	  ** overloaded sfx constructors
-	  */
+    /*
+    ** overloaded sfx constructors
+    */
 
-	  // Message timer
-	  SfxClass( FalconMissileEndMessage *endM,
-	  		  FalconDamageMessage *damM );
+    // Message timer
+    SfxClass(FalconMissileEndMessage *endM,
+             FalconDamageMessage *damM);
 
-	  // non-moving effect
-	  SfxClass( int type,
-	  		  Tpoint *pos,
-			  float timeToLive,
-			  float scale );
+    // non-moving effect
+    SfxClass(int type,
+             Tpoint *pos,
+             float timeToLive,
+             float scale);
 
-	  // Secondary effect driver effect
-	  SfxClass( int type,
-	  		  Tpoint *pos,
-			  int count,
-			  float interval );
+    // Secondary effect driver effect
+    SfxClass(int type,
+             Tpoint *pos,
+             int count,
+             float interval);
 
-	  // Secondary effect driver effect with vector
-	  SfxClass( int type,
-	  		  Tpoint *pos,
-	  		  Tpoint *vec,
-			  int count,
-			  float interval );
+    // Secondary effect driver effect with vector
+    SfxClass(int type,
+             Tpoint *pos,
+             Tpoint *vec,
+             int count,
+             float interval);
 
-	  // moving effect
-	  SfxClass( int type,
-	  		  int flags,
-	  		  Tpoint *pos,
-	  		  Tpoint *vec,
-			  float timeToLive,
-			  float scale );
+    // moving effect
+    SfxClass(int type,
+             int flags,
+             Tpoint *pos,
+             Tpoint *vec,
+             float timeToLive,
+             float scale);
 
-	  // moving effect with rotation
-	  SfxClass( int type,
-	  		  int flags,
-	  		  Tpoint *pos,
-	  		  Trotation *rot,
-	  		  Tpoint *vec,
-			  float timeToLive,
-			  float scale );
+    // moving effect with rotation
+    SfxClass(int type,
+             int flags,
+             Tpoint *pos,
+             Trotation *rot,
+             Tpoint *vec,
+             float timeToLive,
+             float scale);
 
-	  // BSP effect may or may not move based on deltas and ypr deltas
-	  SfxClass( int type,
-	  		  int flags,
-			  SimBaseClass *baseobj,
-			  float timeToLive,
-			  float scale );
+    // BSP effect may or may not move based on deltas and ypr deltas
+    SfxClass(int type,
+             int flags,
+             SimBaseClass *baseobj,
+             float timeToLive,
+             float scale);
 
-	  // this just times the life of a trail then deletes it
-	  SfxClass( float timeToLive,
-			  DrawableTrail *trail );
+    // this just times the life of a trail then deletes it
+    SfxClass(float timeToLive,
+             DrawableTrail *trail);
 
-	  // moving BSP
-	  SfxClass( int type,
-	  		  Tpoint *pos,
-	  		  Tpoint *vec,
-           DrawableBSP* theObject,
-			  float timeToLive,
-			  float scale );
+    // moving BSP
+    SfxClass(int type,
+             Tpoint *pos,
+             Tpoint *vec,
+             DrawableBSP* theObject,
+             float timeToLive,
+             float scale);
 
-	  SfxClass ( DrawableParticleSys *drawPartSys );
+    SfxClass(DrawableParticleSys *drawPartSys);
 
-	  // destructor
-	  ~SfxClass( void );
+    // destructor
+    ~SfxClass(void);
 
-	  // start executing function
-	  void	Start( void );
+    // start executing function
+    void	Start(void);
 
-	  // execute function
-	  BOOL	Exec( void );
-	  BOOL	Draw( void );
+    // execute function
+    BOOL	Exec(void);
+    BOOL	Draw(void);
 
-	  // for ACMI
-	  // start executing function
-	  void	ACMIStart( RViewPoint *acmiView, float startTime, float currTime );
+    // for ACMI
+    // start executing function
+    void	ACMIStart(RViewPoint *acmiView, float startTime, float currTime);
 
-	  // execute function
-	  BOOL	ACMIExec( float currTime );
+    // execute function
+    BOOL	ACMIExec(float currTime);
 
-	  // set detail level
-	  static void SetLOD( float objDetail );
+    // set detail level
+    static void SetLOD(float objDetail);
 
-	  // type accessor
-	  int GetType( void )	{ return type; };
+    // type accessor
+    int GetType(void)
+    {
+        return type;
+    };
 };
 
 // externals

@@ -11,24 +11,25 @@
 #include <MgAPIall.h>
 #include "shi\ShiError.h"
 
-inline void FLTwarning( mgrec *rec, char *message ) {
-	char *name = mgGetName(rec);
-	char *dbname = mgRec2Filename(rec);
+inline void FLTwarning(mgrec *rec, char *message)
+{
+    char *name = mgGetName(rec);
+    char *dbname = mgRec2Filename(rec);
 #if 1
-	printf("%s %s: %s\n", dbname, name, message);
+    printf("%s %s: %s\n", dbname, name, message);
 #else
-	char	buffer[1024];
-	strcpy( buffer, dbname );
-	strcat( buffer, " " );
-	strcat( buffer, name );
-	strcat( buffer, ":  " );
-	strcat( buffer, message );
-	strcat( buffer, "\n" );
-	OutputDebugString( buffer );
-	ShiAssert( strlen(buffer) < sizeof(buffer) );
+    char	buffer[1024];
+    strcpy(buffer, dbname);
+    strcat(buffer, " ");
+    strcat(buffer, name);
+    strcat(buffer, ":  ");
+    strcat(buffer, message);
+    strcat(buffer, "\n");
+    OutputDebugString(buffer);
+    ShiAssert(strlen(buffer) < sizeof(buffer));
 #endif
-	mgFree( dbname );
-	mgFree( name );
+    mgFree(dbname);
+    mgFree(name);
 }
 
 

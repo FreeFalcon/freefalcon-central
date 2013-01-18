@@ -23,18 +23,21 @@ These definitions are lifted from the August 2001 Platform SDK release.
 typedef DWORD RVA;
 typedef ULONG64 RVA64;
 
-typedef struct _MINIDUMP_LOCATION_DESCRIPTOR {
+typedef struct _MINIDUMP_LOCATION_DESCRIPTOR
+{
     ULONG32 DataSize;
     RVA Rva;
 } MINIDUMP_LOCATION_DESCRIPTOR;
 
-typedef struct _MINIDUMP_LOCATION_DESCRIPTOR64 {
+typedef struct _MINIDUMP_LOCATION_DESCRIPTOR64
+{
     ULONG64 DataSize;
     RVA64 Rva;
 } MINIDUMP_LOCATION_DESCRIPTOR64;
 
 
-typedef struct _MINIDUMP_MEMORY_DESCRIPTOR {
+typedef struct _MINIDUMP_MEMORY_DESCRIPTOR
+{
     ULONG64 StartOfMemoryRange;
     MINIDUMP_LOCATION_DESCRIPTOR Memory;
 } MINIDUMP_MEMORY_DESCRIPTOR, *PMINIDUMP_MEMORY_DESCRIPTOR;
@@ -44,19 +47,22 @@ typedef struct _MINIDUMP_MEMORY_DESCRIPTOR {
 // end of the dump.  There is no need for individual RVAs
 // as the RVA is the base RVA plus the sum of the preceeding
 // data blocks.
-typedef struct _MINIDUMP_MEMORY_DESCRIPTOR64 {
+typedef struct _MINIDUMP_MEMORY_DESCRIPTOR64
+{
     ULONG64 StartOfMemoryRange;
     ULONG64 DataSize;
 } MINIDUMP_MEMORY_DESCRIPTOR64, *PMINIDUMP_MEMORY_DESCRIPTOR64;
 
 
-typedef struct _MINIDUMP_HEADER {
+typedef struct _MINIDUMP_HEADER
+{
     ULONG32 Signature;
     ULONG32 Version;
     ULONG32 NumberOfStreams;
     RVA StreamDirectoryRva;
     ULONG32 CheckSum;
-    union {
+    union
+    {
         ULONG32 Reserved;
         ULONG32 TimeDateStamp;
     };
@@ -68,13 +74,15 @@ typedef struct _MINIDUMP_HEADER {
 // an array of MINIDUMP_DIRECTORY structures.
 //
 
-typedef struct _MINIDUMP_DIRECTORY {
+typedef struct _MINIDUMP_DIRECTORY
+{
     ULONG32 StreamType;
     MINIDUMP_LOCATION_DESCRIPTOR Location;
 } MINIDUMP_DIRECTORY, *PMINIDUMP_DIRECTORY;
 
 
-typedef struct _MINIDUMP_STRING {
+typedef struct _MINIDUMP_STRING
+{
     ULONG32 Length;         // Length in bytes of the string
     WCHAR   Buffer [0];     // Variable size buffer
 } MINIDUMP_STRING, *PMINIDUMP_STRING;
@@ -89,7 +97,8 @@ typedef struct _MINIDUMP_STRING {
 // the system and is reserved for program-specific information.
 //
 
-typedef enum _MINIDUMP_STREAM_TYPE {
+typedef enum _MINIDUMP_STREAM_TYPE
+{
 
     UnusedStream                = 0,
     ReservedStream0             = 1,
@@ -115,7 +124,8 @@ typedef enum _MINIDUMP_STREAM_TYPE {
 // Operating System specific information.
 //
 
-typedef struct _MINIDUMP_SYSTEM_INFO {
+typedef struct _MINIDUMP_SYSTEM_INFO
+{
 
     //
     // ProcessorArchitecture, ProcessorLevel and ProcessorRevision are all
@@ -158,13 +168,15 @@ typedef struct _MINIDUMP_SYSTEM_INFO {
     //     IsProcessorFeatureSupported().
     //
 
-    union _CPU_INFORMATION {
+    union _CPU_INFORMATION
+    {
 
         //
         // X86 platforms use CPUID function to obtain processor information.
         //
 
-        struct {
+        struct
+        {
 
             //
             // CPUID Subfunction 0, register EAX (VendorId [0]),
@@ -199,7 +211,8 @@ typedef struct _MINIDUMP_SYSTEM_INFO {
         // Non-x86 platforms use processor feature flags.
         //
 
-        struct {
+        struct
+        {
 
             ULONG64 ProcessorFeatures [ 2 ];
 
@@ -224,9 +237,10 @@ typedef union _CPU_INFORMATION CPU_INFORMATION, *PCPU_INFORMATION;
 // ThreadId must be 4 bytes on all architectures.
 //
 
-C_ASSERT (sizeof ( ((PPROCESS_INFORMATION)0)->dwThreadId ) == 4);
+C_ASSERT(sizeof(((PPROCESS_INFORMATION)0)->dwThreadId) == 4);
 
-typedef struct _MINIDUMP_THREAD {
+typedef struct _MINIDUMP_THREAD
+{
     ULONG32 ThreadId;
     ULONG32 SuspendCount;
     ULONG32 PriorityClass;
@@ -240,13 +254,15 @@ typedef struct _MINIDUMP_THREAD {
 // The thread list is a container of threads.
 //
 
-typedef struct _MINIDUMP_THREAD_LIST {
+typedef struct _MINIDUMP_THREAD_LIST
+{
     ULONG32 NumberOfThreads;
     MINIDUMP_THREAD Threads [0];
 } MINIDUMP_THREAD_LIST, *PMINIDUMP_THREAD_LIST;
 
 
-typedef struct _MINIDUMP_THREAD_EX {
+typedef struct _MINIDUMP_THREAD_EX
+{
     ULONG32 ThreadId;
     ULONG32 SuspendCount;
     ULONG32 PriorityClass;
@@ -261,7 +277,8 @@ typedef struct _MINIDUMP_THREAD_EX {
 // The thread list is a container of threads.
 //
 
-typedef struct _MINIDUMP_THREAD_EX_LIST {
+typedef struct _MINIDUMP_THREAD_EX_LIST
+{
     ULONG32 NumberOfThreads;
     MINIDUMP_THREAD_EX Threads [0];
 } MINIDUMP_THREAD_EX_LIST, *PMINIDUMP_THREAD_EX_LIST;
@@ -271,7 +288,8 @@ typedef struct _MINIDUMP_THREAD_EX_LIST {
 // The MINIDUMP_EXCEPTION is the same as EXCEPTION on Win64.
 //
 
-typedef struct _MINIDUMP_EXCEPTION  {
+typedef struct _MINIDUMP_EXCEPTION
+{
     ULONG32 ExceptionCode;
     ULONG32 ExceptionFlags;
     ULONG64 ExceptionRecord;
@@ -289,7 +307,8 @@ typedef struct _MINIDUMP_EXCEPTION  {
 // occured.
 //
 
-typedef struct MINIDUMP_EXCEPTION_STREAM {
+typedef struct MINIDUMP_EXCEPTION_STREAM
+{
     ULONG32 ThreadId;
     ULONG32  __alignment;
     MINIDUMP_EXCEPTION ExceptionRecord;
@@ -304,7 +323,8 @@ typedef struct MINIDUMP_EXCEPTION_STREAM {
 // can be reloaded during the analysis phase.
 //
 
-typedef struct _MINIDUMP_MODULE {
+typedef struct _MINIDUMP_MODULE
+{
     ULONG64 BaseOfImage;
     ULONG32 SizeOfImage;
     ULONG32 CheckSum;
@@ -322,7 +342,8 @@ typedef struct _MINIDUMP_MODULE {
 // The minidump module list is a container for modules.
 //
 
-typedef struct _MINIDUMP_MODULE_LIST {
+typedef struct _MINIDUMP_MODULE_LIST
+{
     ULONG32 NumberOfModules;
     MINIDUMP_MODULE Modules [ 0 ];
 } MINIDUMP_MODULE_LIST, *PMINIDUMP_MODULE_LIST;
@@ -332,12 +353,14 @@ typedef struct _MINIDUMP_MODULE_LIST {
 // Memory Ranges
 //
 
-typedef struct _MINIDUMP_MEMORY_LIST {
+typedef struct _MINIDUMP_MEMORY_LIST
+{
     ULONG32 NumberOfMemoryRanges;
     MINIDUMP_MEMORY_DESCRIPTOR MemoryRanges [0];
 } MINIDUMP_MEMORY_LIST, *PMINIDUMP_MEMORY_LIST;
 
-typedef struct _MINIDUMP_MEMORY64_LIST {
+typedef struct _MINIDUMP_MEMORY64_LIST
+{
     ULONG64 NumberOfMemoryRanges;
     RVA64 BaseRva;
     MINIDUMP_MEMORY_DESCRIPTOR64 MemoryRanges [0];
@@ -348,7 +371,8 @@ typedef struct _MINIDUMP_MEMORY64_LIST {
 // Support for user supplied exception information.
 //
 
-typedef struct _MINIDUMP_EXCEPTION_INFORMATION {
+typedef struct _MINIDUMP_EXCEPTION_INFORMATION
+{
     DWORD ThreadId;
     PEXCEPTION_POINTERS ExceptionPointers;
     BOOL ClientPointers;
@@ -359,7 +383,8 @@ typedef struct _MINIDUMP_EXCEPTION_INFORMATION {
 // Support for capturing system handle state at the time of the dump.
 //
 
-typedef struct _MINIDUMP_HANDLE_DESCRIPTOR {
+typedef struct _MINIDUMP_HANDLE_DESCRIPTOR
+{
     ULONG64 Handle;
     RVA TypeNameRva;
     RVA ObjectNameRva;
@@ -369,7 +394,8 @@ typedef struct _MINIDUMP_HANDLE_DESCRIPTOR {
     ULONG PointerCount;
 } MINIDUMP_HANDLE_DESCRIPTOR, *PMINIDUMP_HANDLE_DESCRIPTOR;
 
-typedef struct _MINIDUMP_HANDLE_DATA_STREAM {
+typedef struct _MINIDUMP_HANDLE_DATA_STREAM
+{
     ULONG SizeOfHeader;
     ULONG SizeOfDescriptor;
     ULONG NumberOfDescriptors;
@@ -381,13 +407,15 @@ typedef struct _MINIDUMP_HANDLE_DATA_STREAM {
 // Support for arbitrary user-defined information.
 //
 
-typedef struct _MINIDUMP_USER_RECORD {
+typedef struct _MINIDUMP_USER_RECORD
+{
     ULONG32 Type;
     MINIDUMP_LOCATION_DESCRIPTOR Memory;
 } MINIDUMP_USER_RECORD, *PMINIDUMP_USER_RECORD;
 
 
-typedef struct _MINIDUMP_USER_STREAM {
+typedef struct _MINIDUMP_USER_STREAM
+{
     ULONG32 Type;
     ULONG BufferSize;
     PVOID Buffer;
@@ -395,7 +423,8 @@ typedef struct _MINIDUMP_USER_STREAM {
 } MINIDUMP_USER_STREAM, *PMINIDUMP_USER_STREAM;
 
 
-typedef struct _MINIDUMP_USER_STREAM_INFORMATION {
+typedef struct _MINIDUMP_USER_STREAM_INFORMATION
+{
     ULONG UserStreamCount;
     PMINIDUMP_USER_STREAM UserStreamArray;
 } MINIDUMP_USER_STREAM_INFORMATION, *PMINIDUMP_USER_STREAM_INFORMATION;
@@ -404,14 +433,16 @@ typedef struct _MINIDUMP_USER_STREAM_INFORMATION {
 // Callback support.
 //
 
-typedef enum _MINIDUMP_CALLBACK_TYPE {
+typedef enum _MINIDUMP_CALLBACK_TYPE
+{
     ModuleCallback,
     ThreadCallback,
     ThreadExCallback
 } MINIDUMP_CALLBACK_TYPE;
 
 
-typedef struct _MINIDUMP_THREAD_CALLBACK {
+typedef struct _MINIDUMP_THREAD_CALLBACK
+{
     ULONG ThreadId;
     HANDLE ThreadHandle;
     CONTEXT Context;
@@ -421,7 +452,8 @@ typedef struct _MINIDUMP_THREAD_CALLBACK {
 } MINIDUMP_THREAD_CALLBACK, *PMINIDUMP_THREAD_CALLBACK;
 
 
-typedef struct _MINIDUMP_THREAD_EX_CALLBACK {
+typedef struct _MINIDUMP_THREAD_EX_CALLBACK
+{
     ULONG ThreadId;
     HANDLE ThreadHandle;
     CONTEXT Context;
@@ -433,7 +465,8 @@ typedef struct _MINIDUMP_THREAD_EX_CALLBACK {
 } MINIDUMP_THREAD_EX_CALLBACK, *PMINIDUMP_THREAD_EX_CALLBACK;
 
 
-typedef enum _THREAD_WRITE_FLAGS {
+typedef enum _THREAD_WRITE_FLAGS
+{
     ThreadWriteThread            = 0x0001,
     ThreadWriteStack             = 0x0002,
     ThreadWriteContext           = 0x0004,
@@ -441,7 +474,8 @@ typedef enum _THREAD_WRITE_FLAGS {
     ThreadWriteInstructionWindow = 0x0010
 } THREAD_WRITE_FLAGS;
 
-typedef struct _MINIDUMP_MODULE_CALLBACK {
+typedef struct _MINIDUMP_MODULE_CALLBACK
+{
     PWCHAR FullPath;
     ULONG64 BaseOfImage;
     ULONG SizeOfImage;
@@ -455,26 +489,31 @@ typedef struct _MINIDUMP_MODULE_CALLBACK {
 } MINIDUMP_MODULE_CALLBACK, *PMINIDUMP_MODULE_CALLBACK;
 
 
-typedef enum _MODULE_WRITE_FLAGS {
+typedef enum _MODULE_WRITE_FLAGS
+{
     ModuleWriteModule       = 0x0001,
     ModuleWriteDataSeg      = 0x0002,
     ModuleWriteMiscRecord   = 0x0004
 } MODULE_WRITE_FLAGS;
 
 
-typedef struct _MINIDUMP_CALLBACK_INPUT {
+typedef struct _MINIDUMP_CALLBACK_INPUT
+{
     ULONG ProcessId;
     HANDLE ProcessHandle;
     ULONG CallbackType;
-    union {
+    union
+    {
         MINIDUMP_THREAD_CALLBACK Thread;
         MINIDUMP_THREAD_EX_CALLBACK ThreadEx;
         MINIDUMP_MODULE_CALLBACK Module;
     };
 } MINIDUMP_CALLBACK_INPUT, *PMINIDUMP_CALLBACK_INPUT;
 
-typedef struct _MINIDUMP_CALLBACK_OUTPUT {
-    union {
+typedef struct _MINIDUMP_CALLBACK_OUTPUT
+{
+    union
+    {
         ULONG ModuleWriteFlags;
         ULONG ThreadWriteFlags;
     };
@@ -515,13 +554,14 @@ typedef struct _MINIDUMP_CALLBACK_OUTPUT {
 
 typedef
 BOOL
-(WINAPI * MINIDUMP_CALLBACK_ROUTINE) (
+(WINAPI * MINIDUMP_CALLBACK_ROUTINE)(
     IN PVOID CallbackParam,
     IN CONST PMINIDUMP_CALLBACK_INPUT CallbackInput,
     IN OUT PMINIDUMP_CALLBACK_OUTPUT CallbackOutput
-    );
+);
 
-typedef struct _MINIDUMP_CALLBACK_INFORMATION {
+typedef struct _MINIDUMP_CALLBACK_INFORMATION
+{
     MINIDUMP_CALLBACK_ROUTINE CallbackRoutine;
     PVOID CallbackParam;
 } MINIDUMP_CALLBACK_INFORMATION, *PMINIDUMP_CALLBACK_INFORMATION;
@@ -565,7 +605,7 @@ MiniDumpWriteDump(
     IN CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, OPTIONAL
     IN CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, OPTIONAL
     IN CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam OPTIONAL
-    );
+);
 
 BOOL
 WINAPI
@@ -575,7 +615,7 @@ MiniDumpReadDumpStream(
     OUT PMINIDUMP_DIRECTORY * Dir, OPTIONAL
     OUT PVOID * StreamPointer, OPTIONAL
     OUT ULONG * StreamSize OPTIONAL
-    );
+);
 
 #include <poppack.h>
 

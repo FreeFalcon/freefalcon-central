@@ -33,97 +33,178 @@ enum DogfightStatus { dog_Waiting, dog_Starting, dog_Flying, dog_EndRound };
 // =====================================================================================
 
 class DogfightClass
-	{
-	public:
-		DogfightType		gameType;
-		DogfightStatus		gameStatus;
-		DogfightStatus		localGameStatus;
-		CampaignTime		startTime;
-		float				startRange;
-		float				startAltitude;
-		float				startX;
-		float				startY;
-		float				xRatio;
-		float				yRatio;
-		short				flags;
-		short				localFlags;
-		uchar				rounds;
-		uchar				currentRound;
-	// sfr: hiding these members 
-	private:
-		uchar				numRadarMissiles;
-		uchar				numRearAspectMissiles;
-		uchar				numAllAspectMissiles;
-	public:
-		static char			settings_filename[MAX_PATH];
+{
+public:
+    DogfightType		gameType;
+    DogfightStatus		gameStatus;
+    DogfightStatus		localGameStatus;
+    CampaignTime		startTime;
+    float				startRange;
+    float				startAltitude;
+    float				startX;
+    float				startY;
+    float				xRatio;
+    float				yRatio;
+    short				flags;
+    short				localFlags;
+    uchar				rounds;
+    uchar				currentRound;
+    // sfr: hiding these members
+private:
+    uchar				numRadarMissiles;
+    uchar				numRearAspectMissiles;
+    uchar				numAllAspectMissiles;
+public:
+    static char			settings_filename[MAX_PATH];
 
-	private:
-		CampaignTime		lastUpdateTime;
-		TailInsertList		*regenerationQueue;
+private:
+    CampaignTime		lastUpdateTime;
+    TailInsertList		*regenerationQueue;
 
-	public:
-		DogfightClass(void);
-		~DogfightClass(void);
+public:
+    DogfightClass(void);
+    ~DogfightClass(void);
 
-		// Game setup
-		void SetGameType (DogfightType type)			{ gameType = type; };
-		void SetGameStatus (DogfightStatus stat)		{ gameStatus = stat; };
-		void SetRounds(uchar numr)						{ rounds=numr; }
-		void SetStartRange (float newRange)				{ startRange = newRange * 0.5F;};
-		void SetStartAltitude (float newAltitude)		{ startAltitude = -newAltitude;};
-		void SetNumRadarMissiles (uchar newRadar)		{ numRadarMissiles = newRadar;};
-		void SetNumRearAspectMissiles (uchar newRear)   { numRearAspectMissiles = newRear;};
-		void SetNumAllAspectMissiles (uchar newAll)		{ numAllAspectMissiles = newAll;};
-		// sfr getters for privates
-		uchar GetNumRadarMissiles() const               { return numRadarMissiles;};
-		uchar GetNumRearAspectMissiles() const          { return numRearAspectMissiles;};
-		uchar GetNumAllAspectMissiles() const           { return numAllAspectMissiles;};
+    // Game setup
+    void SetGameType(DogfightType type)
+    {
+        gameType = type;
+    };
+    void SetGameStatus(DogfightStatus stat)
+    {
+        gameStatus = stat;
+    };
+    void SetRounds(uchar numr)
+    {
+        rounds = numr;
+    }
+    void SetStartRange(float newRange)
+    {
+        startRange = newRange * 0.5F;
+    };
+    void SetStartAltitude(float newAltitude)
+    {
+        startAltitude = -newAltitude;
+    };
+    void SetNumRadarMissiles(uchar newRadar)
+    {
+        numRadarMissiles = newRadar;
+    };
+    void SetNumRearAspectMissiles(uchar newRear)
+    {
+        numRearAspectMissiles = newRear;
+    };
+    void SetNumAllAspectMissiles(uchar newAll)
+    {
+        numAllAspectMissiles = newAll;
+    };
+    // sfr getters for privates
+    uchar GetNumRadarMissiles() const
+    {
+        return numRadarMissiles;
+    };
+    uchar GetNumRearAspectMissiles() const
+    {
+        return numRearAspectMissiles;
+    };
+    uchar GetNumAllAspectMissiles() const
+    {
+        return numAllAspectMissiles;
+    };
 
-		void SetStartLocation (float newX, float newY)	{ startX = newX; startY = newY;};
-		void SetFlag (int flag)							{ flags |= flag;};
-		void UnSetFlag (int flag)						{ flags &= ~flag;};
-		int  IsSetFlag (int flag)						{ return (flags & flag) ? 1 : 0;};
-		void SetLocalFlag (int flag)					{ localFlags |= flag;};
-		void UnSetLocalFlag (int flag)					{ localFlags &= ~flag;};
-		int  IsSetLocalFlag (int flag)					{ return (localFlags & flag) ? 1 : 0;};
-		
-		DogfightType GetGameType (void)					{ return gameType; };
-		DogfightStatus GetLocalGameStatus (void)		{ return localGameStatus; };
-		DogfightStatus GetDogfightGameStatus (void)		{ return gameStatus; };
-		int GameStarted (void)							{ if (gameStatus != dog_Waiting) return TRUE; return FALSE; };
-		int GetRounds (void)							{ return rounds; };
-		float StartX (void)								{ return startX;};
-		float StartY (void)								{ return startY;};
-		float StartZ (void)								{ return startAltitude;};
+    void SetStartLocation(float newX, float newY)
+    {
+        startX = newX;
+        startY = newY;
+    };
+    void SetFlag(int flag)
+    {
+        flags |= flag;
+    };
+    void UnSetFlag(int flag)
+    {
+        flags &= ~flag;
+    };
+    int  IsSetFlag(int flag)
+    {
+        return (flags & flag) ? 1 : 0;
+    };
+    void SetLocalFlag(int flag)
+    {
+        localFlags |= flag;
+    };
+    void UnSetLocalFlag(int flag)
+    {
+        localFlags &= ~flag;
+    };
+    int  IsSetLocalFlag(int flag)
+    {
+        return (localFlags & flag) ? 1 : 0;
+    };
 
-		// Functionality
-		void ApplySettings (void);
-		void SendSettings (FalconSessionEntity *target);
-		void ReceiveSettings (DogfightClass *tmpSettings);
-		void ApplySettingsToFlight (FlightClass *flight);
-		void RequestSettings (FalconGameEntity *game);
-		int ReadyToStart (void);
+    DogfightType GetGameType(void)
+    {
+        return gameType;
+    };
+    DogfightStatus GetLocalGameStatus(void)
+    {
+        return localGameStatus;
+    };
+    DogfightStatus GetDogfightGameStatus(void)
+    {
+        return gameStatus;
+    };
+    int GameStarted(void)
+    {
+        if (gameStatus != dog_Waiting) return TRUE;
 
-		void SetFilename (char *filename);
-		void LoadSettings (void);
-		void SaveSettings (char *filename);
+        return FALSE;
+    };
+    int GetRounds(void)
+    {
+        return rounds;
+    };
+    float StartX(void)
+    {
+        return startX;
+    };
+    float StartY(void)
+    {
+        return startY;
+    };
+    float StartZ(void)
+    {
+        return startAltitude;
+    };
 
-		void UpdateDogfight (void);
-		void UpdateGameStatus (void);
-		void RegenerateAircraft (AircraftClass *aircraft);
-		int AdjustClassId(int oldid, int team);
-		void EndGame (void);
+    // Functionality
+    void ApplySettings(void);
+    void SendSettings(FalconSessionEntity *target);
+    void ReceiveSettings(DogfightClass *tmpSettings);
+    void ApplySettingsToFlight(FlightClass *flight);
+    void RequestSettings(FalconGameEntity *game);
+    int ReadyToStart(void);
 
-	private:
-		// Private functions
-		int GameOver (void);
-		void RestartGame (void);
-		int CheckRoundOver (void);
-		void RoundOver (void);
-		void EndRound(void);
-		void ResetRound(void);
-		void RegenerateAvailableAircraft(void);
-	};
+    void SetFilename(char *filename);
+    void LoadSettings(void);
+    void SaveSettings(char *filename);
+
+    void UpdateDogfight(void);
+    void UpdateGameStatus(void);
+    void RegenerateAircraft(AircraftClass *aircraft);
+    int AdjustClassId(int oldid, int team);
+    void EndGame(void);
+
+private:
+    // Private functions
+    int GameOver(void);
+    void RestartGame(void);
+    int CheckRoundOver(void);
+    void RoundOver(void);
+    void EndRound(void);
+    void ResetRound(void);
+    void RegenerateAvailableAircraft(void);
+};
 
 extern DogfightClass SimDogfight;
 

@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 
-int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols);
+    int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols);
 
 
 #ifdef __cplusplus

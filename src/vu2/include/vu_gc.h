@@ -7,23 +7,24 @@
 /** garbage collector class. All entities inserted here are removed when flush is called.
 * The insertion functions are thread safe.
 */
-class VuGC {
+class VuGC
+{
 public:
-	/** creates the garbage collector and its internal data. */
-	explicit VuGC();
-	/** destroys the garbage collector, flushing before destruction. */
-	~VuGC();
+    /** creates the garbage collector and its internal data. */
+    explicit VuGC();
+    /** destroys the garbage collector, flushing before destruction. */
+    ~VuGC();
 
-	/** inserts a list node to be removed. */
-	void insert(class VuEntity *e);
+    /** inserts a list node to be removed. */
+    void insert(class VuEntity *e);
 
-	/** flushes the garbage collector, freeing everything in it. Call this somewhere SAFE when no thread is using VU (IE sleeping) */
-	void flush();
+    /** flushes the garbage collector, freeing everything in it. Call this somewhere SAFE when no thread is using VU (IE sleeping) */
+    void flush();
 
 private:
-	struct Data;
-	/** garbage collector internal data. */
-	std::auto_ptr<Data> d;
+    struct Data;
+    /** garbage collector internal data. */
+    std::auto_ptr<Data> d;
 };
 
 

@@ -8,7 +8,7 @@
 
 
 void	AssignPmatrixToD3DXMATRIX(D3DXMATRIX *d, Pmatrix *s);
-void	AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s );
+void	AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s);
 
 
 // The Scripts Pointer Array

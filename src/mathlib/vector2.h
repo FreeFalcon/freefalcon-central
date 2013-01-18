@@ -2,7 +2,7 @@
 vector2.h
 
 	Author: Miro "Jammer" Torrielli
-	Last Update: 21 April 2004 
+	Last Update: 21 April 2004
 */
 
 #ifndef _VECTOR2_H
@@ -68,6 +68,7 @@ __forceinline float vector2::len() const
 __forceinline void vector2::norm()
 {
     float l = len();
+
     if (l > TINY)
     {
         x /= l;
@@ -75,25 +76,25 @@ __forceinline void vector2::norm()
     }
 }
 
-__forceinline void vector2::operator +=(const vector2& v0) 
+__forceinline void vector2::operator +=(const vector2& v0)
 {
     x += v0.x;
     y += v0.y;
 }
 
-__forceinline void vector2::operator -=(const vector2& v0) 
+__forceinline void vector2::operator -=(const vector2& v0)
 {
     x -= v0.x;
     y -= v0.y;
 }
 
-__forceinline void vector2::operator *=(const float s) 
+__forceinline void vector2::operator *=(const float s)
 {
     x *= s;
     y *= s;
 }
 
-__forceinline void vector2::operator /=(const float s) 
+__forceinline void vector2::operator /=(const float s)
 {
     x /= s;
     y /= s;
@@ -103,32 +104,33 @@ __forceinline bool vector2::isequal(const vector2& v, const float tol) const
 {
     if (fabs(v.x - x) > tol)      return false;
     else if (fabs(v.y - y) > tol) return false;
+
     return true;
 }
 
 __forceinline int vector2::compare(const vector2& v, float tol) const
 {
-    if (fabs(v.x - x) > tol)      return (v.x > x) ? +1 : -1; 
+    if (fabs(v.x - x) > tol)      return (v.x > x) ? +1 : -1;
     else if (fabs(v.y - y) > tol) return (v.y > y) ? +1 : -1;
     else                          return 0;
 }
 
-static __forceinline vector2 operator +(const vector2& v0, const vector2& v1) 
+static __forceinline vector2 operator +(const vector2& v0, const vector2& v1)
 {
-    return vector2(v0.x + v1.x, v0.y + v1.y); 
+    return vector2(v0.x + v1.x, v0.y + v1.y);
 }
 
-static __forceinline vector2 operator -(const vector2& v0, const vector2& v1) 
+static __forceinline vector2 operator -(const vector2& v0, const vector2& v1)
 {
     return vector2(v0.x - v1.x, v0.y - v1.y);
 }
 
-static __forceinline vector2 operator *(const vector2& v0, const float s) 
+static __forceinline vector2 operator *(const vector2& v0, const float s)
 {
     return vector2(v0.x * s, v0.y * s);
 }
 
-static __forceinline vector2 operator -(const vector2& v) 
+static __forceinline vector2 operator -(const vector2& v)
 {
     return vector2(-v.x, -v.y);
 }

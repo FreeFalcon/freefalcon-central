@@ -12,8 +12,8 @@
 
 
 // Convert a Direct Draw return code into an error message
-BOOL DDErrorCheck( HRESULT result );
-BOOL D3DErrorCheck( HRESULT result );
-BOOL DSErrorCheck( HRESULT result );
+BOOL DDErrorCheck(HRESULT result);
+BOOL D3DErrorCheck(HRESULT result);
+BOOL DSErrorCheck(HRESULT result);
 
 #endif // _DDERROR_H_

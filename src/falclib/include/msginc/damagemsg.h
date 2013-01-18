@@ -31,51 +31,55 @@
  */
 class FalconDamageMessage : public FalconEvent
 {
-   public:
-      FalconDamageMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconDamageMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconDamageMessage(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: changed to long *
-	  int Decode (VU_BYTE **buf, long *rem) {
-		  long init = *rem;
+public:
+    FalconDamageMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconDamageMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconDamageMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed to long *
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
-            unsigned int damageType;
-            float damageStrength;
-			float damageRandomFact;
-            VU_ID dEntityID;
-            ushort dCampID;
-            uchar dPilotID;
-            ushort dIndex;
-            uchar dSide;
-            VU_ID fEntityID;
-            ushort fCampID;
-            uchar fPilotID;
-            ushort fIndex;
-            uchar fSide;
-            ushort fWeaponID;
-            VU_ID fWeaponUID;
-      } dataBlock;
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
+        unsigned int damageType;
+        float damageStrength;
+        float damageRandomFact;
+        VU_ID dEntityID;
+        ushort dCampID;
+        uchar dPilotID;
+        ushort dIndex;
+        uchar dSide;
+        VU_ID fEntityID;
+        ushort fCampID;
+        uchar fPilotID;
+        ushort fIndex;
+        uchar fSide;
+        ushort fWeaponID;
+        VU_ID fWeaponUID;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

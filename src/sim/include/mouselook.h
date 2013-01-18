@@ -11,56 +11,64 @@
 #include "SimIO.h"
 
 /************************************************************************/
-//	
+//
 /************************************************************************/
-class MouseView {
+class MouseView
+{
 public:
-	MouseView();
+    MouseView();
 
-	float GetMouseAzim();
-	float GetMouseElev();
+    float GetMouseAzim();
+    float GetMouseElev();
 
-	void Reset();
+    void Reset();
 
-	void AddAzimuth(float);
-	void AddElevation(float);
+    void AddAzimuth(float);
+    void AddElevation(float);
 
-	void BumpViewUp(float);
-	void BumpViewLeft(float);
+    void BumpViewUp(float);
+    void BumpViewLeft(float);
 
-	void Compute(float,bool mouseMoved = false);
+    void Compute(float, bool mouseMoved = false);
 private:
-	float XTotal;	// total travel values, clamped to a range..
-	float YTotal;
+    float XTotal;	// total travel values, clamped to a range..
+    float YTotal;
 
-	float Azimuth;	// normalized view angels (+-PI in RAD)
-	float Elevation;
+    float Azimuth;	// normalized view angels (+-PI in RAD)
+    float Elevation;
 
-	float azDir;	// directions.. -1 is right/down, 1 is left/up, 0 stops
-	float elDir;
+    float azDir;	// directions.. -1 is right/down, 1 is left/up, 0 stops
+    float elDir;
 };
 extern MouseView theMouseView;
 
 /************************************************************************/
 // Retro 18Jan2004 - support for mousewheel as fake axis
 /************************************************************************/
-class MouseWheelStuff {
+class MouseWheelStuff
+{
 public:
-	MouseWheelStuff();
+    MouseWheelStuff();
 
-	void SetAxis(GameAxis_t);
-	void ResetAxisValue();
-	long GetAxisValue();
-	void AddToAxisValue(long);
+    void SetAxis(GameAxis_t);
+    void ResetAxisValue();
+    long GetAxisValue();
+    void AddToAxisValue(long);
 
-	void SetWheelInactive() { WheelIsUsed = false; }
-	bool IsWheelActive() { return WheelIsUsed; }
+    void SetWheelInactive()
+    {
+        WheelIsUsed = false;
+    }
+    bool IsWheelActive()
+    {
+        return WheelIsUsed;
+    }
 
 private:
-	GameAxis_t theMappedAxis;
-	bool isUnipolar;
-	long theAxisValue;
-	bool WheelIsUsed;
+    GameAxis_t theMappedAxis;
+    bool isUnipolar;
+    long theAxisValue;
+    bool WheelIsUsed;
 };
 extern MouseWheelStuff theMouseWheelAxis;
 

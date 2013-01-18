@@ -1,6 +1,6 @@
 //
 // Router.h
-// 
+//
 // Router layer for comms shit
 //
 // Kevin Klemmick
@@ -51,7 +51,7 @@
 #define RTR_PROTOCOL_NOT_AVAILABLE		-2
 #define RTR_OVERFLOW_ERROR		        -3		// Send buffer is full
 #define RTR_CONNECTION_CLOSED			-5		// Connection is no longer available
-#define RTR_MESSAGE_TOO_BIG				-6 
+#define RTR_MESSAGE_TOO_BIG				-6
 #define RTR_CONNECTION_PENDING			-7
 #define RTR_WOULDBLOCK					-8
 #define RTR_EMPTYGROUP					-9
@@ -68,90 +68,96 @@ typedef struct comapihandle *ComAPIHandle;      // defined in CAPI.h
 typedef unsigned long	RtrAddress;				// IP Address or similar way to get to a physical machine
 typedef unsigned char	uchar;
 
-class RouterAddressNode {
-	public:
-		RtrAddress			machine_address;	// Physical address of the machine
-		ComAPIHandle		normalHandle;		// UDP or unreliable transport handle (if any)
-		ComAPIHandle		reliableHandle;		// TCP or reliable transport handle (if any)
-		RouterAddressNode	*next;				// Next node in the delivery list
-	public:
-		RouterAddressNode (RtrAddress pa, ComAPIHandle remote_socket);
-		~RouterAddressNode (void);
+class RouterAddressNode
+{
+public:
+    RtrAddress			machine_address;	// Physical address of the machine
+    ComAPIHandle		normalHandle;		// UDP or unreliable transport handle (if any)
+    ComAPIHandle		reliableHandle;		// TCP or reliable transport handle (if any)
+    RouterAddressNode	*next;				// Next node in the delivery list
+public:
+    RouterAddressNode(RtrAddress pa, ComAPIHandle remote_socket);
+    ~RouterAddressNode(void);
 
-		RtrAddress GetAddress (void)		{ return machine_address; };
-	};
+    RtrAddress GetAddress(void)
+    {
+        return machine_address;
+    };
+};
 
 typedef RouterAddressNode* RtrAddressNode;
 
-class RouterHandle {
-	public:
-		RtrAddressNode		delivery_list;		// List of physical addresses to deliver to
-		uchar				name[RTR_NAME_SIZE];// The handle's name
-		RouterHandle		*next;				// Next handle in list
-	public:
-		RouterHandle (void);
-		~RouterHandle (void);
+class RouterHandle
+{
+public:
+    RtrAddressNode		delivery_list;		// List of physical addresses to deliver to
+    uchar				name[RTR_NAME_SIZE];// The handle's name
+    RouterHandle		*next;				// Next handle in list
+public:
+    RouterHandle(void);
+    ~RouterHandle(void);
 
-		void AddToDeliveryList (RtrAddress pa);
-		void RemoveFromDeliveryList (RtrAddress pa);
-	};
+    void AddToDeliveryList(RtrAddress pa);
+    void RemoveFromDeliveryList(RtrAddress pa);
+};
 
 typedef RouterHandle* RtrHandle;
 
-class RouterInfoClass {
-	public:
-		uchar				type;				// type of virtual connection we have
-		uchar				protocols;			// protocols available to us
-		RtrAddressNode		server_info;		// server address && connections, if one exists
-		RtrHandle			server_handle;
-		RtrAddressNode		broadcast_info;		// broadcast information, if any exists
-		RtrHandle			broadcast_handle;
-		RtrHandle			group_list;			// list of virtual groups we know about
-		RtrAddressNode		connection_list;	// list of all current connections
-		RtrAddress			our_address;		// who we are
-		short				max_message_size;	// Biggest message we're allowed to send
-		char*				game_name;			// Name of the game - duh!
-	public:
-		RouterInfoClass(void);
-	};
+class RouterInfoClass
+{
+public:
+    uchar				type;				// type of virtual connection we have
+    uchar				protocols;			// protocols available to us
+    RtrAddressNode		server_info;		// server address && connections, if one exists
+    RtrHandle			server_handle;
+    RtrAddressNode		broadcast_info;		// broadcast information, if any exists
+    RtrHandle			broadcast_handle;
+    RtrHandle			group_list;			// list of virtual groups we know about
+    RtrAddressNode		connection_list;	// list of all current connections
+    RtrAddress			our_address;		// who we are
+    short				max_message_size;	// Biggest message we're allowed to send
+    char*				game_name;			// Name of the game - duh!
+public:
+    RouterInfoClass(void);
+};
 
 // =========================================================
 // Here are our functions
 // =========================================================
 
-extern RtrHandle RtrInitRouter (int virtual_connection_type, 
-								int protocols_available, 
-								RtrAddress our_address, 
-								RtrAddress initial_address, 
-								int max_message_size,
-								char* game_name);
+extern RtrHandle RtrInitRouter(int virtual_connection_type,
+                               int protocols_available,
+                               RtrAddress our_address,
+                               RtrAddress initial_address,
+                               int max_message_size,
+                               char* game_name);
 
-extern void RtrShutdownRouter (void);
+extern void RtrShutdownRouter(void);
 
-extern RtrHandle RtrCreateGroup (uchar* name);
+extern RtrHandle RtrCreateGroup(uchar* name);
 
-extern void RtrDeleteGroup (RtrHandle group);
+extern void RtrDeleteGroup(RtrHandle group);
 
-extern int RtrAddToGroup (RtrHandle group, RtrHandle connection);
+extern int RtrAddToGroup(RtrHandle group, RtrHandle connection);
 
-extern int RtrRemoveFromGroup (RtrHandle group, RtrHandle connection);
+extern int RtrRemoveFromGroup(RtrHandle group, RtrHandle connection);
 
-extern RtrHandle RtrCreateConnection (RtrAddress physical_address, uchar* name);
+extern RtrHandle RtrCreateConnection(RtrAddress physical_address, uchar* name);
 
-extern void RtrShutdownConnection (RtrHandle connection);
+extern void RtrShutdownConnection(RtrHandle connection);
 
 // RtrGetSendBuffer requires to buffer to be filled by the caller.
 // It is guarenteed not to send until another call to RtrGetSendBuffer or RtrSendNow.
 // Multiple calls to RtrGetSendBuffer can be made without calling RtrSendNow.
-extern int RtrGetSendBuffer (RtrHandle to, uchar* bufptr, short size, int reliable);
+extern int RtrGetSendBuffer(RtrHandle to, uchar* bufptr, short size, int reliable);
 
 // RtrSendNow sends the currently pending Rtr buffer.
-extern int RtrSendNow (void);
+extern int RtrSendNow(void);
 
 // RtrGet will get the next message addressed to this machine
-extern int RtrGet (uchar* bufptr);
+extern int RtrGet(uchar* bufptr);
 
 // RtrGetLocalId will return the IPAddress of the local machine, or some other unique id
-extern RtrAddress RtrGetLocalId (void);
+extern RtrAddress RtrGetLocalId(void);
 
 #endif

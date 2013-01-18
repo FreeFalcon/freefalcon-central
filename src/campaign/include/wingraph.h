@@ -61,9 +61,9 @@ void _lineto(HDC DC, int X, int Y);
 
 void _outgtext(HDC DC, char *str);
 
-void _wgprintf (HDC DC, int x, int y, char *string, ... );
+void _wgprintf(HDC DC, int x, int y, char *string, ...);
 
-void _wprintf (HDC DC, char *string, ... );
+void _wprintf(HDC DC, char *string, ...);
 
 void _drawbmap(HDC DC, int num, int ULX, int ULY, int size, int ofx, int ofy);
 

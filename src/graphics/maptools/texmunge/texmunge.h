@@ -15,36 +15,38 @@
 
 typedef struct PIXELCLUSTER
 {
-	BYTE		p1, p2, p3, p4;
-	BYTE		c1, c2, c3, c4;
-	BYTE		p1A, p2A, p3A, p4A;
-	BYTE		p1B, p2B, p3B, p4B;
-	BYTE		p1C, p2C, p3C, p4C;
+    BYTE		p1, p2, p3, p4;
+    BYTE		c1, c2, c3, c4;
+    BYTE		p1A, p2A, p3A, p4A;
+    BYTE		p1B, p2B, p3B, p4B;
+    BYTE		p1C, p2C, p3C, p4C;
 } 	PIXELCLUSTER;
 
 
-typedef struct codeListEntry {
-	int				usageCount;
-	char			name[20];
-	WORD			id;
-	WORD			code;
-	codeListEntry	*prev;
-	codeListEntry	*next;
+typedef struct codeListEntry
+{
+    int				usageCount;
+    char			name[20];
+    WORD			id;
+    WORD			code;
+    codeListEntry	*prev;
+    codeListEntry	*next;
 } codeListEntry;
 
 
-typedef struct setListEntry {
-	int		setCode;
-	int		numTiles;
-	int		tileCode[16];
+typedef struct setListEntry
+{
+    int		setCode;
+    int		numTiles;
+    int		tileCode[16];
 } setListEntry;
 
 
 // Erick's worker function which decide which texture to apply.
-WORD DecodeCluster( PIXELCLUSTER sourceSamples,int row, int col );
+WORD DecodeCluster(PIXELCLUSTER sourceSamples, int row, int col);
 
 // Erick's function to convert from a code to a string name
-void NumberToName( WORD k, char *name );
+void NumberToName(WORD k, char *name);
 
 
 #endif // _TEXMUNGE_H_

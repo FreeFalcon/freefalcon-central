@@ -24,25 +24,30 @@
 
 typedef struct FontDataTag
 {
-	float top;
-	float left;
-	float width;
-	float height;
-	float pixelWidth;
-	float pixelHeight;
+    float top;
+    float left;
+    float width;
+    float height;
+    float pixelWidth;
+    float pixelHeight;
 } FontDataType;
 
 // ASFO:
-struct FontSet {
-	FontSet() { fontNum = 0; totalFont = 3; }
-	~FontSet() {}
+struct FontSet
+{
+    FontSet()
+    {
+        fontNum = 0;
+        totalFont = 3;
+    }
+    ~FontSet() {}
 
-	int ReadFontMetrics( int indx, char* fileName );
-	Texture	fontTexture[NUM_FONT_RESOLUTIONS]; 
-	FontDataType fontData[NUM_FONT_RESOLUTIONS][256];
-	//int fontSpacing[NUM_FONT_RESOLUTIONS];
-	int fontNum;
-	int totalFont;
+    int ReadFontMetrics(int indx, char* fileName);
+    Texture	fontTexture[NUM_FONT_RESOLUTIONS];
+    FontDataType fontData[NUM_FONT_RESOLUTIONS][256];
+    //int fontSpacing[NUM_FONT_RESOLUTIONS];
+    int fontNum;
+    int totalFont;
 };
 
 //int 	ReadFontMetrics(int indx, char*fileName);
@@ -66,11 +71,12 @@ static const DWORD	CLIP_FAR			= 0x20;
 static const DWORD	OFF_SCREEN			= 0xFF;
 
 static const int	CircleStep = 4;							// In units of degrees
-static const int	CircleSegments = 360/CircleStep + 1;	// How many segments (plus one)?
+static const int	CircleSegments = 360 / CircleStep + 1;	// How many segments (plus one)?
 extern float		CircleX[];
 extern float		CircleY[];
 
-struct DisplayMatrix { // JPO - how a display is oriented
+struct DisplayMatrix   // JPO - how a display is oriented
+{
     float	translationX, translationY;
     float	rotation00,	rotation01;
     float	rotation10,	rotation11;
@@ -80,103 +86,168 @@ struct DisplayMatrix { // JPO - how a display is oriented
 class Render3D;		// ASSO:
 
 
-class VirtualDisplay {
-  public:
-    VirtualDisplay()			{ ready = FALSE; tLeft = tTop = tRight = tBottom = txRes = tyRes = 0; }
-    virtual ~VirtualDisplay()	{ ShiAssert( ready == FALSE ); }
+class VirtualDisplay
+{
+public:
+    VirtualDisplay()
+    {
+        ready = FALSE;
+        tLeft = tTop = tRight = tBottom = txRes = tyRes = 0;
+    }
+    virtual ~VirtualDisplay()
+    {
+        ShiAssert(ready == FALSE);
+    }
 
-	// One time call to create inverse font
-	static void InitializeFonts( void );
+    // One time call to create inverse font
+    static void InitializeFonts(void);
 
     // Parents Setup() must set xRes and yRes before call this...
-    virtual void Setup( void );
-    virtual void Cleanup( void );
-	BOOL	IsReady( void )				{ return ready; };
+    virtual void Setup(void);
+    virtual void Cleanup(void);
+    BOOL	IsReady(void)
+    {
+        return ready;
+    };
 
-    virtual void StartDraw( void ) = 0;
-    virtual void ClearDraw( void ) = 0;
-    virtual void EndDraw( void ) = 0;
+    virtual void StartDraw(void) = 0;
+    virtual void ClearDraw(void) = 0;
+    virtual void EndDraw(void) = 0;
 
-    virtual void Point( float x1, float y1 );
-    virtual void Line( float x1, float y1, float x2, float y2 );
-	virtual void Line(float x1, float y1, float x2, float y2, float width);
-    virtual void Tri( float x1, float y1, float x2, float y2, float x3, float y3 );
-	virtual void Oval (float x, float y, float xRadius, float yRadius);
-	virtual void OvalArc (float x, float y, float xRadius, float yRadius, float start, float stop);
-	virtual void Circle ( float x, float y, float xRadius )
-		{ Oval(x, y, xRadius, xRadius*scaleX/scaleY); };
-	virtual void Arc ( float x, float y, float xRadius, float start, float stop )
-		{ OvalArc(x, y, xRadius, xRadius*scaleX/scaleY, start, stop); };
+    virtual void Point(float x1, float y1);
+    virtual void Line(float x1, float y1, float x2, float y2);
+    virtual void Line(float x1, float y1, float x2, float y2, float width);
+    virtual void Tri(float x1, float y1, float x2, float y2, float x3, float y3);
+    virtual void Oval(float x, float y, float xRadius, float yRadius);
+    virtual void OvalArc(float x, float y, float xRadius, float yRadius, float start, float stop);
+    virtual void Circle(float x, float y, float xRadius)
+    {
+        Oval(x, y, xRadius, xRadius * scaleX / scaleY);
+    };
+    virtual void Arc(float x, float y, float xRadius, float start, float stop)
+    {
+        OvalArc(x, y, xRadius, xRadius * scaleX / scaleY, start, stop);
+    };
 
-	virtual void TextLeft( float x1, float y1, const char *string, int boxed = 0 );
-	virtual void TextRight( float x1, float y1, const char *string, int boxed = 0 );
-	virtual void TextLeftVertical( float x1, float y1, const char *string, int boxed = 0 );
-	virtual void TextRightVertical( float x1, float y1, const char *string, int boxed = 0 );
-	virtual void TextCenter( float x1, float y1, const char *string, int boxed = 0 );
-	virtual void TextCenterVertical( float x1, float y1, const char *string, int boxed = 0 );
-	virtual int  TextWrap( float h, float v, const char *string, float spacing, float width );
+    virtual void TextLeft(float x1, float y1, const char *string, int boxed = 0);
+    virtual void TextRight(float x1, float y1, const char *string, int boxed = 0);
+    virtual void TextLeftVertical(float x1, float y1, const char *string, int boxed = 0);
+    virtual void TextRightVertical(float x1, float y1, const char *string, int boxed = 0);
+    virtual void TextCenter(float x1, float y1, const char *string, int boxed = 0);
+    virtual void TextCenterVertical(float x1, float y1, const char *string, int boxed = 0);
+    virtual int  TextWrap(float h, float v, const char *string, float spacing, float width);
 
-	// NOTE:  These might need to be virtualized and overloaded by canvas3d (maybe???)
-	virtual float TextWidth(char *string)	{ return ScreenTextWidth(string)/scaleX; };	// normalized screen space
-	virtual float TextHeight(void)			{ return ScreenTextHeight()/scaleY; };		// normalized screen space
+    // NOTE:  These might need to be virtualized and overloaded by canvas3d (maybe???)
+    virtual float TextWidth(char *string)
+    {
+        return ScreenTextWidth(string) / scaleX;
+    };	// normalized screen space
+    virtual float TextHeight(void)
+    {
+        return ScreenTextHeight() / scaleY;
+    };		// normalized screen space
 
-	//JAM 22Dec03
-	virtual void SetColor(DWORD)=0;
-	virtual void SetBackground(DWORD)=0;
-	virtual void ScreenText(float x, float y, const char *string, int boxed=0)=0;
+    //JAM 22Dec03
+    virtual void SetColor(DWORD) = 0;
+    virtual void SetBackground(DWORD) = 0;
+    virtual void ScreenText(float x, float y, const char *string, int boxed = 0) = 0;
 
-	static int ScreenTextHeight(void);
-	static int ScreenTextWidth(const char *string);
+    static int ScreenTextHeight(void);
+    static int ScreenTextWidth(const char *string);
 
-	static void SetFont(int newFont);
-	static int CurFont(void) { return pFontSet->fontNum; };
-	//JAM
-	
-	virtual void SetLineStyle (int) {};
-	virtual DWORD Color( void )	{return 0x0; };
+    static void SetFont(int newFont);
+    static int CurFont(void)
+    {
+        return pFontSet->fontNum;
+    };
+    //JAM
 
-    virtual void SetViewport( float leftSide, float topSide, float rightSide, float bottomSide );
-    virtual void SetViewportRelative( float leftSide, float topSide, float rightSide, float bottomSide );
+    virtual void SetLineStyle(int) {};
+    virtual DWORD Color(void)
+    {
+        return 0x0;
+    };
 
-    void AdjustOriginInViewport( float horizontal, float vertical );
-	void AdjustRotationAboutOrigin( float angle );
-	void CenterOriginInViewport( void )  { dmatrix.translationX = 0.0f; dmatrix.translationY = 0.0f; };
-    void ZeroRotationAboutOrigin( void ) { dmatrix.rotation01 = dmatrix.rotation10 = 0.0f, dmatrix.rotation00 = dmatrix.rotation11 = 1.0f; };
-	void SaveDisplayMatrix (DisplayMatrix *dm);
-	void RestoreDisplayMatrix(DisplayMatrix *dm);
+    virtual void SetViewport(float leftSide, float topSide, float rightSide, float bottomSide);
+    virtual void SetViewportRelative(float leftSide, float topSide, float rightSide, float bottomSide);
 
-    int GetXRes(void) { return xRes; };
-    int GetYRes(void) { return yRes; };
+    void AdjustOriginInViewport(float horizontal, float vertical);
+    void AdjustRotationAboutOrigin(float angle);
+    void CenterOriginInViewport(void)
+    {
+        dmatrix.translationX = 0.0f;
+        dmatrix.translationY = 0.0f;
+    };
+    void ZeroRotationAboutOrigin(void)
+    {
+        dmatrix.rotation01 = dmatrix.rotation10 = 0.0f, dmatrix.rotation00 = dmatrix.rotation11 = 1.0f;
+    };
+    void SaveDisplayMatrix(DisplayMatrix *dm);
+    void RestoreDisplayMatrix(DisplayMatrix *dm);
 
-	void GetViewport( float *leftSide, float *topSide, float *rightSide, float *bottomSide );
+    int GetXRes(void)
+    {
+        return xRes;
+    };
+    int GetYRes(void)
+    {
+        return yRes;
+    };
 
-	float GetTopPixel( void )		{ return topPixel; };
-	float GetBottomPixel( void )	{ return bottomPixel; };
-	float GetLeftPixel( void )		{ return leftPixel; };
-	float GetRightPixel( void )		{ return rightPixel; };
+    void GetViewport(float *leftSide, float *topSide, float *rightSide, float *bottomSide);
 
-	float GetXOffset(void)	{ return shiftX; };
-	float GetYOffset(void)	{ return shiftY; };
+    float GetTopPixel(void)
+    {
+        return topPixel;
+    };
+    float GetBottomPixel(void)
+    {
+        return bottomPixel;
+    };
+    float GetLeftPixel(void)
+    {
+        return leftPixel;
+    };
+    float GetRightPixel(void)
+    {
+        return rightPixel;
+    };
 
-	enum {
-		DISPLAY_GENERAL = 0,
-		DISPLAY_CANVAS
-	} type;
+    float GetXOffset(void)
+    {
+        return shiftX;
+    };
+    float GetYOffset(void)
+    {
+        return shiftY;
+    };
+
+    enum
+    {
+        DISPLAY_GENERAL = 0,
+        DISPLAY_CANVAS
+    } type;
 
     // Functions to convert from normalized coordinates to pixel coordinates
-	// (assumes at this point that x is right and y is down)
-    float viewportXtoPixel( float x ) { return (x * scaleX) + shiftX; };
-    float viewportYtoPixel( float y ) { return (y * scaleY) + shiftY; };
+    // (assumes at this point that x is right and y is down)
+    float viewportXtoPixel(float x)
+    {
+        return (x * scaleX) + shiftX;
+    };
+    float viewportYtoPixel(float y)
+    {
+        return (y * scaleY) + shiftY;
+    };
 
- protected:	
+protected:
     // Functions which must be provided by all derived classes
-    virtual void Render2DPoint( float x1, float y1 ) = 0;
-    virtual void Render2DLine( float x1, float y1, float x2, float y2 ) = 0;
+    virtual void Render2DPoint(float x1, float y1) = 0;
+    virtual void Render2DLine(float x1, float y1, float x2, float y2) = 0;
 
     // Functions which should be provided by all derived classes
-    virtual void Render2DTri( float x1, float y1, float x2, float y2, float x3, float y3 );
+    virtual void Render2DTri(float x1, float y1, float x2, float y2, float x3, float y3);
 
-  protected:
+protected:
     // Store the currently selected resolution
     int		xRes;
     int		yRes;
@@ -186,83 +257,91 @@ class VirtualDisplay {
     float	top, bottom;
 
     // The parameters required to get from normalized screen space to pixel space
-	// TEMPORARILY PUBLIC TO GET THINGS GOING...
-  public:
-	float	scaleX;
+    // TEMPORARILY PUBLIC TO GET THINGS GOING...
+public:
+    float	scaleX;
     float	scaleY;
     float	shiftX;
     float	shiftY;
 
-  protected:
-	ImageBuffer* image;
+protected:
+    ImageBuffer* image;
 
-	// Store the pixel space boundries of the current viewport
-	// (top/right inclusive, bottom/left exclusive)
-	float	topPixel;
-	float	bottomPixel;
-	float	leftPixel;
-	float	rightPixel;
+    // Store the pixel space boundries of the current viewport
+    // (top/right inclusive, bottom/left exclusive)
+    float	topPixel;
+    float	bottomPixel;
+    float	leftPixel;
+    float	rightPixel;
 
     // The 2D rotation/translation settings
-	DisplayMatrix dmatrix; // JPO - now in a sub structure so you can save/restore
+    DisplayMatrix dmatrix; // JPO - now in a sub structure so you can save/restore
     //float	translationX, translationY;
     //float	rotation00,	rotation01;
     //float	rotation10,	rotation11;
 
     // The font information for drawing text
-	static const unsigned char FontLUT[256];
+    static const unsigned char FontLUT[256];
     static const unsigned char *Font[];
-	static const unsigned int  FontLength;
+    static const unsigned int  FontLength;
     static unsigned char       InvFont[][8];
-	BOOL	ready;
+    BOOL	ready;
 
-  public:
-	bool	ForceAlpha;							// COBRA - RED - To force translucent displays
-// ASSO: BEGIN
-	// Window and rendering context handles
-	ContextMPR context;
-	
-	// ASFO:
-	static FontSet Font2D;
-	static FontSet Font3D;
-	static FontSet* pFontSet;
+public:
+    bool	ForceAlpha;							// COBRA - RED - To force translucent displays
+    // ASSO: BEGIN
+    // Window and rendering context handles
+    ContextMPR context;
 
-	static bool SetupRttTarget( int tXres_, int tYres_, int tBpp_ );
-	static bool CleanupRttTarget();
-	void StartRtt( Render3D* r3d_ );
-	void FinishRtt();
-	void SetRttCanvas( Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_ );
-	void SetRttRect( int tLeft_, int tTop_, int tRight_, int tBottom_,  bool rt_ = true );
-	void AdjustRttViewport();
-	void ResetRttViewport();
-  	void DrawRttQuad();
-	int HasRttTarget() { return (int)renderTexture; };
-	void GetRttCanvas( Tpoint* Canvas ) { Canvas[0]=canUL; Canvas[1]=canUR; Canvas[2]=canLL; }
-  protected:
-	int tLeft;
-	int tTop;
-	int tRight;
-	int tBottom;
-	int txRes;
-	int tyRes;
+    // ASFO:
+    static FontSet Font2D;
+    static FontSet Font3D;
+    static FontSet* pFontSet;
 
-	Tpoint canUL;
-	Tpoint canUR;
-	Tpoint canLL;
-	int rttBlendMode;
-	float rttAlpha;
-	
-	int oldXRes;
-	int oldYRes;
-	static float oldTop; 
-	static float oldLeft; 
-	static float oldBottom; 
-	static float oldRight;
+    static bool SetupRttTarget(int tXres_, int tYres_, int tBpp_);
+    static bool CleanupRttTarget();
+    void StartRtt(Render3D* r3d_);
+    void FinishRtt();
+    void SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_);
+    void SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_,  bool rt_ = true);
+    void AdjustRttViewport();
+    void ResetRttViewport();
+    void DrawRttQuad();
+    int HasRttTarget()
+    {
+        return (int)renderTexture;
+    };
+    void GetRttCanvas(Tpoint* Canvas)
+    {
+        Canvas[0] = canUL;
+        Canvas[1] = canUR;
+        Canvas[2] = canLL;
+    }
+protected:
+    int tLeft;
+    int tTop;
+    int tRight;
+    int tBottom;
+    int txRes;
+    int tyRes;
 
-	static TextureHandle* renderTexture;
-	static IDirectDrawSurface7* oldTarget;
-	static Render3D* r3d;
-// ASSO: END
+    Tpoint canUL;
+    Tpoint canUR;
+    Tpoint canLL;
+    int rttBlendMode;
+    float rttAlpha;
+
+    int oldXRes;
+    int oldYRes;
+    static float oldTop;
+    static float oldLeft;
+    static float oldBottom;
+    static float oldRight;
+
+    static TextureHandle* renderTexture;
+    static IDirectDrawSurface7* oldTarget;
+    static Render3D* r3d;
+    // ASSO: END
 };
 
 

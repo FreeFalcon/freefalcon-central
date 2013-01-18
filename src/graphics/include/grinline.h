@@ -17,29 +17,35 @@ extern MEM_POOL glMemPool;
 //___________________________________________________________________________
 
 // default is clear memory allocated
-inline void *glAllocateMemory (int totalbytes, GLint clearit=1)
+inline void *glAllocateMemory(int totalbytes, GLint clearit = 1)
 {
 #ifdef USE_SH_POOLS
-	char *buf = (char *)MemAllocPtr( glMemPool, totalbytes, 0 );
+    char *buf = (char *)MemAllocPtr(glMemPool, totalbytes, 0);
 #else
-	char *buf = new char[totalbytes];
+    char *buf = new char[totalbytes];
 #endif
-	if (buf && clearit) memset (buf, 0, totalbytes);
-	return buf;
+
+    if (buf && clearit) memset(buf, 0, totalbytes);
+
+    return buf;
 }
 
-inline void glReleaseMemory (void *memptr)
+inline void glReleaseMemory(void *memptr)
 {
 #ifdef USE_SH_POOLS
-	if (memptr)
-	{
-		MemFreePtr( memptr );
-	}
+
+    if (memptr)
+    {
+        MemFreePtr(memptr);
+    }
+
 #else
-	if (memptr)
-	{
-		delete[] memptr;
-	}
+
+    if (memptr)
+    {
+        delete[] memptr;
+    }
+
 #endif
 }
 
@@ -57,9 +63,9 @@ inline void glReleaseMemory (void *memptr)
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+
 */
-inline GLfloat glConvertToRadian (GLFixed0_14 deg)
+inline GLfloat glConvertToRadian(GLFixed0_14 deg)
 {
-	return (deg * (GLfloat) 0.000383495197f);
+    return (deg * (GLfloat) 0.000383495197f);
 }	/* glConvertToRadian */
 
 /*
@@ -75,9 +81,9 @@ inline GLfloat glConvertToRadian (GLFixed0_14 deg)
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+
 */
-inline GLfloat glConvertToDegree (GLFixed0_14 deg)
+inline GLfloat glConvertToDegree(GLFixed0_14 deg)
 {
-	return (deg * 0.021972656f);
+    return (deg * 0.021972656f);
 }	/* glConvertToDegree */
 
 /*
@@ -93,14 +99,14 @@ inline GLfloat glConvertToDegree (GLFixed0_14 deg)
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+
 */
-inline GLFixed0_14 glConvertFromDegree (GLfloat deg)
+inline GLFixed0_14 glConvertFromDegree(GLfloat deg)
 {
-	return ( FloatToInt32(deg * 45.511111111f + 0.5f) );
+    return (FloatToInt32(deg * 45.511111111f + 0.5f));
 }	/* glConvertFromDegree */
 
-inline GLfloat glConvertFromDegreef (GLfloat deg)
+inline GLfloat glConvertFromDegreef(GLfloat deg)
 {
-	return (deg * 45.511111111f + 0.5f);
+    return (deg * 45.511111111f + 0.5f);
 }	/* glConvertFromDegreef */
 
 /*
@@ -116,48 +122,58 @@ inline GLfloat glConvertFromDegreef (GLfloat deg)
 |    Programmed by Erick Jap                           November 29, 1993    |
 +---------------------------------------------------------------------------+
 */
-inline GLFixed0_14 glConvertFromRadian (GLfloat deg)
+inline GLFixed0_14 glConvertFromRadian(GLfloat deg)
 {
-	return ( FloatToInt32(deg * 2607.594588f + 0.5f) );
+    return (FloatToInt32(deg * 2607.594588f + 0.5f));
 }	/* glConvertFromRadian */
 
 
 
-inline void glGetFileExtension (const char *file, char *ext)
+inline void glGetFileExtension(const char *file, char *ext)
 {
 #if 0
-	char	prevchar, currchar, nextchar;
+    char	prevchar, currchar, nextchar;
 
-	prevchar = '.';
-	while (*file != 0) {
-		currchar = *file++;
-		nextchar = *file;
-		if (currchar == '.' && 
-			((prevchar != '.' && prevchar != '\\') || 
-			 (nextchar != '.' && nextchar != '\\'))) break;
-		prevchar = currchar;
-	}
+    prevchar = '.';
+
+    while (*file != 0)
+    {
+        currchar = *file++;
+        nextchar = *file;
+
+        if (currchar == '.' &&
+            ((prevchar != '.' && prevchar != '\\') ||
+             (nextchar != '.' && nextchar != '\\'))) break;
+
+        prevchar = currchar;
+    }
+
 #else
 
 
-// Visual C/C++ 2010 migration fix
-//pmvstrm this the change
-	const char *lastdot;
+    // Visual C/C++ 2010 migration fix
+    //pmvstrm this the change
+    const char *lastdot;
 
-//pmvstrm this is the original
-//char *lastdot;
+    //pmvstrm this is the original
+    //char *lastdot;
 
-	lastdot = strrchr(file, '.');
+    lastdot = strrchr(file, '.');
 
-	if(lastdot) {
-		file = lastdot + 1;
-	} else {
-		file = file + strlen(file);
-	}
+    if (lastdot)
+    {
+        file = lastdot + 1;
+    }
+    else
+    {
+        file = file + strlen(file);
+    }
+
 #endif
 
-	while (*file) *ext++ = *file++;
-	*ext = 0;
+    while (*file) *ext++ = *file++;
+
+    *ext = 0;
 }
 
 //___________________________________________________________________________

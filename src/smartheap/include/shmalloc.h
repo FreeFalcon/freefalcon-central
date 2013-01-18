@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-/* ANSI Standard Memory Management API */
+    /* ANSI Standard Memory Management API */
 
 #if (!defined(MEM_DEBUG) && !defined(NO_MALLOC_MACRO)) || defined(MALLOC_MACRO)
 #ifdef malloc
@@ -42,18 +42,18 @@ extern "C" {
 #endif  /* NO_MALLOC_MACRO */
 
 #ifndef MEM_malloc
-void MEM_FAR * MEM_ENTRY_ANSI MEM_malloc(size_t size);
-void MEM_FAR * MEM_ENTRY_ANSI MEM_calloc(size_t nobj, size_t size);
-void MEM_FAR * MEM_ENTRY_ANSI MEM_realloc(void MEM_FAR *p, size_t size);
-void MEM_ENTRY_ANSI MEM_free(void MEM_FAR *p);
+    void MEM_FAR * MEM_ENTRY_ANSI MEM_malloc(size_t size);
+    void MEM_FAR * MEM_ENTRY_ANSI MEM_calloc(size_t nobj, size_t size);
+    void MEM_FAR * MEM_ENTRY_ANSI MEM_realloc(void MEM_FAR *p, size_t size);
+    void MEM_ENTRY_ANSI MEM_free(void MEM_FAR *p);
 #endif /* MEM_malloc */
 
 #if defined(__WATCOMC__) && defined(__SW_3S)
-/* Watcom stack calling convention */
-   #pragma aux (syscall) MEM_malloc
-   #pragma aux (syscall) MEM_realloc
-   #pragma aux (syscall) MEM_calloc
-   #pragma aux (syscall) MEM_free
+    /* Watcom stack calling convention */
+#pragma aux (syscall) MEM_malloc
+#pragma aux (syscall) MEM_realloc
+#pragma aux (syscall) MEM_calloc
+#pragma aux (syscall) MEM_free
 #endif  /* __WATCOMC__ */
 
 #ifdef __cplusplus

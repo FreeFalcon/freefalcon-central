@@ -16,47 +16,51 @@
 #include "mission.h"
 #pragma pack (1)
 
-enum TrackType {
-	Track_None = 0,	// Never sent, but the RWR uses this one internally
-	Track_Ping,		// Never sent, but the RWR uses this one internally
-	Track_Unlock,
-	Track_Lock,
-	Track_LaunchEnd,
-	Track_Launch,
-	Track_SmokeOn,
-	Track_SmokeOff,
-	Track_JettisonAll,
-	Track_JettisonWeapon,
-	Track_RemoveWeapon			
+enum TrackType
+{
+    Track_None = 0,	// Never sent, but the RWR uses this one internally
+    Track_Ping,		// Never sent, but the RWR uses this one internally
+    Track_Unlock,
+    Track_Lock,
+    Track_LaunchEnd,
+    Track_Launch,
+    Track_SmokeOn,
+    Track_SmokeOff,
+    Track_JettisonAll,
+    Track_JettisonWeapon,
+    Track_RemoveWeapon
 };
-	
+
 /*
  * Message Type Radar Track Message
  */
 class FalconTrackMessage : public FalconEvent
 {
 public:
-	FalconTrackMessage(int reliable ,VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-	FalconTrackMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-	~FalconTrackMessage(void);
-	
-	virtual int Size() const { return (sizeof(unsigned int) + sizeof(VU_ID) + FalconEvent::Size()); };
+    FalconTrackMessage(int reliable , VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconTrackMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconTrackMessage(void);
 
-	//sfr: long *	
-	int Decode (VU_BYTE **buf, long *rem);
-	int Encode (VU_BYTE **buf);
-	
-	class DATA_BLOCK
-	{
-	public:
-		
-		unsigned int trackType :16;
-		unsigned int hardpoint :16;
-		VU_ID id;
-	} dataBlock;
-	
-	protected:
-		int Process(uchar autodisp);
+    virtual int Size() const
+    {
+        return (sizeof(unsigned int) + sizeof(VU_ID) + FalconEvent::Size());
+    };
+
+    //sfr: long *
+    int Decode(VU_BYTE **buf, long *rem);
+    int Encode(VU_BYTE **buf);
+
+    class DATA_BLOCK
+    {
+    public:
+
+        unsigned int trackType : 16;
+        unsigned int hardpoint : 16;
+        VU_ID id;
+    } dataBlock;
+
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

@@ -22,31 +22,32 @@
  */
 class FalconCampDataMessage : public FalconEvent
 {
-   public:
-      enum CampMsgType {
-		 campDeaggregateStatusChangeData,
-         campPriorityData,
-		 campOrdersData,
-		 };
+public:
+    enum CampMsgType
+    {
+        campDeaggregateStatusChangeData,
+        campPriorityData,
+        campOrdersData,
+    };
 
-      FalconCampDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconCampDataMessage(void);
-      virtual int Size (void) const;
-	  //sfr: changed to long *
-      virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
+    FalconCampDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconCampDataMessage(void);
+    virtual int Size(void) const;
+    //sfr: changed to long *
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
-            unsigned int type;
-            ushort size;
-			uchar* data;
-      } dataBlock;
+    class DATA_BLOCK
+    {
+    public:
+        unsigned int type;
+        ushort size;
+        uchar* data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

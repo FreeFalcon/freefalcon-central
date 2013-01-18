@@ -33,51 +33,55 @@ Return Value:
 --*/
 int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols)
 {
-  DWORD BufferSize = 0;       /* size of InstalledProtocols buffer */
-    
+    DWORD BufferSize = 0;       /* size of InstalledProtocols buffer */
 
-  /* Call WSAEnumProtocols to figure out how big of a buffer we need. */
-  *NumProtocols = WSAEnumProtocols(NULL,
-                                   NULL,
-                                   &BufferSize);
 
-  if((*NumProtocols != SOCKET_ERROR) && (WSAGetLastError() != WSAENOBUFS))
+    /* Call WSAEnumProtocols to figure out how big of a buffer we need. */
+    *NumProtocols = WSAEnumProtocols(NULL,
+                                     NULL,
+                                     &BufferSize);
+
+    if ((*NumProtocols != SOCKET_ERROR) && (WSAGetLastError() != WSAENOBUFS))
     {
-      /* Were in trouble!! */
-      /* MessageBox(GlobalFrameWindow, "WSAEnumProtocols is broken.", "Error", 
-         MB_OK | MB_ICONSTOP | MB_SETFOREGROUND); */
-      goto Fail;
-    }
-    
-  /* Allocate a buffer, call WSAEnumProtocols to get an array of
-     WSAPROTOCOL_INFO structs. */
-  *InstalledProtocols = (LPWSAPROTOCOL_INFO)malloc(BufferSize);
-  if(*InstalledProtocols == NULL)
-    {
-      /*
-        MessageBox(GlobalFrameWindow, "malloc failed.", "Error", 
-        MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-        */
+        /* Were in trouble!! */
+        /* MessageBox(GlobalFrameWindow, "WSAEnumProtocols is broken.", "Error",
+           MB_OK | MB_ICONSTOP | MB_SETFOREGROUND); */
         goto Fail;
     }
-  *NumProtocols = WSAEnumProtocols(NULL,
-                                   (LPVOID)*InstalledProtocols,
-                                   &BufferSize);
-  if(*NumProtocols == SOCKET_ERROR)
+
+    /* Allocate a buffer, call WSAEnumProtocols to get an array of
+       WSAPROTOCOL_INFO structs. */
+    *InstalledProtocols = (LPWSAPROTOCOL_INFO)malloc(BufferSize);
+
+    if (*InstalledProtocols == NULL)
     {
-      /* uh-oh */
-      /*
-        wsprintf(MsgText, "WSAEnumProtocols failed.  Error Code: %d",
-        WSAGetLastError());
-        MessageBox(GlobalFrameWindow, MsgText, "Error", 
-        MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-        */
-      goto Fail;
+        /*
+          MessageBox(GlobalFrameWindow, "malloc failed.", "Error",
+          MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+          */
+        goto Fail;
     }
-  return 1;
+
+    *NumProtocols = WSAEnumProtocols(NULL,
+                                     (LPVOID) * InstalledProtocols,
+                                     &BufferSize);
+
+    if (*NumProtocols == SOCKET_ERROR)
+    {
+        /* uh-oh */
+        /*
+          wsprintf(MsgText, "WSAEnumProtocols failed.  Error Code: %d",
+          WSAGetLastError());
+          MessageBox(GlobalFrameWindow, MsgText, "Error",
+          MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+          */
+        goto Fail;
+    }
+
+    return 1;
 
 Fail:
 
-  WSACleanup();
-  return 0;
+    WSACleanup();
+    return 0;
 }

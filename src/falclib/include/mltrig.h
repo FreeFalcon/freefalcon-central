@@ -2,26 +2,26 @@
 #ifndef _ML_TRIG_H
 #define _ML_TRIG_H
 
-typedef struct 
+typedef struct
 {
-	Float32 sin;
-	Float32 cos;
+    Float32 sin;
+    Float32 cos;
 } mlTrig;
 
 inline void mlSinCos(mlTrig* trig, Float32 angle)
 {
 #if defined(_MSC_VER)
-	__asm 
-	{
-		__asm	mov     ecx, trig;
-		__asm	fld     dword ptr [angle];
-		__asm	fsincos;
-		__asm	fstp    dword ptr [ecx]trig.cos;
-		__asm	fstp    dword ptr [ecx]trig.sin;
-	}
+    __asm
+    {
+        __asm	mov     ecx, trig;
+        __asm	fld     dword ptr [angle];
+        __asm	fsincos;
+        __asm	fstp    dword ptr [ecx]trig.cos;
+        __asm	fstp    dword ptr [ecx]trig.sin;
+    }
 #else
-	trig->sin = (Float32)sin(angle);
-	trig->cos = (Float32)cos(angle);
+    trig->sin = (Float32)sin(angle);
+    trig->cos = (Float32)cos(angle);
 #endif
 }
 
@@ -44,27 +44,27 @@ atan2(0,0) is undefined and should give an error.
 #define atan2(x,y) checked_atan2(x,y)
 inline double checked_atan2(double y, double x)
 {
-	double z;
-	
-	if (x == -0.0)
-		x = 0.0;
-	
-	if (x != 0)
-		z = atan(y / x);
-	else if (y > 0)
-		z = HALF_DPI;
-	else
-		z = -HALF_DPI;
+    double z;
 
-	if (x < 0)
-	{
-		if (y < 0)
-			z -= DPI;
-		else
-			z += DPI;
-	}
+    if (x == -0.0)
+        x = 0.0;
 
-	return z;
+    if (x != 0)
+        z = atan(y / x);
+    else if (y > 0)
+        z = HALF_DPI;
+    else
+        z = -HALF_DPI;
+
+    if (x < 0)
+    {
+        if (y < 0)
+            z -= DPI;
+        else
+            z += DPI;
+    }
+
+    return z;
 }
 
 #endif

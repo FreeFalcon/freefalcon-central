@@ -18,73 +18,102 @@
 // they should go to, instead of only allowing them to go up or down one level at a time
 struct TransportStr
 {
-	DrawableObject	*list[_NUM_OBJECT_LISTS_];
-	float			bottom[_NUM_OBJECT_LISTS_];
-	float			top[_NUM_OBJECT_LISTS_];
+    DrawableObject	*list[_NUM_OBJECT_LISTS_];
+    float			bottom[_NUM_OBJECT_LISTS_];
+    float			top[_NUM_OBJECT_LISTS_];
 };
 
-typedef struct UpdateCallBack {
-	void(*fn)(void*, long, const Tpoint*, TransportStr*);
-	void				*self;
-	struct UpdateCallBack *prev;
-	struct UpdateCallBack *next;
+typedef struct UpdateCallBack
+{
+    void(*fn)(void*, long, const Tpoint*, TransportStr*);
+    void				*self;
+    struct UpdateCallBack *prev;
+    struct UpdateCallBack *next;
 } UpdateCallBack;
 
-typedef struct SortCallBack {
-	void(*fn)(void*);
-	void				*self;
-	struct SortCallBack *prev;
-	struct SortCallBack *next;
+typedef struct SortCallBack
+{
+    void(*fn)(void*);
+    void				*self;
+    struct SortCallBack *prev;
+    struct SortCallBack *next;
 } SortCallBack;
 
-class ObjectDisplayList {
-  public:
-	ObjectDisplayList();
-	~ObjectDisplayList();
+class ObjectDisplayList
+{
+public:
+    ObjectDisplayList();
+    ~ObjectDisplayList();
 
-	void	Setup( void )	{};
-	void	Cleanup( void )	{};
+    void	Setup(void)	{};
+    void	Cleanup(void)	{};
 
-	void	InsertObject( DrawableObject *object );
-	void	RemoveObject( DrawableObject *object );
+    void	InsertObject(DrawableObject *object);
+    void	RemoveObject(DrawableObject *object);
 
-	void	InsertUpdateCallbacks( UpdateCallBack*, SortCallBack*, void *self );
-	void	RemoveUpdateCallbacks( UpdateCallBack*, SortCallBack*, void *self );
+    void	InsertUpdateCallbacks(UpdateCallBack*, SortCallBack*, void *self);
+    void	RemoveUpdateCallbacks(UpdateCallBack*, SortCallBack*, void *self);
 
-	void	UpdateMetrics(const Tpoint *pos); // do update without moving around in lists
-	void	UpdateMetrics( long listNo, const Tpoint *pos, TransportStr *transList );
-	void	SortForViewpoint( void );
+    void	UpdateMetrics(const Tpoint *pos); // do update without moving around in lists
+    void	UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
+    void	SortForViewpoint(void);
 
-	void	ResetTraversal( void )		{ nextToDraw = head; };
-	float	GetNextDrawDistance( void )	{ if (nextToDraw) return nextToDraw->distance; else return -1.0f; };
-	void	DrawBeyond( float ringDistance, int LOD, RenderOTW *renderer );
-	void	DrawBeyond( float ringDistance, Render3D *renderer );
+    void	ResetTraversal(void)
+    {
+        nextToDraw = head;
+    };
+    float	GetNextDrawDistance(void)
+    {
+        if (nextToDraw) return nextToDraw->distance;
+        else return -1.0f;
+    };
+    void	DrawBeyond(float ringDistance, int LOD, RenderOTW *renderer);
+    void	DrawBeyond(float ringDistance, Render3D *renderer);
 
-	DrawableObject*	GetNearest( void )			{ return tail; };
-	DrawableObject*	GetNext( void )				{ return nextToDraw; };
-	DrawableObject* GetNextAndAdvance( void )	{ DrawableObject *p = nextToDraw; if (nextToDraw) nextToDraw = nextToDraw->next;  return p; };
-	void InsertionSortLink(DrawableObject **listhead, DrawableObject *listend);
-	void QuickSortLink(DrawableObject **head, DrawableObject *end);
+    DrawableObject*	GetNearest(void)
+    {
+        return tail;
+    };
+    DrawableObject*	GetNext(void)
+    {
+        return nextToDraw;
+    };
+    DrawableObject* GetNextAndAdvance(void)
+    {
+        DrawableObject *p = nextToDraw;
 
-	// HANDLE WITH CARE...!!!!!
-	// COBRA - RED - This function is used from a list manager to ask the object to kill itself...
-	// RemoveMe() would just remove the object from the List, KillMe() would deallocate it too
-	void	KillMe() { RemoveTheObject=KillTheObject=true; };
-	void	RemoveMe() { RemoveTheObject=true; };
+        if (nextToDraw) nextToDraw = nextToDraw->next;
 
-	// This function just preloads all objects in the List withing a range
-	// it exits when the list of ojects is fully loaded
-	void	PreLoad(class RenderOTW *renderer);
+        return p;
+    };
+    void InsertionSortLink(DrawableObject **listhead, DrawableObject *listend);
+    void QuickSortLink(DrawableObject **head, DrawableObject *end);
 
-  protected:
-	DrawableObject	*head;
-	DrawableObject	*tail;
-	DrawableObject	*nextToDraw;
+    // HANDLE WITH CARE...!!!!!
+    // COBRA - RED - This function is used from a list manager to ask the object to kill itself...
+    // RemoveMe() would just remove the object from the List, KillMe() would deallocate it too
+    void	KillMe()
+    {
+        RemoveTheObject = KillTheObject = true;
+    };
+    void	RemoveMe()
+    {
+        RemoveTheObject = true;
+    };
 
-	UpdateCallBack	*updateCBlist;
-	SortCallBack	*sortCBlist;
+    // This function just preloads all objects in the List withing a range
+    // it exits when the list of ojects is fully loaded
+    void	PreLoad(class RenderOTW *renderer);
 
-	bool	KillTheObject, RemoveTheObject;
+protected:
+    DrawableObject	*head;
+    DrawableObject	*tail;
+    DrawableObject	*nextToDraw;
+
+    UpdateCallBack	*updateCBlist;
+    SortCallBack	*sortCBlist;
+
+    bool	KillTheObject, RemoveTheObject;
 };
 
 #endif // _OBJLIST_H_

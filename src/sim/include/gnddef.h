@@ -5,9 +5,9 @@
 
 class SimGroundDefinition : public SimMoverDefinition
 {
-   public:
-      SimGroundDefinition (char*);
-      ~SimGroundDefinition (void);
+public:
+    SimGroundDefinition(char*);
+    ~SimGroundDefinition(void);
 };
 
 #endif

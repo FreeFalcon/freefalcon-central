@@ -18,62 +18,73 @@ extern int				TheObjectLODsCount;
 
 typedef	short			TexSetRefType;
 
-class ObjectLOD {
-  public:
-	ObjectLOD();
-	~ObjectLOD();
+class ObjectLOD
+{
+public:
+    ObjectLOD();
+    ~ObjectLOD();
 
 
-	void				Reference(void);
-	void				Release(void);
-	BOOL				Fetch(void);			// True means ready to draw.  False means still waiting.
-	void				Draw(void) const		{ ShiAssert( root ); root->Draw(); };
-	void				ReferenceTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
-	void				ReleaseTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
+    void				Reference(void);
+    void				Release(void);
+    BOOL				Fetch(void);			// True means ready to draw.  False means still waiting.
+    void				Draw(void) const
+    {
+        ShiAssert(root);
+        root->Draw();
+    };
+    void				ReferenceTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
+    void				ReleaseTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
 
-	static void			ReleaseLodList(void);
-	static void			SetupEmptyTable( int numEntries );
-	static void			SetupTable( int file, char *basename );
-	static void			CleanupTable();
-	static bool			UpdateLods( void );
-	static void			WaitUpdates( void );
-	static void			SetRatedLoad( bool Status ) { RatedLoad = false; }
-
-
-
-
-	static				CRITICAL_SECTION	cs_ObjectLOD;
-
-  protected:
-	void				Unload( void );
-	DWORD				Load(void);
-	void				Free(void);
-
-	bool				OnOrder, OnRelease;
-	int					refCount;														// How many instances of this LOD are in use
-	short				WhoAmI(void)			{ return static_cast<short>(this - TheObjectLODs); } // Return the Self LOD Id
-
-	static FileMemMap   ObjectLodMap; // JPO - MMFILE
-	static BNodeType	*tagListBuffer;
-	static BYTE			*LodBuffer;
-	static DWORD		LodBufferSize;
-	static bool			RatedLoad;
-	static	short		*CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
+    static void			ReleaseLodList(void);
+    static void			SetupEmptyTable(int numEntries);
+    static void			SetupTable(int file, char *basename);
+    static void			CleanupTable();
+    static bool			UpdateLods(void);
+    static void			WaitUpdates(void);
+    static void			SetRatedLoad(bool Status)
+    {
+        RatedLoad = false;
+    }
 
 
-  public:
-	BRoot				*root;			// NULL until loaded, then pointer to node tree
-	UInt32				fileoffset;		// Where in the disk file is this record's tree stored
-	UInt32				filesize;		// How big the disk representation of this record's tree
-	DWORD				*TexBank;		// The copy of the textures Bank of the Model
-	DWORD				NrTextures;		// Nr of textures available in the model
+
+
+    static				CRITICAL_SECTION	cs_ObjectLOD;
+
+protected:
+    void				Unload(void);
+    DWORD				Load(void);
+    void				Free(void);
+
+    bool				OnOrder, OnRelease;
+    int					refCount;														// How many instances of this LOD are in use
+    short				WhoAmI(void)
+    {
+        return static_cast<short>(this - TheObjectLODs);    // Return the Self LOD Id
+    }
+
+    static FileMemMap   ObjectLodMap; // JPO - MMFILE
+    static BNodeType	*tagListBuffer;
+    static BYTE			*LodBuffer;
+    static DWORD		LodBufferSize;
+    static bool			RatedLoad;
+    static	short		*CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
+
+
+public:
+    BRoot				*root;			// NULL until loaded, then pointer to node tree
+    UInt32				fileoffset;		// Where in the disk file is this record's tree stored
+    UInt32				filesize;		// How big the disk representation of this record's tree
+    DWORD				*TexBank;		// The copy of the textures Bank of the Model
+    DWORD				NrTextures;		// Nr of textures available in the model
 
 #ifdef USE_SMART_HEAP
-  public:
-	static MEM_POOL	pool;
+public:
+    static MEM_POOL	pool;
 #endif
 #ifdef _DEBUG
-	static int lodsLoaded; // JPO - some stats
+    static int lodsLoaded; // JPO - some stats
 #endif
 
 };

@@ -16,22 +16,26 @@
 #define	CE_ONETIME		0x01						// Set if this is a onetime only event
 #define	CE_FIRED		0x08						// This event has been used
 
-class EventClass {
-	private:
-	public:
-		short			event;						// The Event ID
-		short			flags;						// event flags
-	public:
-		EventClass (short id);
-		//sfr: added rem
-		EventClass (uchar **stream, long *rem);
-		EventClass (FILE* fp);
-		~EventClass (void);
-		int Save (FILE* fp);
-		void DoEvent (void);
-		void SetEvent (int status);
-		int HasFired (void)							{ return flags & CE_FIRED; }
-	};
+class EventClass
+{
+private:
+public:
+    short			event;						// The Event ID
+    short			flags;						// event flags
+public:
+    EventClass(short id);
+    //sfr: added rem
+    EventClass(uchar **stream, long *rem);
+    EventClass(FILE* fp);
+    ~EventClass(void);
+    int Save(FILE* fp);
+    void DoEvent(void);
+    void SetEvent(int status);
+    int HasFired(void)
+    {
+        return flags & CE_FIRED;
+    }
+};
 
 
 /*
@@ -84,12 +88,12 @@ class EventClass {
 
 int CheckTriggers(char *filename);
 
-int NewCampaignEvents (char* filename);
+int NewCampaignEvents(char* filename);
 
-int LoadCampaignEvents (char* filename, char* scenario);
+int LoadCampaignEvents(char* filename, char* scenario);
 
-int SaveCampaignEvents (char* filename);
+int SaveCampaignEvents(char* filename);
 
-void DisposeCampaignEvents (void);
+void DisposeCampaignEvents(void);
 
 #endif

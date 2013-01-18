@@ -18,83 +18,104 @@
 class ANIMATION
 {
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(UI_Pools[UI_CONTROL_POOL],size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(UI_Pools[UI_CONTROL_POOL], size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
-	public:
-		char  Header[4];
-		long  Version;
-		long  Width;
-		long  Height;
-		long  Frames;
-		short Compression;
-		short BytesPerPixel;
-		long  Background;
-		char  Start[];
+public:
+    char  Header[4];
+    long  Version;
+    long  Width;
+    long  Height;
+    long  Frames;
+    short Compression;
+    short BytesPerPixel;
+    long  Background;
+    char  Start[];
 };
 
 typedef struct
 {
-	long Size;
-	char Data[];
+    long Size;
+    char Data[];
 } ANIM_FRAME;
 #pragma warning ( default: 4200 )	// Restore normal warning behavior
 
 class ANIM_RES
 {
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(UI_Pools[UI_CONTROL_POOL],size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(UI_Pools[UI_CONTROL_POOL], size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
-	public:
-		long ID;
-		long flags;
-		ANIMATION *Anim;
-		ANIM_RES *Next;
+public:
+    long ID;
+    long flags;
+    ANIMATION *Anim;
+    ANIM_RES *Next;
 };
 
 class C_Animation
 {
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(UI_Pools[UI_CONTROL_POOL],size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(UI_Pools[UI_CONTROL_POOL], size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
-	private:
-		ANIM_RES *Root_;
+private:
+    ANIM_RES *Root_;
 
-		void C_Animation::ConvertAnim(ANIMATION *Data);
-		void C_Animation::Convert16BitRLE(ANIMATION *Data);
-		void C_Animation::Convert16Bit(ANIMATION *Data);
+    void C_Animation::ConvertAnim(ANIMATION *Data);
+    void C_Animation::Convert16BitRLE(ANIMATION *Data);
+    void C_Animation::Convert16Bit(ANIMATION *Data);
 
-	public:
-		C_Animation();
-		C_Animation(char **stream);
-		C_Animation(FILE *fp);
-		~C_Animation();
-		long Size();
-		void Save(char **stream);
-		void Save(FILE *fp);
+public:
+    C_Animation();
+    C_Animation(char **stream);
+    C_Animation(FILE *fp);
+    ~C_Animation();
+    long Size();
+    void Save(char **stream);
+    void Save(FILE *fp);
 
-		void Setup();
-		void Cleanup();
+    void Setup();
+    void Cleanup();
 
-		ANIM_RES *LoadAnim(long ID,char *file);
-		ANIM_RES *GetAnim(long ID);
-		void SetFlags(long ID,long flags);
-		long GetFlags(long ID);
-		BOOL RemoveAnim(long ID);
+    ANIM_RES *LoadAnim(long ID, char *file);
+    ANIM_RES *GetAnim(long ID);
+    void SetFlags(long ID, long flags);
+    long GetFlags(long ID);
+    BOOL RemoveAnim(long ID);
 
 #ifdef _UI95_PARSER_
 
-		short LocalFind(char *token);
-		void LocalFunction(short ID,long P[],_TCHAR *str,C_Handler *);
-		void SaveText(HANDLE, C_Parser *) { ; }
+    short LocalFind(char *token);
+    void LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *);
+    void SaveText(HANDLE, C_Parser *)
+    {
+        ;
+    }
 
 #endif // PARSER
 };

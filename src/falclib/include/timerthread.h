@@ -23,11 +23,11 @@
 #define REMOTE_REQUEST_1024		0x400
 
 // external functions and variables
-extern void             RealTimeFunction( unsigned long, void * );
-extern void				SetTimeCompressionFromRemote( int );
-extern void             SetTimeCompression( int );
-extern void             SetTemporaryCompression( int );
-extern void             SetTime( unsigned long );
+extern void             RealTimeFunction(unsigned long, void *);
+extern void				SetTimeCompressionFromRemote(int);
+extern void             SetTimeCompression(int);
+extern void             SetTemporaryCompression(int);
+extern void             SetTime(unsigned long);
 
 extern ulong            gCompressTillTime;
 extern unsigned long    vuxRealTime;
@@ -45,13 +45,13 @@ extern int				remoteCompressionRequests;
 #ifndef NO_TIMER_THREAD
 #define                 THREAD_TIME_SLICE       20
 
-extern void             beginTimer( void );
-extern void             endTimer( void );
+extern void             beginTimer(void);
+extern void             endTimer(void);
 #endif		// NO_TIMER_THREAD
 
-extern void SetTimeCompression( int newComp );
-extern void SetOnlineTimeCompression( int newComp );
-extern void SetTemporaryCompression( int newComp );
-extern void SetTime( unsigned long currentTime );
+extern void SetTimeCompression(int newComp);
+extern void SetOnlineTimeCompression(int newComp);
+extern void SetTemporaryCompression(int newComp);
+extern void SetTime(unsigned long currentTime);
 
 #endif      // _TIMER_THREAD_H_

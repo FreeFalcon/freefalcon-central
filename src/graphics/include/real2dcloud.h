@@ -14,16 +14,16 @@
 class Real2DCloud
 {
 public:
-	Real2DCloud();        
-	~Real2DCloud();
-	void Setup(ObjectDisplayList* objList);
-	void Cleanup();
+    Real2DCloud();
+    ~Real2DCloud();
+    void Setup(ObjectDisplayList* objList);
+    void Cleanup();
 
 public:
-	Drawable2DCloud	*drawable2DCloud;
+    Drawable2DCloud	*drawable2DCloud;
 
 protected:
-	static ObjectDisplayList* objMgr;
+    static ObjectDisplayList* objMgr;
 };
 
 #endif // _REAL2DCLOUD_H_

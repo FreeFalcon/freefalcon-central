@@ -58,8 +58,8 @@ typedef double SIM_DOUBLE;
 /*-----------------------------------*/
 /* Debug Utility Function Prototypes */
 /*-----------------------------------*/
-SIM_INT SimLibPrintError (char *fmt, ...);
-SIM_INT SimLibPrintMessage (char *fmt, ...);
+SIM_INT SimLibPrintError(char *fmt, ...);
+SIM_INT SimLibPrintMessage(char *fmt, ...);
 
 /*---------*/
 /* Globals */
@@ -74,7 +74,7 @@ extern unsigned int   SimLibFrameCount;
 extern int    SimLibMinorPerMajor;
 extern char debstr[10][120];
 extern float  SimLibElapsedSeconds;						// COBRA - RED - Added Variable of Elapsed Simulation Seconds
-extern float  SimLibFrameElapsed,SimLibLastFrameTime;	// COBRA - RED - Added Variable of Elapsed Frame Time
+extern float  SimLibFrameElapsed, SimLibLastFrameTime;	// COBRA - RED - Added Variable of Elapsed Frame Time
 
 #define		SIM_ELAPSED_MSEC			SimLibElapsedTime
 #define		SIM_ELAPSED_SEC				SimLibElapsedSeconds
@@ -82,7 +82,7 @@ extern float  SimLibFrameElapsed,SimLibLastFrameTime;	// COBRA - RED - Added Var
 #define		UPDATE_SIM_ELAPSED_SECONDS	{ SIM_ELAPSED_SEC = (float)SIM_ELAPSED_MSEC / SEC_TO_MSEC;\
 										  SIM_FRAME_ELAPSED = SIM_ELAPSED_SEC - SimLibLastFrameTime;\
 										  SimLibLastFrameTime=SIM_ELAPSED_SEC;}
-	
+
 
 
 #endif

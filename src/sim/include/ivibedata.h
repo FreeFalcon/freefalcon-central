@@ -46,36 +46,57 @@ overspeed
 weapons
 afterburner
 */
-class IntellivibeData {
+class IntellivibeData
+{
 public:
-	IntellivibeData() { AAMissileFired = 0; AGMissileFired = 0; BombDropped = 0; FlareDropped = 0;
-		ChaffDropped = 0; BulletsFired = 0; CollisionCounter = 0;
-		IsFiringGun = false; IsEndFlight = false; IsEjecting = false; In3D = false;	IsPaused = false; 
-		IsFrozen = false; IsOverG = false; IsOnGround = false; IsExitGame = false;
-		Gforce = 1.0;
-		eyex = 0.0; eyey = 0.0; eyez = 0.0; lastdamage = 0; damageforce = 0.0; whendamage = 0; }
+    IntellivibeData()
+    {
+        AAMissileFired = 0;
+        AGMissileFired = 0;
+        BombDropped = 0;
+        FlareDropped = 0;
+        ChaffDropped = 0;
+        BulletsFired = 0;
+        CollisionCounter = 0;
+        IsFiringGun = false;
+        IsEndFlight = false;
+        IsEjecting = false;
+        In3D = false;
+        IsPaused = false;
+        IsFrozen = false;
+        IsOverG = false;
+        IsOnGround = false;
+        IsExitGame = false;
+        Gforce = 1.0;
+        eyex = 0.0;
+        eyey = 0.0;
+        eyez = 0.0;
+        lastdamage = 0;
+        damageforce = 0.0;
+        whendamage = 0;
+    }
 
-  unsigned char AAMissileFired; // how many AA missiles fired.
-  unsigned char AGMissileFired; // how many maveric/rockets fired
-  unsigned char BombDropped; // how many bombs dropped
-  unsigned char FlareDropped; // how many flares dropped
-  unsigned char ChaffDropped; // how many chaff dropped
-  unsigned char BulletsFired; // how many bullets shot
-	int CollisionCounter; // Collisions
-  bool IsFiringGun; // gun is firing
-	bool IsEndFlight; // Ending the flight from 3d
-  bool IsEjecting; // we've ejected
-	bool In3D; // In 3D?
-  bool IsPaused; // sim paused?
-	bool IsFrozen; // sim frozen?
-  bool IsOverG; // are G limits being exceeded?
-  bool IsOnGround; // are we on the ground
-	bool IsExitGame; // Did we exit Falcon?
-  float Gforce; // what gforce we are feeling
-  float eyex, eyey, eyez; // where the eye is in relationship to the plane
-  int lastdamage; // 1 to 8 depending on quadrant. Make this into an enum later
-  float damageforce; // how big the hit was.
-  int whendamage;
+    unsigned char AAMissileFired; // how many AA missiles fired.
+    unsigned char AGMissileFired; // how many maveric/rockets fired
+    unsigned char BombDropped; // how many bombs dropped
+    unsigned char FlareDropped; // how many flares dropped
+    unsigned char ChaffDropped; // how many chaff dropped
+    unsigned char BulletsFired; // how many bullets shot
+    int CollisionCounter; // Collisions
+    bool IsFiringGun; // gun is firing
+    bool IsEndFlight; // Ending the flight from 3d
+    bool IsEjecting; // we've ejected
+    bool In3D; // In 3D?
+    bool IsPaused; // sim paused?
+    bool IsFrozen; // sim frozen?
+    bool IsOverG; // are G limits being exceeded?
+    bool IsOnGround; // are we on the ground
+    bool IsExitGame; // Did we exit Falcon?
+    float Gforce; // what gforce we are feeling
+    float eyex, eyey, eyez; // where the eye is in relationship to the plane
+    int lastdamage; // 1 to 8 depending on quadrant. Make this into an enum later
+    float damageforce; // how big the hit was.
+    int whendamage;
 };
 
 extern IntellivibeData g_intellivibeData;

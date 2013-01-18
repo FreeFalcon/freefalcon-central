@@ -29,16 +29,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
-void _trans_v1x4(float *res, float *mtx, float *pt);
-void _trans_v4x1(float *res, float *mtx, float *pt);
-void _trans_v1x3(float *res, float *mtx, float *pt);
-void _trans_v3x1(float *res, float *mtx, float *pt);
-void _trans_va3(float *res, float *mtx, float *pt, int npt);
-void _trans_va3r(float *res, float *mtx, float *pt, int npt);
-void _trans_va4(float *res, float *mtx, float *pt, int npt);
-void _trans_va4r(float *res, float *mtx, float *pt, int npt);
-void _jpeg_fdct(float *);
+
+    void _trans_v1x4(float *res, float *mtx, float *pt);
+    void _trans_v4x1(float *res, float *mtx, float *pt);
+    void _trans_v1x3(float *res, float *mtx, float *pt);
+    void _trans_v3x1(float *res, float *mtx, float *pt);
+    void _trans_va3(float *res, float *mtx, float *pt, int npt);
+    void _trans_va3r(float *res, float *mtx, float *pt, int npt);
+    void _trans_va4(float *res, float *mtx, float *pt, int npt);
+    void _trans_va4r(float *res, float *mtx, float *pt, int npt);
+    void _jpeg_fdct(float *);
 
 #ifdef __cplusplus
 }

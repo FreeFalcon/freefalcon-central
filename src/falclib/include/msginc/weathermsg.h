@@ -18,31 +18,32 @@
 class FalconWeatherMessage : public FalconEvent
 {
 public:
-	FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
+    FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
     FalconWeatherMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconWeatherMessage(void);
     virtual int Size() const;
-	//sfr: changed to long *
+    //sfr: changed to long *
     virtual int Decode(VU_BYTE **buf, long *rem);
     virtual int Encode(VU_BYTE **buf);
 
-    struct DATA_BLOCK {
-		int weatherCondition;
-		ulong lastCheck;
-		float temperature;
-		float windSpeed;
-		float windHeading;
-		float cumulusZ;
-		float stratusZ;
-		float stratus2Z;
-		float contrailLow;
-		float contrailHigh;
-		float ShadingFactor;
-		float weatherQuality;
+    struct DATA_BLOCK
+    {
+        int weatherCondition;
+        ulong lastCheck;
+        float temperature;
+        float windSpeed;
+        float windHeading;
+        float cumulusZ;
+        float stratusZ;
+        float stratus2Z;
+        float contrailLow;
+        float contrailHigh;
+        float ShadingFactor;
+        float weatherQuality;
     } dataBlock;
 
 protected:
-	int Process(uchar autodisp);
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

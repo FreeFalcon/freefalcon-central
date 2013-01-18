@@ -26,41 +26,44 @@
  */
 class FalconUnitAssignmentMessage : public FalconEvent
 {
-   public:
-      FalconUnitAssignmentMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconUnitAssignmentMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconUnitAssignmentMessage(void);
-      virtual int Size() const { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: changed to long *
-	  int Decode (VU_BYTE **buf, long *rem)
-	  {
-		  long init = *rem;
+public:
+    FalconUnitAssignmentMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconUnitAssignmentMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconUnitAssignmentMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed to long *
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
-            short orders;
-            VU_ID poid;
-            VU_ID soid;
-            VU_ID roid;
-      } dataBlock;
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
+        short orders;
+        VU_ID poid;
+        VU_ID soid;
+        VU_ID roid;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

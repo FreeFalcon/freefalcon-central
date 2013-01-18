@@ -45,75 +45,75 @@ extern float MAX_RADIO_RANGE;	// Radio range, in feet (300nm)(maximum range at w
  */
 class FalconRadioChatterMessage : public FalconEvent
 {
-   public:
-      FalconRadioChatterMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconRadioChatterMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconRadioChatterMessage(void);
+public:
+    FalconRadioChatterMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconRadioChatterMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconRadioChatterMessage(void);
 
-      virtual int Size() const;
-		//sfr: changed to long *
-	  virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
+    virtual int Size() const;
+    //sfr: changed to long *
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
 
-      struct DATA_BLOCK
-      {
-		  VU_ID	from;
-		  ulong	time_to_play;		// Time to play (from now)
-		  uchar	to;
-		  uchar	voice_id;
-		  short	message;
-		  short	edata[MAX_EVALS_PER_RADIO_MESSAGE];
-      } dataBlock;
+    struct DATA_BLOCK
+    {
+        VU_ID	from;
+        ulong	time_to_play;		// Time to play (from now)
+        uchar	to;
+        uchar	voice_id;
+        short	message;
+        short	edata[MAX_EVALS_PER_RADIO_MESSAGE];
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 // ==============================
 // Conversion functions
 // ==============================
 
-extern short ConvertFlightNumberToCallNumber (int flight_num);
-extern short ConvertWingNumberToCallNumber (int wing_num);
-extern short ConvertToCallNumber (int flight_num, int wing_num);
+extern short ConvertFlightNumberToCallNumber(int flight_num);
+extern short ConvertWingNumberToCallNumber(int wing_num);
+extern short ConvertToCallNumber(int flight_num, int wing_num);
 
 // This will send a simple call from ATC (ie: a call with only the callsigns as evals)
-FalconRadioChatterMessage* CreateCallFromATC (Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
-void SendCallFromATC (Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+FalconRadioChatterMessage* CreateCallFromATC(Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+void SendCallFromATC(Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call to ATC (ie: a call with only the callsigns as evals)
-FalconRadioChatterMessage* CreateCallToATC (AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
-void SendCallToATC (AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+FalconRadioChatterMessage* CreateCallToATC(AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+void SendCallToATC(AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call to ATC (ie: a call with only the callsigns as evals)
-void SendCallToATC (AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target);
-FalconRadioChatterMessage* CreateCallToATC (AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target);
+void SendCallToATC(AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target);
+FalconRadioChatterMessage* CreateCallToATC(AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target);
 
 // This will send a simple call to AWACS/FAC (ie: a call with only the callsigns as evals)
-extern void SendCallToAWACS (AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
-extern FalconRadioChatterMessage* CreateCallToAWACS (AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+extern void SendCallToAWACS(AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
+extern FalconRadioChatterMessage* CreateCallToAWACS(AircraftClass* aircraft, short call, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call to AWACS/FAC (ie: a call with only the callsigns as evals)
-extern void SendCallToAWACS (Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
-extern FalconRadioChatterMessage* CreateCallToAWACS (Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
+extern void SendCallToAWACS(Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
+extern FalconRadioChatterMessage* CreateCallToAWACS(Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call FROM AWACS/FAC (ie: a call with only the callsigns as evals)
-extern void SendCallFromAwacs (Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
-extern FalconRadioChatterMessage* CreateCallFromAwacs (Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
-extern FalconRadioChatterMessage* CreateCallFromAwacsPlane (AircraftClass* plane, short call, VuTargetEntity *target = FalconLocalSession);
+extern void SendCallFromAwacs(Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
+extern FalconRadioChatterMessage* CreateCallFromAwacs(Flight flight, short call, VuTargetEntity *target = FalconLocalSession);
+extern FalconRadioChatterMessage* CreateCallFromAwacsPlane(AircraftClass* plane, short call, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call FROM from (ie: a call with only the callsigns as evals)
-void SendCallToPlane (AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
-FalconRadioChatterMessage* CreateCallToPlane (AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
+void SendCallToPlane(AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
+FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
 
-void SendRogerToPlane (AircraftClass* aircraft, FalconEntity *from, VuTargetEntity *target = FalconLocalSession);
+void SendRogerToPlane(AircraftClass* aircraft, FalconEntity *from, VuTargetEntity *target = FalconLocalSession);
 
 // This will send a simple call FROM from (ie: a call with only the callsigns as evals)
-void SendCallToFlight (Flight flight, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
-FalconRadioChatterMessage* CreateCallToFlight (Flight flight, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
+void SendCallToFlight(Flight flight, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
+FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from, short call, VuTargetEntity *target = FalconLocalSession);
 
-FalconRadioChatterMessage* CreateCallToWing (Flight flight, int from_position, int to_position, short call, VuTargetEntity *target = FalconLocalSession);
-void SendCallToWing (Flight flight, int from_position, int to_position, short call, VuTargetEntity *target = FalconLocalSession);
+FalconRadioChatterMessage* CreateCallToWing(Flight flight, int from_position, int to_position, short call, VuTargetEntity *target = FalconLocalSession);
+void SendCallToWing(Flight flight, int from_position, int to_position, short call, VuTargetEntity *target = FalconLocalSession);
 
 
 #pragma pack ()

@@ -38,15 +38,16 @@
 #define SIM_CURSOR_FILE						"6_cursor.dat"
 #define SIM_CURSOR_DIR						"\\art\\ckptart\\"
 
-typedef struct {
-	UInt16			Width;
-	UInt16			Height;
-	UInt16			xHotspot;
-	UInt16			yHotspot;
-	ImageBuffer*	CursorBuffer;
-	BYTE*			CursorRenderBuffer;	//Wombat778 3-24-04
-	std::vector<TextureHandle *> CursorRenderTexture;
-	PaletteHandle *CursorRenderPalette;
+typedef struct
+{
+    UInt16			Width;
+    UInt16			Height;
+    UInt16			xHotspot;
+    UInt16			yHotspot;
+    ImageBuffer*	CursorBuffer;
+    BYTE*			CursorRenderBuffer;	//Wombat778 3-24-04
+    std::vector<TextureHandle *> CursorRenderTexture;
+    PaletteHandle *CursorRenderPalette;
 } SimCursor;
 
 #define SDIERR_INVALIDPARAM				"SDIERR_INVALIDPARAM"
@@ -57,11 +58,11 @@ typedef struct {
 #define SDIERR_DEVICENOTREG				"SDIERR_DEVICENOTREG"
 #define SDIERR_ACQUIRED						"SDIERR_ACQUIRED"
 #define SDIERR_HANDLEEXISTS				"SDIERR_HANDLEEXISTS"
-#define SDI_PROPNOEFFECT					"SDI_PROPNOEFFECT"	
+#define SDI_PROPNOEFFECT					"SDI_PROPNOEFFECT"
 #define SDIERR_OBJECTNOTFOUND				"SDIERR_OBJECTNOTFOUND"
 #define SDIERR_UNSUPPORTED					"SDIERR_UNSUPPORTED"
 #define SDIERR_OTHERAPPHASPRIO				"SDIERR_OTHERAPPHASPRIO"
-		
+
 #define SSI_GENERAL							"General SIM Input Error"
 #define SSI_NO_DI_INIT						"Unable to Create Direct Input Object, Cannot Continue!"
 #define SSI_NO_MOUSE_INIT					"Unable to Initialize Mouse, Click OK to Continue without Mouse"
@@ -148,11 +149,11 @@ void SimMouseResumeProcessing(const int x, const int y);
 void CleanupDIAll(void);
 void InputCycle(void);
 void NoInputCycle(void);
-void GetJoystickInput(void);		
+void GetJoystickInput(void);
 float ReadThrottle(void);
 
 // Functions used only used internaly by this module
-BOOL SetupDIDevice( HWND, BOOL, int, REFGUID, LPCDIDATAFORMAT, DIPROPDWORD*);
+BOOL SetupDIDevice(HWND, BOOL, int, REFGUID, LPCDIDATAFORMAT, DIPROPDWORD*);
 BOOL CleanupDIDevice(int);
 void OnSimKeyboardInput(void);
 void OnSimMouseInput(HWND);
@@ -165,6 +166,6 @@ void UpdateCursorPosition(DWORD, DWORD);
 void ClipAndDrawCursor(int, int);
 BOOL VerifyResult(HRESULT);
 BOOL DIMessageBox(int, int, char*);
-void JoystickReleaseEffects (void);
+void JoystickReleaseEffects(void);
 
 #endif

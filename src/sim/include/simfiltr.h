@@ -3,67 +3,67 @@
 
 class AllSimFilter : public VuFilter
 {
-   public:
-      AllSimFilter(void);
-      virtual ~AllSimFilter();
+public:
+    AllSimFilter(void);
+    virtual ~AllSimFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    // returns ent2->Id() - ent1->Id()
+    virtual VuFilter *Copy();
 };
 
 class CombinedSimFilter : public VuFilter
 {
-   public:
-      CombinedSimFilter(void);
-      virtual ~CombinedSimFilter();
+public:
+    CombinedSimFilter(void);
+    virtual ~CombinedSimFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    // returns ent2->Id() - ent1->Id()
+    virtual VuFilter *Copy();
 };
 
 class SimFeatureFilter : public VuFilter
 {
-   public:
-      SimFeatureFilter(void);
-      virtual ~SimFeatureFilter();
+public:
+    SimFeatureFilter(void);
+    virtual ~SimFeatureFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    // returns ent2->Id() - ent1->Id()
+    virtual VuFilter *Copy();
 };
 
 class SimLocalFilter : public VuFilter
 {
-   public:
-      SimLocalFilter(void);
-      virtual ~SimLocalFilter();
+public:
+    SimLocalFilter(void);
+    virtual ~SimLocalFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    // returns ent2->Id() - ent1->Id()
+    virtual VuFilter *Copy();
 };
 
 class SimObjectFilter : public VuFilter
 {
-   public:
-      SimObjectFilter(void);
-      virtual ~SimObjectFilter();
+public:
+    SimObjectFilter(void);
+    virtual ~SimObjectFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-  	   // returns ent2->Id() - ent1->Id()
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    // returns ent2->Id() - ent1->Id()
+    virtual VuFilter *Copy();
 };
 
 /* KCK: Not being used now that we tossed the LM
@@ -84,28 +84,28 @@ class SimSurfaceFilter : public VuFilter
 
 class SimAirfieldFilter : public VuFilter
 {
-   public:
-      SimAirfieldFilter(void);
-      virtual ~SimAirfieldFilter();
+public:
+    SimAirfieldFilter(void);
+    virtual ~SimAirfieldFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    virtual VuFilter *Copy();
 };
 
 class SimDynamicTacanFilter : public VuFilter
 {
-   public:
-      SimDynamicTacanFilter(void);
-      virtual ~SimDynamicTacanFilter();
+public:
+    SimDynamicTacanFilter(void);
+    virtual ~SimDynamicTacanFilter();
 
-      virtual VU_BOOL Test(VuEntity *ent);
-      virtual VU_BOOL RemoveTest(VuEntity *ent);
-      virtual int Compare(VuEntity *ent1, VuEntity *ent2);
-      virtual VuFilter *Copy();
+    virtual VU_BOOL Test(VuEntity *ent);
+    virtual VU_BOOL RemoveTest(VuEntity *ent);
+    virtual int Compare(VuEntity *ent1, VuEntity *ent2);
+    virtual VuFilter *Copy();
 };
 
-int SimCompare (VuEntity* ent1, VuEntity*ent2);
+int SimCompare(VuEntity* ent1, VuEntity*ent2);
 
 #endif

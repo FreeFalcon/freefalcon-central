@@ -49,22 +49,22 @@ typedef VuListIterator*				F4LIt;
 // Campaign Library Functions
 // =====================================
 
-extern void Camp_Init (int processor);
+extern void Camp_Init(int processor);
 
-extern void Camp_Exit (void);
+extern void Camp_Exit(void);
 
-extern void Camp_SetPlayerSquadron (Unit squadron);
+extern void Camp_SetPlayerSquadron(Unit squadron);
 
-extern Unit Camp_GetPlayerSquadron (void);
+extern Unit Camp_GetPlayerSquadron(void);
 
-extern VuEntity* Camp_GetPlayerEntity (void);
+extern VuEntity* Camp_GetPlayerEntity(void);
 
-extern CampaignTime Camp_GetCurrentTime (void);
+extern CampaignTime Camp_GetCurrentTime(void);
 
 extern void Camp_SetCurrentTime(double newTime);
 
-extern void Camp_FreeMemory (void);
- 
-extern FILE* OpenCampFile (char *filename, char *ext, char *mode);
+extern void Camp_FreeMemory(void);
+
+extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 
 #endif

@@ -5,7 +5,7 @@
 #include "line.h"
 
 //------------------------------------------------------------------------------
-class plane 
+class plane
 {
 public:
     /// default constructor
@@ -111,7 +111,7 @@ plane::plane(const vector3& v0, const vector3& v1, const vector3& v2)
 
 //------------------------------------------------------------------------------
 /**
-    Computes the distance of a point to the plane. Return 0.0 if the 
+    Computes the distance of a point to the plane. Return 0.0 if the
     point is on the plane.
 */
 inline
@@ -126,7 +126,7 @@ plane::distance(const vector3& v) const
     Returns the plane normal.
 */
 inline
-vector3 
+vector3
 plane::normal() const
 {
     return vector3(this->a, this->b, this->c);
@@ -143,6 +143,7 @@ plane::intersect(const line3& l, float& t) const
 {
     float f0 = this->a * l.b.x + this->b * l.b.y + this->c * l.b.z + this->d;
     float f1 = this->a * -l.m.x + this->b * -l.m.y + this->c * -l.m.z;
+
     if ((f1 < -0.0001f) || (f1 > 0.0001f))
     {
         t = f0 / f1;
@@ -169,15 +170,16 @@ plane::intersect(const plane& p, line3& l) const
     float n11 = n1 % n1;
     float det = n00 * n11 - n01 * n01;
     const float tol = 1e-06f;
-    if (fabs(det) < tol) 
+
+    if (fabs(det) < tol)
     {
         return false;
     }
-    else 
+    else
     {
-        float inv_det = 1.0f/det;
+        float inv_det = 1.0f / det;
         float c0 = (n11 * this->d - n01 * p.d)    * inv_det;
-        float c1 = (n00 * p.d - n01 * this->d)* inv_det;
+        float c1 = (n00 * p.d - n01 * this->d) * inv_det;
         l.m = n0 * n1;
         l.b = n0 * c0 + n1 * c1;
         return true;

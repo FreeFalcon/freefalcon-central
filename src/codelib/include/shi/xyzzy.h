@@ -66,7 +66,7 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_XYZZY_CAT5(A,B,C,D,E) A ## B ## C ## D ## E 
+#define SHI_XYZZY_CAT5(A,B,C,D,E) A ## B ## C ## D ## E
 
 
 

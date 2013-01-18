@@ -6,9 +6,10 @@
 #include "mathlib/matrix.h"
 #include "mathlib/euler.h"
 
-class nEulerAngles {
+class nEulerAngles
+{
 public:
-    float x,y,z;
+    float x, y, z;
 
     //-- constructors -----------------------------------------------
     nEulerAngles()
@@ -46,12 +47,14 @@ public:
     };
     void Set(const matrix33& m)
     {
-        int i,j,k,h,n,s,f;
-        EulGetOrd(EulOrdXYZs,i,j,k,h,n,s,f);
+        int i, j, k, h, n, s, f;
+        EulGetOrd(EulOrdXYZs, i, j, k, h, n, s, f);
+
         if (s == EulRepYes)
         {
-            double sy = (float) sqrt(m.m[0][1]*m.m[0][1] + m.m[0][2]*m.m[0][2]);
-            if (sy > 16*FLT_EPSILON)
+            double sy = (float) sqrt(m.m[0][1] * m.m[0][1] + m.m[0][2] * m.m[0][2]);
+
+            if (sy > 16 * FLT_EPSILON)
             {
                 this->x = (float) atan2(m.m[0][1], m.m[0][2]);
                 this->y = (float) atan2(sy, m.m[0][0]);
@@ -66,8 +69,9 @@ public:
         }
         else
         {
-            double cy = sqrt(m.m[0][0]*m.m[0][0] + m.m[1][0]*m.m[1][0]);
-            if (cy > 16*FLT_EPSILON)
+            double cy = sqrt(m.m[0][0] * m.m[0][0] + m.m[1][0] * m.m[1][0]);
+
+            if (cy > 16 * FLT_EPSILON)
             {
                 this->x = (float) atan2(m.m[2][1], m.m[2][2]);
                 this->y = (float) atan2(-m.m[2][0], cy);
@@ -80,13 +84,15 @@ public:
                 this->z = 0;
             }
         }
-        if (n==EulParOdd)
+
+        if (n == EulParOdd)
         {
             this->x = -this->x;
             this->y = -this->y;
             this->z = -this->z;
         }
-        if (f==EulFrmR)
+
+        if (f == EulFrmR)
         {
             float t = this->x;
             this->x = this->z;
@@ -99,22 +105,60 @@ public:
         matrix33 mat;
 
         double ti, tj, th, ci, cj, ch, si, sj, sh, cc, cs, sc, ss;
-        int i,j,k,h,n,s,f;
-        EulGetOrd(EulOrdXYZs,i,j,k,h,n,s,f);
-        if (f==EulFrmR) {float t = x; x = z; z = t;}
-        if (n==EulParOdd) {x = -x; y = -y; z = -z;}
-        ti = x;   tj = y;   th = z;
-        ci = cos(ti); cj = cos(tj); ch = cos(th);
-        si = sin(ti); sj = sin(tj); sh = sin(th);
-        cc = ci*ch; cs = ci*sh; sc = si*ch; ss = si*sh;
-        if (s==EulRepYes) {
-            mat.M11 = (float)(cj);     mat.M12 = (float)( sj*si);    mat.M13 = (float)( sj*ci);
-            mat.M21 = (float)(sj*sh);  mat.M22 = (float)(-cj*ss+cc); mat.M23 = (float)(-cj*cs-sc);
-            mat.M31 = (float)(-sj*ch); mat.M23 = (float)( cj*sc+cs); mat.M33 = (float)( cj*cc-ss);
-        } else {
-            mat.M11 = (float)(cj*ch); mat.M12 = (float)(sj*sc-cs); mat.M13 = (float)(sj*cc+ss);
-            mat.M21 = (float)(cj*sh); mat.M22 = (float)(sj*ss+cc); mat.M23 = (float)(sj*cs-sc);
-            mat.M31 = (float)(-sj);   mat.M32 = (float)(cj*si);    mat.M33 = (float)(cj*ci);
+        int i, j, k, h, n, s, f;
+        EulGetOrd(EulOrdXYZs, i, j, k, h, n, s, f);
+
+        if (f == EulFrmR)
+        {
+            float t = x;
+            x = z;
+            z = t;
+        }
+
+        if (n == EulParOdd)
+        {
+            x = -x;
+            y = -y;
+            z = -z;
+        }
+
+        ti = x;
+        tj = y;
+        th = z;
+        ci = cos(ti);
+        cj = cos(tj);
+        ch = cos(th);
+        si = sin(ti);
+        sj = sin(tj);
+        sh = sin(th);
+        cc = ci * ch;
+        cs = ci * sh;
+        sc = si * ch;
+        ss = si * sh;
+
+        if (s == EulRepYes)
+        {
+            mat.M11 = (float)(cj);
+            mat.M12 = (float)(sj * si);
+            mat.M13 = (float)(sj * ci);
+            mat.M21 = (float)(sj * sh);
+            mat.M22 = (float)(-cj * ss + cc);
+            mat.M23 = (float)(-cj * cs - sc);
+            mat.M31 = (float)(-sj * ch);
+            mat.M23 = (float)(cj * sc + cs);
+            mat.M33 = (float)(cj * cc - ss);
+        }
+        else
+        {
+            mat.M11 = (float)(cj * ch);
+            mat.M12 = (float)(sj * sc - cs);
+            mat.M13 = (float)(sj * cc + ss);
+            mat.M21 = (float)(cj * sh);
+            mat.M22 = (float)(sj * ss + cc);
+            mat.M23 = (float)(sj * cs - sc);
+            mat.M31 = (float)(-sj);
+            mat.M32 = (float)(cj * si);
+            mat.M33 = (float)(cj * ci);
         }
 
         return mat;

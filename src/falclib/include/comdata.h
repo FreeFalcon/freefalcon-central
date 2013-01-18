@@ -69,34 +69,35 @@
 //sfr: new pbook
 // TODO set this constant according to UI+1
 // all in machine
-class ComDataClass {
+class ComDataClass
+{
 public:
-	// our port
-	unsigned short localPort;
-	// if client, host address. If server, 0
-	long ip_address;
-	// peer port to connect to
-	unsigned short remotePort;
-}; 
+    // our port
+    unsigned short localPort;
+    // if client, host address. If server, 0
+    long ip_address;
+    // peer port to connect to
+    unsigned short remotePort;
+};
 
 #if 0
-class ComDataClass 
-	{
-	public:
-		FalconConnectionTypes	protocol;	// Protocol comes from F4Comms.h - "FalconConnectionTypes"
-		uchar		connect_type;
-		uchar		com_port;
-		uchar		baud_rate;
-		uchar		lan_rate;
-		uchar		internet_rate;
-		uchar		jetnet_rate;
-		uchar		modem_rate;
-		uchar		parity;
-		uchar		stop_bits;
-		uchar		flow_control;
-		ulong		ip_address;				// Use this or the phone_number below
-		char		phone_number[20];		// Phone number, in string form.
-	};
+class ComDataClass
+{
+public:
+    FalconConnectionTypes	protocol;	// Protocol comes from F4Comms.h - "FalconConnectionTypes"
+    uchar		connect_type;
+    uchar		com_port;
+    uchar		baud_rate;
+    uchar		lan_rate;
+    uchar		internet_rate;
+    uchar		jetnet_rate;
+    uchar		modem_rate;
+    uchar		parity;
+    uchar		stop_bits;
+    uchar		flow_control;
+    ulong		ip_address;				// Use this or the phone_number below
+    char		phone_number[20];		// Phone number, in string form.
+};
 #endif
 
 // ========================================================
@@ -105,4 +106,4 @@ class ComDataClass
 
 extern ComDataClass	gComData;
 
-#endif 
+#endif

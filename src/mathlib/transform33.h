@@ -35,7 +35,7 @@ private:
 
     enum
     {
-        Dirty = (1<<0),
+        Dirty = (1 << 0),
     };
     vector2 translation;
     vector2 euler;
@@ -174,5 +174,4 @@ transform33::isdirty() const
 //------------------------------------------------------------------------------
 #endif
 
-    
-    
+

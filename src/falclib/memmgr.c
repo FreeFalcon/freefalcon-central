@@ -1,8 +1,8 @@
 /*
  *  MODULE:  MEMMGR.C
- * 
- *  PURPOSE: Memory Management Functions.           
- *                                                  
+ *
+ *  PURPOSE: Memory Management Functions.
+ *
  *           Maintains a doubly linked list
  *           of memory descriptors that are
  *           inserted at the HEAD of every
@@ -15,7 +15,7 @@
  *    MEMDump   - Display list & nodes
  *    MEMAvail  - Query the OS for specific memory availability
  *    MEMSanity - Traverse list looking for errors
- *    
+ *
  *    MEMFindCount - Find number of allocations
  *    MEMFindEqual - Find mallocs of size n
  *    MEMFindMin   - Find mallocs of size n or less
@@ -30,7 +30,7 @@
  *    new[]     - c++ overload   not allowed under msvc
  *    delete    - c++ overload
  *    delete[]  - c++ overload   not allowed under msvc
- *                                                  
+ *
  *
  *  MSVC4.x Note:
  *    Even though Microsoft Visual C++ 4.x supports wrapped allocations, there are several
@@ -38,9 +38,9 @@
  *    defined, the MSVC run-time debugging is available as well.
  *
  *
- *  AUTHORS:                                        
+ *  AUTHORS:
  *    KBR   3/29/94           Created.
- *    KBR   4/16/96           Win95 port 
+ *    KBR   4/16/96           Win95 port
  *                              renamed .c from .cpp
  *                              removed watcom specific comments
  *                              removed mono-windows support
@@ -182,19 +182,19 @@ struct meminfo
 
 static
 MEMCHECK
-    * MEMCHECK_LIST = NULL;
+* MEMCHECK_LIST = NULL;
 
 long
-      MEM_TOTAL_ALLOC = 0;
+MEM_TOTAL_ALLOC = 0;
 
 long
-      MEM_TOTAL_MIN = 0,
-      MEM_TOTAL_MAX = 0;
+MEM_TOTAL_MIN = 0,
+MEM_TOTAL_MAX = 0;
 
 
 #if( USE_THREAD_SAFE )
 
-   HANDLE MEMORY_MUTEX = 0;   /* If you want to bypass microsoft's very heavy
+HANDLE MEMORY_MUTEX = 0;   /* If you want to bypass microsoft's very heavy
                                  mutex implementation, do so here. */
 
 #  define WAIT_FOR_LOCK(a)     {if(a) WaitForSingleObject( a, INFINITE );}
@@ -202,9 +202,9 @@ long
 #  define CREATE_LOCK(a)       {if(!a) { a = CreateMutex( NULL, FALSE, NULL ); \
                                 if(!a) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }}
 #else
-#  define WAIT_FOR_LOCK(a)     
-#  define RELEASE_LOCK(a)      
-#  define CREATE_LOCK(a)       
+#  define WAIT_FOR_LOCK(a)
+#  define RELEASE_LOCK(a)
+#  define CREATE_LOCK(a)
 #endif
 
 
@@ -231,15 +231,15 @@ int memmgr_filename;
 
   ===================================================*/
 
-MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int linenum )
+MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linenum)
 {
     void *ptr;
     long *tailptr;
     MEMCHECK *newptr;
     unsigned int req;
 
-    CREATE_LOCK( MEMORY_MUTEX );
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    CREATE_LOCK(MEMORY_MUTEX);
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     if (!filename)
         filename = "Huh?";
@@ -263,10 +263,12 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
 
 #if( LIB_COMPILER == COMPILER_MSVC )
     ptr = (char *)calloc(req, sizeof(char));
-//    ptr = (char *)__calloc_dbg(req, sizeof(char), _CRT_BLOCK, filename, linenum);
+    //    ptr = (char *)__calloc_dbg(req, sizeof(char), _CRT_BLOCK, filename, linenum);
 #else
+
     if ((ptr = (char *)malloc(req)) != NULL)
         memset(ptr, 0, req);    /* calloc was creating spurious results under watcom 9.5 */
+
 #endif
 
     if (!ptr)
@@ -275,7 +277,7 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
         DBG(PF("file: %s ", filename));
         DBG(PF("line: %d ", linenum));
         DBG(PF("\n"));
-        RELEASE_LOCK( MEMORY_MUTEX );
+        RELEASE_LOCK(MEMORY_MUTEX);
         return (NULL);
     }
 
@@ -291,23 +293,27 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
     /* cast the pointer to BYTE so our arithmetic works */
     newptr->ptr = (memBYTE *) ptr + sizeof(MEMCHECK);
 
-    if( strlen( filename ) > 15 ) {
+    if (strlen(filename) > 15)
+    {
         int length, i;
 
-        length = strlen( filename );
+        length = strlen(filename);
 
-        for( i=length; i>0; i-- ) {
-            if( filename[i] == '\\' ) {
-                if( i<length ) 
+        for (i = length; i > 0; i--)
+        {
+            if (filename[i] == '\\')
+            {
+                if (i < length)
                     i++;
+
                 break;
             }
         }
 
-        if( i )
+        if (i)
             filename += i;
 
-        if( strlen(filename) > 15 )       
+        if (strlen(filename) > 15)
             filename += strlen(filename) - 15;
     }
 
@@ -330,8 +336,8 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
         newptr->prevptr = NULL;
     }
 
-//   if( _TimerCount && !MEM_TOTAL_MIN )
-//      MEM_TOTAL_MIN = MEM_TOTAL_ALLOC;
+    //   if( _TimerCount && !MEM_TOTAL_MIN )
+    //      MEM_TOTAL_MIN = MEM_TOTAL_ALLOC;
 
     tailptr = (long *)((char *)(newptr->ptr) + req_size);
 
@@ -345,7 +351,7 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
     if (MEM_TOTAL_ALLOC < MEM_TOTAL_MIN)
         MEM_TOTAL_MIN = MEM_TOTAL_ALLOC;
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     return ((void *)newptr->ptr);
 }
@@ -371,7 +377,7 @@ MEM_EXPORT void * MEMMalloc( long req_size, char *name, char *filename, int line
   ===================================================*/
 
 
-MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
+MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 {
     MEMCHECK * newptr;
     long     * tailptr;
@@ -381,8 +387,8 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
 
     static memBOOL ok = TRUE;
 
-    CREATE_LOCK( MEMORY_MUTEX );
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    CREATE_LOCK(MEMORY_MUTEX);
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     if (!filename)
         filename = "Huh?";
@@ -391,21 +397,22 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
     {
         DBG(PF("Empty list!\n"));
 
-        DBG(if(filename))
+        DBG(if (filename))
             DBG(PF("file: %s ", filename));
 
-        DBG(if(linenum))
+        DBG(if (linenum))
             DBG(PF("line: %d ", linenum));
 
         DBG(PF("\n"));
 
-        RELEASE_LOCK( MEMORY_MUTEX );
+        RELEASE_LOCK(MEMORY_MUTEX);
 
         return (FALSE);
     }
 
 
 #if 0
+
     if (!ptr)                   /* OK to do - just not polite! */
     {
         DBG(PF("Freeing NULL ptr!\n"));
@@ -418,6 +425,7 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
 
         DBG(PF("\n"));
     }
+
 #endif
 
     freed = FALSE;
@@ -516,7 +524,7 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
 
                 if (ptr)
                 {
-                    newptr = (MEMCHECK *) ((char *)ptr - sizeof(MEMCHECK));
+                    newptr = (MEMCHECK *)((char *)ptr - sizeof(MEMCHECK));
 
                     if (newptr->sentinel[0] == MAGIC_COOKIE_HEAD)
                     {
@@ -537,6 +545,7 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
                         }
                     }
                 }
+
                 freed = TRUE;
             }
         }
@@ -554,7 +563,7 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
     if (MEM_TOTAL_ALLOC < MEM_TOTAL_MIN)
         MEM_TOTAL_MIN = MEM_TOTAL_ALLOC;
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     return (freed);
 }
@@ -562,11 +571,11 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
 
 
 /* ------------------------------------------------------
-   PURPOSE:  Since the sdtlib function strdup does its 
-   own allocation, we need to overload it as 
-   well.  Unfortunately, this is has not been 
-   mimicked for all of the c++ functions that 
-   perform their own allocations.  someday... 
+   PURPOSE:  Since the sdtlib function strdup does its
+   own allocation, we need to overload it as
+   well.  Unfortunately, this is has not been
+   mimicked for all of the c++ functions that
+   perform their own allocations.  someday...
 
    INPUTS: pointer to string to copy
 
@@ -574,14 +583,14 @@ MEM_EXPORT unsigned char MEMFree( void *ptr, char *filename, int linenum )
 
    -------------------------------------------------------- */
 
-MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum )
+MEM_EXPORT char * MEMStrDup(const char *src_string, char *filename, int linenum)
 {
     char *dst_string;
     size_t size;
 
     size = strlen(src_string);
 
-    dst_string = (char *)MEMMalloc((size + 1), "strdup", filename, linenum );
+    dst_string = (char *)MEMMalloc((size + 1), "strdup", filename, linenum);
 
     strcpy(dst_string, src_string);
 
@@ -595,12 +604,12 @@ MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum
 
 /* ----------------------------------------------------
 
-   PURPOSE:  Replace the C++ new() operator with   
-   something that is aware of the        
-   memory manager.                       
+   PURPOSE:  Replace the C++ new() operator with
+   something that is aware of the
+   memory manager.
 
-   This process caused me great agony, and there-  
-   fore is commented accordingly.                  
+   This process caused me great agony, and there-
+   fore is commented accordingly.
 
    As far as I can tell, overloading the new and delete
    operators should be quite trivial.
@@ -609,7 +618,7 @@ MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum
    (Holub) writes that both of these operators can be
    overloaded [p.211].
 
-   In "The C++ programming language" (Bjarne Stroustups) 
+   In "The C++ programming language" (Bjarne Stroustups)
    mentions it several times [p. 498-500] [p. 592]
 
    Finally, in "Programming in C++" (Dewhurst & Stark)
@@ -652,7 +661,7 @@ MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum
 
    new fooCl;
 
-   will cause all of your new operations to be substituted 
+   will cause all of your new operations to be substituted
    for the improved version.
 
    The delete operator proved more troublesome.  Since the
@@ -664,7 +673,7 @@ MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum
    cookie.  Therefore pointer[-1] should be a magic cookie.
    Also, pointer[size + 1] should also be a magic cookie.
 
-   So with that in mind, I make a spit and a prayer, test 
+   So with that in mind, I make a spit and a prayer, test
    for cookies and decide whether to free a MEMMalloc'd
    block or a traditional malloc'd block.
 
@@ -677,11 +686,11 @@ MEM_EXPORT char * MEMStrDup( const char *src_string, char *filename, int linenum
 
    ------------------------------------------------------------- */
 
-MEM_EXPORT void * operator new( size_t size
+MEM_EXPORT void * operator new(size_t size
 #if !defined(_MSC_VER)
-, char * memmgr_filename, int memmgr_linenum
+                               , char * memmgr_filename, int memmgr_linenum
 #endif
-)
+                              )
 {
     memANY_PTR any_ptr;
     unsigned int i;
@@ -694,7 +703,7 @@ MEM_EXPORT void * operator new( size_t size
         memmgr_filename = &memmgr_filename[strlen(memmgr_filename) - 12];
 
         for (i = 0; i < strlen(memmgr_filename); i++)
-            if (memmgr_filename[i] == '\\' /* backslash 0x5C */ )
+            if (memmgr_filename[i] == '\\' /* backslash 0x5C */)
                 memmgr_filename = &memmgr_filename[i + 1];
     }
 
@@ -713,13 +722,13 @@ MEM_EXPORT void * operator new( size_t size
         DBG(PF("\n"));
     }
 
-    return ((memANY_PTR) (any_ptr));
+    return ((memANY_PTR)(any_ptr));
 }
 
 
 
 
-MEM_EXPORT void operator delete( memANY_PTR ptr )
+MEM_EXPORT void operator delete(memANY_PTR ptr)
 {
     long *cookie;
     MEMCHECK *memcheck;
@@ -738,29 +747,33 @@ MEM_EXPORT void operator delete( memANY_PTR ptr )
            low end of the malloc'd area is bound by a magic cookie (sentinel value) by
            using cookie[-1].
 
-           We could also use this method to check the high end value 
+           We could also use this method to check the high end value
            (eg; cookie[ ( sizeof(long) / sizeof( BYTE ) ) * cookie -> size + sizeof(long) ]
            *but* that would be kind of repulsive - so we don't.
            ------------------------------------------------------------------------------------------- */
 
-        if( cookie[-1] == MAGIC_COOKIE_HEAD ) {
+        if (cookie[-1] == MAGIC_COOKIE_HEAD)
+        {
             /* we found a cookie, so assume that there is one of our
                memcheck structures immediate preceding this pointer */
 
-            memcheck = (MEMCHECK *) ((memBYTE *) ptr - sizeof(MEMCHECK));
+            memcheck = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
 
-            cookie = (long *)((memBYTE *) (memcheck->ptr) + memcheck->size);
+            cookie = (long *)((memBYTE *)(memcheck->ptr) + memcheck->size);
 
-            if (*cookie == MAGIC_COOKIE_TAIL) {
+            if (*cookie == MAGIC_COOKIE_TAIL)
+            {
                 ok = TRUE;      /* both cookies are present! yipee! */
             }
         }
     }
 
-    if (!ok) {
+    if (!ok)
+    {
         MEMFree(ptr, "BadDel()", 0);
     }
-    else {
+    else
+    {
         MEMFree(ptr, "Del()", 0);
     }
 }
@@ -781,7 +794,7 @@ MEM_EXPORT void operator delete( memANY_PTR ptr )
 
 #if( MEM_ARRAY_EXTENSION )
 
-MEM_EXPORT void *operator new[] (size_t size, char *filename, int linenum)
+MEM_EXPORT void *operator new[](size_t size, char *filename, int linenum)
 {
     memANY_PTR any_ptr;
 
@@ -808,11 +821,11 @@ MEM_EXPORT void *operator new[] (size_t size, char *filename, int linenum)
         DBG(PF("\n"));
     }
 
-    return ((memANY_PTR) (any_ptr));
+    return ((memANY_PTR)(any_ptr));
 }
 
 
-MEM_EXPORT void operator delete[] (memANY_PTR ptr)
+MEM_EXPORT void operator delete[](memANY_PTR ptr)
 {
     long *cookie;
     MEMCHECK *memcheck;
@@ -827,11 +840,11 @@ MEM_EXPORT void operator delete[] (memANY_PTR ptr)
         /* -------------------------------------------------------------------------------
            NOTE:
 
-           By casting the pointer to a long and treating it as an array, we can see if 
-           the low end of the malloc'd area is bound by a magic cookie (sentinel value) 
+           By casting the pointer to a long and treating it as an array, we can see if
+           the low end of the malloc'd area is bound by a magic cookie (sentinel value)
            by using cookie[-1].
 
-           We could also use this method to check the high end value 
+           We could also use this method to check the high end value
            (eg; cookie[ ( sizeof(long) / sizeof( BYTE ) ) * cookie -> size + sizeof(long) ]
            *but* that would be kind of repulsive - so we don't.
            ------------------------------------------------------------------------------- */
@@ -841,7 +854,7 @@ MEM_EXPORT void operator delete[] (memANY_PTR ptr)
             /* we found a cookie, so assume that there is one of our
                memcheck structures immediate preceding this pointer */
 
-            memcheck = (MEMCHECK *) ((memBYTE *) ptr - sizeof(MEMCHECK));
+            memcheck = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
 
             cookie = (long *)((memBYTE *) memcheck->ptr + memcheck->size);
 
@@ -870,16 +883,16 @@ MEM_EXPORT void operator delete[] (memANY_PTR ptr)
 /*===================================================
 
    MEMCheckPointer :  Authenticates a pointer as valid.
-              
+
 
    INPUTS: Pointer to the suspicious allocation.
-           
+
 
    RETURNS: TRUE if successful, FALSE if not.
 
       This routine looks for the existence of a valid
       sentinel block immediately preceeding the supplied
-      pointer.  If the allocation was created by the 
+      pointer.  If the allocation was created by the
       memory manager, then if the pointer is treated
       as an array, array[-1] should be our magic cookie.
 
@@ -888,14 +901,14 @@ MEM_EXPORT void operator delete[] (memANY_PTR ptr)
 
   ===================================================*/
 
-MEM_EXPORT int MEMCheckPointer( char * ptr )
+MEM_EXPORT int MEMCheckPointer(char * ptr)
 {
     long *tailptr;
     MEMCHECK *newptr;
     memBOOL check_head,
-          check_tail;
+            check_tail;
 
-    newptr = (MEMCHECK *) ((memBYTE *) ptr - sizeof(MEMCHECK));
+    newptr = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
 
     CHECK_COOKIE_HEAD(newptr->sentinel, check_head);
 
@@ -922,24 +935,24 @@ MEM_EXPORT int MEMCheckPointer( char * ptr )
               manager.
 
    INPUTS: None.
-   
+
    RETURNS: The number of allocations.
 
   =================================================== */
 
-MEM_EXPORT int MEMFindCount( void )
+MEM_EXPORT int MEMFindCount(void)
 {
     MEMCHECK *newptr;
     int   count = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr;
          newptr = newptr->nextptr)
         count++;
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     return (count);
 }
@@ -955,23 +968,24 @@ MEM_EXPORT int MEMFindCount( void )
 
   ===================================================*/
 
-MEM_EXPORT long MEMFindSize( void * ptr )
+MEM_EXPORT long MEMFindSize(void * ptr)
 {
     MEMCHECK *newptr;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr;
          newptr = newptr->nextptr)
     {
-        if (newptr->ptr == ptr) {
-            RELEASE_LOCK( MEMORY_MUTEX );
+        if (newptr->ptr == ptr)
+        {
+            RELEASE_LOCK(MEMORY_MUTEX);
             return (newptr->size);
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     return (-1);
 }
@@ -981,7 +995,7 @@ MEM_EXPORT long MEMFindSize( void * ptr )
 
 /*===================================================
 
-   MEMDump  :  Display all of the information 
+   MEMDump  :  Display all of the information
                contained within the memory-list.
 
    INPUTS: None.
@@ -990,7 +1004,7 @@ MEM_EXPORT long MEMFindSize( void * ptr )
 
   ===================================================*/
 
-MEM_EXPORT void MEMDump( void )
+MEM_EXPORT void MEMDump(void)
 {
     MEMCHECK *newptr;
     int   i;
@@ -1006,7 +1020,7 @@ MEM_EXPORT void MEMDump( void )
     i = 0;
 
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1015,24 +1029,24 @@ MEM_EXPORT void MEMDump( void )
         ++i;
 
         PrintMemLine(i, newptr);
-        
-        if( !(i % 20))
+
+        if (!(i % 20))
             PrintMemHeading();
 
         total_size += newptr->size;
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
-    DBG(if(!i))
-        DBG(PF("No allocations (all freed)\n" ));
+    DBG(if (!i))
+        DBG(PF("No allocations (all freed)\n"));
 }
 
 
 
 /*===================================================
 
-   MEMFindLevels :  Display the statically held 
+   MEMFindLevels :  Display the statically held
                     values of:
 
                       1) current memory
@@ -1045,7 +1059,7 @@ MEM_EXPORT void MEMDump( void )
 
   ===================================================*/
 
-MEM_EXPORT void MEMFindLevels( void )
+MEM_EXPORT void MEMFindLevels(void)
 {
     DBG(PF("Current memory usage:  %ld\n", MEM_TOTAL_ALLOC));
     DBG(PF("Minimum memory usage:  %ld\n", MEM_TOTAL_MIN));
@@ -1054,7 +1068,7 @@ MEM_EXPORT void MEMFindLevels( void )
 
 
 #if( LIB_COMPILER == COMPILER_WATCOM )
-MEM_EXPORT unsigned long MEMAvail( void )
+MEM_EXPORT unsigned long MEMAvail(void)
 {
     union REGS regs;
     struct SREGS sregs;
@@ -1079,7 +1093,7 @@ MEM_EXPORT unsigned long MEMAvail( void )
     return (MemInfo.MaxUnlockedPage * 4);
 }
 
-MEM_EXPORT void MEMCheckVMM( void )
+MEM_EXPORT void MEMCheckVMM(void)
 {
     union REGS regs;
     struct SREGS sregs;
@@ -1099,8 +1113,8 @@ MEM_EXPORT void MEMCheckVMM( void )
 
 /*===================================================
 
-   MEMFindEqual :  Display statistics of all 
-                   allocations matching the 
+   MEMFindEqual :  Display statistics of all
+                   allocations matching the
                    specified size.
 
    INPUTS: Allocation size.
@@ -1109,7 +1123,7 @@ MEM_EXPORT void MEMCheckVMM( void )
 
   ===================================================*/
 
-MEM_EXPORT void MEMFindEqual( size_t size )
+MEM_EXPORT void MEMFindEqual(size_t size)
 {
     MEMCHECK *newptr;
     int   i;
@@ -1122,7 +1136,7 @@ MEM_EXPORT void MEMFindEqual( size_t size )
 
     i = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1136,7 +1150,7 @@ MEM_EXPORT void MEMFindEqual( size_t size )
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
@@ -1145,7 +1159,7 @@ MEM_EXPORT void MEMFindEqual( size_t size )
 
 /*===================================================
 
-   MEMFindMin :  Display statistics of all allocations 
+   MEMFindMin :  Display statistics of all allocations
                  equal to, or smaller than, the
                  specified size.
 
@@ -1155,7 +1169,7 @@ MEM_EXPORT void MEMFindEqual( size_t size )
 
   ===================================================*/
 
-MEM_EXPORT void MEMFindMin( size_t size )
+MEM_EXPORT void MEMFindMin(size_t size)
 {
     MEMCHECK *newptr;
     int   i;
@@ -1168,7 +1182,7 @@ MEM_EXPORT void MEMFindMin( size_t size )
 
     i = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1182,8 +1196,8 @@ MEM_EXPORT void MEMFindMin( size_t size )
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
-    
+    RELEASE_LOCK(MEMORY_MUTEX);
+
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
 }
@@ -1192,8 +1206,8 @@ MEM_EXPORT void MEMFindMin( size_t size )
 
 /*===================================================
 
-   MEMFindMax :  Display statistics of all allocations 
-                 equal to, or greater than, the 
+   MEMFindMax :  Display statistics of all allocations
+                 equal to, or greater than, the
                  specified size.
 
    INPUTS: Allocation size.
@@ -1202,7 +1216,7 @@ MEM_EXPORT void MEMFindMin( size_t size )
 
   ===================================================*/
 
-MEM_EXPORT void MEMFindMax( size_t size )
+MEM_EXPORT void MEMFindMax(size_t size)
 {
     MEMCHECK *newptr;
     int   i;
@@ -1215,7 +1229,7 @@ MEM_EXPORT void MEMFindMax( size_t size )
 
     i = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1229,7 +1243,7 @@ MEM_EXPORT void MEMFindMax( size_t size )
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
@@ -1242,14 +1256,14 @@ MEM_EXPORT void MEMFindMax( size_t size )
    MEMFindUsage :  Display the total size (in bytes)
                    of allocations handled by the
                    memory manager.
-                   
+
    INPUTS: None.
 
    RETURNS: None.
 
   ===================================================*/
 
-MEM_EXPORT void MEMFindUsage( void )
+MEM_EXPORT void MEMFindUsage(void)
 {
     MEMCHECK *newptr;
 
@@ -1258,7 +1272,7 @@ MEM_EXPORT void MEMFindUsage( void )
     DBG(PF("Total Memory Allocations = "));
 
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1267,7 +1281,7 @@ MEM_EXPORT void MEMFindUsage( void )
         total_size += newptr->size;
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     MEM_TOTAL_ALLOC = total_size;
 
@@ -1281,15 +1295,15 @@ MEM_EXPORT void MEMFindUsage( void )
    MEMFindName :  Display all of the allocations
                   with user strings matching the
                   specified string.
-                  
-                   
+
+
    INPUTS: String to match.
 
    RETURNS: Number of entries matching.
 
   ===================================================*/
 
-MEM_EXPORT int MEMFindName( char * string )
+MEM_EXPORT int MEMFindName(char * string)
 {
     MEMCHECK *newptr;
     int   i;
@@ -1309,7 +1323,7 @@ MEM_EXPORT int MEMFindName( char * string )
 
     i = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     for (newptr = MEMCHECK_LIST;
          newptr != NULL;
@@ -1323,7 +1337,7 @@ MEM_EXPORT int MEMFindName( char * string )
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
@@ -1343,20 +1357,20 @@ MEM_EXPORT int MEMFindName( char * string )
 
   ===================================================*/
 
-MEM_EXPORT int MEMSanity( void )
+MEM_EXPORT int MEMSanity(void)
 {
     MEMCHECK *newptr;
     int   i;
     long *tailptr;
     memBOOL check_head,
-          check_tail;
+            check_tail;
     int   retval = TRUE;
 
     long  total_size = 0;
 
     i = 0;
 
-    WAIT_FOR_LOCK( MEMORY_MUTEX );
+    WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     DBG(if (!MEMCHECK_LIST))
         DBG(PF("Empty list!\n"));
@@ -1380,9 +1394,9 @@ MEM_EXPORT int MEMSanity( void )
         }
     }
 
-    RELEASE_LOCK( MEMORY_MUTEX );
+    RELEASE_LOCK(MEMORY_MUTEX);
 
-    return( retval );
+    return(retval);
 }
 
 
@@ -1396,7 +1410,7 @@ MEM_EXPORT int MEMSanity( void )
 
   ===================================================*/
 
-MEM_EXPORT void MEMMark( void * ptr )
+MEM_EXPORT void MEMMark(void * ptr)
 {
     long  size;
 
@@ -1409,35 +1423,35 @@ MEM_EXPORT void MEMMark( void * ptr )
 
 
 /* ----------------------------------------
-   printing utility function 
+   printing utility function
    ---------------------------------------- */
 
-MEM_EXPORT void PrintMemHeading( void )
+MEM_EXPORT void PrintMemHeading(void)
 {
 #if( USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF )
 #  if( USE_DEBUG_MONO )
-      MonoColor( MONO_REVERSE | MONO_INTENSE );
+    MonoColor(MONO_REVERSE | MONO_INTENSE);
 #  endif
 
 #  if( MEM_DEBUG_PRINTF )
-      DBG(PF( "\n" ));
+    DBG(PF("\n"));
 #  endif
 
     DBG(PF(" BLOCK LOCATION   SIZE  COOKIES     NAME            LINE  FILE  "));
 
 #  if( MEM_DEBUG_PRINTF )
-      DBG(PF( "\n" ));
+    DBG(PF("\n"));
 #  endif
 
 #  if( USE_DEBUG_MONO )
-      MonoColor( MONO_NORMAL );
+    MonoColor(MONO_NORMAL);
 #  endif
 #endif
 }
 
 
 /* ----------------------------------------
-   printing utility function 
+   printing utility function
    ---------------------------------------- */
 
 MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
@@ -1462,16 +1476,16 @@ MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
     else
     {
 #if( USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF )
-        #if( USE_DEBUG_MONO )
-            MonoColor( MONO_NORMAL | MONO_BLINK );
-        #endif
+#if( USE_DEBUG_MONO )
+        MonoColor(MONO_NORMAL | MONO_BLINK);
+#endif
 
         DBG(PF("FAILED "));
 
-        #if( USE_DEBUG_MONO )
-            dbgPause();
-            MonoColor( MONO_NORMAL );
-        #endif
+#if( USE_DEBUG_MONO )
+        dbgPause();
+        MonoColor(MONO_NORMAL);
+#endif
 #endif
     }
 
@@ -1507,5 +1521,6 @@ MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
             PrintMemHeading();
         }
     }
+
 #endif
 }

@@ -6,22 +6,23 @@
 #include "Falcmesg.h"
 #include "Sim/Include/simmover.h"
 
-class RequestUnitPosition : public FalconEvent {
+class RequestUnitPosition : public FalconEvent
+{
 public:
-	// sender constructor
-	RequestUnitPosition(SimMoverClass *mover, VU_ID target);
-	// receiver constructor
-	RequestUnitPosition(VU_ID senderID, VU_ID target);
-	// destructor
-	~RequestUnitPosition();
+    // sender constructor
+    RequestUnitPosition(SimMoverClass *mover, VU_ID target);
+    // receiver constructor
+    RequestUnitPosition(VU_ID senderID, VU_ID target);
+    // destructor
+    ~RequestUnitPosition();
 
-	// stream functions
-	int Size (void);
-	int Decode (VU_BYTE **buf, long *rem);
-	int Encode (VU_BYTE **buf);
+    // stream functions
+    int Size(void);
+    int Decode(VU_BYTE **buf, long *rem);
+    int Encode(VU_BYTE **buf);
 
 protected:
-	int Process(uchar autodisp);
+    int Process(uchar autodisp);
 
 };
 

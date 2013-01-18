@@ -13,44 +13,45 @@ extern "C" {
 
 #define U_AVAILABLE	0x1
 
-/*
-typedef struct {
-	CdbStaticHeader				entity;
-	UnitTransmitDataType			transmitData;
-	UnitClass						*UnitData;
-	} FalconUnitType;
+    /*
+    typedef struct {
+    	CdbStaticHeader				entity;
+    	UnitTransmitDataType			transmitData;
+    	UnitClass						*UnitData;
+    	} FalconUnitType;
 
-typedef struct {
-	CdbStaticHeader				entity;
-	CommandTransmitDataType		transmitData;
-	CommandClass					*CommandData;
-	} FalconCommandType;
+    typedef struct {
+    	CdbStaticHeader				entity;
+    	CommandTransmitDataType		transmitData;
+    	CommandClass					*CommandData;
+    	} FalconCommandType;
 
-typedef struct {
-	CdbStaticHeader				entity;
-	HQTransmitDataType			transmitData;
-	HQClass							*HQData;
-	} FalconHQType;
+    typedef struct {
+    	CdbStaticHeader				entity;
+    	HQTransmitDataType			transmitData;
+    	HQClass							*HQData;
+    	} FalconHQType;
 
-// OR...
+    // OR...
 
-typedef struct {
-	CdbStaticHeader				entity;
-	TransmitDataType				transmitData;
-	union	{
-		UnitClass						*UnitData;
-		CommandClass					*CommandData;
-		HQClass							*HQData;
-		};
-	} FalconUnitType;
+    typedef struct {
+    	CdbStaticHeader				entity;
+    	TransmitDataType				transmitData;
+    	union	{
+    		UnitClass						*UnitData;
+    		CommandClass					*CommandData;
+    		HQClass							*HQData;
+    		};
+    	} FalconUnitType;
 
-*/
+    */
 
-typedef struct {
-	CdbStaticHeader				entity;
-	ObjectiveTransmitDataType	transmitData;
-	ObjectiveClass					*ObjectiveData;
-	} FalconObjectiveType;
+    typedef struct
+    {
+        CdbStaticHeader				entity;
+        ObjectiveTransmitDataType	transmitData;
+        ObjectiveClass					*ObjectiveData;
+    } FalconObjectiveType;
 
 #ifdef __cplusplus
 #endif

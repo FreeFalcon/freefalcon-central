@@ -4,7 +4,7 @@
 
   This header file is used by all of the UnZip source files.  Its contents
   are divided into seven more-or-less separate sections:  predefined macros,
-  OS-dependent includes, (mostly) OS-independent defines, typedefs, function 
+  OS-dependent includes, (mostly) OS-independent defines, typedefs, function
   prototypes (or "forward declarations," in the case of non-ANSI compilers),
   macros, and global-variable declarations.
 
@@ -116,13 +116,13 @@
 #  ifndef NO_STDLIB_H
 #    include <stdlib.h>    /* standard library prototypes, malloc(), etc. */
 #  endif
-   typedef size_t extent;
-   typedef void voidp;
+typedef size_t extent;
+typedef void voidp;
 #else /* !MODERN */
-   LONGINT lseek();
-   char *malloc();
-   typedef unsigned int extent;
-   typedef char voidp;
+LONGINT lseek();
+char *malloc();
+typedef unsigned int extent;
+typedef char voidp;
 #  define void int
 #endif /* ?MODERN */
 
@@ -161,7 +161,7 @@
 #    define __32BIT__
 #  endif
 #  include <sys/timeb.h>     /* for structure ftime */
-   int setmode(int, int);    /* not in djgpp's include files */
+int setmode(int, int);    /* not in djgpp's include files */
 #endif
 
 #if defined(_MSC_VER) && (!defined(MSC))
@@ -263,7 +263,7 @@
 #endif
 
 #define DIR_BLKSIZ  64      /* number of directory entries per block
-                             *  (should fit in 4096 bytes, usually) */
+*  (should fit in 4096 bytes, usually) */
 #ifndef WSIZE
 #  define WSIZE     0x8000  /* window size--must be a power of two, and */
 #endif                      /*  at least 32K for zip's deflate method */
@@ -551,7 +551,8 @@ typedef unsigned char     uch;  /* code assumes unsigned bytes; these type-  */
 typedef unsigned short    ush;  /*  defs replace byte/UWORD/ULONG (which are */
 typedef unsigned long     ulg;  /*  predefined on some systems) & match zip  */
 
-typedef struct min_info {
+typedef struct min_info
+{
     long offset;
     ulg compr_size;          /* compressed size (needed if extended header) */
     ulg crc;                 /* crc (needed if extended header) */
@@ -565,7 +566,8 @@ typedef struct min_info {
     unsigned vollabel : 1;   /* "file" is an MS-DOS volume (disk) label */
 } min_info;
 
-typedef struct VMStimbuf {
+typedef struct VMStimbuf
+{
     char *revdate;           /* (both correspond to Unix modtime/st_mtime) */
     char *credate;
 } VMStimbuf;
@@ -575,30 +577,34 @@ typedef struct VMStimbuf {
   ---------------------------------------------------------------------------*/
 
 #ifdef MALLOC_WORK
-   union work {
-     struct {
-       short *Prefix_of;            /* (8193 * sizeof(short)) */
-       uch *Suffix_of;
-       uch *Stack;
-     } shrink;                      /* unshrink() */
-     uch *Slide;                    /* explode(), inflate(), unreduce() */
-   };
+union work
+{
+    struct
+    {
+        short *Prefix_of;            /* (8193 * sizeof(short)) */
+        uch *Suffix_of;
+        uch *Stack;
+    } shrink;                      /* unshrink() */
+    uch *Slide;                    /* explode(), inflate(), unreduce() */
+};
 
 #else /* !MALLOC_WORK */
-   union work {
-     struct {
+union work
+{
+    struct
+    {
 #ifdef HSIZE2    /* needed to avoid errors on some machines? */
-       short Prefix_of[HSIZE + 2];  /* (8194 * sizeof(short)) */
-       uch Suffix_of[HSIZE + 2];    /* also s-f length_nodes (smaller) */
-       uch Stack[HSIZE + 2];        /* also s-f distance_nodes (smaller) */
+        short Prefix_of[HSIZE + 2];  /* (8194 * sizeof(short)) */
+        uch Suffix_of[HSIZE + 2];    /* also s-f length_nodes (smaller) */
+        uch Stack[HSIZE + 2];        /* also s-f distance_nodes (smaller) */
 #else /* !HSIZE2 */
-       short Prefix_of[HSIZE];      /* (8192 * sizeof(short)) */
-       uch Suffix_of[HSIZE];        /* also s-f length_nodes (smaller) */
-       uch Stack[HSIZE];            /* also s-f distance_nodes (smaller) */
+        short Prefix_of[HSIZE];      /* (8192 * sizeof(short)) */
+        uch Suffix_of[HSIZE];        /* also s-f length_nodes (smaller) */
+        uch Stack[HSIZE];            /* also s-f distance_nodes (smaller) */
 #endif /* ?HSIZE2 */
-     } shrink;
-     uch Slide[WSIZE];
-   };
+    } shrink;
+    uch Slide[WSIZE];
+};
 #endif /* ?MALLOC_WORK */
 
 //#define prefix_of   area.shrink.Prefix_of
@@ -611,7 +617,7 @@ typedef struct VMStimbuf {
     xxREC_SIZE defines (above) change with them!
   ---------------------------------------------------------------------------*/
 
-   typedef uch   local_byte_hdr[ LREC_SIZE ];
+typedef uch   local_byte_hdr[ LREC_SIZE ];
 #      define L_VERSION_NEEDED_TO_EXTRACT_0     0
 #      define L_VERSION_NEEDED_TO_EXTRACT_1     1
 #      define L_GENERAL_PURPOSE_BIT_FLAG        2
@@ -624,7 +630,7 @@ typedef struct VMStimbuf {
 #      define L_FILENAME_LENGTH                 22
 #      define L_EXTRA_FIELD_LENGTH              24
 
-   typedef uch   cdir_byte_hdr[ CREC_SIZE ];
+typedef uch   cdir_byte_hdr[ CREC_SIZE ];
 #      define C_VERSION_MADE_BY_0               0
 #      define C_VERSION_MADE_BY_1               1
 #      define C_VERSION_NEEDED_TO_EXTRACT_0     2
@@ -644,7 +650,7 @@ typedef struct VMStimbuf {
 #      define C_EXTERNAL_FILE_ATTRIBUTES        34
 #      define C_RELATIVE_OFFSET_LOCAL_HEADER    38
 
-   typedef uch   ec_byte_rec[ ECREC_SIZE+4 ];
+typedef uch   ec_byte_rec[ ECREC_SIZE + 4 ];
 /*     define SIGNATURE                         0   space-holder only */
 #      define NUMBER_THIS_DISK                  4
 #      define NUM_DISK_WITH_START_CENTRAL_DIR   6
@@ -655,47 +661,50 @@ typedef struct VMStimbuf {
 #      define ZIPFILE_COMMENT_LENGTH            20
 
 
-   typedef struct local_file_header {                 /* LOCAL */
-       uch version_needed_to_extract[2];
-       ush general_purpose_bit_flag;
-       ush compression_method;
-       ush last_mod_file_time;
-       ush last_mod_file_date;
-       ulg crc32;
-       ulg csize;
-       ulg ucsize;
-       ush filename_length;
-       ush extra_field_length;
-   } local_file_hdr;
+typedef struct local_file_header                   /* LOCAL */
+{
+    uch version_needed_to_extract[2];
+    ush general_purpose_bit_flag;
+    ush compression_method;
+    ush last_mod_file_time;
+    ush last_mod_file_date;
+    ulg crc32;
+    ulg csize;
+    ulg ucsize;
+    ush filename_length;
+    ush extra_field_length;
+} local_file_hdr;
 
-   typedef struct central_directory_file_header {     /* CENTRAL */
-       uch version_made_by[2];
-       uch version_needed_to_extract[2];
-       ush general_purpose_bit_flag;
-       ush compression_method;
-       ush last_mod_file_time;
-       ush last_mod_file_date;
-       ulg crc32;
-       ulg csize;
-       ulg ucsize;
-       ush filename_length;
-       ush extra_field_length;
-       ush file_comment_length;
-       ush disk_number_start;
-       ush internal_file_attributes;
-       ulg external_file_attributes;
-       ulg relative_offset_local_header;
-   } cdir_file_hdr;
+typedef struct central_directory_file_header       /* CENTRAL */
+{
+    uch version_made_by[2];
+    uch version_needed_to_extract[2];
+    ush general_purpose_bit_flag;
+    ush compression_method;
+    ush last_mod_file_time;
+    ush last_mod_file_date;
+    ulg crc32;
+    ulg csize;
+    ulg ucsize;
+    ush filename_length;
+    ush extra_field_length;
+    ush file_comment_length;
+    ush disk_number_start;
+    ush internal_file_attributes;
+    ulg external_file_attributes;
+    ulg relative_offset_local_header;
+} cdir_file_hdr;
 
-   typedef struct end_central_dir_record {            /* END CENTRAL */
-       ush number_this_disk;
-       ush num_disk_with_start_central_dir;
-       ush num_entries_centrl_dir_ths_disk;
-       ush total_entries_central_dir;
-       ulg size_central_directory;
-       ulg offset_start_central_directory;
-       ush zipfile_comment_length;
-   } ecdir_rec;
+typedef struct end_central_dir_record              /* END CENTRAL */
+{
+    ush number_this_disk;
+    ush num_disk_with_start_central_dir;
+    ush num_entries_centrl_dir_ths_disk;
+    ush total_entries_central_dir;
+    ulg size_central_directory;
+    ulg offset_start_central_directory;
+    ush zipfile_comment_length;
+} ecdir_rec;
 
 
 
@@ -745,14 +754,14 @@ int      readbuf            __((char *buf, register unsigned len, ARCHIVE * arc)
 int      FillBitBuffer      __((void));
 int      readbyte           __((COMPRESSED_FILE * cmp));
 #ifdef FUNZIP
-   int   flush              __((ulg size));
+int   flush              __((ulg size));
 #else
-   int   flush              __((uch *buf, ulg size, int unshrink, COMPRESSED_FILE * cmp));
+int   flush              __((uch *buf, ulg size, int unshrink, COMPRESSED_FILE * cmp));
 #endif
 void     handler            __((int signal));
 time_t   dos_to_unix_time   __((unsigned ddate, unsigned dtime));
 int      check_for_newer    __((char *filename));       /* also os2.c, vms.c */
-int      find_end_central_dir __((long searchlen, ecdir_rec *, ARCHIVE * arc ));        /* find_ecrec */
+int      find_end_central_dir __((long searchlen, ecdir_rec *, ARCHIVE * arc));         /* find_ecrec */
 //int      get_cdir_file_hdr  __((void));                    /* get_cdir_ent */
 //int      do_string          __((unsigned int len, int option, char *buffer));
 //ush      makeword           __((uch *b));
@@ -760,8 +769,8 @@ int      find_end_central_dir __((long searchlen, ecdir_rec *, ARCHIVE * arc ));
 int      zstrnicmp __((register char *s1, register char *s2, register int n));
 
 #ifdef ZMEM   /* MUST be ifdef'd because of conflicts with the standard def. */
-   char *memset __((register char *, register char, register unsigned int));
-   char *memcpy __((register char *, register char *, register unsigned int));
+char *memset __((register char *, register char, register unsigned int));
+char *memcpy __((register char *, register char *, register unsigned int));
 #endif
 
 /*---------------------------------------------------------------------------
@@ -792,11 +801,11 @@ int    unshrink                  __((void));                   /* unshrink.c */
   ---------------------------------------------------------------------------*/
 
 #if (defined(__GO32__) || (defined(MSDOS) && defined(__EMX__)))
-   void _dos_setftime(int, unsigned short, unsigned short);       /* msdos.c */
-   void _dos_setfileattr(char *, int);                            /* msdos.c */
-   unsigned _dos_creat(char *, unsigned, int *);                  /* msdos.c */
-   void _dos_getdrive(unsigned *);                                /* msdos.c */
-   unsigned _dos_close(int);                                      /* msdos.c */
+void _dos_setftime(int, unsigned short, unsigned short);       /* msdos.c */
+void _dos_setfileattr(char *, int);                            /* msdos.c */
+unsigned _dos_creat(char *, unsigned, int *);                  /* msdos.c */
+void _dos_getdrive(unsigned *);                                /* msdos.c */
+unsigned _dos_close(int);                                      /* msdos.c */
 #endif
 
 
@@ -816,7 +825,7 @@ int      mapname           __((int renamed));                       /* local */
 int      checkdir          __((char *pathcomp, int flag));          /* local */
 char    *do_wild           __((char *wildzipfn));                   /* local */
 #ifndef MTS /* macro in MTS */
-   void  close_outfile     __((void));                              /* local */
+void  close_outfile     __((void));                              /* local */
 #endif
 
 

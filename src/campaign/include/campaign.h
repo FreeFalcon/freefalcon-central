@@ -8,9 +8,10 @@
 
 //sfr:
 //added this struct for a decent return type with size in it
-typedef struct {
-	long dataSize;
-	char *data;
+typedef struct
+{
+    long dataSize;
+    char *data;
 } CampaignData;
 
 // ============
@@ -36,7 +37,7 @@ typedef ObjectiveClass* Objective;
 struct F4CSECTIONHANDLE;
 extern F4CSECTIONHANDLE* campCritical;
 extern int VisualDetectionRange[OtherDam];
-extern uchar DefaultDamageMods[OtherDam+1];
+extern uchar DefaultDamageMods[OtherDam + 1];
 
 // ================
 // Defines & macros
@@ -47,36 +48,42 @@ extern uchar DefaultDamageMods[OtherDam+1];
 // sfr: start removing locks
 #define NO_CAMP_LOCK 1
 
-inline void CampEnterCriticalSection(){ F4EnterCriticalSection(campCritical); }
-inline void CampLeaveCriticalSection(){ F4LeaveCriticalSection(campCritical); }
+inline void CampEnterCriticalSection()
+{
+    F4EnterCriticalSection(campCritical);
+}
+inline void CampLeaveCriticalSection()
+{
+    F4LeaveCriticalSection(campCritical);
+}
 
 // ======================
 // external functions
 // ======================
-   
-extern Objective AddObjectiveToCampaign (GridIndex I, GridIndex J);
 
-extern void RemoveObjective (Objective O);
+extern Objective AddObjectiveToCampaign(GridIndex I, GridIndex J);
 
-extern int LoadTheater (char *filename);
+extern void RemoveObjective(Objective O);
 
-extern int SaveTheater (char *filename);
+extern int LoadTheater(char *filename);
 
-extern int LinkCampaignObjectives (/*BasePathClass **/ Path p, Objective O1, Objective O2);
+extern int SaveTheater(char *filename);
 
-extern int UnLinkCampaignObjectives (Objective O1, Objective O2);
+extern int LinkCampaignObjectives(/*BasePathClass **/ Path p, Objective O1, Objective O2);
 
-extern int RecalculateLinks (Objective o);
+extern int UnLinkCampaignObjectives(Objective O1, Objective O2);
 
-extern Unit GetUnitByXY (GridIndex I, GridIndex J);
+extern int RecalculateLinks(Objective o);
 
-extern Unit AddUnit (GridIndex I, GridIndex J, char Side);
+extern Unit GetUnitByXY(GridIndex I, GridIndex J);
 
-extern Unit CreateUnit (Control who, int Domain, UnitType Type, uchar SType, uchar SPType, Unit Parent);
+extern Unit AddUnit(GridIndex I, GridIndex J, char Side);
 
-extern void RemoveUnit (Unit u);
+extern Unit CreateUnit(Control who, int Domain, UnitType Type, uchar SType, uchar SPType, Unit Parent);
 
-extern int TimeOfDayGeneral (CampaignTime time);
+extern void RemoveUnit(Unit u);
+
+extern int TimeOfDayGeneral(CampaignTime time);
 
 extern int TimeOfDayGeneral(void);
 
@@ -84,22 +91,22 @@ extern CampaignTime TimeOfDay(void);
 
 extern int CreateCampFile(char *filename, char* path);
 
-extern FILE* OpenCampFile (char *filename, char *ext, char *mode);
-extern void CloseCampFile (FILE *);
+extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern void CloseCampFile(FILE *);
 
-extern void StartReadCampFile (FalconGameType type, char *filename);
+extern void StartReadCampFile(FalconGameType type, char *filename);
 //sfr: changed return type
 //extern char *ReadCampFile (char *filename, char *ext);
-extern CampaignData ReadCampFile (char *filename, char *ext);
-extern void EndReadCampFile (void);
+extern CampaignData ReadCampFile(char *filename, char *ext);
+extern void EndReadCampFile(void);
 
-extern void StartWriteCampFile (FalconGameType type, char *filename);
-extern void WriteCampFile (char *filename, char *ext, char *data, int size);
-extern void EndWriteCampFile (void);
+extern void StartWriteCampFile(FalconGameType type, char *filename);
+extern void WriteCampFile(char *filename, char *ext, char *data, int size);
+extern void EndWriteCampFile(void);
 
 // Bubble rebuilding stuff
-extern void CampaignRequestSleep (void);
-extern int CampaignAllAsleep (void);
+extern void CampaignRequestSleep(void);
+extern int CampaignAllAsleep(void);
 
 #undef Unit
 #undef Objective

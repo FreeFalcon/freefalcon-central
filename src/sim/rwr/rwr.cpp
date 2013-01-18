@@ -86,8 +86,9 @@ void RwrClass::DrawSymbol(VirtualDisplay *display, int symbolID, int boxed)
     if (flash && ((oldcount && show != 0) || (!oldcount && show == 0)))
     {
         ++show;
+
         if (show > 3)
-			show = oldcount = 0;
+            show = oldcount = 0;
     }
 
     if (!flash && ((oldcount && show == 0) || (!oldcount && show != 0)))

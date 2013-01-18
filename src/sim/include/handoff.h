@@ -13,7 +13,7 @@ class SimObjectType;
 
 typedef enum { HANDOFF_RADAR, HANDOFF_RANDOM, HANDOFF_LEADER } HandOffType;
 
-FalconEntity*	SimCampHandoff( FalconEntity  *current, HandOffType style );
-SimObjectType*	SimCampHandoff( SimObjectType *current, SimObjectType *tgtList, HandOffType style );
+FalconEntity*	SimCampHandoff(FalconEntity  *current, HandOffType style);
+SimObjectType*	SimCampHandoff(SimObjectType *current, SimObjectType *tgtList, HandOffType style);
 
 #endif // _HANDOFF_H_

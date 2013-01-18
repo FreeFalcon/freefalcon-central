@@ -14,42 +14,42 @@
 extern "C" {
 #endif
 
-/** starts bandwidth control */
-void start_bandwidth();
+    /** starts bandwidth control */
+    void start_bandwidth();
 
-/** enters a given state, adjusting bandwidth */
-void enter_state(bwstates);
+    /** enters a given state, adjusting bandwidth */
+    void enter_state(bwstates);
 
-/** called when a new player joins, adjusting bw */
-void player_joined();
+    /** called when a new player joins, adjusting bw */
+    void player_joined();
 
-/** called when a player leaves, adjusting bw */
-void player_left();
+    /** called when a player leaves, adjusting bw */
+    void player_left();
 
-/** consume bandwidth
-* @param size amount of bytes to consume
-* @param isReliable indicates we are consuming reliable data. This means size will be adjusted,
-* @param type of bandwidth being used
-* since reliable consumes more
-*/
-void use_bandwidth (int size, int isReliable, int type);
+    /** consume bandwidth
+    * @param size amount of bytes to consume
+    * @param isReliable indicates we are consuming reliable data. This means size will be adjusted,
+    * @param type of bandwidth being used
+    * since reliable consumes more
+    */
+    void use_bandwidth(int size, int isReliable, int type);
 
-/** checks if there is available bandwidth. if isRUDP, size is adjusted since RUDP consumes more 
-* @param size amount of bytes
-* @param isReliable indicates we are consuming RUDP, meaning size will be adjusted 
-* @param type of bandwidth being used
-* @return 0 if there is no BW available, different otherwise
-*/
-int check_bandwidth(int size, int isReliable, int type);
+    /** checks if there is available bandwidth. if isRUDP, size is adjusted since RUDP consumes more
+    * @param size amount of bytes
+    * @param isReliable indicates we are consuming RUDP, meaning size will be adjusted
+    * @param type of bandwidth being used
+    * @return 0 if there is no BW available, different otherwise
+    */
+    int check_bandwidth(int size, int isReliable, int type);
 
-/** we call this when we want to stop sending (for example, when a send would block because of a full queue */
-void cut_bandwidth();
+    /** we call this when we want to stop sending (for example, when a send would block because of a full queue */
+    void cut_bandwidth();
 
-/** gets status regarding BW usage 
-* @param isReliable status for reliable connection? or regular?
-* @return ok: 0, warning: 1, critical: 0
-*/
-int get_status(int isReliable);
+    /** gets status regarding BW usage
+    * @param isReliable status for reliable connection? or regular?
+    * @return ok: 0, warning: 1, critical: 0
+    */
+    int get_status(int isReliable);
 
 #ifdef __cplusplus
 }

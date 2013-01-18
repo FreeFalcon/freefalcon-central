@@ -6,11 +6,11 @@
 
 class EasyHarmTargetingPod : public HarmTargetingPod
 {
-  public:
-	EasyHarmTargetingPod(int idx, SimMoverClass* newPlatform);
-	virtual ~EasyHarmTargetingPod(void);
-	
-	virtual void			Display (VirtualDisplay *newDisplay);
+public:
+    EasyHarmTargetingPod(int idx, SimMoverClass* newPlatform);
+    virtual ~EasyHarmTargetingPod(void);
+
+    virtual void			Display(VirtualDisplay *newDisplay);
 };
 
 #endif // _EASYHARMPOD_H

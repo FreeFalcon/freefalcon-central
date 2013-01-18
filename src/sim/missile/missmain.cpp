@@ -1294,26 +1294,26 @@ MissileClass::ApplyProximityDamage(void)
         				//Only check against planes ....
         				//removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
         				if ( !(testObject->IsAirplane())/* || targetPtr &&  ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
-					testObject = (SimBaseClass*) objectWalker.GetNext();
-					continue;
-				}
-				tmpX = testObject->XPos() - XPos();
-				tmpY = testObject->YPos() - YPos();
-				tmpZ = testObject->ZPos() - ZPos();
-
-				rangeSquare = tmpX*tmpX + tmpY*tmpY + tmpZ*tmpZ;
-
-				if (rangeSquare < lethalRadiusSqrd ) {
-					// edg: calculate a normalized blast Dist
-					normBlastDist = ( lethalRadiusSqrd - rangeSquare )/( lethalRadiusSqrd );
-
-					// quadratic dropoff
-					normBlastDist *= normBlastDist;
-					SendDamageMessage( targetPtr->BaseData(), rangeSquare, FalconDamageType::MissileDamage ); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
-				}
-				testObject = (SimBaseClass*) objectWalker.GetNext();
-			}
+			testObject = (SimBaseClass*) objectWalker.GetNext();
+			continue;
 		}
+		tmpX = testObject->XPos() - XPos();
+		tmpY = testObject->YPos() - YPos();
+		tmpZ = testObject->ZPos() - ZPos();
+
+		rangeSquare = tmpX*tmpX + tmpY*tmpY + tmpZ*tmpZ;
+
+		if (rangeSquare < lethalRadiusSqrd ) {
+			// edg: calculate a normalized blast Dist
+			normBlastDist = ( lethalRadiusSqrd - rangeSquare )/( lethalRadiusSqrd );
+
+			// quadratic dropoff
+			normBlastDist *= normBlastDist;
+			SendDamageMessage( targetPtr->BaseData(), rangeSquare, FalconDamageType::MissileDamage ); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
+		}
+		testObject = (SimBaseClass*) objectWalker.GetNext();
+	}
+}
 */		if (targetPtr)
         {
             // F4Assert(targetPtr->BaseData()->IsSim());

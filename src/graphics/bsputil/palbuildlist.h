@@ -13,30 +13,36 @@
 extern class BuildTimePaletteList	ThePaletteBuildList;
 
 
-typedef struct BuildTimePaletteEntry {
-	UInt32	palData[256];
-	int		index;
-	int		refCount;
+typedef struct BuildTimePaletteEntry
+{
+    UInt32	palData[256];
+    int		index;
+    int		refCount;
 
-	struct BuildTimePaletteEntry	*prev;
-	struct BuildTimePaletteEntry	*next;
+    struct BuildTimePaletteEntry	*prev;
+    struct BuildTimePaletteEntry	*next;
 } BuildTimePaletteEntry;
 
 
-class BuildTimePaletteList {
-  public:
-	BuildTimePaletteList()	{ head = tail = NULL; listLen = 0; };
-	~BuildTimePaletteList()	{};
+class BuildTimePaletteList
+{
+public:
+    BuildTimePaletteList()
+    {
+        head = tail = NULL;
+        listLen = 0;
+    };
+    ~BuildTimePaletteList()	{};
 
-	int		AddReference( UInt32 *palData );
-	void	BuildPool(void);
-	void	WritePool( int file );
-	void	Report(void);
-	void	MergePalette ();
-  protected:
-	BuildTimePaletteEntry	*head;
-	BuildTimePaletteEntry	*tail;
-	int						listLen;
+    int		AddReference(UInt32 *palData);
+    void	BuildPool(void);
+    void	WritePool(int file);
+    void	Report(void);
+    void	MergePalette();
+protected:
+    BuildTimePaletteEntry	*head;
+    BuildTimePaletteEntry	*tail;
+    int						listLen;
 };
 
 #endif //_PALBUILDLIST_H_

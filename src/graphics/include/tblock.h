@@ -17,74 +17,118 @@
 #include "TMap.h"
 
 
-class TBlock {
-  public:
-	TBlock()	{ owners = 0; };
-	~TBlock()	{ ShiAssert( owners == 0 ); };
+class TBlock
+{
+public:
+    TBlock()
+    {
+        owners = 0;
+    };
+    ~TBlock()
+    {
+        ShiAssert(owners == 0);
+    };
 
-  	TLevel*	Level()	{ return level; };
+    TLevel*	Level()
+    {
+        return level;
+    };
 
-	float	GetMaxZ(void)	{ return maxZ; };
-	float	GetMinZ(void)	{ return minZ; };
+    float	GetMaxZ(void)
+    {
+        return maxZ;
+    };
+    float	GetMinZ(void)
+    {
+        return minZ;
+    };
 
-	// Return the row and column address of this physical block in the map grid
-	UINT	Row()	{ return blockRow; };
-	UINT	Col()	{ return blockCol; };
+    // Return the row and column address of this physical block in the map grid
+    UINT	Row()
+    {
+        return blockRow;
+    };
+    UINT	Col()
+    {
+        return blockCol;
+    };
 
-	// Return a pointer to the South West post in this block (array element 0)
-	Tpost*	Posts()	{ return posts; };
+    // Return a pointer to the South West post in this block (array element 0)
+    Tpost*	Posts()
+    {
+        return posts;
+    };
 
-	// Return a pointer to the specified post (in local row/col coordinates)
-	Tpost*	Post( UINT r, UINT c )		{	ShiAssert(r<(UINT)POSTS_ACROSS_BLOCK);
-											ShiAssert(c<(UINT)POSTS_ACROSS_BLOCK);
-											return posts+(r*POSTS_ACROSS_BLOCK+c);	};
-  
-  protected:
-	// Block coordinates of this block within its level
-	UINT	blockRow;
-	UINT	blockCol;
+    // Return a pointer to the specified post (in local row/col coordinates)
+    Tpost*	Post(UINT r, UINT c)
+    {
+        ShiAssert(r < (UINT)POSTS_ACROSS_BLOCK);
+        ShiAssert(c < (UINT)POSTS_ACROSS_BLOCK);
+        return posts + (r * POSTS_ACROSS_BLOCK + c);
+    };
 
-	// Offset of this block's data in the disk file
-	DWORD	fileOffset;
+protected:
+    // Block coordinates of this block within its level
+    UINT	blockRow;
+    UINT	blockCol;
 
-	// Max and min z values within this block
-	float	maxZ;
-	float	minZ;
+    // Offset of this block's data in the disk file
+    DWORD	fileOffset;
 
-	// The level to which this block belongs
-	TLevel	*level;
+    // Max and min z values within this block
+    float	maxZ;
+    float	minZ;
 
-	// Pointer to the array of posts (NULL when not loaded in memory)
-	Tpost	*posts;
+    // The level to which this block belongs
+    TLevel	*level;
 
-	// How many viewers are using this block -- if none, this block should be removed
-	int		owners;
+    // Pointer to the array of posts (NULL when not loaded in memory)
+    Tpost	*posts;
 
-
-	// Intialize and release block headers - only allowed from within a TLevel's critical section.
-	void Setup( TLevel *Level, UINT r, UINT c );
-	void Cleanup();
-
-	// Set and check ownership of this block (block may belong to multiple viewers)
-	// These should only be called from within the level's critical section
-	void	Reference( void );							// Request use of this block
-	int		Release( void );							// Express disinterest in this block
-	BOOL	IsOwned( void )  { return (owners > 0); };	// Are we in use by any entity?
+    // How many viewers are using this block -- if none, this block should be removed
+    int		owners;
 
 
-	// Allow the level which owns each block to get at the private functions of this class.
-	// Specificly, the reference and release functions.
-	friend TLevel;
+    // Intialize and release block headers - only allowed from within a TLevel's critical section.
+    void Setup(TLevel *Level, UINT r, UINT c);
+    void Cleanup();
+
+    // Set and check ownership of this block (block may belong to multiple viewers)
+    // These should only be called from within the level's critical section
+    void	Reference(void);							// Request use of this block
+    int		Release(void);							// Express disinterest in this block
+    BOOL	IsOwned(void)
+    {
+        return (owners > 0);
+    };	// Are we in use by any entity?
+
+
+    // Allow the level which owns each block to get at the private functions of this class.
+    // Specificly, the reference and release functions.
+    friend TLevel;
 
 
 #ifdef USE_SH_POOLS
-  public:
-	// Overload new/delete to use a SmartHeap fixed size pool
-	void *operator new(size_t size) { ShiAssert( size == sizeof(TBlock) ); return MemAllocFS(pool);	};
-	void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-	static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(TBlock), 4, 0 ); };
-	static void ReleaseStorage()	{ MemPoolFree( pool ); };
-	static MEM_POOL	pool;
+public:
+    // Overload new/delete to use a SmartHeap fixed size pool
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(TBlock));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(TBlock), 4, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
+    static MEM_POOL	pool;
 #endif
 };
 

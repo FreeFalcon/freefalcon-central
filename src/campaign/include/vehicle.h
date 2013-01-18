@@ -63,36 +63,36 @@ typedef UnitClass* Unit;
 // Global Functions
 // ===================
 
-extern char* GetVehicleName (VehicleID vid);
+extern char* GetVehicleName(VehicleID vid);
 
-extern VehicleClassDataType* GetVehicleClassData (int index);
+extern VehicleClassDataType* GetVehicleClassData(int index);
 
 // extern int GetVehicleHitChance (Unit u, int id, int mt, int range, int hitflags);
 
-extern int GetAproxVehicleHitChance (int id, int mt, int range);
+extern int GetAproxVehicleHitChance(int id, int mt, int range);
 
-extern int CalculateVehicleHitChance (int id, int mt);
+extern int CalculateVehicleHitChance(int id, int mt);
 
 // extern int GetVehicleCombatStrength (Unit u, int id, int mt, int range);
 
-extern int GetAproxVehicleCombatStrength (int id, int mt, int range);
+extern int GetAproxVehicleCombatStrength(int id, int mt, int range);
 
-extern int CalculateVehicleCombatStrength (int id, int mt);
+extern int CalculateVehicleCombatStrength(int id, int mt);
 
-extern int GetAproxVehicleRange (int id, int mt);
+extern int GetAproxVehicleRange(int id, int mt);
 
 // extern int GetVehicleRange (Unit u, int id, int mt);
 
-extern int CalculateVehicleRange (int id, int mt);
+extern int CalculateVehicleRange(int id, int mt);
 
-extern int GetVehicleDetectionRange (int id, int mt);
+extern int GetVehicleDetectionRange(int id, int mt);
 
-extern int GetBestVehicleWeapon (int id, uchar* dam, MoveType m, int range, int *hard_point);
+extern int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_point);
 
-extern void CalculateVehicleStatistics (int id);
+extern void CalculateVehicleStatistics(int id);
 
-extern int GetVehicleWeapon (int vid, int hp);
+extern int GetVehicleWeapon(int vid, int hp);
 
-extern int GetVehicleWeapons (int vid, int hp);
+extern int GetVehicleWeapons(int vid, int hp);
 
 #endif

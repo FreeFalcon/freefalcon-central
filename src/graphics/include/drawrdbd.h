@@ -12,40 +12,59 @@
 #include "DrawBldg.h"
 
 
-class DrawableRoadbed : public DrawableBuilding {
-  public:
-	DrawableRoadbed( int IDbase, int IDtop, Tpoint *pos, float heading, float height, float angle, float s = 1.0f );
-	virtual ~DrawableRoadbed();
+class DrawableRoadbed : public DrawableBuilding
+{
+public:
+    DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float heading, float height, float angle, float s = 1.0f);
+    virtual ~DrawableRoadbed();
 
-	virtual void Draw( class RenderOTW *renderer, int LOD );
-	void         DrawSuperstructure( class RenderOTW *renderer, int LOD );
-	void         DrawSuperstructure( class Render3D *renderer );
+    virtual void Draw(class RenderOTW *renderer, int LOD);
+    void         DrawSuperstructure(class RenderOTW *renderer, int LOD);
+    void         DrawSuperstructure(class Render3D *renderer);
 
-	BOOL OnRoadbed( Tpoint *pos, Tpoint *normal );
+    BOOL OnRoadbed(Tpoint *pos, Tpoint *normal);
 
-	// This one is for internal use only.  Don't use it or you'll break things...
-	void ForceZ( float z )		{ position.z = z; if (superStructure) superStructure->ForceZ(z); };
+    // This one is for internal use only.  Don't use it or you'll break things...
+    void ForceZ(float z)
+    {
+        position.z = z;
 
-  protected:
-	DrawableBSP		*superStructure;
+        if (superStructure) superStructure->ForceZ(z);
+    };
 
-	float			start;
-	float			length;
+protected:
+    DrawableBSP		*superStructure;
 
-	float			cosInvYaw;
-	float			sinInvYaw;
+    float			start;
+    float			length;
 
-	float			tanRampAngle;
-	Edge			ramp;
+    float			cosInvYaw;
+    float			sinInvYaw;
+
+    float			tanRampAngle;
+    Edge			ramp;
 
 #ifdef USE_SH_POOLS
-  public:
-	// Overload new/delete to use a SmartHeap fixed size pool
-	void *operator new(size_t size) { ShiAssert( size == sizeof(DrawableRoadbed) ); return MemAllocFS(pool);	};
-	void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-	static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(DrawableRoadbed), 10, 0 ); };
-	static void ReleaseStorage()	{ MemPoolFree( pool ); };
-	static MEM_POOL	pool;
+public:
+    // Overload new/delete to use a SmartHeap fixed size pool
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(DrawableRoadbed));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(DrawableRoadbed), 10, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
+    static MEM_POOL	pool;
 #endif
 };
 

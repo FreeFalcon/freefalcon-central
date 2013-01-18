@@ -32,7 +32,7 @@ typedef signed char		GLbyte;
 typedef unsigned char	GLubyte;
 typedef signed int		GLFixed0_14;
 
-// color depth 
+// color depth
 #define COLOR_256					0		// 256 color
 #define COLOR_32K					1		// 32K color --  0rrrrrgggggbbbbb
 #define COLOR_64K					2		// 64K color --  rrrrrggggggbbbbb
@@ -50,11 +50,11 @@ typedef signed int		GLFixed0_14;
 
 struct GLImageInfo
 {
-	GLint	 		width;
-	GLint	 		height;
-	GLulong			*palette;
-	GLubyte			*image;
-	DDSURFACEDESC2	ddsd;
+    GLint	 		width;
+    GLint	 		height;
+    GLulong			*palette;
+    GLubyte			*image;
+    DDSURFACEDESC2	ddsd;
 };
 
 #endif

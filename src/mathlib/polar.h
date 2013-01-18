@@ -21,7 +21,7 @@ public:
     polar2(const polar2& src);
     /// the assignment operator
     polar2& operator=(const polar2& rhs);
-    /// convert to normalized cartesian coords 
+    /// convert to normalized cartesian coords
     vector3 get_cartesian() const;
     /// get theta and rho in a 2d vec
     vector2 get() const;
@@ -29,9 +29,9 @@ public:
     void set(const polar2& p);
     /// set to theta and rho
     void set(const float t, const float r);
-    /// set to cartesian 
+    /// set to cartesian
     void set(const vector3&);
-    /// fuzzy equality check 
+    /// fuzzy equality check
     bool isequal(const polar2& rhs, float tol);
 
     float theta;
@@ -39,7 +39,10 @@ public:
 
 private:
     /// the equal operator is not allowed, use isequal() with tolerance!
-    bool operator==(const polar2& /*rhs*/) { return false; }
+    bool operator==(const polar2& /*rhs*/)
+    {
+        return false;
+    }
 };
 
 //------------------------------------------------------------------------------
@@ -134,6 +137,7 @@ polar2::set(const vector3& vec)
 
     // adjust dRho based on the quadrant we are in
     double dRho;
+
     if ((v2.x >= 0.0f) && (v2.y >= 0.0f))
     {
         // quadrant 1
@@ -141,7 +145,7 @@ polar2::set(const vector3& vec)
     }
     else if ((v2.x < 0.0f) && (v2.y >= 0.0f))
     {
-        // quadrant 2 
+        // quadrant 2
         dRho = acos(v2.y) + _deg2rad(90.0f);
     }
     else if ((v2.x < 0.0f) && (v2.y < 0.0f))
@@ -158,7 +162,7 @@ polar2::set(const vector3& vec)
     this->theta = (float) dTheta;
     this->rho   = (float) dRho;
 }
-    
+
 //------------------------------------------------------------------------------
 /**
     Convert polar to cartesian.
@@ -172,10 +176,10 @@ polar2::get_cartesian() const
     double cos_theta = cos(this->theta);
     double sin_rho   = sin(this->rho);
     double cos_rho   = cos(this->rho);
-    float x = (float) (sin_theta * sin_rho);
+    float x = (float)(sin_theta * sin_rho);
     float y = (float) cos_theta;
-    float z = (float) (sin_theta * cos_rho);
-    v.set(x,y,z);
+    float z = (float)(sin_theta * cos_rho);
+    v.set(x, y, z);
     return v;
 }
 
@@ -188,8 +192,10 @@ polar2::isequal(const polar2& rhs, float tol)
 {
     float dt = _abs(rhs.theta - this->theta);
     float dr = _abs(rhs.rho - this->rho);
+
     if (dt > tol)      return false;
     else if (dr > tol) return false;
+
     return true;
 }
 

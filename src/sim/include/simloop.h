@@ -13,40 +13,48 @@
 
 class SimluationDriver;
 
-class SimulationLoopControl {
+class SimulationLoopControl
+{
 public:
-	static void StartSim(void);
-	static void StopSim(void);
+    static void StartSim(void);
+    static void StopSim(void);
 
-	static void StartGraphics(void);
-	static void StopGraphics(void);
+    static void StartGraphics(void);
+    static void StopGraphics(void);
 
-	static void Loop(void);
-	static void StartLoop(void);
+    static void Loop(void);
+    static void StartLoop(void);
 
-	static bool InSim(void)			{ return currentMode == RunningGraphics; }
-	static int  GetSimTick(void)	{ return sim_tick; }
+    static bool InSim(void)
+    {
+        return currentMode == RunningGraphics;
+    }
+    static int  GetSimTick(void)
+    {
+        return sim_tick;
+    }
 
-	static HANDLE wait_for_sim_cleanup;
-	static HANDLE wait_for_graphics_cleanup;
+    static HANDLE wait_for_sim_cleanup;
+    static HANDLE wait_for_graphics_cleanup;
 
 protected:
-	static enum SimLoopControlMode { 
-		Stopped,
-		StartingSim, 
-		RunningSim, 
-		StartingGraphics, 
-		Step2, 
-		StartRunningGraphics, 
-		RunningGraphics, 
-		StoppingGraphics,
-		Step5,
-		StoppingSim,
-	} currentMode;
+    static enum SimLoopControlMode
+    {
+        Stopped,
+        StartingSim,
+        RunningSim,
+        StartingGraphics,
+        Step2,
+        StartRunningGraphics,
+        RunningGraphics,
+        StoppingGraphics,
+        Step5,
+        StoppingSim,
+    } currentMode;
 
-	static HANDLE wait_for_start_graphics;
-	static HANDLE wait_for_stop_graphics;
-	static int sim_tick;
+    static HANDLE wait_for_start_graphics;
+    static HANDLE wait_for_stop_graphics;
+    static int sim_tick;
 };
 
 

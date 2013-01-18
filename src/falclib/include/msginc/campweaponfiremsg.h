@@ -36,30 +36,30 @@ class SimBaseClass;
  */
 class FalconCampWeaponsFire : public FalconEvent
 {
-   public:
-      FalconCampWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconCampWeaponsFire(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconCampWeaponsFire(void);
-      virtual int Size (void) const;
-	  //sfr: changed to long *
-      virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
-      class DATA_BLOCK
-      {
-         public:
+public:
+    FalconCampWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampWeaponsFire(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconCampWeaponsFire(void);
+    virtual int Size(void) const;
+    //sfr: changed to long *
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
+    class DATA_BLOCK
+    {
+    public:
 
-            VU_ID shooterID;
-            VU_ID fWeaponUID;
-            short weapon[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
-            uchar shots[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
-			uchar fPilotId;
-			uchar dPilotId;
-			ushort size;
-			uchar *data;
-      } dataBlock;
+        VU_ID shooterID;
+        VU_ID fWeaponUID;
+        short weapon[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
+        uchar shots[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
+        uchar fPilotId;
+        uchar dPilotId;
+        ushort size;
+        uchar *data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 extern uchar gDamageStatusBuffer[256];
@@ -67,9 +67,9 @@ extern uchar *gDamageStatusPtr;
 
 // Functions to fire on sim entities from campaign units
 extern SimBaseClass* GetSimTarget(CampEntity target, uchar targetId);
-extern void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uchar shots[], uchar targetId=255);
+extern void FireOnSimEntity(CampEntity shooter, CampEntity campTarg, short weapon[], uchar shots[], uchar targetId = 255);
 extern void FireOnSimEntity(CampEntity shooter, SimBaseClass *simTarg, short weaponId);
-extern void SendSimDamageMessage( CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType,	int weapId );
+extern void SendSimDamageMessage(CampEntity shooter, SimBaseClass *target, float rangeSq, int damageType,	int weapId);
 
 #pragma pack ()
 

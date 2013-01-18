@@ -51,9 +51,9 @@ typedef struct DBLIST
 
 typedef struct
 {
-	int listboxId;
-	int menuId;
-	char name[40];
+    int listboxId;
+    int menuId;
+    char name[40];
 } ACMIEntityUIMap;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,156 +63,162 @@ typedef struct
 class ACMIView
 {
 public:
-	
-	// Constructors.
-	ACMIView();
 
-	// Destructor.
-	~ACMIView();
+    // Constructors.
+    ACMIView();
 
-	// Access.
-	ACMITape *Tape();
-	RViewPoint* Viewpoint();
+    // Destructor.
+    ~ACMIView();
 
-	void ToggleScreenShot();
+    // Access.
+    ACMITape *Tape();
+    RViewPoint* Viewpoint();
 
-	// An array of sim entity pointers.  
-	ACMIEntityUIMap	*_entityUIMappings;
+    void ToggleScreenShot();
 
-	
-	// display toggles
-	void ToggleLabel(int doIDTags);
-	void ToggleHeading(int val);
-	void ToggleAirSpeed(int val);
-	void ToggleAltitude(int val);
-	void ToggleTurnRate(int val);
-	void ToggleTurnRadius(int val);
-	void ToggleWireFrame(int val);
-	void TogglePoles(int val);
-	void ToggleLockLines(int val);
-	void Togglelockrange(int val);//me123
+    // An array of sim entity pointers.
+    ACMIEntityUIMap	*_entityUIMappings;
 
-	void InitGraphics(C_Window *win);
-	int ExitGraphics();
-	
-	void Exec();
-	void Draw();
 
-	void GetObjectName(SimBaseClass* theObject, char *tmpStr);
-	// BING - 4/15/98 
-	void SetObjectName(SimBaseClass* theObject, char *tmpStr);
+    // display toggles
+    void ToggleLabel(int doIDTags);
+    void ToggleHeading(int val);
+    void ToggleAirSpeed(int val);
+    void ToggleAltitude(int val);
+    void ToggleTurnRate(int val);
+    void ToggleTurnRadius(int val);
+    void ToggleWireFrame(int val);
+    void TogglePoles(int val);
+    void ToggleLockLines(int val);
+    void Togglelockrange(int val);//me123
 
-	void InitUIVector();
-	void SetUIVector(Tpoint *tVect);
-	void VectorTranslate(Tpoint *tVector);
-	void VectorToVectorTranslation(Tpoint *tVector, Tpoint *offSetV);
+    void InitGraphics(C_Window *win);
+    int ExitGraphics();
 
-	// List box functions.
-	char *SetListBoxID(int objectNum, long listID);
-	long ListBoxID(int objectNum, long filter);
-	
-	// Camera selection.  
-	void IncrementCameraObject(int inc);
-	void SetCameraObject(int theObject);
-	int CameraObject();
-	void IncrementTrackingObject(int inc);
-	void SetTrackingObject(int theObject);
-	int TrackingObject();
+    void Exec();
+    void Draw();
 
-	// More camera selection.
-	void SelectCamera(long camSel);
-	void SwitchCameraObject(long cameraObject);
-	void SwitchTrackingObject(long cameraObject);
+    void GetObjectName(SimBaseClass* theObject, char *tmpStr);
+    // BING - 4/15/98
+    void SetObjectName(SimBaseClass* theObject, char *tmpStr);
 
-	// Load and unload a tape
-	BOOL LoadTape(char *fname, BOOL reload);
-	void UnloadTape(BOOL reload);
-	BOOL TapeHasLoaded( void ) { return _tapeHasLoaded; };
+    void InitUIVector();
+    void SetUIVector(Tpoint *tVect);
+    void VectorTranslate(Tpoint *tVector);
+    void VectorToVectorTranslation(Tpoint *tVector, Tpoint *offSetV);
 
-	// panner/camera control functions
-	void SetPannerXYZ( float x, float y, float z );
-	void SetPannerAzEl( float az, float el );
-	void ResetPanner( void );
-	void UpdateViewPosRot( void );
-	void ToggleTracking( void )
-	{
-		_tracking ^= 1;
-	};
+    // List box functions.
+    char *SetListBoxID(int objectNum, long listID);
+    long ListBoxID(int objectNum, long filter);
+
+    // Camera selection.
+    void IncrementCameraObject(int inc);
+    void SetCameraObject(int theObject);
+    int CameraObject();
+    void IncrementTrackingObject(int inc);
+    void SetTrackingObject(int theObject);
+    int TrackingObject();
+
+    // More camera selection.
+    void SelectCamera(long camSel);
+    void SwitchCameraObject(long cameraObject);
+    void SwitchTrackingObject(long cameraObject);
+
+    // Load and unload a tape
+    BOOL LoadTape(char *fname, BOOL reload);
+    void UnloadTape(BOOL reload);
+    BOOL TapeHasLoaded(void)
+    {
+        return _tapeHasLoaded;
+    };
+
+    // panner/camera control functions
+    void SetPannerXYZ(float x, float y, float z);
+    void SetPannerAzEl(float az, float el);
+    void ResetPanner(void);
+    void UpdateViewPosRot(void);
+    void ToggleTracking(void)
+    {
+        _tracking ^= 1;
+    };
 
 
 public:
-	int					_initialGraphicsLoad;
+    int					_initialGraphicsLoad;
 
-	int IsFinished() { return _drawingFinished; };
+    int IsFinished()
+    {
+        return _drawingFinished;
+    };
 
-	char				_fileName[MAX_PATH];
-	int					_cameraState;
-	RViewPoint			*_viewPoint;
-	RenderOTW			*_renderer;
-	Texture				wireTexture;
-	HWND					_win;
+    char				_fileName[MAX_PATH];
+    int					_cameraState;
+    RViewPoint			*_viewPoint;
+    RenderOTW			*_renderer;
+    Texture				wireTexture;
+    HWND					_win;
 
-	// currentCam is the object we're attached to
-	// currentEntityCam is the object we're tracking
-	int					_currentCam;			
-	int					_currentEntityCam;
+    // currentCam is the object we're attached to
+    // currentEntityCam is the object we're tracking
+    int					_currentCam;
+    int					_currentEntityCam;
 
-	float				_objectScale;
+    float				_objectScale;
 
-	int					_drawing;
-	int					_drawingFinished;
-	int					_isReady;
-	int					_tapeHasLoaded;
+    int					_drawing;
+    int					_drawingFinished;
+    int					_isReady;
+    int					_tapeHasLoaded;
 
-	int					_doWeather;
+    int					_doWeather;
 
-	int					_takeScreenShot;
+    int					_takeScreenShot;
 
-	SimBaseClass		*_platform;
+    SimBaseClass		*_platform;
 
-	ACMITape			*_tape;
+    ACMITape			*_tape;
 
-	// camera view controls
-	float				_pannerX;
-	float				_pannerY;
-	float				_pannerZ;
-	float				_pannerAz;
-	float				_pannerEl;
-	float				_chaseX;
-	float				_chaseY;
-	float				_chaseZ;
-	BOOL				_tracking;
-	float				_camYaw;
-	float				_camPitch;
-	float				_camRoll;
-	float				_camRange;
+    // camera view controls
+    float				_pannerX;
+    float				_pannerY;
+    float				_pannerZ;
+    float				_pannerAz;
+    float				_pannerEl;
+    float				_chaseX;
+    float				_chaseY;
+    float				_chaseZ;
+    BOOL				_tracking;
+    float				_camYaw;
+    float				_camPitch;
+    float				_camRoll;
+    float				_camRange;
 
-	int					_doWireFrame;
-	int					_doLockLine;
+    int					_doWireFrame;
+    int					_doLockLine;
 
-	// view position and rotation of camera
-	Trotation			_camRot;
-	Tpoint				_camPos;
-	Tpoint				_camWorldPos;
+    // view position and rotation of camera
+    Trotation			_camRot;
+    Tpoint				_camPos;
+    Tpoint				_camWorldPos;
 
-	// Initialize, used by constructor and destructor.
-	void Init();
+    // Initialize, used by constructor and destructor.
+    void Init();
 
-	// Setup functions.  Allocate and initialize data.
-	void SetupEntityUIMappings();
+    // Setup functions.  Allocate and initialize data.
+    void SetupEntityUIMappings();
 
-	
-	// Misc functions.
-	void DrawIDTags();
-	void ShowVersionString();
-	
 
-	// Other random functions.
-	void StopGraphicsLoop();
-	void InsertObjectIntoDrawList(SimBaseClass*);
+    // Misc functions.
+    void DrawIDTags();
+    void ShowVersionString();
 
-	// Take a screen shot.
-	void TakeScreenShot();
+
+    // Other random functions.
+    void StopGraphicsLoop();
+    void InsertObjectIntoDrawList(SimBaseClass*);
+
+    // Take a screen shot.
+    void TakeScreenShot();
 };
 
 #include "acmvwinl.cpp"

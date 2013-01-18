@@ -5,10 +5,10 @@
 // #define USE_ATL_SMART_POINTERS
 
 #ifndef USE_ATL_SMART_POINTERS
-	#define COM_SMARTPTR_TYPEDEF _COM_SMARTPTR_TYPEDEF
+#define COM_SMARTPTR_TYPEDEF _COM_SMARTPTR_TYPEDEF
 #else
-	// Emulates VC smart pointers
-	#define COM_SMARTPTR_TYPEDEF(a, b) typedef CComQIPtr<a, &b> a##Ptr
+// Emulates VC smart pointers
+#define COM_SMARTPTR_TYPEDEF(a, b) typedef CComQIPtr<a, &b> a##Ptr
 #endif	// USE_ATL_SMART_POINTERS
 
 COM_SMARTPTR_TYPEDEF(IDirectDraw, IID_IDirectDraw);
@@ -25,10 +25,10 @@ COM_SMARTPTR_TYPEDEF(IDirectDrawGammaControl, IID_IDirectDrawGammaControl);
 // Helper stuff
 inline void CheckHR(HRESULT hr)
 {
-	if(FAILED(hr))
-	{
-		IErrorInfo *pEI = NULL;
-		::GetErrorInfo(NULL, &pEI);
-		throw _com_error(hr, pEI);
-	}
+    if (FAILED(hr))
+    {
+        IErrorInfo *pEI = NULL;
+        ::GetErrorInfo(NULL, &pEI);
+        throw _com_error(hr, pEI);
+    }
 }

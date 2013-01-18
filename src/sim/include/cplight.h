@@ -41,70 +41,79 @@ extern MEM_POOL gCockMemPool;
 //====================================================//
 
 //Wombat778 3-22-04 Added type to hold textures for rendered lights.
-typedef struct {
-	BYTE *light;
-	std::vector<TextureHandle *> m_arrTex;
-	int mHeight;
-	int mWidth;
+typedef struct
+{
+    BYTE *light;
+    std::vector<TextureHandle *> m_arrTex;
+    int mHeight;
+    int mWidth;
 } SourceLightType;
 
-typedef struct {
-					int				states;
-					int				cursorId;
-					RECT				*psrcRect;
-					int				initialState;
-					int				type;
-					SourceLightType *sourcelights;	//Wombat778 3-22-04
-					} LightButtonInitStr;
+typedef struct
+{
+    int				states;
+    int				cursorId;
+    RECT				*psrcRect;
+    int				initialState;
+    int				type;
+    SourceLightType *sourcelights;	//Wombat778 3-22-04
+} LightButtonInitStr;
 
 //====================================================//
 // CPLight Class Definition
 //====================================================//
 
-class CPLight : public CPObject {
+class CPLight : public CPObject
+{
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(gCockMemPool,size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(gCockMemPool, size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
 public:
 
-	//====================================================//
-	// State Information
-	//====================================================//
+    //====================================================//
+    // State Information
+    //====================================================//
 
-	int		mStates;
-	int		mState;
-	//MI
-	bool WasPersistant;
+    int		mStates;
+    int		mState;
+    //MI
+    bool WasPersistant;
 
-	//====================================================//
-	// Source Locations for Template Surface
-	//====================================================//
+    //====================================================//
+    // Source Locations for Template Surface
+    //====================================================//
 
-	RECT		*mpSrcRect;
+    RECT		*mpSrcRect;
 
-	//====================================================//
-	// Runtime Member Functions
-	//====================================================//
+    //====================================================//
+    // Runtime Member Functions
+    //====================================================//
 
-	virtual void	Exec(SimBaseClass*);
-	virtual void	DisplayBlit(void);
-	void			DisplayBlit3D();
+    virtual void	Exec(SimBaseClass*);
+    virtual void	DisplayBlit(void);
+    void			DisplayBlit3D();
 
-	//Wombat778 3-22-04 Stuff for rendered lights
-	SourceLightType		*mpSourceBuffer;
-	virtual void CreateLit(void);
-	virtual void DiscardLit(void);
-	//Wombat778 End
+    //Wombat778 3-22-04 Stuff for rendered lights
+    SourceLightType		*mpSourceBuffer;
+    virtual void CreateLit(void);
+    virtual void DiscardLit(void);
+    //Wombat778 End
 
-	//====================================================//
-	// Constructors and Destructors
-	//====================================================//
+    //====================================================//
+    // Constructors and Destructors
+    //====================================================//
 
-	CPLight(ObjectInitStr*, LightButtonInitStr*);
-	virtual ~CPLight();
+    CPLight(ObjectInitStr*, LightButtonInitStr*);
+    virtual ~CPLight();
 };
 
 #endif

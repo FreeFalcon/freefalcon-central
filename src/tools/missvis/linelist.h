@@ -14,26 +14,43 @@
 extern class LineListClass	TheLineList;
 
 
-typedef struct LineSegment {
-	Tpoint		p1;
-	Tpoint		p2;
-	DWORD		color;
-	LineSegment	*next;
+typedef struct LineSegment
+{
+    Tpoint		p1;
+    Tpoint		p2;
+    DWORD		color;
+    LineSegment	*next;
 } LineSegment;
 
 
-class LineListClass {
-  public:
-	LineListClass()		{ head = NULL; numLines = 0; };
-	~LineListClass()	{ ClearAll(); };
+class LineListClass
+{
+public:
+    LineListClass()
+    {
+        head = NULL;
+        numLines = 0;
+    };
+    ~LineListClass()
+    {
+        ClearAll();
+    };
 
-	void AddLine( Tpoint *p1, Tpoint *p2, DWORD color );
-	void DrawAll( Render3D *renderer );
-	void ClearAll( void )	{ while (head) { LineSegment *p=head->next; delete head; head = p; } };
+    void AddLine(Tpoint *p1, Tpoint *p2, DWORD color);
+    void DrawAll(Render3D *renderer);
+    void ClearAll(void)
+    {
+        while (head)
+        {
+            LineSegment *p = head->next;
+            delete head;
+            head = p;
+        }
+    };
 
-  private:
-	LineSegment	*head;
-	int			numLines;
+private:
+    LineSegment	*head;
+    int			numLines;
 };
 
 

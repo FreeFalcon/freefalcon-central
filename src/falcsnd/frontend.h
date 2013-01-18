@@ -9,15 +9,15 @@
 ** By Justin Frankel. Updates by Christophe Thibault.
 ** Copyright (C) 1997-2000, Nullsoft Inc.
 ** Last updated: JUL.12.2000.
-** 
+**
 ** Introduction
 ** -----------------------
 ** This file describes a means to easily communicate to Winamp
-** via the classic Win32 Message API. 
+** via the classic Win32 Message API.
 **
 ** These definitions/code assume C/C++. Porting to VB/Delphi shouldn't
 ** be too hard.
-** 
+**
 ** First, you find the HWND of the Winamp main window. From a plug-in
 ** you can easily extract this from the plug-in structure (hMainWindow,
 ** hwndParent, whatever). For external apps, use:
@@ -26,7 +26,7 @@
 **
 ** (note: I know, we're in Winamp 2.x, but it's 1.x for compatibility)
 **
-** Once you have the hwnd_winamp, it's a good idea to check the version 
+** Once you have the hwnd_winamp, it's a good idea to check the version
 ** number. To do this, you send a WM_WA_IPC message to hwnd_winamp.
 ** Note that WM_WA_IPC is defined as Win32's WM_USER.
 **
@@ -76,7 +76,7 @@
 ** int res = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_ISPLAYING);
 **
 ** IPC_ISPLAYING returns the status of playback.
-** If it returns 1, it is playing. if it returns 3, it is paused, 
+** If it returns 1, it is playing. if it returns 3, it is paused,
 ** if it returns 0, it is not playing.
 */
 
@@ -86,7 +86,7 @@
 /*
 ** int res = SendMessage(hwnd_winamp,WM_WA_IPC,mode,IPC_GETOUTPUTTIME);
 **
-** IPC_GETOUTPUTTIME returns the position in milliseconds of the 
+** IPC_GETOUTPUTTIME returns the position in milliseconds of the
 ** current song (mode = 0), or the song length, in seconds (mode = 1).
 ** Returns -1 if not playing or error.
 */
@@ -96,7 +96,7 @@
 
 /* (requires Winamp 1.60+)
 ** SendMessage(hwnd_winamp,WM_WA_IPC,ms,IPC_JUMPTOTIME);
-** IPC_JUMPTOTIME sets the position in milliseconds of the 
+** IPC_JUMPTOTIME sets the position in milliseconds of the
 ** current song (approximately).
 ** Returns -1 if not playing, 1 on eof, or 0 if successful
 */
@@ -156,9 +156,9 @@
 /* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
 ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)"skinname",IPC_SETSKIN);
 **
-** IPC_SETSKIN sets the current skin to "skinname". Note that skinname 
-** can be the name of a skin, a skin .zip file, with or without path. 
-** If path isn't specified, the default search path is the winamp skins 
+** IPC_SETSKIN sets the current skin to "skinname". Note that skinname
+** can be the name of a skin, a skin .zip file, with or without path.
+** If path isn't specified, the default search path is the winamp skins
 ** directory.
 */
 
@@ -168,7 +168,7 @@
 /* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
 ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)skinname_buffer,IPC_GETSKIN);
 **
-** IPC_GETSKIN puts the directory where skin bitmaps can be found 
+** IPC_GETSKIN puts the directory where skin bitmaps can be found
 ** into  skinname_buffer.
 ** skinname_buffer must be MAX_PATH characters in length.
 ** When using a .zip'd skin file, it'll return a temporary directory
@@ -185,7 +185,7 @@
 ** the format of this string can be:
 ** "vis_whatever.dll"
 ** "vis_whatever.dll,0" // (first mod, file in winamp plug-in dir)
-** "C:\\dir\\vis_whatever.dll,1" 
+** "C:\\dir\\vis_whatever.dll,1"
 */
 
 
@@ -219,7 +219,7 @@
 */
 
 
-#define IPC_GETINFO 126 
+#define IPC_GETINFO 126
 
 /* (requires Winamp 2.05+)
 ** int inf=SendMessage(hwnd_winamp,WM_WA_IPC,mode,IPC_GETINFO);
@@ -234,12 +234,12 @@
 */
 
 
-#define IPC_GETEQDATA 127 
+#define IPC_GETEQDATA 127
 
 /* (requires Winamp 2.05+)
 ** int data=SendMessage(hwnd_winamp,WM_WA_IPC,pos,IPC_GETEQDATA);
 **
-** IPC_GETEQDATA queries the status of the EQ. 
+** IPC_GETEQDATA queries the status of the EQ.
 ** The value returned depends on what 'pos' is set to:
 ** Value      Meaning
 ** ------------------
@@ -328,7 +328,7 @@
 /* (requires Winamp 2.4+)
 ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)url,IPC_MBOPENREAL);
 **
-** IPC_MBOPENREAL works the same as IPC_MBOPEN except that it will works even if 
+** IPC_MBOPENREAL works the same as IPC_MBOPEN except that it will works even if
 ** IPC_MBBLOCK has been set to 1
 */
 
@@ -398,9 +398,9 @@
 /**************************************************************************/
 
 /*
-** Finally there are some WM_COMMAND messages that you can use to send 
+** Finally there are some WM_COMMAND messages that you can use to send
 ** Winamp misc commands.
-** 
+**
 ** To send these, use:
 **
 ** SendMessage(hwnd_winamp, WM_COMMAND,command_name,0);
@@ -413,7 +413,7 @@
 #define WINAMP_FFWD5S                   40060 // fast forwards 5 seconds
 #define WINAMP_REW5S                    40061 // rewinds 5 seconds
 
-// the following are the five main control buttons, with optionally shift 
+// the following are the five main control buttons, with optionally shift
 // or control pressed
 // (for the exact functions of each, just try it out)
 #define WINAMP_BUTTON1                  40044

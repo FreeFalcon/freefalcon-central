@@ -25,47 +25,53 @@
  */
 class FalconTeamMessage : public FalconEvent
 {
-   public:
-      enum TeamMsgType {
-         teamRelationsChange,
-         teamNewMember,
-         teamAdjustInititive};
+public:
+    enum TeamMsgType
+    {
+        teamRelationsChange,
+        teamNewMember,
+        teamAdjustInititive
+    };
 
-      FalconTeamMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconTeamMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconTeamMessage(void);
-	  int Size (void) { return sizeof(dataBlock) + FalconEvent::Size();};
-	  //sfr: changed to long*
-	  int Decode (VU_BYTE **buf, long *rem){
-		  long init = *rem;
+    FalconTeamMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconTeamMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconTeamMessage(void);
+    int Size(void)
+    {
+        return sizeof(dataBlock) + FalconEvent::Size();
+    };
+    //sfr: changed to long*
+    int Decode(VU_BYTE **buf, long *rem)
+    {
+        long init = *rem;
 
-		  FalconEvent::Decode (buf, rem);
-		  memcpychk(&dataBlock, buf, sizeof (dataBlock), rem);
-		  return init - *rem;
-	  };
-      int Encode (VU_BYTE **buf)
-         {
-         int size;
+        FalconEvent::Decode(buf, rem);
+        memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
+        return init - *rem;
+    };
+    int Encode(VU_BYTE **buf)
+    {
+        int size;
 
-            size = FalconEvent::Encode (buf);
-            memcpy (*buf, &dataBlock, sizeof (dataBlock));
-            *buf += sizeof (dataBlock);
-            size += sizeof (dataBlock);
-            return size;
-         };
-      class DATA_BLOCK
-      {
-         public:
-            VU_ID from;
-            uchar team;
-            unsigned int messageType;
-            uchar actor;
-            short value;
-            short value2;
-      } dataBlock;
+        size = FalconEvent::Encode(buf);
+        memcpy(*buf, &dataBlock, sizeof(dataBlock));
+        *buf += sizeof(dataBlock);
+        size += sizeof(dataBlock);
+        return size;
+    };
+    class DATA_BLOCK
+    {
+    public:
+        VU_ID from;
+        uchar team;
+        unsigned int messageType;
+        uchar actor;
+        short value;
+        short value2;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 
 #pragma pack ()

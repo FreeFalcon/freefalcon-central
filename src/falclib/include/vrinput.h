@@ -4,11 +4,11 @@
 
 // #define VOICE_INPUT	1
 
-extern void InitVoiceRecognitionEngine (void);
+extern void InitVoiceRecognitionEngine(void);
 
-extern void InitVoiceRecognitionTopicsFiles (char *path);
+extern void InitVoiceRecognitionTopicsFiles(char *path);
 
-extern void DoVoiceRecognitionInput (void);
+extern void DoVoiceRecognitionInput(void);
 
 #endif
 

@@ -35,50 +35,58 @@ extern MEM_POOL gCockMemPool;
 // Initialization Structures
 //====================================================//
 
-typedef struct {
-					int				states;
-					RECT				*psrcRect;
-					} LightInitStr;
+typedef struct
+{
+    int				states;
+    RECT				*psrcRect;
+} LightInitStr;
 
 //====================================================//
 // CPLight Class Definition
 //====================================================//
 
-class CPLight : public CPObject {
+class CPLight : public CPObject
+{
 #ifdef USE_SH_POOLS
-	public:
-		// Overload new/delete to use a SmartHeap pool
-		void *operator new(size_t size) { return MemAllocPtr(gCockMemPool,size,FALSE);	};
-		void operator delete(void *mem) { if (mem) MemFreePtr(mem); };
+public:
+    // Overload new/delete to use a SmartHeap pool
+    void *operator new(size_t size)
+    {
+        return MemAllocPtr(gCockMemPool, size, FALSE);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreePtr(mem);
+    };
 #endif
 public:
 
-	//====================================================//
-	// State Information
-	//====================================================//
+    //====================================================//
+    // State Information
+    //====================================================//
 
-	int		mStates;
-	int		mState;
+    int		mStates;
+    int		mState;
 
-	//====================================================//
-	// Source Locations for Template Surface
-	//====================================================//
+    //====================================================//
+    // Source Locations for Template Surface
+    //====================================================//
 
-	RECT		*mpSrcRect;
+    RECT		*mpSrcRect;
 
-	//====================================================//
-	// Runtime Member Functions
-	//====================================================//
+    //====================================================//
+    // Runtime Member Functions
+    //====================================================//
 
-	void	Exec(SimBaseClass*);
-	void	Display(void);
+    void	Exec(SimBaseClass*);
+    void	Display(void);
 
-	//====================================================//
-	// Constructors and Destructors
-	//====================================================//
+    //====================================================//
+    // Constructors and Destructors
+    //====================================================//
 
-	CPLight(ObjectInitStr*, LightInitStr*);
-	virtual ~CPLight();
+    CPLight(ObjectInitStr*, LightInitStr*);
+    virtual ~CPLight();
 };
 
 #endif

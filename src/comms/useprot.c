@@ -5,17 +5,19 @@
 
 int UseProtocol(IN LPWSAPROTOCOL_INFO Proto)
 {
-  if (!
-      (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) &&
-      (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) &&
-      (Proto->dwServiceFlags1 & XP1_GUARANTEED_DELIVERY) &&
-      (Proto->dwServiceFlags1 & XP1_GUARANTEED_ORDER))
+    if (!
+        (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) &&
+        (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) &&
+        (Proto->dwServiceFlags1 & XP1_GUARANTEED_DELIVERY) &&
+        (Proto->dwServiceFlags1 & XP1_GUARANTEED_ORDER))
     {
-    
+
         returnTRUE;
-    
-    } else {
-        
+
+    }
+    else
+    {
+
         return FALSE;
     }
 } // UseProtocol

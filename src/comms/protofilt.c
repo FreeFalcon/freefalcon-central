@@ -22,17 +22,17 @@ Return Value:
 --*/
 int UseProtocol(IN LPWSAPROTOCOL_INFO Proto)
 {
-  if(!
-     (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) /*&&*/
-     /*(Proto->dwServiceFlags1 & XP1_MULTIPOINT_DATA_PLANE) &&*/
-     /*(Proto->dwServiceFlags1 & XP1_SUPPORT_MULTIPOINT)*/
-     )
+    if (!
+        (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) /*&&*/
+        /*(Proto->dwServiceFlags1 & XP1_MULTIPOINT_DATA_PLANE) &&*/
+        /*(Proto->dwServiceFlags1 & XP1_SUPPORT_MULTIPOINT)*/
+       )
     {
-      return 1;
-    
+        return 1;
+
     }
-  else
+    else
     {
-      return 0;
+        return 0;
     }
 }

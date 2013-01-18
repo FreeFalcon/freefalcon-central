@@ -11,7 +11,7 @@
 
 #include "Cmpglobl.h"
 
-extern bool g_bPrecisionWaypoints;			//Wombat778 11-5-2003 
+extern bool g_bPrecisionWaypoints;			//Wombat778 11-5-2003
 
 class CampBaseClass;
 typedef CampBaseClass* CampEntity;
@@ -20,7 +20,7 @@ typedef CampBaseClass* CampEntity;
 #define WP_NOTHING			0
 #define WP_TAKEOFF			1
 #define WP_ASSEMBLE			2
-#define WP_POSTASSEMBLE		3	
+#define WP_POSTASSEMBLE		3
 #define WP_REFUEL      		4
 #define WP_REARM       		5
 #define WP_PICKUP			6				// Pick up a unit
@@ -43,12 +43,12 @@ typedef CampBaseClass* CampEntity;
 #define	WP_RESCUE			22				// Rescue a pilot at location
 #define	WP_ASW				23
 #define	WP_TANKER			24				// Respond to tanker requests
-#define	WP_AIRDROP			25	
-#define	WP_JAM				26			
+#define	WP_AIRDROP			25
+#define	WP_JAM				26
 
 // M.N. fix for Airlift missions
 //#define WP_LAND2			27				// this is our 2nd landing waypoint for Airlift missions
-											// supply will be given at WP_LAND MNLOOK -> Change in string.txt 377
+// supply will be given at WP_LAND MNLOOK -> Change in string.txt 377
 
 #define	WP_B5
 #define	WP_B6
@@ -80,7 +80,7 @@ typedef CampBaseClass* CampEntity;
 #define	WPF_LAND				0x0100			// Suck aircraft back into squadron
 #define WPF_DIVERT				0x0200			// This is a divert WP (deleted upon completion of divert)
 #define WPF_ALTERNATE			0x0400			// Alternate landing site
-// Climb profile flags			
+// Climb profile flags
 #define WPF_HOLDCURRENT			0x0800			// Stay at current altitude until last minute
 // Other stuff
 #define WPF_REPEAT_CONTINUOUS	0x1000			// Do this until the end of time
@@ -108,133 +108,242 @@ typedef CampBaseClass* CampEntity;
 class WayPointClass;
 typedef WayPointClass* WayPoint;
 
-class WayPointClass {
+class WayPointClass
+{
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size) { ShiAssert( size == sizeof(WayPointClass) ); return MemAllocFS(pool);	};
-    void operator delete(void *mem) { if (mem) MemFreeFS(mem); };
-    static void InitializeStorage()	{ pool = MemPoolInitFS( sizeof(WayPointClass), 200, 0 ); };
-    static void ReleaseStorage()	{ MemPoolFree( pool ); };
+    void *operator new(size_t size)
+    {
+        ShiAssert(size == sizeof(WayPointClass));
+        return MemAllocFS(pool);
+    };
+    void operator delete(void *mem)
+    {
+        if (mem) MemFreeFS(mem);
+    };
+    static void InitializeStorage()
+    {
+        pool = MemPoolInitFS(sizeof(WayPointClass), 200, 0);
+    };
+    static void ReleaseStorage()
+    {
+        MemPoolFree(pool);
+    };
     static MEM_POOL	pool;
 #endif
 private:
-  	GridIndex          	GridX;					// Waypoint's X,Y and Z coordinates (in km from southwest corner)
-	GridIndex			GridY;
-	short				GridZ;					// Z is in 10s of feet		
-  	CampaignTime      	Arrive;
-	CampaignTime		Depart;					// This is only used for loiter waypoints 
-	VU_ID				TargetID;
-  	uchar             	Action;
-	uchar				RouteAction;
-	uchar				Formation;
-	uchar				TargetBuilding;
-	ulong				Flags;					// Various wp flags
-	short				Tactic;					// Tactic to use here
+    GridIndex          	GridX;					// Waypoint's X,Y and Z coordinates (in km from southwest corner)
+    GridIndex			GridY;
+    short				GridZ;					// Z is in 10s of feet
+    CampaignTime      	Arrive;
+    CampaignTime		Depart;					// This is only used for loiter waypoints
+    VU_ID				TargetID;
+    uchar             	Action;
+    uchar				RouteAction;
+    uchar				Formation;
+    uchar				TargetBuilding;
+    ulong				Flags;					// Various wp flags
+    short				Tactic;					// Tactic to use here
 protected:
-	float				Speed;
-  	WayPoint			PrevWP;					// Make this one public for kicks..
-  	WayPoint			NextWP;					// Make this one public for kicks..
+    float				Speed;
+    WayPoint			PrevWP;					// Make this one public for kicks..
+    WayPoint			NextWP;					// Make this one public for kicks..
 private:
-	// These functions are intended for use by the Sim (They use sim coordinates and times)
-	//Wombat778 11-05-2003 new variable to hold a Sim location rather than a grid location
-	BIG_SCALAR SimX;					
-	BIG_SCALAR SimY;
-	BIG_SCALAR SimZ;
+    // These functions are intended for use by the Sim (They use sim coordinates and times)
+    //Wombat778 11-05-2003 new variable to hold a Sim location rather than a grid location
+    BIG_SCALAR SimX;
+    BIG_SCALAR SimY;
+    BIG_SCALAR SimZ;
 
 public:
-	WayPointClass();
-	WayPointClass(
-		GridIndex x, GridIndex y, 
-		int alt, int speed, CampaignTime arr, CampaignTime station, uchar action, int flags
-	);
-	WayPointClass(VU_BYTE **stream, long *rem);
-	WayPointClass(FILE* fp);
-	int SaveSize(void);
-	int Save(VU_BYTE **stream);
-	int Save(FILE* fp);
+    WayPointClass();
+    WayPointClass(
+        GridIndex x, GridIndex y,
+        int alt, int speed, CampaignTime arr, CampaignTime station, uchar action, int flags
+    );
+    WayPointClass(VU_BYTE **stream, long *rem);
+    WayPointClass(FILE* fp);
+    int SaveSize(void);
+    int Save(VU_BYTE **stream);
+    int Save(FILE* fp);
 
-	// These functions are intended for general use
-	void SetWPTarget (VU_ID e)						{ TargetID = e; }
-	void SetWPTargetBuilding (uchar t)				{ TargetBuilding = t; }
-	void SetWPAction (int a)						{ Action = (uchar) a; }
-	void SetWPRouteAction (int a)					{ RouteAction = (uchar) a; }
-	void SetWPFormation (int f)						{ Formation = (uchar) f; }
-	void SetWPFlags (ulong f)						{ Flags = (ulong) f; }
-	void SetWPFlag (ulong f)						{ Flags |= (ulong) f; }
-	void UnSetWPFlag (ulong f)						{ Flags &= ~((ulong)(f)); }
-	void SetWPTactic (int f)						{ Tactic = (short) f; }
-	VU_ID GetWPTargetID (void)						{ return TargetID; }
-	CampEntity GetWPTarget (void)					{ return (CampEntity)vuDatabase->Find(TargetID); }
-	uchar GetWPTargetBuilding (void)				{ return TargetBuilding; }
-	int GetWPAction(void)							{ return (int)Action; }
-	int GetWPRouteAction(void)						{ return (int)RouteAction; }
-	int GetWPFormation (void)						{ return (int)Formation; }
-	ulong GetWPFlags (void)							{ return (ulong)Flags; }
-	int GetWPTactic (void)							{ return (int)Tactic; }
-	WayPoint GetNextWP (void)						{ return NextWP; }
-	WayPoint GetPrevWP (void)						{ return PrevWP; }
+    // These functions are intended for general use
+    void SetWPTarget(VU_ID e)
+    {
+        TargetID = e;
+    }
+    void SetWPTargetBuilding(uchar t)
+    {
+        TargetBuilding = t;
+    }
+    void SetWPAction(int a)
+    {
+        Action = (uchar) a;
+    }
+    void SetWPRouteAction(int a)
+    {
+        RouteAction = (uchar) a;
+    }
+    void SetWPFormation(int f)
+    {
+        Formation = (uchar) f;
+    }
+    void SetWPFlags(ulong f)
+    {
+        Flags = (ulong) f;
+    }
+    void SetWPFlag(ulong f)
+    {
+        Flags |= (ulong) f;
+    }
+    void UnSetWPFlag(ulong f)
+    {
+        Flags &= ~((ulong)(f));
+    }
+    void SetWPTactic(int f)
+    {
+        Tactic = (short) f;
+    }
+    VU_ID GetWPTargetID(void)
+    {
+        return TargetID;
+    }
+    CampEntity GetWPTarget(void)
+    {
+        return (CampEntity)vuDatabase->Find(TargetID);
+    }
+    uchar GetWPTargetBuilding(void)
+    {
+        return TargetBuilding;
+    }
+    int GetWPAction(void)
+    {
+        return (int)Action;
+    }
+    int GetWPRouteAction(void)
+    {
+        return (int)RouteAction;
+    }
+    int GetWPFormation(void)
+    {
+        return (int)Formation;
+    }
+    ulong GetWPFlags(void)
+    {
+        return (ulong)Flags;
+    }
+    int GetWPTactic(void)
+    {
+        return (int)Tactic;
+    }
+    WayPoint GetNextWP(void)
+    {
+        return NextWP;
+    }
+    WayPoint GetPrevWP(void)
+    {
+        return PrevWP;
+    }
 
-	void SetNextWP (WayPointClass *next);
-	void SetPrevWP (WayPointClass *prev);
-	void UnlinkNextWP (void);
+    void SetNextWP(WayPointClass *next);
+    void SetPrevWP(WayPointClass *prev);
+    void UnlinkNextWP(void);
 
-	void SplitWP (void);
-	void InsertWP (WayPointClass *);
-	void DeleteWP (void);
+    void SplitWP(void);
+    void InsertWP(WayPointClass *);
+    void DeleteWP(void);
 
-	void CloneWP (WayPoint w);
-	void SetWPTimes (CampaignTime t);
-	float DistanceTo (WayPoint w);
+    void CloneWP(WayPoint w);
+    void SetWPTimes(CampaignTime t);
+    float DistanceTo(WayPoint w);
 
-	// These functions are intended for use by the campaign (They use Campaign Coordinates and times)
-	void SetWPAltitude(int alt);//					{ GridZ = (short)(alt/GRIDZ_SCALE_FACTOR); }
-	void SetWPAltitudeLevel(int alt);//				{ GridZ = (short)alt; }
-	void SetWPStationTime (CampaignTime t)			{ Depart = Arrive + t; }
-	void SetWPDepartTime (CampaignTime t)			{ Depart = t; }
-	void SetWPArrive (CampaignTime t)				{ Arrive = t; }
-	void SetWPSpeed (float s)						{ Speed = s; }
-	float GetWPSpeed (void)							{ return Speed; }	
-	void SetWPLocation(GridIndex x, GridIndex y);// 	{ GridX = x; GridY = y; }
-	int GetWPAltitude()								{ return (int)(GridZ*GRIDZ_SCALE_FACTOR); }
-	int GetWPAltitudeLevel()						{ return GridZ; }
-	CampaignTime GetWPStationTime()					{ return (int)(Depart-Arrive); }
-	CampaignTime GetWPArrivalTime()					{ return Arrive; }
-	CampaignTime GetWPDepartureTime()				{ return Depart; }
-	void AddWPTimeDelta (CampaignTime dt)			{ Arrive += dt; Depart += dt; }
-	void GetWPLocation (GridIndex* x, GridIndex* y) const { *x = GridX; *y = GridY; }
-	// Wombat778 11-5-2003 Changed to a new calculation.  
-	// Takes the sim position and stores it in a var, and also updates the GridX/Y/Z.
-	// This is to allow waypoints to be placed more narrowly than the 1KM grid. 
-	// Hopefully, the sim wont care about the new more precise
-	// waypoint locations.
-	void SetLocation (float x, float y, float z);
-	void GetLocation (float* x, float* y, float* z) const;
+    // These functions are intended for use by the campaign (They use Campaign Coordinates and times)
+    void SetWPAltitude(int alt);//					{ GridZ = (short)(alt/GRIDZ_SCALE_FACTOR); }
+    void SetWPAltitudeLevel(int alt);//				{ GridZ = (short)alt; }
+    void SetWPStationTime(CampaignTime t)
+    {
+        Depart = Arrive + t;
+    }
+    void SetWPDepartTime(CampaignTime t)
+    {
+        Depart = t;
+    }
+    void SetWPArrive(CampaignTime t)
+    {
+        Arrive = t;
+    }
+    void SetWPSpeed(float s)
+    {
+        Speed = s;
+    }
+    float GetWPSpeed(void)
+    {
+        return Speed;
+    }
+    void SetWPLocation(GridIndex x, GridIndex y);// 	{ GridX = x; GridY = y; }
+    int GetWPAltitude()
+    {
+        return (int)(GridZ * GRIDZ_SCALE_FACTOR);
+    }
+    int GetWPAltitudeLevel()
+    {
+        return GridZ;
+    }
+    CampaignTime GetWPStationTime()
+    {
+        return (int)(Depart - Arrive);
+    }
+    CampaignTime GetWPArrivalTime()
+    {
+        return Arrive;
+    }
+    CampaignTime GetWPDepartureTime()
+    {
+        return Depart;
+    }
+    void AddWPTimeDelta(CampaignTime dt)
+    {
+        Arrive += dt;
+        Depart += dt;
+    }
+    void GetWPLocation(GridIndex* x, GridIndex* y) const
+    {
+        *x = GridX;
+        *y = GridY;
+    }
+    // Wombat778 11-5-2003 Changed to a new calculation.
+    // Takes the sim position and stores it in a var, and also updates the GridX/Y/Z.
+    // This is to allow waypoints to be placed more narrowly than the 1KM grid.
+    // Hopefully, the sim wont care about the new more precise
+    // waypoint locations.
+    void SetLocation(float x, float y, float z);
+    void GetLocation(float* x, float* y, float* z) const;
 };
- 
-// =================================================== 
+
+// ===================================================
 // Global functions
 // ===================================================
 
-extern void DeleteWPList (WayPoint w);
+extern void DeleteWPList(WayPoint w);
 
 // Sets a set of waypoint times to start at waypoint w at time start. Returns duration of mission
-extern CampaignTime SetWPTimes (WayPoint w, CampaignTime start, int speed, int flags);
+extern CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags);
 
 // Shifts a set of waypoints by time delta. Returns duration of mission
-extern CampaignTime SetWPTimes (WayPoint w, long delta, int flags);
+extern CampaignTime SetWPTimes(WayPoint w, long delta, int flags);
 
 // Sets a set of waypoint times to start at waypoint w as soon as we can get there from x,y.
-extern CampaignTime SetWPTimes (WayPoint w, GridIndex x, GridIndex y, int speed, int flags);
+extern CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed, int flags);
 
-extern WayPoint CloneWPList (WayPoint w);
-extern WayPoint CloneWPToList (WayPoint w, WayPoint stop);
+extern WayPoint CloneWPList(WayPoint w);
+extern WayPoint CloneWPToList(WayPoint w, WayPoint stop);
 
-extern WayPoint CloneWPList (WayPointClass wps[], int waypoints);
+extern WayPoint CloneWPList(WayPointClass wps[], int waypoints);
 
 // KCK: This function requires that the graphic's altitude map is loaded
-extern float AdjustAltitudeForMSL_AGL (float x, float y, float z);
+extern float AdjustAltitudeForMSL_AGL(float x, float y, float z);
 
-extern float SetWPSpeed (WayPoint wp);
+extern float SetWPSpeed(WayPoint wp);
 
 #endif

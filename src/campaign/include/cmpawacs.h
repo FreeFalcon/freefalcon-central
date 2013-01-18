@@ -12,6 +12,6 @@
 // AWACS related functions
 // ========================
 
-extern CampEntity FindNearestCampEntity (int type, int radius, int *count);
+extern CampEntity FindNearestCampEntity(int type, int radius, int *count);
 
 #endif

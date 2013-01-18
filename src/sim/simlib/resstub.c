@@ -1,32 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void ResSetDirectory (char* a) {}
-void ResAddPath (char* a, int b) {}
-void ResCreatePath (char* a, int b) {}
-int ResAttach (char* a, char* b, int c) {return 1;}
-void ResInit (void) {}
-void ResExit (void) {}
-void ResDetach (int a) {}
-int ResExistFile (char* fileName)
+void ResSetDirectory(char* a) {}
+void ResAddPath(char* a, int b) {}
+void ResCreatePath(char* a, int b) {}
+int ResAttach(char* a, char* b, int c)
 {
-int retval = 0;
-FILE* tmpFile;
-
-   tmpFile = fopen (fileName, "r");
-   if (tmpFile)
-   {
-      fclose (tmpFile);
-      retval = 1;
-   }
-   return retval;
+    return 1;
 }
-int ResWhereIs (char* fileName, char* path)
+void ResInit(void) {}
+void ResExit(void) {}
+void ResDetach(int a) {}
+int ResExistFile(char* fileName)
 {
-int retval = -1;
+    int retval = 0;
+    FILE* tmpFile;
 
-   if (ResExistFile (fileName))
-      retval = 1;
+    tmpFile = fopen(fileName, "r");
 
-   return retval;
+    if (tmpFile)
+    {
+        fclose(tmpFile);
+        retval = 1;
+    }
+
+    return retval;
+}
+int ResWhereIs(char* fileName, char* path)
+{
+    int retval = -1;
+
+    if (ResExistFile(fileName))
+        retval = 1;
+
+    return retval;
 }

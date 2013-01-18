@@ -65,136 +65,136 @@
 class ACMICamera
 {
 public:
-	// Constructors.
-	ACMICamera();
+    // Constructors.
+    ACMICamera();
 
-	// Destructor.
-	~ACMICamera();
+    // Destructor.
+    ~ACMICamera();
 
-	// Access.
-	void SetType(int type);
-	int  Type() const;
+    // Access.
+    void SetType(int type);
+    int  Type() const;
 
-	void SetAction(int action);
-	void SetAction(int action, float az, float el);
-	int Action() const;
+    void SetAction(int action);
+    void SetAction(int action, float az, float el);
+    int Action() const;
 
-	void ToggleTracking();
-	void SetTracking(int n);
-	int Tracking() const;	
+    void ToggleTracking();
+    void SetTracking(int n);
+    int Tracking() const;
 
-	void SetRotateType(int type);
-	int RotateType() const;
+    void SetRotateType(int type);
+    int RotateType() const;
 
-	void SetPosition(const Tpoint &pos);
-	void GetPosition(Tpoint &pos) const;
-	const Tpoint &Position() const;
+    void SetPosition(const Tpoint &pos);
+    void GetPosition(Tpoint &pos) const;
+    const Tpoint &Position() const;
 
-	void SetRotation(const Trotation &rot);
-	void GetRotation(Trotation &rot) const;
-	const Trotation &Rotation() const;
+    void SetRotation(const Trotation &rot);
+    void GetRotation(Trotation &rot) const;
+    const Trotation &Rotation() const;
 
-	void SetWorldPosition(const Tpoint &pos);
+    void SetWorldPosition(const Tpoint &pos);
 
-	void SetElDir(float diff);
-	void SetAzDir(float diff);
-	void SetObjectEl(float diff);
-	void SetObjectAz(float diff);
-	void SetObjectRoll(float diff);
-	void SetPannerAz();
-	void IncrementPannerAzEl(int currentAction, float az, float el);
-	void SetLocalEl(float diff);
-	void SetLocalAz(float diff);
-	float El() const;
-	float Az() const;
-	void SetObjectRange(float diff, int instruction);
-	float GetObjectRange( void )
-	{
-		return _objectRange;
-	};
-	void SetSlewRate(float diff);
-	void TrackPoint(const Tpoint &trackingPt);
+    void SetElDir(float diff);
+    void SetAzDir(float diff);
+    void SetObjectEl(float diff);
+    void SetObjectAz(float diff);
+    void SetObjectRoll(float diff);
+    void SetPannerAz();
+    void IncrementPannerAzEl(int currentAction, float az, float el);
+    void SetLocalEl(float diff);
+    void SetLocalAz(float diff);
+    float El() const;
+    float Az() const;
+    void SetObjectRange(float diff, int instruction);
+    float GetObjectRange(void)
+    {
+        return _objectRange;
+    };
+    void SetSlewRate(float diff);
+    void TrackPoint(const Tpoint &trackingPt);
 
-	// Update methods.
-	void UpdatePosition();
-	void UpdateChasePosition( float dT );
-	void UpdatePannerPosition();
+    // Update methods.
+    void UpdatePosition();
+    void UpdateChasePosition(float dT);
+    void UpdatePannerPosition();
 
-	void Tilt
-	(
-		float pitch,
-		float roll,
-		float yaw,
-		Trotation *tilt
-	);
-	void Rotate
-	(
-		float pitch,
-		float roll,
-		float yaw,
-		Trotation *viewRotation
-	);
-	void Translate
-	(
-		float x,
-		float y,
-		float z,
-		Tpoint* camView
-	);
-	
-	CRITICAL_SECTION    criticalSection;
+    void Tilt
+    (
+        float pitch,
+        float roll,
+        float yaw,
+        Trotation *tilt
+    );
+    void Rotate
+    (
+        float pitch,
+        float roll,
+        float yaw,
+        Trotation *viewRotation
+    );
+    void Translate
+    (
+        float x,
+        float y,
+        float z,
+        Tpoint* camView
+    );
 
-	void SetChasePosition( Tpoint *pos )
-	{
-		_chasePos.x = pos->x;
-		_chasePos.y = pos->y;
-		_chasePos.z = pos->z;
-	};
+    CRITICAL_SECTION    criticalSection;
 
-	void SetChaseRoll( float roll )
-	{
-		_chaseRoll = roll;
-	};
+    void SetChasePosition(Tpoint *pos)
+    {
+        _chasePos.x = pos->x;
+        _chasePos.y = pos->y;
+        _chasePos.z = pos->z;
+    };
+
+    void SetChaseRoll(float roll)
+    {
+        _chaseRoll = roll;
+    };
 
 private:
-	// Detached or attached?
-	int				_type;		
-	
-	// Detached or attached?
-	int				_rotType;				
+    // Detached or attached?
+    int				_type;
 
-	// Camera position relative to object.
-	Tpoint			_pos;
+    // Detached or attached?
+    int				_rotType;
 
-	// World coords of camera position.
-	Tpoint			_worldPos;			
+    // Camera position relative to object.
+    Tpoint			_pos;
 
-	// Camera rotation matrix.
-	Trotation		_rot;
+    // World coords of camera position.
+    Tpoint			_worldPos;
 
-	float				_objectAz, _localAz, _pannerAz;			
-	float				_objectEl, _localEl, _pannerEl;		
-	float				_objectRoll;
+    // Camera rotation matrix.
+    Trotation		_rot;
 
-	// For a dettached camera, set this value to 0.0F
-	float				_objectRange;			
+    float				_objectAz, _localAz, _pannerAz;
+    float				_objectEl, _localEl, _pannerEl;
+    float				_objectRoll;
 
-	// Used to rotate around self.
-	float				_rotate;					
+    // For a dettached camera, set this value to 0.0F
+    float				_objectRange;
 
-	// Used to rotate around object.
-	float				_objectRotate;			
+    // Used to rotate around self.
+    float				_rotate;
 
-	float				_azDir;
-	float				_elDir;
-	float				_slewRate;
-	int				_action;
-	int				_tracking;
-	Tpoint			_chasePos;
-	Tpoint			_chaseObjPos;
-	float			_chaseRoll;
+    // Used to rotate around object.
+    float				_objectRotate;
 
-	void DoAction();
+    float				_azDir;
+    float				_elDir;
+    float				_slewRate;
+    int				_action;
+    int				_tracking;
+    Tpoint			_chasePos;
+    Tpoint			_chaseObjPos;
+    float			_chaseRoll;
+
+    void DoAction();
 };
 
 #include "acmcminl.cpp"

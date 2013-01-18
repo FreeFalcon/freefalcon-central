@@ -22,26 +22,29 @@
  */
 class UI_SendChatMessage : public FalconEvent
 {
-   public:
-      UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~UI_SendChatMessage(void);
-      virtual int Size() const { return sizeof(VU_ID) + sizeof(short) + dataBlock.size + FalconEvent::Size();};
-		//sfr: changed to long *
-	  int Decode (VU_BYTE **buf, long *rem);
-      int Encode (VU_BYTE **buf);
+public:
+    UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~UI_SendChatMessage(void);
+    virtual int Size() const
+    {
+        return sizeof(VU_ID) + sizeof(short) + dataBlock.size + FalconEvent::Size();
+    };
+    //sfr: changed to long *
+    int Decode(VU_BYTE **buf, long *rem);
+    int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
+    class DATA_BLOCK
+    {
+    public:
 
-            VU_ID from;
-            short size;
-            void* message;
-      } dataBlock;
+        VU_ID from;
+        short size;
+        void* message;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

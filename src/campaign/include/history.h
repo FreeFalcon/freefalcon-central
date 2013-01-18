@@ -11,9 +11,10 @@
 extern	int	test;
 
 #pragma pack(1)
-struct UnitHistoryType {
-	unsigned char	team;
-	GridIndex		x,y;							// It's location
-	};
+struct UnitHistoryType
+{
+    unsigned char	team;
+    GridIndex		x, y;							// It's location
+};
 #pragma pack()
 #endif

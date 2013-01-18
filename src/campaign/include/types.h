@@ -1,5 +1,5 @@
 /* Types.h - integer types defined for portability between compilers and
- * notational convenience. 
+ * notational convenience.
  *
  * Copyright (c) 1992 Jim Kent.  This file may be freely used, modified,
  * copied and distributed.  This file was first published as part of
@@ -25,12 +25,12 @@ typedef int            INDEX;
 
 typedef void *         ANY_PTR;
 typedef char *         STR_PTR;
-  
+
 typedef int Boolean;                    /* TRUE or FALSE value. */
 typedef int ErrCode;                    /* ErrXXX or Success. */
 typedef int FileHandle;                 /* OS file handle. */
 
-	/* Values for ErrCodes */
+/* Values for ErrCodes */
 #define Success         0               /* Things are fine. */
 #define Error           -1              /* Unclassified error. */
 /* Various error codes flic reader can get. */

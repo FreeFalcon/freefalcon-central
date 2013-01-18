@@ -21,28 +21,28 @@
  */
 class FalconFlightPlanMessage : public FalconEvent
 {
-   public:
-      enum { waypointData, loadoutData, squadronStores };
+public:
+    enum { waypointData, loadoutData, squadronStores };
 
-      FalconFlightPlanMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback=TRUE);
-      FalconFlightPlanMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
-      ~FalconFlightPlanMessage(void);
-      virtual int Size() const;
-	  //sfr: changed to long *length
-      //int Decode (VU_BYTE **buf, int length);
-	  virtual int Decode (VU_BYTE **buf, long *rem);
-      virtual int Encode (VU_BYTE **buf);
+    FalconFlightPlanMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconFlightPlanMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
+    ~FalconFlightPlanMessage(void);
+    virtual int Size() const;
+    //sfr: changed to long *length
+    //int Decode (VU_BYTE **buf, int length);
+    virtual int Decode(VU_BYTE **buf, long *rem);
+    virtual int Encode(VU_BYTE **buf);
 
-      class DATA_BLOCK
-      {
-         public:
-			uchar type;
-            long size;
-            uchar* data;
-      } dataBlock;
+    class DATA_BLOCK
+    {
+    public:
+        uchar type;
+        long size;
+        uchar* data;
+    } dataBlock;
 
-   protected:
-      int Process(uchar autodisp);
+protected:
+    int Process(uchar autodisp);
 };
 #pragma pack ()
 

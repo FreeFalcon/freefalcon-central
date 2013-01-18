@@ -114,7 +114,7 @@ extern char *ICPModeNames[NUM_ICP_MODES];
 
 #define ICP_STPT_NAME_LEN	9
 #define NUM_WAY_TYPES		3
-#define NUM_ACTION_TYPES	31	
+#define NUM_ACTION_TYPES	31
 
 #define MAX_PGMS 5 //Maximum number of EWS progs (4)
 
@@ -130,11 +130,12 @@ class CPButtonObject;
 extern char	*ICPWayPtNames[NUM_WAY_TYPES];
 extern char *ICPWayPtActionTable[NUM_ACTION_TYPES];
 
-typedef enum ICPWayPtType {
-				Way_STPT,
-				Way_IP,
-				Way_TGT
-				};
+typedef enum ICPWayPtType
+{
+    Way_STPT,
+    Way_IP,
+    Way_TGT
+};
 
 // ================================= \\
 //	Datalink Specific Information
@@ -144,12 +145,13 @@ typedef enum ICPWayPtType {
 #define NUM_DLINK_TYPES		4
 extern char *ICPDLINKNames[NUM_DLINK_TYPES];
 
-typedef enum ICPDLINKType {
-				DLink_IP,
-				DLink_TGT,
-				Dlink_EGR,
-				Dlink_CP
-				};
+typedef enum ICPDLINKType
+{
+    DLink_IP,
+    DLink_TGT,
+    Dlink_EGR,
+    Dlink_CP
+};
 
 // ================================= \\
 //	Mark Specific Information
@@ -158,423 +160,486 @@ typedef enum ICPDLINKType {
 class ICPClass
 {
 
-	// Pointers to the Outside World
-	AircraftClass		*mpOwnship;
-	WayPointClass		*mpWayPoints;
+    // Pointers to the Outside World
+    AircraftClass		*mpOwnship;
+    WayPointClass		*mpWayPoints;
 
 
-	// General Mode Variables
-	long					mICPPrimaryMode;
-	long					mICPSecondaryMode;
-	long					mICPTertiaryMode;
-	char					mpSelectedModeName[ICP_MODE_NAME_LEN];
-	int					mUpdateFlags;
-	int					mDirtyFlag;
+    // General Mode Variables
+    long					mICPPrimaryMode;
+    long					mICPSecondaryMode;
+    long					mICPTertiaryMode;
+    char					mpSelectedModeName[ICP_MODE_NAME_LEN];
+    int					mUpdateFlags;
+    int					mDirtyFlag;
 
-	// Output Strings for DED
-	char					mpLine1[60];
-	char					mpLine2[60];
-	char					mpLine3[60];
-	//MI added for ICP Stuff
-	char					TacanBand;
-	char					timeStr[16];
-	
-	// Pointer to Exclusive Buttons
-	CPButtonObject		*mpTertiaryExclusiveButton;
-	CPButtonObject		*mpSecondaryExclusiveButton;
-	CPButtonObject		*mpPrimaryExclusiveButton;
+    // Output Strings for DED
+    char					mpLine1[60];
+    char					mpLine2[60];
+    char					mpLine3[60];
+    //MI added for ICP Stuff
+    char					TacanBand;
+    char					timeStr[16];
 
-	// Steer Point Mode Specific 
-	WayPointClass		*mpPreviousWayPt;
-	int					mNumWayPts;
-	int					mWPIndex;
+    // Pointer to Exclusive Buttons
+    CPButtonObject		*mpTertiaryExclusiveButton;
+    CPButtonObject		*mpSecondaryExclusiveButton;
+    CPButtonObject		*mpPrimaryExclusiveButton;
 
-	// Fault Mode Specific
-	int					mFaultNum;
-	int					mFaultFunc;
+    // Steer Point Mode Specific
+    WayPointClass		*mpPreviousWayPt;
+    int					mNumWayPts;
+    int					mWPIndex;
 
-	// Mark Mode Specific
-	int					mMarkIndex;
+    // Fault Mode Specific
+    int					mFaultNum;
+    int					mFaultFunc;
 
-	// DLink Mode Specific
-	int					mDLinkIndex;
+    // Mark Mode Specific
+    int					mMarkIndex;
 
-	// Cruise Mode Specific
-	int					mCruiseMarkIndex;
-	int					mCruiseDLinkIndex;
-	int					mCruiseWPIndex;
-	WayPointClass		*mpCruiseWP;
-	enum					{STPT_LIST, MARK_LIST, DLINK_LIST} mList;
+    // DLink Mode Specific
+    int					mDLinkIndex;
+
+    // Cruise Mode Specific
+    int					mCruiseMarkIndex;
+    int					mCruiseDLinkIndex;
+    int					mCruiseWPIndex;
+    WayPointClass		*mpCruiseWP;
+    enum					{STPT_LIST, MARK_LIST, DLINK_LIST} mList;
 
 public:
-	//Main Stuff
-	//*****************
-	//Override buttons*
-	//*****************
-	//Comms
-	void ExecCOMMMode(void);
-	void ENTRUpdateCOMMMode(void);
-	void PNUpdateCOMMMode(int, int);
-	void ExecCOMM1Mode(void);
-	void ExecCOMM2Mode(void);
-	//IFF
-	void ExecIFFMode(void);
-	//List + Misc
-	void ExecLISTMode(void);
-	void ExecMISCMode(void);
-	
-	//Main buttons
-	void OneButton(int);
-	void TwoButton(int);
-	void ThreeButton(int);
-	void FourButton(int);
-	void FifeButton(int);
-	void SixButton(int);
-	void SevenButton(int);
-	void EightButton(int);
-	void NineButton(int);
-	void ZeroButton(int);
-	void HandleENTR(int);
-	void HandlePrevNext(int, int);
-	void CNISwitch(int);
-	
-	void ExecCNIMode(void);
-	void ExecILSMode(void);
-	BOOL GetCMDSTR(void)	{return CMDSTRG;};
-	int ILSPageSel;
-	void ENTRUpdateILSMode(void);
-	void PNUpdateILSMode(int, int);
-	void ExecALOWMode(void);
-	void PNUpdateALOWMode(int, int);
-	void ExecSTPTMode(void);
-	void PNUpdateSTPTMode(int, int);
-	void CheckAutoSTPT(void);
-	void ExecCRUSMode(void);
-	void PNUpdateCRUSMode(int, int);
-	void StepCruise(void);
-	void FindEDR(long, char*);
-	void ExecTimeMode(void);
-	void ExecMARKMode(void);
-	void PNUpdateMARKMode(int, int);
-	void ENTRUpdateMARKMode(void);
-	void ExecFIXMode(void);	
-	void ExecACALMode(void);
-	void ExecFACKMode(void);
-	void PNUpdateFACKMode(int, int);
-	
-	//List pages
-	void ExecDESTMode(void);
-	void ExecOA1Mode(void);
-	void ExecOA2Mode(void);
-	void ExecBingo(void);
-	void ExecVIPMode(void);
-	void ExecNAVMode(void);
-	void ExecMANMode(void);
-	void ExecINSMode(void);
-	void ExecEWSMode(void);
-	void ChaffPGM(void);
-	void FlarePGM(void);
-	void ExecMODEMode(void);
-	void UpdateMODEMode(void);
-	void ExecVRPMode(void); 
-	void ExecINTGMode(void);
-	void ExecDLINKMode(void);
-	void PNUpdateDLINKMode(int, int);
-	
-	//Misc pages
-	void ExecCORRMode(void);
-	void ExecMAGVMode(void);
-	void ExecOFPMode(void);
-	void ExecINSMMode(void);
-	void ExecLASRMode(void);
-	void ExecGPSMode(void); 
-	void ExecDRNGMode(void);
-	void ExecBullMode(void);
-	void ExecWPTMode(void);
-	void ExecHARMMode(void);
-	void ExecWinAmpMode(void);	// Retro 3Jan2004
-	BOOL CheckForHARM(void);
-	bool ShowBullseyeInfo;
-	bool transmitingvoicecom1;
-	bool transmitingvoicecom2;
+    //Main Stuff
+    //*****************
+    //Override buttons*
+    //*****************
+    //Comms
+    void ExecCOMMMode(void);
+    void ENTRUpdateCOMMMode(void);
+    void PNUpdateCOMMMode(int, int);
+    void ExecCOMM1Mode(void);
+    void ExecCOMM2Mode(void);
+    //IFF
+    void ExecIFFMode(void);
+    //List + Misc
+    void ExecLISTMode(void);
+    void ExecMISCMode(void);
 
-	//Supporting functions
-	void InitStuff(void);
-	void ClearStrings(void);
-	void ClearFlags(void);
-	void HandleManualInput(int button);
-	void ClearInput(void);
-	int CheckMode(void);
-	void EnterLat(void);
-	void EnterLong(void);
-	void EnterALOW(void);
-	void EnterTCN(void);
-	void EnterBingo(void);
-	void PushedSame(int);
-	void NewMode(int);
-	int ManualInput(void);
-	void CNIBackup(void);
-	void ScratchPad(int Line, int Start, int End);
-	void MakeInverted(int Line, int Start, int End);
-	void FormatTime(long, char*);
-	void FormatRadioString(void);
-	void FillDEDMatrix(int Line, int Start, char*, int Inverted = 0);
-	void LeaveCNI(void);
-	void ClearDigits(void);
-	void ClearInverted(int Line, int Start, int End);
-	void ClearString(void);
-	void CheckDigits(void);
-	void ResetSubPages(void);
-	void ICPEnter(void);
-	void FakeILSFreq(void);
-	void ResetInput(void);
-	void WrongInput(void);
-	int CheckBackupPages(void);
-	void LeaveCNIPage(void);
-	
-	//STPT and DEST stuff
-	float latitude, cosLatitude, longitude;
-	int	latDeg, longDeg, heading;
-	float latMin, longMin, xCurr, yCurr, zCurr;
-	char latStr[40];
-	char longStr[40];
-	bool ShowWind, OA1, OA2, MAN;
-	void EnterOA(void);
-	float windSpeed;
+    //Main buttons
+    void OneButton(int);
+    void TwoButton(int);
+    void ThreeButton(int);
+    void FourButton(int);
+    void FifeButton(int);
+    void SixButton(int);
+    void SevenButton(int);
+    void EightButton(int);
+    void NineButton(int);
+    void ZeroButton(int);
+    void HandleENTR(int);
+    void HandlePrevNext(int, int);
+    void CNISwitch(int);
 
-	void GetValues(float Angle, float *a, float *b, int Range);
-	
-	//Cruise page stuff
-	bool Cruise_RNG, Cruise_HOME, Cruise_EDR, Cruise_TOS;
-	void CruiseRNG(void);
-	void CruiseEDR(void);
-	void CruiseHOME(void);
-	void CruiseTOS(void);
-	void GetWind(void);
-	void AddSTPT(int Line,int Pos);
-	int HomeWP, RangeWP, TOSWP;
-	void StepHOMERNGSTPT(int mode);
-	int GetHOMERNGSTPTNum(int var, int mode);
-	int CruiseMode;
-	int GetCruiseIndex(void)	{return CruiseMode;};
-	void SetCruiseIndex(int NewIndex)	{CruiseMode = NewIndex;};
-	
-	//Time page
-	bool running;
-	bool stopped;
-	VU_TIME Start, Difference;
-	//PFL stuff
-	void ChangeToCNI(void);
-	bool m_FaultDisplay; // should we show a fault
-	FaultClass::type_FSubSystem m_subsystem; // current fault and function
-	int m_function;
-	void PflFault(FaultClass::type_FSubSystem sys, int func);
-	void PflNoFaults();
-	void ExecPfl();
+    void ExecCNIMode(void);
+    void ExecILSMode(void);
+    BOOL GetCMDSTR(void)
+    {
+        return CMDSTRG;
+    };
+    int ILSPageSel;
+    void ENTRUpdateILSMode(void);
+    void PNUpdateILSMode(int, int);
+    void ExecALOWMode(void);
+    void PNUpdateALOWMode(int, int);
+    void ExecSTPTMode(void);
+    void PNUpdateSTPTMode(int, int);
+    void CheckAutoSTPT(void);
+    void ExecCRUSMode(void);
+    void PNUpdateCRUSMode(int, int);
+    void StepCruise(void);
+    void FindEDR(long, char*);
+    void ExecTimeMode(void);
+    void ExecMARKMode(void);
+    void PNUpdateMARKMode(int, int);
+    void ENTRUpdateMARKMode(void);
+    void ExecFIXMode(void);
+    void ExecACALMode(void);
+    void ExecFACKMode(void);
+    void PNUpdateFACKMode(int, int);
 
+    //List pages
+    void ExecDESTMode(void);
+    void ExecOA1Mode(void);
+    void ExecOA2Mode(void);
+    void ExecBingo(void);
+    void ExecVIPMode(void);
+    void ExecNAVMode(void);
+    void ExecMANMode(void);
+    void ExecINSMode(void);
+    void ExecEWSMode(void);
+    void ChaffPGM(void);
+    void FlarePGM(void);
+    void ExecMODEMode(void);
+    void UpdateMODEMode(void);
+    void ExecVRPMode(void);
+    void ExecINTGMode(void);
+    void ExecDLINKMode(void);
+    void PNUpdateDLINKMode(int, int);
 
-	//EWS page
-	bool EWSMain, PGMChaff, PGMFlare, EWS_JAMMER_ON, EWS_BINGO_ON;
-	void EWSOnOff(void);
-	void EWSEnter(void);
-	void EnterBurst(void);
-	void EnterSalvo(void);
-	unsigned int FlareBingo, ChaffBingo;
-	bool BQ, BI, SQ, SI;
-	//unsigned int iCHAFF_BQ, iCHAFF_SQ, iFLARE_BQ, iFLARE_SQ;
-	unsigned int iCHAFF_BQ[MAX_PGMS], iCHAFF_SQ[MAX_PGMS], iFLARE_BQ[MAX_PGMS], iFLARE_SQ[MAX_PGMS];
-	float fCHAFF_BI[MAX_PGMS], fCHAFF_SI[MAX_PGMS], fFLARE_BI[MAX_PGMS], fFLARE_SI[MAX_PGMS];
-	int CPI, FPI; //chaff and Flare program index
-	void StepEWSProg(int mode);
-	void ShowFlareIndex(int Line,int Pos);
-	void ShowChaffIndex(int Line,int Pos);
+    //Misc pages
+    void ExecCORRMode(void);
+    void ExecMAGVMode(void);
+    void ExecOFPMode(void);
+    void ExecINSMMode(void);
+    void ExecLASRMode(void);
+    void ExecGPSMode(void);
+    void ExecDRNGMode(void);
+    void ExecBullMode(void);
+    void ExecWPTMode(void);
+    void ExecHARMMode(void);
+    void ExecWinAmpMode(void);	// Retro 3Jan2004
+    BOOL CheckForHARM(void);
+    bool ShowBullseyeInfo;
+    bool transmitingvoicecom1;
+    bool transmitingvoicecom2;
+
+    //Supporting functions
+    void InitStuff(void);
+    void ClearStrings(void);
+    void ClearFlags(void);
+    void HandleManualInput(int button);
+    void ClearInput(void);
+    int CheckMode(void);
+    void EnterLat(void);
+    void EnterLong(void);
+    void EnterALOW(void);
+    void EnterTCN(void);
+    void EnterBingo(void);
+    void PushedSame(int);
+    void NewMode(int);
+    int ManualInput(void);
+    void CNIBackup(void);
+    void ScratchPad(int Line, int Start, int End);
+    void MakeInverted(int Line, int Start, int End);
+    void FormatTime(long, char*);
+    void FormatRadioString(void);
+    void FillDEDMatrix(int Line, int Start, char*, int Inverted = 0);
+    void LeaveCNI(void);
+    void ClearDigits(void);
+    void ClearInverted(int Line, int Start, int End);
+    void ClearString(void);
+    void CheckDigits(void);
+    void ResetSubPages(void);
+    void ICPEnter(void);
+    void FakeILSFreq(void);
+    void ResetInput(void);
+    void WrongInput(void);
+    int CheckBackupPages(void);
+    void LeaveCNIPage(void);
+
+    //STPT and DEST stuff
+    float latitude, cosLatitude, longitude;
+    int	latDeg, longDeg, heading;
+    float latMin, longMin, xCurr, yCurr, zCurr;
+    char latStr[40];
+    char longStr[40];
+    bool ShowWind, OA1, OA2, MAN;
+    void EnterOA(void);
+    float windSpeed;
+
+    void GetValues(float Angle, float *a, float *b, int Range);
+
+    //Cruise page stuff
+    bool Cruise_RNG, Cruise_HOME, Cruise_EDR, Cruise_TOS;
+    void CruiseRNG(void);
+    void CruiseEDR(void);
+    void CruiseHOME(void);
+    void CruiseTOS(void);
+    void GetWind(void);
+    void AddSTPT(int Line, int Pos);
+    int HomeWP, RangeWP, TOSWP;
+    void StepHOMERNGSTPT(int mode);
+    int GetHOMERNGSTPTNum(int var, int mode);
+    int CruiseMode;
+    int GetCruiseIndex(void)
+    {
+        return CruiseMode;
+    };
+    void SetCruiseIndex(int NewIndex)
+    {
+        CruiseMode = NewIndex;
+    };
+
+    //Time page
+    bool running;
+    bool stopped;
+    VU_TIME Start, Difference;
+    //PFL stuff
+    void ChangeToCNI(void);
+    bool m_FaultDisplay; // should we show a fault
+    FaultClass::type_FSubSystem m_subsystem; // current fault and function
+    int m_function;
+    void PflFault(FaultClass::type_FSubSystem sys, int func);
+    void PflNoFaults();
+    void ExecPfl();
 
 
-	//Offset Aimpoints
-	bool OA_RNG, OA_BRG, OA_ALT;
-	unsigned int iOA_RNG, iOA_ALT, iOA_RNG2, iOA_ALT2; 
-	float fOA_BRG, fOA_BRG2;
-	void SetOA(void);
-	//VIP
-	bool VIP_RNG, VIP_BRG, VIP_ALT;
-	unsigned int iVIP_RNG, iVIP_ALT; 
-	float fVIP_BRG;
-	void EnterVIP(void);
-	void SetVIP(void);
-	//VRP
-	bool VRP_RNG, VRP_BRG, VRP_ALT;
-	unsigned int iVRP_RNG, iVRP_ALT; 
-	float fVRP_BRG;
-	void EnterVRP(void);
-	void SetVRP(void);
+    //EWS page
+    bool EWSMain, PGMChaff, PGMFlare, EWS_JAMMER_ON, EWS_BINGO_ON;
+    void EWSOnOff(void);
+    void EWSEnter(void);
+    void EnterBurst(void);
+    void EnterSalvo(void);
+    unsigned int FlareBingo, ChaffBingo;
+    bool BQ, BI, SQ, SI;
+    //unsigned int iCHAFF_BQ, iCHAFF_SQ, iFLARE_BQ, iFLARE_SQ;
+    unsigned int iCHAFF_BQ[MAX_PGMS], iCHAFF_SQ[MAX_PGMS], iFLARE_BQ[MAX_PGMS], iFLARE_SQ[MAX_PGMS];
+    float fCHAFF_BI[MAX_PGMS], fCHAFF_SI[MAX_PGMS], fFLARE_BI[MAX_PGMS], fFLARE_SI[MAX_PGMS];
+    int CPI, FPI; //chaff and Flare program index
+    void StepEWSProg(int mode);
+    void ShowFlareIndex(int Line, int Pos);
+    void ShowChaffIndex(int Line, int Pos);
+
+
+    //Offset Aimpoints
+    bool OA_RNG, OA_BRG, OA_ALT;
+    unsigned int iOA_RNG, iOA_ALT, iOA_RNG2, iOA_ALT2;
+    float fOA_BRG, fOA_BRG2;
+    void SetOA(void);
+    //VIP
+    bool VIP_RNG, VIP_BRG, VIP_ALT;
+    unsigned int iVIP_RNG, iVIP_ALT;
+    float fVIP_BRG;
+    void EnterVIP(void);
+    void SetVIP(void);
+    //VRP
+    bool VRP_RNG, VRP_BRG, VRP_ALT;
+    unsigned int iVRP_RNG, iVRP_ALT;
+    float fVRP_BRG;
+    void EnterVRP(void);
+    void SetVRP(void);
 
 
 
-	//MODE page
-	bool IN_AG, IN_AA, AA_SELECT, IsSelected;
+    //MODE page
+    bool IN_AG, IN_AA, AA_SELECT, IsSelected;
 
-	bool Manual_Input;
-	unsigned int tempvar;
-	float tempvar1;
-	int AddUp(void);
-	float AddUpFloat(void);
-	long AddUpLong(void);
-	unsigned int InputsMade, PossibleInputs;
+    bool Manual_Input;
+    unsigned int tempvar;
+    float tempvar1;
+    int AddUp(void);
+    float AddUpFloat(void);
+    long AddUpLong(void);
+    unsigned int InputsMade, PossibleInputs;
 
-	//Backup pages
-	void UHFBackup(void);
-	void VHFBackup(void);
-	void IFFBackup(void);
-	void ILSBackup(void);
+    //Backup pages
+    void UHFBackup(void);
+    void VHFBackup(void);
+    void IFFBackup(void);
+    void ILSBackup(void);
 
-	//for flashing things
-	unsigned int flash;
+    //for flashing things
+    unsigned int flash;
 public:
 
-	int					mIdNum;
-	int					mCycleBits;
+    int					mIdNum;
+    int					mCycleBits;
 
-	char DEDLines[5][MAX_DED_LEN];
-	char Invert[5][MAX_DED_LEN];
-	char tempstr[40];
-	char InputString[20];
+    char DEDLines[5][MAX_DED_LEN];
+    char Invert[5][MAX_DED_LEN];
+    char tempstr[40];
+    char InputString[20];
 
-	//PFL
-	char PFLLines[5][MAX_PFL_LEN];
-	char PFLInvert[5][MAX_PFL_LEN];
-	void FillPFLMatrix(int Line, int Start, char*, int Inverted = 0);
-	void ClearPFLLines(void);
-	
-	float PREUHF, PREVHF;
-	double UHFChann,VHFChann, MagVar;
-	
-	//Variables that hold our Flags and stuff
-	unsigned int ICPModeFlags, LastMode, ILSOn;
-	//Manual Input stuff
-	unsigned int CommChannel, TacanChannel, CurrChannel, Digit1, Digit2, Digit3;
-	unsigned int Input_Digit1, Input_Digit2, Input_Digit3, Input_Digit4, Input_Digit5, Input_Digit6, Input_Digit7;
-	float LATDegrees, LATMinutes, LATSeconds, LONGDegrees, LONGMinutes, LONGSeconds;
-	float Lat, Long, SetLat, SetLong, cosLat, WPAlt;
-	int ClearCount, HSICourse, WhichRadio;
-	bool MadeInput, CMDSTRG;
+    //PFL
+    char PFLLines[5][MAX_PFL_LEN];
+    char PFLInvert[5][MAX_PFL_LEN];
+    void FillPFLMatrix(int Line, int Start, char*, int Inverted = 0);
+    void ClearPFLLines(void);
 
-	//Manual Wspan stuff
-	float ManWSpan, ManualWSpan;
-	void EnterWSpan(void);
+    float PREUHF, PREVHF;
+    double UHFChann, VHFChann, MagVar;
 
-	long ManualBingo, ManualALOW, level, total;
-	bool EDITMSLFLOOR, TFADV;
-	char Freq[7];
-	
-	//Flagdefinitions
-	enum ModeFlags
-	{
-		//Master Modes
-		MODE_A_A		= 0x1,
-		MODE_A_G		= 0x2,
-		MODE_LIST		= 0x4,
-		MISC_MODE		= 0x8,
-		MODE_IFF		= 0x10,
-		MODE_COMM1		= 0x20,
-		MODE_COMM2		= 0x40,
-		MODE_CNI		= 0x80,
-		MODE_DLINK		= 0x100,
-		BLOCK_MODE		= 0x200,
-		CHAFF_BINGO		= 0x400,
-		FLARE_BINGO		= 0x800,
-		FLASH_FLAG		= 0x1000,
-		MODE_FACK		= 0x2000,
-		EDIT_LAT		= 0x4000,
-		EDIT_LONG		= 0x8000,
-		EDIT_JAMMER		= 0x10000,
-		EWS_EDIT_BINGO  = 0x20000,
-		EDIT_VHF		= 0x40000,
-		EDIT_UHF		= 0x80000,
-		EDIT_STPT		= 0x100000,
-	};
+    //Variables that hold our Flags and stuff
+    unsigned int ICPModeFlags, LastMode, ILSOn;
+    //Manual Input stuff
+    unsigned int CommChannel, TacanChannel, CurrChannel, Digit1, Digit2, Digit3;
+    unsigned int Input_Digit1, Input_Digit2, Input_Digit3, Input_Digit4, Input_Digit5, Input_Digit6, Input_Digit7;
+    float LATDegrees, LATMinutes, LATSeconds, LONGDegrees, LONGMinutes, LONGSeconds;
+    float Lat, Long, SetLat, SetLong, cosLat, WPAlt;
+    int ClearCount, HSICourse, WhichRadio;
+    bool MadeInput, CMDSTRG;
 
-	//Functions for our Flags
-	void SetICPFlag (int newFlag) {ICPModeFlags |= newFlag;};
-	void ClearICPFlag (int newFlag) {ICPModeFlags &= ~newFlag;};
-	int IsICPSet (int testFlag) {return ICPModeFlags & testFlag ? 1 : 0;};
+    //Manual Wspan stuff
+    float ManWSpan, ManualWSpan;
+    void EnterWSpan(void);
 
-	//IFF Stuff
-	unsigned int IFFModes;
-	enum IFFFlags
-	{
-		MODE_1		= 0x1,
-		MODE_2		= 0x2,
-		MODE_3		= 0x4,
-		MODE_4		= 0x8,
-		MODE_4B		= 0x10,
-		MODE_4OUT	= 0x20,
-		MODE_4LIT	= 0x40,
-		MODE_C		= 0x80,
-	};
-	void SetIFFFlag (int newFlag) {IFFModes |= newFlag;};
-	void ClearIFFFlag (int newFlag) {IFFModes &= ~newFlag;};
-	int IsIFFSet (int testFlag) {return IFFModes & testFlag ? 1 : 0;};
-	void ToggleIFFFlag(int Flag)	{IFFModes ^= Flag;};
-	void FillIFFString(char *string);
+    long ManualBingo, ManualALOW, level, total;
+    bool EDITMSLFLOOR, TFADV;
+    char Freq[7];
 
-	void EnterINTG(void);
-	int Mode1Code, Mode2Code,Mode3Code;
-	float GetNumScans(void);
+    //Flagdefinitions
+    enum ModeFlags
+    {
+        //Master Modes
+        MODE_A_A		= 0x1,
+        MODE_A_G		= 0x2,
+        MODE_LIST		= 0x4,
+        MISC_MODE		= 0x8,
+        MODE_IFF		= 0x10,
+        MODE_COMM1		= 0x20,
+        MODE_COMM2		= 0x40,
+        MODE_CNI		= 0x80,
+        MODE_DLINK		= 0x100,
+        BLOCK_MODE		= 0x200,
+        CHAFF_BINGO		= 0x400,
+        FLARE_BINGO		= 0x800,
+        FLASH_FLAG		= 0x1000,
+        MODE_FACK		= 0x2000,
+        EDIT_LAT		= 0x4000,
+        EDIT_LONG		= 0x8000,
+        EDIT_JAMMER		= 0x10000,
+        EWS_EDIT_BINGO  = 0x20000,
+        EDIT_VHF		= 0x40000,
+        EDIT_UHF		= 0x80000,
+        EDIT_STPT		= 0x100000,
+    };
 
-	//INS stuff
-	float INSTime;
-	int INSLine;	//which line we are editing
-	char INSLong[20];
-	char INSLat[20];
-	void GetINSInfo(void);
-	char altStr[10];
-	char INSHead[10];
-	float INSLATDiff, INSLONGDiff, INSALTDiff;
-	float StartLat, StartLong;
-	bool EnteredHDG;
-	bool INSEnter;
-	int INSHDGDiff;
-	int INSEnterPush(void)	{return INSEnter;};
-	void ClearINSEnter(void)	{INSEnter = FALSE;};
-	void EnterINSStuff(void);
-	bool FillStrings;
+    //Functions for our Flags
+    void SetICPFlag(int newFlag)
+    {
+        ICPModeFlags |= newFlag;
+    };
+    void ClearICPFlag(int newFlag)
+    {
+        ICPModeFlags &= ~newFlag;
+    };
+    int IsICPSet(int testFlag)
+    {
+        return ICPModeFlags & testFlag ? 1 : 0;
+    };
 
-	//Laser Page
-	int LaserTime;
-	int LaserLine;
-	int LaserCode;
-	void EnterLaser(void);
-	
-	
-	//bool ShowWindNow(void) {return ShowWind;};
+    //IFF Stuff
+    unsigned int IFFModes;
+    enum IFFFlags
+    {
+        MODE_1		= 0x1,
+        MODE_2		= 0x2,
+        MODE_3		= 0x4,
+        MODE_4		= 0x8,
+        MODE_4B		= 0x10,
+        MODE_4OUT	= 0x20,
+        MODE_4LIT	= 0x40,
+        MODE_C		= 0x80,
+    };
+    void SetIFFFlag(int newFlag)
+    {
+        IFFModes |= newFlag;
+    };
+    void ClearIFFFlag(int newFlag)
+    {
+        IFFModes &= ~newFlag;
+    };
+    int IsIFFSet(int testFlag)
+    {
+        return IFFModes & testFlag ? 1 : 0;
+    };
+    void ToggleIFFFlag(int Flag)
+    {
+        IFFModes ^= Flag;
+    };
+    void FillIFFString(char *string);
 
-	ICPClass();
-	~ICPClass();
-	void Exec();
-	void HandleInput(int, CPButtonObject *);
-	void DisplayBlit(void);
-	void DisplayDraw(void);
-	void SetOwnship(void);
-	CPButtonObject* GetTertiaryExclusiveButton(void);
-//	void SetSecondaryExclusiveButton(CPButtonObject *);
-	CPButtonObject* GetSecondaryExclusiveButton(void);
-//	void SetPrimaryExclusiveButton(CPButtonObject *);
-	void InitPrimaryExclusiveButton(CPButtonObject *);
-	void InitTertiaryExclusiveButton(CPButtonObject *);
-	CPButtonObject* GetPrimaryExclusiveButton(void);
-	void SetDirtyFlag(void) {mDirtyFlag = TRUE;};
-	void GetDEDStrings(char*, char*, char*);
-	long GetICPPrimaryMode(void) {return mICPPrimaryMode;};
-	long GetICPSecondaryMode(void) {return mICPSecondaryMode;};
-	long GetICPTertiaryMode(void) {return mICPTertiaryMode;};
-	void SetICPTertiaryMode(long mode)	{mICPTertiaryMode = mode;};
-   int  GetICPWPIndex (void) {return mWPIndex;};
-   void SetICPWPIndex (int newWp) {mWPIndex = newWp;};
-   void SetICPUpdateFlag (int newFlag) {mUpdateFlags |= newFlag;};
+    void EnterINTG(void);
+    int Mode1Code, Mode2Code, Mode3Code;
+    float GetNumScans(void);
 
-   void SetICPSecondaryMode(int num) {mICPSecondaryMode = num;};
+    //INS stuff
+    float INSTime;
+    int INSLine;	//which line we are editing
+    char INSLong[20];
+    char INSLat[20];
+    void GetINSInfo(void);
+    char altStr[10];
+    char INSHead[10];
+    float INSLATDiff, INSLONGDiff, INSALTDiff;
+    float StartLat, StartLong;
+    bool EnteredHDG;
+    bool INSEnter;
+    int INSHDGDiff;
+    int INSEnterPush(void)
+    {
+        return INSEnter;
+    };
+    void ClearINSEnter(void)
+    {
+        INSEnter = FALSE;
+    };
+    void EnterINSStuff(void);
+    bool FillStrings;
 
-   //MI for volume control in the cockpit
-	int Comm1Volume, Comm2Volume;
+    //Laser Page
+    int LaserTime;
+    int LaserLine;
+    int LaserCode;
+    void EnterLaser(void);
+
+
+    //bool ShowWindNow(void) {return ShowWind;};
+
+    ICPClass();
+    ~ICPClass();
+    void Exec();
+    void HandleInput(int, CPButtonObject *);
+    void DisplayBlit(void);
+    void DisplayDraw(void);
+    void SetOwnship(void);
+    CPButtonObject* GetTertiaryExclusiveButton(void);
+    //	void SetSecondaryExclusiveButton(CPButtonObject *);
+    CPButtonObject* GetSecondaryExclusiveButton(void);
+    //	void SetPrimaryExclusiveButton(CPButtonObject *);
+    void InitPrimaryExclusiveButton(CPButtonObject *);
+    void InitTertiaryExclusiveButton(CPButtonObject *);
+    CPButtonObject* GetPrimaryExclusiveButton(void);
+    void SetDirtyFlag(void)
+    {
+        mDirtyFlag = TRUE;
+    };
+    void GetDEDStrings(char*, char*, char*);
+    long GetICPPrimaryMode(void)
+    {
+        return mICPPrimaryMode;
+    };
+    long GetICPSecondaryMode(void)
+    {
+        return mICPSecondaryMode;
+    };
+    long GetICPTertiaryMode(void)
+    {
+        return mICPTertiaryMode;
+    };
+    void SetICPTertiaryMode(long mode)
+    {
+        mICPTertiaryMode = mode;
+    };
+    int  GetICPWPIndex(void)
+    {
+        return mWPIndex;
+    };
+    void SetICPWPIndex(int newWp)
+    {
+        mWPIndex = newWp;
+    };
+    void SetICPUpdateFlag(int newFlag)
+    {
+        mUpdateFlags |= newFlag;
+    };
+
+    void SetICPSecondaryMode(int num)
+    {
+        mICPSecondaryMode = num;
+    };
+
+    //MI for volume control in the cockpit
+    int Comm1Volume, Comm2Volume;
 };
 #endif
