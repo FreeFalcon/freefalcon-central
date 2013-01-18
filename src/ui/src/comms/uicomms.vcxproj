@@ -127,7 +127,6 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Chatwin.cpp" />
     <ClCompile Include="cpcomms.cpp" />
     <ClCompile Include="cphoneb.cpp" />
     <ClCompile Include="dfcomms.cpp" />
