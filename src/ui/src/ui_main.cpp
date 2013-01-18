@@ -1369,50 +1369,26 @@ void GlobalSetup()
 
 void SetStartupFlags()
 {
-    int i, j;
-
-    i = 0;
-    j = 0;
-
-    while (List1[i])
-    {
+    for (int i = 0; List1[i]; ++i)
         if (stricmp(List1[i], gUBuffer) == 0)
-            j++;
+        {
+            gUI_Tracking_Flag |= _UI_TRACK_FLAG00;
+            break;
+        }
 
-        i++;
-    }
-
-    if (j)
-        gUI_Tracking_Flag |= _UI_TRACK_FLAG00;
-
-    i = 0;
-    j = 0;
-
-    while (List2[i])
-    {
+    for (int i = 0; List2[i]; ++i)
         if (stricmp(List2[i], gUBuffer) == 0)
-            j++;
+        {
+            gUI_Tracking_Flag |= _UI_TRACK_FLAG01;
+            break;
+        }
 
-        i++;
-    }
-
-    if (j)
-        gUI_Tracking_Flag |= _UI_TRACK_FLAG01;
-
-    i = 0;
-    j = 0;
-
-    while (List3[i])
-    {
+    for (int i = 0; List3[i]; ++i)
         if (stricmp(List3[i], gUBuffer) == 0)
-            j++;
-
-        i++;
-    }
-
-    if (j)
-        gUI_Tracking_Flag |= _UI_TRACK_FLAG02;
-
+        {
+            gUI_Tracking_Flag |= _UI_TRACK_FLAG02;
+            break;
+        }
 }
 
 void StartCommsQueue()
