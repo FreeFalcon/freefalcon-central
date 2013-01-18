@@ -139,7 +139,7 @@ int ICPClass::CheckMode(void)
     {
         //you can only change progs if you're in STBY
         if (playerAC &&
-            playerAC->EWSPGM() != AircraftClass::EWSPGMSwitch::Stby)
+            playerAC->EWSPGM() != AircraftClass::Stby)
             return TRUE;
     }
 
