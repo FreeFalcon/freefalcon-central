@@ -13,6 +13,12 @@ contribute.
 
 FreeFalcon currently requires Visual Studio 2010, updated to SP1.
 
+To load the Installer project, you'll need the latest version of the WiX
+Toolset, which can be found [here](http://wixtoolset.org/). Without this, you
+will get an error when loading the solution, but you will still be able to
+build the FreeFalcon source code- you just won't be able to package it into
+an installer.
+
 You'll need the Windows SDK 7.1 (get it
 [here](http://www.microsoft.com/en-us/download/details.aspx?id=8279)); to
 install it successfully, you'll need to uninstall any existing Visual C++
@@ -47,6 +53,14 @@ projects that were changed.
 Also, if you are planning on sending patches, be sure that you set Visual
 Studio to use spaces instead of tabs! This setting is located at
 Tools -> Options... -> Text Editor -> C/C++ -> Tabs, select "Insert spaces".
+
+## Building the Installer
+
+To build the installer, you **must** be on the Release target. You can then
+right click the project and click Build and it will create the installer. If
+you don't have an up-to-date Release build of FFViper, this may take a while-
+it will build FFViper for you if it needs to. The installer will build into
+the `pkg/` directory at the root of the repository.
 
 ## Contributing
 

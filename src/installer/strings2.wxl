@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="WelcomeEulaDlg"             Overridable="yes"></String>
+  <String Id="LicenseAgreementDlg_Title"  Overridable="yes">FFViper </String>
+  <String Id="LicenseAgreementDlgTitle"   Overridable="yes">FFViper </String>
+  <String Id="ProgressDlg"                Overridable="yes"></String>
+  <String Id="ProgressDlgTitleInstalling" Overridable="yes"></String>
+  <String Id="UserExitTitle"              Overridable="yes"></String>
+  <String Id="ExitDialogTitle"            Overridable="yes"></String>
+  <String Id="MaintenanceWelcomeDlg"      Overridable="yes"></String>
+  <String Id="LicenseAgreementDlgTitle"   Overridable="yes">FFViper</String>
+  <String Id="LicenseAgreementDlg_Title"  Overridable="yes"></String>
+  <String Id="LicenseAgreementDlgDescription"  Overridable="yes">.</String>
+  <String Id="ProgressDlg"                Overridable="yes"></String>
+  <String Id="MaintenanceTypeDlg"         Overridable="yes"></String>
+  <String Id="MaintenanceTypeDlgTitle"    Overridable="yes">Uninstall</String>
+  <String Id="MaintenanceTypeDlg_Title"   Overridable="yes">Uninstall</String>
+  <String Id="MaintenanceTypeDlgChangeText" Overridable="yes">FFViper not installed.</String>
+  <String Id="MaintenanceTypeDlgRemoveText" Overridable="yes">Remove FFViper from your Computer</String>
+  <String Id="MaintenanceTypeDlgRepairText" Overridable="yes">Repair the FFViper Installation</String>
+  <String Id="VerifyReadyDlg"             Overridable="yes"></String>
+  <String Id="PrepareDlg"                 Overridable="yes"></String>
+  <String Id="VerifyReadyDlg"             Overridable="yes"></String>
+  <String Id="VerifyRemoveDlg"            Overridable="yes"></String>
+  <String Id="VerifyRepairDlg"            Overridable="yes"></String>
+  <String Id="ResumeDlg"                  Overridable="yes"></String>
+  <String Id="ExitDialog_Title"           Overridable="yes">FFViper</String>
+  <String Id="ExitDialogFinish"           Overridable="yes">Finish.</String>
+  <String Id="ExitDialogDescription"      Overridable="yes">Installation completed.</String>
+</WixLocalization>

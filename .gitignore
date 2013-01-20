@@ -1,5 +1,7 @@
 # Build directories
 build/
+pkg/
+obj/
 
 # Build artifacts
 *.ipch
