@@ -9,13 +9,44 @@ Combat Simulator. Most of the development was done from a small group of
 people dedicated to the scene. Now we're going open source, and anybody can
 contribute.
 
-## Configuration
+## Build Instructions
+
+FreeFalcon currently requires Visual Studio 2010, updated to SP1.
+
+You'll need the Windows SDK 7.1 (get it
+[here](http://www.microsoft.com/en-us/download/details.aspx?id=8279)); to
+install it successfully, you'll need to uninstall any existing Visual C++
+2010 redistributables on your machine. They will be reinstalled with the SDK.
+Then install
+[this](http://www.microsoft.com/en-us/download/details.aspx?id=4422) to update
+the compiler.
+
+The DirectX 8.1 SDK is also required (download
+[here](http://www.darwinbots.com/numsgil/dx81sdk_full.exe)). Install it
+anywhere on your hard drive, and point Visual Studio to where ever you
+installed it.
+[This tutorial](http://www.darwinbots.com/numsgil/dx81sdk_full.exe) covers how
+to do that- follow the instructions under "Setting up the Include and Library
+Paths", you can ignore "Linking the DirectX Static Libraries In Your Projects"
+as that is already taken care of.
 
 To set up the source code to run in Debug mode, you'll need an install of
 FreeFalcon on your computer. To tell Visual Studio where this installation is,
 right click on the FFViper project and select Properties from the dropdown.
 Under Configuration Options in the window that pops up, select Debugging and
 edit the Working Directory to the root of your FreeFalcon install.
+
+To compile the code, do a build on the solution or the FFViper project. To run
+the code, run the Debug target of the FFViper project. You should set FFViper
+as the startup project in the solution's settings so that this is done
+automatically. Once you've built the code once, you usually won't have to do
+full rebuilds; just run the Debug target again on FFViper and it should build
+any changes. If you pull down changes from GitHub, you may have to rebuild the
+projects that were changed.
+
+Also, if you are planning on sending patches, be sure that you set Visual
+Studio to use spaces instead of tabs! This setting is located at
+Tools -> Options... -> Text Editor -> C/C++ -> Tabs, select "Insert spaces".
 
 ## Contributing
 
