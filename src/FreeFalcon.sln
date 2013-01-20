@@ -200,6 +200,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DXEngine", "graphics\dxengine\DXEngine.vcxproj", "{59BECA8E-1370-4D6E-BCA7-C6948601471A}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "installer\Installer.wixproj", "{89B4A6BA-5E99-48A8-8D73-7FF1669834A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AB8D7652-9229-4626-9D63-87F8D546C79D} = {AB8D7652-9229-4626-9D63-87F8D546C79D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
