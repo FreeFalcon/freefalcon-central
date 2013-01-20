@@ -999,7 +999,7 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-event"))
                 SimDriver.doEvent = TRUE;
 
-            if (strnicmp(arg, "-repair", 2) == 0)
+            if (_strnicmp(arg, "-repair", 2) == 0)
                 RepairObjective = 1;
 
             if (stricmp(arg, "-armageddon") == 0)
@@ -1008,13 +1008,13 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-log") == 0)
                 log_frame_rate = TRUE;
 
-            if (strnicmp(arg, "-C", 2) == 0)
+            if (_strnicmp(arg, "-C", 2) == 0)
                 ClearObjManualFlags = 1;
 
-            if (strnicmp(arg, "-UA", 3) == 0)
+            if (_strnicmp(arg, "-UA", 3) == 0)
                 gUnlimitedAmmo ++;
 
-            if (!strnicmp(arg, "-g", 2))
+            if (!_strnicmp(arg, "-g", 2))
             {
                 int temp = atoi(&arg[2]);
                 GraphicSettingMult = temp >= 1 ? temp : 1;
@@ -1041,15 +1041,15 @@ void ParseCommandLine(LPSTR cmdLine)
                 if ((arg = strtok(NULL, " ")) != NULL)
                     NumHats = atoi(arg);
 
-            if (strnicmp(arg, "-nosound", 8) == 0)
+            if (_strnicmp(arg, "-nosound", 8) == 0)
                 gSoundFlags &= (0xffffffff ^ FSND_SOUND);
 
-            if (strnicmp(arg, "-nopete", 7) == 0)
+            if (_strnicmp(arg, "-nopete", 7) == 0)
                 gSoundFlags &= (0xffffffff ^ FSND_REPETE);
 
 #ifdef DEBUG
 
-            if (strnicmp(arg, "-noassert", 9) == 0)
+            if (_strnicmp(arg, "-noassert", 9) == 0)
             {
                 F4SetAsserts(FALSE);
                 // KCK: If this line is causing your compile to fail, update
@@ -1058,10 +1058,10 @@ void ParseCommandLine(LPSTR cmdLine)
             }
 
             // JB 010325
-            if (strnicmp(arg, "-nowarning", 10) == 0)
+            if (_strnicmp(arg, "-nowarning", 10) == 0)
                 ShiSetWarnings(FALSE);
 
-            if (strnicmp(arg, "-hardcrash", 9) == 0)
+            if (_strnicmp(arg, "-hardcrash", 9) == 0)
             {
                 F4SetAsserts(TRUE);
                 F4SetHardCrash(TRUE);
@@ -1085,27 +1085,27 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-usersc") == 0)
                 _LOAD_ART_RESOURCES_ = 1;
 
-            if (strnicmp(arg, "-auto", 5) == 0)
+            if (_strnicmp(arg, "-auto", 5) == 0)
                 auto_start = TRUE;
 
-            if (strnicmp(arg, "-nomovie", 8) == 0)
+            if (_strnicmp(arg, "-nomovie", 8) == 0)
                 intro_movie = FALSE;
 
-            if (strnicmp(arg, "-noUIcomms", 8) == 0)
+            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
                 noUIcomms = TRUE;
 
-            if (strnicmp(arg, "-time", 5) == 0)
+            if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
 
-            if (strnicmp(arg, "-movie", 6) == 0)
+            if (_strnicmp(arg, "-movie", 6) == 0)
                 intro_movie = TRUE;
 
-            if (strnicmp(arg, "-noloader", 9) == 0)
+            if (_strnicmp(arg, "-noloader", 9) == 0)
                 wait_for_loaded = FALSE;
 
 #ifdef DEBUG
 
-            if (strnicmp(arg, "-campinput", 10) == 0)
+            if (_strnicmp(arg, "-campinput", 10) == 0)
                 gCampPlayerInput = atoi(arg + 10);
 
 #endif
@@ -1210,7 +1210,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             //sfr converts
             // added for ports
-            if (!strnicmp(arg, "-port", 5))
+            if (!_strnicmp(arg, "-port", 5))
                 if ((arg = strtok(NULL, " ")) != NULL)
                     force_port = (unsigned short)atoi(arg);
 
@@ -1221,7 +1221,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 DisplayOptionsClass::SetDevCaps(D3DDEVCAPS_HWRASTERIZATION);
 
             // force logbook
-            if (!strnicmp(arg, "-lgbk", 5))
+            if (!_strnicmp(arg, "-lgbk", 5))
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     // select a given logbook if it exists
@@ -1320,7 +1320,7 @@ void SystemLevelInit()
         SetCursor(gCursors[CRSR_WAIT]);
         g_theaters.SetNewTheater(td);
 
-        if (((!strnicmp(td->m_name, "Korea", 5)) || (!strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
+        if (((!_strnicmp(td->m_name, "Korea", 5)) || (!_strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
         {
             char tmpPath[256];
             sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files

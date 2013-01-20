@@ -186,4 +186,9 @@ int readMap(char *mapFile)
         return -1;
 }
 
+#else
+
+// Anonymous namespace, prevents the linker from complaining that convert.obj is empty
+namespace { char dummy; };
+
 #endif

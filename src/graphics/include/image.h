@@ -164,21 +164,21 @@ inline GLint CheckImageType(const char *file)
 
     glGetFileExtension(file, ext);
 
-    if (!strnicmp(ext, "GIF", 3))
+    if (!_strnicmp(ext, "GIF", 3))
         i = IMAGE_TYPE_GIF;
-    else if (!strnicmp(ext, "LBM", 3))
+    else if (!_strnicmp(ext, "LBM", 3))
         i = IMAGE_TYPE_LBM;
-    else if (!strnicmp(ext, "PCX", 3))
+    else if (!_strnicmp(ext, "PCX", 3))
         i = IMAGE_TYPE_PCX;
-    else if (!strnicmp(ext, "BMP", 3))
+    else if (!_strnicmp(ext, "BMP", 3))
         i = IMAGE_TYPE_BMP;
-    else if (!strnicmp(ext, "APL", 3))
+    else if (!_strnicmp(ext, "APL", 3))
         i = IMAGE_TYPE_APL;
-    else if (!strnicmp(ext, "TGA", 3))
+    else if (!_strnicmp(ext, "TGA", 3))
         i = IMAGE_TYPE_TGA;
 
     //JAM 22Sep03
-    else if (!strnicmp(ext, "DDS", 3))
+    else if (!_strnicmp(ext, "DDS", 3))
         i = IMAGE_TYPE_DDS;
 
     //JAM

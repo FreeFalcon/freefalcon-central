@@ -1,5 +1,3 @@
-#pragma optimize( "", off ) // JB 010718
-
 #include <objbase.h>
 #include <cguid.h>
 #include <dplay8.h>

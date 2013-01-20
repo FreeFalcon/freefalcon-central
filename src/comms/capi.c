@@ -1,7 +1,3 @@
-#if WIN32
-#pragma optimize( "", off ) // JB 010718
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

@@ -1,5 +1,3 @@
-#pragma optimize( "", off ) // JB 010718
-
 #pragma warning(disable : 4706)
 
 #ifdef __cplusplus

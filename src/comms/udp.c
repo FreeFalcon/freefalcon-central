@@ -1,5 +1,3 @@
-#pragma optimize( "", off ) // JB 010718
-
 #include <stdio.h>
 #include <stdlib.h>
 

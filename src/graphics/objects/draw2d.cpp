@@ -20,11 +20,6 @@
 //JAM 18Nov03
 #include "RealWeather.h"
 
-// HACK: turn off optimizations for this function.  The optimizer
-// may have a bug in it.....
-#pragma optimize("",off)
-
-
 #ifdef USE_SH_POOLS
 MEM_POOL Drawable2D::pool;
 #endif

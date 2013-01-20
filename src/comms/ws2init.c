@@ -1,5 +1,3 @@
-#pragma optimize( "", off )
-
 /* ws2init.c - Copyright (c) Fri Dec 06 22:43:16 1996,  Spectrum HoloByte, Inc.  All Rights Reserved */
 #include "capiopt.h"
 #include <winsock.h>
