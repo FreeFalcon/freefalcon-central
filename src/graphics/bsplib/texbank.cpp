@@ -140,9 +140,9 @@ void TextureBankClass::ReadPool(int file, char *basename)
     // Read the size of the biggest compressed texture in the pool
     result = read(file, &maxCompressedSize, sizeof(maxCompressedSize));
 
-    nVer = maxCompressedSize; // HACK - KO.dxh version - Note maxCompressedSize is used for the old BMP textures, not DDS textures.
-
-    maxCompressedSize = 0xffffffff;
+    // HACK - KO.dxh version - Note maxCompressedSize is used for the old BMP
+    // textures, not DDS textures.
+    nVer = maxCompressedSize;
 
 #ifdef USE_SH_POOLS
     CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool, sizeof(BYTE) * maxCompressedSize, 0);
