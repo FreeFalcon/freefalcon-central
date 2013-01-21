@@ -54,6 +54,8 @@
     <TargetName>weather</TargetName>
     <OutDir>../../../build/x86/debug_win32/graphics/weather/</OutDir>
     <IntDir>../../../build/x86/debug_win32/graphics/weather/</IntDir>
+    <IncludePath>$(IncludePath);$(DX81_SDK)/include</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DX81_SDK)/lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>../../../build/x86/release_win32/graphics/weather/</OutDir>
@@ -63,6 +65,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>weather</TargetName>
+    <IncludePath>$(IncludePath);$(DX81_SDK)/include</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DX81_SDK)/lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

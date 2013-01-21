@@ -142,7 +142,7 @@ void TextureBankClass::ReadPool(int file, char *basename)
 
     nVer = maxCompressedSize; // HACK - KO.dxh version - Note maxCompressedSize is used for the old BMP textures, not DDS textures.
 
-    //maxCompressedSize = 0xffffffff; // Pu239 I don't understand why doing this, so comment out.
+    //maxCompressedSize = 0xffffffff; 
 
 #ifdef USE_SH_POOLS
     CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool, sizeof(BYTE) * maxCompressedSize, 0);
