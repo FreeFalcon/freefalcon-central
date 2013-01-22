@@ -1,22 +1,20 @@
-///////////////////////////////////////// FAST MATH FUNCTIONS ///////////////////////////////////////////
-// RED - 2007
+/** Fast Math Functions **/
 
-
-// Float to Int32
+// Float to 32-bit integer
 inline DWORD F_I32(float x)
 {
     DWORD r;
+
     _asm
     {
         fld x
         fistp r
     }
+
     return r;
 }
 
-
-
-// Absolute Value
+// Absolute value
 inline float F_ABS(float x)
 {
     float r;
@@ -27,5 +25,6 @@ inline float F_ABS(float x)
         fabs
         fstp r
     }
+
     return r;
 }
