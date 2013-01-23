@@ -1185,7 +1185,7 @@ GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpo
     if (Flags & ANIM_DNVIEW)  // * DOWN VIEW ALPHA *
     {
         float cx = sqrt((pos.x - ObserverPosition.x) * (pos.x - ObserverPosition.x) //
-                          + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
+                        + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
         cx = (float)atan2(ObserverPosition.z - pos.z, cx); // Angle CX
         alpha *= abs(cos(cx));
     }
@@ -1193,7 +1193,7 @@ GLint ParticleAnimationNode::Run(int &Frame, float &TimeRest, float Elapsed, Tpo
     if (Flags & ANIM_UPVIEW)  // * DOWN VIEW ALPHA *
     {
         float cx = sqrt((pos.x - ObserverPosition.x) * (pos.x - ObserverPosition.x) //
-                          + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
+                        + (pos.y - ObserverPosition.y) * (pos.y - ObserverPosition.y)); // ground distance from object
         cx = (float)atan2(ObserverPosition.z - pos.z, cx); // Angle CX
         alpha *= abs(sin(cx));
     }
@@ -5067,25 +5067,25 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
 
     // COBRA - RED - Setup the LOG10 Array
-    for (int a = 0; a < LOG10_ARRAY_ITEMS; a++) 
-	{
-		Log10Array[a] = 1.0f - log10((float)a / LOG10_ARRAY_ITEMS * 9.0f + 1.0f);
-	}
+    for (int a = 0; a < LOG10_ARRAY_ITEMS; a++)
+    {
+        Log10Array[a] = 1.0f - log10((float)a / LOG10_ARRAY_ITEMS * 9.0f + 1.0f);
+    }
 
-    for (float x = 0; x < FADE_ARRAY_ITEMS; x++) 
-	{
-		FadeArray[(int)x] = log10(x + 10.0f) / (pow((x + 10), 2) / 1200 + 1.0f);
-	}
+    for (float x = 0; x < FADE_ARRAY_ITEMS; x++)
+    {
+        FadeArray[(int)x] = log10(x + 10.0f) / (pow((x + 10), 2) / 1200 + 1.0f);
+    }
 
-    for (int a = 0; a < ASIN_ARRAY_ITEMS; a++) 
-	{
-		ASinArray[a] = asinf((float)a / (ASIN_ARRAY_ITEMS - 1)) * 2 / PI;
-	}
+    for (int a = 0; a < ASIN_ARRAY_ITEMS; a++)
+    {
+        ASinArray[a] = asinf((float)a / (ASIN_ARRAY_ITEMS - 1)) * 2 / PI;
+    }
 
     for (float x = 0; x < SIZE_ARRAY_ITEMS; x++)
-	{
-		SizeArray[(int)x] = 1.0f - pow((((float)SIZE_ARRAY_ITEMS - x) / (float)SIZE_ARRAY_ITEMS), 9);
-	}
+    {
+        SizeArray[(int)x] = 1.0f - pow((((float)SIZE_ARRAY_ITEMS - x) / (float)SIZE_ARRAY_ITEMS), 9);
+    }
 
     //  RED - Setup the Randomly rotate Quads
     for (int a = 0; a < PS_MAXQUADRNDLIST; a++)
@@ -5248,7 +5248,8 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 ppn->WindAffected = true;
                 ppn->WindFactor         = 1.0f; // RV - I-Hawk - default to 1.0
             }
-			continue;
+
+            continue;
         }
 
         //////////////////////////// TRAILS PARAMETER INITIALIZATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -5290,7 +5291,8 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 tpn->Color[0].a = 1.0f;
                 tpn->GroupFlags = GRP_NONE;
             }
-			continue;
+
+            continue;
         }
 
 
@@ -5308,7 +5310,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             else Groups = GroupNode;
 
             LastGroup = GroupNode;
-			continue;
+            continue;
         }
 
         On("animation")
@@ -5318,7 +5320,8 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             char *n = TokenStr(0);
 
             if (n) pan = GetAnimationNode(n);
-			continue;
+
+            continue;
         }
 
         // Texture File Spcification...
@@ -5331,9 +5334,9 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
         // we need a valid ppn or pan pointer
         if ((!tpn) && (!ppn) && (!pan) && (!GroupNode))
-		{
-			continue;
-		}
+        {
+            continue;
+        }
 
 
 
@@ -5347,26 +5350,26 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             On("cluster")
             {
                 ppn->ClusterMode = TokenF(CHILD_CLUSTER);
-				continue;
+                continue;
             }
 
             On("windoff")
-			{
-				ppn->WindAffected = false;
-				continue;
-			}
+            {
+                ppn->WindAffected = false;
+                continue;
+            }
 
             On("windFactor")
-			{
-				ppn->WindFactor = TokenF(1);
-				continue;
-			}
+            {
+                ppn->WindFactor = TokenF(1);
+                continue;
+            }
 
             On("lifespan")
             {
                 ppn->lifespan          = TokenF(1);
                 ppn->lifespanvariation = TokenF(0);
-				continue;
+                continue;
             }
 
             On("color")
@@ -5391,7 +5394,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             On("3dlight")
             {
                 ppn->EmitLight = true;
-				continue;
+                continue;
             }
 
             On("light")
@@ -5515,7 +5518,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // setup zero time variation
                     ppn->emitter[currentemitter].TimeVariation  = 0.0f;
                     ppn->emitter[currentemitter].Light = false;
-					continue;
+                    continue;
                 }
 
                 if (currentemitter >= 0)
@@ -5529,7 +5532,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                         if (n)
                             strncpy(ppn->emitter[currentemitter].name, n, PS_NAMESIZE);
 
-						continue;
+                        continue;
                     }
 
                     On("emissionmode")
@@ -5542,18 +5545,19 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                             char *emitenums[] = {"ONCE", "PERSEC", "IMPACT", "EARTHIMPACT", "WATERIMPACT", 0};
                             ppn->emitter[currentemitter].mode = (PSEmitterModeEnum)TokenEnum(emitenums, 0);
                         }
-						continue;
+
+                        continue;
                     }
                     On("emissiondomain")
                     {
                         ppn->emitter[currentemitter].domain.Parse();
-						continue;
+                        continue;
                     }
 
                     On("emissiontarget")
                     {
                         ppn->emitter[currentemitter].target.Parse();
-						continue;
+                        continue;
                     }
 
                     On("emissionrate")
@@ -5561,20 +5565,20 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                         ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].value = TokenF(0);
                         ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].time  = i;
                         ppn->emitter[currentemitter].stages++;
-						continue;
+                        continue;
                     }
 
                     On("emissionvelocity")
                     {
                         ppn->emitter[currentemitter].velocity = TokenF(0);
                         ppn->emitter[currentemitter].velVariation = TokenF(0);
-						continue;
+                        continue;
                     }
 
                     On("emissionrnd")
                     {
                         ppn->emitter[currentemitter].TimeVariation = TokenF(0);
-						continue;
+                        continue;
                     }
 
                 }
@@ -5589,27 +5593,27 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->accel, ppn->accelStages);
                 ppn->accelStages++;
-				continue;
+                continue;
             }
 
             On("inheritvelocity")
             {
                 ppn->velInherit = TokenF(1);
-				continue;
+                continue;
             }
 
             On("initialVelocity")
             {
                 ppn->velInitial = TokenF(1);
                 ppn->velVariation = TokenF(0);
-				continue;
+                continue;
             }
 
             On("RotationRate")
             {
                 ppn->RotationRateMax = TokenF(1) * PI / 180.0f;
                 ppn->RotationRateMin = TokenF(0) * PI / 180.0f;
-				continue;
+                continue;
             }
 
 
@@ -5618,27 +5622,28 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 char *n = TokenStr(0);
 
                 if (!strcmp(n, "poly"))
-				{
-					ppn->drawType = PSDT_POLY;
-				}
+                {
+                    ppn->drawType = PSDT_POLY;
+                }
 
-                if (!strcmp(n, "zplane")) 
-				{
-					ppn->drawType = PSDT_POLY, ppn->ZPoly = true;
-				}
-				continue;
+                if (!strcmp(n, "zplane"))
+                {
+                    ppn->drawType = PSDT_POLY, ppn->ZPoly = true;
+                }
+
+                continue;
             }
 
             On("soundid")
             {
                 ppn->sndId = TokenI(0);
-				continue;
+                continue;
             }
 
             On("soundlooped")
             {
                 ppn->sndLooped = TokenI(0);
-				continue;
+                continue;
             }
 
             On("soundVolume")
@@ -5650,7 +5655,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->sndVol, ppn->sndVolStages);
                 ppn->sndVolStages++;
-				continue;
+                continue;
             }
 
             On("soundPitch")
@@ -5662,51 +5667,51 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->sndPitch, ppn->sndPitchStages);
                 ppn->sndPitchStages++;
-				continue;
+                continue;
             }
 
-            On("trailid") 
-			{
-				strncpy(ppn->TrailName, TokenStr(0), PS_NAMESIZE);
-				continue;
-			}
+            On("trailid")
+            {
+                strncpy(ppn->TrailName, TokenStr(0), PS_NAMESIZE);
+                continue;
+            }
 
             On("groundfriction")
             {
                 ppn->groundFriction = TokenF(0);
-				continue;
+                continue;
             }
 
             On("visibledistance")
             {
                 ppn->visibleDistance = TokenF(10000);
-				continue;
+                continue;
             }
 
             On("dieonground")
             {
                 ppn->dieOnGround = (float)TokenI(0);
-				continue;
+                continue;
             }
 
             On("modelct")
             {
                 ppn->bspCTID    = TokenI(0);
                 ppn->bspVisType = TokenI(0);
-				continue;
+                continue;
             }
 
             On("orientation")
             {
                 char *enumstr[] = {"none", "movement", 0};
                 ppn->orientation = (PSOrientation)TokenEnum(enumstr, 0);
-				continue;
+                continue;
             }
 
             On("emitonerandomly")
             {
                 ppn->emitOneRandomly = TokenI(0);
-				continue;
+                continue;
             }
         } // * END OF PARTICLE PARAMETER NODE *
 
@@ -5726,21 +5731,21 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 char FileName[PARTICLE_NAMES_LEN]; // name = BaseName of frames
                 strncpy(FileName, TokenStr(""), PARTICLE_NAMES_LEN);
                 pan->Sequence = (void*)GetFramesList(FileName, pan->NFrames);
-				continue;
+                continue;
             }
 
             On("framerate") // * FRAME RATE DEFINITION *
             {
                 // 'framerate=fps'
                 pan->Fps = 1.0f / TokenF(0); // fps= Frames Per Second speed
-				continue;
+                continue;
             }
 
             On("flags") // * FLAGS DECLARATION *
             {
                 // 'flags=F1|F2...'
                 pan->Flags = TokenFlags(0, ANIMATION_FLAGS);
-				continue;
+                continue;
             }
 
         }
@@ -5765,7 +5770,8 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                         GroupNode->Items++;
                     }
                 }
-				continue;
+
+                continue;
             }
         }
 
@@ -5779,23 +5785,23 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         if (tpn)  // * TRAIL PARAMETER NODE *
         {
 
-            On("lifespan")  
-			{
-				tpn->LifeSpan = TokenF(1);
-				continue;
-			}
+            On("lifespan")
+            {
+                tpn->LifeSpan = TokenF(1);
+                continue;
+            }
 
             On("emittime")
-			{
-				tpn->LifeCx = 1.0f / TokenF(1) ;
-				continue;
-			}
+            {
+                tpn->LifeCx = 1.0f / TokenF(1) ;
+                continue;
+            }
 
             On("weight")
-			{
-				tpn->Weight = TokenF(0);
-				continue;
-			}
+            {
+                tpn->Weight = TokenF(0);
+                continue;
+            }
 
 
             On("color")
@@ -5915,43 +5921,45 @@ bool DrawableParticleSys::PS_LoadParameters(void)
     /* id */
     int l, extra = 0;
 
-    for (l = 0; l < nameListCount;l++)
+    for (l = 0; l < nameListCount; l++)
     {
         // Assign IDs to Names for each possible PPN
         for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++)
         {
             // if a name found
-            if (!stricmp(PS_PPN[c].name, nameList[l])) 
-			{
-				PS_PPN[c].id = l;
-				extra++;
-				break;
-			}
-			else
-			{
-				if(PS_PPN[c].id != -1)
-				{
-					continue;
-				}
-				else
-					PS_PPN[c].id = -1;
-				if (c == MAX_PARTICLE_PARAMETERS-1)
-				{
-					break;
-				}
-			}
+            if (!stricmp(PS_PPN[c].name, nameList[l]))
+            {
+                PS_PPN[c].id = l;
+                extra++;
+                break;
+            }
+            else
+            {
+                if (PS_PPN[c].id != -1)
+                {
+                    continue;
+                }
+                else
+                    PS_PPN[c].id = -1;
+
+                if (c == MAX_PARTICLE_PARAMETERS - 1)
+                {
+                    break;
+                }
+            }
         }
     }
-	l = extra;
+
+    l = extra;
 
     // number all the nodes that don't match above;
-    for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++) 
-	{
-		if (PS_PPN[c].id == -1) 
-		{
-			PS_PPN[c].id = l++;
-		}
-	}
+    for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++)
+    {
+        if (PS_PPN[c].id == -1)
+        {
+            PS_PPN[c].id = l++;
+        }
+    }
 
 
 
@@ -5980,9 +5988,9 @@ bool DrawableParticleSys::PS_LoadParameters(void)
     PPNCount = l;
 
     for (int c = 0; c < l; c++)
-	{
+    {
         PPN[PS_PPN[c].id] = (ParticleParamNode *)c;
-	}
+    }
 
     /*ppn=(ParticleParamNode *)paramList.GetHead();
     while(ppn)
@@ -6003,8 +6011,9 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         // Check for any emitter in the particle
         for (t = 0; t < PSMAX_EMITTERS; t++)
         {
-			if(PS_PPN[c].emitter[t].stages <= 0)
-				continue;
+            if (PS_PPN[c].emitter[t].stages <= 0)
+                continue;
+
             // Look thru all list of PPN for the right emitter
             for (DWORD n = 0; n < MAX_PARTICLE_PARAMETERS; n++)
             {
@@ -6013,10 +6022,10 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 {
                     PS_PPN[c].emitter[t].id = n;
 
-                    if (PS_PPN[n].EmitLight) 
-					{
-						PS_PPN[c].emitter[t].Light = true;
-					}
+                    if (PS_PPN[n].EmitLight)
+                    {
+                        PS_PPN[c].emitter[t].Light = true;
+                    }
                 }
             }
         }
@@ -6030,8 +6039,9 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         // Check for any emitter in the particle
         for (t = 0; t < PSMAX_EMITTERS; t++)
         {
-			if(PS_PPN[c].emitter[t].stages <= 0)
-				continue;
+            if (PS_PPN[c].emitter[t].stages <= 0)
+                continue;
+
             if (PS_PPN[c].emitter[t].Light)
             {
                 PS_PPN[c].LightRoot = true;
@@ -6083,20 +6093,20 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
         // Visible Distance
         if (!PS_TPN[a].VisibleDistance)
-		{
-			PS_TPN[a].VisibleDistance = PS_TPN[a].LineDistance * 10.0f;
-		}
+        {
+            PS_TPN[a].VisibleDistance = PS_TPN[a].LineDistance * 10.0f;
+        }
 
         // The Frag Radius is half max size * 30 ( feet )
         if (!PS_TPN[a].FragRadius)
-		{
-			PS_TPN[a].FragRadius = PS_TPN[a].Size[1] * 30.0f ;
-		}
+        {
+            PS_TPN[a].FragRadius = PS_TPN[a].Size[1] * 30.0f ;
+        }
 
-        if (!PS_TPN[a].IntegrateDistance) 
-		{
-			PS_TPN[a].IntegrateDistance = PS_TPN[a].FragRadius / 2.0f;
-		}
+        if (!PS_TPN[a].IntegrateDistance)
+        {
+            PS_TPN[a].IntegrateDistance = PS_TPN[a].FragRadius / 2.0f;
+        }
 
     }
 
@@ -6121,7 +6131,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
 
     //------------------
-     fclose(fp);
+    fclose(fp);
     //------------------
 
     if (psContext)
