@@ -7,7 +7,7 @@ inline float RED_Distance3D(D3DXVECTOR3 *V1, D3DXVECTOR3 *V2)
     float dy = V1->y - V2->y;
     float dz = V1->z - V2->z;
 
-    return sqrtf(dx ** 2 + dy ** 2 + dz ** 2);
+    return sqrtf(dx * dx + dy * dy + dz * dz);
 }
 
 // Returns a vector length
