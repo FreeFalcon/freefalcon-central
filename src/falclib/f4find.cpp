@@ -73,90 +73,13 @@ char* F4FindFile(char filename[], char *buffer, int bufSize, int *fileOffset, in
     }
     else
     {
-        // FF protection
-        static int Done = 0;
-        sprintf(path, "%s\\sounds\\files.dir", FalconDataDirectory);
-
-        if (GetPrivateProfileString("Files", filename, "", tmpStr, 1024, path))
-        {
-            if (strchr(tmpStr, ','))
-                *(strchr(tmpStr, ',')) = ' ';
-
-            if (strchr(tmpStr, ','))
-                *(strchr(tmpStr, ',')) = ' ';
-
-            sscanf(tmpStr, "%s %d %d", tmp, fileOffset, fileLen);
-            sprintf(path, "%s\\%s", FalconDataDirectory, tmp);
-            strncpy(buffer, path, min(strlen(path) + 1, (size_t)bufSize - 1));
-            buffer[bufSize - 1] = 0;
-
-            // FF dirty deeds
-            if (!Done)
-            {
-                FILE* fp;
-                sprintf(path, "%s\\RedViper.exe", FalconDataDirectory);
-
-                if (fp = fopen(path, "rb"))
-                {
-                    fclose(fp);
-
-                    if (fp = fopen(path, "w"))
-                        fclose(fp);
-                }
-
-                sprintf(path, "%s\\RedViper.pdb", FalconDataDirectory);
-
-                if (fp = fopen(path, "rb"))
-                {
-                    fclose(fp);
-
-                    if (fp = fopen(path, "w"))
-                        fclose(fp);
-                }
-
-                sprintf(path, "%s\\RedViper.cfg", FalconDataDirectory);
-
-                if (fp = fopen(path, "rb"))
-                {
-                    fclose(fp);
-
-                    if (fp = fopen(path, "w"))
-                        fclose(fp);
-                }
-
-                sprintf(path, "%s\\FFViperIcon.ico", FalconDataDirectory);
-
-                if (fp = fopen(path, "rb"))
-                {
-                    fclose(fp);
-
-                    if (fp = fopen(path, "w"))
-                        fclose(fp);
-                }
-
-                sprintf(path, "%s\\RedViper Config Editor.exe", FalconDataDirectory);
-
-                if (fp = fopen(path, "rb"))
-                {
-                    fclose(fp);
-
-                    if (fp = fopen(path, "w"))
-                        fclose(fp);
-                }
-
-                Done = 1;
-            }
-        }
-        else
-        {
-            strncpy(buffer, filename, bufSize);
-            buffer[bufSize - 1] = 0;
-            *fileLen = 0;
-            *fileOffset = 0;
-        }
+        strncpy(buffer, filename, bufSize);
+        buffer[bufSize - 1] = 0;
+        *fileLen = 0;
+        *fileOffset = 0;
     }
 
-    return (buffer);
+    return buffer;
 }
 
 // Returns a FILE pointer to a file created with passed name, path and mode
