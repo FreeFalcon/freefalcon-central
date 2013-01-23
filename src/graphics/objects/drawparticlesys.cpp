@@ -5,6 +5,8 @@
 #include "DrawParticleSys.h"
 #include "tod.h"
 
+#include <iostream>
+
 
 //JAM 19Apr04
 
@@ -242,11 +244,20 @@ class RenderOTW *DrawableParticleSys::PS_Renderer;
 #define NRESCALE(in,outmin,outmax)   RESCALE(in,0,1,outmin,outmax)
 
 
-#define K_CALC(Stage, Count)  if(Count){\
+#define K_CALC(Stage, Count) \
+if(Count)\
+{\
  Stage[Count-1].K = (fabs(Stage[Count].value) - fabs(Stage[Count-1].value)) /(Stage[Count].time - Stage[Count-1].time );\
- if(Stage[Count].value<0) Stage[Count].LogMode=true; else Stage[Count].LogMode=false;\
+ if(Stage[Count].value<0) \
+ {\
+	 Stage[Count].LogMode=true; \
+ }\
+ else \
+ {\
+     Stage[Count].LogMode=false;\
+ }\
  Stage[Count].value = fabs(Stage[Count].value);\
- }
+}
 
 #define K_CALCRGB(Stage, Count, color) if(Count){\
  Stage[Count-1].K.color = (fabs(Stage[Count].value.color) - fabs(Stage[Count-1].value.color))/(Stage[Count].time - Stage[Count-1].time );\
@@ -2141,705 +2152,7 @@ char *DrawableParticleSys::GetErrorMessage(void)
 // COBRA - RED - Returns False if any Failure
 bool DrawableParticleSys::LoadParameters(void)
 {
-#ifdef USE_NEW_PS
     return PS_LoadParameters();
-#else
-    char buffer[1024];
-    char path[_MAX_PATH];
-    FILE *fp;
-    ParticleParamNode *ppn = 0;
-    ParticleAnimationNode *pan = 0;
-    ParticleGroupNode *GroupNode = NULL;
-    int Counter;
-
-    DPS_Node *dps;
-
-    paramList.Lock();
-    dps = (DPS_Node *)dpsList.GetHead();
-
-    while (dps)
-    {
-        dps->owner->ClearParticles();
-        dps = (DPS_Node *)dps->GetSucc();
-    }
-
-    // COBRA - RED - Setup the LOG10 Array and FADE Array
-    for (int a = 0; a < LOG10_ARRAY_ITEMS; a++)
-        Log10Array[a] = 1.0f - log10((float)a / LOG10_ARRAY_ITEMS * 9.0f + 1.0f);
-
-    for (int a = 0; a < ASIN_ARRAY_ITEMS; a++)
-        ASinArray[a] = asinf((float)a / ASIN_ARRAY_ITEMS) * 4 / PI;
-
-    if (PPN)
-        delete [] PPN;
-
-    while (ppn = (ParticleParamNode *)paramList.RemHead())
-    {
-        delete ppn;
-    }
-
-
-    sprintf(path, "%s\\terrdata\\%s", FalconDataDirectory, TRAILFILE);  // MLR 12/14/2003 - This should probably be fixed
-    fp = fopen(path, "r");
-
-    ppn = 0;
-    int currentemitter = -1;
-
-    // Cobra - Use intrnal PS.ini
-    int k = 0;
-
-    while (1)
-    {
-        char *com, *ary, *arg;
-        float  i; // time index
-
-        if (fp == NULL)
-        {
-            if (g_bHighSFX)
-            {
-                while (strlen(PS_Data_High[k]) == 0)
-                    k++;
-
-                strcpy(buffer, PS_Data_High[k]);
-
-                if (stricmp(PS_Data_High[k], "END") == 0)
-                    break;
-
-                k++;
-            }
-            else
-            {
-                while (strlen(PS_Data_Low[k]) == 0)
-                    k++;
-
-                strcpy(buffer, PS_Data_Low[k]);
-
-                if (stricmp(PS_Data_Low[k], "END") == 0)
-                    break;
-
-                k++;
-            }
-        }
-        else
-        {
-            if (fgets(buffer, sizeof buffer, fp) == 0)
-            {
-                fclose(fp);
-                break;
-            }
-        }
-
-        // end Cobra
-
-        if (buffer[0] == '#' || buffer[0] == ';' || buffer[0] == '\n')
-            continue;
-
-        int b;
-
-        for (b = 0; b < 1024 && (buffer[b] == ' ' || buffer[b] == '\t'); b++);
-
-        com = strtok(&buffer[b], "=\n");
-        arg = strtok(0, "\n\0");
-
-        if (com[0] == '#' || com[0] == ';')
-            continue;
-
-
-        /* seperate command and array number 'command[arraynumber]*/
-        com = strtok(com, "[");
-        ary = strtok(0, "]");
-
-        com = trim(com);
-        ary = trim(ary);
-
-        i = TokenF(ary, 0);
-
-        /* kludge so that arg is the current string being parsed */
-        SetTokenString(arg);
-
-        if (!com)continue;
-
-#define On(s) if(stricmp(com,s)==0)
-
-        // COBRA - RED - This section has been added of Animation Nodes
-        // The token 'id' or 'animation' selects which node is pointed
-        // and what commands are then evaluated referring that node type
-
-        On("id")
-        {
-            pan = 0;
-            GroupNode = NULL;
-            char *n = TokenStr(0);
-
-            if (n)
-            {
-                if (ppn = new ParticleParamNode)
-                {
-                    // if a new name must inherit from it
-                    char *i = TokenStr(0);
-
-                    if (i)
-                    {
-                        // look for the name
-                        ParticleParamNode *Fn;
-                        Fn = (ParticleParamNode *)paramList.GetHead();
-
-                        while (Fn && strncmp(Fn->name, i, PS_NAMESIZE))
-                            Fn = (ParticleParamNode *)Fn->GetSucc();
-
-                        // if found, make a copy and go ahead
-                        if (Fn)
-                        {
-                            *ppn = *Fn;
-                            paramList.AddTail(ppn);
-                            continue;
-                        }
-                    }
-
-                    memset(ppn, 0, sizeof(*ppn));
-                    strncpy(ppn->name, n, PS_NAMESIZE);
-                    ppn->id = -1;
-                    ppn->accel[0].value = 1;
-                    ppn->alpha[0].value = 1;
-                    ppn->velInherit = 1;
-                    ppn->drawType = PSDT_NONE;
-                    currentemitter = -1;
-                    ppn->sndVol[0].value = 0;
-                    ppn->sndPitch[0].value = 1;
-                    ppn->trailId = -1;
-                    ppn->visibleDistance = 10000;
-                    ppn->GroupFlags = GRP_NONE;
-                    ppn->color[0].value.r = ppn->color[0].value.g = ppn->color[0].value.b = 1.0f;
-                    ppn->RotationRateMax = ppn->RotationRateMin = 0.0f;
-                    paramList.AddTail(ppn);
-                }
-            }
-        }
-
-        On("group")
-        {
-            ppn = NULL;
-            pan = NULL;
-            Counter = 0;
-            char *n = TokenStr(0);
-
-            if (n) GroupNode = new ParticleGroupNode(n);
-
-            if (LastGroup) LastGroup->Next = GroupNode;
-            else Groups = GroupNode;
-
-            LastGroup = GroupNode;
-        }
-
-        On("animation")
-        {
-            ppn = NULL;
-            GroupNode = NULL;
-            char *n = TokenStr(0);
-
-            if (n) pan = GetAnimationNode(n);
-        }
-
-        // Texture File Spcification...
-        On("texturefile")
-        {
-            char *n = TokenStr(0);
-            TheDXEngine.LoadTexture(n);
-            continue;
-        }
-
-        // we need a valid ppn or pan pointer
-        if ((!ppn) && (!pan) && (!GroupNode)) continue;
-
-
-        // COBRA - RED - This section is just evaluated if a PARTICLE PARAMETER NODE is active
-        if (ppn)  // * PARTICLE PARAMETER NODE *
-        {
-
-            On("lifespan")
-            {
-                ppn->lifespan          = TokenF(1);
-                ppn->lifespanvariation = TokenF(0);
-            }
-
-            On("color")
-            {
-                // color[x]=0,1,0,0,1
-                ppn->color[ppn->colorStages].value.r = TokenF(0);
-                ppn->color[ppn->colorStages].value.g = TokenF(0);
-                ppn->color[ppn->colorStages].value.b = TokenF(0);
-                ppn->color[ppn->colorStages].K.r = 1.0f;
-                ppn->color[ppn->colorStages].K.g = 1.0f;
-                ppn->color[ppn->colorStages].K.b = 1.0f;
-                ppn->color[ppn->colorStages].time    = i;
-                K_CALCRGB(ppn->color, ppn->colorStages, r);
-                K_CALCRGB(ppn->color, ppn->colorStages, g);
-                K_CALCRGB(ppn->color, ppn->colorStages, b);
-
-
-                ppn->colorStages++;
-                continue;
-            }
-
-            On("light")
-            {
-                ppn->light[ppn->lightStages].value.r = TokenF(0);
-                ppn->light[ppn->lightStages].value.g = TokenF(0);
-                ppn->light[ppn->lightStages].value.b = TokenF(0);
-                ppn->light[ppn->lightStages].K.r = 1.0f;
-                ppn->light[ppn->lightStages].K.g = 1.0f;
-                ppn->light[ppn->lightStages].K.b = 1.0f;
-                ppn->light[ppn->lightStages].time    = i;
-                K_CALCRGB(ppn->light, ppn->lightStages, r);
-                K_CALCRGB(ppn->light, ppn->lightStages, g);
-                K_CALCRGB(ppn->light, ppn->lightStages, b);
-                ppn->lightStages++;
-                continue;
-            }
-
-            On("size")
-            {
-                ppn->size[ppn->sizeStages].value = TokenF(0);
-                ppn->size[ppn->sizeStages].time  = i;
-
-                // COBRA - RED - The 1st Stage can define also a Size andom CX
-                if (!ppn->sizeStages) ppn->SizeRandom = TokenF(0) / ppn->size[ppn->sizeStages].value;
-
-                // K for this stage defaults at 1
-                ppn->size[ppn->sizeStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->size, ppn->sizeStages);
-                ppn->sizeStages++;
-                continue;
-            }
-
-            On("flags")
-            ppn->flags = TokenFlags(0, PSF_CHARACTERS);
-
-            On("animate")
-            {
-                ppn->Texture = NULL; // Disables Texture
-                char FileName[PARTICLE_NAMES_LEN];
-                strncpy(FileName, TokenStr(""), PS_NAMESIZE); // Sequence Name
-
-                if (i > 1)i = 1; // Limit Check
-
-                ppn->Animation[(int)i] = GetAnimationNode(FileName); // Assign it
-                ppn->drawType = PSDT_POLY;
-                continue;
-            }
-
-            On("texture")
-            {
-                strncpy(ppn->texFilename, arg, PS_NAMESIZE);
-                // ok, check for a group with such a name
-                ParticleGroupNode *gpn = FindGroupNode(ppn->texFilename);
-
-                // if found
-                if (gpn)
-                {
-                    // assing a link as texture
-                    ppn->Texture = (ParticleTextureNode*)gpn;
-                    // and signal the texture depends on a group
-                    ppn->GroupFlags |= GRP_TEXTURE;
-                    ppn->drawType = PSDT_POLY;
-                    // end here
-                    continue;
-                }
-
-                ParticleTextureNode *ptn;
-                ptn = GetTextureNode(ppn->texFilename);
-                ppn->Texture = ptn;
-                ppn->drawType = PSDT_POLY;
-                continue;
-            }
-
-            On("gravity")
-            {
-                ppn->gravity[ppn->gravityStages].value = TokenF(0);
-                ppn->gravity[ppn->gravityStages].time  = i;
-                // K for this stage defaults at 1
-                ppn->gravity[ppn->gravityStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->gravity, ppn->gravityStages);
-                ppn->gravityStages++;
-                continue;
-            }
-
-            On("alpha")
-            {
-                ppn->alpha[ppn->alphaStages].value = TokenF(0);
-                ppn->alpha[ppn->alphaStages].time  = i;
-                // K for this stage defaults at 1
-                ppn->alpha[ppn->alphaStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->alpha, ppn->alphaStages);
-                ppn->alphaStages++;
-                continue;
-            }
-
-            On("drag")
-            {
-                ppn->simpleDrag = TokenF(0);
-            }
-
-            On("bounce")
-            {
-                ppn->bounce = TokenF(0);
-            }
-
-            if (currentemitter < 10)
-            {
-                On("addemitter")
-                {
-                    currentemitter++;
-                    //Get run minimum Threshold
-                    ppn->ParticleEmitterMin[currentemitter] = TokenF(0);
-                    //Get run max Threshold
-                    ppn->ParticleEmitterMax[currentemitter] = TokenF(1);
-                    // setup zero time variation
-                    ppn->emitter[currentemitter].TimeVariation  = 0.0f;
-
-                }
-
-                if (currentemitter >= 0)
-                {
-                    On("emissionid")
-                    {
-                        char *n;
-                        n = TokenStr("none");
-                        ppn->emitter[currentemitter].id   = -1;
-
-                        if (n)
-                            strncpy(ppn->emitter[currentemitter].name, n, PS_NAMESIZE);
-                    }
-
-                    On("emissionmode")
-                    {
-                        char *emitenums[] = {"EMITONCE", "EMITPERSEC", "EMITONIMPACT", "EMITONEARTHIMPACT", "EMITONWATERIMPACT", 0};
-                        ppn->emitter[currentemitter].mode = (PSEmitterModeEnum)TokenEnum(emitenums, -1);
-
-                        if (ppn->emitter[currentemitter].mode == -1)
-                        {
-                            char *emitenums[] = {"ONCE", "PERSEC", "IMPACT", "EARTHIMPACT", "WATERIMPACT", 0};
-                            ppn->emitter[currentemitter].mode = (PSEmitterModeEnum)TokenEnum(emitenums, 0);
-                        }
-
-                    }
-                    On("emissiondomain")
-                    {
-                        ppn->emitter[currentemitter].domain.Parse();
-                    }
-
-                    On("emissiontarget")
-                    {
-                        ppn->emitter[currentemitter].target.Parse();
-                    }
-
-                    On("emissionrate")
-                    {
-                        ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].value = TokenF(0);
-                        ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].time  = i;
-                        ppn->emitter[currentemitter].stages++;
-                    }
-
-                    On("emissionvelocity")
-                    {
-                        ppn->emitter[currentemitter].velocity = TokenF(0);
-                        ppn->emitter[currentemitter].velVariation = TokenF(0);
-                    }
-
-                    On("emissionrnd")
-                    {
-                        ppn->emitter[currentemitter].TimeVariation = TokenF(0);
-                    }
-
-                }
-            }
-
-            On("acceleration")
-            {
-                ppn->accel[ppn->accelStages].value = TokenF(1);
-                ppn->accel[ppn->accelStages].time  = i;
-                // K for this stage defaults at 1
-                ppn->accel[ppn->accelStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->accel, ppn->accelStages);
-                ppn->accelStages++;
-            }
-
-            On("inheritvelocity")
-            {
-                ppn->velInherit = TokenF(1);
-            }
-
-            On("initialVelocity")
-            {
-                ppn->velInitial = TokenF(1);
-                ppn->velVariation = TokenF(0);
-            }
-
-            On("RotationRate")
-            {
-                ppn->RotationRateMax = TokenF(1) * PI / 180.0f;
-                ppn->RotationRateMin = TokenF(0) * PI / 180.0f;
-            }
-
-
-            On("drawtype")
-            {
-                char *n = TokenStr(0);
-
-                if (!strcmp(n, "poly")) ppn->drawType = PSDT_POLY;
-            }
-
-            On("soundid")
-            {
-                ppn->sndId = TokenI(0);
-            }
-
-            On("soundlooped")
-            {
-                ppn->sndLooped = TokenI(0);
-            }
-
-            On("soundVolume")
-            {
-                ppn->sndVol[ppn->sndVolStages].value = (TokenF(0) - 1) * -10000;
-                ppn->sndVol[ppn->sndVolStages].time  = i;
-                // K for this stage defaults at 1
-                ppn->sndVol[ppn->sndVolStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->sndVol, ppn->sndVolStages);
-                ppn->sndVolStages++;
-            }
-
-            On("soundPitch")
-            {
-                ppn->sndPitch[ppn->sndPitchStages].value = TokenF(1);
-                ppn->sndPitch[ppn->sndPitchStages].time  = i;
-                // K for this stage defaults at 1
-                ppn->sndPitch[ppn->sndPitchStages].K = 1.0f;
-                // Update CXes
-                K_CALC(ppn->sndPitch, ppn->sndPitchStages);
-                ppn->sndPitchStages++;
-            }
-
-            On("trailid")
-            {
-                ppn->trailId = TokenI(-1);
-            }
-
-            On("groundfriction")
-            {
-                ppn->groundFriction = TokenF(0);
-            }
-
-            On("visibledistance")
-            {
-                ppn->visibleDistance = TokenF(10000);
-            }
-
-            On("dieonground")
-            {
-                ppn->dieOnGround = (float)TokenI(0);
-            }
-
-            On("modelct")
-            {
-                ppn->bspCTID    = TokenI(0);
-                ppn->bspVisType = TokenI(0);
-            }
-
-            On("orientation")
-            {
-                char *enumstr[] = {"none", "movement", 0};
-                ppn->orientation = (PSOrientation)TokenEnum(enumstr, 0);
-            }
-
-            On("emitonerandomly")
-            {
-                ppn->emitOneRandomly = TokenI(0);
-            }
-        } // * END OF PARTICLE PARAMETER NODE *
-
-        // COBRA - RED - This section is just evaluated if a PARTICLE ANIMATION NODE is active
-        if (pan)  // * PARTICLE ANIMATION NODE *
-        {
-
-            On("frames") // * FRAMES SEQUENCE DECLARATION *
-            {
-                // 'frames=n name'
-                pan->NFrames = TokenI(0); // n = Number of Frames
-                char FileName[PARTICLE_NAMES_LEN]; // name = BaseName of frames
-                strncpy(FileName, TokenStr(""), PARTICLE_NAMES_LEN);
-                pan->Sequence = (void*)GetFramesList(FileName, pan->NFrames);
-
-            }
-
-            On("framerate") // * FRAME RATE DEFINITION *
-            {
-                // 'framerate=fps'
-                pan->Fps = 1.0f / TokenF(0); // fps= Frames Per Second speed
-            }
-
-            On("flags") // * FLAGS DECLARATION *
-            {
-                // 'flags=F1|F2...'
-                pan->Flags = TokenFlags(0, ANIMATION_FLAGS);
-            }
-
-        }
-
-        if (GroupNode)
-        {
-            On("texture")
-            {
-                // Check for texture
-                if (GroupNode->Type == GRP_NONE || GroupNode->Type == GRP_TEXTURE)
-                {
-                    char *n = TokenStr(0);
-
-                    // if found and added
-                    if (GroupNode->ptr[GroupNode->Items] = GetTextureNode(n))
-                    {
-                        GroupNode->Type = GRP_TEXTURE;
-                        GroupNode->Items++;
-                    }
-                }
-            }
-        }
-
-    }
-
-    //    fclose (fp);
-
-    /* id */
-    int l;
-
-    for (l = 0; l < nameListCount; l++)
-    {
-        ppn = (ParticleParamNode *)paramList.GetHead();
-
-        while (ppn)
-        {
-            if (stricmp(ppn->name, nameList[l]) == 0)
-            {
-                ppn->id = l;
-                ppn = 0;
-            }
-            else
-                ppn = (ParticleParamNode *)ppn->GetSucc();
-        }
-    }
-
-
-    // number all the nodes that don't match above;
-    ppn = (ParticleParamNode *)paramList.GetHead();
-
-    while (ppn)
-    {
-        if (ppn->id == -1)
-        {
-            ppn->id = l;
-            l++;
-        }
-
-        ppn = (ParticleParamNode *)ppn->GetSucc();
-    }
-
-    // COBRA - RED - Going to check that all animations are configured the right way
-    pan = (ParticleAnimationNode*)AnimationsList.GetHead();
-
-    while (pan)
-    {
-        if ((!pan->Fps) || (!pan->NFrames) || (!pan->Sequence))
-        {
-            sprintf(ErrorMessage, "Animation %s Failed", pan->AnimationName); //*** CRASH MESSAGE ****
-            OutputDebugString(ErrorMessage);
-            ShiError(ErrorMessage);
-            return(false);
-        }
-        else
-        {
-            pan = (ParticleAnimationNode*)pan->GetSucc();
-        }
-    }
-
-
-    // copy pointers to PPN array here
-    //PPN = (ParticleParamNode **)malloc(sizeof(ParticleParamNode *) * l);
-    PPN = new ParticleParamNode * [l];
-    memset(PPN, 0, sizeof(ParticleParamNode *) * l);
-    PPNCount = l;
-
-    ppn = (ParticleParamNode *)paramList.GetHead();
-
-    while (ppn)
-    {
-        PPN[ppn->id] = ppn;
-        ppn = (ParticleParamNode *)ppn->GetSucc();
-    }
-
-    //------------------
-    // fp = fopen("NoEmitterDefined.txt", "w");
-    //------------------
-
-    // link the emmitter names to ids;
-    ppn = (ParticleParamNode *)paramList.GetHead();
-
-    while (ppn)
-    {
-        int t;
-
-        for (t = 0; t < PSMAX_EMITTERS && ppn->emitter[t].stages; t++)
-        {
-            ParticleParamNode *n2;
-
-            n2 = (ParticleParamNode *)paramList.GetHead();
-
-            while (n2)
-            {
-                if (stricmp(n2->name, ppn->emitter[t].name) == 0)
-                {
-                    ppn->emitter[t].id = n2->id;
-                    n2 = 0;
-                }
-                else
-                    n2 = (ParticleParamNode *)n2->GetSucc();
-            }
-
-            if (ppn->emitter[t].id == -1)
-            {
-                // this will prevent a CTD
-                ppn->emitter[t].stages = 0;
-                //------------------
-                // fprintf(fp, " %s\n", ppn->emitter[t].name);
-                //------------------
-            }
-        }
-
-        ppn = (ParticleParamNode *)ppn->GetSucc();
-    }
-
-    //------------------
-    // fclose(fp);
-    //------------------
-
-    if (psContext)
-    {
-        DXContext *stored = psContext; // have to store it because release clears it.
-
-        ReleaseTexturesOnDevice(stored);
-        SetupTexturesOnDevice(stored);
-    }
-
-    paramList.Unlock();
-
-    return(true);
-
-#endif
-
 }
 
 
@@ -5754,13 +5067,25 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
 
     // COBRA - RED - Setup the LOG10 Array
-    for (int a = 0; a < LOG10_ARRAY_ITEMS; a++) Log10Array[a] = 1.0f - log10((float)a / LOG10_ARRAY_ITEMS * 9.0f + 1.0f);
+    for (int a = 0; a < LOG10_ARRAY_ITEMS; a++) 
+	{
+		Log10Array[a] = 1.0f - log10((float)a / LOG10_ARRAY_ITEMS * 9.0f + 1.0f);
+	}
 
-    for (float x = 0; x < FADE_ARRAY_ITEMS; x++)  FadeArray[(int)x] = log10(x + 10.0f) / (pow((x + 10), 2) / 1200 + 1.0f);
+    for (float x = 0; x < FADE_ARRAY_ITEMS; x++) 
+	{
+		FadeArray[(int)x] = log10(x + 10.0f) / (pow((x + 10), 2) / 1200 + 1.0f);
+	}
 
-    for (int a = 0; a < ASIN_ARRAY_ITEMS; a++) ASinArray[a] = asinf((float)a / (ASIN_ARRAY_ITEMS - 1)) * 2 / PI;
+    for (int a = 0; a < ASIN_ARRAY_ITEMS; a++) 
+	{
+		ASinArray[a] = asinf((float)a / (ASIN_ARRAY_ITEMS - 1)) * 2 / PI;
+	}
 
-    for (float x = 0; x < SIZE_ARRAY_ITEMS; x++) SizeArray[(int)x] = 1.0f - pow((((float)SIZE_ARRAY_ITEMS - x) / (float)SIZE_ARRAY_ITEMS), 9);
+    for (float x = 0; x < SIZE_ARRAY_ITEMS; x++)
+	{
+		SizeArray[(int)x] = 1.0f - pow((((float)SIZE_ARRAY_ITEMS - x) / (float)SIZE_ARRAY_ITEMS), 9);
+	}
 
     //  RED - Setup the Randomly rotate Quads
     for (int a = 0; a < PS_MAXQUADRNDLIST; a++)
@@ -5923,6 +5248,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 ppn->WindAffected = true;
                 ppn->WindFactor         = 1.0f; // RV - I-Hawk - default to 1.0
             }
+			continue;
         }
 
         //////////////////////////// TRAILS PARAMETER INITIALIZATION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -5964,6 +5290,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 tpn->Color[0].a = 1.0f;
                 tpn->GroupFlags = GRP_NONE;
             }
+			continue;
         }
 
 
@@ -5981,6 +5308,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             else Groups = GroupNode;
 
             LastGroup = GroupNode;
+			continue;
         }
 
         On("animation")
@@ -5990,6 +5318,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             char *n = TokenStr(0);
 
             if (n) pan = GetAnimationNode(n);
+			continue;
         }
 
         // Texture File Spcification...
@@ -6001,7 +5330,10 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         }
 
         // we need a valid ppn or pan pointer
-        if ((!tpn) && (!ppn) && (!pan) && (!GroupNode)) continue;
+        if ((!tpn) && (!ppn) && (!pan) && (!GroupNode))
+		{
+			continue;
+		}
 
 
 
@@ -6015,18 +5347,26 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             On("cluster")
             {
                 ppn->ClusterMode = TokenF(CHILD_CLUSTER);
+				continue;
             }
 
             On("windoff")
-            ppn->WindAffected = false;
+			{
+				ppn->WindAffected = false;
+				continue;
+			}
 
             On("windFactor")
-            ppn->WindFactor = TokenF(1);
+			{
+				ppn->WindFactor = TokenF(1);
+				continue;
+			}
 
             On("lifespan")
             {
                 ppn->lifespan          = TokenF(1);
                 ppn->lifespanvariation = TokenF(0);
+				continue;
             }
 
             On("color")
@@ -6051,6 +5391,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             On("3dlight")
             {
                 ppn->EmitLight = true;
+				continue;
             }
 
             On("light")
@@ -6174,7 +5515,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                     // setup zero time variation
                     ppn->emitter[currentemitter].TimeVariation  = 0.0f;
                     ppn->emitter[currentemitter].Light = false;
-
+					continue;
                 }
 
                 if (currentemitter >= 0)
@@ -6187,6 +5528,8 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
                         if (n)
                             strncpy(ppn->emitter[currentemitter].name, n, PS_NAMESIZE);
+
+						continue;
                     }
 
                     On("emissionmode")
@@ -6199,16 +5542,18 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                             char *emitenums[] = {"ONCE", "PERSEC", "IMPACT", "EARTHIMPACT", "WATERIMPACT", 0};
                             ppn->emitter[currentemitter].mode = (PSEmitterModeEnum)TokenEnum(emitenums, 0);
                         }
-
+						continue;
                     }
                     On("emissiondomain")
                     {
                         ppn->emitter[currentemitter].domain.Parse();
+						continue;
                     }
 
                     On("emissiontarget")
                     {
                         ppn->emitter[currentemitter].target.Parse();
+						continue;
                     }
 
                     On("emissionrate")
@@ -6216,17 +5561,20 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                         ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].value = TokenF(0);
                         ppn->emitter[currentemitter].rate[ppn->emitter[currentemitter].stages].time  = i;
                         ppn->emitter[currentemitter].stages++;
+						continue;
                     }
 
                     On("emissionvelocity")
                     {
                         ppn->emitter[currentemitter].velocity = TokenF(0);
                         ppn->emitter[currentemitter].velVariation = TokenF(0);
+						continue;
                     }
 
                     On("emissionrnd")
                     {
                         ppn->emitter[currentemitter].TimeVariation = TokenF(0);
+						continue;
                     }
 
                 }
@@ -6241,23 +5589,27 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->accel, ppn->accelStages);
                 ppn->accelStages++;
+				continue;
             }
 
             On("inheritvelocity")
             {
                 ppn->velInherit = TokenF(1);
+				continue;
             }
 
             On("initialVelocity")
             {
                 ppn->velInitial = TokenF(1);
                 ppn->velVariation = TokenF(0);
+				continue;
             }
 
             On("RotationRate")
             {
                 ppn->RotationRateMax = TokenF(1) * PI / 180.0f;
                 ppn->RotationRateMin = TokenF(0) * PI / 180.0f;
+				continue;
             }
 
 
@@ -6265,19 +5617,28 @@ bool DrawableParticleSys::PS_LoadParameters(void)
             {
                 char *n = TokenStr(0);
 
-                if (!strcmp(n, "poly")) ppn->drawType = PSDT_POLY;
+                if (!strcmp(n, "poly"))
+				{
+					ppn->drawType = PSDT_POLY;
+				}
 
-                if (!strcmp(n, "zplane")) ppn->drawType = PSDT_POLY, ppn->ZPoly = true;
+                if (!strcmp(n, "zplane")) 
+				{
+					ppn->drawType = PSDT_POLY, ppn->ZPoly = true;
+				}
+				continue;
             }
 
             On("soundid")
             {
                 ppn->sndId = TokenI(0);
+				continue;
             }
 
             On("soundlooped")
             {
                 ppn->sndLooped = TokenI(0);
+				continue;
             }
 
             On("soundVolume")
@@ -6289,6 +5650,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->sndVol, ppn->sndVolStages);
                 ppn->sndVolStages++;
+				continue;
             }
 
             On("soundPitch")
@@ -6300,40 +5662,51 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 // Update CXes
                 K_CALC(ppn->sndPitch, ppn->sndPitchStages);
                 ppn->sndPitchStages++;
+				continue;
             }
 
-            On("trailid") strncpy(ppn->TrailName, TokenStr(0), PS_NAMESIZE);
+            On("trailid") 
+			{
+				strncpy(ppn->TrailName, TokenStr(0), PS_NAMESIZE);
+				continue;
+			}
 
             On("groundfriction")
             {
                 ppn->groundFriction = TokenF(0);
+				continue;
             }
 
             On("visibledistance")
             {
                 ppn->visibleDistance = TokenF(10000);
+				continue;
             }
 
             On("dieonground")
             {
                 ppn->dieOnGround = (float)TokenI(0);
+				continue;
             }
 
             On("modelct")
             {
                 ppn->bspCTID    = TokenI(0);
                 ppn->bspVisType = TokenI(0);
+				continue;
             }
 
             On("orientation")
             {
                 char *enumstr[] = {"none", "movement", 0};
                 ppn->orientation = (PSOrientation)TokenEnum(enumstr, 0);
+				continue;
             }
 
             On("emitonerandomly")
             {
                 ppn->emitOneRandomly = TokenI(0);
+				continue;
             }
         } // * END OF PARTICLE PARAMETER NODE *
 
@@ -6353,19 +5726,21 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 char FileName[PARTICLE_NAMES_LEN]; // name = BaseName of frames
                 strncpy(FileName, TokenStr(""), PARTICLE_NAMES_LEN);
                 pan->Sequence = (void*)GetFramesList(FileName, pan->NFrames);
-
+				continue;
             }
 
             On("framerate") // * FRAME RATE DEFINITION *
             {
                 // 'framerate=fps'
                 pan->Fps = 1.0f / TokenF(0); // fps= Frames Per Second speed
+				continue;
             }
 
             On("flags") // * FLAGS DECLARATION *
             {
                 // 'flags=F1|F2...'
                 pan->Flags = TokenFlags(0, ANIMATION_FLAGS);
+				continue;
             }
 
         }
@@ -6390,6 +5765,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                         GroupNode->Items++;
                     }
                 }
+				continue;
             }
         }
 
@@ -6403,11 +5779,23 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         if (tpn)  // * TRAIL PARAMETER NODE *
         {
 
-            On("lifespan")  tpn->LifeSpan = TokenF(1);
+            On("lifespan")  
+			{
+				tpn->LifeSpan = TokenF(1);
+				continue;
+			}
 
-            On("emittime") tpn->LifeCx = 1.0f / TokenF(1) ;
+            On("emittime")
+			{
+				tpn->LifeCx = 1.0f / TokenF(1) ;
+				continue;
+			}
 
-            On("weight") tpn->Weight = TokenF(0);
+            On("weight")
+			{
+				tpn->Weight = TokenF(0);
+				continue;
+			}
 
 
             On("color")
@@ -6525,21 +5913,45 @@ bool DrawableParticleSys::PS_LoadParameters(void)
     /////////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     /* id */
-    int l;
+    int l, extra = 0;
 
-    for (l = 0; l < nameListCount; l++)
+    for (l = 0; l < nameListCount;l++)
     {
         // Assign IDs to Names for each possible PPN
         for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++)
         {
             // if a name found
-            if (!stricmp(PS_PPN[c].name, nameList[l])) PS_PPN[c].id = l;
+            if (!stricmp(PS_PPN[c].name, nameList[l])) 
+			{
+				PS_PPN[c].id = l;
+				extra++;
+				break;
+			}
+			else
+			{
+				if(PS_PPN[c].id != -1)
+				{
+					continue;
+				}
+				else
+					PS_PPN[c].id = -1;
+				if (c == MAX_PARTICLE_PARAMETERS-1)
+				{
+					break;
+				}
+			}
         }
     }
-
+	l = extra;
 
     // number all the nodes that don't match above;
-    for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++) if (PS_PPN[c].id == -1) PS_PPN[c].id = l++;
+    for (DWORD c = 0; c < MAX_PARTICLE_PARAMETERS; c++) 
+	{
+		if (PS_PPN[c].id == -1) 
+		{
+			PS_PPN[c].id = l++;
+		}
+	}
 
 
 
@@ -6565,11 +5977,12 @@ bool DrawableParticleSys::PS_LoadParameters(void)
     // copy pointers to PPN array here
     //PPN = (ParticleParamNode **)malloc(sizeof(ParticleParamNode *) * l);
     PPN = new ParticleParamNode * [l];
-    memset(PPN, 0, sizeof(ParticleParamNode *) * l);
     PPNCount = l;
 
     for (int c = 0; c < l; c++)
+	{
         PPN[PS_PPN[c].id] = (ParticleParamNode *)c;
+	}
 
     /*ppn=(ParticleParamNode *)paramList.GetHead();
     while(ppn)
@@ -6588,8 +6001,10 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         int t;
 
         // Check for any emitter in the particle
-        for (t = 0; t < PSMAX_EMITTERS && PS_PPN[c].emitter[t].stages; t++)
+        for (t = 0; t < PSMAX_EMITTERS; t++)
         {
+			if(PS_PPN[c].emitter[t].stages <= 0)
+				continue;
             // Look thru all list of PPN for the right emitter
             for (DWORD n = 0; n < MAX_PARTICLE_PARAMETERS; n++)
             {
@@ -6598,13 +6013,12 @@ bool DrawableParticleSys::PS_LoadParameters(void)
                 {
                     PS_PPN[c].emitter[t].id = n;
 
-                    if (PS_PPN[n].EmitLight) PS_PPN[c].emitter[t].Light = true;
+                    if (PS_PPN[n].EmitLight) 
+					{
+						PS_PPN[c].emitter[t].Light = true;
+					}
                 }
             }
-
-            // this will prevent a CTD
-            if (PS_PPN[c].emitter[t].id == -1) PS_PPN[c].emitter[t].stages = 0;
-
         }
     }
 
@@ -6614,8 +6028,10 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         int t;
 
         // Check for any emitter in the particle
-        for (t = 0; t < PSMAX_EMITTERS && PS_PPN[c].emitter[t].stages; t++)
+        for (t = 0; t < PSMAX_EMITTERS; t++)
         {
+			if(PS_PPN[c].emitter[t].stages <= 0)
+				continue;
             if (PS_PPN[c].emitter[t].Light)
             {
                 PS_PPN[c].LightRoot = true;
@@ -6666,12 +6082,21 @@ bool DrawableParticleSys::PS_LoadParameters(void)
         PS_TPN[a].LineDistance = PS_TPN[a].Size[1] * PS_TPN[a].Size[1] * 50.0f ;//* TRAIL_BIAS_CX;
 
         // Visible Distance
-        if (!PS_TPN[a].VisibleDistance) PS_TPN[a].VisibleDistance = PS_TPN[a].LineDistance * 10.0f;
+        if (!PS_TPN[a].VisibleDistance)
+		{
+			PS_TPN[a].VisibleDistance = PS_TPN[a].LineDistance * 10.0f;
+		}
 
         // The Frag Radius is half max size * 30 ( feet )
-        if (!PS_TPN[a].FragRadius) PS_TPN[a].FragRadius = PS_TPN[a].Size[1] * 30.0f ;
+        if (!PS_TPN[a].FragRadius)
+		{
+			PS_TPN[a].FragRadius = PS_TPN[a].Size[1] * 30.0f ;
+		}
 
-        if (!PS_TPN[a].IntegrateDistance) PS_TPN[a].IntegrateDistance = PS_TPN[a].FragRadius / 2.0f;
+        if (!PS_TPN[a].IntegrateDistance) 
+		{
+			PS_TPN[a].IntegrateDistance = PS_TPN[a].FragRadius / 2.0f;
+		}
 
     }
 
@@ -6696,7 +6121,7 @@ bool DrawableParticleSys::PS_LoadParameters(void)
 
 
     //------------------
-    // fclose(fp);
+     fclose(fp);
     //------------------
 
     if (psContext)
