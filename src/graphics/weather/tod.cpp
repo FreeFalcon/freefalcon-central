@@ -17,9 +17,8 @@
 #include "RealWeather.h"
 #include <fstream>
 #include <iostream>
+
 using namespace std;
-
-
 
 CStar TheStar;
 
@@ -27,10 +26,6 @@ CStar TheStar;
 CTimeOfDay TheTimeOfDay;
 
 extern float g_fLatitude; // JB 010804
-
-//
-// pmvstrm
-// original was: extern SkyColorDataType* skycolor;
 
 // but this compiled, strange.
 SkyColorDataType* skycolor;
@@ -40,9 +35,6 @@ static const int SUN_GLARE_SIZE = 1024;
 
 unsigned char CTimeOfDay::MoonPhaseMask[8 * 64];
 unsigned char CTimeOfDay::CurrentMoonPhaseMask[8 * 64];
-
-
-
 
 void CTimeOfDay::Setup(char *dataPath)
 {
@@ -206,24 +198,6 @@ void CTimeOfDay::Cleanup()
 void CTimeOfDay::SetNVGmode(BOOL state)
 {
     NVGmode = state;
-    /*
-     Tcolor paletteEffect;
-     int id;
-
-     // Convert all the object texture palettes appropriatly
-     paletteEffect.g = 1.0f;
-     if (NVGmode) {
-     paletteEffect.r = 0.0f;
-     paletteEffect.b = 0.0f;
-     } else {
-     paletteEffect.r = 1.0f;
-     paletteEffect.b = 1.0f;
-     }
-     for (id=0; ThePaletteBank.IsValidIndex( id ); id++) {
-     ThePaletteBank.LightPalette( id, &paletteEffect );
-     }
-    */
-    // Force a lighting refresh to reflect the changes
     TheTimeManager.Refresh();
 }
 
@@ -233,15 +207,12 @@ void CTimeOfDay::TimeUpdateCallback(void *self)
     ((CTimeOfDay*)self)->UpdateSkyProperties();
 }
 
-
-
 void CTimeOfDay::UpdateSkyProperties()
 {
     int i, c, n;
     TimeOfDayStruct *tod, *ntod;
     unsigned now;
     float t;
-
 
     // Convert from time since clock start to time since midnight
     now = TheTimeManager.GetTimeOfDay();
@@ -260,30 +231,30 @@ void CTimeOfDay::UpdateSkyProperties()
         }
     }
 
-
     // Identify the Current time step in the TOD table
     for (i = 0; i < TotalTimeOfDay; i++)
-    {
-        if (TimeOfDay[i].Time > now) break;
-    }
+        if (TimeOfDay[i].Time > now)
+            break;
 
-    if (i == 0) c = TotalTimeOfDay - 1;
-    else if (i >= TotalTimeOfDay) c = TotalTimeOfDay - 1;
+    if (i == 0)
+        c = TotalTimeOfDay - 1;
+    else if (i >= TotalTimeOfDay)
+        c = TotalTimeOfDay - 1;
     else c = i - 1;
 
     // Identify the Next time step in the TOD table
     n = c + 1;
 
-    if (n >= TotalTimeOfDay) n = 0;
+    if (n >= TotalTimeOfDay)
+        n = 0;
 
     // This should only happen if the table has less than two entries
-    if (c == n) return;
-
+    if (c == n)
+        return;
 
     // Get pointers to the current and next TOD table entries
     tod = &(TimeOfDay[c]);
     ntod = &(TimeOfDay[n]);
-
 
     // No two table entries should have the same time stamp
     c = tod -> Time;
@@ -291,12 +262,14 @@ void CTimeOfDay::UpdateSkyProperties()
     ShiAssert(c != n);
 
     // Calculate the time between the two table entries
-    if (n < c) n += MSEC_PER_DAY;
+    if (n < c)
+        n += MSEC_PER_DAY;
 
     n -= c;
 
     // Calculate the time between now and the current table entry
-    if (now < (DWORD)c) now += MSEC_PER_DAY;
+    if (now < (DWORD)c)
+        now += MSEC_PER_DAY;
 
     c = now - c;
 
@@ -632,8 +605,6 @@ void CTimeOfDay::SetDefaultColor(Tcolor *col, Tcolor *defcol)
         *col = *defcol;
 }
 
-
-
 int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 {
     float fvar;
@@ -666,17 +637,18 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
                 SetDefaultColor(&tod->VisColor, &tod->HazeSkyColor);
             }
 
-            total++;
+            ++total;
 
-            if (!countflag) tod++;
+            if (!countflag)
+                ++tod;
 
             fscanf(in, "%ld:%ld:%ld", &ivar1, &ivar2, &ivar3);
             ivar1 *= 3600000;
             ivar2 *= 60000;
             ivar3 *= 1000;
-            tod -> Time = ivar1 + ivar2 + ivar3;
-            tod -> Flag = 0;
-            tod -> StarIntensity = 0.0f;
+            tod->Time = ivar1 + ivar2 + ivar3;
+            tod->Flag = 0;
+            tod->StarIntensity = 0.0f;
             tod->LightningColor.r = tod->LightningColor.g = 1;
             tod->LightningColor.b = 0;
             tod->RainColor.r = tod->RainColor.g = tod->RainColor.b = 1;
@@ -694,103 +666,61 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
             fscanf(in, "%f", &fvar);
             IMoonTilt = glConvertFromDegree(fvar);
         }
-
-        //---- ignore these ----
-        else if (strcmp(buffer, "SUNYAW") == 0)
-        {
-            fscanf(in, "%f", &fvar);
-        }
-        else if (strcmp(buffer, "MOONYAW") == 0)
-        {
-            fscanf(in, "%f", &fvar);
-        }
-        //----------------------
         else if (strcmp(buffer, "HAZESUNSETCOLOR") == 0)
-        {
             fscanf(in, "%f %f %f", &HazeSunsetColor.r, &HazeSunsetColor.g, &HazeSunsetColor.b);
-        }
         else if (strcmp(buffer, "HAZESUNRISECOLOR") == 0)
-        {
             fscanf(in, "%f %f %f", &HazeSunriseColor.r, &HazeSunriseColor.g, &HazeSunriseColor.b);
-        }
         else if (strcmp(buffer, "SKYCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod -> SkyColor.r, &tod -> SkyColor.g, &tod -> SkyColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->SkyColor.r, &tod->SkyColor.g, &tod->SkyColor.b);
         else if (strcmp(buffer, "HAZESKYCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod -> HazeSkyColor.r, &tod -> HazeSkyColor.g, &tod -> HazeSkyColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->HazeSkyColor.r, &tod->HazeSkyColor.g, &tod->HazeSkyColor.b);
         else if (strcmp(buffer, "GROUNDCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod -> GroundColor.r, &tod -> GroundColor.g, &tod -> GroundColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->GroundColor.r, &tod->GroundColor.g, &tod->GroundColor.b);
         else if (strcmp(buffer, "HAZEGROUNDCOLOR") == 0)
         {
-            fscanf(in, "%f %f %f", &tod -> HazeGroundColor.r, &tod -> HazeGroundColor.g, &tod -> HazeGroundColor.b);
-            tod -> HazeGroundColor.r *= 0.7f;
-            tod -> HazeGroundColor.g *= 0.7f;
-            tod -> HazeGroundColor.b *= 0.7f;
+            fscanf(in, "%f %f %f", &tod->HazeGroundColor.r, &tod->HazeGroundColor.g, &tod->HazeGroundColor.b);
+            tod->HazeGroundColor.r *= 0.7f;
+            tod->HazeGroundColor.g *= 0.7f;
+            tod->HazeGroundColor.b *= 0.7f;
         }
         else if (strcmp(buffer, "TEXTURELIGHTING") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod -> TextureLighting.r, &tod -> TextureLighting.g, &tod -> TextureLighting.b);
-        }
+            fscanf(in, "%f %f %f", &tod->TextureLighting.r, &tod->TextureLighting.g, &tod->TextureLighting.b);
         else if (strcmp(buffer, "BADWEATHERLIGHTING") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod -> BadWeatherLighting.r, &tod -> BadWeatherLighting.g, &tod -> BadWeatherLighting.b);
-        }
+            fscanf(in, "%f %f %f", &tod->BadWeatherLighting.r, &tod->BadWeatherLighting.g, &tod->BadWeatherLighting.b);
         else if (strcmp(buffer, "AMBIENT") == 0)
-        {
-            fscanf(in, "%f", &tod -> Ambient);
-        }
+            fscanf(in, "%f", &tod->Ambient);
         else if (strcmp(buffer, "DIFFUSE") == 0)
-        {
-            fscanf(in, "%f", &tod -> Diffuse);
-        }
+            fscanf(in, "%f", &tod->Diffuse);
         else if (strcmp(buffer, "SPECULAR") == 0)
-        {
-            fscanf(in, "%f", &tod ->Specular);
-        }
+            fscanf(in, "%f", &tod->Specular);
         else if (strcmp(buffer, "SUNPITCH") == 0)
         {
-            fscanf(in, "%f", &tod -> SunPitch);
-            tod -> SunPitch = glConvertFromDegreef(tod -> SunPitch);
-            tod -> Flag |= GL_TIME_OF_DAY_USE_SUN;
+            fscanf(in, "%f", &tod->SunPitch);
+            tod->SunPitch = glConvertFromDegreef(tod->SunPitch);
+            tod->Flag |= GL_TIME_OF_DAY_USE_SUN;
         }
         else if (strcmp(buffer, "MOONPITCH") == 0)
         {
-            fscanf(in, "%f", &tod -> MoonPitch);
-            tod -> MoonPitch = glConvertFromDegreef(tod -> MoonPitch);
-            tod -> Flag |= GL_TIME_OF_DAY_USE_MOON;
+            fscanf(in, "%f", &tod->MoonPitch);
+            tod->MoonPitch = glConvertFromDegreef(tod->MoonPitch);
+            tod->Flag |= GL_TIME_OF_DAY_USE_MOON;
         }
         else if (strcmp(buffer, "STAR") == 0)
-        {
-            tod -> StarIntensity = 1.0f;
-        }
-        // JPO additions
+            tod->StarIntensity = 1.0f;
         else if (strcmp(buffer, "RAINCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod ->RainColor.r, &tod ->RainColor.g, &tod ->RainColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->RainColor.r, &tod->RainColor.g, &tod->RainColor.b);
         else if (strcmp(buffer, "SNOWCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod ->SnowColor.r, &tod ->SnowColor.g, &tod ->SnowColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->SnowColor.r, &tod->SnowColor.g, &tod->SnowColor.b);
         else if (strcmp(buffer, "MINVISIBILITY") == 0)
-        {
             fscanf(in, "%f", &tod->MinVis);
-        }
         else if (strcmp(buffer, "VISCOLOR") == 0)
-        {
-            fscanf(in, "%f %f %f", &tod ->VisColor.r, &tod ->VisColor.g, &tod ->VisColor.b);
-        }
+            fscanf(in, "%f %f %f", &tod->VisColor.r, &tod->VisColor.g, &tod->VisColor.b);
     }
 
     return total;
 }
 
-// angle must be between 0 and 90
+// Angle must be between 0 and 90
 void CTimeOfDay::SetSunGlareAngle(int angle)
 {
     SunGlareCosine = (float) glGetCosine(angle);
