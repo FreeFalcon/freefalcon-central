@@ -619,7 +619,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 
         strupr(buffer);
 
-        if (strcmp(buffer, "ZZZZ") == 0)
+        if (feof(in))
         {
             SetDefaultColor(&tod->RainColor, &tod->HazeGroundColor);
             SetDefaultColor(&tod->SnowColor, &tod->HazeGroundColor);
