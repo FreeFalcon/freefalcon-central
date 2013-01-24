@@ -221,7 +221,6 @@ BOOL Texture::LoadImage(char *filename, DWORD newFlags, BOOL addDefaultPath)
     // We only support square textures
     ShiAssert(texFile.image.width == texFile.image.height)
     dimensions = texFile.image.width;
-    // Pu239 why it can't be equal to 2048? 
     ShiAssert(dimensions <= 2048);
 
     if (texFile.image.palette)

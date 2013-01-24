@@ -795,7 +795,8 @@ void DigitalBrain::ReadManeuverData(void)
     mnvrFile->Read(&fileType, 1);
 
     // ASCII file
-    // Pu239 Either change the file structure, of use this compromised reading method
+    // Either change the file structure, or use this compromised reading method.
+    // Comments at the top of the file are preventing proper detection, thus '#'
     if (fileType == '#')
     {
         for (int i = 0; i < NumMnvrClasses; ++i)
@@ -803,6 +804,7 @@ void DigitalBrain::ReadManeuverData(void)
             // read a line to get rid of the comments
             char temp[3000];
             mnvrFile->ReadLine(temp, 3000);
+
             // Get the limits for this Maneuver type
             sscanf(mnvrFile->GetNext(), "%x", &maneuverClassData[i]);
 
