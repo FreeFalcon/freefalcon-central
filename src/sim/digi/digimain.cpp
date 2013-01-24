@@ -786,104 +786,94 @@ void DigitalBrain::JoinFlight(void)
 
 void DigitalBrain::ReadManeuverData(void)
 {
-
-    SimlibFileClass* mnvrFile;
-    int i, j, k;
+    SimlibFileClass *mnvrFile;
     char fileType;
 
-    /*---------------------*/
-    /* open formation file */
-    /*---------------------*/
+    // Open formation file
     mnvrFile = SimlibFileClass::Open(MANEUVER_DATA_FILE, SIMLIB_READ);
     F4Assert(mnvrFile);
     mnvrFile->Read(&fileType, 1);
 
-    if (fileType == 'B') // Binary
+    // ASCII file
+    if (fileType == 'A')
     {
-        for (i = 0; i < NumMnvrClasses; i++)
-        {
-            for (j = 0; j < NumMnvrClasses; j++)
-            {
-            }
-        }
-    }
-    else if (fileType == 'A') // Ascii
-    {
-        for (i = 0; i < NumMnvrClasses; i++)
+        for (int i = 0; i < NumMnvrClasses; ++i)
         {
             // Get the limits for this Maneuver type
             sscanf(mnvrFile->GetNext(), "%x", &maneuverClassData[i]);
 
-            for (j = 0; j < NumMnvrClasses; j++)
+            for (int j = 0; j < NumMnvrClasses; ++j)
             {
                 maneuverData[i][j].numIntercepts = (char)atoi(mnvrFile->GetNext());
 
                 if (maneuverData[i][j].numIntercepts)
                 {
-                    maneuverData[i][j].intercept     =
+                    maneuverData[i][j].intercept =
 #ifdef USE_SH_POOLS
-                        (BVRInterceptType *)MemAllocPtr(gReadInMemPool, sizeof(BVRInterceptType) * maneuverData[i][j].numIntercepts, 0);
+                        (BVRInterceptType*)MemAllocPtr(
+                            gReadInMemPool,
+                            sizeof(BVRInterceptType) *maneuverData[i][j].numIntercepts,
+                            0
+                        );
 #else
                         new BVRInterceptType[maneuverData[i][j].numIntercepts];
 #endif
                 }
-                else
-                    maneuverData[i][j].intercept     = NULL;
+                else maneuverData[i][j].intercept = NULL;
 
-                maneuverData[i][j].numMerges     = (char)atoi(mnvrFile->GetNext());
+                maneuverData[i][j].numMerges = (char)atoi(mnvrFile->GetNext());
 
                 if (maneuverData[i][j].numMerges)
                 {
-                    maneuverData[i][j].merge         =
+                    maneuverData[i][j].merge =
 #ifdef USE_SH_POOLS
-                        (WVRMergeManeuverType *)MemAllocPtr(gReadInMemPool, sizeof(WVRMergeManeuverType) * maneuverData[i][j].numMerges, 0);
+                        (WVRMergeManeuverType*)MemAllocPtr(
+                            gReadInMemPool,
+                            sizeof(WVRMergeManeuverType) *maneuverData[i][j].numMerges,
+                            0
+                        );
 #else
                         new WVRMergeManeuverType[maneuverData[i][j].numMerges];
 #endif
                 }
-                else
-                    maneuverData[i][j].merge         = NULL;
+                else maneuverData[i][j].merge = NULL;
 
-                maneuverData[i][j].numReacts     = (char)atoi(mnvrFile->GetNext());
+                maneuverData[i][j].numReacts = (char)atoi(mnvrFile->GetNext());
 
                 if (maneuverData[i][j].numReacts)
                 {
-                    maneuverData[i][j].spikeReact    =
+                    maneuverData[i][j].spikeReact =
 #ifdef USE_SH_POOLS
-                        (SpikeReactionType *)MemAllocPtr(gReadInMemPool, sizeof(SpikeReactionType) * maneuverData[i][j].numReacts, 0);
+                        (SpikeReactionType*)MemAllocPtr(
+                            gReadInMemPool,
+                            sizeof(SpikeReactionType) *maneuverData[i][j].numReacts,
+                            0
+                        );
 #else
                         new SpikeReactionType[maneuverData[i][j].numReacts];
 #endif
                 }
-                else
-                    maneuverData[i][j].spikeReact    = NULL;
+                else maneuverData[i][j].spikeReact = NULL;
 
-                for (k = 0; k < maneuverData[i][j].numIntercepts; k++)
-                {
+                for (int k = 0; k < maneuverData[i][j].numIntercepts; ++k)
                     maneuverData[i][j].intercept[k] =
                         (BVRInterceptType)(atoi(mnvrFile->GetNext()) - 1);
-                }
 
-                for (k = 0; k < maneuverData[i][j].numMerges; k++)
-                {
+                for (int k = 0; k < maneuverData[i][j].numMerges; ++k)
                     maneuverData[i][j].merge[k] =
                         (WVRMergeManeuverType)(atoi(mnvrFile->GetNext()) - 1);
-                }
 
-                for (k = 0; k < maneuverData[i][j].numReacts; k++)
-                {
+                for (int k = 0; k < maneuverData[i][j].numReacts; ++k)
                     maneuverData[i][j].spikeReact[k] =
                         (SpikeReactionType)(atoi(mnvrFile->GetNext()) - 1);
-                }
             }
         }
     }
-    else
-    {
+    // Allow binary, but otherwise throw a warning
+    else if (fileType != 'B')
         ShiWarning("Bad Maneuver Data File Format");
-    }
 
-    mnvrFile->Close();  // JPO Handle/memory leak fix
+    mnvrFile->Close();
     delete mnvrFile;
     mnvrFile = NULL;
 }
