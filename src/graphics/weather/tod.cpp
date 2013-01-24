@@ -617,16 +617,15 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
     {
         fscanf(in, "%s", buffer);
 
-        strupr(buffer);
-
         if (feof(in))
         {
             SetDefaultColor(&tod->RainColor, &tod->HazeGroundColor);
             SetDefaultColor(&tod->SnowColor, &tod->HazeGroundColor);
             SetDefaultColor(&tod->VisColor, &tod->HazeSkyColor);
+
             break;
         }
-        else if (strcmp(buffer, "TIME") == 0)
+        else if (stricmp(buffer, "Time") == 0)
         {
             DWORD ivar1, ivar2, ivar3;
 
@@ -656,64 +655,64 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
             tod->VisColor.r = tod->VisColor.g = tod->VisColor.b = -1;
             tod->MinVis = 0.1f;
         }
-        else if (strcmp(buffer, "SUNTILT") == 0)
+        else if (stricmp(buffer, "SunTilt") == 0)
         {
             fscanf(in, "%f", &fvar);
             ISunTilt = glConvertFromDegree(fvar);
         }
-        else if (strcmp(buffer, "MOONTILT") == 0)
+        else if (stricmp(buffer, "MoonTilt") == 0)
         {
             fscanf(in, "%f", &fvar);
             IMoonTilt = glConvertFromDegree(fvar);
         }
-        else if (strcmp(buffer, "HAZESUNSETCOLOR") == 0)
+        else if (stricmp(buffer, "HazeSunsetColor") == 0)
             fscanf(in, "%f %f %f", &HazeSunsetColor.r, &HazeSunsetColor.g, &HazeSunsetColor.b);
-        else if (strcmp(buffer, "HAZESUNRISECOLOR") == 0)
+        else if (stricmp(buffer, "HazeSunriseColor") == 0)
             fscanf(in, "%f %f %f", &HazeSunriseColor.r, &HazeSunriseColor.g, &HazeSunriseColor.b);
-        else if (strcmp(buffer, "SKYCOLOR") == 0)
+        else if (stricmp(buffer, "SkyColor") == 0)
             fscanf(in, "%f %f %f", &tod->SkyColor.r, &tod->SkyColor.g, &tod->SkyColor.b);
-        else if (strcmp(buffer, "HAZESKYCOLOR") == 0)
+        else if (stricmp(buffer, "HazeSkyColor") == 0)
             fscanf(in, "%f %f %f", &tod->HazeSkyColor.r, &tod->HazeSkyColor.g, &tod->HazeSkyColor.b);
-        else if (strcmp(buffer, "GROUNDCOLOR") == 0)
+        else if (stricmp(buffer, "GroundColor") == 0)
             fscanf(in, "%f %f %f", &tod->GroundColor.r, &tod->GroundColor.g, &tod->GroundColor.b);
-        else if (strcmp(buffer, "HAZEGROUNDCOLOR") == 0)
+        else if (stricmp(buffer, "HazeGroundColor") == 0)
         {
             fscanf(in, "%f %f %f", &tod->HazeGroundColor.r, &tod->HazeGroundColor.g, &tod->HazeGroundColor.b);
             tod->HazeGroundColor.r *= 0.7f;
             tod->HazeGroundColor.g *= 0.7f;
             tod->HazeGroundColor.b *= 0.7f;
         }
-        else if (strcmp(buffer, "TEXTURELIGHTING") == 0)
+        else if (stricmp(buffer, "TextureLighting") == 0)
             fscanf(in, "%f %f %f", &tod->TextureLighting.r, &tod->TextureLighting.g, &tod->TextureLighting.b);
-        else if (strcmp(buffer, "BADWEATHERLIGHTING") == 0)
+        else if (stricmp(buffer, "BadWeatherLighting") == 0)
             fscanf(in, "%f %f %f", &tod->BadWeatherLighting.r, &tod->BadWeatherLighting.g, &tod->BadWeatherLighting.b);
-        else if (strcmp(buffer, "AMBIENT") == 0)
+        else if (stricmp(buffer, "Ambient") == 0)
             fscanf(in, "%f", &tod->Ambient);
-        else if (strcmp(buffer, "DIFFUSE") == 0)
+        else if (stricmp(buffer, "Diffuse") == 0)
             fscanf(in, "%f", &tod->Diffuse);
-        else if (strcmp(buffer, "SPECULAR") == 0)
+        else if (stricmp(buffer, "Specular") == 0)
             fscanf(in, "%f", &tod->Specular);
-        else if (strcmp(buffer, "SUNPITCH") == 0)
+        else if (stricmp(buffer, "SunPitch") == 0)
         {
             fscanf(in, "%f", &tod->SunPitch);
             tod->SunPitch = glConvertFromDegreef(tod->SunPitch);
             tod->Flag |= GL_TIME_OF_DAY_USE_SUN;
         }
-        else if (strcmp(buffer, "MOONPITCH") == 0)
+        else if (stricmp(buffer, "MoonPitch") == 0)
         {
             fscanf(in, "%f", &tod->MoonPitch);
             tod->MoonPitch = glConvertFromDegreef(tod->MoonPitch);
             tod->Flag |= GL_TIME_OF_DAY_USE_MOON;
         }
-        else if (strcmp(buffer, "STAR") == 0)
+        else if (stricmp(buffer, "Star") == 0)
             tod->StarIntensity = 1.0f;
-        else if (strcmp(buffer, "RAINCOLOR") == 0)
+        else if (stricmp(buffer, "RainColor") == 0)
             fscanf(in, "%f %f %f", &tod->RainColor.r, &tod->RainColor.g, &tod->RainColor.b);
-        else if (strcmp(buffer, "SNOWCOLOR") == 0)
+        else if (stricmp(buffer, "SnowColor") == 0)
             fscanf(in, "%f %f %f", &tod->SnowColor.r, &tod->SnowColor.g, &tod->SnowColor.b);
-        else if (strcmp(buffer, "MINVISIBILITY") == 0)
+        else if (stricmp(buffer, "MinVisibility") == 0)
             fscanf(in, "%f", &tod->MinVis);
-        else if (strcmp(buffer, "VISCOLOR") == 0)
+        else if (stricmp(buffer, "VisColor") == 0)
             fscanf(in, "%f %f %f", &tod->VisColor.r, &tod->VisColor.g, &tod->VisColor.b);
     }
 
