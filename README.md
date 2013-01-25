@@ -1,6 +1,6 @@
 # FreeFalcon
 
-A campain based, multiplayer, open source flight simulator.
+A campaign based, multiplayer, open source flight simulator.
 
 ## About FreeFalcon
 
