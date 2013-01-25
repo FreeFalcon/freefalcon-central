@@ -54,11 +54,6 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     // Setup our base class's terrain information
     float *ranges = new float[minDetail + 1];
 
-    //pm
-    int Ranges = 0;
-
-    ShiAssert(Ranges);
-
     for (i = minDetail; i >= 0; i--)
     {
         // Store this detail levels active range
