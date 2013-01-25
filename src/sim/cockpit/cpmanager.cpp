@@ -1199,11 +1199,14 @@ void CockpitManager::CreateSound(int idNum, FILE* pcockpitDataFile)
 // sfr: removes invalid characters from folder names and spaces
 string RemoveInvalidChars(const string &instr)
 {
-    string outstr(instr);
+    string outstr((instr+'\0'));
     // string with invalid chars
     string invalid_chars = string("*/\\");
 
-    for (std::string::iterator pos = outstr.begin(); pos != outstr.end();)
+    std::string::iterator pos = outstr.begin();
+    int len = strlen(outstr.c_str());
+    int i = 0;
+    for(i=0;i<len;i++)
     {
         if (isspace(*pos) || (invalid_chars.find(*pos) != string::npos))
         {

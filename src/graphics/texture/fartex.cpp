@@ -458,8 +458,8 @@ void FarTexDB::Request(TextureID texID)
 
     if (texID == INVALID_TEXID) return;
 
-    ShiAssert(texID >= (WORD) 0);
-    ShiAssert(texID < (WORD) texCount);
+    ShiAssert(texID >= (DWORD) 0);
+    ShiAssert(texID < (DWORD) texCount);
 
     EnterCriticalSection(&cs_textureList);
 
@@ -515,7 +515,7 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
 {
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (WORD) texCount);
+    ShiAssert(offset < (DWORD) texCount);
     ShiAssert(texArray[offset].bits == NULL);
 
     if (!forceNoDDS && DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
