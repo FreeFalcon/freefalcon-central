@@ -127,7 +127,8 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         // Scale from integer feet (Z up) to floating point feet (Z down)
         memPost->z = -(float)(diskPost->z);
 
-        memPost->texID = diskPost->texID;
+        // Pu239 fix error of assigning uint to DWORD
+        memPost->texID = (DWORD) diskPost->texID;
 
         // Compute the texture coordinates for this post
         // The "& 0x3" and 0.25 terms are because we have 4 posts (0,1,2,3) accross each
