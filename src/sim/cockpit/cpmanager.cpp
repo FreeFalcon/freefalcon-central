@@ -6,7 +6,6 @@
 
 #include "stdhdr.h"
 #include "simdrive.h"
-
 #include "cpmirror.h"
 #include "cpres.h"
 #include "cpchev.h"
@@ -46,7 +45,6 @@
 #include "simweapn.h"
 #include "cpkneeview.h"
 #include "flightData.h"
-//#include "fault.h"
 #include "datadir.h"
 #include "hud.h"
 #include "commands.h"
@@ -59,7 +57,6 @@
 #include "falcsess.h"
 
 using namespace std;
-
 
 // argh globals
 extern bool g_bEnableCockpitVerifier;
@@ -1199,24 +1196,16 @@ void CockpitManager::CreateSound(int idNum, FILE* pcockpitDataFile)
 // sfr: removes invalid characters from folder names and spaces
 string RemoveInvalidChars(const string &instr)
 {
-    string outstr((instr+'\0'));
-    // string with invalid chars
-    string invalid_chars = string("*/\\");
+    string outstr = instr + '\0';
+    string invalid_chars = "*/\\";
 
     std::string::iterator pos = outstr.begin();
     int len = strlen(outstr.c_str());
-    int i = 0;
-    for(i=0;i<len;i++)
-    {
+
+    for (int i = 0; i < len; ++i)
         if (isspace(*pos) || (invalid_chars.find(*pos) != string::npos))
-        {
             outstr.erase(pos); // this increments pos
-        }
-        else
-        {
-            ++pos;
-        }
-    }
+        else ++pos;
 
     return outstr;
 }
