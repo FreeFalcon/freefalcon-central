@@ -124,7 +124,8 @@ ObjectInstance::ObjectInstance(int tid)
 
 ObjectInstance::~ObjectInstance()
 {
-    if (TexSetReferenced) ParentObject->ReleaseTexSet(TextureSet);
+    if (TexSetReferenced) 
+        ParentObject->ReleaseTexSet(TextureSet);
 
     ParentObject->Release();
     ParentObject = NULL;

@@ -137,7 +137,8 @@ void C_BSPList::Remove(long ID, BSPLIST **top)
 {
     BSPLIST *cur, *delme;
 
-    if (*top == NULL) return;
+    if (*top == NULL) 
+        return;
 
     cur = *top;
 

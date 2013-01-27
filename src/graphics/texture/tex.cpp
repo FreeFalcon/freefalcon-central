@@ -868,7 +868,8 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             break;
 
         default:
-            ShiAssert(false);
+            ;
+            //ShiAssert(false);
     }
 
     m_nImageDataStride = nImageDataStride != -1 ? nImageDataStride : m_nWidth;
@@ -902,8 +903,8 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             m_bImageDataOwned = true;
 
 #ifdef _DEBUG
-            InterlockedExchangeAdd((long *)&m_dwTotalBytes, dwSize);
-            InterlockedExchangeAdd((long *)&m_dwBitmapBytes, dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwTotalBytes, dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwBitmapBytes, dwSize);
 #endif
         }
         else
