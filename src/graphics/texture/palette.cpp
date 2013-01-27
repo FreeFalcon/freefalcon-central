@@ -139,7 +139,8 @@ int Palette::Release(void)
     //JAM 30Sep03
     // ShiAssert( refCount > 0 );
 
-    if (refCount > 0) refCount--;
+    if (refCount > 0) 
+        refCount--;
 
     //JAM
 
