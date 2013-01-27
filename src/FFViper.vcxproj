@@ -106,7 +106,7 @@
     <IntDir>../build/x86/debug_win32/ffviper/</IntDir>
     <TargetName>FFViper</TargetName>
     <GenerateManifest>true</GenerateManifest>
-    <LibraryPath>F:\Program Files (x86)\Intel\Composer XE 2013\compiler\lib\ia32;$(DX81_SDK)\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DX81_SDK)\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
