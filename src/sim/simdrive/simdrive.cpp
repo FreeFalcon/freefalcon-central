@@ -959,14 +959,14 @@ void SimulationDriver::SetFrameDescription(int mSecPerFrame, int numMinorFrames)
 void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, TailInsertList *comps)
 {
     // pm
-#ifdef _DEBUG
-    int flightList = 0;
-#endif
+//#ifdef _DEBUG
+//    int flightList = 0;
+//#endif
     SimBaseClass* theObject = NULL;
     int vehicles = 0, last_to_add = 0, woken = 0;
 
 
-    ShiAssert(flightList);
+    //ShiAssert(flightList);
     ShiAssert(baseEntity);
 
     if (isUnit)

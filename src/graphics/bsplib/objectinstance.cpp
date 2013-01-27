@@ -189,7 +189,8 @@ void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
 #ifdef _DEBUG
     float r2 = DynamicCoords[id].x * DynamicCoords[id].x + DynamicCoords[id].y * DynamicCoords[id].y + DynamicCoords[id].z * DynamicCoords[id].z;
 
-    ShiAssert(r2 <= r1 + 0.00001f); // Illegal for dynamic verts to exceed object bounding volume
+    //Need to take a further look why it should be this way.
+    //ShiAssert(r2 <= r1 + 0.00001f); // Illegal for dynamic verts to exceed object bounding volume
     // so we require movement to be only toward the origin.
 #endif
 }
