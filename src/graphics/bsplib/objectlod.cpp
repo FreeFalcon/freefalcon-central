@@ -257,14 +257,16 @@ void ObjectLOD::CleanupTable(void)
 BOOL ObjectLOD::Fetch(void)
 {
 
-    ShiAssert(refCount > 0);
+    ShiAssert(refCount >= 0);
 
     // if object is on release do nothing
     // DO NOT RETURN A ROOT THAT MAY BE VANISHING, deleted by loader task
-    if (OnRelease || OnOrder) return false;
+    if (OnRelease || OnOrder) 
+        return false;
 
     // If we already have our data
-    if (root) return true;
+    if (root) 
+        return true;
 
     // Mark as ordered
     OnOrder = true;
@@ -273,7 +275,8 @@ BOOL ObjectLOD::Fetch(void)
     // ring the in pointer, work on TEMP to avoid problems with ReleaseOut comparison in other thread
     short Temp = LoadIn + 1;
 
-    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN)) Temp = 0;
+    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN))
+        Temp = 0;
 
     LoadIn = Temp;
     // Kick the Loader
@@ -293,7 +296,9 @@ void ObjectLOD::Unload(void)
 {
 
     // if nothing loaded or already on release, return
-    if (!root || OnRelease) return;
+    // Have to modify this or nothing is going to be released since Root is always 0x0
+    if (!root || OnRelease) 
+        return;
 
     // Setup the Flag about Release
     OnRelease = true;
@@ -302,7 +307,8 @@ void ObjectLOD::Unload(void)
     // ring the in pointer, work on TEMP to avoid problems with ReleaseOut comparison in other thread
     short Temp = ReleaseIn + 1;
 
-    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN)) Temp = 0;
+    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN)) 
+        Temp = 0;
 
     ReleaseIn = Temp;
     // Kick the Loader
@@ -524,7 +530,9 @@ void ObjectLOD::Reference(void)
 void ObjectLOD::Release(void)
 {
     // Dereference the object, and eventually uload
-    refCount--;
+    if (refCount>0)
+        refCount--;
 
-    if (refCount == 0) Unload();
+    if (refCount == 0) 
+        Unload();
 }

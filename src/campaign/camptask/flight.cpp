@@ -1310,7 +1310,8 @@ CampEntity FlightClass::GetUnitAirbase(void)
         return 0;
     }
 
-    ShiAssert(w && w->GetWPAction() == WP_TAKEOFF)
+    //Why does it has to be takeoff wp? What about Instant Action?
+    //ShiAssert(w && w->GetWPAction() == WP_TAKEOFF)
     return w->GetWPTarget();
 }
 

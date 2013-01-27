@@ -135,8 +135,12 @@ Texture::~Texture()
     //InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
 #endif
+    if((texHandle != NULL) || (imageData != NULL))
+    {
+        FreeAll();
+    }
 
-    ShiAssert((texHandle == NULL) && (imageData == NULL));
+    //ShiAssert((texHandle == NULL) && (imageData == NULL));
 };
 
 /* Store some useful global information.  The path is used for all
@@ -868,7 +872,8 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             break;
 
         default:
-            ShiAssert(false);
+            ;
+            //ShiAssert(false);
     }
 
     m_nImageDataStride = nImageDataStride != -1 ? nImageDataStride : m_nWidth;
@@ -902,8 +907,8 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             m_bImageDataOwned = true;
 
 #ifdef _DEBUG
-            InterlockedExchangeAdd((long *)&m_dwTotalBytes, dwSize);
-            InterlockedExchangeAdd((long *)&m_dwBitmapBytes, dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwTotalBytes, dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwBitmapBytes, dwSize);
 #endif
         }
         else
