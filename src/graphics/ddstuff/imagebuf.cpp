@@ -889,10 +889,6 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
         else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT, NULL);
     }
 
-    // Still not clear why it would fail 3 times with error 0x88760096 when entering Campaign
-    // or switching between Campaign scenarios.
-    //ShiAssert(SUCCEEDED(hr));
-
     if (!SUCCEEDED(hr))
         MonoPrint("ImageBuffer::Compose - Error 0x%X\n", hr);
 }

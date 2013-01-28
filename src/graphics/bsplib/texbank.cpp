@@ -262,16 +262,12 @@ void TextureBankClass::Reference(int id)
     // If we already have the data, just verify that fact. Otherwise, load it.
     if (isLoaded)
     {
-        //ShiAssert(TexturePool[id].tex.imageData || TexturePool[id].tex.TexHandle() || deferredLoadState);
-        //if(!(TexturePool[id].tex.imageData || TexturePool[id].tex.TexHandle() || deferredLoadState))
-        //    TexturePool[id].refCount--;
-        //LeaveCriticalSection(&ObjectLOD::cs_ObjectLOD);
+        ;
     }
     else
     {
         ShiAssert(TexFileMap.IsReady());
         ShiAssert(CompressedBuffer);
-        //ShiAssert(TexturePool[id].tex.imageData == NULL);
         if(TexturePool[id].tex.imageData != NULL)
             return;
         ShiAssert(TexturePool[id].tex.TexHandle() == NULL);

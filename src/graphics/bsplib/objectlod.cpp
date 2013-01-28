@@ -530,8 +530,8 @@ void ObjectLOD::Reference(void)
 void ObjectLOD::Release(void)
 {
     // Dereference the object, and eventually uload
-    if (refCount>0)
-        refCount--;
+    if (refCount > 0)
+        --refCount;
 
     if (refCount == 0) 
         Unload();

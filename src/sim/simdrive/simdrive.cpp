@@ -958,15 +958,9 @@ void SimulationDriver::SetFrameDescription(int mSecPerFrame, int numMinorFrames)
 // Add to lists, flights, create drawable object, etc.
 void SimulationDriver::WakeCampaignBase(int isUnit, CampBaseClass* baseEntity, TailInsertList *comps)
 {
-    // pm
-//#ifdef _DEBUG
-//    int flightList = 0;
-//#endif
     SimBaseClass* theObject = NULL;
     int vehicles = 0, last_to_add = 0, woken = 0;
 
-
-    //ShiAssert(flightList);
     ShiAssert(baseEntity);
 
     if (isUnit)

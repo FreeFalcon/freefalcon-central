@@ -65,7 +65,20 @@ VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 
 VuEntity *VuRBIterator::GetNext()
 {
-    ++curr_;
+    if (!collection_)
+    {
+        return NULL;
+    }
+
+    VuRedBlackTree *rbt = static_cast<VuRedBlackTree *>(collection_);
+    if (curr_ != rbt->map_.end())
+    {
+        ++curr_;
+    }
+    else
+    {
+        return NULL;
+    }
     VuEntity *ret = CurrEnt();
 
     if (ret != NULL && ret->VuState() != VU_MEM_ACTIVE)
