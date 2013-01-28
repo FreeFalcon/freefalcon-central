@@ -65,6 +65,7 @@ VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 
 VuEntity *VuRBIterator::GetNext()
 {
+    VuEntity *ret = NULL;
     if (!collection_)
     {
         return NULL;
@@ -77,9 +78,9 @@ VuEntity *VuRBIterator::GetNext()
     }
     else
     {
-        return NULL;
+        return ret;
     }
-    VuEntity *ret = CurrEnt();
+    ret = CurrEnt();
 
     if (ret != NULL && ret->VuState() != VU_MEM_ACTIVE)
     {

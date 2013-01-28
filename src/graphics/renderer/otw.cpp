@@ -63,6 +63,104 @@ ulong terrTime = 0;
 #endif
 
 
+RenderOTW::RenderOTW()
+{
+    skyRoof = FALSE;
+    viewpoint = NULL;
+}
+
+
+RenderOTW::~RenderOTW()
+{}
+
+
+void RenderOTW::SetHazeMode(BOOL state)
+{
+    hazed = state;
+    SetupStates();
+}
+
+
+BOOL RenderOTW::GetHazeMode()
+{
+    return hazed;
+}
+
+
+void RenderOTW::SetDitheringMode(BOOL state)
+{
+    dithered = state;
+    SetupStates();
+}
+
+
+BOOL RenderOTW::GetDitheringMode()
+{
+    return dithered;
+}
+
+
+void RenderOTW::SetFilteringMode(BOOL state)
+{
+    filtering = state;
+    SetupStates();
+}
+
+
+BOOL RenderOTW::GetFilteringMode()
+{
+    return filtering;
+}
+
+
+float RenderOTW::GetRangeOnlyFog(float range)
+{
+    return min((range-haze_start)/haze_depth, 1.f);
+}
+
+
+Tcolor* RenderOTW::GetFogColor()
+{
+    return &haze_ground_color;
+}
+
+
+float RenderOTW::GetTunnelPercent()
+{
+    return tunnelPercent;
+}
+
+
+bool RenderOTW::IsThunder()
+{
+    return thunder;
+}
+
+
+float RenderOTW::RainFactor()
+{
+    return rainFactor;
+}
+
+
+float RenderOTW::SnowFactor()
+{
+    return snowFactor;
+}
+
+
+float RenderOTW::Visibility()
+{
+    return visibility;
+}
+
+
+void RenderOTW::SetLightning()
+{
+    Lightning = true;
+}
+
+
 /***************************************************************************\
  Setup the rendering context for thiw view
 \***************************************************************************/
@@ -77,7 +175,10 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     Render3D::Setup(imageBuffer);
 
     // Retain a pointer to the TViewPoint we are to use
-    viewpoint = vp;
+    RViewPoint *temp = vp;
+    delete viewpoint;
+    viewpoint = NULL;
+    viewpoint = temp;
 
     // Start with the default light source position (over head)
     lightTheta = 0.0f;
