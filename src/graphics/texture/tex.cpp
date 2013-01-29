@@ -883,8 +883,8 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
         if (m_pImageData && m_bImageDataOwned)
         {
 #ifdef _DEBUG
-            InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
-            InterlockedExchangeAdd((long *)&m_dwBitmapBytes,-dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-dwSize);
+            //InterlockedExchangeAdd((long *)&m_dwBitmapBytes,-dwSize);
 #endif
 
             delete[] m_pImageData;

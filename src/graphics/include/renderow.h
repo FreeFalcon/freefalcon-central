@@ -14,6 +14,7 @@
 
 #include "Edge.h"
 #include "Render3D.h"
+#include "rviewpnt.h"
 
 
 //#define ENABLE_LIGHTING // Define this to light the terrain when hazing is on
@@ -166,10 +167,14 @@ protected:
     DWORD cloudColor;
 
     // Points which define the corners of the viewing volume
-    float rightX1, rightX2;
-    float rightY1, rightY2;
-    float leftX1, leftX2;
-    float leftY1, leftY2;
+    float rightX1;
+    float rightX2;
+    float rightY1;
+    float rightY2;
+    float leftX1;
+    float leftX2;
+    float leftY1; 
+    float leftY2;
 
     // Edges which define the viewing volume
     Edge front_edge;
@@ -325,6 +330,10 @@ protected:
     virtual void AdjustSkyColor(void);
     static void TimeUpdateCallback(void *self);
 public:
+    RViewPoint vtemp;
+    RViewPoint *viewpoint;
+    int t;
+    int *tp;
     static const float PERSPECTIVE_RANGE;
     static const float NVG_TUNNEL_PERCENT;
     // static const float FOG_MIN;
@@ -334,8 +343,8 @@ public:
     static const float DETAIL_RANGE;
     float haze_start;
     float haze_depth;
-    static class Texture NoiseFore;
-    static class Texture NoiseNear;
+    static Texture NoiseFore;
+    static Texture NoiseNear;
     //JAM
 
     static const float MOON_DIST;
@@ -349,11 +358,10 @@ public:
     static const float HAZE_ALTITUDE_FACTOR;
     static const float GLARE_FACTOR;
 
-    static class Texture texRoofTop;
-    static class Texture texRoofBottom;
+    static Texture texRoofTop;
+    static Texture texRoofBottom;
 
-    static class Texture ddsTest;
-    RViewPoint *viewpoint;
+    static Texture ddsTest;
 };
 
 
