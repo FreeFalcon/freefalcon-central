@@ -17,6 +17,126 @@ extern float g_fDefaultFOV; //Wombat778 10-31-2003
 #include "Graphics/DXEngine/DXTools.h"
 extern bool g_bUse_DX_Engine;
 
+
+Render3D::Render3D()
+{
+}
+
+
+Render3D::~Render3D()
+{
+}
+
+
+void Render3D::Cleanup()
+{
+    Render2D::Cleanup();
+}
+
+
+void Render3D::SetFar(float distance)
+{
+    far_clip = distance;
+}
+
+
+float Render3D::GetObjectDetail()
+{
+    return detailScaler;
+}
+
+
+float Render3D::GetFOV()
+{
+    return horizontal_half_angle*2.0;
+}
+
+
+float Render3D::GetVFOV()
+{
+    return vertical_half_angle*2.0;
+}
+
+
+float Render3D::GetDFOV()
+{
+    return diagonal_half_angle*2.0;
+}
+
+
+float Render3D::GetFar()
+{
+    return far_clip;
+}
+
+
+BOOL Render3D::GetObjectTextureState()
+{
+    return objTextureState;
+}
+
+
+float Render3D::X()
+{
+    return cameraPos.x;
+}
+
+
+float Render3D::Y()
+{
+    return cameraPos.y;
+}
+
+
+float Render3D::Z()
+{
+    return cameraPos.z;
+}
+
+
+float Render3D::Yaw()
+{
+    return yaw;
+}
+
+
+float Render3D::Pitch()
+{
+    return pitch;
+}
+
+
+float Render3D::Roll()
+{
+    return roll;
+}
+
+
+// Maybe better access methods for a class variable?
+void Render3D::GetAt(Tpoint *v)
+{
+    v->x = cameraRot.M11;
+    v->y = cameraRot.M12;
+    v->z = cameraRot.M13;
+}
+
+
+void Render3D::GetLeft(Tpoint *v)
+{
+    v->x = cameraRot.M21;
+    v->y = cameraRot.M22;
+    v->z = cameraRot.M23;
+}
+
+
+void Render3D::GetUp(Tpoint *v)
+{
+    v->x = cameraRot.M31;
+    v->y = cameraRot.M32;
+    v->z = cameraRot.M33;
+}
+
+
 /***************************************************************************\
  Setup the rendering context for thiw view
 \***************************************************************************/

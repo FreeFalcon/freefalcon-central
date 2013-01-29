@@ -26,6 +26,66 @@ int FindBestResolution(); //Wombat778 4-03-04
 
 //Texture Render2D::Font.FontTexture[NUM_FONT_RESOLUTIONS]; //JAM 22Dec03
 
+
+Render2D::Render2D()
+{
+}
+
+
+Render2D::~Render2D()
+{
+}
+
+
+ImageBuffer* Render2D::GetImageBuffer()
+{
+    return image;
+}
+
+
+void Render2D::ClearDraw()
+{
+    context.ClearBuffers(MPR_CI_DRAW_BUFFER);
+}
+
+
+void Render2D::ClearZBuffer()
+{
+    context.ClearBuffers(MPR_CI_ZBUFFER);
+}
+
+
+DWORD Render2D::Color()
+{
+    return context.CurrentForegroundColor();
+}
+
+
+void Render2D::SetColor(DWORD packedRGBA)
+{
+    context.RestoreState(STATE_SOLID);
+    context.SelectForegroundColor(packedRGBA);
+}
+
+
+void Render2D::SetBackground(DWORD packedRGBA)
+{
+    context.SetState(MPR_STA_BG_COLOR, packedRGBA);
+}
+
+
+void Render2D::SetOffset(float x, float y)
+{
+    OffsetX = x;
+    OffsetY = y;
+}
+
+
+void Render2D::SetLineStyle(int)
+{
+}
+
+
 /***************************************************************************\
  Setup the rendering context for this display
 \***************************************************************************/

@@ -41,17 +41,20 @@ typedef struct ThreeDVertex: public TwoDVertex
 class Render3D : public Render2D
 {
 public:
-    Render3D() {};
-    virtual ~Render3D() {};
-
+    Render3D();
+    virtual ~Render3D();
+private:
+    void IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+    void IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+    void IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+    void IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+    void IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+public:
     Trotation Tbb; // Transformation matrix for billboards
 
     // Setup and Cleanup need to have additions here, but still call the parent versions
     virtual void Setup(ImageBuffer *imageBuffer);
-    virtual void Cleanup(void)
-    {
-        Render2D::Cleanup();
-    };
+    virtual void Cleanup(void);
 
     // Overload this function to get extra work done at start frame
     virtual void StartDraw(void);
@@ -59,32 +62,14 @@ public:
     // Set the camera parameters we're to use for rendering
     void SetObjectDetail(float scaler);
     void SetFOV(float horizontal_fov, float NearZ = 0.2f);
-    void SetFar(float distance)
-    {
-        far_clip = distance;
-    };
+    void SetFar(float distance);
     void SetCamera(const Tpoint* pos, const Trotation* rot);
 
-    float GetObjectDetail(void)
-    {
-        return detailScaler;
-    };
-    float GetFOV(void)
-    {
-        return horizontal_half_angle * 2.0f;
-    };
-    float GetVFOV(void)
-    {
-        return vertical_half_angle * 2.0f;
-    };
-    float GetDFOV(void)
-    {
-        return diagonal_half_angle * 2.0f;
-    };
-    float GetFar(void)
-    {
-        return far_clip;
-    }; //JAM 09Dec03
+    float GetObjectDetail(void);
+    float GetFOV(void);
+    float GetVFOV(void);
+    float GetDFOV(void);
+    float GetFar(void); //JAM 09Dec03
 
 
     virtual void SetViewport(float leftSide, float topSide, float rightSide, float bottomSide);
@@ -95,50 +80,20 @@ public:
 
     // Turn 3D object texturing on/off
     void SetObjectTextureState(BOOL state);
-    BOOL GetObjectTextureState(void)
-    {
-        return objTextureState;
-    };
+    BOOL GetObjectTextureState(void);
 
     // Get the location and orientation of the camera for this renderer
-    float X(void)
-    {
-        return cameraPos.x;
-    };
-    float Y(void)
-    {
-        return cameraPos.y;
-    };
-    float Z(void)
-    {
-        return cameraPos.z;
-    };
+    float X(void);
+    float Y(void);
+    float Z(void);
 
-    float Yaw(void)
-    {
-        return yaw;
-    };
-    float Pitch(void)
-    {
-        return pitch;
-    };
-    float   Roll(void)
-    {
-        return roll;
-    };
+    float Yaw(void);
+    float Pitch(void);
+    float Roll(void);
 
-    void GetAt(Tpoint *v)
-    {
-        v->x = cameraRot.M11, v->y = cameraRot.M12, v->z = cameraRot.M13;
-    };
-    void GetLeft(Tpoint *v)
-    {
-        v->x = cameraRot.M21, v->y = cameraRot.M22, v->z = cameraRot.M23;
-    };
-    void GetUp(Tpoint *v)
-    {
-        v->x = cameraRot.M31, v->y = cameraRot.M32, v->z = cameraRot.M33;
-    };
+    void GetAt(Tpoint *v);
+    void GetLeft(Tpoint *v);
+    void GetUp(Tpoint *v);
 
 
     // Transform the given worldspace point into pixel coordinates using the current camera
@@ -172,14 +127,6 @@ protected:
     void ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false, bool terrain = false, bool sort = false);
     // void ClipAndDraw3DFan( ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false );
     //JAM
-
-private:
-    void IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-
 protected:
     float far_clip;
     float detailScaler;

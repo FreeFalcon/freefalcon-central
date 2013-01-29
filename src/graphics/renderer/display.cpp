@@ -43,6 +43,155 @@ int FontNum = 0;
 int TotalFont = 3;
 */
 
+
+VirtualDisplay::VirtualDisplay()
+{
+    ready = FALSE;
+    tLeft = tTop = tRight = tBottom = txRes = tyRes = 0;
+}
+
+
+VirtualDisplay::~VirtualDisplay()
+{
+    ShiAssert(ready == FALSE);
+}
+
+
+BOOL VirtualDisplay::IsReady()
+{
+    return ready;
+}
+
+
+void VirtualDisplay::Circle(float x, float y, float xRadius)
+{
+    Oval(x, y, xRadius, xRadius*scaleX/scaleY);
+}
+
+
+void VirtualDisplay::Arc(float x, float y, float xRadius, float start, float stop)
+{
+    OvalArc(x, y, xRadius, xRadius*scaleX/scaleY, start, stop);
+}
+
+
+float VirtualDisplay::TextWidth(char* string)
+{
+    return ScreenTextWidth(string)/scaleX;
+}
+
+
+float VirtualDisplay::TextHeight()
+{
+    return ScreenTextHeight()/scaleY;
+}
+
+
+int VirtualDisplay::CurFont()
+{
+    return pFontSet->fontNum;
+}
+
+
+DWORD VirtualDisplay::Color()
+{
+    return 0x0;
+}
+
+
+void VirtualDisplay::SetLineStyle(int)
+{
+}
+
+
+void VirtualDisplay::CenterOriginInViewport()
+{
+    dmatrix.translationX = 0.0;
+    dmatrix.translationY = 0.0;
+}
+
+
+void VirtualDisplay::ZeroRotationAboutOrigin()
+{
+    dmatrix.rotation01 = dmatrix.rotation10;
+    dmatrix.rotation00 = dmatrix.rotation11 = 1.0;
+}
+
+
+int VirtualDisplay::GetXRes()
+{
+    return xRes;
+}
+
+
+int VirtualDisplay::GetYRes()
+{
+    return yRes;
+}
+
+
+float VirtualDisplay::GetTopPixel()
+{
+    return topPixel;
+}
+
+
+float VirtualDisplay::GetBottomPixel()
+{
+    return bottomPixel;
+}
+
+
+float VirtualDisplay::GetLeftPixel()
+{
+    return leftPixel;
+}
+
+
+float VirtualDisplay::GetRightPixel()
+{
+    return rightPixel;
+}
+
+
+float VirtualDisplay::GetXOffset()
+{
+    return shiftX;
+}
+
+
+float VirtualDisplay::GetYOffset()
+{
+    return shiftY;
+}
+
+
+float VirtualDisplay::viewportXtoPixel(float x)
+{
+    return (x*scaleX)+shiftX;
+}
+
+
+float VirtualDisplay::viewportYtoPixel(float y)
+{
+    return (y*scaleY)+shiftY;
+}
+
+
+int VirtualDisplay::HasRttTarget()
+{
+    return (int)renderTexture;
+}
+
+
+void VirtualDisplay::GetRttCanvas(Tpoint* Canvas)
+{
+    Canvas[0] = canUL;
+    Canvas[1] = canUR;
+    Canvas[2] = canLL;
+}
+
+
 /***************************************************************************\
  Setup the rendering context for this display
 \***************************************************************************/

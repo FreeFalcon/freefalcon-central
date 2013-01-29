@@ -14,7 +14,7 @@
 
 #include "Edge.h"
 #include "Render3D.h"
-#include "rviewpnt.h"
+//#include "rviewpnt.h"
 
 
 //#define ENABLE_LIGHTING // Define this to light the terrain when hazing is on
@@ -262,18 +262,9 @@ public:
     float SnowFactor();
     float Visibility();
     void SetLightning(void);
-    inline void ToggleGreenMode()
-    {
-        GreenMode = !GreenMode;
-    };
-    inline void SetGreenMode(bool state)
-    {
-        GreenMode = state;
-    };
-    inline bool GetGreenMode()
-    {
-        return GreenMode;
-    };
+    void ToggleGreenMode();
+    void SetGreenMode(bool state);
+    bool GetGreenMode();
     static void SetupTexturesOnDevice(DXContext *rc);
     static void ReleaseTexturesOnDevice(DXContext *rc);
 protected:
@@ -330,10 +321,11 @@ protected:
     virtual void AdjustSkyColor(void);
     static void TimeUpdateCallback(void *self);
 public:
-    RViewPoint vtemp;
-    RViewPoint *viewpoint;
-    int t;
-    int *tp;
+    //RViewPoint vtemp;
+    class RViewPoint *viewpoint;
+    //int t;
+    //int *tp;
+public:
     static const float PERSPECTIVE_RANGE;
     static const float NVG_TUNNEL_PERCENT;
     // static const float FOG_MIN;
@@ -358,8 +350,8 @@ public:
     static const float HAZE_ALTITUDE_FACTOR;
     static const float GLARE_FACTOR;
 
-    static Texture texRoofTop;
-    static Texture texRoofBottom;
+    static class Texture texRoofTop;
+    static class Texture texRoofBottom;
 
     static Texture ddsTest;
 };

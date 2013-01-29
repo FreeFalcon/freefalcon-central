@@ -60,6 +60,8 @@ extern bool g_bUse_DX_Engine;
 #include "Weather.h"
 #include "DrawParticleSys.h"
 
+#include "SimIO.h" // Retro 9Jan2004
+
 #include "radiosubtitle.h" // Retro 16Dec2003
 #include "falcsnd/winampfrontend.h" // Retro 3Jan2004
 #include "mouselook.h" // Retro 18Jan2004
@@ -1974,7 +1976,6 @@ void OTWDriverClass::ServerSetviewPoint(void)
 }
 #endif
 
-#include "SimIO.h" // Retro 9Jan2004
 
 void OTWDriverClass::Enter(void)
 {

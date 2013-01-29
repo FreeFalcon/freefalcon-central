@@ -21,6 +21,23 @@ extern bool g_bUse_DX_Engine;
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
 
+
+RenderTV::RenderTV()
+{
+}
+
+
+RenderTV::~RenderTV()
+{
+}
+
+
+void RenderTV::ComputeHorizonEffect(HorizonRecord *pHorizon)
+{
+    pHorizon->horeffect = 0;
+}
+
+
 void RenderTV::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 {
     RenderOTW::Setup(imageBuffer, vp);

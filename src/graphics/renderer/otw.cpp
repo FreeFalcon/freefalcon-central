@@ -67,13 +67,14 @@ RenderOTW::RenderOTW()
 {
     viewpoint = NULL;
     skyRoof = FALSE;
-    t = 817;
-    tp = &t;
+    //t = 817;
+    //tp = &t;
 }
 
 
 RenderOTW::~RenderOTW()
-{}
+{
+}
 
 
 void RenderOTW::SetHazeMode(BOOL state)
@@ -163,6 +164,24 @@ void RenderOTW::SetLightning()
 }
 
 
+void RenderOTW::ToggleGreenMode()
+{
+    GreenMode = !GreenMode;
+}
+
+
+void RenderOTW::SetGreenMode(bool state)
+{
+    GreenMode = state;
+}
+
+
+bool RenderOTW::GetGreenMode()
+{
+    return GreenMode;
+}
+
+
 /***************************************************************************\
  Setup the rendering context for thiw view
 \***************************************************************************/
@@ -177,8 +196,8 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     Render3D::Setup(imageBuffer);
 
     // Retain a pointer to the TViewPoint we are to use
-    RViewPoint *temp = NULL;
-    temp = vp;
+    //RViewPoint *temp = NULL;
+    //temp = vp;
     viewpoint = vp;
 
     // Start with the default light source position (over head)

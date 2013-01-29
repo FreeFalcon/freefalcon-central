@@ -15,8 +15,8 @@
 class RenderTV : public RenderOTW
 {
 public:
-    RenderTV() {};
-    virtual ~RenderTV() {};
+    RenderTV();
+    virtual ~RenderTV();
 
     virtual void Setup(ImageBuffer *imageBuffer, RViewPoint *vp);
 
@@ -29,10 +29,7 @@ protected:
     // Overloaded to provide appropriate sky effects
     virtual void DrawSun(void);
     virtual void DrawMoon(void);
-    virtual void ComputeHorizonEffect(HorizonRecord *pHorizon)
-    {
-        pHorizon->horeffect = 0;
-    };
+    virtual void ComputeHorizonEffect(HorizonRecord *pHorizon);
 
     virtual void ProcessColor(Tcolor *color);
     virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y);
