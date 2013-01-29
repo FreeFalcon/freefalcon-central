@@ -38,7 +38,7 @@
     <None Include="falclib\include\f16_on.cur" />
     <None Include="falclib\include\f16_on_r.cur" />
     <None Include="falclib\include\f16_rm.cur" />
-    <None Include="falclib\include\falcon4.ico" />
+    <None Include="falclib\include\icon.ico" />
     <None Include="falclib\include\font1.bmp" />
     <None Include="falclib\include\hdragon.cur" />
     <None Include="falclib\include\hdragrm.cur" />
