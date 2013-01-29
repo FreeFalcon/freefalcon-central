@@ -80,6 +80,11 @@ void RenderOTW::SetRoofMode(BOOL state)
     skyRoof = state;
 }
 
+BOOL RenderOTW::GetRoofMode()
+{
+    return skyRoof;
+}
+
 /***************************************************************************\
     Draw the sky  ( Assumes square pixels )
 \***************************************************************************/

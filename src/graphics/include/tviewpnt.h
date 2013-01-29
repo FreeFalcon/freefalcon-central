@@ -38,7 +38,8 @@ public:
     };
     ~TViewPoint()
     {
-        if (nLists != 0)  Cleanup();
+        if (nLists != 0)
+            Cleanup();
     };
 
     void Setup(int minimumLOD, int maximumLOD, float *fetchRanges);

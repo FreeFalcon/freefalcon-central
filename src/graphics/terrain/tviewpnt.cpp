@@ -55,7 +55,6 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
     pos.x = -1e12f;
     pos.y = -1e12f;
     pos.z = -1e12f;
-
     // Initially enable all detail levels at once.  This will be adjusted by the first
     // call to UpdateViewpoint().
     highDetail = minLOD;
@@ -188,13 +187,17 @@ void TViewPoint::Update(const Tpoint *position)
     }
 
     // Clamp the values to the avialable range of LODs
-    if (lowDetail  < minLOD) lowDetail = minLOD;
+    if (lowDetail  < minLOD) 
+        lowDetail = minLOD;
 
-    if (lowDetail  > maxLOD) lowDetail = maxLOD;
+    if (lowDetail  > maxLOD) 
+        lowDetail = maxLOD;
 
-    if (highDetail > lowDetail) highDetail = lowDetail;
+    if (highDetail > lowDetail) 
+        highDetail = lowDetail;
 
-    if (highDetail < minLOD) highDetail = minLOD;
+    if (highDetail < minLOD) 
+        highDetail = minLOD;
 
     // Unlock the viewpoint so others can query it
     LeaveCriticalSection(&cs_update);

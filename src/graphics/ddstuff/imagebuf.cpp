@@ -889,8 +889,6 @@ void ImageBuffer::Compose(ImageBuffer *srcBuffer, RECT *dstRect, RECT *srcRect)
         else hr = m_pBltTarget->Blt(srcRect, srcBuffer->m_pDDSBack, dstRect, DDBLT_WAIT, NULL);
     }
 
-    ShiAssert(SUCCEEDED(hr));
-
     if (!SUCCEEDED(hr))
         MonoPrint("ImageBuffer::Compose - Error 0x%X\n", hr);
 }
