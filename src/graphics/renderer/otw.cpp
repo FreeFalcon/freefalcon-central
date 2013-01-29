@@ -65,7 +65,6 @@ ulong terrTime = 0;
 
 RenderOTW::RenderOTW()
 {
-    viewpoint = NULL;
     skyRoof = FALSE;
 }
 
