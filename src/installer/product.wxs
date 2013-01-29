@@ -67,7 +67,7 @@
             </Component>
             
             <Component Id="app.config" Guid="{EE4CA09D-2C10-48E4-946A-D8B9242F557E}">
-                 <File Id="ffosc" Name="ffosc.ico" Source="../falclib/include/falcon4.ico" />
+                 <File Id="ffosc" Name="ffosc.ico" Source="../falclib/include/icon.ico" />
             </Component>   
             
             <Directory Id="IMAGEFOLDER" Name="Images">

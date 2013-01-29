@@ -149,7 +149,6 @@ int TheaterYPosition; // central Y position for theater - used for finding best 
 void ReadCampAIInputs(char * name)
 {
     char fileName[256], tmpName[80];
-    int off, len;
     short temp;
 
     sprintf(tmpName, "%s.AII", name);

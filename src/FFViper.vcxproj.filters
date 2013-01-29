@@ -168,10 +168,10 @@
     <None Include="falclib\include\midfnt.fnt">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="falclib\include\falcon4.ico">
+    <None Include="falclib\include\4.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="falclib\include\4.ico">
+    <None Include="falclib\include\icon.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

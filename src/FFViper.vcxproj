@@ -38,7 +38,7 @@
     <None Include="falclib\include\f16_on.cur" />
     <None Include="falclib\include\f16_on_r.cur" />
     <None Include="falclib\include\f16_rm.cur" />
-    <None Include="falclib\include\falcon4.ico" />
+    <None Include="falclib\include\icon.ico" />
     <None Include="falclib\include\font1.bmp" />
     <None Include="falclib\include\hdragon.cur" />
     <None Include="falclib\include\hdragrm.cur" />
@@ -106,7 +106,7 @@
     <IntDir>../build/x86/debug_win32/ffviper/</IntDir>
     <TargetName>FFViper</TargetName>
     <GenerateManifest>true</GenerateManifest>
-    <LibraryPath>F:\Program Files (x86)\Intel\Composer XE 2013\compiler\lib\ia32;$(DX81_SDK)\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(DX81_SDK)\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
