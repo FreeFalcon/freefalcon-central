@@ -323,8 +323,6 @@ protected:
 public:
     //RViewPoint vtemp;
     class RViewPoint *viewpoint;
-    //int t;
-    //int *tp;
 public:
     static const float PERSPECTIVE_RANGE;
     static const float NVG_TUNNEL_PERCENT;

@@ -67,8 +67,6 @@ RenderOTW::RenderOTW()
 {
     viewpoint = NULL;
     skyRoof = FALSE;
-    //t = 817;
-    //tp = &t;
 }
 
 
@@ -196,8 +194,6 @@ void RenderOTW::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
     Render3D::Setup(imageBuffer);
 
     // Retain a pointer to the TViewPoint we are to use
-    //RViewPoint *temp = NULL;
-    //temp = vp;
     viewpoint = vp;
 
     // Start with the default light source position (over head)
