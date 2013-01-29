@@ -262,14 +262,14 @@ void TextureBankClass::Reference(int id)
     // If we already have the data, just verify that fact. Otherwise, load it.
     if (isLoaded)
     {
-        ShiAssert(TexturePool[id].tex.imageData || TexturePool[id].tex.TexHandle() || deferredLoadState);
-        //LeaveCriticalSection(&ObjectLOD::cs_ObjectLOD);
+        ;
     }
     else
     {
         ShiAssert(TexFileMap.IsReady());
         ShiAssert(CompressedBuffer);
-        ShiAssert(TexturePool[id].tex.imageData == NULL);
+        if(TexturePool[id].tex.imageData != NULL)
+            return;
         ShiAssert(TexturePool[id].tex.TexHandle() == NULL);
 
         // Get the palette pointer
@@ -309,7 +309,8 @@ void TextureBankClass::Release(int id)
     ShiAssert(TexturePool[id].refCount > 0);
 
     // RED - no reference, no party... !!!!!
-    if (!TexturePool[id].refCount) return;
+    if (!TexturePool[id].refCount) 
+        return;
 
     TexturePool[id].refCount--;
 
@@ -885,10 +886,18 @@ void TextureBankClass::CreateCallBack(LoaderQ* request)
 
 void TextureBankClass::ReferenceTexSet(DWORD *TexList, DWORD Nr)
 {
-    while (Nr--) Reference(*TexList), TexList++;
+    while (Nr--) 
+    {
+        Reference(*TexList);
+        TexList++;
+    }
 }
 
 void TextureBankClass::ReleaseTexSet(DWORD *TexList, DWORD Nr)
 {
-    while (Nr--) Release(*TexList), TexList++;
+    while (Nr--) 
+    {
+        Release(*TexList);
+        TexList++;
+    }
 }

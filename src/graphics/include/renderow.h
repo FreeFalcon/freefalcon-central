@@ -14,6 +14,7 @@
 
 #include "Edge.h"
 #include "Render3D.h"
+#include "rviewpnt.h"
 
 
 //#define ENABLE_LIGHTING // Define this to light the terrain when hazing is on
@@ -110,162 +111,8 @@ typedef struct HorizonRecord
 class RenderOTW : public Render3D
 {
 public:
-    RenderOTW()
-    {
-        skyRoof = FALSE;
-    };
-    virtual ~RenderOTW() {};
-
-    // Setup and Cleanup need to have additions here, but still call the parent versions
-    virtual void Setup(class ImageBuffer *imageBuffer, class RViewPoint *vp);
-    virtual void Cleanup(void);
-
-    // Overload this function to get extra work done at start frame
-    virtual void StartDraw(void) ;
-    virtual void EndDraw(void) ;
-
-    // Select the amount of terrain texturing employed
-    void SetTerrainTextureLevel(int level);
-    // int  GetTerrainTextureLevel( void ) { return textureLevel; };
-
-    // Set/get rendering settings
-    void SetHazeMode(BOOL state)
-    {
-        hazed = state;
-        SetupStates();
-    };
-    BOOL GetHazeMode(void)
-    {
-        return hazed;
-    };
-
-    // alpha setting
-    //JAM 01Dec03 - Deprecated
-    // void SetAlphaMode( BOOL state )          { alphaMode = state; };
-    // BOOL GetAlphaMode( void )         { return alphaMode; };
-
-    void SetRoofMode(BOOL state);
-    BOOL GetRoofMode(void)
-    {
-        return skyRoof;
-    };
-
-    //JAM 01Dec03 - Deprecated
-    // void SetSmoothShadingMode( BOOL state ) { smoothed = state; SetupStates(); };
-    // BOOL GetSmoothShadingMode( void ) { return smoothed; };
-
-    void SetDitheringMode(BOOL state)
-    {
-        dithered = state;
-        SetupStates();
-    };
-    BOOL GetDitheringMode(void)
-    {
-        return dithered;
-    };
-
-    void SetFilteringMode(BOOL state)
-    {
-        filtering = state;
-        SetupStates();
-    };
-    BOOL GetFilteringMode(void)
-    {
-        return filtering;
-    };
-
-    //JAM 26Dec03
-    float GetRangeOnlyFog(float range)
-    {
-        return min((range - haze_start) / haze_depth, 1.f);
-    };
-
-    float GetValleyFog(float distance, float worldZ);
-    Tcolor* GetFogColor(void)
-    {
-        return &haze_ground_color;
-    };
-
-    // Draw the out the window view, including terrain and all registered objects
-    void DrawScene(const Tpoint *offset, const Trotation *orientation);
-    // this function gets all needed objects round the scene
-    void PreLoadScene(const Tpoint *offset, const Trotation *orientation);
-
-    // Special calls used for tunnel vision and cloud occulsion effects
-    float GetTunnelPercent(void)
-    {
-        return tunnelPercent;
-    };
-    void SetTunnelPercent(float percent, DWORD color); // CALL _BEFORE_ DrawScene()
-    void PostSceneCloudOcclusion(void); // CALL between DrawScene() and FinishFrame()
-    void DrawTunnelBorder(); // CALL _AFTER_ FinishFrame()
-    bool IsThunder()
-    {
-        return thunder;
-    };
-    float RainFactor()
-    {
-        return rainFactor;
-    };
-    float SnowFactor()
-    {
-        return snowFactor;
-    };
-    float Visibility()
-    {
-        return visibility;
-    };
-    void SetLightning(void)
-    {
-        Lightning = true;
-    }
-
-    inline void ToggleGreenMode()
-    {
-        GreenMode = !GreenMode;
-    }
-    inline void SetGreenMode(bool state)
-    {
-        GreenMode = state;
-    };
-    inline bool GetGreenMode()
-    {
-        return GreenMode;
-    };
-
-public:
-    static const float PERSPECTIVE_RANGE;
-    static const float NVG_TUNNEL_PERCENT;
-    // static const float FOG_MIN;
-    // static const float FOG_MAX;
-
-    //JAM 24Sep03
-    static const float DETAIL_RANGE;
-    float haze_start;
-    float haze_depth;
-    static class Texture NoiseFore;
-    static class Texture NoiseNear;
-    //JAM
-
-    static const float MOON_DIST;
-    static const float SUN_DIST;
-
-    static const float MOST_SUN_GLARE_DIST;
-    static const float MIN_SUN_GLARE;
-
-    static const float ROOF_REPEAT_COUNT;
-
-    static const float HAZE_ALTITUDE_FACTOR;
-    static const float GLARE_FACTOR;
-
-    static class Texture texRoofTop;
-    static class Texture texRoofBottom;
-
-    static class Texture ddsTest;
-
-public:
-    class RViewPoint *viewpoint;
-
+    RenderOTW();
+    virtual ~RenderOTW();
 protected:
     // Control states
     // BOOL smoothed; // Smooth shading state (on or off)
@@ -320,10 +167,14 @@ protected:
     DWORD cloudColor;
 
     // Points which define the corners of the viewing volume
-    float rightX1, rightX2;
-    float rightY1, rightY2;
-    float leftX1, leftX2;
-    float leftY1, leftY2;
+    float rightX1;
+    float rightX2;
+    float rightY1;
+    float rightY2;
+    float leftX1;
+    float leftX2;
+    float leftY1; 
+    float leftY2;
 
     // Edges which define the viewing volume
     Edge front_edge;
@@ -354,7 +205,77 @@ protected:
     LODdataBlock *LODdata;
 
     bool GreenMode;
+public:
+    // Setup and Cleanup need to have additions here, but still call the parent versions
+    virtual void Setup(class ImageBuffer *imageBuffer, class RViewPoint *vp);
+    virtual void Cleanup(void);
 
+    // Overload this function to get extra work done at start frame
+    virtual void StartDraw(void) ;
+    virtual void EndDraw(void) ;
+
+    // Select the amount of terrain texturing employed
+    void SetTerrainTextureLevel(int level);
+    // int  GetTerrainTextureLevel( void ) { return textureLevel; };
+
+    // Set/get rendering settings
+    void SetHazeMode(BOOL state);
+    
+    BOOL GetHazeMode(void);
+
+    // alpha setting
+    //JAM 01Dec03 - Deprecated
+    // void SetAlphaMode( BOOL state )          { alphaMode = state; };
+    // BOOL GetAlphaMode( void )         { return alphaMode; };
+
+    void SetRoofMode(BOOL state);
+    BOOL GetRoofMode(void);
+
+    //JAM 01Dec03 - Deprecated
+    // void SetSmoothShadingMode( BOOL state ) { smoothed = state; SetupStates(); };
+    // BOOL GetSmoothShadingMode( void ) { return smoothed; };
+
+    void SetDitheringMode(BOOL state);
+    BOOL GetDitheringMode(void);
+
+    void SetFilteringMode(BOOL state);
+    BOOL GetFilteringMode(void);
+
+    //JAM 26Dec03
+    float GetRangeOnlyFog(float range);
+
+    float GetValleyFog(float distance, float worldZ);
+    Tcolor* GetFogColor(void);
+
+    // Draw the out the window view, including terrain and all registered objects
+    void DrawScene(const Tpoint *offset, const Trotation *orientation);
+    // this function gets all needed objects round the scene
+    void PreLoadScene(const Tpoint *offset, const Trotation *orientation);
+
+    // Special calls used for tunnel vision and cloud occulsion effects
+    float GetTunnelPercent(void);
+    void SetTunnelPercent(float percent, DWORD color); // CALL _BEFORE_ DrawScene()
+    void PostSceneCloudOcclusion(void); // CALL between DrawScene() and FinishFrame()
+    void DrawTunnelBorder(); // CALL _AFTER_ FinishFrame()
+    bool IsThunder();
+    float RainFactor();
+    float SnowFactor();
+    float Visibility();
+    void SetLightning(void);
+    inline void ToggleGreenMode()
+    {
+        GreenMode = !GreenMode;
+    };
+    inline void SetGreenMode(bool state)
+    {
+        GreenMode = state;
+    };
+    inline bool GetGreenMode()
+    {
+        return GreenMode;
+    };
+    static void SetupTexturesOnDevice(DXContext *rc);
+    static void ReleaseTexturesOnDevice(DXContext *rc);
 protected:
     // Utility functions used within this class
     void SetupStates(void);
@@ -408,10 +329,39 @@ protected:
     virtual void SetTimeOfDayColor(void);
     virtual void AdjustSkyColor(void);
     static void TimeUpdateCallback(void *self);
-
 public:
-    static void SetupTexturesOnDevice(DXContext *rc);
-    static void ReleaseTexturesOnDevice(DXContext *rc);
+    RViewPoint vtemp;
+    RViewPoint *viewpoint;
+    int t;
+    int *tp;
+    static const float PERSPECTIVE_RANGE;
+    static const float NVG_TUNNEL_PERCENT;
+    // static const float FOG_MIN;
+    // static const float FOG_MAX;
+
+    //JAM 24Sep03
+    static const float DETAIL_RANGE;
+    float haze_start;
+    float haze_depth;
+    static Texture NoiseFore;
+    static Texture NoiseNear;
+    //JAM
+
+    static const float MOON_DIST;
+    static const float SUN_DIST;
+
+    static const float MOST_SUN_GLARE_DIST;
+    static const float MIN_SUN_GLARE;
+
+    static const float ROOF_REPEAT_COUNT;
+
+    static const float HAZE_ALTITUDE_FACTOR;
+    static const float GLARE_FACTOR;
+
+    static Texture texRoofTop;
+    static Texture texRoofBottom;
+
+    static Texture ddsTest;
 };
 
 

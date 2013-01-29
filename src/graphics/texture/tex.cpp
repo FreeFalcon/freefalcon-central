@@ -135,8 +135,10 @@ Texture::~Texture()
     //InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
     //InterlockedExchangeAdd((long *)&m_dwTotalBytes,-sizeof(*this));
 #endif
-
-    ShiAssert((texHandle == NULL) && (imageData == NULL));
+    if((texHandle != NULL) || (imageData != NULL))
+    {
+        FreeAll();
+    }
 };
 
 /* Store some useful global information.  The path is used for all
@@ -868,7 +870,7 @@ bool TextureHandle::Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotL
             break;
 
         default:
-            ShiAssert(false);
+            ;
     }
 
     m_nImageDataStride = nImageDataStride != -1 ? nImageDataStride : m_nWidth;
