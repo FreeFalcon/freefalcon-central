@@ -443,14 +443,14 @@ void ObjectParent::ReferenceWithFetch(void)
 
 void ObjectParent::Release(bool Unlock)
 {
-    ShiAssert(refCount > 0);
-
     LODrecord *record = pLODs + nLODs - 1;
 
     // Now reduce our reference count
-    if (refCount) refCount--;
+    if (refCount) 
+        refCount--;
 
-    if (Unlock) Locked = false;
+    if (Unlock) 
+        Locked = false;
 
     // RED - Release if count eraches 0, and OBJECT IS NOT LOCKED
     if (refCount == 0 && !Locked)

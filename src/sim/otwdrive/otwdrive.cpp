@@ -2441,11 +2441,13 @@ void OTWDriverClass::Enter(void)
 
     if (PlayerOptions.SimVisualCueMode == VCLiftLine || PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(1, 1);
-    else vrCockpit->SetSwitchMask(1, 0);
+    else 
+        vrCockpit->SetSwitchMask(1, 0);
 
     if (PlayerOptions.SimVisualCueMode == VCReflection || PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(3, 1);
-    else vrCockpit->SetSwitchMask(3, 0);
+    else 
+        vrCockpit->SetSwitchMask(3, 0);
 
     // Load the f16
     DrawableBSP::LockAndLoad(vrCockpitModel[2]);  // f16
