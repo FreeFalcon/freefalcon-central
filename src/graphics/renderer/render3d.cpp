@@ -48,19 +48,19 @@ float Render3D::GetObjectDetail()
 
 float Render3D::GetFOV()
 {
-    return horizontal_half_angle*2.0;
+    return horizontal_half_angle * 2.0F;
 }
 
 
 float Render3D::GetVFOV()
 {
-    return vertical_half_angle*2.0;
+    return vertical_half_angle * 2.0F;
 }
 
 
 float Render3D::GetDFOV()
 {
-    return diagonal_half_angle*2.0;
+    return diagonal_half_angle * 2.0F;
 }
 
 
