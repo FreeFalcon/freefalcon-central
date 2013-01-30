@@ -149,11 +149,14 @@ int TheaterYPosition; // central Y position for theater - used for finding best 
 void ReadCampAIInputs(char * name)
 {
     char fileName[256], tmpName[80];
+    int off, len;
     short temp;
 
     sprintf(tmpName, "%s.AII", name);
 
-    sprintf(fileName, "%s\\campaign\\SAVE\\%s", FalconDataDirectory, tmpName);
+    //sprintf(fileName, "%s\\campaign\\SAVE\\%s", FalconDataDirectory, tmpName);
+    if(!F4FindFile(tmpName, fileName, 256, &off, &len))
+        exit(0);
 
     /* ATM Inputs */
     IMMEDIATE_MIN_TIME = (short)GetPrivateProfileInt("ATM", "ImmediatePlanMinTime", 0, fileName);

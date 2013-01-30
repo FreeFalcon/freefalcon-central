@@ -56,7 +56,7 @@ char* F4FindFile(char filename[], char *buffer, int bufSize, int *fileOffset, in
     char path[MAX_PATH], tmp[MAX_PATH];
     char tmpStr[1024];
 
-    sprintf(path, "%s\\files.dir", FalconDataDirectory);
+    sprintf(path, "%s\\sounds\\files.dir", FalconDataDirectory);
 
     if (GetPrivateProfileString("Files", filename, "", tmpStr, 1024, path))
     {
@@ -96,7 +96,7 @@ FILE* F4CreateFile(char* filename, char* path, char* mode)
         ppath += strlen(FalconDataDirectory) + 1;
 
     // Check if the file's already there
-    sprintf(filedir, "%s\\files.dir", FalconDataDirectory);
+    sprintf(filedir, "%s\\sounds\\files.dir", FalconDataDirectory);
 
     if (!GetPrivateProfileString("Files", filename, "", tmpStr, 1024, filedir))
     {
