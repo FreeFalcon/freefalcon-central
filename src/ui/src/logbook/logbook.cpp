@@ -50,7 +50,7 @@ int LogBookData::Load(void)
     else
     {
         retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                              0, KEY_ALL_ACCESS, &theKey);
+                              0, KEY_READ, &theKey);
         size = _NAME_LEN_;
         retval = RegQueryValueEx(theKey, "PilotName", 0, &type, (LPBYTE)Pilot.Name, &size);
         size = _CALLSIGN_LEN_;
