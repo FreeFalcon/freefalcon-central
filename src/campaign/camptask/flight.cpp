@@ -4007,8 +4007,7 @@ uchar FlightClass::GetPilotVoiceID(int pilot_slot)
     if (PilotInfo[pilot_id].voice_id == 255)
         PilotInfo[pilot_id].AssignVoice(GetOwner());
 
-	//Moving this line here so that it won't fail, not sure if there was something wrong for not getting a voice id.
-	ShiAssert(PilotInfo[pilot_id].voice_id != 255); // JPO - should always be something else
+    ShiAssert(PilotInfo[pilot_id].voice_id != 255);
 
     return (uchar)PilotInfo[pilot_id].voice_id;
 }
