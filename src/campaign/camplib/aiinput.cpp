@@ -154,7 +154,6 @@ void ReadCampAIInputs(char * name)
 
     sprintf(tmpName, "%s.AII", name);
 
-    //sprintf(fileName, "%s\\campaign\\SAVE\\%s", FalconDataDirectory, tmpName);
     if(!F4FindFile(tmpName, fileName, 256, &off, &len))
         exit(0);
 
