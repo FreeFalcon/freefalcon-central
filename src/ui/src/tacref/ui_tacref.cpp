@@ -781,24 +781,10 @@ static void Load3dModel(Entity *ent)
     }
 }
 
-static void LoadBitmap(C_Button *btn, char filename[])
-{
-    char file[MAX_PATH];
-
-    gImageMgr->RemoveImage(TACREF_BITMAP_ID);
-    strcpy(file, filename);
-    strcat(file, ".tga");
-    gImageMgr->LoadImage(TACREF_BITMAP_ID, file, 0, 0);
-    btn->Refresh();
-    btn->SetImage(0, TACREF_BITMAP_ID);
-    btn->Refresh();
-}
-
 // Moves individual entity to Window (info,model,RWR etc)
 static void EntityToWindow(Entity* ent)
 {
     C_Window *win;
-    C_Button *btn;
     C_ListBox *lbox;
     C_TreeList *tree;
 
@@ -843,13 +829,6 @@ static void EntityToWindow(Entity* ent)
         }
 
         Load3dModel(ent);
-
-        btn = (C_Button*)win->FindControl(ENTITY_PIC);
-
-        if (btn)
-        {
-            LoadBitmap(btn, ent->PhotoFile);
-        }
 
         win->RefreshWindow();
     }
