@@ -31,10 +31,10 @@ The DirectX 8.1 SDK is also required (download
 [here](http://www.darwinbots.com/numsgil/dx81sdk_full.exe)). Install it
 anywhere on your hard drive, and point Visual Studio to where ever you
 installed it.
-[This tutorial](http://www.darwinbots.com/numsgil/dx81sdk_full.exe) covers how
-to do that- follow the instructions under "Setting up the Include and Library
-Paths", you can ignore "Linking the DirectX Static Libraries In Your Projects"
-as that is already taken care of.
+[This tutorial](http://takinginitiative.wordpress.com/2010/07/02/setting-up-the-directx-sdk-with-visual-studio-2010/)
+covers how to do that- follow the instructions under "Setting up the Include
+and Library Paths", you can ignore "Linking the DirectX Static Libraries In
+Your Projects" as that is already taken care of.
 
 To set up the source code to run in Debug mode, you'll need an install of
 FreeFalcon on your computer. To tell Visual Studio where this installation is,
