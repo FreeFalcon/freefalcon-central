@@ -11,6 +11,10 @@ contribute.
 
 ## Build Instructions
 
+This is only a summary of the requirements and assumes a knowledge of your
+way around installing libraries on your system. For more detail, see
+[our documentation](https://github.com/FreeFalcon/docs).
+
 FreeFalcon currently requires Visual Studio 2010, updated to SP1.
 
 To load the Installer project, you'll need the latest version of the WiX
