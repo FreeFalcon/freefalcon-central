@@ -11,7 +11,8 @@ contribute.
 
 ## Build Instructions
 
-For a complete step by step instructions, read the FreeFalcon build manual.docx.
+For a complete step by step instructions, read the FreeFalcon6 build manual.docx.
+It is in the DOCS repository.
 
 FreeFalcon currently requires Visual Studio 2010, updated to SP1.
 
