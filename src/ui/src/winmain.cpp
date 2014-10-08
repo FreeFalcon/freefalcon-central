@@ -230,7 +230,7 @@ int ClearObjManualFlags = FALSE;
 int doUI = FALSE;
 int wait_for_loaded = TRUE;
 int eyeFlyEnabled = FALSE;
-static int lTestVar = TRUE;
+//static int lTestVar = TRUE; // dannycoh - seems to be used as secret code.
 int NoRudder = FALSE;
 int DisableSmoothing = FALSE;
 int NumHats = -1;
@@ -322,12 +322,14 @@ void IncDecTalkerToPlay(int delta);
 void IncDecMsgToPlay(int delta);
 void IncDecDataToPlay(int delta);
 
-char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
-char lTestVarString[] = "JustForGilman1";
-#ifdef _USE_SECRET_CODE_
-BOOL VersionData = FALSE;
-char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
-#endif // _USE_SECRET_CODE_
+// dannycoh - seems to be used as secret code.
+//char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
+//char lTestVarString[] = "JustForGilman1"; 
+//#ifdef _USE_SECRET_CODE_
+//BOOL VersionData = FALSE;
+//char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
+//#endif // _USE_SECRET_CODE_
+// dannycoh - end.
 
 int MajorVersion = F4MajorVersion;
 int MinorVersion = F4MinorVersion;
@@ -386,15 +388,17 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     WNDCLASS wc;
     BOOL rc;
 
-#ifdef _USE_SECRET_CODE_
-    struct tm expirationDate = { 0, 0, 0, 16, 7, 97 };
-    time_t expirationTime = mktime(&expirationDate);
-    time_t curTime = time(NULL);
-
-    if (curTime > expirationTime)
-        return FALSE;
-
-#endif //_USE_SECRET_CODE_
+// dannycoh - removed secret code.
+//#ifdef _USE_SECRET_CODE_
+//    struct tm expirationDate = { 0, 0, 0, 16, 7, 97 };
+//    time_t expirationTime = mktime(&expirationDate);
+//    time_t curTime = time(NULL);
+//
+//    if (curTime > expirationTime)
+//        return FALSE;
+//
+//#endif //_USE_SECRET_CODE_
+// dannycoh - end.
 
     if (!hPrevInstance)
     {
@@ -513,7 +517,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     ReadFalcon4Config();
 
-    lTestVar = !strncmp(lTestVarString, "JustForGilman", 13);
+    //lTestVar = !strncmp(lTestVarString, "JustForGilman", 13); // dannycoh - seems to be used as secret code.
 
     // PW Kludge
     if (VersionInfo)
@@ -1715,8 +1719,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // =========================================================
 
         case FM_LOAD_CAMPAIGN:
-            if (lTestVar)
-            {
+			// dannycoh - seems to be used as secret code.
+			//if (lTestVar)
+            //{
                 // Load a campaign here (this should allow tactical engagements too, so we
                 // So we can eliminate the LOAD_TACTICAL case.
                 if (
@@ -1738,7 +1743,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 {
                     PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
                 }
-            }
+            //}	// dannycoh - end.
 
             break;
 
@@ -1768,8 +1773,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_JOIN_CAMPAIGN:
-            if (lTestVar)
-            {
+			// dannycoh - seems to be used as secret code.
+            //if (lTestVar)
+            //{
                 // Join a campaign here
                 if (gCommsMgr)
                 {
@@ -1804,7 +1810,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
                 if (!retval)
                     PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-            }
+            //}	// dannycoh - end.
 
             break;
 
@@ -1874,38 +1880,41 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_START_DOGFIGHT:
-            if (lTestVar)
-            {
+			// dannycoh - seems to be used as secret code.
+			//if (lTestVar)
+            //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
                 SimulationLoopControl::StartGraphics();
                 EndUI();
                 KeepFocus = 1;
-            }
+            //}	// dannycoh - end.
 
             break;
 
         case FM_START_CAMPAIGN:
-            if (lTestVar)
-            {
+			// dannycoh - seems to be used as secret code.
+			//if (lTestVar)
+            //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
                 SimulationLoopControl::StartGraphics();
                 EndUI();
                 KeepFocus = 1;
-            }
+            //}	// dannycoh - end.
 
             break;
 
         case FM_START_TACTICAL:
-            if (lTestVar)
-            {
+			// dannycoh - seems to be used as secret code.
+			//if (lTestVar)
+            //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
                 SimulationLoopControl::StartGraphics();
                 EndUI();
                 KeepFocus = 1;
-            }
+            //}	// dannycoh - end.
 
             break;
 
