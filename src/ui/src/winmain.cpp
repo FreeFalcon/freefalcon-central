@@ -901,72 +901,75 @@ void ParseCommandLine(LPSTR cmdLine)
     DWORD type, size;
     HKEY theKey;
 
-    if (i_am("rheydon"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        auto_start = TRUE;
-        F4SetAsserts(TRUE);
-        ShiSetAsserts(TRUE);
-    }
+	// dannycoh - commented out specific coder who is no longer with us.
+    //if (i_am("rheydon"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    auto_start = TRUE;
+    //    F4SetAsserts(TRUE);
+    //    ShiSetAsserts(TRUE);
+    //}
+	// dannycoh - end.
 
 #ifdef DEBUG
-    else if (i_am("mmortime"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("kklemmic"))
-    {
+	// dannycoh - commented out specific coders who are no longer with us.
+	//else if (i_am("mmortime"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    RepairObjective = 1;
+    //    intro_movie = FALSE;
+    //    eyeFlyEnabled = TRUE;
+    //    ShiSetAsserts(TRUE);
+    //    F4SetAsserts(TRUE);
+    //}
+    //else if (i_am("kklemmic"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    auto_start = TRUE;
+    //    wait_for_loaded = FALSE;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    F4SetAsserts(TRUE);
+    //    F4SetHardCrash(TRUE);
+    //    ShiSetHardCrash(TRUE);
+    //    ShiSetAsserts(TRUE);
+    //}
+    //else if (i_am("dpower"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    RepairObjective = 1;
+    //    intro_movie = FALSE;
+    //    eyeFlyEnabled = TRUE;
+    //    ShiSetAsserts(TRUE);
+    //    F4SetAsserts(TRUE);
+    //}
+    //else if (i_am("ericg") || i_am("chrisw"))
+    //{
+    //    eyeFlyEnabled = TRUE;
+    //}
+    //else if (i_am("lrosensh"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    auto_start = TRUE;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    intro_movie = TRUE;
+    //}
+    //else if (i_am("vincentf"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    gSoundFlags = 0;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    wait_for_loaded = FALSE;
+    //    auto_start = TRUE;
+    //}
+    //else
+    //{
         InitDebug(DEBUGGER_TEXT_MODE);
         auto_start = TRUE;
-        wait_for_loaded = FALSE;
-        FalconDisplay.displayFullScreen = FALSE;
-        F4SetAsserts(TRUE);
-        F4SetHardCrash(TRUE);
-        ShiSetHardCrash(TRUE);
-        ShiSetAsserts(TRUE);
-    }
-    else if (i_am("dpower"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("ericg") || i_am("chrisw"))
-    {
-        eyeFlyEnabled = TRUE;
-    }
-    else if (i_am("lrosensh"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-        FalconDisplay.displayFullScreen = FALSE;
-        intro_movie = TRUE;
-    }
-    else if (i_am("vincentf"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        gSoundFlags = 0;
-        FalconDisplay.displayFullScreen = FALSE;
-        wait_for_loaded = FALSE;
-        auto_start = TRUE;
-    }
-    else
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-    }
-
+    //}
+	// dannycoh - end.
 #endif
 
     size = sizeof(FalconDataDirectory);

@@ -54,11 +54,14 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
 #ifdef NDEBUG
     displayFullScreen = TRUE;
 #else
-    char strName[40];
-    DWORD dwSize = sizeof(strName);
-    GetComputerName(strName, &dwSize);
+	// dannycoh - commented out specific coder who is no longer with us.
+	//char strName[40];
+    //DWORD dwSize = sizeof(strName);
+    //GetComputerName(strName, &dwSize);
 
-    displayFullScreen = stricmp(strName, "diablo");
+    //displayFullScreen = stricmp(strName, "diablo");
+	// dannycoh - end.
+
     //   displayFullScreen = TRUE;
     //   displayFullScreen = FALSE;
 #endif
