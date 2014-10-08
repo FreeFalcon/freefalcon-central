@@ -650,6 +650,9 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ExitProcess(0);
 }
 
+// dannycoh - This is the main entrance point to the entire solution. However, there are many callback 
+// functions that needs to be trapped. Use the breakpoints file from the build manual.
+
 // set up structured exception handling here
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, int nCmdShow)
