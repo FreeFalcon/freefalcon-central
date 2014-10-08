@@ -1785,8 +1785,10 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,9
- PRODUCTVERSION 2,3,1,9
+// dannycoh - fixed the version info to reflect FFOSP7
+ FILEVERSION 7,0,0,0
+ PRODUCTVERSION 7,0,0,0
+// dannycoh - end.
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -1801,17 +1803,19 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", "FreeFalcon 6.1"
-            VALUE "CompanyName", "MicroProse (Atari)"
-            VALUE "FileDescription", "Falcon 6.1  FFViper (US)"
-            VALUE "FileVersion", "2, 3, 1, 9"
-            VALUE "InternalName", "1.08i"
-            VALUE "LegalCopyright", "Copyright © 1998 - 2012"
+		// dannycoh - Fixed version info to reflect FFOSP7 version.
+            VALUE "Comments", "FreeFalcon 7.0"
+            VALUE "CompanyName", "Open Source Project"
+            VALUE "FileDescription", "FreeFalcon 7 FFViper (US)"
+            VALUE "FileVersion", "7, 0, 0, 0"
+            VALUE "InternalName", "7.00"
+            VALUE "LegalCopyright", "Copyright © 1998 - 2014"
             VALUE "OriginalFilename", "FFViper.exe"
-            VALUE "ProductName", "FreeFalcon 6.1"
-            VALUE "ProductVersion", "2, 3, 1, 9"
+            VALUE "ProductName", "FreeFalcon 7.0"
+            VALUE "ProductVersion", "7, 0, 0, 0"
             VALUE "SpecialBuild", "US Edition"
-        END
+		// dannycoh - end.
+		END
     END
     BLOCK "VarFileInfo"
     BEGIN

@@ -172,7 +172,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
     AdjustWindowRect(&rect, windowStyle, FALSE);
     appWin = CreateWindow(
                  "FalconDisplay", /* class */
-                 "F4 3D Output", /* caption */
+                 "FreeFalcon 7", /* caption */ // dannycoh - fixed the version number.
                  windowStyle, /* style */
                  xOffset, /* init. x pos */
                  yOffset, /* init. y pos */
