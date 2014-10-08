@@ -63,7 +63,7 @@ void Loader::Setup()
 #endif
 
 
-    // Create the synmchronization objects we'll need
+    // Create the synchronization objects we'll need
     strcpy(WakeEventName, "LoaderWakeupCall");
     WakeEventHandle = CreateEvent(NULL, FALSE, FALSE, WakeEventName);
 
