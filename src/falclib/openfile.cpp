@@ -48,15 +48,17 @@ char *UnableToOpen[] =
 
 static int Enabled = 1;
 
-void EnableOpenTest()
-{
-    Enabled = 1;
-}
+// dannycoh - removed. Belongs to CD check.
+//void EnableOpenTest()
+//{
+//    Enabled = 1;
+//}
 
-void DisableOpenTest()
-{
-    Enabled = 0;
-}
+//void DisableOpenTest()
+//{
+//    Enabled = 0;
+//}
+// dannycoh - end.
 
 // This function opens a dialog box asking the user to insert the Falcon CD
 // Possible return values:

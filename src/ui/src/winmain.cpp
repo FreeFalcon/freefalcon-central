@@ -452,7 +452,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     MSG  msg;
     char buf[60], title[60];
     char fileName[_MAX_PATH];
-    FILE *testopen;
+    //FILE *testopen; // dannycoh - removed. Belongs to CD check.
 
     _Module.Init(ObjectMap, hInstance);
 
@@ -561,27 +561,29 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Create PictureDir if not present
     _mkdir(FalconPictureDirectory);
 
+	// dannycoh - removed CD check.
     // Test for CD stuff
-    {
-        char buffer[MAX_PATH];
+    //{
+    //    char buffer[MAX_PATH];
 
-        EnableOpenTest();
-        sprintf(buffer, "%s\\terrain\\theater.map", FalconTerrainDataDir);
-        testopen = FILE_Open(buffer, "r");
+    //    EnableOpenTest();
+    //    sprintf(buffer, "%s\\terrain\\theater.map", FalconTerrainDataDir);
+    //    testopen = FILE_Open(buffer, "r");
 
-        if (!testopen)
-            exit(-1);
+    //    if (!testopen)
+    //        exit(-1);
 
-        fclose(testopen);
-        sprintf(buffer, "%s\\falcon4.ini", FalconObjectDataDir);
-        testopen = FILE_Open(buffer, "r");
+    //    fclose(testopen);
+    //    sprintf(buffer, "%s\\falcon4.ini", FalconObjectDataDir);
+    //    testopen = FILE_Open(buffer, "r");
 
-        if (!testopen)
-            exit(-1);
+    //    if (!testopen)
+    //        exit(-1);
 
-        fclose(testopen);
-        DisableOpenTest();
-    }
+    //    fclose(testopen);
+    //    DisableOpenTest();
+    //}
+	// dannycoh - end.
 
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
