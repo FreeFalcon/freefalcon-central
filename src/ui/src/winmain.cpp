@@ -122,9 +122,9 @@ int WeatherCondition = SUNNY;
 int NoRudder = FALSE;
 int DisableSmoothing = FALSE;
 int NumHats = -1;
-int MajorVersion = F4MajorVersion;
-int MinorVersion = F4MinorVersion;
-int BuildNumber = F4BuildNumber;
+int MajorVersion = FfMajorVersion;
+int MinorVersion = FfMinorVersion;
+int BuildNumber = FfBuildNumber;
 // Theater switching stuff
 int numZips = 0;
 int SimPathHandle = -1; int doNetwork = FALSE; // referred in splash.cpp
