@@ -96,9 +96,9 @@
 // dannycoh - grouped all global variables and sorted by type.
 // GLOBAL VARIABLES
 // bool Has3dNow = false; // dannycoh - commented out - not used.
-bool g_bEnableCockpitVerifier = false;
-bool g_writeSndTbl = false;
-bool g_writeMissionTbl = false;
+bool EnableCockpitVerifier = false;
+bool WriteSoundTable = false;
+bool WriteMissionTable = false;
 
 // dannycoh - commented out - not used.
 //char top_space[] =    "                                                                               ";
@@ -615,10 +615,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     mainAppWnd = FalconDisplay.appWin;
 
-    if (g_writeSndTbl)
+    if (WriteSoundTable)
         SaveSFXTable();
 
-    if (g_writeMissionTbl)
+    if (WriteMissionTable)
         WriteMissionData();
 
     if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
@@ -1245,13 +1245,13 @@ void ParseCommandLine(LPSTR cmdLine)
                 g_bEnumSoftwareDevices = true;
 
             if (!stricmp(arg, "-cockpitverifier"))
-                g_bEnableCockpitVerifier = true;
+                EnableCockpitVerifier = true;
 
             if (!stricmp(arg, "-writesndtbl"))
-                g_writeSndTbl = true;
+                WriteSoundTable = true;
 
             if (!stricmp(arg, "-writemissiontbl"))
-                g_writeMissionTbl = true;
+                WriteMissionTable = true;
 
         }
         while ((arg = strtok(NULL, " ")) != NULL);
