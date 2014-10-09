@@ -13,7 +13,7 @@
 #include "debuggr.h"
 
 char FalconDataDirectory[_MAX_PATH];
-char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+char FalconPictureFolder[_MAX_PATH]; // JB 010623
 char FalconTerrainDataDir[_MAX_PATH];
 char FalconMiscTexDataDir[_MAX_PATH];
 char FalconObjectDataDir[_MAX_PATH];

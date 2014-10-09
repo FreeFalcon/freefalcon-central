@@ -290,7 +290,7 @@ extern bool g_bHiResUI;
 
 extern HINSTANCE HInstance;
 
-char gUI_AutoSaveName[MAX_PATH];
+char UiAutoSaveName[MAX_PATH];
 extern long gRanksTxt[NUM_RANKS];
 
 extern char **KeyDescrips;
@@ -1662,7 +1662,7 @@ int UI_Startup()
     LoadHelpGuideWindows();
     RealLoadLogbook(); // without daves extra garbage
 
-    _tcscpy(gUI_AutoSaveName, gStringMgr->GetString(TXT_AUTOSAVENAME));
+    _tcscpy(UiAutoSaveName, gStringMgr->GetString(TXT_AUTOSAVENAME));
 
 
     if (gCommsMgr->Online())

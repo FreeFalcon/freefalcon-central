@@ -62,8 +62,8 @@ extern int inButton(RECT *but, WORD xPos, WORD yPos);
 
 #endif CAMPTOOL
 
-char *BSP;
-char *BTP;
+char* BspPointer;
+char* BtpPointer;
 
 // ========================================================
 // External prototypes
@@ -1918,8 +1918,8 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         char btitle[40] = "Mission Debrief";
 
                         BuildCampDebrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
+						BspPointer = brief_string;
+						BtpPointer = btitle;
                         DialogBox(HInstance, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
                         MessageBox(hDlg, brief_string, "Mission Debrief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
                     }
@@ -1933,8 +1933,8 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         char btitle[40] = "Mission Brief";
 
                         BuildCampBrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
+						BspPointer = brief_string;
+						BtpPointer = btitle;
                         DialogBox(HInstance, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
                         MessageBox(hDlg, brief_string, "Mission Brief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
                     }
@@ -2112,7 +2112,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
         case WM_INITDIALOG:              /* message: initialize dialog box */
             // SetTitle(BTP);
-            SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BSP);
+			SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BspPointer);
             return (TRUE);
             break;
 

@@ -31,7 +31,7 @@ extern char FalconCockpitTheaterFolder[];
 extern char FalconZipsTheaterFolder[];
 extern char FalconTacticalReferenceTheaterFolder[];
 extern char FalconSplashTheaterFolder[];
-extern char FalconPictureDirectory[];
+extern char FalconPictureFolder[];
 
 // RV - Biker - Theater switching stuff
 extern int NumZips;
@@ -301,7 +301,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     sprintf(tmpPath1, "%s\\art", FalconDataDirectory);
     ResAddPath(tmpPath1, TRUE);
 
-    sprintf(tmpPath1, "%s", FalconPictureDirectory);  // JB 010623
+    sprintf(tmpPath1, "%s", FalconPictureFolder);  // JB 010623
     ResAddPath(tmpPath1, FALSE);  // JB 010623
 
     //======================================================

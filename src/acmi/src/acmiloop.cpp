@@ -66,7 +66,7 @@ int GLOBAL_WIRE_COCKPIT = 1; // default ON.
 
 
 extern char FalconDataDirectory[_MAX_PATH];
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 extern bool g_bNewAcmiHud;
 
 extern C_Handler
@@ -637,7 +637,7 @@ void ACMIView::TakeScreenShot()
 #if 0
     sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s\\%s", FalconPictureFolder, tmpStr);
 #endif
 
     gMainHandler->GetFront()->BackBufferToRAW(fileName);

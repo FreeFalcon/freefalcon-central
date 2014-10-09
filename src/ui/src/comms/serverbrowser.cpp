@@ -49,14 +49,14 @@ extern void Phone_Connect_CB(long n, short hittype, C_Base *control);
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 
-extern char g_strMasterServerName[0x40];
+extern char MasterServerName[0x40];
 // M.N. EnableUplink UI switch
 extern GNETCORELib::IUplinkPtr m_pUplink;
 extern bool EnableUplink;
 extern int g_nMasterServerPort;
 char strVersion[0x20];
-extern char g_strServerLocation[0x40];
-extern char g_strServerName[0x40];
+extern char ServerLocation[0x40];
+extern char ServerName[0x40];
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 extern int MajorVersion;
 extern int MinorVersion;
@@ -320,14 +320,14 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  // Create Uplink service object
  CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
 
- m_pUplink->PutMasterServerName(g_strMasterServerName);
+ m_pUplink->PutMasterServerName(MasterServerName);
  m_pUplink->PutMasterServerPort(g_nMasterServerPort);
  m_pUplink->PutQueryPort(7778);
  m_pUplink->PutHeartbeatInterval(60000);
  m_pUplink->PutServerVersion(strVersion);
  m_pUplink->PutServerVersionMin(strVersion);
- m_pUplink->PutServerLocation(g_strServerLocation);
- m_pUplink->PutServerName(g_strServerName);
+ m_pUplink->PutServerLocation(ServerLocation);
+ m_pUplink->PutServerName(ServerName);
  m_pUplink->PutGameName("Falcon4");
  m_pUplink->PutGameMode("openplaying");
  }
@@ -1333,13 +1333,13 @@ void CGNetUpdater::Update()
 
 #ifdef _DEBUG
 #if 1
-        m_pMasterServer->PutServerName(g_strMasterServerName);
+        m_pMasterServer->PutServerName(MasterServerName);
         m_pMasterServer->PutGameFilter("Falcon4");
 #else
         m_pMasterServer->PutServerName("master.gamespy.com");
 #endif
 #else
-        m_pMasterServer->PutServerName(g_strMasterServerName);
+        m_pMasterServer->PutServerName(MasterServerName);
         m_pMasterServer->PutGameFilter("Falcon4");
 #endif
 

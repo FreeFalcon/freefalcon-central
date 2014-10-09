@@ -56,7 +56,7 @@ void ProcessEventList(C_Window *win, long client);
 void SetSingle_Comms_Ctrls();
 void RemoveWeaponUsageList();
 extern C_Handler *gMainHandler;
-extern char gUI_CampaignFile[];
+extern char UiCampaignFile[];
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void EncryptBuffer(uchar startkey, uchar *buffer, long length);
 void DecryptBuffer(uchar startkey, uchar *buffer, long length);
@@ -676,13 +676,13 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
     ShiAssert(!TheCampaign.IsLoaded());
 
     // Load a campaign here
-    strcpy(gUI_CampaignFile, "Instant");
+    strcpy(UiCampaignFile, "Instant");
 
     ShiAssert(gameCompressionRatio == 0);
 
     TheCampaign.SetOnlineStatus(0);
 
-    TheCampaign.LoadCampaign(game_InstantAction, gUI_CampaignFile);
+    TheCampaign.LoadCampaign(game_InstantAction, UiCampaignFile);
 
     instant_action::set_start_wave(InstantActionSettings.PilotLevel);
     instant_action::create_player_flight();
@@ -1851,10 +1851,10 @@ void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
     if (!TheCampaign.IsLoaded())
     {
         // Load a campaign here
-        strcpy(gUI_CampaignFile, "Instant");
+        strcpy(UiCampaignFile, "Instant");
 
         TheCampaign.SetOnlineStatus(0);
-        TheCampaign.LoadCampaign(game_InstantAction, gUI_CampaignFile);
+        TheCampaign.LoadCampaign(game_InstantAction, UiCampaignFile);
 
         instant_action::create_player_flight();
     }

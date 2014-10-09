@@ -22,7 +22,7 @@
 // JB 010731
 #include "textids.h"
 extern void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-extern char gUI_CampaignFile[];
+extern char UiCampaignFile[];
 
 // MN 020121
 bool campaignStart;
@@ -269,7 +269,7 @@ void CampaignJoinSuccess(void)
             // 2002-01-03 M.N.
             // If we started a new campaign, make some first task manager calculations and pop up the priority windows
             if (FalconLocalGame->IsLocal() &&
-                (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0))
+                (strcmp(UiCampaignFile, "save0") == 0 || strcmp(UiCampaignFile, "save1") == 0 || strcmp(UiCampaignFile, "save2") == 0))
             {
                 C_Window *winme = NULL;
                 C_Button *ctrl = NULL;

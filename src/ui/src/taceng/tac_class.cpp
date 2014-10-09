@@ -56,7 +56,7 @@ void update_team_victory_window(void);
 void UpdateVCOptions(victory_condition *vc);
 
 extern long ShowGameOverWindow;
-extern char gUI_CampaignFile[];
+extern char UiCampaignFile[];
 extern _TCHAR gUI_ScenarioName[];
 extern uchar gSelectedTeam;
 extern C_Map
@@ -340,7 +340,7 @@ void TacticalMission::save_data(char *savefile)
 
     if (filename)
     {
-        strcpy(gUI_CampaignFile, filename);
+        strcpy(UiCampaignFile, filename);
     }
 
     CloseCampFile(fp);
@@ -804,7 +804,7 @@ void TacticalMission::load(void)
             ptr ++;
         }
 
-        ptr = gUI_CampaignFile;
+        ptr = UiCampaignFile;
 
         ext = NULL;
 
@@ -883,7 +883,7 @@ void TacticalMission::preload(void)
             ptr ++;
         }
 
-        ptr = gUI_CampaignFile;
+        ptr = UiCampaignFile;
 
         ext = ptr;
 
@@ -907,17 +907,17 @@ void TacticalMission::preload(void)
     }
     else
     {
-        strcpy(gUI_CampaignFile, "te_new");
+        strcpy(UiCampaignFile, "te_new");
         _tcscpy(gUI_ScenarioName, "te_new");
     }
 
     TheCampaign.Suspend();
 
-    TheCampaign.LoadScenarioStats(game_TacticalEngagement, gUI_CampaignFile);
+    TheCampaign.LoadScenarioStats(game_TacticalEngagement, UiCampaignFile);
 
-    // StartReadCampFile (game_TacticalEngagement, gUI_CampaignFile);
+    // StartReadCampFile (game_TacticalEngagement, UiCampaignFile);
     //
-    // if (!LoadTeams (gUI_CampaignFile))
+    // if (!LoadTeams (UiCampaignFile))
     // {
     // AddNewTeams (Neutral);
     // }
@@ -933,7 +933,7 @@ void TacticalMission::new_setup(void)
 {
     //MonoPrint ("Tactical_Mission::New Setup\n");
 
-    strcpy(gUI_CampaignFile, "te_new");
+    strcpy(UiCampaignFile, "te_new");
 
     is_new = TRUE;
 

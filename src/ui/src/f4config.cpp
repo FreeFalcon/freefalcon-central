@@ -159,12 +159,12 @@ float g_fdwPortclient = 2937;
 float g_fdwPorthost = 2936;
 
 bool EnableUplink = false;
-char g_strMasterServerName[0x40];
+char MasterServerName[0x40];
 int g_nMasterServerPort = 0;
-char g_strServerName[0x40];
-char g_strServerLocation[0x40];
-char g_strServerAdmin[0x40];
-char g_strServerAdminEmail[0x40];
+char ServerName[0x40];
+char ServerLocation[0x40];
+char ServerAdministrator[0x40];
+char ServerAdministratorEmail[0x40];
 
 char g_strVoiceHostIP[0x40];
 char g_strWorldName[0x40] = {"FFVIPER"};
@@ -1088,11 +1088,11 @@ static ConfigOption<int> IntOpts[] =
 
 static ConfigOption<char> StringOpts[] =
 {
-    { "MasterServerName", &g_strMasterServerName[0] },
-    { "ServerName", &g_strServerName[0] },
-    { "ServerLocation", &g_strServerLocation[0] },
-    { "ServerAdmin", &g_strServerAdmin[0] },
-    { "ServerAdminEmail", &g_strServerAdminEmail[0] },
+    { "MasterServerName", &MasterServerName[0] },
+    { "ServerName", &ServerName[0] },
+    { "ServerLocation", &ServerLocation[0] },
+    { "ServerAdmin", &ServerAdministrator[0] },
+    { "ServerAdminEmail", &ServerAdministratorEmail[0] },
     { "VoiceHostIP", &g_strVoiceHostIP[0] },
     { "WorldName", &g_strWorldName[0] },
     { "ScrollUpFunction", &g_strScrollUpFunction[0] }, //Wombat778 10-07-2003

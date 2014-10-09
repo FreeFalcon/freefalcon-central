@@ -45,7 +45,7 @@ static int exitMenuDesired = 0;
 extern bool g_bUse_DX_Engine;
 int tactical_is_training(void);
 
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 
 #define EXITMENU_POPUP_TIME 15000 // Exit menu will pop up 15 seconds after death
 
@@ -340,7 +340,7 @@ void OTWDriverClass::TakeScreenShot(void)
 #if 0
     sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s\\%s", FalconPictureFolder, tmpStr);
 #endif
 
     OTWImage->BackBufferToRAW(fileName);

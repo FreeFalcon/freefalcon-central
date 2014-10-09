@@ -49,7 +49,7 @@ extern C_Parser *gMainParser;
 extern VU_ID gCurrentFlightID;
 extern GlobalPositioningSystem *gGps;
 
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 extern bool g_bHiResUI; // MN 020104
 extern bool g_bMissionACIcons; // JB 020211
 extern bool g_LargeTheater; // MN
@@ -2730,7 +2730,7 @@ void SaveTargaCB(long, short hittype, C_Base *control)
 #if 0
         _stprintf(filename, "%s.tga", ebox->GetText());
 #else
-        _stprintf(filename, "%s\\%s.tga", FalconPictureDirectory, ebox->GetText());
+        _stprintf(filename, "%s\\%s.tga", FalconPictureFolder, ebox->GetText());
 #endif
 
         fp = fopen(filename, "wb");

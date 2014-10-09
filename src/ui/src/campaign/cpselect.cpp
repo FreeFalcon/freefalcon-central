@@ -133,7 +133,7 @@ void CopySettingsToTemp(void);
 BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem);
 extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
 
-char gUI_CampaignFile[MAX_PATH];
+char UiCampaignFile[MAX_PATH];
 _TCHAR gUI_ScenarioName[64];
 _TCHAR gLastCampFilename[MAX_PATH];
 
@@ -919,17 +919,17 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case CS_LOAD_SCENARIO1:
-            strcpy(gUI_CampaignFile, "save0");
+            strcpy(UiCampaignFile, "save0");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_1));
             break;
 
         case CS_LOAD_SCENARIO2:
-            strcpy(gUI_CampaignFile, "save1");
+            strcpy(UiCampaignFile, "save1");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_2));
             break;
 
         case CS_LOAD_SCENARIO3:
-            strcpy(gUI_CampaignFile, "save2");
+            strcpy(UiCampaignFile, "save2");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_3));
             break;
 
@@ -937,7 +937,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
             return;
     }
 
-    TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
+    TheCampaign.LoadScenarioStats(game_Campaign, UiCampaignFile);
     // Pick the default squadron ID
     gSelectedSquadronID = -1;
 
@@ -1179,10 +1179,10 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
                 tree->SetAllControlStates(0, tree->GetRoot());
                 btn->SetState(1);
                 tree->Refresh();
-                _tcscpy(gUI_CampaignFile, btn->GetText(C_STATE_0));
+                _tcscpy(UiCampaignFile, btn->GetText(C_STATE_0));
                 // MN 2002-02-04 removed ".cam" to be able to also delete .his .frc-files
-                _stprintf(gLastCampFilename, "%s\\%s", FalconCampUserSaveDirectory, gUI_CampaignFile);
-                TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
+                _stprintf(gLastCampFilename, "%s\\%s", FalconCampUserSaveDirectory, UiCampaignFile);
+                TheCampaign.LoadScenarioStats(game_Campaign, UiCampaignFile);
 
                 // Pick the last selected squadron
                 for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)

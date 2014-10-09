@@ -159,14 +159,14 @@ extern bool PilotEntertainment;
 extern bool EnumerateSoftwareDevices;
 extern bool EnableUplink;
 
-extern char g_strMasterServerName[0x40];
-extern char g_strServerName[0x40];
-extern char g_strServerLocation[0x40];
-extern char g_strServerAdmin[0x40];
-extern char g_strServerAdminEmail[0x40];
-extern char gUI_CampaignFile[];
-extern char gUI_AutoSaveName[];
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char MasterServerName[0x40];
+extern char ServerName[0x40];
+extern char ServerLocation[0x40];
+extern char ServerAdministrator[0x40];
+extern char ServerAdministratorEmail[0x40];
+extern char UiCampaignFile[];
+extern char UiAutoSaveName[];
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 extern char* BSP;
 extern char* BTP;
 
@@ -474,14 +474,14 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             ComSup::RegisterServer("GNCorePS.dll");
             ComSup::RegisterServer("GNShared.dll");
 
-            m_pUplink->PutMasterServerName(g_strMasterServerName);
+            m_pUplink->PutMasterServerName(MasterServerName);
             m_pUplink->PutMasterServerPort(g_nMasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
             m_pUplink->PutServerVersion(strVersion);
             m_pUplink->PutServerVersionMin(strVersion);
-            m_pUplink->PutServerLocation(g_strServerLocation);
-            m_pUplink->PutServerName(g_strServerName);
+            m_pUplink->PutServerLocation(ServerLocation);
+            m_pUplink->PutServerName(ServerName);
             m_pUplink->PutGameName("Falcon4");
             m_pUplink->PutGameMode("openplaying");
         }
@@ -555,10 +555,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Initialize this
     sprintf(FalconMiscTexDataDir, "%s\\terrdata\\misctex", FalconDataDirectory);
 
-    sprintf(FalconPictureDirectory, "%s\\Pictures", FalconDataDirectory);
+    sprintf(FalconPictureFolder, "%s\\Pictures", FalconDataDirectory);
 
     // Create PictureDir if not present
-    _mkdir(FalconPictureDirectory);
+    _mkdir(FalconPictureFolder);
 
 	// dannycoh - commented out the CD check as we no longer use CD's for installation.
     //// Test for CD stuff
@@ -591,7 +591,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ResAddPath(tmpPath, FALSE);
     sprintf(tmpPath, "%s\\Art", FalconDataDirectory); // This one can go if zips are always used
     ResAddPath(tmpPath, TRUE);
-    sprintf(tmpPath, "%s", FalconPictureDirectory);  // JB 010623
+    sprintf(tmpPath, "%s", FalconPictureFolder);  // JB 010623
     ResAddPath(tmpPath, TRUE);  // JB 010623
 
     // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
@@ -1538,7 +1538,7 @@ void CampaignAutoSave(FalconGameType gametype)
         if (FalconLocalGame->IsLocal())
         {
             TheCampaign.SetCreationIter(TheCampaign.GetCreationIter() + 1);
-            TheCampaign.SaveCampaign(gametype, gUI_AutoSaveName, 0);
+            TheCampaign.SaveCampaign(gametype, UiAutoSaveName, 0);
 
             if (gCommsMgr->Online())
             {
@@ -1726,10 +1726,10 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     (FalconGameType)lParam != game_TacticalEngagement
                 )
                 {
-                    strcpy(gUI_CampaignFile, "Instant");
+                    strcpy(UiCampaignFile, "Instant");
                 }
 
-                retval = TheCampaign.LoadCampaign((FalconGameType)lParam, gUI_CampaignFile);
+                retval = TheCampaign.LoadCampaign((FalconGameType)lParam, UiCampaignFile);
 
                 // Notify UI of our success
                 if (retval)
@@ -1749,7 +1749,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             int gametype = FalconLocalGame->GetGameType();
 
             // Game aborted - reload current campaign
-            strcpy(gUI_CampaignFile, TheCampaign.SaveFile);
+            strcpy(UiCampaignFile, TheCampaign.SaveFile);
             SendMessage(hwnd, FM_SHUTDOWN_CAMPAIGN, 0, 0);
 
             // KCK: This is well and truely stupid

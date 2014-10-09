@@ -108,7 +108,7 @@ short InCleanup = 0;
 
 extern uchar gSelectedTeam;
 extern IMAGE_RSC *PAKMap;
-extern char gUI_CampaignFile[];
+extern char UiCampaignFile[];
 extern bool campaignStart;
 
 extern bool g_bAWACSSupport;
@@ -1183,7 +1183,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
     if (FalconLocalGame->IsLocal() &&
-        (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0) &&
+        (strcmp(UiCampaignFile, "save0") == 0 || strcmp(UiCampaignFile, "save1") == 0 || strcmp(UiCampaignFile, "save2") == 0) &&
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);
