@@ -1,80 +1,90 @@
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all system includes.
-#include <AtlBase.h>
-#include <AtlCom.h>
+#include <AtlBase.h> // needeb by AtlCom.h
 #include <AtlWin.h>
-#include <direct.h>
-#include <StdIo.h>
-#include <time.h>
-#include <windows.h>
-#include <winsock2.h>
+#include <direct.h> // used by _chdir and _mkdir.
+#include <time.h> // used by time.
+// dannycoh - end.
+
+// dannycoh - commented out - those are not needed.
+//#include <AtlCom.h>
+//#include <StdIo.h>
+//#include <windows.h>
+//#include <winsock2.h>
 // dannycoh - end.
 
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all sim includes.
 #include "ascii.h"
-#include "Camp2Sim.h"
-#include "Campaign.h"
 #include "CampJoin.h"
 #include "CampStr.h"
-#include "ClassTbl.h"
-#include "CmpClass.h"
-#include "DDraw.h"
 #include "dialog.h" // Campaign tool include
 #include "DispCfg.h"
 #include "DispOpts.h"
 #include "ehandler.h"
-#include "Entity.h"
-#include "f4comms.h"
 #include "f4find.h"
 #include "f4version.h"
-#include "FalcLib.h"
 #include "FalcMem.h"
-#include "FalcMesg.h"
-#include "FalcUser.h"
-#include "feature.h"
-#include "find.h"
-#include "fsound.h"
-#include "hud.h"
 #include "iaction.h"
-#include "InpFunc.h"
-#include "LogBook.h"
-#include "MissEval.h"
-#include "OpenFile.h"
 #include "OtwDrive.h"
-#include "PlayerOp.h"
 #include "RadioSubTitle.h"
 #include "resource.h"
-#include "rules.h"
 #include "SimDrive.h"
-#include "SimIo.h"
-#include "SimLoop.h"
-#include "SimObj.h"
 #include "sinput.h"
-#include "sms.h"
 #include "Statistics.h"
-#include "StdHdr.h"
 #include "TheaterDef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
-#include "token.h" // default value Unz
 #include "TrackIR.h"
 #include "UiComms.h" // UI Includes
-#include "Ui_ia.h"
 #include "UserIds.h"
-#include "VRInput.h"
 #include "Weather.h"
+// dannycoh - end.
+
+// dannycoh - commented out - those are not needed.
+//#include "Camp2Sim.h"
+//#include "Campaign.h"
+//#include "ClassTbl.h"
+//#include "CmpClass.h"
+//#include "DDraw.h"
+//#include "Entity.h"
+//#include "f4comms.h"
+//#include "FalcLib.h"
+//#include "FalcMesg.h"
+//#include "FalcUser.h"
+//#include "feature.h"
+//#include "find.h"
+//#include "fsound.h"
+//#include "hud.h"
+//#include "InpFunc.h"
+//#include "LogBook.h"
+//#include "MissEval.h"
+//#include "OpenFile.h"
+//#include "PlayerOp.h"
+//#include "rules.h"
+//#include "SimIo.h"
+//#include "SimLoop.h"
+//#include "SimObj.h"
+//#include "sms.h"
+//#include "StdHdr.h"
+//#include "token.h" // default value Unz
+//#include "Ui_ia.h"
+//#include "VRInput.h"
 // dannycoh - end.
 
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all utility includes.
 #include "CodeLib/resources/ResLib/src/ResMgr.h"
-#include "FalcSnd/psound.h"
 #include "FalcSnd/VoiceMapper.h"
 #include "FalcSnd/WinampFrontEnd.h"
 #include "Graphics/Include/DrawParticleSys.h"
-#include "Graphics/Include/ImageBuf.h"
-#include "Graphics/Include/TexBank.h"
 #include "include/ComSup.h"
 #include "movie/AviMovie.h"
 #include "Ui95/chandler.h"
+// dannycoh - end.
+
+// dannycoh - commented out - those are not needed.
+//#include "FalcSnd/psound.h"
+//#include "Graphics/Include/ImageBuf.h"
+//#include "Graphics/Include/TexBank.h"
+// dannycoh - end.
 
 extern "C"
 {
