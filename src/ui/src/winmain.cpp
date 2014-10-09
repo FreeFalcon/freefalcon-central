@@ -1,5 +1,5 @@
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all system includes.
-#include <AtlBase.h> // needeb by AtlCom.h
+#include <AtlBase.h> // used by AtlCom.h
 #include <AtlWin.h>
 #include <direct.h> // used by _chdir and _mkdir.
 #include <time.h> // used by time.
@@ -86,15 +86,16 @@
 //#include "Graphics/Include/TexBank.h"
 // dannycoh - end.
 
-extern "C"
-{
-#include "AmdLib.h"
-}
+// dannycoh - commented out - this is not needed.
+//extern "C"
+//{
+//#include "AmdLib.h"
+//}
 // dannycoh - end.
 
 // dannycoh - grouped all global variables and sorted by type.
 // GLOBAL VARIABLES
-bool g_bHas3DNow = false;
+// bool Has3dNow = false; // dannycoh - commented out - not used.
 bool g_bEnableCockpitVerifier = false;
 bool g_writeSndTbl = false;
 bool g_writeMissionTbl = false;

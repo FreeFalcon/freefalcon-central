@@ -20,7 +20,7 @@
 #include "Campaign/include/Cmpclass.h"
 
 // OW
-extern bool g_bHas3DNow;
+//extern bool Has3dNow; // dannycoh - commented out - not used.
 extern bool g_bRealisticAvionics; // M.N.
 //extern bool g_bClickablePitModeDefault; //Wombat778
 
