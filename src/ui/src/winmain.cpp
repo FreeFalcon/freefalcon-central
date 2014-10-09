@@ -100,10 +100,13 @@ bool g_bEnableCockpitVerifier = false;
 bool g_writeSndTbl = false;
 bool g_writeMissionTbl = false;
 
-char top_space[] = "                                                                               ";
-char program_name[] = "    ****    FreeFalcon OSP    ****    ";
-char legal_crap[] = "    ****    (c)2014 The FreeFalcon Community.    ****    ";
-char bottom_space[] = "                                                                               ";
+// dannycoh - commented out - not used.
+//char top_space[] =    "                                                                               ";
+//char program_name[] = "    ****    FreeFalcon OSP    ****    ";
+//char legal_crap[] =   "    ****    (c)2014 The FreeFalcon Community.    ****    ";
+//char bottom_space[] = "                                                                               ";
+// dannycoh - end.
+
 char FalconMovieDirectory[_MAX_PATH];
 char FalconMovieMode[_MAX_PATH];
 char FalconUIArtDirectory[_MAX_PATH];
