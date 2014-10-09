@@ -82,7 +82,7 @@
 
 typedef signed long SLONG;
 
-enum { SUNNY = 1, FAIR, POOR, INCLEMENT, NUMCONDITIONS };
+enum WeatherConditionEnum:int { SUNNY = 1, FAIR, POOR, INCLEMENT, NUMCONDITIONS };
 enum { OBSERVER_LOW = 0, OBSERVER_MIDDLE, OBSERVER_HI, MAX_OBSERVER_POSITIONS };
 
 struct WeatherCell

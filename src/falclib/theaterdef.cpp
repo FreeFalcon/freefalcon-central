@@ -34,8 +34,8 @@ extern char FalconSplashTheaterFolder[];
 extern char FalconPictureDirectory[];
 
 // RV - Biker - Theater switching stuff
-extern int numZips;
-extern int* resourceHandle;
+extern int NumZips;
+extern int* ResourceHandle;
 extern int SimPathHandle;
 #define ZIPFILE_NAME    "ziplist.lst"
 
@@ -189,20 +189,20 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     FreeIndex();
     ClearCampCache();
 
-    if (numZips)
+    if (NumZips)
     {
-        for (int i = 0; i < numZips; i++)
+        for (int i = 0; i < NumZips; i++)
         {
-            if (resourceHandle[i])
-                ResDetach(resourceHandle[i]);
+            if (ResourceHandle[i])
+                ResDetach(ResourceHandle[i]);
             else
                 break;
         }
 
-        if (resourceHandle[0] < 0)
-            delete [] resourceHandle;
+        if (ResourceHandle[0] < 0)
+            delete [] ResourceHandle;
 
-        numZips = 0;
+        NumZips = 0;
     }
 
     // Reinitialize res manager...
@@ -333,25 +333,25 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         sprintf(string, "Failed to open %s\n", tmpPath);
         OutputDebugString(string);
         ShiError(string);
-        numZips = 0;
+        NumZips = 0;
     }
     else
     {
-        fscanf(zipFile, "%d", &numZips);
-        resourceHandle = new int[numZips];
+        fscanf(zipFile, "%d", &NumZips);
+        ResourceHandle = new int[NumZips];
 
-        for (int i = 0; i < numZips; i++)
+        for (int i = 0; i < NumZips; i++)
         {
             char tmp[256];
             fscanf(zipFile, "%*c%s", tmp);
             sprintf(tmpPath, "%s\\%s", FalconZipsTheaterFolder, tmp);
 
             if (!strnicmp(td->m_name, "Korea", 5))
-                resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
+                ResourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
                 // FRB - Must use FalconDataDirectory and not FalconZipsTheaterFolder (don't know why!?)
-                //resourceHandle[i] = ResAttach (FalconZipsTheaterFolder, tmpPath, TRUE);
-                resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
+                //ResourceHandle[i] = ResAttach (FalconZipsTheaterFolder, tmpPath, TRUE);
+                ResourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }
 
         fclose(zipFile);

@@ -134,14 +134,14 @@ int DoNetwork = FALSE; // referred in splash.cpp
 int NumHats = -1;
 int WeatherCondition = SUNNY;
 // Theater switching stuff
-int numZips = 0;
+int NumZips = 0;
 int SimPathHandle = -1;
-int MajorVersion = F4MajorVersion;
-int MinorVersion = F4MinorVersion;
-int BuildNumber = F4BuildNumber;
+int MajorVersion = FfMajorVersion;
+int MinorVersion = FfMinorVersion;
+int BuildNumber = FfBuildNumber;
 //used to display version number in game (not part of version system)
 int ShowVersion = 0;
-int* resourceHandle;
+int* ResourceHandle;
 
 BOOL VersionInfo = FALSE;
 HWND mainMenuWnd;
@@ -1515,12 +1515,12 @@ void SystemLevelExit(void)
     UnloadClassTable();
     FreeTactics();
 
-    for (int i = 0; i < numZips; i++)
+    for (int i = 0; i < NumZips; i++)
     {
-        ResDetach(resourceHandle[i]);
+        ResDetach(ResourceHandle[i]);
     }
 
-    delete [] resourceHandle;
+    delete [] ResourceHandle;
     ResExit();
 
     SimDriver.ReleaseSimMemoryPools();

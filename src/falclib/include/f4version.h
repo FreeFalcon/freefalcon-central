@@ -10,8 +10,8 @@
 
 #define VERSION_COMMSTRING    "FreeFalcon" F4BuildType "(" F4LanguageAbbrev ")\0"
 #define VERSION_FILEDESC      "FreeFalcon" F4BuildType "(" F4LanguageAbbrev ")\0"
-#define VERSION_FILEVERSION    STRINGER(F4MajorVersion) ",0," STRINGER(F4MinorVersion) "," STRINGER (F4Language)
-#define VERSION_PRODUCTVERSION STRINGER(F4MajorVersion) ".0" STRINGER(F4MinorVersion) STRINGER (F4Language)
+#define VERSION_FILEVERSION    STRINGER(FfMajorVersion) ",0," STRINGER(FfMinorVersion) "," STRINGER (F4Language)
+#define VERSION_PRODUCTVERSION STRINGER(FfMajorVersion) ".0" STRINGER(FfMinorVersion) STRINGER (F4Language)
 #define VERSION_SPECIAL        F4BuildType F4LanguageAbbrev " Edition"
 
 #define F4LANG_ENGLISH 1
