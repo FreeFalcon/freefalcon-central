@@ -650,6 +650,8 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     ExitProcess(0);
 }
+// dannycoh - entry point to the entire solution.
+// However, some code are called by CALLBACK functions so use the breakpoints file to debug properly!
 
 // set up structured exception handling here
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
