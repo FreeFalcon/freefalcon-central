@@ -11914,13 +11914,13 @@ void ToggleDisplacementCam(unsigned long, int state, void*) // Retro 24Dec2003
 }
 
 // Retro 4Jan2004 - WinAmpPointer commands
-extern bool g_bPilotEntertainment;
+extern bool PilotEntertainment;
 #include "falcsnd/winampfrontend.h"
 void WinAmpNextTrack(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->Next();
         }
@@ -11930,7 +11930,7 @@ void WinAmpPreviousTrack(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->Previous();
         }
@@ -11940,7 +11940,7 @@ void WinAmpStopPlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->Stop();
         }
@@ -11950,7 +11950,7 @@ void WinAmpStartPlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->Start();
         }
@@ -11960,7 +11960,7 @@ void WinAmpTogglePlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->TogglePlayback();
         }
@@ -11970,7 +11970,7 @@ void WinAmpVolumeUp(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->VolUp();
         }
@@ -11980,7 +11980,7 @@ void WinAmpVolumeDown(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (WinAmpPointer))
+        if ((PilotEntertainment) && (WinAmpPointer))
         {
             WinAmpPointer->VolDown();
         }

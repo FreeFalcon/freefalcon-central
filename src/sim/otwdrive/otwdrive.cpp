@@ -65,7 +65,7 @@ extern bool g_bUse_DX_Engine;
 #include "radiosubtitle.h" // Retro 16Dec2003
 #include "falcsnd/winampfrontend.h" // Retro 3Jan2004
 #include "mouselook.h" // Retro 18Jan2004
-extern bool g_bPilotEntertainment; // Retro 3Jan2004
+extern bool PilotEntertainment; // Retro 3Jan2004
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 
 
@@ -2518,7 +2518,7 @@ void OTWDriverClass::Enter(void)
         drawSubTitles = false; // Retro 21Dec2003
     }
 
-    if ((g_bPilotEntertainment) && (WinAmpPointer)) // Retro 3Jan2004 (all) - looking for that WinAmpPointer window..
+    if ((PilotEntertainment) && (WinAmpPointer)) // Retro 3Jan2004 (all) - looking for that WinAmpPointer window..
     {
         WinAmpPointer->InitWinAmp();
     }

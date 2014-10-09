@@ -52,7 +52,7 @@ extern void Phone_Connect_CB(long n, short hittype, C_Base *control);
 extern char g_strMasterServerName[0x40];
 // M.N. EnableUplink UI switch
 extern GNETCORELib::IUplinkPtr m_pUplink;
-extern bool g_bEnableUplink;
+extern bool EnableUplink;
 extern int g_nMasterServerPort;
 char strVersion[0x20];
 extern char g_strServerLocation[0x40];
@@ -309,8 +309,8 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
  {
- g_bEnableUplink = !g_bEnableUplink;
- if (g_bEnableUplink) // now we switched from off to on, set up the uplink
+ EnableUplink = !EnableUplink;
+ if (EnableUplink) // now we switched from off to on, set up the uplink
  {
  // Make sure all objects are registered
  ComSup::RegisterServer("GNGameSpy.dll");

@@ -313,10 +313,10 @@ void ICPClass::ZeroButton(int mode)
     }
     else if (IsICPSet(ICPClass::MISC_MODE))
     {
-        extern bool g_bPilotEntertainment; // Retro 3Jan2004
+        extern bool PilotEntertainment; // Retro 3Jan2004
 
         // ORIGINAL STUFF // Retro 3Jan2004
-        if (g_bPilotEntertainment == false)
+        if (PilotEntertainment == false)
         {
             if (!CheckForHARM())
                 return;

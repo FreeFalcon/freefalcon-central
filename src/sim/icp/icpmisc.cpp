@@ -311,12 +311,12 @@ BOOL ICPClass::CheckForHARM(void)
 }*/
 // Retro 3Jan2004 from here...
 #include "falcsnd/winampfrontend.h"
-extern bool g_bPilotEntertainment; // Retro 3Jan2004
+extern bool PilotEntertainment; // Retro 3Jan2004
 
 void ICPClass::ExecWinAmpMode(void)
 {
 
-    if (!g_bPilotEntertainment)
+    if (!PilotEntertainment)
     {
         ShiAssert(false); // we really shouldn´t be here then !
         return;

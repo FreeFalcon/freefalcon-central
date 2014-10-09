@@ -158,7 +158,7 @@ float g_fCloudThicknessFactor = 4000; //JPO
 float g_fdwPortclient = 2937;
 float g_fdwPorthost = 2936;
 
-bool g_bEnableUplink = false;
+bool EnableUplink = false;
 char g_strMasterServerName[0x40];
 int g_nMasterServerPort = 0;
 char g_strServerName[0x40];
@@ -499,7 +499,7 @@ bool g_bUseNewSmoothing = false; // Retro 20Feb2004 - if enabled uses a new smoo
 //  for bank/pitch/yaw/throttle(1+2) yet
 bool g_bDisplayAxisValues = false; // Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
 
-bool g_bPilotEntertainment = false; // Retro 3Jan2004 - enable WinAmpPointer interface
+bool PilotEntertainment = false; // Retro 3Jan2004 - enable WinAmpPointer interface
 int g_nWinAmpInitVolume = 204; // Retro 3Jan2004 - inital playback volume (valid between 0 and 255)
 
 int g_nBWMaxDeltaTime = 1; // true = use maximum value restriction, false = set 0 and return
@@ -756,7 +756,7 @@ static ConfigOption<bool> BoolOpts[] =
     // { "EnableArmingDelay", &g_bArmingDelay }, MI
     // { "EnableHardCoreReal", &g_bHardCoreReal }, MI
     { "CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip },
-    { "EnableUplink", &g_bEnableUplink },
+    { "EnableUplink", &EnableUplink },
     { "EnableColorMfd", &g_bEnableColorMfd },
     { "NewDamageEffects", &g_bNewDamageEffects },
     { "DisableFunkyChicken", &g_bDisableFunkyChicken },
@@ -949,7 +949,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "newAMRAAMdlz", &g_bnewAMRAAMdlz }, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above
     { "EnableDisplacementCam", &g_bEnableDisplacementCam }, // Retro 25Dec2003
     { "AntElevKnobFix", &g_bAntElevKnobFix }, // MD -- 20031231: see above
-    { "PilotEntertainment", &g_bPilotEntertainment },// Retro 3Jan2004
+    { "PilotEntertainment", &PilotEntertainment },// Retro 3Jan2004
     { "RollInertia", &g_bRollInertia }, //TJL 01/06/04 Roll Inertia
     { "ACMIRecordMsgOff", &g_bACMIRecordMsgOff }, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
     { "UseAnalogIdleCutoff", &g_bUseAnalogIdleCutoff }, // MD -- 20040209: see above

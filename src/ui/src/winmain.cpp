@@ -155,9 +155,9 @@ FreeFalconLeakCheck FalconLeakCheck;
 RealWeather* RealWeatherPointer = NULL;
 WinAmpFrontEnd* WinAmpPointer = 0;
 
-extern bool g_bPilotEntertainment;
-extern bool g_bEnumSoftwareDevices;
-extern bool g_bEnableUplink;
+extern bool PilotEntertainment;
+extern bool EnumerateSoftwareDevices;
+extern bool EnableUplink;
 
 extern char g_strMasterServerName[0x40];
 extern char g_strServerName[0x40];
@@ -467,7 +467,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Begin - Uplink stuff
     try
     {
-        if (g_bEnableUplink)
+        if (EnableUplink)
         {
             // Make sure all objects are registered
             ComSup::RegisterServer("GNGameSpy.dll");
@@ -1242,7 +1242,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             // OW
             if (!stricmp(arg, "-enumswdev"))
-                g_bEnumSoftwareDevices = true;
+                EnumerateSoftwareDevices = true;
 
             if (!stricmp(arg, "-cockpitverifier"))
                 EnableCockpitVerifier = true;
@@ -1433,13 +1433,13 @@ void SystemLevelInit()
         OTWDriver.SetHeadTracking(FALSE); // Cobra - Make 3D pit mouselook work when TIR is user-selected "off".
 
     // Retro 3Jan2004 - starting up the WinAmpPointer frontend class, the WinAmpPointer win need not be active at this point
-    if (g_bPilotEntertainment == true)
+    if (PilotEntertainment == true)
     {
         WinAmpPointer = new WinAmpFrontEnd();
 
         if (!WinAmpPointer)
         {
-            g_bPilotEntertainment = false;
+            PilotEntertainment = false;
         }
     }
 

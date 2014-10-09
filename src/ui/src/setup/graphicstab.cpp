@@ -48,9 +48,9 @@ extern bool g_bCheckBltStatusBeforeFlip;
 extern bool g_bVoodoo12Compatible;
 
 #ifdef _DEBUG
-bool g_bEnumSoftwareDevices = true;
+bool EnumerateSoftwareDevices = true;
 #else
-bool g_bEnumSoftwareDevices = false;
+bool EnumerateSoftwareDevices = false;
 #endif
 
 
@@ -1152,7 +1152,7 @@ void BuildVideoCardList(C_ListBox *lbox)
 
     while (buf = FalconDisplay.devmgr.GetDeviceName(Driver, i))
     {
-        if (!g_bEnumSoftwareDevices)
+        if (!EnumerateSoftwareDevices)
         {
             // check for software device
             DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);

@@ -211,7 +211,7 @@ void ICPClass::SetOwnship(void)
 }
 
 #include "falcsnd/winampfrontend.h" // Retro 3Jan2004
-extern bool g_bPilotEntertainment; // Retro 3Jan2004
+extern bool PilotEntertainment; // Retro 3Jan2004
 
 //==================================================//
 // ICPClass::HandleInput
@@ -495,7 +495,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     PNUpdateSTPTMode(mode, 0);
             }
             // Retro 3Jan2004 start
-            else if ((g_bPilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            else if ((PilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == PREV_BUTTON)
                     WinAmpPointer->VolDown();
@@ -525,7 +525,7 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             // Retro 3Jan2004 start
             // Retro from here, kind of a hack having this here..
-            if ((g_bPilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            if ((PilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == UP_MODE)
                     WinAmpPointer->Next();
@@ -963,7 +963,7 @@ void ICPClass::Exec()
                 case ZERO_BUTTON:
                 {
                     // Retro 3Jan2004 start
-                    if (g_bPilotEntertainment == false)
+                    if (PilotEntertainment == false)
                         ExecHARMMode();
                     else
                         ExecWinAmpMode();
