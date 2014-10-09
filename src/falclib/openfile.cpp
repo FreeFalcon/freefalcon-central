@@ -20,7 +20,7 @@ char *InsertMedia[] =
     "Please mount the FreeFalcon media",// undefined
     "Please mount the FreeFalcon media",// English
     "Please mount the FreeFalcon media",// UK
-    "Bitte montieren Sie die FreeFalcon Medien",// German
+    "Bitte mounten sie die FreeFalcon Medien",// German
     "S'il vous plait monter le media FreeFalcon",// French
     "Monte el soporte de FreeFalcon",// Spanish
     "Si prega di montare i media FreeFalcon",// Italian
