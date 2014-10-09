@@ -55,7 +55,7 @@ float AirframeClass::Turbulence(float turb)
     time = TheCampaign.GetMinutesSinceMidnight();
 
     //Determine Weather Condition
-    weather = realWeather->weatherCondition; //Sunny (1), Fair, Poor, Inclement
+    weather = realWeather->WeatherCondition; //Sunny (1), Fair, Poor, Inclement
     wind = realWeather->windSpeed;
     temp = ((WeatherClass*)realWeather)->temperature;
     windHeading = realWeather->windHeading;

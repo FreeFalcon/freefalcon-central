@@ -372,9 +372,9 @@ void CTimeOfDay::UpdateSkyProperties()
     m_StarIntensity += t * (ntod -> StarIntensity - m_StarIntensity);
     TheStar.UpdateStar();
     /*
-     if(realWeather->weatherCondition > FAIR)
+     if(realWeather->WeatherCondition > FAIR)
      {
-     if(realWeather->weatherCondition == INCLEMENT)
+     if(realWeather->WeatherCondition == INCLEMENT)
      {
      BadWeatherLighting.r = max(BadWeatherLighting.r/1.5f,0.01f);
      BadWeatherLighting.g = max(BadWeatherLighting.g/1.5f,0.01f);
@@ -383,7 +383,7 @@ void CTimeOfDay::UpdateSkyProperties()
 
      if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
      {
-     if(realWeather->weatherCondition > POOR)
+     if(realWeather->WeatherCondition > POOR)
       Specular = 0.f;
      else
       Specular *= 0.2f;
@@ -437,7 +437,7 @@ void CTimeOfDay::UpdateSkyProperties()
 
 
 // RED - Tihs function calculates Sky colors based on weather Conditions
-void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
+void CTimeOfDay::UpdateWeatherColors(DWORD WeatherCondition)
 {
     // default values
     StarIntensity = m_StarIntensity;
@@ -447,7 +447,7 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
     Specular = m_Specular;
 
     // Deafule values if nont under/inside an overcast layer
-    if (weatherCondition <= FAIR)
+    if (WeatherCondition <= FAIR)
     {
         SkyColor = m_SkyColor;
         HazeSkyColor = m_HazeSkyColor;
@@ -463,7 +463,7 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
         Diffuse = m_Diffuse / max((2.f * scaleFactor), 1.f);
 
         // Bad weather stuff
-        if (weatherCondition == INCLEMENT)
+        if (WeatherCondition == INCLEMENT)
         {
             BadWeatherLighting.r = max(m_BadWeatherLighting.r / 1.5f, 0.01f);
             BadWeatherLighting.g = max(m_BadWeatherLighting.g / 1.5f, 0.01f);
@@ -479,7 +479,7 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
         if (realWeather->InsideOvercast() || realWeather->UnderOvercast())
         {
 
-            if (realWeather->weatherCondition > POOR) Specular = 0.f;
+            if (realWeather->WeatherCondition > POOR) Specular = 0.f;
             else Specular *= 0.2f;
 
             SkyColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);

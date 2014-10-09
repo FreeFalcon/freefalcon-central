@@ -72,7 +72,7 @@ char *BTP;
 extern char TargetTypeStr[7][15];
 extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-extern int studlyCampaignDude;
+extern int StudlyCampaignDude;
 extern int ShowReal;
 extern HWND mainMenuWnd;
 void ChooseMission(void);
@@ -1837,7 +1837,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     delete flights;
                     squadrons = NULL;
                     flights = NULL;
-                    studlyCampaignDude = 0;
+                    StudlyCampaignDude = 0;
                     EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
                     return (TRUE);
                     break;

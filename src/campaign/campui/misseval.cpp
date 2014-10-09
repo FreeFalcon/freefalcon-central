@@ -197,7 +197,7 @@ extern int testDebrief;
 
 #ifdef DEBUG
 int gPlayerPilotLock = 0;
-extern int doUI;
+extern int DoUI;
 #endif
 
 extern int ConvertTeamToStringIndex(int team, int gender = 0, int usage = 0, int plural = 0);
@@ -365,7 +365,7 @@ void MissionEvaluationClass::CleanupPilotData(void)
     }
 }
 
-extern int doUI;
+extern int DoUI;
 
 void MissionEvaluationClass::PreDogfightEval(void)
 {
@@ -466,7 +466,7 @@ int MissionEvaluationClass::PreMissionEval(Flight flight, uchar aircraft_slot)
 
 #endif
 
-    ShiAssert(doUI || (g_bLogEvents));
+    ShiAssert(DoUI || (g_bLogEvents));
 
     CampEnterCriticalSection();
 

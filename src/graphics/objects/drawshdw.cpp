@@ -95,9 +95,9 @@ void DrawableShadowed::Draw(class RenderOTW *renderer, int LOD)
             if (ShadowAlphaLevel > 1.0f) ShadowAlphaLevel = 1.0f; // Limit Check
 
             // FRB - Almost no shadows when there is no sun (overcast or heavy overcast)
-            if (realWeather->weatherCondition == INCLEMENT)
+            if (realWeather->WeatherCondition == INCLEMENT)
                 ShadowAlphaLevel = 0.1f;
-            else if (realWeather->weatherCondition == POOR)
+            else if (realWeather->WeatherCondition == POOR)
                 ShadowAlphaLevel = 0.3f;
 
             TheStateStack.DrawWarpedObject(&shadowInstance, &rot, &pos, sx, sy, 1.0f, instance.Radius());

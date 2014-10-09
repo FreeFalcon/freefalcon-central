@@ -1556,8 +1556,8 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 
     if (TheCampaign.InMainUI || !((WeatherClass *)realWeather)->lockedCondition)
     {
-        PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-        ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
+        PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
+        ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.WeatherCondition, true);
         ((WeatherClass *)realWeather)->Init(true);
     }
     else if (((WeatherClass *)realWeather)->unlockableCondition == 0)
@@ -1571,7 +1571,7 @@ void RealWeatherCB(long, short hittype, C_Base *control)
             lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
             lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-            lbox->SetValue(realWeather->weatherCondition + 70207);
+            lbox->SetValue(realWeather->WeatherCondition + 70207);
             lbox->Refresh();
 
             ((WeatherClass *)realWeather)->lockedCondition = FALSE;
@@ -1586,7 +1586,7 @@ void RealWeatherCB(long, short hittype, C_Base *control)
         lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
         lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-        lbox->SetValue(realWeather->weatherCondition + 70207);
+        lbox->SetValue(realWeather->WeatherCondition + 70207);
         lbox->Refresh();
 
         ((WeatherClass *)realWeather)->lockedCondition = FALSE;

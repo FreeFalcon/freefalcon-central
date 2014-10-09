@@ -44,7 +44,7 @@ void Drawable3DCloud::Update(Tpoint *worldPos, int txtIndex)
 void Drawable3DCloud::Draw(class RenderOTW *renderer, int)
 {
     // RED - LINEAR FOG - Remove the Clouds under Overcast layer...
-    if (!(realWeather->weatherCondition == FAIR))/* || (realWeather->weatherCondition > FAIR &&
+    if (!(realWeather->WeatherCondition == FAIR))/* || (realWeather->WeatherCondition > FAIR &&
  (-realWeather->viewerZ) > (-realWeather->stratusZ) && (-realWeather->viewerZ) < (-realWeather->stratusZ)+(realWeather->stratusDepth))))*/
     {
         return;

@@ -119,20 +119,20 @@ char FalconZipsTheaterFolder[_MAX_PATH];
 char FalconTacticalReferenceTheaterFolder[_MAX_PATH];
 char FalconSplashTheaterFolder[_MAX_PATH];
 
-int noUIcomms = FALSE;
-int displayCampaign = FALSE;
-int studlyCampaignDude = FALSE;
+int NoUiComms = FALSE;
+int DisplayCampaign = FALSE;
+int StudlyCampaignDude = FALSE;
 int RepairObjective = FALSE;
 int DestroyObjective = FALSE;
 int ClearObjManualFlags = FALSE;
-int doUI = FALSE;
-int wait_for_loaded = TRUE;
-int eyeFlyEnabled = FALSE;
+int DoUI = FALSE;
+int WaitForLoaded = TRUE;
+int EyeFlyEnabled = FALSE;
 int NoRudder = FALSE;
 int DisableSmoothing = FALSE;
-int doNetwork = FALSE; // referred in splash.cpp
+int DoNetwork = FALSE; // referred in splash.cpp
 int NumHats = -1;
-int weatherCondition = SUNNY;
+int WeatherCondition = SUNNY;
 // Theater switching stuff
 int numZips = 0;
 int SimPathHandle = -1;
@@ -678,7 +678,7 @@ void EndUI(void)
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
 
-    doUI = FALSE;
+    DoUI = FALSE;
     TheCampaign.Suspend();
     UI_Cleanup();
     TheCampaign.Resume();
@@ -760,20 +760,20 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 
                 case ID_CAMPAIGN_DISPLAY:
 #ifdef CAMPTOOL
-                    if (!displayCampaign)
+                    if (!DisplayCampaign)
                     {
                         CampMain(hInst, SW_SHOW);
-                        displayCampaign = TRUE;
+                        DisplayCampaign = TRUE;
                     }
                     else
                     {
                         if (hMainWnd)
                             PostMessage(hMainWnd, WM_CLOSE, 0, 0);
 
-                        displayCampaign = FALSE;
+                        DisplayCampaign = FALSE;
                     }
 
-                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_DISPLAY, (displayCampaign ? MF_CHECKED : MF_UNCHECKED));
+                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_DISPLAY, (DisplayCampaign ? MF_CHECKED : MF_UNCHECKED));
 #endif CAMPTOOL
                     break;
 
@@ -925,7 +925,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //    FalconDisplay.displayFullScreen = FALSE;
     //    RepairObjective = 1;
     //    intro_movie = FALSE;
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //    ShiSetAsserts(TRUE);
     //    F4SetAsserts(TRUE);
     //}
@@ -933,7 +933,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //{
     //    InitDebug(DEBUGGER_TEXT_MODE);
     //    auto_start = TRUE;
-    //    wait_for_loaded = FALSE;
+    //    WaitForLoaded = FALSE;
     //    FalconDisplay.displayFullScreen = FALSE;
     //    F4SetAsserts(TRUE);
     //    F4SetHardCrash(TRUE);
@@ -946,13 +946,13 @@ void ParseCommandLine(LPSTR cmdLine)
     //    FalconDisplay.displayFullScreen = FALSE;
     //    RepairObjective = 1;
     //    intro_movie = FALSE;
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //    ShiSetAsserts(TRUE);
     //    F4SetAsserts(TRUE);
     //}
     //else if (i_am("ericg") || i_am("chrisw"))
     //{
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //}
     //else if (i_am("lrosensh"))
     //{
@@ -966,7 +966,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //    InitDebug(DEBUGGER_TEXT_MODE);
     //    gSoundFlags = 0;
     //    FalconDisplay.displayFullScreen = FALSE;
-    //    wait_for_loaded = FALSE;
+    //    WaitForLoaded = FALSE;
     //    auto_start = TRUE;
     //}
     //else
@@ -1099,8 +1099,8 @@ void ParseCommandLine(LPSTR cmdLine)
             if (_strnicmp(arg, "-nomovie", 8) == 0)
                 intro_movie = FALSE;
 
-            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
-                noUIcomms = TRUE;
+            if (_strnicmp(arg, "-NoUiComms", 8) == 0)
+                NoUiComms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
@@ -1109,7 +1109,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 intro_movie = TRUE;
 
             if (_strnicmp(arg, "-noloader", 9) == 0)
-                wait_for_loaded = FALSE;
+                WaitForLoaded = FALSE;
 
 #ifdef DEBUG
 
@@ -1206,7 +1206,7 @@ void ParseCommandLine(LPSTR cmdLine)
             else F4CommsMTU = 500; // Unz Ugly...but it works
 
             if (!stricmp(arg, "-ef"))
-                eyeFlyEnabled = 1 - eyeFlyEnabled;
+                EyeFlyEnabled = 1 - EyeFlyEnabled;
 
             if (!stricmp(arg, "-ip"))
             {
@@ -1585,7 +1585,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
-            if (doUI && FalconDisplay.displayFullScreen)
+            if (DoUI && FalconDisplay.displayFullScreen)
             {
                 RECT rect;
 
@@ -1641,7 +1641,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 #ifdef DEBUG
             gPlayerPilotLock = 0;
 #endif
-            doUI = TRUE;
+            DoUI = TRUE;
 
             UI_Startup();
             TheCampaign.Resume();
@@ -1840,7 +1840,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_ONLINE_STATUS:
-            if (!doUI)
+            if (!DoUI)
                 break;
 
             if (!gMainHandler)
@@ -2416,7 +2416,7 @@ void DisableCampaignMenus(void)
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_FLYMISSION, MF_GRAYED);
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SELECTSQUADRON, MF_GRAYED);
 
-    if (doNetwork)
+    if (DoNetwork)
         EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_JOIN, MF_ENABLED);
 
     CheckMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_CHECKED);

@@ -33,7 +33,7 @@
 
 void *map_file(char *filename, long bytestomap = 0);
 
-extern int noUIcomms;
+extern int NoUiComms;
 
 extern VU_TIME vuxGameTime;
 extern void set_spinner3(int);
@@ -198,7 +198,7 @@ int FilterMessage(CONVERSATION *node)
 
     if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign())
     {
-        if (noUIcomms || FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
+        if (NoUiComms || FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
             return FALSE;
 
         //else

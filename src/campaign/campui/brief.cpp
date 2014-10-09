@@ -3289,13 +3289,13 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             {
                 char szTemp[256];
 
-                if (realWeather->weatherCondition == SUNNY)
+                if (realWeather->WeatherCondition == SUNNY)
                     sprintf(szTemp, "Sunny ");
-                else if (realWeather->weatherCondition == FAIR)
+                else if (realWeather->WeatherCondition == FAIR)
                     sprintf(szTemp, "Fair ");
-                else if (realWeather->weatherCondition == POOR)
+                else if (realWeather->WeatherCondition == POOR)
                     sprintf(szTemp, "Poor ");
-                else if (realWeather->weatherCondition == INCLEMENT)
+                else if (realWeather->WeatherCondition == INCLEMENT)
                     sprintf(szTemp, "Inclement ");
 
                 _tcscat(current_line, szTemp);

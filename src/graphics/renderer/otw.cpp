@@ -411,12 +411,12 @@ void RenderOTW::SetTerrainTextureLevel(int level)
 
     // Rearrange the fog settings
     //JAM 13Nov03
-    if (realWeather->weatherCondition == INCLEMENT)
+    if (realWeather->WeatherCondition == INCLEMENT)
     {
         haze_start = far_clip * .05f;
         haze_depth = far_clip * .3f;
     }
-    else if (realWeather->weatherCondition == POOR)
+    else if (realWeather->WeatherCondition == POOR)
     {
         haze_start = far_clip * .1f;
         haze_depth = far_clip * .6f;
@@ -1097,19 +1097,19 @@ void RenderOTW::DrawScene(const Tpoint *offset, const Trotation *orientation)
      case 0 :
      case 1 : {DWORD DrawOrder[]={LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP};
      // RED - Weather Stuff - if weatehr > FAIR, do not draw some layers, they are not visible
-     //if(realWeather->weatherCondition > FAIR) DrawOrder[0] = DrawOrder[1] = DrawOrder[2] = LAYER_NODRAW;
+     //if(realWeather->WeatherCondition > FAIR) DrawOrder[0] = DrawOrder[1] = DrawOrder[2] = LAYER_NODRAW;
      TheDXEngine.DX2D_SetDrawOrder(DrawOrder);}
      break;
 
      case 2 : {DWORD DrawOrder[]={LAYER_ROOF, LAYER_STRATUS2, LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP};
      // RED - Weather Stuff - if weatehr > FAIR, do not draw some layers, they are not visible
-     //if(realWeather->weatherCondition > FAIR) DrawOrder[2] = LAYER_NODRAW;
+     //if(realWeather->WeatherCondition > FAIR) DrawOrder[2] = LAYER_NODRAW;
      TheDXEngine.DX2D_SetDrawOrder(DrawOrder);}
      break;
      case 3 :
      case 4 : {DWORD DrawOrder[]={LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP};
      // RED - Weather Stuff - if weatehr > FAIR, do not draw some layers, they are not visible
-     //if(realWeather->weatherCondition > FAIR) DrawOrder[0] = LAYER_NODRAW;
+     //if(realWeather->WeatherCondition > FAIR) DrawOrder[0] = LAYER_NODRAW;
      TheDXEngine.DX2D_SetDrawOrder(DrawOrder);}
      break;
 
@@ -1405,7 +1405,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
 
         // COBRA - RED - Only this is good...just do nothing is false
         //JAM 13Nov03
-        if ((realWeather->weatherCondition <= FAIR) || (viewpoint->Z() > realWeather->MidOvercast))
+        if ((realWeather->WeatherCondition <= FAIR) || (viewpoint->Z() > realWeather->MidOvercast))
             // If we're above the overcast layer, ground objects are not visible.
             objectList->DrawBeyond(LEVEL_POST_TO_WORLD(span->ring, span->LOD), span->LOD, this);
 
@@ -1422,7 +1422,7 @@ void RenderOTW::DrawGroundAndObjects(ObjectDisplayList *objectList)
     // COBRA - RED - Seems completely wrong condition, completely wrong way to do it to me
     // these condition ( corrected ) should be placed above
     //JAM 13Nov03
-    /* if(!(realWeather->weatherCondition > FAIR && (-viewpoint->Z()) > (-realWeather->stratusZ)))
+    /* if(!(realWeather->WeatherCondition > FAIR && (-viewpoint->Z()) > (-realWeather->stratusZ)))
      {
      // If we're above the overcast layer, ground objects are not visible.
      objectList->DrawBeyond(0.f,-1,this);
@@ -1701,7 +1701,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         vert->b = 0.f;
         vert->g = NVG_LIGHT_LEVEL;
 
-        if (realWeather->weatherCondition > FAIR)
+        if (realWeather->WeatherCondition > FAIR)
         {
             // if we are lower than overcast layer upper limit, enable Fog...
             if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) TheDXEngine.LinearFog(true);
@@ -1797,7 +1797,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     float g = TheMap.ColorTable[post->colorIndex].g * scale + ground_color.g * inv;
     float b = TheMap.ColorTable[post->colorIndex].b * scale + ground_color.b * inv;
 
-    if (realWeather->weatherCondition > FAIR)
+    if (realWeather->WeatherCondition > FAIR)
     {
         // Setup ground color
         r = haze_ground_color.r;
@@ -1876,7 +1876,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             b *= iTot;
         }
 
-        if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+        if (PlayerOptions.ShadowsOn() && realWeather->WeatherCondition == FAIR)
         {
             for (row = realWeather->shadowCell; row < realWeather->numCells - realWeather->shadowCell; row++)
             {
@@ -1902,7 +1902,7 @@ void RenderOTW::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             }
         }
 
-        /*else if(realWeather->weatherCondition > FAIR)
+        /*else if(realWeather->WeatherCondition > FAIR)
         {
          if((-viewpoint->Z()) > (-realWeather->stratusZ))
          {

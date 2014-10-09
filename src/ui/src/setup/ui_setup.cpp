@@ -628,7 +628,7 @@ void STPSetupControls(void)
             lbox->AddItem(70209, C_TYPE_ITEM, "Fair");
             lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
             lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
-            lbox->SetValue(PlayerOptions.weatherCondition + 70207);
+            lbox->SetValue(PlayerOptions.WeatherCondition + 70207);
             lbox->Refresh();
         }
         else if (((WeatherClass *)realWeather)->lockedCondition)
@@ -1424,8 +1424,8 @@ static void SaveValues(void)
 
         if (lbox != NULL)
         {
-            PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-            ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
+            PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
+            ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.WeatherCondition, true);
             ((WeatherClass *)realWeather)->Init(true);
         }
     }

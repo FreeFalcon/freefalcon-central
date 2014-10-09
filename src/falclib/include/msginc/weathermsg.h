@@ -28,7 +28,7 @@ public:
 
     struct DATA_BLOCK
     {
-        int weatherCondition;
+        int WeatherCondition;
         ulong lastCheck;
         float temperature;
         float windSpeed;

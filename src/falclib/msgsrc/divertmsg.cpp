@@ -36,7 +36,7 @@
 // ==============================
 
 VU_ID gInterceptersId;
-extern int doUI;
+extern int DoUI;
 
 // ==============================
 // Statics
@@ -232,7 +232,7 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
     // Generate a scramble message dialog box if this is an intercept divert on one of the
     // player squadron's alert missions.
-    if (doUI && oldmission == AMIS_ALERT && fdm->dataBlock.mission == AMIS_INTERCEPT && flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+    if (DoUI && oldmission == AMIS_ALERT && fdm->dataBlock.mission == AMIS_INTERCEPT && flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
     {
         gInterceptersId = flight->Id();
         PostMessage(FalconDisplay.appWin, FM_ATTACK_WARNING, 0, 0);

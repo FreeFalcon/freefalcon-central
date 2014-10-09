@@ -38,7 +38,7 @@
 short gDefaultAWACSCallSign = 45;
 short gDefaultAWACSFlightNum = 1;
 
-extern int noUIcomms;
+extern int NoUiComms;
 extern int g_nChatterInterval; // FRB message interval time
 
 #ifdef _DEBUG
@@ -239,7 +239,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         }
     }
 
-    if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign() && !noUIcomms)
+    if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign() && !NoUiComms)
         us = FalconLocalSession->GetPlayerSquadron();
 
 #ifdef _DEBUG
@@ -251,7 +251,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, !us);
 
     if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) ||
-        (SimDriver.RunningCampaign() && !noUIcomms) ||
+        (SimDriver.RunningCampaign() && !NoUiComms) ||
         (to && to == us))
     {
         if (!us)
