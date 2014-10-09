@@ -79,7 +79,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         {
             // Ran off the end of the list
             char message[80];
-            sprintf(message, "Requested unavilable resolution %0dx%0dx%0d", width, height, depth);
+            sprintf(message, "Requested unavailable resolution %0dx%0dx%0d", width, height, depth);
             ShiError(message);
         }
     }
