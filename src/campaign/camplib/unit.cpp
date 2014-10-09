@@ -187,7 +187,7 @@ _TCHAR* GetSTypeName(int domain, int type, int stype, _TCHAR buffer[]);
 extern void RedrawCell(MapData md, GridIndex x, GridIndex y);
 extern void RedrawUnit(Unit u);
 extern int DisplayOk(Unit u);
-extern int displayCampaign;
+extern int DisplayCampaign;
 #endif
 
 //#ifdef DEBUG
@@ -2447,7 +2447,7 @@ int UnitClass::ChangeUnitLocation(CampaignHeading h)
 
         // If we get here, it's because we've moved..
 #ifdef CAMPTOOL
-        else if (DisplayOk(this) && displayCampaign)
+        else if (DisplayOk(this) && DisplayCampaign)
         {
             RedrawCell(NULL, x, y);
             RedrawUnit(this);

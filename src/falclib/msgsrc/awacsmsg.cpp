@@ -37,7 +37,7 @@ typedef std::set<FlightClass *> stdFlightSet;
 #include "falclist.h"
 
 extern void AircraftLaunch(Flight f);
-extern int doUI;
+extern int DoUI;
 int AWACSon = TRUE;
 
 extern VU_TIME vuxGameTime;

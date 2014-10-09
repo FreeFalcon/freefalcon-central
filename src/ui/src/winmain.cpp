@@ -1,15 +1,15 @@
 // dannycoh - reordered all #includes.
 // system includes
-#include <atlbase.h>
-#include <atlwin.h>
-#include <direct.h>
-#include <time.h>
+#include <atlbase.h> // needed by atlwin.h
+#include <atlwin.h> // needed for GNET stuff
+#include <direct.h> // needed for _mkdir and _chdir
+#include <time.h> // needed for time
 
 // sim includes
 #include "ascii.h"
 #include "CampJoin.h"
 #include "CampStr.h"
-#include "dialog.h" // Campaign tool includes
+#include "dialog.h" // Campaign tool include
 #include "dispcfg.h"
 #include "DispOpts.h"
 #include "ehandler.h"
@@ -23,12 +23,11 @@
 #include "simDrive.h"
 #include "simio.h"
 #include "Statistics.h"
-#include "stdhdr.h"
 #include "Theaterdef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
 #include "TrackIR.h"
-#include "uicomms.h" // UI Includes
+#include "uicomms.h" // UI Include
 #include "userids.h"
 #include "Weather.h"
 #include "codelib/resources/reslib/src/resmgr.h"
@@ -55,7 +54,6 @@
 //#include "f4comms.h"
 //#include "FalcLib.h"
 //#include "falcmesg.h"
-//#include "FalcSnd/psound.h"
 //#include "falcuser.h"
 //#include "feature.h"
 //#include "find.h"
@@ -71,9 +69,11 @@
 //#include "simobj.h"
 //#include "sinput.h"
 //#include "sms.h"
+//#include "stdhdr.h"
 //#include "token.h" // default value Unz
 //#include "ui_ia.h"
 //#include "VRInput.h"
+//#include "FalcSnd/psound.h"
 //#include "Graphics/Include/imagebuf.h"
 //#include "Graphics/Include/texbank.h"
 
@@ -82,43 +82,43 @@
 //#include "amdlib.h"
 //}
 
-#pragma warning(disable:4192)
+//#pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"
 //#import "gnet\bin\shared.tlb" named_guids
-#pragma warning(default:4192)
+//#pragma warning(default:4192)
 
 // GLOBAL VARIABLES
-bool g_bEnableCockpitVerifier = false;
-bool g_writeSndTbl = false;
-bool g_writeMissionTbl = false;
-//bool g_bHas3DNow = false;
+bool EnableCockpitVerifier = false;
+bool WriteSoundTable = false;
+bool WriteMissionTable = false;
+//bool Has3dNow = false;
 BOOL VersionInfo = FALSE;
-char FalconMovieDirectory[_MAX_PATH];
-char FalconMovieMode[_MAX_PATH];
-char FalconUIArtDirectory[_MAX_PATH];
-char FalconUIArtThrDirectory[_MAX_PATH];
-char FalconUISoundDirectory[_MAX_PATH];
-char FalconSoundThrDirectory[_MAX_PATH];
+char MovieFolder[_MAX_PATH];
+char MovieMode[_MAX_PATH];
+char UiArtFolder[_MAX_PATH];
+char UiArtTheaterFolder[_MAX_PATH];
+char UiSoundFolder[_MAX_PATH];
+char SoundTheaterFolder[_MAX_PATH];
 // Theater switching stuff
-char FalconCockpitThrDirectory[_MAX_PATH];
-char FalconZipsThrDirectory[_MAX_PATH];
-char FalconTacrefThrDirectory[_MAX_PATH];
-char FalconSplashThrDirectory[_MAX_PATH];
-//char top_space[] =    "                                                                               ";
-//char program_name[] = "    ****    FreeFalcon 7.0    ****    ";
-//char legal_crap[] =   "    ****    (c)2014 The FreeFalcon Community.    ****    ";
-//char bottom_space[] = "                                                                               ";
+char CockpitTheaterFolder[_MAX_PATH];
+char ZipsTheaterFolder[_MAX_PATH];
+char TacticalReferenceTheaterFolder[_MAX_PATH];
+char SplashTheaterFolder[_MAX_PATH];
+//char TopSpace[] =    "                                                                               ";
+//char ProgramName[] = "    ****    FreeFalcon 7.0    ****    ";
+//char LegalCrap[] =   "    ****    (c)2014 The FreeFalcon Community.    ****    ";
+//char BottomSpace[] = "                                                                               ";
 int ShowVersion = 0; //used to display version number in game (not part of version system)
-int noUIcomms = FALSE;
-int displayCampaign = FALSE;
-int studlyCampaignDude = FALSE;
+int NoUiComms = FALSE;
+int DisplayCampaign = FALSE;
+//int StudlyCampaignDude = FALSE; // dannycoh - never used.
 int RepairObjective = FALSE;
 int DestroyObjective = FALSE;
 int ClearObjManualFlags = FALSE;
-int doUI = FALSE;
-int wait_for_loaded = TRUE;
-int eyeFlyEnabled = FALSE;
-int weatherCondition = SUNNY;
+int DoUI = FALSE;
+int WaitForLoaded = TRUE;
+int EyeFlyEnabled = FALSE;
+int WeatherCondition = SUNNY;
 int NoRudder = FALSE;
 int DisableSmoothing = FALSE;
 int NumHats = -1;
@@ -579,10 +579,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     mainAppWnd = FalconDisplay.appWin;
 
-    if (g_writeSndTbl)
+    if (WriteSoundTable)
         SaveSFXTable();
 
-    if (g_writeMissionTbl)
+    if (WriteMissionTable)
         WriteMissionData();
 
     if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
@@ -643,7 +643,7 @@ void EndUI(void)
     ShiAssert(TeamInfo[1] == NULL || TeamInfo[1]->cteam != 0xFC);
     ShiAssert(TeamInfo[2] == NULL || TeamInfo[2]->cteam != 0xFC);
 
-    doUI = FALSE;
+    DoUI = FALSE;
     TheCampaign.Suspend();
     UI_Cleanup();
     TheCampaign.Resume();
@@ -725,20 +725,20 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 
                 case ID_CAMPAIGN_DISPLAY:
 #ifdef CAMPTOOL
-                    if (!displayCampaign)
+                    if (!DisplayCampaign)
                     {
                         CampMain(hInst, SW_SHOW);
-                        displayCampaign = TRUE;
+                        DisplayCampaign = TRUE;
                     }
                     else
                     {
                         if (hMainWnd)
                             PostMessage(hMainWnd, WM_CLOSE, 0, 0);
 
-                        displayCampaign = FALSE;
+                        DisplayCampaign = FALSE;
                     }
 
-                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_DISPLAY, (displayCampaign ? MF_CHECKED : MF_UNCHECKED));
+                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_DISPLAY, (DisplayCampaign ? MF_CHECKED : MF_UNCHECKED));
 #endif CAMPTOOL
                     break;
 
@@ -892,7 +892,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //    FalconDisplay.displayFullScreen = FALSE;
     //    RepairObjective = 1;
     //    intro_movie = FALSE;
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //    ShiSetAsserts(TRUE);
     //    F4SetAsserts(TRUE);
     //}
@@ -900,7 +900,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //{
     //    InitDebug(DEBUGGER_TEXT_MODE);
     //    auto_start = TRUE;
-    //    wait_for_loaded = FALSE;
+    //    WaitForLoaded = FALSE;
     //    FalconDisplay.displayFullScreen = FALSE;
     //    F4SetAsserts(TRUE);
     //    F4SetHardCrash(TRUE);
@@ -913,13 +913,13 @@ void ParseCommandLine(LPSTR cmdLine)
     //    FalconDisplay.displayFullScreen = FALSE;
     //    RepairObjective = 1;
     //    intro_movie = FALSE;
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //    ShiSetAsserts(TRUE);
     //    F4SetAsserts(TRUE);
     //}
     //else if (i_am("ericg") || i_am("chrisw"))
     //{
-    //    eyeFlyEnabled = TRUE;
+    //    EyeFlyEnabled = TRUE;
     //}
     //else if (i_am("lrosensh"))
     //{
@@ -933,7 +933,7 @@ void ParseCommandLine(LPSTR cmdLine)
     //    InitDebug(DEBUGGER_TEXT_MODE);
     //    gSoundFlags = 0;
     //    FalconDisplay.displayFullScreen = FALSE;
-    //    wait_for_loaded = FALSE;
+    //    WaitForLoaded = FALSE;
     //    auto_start = TRUE;
     //}
     //else
@@ -1066,8 +1066,8 @@ void ParseCommandLine(LPSTR cmdLine)
             if (_strnicmp(arg, "-nomovie", 8) == 0)
                 intro_movie = FALSE;
 
-            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
-                noUIcomms = TRUE;
+            if (_strnicmp(arg, "-NoUiComms", 8) == 0)
+                NoUiComms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
@@ -1076,7 +1076,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 intro_movie = TRUE;
 
             if (_strnicmp(arg, "-noloader", 9) == 0)
-                wait_for_loaded = FALSE;
+                WaitForLoaded = FALSE;
 
 #ifdef DEBUG
 
@@ -1173,7 +1173,7 @@ void ParseCommandLine(LPSTR cmdLine)
             else F4CommsMTU = 500; // Unz Ugly...but it works
 
             if (!stricmp(arg, "-ef"))
-                eyeFlyEnabled = 1 - eyeFlyEnabled;
+                EyeFlyEnabled = 1 - EyeFlyEnabled;
 
             if (!stricmp(arg, "-ip"))
             {
@@ -1212,13 +1212,13 @@ void ParseCommandLine(LPSTR cmdLine)
                 g_bEnumSoftwareDevices = true;
 
             if (!stricmp(arg, "-cockpitverifier"))
-                g_bEnableCockpitVerifier = true;
+                EnableCockpitVerifier = true;
 
             if (!stricmp(arg, "-writesndtbl"))
-                g_writeSndTbl = true;
+                WriteSoundTable = true;
 
             if (!stricmp(arg, "-writemissiontbl"))
-                g_writeMissionTbl = true;
+                WriteMissionTable = true;
 
         }
         while ((arg = strtok(NULL, " ")) != NULL);
@@ -1242,33 +1242,33 @@ void ParseCommandLine(LPSTR cmdLine)
     strcpy(Falcon3DDataDir, FalconObjectDataDir);
     size = sizeof(FalconMiscTexDataDir);
 
-    size = sizeof(FalconMovieMode);
-    retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)FalconMovieMode, &size);
+    size = sizeof(MovieMode);
+    retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)MovieMode, &size);
 
     if (retval != ERROR_SUCCESS)
-        strcpy(FalconMovieMode, "Hurry");
+        strcpy(MovieMode, "Hurry");
     else if (size <= 1)
-        strcpy(FalconMovieMode, "Hurry");
+        strcpy(MovieMode, "Hurry");
 
-    size = sizeof(FalconUIArtDirectory);
-    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUIArtDirectory, &size);
-
-    if (retval != ERROR_SUCCESS)
-    {
-        strcpy(FalconUIArtDirectory, FalconDataDirectory);
-        strcpy(FalconUIArtThrDirectory, FalconDataDirectory);
-    }
-
-    size = sizeof(FalconUISoundDirectory);
-    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUISoundDirectory, &size);
+    size = sizeof(UiArtFolder);
+    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)UiArtFolder, &size);
 
     if (retval != ERROR_SUCCESS)
     {
-        strcpy(FalconUISoundDirectory, FalconDataDirectory);
+        strcpy(UiArtFolder, FalconDataDirectory);
+        strcpy(UiArtTheaterFolder, FalconDataDirectory);
     }
 
-    strcpy(FalconSoundThrDirectory, FalconDataDirectory);
-    strcat(FalconSoundThrDirectory, "\\sounds");
+    size = sizeof(UiSoundFolder);
+    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)UiSoundFolder, &size);
+
+    if (retval != ERROR_SUCCESS)
+    {
+        strcpy(UiSoundFolder, FalconDataDirectory);
+    }
+
+    strcpy(SoundTheaterFolder, FalconDataDirectory);
+    strcat(SoundTheaterFolder, "\\sounds");
     retval = RegCloseKey(theKey);
 }
 
@@ -1552,7 +1552,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // until then UI is only thing that can handle surface lost
         case WM_ACTIVATEAPP:
         case WM_ACTIVATE:
-            if (doUI && FalconDisplay.displayFullScreen)
+            if (DoUI && FalconDisplay.displayFullScreen)
             {
                 RECT rect;
 
@@ -1608,7 +1608,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 #ifdef DEBUG
             gPlayerPilotLock = 0;
 #endif
-            doUI = TRUE;
+            DoUI = TRUE;
 
             UI_Startup();
             TheCampaign.Resume();
@@ -1807,7 +1807,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_ONLINE_STATUS:
-            if (!doUI)
+            if (!DoUI)
                 break;
 
             if (!gMainHandler)
@@ -2108,7 +2108,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             // RV - Biker - Add theater switching for into movie
             char tmpPath[MAX_PATH];
-            sprintf(tmpPath, "%s\\intro.avi", FalconMovieDirectory);
+            sprintf(tmpPath, "%s\\intro.avi", MovieFolder);
             PlayMovie(tmpPath, -1, -1, 0, 0, FalconDisplay.GetImageBuffer()->frontSurface());
             FalconDisplay.LeaveMode();
             break;
@@ -2234,7 +2234,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     hwnd = FalconDisplay.appWin;
     // RV - Biker - Path is in filename already
     sprintf(movieFile, "%s", filename);
-    //sprintf(movieFile, "%s\\%s", FalconMovieDirectory, filename);
+    //sprintf(movieFile, "%s\\%s", MovieFolder, filename);
 
     if (left == -1)
     {
@@ -2247,7 +2247,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
         top = theRect.top;
         mode = MOVIE_MODE_INTERLACE;
 
-        if (!stricmp(FalconMovieMode, "Hurry"))
+        if (!stricmp(MovieMode, "Hurry"))
         {
             mode |= MOVIE_MODE_HURRY;
         }

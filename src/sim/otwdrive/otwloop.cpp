@@ -94,7 +94,7 @@ int tactical_is_training(void);
 #define SCOREPOINT_X (0.9f)
 #define SCORE_Y      (0.8f)
 
-extern int weatherCondition; //JAM 16Nov03
+extern int WeatherCondition; //JAM 16Nov03
 extern long mHelmetIsUR; // hack for UR Helmet detected
 extern bool g_bLookCloserFix;
 extern bool g_bLensFlare; //THW 2003-11-10 Toggle Lens Flare
@@ -2764,7 +2764,7 @@ void OTWDriverClass::RenderFrame()
     }
 
     //JAM 18Nov03
-    if (weatherCondition == INCLEMENT && cameraPos.z > realWeather->stratusZ)
+    if (WeatherCondition == INCLEMENT && cameraPos.z > realWeather->stratusZ)
     {
         if (DisplayInCockpit())
         {

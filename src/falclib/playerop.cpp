@@ -20,7 +20,7 @@
 #include "Campaign/include/Cmpclass.h"
 
 // OW
-extern bool g_bHas3DNow;
+//extern bool Has3dNow; // dannycoh - not used anymore
 extern bool g_bRealisticAvionics; // M.N.
 //extern bool g_bClickablePitModeDefault; //Wombat778
 
@@ -82,7 +82,7 @@ void PlayerOptionsClass::Initialize(void)
     PlayerBubble = 1.f; // .5 - 2 (ratio by which to multiply player bubble size)
 
     //JAM 19Nov03
-    weatherCondition = 1;
+    WeatherCondition = 1;
     //THW 2004-01-17
     Season = 1; //Summer
 
@@ -227,7 +227,7 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     //JAM 18Nov03
     if (TheCampaign.InMainUI)
     {
-        ((WeatherClass *)realWeather)->UpdateCondition(weatherCondition, true);
+        ((WeatherClass *)realWeather)->UpdateCondition(WeatherCondition, true);
         ((WeatherClass *)realWeather)->Init(true);
     }
 

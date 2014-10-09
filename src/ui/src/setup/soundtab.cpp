@@ -18,7 +18,7 @@
 extern C_Handler *gMainHandler;
 extern C_Music *gMusic;
 extern VoiceManager *VM;
-extern int noUIcomms;
+extern int NoUiComms;
 void PlayRandomMessage(int channel);
 
 #define RESCALE(in,inmin,inmax,outmin,outmax) (int)( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
@@ -342,12 +342,12 @@ void ToggleUICommsCB(long, short hittype, C_Base *control)
     if (((C_Button *)control)->GetState())
     {
         PlayerOptions.UIComms = true;
-        noUIcomms = false;
+        NoUiComms = false;
     }
     else
     {
         PlayerOptions.UIComms = false;
-        noUIcomms = true;
+        NoUiComms = true;
     }
 }
 

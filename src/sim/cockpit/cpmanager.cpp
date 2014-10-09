@@ -59,7 +59,7 @@
 using namespace std;
 
 // argh globals
-extern bool g_bEnableCockpitVerifier;
+extern bool EnableCockpitVerifier;
 extern bool g_bRealisticAvinoics;
 extern bool g_bStartIn3Dpit;  // Cobra
 extern bool g_bCockpitAutoScale; //Wombat778 10-24-2003
@@ -70,7 +70,7 @@ extern bool g_bResizeUsesResMgr; //Wombat778 4-14-04
 extern bool g_bUse_DX_Engine; // COBRA - RED
 extern float g_fHUDonlySize;
 // RV - Biker - We need this for theater switching
-extern char FalconCockpitThrDirectory[];
+extern char CockpitTheaterFolder[];
 
 //Cobra TJL 11/08/04
 //char cockpitFolder[50];//Cobra
@@ -600,7 +600,7 @@ CockpitManager::CockpitManager(
 
     mpCockpitCritSec = F4CreateCriticalSection("mpCockpitCritSec");
 
-    if (g_bEnableCockpitVerifier)
+    if (EnableCockpitVerifier)
     {
         if (mSurfaceTally != mNumSurfaces ||
             mObjectTally != mNumObjects ||
@@ -5980,7 +5980,7 @@ int FindCockpit(
     // FO! sfr: plane number is no more
     // try plane number
     // FRB - Make cockpits switchable with theater
-    sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+    sprintf(cockpitFolder, "%s", CockpitTheaterFolder);
     sprintf(strCPFile, "%s\\%d\\%s", cockpitFolder, MapVisId(eCPVisType), pCPFile);
 
     if (FileExists(strCPFile))
@@ -5993,7 +5993,7 @@ int FindCockpit(
     {
         std::string name = RemoveInvalidChars(string(eCPName, 15));
         // RV - Biker - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", CockpitTheaterFolder);
         sprintf(strCPFile, "%s\\%s\\%s", cockpitFolder, name.c_str(), pCPFile);
 
         if (FileExists(strCPFile))
@@ -6007,7 +6007,7 @@ int FindCockpit(
     {
         std::string nameNCTR = RemoveInvalidChars(string(eCPNameNCTR, 5));
         // RV - Biker - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", CockpitTheaterFolder);
         sprintf(strCPFile, "%s\\%s\\%s", cockpitFolder, nameNCTR.c_str(), pCPFile);
 
         if (FileExists(strCPFile))
@@ -6020,7 +6020,7 @@ int FindCockpit(
     if (fallback)
     {
         // FRB - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", CockpitTheaterFolder);
         sprintf(strCPFile, "%s\\%s", cockpitFolder, pCPFile);
 
         if (FileExists(strCPFile))

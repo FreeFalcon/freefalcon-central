@@ -40,9 +40,9 @@ void Drawable2DCloud::Update(Tpoint *worldPos, int txtIndex)
 {
     memcpy(&position, worldPos, sizeof(Tpoint));
 
-    if (realWeather->weatherCondition == SUNNY)
+    if (realWeather->WeatherCondition == SUNNY)
         cloudTexture = realWeather->CirrusCumTextures;
-    else if (realWeather->weatherCondition == FAIR)
+    else if (realWeather->WeatherCondition == FAIR)
         cloudTexture = realWeather->CirrusCumTextures;
     else
         cloudTexture = realWeather->overcastTexture;
@@ -57,12 +57,12 @@ void Drawable2DCloud::Draw(class RenderOTW *renderer, int)
     float minFog, cloudColor;
     ThreeDVertex v0, v1, v2, v3;
 
-    if (realWeather->weatherCondition < POOR)
+    if (realWeather->WeatherCondition < POOR)
     {
         minFog = .2f;
         cloudColor = 1.f;
     }
-    else if (realWeather->weatherCondition == POOR)
+    else if (realWeather->WeatherCondition == POOR)
     {
         minFog = .8f;
         cloudColor = .8f;

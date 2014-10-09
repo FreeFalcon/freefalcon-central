@@ -33,13 +33,13 @@
 
 void *map_file(char *filename, long bytestomap = 0);
 
-extern int noUIcomms;
+extern int NoUiComms;
 
 extern VU_TIME vuxGameTime;
 extern void set_spinner3(int);
 VU_ID gVmPlayVU_ID;
 
-extern char FalconSoundThrDirectory [];
+extern char SoundTheaterFolder [];
 extern int g_nSoundSwitchFix;
 
 #ifdef USE_SH_POOLS
@@ -144,7 +144,7 @@ int VoiceManager::VoiceOpen(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\falcon.tlk", FalconSoundThrDirectory);
+    sprintf(filename, "%s\\falcon.tlk", SoundTheaterFolder);
 #if 0
     voiceMapPtr = (char *)map_file(filename);
 #endif
@@ -198,7 +198,7 @@ int FilterMessage(CONVERSATION *node)
 
     if (FalconLocalSession->GetFlyState() != FLYSTATE_FLYING && SimDriver.RunningCampaign())
     {
-        if (noUIcomms || FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
+        if (NoUiComms || FalconLocalSession->GetFlyState() != FLYSTATE_IN_UI)
             return FALSE;
 
         //else

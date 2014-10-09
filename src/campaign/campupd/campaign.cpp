@@ -150,7 +150,7 @@ volatile int gLeftToDeaggregate = 0;
 // Externals
 // =========================
 
-extern int doUI;
+extern int DoUI;
 
 extern C_Handler *gMainHandler;
 
@@ -2714,7 +2714,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             startup = 0;
         }
 
-        if (!doUI)
+        if (!DoUI)
         {
             gCampTime = GetTickCount() - sleepTic;
             gAveCampTime = (gAveCampTime * 7 + gCampTime) / 8;
@@ -2912,7 +2912,7 @@ void DoCampaignLoop(int startup)
                 // calculate statistics
                 UpdateTeamStatistics();
 
-                if (doUI)
+                if (DoUI)
                     SendMessage(FalconDisplay.appWin, FM_AUTOSAVE_CAMPAIGN, 0, game_Campaign);
 
                 break;

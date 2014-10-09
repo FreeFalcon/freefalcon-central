@@ -139,7 +139,7 @@ extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 VU_ID_NUMBER RenameTable[65536] = { 0 };
 int gRenameIds = 0;
 
-extern int displayCampaign;
+extern int DisplayCampaign;
 extern int maxSearch;
 
 extern void ShowMissionLists(void);
@@ -3266,7 +3266,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                 ShowCodes = FALSE;
             }
 
-            displayCampaign = FALSE;
+            DisplayCampaign = FALSE;
             hMainWnd = NULL;
             retval = 0;
             break;

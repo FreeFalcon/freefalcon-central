@@ -608,7 +608,7 @@ int GroundClass::Exec(void)
         {
             if (isShip)
             {
-                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK || realWeather->weatherCondition == INCLEMENT) ? true : false;
+                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK || realWeather->WeatherCondition == INCLEMENT) ? true : false;
 
                 if (pctStrength > 0.50f)
                 {
@@ -1147,7 +1147,7 @@ int GroundClass::Exec(void)
                 vec.z = -20.0f;
 
                 //JAM 24Oct03 - No dust trails when it's raining.
-                if (realWeather->weatherCondition < INCLEMENT)
+                if (realWeather->WeatherCondition < INCLEMENT)
                 {
                     /*
                     OTWDriver.AddSfxRequest(

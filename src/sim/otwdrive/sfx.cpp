@@ -207,7 +207,7 @@ int SfxClass::TryParticleEffect(void)
         // Cobra - Kludge to fix no PS effects above overcast layer
         /*
         if (
-         otwPlatform && realWeather->weatherCondition > FAIR &&
+         otwPlatform && realWeather->WeatherCondition > FAIR &&
          (otwPlatform->ZPos() < (realWeather->stratusZ-realWeather->stratusDepth)))
          return 0;
         */

@@ -53,7 +53,7 @@ extern unsigned char SHOWSTATS;
 extern int gCampDataVersion;
 extern char MissStr[AMIS_OTHER][16];
 
-extern int doUI;
+extern int DoUI;
 extern int RegroupFlight(Flight flight);
 extern void UI_Refresh(void);
 
@@ -1305,7 +1305,7 @@ int SquadronClass::AssignPilots(Flight fl)
 
     fl->SetPilots(TRUE);
 
-    if (doUI && FalconLocalSession->GetPlayerFlight() && (fl->Id() == gCurrentFlightID || fl->InPackage()))
+    if (DoUI && FalconLocalSession->GetPlayerFlight() && (fl->Id() == gCurrentFlightID || fl->InPackage()))
     {
         TheCampaign.MissionEvaluator->PreMissionEval(FalconLocalSession->GetPlayerFlight(), FalconLocalSession->GetPilotSlot());
         UI_Refresh();

@@ -506,7 +506,7 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     z = renderer->ZDistanceFromCamera(&position);
 
     // RED - Linear Fog, if inside the layer, modulate with Hze, we can not use linear fog there
-    if (realWeather->weatherCondition > FAIR && position.z > (realWeather->HiOvercast))
+    if (realWeather->WeatherCondition > FAIR && position.z > (realWeather->HiOvercast))
     {
         alpha = 1.0f - (-realWeather->HiOvercast + position.z) / (realWeather->stratusDepth / 2.0f);
         alpha *= alpha * alpha;
@@ -595,7 +595,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
     BOOL isShadow = FALSE;
 
-    if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+    if (PlayerOptions.ShadowsOn() && realWeather->WeatherCondition == FAIR)
     {
         Tpoint pv;
         Tcolor light;

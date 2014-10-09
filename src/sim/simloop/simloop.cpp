@@ -42,7 +42,7 @@
 extern int endAbort; // From OTWdrive.cpp
 extern volatile int gLeftToDeaggregate; // defined in Campaign.cpp
 extern unsigned short BUBBLE_REBUILD_TIME;
-extern int wait_for_loaded;
+extern int WaitForLoaded;
 extern int prevskycol;
 extern char FalconTerrainDataDir[_MAX_PATH];
 
@@ -834,7 +834,7 @@ void SimulationLoopControl::StartLoop(void)
             CampEnterCriticalSection();
             /*
             #ifdef DELAY_TEX_LOAD
-             if (wait_for_loaded) {
+             if (WaitForLoaded) {
              TheTextureBank.SetDeferredLoad( TRUE ); // Hold off loading object textures 'till later
              TheLoader.SetPause( TRUE ); // Stop the loader so that we queue up all object requests.
              }
@@ -843,7 +843,7 @@ void SimulationLoopControl::StartLoop(void)
             */// OTWDriver.RenderFirstFrame();
             /*
             #ifdef DELAY_TEX_LOAD
-             if (wait_for_loaded) {
+             if (WaitForLoaded) {
              TheLoader.SetPause( FALSE ); // Resume async loading
              }
             #endif
@@ -857,7 +857,7 @@ void SimulationLoopControl::StartLoop(void)
 
             //MonoPrint("Waiting for loader:  %d\n",vuxRealTime);
             /*
-             if (wait_for_loaded)
+             if (WaitForLoaded)
              {
              delayCounter = 0;
              while (!TheLoader.LoaderQueueEmpty())
