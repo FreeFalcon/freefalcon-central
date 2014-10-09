@@ -16,7 +16,7 @@ extern C_Handler *gMainHandler;
 PhoneBook *gPlayerBook = NULL;
 
 // sfr: temp global while UI does not have ports
-extern "C" unsigned short force_port = 0;
+extern "C" unsigned short ForcePort = 0;
 
 // function prototypes
 void SetSingle_Comms_Ctrls();
@@ -124,9 +124,9 @@ void CopyDataFromWindow()
     }
 
     // TODO read UI values
-    if (force_port)
+    if (ForcePort)
     {
-        localData.localPort = force_port;
+        localData.localPort = ForcePort;
     }
     else
     {

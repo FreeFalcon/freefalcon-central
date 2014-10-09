@@ -35,7 +35,7 @@ LogBookData::LogBookData(void)
 }
 
 // sfr: logbook hack
-extern "C" char g_strLgbk[20];
+extern "C" char StringLogBook[20];
 int LogBookData::Load(void)
 {
 #if _USE_REGISTRY_
@@ -43,9 +43,9 @@ int LogBookData::Load(void)
     HKEY theKey;
     long retval;
 
-    if (strlen(g_strLgbk) != 0)
+    if (strlen(StringLogBook) != 0)
     {
-        sprintf(Pilot.Callsign, "%s", g_strLgbk);
+        sprintf(Pilot.Callsign, "%s", StringLogBook);
     }
     else
     {

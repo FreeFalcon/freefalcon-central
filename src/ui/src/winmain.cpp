@@ -183,14 +183,13 @@ extern int CampaignJoinStatus;
 
 extern "C"
 {
-	extern int InitWS2(WSADATA *wsaData);
-	extern int ComIPGetHostIDIndex;
-	extern int force_ip_address;
-	extern unsigned short force_port;
+	extern int ComIpGetHostIdIndex;
+	extern int ForceIpAddress;
+	extern unsigned short ForcePort;
 	//sfr: logbook debug
-	extern char g_strLgbk[20];
+	extern char StringLogBook[20];
 }
-char g_strLgbk[20];
+char StringLogBook[20];
 
 extern long MovieCount;
 extern long CampEventSoundID;
@@ -349,6 +348,11 @@ extern BOOL SaveSFXTable();
 extern BOOL WriteMissionData();
 
 extern HRESULT  StartServer(HWND hDlg);  //me123
+
+extern "C"
+{
+	extern int InitWS2(WSADATA *wsaData);
+}
 
 // FUNCTION DEFINITION
 void BuildAscii()
@@ -981,12 +985,12 @@ void ParseCommandLine(LPSTR cmdLine)
     retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
                           0, KEY_QUERY_VALUE, &theKey);
 
-    size = sizeof(ComIPGetHostIDIndex);
+    size = sizeof(ComIpGetHostIdIndex);
     retval = RegQueryValueEx(theKey, "HostIDX", 0, &type, (LPBYTE)&value, &size);
 
     if (retval == ERROR_SUCCESS)
     {
-        ComIPGetHostIDIndex = value;
+        ComIpGetHostIdIndex = value;
     }
 
     retval = RegCloseKey(theKey);
@@ -995,7 +999,7 @@ void ParseCommandLine(LPSTR cmdLine)
     arg = strtok(cmdLine, " ");
 
     //sfr: zero lgbk
-    memset(g_strLgbk, 0, 20);
+    memset(StringLogBook, 0, 20);
 
     if (arg != NULL)
     {
@@ -1166,7 +1170,7 @@ void ParseCommandLine(LPSTR cmdLine)
             if ((!stricmp(arg, "-hostidx")) || (!stricmp(arg, "-hostid")))
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
-                    ComIPGetHostIDIndex = atoi(arg);
+                    ComIpGetHostIdIndex = atoi(arg);
                 }
 
             if (!stricmp(arg, "-alive"))
@@ -1211,16 +1215,16 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-ip"))
             {
                 if ((arg = strtok(NULL, " ")) != NULL)
-                    force_ip_address = atoi(arg);
+                    ForceIpAddress = atoi(arg);
 
-                MonoPrint("Force IP Address to %08x\n", force_ip_address);
+                MonoPrint("Force IP Address to %08x\n", ForceIpAddress);
             }
 
             //sfr converts
             // added for ports
             if (!_strnicmp(arg, "-port", 5))
                 if ((arg = strtok(NULL, " ")) != NULL)
-                    force_port = (unsigned short)atoi(arg);
+                    ForcePort = (unsigned short)atoi(arg);
 
             // sfr: no T&L checks
             // added for server and notebooks
@@ -1233,7 +1237,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
                     // select a given logbook if it exists
-                    sprintf(g_strLgbk, "%.19s", arg);
+                    sprintf(StringLogBook, "%.19s", arg);
 
                 }
 
