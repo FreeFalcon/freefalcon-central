@@ -13,21 +13,24 @@ extern "C"
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
-char *InsertCD[] =
+// dannycoh - renamed from InsertCD to InsertMedia as we no longer install from a CD.
+char *InsertMedia[] =
 {
-    "Please insert the Falcon 4.0 CD",// undefined
-    "Please insert the Falcon 4.0 CD",// English
-    "Please insert the Falcon 4.0 CD",// UK
-    "Bitte legen Sie die Falcon 4.0 CD ein",// German
+	// dannycoh - changed Falcon 4.0 CD to FreeFalcon media.
+    "Please mount the FreeFalcon media",// undefined
+    "Please mount the FreeFalcon media",// English
+    "Please mount the FreeFalcon media",// UK
+    "Bitte montieren Sie die FreeFalcon Medien",// German
     "Veuillez insérer le CD de Falcon 4.0",// French
-    "Introduzca el CD de Falcon 4.0",// Spanish
-    "Inserire il CD di Falcon 4.0",// Italian
-    "Insira o CD do Falcon 4.0",// Portuguese
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
+    "S'il vous pla?t monter le m?dia FreeFalcon",// Spanish
+    "Si prega di montare i media FreeFalcon",// Italian
+    "Por favor, montar a m?dia FreeFalcon",// Portuguese
+    "Please mount the FreeFalcon media",
+    "Please mount the FreeFalcon media",
+    "Please mount the FreeFalcon media",
+    "Please mount the FreeFalcon media",
+    "Please mount the FreeFalcon media",
+	// dannycoh - end.
 };
 char *UnableToOpen[] =
 {
@@ -73,7 +76,7 @@ int DoDialogBox()
     if (!Enabled)
         exit(0);
 
-    retval = MessageBox(NULL, InsertCD[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
+	retval = MessageBox(NULL, InsertMedia[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
 
     if (retval == IDRETRY)
         return(0);
