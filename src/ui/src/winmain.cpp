@@ -7,6 +7,7 @@
 #include <time.h>
 #include <windows.h>
 #include <winsock2.h>
+// dannycoh - end.
 
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all sim includes.
 #include "ascii.h"
@@ -61,6 +62,7 @@
 #include "UserIds.h"
 #include "VRInput.h"
 #include "Weather.h"
+// dannycoh - end.
 
 // dannycoh - grouped, sorted, fixed capitals and removed duplicates of all utility includes.
 #include "CodeLib/resources/ResLib/src/ResMgr.h"
@@ -78,58 +80,167 @@ extern "C"
 {
 #include "AmdLib.h"
 }
+// dannycoh - end.
 
-int weatherCondition = SUNNY;
-RealWeather *realWeather = NULL;
-
-
-TrackIR theTrackIRObject;
-
-WinAmpFrontEnd* winamp = 0;
-extern bool g_bPilotEntertainment;
-
+// dannycoh - grouped all global variables and sorted by type.
+// GLOBAL VARIABLES
 bool g_bHas3DNow = false;
-extern bool g_bEnumSoftwareDevices;
 bool g_bEnableCockpitVerifier = false;
 bool g_writeSndTbl = false;
 bool g_writeMissionTbl = false;
-extern void ReadFalcon4Config();
+
+char top_space[] = "                                                                               ";
+char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
+char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
+char bottom_space[] = "                                                                               ";
+char FalconMovieDirectory[_MAX_PATH];
+char FalconMovieMode[_MAX_PATH];
+char FalconUIArtDirectory[_MAX_PATH];
+char FalconUIArtThrDirectory[_MAX_PATH];
+char FalconUISoundDirectory[_MAX_PATH];
+char FalconSoundThrDirectory[_MAX_PATH];
+// Theater switching stuff
+char FalconCockpitThrDirectory[_MAX_PATH];
+char FalconZipsThrDirectory[_MAX_PATH];
+char FalconTacrefThrDirectory[_MAX_PATH];
+char FalconSplashThrDirectory[_MAX_PATH];
+
+int noUIcomms = FALSE;
+int displayCampaign = FALSE;
+int studlyCampaignDude = FALSE;
+int RepairObjective = FALSE;
+int DestroyObjective = FALSE;
+int ClearObjManualFlags = FALSE;
+int doUI = FALSE;
+int wait_for_loaded = TRUE;
+int eyeFlyEnabled = FALSE;
+int NoRudder = FALSE;
+int DisableSmoothing = FALSE;
+int doNetwork = FALSE; // referred in splash.cpp
+int NumHats = -1;
+int weatherCondition = SUNNY;
+// Theater switching stuff
+int numZips = 0;
+int SimPathHandle = -1;
+int MajorVersion = F4MajorVersion;
+int MinorVersion = F4MinorVersion;
+int BuildNumber = F4BuildNumber;
+//used to display version number in game (not part of version system)
+int ShowVersion = 0;
+int* resourceHandle;
+
+BOOL VersionInfo = FALSE;
+HWND mainMenuWnd;
+HWND mainAppWnd;
+HINSTANCE hInst;
+class tactical_mission;
+TrackIR theTrackIRObject;
+CComModule _Module;
+WSADATA wsadata;
+falcon4LeakCheck flc;
+RealWeather* realWeather = NULL;
+WinAmpFrontEnd* winamp = 0;
+
+extern bool g_bPilotEntertainment;
+extern bool g_bEnumSoftwareDevices;
+extern bool g_bEnableUplink;
+
+extern char g_strMasterServerName[0x40];
+extern char g_strServerName[0x40];
+extern char g_strServerLocation[0x40];
+extern char g_strServerAdmin[0x40];
+extern char g_strServerAdminEmail[0x40];
+extern char gUI_CampaignFile[];
+extern char gUI_AutoSaveName[];
+extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char* BSP;
+extern char* BTP;
+
+extern int g_nMasterServerPort;
+extern int HighResolutionHackFlag;
+extern int voice_;
+extern int GraphicSettingMult;
+extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
+extern int MainLastGroup;
+extern int flag_keep_smoke_trails;
+extern int gTimeModeServer;
+extern int gUnlimitedAmmo;
+extern int gCampJoinStatus;
+
+extern "C"
+{
+	extern int InitWS2(WSADATA *wsaData);
+	extern int ComIPGetHostIDIndex;
+	extern int force_ip_address;
+	extern unsigned short force_port;
+	//sfr: logbook debug
+	extern char g_strLgbk[20];
+}
+char g_strLgbk[20];
+
+extern long MovieCount;
+extern long CampEventSoundID;
+extern long gScreenShotEnabled;
+extern float UR_HEAD_VIEW;
+extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
+extern uchar gCampJoinTries;
+extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
+extern CampaignTime gConnectionTime;
+extern CampaignTime gResendTime;
+extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
+extern C_Handler *gMainHandler;
+
+static int KeepFocus = 0;
+static int numProcessors;
+//static int lTestVar = TRUE; // dannycoh - commented out secret code used as a crude protection.
+static HACCEL hAccel;
+
+#ifdef DEBUG
+	// Debug Assert softswitches
+	int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
+	int shiAssertsOn = TRUE,
+	shiWarningsOn = TRUE,
+	shiHardCrashOn = FALSE;
+	extern int gCampPlayerInput;
+	extern int gPlayerPilotLock;
+	HANDLE gDispatchThreadID;
+#endif
+
+#ifdef NDEBUG
+	int auto_start = TRUE;
+	int intro_movie = TRUE;
+#else
+	int auto_start = FALSE;
+	int intro_movie = FALSE;
+#endif
+
+#ifdef CAMPTOOL
+	// Renaming tool stuff
+	extern VU_ID_NUMBER RenameTable[65536];
+	extern int gRenameIds;
+	// Window handles
+	extern HWND hMainWnd;
+	extern HWND hToolWnd;
+#endif
+// dannycoh - end.
 
 // Begin - Uplink stuff
-
 #pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 
-CComModule _Module;
-
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
-
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 GNETCORELib::IUplinkPtr m_pUplink;
 
-WSADATA wsadata;
-extern "C" int InitWS2(WSADATA *wsaData);
-
-extern bool g_bEnableUplink;
-extern char g_strMasterServerName[0x40];
-extern int g_nMasterServerPort;
-extern char g_strServerName[0x40];
-extern char g_strServerLocation[0x40];
-extern char g_strServerAdmin[0x40];
-extern char g_strServerAdminEmail[0x40];
 // End - Uplink stuff
 
-//sfr: logbook debug
-extern "C" char g_strLgbk[20];
-char g_strLgbk[20];
 
+extern void ReadFalcon4Config();
 void DoRecoShit(void);
 
-extern int HighResolutionHackFlag;
-extern uchar gCampJoinTries;
 
 
 
@@ -137,25 +248,9 @@ extern uchar gCampJoinTries;
 #undef fopen
 #undef fclose
 
-char top_space[] = "                                                                               ";
-char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
-char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
-char bottom_space[] = "                                                                               ";
 
-extern int voice_;
-extern int GraphicSettingMult;
-extern char gUI_CampaignFile[];
-extern char gUI_AutoSaveName[];
-extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
+
 //static int i_am(char *with); // dannycoh - commented out because it is used for coder specific debug switches.
-
-extern "C"
-{
-    extern int ComIPGetHostIDIndex;
-    extern int force_ip_address;
-    extern unsigned short force_port;
-}
-
 void PlayThatFunkyMusicWhiteBoy();
 void load_voice_recognition_demo_sound_file(void);
 extern void EnableCampaignMenus(void);
@@ -167,32 +262,17 @@ extern void DisplayJoinStatusWindow(int);
 extern void ServerBrowserExit();
 extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern char *BSP;
-extern char *BTP;
-extern long MovieCount;
-extern int MainLastGroup;
-extern int flag_keep_smoke_trails;
-extern int gTimeModeServer;
-extern int gUnlimitedAmmo;
-extern float UR_HEAD_VIEW;
 int FileVerify(void);
 extern void LoadTrails();
 
 LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 extern void UIScramblePlayerFlight(void);
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);
 //!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
 extern void PlayUIMovieQ(); // defined in UI_Main.cpp
-extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
 
-#ifdef DEBUG
-extern int gCampPlayerInput;
-#endif
 
-extern C_SoundBite *gInstantBites, *gDogfightBites, *gCampaignBites;
-extern long CampEventSoundID;
 extern void UpdateMissionWindow(long ID);
 extern void update_tactical_flight_information(void);
 extern void CopyDFSettingsToWindow(void);
@@ -218,72 +298,11 @@ void ViewRemoteLogbook(long playerID);
 void RelocateSquadron();
 void ShutdownCampaign(void);
 int tactical_is_training(void);
-class tactical_mission;
 void tactical_restart_mission(void);
 
-int noUIcomms = FALSE;
-char FalconMovieDirectory[_MAX_PATH];
-char FalconMovieMode[_MAX_PATH];
-int displayCampaign = FALSE;
-int studlyCampaignDude = FALSE;
-int RepairObjective = FALSE;
-int DestroyObjective = FALSE;
-int ClearObjManualFlags = FALSE;
-int doUI = FALSE;
-int wait_for_loaded = TRUE;
-int eyeFlyEnabled = FALSE;
-//static int lTestVar = TRUE; // dannycoh - commented out secret code used as a crude protection.
-int NoRudder = FALSE;
-int DisableSmoothing = FALSE;
-int NumHats = -1;
 
-static int KeepFocus = 0;
-char FalconUIArtDirectory[_MAX_PATH];
-char FalconUIArtThrDirectory[_MAX_PATH];
-char FalconUISoundDirectory[_MAX_PATH];
-char FalconSoundThrDirectory[_MAX_PATH];
-
-// Theater switching stuff
-char FalconCockpitThrDirectory[_MAX_PATH];
-char FalconZipsThrDirectory[_MAX_PATH];
-char FalconTacrefThrDirectory[_MAX_PATH];
-char FalconSplashThrDirectory[_MAX_PATH];
-
-extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
-
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 extern void LoadTheaterList(); // JPO
 
-#ifdef NDEBUG
-int auto_start = TRUE;
-int intro_movie = TRUE;
-#else
-int auto_start = FALSE;
-int intro_movie = FALSE;
-#endif
-
-// Debug Assert softswitches
-#ifdef DEBUG
-int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
-int shiAssertsOn = TRUE,
-    shiWarningsOn = TRUE,
-    shiHardCrashOn = FALSE;
-#endif
-
-#ifdef DEBUG
-extern int gPlayerPilotLock;
-#endif
-
-static int numProcessors;
-static HACCEL hAccel;
-HWND mainMenuWnd;
-HWND mainAppWnd;
-int doNetwork = FALSE; // referred in splash.cpp
-
-// Theater switching stuff
-int numZips = 0;
-int* resourceHandle;
-int SimPathHandle = -1;
 
 static void ParseCommandLine(LPSTR cmdLine);
 static void SystemLevelInit(void);
@@ -291,29 +310,22 @@ static void SystemLevelExit(void);
 static void CtrlAltDelMask(int state);
 void ConsoleWrite(char *);
 
-HINSTANCE hInst;
 extern void CampMain(HINSTANCE hInstance, int nCmdShow);
 extern void ReadCampAIInputs(char * name);
 extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern void CampaignConnectionTimer(void);
 
-extern CampaignTime gConnectionTime;
-extern CampaignTime gResendTime;
-extern int gCampJoinStatus;
 
 void UIMain(void);
 void UI_LoadSkyWeatherData();
 int UI_Startup();
 void UI_Cleanup();
-extern C_Handler *gMainHandler;
-extern long gScreenShotEnabled;
 void UI_UpdateVU();
 void RecieveScenarioInfo();
 
 void UI_CommsErrorMessage(WORD error);
 void LeaveDogfight();
-BOOL VersionInfo = FALSE;
 
 void STPRender(C_Base *control);
 void UpdateRules(void);
@@ -333,25 +345,11 @@ void IncDecDataToPlay(int delta);
 //#endif // _USE_SECRET_CODE_
 // dannycoh - end.
 
-int MajorVersion = F4MajorVersion;
-int MinorVersion = F4MinorVersion;
-int BuildNumber  = F4BuildNumber;
 
 extern BOOL SaveSFXTable();
 extern BOOL WriteMissionData();
 
-//used to display version number in game (not part of version system)
-int ShowVersion  = 0;
 
-#ifdef CAMPTOOL
-// Renaming tool stuff
-extern VU_ID_NUMBER RenameTable[65536];
-extern int gRenameIds;
-// Window handles
-extern HWND hMainWnd;
-extern HWND hToolWnd;
-#endif
-falcon4LeakCheck flc;
 extern HRESULT  StartServer(HWND hDlg);  //me123
 extern void StopVoice();
 void BuildAscii()
@@ -1552,10 +1550,6 @@ void CampaignAutoSave(FalconGameType gametype)
         }
     }
 }
-
-#ifdef DEBUG
-HANDLE gDispatchThreadID;
-#endif
 
 LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
