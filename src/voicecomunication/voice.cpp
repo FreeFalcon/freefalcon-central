@@ -1326,7 +1326,7 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    char test[1024] = "F4 3D Output";
+    char test[1024] = "Free Falcon Open Source Project";
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.
