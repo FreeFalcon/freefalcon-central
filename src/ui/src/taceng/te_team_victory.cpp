@@ -93,7 +93,7 @@ void CancelCampaignCompression(void);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 extern VU_ID
 gSelectedFlightID;
@@ -281,7 +281,7 @@ void RebuildTeamLists()
     C_Victory *vctrl = NULL;
     short i = 0;
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     cur = team_lbox;
 
@@ -327,7 +327,7 @@ void RebuildTeamLists()
         vc = current_tactical_mission->get_next_unfiltered_victory_condition();
     }
 
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 void InitVCArgLists()
@@ -786,7 +786,7 @@ void VCChangeActionCB(long, short hittype, C_Base *control)
 
                 SetCursor(gCursors[CRSR_WAIT]);
 
-                win = gMainHandler->FindWindow(RECON_LIST_WIN);
+                win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
                 if (win)
                 {
@@ -843,7 +843,7 @@ void VCSetTargetCB(long, short hittype, C_Base *control)
         {
             vctrl = (C_Victory*)item->Item_;
             vc = (victory_condition*)vctrl->GetPtr();
-            win = gMainHandler->FindWindow(RECON_LIST_WIN);
+            win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
             if (win && vc)
             {
@@ -1015,7 +1015,7 @@ void SetVCTargetInfo(CampEntity ent)
 
         SetCursor(gCursors[CRSR_WAIT]);
 
-        win = gMainHandler->FindWindow(RECON_LIST_WIN);
+        win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
         if (win)
         {
@@ -1273,7 +1273,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
 
     // Team Name
     lbox = new C_ListBox;
-    lbox->Setup(1, 0, gMainHandler);
+    lbox->Setup(1, 0, MainHandlerPointer);
     lbox->SetWH(gVCTree->GetUserNumber(11), fh);
     lbox->SetBgFill(0, 0, 0, 0);
     lbox->SetBgColor(11370561); //
@@ -1287,7 +1287,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
 
     // Action
     lbox = new C_ListBox;
-    lbox->Setup(2, 0, gMainHandler);
+    lbox->Setup(2, 0, MainHandlerPointer);
     lbox->SetWH(gVCTree->GetUserNumber(12), fh);
     lbox->SetBgFill(0, 0, 0, 0);
     lbox->SetBgColor(11370561); //
@@ -1335,7 +1335,7 @@ C_Victory *MakeVCControl(victory_condition *vc)
 
     // Arguments (other than target)
     lbox = new C_ListBox;
-    lbox->Setup(4, 0, gMainHandler);
+    lbox->Setup(4, 0, MainHandlerPointer);
     lbox->SetWH(gVCTree->GetUserNumber(14), fh);
     lbox->SetBgFill(0, 0, 0, 0);
     lbox->SetBgColor(11370561); //
@@ -1539,7 +1539,7 @@ void UpdateVCScoring(long WinID, short mode)
         }
     }
 
-    win = gMainHandler->FindWindow(WinID);
+    win = MainHandlerPointer->FindWindow(WinID);
 
     if (win)
     {
@@ -1606,7 +1606,7 @@ void UpdateVCScoring(long WinID, short mode)
 
 void update_team_victory_window(void)
 {
-    if (gMainHandler)
+    if (MainHandlerPointer)
     {
         if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
             UpdateVCScoring(TAC_VC_WIN, 1);
@@ -2282,7 +2282,7 @@ void add_vc_air_unit(long, short, C_Base *)
 
         update_team_victory_window();
 
-        gMainHandler->EnableWindowGroup(3400);
+        MainHandlerPointer->EnableWindowGroup(3400);
     }
 }
 
@@ -2431,7 +2431,7 @@ void EndGameEvaluation()
     LISTBOX *lbitem;
     long eval;
 
-    win = gMainHandler->FindWindow(TAC_END_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_END_WIN);
     {
         UpdateVCScoring(TAC_END_WIN, 0);
         lbox = (C_ListBox*)win->FindControl(TAC_WIN_TITLE);
@@ -2451,8 +2451,8 @@ void EndGameEvaluation()
         }
 
         win->RefreshWindow();
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -2464,25 +2464,25 @@ void TriggerTacEndGame(void)
 {
     ShowGameOverWindow = 1;
 
-    if (gMainHandler && ShowGameOverWindow)
+    if (MainHandlerPointer && ShowGameOverWindow)
     {
         C_Window *win;
 
         TheCampaign.EndgameResult = 1;
         SetTimeCompression(0);
 
-        if (gMainHandler->GetWindowFlags(CP_COUNTDOWN_WIN) & C_BIT_ENABLED)
+        if (MainHandlerPointer->GetWindowFlags(CP_COUNTDOWN_WIN) & C_BIT_ENABLED)
         {
-            win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+            win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
             if (win)
             {
                 CancelCampaignCompression();
-                gMainHandler->HideWindow(win);
+                MainHandlerPointer->HideWindow(win);
             }
         }
 
-        PostMessage(gMainHandler->GetAppWnd(), FM_OPEN_GAME_OVER_WIN, game_TacticalEngagement, 0);
+        PostMessage(MainHandlerPointer->GetAppWnd(), FM_OPEN_GAME_OVER_WIN, game_TacticalEngagement, 0);
     }
 }
 
@@ -2492,7 +2492,7 @@ void TriggerTacEndGame(void)
 
 void OpenTEGameOverWindow()
 {
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     EndGameEvaluation();

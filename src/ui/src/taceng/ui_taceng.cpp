@@ -117,7 +117,7 @@ void LoadTacEngSelectWindows()
         TACSelLoaded++;
     }
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (win) // JPO
         tac_train = (C_Button *)win->FindControl(TAC_TRAIN_CTRL);
@@ -156,7 +156,7 @@ void LoadTacticalWindows(void)
         ID = gMainParser->GetNextWindowLoaded();
     }
 
-    win = gMainHandler->FindWindow(TAC_PLAY_SCREEN);
+    win = MainHandlerPointer->FindWindow(TAC_PLAY_SCREEN);
 
     if (win)
     {

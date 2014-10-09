@@ -131,10 +131,10 @@ int EyeFlyEnabled = FALSE;
 int NoRudder = FALSE;
 int DisableSmoothing = FALSE;
 int DoNetwork = FALSE; // referred in splash.cpp
-int NumHats = -1;
+int NumberOfHats = -1;
 int WeatherCondition = SUNNY;
 // Theater switching stuff
-int NumZips = 0;
+int NumberOfZips = 0;
 int SimPathHandle = -1;
 int MajorVersion = FfMajorVersion;
 int MinorVersion = FfMinorVersion;
@@ -192,21 +192,21 @@ extern "C"
 char StringLogBook[20];
 
 extern long MovieCount;
-extern long CampEventSoundID;
-extern long gScreenShotEnabled;
-extern float UR_HEAD_VIEW;
+extern long CampaignEventSoundId;
+extern long ScreenShotEnabled;
+extern float UrHeadView;
 extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
-extern uchar gCampJoinTries;
-extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
-extern CampaignTime gConnectionTime;
-extern CampaignTime gResendTime;
-extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
-extern C_Handler *gMainHandler;
+extern uchar CampaignJoinTries;
+extern ulong CampJoinLastData; // Last vuxRealtime we received data about this game
+extern CampaignTime ConnectionTime;
+extern CampaignTime ResendTime;
+extern C_SoundBite* InstantBitesPointer, *DogFightBites, *CampaignBitesPointer;
+extern C_Handler *MainHandlerPointer;
 
 static int KeepFocus = 0;
-static int numProcessors;
-//static int lTestVar = TRUE; // dannycoh - commented out secret code used as a crude protection.
-static HACCEL hAccel;
+static int NumberOfProcessors;
+//static int lTestVariable = TRUE; // dannycoh - commented out secret code used as a crude protection.
+static HACCEL HAcceleration;
 
 #ifdef DEBUG
 	// Debug Assert softswitches
@@ -440,7 +440,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     ShowWindow(MainMenuWindow, SW_SHOW);
 #endif
 
-    hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_FALCON4_ACC1));
+    HAcceleration = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_FALCON4_ACC1));
     return TRUE;
 
 }
@@ -520,7 +520,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ReadFalcon4Config();
 
 	// dannycoh - commented out secret code used as a crude protection.
-	//lTestVar = !strncmp(lTestVarString, "JustForGilman", 13);
+	//lTestVariable = !strncmp(lTestVarString, "JustForGilman", 13);
 
     // PW Kludge
     if (VersionInfo)
@@ -1051,7 +1051,7 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (!stricmp(arg, "-numhats"))
                 if ((arg = strtok(NULL, " ")) != NULL)
-                    NumHats = atoi(arg);
+                    NumberOfHats = atoi(arg);
 
             if (_strnicmp(arg, "-nosound", 8) == 0)
                 gSoundFlags &= (0xffffffff ^ FSND_SOUND);
@@ -1134,13 +1134,13 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-urview"))
                 if ((arg = strtok(NULL, " ")) != NULL)
                 {
-                    UR_HEAD_VIEW = (float)atoi(arg);
+                    UrHeadView = (float)atoi(arg);
 
-                    if (UR_HEAD_VIEW < 50)
-                        UR_HEAD_VIEW = 50;
+                    if (UrHeadView < 50)
+                        UrHeadView = 50;
 
-                    if (UR_HEAD_VIEW > 160)
-                        UR_HEAD_VIEW = 160;
+                    if (UrHeadView > 160)
+                        UrHeadView = 160;
                 }
 
             if (!stricmp(arg, "-latency"))
@@ -1351,7 +1351,7 @@ void SystemLevelInit()
             SimPathHandle = ResAddPath(tmpPath, TRUE);
 
         ReadCampAIInputs("Falcon4");
-        numProcessors = F4GetNumProcessors();
+        NumberOfProcessors = F4GetNumProcessors();
 
         if (!LoadClassTable("Falcon4"))
         {
@@ -1519,7 +1519,7 @@ void SystemLevelExit(void)
     UnloadClassTable();
     FreeTactics();
 
-    for (int i = 0; i < NumZips; i++)
+    for (int i = 0; i < NumberOfZips; i++)
     {
         ResDetach(ResourceHandlePointer[i]);
     }
@@ -1594,7 +1594,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 RECT rect;
 
                 // restore surfaces
-                if (gMainHandler)
+                if (MainHandlerPointer)
                 {
                     GetWindowRect(FalconDisplay.appWin, &rect);
                     InvalidateRect(FalconDisplay.appWin, &rect, FALSE);
@@ -1665,7 +1665,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_REFRESH_TACTICAL:
-            if (gMainHandler != NULL)
+            if (MainHandlerPointer != NULL)
             {
                 UpdateMissionWindow(TAC_AIRCRAFT);
                 CheckCampaignFlyButton();
@@ -1674,7 +1674,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_REFRESH_CAMPAIGN:
-            if (gMainHandler != NULL)
+            if (MainHandlerPointer != NULL)
             {
                 UpdateMissionWindow(CB_MISSION_SCREEN);
                 CheckCampaignFlyButton();
@@ -1683,7 +1683,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_TIMER_UPDATE:
-            if (gMainHandler != NULL)
+            if (MainHandlerPointer != NULL)
             {
                 if (InTimer)
                     break;
@@ -1695,7 +1695,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 if (gCommsMgr)
                     RebuildGameTree();
 
-                gMainHandler->ProcessUserCallbacks();
+                MainHandlerPointer->ProcessUserCallbacks();
                 InTimer = 0;
             }
 
@@ -1721,7 +1721,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_LOAD_CAMPAIGN:
 			// dannycoh - commented out secret code used as a crude protection.
-			//if (lTestVar)
+			//if (lTestVariable)
             //{
                 // Load a campaign here (this should allow tactical engagements too, so we
                 // So we can eliminate the LOAD_TACTICAL case.
@@ -1775,7 +1775,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_JOIN_CAMPAIGN:
 			// dannycoh - commented out secret code used as a crude protection.
-			//if (lTestVar)
+			//if (lTestVariable)
             //{
                 // Join a campaign here
                 if (gCommsMgr)
@@ -1819,7 +1819,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             MonoPrint("Starting %s game.\n", (wParam) ? "remote" : "local");
             CampaignJoinSuccess();
 
-            if (!gMainHandler)
+            if (!MainHandlerPointer)
                 SendMessage(hwnd, FM_START_UI, 0, 0);
 
             break;
@@ -1847,7 +1847,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             if (!DoUI)
                 break;
 
-            if (!gMainHandler)
+            if (!MainHandlerPointer)
                 break;
 
             UI_CommsErrorMessage(static_cast<WORD>(wParam));
@@ -1882,7 +1882,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_START_DOGFIGHT:
 			// dannycoh - commented out secret code used as a crude protection.
-			//if (lTestVar)
+			//if (lTestVariable)
             //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
@@ -1895,7 +1895,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_START_CAMPAIGN:
 			// dannycoh - commented out secret code used as a crude protection.
-			//if (lTestVar)
+			//if (lTestVariable)
             //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
@@ -1908,7 +1908,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_START_TACTICAL:
 			// dannycoh - commented out secret code used as a crude protection.
-			//if (lTestVar)
+			//if (lTestVariable)
             //{
                 // Mark us as loading
                 FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
@@ -1927,12 +1927,12 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     // with it.
                 case CAMP_NEED_PRELOAD:
                     MonoPrint("Got Scenario Stats.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
 
                     if (FalconLocalGame)
                         CampaignPreloadSuccess(!FalconLocalGame->IsLocal());
 
-                    if (gMainHandler) // Removed GameType check - RH
+                    if (MainHandlerPointer) // Removed GameType check - RH
                         RecieveScenarioInfo();
 
                     SetCursor(gCursors[CRSR_F16]);
@@ -1942,9 +1942,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame || vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got Entities.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -1953,9 +1953,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got weather.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -1964,9 +1964,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got persistant lists.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -1975,8 +1975,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame || vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
-                    gCampJoinTries = 0;
+                    CampJoinLastData = vuxRealTime;
+                    CampaignJoinTries = 0;
                     MonoPrint("Got objective data.\n");
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
@@ -1986,8 +1986,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
-                    gCampJoinTries = 0;
+                    CampJoinLastData = vuxRealTime;
+                    CampaignJoinTries = 0;
                     MonoPrint("Got team data.\n");
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
@@ -1997,9 +1997,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got unit data.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -2008,9 +2008,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got VC data.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -2019,9 +2019,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     if (!FalconLocalGame ||  vuPlayerPoolGroup == vuLocalGame)
                         break;
 
-                    gCampJoinLastData = vuxRealTime;
+                    CampJoinLastData = vuxRealTime;
                     MonoPrint("Got Priorities data.\n");
-                    gCampJoinTries = 0;
+                    CampaignJoinTries = 0;
                     TheCampaign.GotJoinData();
                     DisplayJoinStatusWindow(wParam);
                     break;
@@ -2042,7 +2042,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 LogBook.FinishCampaign(static_cast<short>(wParam));
 
             // KCK: If UI is running, pause the Campaign
-            if (gMainHandler)
+            if (MainHandlerPointer)
                 SetTimeCompression(0);
 
             TheCampaign.EndgameResult = static_cast<uchar>(wParam);
@@ -2081,7 +2081,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_AIRBASE_ATTACK:
-            CampEventSoundID = 500005;
+            CampaignEventSoundId = 500005;
             break;
 
         case FM_AIRBASE_DISABLED:
@@ -2122,19 +2122,19 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
 
         case FM_PLAY_UI_MOVIE:
-            if (gMainHandler && ReadyToPlayMovie)
+            if (MainHandlerPointer && ReadyToPlayMovie)
                 PlayUIMovieQ();
 
             break;
 
         case FM_REPLAY_UI_MOVIE:
-            if (gMainHandler && ReadyToPlayMovie)
+            if (MainHandlerPointer && ReadyToPlayMovie)
                 ReplayUIMovie(lParam);
 
             break;
 
         case FM_REMOTE_LOGBOOK:
-            if (gMainHandler && gCommsMgr)
+            if (MainHandlerPointer && gCommsMgr)
                 ViewRemoteLogbook(lParam);
 
             break;
@@ -2192,9 +2192,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         default:
         {
-            if (gMainHandler != NULL)
+            if (MainHandlerPointer != NULL)
             {
-                if (gMainHandler->EventHandler(hwnd, message, wParam, lParam))
+                if (MainHandlerPointer->EventHandler(hwnd, message, wParam, lParam))
                 {
                     retval = DefWindowProc(hwnd, message, wParam, lParam);
                 }
@@ -2374,8 +2374,8 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
 
 void ShutdownCampaign(void)
 {
-    if (gMainHandler)
-        gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
+    if (MainHandlerPointer)
+        MainHandlerPointer->RemoveUserCallback(CampaignConnectionTimer);
 
     // Shutdown campaign stuff here
     TheCampaign.EndCampaign();

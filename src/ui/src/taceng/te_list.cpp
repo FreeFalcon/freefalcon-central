@@ -263,7 +263,7 @@ void GetTrainingFileList()
     C_Window *win;
     C_TreeList *tree;
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (win)
     {
@@ -295,7 +295,7 @@ void GetTacticalFileList()
     C_TreeList *tree;
 
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (win)
     {
@@ -327,7 +327,7 @@ void TEDelFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_); // Close Verify Window
+    MainHandlerPointer->HideWindow(control->Parent_); // Close Verify Window
 
     if (!CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
         DeleteFile(gLastTEFilename);
@@ -521,7 +521,7 @@ void create_tactical_list(void)
     y = 0;
     id = 3000000;
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (!win)
     {
@@ -710,7 +710,7 @@ static void update_sua_load_list(void)
     else
         MaxTeams = NUM_TEAMS;
 
-    win = gMainHandler->FindWindow(TAC_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_SUA_WIN);
 
     if (current_tactical_mission && win)
     {
@@ -784,7 +784,7 @@ static void update_pua_list(void)
     buffer[100],
            *text;
 
-    win = gMainHandler->FindWindow(TAC_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_WIN);
 
     if (current_tactical_mission)
     {
@@ -972,7 +972,7 @@ void update_missions_details(long winID)
     _TCHAR Buffer[200];
     C_Text *text;
 
-    C_Window *win = gMainHandler->FindWindow(winID);
+    C_Window *win = MainHandlerPointer->FindWindow(winID);
 
     if (!win)
         return;
@@ -1115,7 +1115,7 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
     DisableScenarioInfo();
 
     if (!gCommsMgr->Online())
-        gMainHandler->EnableWindowGroup(6001);
+        MainHandlerPointer->EnableWindowGroup(6001);
 
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(1));
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(2));
@@ -1123,11 +1123,11 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
     if (!gCommsMgr->Online())
     {
-        win = gMainHandler->FindWindow(PB_WIN);
+        win = MainHandlerPointer->FindWindow(PB_WIN);
 
         if (win)
         {
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
         }
     }
 

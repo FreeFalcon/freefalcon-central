@@ -941,7 +941,7 @@ void TacticalMission::new_setup(void)
 
     // FalconLocalSession->SetCountry (team);
 
-    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    SendMessage(MainHandlerPointer->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
 
     //MonoPrint ("Tactical_Mission::New Setup\n");
 }
@@ -956,7 +956,7 @@ void TacticalMission::revert(void)
 
     // HACK - Robin (unnessary hack)
     //FalconLocalSession->SetCountry(gSelectedTeam);
-    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    SendMessage(MainHandlerPointer->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
 }
 
 //////////////////////////////////////////////////////////////////////////////

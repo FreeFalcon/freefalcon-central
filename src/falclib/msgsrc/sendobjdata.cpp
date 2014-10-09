@@ -14,7 +14,7 @@
 
 #define DEBUG_STARTUP 1
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern void CampaignJoinKeepAlive(void);
 
 // Maximum size data block we can send per message
@@ -157,8 +157,8 @@ int FalconSendObjData::Process(uchar autodisp)
         session->objDataReceiveSet = 0;
 
         // Let the UI know we've received some data
-        if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_OBJ_DELTAS, 0);
+        if (MainHandlerPointer)
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_OBJ_DELTAS, 0);
     }
     else
     {

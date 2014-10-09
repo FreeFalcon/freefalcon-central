@@ -6,7 +6,7 @@
 #include "textids.h"
 
 extern int MainLastGroup, CampaignLastGroup, HelpLoaded, TacLastGroup;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 
 void CloseWindowCB(long ID, short hittype, C_Base *control);
@@ -70,7 +70,7 @@ void UI_Help_Guide_CB(long, short hittype, C_Base *ctrl)
 
     if (ctrl->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(ctrl->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(ctrl->GetGroup());
     }
     else
     {
@@ -78,14 +78,14 @@ void UI_Help_Guide_CB(long, short hittype, C_Base *ctrl)
         {
             if (ctrl->GetUserNumber(CampaignLastGroup))
             {
-                gMainHandler->EnableWindowGroup(ctrl->GetUserNumber(CampaignLastGroup));
+                MainHandlerPointer->EnableWindowGroup(ctrl->GetUserNumber(CampaignLastGroup));
             }
         }
         else if (MainLastGroup == 3000) // Campaign
         {
             if (ctrl->GetUserNumber(TacLastGroup))
             {
-                gMainHandler->EnableWindowGroup(ctrl->GetUserNumber(TacLastGroup));
+                MainHandlerPointer->EnableWindowGroup(ctrl->GetUserNumber(TacLastGroup));
             }
         }
     }
@@ -97,7 +97,7 @@ void HookupHelpGuideWindows(long ID)
     C_Button *btn;
     C_ListBox *lbox;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {

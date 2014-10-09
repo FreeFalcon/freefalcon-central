@@ -15,7 +15,7 @@
 
 #pragma warning(disable : 4127)
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 enum
 {
@@ -46,7 +46,7 @@ void InitPAKNames()
     VuListIterator poit(POList);
     Objective o;
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -96,7 +96,7 @@ void InitPAKMap()
             PAKMap->Header->flags |= _RSC_USECOLORKEY_;
             MakeCampMap(MAP_PAK, (uchar*)PAKMap->Owner->GetData(), TheCampaign.TheaterSizeX / PAK_MAP_RATIO * TheCampaign.TheaterSizeY / PAK_MAP_RATIO);
 
-            win = gMainHandler->FindWindow(STRAT_WIN);
+            win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
             if (win)
             {
@@ -185,7 +185,7 @@ void TurnOffHQButton()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -204,7 +204,7 @@ void TurnOnHQButton()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -235,7 +235,7 @@ void LoadTargetPriorities()
     long value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -419,7 +419,7 @@ void LoadMissionPriorities()
     long value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -587,7 +587,7 @@ void LoadDefaultTargetPriorities()
     long value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -772,7 +772,7 @@ void LoadDefaultMissionPriorities()
     long value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -923,7 +923,7 @@ void SaveTargetPriorities()
     uchar value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -1093,7 +1093,7 @@ void SaveMissionPriorities()
     uchar value;
     int team = FalconLocalSession->GetTeam();
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -1244,7 +1244,7 @@ void SelectPAK(long PAKID, long TeamID)
         return;
 
 
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -1356,7 +1356,7 @@ void OpenPriorityCB(long, short hittype, C_Base *control)
     SelectPAK(1, FalconLocalSession->GetTeam());
 
     // Init window... make sure proper stuff is visible or hidden
-    win = gMainHandler->FindWindow(STRAT_WIN);
+    win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
     if (win)
     {
@@ -1396,7 +1396,7 @@ void OpenPriorityCB(long, short hittype, C_Base *control)
     }
 
     // Display window
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 // Callback from MAP x,y checker

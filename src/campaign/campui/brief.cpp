@@ -40,7 +40,7 @@
 extern int inMission;
 #endif
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 enum
 {
@@ -123,7 +123,7 @@ void BuildCampBrief(C_Window *win)
 
     if (testDebrief)
     {
-        C_Window *win2 = gMainHandler->FindWindow(DEBRIEF_WIN);
+        C_Window *win2 = MainHandlerPointer->FindWindow(DEBRIEF_WIN);
         BuildCampDebrief(win2);
         return;
     }
@@ -347,7 +347,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                 {
                     _TCHAR tmp[40] = "";
                     eventListBox = new C_ListBox;
-                    eventListBox->Setup(C_DONT_CARE, 0, gMainHandler);
+                    eventListBox->Setup(C_DONT_CARE, 0, MainHandlerPointer);
                     eventListBox->SetFont(win->Font_);
                     eventListBox->SetXY(x - 5, y);
                     eventListBox->SetDropDown(BID_DROPDOWN);
@@ -436,7 +436,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                             CBX = CLineStart = 0;
                             ReadScriptedBriefFile("FOrdWeap.db", temp_line, NULL, event_str, TheCampaign.MissionEvaluator, flight_data);
                             eventListBox = new C_ListBox;
-                            eventListBox->Setup(C_DONT_CARE, 0, gMainHandler);
+                            eventListBox->Setup(C_DONT_CARE, 0, MainHandlerPointer);
                             eventListBox->SetFont(win->Font_);
                             eventListBox->SetXY(x - 5, y);
                             eventListBox->SetDropDown(BID_DROPDOWN);

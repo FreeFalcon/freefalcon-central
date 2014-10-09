@@ -44,7 +44,7 @@
 
 #pragma warning(disable:4244) // for +=
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern VU_ID gCurrentFlightID;
 extern GlobalPositioningSystem *gGps;
@@ -785,7 +785,7 @@ void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     if (!YesCB || !filespec)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (win)
     {
@@ -863,8 +863,8 @@ void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
                 tree->Parent_->RefreshClient(tree->GetClient());
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -879,7 +879,7 @@ void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void
     if (!YesCB || !filespec)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (win)
     {
@@ -961,8 +961,8 @@ void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void
                 tree->Parent_->RefreshClient(tree->GetClient());
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -977,7 +977,7 @@ void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
     if (!YesCB || !filespec)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (win)
     {
@@ -1055,18 +1055,18 @@ void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*Yes
                 tree->Parent_->RefreshClient(tree->GetClient());
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
 void CloseAYS()
 {
     C_Window *win;
-    win = gMainHandler->FindWindow(AYS_WIN);
+    win = MainHandlerPointer->FindWindow(AYS_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 }
 
 void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*))
@@ -1079,7 +1079,7 @@ void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), 
     if (!text)
         return;
 
-    win = gMainHandler->FindWindow(AYS_WIN);
+    win = MainHandlerPointer->FindWindow(AYS_WIN);
 
     if (win)
     {
@@ -1119,8 +1119,8 @@ void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), 
         DeleteGroupList(win->GetID());
         AddWordWrapTextToWindow(win, &x, &y, 0, static_cast<short>(win->ClientArea_[1].right - win->ClientArea_[1].left), 0xe0e0e0, text, 1);
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -1160,7 +1160,7 @@ void ExitVerify(long TitleID, void (*OkCB)(long, short, C_Base*), void (*CancelC
     C_Button *btn;
     C_Text *txt;
 
-    win = gMainHandler->FindWindow(EXIT_WIN);
+    win = MainHandlerPointer->FindWindow(EXIT_WIN);
 
     if (win)
     {
@@ -1195,8 +1195,8 @@ void ExitVerify(long TitleID, void (*OkCB)(long, short, C_Base*), void (*CancelC
                 btn->SetFlagBitOff(C_BIT_ENABLED);
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -1586,12 +1586,12 @@ void UpdateMissionWindow(long ID)
     FalconSessionEntity *session;
     short i, planecount;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
     {
         return;
     }
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -1974,7 +1974,7 @@ void UpdateIntel(long ID)
 
     i = static_cast<short>(GetTopPriorityObjectives(Team, ObjStr));
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     //if(win) // JB 010222 CTD
     if (win && !F4IsBadReadPtr(win, sizeof(C_Window)) // JB 010222 CTD
@@ -2431,7 +2431,7 @@ void RefreshMapEventList(long winID, long client)
     short x, y;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(winID);
+    win = MainHandlerPointer->FindWindow(winID);
 
     if (win)
     {
@@ -2486,7 +2486,7 @@ void RefreshEventList()
     _TCHAR buffer[10];
     short y, wrap_w, i;
 
-    win = gMainHandler->FindWindow(RVNTS_WIN);
+    win = MainHandlerPointer->FindWindow(RVNTS_WIN);
 
     if (win)
     {
@@ -2554,7 +2554,7 @@ void RelocateSquadron()
     GridIndex x, y;
     ObjClassDataType *ObjPtr;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     sqd = (Squadron)FalconLocalSession->GetPlayerSquadron();
@@ -2572,7 +2572,7 @@ void RelocateSquadron()
     if (!ObjPtr)
         return;
 
-    win = gMainHandler->FindWindow(TRANSFER_WIN);
+    win = MainHandlerPointer->FindWindow(TRANSFER_WIN);
 
     if (win)
     {
@@ -2640,7 +2640,7 @@ void RelocateSquadron()
             }
         }
 
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
     }
 }
 
@@ -2650,7 +2650,7 @@ void CloseItCB(long, short hit, C_Base *ctrl)
     if (hit != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(ctrl->Parent_);
+    MainHandlerPointer->HideWindow(ctrl->Parent_);
 }
 
 #pragma pack(1)
@@ -2692,7 +2692,7 @@ void SaveTargaCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
 
@@ -2888,7 +2888,7 @@ void LoadPeopleInfo(long client)
     filedata = (char*)rsc->GetData();
     size = rsc->Header->size;
 
-    win = gMainHandler->FindWindow(EXIT_WIN);
+    win = MainHandlerPointer->FindWindow(EXIT_WIN);
 
     if (win)
     {

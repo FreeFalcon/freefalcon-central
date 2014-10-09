@@ -27,7 +27,7 @@ enum
     TACREF_BITMAP_ID = 999888777,
 };
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern int TACREFLoaded;
 
@@ -131,7 +131,7 @@ void StopRWRSounds()
         LastLockTone = -1;
     }
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -382,7 +382,7 @@ void SelectRWR(long ID)
     C_Button *btn;
     LISTBOX *item;
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -771,7 +771,7 @@ static void Load3dModel(Entity *ent)
 
 
 
-            win = gMainHandler->FindWindow(TAC_REF_WIN);
+            win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
             if (win)
             {
@@ -788,7 +788,7 @@ static void EntityToWindow(Entity* ent)
     C_ListBox *lbox;
     C_TreeList *tree;
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -842,7 +842,7 @@ static long InfoToWindow(long SubGroupID)
     Entity *ent;
     long entval = 0;
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -881,7 +881,7 @@ static void SetGroupButton(long GroupID)
     C_Button *btn;
     short i;
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -913,7 +913,7 @@ static void SetSubGroupButton(long SubGroupID)
     C_Button *btn;
     short i;
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -1119,7 +1119,7 @@ static void HookupTacticalReferenceControls(long ID)
     C_ListBox *lbox;
     C_TimerHook *drawTimer;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -1327,7 +1327,7 @@ BOOL TacRef_Setup()
     char tmpPath[_MAX_PATH];
     sprintf(tmpPath, "%s\\%s", FalconTacticalReferenceTheaterFolder, "tacrefdb.bin");
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {

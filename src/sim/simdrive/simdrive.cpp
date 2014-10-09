@@ -111,7 +111,7 @@ void GraphicsDataPoolInitializeStorage(void);
 void GraphicsDataPoolReleaseStorage(void);
 
 extern void SavePersistantList(char* scenario);
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int gNumWeaponsInAir;
 extern HWND MainMenuWindow;
 extern int FileVerify(void);

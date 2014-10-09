@@ -6,7 +6,7 @@
 #include "userids.h"
 
 extern HINSTANCE HInstance;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 static HWND mywin;
 
@@ -109,7 +109,7 @@ void SetWindowLOGFONT(LOGFONT *log)
     if (!log)
         return;
 
-    win = gMainHandler->FindWindow(LOGFONT_WIN);
+    win = MainHandlerPointer->FindWindow(LOGFONT_WIN);
 
     if (win)
     {
@@ -232,7 +232,7 @@ void GetWindowLOGFONT(LOGFONT *log)
     if (!log)
         return;
 
-    win = gMainHandler->FindWindow(LOGFONT_WIN);
+    win = MainHandlerPointer->FindWindow(LOGFONT_WIN);
 
     if (win)
     {
@@ -918,7 +918,7 @@ void MakeFontList(long FontID)
     C_Text *txt;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(FONT_ED_WIN);
+    win = MainHandlerPointer->FindWindow(FONT_ED_WIN);
 
     if (!win || !FontID)
         return;
@@ -1040,7 +1040,7 @@ void CreateFontCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->EnableWindowGroup(-200);
+    MainHandlerPointer->EnableWindowGroup(-200);
 }
 
 void SaveFontCB(long, short hittype, C_Base *control)
@@ -1134,7 +1134,7 @@ void InitFontTool()
     ShowWindow(mywin, 0);
     UpdateWindow(mywin);
 
-    win = gMainHandler->FindWindow(LOGFONT_WIN);
+    win = MainHandlerPointer->FindWindow(LOGFONT_WIN);
 
     if (win)
     {

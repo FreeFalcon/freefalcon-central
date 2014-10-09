@@ -91,7 +91,7 @@ extern void ChooseBullseye(void);
 extern void SetCampaignStartupMode(void);
 extern int tactical_is_training(void);
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern short gLastId;
 
 extern int PMRX;
@@ -301,9 +301,9 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
         gamename = LogBook.Callsign();
 
         // Setup game values
-        if (gMainHandler)
+        if (MainHandlerPointer)
         {
-            C_Window *win = gMainHandler->FindWindow(INFO_WIN);
+            C_Window *win = MainHandlerPointer->FindWindow(INFO_WIN);
 
             if (win)
             {
@@ -841,7 +841,7 @@ void CampaignClass::GotJoinData(void)
     gMainThread->JoinGame(gCommsMgr->GetTargetGame());
 
     // Notify UI of our success
-    if (gMainHandler)
+    if (MainHandlerPointer)
         PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, !FalconLocalGame->IsLocal(), 0);
 }
 

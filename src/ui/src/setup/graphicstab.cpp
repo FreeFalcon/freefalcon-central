@@ -29,7 +29,7 @@
 #include "Weather.h"
 
 #pragma warning(disable : 4706) // assignment within conditional expression
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int GraphicSettingMultiplier;
 
 extern int HighResolutionHackFlag; // Used in WinMain.CPP
@@ -436,7 +436,7 @@ void RenderViewCB(long, short hittype, C_Base *control)
 
         //Sleep(100);
         //STPRender(control);
-        PostMessage(gMainHandler->GetAppWnd(), FM_STP_START_RENDER, 0, (LPARAM)control);
+        PostMessage(MainHandlerPointer->GetAppWnd(), FM_STP_START_RENDER, 0, (LPARAM)control);
     }
     else
     {
@@ -483,7 +483,7 @@ void ChangeViewpointCB(long, short, C_Base *)
 
         if (IO.digital[0] || ((count %= 3) == 0))
         {
-            win = gMainHandler->FindWindow(SETUP_WIN);
+            win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
             if (win != NULL)
             {
@@ -503,7 +503,7 @@ void ChangeViewpointCB(long, short, C_Base *)
                 float altChg = 0.0f;
                 float newPitch = 0.0f, newYaw = 0.0f, newAlt;
 
-                //gMainHandler->EnterCriticalSection();
+                //MainHandlerPointer->EnterCriticalSection();
                 // Retro 31Dec2003
                 extern AxisMapping AxisMap;
 
@@ -966,7 +966,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             renderer->Cleanup();
 
-            renderer->Setup(gMainHandler->GetFront(), viewpt);
+            renderer->Setup(MainHandlerPointer->GetFront(), viewpt);
 
             //reset all values for new renderer
             tslider = (C_Slider *)control->Parent_->FindControl(OBJECT_DETAIL);
@@ -1295,7 +1295,7 @@ void SetAdvanced()
     C_Button *button;
     C_ListBox *lbox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
@@ -1317,7 +1317,7 @@ void SetAdvanced()
 
     if (!pD3DDI) return;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1392,7 +1392,7 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
  C_Button *btn;
  C_ListBox *lbox;
 
- win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+ win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
  if(!win) return;
 
  lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
@@ -1618,7 +1618,7 @@ void SetupGraphicsControls(void)
     C_Slider *slider;
     C_EditBox *ebox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -1821,12 +1821,12 @@ void SetupGraphicsControls(void)
         }
     }
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
     // M.N. SkyColor stuff
-    // win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    // win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
     // if (win) { // JPO conditional
     //     lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
     //     if (lbox) lbox->SetValue(PlayerOptions.skycol);
@@ -1899,12 +1899,12 @@ void AdvancedCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 
 // JPO - select advanced features
@@ -1915,12 +1915,12 @@ void AdvancedGameCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
+    win = MainHandlerPointer->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 
 // M.N. Skyfix
@@ -1931,10 +1931,10 @@ void SkyColorCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }

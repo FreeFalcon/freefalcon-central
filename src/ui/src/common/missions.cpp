@@ -29,7 +29,7 @@ void UpdateMissionWindow(long ID);
 void MakeIndividualATO(VU_ID flightID);
 void SetupFlightSpecificControls(Flight flt);
 void SetSingle_Comms_Ctrls();
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 extern VU_ID gSelectedFlightID;
 VU_ID gPlayerFlightID = FalconNullId;
@@ -208,7 +208,7 @@ void CheckCampaignFlyButton()
 #endif
     }
 
-    win = gMainHandler->FindWindow(CP_TOOLBAR);
+    win = MainHandlerPointer->FindWindow(CP_TOOLBAR);
 
     if (win)
     {
@@ -237,7 +237,7 @@ void CheckCampaignFlyButton()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_TOOLBAR_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_TOOLBAR_WIN);
 
     if (win)
     {
@@ -345,7 +345,7 @@ void FindMissionInBriefing(long ID)
     TREELIST *cur;
     Flight flight;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {

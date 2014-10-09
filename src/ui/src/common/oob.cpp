@@ -44,7 +44,7 @@ enum
     SMALL_OBJ = 200103,
 };
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern GlobalPositioningSystem *gGps;
 C_Base *BuildOOBItem(CampEntity entity);
 SQUADRONPLAYER *gPlayerSquadrons = NULL;
@@ -192,7 +192,7 @@ void SetupOOBWindow()
     C_Entity *category;
     short idx;
 
-    win = gMainHandler->FindWindow(OOB_WIN);
+    win = MainHandlerPointer->FindWindow(OOB_WIN);
 
     if (win)
     {

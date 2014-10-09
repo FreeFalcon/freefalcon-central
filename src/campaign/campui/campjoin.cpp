@@ -32,7 +32,7 @@ bool campaignStart;
 // ============================
 
 extern int FalconConnectionDescription;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern _TCHAR gUI_ScenarioName[];
 extern int CurrentDataVersion;
 extern int CampaignDataVersion;
@@ -61,9 +61,9 @@ extern void ChooseBullseye(void); // 2002-04-18 MN
 // ============================
 
 int CampaignJoinStatus = 0; // This stores what stage of loading we're currently in
-ulong gCampJoinLastData = 0; // Last vuxRealtime we received data about this game
+ulong CampJoinLastData = 0; // Last vuxRealtime we received data about this game
 ulong gCampJoinTimeout = 0; // How long we're willing to wait for the next set of data
-uchar gCampJoinTries = 0; // How many times we've re-requested campaign data
+uchar CampaignJoinTries = 0; // How many times we've re-requested campaign data
 int gCampJoinGameType = 0; // Type of game we're joining (Campaign/TacEng/Dogfight)
 
 // ============================
@@ -91,9 +91,9 @@ void StartCampaignGame(int local, int game_type)
     {
         // Load a Campaign
         CampaignJoinStatus = 0;
-        gCampJoinLastData = 0;
+        CampJoinLastData = 0;
         gCampJoinTimeout = 0;
-        gCampJoinTries = 0;
+        CampaignJoinTries = 0;
         gCampJoinGameType = game_type;
         SendMessage(FalconDisplay.appWin, FM_LOAD_CAMPAIGN, 0, game_type);
         _tcscpy(TheCampaign.SaveFile, gUI_ScenarioName);
@@ -121,8 +121,8 @@ void StartCampaignGame(int local, int game_type)
         // Join a Campaign
         CampaignDataVersion = CurrentDataVersion;
         CampaignJoinStatus = JOIN_REQUEST_ALL_DATA;
-        gCampJoinLastData = vuxRealTime;
-        gCampJoinTries = 0;
+        CampJoinLastData = vuxRealTime;
+        CampaignJoinTries = 0;
         gCampJoinGameType = game_type;
 
         switch (FalconConnectionDescription)
@@ -150,7 +150,7 @@ void StartCampaignGame(int local, int game_type)
         }
 
         // Set up our timeout callback
-        gMainHandler->AddUserCallback(CampaignConnectionTimer);
+        MainHandlerPointer->AddUserCallback(CampaignConnectionTimer);
         SendMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN, JOIN_REQUEST_ALL_DATA, game_type);
     }
 }
@@ -170,8 +170,8 @@ void CampaignJoinSuccess(void)
 {
     MonoPrint("Got all campaign data! Starting it up!\n");
 
-    if (gMainHandler)
-        gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
+    if (MainHandlerPointer)
+        MainHandlerPointer->RemoveUserCallback(CampaignConnectionTimer);
 
     campaignStart = true;
 
@@ -226,7 +226,7 @@ void CampaignJoinSuccess(void)
         if (ps && ps->IsSquadron())
             FalconLocalSession->SetPlayerSquadron((Squadron)ps);
 
-        if (gMainHandler)
+        if (MainHandlerPointer)
         {
             CopyinTempSettings();
 
@@ -235,7 +235,7 @@ void CampaignJoinSuccess(void)
             else
                 AdjustExperienceLevels();
 
-            win = gMainHandler->FindWindow(CS_PUA_WIN);
+            win = MainHandlerPointer->FindWindow(CS_PUA_WIN);
 
             if (win)
             {
@@ -255,16 +255,16 @@ void CampaignJoinSuccess(void)
 
             CampaignSetup();
             campaignStart = false; // next time CampaignSetup() is called, don't stop the clock.
-            gMainHandler->EnterCritical();
+            MainHandlerPointer->EnterCritical();
 
             if (MainLastGroup)
-                gMainHandler->DisableWindowGroup(MainLastGroup);
+                MainHandlerPointer->DisableWindowGroup(MainLastGroup);
 
             DeleteGroupList(CS_SUA_WIN);
-            gMainHandler->DisableWindowGroup(100);
-            gMainHandler->DisableSection(100);
-            gMainHandler->SetSection(200);
-            gMainHandler->EnableWindowGroup(200);
+            MainHandlerPointer->DisableWindowGroup(100);
+            MainHandlerPointer->DisableSection(100);
+            MainHandlerPointer->SetSection(200);
+            MainHandlerPointer->EnableWindowGroup(200);
 
             // 2002-01-03 M.N.
             // If we started a new campaign, make some first task manager calculations and pop up the priority windows
@@ -286,16 +286,16 @@ void CampaignJoinSuccess(void)
                 }
 
                 // first pop up the "Start Campaign" window
-                winme = gMainHandler->FindWindow(STARTCAMP_WIN);
+                winme = MainHandlerPointer->FindWindow(STARTCAMP_WIN);
 
                 if (winme)
                 {
-                    gMainHandler->ShowWindow(winme);
-                    gMainHandler->WindowToFront(winme);
+                    MainHandlerPointer->ShowWindow(winme);
+                    MainHandlerPointer->WindowToFront(winme);
                 }
 
                 // then the priority window - hack, mimic a "P" button press :-)
-                winme = gMainHandler->FindWindow(CP_PUA_MAP);
+                winme = MainHandlerPointer->FindWindow(CP_PUA_MAP);
 
                 if (winme)
                 {
@@ -306,7 +306,7 @@ void CampaignJoinSuccess(void)
 
             gCommsMgr->SetCampaignFlag(game_Campaign);
             ActivateCampMissionSchedule();
-            gMainHandler->LeaveCritical();
+            MainHandlerPointer->LeaveCritical();
             SetCursor(gCursors[CRSR_F16]);
             gCommsMgr->LoadStats();
         }
@@ -331,11 +331,11 @@ void CampaignJoinFail(void)
     C_Window
     *win;
 
-    win = gMainHandler->FindWindow(COMMLINK_WIN);
+    win = MainHandlerPointer->FindWindow(COMMLINK_WIN);
 
     if (win)
     {
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
     }
 
     CommsErrorDialog(TXT_JOINING_GAME, TXT_COMMS_NO_SERVER, NULL, NULL);
@@ -345,7 +345,7 @@ void StopCampaignLoad(void)
 {
     MonoPrint("Stop Campaign Load!\n");
 
-    gMainHandler->RemoveUserCallback(CampaignConnectionTimer);
+    MainHandlerPointer->RemoveUserCallback(CampaignConnectionTimer);
 
     PostMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, game_Campaign);
 }
@@ -353,28 +353,28 @@ void StopCampaignLoad(void)
 // This is called when we've gotten any sort of join data to keep us from timing out
 void CampaignJoinKeepAlive(void)
 {
-    gCampJoinLastData = vuxRealTime;
+    CampJoinLastData = vuxRealTime;
 }
 
 // This is the timer routine which runs during the campaign join process
 void CampaignConnectionTimer(void)
 {
-    ulong elapsedTime = vuxRealTime - gCampJoinLastData;
+    ulong elapsedTime = vuxRealTime - CampJoinLastData;
 
     // Abort entire load process if we've waited to long
     if (elapsedTime > gCampJoinTimeout)
     {
-        gCampJoinTries++;
+        CampaignJoinTries++;
 
         // If we fail to many times, we quit
-        if (gCampJoinTries > 600)
+        if (CampaignJoinTries > 600)
         {
             MonoPrint("Join Timed out!\n");
             PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
             return;
         }
 
-        gCampJoinLastData = vuxRealTime;
+        CampJoinLastData = vuxRealTime;
 
         /* Don't repost messages - these are now sent reliably
          if (!TheCampaign.IsPreLoaded())

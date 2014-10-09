@@ -58,7 +58,7 @@ enum
 };
 
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 
 extern int COLoaded;
@@ -193,10 +193,10 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
     C_Button *btn;
     C_Text *txt;
 
-    if (!MessageID || !gMainHandler)
+    if (!MessageID || !MainHandlerPointer)
         return;
 
-    win = gMainHandler->FindWindow(COMMLINK_WIN);
+    win = MainHandlerPointer->FindWindow(COMMLINK_WIN);
 
     if (win)
     {
@@ -228,8 +228,8 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
         if (txt)
             txt->SetText(MessageID);
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -319,7 +319,7 @@ void CommsSetup()
 
     CurChatY = 0;
 
-    win = gMainHandler->FindWindow(UI_MAIN_SCREEN);
+    win = MainHandlerPointer->FindWindow(UI_MAIN_SCREEN);
 
     if (win)
     {
@@ -356,9 +356,9 @@ static void OpenPhoneBookCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
-    win = gMainHandler->FindWindow(PB_WIN);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
+    win = MainHandlerPointer->FindWindow(PB_WIN);
+    MainHandlerPointer->WindowToFront(win);
 }
 extern bool g_bServer;
 extern int MainLastGroup, TacLastGroup;
@@ -553,10 +553,10 @@ void ServerChatCommand(_TCHAR *msg)
                 strcat(buffer, ".tac");
                 current_tactical_mission = new TacticalMission(buffer);
                 LoadTacticalWindows();
-                gMainHandler->EnterCritical();
+                MainHandlerPointer->EnterCritical();
                 FalconLocalSession->SetCountry(2);
                 tactical_accept_mission();
-                gMainHandler->LeaveCritical();
+                MainHandlerPointer->LeaveCritical();
                 SetTimeCompression(0);
                 MainLastGroup = 3000;
             }
@@ -606,10 +606,10 @@ void ServerChatCommand(_TCHAR *msg)
                 strcat(buffer, ".cam");
                 current_tactical_mission = new TacticalMission(buffer);
                 LoadTacticalWindows();
-                gMainHandler->EnterCritical();
+                MainHandlerPointer->EnterCritical();
                 FalconLocalSession->SetCountry(2);
                 tactical_accept_mission();
-                gMainHandler->LeaveCritical();
+                MainHandlerPointer->LeaveCritical();
                 SetTimeCompression(0);
                 MainLastGroup = 3000;
             }
@@ -618,15 +618,15 @@ void ServerChatCommand(_TCHAR *msg)
             {
                 tactical_mission_loaded = FALSE;
                 RemoveTacticalEdit();
-                gMainHandler->EnterCritical();
+                MainHandlerPointer->EnterCritical();
                 TheCampaign.EndCampaign();
                 CleanupTacticalEngagementUI();
                 TacLastGroup = 0;
-                gMainHandler->DisableSection(200);
-                gMainHandler->SetSection(100);
-                gMainHandler->EnableWindowGroup(100);
-                gMainHandler->EnableWindowGroup(MainLastGroup);
-                gMainHandler->LeaveCritical();
+                MainHandlerPointer->DisableSection(200);
+                MainHandlerPointer->SetSection(100);
+                MainHandlerPointer->EnableWindowGroup(100);
+                MainHandlerPointer->EnableWindowGroup(MainLastGroup);
+                MainHandlerPointer->LeaveCritical();
             }
         }
 
@@ -729,7 +729,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
     C_Text              *txt;
     FalconSessionEntity *session;
     COLORREF             color;
-    win = gMainHandler->FindWindow(CHAT_WIN);
+    win = MainHandlerPointer->FindWindow(CHAT_WIN);
     ServerChatCommand(message); //me123
 
     if (win)
@@ -1025,7 +1025,7 @@ void ProcessChatStr(CHATSTR *msg)
 
     ServerChatCommand(msg->Text_); //me123
 
-    if (gMainHandler) // Assume UI is running
+    if (MainHandlerPointer) // Assume UI is running
     {
         TREELIST *item;
         C_Player *plyr;
@@ -1045,7 +1045,7 @@ void ProcessChatStr(CHATSTR *msg)
 
         AddMessageToChatWindow(msg->ID_, msg->Text_);
 
-        if (!(gMainHandler->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
+        if (!(MainHandlerPointer->GetWindowFlags(CHAT_WIN) & C_BIT_ENABLED))
             gNewMessage = TRUE;
     }
     else if (VM) // Assume Sim is running (AND VM is initialized)
@@ -1128,7 +1128,7 @@ static void SetOnlineStatus(long ID)
     C_Window *win;
     C_Base *ctrl;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -1518,7 +1518,7 @@ void MakeLocalGameTree(VuGameEntity *game)
     if (People->GetRoot())
         People->DeleteBranch(People->GetRoot());
 
-    win = gMainHandler->FindWindow(CHAT_WIN);
+    win = MainHandlerPointer->FindWindow(CHAT_WIN);
 
     if (!win)
         return;
@@ -2293,7 +2293,7 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
 
 void UI_Refresh(void)
 {
-    if (!FalconLocalGame || !gCommsMgr || !gMainHandler)
+    if (!FalconLocalGame || !gCommsMgr || !MainHandlerPointer)
     {
         return;
     }
@@ -2326,7 +2326,7 @@ void ViewRemoteLogbook(long playerID)
     RemoteLB *remlb;
     IMAGE_RSC *pic, *pat;
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win)
     {
@@ -2355,8 +2355,8 @@ void ViewRemoteLogbook(long playerID)
             }
 
             DisplayLogbook(&remlb->Pilot_, pic, pat, FALSE);
-            gMainHandler->ShowWindow(win);
-            gMainHandler->WindowToFront(win);
+            MainHandlerPointer->ShowWindow(win);
+            MainHandlerPointer->WindowToFront(win);
         }
 
         UI_Leave(Leave);
@@ -2610,7 +2610,7 @@ static void HookupCommsControls(long ID)
     C_EditBox *ebox;
     C_TreeList *tree;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;

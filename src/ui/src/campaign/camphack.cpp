@@ -17,7 +17,7 @@
 #include "Gps.h"
 #include "Brief.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern VU_ID gCurrentFlight; // ID of current flight in mission list
 extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -92,7 +92,7 @@ void CampHackButton5CB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(DEBRIEF_WIN);
+    win = MainHandlerPointer->FindWindow(DEBRIEF_WIN);
 
     // KCK: Added the check for a pilot list so that we don't debrief after a
     // discarded mission
@@ -100,6 +100,6 @@ void CampHackButton5CB(long, short hittype, C_Base *)
     {
         // TheCampaign.MissionEvaluator->PostMissionEval();
         BuildCampDebrief(win);
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
     }
 }

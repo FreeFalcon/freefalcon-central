@@ -72,7 +72,7 @@ void ChangeTimeCB(long ID, short hittype, C_Base *control);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern GlobalPositioningSystem *gGps;
 extern C_Map *gMapMgr;
 
@@ -769,7 +769,7 @@ void SetupFlightSpecificControls(Flight flt)
         return;
 
     mission = flt->GetUnitMission();
-    win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+    win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
     menu = gPopupMgr->GetMenu(STEERPOINT_POP);
 
     // Setup our possible waypoint actions
@@ -844,7 +844,7 @@ void GotoFlightCB(long ID, short hittype, C_Base *control)
 
     ID = ((C_ListBox*)control)->GetTextID();
 
-    win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+    win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
@@ -894,8 +894,8 @@ void GotoFlightCB(long ID, short hittype, C_Base *control)
         {
             UpdateWaypointWindowInfo(win, wp, i, FALSE);
             win->RefreshWindow();
-            gMainHandler->ShowWindow(win);
-            gMainHandler->WindowToFront(win);
+            MainHandlerPointer->ShowWindow(win);
+            MainHandlerPointer->WindowToFront(win);
             gActiveWPNum = static_cast<short>(i);
         }
     }
@@ -1303,8 +1303,8 @@ void refresh_waypoint(WayPointClass * wp)
 
     gActiveWPNum = static_cast<short>(i);
 
-    if (gMainHandler)
-        win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+    if (MainHandlerPointer)
+        win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
@@ -2134,7 +2134,7 @@ void DropWayPoint(WayPoint wp)
    if(hittype != C_TYPE_LMOUSEUP)
    return;
 
-   win=gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+   win=MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
    if(win)
    {
    tmpID=(VU_ID *)control->GetUserPtr(C_STATE_0);
@@ -2163,8 +2163,8 @@ void DropWayPoint(WayPoint wp)
    {
    UpdateWaypointWindowInfo(win,wp,i);
    win->RefreshWindow();
-   gMainHandler->ShowWindow(win);
-   gMainHandler->WindowToFront(win);
+   MainHandlerPointer->ShowWindow(win);
+   MainHandlerPointer->WindowToFront(win);
    gActiveWPNum=control->GetUserNumber(C_STATE_1);
    }
    }
@@ -2316,7 +2316,7 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
                 }
 
                 if (ID & 0x40000000)
-                    PostMessage(gMainHandler->GetAppWnd(), FM_REBUILD_WP_LIST, 0, 0); // Have to do this because we can't delete the caller of this CB
+                    PostMessage(MainHandlerPointer->GetAppWnd(), FM_REBUILD_WP_LIST, 0, 0); // Have to do this because we can't delete the caller of this CB
             }
 
             if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
@@ -2355,14 +2355,14 @@ void WaypointCB(long ID, short hittype, class C_Base *ctrl)
                 wp = get_current_waypoint();
             }
 
-            win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+            win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
 
             if (win && wp)
             {
                 UpdateWaypointWindowInfo(win, wp, gActiveWPNum);
                 win->RefreshWindow();
-                gMainHandler->ShowWindow(win);
-                gMainHandler->WindowToFront(win);
+                MainHandlerPointer->ShowWindow(win);
+                MainHandlerPointer->WindowToFront(win);
             }
         }
     }

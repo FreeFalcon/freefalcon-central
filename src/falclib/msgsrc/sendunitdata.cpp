@@ -18,12 +18,12 @@
 //sfr: added here for checks
 using namespace std;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 #define DEBUG_STARTUP 1
 
 extern void CampaignJoinKeepAlive(void);
-extern uchar gCampJoinTries;
+extern uchar CampaignJoinTries;
 
 // Maximum size data block we can send per message
 // Since this needs an instance of the message to really be sized correctly,
@@ -136,7 +136,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         MonoPrint("Got Unit Block #%d!\n", dataBlock.block);
 #endif
 
-        gCampJoinTries = 0;
+        CampaignJoinTries = 0;
 
         // Mark this block as being received.
         session->unitDataReceived[dataBlock.block / 8] |= (1 << (dataBlock.block % 8));
@@ -166,9 +166,9 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         session->unitDataReceiveSet = 0;
 
         // Let the UI know we've received some data
-        if (gMainHandler)
+        if (MainHandlerPointer)
         {
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_UNIT_DATA, 0);
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_UNIT_DATA, 0);
         }
     }
 

@@ -21,7 +21,7 @@ bool JoyEffectPlaying = false;
 
 #pragma warning (disable : 4706) // assignment within conditional expression
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern char **KeyDescrips;
 extern long Cluster;
@@ -359,11 +359,11 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     /* pointer to mommy */
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -490,7 +490,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     SetupGameAxis();
 
     /* PROBLEM: have to call the 'SetThrottleAndRudderBars' functions in the setup->controls tab.. hmm */
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
@@ -990,11 +990,11 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     /* pointer to mommy */
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1105,11 +1105,11 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     /* array of pointers to all axis listboxes in this sheet */
     C_ListBox *listbox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1485,8 +1485,8 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     InitializeValueBars = 1; // Retro 26Dec2003
 
     /* make it official */
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 ///////////**************************************/////////////////
 // Retro ends
@@ -1532,7 +1532,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #define UPDATE_ALWAYS // Retro 13Jan2004
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win != NULL)
     {
@@ -1986,7 +1986,7 @@ void RefreshJoystickCB(long, short, C_Base *)
     // Calibrate();
 
     // Retro - trying to get some of this shit into my advanced controller window..
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -2121,7 +2121,7 @@ SIM_INT Calibrate ( void )
  }
  else
  {
- win = gMainHandler->FindWindow(SETUP_WIN);
+ win = MainHandlerPointer->FindWindow(SETUP_WIN);
  control = win->FindControl(JOY_INDICATOR);
 
  text=(C_Text *)win->FindControl(CAL_TEXT);
@@ -2475,7 +2475,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
         C_Window *win;
         int CommandCombo = 0;
 
-        win = gMainHandler->FindWindow(SETUP_WIN);
+        win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
         if (KeyVar.EditKey)
         {
@@ -3058,7 +3058,7 @@ BOOL SaveKeyMapList(char *filename)
     C_Text *text;
     char descrip[_MAX_PATH];
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (!win)
         return FALSE;
@@ -3165,13 +3165,13 @@ void SaveKeyCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -3298,7 +3298,7 @@ int UpdateKeyMapList(char *fname, int flag)
     C_Window *win;
 
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (!win)
     {
@@ -3442,7 +3442,7 @@ int UpdateKeyMapList(char *fname, int flag)
 
     while (RemoveExcessControls(win, count++));
 
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->WindowToFront(win);
 
     SetCursor(gCursors[CRSR_F16]);
     return TRUE;
@@ -3456,7 +3456,7 @@ void LoadKeyCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
 
@@ -3496,7 +3496,7 @@ int CreateKeyMapList(char *filename)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (!win)
         return FALSE;

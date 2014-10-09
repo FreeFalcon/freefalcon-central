@@ -20,7 +20,7 @@
 #include "InvalidBufferException.h"
 //#include "datadir.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int F4GameType;
 
 void INFOSetupRulesControls(void);
@@ -276,7 +276,7 @@ VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
 
     int dirty = FALSE;
 
-    if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI && gMainHandler)
+    if (FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI && MainHandlerPointer)
         if (memcmp(&rules, &tmpGame->rules, sizeof(class RulesClass)))
             dirty = TRUE;
 
@@ -425,7 +425,7 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     if (FalconLocalGame && FalconLocalSession && \
         FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI && \
         FalconLocalGame->OwnerId() == FalconLocalSession->Id() && \
-        gMainHandler)
+        MainHandlerPointer)
     {
         INFOSetupRulesControls();
     }

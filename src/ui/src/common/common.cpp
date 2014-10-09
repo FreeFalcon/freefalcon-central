@@ -18,10 +18,10 @@
 #include "campmiss.h"
 #include "logbook.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser  *gMainParser;
 
-C_SoundBite *gCampaignBites = NULL;
+C_SoundBite *CampaignBitesPointer = NULL;
 
 extern int CommonLoaded;
 void CloseWindowCB(long, short, C_Base*);
@@ -117,7 +117,7 @@ void AwardWindow(void)
 
     F4SilenceVoices();
 
-    win = gMainHandler->FindWindow(AWARD_WIN);
+    win = MainHandlerPointer->FindWindow(AWARD_WIN);
 
     if (win)
     {
@@ -175,8 +175,8 @@ void AwardWindow(void)
             btn->SetCallback(CheckPromotion);
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -201,7 +201,7 @@ void PromotionWindow(void)
 
     F4SilenceVoices();
 
-    win = gMainHandler->FindWindow(PROMO_WIN);
+    win = MainHandlerPointer->FindWindow(PROMO_WIN);
 
     if (win)
     {
@@ -222,8 +222,8 @@ void PromotionWindow(void)
             btn->SetCallback(CloseResultsWindow);
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     MissionResult = 0;
@@ -237,7 +237,7 @@ void CourtMartialWindow(void)
 
     F4SilenceVoices();
 
-    win = gMainHandler->FindWindow(COURT_WIN);
+    win = MainHandlerPointer->FindWindow(COURT_WIN);
 
     if (win)
     {
@@ -288,8 +288,8 @@ void CourtMartialWindow(void)
             btn->SetCallback(CloseResultsWindow);
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     MissionResult = 0;
@@ -301,7 +301,7 @@ void HookupCommonControls(long ID)
     C_Button *btn;
     C_Window *win;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -421,8 +421,8 @@ void LoadCommonWindows()
 
     gMainParser->LoadSoundList("cmn_snd.lst");
 
-    if (!gCampaignBites)
-        gCampaignBites = gMainParser->ParseSoundBite("art\\common\\uidcp.scf");
+    if (!CampaignBitesPointer)
+        CampaignBitesPointer = gMainParser->ParseSoundBite("art\\common\\uidcp.scf");
 
     gMainParser->LoadWindowList("cmn_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 

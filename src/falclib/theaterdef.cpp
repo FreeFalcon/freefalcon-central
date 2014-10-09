@@ -34,7 +34,7 @@ extern char FalconSplashTheaterFolder[];
 extern char FalconPictureFolder[];
 
 // RV - Biker - Theater switching stuff
-extern int NumZips;
+extern int NumberOfZips;
 extern int* ResourceHandlePointer;
 extern int SimPathHandle;
 #define ZIPFILE_NAME    "ziplist.lst"
@@ -189,9 +189,9 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     FreeIndex();
     ClearCampCache();
 
-    if (NumZips)
+    if (NumberOfZips)
     {
-        for (int i = 0; i < NumZips; i++)
+        for (int i = 0; i < NumberOfZips; i++)
         {
             if (ResourceHandlePointer[i])
                 ResDetach(ResourceHandlePointer[i]);
@@ -202,7 +202,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         if (ResourceHandlePointer[0] < 0)
             delete [] ResourceHandlePointer;
 
-        NumZips = 0;
+        NumberOfZips = 0;
     }
 
     // Reinitialize res manager...
@@ -333,14 +333,14 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         sprintf(string, "Failed to open %s\n", tmpPath);
         OutputDebugString(string);
         ShiError(string);
-        NumZips = 0;
+        NumberOfZips = 0;
     }
     else
     {
-        fscanf(zipFile, "%d", &NumZips);
-        ResourceHandlePointer = new int[NumZips];
+        fscanf(zipFile, "%d", &NumberOfZips);
+        ResourceHandlePointer = new int[NumberOfZips];
 
-        for (int i = 0; i < NumZips; i++)
+        for (int i = 0; i < NumberOfZips; i++)
         {
             char tmp[256];
             fscanf(zipFile, "%*c%s", tmp);

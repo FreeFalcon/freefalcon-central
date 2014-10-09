@@ -32,7 +32,7 @@
 #include "F4version.h"
 
 extern C_Map *gMapMgr;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern GlobalPositioningSystem *gGps;
 
 void DeleteGroupList(long ID);
@@ -170,7 +170,7 @@ void SetupUnitInfoWindow(VU_ID unitID)
     int i;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(UNIT_WIN);
+    win = MainHandlerPointer->FindWindow(UNIT_WIN);
 
     if (!win)
         return;
@@ -461,8 +461,8 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
     AddVehiclesToWindow(win, 0);
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
     UI_Leave(Leave);
 }
 
@@ -487,7 +487,7 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     _TCHAR buffer[200];
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(UNIT_WIN);
+    win = MainHandlerPointer->FindWindow(UNIT_WIN);
 
     if (!win)
         return;
@@ -744,8 +744,8 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     AddVehiclesToWindow(win, 0);
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
     UI_Leave(Leave);
 }
 
@@ -1226,7 +1226,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
     if (!urec)
         return;
 
-    win = gMainHandler->FindWindow(AIR_UNIT_WIN);
+    win = MainHandlerPointer->FindWindow(AIR_UNIT_WIN);
 
     if (win)
     {
@@ -1545,8 +1545,8 @@ void SetupSquadronInfoWindow(VU_ID TheID)
             BuildPilotList(tree, sqd);
         }
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
         win->RefreshWindow();
 
         //dpc SquadronInfoFix for other squadrons
@@ -1591,7 +1591,7 @@ void UpdateSierraHotel()
     RemoteLB *lbptr;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(CAMP_SH);
+    win = MainHandlerPointer->FindWindow(CAMP_SH);
 
     if (win)
     {

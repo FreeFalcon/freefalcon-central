@@ -37,7 +37,7 @@ OBJECTINFO Recon;
 
 extern long FirstPlane;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 void DeleteGroupList(long ID);
 //SimBaseClass* AddFeatureToSim (SimInitDataClass *initData);
 //void CalcTransformMatrix (SimBaseClass* theObject);
@@ -79,8 +79,8 @@ void CalculateViewport(C_Window *win, long client, float *l, float *t, float *r,
 {
     float sw, sh;
 
-    sw = (float)gMainHandler->GetFront()->targetXres();
-    sh = (float)gMainHandler->GetFront()->targetYres();
+    sw = (float)MainHandlerPointer->GetFront()->targetXres();
+    sh = (float)MainHandlerPointer->GetFront()->targetYres();
 
     *l = static_cast<float>(-1.0f + ((float)(win->GetX() + win->ClientArea_[client].left + 6) / (sw * .5)));
     *t = static_cast<float>(1.0f - ((float)(win->GetY() + win->ClientArea_[client].top + 6) / (sh * .5)));
@@ -110,7 +110,7 @@ void CenterOnFeatureCB(long, short hittype, C_Base *control)
             Recon.PosY = pos.y;
             Recon.PosZ = pos.z;
             gUIViewer->SetPosition(Recon.PosX, Recon.PosY, Recon.PosZ);
-            win = gMainHandler->FindWindow(RECON_WIN);
+            win = MainHandlerPointer->FindWindow(RECON_WIN);
 
             if (win)
                 win->RefreshWindow();
@@ -288,7 +288,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         return(0);
 
     CloseAllRenderers(RECON_WIN);
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win == NULL)
         return(0);
@@ -424,7 +424,7 @@ void InitObjectViewer(C_Window *win, long client)
     viewPos.z = 0.0f;
 
     UIrend3d = new Render3D;
-    UIrend3d->Setup(gMainHandler->GetFront());
+    UIrend3d->Setup(MainHandlerPointer->GetFront());
     UIrend3d->SetFOV(30.0f * PI / 180.f);
 
     CalculateViewport(win, client, &l, &t, &r, &b);

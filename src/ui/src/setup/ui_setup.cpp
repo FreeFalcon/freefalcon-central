@@ -42,7 +42,7 @@ Dave Power (x4373)
 //JAM
 
 extern int STPLoaded;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern char **KeyDescrips;
 
@@ -227,7 +227,7 @@ void LoadSetupWindows()
     }
 
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win != NULL)
     {
@@ -355,7 +355,7 @@ void LoadSetupWindows()
         // Retro 27Mar2004 - a bar to show the value of an analogue axis
         // ..actually there are about 20+ of these, but I use the coords of one, the
         // others are (or rather: should be) aligned to this one
-        C_Window* win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+        C_Window* win2 = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
         if (!win2) return;
 
@@ -410,7 +410,7 @@ void STPSetupControls(void)
     C_Slider *slider;
     C_EditBox *ebox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -1059,7 +1059,7 @@ void STPSetupControls(void)
 
     /* // M.N. Sky Color Stuff
     #if 0
-     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if (!win)
      return;
      lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
@@ -1069,7 +1069,7 @@ void STPSetupControls(void)
      lbox->Refresh();
      }
     #else
-     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if(!win) return;
      lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
@@ -1199,7 +1199,7 @@ void RestartCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    PostMessage(gMainHandler->GetAppWnd(), FM_EXIT_GAME, 0, 0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_EXIT_GAME, 0, 0);
 }
 //JAM
 
@@ -1213,7 +1213,7 @@ static void SaveValues(void)
     C_EditBox *ebox;
 
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -1709,7 +1709,7 @@ static void SaveValues(void)
 
     PlayerOptions.Realism = GetRealism(win) / 100.0f;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1756,7 +1756,7 @@ static void SaveValues(void)
 
     SaveKeyMapList(PlayerOptions.keyfile);
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win)
     {
@@ -1857,11 +1857,11 @@ void DoSyncWindowCB(long ID, short hittype, C_Base *control)
      TheFarTextures.FlushHandles();
 
 
-     win = gMainHandler->FindWindow(SYNC_WIN);
+     win = MainHandlerPointer->FindWindow(SYNC_WIN);
      if( win )
      {
-     gMainHandler->ShowWindow(win);
-     gMainHandler->WindowToFront(win);
+     MainHandlerPointer->ShowWindow(win);
+     MainHandlerPointer->WindowToFront(win);
      }
 
      TheTextureBank.SyncDDSTextures();
@@ -1870,7 +1870,7 @@ void DoSyncWindowCB(long ID, short hittype, C_Base *control)
 
      TheTerrTextures.FlushHandles();
      TheFarTextures.FlushHandles();
-    // gMainHandler->HideWindow(win);
+    // MainHandlerPointer->HideWindow(win);
      }
     */
 }
@@ -1966,7 +1966,7 @@ static void HookupSetupControls(long ID)
     C_Slider *slider;
     C_ListBox *listbox;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win == NULL)
         return;
@@ -2427,7 +2427,7 @@ static void HookupSetupControls(long ID)
     }
 
     // OW new stuff
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -2444,7 +2444,7 @@ static void HookupSetupControls(long ID)
 
 
     // M.N. SkyColor stuff
-    /* win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    /* win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if(!win) return;
 
      // disable parent notification for close and cancel button

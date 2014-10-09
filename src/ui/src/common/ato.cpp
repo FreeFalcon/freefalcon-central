@@ -59,7 +59,7 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[]);
 int IsValidMission(int dindex, int mission);
 void SetupFlightSpecificControls(Flight flt);
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 //extern LISTBOX *gTaskList;
 
 extern C_Map *gMapMgr;
@@ -352,7 +352,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     newinfo = new C_ATO_Flight;
     newinfo->Setup(fl->GetCampID(), 0);
     newinfo->SetWH(286, 52);
-    newinfo->InitFlight(gMainHandler);
+    newinfo->InitFlight(MainHandlerPointer);
     newinfo->SetVUID(fl->Id());
     newinfo->SetUserNumber(0, fl->GetTeam());
 
@@ -445,7 +445,7 @@ C_ATO_Package *BuildATOPackageInfo(Package pkg)
     newinfo = new C_ATO_Package;
     newinfo->Setup(pkg->GetCampID(), 0);
     newinfo->SetWH(300, 22);
-    newinfo->InitPackage(gMainHandler);
+    newinfo->InitPackage(MainHandlerPointer);
     newinfo->SetVUID(pkg->Id());
     newinfo->SetUserNumber(0, pkg->GetTeam());
 

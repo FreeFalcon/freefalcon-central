@@ -33,7 +33,7 @@ int setABdetent = FALSE;
 int setIdleCutoff = FALSE; // Retro 1Feb2004
 long mHelmetIsUR = FALSE; // hack for UR Helmet detected
 long mHelmetID;
-float UR_HEAD_VIEW = 160.0f;
+float UrHeadView = 160.0f;
 float UR_PREV_X = 0.0f;
 float UR_PREV_Y = 0.0f;
 
@@ -60,7 +60,7 @@ enum
     MAX_DIFF = 10000,
 };
 
-unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
+unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumberOfHats
 
 void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
 
@@ -186,8 +186,8 @@ void GetURHelmetInput()
             headx = (float)(joyState.lX);
             heady = -(float)(joyState.lY);
 
-            headx = headx * UR_HEAD_VIEW;
-            heady = heady * UR_HEAD_VIEW;
+            headx = headx * UrHeadView;
+            heady = heady * UrHeadView;
 
             headx = headx / 10000.0f;
             heady = heady / 10000.0f;

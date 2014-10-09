@@ -141,7 +141,7 @@ void SetCurrentLoadout(void);
 StoresList *gStores = NULL;
 
 short g3dObjectID = 0;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern VU_ID gSelectedFlightID;
 extern VU_ID gPlayerFlightID; // Flight Player is in (NULL) if not in a flight
 VU_ID gLoadoutFlightID = FalconNullId;
@@ -1001,7 +1001,7 @@ void LoadFlight(VU_ID flightID)
         gOriginalStores[i] = gCurStores[i];
     }
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     for (i = 0; i < PlaneCount; i++)
     {
@@ -1108,7 +1108,7 @@ void LoadFlight(VU_ID flightID)
     }
 
     TallyStores();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 //TJL 01/02/04 Change Skin Function
@@ -1535,7 +1535,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
     VehicleClassDataType *vc = NULL;
     FalconSessionEntity *session = NULL;
 
-    win = gMainHandler->FindWindow(MUNITIONS_WIN);
+    win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
     if (win == NULL)
         return;
@@ -2109,7 +2109,7 @@ void SetCurrentLoadout()
     C_Window *win;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(MUNITIONS_WIN);
+    win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
     if (win == NULL)
         return;

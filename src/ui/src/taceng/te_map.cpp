@@ -103,7 +103,7 @@ void ClearMapToolStates(long ID)
     C_Window *win;
     C_Button *ctrl;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -170,7 +170,7 @@ void hookup_map_windows(C_Window *win)
     C_Button
     *ctrl;
 
-    gMainHandler->AddUserCallback(update_gMapMgr);
+    MainHandlerPointer->AddUserCallback(update_gMapMgr);
 
     ctrl = (C_Button *) win->FindControl(MAP_MAXIMIZE);
 
@@ -356,7 +356,7 @@ static void SetToolbarDirections(long textid)
     C_Window *win;
     C_Text *txt;
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
     {
@@ -370,7 +370,7 @@ static void SetToolbarDirections(long textid)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
     {
@@ -384,7 +384,7 @@ static void SetToolbarDirections(long textid)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_VC_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_VC_WIN);
 
     if (win)
     {
@@ -544,7 +544,7 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
         return;
     }
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win != NULL)
     {
@@ -552,14 +552,14 @@ static void tactical_maximize_map(long, short hittype, C_Base *control)
         gMapMgr->DrawMap();
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win != NULL)
     {
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
     }
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -576,7 +576,7 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
         return;
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     //MonoPrint ("Minimize %d %08x\n", control->GetGroup (), win);
 
@@ -586,14 +586,14 @@ static void tactical_minimize_map(long, short hittype, C_Base *control)
         gMapMgr->DrawMap();
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win != NULL)
     {
-        gMainHandler->ShowWindow(win);
+        MainHandlerPointer->ShowWindow(win);
     }
 
-    gMainHandler->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 }
 
 ///////////////////////////////////////////////////////////////////////////////

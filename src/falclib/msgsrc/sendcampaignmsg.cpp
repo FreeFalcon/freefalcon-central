@@ -14,7 +14,7 @@
 #include "InvalidBufferException.h"
 
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int CurrentDataVersion;
 extern int CampaignDataVersion;
 
@@ -100,9 +100,9 @@ int FalconSendCampaign::Process(uchar autodisp)
         TheCampaign.Flags |= CAMP_PRELOADED;
         CampLeaveCriticalSection();
 
-        if (gMainHandler)
+        if (MainHandlerPointer)
         {
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
         }
 
         return 1;

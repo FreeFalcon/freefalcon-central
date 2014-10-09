@@ -121,7 +121,7 @@ int g_nTargetSpotTimeout = 2 * 60 * 1000;
 // 2001-09-07 ADDED BY S.G. FOR RP5 COMPATIBILITY DATA TEST
 bool g_bRP5Comp = true;
 
-extern int NumHats;
+extern int NumberOfHats;
 bool g_bEnableNonPersistentTextures = false;
 bool g_bEnableStaticTerrainTextures = false;
 //bool g_bEnableAircraftLimits = false; //MI replaced with g_bRealisticAvionics
@@ -990,7 +990,7 @@ static ConfigOption<int> IntOpts[] =
     { "ThrottleMode", &g_nThrottleMode },
     { "PadlockBoxSize", &g_nPadlockBoxSize },
     { "PadlockMode", &g_nPadlockMode },
-    { "NumDefaultHatSwitches", &NumHats },
+    { "NumDefaultHatSwitches", &NumberOfHats },
     { "NearLabelLimit", &g_nNearLabelLimit },
     { "percentage_available_aircraft", &g_npercentage_available_aircraft },
     { "minimum_available_aircraft", &g_nminimum_available_aircraft },

@@ -19,7 +19,7 @@
 
 #include "Sim/Include/navsystem.h" //Wombat778 11-3-2003
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 #include "Graphics/DXEngine/DXVBManager.h"
 extern bool g_bUse_DX_Engine;
@@ -40,7 +40,7 @@ BOOL C_3dViewer::Setup()
     BSPLIST *cur;
 
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
-    if (g_bUse_DX_Engine) TheVbManager.Setup((gMainHandler->GetFront())->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+    if (g_bUse_DX_Engine) TheVbManager.Setup((MainHandlerPointer->GetFront())->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
 
     if (objects_)
     {
@@ -66,8 +66,8 @@ BOOL C_3dViewer::Setup()
 
     TheTimeManager.SetTime((unsigned long)(12l * 60l * 60l * 1000l));
 
-    sw = (float)gMainHandler->GetFront()->targetXres();
-    sh = (float)gMainHandler->GetFront()->targetYres();
+    sw = (float)MainHandlerPointer->GetFront()->targetXres();
+    sh = (float)MainHandlerPointer->GetFront()->targetYres();
 
     return(FALSE);
 }
@@ -79,7 +79,7 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
 
 
     rend3d_ = new Render3D;
-    rend3d_->Setup(gMainHandler->GetFront());
+    rend3d_->Setup(MainHandlerPointer->GetFront());
     // The Near Z must be at least 10.0feet having a so tight angle
     rend3d_->SetFOV(ViewAngle * DTR, 10.0f);
     rend3d_->SetViewport(l, t, r, b);
@@ -120,7 +120,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
     rendOTW_ = new RenderOTW;
 
     viewPoint_->Setup(ViewDistance_, MinTexture_, MaxTexture_, DisplayOptions.bZBuffering);
-    rendOTW_->Setup(gMainHandler->GetFront(), viewPoint_);
+    rendOTW_->Setup(MainHandlerPointer->GetFront(), viewPoint_);
 
     rendOTW_->SetViewport(l, t, r, b);
 
@@ -418,7 +418,7 @@ BOOL C_3dViewer::View3d(long ID)
 
         if (obj)
         {
-            gMainHandler->Unlock();
+            MainHandlerPointer->Unlock();
             rend3d_->SetCamera(&currentPos_, &currentRot_);
             // rend3d_->SetTime(Time_+(GetCurrentTime() % 60000l));
 
@@ -444,7 +444,7 @@ BOOL C_3dViewer::View3d(long ID)
             // CLose the Frame
             rend3d_->context.FinishFrame(NULL);
 
-            gMainHandler->Lock();
+            MainHandlerPointer->Lock();
             return(TRUE);
         }
     }
@@ -457,7 +457,7 @@ BOOL C_3dViewer::ViewOTW()
     if (rendOTW_ && viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
-        gMainHandler->Unlock();
+        MainHandlerPointer->Unlock();
 
         //JAM 16Dec03
         if (DisplayOptions.bZBuffering)
@@ -474,7 +474,7 @@ BOOL C_3dViewer::ViewOTW()
         rendOTW_->context.FinishFrame(NULL);
         //JAM
 
-        gMainHandler->Lock();
+        MainHandlerPointer->Lock();
         return(TRUE);
     }
 
@@ -489,7 +489,7 @@ BOOL C_3dViewer::ViewGreyOTW()
     if (rendOTW_ && viewPoint_)
     {
         viewPoint_->Update(&currentPos_);
-        gMainHandler->Unlock();
+        MainHandlerPointer->Unlock();
 
         rendOTW_->context.SetZBuffering(TRUE);
 
@@ -565,7 +565,7 @@ BOOL C_3dViewer::ViewGreyOTW()
         }
 
         // Blit to work buffer
-        m_pImgGray->Compose(gMainHandler->GetFront(), &rcSrc, &rcDst);
+        m_pImgGray->Compose(MainHandlerPointer->GetFront(), &rcSrc, &rcDst);
 
         // Convert to grey
         mem = (WORD *) m_pImgGray->Lock();
@@ -582,11 +582,11 @@ BOOL C_3dViewer::ViewGreyOTW()
         m_pImgGray->Unlock();
 
         // and blit back
-        gMainHandler->GetFront()->Compose(m_pImgGray, &rcDst, &rcSrc);
+        MainHandlerPointer->GetFront()->Compose(m_pImgGray, &rcDst, &rcSrc);
 
-        mem = (WORD*)gMainHandler->Lock();
+        mem = (WORD*)MainHandlerPointer->Lock();
 #else
-        mem = (WORD*)gMainHandler->Lock();
+        mem = (WORD*)MainHandlerPointer->Lock();
 
         // OW FIXME: implement this by blitting to a temp sysmem surface, convert and blitting back
 #if 0

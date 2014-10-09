@@ -41,7 +41,7 @@
 
 #define _USE_REGISTRY_ 1
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 
 static void HookupPWControls(long ID);
@@ -131,7 +131,7 @@ void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base*),
 
 
 
-    win = gMainHandler->FindWindow(DIALOG_WIN);
+    win = MainHandlerPointer->FindWindow(DIALOG_WIN);
 
     if (win)
     {
@@ -224,8 +224,8 @@ void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base*),
         }
     }
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 }
 
@@ -266,7 +266,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     if (LogState & LB_CHECKED)
         return;
 
-    win = gMainHandler->FindWindow(PASSWORD_WIN);
+    win = MainHandlerPointer->FindWindow(PASSWORD_WIN);
 
     if (win)
     {
@@ -283,7 +283,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
 
                 lbox->RemoveAllItems();
 
-                C_Window *win = gMainHandler->FindWindow(LOG_WIN);
+                C_Window *win = MainHandlerPointer->FindWindow(LOG_WIN);
 
                 if (win)
                     ebox = (C_EditBox *)win->FindControl(CALLSIGN_LIST);
@@ -397,8 +397,8 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
         btn->Refresh();
     }
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 }
 
@@ -421,7 +421,7 @@ void CheckPasswordCB(long, short hittype, C_Base *control)
         if (UI_logbk.CheckPassword(pwd))
         {
             LogState |= LB_EDITABLE | LB_CHECKED;
-            gMainHandler->HideWindow(control->Parent_);
+            MainHandlerPointer->HideWindow(control->Parent_);
             LogBook.LoadData(&UI_logbk.Pilot);
             UpdateKeyMapList(PlayerOptions.keyfile, 1);
         }
@@ -468,7 +468,7 @@ void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot, int flag = LB_EDITABLE
         return;
     }
 
-    C_Window *win = gMainHandler->FindWindow(LOG_WIN);
+    C_Window *win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win)
     {
@@ -497,7 +497,7 @@ void NoPasswordCB(long, short hittype, C_Base *control)
     UpdateKeyMapList(PlayerOptions.keyfile, 0);
     LoadLogBookWindows();
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 }
 
 
@@ -626,7 +626,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
     //TJL 12/01/03 Add Pointer here
     CAMP_STATS *camp = UI_logbk.GetCampaign();
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win)
     {
@@ -1307,7 +1307,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
 
@@ -1343,7 +1343,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
                 UI_logbk.SetSquadron(fname);
 
                 C_Window *win;
-                win = gMainHandler->FindWindow(LOG_WIN);
+                win = MainHandlerPointer->FindWindow(LOG_WIN);
 
                 if (win)
                 {
@@ -1372,7 +1372,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
 
@@ -1435,7 +1435,7 @@ void ChangeImageCB(long ID, short hittype, C_Base *control)
 int SetResourceImage(long ID, long ImageID)
 {
     C_Window *win;
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win != NULL)
     {
@@ -1473,7 +1473,7 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
     // IMAGE_RSC *PrevImage=NULL;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win != NULL)
     {
@@ -1604,7 +1604,7 @@ void LoadLogCB(long ID,short hittype,C_Base *control)
  if(hittype != C_TYPE_LMOUSEUP)
  return;
 
- gMainHandler->HideWindow(control->Parent_);
+ MainHandlerPointer->HideWindow(control->Parent_);
 
  ebox=(C_EditBox*)control->Parent_->FindControl(FILE_NAME);
  if(ebox)
@@ -1635,7 +1635,7 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win == NULL)
         return;
@@ -1656,7 +1656,7 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
             pwdbox->Refresh();
             ebox->SetText(_T(""));
             ebox->Refresh();
-            gMainHandler->HideWindow(control->Parent_);
+            MainHandlerPointer->HideWindow(control->Parent_);
             control = win->FindControl(LOG_OK);
             SaveLogBookCB(LOG_OK, hittype, control);
             LogState |= LB_CHECKED;
@@ -1674,7 +1674,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win == NULL)
         return;
@@ -1694,7 +1694,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
             UI_logbk.SetPassword(ebox->GetText());
             ebox->SetText(_T(""));
             ebox->Refresh();
-            gMainHandler->HideWindow(control->Parent_);
+            MainHandlerPointer->HideWindow(control->Parent_);
             LogState |= LB_CHECKED;
 
 
@@ -1786,7 +1786,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
 
                 C_Window *stpwin;
-                stpwin = gMainHandler->FindWindow(SETUP_WIN);
+                stpwin = MainHandlerPointer->FindWindow(SETUP_WIN);
 
                 if (stpwin)
                 {
@@ -1887,7 +1887,7 @@ void OpenLogBookCB(long, short hittype, C_Base *control)
 
     LoadLogBookWindows();
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     SetCursor(gCursors[CRSR_F16]);
 
     if (!LogBook.CheckPassword(_T("")))
@@ -1915,7 +1915,7 @@ void ClearCB(long, short hittype, C_Base *control)
         return;
 
     UI_logbk.Clear();
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
     LBSetupControls();
 }
 
@@ -1968,7 +1968,7 @@ int SaveControlValues(void)
     C_Text *text;
     C_ListBox *lbox;
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win == NULL)
         return FALSE;
@@ -2028,7 +2028,7 @@ int SaveControlValues(void)
         ebox->Refresh();
 
         C_Window *stpwin;
-        stpwin = gMainHandler->FindWindow(SETUP_WIN);
+        stpwin = MainHandlerPointer->FindWindow(SETUP_WIN);
 
         if (stpwin)
         {
@@ -2104,7 +2104,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win == NULL)
         return;
@@ -2149,7 +2149,7 @@ void HookupLBControls(long ID)
     C_Button *ctrl;
     C_ListBox *lbox;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -2220,7 +2220,7 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
     C_ListBox *lbox;
     _TCHAR buf[MAX_PATH];
 
-    win = gMainHandler->FindWindow(LOG_WIN);
+    win = MainHandlerPointer->FindWindow(LOG_WIN);
 
     if (win)
     {

@@ -188,7 +188,7 @@ int AddObjectToKillsList(int index);
 int score_player_ejected(void);
 void UpdateEvaluators(FlightDataClass *flight_data, PilotDataClass *pilot_data);
 class C_Handler;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern void AddMessageToChatWindow(VU_ID from, _TCHAR *message);
 
 #ifdef DEBUG

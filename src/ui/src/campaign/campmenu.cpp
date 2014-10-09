@@ -49,7 +49,7 @@ void CloseAllRenderers(long openID);
 
 C_TreeList *TargetTree = NULL;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Map *gMapMgr;
 extern C_3dViewer *gUIViewer;
 extern OBJECTINFO Recon;
@@ -662,7 +662,7 @@ void MenuObjReconCB(long, short, C_Base *)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -722,19 +722,19 @@ void MenuObjReconCB(long, short, C_Base *)
         TheLoader.WaitLoader();
         PositionCamera(&Recon, win, 0);
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
         if (TargetTree)
             TargetTree->RecalcSize();
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     SetCursor(gCursors[CRSR_F16]);
@@ -1170,7 +1170,7 @@ void MenuUnitStatusCB(long, short, C_Base *)
 
     if (urec)
     {
-        win = gMainHandler->FindWindow(UNIT_WIN);
+        win = MainHandlerPointer->FindWindow(UNIT_WIN);
 
         if (win)
         {

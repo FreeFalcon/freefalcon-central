@@ -19,7 +19,7 @@
 #include "persist.h"
 #include "InvalidBufferException.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int F4VuMaxTCPMessageSize;
 extern ulong gResendEvalRequestTime;
 extern int EncodeObjectiveDeltas(VU_BYTE **stream);
@@ -126,16 +126,16 @@ int FalconRequestCampaignData::Process(uchar autodisp)
     {
         MonoPrint("Bang Crash Whollop\n");
 
-        if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_GAME_FULL, 0, 0);
+        if (MainHandlerPointer)
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_GAME_FULL, 0, 0);
     }
 
     if (dataBlock.dataNeeded & DF_MATCH_IN_PROGRESS)
     {
         MonoPrint("Whollop Crash Bang\n");
 
-        if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_MATCH_IN_PROGRESS, 0, 0);
+        if (MainHandlerPointer)
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_MATCH_IN_PROGRESS, 0, 0);
     }
 
     if (!TheCampaign.IsLoaded())

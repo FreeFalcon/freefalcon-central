@@ -541,7 +541,7 @@ int make_callsign_string(char *str, char *insert, SimBaseClass *theObject)
 ///////////////////////////////////////////////////////////////////////////////
 
 class C_Handler;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern void AddMessageToChatWindow(VU_ID from, _TCHAR *message);
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -42,7 +42,7 @@ extern int gMoveBattalion;
 
 extern GlobalPositioningSystem *gGps;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 void WaypointCB(long ID, short hittype, C_Base *ctrl);
 void UnitCB(long ID, short hittype, C_Base *ctrl);
 int IsValidWP(WayPointClass *wp, Flight flt);

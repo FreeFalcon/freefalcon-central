@@ -15,7 +15,7 @@
 #include "falclib/include/soundgroups.h"
 #include "falcsnd/psound.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Music *gMusic;
 extern VoiceManager *VM;
 extern int NoUiComms;
@@ -105,7 +105,7 @@ void InitSoundSetup()
         PlayerOptions.GroupVol[MASTER_SOUND_GROUP] = gSoundDriver->GetMasterVolume();
     }
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win)
     {

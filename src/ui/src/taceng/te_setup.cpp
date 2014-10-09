@@ -106,7 +106,7 @@ void hookup_tactical_controls(long ID)
     C_TreeList
     *tree;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (!win)
     {
@@ -351,12 +351,12 @@ void TestOpenCB(long, short hittype, C_Base *control)
         return;
 
     if (TacLastGroup)
-        gMainHandler->DisableWindowGroup(TacLastGroup);
+        MainHandlerPointer->DisableWindowGroup(TacLastGroup);
 
     TacLastGroup = control->GetGroup();
-    gMainHandler->EnableWindowGroup(TacLastGroup);
-    win1 = gMainHandler->FindWindow(TAC_TOOLBAR_WIN);
-    win2 = gMainHandler->FindWindow(TAC_EDIT_TOOLBAR);
+    MainHandlerPointer->EnableWindowGroup(TacLastGroup);
+    win1 = MainHandlerPointer->FindWindow(TAC_TOOLBAR_WIN);
+    win2 = MainHandlerPointer->FindWindow(TAC_EDIT_TOOLBAR);
 
     //Hide Icons which shouldn't be seen with this window
     idx = 200;
@@ -414,7 +414,7 @@ void OpenVCWindowCB(long ID, short hittype, C_Base *base)
     if (OwnershipChanged)
         UpdateOwners();
 
-    win = gMainHandler->FindWindow(TAC_VC_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_VC_WIN);
 
     if (win)
     {
@@ -435,7 +435,7 @@ void OpenBuilderWindowCB(long ID, short hittype, C_Base *base)
     if (OwnershipChanged)
         UpdateOwners();
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
     {
@@ -456,7 +456,7 @@ void OpenMissionWindowCB(long ID, short hittype, C_Base *base)
     if (OwnershipChanged)
         UpdateOwners();
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
     {
@@ -639,7 +639,7 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
                 if (game)
                 {
                     if (game->GetGameType() == game_TacticalEngagement)
-                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_TacticalEngagement);
+                        SendMessage(MainHandlerPointer->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_TacticalEngagement);
                 }
             }
         }

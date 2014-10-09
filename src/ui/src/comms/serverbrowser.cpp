@@ -38,7 +38,7 @@ extern CComModule _Module;
 #include "../../../gnet/include/core.h"       // main symbols
 
 // Imports
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 void GetPlayerInfo(VU_ID ID);
@@ -303,7 +303,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  C_Window *win;
  C_Button *button;
 
- win=gMainHandler->FindWindow(JETNET_WIN);
+ win=MainHandlerPointer->FindWindow(JETNET_WIN);
  if(!win) return;
 
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
@@ -526,12 +526,12 @@ static void OnClickedSetup(long,short hittype,C_Base *control)
     if(hittype != C_TYPE_LMOUSEUP)
  return;
     C_Window *win;
-    win=gMainHandler->FindWindow(SETUP_JETNET_OPTIONS_WIN);
+    win=MainHandlerPointer->FindWindow(SETUP_JETNET_OPTIONS_WIN);
     if(win == NULL)
  return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 */
 static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
@@ -571,7 +571,7 @@ void HookupServerBrowserControls(long ID)
     sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
 
-    winme = gMainHandler->FindWindow(JETNET_WIN);
+    winme = MainHandlerPointer->FindWindow(JETNET_WIN);
 
     if (winme == NULL)
         return;
@@ -762,7 +762,7 @@ static void Update()
 
 #if 0
             // Adjust maximum number of concurent server quries according to phonebook bandwidth settings
-            C_Window *pWin = gMainHandler->FindWindow(PB_WIN);
+            C_Window *pWin = MainHandlerPointer->FindWindow(PB_WIN);
 
             if (pWin)
             {
@@ -904,7 +904,7 @@ static void UpdateComplete(BOOL bSuccess)
     {
         m_bCloseWindowPending = false;
 
-        C_Window *pWin = gMainHandler->FindWindow(JETNET_WIN);
+        C_Window *pWin = MainHandlerPointer->FindWindow(JETNET_WIN);
         C_Base *wndClose = pWin->FindControl(CLOSE_WINDOW);
 
         if (wndClose)

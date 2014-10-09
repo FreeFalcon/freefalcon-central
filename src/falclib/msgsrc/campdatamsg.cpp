@@ -18,7 +18,7 @@
 //sfr: added here for checks
 #include "InvalidBufferException.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 #ifdef DEBUG
 int cdecode_count = 0, cencode_count = 0;
@@ -123,8 +123,8 @@ int FalconCampDataMessage::Process(uchar autodisp)
             DecodePrimaryObjectiveList(data, ent);
             TheCampaign.Flags &= ~CAMP_NEED_PERSIST;
 
-            if (gMainHandler)
-                PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRIORITIES, 0);
+            if (MainHandlerPointer)
+                PostMessage(MainHandlerPointer->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRIORITIES, 0);
 
             TheCampaign.GotJoinData();
             break;
