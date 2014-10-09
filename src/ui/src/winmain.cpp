@@ -101,23 +101,23 @@ bool WriteSoundTable = false;
 bool WriteMissionTable = false;
 
 // dannycoh - commented out - not used.
-//char top_space[] =    "                                                                               ";
-//char program_name[] = "    ****    FreeFalcon OSP    ****    ";
-//char legal_crap[] =   "    ****    (c)2014 The FreeFalcon Community.    ****    ";
-//char bottom_space[] = "                                                                               ";
+//char TopSpace[] =    "                                                                               ";
+//char ProgramName[] = "    ****    FreeFalcon OSP    ****    ";
+//char LegalCrap[] =   "    ****    (c)2014 The FreeFalcon Community.    ****    ";
+//char BottomSpace[] = "                                                                               ";
 // dannycoh - end.
 
-char FalconMovieDirectory[_MAX_PATH];
+char FalconMovieFolder[_MAX_PATH];
 char FalconMovieMode[_MAX_PATH];
-char FalconUIArtDirectory[_MAX_PATH];
-char FalconUIArtThrDirectory[_MAX_PATH];
-char FalconUISoundDirectory[_MAX_PATH];
-char FalconSoundThrDirectory[_MAX_PATH];
+char FalconUiArtFolder[_MAX_PATH];
+char FalconUiArtTheaterFolder[_MAX_PATH];
+char FalconUiSoundFolder[_MAX_PATH];
+char FalconSoundTheaterFolder[_MAX_PATH];
 // Theater switching stuff
-char FalconCockpitThrDirectory[_MAX_PATH];
-char FalconZipsThrDirectory[_MAX_PATH];
-char FalconTacrefThrDirectory[_MAX_PATH];
-char FalconSplashThrDirectory[_MAX_PATH];
+char FalconCockpitTheaterFolder[_MAX_PATH];
+char FalconZipsTheaterFolder[_MAX_PATH];
+char FalconTacticalReferenceTheaterFolder[_MAX_PATH];
+char FalconSplashTheaterFolder[_MAX_PATH];
 
 int noUIcomms = FALSE;
 int displayCampaign = FALSE;
@@ -1283,25 +1283,25 @@ void ParseCommandLine(LPSTR cmdLine)
     else if (size <= 1)
         strcpy(FalconMovieMode, "Hurry");
 
-    size = sizeof(FalconUIArtDirectory);
-    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUIArtDirectory, &size);
+    size = sizeof(FalconUiArtFolder);
+    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUiArtFolder, &size);
 
     if (retval != ERROR_SUCCESS)
     {
-        strcpy(FalconUIArtDirectory, FalconDataDirectory);
-        strcpy(FalconUIArtThrDirectory, FalconDataDirectory);
+        strcpy(FalconUiArtFolder, FalconDataDirectory);
+        strcpy(FalconUiArtTheaterFolder, FalconDataDirectory);
     }
 
-    size = sizeof(FalconUISoundDirectory);
-    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUISoundDirectory, &size);
+    size = sizeof(FalconUiSoundFolder);
+    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUiSoundFolder, &size);
 
     if (retval != ERROR_SUCCESS)
     {
-        strcpy(FalconUISoundDirectory, FalconDataDirectory);
+        strcpy(FalconUiSoundFolder, FalconDataDirectory);
     }
 
-    strcpy(FalconSoundThrDirectory, FalconDataDirectory);
-    strcat(FalconSoundThrDirectory, "\\sounds");
+    strcpy(FalconSoundTheaterFolder, FalconDataDirectory);
+    strcat(FalconSoundTheaterFolder, "\\sounds");
     retval = RegCloseKey(theKey);
 }
 
@@ -2141,7 +2141,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             // RV - Biker - Add theater switching for into movie
             char tmpPath[MAX_PATH];
-            sprintf(tmpPath, "%s\\intro.avi", FalconMovieDirectory);
+            sprintf(tmpPath, "%s\\intro.avi", FalconMovieFolder);
             PlayMovie(tmpPath, -1, -1, 0, 0, FalconDisplay.GetImageBuffer()->frontSurface());
             FalconDisplay.LeaveMode();
             break;
@@ -2267,7 +2267,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     hwnd = FalconDisplay.appWin;
     // RV - Biker - Path is in filename already
     sprintf(movieFile, "%s", filename);
-    //sprintf(movieFile, "%s\\%s", FalconMovieDirectory, filename);
+    //sprintf(movieFile, "%s\\%s", FalconMovieFolder, filename);
 
     if (left == -1)
     {
