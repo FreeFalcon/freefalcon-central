@@ -322,23 +322,23 @@ void ICPClass::ExecWinAmpMode(void)
         return;
     }
 
-    if (!winamp)
+    if (!WinAmpPointer)
         return;
 
-    winamp->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..
+    WinAmpPointer->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..
 
     ClearStrings();
 
     //Line1
     FillDEDMatrix(0, 1, "BMS Crew Entertainment");
     //Line3
-    char* title = winamp->getDEDTitle(0);
+    char* title = WinAmpPointer->getDEDTitle(0);
 
     if (title)
         FillDEDMatrix(2, 1, title);
 
     //Line4
-    title = winamp->getDEDTitle(1);
+    title = WinAmpPointer->getDEDTitle(1);
 
     if (title)
         FillDEDMatrix(3, 1, title);
@@ -347,7 +347,7 @@ void ICPClass::ExecWinAmpMode(void)
     FillDEDMatrix(4, 2, "Volume");
     FillDEDMatrix(4, 10, "\x02", 2);
     char tmp[10];
-    sprintf(tmp, "%3i", winamp->getVolume());
+    sprintf(tmp, "%3i", WinAmpPointer->getVolume());
     FillDEDMatrix(4, 12, tmp);
     FillDEDMatrix(4, 16, "\x02", 2);
 }

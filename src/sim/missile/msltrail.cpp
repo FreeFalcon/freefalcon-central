@@ -229,8 +229,8 @@ void MissileClass::UpdateTrail(void)
             bool contrail = false;
 
             //JAM 24Nov03
-            if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
-                objAlt < ((WeatherClass*)realWeather)->contrailHigh)
+            if (objAlt > ((WeatherClass*)RealWeatherPointer)->contrailLow &&
+                objAlt < ((WeatherClass*)RealWeatherPointer)->contrailHigh)
                 contrail = true;
 
             //RV - I-Hawk - AIM-120 had no trail, it should have a weak trail

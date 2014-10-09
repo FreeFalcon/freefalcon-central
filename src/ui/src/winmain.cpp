@@ -141,19 +141,19 @@ int MinorVersion = FfMinorVersion;
 int BuildNumber = FfBuildNumber;
 //used to display version number in game (not part of version system)
 int ShowVersion = 0;
-int* ResourceHandle;
+int* ResourceHandlePointer;
 
 BOOL VersionInfo = FALSE;
-HWND mainMenuWnd;
-HWND mainAppWnd;
-HINSTANCE hInst;
-class tactical_mission;
-TrackIR theTrackIRObject;
+HWND MainMenuWindow;
+HWND MainApplicationWindow;
+HINSTANCE HInstance;
+class TacticalMission;
+TrackIR TheTrackIrObject;
 CComModule _Module;
-WSADATA wsadata;
-falcon4LeakCheck flc;
-RealWeather* realWeather = NULL;
-WinAmpFrontEnd* winamp = 0;
+WSADATA WindowsSocketsData;
+FreeFalconLeakCheck FalconLeakCheck;
+RealWeather* RealWeatherPointer = NULL;
+WinAmpFrontEnd* WinAmpPointer = 0;
 
 extern bool g_bPilotEntertainment;
 extern bool g_bEnumSoftwareDevices;
@@ -304,7 +304,7 @@ void IncDecDataToPlay(int delta);
 
 BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL CleanupDIJoystick(void);
-BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
+BOOL SetupDIJoystick(HINSTANCE HInstance, HWND hWnd);
 
 int FileVerify(void);
 int tactical_is_training(void);
@@ -420,7 +420,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
         }
     }
 
-    mainMenuWnd = CreateWindow("Falcon4Class",
+    MainMenuWindow = CreateWindow("Falcon4Class",
                                "FreeFalcon OSP Debug Window",
                                WS_OVERLAPPEDWINDOW,
                                720,
@@ -433,7 +433,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
                                NULL);
 
 #ifndef NDEBUG
-    ShowWindow(mainMenuWnd, SW_SHOW);
+    ShowWindow(MainMenuWindow, SW_SHOW);
 #endif
 
     hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_FALCON4_ACC1));
@@ -454,7 +454,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     _Module.Init(ObjectMap, hInstance);
 
-    InitWS2(&wsadata); // Init Winsock now, we need it for GNet
+    InitWS2(&WindowsSocketsData); // Init Winsock now, we need it for GNet
 
     char strVersion[0x20];
     sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
@@ -509,7 +509,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    hInst = hInstance;
+    HInstance = hInstance;
 
     ParseCommandLine(lpCmdLine);
 
@@ -541,7 +541,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return(FALSE);
     }
 
-    realWeather = new WeatherClass();
+    RealWeatherPointer = new WeatherClass();
 
     // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
     // I'd like to make it go away soon...
@@ -613,7 +613,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     FalconDisplay.Setup(gLangIDNum);
 
-    mainAppWnd = FalconDisplay.appWin;
+    MainApplicationWindow = FalconDisplay.appWin;
 
     if (WriteSoundTable)
         SaveSFXTable();
@@ -637,7 +637,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     SystemLevelExit();
 
     // Since its initialized here, finalize here
-    delete realWeather;
+    delete RealWeatherPointer;
 
     _Module.Term();
 
@@ -684,7 +684,7 @@ void EndUI(void)
     TheCampaign.Resume();
 
     if (auto_start)
-        SetFocus(mainMenuWnd);
+        SetFocus(MainMenuWindow);
 }
 
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -762,7 +762,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 #ifdef CAMPTOOL
                     if (!DisplayCampaign)
                     {
-                        CampMain(hInst, SW_SHOW);
+                        CampMain(HInstance, SW_SHOW);
                         DisplayCampaign = TRUE;
                     }
                     else
@@ -789,11 +789,11 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 #ifdef CAMPTOOL
 
                 case ID_CAMPAIGN_SELECTSQUADRON:
-                    DialogBox(hInst, MAKEINTRESOURCE(IDD_SQUADRONDIALOG), mainMenuWnd, (DLGPROC)SelectSquadron);
+                    DialogBox(HInstance, MAKEINTRESOURCE(IDD_SQUADRONDIALOG), MainMenuWindow, (DLGPROC)SelectSquadron);
                     break;
 
                 case ID_CAMPAIGN_FLYMISSION:
-                    DialogBox(hInst, MAKEINTRESOURCE(IDD_MISSDIALOG), mainMenuWnd, (DLGPROC)SelectMission);
+                    DialogBox(HInstance, MAKEINTRESOURCE(IDD_MISSDIALOG), MainMenuWindow, (DLGPROC)SelectMission);
                     break;
 
                 case ID_CAMPAIGN_RENAMINGON:
@@ -811,7 +811,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_VOICES_TOOL:
-                    DialogBox(hInst, MAKEINTRESOURCE(IDD_PLAYVOICES), FalconDisplay.appWin, (DLGPROC)PlayVoicesProc);
+                    DialogBox(HInstance, MAKEINTRESOURCE(IDD_PLAYVOICES), FalconDisplay.appWin, (DLGPROC)PlayVoicesProc);
                     break;
 
                 case ID_UI_AIRBASE:
@@ -1391,7 +1391,7 @@ void SystemLevelInit()
         LogBook.LoadData(&UI_logbk.Pilot);
     }
 
-    SetupDIJoystick(hInst, FalconDisplay.appWin);
+    SetupDIJoystick(HInstance, FalconDisplay.appWin);
 
     // Retro 20Dec2003
     extern int g_nNumberOfSubTitles;
@@ -1427,17 +1427,17 @@ void SystemLevelInit()
 
     // Retro 20Dec2003 ends
 
-    theTrackIRObject.InitTrackIR(mainAppWnd); // Retro 26/09/03
+    TheTrackIrObject.InitTrackIR(MainApplicationWindow); // Retro 26/09/03
 
     if (PlayerOptions.Get3dTrackIR() == false)
         OTWDriver.SetHeadTracking(FALSE); // Cobra - Make 3D pit mouselook work when TIR is user-selected "off".
 
-    // Retro 3Jan2004 - starting up the winamp frontend class, the winamp win need not be active at this point
+    // Retro 3Jan2004 - starting up the WinAmpPointer frontend class, the WinAmpPointer win need not be active at this point
     if (g_bPilotEntertainment == true)
     {
-        winamp = new WinAmpFrontEnd();
+        WinAmpPointer = new WinAmpFrontEnd();
 
-        if (!winamp)
+        if (!WinAmpPointer)
         {
             g_bPilotEntertainment = false;
         }
@@ -1469,13 +1469,13 @@ void SystemLevelExit(void)
     StopVoice(); //me123
     CleanupDIAll();
     DrawableParticleSys::UnloadParameters(); // MLR 1/31/2004 -
-    theTrackIRObject.ExitTrackIR(); // Retro 26/09/03
+    TheTrackIrObject.ExitTrackIR(); // Retro 26/09/03
 
     // Retro 3Jan2004
-    if (winamp)
+    if (WinAmpPointer)
     {
-        delete(winamp);
-        winamp = 0;
+        delete(WinAmpPointer);
+        WinAmpPointer = 0;
     }
 
     // ..ends
@@ -1517,10 +1517,10 @@ void SystemLevelExit(void)
 
     for (int i = 0; i < NumZips; i++)
     {
-        ResDetach(ResourceHandle[i]);
+        ResDetach(ResourceHandlePointer[i]);
     }
 
-    delete [] ResourceHandle;
+    delete [] ResourceHandlePointer;
     ResExit();
 
     SimDriver.ReleaseSimMemoryPools();
@@ -2388,38 +2388,38 @@ void ShutdownCampaign(void)
 
 void EnableCampaignMenus(void)
 {
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEAS, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEALLAS, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEINSTANTAS, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_LOAD, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_NEW, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_JOIN, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEAS, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEALLAS, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEINSTANTAS, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_LOAD, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_NEW, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_JOIN, MF_GRAYED);
 #ifdef CAMPTOOL
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_DISPLAY, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_DISPLAY, MF_ENABLED);
 #endif
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SELECTSQUADRON, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_FLYMISSION, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_EXIT, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_PAUSED, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SELECTSQUADRON, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_FLYMISSION, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_EXIT, MF_ENABLED);
 }
 
 void DisableCampaignMenus(void)
 {
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVE, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEAS, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEALLAS, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEINSTANTAS, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_LOAD, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_NEW, MF_ENABLED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_DISPLAY, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_FLYMISSION, MF_GRAYED);
-    EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SELECTSQUADRON, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVE, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEAS, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEALLAS, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SAVEINSTANTAS, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_LOAD, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_NEW, MF_ENABLED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_PAUSED, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_DISPLAY, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_FLYMISSION, MF_GRAYED);
+    EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_SELECTSQUADRON, MF_GRAYED);
 
     if (DoNetwork)
-        EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_JOIN, MF_ENABLED);
+        EnableMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_JOIN, MF_ENABLED);
 
-    CheckMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_CHECKED);
+    CheckMenuItem(GetMenu(MainMenuWindow), ID_CAMPAIGN_PAUSED, MF_CHECKED);
 }
 
 void ConsoleWrite(char* str)

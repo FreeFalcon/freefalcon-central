@@ -228,7 +228,7 @@ public:
     METAR *metar;
 };
 
-extern RealWeather *realWeather;
+extern RealWeather *RealWeatherPointer;
 
 /*
 class Weather

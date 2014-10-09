@@ -551,7 +551,7 @@ void ServerChatCommand(_TCHAR *msg)
                 strcat(buffer, "\\");
                 strcat(buffer, argb);
                 strcat(buffer, ".tac");
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
                 LoadTacticalWindows();
                 gMainHandler->EnterCritical();
                 FalconLocalSession->SetCountry(2);
@@ -604,7 +604,7 @@ void ServerChatCommand(_TCHAR *msg)
                 strcpy(buffer, FalconCampaignSaveDirectory);
                 strcat(buffer, argb);
                 strcat(buffer, ".cam");
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
                 LoadTacticalWindows();
                 gMainHandler->EnterCritical();
                 FalconLocalSession->SetCountry(2);

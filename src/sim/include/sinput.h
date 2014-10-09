@@ -133,7 +133,7 @@ extern _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1];
 extern DIDEVCAPS gCurJoyCaps;
 
 // Functions called by other modules
-BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
+BOOL SetupDIJoystick(HINSTANCE HInstance, HWND hWnd);
 BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND);
 BOOL CleanupDIJoystick(void);
 BOOL CleanupDIMouseAndKeyboard(void);

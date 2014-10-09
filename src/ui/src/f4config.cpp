@@ -499,7 +499,7 @@ bool g_bUseNewSmoothing = false; // Retro 20Feb2004 - if enabled uses a new smoo
 //  for bank/pitch/yaw/throttle(1+2) yet
 bool g_bDisplayAxisValues = false; // Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
 
-bool g_bPilotEntertainment = false; // Retro 3Jan2004 - enable winamp interface
+bool g_bPilotEntertainment = false; // Retro 3Jan2004 - enable WinAmpPointer interface
 int g_nWinAmpInitVolume = 204; // Retro 3Jan2004 - inital playback volume (valid between 0 and 255)
 
 int g_nBWMaxDeltaTime = 1; // true = use maximum value restriction, false = set 0 and return

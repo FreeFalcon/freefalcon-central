@@ -32,7 +32,7 @@
 #include "fsound.h"
 #include "vdial.h"
 
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;
 extern unsigned int chatterCount;

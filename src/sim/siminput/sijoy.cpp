@@ -39,7 +39,7 @@ float UR_PREV_Y = 0.0f;
 
 #include "TrackIR.h" // Retro 26/09/03
 extern bool g_bEnableTrackIR; // Retro 26/09/03
-extern TrackIR theTrackIRObject; // Retro 27/09/03
+extern TrackIR TheTrackIrObject; // Retro 27/09/03
 
 extern int DisableSmoothing;
 extern bool g_bUseNewSmoothing; // Retro 21Feb2004
@@ -219,13 +219,13 @@ void GetURHelmetInput()
 void GetTrackIRInput() // Retro 26/09/03
 {
 #if 0 // Retro 24Dez2004 - deprecated
-    theTrackIRObject.GetTrackIR_ViewValues(&cockpitFlightData.headYaw, &cockpitFlightData.headPitch);
+    TheTrackIrObject.GetTrackIR_ViewValues(&cockpitFlightData.headYaw, &cockpitFlightData.headPitch);
 #else
-    theTrackIRObject.Poll();
+    TheTrackIrObject.Poll();
 
-    cockpitFlightData.headYaw = theTrackIRObject.getYaw();
-    cockpitFlightData.headPitch = theTrackIRObject.getPitch();
-    cockpitFlightData.headRoll = theTrackIRObject.getRoll();
+    cockpitFlightData.headYaw = TheTrackIrObject.getYaw();
+    cockpitFlightData.headPitch = TheTrackIrObject.getPitch();
+    cockpitFlightData.headRoll = TheTrackIrObject.getRoll();
 #endif
 }
 

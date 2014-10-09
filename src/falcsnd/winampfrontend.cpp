@@ -2,7 +2,7 @@
 // Filename: winampfrontend.cpp
 // Author: Retro
 // Date: 3Jan2004
-// Description:Used the winamp 2.xx API to communicate with said application
+// Description:Used the WinAmpPointer 2.xx API to communicate with said application
 // Provides some functions that are currently used within the
 // DED/ICP code, they can however be bound to keyboard commands
 // as well..
@@ -45,9 +45,9 @@ WinAmpFrontEnd::~WinAmpFrontEnd()
 };
 
 /*****************************************************************************/
-// Initialisation. Searches for the winamp window. I might want to call
+// Initialisation. Searches for the WinAmpPointer window. I might want to call
 // this on entering the 3d so that the user doesn´t have to restart falcon
-// if he accidentially canceled (or didn´t open in the first place) the winamp
+// if he accidentially canceled (or didn´t open in the first place) the WinAmpPointer
 // window
 /*****************************************************************************/
 void WinAmpFrontEnd::InitWinAmp()
@@ -181,7 +181,7 @@ void WinAmpFrontEnd::TogglePlayback()
 // Also copies this title into two class internal strings that are
 // set up to be displayed in the DED (they have the correct length)
 //
-// the upper part is ripped straight out of the winamp tutorial, and not
+// the upper part is ripped straight out of the WinAmpPointer tutorial, and not
 // really optimized ?
 //
 // this function should be called on start/stop/next/previous/toggle
@@ -303,7 +303,7 @@ void WinAmpFrontEnd::Refresh(unsigned long timer)
         copyCurTitle();
         myTimer = timer + REFRESH_INTERVAL;
 
-        WinAmpAlive++; // once every 40 secs I check if winamp was deactivated..
+        WinAmpAlive++; // once every 40 secs I check if WinAmpPointer was deactivated..
         WinAmpAlive %= 20;
 
         if (WinAmpAlive == 0)

@@ -455,7 +455,7 @@ void ICPClass::GetWind(void)
     pos.y = playerAC->YPos();
     pos.z = playerAC->ZPos();
 
-    heading = FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
+    heading = FloatToInt32(((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos) * RTD);
 
     if (heading <= 0)
         heading += 180;
@@ -466,7 +466,7 @@ void ICPClass::GetWind(void)
         heading = 360 + heading;
 
 
-    windSpeed = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
+    windSpeed = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
 
 }
 void ICPClass::AddSTPT(int Line, int Pos)

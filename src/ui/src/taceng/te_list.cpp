@@ -53,7 +53,7 @@
 #define TAC_JOIN 30208
 
 #ifdef _DEBUG
-extern HWND mainAppWnd;
+extern HWND MainApplicationWindow;
 #endif
 #ifdef CAMPTOOL
 // Renaming tool stuff
@@ -73,7 +73,7 @@ void SetDeleteCallback(void (*cb)(long, short, C_Base*));
 void tactical_select_training(long, short, C_Base *);
 static void update_sua_load_list(void);
 static void update_pua_list(void);
-void tactical_edit_mission(tactical_mission *);
+void tactical_edit_mission(TacticalMission *);
 void ActivateTacMissionBuilder();
 BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
 void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
@@ -113,7 +113,7 @@ _TCHAR *TEExcludeList[] =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_mission
+TacticalMission
 *current_tactical_mission = NULL;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ static void tactical_mission_selection(int hack_training)
     update_pua_list();
 
 #ifdef _DEBUG
-    PostMessage(mainAppWnd, FM_GIVE_FOCUS, NULL, NULL);
+    PostMessage(MainApplicationWindow, FM_GIVE_FOCUS, NULL, NULL);
 #endif
 
 }
@@ -206,7 +206,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
                     delete current_tactical_mission;
                 }
 
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
 
                 tactical_mission_selection(FALSE);
             }
@@ -250,7 +250,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
                     delete current_tactical_mission;
                 }
 
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
 
                 tactical_mission_selection(TRUE);
             }
@@ -515,7 +515,7 @@ void create_tactical_list(void)
     char
     buffer[100];
 
-    tactical_mission
+    TacticalMission
     *miss;
 
     y = 0;
@@ -534,7 +534,7 @@ void create_tactical_list(void)
 
     DeleteGroupList(TAC_MISSION_WIN);
 
-    miss = tactical_mission::get_first_mission(current_tactical_mode);
+    miss = TacticalMission::get_first_mission(current_tactical_mode);
 
     for (loop = 0; miss; loop ++)
     {
@@ -597,7 +597,7 @@ void create_tactical_list(void)
         id ++;
         y += but->GetH();
 
-        miss = tactical_mission::get_next_mission();
+        miss = TacticalMission::get_next_mission();
     }
 
 #if 0

@@ -2847,7 +2847,7 @@ void DoTacticalLoop(int startup)
 
     // Update weather when in UI
     if (!SimDriver.InSim())
-        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
+        ((WeatherClass*)RealWeatherPointer)->UpdateWeather(); // Sim calls this otherwise
 }
 
 // ==============================================================
@@ -2985,7 +2985,7 @@ void DoCampaignLoop(int startup)
     // Update weather when in UI
     if (!SimDriver.InSim())
     {
-        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
+        ((WeatherClass*)RealWeatherPointer)->UpdateWeather(); // Sim calls this otherwise
     }
 
     // Task air

@@ -67,7 +67,7 @@ enum
 };
 TimeAdjustClass TimeAdjust;
 
-//JAM 06Dec03 - Bumped version number for realWeather changes.
+//JAM 06Dec03 - Bumped version number for RealWeatherPointer changes.
 //int gCurrentDataVersion = 76; // Current version of campaign data files
 // Cobra - Revert back to SP3 version to make saved cam/tac files cpmpatible with Tacedit
 int gCurrentDataVersion = 73; // SP3 version of campaign data files
@@ -341,7 +341,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     gMainThread->JoinGame(newgame);
 
     // Now init the other needed modules
-    ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction || gametype == game_Dogfight));
+    ((WeatherClass*)RealWeatherPointer)->Init((gametype == game_InstantAction || gametype == game_Dogfight));
 
     if (!LoadTheater(TheaterName))
     {
@@ -380,7 +380,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
 
     if (!(Flags & CAMP_LIGHT))
     {
-        CampaignWindow(hInst, SW_SHOW);
+        CampaignWindow(HInstance, SW_SHOW);
     }
 
     CampEnterCriticalSection();
@@ -561,14 +561,14 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
-        ((WeatherClass*)realWeather)->CampLoad(savefile, 0);
+        ((WeatherClass*)RealWeatherPointer)->CampLoad(savefile, 0);
         StandardRebuild();
         lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         ChooseBullseye();
     }
     else
     {
-        ((WeatherClass*)realWeather)->CampLoad(savefile, gametype);
+        ((WeatherClass*)RealWeatherPointer)->CampLoad(savefile, gametype);
     }
 
     // ChillTypes();
@@ -742,7 +742,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             NewCampaignEvents(Scenario);
 
         if (!(Flags & CAMP_LIGHT))
-            ((WeatherClass*)realWeather)->CampLoad(TheCampaign.Scenario, game_Campaign);
+            ((WeatherClass*)RealWeatherPointer)->CampLoad(TheCampaign.Scenario, game_Campaign);
 
         // Rebuild objective lists once, so our received data has somewhere to go
         // (especially the priority data)
@@ -918,7 +918,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
                 SaveCampaignEvents(savefile);
                 SavePilotInfo(savefile);
                 SavePersistantList(savefile);
-                ((WeatherClass*)realWeather)->Save(savefile);
+                ((WeatherClass*)RealWeatherPointer)->Save(savefile);
                 SavePrimaryObjectiveList(savefile);
                 break;
         }
@@ -2390,9 +2390,9 @@ void Camp_FreeMemory(void)
     delete ASD;
     ASD = NULL;
     //sfr: Real weather destructor shouldnt be here!!
-    /* if (realWeather != NULL){
-     delete realWeather;
-     realWeather = NULL;
+    /* if (RealWeatherPointer != NULL){
+     delete RealWeatherPointer;
+     RealWeatherPointer = NULL;
      }
     */
 }
@@ -2509,7 +2509,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
     SaveCampaignEvents(filename);
     SavePilotInfo(filename);
     SavePersistantList(filename);
-    ((WeatherClass*)realWeather)->Save(filename);
+    ((WeatherClass*)RealWeatherPointer)->Save(filename);
 
     WriteVersionNumber(filename);
     EndWriteCampFile();

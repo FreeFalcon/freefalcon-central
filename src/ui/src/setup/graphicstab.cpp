@@ -1554,13 +1554,13 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 
     C_ListBox *lbox = (C_ListBox*)control;
 
-    if (TheCampaign.InMainUI || !((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI || !((WeatherClass *)RealWeatherPointer)->lockedCondition)
     {
         PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
-        ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.WeatherCondition, true);
-        ((WeatherClass *)realWeather)->Init(true);
+        ((WeatherClass *)RealWeatherPointer)->UpdateCondition(PlayerOptions.WeatherCondition, true);
+        ((WeatherClass *)RealWeatherPointer)->Init(true);
     }
-    else if (((WeatherClass *)realWeather)->unlockableCondition == 0)
+    else if (((WeatherClass *)RealWeatherPointer)->unlockableCondition == 0)
     {
         if (lbox->GetTextID() == 70213)
         {
@@ -1571,10 +1571,10 @@ void RealWeatherCB(long, short hittype, C_Base *control)
             lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
             lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-            lbox->SetValue(realWeather->WeatherCondition + 70207);
+            lbox->SetValue(RealWeatherPointer->WeatherCondition + 70207);
             lbox->Refresh();
 
-            ((WeatherClass *)realWeather)->lockedCondition = FALSE;
+            ((WeatherClass *)RealWeatherPointer)->lockedCondition = FALSE;
         }
     }
     else if (lbox->GetTextID() == 70213)
@@ -1586,10 +1586,10 @@ void RealWeatherCB(long, short hittype, C_Base *control)
         lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
         lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-        lbox->SetValue(realWeather->WeatherCondition + 70207);
+        lbox->SetValue(RealWeatherPointer->WeatherCondition + 70207);
         lbox->Refresh();
 
-        ((WeatherClass *)realWeather)->lockedCondition = FALSE;
+        ((WeatherClass *)RealWeatherPointer)->lockedCondition = FALSE;
     }
 }
 //JAM

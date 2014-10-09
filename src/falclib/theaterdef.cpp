@@ -35,7 +35,7 @@ extern char FalconPictureDirectory[];
 
 // RV - Biker - Theater switching stuff
 extern int NumZips;
-extern int* ResourceHandle;
+extern int* ResourceHandlePointer;
 extern int SimPathHandle;
 #define ZIPFILE_NAME    "ziplist.lst"
 
@@ -193,14 +193,14 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     {
         for (int i = 0; i < NumZips; i++)
         {
-            if (ResourceHandle[i])
-                ResDetach(ResourceHandle[i]);
+            if (ResourceHandlePointer[i])
+                ResDetach(ResourceHandlePointer[i]);
             else
                 break;
         }
 
-        if (ResourceHandle[0] < 0)
-            delete [] ResourceHandle;
+        if (ResourceHandlePointer[0] < 0)
+            delete [] ResourceHandlePointer;
 
         NumZips = 0;
     }
@@ -338,7 +338,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     else
     {
         fscanf(zipFile, "%d", &NumZips);
-        ResourceHandle = new int[NumZips];
+        ResourceHandlePointer = new int[NumZips];
 
         for (int i = 0; i < NumZips; i++)
         {
@@ -347,11 +347,11 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
             sprintf(tmpPath, "%s\\%s", FalconZipsTheaterFolder, tmp);
 
             if (!strnicmp(td->m_name, "Korea", 5))
-                ResourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
+                ResourceHandlePointer[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
                 // FRB - Must use FalconDataDirectory and not FalconZipsTheaterFolder (don't know why!?)
-                //ResourceHandle[i] = ResAttach (FalconZipsTheaterFolder, tmpPath, TRUE);
-                ResourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
+                //ResourceHandlePointer[i] = ResAttach (FalconZipsTheaterFolder, tmpPath, TRUE);
+                ResourceHandlePointer[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }
 
         fclose(zipFile);

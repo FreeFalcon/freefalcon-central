@@ -360,7 +360,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     GlobObj = o;
                     GlobList->Remove(o);
-                    DialogBox(hInst, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hDlg, (DLGPROC)EditObjective);
+                    DialogBox(HInstance, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hDlg, (DLGPROC)EditObjective);
                     GlobObj = O;
                 }
             }
@@ -455,7 +455,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         o->RecalculateParent();
                         GlobObj = o;
                         GlobList->Remove(o);
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hDlg, (DLGPROC)EditObjective);
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hDlg, (DLGPROC)EditObjective);
                         GlobObj = O;
                     }
 
@@ -940,23 +940,23 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
     switch (message)
     {
         case WM_INITDIALOG:              /* message: initialize dialog box */
-            sprintf(buffer, "%d", (int)(((WeatherClass*)realWeather)->temperature));
+            sprintf(buffer, "%d", (int)(((WeatherClass*)RealWeatherPointer)->temperature));
             SetWindowText(GetDlgItem(hDlg, IDC_WD_TEMPVAL), buffer);
-            head = (int)(((WeatherClass*)realWeather)->windHeading * 180 / PI);
+            head = (int)(((WeatherClass*)RealWeatherPointer)->windHeading * 180 / PI);
             head = head % 360;
             sprintf(buffer, "%d", head);
             SetWindowText(GetDlgItem(hDlg, IDC_WD_WHVAL), buffer);
-            sprintf(buffer, "%5.1f", ((WeatherClass*)realWeather)->windSpeed);
+            sprintf(buffer, "%5.1f", ((WeatherClass*)RealWeatherPointer)->windSpeed);
             SetWindowText(GetDlgItem(hDlg, IDC_WD_WSVAL), buffer);
-            sprintf(buffer, "%d", ((WeatherClass*)realWeather)->GetCloudCover(CurX, CurY));
+            sprintf(buffer, "%d", ((WeatherClass*)RealWeatherPointer)->GetCloudCover(CurX, CurY));
             SetWindowText(GetDlgItem(hDlg, IDC_WD_COVEREDIT), buffer);
-            sprintf(buffer, "%d", ((WeatherClass*)realWeather)->GetCloudLevel(CurX, CurY));
+            sprintf(buffer, "%d", ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(CurX, CurY));
             SetWindowText(GetDlgItem(hDlg, IDC_WD_LEVELEDIT), buffer);
-            sprintf(buffer, "%d", ((WeatherClass*)realWeather)->temperature);
+            sprintf(buffer, "%d", ((WeatherClass*)RealWeatherPointer)->temperature);
             SetWindowText(GetDlgItem(hDlg, IDC_WD_FORCASTTEMP), buffer);
-            sprintf(buffer, "%d", ((WeatherClass*)realWeather)->windSpeed);
+            sprintf(buffer, "%d", ((WeatherClass*)RealWeatherPointer)->windSpeed);
             SetWindowText(GetDlgItem(hDlg, IDC_WD_FORCASTSPEED), buffer);
-            sprintf(buffer, "%d", ((WeatherClass*)realWeather)->stratusBase);
+            sprintf(buffer, "%d", ((WeatherClass*)RealWeatherPointer)->stratusBase);
             SetWindowText(GetDlgItem(hDlg, IDC_WD_FORCASTLEVEL), buffer);
             break;
 
@@ -990,7 +990,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->SetCloudCover(CurX, CurY, i);
+                        ((WeatherClass*)RealWeatherPointer)->SetCloudCover(CurX, CurY, i);
 
                     break;
 
@@ -999,7 +999,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->SetCloudLevel(CurX, CurY, i);
+                        ((WeatherClass*)RealWeatherPointer)->SetCloudLevel(CurX, CurY, i);
 
                     break;
 
@@ -1008,7 +1008,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->temperature = (float) i;
+                        ((WeatherClass*)RealWeatherPointer)->temperature = (float) i;
 
                     break;
 
@@ -1017,7 +1017,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->windSpeed = (float) i;
+                        ((WeatherClass*)RealWeatherPointer)->windSpeed = (float) i;
 
                     break;
 
@@ -1026,7 +1026,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->stratusBase = i;
+                        ((WeatherClass*)RealWeatherPointer)->stratusBase = i;
 
                     break;
 
@@ -1035,7 +1035,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->windSpeed = (float) i;
+                        ((WeatherClass*)RealWeatherPointer)->windSpeed = (float) i;
 
                     break;
 
@@ -1046,7 +1046,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     if (HIWORD(wParam) == EN_KILLFOCUS)
                     {
                         head = i;
-                        ((WeatherClass*)realWeather)->windHeading = (float)(i * PI / 180.0F);
+                        ((WeatherClass*)RealWeatherPointer)->windHeading = (float)(i * PI / 180.0F);
                     }
 
                     break;
@@ -1056,7 +1056,7 @@ BOOL WINAPI WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
                     i = atoi(buffer);
 
                     if (HIWORD(wParam) == EN_KILLFOCUS)
-                        ((WeatherClass*)realWeather)->temperature = (float) i;
+                        ((WeatherClass*)RealWeatherPointer)->temperature = (float) i;
 
                     break;
 
@@ -2454,7 +2454,7 @@ BOOL OpenCampFile(HWND hWnd)
 
     CampFileName.lStructSize       = sizeof(OPENFILENAME);
     CampFileName.hwndOwner         = hWnd;
-    CampFileName.hInstance         = hInst;
+    CampFileName.hInstance         = HInstance;
     CampFileName.lpstrCustomFilter = (LPSTR) NULL;
     CampFileName.nMaxCustFilter    = 0L;
     CampFileName.nFilterIndex      = 1L;
@@ -2520,7 +2520,7 @@ BOOL OpenTheaterFile(HWND hWnd)
 
     TheaterFileName.lStructSize       = sizeof(OPENFILENAME);
     TheaterFileName.hwndOwner         = hWnd;
-    TheaterFileName.hInstance         = hInst;
+    TheaterFileName.hInstance         = HInstance;
     TheaterFileName.lpstrCustomFilter = (LPSTR) NULL;
     TheaterFileName.nMaxCustFilter    = 0L;
     TheaterFileName.nFilterIndex      = 1L;
@@ -2764,7 +2764,7 @@ BOOL SaveAsCampFile(HWND hWnd, int mode)
 
     CampFileName.lStructSize       = sizeof(OPENFILENAME);
     CampFileName.hwndOwner         = hWnd;
-    CampFileName.hInstance         = hInst;
+    CampFileName.hInstance         = HInstance;
     CampFileName.lpstrFile         = cmpFile;
     CampFileName.lpstrCustomFilter = (LPSTR) NULL;
     CampFileName.nMaxCustFilter    = 0L;
@@ -2805,7 +2805,7 @@ BOOL SaveAsTheaterFile(HWND hWnd)
 
     TheaterFileName.lStructSize       = sizeof(OPENFILENAME);
     TheaterFileName.hwndOwner         = hWnd;
-    TheaterFileName.hInstance         = hInst;
+    TheaterFileName.hInstance         = HInstance;
     TheaterFileName.lpstrCustomFilter = (LPSTR) NULL;
     TheaterFileName.nMaxCustFilter    = 0L;
     TheaterFileName.nFilterIndex      = 1L;
@@ -2848,7 +2848,7 @@ BOOL SaveAsScriptedUnitFile(HWND hWnd)
 
     this_file.lStructSize       = sizeof(OPENFILENAME);
     this_file.hwndOwner         = hWnd;
-    this_file.hInstance         = hInst;
+    this_file.hInstance         = HInstance;
     this_file.lpstrCustomFilter = (LPSTR) NULL;
     this_file.nMaxCustFilter    = 0L;
     this_file.nFilterIndex      = 1L;

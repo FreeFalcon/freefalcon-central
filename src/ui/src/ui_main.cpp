@@ -288,7 +288,7 @@ extern long MusicStopped; // Delay between music
 // M.N.
 extern bool g_bHiResUI;
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 
 char gUI_AutoSaveName[MAX_PATH];
 extern long gRanksTxt[NUM_RANKS];
@@ -1260,46 +1260,46 @@ void GlobalSetup()
     // FILE *fp;
 
     mouse = MAKEINTRESOURCE(UI_F16);
-    gCursors[1] = LoadCursor(hInst, mouse);
+    gCursors[1] = LoadCursor(HInstance, mouse);
     gCursors[0] = gCursors[1];
     mouse = MAKEINTRESOURCE(UI_F16_ON);
-    gCursors[2] = LoadCursor(hInst, mouse);
+    gCursors[2] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_F16_ON_RM);
-    gCursors[3] = LoadCursor(hInst, mouse);
+    gCursors[3] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_F16_RM);
-    gCursors[4] = LoadCursor(hInst, mouse);
+    gCursors[4] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG);
-    gCursors[5] = LoadCursor(hInst, mouse);
+    gCursors[5] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG_RM);
-    gCursors[6] = LoadCursor(hInst, mouse);
+    gCursors[6] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG_STEERPOINT);
-    gCursors[7] = LoadCursor(hInst, mouse);
+    gCursors[7] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG);
-    gCursors[8] = LoadCursor(hInst, mouse);
+    gCursors[8] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG_ON);
-    gCursors[9] = LoadCursor(hInst, mouse);
+    gCursors[9] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG_RM);
-    gCursors[10] = LoadCursor(hInst, mouse);
+    gCursors[10] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG);
-    gCursors[11] = LoadCursor(hInst, mouse);
+    gCursors[11] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG_ON);
-    gCursors[12] = LoadCursor(hInst, mouse);
+    gCursors[12] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG_RM);
-    gCursors[13] = LoadCursor(hInst, mouse);
+    gCursors[13] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_STEERPOINT);
-    gCursors[14] = LoadCursor(hInst, mouse);
+    gCursors[14] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_LIST_F16);
-    gCursors[15] = LoadCursor(hInst, mouse);
+    gCursors[15] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_NOT_ALLOWED);
-    gCursors[16] = LoadCursor(hInst, mouse);
+    gCursors[16] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_MAP_ZOOM);
-    gCursors[17] = LoadCursor(hInst, mouse);
+    gCursors[17] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_TARGET);
-    gCursors[18] = LoadCursor(hInst, mouse);
+    gCursors[18] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_WAIT);
-    gCursors[19] = LoadCursor(hInst, mouse);
+    gCursors[19] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_TEXT);
-    gCursors[20] = LoadCursor(hInst, mouse);
+    gCursors[20] = LoadCursor(HInstance, mouse);
 
     SetCursor(gCursors[CRSR_WAIT]);
 

@@ -750,7 +750,7 @@ void ChangeCell(GridIndex X, GridIndex Y)
             break;
 
         case 5:
-            ((WeatherClass*)realWeather)->SetCloudCover(X, Y, DrawWeather);
+            ((WeatherClass*)RealWeatherPointer)->SetCloudCover(X, Y, DrawWeather);
             GetClientRect(md->hMapWnd, &r);
             InvalidateRect(md->hMapWnd, &r, FALSE);
             DC = BeginPaint(md->hMapWnd, &ps);
@@ -771,7 +771,7 @@ void ChangeCell(GridIndex X, GridIndex Y)
             break;
 
         case 6:
-            ((WeatherClass*)realWeather)->SetCloudLevel(X, Y, DrawWeather);
+            ((WeatherClass*)RealWeatherPointer)->SetCloudLevel(X, Y, DrawWeather);
             GetClientRect(md->hMapWnd, &r);
             InvalidateRect(md->hMapWnd, &r, FALSE);
             DC = BeginPaint(md->hMapWnd, &ps);
@@ -807,23 +807,23 @@ void ResizeCursor(void)
     switch (CellSize)
     {
         case 2:
-            hCur = LoadCursor(hInst, MAKEINTRESOURCE(IDC_CURSOR1));
+            hCur = LoadCursor(HInstance, MAKEINTRESOURCE(IDC_CURSOR1));
             break;
 
         case 4:
-            hCur = LoadCursor(hInst, MAKEINTRESOURCE(IDC_CURSOR2));
+            hCur = LoadCursor(HInstance, MAKEINTRESOURCE(IDC_CURSOR2));
             break;
 
         case 8:
-            hCur = LoadCursor(hInst, MAKEINTRESOURCE(IDC_CURSOR3));
+            hCur = LoadCursor(HInstance, MAKEINTRESOURCE(IDC_CURSOR3));
             break;
 
         case 16:
-            hCur = LoadCursor(hInst, MAKEINTRESOURCE(IDC_CURSOR4));
+            hCur = LoadCursor(HInstance, MAKEINTRESOURCE(IDC_CURSOR4));
             break;
 
         default:
-            hCur = LoadCursor(hInst, MAKEINTRESOURCE(IDC_CURSOR0));
+            hCur = LoadCursor(HInstance, MAKEINTRESOURCE(IDC_CURSOR0));
             break;
     }
 
@@ -1451,7 +1451,7 @@ void StartUnitEdit(void)
         GlobUnit = NULL;
 
     if (GlobUnit)
-        DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hMainWnd, (DLGPROC)EditUnit);
+        DialogBox(HInstance, MAKEINTRESOURCE(IDD_UNITDIALOG1), hMainWnd, (DLGPROC)EditUnit);
 
     if (MainMapData->ShowWPs)
         SetRefresh(MainMapData);
@@ -1480,7 +1480,7 @@ void StartObjectiveEdit(void)
 
     GlobObj = OneObjective;
     CampLeaveCriticalSection();
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hMainWnd, (DLGPROC)EditObjective);
+    DialogBox(HInstance, MAKEINTRESOURCE(IDD_OBJECTIVEDIALOG), hMainWnd, (DLGPROC)EditObjective);
     MainMapData->ShowObjectives = TRUE;
     InvalidateRect(MainMapData->hMapWnd, NULL, FALSE);
     PostMessage(MainMapData->hMapWnd, WM_PAINT, (WPARAM)hMainDC, 0);
@@ -2074,7 +2074,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
     {
         case ID_FILE_NEWTHEATER:
             InitTheaterTerrain();
-            ((WeatherClass*)realWeather)->Init();
+            ((WeatherClass*)RealWeatherPointer)->Init();
             // WARNING: Things could get fucked if we changed the theater size
             // DisposeProxLists();
             // InitProximityLists();
@@ -2084,7 +2084,7 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
 
         case ID_FILE_OPENTHEATER:
             OpenTheaterFile(hMainWnd);
-            ((WeatherClass*)realWeather)->Init();
+            ((WeatherClass*)RealWeatherPointer)->Init();
             // WARNING: Things could get fucked if we changed the theater size
             // DisposeProxLists();
             // InitProximityLists();
@@ -2751,12 +2751,12 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         break;
 
         case ID_TOOLS_APPLYFORCERATIOS:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_FORCERARIODIALOG), hMainWnd, (DLGPROC)AdjustForceRatioProc);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_FORCERARIODIALOG), hMainWnd, (DLGPROC)AdjustForceRatioProc);
             AdjustForceRatios();
             break;
 
         case ID_TOOLS_CLIPCAMPAIGN:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_CAMP_CLIPPER), hMainWnd, (DLGPROC)CampClipperProc);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_CAMP_CLIPPER), hMainWnd, (DLGPROC)CampClipperProc);
             break;
 
         case ID_TOOLS_AUTOSETSAMARTSITES:
@@ -2951,8 +2951,8 @@ BOOL MainWndCommandProc(HWND hWndFrame, WPARAM wParam, LONG lParam)
         {
             FARPROC lpProcAbout;
 
-            lpProcAbout = MakeProcInstance((FARPROC)About, hInst);
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hMainWnd, (DLGPROC)lpProcAbout);
+            lpProcAbout = MakeProcInstance((FARPROC)About, HInstance);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hMainWnd, (DLGPROC)lpProcAbout);
             FreeProcInstance(lpProcAbout);
             break;
         }
@@ -3431,11 +3431,11 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
                     break;
 
                 case 5:
-                    DrawWeather = ((WeatherClass*)realWeather)->GetCloudCover(CurX, CurY);
+                    DrawWeather = ((WeatherClass*)RealWeatherPointer)->GetCloudCover(CurX, CurY);
                     break;
 
                 case 6:
-                    DrawWeather = ((WeatherClass*)realWeather)->GetCloudLevel(CurX, CurY);
+                    DrawWeather = ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(CurX, CurY);
                     break;
 
                 case 7:
@@ -3517,7 +3517,7 @@ void ProcessCommand(int Key)
             CampEnterCriticalSection();
             GlobUnit = AddUnit(X, Y, COUN_NORTH_KOREA);
             CampLeaveCriticalSection();
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG), hMainWnd, (DLGPROC)EditUnit);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_UNITDIALOG), hMainWnd, (DLGPROC)EditUnit);
 
             if (GlobUnit)
                 GlobUnit = NULL;
@@ -3552,7 +3552,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'c':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_WEATHERDIALOG), hMainWnd, (DLGPROC)WeatherEditProc);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_WEATHERDIALOG), hMainWnd, (DLGPROC)WeatherEditProc);
             break;
 
         case 'C':
@@ -3579,7 +3579,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'e':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_TEAMEDIT_DIALOG), hMainWnd, (DLGPROC)EditTeams);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_TEAMEDIT_DIALOG), hMainWnd, (DLGPROC)EditTeams);
             break;
 
         case 'E':
@@ -3707,11 +3707,11 @@ void ProcessCommand(int Key)
             break;
 
         case 'm':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_MISSTRIGDIALOG), hMainWnd, (DLGPROC)MissionTriggerProc);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_MISSTRIGDIALOG), hMainWnd, (DLGPROC)MissionTriggerProc);
             break;
 
         case 'M':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_MAPDIALOG), hMainWnd, (DLGPROC)MapDialogProc);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_MAPDIALOG), hMainWnd, (DLGPROC)MapDialogProc);
             PostMessage(hMainWnd, WM_KEYUP, 16, 0);
             break;
 
@@ -3806,7 +3806,7 @@ void ProcessCommand(int Key)
             break;
 
         case 'r':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_TEAMDIALOG), hMainWnd, (DLGPROC)EditRelations);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_TEAMDIALOG), hMainWnd, (DLGPROC)EditRelations);
             break;
 
         case 'R':
@@ -3816,7 +3816,7 @@ void ProcessCommand(int Key)
             break;
 
         case 's':
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_SQUADRONDIALOG), hMainWnd, (DLGPROC)SelectSquadron);
+            DialogBox(HInstance, MAKEINTRESOURCE(IDD_SQUADRONDIALOG), hMainWnd, (DLGPROC)SelectSquadron);
             break;
 
         case 'S':
@@ -3857,7 +3857,7 @@ void ProcessCommand(int Key)
                  GlobUnit = NULL;
 
                 if (GlobUnit)
-                 DialogBox(hInst,MAKEINTRESOURCE(IDD_UNITDIALOG1),hMainWnd,(DLGPROC)EditUnit);
+                 DialogBox(HInstance,MAKEINTRESOURCE(IDD_UNITDIALOG1),hMainWnd,(DLGPROC)EditUnit);
                 if (MainMapData->ShowWPs)
                  SetRefresh(MainMapData);
                 else
@@ -3903,7 +3903,7 @@ void ProcessCommand(int Key)
                     if (x == X && y == Y)
                     {
                         GlobWP = w;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
                         gotone = 1;
                     }
 
@@ -3928,7 +3928,7 @@ void ProcessCommand(int Key)
                         // GlobWP = WPUnit->AddWPAfter(w,X,Y,0,0,0.0F,0,WP_NOTHING);
                         w = WPUnit->GetFirstUnitWP();
                         SetWPTimes(w, w->GetWPArrivalTime(), WPUnit->GetCruiseSpeed());
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_WPDIALOG), hMainWnd, (DLGPROC)EditWayPoint);
                     }
 
                     SetRefresh(MainMapData);
@@ -4003,9 +4003,9 @@ void ProcessCommand(int Key)
 
                 case 5:
                 case 6:
-                    i = ((WeatherClass*)realWeather)->GetCloudLevel(X, Y);
+                    i = ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(X, Y);
                     i++;
-                    ((WeatherClass*)realWeather)->SetCloudLevel(X, Y, i);
+                    ((WeatherClass*)RealWeatherPointer)->SetCloudLevel(X, Y, i);
                     break;
 
                 default:
@@ -4028,9 +4028,9 @@ void ProcessCommand(int Key)
 
                 case 5:
                 case 6:
-                    i = ((WeatherClass*)realWeather)->GetCloudLevel(X, Y);
+                    i = ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(X, Y);
                     i--;
-                    ((WeatherClass*)realWeather)->SetCloudLevel(X, Y, i);
+                    ((WeatherClass*)RealWeatherPointer)->SetCloudLevel(X, Y, i);
                     break;
 
                 default:

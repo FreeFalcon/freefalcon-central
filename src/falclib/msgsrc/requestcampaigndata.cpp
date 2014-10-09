@@ -213,7 +213,7 @@ void SendRequestedData(void)
                 if (request->dataBlock.dataNeeded & CAMP_NEED_WEATHER)
                 {
                     MonoPrint("Sending Weather\n");
-                    ((WeatherClass*)realWeather)->SendWeather(requester);
+                    ((WeatherClass*)RealWeatherPointer)->SendWeather(requester);
                 }
 
                 if (request->dataBlock.dataNeeded & CAMP_NEED_PERSIST)

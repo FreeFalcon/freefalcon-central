@@ -57,6 +57,6 @@ private:
     unsigned long myTimer;
     int WinAmpAlive;
 };
-extern WinAmpFrontEnd* winamp;
+extern WinAmpFrontEnd* WinAmpPointer;
 
 #endif WINAMP_FRONTEND_INCLUDED

@@ -86,7 +86,7 @@ extern bool g_bTrackIRon; // Retro 24Dez2004
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;
 extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 extern void RequestPlayerDivert(void);
 extern int radioMenu;
 extern SensorClass* FindSensor(SimMoverClass* theObject, int sensorType);
@@ -11913,16 +11913,16 @@ void ToggleDisplacementCam(unsigned long, int state, void*) // Retro 24Dec2003
     }
 }
 
-// Retro 4Jan2004 - winamp commands
+// Retro 4Jan2004 - WinAmpPointer commands
 extern bool g_bPilotEntertainment;
 #include "falcsnd/winampfrontend.h"
 void WinAmpNextTrack(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->Next();
+            WinAmpPointer->Next();
         }
     }
 }
@@ -11930,9 +11930,9 @@ void WinAmpPreviousTrack(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->Previous();
+            WinAmpPointer->Previous();
         }
     }
 }
@@ -11940,9 +11940,9 @@ void WinAmpStopPlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->Stop();
+            WinAmpPointer->Stop();
         }
     }
 }
@@ -11950,9 +11950,9 @@ void WinAmpStartPlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->Start();
+            WinAmpPointer->Start();
         }
     }
 }
@@ -11960,9 +11960,9 @@ void WinAmpTogglePlayback(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->TogglePlayback();
+            WinAmpPointer->TogglePlayback();
         }
     }
 }
@@ -11970,9 +11970,9 @@ void WinAmpVolumeUp(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->VolUp();
+            WinAmpPointer->VolUp();
         }
     }
 }
@@ -11980,13 +11980,13 @@ void WinAmpVolumeDown(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if ((g_bPilotEntertainment) && (winamp))
+        if ((g_bPilotEntertainment) && (WinAmpPointer))
         {
-            winamp->VolDown();
+            WinAmpPointer->VolDown();
         }
     }
 }
-// Retro 4Jan2004 - winamp commands end
+// Retro 4Jan2004 - WinAmpPointer commands end
 
 // Retro 12Jan2004
 void CycleEngine(unsigned long, int state, void*)

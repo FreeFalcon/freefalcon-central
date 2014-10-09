@@ -73,9 +73,9 @@ extern "C" {
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 extern int F4FlyingEyeType;
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 extern VU_ID gVmPlayVU_ID;
 extern int narrowFOV;
 //extern bool g_b3DClickableCockpit; //Wombat778 10-10-2003
@@ -2518,9 +2518,9 @@ void OTWDriverClass::Enter(void)
         drawSubTitles = false; // Retro 21Dec2003
     }
 
-    if ((g_bPilotEntertainment) && (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
+    if ((g_bPilotEntertainment) && (WinAmpPointer)) // Retro 3Jan2004 (all) - looking for that WinAmpPointer window..
     {
-        winamp->InitWinAmp();
+        WinAmpPointer->InitWinAmp();
     }
 
     IO.ResetAllInputs(); // Retro 9Jan2004
@@ -2553,7 +2553,7 @@ void OTWDriverClass::Enter(void)
     F4SoundFXInit();
 
     // Start up Direct Input
-    SetupDIMouseAndKeyboard(hInst, FalconDisplay.appWin);
+    SetupDIMouseAndKeyboard(HInstance, FalconDisplay.appWin);
     SetFocus(FalconDisplay.appWin);
 
     // sfr: this is the correct place to set it.
@@ -2632,9 +2632,9 @@ int OTWDriverClass::Exit(void)
     }
 
     //JAM 19Nov03
-    if (realWeather)
+    if (RealWeatherPointer)
     {
-        realWeather->Cleanup();
+        RealWeatherPointer->Cleanup();
     }
 
     // Clean up the cockpit stuff

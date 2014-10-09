@@ -113,7 +113,7 @@ void GraphicsDataPoolReleaseStorage(void);
 extern void SavePersistantList(char* scenario);
 extern C_Handler *gMainHandler;
 extern int gNumWeaponsInAir;
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 extern int FileVerify(void);
 
 extern ulong gBumpTime;
@@ -728,9 +728,9 @@ void SimulationDriver::Cycle()
             wind.y = 0;
             wind.z = 0;
 
-            if ((WeatherClass*)realWeather)
+            if ((WeatherClass*)RealWeatherPointer)
             {
-                ((WeatherClass*)realWeather)->WindHeadingAt(&wind);
+                ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&wind);
             }
 
             x = OTWDriver.cameraVel.x - wind.x;

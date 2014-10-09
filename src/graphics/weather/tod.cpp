@@ -372,18 +372,18 @@ void CTimeOfDay::UpdateSkyProperties()
     m_StarIntensity += t * (ntod -> StarIntensity - m_StarIntensity);
     TheStar.UpdateStar();
     /*
-     if(realWeather->WeatherCondition > FAIR)
+     if(RealWeatherPointer->WeatherCondition > FAIR)
      {
-     if(realWeather->WeatherCondition == INCLEMENT)
+     if(RealWeatherPointer->WeatherCondition == INCLEMENT)
      {
      BadWeatherLighting.r = max(BadWeatherLighting.r/1.5f,0.01f);
      BadWeatherLighting.g = max(BadWeatherLighting.g/1.5f,0.01f);
      BadWeatherLighting.b = max(BadWeatherLighting.b/1.5f,0.01f);
      }
 
-     if(realWeather->InsideOvercast() || realWeather->UnderOvercast())
+     if(RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast())
      {
-     if(realWeather->WeatherCondition > POOR)
+     if(RealWeatherPointer->WeatherCondition > POOR)
       Specular = 0.f;
      else
       Specular *= 0.2f;
@@ -476,10 +476,10 @@ void CTimeOfDay::UpdateWeatherColors(DWORD WeatherCondition)
             BadWeatherLighting.b = m_BadWeatherLighting.b;
         }
 
-        if (realWeather->InsideOvercast() || realWeather->UnderOvercast())
+        if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast())
         {
 
-            if (realWeather->WeatherCondition > POOR) Specular = 0.f;
+            if (RealWeatherPointer->WeatherCondition > POOR) Specular = 0.f;
             else Specular *= 0.2f;
 
             SkyColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);

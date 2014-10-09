@@ -94,12 +94,12 @@ void AirframeClass::EquationsOfMotion(float dt)
 
     if (stallMode != Crashing && stallMode < Spinning)
     {
-        mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&gndNormal));
+        mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&gndNormal));
         windfraction = 1.0f;//me123max(0.0F, min(nzcgs, 1.0F));
 
         if (platform->IsSetFlag(ON_GROUND))windfraction = 0.0f;
 
-        wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&gndNormal) * windfraction;
+        wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&gndNormal) * windfraction;
         xdot =  gSpeedyGonzales * vt * platform->platformAngles.cosgam *
                 platform->platformAngles.cossig + trigWind.cos * wind;
         ydot =  gSpeedyGonzales * vt * platform->platformAngles.cosgam *

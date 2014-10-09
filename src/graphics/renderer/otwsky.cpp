@@ -1161,7 +1161,7 @@ void RenderOTW::DrawFillerToHorizon(HorizonRecord *pHorizon)
 void RenderOTW::DrawStars(void)
 {
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast()) return;
 
     float starblend = TheTimeOfDay.GetStarIntensity();
     float vpAlt = -viewpoint->Z();
@@ -1278,7 +1278,7 @@ void RenderOTW::DrawSun(void)
 
 
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast()) return;
 
     // ShiAssert( TheTimeOfDay.ThereIsASun() );
 
@@ -1330,7 +1330,7 @@ void RenderOTW::DrawSun(void)
 void RenderOTW::DrawMoon(void)
 {
     // RED - Do not draw if inside a layer
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast()) return;
 
     Tpoint center;
 
@@ -1520,7 +1520,7 @@ void RenderOTW::ComputeHorizonEffect(HorizonRecord *pHorizon)
     ThreeDVertex sunEffectScreenSpace;
 
     //JAM 09Dec03
-    if (realWeather->UnderOvercast() || realWeather->InsideOvercast())
+    if (RealWeatherPointer->UnderOvercast() || RealWeatherPointer->InsideOvercast())
     {
         pHorizon->horeffect = 0;
         return;
@@ -1755,7 +1755,7 @@ void RenderOTW::ProcessColor(Tcolor * color)
 void RenderOTW::AdjustSkyColor(void)
 {
     //JAM 09Dec03
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast()) return;
 
     TheTimeOfDay.GetSkyColor(&sky_color);
     ProcessColor(&sky_color);

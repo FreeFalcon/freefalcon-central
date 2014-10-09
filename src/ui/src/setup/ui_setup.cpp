@@ -631,7 +631,7 @@ void STPSetupControls(void)
             lbox->SetValue(PlayerOptions.WeatherCondition + 70207);
             lbox->Refresh();
         }
-        else if (((WeatherClass *)realWeather)->lockedCondition)
+        else if (((WeatherClass *)RealWeatherPointer)->lockedCondition)
         {
             lbox->RemoveAllItems();
             lbox->AddItem(70212, C_TYPE_ITEM, "Locked");
@@ -1425,8 +1425,8 @@ static void SaveValues(void)
         if (lbox != NULL)
         {
             PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
-            ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.WeatherCondition, true);
-            ((WeatherClass *)realWeather)->Init(true);
+            ((WeatherClass *)RealWeatherPointer)->UpdateCondition(PlayerOptions.WeatherCondition, true);
+            ((WeatherClass *)RealWeatherPointer)->Init(true);
         }
     }
 

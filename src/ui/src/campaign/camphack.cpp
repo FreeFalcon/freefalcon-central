@@ -25,7 +25,7 @@ extern void BuildCampDebrief(C_Window *win);
 extern void DeleteGroupList(long ID);
 
 //extern int FistOfGodActive;
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 extern GlobalPositioningSystem *gGps;
 
 void CampHackButton1CB(long, short hittype, C_Base *)
@@ -34,7 +34,7 @@ void CampHackButton1CB(long, short hittype, C_Base *)
         return;
 
     // Button 1 is Fist Of God tool
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
+    DialogBox(HInstance, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
 }
 
 void CampHackButton2CB(long, short hittype, C_Base *)
@@ -43,7 +43,7 @@ void CampHackButton2CB(long, short hittype, C_Base *)
         return;
 
     // Button 1 is Cheat tool
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_PLAYERCHEAT), FalconDisplay.appWin, (DLGPROC)CheatTool);
+    DialogBox(HInstance, MAKEINTRESOURCE(IDD_PLAYERCHEAT), FalconDisplay.appWin, (DLGPROC)CheatTool);
 }
 
 void CampHackButton3CB(long, short hittype, C_Base *)

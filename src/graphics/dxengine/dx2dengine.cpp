@@ -1241,7 +1241,7 @@ void CDXEngine::DX2D_AssignLayers(void)
     DWORD Start = Layers[LAYER_AUTO].Start, Next;
     // get the Startus Layers
 #ifndef DEBUG_ENGINE
-    float Stratus1Z = realWeather->stratusZ, Stratus2Z = realWeather->stratus2Z;
+    float Stratus1Z = RealWeatherPointer->stratusZ, Stratus2Z = RealWeatherPointer->stratus2Z;
 #else
     float Stratus1Z = 0.0f, Stratus2Z = 0.0f;
 #endif

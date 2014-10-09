@@ -56,10 +56,10 @@ static BOOL InitPSAPI(void)
     }
 
     // Load up PSAPI.DLL.
-    HINSTANCE hInst = LoadLibraryA("PSAPI.DLL") ;
-    ASSERT(NULL != hInst) ;
+    HINSTANCE HInstance = LoadLibraryA("PSAPI.DLL") ;
+    ASSERT(NULL != HInstance) ;
 
-    if (NULL == hInst)
+    if (NULL == HInstance)
     {
         TRACE0("Unable to load PSAPI.DLL!\n") ;
         return (FALSE) ;
@@ -67,7 +67,7 @@ static BOOL InitPSAPI(void)
 
     // Now do the GetProcAddress stuff.
     g_pEnumProcessModules =
-        (ENUMPROCESSMODULES)GetProcAddress(hInst ,
+        (ENUMPROCESSMODULES)GetProcAddress(HInstance ,
                                            "EnumProcessModules") ;
     ASSERT(NULL != g_pEnumProcessModules) ;
 
@@ -78,7 +78,7 @@ static BOOL InitPSAPI(void)
     }
 
     g_pGetModuleBaseName =
-        (GETMODULEBASENAME)GetProcAddress(hInst ,
+        (GETMODULEBASENAME)GetProcAddress(HInstance ,
                                           "GetModuleBaseNameA") ;
     ASSERT(NULL != g_pGetModuleBaseName) ;
 

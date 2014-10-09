@@ -192,8 +192,8 @@ BOOL C_3dViewer::Cleanup()
     }
 
     //JAM 19Nov03
-    if (realWeather)
-        realWeather->Cleanup();
+    if (RealWeatherPointer)
+        RealWeatherPointer->Cleanup();
 
     ObjectLOD::ReleaseLodList();
     TheVbManager.Release();

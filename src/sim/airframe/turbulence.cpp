@@ -55,10 +55,10 @@ float AirframeClass::Turbulence(float turb)
     time = TheCampaign.GetMinutesSinceMidnight();
 
     //Determine Weather Condition
-    weather = realWeather->WeatherCondition; //Sunny (1), Fair, Poor, Inclement
-    wind = realWeather->windSpeed;
-    temp = ((WeatherClass*)realWeather)->temperature;
-    windHeading = realWeather->windHeading;
+    weather = RealWeatherPointer->WeatherCondition; //Sunny (1), Fair, Poor, Inclement
+    wind = RealWeatherPointer->windSpeed;
+    temp = ((WeatherClass*)RealWeatherPointer)->temperature;
+    windHeading = RealWeatherPointer->windHeading;
 
     // Here we determine the surface type and assign a turb score
     groundType = OTWDriver.GetGroundType(x, y);
@@ -369,11 +369,11 @@ float AirframeClass::Turbulence(float turb)
                 for (int col = drawCell; col < numCells - 2; col++)
                 {
 
-                    xx = (realWeather->weatherCellArray[row][col].cloudPosX + realWeather->weatherShiftX) - x;
+                    xx = (RealWeatherPointer->weatherCellArray[row][col].cloudPosX + RealWeatherPointer->weatherShiftX) - x;
 
-                    yy = (realWeather->weatherCellArray[row][col].cloudPosY + realWeather->weatherShiftY) - y;
+                    yy = (RealWeatherPointer->weatherCellArray[row][col].cloudPosY + RealWeatherPointer->weatherShiftY) - y;
 
-                    zz = ((WeatherClass*)realWeather)->cumulusZ - z;
+                    zz = ((WeatherClass*)RealWeatherPointer)->cumulusZ - z;
                     cloudDist = sqrt(xx * xx + yy * yy);
 
                     if (cloudDist < cloudRadius)
@@ -664,7 +664,7 @@ float AirframeClass::Turbulence(float turb)
     {
         //General Atmospherics: mech, convection, shear
         //under
-        if (platform->ZPos() > realWeather->stratusZ)
+        if (platform->ZPos() > RealWeatherPointer->stratusZ)
         {
             if (turbOn == 0)
             {
@@ -690,8 +690,8 @@ float AirframeClass::Turbulence(float turb)
         }//end under
 
         //in
-        else if (platform->ZPos() <= realWeather->stratusZ &&
-                 platform->ZPos() > (realWeather->stratusZ - realWeather->stratusDepth))
+        else if (platform->ZPos() <= RealWeatherPointer->stratusZ &&
+                 platform->ZPos() > (RealWeatherPointer->stratusZ - RealWeatherPointer->stratusDepth))
         {
             turb = PRANDFloat() * ((rand() % 20) * 0.05f);
 

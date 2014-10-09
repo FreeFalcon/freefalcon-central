@@ -227,8 +227,8 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     //JAM 18Nov03
     if (TheCampaign.InMainUI)
     {
-        ((WeatherClass *)realWeather)->UpdateCondition(WeatherCondition, true);
-        ((WeatherClass *)realWeather)->Init(true);
+        ((WeatherClass *)RealWeatherPointer)->UpdateCondition(WeatherCondition, true);
+        ((WeatherClass *)RealWeatherPointer)->Init(true);
     }
 
     return TRUE;

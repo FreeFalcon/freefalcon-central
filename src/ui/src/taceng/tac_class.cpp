@@ -77,42 +77,42 @@ void MakeTacEngScoreList();
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::hide_enemy_on(void)
+int TacticalMission::hide_enemy_on(void)
 {
     return (TheCampaign.TE_flags & tf_hide_enemy) && TRUE;
 }
 
-int tactical_mission::lock_ato_on(void)
+int TacticalMission::lock_ato_on(void)
 {
     return (TheCampaign.TE_flags & tf_lock_ato) && TRUE;
 }
 
-int tactical_mission::lock_oob_on(void)
+int TacticalMission::lock_oob_on(void)
 {
     return (TheCampaign.TE_flags & tf_lock_oob) && TRUE;
 }
 
-int tactical_mission::start_paused_on(void)
+int TacticalMission::start_paused_on(void)
 {
     return (TheCampaign.TE_flags & tf_start_paused) && TRUE;
 }
 
-int tactical_mission::is_flag_on(long value)
+int TacticalMission::is_flag_on(long value)
 {
     return (TheCampaign.TE_flags & value) && TRUE;
 }
 
-void tactical_mission::set_flag(long value)
+void TacticalMission::set_flag(long value)
 {
     TheCampaign.TE_flags |= value;
 }
 
-void tactical_mission::clear_flag(long value)
+void TacticalMission::clear_flag(long value)
 {
     TheCampaign.TE_flags &= ~value;
 }
 
-tactical_mission::tactical_mission(char *the_filename)
+TacticalMission::TacticalMission(char *the_filename)
 {
     TheCampaign.TE_type = tt_unknown;
 
@@ -146,7 +146,7 @@ tactical_mission::tactical_mission(char *the_filename)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_mission::tactical_mission(void)
+TacticalMission::TacticalMission(void)
 {
     TheCampaign.TE_type = tt_engagement;
 
@@ -175,7 +175,7 @@ tactical_mission::tactical_mission(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_mission::~tactical_mission(void)
+TacticalMission::~TacticalMission(void)
 {
     if (filename)
     {
@@ -189,7 +189,7 @@ tactical_mission::~tactical_mission(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_type(tactical_type new_type)
+void TacticalMission::set_type(tactical_type new_type)
 {
     TheCampaign.TE_type = new_type;
 }
@@ -198,7 +198,7 @@ void tactical_mission::set_type(tactical_type new_type)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_type tactical_mission::get_type(void)
+tactical_type TacticalMission::get_type(void)
 {
     return (tactical_type) TheCampaign.TE_type;
 }
@@ -207,7 +207,7 @@ tactical_type tactical_mission::get_type(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *tactical_mission::get_title(void)
+char *TacticalMission::get_title(void)
 {
     static char
     buffer[100];
@@ -263,7 +263,7 @@ char *tactical_mission::get_title(void)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::save_data(char *savefile)
+void TacticalMission::save_data(char *savefile)
 {
     FILE
     *fp;
@@ -350,7 +350,7 @@ void tactical_mission::save_data(char *savefile)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::save(char *filename)
+void TacticalMission::save(char *filename)
 {
     long saveIP, saveIter;
 
@@ -398,7 +398,7 @@ void tactical_mission::save(char *filename)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::process_load(char *data, int size, int)
+void TacticalMission::process_load(char *data, int size, int)
 {
     char
     *ptr = NULL,
@@ -602,7 +602,7 @@ void tactical_mission::process_load(char *data, int size, int)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-char *tactical_mission::read_te_file(char *filename, int *size)
+char *TacticalMission::read_te_file(char *filename, int *size)
 {
     FILE
     *fp;
@@ -731,7 +731,7 @@ char *tactical_mission::read_te_file(char *filename, int *size)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::info_load(char *the_filename)
+void TacticalMission::info_load(char *the_filename)
 {
     int
     size;
@@ -766,7 +766,7 @@ void tactical_mission::info_load(char *the_filename)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::load(void)
+void TacticalMission::load(void)
 {
     int
     size;
@@ -860,7 +860,7 @@ void tactical_mission::load(void)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::preload(void)
+void TacticalMission::preload(void)
 {
     char
     *ext,
@@ -929,7 +929,7 @@ void tactical_mission::preload(void)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::new_setup(void)
+void TacticalMission::new_setup(void)
 {
     //MonoPrint ("Tactical_Mission::New Setup\n");
 
@@ -950,7 +950,7 @@ void tactical_mission::new_setup(void)
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::revert(void)
+void TacticalMission::revert(void)
 {
     //MonoPrint ("Tactical_Mission::Revert %s\n", filename);
 
@@ -967,7 +967,7 @@ void tactical_mission::revert(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_number_of_teams(void)
+int TacticalMission::get_number_of_teams(void)
 {
     return number_teams;
 }
@@ -976,7 +976,7 @@ int tactical_mission::get_number_of_teams(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_number_of_aircraft(int team)
+int TacticalMission::get_number_of_aircraft(int team)
 {
     return number_aircraft[team];
 }
@@ -985,7 +985,7 @@ int tactical_mission::get_number_of_aircraft(int team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_number_of_players(int team)
+int TacticalMission::get_number_of_players(int team)
 {
     return number_players[team];
 }
@@ -994,7 +994,7 @@ int tactical_mission::get_number_of_players(int team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_number_of_f16s(int team)
+int TacticalMission::get_number_of_f16s(int team)
 {
     return number_f16s[team];
 }
@@ -1003,7 +1003,7 @@ int tactical_mission::get_number_of_f16s(int team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *tactical_mission::get_team_name(int team)
+char *TacticalMission::get_team_name(int team)
 {
     return team_name[team];
 }
@@ -1012,7 +1012,7 @@ char *tactical_mission::get_team_name(int team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_team_name(int team, char *name)
+void TacticalMission::set_team_name(int team, char *name)
 {
     if (team_name[team])
     {
@@ -1030,7 +1030,7 @@ void tactical_mission::set_team_name(int team, char *name)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_team_flag(int team)
+int TacticalMission::get_team_flag(int team)
 {
     return team_flag[team];
 }
@@ -1039,7 +1039,7 @@ int tactical_mission::get_team_flag(int team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_team_flag(int team, int flag)
+void TacticalMission::set_team_flag(int team, int flag)
 {
     team_flag[team] = static_cast<char>(flag);
 }
@@ -1048,7 +1048,7 @@ void tactical_mission::set_team_flag(int team, int flag)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::setup_victory_condition(char *buffer)
+void TacticalMission::setup_victory_condition(char *buffer)
 {
     victory_type
     type;
@@ -1224,7 +1224,7 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_victory_condition_filter(victory_condition_filter new_filter)
+void TacticalMission::set_victory_condition_filter(victory_condition_filter new_filter)
 {
     filter = new_filter;
 }
@@ -1233,7 +1233,7 @@ void tactical_mission::set_victory_condition_filter(victory_condition_filter new
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_victory_condition_team_filter(int new_team)
+void TacticalMission::set_victory_condition_team_filter(int new_team)
 {
     team = new_team;
 }
@@ -1242,7 +1242,7 @@ void tactical_mission::set_victory_condition_team_filter(int new_team)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-victory_condition *tactical_mission::get_first_victory_condition(void)
+victory_condition *TacticalMission::get_first_victory_condition(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1267,7 +1267,7 @@ victory_condition *tactical_mission::get_first_victory_condition(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-victory_condition *tactical_mission::get_next_victory_condition(void)
+victory_condition *TacticalMission::get_next_victory_condition(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1292,7 +1292,7 @@ victory_condition *tactical_mission::get_next_victory_condition(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-victory_condition *tactical_mission::get_first_unfiltered_victory_condition(void)
+victory_condition *TacticalMission::get_first_unfiltered_victory_condition(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1307,7 +1307,7 @@ victory_condition *tactical_mission::get_first_unfiltered_victory_condition(void
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-victory_condition *tactical_mission::get_next_unfiltered_victory_condition(void)
+victory_condition *TacticalMission::get_next_unfiltered_victory_condition(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1322,7 +1322,7 @@ victory_condition *tactical_mission::get_next_unfiltered_victory_condition(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_points_required(int value)
+void TacticalMission::set_points_required(int value)
 {
     points_required = value;
 }
@@ -1331,7 +1331,7 @@ void tactical_mission::set_points_required(int value)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::get_points_required(void)
+int TacticalMission::get_points_required(void)
 {
     return points_required;
 }
@@ -1340,7 +1340,7 @@ int tactical_mission::get_points_required(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::evaluate_victory_conditions(void)
+void TacticalMission::evaluate_victory_conditions(void)
 {
     UISendMsg *vcdone;
     victory_condition
@@ -1559,7 +1559,7 @@ void tactical_mission::evaluate_victory_conditions(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #if 0 // NOT supported anymore -PJW
-void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, double z, double s)
+void TacticalMission::evaluate_parameters(void *arg_wp, double x, double y, double z, double s)
 {
     victory_condition
     *vc;
@@ -1764,7 +1764,7 @@ void tactical_mission::evaluate_parameters(void *arg_wp, double x, double y, dou
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::calculate_victory_points(void)
+void TacticalMission::calculate_victory_points(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1798,7 +1798,7 @@ void tactical_mission::calculate_victory_points(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::determine_victor(void)
+int TacticalMission::determine_victor(void)
 {
     int
     i;
@@ -1868,7 +1868,7 @@ int determine_tactical_rating(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tactical_mission::determine_rating(void)
+int TacticalMission::determine_rating(void)
 {
     int player_pts = 0;
     int best_opp = 0;

@@ -648,7 +648,7 @@ int WeatherClass::CampLoad(char* name, int type)
     delete cd.data;
 
     // RED - Update the weather condition
-    realWeather->UpdateCondition();
+    RealWeatherPointer->UpdateCondition();
 
     return TRUE;
 }

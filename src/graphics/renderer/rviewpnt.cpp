@@ -80,9 +80,9 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     roofHeight = -SKY_ROOF_HEIGHT;
 
     if (bZBuffering)
-        realWeather->Setup();
+        RealWeatherPointer->Setup();
     else
-        realWeather->Setup(ObjectsBelowClouds(), Clouds());
+        RealWeatherPointer->Setup(ObjectsBelowClouds(), Clouds());
 }
 
 
@@ -170,8 +170,8 @@ void RViewPoint::Update(const Tpoint *pos)
 
     // Update the ceiling values of the object display lists
     objectLists[0].Ztop = terrainCeiling;
-    objectLists[1].Ztop = realWeather->stratusZ + ((realWeather->stratusDepth) / 4.f);
-    objectLists[2].Ztop = realWeather->stratusZ - ((realWeather->stratusDepth) / 4.f);
+    objectLists[1].Ztop = RealWeatherPointer->stratusZ + ((RealWeatherPointer->stratusDepth) / 4.f);
+    objectLists[2].Ztop = RealWeatherPointer->stratusZ - ((RealWeatherPointer->stratusDepth) / 4.f);
     objectLists[3].Ztop = roofHeight;
 
     previousTop = 1e12f;

@@ -30,7 +30,7 @@ extern bool g_bUse_DX_Engine; // COBRA - RED
 extern bool g_bEnableTrackIR; // Retro 24Dez2004
 extern bool g_bTrackIRon; // Retro 24Dez2004
 extern bool g_bUse6DOFTir; // Retro 24Dez2004
-extern TrackIR theTrackIRObject; // Retro 24Dez2004
+extern TrackIR TheTrackIrObject; // Retro 24Dez2004
 extern float g_fTIRMinimumFOV; // Cobra
 extern float g_fTIRMaximumFOV; // Cobra
 extern int g_n6DOFTIR; // Cobra
@@ -1412,9 +1412,9 @@ void OTWDriverClass::VCock_HeadCalc(void)
         if (g_n6DOFTIR == 1)
         {
             Tpoint Pan;
-            Pan.x = theTrackIRObject.getZ() / 16383.0f * -1.25f; // Cobra - changed from +/-4' to +/-1.75'
-            Pan.y = theTrackIRObject.getX() / 16383.0f * -0.50f;
-            Pan.z = theTrackIRObject.getY() / 16383.0f * -0.75f;
+            Pan.x = TheTrackIrObject.getZ() / 16383.0f * -1.25f; // Cobra - changed from +/-4' to +/-1.75'
+            Pan.y = TheTrackIrObject.getX() / 16383.0f * -0.50f;
+            Pan.z = TheTrackIrObject.getY() / 16383.0f * -0.75f;
 
             // If using DX Engine, orient head with the cockpit/platform, head movements oriented with head rotation
             if (g_bUse_DX_Engine)
@@ -1431,7 +1431,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
             headOrigin.x = headOrigin.y = headOrigin.z = 0.0f;
             headPan = headOrigin;
 
-            x = -(theTrackIRObject.getZ() / 16383.0f); // +/-1.0
+            x = -(TheTrackIrObject.getZ() / 16383.0f); // +/-1.0
 
             if (x > 0.0f)
                 fov = g_fDefaultFOV - (x * (g_fDefaultFOV - g_fTIRMinimumFOV));

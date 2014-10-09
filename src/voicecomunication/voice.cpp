@@ -1306,7 +1306,7 @@ LCleanup:
 // Name: GetConsoleHwnd()
 // Desc: Returns the console HWND
 //-----------------------------------------------------------------------------
-extern HWND mainAppWnd;
+extern HWND MainApplicationWindow;
 HWND GetConsoleHwnd()
 {
     /*  HWND hwndFound;        // This is what is returned to the caller.
@@ -1333,7 +1333,7 @@ HWND GetConsoleHwnd()
       SetConsoleTitle(pszOldWindowTitle);
 
       return(hwndFound);*/
-    return (mainAppWnd);
+    return (MainApplicationWindow);
 }
 
 extern char* g_ipadress; // 2002-02-07 S.G.

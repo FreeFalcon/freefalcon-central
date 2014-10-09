@@ -614,7 +614,7 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
         delete current_tactical_mission;
     }
 
-    current_tactical_mission = new tactical_mission;
+    current_tactical_mission = new TacticalMission;
 
     SetCursor(gCursors[CRSR_WAIT]);
     item = ((C_TreeList *)control)->GetLastItem();

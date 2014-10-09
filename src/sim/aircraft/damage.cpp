@@ -1676,11 +1676,11 @@ void AircraftClass::ShowDamage(void)
     //RV - I-Hawk - set Contrails margin band variables for appropraite contrails insertion checks later...
     if (!contrailLowValue) // Make sure I assigned contrails weather values only once
     {
-        contrailLowValue = ((WeatherClass*)realWeather)->contrailLow;
-        contrailHighValue = ((WeatherClass*)realWeather)->contrailHigh;
-        contrailLow10Percent = (((WeatherClass*)realWeather)->contrailLow * 0.1f);
-        contrailLow90Percent = (((WeatherClass*)realWeather)->contrailLow * 0.9f);
-        contrailHigh110Percent = (((WeatherClass*)realWeather)->contrailHigh + contrailLow10Percent);
+        contrailLowValue = ((WeatherClass*)RealWeatherPointer)->contrailLow;
+        contrailHighValue = ((WeatherClass*)RealWeatherPointer)->contrailHigh;
+        contrailLow10Percent = (((WeatherClass*)RealWeatherPointer)->contrailLow * 0.1f);
+        contrailLow90Percent = (((WeatherClass*)RealWeatherPointer)->contrailLow * 0.9f);
+        contrailHigh110Percent = (((WeatherClass*)RealWeatherPointer)->contrailHigh + contrailLow10Percent);
     }
 
     //RV - I-Hawk - Set damage trails locations based on how many engines there are, can be set only once

@@ -169,7 +169,7 @@ extern int gTotSfx;
 extern int numObjsProcessed;
 extern int numObjsInDrawList;
 
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 extern void* gSharedMemPtr;
 extern void *gSharedIntellivibe;
 
@@ -206,7 +206,7 @@ extern MEM_POOL gFartexMemPool;
 /* Retro TrackIR stuff.. */
 #include "TrackIR.h" // Retro 26/09/03
 extern bool g_bEnableTrackIR; // Retro 26/09/03
-extern TrackIR theTrackIRObject; // Retro 27/09/03
+extern TrackIR TheTrackIrObject; // Retro 27/09/03
 extern int g_nTrackIRSampleFreq; // Retro 02/10/03
 /* ..ends */
 
@@ -439,7 +439,7 @@ void OTWDriverClass::RenderFirstFrame(void)
     // update callbacks
     TheTimeManager.Refresh();
     // Refresh weather stuff
-    realWeather->RefreshWeather(renderer);
+    RealWeatherPointer->RefreshWeather(renderer);
     //if its dark, turn internal lights on
     float light = TheTimeOfDay.GetLightLevel();
 
@@ -1814,11 +1814,11 @@ void OTWDriverClass::RenderFrame()
             posit.z = ac->ZPos();
 
             // Find angle between heading and wind
-            yaw = ((WeatherClass*)realWeather)->WindHeadingAt(&posit) - yaw;
+            yaw = ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&posit) - yaw;
 
             // Project wind speed
 
-            yaw = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&posit) * (float)sin(yaw);
+            yaw = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&posit) * (float)sin(yaw);
 
             // Find angle
             yaw = (float)atan2(yaw, cockpitFlightData.vt);
@@ -2296,7 +2296,7 @@ void OTWDriverClass::RenderFrame()
     F4SoundFXSetCamPosAndOrient(&viewPos, &cameraRot, &cameraVel);
 
     TheTimeManager.SetTime(vuxGameTime + (unsigned long)FloatToInt32(todOffset * 1000.0F));
-    ((WeatherClass*)realWeather)->UpdateWeather();
+    ((WeatherClass*)RealWeatherPointer)->UpdateWeather();
 
     BuildExternalNearList();
 
@@ -2764,7 +2764,7 @@ void OTWDriverClass::RenderFrame()
     }
 
     //JAM 18Nov03
-    if (WeatherCondition == INCLEMENT && cameraPos.z > realWeather->stratusZ)
+    if (WeatherCondition == INCLEMENT && cameraPos.z > RealWeatherPointer->stratusZ)
     {
         if (DisplayInCockpit())
         {
@@ -2897,7 +2897,7 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
             {
                 fprintf(fp, " - chk");
 
-                if (theTrackIRObject.Get_Panning_Allowed())
+                if (TheTrackIrObject.Get_Panning_Allowed())
                     fprintf(fp, " - allowed");
             }
 
@@ -2911,12 +2911,12 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
 
             else if (vuxRealTime & g_nTrackIRSampleFreq) // Retro 26/09/03 - check every 512 ms (default value)
             {
-                if (theTrackIRObject.Get_Panning_Allowed())
-                    SimDriver.POVKludgeFunction(theTrackIRObject.TrackIR_2D_Map()); // Retro 26/09/03
+                if (TheTrackIrObject.Get_Panning_Allowed())
+                    SimDriver.POVKludgeFunction(TheTrackIrObject.TrackIR_2D_Map()); // Retro 26/09/03
             }
             else
             {
-                theTrackIRObject.Allow_2D_Panning();
+                TheTrackIrObject.Allow_2D_Panning();
             }
         }
 

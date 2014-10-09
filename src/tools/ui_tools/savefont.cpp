@@ -5,7 +5,7 @@
 #include "textids.h"
 #include "userids.h"
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 extern C_Handler *gMainHandler;
 
 static HWND mywin;
@@ -1112,7 +1112,7 @@ void InitFontTool()
     myclass.lpfnWndProc = NULL;
     myclass.cbClsExtra = 0;
     myclass.cbWndExtra = 0;
-    myclass.hInstance = hInst;
+    myclass.hInstance = HInstance;
     myclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     myclass.hCursor = LoadCursor(NULL, IDC_ARROW);
     myclass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -1128,7 +1128,7 @@ void InitFontTool()
                          SCREEN_SIZE,
                          NULL,
                          NULL,
-                         hInst,
+                         HInstance,
                          NULL);
 
     ShowWindow(mywin, 0);

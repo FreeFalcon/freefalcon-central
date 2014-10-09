@@ -2072,7 +2072,7 @@ void CDXEngine::FlushBuffers(void)
     // New Fog stuff
     if (m_LinearFog)
     {
-        m_LinearFogLevel = realWeather->LinearFogEnd();
+        m_LinearFogLevel = RealWeatherPointer->LinearFogEnd();
         m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND, *(DWORD *)(&m_FogLevel));
     }
     else

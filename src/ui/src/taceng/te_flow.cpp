@@ -100,7 +100,7 @@ void PickTeamColors();
 void InitTimeCompressionBox(long compression);
 void UpdateOwners();
 extern long OwnershipChanged;
-void tactical_edit_mission(tactical_mission *);
+void tactical_edit_mission(TacticalMission *);
 static void tactical_revert_mission(void);
 
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
@@ -293,7 +293,7 @@ static void TACNewCB(long, short hittype, C_Base *control)
     char path[_MAX_PATH];
     sprintf(path, "%s\\te_new.tac", FalconCampaignSaveDirectory);
 
-    current_tactical_mission = new tactical_mission(path);
+    current_tactical_mission = new TacticalMission(path);
 
 #ifdef CAMPTOOL
 
@@ -761,7 +761,7 @@ void restart_tactical_engagement(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_edit_mission(tactical_mission *)
+void tactical_edit_mission(TacticalMission *)
 {
     short i;
     int
@@ -800,7 +800,7 @@ void tactical_edit_mission(tactical_mission *)
             }
             else
             {
-                current_tactical_mission = new tactical_mission(filename);
+                current_tactical_mission = new TacticalMission(filename);
                 break;
             }
         }

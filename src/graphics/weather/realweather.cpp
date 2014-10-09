@@ -91,11 +91,11 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     // the Cloud vertices
     D3DDYNVERTEX Quad[4];
 
-    if (realWeather->WeatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
-    else if ((realWeather->WeatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
+    if (RealWeatherPointer->WeatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
+    else if ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
 
     // Assign textures Coord
-    if (realWeather->WeatherCondition < FAIR || ((realWeather->WeatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (RealWeatherPointer->WeatherCondition < FAIR || ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)))
     {
         Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
         Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
@@ -123,7 +123,7 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius, Quad[3].pos.z = 0;
 
     // Draw the Square
-    if (realWeather->WeatherCondition < FAIR || ((realWeather->WeatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (RealWeatherPointer->WeatherCondition < FAIR || ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)))
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, CirrusCumTextures.TexHandle());
     else
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, overcastTexture.TexHandle());
@@ -1353,12 +1353,12 @@ void RealWeather::UpdateWeatherQuality(void)
     WeatherQualityStep = F_I32(PRANDFloatPos() * MAX_WEATHER_Q_STEPS);
     WeatherQualityRate = PRANDFloat() * MIN_WEATHER_Q_STEP;
 
-    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f)) realWeather->WeatherQualityRate = fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
+    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f)) RealWeatherPointer->WeatherQualityRate = fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
 }
 
 void RealWeather::TimeUpdateCallback(void *)
 {
-    realWeather->UpdateLighting();
+    RealWeatherPointer->UpdateLighting();
 
 }
 //Cobra

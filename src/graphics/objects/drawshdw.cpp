@@ -62,7 +62,7 @@ void DrawableShadowed::Draw(class RenderOTW *renderer, int LOD)
         pos.z = renderer->viewpoint->GetGroundLevel(position.x, position.y);
 
         // RED - Linear Fog - checvk if under visibility limit
-        if (pos.z < realWeather->VisibleLimit())
+        if (pos.z < RealWeatherPointer->VisibleLimit())
         {
             dZ = fabs(position.z - pos.z); // Absolute distance ( not oriented, but who cares...???)
             pos.x = position.x - LightDir.x * dZ * (2 + LightDir.z); // COBRA - RED - Light Direction Casting
@@ -95,9 +95,9 @@ void DrawableShadowed::Draw(class RenderOTW *renderer, int LOD)
             if (ShadowAlphaLevel > 1.0f) ShadowAlphaLevel = 1.0f; // Limit Check
 
             // FRB - Almost no shadows when there is no sun (overcast or heavy overcast)
-            if (realWeather->WeatherCondition == INCLEMENT)
+            if (RealWeatherPointer->WeatherCondition == INCLEMENT)
                 ShadowAlphaLevel = 0.1f;
-            else if (realWeather->WeatherCondition == POOR)
+            else if (RealWeatherPointer->WeatherCondition == POOR)
                 ShadowAlphaLevel = 0.3f;
 
             TheStateStack.DrawWarpedObject(&shadowInstance, &rot, &pos, sx, sy, 1.0f, instance.Radius());

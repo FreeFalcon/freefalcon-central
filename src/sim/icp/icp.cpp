@@ -495,12 +495,12 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
                     PNUpdateSTPTMode(mode, 0);
             }
             // Retro 3Jan2004 start
-            else if ((g_bPilotEntertainment) && (winamp) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            else if ((g_bPilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == PREV_BUTTON)
-                    winamp->VolDown();
+                    WinAmpPointer->VolDown();
                 else if (mode == NEXT_BUTTON)
-                    winamp->VolUp();
+                    WinAmpPointer->VolUp();
             } // Retro 3Jan2004 end
         }
         else if (mode == ENTR_BUTTON)
@@ -525,14 +525,14 @@ void ICPClass::HandleInput(int mode, CPButtonObject *pbutton)
 
             // Retro 3Jan2004 start
             // Retro from here, kind of a hack having this here..
-            if ((g_bPilotEntertainment) && (winamp) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
+            if ((g_bPilotEntertainment) && (WinAmpPointer) && (IsICPSet(ICPClass::MISC_MODE) && mICPSecondaryMode == ZERO_MODE))
             {
                 if (mode == UP_MODE)
-                    winamp->Next();
+                    WinAmpPointer->Next();
                 else if (mode == DOWN_MODE)
-                    winamp->Previous();
+                    WinAmpPointer->Previous();
                 else if (mode == SEQ_MODE)
-                    winamp->TogglePlayback();
+                    WinAmpPointer->TogglePlayback();
             } // Retro 3Jan2004 end
         }
         //******************

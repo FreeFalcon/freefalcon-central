@@ -59,7 +59,7 @@ int FalconWeatherMessage::Process(uchar autodisp)
 {
     if (autodisp || !TheCampaign.IsPreLoaded()) return -1;
 
-    ((WeatherClass *)realWeather)->ReceiveWeather(this);
+    ((WeatherClass *)RealWeatherPointer)->ReceiveWeather(this);
 
     return 0;
 }

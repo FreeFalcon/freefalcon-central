@@ -104,7 +104,7 @@ int voice_ = 0; //default voice to play
 void *map_file(char *filename, long bytestomap = 0);
 extern VoiceFilter *voiceFilter;
 VoiceManager *VM;
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 extern HANDLE VMWakeEventHandle;
 //C_Hash *fragTable = NULL;
 
@@ -1672,7 +1672,7 @@ LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             UpdateVoiceDialog(hwnd);
             ShowWindow(hwnd, SW_SHOW);
             return DefWindowProc(hwnd, message, wParam, lParam);
-            //DialogBox(hInst,MAKEINTRESOURCE(IDD_PLAYVOICES),hwnd,(DLGPROC)PlayVoicesProc);
+            //DialogBox(HInstance,MAKEINTRESOURCE(IDD_PLAYVOICES),hwnd,(DLGPROC)PlayVoicesProc);
             break;
 
         case WM_COMMAND:                 /* message: received command */

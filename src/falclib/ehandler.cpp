@@ -384,11 +384,11 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                                              data              ) ;*/
 
     //Wombat778 5-02-04 Check if we are being debugged.  If so, dont write the crashlog
-    HINSTANCE hInst = LoadLibrary("kernel32.dll");
+    HINSTANCE HInstance = LoadLibrary("kernel32.dll");
 
-    if (hInst)
+    if (HInstance)
     {
-        FARPROC pIsDebuggerPresent = GetProcAddress(hInst, "IsDebuggerPresent");
+        FARPROC pIsDebuggerPresent = GetProcAddress(HInstance, "IsDebuggerPresent");
 
         if (pIsDebuggerPresent)
             if (pIsDebuggerPresent())
