@@ -77,7 +77,7 @@ extern BOOL gNewMessage;
 extern IMAGE_RSC *gOccupationMap;
 extern long StopLookingforMission;
 extern C_Base *CurMapTool;
-extern int gTimeModeServer;
+extern int TimeModeServer;
 extern bool g_bServer;
 extern OBJECTINFO Recon;
 extern long gRefreshScoresList;
@@ -1218,7 +1218,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gMainHandler->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1510,7 +1510,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
 
     CheckCampaignFlyButton();
 
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 || flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!TimeModeServer && !g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!TimeModeServer && !g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 || flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!TimeModeServer && !g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!TimeModeServer && !g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }

@@ -32,7 +32,7 @@ FalconEntity::FalconEntity(VU_BYTE** stream, long *rem) : VuEntity(stream, rem)
     InitLocalData();
     memcpychk(&falconType, stream, sizeof(falconType), rem);
 
-    if (gCampDataVersion >= 32)
+    if (CampaignDataVersion >= 32)
     {
         memcpychk(&falconFlags, stream, sizeof(uchar), rem);
     }
@@ -43,7 +43,7 @@ FalconEntity::FalconEntity(FILE* filePtr) : VuEntity(filePtr)
     InitLocalData();
     fread(&falconType, sizeof(falconType), 1, filePtr);
 
-    if (gCampDataVersion >= 32)
+    if (CampaignDataVersion >= 32)
     {
         fread(&falconFlags, sizeof(uchar), 1, filePtr);
     }

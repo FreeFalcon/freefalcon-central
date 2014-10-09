@@ -226,7 +226,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
 
     memcpychk(&obj_data.last_repair, stream, sizeof(CampaignTime), rem);
 
-    if (gCampDataVersion > 1)
+    if (CampaignDataVersion > 1)
     {
         memcpychk(&obj_data.obj_flags, stream, sizeof(ulong), rem);
     }
@@ -302,7 +302,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
     }
 
     // Read Radar data
-    if (gCampDataVersion >= 20)
+    if (CampaignDataVersion >= 20)
     {
         memcpychk(&i, stream, sizeof(uchar), rem);
 
@@ -546,7 +546,7 @@ void ObjectiveClass::UpdateFromData(VU_BYTE **stream, long *rem)
     obj_data.fstatus = new uchar[len];
 #endif
 
-    if (gCampDataVersion < 64)
+    if (CampaignDataVersion < 64)
     {
         memcpychk(obj_data.fstatus, stream, 1, rem);
         memset(obj_data.fstatus + 1, 0, len - 1);
@@ -2851,17 +2851,17 @@ int LoadBaseObjectives(char* scenario)
     uchar *buffer, *bufptr;
     uchar /* *data,*/*data_ptr;
 
-    old_version = gCampDataVersion;
+    old_version = CampaignDataVersion;
 
     CampaignData cd = ReadCampFile(scenario, "obj");
 
     if (cd.dataSize == -1)
     {
-        gCampDataVersion = old_version;
+        CampaignDataVersion = old_version;
         return 0;
     }
 
-    gCampDataVersion = ReadVersionNumber(scenario);
+    CampaignDataVersion = ReadVersionNumber(scenario);
 
     // Read Number of Objectives..
 
@@ -2904,7 +2904,7 @@ int LoadBaseObjectives(char* scenario)
     delete [] buffer;
     delete cd.data;
 
-    gCampDataVersion = old_version;
+    CampaignDataVersion = old_version;
 
     return 1;
 }

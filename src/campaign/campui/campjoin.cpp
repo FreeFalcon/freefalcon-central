@@ -34,8 +34,8 @@ bool campaignStart;
 extern int FalconConnectionDescription;
 extern C_Handler *gMainHandler;
 extern _TCHAR gUI_ScenarioName[];
-extern int gCurrentDataVersion;
-extern int gCampDataVersion;
+extern int CurrentDataVersion;
+extern int CampaignDataVersion;
 extern int CampSelMode;
 extern int MainLastGroup;
 extern VU_ID gPlayerSquadronId;
@@ -60,7 +60,7 @@ extern void ChooseBullseye(void); // 2002-04-18 MN
 // Globals
 // ============================
 
-int gCampJoinStatus = 0; // This stores what stage of loading we're currently in
+int CampaignJoinStatus = 0; // This stores what stage of loading we're currently in
 ulong gCampJoinLastData = 0; // Last vuxRealtime we received data about this game
 ulong gCampJoinTimeout = 0; // How long we're willing to wait for the next set of data
 uchar gCampJoinTries = 0; // How many times we've re-requested campaign data
@@ -90,7 +90,7 @@ void StartCampaignGame(int local, int game_type)
     if (local)
     {
         // Load a Campaign
-        gCampJoinStatus = 0;
+        CampaignJoinStatus = 0;
         gCampJoinLastData = 0;
         gCampJoinTimeout = 0;
         gCampJoinTries = 0;
@@ -113,14 +113,14 @@ void StartCampaignGame(int local, int game_type)
             TheCampaign.SetCreationIter(1); // Iteration of this file
         }
 
-        gCampDataVersion = gCurrentDataVersion;
+        CampaignDataVersion = CurrentDataVersion;
     }
     else
     {
         DisplayJoinStatusWindow(0);
         // Join a Campaign
-        gCampDataVersion = gCurrentDataVersion;
-        gCampJoinStatus = JOIN_REQUEST_ALL_DATA;
+        CampaignDataVersion = CurrentDataVersion;
+        CampaignJoinStatus = JOIN_REQUEST_ALL_DATA;
         gCampJoinLastData = vuxRealTime;
         gCampJoinTries = 0;
         gCampJoinGameType = game_type;
@@ -158,10 +158,10 @@ void StartCampaignGame(int local, int game_type)
 // This is called any time we've received Campaign Scenario Status data (preload data)
 void CampaignPreloadSuccess(int remote_game)
 {
-    if (remote_game && !TheCampaign.IsLoaded() && gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
+    if (remote_game && !TheCampaign.IsLoaded() && CampaignJoinStatus == JOIN_REQUEST_ALL_DATA)
     {
         // We want the rest of the data too.
-        gCampJoinStatus = JOIN_CAMP_DATA_ONLY;
+        CampaignJoinStatus = JOIN_CAMP_DATA_ONLY;
         PostMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN, JOIN_CAMP_DATA_ONLY, gCampJoinGameType);
     }
 }

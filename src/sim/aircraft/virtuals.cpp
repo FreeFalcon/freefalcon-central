@@ -72,7 +72,7 @@ FireControlComputer::FCCMasterMode playerLastMasterMode = FireControlComputer::N
 //FireControlComputer::FCCSubMode playerLastSubMode = FireControlComputer::TimeToGo;
 FireControlComputer::FCCSubMode playerLastSubMode = FireControlComputer::ETE;
 extern int gPlayerExitMenuShown;
-int gUnlimitedAmmo = 0;
+int UnlimitedAmmunition = 0;
 extern bool g_bUnlimitedAmmo;//Cobra
 
 int AircraftClass::Wake(void)
@@ -516,7 +516,7 @@ void AircraftClass::MakePlayerVehicle(void)
 
     // Set Unlimited ammo appropriatly
     //Cobra we are doing this to test for now in TE  ADD BACK IN LATER
-    if (SimDriver.RunningInstantAction() || gUnlimitedAmmo > 2 || g_bUnlimitedAmmo)
+    if (SimDriver.RunningInstantAction() || UnlimitedAmmunition > 2 || g_bUnlimitedAmmo)
         Sms->SetUnlimitedAmmo(TRUE);
 
     // Get rid of old sensors

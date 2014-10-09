@@ -99,7 +99,7 @@ char *fragsPlayed;
 #define EAIRSPEED_MAX 47
 
 
-int voice_ = 0; //default voice to play
+int DefaultVoiceToPlay = 0; //default voice to play
 
 void *map_file(char *filename, long bytestomap = 0);
 extern VoiceFilter *voiceFilter;

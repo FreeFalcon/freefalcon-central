@@ -66,7 +66,7 @@ extern int gRenameIds;
 //extern char gPlaceholderFile[80];
 #endif
 
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 extern int g_nNoPlayerPlay; // JB 010926
 
 TeamClass* TeamInfo[NUM_TEAMS] = { 0 };
@@ -272,7 +272,7 @@ TeamClass::TeamClass(FILE *file) :
     //
     //#ifdef DEBUG
     // // Somehow this entity type got changed..
-    // if (gCampDataVersion < 35)
+    // if (CampaignDataVersion < 35)
     // SetEntityType(883);
     //#endif
 
@@ -301,7 +301,7 @@ TeamClass::TeamClass(FILE *file) :
     ShiAssert((cteam > 0 || who == 0) && cteam < NUM_TEAMS);
     fread(&flags, sizeof(short), 1, file);
 
-    if (gCampDataVersion > 2)
+    if (CampaignDataVersion > 2)
     {
         fread(member, sizeof(uchar), NUM_COUNS, file);
         fread(stance, sizeof(short), NUM_TEAMS, file);
@@ -321,7 +321,7 @@ TeamClass::TeamClass(FILE *file) :
     playerRating = 0.0F;
     lastPlayerMission = 0;
 
-    if (gCampDataVersion > 11)
+    if (CampaignDataVersion > 11)
     {
         fread(&airExperience, sizeof(uchar), 1, file);
         fread(&airDefenseExperience, sizeof(uchar), 1, file);
@@ -343,7 +343,7 @@ TeamClass::TeamClass(FILE *file) :
     fread(&supplyAvail, sizeof(ushort), 1, file);
     fread(&fuelAvail, sizeof(ushort), 1, file);
 
-    if (gCampDataVersion > 53)
+    if (CampaignDataVersion > 53)
     {
         fread(&replacementsAvail, sizeof(ushort), 1, file);
         fread(&playerRating, sizeof(float), 1, file);
@@ -356,7 +356,7 @@ TeamClass::TeamClass(FILE *file) :
         lastPlayerMission = 0;
     }
 
-    if (gCampDataVersion < 40)
+    if (CampaignDataVersion < 40)
     {
         ushort
         dummy;
@@ -373,19 +373,19 @@ TeamClass::TeamClass(FILE *file) :
     fread(objtype_priority, sizeof(uchar), MAX_TGTTYPE, file);
     fread(unittype_priority, sizeof(uchar), MAX_UNITTYPE, file);
 
-    if (gCampDataVersion < 30)
+    if (CampaignDataVersion < 30)
         fread(mission_priority, sizeof(uchar), 40, file);
     else
         fread(mission_priority, sizeof(uchar), AMIS_OTHER, file);
 
-    if (gCampDataVersion < 46)
+    if (CampaignDataVersion < 46)
     {
         memcpy(objtype_priority, DefaultObjtypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_TGTTYPE);
         memcpy(unittype_priority, DefaultUnittypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_UNITTYPE);
         memcpy(mission_priority, DefaultMissionPriority[TAT_CAS - 1], sizeof(uchar)*AMIS_OTHER);
     }
 
-    if (gCampDataVersion < 34)
+    if (CampaignDataVersion < 34)
     {
         CampaignTime attackTime;
         uchar offensiveLoss;
@@ -395,11 +395,11 @@ TeamClass::TeamClass(FILE *file) :
 
     fread(max_vehicle, sizeof(uchar), 4, file);
 
-    if (gCampDataVersion > 4)
+    if (CampaignDataVersion > 4)
     {
         fread(&teamFlag, sizeof(uchar), 1, file);
 
-        if (gCampDataVersion > 32)
+        if (CampaignDataVersion > 32)
         {
             fread(&teamColor, sizeof(uchar), 1, file);
         }
@@ -412,7 +412,7 @@ TeamClass::TeamClass(FILE *file) :
         fread(name, sizeof(_TCHAR)*MAX_TEAM_NAME_SIZE, 1, file);
     }
 
-    if (gCampDataVersion < 41)
+    if (CampaignDataVersion < 41)
     {
         // Hand set colors correctly
         if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
@@ -499,7 +499,7 @@ TeamClass::TeamClass(FILE *file) :
     if (FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
         ReadIndexedString(40 + who, name, MAX_TEAM_NAME_SIZE);
 
-    if (gCampDataVersion > 32)
+    if (CampaignDataVersion > 32)
     {
         fread(teamMotto, sizeof(_TCHAR)*MAX_MOTTO_SIZE, 1, file);
     }
@@ -508,11 +508,11 @@ TeamClass::TeamClass(FILE *file) :
         memset(teamMotto, 0, sizeof(_TCHAR)*MAX_MOTTO_SIZE);
     }
 
-    if (gCampDataVersion > 33)
+    if (CampaignDataVersion > 33)
     {
-        if (gCampDataVersion > 50)
+        if (CampaignDataVersion > 50)
             fread(&groundAction, sizeof(TeamGndActionType), 1, file);
-        else if (gCampDataVersion > 41)
+        else if (CampaignDataVersion > 41)
         {
             fread(&groundAction, 27, 1, file);
             memset(&groundAction, 0, sizeof(TeamGndActionType));
@@ -533,13 +533,13 @@ TeamClass::TeamClass(FILE *file) :
         memset(&offensiveAirAction, 0, sizeof(TeamAirActionType));
     }
 
-    if (gCampDataVersion < 43)
+    if (CampaignDataVersion < 43)
     {
         groundAction.actionType = GACTION_CONSOLIDATE;
         supplyAvail = fuelAvail = 1000;
     }
 
-    if (gCampDataVersion < 60 && FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
+    if (CampaignDataVersion < 60 && FalconLocalGame && FalconLocalGame->GetGameType() == game_Campaign)
     {
         if (who == COUN_US)
             equipment = toe_us;
@@ -555,7 +555,7 @@ TeamClass::TeamClass(FILE *file) :
             equipment = toe_dprk;
     }
 
-    if (gCampDataVersion < 51)
+    if (CampaignDataVersion < 51)
     {
         if (who == COUN_RUSSIA)
         {

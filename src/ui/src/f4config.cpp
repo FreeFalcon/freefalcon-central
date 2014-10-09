@@ -160,7 +160,7 @@ float g_fdwPorthost = 2936;
 
 bool EnableUplink = false;
 char MasterServerName[0x40];
-int g_nMasterServerPort = 0;
+int MasterServerPort = 0;
 char ServerName[0x40];
 char ServerLocation[0x40];
 char ServerAdministrator[0x40];
@@ -994,7 +994,7 @@ static ConfigOption<int> IntOpts[] =
     { "NearLabelLimit", &g_nNearLabelLimit },
     { "percentage_available_aircraft", &g_npercentage_available_aircraft },
     { "minimum_available_aircraft", &g_nminimum_available_aircraft },
-    { "MasterServerPort", &g_nMasterServerPort },
+    { "MasterServerPort", &MasterServerPort },
     { "MaxVertexSpace", &g_nMaxVertexSpace },
     // { "MinTacanChannel", &g_nMinTacanChannel}, -> Theater definition file
     { "FlightVisualBonus", &g_nFlightVisualBonus},

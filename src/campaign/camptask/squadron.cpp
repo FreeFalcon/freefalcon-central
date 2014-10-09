@@ -50,7 +50,7 @@ extern int g_nminimum_available_aircraft; //me123
 // ============================================
 
 extern unsigned char SHOWSTATS;
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 extern char MissStr[AMIS_OTHER][16];
 
 extern int DoUI;
@@ -186,12 +186,12 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     memcpychk(&fuel, stream, sizeof(long), rem);
     memcpychk(&specialty, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion < 69)
+    if (CampaignDataVersion < 69)
     {
         memset(stores, 0, MAXIMUM_WEAPTYPES);
         memcpychk(stores, stream, sizeof(uchar) * 200, rem);
     }
-    else if (gCampDataVersion < 72)
+    else if (CampaignDataVersion < 72)
     {
         memset(stores, 0, MAXIMUM_WEAPTYPES);
         memcpychk(stores, stream, sizeof(uchar) * 220, rem);
@@ -201,9 +201,9 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
         memcpychk(stores, stream, sizeof(uchar)*MAXIMUM_WEAPTYPES, rem);
     }
 
-    if (gCampDataVersion < 47)
+    if (CampaignDataVersion < 47)
     {
-        if (gCampDataVersion >= 29)
+        if (CampaignDataVersion >= 29)
         {
             memcpychk(pilot_data, stream, 8 * PILOTS_PER_SQUADRON, rem);
             // Reinit them
@@ -220,7 +220,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     {
         memcpychk(pilot_data, stream, sizeof(PilotClass)*PILOTS_PER_SQUADRON, rem);
 
-        if (gCampDataVersion < 55)
+        if (CampaignDataVersion < 55)
         {
             InitPilots();
         }
@@ -235,7 +235,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     memcpychk(&airbase_id, stream, sizeof(VU_ID), rem);
     memcpychk(&hot_spot, stream, sizeof(VU_ID), rem);
 
-    if (gCampDataVersion >= 6 && gCampDataVersion < 16)
+    if (CampaignDataVersion >= 6 && CampaignDataVersion < 16)
     {
         VU_ID junk;
         memcpychk(&junk, stream, sizeof(VU_ID), rem);
@@ -250,7 +250,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     memcpychk(&mission_score, stream, sizeof(short), rem);
     memcpychk(&total_losses, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion >= 9)
+    if (CampaignDataVersion >= 9)
     {
         memcpychk(&pilot_losses, stream, sizeof(uchar), rem);
     }
@@ -259,12 +259,12 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
         pilot_losses = 0;
     }
 
-    if (gCampDataVersion < 41)
+    if (CampaignDataVersion < 41)
     {
         BuildElements();
     }
 
-    if (gCampDataVersion < 45)
+    if (CampaignDataVersion < 45)
     {
         squadron_patch = AssignUISquadronID(GetUnitNameID());
     }
@@ -272,7 +272,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     {
         memcpychk(&squadron_patch, stream, sizeof(uchar), rem);
 
-        if (gCampDataVersion < 50)
+        if (CampaignDataVersion < 50)
         {
             squadron_patch = AssignUISquadronID(GetUnitNameID());
         }

@@ -116,7 +116,7 @@ CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST
     memcpychk(&y, stream, sizeof(GridIndex), rem);
     SetLocation(x, y);
 
-    if (gCampDataVersion < 70)
+    if (CampaignDataVersion < 70)
     {
         pos_.z_ = 0.0F;
     }

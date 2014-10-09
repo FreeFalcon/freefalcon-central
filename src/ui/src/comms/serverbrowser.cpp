@@ -53,7 +53,7 @@ extern char MasterServerName[0x40];
 // M.N. EnableUplink UI switch
 extern GNETCORELib::IUplinkPtr m_pUplink;
 extern bool EnableUplink;
-extern int g_nMasterServerPort;
+extern int MasterServerPort;
 char strVersion[0x20];
 extern char ServerLocation[0x40];
 extern char ServerName[0x40];
@@ -321,7 +321,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
 
  m_pUplink->PutMasterServerName(MasterServerName);
- m_pUplink->PutMasterServerPort(g_nMasterServerPort);
+ m_pUplink->PutMasterServerPort(MasterServerPort);
  m_pUplink->PutQueryPort(7778);
  m_pUplink->PutHeartbeatInterval(60000);
  m_pUplink->PutServerVersion(strVersion);

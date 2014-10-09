@@ -161,7 +161,7 @@ extern short NumWeaponTypes;
 // Externals
 // ============================================
 
-extern int gCurrentDataVersion;
+extern int CurrentDataVersion;
 extern unsigned char        SHOWSTATS;
 extern SimulationDriver SimDriver;
 extern int theirDomain;
@@ -344,7 +344,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     target_id.num_ &= 0xffff;
 #endif
 
-    if (gCampDataVersion > 1)
+    if (CampaignDataVersion > 1)
     {
         memcpychk(&cargo_id, stream, sizeof(VU_ID), rem);
 #ifdef DEBUG
@@ -363,7 +363,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     memcpychk(&losses, stream, sizeof(uchar), rem);
     memcpychk(&tactic, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion >= 71)
+    if (CampaignDataVersion >= 71)
     {
         memcpychk(&current_wp, stream, sizeof(ushort), rem);
     }
@@ -6497,7 +6497,7 @@ void UnitClass::DecodeWaypoints(VU_BYTE **stream, long *rem)
     WayPointClass *new_list, *lw, *nw, *w;
 
 
-    if (gCampDataVersion >= 71)
+    if (CampaignDataVersion >= 71)
     {
         memcpychk(&count, stream, sizeof(ushort), rem);
     }

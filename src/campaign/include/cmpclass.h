@@ -335,7 +335,7 @@ public:
 extern CampaignClass TheCampaign;
 
 // Current data version
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 
 // ======================
 // Time adjustment class

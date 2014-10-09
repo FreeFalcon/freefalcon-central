@@ -57,7 +57,7 @@ float Get3DDistance(Tpoint &a, Tpoint &b);
 Tpoint Get3DMiddle(Tpoint &a, Tpoint &b);
 void AssignACOrientation(Trotation* &orientation, Tpoint &origin, Tpoint &position, Tpoint &worldPosition, bool right);
 
-int flag_keep_smoke_trails = FALSE;
+int FlagKeepSmokeTrails = FALSE;
 // wing tip vortex constants.
 //static const float minwingvortexalt = 0; // where vortex conditions start
 //static const float maxwingvortexalt = 10000; // where they end
@@ -1593,7 +1593,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
         pos.z += ZPos();
 
         //OTWDriver.AddTrailHead (tlist[i], pos.x, pos.y, pos.z );
-        //tlist[i]->KeepStaleSegs (flag_keep_smoke_trails);
+        //tlist[i]->KeepStaleSegs (FlagKeepSmokeTrails);
         //
         //RV - I-Hawk - engine trails size/alpha change with altitude
         engineTrailMargin = 1;

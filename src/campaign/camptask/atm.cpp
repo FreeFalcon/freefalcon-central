@@ -72,7 +72,7 @@ extern int GetAction(CampaignTime tot, int who);
 
 extern int PackRadius(int type);
 extern int PackInserted;
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 
 extern  int g_nMaxInterceptDistance;
 
@@ -253,9 +253,9 @@ AirTaskingManagerClass::AirTaskingManagerClass(FILE *file) : CampManagerClass(fi
 
     fread(&flags, sizeof(short), 1, file);
 
-    if (gCampDataVersion >= 28)
+    if (CampaignDataVersion >= 28)
     {
-        if (gCampDataVersion >= 63)
+        if (CampaignDataVersion >= 63)
             fread(&averageCAStrength, sizeof(short), 1, file);
 
         fread(&averageCAMissions, sizeof(short), 1, file);
@@ -263,7 +263,7 @@ AirTaskingManagerClass::AirTaskingManagerClass(FILE *file) : CampManagerClass(fi
         currentCAMissions = 0;
     }
 
-    if (gCampDataVersion < 63)
+    if (CampaignDataVersion < 63)
     {
         averageCAMissions = 500;
         averageCAStrength = 50;
@@ -293,7 +293,7 @@ AirTaskingManagerClass::AirTaskingManagerClass(FILE *file) : CampManagerClass(fi
     fread(&nreq, sizeof(short), 1, file);
 
     // Read list entries
-    if (gCampDataVersion < 35)
+    if (CampaignDataVersion < 35)
     {
         // Zero these - they're invalid
         int size = 64;
@@ -314,7 +314,7 @@ AirTaskingManagerClass::AirTaskingManagerClass(FILE *file) : CampManagerClass(fi
             mis = new MissionRequestClass();
             fread(mis, sizeof(MissionRequestClass), 1, file);
 
-            if (gCampDataVersion >= 22)
+            if (CampaignDataVersion >= 22)
                 requestList->InsertNewElement(mis->priority, mis, LADT_FREE_USER_DATA);
             else
                 delete mis;

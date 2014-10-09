@@ -26,7 +26,7 @@
 #include "FakeRand.h"
 
 
-extern int gCurrentDataVersion;
+extern int CurrentDataVersion;
 float COVersion = 0.0077f; // Cobra file version kludge
 
 WeatherClass::WeatherClass() : RealWeather()
@@ -482,7 +482,7 @@ int WeatherClass::CampLoad(char* name, int type)
 
     if (type != game_Campaign && type != game_PlayerPool)
     {
-        if (gCampDataVersion >= 75)
+        if (CampaignDataVersion >= 75)
         {
             UpdateCondition(*((int *)data_ptr));
             data_ptr += sizeof(int);
@@ -499,7 +499,7 @@ int WeatherClass::CampLoad(char* name, int type)
             windHeading = *((float *)data_ptr);
             data_ptr += sizeof(float);
 
-            if (gCampDataVersion >= 76)
+            if (CampaignDataVersion >= 76)
             {
                 cumulusZ = *((float *)data_ptr);
                 data_ptr += sizeof(float);
@@ -533,7 +533,7 @@ int WeatherClass::CampLoad(char* name, int type)
              X Off                  (4) Stratus 2 Base (future)
              Y Off                  (4) Cobra file version (do not change) */
 
-            // Cobra version check  (gCampDataVersion = 73 = SP3 version)
+            // Cobra version check  (CampaignDataVersion = 73 = SP3 version)
             // Tacedit reverses XOff and YOff when TE is saved. :^(
             if (*((float *)(data_ptr + 21)) == COVersion)
             {
@@ -661,7 +661,7 @@ int WeatherClass::Save(char* name)
 
     if ((fp = OpenCampFile(name, "wth", "wb")) == NULL) return 0;
 
-    if (gCurrentDataVersion >= 75)
+    if (CurrentDataVersion >= 75)
     {
         fwrite(&WeatherCondition, sizeof(int), 1, fp);
         fwrite(&lastCheck, sizeof(CampaignTime), 1, fp);

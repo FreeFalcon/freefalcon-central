@@ -38,7 +38,7 @@ short gCurrentAircraftNum;
 short gPlayerPlane = -1;
 long StopLookingforMission = 0;
 extern short InCleanup;
-extern int gTimeModeServer;
+extern int TimeModeServer;
 extern bool g_bServer;
 extern C_Map *gMapMgr;
 extern GlobalPositioningSystem *gGps;
@@ -603,7 +603,7 @@ void RemoveMissionCB(TREELIST *item)
     {
         if (TheCampaign.Flags & CAMP_TACTICAL)
         {
-            if (gTimeModeServer || g_bServer)
+            if (TimeModeServer || g_bServer)
             {
                 FindMissionInBriefing(TAC_AIRCRAFT);
             }
@@ -612,7 +612,7 @@ void RemoveMissionCB(TREELIST *item)
         }
         else
         {
-            if (gTimeModeServer || g_bServer)
+            if (TimeModeServer || g_bServer)
             {
                 FindMissionInBriefing(CB_MISSION_SCREEN);
                 UpdateMissionWindow(CB_MISSION_SCREEN);

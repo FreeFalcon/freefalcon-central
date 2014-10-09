@@ -79,7 +79,7 @@ extern int FalconConnectionProtocol;
 extern int FalconConnectionType;
 extern int FalconConnectionDescription;
 extern int gConnectionStatus;
-extern int gTimeModeServer;
+extern int TimeModeServer;
 extern FalconPrivateList *DanglingSessionsList;
 extern ComAPIHandle FalconTCPListenHandle;
 extern ComAPIHandle FalconGlobalUDPHandle;
@@ -89,7 +89,7 @@ extern int FalconConnectionProtocol;
 extern int FalconConnectionType;
 extern int FalconConnectionDescription;
 extern int gConnectionStatus;
-extern int gTimeModeServer;
+extern int TimeModeServer;
 extern int g_b_forcebandwidth;
 extern char* g_ipadress;
 

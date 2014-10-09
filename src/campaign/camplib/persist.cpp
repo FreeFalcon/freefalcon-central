@@ -19,7 +19,7 @@
 // =============================
 
 extern short SFXType;
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 extern void CloseCampFile(FILE *fp);
 extern float OffsetToMiddle;
@@ -334,7 +334,7 @@ void LoadPersistantList(char* scenario)
     int i, count = 0;
     FILE* fp;
 
-    if (gCampDataVersion < 69)
+    if (CampaignDataVersion < 69)
     {
         // Don't even try and load earlier versions
         CleanupPersistantList();

@@ -80,7 +80,7 @@ extern VU_ID_NUMBER RenameTable[65536];
 extern int gRenameIds;
 #endif
 
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 
 extern bool g_bOldSamActivity;
 
@@ -185,7 +185,7 @@ BattalionClass::BattalionClass(VU_BYTE **stream, long *rem) : GroundUnitClass(st
     memcpychk(&heading, stream, sizeof(uchar), rem);
     memcpychk(&final_heading, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion < 15)
+    if (CampaignDataVersion < 15)
     {
         uchar dummy;
         memcpychk(&dummy, stream, sizeof(uchar), rem);

@@ -170,16 +170,16 @@ extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 extern char* BSP;
 extern char* BTP;
 
-extern int g_nMasterServerPort;
+extern int MasterServerPort;
 extern int HighResolutionHackFlag;
-extern int voice_;
-extern int GraphicSettingMult;
-extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
+extern int DefaultVoiceToPlay;
+extern int GraphicSettingMultiplier;
+extern int CampaignDataVersion, CurrentDataVersion, ClearPilotInfo, TacticalFullEdit;
 extern int MainLastGroup;
-extern int flag_keep_smoke_trails;
-extern int gTimeModeServer;
-extern int gUnlimitedAmmo;
-extern int gCampJoinStatus;
+extern int FlagKeepSmokeTrails;
+extern int TimeModeServer;
+extern int UnlimitedAmmunition;
+extern int CampaignJoinStatus;
 
 extern "C"
 {
@@ -475,7 +475,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             ComSup::RegisterServer("GNShared.dll");
 
             m_pUplink->PutMasterServerName(MasterServerName);
-            m_pUplink->PutMasterServerPort(g_nMasterServerPort);
+            m_pUplink->PutMasterServerPort(MasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
             m_pUplink->PutServerVersion(strVersion);
@@ -1020,12 +1020,12 @@ void ParseCommandLine(LPSTR cmdLine)
                 ClearObjManualFlags = 1;
 
             if (_strnicmp(arg, "-UA", 3) == 0)
-                gUnlimitedAmmo ++;
+                UnlimitedAmmunition ++;
 
             if (!_strnicmp(arg, "-g", 2))
             {
                 int temp = atoi(&arg[2]);
-                GraphicSettingMult = temp >= 1 ? temp : 1;
+                GraphicSettingMultiplier = temp >= 1 ? temp : 1;
             }
 
             if (!stricmp(arg, "-full"))
@@ -1080,12 +1080,12 @@ void ParseCommandLine(LPSTR cmdLine)
             }
 
             if (stricmp(arg, "-resetpilots") == 0)
-                gClearPilotInfo = 1;
+                ClearPilotInfo = 1;
 
 #endif
 
             if (stricmp(arg, "-tacedit") == 0)
-                gTacticalFullEdit = 1;
+                TacticalFullEdit = 1;
 
             if (stricmp(arg, "-norsc") == 0)
                 _LOAD_ART_RESOURCES_ = 0;
@@ -1103,7 +1103,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 NoUiComms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
-                gTimeModeServer = 1;
+                TimeModeServer = 1;
 
             if (_strnicmp(arg, "-movie", 6) == 0)
                 intro_movie = TRUE;
@@ -1238,7 +1238,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 }
 
             if (!stricmp(arg, "-smoke"))
-                flag_keep_smoke_trails = TRUE;
+                FlagKeepSmokeTrails = TRUE;
 
             // OW
             if (!stricmp(arg, "-enumswdev"))
@@ -2383,7 +2383,7 @@ void ShutdownCampaign(void)
 #endif
     SetTimeCompression(0);
     DisableCampaignMenus();
-    gCampJoinStatus = 0;
+    CampaignJoinStatus = 0;
 }
 
 void EnableCampaignMenus(void)

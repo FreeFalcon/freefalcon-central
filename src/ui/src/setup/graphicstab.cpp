@@ -30,7 +30,7 @@
 
 #pragma warning(disable : 4706) // assignment within conditional expression
 extern C_Handler *gMainHandler;
-extern int GraphicSettingMult;
+extern int GraphicSettingMultiplier;
 
 extern int HighResolutionHackFlag; // Used in WinMain.CPP
 
@@ -794,7 +794,7 @@ void PlayerBubbleCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMultiplier + 1.5f));
         ebox->Refresh();
     }
 }
@@ -814,7 +814,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMultiplier + 1.5f));
         ebox->Refresh();
     }
 
@@ -823,7 +823,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     RenderOTW *renderer;
     renderer = SetupViewer->GetRendOTW();
-    detail = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult);
+    detail = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMultiplier);
     renderer->SetObjectDetail(detail);
 
     //have the rendered view update with new settings
@@ -896,7 +896,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6.0F * GraphicSettingMult  + 1.5F));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6.0F * GraphicSettingMultiplier  + 1.5F));
         ebox->Refresh();
     }
 
@@ -904,7 +904,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
         return;
 
     int step;
-    step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+    step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMultiplier);
 
     if (abs(slider->GetSliderPos() - prevpos) > step - 1)
     {

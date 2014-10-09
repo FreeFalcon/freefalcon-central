@@ -66,7 +66,7 @@ extern C_Map *gMapMgr;
 extern GlobalPositioningSystem *gGps;
 extern long gDFTeamID;
 extern long _IsF16_;
-extern int gCampDataVersion, gCurrentDataVersion;
+extern int CampaignDataVersion, CurrentDataVersion;
 
 extern bool g_bHiResUI;
 extern bool g_LargeTheater;
