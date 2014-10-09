@@ -33,7 +33,7 @@ DisplayDevice::~DisplayDevice()
 }
 
 
-// Intialize our device.  This must be called before any images
+// Initialize our device.  This must be called before any images
 // are constructed.
 void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
 {

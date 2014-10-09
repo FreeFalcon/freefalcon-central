@@ -2489,7 +2489,7 @@ void OTWDriverClass::Enter(void)
     ejectCam = 0;
     prevChase = 0;
 
-    // Intialize the campaign/sim object height refresh loop
+    // Initialize the campaign/sim object height refresh loop
     nextCampObjectHeightRefresh = 0;
 
     SetOTWDisplayMode(startMode);

@@ -152,7 +152,7 @@ void Render3D::Setup(ImageBuffer *imageBuffer)
     Render2D::Setup(imageBuffer);
     SetFOV(60.0f * PI / 180.0f);
 
-    // Intialize our camera parameters to something reasonable
+    // Initialize our camera parameters to something reasonable
 
     pos.x = pos.y = pos.z = 0.0f;
     SetCamera(&pos, &IMatrix);

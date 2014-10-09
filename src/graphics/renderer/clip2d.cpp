@@ -49,7 +49,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     ShiAssert(vertPointers);
     ShiAssert(count >= 3);
 
-    // Intialize the vertex buffers
+    // Initialize the vertex buffers
     outList = vertList1;
     lastIn = vertPointers + count;
 

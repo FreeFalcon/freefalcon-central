@@ -30,7 +30,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
 
     ShiAssert(!IsReady());
 
-    // Intialize our sun and moon textures
+    // Initialize our sun and moon textures
     SetupTextures();
 
     // Determine how many object lists we'll need
@@ -41,7 +41,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     objectLists = new ObjectListRecord[nObjectLists];
     ShiAssert(objectLists);
 
-    // Intialize each display list -- update will set the top and base values
+    // Initialize each display list -- update will set the top and base values
     for (i = 0; i < nObjectLists; i++)
     {
         objectLists[i].displayList.Setup();
