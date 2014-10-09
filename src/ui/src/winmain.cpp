@@ -224,7 +224,16 @@ static HACCEL hAccel;
 #endif
 // dannycoh - end.
 
-// Begin - Uplink stuff
+// dannycoh - commented out secret code used as a crude protection.
+//char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
+//char lTestVarString[] = "JustForGilman1";
+//#ifdef _USE_SECRET_CODE_
+	//BOOL VersionData = FALSE;
+	//char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
+//#endif // _USE_SECRET_CODE_
+// dannycoh - end.
+	
+	// Begin - Uplink stuff
 #pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"
 #import "gnet\bin\shared.tlb" named_guids
@@ -234,51 +243,18 @@ BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 GNETCORELib::IUplinkPtr m_pUplink;
-
 // End - Uplink stuff
-
-
-extern void ReadFalcon4Config();
-void DoRecoShit(void);
-
-
-
-
 
 #undef fopen
 #undef fclose
 
-
-
-//static int i_am(char *with); // dannycoh - commented out because it is used for coder specific debug switches.
+// dannycoh - grouped all functions and sorted by type.
+// FUNCTION DECLERATIONS
+void DoRecoShit(void);
 void PlayThatFunkyMusicWhiteBoy();
 void load_voice_recognition_demo_sound_file(void);
-extern void EnableCampaignMenus(void);
-extern void DisableCampaignMenus(void);
-extern void CampaignPreloadSuccess(int remote);
-extern void CampaignJoinSuccess(void);
-extern void CampaignJoinFail(void);
-extern void DisplayJoinStatusWindow(int);
-extern void ServerBrowserExit();
-extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-int FileVerify(void);
-extern void LoadTrails();
-
-LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-extern void UIScramblePlayerFlight(void);
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);
 //!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
-extern void PlayUIMovieQ(); // defined in UI_Main.cpp
-
-
-extern void UpdateMissionWindow(long ID);
-extern void update_tactical_flight_information(void);
-extern void CopyDFSettingsToWindow(void);
-extern void CheckCampaignFlyButton(void);
-extern void GameHasStarted(void);
-
 void RebuildCurrentWPList();
 void UI_HandleAirbaseDestroyed();
 void UI_HandleAirbaseDestroyed();
@@ -287,7 +263,6 @@ void UI_HandleAircraftDestroyed();
 void UI_UpdateOccupationMap();
 void OpenTEGameOverWindow();
 void ProcessChatStr(CHATSTR *msg);
-
 void RebuildGameTree();
 void UI_UpdateDogfight(long winID, short Setting); // LParam=Window,wParam=Setting
 void UI_UpdateGameList();
@@ -297,61 +272,71 @@ void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
 void ViewRemoteLogbook(long playerID);
 void RelocateSquadron();
 void ShutdownCampaign(void);
-int tactical_is_training(void);
 void tactical_restart_mission(void);
-
-
-extern void LoadTheaterList(); // JPO
-
-
-static void ParseCommandLine(LPSTR cmdLine);
-static void SystemLevelInit(void);
-static void SystemLevelExit(void);
-static void CtrlAltDelMask(int state);
 void ConsoleWrite(char *);
-
-extern void CampMain(HINSTANCE hInstance, int nCmdShow);
-extern void ReadCampAIInputs(char * name);
-extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
-extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern void CampaignConnectionTimer(void);
-
-
 void UIMain(void);
 void UI_LoadSkyWeatherData();
-int UI_Startup();
 void UI_Cleanup();
 void UI_UpdateVU();
 void RecieveScenarioInfo();
-
 void UI_CommsErrorMessage(WORD error);
 void LeaveDogfight();
-
 void STPRender(C_Base *control);
 void UpdateRules(void);
-BOOL CleanupDIJoystick(void);
-BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
 void SetVoiceVolumes(void);
 void IncDecTalkerToPlay(int delta);
 void IncDecMsgToPlay(int delta);
 void IncDecDataToPlay(int delta);
 
-// dannycoh - commented out secret code used as a crude protection.
-//char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
-//char lTestVarString[] = "JustForGilman1";
-//#ifdef _USE_SECRET_CODE_
-//BOOL VersionData = FALSE;
-//char PetersSecretCode [] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
-//#endif // _USE_SECRET_CODE_
-// dannycoh - end.
+BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+BOOL CleanupDIJoystick(void);
+BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
 
+int FileVerify(void);
+int tactical_is_training(void);
+int UI_Startup();
 
+static void ParseCommandLine(LPSTR cmdLine);
+static void SystemLevelInit(void);
+static void SystemLevelExit(void);
+static void CtrlAltDelMask(int state);
+
+//static int i_am(char *with); // dannycoh - commented out because it is used for coder specific debug switches.
+
+LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+extern void ReadFalcon4Config();
+extern void EnableCampaignMenus(void);
+extern void DisableCampaignMenus(void);
+extern void CampaignPreloadSuccess(int remote);
+extern void CampaignJoinSuccess(void);
+extern void CampaignJoinFail(void);
+extern void DisplayJoinStatusWindow(int);
+extern void ServerBrowserExit();
+extern void LoadTrails();
+extern void UIScramblePlayerFlight(void);
+extern void PlayUIMovieQ(); // defined in UI_Main.cpp
+extern void UpdateMissionWindow(long ID);
+extern void update_tactical_flight_information(void);
+extern void CopyDFSettingsToWindow(void);
+extern void CheckCampaignFlyButton(void);
+extern void GameHasStarted(void);
+extern void LoadTheaterList(); // JPO
+extern void CampMain(HINSTANCE hInstance, int nCmdShow);
+extern void ReadCampAIInputs(char * name);
+extern void CampaignConnectionTimer(void);
+extern void StopVoice();
+
+extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
+extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL SaveSFXTable();
 extern BOOL WriteMissionData();
 
-
 extern HRESULT  StartServer(HWND hDlg);  //me123
-extern void StopVoice();
+
+// FUNCTION DEFINITION
 void BuildAscii()
 {
     short i, kbd, scan;
