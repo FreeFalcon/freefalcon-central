@@ -244,7 +244,7 @@ static void RecordSystemInformation(HANDLE LogFile)
             VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
             VersionInfo.szCSDVersion);
 
-    hprintf(LogFile, "Version: Falcon 4.0 - Version %1d.%02d.%1d.%05d\r\n", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+    hprintf(LogFile, "Version: FreeFalcon - Version %1d.%02d.%1d.%05d\r\n", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
     hprintf(LogFile, "%s\r\n", g_sVersion);
 

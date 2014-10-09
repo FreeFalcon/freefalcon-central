@@ -90,8 +90,8 @@ bool g_writeSndTbl = false;
 bool g_writeMissionTbl = false;
 
 char top_space[] = "                                                                               ";
-char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
-char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
+char program_name[] = "    ****    FreeFalcon OSP    ****    ";
+char legal_crap[] = "    ****    (c)2014 The FreeFalcon Community.    ****    ";
 char bottom_space[] = "                                                                               ";
 char FalconMovieDirectory[_MAX_PATH];
 char FalconMovieMode[_MAX_PATH];
@@ -407,7 +407,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     }
 
     mainMenuWnd = CreateWindow("Falcon4Class",
-                               "FreeFalcon 6.1 Debug Window",
+                               "FreeFalcon OSP Debug Window",
                                WS_OVERLAPPEDWINDOW,
                                720,
                                100,
@@ -521,7 +521,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         setvbuf(stdout, NULL, _IONBF, 0);
 
 
-        sprintf(title, "FreeFalcon 6.1 - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+        sprintf(title, "FreeFalcon OSP - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
         printf("%s:%s\n", title, buf);
         return(FALSE);

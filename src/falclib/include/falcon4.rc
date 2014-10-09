@@ -650,9 +650,9 @@ CAPTION "Dialog"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,68,45,50,14
-    CTEXT           "Falcon 4.0 Campaign Tool ",IDC_STATIC,18,5,149,10
-    CTEXT           "Kevin Klemmick, 1995",IDC_STATIC,18,15,149,8
-    CTEXT           "Spectrum HoloByte",IDC_STATIC,18,25,149,10
+    CTEXT           "FreeFalcon Campaign Tool ",IDC_STATIC,18,5,149,10
+    CTEXT           "FFOSP CODERS, 2014",IDC_STATIC,18,15,149,8
+    CTEXT           "Open Source Project",IDC_STATIC,18,25,149,10
 END
 
 IDD_MISSDIALOG DIALOG  5, 5, 382, 226
@@ -1801,16 +1801,18 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", "FreeFalcon 6.1"
-            VALUE "CompanyName", "MicroProse (Atari)"
-            VALUE "FileDescription", "Falcon 6.1  FFViper (US)"
-            VALUE "FileVersion", "2, 3, 1, 9"
-            VALUE "InternalName", "1.08i"
-            VALUE "LegalCopyright", "Copyright © 1998 - 2012"
+			// dannycoh - fixed version to reflet FFOSP7.
+            VALUE "Comments", "FreeFalcon"
+            VALUE "CompanyName", "Open Source Project"
+            VALUE "FileDescription", "FreeFalcon OSP FFViper (US)"
+            VALUE "FileVersion", "7, 0, 0, 0"
+            VALUE "InternalName", "7.00a"
+            VALUE "LegalCopyright", "Copyright © 1998 - 2014"
             VALUE "OriginalFilename", "FFViper.exe"
-            VALUE "ProductName", "FreeFalcon 6.1"
-            VALUE "ProductVersion", "2, 3, 1, 9"
+            VALUE "ProductName", "FreeFalcon OSP"
+            VALUE "ProductVersion", "7, 0, 0, 0"
             VALUE "SpecialBuild", "US Edition"
+			// dannycoh - end.
         END
     END
     BLOCK "VarFileInfo"

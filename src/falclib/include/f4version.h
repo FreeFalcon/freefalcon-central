@@ -8,8 +8,8 @@
 #define Charmakerl(A) #@A
 #define Charmaker(A) Charmakerl(A)
 
-#define VERSION_COMMSTRING    "FreeFalcon 6.1 " F4BuildType "(" F4LanguageAbbrev ")\0"
-#define VERSION_FILEDESC      "FreeFalcon 6.1 " F4BuildType "(" F4LanguageAbbrev ")\0"
+#define VERSION_COMMSTRING    "FreeFalcon" F4BuildType "(" F4LanguageAbbrev ")\0"
+#define VERSION_FILEDESC      "FreeFalcon" F4BuildType "(" F4LanguageAbbrev ")\0"
 #define VERSION_FILEVERSION    STRINGER(F4MajorVersion) ",0," STRINGER(F4MinorVersion) "," STRINGER (F4Language)
 #define VERSION_PRODUCTVERSION STRINGER(F4MajorVersion) ".0" STRINGER(F4MinorVersion) STRINGER (F4Language)
 #define VERSION_SPECIAL        F4BuildType F4LanguageAbbrev " Edition"

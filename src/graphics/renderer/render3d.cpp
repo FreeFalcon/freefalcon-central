@@ -408,7 +408,7 @@ void Render3D::SetObjectDetail(float scaler)
 
 /***************************************************************************\
     Set the lighting direction
- (based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a FreeFalcon X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::SetLightDirection(const Tpoint* dir)
 {

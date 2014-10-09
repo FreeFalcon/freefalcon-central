@@ -49,7 +49,7 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         }
 
         // set up some page stuff
-        p_prt->title = SysAllocString(L"FreeFalcon-Cobra");
+        p_prt->title = SysAllocString(L"FreeFalcon-OSP");
         p_prt->punch_margin = 0.5;
         p_prt->orientation = GMPRINTLib::GMP_LANDSCAPE;
         p_prt->font_size = GMPRINTLib::GMP_FONT_12;  //or even 15 if needed (or when
@@ -165,7 +165,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     }
 
     if (g_bBriefHTML)
-        strsize = sprintf(tmpString, "<html><head><title>Falcon 4 Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
+        strsize = sprintf(tmpString, "<html><head><title>FreeFalcon Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
     else
         strsize = sprintf(tmpString, "--------------------------------------------------------\r\nBRIEFING RECORD ");
 
