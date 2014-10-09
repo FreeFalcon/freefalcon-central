@@ -145,7 +145,7 @@ extern int GraphicSettingMult;
 extern char gUI_CampaignFile[];
 extern char gUI_AutoSaveName[];
 extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
-static int i_am(char *with);
+//static int i_am(char *with); // dannycoh - commented out because it is used for coder specific debug switches.
 
 extern "C"
 {
@@ -901,72 +901,73 @@ void ParseCommandLine(LPSTR cmdLine)
     DWORD type, size;
     HKEY theKey;
 
-    if (i_am("rheydon"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        auto_start = TRUE;
-        F4SetAsserts(TRUE);
-        ShiSetAsserts(TRUE);
-    }
+// dannycoh - commented out because it is used for coder specific debug switches.
+	//if (i_am("rheydon"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    auto_start = TRUE;
+    //    F4SetAsserts(TRUE);
+    //    ShiSetAsserts(TRUE);
+    //}
 
 #ifdef DEBUG
-    else if (i_am("mmortime"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("kklemmic"))
-    {
+    //else if (i_am("mmortime"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    RepairObjective = 1;
+    //    intro_movie = FALSE;
+    //    eyeFlyEnabled = TRUE;
+    //    ShiSetAsserts(TRUE);
+    //    F4SetAsserts(TRUE);
+    //}
+    //else if (i_am("kklemmic"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    auto_start = TRUE;
+    //    wait_for_loaded = FALSE;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    F4SetAsserts(TRUE);
+    //    F4SetHardCrash(TRUE);
+    //    ShiSetHardCrash(TRUE);
+    //    ShiSetAsserts(TRUE);
+    //}
+    //else if (i_am("dpower"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    RepairObjective = 1;
+    //    intro_movie = FALSE;
+    //    eyeFlyEnabled = TRUE;
+    //    ShiSetAsserts(TRUE);
+    //    F4SetAsserts(TRUE);
+    //}
+    //else if (i_am("ericg") || i_am("chrisw"))
+    //{
+    //    eyeFlyEnabled = TRUE;
+    //}
+    //else if (i_am("lrosensh"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    auto_start = TRUE;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    intro_movie = TRUE;
+    //}
+    //else if (i_am("vincentf"))
+    //{
+    //    InitDebug(DEBUGGER_TEXT_MODE);
+    //    gSoundFlags = 0;
+    //    FalconDisplay.displayFullScreen = FALSE;
+    //    wait_for_loaded = FALSE;
+    //    auto_start = TRUE;
+    //}
+    //else
+    //{
         InitDebug(DEBUGGER_TEXT_MODE);
         auto_start = TRUE;
-        wait_for_loaded = FALSE;
-        FalconDisplay.displayFullScreen = FALSE;
-        F4SetAsserts(TRUE);
-        F4SetHardCrash(TRUE);
-        ShiSetHardCrash(TRUE);
-        ShiSetAsserts(TRUE);
-    }
-    else if (i_am("dpower"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("ericg") || i_am("chrisw"))
-    {
-        eyeFlyEnabled = TRUE;
-    }
-    else if (i_am("lrosensh"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-        FalconDisplay.displayFullScreen = FALSE;
-        intro_movie = TRUE;
-    }
-    else if (i_am("vincentf"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        gSoundFlags = 0;
-        FalconDisplay.displayFullScreen = FALSE;
-        wait_for_loaded = FALSE;
-        auto_start = TRUE;
-    }
-    else
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-    }
-
+    //}
+// dannycoh - end.
 #endif
 
     size = sizeof(FalconDataDirectory);
@@ -2446,25 +2447,26 @@ void CtrlAltDelMask(int state)
     else SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &was, 0);
 }
 
-int i_am(char *with)
-{
-    DWORD type, size;
-    char name[64];
-    HKEY key;
-    long retval;
-
-    size = 63;
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Network\\Logon", 0, KEY_QUERY_VALUE, &key);
-
-    if (retval == ERROR_SUCCESS)
-    {
-        RegQueryValueEx(key, "Username", 0, &type, (uchar*)&name, &size);
-
-        if (stricmp(name, with) == 0)
-            return TRUE;
-
-        RegCloseKey(key);
-    }
-
-    return FALSE;
-}
+// dannycoh - commented out because it is used for coder specific debug switches.
+//int i_am(char *with)
+//{
+//    DWORD type, size;
+//    char name[64];
+//    HKEY key;
+//    long retval;
+//
+//    size = 63;
+//    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Network\\Logon", 0, KEY_QUERY_VALUE, &key);
+//
+//    if (retval == ERROR_SUCCESS)
+//    {
+//        RegQueryValueEx(key, "Username", 0, &type, (uchar*)&name, &size);
+//
+//        if (stricmp(name, with) == 0)
+//            return TRUE;
+//
+//        RegCloseKey(key);
+//    }
+//
+//    return FALSE;
+//}
