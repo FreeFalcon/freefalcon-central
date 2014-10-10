@@ -161,8 +161,10 @@ void FalconDisplayConfiguration::MakeWindow(void)
     else
     {
         windowStyle = WS_OVERLAPPEDWINDOW;
-        xOffset = 50;
-        yOffset = 50;
+		// dannycoh - changed so windows will not have to be dragged everytime if screen resolution is 1024*768.
+        xOffset = 0;
+        yOffset = 0;
+		// dannycoh - end.
     }
 
     // Build a window for this application

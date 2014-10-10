@@ -305,7 +305,7 @@ BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL CleanupDIJoystick(void);
 BOOL SetupDIJoystick(HINSTANCE HInstance, HWND hWnd);
 
-//int FileVerify(void);  // dannycoh - commented out - not working with current data files.
+//int FileVerify(void); 
 int tactical_is_training(void);
 int UI_Startup();
 
