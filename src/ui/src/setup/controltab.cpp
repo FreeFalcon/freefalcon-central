@@ -1522,7 +1522,12 @@ void RefreshJoystickCB(long, short, C_Base *)
     C_Line *line;
     C_Button *button;
 
-    GetJoystickInput();
+	// dannycoh - interim fix for the CONTROLLERS tab CTD.
+	if (!gTotalJoy)
+		return; // returning if we don´t have a stick
+	// dannycoh - end.
+
+	GetJoystickInput();
 
     // Retro 14Feb2004 - autocenter
     if ((hasForceFeedback) && (PlayerOptions.GetFFB()))

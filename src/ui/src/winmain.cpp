@@ -136,9 +136,9 @@ int WeatherCondition = SUNNY;
 // Theater switching stuff
 int NumberOfZips = 0;
 int SimPathHandle = -1;
-int MajorVersion = FfMajorVersion;
-int MinorVersion = FfMinorVersion;
-int BuildNumber = FfBuildNumber;
+int MajorVersion = FF_MAJOR_VERSION;
+int MinorVersion = FF_MINOR_VERSION;
+int BuildNumber = FF_BUILD_NUMBER;
 //used to display version number in game (not part of version system)
 int ShowVersion = 0;
 int* ResourceHandlePointer;
