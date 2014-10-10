@@ -143,7 +143,7 @@ int BuildNumber = FF_BUILD_NUMBER;
 int ShowVersion = 0;
 int* ResourceHandlePointer;
 
-//BOOL VersionInfo = FALSE; // dannycoh - commented out - only shows the version info and CTD's.
+//BOOL VersionInfo = FALSE;
 HWND MainMenuWindow;
 HWND MainApplicationWindow;
 HINSTANCE HInstance;
@@ -462,7 +462,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     InitWS2(&WindowsSocketsData); // Init Winsock now, we need it for GNet
 
     char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+	sprintf(strVersion, "%1d.%02d.%1d.%5d", FF_MAJOR_VERSION, FF_MINOR_VERSION, gLangIDNum, FF_BUILD_NUMBER);
 
     HRESULT hr = CoInitialize(NULL);
 
