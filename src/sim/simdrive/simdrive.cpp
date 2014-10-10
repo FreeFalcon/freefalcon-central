@@ -114,7 +114,7 @@ extern void SavePersistantList(char* scenario);
 extern C_Handler *MainHandlerPointer;
 extern int gNumWeaponsInAir;
 extern HWND MainMenuWindow;
-extern int FileVerify(void);
+//extern int FileVerify(void);  // dannycoh - commented out - not working with current data files.
 
 extern ulong gBumpTime;
 extern int gBumpFlag;
@@ -279,7 +279,7 @@ void SimulationDriver::Startup(void)
 
     //Prep Object Data
     // Check file integrity
-    FileVerify();
+    //FileVerify();  // dannycoh - commented out - not working with current data files.
 
     SimMoverDefinition::ReadSimMoverDefinitionData();
     ReadDigitalBrainData();
