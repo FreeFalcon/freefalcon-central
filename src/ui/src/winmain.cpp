@@ -143,7 +143,7 @@ int BuildNumber = FF_BUILD_NUMBER;
 int ShowVersion = 0;
 int* ResourceHandlePointer;
 
-BOOL VersionInfo = FALSE;
+//BOOL VersionInfo = FALSE; // dannycoh - commented out - only shows the version info and CTD's.
 HWND MainMenuWindow;
 HWND MainApplicationWindow;
 HINSTANCE HInstance;
@@ -201,7 +201,7 @@ extern ulong CampJoinLastData; // Last vuxRealtime we received data about this g
 extern CampaignTime ConnectionTime;
 extern CampaignTime ResendTime;
 extern C_SoundBite* InstantBitesPointer, *DogFightBites, *CampaignBitesPointer;
-extern C_Handler *MainHandlerPointer;
+extern C_Handler* MainHandlerPointer;
 
 static int KeepFocus = 0;
 static int NumberOfProcessors;
@@ -452,7 +452,8 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
-    char buf[60], title[60];
+  //char buf[60]; // dannycoh - commented out - never used.
+  //char title[60]; // dannycoh - commented out - only used to show the version number.
     char fileName[_MAX_PATH];
     //FILE *testopen; 	// dannycoh - commented out, used for the CD check.
 
@@ -523,27 +524,30 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//lTestVariable = !strncmp(lTestVarString, "JustForGilman", 13);
 
     // PW Kludge
-    if (VersionInfo)
-    {
-        int hCrt;
-        FILE *hf;
-
-        // Hack to make printf work
-        AllocConsole();
-        hCrt = _open_osfhandle(
-                   (long) GetStdHandle(STD_OUTPUT_HANDLE),
-                   _O_TEXT
-               );
-        hf = _fdopen(hCrt, "w");
-        *stdout = *hf;
-        setvbuf(stdout, NULL, _IONBF, 0);
-
-
-        sprintf(title, "FreeFalcon OSP - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
-
-        printf("%s:%s\n", title, buf);
-        return(FALSE);
-    }
+// dannycoh - commented out - it only shows the version number and then CTD's...
+//    if (VersionInfo)
+//    {
+//        int hCrt;
+//        FILE *hf;
+//
+//        // Hack to make printf work
+//        AllocConsole();
+//        hCrt = _open_osfhandle(
+//                   (long) GetStdHandle(STD_OUTPUT_HANDLE),
+//                   _O_TEXT
+//               );
+//        hf = _fdopen(hCrt, "w");
+//        *stdout = *hf;
+//        setvbuf(stdout, NULL, _IONBF, 0);
+//
+//
+//        sprintf(title, "FreeFalcon OSP - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+//
+////      printf("%s:%s\n", title, buf); // dannycoh - removed buf because it was not assigned anything.
+//		printf("%s:%s\n", title); 
+//		return(FALSE);
+//    }
+// dannycoh - end.
 
     RealWeatherPointer = new WeatherClass();
 
@@ -1040,8 +1044,10 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-hires") == 0)
                 HighResolutionHackFlag = TRUE;
 
-            if (!stricmp(arg, "-version"))
-                VersionInfo = TRUE;
+			// dannycoh - commented out - only shows version number and CTD's...
+            //if (!stricmp(arg, "-version"))
+            //    VersionInfo = TRUE;
+			// dannycoh - end.
 
             if (!stricmp(arg, "-norudder"))
                 NoRudder = TRUE;
