@@ -919,7 +919,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
 
                 if (flags & WEAP_AREA) // Area effect - halve strength and have another go.
                 {
-                    // Note: we halve the strength wether or not we killed the target
+                    // Note: we halve the strength whether or not we killed the target
                     *str /= 2;
 
                     if (*str < MINIMUM_STRENGTH)

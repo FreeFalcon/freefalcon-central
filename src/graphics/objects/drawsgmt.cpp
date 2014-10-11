@@ -2784,7 +2784,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     GunTrailTexture.palette->UpdateMPR(GunTrailTexture.palette->paletteData);
 
 
-    // Intialize the lite colors for all trail types (handles those which aren't lite)
+    // Initializethe lite colors for all trail types (handles those which aren't lite)
     for (int i = 0; i < nTypes; i++)
     {
         types[i].rLite = types[i].r, types[i].gLite = types[i].g, types[i].bLite = types[i].b;

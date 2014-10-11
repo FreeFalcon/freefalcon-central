@@ -35,7 +35,7 @@ float ShadowAlphaLevel; // that may be affected by TOD Light level
  module.
 \***************************************************************/
 
-// Determine the type of an encoded node and intialize and contruct
+// Determine the type of an encoded node and initialize and contruct
 // it appropriatly.
 BNode* BNode::RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr)
 {
