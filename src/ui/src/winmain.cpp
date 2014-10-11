@@ -874,10 +874,8 @@ void ParseCommandLine(LPSTR cmdLine)
                 GraphicSettingMult = temp >= 1 ? temp : 1;
             }
 
-            if (!stricmp(arg, "-full"))
-                FalconDisplay.displayFullScreen = TRUE;
-            else if (!stricmp(arg, "-window"))
-                FalconDisplay.displayFullScreen = FALSE;
+            if (!stricmp(arg, "-window"))
+                FalconDisplay.displayFullScreen = false;
 
             if (stricmp(arg, "-hires") == 0)
                 HighResolutionHackFlag = TRUE;

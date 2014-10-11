@@ -10,7 +10,7 @@
 class FalconDisplayConfiguration
 {
 public:
-    FalconDisplayConfiguration();
+	FalconDisplayConfiguration();
     ~FalconDisplayConfiguration();
 
     enum DisplayMode {Movie, UI, UILarge, Planner, Layout, Sim, NumModes};
@@ -27,7 +27,7 @@ public:
     DeviceManager devmgr;
     DisplayDevice theDisplayDevice;
     int deviceNumber;
-    int displayFullScreen;
+    bool displayFullScreen;
 
     void Setup(int languageNum);
     void Cleanup();

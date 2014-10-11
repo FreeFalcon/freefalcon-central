@@ -16,7 +16,9 @@ FalconDisplayConfiguration FalconDisplay;
 
 FalconDisplayConfiguration::FalconDisplayConfiguration(void)
 {
-    xOffset = 40;
+	displayFullScreen = true;
+	
+	xOffset = 40;
     yOffset = 40;
 
     width[Movie] = 640;
@@ -51,17 +53,6 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     doubleBuffer[Sim] = TRUE;
 
     deviceNumber = 0;
-#ifdef NDEBUG
-    displayFullScreen = TRUE;
-#else
-    char strName[40];
-    DWORD dwSize = sizeof(strName);
-    GetComputerName(strName, &dwSize);
-
-    displayFullScreen = stricmp(strName, "diablo");
-    //   displayFullScreen = TRUE;
-    //   displayFullScreen = FALSE;
-#endif
 }
 
 FalconDisplayConfiguration::~FalconDisplayConfiguration(void)
@@ -292,8 +283,6 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          theDevice = nIndexRGBRenderer;
          }
          }
-        #else
-         displayFullScreen = TRUE; // force fullscreen
         #endif
          }*/
 
@@ -366,7 +355,7 @@ void FalconDisplayConfiguration::ToggleFullScreen(void)
 
     LeaveMode();
     DestroyWindow(appWin);
-    displayFullScreen = 1 - displayFullScreen;
+    !displayFullScreen;
     MakeWindow();
     EnterMode(currentMode);
 }
