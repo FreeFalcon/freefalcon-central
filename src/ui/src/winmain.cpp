@@ -447,8 +447,10 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 
 RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 
-int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                         LPSTR lpCmdLine, int nCmdShow)
+int PASCAL HandleWinMain(HINSTANCE hInstance,
+	                     HINSTANCE hPrevInstance,
+                         LPSTR lpCmdLine,
+						 int nCmdShow)
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
@@ -654,16 +656,20 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     CoUninitialize();
 
-    ExitProcess(0);
+	// dannycoh - this is a standard return code. Better than just returning 0.
+	ExitProcess(EXIT_SUCCESS);
 }
 // dannycoh - entry point to the entire solution.
 // However, some code are called by CALLBACK functions so use the breakpoints file to debug properly!
 
 // set up structured exception handling here
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, 
+	               HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+				   int nCmdShow)
 {
-    int Result = -1;
+	// dannycoh - this is a standard return code. Better than just returning -1.
+	int Result = EXIT_FAILURE;
 
     __try
     {

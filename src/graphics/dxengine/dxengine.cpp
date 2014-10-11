@@ -118,7 +118,8 @@ CDXEngine::~CDXEngine(void)
 {
     CleanUpTexturesOnDevice();
     ReleaseTextures();
-    CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
+	if (DxEngineStateHandle) // dannycoh - added - fixes an exception if the DXengine hasn't initialized yet.
+		CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
 }
 
 // The Default engine states for the renderer
