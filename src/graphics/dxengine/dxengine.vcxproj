@@ -62,7 +62,7 @@
       <AssemblerListingLocation>../../../build/x86/debug_win32/graphics/dxengine/</AssemblerListingLocation>
       <ObjectFileName>../../../build/x86/debug_win32/graphics/dxengine/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/graphics/dxengine/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>

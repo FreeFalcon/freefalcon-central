@@ -2065,7 +2065,7 @@ _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
         {
             pnid = p->GetObjectiveNameID();
 
-            if (gLangIDNum == F4LANG_FRENCH)
+            if (LanguageNumber == F4LANG_FRENCH)
             {
                 _TCHAR namestr[80];
                 ReadNameString(pnid, namestr, 79);
@@ -2077,7 +2077,7 @@ _TCHAR* ObjectiveClass::GetName(_TCHAR* name, int size, int mode)
                 else
                     _sntprintf(name, size, "%s de %s", ObjectiveStr[GetType()], namestr);
             }
-            else if (gLangIDNum == F4LANG_ITALIAN || gLangIDNum == F4LANG_SPANISH || gLangIDNum == F4LANG_PORTUGESE)
+            else if (LanguageNumber == F4LANG_ITALIAN || LanguageNumber == F4LANG_SPANISH || LanguageNumber == F4LANG_PORTUGESE)
                 _sntprintf(name, size, "%s %s", ObjectiveStr[GetType()], ReadNameString(pnid, buffer, 79));
             else
                 _sntprintf(name, size, "%s %s", ReadNameString(pnid, buffer, 79), ObjectiveStr[GetType()]);

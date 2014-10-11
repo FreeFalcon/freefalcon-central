@@ -76,7 +76,7 @@ int DoDialogBox()
     if (!Enabled)
         exit(0);
 
-	retval = MessageBox(NULL, InsertMedia[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
+	retval = MessageBox(NULL, InsertMedia[LanguageNumber], UnableToOpen[LanguageNumber], MB_RETRYCANCEL);
 
     if (retval == IDRETRY)
         return(0);

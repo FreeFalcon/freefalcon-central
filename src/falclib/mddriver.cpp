@@ -304,8 +304,8 @@ int FileVerify(void)
     // OW FIXME
     MonoPrint("FileVerify -\n");
 
-    LocalizedInvalidDataStr = InvalidDataStr[gLangIDNum];
-    objectFileList = localizedFiles[gLangIDNum];
+    LocalizedInvalidDataStr = InvalidDataStr[LanguageNumber];
+    objectFileList = localizedFiles[LanguageNumber];
 
     retval = FileVerify(commonFileList);
     retval += FileVerify(objectFileList);

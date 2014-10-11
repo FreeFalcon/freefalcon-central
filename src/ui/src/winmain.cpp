@@ -252,8 +252,11 @@ static HACCEL HAcceleration;
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 
+// dannycoh - ATL stuff
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
+// dannycoh - end.
+
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 GNETCORELib::IUplinkPtr m_pUplink;
 // End - Uplink stuff
@@ -452,19 +455,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
                          LPSTR lpCmdLine,
 						 int nCmdShow)
 {
-    char tmpPath[_MAX_PATH];
-    MSG  msg;
-  //char buf[60]; // dannycoh - commented out - never used.
-  //char title[60]; // dannycoh - commented out - only used to show the version number.
-    char fileName[_MAX_PATH];
-    //FILE *testopen; 	// dannycoh - commented out, used for the CD check.
+    _Module.Init(ObjectMap, hInstance); // ATL initialization.
 
-    _Module.Init(ObjectMap, hInstance);
+    InitWS2(&WindowsSocketsData); // Initialize WinSock now, we need it for GNet
 
-    InitWS2(&WindowsSocketsData); // Init Winsock now, we need it for GNet
-
-    char strVersion[0x20];
-	sprintf(strVersion, "%1d.%02d.%1d.%5d", FF_MAJOR_VERSION, FF_MINOR_VERSION, gLangIDNum, FF_BUILD_NUMBER);
 
     HRESULT hr = CoInitialize(NULL);
 
@@ -485,11 +479,13 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
             m_pUplink->PutMasterServerPort(MasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
-            m_pUplink->PutServerVersion(strVersion);
-            m_pUplink->PutServerVersionMin(strVersion);
+			char VersionString[0x20];
+			sprintf(VersionString, "%d.%d.%d-%d", FF_MAJOR_VERSION, FF_MINOR_VERSION, FF_BUILD_NUMBER, LanguageNumber);
+			m_pUplink->PutServerVersion(VersionString);
+			m_pUplink->PutServerVersionMin(VersionString);
             m_pUplink->PutServerLocation(ServerLocation);
             m_pUplink->PutServerName(ServerName);
-            m_pUplink->PutGameName("Falcon4");
+            m_pUplink->PutGameName("FreeFalcon");
             m_pUplink->PutGameMode("openplaying");
         }
     }
@@ -543,10 +539,12 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
 //        setvbuf(stdout, NULL, _IONBF, 0);
 //
 //
-//        sprintf(title, "FreeFalcon OSP - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+//        char Title[60]; // dannycoh - commented out - only used to show the version number.
+//        sprintf(Title, "FreeFalcon OSP - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, LanguageNumber, BuildNumber);
 //
-////      printf("%s:%s\n", title, buf); // dannycoh - removed buf because it was not assigned anything.
-//		printf("%s:%s\n", title); 
+//        char Buffer[60]; // dannycoh - commented out - never used.
+////      printf("%s:%s\n", Title, Buffer); // dannycoh - removed Buffer because it was not assigned anything.
+//		printf("%s:%s\n", Title); 
 //		return(FALSE);
 //    }
 // dannycoh - end.
@@ -577,19 +575,20 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
 
     //    EnableOpenTest();
     //    sprintf(buffer, "%s\\terrain\\theater.map", FalconTerrainDataDir);
-    //    testopen = FILE_Open(buffer, "r");
+	//    FILE *TestOpen; 	// dannycoh - commented out, used for the CD check.
+	//    TestOpen = FILE_Open(buffer, "r");
 
-    //    if (!testopen)
+    //    if (!TestOpen)
     //        exit(-1);
 
-    //    fclose(testopen);
+    //    fclose(TestOpen);
     //    sprintf(buffer, "%s\\falcon4.ini", FalconObjectDataDir);
-    //    testopen = FILE_Open(buffer, "r");
+    //    TestOpen = FILE_Open(buffer, "r");
 
-    //    if (!testopen)
+    //    if (!TestOpen)
     //        exit(-1);
 
-    //    fclose(testopen);
+    //    fclose(TestOpen);
     //    DisableOpenTest();
     //}
 	// dannycoh - end.
@@ -597,12 +596,13 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
-    sprintf(tmpPath, "%s\\Config", FalconDataDirectory);
-    ResAddPath(tmpPath, FALSE);
-    sprintf(tmpPath, "%s\\Art", FalconDataDirectory); // This one can go if zips are always used
-    ResAddPath(tmpPath, TRUE);
-    sprintf(tmpPath, "%s", FalconPictureFolder);  // JB 010623
-    ResAddPath(tmpPath, TRUE);  // JB 010623
+	char TemporaryPath[_MAX_PATH];
+	sprintf(TemporaryPath, "%s\\Config", FalconDataDirectory);
+	ResAddPath(TemporaryPath, FALSE);
+	sprintf(TemporaryPath, "%s\\Art", FalconDataDirectory); // This one can go if zips are always used
+	ResAddPath(TemporaryPath, TRUE);
+	sprintf(TemporaryPath, "%s", FalconPictureFolder);  // JB 010623
+	ResAddPath(TemporaryPath, TRUE);  // JB 010623
 
     // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
     // I'd like to make it go away soon...
@@ -613,15 +613,16 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
 #else
     _chdir(FalconDataDirectory);
 #endif
-    sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, "Falcon4");
+	char FileName[_MAX_PATH];
+	sprintf(FileName, "%s\\%s.ini", FalconObjectDataDir, "Falcon4");
 
-    gLangIDNum = GetPrivateProfileInt("Lang", "Id", 0, fileName);
+	LanguageNumber = GetPrivateProfileInt("Lang", "Id", 0, FileName);
 
     UI_LoadSkyWeatherData();
 
     DisplayOptions.LoadOptions("display");
 
-    FalconDisplay.Setup(gLangIDNum);
+    FalconDisplay.Setup(LanguageNumber);
 
     MainApplicationWindow = FalconDisplay.appWin;
 
@@ -639,9 +640,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance,
     if (!initApplication(hInstance, hPrevInstance, nCmdShow))
         return FALSE;
 
-    while (GetMessage(&msg, NULL, 0, 0) != 0)
+	MSG  Message;
+	while (GetMessage(&Message, NULL, 0, 0) != 0)
     {
-        DispatchMessage(&msg);
+		DispatchMessage(&Message);
     }
 
     SystemLevelExit();

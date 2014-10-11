@@ -107,7 +107,7 @@
       <ObjectFileName>../../../build/x86/debug_win32/campaign/campupd/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/campaign/campupd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>

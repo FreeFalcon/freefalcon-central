@@ -1617,7 +1617,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
     if (!INFOLoaded)
     {
-        switch (gLangIDNum)
+        switch (LanguageNumber)
         {
             case F4LANG_ENGLISH:
             case F4LANG_UK:

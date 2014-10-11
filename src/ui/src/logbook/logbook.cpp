@@ -126,7 +126,7 @@ void LogBookData::Initialize(void)
     // german hack... no time
     GetSystemTime(&systime);
 
-    if (gLangIDNum != F4LANG_ENGLISH)
+    if (LanguageNumber != F4LANG_ENGLISH)
     {
         _stprintf(Pilot.Commissioned, "%02d.%02d.%02d", systime.wDay, systime.wMonth, systime.wYear % 100);
     }

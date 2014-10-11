@@ -1988,7 +1988,7 @@ void UnitClass::InsertInSimLists(float cameraX, float cameraY)
                         draw_pointer->SetLabel(vc->Name, TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                     else
                     {
-                        if (gLangIDNum <= F4LANG_GERMAN || !IsBattalion())
+                        if (LanguageNumber <= F4LANG_GERMAN || !IsBattalion())
                             draw_pointer->SetLabel(GetUnitClassName(), TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                         else
                         {
@@ -3278,13 +3278,13 @@ char* UnitClass::GetName(_TCHAR* buffer, int size, int)
     _tcsnccpy(temp2, class_data->Name, 29);
     temp2[29] = 0;
 
-    if (gLangIDNum == F4LANG_GERMAN)
+    if (LanguageNumber == F4LANG_GERMAN)
     {
         // Replace space with hyphen, if necessary
         if (temp2[_tcslen(temp2) - 1] == '-')
             _tcscpy(format, "%s %s%s");
     }
-    else if (gLangIDNum == F4LANG_FRENCH)
+    else if (LanguageNumber == F4LANG_FRENCH)
     {
         if (name_id == 1 && IsBattalion())
         {
@@ -3300,7 +3300,7 @@ char* UnitClass::GetName(_TCHAR* buffer, int size, int)
 
     ShiAssert(((int)(_tcslen(temp1) + _tcslen(temp2) + _tcslen(temp3) + 3)) < size);
 
-    if (gLangIDNum >= F4LANG_SPANISH)
+    if (LanguageNumber >= F4LANG_SPANISH)
         _sntprintf(buffer, size, format, temp1, temp3, temp2);
     else
         _sntprintf(buffer, size, format, temp1, temp2, temp3);
@@ -5509,7 +5509,7 @@ _TCHAR* GetDivisionName(int div, int type, _TCHAR *buffer, int size, int object)
     GetSTypeName(DOMAIN_LAND, 0, type, temp2);
     _tcscpy(format, "%s %s %s");
 
-    if (gLangIDNum == F4LANG_GERMAN)
+    if (LanguageNumber == F4LANG_GERMAN)
     {
         // Replace space with hyphen, if necessary
         if (temp2[_tcslen(temp2) - 1] == '-')
@@ -5520,7 +5520,7 @@ _TCHAR* GetDivisionName(int div, int type, _TCHAR *buffer, int size, int object)
 
     ShiAssert(((int) _tcslen(temp1) + _tcslen(temp2) + _tcslen(temp3) + 3) < static_cast<unsigned long>(size));
 
-    if (gLangIDNum >= F4LANG_SPANISH)
+    if (LanguageNumber >= F4LANG_SPANISH)
         _sntprintf(buffer, size, format, temp1, temp3, temp2);
     else
         _sntprintf(buffer, size, format, temp1, temp2, temp3);

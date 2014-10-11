@@ -130,9 +130,9 @@ void InitVU(void)
 #endif
 
 #ifdef NDEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
-    sprintf(tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+    sprintf(tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, LanguageNumber, MinorVersion, "EBS", MajorVersion);
 #else
-    sprintf(tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+    sprintf(tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, LanguageNumber, MinorVersion, "EBS", MajorVersion);
 #endif
 
     MonoPrint("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);

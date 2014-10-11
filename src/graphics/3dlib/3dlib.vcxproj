@@ -71,7 +71,7 @@
       <ObjectFileName>../../../build/x86/debug_win32/graphics/3dlib/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/graphics/3dlib/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>

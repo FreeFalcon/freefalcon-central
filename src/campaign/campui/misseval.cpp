@@ -925,7 +925,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
 
                         _TCHAR tmp2[30];
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(fpsm->dataBlock.side, F4LANG_FEMININE), tmp2, 29);
                         else
                             ReadIndexedString(ConvertTeamToStringIndex(fpsm->dataBlock.side), tmp2, 29);
@@ -2787,7 +2787,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         // determine vehicle name and country
                         vc = GetVehicleClassData(dtm->dataBlock.fIndex - VU_LAST_ENTITY_TYPE);
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.fSide, F4LANG_FEMININE), tmp2, 29);
                         // ReadIndexedString(3821+20*dtm->dataBlock.fSide,tmp2,29);
                         else
@@ -2857,7 +2857,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         else
                             _stprintf(tmp, "");
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.fSide, F4LANG_FEMININE), tmp2, 29);
                         // ReadIndexedString(3821+20*dtm->dataBlock.fSide,tmp2,29);
                         else
@@ -3083,7 +3083,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         }
                     }
 
-                    if (gLangIDNum == F4LANG_GERMAN)
+                    if (LanguageNumber == F4LANG_GERMAN)
                         ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.dSide, F4LANG_FEMININE), tmp2, 29);
                     // ReadIndexedString(3821+20*dtm->dataBlock.dSide,tmp2,29);
                     else

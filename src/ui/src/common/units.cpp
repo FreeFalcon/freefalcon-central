@@ -425,12 +425,12 @@ void SetupUnitInfoWindow(VU_ID unitID)
             _TCHAR tmp[80];
             obj->GetName(tmp, 20, FALSE);
 
-            if (gLangIDNum >= F4LANG_SPANISH)
+            if (LanguageNumber >= F4LANG_SPANISH)
             {
                 _tcscat(buffer, _T(" - "));
                 _tcscat(buffer, tmp);
             }
-            else if (gLangIDNum == F4LANG_GERMAN)
+            else if (LanguageNumber == F4LANG_GERMAN)
             {
                 _tcscat(buffer, _T(": "));
                 _tcscat(buffer, tmp);
@@ -708,12 +708,12 @@ void SetupDivisionInfoWindow(long DivID, short owner)
             _TCHAR tmp[80];
             obj->GetName(tmp, 20, FALSE);
 
-            if (gLangIDNum >= F4LANG_SPANISH)
+            if (LanguageNumber >= F4LANG_SPANISH)
             {
                 _tcscat(buffer, _T(" - "));
                 _tcscat(buffer, tmp);
             }
-            else if (gLangIDNum == F4LANG_GERMAN)
+            else if (LanguageNumber == F4LANG_GERMAN)
             {
                 _tcscat(buffer, _T(": "));
                 _tcscat(buffer, tmp);

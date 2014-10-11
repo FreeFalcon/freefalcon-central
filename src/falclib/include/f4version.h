@@ -38,7 +38,7 @@
 //#pragma message ( VERSION_SPECIAL )
 // dannycoh - end.
 
-extern int gLangIDNum;
+extern int LanguageNumber;
 
 #endif
 

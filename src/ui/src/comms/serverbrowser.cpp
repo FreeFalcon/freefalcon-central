@@ -60,7 +60,7 @@ extern char ServerName[0x40];
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 extern int MajorVersion;
 extern int MinorVersion;
-extern int gLangIDNum;
+extern int LanguageNumber;
 extern int BuildNumber;
 
 // Helper classes
@@ -568,7 +568,7 @@ void HookupServerBrowserControls(long ID)
     C_TreeList *tree;
 
     char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, LanguageNumber, BuildNumber);
 
 
     winme = MainHandlerPointer->FindWindow(JETNET_WIN);

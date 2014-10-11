@@ -148,7 +148,7 @@ _TCHAR *OrdinalString(long value)
     long ordinal;
     static _TCHAR buffer[20];
 
-    if (gLangIDNum == F4LANG_FRENCH)
+    if (LanguageNumber == F4LANG_FRENCH)
     {
         if (value == 1)
         {
@@ -2851,7 +2851,7 @@ void LoadPeopleInfo(long client)
     res->Setup(CREDITS_RES, "art\\resource\\credits", gMainParser->GetTokenHash());
     res->LoadData();
 
-    switch (gLangIDNum)
+    switch (LanguageNumber)
     {
         case F4LANG_GERMAN:
             LanguageID = GERMAN_CREDITS;

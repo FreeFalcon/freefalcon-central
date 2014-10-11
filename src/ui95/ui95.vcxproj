@@ -72,7 +72,7 @@
       <ObjectFileName>../../build/x86/debug_win32/ui95/</ObjectFileName>
       <ProgramDataBaseFileName>../../build/x86/debug_win32/ui95/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
       <XMLDocumentationFileName>../../build/x86/debug_win32/ui95/doc.xml</XMLDocumentationFileName>
