@@ -1494,7 +1494,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     sfxp = &SFX_DEF[ sfxId ];
 
-    // Cobra - Fix CTD when exiting F4
+    // Cobra - Fix CTD when exiting FF
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
     if (g_bRealisticAvionics &&
@@ -1798,7 +1798,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
 
     sfxp = &SFX_DEF[ SfxID ];
 
-    // Cobra - Fix CTD when exiting F4
+    // Cobra - Fix CTD when exiting FF
     // sfr: @todo remove this hack
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 

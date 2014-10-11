@@ -642,7 +642,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     else if (pStick > 1.0f)
         pStick = 1.0f;
 
-    //me123 unload if roll input is 1 (to rool faster and eleveate the f4 bug)
+    //me123 unload if roll input is 1 (to rool faster and eleveate the FF bug)
     if (fabs(rStick) > 0.9f && groundAvoidNeeded == FALSE)
         pStick = 0.0f;
 

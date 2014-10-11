@@ -49,14 +49,14 @@ extern int F4CommsMTU;  // More of Unz and  Boosters stuff
 // Some defines
 // ========================================================================
 
-// Protocols available to Falcon
+// Protocols available to FreeFalcon
 #define FCP_UDP_AVAILABLE 0x01 // We have UDP available
 #define FCP_TCP_AVAILABLE 0x02 // We have TCP available
 #define FCP_SERIAL_AVAILABLE 0x04 // We have a serial (via modem or null modem) connection
 #define FCP_MULTICAST_AVAILABLE 0x08 // True multicast is available
 #define FCP_RUDP_AVAILABLE 0x10 // We have RUDP available
 
-// Virtual connection types available to Falcon
+// Virtual connection types available to FreeFalcon
 #define FCT_PTOP_AVAILABLE 0x01 // We can send point to point messages to multiple machines
 #define FCT_BCAST_AVAILABLE 0x02 // We can send broadcast (to world) messages
 #define FCT_SERVER_AVAILABLE 0x04 // We are connecting to an exploder server

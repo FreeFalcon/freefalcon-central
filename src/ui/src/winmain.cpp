@@ -89,8 +89,10 @@
 #undef fopen
 
 // These are needed for network support.
+#pragma warning(disable:4192)
 #import "gnet/bin/core.tlb"
 //#import "gnet/bin/shared.tlb" named_guids
+#pragma warning(default:4192)
 
 // We want the intro movie to play only in RELEASE, not in DEBUG. If you need it in DEBUG, use a command line option.
 #ifdef NDEBUG
@@ -380,9 +382,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
-    char buf[60], title[60];
     char fileName[_MAX_PATH];
-    FILE* testopen;
 
     _Module.Init(ObjectMap, hInstance);
 
@@ -464,28 +464,6 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Create PictureDir if not present
     _mkdir(FalconPictureDirectory);
 
-    // Test for CD stuff
-    {
-        char buffer[MAX_PATH];
-
-        EnableOpenTest();
-        sprintf(buffer, "%s\\terrain\\theater.map", FalconTerrainDataDir);
-        testopen = FILE_Open(buffer, "r");
-
-        if (!testopen)
-            exit(-1);
-
-        fclose(testopen);
-        sprintf(buffer, "%s\\falcon4.ini", FalconObjectDataDir);
-        testopen = FILE_Open(buffer, "r");
-
-        if (!testopen)
-            exit(-1);
-
-        fclose(testopen);
-        DisableOpenTest();
-    }
-
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
@@ -550,6 +528,9 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     ExitProcess(0);
 }
+// Main entry point to the entire solution.
+// However, some code is called by callback functions so use the breakpoints
+// file to debug properly!
 
 // set up structured exception handling here
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -2027,7 +2008,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
                 switch (message)
                 {
-                        // indicates mouse inside area falcon window area
+                        // indicates mouse inside area FreeFalcon window area
                     case WM_MOUSELEAVE:
                     {
                         mouseIn = false;

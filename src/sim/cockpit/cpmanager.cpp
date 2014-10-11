@@ -611,10 +611,10 @@ CockpitManager::CockpitManager(
             char buf[0x400];
             sprintf(buf, "Verify error detected!\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
                     mNumSurfaces, mSurfaceTally, mNumObjects, mObjectTally, mNumPanels, mPanelTally, mNumButtons, mButtonTally, mNumButtonViews, mButtonViewTally);
-            ::MessageBox(NULL, buf, "Falcon 4.0 Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+            ::MessageBox(NULL, buf, "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
         }
 
-        else ::MessageBox(NULL, "No errors.", "Falcon 4.0 Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+        else ::MessageBox(NULL, "No errors.", "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
     }
 
     //Wombat778 10-18-2003 Hack for 1.25 resolutions
@@ -1104,7 +1104,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mAltPanel);
         }
-        //sfr added for lights. Remember, falcon uses 0xAABBGGRR format
+        //sfr added for lights. Remember, FreeFalcon uses 0xAABBGGRR format
         else if (!strcmpi(ptoken, PROP_FLOODLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);

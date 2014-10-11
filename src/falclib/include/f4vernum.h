@@ -2,11 +2,11 @@
 #ifndef _F4VerNum_H
 #define _F4VerNum_H
 
-#define F4MajorVersion  1
-#define F4MinorVersion  13
-#define F4Language            1
-#define F4BuildNumber         20422
+const int F4MajorVersion = 7;
+const int F4MinorVersion = 0;
+const int F4Language = 1;
+const int F4BuildNumber = 0;
 #define F4LanguageAbbrev      "US"
-#define F4BuildType "alpha-3 "
+#define F4BuildType "DEBUG "
 
 #endif

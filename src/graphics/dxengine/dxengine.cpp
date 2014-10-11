@@ -1017,7 +1017,7 @@ void CDXEngine::DrawSurface()
 
 
 // ********************************
-// * DOF Process as in Falcon code*
+// * DOF Process as inFreeFalconcode*
 // ********************************
 
 float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float min, float max, float multiplier, float unused)

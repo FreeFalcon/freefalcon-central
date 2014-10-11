@@ -677,7 +677,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 }
 
 // =============================================
-// Falcon Event
+// FreeFalcon Event
 // =============================================
 
 FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : VuMessage(type, entityId, target, FALSE)
@@ -809,7 +809,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
     if (event->Type() > VU_LAST_EVENT)
     {
-        // This is a Falcon Event
+        // This is a FreeFalcon Event
         if ((((FalconEvent*)event)->handlingThread & filterThread) == 0)
         {
             // message not intended for this thread

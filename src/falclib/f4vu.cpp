@@ -82,7 +82,7 @@ VuSessionEntity* vuxCreateSession(void);
 
 
 // =================================
-// VU related globals for Falcon 4.0
+// VU related globals for FreeFalcon
 // =================================
 
 VuMainThread *gMainThread = 0;
@@ -389,7 +389,7 @@ void VuxRetireEntity(VuEntity* theEntity)
 
 VuSessionEntity* vuxCreateSession(void)
 {
-    return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain, "Falcon 4.0");
+    return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain, "FreeFalcon");
 }
 
 // ======================================

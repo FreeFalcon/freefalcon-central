@@ -12,7 +12,7 @@
 extern int g_nMissileFix;
 
 // Angle off sun at which sun effect goes to zero
-static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
 //extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 

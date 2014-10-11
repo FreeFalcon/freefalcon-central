@@ -94,7 +94,7 @@ BOOL DIMessageBox(int ErrNum, int Type, char* pErrStr)
     char pOutStr[100];
 
     sprintf(pOutStr, "Sim Input//DInput Error: %d, %s\n", ErrNum, pErrStr);
-    Response = MessageBox(FalconDisplay.appWin, pErrStr, "Falcon Sim Input Error", Type);
+    Response = MessageBox(FalconDisplay.appWin, pErrStr, "FreeFalcon Sim Input Error", Type);
 
     return (Response == IDYES);
 }

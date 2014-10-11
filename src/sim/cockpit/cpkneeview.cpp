@@ -616,7 +616,7 @@ void CPKneeView::MapWaypointToDisplay(WayPointClass *pwaypoint, float *h, float 
 
     pwaypoint->GetLocation(&wpX, &wpY, &wpZ);
 
-    // Return values are in screen space, while the waypoint location is in falcon (X North, Y East)
+    // Return values are in screen space, while the waypoint location is in FreeFalcon (X North, Y East)
     *v = (wpX - wsVcenter) / wsVsize;
     *h = (wpY - wsHcenter) / wsHsize;
 }

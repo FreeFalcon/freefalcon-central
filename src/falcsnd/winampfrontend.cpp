@@ -46,7 +46,7 @@ WinAmpFrontEnd::~WinAmpFrontEnd()
 
 /*****************************************************************************/
 // Initialisation. Searches for the winamp window. I might want to call
-// this on entering the 3d so that the user doesn´t have to restart falcon
+// this on entering the 3d so that the user doesn´t have to restart FreeFalcon
 // if he accidentially canceled (or didn´t open in the first place) the winamp
 // window
 /*****************************************************************************/
