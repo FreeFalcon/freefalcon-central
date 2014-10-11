@@ -35,7 +35,7 @@ DisplayDevice::~DisplayDevice()
 
 // Initializeour device.  This must be called before any images
 // are constructed.
-void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
+void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, bool fullScreen, bool dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
 {
     RECT rect;
     DWORD style;
