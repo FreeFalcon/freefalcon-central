@@ -2759,7 +2759,7 @@ void SaveScreenShot()
     SaveAFile(gStringMgr->AddText("Save Screenshot"), path, NULL, SaveTargaCB, CloseItCB, "");
 }
 
-char MasterXOR[] = "Falcon is your Master";
+char MasterXOR[] = "FreeFalcon is your Master";
 
 void EncryptBuffer(uchar startkey, uchar *buffer, long length)
 {

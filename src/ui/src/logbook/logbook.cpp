@@ -349,7 +349,7 @@ short LogBookData::TotalKilled(void)
     return static_cast<short>(Pilot.Campaign.Killed + Pilot.Dogfight.Killed);
 }
 
-//static char XorMask[]="Falcon 4.0 Fun for the whole Family!!!";
+//static char XorMask[]="FreeFalcon Fun for the whole Family!!!";
 //static char YorMask[]="Makes other sims look like shit!";
 
 void LogBookData::Encrypt(void)
@@ -371,7 +371,7 @@ void LogBookData::Encrypt(void)
 }
 
 static char PwdMask[] = "Who needs a password!";
-static char PwdMask2[] = "Repent, Falcon is coming!";
+static char PwdMask2[] = "Repent, FreeFalcon is coming!";
 
 void LogBookData::EncryptPwd(void)
 {

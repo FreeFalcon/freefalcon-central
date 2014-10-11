@@ -215,7 +215,7 @@ void RenderGMRadar::TransformScene(void)
             //vert->r = vert->b = vert->g;
 
             // Compute the rotated and scaled location of the points
-            // Note:  We're converting from Falcon to normalized screen space
+            // Note:  We're converting from FreeFalcon to normalized screen space
             // (positive y down screen in this case)
             y = -(scene_x * ScaledCOS - scene_y * ScaledSIN + dCtrY) * dScaleY;
             x = (scene_x * ScaledSIN + scene_y * ScaledCOS + dCtrX) * dScaleX;
@@ -501,7 +501,7 @@ void RenderGMRadar::DrawBlip(float worldX, float worldY)
     if (SkipDraw)  return;
 
     // Compute the rotated and scaled location of the points
-    // Note:  We're converting from Falcon to normalized screen space
+    // Note:  We're converting from FreeFalcon to normalized screen space
     // (positive y down screen in this case)
     dx = worldX - centerPos.x;
     dy = worldY - centerPos.y;
@@ -547,7 +547,7 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
     {
 
         // Compute the rotated and scaled location of the points
-        // Note:  We're converting from Falcon to normalized screen space
+        // Note:  We're converting from FreeFalcon to normalized screen space
         // (positive y down screen in this case)
         dx = drawable->X() - centerPos.x;
         dy = drawable->Y() - centerPos.y;

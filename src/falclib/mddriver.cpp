@@ -281,14 +281,14 @@ static char* LocalizedInvalidDataStr = NULL;
 
 static char* InvalidDataStr[] =
 {
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
 };
 
 /* Main driver.

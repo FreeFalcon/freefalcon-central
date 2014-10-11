@@ -165,7 +165,7 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     }
 
     if (g_bBriefHTML)
-        strsize = sprintf(tmpString, "<html><head><title>Falcon 4 Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
+        strsize = sprintf(tmpString, "<html><head><title>FreeFalcon Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
     else
         strsize = sprintf(tmpString, "--------------------------------------------------------\r\nBRIEFING RECORD ");
 

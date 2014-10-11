@@ -3,7 +3,7 @@
  David Power
  July 14,1997
 
- Logbook screen for falcon
+ Logbook screen for FreeFalcon
 \***************************************************************************/
 #include <windows.h>
 #include <targa.h>

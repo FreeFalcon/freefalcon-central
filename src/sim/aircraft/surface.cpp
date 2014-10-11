@@ -1566,7 +1566,7 @@ void AircraftClass::RunGearSurfaces(void)
     if (af->auxaeroData->animWheelRadius[0])
     {
         // MLR 2003-10-04 animate wheels.
-        // F4 only supports 3 gears currently (2003-10-04)
+        // FF only supports 3 gears currently (2003-10-04)
         int ng = af->NumGear();
 
         if (ng > 8) ng = 8;
