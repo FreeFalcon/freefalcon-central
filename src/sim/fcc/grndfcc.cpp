@@ -544,8 +544,8 @@ void FireControlComputer::CalculateImpactPoint(void)
             pos.z = platform->ZPos();
 
             // current wind
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+            mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+            wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
             float winddx = trigWind.cos * wind;
             float winddy = trigWind.sin * wind;
 
@@ -553,8 +553,8 @@ void FireControlComputer::CalculateImpactPoint(void)
 
             /* //wind at 1/3 the altitude
             pos.z = platform->ZPos()/3f;
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind =  ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+            mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+            wind =  ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
             float nextwinddx = trigWind.cos * wind;
             float nextwinddy = trigWind.sin * wind;
             */
@@ -600,8 +600,8 @@ void FireControlComputer::FindRelativeImpactPoint(void)
         pos.x = platform->XPos();
         pos.y = platform->YPos();
         pos.z = platform->ZPos();
-        mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-        wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+        mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+        wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
         winddx = trigWind.cos * wind * t;
         winddy = trigWind.sin * wind * t;
     }
@@ -797,8 +797,8 @@ void FireControlComputer::FindTargetError(void)
     pos.y = platform->YPos();
     pos.z = platform->ZPos();
 
-    hdg = ((WeatherClass*)realWeather)->WindHeadingAt(&pos);
-    vel = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+    hdg = ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos);
+    vel = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
     mlSinCos(&trig, hdg);
 
 
@@ -978,8 +978,8 @@ void FireControlComputer::CalculateReleaseRange(void)
 
     if (g_bEnableWindsAloft)
     {
-        hdg = ((WeatherClass*)realWeather)->WindHeadingAt(&pos);
-        vel = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+        hdg = ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos);
+        vel = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
         mlSinCos(&trig, hdg);
 
         dx = groundDesignateX - (platform->XPos() + trig.cos * vel * groundImpactTime);
@@ -1365,8 +1365,8 @@ void FireControlComputer::CalculateLADDReleaseRange(void)
     mlTrig trig;
     float hdg, vel;
 
-    hdg = ((WeatherClass*)realWeather)->WindHeadingAt(&pos);
-    vel = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+    hdg = ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos);
+    vel = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
     mlSinCos(&trig, hdg);
 
     dx = groundDesignateX - (platform->XPos() + trig.cos * vel * groundImpactTime);

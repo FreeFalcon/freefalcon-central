@@ -30,7 +30,7 @@
 #include "railinfo.h"
 
 extern int PlannerLoaded;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern VU_ID gSelectedFlightID;
 extern VU_ID gLoadoutFlightID;
@@ -184,7 +184,7 @@ void LoadPlannerWindows()
     }
 
     PlannerLoaded++;
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -211,7 +211,7 @@ void LoadPlannerWindows()
 
     }
 
-    win = gMainHandler->FindWindow(MUNITIONS_WIN);
+    win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
     if (win)
     {
@@ -425,10 +425,10 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
-    Flags1 = gMainHandler->GetWindowFlags(RECON_WIN);
-    Flags2 = gMainHandler->GetWindowFlags(RECON_LIST_WIN);
+    Flags1 = MainHandlerPointer->GetWindowFlags(RECON_WIN);
+    Flags2 = MainHandlerPointer->GetWindowFlags(RECON_LIST_WIN);
 
     if (!(Flags1 & C_BIT_ENABLED) && !(Flags2 & C_BIT_ENABLED))
     {
@@ -478,7 +478,7 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
@@ -534,7 +534,7 @@ void OpenReconForVCCB(long, short hittype, C_Base *)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
@@ -570,7 +570,7 @@ void ClosePlannerWindowCB(long, short hittype, C_Base *control)
         return;
 
     if (control->GetGroup())
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 }
 
 static void ObjectPannerCB(long, short hittype, C_Base *control)
@@ -654,7 +654,7 @@ void OpenMunitionsWindowCB(long, short hittype, C_Base *control)
     {
         if (UIrend3d == NULL)
         {
-            win = gMainHandler->FindWindow(MUNITIONS_WIN);
+            win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
             if (win)
             {
@@ -686,7 +686,7 @@ void OpenMunitionsWindowCB(long, short hittype, C_Base *control)
             }
         }
 
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     }
 
     SetCursor(gCursors[CRSR_F16]);
@@ -700,7 +700,7 @@ void CloseMunitionsWindowCB(long, short hittype, C_Base *control)
         return;
 
     if (control->GetGroup())
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 
     if (gUIViewer)
     {
@@ -773,7 +773,7 @@ static void ChooseWeaponListCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(MUNITIONS_WIN);
+    win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
     if (win)
     {
@@ -798,7 +798,7 @@ static void LoadTheStoresCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
 
@@ -815,7 +815,7 @@ static void LoadTheStoresCB(long, short hittype, C_Base *control)
 
         PlaceLoadedWeapons(&hp);
 
-        win = gMainHandler->FindWindow(MUNITIONS_WIN);
+        win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
         if (win)
         {
@@ -861,13 +861,13 @@ static void SaveTheStoresCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -992,7 +992,7 @@ static void UseStoresCB(long, short hittype, C_Base *control)
     UseStores();
 
     if (control->GetGroup())
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 
     if (gUIViewer)
     {
@@ -1023,7 +1023,7 @@ static void OpenReconWinCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -1031,8 +1031,8 @@ static void OpenReconWinCB(long, short hittype, C_Base *)
         SetCursor(gCursors[CRSR_WAIT]);
         TheLoader.WaitLoader();
         PositionCamera(&Recon, win, 0);
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
         SetCursor(gCursors[CRSR_F16]);
     }
 }
@@ -1044,13 +1044,13 @@ static void OpenTargetWinCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
         CloseAllRenderers(RECON_WIN);
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -1061,7 +1061,7 @@ static void CampaignAbortTakeoffCB(long, short hittype, C_Base *control)
 
     CancelCampaignCompression();
     UpdateRemoteCompression();
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
     ReadyToPlayMovie = TRUE;
 }
 
@@ -1172,7 +1172,7 @@ void HookupPlannerControls(long ID)
     C_Panner *pnr;
     C_Text *txt;
     C_TreeList *tree;
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;

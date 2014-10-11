@@ -54,11 +54,14 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
 #ifdef NDEBUG
     displayFullScreen = TRUE;
 #else
-    char strName[40];
-    DWORD dwSize = sizeof(strName);
-    GetComputerName(strName, &dwSize);
+	// dannycoh - commented out because it is coder specific and this coder is no longer with us.
+    //char strName[40];
+    //DWORD dwSize = sizeof(strName);
+    //GetComputerName(strName, &dwSize);
 
-    displayFullScreen = stricmp(strName, "diablo");
+    //displayFullScreen = stricmp(strName, "diablo");
+	// dannycoh - end.
+
     //   displayFullScreen = TRUE;
     //   displayFullScreen = FALSE;
 #endif
@@ -158,8 +161,10 @@ void FalconDisplayConfiguration::MakeWindow(void)
     else
     {
         windowStyle = WS_OVERLAPPEDWINDOW;
-        xOffset = 50;
-        yOffset = 50;
+		// dannycoh - changed so windows will not have to be dragged everytime if screen resolution is 1024*768.
+        xOffset = 0;
+        yOffset = 0;
+		// dannycoh - end.
     }
 
     // Build a window for this application
@@ -169,7 +174,7 @@ void FalconDisplayConfiguration::MakeWindow(void)
     AdjustWindowRect(&rect, windowStyle, FALSE);
     appWin = CreateWindow(
                  "FalconDisplay", /* class */
-                 "F4 3D Output", /* caption */
+                 "Free Falcon Open Source Project", /* caption */
                  windowStyle, /* style */
                  xOffset, /* init. x pos */
                  yOffset, /* init. y pos */

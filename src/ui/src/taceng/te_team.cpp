@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ void UpdateTeamName(long team);
 void RebuildTeamLists();
 void AddTeam(int teamNum, int defaultStance);
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern uchar gSelectedTeam;
 
 long gDrawTeam = 1;
@@ -135,17 +135,17 @@ void SetupTeamFlags()
     C_Button *EditMap = NULL, *SmallMap = NULL, *BigMap = NULL;
     short i;
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
         EditMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
         SmallMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
         BigMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
@@ -194,7 +194,7 @@ void SetupTeamColors()
 
     gDrawTeam = gSelectedTeam;
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
     {
@@ -211,7 +211,7 @@ void SetupTeamColors()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
     {
@@ -228,7 +228,7 @@ void SetupTeamColors()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
     {
@@ -295,7 +295,7 @@ void SetupTeamListValues()
     long i;
     long btnidx;
 
-    win = gMainHandler->FindWindow(TAC_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_TEAM_WIN);
 
     if (win)
     {
@@ -385,7 +385,7 @@ void SetupCurrentTeamValues(long team)
     if (!TeamInfo[team]) // Team undefined
         return;
 
-    win = gMainHandler->FindWindow(TAC_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_TEAM_WIN);
 
     if (win)
     {
@@ -722,7 +722,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 
     FalconLocalSession->SetCountry(gSelectedTeam);
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
     {
@@ -743,7 +743,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
     {
@@ -764,7 +764,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
     {

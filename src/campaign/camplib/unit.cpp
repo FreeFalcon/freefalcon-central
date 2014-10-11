@@ -161,7 +161,7 @@ extern short NumWeaponTypes;
 // Externals
 // ============================================
 
-extern int gCurrentDataVersion;
+extern int CurrentDataVersion;
 extern unsigned char        SHOWSTATS;
 extern SimulationDriver SimDriver;
 extern int theirDomain;
@@ -187,7 +187,7 @@ _TCHAR* GetSTypeName(int domain, int type, int stype, _TCHAR buffer[]);
 extern void RedrawCell(MapData md, GridIndex x, GridIndex y);
 extern void RedrawUnit(Unit u);
 extern int DisplayOk(Unit u);
-extern int displayCampaign;
+extern int DisplayCampaign;
 #endif
 
 //#ifdef DEBUG
@@ -344,7 +344,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     target_id.num_ &= 0xffff;
 #endif
 
-    if (gCampDataVersion > 1)
+    if (CampaignDataVersion > 1)
     {
         memcpychk(&cargo_id, stream, sizeof(VU_ID), rem);
 #ifdef DEBUG
@@ -363,7 +363,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     memcpychk(&losses, stream, sizeof(uchar), rem);
     memcpychk(&tactic, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion >= 71)
+    if (CampaignDataVersion >= 71)
     {
         memcpychk(&current_wp, stream, sizeof(ushort), rem);
     }
@@ -919,7 +919,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
 
                 if (flags & WEAP_AREA) // Area effect - halve strength and have another go.
                 {
-                    // Note: we halve the strength wether or not we killed the target
+                    // Note: we halve the strength whether  or not we killed the target
                     *str /= 2;
 
                     if (*str < MINIMUM_STRENGTH)
@@ -1988,7 +1988,7 @@ void UnitClass::InsertInSimLists(float cameraX, float cameraY)
                         draw_pointer->SetLabel(vc->Name, TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                     else
                     {
-                        if (gLangIDNum <= F4LANG_GERMAN || !IsBattalion())
+                        if (LanguageNumber <= F4LANG_GERMAN || !IsBattalion())
                             draw_pointer->SetLabel(GetUnitClassName(), TeamSimColorList[TeamInfo[GetTeam()]->GetColor()]);
                         else
                         {
@@ -2447,7 +2447,7 @@ int UnitClass::ChangeUnitLocation(CampaignHeading h)
 
         // If we get here, it's because we've moved..
 #ifdef CAMPTOOL
-        else if (DisplayOk(this) && displayCampaign)
+        else if (DisplayOk(this) && DisplayCampaign)
         {
             RedrawCell(NULL, x, y);
             RedrawUnit(this);
@@ -3278,13 +3278,13 @@ char* UnitClass::GetName(_TCHAR* buffer, int size, int)
     _tcsnccpy(temp2, class_data->Name, 29);
     temp2[29] = 0;
 
-    if (gLangIDNum == F4LANG_GERMAN)
+    if (LanguageNumber == F4LANG_GERMAN)
     {
         // Replace space with hyphen, if necessary
         if (temp2[_tcslen(temp2) - 1] == '-')
             _tcscpy(format, "%s %s%s");
     }
-    else if (gLangIDNum == F4LANG_FRENCH)
+    else if (LanguageNumber == F4LANG_FRENCH)
     {
         if (name_id == 1 && IsBattalion())
         {
@@ -3300,7 +3300,7 @@ char* UnitClass::GetName(_TCHAR* buffer, int size, int)
 
     ShiAssert(((int)(_tcslen(temp1) + _tcslen(temp2) + _tcslen(temp3) + 3)) < size);
 
-    if (gLangIDNum >= F4LANG_SPANISH)
+    if (LanguageNumber >= F4LANG_SPANISH)
         _sntprintf(buffer, size, format, temp1, temp3, temp2);
     else
         _sntprintf(buffer, size, format, temp1, temp2, temp3);
@@ -5509,7 +5509,7 @@ _TCHAR* GetDivisionName(int div, int type, _TCHAR *buffer, int size, int object)
     GetSTypeName(DOMAIN_LAND, 0, type, temp2);
     _tcscpy(format, "%s %s %s");
 
-    if (gLangIDNum == F4LANG_GERMAN)
+    if (LanguageNumber == F4LANG_GERMAN)
     {
         // Replace space with hyphen, if necessary
         if (temp2[_tcslen(temp2) - 1] == '-')
@@ -5520,7 +5520,7 @@ _TCHAR* GetDivisionName(int div, int type, _TCHAR *buffer, int size, int object)
 
     ShiAssert(((int) _tcslen(temp1) + _tcslen(temp2) + _tcslen(temp3) + 3) < static_cast<unsigned long>(size));
 
-    if (gLangIDNum >= F4LANG_SPANISH)
+    if (LanguageNumber >= F4LANG_SPANISH)
         _sntprintf(buffer, size, format, temp1, temp3, temp2);
     else
         _sntprintf(buffer, size, format, temp1, temp2, temp3);
@@ -6497,7 +6497,7 @@ void UnitClass::DecodeWaypoints(VU_BYTE **stream, long *rem)
     WayPointClass *new_list, *lw, *nw, *w;
 
 
-    if (gCampDataVersion >= 71)
+    if (CampaignDataVersion >= 71)
     {
         memcpychk(&count, stream, sizeof(ushort), rem);
     }

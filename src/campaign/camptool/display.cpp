@@ -213,7 +213,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
                     break;
 
                 case 5:
-                    w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
+                    w = ((WeatherClass*)RealWeatherPointer)->GetCloudCover(x, y);
                     //JAM - FIXME
                     // if (w >= FIRST_OVC_TYPE)
                     // w = FIRST_OVC_TYPE;
@@ -222,7 +222,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
                     break;
 
                 case 6:
-                    w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
+                    w = ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(x, y) / 32;
                     i = (x & 0x01) & (y & 0x01);
                     SetPixel(DC, ScreenX, ScreenY, GradCol[w][i]);
                     break;
@@ -271,7 +271,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             // _drawsbmap(AltitudeBMap[GetAltitudeCode(TheCell)],ScreenX,ScreenY,Size);
             // break;
         case 5:
-            w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
+            w = ((WeatherClass*)RealWeatherPointer)->GetCloudCover(x, y);
             //JAM - FIXME
             // if (w >= FIRST_OVC_TYPE)
             // w = FIRST_OVC_TYPE;
@@ -280,7 +280,7 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             break;
 
         case 6:
-            w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
+            w = ((WeatherClass*)RealWeatherPointer)->GetCloudLevel(x, y) / 32;
             _drawbmap(DC, CloudLevelBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
             return;
 

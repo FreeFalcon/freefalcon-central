@@ -217,8 +217,8 @@ float EyeballClass::GetSignature(SimObjectType* obj)
             else
             {
                 // Contrails
-                if (objAlt > ((WeatherClass*)realWeather)->contrailLow &&
-                    objAlt < ((WeatherClass*)realWeather)->contrailHigh)
+                if (objAlt > ((WeatherClass*)RealWeatherPointer)->contrailLow &&
+                    objAlt < ((WeatherClass*)RealWeatherPointer)->contrailHigh)
                 {
                     visDetMod = 10.0f;
                 }
@@ -352,10 +352,10 @@ float EyeballClass::GetSignature(SimObjectType* obj)
 
 
     /* if (g_bEnableWeatherExtensions) {
-         int wx = realWeather->WorldToTile( obj->BaseData()->XPos() - realWeather->xOffset);
-         int wy = realWeather->WorldToTile( obj->BaseData()->YPos() - realWeather->yOffset);
-         if (obj->BaseData()->ZPos() > realWeather->TopsAt(wx, wy) )
-     visualSignature *= realWeather->VisRangeAt(wx, wy);
+         int wx = RealWeatherPointer->WorldToTile( obj->BaseData()->XPos() - RealWeatherPointer->xOffset);
+         int wy = RealWeatherPointer->WorldToTile( obj->BaseData()->YPos() - RealWeatherPointer->yOffset);
+         if (obj->BaseData()->ZPos() > RealWeatherPointer->TopsAt(wx, wy) )
+     visualSignature *= RealWeatherPointer->VisRangeAt(wx, wy);
      }
     */
     // M.N. Factor in the radius value of the draw pointer as representation of overall aircraft size

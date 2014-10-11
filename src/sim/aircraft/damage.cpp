@@ -57,7 +57,7 @@ float Get3DDistance(Tpoint &a, Tpoint &b);
 Tpoint Get3DMiddle(Tpoint &a, Tpoint &b);
 void AssignACOrientation(Trotation* &orientation, Tpoint &origin, Tpoint &position, Tpoint &worldPosition, bool right);
 
-int flag_keep_smoke_trails = FALSE;
+int FlagKeepSmokeTrails = FALSE;
 // wing tip vortex constants.
 //static const float minwingvortexalt = 0; // where vortex conditions start
 //static const float maxwingvortexalt = 10000; // where they end
@@ -1593,7 +1593,7 @@ void AircraftClass::AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail)
         pos.z += ZPos();
 
         //OTWDriver.AddTrailHead (tlist[i], pos.x, pos.y, pos.z );
-        //tlist[i]->KeepStaleSegs (flag_keep_smoke_trails);
+        //tlist[i]->KeepStaleSegs (FlagKeepSmokeTrails);
         //
         //RV - I-Hawk - engine trails size/alpha change with altitude
         engineTrailMargin = 1;
@@ -1676,11 +1676,11 @@ void AircraftClass::ShowDamage(void)
     //RV - I-Hawk - set Contrails margin band variables for appropraite contrails insertion checks later...
     if (!contrailLowValue) // Make sure I assigned contrails weather values only once
     {
-        contrailLowValue = ((WeatherClass*)realWeather)->contrailLow;
-        contrailHighValue = ((WeatherClass*)realWeather)->contrailHigh;
-        contrailLow10Percent = (((WeatherClass*)realWeather)->contrailLow * 0.1f);
-        contrailLow90Percent = (((WeatherClass*)realWeather)->contrailLow * 0.9f);
-        contrailHigh110Percent = (((WeatherClass*)realWeather)->contrailHigh + contrailLow10Percent);
+        contrailLowValue = ((WeatherClass*)RealWeatherPointer)->contrailLow;
+        contrailHighValue = ((WeatherClass*)RealWeatherPointer)->contrailHigh;
+        contrailLow10Percent = (((WeatherClass*)RealWeatherPointer)->contrailLow * 0.1f);
+        contrailLow90Percent = (((WeatherClass*)RealWeatherPointer)->contrailLow * 0.9f);
+        contrailHigh110Percent = (((WeatherClass*)RealWeatherPointer)->contrailHigh + contrailLow10Percent);
     }
 
     //RV - I-Hawk - Set damage trails locations based on how many engines there are, can be set only once

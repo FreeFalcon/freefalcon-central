@@ -18,8 +18,8 @@
 #include "falclib/include/isbad.h"
 
 extern int ComAPILastError;
-int ComIPGetHostIDIndex = 0;
-int force_ip_address = 0;
+int ComIpGetHostIdIndex = 0;
+int ForceIpAddress = 0;
 extern DWProc_t CAPI_TimeStamp;
 
 void cut_bandwidth(void);
@@ -895,9 +895,9 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
         internalId = ((long)(clock()));
     }
 
-    if (force_ip_address)
+    if (ForceIpAddress)
     {
-        internalId = ((long)force_ip_address);
+        internalId = ((long)ForceIpAddress);
     }
 
     // writes Id to buffer, host order
@@ -932,12 +932,12 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
     }
 
 
-    if (force_ip_address)
+    if (ForceIpAddress)
     {
-        buf[3] = (char)(force_ip_address & 0xff);
-        buf[2] = (char)((force_ip_address >> 8)  & 0xff);
-        buf[1] = (char)((force_ip_address >> 16) & 0xff);
-        buf[0] = (char)((force_ip_address >> 24) & 0xff);
+        buf[3] = (char)(ForceIpAddress & 0xff);
+        buf[2] = (char)((ForceIpAddress >> 8)  & 0xff);
+        buf[1] = (char)((ForceIpAddress >> 16) & 0xff);
+        buf[0] = (char)((ForceIpAddress >> 24) & 0xff);
         return 0;
     }
 
@@ -956,7 +956,7 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
         }
 
         // hostIdx IP
-        if (i == ComIPGetHostIDIndex)
+        if (i == ComIpGetHostIdIndex)
         {
             *((int*)buf) = *((int*)(hentry->h_addr_list[i]));
             return 0;

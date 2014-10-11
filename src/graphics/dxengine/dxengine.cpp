@@ -118,7 +118,8 @@ CDXEngine::~CDXEngine(void)
 {
     CleanUpTexturesOnDevice();
     ReleaseTextures();
-    CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
+	if (DxEngineStateHandle) // dannycoh - added - fixes an exception if the DXengine hasn't initialized yet.
+		CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
 }
 
 // The Default engine states for the renderer
@@ -2072,7 +2073,7 @@ void CDXEngine::FlushBuffers(void)
     // New Fog stuff
     if (m_LinearFog)
     {
-        m_LinearFogLevel = realWeather->LinearFogEnd();
+        m_LinearFogLevel = RealWeatherPointer->LinearFogEnd();
         m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGEND, *(DWORD *)(&m_FogLevel));
     }
     else

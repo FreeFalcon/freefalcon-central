@@ -1734,10 +1734,10 @@ void EjectedPilotClass::CalculateDragVector(EP_VECTOR &result) const
 
     // Find the velocity vector for the wind.
     //JAM 24Nov03
-    windHdg = ((WeatherClass*)realWeather)->windHeading;
+    windHdg = ((WeatherClass*)RealWeatherPointer)->windHeading;
 
     windVelocity = EP_VECTOR((float)cos(windHdg), (float)sin(windHdg), 0);
-    windVelocity *= ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+    windVelocity *= ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
 
     // Subtract the velocity of the wind from the velocity of the seat before computing drag.
     result = _vel;

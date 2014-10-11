@@ -53,7 +53,7 @@ HBITMAP BMap;
 
 static int CurrX, CurrY;
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 
 void _initgraphics(HDC DC)
 {
@@ -63,14 +63,14 @@ void _initgraphics(HDC DC)
     // load bitmaps
     for (i = 0; i < 16; i++)
     {
-        //       BMaps[i] = LoadBitmap( hInst, MAKEINTRESOURCE( BNames[i] ) ) ;
+        //       BMaps[i] = LoadBitmap( HInstance, MAKEINTRESOURCE( BNames[i] ) ) ;
         Pens[i] = CreatePen(PS_SOLID, 0, ColorTable16[i]);
         Brushes[i] = CreateSolidBrush(ColorTable16[i]);
     }
 
     hMDC = CreateCompatibleDC(DC);
     // New stuff
-    BMap = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BIGBMAP));
+    BMap = (HBITMAP)LoadBitmap(HInstance, MAKEINTRESOURCE(IDB_BIGBMAP));
     hOldBMap = (HBITMAP)SelectObject(hMDC, BMap);
     DeleteObject(hOldBMap);
 }

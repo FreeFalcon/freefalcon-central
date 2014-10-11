@@ -126,12 +126,12 @@ namespace ComSup
         return hr;
     }
 
-    inline HRESULT RegisterServer(HINSTANCE hInst)
+    inline HRESULT RegisterServer(HINSTANCE HInstance)
     {
-        if (!hInst) return E_FAIL;
+        if (!HInstance) return E_FAIL;
 
         HRESULT(__stdcall * pprocDLLRegisterServer)() = (HRESULT(__stdcall *)())
-                GetProcAddress(hInst, "DllRegisterServer");
+                GetProcAddress(HInstance, "DllRegisterServer");
 
         if (!pprocDLLRegisterServer) return -2;
 
@@ -140,21 +140,21 @@ namespace ComSup
 
     inline HRESULT RegisterServer(LPCTSTR lpszServername)
     {
-        HINSTANCE hInst = LoadLibrary(lpszServername); // retry
+        HINSTANCE HInstance = LoadLibrary(lpszServername); // retry
 
-        if (!hInst) return E_FAIL;
+        if (!HInstance) return E_FAIL;
 
-        HRESULT hr = RegisterServer(hInst);
-        FreeLibrary(hInst);
+        HRESULT hr = RegisterServer(HInstance);
+        FreeLibrary(HInstance);
         return hr;
     }
 
-    inline HRESULT UnregisterServer(HINSTANCE hInst)
+    inline HRESULT UnregisterServer(HINSTANCE HInstance)
     {
-        if (!hInst) return E_FAIL;
+        if (!HInstance) return E_FAIL;
 
         HRESULT(__stdcall * pprocDLLUnregisterServer)() = (HRESULT(__stdcall *)())
-                GetProcAddress(hInst, "DllUnregisterServer");
+                GetProcAddress(HInstance, "DllUnregisterServer");
 
         if (!pprocDLLUnregisterServer) return -2;
 
@@ -163,12 +163,12 @@ namespace ComSup
 
     inline HRESULT UnregisterServer(LPCTSTR lpszServername)
     {
-        HINSTANCE hInst = LoadLibrary(lpszServername); // retry
+        HINSTANCE HInstance = LoadLibrary(lpszServername); // retry
 
-        if (!hInst) return E_FAIL;
+        if (!HInstance) return E_FAIL;
 
-        HRESULT hr = UnregisterServer(hInst);
-        FreeLibrary(hInst);
+        HRESULT hr = UnregisterServer(HInstance);
+        FreeLibrary(HInstance);
         return hr;
     }
 

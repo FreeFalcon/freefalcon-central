@@ -73,7 +73,7 @@ short TableVal[] =
     0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
 };
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern WORD UIColorTable[200][256];
 extern WORD rShift[], bShift[], gShift[];
 
@@ -172,7 +172,7 @@ void C_Window::Setup(long wID, short Type, short w, short h)
     if (h < 1)
         h = 1;
 
-    imgBuf_ = gMainHandler->GetFront();
+    imgBuf_ = MainHandlerPointer->GetFront();
 
     SetDefaultFlags();
     Type_ = Type;

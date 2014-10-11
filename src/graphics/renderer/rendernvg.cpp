@@ -29,7 +29,7 @@ void RenderNVG::StartDraw(void)
     // DX - YELLOW BUG FIX - RED
     RenderOTW::StartDraw();
     Drawable2D::SetGreenMode(TRUE);
-    realWeather->SetGreenMode(TRUE);
+    RealWeatherPointer->SetGreenMode(TRUE);
     TheColorBank.SetColorMode(ColorBankClass::UnlitGreenMode);
 }
 
@@ -56,7 +56,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
         vert->r = vert->b = vert->g;
 
     if ((distance > haze_start + haze_depth + 3000)
-        || (realWeather->weatherCondition > FAIR && (-realWeather->viewerZ) > (-realWeather->stratusZ)))
+        || (RealWeatherPointer->WeatherCondition > FAIR && (-RealWeatherPointer->viewerZ) > (-RealWeatherPointer->stratusZ)))
     {
         vert->RenderingStateHandle = state_far;
     }

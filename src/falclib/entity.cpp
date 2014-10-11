@@ -101,7 +101,7 @@ void UpdateObjectiveCombatStatistics(void);
 int LoadFeatureEntryData(char *filename);
 int LoadACDefData(char*);
 int LoadSquadronStoresData(char *filename);
-extern int FileVerify(void);
+//extern int FileVerify(void); // dannycoh - commented out - not working with current data files.
 
 extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 void WriteClassTable();

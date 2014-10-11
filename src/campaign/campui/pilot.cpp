@@ -154,7 +154,7 @@ int LoadPilotInfo(char* scenario)
     char /* *data,*/ *data_ptr;
     short max;
 
-    if (gCampDataVersion < 60)
+    if (CampaignDataVersion < 60)
     {
         NewPilotInfo();
         return 1;

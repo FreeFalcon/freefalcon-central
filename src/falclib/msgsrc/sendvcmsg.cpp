@@ -187,8 +187,8 @@ int FalconSendVC::Process(uchar autodisp)
         TheCampaign.Flags &= ~CAMP_NEED_VC;
 
         // Let the UI know we've received some data
-        if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_VC, 0);
+        if (MainHandlerPointer)
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_VC, 0);
     }
 
     return 0;

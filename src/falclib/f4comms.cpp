@@ -67,7 +67,7 @@ int FalconConnectionProtocol = 0;
 int FalconConnectionType = 0;
 int FalconConnectionDescription = 0;
 int gConnectionStatus = 0;
-int gTimeModeServer = 0;
+int TimeModeServer = 0;
 int g_b_forcebandwidth = 0;
 extern bool g_bServer;
 
@@ -732,7 +732,7 @@ void ResyncTimes()
 
     best_comp = 1;
 
-    if (gTimeModeServer || g_bServer)
+    if (TimeModeServer || g_bServer)
     {
         session = (FalconSessionEntity*)sit.GetFirst();
         count = 0;
@@ -768,7 +768,7 @@ void ResyncTimes()
 
     while (session)
     {
-        if (gTimeModeServer || g_bServer)
+        if (TimeModeServer || g_bServer)
         {
             if (session->IsLocal())
             {

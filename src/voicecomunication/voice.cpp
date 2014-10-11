@@ -1306,7 +1306,7 @@ LCleanup:
 // Name: GetConsoleHwnd()
 // Desc: Returns the console HWND
 //-----------------------------------------------------------------------------
-extern HWND mainAppWnd;
+extern HWND MainApplicationWindow;
 HWND GetConsoleHwnd()
 {
     /*  HWND hwndFound;        // This is what is returned to the caller.
@@ -1326,14 +1326,14 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    char test[1024] = "F4 3D Output";
+    char test[1024] = "Free Falcon Open Source Project";
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.
       SetConsoleTitle(pszOldWindowTitle);
 
       return(hwndFound);*/
-    return (mainAppWnd);
+    return (MainApplicationWindow);
 }
 
 extern char* g_ipadress; // 2002-02-07 S.G.

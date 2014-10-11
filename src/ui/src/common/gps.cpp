@@ -16,7 +16,7 @@
 #include "campaign.h"
 #include "Falclib/Include/IsBad.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 extern BOOL gMoviePlaying;
 
@@ -332,7 +332,7 @@ void GlobalPositioningSystem::Update()
     if (gMoviePlaying) // If a Movie is playing... don't execute... because the movie might stutter
         return;
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
     CampEnterCriticalSection();
 
     VuListIterator iter(AllCampList);
@@ -438,7 +438,7 @@ void GlobalPositioningSystem::Update()
 
     Flags = 0;
     CampLeaveCriticalSection();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 void *GlobalPositioningSystem::Find(long ID)

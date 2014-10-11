@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -489,7 +489,7 @@ void PickTeamColors()
     C_Button *btn;
     C_Line *line;
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
     {
@@ -515,7 +515,7 @@ void PickTeamColors()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
     {
@@ -541,7 +541,7 @@ void PickTeamColors()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
     {
@@ -599,7 +599,7 @@ void tactical_show_ato_window(void)
     gGps->SetAllowed(gGps->GetAllowed() | UR_ATO | UR_SQUADRON);
     gGps->Update();
 
-    gMainHandler->EnableWindowGroup(7001);
+    MainHandlerPointer->EnableWindowGroup(7001);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -610,7 +610,7 @@ void tactical_show_oob_window(void)
 {
     gGps->SetAllowed(gGps->GetAllowed() | UR_OOB);
 
-    gMainHandler->EnableWindowGroup(7009);
+    MainHandlerPointer->EnableWindowGroup(7009);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -697,7 +697,7 @@ void tac_select_squadron_aircraft(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
+    win = MainHandlerPointer->FindWindow(NEW_SQUAD_WIN);
 
     if (!win)
         return;
@@ -713,7 +713,7 @@ void tac_select_squadron_airbase(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
+    win = MainHandlerPointer->FindWindow(NEW_SQUAD_WIN);
 
     if (!win)
         return;
@@ -766,7 +766,7 @@ void tactical_add_squadron(VU_ID id)
     C_Window *win;
     CampBaseClass* airbase;
 
-    win = gMainHandler->FindWindow(NEW_SQUAD_WIN);
+    win = MainHandlerPointer->FindWindow(NEW_SQUAD_WIN);
 
     if (!win)
         return;
@@ -821,7 +821,7 @@ void tactical_add_squadron(VU_ID id)
         lbox->Refresh();
     }
 
-    gMainHandler->EnableWindowGroup(31000);
+    MainHandlerPointer->EnableWindowGroup(31000);
 }
 
 void tactical_create_squadron(long, short hittype, C_Base *)
@@ -833,7 +833,7 @@ void tactical_create_squadron(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(31000);
+    MainHandlerPointer->DisableWindowGroup(31000);
 
     tid = gLastAircraftType - VU_LAST_ENTITY_TYPE;
 
@@ -869,7 +869,7 @@ void tactical_cancel_squadron(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(31000);
+    MainHandlerPointer->DisableWindowGroup(31000);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -888,7 +888,7 @@ void LockTakeoffTimeCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -926,7 +926,7 @@ void LockTimeOnTargetCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -978,7 +978,7 @@ void tactical_update_package(void)
     if (new_package)
         element = new_package->GetFirstUnitElement();
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -1425,7 +1425,7 @@ void SetupPackageControls(C_Window *win, C_Base *caller)
         btn->SetCallback(ChangePackTimeCB);
 
     if (caller->_GetCType_() != _CNTL_BUTTON_)
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
 }
 
 // KCK: This is called when we've decided to add a package -
@@ -1483,7 +1483,7 @@ void tactical_add_package(VU_ID id, C_Base *caller)
 
     gLastRole = GetMissionFromTarget(gSelectedTeam, gLastAircraftType - VU_LAST_ENTITY_TYPE, ent);
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -1534,7 +1534,7 @@ void tactical_edit_package(VU_ID id, C_Base *caller)
 
     tactical_update_package();
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -1641,7 +1641,7 @@ void DiscardPackage(long, short hittype, C_Base *control)
     EdittingPackage = 0;
     new_package = NULL;
     WeAreAddingPackage = 0;
-    gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->Parent_->GetGroup());
 }
 
 void KeepPackage(long ID, short hittype, C_Base *control)
@@ -1682,7 +1682,7 @@ void KeepPackage(long ID, short hittype, C_Base *control)
     EdittingPackage = 0;
     new_package = NULL;
     WeAreAddingPackage = 0;
-    gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->Parent_->GetGroup());
 }
 
 // KCK: This is called when we've decided to create a package -
@@ -1697,7 +1697,7 @@ void tactical_make_package(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(PACKAGE_WIN);
+    win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
     if (win)
     {
@@ -1818,7 +1818,7 @@ void tac_select_aircraft(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (!win)
         return;
@@ -1877,7 +1877,7 @@ void tac_select_skill(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (!win)
         return;
@@ -1894,7 +1894,7 @@ void tac_select_role(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (!win)
         return;
@@ -1974,7 +1974,7 @@ void tac_select_squadron(long ID, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (!win)
         return;
@@ -2096,7 +2096,7 @@ void tactical_add_flight(VU_ID id, C_Base *caller)
     short x = 0, y = 0;
     float mx, my, maxy, scale;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (caller->_GetCType_() == _CNTL_BUTTON_)
     {
@@ -2211,7 +2211,7 @@ void tactical_add_flight(VU_ID id, C_Base *caller)
         if (btn)
             btn->SetCallback(tactical_make_flight);
 
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
     }
 }
 
@@ -2236,7 +2236,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->Parent_->GetGroup());
 
     // Create our package, if we don't current have one
     if (!new_package)
@@ -2247,7 +2247,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
     if (!new_package)
         return;
 
-    win = gMainHandler->FindWindow(TAC_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FLIGHT_WIN);
 
     if (win)
     {
@@ -2499,7 +2499,7 @@ void tactical_make_flight(long ID, short hittype, C_Base *control)
 
         if (WeAreAddingPackage)
         {
-            win = gMainHandler->FindWindow(PACKAGE_WIN);
+            win = MainHandlerPointer->FindWindow(PACKAGE_WIN);
 
             if (win)
             {
@@ -2599,7 +2599,7 @@ void tactical_cancel_package(long, short hittype, C_Base *ctrl)
         return;
     }
 
-    gMainHandler->DisableWindowGroup(ctrl->Parent_->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(ctrl->Parent_->GetGroup());
 
     //  Delete the unwanted package
     if (new_package)
@@ -2638,7 +2638,7 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
     float mx, my, maxy, scale;
     CampBaseClass *ent = NULL;
 
-    win = gMainHandler->FindWindow(NEW_BATT_WIN);
+    win = MainHandlerPointer->FindWindow(NEW_BATT_WIN);
 
     if (!win)
         return;
@@ -2707,7 +2707,7 @@ void tactical_add_battalion(VU_ID id, C_Base *caller)
     }
 
     update_new_battalion_window();
-    gMainHandler->EnableWindowGroup(32000);
+    MainHandlerPointer->EnableWindowGroup(32000);
 }
 
 Objective FindValidObjective(Battalion bat, VU_ID current_obj, GridIndex x, GridIndex y)
@@ -2923,7 +2923,7 @@ void tactical_create_battalion(long, short hittype, C_Base *)
     for (int i = 0; i < NUM_TEAMS; i++)
         new_battalion->SetSpotted(static_cast<uchar>(i), TheCampaign.CurrentTime);
 
-    gMainHandler->DisableWindowGroup(32000);
+    MainHandlerPointer->DisableWindowGroup(32000);
     display_land_units(new_battalion);
     update_new_battalion_window();
     // MN 2002-01-04 show up the battalion faster
@@ -2935,7 +2935,7 @@ void tactical_cancel_battalion(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(32000);
+    MainHandlerPointer->DisableWindowGroup(32000);
 }
 
 static void set_battalion_table_of_equipment(long, short hittype, C_Base *ctrl)
@@ -2979,7 +2979,7 @@ static void update_new_battalion_window(void)
     int num[VEHICLE_GROUPS_PER_UNIT], tid, equipment = -1, prev, loop;
     _TCHAR buffer[100];
 
-    win = gMainHandler->FindWindow(NEW_BATT_WIN);
+    win = MainHandlerPointer->FindWindow(NEW_BATT_WIN);
 
     if (!win)
         return;

@@ -17,7 +17,7 @@ long _LOAD_ART_RESOURCES_ = 1;
 // Take Screenshot HACK stuff
 long gUI_TakeScreenShot = 0;
 // MN 020104 always allow UI screenshots
-long gScreenShotEnabled = 1;
+long ScreenShotEnabled = 1;
 WORD *gScreenShotBuffer = NULL;
 void SaveScreenShot();
 
@@ -37,7 +37,7 @@ extern DWORD RGB565toRGB8(WORD sc);
 
 
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 C_Handler::C_Handler()
 {
@@ -1184,7 +1184,7 @@ void C_Handler::Update()
     if (OverLast_.Time_)
         CheckHelpText(&surface_);
 
-    if (gScreenShotEnabled && gUI_TakeScreenShot == 1)
+    if (ScreenShotEnabled && gUI_TakeScreenShot == 1)
     {
         // Copy Front_ surface to a secondary buffer
         int xsize = 800;
@@ -2281,7 +2281,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (Grab_.Control_)
             {
-                if (this != gMainHandler)
+                if (this != MainHandlerPointer)
                 {
                     ret = TRUE;
                 }
@@ -2295,7 +2295,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     ret = TRUE;
                 }
 
-                if (this != gMainHandler)
+                if (this != MainHandlerPointer)
                 {
                     ret = TRUE;
                 }
@@ -2329,7 +2329,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     }
                 }
 
-                if (this != gMainHandler)
+                if (this != MainHandlerPointer)
                 {
                     ret = TRUE;
                 }
@@ -2798,7 +2798,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     }
                 }
 
-            if (gScreenShotEnabled && gUI_TakeScreenShot == 2)
+            if (ScreenShotEnabled && gUI_TakeScreenShot == 2)
             {
                 SaveScreenShot();
                 gUI_TakeScreenShot = 0;
@@ -2812,7 +2812,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (wParam == VK_SNAPSHOT) // fall through to KEYDOWN also
             {
-                if (gScreenShotEnabled)
+                if (ScreenShotEnabled)
                     gUI_TakeScreenShot = 1; // Set to take screen shot after screen is refreshed (2=Save to file)...
 
                 lParam = (lParam & 0xff00ffff) | DIK_SYSRQ;

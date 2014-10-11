@@ -121,7 +121,7 @@ int g_nTargetSpotTimeout = 2 * 60 * 1000;
 // 2001-09-07 ADDED BY S.G. FOR RP5 COMPATIBILITY DATA TEST
 bool g_bRP5Comp = true;
 
-extern int NumHats;
+extern int NumberOfHats;
 bool g_bEnableNonPersistentTextures = false;
 bool g_bEnableStaticTerrainTextures = false;
 //bool g_bEnableAircraftLimits = false; //MI replaced with g_bRealisticAvionics
@@ -158,13 +158,13 @@ float g_fCloudThicknessFactor = 4000; //JPO
 float g_fdwPortclient = 2937;
 float g_fdwPorthost = 2936;
 
-bool g_bEnableUplink = false;
-char g_strMasterServerName[0x40];
-int g_nMasterServerPort = 0;
-char g_strServerName[0x40];
-char g_strServerLocation[0x40];
-char g_strServerAdmin[0x40];
-char g_strServerAdminEmail[0x40];
+bool EnableUplink = false;
+char MasterServerName[0x40];
+int MasterServerPort = 0;
+char ServerName[0x40];
+char ServerLocation[0x40];
+char ServerAdministrator[0x40];
+char ServerAdministratorEmail[0x40];
 
 char g_strVoiceHostIP[0x40];
 char g_strWorldName[0x40] = {"FFVIPER"};
@@ -330,7 +330,7 @@ float g_fAFElevatorUp = 3.0f;
 float g_frollStickOffset = 0.0f;
 float g_fpitchStickOffset = 0.9f;
 float g_frudderOffset = 0.9f;
-bool g_bRollLinkedNWSRudder = true; // ASSOCIATOR 30/11/03: Controls wether the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
+bool g_bRollLinkedNWSRudder = true; // ASSOCIATOR 30/11/03: Controls whether  the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
 bool g_bEnableGRCursorBullseye = false; // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
 // MD -- 20040808: disabling this one -- see comments on why in fccmain.cpp
 bool g_bEnableFCCSubNavCycle = false; // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
@@ -499,7 +499,7 @@ bool g_bUseNewSmoothing = false; // Retro 20Feb2004 - if enabled uses a new smoo
 //  for bank/pitch/yaw/throttle(1+2) yet
 bool g_bDisplayAxisValues = false; // Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
 
-bool g_bPilotEntertainment = false; // Retro 3Jan2004 - enable winamp interface
+bool PilotEntertainment = false; // Retro 3Jan2004 - enable WinAmpPointer interface
 int g_nWinAmpInitVolume = 204; // Retro 3Jan2004 - inital playback volume (valid between 0 and 255)
 
 int g_nBWMaxDeltaTime = 1; // true = use maximum value restriction, false = set 0 and return
@@ -756,7 +756,7 @@ static ConfigOption<bool> BoolOpts[] =
     // { "EnableArmingDelay", &g_bArmingDelay }, MI
     // { "EnableHardCoreReal", &g_bHardCoreReal }, MI
     { "CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip },
-    { "EnableUplink", &g_bEnableUplink },
+    { "EnableUplink", &EnableUplink },
     { "EnableColorMfd", &g_bEnableColorMfd },
     { "NewDamageEffects", &g_bNewDamageEffects },
     { "DisableFunkyChicken", &g_bDisableFunkyChicken },
@@ -941,7 +941,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
     { "DisableHighFartiles", &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
     { "noRadStutter", &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
-    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder }, // ASSOCIATOR 30/11/03 Controls wether the Rudder and NWS are linked to the roll input when on the ground
+    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder }, // ASSOCIATOR 30/11/03 Controls whether  the Rudder and NWS are linked to the roll input when on the ground
     { "EnableGRCursorBullseye", &g_bEnableGRCursorBullseye }, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
     { "BriefHTML", &g_bBriefHTML }, // THW 2003-12-07 Generate Briefing using HTML tags
     // { "EnableFCCSubNavCycle", &g_bEnableFCCSubNavCycle },  // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
@@ -949,7 +949,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "newAMRAAMdlz", &g_bnewAMRAAMdlz }, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above
     { "EnableDisplacementCam", &g_bEnableDisplacementCam }, // Retro 25Dec2003
     { "AntElevKnobFix", &g_bAntElevKnobFix }, // MD -- 20031231: see above
-    { "PilotEntertainment", &g_bPilotEntertainment },// Retro 3Jan2004
+    { "PilotEntertainment", &PilotEntertainment },// Retro 3Jan2004
     { "RollInertia", &g_bRollInertia }, //TJL 01/06/04 Roll Inertia
     { "ACMIRecordMsgOff", &g_bACMIRecordMsgOff }, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
     { "UseAnalogIdleCutoff", &g_bUseAnalogIdleCutoff }, // MD -- 20040209: see above
@@ -990,11 +990,11 @@ static ConfigOption<int> IntOpts[] =
     { "ThrottleMode", &g_nThrottleMode },
     { "PadlockBoxSize", &g_nPadlockBoxSize },
     { "PadlockMode", &g_nPadlockMode },
-    { "NumDefaultHatSwitches", &NumHats },
+    { "NumDefaultHatSwitches", &NumberOfHats },
     { "NearLabelLimit", &g_nNearLabelLimit },
     { "percentage_available_aircraft", &g_npercentage_available_aircraft },
     { "minimum_available_aircraft", &g_nminimum_available_aircraft },
-    { "MasterServerPort", &g_nMasterServerPort },
+    { "MasterServerPort", &MasterServerPort },
     { "MaxVertexSpace", &g_nMaxVertexSpace },
     // { "MinTacanChannel", &g_nMinTacanChannel}, -> Theater definition file
     { "FlightVisualBonus", &g_nFlightVisualBonus},
@@ -1088,11 +1088,11 @@ static ConfigOption<int> IntOpts[] =
 
 static ConfigOption<char> StringOpts[] =
 {
-    { "MasterServerName", &g_strMasterServerName[0] },
-    { "ServerName", &g_strServerName[0] },
-    { "ServerLocation", &g_strServerLocation[0] },
-    { "ServerAdmin", &g_strServerAdmin[0] },
-    { "ServerAdminEmail", &g_strServerAdminEmail[0] },
+    { "MasterServerName", &MasterServerName[0] },
+    { "ServerName", &ServerName[0] },
+    { "ServerLocation", &ServerLocation[0] },
+    { "ServerAdmin", &ServerAdministrator[0] },
+    { "ServerAdminEmail", &ServerAdministratorEmail[0] },
     { "VoiceHostIP", &g_strVoiceHostIP[0] },
     { "WorldName", &g_strWorldName[0] },
     { "ScrollUpFunction", &g_strScrollUpFunction[0] }, //Wombat778 10-07-2003

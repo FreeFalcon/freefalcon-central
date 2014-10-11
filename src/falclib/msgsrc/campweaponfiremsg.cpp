@@ -48,7 +48,7 @@ uchar *gDamageStatusPtr;
 extern int gRebuildBubbleNow;
 
 extern int InterestingSFX(float x, float y);
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 void DoDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_id, int shots);
 void DoShortDistanceVisualEffects(CampEntity shooter, CampEntity target, int weapon_id, int shots);
@@ -509,7 +509,7 @@ int FalconCampWeaponsFire::Process(uchar autodisp)
         SendCampUIMessage(newEvent);
     }
 
-    if (gMainHandler && FalconLocalSession->GetPlayerSquadron() && target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
+    if (MainHandlerPointer && FalconLocalSession->GetPlayerSquadron() && target->Id() == FalconLocalSession->GetPlayerSquadron()->GetUnitAirbaseID())
         PostMessage(FalconDisplay.appWin, FM_AIRBASE_ATTACK, 0, 0);
 
     return 0;

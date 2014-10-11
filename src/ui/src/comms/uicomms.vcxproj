@@ -102,7 +102,7 @@
       <AssemblerListingLocation>../../../../build/x86/debug_win32/ui/comms/</AssemblerListingLocation>
       <ObjectFileName>../../../../build/x86/debug_win32/ui/comms/</ObjectFileName>
       <ProgramDataBaseFileName>../../../../build/x86/debug_win32/ui/comms/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>

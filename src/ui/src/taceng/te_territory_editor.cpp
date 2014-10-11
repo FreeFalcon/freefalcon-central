@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -371,7 +371,7 @@ void SetupOccupationMap(void)
     if (gOccupationMap)
         MakeOccupationMap(gOccupationMap);
 
-    win = gMainHandler->FindWindow(TAC_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_TEAM_WIN);
 
     if (win != NULL)
     {
@@ -385,7 +385,7 @@ void SetupOccupationMap(void)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {
@@ -399,7 +399,7 @@ void SetupOccupationMap(void)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_SUA_WIN);
 
     if (win)
     {
@@ -425,7 +425,7 @@ void UpdateOccupationMap(void)
 
     MakeOccupationMap(gOccupationMap);
 
-    win = gMainHandler->FindWindow(TAC_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_TEAM_WIN);
 
     if (win != NULL)
     {
@@ -437,7 +437,7 @@ void UpdateOccupationMap(void)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {

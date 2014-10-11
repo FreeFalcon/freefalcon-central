@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ static void tactical_team_victory_button(long, short hittype, C_Base *)
 
     update_team_victory_window();
 
-    gMainHandler->EnableWindowGroup(3400);
+    MainHandlerPointer->EnableWindowGroup(3400);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -270,11 +270,11 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
         return;
     }
 
-    win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+    win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if (!(MainHandlerPointer->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
         {
             gActiveFlightID = gSelectedFlightID;
 
@@ -283,12 +283,12 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
             if (wp)
             {
                 UpdateWaypointWindowInfo(win, wp, 1);
-                gMainHandler->EnableWindowGroup(ctrl->GetGroup());
+                MainHandlerPointer->EnableWindowGroup(ctrl->GetGroup());
             }
         }
         else
         {
-            gMainHandler->WindowToFront(win);
+            MainHandlerPointer->WindowToFront(win);
         }
     }
 }
@@ -430,12 +430,12 @@ void do_tactical_briefing(C_Base *control)
     C_Window
     *win;
 
-    win = gMainHandler->FindWindow(BRIEF_WIN);
+    win = MainHandlerPointer->FindWindow(BRIEF_WIN);
 
     if (win)
     {
         BuildCampBrief(win);
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         // JPO - attempt to add handlers for these
         C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
 
@@ -475,14 +475,14 @@ void do_tactical_debrief(void)
 
     if (current_tactical_mission->get_type() != tt_training)
     {
-        win = gMainHandler->FindWindow(DEBRIEF_WIN);
+        win = MainHandlerPointer->FindWindow(DEBRIEF_WIN);
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
         if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data && TheCampaign.MissionEvaluator->flight_data->mission != AMIS_TRAINING)
         {
             BuildCampDebrief(win);
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
             // JPO - attempt to add handlers for these
             C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
 

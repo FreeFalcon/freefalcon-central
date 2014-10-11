@@ -11,10 +11,12 @@
 #include "F4vu.h"
 
 
+// dannycoh - commented out. Not used.
+//#define FALCON_VERSION      17
+//#define FALCON_RELEASE      23
+//#define FALCON40            0x02
+// dannycoh - end.
 
-#define FALCON_VERSION      17
-#define FALCON_RELEASE      23
-#define FALCON40            0x02
 /* Domain Class table Entries */
 enum Classtable_Domains
 {

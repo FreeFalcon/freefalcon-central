@@ -2342,8 +2342,8 @@ int ATCBrain::FindBestTakeoffRunway(int checklist)
     runwayQueueStruct *info = NULL;
 
     // Find windheading in degrees (add 180 if we want opposite direction)
-    if (realWeather)
-        windheading = FloatToInt32(((WeatherClass*)realWeather)->windHeading * RTD + 180.5f);
+    if (RealWeatherPointer)
+        windheading = FloatToInt32(((WeatherClass*)RealWeatherPointer)->windHeading * RTD + 180.5f);
 
     while (windheading > 360)
         windheading -= 360;
@@ -2937,7 +2937,7 @@ int ATCBrain::FindBestLandingRunway(FalconEntity* landing, int checklist)
 
     // Find windheading in degrees (add 180 if we want opposite direction)
     // Cobra - windHeading in radians
-    windheading = FloatToInt32(((WeatherClass*)realWeather)->windHeading * RTD + 0.5f) % 360;
+    windheading = FloatToInt32(((WeatherClass*)RealWeatherPointer)->windHeading * RTD + 0.5f) % 360;
 
     for (i = 0; i < numRwys; i++)
     {

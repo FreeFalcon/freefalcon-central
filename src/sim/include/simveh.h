@@ -40,7 +40,7 @@ protected:
     };
 
     // RV - I-Hawk - AC dying time is now randomized. maybe long,short, or sometiems immediate...
-    // Value is intialized in Aircraft.cpp constructor, and used in simveh.cpp with the dying
+    // Value is initialized in Aircraft.cpp constructor, and used in simveh.cpp with the dying
     // timer...
     int dyingTime;
 

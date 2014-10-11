@@ -22,7 +22,7 @@ const unsigned dbgMemGuardSize = 16;
 #define MAIN_INIT_CHECK_POINT   2
 #define MAIN_DEINIT_CHECK_POINT 3
 
-falcon4LeakCheck::falcon4LeakCheck()
+FreeFalconLeakCheck::FreeFalconLeakCheck()
 {
 #ifdef USE_HEAPAGENT
     lastErrorFn = MemSetErrorHandler(errPrint);
@@ -32,7 +32,7 @@ falcon4LeakCheck::falcon4LeakCheck()
 #endif
 }
 
-falcon4LeakCheck::~falcon4LeakCheck()
+FreeFalconLeakCheck::~FreeFalconLeakCheck()
 {
 #ifdef USE_HEAPAGENT
     dbgMemSetCheckpoint(MAIN_DEINIT_CHECK_POINT);

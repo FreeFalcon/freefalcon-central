@@ -1086,7 +1086,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     // So it is an AI airplane after all :-)
     else
     {
-        // Because F4 doesn't clean up its act, need to make sure exploded missiles are not accounted for
+        // Because FF doesn't clean up its act, need to make sure exploded missiles are not accounted for
         // We do the holding spot first
         if (incomingMissile[1] && incomingMissile[1]->IsDead())
         {

@@ -67,13 +67,13 @@ enum
 };
 TimeAdjustClass TimeAdjust;
 
-//JAM 06Dec03 - Bumped version number for realWeather changes.
-//int gCurrentDataVersion = 76; // Current version of campaign data files
+//JAM 06Dec03 - Bumped version number for RealWeatherPointer changes.
+//int CurrentDataVersion = 76; // Current version of campaign data files
 // Cobra - Revert back to SP3 version to make saved cam/tac files cpmpatible with Tacedit
-int gCurrentDataVersion = 73; // SP3 version of campaign data files
-int gCampDataVersion = gCurrentDataVersion;
-int gClearPilotInfo = 0;
-int gTacticalFullEdit = 0;
+int CurrentDataVersion = 73; // SP3 version of campaign data files
+int CampaignDataVersion = CurrentDataVersion;
+int ClearPilotInfo = 0;
+int TacticalFullEdit = 0;
 
 void Camp_MakeInstantAction(void);
 int ReadVersionNumber(char *saveFile);
@@ -91,7 +91,7 @@ extern void ChooseBullseye(void);
 extern void SetCampaignStartupMode(void);
 extern int tactical_is_training(void);
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern short gLastId;
 
 extern int PMRX;
@@ -301,9 +301,9 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
         gamename = LogBook.Callsign();
 
         // Setup game values
-        if (gMainHandler)
+        if (MainHandlerPointer)
         {
-            C_Window *win = gMainHandler->FindWindow(INFO_WIN);
+            C_Window *win = MainHandlerPointer->FindWindow(INFO_WIN);
 
             if (win)
             {
@@ -341,7 +341,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     gMainThread->JoinGame(newgame);
 
     // Now init the other needed modules
-    ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction || gametype == game_Dogfight));
+    ((WeatherClass*)RealWeatherPointer)->Init((gametype == game_InstantAction || gametype == game_Dogfight));
 
     if (!LoadTheater(TheaterName))
     {
@@ -380,7 +380,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
 
     if (!(Flags & CAMP_LIGHT))
     {
-        CampaignWindow(hInst, SW_SHOW);
+        CampaignWindow(HInstance, SW_SHOW);
     }
 
     CampEnterCriticalSection();
@@ -456,7 +456,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     StartReadCampFile(gametype, savefile);
 
-    gCampDataVersion = ReadVersionNumber(savefile);
+    CampaignDataVersion = ReadVersionNumber(savefile);
 
 #if !NO_LOCKS_ON_INIT_EXIT
     CampEnterCriticalSection();
@@ -491,7 +491,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     LoadBaseObjectives(Scenario);
     LoadObjectiveDeltas(savefile);
 
-    if (gClearPilotInfo || !LoadPilotInfo(savefile))
+    if (ClearPilotInfo || !LoadPilotInfo(savefile))
     {
         NewPilotInfo();
     }
@@ -546,7 +546,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     {
         RebuildObjectiveLists();
 
-        if (gCurrentDataVersion > 67)
+        if (CurrentDataVersion > 67)
         {
             LoadPrimaryObjectiveList(savefile);
         }
@@ -561,14 +561,14 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
-        ((WeatherClass*)realWeather)->CampLoad(savefile, 0);
+        ((WeatherClass*)RealWeatherPointer)->CampLoad(savefile, 0);
         StandardRebuild();
         lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
         ChooseBullseye();
     }
     else
     {
-        ((WeatherClass*)realWeather)->CampLoad(savefile, gametype);
+        ((WeatherClass*)RealWeatherPointer)->CampLoad(savefile, gametype);
     }
 
     // ChillTypes();
@@ -616,7 +616,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         }
     }
 
-    if (gTacticalFullEdit)
+    if (TacticalFullEdit)
     {
         // Copy in new country names
         for (int t = 0; t < NUM_TEAMS; t++)
@@ -628,7 +628,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         }
     }
 
-    gCampDataVersion = gCurrentDataVersion;
+    CampaignDataVersion = CurrentDataVersion;
     TheCampaign.Resume();
 #if !NO_LOCKS_ON_INIT_EXIT
     CampLeaveCriticalSection();
@@ -728,7 +728,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         // Load initial objective data..
         StartReadCampFile(gametype, Scenario);
 
-        gCampDataVersion = ReadVersionNumber(Scenario);
+        CampaignDataVersion = ReadVersionNumber(Scenario);
 
         LoadBaseObjectives(TheCampaign.Scenario);
 
@@ -742,14 +742,14 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             NewCampaignEvents(Scenario);
 
         if (!(Flags & CAMP_LIGHT))
-            ((WeatherClass*)realWeather)->CampLoad(TheCampaign.Scenario, game_Campaign);
+            ((WeatherClass*)RealWeatherPointer)->CampLoad(TheCampaign.Scenario, game_Campaign);
 
         // Rebuild objective lists once, so our received data has somewhere to go
         // (especially the priority data)
         RebuildObjectiveLists();
         EndReadCampFile();
 
-        gCampDataVersion = gCurrentDataVersion;
+        CampaignDataVersion = CurrentDataVersion;
 
         // Clear previous requests
         Flags &= ~CAMP_NEED_MASK;
@@ -841,7 +841,7 @@ void CampaignClass::GotJoinData(void)
     gMainThread->JoinGame(gCommsMgr->GetTargetGame());
 
     // Notify UI of our success
-    if (gMainHandler)
+    if (MainHandlerPointer)
         PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, !FalconLocalGame->IsLocal(), 0);
 }
 
@@ -861,7 +861,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
 
     CampEnterCriticalSection();
 
-    if (gTacticalFullEdit)
+    if (TacticalFullEdit)
         save_mode = CAMP_SAVE_FULL;
 
     if (gametype == game_TacticalEngagement)
@@ -918,7 +918,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
                 SaveCampaignEvents(savefile);
                 SavePilotInfo(savefile);
                 SavePersistantList(savefile);
-                ((WeatherClass*)realWeather)->Save(savefile);
+                ((WeatherClass*)RealWeatherPointer)->Save(savefile);
                 SavePrimaryObjectiveList(savefile);
                 break;
         }
@@ -1269,12 +1269,12 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     SetTime(CurrentTime);
 
-    if (gCampDataVersion >= 48)
+    if (CampaignDataVersion >= 48)
     {
         memcpychk(&TE_StartTime, &buffer, sizeof(CampaignTime), &newRem);
         memcpychk(&TE_TimeLimit, &buffer, sizeof(CampaignTime), &newRem);
 
-        if (gCampDataVersion > 49)
+        if (CampaignDataVersion > 49)
         {
             memcpychk(&TE_VictoryPoints, &buffer, sizeof(long), &newRem);
         }
@@ -1290,7 +1290,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         TE_VictoryPoints = 0;
     }
 
-    if (gCampDataVersion >= 52)
+    if (CampaignDataVersion >= 52)
     {
         memcpychk(&TE_type, &buffer, sizeof(long), &newRem);
         memcpychk(&TE_number_teams, &buffer, sizeof(long), &newRem);
@@ -1328,7 +1328,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     lastNavalPlan = 0;
     lastStatistic = 0;
 
-    if (gCampDataVersion >= 19)
+    if (CampaignDataVersion >= 19)
     {
         memcpychk(&lastMajorEvent, &buffer, sizeof(CampaignTime), &newRem);
     }
@@ -1440,7 +1440,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     if (NumAvailSquadrons > 0)
     {
-        if (gCampDataVersion < 42)
+        if (CampaignDataVersion < 42)
         {
             OldSquadUIInfoClass *osic = new OldSquadUIInfoClass[NumAvailSquadrons];
             memcpychk(osic, &buffer, sizeof(OldSquadUIInfoClass)*NumAvailSquadrons, &newRem);
@@ -1469,12 +1469,12 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         }
     }
 
-    if (gCampDataVersion >= 31)
+    if (CampaignDataVersion >= 31)
     {
         memcpychk(&Tempo, &buffer, sizeof(uchar), &newRem);
     }
 
-    if (gCampDataVersion >= 43)
+    if (CampaignDataVersion >= 43)
     {
         memcpychk(&CreatorIP, &buffer, sizeof(long), &newRem);
         memcpychk(&CreationTime, &buffer, sizeof(long), &newRem);
@@ -1488,7 +1488,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     delete bufhead;
 
-    if (gCampDataVersion > 5)
+    if (CampaignDataVersion > 5)
     {
         ShiAssert((int)(buffer - bufhead) == datasize);
     }
@@ -1751,7 +1751,7 @@ int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
 
     StartReadCampFile(type, savefile);
 
-    gCampDataVersion = ReadVersionNumber(savefile);
+    CampaignDataVersion = ReadVersionNumber(savefile);
 
     CampaignData cd;
     cd = ReadCampFile(savefile, "cmp");
@@ -1793,7 +1793,7 @@ int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
 
     EndReadCampFile();
 
-    gCampDataVersion = gCurrentDataVersion;
+    CampaignDataVersion = CurrentDataVersion;
 
     // Notify UI of our successfull preload
     PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
@@ -2390,9 +2390,9 @@ void Camp_FreeMemory(void)
     delete ASD;
     ASD = NULL;
     //sfr: Real weather destructor shouldnt be here!!
-    /* if (realWeather != NULL){
-     delete realWeather;
-     realWeather = NULL;
+    /* if (RealWeatherPointer != NULL){
+     delete RealWeatherPointer;
+     RealWeatherPointer = NULL;
      }
     */
 }
@@ -2447,7 +2447,7 @@ int ReadVersionNumber(char *saveFile)
 void WriteVersionNumber(char *saveFile)
 {
     FILE *fp;
-    int vers = gCurrentDataVersion;
+    int vers = CurrentDataVersion;
 
     fp = OpenCampFile(saveFile, "ver", "w");
 
@@ -2509,7 +2509,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
     SaveCampaignEvents(filename);
     SavePilotInfo(filename);
     SavePersistantList(filename);
-    ((WeatherClass*)realWeather)->Save(filename);
+    ((WeatherClass*)RealWeatherPointer)->Save(filename);
 
     WriteVersionNumber(filename);
     EndWriteCampFile();

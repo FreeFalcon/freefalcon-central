@@ -26,7 +26,7 @@
 #include "FakeRand.h"
 
 
-extern int gCurrentDataVersion;
+extern int CurrentDataVersion;
 float COVersion = 0.0077f; // Cobra file version kludge
 
 WeatherClass::WeatherClass() : RealWeather()
@@ -34,7 +34,7 @@ WeatherClass::WeatherClass() : RealWeather()
     cumulusZ = stratusZ = stratus2Z = 0.f;
     cumulusBase = stratusBase = stratus2Base = 0;
     temperature = windSpeed = windHeading = turbFactor = 0.f;
-    weatherCondition = 1;
+    WeatherCondition = 1;
     needsWeatherRefresh = updateLighting = lockedCondition = unlockableCondition = FALSE;
 }
 
@@ -55,7 +55,7 @@ void WeatherClass::Init(bool instantAction)
         lockedCondition = TRUE;
         // Cobra - no random weather
         // UpdateCondition(min(1+rand()%4,4));
-        UpdateCondition(PlayerOptions.weatherCondition);
+        UpdateCondition(PlayerOptions.WeatherCondition);
     }
 
     switch (TimeOfDayGeneral())
@@ -86,7 +86,7 @@ void WeatherClass::Init(bool instantAction)
 
     if (windHeading > 2.f * PI) windHeading -= 2.f * PI;
 
-    if (weatherCondition == INCLEMENT)
+    if (WeatherCondition == INCLEMENT)
     {
         temperature *= 0.75f;
         windSpeed = windSpeed + (rand() % 20);
@@ -98,11 +98,11 @@ void WeatherClass::Init(bool instantAction)
 
     cumulusZ = (float) - (100 * cumulusBase + 100 * (rand() % 5));
 
-    if (weatherCondition > FAIR)
+    if (WeatherCondition > FAIR)
     {
         stratusZ = (float) - (100 * stratusBase + 100 * (rand() % 20));
 
-        if (weatherCondition == INCLEMENT)
+        if (WeatherCondition == INCLEMENT)
             stratusZ = (float) - (5000 + 100 * (rand() % 150));
     }
     else
@@ -121,14 +121,14 @@ void WeatherClass::Init(bool instantAction)
 
 void WeatherClass::UpdateCondition(int condition, bool bForce)
 {
-    weatherCondition = condition;
+    WeatherCondition = condition;
 
-    if (weatherCondition != oldWeatherCondition || bForce)
+    if (WeatherCondition != oldWeatherCondition || bForce)
     {
-        oldWeatherCondition = weatherCondition;
+        oldWeatherCondition = WeatherCondition;
         needsWeatherRefresh = updateLighting = TRUE;
 
-        switch (weatherCondition)
+        switch (WeatherCondition)
         {
             case SUNNY:
             {
@@ -248,7 +248,7 @@ void WeatherClass::UpdateWeather()
 
         cumulusZ = (float) - (100 * cumulusBase + 100 * rand() % 5);
 
-        if (weatherCondition > FAIR)
+        if (WeatherCondition > FAIR)
             stratusZ = (float) - (100 * stratusBase + 100 * rand() % 5);
         else
             stratusZ = (float) - (100 * stratusBase + 100 * rand() % 10);
@@ -359,34 +359,34 @@ void WeatherClass::UpdateWeather()
             int direction = rand() % 10;
             direction = (direction > 5) ? 1 : -1;
 
-            switch (weatherCondition)
+            switch (WeatherCondition)
             {
                 case SUNNY:
                 {
-                    UpdateCondition(weatherCondition + 1);
+                    UpdateCondition(WeatherCondition + 1);
                     break;
                 }
 
                 case FAIR:
                 {
-                    UpdateCondition(weatherCondition + direction);
+                    UpdateCondition(WeatherCondition + direction);
                     break;
                 }
 
                 case POOR:
                 {
-                    UpdateCondition(weatherCondition + direction);
+                    UpdateCondition(WeatherCondition + direction);
                     break;
                 }
 
                 case INCLEMENT:
                 {
-                    UpdateCondition(weatherCondition - 1);
+                    UpdateCondition(WeatherCondition - 1);
                 }
             }
         }
 
-        message->dataBlock.weatherCondition = weatherCondition;
+        message->dataBlock.WeatherCondition = WeatherCondition;
         message->dataBlock.lastCheck = lastCheck;
         message->dataBlock.temperature = temperature;
         message->dataBlock.windSpeed = windSpeed;
@@ -423,7 +423,7 @@ void WeatherClass::SendWeather(VuTargetEntity *target)
     FalconWeatherMessage *message;
     message = new FalconWeatherMessage(vuLocalSessionEntity->Id(), target);
 
-    message->dataBlock.weatherCondition = weatherCondition;
+    message->dataBlock.WeatherCondition = WeatherCondition;
     message->dataBlock.lastCheck = lastCheck;
     message->dataBlock.temperature = temperature;
     message->dataBlock.windSpeed = windSpeed;
@@ -441,7 +441,7 @@ void WeatherClass::SendWeather(VuTargetEntity *target)
 
 void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
 {
-    UpdateCondition(message->dataBlock.weatherCondition);
+    UpdateCondition(message->dataBlock.WeatherCondition);
     lastCheck = message->dataBlock.lastCheck;
     temperature = message->dataBlock.temperature;
     windSpeed = message->dataBlock.windSpeed;
@@ -482,7 +482,7 @@ int WeatherClass::CampLoad(char* name, int type)
 
     if (type != game_Campaign && type != game_PlayerPool)
     {
-        if (gCampDataVersion >= 75)
+        if (CampaignDataVersion >= 75)
         {
             UpdateCondition(*((int *)data_ptr));
             data_ptr += sizeof(int);
@@ -499,7 +499,7 @@ int WeatherClass::CampLoad(char* name, int type)
             windHeading = *((float *)data_ptr);
             data_ptr += sizeof(float);
 
-            if (gCampDataVersion >= 76)
+            if (CampaignDataVersion >= 76)
             {
                 cumulusZ = *((float *)data_ptr);
                 data_ptr += sizeof(float);
@@ -533,7 +533,7 @@ int WeatherClass::CampLoad(char* name, int type)
              X Off                  (4) Stratus 2 Base (future)
              Y Off                  (4) Cobra file version (do not change) */
 
-            // Cobra version check  (gCampDataVersion = 73 = SP3 version)
+            // Cobra version check  (CampaignDataVersion = 73 = SP3 version)
             // Tacedit reverses XOff and YOff when TE is saved. :^(
             if (*((float *)(data_ptr + 21)) == COVersion)
             {
@@ -636,10 +636,10 @@ int WeatherClass::CampLoad(char* name, int type)
                 stratusZ = -22000.f;
                 stratus2Z = -35000.f;
 
-                if (PlayerOptions.weatherCondition < 1 || PlayerOptions.weatherCondition > 4)
-                    PlayerOptions.weatherCondition = 1;
+                if (PlayerOptions.WeatherCondition < 1 || PlayerOptions.WeatherCondition > 4)
+                    PlayerOptions.WeatherCondition = 1;
 
-                UpdateCondition(PlayerOptions.weatherCondition, false);
+                UpdateCondition(PlayerOptions.WeatherCondition, false);
                 UpdateWeather();
             }
         }
@@ -648,7 +648,7 @@ int WeatherClass::CampLoad(char* name, int type)
     delete cd.data;
 
     // RED - Update the weather condition
-    realWeather->UpdateCondition();
+    RealWeatherPointer->UpdateCondition();
 
     return TRUE;
 }
@@ -661,9 +661,9 @@ int WeatherClass::Save(char* name)
 
     if ((fp = OpenCampFile(name, "wth", "wb")) == NULL) return 0;
 
-    if (gCurrentDataVersion >= 75)
+    if (CurrentDataVersion >= 75)
     {
-        fwrite(&weatherCondition, sizeof(int), 1, fp);
+        fwrite(&WeatherCondition, sizeof(int), 1, fp);
         fwrite(&lastCheck, sizeof(CampaignTime), 1, fp);
         fwrite(&temperature, sizeof(float), 1, fp);
         fwrite(&windSpeed, sizeof(float), 1, fp);
@@ -705,7 +705,7 @@ int WeatherClass::Save(char* name)
         fwrite(&sConv, sizeof(char), 1, fp);
         uConv = (BYTE)(windSpeed * (KPH_TO_FPS * FTPSEC_TO_KNOTS));
         fwrite(&uConv, sizeof(BYTE), 1, fp); // TodaysWind
-        uConv = (BYTE)weatherCondition;
+        uConv = (BYTE)WeatherCondition;
         fwrite(&uConv, sizeof(BYTE), 1, fp); // TodaysBase
         uConv = (BYTE)(int)(contrailLow / 1000.0f + 0.5); // same
         fwrite(&uConv, sizeof(BYTE), 1, fp);

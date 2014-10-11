@@ -73,7 +73,7 @@ int PackInserted = 0;
 #define ATM_HIGH_PRIORITY 150
 #pragma warning (disable : 4786) // debug info truncation
 
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 extern bool g_bTankerWaypoints;
 extern bool g_bLargeStrike;
 
@@ -223,7 +223,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
 #endif
     memcpychk(&interceptor, stream, sizeof(VU_ID), rem);
 
-    if (gCampDataVersion >= 7)
+    if (CampaignDataVersion >= 7)
     {
         memcpychk(&awacs, stream, sizeof(VU_ID), rem);
         memcpychk(&jstar, stream, sizeof(VU_ID), rem);
@@ -245,7 +245,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
 
         memcpychk(&requests, stream, sizeof(short), rem);
 
-        if (gCampDataVersion < 35)
+        if (CampaignDataVersion < 35)
         {
             short threat_stats;
             memcpychk(&threat_stats, stream, sizeof(short), rem);
@@ -262,16 +262,16 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
         mis_request.targetID.num_ &= 0x0000ffff;
 #endif
 
-        if (gCampDataVersion >= 26)
+        if (CampaignDataVersion >= 26)
         {
             memcpychk(&mis_request.tot, stream, sizeof(CampaignTime), rem);
         }
-        else if (gCampDataVersion >= 16)
+        else if (CampaignDataVersion >= 16)
         {
             memcpychk(&mis_request.tot, stream, sizeof(CampaignTime), rem);
         }
 
-        if (gCampDataVersion >= 35)
+        if (CampaignDataVersion >= 35)
         {
             memcpychk(&mis_request.action_type, stream, sizeof(uchar), rem);
         }
@@ -280,7 +280,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
             mis_request.action_type = 0;
         }
 
-        if (gCampDataVersion >= 41)
+        if (CampaignDataVersion >= 41)
         {
             memcpychk(&mis_request.priority, stream, sizeof(short), rem);
         }
@@ -316,7 +316,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
         memcpychk(&caps, stream, sizeof(short), rem);
         memcpychk(&requests, stream, sizeof(short), rem);
 
-        if (gCampDataVersion < 35)
+        if (CampaignDataVersion < 35)
         {
             short threat_stats;
             memcpychk(&threat_stats, stream, sizeof(short), rem);
@@ -357,7 +357,7 @@ PackageClass::PackageClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, r
             wps--;
         }
 
-        if (gCampDataVersion < 35)
+        if (CampaignDataVersion < 35)
         {
             // This isn't valid any more
             memcpychk(&mis_request, stream, 64, rem);

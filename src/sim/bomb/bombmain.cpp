@@ -452,15 +452,15 @@ int BombClass::Exec(void)
             pos.z = z;
 
             // current wind
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+            mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+            wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
             float winddx = trigWind.cos * wind;
             float winddy = trigWind.sin * wind;
 
             //the wind last time we checked
             pos.z = z - ZDelta() * SimLibMajorFrameTime;
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+            mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+            wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
             float lastwinddx = trigWind.cos * wind;
             float lastwinddy = trigWind.sin * wind;
 

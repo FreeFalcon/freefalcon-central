@@ -1802,8 +1802,8 @@ void DrawableParticleSys::Draw(class RenderOTW *renderer, int LOD)
         // current wind
         // mlSinCos(&trigWind, TheWeather->GetWindHeading(&n->pos));
         // wind =  TheWeather->GetWindSpeedFPS(&n->pos);
-        mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&n->pos));
-        wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&n->pos);
+        mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&n->pos));
+        wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&n->pos);
         wind *= n->ppn->WindFactor * 0.5f ; // RV - I-Hawk
         winddx = trigWind.cos * wind;
         winddy = trigWind.sin * wind;
@@ -3535,8 +3535,8 @@ void DrawableParticleSys::PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel, Tpoin
     // Recalc Wind velocity
     mlTrig trigWind;
     float wind;
-    mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pn.pos));
-    wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pn.pos);
+    mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pn.pos));
+    wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pn.pos);
     wind *= ppn.WindFactor * 0.5f ; // RV - I-Hawk
     pn.Wind.x = trigWind.cos * wind;
     pn.Wind.y = trigWind.sin * wind;
@@ -3606,7 +3606,7 @@ void DrawableParticleSys::PS_ParticleRun(void)
             Part.LastCalcPos = Part.pos;
             Part.GroundLevel = OTWDriver.GetGroundLevel(Part.pos.x, Part.pos.y);
             // Recalc Wind velocity
-            Part.Wind = ((WeatherClass*)realWeather)->GetWindVector();
+            Part.Wind = ((WeatherClass*)RealWeatherPointer)->GetWindVector();
             Part.Wind.x *= ppn.WindFactor;
             Part.Wind.y *= ppn.WindFactor;
             Part.Wind.z *= ppn.WindFactor;
@@ -4049,7 +4049,7 @@ void DrawableParticleSys::PS_TrailRun(void)
 
         // Check for emit time....
         Trail.Elapsed += PS_ElapsedTime;
-        Trail.Wind = ((WeatherClass*)realWeather)->GetWindVector();
+        Trail.Wind = ((WeatherClass*)RealWeatherPointer)->GetWindVector();
 
 
         if (Trail.Alive && Trail.OWNER != PS_NOPTR)

@@ -28,7 +28,7 @@ Tcolor Drawable3DCloud::litCloudColor = { 0.f };
 Drawable3DCloud::Drawable3DCloud() : DrawableObject(1.0f)
 {
     drawClassID = realClouds;
-    radius = realWeather->puffRadius;
+    radius = RealWeatherPointer->puffRadius;
 }
 
 Drawable3DCloud::~Drawable3DCloud()
@@ -38,14 +38,14 @@ Drawable3DCloud::~Drawable3DCloud()
 void Drawable3DCloud::Update(Tpoint *worldPos, int txtIndex)
 {
     memcpy(&position, worldPos, sizeof(Tpoint));
-    cloudTexture = realWeather->CumulusTextures;//[txtIndex];
+    cloudTexture = RealWeatherPointer->CumulusTextures;//[txtIndex];
 }
 
 void Drawable3DCloud::Draw(class RenderOTW *renderer, int)
 {
     // RED - LINEAR FOG - Remove the Clouds under Overcast layer...
-    if (!(realWeather->weatherCondition == FAIR))/* || (realWeather->weatherCondition > FAIR &&
- (-realWeather->viewerZ) > (-realWeather->stratusZ) && (-realWeather->viewerZ) < (-realWeather->stratusZ)+(realWeather->stratusDepth))))*/
+    if (!(RealWeatherPointer->WeatherCondition == FAIR))/* || (RealWeatherPointer->WeatherCondition > FAIR &&
+ (-RealWeatherPointer->viewerZ) > (-RealWeatherPointer->stratusZ) && (-RealWeatherPointer->viewerZ) < (-RealWeatherPointer->stratusZ)+(RealWeatherPointer->stratusDepth))))*/
     {
         return;
     }

@@ -56,7 +56,7 @@ extern _TCHAR *CampExcludeList[];
 
 extern uchar max_veh[5];
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;;
 extern C_Music  *gMusic;
 extern int CPSelectLoaded;
@@ -66,7 +66,7 @@ extern C_Map *gMapMgr;
 extern GlobalPositioningSystem *gGps;
 extern long gDFTeamID;
 extern long _IsF16_;
-extern int gCampDataVersion, gCurrentDataVersion;
+extern int CampaignDataVersion, CurrentDataVersion;
 
 extern bool g_bHiResUI;
 extern bool g_LargeTheater;
@@ -133,7 +133,7 @@ void CopySettingsToTemp(void);
 BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem);
 extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
 
-char gUI_CampaignFile[MAX_PATH];
+char UiCampaignFile[MAX_PATH];
 _TCHAR gUI_ScenarioName[64];
 _TCHAR gLastCampFilename[MAX_PATH];
 
@@ -297,7 +297,7 @@ void SetupMapWindow()
     C_Window *win;
     C_Bitmap *bmp;
 
-    win = gMainHandler->FindWindow(CS_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(CS_MAP_WIN);
 
     // MN turn off the occupation maps for now for 128x128 theaters - they cause CTD's...
     if (win && !g_LargeTheater)
@@ -355,7 +355,7 @@ void AddSquadronsToMap()
 
     maxy = (float)(TheCampaign.TheaterSizeY) * FEET_PER_KM;
 
-    win = gMainHandler->FindWindow(CS_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(CS_MAP_WIN);
 
     if (win)
     {
@@ -493,7 +493,7 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
 
     maxy = (float)(TheCampaign.TheaterSizeY) * FEET_PER_KM;
 
-    win = gMainHandler->FindWindow(CS_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_SUA_WIN);
 
     if (win)
     {
@@ -589,7 +589,7 @@ void LoadSquadronInfo()
     SquadUIInfoClass *SquadPtr;
     _TCHAR buffer[60];
 
-    win = gMainHandler->FindWindow(CS_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_PUA_WIN);
 
     if (win)
     {
@@ -722,7 +722,7 @@ static void CalcChallengeLevel()
 
     TEMP_Settings.Challenge /= 6;
 
-    win = gMainHandler->FindWindow(CHALLENGE_WIN);
+    win = MainHandlerPointer->FindWindow(CHALLENGE_WIN);
 
     if (win)
     {
@@ -772,7 +772,7 @@ void LoadScenarioInfo()
     CopySettingsToTemp();
     CalcChallengeLevel();
 
-    win = gMainHandler->FindWindow(CS_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_PUA_WIN);
 
     if (win)
     {
@@ -803,7 +803,7 @@ void LoadScenarioInfo()
         }
     }
 
-    win = gMainHandler->FindWindow(CS_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_SUA_WIN);
 
     if (win)
     {
@@ -826,7 +826,7 @@ void EnableScenarioText(C_Base *control)
 {
     C_Window *win;
 
-    win = gMainHandler->FindWindow(CS_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_PUA_WIN);
 
     if (win)
     {
@@ -860,7 +860,7 @@ void SelectScenarioButtons(long ID)
     C_Button *btn;
     F4CSECTIONHANDLE *Leave;
 
-    win = gMainHandler->FindWindow(CS_SELECT_WIN);
+    win = MainHandlerPointer->FindWindow(CS_SELECT_WIN);
 
     if (win)
     {
@@ -919,17 +919,17 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
     switch (ID)
     {
         case CS_LOAD_SCENARIO1:
-            strcpy(gUI_CampaignFile, "save0");
+            strcpy(UiCampaignFile, "save0");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_1));
             break;
 
         case CS_LOAD_SCENARIO2:
-            strcpy(gUI_CampaignFile, "save1");
+            strcpy(UiCampaignFile, "save1");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_2));
             break;
 
         case CS_LOAD_SCENARIO3:
-            strcpy(gUI_CampaignFile, "save2");
+            strcpy(UiCampaignFile, "save2");
             _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_3));
             break;
 
@@ -937,7 +937,7 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
             return;
     }
 
-    TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
+    TheCampaign.LoadScenarioStats(game_Campaign, UiCampaignFile);
     // Pick the default squadron ID
     gSelectedSquadronID = -1;
 
@@ -981,7 +981,7 @@ void RecieveScenarioInfo()
     int i;
     VuGameEntity * game;
 
-    if (gMainHandler == NULL)
+    if (MainHandlerPointer == NULL)
         return;
 
     // KCK: These really should be a better way to figure out which windows need updating than
@@ -1099,7 +1099,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
         if (game != FalconLocalGame)
         {
-            win = gMainHandler->FindWindow(INFO_WIN);
+            win = MainHandlerPointer->FindWindow(INFO_WIN);
 
             if (win)
             {
@@ -1179,10 +1179,10 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
                 tree->SetAllControlStates(0, tree->GetRoot());
                 btn->SetState(1);
                 tree->Refresh();
-                _tcscpy(gUI_CampaignFile, btn->GetText(C_STATE_0));
+                _tcscpy(UiCampaignFile, btn->GetText(C_STATE_0));
                 // MN 2002-02-04 removed ".cam" to be able to also delete .his .frc-files
-                _stprintf(gLastCampFilename, "%s\\%s", FalconCampUserSaveDirectory, gUI_CampaignFile);
-                TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
+                _stprintf(gLastCampFilename, "%s\\%s", FalconCampUserSaveDirectory, UiCampaignFile);
+                TheCampaign.LoadScenarioStats(game_Campaign, UiCampaignFile);
 
                 // Pick the last selected squadron
                 for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
@@ -1286,16 +1286,16 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
 
             if (!gCommsMgr->Online())
             {
-                win = gMainHandler->FindWindow(PB_WIN);
+                win = MainHandlerPointer->FindWindow(PB_WIN);
 
                 if (win)
-                    gMainHandler->EnableWindowGroup(win->GetGroup());
+                    MainHandlerPointer->EnableWindowGroup(win->GetGroup());
             }
 
             break;
     }
 
-    win = gMainHandler->FindWindow(CHALLENGE_WIN);
+    win = MainHandlerPointer->FindWindow(CHALLENGE_WIN);
 
     if (win)
     {
@@ -1380,7 +1380,7 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
                 if (game)
                 {
                     if (game->GetGameType() == game_Campaign)
-                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_Campaign);
+                        SendMessage(MainHandlerPointer->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_Campaign);
                 }
             }
         }
@@ -1403,7 +1403,7 @@ static void SetCampaignLevels()
     C_ListBox *lb;
     long val;
 
-    win = gMainHandler->FindWindow(CHALLENGE_WIN);
+    win = MainHandlerPointer->FindWindow(CHALLENGE_WIN);
 
     if (win)
     {
@@ -1666,7 +1666,7 @@ void OpenChallengeCB(long, short hittype, C_Base *control)
     CalcChallengeLevel();
     SetCampaignLevels();
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void CloseChallengeCB(long ID, short hittype, C_Base *control)
@@ -1683,12 +1683,12 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(CS_SELECT_WIN);
+    win = MainHandlerPointer->FindWindow(CS_SELECT_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(control->Parent_); // Close Verify Window
+    MainHandlerPointer->HideWindow(control->Parent_); // Close Verify Window
 
     // 2002-02-04 MN modified to also delete .his/.frc file
     _TCHAR filename[MAX_PATH];
@@ -1840,7 +1840,7 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
         PlayerOptions.SetCampNavalRatio(TEMP_Settings.NavalForces);
     }
 
-    win = gMainHandler->FindWindow(CS_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(CS_PUA_WIN);
 
     if (win)
     {
@@ -1855,7 +1855,7 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
     }
 
     LoadSquadronInfo();
-    gMainHandler->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 }
 
 void CopyinTempSettings(void)
@@ -1876,7 +1876,7 @@ static void HookupCampaignSelectControls(long ID)
     C_Slider *sldr;
     C_TreeList *tree;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -2029,7 +2029,7 @@ static void JoinStatusCancelCB(long, short hittype, C_Base *control)
 
     MonoPrint("Cancel Join\n");
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     StopCampaignLoad();
 }
@@ -2136,11 +2136,11 @@ void DisplayJoinStatusWindow(int bits)
 
     if (id != last_id)
     {
-        win = gMainHandler->FindWindow(COMMLINK_WIN);
+        win = MainHandlerPointer->FindWindow(COMMLINK_WIN);
 
         if (win)
         {
-            gMainHandler->HideWindow(win);
+            MainHandlerPointer->HideWindow(win);
         }
 
         last_id = id;

@@ -608,7 +608,7 @@ int GroundClass::Exec(void)
         {
             if (isShip)
             {
-                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK || realWeather->weatherCondition == INCLEMENT) ? true : false;
+                isNight = (TimeOfDayGeneral(TheCampaign.CurrentTime) <= TOD_DAWNDUSK || RealWeatherPointer->WeatherCondition == INCLEMENT) ? true : false;
 
                 if (pctStrength > 0.50f)
                 {
@@ -981,7 +981,7 @@ int GroundClass::Exec(void)
         }
 
         // RV - Biker - Why do this maybe helpful knowing which vehicle has problems
-        // Determine wether to draw label or not
+        // Determine whether  to draw label or not
         if (gai->distLOD < labelLOD)
         {
             if (!IsSetLocalFlag(NOT_LABELED))
@@ -1147,7 +1147,7 @@ int GroundClass::Exec(void)
                 vec.z = -20.0f;
 
                 //JAM 24Oct03 - No dust trails when it's raining.
-                if (realWeather->weatherCondition < INCLEMENT)
+                if (RealWeatherPointer->WeatherCondition < INCLEMENT)
                 {
                     /*
                     OTWDriver.AddSfxRequest(

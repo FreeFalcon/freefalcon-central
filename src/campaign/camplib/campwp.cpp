@@ -105,7 +105,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
     memcpychk(&RouteAction, stream, sizeof(uchar), rem);
     memcpychk(&Formation, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion < 72)
+    if (CampaignDataVersion < 72)
     {
         Flags = 0;
         memcpychk(&Flags, stream, sizeof(short), rem);
@@ -159,7 +159,7 @@ WayPointClass::WayPointClass(FILE* fp)
     fread(&RouteAction, sizeof(uchar), 1, fp);
     fread(&Formation, sizeof(uchar), 1, fp);
 
-    if (gCampDataVersion < 72)
+    if (CampaignDataVersion < 72)
     {
         Flags = 0;
         fread(&Flags, sizeof(short), 1, fp);

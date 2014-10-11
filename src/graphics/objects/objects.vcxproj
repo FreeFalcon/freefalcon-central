@@ -105,7 +105,7 @@
       <AssemblerListingLocation>../../../build/x86/debug_win32/graphics/objects/</AssemblerListingLocation>
       <ObjectFileName>../../../build/x86/debug_win32/graphics/objects/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/graphics/objects/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>

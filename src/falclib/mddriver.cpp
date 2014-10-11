@@ -281,14 +281,14 @@ static char* LocalizedInvalidDataStr = NULL;
 
 static char* InvalidDataStr[] =
 {
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
-    "Invalid Data files, Please Reinstall Falcon 4.0",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
+    "Invalid Data files, Please Reinstall FreeFalcon",
 };
 
 /* Main driver.
@@ -304,8 +304,8 @@ int FileVerify(void)
     // OW FIXME
     MonoPrint("FileVerify -\n");
 
-    LocalizedInvalidDataStr = InvalidDataStr[gLangIDNum];
-    objectFileList = localizedFiles[gLangIDNum];
+    LocalizedInvalidDataStr = InvalidDataStr[LanguageNumber];
+    objectFileList = localizedFiles[LanguageNumber];
 
     retval = FileVerify(commonFileList);
     retval += FileVerify(objectFileList);

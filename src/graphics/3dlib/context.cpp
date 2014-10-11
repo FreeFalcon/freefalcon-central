@@ -2567,7 +2567,7 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
     // if Linear Fog is enabled, add it
     if (TheDXEngine.LinearFog())
     {
-        float FogLevel = realWeather->LinearFogEnd();
+        float FogLevel = RealWeatherPointer->LinearFogEnd();
         float FogStart = 0;
         m_pD3DD->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
         m_pD3DD->SetRenderState(D3DRENDERSTATE_RANGEFOGENABLE, TRUE);

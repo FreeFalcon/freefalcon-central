@@ -45,7 +45,7 @@ void SetHeading(C_Window *);
 void PositionCamera(OBJECTINFO *Info, C_Window *win, long client);
 void CloseAllRenderers(long openID);
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_TreeList *TargetTree;
 extern C_3dViewer *gUIViewer;
 extern OBJECTINFO Recon;
@@ -586,7 +586,7 @@ void ReconArea(float x, float y, float range)
     TREELIST *parent, *item;
 
     SetCursor(gCursors[CRSR_WAIT]);
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -669,19 +669,19 @@ void ReconArea(float x, float y, float range)
         TheLoader.WaitLoader();
         PositionCamera(&Recon, win, 0);
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
         if (TargetTree)
             TargetTree->RecalcSize();
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     if (TargetTree)
@@ -710,7 +710,7 @@ void BuildTargetList(float x, float y, float range)
     TREELIST *parent, *item;
     C_Window *win;
 
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -761,15 +761,15 @@ void BuildTargetList(float x, float y, float range)
         PositionCamera(&Recon, win, 0);
     }
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
         if (TargetTree)
             TargetTree->RecalcSize();
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     if (TargetTree)
@@ -802,7 +802,7 @@ void BuildSpecificTargetList(VU_ID targetID)
     if (!ent)
         return;
 
-    win = gMainHandler->FindWindow(RECON_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_WIN);
 
     if (win)
     {
@@ -856,15 +856,15 @@ void BuildSpecificTargetList(VU_ID targetID)
         PositionCamera(&Recon, win, 0);
     }
 
-    win = gMainHandler->FindWindow(RECON_LIST_WIN);
+    win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
     if (win)
     {
         if (TargetTree)
             TargetTree->RecalcSize();
 
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     if (TargetTree)

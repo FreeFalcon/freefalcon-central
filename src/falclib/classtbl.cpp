@@ -16,7 +16,7 @@
 extern bool g_bFFDBC;
 
 // Which langauge should we use?
-int gLangIDNum = 1;
+int LanguageNumber = 1;
 
 /*
 * Class Table Constant Init Function
@@ -35,7 +35,7 @@ void InitClassTableAndData(char *name, char *objset)
 
     sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, name);
 
-    gLangIDNum = GetPrivateProfileInt("Lang", "Id", 0, fileName);
+    LanguageNumber = GetPrivateProfileInt("Lang", "Id", 0, fileName);
 
     filePtr = OpenCampFile(name, "ct", "rb");
 

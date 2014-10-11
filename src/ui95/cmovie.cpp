@@ -24,7 +24,7 @@ char *C_Mov_Tokens[] =
 
 #endif // PARSER
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 C_Movie *gMovieMgr = NULL;
 
 void PlayMovie(char *filename, int left, int top, int w, int h, void *surface);
@@ -184,7 +184,7 @@ BOOL C_Movie::Play(long ID)
 
     if (cur)
     {
-        PlayMovie(cur->Movie, x_, y_, 0, 0, gMainHandler->GetPrimary()->frontSurface());
+        PlayMovie(cur->Movie, x_, y_, 0, 0, MainHandlerPointer->GetPrimary()->frontSurface());
         return(TRUE);
     }
 

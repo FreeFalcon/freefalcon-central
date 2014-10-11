@@ -47,7 +47,7 @@ extern void CheckFlyButton(void);
 // Imported Variables
 extern uchar DefaultDamageMods[OtherDam + 1];
 extern uchar calltable[5][5];
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 extern int g_nDFRegenerateFix;
 
@@ -870,7 +870,7 @@ void DogfightClass::RestartGame(void)
     TheCampaign.MissionEvaluator->PreDogfightEval();
     ApplySettings();
 
-    if (gMainHandler)
+    if (MainHandlerPointer)
     {
         CheckFlyButton();
     }

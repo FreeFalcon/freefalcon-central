@@ -2769,7 +2769,7 @@ void Draw2DLensFlare(class RenderOTW *renderer)
 
 
     // If we're below the overcast layer, do not draw the lens flare.
-    if (realWeather->InsideOvercast() || realWeather->UnderOvercast()) return;
+    if (RealWeatherPointer->InsideOvercast() || RealWeatherPointer->UnderOvercast()) return;
 
     // is there a sun, if not return
     if (!TheTimeOfDay.ThereIsASun()) return;

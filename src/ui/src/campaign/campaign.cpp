@@ -68,7 +68,7 @@ GlobalPositioningSystem *gGps = NULL;
 
 int StupidHackToCloseCSECT = 0;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;;
 extern int MainLastGroup;
 extern int CPLoaded, COLoaded;
@@ -77,7 +77,7 @@ extern BOOL gNewMessage;
 extern IMAGE_RSC *gOccupationMap;
 extern long StopLookingforMission;
 extern C_Base *CurMapTool;
-extern int gTimeModeServer;
+extern int TimeModeServer;
 extern bool g_bServer;
 extern OBJECTINFO Recon;
 extern long gRefreshScoresList;
@@ -108,7 +108,7 @@ short InCleanup = 0;
 
 extern uchar gSelectedTeam;
 extern IMAGE_RSC *PAKMap;
-extern char gUI_CampaignFile[];
+extern char UiCampaignFile[];
 extern bool campaignStart;
 
 extern bool g_bAWACSSupport;
@@ -256,7 +256,7 @@ void OpenHistoryWindowCB(long, short hittype, C_Base *control)
         return;
 
     LoadTroopMovementHistory();
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void OpenForceLevelsWindowCB(long, short hittype, C_Base *control)
@@ -265,7 +265,7 @@ void OpenForceLevelsWindowCB(long, short hittype, C_Base *control)
         return;
 
     LoadForceLevelHistory();
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void ActivateCampMissionSchedule()
@@ -273,7 +273,7 @@ void ActivateCampMissionSchedule()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(CB_MAIN_SCREEN);
+    win = MainHandlerPointer->FindWindow(CB_MAIN_SCREEN);
 
     if (win)
     {
@@ -290,7 +290,7 @@ void OpenOOBWindowCB(long, short hittype, C_Base *control)
         return;
 
     SetCursor(gCursors[CRSR_WAIT]);
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     gGps->SetAllowed(gGps->GetAllowed() | UR_OOB);
     long curtime = GetCurrentTime();
     gGps->Update();
@@ -311,7 +311,7 @@ void OpenSierraHotelCB(long, short hittype, C_Base *control)
         return;
 
     UpdateSierraHotel();
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void BuildCampBrief(C_Window *win);
@@ -356,7 +356,7 @@ enum
     CSM1   = 400134,
 };
 
-long CampEventSoundID;
+long CampaignEventSoundId;
 
 enum
 {
@@ -399,15 +399,15 @@ void ViewTimerAnimCB(long, short, C_Base *control)
 
 void UI_UpdateEventList()
 {
-    if (gMainHandler)
+    if (MainHandlerPointer)
         NewEvents = TRUE;
 }
 
 void StartMovieQ()
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (MainHandlerPointer && ReadyToPlayMovie && !MovieQInUse)
         if (MovieCount > 0)
-            PostMessage(gMainHandler->GetAppWnd(), FM_PLAY_UI_MOVIE, 0, 0);
+            PostMessage(MainHandlerPointer->GetAppWnd(), FM_PLAY_UI_MOVIE, 0, 0);
 }
 
 void StartAMovieCB(long, short hittype, C_Base *control)
@@ -415,7 +415,7 @@ void StartAMovieCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    PostMessage(gMainHandler->GetAppWnd(), FM_REPLAY_UI_MOVIE, 0, control->GetUserNumber(0));
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_REPLAY_UI_MOVIE, 0, control->GetUserNumber(0));
 }
 
 void InitNewFlash()
@@ -424,7 +424,7 @@ void InitNewFlash()
     C_Button *btn;
 
     DeleteGroupList(NEWS_FLASH_WIN);
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -444,10 +444,10 @@ void AddToNewsWindow(long timestamp, _TCHAR *desc, long MovieID)
     C_Window *win;
     C_Button *btn;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
-    win = gMainHandler->FindWindow(NEWS_FLASH_WIN);
+    win = MainHandlerPointer->FindWindow(NEWS_FLASH_WIN);
 
     if (win)
     {
@@ -471,7 +471,7 @@ void AddToNewsWindow(long timestamp, _TCHAR *desc, long MovieID)
         MovieY = static_cast<short>(MovieY + btn->GetH() + 2);
     }
 
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -489,7 +489,7 @@ void PlayUIMovieQ()
 {
     int i;
 
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (MainHandlerPointer && ReadyToPlayMovie && !MovieQInUse)
     {
         MovieQInUse = 1;
 
@@ -523,7 +523,7 @@ void PlayUIMovieQ()
 
 void ReplayUIMovie(long MovieID)
 {
-    if (gMainHandler && ReadyToPlayMovie && !MovieQInUse)
+    if (MainHandlerPointer && ReadyToPlayMovie && !MovieQInUse)
     {
         MovieQInUse = 1;
         TheCampaign.Suspend();
@@ -552,10 +552,10 @@ void UI_HandleAirbaseDestroyed()
 
     SetTimeCompression(1);
     UpdateRemoteCompression();
-    win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+    win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 }
 
 void UI_HandleFlightCancel()
@@ -564,10 +564,10 @@ void UI_HandleFlightCancel()
 
     SetTimeCompression(1);
     UpdateRemoteCompression();
-    win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+    win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 
     AreYouSure(TXT_FLIGHT_CANCELED, TXT_YOUR_FLIGHT_CANCELED, CloseWindowCB, CloseWindowCB);
 }
@@ -578,10 +578,10 @@ void UI_HandleFlightScrub()
 
     SetTimeCompression(1);
     UpdateRemoteCompression();
-    win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+    win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 
     AreYouSure(TXT_FLIGHT_CANCELED, TXT_THIS_FLIGHT_SCRUBBED, CloseWindowCB, CloseWindowCB);
 }
@@ -592,10 +592,10 @@ void UI_HandleAircraftDestroyed()
 
     SetTimeCompression(1);
     UpdateRemoteCompression();
-    win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+    win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 
     AreYouSure(TXT_AC_DESTROYED, TXT_YOUR_AC_DESTROYED, CloseWindowCB, CloseWindowCB);
 }
@@ -607,7 +607,7 @@ void UIScramblePlayerFlight(void)
 {
     C_Window *win;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     gSoundMgr->PlaySound(500017); // Airraid sound?
@@ -629,17 +629,17 @@ void UIScramblePlayerFlight(void)
     UpdateRemoteCompression();
     CampLeaveCriticalSection();
 
-    win = gMainHandler->FindWindow(SCRAMBLE_WIN);
+    win = MainHandlerPointer->FindWindow(SCRAMBLE_WIN);
 
     if (win)
     {
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
         gSoundMgr->PlaySound(CSM1);
         gAWWTimeout = 60000; // 60 second timeout period
-        gMainHandler->EnterCritical();
-        gMainHandler->AddUserCallback(CloseAWWWindowTimer);
-        gMainHandler->LeaveCritical();
+        MainHandlerPointer->EnterCritical();
+        MainHandlerPointer->AddUserCallback(CloseAWWWindowTimer);
+        MainHandlerPointer->LeaveCritical();
     }
 }
 
@@ -652,14 +652,14 @@ void Cancel_Scramble_CB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP || gOldCompressionRatio < 0)
         return;
 
-    win = gMainHandler->FindWindow(SCRAMBLE_WIN);
+    win = MainHandlerPointer->FindWindow(SCRAMBLE_WIN);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 
-    gMainHandler->EnterCritical();
-    gMainHandler->RemoveUserCallback(CloseAWWWindowTimer);
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->EnterCritical();
+    MainHandlerPointer->RemoveUserCallback(CloseAWWWindowTimer);
+    MainHandlerPointer->LeaveCritical();
 
     if (gOldCompressTillTime)
     {
@@ -702,10 +702,10 @@ void Scramble_Intercept_CB(long ID, short hittype, C_Base *control)
             gCurrentFlightID = gInterceptersId;
             UpdateMissionWindow(CB_MISSION_SCREEN);
             // Close the waiting screen, if we're there.
-            win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+            win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
             if (win)
-                gMainHandler->HideWindow(win);
+                MainHandlerPointer->HideWindow(win);
 
             gOldCompressionRatio = 1;
         }
@@ -725,20 +725,20 @@ void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description)
         MovieCount++;
     }
 
-    if (gMainHandler && ReadyToPlayMovie)
+    if (MainHandlerPointer && ReadyToPlayMovie)
         StartMovieQ();
 }
 
 void UI_UpdateOccupationMap()
 {
-    if (gOccupationMap && gMainHandler)
+    if (gOccupationMap && MainHandlerPointer)
     {
         C_Window *win;
         C_Bitmap *bmp;
 
         MakeOccupationMap(gOccupationMap);
 
-        win = gMainHandler->FindWindow(CP_SUA);
+        win = MainHandlerPointer->FindWindow(CP_SUA);
 
         if (win)
         {
@@ -748,7 +748,7 @@ void UI_UpdateOccupationMap()
                 bmp->Refresh();
         }
 
-        win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+        win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
         if (win)
         {
@@ -763,10 +763,10 @@ void UI_UpdateOccupationMap()
 void AircraftLaunch(Flight f)
 {
     // TJL 10/26/03 Added Config variable to turn off this sound
-    if (f && gMainHandler && FalconLocalSession->GetPlayerSquadronID() && g_bTakeoffSound)
+    if (f && MainHandlerPointer && FalconLocalSession->GetPlayerSquadronID() && g_bTakeoffSound)
     {
         if (f->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
-            CampEventSoundID = SND_TAKEOFF;
+            CampaignEventSoundId = SND_TAKEOFF;
     }
 }
 
@@ -848,9 +848,9 @@ void SetupMapMgr(bool noawacsmap)
     }
 
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
-        win = gMainHandler->FindWindow(MB_CSECT_WIN);
+        win = MainHandlerPointer->FindWindow(MB_CSECT_WIN);
     else
-        win = gMainHandler->FindWindow(CSECT_WIN);
+        win = MainHandlerPointer->FindWindow(CSECT_WIN);
 
     gMapMgr->SetWPZWindow(win);
 }
@@ -905,13 +905,13 @@ static void CampSaveFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(control->Parent_); // verify window...
-    gMainHandler->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_); // verify window...
+    MainHandlerPointer->HideWindow(win);
 
     edit_box = (C_EditBox*) win->FindControl(FILE_NAME);
 
@@ -1010,7 +1010,7 @@ void CampSaveAsCB(long, short hittype, C_Base *)
 
     SetDeleteCallback(DelCamFileCB);
     SaveAFile(TXT_SAVE_CAMPAIGN, buffer, CampExcludeList, CampVerifySaveFileCB, CloseWindowCB, "");
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (win)
     {
@@ -1058,7 +1058,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     StopLookingforMission = 0;
     CurMapTool = NULL;
 
-    win = gMainHandler->FindWindow(CP_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(CP_PUA_MAP);
 
     if (win)
     {
@@ -1067,12 +1067,12 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         gMapMgr->SetupOverlay();
     }
 
-    win = gMainHandler->FindWindow(CB_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(CB_FULLMAP_WIN);
 
     if (win)
         SetupMover(win, MAP_POP, MapMgrMoveCB);
 
-    win = gMainHandler->FindWindow(CB_MISSION_SCREEN);
+    win = MainHandlerPointer->FindWindow(CB_MISSION_SCREEN);
 
     if (win)
     {
@@ -1080,7 +1080,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         SetupGPS(tree);
     }
 
-    win = gMainHandler->FindWindow(CB_MISSION_SCREEN);
+    win = MainHandlerPointer->FindWindow(CB_MISSION_SCREEN);
 
     if (win)
     {
@@ -1098,7 +1098,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         }
     }
 
-    win = gMainHandler->FindWindow(CB_MAIN_SCREEN);
+    win = MainHandlerPointer->FindWindow(CB_MAIN_SCREEN);
 
     if (win)
     {
@@ -1114,7 +1114,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         }
     }
 
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -1148,7 +1148,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     gGps->SetTeamNo(FalconLocalSession->GetTeam()); // See ONLY what is spotted
     gGps->Update();
 
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -1183,7 +1183,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     // stop the time and let the camp priorities window pop up (in CAMPUI/CampJoin.cpp)
 
     if (FalconLocalGame->IsLocal() &&
-        (strcmp(gUI_CampaignFile, "save0") == 0 || strcmp(gUI_CampaignFile, "save1") == 0 || strcmp(gUI_CampaignFile, "save2") == 0) &&
+        (strcmp(UiCampaignFile, "save0") == 0 || strcmp(UiCampaignFile, "save1") == 0 || strcmp(UiCampaignFile, "save2") == 0) &&
         campaignStart) // fixes clock being set to "STOP" after a campaign mission
     {
         SetTimeCompression(0);
@@ -1198,14 +1198,14 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
 
     if (CampaignLastGroup)
     {
-        win = gMainHandler->FindWindow(DEBRIEF_WIN);
+        win = MainHandlerPointer->FindWindow(DEBRIEF_WIN);
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
         if (win && TheCampaign.MissionEvaluator && TheCampaign.MissionEvaluator->flight_data)
         {
             BuildCampDebrief(win);
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
             // JPO - attempt to add handlers for these
             C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
 
@@ -1214,11 +1214,11 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
         }
     }
 
-    gMainHandler->AddUserCallback(CampaignListCB);
-    gMainHandler->AddUserCallback(CampaignSoundEventCB);
+    MainHandlerPointer->AddUserCallback(CampaignListCB);
+    MainHandlerPointer->AddUserCallback(CampaignSoundEventCB);
 
     // Choose our next mission (default)
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         FindMissionInBriefing(CB_MISSION_SCREEN);
     }
@@ -1271,7 +1271,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     if (TheCampaign.Flags & CAMP_TACTICAL_EDIT)
     {
         SetupTacEngMenus(1);
-        win = gMainHandler->FindWindow(TAC_VC_WIN);
+        win = MainHandlerPointer->FindWindow(TAC_VC_WIN);
 
         if (win)
         {
@@ -1310,7 +1310,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     else
     {
         SetupTacEngMenus(0);
-        win = gMainHandler->FindWindow(TAC_VC_WIN);
+        win = MainHandlerPointer->FindWindow(TAC_VC_WIN);
 
         if (win)
         {
@@ -1346,7 +1346,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
             win->HideCluster(100);
         }
 
-        win = gMainHandler->FindWindow(TAC_END_WIN);
+        win = MainHandlerPointer->FindWindow(TAC_END_WIN);
 
         if (win)
         {
@@ -1365,17 +1365,17 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_EDIT_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_WIN);
 
     if (win)
         SetupMover(win, MAP_POP, gMapMgr_TACmover);
 
-    win = gMainHandler->FindWindow(TAC_VC_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_VC_WIN);
 
     if (win)
         SetupMover(win, MAP_POP, gMapMgr_TACmover);
 
-    win = gMainHandler->FindWindow(TAC_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_MAP);
 
     if (win)
     {
@@ -1384,12 +1384,12 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         gMapMgr->SetupOverlay();
     }
 
-    win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
         SetupMover(win, MAP_POP, gMapMgr_TACmover);
 
-    win = gMainHandler->FindWindow(TAC_AIRCRAFT);
+    win = MainHandlerPointer->FindWindow(TAC_AIRCRAFT);
 
     if (win)
     {
@@ -1397,7 +1397,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         SetupGPS(tree);
     }
 
-    win = gMainHandler->FindWindow(TAC_EDIT_SCREEN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_SCREEN);
 
     if (win)
     {
@@ -1413,7 +1413,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_PLAY_SCREEN);
+    win = MainHandlerPointer->FindWindow(TAC_PLAY_SCREEN);
 
     if (win)
     {
@@ -1429,7 +1429,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {
@@ -1439,7 +1439,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
             bmp->SetImage(gOccupationMap);
     }
 
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {
@@ -1505,12 +1505,12 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
         do_tactical_debrief();
 
     gGps->Update();
-    gMainHandler->AddUserCallback(TacEngListCB);
-    gMainHandler->AddUserCallback(CampaignSoundEventCB);
+    MainHandlerPointer->AddUserCallback(TacEngListCB);
+    MainHandlerPointer->AddUserCallback(CampaignSoundEventCB);
 
     CheckCampaignFlyButton();
 
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         FindMissionInBriefing(TAC_AIRCRAFT);
     }
@@ -1530,7 +1530,7 @@ void TacticalEngagementSetup(bool noawacsmap) // Everything that needs to be don
     PlayCampaignMusic();
 
     if (ShowGameOverWindow)
-        PostMessage(gMainHandler->GetAppWnd(), FM_OPEN_GAME_OVER_WIN, game_TacticalEngagement, 0);
+        PostMessage(MainHandlerPointer->GetAppWnd(), FM_OPEN_GAME_OVER_WIN, game_TacticalEngagement, 0);
 }
 
 void LoadCampaignWindows()
@@ -1541,7 +1541,7 @@ void LoadCampaignWindows()
 
     if (CPLoaded) return;
 
-    CampEventSoundID = 0;
+    CampaignEventSoundId = 0;
 
     if (_LOAD_ART_RESOURCES_)
     {
@@ -1566,7 +1566,7 @@ void LoadCampaignWindows()
     LoadCommonWindows();
 
     CPLoaded++;
-    win = gMainHandler->FindWindow(CB_MAIN_SCREEN);
+    win = MainHandlerPointer->FindWindow(CB_MAIN_SCREEN);
 
     if (win)
     {
@@ -1612,7 +1612,7 @@ void CampaignListCB()
             {
                 if (flt->GetTotalVehicles() < 1 || flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!TimeModeServer && !g_bServer)
                     {
                         FindMissionInBriefing(CB_MISSION_SCREEN);
                     }
@@ -1622,7 +1622,7 @@ void CampaignListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!TimeModeServer && !g_bServer)
                 {
                     FindMissionInBriefing(CB_MISSION_SCREEN);
                     UpdateMissionWindow(CB_MISSION_SCREEN);
@@ -1660,7 +1660,7 @@ void TacEngListCB()
             {
                 if (flt->GetTotalVehicles() < 1 || flt->IsDead())
                 {
-                    if (!gTimeModeServer && !g_bServer)
+                    if (!TimeModeServer && !g_bServer)
                     {
                         FindMissionInBriefing(TAC_AIRCRAFT);
                     }
@@ -1670,7 +1670,7 @@ void TacEngListCB()
             }
             else
             {
-                if (!gTimeModeServer && !g_bServer)
+                if (!TimeModeServer && !g_bServer)
                 {
                     FindMissionInBriefing(TAC_AIRCRAFT);
                     UpdateMissionWindow(TAC_AIRCRAFT);
@@ -1689,10 +1689,10 @@ void TacEngListCB()
 
 void CampaignSoundEventCB()
 {
-    if (CampEventSoundID > 0)
+    if (CampaignEventSoundId > 0)
     {
-        gSoundMgr->PlaySound(CampEventSoundID);
-        CampEventSoundID = 0;
+        gSoundMgr->PlaySound(CampaignEventSoundId);
+        CampaignEventSoundId = 0;
     }
 }
 
@@ -1710,22 +1710,22 @@ static void OpenFlightPlanWindowCB(long, short hittype, C_Base *control)
     if (!flt)
         return;
 
-    win = gMainHandler->FindWindow(FLIGHT_PLAN_WIN);
+    win = MainHandlerPointer->FindWindow(FLIGHT_PLAN_WIN);
 
     if (win)
     {
-        if (!(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
+        if (!(MainHandlerPointer->GetWindowFlags(FLIGHT_PLAN_WIN) & C_BIT_ENABLED))
         {
             wp = flt->GetFirstUnitWP();
 
             if (wp)
             {
                 UpdateWaypointWindowInfo(win, wp, 1);
-                gMainHandler->EnableWindowGroup(control->GetGroup());
+                MainHandlerPointer->EnableWindowGroup(control->GetGroup());
             }
         }
         else
-            gMainHandler->WindowToFront(win);
+            MainHandlerPointer->WindowToFront(win);
     }
 }
 
@@ -1807,11 +1807,11 @@ void CampaignButtonCB(long, short hittype, C_Base *)
                 PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RUNWAY);
 
             // Open Countdown window if we're waiting for takeoff
-            win = gMainHandler->FindWindow(CP_COUNTDOWN_WIN);
+            win = MainHandlerPointer->FindWindow(CP_COUNTDOWN_WIN);
 
             if (win && entryType < 0)
             {
-                gMainHandler->EnterCritical();
+                MainHandlerPointer->EnterCritical();
 
                 btn = (C_Button*)win->FindControl(WAIT_TAXI);
 
@@ -1876,9 +1876,9 @@ void CampaignButtonCB(long, short hittype, C_Base *)
                     btn->Refresh();
                 }
 
-                gMainHandler->ShowWindow(win);
-                gMainHandler->WindowToFront(win);
-                gMainHandler->LeaveCritical();
+                MainHandlerPointer->ShowWindow(win);
+                MainHandlerPointer->WindowToFront(win);
+                MainHandlerPointer->LeaveCritical();
             }
         }
     }
@@ -1906,8 +1906,8 @@ static void CloseCampaignWindowCB(long, short hittype, C_Base *)
 
     if (CampaignLastGroup)
     {
-        gMainHandler->DisableWindowGroup(CampaignLastGroup);
-        win = gMainHandler->FindWindow(CP_TOOLBAR);
+        MainHandlerPointer->DisableWindowGroup(CampaignLastGroup);
+        win = MainHandlerPointer->FindWindow(CP_TOOLBAR);
 
         if (win)
             win->HideCluster(CampaignLastGroup);
@@ -1921,7 +1921,7 @@ static void GenericCloseCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 }
 
 static void MapMgrDrawCB(long, short, C_Base *)
@@ -1970,7 +1970,7 @@ static void OpenFullMapCB(long, short hittype, C_Base *control)
         return;
 
     Leave = UI_Enter(control->Parent_);
-    win = gMainHandler->FindWindow(CB_FULLMAP_WIN);
+    win = MainHandlerPointer->FindWindow(CB_FULLMAP_WIN);
 
     if (win)
     {
@@ -1978,12 +1978,12 @@ static void OpenFullMapCB(long, short hittype, C_Base *control)
         gMapMgr->DrawMap();
     }
 
-    win = gMainHandler->FindWindow(CP_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(CP_PUA_MAP);
 
     if (win)
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     UI_Leave(Leave);
 }
 
@@ -1996,17 +1996,17 @@ static void CloseFullMapCB(long, short hittype, C_Base *control)
         return;
 
     Leave = UI_Enter(control->Parent_);
-    gMainHandler->DisableWindowGroup(control->GetGroup());
-    gMainHandler->DisableWindowGroup(6401);
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(6401);
     StupidHackToCloseCSECT = 0;
-    win = gMainHandler->FindWindow(CP_PUA_MAP);
+    win = MainHandlerPointer->FindWindow(CP_PUA_MAP);
 
     if (win)
     {
         gMapMgr->SetWindow(win);
         gMapMgr->DrawMap();
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     UI_Leave(Leave);
@@ -2019,11 +2019,11 @@ static void OpenCampaignCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(CP_TOOLBAR);
+    win = MainHandlerPointer->FindWindow(CP_TOOLBAR);
 
     if (CampaignLastGroup != 0 && CampaignLastGroup != control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(CampaignLastGroup);
+        MainHandlerPointer->DisableWindowGroup(CampaignLastGroup);
 
         if (win)
             win->HideCluster(CampaignLastGroup);
@@ -2031,7 +2031,7 @@ static void OpenCampaignCB(long, short hittype, C_Base *control)
 
     if (CampaignLastGroup != control->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         CampaignLastGroup = control->GetGroup();
 
         if (win)
@@ -2073,11 +2073,11 @@ void CleanupCampaignUI()
     ReadyToPlayMovie = FALSE;
     gCurrentFlightID = FalconNullId;
 
-    if (gMainHandler)
+    if (MainHandlerPointer)
     {
-        gMainHandler->EnterCritical();
-        gMainHandler->RemoveUserCallback(CampaignListCB);
-        gMainHandler->RemoveUserCallback(CampaignSoundEventCB);
+        MainHandlerPointer->EnterCritical();
+        MainHandlerPointer->RemoveUserCallback(CampaignListCB);
+        MainHandlerPointer->RemoveUserCallback(CampaignSoundEventCB);
 
         if (gGps)
         {
@@ -2124,7 +2124,7 @@ void CleanupCampaignUI()
          gTaskList=NULL;
          }
         */
-        win = gMainHandler->FindWindow(STRAT_WIN);
+        win = MainHandlerPointer->FindWindow(STRAT_WIN);
 
         if (win)
         {
@@ -2159,7 +2159,7 @@ void CleanupCampaignUI()
             gUIViewer = NULL;
         }
 
-        win = gMainHandler->FindWindow(CP_SUA);
+        win = MainHandlerPointer->FindWindow(CP_SUA);
 
         if (win)
         {
@@ -2170,7 +2170,7 @@ void CleanupCampaignUI()
                 blip->RemoveAll();
         }
 
-        gMainHandler->LeaveCritical();
+        MainHandlerPointer->LeaveCritical();
     }
 }
 
@@ -2190,11 +2190,11 @@ void CleanupTacticalEngagementUI()
     ReadyToPlayMovie = FALSE;
     gCurrentFlightID = FalconNullId;
 
-    if (gMainHandler)
+    if (MainHandlerPointer)
     {
-        gMainHandler->EnterCritical();
-        gMainHandler->RemoveUserCallback(TacEngListCB);
-        gMainHandler->RemoveUserCallback(CampaignSoundEventCB);
+        MainHandlerPointer->EnterCritical();
+        MainHandlerPointer->RemoveUserCallback(TacEngListCB);
+        MainHandlerPointer->RemoveUserCallback(CampaignSoundEventCB);
 
         if (gGps)
         {
@@ -2252,7 +2252,7 @@ void CleanupTacticalEngagementUI()
             gUIViewer = NULL;
         }
 
-        win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+        win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
         if (win)
         {
@@ -2263,7 +2263,7 @@ void CleanupTacticalEngagementUI()
                 blip->RemoveAll();
         }
 
-        gMainHandler->LeaveCritical();
+        MainHandlerPointer->LeaveCritical();
     }
 }
 
@@ -2281,12 +2281,12 @@ void EndCommitCB(long, short hittype, C_Base *)
     gMusic->ToggleStream();
     PlayUIMusic();
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     if (CampaignLastGroup)
     {
-        gMainHandler->DisableWindowGroup(CampaignLastGroup);
-        win = gMainHandler->FindWindow(CP_TOOLBAR);
+        MainHandlerPointer->DisableWindowGroup(CampaignLastGroup);
+        win = MainHandlerPointer->FindWindow(CP_TOOLBAR);
 
         if (win)
             win->HideCluster(CampaignLastGroup);
@@ -2294,15 +2294,15 @@ void EndCommitCB(long, short hittype, C_Base *)
         CampaignLastGroup = 0;
     }
 
-    gMainHandler->DisableWindowGroup(200);
+    MainHandlerPointer->DisableWindowGroup(200);
 
-    gMainHandler->DisableSection(200);
+    MainHandlerPointer->DisableSection(200);
 
-    gMainHandler->SetSection(100);
-    gMainHandler->EnableWindowGroup(100);
-    gMainHandler->EnableWindowGroup(MainLastGroup);
+    MainHandlerPointer->SetSection(100);
+    MainHandlerPointer->EnableWindowGroup(100);
+    MainHandlerPointer->EnableWindowGroup(MainLastGroup);
 
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
     FalconLocalSession->SetPlayerSquadron(NULL);
     FalconLocalSession->SetPlayerFlight(NULL);
 
@@ -2343,7 +2343,7 @@ void OpenPlannerWindowCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 static void OpenATOWindowCB(long, short hittype, C_Base *control)
@@ -2354,7 +2354,7 @@ static void OpenATOWindowCB(long, short hittype, C_Base *control)
     gGps->SetAllowed(gGps->GetAllowed() | UR_ATO | UR_SQUADRON);
     gGps->Update();
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
@@ -2367,7 +2367,7 @@ static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
     if (gSelectedFlightID == FalconNullId)
         return;
 
-    win = gMainHandler->FindWindow(BRIEF_WIN);
+    win = MainHandlerPointer->FindWindow(BRIEF_WIN);
 
     if (win)
     {
@@ -2380,7 +2380,7 @@ static void OpenBriefingWindowCB(long, short hittype, C_Base *control)
 
     }
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void CheckPlayersFlight(FalconSessionEntity *session)
@@ -2447,7 +2447,7 @@ void PickCampaignPlaneCB(long ID, short hittype, C_Base *)
     }
 
     // playerPlane = flight->GetAdjustedAircraftSlot(playerPlane);
-    if (!gTimeModeServer && !g_bServer)
+    if (!TimeModeServer && !g_bServer)
     {
         RequestACSlot(flight, 0, static_cast<uchar>(playerPlane), 0, 0, 1);
     }
@@ -2492,11 +2492,11 @@ void OpenCampaignCommsCB(long, short hittype, C_Base *control)
         return;
 
     if (!gCommsMgr->Online())
-        gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
+        MainHandlerPointer->EnableWindowGroup(control->GetUserNumber(1));
     else
     {
         gNewMessage = NULL;
-        gMainHandler->EnableWindowGroup(control->GetUserNumber(0));
+        MainHandlerPointer->EnableWindowGroup(control->GetUserNumber(0));
     }
 }
 
@@ -2754,11 +2754,11 @@ void OpenCrossSectionCB(long, short hittype, C_Base *control)
             win->HideCluster(control->GetUserNumber(1));
             win->UnHideCluster(StupidHackToCloseCSECT);
             win->RefreshWindow();
-            gMainHandler->ShowWindow(win);
+            MainHandlerPointer->ShowWindow(win);
         }
         else
         {
-            gMainHandler->HideWindow(win);
+            MainHandlerPointer->HideWindow(win);
             StupidHackToCloseCSECT = 0;
         }
 
@@ -2796,7 +2796,7 @@ void LoadTroopMovementHistory()
         factor = 2;
     }
 
-    win = gMainHandler->FindWindow(HISTORY_WIN);
+    win = MainHandlerPointer->FindWindow(HISTORY_WIN);
 
     if (win)
     {
@@ -2927,7 +2927,7 @@ void SelectForceCategoryCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_SELECT)
         return;
 
-    win = gMainHandler->FindWindow(FORCE_WIN);
+    win = MainHandlerPointer->FindWindow(FORCE_WIN);
 
     if (win)
     {
@@ -3000,7 +3000,7 @@ void LoadForceLevelHistory()
 
     DeleteGroupList(FORCE_WIN);
 
-    win = gMainHandler->FindWindow(FORCE_WIN);
+    win = MainHandlerPointer->FindWindow(FORCE_WIN);
 
     if (win)
     {
@@ -3176,7 +3176,7 @@ void UpdateRemoteCompression()
     long color, remreq;
 
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     remreq = 1;
@@ -3204,7 +3204,7 @@ void UpdateRemoteCompression()
     }
 
     // Campaign
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -3219,7 +3219,7 @@ void UpdateRemoteCompression()
     }
 
     // Taceng
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {
@@ -3241,7 +3241,7 @@ void InitTimeCompressionBox(long compression)
 
     UpdateRemoteCompression();
     // Campaign
-    win = gMainHandler->FindWindow(CP_SUA);
+    win = MainHandlerPointer->FindWindow(CP_SUA);
 
     if (win)
     {
@@ -3257,7 +3257,7 @@ void InitTimeCompressionBox(long compression)
     }
 
     // Taceng
-    win = gMainHandler->FindWindow(TAC_MISSION_SUA);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_SUA);
 
     if (win)
     {
@@ -3296,7 +3296,7 @@ void OpenNewsWindowCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 static void HookupCampaignControls(long ID)
@@ -3311,7 +3311,7 @@ static void HookupCampaignControls(long ID)
     C_Clock *clk;
     int i, j;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -3769,7 +3769,7 @@ static void HookupCampaignControls(long ID)
     if (ctrl)
         ctrl->SetCallback(CampHackButton5CB);
 
-    winme = gMainHandler->FindWindow(STARTCAMP_WIN);
+    winme = MainHandlerPointer->FindWindow(STARTCAMP_WIN);
 
     if (!winme)
         return;

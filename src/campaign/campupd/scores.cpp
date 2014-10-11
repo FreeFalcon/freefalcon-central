@@ -36,7 +36,7 @@
 #include "tac_class.h"
 
 
-extern tactical_mission
+extern TacticalMission
 *current_tactical_mission;
 
 // Scoring Variables

@@ -37,7 +37,7 @@ extern int DeviceNumber;
 extern bool g_bUse_DX_Engine;
 
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 extern int TESTBUTTONPUSH;
 
@@ -526,7 +526,7 @@ void ACMIView::InitGraphics(C_Window *win)
                           4,
                           DisplayOptions.bZBuffering); //JAM 30Dec03
 
-        _renderer->Setup(gMainHandler->GetFront(), _viewPoint);
+        _renderer->Setup(MainHandlerPointer->GetFront(), _viewPoint);
 
         // _renderer->SetTerrainTextureLevel( PlayerOptions.TextureLevel() );
         // _renderer->SetSmoothShadingMode( TRUE );//PlayerOptions.GouraudOn() );
@@ -545,16 +545,16 @@ void ACMIView::InitGraphics(C_Window *win)
                           0,
                           2,
                           0.0f);
-        _renderer->Setup(gMainHandler->GetFront(), _viewPoint);
+        _renderer->Setup(MainHandlerPointer->GetFront(), _viewPoint);
         // _renderer->SetTerrainTextureLevel(2);
         _renderer->SetHazeMode(FALSE);
         // _renderer->SetSmoothShadingMode(FALSE);
     }
 
-    TheVbManager.Setup(gMainHandler->GetFront()->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
+    TheVbManager.Setup(MainHandlerPointer->GetFront()->GetDisplayDevice()->GetDefaultRC()->m_pD3D);
 
-    sw = (float)gMainHandler->GetFront()->targetXres();
-    sh = (float)gMainHandler->GetFront()->targetYres();
+    sw = (float)MainHandlerPointer->GetFront()->targetXres();
+    sh = (float)MainHandlerPointer->GetFront()->targetYres();
 
     l = -1.0f + ((float) win->GetX() / (sw * 0.5F));
     t = 1.0f - ((float) win->GetY() / (sh * 0.5F));

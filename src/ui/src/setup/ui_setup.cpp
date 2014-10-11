@@ -42,7 +42,7 @@ Dave Power (x4373)
 //JAM
 
 extern int STPLoaded;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 extern char **KeyDescrips;
 
@@ -52,7 +52,7 @@ extern ObjectPos *Objects;
 extern FeaturePos *Features;
 extern Drawable2D *Smoke;
 
-int GraphicSettingMult = 1;
+int GraphicSettingMultiplier = 1;
 
 //M.N.
 //int skycolortime;
@@ -227,7 +227,7 @@ void LoadSetupWindows()
     }
 
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win != NULL)
     {
@@ -355,7 +355,7 @@ void LoadSetupWindows()
         // Retro 27Mar2004 - a bar to show the value of an analogue axis
         // ..actually there are about 20+ of these, but I use the coords of one, the
         // others are (or rather: should be) aligned to this one
-        C_Window* win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+        C_Window* win2 = MainHandlerPointer->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
         if (!win2) return;
 
@@ -410,7 +410,7 @@ void STPSetupControls(void)
     C_Slider *slider;
     C_EditBox *ebox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -628,10 +628,10 @@ void STPSetupControls(void)
             lbox->AddItem(70209, C_TYPE_ITEM, "Fair");
             lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
             lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
-            lbox->SetValue(PlayerOptions.weatherCondition + 70207);
+            lbox->SetValue(PlayerOptions.WeatherCondition + 70207);
             lbox->Refresh();
         }
-        else if (((WeatherClass *)realWeather)->lockedCondition)
+        else if (((WeatherClass *)RealWeatherPointer)->lockedCondition)
         {
             lbox->RemoveAllItems();
             lbox->AddItem(70212, C_TYPE_ITEM, "Locked");
@@ -904,14 +904,14 @@ void STPSetupControls(void)
 
         if (ebox)
         {
-            PlayerOptions.ObjDetailLevel = min(PlayerOptions.ObjDetailLevel, 2.0F * GraphicSettingMult);
+            PlayerOptions.ObjDetailLevel = min(PlayerOptions.ObjDetailLevel, 2.0F * GraphicSettingMultiplier);
             ebox->SetInteger(FloatToInt32((PlayerOptions.ObjDetailLevel - .5f) / .25f + 1.5f));
             ebox->Refresh();
-            slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
+            slider->SetSteps(static_cast<short>(6 * GraphicSettingMultiplier));
             slider->SetUserNumber(0, OBJECT_DETAIL_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjDetailLevel - 0.5f) / (1.5f * GraphicSettingMult)));
+        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjDetailLevel - 0.5f) / (1.5f * GraphicSettingMultiplier)));
     }
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
@@ -983,14 +983,14 @@ void STPSetupControls(void)
 
         if (ebox)
         {
-            PlayerOptions.PlayerBubble = min(PlayerOptions.PlayerBubble, 2.0F * GraphicSettingMult);
+            PlayerOptions.PlayerBubble = min(PlayerOptions.PlayerBubble, 2.0F * GraphicSettingMultiplier);
             ebox->SetInteger(FloatToInt32((PlayerOptions.PlayerBubble - .5f) * 4.0F + 1.5F));
             ebox->Refresh();
-            slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
+            slider->SetSteps(static_cast<short>(6 * GraphicSettingMultiplier));
             slider->SetUserNumber(0, PLAYER_BUBBLE_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.PlayerBubble - 0.5f) / (1.5f * GraphicSettingMult)));
+        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.PlayerBubble - 0.5f) / (1.5f * GraphicSettingMultiplier)));
     }
 
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
@@ -998,9 +998,9 @@ void STPSetupControls(void)
     if (slider != NULL)
     {
         int step;
-        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMultiplier);
 
-        slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
+        slider->SetSteps(static_cast<short>(6 * GraphicSettingMultiplier));
 
         if (PlayerOptions.DispTerrainDist > 40)
             slider->SetSliderPos(FloatToInt32(step * (2 + (PlayerOptions.DispTerrainDist - 40.0F) / 10.0F)));
@@ -1011,7 +1011,7 @@ void STPSetupControls(void)
 
         if (ebox)
         {
-            ebox->SetInteger(FloatToInt32(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin())) * 6.0F * GraphicSettingMult + 1.5F));
+            ebox->SetInteger(FloatToInt32(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin())) * 6.0F * GraphicSettingMultiplier + 1.5F));
             ebox->Refresh();
             slider->SetUserNumber(0, TEX_DETAIL_READOUT);
         }
@@ -1059,7 +1059,7 @@ void STPSetupControls(void)
 
     /* // M.N. Sky Color Stuff
     #if 0
-     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if (!win)
      return;
      lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
@@ -1069,7 +1069,7 @@ void STPSetupControls(void)
      lbox->Refresh();
      }
     #else
-     win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+     win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if(!win) return;
      lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
      if (lbox)
@@ -1199,7 +1199,7 @@ void RestartCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    PostMessage(gMainHandler->GetAppWnd(), FM_EXIT_GAME, 0, 0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_EXIT_GAME, 0, 0);
 }
 //JAM
 
@@ -1213,7 +1213,7 @@ static void SaveValues(void)
     C_EditBox *ebox;
 
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -1424,9 +1424,9 @@ static void SaveValues(void)
 
         if (lbox != NULL)
         {
-            PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-            ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
-            ((WeatherClass *)realWeather)->Init(true);
+            PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
+            ((WeatherClass *)RealWeatherPointer)->UpdateCondition(PlayerOptions.WeatherCondition, true);
+            ((WeatherClass *)RealWeatherPointer)->Init(true);
         }
     }
 
@@ -1616,7 +1616,7 @@ static void SaveValues(void)
 
     if (slider != NULL)
     {
-        PlayerOptions.ObjDetailLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
+        PlayerOptions.ObjDetailLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMultiplier + 0.5f);
     }
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
@@ -1630,7 +1630,7 @@ static void SaveValues(void)
 
     if (slider != NULL)
     {
-        PlayerOptions.PlayerBubble = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
+        PlayerOptions.PlayerBubble = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMultiplier + 0.5f);
         FalconLocalSession->SetBubbleRatio(PlayerOptions.PlayerBubble);
     }
 
@@ -1660,7 +1660,7 @@ static void SaveValues(void)
     if (slider != NULL)
     {
         int step;
-        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMultiplier);
 
         if (slider->GetSliderPos() > 2 * step)
         {
@@ -1709,7 +1709,7 @@ static void SaveValues(void)
 
     PlayerOptions.Realism = GetRealism(win) / 100.0f;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1756,7 +1756,7 @@ static void SaveValues(void)
 
     SaveKeyMapList(PlayerOptions.keyfile);
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win)
     {
@@ -1857,11 +1857,11 @@ void DoSyncWindowCB(long ID, short hittype, C_Base *control)
      TheFarTextures.FlushHandles();
 
 
-     win = gMainHandler->FindWindow(SYNC_WIN);
+     win = MainHandlerPointer->FindWindow(SYNC_WIN);
      if( win )
      {
-     gMainHandler->ShowWindow(win);
-     gMainHandler->WindowToFront(win);
+     MainHandlerPointer->ShowWindow(win);
+     MainHandlerPointer->WindowToFront(win);
      }
 
      TheTextureBank.SyncDDSTextures();
@@ -1870,7 +1870,7 @@ void DoSyncWindowCB(long ID, short hittype, C_Base *control)
 
      TheTerrTextures.FlushHandles();
      TheFarTextures.FlushHandles();
-    // gMainHandler->HideWindow(win);
+    // MainHandlerPointer->HideWindow(win);
      }
     */
 }
@@ -1966,7 +1966,7 @@ static void HookupSetupControls(long ID)
     C_Slider *slider;
     C_ListBox *listbox;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win == NULL)
         return;
@@ -2427,7 +2427,7 @@ static void HookupSetupControls(long ID)
     }
 
     // OW new stuff
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -2444,7 +2444,7 @@ static void HookupSetupControls(long ID)
 
 
     // M.N. SkyColor stuff
-    /* win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    /* win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
      if(!win) return;
 
      // disable parent notification for close and cancel button

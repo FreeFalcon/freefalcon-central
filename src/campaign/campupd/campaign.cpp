@@ -150,9 +150,9 @@ volatile int gLeftToDeaggregate = 0;
 // Externals
 // =========================
 
-extern int doUI;
+extern int DoUI;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 // Special time setting stuff
 extern void SetTemporaryCompression(int newComp);
@@ -2418,15 +2418,15 @@ void DoCompressionLoop(void)
                 gCompressTillTime = 0;
 
                 // OW FIXME: sometimes gets called when mainhandler is already freed!
-                // if (gMainHandler->GetAppWnd ())
-                if (gMainHandler && gMainHandler->GetAppWnd())
+                // if (MainHandlerPointer->GetAppWnd ())
+                if (MainHandlerPointer && MainHandlerPointer->GetAppWnd())
                 {
                     switch (FalconLocalGame->GetGameType())
                     {
                         case game_InstantAction:
                         case game_Dogfight:
-                            gMainHandler->SetDrawFlag(0); // Hack to keep the UI from drawing
-                            PostMessage(gMainHandler->GetAppWnd(), FM_START_DOGFIGHT, 0, 0);
+                            MainHandlerPointer->SetDrawFlag(0); // Hack to keep the UI from drawing
+                            PostMessage(MainHandlerPointer->GetAppWnd(), FM_START_DOGFIGHT, 0, 0);
                             break;
 
                         case game_TacticalEngagement:
@@ -2440,9 +2440,9 @@ void DoCompressionLoop(void)
                                 }
                             }
 
-                            gMainHandler->SetDrawFlag(0); // Hack to keep the UI from drawing
+                            MainHandlerPointer->SetDrawFlag(0); // Hack to keep the UI from drawing
                             CleanupTacticalEngagementUI();
-                            PostMessage(gMainHandler->GetAppWnd(), FM_START_TACTICAL, 0, 0);
+                            PostMessage(MainHandlerPointer->GetAppWnd(), FM_START_TACTICAL, 0, 0);
                             ResumeTacticalEngagement();
                             break;
 
@@ -2460,9 +2460,9 @@ void DoCompressionLoop(void)
                                 }
                             }
 
-                            gMainHandler->SetDrawFlag(0); // Hack to keep the UI from drawing
+                            MainHandlerPointer->SetDrawFlag(0); // Hack to keep the UI from drawing
                             CleanupCampaignUI();
-                            PostMessage(gMainHandler->GetAppWnd(), FM_START_CAMPAIGN, 0, 0);
+                            PostMessage(MainHandlerPointer->GetAppWnd(), FM_START_CAMPAIGN, 0, 0);
                             break;
                     }
                 }
@@ -2714,7 +2714,7 @@ unsigned int __stdcall HandleCampaignThread(void)
             startup = 0;
         }
 
-        if (!doUI)
+        if (!DoUI)
         {
             gCampTime = GetTickCount() - sleepTic;
             gAveCampTime = (gAveCampTime * 7 + gCampTime) / 8;
@@ -2847,7 +2847,7 @@ void DoTacticalLoop(int startup)
 
     // Update weather when in UI
     if (!SimDriver.InSim())
-        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
+        ((WeatherClass*)RealWeatherPointer)->UpdateWeather(); // Sim calls this otherwise
 }
 
 // ==============================================================
@@ -2912,7 +2912,7 @@ void DoCampaignLoop(int startup)
                 // calculate statistics
                 UpdateTeamStatistics();
 
-                if (doUI)
+                if (DoUI)
                     SendMessage(FalconDisplay.appWin, FM_AUTOSAVE_CAMPAIGN, 0, game_Campaign);
 
                 break;
@@ -2985,7 +2985,7 @@ void DoCampaignLoop(int startup)
     // Update weather when in UI
     if (!SimDriver.InSim())
     {
-        ((WeatherClass*)realWeather)->UpdateWeather(); // Sim calls this otherwise
+        ((WeatherClass*)RealWeatherPointer)->UpdateWeather(); // Sim calls this otherwise
     }
 
     // Task air

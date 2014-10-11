@@ -111,10 +111,10 @@ void GraphicsDataPoolInitializeStorage(void);
 void GraphicsDataPoolReleaseStorage(void);
 
 extern void SavePersistantList(char* scenario);
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern int gNumWeaponsInAir;
-extern HWND mainMenuWnd;
-extern int FileVerify(void);
+extern HWND MainMenuWindow;
+//extern int FileVerify(void);  // dannycoh - commented out - not working with current data files.
 
 extern ulong gBumpTime;
 extern int gBumpFlag;
@@ -279,7 +279,7 @@ void SimulationDriver::Startup(void)
 
     //Prep Object Data
     // Check file integrity
-    FileVerify();
+    //FileVerify();  // dannycoh - commented out - not working with current data files.
 
     SimMoverDefinition::ReadSimMoverDefinitionData();
     ReadDigitalBrainData();
@@ -728,9 +728,9 @@ void SimulationDriver::Cycle()
             wind.y = 0;
             wind.z = 0;
 
-            if ((WeatherClass*)realWeather)
+            if ((WeatherClass*)RealWeatherPointer)
             {
-                ((WeatherClass*)realWeather)->WindHeadingAt(&wind);
+                ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&wind);
             }
 
             x = OTWDriver.cameraVel.x - wind.x;

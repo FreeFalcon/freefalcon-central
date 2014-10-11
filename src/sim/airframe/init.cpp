@@ -178,7 +178,7 @@ void AirframeClass::Initialize()
     oldr01[3] = 0.0;
 
     /*------------------------------------------*/
-    /* intialize yaw axis flight control system */
+    /* initialize yaw axis flight control system */
     /*------------------------------------------*/
     /* yaw integral pathway */
     /*----------------------*/
@@ -209,7 +209,7 @@ void AirframeClass::Initialize()
     //oldy04[3] = 0.0;
 
     /*--------------------------------*/
-    /* intialize axial control system */
+    /* initialize axial control system */
     /*--------------------------------*/
     olda01[0] = thrtab;
     olda01[1] = thrtab;
@@ -387,7 +387,7 @@ void AirframeClass::ReInitialize()
     oldr01[3] = 0.0;
 
     /*------------------------------------------*/
-    /* intialize yaw axis flight control system */
+    /* initialize yaw axis flight control system */
     /*------------------------------------------*/
     /* yaw integral pathway */
     /*----------------------*/

@@ -2,7 +2,7 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 
 // constants
 

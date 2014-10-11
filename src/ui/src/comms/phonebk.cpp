@@ -11,12 +11,12 @@
 
 using namespace std;
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 PhoneBook *gPlayerBook = NULL;
 
 // sfr: temp global while UI does not have ports
-extern "C" unsigned short force_port = 0;
+extern "C" unsigned short ForcePort = 0;
 
 // function prototypes
 void SetSingle_Comms_Ctrls();
@@ -38,7 +38,7 @@ static long localID = 0;
 void CopyDataToWindow()
 {
     // get pbook window handlers
-    C_Window *win = gMainHandler->FindWindow(PB_WIN);
+    C_Window *win = MainHandlerPointer->FindWindow(PB_WIN);
     C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
     C_Button *clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT);
@@ -75,7 +75,7 @@ void CopyDataToWindow()
 void CopyDataFromWindow()
 {
     // get pbook window handlers
-    C_Window *win = gMainHandler->FindWindow(PB_WIN);
+    C_Window *win = MainHandlerPointer->FindWindow(PB_WIN);
     C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
     C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
 
@@ -124,9 +124,9 @@ void CopyDataFromWindow()
     }
 
     // TODO read UI values
-    if (force_port)
+    if (ForcePort)
     {
-        localData.localPort = force_port;
+        localData.localPort = ForcePort;
     }
     else
     {
@@ -151,7 +151,7 @@ void AddressInputCB(long ID, short hittype, C_Base *)
     C_Button *clientButtonControl = NULL;
 
     if (
-        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) ||
+        ((win = MainHandlerPointer->FindWindow(PB_WIN)) == NULL) ||
         ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) ||
         ((servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV)) == NULL)
     )
@@ -200,7 +200,7 @@ void CopyPBToWindow(long ID, long Client)
     F4CSECTIONHANDLE* Leave;
     int y = 4;
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -323,7 +323,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
 
     if (gCommsMgr->Online() && control->Parent_)
     {
-        gMainHandler->DisableWindowGroup(control->Parent_->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->Parent_->GetGroup());
     }
 }
 

@@ -17,7 +17,7 @@ Preset Presets[] =
     //{FMSimplified,ATEasy,WEExaggerated,APIntelligent,ARSimplistic, PDSuper,SIM_NO_BLACKOUT|SIM_UNLIMITED_AMMO|SIM_UNLIMITED_CHAFF|SIM_NAMETAGS|SIM_UNLIMITED_FUEL|SIM_NO_COLLISIONS}, //back into these two after DEMO
 };
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 /////////////
 // Sim Tab

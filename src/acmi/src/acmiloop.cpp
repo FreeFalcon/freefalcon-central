@@ -66,11 +66,11 @@ int GLOBAL_WIRE_COCKPIT = 1; // default ON.
 
 
 extern char FalconDataDirectory[_MAX_PATH];
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 extern bool g_bNewAcmiHud;
 
 extern C_Handler
-*gMainHandler;
+*MainHandlerPointer;
 
 extern BOOL
 acmiDraw;
@@ -384,7 +384,7 @@ void ACMIView::Draw()
 
     if (TapeHasLoaded() && Tape() != NULL && Tape()->IsLoaded())
     {
-        gMainHandler->Unlock(); // Make surface available...
+        MainHandlerPointer->Unlock(); // Make surface available...
 
         // pos = _camPos;
         pos.x = 0.0f;
@@ -595,7 +595,7 @@ void ACMIView::Draw()
             TakeScreenShot();
         }
 
-        gMainHandler->Lock();
+        MainHandlerPointer->Lock();
 
         // update the entities
         // MUST be done after render
@@ -637,10 +637,10 @@ void ACMIView::TakeScreenShot()
 #if 0
     sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s\\%s", FalconPictureFolder, tmpStr);
 #endif
 
-    gMainHandler->GetFront()->BackBufferToRAW(fileName);
+    MainHandlerPointer->GetFront()->BackBufferToRAW(fileName);
 }
 
 

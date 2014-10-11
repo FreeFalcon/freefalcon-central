@@ -498,7 +498,7 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     float alpha, fog, z;
 
     // RED - Linear Fog - checvk if under visibility limit
-    if (position.z > realWeather->VisibleLimit()) return false;
+    if (position.z > RealWeatherPointer->VisibleLimit()) return false;
 
 
     //////////////////////////////////// FOG / HAZE ///////////////////////////////////////////////////
@@ -506,9 +506,9 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     z = renderer->ZDistanceFromCamera(&position);
 
     // RED - Linear Fog, if inside the layer, modulate with Hze, we can not use linear fog there
-    if (realWeather->weatherCondition > FAIR && position.z > (realWeather->HiOvercast))
+    if (RealWeatherPointer->WeatherCondition > FAIR && position.z > (RealWeatherPointer->HiOvercast))
     {
-        alpha = 1.0f - (-realWeather->HiOvercast + position.z) / (realWeather->stratusDepth / 2.0f);
+        alpha = 1.0f - (-RealWeatherPointer->HiOvercast + position.z) / (RealWeatherPointer->stratusDepth / 2.0f);
         alpha *= alpha * alpha;
     }
     else
@@ -595,7 +595,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
     BOOL isShadow = FALSE;
 
-    if (PlayerOptions.ShadowsOn() && realWeather->weatherCondition == FAIR)
+    if (PlayerOptions.ShadowsOn() && RealWeatherPointer->WeatherCondition == FAIR)
     {
         Tpoint pv;
         Tcolor light;
@@ -603,22 +603,22 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         TheTimeOfDay.GetTextureLightingColor(&light);
         renderer->TransformPointToViewSwapped(&position, &pv);
 
-        for (int row = 2; row < realWeather->numCells - 2; row++)
+        for (int row = 2; row < RealWeatherPointer->numCells - 2; row++)
         {
-            for (int col = 2; col < realWeather->numCells - 2; col++)
+            for (int col = 2; col < RealWeatherPointer->numCells - 2; col++)
             {
-                if (realWeather->weatherCellArray[row][col].onScreen)
+                if (RealWeatherPointer->weatherCellArray[row][col].onScreen)
                 {
-                    float dx = pv.x - realWeather->weatherCellArray[row][col].shadowPos.x;
-                    float dy = pv.y - realWeather->weatherCellArray[row][col].shadowPos.y;
-                    float dz = pv.z - realWeather->weatherCellArray[row][col].shadowPos.z;
+                    float dx = pv.x - RealWeatherPointer->weatherCellArray[row][col].shadowPos.x;
+                    float dy = pv.y - RealWeatherPointer->weatherCellArray[row][col].shadowPos.y;
+                    float dz = pv.z - RealWeatherPointer->weatherCellArray[row][col].shadowPos.z;
                     float range = FabsF(SqrtF(dx * dx + dy * dy + dz * dz));
 
-                    if (range < realWeather->cloudRadius)
+                    if (range < RealWeatherPointer->cloudRadius)
                     {
                         isShadow = TRUE;
 
-                        float interp = max(1.f - (realWeather->cloudRadius - range) / realWeather->cloudRadius, .5f);
+                        float interp = max(1.f - (RealWeatherPointer->cloudRadius - range) / RealWeatherPointer->cloudRadius, .5f);
 
                         float r = interp * light.r;
                         float g = interp * light.g;

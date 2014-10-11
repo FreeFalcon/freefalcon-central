@@ -112,7 +112,7 @@ char gCountText[64];
 extern char FalconDataDirectory[_MAX_PATH];
 
 extern C_Handler
-*gMainHandler;
+*MainHandlerPointer;
 
 extern C_Parser
 *gMainParser;
@@ -298,7 +298,7 @@ void CloseACMI()
         //TheLoader.Cleanup();
         TheVbManager.Release();
 
-        win = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_RIGHT_WIN);
 
         if (win)
         {
@@ -411,7 +411,7 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
 
     if (acmiView != NULL)
     {
-        win = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
         if (win == NULL)
             return;
@@ -892,7 +892,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+    renwin = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
     if (renwin == NULL)
         return;
@@ -940,7 +940,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
         sprintf(loadedfname, fname);
 
 
-        win = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_RIGHT_WIN);
 
         if (win)
         {
@@ -955,7 +955,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
 
         acmiView->InitUIVector();
 
-        win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
         if (win != NULL)
         {
@@ -1030,28 +1030,28 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
         }// if win != null
     } // end listbox
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
-    win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+    win = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
     if (win)
     {
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
-    win = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(ACMI_RIGHT_WIN);
 
     if (win)
     {
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
     }
 
     renwin->UnHideCluster(100);
     renwin->HideCluster(200);
-    gMainHandler->ShowWindow(renwin);
-    gMainHandler->WindowToFront(renwin);
+    MainHandlerPointer->ShowWindow(renwin);
+    MainHandlerPointer->WindowToFront(renwin);
 
     acmiDraw = TRUE;
     renderACMI = TRUE;
@@ -1080,12 +1080,12 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+    renwin = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
     if (renwin == NULL)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
@@ -1094,8 +1094,8 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
 
     sprintf(fnamedir, "acmibin\\");
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -1142,7 +1142,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetWingTrailLength(gTrailLen);
         acmiView->Tape()->SetObjScale(gObjScale);
 
-        C_Window *win = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+        C_Window *win = MainHandlerPointer->FindWindow(ACMI_RIGHT_WIN);
 
         if (win)
         {
@@ -1297,7 +1297,7 @@ void ACMIButtonCB(long, short hittype, C_Base*)
 
     if (acmiView == NULL)
     {
-        win = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
         if (win == NULL)
             return;
@@ -1380,7 +1380,7 @@ void FindACMIFLTFiles()
     // first check to see if we should import any files.
     // ACMI_ImportFile();
 
-    win = gMainHandler->FindWindow(ACMI_LOAD_WIN);
+    win = MainHandlerPointer->FindWindow(ACMI_LOAD_WIN);
 
     if (win == NULL)
         return;
@@ -1495,7 +1495,7 @@ void HookupACMIControls(long ID)
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -1869,7 +1869,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
 
                 if (newpos == gFrameMarkerMax)
                 {
-                    win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+                    win = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
                     if (win)
                         win->SetGroupState(200001, 0); // Turn off all VCR buttons
@@ -1881,7 +1881,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
             if (!acmiView->Tape()->IsPaused())
             {
                 int intTime = (int)(acmiView->Tape()->SimTime() - acmiView->Tape()->GetTodOffset()) * 1000;
-                win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+                win = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
                 if (win)
                 {
@@ -1946,13 +1946,13 @@ void ACMILoadCB(long, short hittype, C_Base *control)
         acmiDraw = FALSE;
         renderACMI = FALSE;
 
-        win = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+        win = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
         win->HideCluster(200);
         win->UnHideCluster(100);
 
         FindACMIFLTFiles();
 
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     }
 
     // F4LeaveCriticalSection( gUICriticalSection );
@@ -1974,7 +1974,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+    renwin = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
     if (renwin == NULL)
         return;
@@ -1984,7 +1984,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
     acmiDraw = FALSE;
     renderACMI = FALSE;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
 
     drawTimer->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -2007,7 +2007,7 @@ void ACMICloseCB(long, short hittype, C_Base *control)
 
     if (control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
     }
 
     UI_Leave(Leave);
@@ -2365,7 +2365,7 @@ void ACMICameraCB(long, short hittype, C_Base *control)
 
         if (item)
         {
-            win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+            win = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
             if (win)
             {
@@ -2466,7 +2466,7 @@ void ACMICamTrackingCB(long, short hittype, C_Base *control)
 
 void ACMICamTrackingPrevCB(long, short hittype, C_Base *control)
 {
-    // C_Window *winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+    // C_Window *winme = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
     C_ListBox *lbox;
     C_Window *winme = control->Parent_;
 
@@ -2646,7 +2646,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP || acmiView == NULL)
         return;
 
-    renwin = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+    renwin = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
 
     if (renwin == NULL)
         return;
@@ -2660,12 +2660,12 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     tbtn = (C_Button *)control;
     tbtn->SetState(1);
     fname = tbtn->GetText(0);
-    gMainHandler->HideWindow(control->GetParent());
+    MainHandlerPointer->HideWindow(control->GetParent());
 
 
-    gMainHandler->EnableWindowGroup(200149);
+    MainHandlerPointer->EnableWindowGroup(200149);
 
-    winme = gMainHandler->FindWindow(ACMI_LOAD_SCREEN);
+    winme = MainHandlerPointer->FindWindow(ACMI_LOAD_SCREEN);
 
 
     // make sure no tape is now loaded
@@ -2689,7 +2689,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
 
     acmiView->InitUIVector();
 
-    winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+    winme = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
     if (winme != NULL)
     {
@@ -2748,15 +2748,15 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     }
 
 
-    gMainHandler->EnableWindowGroup(200000);
-    winme = gMainHandler->FindWindow(ACMI_RENDER_WIN);
+    MainHandlerPointer->EnableWindowGroup(200000);
+    winme = MainHandlerPointer->FindWindow(ACMI_RENDER_WIN);
     winme->HideCluster(100);
     winme->UnHideCluster(200);
 
 
 
     // put the name of the vhs file into the window top.
-    winme = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+    winme = MainHandlerPointer->FindWindow(ACMI_RIGHT_WIN);
 
     if (winme != NULL)
     {
@@ -2807,7 +2807,7 @@ void ACMIUpdateModelMenu()
     long
     camSel = EXTERNAL_CAM;
 
-    winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
+    winme = MainHandlerPointer->FindWindow(ACMI_LEFT_WIN);
 
     if (winme != NULL)
     {

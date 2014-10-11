@@ -55,15 +55,15 @@ IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD, DWORD width, DWORD hei
 void ProcessEventList(C_Window *win, long client);
 void SetSingle_Comms_Ctrls();
 void RemoveWeaponUsageList();
-extern C_Handler *gMainHandler;
-extern char gUI_CampaignFile[];
+extern C_Handler *MainHandlerPointer;
+extern char UiCampaignFile[];
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void EncryptBuffer(uchar startkey, uchar *buffer, long length);
 void DecryptBuffer(uchar startkey, uchar *buffer, long length);
 
 char *gUBuffer;
 
-C_SoundBite *gInstantBites = NULL;
+C_SoundBite *InstantBitesPointer = NULL;
 
 
 // Parameters for Instant Action
@@ -531,8 +531,8 @@ void LoadInstantActionWindows()
 
     gMainParser->LoadSoundList("ia_snd.lst");
 
-    if (!gInstantBites)
-        gInstantBites = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
+    if (!InstantBitesPointer)
+        InstantBitesPointer = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
 
     gMainParser->LoadWindowList("ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
@@ -545,7 +545,7 @@ void LoadInstantActionWindows()
     }
 
     SetSingle_Comms_Ctrls();
-    win = gMainHandler->FindWindow(IA_HS_WIN);
+    win = MainHandlerPointer->FindWindow(IA_HS_WIN);
 
     if (win)
     {
@@ -570,7 +570,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(IA_SETTINGS_WIN);
+    win = MainHandlerPointer->FindWindow(IA_SETTINGS_WIN);
 
     if (win)
     {
@@ -640,7 +640,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
         }
     }
 
-    win = gMainHandler->FindWindow(IA_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(IA_MAP_WIN);
 
     if (win)
     {
@@ -661,7 +661,7 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
         }
     }
 
-    win = gMainHandler->FindWindow(IA_SUA);
+    win = MainHandlerPointer->FindWindow(IA_SUA);
 
     if (win)
     {
@@ -676,18 +676,18 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
     ShiAssert(!TheCampaign.IsLoaded());
 
     // Load a campaign here
-    strcpy(gUI_CampaignFile, "Instant");
+    strcpy(UiCampaignFile, "Instant");
 
     ShiAssert(gameCompressionRatio == 0);
 
     TheCampaign.SetOnlineStatus(0);
 
-    TheCampaign.LoadCampaign(game_InstantAction, gUI_CampaignFile);
+    TheCampaign.LoadCampaign(game_InstantAction, UiCampaignFile);
 
     instant_action::set_start_wave(InstantActionSettings.PilotLevel);
     instant_action::create_player_flight();
 
-    PostMessage(gMainHandler->GetAppWnd(), FM_START_INSTANTACTION, 0, 0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_START_INSTANTACTION, 0, 0);
 }
 
 static void InsertScoreCB(long, short hittype, C_Base *)
@@ -723,13 +723,13 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         Scores.Scores[i].Score = TotalScore;
 
         ebox = NULL;
-        win = gMainHandler->FindWindow(IA_HS_WIN);
+        win = MainHandlerPointer->FindWindow(IA_HS_WIN);
 
         if (win)
         {
             ebox = (C_EditBox *)win->FindControl(IA_HS_NAME_EDIT);
             win->SetControl(0);
-            gMainHandler->DisableWindowGroup(win->GetGroup());
+            MainHandlerPointer->DisableWindowGroup(win->GetGroup());
         }
 
         if (ebox)
@@ -748,7 +748,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
             Scores.Scores[i].Name[1] = 0;
         }
 
-        win = gMainHandler->FindWindow(IA_SH_WIN);
+        win = MainHandlerPointer->FindWindow(IA_SH_WIN);
 
         if (win)
         {
@@ -790,10 +790,10 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         SaveHighScores();
     }
 
-    win = gMainHandler->FindWindow(IA_DBRF_WIN);
+    win = MainHandlerPointer->FindWindow(IA_DBRF_WIN);
 
     if (win)
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
 }
 
 static void HighScoreKeyboardCB(long ID, short DKKey, C_Base *control)
@@ -929,7 +929,7 @@ static void HookupIAControls(long ID)
     C_EditBox *ebox;
     C_Clock *clk;
     long hour; //THW 2004-02-18 Random daytime
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -1668,56 +1668,56 @@ void CheckHighScore(long TotalScore)
 
     if (TotalScore < 0)
     {
-        SoundID = gInstantBites->Pick(IA1);
+        SoundID = InstantBitesPointer->Pick(IA1);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (TotalScore < _A_LOW_SCORE_)
     {
-        SoundID = gInstantBites->Pick(IA2);
+        SoundID = InstantBitesPointer->Pick(IA2);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (TotalScore < _A_MEDIUM_SCORE_)
     {
-        SoundID = gInstantBites->Pick(IA3);
+        SoundID = InstantBitesPointer->Pick(IA3);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (!i)
     {
-        SoundID = gInstantBites->Pick(IA8);
+        SoundID = InstantBitesPointer->Pick(IA8);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (i == 1)
     {
-        SoundID = gInstantBites->Pick(IA7);
+        SoundID = InstantBitesPointer->Pick(IA7);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (i >= 2 && i <= 6)
     {
-        SoundID = gInstantBites->Pick(IA6);
+        SoundID = InstantBitesPointer->Pick(IA6);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (i >= 7 && i <= 11)
     {
-        SoundID = gInstantBites->Pick(IA5);
+        SoundID = InstantBitesPointer->Pick(IA5);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else
     {
-        SoundID = gInstantBites->Pick(IA4);
+        SoundID = InstantBitesPointer->Pick(IA4);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
@@ -1725,11 +1725,11 @@ void CheckHighScore(long TotalScore)
 
     if (i < MAX_SCORES)
     {
-        win = gMainHandler->FindWindow(IA_HS_WIN);
+        win = MainHandlerPointer->FindWindow(IA_HS_WIN);
 
         if (win)
         {
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
             txt = (C_Text *)win->FindControl(IA_HS_FIELD);
 
             if (txt)
@@ -1739,15 +1739,15 @@ void CheckHighScore(long TotalScore)
                 txt->SetText(buffer);
             }
 
-            gMainHandler->WindowToFront(win);
+            MainHandlerPointer->WindowToFront(win);
             win->RefreshWindow();
             win->SetControl(IA_HS_NAME_EDIT);
         }
     }
     else
     {
-        win = gMainHandler->FindWindow(IA_DBRF_WIN);
-        gMainHandler->EnableWindowGroup(win->GetGroup());
+        win = MainHandlerPointer->FindWindow(IA_DBRF_WIN);
+        MainHandlerPointer->EnableWindowGroup(win->GetGroup());
     }
 }
 
@@ -1758,7 +1758,7 @@ static void SetupInstantAction()
     _TCHAR buf[20];
     int i;
 
-    win = gMainHandler->FindWindow(IA_SETTINGS_WIN);
+    win = MainHandlerPointer->FindWindow(IA_SETTINGS_WIN);
 
     if (win)
     {
@@ -1768,7 +1768,7 @@ static void SetupInstantAction()
 
     GetHighScores();
 
-    win = gMainHandler->FindWindow(IA_SH_WIN);
+    win = MainHandlerPointer->FindWindow(IA_SH_WIN);
 
     if (win)
     {
@@ -1798,7 +1798,7 @@ static void SetupInstantAction()
         win->RefreshWindow();
     }
 
-    win = gMainHandler->FindWindow(IA_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(IA_MAP_WIN);
 
     if (win)
         SetMapStartup(win);
@@ -1812,7 +1812,7 @@ static void SetupInstantAction()
         LivingBonus = 0;
         LandingBonus = 0;
 
-        win = gMainHandler->FindWindow(IA_DBRF_WIN);
+        win = MainHandlerPointer->FindWindow(IA_DBRF_WIN);
 
         if (win)
         {
@@ -1821,7 +1821,7 @@ static void SetupInstantAction()
 
         //for(i=InstantAction.iaStartLevel;i<InstantAction.iaCurLevel;i++)
         //Bonus+=20000*i;
-        win = gMainHandler->FindWindow(IA_DBRF_WIN);
+        win = MainHandlerPointer->FindWindow(IA_DBRF_WIN);
 
         if (win)
         {
@@ -1851,10 +1851,10 @@ void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
     if (!TheCampaign.IsLoaded())
     {
         // Load a campaign here
-        strcpy(gUI_CampaignFile, "Instant");
+        strcpy(UiCampaignFile, "Instant");
 
         TheCampaign.SetOnlineStatus(0);
-        TheCampaign.LoadCampaign(game_InstantAction, gUI_CampaignFile);
+        TheCampaign.LoadCampaign(game_InstantAction, UiCampaignFile);
 
         instant_action::create_player_flight();
     }

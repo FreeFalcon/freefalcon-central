@@ -82,7 +82,7 @@
 
 typedef signed long SLONG;
 
-enum { SUNNY = 1, FAIR, POOR, INCLEMENT, NUMCONDITIONS };
+enum WeatherConditionEnum:int { SUNNY = 1, FAIR, POOR, INCLEMENT, NUMCONDITIONS };
 enum { OBSERVER_LOW = 0, OBSERVER_MIDDLE, OBSERVER_HI, MAX_OBSERVER_POSITIONS };
 
 struct WeatherCell
@@ -132,7 +132,7 @@ public:
     Texture CirrusCumTextures;
     Texture CumulusTextures;
     WeatherCell weatherCellArray[MAX_NUM_CELLS][MAX_NUM_CELLS];
-    int numCells, halfCells, cellSize, shadowCell, drawableCell, halfSize, vpShift, weatherCondition, weatherShiftX, weatherShiftY;
+    int numCells, halfCells, cellSize, shadowCell, drawableCell, halfSize, vpShift, WeatherCondition, weatherShiftX, weatherShiftY;
     float viewerX, viewerY, viewerZ, cumulusZ, stratusZ, stratus2Z, windSpeed, windHeading, puffRadius, cloudRadius, stratusRadius, stratusDepth, ShadingFactor;
     float HiOvercast, LoOvercast, MidOvercast;
     int numMETARS;//Cobra
@@ -228,7 +228,7 @@ public:
     METAR *metar;
 };
 
-extern RealWeather *realWeather;
+extern RealWeather *RealWeatherPointer;
 
 /*
 class Weather

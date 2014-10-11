@@ -56,7 +56,7 @@ void RenderTV::StartDraw(void)
     TheColorBank.SetColorMode(ColorBankClass::NormalMode);
 
     context.SetTVmode(TRUE);
-    //realWeather->SetGreenMode(TRUE); // RV - I-Hawk - Do not force green
+    //RealWeatherPointer->SetGreenMode(TRUE); // RV - I-Hawk - Do not force green
     // Enable DX engine TV Mode
     TheDXEngine.SaveState();
     TheDXEngine.SetState(DX_TV);
@@ -69,7 +69,7 @@ void RenderTV::EndDraw(void)
     Drawable2D::SetGreenMode(FALSE);
 
     context.SetTVmode(FALSE);
-    realWeather->SetGreenMode(FALSE);
+    RealWeatherPointer->SetGreenMode(FALSE);
     // Disable DX engine TV Mode
     TheDXEngine.RestoreState();
 }

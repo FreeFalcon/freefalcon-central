@@ -33,13 +33,13 @@ int setABdetent = FALSE;
 int setIdleCutoff = FALSE; // Retro 1Feb2004
 long mHelmetIsUR = FALSE; // hack for UR Helmet detected
 long mHelmetID;
-float UR_HEAD_VIEW = 160.0f;
+float UrHeadView = 160.0f;
 float UR_PREV_X = 0.0f;
 float UR_PREV_Y = 0.0f;
 
 #include "TrackIR.h" // Retro 26/09/03
 extern bool g_bEnableTrackIR; // Retro 26/09/03
-extern TrackIR theTrackIRObject; // Retro 27/09/03
+extern TrackIR TheTrackIrObject; // Retro 27/09/03
 
 extern int DisableSmoothing;
 extern bool g_bUseNewSmoothing; // Retro 21Feb2004
@@ -60,7 +60,7 @@ enum
     MAX_DIFF = 10000,
 };
 
-unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
+unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumberOfHats
 
 void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
 
@@ -186,8 +186,8 @@ void GetURHelmetInput()
             headx = (float)(joyState.lX);
             heady = -(float)(joyState.lY);
 
-            headx = headx * UR_HEAD_VIEW;
-            heady = heady * UR_HEAD_VIEW;
+            headx = headx * UrHeadView;
+            heady = heady * UrHeadView;
 
             headx = headx / 10000.0f;
             heady = heady / 10000.0f;
@@ -219,13 +219,13 @@ void GetURHelmetInput()
 void GetTrackIRInput() // Retro 26/09/03
 {
 #if 0 // Retro 24Dez2004 - deprecated
-    theTrackIRObject.GetTrackIR_ViewValues(&cockpitFlightData.headYaw, &cockpitFlightData.headPitch);
+    TheTrackIrObject.GetTrackIR_ViewValues(&cockpitFlightData.headYaw, &cockpitFlightData.headPitch);
 #else
-    theTrackIRObject.Poll();
+    TheTrackIrObject.Poll();
 
-    cockpitFlightData.headYaw = theTrackIRObject.getYaw();
-    cockpitFlightData.headPitch = theTrackIRObject.getPitch();
-    cockpitFlightData.headRoll = theTrackIRObject.getRoll();
+    cockpitFlightData.headYaw = TheTrackIrObject.getYaw();
+    cockpitFlightData.headPitch = TheTrackIrObject.getPitch();
+    cockpitFlightData.headRoll = TheTrackIrObject.getRoll();
 #endif
 }
 
@@ -1477,7 +1477,7 @@ BOOL JoystickCreateEffect(DWORD)
 
     // Retro 27Dec2003
     /* no point in inquiring force feedback caps of a not (yet) mapped device */
-    /* this propably means that  f4 has to be restarted after a controller change */
+    /* this propably means that FF has to be restarted after a controller change */
     /* or I just run this stuff on assigning controllers (have to find out FF caps anyway */
 
     if (AxisMap.FlightControlDevice < SIM_JOYSTICK1)

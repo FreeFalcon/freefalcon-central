@@ -11,7 +11,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class tactical_mission;
+class TacticalMission;
 class C_Base;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -87,9 +87,9 @@ class victory_condition
 
 private:
 
-    friend tactical_mission;
+    friend TacticalMission;
 
-    tactical_mission *mission;
+    TacticalMission *mission;
 
     int active;
 
@@ -118,7 +118,7 @@ public:
 
 public:
 
-    victory_condition(tactical_mission *);
+    victory_condition(TacticalMission *);
     ~victory_condition();
 
     void set_team(int);
@@ -206,7 +206,7 @@ enum tac_flags
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class tactical_mission
+class TacticalMission
 {
 
 private:
@@ -237,16 +237,16 @@ private:
 
     int game_over;
     // static tactical_mode search_mode;
-    // static tactical_mission *search_mission;
+    // static TacticalMission *search_mission;
 
     char *read_te_file(char *filename, int *size);
     void process_load(char *data, int size, int full_load);
 
 public:
 
-    tactical_mission(char *filename);
-    tactical_mission(void); // Online
-    ~tactical_mission(void);
+    TacticalMission(char *filename);
+    TacticalMission(void); // Online
+    ~TacticalMission(void);
 
     void load(void);
     void preload(void);

@@ -21,7 +21,7 @@
 #include "rules.h"
 #include "uicomms.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 static void INFOSaveValues(void);
@@ -45,7 +45,7 @@ void INFOSetupRulesControls(void)
     C_Slider *slider;
     C_EditBox *ebox;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win == NULL)
         return;
@@ -391,7 +391,7 @@ void INFOSetupControls(void)
     C_EditBox *ebox;
 
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win == NULL)
         return;
@@ -651,7 +651,7 @@ void UpdateRules(void)
     if (vuPlayerPoolGroup != vuLocalGame)
         CurrRules.LoadRules(FalconLocalGame->rules.GetRules());
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     INFOSetupRulesControls();
@@ -659,7 +659,7 @@ void UpdateRules(void)
     C_Window *win;
     C_Button *button;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win == NULL)
         return;
@@ -790,7 +790,7 @@ int CheckButtonCompliance(C_Button *button, int test)
 
 void CheckCompliance(void)
 {
-    C_Window *win = gMainHandler->FindWindow(INFO_WIN);
+    C_Window *win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (!win)
         return;
@@ -1353,7 +1353,7 @@ void INFOHookupControls()
     C_ListBox *lbox;
     C_Slider *slider;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (!win)
         return;
@@ -1582,7 +1582,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
     FalconGameEntity *game;
     C_Window *win;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (!win)
     {
@@ -1617,7 +1617,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
     if (!INFOLoaded)
     {
-        switch (gLangIDNum)
+        switch (LanguageNumber)
         {
             case F4LANG_ENGLISH:
             case F4LANG_UK:
@@ -1639,7 +1639,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
     INFOSetupControls();
 
-    gMainHandler->EnableWindowGroup(win->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(win->GetGroup());
 }
 
 
@@ -1657,7 +1657,7 @@ static void INFOSaveRules(void)
     if (vuPlayerPoolGroup != vuLocalGame)
         return;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win == NULL)
         return;
@@ -1932,7 +1932,7 @@ static void INFOSaveValues(void)
     C_Slider *slider;
 
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win == NULL)
         return;

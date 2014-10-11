@@ -35,7 +35,7 @@ LogBookData::LogBookData(void)
 }
 
 // sfr: logbook hack
-extern "C" char g_strLgbk[20];
+extern "C" char StringLogBook[20];
 int LogBookData::Load(void)
 {
 #if _USE_REGISTRY_
@@ -43,9 +43,9 @@ int LogBookData::Load(void)
     HKEY theKey;
     long retval;
 
-    if (strlen(g_strLgbk) != 0)
+    if (strlen(StringLogBook) != 0)
     {
-        sprintf(Pilot.Callsign, "%s", g_strLgbk);
+        sprintf(Pilot.Callsign, "%s", StringLogBook);
     }
     else
     {
@@ -126,7 +126,7 @@ void LogBookData::Initialize(void)
     // german hack... no time
     GetSystemTime(&systime);
 
-    if (gLangIDNum != F4LANG_ENGLISH)
+    if (LanguageNumber != F4LANG_ENGLISH)
     {
         _stprintf(Pilot.Commissioned, "%02d.%02d.%02d", systime.wDay, systime.wMonth, systime.wYear % 100);
     }
@@ -349,7 +349,7 @@ short LogBookData::TotalKilled(void)
     return static_cast<short>(Pilot.Campaign.Killed + Pilot.Dogfight.Killed);
 }
 
-//static char XorMask[]="Falcon 4.0 Fun for the whole Family!!!";
+//static char XorMask[]="FreeFalcon Fun for the whole Family!!!";
 //static char YorMask[]="Makes other sims look like shit!";
 
 void LogBookData::Encrypt(void)

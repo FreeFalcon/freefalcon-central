@@ -47,7 +47,7 @@
 
 #define _USE_REGISTRY_ 1 // 0=No,1=Yes
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern _TCHAR gUI_ScenarioName[];
 extern VU_ID gCurrentFlightID;
 extern short gCurrentAircraftNum;
@@ -58,7 +58,7 @@ extern C_TreeList *DogfightGames;
 extern RulesClass CurrRules;
 
 C_Base *gDogfightControl;
-C_SoundBite *gDogfightBites = NULL;
+C_SoundBite *DogFightBites = NULL;
 
 // These are prototypes I need since the revision.
 extern int CompressCampaignUntilTakeoff(Flight flight);
@@ -501,10 +501,10 @@ void JoinDogfightCB(long, short hittype, C_Base *)
 
     if (!gCommsMgr->Online())
     {
-        win = gMainHandler->FindWindow(PB_WIN);
+        win = MainHandlerPointer->FindWindow(PB_WIN);
 
         if (win)
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
 
         return;
     }
@@ -514,7 +514,7 @@ void JoinDogfightCB(long, short hittype, C_Base *)
     if (!game)
         return;
 
-    win = gMainHandler->FindWindow(INFO_WIN);
+    win = MainHandlerPointer->FindWindow(INFO_WIN);
 
     if (win)
     {
@@ -608,15 +608,15 @@ void DogfightJoinSuccess(void)
     F4Assert(gDogfightControl);
 
     Leave = UI_Enter(gDogfightControl->Parent_);
-    gMainHandler->DisableWindowGroup(100);
-    gMainHandler->DisableWindowGroup(gDogfightControl->GetParent()->GetGroup());
-    gMainHandler->EnableWindowGroup(gDogfightControl->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(100);
+    MainHandlerPointer->DisableWindowGroup(gDogfightControl->GetParent()->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(gDogfightControl->GetGroup());
 
-    win = gMainHandler->FindWindow(COMMLINK_WIN);
+    win = MainHandlerPointer->FindWindow(COMMLINK_WIN);
 
     if (win)
     {
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
     }
 
     gDogfightControl = NULL;
@@ -703,7 +703,7 @@ void ClearAllTreeStates()
     C_Window *win;
     C_TreeList *tree;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -740,7 +740,7 @@ void CheckDelButtons()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -1320,7 +1320,7 @@ void ClearOldDFInfo(long timestamp)
     C_Window *win;
     C_TreeList *tree;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -1393,10 +1393,10 @@ void BuildDFPlayerList()
     C_Dog_Flight *furflt, *teamflt;
     long timestamp;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (!win)
         return;
@@ -1529,7 +1529,7 @@ void DeleteGroupList(long ID)
 
     // Clear controls from window with the userdata[_UI95_DELGROUP_SLOT_] == _UI95_DELGROUP_ID_
 
-    win = gMainHandler->FindWindow(ID);
+    win = MainHandlerPointer->FindWindow(ID);
 
     if (win)
     {
@@ -1759,7 +1759,7 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
     type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
     AddDogfightAIPlane(flight, type, skill, teamid);
 
-    gMainHandler->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 }
 
 void AddDogfightAICB(long ID, short hittype, C_Base *control)
@@ -1773,7 +1773,7 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
     if (gCommsMgr && gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -1801,7 +1801,7 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
             break;
     }
 
-    win = gMainHandler->FindWindow(DF_FLIGHT_WIN);
+    win = MainHandlerPointer->FindWindow(DF_FLIGHT_WIN);
 
     if (win)
     {
@@ -1817,7 +1817,7 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
         }
     }
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void RemoveAICB(long ID, short hittype, C_Base *)
@@ -1836,7 +1836,7 @@ void RemoveAICB(long ID, short hittype, C_Base *)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -1888,7 +1888,7 @@ void UpdateDogfightWindows(void)
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(DF_GAME_HEADER_WIN);
+    win = MainHandlerPointer->FindWindow(DF_GAME_HEADER_WIN);
 
     if (win)
     {
@@ -1915,7 +1915,7 @@ void UpdateDogfightWindows(void)
         btn->Refresh();
     }
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -1954,11 +1954,11 @@ void CopyDFSettingsToWindow(void)
     C_Cursor *crsr;
     C_Clock *clk;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
-    gMainHandler->EnterCritical();
-    win = gMainHandler->FindWindow(DF_SETTINGS_WIN);
+    MainHandlerPointer->EnterCritical();
+    win = MainHandlerPointer->FindWindow(DF_SETTINGS_WIN);
 
     if (win)
     {
@@ -2086,7 +2086,7 @@ void CopyDFSettingsToWindow(void)
         }
     }
 
-    win = gMainHandler->FindWindow(DF_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(DF_MAP_WIN);
 
     if (win)
     {
@@ -2099,7 +2099,7 @@ void CopyDFSettingsToWindow(void)
         }
     }
 
-    win = gMainHandler->FindWindow(DF_PLAY_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(DF_PLAY_SUA_WIN);
 
     if (win)
     {
@@ -2120,7 +2120,7 @@ void CopyDFSettingsToWindow(void)
         BuildDFPlayerList();
 
     DogfightMenuSetup();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 // Same as above function, but only copys in the time, essentially
@@ -2133,11 +2133,11 @@ void CopyDFSettingsToSelectWindow(void)
     C_Clock *clk;
     C_Cursor *crsr;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
-    gMainHandler->EnterCritical();
-    win = gMainHandler->FindWindow(DF_SUA_WIN);
+    MainHandlerPointer->EnterCritical();
+    win = MainHandlerPointer->FindWindow(DF_SUA_WIN);
 
     if (win)
     {
@@ -2154,7 +2154,7 @@ void CopyDFSettingsToSelectWindow(void)
     }
 
     // Update the map too.
-    win = gMainHandler->FindWindow(DF_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(DF_MAP_WIN);
 
     if (win)
     {
@@ -2168,7 +2168,7 @@ void CopyDFSettingsToSelectWindow(void)
     }
 
     UpdateDogfightWindows();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 void CopyDFSettingsFromWindow(void)
@@ -2180,15 +2180,15 @@ void CopyDFSettingsFromWindow(void)
     C_Button *btn;
     C_Clock *clk;
 
-    if (!gMainHandler) return;
+    if (!MainHandlerPointer) return;
 
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
         return;
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     // Now the main window
-    win = gMainHandler->FindWindow(DF_SETTINGS_WIN);
+    win = MainHandlerPointer->FindWindow(DF_SETTINGS_WIN);
 
     if (win)
     {
@@ -2244,7 +2244,7 @@ void CopyDFSettingsFromWindow(void)
         }
     }
 
-    win = gMainHandler->FindWindow(DF_MAP_WIN);
+    win = MainHandlerPointer->FindWindow(DF_MAP_WIN);
 
     if (win)
     {
@@ -2259,7 +2259,7 @@ void CopyDFSettingsFromWindow(void)
         }
     }
 
-    win = gMainHandler->FindWindow(DF_SETTINGS_WIN);
+    win = MainHandlerPointer->FindWindow(DF_SETTINGS_WIN);
 
     if (win)
     {
@@ -2284,7 +2284,7 @@ void CopyDFSettingsFromWindow(void)
         }
     }
 
-    win = gMainHandler->FindWindow(DF_PLAY_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(DF_PLAY_SUA_WIN);
 
     if (win)
     {
@@ -2303,7 +2303,7 @@ void CopyDFSettingsFromWindow(void)
     }
 
     DogfightMenuSetup();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 static void DFGameModeCB(long, short hittype, C_Base *)
@@ -2314,7 +2314,7 @@ static void DFGameModeCB(long, short hittype, C_Base *)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -2329,7 +2329,7 @@ void CheckFlyButton()
     C_Button *btn1, *btn2;
     BOOL Enabled;
 
-    win = gMainHandler->FindWindow(DF_PLAY_TOOLBAR_WIN);
+    win = MainHandlerPointer->FindWindow(DF_PLAY_TOOLBAR_WIN);
 
     if (win == NULL)
         return;
@@ -2369,7 +2369,7 @@ static void SetDogFightStartup()
     if ((MainLastGroup == 2000))
     {
         // these functions (with scoring) MUST be in this order to work properly
-        win = gMainHandler->FindWindow(DF_DBRF_WIN);
+        win = MainHandlerPointer->FindWindow(DF_DBRF_WIN);
 
         if (win)
         {
@@ -2378,10 +2378,10 @@ static void SetDogFightStartup()
             DisplayDogfightResults();
             win->ScanClientAreas();
             win->RefreshWindow();
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
 
             CopyDFSettingsToWindow();
-            gMainHandler->EnableWindowGroup(2020);
+            MainHandlerPointer->EnableWindowGroup(2020);
         }
     }
 }
@@ -2404,8 +2404,8 @@ void LoadDogFightWindows()
 
         gMainParser->LoadSoundList("df_snd.lst");
 
-        if (!gDogfightBites)
-            gDogfightBites = gMainParser->ParseSoundBite("art\\dgft\\play\\uiddf.scf");
+        if (!DogFightBites)
+            DogFightBites = gMainParser->ParseSoundBite("art\\dgft\\play\\uiddf.scf");
 
         gMainParser->LoadWindowList("df_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
@@ -2417,7 +2417,7 @@ void LoadDogFightWindows()
             ID = gMainParser->GetNextWindowLoaded();
         }
 
-        win = gMainHandler->FindWindow(DGFT_MAIN_SCREEN);
+        win = MainHandlerPointer->FindWindow(DGFT_MAIN_SCREEN);
 
         if (win)
         {
@@ -2444,7 +2444,7 @@ void LoadDogFightWindows()
     if (gCommsMgr->Online())
         RebuildGameTree();
 
-    win = gMainHandler->FindWindow(DF_LOAD_WIN);
+    win = MainHandlerPointer->FindWindow(DF_LOAD_WIN);
 
     if (win)
     {
@@ -2482,7 +2482,7 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -2571,7 +2571,7 @@ void ClearDFTeamLists()
     C_Window *win;
     C_TreeList *list;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -2637,7 +2637,7 @@ void ClearDFTeamButtons()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(DF_TEAM_WIN);
+    win = MainHandlerPointer->FindWindow(DF_TEAM_WIN);
 
     if (win)
     {
@@ -2752,7 +2752,7 @@ void LeaveDogfight()
     FalconLocalSession->SetPlayerFlight(NULL);
     FalconLocalSession->SetCountry(255);
     FalconLocalSession->SetPilotSlot(255);
-    SendMessage(gMainHandler->GetAppWnd(), FM_SHUTDOWN_CAMPAIGN, 0, 0);
+    SendMessage(MainHandlerPointer->GetAppWnd(), FM_SHUTDOWN_CAMPAIGN, 0, 0);
     CheckFlyButton();
 }
 
@@ -2769,7 +2769,7 @@ void InfoButtonCB(long, short hittype, C_Base *control)
         return;
 
     SetupInfoWindow(NULL, NULL);
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
 }
 
 void SaveItCB(long, short hittype, C_Base *control)
@@ -2782,13 +2782,13 @@ void SaveItCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -2800,7 +2800,7 @@ void SaveItCB(long, short hittype, C_Base *control)
         SimDogfight.SaveSettings(filename);
     }
 
-    win = gMainHandler->FindWindow(DF_LOAD_WIN);
+    win = MainHandlerPointer->FindWindow(DF_LOAD_WIN);
 
     if (win)
     {
@@ -2960,10 +2960,10 @@ void JoinRadioCB(long, short hittype, C_Base *control)
 
     if (!gCommsMgr->Online())
     {
-        win = gMainHandler->FindWindow(PB_WIN);
+        win = MainHandlerPointer->FindWindow(PB_WIN);
 
         if (win)
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
     }
 
     if (DogfightGames)
@@ -2981,7 +2981,7 @@ static void ToggleGunCB(long, short hittype, C_Base *)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -2997,7 +2997,7 @@ static void ToggleECMCB(long, short hittype, C_Base *)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -3013,7 +3013,7 @@ static void MoveGameLocationCB(long, short hittype, C_Base *)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -3153,13 +3153,13 @@ void SaveResultsFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     ebox = (C_EditBox*)win->FindControl(FILE_NAME);
 
@@ -3227,7 +3227,7 @@ void CleanupDebriefCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
     // ClearPilotList();
 }
 
@@ -3266,7 +3266,7 @@ void SeeDFGamesCB(long, short hittype, C_Base *control)
         return;
 
     if (!gCommsMgr->Online())
-        gMainHandler->EnableWindowGroup(6001);
+        MainHandlerPointer->EnableWindowGroup(6001);
 
     control->Parent_->HideCluster(control->GetUserNumber(1));
     control->Parent_->UnHideCluster(control->GetUserNumber(0));
@@ -3280,7 +3280,7 @@ void DogfightChangeTimeCB(long ID, short hittype, C_Base *control)
     if (gCommsMgr->Online() && SimDogfight.GetDogfightGameStatus() != dog_Waiting)
     {
         GameHasStarted();
-        gMainHandler->DropControl();
+        MainHandlerPointer->DropControl();
         CopyDFSettingsToWindow();
         return;
     }
@@ -3298,12 +3298,12 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(DF_LOAD_WIN);
+    win = MainHandlerPointer->FindWindow(DF_LOAD_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(control->Parent_); // Close Verify Window
+    MainHandlerPointer->HideWindow(control->Parent_); // Close Verify Window
 
     if (!CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
     {
@@ -3351,9 +3351,9 @@ void EndDogfightCB(long, short hittype, C_Base *control)
     LeaveDogfight();
 
     Leave = UI_Enter(control->Parent_);
-    gMainHandler->DisableWindowGroup(control->GetGroup());
-    gMainHandler->EnableWindowGroup(100);
-    gMainHandler->EnableWindowGroup(MainLastGroup);
+    MainHandlerPointer->DisableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(100);
+    MainHandlerPointer->EnableWindowGroup(MainLastGroup);
     UI_Leave(Leave);
 }
 
@@ -3367,7 +3367,7 @@ static void HookupDogFightControls(long ID)
     C_Cursor *crsr;
     C_TreeList *tree;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;

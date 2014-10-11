@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@
 #define TAC_JOIN 30208
 
 #ifdef _DEBUG
-extern HWND mainAppWnd;
+extern HWND MainApplicationWindow;
 #endif
 #ifdef CAMPTOOL
 // Renaming tool stuff
@@ -73,7 +73,7 @@ void SetDeleteCallback(void (*cb)(long, short, C_Base*));
 void tactical_select_training(long, short, C_Base *);
 static void update_sua_load_list(void);
 static void update_pua_list(void);
-void tactical_edit_mission(tactical_mission *);
+void tactical_edit_mission(TacticalMission *);
 void ActivateTacMissionBuilder();
 BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
 void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
@@ -113,7 +113,7 @@ _TCHAR *TEExcludeList[] =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_mission
+TacticalMission
 *current_tactical_mission = NULL;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ static void tactical_mission_selection(int hack_training)
     update_pua_list();
 
 #ifdef _DEBUG
-    PostMessage(mainAppWnd, FM_GIVE_FOCUS, NULL, NULL);
+    PostMessage(MainApplicationWindow, FM_GIVE_FOCUS, NULL, NULL);
 #endif
 
 }
@@ -206,7 +206,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
                     delete current_tactical_mission;
                 }
 
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
 
                 tactical_mission_selection(FALSE);
             }
@@ -250,7 +250,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
                     delete current_tactical_mission;
                 }
 
-                current_tactical_mission = new tactical_mission(buffer);
+                current_tactical_mission = new TacticalMission(buffer);
 
                 tactical_mission_selection(TRUE);
             }
@@ -263,7 +263,7 @@ void GetTrainingFileList()
     C_Window *win;
     C_TreeList *tree;
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (win)
     {
@@ -295,7 +295,7 @@ void GetTacticalFileList()
     C_TreeList *tree;
 
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (win)
     {
@@ -327,7 +327,7 @@ void TEDelFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_); // Close Verify Window
+    MainHandlerPointer->HideWindow(control->Parent_); // Close Verify Window
 
     if (!CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
         DeleteFile(gLastTEFilename);
@@ -515,13 +515,13 @@ void create_tactical_list(void)
     char
     buffer[100];
 
-    tactical_mission
+    TacticalMission
     *miss;
 
     y = 0;
     id = 3000000;
 
-    win = gMainHandler->FindWindow(TAC_MISSION_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_MISSION_WIN);
 
     if (!win)
     {
@@ -534,7 +534,7 @@ void create_tactical_list(void)
 
     DeleteGroupList(TAC_MISSION_WIN);
 
-    miss = tactical_mission::get_first_mission(current_tactical_mode);
+    miss = TacticalMission::get_first_mission(current_tactical_mode);
 
     for (loop = 0; miss; loop ++)
     {
@@ -597,7 +597,7 @@ void create_tactical_list(void)
         id ++;
         y += but->GetH();
 
-        miss = tactical_mission::get_next_mission();
+        miss = TacticalMission::get_next_mission();
     }
 
 #if 0
@@ -710,7 +710,7 @@ static void update_sua_load_list(void)
     else
         MaxTeams = NUM_TEAMS;
 
-    win = gMainHandler->FindWindow(TAC_SUA_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_SUA_WIN);
 
     if (current_tactical_mission && win)
     {
@@ -784,7 +784,7 @@ static void update_pua_list(void)
     buffer[100],
            *text;
 
-    win = gMainHandler->FindWindow(TAC_PUA_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_PUA_WIN);
 
     if (current_tactical_mission)
     {
@@ -972,7 +972,7 @@ void update_missions_details(long winID)
     _TCHAR Buffer[200];
     C_Text *text;
 
-    C_Window *win = gMainHandler->FindWindow(winID);
+    C_Window *win = MainHandlerPointer->FindWindow(winID);
 
     if (!win)
         return;
@@ -1115,7 +1115,7 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
     DisableScenarioInfo();
 
     if (!gCommsMgr->Online())
-        gMainHandler->EnableWindowGroup(6001);
+        MainHandlerPointer->EnableWindowGroup(6001);
 
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(1));
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(2));
@@ -1123,11 +1123,11 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
     if (!gCommsMgr->Online())
     {
-        win = gMainHandler->FindWindow(PB_WIN);
+        win = MainHandlerPointer->FindWindow(PB_WIN);
 
         if (win)
         {
-            gMainHandler->EnableWindowGroup(win->GetGroup());
+            MainHandlerPointer->EnableWindowGroup(win->GetGroup());
         }
     }
 

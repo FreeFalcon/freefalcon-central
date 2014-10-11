@@ -8,13 +8,13 @@
 FalconWeatherMessage::FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback)
     : FalconEvent(WeatherMsg, FalconEvent::CampaignThread, entityId, target, loopback)
 {
-    dataBlock.weatherCondition = SUNNY;
+    dataBlock.WeatherCondition = SUNNY;
 }
 
 FalconWeatherMessage::FalconWeatherMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
     : FalconEvent(WeatherMsg, FalconEvent::CampaignThread, senderid, target)
 {
-    dataBlock.weatherCondition = SUNNY;
+    dataBlock.WeatherCondition = SUNNY;
 }
 
 FalconWeatherMessage::~FalconWeatherMessage(void)
@@ -59,7 +59,7 @@ int FalconWeatherMessage::Process(uchar autodisp)
 {
     if (autodisp || !TheCampaign.IsPreLoaded()) return -1;
 
-    ((WeatherClass *)realWeather)->ReceiveWeather(this);
+    ((WeatherClass *)RealWeatherPointer)->ReceiveWeather(this);
 
     return 0;
 }

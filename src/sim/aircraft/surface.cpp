@@ -30,7 +30,7 @@ extern float g_fPilotActInterval; // Cobra - Pilot animation act interval (minut
 extern float g_fPilotHeadMoveRate; // Cobra - Pilot animation act move rate
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 extern float g_fTIR2DPitchPercentage, g_fTIR2DYawPercentage;
-extern TrackIR theTrackIRObject; // Retro 27/09/03
+extern TrackIR TheTrackIrObject; // Retro 27/09/03
 
 // MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs & Switches
 //                 because the ID numbers are out of order.
@@ -855,14 +855,14 @@ void AircraftClass::MoveSurfaces(void)
             else
             {
                 // Head TRACK IR Control
-                //SetDOF( COMP_HEAD_LR, -theTrackIRObject.getYaw());
-                //SetDOF( COMP_HEAD2_LR, -theTrackIRObject.getYaw());
-                //SetDOF( COMP_HEAD_UD, theTrackIRObject.getPitch());
-                //SetDOF( COMP_HEAD2_UD, theTrackIRObject.getPitch());
-                MoveDof(COMP_HEAD_LR, theTrackIRObject.getYaw(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD2_LR, theTrackIRObject.getYaw(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD_UD, theTrackIRObject.getPitch(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD2_UD, theTrackIRObject.getPitch(), g_fPilotHeadMoveRate, -1);
+                //SetDOF( COMP_HEAD_LR, -TheTrackIrObject.getYaw());
+                //SetDOF( COMP_HEAD2_LR, -TheTrackIrObject.getYaw());
+                //SetDOF( COMP_HEAD_UD, TheTrackIrObject.getPitch());
+                //SetDOF( COMP_HEAD2_UD, TheTrackIrObject.getPitch());
+                MoveDof(COMP_HEAD_LR, TheTrackIrObject.getYaw(), g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD2_LR, TheTrackIrObject.getYaw(), g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD_UD, TheTrackIrObject.getPitch(), g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD2_UD, TheTrackIrObject.getPitch(), g_fPilotHeadMoveRate, -1);
 
             }
         }
@@ -1566,7 +1566,7 @@ void AircraftClass::RunGearSurfaces(void)
     if (af->auxaeroData->animWheelRadius[0])
     {
         // MLR 2003-10-04 animate wheels.
-        // F4 only supports 3 gears currently (2003-10-04)
+        // FF only supports 3 gears currently (2003-10-04)
         int ng = af->NumGear();
 
         if (ng > 8) ng = 8;

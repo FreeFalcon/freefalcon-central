@@ -32,14 +32,14 @@
 #include "fsound.h"
 #include "vdial.h"
 
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 extern int CommandsKeyCombo;
 extern int CommandsKeyComboMod;
 extern unsigned int chatterCount;
 extern char chatterStr[256];
 extern SimBaseClass* eyeFlyTgt;
 extern int gUseAlpha;
-extern int eyeFlyEnabled;
+extern int EyeFlyEnabled;
 extern int narrowFOV;
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
@@ -1522,7 +1522,7 @@ void OTWDriverClass::ToggleEyeFly(void)
 {
     mlTrig trigYaw, trigPitch, trigRoll;
 
-    if (!eyeFlyEnabled)
+    if (!EyeFlyEnabled)
     {
         return;
     }

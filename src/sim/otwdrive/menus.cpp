@@ -45,7 +45,7 @@ static int exitMenuDesired = 0;
 extern bool g_bUse_DX_Engine;
 int tactical_is_training(void);
 
-extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
+extern char FalconPictureFolder[_MAX_PATH]; // JB 010623
 
 #define EXITMENU_POPUP_TIME 15000 // Exit menu will pop up 15 seconds after death
 
@@ -63,7 +63,7 @@ void OTWDriverClass::ShowVersionString(void)
     if (ShowVersion == 1)
         sprintf(verStr, "%d.%02d", MajorVersion, MinorVersion);
     else
-        sprintf(verStr, "%d.%02d%d%c", MajorVersion, MinorVersion, gLangIDNum);
+        sprintf(verStr, "%d.%02d%d%c", MajorVersion, MinorVersion, LanguageNumber);
 
     renderer->SetColor(0xff00ff00);
     renderer->TextCenter(-0.9F, 0.9F, verStr);
@@ -340,7 +340,7 @@ void OTWDriverClass::TakeScreenShot(void)
 #if 0
     sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s\\%s", FalconPictureFolder, tmpStr);
 #endif
 
     OTWImage->BackBufferToRAW(fileName);
@@ -668,7 +668,7 @@ void OTWDriverClass::ChangeExitMenu(int newVal)
             pos.x *= (60.0F * DTR) / GetFOV();
             endDialogObject = new DrawableBSP(MapVisId(VIS_END_MISSION), &pos, &IMatrix, 1.0f);
 
-            switch (gLangIDNum)
+            switch (LanguageNumber)
             {
                 case F4LANG_UK:               // UK
                 case F4LANG_ENGLISH:          // US

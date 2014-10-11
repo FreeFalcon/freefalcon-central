@@ -152,7 +152,7 @@ void Render3D::Setup(ImageBuffer *imageBuffer)
     Render2D::Setup(imageBuffer);
     SetFOV(60.0f * PI / 180.0f);
 
-    // Intialize our camera parameters to something reasonable
+    // Initialize our camera parameters to something reasonable
 
     pos.x = pos.y = pos.z = 0.0f;
     SetCamera(&pos, &IMatrix);
@@ -408,7 +408,7 @@ void Render3D::SetObjectDetail(float scaler)
 
 /***************************************************************************\
     Set the lighting direction
- (based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a FreeFalcon X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::SetLightDirection(const Tpoint* dir)
 {

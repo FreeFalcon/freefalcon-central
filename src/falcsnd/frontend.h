@@ -43,7 +43,7 @@
 /*
 ** int version = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETVERSION);
 **
-** Version will be 0x20yx for winamp 2.yx. versions previous to Winamp 2.0
+** Version will be 0x20yx for WinAmpPointer 2.yx. versions previous to Winamp 2.0
 ** typically (but not always) use 0x1zyx for 1.zx versions. Weird, I know.
 **
 ** The basic format for sending messages to Winamp is:
@@ -158,7 +158,7 @@
 **
 ** IPC_SETSKIN sets the current skin to "skinname". Note that skinname
 ** can be the name of a skin, a skin .zip file, with or without path.
-** If path isn't specified, the default search path is the winamp skins
+** If path isn't specified, the default search path is the WinAmpPointer skins
 ** directory.
 */
 
@@ -184,7 +184,7 @@
 ** IPC_EXECPLUG executes a visualization plug-in pointed to by WPARAM.
 ** the format of this string can be:
 ** "vis_whatever.dll"
-** "vis_whatever.dll,0" // (first mod, file in winamp plug-in dir)
+** "vis_whatever.dll,0" // (first mod, file in WinAmpPointer plug-in dir)
 ** "C:\\dir\\vis_whatever.dll,1"
 */
 

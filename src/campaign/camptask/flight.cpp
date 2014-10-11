@@ -149,7 +149,7 @@ CampaignTime gLastCombatBonus = 0;
 int gCampPlayerInput = Average;
 #endif
 
-extern int gCampDataVersion;
+extern int CampaignDataVersion;
 extern int g_nFlightVisualBonus;
 extern bool g_bRealisticAttrition; // JB 010710
 
@@ -280,7 +280,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
     memcpychk(&pos_.z_, stream, sizeof(BIG_SCALAR), rem);
     memcpychk(&fuel_burnt, stream, sizeof(long), rem);
 
-    if (gCampDataVersion < 65)
+    if (CampaignDataVersion < 65)
         fuel_burnt = 0;
 
     memcpychk(&last_move, stream, sizeof(CampaignTime), rem);
@@ -289,7 +289,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
     memcpychk(&mission_over_time, stream, sizeof(CampaignTime), rem);
     memcpychk(&mission_target, stream, sizeof(short), rem);
 
-    if (gCampDataVersion < 24)
+    if (CampaignDataVersion < 24)
     {
         char use_loadout = 0;
         uchar weapons[HARDPOINT_MAX];
@@ -297,7 +297,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
         loadouts = 1;
         loadout = new LoadoutStruct[loadouts];
 
-        if (gCampDataVersion >= 8)
+        if (CampaignDataVersion >= 8)
         {
             memcpychk(&use_loadout, stream, sizeof(char), rem);
 
@@ -309,7 +309,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
             }
         }
 
-        if (gCampDataVersion < 18)
+        if (CampaignDataVersion < 18)
         {
             short weapon[HARDPOINT_MAX];
             memcpychk(weapon, stream, sizeof(short)*HARDPOINT_MAX, rem);
@@ -341,7 +341,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
 
         for (int i = 0; i < loadouts; i++)
         {
-            if (gCampDataVersion <= 72)
+            if (CampaignDataVersion <= 72)
             {
                 int j;
 
@@ -364,7 +364,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
 
     memcpychk(&mission, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion > 65)
+    if (CampaignDataVersion > 65)
     {
         memcpychk(&old_mission, stream, sizeof(uchar), rem);
     }
@@ -382,7 +382,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
     memcpychk(&priority, stream, sizeof(uchar), rem);
     memcpychk(&mission_id, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion < 14)
+    if (CampaignDataVersion < 14)
     {
         uchar dummy;
         memcpychk(&dummy, stream, sizeof(uchar), rem);
@@ -390,7 +390,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
 
     memcpychk(&eval_flags, stream , sizeof(uchar), rem);
 
-    if (gCampDataVersion > 65)
+    if (CampaignDataVersion > 65)
     {
         memcpychk(&mission_context, stream , sizeof(uchar), rem);
     }
@@ -411,7 +411,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
 
     memcpychk(&squadron, stream, sizeof(VU_ID), rem);
 
-    if (gCampDataVersion > 65)
+    if (CampaignDataVersion > 65)
     {
         memcpychk(&requester, stream, sizeof(VU_ID), rem);
     }
@@ -432,7 +432,7 @@ FlightClass::FlightClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem
     memcpychk(&callsign_id, stream, sizeof(uchar), rem);
     memcpychk(&callsign_num, stream, sizeof(uchar), rem);
 
-    if (gCampDataVersion >= 72)
+    if (CampaignDataVersion >= 72)
     {
         memcpychk(&refuel, stream, sizeof(unsigned int), rem);
     }
@@ -5185,7 +5185,7 @@ void UpdateSquadronStatus(Flight flight, int landed, int playchatter)
         }
     }
 
-    // Decide wether to send the message or not
+    // Decide whether  to send the message or not
     if (sendmessage)
         FalconSendMessage(msg, FALSE);
     else if (msg)

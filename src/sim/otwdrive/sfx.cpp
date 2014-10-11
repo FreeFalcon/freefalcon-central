@@ -207,8 +207,8 @@ int SfxClass::TryParticleEffect(void)
         // Cobra - Kludge to fix no PS effects above overcast layer
         /*
         if (
-         otwPlatform && realWeather->weatherCondition > FAIR &&
-         (otwPlatform->ZPos() < (realWeather->stratusZ-realWeather->stratusDepth)))
+         otwPlatform && RealWeatherPointer->WeatherCondition > FAIR &&
+         (otwPlatform->ZPos() < (RealWeatherPointer->stratusZ-RealWeatherPointer->stratusDepth)))
          return 0;
         */
 
@@ -2697,8 +2697,8 @@ BOOL SfxClass::Exec()
 
         gWindTimer = SimLibElapsedTime + 120000;
 
-        hdg = ((WeatherClass*)realWeather)->WindHeadingAt(&pos);
-        vel = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+        hdg = ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos);
+        vel = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
         mlSinCos(&trig, hdg);
         gWindVect.x = trig.cos * vel;
         gWindVect.y = trig.sin * vel;
@@ -3445,8 +3445,8 @@ SfxClass::RunSecondarySfx(void)
             float wind;
 
             // current wind
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+            mlSinCos(&trigWind, ((WeatherClass*)RealWeatherPointer)->WindHeadingAt(&pos));
+            wind = ((WeatherClass*)RealWeatherPointer)->WindSpeedInFeetPerSecond(&pos);
             windvec.x = trigWind.cos * wind;
             windvec.y = trigWind.sin * wind;
             windvec.z = -10;

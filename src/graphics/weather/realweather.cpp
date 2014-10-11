@@ -81,7 +81,7 @@ const float UVCoords4X4[16][4][2] =
 
 inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
 {
-    if (weatherCondition == SUNNY) return;
+    if (WeatherCondition == SUNNY) return;
 
     // Bad Weather and inside overcast
     if (InsideOvercast()) return;
@@ -91,11 +91,11 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     // the Cloud vertices
     D3DDYNVERTEX Quad[4];
 
-    if (realWeather->weatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
-    else if ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
+    if (RealWeatherPointer->WeatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
+    else if ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
 
     // Assign textures Coord
-    if (realWeather->weatherCondition < FAIR || ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (RealWeatherPointer->WeatherCondition < FAIR || ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)))
     {
         Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
         Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
@@ -123,7 +123,7 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius, Quad[3].pos.z = 0;
 
     // Draw the Square
-    if (realWeather->weatherCondition < FAIR || ((realWeather->weatherCondition == FAIR) && (ShadingFactor < 5)))
+    if (RealWeatherPointer->WeatherCondition < FAIR || ((RealWeatherPointer->WeatherCondition == FAIR) && (ShadingFactor < 5)))
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, CirrusCumTextures.TexHandle());
     else
         TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, overcastTexture.TexHandle());
@@ -171,7 +171,7 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
 
 inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radius)
 {
-    if (weatherCondition != FAIR) return;
+    if (WeatherCondition != FAIR) return;
 
     float minFog = 0.2f;
 
@@ -268,7 +268,7 @@ void RealWeather::SetDrawingOrder(float ZPosition)
     DWORD Observer = GetObserverOrder(ZPosition);
 
     // check weather status, assing drawing order based on it
-    switch (weatherCondition)
+    switch (WeatherCondition)
     {
 
             // Fair or good weather
@@ -370,7 +370,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     TheTimeOfDay.SetScaleFactor(0);
 
     // RED - Update viewer / weather status
-    if (weatherCondition > FAIR)
+    if (WeatherCondition > FAIR)
     {
         LoOvercast = stratusZ + stratusDepth / 2.0f;
         HiOvercast = stratusZ - stratusDepth / 2.0f;
@@ -411,7 +411,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     }
 
     // update all the colors stuff
-    TheTimeOfDay.UpdateWeatherColors(weatherCondition);
+    TheTimeOfDay.UpdateWeatherColors(WeatherCondition);
     TheTimeOfDay.GetTextureLightingColor(&litCloudColor);
     Drawable3DCloud::SetCloudColor(&litCloudColor);
     Drawable2DCloud::SetCloudColor(&litCloudColor);
@@ -446,7 +446,7 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     // RED  - Update visible height if an overcasting is prsent
     // used by DrawableBSP to update its own visibility
     // if under the overcast layer
-    if (weatherCondition > FAIR && viewerZ < stratusZ) VisibleHeight = stratusZ;
+    if (WeatherCondition > FAIR && viewerZ < stratusZ) VisibleHeight = stratusZ;
     // if weather fine or Viever under the overcast, give a default positive value ( negative is higher )
     // so that positive makes ALWAYS VISIBLE
     else VisibleHeight = 10000.0f;
@@ -455,9 +455,9 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     float StratusHalf = stratusDepth / 2.0f;
 
     // Update fog evolution with weather
-    if (weatherCondition == POOR) LinearFogLimit = -stratusZ * 4.0f;
+    if (WeatherCondition == POOR) LinearFogLimit = -stratusZ * 4.0f;
 
-    if (weatherCondition == INCLEMENT)
+    if (WeatherCondition == INCLEMENT)
     {
         stratusZ = -15000.0f * WeatherQuality - 5000.0f;
         float sDistance = -stratusZ - (stratusDepth / 2.0f) ;
@@ -572,7 +572,7 @@ void RealWeather::GenerateClouds(bool bRandom)
         shadowCell = 2;
         drawableCell = 1;
 
-        /*if(weatherCondition > FAIR
+        /*if(WeatherCondition > FAIR
         &&(-viewerZ) > (-stratusZ) && (-viewerZ) < (-stratusZ)+stratusDepth)
         {
          numCells = 5;
@@ -621,13 +621,13 @@ void RealWeather::GenerateClouds(bool bRandom)
 void RealWeather::UpdateCondition(void)
 {
     // SUNNY
-    if (weatherCondition < FAIR) ShadingFactor = PRANDFloatPos() * 3.0f;
+    if (WeatherCondition < FAIR) ShadingFactor = PRANDFloatPos() * 3.0f;
 
     // FAIR OR WORST
-    if (weatherCondition == FAIR) ShadingFactor = PRANDFloatPos() * 9.0f;
+    if (WeatherCondition == FAIR) ShadingFactor = PRANDFloatPos() * 9.0f;
 
     // FAIR OR WORST
-    if (weatherCondition > FAIR)
+    if (WeatherCondition > FAIR)
     {
 
         LinearFogStatus = true;
@@ -768,7 +768,7 @@ void RealWeather::UpdateDrawables()
     float Stratus1Z = stratusZ;
 
     // if weather bad, position is upper or lower the stratus ( overcast ) layer
-    if (weatherCondition > FAIR)
+    if (WeatherCondition > FAIR)
     {
         // Stratus 1 is mover lower or upper based on observer position
         if (ObserverPos == OBSERVER_LOW) Stratus1Z += stratusDepth / 2.0f;
@@ -799,7 +799,7 @@ void RealWeather::UpdateDrawables()
     float Stratus1Alpha;
     float StratusShading;
 
-    if (weatherCondition <= FAIR)
+    if (WeatherCondition <= FAIR)
     {
         // Stratus 1 Alpha, depends on ShadingFactor and illumination
         Stratus1Alpha = max(0.0f, 1.0f - 0.4f * stratusShadingFactor - Ambient * 0.4f);
@@ -819,7 +819,7 @@ void RealWeather::UpdateDrawables()
 
     float Stratus2Alpha = max(0.0f, 1.0f - 0.3f * stratusShadingFactor - SunPitch / 4000.0f);
 
-    if (weatherCondition > FAIR) Stratus2Alpha /= 4.0f;
+    if (WeatherCondition > FAIR) Stratus2Alpha /= 4.0f;
 
     CloudHiColor = F_TO_ARGB(CloudAlpha, litCloudColor.r, litCloudColor.g, litCloudColor.b);
     CloudLoColor = F_TO_ARGB(CloudAlpha, litCloudColor.r * CloudShading, litCloudColor.g * CloudShading, litCloudColor.b * CloudShading);
@@ -849,7 +849,7 @@ void RealWeather::UpdateDrawables()
             stratusPos.z = stratus2Z;
             DrawStratus2(&stratusPos, sTxtIndex);
 
-            if (weatherCondition == FAIR || (weatherCondition > FAIR && InsideOvercast()))
+            if (WeatherCondition == FAIR || (WeatherCondition > FAIR && InsideOvercast()))
             {
                 for (i = 0; i < NUM_3DCLOUD_POLYS; i++)
                 {
@@ -907,7 +907,7 @@ void RealWeather::UpdateDrawables()
                         real3DClouds[q].drawable3DClouds[r++].Update(&cumulusPos, cTxtIndex);
 
                     // Cobra - Raining under dark cummulus clouds
-                    if ((weatherCondition == FAIR) && (ShadingFactor >= 5) && (viewerZ > cumulusPos.z))
+                    if ((WeatherCondition == FAIR) && (ShadingFactor >= 5) && (viewerZ > cumulusPos.z))
                     {
                         float dx = viewerX - cumulusPos.x;
                         float dy = viewerY - cumulusPos.y;
@@ -998,7 +998,7 @@ void RealWeather::Draw()
     if (DisplayOptions.bZBuffering) UpdateDrawables();
 
     // Weather quality check under overcast
-    if (weatherCondition == INCLEMENT && UnderOvercast())
+    if (WeatherCondition == INCLEMENT && UnderOvercast())
     {
         // if worst than just lighting, rain
         if (WeatherQuality >= 0.1f) DrawRain(); // RV - I-Hawk - was 0.75
@@ -1353,12 +1353,12 @@ void RealWeather::UpdateWeatherQuality(void)
     WeatherQualityStep = F_I32(PRANDFloatPos() * MAX_WEATHER_Q_STEPS);
     WeatherQualityRate = PRANDFloat() * MIN_WEATHER_Q_STEP;
 
-    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f)) realWeather->WeatherQualityRate = fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
+    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f)) RealWeatherPointer->WeatherQualityRate = fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
 }
 
 void RealWeather::TimeUpdateCallback(void *)
 {
-    realWeather->UpdateLighting();
+    RealWeatherPointer->UpdateLighting();
 
 }
 //Cobra

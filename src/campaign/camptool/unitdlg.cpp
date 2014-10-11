@@ -62,8 +62,8 @@ extern int inButton(RECT *but, WORD xPos, WORD yPos);
 
 #endif CAMPTOOL
 
-char *BSP;
-char *BTP;
+char* BspPointer;
+char* BtpPointer;
 
 // ========================================================
 // External prototypes
@@ -72,9 +72,9 @@ char *BTP;
 extern char TargetTypeStr[7][15];
 extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-extern int studlyCampaignDude;
+extern int StudlyCampaignDude;
 extern int ShowReal;
-extern HWND mainMenuWnd;
+extern HWND MainMenuWindow;
 void ChooseMission(void);
 void GetString(char* buffer);
 
@@ -675,7 +675,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     if (e)
     {
         GlobUnit = e;
-        DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
+        DialogBox(HInstance, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
         GlobUnit = u;
     }
 
@@ -1243,7 +1243,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                             GlobUnit = E;
                             aggmode = asAgg;
                             asAgg = 1;
-                            DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
+                            DialogBox(HInstance, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
                             GlobUnit = U;
                             asAgg = aggmode;
                             GetClientRect(hDlg, &rect);
@@ -1321,7 +1321,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                                 GlobUnit = U->GetUnitParent();
 
                                 if (GlobUnit && GlobUnit != U)
-                                    DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
+                                    DialogBox(HInstance, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
 
                                 GlobUnit = U;
                                 GetClientRect(hDlg, &rect);
@@ -1509,7 +1509,7 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     if (nw)
                     {
                         GlobWP = nw;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hDlg, (DLGPROC)EditWayPoint);
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_WPDIALOG), hDlg, (DLGPROC)EditWayPoint);
                         GlobWP = w;
                     }
 
@@ -1837,7 +1837,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     delete flights;
                     squadrons = NULL;
                     flights = NULL;
-                    studlyCampaignDude = 0;
+                    StudlyCampaignDude = 0;
                     EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
                     return (TRUE);
                     break;
@@ -1908,7 +1908,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                 case IDC_MISS_FOG:
                     if (flight)
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
 
                     // Continue on to debrief for Fist of God...
                 case IDC_DEBRIEF:
@@ -1918,9 +1918,9 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         char btitle[40] = "Mission Debrief";
 
                         BuildCampDebrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
+						BspPointer = brief_string;
+						BtpPointer = btitle;
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
                         MessageBox(hDlg, brief_string, "Mission Debrief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
                     }
 
@@ -1933,9 +1933,9 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         char btitle[40] = "Mission Brief";
 
                         BuildCampBrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
+						BspPointer = brief_string;
+						BtpPointer = btitle;
+                        DialogBox(HInstance, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
                         MessageBox(hDlg, brief_string, "Mission Brief", MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
                     }
 
@@ -2112,7 +2112,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
         case WM_INITDIALOG:              /* message: initialize dialog box */
             // SetTitle(BTP);
-            SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BSP);
+			SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BspPointer);
             return (TRUE);
             break;
 

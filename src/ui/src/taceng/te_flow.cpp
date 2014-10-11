@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ void PickTeamColors();
 void InitTimeCompressionBox(long compression);
 void UpdateOwners();
 extern long OwnershipChanged;
-void tactical_edit_mission(tactical_mission *);
+void tactical_edit_mission(TacticalMission *);
 static void tactical_revert_mission(void);
 
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
@@ -232,7 +232,7 @@ void ActivateTacMissionSchedule()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(TAC_PLAY_SCREEN);
+    win = MainHandlerPointer->FindWindow(TAC_PLAY_SCREEN);
 
     if (win)
     {
@@ -253,7 +253,7 @@ void ActivateTacMissionBuilder()
     C_Window *win;
     C_Button *btn;
 
-    win = gMainHandler->FindWindow(TAC_EDIT_SCREEN);
+    win = MainHandlerPointer->FindWindow(TAC_EDIT_SCREEN);
 
     if (win)
     {
@@ -278,10 +278,10 @@ static void TACNewCB(long, short hittype, C_Base *control)
     }
 
     LoadTacticalWindows();
-    gMainHandler->EnterCritical();
-    gMainHandler->DisableWindowGroup(100);
-    gMainHandler->DisableSection(100);
-    gMainHandler->SetSection(200);
+    MainHandlerPointer->EnterCritical();
+    MainHandlerPointer->DisableWindowGroup(100);
+    MainHandlerPointer->DisableSection(100);
+    MainHandlerPointer->SetSection(200);
 
     if (current_tactical_mission)
     {
@@ -293,21 +293,21 @@ static void TACNewCB(long, short hittype, C_Base *control)
     char path[_MAX_PATH];
     sprintf(path, "%s\\te_new.tac", FalconCampaignSaveDirectory);
 
-    current_tactical_mission = new tactical_mission(path);
+    current_tactical_mission = new TacticalMission(path);
 
 #ifdef CAMPTOOL
 
     if (gRenameIds)
-        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+        SendMessage(MainHandlerPointer->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
         tactical_edit_mission(current_tactical_mission);
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     ActivateTacMissionBuilder();
     gSelectedTeam = 1;
     PickTeamColors();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -328,24 +328,24 @@ static void TACEditCB(long ID, short hittype, C_Base *control)
     }
 
     LoadTacticalWindows();
-    gMainHandler->EnterCritical();
-    gMainHandler->DisableWindowGroup(100);
-    gMainHandler->DisableSection(100);
-    gMainHandler->SetSection(200);
+    MainHandlerPointer->EnterCritical();
+    MainHandlerPointer->DisableWindowGroup(100);
+    MainHandlerPointer->DisableSection(100);
+    MainHandlerPointer->SetSection(200);
 
 #ifdef CAMPTOOL
 
     if (gRenameIds)
-        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+        SendMessage(MainHandlerPointer->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
         tactical_edit_mission(current_tactical_mission);
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     ActivateTacMissionBuilder();
     gSelectedTeam = 1;
     PickTeamColors();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -371,9 +371,9 @@ static void TACReallyAcceptCB(void)
 
     LoadTacticalWindows();
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
     tactical_accept_mission();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -435,17 +435,17 @@ static void TACExitCB(long, short hittype, C_Base *)
 
     RemoveTacticalEdit();
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     TheCampaign.EndCampaign();
     CleanupTacticalEngagementUI();
     TacLastGroup = 0;
 
-    gMainHandler->DisableSection(200);
-    gMainHandler->SetSection(100);
-    gMainHandler->EnableWindowGroup(100);
-    gMainHandler->EnableWindowGroup(MainLastGroup);
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->DisableSection(200);
+    MainHandlerPointer->SetSection(100);
+    MainHandlerPointer->EnableWindowGroup(100);
+    MainHandlerPointer->EnableWindowGroup(MainLastGroup);
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -460,7 +460,7 @@ static void TACInfoCB(long, short hittype, C_Base *)
     }
 
     SetupInfoWindow(NULL, NULL);
-    // gMainHandler->EnableWindowGroup (control->GetGroup ());
+    // MainHandlerPointer->EnableWindowGroup (control->GetGroup ());
 
     //MonoPrint ("Info\n");
 }
@@ -510,13 +510,13 @@ static void TACSaveFileCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    win = gMainHandler->FindWindow(SAVE_WIN);
+    win = MainHandlerPointer->FindWindow(SAVE_WIN);
 
     if (!win)
         return;
 
-    gMainHandler->HideWindow(win);
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(win);
+    MainHandlerPointer->HideWindow(control->Parent_);
 
     edit_box = (C_EditBox*) win->FindControl(FILE_NAME);
 
@@ -639,16 +639,16 @@ void tactical_play_setup()
 {
     short i;
 
-    if (!gMainHandler)
+    if (!MainHandlerPointer)
         return;
 
     // MonoPrint ("Tactical Play Setup\n");
 
-    gMainHandler->EnterCritical();
-    gMainHandler->DisableWindowGroup(100);
-    gMainHandler->DisableSection(100);
-    gMainHandler->SetSection(200);
-    gMainHandler->EnableWindowGroup(3025);
+    MainHandlerPointer->EnterCritical();
+    MainHandlerPointer->DisableWindowGroup(100);
+    MainHandlerPointer->DisableSection(100);
+    MainHandlerPointer->SetSection(200);
+    MainHandlerPointer->EnableWindowGroup(3025);
 
     tactical_update_campaign_entities();
 
@@ -693,7 +693,7 @@ void tactical_play_setup()
     }
 
     ActivateTacMissionSchedule();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -744,7 +744,7 @@ void restart_tactical_engagement(void)
         SetTimeCompression(0);
     }
 
-    gMainHandler->SetSection(200);
+    MainHandlerPointer->SetSection(200);
 
     LoadTacEngSelectWindows();
     LoadTacticalWindows();
@@ -752,7 +752,7 @@ void restart_tactical_engagement(void)
     tactical_play_setup();
 
     if (TacLastGroup)
-        gMainHandler->EnableWindowGroup(TacLastGroup);
+        MainHandlerPointer->EnableWindowGroup(TacLastGroup);
     else
         ActivateTacMissionSchedule();
 }
@@ -761,7 +761,7 @@ void restart_tactical_engagement(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_edit_mission(tactical_mission *)
+void tactical_edit_mission(TacticalMission *)
 {
     short i;
     int
@@ -800,7 +800,7 @@ void tactical_edit_mission(tactical_mission *)
             }
             else
             {
-                current_tactical_mission = new tactical_mission(filename);
+                current_tactical_mission = new TacticalMission(filename);
                 break;
             }
         }
@@ -852,7 +852,7 @@ void tactical_edit_mission(tactical_mission *)
 // This basically Ends, then starts
 void tactical_revert_mission(void)
 {
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
     tactical_mission_loaded = FALSE;
 
     RemoveTacticalEdit();
@@ -863,7 +863,7 @@ void tactical_revert_mission(void)
 #ifdef CAMPTOOL
 
     if (gRenameIds)
-        SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+        SendMessage(MainHandlerPointer->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
         tactical_edit_mission(current_tactical_mission);
@@ -871,7 +871,7 @@ void tactical_revert_mission(void)
     ActivateTacMissionBuilder();
     gSelectedTeam = 1;
     PickTeamColors();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -892,7 +892,7 @@ void update_taceng_clock(void)
     C_Clock
     *clk;
 
-    win = gMainHandler->FindWindow(TAC_TIME);
+    win = MainHandlerPointer->FindWindow(TAC_TIME);
 
     if (!win)
     {

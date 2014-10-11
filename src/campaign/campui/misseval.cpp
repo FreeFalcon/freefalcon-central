@@ -188,7 +188,7 @@ int AddObjectToKillsList(int index);
 int score_player_ejected(void);
 void UpdateEvaluators(FlightDataClass *flight_data, PilotDataClass *pilot_data);
 class C_Handler;
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern void AddMessageToChatWindow(VU_ID from, _TCHAR *message);
 
 #ifdef DEBUG
@@ -197,7 +197,7 @@ extern int testDebrief;
 
 #ifdef DEBUG
 int gPlayerPilotLock = 0;
-extern int doUI;
+extern int DoUI;
 #endif
 
 extern int ConvertTeamToStringIndex(int team, int gender = 0, int usage = 0, int plural = 0);
@@ -365,7 +365,7 @@ void MissionEvaluationClass::CleanupPilotData(void)
     }
 }
 
-extern int doUI;
+extern int DoUI;
 
 void MissionEvaluationClass::PreDogfightEval(void)
 {
@@ -466,7 +466,7 @@ int MissionEvaluationClass::PreMissionEval(Flight flight, uchar aircraft_slot)
 
 #endif
 
-    ShiAssert(doUI || (g_bLogEvents));
+    ShiAssert(DoUI || (g_bLogEvents));
 
     CampEnterCriticalSection();
 
@@ -925,7 +925,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
 
                         _TCHAR tmp2[30];
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(fpsm->dataBlock.side, F4LANG_FEMININE), tmp2, 29);
                         else
                             ReadIndexedString(ConvertTeamToStringIndex(fpsm->dataBlock.side), tmp2, 29);
@@ -2787,7 +2787,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         // determine vehicle name and country
                         vc = GetVehicleClassData(dtm->dataBlock.fIndex - VU_LAST_ENTITY_TYPE);
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.fSide, F4LANG_FEMININE), tmp2, 29);
                         // ReadIndexedString(3821+20*dtm->dataBlock.fSide,tmp2,29);
                         else
@@ -2857,7 +2857,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         else
                             _stprintf(tmp, "");
 
-                        if (gLangIDNum == F4LANG_GERMAN)
+                        if (LanguageNumber == F4LANG_GERMAN)
                             ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.fSide, F4LANG_FEMININE), tmp2, 29);
                         // ReadIndexedString(3821+20*dtm->dataBlock.fSide,tmp2,29);
                         else
@@ -3083,7 +3083,7 @@ void MissionEvaluationClass::RegisterKill(FalconDeathMessage *dtm, int type, int
                         }
                     }
 
-                    if (gLangIDNum == F4LANG_GERMAN)
+                    if (LanguageNumber == F4LANG_GERMAN)
                         ReadIndexedString(ConvertTeamToStringIndex(dtm->dataBlock.dSide, F4LANG_FEMININE), tmp2, 29);
                     // ReadIndexedString(3821+20*dtm->dataBlock.dSide,tmp2,29);
                     else

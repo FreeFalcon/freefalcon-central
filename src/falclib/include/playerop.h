@@ -31,7 +31,7 @@ public:
     float SfxLevel; // 1.0-5.0
     float PlayerBubble; // 0.5 - 2 multiplier for player bubble size
 
-    int weatherCondition; //JAM 18Nov03
+    int WeatherCondition; //JAM 18Nov03
     int Season; //THW 2004-01-17
 
     int SimFlags; // Sim flags

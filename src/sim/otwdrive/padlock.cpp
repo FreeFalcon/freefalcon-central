@@ -69,7 +69,7 @@ extern int g_nNearLabelLimit;
 extern float g_fPadlockBreakDistance;
 extern bool g_bPadlockHudColor; //Wombat778 4-28-04
 
-static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
 
 
 // ------------------------------------------------------------------------------

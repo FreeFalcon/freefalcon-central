@@ -274,7 +274,7 @@ extern MEM_ERROR_FN lastErrorFn;
 #define MUSIC_DELAY (60l * 1000l)
 
 extern void UpdateDFPlayerList();
-C_Handler *gMainHandler = NULL;
+C_Handler *MainHandlerPointer = NULL;
 extern C_Music *gMusic;
 extern BOOL gNewMessage;
 extern C_Map *gMapMgr;
@@ -282,22 +282,22 @@ extern IMAGE_RSC *gOccupationMap;
 extern CSoundMgr *gSoundDriver;
 extern char *gUBuffer;
 extern WORD *gScreenShotBuffer;
-extern long gScreenShotEnabled;
+extern long ScreenShotEnabled;
 extern long MusicStopped; // Delay between music
 
 // M.N.
 extern bool g_bHiResUI;
 
-extern HINSTANCE hInst;
+extern HINSTANCE HInstance;
 
-char gUI_AutoSaveName[MAX_PATH];
+char UiAutoSaveName[MAX_PATH];
 extern long gRanksTxt[NUM_RANKS];
 
 extern char **KeyDescrips;
 void CleanupKeys(void);
 extern PhoneBook *gPlayerBook;
 extern C_TreeList *People, *DogfightGames, *TacticalGames, *CampaignGames;
-extern C_SoundBite *gInstantBites, *gDogfightBites, *gCampaignBites;
+extern C_SoundBite *InstantBitesPointer, *DogFightBites, *CampaignBitesPointer;
 
 void InitFontTool();
 
@@ -464,16 +464,16 @@ void CloseAllRenderers(long openID)
     C_Window *win;
     C_Button *btn;
 
-    if (gMainHandler->GetWindowFlags(openID) & C_BIT_ENABLED)
+    if (MainHandlerPointer->GetWindowFlags(openID) & C_BIT_ENABLED)
         return;
 
-    gMainHandler->EnterCritical();
+    MainHandlerPointer->EnterCritical();
 
     if (openID != RECON_WIN && openID != RECON_LIST_WIN)
     {
-        win = gMainHandler->FindWindow(RECON_WIN);
+        win = MainHandlerPointer->FindWindow(RECON_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
+        if (win && (MainHandlerPointer->GetWindowFlags(RECON_WIN) & C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -481,9 +481,9 @@ void CloseAllRenderers(long openID)
                 CloseReconWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
         }
 
-        win = gMainHandler->FindWindow(RECON_LIST_WIN);
+        win = MainHandlerPointer->FindWindow(RECON_LIST_WIN);
 
-        if (win && (gMainHandler->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
+        if (win && (MainHandlerPointer->GetWindowFlags(RECON_LIST_WIN) & C_BIT_ENABLED))
         {
             btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -492,9 +492,9 @@ void CloseAllRenderers(long openID)
         }
     }
 
-    win = gMainHandler->FindWindow(MUNITIONS_WIN);
+    win = MainHandlerPointer->FindWindow(MUNITIONS_WIN);
 
-    if (win && (gMainHandler->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
+    if (win && (MainHandlerPointer->GetWindowFlags(MUNITIONS_WIN) & C_BIT_ENABLED))
     {
         btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
 
@@ -502,7 +502,7 @@ void CloseAllRenderers(long openID)
             CloseMunitionsWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
     }
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win)
     {
@@ -512,7 +512,7 @@ void CloseAllRenderers(long openID)
             CloseSetupWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
     }
 
-    win = gMainHandler->FindWindow(TAC_REF_WIN);
+    win = MainHandlerPointer->FindWindow(TAC_REF_WIN);
 
     if (win)
     {
@@ -523,7 +523,7 @@ void CloseAllRenderers(long openID)
     }
 
     CloseACMI();
-    gMainHandler->LeaveCritical();
+    MainHandlerPointer->LeaveCritical();
 }
 
 void LeaveCurrentGame()
@@ -637,7 +637,7 @@ void LoadMainWindow()
     gUBuffer = &gTrackBuffer[0];
 
     //Display the version on the main screen
-    /*C_Window *win = gMainHandler->FindWindow(UI_MAIN_SCREEN);
+    /*C_Window *win = MainHandlerPointer->FindWindow(UI_MAIN_SCREEN);
     C_Text *txt=new C_Text;
     txt->Setup(C_DONT_CARE,0);
     txt->SetFont(BANK_GOTHIC_16);
@@ -671,8 +671,8 @@ static void ExitTheGameCB(long , short hittype, C_Base *)
     g_intellivibeData.IsExitGame = true;
     memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
 
-    // PostMessage(gMainHandler->GetAppWnd(),FM_END_UI,0,0);
-    PostMessage(gMainHandler->GetAppWnd(), FM_EXIT_GAME, 0, 0);
+    // PostMessage(MainHandlerPointer->GetAppWnd(),FM_END_UI,0,0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_EXIT_GAME, 0, 0);
 }
 
 void ExitCloseWindowCB(long , short hittype, C_Base *control)
@@ -680,11 +680,11 @@ void ExitCloseWindowCB(long , short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    // gMainHandler->SetOutputDelay(80);
-    // gMainHandler->SetControlDelay(80);
+    // MainHandlerPointer->SetOutputDelay(80);
+    // MainHandlerPointer->SetControlDelay(80);
     if (control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 
         if (MainLastGroup == control->GetGroup())
             MainLastGroup = 0;
@@ -699,13 +699,13 @@ static void ExitButtonCB(long , short hittype, C_Base *)
         return;
 
 
-    win = gMainHandler->FindWindow(EXIT_WIN);
+    win = MainHandlerPointer->FindWindow(EXIT_WIN);
 
     if (win)
         win->VY_[1] = win->ClientArea_[1].top;
 
-    // gMainHandler->SetOutputDelay(40);
-    // gMainHandler->SetControlDelay(40);
+    // MainHandlerPointer->SetOutputDelay(40);
+    // MainHandlerPointer->SetControlDelay(40);
     ExitVerify(TXT_EXIT_GAME, ExitTheGameCB, ExitCloseWindowCB);
 }
 
@@ -716,7 +716,7 @@ void CloseWindowCB(long , short hittype, C_Base *control)
 
     if (control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(control->GetGroup());
+        MainHandlerPointer->DisableWindowGroup(control->GetGroup());
 
         if (MainLastGroup == control->GetGroup())
             MainLastGroup = 0;
@@ -729,7 +729,7 @@ void GenericCloseWindowCB(long , short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
 }
 
 void MinMaxWindowCB(long , short hittype, C_Base *control)
@@ -753,9 +753,9 @@ void DisableScenarioInfo()
     C_Window *win;
     C_Base *ctrl;
 
-    gMainHandler->DisableWindowGroup(3050);
-    gMainHandler->DisableWindowGroup(4050);
-    win = gMainHandler->FindWindow(CS_TOOLBAR_WIN);
+    MainHandlerPointer->DisableWindowGroup(3050);
+    MainHandlerPointer->DisableWindowGroup(4050);
+    win = MainHandlerPointer->FindWindow(CS_TOOLBAR_WIN);
 
     if (win)
     {
@@ -776,7 +776,7 @@ void DisableScenarioInfo()
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_LOAD_TOOLBAR);
+    win = MainHandlerPointer->FindWindow(TAC_LOAD_TOOLBAR);
 
     if (win)
     {
@@ -803,8 +803,8 @@ void EnableScenarioInfo(long ID)
     C_Window *win;
     C_Base*  ctrl;
 
-    gMainHandler->EnableWindowGroup(ID);
-    win = gMainHandler->FindWindow(CS_TOOLBAR_WIN);
+    MainHandlerPointer->EnableWindowGroup(ID);
+    win = MainHandlerPointer->FindWindow(CS_TOOLBAR_WIN);
 
     if (win)
     {
@@ -825,7 +825,7 @@ void EnableScenarioInfo(long ID)
         }
     }
 
-    win = gMainHandler->FindWindow(TAC_LOAD_TOOLBAR);
+    win = MainHandlerPointer->FindWindow(TAC_LOAD_TOOLBAR);
 
     if (win)
     {
@@ -864,12 +864,12 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
     if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(MainLastGroup);
+        MainHandlerPointer->DisableWindowGroup(MainLastGroup);
     }
 
     if (MainLastGroup != control->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
     }
 
@@ -893,12 +893,12 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 
     if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(MainLastGroup);
+        MainHandlerPointer->DisableWindowGroup(MainLastGroup);
     }
 
     if (MainLastGroup != control->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
     }
 
@@ -923,11 +923,11 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
         LoadTacEngSelectWindows();
 
     if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
-        gMainHandler->DisableWindowGroup(MainLastGroup);
+        MainHandlerPointer->DisableWindowGroup(MainLastGroup);
 
     if (MainLastGroup != control->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
     }
 
@@ -954,10 +954,10 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
     if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(MainLastGroup);
+        MainHandlerPointer->DisableWindowGroup(MainLastGroup);
     }
 
-    win = gMainHandler->FindWindow(CS_SELECT_WIN);
+    win = MainHandlerPointer->FindWindow(CS_SELECT_WIN);
 
     if (win)
     {
@@ -970,7 +970,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
         }
     }
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     MainLastGroup = control->GetGroup();
 
     SetCursor(gCursors[CRSR_F16]);
@@ -987,11 +987,11 @@ void OpenCommsCB(long , short hittype, C_Base *control)
 
     if (!gCommsMgr->Online())
     {
-        gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
+        MainHandlerPointer->EnableWindowGroup(control->GetUserNumber(1));
     }
     else
     {
-        gMainHandler->EnableWindowGroup(control->GetUserNumber(0));
+        MainHandlerPointer->EnableWindowGroup(control->GetUserNumber(0));
         gNewMessage = FALSE;
     }
 }
@@ -1010,7 +1010,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 
     if (TacRef_Setup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     }
 
     SetCursor(gCursors[CRSR_F16]);
@@ -1026,7 +1026,7 @@ void OpenSetupCB(long , short hittype, C_Base *control)
 
     CloseAllRenderers(SETUP_WIN);
 
-    gMainHandler->EnableWindowGroup(control->GetGroup());
+    MainHandlerPointer->EnableWindowGroup(control->GetGroup());
     SetCursor(gCursors[CRSR_F16]);
 }
 
@@ -1037,7 +1037,7 @@ void OpenFontToolCB(long , short hittype, C_Base *)
         return;
 
     InitFontTool();
-    gMainHandler->EnableWindowGroup(-100);
+    MainHandlerPointer->EnableWindowGroup(-100);
 }
 
 
@@ -1098,7 +1098,7 @@ void HookupControls(long ID)
     C_Button *ctrl;
     C_ListBox *lbox;
 
-    winme = gMainHandler->FindWindow(ID);
+    winme = MainHandlerPointer->FindWindow(ID);
 
     if (winme == NULL)
         return;
@@ -1260,46 +1260,46 @@ void GlobalSetup()
     // FILE *fp;
 
     mouse = MAKEINTRESOURCE(UI_F16);
-    gCursors[1] = LoadCursor(hInst, mouse);
+    gCursors[1] = LoadCursor(HInstance, mouse);
     gCursors[0] = gCursors[1];
     mouse = MAKEINTRESOURCE(UI_F16_ON);
-    gCursors[2] = LoadCursor(hInst, mouse);
+    gCursors[2] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_F16_ON_RM);
-    gCursors[3] = LoadCursor(hInst, mouse);
+    gCursors[3] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_F16_RM);
-    gCursors[4] = LoadCursor(hInst, mouse);
+    gCursors[4] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG);
-    gCursors[5] = LoadCursor(hInst, mouse);
+    gCursors[5] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG_RM);
-    gCursors[6] = LoadCursor(hInst, mouse);
+    gCursors[6] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_DRAG_STEERPOINT);
-    gCursors[7] = LoadCursor(hInst, mouse);
+    gCursors[7] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG);
-    gCursors[8] = LoadCursor(hInst, mouse);
+    gCursors[8] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG_ON);
-    gCursors[9] = LoadCursor(hInst, mouse);
+    gCursors[9] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_HDRAG_RM);
-    gCursors[10] = LoadCursor(hInst, mouse);
+    gCursors[10] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG);
-    gCursors[11] = LoadCursor(hInst, mouse);
+    gCursors[11] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG_ON);
-    gCursors[12] = LoadCursor(hInst, mouse);
+    gCursors[12] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_VDRAG_RM);
-    gCursors[13] = LoadCursor(hInst, mouse);
+    gCursors[13] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_STEERPOINT);
-    gCursors[14] = LoadCursor(hInst, mouse);
+    gCursors[14] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_LIST_F16);
-    gCursors[15] = LoadCursor(hInst, mouse);
+    gCursors[15] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_NOT_ALLOWED);
-    gCursors[16] = LoadCursor(hInst, mouse);
+    gCursors[16] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_MAP_ZOOM);
-    gCursors[17] = LoadCursor(hInst, mouse);
+    gCursors[17] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_TARGET);
-    gCursors[18] = LoadCursor(hInst, mouse);
+    gCursors[18] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_WAIT);
-    gCursors[19] = LoadCursor(hInst, mouse);
+    gCursors[19] = LoadCursor(HInstance, mouse);
     mouse = MAKEINTRESOURCE(UI_TEXT);
-    gCursors[20] = LoadCursor(hInst, mouse);
+    gCursors[20] = LoadCursor(HInstance, mouse);
 
     SetCursor(gCursors[CRSR_WAIT]);
 
@@ -1320,7 +1320,7 @@ void GlobalSetup()
     gImageMgr->SetScreenFormat(r_shift, g_shift, b_shift);
 
     gFontList = new C_Font;
-    gFontList->Setup(gMainHandler);
+    gFontList->Setup(MainHandlerPointer);
 
     gAnimMgr = new C_Animation;
     gAnimMgr->Setup();
@@ -1332,13 +1332,13 @@ void GlobalSetup()
     gStringMgr->Setup(TXT_LAST_TEXT_ID);
 
     gPopupMgr = new C_PopupMgr;
-    gPopupMgr->Setup(gMainHandler);
+    gPopupMgr->Setup(MainHandlerPointer);
 
     gMovieMgr = new C_Movie;
     gMovieMgr->Setup();
 
     gMainParser = new C_Parser;
-    gMainParser->Setup(gMainHandler, gImageMgr, gFontList, gSoundMgr, gPopupMgr, gAnimMgr, gStringMgr, gMovieMgr);
+    gMainParser->Setup(MainHandlerPointer, gImageMgr, gFontList, gSoundMgr, gPopupMgr, gAnimMgr, gStringMgr, gMovieMgr);
 
     gMainParser->SetCheck(0); // Used to find which IDs are NOT used
 
@@ -1491,17 +1491,17 @@ void PlayUIMovie(long ID)
 #ifdef _USE_MOVIE_
     C_Window *win;
 
-    win = gMainHandler->FindWindow(VIDEO_WIN);
+    win = MainHandlerPointer->FindWindow(VIDEO_WIN);
 
     if ((win) && (gMovieMgr->GetMovie(ID)))
     {
         gMoviePlaying = TRUE;
         gMusic->FadeOut_Pause();
-        gMainHandler->ShowWindow(win);
-        gMainHandler->WindowToFront(win);
+        MainHandlerPointer->ShowWindow(win);
+        MainHandlerPointer->WindowToFront(win);
         gMovieMgr->SetXY(win->GetX() + win->ClientArea_[0].left, win->GetY() + win->ClientArea_[0].top);
         gMovieMgr->Play(ID);
-        gMainHandler->HideWindow(win);
+        MainHandlerPointer->HideWindow(win);
         gMusic->Resume();
         gMoviePlaying = FALSE;
     }
@@ -1638,7 +1638,7 @@ int UI_Startup()
     ShowWindow(FalconDisplay.appWin, SW_SHOWNORMAL);
     UpdateWindow(FalconDisplay.appWin);
 
-    if (gScreenShotEnabled)
+    if (ScreenShotEnabled)
     {
         if (g_bHiResUI)
             gScreenShotBuffer = new WORD[1024l * 768l];
@@ -1646,9 +1646,9 @@ int UI_Startup()
             gScreenShotBuffer = new WORD[800l * 600l];
     }
 
-    gMainHandler = new C_Handler;
-    gMainHandler->Setup(FalconDisplay.appWin, NULL, Primary);
-    // gMainHandler->SetCallback(UIMainMouse);
+    MainHandlerPointer = new C_Handler;
+    MainHandlerPointer->Setup(FalconDisplay.appWin, NULL, Primary);
+    // MainHandlerPointer->SetCallback(UIMainMouse);
 
     GlobalSetup();
     LoadArtwork();
@@ -1662,7 +1662,7 @@ int UI_Startup()
     LoadHelpGuideWindows();
     RealLoadLogbook(); // without daves extra garbage
 
-    _tcscpy(gUI_AutoSaveName, gStringMgr->GetString(TXT_AUTOSAVENAME));
+    _tcscpy(UiAutoSaveName, gStringMgr->GetString(TXT_AUTOSAVENAME));
 
 
     if (gCommsMgr->Online())
@@ -1683,7 +1683,7 @@ int UI_Startup()
         i++;
     }
 
-    gMainHandler->SetSection(100);
+    MainHandlerPointer->SetSection(100);
 
     if (MainLastGroup)
     {
@@ -1696,8 +1696,8 @@ int UI_Startup()
         if (MainLastGroup == 1000)
         {
             LoadInstantActionWindows();
-            gMainHandler->EnableWindowGroup(100);
-            gMainHandler->EnableWindowGroup(MainLastGroup);
+            MainHandlerPointer->EnableWindowGroup(100);
+            MainHandlerPointer->EnableWindowGroup(MainLastGroup);
         }
         else if (MainLastGroup == 2000)
         {
@@ -1710,21 +1710,21 @@ int UI_Startup()
         }
         else if (MainLastGroup == 4000)
         {
-            gMainHandler->SetSection(200);
+            MainHandlerPointer->SetSection(200);
             LoadCampaignSelectWindows();
             SetupMapWindow();
             LoadCampaignWindows();
             CampaignSetup();
-            gMainHandler->EnableWindowGroup(200);
+            MainHandlerPointer->EnableWindowGroup(200);
 
             if (CampaignLastGroup)
             {
-                win = gMainHandler->FindWindow(CP_TOOLBAR);
+                win = MainHandlerPointer->FindWindow(CP_TOOLBAR);
 
                 if (win)
                     win->UnHideCluster(CampaignLastGroup);
 
-                gMainHandler->EnableWindowGroup(CampaignLastGroup);
+                MainHandlerPointer->EnableWindowGroup(CampaignLastGroup);
             }
 
             ActivateCampMissionSchedule();
@@ -1742,11 +1742,11 @@ int UI_Startup()
         }
         else
         {
-            gMainHandler->EnableWindowGroup(MainLastGroup);
+            MainHandlerPointer->EnableWindowGroup(MainLastGroup);
         }
     }
     else
-        gMainHandler->EnableWindowGroup(100);
+        MainHandlerPointer->EnableWindowGroup(100);
 
     if (CampaignLastGroup != 4000)
         PlayUIMusic();
@@ -1754,10 +1754,10 @@ int UI_Startup()
     gSoundMgr->SetAllVolumes(PlayerOptions.GroupVol[UI_SOUND_GROUP]);
 
 
-    gMainHandler->StartTimerThread(UI_TIMER_INTERVAL); // 1 second intervals
+    MainHandlerPointer->StartTimerThread(UI_TIMER_INTERVAL); // 1 second intervals
 
-    gMainHandler->SetEnableTime(GetCurrentTime() + 100);
-    gMainHandler->SetDrawFlag(1); // allow drawing (currently a true/false flag)
+    MainHandlerPointer->SetEnableTime(GetCurrentTime() + 100);
+    MainHandlerPointer->SetDrawFlag(1); // allow drawing (currently a true/false flag)
 
     UI_VuThread = new VuThread(&UIFilter, F4_EVENT_QUEUE_SIZE);
 
@@ -1818,11 +1818,11 @@ void UI_Cleanup()
         gMapMgr = NULL;
     }
 
-    if (gMainHandler)
+    if (MainHandlerPointer)
     {
-        gMainHandler->Cleanup();
-        delete gMainHandler;
-        gMainHandler = NULL;
+        MainHandlerPointer->Cleanup();
+        delete MainHandlerPointer;
+        MainHandlerPointer = NULL;
     }
 
     if (gUIViewer)
@@ -1968,25 +1968,25 @@ void UI_Cleanup()
         F4LeaveCriticalSection(vuCritical);
     }
 
-    if (gInstantBites)
+    if (InstantBitesPointer)
     {
-        gInstantBites->Cleanup();
-        delete gInstantBites;
-        gInstantBites = NULL;
+        InstantBitesPointer->Cleanup();
+        delete InstantBitesPointer;
+        InstantBitesPointer = NULL;
     }
 
-    if (gDogfightBites)
+    if (DogFightBites)
     {
-        gDogfightBites->Cleanup();
-        delete gDogfightBites;
-        gDogfightBites = NULL;
+        DogFightBites->Cleanup();
+        delete DogFightBites;
+        DogFightBites = NULL;
     }
 
-    if (gCampaignBites)
+    if (CampaignBitesPointer)
     {
-        gCampaignBites->Cleanup();
-        delete gCampaignBites;
-        gCampaignBites = NULL;
+        CampaignBitesPointer->Cleanup();
+        delete CampaignBitesPointer;
+        CampaignBitesPointer = NULL;
     }
 
     ShutdownSetup();
@@ -2003,7 +2003,7 @@ void UI_Cleanup()
         if (gCursors[i])
             DeleteObject(gCursors[i]);
 
-    if (gScreenShotEnabled && gScreenShotBuffer)
+    if (ScreenShotEnabled && gScreenShotBuffer)
     {
         delete gScreenShotBuffer;
         gScreenShotBuffer = NULL;
@@ -2070,10 +2070,10 @@ static void TheaterBackCB(long, short hittype, C_Base *control)
         return;
 
     TheaterDef *td = NULL;
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
     MainLastGroup = 0;
 
-    C_Window *win = gMainHandler->FindWindow(UI_THEATER_WINDOW);
+    C_Window *win = MainHandlerPointer->FindWindow(UI_THEATER_WINDOW);
 
     C_Button *btn = (C_Button*)win->FindControl(UI_THEATER_IMAGE);
 
@@ -2089,10 +2089,10 @@ static void TheaterBackCB(long, short hittype, C_Base *control)
         }
     }
 
-    PostMessage(gMainHandler->GetAppWnd(), FM_END_UI, 0, 0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_END_UI, 0, 0);
     // wParam "1" calls "DoSoundSetup" in TheaterDef.cpp
     // Can't call it here, as the UI must be shut down before the sound gets setup again
-    PostMessage(gMainHandler->GetAppWnd(), FM_START_UI, 1, 0);
+    PostMessage(MainHandlerPointer->GetAppWnd(), FM_START_UI, 1, 0);
 }
 
 static void TheaterCancelCB(long, short hittype, C_Base *control)
@@ -2100,7 +2100,7 @@ static void TheaterCancelCB(long, short hittype, C_Base *control)
     if (hittype != C_TYPE_LMOUSEUP)
         return;
 
-    gMainHandler->HideWindow(control->Parent_);
+    MainHandlerPointer->HideWindow(control->Parent_);
     MainLastGroup = 0;
 }
 
@@ -2205,7 +2205,7 @@ static void FillTheaterTree(C_TreeList *tree)
 
 static void SelectTheater(TheaterDef *td)
 {
-    C_Window *win = gMainHandler->FindWindow(UI_THEATER_WINDOW);
+    C_Window *win = MainHandlerPointer->FindWindow(UI_THEATER_WINDOW);
 
     C_Text *txt = (C_Text*)win->FindControl(UI_THEATER_DESC);
 
@@ -2263,7 +2263,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
         return;
 
     C_Window *win;
-    win = gMainHandler->FindWindow(UI_THEATER_WINDOW);
+    win = MainHandlerPointer->FindWindow(UI_THEATER_WINDOW);
 
     if (win == NULL)
         return;
@@ -2273,7 +2273,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
 
     if (MainLastGroup != 0 && MainLastGroup != control->GetGroup())
     {
-        gMainHandler->DisableWindowGroup(MainLastGroup);
+        MainHandlerPointer->DisableWindowGroup(MainLastGroup);
     }
 
     MainLastGroup = 0;
@@ -2281,7 +2281,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
 
     if (MainLastGroup != control->GetGroup())
     {
-        gMainHandler->EnableWindowGroup(control->GetGroup());
+        MainHandlerPointer->EnableWindowGroup(control->GetGroup());
         MainLastGroup = control->GetGroup();
     }
 
@@ -2291,7 +2291,7 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     SelectTheater(NULL);
     LoadAllTheaters(win);
     win->RefreshWindow();
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 

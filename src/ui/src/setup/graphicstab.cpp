@@ -29,8 +29,8 @@
 #include "Weather.h"
 
 #pragma warning(disable : 4706) // assignment within conditional expression
-extern C_Handler *gMainHandler;
-extern int GraphicSettingMult;
+extern C_Handler *MainHandlerPointer;
+extern int GraphicSettingMultiplier;
 
 extern int HighResolutionHackFlag; // Used in WinMain.CPP
 
@@ -48,9 +48,9 @@ extern bool g_bCheckBltStatusBeforeFlip;
 extern bool g_bVoodoo12Compatible;
 
 #ifdef _DEBUG
-bool g_bEnumSoftwareDevices = true;
+bool EnumerateSoftwareDevices = true;
 #else
-bool g_bEnumSoftwareDevices = false;
+bool EnumerateSoftwareDevices = false;
 #endif
 
 
@@ -436,7 +436,7 @@ void RenderViewCB(long, short hittype, C_Base *control)
 
         //Sleep(100);
         //STPRender(control);
-        PostMessage(gMainHandler->GetAppWnd(), FM_STP_START_RENDER, 0, (LPARAM)control);
+        PostMessage(MainHandlerPointer->GetAppWnd(), FM_STP_START_RENDER, 0, (LPARAM)control);
     }
     else
     {
@@ -483,7 +483,7 @@ void ChangeViewpointCB(long, short, C_Base *)
 
         if (IO.digital[0] || ((count %= 3) == 0))
         {
-            win = gMainHandler->FindWindow(SETUP_WIN);
+            win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
             if (win != NULL)
             {
@@ -503,7 +503,7 @@ void ChangeViewpointCB(long, short, C_Base *)
                 float altChg = 0.0f;
                 float newPitch = 0.0f, newYaw = 0.0f, newAlt;
 
-                //gMainHandler->EnterCriticalSection();
+                //MainHandlerPointer->EnterCriticalSection();
                 // Retro 31Dec2003
                 extern AxisMapping AxisMap;
 
@@ -794,7 +794,7 @@ void PlayerBubbleCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMultiplier + 1.5f));
         ebox->Refresh();
     }
 }
@@ -814,7 +814,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMultiplier + 1.5f));
         ebox->Refresh();
     }
 
@@ -823,7 +823,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     RenderOTW *renderer;
     renderer = SetupViewer->GetRendOTW();
-    detail = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult);
+    detail = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMultiplier);
     renderer->SetObjectDetail(detail);
 
     //have the rendered view update with new settings
@@ -896,7 +896,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6.0F * GraphicSettingMult  + 1.5F));
+        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6.0F * GraphicSettingMultiplier  + 1.5F));
         ebox->Refresh();
     }
 
@@ -904,7 +904,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
         return;
 
     int step;
-    step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+    step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMultiplier);
 
     if (abs(slider->GetSliderPos() - prevpos) > step - 1)
     {
@@ -966,7 +966,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             renderer->Cleanup();
 
-            renderer->Setup(gMainHandler->GetFront(), viewpt);
+            renderer->Setup(MainHandlerPointer->GetFront(), viewpt);
 
             //reset all values for new renderer
             tslider = (C_Slider *)control->Parent_->FindControl(OBJECT_DETAIL);
@@ -1152,7 +1152,7 @@ void BuildVideoCardList(C_ListBox *lbox)
 
     while (buf = FalconDisplay.devmgr.GetDeviceName(Driver, i))
     {
-        if (!g_bEnumSoftwareDevices)
+        if (!EnumerateSoftwareDevices)
         {
             // check for software device
             DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);
@@ -1295,7 +1295,7 @@ void SetAdvanced()
     C_Button *button;
     C_ListBox *lbox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL) return;
 
@@ -1317,7 +1317,7 @@ void SetAdvanced()
 
     if (!pD3DDI) return;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
@@ -1392,7 +1392,7 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
  C_Button *btn;
  C_ListBox *lbox;
 
- win=gMainHandler->FindWindow(SETUP_SKY_WIN);
+ win=MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
  if(!win) return;
 
  lbox=(C_ListBox *)win->FindControl(SETUP_SKY_COLOR);
@@ -1554,13 +1554,13 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 
     C_ListBox *lbox = (C_ListBox*)control;
 
-    if (TheCampaign.InMainUI || !((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI || !((WeatherClass *)RealWeatherPointer)->lockedCondition)
     {
-        PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-        ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
-        ((WeatherClass *)realWeather)->Init(true);
+        PlayerOptions.WeatherCondition = lbox->GetTextID() - 70207;
+        ((WeatherClass *)RealWeatherPointer)->UpdateCondition(PlayerOptions.WeatherCondition, true);
+        ((WeatherClass *)RealWeatherPointer)->Init(true);
     }
-    else if (((WeatherClass *)realWeather)->unlockableCondition == 0)
+    else if (((WeatherClass *)RealWeatherPointer)->unlockableCondition == 0)
     {
         if (lbox->GetTextID() == 70213)
         {
@@ -1571,10 +1571,10 @@ void RealWeatherCB(long, short hittype, C_Base *control)
             lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
             lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-            lbox->SetValue(realWeather->weatherCondition + 70207);
+            lbox->SetValue(RealWeatherPointer->WeatherCondition + 70207);
             lbox->Refresh();
 
-            ((WeatherClass *)realWeather)->lockedCondition = FALSE;
+            ((WeatherClass *)RealWeatherPointer)->lockedCondition = FALSE;
         }
     }
     else if (lbox->GetTextID() == 70213)
@@ -1586,10 +1586,10 @@ void RealWeatherCB(long, short hittype, C_Base *control)
         lbox->AddItem(70210, C_TYPE_ITEM, "Poor");
         lbox->AddItem(70211, C_TYPE_ITEM, "Inclement");
 
-        lbox->SetValue(realWeather->weatherCondition + 70207);
+        lbox->SetValue(RealWeatherPointer->WeatherCondition + 70207);
         lbox->Refresh();
 
-        ((WeatherClass *)realWeather)->lockedCondition = FALSE;
+        ((WeatherClass *)RealWeatherPointer)->lockedCondition = FALSE;
     }
 }
 //JAM
@@ -1618,7 +1618,7 @@ void SetupGraphicsControls(void)
     C_Slider *slider;
     C_EditBox *ebox;
 
-    win = gMainHandler->FindWindow(SETUP_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_WIN);
 
     if (win == NULL)
         return;
@@ -1821,12 +1821,12 @@ void SetupGraphicsControls(void)
         }
     }
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
     // M.N. SkyColor stuff
-    // win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    // win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
     // if (win) { // JPO conditional
     //     lbox = (C_ListBox *) win->FindControl(SETUP_SKY_COLOR);
     //     if (lbox) lbox->SetValue(PlayerOptions.skycol);
@@ -1899,12 +1899,12 @@ void AdvancedCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_ADVANCED_WIN);
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 
 // JPO - select advanced features
@@ -1915,12 +1915,12 @@ void AdvancedGameCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
+    win = MainHandlerPointer->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 
 // M.N. Skyfix
@@ -1931,10 +1931,10 @@ void SkyColorCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_SKY_WIN);
+    win = MainHandlerPointer->FindWindow(SETUP_SKY_WIN);
 
     if (!win) return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }

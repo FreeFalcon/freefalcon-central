@@ -40,7 +40,7 @@
 extern int inMission;
 #endif
 
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 
 enum
 {
@@ -123,7 +123,7 @@ void BuildCampBrief(C_Window *win)
 
     if (testDebrief)
     {
-        C_Window *win2 = gMainHandler->FindWindow(DEBRIEF_WIN);
+        C_Window *win2 = MainHandlerPointer->FindWindow(DEBRIEF_WIN);
         BuildCampDebrief(win2);
         return;
     }
@@ -347,7 +347,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                 {
                     _TCHAR tmp[40] = "";
                     eventListBox = new C_ListBox;
-                    eventListBox->Setup(C_DONT_CARE, 0, gMainHandler);
+                    eventListBox->Setup(C_DONT_CARE, 0, MainHandlerPointer);
                     eventListBox->SetFont(win->Font_);
                     eventListBox->SetXY(x - 5, y);
                     eventListBox->SetDropDown(BID_DROPDOWN);
@@ -436,7 +436,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                             CBX = CLineStart = 0;
                             ReadScriptedBriefFile("FOrdWeap.db", temp_line, NULL, event_str, TheCampaign.MissionEvaluator, flight_data);
                             eventListBox = new C_ListBox;
-                            eventListBox->Setup(C_DONT_CARE, 0, gMainHandler);
+                            eventListBox->Setup(C_DONT_CARE, 0, MainHandlerPointer);
                             eventListBox->SetFont(win->Font_);
                             eventListBox->SetXY(x - 5, y);
                             eventListBox->SetDropDown(BID_DROPDOWN);
@@ -1008,9 +1008,9 @@ void AddFontTextToBrief(_TCHAR *buffer, int font, C_Window *window, _TCHAR *outp
         // KCK HACK: Some fonts just don't get very good heights
         if (font == 14)
         {
-            if (gLangIDNum == F4LANG_GERMAN)
+            if (LanguageNumber == F4LANG_GERMAN)
                 ;
-            else if (gLangIDNum >= F4LANG_SPANISH)
+            else if (LanguageNumber >= F4LANG_SPANISH)
                 height--;
             else
                 height = 19;
@@ -1133,7 +1133,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                 case 'n':
 
                     // Say 'direction of name'
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (LanguageNumber == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
                         ReadIndexedString(3993, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(53, format, MAX_STRLEN_PER_TOKEN);
@@ -1155,7 +1155,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                     bd = bd * GRID_SIZE_FT * FT_TO_NM;
                     _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (LanguageNumber == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
                         ReadIndexedString(3992, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(52, format, MAX_STRLEN_PER_TOKEN);
@@ -1167,7 +1167,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
                     // Say 'x km direction of name'
                     _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+                    if (LanguageNumber == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
                         ReadIndexedString(3991, format, MAX_STRLEN_PER_TOKEN);
                     else
                         ReadIndexedString(51, format, MAX_STRLEN_PER_TOKEN);
@@ -1194,7 +1194,7 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
         else
         {
             // Just say 'near x'
-            if (gLangIDNum == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
+            if (LanguageNumber == F4LANG_FRENCH && (name[0] == 'A' || name[0] == 'a' || name[0] == 'E' || name[0] == 'e' || name[0] == 'I' || name[0] == 'i' || name[0] == 'O' || name[0] == 'o' || name[0] == 'U' || name[0] == 'u'))
                 ReadIndexedString(3994, format, MAX_STRLEN_PER_TOKEN);
             else
                 ReadIndexedString(54, format, MAX_STRLEN_PER_TOKEN);
@@ -1412,13 +1412,13 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
 int GetGender(CampEntity entity, int div)
 {
     // Gender is hardcoded for now- no data exists
-    if (!entity || gLangIDNum < F4LANG_GERMAN)
+    if (!entity || LanguageNumber < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
     if (div && (!entity->IsUnit() || !((Unit)entity)->GetUnitDivision()))
         div = 0;
 
-    if (gLangIDNum == F4LANG_GERMAN)
+    if (LanguageNumber == F4LANG_GERMAN)
     {
         if (div)
             return F4LANG_FEMININE;
@@ -1429,7 +1429,7 @@ int GetGender(CampEntity entity, int div)
         else
             return F4LANG_FEMININE;
     }
-    else if (gLangIDNum == F4LANG_FRENCH)
+    else if (LanguageNumber == F4LANG_FRENCH)
     {
         if (div)
             return F4LANG_FEMININE;
@@ -1438,7 +1438,7 @@ int GetGender(CampEntity entity, int div)
         else
             return F4LANG_FEMININE;
     }
-    else if (gLangIDNum == F4LANG_ITALIAN)
+    else if (LanguageNumber == F4LANG_ITALIAN)
     {
         if (div)
             return F4LANG_FEMININE;
@@ -1447,7 +1447,7 @@ int GetGender(CampEntity entity, int div)
         else
             return F4LANG_FEMININE;
     }
-    else if (gLangIDNum == F4LANG_SPANISH)
+    else if (LanguageNumber == F4LANG_SPANISH)
     {
         if (div)
             return F4LANG_FEMININE;
@@ -1456,7 +1456,7 @@ int GetGender(CampEntity entity, int div)
         else
             return F4LANG_FEMININE;
     }
-    else if (gLangIDNum == F4LANG_PORTUGESE)
+    else if (LanguageNumber == F4LANG_PORTUGESE)
     {
         if (div)
             return F4LANG_FEMININE;
@@ -2295,11 +2295,11 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_CLEAR_WEATHER") == 0)
                 {
-                    int cc = (((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx - 1, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty - 1) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx + 1, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty + 1)) / 5;
+                    int cc = (((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx, mec->ty) +
+                                     ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx - 1, mec->ty) +
+                                     ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx, mec->ty - 1) +
+                                     ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx + 1, mec->ty) +
+                                     ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx, mec->ty + 1)) / 5;
 
                     if (cc < 2)
                         stack_active[curr_stack] = 1;
@@ -2511,7 +2511,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 // HACKED country adjective stuff (Used only for modification to "aircraft")
                 if (ptarget)
                 {
-                    if (gLangIDNum == F4LANG_GERMAN)
+                    if (LanguageNumber == F4LANG_GERMAN)
                         AddIndexedStringToBuffer(ConvertTeamToStringIndex(ptarget->GetOwner(), F4LANG_FEMININE), current_line);
                     // AddIndexedStringToBuffer(3821 + 20*ptarget->GetOwner(), current_line);
                     else
@@ -2605,13 +2605,13 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  reqe = ((Package)reqe)->GetFirstUnitElement();
                  ShiAssert (reqe);
                  VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[((Unit)reqe)->GetVehicleID(0)].dataPtr;
-                 if (gLangIDNum >= F4LANG_SPANISH)
+                 if (LanguageNumber >= F4LANG_SPANISH)
                  {
                  AddStringToBuffer(vc->Name, current_line);
                  AddStringToBuffer(" ", current_line);
                  AddIndexedStringToBuffer(3820 + 20*reqe->GetOwner(), current_line);
                  }
-                 else if (gLangIDNum == F4LANG_GERMAN)
+                 else if (LanguageNumber == F4LANG_GERMAN)
                  {
                  AddIndexedStringToBuffer(3821 + 20*reqe->GetOwner(), current_line);
                  AddStringToBuffer(" ", current_line);
@@ -2639,14 +2639,14 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 {
                     VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[((Unit)ent)->GetVehicleID(0)].dataPtr;
 
-                    if (gLangIDNum >= F4LANG_SPANISH)
+                    if (LanguageNumber >= F4LANG_SPANISH)
                     {
                         AddStringToBuffer(vc->Name, current_line);
                         AddStringToBuffer(" ", current_line);
                         AddIndexedStringToBuffer(ConvertTeamToStringIndex(ent->GetOwner()), current_line);
                         // AddIndexedStringToBuffer(3820 + 20*ent->GetOwner(), current_line);
                     }
-                    else if (gLangIDNum == F4LANG_GERMAN)
+                    else if (LanguageNumber == F4LANG_GERMAN)
                     {
                         AddIndexedStringToBuffer(ConvertTeamToStringIndex(ent->GetOwner(), F4LANG_FEMININE), current_line);
                         // AddIndexedStringToBuffer(3821 + 20*ent->GetOwner(), current_line);
@@ -3269,8 +3269,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
             //dpc - reversed wind heading to show correctly and consistent with DED
             // if (strcmp(token,"WIND_HEADING")==0)
-            //   AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->WindHeading*RTD),current_line);
-            float reversedWindHeading = ((WeatherClass*)realWeather)->windHeading * RTD + 180.0F;
+            //   AddNumberToBuffer(FloatToInt32(((WeatherClass*)RealWeatherPointer)->WindHeading*RTD),current_line);
+            float reversedWindHeading = ((WeatherClass*)RealWeatherPointer)->windHeading * RTD + 180.0F;
 
             if (reversedWindHeading > 360.0F) reversedWindHeading -= 360.0F;
 
@@ -3278,33 +3278,33 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 AddNumberToBuffer(FloatToInt32(reversedWindHeading), current_line);
             //end fix
             else if (strcmp(token, "WIND_SPEED") == 0)
-                //AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->WindSpeed),current_line);
+                //AddNumberToBuffer(FloatToInt32(((WeatherClass*)RealWeatherPointer)->WindSpeed),current_line);
                 //MI fix to show Knots/H instead of KM/H
-                AddNumberToBuffer(FloatToInt32((((WeatherClass*)realWeather)->windSpeed + 0.5F) *
+                AddNumberToBuffer(FloatToInt32((((WeatherClass*)RealWeatherPointer)->windSpeed + 0.5F) *
                                                KPH_TO_FPS * FTPSEC_TO_KNOTS), current_line);
             else if (strcmp(token, "TEMPERATURE") == 0)
-                AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->temperature), current_line);
+                AddNumberToBuffer(FloatToInt32(((WeatherClass*)RealWeatherPointer)->temperature), current_line);
             else if (strcmp(token, "CLOUD_TYPE") == 0)
                 //JAM 17Nov03
             {
                 char szTemp[256];
 
-                if (realWeather->weatherCondition == SUNNY)
+                if (RealWeatherPointer->WeatherCondition == SUNNY)
                     sprintf(szTemp, "Sunny ");
-                else if (realWeather->weatherCondition == FAIR)
+                else if (RealWeatherPointer->WeatherCondition == FAIR)
                     sprintf(szTemp, "Fair ");
-                else if (realWeather->weatherCondition == POOR)
+                else if (RealWeatherPointer->WeatherCondition == POOR)
                     sprintf(szTemp, "Poor ");
-                else if (realWeather->weatherCondition == INCLEMENT)
+                else if (RealWeatherPointer->WeatherCondition == INCLEMENT)
                     sprintf(szTemp, "Inclement ");
 
                 _tcscat(current_line, szTemp);
 
-                /* int cc = (((WeatherClass*)realWeather)->GetCloudCover(mec->tx,mec->ty) +
-                 ((WeatherClass*)realWeather)->GetCloudCover(mec->tx-1,mec->ty) +
-                 ((WeatherClass*)realWeather)->GetCloudCover(mec->tx,mec->ty-1) +
-                 ((WeatherClass*)realWeather)->GetCloudCover(mec->tx+1,mec->ty) +
-                 ((WeatherClass*)realWeather)->GetCloudCover(mec->tx,mec->ty+1))/5;
+                /* int cc = (((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx,mec->ty) +
+                 ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx-1,mec->ty) +
+                 ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx,mec->ty-1) +
+                 ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx+1,mec->ty) +
+                 ((WeatherClass*)RealWeatherPointer)->GetCloudCover(mec->tx,mec->ty+1))/5;
                  if (cc > 4)
                  AddIndexedStringToBuffer(603,current_line);
                  else if (cc > 2)
@@ -3331,14 +3331,14 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 //JAM 17Nov03
                 //char szTemp[256];
 
-                //sprintf(szTemp,"Clouds:           %d",-realWeather->stratusZ/1000);
+                //sprintf(szTemp,"Clouds:           %d",-RealWeatherPointer->stratusZ/1000);
                 //_tcscat(current_line,szTemp);
-                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)realWeather)->stratusZ / 1000.0f + 0.5f), current_line);
+                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)RealWeatherPointer)->stratusZ / 1000.0f + 0.5f), current_line);
 
             }
             else if (strcmp(token, "CON_LAYER") == 0)
-                // AddNumberToBuffer(((WeatherClass*)realWeather)->contrailLow/1000.f,current_line); // Cobra - contrail not in 100's of feet anymore
-                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)realWeather)->stratus2Z / 1000.0f + 0.5f), current_line);
+                // AddNumberToBuffer(((WeatherClass*)RealWeatherPointer)->contrailLow/1000.f,current_line); // Cobra - contrail not in 100's of feet anymore
+                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)RealWeatherPointer)->stratus2Z / 1000.0f + 0.5f), current_line);
             else if (strcmp(token, "WAYPOINT_NUM") == 0)
                 AddNumberToBuffer(mec->curr_data, current_line);
             else if (strcmp(token, "WAYPOINT_ACTION") == 0)

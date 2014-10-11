@@ -38,7 +38,7 @@ extern CComModule _Module;
 #include "../../../gnet/include/core.h"       // main symbols
 
 // Imports
-extern C_Handler *gMainHandler;
+extern C_Handler *MainHandlerPointer;
 extern C_Parser *gMainParser;
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 void GetPlayerInfo(VU_ID ID);
@@ -49,18 +49,18 @@ extern void Phone_Connect_CB(long n, short hittype, C_Base *control);
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 
-extern char g_strMasterServerName[0x40];
+extern char MasterServerName[0x40];
 // M.N. EnableUplink UI switch
 extern GNETCORELib::IUplinkPtr m_pUplink;
-extern bool g_bEnableUplink;
-extern int g_nMasterServerPort;
+extern bool EnableUplink;
+extern int MasterServerPort;
 char strVersion[0x20];
-extern char g_strServerLocation[0x40];
-extern char g_strServerName[0x40];
+extern char ServerLocation[0x40];
+extern char ServerName[0x40];
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 extern int MajorVersion;
 extern int MinorVersion;
-extern int gLangIDNum;
+extern int LanguageNumber;
 extern int BuildNumber;
 
 // Helper classes
@@ -303,14 +303,14 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  C_Window *win;
  C_Button *button;
 
- win=gMainHandler->FindWindow(JETNET_WIN);
+ win=MainHandlerPointer->FindWindow(JETNET_WIN);
  if(!win) return;
 
  button = (C_Button*)win->FindControl(SETUP_JETNET_ENABLEUPLINK);
  if (button)
  {
- g_bEnableUplink = !g_bEnableUplink;
- if (g_bEnableUplink) // now we switched from off to on, set up the uplink
+ EnableUplink = !EnableUplink;
+ if (EnableUplink) // now we switched from off to on, set up the uplink
  {
  // Make sure all objects are registered
  ComSup::RegisterServer("GNGameSpy.dll");
@@ -320,14 +320,14 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  // Create Uplink service object
  CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
 
- m_pUplink->PutMasterServerName(g_strMasterServerName);
- m_pUplink->PutMasterServerPort(g_nMasterServerPort);
+ m_pUplink->PutMasterServerName(MasterServerName);
+ m_pUplink->PutMasterServerPort(MasterServerPort);
  m_pUplink->PutQueryPort(7778);
  m_pUplink->PutHeartbeatInterval(60000);
  m_pUplink->PutServerVersion(strVersion);
  m_pUplink->PutServerVersionMin(strVersion);
- m_pUplink->PutServerLocation(g_strServerLocation);
- m_pUplink->PutServerName(g_strServerName);
+ m_pUplink->PutServerLocation(ServerLocation);
+ m_pUplink->PutServerName(ServerName);
  m_pUplink->PutGameName("Falcon4");
  m_pUplink->PutGameMode("openplaying");
  }
@@ -526,12 +526,12 @@ static void OnClickedSetup(long,short hittype,C_Base *control)
     if(hittype != C_TYPE_LMOUSEUP)
  return;
     C_Window *win;
-    win=gMainHandler->FindWindow(SETUP_JETNET_OPTIONS_WIN);
+    win=MainHandlerPointer->FindWindow(SETUP_JETNET_OPTIONS_WIN);
     if(win == NULL)
  return;
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
+    MainHandlerPointer->ShowWindow(win);
+    MainHandlerPointer->WindowToFront(win);
 }
 */
 static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
@@ -568,10 +568,10 @@ void HookupServerBrowserControls(long ID)
     C_TreeList *tree;
 
     char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
+    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, LanguageNumber, BuildNumber);
 
 
-    winme = gMainHandler->FindWindow(JETNET_WIN);
+    winme = MainHandlerPointer->FindWindow(JETNET_WIN);
 
     if (winme == NULL)
         return;
@@ -762,7 +762,7 @@ static void Update()
 
 #if 0
             // Adjust maximum number of concurent server quries according to phonebook bandwidth settings
-            C_Window *pWin = gMainHandler->FindWindow(PB_WIN);
+            C_Window *pWin = MainHandlerPointer->FindWindow(PB_WIN);
 
             if (pWin)
             {
@@ -904,7 +904,7 @@ static void UpdateComplete(BOOL bSuccess)
     {
         m_bCloseWindowPending = false;
 
-        C_Window *pWin = gMainHandler->FindWindow(JETNET_WIN);
+        C_Window *pWin = MainHandlerPointer->FindWindow(JETNET_WIN);
         C_Base *wndClose = pWin->FindControl(CLOSE_WINDOW);
 
         if (wndClose)
@@ -1333,13 +1333,13 @@ void CGNetUpdater::Update()
 
 #ifdef _DEBUG
 #if 1
-        m_pMasterServer->PutServerName(g_strMasterServerName);
+        m_pMasterServer->PutServerName(MasterServerName);
         m_pMasterServer->PutGameFilter("Falcon4");
 #else
         m_pMasterServer->PutServerName("master.gamespy.com");
 #endif
 #else
-        m_pMasterServer->PutServerName(g_strMasterServerName);
+        m_pMasterServer->PutServerName(MasterServerName);
         m_pMasterServer->PutGameFilter("Falcon4");
 #endif
 

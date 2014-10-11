@@ -31,8 +31,8 @@ short TeamUsed[MAX_DOGFIGHT_TEAMS];
 short TeamRank[MAX_DOGFIGHT_TEAMS];
 PilotSortClass *SortedPilotList = NULL;
 
-extern C_Handler *gMainHandler;
-extern C_SoundBite *gDogfightBites;
+extern C_Handler *MainHandlerPointer;
+extern C_SoundBite *DogFightBites;
 extern long DFTeamNameStrIDs[];
 extern COLORREF DFTeamColors[];
 
@@ -268,63 +268,63 @@ void PlayDogfightBite()
 
     if (HowIDid & (_FIRST_PLACE_ | _MOST_KILLS_) && SimDogfight.GetGameType() != dog_Furball)
     {
-        SoundID = gDogfightBites->Pick(DF5);
+        SoundID = DogFightBites->Pick(DF5);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _FIRST_PLACE_)
     {
-        SoundID = gDogfightBites->Pick(DF1);
+        SoundID = DogFightBites->Pick(DF1);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if ((HowIDid & _MOST_KILLS_) && SimDogfight.GetGameType() != dog_Furball)
     {
-        SoundID = gDogfightBites->Pick(DF6);
+        SoundID = DogFightBites->Pick(DF6);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _SECOND_PLACE_)
     {
-        SoundID = gDogfightBites->Pick(DF2);
+        SoundID = DogFightBites->Pick(DF2);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _THIRD_PLACE_)
     {
-        SoundID = gDogfightBites->Pick(DF3);
+        SoundID = DogFightBites->Pick(DF3);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _LAST_PLACE_)
     {
-        SoundID = gDogfightBites->Pick(DF4);
+        SoundID = DogFightBites->Pick(DF4);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _MOST_FRAGS_)
     {
-        SoundID = gDogfightBites->Pick(DF8);
+        SoundID = DogFightBites->Pick(DF8);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _FEWEST_KILLS_)
     {
-        SoundID = gDogfightBites->Pick(DF7);
+        SoundID = DogFightBites->Pick(DF7);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
     else if (HowIDid & _MOST_DEATHS_)
     {
-        SoundID = gDogfightBites->Pick(DF9);
+        SoundID = DogFightBites->Pick(DF9);
 
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
@@ -370,7 +370,7 @@ void DisplayDogfightResults()
     }
 
     // Sort
-    win = gMainHandler->FindWindow(DF_DBRF_WIN);
+    win = MainHandlerPointer->FindWindow(DF_DBRF_WIN);
 
     if (win)
     {

@@ -507,7 +507,7 @@ bool CheckDeviceArray()
 // works..
 //***********************************
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd)
+BOOL SetupDIJoystick(HINSTANCE HInstance, HWND hWnd)
 #else
 BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
 #endif
@@ -530,7 +530,7 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     // Create our interface to DInput7/8..
     /*******************************************************************************/
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-    gDIEnabled = VerifyResult(DirectInputCreateEx(hInst, DIRECTINPUT_VERSION, IID_IDirectInput7, (void **) &gpDIObject, NULL));
+    gDIEnabled = VerifyResult(DirectInputCreateEx(HInstance, DIRECTINPUT_VERSION, IID_IDirectInput7, (void **) &gpDIObject, NULL));
 #else
     hres = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&gpDIObject, NULL);
     gDIEnabled = (hres == DI_OK) ? TRUE : FALSE;

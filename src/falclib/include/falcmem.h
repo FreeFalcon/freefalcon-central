@@ -1,11 +1,11 @@
 #ifndef _FALCMEM_H
 #define _FALCMEM_H
 
-class falcon4LeakCheck
+class FreeFalconLeakCheck
 {
 public:
-    falcon4LeakCheck();
-    virtual ~falcon4LeakCheck();
+	FreeFalconLeakCheck();
+	virtual ~FreeFalconLeakCheck();
 };
 
 #endif
