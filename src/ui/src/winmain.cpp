@@ -9,6 +9,7 @@
 //#include <WinSock2.h>
 // END OF SYSTEM INCLUDES
 
+
 // SIM INCLUDES
 #include "ascii.h"
 //#include "Camp2Sim.h"
@@ -64,11 +65,13 @@
 #include "weather.h"
 // END OF SIM INCLUDES
 
+
 // ADDITIONAL SIM INCLUDES
 //extern "C"
 //{
 //#include "AmdLib.h"
 //}
+
 
 #include "CodeLib/resources/ResLib/src/ResMgr.h"
 //#include "FalcSnd/PSound.h"
@@ -83,6 +86,7 @@
 // END OF ADDITIONAL SIM INCLUDES
 
 
+
 // PREPROCESSOR DIRECTIVES
 // These are needed so the Resource Manager functions will not be called.
 #undef fclose
@@ -93,6 +97,7 @@
 #import "gnet/bin/core.tlb"
 //#import "gnet/bin/shared.tlb" named_guids
 #pragma warning(default:4192)
+
 
 // We want the intro movie to play only in RELEASE, not in DEBUG. If you need it in DEBUG, use a command line option.
 #ifdef NDEBUG
@@ -114,6 +119,7 @@
 	int shiHardCrashOn = FALSE;
 #endif
 
+
 #ifdef CAMPTOOL
 	// Renaming tool stuff
 	extern VU_ID_NUMBER RenameTable[65536];
@@ -124,16 +130,22 @@
 #endif
 // END OF PREPROCESSOR DIRECTIVES
 
+
+
 // GLOBAL CONSTANTS
 const char* FREE_FALCON_BRAND = "Free Falcon";
 const char* FREE_FALCON_PROJECT = "Open Source Project";
 const char* FREE_FALCON_VERSION = "7.0.0";
 
+
+
 // GLOBAL VARIABLES
 bool g_bEnableCockpitVerifier = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
+
 CComModule _Module; // ATL stuff.
+
 char FalconCockpitThrDirectory[_MAX_PATH];
 char FalconMovieDirectory[_MAX_PATH];
 char FalconMovieMode[_MAX_PATH];
@@ -144,15 +156,19 @@ char FalconUIArtDirectory[_MAX_PATH];
 char FalconUIArtThrDirectory[_MAX_PATH];
 char FalconUISoundDirectory[_MAX_PATH];
 char FalconZipsThrDirectory[_MAX_PATH];
+
 class tactical_mission;
+
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
 extern bool g_bPilotEntertainment;
+
 extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
 extern C_Handler* gMainHandler;
 extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
 extern CampaignTime gConnectionTime;
 extern CampaignTime gResendTime;
+
 extern char* BSP;
 extern char* BTP;
 extern char FalconPictureDirectory[_MAX_PATH];
@@ -163,7 +179,9 @@ extern char g_strServerLocation[0x40];
 extern char g_strServerName[0x40];
 extern char gUI_AutoSaveName[];
 extern char gUI_CampaignFile[];
+
 extern float UR_HEAD_VIEW;
+
 extern int flag_keep_smoke_trails;
 extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
 extern int gCampJoinStatus;
@@ -174,9 +192,11 @@ extern int gUnlimitedAmmo;
 extern int HighResolutionHackFlag;
 extern int MainLastGroup;
 extern int voice_;
+
 extern long CampEventSoundID;
 extern long gScreenShotEnabled;
 extern long MovieCount;
+
 extern uchar gCampJoinTries;
 extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
 falcon4LeakCheck flc;
@@ -184,6 +204,7 @@ GNETCORELib::IUplinkPtr m_pUplink;
 HINSTANCE hInst;
 HWND mainAppWnd;
 HWND mainMenuWnd;
+
 int ClearObjManualFlags = FALSE;
 int DestroyObjective = FALSE;
 int DisableSmoothing = FALSE;
@@ -201,14 +222,18 @@ int SimPathHandle = -1;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
 int* resourceHandle;
+
 RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 RealWeather* realWeather = NULL;
+
 static HACCEL hAccel;
 static int KeepFocus = 0;
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
+
 TrackIR theTrackIRObject;
 WinAmpFrontEnd* winamp = 0;
 WSADATA wsadata;
+
 
 extern "C"
 {
@@ -220,16 +245,20 @@ extern "C"
 // END OF GLOBAL VARIABLES
 
 
+
 // FUNCTION DECLARATIONS
 BOOL CleanupDIJoystick(void);
 BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
+
 extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
 extern BOOL SaveSFXTable();
 extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WriteMissionData();
+
 extern HRESULT StartServer(HWND hDlg);
+
 extern void CampaignConnectionTimer(void);
 extern void CampaignJoinFail(void);
 extern void CampaignJoinSuccess(void);
@@ -251,14 +280,18 @@ extern void StopVoice();
 extern void UIScramblePlayerFlight(void);
 extern void update_tactical_flight_information(void);
 extern void UpdateMissionWindow(long ID);
+
 int tactical_is_training(void);
 int UI_Startup();
+
 LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 static void CtrlAltDelMask(int state);
 static void ParseCommandLine(LPSTR cmdLine);
 static void SystemLevelExit(void);
 static void SystemLevelInit(void);
+
 void ConsoleWrite(char*);
 void EndCommitCB(long ID, short hittype, C_Base* control);
 void IncDecDataToPlay(int delta);
@@ -293,10 +326,12 @@ void UI_UpdateVU();
 void UIMain(void);
 void UpdateRules(void);
 void ViewRemoteLogbook(long playerID);
+
 extern "C" int InitWS2(WSADATA* wsaData);
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
 // END OF FUNCTION DECLARATIONS
+
 
 
 // FUNCTION DEFINITIONS
@@ -330,6 +365,7 @@ void BuildAscii()
         }
     }
 }
+
 
 static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int)
 {
@@ -377,6 +413,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     return TRUE;
 
 }
+
 
 int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                          LPSTR lpCmdLine, int nCmdShow)
@@ -524,8 +561,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     CoUninitialize();
 
-    ExitProcess(0);
+	ExitProcess(EXIT_SUCCESS);
 }
+
+
 // Main entry point to the entire solution.
 // However, some code is called by callback functions so use the breakpoints
 // file to debug properly!
@@ -534,7 +573,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, int nCmdShow)
 {
-    int Result = -1;
+	int Result = EXIT_FAILURE;
 
     __try
     {
@@ -551,6 +590,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     return Result;
 }
 
+
 void EndUI(void)
 {
     // Looking for multiplayer stomp...
@@ -565,6 +605,7 @@ void EndUI(void)
     if (auto_start)
         SetFocus(mainMenuWnd);
 }
+
 
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -747,6 +788,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     return retval;
 }
 
+
 int get_ip(char* str)
 {
     char
@@ -778,6 +820,7 @@ int get_ip(char* str)
 
     return addr;
 }
+
 
 void ParseCommandLine(LPSTR cmdLine)
 {
@@ -1125,6 +1168,7 @@ void ParseCommandLine(LPSTR cmdLine)
     retval = RegCloseKey(theKey);
 }
 
+
 void SystemLevelInit()
 {
     SimDriver.InitializeSimMemoryPools();
@@ -1276,6 +1320,7 @@ void SystemLevelInit()
 
 }
 
+
 void SystemLevelExit(void)
 {
 #ifdef NDEBUG
@@ -1348,6 +1393,7 @@ void SystemLevelExit(void)
     CtrlAltDelMask(FALSE);
 }
 
+
 void CampaignAutoSave(FalconGameType gametype)
 {
     if (!tactical_is_training())
@@ -1368,6 +1414,7 @@ void CampaignAutoSave(FalconGameType gametype)
         }
     }
 }
+
 
 LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -2053,6 +2100,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     return retval;
 }
 
+
 void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface)
 {
     HWND hwnd;
@@ -2167,6 +2215,7 @@ void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface
     F4HearVoices();
 }
 
+
 void ShutdownCampaign(void)
 {
     if (gMainHandler)
@@ -2185,6 +2234,7 @@ void ShutdownCampaign(void)
     gCampJoinStatus = 0;
 }
 
+
 void EnableCampaignMenus(void)
 {
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEAS, MF_ENABLED);
@@ -2201,6 +2251,7 @@ void EnableCampaignMenus(void)
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_FLYMISSION, MF_ENABLED);
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_EXIT, MF_ENABLED);
 }
+
 
 void DisableCampaignMenus(void)
 {
@@ -2220,6 +2271,7 @@ void DisableCampaignMenus(void)
 
     CheckMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_CHECKED);
 }
+
 
 void ConsoleWrite(char* str)
 {
@@ -2244,6 +2296,7 @@ void ConsoleWrite(char* str)
 
     WriteConsole(hStdIn, str, strlen(str), &num, NULL);
 }
+
 
 void CtrlAltDelMask(int state)
 {
