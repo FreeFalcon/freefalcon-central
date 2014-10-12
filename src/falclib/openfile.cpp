@@ -48,7 +48,7 @@ char *UnableToOpen[] =
 
 static int Enabled = 1;
 
-// This function opens a dialog box asking the user to insert the FreeFalcon CD
+// This function opens a dialog box asking the user to insert the FreeFalcon media
 // Possible return values:
 // 0 = Retry
 // 1 = Abort

@@ -1326,7 +1326,8 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    char test[1024] = "FreeFalcon OSP";
+    const char* FREE_FALCON_PROJECT;
+	char test[1024] = FREE_FALCON_PROJECT;
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.

@@ -49,7 +49,7 @@ public:
     virtual ~VuThread();
 };
 
-/** main thread uses this. This isFreeFalconcore. */
+/** main thread uses this. This is FreeFalcon core. */
 class VuMainThread : public VuBaseThread
 {
 public:

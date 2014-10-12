@@ -154,13 +154,14 @@ void FalconDisplayConfiguration::MakeWindow(void)
     }
 
     // Build a window for this application
-    rect.top = rect.left = 0;
+	extern const char* FREE_FALCON_PROJECT;
+	rect.top = rect.left = 0;
     rect.right = width[Movie];
     rect.bottom = height[Movie];
     AdjustWindowRect(&rect, windowStyle, FALSE);
     appWin = CreateWindow(
                  "FalconDisplay", /* class */
-                 "FreeFalcon OSP", /* caption */
+                 FREE_FALCON_PROJECT, /* caption */
                  windowStyle, /* style */
                  xOffset, /* init. x pos */
                  yOffset, /* init. y pos */
