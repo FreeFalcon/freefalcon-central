@@ -1797,26 +1797,6 @@ VS_VERSION_INFO VERSIONINFO
  FILETYPE 0x1L
  FILESUBTYPE 0x0L
 BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "000004b0"
-        BEGIN
-            VALUE "Comments", "FreeFalcon 6.1"
-            VALUE "CompanyName", "MicroProse (Atari)"
-            VALUE "FileDescription", "FreeFalcon FFViper (US)"
-            VALUE "FileVersion", "2, 3, 1, 9"
-            VALUE "InternalName", "1.08i"
-            VALUE "LegalCopyright", "Copyright © 1998 - 2012"
-            VALUE "OriginalFilename", "FFViper.exe"
-            VALUE "ProductName", "FreeFalcon 6.1"
-            VALUE "ProductVersion", "2, 3, 1, 9"
-            VALUE "SpecialBuild", "US Edition"
-        END
-    END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x0, 1200
-    END
 END
 
 
