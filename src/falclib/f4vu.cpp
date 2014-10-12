@@ -50,9 +50,6 @@ extern UnitClass* NewUnit(short tid, VU_BYTE **stream, long *rem);
 extern ObjectiveClass* NewObjective(short tid, VU_BYTE **stream, long *rem);
 extern VuEntity* NewManager(short tid, VU_BYTE **stream, long *rem);
 extern void TcpConnectCallback(ComAPIHandle ch, int ret);
-extern int MajorVersion;
-extern int MinorVersion;
-extern int BuildNumber;
 
 //extern VU_ID_NUMBER vuAssignmentId;
 //extern VU_ID_NUMBER vuLowWrapNumber;
@@ -129,10 +126,12 @@ void InitVU(void)
 #error "Incorrect VU Patch"
 #endif
 
+extern const char* FREE_FALCON_VERSION;
+
 #ifdef NDEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
-    sprintf(tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+	sprintf( tmpStr, "R %s", FREE_FALCON_VERSION );
 #else
-    sprintf(tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
+	sprintf( tmpStr, "K %s", FREE_FALCON_VERSION );
 #endif
 
     MonoPrint("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);

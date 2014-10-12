@@ -124,6 +124,10 @@
 #endif
 // END OF PREPROCESSOR DIRECTIVES
 
+// GLOBAL CONSTANTS
+const char* FREE_FALCON_BRAND = "Free Falcon";
+const char* FREE_FALCON_PROJECT = "Open Source Project";
+const char* FREE_FALCON_VERSION = "7.0.0";
 
 // GLOBAL VARIABLES
 bool g_bEnableCockpitVerifier = false;
@@ -180,7 +184,6 @@ GNETCORELib::IUplinkPtr m_pUplink;
 HINSTANCE hInst;
 HWND mainAppWnd;
 HWND mainMenuWnd;
-int BuildNumber = F4BuildNumber;
 int ClearObjManualFlags = FALSE;
 int DestroyObjective = FALSE;
 int DisableSmoothing = FALSE;
@@ -188,8 +191,6 @@ int displayCampaign = FALSE;
 int doNetwork = FALSE; // referred in splash.cpp
 int doUI = FALSE;
 int eyeFlyEnabled = FALSE;
-int MajorVersion = F4MajorVersion;
-int MinorVersion = F4MinorVersion;
 int NoRudder = FALSE;
 int noUIcomms = FALSE;
 int NumHats = -1;
@@ -357,7 +358,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     }
 
     mainMenuWnd = CreateWindow("Falcon4Class",
-                               "FreeFalcon 6.1 Debug Window",
+                               "FreeFalcon Debug Window",
                                WS_OVERLAPPEDWINDOW,
                                720,
                                100,
@@ -388,15 +389,12 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     InitWS2(&wsadata); // Init Winsock now, we need it for GNet
 
-    char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
-
     HRESULT hr = CoInitialize(NULL);
 
     if (FAILED(hr))
         MonoPrint("HandleWinMain: Error 0x%X occured during COM initialization!", hr);
 
-    // Begin - Uplink stuff
+	// Begin - Uplink stuff
     try
     {
         if (g_bEnableUplink)
@@ -410,11 +408,11 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             m_pUplink->PutMasterServerPort(g_nMasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
-            m_pUplink->PutServerVersion(strVersion);
-            m_pUplink->PutServerVersionMin(strVersion);
+			m_pUplink->PutServerVersion( FREE_FALCON_VERSION );
+			m_pUplink->PutServerVersionMin( FREE_FALCON_VERSION );
             m_pUplink->PutServerLocation(g_strServerLocation);
             m_pUplink->PutServerName(g_strServerName);
-            m_pUplink->PutGameName("Falcon4");
+			m_pUplink->PutGameName( FREE_FALCON_BRAND );
             m_pUplink->PutGameMode("openplaying");
         }
     }

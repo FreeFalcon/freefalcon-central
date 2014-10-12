@@ -596,7 +596,7 @@ void C_Parser::LoadIDList(char *filename)
 
 #if 0
     char filebuf[_MAX_PATH];
-    strcpy(filebuf, FalconUIArtDirectory); //FreeFalconroot
+    strcpy(filebuf, FalconUIArtDirectory); //FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -771,7 +771,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     }
 
     // try theater first
-    strcpy(filebuf, thrdir); //FreeFalconthr root dir
+    strcpy(filebuf, thrdir); //FreeFalcon thr root dir
 
     if (hirescapable)
     {
@@ -804,7 +804,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     }
 
     // try main dir
-    strcpy(filebuf, maindir); //FreeFalconmain root dir
+    strcpy(filebuf, maindir); //FreeFalcon main root dir
 
     if (hirescapable)
     {
@@ -1088,7 +1088,7 @@ BOOL C_Parser::LoadImageList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, FalconUIArtDirectory); //FreeFalconroot
+    strcpy(filebuf, FalconUIArtDirectory); //FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1187,7 +1187,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, FalconUIArtDirectory); //FreeFalconroot
+    strcpy(filebuf, FalconUIArtDirectory); //FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1287,7 +1287,7 @@ BOOL C_Parser::LoadStringList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, FalconUIArtDirectory); //FreeFalconroot
+    strcpy(filebuf, FalconUIArtDirectory); //FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1386,7 +1386,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, FalconUIArtDirectory); //FreeFalconroot
+    strcpy(filebuf, FalconUIArtDirectory); //FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI

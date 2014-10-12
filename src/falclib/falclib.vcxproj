@@ -277,7 +277,6 @@
     <ClInclude Include="Include\F4Comms.h" />
     <ClInclude Include="include\f4error.h" />
     <ClInclude Include="include\f4thread.h" />
-    <ClInclude Include="Include\f4VerNum.h" />
     <ClInclude Include="Include\f4version.h" />
     <ClInclude Include="include\f4vu.h" />
     <ClInclude Include="Include\MsgInc\FACMsg.h" />
