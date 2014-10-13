@@ -157,18 +157,17 @@ bool intro_movie = true;
 
 CComModule _Module; // ATL stuff.
 
-char FalconCockpitThrDirectory[_MAX_PATH];
-char FalconMovieDirectory[_MAX_PATH];
-char FalconMovieMode[_MAX_PATH];
-char FalconSoundThrDirectory[_MAX_PATH];
-char FalconSplashThrDirectory[_MAX_PATH];
-char FalconTacrefThrDirectory[_MAX_PATH];
-char FalconUIArtDirectory[_MAX_PATH];
-char FalconUIArtThrDirectory[_MAX_PATH];
-char FalconUISoundDirectory[_MAX_PATH];
-char FalconZipsThrDirectory[_MAX_PATH];
-
-class tactical_mission;
+// Do not use a path and folder name longer than _MAX_PATH (260 chars).
+char cockpit_theater_directory[_MAX_PATH];
+char movie_directory[_MAX_PATH];
+char movie_mode[_MAX_PATH];
+char sound_theater_directory[_MAX_PATH];
+char splash_theater_directory[_MAX_PATH];
+char tactical_reference_theater_directory[_MAX_PATH];
+char UI_art_directory[_MAX_PATH];
+char UI_art_theater_directory[_MAX_PATH];
+char UI_sound_directory[_MAX_PATH];
+char zip_theater_directory[_MAX_PATH]; 
 
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
@@ -1143,33 +1142,33 @@ void ParseCommandLine(LPSTR cmdLine)
     strcpy(Falcon3DDataDir, FalconObjectDataDir);
     size = sizeof(FalconMiscTexDataDir);
 
-    size = sizeof(FalconMovieMode);
-    retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)FalconMovieMode, &size);
+	size = sizeof(movie_mode);
+	retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)movie_mode, &size);
 
     if (retval != ERROR_SUCCESS)
-        strcpy(FalconMovieMode, "Hurry");
+		strcpy(movie_mode, "Hurry");
     else if (size <= 1)
-        strcpy(FalconMovieMode, "Hurry");
+		strcpy(movie_mode, "Hurry");
 
-    size = sizeof(FalconUIArtDirectory);
-    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUIArtDirectory, &size);
-
-    if (retval != ERROR_SUCCESS)
-    {
-        strcpy(FalconUIArtDirectory, FalconDataDirectory);
-        strcpy(FalconUIArtThrDirectory, FalconDataDirectory);
-    }
-
-    size = sizeof(FalconUISoundDirectory);
-    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUISoundDirectory, &size);
+	size = sizeof(UI_art_directory);
+	retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)UI_art_directory, &size);
 
     if (retval != ERROR_SUCCESS)
     {
-        strcpy(FalconUISoundDirectory, FalconDataDirectory);
+		strcpy(UI_art_directory, FalconDataDirectory);
+		strcpy(UI_art_theater_directory, FalconDataDirectory);
     }
 
-    strcpy(FalconSoundThrDirectory, FalconDataDirectory);
-    strcat(FalconSoundThrDirectory, "\\sounds");
+	size = sizeof(UI_sound_directory);
+	retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)UI_sound_directory, &size);
+
+    if (retval != ERROR_SUCCESS)
+    {
+		strcpy(UI_sound_directory, FalconDataDirectory);
+    }
+
+	strcpy(sound_theater_directory, FalconDataDirectory);
+	strcat(sound_theater_directory, "\\sounds");
     retval = RegCloseKey(theKey);
 }
 
@@ -1988,7 +1987,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             // RV - Biker - Add theater switching for into movie
             char tmpPath[MAX_PATH];
-            sprintf(tmpPath, "%s\\intro.avi", FalconMovieDirectory);
+			sprintf(tmpPath, "%s\\intro.avi", movie_directory);
             PlayMovie(tmpPath, -1, -1, 0, 0, FalconDisplay.GetImageBuffer()->frontSurface());
             FalconDisplay.LeaveMode();
             break;
@@ -2125,7 +2124,7 @@ void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface
         top = theRect.top;
         mode = MOVIE_MODE_INTERLACE;
 
-        if (!stricmp(FalconMovieMode, "Hurry"))
+		if (!stricmp(movie_mode, "Hurry"))
         {
             mode |= MOVIE_MODE_HURRY;
         }
