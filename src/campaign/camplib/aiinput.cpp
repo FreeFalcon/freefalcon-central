@@ -155,7 +155,7 @@ void ReadCampAIInputs(char * name)
     sprintf(tmpName, "%s.AII", name);
 
     if(!F4FindFile(tmpName, fileName, 256, &off, &len))
-        exit(0);
+        exit(EXIT_SUCCESS);
 
     /* ATM Inputs */
     IMMEDIATE_MIN_TIME = (short)GetPrivateProfileInt("ATM", "ImmediatePlanMinTime", 0, fileName);

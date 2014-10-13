@@ -196,7 +196,6 @@ extern int testDebrief;
 #endif
 
 #ifdef DEBUG
-int gPlayerPilotLock = 0;
 extern int doUI;
 #endif
 
@@ -1072,9 +1071,6 @@ int MissionEvaluationClass::PostMissionEval(void)
     FlightDataClass *flight_ptr;
 
     CampEnterCriticalSection();
-#ifdef DEBUG
-    gPlayerPilotLock = 0;
-#endif
     player_end_time = vuxGameTime;
     logbook_data.AircraftInPackage = 0;
     friendly_losses = 0;

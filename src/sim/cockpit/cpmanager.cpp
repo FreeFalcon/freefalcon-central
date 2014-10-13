@@ -109,7 +109,7 @@ MEM_POOL gCockMemPool;
  choice = MessageBox(NULL, buffer, "Problem:  ",   \
  MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
  if (choice == IDABORT) { \
- exit(-1); \
+ exit(EXIT_FAILURE); \
  } \
  if (choice == IDRETRY) { \
  __asm int 3 \

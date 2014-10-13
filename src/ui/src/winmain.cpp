@@ -56,9 +56,9 @@
 #include "TheaterDef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
-//#include "token.h" // default value Unz
+//#include "token.h"
 #include "TrackIR.h"
-//#include "UI_ia.h" // UI Include
+//#include "UI_ia.h"
 #include "UiComms.h" 
 #include "UserIds.h"
 //#include "VRInput.h"
@@ -92,31 +92,21 @@
 #undef fclose
 #undef fopen
 
+
 // These are needed for network support.
 #pragma warning(disable:4192)
-#import "gnet/bin/core.tlb"
+#import "gnet/bin/core.tlb" // Required by GNETCORELib
 //#import "gnet/bin/shared.tlb" named_guids
 #pragma warning(default:4192)
 
 
-// We want the intro movie to play only in RELEASE, not in DEBUG. If you need it in DEBUG, use a command line option.
-#ifdef NDEBUG
-	int auto_start = TRUE;
-	int intro_movie = TRUE;
-#else
-	int auto_start = FALSE;
-	int intro_movie = FALSE;
-
-	extern int gCampPlayerInput;
-	extern int gPlayerPilotLock;
-	HANDLE gDispatchThreadID;
-
-	// Debug Assert soft switches
-	int f4AssertsOn = TRUE;
-	int f4HardCrashOn = FALSE;
-	int shiAssertsOn = TRUE;
-	int shiWarningsOn = TRUE;
-	int shiHardCrashOn = FALSE;
+#ifdef DEBUG
+	// assertion flags
+    bool asserts = true;
+	bool shi_asserts = true;
+	int hard_crash = FALSE;
+	int shi_hard_crash = FALSE;
+	int shi_warnings = TRUE;
 #endif
 
 
@@ -140,6 +130,8 @@ const char* FREE_FALCON_VERSION = "7.0.0";
 
 
 // GLOBAL VARIABLES
+// If you don't want the intro movie to play, use -nomovie command line
+bool intro_movie = true; 
 bool g_bEnableCockpitVerifier = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
@@ -162,8 +154,8 @@ class tactical_mission;
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
 extern bool g_bPilotEntertainment;
+extern bool ReadyToPlayMovie;
 
-extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
 extern C_Handler* gMainHandler;
 extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
 extern CampaignTime gConnectionTime;
@@ -601,9 +593,7 @@ void EndUI(void)
     TheCampaign.Suspend();
     UI_Cleanup();
     TheCampaign.Resume();
-
-    if (auto_start)
-        SetFocus(mainMenuWnd);
+    SetFocus(mainMenuWnd);
 }
 
 
@@ -832,12 +822,11 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #ifdef DEBUG
 	InitDebug(DEBUGGER_TEXT_MODE);
-    auto_start = TRUE;
 
 	// These are optional debug modes. Activate if needed.
-	//F4SetAsserts(TRUE);
+	//asserts = true;
 	//F4SetHardCrash(TRUE);
-	//ShiSetAsserts(TRUE);
+	//shi_asserts = true;
 	//ShiSetHardCrash(TRUE);
 	//wait_for_loaded = FALSE;
 	//eyeFlyEnabled = TRUE;
@@ -922,10 +911,10 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (_strnicmp(arg, "-noassert", 9) == 0)
             {
-                F4SetAsserts(FALSE);
+                asserts = false;
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-                ShiSetAsserts(FALSE);
+				shi_asserts = false;
             }
 
             // JB 010325
@@ -934,12 +923,12 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (_strnicmp(arg, "-hardcrash", 9) == 0)
             {
-                F4SetAsserts(TRUE);
+                asserts = true;
                 F4SetHardCrash(TRUE);
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
                 ShiSetHardCrash(TRUE);
-                ShiSetAsserts(TRUE);
+				shi_asserts = true;
             }
 
             if (stricmp(arg, "-resetpilots") == 0)
@@ -956,28 +945,25 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-usersc") == 0)
                 _LOAD_ART_RESOURCES_ = 1;
 
-            if (_strnicmp(arg, "-auto", 5) == 0)
-                auto_start = TRUE;
-
             if (_strnicmp(arg, "-nomovie", 8) == 0)
-                intro_movie = FALSE;
+                intro_movie = false;
 
-            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
+			if (_strnicmp(arg, "-noUIcomms", 8) == 0)
                 noUIcomms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
-
-            if (_strnicmp(arg, "-movie", 6) == 0)
-                intro_movie = TRUE;
 
             if (_strnicmp(arg, "-noloader", 9) == 0)
                 wait_for_loaded = FALSE;
 
 #ifdef DEBUG
 
-            if (_strnicmp(arg, "-campinput", 10) == 0)
-                gCampPlayerInput = atoi(arg + 10);
+			if (_strnicmp(arg, "-campinput", 10) == 0)
+			{
+				extern int gCampPlayerInput;
+				gCampPlayerInput = atoi(arg + 10);
+			}
 
 #endif
 
@@ -1215,7 +1201,7 @@ void SystemLevelInit()
         if (!LoadClassTable("Falcon4"))
         {
             MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
 
         InitVU();
@@ -1223,7 +1209,7 @@ void SystemLevelInit()
         if (!LoadTactics("Falcon4"))
         {
             MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
 
         LoadTrails();
@@ -1491,8 +1477,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             if (intro_movie)
                 SendMessage(hwnd, FM_PLAY_INTRO_MOVIE, 0, 0); // Play Movie
 
-            if (auto_start)
-                PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
+            PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
 
             break;
 
@@ -1504,9 +1489,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 g_theaters.DoSoundSetup();
 
             FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
-#ifdef DEBUG
-            gPlayerPilotLock = 0;
-#endif
             doUI = TRUE;
 
             UI_Startup();
@@ -1995,11 +1977,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_EXIT_GAME:
             EndUI();
 
-            if (auto_start)
-            {
-                PostQuitMessage(0);
-                retval = 0;
-            }
+            PostQuitMessage(0);
+            retval = 0;
 
             break;
 

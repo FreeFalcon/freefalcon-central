@@ -330,7 +330,7 @@ void main(int argc,char **argv)
  if(argc != 3)
  {
  printf("Usage: test ifp ofp\n");
- exit(0);
+ exit(EXIT_SUCCESS);
  }
 
  ifp=open(argv[1],O_RDONLY|O_BINARY);
@@ -352,7 +352,7 @@ void main(int argc,char **argv)
  free(iBuf);
  free(oBuf);
 
- exit(0);
+ exit(EXIT_SUCCESS);
 }
 
 */
