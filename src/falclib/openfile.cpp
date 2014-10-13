@@ -52,14 +52,14 @@ static int Enabled = 1;
 // Possible return values:
 // 0 = Retry
 // 1 = Abort
-// if Disabled... exit(-1);
+// if Disabled... exit(EXIT_FAILURE);
 
 int DoDialogBox()
 {
     int retval;
 
     if (!Enabled)
-        exit(0);
+        exit(EXIT_SUCCESS);
 
 	retval = MessageBox(NULL, InsertMedia[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
 

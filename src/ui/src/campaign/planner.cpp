@@ -43,7 +43,7 @@ extern long FirstPlane;
 extern LoadoutStruct gCurStores[];
 extern long HardPoints;
 extern long PlaneCount;
-extern BOOL ReadyToPlayMovie;
+extern bool ReadyToPlayMovie;
 extern RailList gCurRails[4];
 extern VehicleClassDataType *gVCPtr;
 extern int gVehID;
@@ -1062,7 +1062,7 @@ static void CampaignAbortTakeoffCB(long, short hittype, C_Base *control)
     CancelCampaignCompression();
     UpdateRemoteCompression();
     gMainHandler->HideWindow(control->Parent_);
-    ReadyToPlayMovie = TRUE;
+    ReadyToPlayMovie = true;
 }
 
 static void CampaignTaxiCB(long ID, short hittype, C_Base *)

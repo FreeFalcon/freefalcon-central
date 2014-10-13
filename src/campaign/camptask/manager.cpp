@@ -20,8 +20,8 @@
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER RenameTable[65536];
-extern int gRenameIds;
+extern VU_ID_NUMBER rename_table[65536];
+extern bool rename_IDs;
 #endif
 
 // ====================================
@@ -73,7 +73,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     share_.id_.num_ &= 0xffff;
 #endif
     //#ifdef CAMPTOOL
-    // if (gRenameIds)
+    // if (rename_IDs)
     // {
     // VU_ID new_id = FalconNullId;
     //
@@ -82,7 +82,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     // {
     // if (!vuDatabase->Find(new_id))
     // {
-    // RenameTable[share_.id_.num_] = new_id.num_;
+    // rename_table[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }

@@ -56,9 +56,9 @@
 #include "TheaterDef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
-//#include "token.h" // default value Unz
+//#include "token.h"
 #include "TrackIR.h"
-//#include "UI_ia.h" // UI Include
+//#include "UI_ia.h"
 #include "UiComms.h" 
 #include "UserIds.h"
 //#include "VRInput.h"
@@ -92,57 +92,68 @@
 #undef fclose
 #undef fopen
 
+
 // These are needed for network support.
 #pragma warning(disable:4192)
-#import "gnet/bin/core.tlb"
+#import "gnet/bin/core.tlb" // Required by GNETCORELib
 //#import "gnet/bin/shared.tlb" named_guids
 #pragma warning(default:4192)
 
 
-// We want the intro movie to play only in RELEASE, not in DEBUG. If you need it in DEBUG, use a command line option.
+// RELEASE mode
 #ifdef NDEBUG
-	int auto_start = TRUE;
-	int intro_movie = TRUE;
-#else
-	int auto_start = FALSE;
-	int intro_movie = FALSE;
+	bool cockpit_verifier = false;
+	bool write_mission_table = false;
+	bool write_sound_table = false;
+#endif
 
-	extern int gCampPlayerInput;
-	extern int gPlayerPilotLock;
-	HANDLE gDispatchThreadID;
 
-	// Debug Assert soft switches
-	int f4AssertsOn = TRUE;
-	int f4HardCrashOn = FALSE;
-	int shiAssertsOn = TRUE;
-	int shiWarningsOn = TRUE;
-	int shiHardCrashOn = FALSE;
+#ifdef DEBUG
+	// assertion flags
+    bool asserts = true;
+	bool shi_asserts = true;
+	bool hard_crash = false;
+	bool shi_hard_crash = false;
+	bool shi_warnings = true;
+	// if you want to disable it, use -nococpitverifier commandline
+	bool cockpit_verifier = true;
+	// if you want to disable it, use -nomissiontable commandline
+	bool write_mission_table = true;
+	// if you want to disable it, use -nosoundtable commandline
+	bool write_sound_table = true;
+
+// This is for debugging only. I don't know what the CAMPTOOL is or does...
+// CAMPTOOL is not defined anywhere in the code 
+// although the #ifdef CAMPTOOL appears in many places!
+// It fails to compile under RELEASE.
+#define CAMPTOOL 1
+
 #endif
 
 
 #ifdef CAMPTOOL
 	// Renaming tool stuff
-	extern VU_ID_NUMBER RenameTable[65536];
-	extern int gRenameIds;
+	extern bool rename_IDs;
 	// Window handles
 	extern HWND hMainWnd;
-	extern HWND hToolWnd;
 #endif
 // END OF PREPROCESSOR DIRECTIVES
 
 
 
 // GLOBAL CONSTANTS
+// This is the only place in the entire code base where the name and the
+// version should be defined.
 const char* FREE_FALCON_BRAND = "Free Falcon";
 const char* FREE_FALCON_PROJECT = "Open Source Project";
 const char* FREE_FALCON_VERSION = "7.0.0";
+// END OF GLOBAL CONSTANTS
 
 
 
 // GLOBAL VARIABLES
-bool g_bEnableCockpitVerifier = false;
-bool g_writeMissionTbl = false;
-bool g_writeSndTbl = false;
+// If you don't want the intro movie to play, use -nomovie command line
+bool intro_movie = true; 
 
 CComModule _Module; // ATL stuff.
 
@@ -162,8 +173,8 @@ class tactical_mission;
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
 extern bool g_bPilotEntertainment;
+extern bool ReadyToPlayMovie;
 
-extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
 extern C_Handler* gMainHandler;
 extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
 extern CampaignTime gConnectionTime;
@@ -530,10 +541,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     mainAppWnd = FalconDisplay.appWin;
 
-    if (g_writeSndTbl)
+    if (write_sound_table)
         SaveSFXTable();
 
-    if (g_writeMissionTbl)
+    if (write_mission_table)
         WriteMissionData();
 
     if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
@@ -601,9 +612,7 @@ void EndUI(void)
     TheCampaign.Suspend();
     UI_Cleanup();
     TheCampaign.Resume();
-
-    if (auto_start)
-        SetFocus(mainMenuWnd);
+    SetFocus(mainMenuWnd);
 }
 
 
@@ -717,8 +726,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_RENAMINGON:
-                    gRenameIds = 1 - gRenameIds;
-                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (gRenameIds ? MF_CHECKED : MF_UNCHECKED));
+                    !rename_IDs;
+                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (rename_IDs ? MF_CHECKED : MF_UNCHECKED));
                     break;
 #endif
 
@@ -832,13 +841,12 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #ifdef DEBUG
 	InitDebug(DEBUGGER_TEXT_MODE);
-    auto_start = TRUE;
 
 	// These are optional debug modes. Activate if needed.
-	//F4SetAsserts(TRUE);
-	//F4SetHardCrash(TRUE);
-	//ShiSetAsserts(TRUE);
-	//ShiSetHardCrash(TRUE);
+	//asserts = true;
+	//hard_crash = true;
+	//shi_asserts = true;
+	//shi_hard_crash = true;
 	//wait_for_loaded = FALSE;
 	//eyeFlyEnabled = TRUE;
 	//RepairObjective = 1;
@@ -922,24 +930,24 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (_strnicmp(arg, "-noassert", 9) == 0)
             {
-                F4SetAsserts(FALSE);
+                asserts = false;
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-                ShiSetAsserts(FALSE);
+				shi_asserts = false;
             }
 
             // JB 010325
             if (_strnicmp(arg, "-nowarning", 10) == 0)
-                ShiSetWarnings(FALSE);
+				shi_warnings = false;
 
             if (_strnicmp(arg, "-hardcrash", 9) == 0)
             {
-                F4SetAsserts(TRUE);
-                F4SetHardCrash(TRUE);
+                asserts = true;
+				hard_crash = true;
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-                ShiSetHardCrash(TRUE);
-                ShiSetAsserts(TRUE);
+				shi_hard_crash = true;
+				shi_asserts = true;
             }
 
             if (stricmp(arg, "-resetpilots") == 0)
@@ -956,28 +964,25 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-usersc") == 0)
                 _LOAD_ART_RESOURCES_ = 1;
 
-            if (_strnicmp(arg, "-auto", 5) == 0)
-                auto_start = TRUE;
-
             if (_strnicmp(arg, "-nomovie", 8) == 0)
-                intro_movie = FALSE;
+                intro_movie = false;
 
-            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
+			if (_strnicmp(arg, "-noUIcomms", 8) == 0)
                 noUIcomms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
-
-            if (_strnicmp(arg, "-movie", 6) == 0)
-                intro_movie = TRUE;
 
             if (_strnicmp(arg, "-noloader", 9) == 0)
                 wait_for_loaded = FALSE;
 
 #ifdef DEBUG
 
-            if (_strnicmp(arg, "-campinput", 10) == 0)
-                gCampPlayerInput = atoi(arg + 10);
+			if (_strnicmp(arg, "-campinput", 10) == 0)
+			{
+				extern int gCampPlayerInput;
+				gCampPlayerInput = atoi(arg + 10);
+			}
 
 #endif
 
@@ -1107,14 +1112,14 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-enumswdev"))
                 g_bEnumSoftwareDevices = true;
 
-            if (!stricmp(arg, "-cockpitverifier"))
-                g_bEnableCockpitVerifier = true;
+			if (!stricmp(arg, "-nocockpitverifier"))
+				cockpit_verifier = false;
+			
+			if (!stricmp(arg, "-nosoundtable"))
+				write_sound_table = false;
 
-            if (!stricmp(arg, "-writesndtbl"))
-                g_writeSndTbl = true;
-
-            if (!stricmp(arg, "-writemissiontbl"))
-                g_writeMissionTbl = true;
+            if (!stricmp(arg, "-nomissiontable"))
+                write_mission_table = false;
 
         }
         while ((arg = strtok(NULL, " ")) != NULL);
@@ -1215,7 +1220,7 @@ void SystemLevelInit()
         if (!LoadClassTable("Falcon4"))
         {
             MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
 
         InitVU();
@@ -1223,7 +1228,7 @@ void SystemLevelInit()
         if (!LoadTactics("Falcon4"))
         {
             MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
 
         LoadTrails();
@@ -1491,8 +1496,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             if (intro_movie)
                 SendMessage(hwnd, FM_PLAY_INTRO_MOVIE, 0, 0); // Play Movie
 
-            if (auto_start)
-                PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
+            PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
 
             break;
 
@@ -1504,9 +1508,6 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 g_theaters.DoSoundSetup();
 
             FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
-#ifdef DEBUG
-            gPlayerPilotLock = 0;
-#endif
             doUI = TRUE;
 
             UI_Startup();
@@ -1995,11 +1996,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_EXIT_GAME:
             EndUI();
 
-            if (auto_start)
-            {
-                PostQuitMessage(0);
-                retval = 0;
-            }
+            PostQuitMessage(0);
+            retval = 0;
 
             break;
 

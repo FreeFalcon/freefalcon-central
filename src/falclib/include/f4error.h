@@ -26,20 +26,21 @@
     \
  sprintf( buffer, "Error:  %0d  %s  %s", __LINE__, __FILE__, __DATE__ ); \
  MessageBox(NULL, buffer, string, MB_OK); \
- exit(-1);    \
+ exit(EXIT_FAILURE);    \
 }
 
 
 // F4Assert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
 
-extern int f4AssertsOn, f4HardCrashOn;
+extern bool hard_crash;
+extern bool asserts;
 
 #define F4Assert( expr ) \
- if (f4AssertsOn && !(expr)) { \
+ if (asserts && !(expr)) { \
  char buffer[80];    \
  int choice = IDRETRY; \
- if (f4HardCrashOn) \
+ if (hard_crash) \
  *((unsigned int *) 0x00) = 0; \
  else \
  { \
@@ -48,7 +49,7 @@ extern int f4AssertsOn, f4HardCrashOn;
  choice = MessageBox(NULL, buffer, "Failed:  " #expr,   \
  MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
  if (choice == IDABORT) { \
- exit(-1); \
+ exit(EXIT_FAILURE); \
  } \
  if (choice == IDRETRY) { \
  __asm int 3 \
@@ -65,24 +66,10 @@ extern int f4AssertsOn, f4HardCrashOn;
  MessageBox(NULL, buffer, string, MB_OK); \
 }
 
-#define F4SetAsserts( expr ) \
-{ \
- f4AssertsOn = expr; \
-}
-
-#define F4SetHardCrash( expr ) \
-{ \
- f4HardCrashOn = expr; \
-} \
- 
 #else
 #define F4Assert( expr )
 
 #define F4Warning( string )
-
-#define F4SetAsserts( expr )
-
-#define F4SetHardCrash( expr )
 
 #endif
 
