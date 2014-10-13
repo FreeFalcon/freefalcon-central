@@ -32,7 +32,7 @@ extern C_Parser *gMainParser;
 extern int TACREFLoaded;
 
 // RV - Biker - Theater switching stuff
-extern char FalconTacrefThrDirectory[];
+extern char tactical_reference_theater_directory[];
 
 TacticalReference *Reference = NULL;
 C_3dViewer *TAC_Viewer = NULL;
@@ -1325,7 +1325,7 @@ BOOL TacRef_Setup()
 
     // RV - Biker - Add theater switching for tacref
     char tmpPath[_MAX_PATH];
-    sprintf(tmpPath, "%s\\%s", FalconTacrefThrDirectory, "tacrefdb.bin");
+    sprintf(tmpPath, "%s\\%s", tactical_reference_theater_directory, "tacrefdb.bin");
 
     win = gMainHandler->FindWindow(TAC_REF_WIN);
 

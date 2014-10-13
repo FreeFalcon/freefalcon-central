@@ -7,8 +7,8 @@
 #define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) & 0x1f) << rs) | (((color >> 5) & 0x1f) << gs) | (((color) & 0x1f) << bs))
 
 extern C_Parser *gMainParser;
-extern char FalconUIArtDirectory[];
-extern char FalconUIArtThrDirectory[];
+extern char UI_art_directory[];
+extern char UI_art_theater_directory[];
 
 void ImageCleanupCB(void *rec)
 {
@@ -161,12 +161,12 @@ FILE *C_Resmgr::OpenResFile(const char *name, const char *sfx, const char *mode)
     char filename[MAX_PATH];
     FILE *fp;
 
-    sprintf(filename, "%s\\%s.%s", FalconUIArtThrDirectory, name, sfx);
+    sprintf(filename, "%s\\%s.%s", UI_art_theater_directory, name, sfx);
 
     if ((fp = fopen(filename, mode)) != NULL)
         return fp;
 
-    sprintf(filename, "%s\\%s.%s", FalconUIArtDirectory, name, sfx);
+    sprintf(filename, "%s\\%s.%s", UI_art_directory, name, sfx);
     return fopen(filename, mode);
 }
 
