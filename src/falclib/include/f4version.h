@@ -13,7 +13,6 @@
 #define F4LANG_FEMININE 1
 #define F4LANG_NEUTER 2
 
-const int F4Language = 1;
 extern int gLangIDNum;
 
 #endif

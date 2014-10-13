@@ -36,9 +36,7 @@
 // ShiAssert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
 
-// JB 010325
-extern int shi_warnings, shi_hard_crash;
-extern bool shi_asserts;
+extern bool shi_asserts, shi_hard_crash, shi_warnings;
 
 #define ShiAssert( expr ) \
  if (shi_asserts && !(expr)) { \
@@ -77,23 +75,10 @@ extern bool shi_asserts;
  MessageBox(NULL, buffer, string, MB_OK); } \
 }
 
-// JB 010325
-#define ShiSetWarnings( expr ) \
-{ \
- shi_warnings = expr; \
-}
-
-#define ShiSetHardCrash( expr ) \
-{ \
- shi_hard_crash = expr; \
-} \
- 
 #else
 #define ShiAssert( expr )
 
 #define ShiWarning( string )
-
-#define ShiSetHardCrash( expr )
 
 #endif
 

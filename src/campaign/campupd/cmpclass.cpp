@@ -102,8 +102,8 @@ extern int MAXOI;
 extern HWND hToolWnd;
 extern void CampaignWindow(HINSTANCE hInstance, int nCmdShow);
 // Renaming tool stuff
-extern VU_ID_NUMBER RenameTable[65536];
-extern int gRenameIds;
+extern VU_ID_NUMBER rename_table[65536];
+extern bool rename_IDs;
 #endif CAMPTOOL
 
 #ifdef CAMPTOOL
@@ -426,8 +426,8 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
-        memset(RenameTable, 0, sizeof(VU_ID_NUMBER) * 65536);
+    if (rename_IDs)
+        memset(rename_table, 0, sizeof(VU_ID_NUMBER) * 65536);
 
     if (CampIDRenameTable[0])
     {
@@ -508,7 +508,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
+    if (rename_IDs)
     {
         EndReadCampFile();
         // The new scenario file should be set to our current save file
@@ -1639,8 +1639,8 @@ int CampaignClass::Encode(VU_BYTE **stream)
 #endif
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
-        PlayerSquadronID.num_ = RenameTable[PlayerSquadronID.num_];
+    if (rename_IDs)
+        PlayerSquadronID.num_ = rename_table[PlayerSquadronID.num_];
 
 #endif
     memcpy(buffer, &PlayerSquadronID, sizeof(VU_ID));

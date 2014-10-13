@@ -54,7 +54,7 @@
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern int gRenameIds;
+extern bool rename_IDs;
 #endif CAMPTOOL
 
 #pragma warning(disable : 4127) // Conditional Expression is constant warning
@@ -297,7 +297,7 @@ static void TACNewCB(long, short hittype, C_Base *control)
 
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
+    if (rename_IDs)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
@@ -335,7 +335,7 @@ static void TACEditCB(long ID, short hittype, C_Base *control)
 
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
+    if (rename_IDs)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
@@ -862,7 +862,7 @@ void tactical_revert_mission(void)
 
 #ifdef CAMPTOOL
 
-    if (gRenameIds)
+    if (rename_IDs)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif

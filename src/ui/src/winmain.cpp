@@ -100,41 +100,60 @@
 #pragma warning(default:4192)
 
 
+// RELEASE mode
+#ifdef NDEBUG
+	bool cockpit_verifier = false;
+	bool write_mission_table = false;
+	bool write_sound_table = false;
+#endif
+
+
 #ifdef DEBUG
 	// assertion flags
     bool asserts = true;
 	bool shi_asserts = true;
-	int hard_crash = FALSE;
-	int shi_hard_crash = FALSE;
-	int shi_warnings = TRUE;
+	bool hard_crash = false;
+	bool shi_hard_crash = false;
+	bool shi_warnings = true;
+	// if you want to disable it, use -nococpitverifier commandline
+	bool cockpit_verifier = true;
+	// if you want to disable it, use -nomissiontable commandline
+	bool write_mission_table = true;
+	// if you want to disable it, use -nosoundtable commandline
+	bool write_sound_table = true;
+
+// This is for debugging only. I don't know what the CAMPTOOL is or does...
+// CAMPTOOL is not defined anywhere in the code 
+// although the #ifdef CAMPTOOL appears in many places!
+// It fails to compile under RELEASE.
+#define CAMPTOOL 1
+
 #endif
 
 
 #ifdef CAMPTOOL
 	// Renaming tool stuff
-	extern VU_ID_NUMBER RenameTable[65536];
-	extern int gRenameIds;
+	extern bool rename_IDs;
 	// Window handles
 	extern HWND hMainWnd;
-	extern HWND hToolWnd;
 #endif
 // END OF PREPROCESSOR DIRECTIVES
 
 
 
 // GLOBAL CONSTANTS
+// This is the only place in the entire code base where the name and the
+// version should be defined.
 const char* FREE_FALCON_BRAND = "Free Falcon";
 const char* FREE_FALCON_PROJECT = "Open Source Project";
 const char* FREE_FALCON_VERSION = "7.0.0";
+// END OF GLOBAL CONSTANTS
 
 
 
 // GLOBAL VARIABLES
 // If you don't want the intro movie to play, use -nomovie command line
 bool intro_movie = true; 
-bool g_bEnableCockpitVerifier = false;
-bool g_writeMissionTbl = false;
-bool g_writeSndTbl = false;
 
 CComModule _Module; // ATL stuff.
 
@@ -522,10 +541,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     mainAppWnd = FalconDisplay.appWin;
 
-    if (g_writeSndTbl)
+    if (write_sound_table)
         SaveSFXTable();
 
-    if (g_writeMissionTbl)
+    if (write_mission_table)
         WriteMissionData();
 
     if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
@@ -707,8 +726,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_RENAMINGON:
-                    gRenameIds = 1 - gRenameIds;
-                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (gRenameIds ? MF_CHECKED : MF_UNCHECKED));
+                    !rename_IDs;
+                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (rename_IDs ? MF_CHECKED : MF_UNCHECKED));
                     break;
 #endif
 
@@ -825,9 +844,9 @@ void ParseCommandLine(LPSTR cmdLine)
 
 	// These are optional debug modes. Activate if needed.
 	//asserts = true;
-	//F4SetHardCrash(TRUE);
+	//hard_crash = true;
 	//shi_asserts = true;
-	//ShiSetHardCrash(TRUE);
+	//shi_hard_crash = true;
 	//wait_for_loaded = FALSE;
 	//eyeFlyEnabled = TRUE;
 	//RepairObjective = 1;
@@ -919,15 +938,15 @@ void ParseCommandLine(LPSTR cmdLine)
 
             // JB 010325
             if (_strnicmp(arg, "-nowarning", 10) == 0)
-                ShiSetWarnings(FALSE);
+				shi_warnings = false;
 
             if (_strnicmp(arg, "-hardcrash", 9) == 0)
             {
                 asserts = true;
-                F4SetHardCrash(TRUE);
+				hard_crash = true;
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-                ShiSetHardCrash(TRUE);
+				shi_hard_crash = true;
 				shi_asserts = true;
             }
 
@@ -1093,14 +1112,14 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-enumswdev"))
                 g_bEnumSoftwareDevices = true;
 
-            if (!stricmp(arg, "-cockpitverifier"))
-                g_bEnableCockpitVerifier = true;
+			if (!stricmp(arg, "-nocockpitverifier"))
+				cockpit_verifier = false;
+			
+			if (!stricmp(arg, "-nosoundtable"))
+				write_sound_table = false;
 
-            if (!stricmp(arg, "-writesndtbl"))
-                g_writeSndTbl = true;
-
-            if (!stricmp(arg, "-writemissiontbl"))
-                g_writeMissionTbl = true;
+            if (!stricmp(arg, "-nomissiontable"))
+                write_mission_table = false;
 
         }
         while ((arg = strtok(NULL, " ")) != NULL);

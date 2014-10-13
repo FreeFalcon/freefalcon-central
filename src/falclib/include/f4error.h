@@ -33,7 +33,7 @@
 // F4Assert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
 
-extern int hard_crash;
+extern bool hard_crash;
 extern bool asserts;
 
 #define F4Assert( expr ) \
@@ -66,17 +66,10 @@ extern bool asserts;
  MessageBox(NULL, buffer, string, MB_OK); \
 }
 
-#define F4SetHardCrash( expr ) \
-{ \
- hard_crash = expr; \
-} \
- 
 #else
 #define F4Assert( expr )
 
 #define F4Warning( string )
-
-#define F4SetHardCrash( expr )
 
 #endif
 

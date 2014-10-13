@@ -57,7 +57,7 @@ extern HWND mainAppWnd;
 #endif
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern int gRenameIds;
+extern bool rename_IDs;
 #endif CAMPTOOL
 
 extern uchar gSelectedTeam;
