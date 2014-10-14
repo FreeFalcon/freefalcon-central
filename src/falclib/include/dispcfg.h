@@ -20,7 +20,7 @@ public:
     int width[NumModes];
     int height[NumModes];
     int depth[NumModes];
-    int doubleBuffer[NumModes];
+    bool doubleBuffer[NumModes];
     HWND appWin;
     int windowStyle;
     // Device managment

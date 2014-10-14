@@ -725,7 +725,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_RENAMINGON:
-                    !rename_IDs;
+					rename_IDs ? rename_IDs = false : rename_IDs = true;
                     CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (rename_IDs ? MF_CHECKED : MF_UNCHECKED));
                     break;
 #endif
