@@ -356,7 +356,7 @@ void FalconDisplayConfiguration::ToggleFullScreen(void)
 
     LeaveMode();
     DestroyWindow(appWin);
-    !displayFullScreen;
+	displayFullScreen ? displayFullScreen = false : displayFullScreen = true;
     MakeWindow();
     EnterMode(currentMode);
 }
