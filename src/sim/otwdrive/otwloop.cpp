@@ -160,8 +160,6 @@ extern bool g_bShowFlaps;
 
 void CallInputFunction(unsigned long val, int state);
 
-extern int MajorVersion;
-extern int MinorVersion;
 extern int ShowVersion;
 extern int ShowFrameRate;
 extern SimBaseClass* eyeFlyTgt;
@@ -625,7 +623,7 @@ void OTWDriverClass::DisplayInfoBar(void)
 
         // 2 issues here:
         // a) string could be longer as the locally allocated one (bad thing (tm)) - however that´s unlikely, see above
-        // b) string could be longer than physical screen size.. falcon then displays nothing.. also a bit suboptimal..
+        // b) string could be longer than physical screen size.. FreeFalcon then displays nothing.. also a bit suboptimal..
         // solution for b) need to get renderer->TextWidth() working, if it is >1 then we don´t add a chunk.. or so..
         if ((!otwPlatform->IsGroundVehicle()) && (!otwPlatform->IsBomb()))
         {
@@ -766,7 +764,7 @@ void OTWDriverClass::DisplayFrontText(void)
     // See OTWDriver.h for explanation
     if (takePrettyScreenShot == EXECUTE)
     {
-        takeScreenShot = TRUE; // tell falcon to take a shot
+        takeScreenShot = TRUE; // tell FreeFalcon to take a shot
         takePrettyScreenShot = CLEANUP; // advance state..
         return; // deactivate 2d text (by NOT drawing it :p)
     }

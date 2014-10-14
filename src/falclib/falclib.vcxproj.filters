@@ -436,9 +436,6 @@
     <ClInclude Include="include\f4thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\f4VerNum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\f4version.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -33,9 +33,9 @@ DisplayDevice::~DisplayDevice()
 }
 
 
-// Intialize our device.  This must be called before any images
+// Initializeour device.  This must be called before any images
 // are constructed.
-void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
+void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int depth, bool fullScreen, bool dblBuffer, HWND win, BOOL bWillCallSwapBuffer)
 {
     RECT rect;
     DWORD style;
@@ -79,7 +79,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         {
             // Ran off the end of the list
             char message[80];
-            sprintf(message, "Requested unavilable resolution %0dx%0dx%0d", width, height, depth);
+            sprintf(message, "Requested unavailable resolution %0dx%0dx%0d", width, height, depth);
             ShiError(message);
         }
     }
@@ -142,7 +142,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         AdjustWindowRect(&rect, style, FALSE);
         appWin = CreateWindow(
                      "RenderTarget", /* class */
-                     "Falcon 4.0 Demo", /* caption */
+                     "FreeFalcon Demo", /* caption */
                      style, /* style */
                      50, /* init. x pos */
                      50, /* init. y pos */

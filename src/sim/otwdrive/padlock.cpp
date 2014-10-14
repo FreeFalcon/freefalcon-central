@@ -69,7 +69,7 @@ extern int g_nNearLabelLimit;
 extern float g_fPadlockBreakDistance;
 extern bool g_bPadlockHudColor; //Wombat778 4-28-04
 
-static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
 
 
 // ------------------------------------------------------------------------------
@@ -1193,7 +1193,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
 // FALSE otherwise.
 //
 // This function compares two objects and determines which has the higher
-// padlock sorting priority.  The document entitled "The Falcon 4.0 Specification
+// padlock sorting priority.  The document entitled "The FreeFalcon Specification
 // for Target Sorting and Tracking in Padlock Modes" (file name targeting_rev_.doc)
 // has the specificaton about how to order the target list.
 //
@@ -1311,7 +1311,7 @@ BOOL OTWDriverClass::Padlock_DetermineRelativePriority(SimBaseClass* pObjA, floa
 //
 // This function searches thru all the different properties of the object and
 // ranks the importance of the object.  Ranking is specified by section 3. of the
-// document entitled "Falcon 4.0 Specification for Target Sorting and Tracking in
+// document entitled "FreeFalcon Specification for Target Sorting and Tracking in
 // Padlock Modes, filename: targeting_rev_A.doc".  Targets with higher importance
 // will get lower rankings.  Since this pObj can either be a vehicle or a feature
 // we must check the object's datatype and then handle the object appropiately.
@@ -1461,7 +1461,7 @@ int OTWDriverClass::Padlock_RankAGPriority(SimBaseClass* pObj, BOOL isPainted)
 //
 // This function searches thru all the different properties of the object and
 // ranks the importance of the object.  Ranking is specified by section 3. of the
-// document entitled "Falcon 4.0 Specification for Target Sorting and Tracking in
+// document entitled "FreeFalcon Specification for Target Sorting and Tracking in
 // Padlock Modes, filename: targeting_rev_A.doc".  Targets with higher importance
 // will get lower rankings.  Just to make Vince's life more difficult, pObj can
 // either be a vehicle or a feature (runway).
@@ -1605,7 +1605,7 @@ int OTWDriverClass::Padlock_RankAAPriority(SimBaseClass* pObj, BOOL isPainted)
 //
 // This function searches thru all the different properties of the object and
 // ranks the importance of the object.  Ranking is specified by section 3. of the
-// document entitled "Falcon 4.0 Specification for Target Sorting and Tracking in
+// document entitled "FreeFalcon Specification for Target Sorting and Tracking in
 // Padlock Modes, filename: targeting_rev_A.doc".  Targets with higher importance
 // will get lower rankings.  Just to make Vince's life more difficult, pObj can
 // either be a vehicle or a feature (runway).

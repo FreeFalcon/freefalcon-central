@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of falcon 4.0
+// of FreeFalcon
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ extern HWND mainAppWnd;
 #endif
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern int gRenameIds;
+extern bool rename_IDs;
 #endif CAMPTOOL
 
 extern uchar gSelectedTeam;

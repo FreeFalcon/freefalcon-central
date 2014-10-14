@@ -618,7 +618,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         context.SelectForegroundColor(cloudColor);
         context.RestoreState(STATE_ALPHA_SOLID);
 
-        // Now intialize the four corners of the rectangle to fill
+        // Now initialize the four corners of the rectangle to fill
         pVtx[0].x = leftPixel;
         pVtx[0].y = bottomPixel;
         pVtx[1].x = leftPixel;
@@ -641,7 +641,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         context.Primitive(MPR_PRM_TRIFAN, 0, 4, sizeof(*p));
         p = (MPRVtx_t*)context.GetContextBufferPtr();
 
-        // Now intialize the four corners of the rectangle to fill
+        // Now initialize the four corners of the rectangle to fill
         p->x = leftPixel;
         p->y = bottomPixel;
         p++;

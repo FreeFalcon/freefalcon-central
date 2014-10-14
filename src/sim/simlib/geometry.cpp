@@ -26,7 +26,7 @@ void CalcTransformMatrix(SimBaseClass* theObject);
 // features. I need to get az and el for features and
 // possibly arbitrary points (Gilman mentioned that it would
 // be nice if the player can padlock a marked point on the
-// ground (cringe).  Have a Falcon day.
+// ground (cringe).  Have a FreeFalcon day.
 //
 // -----------------------------------------------------
 

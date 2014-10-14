@@ -152,7 +152,7 @@ void Render3D::Setup(ImageBuffer *imageBuffer)
     Render2D::Setup(imageBuffer);
     SetFOV(60.0f * PI / 180.0f);
 
-    // Intialize our camera parameters to something reasonable
+    // Initializeour camera parameters to something reasonable
 
     pos.x = pos.y = pos.z = 0.0f;
     SetCamera(&pos, &IMatrix);
@@ -257,7 +257,7 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         D3DXMATRIX matProj;
         D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), NearZ, context.ZFAR);
 
-        // Original Falcon FOV transformation
+        // Original FreeFalcon FOV transformation
         matProj.m10 *= oneOVERtanVFOV;
         matProj.m11 *= oneOVERtanVFOV;
         matProj.m12 *= oneOVERtanVFOV;
@@ -408,7 +408,7 @@ void Render3D::SetObjectDetail(float scaler)
 
 /***************************************************************************\
     Set the lighting direction
- (based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a FreeFalcon X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::SetLightDirection(const Tpoint* dir)
 {
@@ -420,7 +420,7 @@ void Render3D::SetLightDirection(const Tpoint* dir)
 
 /***************************************************************************\
     Get the lighting direction
- (based on a Falcon 4 X north, Y east, Z down coordinate system)
+ (based on a FreeFalcon X north, Y east, Z down coordinate system)
 \***************************************************************************/
 void Render3D::GetLightDirection(Tpoint* dir)
 {

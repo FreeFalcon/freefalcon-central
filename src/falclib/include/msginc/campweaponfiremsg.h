@@ -18,7 +18,7 @@
 // =============================================================================
 // KCK: This message is used to broadcast damage data to the entire game for
 // Campaign Entities. This is called only from a Campaign Entity's ApplyDamage()
-// function, but is called regardless of wether damage was applied in order to
+// function, but is called regardless of whether damage was applied in order to
 // do the distant visual effects.
 //
 // It contains a list of all weapons being fired and the quantity, as well as

@@ -59,7 +59,7 @@
 using namespace std;
 
 // argh globals
-extern bool g_bEnableCockpitVerifier;
+extern bool cockpit_verifier;
 extern bool g_bRealisticAvinoics;
 extern bool g_bStartIn3Dpit;  // Cobra
 extern bool g_bCockpitAutoScale; //Wombat778 10-24-2003
@@ -70,7 +70,7 @@ extern bool g_bResizeUsesResMgr; //Wombat778 4-14-04
 extern bool g_bUse_DX_Engine; // COBRA - RED
 extern float g_fHUDonlySize;
 // RV - Biker - We need this for theater switching
-extern char FalconCockpitThrDirectory[];
+extern char cockpit_theater_directory[];
 
 //Cobra TJL 11/08/04
 //char cockpitFolder[50];//Cobra
@@ -109,7 +109,7 @@ MEM_POOL gCockMemPool;
  choice = MessageBox(NULL, buffer, "Problem:  ",   \
  MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
  if (choice == IDABORT) { \
- exit(-1); \
+ exit(EXIT_FAILURE); \
  } \
  if (choice == IDRETRY) { \
  __asm int 3 \
@@ -600,7 +600,7 @@ CockpitManager::CockpitManager(
 
     mpCockpitCritSec = F4CreateCriticalSection("mpCockpitCritSec");
 
-    if (g_bEnableCockpitVerifier)
+    if (cockpit_verifier)
     {
         if (mSurfaceTally != mNumSurfaces ||
             mObjectTally != mNumObjects ||
@@ -611,10 +611,10 @@ CockpitManager::CockpitManager(
             char buf[0x400];
             sprintf(buf, "Verify error detected!\n\nNumSurfaces:\t%.3d\t\tSurfaceTally:\t%.3d\nNumObjects:\t%.3d\t\tObjectTally:\t%.3d\nNumPanels:\t%.3d\t\tPanelTally:\t%.3d\nNumButtons:\t%.3d\t\tButtonTally:\t%.3d\nNumButtonViews:\t%.3d\t\tButtonViewTally:\t%.3d\t\n",
                     mNumSurfaces, mSurfaceTally, mNumObjects, mObjectTally, mNumPanels, mPanelTally, mNumButtons, mButtonTally, mNumButtonViews, mButtonViewTally);
-            ::MessageBox(NULL, buf, "Falcon 4.0 Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+            ::MessageBox(NULL, buf, "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
         }
 
-        else ::MessageBox(NULL, "No errors.", "Falcon 4.0 Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
+        else ::MessageBox(NULL, "No errors.", "FreeFalcon Cockpit Verifier", MB_OK | MB_SETFOREGROUND);
     }
 
     //Wombat778 10-18-2003 Hack for 1.25 resolutions
@@ -1104,7 +1104,7 @@ void CockpitManager::ParseManagerInfo(FILE* pcockpitDataFile)
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &mAltPanel);
         }
-        //sfr added for lights. Remember, falcon uses 0xAABBGGRR format
+        //sfr added for lights. Remember, FreeFalcon uses 0xAABBGGRR format
         else if (!strcmpi(ptoken, PROP_FLOODLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
@@ -5980,7 +5980,7 @@ int FindCockpit(
     // FO! sfr: plane number is no more
     // try plane number
     // FRB - Make cockpits switchable with theater
-    sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+    sprintf(cockpitFolder, "%s", cockpit_theater_directory);
     sprintf(strCPFile, "%s\\%d\\%s", cockpitFolder, MapVisId(eCPVisType), pCPFile);
 
     if (FileExists(strCPFile))
@@ -5993,7 +5993,7 @@ int FindCockpit(
     {
         std::string name = RemoveInvalidChars(string(eCPName, 15));
         // RV - Biker - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", cockpit_theater_directory);
         sprintf(strCPFile, "%s\\%s\\%s", cockpitFolder, name.c_str(), pCPFile);
 
         if (FileExists(strCPFile))
@@ -6007,7 +6007,7 @@ int FindCockpit(
     {
         std::string nameNCTR = RemoveInvalidChars(string(eCPNameNCTR, 5));
         // RV - Biker - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", cockpit_theater_directory);
         sprintf(strCPFile, "%s\\%s\\%s", cockpitFolder, nameNCTR.c_str(), pCPFile);
 
         if (FileExists(strCPFile))
@@ -6020,7 +6020,7 @@ int FindCockpit(
     if (fallback)
     {
         // FRB - Make cockpits switchable with theater
-        sprintf(cockpitFolder, "%s", FalconCockpitThrDirectory);
+        sprintf(cockpitFolder, "%s", cockpit_theater_directory);
         sprintf(strCPFile, "%s\\%s", cockpitFolder, pCPFile);
 
         if (FileExists(strCPFile))

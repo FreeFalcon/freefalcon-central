@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-// THIS FALCON DP8 VOICE CODED BY RIK TMF@BIGFOOT.COM //ME123
+// THIS FreeFalcon DP8 VOICE CODED BY RIK TMF@BIGFOOT.COM //ME123
 //-----------------------------------------------------------------------------
 //#define INITGUID
 #include "voicecom.h"
@@ -827,8 +827,8 @@ HRESULT HostSession()
     // Prompt the user for the session name
     MonoPrint("\nHostign a Voice Session.\n");
     //wscanf(L"%ls", wszSession);
-    //wcscpy(wszSession,L "FALCON");
-    wcscpy(wszSession, L"FALCON");
+    //wcscpy(wszSession,L "FreeFalcon");
+    wcscpy(wszSession, L"FreeFalcon");
 
     // Now set up the Application Description
     ZeroMemory(&dpAppDesc, sizeof(DPN_APPLICATION_DESC));
@@ -1326,7 +1326,8 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    char test[1024] = "F4 3D Output";
+    const char* FREE_FALCON_PROJECT;
+	char test[1024] = FREE_FALCON_PROJECT;
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.

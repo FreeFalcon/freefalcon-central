@@ -31,7 +31,7 @@
 #include "CmpClass.h"
 //#include "weather.h"
 #include "dispopts.h"
-#include "Urlmon.h"//Cobra added this so Falcon connects to the net
+#include "Urlmon.h"//Cobra added this so FreeFalcon connects to the net
 //works with urlmon.lib which needs to be present for project to build.
 #include "xmmintrin.h"
 

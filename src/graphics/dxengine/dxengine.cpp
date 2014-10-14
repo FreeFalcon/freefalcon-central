@@ -118,7 +118,8 @@ CDXEngine::~CDXEngine(void)
 {
     CleanUpTexturesOnDevice();
     ReleaseTextures();
-    CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
+	if (DxEngineStateHandle)
+		CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
 }
 
 // The Default engine states for the renderer
@@ -1017,7 +1018,7 @@ void CDXEngine::DrawSurface()
 
 
 // ********************************
-// * DOF Process as in Falcon code*
+// * DOF Process as in FreeFalcon code*
 // ********************************
 
 float CDXEngine::Process_DOFRot(float dofrot, int dofNumber, int flags, float min, float max, float multiplier, float unused)
