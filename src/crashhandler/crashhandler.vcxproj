@@ -71,8 +71,7 @@
       <AssemblerListingLocation>../../build/x86/debug_win32/crashhandler/</AssemblerListingLocation>
       <ObjectFileName>../../build/x86/debug_win32/crashhandler/</ObjectFileName>
       <ProgramDataBaseFileName>../../build/x86/debug_win32/crashhandler/</ProgramDataBaseFileName>
-      <BrowseInformation>
-      </BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -124,14 +123,15 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AssemblerOutput>
-      </AssemblerOutput>
+      <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>../../build/x86/release_win32/crashhandler/</AssemblerListingLocation>
       <ObjectFileName>../../build/x86/release_win32/crashhandler/</ObjectFileName>
       <ProgramDataBaseFileName>../../build/x86/release_win32/crashhandler/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>true</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
       <OutputFile>../../build/x86/release_win32/crashhandler/crashhandler.lib</OutputFile>

@@ -74,7 +74,7 @@
       <AssemblerListingLocation>../../../build/x86/debug_win32/graphics/3dlib/</AssemblerListingLocation>
       <ObjectFileName>../../../build/x86/debug_win32/graphics/3dlib/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/graphics/3dlib/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -125,8 +125,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AssemblerOutput>
-      </AssemblerOutput>
+      <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>../../../build/x86/release_win32/graphics/3dlib/</AssemblerListingLocation>
       <ObjectFileName>../../../build/x86/release_win32/graphics/3dlib/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/release_win32/graphics/3dlib/</ProgramDataBaseFileName>
@@ -136,6 +135,8 @@
       <CompileAs>Default</CompileAs>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <ShowIncludes>true</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
       <OutputFile>../../../build/x86/release_win32/graphics/3dlib/3dlib.lib</OutputFile>
