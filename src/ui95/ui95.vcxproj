@@ -75,7 +75,7 @@
       <AssemblerListingLocation>../../build/x86/debug_win32/ui95/</AssemblerListingLocation>
       <ObjectFileName>../../build/x86/debug_win32/ui95/</ObjectFileName>
       <ProgramDataBaseFileName>../../build/x86/debug_win32/ui95/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -140,6 +140,8 @@
       <CompileAs>Default</CompileAs>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <ShowIncludes>true</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
       <OutputFile>../../build/x86/release_win32/ui95/ui95.lib</OutputFile>

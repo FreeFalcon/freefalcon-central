@@ -98,45 +98,6 @@
 #import "gnet/bin/core.tlb" // Required by GNETCORELib
 //#import "gnet/bin/shared.tlb" named_guids
 #pragma warning(default:4192)
-
-
-// RELEASE mode
-#ifdef NDEBUG
-	bool cockpit_verifier = false;
-	bool write_mission_table = false;
-	bool write_sound_table = false;
-#endif
-
-
-#ifdef DEBUG
-	// assertion flags
-    bool asserts = true;
-	bool shi_asserts = true;
-	bool hard_crash = false;
-	bool shi_hard_crash = false;
-	bool shi_warnings = true;
-	// if you want to disable it, use -nococpitverifier commandline
-	bool cockpit_verifier = true;
-	// if you want to disable it, use -nomissiontable commandline
-	bool write_mission_table = true;
-	// if you want to disable it, use -nosoundtable commandline
-	bool write_sound_table = true;
-
-// This is for debugging only. I don't know what the CAMPTOOL is or does...
-// CAMPTOOL is not defined anywhere in the code 
-// although the #ifdef CAMPTOOL appears in many places!
-// It fails to compile under RELEASE.
-#define CAMPTOOL 1
-
-#endif
-
-
-#ifdef CAMPTOOL
-	// Renaming tool stuff
-	extern bool rename_IDs;
-	// Window handles
-	extern HWND hMainWnd;
-#endif
 // END OF PREPROCESSOR DIRECTIVES
 
 
@@ -152,8 +113,35 @@ const char* FREE_FALCON_VERSION = "7.0.0";
 
 
 // GLOBAL VARIABLES
+bool cockpit_verifier = false;
+bool write_mission_table = false;
+bool write_sound_table = false;
 // If you don't want the intro movie to play, use -nomovie command line
 bool intro_movie = true; 
+
+#ifdef DEBUG
+	// assertion flags
+	bool asserts = true;
+	bool shi_asserts = true;
+	bool hard_crash = false;
+	bool shi_hard_crash = false;
+	bool shi_warnings = true;
+#endif
+
+// This is for debugging only. I don't know what the CAMPTOOL is or does...
+// CAMPTOOL is not defined anywhere in the code 
+// although the #ifdef CAMPTOOL appears in many places!
+// It fails to compile under RELEASE.
+#ifdef DEBUG
+#define CAMPTOOL 1
+#endif
+
+#ifdef CAMPTOOL
+	// Renaming tool stuff
+	extern bool rename_IDs;
+	// Window handles
+	extern HWND hMainWnd;
+#endif
 
 CComModule _Module; // ATL stuff.
 
@@ -377,6 +365,19 @@ void BuildAscii()
 }
 
 
+void InitVariables(void)
+{
+#ifdef DEBUG
+	// if you want to disable it, use -nococpitverifier commandline
+	cockpit_verifier = true;
+	// if you want to disable it, use -nomissiontable commandline
+	write_mission_table = true;
+	// if you want to disable it, use -nosoundtable commandline
+	write_sound_table = true;
+#endif
+}
+
+
 static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int)
 {
     WNDCLASS wc;
@@ -431,6 +432,8 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     char tmpPath[_MAX_PATH];
     MSG  msg;
     char fileName[_MAX_PATH];
+
+	InitVariables();
 
     _Module.Init(ObjectMap, hInstance);
 

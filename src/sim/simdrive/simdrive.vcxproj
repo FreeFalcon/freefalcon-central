@@ -69,7 +69,7 @@
       <AssemblerListingLocation>../../../build/x86/debug_win32/sim/simdrive/</AssemblerListingLocation>
       <ObjectFileName>../../../build/x86/debug_win32/sim/simdrive/</ObjectFileName>
       <ProgramDataBaseFileName>../../../build/x86/debug_win32/sim/simdrive/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -130,6 +130,8 @@
       <CompileAs>Default</CompileAs>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <ShowIncludes>true</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
       <OutputFile>../../../build/x86/release_win32/sim/simdrive/simdrive.lib</OutputFile>
