@@ -915,7 +915,7 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
         return;
 
     //Check which station to fail
-    int center = (Sms->NumHardpoints() - 1) / 2 + 1;
+//  int center = (Sms->NumHardpoints() - 1) / 2 + 1;
 
     for (int i = 0; i < Sms->NumHardpoints(); i++)
     {

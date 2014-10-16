@@ -2107,7 +2107,7 @@ extern "C" {
     {
         int count;
         int sockerror;
-        CAPIList *curr = 0;
+//      CAPIList* curr = 0;
 
         // MonoPrint ("Closing RUDP\n");
 

@@ -331,7 +331,7 @@ void DigitalBrain::TargetSelection(void)
         {
             if (theRadar->digiRadarMode == RadarClass::DigiSTT)
             {
-                int doNothing = 1; //Cobra just keep going since we are guiding a missile in this mode
+//              int doNothing = 1; //Cobra just keep going since we are guiding a missile in this mode
             }
             else
             {
@@ -425,7 +425,7 @@ void DigitalBrain::TargetSelection(void)
     }
     else
     {
-        int testme = 0;
+//      int testme = 0;
 
         // airground mission, if pickup and drop off completely ignore
         // threats

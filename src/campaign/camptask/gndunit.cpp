@@ -306,7 +306,8 @@ int GroundUnitClass::ChooseTarget(void)
     FalconEntity *artTarget, *react_against = NULL, *air_react_against = NULL;
     CampEntity e;
     float d, react_distance, air_react_distance;
-    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
+    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
+//	int pass = 0;
     int search_dist;
     Team who;
 
@@ -2329,7 +2330,7 @@ int GetGroundRole(int orders)
 
 int GetGroundOrders(int role)
 {
-    int orders = GRO_RESERVE;
+//  int orders = GRO_RESERVE;
 
     switch (role)
     {

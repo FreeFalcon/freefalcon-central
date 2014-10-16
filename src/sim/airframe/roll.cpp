@@ -253,12 +253,12 @@ float AirframeClass::RollInertia(float inertia)
 {
     //AircraftClass* self;
     //SMSClass* Sms;
-    int station = 0;
+//  int station = 0;
     int i;
     int hasAGMissile = 0;
     int hasBomb = 0;
     int hasHARM = 0;
-    int hasGun = 0;
+//  int hasGun = 0;
     int hasCamera = 0;
     int hasRocket = 0;
     int hasGBU = 0;

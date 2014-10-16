@@ -1115,7 +1115,8 @@ void UnitClass::SendDeaggregateData(VuTargetEntity *target)
     SimVehicleClass *vehicle = NULL;
     VU_ID_NUMBER num;
     VU_SESSION_ID addr;
-    int totalsize, onesize, i, tc = 0, tr = 0, v/*,classID*/;
+    int totalsize, onesize, i,tr = 0, v/*,classID*/;
+//	int  tc = 0;
     WayPoint w;
     VU_ID vuid;
     long fuel;
@@ -3715,11 +3716,15 @@ int UnitClass::CanDetect(FalconEntity* ent)
 
 #ifdef DEBUG
 
-    if (ent->IsAirplane())
-        int i = 0;
+	if (ent->IsAirplane())
+	{
+	//	int i = 0;
+	}
 
-    if (IsAirplane())
-        int i = 0;
+	if (IsAirplane())
+	{
+	//	int i = 0;
+	}
 
 #endif
 
@@ -5398,7 +5403,8 @@ Unit GetUnitByID(VU_ID id)
 
 Unit ConvertUnit(Unit u, int domain, int type, int stype, int sptype)
 {
-    Unit nu, p = NULL;
+	Unit nu = NULL;
+//	Unit p = NULL;
     GridIndex x, y;
     short z;
 
@@ -5891,7 +5897,8 @@ int FindTaxiPt(Flight flight, Objective airbase, int checklist)
 int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 {
     long            size = 0, newsize;
-    short num = 0, count = 0, type;
+//  short num = 0
+	short count = 0, type;
     Unit cur;
     VU_BYTE *buf, *sptr, *bufhead;
     //#ifdef DEBUG

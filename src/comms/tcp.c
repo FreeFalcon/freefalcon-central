@@ -2011,8 +2011,8 @@ ComAPIHandle CAPIIsInGroup(ComAPIHandle grouphandle, unsigned long ipAddress)
 
 int  ComAPIAddToGroup(ComAPIHandle grouphandle, ComAPIHandle memberhandle)
 {
-    ComGROUP *group = (ComGROUP *)grouphandle;
-    CAPIList *curr = 0;
+    ComGROUP* group = (ComGROUP *)grouphandle;
+//  CAPIList* curr = 0;
 
     if (!grouphandle)
     {
@@ -2146,7 +2146,7 @@ int ComGROUPSend(ComAPIHandle c, int msgsize, int oob, int type)
         ComGROUP  *group = (ComGROUP *)c;
         CAPIList * curr;
         int ret = 0;
-        int count = 0;
+//      int count = 0;
         char *save_send_buffer;
         enter_cs(); // JPO
 

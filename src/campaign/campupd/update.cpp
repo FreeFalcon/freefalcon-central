@@ -247,7 +247,8 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     MoveType defmt;
     short weapon[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
     uchar wcount[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
-    int d, i, id = 255, shot = 0;
+    int d, i, shot = 0;
+//	int id = 255;
     float bonus = 1.0F;
     GridIndex   defx, defy, attx, atty;
 

@@ -391,7 +391,7 @@ void DigitalBrain::AiFollowLead(void)
             wlistLead = ((AircraftClass *)flightLead)->waypoint;
 
         UnitClass *campUnit = NULL;
-        WayPointClass *campCurWP = NULL;
+//      WayPointClass *campCurWP = NULL;
         int waypointIndex = 0;
 
         // This will set our current waypoint to the leads waypoint

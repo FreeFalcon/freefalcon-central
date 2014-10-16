@@ -173,8 +173,8 @@ void ICPClass::ExecILSMode(void)
         VU_ID id;
         VU_ID homeid;
         VU_ID ilsid;
-        char rwyNum[4] = "";
-        char p_signaltype[10] = "";
+//      char rwyNum[4] = "";
+//      char p_signaltype[10] = "";
         static int frame = 0;
 
         HSICourse = static_cast<int>

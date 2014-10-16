@@ -191,8 +191,8 @@ int VoiceMapper::GetNextVoice(int start, int type, int side)
     ShiAssert(type > 0 && type < VOICE_SIDE_BASE);
     ShiAssert(side >= 0 && side <= 7);
     unsigned int match = type | (VOICE_SIDE_BASE << side);
-    int selected = 0;
-    int recno = 0;
+//  int selected = 0;
+//  int recno = 0;
 
     for (int i = 0; i < totalvoices; i++)
     {

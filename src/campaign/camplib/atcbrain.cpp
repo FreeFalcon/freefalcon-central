@@ -5610,7 +5610,7 @@ void ATCBrain::CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playe
         //setup variables
         FalconRadioChatterMessage *radioMessage = NULL;
         float altitude = 0.0F; // altitude of traffic
-        float oldTrafficRange = 0.0F; // hold range of last traffic call
+//      float oldTrafficRange = 0.0F; // hold range of last traffic call
         float xdiff; // difference in x coord between us and traffic
         float ydiff; // difference in y coord between us and traffic
         float angle; // computed angle in radians to traffic

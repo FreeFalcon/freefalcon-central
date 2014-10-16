@@ -65,94 +65,94 @@ FalconAWACSMessage::~FalconAWACSMessage(void)
     // Your Code Goes Here
 }
 
-static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &arrCandidates)
-{
-    // loop thru all sim objects
-    D3DFrame::Vector vPosPlane(plane->XPos(), plane->YPos(), plane->ZPos());
-    FlightClass *pFlight;
-    stdFlightSet setTmp;
-
-    {
-        VuListIterator unitWalker(SimDriver.objectList);
-        SimBaseClass *p = (SimBaseClass*) unitWalker.GetFirst();
-
-        while (p)
-        {
-            // Ignore objects under these conditions:
-            ///////////////////////////////////////////////////////////
-            // - This plane
-            // - Member of this plane's flight
-            // - Outside of maximum range
-            // - Not a flight
-            // - Not same team
-            // - Not on a CAP or SWEEP mission
-            // - Flight is engaged
-
-            if ((p != plane) &&
-                (p->GetCampaignObject() != plane->GetCampaignObject()) &&
-                p->IsAirplane() &&
-                (pFlight = (FlightClass *) p->GetCampaignObject()) &&
-                (setTmp.find(pFlight) == setTmp.end()) &&
-                (pFlight->GetAssignedTarget() == FalconNullId) &&
-                (plane->GetTeam() == p->GetTeam()))
-            {
-                D3DFrame::Vector vPos(p->XPos(), p->YPos(), p->ZPos());
-                float fRange = (vPos - vPosPlane).Size2D() / NM_TO_FT;
-                const float fRangeMax = 50; // 50 nm
-
-                if (fRange <= fRangeMax)
-                {
-                    MissionTypeEnum missionType = pFlight->GetUnitMission();
-
-                    switch (missionType)
-                    {
-                        case AMIS_BARCAP: // BARCAP missions to protect a target area
-                        case AMIS_BARCAP2: // BARCAP missions to defend a border
-                        case AMIS_HAVCAP:
-                        case AMIS_TARCAP:
-
-                            // case AMIS_RESCAP:
-                        case AMIS_AMBUSHCAP:
-                        case AMIS_SWEEP:
-                        case AMIS_ALERT:
-
-                            // case AMIS_INTERCEPT:
-                        case AMIS_ONCALLCAS: // On call CAS
-
-                            // case AMIS_PRPLANCAS: // Pre planned CAS
-                        case AMIS_CAS: // Immediate CAS
-
-                            // case AMIS_RECON:
-                        case AMIS_BDA:
-                        case AMIS_PATROL:
-                        case AMIS_RECONPATROL: // Recon for enemy ground vehicles
-                        {
-                            arrCandidates.insert(std::map<float, FlightClass *>::value_type(fRange, pFlight));
-                            setTmp.insert(pFlight);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            p = (SimBaseClass*) unitWalker.GetNext();
-        }
-    }
-#ifdef _DEBUG
-    MonoPrint("CollectAssistCandidates - Dumping map of potential candidates");
-
-    stdRange2FlightMap::iterator it;
-
-    for (it = arrCandidates.begin(); it != arrCandidates.end(); it++)
-    {
-        char strFlightName[0x100];
-        GetCallsign(it->second->callsign_id, it->second->callsign_num, strFlightName);
-        MonoPrint("Flight %s, Range %.2f nm", strFlightName, it->first);
-    }
-
-    MonoPrint("CollectAssistCandidates - End of dump");
-#endif
-}
+//static void CollectAssistCandidates(AircraftClass *plane, stdRange2FlightMap &arrCandidates)
+//{
+//    // loop thru all sim objects
+//    D3DFrame::Vector vPosPlane(plane->XPos(), plane->YPos(), plane->ZPos());
+//    FlightClass *pFlight;
+//    stdFlightSet setTmp;
+//
+//    {
+//        VuListIterator unitWalker(SimDriver.objectList);
+//        SimBaseClass *p = (SimBaseClass*) unitWalker.GetFirst();
+//
+//        while (p)
+//        {
+//            // Ignore objects under these conditions:
+//            ///////////////////////////////////////////////////////////
+//            // - This plane
+//            // - Member of this plane's flight
+//            // - Outside of maximum range
+//            // - Not a flight
+//            // - Not same team
+//            // - Not on a CAP or SWEEP mission
+//            // - Flight is engaged
+//
+//            if ((p != plane) &&
+//                (p->GetCampaignObject() != plane->GetCampaignObject()) &&
+//                p->IsAirplane() &&
+//                (pFlight = (FlightClass *) p->GetCampaignObject()) &&
+//                (setTmp.find(pFlight) == setTmp.end()) &&
+//                (pFlight->GetAssignedTarget() == FalconNullId) &&
+//                (plane->GetTeam() == p->GetTeam()))
+//            {
+//                D3DFrame::Vector vPos(p->XPos(), p->YPos(), p->ZPos());
+//                float fRange = (vPos - vPosPlane).Size2D() / NM_TO_FT;
+//                const float fRangeMax = 50; // 50 nm
+//
+//                if (fRange <= fRangeMax)
+//                {
+//                    MissionTypeEnum missionType = pFlight->GetUnitMission();
+//
+//                    switch (missionType)
+//                    {
+//                        case AMIS_BARCAP: // BARCAP missions to protect a target area
+//                        case AMIS_BARCAP2: // BARCAP missions to defend a border
+//                        case AMIS_HAVCAP:
+//                        case AMIS_TARCAP:
+//
+//                            // case AMIS_RESCAP:
+//                        case AMIS_AMBUSHCAP:
+//                        case AMIS_SWEEP:
+//                        case AMIS_ALERT:
+//
+//                            // case AMIS_INTERCEPT:
+//                        case AMIS_ONCALLCAS: // On call CAS
+//
+//                            // case AMIS_PRPLANCAS: // Pre planned CAS
+//                        case AMIS_CAS: // Immediate CAS
+//
+//                            // case AMIS_RECON:
+//                        case AMIS_BDA:
+//                        case AMIS_PATROL:
+//                        case AMIS_RECONPATROL: // Recon for enemy ground vehicles
+//                        {
+//                            arrCandidates.insert(std::map<float, FlightClass *>::value_type(fRange, pFlight));
+//                            setTmp.insert(pFlight);
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            p = (SimBaseClass*) unitWalker.GetNext();
+//        }
+//    }
+//#ifdef _DEBUG
+//    MonoPrint("CollectAssistCandidates - Dumping map of potential candidates");
+//
+//    stdRange2FlightMap::iterator it;
+//
+//    for (it = arrCandidates.begin(); it != arrCandidates.end(); it++)
+//    {
+//        char strFlightName[0x100];
+//        GetCallsign(it->second->callsign_id, it->second->callsign_num, strFlightName);
+//        MonoPrint("Flight %s, Range %.2f nm", strFlightName, it->first);
+//    }
+//
+//    MonoPrint("CollectAssistCandidates - End of dump");
+//#endif
+//}
 
 int FalconAWACSMessage::Process(uchar autodisp)
 {
@@ -351,14 +351,14 @@ int FalconAWACSMessage::Process(uchar autodisp)
             case RequestHelp:
                 if (flight)
                 {
-                    int numAircraft = 0;
+//                  int numAircraft = 0;
                     // SendCallToAWACS(plane, rcVECTORTOTHREAT);
                     CampBaseClass *campThreat = NULL;
                     SimBaseClass *simThreat = NULL; //SimDriver.FindNearestEnemyPlane(plane, &X, &Y, &altitude);
                     stdRange2FlightMap arrCandidates;
                     FlightClass *pEnemyFlight = NULL;
-                    FlightClass *pBestInterceptorFlight = NULL;
-                    float fInterceptorRange = 0;
+//                  FlightClass *pBestInterceptorFlight = NULL;
+//                  float fInterceptorRange = 0;
 
                     // First see if we are already targeting someone. Request help against him
                     VU_ID tgtId = FindAircraftTarget(plane);

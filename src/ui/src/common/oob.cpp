@@ -502,9 +502,11 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
 void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
 {
     C_Button *btn = NULL;
-    long i, Cat = 0, j = 0;
+	long i, Cat = 0;
+//	long j = 0;
     short owner;
-    TREELIST *root = NULL, *child = NULL;
+	TREELIST *root = NULL;
+//	TREELIST *child = NULL;
     BOOL TurnOn = FALSE;
 
     F4CSECTIONHANDLE *Leave;

@@ -550,9 +550,9 @@ void ICPClass::SetVIP(void)
 
     //First, let's get our current waypoint
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-    float wpX = xCurr;
-    float wpY = yCurr;
-    float wpZ = zCurr;
+//  float wpX = xCurr;
+//  float wpY = yCurr;
+//  float wpZ = zCurr;
     //let's find the sides a and b of our triangle
     float a = 0.0F, b = 0.0F;
     float tempAng = fVIP_BRG;

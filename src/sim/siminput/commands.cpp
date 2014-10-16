@@ -6376,7 +6376,7 @@ void SimToggleUHFMaster(unsigned long, int state, void*)
 extern IDirectPlayVoiceClient* g_pVoiceClient;
 void SimTransmitCom1(unsigned long val, int state, void *)
 {
-    HRESULT             hr = S_OK;
+//  HRESULT             hr = S_OK;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
@@ -6389,7 +6389,7 @@ void SimTransmitCom1(unsigned long val, int state, void *)
 }
 void SimTransmitCom2(unsigned long val, int state, void *)
 {
-    HRESULT             hr = S_OK;
+//  HRESULT             hr = S_OK;
 
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {

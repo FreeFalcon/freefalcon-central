@@ -949,7 +949,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
     CampEntity campObj;
     char label[40] = {0};
-    long labelColor = 0xff0000ff;
+//  long labelColor = 0xff0000ff;
 
     if (!theObject->IsExploding() && !theObject->IsDead())
     {

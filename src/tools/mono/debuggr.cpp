@@ -48,7 +48,7 @@ static float DebugScreenWidth = 719.0F;
 static float DebugScreenHeight = 347.0F;
 static char *screen_buffer[2];
 static int page = 0;
-static unsigned char *MonoNewline(void);
+//static unsigned char *MonoNewline(void);
 static unsigned char monoPenattribute = 0x07, monoPenX = 0, monoPenY = 0;
 
 static char mono_memory[80 * 25 * 2];
@@ -855,8 +855,8 @@ void InitDebug(int mode)
 {
     int graph_mode[] =
     {53, 45, 46, 7, 91, 2, 87, 87, 2, 3, 0, 0, 0, 0, 0, 0};
-    int text_mode[] =
-    {97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0};
+    //int text_mode[] =
+    //{97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0};
     OSVERSIONINFO osInfo;
 
     osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -1049,7 +1049,7 @@ void FileOutput(char *_mono_buffer)
 void MonoPrint(char *string, ...)
 {
     va_list params;   /* watcom manual 'Library' p.470 */
-    int idx = 0;
+//  int idx = 0;
     int   check;
     static char  _mono_buffer[1000];
 

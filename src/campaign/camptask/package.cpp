@@ -801,8 +801,10 @@ int PackageClass::CheckNeedRequests(void)
 
 int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 {
-    int targets = 0, tar = 0, retval = PRET_SUCCESS, result;
-    int targetf[5], targetd = 0, hs, ls, bs = 0;
+    int targets = 0, tar = 0, result;
+//	int retval = PRET_SUCCESS;
+	int targetf[5], targetd = 0, hs, ls;
+//	int bs = 0;
     uchar targeted[128];
     Flight flight = NULL, add_at_end = NULL;
     CampEntity target = NULL;

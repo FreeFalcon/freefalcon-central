@@ -1093,7 +1093,8 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     // reset the indexed vertices counter
     Indexed2D = 0;
     // The mode flags
-    bool LineMode = false, DotMode = false;
+	bool LineMode = false;
+//	bool DotMode = false;
 
 #if MAX_2D_BUFFERS > 1
     // Setup the starting VB

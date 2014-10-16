@@ -52,7 +52,7 @@ void HudClass::DrawAirspeed(void)
     float winCenter = hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] * 0.5F;
     float boxY = winCenter + display->TextHeight() * 0.5F;
     int i = 0, a = 0;
-    int origfont = 0;//TJL 03/07/04
+//  int origfont = 0;//TJL 03/07/04
 
     if (!ownship)   // VWF added 10/20/98 to avoid crash
     {
@@ -2681,7 +2681,7 @@ void HudClass::DrawCMDSTRG(void)
 
 
     //Calculate 45° intercept Bearing2
-    float headingDiff = RWYHeading - curHeading;
+//  float headingDiff = RWYHeading - curHeading;
 
     //left or right turn?
     if (LocalizerDev < 0)
@@ -2857,7 +2857,8 @@ void HudClass::DrawAirSpeedCarret(float Speed)
     float bigTickLen = 0.0F;
     float smallTickLen = 0.0F;
     float tickInc = 0.0F, delta = 0.0F;
-    float x1 = 0.0F, x2 = 0.0F, y1 = 0.0F;
+	float x1 = 0.0F, y1 = 0.0F;
+//	float x2 = 0.0F;
 
     rightEdge = hudWinX[AIRSPEED_WINDOW] + hudWinWidth[AIRSPEED_WINDOW];
 
@@ -2888,7 +2889,8 @@ void HudClass::DrawAltCarret(float Alt)
     float bigTickLen = 0.0F;
     float smallTickLen = 0.0F;
     float tickInc = 0.0F, delta = 0.0F;
-    float x1 = 0.0F, x2 = 0.0F, y1 = 0.0F;
+    float x1 = 0.0F, y1 = 0.0F;
+//	float x2 = 0.0F;
 
     leftEdge = hudWinX[ALTITUDE_WINDOW] - (hudWinWidth[ALTITUDE_WINDOW] * 0.5F);
 

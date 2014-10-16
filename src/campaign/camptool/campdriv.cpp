@@ -3339,7 +3339,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_LBUTTONDOWN:
         {
-            WORD  fwKeys = wParam;
+//          WORD  fwKeys = wParam;
 
             // if (fwKeys=MK_SHIFT)
             // ;

@@ -941,7 +941,7 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
 // flag & 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
-    UInt32 i = 0;
+//  UInt32 i = 0;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::SetCurrentState (%d,0x%X)\n", state, flag);

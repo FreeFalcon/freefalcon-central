@@ -2548,7 +2548,7 @@ VuEntity* HudClass::CanSeeTarget(int type, VuEntity* entity, FalconEntity* platf
     float dx, dy, dz;
     float maxRangeSqrd;
     float curRangeSqrd;
-    float CameraHalfFOV = 1.4F * DTR;
+//  float CameraHalfFOV = 1.4F * DTR;
     float offset = -8.0F * DTR;
 
     wc =

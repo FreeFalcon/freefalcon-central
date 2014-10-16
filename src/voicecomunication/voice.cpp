@@ -662,7 +662,7 @@ HRESULT EnumDirectPlayHosts(char* ip)
     HRESULT                 hr = S_OK;
     WCHAR                   wszHost[128];
     DPN_APPLICATION_DESC    dpAppDesc;
-    WCHAR*                  pwszURL = NULL;
+//  WCHAR*                  pwszURL = NULL;
 
     const char* str = ip;
     mbstowcs(&wszHost[0], str, 128);
@@ -1597,7 +1597,7 @@ void RefreshVoiceFreqs()
 {
     Package pkg;
     Flight flt;
-    BOOL retval = FALSE;
+//  BOOL retval = FALSE;
     static int com1 = NULL;
     static int com2 = NULL;
     static int team = NULL;
@@ -1891,10 +1891,10 @@ void Transmit(int com)
 
     Package pkg;
     Flight flt;
-    BOOL retval = FALSE;
+//  BOOL retval = FALSE;
     static int com1 = NULL;
     static int com2 = NULL;
-    bool doupdate = false;
+//  bool doupdate = false;
 
     if (!VM) return;
 

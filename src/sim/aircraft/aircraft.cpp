@@ -1753,7 +1753,7 @@ int AircraftClass::Exec(void)
                     // properly
                     if (af->mach >= 0.55f)
                     {
-                        float breathingPitch = 0.0f * (af->nzcgs / 4.5f) ;
+//                      float breathingPitch = 0.0f * (af->nzcgs / 4.5f) ;
 
                         float v;
 
@@ -3921,7 +3921,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     float x, y, z, xx, yy, zz;
     FalconEntity *wpTarget = NULL;
     ObjClassDataType* oc;
-    uchar tgtnum1 = 0;
+//  uchar tgtnum1 = 0;
     flight = (Flight)GetCampaignObject();
     flightIdx = flight->GetComponentIndex(aircraft);
     WayPoint w = flight->GetFirstUnitWP();

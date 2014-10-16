@@ -173,7 +173,7 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
 {
     if (weatherCondition != FAIR) return;
 
-    float minFog = 0.2f;
+//  float minFog = 0.2f;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     // RV - I-Hawk - X and Y squares are same size
@@ -1366,12 +1366,12 @@ bool RealWeather::ReadWeather(void)
 {
 
     FILE* fp;
-    int i = 0;
-    int cnt = 0;
+//  int i = 0;
+//  int cnt = 0;
     char file[1024];
     extern char FalconTerrainDataDir[];
     //char tmpChar[10];
-    int tmp = 0;
+//  int tmp = 0;
     //char netFile[1024];
     //URLDownloadToFile(NULL, "http://weather.flightgear.org/~curt/WX/METAR.rwx", "c:\\metar.txt", 0, NULL);
     //int testthis = URLDownloadToFile(NULL, "http://www.microsoft.com/ms.htm", "c:\\ms.htm", 0, 0);
@@ -1383,7 +1383,7 @@ bool RealWeather::ReadWeather(void)
 
     //Count
     int t = 0;
-    int cntr = 0;
+//  int cntr = 0;
     char specMETAR[1024];
 
     while (fgets(file, 1024, fp))
@@ -1418,7 +1418,7 @@ bool RealWeather::ReadWeather(void)
     int altim = 0;
     char cpy[10] = "";
     char cpy1[10] = "";
-    char layer[5] = "";
+//  char layer[5] = "";
     int cntLyr = 0;
 
     //char cpy2[10] = "";

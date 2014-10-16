@@ -138,9 +138,9 @@ int InitCommsStuff(ComDataClass *comData)
     g_ipadress = ComAPIinet_htoa(comData->ip_address);//me123
 
     // we need to create both handles on startup, so as to haev the ports available
-    ComAPIHandle tmpHandle = NULL, tmpHandle2 = NULL;
-    int bigPipeBandwidth = -1;
-    int smallPipeBandwidth = 2000;
+//  ComAPIHandle tmpHandle = NULL, tmpHandle2 = NULL;
+//  int bigPipeBandwidth = -1;
+//  int smallPipeBandwidth = 2000;
     FalconTCPListenHandle = NULL;
     FalconGlobalUDPHandle = NULL;
     FalconGlobalTCPHandle = NULL;
@@ -1173,7 +1173,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 int VuxSessionConnect(VuSessionEntity *session)
 {
     // char buffer[100];
-    int wait_for_connection = 0;
+//  int wait_for_connection = 0;
 
     // We only want to connect here during our initial insertion
     if (session->GameAction() != VU_NO_GAME_ACTION)

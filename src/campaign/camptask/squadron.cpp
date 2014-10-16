@@ -399,7 +399,7 @@ int SquadronClass::Handle(VuFullUpdateEvent *event)
 int SquadronClass::MoveUnit(CampaignTime time)
 {
     GridIndex       x, y, nx, ny;
-    VuGridIterator* myit = NULL;
+//  VuGridIterator* myit = NULL;
     CampEntity ab;
     Objective o, bo = NULL;
     int i, want_alert = 0, bs = -999, range, score;
@@ -623,7 +623,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 int SquadronClass::MoveChopperUnit(CampaignTime time)
 {
     GridIndex       x, y, nx, ny;
-    VuGridIterator* myit = NULL;
+//  VuGridIterator* myit = NULL;
     Objective o, bo = NULL;
     float fd;
     int range, score, bs = -999;
@@ -1144,7 +1144,7 @@ void SquadronClass::ScheduleAircraft(Flight fl, MissionRequest mis)
 
     int i, j, sn, nv, nr, role, got = 0;
     //TJL 10/30/03
-    int want_alert = 0;
+//  int want_alert = 0;
     VehicleClassDataType *vc;
 
     role = MissionData[mis->mission].skill;

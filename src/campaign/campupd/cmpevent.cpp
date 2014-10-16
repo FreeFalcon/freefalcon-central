@@ -449,7 +449,7 @@ int ReadScriptedTriggerFile(char* filename)
     FILE* fp;
     int i, done = 0, initdone = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
     char token[128], *sptr;
-    _TCHAR eol[2] = { '\n', 0 };
+//  _TCHAR eol[2] = { '\n', 0 };
     Objective o;
     Team team;
 

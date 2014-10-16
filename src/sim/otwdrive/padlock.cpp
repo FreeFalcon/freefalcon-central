@@ -1060,7 +1060,7 @@ BOOL OTWDriverClass::Padlock_ConsiderThisObject(SimBaseClass* pObj, BOOL isPaint
     FireControlComputer::FCCSubMode fccSubMode;
     BOOL isConsidered = FALSE;
     enum {AA, AG, NAV} mode;
-    bool checkobject = FALSE;
+//  bool checkobject = FALSE;
     RadarClass *pradar = NULL; // 2002-03-12 S.G.
 
     // 2002-01-24 REMOVED BY S.G. Not necessary and prevents missiles from being padlocked.

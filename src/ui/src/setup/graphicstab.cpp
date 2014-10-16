@@ -1370,20 +1370,20 @@ void SetAdvanced()
     //JAM
 }
 
-static void LoadBitmap(long ID, C_Button *btn, char filename[])
-{
-    char file[MAX_PATH];
-
-    btn->ClearImage(0, ID);
-    gImageMgr->RemoveImage(ID);
-    strcpy(file, filename);
-    strcat(file, ".tga");
-    gImageMgr->LoadImage(ID, file, 0, 0);
-    btn->Refresh();
-    btn->SetImage(0, ID);
-    btn->Refresh();
-
-}
+//static void LoadBitmap(long ID, C_Button *btn, char filename[])
+//{
+//    char file[MAX_PATH];
+//
+//    btn->ClearImage(0, ID);
+//    gImageMgr->RemoveImage(ID);
+//    strcpy(file, filename);
+//    strcat(file, ".tga");
+//    gImageMgr->LoadImage(ID, file, 0, 0);
+//    btn->Refresh();
+//    btn->SetImage(0, ID);
+//    btn->Refresh();
+//
+//}
 
 //M.N.
 /*void SetSkyColor()

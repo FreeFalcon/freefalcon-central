@@ -424,8 +424,8 @@ void CPKneeView::DrawMap()
     mapFirstPointer += 0;//srcRowInitOffset*w + srcColInitOffset;
 
     //some auxiliary variables
-    int dstWidth = dstRect.right - dstRect.left;
-    int dstHeight = dstRect.bottom - dstRect.top;
+//  int dstWidth = dstRect.right - dstRect.left;
+//  int dstHeight = dstRect.bottom - dstRect.top;
 
     // Copy from map to kneeboard
     for (int dstRow = 0; dstRow < (dstRect.bottom - dstRect.top); dstRow++)

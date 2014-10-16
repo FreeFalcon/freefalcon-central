@@ -273,9 +273,8 @@ ComAPIHandle ComUDPOpenSendClone(
     unsigned long id
 )
 {
-    ComIP *c;
-    CAPIList *curr = 0;
-
+    ComIP* c;
+//  CAPIList* curr = 0;
 
     /* add new socket connection to list */
 
@@ -355,8 +354,7 @@ ComAPIHandle ComUDPOpenSendClone(
 void ComUDPClose(ComAPIHandle c)
 {
     int sockerror;
-    CAPIList
-    *curr = 0;
+//  CAPIList* curr = 0;
 
     if (c)
     {

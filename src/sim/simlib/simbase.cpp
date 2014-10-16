@@ -954,7 +954,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     short mesgType = 0;
     short data0 = -1, data1 = -1, data2 = -1;
     SimBaseClass* speaker = NULL;
-    float dx = 0.0F, dy = 0.0F;
+//  float dx = 0.0F, dy = 0.0F;
 
     // Is the target the player
     if (missile && this == SimDriver.GetPlayerEntity())

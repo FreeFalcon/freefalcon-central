@@ -1075,13 +1075,13 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             0, 2, -2
         };
 
-        float colormod[] =
-        {
-            1.0f,
-            0.68f,
-            0.68f,
-            1.0f
-        };
+        //float colormod[] =
+        //{
+        //    1.0f,
+        //    0.68f,
+        //    0.68f,
+        //    1.0f
+        //};
 
         v0.u =  1, v0.v = 0;
         v1.u =  1, v1.v = .5;
@@ -1146,13 +1146,13 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             0, 2, -2
         };
 
-        float colormod[] =
-        {
-            1.0f,
-            0.68f,
-            0.68f,
-            1.0f
-        };
+        //float colormod[] =
+        //{
+        //    1.0f,
+        //    0.68f,
+        //    0.68f,
+        //    1.0f
+        //};
 
         v0.u =  5, v0.v = 0;
         v1.u =  5, v1.v = 1;

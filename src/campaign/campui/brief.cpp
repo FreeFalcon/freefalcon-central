@@ -1364,7 +1364,8 @@ char* ReadMemToken(char **ptr, char name[], int len)
 
 void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...)
 {
-    int done = 0, count = 0, index = 0, size;
+//  int done = 0;
+	int count = 0, index = 0, size;
     va_list params;
     _TCHAR argstring[MAX_STRLEN_PER_TOKEN], addchar[2];
 
@@ -1782,7 +1783,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     FILE* fp;
     int i, font = 0, done = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
     char token[128], *sptr;
-    _TCHAR eol[2] = { '\n', 0 };
+//  _TCHAR eol[2] = { '\n', 0 };
     CampEntity target, ptarget;
 
     if (!mec || !mec->flight_data || !mec->flight_data->camp_id)

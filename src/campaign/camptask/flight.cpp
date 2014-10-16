@@ -2498,7 +2498,7 @@ int FlightClass::ChooseTarget()
             e = (CampEntity)detit.GetNext();
         }
 
-        int placeHolder = 0;
+//      int placeHolder = 0;
     }
 
 #endif

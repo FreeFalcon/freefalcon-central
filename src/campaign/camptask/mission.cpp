@@ -2369,7 +2369,8 @@ WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team 
 {
     WayPoint w, nw, bw, pw = NULL;
     GridIndex x, y, nx, ny, tx, ty, cx, cy, bx, by;
-    int guesses = 0, step, owner, dist, done = 0; //alt,balt=0;
+//	int guesses = 0;
+	int step, owner, dist, done = 0; //alt,balt=0;
     float d, xd, yd, dsq = (float)distance * distance;
 
     bx = by = 0;

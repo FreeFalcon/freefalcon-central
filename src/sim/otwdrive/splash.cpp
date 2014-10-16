@@ -200,7 +200,7 @@ void OTWDriverClass::CleanupSplashScreen(void)
 void OTWDriverClass::SplashScreenUpdate(int frame)
 {
     BYTE *imagePtr = NULL;
-    void *buffer = NULL;
+//  void *buffer = NULL;
     int x, y;
     unsigned long tweakedPalette[256];
     unsigned long *srcPal = NULL, *dstPal = NULL;

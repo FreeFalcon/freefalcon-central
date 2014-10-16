@@ -145,7 +145,7 @@ Tpoint CamVel;
 
 static void LoadSFX(char *falconDataDir);
 static void UnLoadSFX(void);
-static BOOL ReadSFXTable(char *sndtable);
+//static BOOL ReadSFXTable(char *sndtable);
 static BOOL ReadSFXTableTXT(char *sndtable); // MLR 2003-10-17
 static BOOL WriteSFXTable(char *sndtable);
 BOOL SaveSFXTable();

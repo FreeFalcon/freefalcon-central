@@ -1115,7 +1115,7 @@ void LoadFlight(VU_ID flightID)
 void ChangeSkin()
 {
     BSPLIST *obj;
-    long plane = 0;
+//  long plane = 0;
     int i;
 
     for (i = 0; i < PlaneCount; i++)

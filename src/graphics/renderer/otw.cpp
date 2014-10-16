@@ -807,7 +807,7 @@ void RenderOTW::DrawTunnelBorder(void)
 void RenderOTW::PreLoadScene(const Tpoint *offset, const Trotation *orientation)
 {
     Tpoint position = {0.0F};
-    int containingList = 0;
+//  int containingList = 0;
     float prevFOV = 0.0F, prevLeft = 0.0F, prevRight = 0.0F, prevTop = 0.0F, prevBottom = 0.0F;
 
     prevFOV = GetFOV();
