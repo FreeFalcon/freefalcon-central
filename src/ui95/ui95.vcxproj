@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>Static</UseOfAtl>
+    <UseOfAtl>false</UseOfAtl>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
@@ -59,6 +59,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -81,7 +84,7 @@
       <CompileAs>Default</CompileAs>
       <XMLDocumentationFileName>../../build/x86/debug_win32/ui95/doc.xml</XMLDocumentationFileName>
       <BrowseInformationFile>../../build/x86/debug_win32/ui95/</BrowseInformationFile>
-      <MinimalRebuild>false</MinimalRebuild>
+      <MinimalRebuild>true</MinimalRebuild>
       <CompileAsManaged>false</CompileAsManaged>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -97,6 +100,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ShowIncludes>true</ShowIncludes>
       <UseFullPaths>true</UseFullPaths>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
     </ClCompile>
     <Lib>
       <OutputFile>../../build/x86/debug_win32/ui95/ui95.lib</OutputFile>
@@ -115,10 +121,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/wd4430 %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\..\AMD\Inc\;..\;..\Falclib\Include;..\Graphics/Include;..\Codelib\Include;..\vu2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
@@ -126,7 +132,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
@@ -142,6 +148,14 @@
       </PrecompiledHeaderFile>
       <ShowIncludes>true</ShowIncludes>
       <UseFullPaths>true</UseFullPaths>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <OpenMPSupport>true</OpenMPSupport>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
+      <CompileAsManaged>false</CompileAsManaged>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Lib>
       <OutputFile>../../build/x86/release_win32/ui95/ui95.lib</OutputFile>
