@@ -21,9 +21,9 @@ unsigned short myRecvPort = 0;
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
 
 extern int ComDPLAYEnumProtocols(int *protocols, int maxprotocols);
-DWProc_t CAPI_TimeStamp = NULL;
+DWProc_t capi_TimeStamp = NULL;
 
-unsigned long ComAPILastError = 0;
+unsigned long com_api_last_error = 0;
 
 static void (*info_callback)(ComAPIHandle c, int send, int msgsize) = NULL;
 
@@ -302,17 +302,17 @@ int ComAPIEnumProtocols(int *protocols, int maxprotocols)
     WSADATA wsaData;
     int ourprotos = 0;
 
-    if (InitWS2(&wsaData) == 0)
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         return 0;
     }
 
     if (maxprotocols >= 2)
     {
-        *protocols = CAPI_TCP_PROTOCOL;
+        *protocols = capi_TCP_PROTOCOL;
         ourprotos++;
         protocols++;
-        *protocols = CAPI_UDP_PROTOCOL;
+        *protocols = capi_UDP_PROTOCOL;
         ourprotos++;
     }
 
@@ -329,19 +329,19 @@ char *ComAPIinet_htoa(u_long ip)
 {
     struct in_addr addr;
 
-    if (CAPI_htonl == NULL)
+    if (capi_htonl == NULL)
     {
         return NULL;
     }
 
-    addr.s_addr = CAPI_htonl(ip);
+    addr.s_addr = capi_htonl(ip);
 
-    if (CAPI_inet_ntoa == NULL)
+    if (capi_inet_ntoa == NULL)
     {
         return NULL;
     }
 
-    return CAPI_inet_ntoa(addr);
+    return capi_inet_ntoa(addr);
 }
 
 /* convert net ipaddress to string */
@@ -352,12 +352,12 @@ char *ComAPIinet_ntoa(u_long ip)
 
     addr.s_addr = ip;
 
-    if (CAPI_inet_ntoa == NULL)
+    if (capi_inet_ntoa == NULL)
     {
         return NULL;
     }
 
-    return CAPI_inet_ntoa(addr);
+    return capi_inet_ntoa(addr);
 }
 
 /* convert net ipaddress to string */
@@ -366,30 +366,30 @@ unsigned long ComAPIinet_haddr(char * IPAddress)
 {
     unsigned long ipaddress;
 
-    if (CAPI_inet_addr == NULL)
+    if (capi_inet_addr == NULL)
     {
         return 0;
     }
 
-    ipaddress = CAPI_inet_addr(IPAddress);
+    ipaddress = capi_inet_addr(IPAddress);
 
-    if (CAPI_ntohl == NULL)
+    if (capi_ntohl == NULL)
     {
         return 0;
     }
 
-    return CAPI_ntohl(ipaddress);
+    return capi_ntohl(ipaddress);
 }
 
 unsigned long ComAPIGetLastError(void)
 {
-    return ComAPILastError;
+    return com_api_last_error;
 }
 
 void ComAPISetTimeStampFunction(unsigned long(*TimeStamp)(void))
 {
-    CAPI_TimeStamp = TimeStamp;
-    CAPI_TimeStamp();
+    capi_TimeStamp = TimeStamp;
+    capi_TimeStamp();
 }
 
 unsigned long ComAPIGetTimeStamp(ComAPIHandle c)
@@ -448,15 +448,15 @@ int ComAPIInitComms(void)
     WSADATA wsaData;
     int ret = 1;
 
-    if (!WS2Connections)
+    if (!windows_sockets_connections)
     {
-        ret = InitWS2(&wsaData);
-        WS2Connections--;
+        ret = initialize_windows_sockets(&wsaData);
+        windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if (!WS2Connections)
+        if (!windows_sockets_connections)
         {
-            CAPI_WSACleanup();
+            capi_WSACleanup();
         }
     }
 
@@ -476,31 +476,31 @@ void ComAPISetName(ComAPIHandle c, char *name_in)
 
 void ComAPISetLocalPorts(unsigned short b, unsigned short r)
 {
-    myRecvPort =  CAPI_htons(b);
-    myReliableRecvPort = CAPI_htons(r);
+    myRecvPort =  capi_htons(b);
+    myReliableRecvPort = capi_htons(r);
 }
 
 unsigned short ComAPIGetRecvPort(ComAPIHandle c)
 {
     // this is the same for all coms of same type
-    return CAPI_ntohs(((ComIP*)c)->recAddress.sin_port);
+    return capi_ntohs(((ComIP*)c)->recAddress.sin_port);
 }
 
 unsigned short ComAPIGetPeerRecvPort(ComAPIHandle c)
 {
     // we send to this address, so its his receive port
-    return CAPI_ntohs(((ComIP*)c)->sendAddress.sin_port);
+    return capi_ntohs(((ComIP*)c)->sendAddress.sin_port);
 }
 
 unsigned long ComAPIGetPeerIP(ComAPIHandle c)
 {
     // we send to this address, so this is his IP
-    return CAPI_ntohl(((ComIP*)c)->sendAddress.sin_addr.S_un.S_addr);
+    return capi_ntohl(((ComIP*)c)->sendAddress.sin_addr.S_un.S_addr);
 }
 
 unsigned long ComAPIGetPeerId(ComAPIHandle c)
 {
-    return CAPI_ntohl(((ComIP*)c)->id);
+    return capi_ntohl(((ComIP*)c)->id);
 }
 
 int ComAPIGetProtocol(ComAPIHandle c)
@@ -510,22 +510,22 @@ int ComAPIGetProtocol(ComAPIHandle c)
 
 unsigned short ComAPIGetMyRecvPort()
 {
-    return CAPI_ntohs(myRecvPort);
+    return capi_ntohs(myRecvPort);
 }
 
 unsigned short ComAPIGetMyReliableRecvPort()
 {
-    return CAPI_ntohs(myReliableRecvPort);
+    return capi_ntohs(myReliableRecvPort);
 }
 
 void ComAPISetMyRecvPort(unsigned short port)
 {
-    myRecvPort = CAPI_htons(port);
+    myRecvPort = capi_htons(port);
 }
 
 void ComAPISetMyReliableRecvPort(unsigned short port)
 {
-    myReliableRecvPort = CAPI_htons(port);
+    myReliableRecvPort = capi_htons(port);
 }
 
 int ComAPIPrivateIP(unsigned long ip)
@@ -555,7 +555,7 @@ int ComAPIPrivateIP(unsigned long ip)
 
 long ComAPIGetIP(const char *address)
 {
-    struct hostent *h = CAPI_gethostbyname(address);
+    struct hostent *h = capi_gethostbyname(address);
 
     if ((h == NULL) || (h->h_addr_list == NULL))
     {
@@ -563,7 +563,7 @@ long ComAPIGetIP(const char *address)
     }
     else
     {
-        return CAPI_ntohl(*((long*)h->h_addr_list[0]));
+        return capi_ntohl(*((long*)h->h_addr_list[0]));
 
     }
 }

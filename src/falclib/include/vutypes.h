@@ -225,8 +225,8 @@ public:
     */
     VU_ADDRESS(
         unsigned long ip = 0,                                //< entity IP
-        unsigned short recvPort = 0,//CAPI_UDP_PORT,         //< port where he receives
-        unsigned short reliableRecvPort = 0 //CAPI_TCP_PORT  //< port where he receives reliable data
+        unsigned short recvPort = 0,//capi_UDP_PORT,         //< port where he receives
+        unsigned short reliableRecvPort = 0 //capi_TCP_PORT  //< port where he receives reliable data
     )
     {
         this->ip = ip;

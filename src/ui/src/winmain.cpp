@@ -43,6 +43,7 @@
 #include "OtwDrive.h"
 //#include "PlayerOp.h"
 #include "RadioSubTitle.h"
+#include "range_check.h"
 #include "resource.h"
 //#include "rules.h"
 #include "SimDrive.h"
@@ -230,7 +231,7 @@ struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 
 TrackIR theTrackIRObject;
 WinAmpFrontEnd* winamp = 0;
-WSADATA wsadata;
+WSADATA windows_sockets_data;
 
 
 extern "C"
@@ -325,7 +326,8 @@ void UIMain(void);
 void UpdateRules(void);
 void ViewRemoteLogbook(long playerID);
 
-extern "C" int InitWS2(WSADATA* wsaData);
+extern "C" int initialize_windows_sockets(WSADATA* wsaData);
+// ATL stuff
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
 // END OF FUNCTION DECLARATIONS
@@ -365,14 +367,14 @@ void BuildAscii()
 }
 
 
-void InitializeVariables(void)
+void initialize_variables(void)
 {
 #ifdef DEBUG
-	// if you want to disable it, use -nococpitverifier commandline
+	// If you want to disable it, use -nococpitverifier commandline
 	cockpit_verifier = true;
-	// if you want to disable it, use -nomissiontable commandline
+	// If you want to disable it, use -nomissiontable commandline
 	write_mission_table = true;
-	// if you want to disable it, use -nosoundtable commandline
+	// If you want to disable it, use -nosoundtable commandline
 	write_sound_table = true;
 #endif
 }
@@ -426,23 +428,26 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
-int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                         LPSTR lpCmdLine, int nCmdShow)
+int PASCAL HandleWinMain(HINSTANCE hInstance,
+						 HINSTANCE hPrevInstance,
+                         LPSTR lpCmdLine,
+						 int nCmdShow)
 {
-    char tmpPath[_MAX_PATH];
+	initialize_variables();
+	
+	_Module.Init(ObjectMap, hInstance); // ATL stuff
+	
+	// We need it for GNet
+	initialize_windows_sockets(&windows_sockets_data);
+
+	char tmpPath[_MAX_PATH];
     MSG  msg;
     char fileName[_MAX_PATH];
-
-	InitializeVariables();
-
-    _Module.Init(ObjectMap, hInstance);
-
-    InitWS2(&wsadata); // Init Winsock now, we need it for GNet
 
     HRESULT hr = CoInitialize(NULL);
 
     if (FAILED(hr))
-        MonoPrint("HandleWinMain: Error 0x%X occured during COM initialization!", hr);
+        MonoPrint("HandleWinMain: Error 0x%X occurred during COM initialization!", hr);
 
 	// Begin - Uplink stuff
     try
@@ -578,19 +583,21 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 
-// Main entry point to the entire solution.
-// However, some code is called by callback functions so use the breakpoints
-// file to debug properly!
-
-// set up structured exception handling here
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+// Main entry point to the entire solution. However, some code is called by
+// callback functions so use breakpoints to debug properly!
+int PASCAL WinMain(HINSTANCE hInstance,
+				   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+				   int nCmdShow)
 {
-	int Result = EXIT_FAILURE;
+	SubrangeInt<0, 1> error_code;
+	error_code = EXIT_FAILURE;
 
-    __try
+	// Set up structured exception handling here
+	__try
     {
-        Result = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+        error_code = HandleWinMain(hInstance, hPrevInstance,
+								   lpCmdLine, nCmdShow);
     }
     __except (RecordExceptionInfo(GetExceptionInformation(), "WinMain Thread"))
     {
@@ -600,7 +607,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         // the __except clause.
     }
 
-    return Result;
+    return error_code;
 }
 
 

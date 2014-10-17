@@ -47,12 +47,12 @@ struct VuMessageHeader
         switch (type_)
         {
             case VU_POSITION_UPDATE_EVENT:
-                return CAPI_POSUPD_BWTYPE;
+                return capi_POSUPD_BWTYPE;
                 break;
 
             case CampDirtyDataMsg:
             case SimDirtyDataMsg:
-                return CAPI_DIRTY_BWTYPE;
+                return capi_DIRTY_BWTYPE;
                 break;
 
             case SendCampaignMsg:
@@ -62,9 +62,9 @@ struct VuMessageHeader
             case SendVCMsg:
             case CampDataMsg:
 
-                //return CAPI_JOIN_BW_TYPE;
+                //return capi_JOIN_BW_TYPE;
             default:
-                return CAPI_OTHER_BWTYPE;
+                return capi_OTHER_BWTYPE;
         }
     }
 
@@ -859,7 +859,7 @@ int VuTargetEntity::SendQueuedMessage(void)
 
     if ((reliableComms_.handle_) && (reliableComms_.status_ == VU_CONN_ACTIVE))
     {
-        size = ComAPISend(reliableComms_.handle_, 0, CAPI_COMMON_BWTYPE);
+        size = ComAPISend(reliableComms_.handle_, 0, capi_COMMON_BWTYPE);
 
         if (size == -2)
         {

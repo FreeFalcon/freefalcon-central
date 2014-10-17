@@ -23,7 +23,7 @@ extern "C" {
         char *gamename,
         unsigned short localUdpPort, // port where we receive data from this entity
         unsigned short remoteUdpPort,  // port where this entity receives udp data
-        unsigned long IPaddress, // peer ip, if == CAPI_DANGLING_IP, this is a receive only comm
+        unsigned long IPaddress, // peer ip, if == capi_DANGLING_IP, this is a receive only comm
         unsigned long id // id of the owner
     );
 

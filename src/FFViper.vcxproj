@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\comsup.h" />
+    <ClInclude Include="range_check.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\src\f4config.cpp" />

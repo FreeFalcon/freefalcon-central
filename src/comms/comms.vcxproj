@@ -186,6 +186,7 @@
     </ClCompile>
     <ClCompile Include="ws2init.c">
       <StructMemberAlignment Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4Bytes</StructMemberAlignment>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

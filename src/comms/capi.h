@@ -7,39 +7,39 @@ within:  capiopt.h
   otherwise       these LIBs are not needed
 *******************************************************************************************************/
 
-#ifndef _CAPI_H_
-#define _CAPI_H_
+#ifndef _capi_H_
+#define _capi_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#define CAPI_VERSION 1
-#define CAPI_REVISION 4
-#define CAPI_PATCH     0
-#define CAPI_REVISION_DATE "5/27/98"
-#define CAPI_PATCH_DATE     "5/27/98"
+#define capi_VERSION 1
+#define capi_REVISION 4
+#define capi_PATCH     0
+#define capi_REVISION_DATE "5/27/98"
+#define capi_PATCH_DATE     "5/27/98"
 
 
 
     /* Protocol values for ComAPIEnumProtocols */
-#define CAPI_UNKNOWN_PROTOCOL        0
-#define CAPI_UDP_PROTOCOL           1
-#define CAPI_IP_MULTICAST_PROTOCOL   2
-#define CAPI_SERIAL_PROTOCOL        3
-#define CAPI_TEN_PROTOCOL           4
-#define CAPI_TCP_PROTOCOL            5
-#define CAPI_DPLAY_MODEM_PROTOCOL    6
-#define CAPI_DPLAY_SERIAL_PROTOCOL   7
-#define CAPI_DPLAY_TCP_PROTOCOL      8
-#define CAPI_DPLAY_IPX_PROTOCOL      9
-#define CAPI_RUDP_PROTOCOL 10
-#define CAPI_GROUP_PROTOCOL         11
-#define CAPI_LAST_PROTOCOL           CAPI_GROUP_PROTOCOL
+#define capi_UNKNOWN_PROTOCOL        0
+#define capi_UDP_PROTOCOL           1
+#define capi_IP_MULTICAST_PROTOCOL   2
+#define capi_SERIAL_PROTOCOL        3
+#define capi_TEN_PROTOCOL           4
+#define capi_TCP_PROTOCOL            5
+#define capi_DPLAY_MODEM_PROTOCOL    6
+#define capi_DPLAY_SERIAL_PROTOCOL   7
+#define capi_DPLAY_TCP_PROTOCOL      8
+#define capi_DPLAY_IPX_PROTOCOL      9
+#define capi_RUDP_PROTOCOL 10
+#define capi_GROUP_PROTOCOL         11
+#define capi_LAST_PROTOCOL           capi_GROUP_PROTOCOL
 
-#define CAPI_HOST 1
-#define CAPI_JOIN 0
+#define capi_HOST 1
+#define capi_JOIN 0
 
     /* COMAPI Error codes  to return to application */
 #define COMAPI_BAD_HEADER           -1  /* COMAPI message header not correct */
@@ -93,35 +93,35 @@ extern "C" {
 
 
 
-#define CAPI_THREAD_PRIORITY_ABOVE_NORMAL   1
-#define CAPI_THREAD_PRIORITY_BELOW_NORMAL   2
-#define CAPI_THREAD_PRIORITY_HIGHEST        3
-#define CAPI_THREAD_PRIORITY_IDLE           4
-#define CAPI_THREAD_PRIORITY_LOWEST         5
-#define CAPI_THREAD_PRIORITY_NORMAL         6
-#define CAPI_THREAD_PRIORITY_TIME_CRITICAL  7
+#define capi_THREAD_PRIORITY_ABOVE_NORMAL   1
+#define capi_THREAD_PRIORITY_BELOW_NORMAL   2
+#define capi_THREAD_PRIORITY_HIGHEST        3
+#define capi_THREAD_PRIORITY_IDLE           4
+#define capi_THREAD_PRIORITY_LOWEST         5
+#define capi_THREAD_PRIORITY_NORMAL         6
+#define capi_THREAD_PRIORITY_TIME_CRITICAL  7
 
-#define CAPI_DPLAY_NOT_GUARANTEED           0
-#define CAPI_DPLAY_GUARANTEED               1
+#define capi_DPLAY_NOT_GUARANTEED           0
+#define capi_DPLAY_GUARANTEED               1
 
     //sfr: define for default IP
     // used for dangling comms
-#define CAPI_DANGLING_IP                   0xFFFFFFFF
-#define CAPI_DANGLING_ID                   0xFFFFFFFF
+#define capi_DANGLING_IP                   0xFFFFFFFF
+#define capi_DANGLING_ID                   0xFFFFFFFF
 
     //sfr: bw states, also defined in comapibwcontrol bwstate enum
-#define CAPI_LOBBY_ST      0
-#define CAPI_CAS_ST        1
-#define CAPI_CAC_ST        2
-#define CAPI_DF_ST         3
+#define capi_LOBBY_ST      0
+#define capi_CAS_ST        1
+#define capi_CAC_ST        2
+#define capi_DF_ST         3
 
     // message types, for bandwidth usage, also defined in comapibwcontrol
-    // important CAPI_JOIN_BWTYPE must be >= BW_NUM_TYPES in capibwcontrol
-#define CAPI_POSUPD_BWTYPE 0
-#define CAPI_DIRTY_BWTYPE  1
-#define CAPI_OTHER_BWTYPE  2
-#define CAPI_COMMON_BWTYPE 3
-#define CAPI_JOIN_BW_TYPE  4
+    // important capi_JOIN_BWTYPE must be >= BW_NUM_TYPES in capibwcontrol
+#define capi_POSUPD_BWTYPE 0
+#define capi_DIRTY_BWTYPE  1
+#define capi_OTHER_BWTYPE  2
+#define capi_COMMON_BWTYPE 3
+#define capi_JOIN_BW_TYPE  4
 
     typedef struct comapihandle *ComAPIHandle;
     /* Init comms  optional - done automatically by any open, but needed if calling
@@ -198,7 +198,7 @@ extern "C" {
     void ComAPIBWPlayerJoined();
     /** called when a player leaves, adjusting bw */
     void ComAPIBWPlayerLeft();
-    /** enters a given state: CAPI_LOBBY_ST, CAPI_CAS_ST, CAC_ST e DF_ST */
+    /** enters a given state: capi_LOBBY_ST, capi_CAS_ST, CAC_ST e DF_ST */
     void ComAPIBWEnterState(int state);
     /** gets BW situation for a connection: 0 ok, 1 yellow, 2 or more critical */
     int ComAPIBWGetStatus(int isReliable);

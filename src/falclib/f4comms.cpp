@@ -187,8 +187,8 @@ int InitCommsStuff(ComDataClass *comData)
         // this dangling represents the first client to connect to server
         // well receive initial data through it
         bool ret = AddDanglingSession(
-                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
-                       VU_ADDRESS(CAPI_DANGLING_IP, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort())
+                       VU_ID(capi_DANGLING_ID, VU_SESSION_ENTITY_ID),
+                       VU_ADDRESS(capi_DANGLING_IP, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort())
                    );
 
         if (!(ret))
@@ -201,7 +201,7 @@ int InitCommsStuff(ComDataClass *comData)
     {
         // this is a dangling session representing server, so we can send first message
         bool ret = AddDanglingSession(
-                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
+                       VU_ID(capi_DANGLING_ID, VU_SESSION_ENTITY_ID),
                        VU_ADDRESS(comData->ip_address, comData->remotePort, comData->remotePort + 1)
                    );
 
@@ -402,7 +402,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
             VU_ADDRESS sAdd = session->GetAddress();
 
             if (
-                //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
+                //(session->OwnerId().creator_.value_ == capi_DANGLING_ID) ||
                 (session->OwnerId().creator_.value_ == owner.creator_) &&
                 (sAdd == address)
             )
@@ -417,7 +417,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     }
 
     // session is not in list, create a new one and insert in list
-    tempSess = new FalconSessionEntity(CAPI_DANGLING_ID, "tmp");
+    tempSess = new FalconSessionEntity(capi_DANGLING_ID, "tmp");
     tempSess->SetOwnerId(owner);
     tempSess->SetAddress(address);
     // KCK: Hackish. Need to trick VU into this is already inserted into DB, otherwise
@@ -482,7 +482,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
         VU_ADDRESS oldAdd = session->GetAddress();
 
         if (
-            (session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
+            (session->OwnerId().creator_.value_ == capi_DANGLING_ID) ||
             (newSess->OwnerId().creator_.value_ == session->OwnerId().creator_)
         )
         {
@@ -1014,23 +1014,23 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
             // adding ourselves to group
             if (game == vuPlayerPoolGroup)
             {
-                ComAPIBWEnterState(CAPI_LOBBY_ST);
+                ComAPIBWEnterState(capi_LOBBY_ST);
             }
             else
             {
                 switch (game->gameType)
                 {
                         //case game_PlayerPool:
-                        // ComAPIBWEnterState(CAPI_LOBBY_ST);
+                        // ComAPIBWEnterState(capi_LOBBY_ST);
                         //break;
                     case game_Dogfight:
-                        ComAPIBWEnterState(CAPI_DF_ST);
+                        ComAPIBWEnterState(capi_DF_ST);
                         break;
 
                     case game_TacticalEngagement:
                     case game_Campaign:
                         // here is different if we are host, for others its the same
-                        ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ? CAPI_CAS_ST : CAPI_CAC_ST);
+                        ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ? capi_CAS_ST : capi_CAC_ST);
                         break;
 
                     default:
@@ -1108,7 +1108,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
         if (session == vuLocalSessionEntity)
         {
             // were leaving game
-            ComAPIBWEnterState(CAPI_LOBBY_ST);
+            ComAPIBWEnterState(capi_LOBBY_ST);
         }
         else if (group == vuLocalGame)
         {

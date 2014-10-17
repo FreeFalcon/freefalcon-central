@@ -89,18 +89,18 @@ typedef HRESULT(PASCAL FAR *  DPFN_DirectPlayEnumerate)(LPDPENUMDPCALLBACKA, LPV
 typedef HRESULT(PASCAL FAR *  DPFN_DirectPlayLobbyCreate)(LPGUID, LPDIRECTPLAYLOBBYA *, IUnknown *, LPVOID, DWORD);
 #endif /* UNICODE */
 
-DPFN_DirectPlayCreate        CAPI_DirectPlayCreate = NULL;
-DPFN_DirectPlayEnumerate     CAPI_DirectPlayEnumerate = NULL;
-DPFN_DirectPlayLobbyCreate   CAPI_DirectPlayLobbyCreate = NULL;
+DPFN_DirectPlayCreate        capi_DirectPlayCreate = NULL;
+DPFN_DirectPlayEnumerate     capi_DirectPlayEnumerate = NULL;
+DPFN_DirectPlayLobbyCreate   capi_DirectPlayLobbyCreate = NULL;
 
 
 typedef HRESULT(PASCAL FAR * OLEFN_CoInitialize)(LPVOID pvReserved);
 typedef VOID (PASCAL FAR * OLEFN_CoUninitialize)(void);
 typedef HRESULT(PASCAL FAR * OLEFN_CoCreateInstance)(REFCLSID rclsid, LPUNKNOWN pUnkOuter,
         DWORD dwClsContext, REFIID riid, LPVOID FAR* ppv);
-OLEFN_CoInitialize           CAPI_CoInitialize = NULL;
-OLEFN_CoUninitialize         CAPI_CoUninitialize = NULL;
-OLEFN_CoCreateInstance       CAPI_CoCreateInstance = NULL;
+OLEFN_CoInitialize           capi_CoInitialize = NULL;
+OLEFN_CoUninitialize         capi_CoUninitialize = NULL;
+OLEFN_CoCreateInstance       capi_CoCreateInstance = NULL;
 
 
 #endif

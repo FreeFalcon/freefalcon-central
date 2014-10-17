@@ -37,8 +37,8 @@ extern "C" {
 
     /* extern GLOBAL WSA startup reference count, defined in  WS2Init() */
 #if WIN32
-    extern int WS2Connections;
-    extern HINSTANCE  hWinSockDLL;
+    extern int windows_sockets_connections;
+    extern HINSTANCE windows_sockets_dll;
 #endif
 
     typedef  unsigned long(*DWProc_t)();
@@ -57,7 +57,7 @@ extern "C" {
         struct capilist      *next;
         char  *name;
         ComAPIHandle          com;
-#ifdef CAPI_NET_DEBUG_FEATURES
+#ifdef capi_NET_DEBUG_FEATURES
         void                 *data;
         int                   size;
         int                   sendtime;
@@ -214,8 +214,8 @@ extern "C" {
     } ComGROUP;
 
 
-#define CAPI_SENDBUFSIZE 1024
-#define CAPI_RECVBUFSIZE 65536
+#define capi_SENDBUFSIZE 1024
+#define capi_RECVBUFSIZE 65536
 
 #ifdef __cplusplus
 }

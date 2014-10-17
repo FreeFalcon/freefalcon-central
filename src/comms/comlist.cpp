@@ -159,7 +159,7 @@ ComIP *ComList::findProtDangling(int protocol)
     for (ComIP *comIP = iterBegin(protocol); comIP != NULL; comIP = iterGetNext(protocol))
     {
         if (
-            (ComAPIGetPeerIP((ComAPIHandle)comIP) == CAPI_DANGLING_IP)
+            (ComAPIGetPeerIP((ComAPIHandle)comIP) == capi_DANGLING_IP)
         )
         {
             return comIP;
