@@ -152,9 +152,6 @@
     <ClCompile Include="..\utils\lzss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mddriver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mesg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -365,7 +365,7 @@ void BuildAscii()
 }
 
 
-void InitVariables(void)
+void InitializeVariables(void)
 {
 #ifdef DEBUG
 	// if you want to disable it, use -nococpitverifier commandline
@@ -433,7 +433,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     MSG  msg;
     char fileName[_MAX_PATH];
 
-	InitVariables();
+	InitializeVariables();
 
     _Module.Init(ObjectMap, hInstance);
 

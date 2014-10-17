@@ -224,7 +224,6 @@
     <ClCompile Include="MsgSrc\LaserDesignateMsg.cpp" />
     <ClCompile Include="LookupTable.cpp" />
     <ClCompile Include="..\utils\lzss.cpp" />
-    <ClCompile Include="mddriver.cpp" />
     <ClCompile Include="mesg.cpp" />
     <ClCompile Include="mesgstr.cpp" />
     <ClCompile Include="messages.cpp" />

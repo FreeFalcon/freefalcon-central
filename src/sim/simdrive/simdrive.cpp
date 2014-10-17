@@ -114,7 +114,6 @@ extern void SavePersistantList(char* scenario);
 extern C_Handler *gMainHandler;
 extern int gNumWeaponsInAir;
 extern HWND mainMenuWnd;
-extern int FileVerify(void);
 
 extern ulong gBumpTime;
 extern int gBumpFlag;
@@ -276,10 +275,6 @@ void SimulationDriver::Startup(void)
     combinedList = NULL;
     combinedFeatureList = NULL;
     ObjsWithNoCampaignParentList = NULL;
-
-    //Prep Object Data
-    // Check file integrity
-    FileVerify();
 
     SimMoverDefinition::ReadSimMoverDefinitionData();
     ReadDigitalBrainData();
