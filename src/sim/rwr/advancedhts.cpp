@@ -632,7 +632,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     char str[24];
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    SMSClass* Sms;
+    SMSClass* Sms = NULL;
 
     if (playerAC)
     {

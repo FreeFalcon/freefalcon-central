@@ -237,7 +237,7 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
 
     ///////////// Creates the DRAW ITEMS Pools and assign pointers //////////////
     pVDrawItemPool = NULL;
-    CDrawItem *dp;
+    CDrawItem *dp = NULL;
 
     for (int i = 0; i < BASE_DRAWS; i++)
     {
