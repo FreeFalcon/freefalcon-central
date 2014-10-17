@@ -816,13 +816,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].intercept =
 #ifdef USE_SH_POOLS
-                        (BVRInterceptType*)MemAllocPtr(
+                    (BVRInterceptType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(BVRInterceptType) *maneuverData[i][j].numIntercepts,
                             0
-                        );
+                    );
 #else
-                        new BVRInterceptType[maneuverData[i][j].numIntercepts];
+                    new BVRInterceptType[maneuverData[i][j].numIntercepts];
 #endif
                 }
                 else maneuverData[i][j].intercept = NULL;
@@ -833,13 +833,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].merge =
 #ifdef USE_SH_POOLS
-                        (WVRMergeManeuverType*)MemAllocPtr(
+                    (WVRMergeManeuverType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(WVRMergeManeuverType) *maneuverData[i][j].numMerges,
                             0
-                        );
+                    );
 #else
-                        new WVRMergeManeuverType[maneuverData[i][j].numMerges];
+                    new WVRMergeManeuverType[maneuverData[i][j].numMerges];
 #endif
                 }
                 else maneuverData[i][j].merge = NULL;
@@ -850,13 +850,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].spikeReact =
 #ifdef USE_SH_POOLS
-                        (SpikeReactionType*)MemAllocPtr(
+                    (SpikeReactionType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(SpikeReactionType) *maneuverData[i][j].numReacts,
                             0
-                        );
+                    );
 #else
-                        new SpikeReactionType[maneuverData[i][j].numReacts];
+                    new SpikeReactionType[maneuverData[i][j].numReacts];
 #endif
                 }
                 else maneuverData[i][j].spikeReact = NULL;
@@ -877,7 +877,7 @@ void DigitalBrain::ReadManeuverData(void)
     }
     // Allow binary, but otherwise throw a warning
     else if (fileType != 'B')
-        ShiWarning("Bad Maneuver Data File Format");
+        ShiWarning("Bad Maneuver Data File Format")
 
     mnvrFile->Close();
     delete mnvrFile;
