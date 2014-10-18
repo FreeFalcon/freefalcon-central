@@ -1,0 +1,17 @@
+# Build directories
+build/
+pkg/
+obj/
+
+# Build artifacts
+*.ipch
+
+# Visual Studio files
+*.opensdf
+*.sdf
+*.pch
+*.ncb
+*.suo
+*.bak
+*.user
+*.tmp

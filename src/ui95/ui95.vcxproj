@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3BE385A8-D11D-4E54-BCEE-443CE3C81DBC}</ProjectGuid>
+    <SccProjectName />
+    <SccLocalPath>..</SccLocalPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>Static</UseOfAtl>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/ui95/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build/x86/debug_win32/ui95/</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/ui95/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build/x86/release_win32/ui95/</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ui95</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IncludePath);$(VCInstallDir)atlmfc\include</IncludePath>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ui95</TargetName>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);$(VSInstallDir);$(VSInstallDir)lib</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\;..\Falclib\Include;..\Graphics/Include;..\Codelib\Include;..\vu2\include;..\..\AMD\Inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>../../build/x86/debug_win32/ui95/</AssemblerListingLocation>
+      <ObjectFileName>../../build/x86/debug_win32/ui95/</ObjectFileName>
+      <ProgramDataBaseFileName>../../build/x86/debug_win32/ui95/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <XMLDocumentationFileName>../../build/x86/debug_win32/ui95/doc.xml</XMLDocumentationFileName>
+      <BrowseInformationFile>../../build/x86/debug_win32/ui95/</BrowseInformationFile>
+      <MinimalRebuild>true</MinimalRebuild>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../../build/x86/debug_win32/ui95/ui95.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <BuildLog>
+      <Path>../../build/x86/debug_win32/ui95/build.log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/wd4430 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\..\AMD\Inc\;..\;..\Falclib\Include;..\Graphics/Include;..\Codelib\Include;..\vu2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>../../build/x86/release_win32/ui95/</AssemblerListingLocation>
+      <ObjectFileName>../../build/x86/release_win32/ui95/</ObjectFileName>
+      <ProgramDataBaseFileName>../../build/x86/release_win32/ui95/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../../build/x86/release_win32/ui95/ui95.lib</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="canim.cpp" />
+    <ClCompile Include="canimrc.cpp" />
+    <ClCompile Include="cbitmap.cpp" />
+    <ClCompile Include="cblip.cpp" />
+    <ClCompile Include="cbox.cpp" />
+    <ClCompile Include="cbuttons.cpp" />
+    <ClCompile Include="cclock.cpp" />
+    <ClCompile Include="ccolor.cpp" />
+    <ClCompile Include="ccontrol.cpp" />
+    <ClCompile Include="ccursor.cpp" />
+    <ClCompile Include="ccustom.cpp" />
+    <ClCompile Include="ceditbox.cpp" />
+    <ClCompile Include="cfill.cpp" />
+    <ClCompile Include="cfontres.cpp" />
+    <ClCompile Include="cfonts.cpp" />
+    <ClCompile Include="chandler.cpp" />
+    <ClCompile Include="chash.cpp" />
+    <ClCompile Include="chelp.cpp" />
+    <ClCompile Include="cimagerc.cpp" />
+    <ClCompile Include="cline.cpp" />
+    <ClCompile Include="clistbox.cpp" />
+    <ClCompile Include="cmarque.cpp" />
+    <ClCompile Include="cmovie.cpp" />
+    <ClCompile Include="cpanner.cpp" />
+    <ClCompile Include="cparser.cpp" />
+    <ClCompile Include="cpopmgr.cpp" />
+    <ClCompile Include="cpopup.cpp" />
+    <ClCompile Include="cresmgr.cpp" />
+    <ClCompile Include="csclbmp.cpp" />
+    <ClCompile Include="cscroll.cpp" />
+    <ClCompile Include="cslider.cpp" />
+    <ClCompile Include="csndbite.cpp" />
+    <ClCompile Include="csoundrc.cpp" />
+    <ClCompile Include="cstringrc.cpp" />
+    <ClCompile Include="ctext.cpp" />
+    <ClCompile Include="cthook.cpp" />
+    <ClCompile Include="ctile.cpp" />
+    <ClCompile Include="ctree.cpp" />
+    <ClCompile Include="cwindow.cpp" />
+    <ClCompile Include="imagersc.cpp" />
+    <ClCompile Include="ooutput.cpp" />
+    <ClCompile Include="soundrsc.cpp" />
+    <ClCompile Include="ui95_dd.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="canim.h" />
+    <ClInclude Include="canimrc.h" />
+    <ClInclude Include="cbase.h" />
+    <ClInclude Include="cbitmap.h" />
+    <ClInclude Include="cblip.h" />
+    <ClInclude Include="cbox.h" />
+    <ClInclude Include="cbuttons.h" />
+    <ClInclude Include="cclock.h" />
+    <ClInclude Include="ccolor.h" />
+    <ClInclude Include="ccontrol.h" />
+    <ClInclude Include="ccursor.h" />
+    <ClInclude Include="ccustom.h" />
+    <ClInclude Include="ceditbox.h" />
+    <ClInclude Include="cfill.h" />
+    <ClInclude Include="cfontres.h" />
+    <ClInclude Include="cfonts.h" />
+    <ClInclude Include="chandler.h" />
+    <ClInclude Include="chash.h" />
+    <ClInclude Include="chelp.h" />
+    <ClInclude Include="cimagerc.h" />
+    <ClInclude Include="ckbd.h" />
+    <ClInclude Include="cline.h" />
+    <ClInclude Include="clistbox.h" />
+    <ClInclude Include="cmarque.h" />
+    <ClInclude Include="cmovie.h" />
+    <ClInclude Include="cpanner.h" />
+    <ClInclude Include="cparser.h" />
+    <ClInclude Include="cpopmgr.h" />
+    <ClInclude Include="cpopup.h" />
+    <ClInclude Include="cresmgr.h" />
+    <ClInclude Include="csclbmp.h" />
+    <ClInclude Include="cscroll.h" />
+    <ClInclude Include="cslider.h" />
+    <ClInclude Include="csndbite.h" />
+    <ClInclude Include="csoundrc.h" />
+    <ClInclude Include="cstringrc.h" />
+    <ClInclude Include="ctext.h" />
+    <ClInclude Include="cthook.h" />
+    <ClInclude Include="ctile.h" />
+    <ClInclude Include="ctree.h" />
+    <ClInclude Include="cwindow.h" />
+    <ClInclude Include="flatrsc.h" />
+    <ClInclude Include="imagersc.h" />
+    <ClInclude Include="ooutput.h" />
+    <ClInclude Include="soundrsc.h" />
+    <ClInclude Include="ui95_dd.h" />
+    <ClInclude Include="ui95defs.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DevPartner_IsInstrumented="1" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
