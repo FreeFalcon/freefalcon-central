@@ -553,7 +553,7 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     char szFile[256];
     FILE *fp;
 
-    TexturePool[id].tex.flags |= MPR_TI_DDS;
+    TexturePool[id].tex.flags = MPR_TI_DDS;
     TexturePool[id].tex.flags &= ~MPR_TI_PALETTE;
 
     sprintf(szFile, "%s\\%d.dds", baseName, id);
