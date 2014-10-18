@@ -46,10 +46,10 @@ extern int gBattalionDetects;
 #define LOG_ERRORS
 #endif DEBUG
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 // KCK: Move to AIInput eventually
@@ -163,10 +163,10 @@ int GroundUnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
     memcpy(*stream, &division, sizeof(short));
     *stream += sizeof(short);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        aobj.num_ = rename_table[aobj.num_];
+    if (gRenameIds)
+        aobj.num_ = RenameTable[aobj.num_];
 
 #endif
     memcpy(*stream, &aobj, sizeof(VU_ID));
@@ -306,8 +306,7 @@ int GroundUnitClass::ChooseTarget(void)
     FalconEntity *artTarget, *react_against = NULL, *air_react_against = NULL;
     CampEntity e;
     float d, react_distance, air_react_distance;
-    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
-//	int pass = 0;
+    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
     int search_dist;
     Team who;
 
@@ -2330,7 +2329,7 @@ int GetGroundRole(int orders)
 
 int GetGroundOrders(int role)
 {
-//  int orders = GRO_RESERVE;
+    int orders = GRO_RESERVE;
 
     switch (role)
     {

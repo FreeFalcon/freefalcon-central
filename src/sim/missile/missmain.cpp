@@ -1458,7 +1458,7 @@ BOOL
 MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impactZ, float *impactTime)
 {
     //float saveMinorFrameTime; // FRB
-//  float lastx = x, lasty = y, lastz = z;
+    float lastx = x, lasty = y, lastz = z;
 
     // Cobra test
     static FILE *fp = NULL;

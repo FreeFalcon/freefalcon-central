@@ -213,7 +213,7 @@ GLint ReadDDS(CImageFileMemory *fi)
 
     if (!fi->glReadMem(&ddsd, sizeof(DDSURFACEDESC2))) return BAD_FORMAT;
 
-    // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
+    // MLR 1/25/2004 - Little kludge so F4 can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||

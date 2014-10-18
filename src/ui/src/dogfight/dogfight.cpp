@@ -2,7 +2,7 @@
  UI_dfght.cpp
  Peter Ward
  December 3, 1996
- Main UI screen stuff for FreeFalcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"
@@ -231,7 +231,7 @@ static long DFTeamIconResID[5][2] =
     { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // UFO Team
     { RED_AIR_NORTH, RED_AIR_NORTH_W }, // Crimson
     { BLUE_AIR_NORTH, BLUE_AIR_NORTH_W }, // Shark
-    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // FreeFalcon Team
+    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // Falcon Team Team
     { ORANGE_AIR_NORTH, ORANGE_AIR_NORTH_W }, // Tiger
 };
 

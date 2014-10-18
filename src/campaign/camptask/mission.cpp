@@ -2364,13 +2364,12 @@ WayPoint EliminateExcessWaypoints(WayPoint w1, WayPoint w2, int who)
 
 // This will traverse a waypoint list from w1 to w2, and find or add a wp as near to w2
 // as possible while not being in enemy threat circles or within 'distance' km.
-// type tells routine whether to search forwards or backwards.
+// type tells routine wether to search forwards or backwards.
 WayPoint AddSafeWaypoint(WayPoint w1, WayPoint w2, int type, int distance, Team who)
 {
     WayPoint w, nw, bw, pw = NULL;
     GridIndex x, y, nx, ny, tx, ty, cx, cy, bx, by;
-//	int guesses = 0;
-	int step, owner, dist, done = 0; //alt,balt=0;
+    int guesses = 0, step, owner, dist, done = 0; //alt,balt=0;
     float d, xd, yd, dsq = (float)distance * distance;
 
     bx = by = 0;
@@ -2515,7 +2514,7 @@ WayPoint AddDistanceWaypoint(WayPoint w1, WayPoint w2, int distance)
 }
 
 // This 'flys' a path, and collects a list of any threats on our route
-// Returns values telling whether to add sead and/or ecm.
+// Returns values telling wether to add sead and/or ecm.
 int CheckPathThreats(Unit u)
 {
     FalconPrivateList threats(&CampFilter);

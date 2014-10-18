@@ -22,7 +22,7 @@ extern char FormStr[3][15];
 extern char SpecialStr[3][15];
 extern char Side[NUM_COUNS][3];
 
-// These are used by FreeFalcon text string builders
+// These are used by Falcon text string builders
 extern _TCHAR ObjectiveStr[33][20];
 extern _TCHAR MissStr[AMIS_OTHER][20];
 extern _TCHAR WPActStr[WP_LAST][20];

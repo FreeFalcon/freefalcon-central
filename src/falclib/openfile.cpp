@@ -13,21 +13,21 @@ extern "C"
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
-char *InsertMedia[] =
+char *InsertCD[] =
 {
-    "Please mount the FreeFalcon media",// undefined
-    "Please mount the FreeFalcon media",// English
-    "Please mount the FreeFalcon media",// UK
-    "Bitte mounten sie die FreeFalcon Medien",// German
-    "S'il vous plait monter le media FreeFalcon",// French
-    "Monte el soporte de FreeFalcon",// Spanish
-    "Si prega di montare i media FreeFalcon",// Italian
-    "Por favor, montar a m?dia FreeFalcon",// Portuguese
-    "Please mount the FreeFalcon media",
-    "Please mount the FreeFalcon media",
-    "Please mount the FreeFalcon media",
-    "Please mount the FreeFalcon media",
-    "Please mount the FreeFalcon media",
+    "Please insert the Falcon 4.0 CD",// undefined
+    "Please insert the Falcon 4.0 CD",// English
+    "Please insert the Falcon 4.0 CD",// UK
+    "Bitte legen Sie die Falcon 4.0 CD ein",// German
+    "Veuillez insérer le CD de Falcon 4.0",// French
+    "Introduzca el CD de Falcon 4.0",// Spanish
+    "Inserire il CD di Falcon 4.0",// Italian
+    "Insira o CD do Falcon 4.0",// Portuguese
+    "Please insert the Falcon 4.0 CD",
+    "Please insert the Falcon 4.0 CD",
+    "Please insert the Falcon 4.0 CD",
+    "Please insert the Falcon 4.0 CD",
+    "Please insert the Falcon 4.0 CD",
 };
 char *UnableToOpen[] =
 {
@@ -48,20 +48,30 @@ char *UnableToOpen[] =
 
 static int Enabled = 1;
 
-// This function opens a dialog box asking the user to insert the FreeFalcon media
+void EnableOpenTest()
+{
+    Enabled = 1;
+}
+
+void DisableOpenTest()
+{
+    Enabled = 0;
+}
+
+// This function opens a dialog box asking the user to insert the Falcon CD
 // Possible return values:
 // 0 = Retry
 // 1 = Abort
-// if Disabled... exit(EXIT_FAILURE);
+// if Disabled... exit(-1);
 
 int DoDialogBox()
 {
     int retval;
 
     if (!Enabled)
-        exit(EXIT_SUCCESS);
+        exit(0);
 
-	retval = MessageBox(NULL, InsertMedia[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
+    retval = MessageBox(NULL, InsertCD[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
 
     if (retval == IDRETRY)
         return(0);

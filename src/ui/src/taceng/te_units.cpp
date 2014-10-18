@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of FreeFalcon
+// of falcon 4.0
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1871,7 +1871,7 @@ void tac_select_aircraft(long, short hittype, C_Base *control)
 
 void tac_select_skill(long, short hittype, C_Base *control)
 {
-//  int mission = -1;
+    int mission = -1;
     C_Window *win;
 
     if (hittype != C_TYPE_SELECT)

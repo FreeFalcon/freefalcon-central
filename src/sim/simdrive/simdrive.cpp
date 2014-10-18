@@ -114,6 +114,7 @@ extern void SavePersistantList(char* scenario);
 extern C_Handler *gMainHandler;
 extern int gNumWeaponsInAir;
 extern HWND mainMenuWnd;
+extern int FileVerify(void);
 
 extern ulong gBumpTime;
 extern int gBumpFlag;
@@ -262,7 +263,7 @@ SimulationDriver::~SimulationDriver(void)
 }
 
 
-// KCK: Startup is called on FreeFalcon startup before the loop calling Cycle is started.
+// KCK: Startup is called on falcon startup before the loop calling Cycle is started.
 void SimulationDriver::Startup(void)
 {
     SetFrameDescription(50, 1);
@@ -275,6 +276,10 @@ void SimulationDriver::Startup(void)
     combinedList = NULL;
     combinedFeatureList = NULL;
     ObjsWithNoCampaignParentList = NULL;
+
+    //Prep Object Data
+    // Check file integrity
+    FileVerify();
 
     SimMoverDefinition::ReadSimMoverDefinitionData();
     ReadDigitalBrainData();
@@ -1517,7 +1522,7 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
 // It will check to see if there is a possible traffic conflict by calling the FindTrafficConflict routine.
 // If traffic is inside the priTrafficDist distance, it will find the aircraft closest to your altitude
 // and then check for a conflict.
-// Due to FreeFalcon's calls, it will only call out distances like this: 1,2,3,4,5,10  (no 6,7,8 or 9 mile calls)
+// Due to Falcon4's calls, it will only call out distances like this: 1,2,3,4,5,10  (no 6,7,8 or 9 mile calls)
 
 SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, ObjectiveClass *self, float* altitude)
 {

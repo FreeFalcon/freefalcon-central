@@ -741,8 +741,8 @@ int RadarDopplerClass::CheckGMBump(void)
     int maxIdx;
     float cRangeSQ;
     float tmpX = (viewOffsetRel.x + 1.0F) * 0.5F;   // Correct for 0.0 being the center of the scope
-//  float topfactor = 0.0F;
-//  float bottomfactor = 0.0F;
+    float topfactor = 0.0F;
+    float bottomfactor = 0.0F;
 
 #if 0
     // MD -- 20040229: comment this lot out -- it's not clear what this is coded to do but it doesn't appear to be
@@ -2606,7 +2606,7 @@ void RadarDopplerClass::GMMode(void)
 
         // Clear the head of the list of removed entities
         testFeature = (FalconEntity*)featureWalker.GetFirst();
-//      int c = 0;
+        int c = 0;
 
         if (testFeature && curNode)
         {

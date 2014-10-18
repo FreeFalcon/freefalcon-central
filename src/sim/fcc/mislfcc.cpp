@@ -18,7 +18,7 @@
 
 
 // Angle off sun at which sun effect goes to zero
-static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in f4
 
 extern bool g_bRealisticAvionics;
 extern int g_nRNESpeed;
@@ -27,7 +27,7 @@ extern int g_nRNESpeed;
 
 void FireControlComputer::AirAirMode(void)
 {
-    MissileClass* theMissile = NULL;
+	MissileClass* theMissile = NULL;
     float irSig;
     SimObjectType* curTarget;
     RadarClass* theRadar = (RadarClass*)FindSensor(platform, SensorClass::Radar);

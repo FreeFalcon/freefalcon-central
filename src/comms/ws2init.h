@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 
-    int initialize_windows_sockets(WSADATA *wsaData);
+    int InitWS2(WSADATA *wsaData);
 
 
 #ifdef __cplusplus

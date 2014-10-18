@@ -4364,7 +4364,7 @@ void SMSClass::StepWeaponByID(void)
     short newWeaponId;
     AList list;
     WeaponStepNode *n;
-//  SimWeaponClass *found = NULL;
+    SimWeaponClass *found = NULL;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     // 2002-02-08 ADDED BY S.G.

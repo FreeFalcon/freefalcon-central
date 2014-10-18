@@ -49,7 +49,10 @@ class CampManagerClass;
 extern UnitClass* NewUnit(short tid, VU_BYTE **stream, long *rem);
 extern ObjectiveClass* NewObjective(short tid, VU_BYTE **stream, long *rem);
 extern VuEntity* NewManager(short tid, VU_BYTE **stream, long *rem);
-extern void TcpConnectCallback(com_API_handle ch, int ret);
+extern void TcpConnectCallback(ComAPIHandle ch, int ret);
+extern int MajorVersion;
+extern int MinorVersion;
+extern int BuildNumber;
 
 //extern VU_ID_NUMBER vuAssignmentId;
 //extern VU_ID_NUMBER vuLowWrapNumber;
@@ -79,7 +82,7 @@ VuSessionEntity* vuxCreateSession(void);
 
 
 // =================================
-// VU related globals for FreeFalcon
+// VU related globals for Falcon 4.0
 // =================================
 
 VuMainThread *gMainThread = 0;
@@ -126,12 +129,10 @@ void InitVU(void)
 #error "Incorrect VU Patch"
 #endif
 
-extern const char* FREE_FALCON_VERSION;
-
 #ifdef NDEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
-	sprintf( tmpStr, "R %s", FREE_FALCON_VERSION );
+    sprintf(tmpStr, "R%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
 #else
-	sprintf( tmpStr, "K %s", FREE_FALCON_VERSION );
+    sprintf(tmpStr, "K%5d.%2d.%02d.%s.%d_\0", BuildNumber, gLangIDNum, MinorVersion, "EBS", MajorVersion);
 #endif
 
     MonoPrint("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);
@@ -388,7 +389,7 @@ void VuxRetireEntity(VuEntity* theEntity)
 
 VuSessionEntity* vuxCreateSession(void)
 {
-    return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain, "FreeFalcon");
+    return (VuSessionEntity*) new FalconSessionEntity(vuxLocalDomain, "Falcon 4.0");
 }
 
 // ======================================

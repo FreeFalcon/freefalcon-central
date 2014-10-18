@@ -3,7 +3,7 @@
  Peter Ward
  December 3, 1996
 
- Main UI screen stuff for FreeFalcon
+ Main UI screen stuff for falcon
 \***************************************************************************/
 #include <windows.h>
 #include "entity.h"

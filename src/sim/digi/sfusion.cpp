@@ -29,14 +29,9 @@ FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *d
 void DigitalBrain::SensorFusion(void)
 {
     SimObjectType* obj = targetList;
-//  float turnTime = 0.0F;
-//	float timeToRmax = 0.0F
-//	float rmax = 0.0F,
-	float tof = 0.0F;
-//	float totV = 0.0F;
+    float turnTime = 0.0F, timeToRmax = 0.0F, rmax = 0.0F, tof = 0.0F, totV = 0.0F;
     SimObjectLocalData* localData = NULL;
-	int relation = 0, pcId = ID_NONE, canSee = FALSE;
-//	int i = 0;
+    int relation = 0, pcId = ID_NONE, canSee = FALSE, i = 0;
     FalconEntity* baseObj = NULL;
 
     // 2002-04-18 REINSTATED BY S.G. After putting back '||' instead of '&&' before "localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime" below, this is no longer required
@@ -285,7 +280,7 @@ void DigitalBrain::SensorFusion(void)
         {
             int hisCombatClass = -1;
             bool isHelo = FALSE;
-//          float threatRng = 0.0f;
+            float threatRng = 0.0f;
             int totalThreat = 0;
 
             if (baseObj)

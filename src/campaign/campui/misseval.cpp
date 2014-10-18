@@ -196,6 +196,7 @@ extern int testDebrief;
 #endif
 
 #ifdef DEBUG
+int gPlayerPilotLock = 0;
 extern int doUI;
 #endif
 
@@ -840,7 +841,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
             // this is the last human player in the flight...do the whole flight output.
             bool HasDoneFLightData = FALSE;
             pilot_data = flight_ptr->pilot_list;
-//          int pilotnumber = 0;
+            int pilotnumber = 0;
 
             while (pilot_data)
             {
@@ -962,7 +963,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
                     sprintf(logstring, "Callsign: %s \n", pilot_data->pilot_callsign);
                     fputs(logstring, fp);
 
-					char* status = NULL;
+                    char* status = NULL;
 
                     if (pilot_data->pilot_status == PILOT_AVAILABLE) status = " - OK";
 
@@ -1071,6 +1072,9 @@ int MissionEvaluationClass::PostMissionEval(void)
     FlightDataClass *flight_ptr;
 
     CampEnterCriticalSection();
+#ifdef DEBUG
+    gPlayerPilotLock = 0;
+#endif
     player_end_time = vuxGameTime;
     logbook_data.AircraftInPackage = 0;
     friendly_losses = 0;
@@ -1261,7 +1265,7 @@ int MissionEvaluationClass::PostMissionEval(void)
                 // 2002-02-13 MN added AWACSAbort condition
                 if (player_element == 0)
                 {
-//                  int a = 0; // so I can set a breakpoint
+                    int a = 0; // so I can set a breakpoint
                 }
 
                 if (player_element) // MLR 3/25/2004 - CTD fix, cause is unknown. //Cobra 10/31/04 TJL
@@ -3679,8 +3683,7 @@ void MissionEvaluationClass::RegisterMove(Flight flight)
 {
     WayPoint w, nw;
     GridIndex fx, fy, wx, wy;
-	float ds = 1000000.0F;
-//  float cds = 1000000.0F;
+    float ds, cds = 1000000.0F;
     int feflags, meflags = 0;
     CampaignTime now = TheCampaign.CurrentTime;
     FlightDataClass *flight_ptr = NULL;

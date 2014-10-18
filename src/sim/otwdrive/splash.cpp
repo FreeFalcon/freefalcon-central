@@ -12,7 +12,7 @@
 #include "RedMacros.h"
 
 // RV - Biker - Theater switching stuff
-extern char splash_theater_directory[];
+extern char FalconSplashThrDirectory[];
 int lastframe;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     {
         // RV - Biker - Theater switching for splash files
         //filename = "art\\splash\\load16.gif";
-        sprintf(filename, "%s\\%s", splash_theater_directory, "load16.gif");
+        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load16.gif");
         tmpFile = fopen(filename, "r");
 
         //Check if file does exist
@@ -77,14 +77,14 @@ void OTWDriverClass::SetupSplashScreen(void)
         {
             // RV - Biker
             //filename = "art\\splash\\load10.gif";
-            sprintf(filename, "%s\\%s", splash_theater_directory, "load10.gif");
+            sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
         }
     }
     else if (OTWImage->targetXres() >= 1280)
     {
         // RV - Biker
         //filename = "art\\splash\\load12.gif";
-        sprintf(filename, "%s\\%s", splash_theater_directory, "load12.gif");
+        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load12.gif");
         tmpFile = fopen(filename, "r");
 
         if (tmpFile)
@@ -95,14 +95,14 @@ void OTWDriverClass::SetupSplashScreen(void)
         {
             // RV - Biker
             //filename = "art\\splash\\load10.gif";
-            sprintf(filename, "%s\\%s", splash_theater_directory, "load10.gif");
+            sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
         }
     }
     else if (OTWImage->targetXres() >= 1024)
     {
         // RV - Biker
         //filename = "art\\splash\\load10.gif";
-        sprintf(filename, "%s\\%s", splash_theater_directory, "load10.gif");
+        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
     }
     // RV - Biker for such low res we don't do theater specific splash files
     else if (OTWImage->targetXres() >= 800)
@@ -200,7 +200,7 @@ void OTWDriverClass::CleanupSplashScreen(void)
 void OTWDriverClass::SplashScreenUpdate(int frame)
 {
     BYTE *imagePtr = NULL;
-//  void *buffer = NULL;
+    void *buffer = NULL;
     int x, y;
     unsigned long tweakedPalette[256];
     unsigned long *srcPal = NULL, *dstPal = NULL;
@@ -312,7 +312,7 @@ void OTWDriverClass::ShowSimpleWaitScreen(char *name)
     // RV - RED - Rewritten with Image Scaling
     // Always look for 1600 x 1200 Image
     //sprintf (filename, "art\\splash\\%s16.gif", name);
-    sprintf(filename, "%s\\%s16.gif", splash_theater_directory, name);
+    sprintf(filename, "%s\\%s16.gif", FalconSplashThrDirectory, name);
 
     // RV - Biker - Try to open file
     tmpFile = fopen(filename, "r");

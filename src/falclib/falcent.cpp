@@ -19,7 +19,7 @@
 using namespace std;
 
 // ==================================
-// FreeFalcon Entity functions
+// Falcon Entity functions
 // ==================================
 
 FalconEntity::FalconEntity(ushort type, VU_ID_NUMBER eid) : VuEntity(type, eid)
@@ -151,7 +151,7 @@ void FalconEntity::DoFullUpdate(void)
 
 int FalconEntity::calc_dirty_bucket(int dirty_score)
 {
-//  int ds = dirty_score; //just for debugging
+    int ds = dirty_score; //just for debugging
 
     if (dirty_score == 0)
     {

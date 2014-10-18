@@ -4,8 +4,8 @@
 #include "vusessn.h"
 #include "falclist.h"
 
-extern com_API_handle vuxComHandle;
-extern com_API_handle tcpListenHandle;
+extern ComAPIHandle vuxComHandle;
+extern ComAPIHandle tcpListenHandle;
 
 enum FalconConnectionTypes
 {
@@ -49,14 +49,14 @@ extern int F4CommsMTU;  // More of Unz and  Boosters stuff
 // Some defines
 // ========================================================================
 
-// Protocols available to FreeFalcon
+// Protocols available to Falcon
 #define FCP_UDP_AVAILABLE 0x01 // We have UDP available
 #define FCP_TCP_AVAILABLE 0x02 // We have TCP available
 #define FCP_SERIAL_AVAILABLE 0x04 // We have a serial (via modem or null modem) connection
 #define FCP_MULTICAST_AVAILABLE 0x08 // True multicast is available
 #define FCP_RUDP_AVAILABLE 0x10 // We have RUDP available
 
-// Virtual connection types available to FreeFalcon
+// Virtual connection types available to Falcon
 #define FCT_PTOP_AVAILABLE 0x01 // We can send point to point messages to multiple machines
 #define FCT_BCAST_AVAILABLE 0x02 // We can send broadcast (to world) messages
 #define FCT_SERVER_AVAILABLE 0x04 // We are connecting to an exploder server
@@ -81,9 +81,9 @@ extern int FalconConnectionDescription;
 extern int gConnectionStatus;
 extern int gTimeModeServer;
 extern FalconPrivateList *DanglingSessionsList;
-extern com_API_handle FalconTCPListenHandle;
-extern com_API_handle FalconGlobalUDPHandle;
-extern com_API_handle FalconGlobalTCPHandle;
+extern ComAPIHandle FalconTCPListenHandle;
+extern ComAPIHandle FalconGlobalUDPHandle;
+extern ComAPIHandle FalconGlobalTCPHandle;
 extern int FalconServerTCPStatus;
 extern int FalconConnectionProtocol;
 extern int FalconConnectionType;
@@ -110,14 +110,14 @@ void ResyncTimes();
 
 //sfr: added these functions to header
 void CleanupDanglingList(void);
-//void AddDanglingSession(com_API_handle ch1, com_API_handle ch2, VU_SESSION_ID id, VU_ADDRESS add);
+//void AddDanglingSession(ComAPIHandle ch1, ComAPIHandle ch2, VU_SESSION_ID id, VU_ADDRESS add);
 // returns true if dangling session sucessfully created
 bool AddDanglingSession(VU_ID owner, VU_ADDRESS add);
 int RemoveDanglingSession(VuSessionEntity *newSess);
 int F4CommsConnectionCallback(int result);
 //void FillSerialDataString(char serial_data[], ComDataClass *comData);
-//void ModemConnectCallback(com_API_handle ch, int ret);
-//void TcpConnectCallback(com_API_handle ch, int ret);
+//void ModemConnectCallback(ComAPIHandle ch, int ret);
+//void TcpConnectCallback(ComAPIHandle ch, int ret);
 int CleanupComms(void);
 void ShutdownCampaign(void);
 ulong TimeStampFunction(void);

@@ -58,7 +58,7 @@ GetLoadedModules(DWORD     dwPID        ,
     //    return (FALSE) ;
     //}
 
-    //// Check the version and call the appropriate thing.
+    // Check the version and call the appropriate thing.
     //if ((VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId) &&
     //    (4 == stOSVI.dwMajorVersion))
     //{

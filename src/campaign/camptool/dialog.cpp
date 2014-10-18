@@ -64,7 +64,7 @@ HWND        hDlgFR = NULL;
 
 extern _TCHAR GroundSTypesStr[20][20];
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 short ObjTypeConverter[35]; // Converts from alphabetical order to real types
 
@@ -374,7 +374,7 @@ BOOL WINAPI EditObjective(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hDC, DC;
             PAINTSTRUCT ps, nps;
             HWND hCWnd;
-//          int c = 0;
+            int c = 0;
 
             InvalidateRect(GetDlgItem(hDlg, IDC_OBJ_NAMEVAL), NULL, TRUE);
             PostMessage(GetDlgItem(hDlg, IDC_OBJ_NAMEVAL), WM_PAINT, 0, 0);
@@ -1763,9 +1763,7 @@ BOOL WINAPI MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps, nps;
             HWND hCWnd;
             RECT rect;
-//			int c = 0;
-//			int lastcol = -1;
-			int hi, dat, s = 0;
+            int c = 0, lastcol = -1, hi, dat, s = 0;
             uchar *map_data;
 
             switch (type)
@@ -2094,7 +2092,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
     lParam;
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 
 BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -2699,7 +2697,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     return TRUE;
 }
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 /*
 BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
  {
@@ -2838,7 +2836,7 @@ BOOL SaveAsTheaterFile(HWND hWnd)
     return (FALSE);
 }
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 BOOL SaveAsScriptedUnitFile(HWND hWnd)
 {

@@ -54,7 +54,7 @@ static const int MAX_AXIS_THROW; // Retro 18Jan2004
 /** variable indicating mouse is inside client area */
 static bool mouseIn = true;
 
-/** synchronizes FreeFalcon and windows cursor */
+/** synchronizes falcon and windows cursor */
 static void SimMouseResyncCursors(const int x, const int y)
 {
     UpdateCursorPosition(x - gxPos, y - gyPos);

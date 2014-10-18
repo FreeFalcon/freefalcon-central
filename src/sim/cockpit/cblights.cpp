@@ -2231,7 +2231,7 @@ void CBELockLight(void *pObject)
 {
     CPLight* pCPLight;
     pCPLight = (CPLight*) pObject;
-//  Falcon4EntityClassType* pclassPtr = NULL;
+    Falcon4EntityClassType* pclassPtr = NULL;
 
     RadarDopplerClass* rdc = NULL;
 

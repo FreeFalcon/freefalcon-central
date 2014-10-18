@@ -3,7 +3,7 @@
 
 /** @file capibwcontrol.h
 * CAPI bandwidth functions
-* This is the local BW API for FreeFalcon
+* This is the local BW API for falcon
 * Used only internally in ComAPI
 * @author sfr
 */

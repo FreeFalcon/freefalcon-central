@@ -2191,7 +2191,7 @@ void OTWDriverClass::Enter(void)
         const int lineLen = MAX_LINE_BUFFER - 1;
         char plineBuffer[MAX_LINE_BUFFER] = "";
         char* plinePtr;
-        char* ptoken = NULL;
+		char* ptoken = NULL;
         char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
 
         if (!feof(pcockpitResFile))
@@ -2489,7 +2489,7 @@ void OTWDriverClass::Enter(void)
     ejectCam = 0;
     prevChase = 0;
 
-    // Initializethe campaign/sim object height refresh loop
+    // Intialize the campaign/sim object height refresh loop
     nextCampObjectHeightRefresh = 0;
 
     SetOTWDisplayMode(startMode);

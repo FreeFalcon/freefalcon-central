@@ -3,7 +3,7 @@
 // Authors: Wolfram "Osram" Kuss (original)
 // Lukas "Retro" Friembichler (adapted for EECH)
 // Date: 26. Feb 2003
-// 26/09/03 adapted for FreeFalcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
+// 26/09/03 adapted for falcon - SHOCK, HORROR, FALCONEERS GET (TWICE !!!) RECYCLED STUFF... EEEEK
 // Update:
 //
 // Description:Implements TrackIR support for EECH
@@ -696,7 +696,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     }
 
     // 2do: NPRESULT __stdcall
-    result = NP_RegisterProgramProfileID(1901); // FreeFalcon ID, issued by Halstead York (NP PR Guru)
+    result = NP_RegisterProgramProfileID(1901); // Falcon ID, issued by Halstead York (NP PR Guru)
 
     //**********************************************************************
     // Query the NaturalPoint software version

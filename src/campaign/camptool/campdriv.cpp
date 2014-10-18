@@ -1,9 +1,9 @@
-// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef  CAMPTOOL  since it is used by other files as well
+// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 #ifdef _DEBUG
 int gDumping = 0;
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 #include <windows.h>
 #include <ctype.h>
@@ -136,15 +136,15 @@ int gMoveWho = 6;
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 // Renaming tool stuff
-VU_ID_NUMBER rename_table[65536] = { 0 };
-bool rename_IDs = false;
+VU_ID_NUMBER RenameTable[65536] = { 0 };
+int gRenameIds = 0;
 
 extern int displayCampaign;
 extern int maxSearch;
 
 extern void ShowMissionLists(void);
 
-// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef  CAMPTOOL  since it is used by other files as well
+// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 //#ifdef _DEBUG
 //int gDumping = 0;
 //#endif
@@ -3339,7 +3339,7 @@ LRESULT CALLBACK CampaignWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_LBUTTONDOWN:
         {
-//          WORD  fwKeys = wParam;
+            WORD  fwKeys = wParam;
 
             // if (fwKeys=MK_SHIFT)
             // ;
@@ -4164,4 +4164,4 @@ void ShowCampaign(void)
     }
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL

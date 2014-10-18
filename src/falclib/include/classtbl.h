@@ -10,6 +10,11 @@
 #define CLASSTBL_H
 #include "F4vu.h"
 
+
+
+#define FALCON_VERSION      17
+#define FALCON_RELEASE      23
+#define FALCON40            0x02
 /* Domain Class table Entries */
 enum Classtable_Domains
 {

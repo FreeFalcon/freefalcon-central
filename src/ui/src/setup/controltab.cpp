@@ -3798,7 +3798,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
     }
     else // at last, a reasonable user
     {
-//      C_Line* line = NULL;
+        C_Line *line = NULL;
         C_Button *button = NULL;
         int hasPOV = FALSE;
 

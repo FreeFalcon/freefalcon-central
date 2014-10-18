@@ -58,10 +58,10 @@ GUID gOurGUID = OVERRIDE_GUID;
 // Globals
 // ====================================
 
-com_API_handle FalconTCPListenHandle = NULL;
-com_API_handle FalconGlobalUDPHandle = NULL;
-com_API_handle FalconGlobalTCPHandle = NULL;
-//com_API_handle FalconInitialUDPHandle = NULL;
+ComAPIHandle FalconTCPListenHandle = NULL;
+ComAPIHandle FalconGlobalUDPHandle = NULL;
+ComAPIHandle FalconGlobalTCPHandle = NULL;
+//ComAPIHandle FalconInitialUDPHandle = NULL;
 int FalconServerTCPStatus = VU_CONN_INACTIVE;
 int FalconConnectionProtocol = 0;
 int FalconConnectionType = 0;
@@ -138,9 +138,9 @@ int InitCommsStuff(ComDataClass *comData)
     g_ipadress = ComAPIinet_htoa(comData->ip_address);//me123
 
     // we need to create both handles on startup, so as to haev the ports available
-//  com_API_handle tmpHandle = NULL, tmpHandle2 = NULL;
-//  int bigPipeBandwidth = -1;
-//  int smallPipeBandwidth = 2000;
+    ComAPIHandle tmpHandle = NULL, tmpHandle2 = NULL;
+    int bigPipeBandwidth = -1;
+    int smallPipeBandwidth = 2000;
     FalconTCPListenHandle = NULL;
     FalconGlobalUDPHandle = NULL;
     FalconGlobalTCPHandle = NULL;
@@ -161,8 +161,8 @@ int InitCommsStuff(ComDataClass *comData)
     SetupMessageSizes(FCT_WAN);
     // start BW FSM and set our ports
     ComAPIBWStart();
-    com_API_set_local_ports(comData->localPort, comData->localPort + 1);
-    vuLocalSessionEntity->SetAddress(VU_ADDRESS(0, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port()));
+    ComAPISetLocalPorts(comData->localPort, comData->localPort + 1);
+    vuLocalSessionEntity->SetAddress(VU_ADDRESS(0, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort()));
 
     // group handles
     // UDP
@@ -187,8 +187,8 @@ int InitCommsStuff(ComDataClass *comData)
         // this dangling represents the first client to connect to server
         // well receive initial data through it
         bool ret = AddDanglingSession(
-			VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
-			VU_ADDRESS(CAPI_DANGLING_IP, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port())
+                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
+                       VU_ADDRESS(CAPI_DANGLING_IP, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort())
                    );
 
         if (!(ret))
@@ -201,7 +201,7 @@ int InitCommsStuff(ComDataClass *comData)
     {
         // this is a dangling session representing server, so we can send first message
         bool ret = AddDanglingSession(
-			VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
+                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
                        VU_ADDRESS(comData->ip_address, comData->remotePort, comData->remotePort + 1)
                    );
 
@@ -377,7 +377,7 @@ void CleanupDanglingList(void)
 
 //sfr: converts
 // changed prototype, changing ip for address and adding VU_ID
-//void AddDanglingSession (com_API_handle ch1, com_API_handle ch2, VU_SESSION_ID id, VU_ADDRESS address)
+//void AddDanglingSession (ComAPIHandle ch1, ComAPIHandle ch2, VU_SESSION_ID id, VU_ADDRESS address)
 bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 {
     VuEnterCriticalSection();
@@ -417,7 +417,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     }
 
     // session is not in list, create a new one and insert in list
-	tempSess = new FalconSessionEntity(CAPI_DANGLING_ID, "tmp");
+    tempSess = new FalconSessionEntity(CAPI_DANGLING_ID, "tmp");
     tempSess->SetOwnerId(owner);
     tempSess->SetAddress(address);
     // KCK: Hackish. Need to trick VU into this is already inserted into DB, otherwise
@@ -425,7 +425,7 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     tempSess->SetVuStateAccess(VU_MEM_ACTIVE);
 
     // temp session handle
-    com_API_handle udpHandle = ComUDPOpen(
+    ComAPIHandle udpHandle = ComUDPOpen(
                                  "Dangling UDP",
                                  F4CommsMaxUDPMessageSize,
                                  vuxWorldName,
@@ -482,7 +482,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
         VU_ADDRESS oldAdd = session->GetAddress();
 
         if (
-			(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
+            (session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) ||
             (newSess->OwnerId().creator_.value_ == session->OwnerId().creator_)
         )
         {
@@ -493,7 +493,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
                     session->GetCommsHandle(), F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize
                 );
                 sprintf(buffer, "%s UDP", ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
-                com_API_set_name(newSess->GetCommsHandle(), buffer);
+                ComAPISetName(newSess->GetCommsHandle(), buffer);
                 // inherit status from session
                 newSess->SetCommsStatus(session->GetCommsStatus());
                 session->SetCommsHandle(NULL);
@@ -505,7 +505,7 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
                     session->GetReliableCommsHandle(), F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize
                 );
                 sprintf(buffer, "%s RUDP", ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
-                com_API_set_name(newSess->GetReliableCommsHandle(), buffer);
+                ComAPISetName(newSess->GetReliableCommsHandle(), buffer);
                 // inherity status from session
                 newSess->SetReliableCommsStatus(session->GetReliableCommsStatus());
                 session->SetReliableCommsHandle(NULL);
@@ -554,7 +554,7 @@ int UpdateDanglingSessions(void)
 // Callback from comms to register a tcp handle
 // This gets called when someone sent a message to our TCP listen socket
 #if 0
-void TcpAcceptCallback(com_API_handle ch)
+void TcpAcceptCallback(ComAPIHandle ch)
 {
     ulong ipaddr;
     VuSessionEntity* s;
@@ -585,7 +585,7 @@ void TcpAcceptCallback(com_API_handle ch)
 
 // This gets called as a result of us calling ComTCPOpenConnect (attempting to connect TCP)
 // ret == 0 means success
-void TcpConnectCallback(com_API_handle ch, int ret)
+void TcpConnectCallback(ComAPIHandle ch, int ret)
 {
     ulong ipaddr;
 
@@ -663,7 +663,7 @@ void TcpConnectCallback(com_API_handle ch, int ret)
 
 // This gets called as a result of us calling ComDPLAYOpen and getting a modem connection
 // ret == 0 means success
-void ModemConnectCallback(com_API_handle ch, int ret)
+void ModemConnectCallback(ComAPIHandle ch, int ret)
 {
     ulong ipaddr;
 
@@ -886,7 +886,7 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s UDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            com_API_handle gh = ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
+            ComAPIHandle gh = ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
             group->SetCommsHandle(gh, F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize);
 
             if (gh)
@@ -926,7 +926,7 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s RUDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            com_API_handle gh = ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
+            ComAPIHandle gh = ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
             group->SetReliableCommsHandle(gh, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize);
 
             if (gh)
@@ -950,7 +950,7 @@ int VuxGroupConnect(VuGroupEntity *group)
 
 void VuxGroupDisconnect(VuGroupEntity *group)
 {
-    com_API_handle ch;
+    ComAPIHandle ch;
 
     if (group->IsGame())
     {
@@ -984,7 +984,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
 
 int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
 {
-    com_API_handle gh, sh;
+    ComAPIHandle gh, sh;
 
     if (g_bVoiceCom)
     {
@@ -1014,7 +1014,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
             // adding ourselves to group
             if (game == vuPlayerPoolGroup)
             {
-				ComAPIBWEnterState(CAPI_LOBBY_ST);
+                ComAPIBWEnterState(CAPI_LOBBY_ST);
             }
             else
             {
@@ -1024,13 +1024,13 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
                         // ComAPIBWEnterState(CAPI_LOBBY_ST);
                         //break;
                     case game_Dogfight:
-						ComAPIBWEnterState(CAPI_DF_ST);
+                        ComAPIBWEnterState(CAPI_DF_ST);
                         break;
 
                     case game_TacticalEngagement:
                     case game_Campaign:
                         // here is different if we are host, for others its the same
-						ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ? CAPI_CAS_ST : CAPI_CAC_ST);
+                        ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ? CAPI_CAS_ST : CAPI_CAC_ST);
                         break;
 
                     default:
@@ -1099,7 +1099,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
         return VU_NO_OP;
     }
 
-    com_API_handle gh, sh;
+    ComAPIHandle gh, sh;
 
     if (group->IsGame())
     {
@@ -1108,7 +1108,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
         if (session == vuLocalSessionEntity)
         {
             // were leaving game
-			ComAPIBWEnterState(CAPI_LOBBY_ST);
+            ComAPIBWEnterState(CAPI_LOBBY_ST);
         }
         else if (group == vuLocalGame)
         {
@@ -1173,7 +1173,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 int VuxSessionConnect(VuSessionEntity *session)
 {
     // char buffer[100];
-//  int wait_for_connection = 0;
+    int wait_for_connection = 0;
 
     // We only want to connect here during our initial insertion
     if (session->GameAction() != VU_NO_GAME_ACTION)
@@ -1202,7 +1202,7 @@ int VuxSessionConnect(VuSessionEntity *session)
         sprintf(buffer, "%s RUDP", ((FalconSessionEntity*)session)->GetPlayerCallsign());
         //sfr: vu change converts
         VU_ADDRESS add = session->GetAddress();
-        com_API_handle rudpHandle = ComRUDPOpen(
+        ComAPIHandle rudpHandle = ComRUDPOpen(
                                       buffer,
                                       F4CommsMaxTCPMessageSize,
                                       vuxWorldName,

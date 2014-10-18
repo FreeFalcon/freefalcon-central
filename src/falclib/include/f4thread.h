@@ -1,7 +1,7 @@
 #ifndef _F4THREADS_H
 #define _F4THREADS_H
 
-/** @file f4thread.h FreeFalcon thread and mutex API. */
+/** @file f4thread.h falcon 4 thread and mutex API. */
 
 /** maximum number of threads created using this API */
 #define F4T_MAX_THREADS 20

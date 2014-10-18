@@ -101,7 +101,7 @@ private:
 
     float priority;
 
-    void PreExec(void); // used to initialize vol levels based on in/out of pit and set priority.
+    void PreExec(void); // used to intialize vol levels based on in/out of pit and set priority.
     void Exec(void);
     bool AllocateBuffers(void);
     void ReleaseBuffers(void);

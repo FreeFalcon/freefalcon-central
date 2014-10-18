@@ -18,19 +18,19 @@ static const char THEATERLIST[] = "theater.lst";
 extern char FalconDataDirectory[];
 extern char FalconCampaignSaveDirectory[];
 extern char FalconCampUserSaveDirectory[];
-extern char UI_art_theater_directory[];
+extern char FalconUIArtThrDirectory[];
 extern char FalconTerrainDataDir[];
-extern char movie_directory[];
-extern char UI_sound_directory[];
+extern char FalconMovieDirectory[];
+extern char FalconUISoundDirectory[];
 extern char FalconObjectDataDir[];
 extern char FalconMiscTexDataDir[];
 extern char Falcon3DDataDir[]; // for Korea.* files
-extern char sound_theater_directory[];
+extern char FalconSoundThrDirectory[];
 // RV - Biker - Make cockpits, zips, tacref and splash files also switchable with theater
-extern char cockpit_theater_directory[];
-extern char zip_theater_directory[];
-extern char tactical_reference_theater_directory[];
-extern char splash_theater_directory[];
+extern char FalconCockpitThrDirectory[];
+extern char FalconZipsThrDirectory[];
+extern char FalconTacrefThrDirectory[];
+extern char FalconSplashThrDirectory[];
 extern char FalconPictureDirectory[];
 
 // RV - Biker - Theater switching stuff
@@ -229,15 +229,15 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_moviedir) > 0)
-        SetPathName(movie_directory, td->m_moviedir, FalconDataDirectory);
+        SetPathName(FalconMovieDirectory, td->m_moviedir, FalconDataDirectory);
     else
-        SetPathName(movie_directory, "movies", FalconDataDirectory);
+        SetPathName(FalconMovieDirectory, "movies", FalconDataDirectory);
 
     //========
     if (strlen(td->m_splashdir) > 0)
-        SetPathName(splash_theater_directory, td->m_splashdir, FalconDataDirectory);
+        SetPathName(FalconSplashThrDirectory, td->m_splashdir, FalconDataDirectory);
     else
-        SetPathName(splash_theater_directory, "art\\splash", FalconDataDirectory);
+        SetPathName(FalconSplashThrDirectory, "art\\splash", FalconDataDirectory);
 
     //========
     if (strlen(td->m_objectdir) > 0)
@@ -259,39 +259,39 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_uisounddir) > 0)
-        SetPathName(UI_sound_directory, td->m_uisounddir, FalconDataDirectory);
+        SetPathName(FalconUISoundDirectory, td->m_uisounddir, FalconDataDirectory);
     else
-        strcpy(UI_sound_directory, FalconDataDirectory);
+        strcpy(FalconUISoundDirectory, FalconDataDirectory);
 
     //========
     if (strlen(td->m_artdir) > 0)
-        SetPathName(UI_art_theater_directory, td->m_artdir, FalconDataDirectory);
+        SetPathName(FalconUIArtThrDirectory, td->m_artdir, FalconDataDirectory);
     else
-        strcpy(UI_sound_directory, FalconDataDirectory);
+        strcpy(FalconUISoundDirectory, FalconDataDirectory);
 
     //========
     if (strlen(td->m_tacrefdir) > 0)
-        SetPathName(tactical_reference_theater_directory, td->m_tacrefdir, FalconDataDirectory);
+        SetPathName(FalconTacrefThrDirectory, td->m_tacrefdir, FalconDataDirectory);
     else
-        strcpy(tactical_reference_theater_directory, FalconDataDirectory);
+        strcpy(FalconTacrefThrDirectory, FalconDataDirectory);
 
     //========
     if (strlen(td->m_zipsdir) > 0)
-        SetPathName(zip_theater_directory, td->m_zipsdir, FalconDataDirectory);
+        SetPathName(FalconZipsThrDirectory, td->m_zipsdir, FalconDataDirectory);
     else
-        SetPathName(zip_theater_directory, "Zips", FalconDataDirectory);
+        SetPathName(FalconZipsThrDirectory, "Zips", FalconDataDirectory);
 
     //========
     if (strlen(td->m_cockpitdir) > 0)
-        SetPathName(cockpit_theater_directory, td->m_cockpitdir, FalconDataDirectory);
+        SetPathName(FalconCockpitThrDirectory, td->m_cockpitdir, FalconDataDirectory);
     else
-        SetPathName(cockpit_theater_directory, "art\\ckptart", FalconDataDirectory);
+        SetPathName(FalconCockpitThrDirectory, "art\\ckptart", FalconDataDirectory);
 
     //========
     if (strlen(td->m_sounddir) > 0)
-        SetPathName(sound_theater_directory, td->m_sounddir, FalconDataDirectory);
+        SetPathName(FalconSoundThrDirectory, td->m_sounddir, FalconDataDirectory);
     else
-        SetPathName(sound_theater_directory, "sounds", FalconDataDirectory);
+        SetPathName(FalconSoundThrDirectory, "sounds", FalconDataDirectory);
 
     // We need some variables to store the diff. paths
     char tmpPath1[_MAX_PATH];
@@ -344,13 +344,13 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         {
             char tmp[256];
             fscanf(zipFile, "%*c%s", tmp);
-            sprintf(tmpPath, "%s\\%s", zip_theater_directory, tmp);
+            sprintf(tmpPath, "%s\\%s", FalconZipsThrDirectory, tmp);
 
             if (!strnicmp(td->m_name, "Korea", 5))
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
-                // FRB - Must use FalconDataDirectory and not zip_theater_directory (don't know why!?)
-                //resourceHandle[i] = ResAttach (zip_theater_directory, tmpPath, TRUE);
+                // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why!?)
+                //resourceHandle[i] = ResAttach (FalconZipsThrDirectory, tmpPath, TRUE);
                 resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }
 
@@ -361,16 +361,16 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     g_nMinTacanChannel = td->m_mintacan;
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
-    ResAddPath(UI_art_theater_directory, TRUE);
-    ResAddPath(zip_theater_directory, FALSE);
-    ResAddPath(movie_directory, FALSE);
-    ResAddPath(UI_sound_directory, FALSE);
+    ResAddPath(FalconUIArtThrDirectory, TRUE);
+    ResAddPath(FalconZipsThrDirectory, FALSE);
+    ResAddPath(FalconMovieDirectory, FALSE);
+    ResAddPath(FalconUISoundDirectory, FALSE);
     ResAddPath(FalconObjectDataDir, FALSE);
     ResAddPath(FalconMiscTexDataDir, FALSE);
     ResAddPath(Falcon3DDataDir, FALSE);
-    ResAddPath(sound_theater_directory, TRUE);
-    ResAddPath(cockpit_theater_directory, TRUE);
-    ResAddPath(tactical_reference_theater_directory, FALSE);
+    ResAddPath(FalconSoundThrDirectory, TRUE);
+    ResAddPath(FalconCockpitThrDirectory, TRUE);
+    ResAddPath(FalconTacrefThrDirectory, FALSE);
 
     ReadIndex("Strings");
     LoadPriorityTables();

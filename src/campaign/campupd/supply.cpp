@@ -52,7 +52,8 @@ extern bool g_bPowerGrid;
 // This should be called by the Campaign Master only
 int ProduceSupplies(CampaignTime deltaTime)
 {
-	Objective o = NULL, po = NULL;
+	Objective o;
+	Objective po = NULL;
     Team who;
     float rate;
     int type;

@@ -35,7 +35,7 @@ float ShadowAlphaLevel; // that may be affected by TOD Light level
  module.
 \***************************************************************/
 
-// Determine the type of an encoded node and initialize and contruct
+// Determine the type of an encoded node and intialize and contruct
 // it appropriatly.
 BNode* BNode::RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr)
 {
@@ -391,7 +391,7 @@ void BDofNode::Draw(void)
     // SCR 10/28/98:  THIS IS WRONG FOR TRANSLATION DOFs.  "DOFValues" is supposed to
     // translate along the local x axis, but this will translate along the parent's x axis.
     // To fix this would require a bit more math (and/or thought).  Since it
-    // only happens once in FreeFalcon, I'll leave it broken and put a workaround into
+    // only happens once in Falcon, I'll leave it broken and put a workaround into
     // the KC10 object so that the parent's and child's x axis are forced into alignment
     // by inserting an extra dummy DOF bead.
     T.x = translation.x + TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;
@@ -510,7 +510,7 @@ void BXDofNode::Draw(void)
     // SCR 10/28/98:  THIS IS WRONG FOR TRANSLATION DOFs.  "DOFValues" is supposed to
     // translate along the local x axis, but this will translate along the parent's x axis.
     // To fix this would require a bit more math (and/or thought).  Since it
-    // only happens once in FreeFalcon, I'll leave it broken and put a workaround into
+    // only happens once in Falcon, I'll leave it broken and put a workaround into
     // the KC10 object so that the parent's and child's x axis are forced into alignment
     // by inserting an extra dummy DOF bead.
     T.x = translation.x + TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;

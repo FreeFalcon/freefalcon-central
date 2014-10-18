@@ -981,7 +981,7 @@ int GroundClass::Exec(void)
         }
 
         // RV - Biker - Why do this maybe helpful knowing which vehicle has problems
-        // Determine whether to draw label or not
+        // Determine wether to draw label or not
         if (gai->distLOD < labelLOD)
         {
             if (!IsSetLocalFlag(NOT_LABELED))

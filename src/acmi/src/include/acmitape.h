@@ -244,7 +244,7 @@ typedef struct
 typedef struct
 {
     int type; // type of object
-    long uniqueID; // A unique ID for the object. Many to One correlation to FreeFalcon Entities
+    long uniqueID; // A unique ID for the object. Many to One correlation to Falcon Entities
     int flags; // side
 
     // for features we may need an index to the lead component and

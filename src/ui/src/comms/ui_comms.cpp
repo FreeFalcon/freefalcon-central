@@ -495,8 +495,7 @@ void ServerChatCommand(_TCHAR *msg)
             char* argc;
             argc = strtok(NULL, " ");
 
-			float Pan, Tilt;
-//			float d = 300;
+            float Pan, Tilt, d = 300;
 
             if (!stricmp(arga, ".")) goto doit;
 

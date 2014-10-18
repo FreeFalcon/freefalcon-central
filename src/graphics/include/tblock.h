@@ -89,7 +89,7 @@ protected:
     int owners;
 
 
-    // Initialize and release block headers - only allowed from within a TLevel's critical section.
+    // Intialize and release block headers - only allowed from within a TLevel's critical section.
     void Setup(TLevel *Level, UINT r, UINT c);
     void Cleanup();
 

@@ -1768,7 +1768,7 @@ GNDAIClass::SetDistLOD(void)
 }
 
 //
-// This just returns 0 or 1 depending on whether the LeadVeh and/or we are moving or not.
+// This just returns 0 or 1 depending on wether the LeadVeh and/or we are moving or not.
 //
 static int InPosition(GNDAIClass* us)
 {

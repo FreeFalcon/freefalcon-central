@@ -698,7 +698,7 @@ void HarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
 
     DrawDTSBBox(); // RV - I-Hawk - Draw the DTSB box
 
-//  float ALICSide   = ALICSIDE * zoomFactor;
+    float ALICSide   = ALICSIDE * zoomFactor;
     float ALICTop    = ALICTOP * zoomFactor;
     float ALICBottom = ALICBOTTOM * zoomFactor;
 
@@ -822,7 +822,7 @@ void HarmTargetingPod::DrawWEZ(MissileClass *theMissile)
         curX = nextX;
         curY = nextY;
 
-//      float curAngle = 275.0f * DTR;
+        float curAngle = 275.0f * DTR;
 
         for (int i = 0; i < 8; i++)
         {

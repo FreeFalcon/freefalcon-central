@@ -242,12 +242,10 @@ int VehRwrClass::ObjectDetected(FalconEntity* theObject, int trackType, int rada
     F4Assert(numContacts == 0 || detectionList[numContacts - 1].entity);
 
     //Cobra TEST Let me know if AI brain is here.
-	if (platform != SimDriver.GetPlayerAircraft())
-	{
-//		int Player = 0;
-	}
+    if (platform != SimDriver.GetPlayerAircraft())
+        int Player = 0;
 
-//  int helper = 0;//cobra test
+    int helper = 0;//cobra test
     FalconEntity* whoPingedMe = theObject;//cobra
 
     // Just return if we're turned off

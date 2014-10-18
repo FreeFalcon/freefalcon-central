@@ -187,7 +187,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     MouseSetupResult = SetupDIDevice(hWnd, (PlayerOptions.GetTouchBuddy() == false), SIM_MOUSE, GUID_SysMouse, &c_dfDIMouse, &dipdw); // Mouse
     // KeyboardSetupResult = SetupDIDevice(hWnd, FALSE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
     // Retro 25 Nov 2003 - this forces foreground/exclusive for the keyboard and makes it possible to use the keyboard while
-    // FreeFalcon is running in a background window
+    // falcon is running in a background window
     KeyboardSetupResult = SetupDIDevice(hWnd, TRUE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
 
 

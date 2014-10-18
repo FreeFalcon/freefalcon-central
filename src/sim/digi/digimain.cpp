@@ -642,7 +642,7 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     else if (pStick > 1.0f)
         pStick = 1.0f;
 
-    //me123 unload if roll input is 1 (to rool faster and eleveate the FF bug)
+    //me123 unload if roll input is 1 (to rool faster and eleveate the f4 bug)
     if (fabs(rStick) > 0.9f && groundAvoidNeeded == FALSE)
         pStick = 0.0f;
 
@@ -816,13 +816,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].intercept =
 #ifdef USE_SH_POOLS
-                    (BVRInterceptType*)MemAllocPtr(
+                        (BVRInterceptType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(BVRInterceptType) *maneuverData[i][j].numIntercepts,
                             0
-                    );
+                        );
 #else
-                    new BVRInterceptType[maneuverData[i][j].numIntercepts];
+                        new BVRInterceptType[maneuverData[i][j].numIntercepts];
 #endif
                 }
                 else maneuverData[i][j].intercept = NULL;
@@ -833,13 +833,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].merge =
 #ifdef USE_SH_POOLS
-                    (WVRMergeManeuverType*)MemAllocPtr(
+                        (WVRMergeManeuverType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(WVRMergeManeuverType) *maneuverData[i][j].numMerges,
                             0
-                    );
+                        );
 #else
-                    new WVRMergeManeuverType[maneuverData[i][j].numMerges];
+                        new WVRMergeManeuverType[maneuverData[i][j].numMerges];
 #endif
                 }
                 else maneuverData[i][j].merge = NULL;
@@ -850,13 +850,13 @@ void DigitalBrain::ReadManeuverData(void)
                 {
                     maneuverData[i][j].spikeReact =
 #ifdef USE_SH_POOLS
-                    (SpikeReactionType*)MemAllocPtr(
+                        (SpikeReactionType*)MemAllocPtr(
                             gReadInMemPool,
                             sizeof(SpikeReactionType) *maneuverData[i][j].numReacts,
                             0
-                    );
+                        );
 #else
-                    new SpikeReactionType[maneuverData[i][j].numReacts];
+                        new SpikeReactionType[maneuverData[i][j].numReacts];
 #endif
                 }
                 else maneuverData[i][j].spikeReact = NULL;
@@ -877,7 +877,7 @@ void DigitalBrain::ReadManeuverData(void)
     }
     // Allow binary, but otherwise throw a warning
     else if (fileType != 'B')
-        ShiWarning("Bad Maneuver Data File Format")
+        ShiWarning("Bad Maneuver Data File Format");
 
     mnvrFile->Close();
     delete mnvrFile;
@@ -949,7 +949,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
     CampEntity campObj;
     char label[40] = {0};
-//  long labelColor = 0xff0000ff;
+    long labelColor = 0xff0000ff;
 
     if (!theObject->IsExploding() && !theObject->IsDead())
     {

@@ -10,7 +10,7 @@ extern int SimCompare(VuEntity* ent1, VuEntity*ent2);
 */
 
 // =================================
-// FreeFalcon's Private Filters
+// Falcon's Private Filters
 // =================================
 
 #if 0
@@ -68,12 +68,12 @@ public:
 extern FalconNothingFilterType FalconNothingFilter;
 
 // =================================
-// FreeFalcon's Private lists
+// Falcon's Private lists
 // =================================
 
 #if VU_ALL_FILTERED
 
-/** TailInsertList is a FreeFalcon-Private list structure which will add entries to the end of the list and
+/** TailInsertList is a Falcon-Private list structure which will add entries to the end of the list and
 * remove from the begining.
 */
 class TailInsertList : public VuLinkedList
@@ -94,7 +94,7 @@ public:
     VuEntity *PopHead();
 };
 
-// HeadInsertList is a FreeFalcon-Private list structure which will add entries to the beginning of the list
+// HeadInsertList is a Falcon-Private list structure which will add entries to the beginning of the list
 class HeadInsertList : public VuLinkedList
 {
 public:
@@ -110,7 +110,7 @@ public:
     int ForcedInsert(VuEntity *entity);
 };
 
-// FreeFalcon FalconPrivateList is simply a FreeFalcon-Private vu entity storage list
+// Falcon FalconPrivateList is simply a Falcon-Private vu entity storage list
 class FalconPrivateList : public VuLinkedList
 {
 public:
@@ -126,7 +126,7 @@ public:
     int ForcedInsert(VuEntity *entity);
 };
 
-// FreeFalcon PrivateFilteredList is identical to above but sorts entries
+// Falcon PrivateFilteredList is identical to above but sorts entries
 class FalconPrivateOrderedList : public VuLinkedList
 {
 public:
@@ -143,7 +143,7 @@ public:
 };
 
 #else
-/** TailInsertList is a FreeFalcon-Private list structure which will add entries to the end of the list and
+/** TailInsertList is a Falcon-Private list structure which will add entries to the end of the list and
 * remove from the begining.
 */
 class TailInsertList : public VuFilteredList
@@ -160,7 +160,7 @@ public:
     VuEntity *PopHead();
 };
 
-// HeadInsertList is a FreeFalcon-Private list structure which will add entries to the beginning of the list
+// HeadInsertList is a Falcon-Private list structure which will add entries to the beginning of the list
 class HeadInsertList : public VuFilteredList
 {
 public:
@@ -171,7 +171,7 @@ public:
     int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
 };
 
-// FreeFalcon FalconPrivateList is simply a FreeFalcon-Private vu entity storage list
+// Falcon FalconPrivateList is simply a Falcon-Private vu entity storage list
 class FalconPrivateList : public VuFilteredList
 {
 public:
@@ -182,7 +182,7 @@ public:
     int ForcedInsert(VuEntity *entity); // Call ForcedInsert instead.
 };
 
-// FreeFalcon PrivateFilteredList is identical to above but sorts entries
+// Falcon PrivateFilteredList is identical to above but sorts entries
 class FalconPrivateOrderedList : public VuFilteredList
 {
 public:

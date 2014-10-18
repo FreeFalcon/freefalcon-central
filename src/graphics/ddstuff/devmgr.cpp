@@ -138,7 +138,7 @@ const char *DeviceManager::GetModeName(int driverNum, int devNum, int modeNum)
 bool DeviceManager::GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth, UINT *pHeight, UINT *pDepth)
 {
     static char buffer[80];
-//  int i = 0;
+    int i = 0;
 
     if (driverNum < 0 || driverNum >= (int) m_arrDDDrivers.size())
         return false;

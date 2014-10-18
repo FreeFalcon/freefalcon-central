@@ -18,10 +18,10 @@ static BOOL g_bIsNT = TRUE ;
 
 BOOL __stdcall IsNT(void)
 {
-    //if (TRUE == g_bHasVersion)
-    //{
-    //    return (TRUE == g_bIsNT) ;
-    //}
+    if (TRUE == g_bHasVersion)
+    {
+        return (TRUE == g_bIsNT) ;
+    }
 
     //OSVERSIONINFO stOSVI ;
 
@@ -37,17 +37,17 @@ BOOL __stdcall IsNT(void)
     //    return (FALSE) ;
     //}
 
-    //// Check the version and call the appropriate thing.
+    // Check the version and call the appropriate thing.
     //if (VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId)
     //{
-    //    g_bIsNT = TRUE ;
+        g_bIsNT = TRUE ;
     //}
     //else
     //{
     //    g_bIsNT = FALSE ;
     //}
 
-    //g_bHasVersion = TRUE ;
+    g_bHasVersion = TRUE ;
     return (TRUE == g_bIsNT) ;
 }
 

@@ -39,6 +39,9 @@ extern bool g_bModuleList; // JB 010101
 
 extern int g_nMiniDump; //Wombat778 5-01-04
 
+extern int MajorVersion;
+extern int MinorVersion;
+extern int BuildNumber;
 char g_CardDetails[1024]; // for the graphics card info.
 
 // hprintf behaves similarly to printf, with a few vital differences.
@@ -240,9 +243,8 @@ static void RecordSystemInformation(HANDLE LogFile)
     //        VersionInfo.dwMajorVersion, VersionInfo.dwMinorVersion,
     //        VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
     //        VersionInfo.szCSDVersion);
-	extern const char* FREE_FALCON_BRAND;
-	extern const char* FREE_FALCON_VERSION;
-	hprintf( LogFile, "%s %s", FREE_FALCON_BRAND, FREE_FALCON_VERSION );
+
+    hprintf(LogFile, "Version: Falcon 4.0 - Version %1d.%02d.%1d.%05d\r\n", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
     hprintf(LogFile, "%s\r\n", g_sVersion);
 

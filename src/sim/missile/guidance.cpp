@@ -248,7 +248,7 @@ void MissileClass::CommandGuide(void)
             if (auxData && auxData->errorfromparrent && sensorArray && sensorArray[0] && sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 FalconEntity* RadarPlt = ((BeamRiderClass*)this->sensorArray[0])->Getplatform();
-                RadarClass* theRadar = NULL;
+				RadarClass* theRadar = NULL;
 
                 if (RadarPlt)
                     theRadar = (RadarClass*)FindSensor((SimMoverClass*)(RadarPlt), SensorClass::Radar);

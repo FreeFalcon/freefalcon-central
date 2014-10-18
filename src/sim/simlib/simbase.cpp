@@ -954,7 +954,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     short mesgType = 0;
     short data0 = -1, data1 = -1, data2 = -1;
     SimBaseClass* speaker = NULL;
-//  float dx = 0.0F, dy = 0.0F;
+    float dx = 0.0F, dy = 0.0F;
 
     // Is the target the player
     if (missile && this == SimDriver.GetPlayerEntity())
@@ -1086,7 +1086,7 @@ void SimBaseClass::SetIncomingMissile(SimBaseClass *missile, BOOL clearAll)
     // So it is an AI airplane after all :-)
     else
     {
-        // Because FF doesn't clean up its act, need to make sure exploded missiles are not accounted for
+        // Because F4 doesn't clean up its act, need to make sure exploded missiles are not accounted for
         // We do the holding spot first
         if (incomingMissile[1] && incomingMissile[1]->IsDead())
         {

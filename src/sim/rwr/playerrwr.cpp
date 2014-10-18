@@ -225,7 +225,7 @@ SimObjectType* PlayerRwrClass::Exec(SimObjectType* targetList)
         if (
             !IsFiltered(curEmitter) &&
             // 2001-03-06 MODIFIED BY S.G. SO OBJECTIVES
-            // ARE ALWAYS CHECKED, WHETHER OR NOT THEY ARE AGGREGATED...
+            // ARE ALWAYS CHECKED, WETHER OR NOT THEY ARE AGGREGATED...
             //curEmitter->IsAggregate() &&                    // A campaign thing
             //(curEmitter->IsAggregate() || curEmitter->IsObjective()) &&
             // A campaign thing or an objective (sim objectives have no sensor routine

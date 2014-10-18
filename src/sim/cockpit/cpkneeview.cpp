@@ -424,8 +424,8 @@ void CPKneeView::DrawMap()
     mapFirstPointer += 0;//srcRowInitOffset*w + srcColInitOffset;
 
     //some auxiliary variables
-//  int dstWidth = dstRect.right - dstRect.left;
-//  int dstHeight = dstRect.bottom - dstRect.top;
+    int dstWidth = dstRect.right - dstRect.left;
+    int dstHeight = dstRect.bottom - dstRect.top;
 
     // Copy from map to kneeboard
     for (int dstRow = 0; dstRow < (dstRect.bottom - dstRect.top); dstRow++)
@@ -616,7 +616,7 @@ void CPKneeView::MapWaypointToDisplay(WayPointClass *pwaypoint, float *h, float 
 
     pwaypoint->GetLocation(&wpX, &wpY, &wpZ);
 
-    // Return values are in screen space, while the waypoint location is in FreeFalcon (X North, Y East)
+    // Return values are in screen space, while the waypoint location is in falcon (X North, Y East)
     *v = (wpX - wsVcenter) / wsVsize;
     *h = (wpY - wsHcenter) / wsHsize;
 }

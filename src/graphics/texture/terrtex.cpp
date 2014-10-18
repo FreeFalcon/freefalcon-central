@@ -1241,8 +1241,10 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 
 bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool bForce)
 {
-    DWORD dwSize, *pal = NULL, dwTmp, n, i;
-	BYTE* pSrc = NULL, *pDst = NULL;
+    DWORD dwSize, dwTmp, n, i;
+	DWORD *pal = NULL;
+	BYTE *pSrc = NULL;
+	BYTE *pDst;
     char szFileName[256], szTemp[256], szKludge[256];
     char sep[] = ".";
     char *token;
@@ -1440,7 +1442,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
     // Read first compressed mipmap
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 
-    // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
+    // MLR 1/25/2004 - Little kludge so F4 can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||
@@ -1528,7 +1530,7 @@ void TextureDB::ReadImageDDS(TileEntry* pTile, int res)
 
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 
-    // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
+    // MLR 1/25/2004 - Little kludge so F4 can read DDS files made by dxtex
     if (ddsd.dwLinearSize == 0)
     {
         if (ddsd.ddpfPixelFormat.dwFourCC == MAKEFOURCC('D', 'X', 'T', '3') ||

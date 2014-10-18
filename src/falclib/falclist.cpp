@@ -9,7 +9,7 @@
 using namespace std;
 
 // =================================
-// FreeFalcon's Private lists
+// Falcon's Private lists
 // =================================
 
 // Private collection functions.  These collections provide a ForcedInsert that

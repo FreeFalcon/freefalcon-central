@@ -591,7 +591,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
 #else
     VuGridIterator gridIt(ObjProxList, self->XPos(), self->YPos(), GridSizeNM * NM_TO_FT);
 #endif
-//  SimBaseClass *foundFeature = NULL;
+    SimBaseClass *foundFeature = NULL;
     SimBaseClass *testFeature;
     float radius;
     Tpoint pos, fpos, vec, p3, collide;

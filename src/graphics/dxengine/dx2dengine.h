@@ -121,7 +121,7 @@ typedef struct
 
 
 // The structure of a layer manager
-// In FreeFalcon 2D Alpha Objects are divided into layers btw the 2 Cloud Layers...
+// In falcon 2D Alpha Objects are divided into layers btw the 2 Cloud Layers...
 // This to give the right draw order
 typedef struct
 {

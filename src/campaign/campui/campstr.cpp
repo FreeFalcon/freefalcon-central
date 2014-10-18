@@ -21,7 +21,7 @@
 #define NUM_CAMERA_LABELS 16
 
 // These are used in my camp tool, so don't need to be UNICODE
-#ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be  CAMPTOOL  but gave link error when  CAMPTOOL  was undefined.
+#ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be CAMPTOOL but gave link error when CAMPTOOL was undefined.
 #include "GndUnit.h"
 
 char TOTStr[7][6] = { "NA", "<", "<=", "=", ">=", ">", "NA" };
@@ -33,7 +33,7 @@ char Side[NUM_COUNS][3] = { "XX", "US", "SK", "JA", "RU", "CH", "NK", "GO" };
 
 char SpecialStr[3][15] = { "General", "Air to Air", "Air to Ground" };
 
-// These are used by FreeFalcon text string builders
+// These are used by Falcon text string builders
 _TCHAR ObjectiveStr[33][20];
 _TCHAR MissStr[AMIS_OTHER][20];
 _TCHAR WPActStr[WP_LAST][20];

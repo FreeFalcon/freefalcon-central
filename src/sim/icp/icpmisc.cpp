@@ -182,7 +182,7 @@ void ICPClass::ExecGPSMode(void)
     GetLocalTime(&time); //Wombat778 10-18-2003 is this going to hurt performance?  It doesnt really need to balculated every frame
     int temptime = time.wYear;
 
-    if (temptime > 1999) //convert the date to 2 digits. This wont work > 2100 but FreeFalcon wont be around by then;-)
+    if (temptime > 1999) //convert the date to 2 digits. This wont work > 2100 but falcon wont be around by then;-)
         temptime -= 2000;
     else
         temptime -= 1900;

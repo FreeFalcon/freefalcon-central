@@ -2,7 +2,7 @@
 UI_setup.cpp
 Dave Power (x4373)
 
-  setup screen stuff for FreeFalcon
+  setup screen stuff for falcon
 \***************************************************************************/
 
 #include "falclib.h"

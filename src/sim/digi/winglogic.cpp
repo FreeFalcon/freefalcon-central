@@ -460,11 +460,10 @@ SimBaseClass *DigitalBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int 
 // 2001-12-17 Added by M.N. - for air diverts
 SimBaseClass *DigitalBrain::FindSimAirTarget(CampBaseClass *targetGroup, int targetNumComponents, int startPos)
 {
-	int i = FALSE;
-//	int gotRadar = FALSE;
+    int i, gotRadar = FALSE;
     int usComponents = self->GetCampaignObject()->NumberOfComponents();
-//  int haveHARMS = FALSE;
-//  int otherHaveHARMS = FALSE;
+    int haveHARMS = FALSE;
+    int otherHaveHARMS = FALSE;
     SimBaseClass *simTarg = NULL;
     SimBaseClass *firstSimTarg = NULL;
     AircraftClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default

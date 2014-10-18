@@ -46,7 +46,7 @@
 #include "vucoll.h"
 extern float bubbleRatio;
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 int asAgg = 1;
 
@@ -60,7 +60,7 @@ int SPTable[50];
 
 extern int inButton(RECT *but, WORD xPos, WORD yPos);
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 
 char *BSP;
 char *BTP;
@@ -72,6 +72,7 @@ char *BTP;
 extern char TargetTypeStr[7][15];
 extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
+extern int studlyCampaignDude;
 extern int ShowReal;
 extern HWND mainMenuWnd;
 void ChooseMission(void);
@@ -89,7 +90,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 // Support functions
 // ========================================================
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 // This looks up the SPType in the table built during the combo box's creation, and finds
 // the correct integer value. Could also be done by compairing strings...
@@ -1836,6 +1837,7 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     delete flights;
                     squadrons = NULL;
                     flights = NULL;
+                    studlyCampaignDude = 0;
                     EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
                     return (TRUE);
                     break;
@@ -2139,5 +2141,5 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     lParam;
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 

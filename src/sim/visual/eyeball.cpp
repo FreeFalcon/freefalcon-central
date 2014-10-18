@@ -133,11 +133,11 @@ EyeballClass::~EyeballClass(void)
 
 float EyeballClass::GetSignature(SimObjectType* obj)
 {
-//  float bonus = 1.25F;
+    float bonus = 1.25F;
     float objAlt = -obj->BaseData()->ZPos() * 0.001F;
 
     FalconEntity *object = obj->BaseData();
-//  SimBaseClass *theObject = NULL;
+    SimBaseClass *theObject = NULL;
     SimObjectLocalData* localData = NULL;
     localData = obj->localData;
 

@@ -27,7 +27,7 @@ void TimeManager::Setup(int startYear, int startDayOfYear)
     year = startYear;
     startDay = startDayOfYear;
 
-    // Allocate and initialize the callback list.
+    // Allocate and intialize the callback list.
     CBlist = new TimeCallBack[MAX_TOD_CALLBACKS];
     memset(CBlist, 0, sizeof(CBlist[0]) * MAX_TOD_CALLBACKS);
     nextCallToMake = 0;

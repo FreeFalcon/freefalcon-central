@@ -817,8 +817,8 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
     FalconEntity* testObject = NULL;
     FalconEntity* closestObj = NULL;
     SimObjectType* tmpTarget = NULL;
-//  FeatureClassDataType *fc = NULL;
-//  SimBaseClass *simTarg = NULL;
+    FeatureClassDataType *fc = NULL;
+    SimBaseClass *simTarg = NULL;
     float groundRange;
     float curMin, dx, dy;
 

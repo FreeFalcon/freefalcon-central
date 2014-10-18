@@ -30,7 +30,7 @@ extern int MonoPrint(char *, ...);
 extern void enter_cs(void);
 extern void leave_cs(void);
 
-extern int com_API_last_error;
+extern int ComAPILastError;
 
 
 /* List head for connection list */
@@ -78,21 +78,21 @@ CAPIList *GlobalGroupListHead = NULL;
 extern DWProc_t CAPI_TimeStamp;
 
 /* forward function declarations */
-void          ComTCPClose(com_API_handle c);
-int           ComTCPSend(com_API_handle c, int msgsize, int oob, int type);
-int           ComTCPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom);
-char         *ComTCPSendBufferGet(com_API_handle c);
-char         *ComTCPRecvBufferGet(com_API_handle c);
-int           ComTCPGetMessage(com_API_handle c);
-int           ComTCPRecv(com_API_handle c, int BytesToRecv);
+void          ComTCPClose(ComAPIHandle c);
+int           ComTCPSend(ComAPIHandle c, int msgsize, int oob, int type);
+int           ComTCPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom);
+char         *ComTCPSendBufferGet(ComAPIHandle c);
+char         *ComTCPRecvBufferGet(ComAPIHandle c);
+int           ComTCPGetMessage(ComAPIHandle c);
+int           ComTCPRecv(ComAPIHandle c, int BytesToRecv);
 static void   initComTCP(ComTCP *c);
-int           ComTCPGetNbytes(com_API_handle c, int BytesToGet);
-unsigned long ComTCPQuery(com_API_handle c, int querytype);
-com_API_handle  ComTCPGetGroupHandle(int buffersize);
-int           ComIPHostIDGet(com_API_handle c, char *buf, int reset);
-char         *ComIPSendBufferGet(com_API_handle c);
-char         *ComIPRecvBufferGet(com_API_handle c);
-unsigned long ComTCPGetTimeStamp(com_API_handle c);
+int           ComTCPGetNbytes(ComAPIHandle c, int BytesToGet);
+unsigned long ComTCPQuery(ComAPIHandle c, int querytype);
+ComAPIHandle  ComTCPGetGroupHandle(int buffersize);
+int           ComIPHostIDGet(ComAPIHandle c, char *buf, int reset);
+char         *ComIPSendBufferGet(ComAPIHandle c);
+char         *ComIPRecvBufferGet(ComAPIHandle c);
+unsigned long ComTCPGetTimeStamp(ComAPIHandle c);
 
 /* these are the thread functions to await connections */
 static void          AcceptConnection(LPVOID cvoid);
@@ -105,15 +105,15 @@ static void setHeader(char *data, int size);
 static void ComTCPFreeData(ComTCP *c);
 
 /*extern function */
-//int ComDPLAYSendFromGroup(com_API_handle com, int msgsize, char *group_send_buffer );
+//int ComDPLAYSendFromGroup(ComAPIHandle com, int msgsize, char *group_send_buffer );
 
 /* List handler functions */
 /* we keep a list of all the connections. May be useful later */
 
 CAPIList * CAPIListAppend(CAPIList * list);
-CAPIList * CAPIListRemove(CAPIList * list, com_API_handle com);
+CAPIList * CAPIListRemove(CAPIList * list, ComAPIHandle com);
 int        CAPIListCount(CAPIList * list);
-CAPIList * CAPIListFindHandle(CAPIList * list, com_API_handle com);
+CAPIList * CAPIListFindHandle(CAPIList * list, ComAPIHandle com);
 static CAPIList * CAPIListFindTCPListenPort(CAPIList * list, short port);
 void       CAPIListDestroy(CAPIList * list, void (* destructor)());
 static CAPIList * CAPIListFindTCPIPaddress(CAPIList * list, unsigned long IPaddress, unsigned short tcpPort);
@@ -133,7 +133,7 @@ static int AcceptCount = 0;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void (*AcceptCallback)(com_API_handle c, int ret))
+ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void (*AcceptCallback)(ComAPIHandle c, int ret))
 {
     ComTCP *c;
     int err;
@@ -145,8 +145,8 @@ com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, voi
 
     gamename;
 
-    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
-    if (initialize_windows_sockets(&wsaData) == 0)
+    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
+    if (InitWS2(&wsaData) == 0)
     {
         return NULL;
     }
@@ -163,7 +163,7 @@ com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, voi
         RELEASE_LOCK(c->lock);
 
         leave_cs();
-        return (com_API_handle)c;
+        return (ComAPIHandle)c;
     }
 
     /* CREATE NEW LISTENER */
@@ -178,14 +178,14 @@ com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, voi
     }
 
     /* allocate a new ComHandle struct */
-    GlobalListHead->com = (com_API_handle)malloc(sizeof(ComTCP));
+    GlobalListHead->com = (ComAPIHandle)malloc(sizeof(ComTCP));
     c = (ComTCP*)(GlobalListHead->com);
     //GlobalListHead->ListenPort = tcpPort;
     memset(c, 0, sizeof(ComTCP));
 
     /* initialize header data */
     c->accept_callback_func         = AcceptCallback;
-	c->apiheader.protocol = CAPI_TCP_PROTOCOL;
+    c->apiheader.protocol           = CAPI_TCP_PROTOCOL;
     c->apiheader.send_func          = ComTCPSend;
     c->apiheader.sendX_func         = ComTCPSendX;
     c->apiheader.recv_func          = ComTCPGetMessage;
@@ -206,7 +206,7 @@ com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, voi
 
     if (listen_sock == INVALID_SOCKET)
     {
-        com_API_last_error = err = CAPI_WSAGetLastError();
+        ComAPILastError = err = CAPI_WSAGetLastError();
     }
 
     /* Set Server Address... */
@@ -248,14 +248,14 @@ com_API_handle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, voi
 
     SetThreadPriority(c->ThreadHandle, THREAD_PRIORITY_IDLE);
     leave_cs();
-    return (com_API_handle)c;
+    return (ComAPIHandle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-com_API_handle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsigned long IPaddress, void (*ConnectCallback)(com_API_handle c, int ret), int timeoutsecs)
+ComAPIHandle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsigned long IPaddress, void (*ConnectCallback)(ComAPIHandle c, int ret), int timeoutsecs)
 {
     ComTCP *c;
     int err;
@@ -266,8 +266,8 @@ com_API_handle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, un
 
     gamename;
 
-    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
-    if (initialize_windows_sockets(&wsaData) == 0)
+    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
+    if (InitWS2(&wsaData) == 0)
     {
         return NULL;
     }
@@ -291,14 +291,14 @@ com_API_handle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, un
     }
 
     /* allocate a new ComHandle struct */
-    GlobalListHead->com = (com_API_handle)malloc(sizeof(ComTCP));
+    GlobalListHead->com = (ComAPIHandle)malloc(sizeof(ComTCP));
     c = (ComTCP*)(GlobalListHead->com);
     memset(c, 0, sizeof(ComTCP));
 
-    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
-    if (initialize_windows_sockets(&c->wsaData) == 0)
+    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
+    if (InitWS2(&c->wsaData) == 0)
     {
-        GlobalListHead = CAPIListRemove(GlobalListHead, (com_API_handle)c);
+        GlobalListHead = CAPIListRemove(GlobalListHead, (ComAPIHandle)c);
         leave_cs();
         free(c);
 
@@ -309,7 +309,7 @@ com_API_handle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, un
 
     /* initialize header data */
     c->connect_callback_func   = ConnectCallback;
-	c->apiheader.protocol = CAPI_TCP_PROTOCOL;
+    c->apiheader.protocol      = CAPI_TCP_PROTOCOL;
     c->apiheader.send_func     = ComTCPSend;
     c->apiheader.sendX_func     = ComTCPSendX;
     c->apiheader.recv_func     = ComTCPGetMessage;
@@ -360,21 +360,21 @@ com_API_handle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, un
         return NULL;
     }
 
-    return (com_API_handle)c;
+    return (ComAPIHandle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-com_API_handle ComTCPOpenAccept(unsigned long IPaddress, int tcpPort, int timeoutsecs)
+ComAPIHandle ComTCPOpenAccept(unsigned long IPaddress, int tcpPort, int timeoutsecs)
 {
     ComTCP *c, *listener;
     CAPIList *listitem;
     WSADATA wsaData;
 
-    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
-    if (initialize_windows_sockets(&wsaData) == 0)
+    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
+    if (InitWS2(&wsaData) == 0)
     {
         return NULL;
     }
@@ -414,14 +414,14 @@ com_API_handle ComTCPOpenAccept(unsigned long IPaddress, int tcpPort, int timeou
     }
 
     /* allocate a new ComHandle struct */
-    GlobalListHead->com = (com_API_handle)malloc(sizeof(ComTCP));
+    GlobalListHead->com = (ComAPIHandle)malloc(sizeof(ComTCP));
     c = (ComTCP*)(GlobalListHead->com);
     memset(c, 0, sizeof(ComTCP));
     /* copy the Listen socket's ComHandle data into the Accepted socket's ComHandle*/
     memcpy(c, listener, sizeof(ComTCP));
     c->recv_sock = c->send_sock = 0;
     c->state = COMAPI_STATE_CONNECTION_PENDING;
-    ((com_API_handle)c)->protocol = CAPI_TCP_PROTOCOL;
+    ((ComAPIHandle)c)->protocol = CAPI_TCP_PROTOCOL;
     c->lock = 0;
 
     /* Create the target address... */
@@ -441,7 +441,7 @@ com_API_handle ComTCPOpenAccept(unsigned long IPaddress, int tcpPort, int timeou
 
     leave_cs();
 
-    return (com_API_handle)c;
+    return (ComAPIHandle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -551,7 +551,7 @@ static void AcceptConnection(LPVOID cvoid)
                 }
 
                 /* allocate a new ComHandle struct */
-                GlobalListHead->com = (com_API_handle)malloc(sizeof(ComTCP));
+                GlobalListHead->com = (ComAPIHandle)malloc(sizeof(ComTCP));
                 ctcpAccept = (ComTCP *)(GlobalListHead->com);
                 memset(ctcpAccept, 0, sizeof(ComTCP));
             }
@@ -615,12 +615,12 @@ static void AcceptConnection(LPVOID cvoid)
 
             /* Increment reference count of openconnections */
             /* we have to do this here because no explicit WS2Init() was called */
-            windows_sockets_connections++;
+            WS2Connections++;
 
             /* Notify User thru his callback that we have connected on a socket */
             ctcpAccept->state = COMAPI_STATE_ACCEPTED;
 
-            ctcpAccept->accept_callback_func((com_API_handle)ctcpAccept, 0);
+            ctcpAccept->accept_callback_func((ComAPIHandle)ctcpAccept, 0);
 
             /* Any errors ? */
             if (err)
@@ -714,7 +714,7 @@ static void RequestConnection(LPVOID cvoid)
                 {
                     /* error or time out here , so inform user and then exit*/
                     c->state = COMAPI_STATE_CONNECTED;
-                    c->connect_callback_func((com_API_handle)c, -1 * error);
+                    c->connect_callback_func((ComAPIHandle)c, -1 * error);
 
                     return;
                 }
@@ -728,7 +728,7 @@ static void RequestConnection(LPVOID cvoid)
 
                 /* error or time out here , so inform user and then exit*/
                 c->state = COMAPI_STATE_CONNECTED;
-                c->connect_callback_func((com_API_handle)c, -1 * error);
+                c->connect_callback_func((ComAPIHandle)c, -1 * error);
 
                 return;
             }
@@ -760,7 +760,7 @@ static void RequestConnection(LPVOID cvoid)
     RELEASE_LOCK(c->lock);
 
     /* Notify User that we have connected on a socket */
-    c->connect_callback_func((com_API_handle)c, 0);
+    c->connect_callback_func((ComAPIHandle)c, 0);
 
     return;
 }
@@ -769,7 +769,7 @@ static void RequestConnection(LPVOID cvoid)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ComTCPClose(com_API_handle c)
+void ComTCPClose(ComAPIHandle c)
 {
     int sockerror;
     ComTCP *ctcp = (ComTCP *)c;
@@ -864,7 +864,7 @@ void ComTCPClose(com_API_handle c)
 
     if ((ctcp->handletype != GROUP) && (ctcp->state != COMAPI_STATE_CONNECTION_PENDING))
     {
-        windows_sockets_connections--;   /* decrement the INIT reference count */
+        WS2Connections--;   /* decrement the INIT reference count */
     }
 
     /* free the data structs */
@@ -881,7 +881,7 @@ void ComTCPClose(com_API_handle c)
     free(c);
 
     /* if No more connections then WSACleanup() */
-    if (!windows_sockets_connections)
+    if (!WS2Connections)
     {
         if (sockerror = CAPI_WSACleanup())
         {
@@ -889,8 +889,8 @@ void ComTCPClose(com_API_handle c)
         }
 
 #ifdef LOAD_DLLS
-        FreeLibrary(windows_sockets_DLL);
-        windows_sockets_DLL = 0;
+        FreeLibrary(hWinSockDLL);
+        hWinSockDLL = 0;
 #endif
 
     }
@@ -900,7 +900,7 @@ void ComTCPClose(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComTCPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
+int ComTCPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom)
 {
     if (c == Xcom)
     {
@@ -916,7 +916,7 @@ int ComTCPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComTCPSend(com_API_handle c, int msgsize, int oob, int type)
+int ComTCPSend(ComAPIHandle c, int msgsize, int oob, int type)
 {
     if (c)
     {
@@ -1028,7 +1028,7 @@ int ComTCPSend(com_API_handle c, int msgsize, int oob, int type)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *ComTCPSendBufferGet(com_API_handle c)
+char *ComTCPSendBufferGet(ComAPIHandle c)
 {
     if (c)
     {
@@ -1055,7 +1055,7 @@ char *ComTCPSendBufferGet(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *ComTCPRecvBufferGet(com_API_handle c)
+char *ComTCPRecvBufferGet(ComAPIHandle c)
 {
     if (c)
     {
@@ -1087,7 +1087,7 @@ char *ComTCPRecvBufferGet(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComTCPQuery(com_API_handle c, int querytype)
+unsigned long ComTCPQuery(ComAPIHandle c, int querytype)
 {
     if (c)
     {
@@ -1167,7 +1167,7 @@ unsigned long ComTCPQuery(com_API_handle c, int querytype)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComTCPRecv(com_API_handle c, int BytesToRecv)
+int ComTCPRecv(ComAPIHandle c, int BytesToRecv)
 {
     if (c)
     {
@@ -1227,7 +1227,7 @@ int ComTCPRecv(com_API_handle c, int BytesToRecv)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComTCPGetMessage(com_API_handle c)
+int ComTCPGetMessage(ComAPIHandle c)
 {
     // int retval = 0;
 
@@ -1422,8 +1422,8 @@ static void setHeader(char *data, int size)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComTCPGetNbytes(com_API_handle c, int BytesToGet)
-//static int ComTCPGetNbytes(com_API_handle c, int BytesToGet)
+int ComTCPGetNbytes(ComAPIHandle c, int BytesToGet)
+//static int ComTCPGetNbytes(ComAPIHandle c, int BytesToGet)
 {
     ComTCP *ctcp = (ComTCP *)c;
     int bytesRecvd = 1;
@@ -1466,7 +1466,7 @@ static void ComTCPFreeData(ComTCP *c)
     {
         leave_cs();
 
-        GlobalListHead = CAPIListRemove(GlobalListHead, (com_API_handle)c);
+        GlobalListHead = CAPIListRemove(GlobalListHead, (ComAPIHandle)c);
 
         leave_cs();
 
@@ -1562,7 +1562,7 @@ CAPIList *CAPIListAppend(CAPIList * list)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
+CAPIList *CAPIListRemove(CAPIList * list, ComAPIHandle com)
 {
     CAPIList
     *start,
@@ -1618,7 +1618,7 @@ CAPIList *CAPIListRemove(CAPIList * list, com_API_handle com)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CAPIList *CAPIListFindHandle(CAPIList * list, com_API_handle com)
+CAPIList *CAPIListFindHandle(CAPIList * list, ComAPIHandle com)
 {
     CAPIList * curr;
 
@@ -1795,7 +1795,7 @@ CAPIList *CAPIListAppendTail(CAPIList * list)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *ComGROUPRecvBufferGet(com_API_handle c)
+char *ComGROUPRecvBufferGet(ComAPIHandle c)
 {
     c;
 
@@ -1807,7 +1807,7 @@ char *ComGROUPRecvBufferGet(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-int ComGROUPGet(com_API_handle c)
+int ComGROUPGet(ComAPIHandle c)
 {
     c;
 
@@ -1819,7 +1819,7 @@ int ComGROUPGet(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 
 // JPO -always called from within the CS
-void ComGROUPClose(com_API_handle c)
+void ComGROUPClose(ComAPIHandle c)
 {
     CAPIList *curr;
 
@@ -1876,7 +1876,7 @@ void ComGROUPClose(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long  ComGROUPQuery(com_API_handle c, int querytype)
+unsigned long  ComGROUPQuery(ComAPIHandle c, int querytype)
 {
     if (c)
     {
@@ -1900,7 +1900,7 @@ unsigned long  ComGROUPQuery(com_API_handle c, int querytype)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int  ComGROUPAddress(com_API_handle c, char *buf, int reset)
+int  ComGROUPAddress(ComAPIHandle c, char *buf, int reset)
 {
     unsigned long ipaddr;
 
@@ -1922,7 +1922,7 @@ int  ComGROUPAddress(com_API_handle c, char *buf, int reset)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress)
+ComAPIHandle CAPIIsInGroup(ComAPIHandle grouphandle, unsigned long ipAddress)
 {
     ComGROUP *group = (ComGROUP *)grouphandle;
     CAPIList * curr;
@@ -1988,7 +1988,7 @@ com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress
         }
         else if (curr->com->protocol == CAPI_GROUP_PROTOCOL)  /* another group */
         {
-            com_API_handle c;
+            ComAPIHandle c;
             c = CAPIIsInGroup(curr->com, ipAddress);
 
             if (c)
@@ -2009,10 +2009,10 @@ com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
+int  ComAPIAddToGroup(ComAPIHandle grouphandle, ComAPIHandle memberhandle)
 {
-    ComGROUP* group = (ComGROUP *)grouphandle;
-//  CAPIList* curr = 0;
+    ComGROUP *group = (ComGROUP *)grouphandle;
+    CAPIList *curr = 0;
 
     if (!grouphandle)
     {
@@ -2059,7 +2059,7 @@ int  ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandle)
+int ComAPIDeleteFromGroup(ComAPIHandle grouphandle, ComAPIHandle memberhandle)
 {
     ComGROUP *group = (ComGROUP *)grouphandle;
     CAPIList
@@ -2114,7 +2114,7 @@ int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandl
 
 /* get the associated write buffer */
 
-char *ComGROUPSendBufferGet(com_API_handle c)
+char *ComGROUPSendBufferGet(ComAPIHandle c)
 {
     if (c)
     {
@@ -2135,7 +2135,7 @@ char *ComGROUPSendBufferGet(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
+int ComGROUPSend(ComAPIHandle c, int msgsize, int oob, int type)
 {
     int senderror = 0;
     int bytesSent = 0;
@@ -2146,7 +2146,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
         ComGROUP  *group = (ComGROUP *)c;
         CAPIList * curr;
         int ret = 0;
-//      int count = 0;
+        int count = 0;
         char *save_send_buffer;
         enter_cs(); // JPO
 
@@ -2170,7 +2170,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
         {
 
             // @todo sfr: remove hack
-            if (F4IsBadReadPtrC(curr->com, sizeof(com_API_handle)))
+            if (F4IsBadReadPtrC(curr->com, sizeof(ComAPIHandle)))
             {
                 // JB 010221 CTD
                 continue; // JB 010221 CTD
@@ -2311,7 +2311,7 @@ int ComGROUPSend(com_API_handle c, int msgsize, int oob, int type)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComGROUPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
+int ComGROUPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom)
 {
     int senderror = 0;
     int bytesSent = 0;
@@ -2465,14 +2465,14 @@ int ComGROUPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_hand
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
+ComAPIHandle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
 {
     ComGROUP *group;
     va_list marker;
     LPVOID   vptr;
     int buffersize;
     int count = 0;
-    com_API_handle CH;
+    ComAPIHandle CH;
     unsigned int HostID = 0;
     CAPIList
     *curr = 0;
@@ -2487,7 +2487,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
     {
         count++;
 
-        CH = (com_API_handle)vptr;
+        CH = (ComAPIHandle)vptr;
 
         switch (CH->protocol)
         {
@@ -2590,7 +2590,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
     }
 
     /* allocate a new ComHandle struct */
-    GlobalGroupListHead->com = (com_API_handle)malloc(sizeof(ComGROUP));
+    GlobalGroupListHead->com = (ComAPIHandle)malloc(sizeof(ComGROUP));
     memset(GlobalGroupListHead->com, 0, sizeof(ComGROUP));
     GlobalGroupListHead->com->name = (char*)malloc(strlen(name_in) + 1);
     strcpy(GlobalGroupListHead->com->name, name_in);
@@ -2642,7 +2642,7 @@ com_API_handle  ComAPICreateGroup(char *name_in, int BufferSize, ...)
 
     leave_cs();
 
-    return (com_API_handle) group;
+    return (ComAPIHandle) group;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2682,7 +2682,7 @@ unsigned long ComAPIGetNetHostBySocket(int Socket)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComAPIGetNetHostByHandle(com_API_handle c)
+unsigned long ComAPIGetNetHostByHandle(ComAPIHandle c)
 {
     ComTCP *ctcp;
     ComIP *cudp;
@@ -2706,7 +2706,7 @@ unsigned long ComAPIGetNetHostByHandle(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComTCPGetTimeStamp(com_API_handle c)
+unsigned long ComTCPGetTimeStamp(ComAPIHandle c)
 {
     if (c)
     {

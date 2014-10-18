@@ -17,7 +17,7 @@ extern "C" {
     */
     void ComRUDPSetup(unsigned short rport);
 
-    com_API_handle ComRUDPOpen(
+    ComAPIHandle ComRUDPOpen(
         char *name,                 // name of this comm, usually "callsign RUDP"
         int buffersize,
         char *gamename,             // game name

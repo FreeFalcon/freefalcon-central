@@ -656,10 +656,8 @@ int WeatherClass::CampLoad(char* name, int type)
 int WeatherClass::Save(char* name)
 {
     FILE *fp;
-//	UINT nw = 0;
-//  UINT nh = 0;
-//	unsigned int w = 0;
-//	unsigned int h = 0;
+    UINT nw = 0, nh = 0;
+    unsigned int w = 0, h = 0;
 
     if ((fp = OpenCampFile(name, "wth", "wb")) == NULL) return 0;
 

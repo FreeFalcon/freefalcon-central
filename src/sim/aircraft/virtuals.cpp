@@ -863,7 +863,7 @@ float AircraftClass::GetKias()
 //void AircraftClass::Regenerate (float newx, float newy, float newz, float newyaw)
 void AircraftClass::Regenerate(float, float, float, float)
 {
-//  int wasDigital = isDigital;
+    int wasDigital = isDigital;
     int wasPlayer = 0;
     unsigned char oldPilotSlot = 0;
     int wasLocal = IsLocal();

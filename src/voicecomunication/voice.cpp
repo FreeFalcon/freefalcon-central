@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------
-// THIS FreeFalcon DP8 VOICE CODED BY RIK TMF@BIGFOOT.COM //ME123
+// THIS FALCON DP8 VOICE CODED BY RIK TMF@BIGFOOT.COM //ME123
 //-----------------------------------------------------------------------------
 //#define INITGUID
 #include "voicecom.h"
@@ -662,7 +662,7 @@ HRESULT EnumDirectPlayHosts(char* ip)
     HRESULT                 hr = S_OK;
     WCHAR                   wszHost[128];
     DPN_APPLICATION_DESC    dpAppDesc;
-//  WCHAR*                  pwszURL = NULL;
+    WCHAR*                  pwszURL = NULL;
 
     const char* str = ip;
     mbstowcs(&wszHost[0], str, 128);
@@ -827,8 +827,8 @@ HRESULT HostSession()
     // Prompt the user for the session name
     MonoPrint("\nHostign a Voice Session.\n");
     //wscanf(L"%ls", wszSession);
-    //wcscpy(wszSession,L "FreeFalcon");
-    wcscpy(wszSession, L"FreeFalcon");
+    //wcscpy(wszSession,L "FALCON");
+    wcscpy(wszSession, L"FALCON");
 
     // Now set up the Application Description
     ZeroMemory(&dpAppDesc, sizeof(DPN_APPLICATION_DESC));
@@ -1326,8 +1326,7 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    const char* FREE_FALCON_PROJECT;
-	char test[1024] = FREE_FALCON_PROJECT;
+    char test[1024] = "F4 3D Output";
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.
@@ -1597,7 +1596,7 @@ void RefreshVoiceFreqs()
 {
     Package pkg;
     Flight flt;
-//  BOOL retval = FALSE;
+    BOOL retval = FALSE;
     static int com1 = NULL;
     static int com2 = NULL;
     static int team = NULL;
@@ -1891,10 +1890,10 @@ void Transmit(int com)
 
     Package pkg;
     Flight flt;
-//  BOOL retval = FALSE;
+    BOOL retval = FALSE;
     static int com1 = NULL;
     static int com2 = NULL;
-//  bool doupdate = false;
+    bool doupdate = false;
 
     if (!VM) return;
 

@@ -455,7 +455,7 @@ void mlrVoice::PreExec()
         IsThunder = true;
     }
 
-//  int retval = 0;
+    int retval = 0;
     vol = initvol;
 
     if (sfx->flags & SFX_POS_EXTERN)

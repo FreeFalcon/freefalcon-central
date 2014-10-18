@@ -30,23 +30,24 @@
     \
  sprintf( buffer, "Error:  %0d  %s  %s", __LINE__, __FILE__, __DATE__ ); \
  MessageBox(NULL, buffer, string, MB_OK); \
- exit(EXIT_FAILURE);    \
+ exit(-1);    \
 }
 
 // ShiAssert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
 
-extern bool shi_asserts, shi_hard_crash, shi_warnings;
+// JB 010325
+extern int shiAssertsOn, shiWarningsOn, shiHardCrashOn;
 
 #define ShiAssert( expr ) \
- if (shi_asserts && !(expr)) { \
+ if (shiAssertsOn && !(expr)) { \
      static int skipThisOne = FALSE; \
  \
  if (!skipThisOne) { \
  char buffer[580];    \
  int choice = IDRETRY; \
  \
- if (shi_hard_crash) \
+ if (shiHardCrashOn) \
  *((unsigned int *) 0x00) = 0; \
  else { \
  sprintf( buffer, "Assertion at %0d  %s  %s\n", __LINE__, __FILE__, __DATE__ );\
@@ -55,7 +56,7 @@ extern bool shi_asserts, shi_hard_crash, shi_warnings;
  choice = MessageBox(NULL, buffer, "Failed:  " #expr,   \
  MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
  if (choice == IDABORT) { \
- exit(EXIT_FAILURE); \
+ exit(-1); \
  } else if (choice == IDRETRY) { \
  DebugBreak(); \
  } else if (choice == IDIGNORE) { \
@@ -67,7 +68,7 @@ extern bool shi_asserts, shi_hard_crash, shi_warnings;
 
 #define ShiWarning( string )                                             \
 {    \
-  if (shi_warnings) { \
+  if (shiWarningsOn) { \
                                             \
  char buffer[580];    \
     \
@@ -75,10 +76,30 @@ extern bool shi_asserts, shi_hard_crash, shi_warnings;
  MessageBox(NULL, buffer, string, MB_OK); } \
 }
 
+#define ShiSetAsserts( expr ) \
+{ \
+ shiAssertsOn = expr; \
+}
+
+// JB 010325
+#define ShiSetWarnings( expr ) \
+{ \
+ shiWarningsOn = expr; \
+}
+
+#define ShiSetHardCrash( expr ) \
+{ \
+ shiHardCrashOn = expr; \
+} \
+ 
 #else
 #define ShiAssert( expr )
 
 #define ShiWarning( string )
+
+#define ShiSetAsserts( expr )
+
+#define ShiSetHardCrash( expr )
 
 #endif
 

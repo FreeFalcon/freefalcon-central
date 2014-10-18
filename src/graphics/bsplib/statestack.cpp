@@ -288,7 +288,7 @@ void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pm
     Xlation.y = -pos->x * Rotation.M21 - pos->y * Rotation.M22 - pos->z * Rotation.M23;
     Xlation.z = -pos->x * Rotation.M31 - pos->y * Rotation.M32 - pos->z * Rotation.M33;
 
-    // Initializethe eye postion in world space
+    // Intialize the eye postion in world space
     ObjSpaceEye = *pos;
 
     Tb = Bill;

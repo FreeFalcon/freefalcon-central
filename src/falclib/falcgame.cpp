@@ -1,5 +1,5 @@
 // FalcGame.cpp
-// FreeFalcon's game subclass
+// Falcon's game subclass
 //====================================================================================
 
 #include <wtypes.h>
@@ -25,7 +25,7 @@ extern int F4GameType;
 
 void INFOSetupRulesControls(void);
 
-static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon!!";
+static char PasswordKey1[] = "Coming soon to Stores Everywhere... Falcon 4.0!!";
 static char PasswordKey2[] = "This is another stupid advertisement... hehehe!!";
 
 // constructors & destructor

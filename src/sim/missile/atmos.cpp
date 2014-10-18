@@ -58,10 +58,8 @@ void MissileClass::Atmosphere(void)
 
         ifd->qovt = ifd->qbar / vt;
 
-		if (_isnan(ifd->qovt))//Cobra
-		{
-		//	int catchx = 0;
-		}
+        if (_isnan(ifd->qovt))//Cobra
+            int catchx = 0;
     }
     else//cobra
     {

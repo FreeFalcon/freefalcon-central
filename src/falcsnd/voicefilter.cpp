@@ -28,7 +28,7 @@ extern BOOL killThread;
 extern float MAX_RADIO_RANGE;
 extern float RADIO_PROX_RANGE;
 extern VU_TIME vuxGameTime;
-extern char sound_theater_directory[];
+extern char FalconSoundThrDirectory[];
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gTextMemPool;
@@ -201,7 +201,7 @@ void VoiceFilter::LoadCommFile(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\commFile.bin", sound_theater_directory);
+    sprintf(filename, "%s\\commFile.bin", FalconSoundThrDirectory);
 
     // commData = (char *)map_file(filename);
 
@@ -244,7 +244,7 @@ void VoiceFilter::LoadEvalFile(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\evalFile.bin", sound_theater_directory);
+    sprintf(filename, "%s\\evalFile.bin", FalconSoundThrDirectory);
 
     // evalData = (char *)map_file(filename);
 
@@ -288,7 +288,7 @@ void VoiceFilter::LoadFragFile(void)
     char filename[MAX_PATH];
 
 
-    sprintf(filename, "%s\\fragFile.bin", sound_theater_directory);
+    sprintf(filename, "%s\\fragFile.bin", FalconSoundThrDirectory);
 
     //fragData = (char *)map_file(filename);
 

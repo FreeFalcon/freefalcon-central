@@ -160,7 +160,7 @@ void ObjectLOD::SetupTable(int file, char *basename)
         //read the model header
         if (ObjectLodMap.ReadDataAt(Lod->fileoffset, &rt, sizeof(DxDbHeader)))
         {
-            // if a bad version, skip
+            // if a bad version, skuip
             if ((rt.Version & 0xffff) == (~rt.Version >> 16))
             {
                 // assign the number of textures to the model

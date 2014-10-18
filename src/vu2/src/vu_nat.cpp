@@ -8,7 +8,7 @@
 ///////////////
 bool VU_ADDRESS::IsPrivate() const
 {
-    return (com_API_private_IP(this->ip)) ? true : false;
+    return (ComAPIPrivateIP(this->ip)) ? true : false;
 }
 
 void VU_ADDRESS::Decode(VU_BYTE **stream, long *rem)

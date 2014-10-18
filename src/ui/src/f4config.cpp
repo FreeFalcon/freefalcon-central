@@ -330,7 +330,7 @@ float g_fAFElevatorUp = 3.0f;
 float g_frollStickOffset = 0.0f;
 float g_fpitchStickOffset = 0.9f;
 float g_frudderOffset = 0.9f;
-bool g_bRollLinkedNWSRudder = true; // ASSOCIATOR 30/11/03: Controls whether the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
+bool g_bRollLinkedNWSRudder = true; // ASSOCIATOR 30/11/03: Controls wether the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
 bool g_bEnableGRCursorBullseye = false; // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
 // MD -- 20040808: disabling this one -- see comments on why in fccmain.cpp
 bool g_bEnableFCCSubNavCycle = false; // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
@@ -941,7 +941,7 @@ static ConfigOption<bool> BoolOpts[] =
     { "LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
     { "DisableHighFartiles", &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
     { "noRadStutter", &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
-    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder }, // ASSOCIATOR 30/11/03 Controls whether the Rudder and NWS are linked to the roll input when on the ground
+    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder }, // ASSOCIATOR 30/11/03 Controls wether the Rudder and NWS are linked to the roll input when on the ground
     { "EnableGRCursorBullseye", &g_bEnableGRCursorBullseye }, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
     { "BriefHTML", &g_bBriefHTML }, // THW 2003-12-07 Generate Briefing using HTML tags
     // { "EnableFCCSubNavCycle", &g_bEnableFCCSubNavCycle },  // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key

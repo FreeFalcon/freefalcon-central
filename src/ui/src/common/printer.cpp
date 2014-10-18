@@ -163,10 +163,10 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
             return 0;
         }
     }
-	extern const char* FREE_FALCON_BRAND;
+
     if (g_bBriefHTML)
-		strsize = sprintf( tmpString, "<html><head><title> %s Mission Briefing< / title><LINK REL = StyleSheet HREF = 'style.css' TYPE = 'text/css' MEDIA = screen>< / head><body>", FREE_FALCON_BRAND );
-	else
+        strsize = sprintf(tmpString, "<html><head><title>Falcon 4 Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
+    else
         strsize = sprintf(tmpString, "--------------------------------------------------------\r\nBRIEFING RECORD ");
 
     WriteFile(fileID, tmpString, strsize, &bytes, NULL);

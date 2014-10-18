@@ -551,7 +551,7 @@ void UpdateWaypointWindowInfo(C_Window *win, WayPointClass *wp, int wpnum, int c
         txt->SetText(buffer);
     }
 
-    // Figure out whether we have an altitude change and show the appropriate choices
+    // Figure out wether we have an altitude change and show the appropriate choices
     if (prev_wp)
         alt_delta = wp->GetWPAltitude() - prev_wp->GetWPAltitude();
     else

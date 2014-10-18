@@ -80,10 +80,10 @@ extern int
 start_save_stream,
 start_load_stream;
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 #ifdef DEBUG
@@ -333,18 +333,18 @@ int SquadronClass::Save(VU_BYTE **stream)
     *stream += sizeof(PilotClass) * PILOTS_PER_SQUADRON;
     memcpy(*stream, schedule, sizeof(long)*VEHICLE_GROUPS_PER_UNIT);
     *stream += sizeof(long) * VEHICLE_GROUPS_PER_UNIT;
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        airbase_id.num_ = rename_table[airbase_id.num_];
+    if (gRenameIds)
+        airbase_id.num_ = RenameTable[airbase_id.num_];
 
 #endif
     memcpy(*stream, &airbase_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        hot_spot.num_ = rename_table[hot_spot.num_];
+    if (gRenameIds)
+        hot_spot.num_ = RenameTable[hot_spot.num_];
 
 #endif
     memcpy(*stream, &hot_spot, sizeof(VU_ID));
@@ -399,7 +399,7 @@ int SquadronClass::Handle(VuFullUpdateEvent *event)
 int SquadronClass::MoveUnit(CampaignTime time)
 {
     GridIndex       x, y, nx, ny;
-//  VuGridIterator* myit = NULL;
+    VuGridIterator* myit = NULL;
     CampEntity ab;
     Objective o, bo = NULL;
     int i, want_alert = 0, bs = -999, range, score;
@@ -623,7 +623,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 int SquadronClass::MoveChopperUnit(CampaignTime time)
 {
     GridIndex       x, y, nx, ny;
-//  VuGridIterator* myit = NULL;
+    VuGridIterator* myit = NULL;
     Objective o, bo = NULL;
     float fd;
     int range, score, bs = -999;
@@ -1144,7 +1144,7 @@ void SquadronClass::ScheduleAircraft(Flight fl, MissionRequest mis)
 
     int i, j, sn, nv, nr, role, got = 0;
     //TJL 10/30/03
-//  int want_alert = 0;
+    int want_alert = 0;
     VehicleClassDataType *vc;
 
     role = MissionData[mis->mission].skill;

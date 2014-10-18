@@ -618,11 +618,11 @@ void DigitalBrain::BvrChooseTactic(void)
 #define no 0
 #define prepitbull 1
 #define pitbull 2
-//  int targetstrength = 1;
-//  int ownstrength = 1;
-//  bool outranged = false;
-//  bool outnumbered = false;
-//  bool outstrengthed = false;
+    int targetstrength = 1;
+    int ownstrength = 1;
+    bool outranged = false;
+    bool outnumbered = false;
+    bool outstrengthed = false;
 
     //CalculateMAR();//Cobra bye bye
 
@@ -707,7 +707,7 @@ void DigitalBrain::ChoiceProfile(void)
             threatScore += 60;
 
         //who has the numerical advantage?
-//      int outnumbered = 0;
+        int outnumbered = 0;
 
         if (targetstrength > ownstrength)
             threatScore += 30;
@@ -2382,7 +2382,7 @@ int DigitalBrain::IsSupportignmissile(void)
     // 2 wingie prepitbull
     // 3 both pre pitbull
     AircraftClass *wingman = NULL;
-//  AircraftClass *elementlead = NULL;
+    AircraftClass *elementlead = NULL;
 
     // find the pointers to wingie, lead and element lead
     //the Isflightleads wingie
@@ -2900,7 +2900,7 @@ int DigitalBrain::BeamManeuver(int direction, int NotchHI)
 }
 void DigitalBrain::CrankManeuver(int direction, int Height)//me123 //Cobra add height
 {
-//  int retval = FALSE;
+    int retval = FALSE;
     float nh1, nh2, az;
     mlTrig trig;
 
@@ -3013,7 +3013,7 @@ void DigitalBrain::DragManeuver(void)
 //priority 1 is speed, 2 is altitude, 0 is none
 void DigitalBrain::StickandThrottle(float DesiredSpeed, float DesiredAltitude)
 {
-//  float sensitivityDecent = 20.0f;
+    float sensitivityDecent = 20.0f;
     float sensitivityClimp = 800.0f;
     float speeddifference;
     int MaxEnergyMode = 1;

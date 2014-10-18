@@ -16,7 +16,7 @@ public:
     DisplayDevice();
     ~DisplayDevice();
 
-    void Setup(int driverNum, int devNum, int width, int height, int nDepth, bool fullScreen, bool dblBuffer, HWND win, BOOL bWillCallSwapBuffer);
+    void Setup(int driverNum, int devNum, int width, int height, int nDepth, BOOL fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer);
     void Cleanup(void);
 
     BOOL IsReady(void)

@@ -1,6 +1,6 @@
 /** @file FalcSess.cpp
 * Kevin Klemmick, 6/97
-* FreeFalcon's session subclass
+* Falcon's session subclass
 */
 
 #include "f4vu.h"

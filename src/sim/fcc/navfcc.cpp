@@ -2184,8 +2184,8 @@ void FireControlComputer::Draw1WingmanGnd(AircraftClass *wing)
     float displayX = 0.0f;
     float displayY = 0.0f;
     float dsq = 0.0f;
-//  float wingBugX = 0.0f;
-//  float wingBugY = 0.0f;
+    float wingBugX = 0.0f;
+    float wingBugY = 0.0f;
     float x = 0.0f;
     float y = 0.0f;
     char no[10]/*, thealt[20]*/;

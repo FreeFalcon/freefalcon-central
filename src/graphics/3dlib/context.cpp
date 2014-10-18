@@ -941,7 +941,7 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
 // flag & 0x01  --> skip StateSetupCount checking --> reset/set state
 void ContextMPR::SetCurrentState(GLint state, GLint flag)
 {
-//  UInt32 i = 0;
+    UInt32 i = 0;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::SetCurrentState (%d,0x%X)\n", state, flag);
@@ -2646,12 +2646,12 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
 void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor)
 {
-    float* I;
-    Spoint* xyz;
-    Pcolor* rgba;
-    TLVERTEX* pVtx = NULL;
+    float *I;
+    Spoint *xyz;
+    Pcolor *rgba;
+	TLVERTEX* pVtx = NULL;
 	TLVERTEX* sVertex = NULL;
-	SPolygon* sPolygon = NULL;
+    SPolygon* sPolygon = NULL;
     float PolyZAvg = 0;
 
     // Incoming type is always MPR_PRM_TRIFAN
@@ -3638,7 +3638,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 
 void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxTexClr_t **pData, bool terrain)
 {
-    TLVERTEX* pVtx = NULL;
+	TLVERTEX* pVtx = NULL;
 	TLVERTEX* sVertex = NULL;
 	SPolygon* sPolygon = NULL;
     float PolyZAvg = 0;

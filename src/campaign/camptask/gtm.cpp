@@ -258,9 +258,8 @@ void GroundTaskingManagerClass::DoCalculations(void)
 
 int GroundTaskingManagerClass::Task(void)
 {
-//  int done = 0;
-//	int count = 0;
-	int collect;
+    int done = 0;
+    int count = 0, collect;
     int action;
 
     // Don't do this if we're not active, or not owned by this machine
@@ -931,8 +930,7 @@ int GroundTaskingManagerClass::AssignUnits(int orders, int mode)
 {
     GODNode curo, nexto;
     USNode curu, nextu;
-	int ucnt = 0, ocnt = 0;
-//	int sortBy = GODN_SORT_BY_PRIORITY;
+    int ucnt = 0, ocnt = 0, sortBy = GODN_SORT_BY_PRIORITY;
 
 #ifdef KEV_GDEBUG
     ulong time, newtime;

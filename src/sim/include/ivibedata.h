@@ -91,7 +91,7 @@ public:
     bool IsFrozen; // sim frozen?
     bool IsOverG; // are G limits being exceeded?
     bool IsOnGround; // are we on the ground
-    bool IsExitGame; // Did we exit FreeFalcon?
+    bool IsExitGame; // Did we exit Falcon?
     float Gforce; // what gforce we are feeling
     float eyex, eyey, eyez; // where the eye is in relationship to the plane
     int lastdamage; // 1 to 8 depending on quadrant. Make this into an enum later

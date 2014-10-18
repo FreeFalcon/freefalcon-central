@@ -48,8 +48,7 @@ void SmsDrawable::InventoryDisplay(int jettOnly)
 {
     char tmpStr1[12];
     char tmpStr2[sizeof(tmpStr1)];
-	int i, numRounds = 0;
-//	int rack = 1;
+    int i, numRounds = 0, rack = 1;
 
     for (i = 1; i < 10; i++)
         InvDrawHp(i, jettOnly);

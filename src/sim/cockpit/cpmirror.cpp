@@ -23,8 +23,8 @@ CPMirror::CPMirror(const ObjectInitStr &ois) : CPObject(&ois)
 
 void CPMirror::Exec(SimBaseClass *simbase)
 {
-//  float xPos = 0.0F;
-//  float yPos = 0.6F;
+    float xPos = 0.0F;
+    float yPos = 0.6F;
     RenderMirror((float)mDestRect.left, (float)mDestRect.top, (float)mDestRect.right, (float)mDestRect.bottom);
 }
 

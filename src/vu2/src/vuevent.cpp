@@ -1600,7 +1600,7 @@ VuBroadcastGlobalEvent::VuBroadcastGlobalEvent(VuEntity *entity, VuTargetEntity*
         if ((entity->Id().creator_ == vuLocalSession.creator_))
         {
             // does not include IP, will be discovered on the other side
-            entityAddress = VU_ADDRESS(0, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port());
+            entityAddress = VU_ADDRESS(0, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort());
         }
         //send another entity
         else

@@ -49,7 +49,7 @@ public:
     virtual ~VuThread();
 };
 
-/** main thread uses this. This is FreeFalcon core. */
+/** main thread uses this. This is falcon core. */
 class VuMainThread : public VuBaseThread
 {
 public:
@@ -80,8 +80,8 @@ public:
 
     /** initializes network comms. */
     VU_ERRCODE InitComms(
-        com_API_handle handle, int bufSize = 0, int packSize = 0,
-        com_API_handle reliablehandle = NULL, int relBufSize = 0, int relPackSize = 0,
+        ComAPIHandle handle, int bufSize = 0, int packSize = 0,
+        ComAPIHandle reliablehandle = NULL, int relBufSize = 0, int relPackSize = 0,
         int resendQueueSize = VU_DEFAULT_QUEUE_SIZE
     );
 

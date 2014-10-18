@@ -465,7 +465,7 @@ BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, 
          (m_ddsdBack.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
          #endif
         */
-        // Set blt target surface depending on whether we will page flip or not
+        // Set blt target surface depending on wether we will page flip or not
         if (bWillCallSwapBuffer)
             m_pBltTarget = m_pDDSBack;
         else
@@ -506,7 +506,7 @@ void ImageBuffer::AttachSurfaces(DisplayDevice *pDev, IDirectDrawSurface7 *pDDSF
         m_ddsdBack.dwSize = sizeof(DDSURFACEDESC2);
         CheckHR(m_pDDSBack->GetSurfaceDesc(&m_ddsdBack));
 
-        // Set blt target surface depending on whether we will page flip or not
+        // Set blt target surface depending on wether we will page flip or not
         m_pBltTarget = m_pDDSFront;
 
         // Record the properties of the buffer(s) we're creating

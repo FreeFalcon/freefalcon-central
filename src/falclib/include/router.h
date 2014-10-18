@@ -63,7 +63,7 @@
 // Router types and classes
 // =========================================================
 
-typedef struct ComApiHandle *ComAPIHandle;      // defined in CAPI.h
+typedef struct comapihandle *ComAPIHandle;      // defined in CAPI.h
 
 typedef unsigned long RtrAddress; // IP Address or similar way to get to a physical machine
 typedef unsigned char uchar;

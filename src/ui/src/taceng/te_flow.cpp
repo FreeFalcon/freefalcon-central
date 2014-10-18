@@ -5,7 +5,7 @@
 // Tactical Engagement - Robin Heydon
 //
 // Implements the user interface for the tactical engagement section
-// of FreeFalcon
+// of falcon 4.0
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,10 +52,10 @@
 #include "gps.h"
 #include "camplist.h" // M.N. Needed for Front/FLOTlist
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern bool rename_IDs;
-#endif  CAMPTOOL  
+extern int gRenameIds;
+#endif CAMPTOOL
 
 #pragma warning(disable : 4127) // Conditional Expression is constant warning
 
@@ -295,9 +295,9 @@ static void TACNewCB(long, short hittype, C_Base *control)
 
     current_tactical_mission = new tactical_mission(path);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
@@ -333,9 +333,9 @@ static void TACEditCB(long ID, short hittype, C_Base *control)
     gMainHandler->DisableSection(100);
     gMainHandler->SetSection(200);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif
@@ -860,9 +860,9 @@ void tactical_revert_mission(void)
     CleanupTacticalEngagementUI();
     TheCampaign.EndCampaign();
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
         SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
     else
 #endif

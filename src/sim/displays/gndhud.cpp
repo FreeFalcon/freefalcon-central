@@ -281,7 +281,7 @@ void HudClass::DrawRCKT(void)
     }
 
     // FPM position
-//  float dx = betaHudUnits;
+    float dx = betaHudUnits;
     float dy = vOffset - alphaHudUnits;
 
     yOffset = -0.40f;
@@ -630,7 +630,7 @@ void HudClass::DrawSteeringToRelease(void)
     int min, sec;
     float slantRange;
     //TJL 12/04/03 Added latRange
-//  float latRange = 0.0f;
+    float latRange = 0.0f;
     //me123 tofextra is the extra tof for the last bomb(this is the bomb the puac symbolice) becourse it has to wait for the preciding bombs to drop
     //float  TofExtra = ( (FCC->Sms->RippleInterval())* ((FCC->Sms->RippleCount()+1))/ // MLR 4/3/2004 -
     float  TofExtra = ((FCC->Sms->GetAGBRippleInterval()) * ((FCC->Sms->GetAGBRippleCount() + 1)) /

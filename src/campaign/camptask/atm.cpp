@@ -54,10 +54,10 @@
 extern _TCHAR MissStr[AMIS_OTHER][16];
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 extern int FriendlyTerritory(GridIndex x, GridIndex y, int team);
@@ -142,10 +142,10 @@ ATMAirbaseClass::~ATMAirbaseClass()
 
 int ATMAirbaseClass::Save(VU_BYTE **stream)
 {
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        id.num_ = rename_table[id.num_];
+    if (gRenameIds)
+        id.num_ = RenameTable[id.num_];
 
 #endif
     memcpy(*stream, &id, sizeof(VU_ID));
@@ -157,10 +157,10 @@ int ATMAirbaseClass::Save(VU_BYTE **stream)
 
 int ATMAirbaseClass::Save(FILE *file)
 {
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        id.num_ = rename_table[id.num_];
+    if (gRenameIds)
+        id.num_ = RenameTable[id.num_];
 
 #endif
     fwrite(&id, sizeof(VU_ID), 1, file);

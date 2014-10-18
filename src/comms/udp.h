@@ -17,7 +17,7 @@ extern "C" {
     */
     void ComUDPSetup(unsigned short rport);
 
-    com_API_handle ComUDPOpen(
+    ComAPIHandle ComUDPOpen(
         char *name, // name of this comm, usuallly callsign UDP
         int buffersize,
         char *gamename,

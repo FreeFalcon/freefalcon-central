@@ -67,12 +67,9 @@ int FalconATCCmdMessage::Process(uchar autodisp)
     }
 
     float cosAngle = 0.0F, desAlt = 0.0F, finalHdg = 0.0F;
-	float
-		finalX = 0.0F, finalY = 0.0F, baseX = 0.0F, baseY = 0.0F,
-		x = 0.0F, y = 0.0F, z = 0.0F;
-//	float dx = 0.0F, dy = 0.0F;
-//	float distD = 0.0F;
-//	float distA = 0.0F;
+    float
+    finalX = 0.0F, finalY = 0.0F, baseX = 0.0F, baseY = 0.0F,
+    x = 0.0F , y = 0.0F, z = 0.0F, dx = 0.0F, dy = 0.0F, distD = 0.0F, distA = 0.0F;
     GridIndex X = 0, Y = 0;
     int taxiPoint = 0, value = 0, rwIndex = 0;
     FalconRadioChatterMessage *radioMessage = NULL;
@@ -82,7 +79,7 @@ int FalconATCCmdMessage::Process(uchar autodisp)
     AircraftClass *aircraft = (AircraftClass*)vuDatabase->Find(EntityId());
     ObjectiveClass *atc = (ObjectiveClass*)vuDatabase->Find(dataBlock.from);
     ObjectiveClass *divertBase = NULL;
-//  ObjectiveClass* altBase = NULL;
+    ObjectiveClass *altBase = NULL;
 
     if (dataBlock.type == Release && aircraft && aircraft->DBrain())
     {

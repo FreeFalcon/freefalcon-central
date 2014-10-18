@@ -42,7 +42,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     ShiAssert(vertPointers);
     ShiAssert(count >= 3);
 
-    // Initializethe vertex buffers
+    // Intialize the vertex buffers
     outList = vertList1;
     lastIn = vertPointers + count;
 

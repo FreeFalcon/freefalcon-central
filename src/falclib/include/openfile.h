@@ -1,6 +1,9 @@
 #ifndef _OPENFILE_H_
 #define _OPENFILE_H_
 
+void EnableOpenTest();
+void DisableOpenTest();
+
 // use this instead of fopen() with the same parameters as that function had
 FILE *FILE_Open(char *filename, char *Params);
 

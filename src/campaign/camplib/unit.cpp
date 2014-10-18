@@ -174,16 +174,16 @@ extern bool g_bFireOntheMove; // FRB
 
 extern bool g_bRealisticAttrition; // JB 010710
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 _TCHAR* GetNumberName(int name_id, _TCHAR *buffer);
 _TCHAR* GetSTypeName(int domain, int type, int stype, _TCHAR buffer[]);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 extern void RedrawCell(MapData md, GridIndex x, GridIndex y);
 extern void RedrawUnit(Unit u);
 extern int DisplayOk(Unit u);
@@ -296,8 +296,8 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
         fflush(load_log);
     }
 
-    //#ifdef  CAMPTOOL  
-    // if (rename_IDs)
+    //#ifdef CAMPTOOL
+    // if (gRenameIds)
     // {
     // VU_ID new_id = FalconNullId;
     //
@@ -311,7 +311,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     // ){
     // if (!vuDatabase->Find(new_id))
     // {
-    // rename_table[share_.id_.num_] = new_id.num_;
+    // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }
@@ -324,7 +324,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     // {
     // if (!vuDatabase->Find(new_id))
     // {
-    // rename_table[share_.id_.num_] = new_id.num_;
+    // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }
@@ -487,18 +487,18 @@ int UnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(GridIndex);
     memcpy(*stream, &dest_y, sizeof(GridIndex));
     *stream += sizeof(GridIndex);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        target_id.num_ = rename_table[target_id.num_];
+    if (gRenameIds)
+        target_id.num_ = RenameTable[target_id.num_];
 
 #endif
     memcpy(*stream, &target_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        cargo_id.num_ = rename_table[cargo_id.num_];
+    if (gRenameIds)
+        cargo_id.num_ = RenameTable[cargo_id.num_];
 
 #endif
     memcpy(*stream, &cargo_id, sizeof(VU_ID));
@@ -919,7 +919,7 @@ int UnitClass::ApplyDamage(DamType d, int* str, int where, short flags)
 
                 if (flags & WEAP_AREA) // Area effect - halve strength and have another go.
                 {
-                    // Note: we halve the strength whether or not we killed the target
+                    // Note: we halve the strength wether or not we killed the target
                     *str /= 2;
 
                     if (*str < MINIMUM_STRENGTH)
@@ -1115,8 +1115,7 @@ void UnitClass::SendDeaggregateData(VuTargetEntity *target)
     SimVehicleClass *vehicle = NULL;
     VU_ID_NUMBER num;
     VU_SESSION_ID addr;
-    int totalsize, onesize, i,tr = 0, v/*,classID*/;
-//	int  tc = 0;
+    int totalsize, onesize, i, tc = 0, tr = 0, v/*,classID*/;
     WayPoint w;
     VU_ID vuid;
     long fuel;
@@ -2447,7 +2446,7 @@ int UnitClass::ChangeUnitLocation(CampaignHeading h)
         }
 
         // If we get here, it's because we've moved..
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
         else if (DisplayOk(this) && displayCampaign)
         {
             RedrawCell(NULL, x, y);
@@ -3716,15 +3715,11 @@ int UnitClass::CanDetect(FalconEntity* ent)
 
 #ifdef DEBUG
 
-	if (ent->IsAirplane())
-	{
-	//	int i = 0;
-	}
+    if (ent->IsAirplane())
+        int i = 0;
 
-	if (IsAirplane())
-	{
-	//	int i = 0;
-	}
+    if (IsAirplane())
+        int i = 0;
 
 #endif
 
@@ -5403,8 +5398,7 @@ Unit GetUnitByID(VU_ID id)
 
 Unit ConvertUnit(Unit u, int domain, int type, int stype, int sptype)
 {
-	Unit nu = NULL;
-//	Unit p = NULL;
+    Unit nu, p = NULL;
     GridIndex x, y;
     short z;
 
@@ -5897,8 +5891,7 @@ int FindTaxiPt(Flight flight, Objective airbase, int checklist)
 int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner)
 {
     long            size = 0, newsize;
-//  short num = 0
-	short count = 0, type;
+    short num = 0, count = 0, type;
     Unit cur;
     VU_BYTE *buf, *sptr, *bufhead;
     //#ifdef DEBUG

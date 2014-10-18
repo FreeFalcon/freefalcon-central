@@ -401,7 +401,7 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
     ShiAssert(*nVerts >= 3);
     ShiAssert(*nVerts <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-    // Initializethe vertex buffers
+    // Intialize the vertex buffers
     outList = vertList1;
     nextOut = outList;
     i = 0;

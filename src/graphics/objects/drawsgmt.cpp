@@ -1075,13 +1075,13 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             0, 2, -2
         };
 
-        //float colormod[] =
-        //{
-        //    1.0f,
-        //    0.68f,
-        //    0.68f,
-        //    1.0f
-        //};
+        float colormod[] =
+        {
+            1.0f,
+            0.68f,
+            0.68f,
+            1.0f
+        };
 
         v0.u =  1, v0.v = 0;
         v1.u =  1, v1.v = .5;
@@ -1146,13 +1146,13 @@ void DrawableTrail::DrawSegment(class RenderOTW *renderer, int LOD, TrailNode *n
             0, 2, -2
         };
 
-        //float colormod[] =
-        //{
-        //    1.0f,
-        //    0.68f,
-        //    0.68f,
-        //    1.0f
-        //};
+        float colormod[] =
+        {
+            1.0f,
+            0.68f,
+            0.68f,
+            1.0f
+        };
 
         v0.u =  5, v0.v = 0;
         v1.u =  5, v1.v = 1;
@@ -2784,7 +2784,7 @@ void DrawableTrail::SetupTexturesOnDevice(DXContext *rc)
     GunTrailTexture.palette->UpdateMPR(GunTrailTexture.palette->paletteData);
 
 
-    // Initializethe lite colors for all trail types (handles those which aren't lite)
+    // Intialize the lite colors for all trail types (handles those which aren't lite)
     for (int i = 0; i < nTypes; i++)
     {
         types[i].rLite = types[i].r, types[i].gLite = types[i].g, types[i].bLite = types[i].b;

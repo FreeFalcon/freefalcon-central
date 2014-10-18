@@ -618,7 +618,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         context.SelectForegroundColor(cloudColor);
         context.RestoreState(STATE_ALPHA_SOLID);
 
-        // Now initialize the four corners of the rectangle to fill
+        // Now intialize the four corners of the rectangle to fill
         pVtx[0].x = leftPixel;
         pVtx[0].y = bottomPixel;
         pVtx[1].x = leftPixel;
@@ -641,7 +641,7 @@ void RenderOTW::PostSceneCloudOcclusion(void)
         context.Primitive(MPR_PRM_TRIFAN, 0, 4, sizeof(*p));
         p = (MPRVtx_t*)context.GetContextBufferPtr();
 
-        // Now initialize the four corners of the rectangle to fill
+        // Now intialize the four corners of the rectangle to fill
         p->x = leftPixel;
         p->y = bottomPixel;
         p++;
@@ -807,7 +807,7 @@ void RenderOTW::DrawTunnelBorder(void)
 void RenderOTW::PreLoadScene(const Tpoint *offset, const Trotation *orientation)
 {
     Tpoint position = {0.0F};
-//  int containingList = 0;
+    int containingList = 0;
     float prevFOV = 0.0F, prevLeft = 0.0F, prevRight = 0.0F, prevTop = 0.0F, prevBottom = 0.0F;
 
     prevFOV = GetFOV();

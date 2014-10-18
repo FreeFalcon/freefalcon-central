@@ -101,6 +101,7 @@ void UpdateObjectiveCombatStatistics(void);
 int LoadFeatureEntryData(char *filename);
 int LoadACDefData(char*);
 int LoadSquadronStoresData(char *filename);
+extern int FileVerify(void);
 
 extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 void WriteClassTable();
@@ -161,6 +162,9 @@ int LoadClassTable(char *filename)
         objSet = newstr + 1;
         newstr = strchr(objSet, '\\');
     }
+
+    // Check file integrity
+    // FileVerify();
 
     InitClassTableAndData(filename, objSet);
     ReadClassTable();

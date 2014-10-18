@@ -181,17 +181,17 @@ void DigitalBrain::MissileDefeatCheck(void)
             {
                 if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming)
                 {
-//                  int testme = 1;
+                    int testme = 1;
                 }
 
                 if (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
                 {
-//                  int testme = 1;
+                    int testme = 1;
                 }
 
                 if ((!((MissileClass *)self->incomingMissile[0])->sensorArray) && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch)
                 {
-//                  int testme = 1;
+                    int testme = 1;
                 }
             }
         }
@@ -206,11 +206,11 @@ void DigitalBrain::MissileDefeatCheck(void)
              || (((MissileClass *)self->incomingMissile[0])->sensorArray && ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
              || (!((MissileClass *)self->incomingMissile[0])->sensorArray && (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) && rwrElement->missileLaunch)))
         {
-//          int donothing = 1;
+            int donothing = 1;
         }
         else if (missileRange < (10.0f * NM_TO_FT) && SimLibElapsedTime > visDetectTimer)
         {
-//          int donothing1 = 1;
+            int donothing1 = 1;
             VisualClass *eyeball = (VisualClass*)FindSensor((SimMoverClass *)self, SensorClass::Visual);
             float az, el, ata, ataFrom, droll;
             int canSee = 0;
@@ -229,27 +229,27 @@ void DigitalBrain::MissileDefeatCheck(void)
                     if (missileRange > (8.0f * NM_TO_FT) && SimLibElapsedTime > visDetectTimer
                         && rand() % 100 < 3)
                     {
-//                      int testme = 0;
+                        int testme = 0;
                     }
                     else if (missileRange > (6.0f * NM_TO_FT) && missileRange < (8.0f * NM_TO_FT)
                              && SimLibElapsedTime > visDetectTimer && rand() % 100 < 10)
                     {
-//                      int testme = 0;
+                        int testme = 0;
                     }
                     else if (missileRange > (4.0f * NM_TO_FT) && missileRange < (6.0f * NM_TO_FT)
                              && SimLibElapsedTime > visDetectTimer && rand() % 100 < 25)
                     {
-//                      int testme = 0;
+                        int testme = 0;
                     }
                     else if (missileRange > (2.0f * NM_TO_FT) && missileRange < (4.0f * NM_TO_FT)
                              && SimLibElapsedTime > visDetectTimer && rand() % 100 < 40)
                     {
-//                      int testme = 0;
+                        int testme = 0;
                     }
                     else if (missileRange > (0.5f * NM_TO_FT) && missileRange < (2.0f * NM_TO_FT)
                              && SimLibElapsedTime > visDetectTimer && rand() % 100 < 65)
                     {
-//                      int testme = 0;
+                        int testme = 0;
                     }
                     else
                     {

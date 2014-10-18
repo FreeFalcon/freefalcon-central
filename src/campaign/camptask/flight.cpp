@@ -94,10 +94,10 @@ extern DWORD gAverageFlightMoveTime;
 extern int  gFlightMoves;
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 #ifdef DEBUG
@@ -567,18 +567,18 @@ int FlightClass::Save(VU_BYTE **stream)
     memcpy(*stream , &mission_context, sizeof(uchar));
     *stream += sizeof(uchar);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        package.num_ = rename_table[package.num_];
+    if (gRenameIds)
+        package.num_ = RenameTable[package.num_];
 
 #endif
     memcpy(*stream, &package, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        squadron.num_ = rename_table[squadron.num_];
+    if (gRenameIds)
+        squadron.num_ = RenameTable[squadron.num_];
 
 #endif
     memcpy(*stream, &squadron, sizeof(VU_ID));
@@ -2498,7 +2498,7 @@ int FlightClass::ChooseTarget()
             e = (CampEntity)detit.GetNext();
         }
 
-//      int placeHolder = 0;
+        int placeHolder = 0;
     }
 
 #endif
@@ -5185,7 +5185,7 @@ void UpdateSquadronStatus(Flight flight, int landed, int playchatter)
         }
     }
 
-    // Decide whether to send the message or not
+    // Decide wether to send the message or not
     if (sendmessage)
         FalconSendMessage(msg, FALSE);
     else if (msg)

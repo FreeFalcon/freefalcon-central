@@ -134,7 +134,7 @@ static int soundCount = 0;
 
 BOOL gSoundManagerRunning = FALSE;
 extern char FalconObjectDataDir[_MAX_PATH];
-extern char sound_theater_directory[_MAX_PATH];
+extern char FalconSoundThrDirectory[_MAX_PATH];
 
 #define MAX_FALCON_SOUNDS  16//8
 
@@ -145,7 +145,7 @@ Tpoint CamVel;
 
 static void LoadSFX(char *falconDataDir);
 static void UnLoadSFX(void);
-//static BOOL ReadSFXTable(char *sndtable);
+static BOOL ReadSFXTable(char *sndtable);
 static BOOL ReadSFXTableTXT(char *sndtable); // MLR 2003-10-17
 static BOOL WriteSFXTable(char *sndtable);
 BOOL SaveSFXTable();
@@ -329,7 +329,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     ShiAssert(FALSE == IsBadStringPtr(falconDataDir, _MAX_PATH));
     ShiAssert(FALSE != IsWindow(hWnd));
     ShiAssert(FALSE == IsBadStringPtr(FalconObjectDataDir, _MAX_PATH));
-    ShiAssert(FALSE == IsBadStringPtr(sound_theater_directory, _MAX_PATH));
+    ShiAssert(FALSE == IsBadStringPtr(FalconSoundThrDirectory, _MAX_PATH));
 
 
     // Sonic Boom N wave
@@ -372,7 +372,7 @@ int InitSoundManager(HWND hWnd, int, char *falconDataDir)
     }
 
     char sfxtable[_MAX_PATH];
-    sprintf(sfxtable, "%s\\%s", sound_theater_directory, FALCONSNDTABLETXT);
+    sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
     ShiAssert(SFX_DEF == NULL);
 
     if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
@@ -1151,7 +1151,7 @@ void F4ReloadSFX(void)
     SFX_DEF = NULL;
 
     char sfxtable[_MAX_PATH];
-    sprintf(sfxtable, "%s\\%s", sound_theater_directory, FALCONSNDTABLETXT);
+    sprintf(sfxtable, "%s\\%s", FalconSoundThrDirectory, FALCONSNDTABLETXT);
 
     if (!ReadSFXTableTXT(sfxtable)) // MLR 2003-10-17 Parse text file if it exists
     {
@@ -1176,7 +1176,7 @@ void LoadSFX(char *falconDataDir)
     char fname[MAX_PATH];
 
     // RV - Biker - Suppress log-file
-    //sprintf( fname, "%s\\%s", sound_theater_directory, "SoundError.log" );
+    //sprintf( fname, "%s\\%s", FalconSoundThrDirectory, "SoundError.log" );
 
     //FILE *fp;
     //fp=fopen("SoundError.log","w");
@@ -1187,7 +1187,7 @@ void LoadSFX(char *falconDataDir)
             if ((SFX_DEF[i].flags & SFX_FLAGS_HIGH) == 0)
                 continue;
 
-            sprintf(fname, "%s\\%s", sound_theater_directory, SFX_DEF[i].fileName);
+            sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
             //SFX_DEF[i].handle = F4LoadFXSound(fname, SND_EXCLUSIVE, &SFX_DEF[i]);
             SFX_DEF[i].handle = F4LoadFXSound(fname, SFX_DEF[i].flags, &SFX_DEF[i]);
             //if(SFX_DEF[i].handle == SND_NO_HANDLE)
@@ -1203,7 +1203,7 @@ void LoadSFX(char *falconDataDir)
             if (SFX_DEF[i].flags & SFX_FLAGS_HIGH)
                 continue;
 
-            sprintf(fname, "%s\\%s", sound_theater_directory, SFX_DEF[i].fileName);
+            sprintf(fname, "%s\\%s", FalconSoundThrDirectory, SFX_DEF[i].fileName);
             //SFX_DEF[i].handle = F4LoadFXSound(fname, SND_EXCLUSIVE, &SFX_DEF[i]);
             SFX_DEF[i].handle = F4LoadFXSound(fname, SFX_DEF[i].flags, &SFX_DEF[i]);
             //if(SFX_DEF[i].handle == SND_NO_HANDLE)
@@ -1494,7 +1494,7 @@ F4SoundFXSetDist(int sfxId, int override, float volume, float pscale)
 
     sfxp = &SFX_DEF[ sfxId ];
 
-    // Cobra - Fix CTD when exiting FF
+    // Cobra - Fix CTD when exiting F4
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 
     if (g_bRealisticAvionics &&
@@ -1798,7 +1798,7 @@ void F4SoundPos::Sfx(int SfxID, int SID, float PScale, float Vol)
 
     sfxp = &SFX_DEF[ SfxID ];
 
-    // Cobra - Fix CTD when exiting FF
+    // Cobra - Fix CTD when exiting F4
     // sfr: @todo remove this hack
     if (F4IsBadReadPtr(sfxp, sizeof(sfxp))) return;
 

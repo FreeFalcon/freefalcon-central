@@ -733,9 +733,10 @@ void instant_action::create_player_flight(void)
 {
     //Modified by TW, 2003-10-17
     //You can now configure your plane type and loadout using the files m.ia and f.ia
-//	int loop = 0;
-//  int valid_data = 0;
-    int value = 0,
+    int
+    loop = 0,
+    valid_data = 0,
+    value = 0,
     tid,
     i,
     type,
@@ -751,7 +752,8 @@ void instant_action::create_player_flight(void)
     FILE
     *fp = NULL;
 
-//  ia_type* ia = NULL;
+    ia_type
+    *ia = NULL;
 
     short
     x,

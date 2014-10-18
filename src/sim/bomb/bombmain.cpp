@@ -774,7 +774,7 @@ int BombClass::Exec(void)
         // RV - Biker - Add 2 sec delay for guidance
         else if (((flags & IsGPS) || (flags & IsJSOW)) && (SimLibElapsedTime - timeOfDeath) > (2.0f * SEC_TO_MSEC))
         {
-//          FalconEntity *target = NULL;
+            FalconEntity *target = NULL;
             // SimBaseClass *simTarg;
 
             // Cobra - Check that we have a valid auxData->JDAMLift for JSOWs
@@ -1158,7 +1158,7 @@ void BombClass::ApplyProximityDamage(float groundZ, float detonateHeight)
 
     //MI
     float hat = 0;
-//  float maxHeight = 3000.0f;
+    float maxHeight = 3000.0f;
 
 
     // for altitude detonations (cluster bomb), the damage radius must

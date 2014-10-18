@@ -98,15 +98,15 @@ extern int PMRX;
 extern int PMRY;
 extern int MAXOI;
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 extern HWND hToolWnd;
 extern void CampaignWindow(HINSTANCE hInstance, int nCmdShow);
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
-#endif  CAMPTOOL  
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
+#endif CAMPTOOL
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 extern short CampIDRenameTable[MAX_CAMP_ENTITIES];
 #endif
 
@@ -373,7 +373,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
 
     SetTimeCompression(0);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
     // KCK: Windows is so fucked up... I don't even want to start explaining
     // why I have to do this..  sigh.
     CampLeaveCriticalSection();
@@ -424,10 +424,10 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 {
     char from[MAX_PATH], to[MAX_PATH];
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        memset(rename_table, 0, sizeof(VU_ID_NUMBER) * 65536);
+    if (gRenameIds)
+        memset(RenameTable, 0, sizeof(VU_ID_NUMBER) * 65536);
 
     if (CampIDRenameTable[0])
     {
@@ -506,9 +506,9 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     LoadPersistantList(savefile);
     ChooseBullseye();
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
     {
         EndReadCampFile();
         // The new scenario file should be set to our current save file
@@ -971,7 +971,7 @@ void CampaignClass::EndCampaign()
 #endif
     SetTimeCompression(0);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (hToolWnd)
     {
@@ -1637,10 +1637,10 @@ int CampaignClass::Encode(VU_BYTE **stream)
 #ifdef DEBUG
     PlayerSquadronID.num_ &= 0x0000ffff;
 #endif
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
-    if (rename_IDs)
-        PlayerSquadronID.num_ = rename_table[PlayerSquadronID.num_];
+    if (gRenameIds)
+        PlayerSquadronID.num_ = RenameTable[PlayerSquadronID.num_];
 
 #endif
     memcpy(buffer, &PlayerSquadronID, sizeof(VU_ID));

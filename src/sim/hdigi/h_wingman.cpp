@@ -145,7 +145,7 @@ void HeliBrain::FollowLead(void)
 {
     Tpoint newpos;
 
-//  HeliBrain *leadBrain = NULL;
+    HeliBrain *leadBrain = NULL;
 
     float rng = 0.0F;
     float dx = 0.0F, dy = 0.0F, dz = 0.0F;

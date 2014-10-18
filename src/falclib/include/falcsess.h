@@ -240,7 +240,7 @@ public:
     void SetPlayerSquadronID(VU_ID id);
     void SetPlayerFlight(FlightClass* ent);
     void SetPlayerFlightID(VU_ID id);
-    // sfr: changed to FreeFalcon entity
+    // sfr: changed to falcon entity
     //void SetPlayerEntity(VuEntity* ent);
     void SetPlayerEntity(FalconEntity* ent);
     void SetPlayerEntityID(VU_ID id);
