@@ -25,8 +25,8 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -44,7 +44,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../build/x86/debug_win32/ui/general/</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../build/x86/release_win32/ui/general/</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../build/x86/release_win32/ui/general/</IntDir>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
@@ -52,6 +52,9 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">uigeneral</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">uigeneral</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -65,7 +68,7 @@
       <AssemblerListingLocation>../../../../build/x86/debug_win32/ui/general/</AssemblerListingLocation>
       <ObjectFileName>../../../../build/x86/debug_win32/ui/general/</ObjectFileName>
       <ProgramDataBaseFileName>../../../../build/x86/debug_win32/ui/general/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -74,6 +77,23 @@
       </PrecompiledHeaderFile>
       <BrowseInformationFile>../../../../build/x86/debug_win32/ui/general/</BrowseInformationFile>
       <MinimalRebuild>true</MinimalRebuild>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <StringPooling>true</StringPooling>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <OpenMPSupport>true</OpenMPSupport>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
       <OutputFile>../../../../build/x86/debug_win32/ui/general/uigeneral.lib</OutputFile>

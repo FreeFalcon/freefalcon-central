@@ -78,10 +78,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -107,6 +107,8 @@
     <TargetName>FFViper</TargetName>
     <GenerateManifest>true</GenerateManifest>
     <LibraryPath>$(LibraryPath);$(DX81_SDK)\lib</LibraryPath>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -132,14 +134,28 @@
       <XMLDocumentationFileName>../build/x86/debug_win32/ffviper/doc.xml</XMLDocumentationFileName>
       <AdditionalIncludeDirectories>./;falclib/include;codelib/include;vu2/include;sim/include;campaign/include;ui/include;graphics/include;amd/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SmallerTypeCheck>true</SmallerTypeCheck>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BrowseInformation>false</BrowseInformation>
       <BrowseInformationFile>../build/x86/debug_win32/ffviper/FFViper.bsc</BrowseInformationFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <OpenMPSupport>true</OpenMPSupport>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
