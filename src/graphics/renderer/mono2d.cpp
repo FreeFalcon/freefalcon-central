@@ -46,7 +46,7 @@ static BOOL enabled = FALSE;
 \***************************************************************************/
 void MonochromeDisplay::Setup(void)
 {
-    OSVERSIONINFO osInfo;
+//    OSVERSIONINFO osInfo;
 
 
     // Set the base class's member variables
