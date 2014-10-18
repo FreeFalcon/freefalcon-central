@@ -80,7 +80,7 @@ extern int
 start_save_stream,
 start_load_stream;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -333,7 +333,7 @@ int SquadronClass::Save(VU_BYTE **stream)
     *stream += sizeof(PilotClass) * PILOTS_PER_SQUADRON;
     memcpy(*stream, schedule, sizeof(long)*VEHICLE_GROUPS_PER_UNIT);
     *stream += sizeof(long) * VEHICLE_GROUPS_PER_UNIT;
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         airbase_id.num_ = rename_table[airbase_id.num_];
@@ -341,7 +341,7 @@ int SquadronClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &airbase_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         hot_spot.num_ = rename_table[hot_spot.num_];

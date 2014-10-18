@@ -8,11 +8,11 @@
 
 #define LOAD_DLLS
 
-//#define capi_DEBUG
+//#define CAPI_DEBUG
 //#define DEBUG_RECEIVE
 //#define DEBUG_SEND
 
-//#define capi_NET_DEBUG_FEATURES
+//#define CAPI_NET_DEBUG_FEATURES
 
 // compression stuff
 #include "utils/Lzss.h"

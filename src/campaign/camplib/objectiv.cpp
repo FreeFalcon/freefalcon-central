@@ -82,7 +82,7 @@ extern int AwakeCampaignEntities;
 // Module variabls and stuff
 // =========================
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -201,7 +201,7 @@ ObjectiveClass::ObjectiveClass(VU_BYTE **stream, long *rem) : CampBaseClass(stre
     dirty_objective = 0;
     static_data.class_data = (ObjClassDataType*)Falcon4ClassTable[share_.entityType_ - VU_LAST_ENTITY_TYPE].dataPtr;
 
-    //#ifdef CAMPTOOL
+    //#ifdef  CAMPTOOL  
     // if (rename_IDs) {
     // VU_ID new_id = FalconNullId;
     //
@@ -460,7 +460,7 @@ int ObjectiveClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
     memcpy(*stream, &static_data.nameid, sizeof(short));
     *stream += sizeof(short);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         static_data.parent.num_ = rename_table[static_data.parent.num_];
@@ -475,7 +475,7 @@ int ObjectiveClass::Save(VU_BYTE **stream)
 
     for (i = 0; i < static_data.links; i++)
     {
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
         if (rename_IDs)
             link_data[i].id.num_ = rename_table[link_data[i].id.num_];

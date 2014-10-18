@@ -46,7 +46,7 @@ extern int gBattalionDetects;
 #define LOG_ERRORS
 #endif DEBUG
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -163,7 +163,7 @@ int GroundUnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
     memcpy(*stream, &division, sizeof(short));
     *stream += sizeof(short);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         aobj.num_ = rename_table[aobj.num_];

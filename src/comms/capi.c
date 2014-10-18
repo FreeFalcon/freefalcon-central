@@ -21,11 +21,11 @@ unsigned short myRecvPort = 0;
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
 
 extern int ComDPLAYEnumProtocols(int *protocols, int maxprotocols);
-DWProc_t capi_TimeStamp = NULL;
+DWProc_t CAPI_TimeStamp = NULL;
 
-unsigned long com_api_last_error = 0;
+unsigned long com_API_last_error = 0;
 
-static void (*info_callback)(ComAPIHandle c, int send, int msgsize) = NULL;
+static void (*info_callback)(com_API_handle c, int send, int msgsize) = NULL;
 
 
 // JB 010718 start
@@ -53,7 +53,7 @@ void leave_cs(void)
 // JB 010718 end
 
 
-void ComAPIClose(ComAPIHandle c)
+void ComAPIClose(com_API_handle c)
 {
     enter_cs();  // JB 010718
 
@@ -65,7 +65,7 @@ void ComAPIClose(ComAPIHandle c)
     leave_cs();  // JB 010718
 }
 
-int ComAPISend(ComAPIHandle c, int msgsize, int type)
+int ComAPISend(com_API_handle c, int msgsize, int type)
 {
     int rc = 0;
     int isBad;
@@ -93,7 +93,7 @@ int ComAPISend(ComAPIHandle c, int msgsize, int type)
 }
 
 
-int ComAPISendDummy(ComAPIHandle c, unsigned long ip, unsigned short port)
+int ComAPISendDummy(com_API_handle c, unsigned long ip, unsigned short port)
 {
     int rc = 0;
     enter_cs();
@@ -112,7 +112,7 @@ int ComAPISendDummy(ComAPIHandle c, unsigned long ip, unsigned short port)
 
 }
 
-int ComAPISendOOB(ComAPIHandle c, int msgsize, int type)
+int ComAPISendOOB(com_API_handle c, int msgsize, int type)
 {
     int rc = 0;
     enter_cs();  // JB 010718
@@ -134,7 +134,7 @@ int ComAPISendOOB(ComAPIHandle c, int msgsize, int type)
     return rc;
 }
 
-/*int ComAPISendX(ComAPIHandle c, int msgsize,ComAPIHandle Xcom){
+/*int ComAPISendX(com_API_handle c, int msgsize,com_API_handle Xcom){
  int rc = 0;
  enter_cs ();
  if(c){
@@ -154,7 +154,7 @@ int ComAPISendOOB(ComAPIHandle c, int msgsize, int type)
 
 /* recive data from a comms session */
 
-int ComAPIGet(ComAPIHandle c)
+int ComAPIGet(com_API_handle c)
 {
     int size = 0;
     int isBad;
@@ -181,7 +181,7 @@ int ComAPIGet(ComAPIHandle c)
 
 /* set the group to send and recieve data from */
 
-void ComAPIGroupSet(ComAPIHandle c, int group)
+void ComAPIGroupSet(com_API_handle c, int group)
 {
     c;
     group;
@@ -189,7 +189,7 @@ void ComAPIGroupSet(ComAPIHandle c, int group)
 
 /* get the local hosts unique id len */
 
-int ComAPIHostIDLen(ComAPIHandle c)
+int ComAPIHostIDLen(com_API_handle c)
 {
     if (c)
     {
@@ -203,7 +203,7 @@ int ComAPIHostIDLen(ComAPIHandle c)
 
 /* get the local hosts unique id */
 
-int ComAPIHostIDGet(ComAPIHandle c, char *buf, int reset)
+int ComAPIHostIDGet(com_API_handle c, char *buf, int reset)
 {
     int ret_val = 0;
 
@@ -221,7 +221,7 @@ int ComAPIHostIDGet(ComAPIHandle c, char *buf, int reset)
 
 /* get the associated write buffer */
 
-char *ComAPISendBufferGet(ComAPIHandle c)
+char *ComAPISendBufferGet(com_API_handle c)
 {
     char *ret_val = 0;
     enter_cs();
@@ -236,7 +236,7 @@ char *ComAPISendBufferGet(ComAPIHandle c)
     return ret_val;
 }
 
-char *ComAPIRecvBufferGet(ComAPIHandle c)
+char *ComAPIRecvBufferGet(com_API_handle c)
 {
     char *ret_val = 0;
     int isBad;
@@ -257,7 +257,7 @@ char *ComAPIRecvBufferGet(ComAPIHandle c)
 
 /* get the current send+receive message count */
 
-unsigned long ComAPIQuery(ComAPIHandle c, int querytype)
+unsigned long ComAPIQuery(com_API_handle c, int querytype)
 {
     unsigned long
     ret_val = 0;
@@ -309,10 +309,10 @@ int ComAPIEnumProtocols(int *protocols, int maxprotocols)
 
     if (maxprotocols >= 2)
     {
-        *protocols = capi_TCP_PROTOCOL;
+        *protocols = CAPI_TCP_PROTOCOL;
         ourprotos++;
         protocols++;
-        *protocols = capi_UDP_PROTOCOL;
+        *protocols = CAPI_UDP_PROTOCOL;
         ourprotos++;
     }
 
@@ -329,19 +329,19 @@ char *ComAPIinet_htoa(u_long ip)
 {
     struct in_addr addr;
 
-    if (capi_htonl == NULL)
+    if (CAPI_htonl == NULL)
     {
         return NULL;
     }
 
-    addr.s_addr = capi_htonl(ip);
+    addr.s_addr = CAPI_htonl(ip);
 
-    if (capi_inet_ntoa == NULL)
+    if (CAPI_inet_ntoa == NULL)
     {
         return NULL;
     }
 
-    return capi_inet_ntoa(addr);
+    return CAPI_inet_ntoa(addr);
 }
 
 /* convert net ipaddress to string */
@@ -352,12 +352,12 @@ char *ComAPIinet_ntoa(u_long ip)
 
     addr.s_addr = ip;
 
-    if (capi_inet_ntoa == NULL)
+    if (CAPI_inet_ntoa == NULL)
     {
         return NULL;
     }
 
-    return capi_inet_ntoa(addr);
+    return CAPI_inet_ntoa(addr);
 }
 
 /* convert net ipaddress to string */
@@ -366,33 +366,33 @@ unsigned long ComAPIinet_haddr(char * IPAddress)
 {
     unsigned long ipaddress;
 
-    if (capi_inet_addr == NULL)
+    if (CAPI_inet_addr == NULL)
     {
         return 0;
     }
 
-    ipaddress = capi_inet_addr(IPAddress);
+    ipaddress = CAPI_inet_addr(IPAddress);
 
-    if (capi_ntohl == NULL)
+    if (CAPI_ntohl == NULL)
     {
         return 0;
     }
 
-    return capi_ntohl(ipaddress);
+    return CAPI_ntohl(ipaddress);
 }
 
 unsigned long ComAPIGetLastError(void)
 {
-    return com_api_last_error;
+    return com_API_last_error;
 }
 
 void ComAPISetTimeStampFunction(unsigned long(*TimeStamp)(void))
 {
-    capi_TimeStamp = TimeStamp;
-    capi_TimeStamp();
+    CAPI_TimeStamp = TimeStamp;
+    CAPI_TimeStamp();
 }
 
-unsigned long ComAPIGetTimeStamp(ComAPIHandle c)
+unsigned long ComAPIGetTimeStamp(com_API_handle c)
 {
     unsigned long
     ret_val = 0;
@@ -407,7 +407,7 @@ unsigned long ComAPIGetTimeStamp(ComAPIHandle c)
     return ret_val;
 }
 
-void ComAPIRegisterInfoCallback(void (*func)(ComAPIHandle, int, int))
+void ComAPIRegisterInfoCallback(void (*func)(com_API_handle, int, int))
 {
     info_callback = func;
 }
@@ -443,7 +443,7 @@ void ComAPIBWEnterState(int state)
 // End Bandwidth //
 ///////////////////
 
-int ComAPIInitComms(void)
+int com_API_init_comms(void)
 {
     WSADATA wsaData;
     int ret = 1;
@@ -456,14 +456,14 @@ int ComAPIInitComms(void)
         /* if No more connections then WSACleanup() */
         if (!windows_sockets_connections)
         {
-            capi_WSACleanup();
+            CAPI_WSACleanup();
         }
     }
 
     return ret;
 }
 
-void ComAPISetName(ComAPIHandle c, char *name_in)
+void com_API_set_name(com_API_handle c, char *name_in)
 {
     if (c->name)
     {
@@ -474,61 +474,61 @@ void ComAPISetName(ComAPIHandle c, char *name_in)
     strcpy(c->name, name_in);
 }
 
-void ComAPISetLocalPorts(unsigned short b, unsigned short r)
+void com_API_set_local_ports(unsigned short b, unsigned short r)
 {
-    myRecvPort =  capi_htons(b);
-    myReliableRecvPort = capi_htons(r);
+    myRecvPort =  CAPI_htons(b);
+    myReliableRecvPort = CAPI_htons(r);
 }
 
-unsigned short ComAPIGetRecvPort(ComAPIHandle c)
+unsigned short com_API_get_receive_port(com_API_handle c)
 {
     // this is the same for all coms of same type
-    return capi_ntohs(((ComIP*)c)->recAddress.sin_port);
+    return CAPI_ntohs(((ComIP*)c)->recAddress.sin_port);
 }
 
-unsigned short ComAPIGetPeerRecvPort(ComAPIHandle c)
+unsigned short com_API_get_peer_receive_port(com_API_handle c)
 {
     // we send to this address, so its his receive port
-    return capi_ntohs(((ComIP*)c)->sendAddress.sin_port);
+    return CAPI_ntohs(((ComIP*)c)->sendAddress.sin_port);
 }
 
-unsigned long ComAPIGetPeerIP(ComAPIHandle c)
+unsigned long com_API_get_peer_IP(com_API_handle c)
 {
     // we send to this address, so this is his IP
-    return capi_ntohl(((ComIP*)c)->sendAddress.sin_addr.S_un.S_addr);
+    return CAPI_ntohl(((ComIP*)c)->sendAddress.sin_addr.S_un.S_addr);
 }
 
-unsigned long ComAPIGetPeerId(ComAPIHandle c)
+unsigned long com_API_get_peer_ID(com_API_handle c)
 {
-    return capi_ntohl(((ComIP*)c)->id);
+    return CAPI_ntohl(((ComIP*)c)->id);
 }
 
-int ComAPIGetProtocol(ComAPIHandle c)
+int com_API_get_protocol(com_API_handle c)
 {
     return c->protocol;
 }
 
-unsigned short ComAPIGetMyRecvPort()
+unsigned short com_API_get_my_receive_port()
 {
-    return capi_ntohs(myRecvPort);
+    return CAPI_ntohs(myRecvPort);
 }
 
-unsigned short ComAPIGetMyReliableRecvPort()
+unsigned short com_API_get_my_reliable_receive_port()
 {
-    return capi_ntohs(myReliableRecvPort);
+    return CAPI_ntohs(myReliableRecvPort);
 }
 
-void ComAPISetMyRecvPort(unsigned short port)
+void com_API_set_my_receive_port(unsigned short port)
 {
-    myRecvPort = capi_htons(port);
+    myRecvPort = CAPI_htons(port);
 }
 
-void ComAPISetMyReliableRecvPort(unsigned short port)
+void com_API_set_my_reliable_receive_port(unsigned short port)
 {
-    myReliableRecvPort = capi_htons(port);
+    myReliableRecvPort = CAPI_htons(port);
 }
 
-int ComAPIPrivateIP(unsigned long ip)
+int com_API_private_IP(unsigned long ip)
 {
     // ip is composed
     // XXX.YYY.ZZZ.WWW
@@ -555,7 +555,7 @@ int ComAPIPrivateIP(unsigned long ip)
 
 long ComAPIGetIP(const char *address)
 {
-    struct hostent *h = capi_gethostbyname(address);
+    struct hostent *h = CAPI_gethostbyname(address);
 
     if ((h == NULL) || (h->h_addr_list == NULL))
     {
@@ -563,7 +563,7 @@ long ComAPIGetIP(const char *address)
     }
     else
     {
-        return capi_ntohl(*((long*)h->h_addr_list[0]));
+        return CAPI_ntohl(*((long*)h->h_addr_list[0]));
 
     }
 }

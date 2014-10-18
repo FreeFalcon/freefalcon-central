@@ -17,13 +17,13 @@ extern "C" {
     */
     void ComUDPSetup(unsigned short rport);
 
-    ComAPIHandle ComUDPOpen(
+    com_API_handle ComUDPOpen(
         char *name, // name of this comm, usuallly callsign UDP
         int buffersize,
         char *gamename,
         unsigned short localUdpPort, // port where we receive data from this entity
         unsigned short remoteUdpPort,  // port where this entity receives udp data
-        unsigned long IPaddress, // peer ip, if == capi_DANGLING_IP, this is a receive only comm
+        unsigned long IPaddress, // peer ip, if == CAPI_DANGLING_IP, this is a receive only comm
         unsigned long id // id of the owner
     );
 

@@ -50,11 +50,11 @@ extern VU_ID_NUMBER lastNonVolatileId;
 extern VU_ID_NUMBER lastLowVolitileId;
 extern VU_ID_NUMBER lastVolatileId;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 extern unsigned char        SHOWSTATS;
 #endif
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -199,7 +199,7 @@ int BrigadeClass::Save(VU_BYTE **stream)
         fflush(save_log);
     }
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
     {

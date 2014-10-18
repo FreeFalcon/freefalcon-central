@@ -88,7 +88,7 @@ void GetNeighborObject(AS_DataClass* asd, void* o, void* t);
 // Public functions
 // ==========================
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
 extern signed short ShowPath(Path path, GridIndex X, GridIndex Y);
 extern void ShowWhere(MapData md, GridIndex x, GridIndex y, int color);
@@ -97,7 +97,7 @@ extern void ShowLink(MapData md, Objective o, Objective n, int color);
 extern unsigned char ShowSearch;
 int DColor;
 
-#endif CAMPTOOL
+#endif  CAMPTOOL  
 
 
 int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags)
@@ -110,7 +110,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     moveType = type;
     moveFlags = flags;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (ShowSearch)
         DColor = (DColor + 1) % 16;
@@ -139,7 +139,7 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     retval = ASD->ASSearch(p, o, t, GetNeighborCoord, RETURN_PARTIAL_ON_FAIL | RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
     //newtime = GetTickCount();
     //MonoPrint("Finding Grid Path: %d,%d -> %d,%d   Time to find: %d (Result: %d)\n",x,y,xx,yy,newtime-time,retval);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (ShowSearch && MOVE_AIR(moveType))
         Sleep(5000);
@@ -196,7 +196,7 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     if (type == NoMove && o != t)
         return -1;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (ShowSearch)
         // DColor = (DColor+1)%16;
@@ -289,7 +289,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
     if (moveType == NoMove)
         return -1;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (ShowSearch)
         // DColor = (DColor+1)%16;
@@ -498,7 +498,7 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
     else
         leftmod = 3.0f;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (ShowSearch && MOVE_AIR(moveType))
         ShowWP(NULL, ox, oy, DColor);
@@ -790,7 +790,7 @@ void GetNeighborObject(AS_DataClass* asd, void* ov, void* tv)
         {
             n = o->GetNeighbor(c);
             n->GetLocation(&nx, &ny);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
             if (ShowSearch)
                 ShowLink(NULL, o, n, DColor);

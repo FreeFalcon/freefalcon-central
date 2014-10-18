@@ -4,7 +4,7 @@
 #include "convert.h"
 #include "Campterr.h"
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
 extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
 extern void CloseCampFile(FILE *fp);

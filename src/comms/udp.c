@@ -17,10 +17,10 @@
 // sfr: for new isbad checks
 #include "falclib/include/isbad.h"
 
-extern int com_api_last_error;
+extern int com_API_last_error;
 int ComIPGetHostIDIndex = 0;
 int force_ip_address = 0;
-extern DWProc_t capi_TimeStamp;
+extern DWProc_t CAPI_TimeStamp;
 
 void cut_bandwidth(void);
 
@@ -47,22 +47,22 @@ extern HANDLE    GlobalListLock;
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
 
 /* forward function declarations */
-void ComUDPClose(ComAPIHandle c);
-int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type);
-int ComUDPSendDummy(ComAPIHandle c, unsigned long ip, unsigned short port);
-int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom);
-int ComUDPGet(ComAPIHandle c);
+void ComUDPClose(com_API_handle c);
+int ComUDPSend(com_API_handle c, int msgsize, int oob, int type);
+int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port);
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom);
+int ComUDPGet(com_API_handle c);
 
-int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset);
-char *ComIPSendBufferGet(ComAPIHandle c);
-char *ComIPRecvBufferGet(ComAPIHandle c);
-unsigned long ComUDPQuery(ComAPIHandle c, int querytype);
-unsigned long ComUDPGetTimeStamp(ComAPIHandle c);
+int ComIPHostIDGet(com_API_handle c, char *buf, int reset);
+char *ComIPSendBufferGet(com_API_handle c);
+char *ComIPRecvBufferGet(com_API_handle c);
+unsigned long ComUDPQuery(com_API_handle c, int querytype);
+unsigned long ComUDPGetTimeStamp(com_API_handle c);
 
 extern void enter_cs(void);
 extern void leave_cs(void);
 
-static ComAPIHandle ComUDPOpenSendClone(
+static com_API_handle ComUDPOpenSendClone(
     char *name,
     ComIP *parentCom,
     int buffersize,
@@ -79,13 +79,13 @@ static ComAPIHandle ComUDPOpenSendClone(
 #define GETActiveCOMHandle(c)   (((ComIP *)c)->parent == NULL) ? ((ComIP *)c) : ((ComIP *)c)->parent
 
 CAPIList * CAPIListAppend(CAPIList * list);
-CAPIList * CAPIListRemove(CAPIList * list , ComAPIHandle c);
+CAPIList * CAPIListRemove(CAPIList * list , com_API_handle c);
 CAPIList * CAPIListAppendTail(CAPIList * list);
 
 /* begin a comms session */
 /* IPaddress == 0 -> Broadcast */
 /* IPaddress == -1 -> Recv socket only */
-ComAPIHandle ComUDPOpen(
+com_API_handle ComUDPOpen(
     char *name_in,
     int buffersize,
     char *gamename,
@@ -108,12 +108,12 @@ ComAPIHandle ComUDPOpen(
     }
 
     //sfr: if we already have comms setup, use a clone to send data to new client
-    c = comListFindProtocolRport(capi_UDP_PROTOCOL, localUdpPort);
+    c = comListFindProtocolRport(CAPI_UDP_PROTOCOL, localUdpPort);
 
     //if (listitem){
     if (c != NULL)
     {
-        ComAPIHandle ret_val;
+        com_API_handle ret_val;
         ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,  remoteUdpPort, IPaddress, id);
         leave_cs();
 
@@ -124,10 +124,10 @@ ComAPIHandle ComUDPOpen(
 
     c = (ComIP*)malloc(sizeof(ComIP));
     memset(c, 0, sizeof(ComIP));
-    ((ComAPIHandle)c)->name = strdup(name_in);
+    ((com_API_handle)c)->name = strdup(name_in);
 
     /* initialize header data */
-    c->apiheader.protocol = capi_UDP_PROTOCOL;
+    c->apiheader.protocol = CAPI_UDP_PROTOCOL;
     c->apiheader.send_func = ComUDPSend;
     c->apiheader.send_dummy_func = ComUDPSendDummy;
     c->apiheader.sendX_func = ComUDPSendX;
@@ -147,14 +147,14 @@ ComAPIHandle ComUDPOpen(
     c->max_buffer_size = 0;
     c->ideal_packet_size = 0;
 
-    c->recv_sock = capi_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    c->recv_sock = CAPI_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-    size = capi_SENDBUFSIZE;
-    capi_setsockopt(c->recv_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
-    size = capi_RECVBUFSIZE;
-    capi_setsockopt(c->recv_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
+    size = CAPI_SENDBUFSIZE;
+    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
+    size = CAPI_RECVBUFSIZE;
+    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
 
-    capi_ioctlsocket(c->recv_sock, FIONBIO, &trueValue);
+    CAPI_ioctlsocket(c->recv_sock, FIONBIO, &trueValue);
 
     c->buffer_size = sizeof(ComAPIHeader) + buffersize;
 
@@ -173,24 +173,24 @@ ComAPIHandle ComUDPOpen(
     // sfr: store as network, but functions all use host order...
     // so reverse here
     ComIPHostIDGet(&c->apiheader, (char *)&c->whoami, 0);
-    c->whoami = capi_htonl(c->whoami);
+    c->whoami = CAPI_htonl(c->whoami);
 
-    if (IPaddress == capi_DANGLING_IP)
+    if (IPaddress == CAPI_DANGLING_IP)
     {
         ComIPHostIDGet(&c->apiheader, (char*)&IPaddress, 0);
-        IPaddress = capi_htonl(IPaddress);
-        //IPaddress = capi_htonl (c->whoami);
+        IPaddress = CAPI_htonl(IPaddress);
+        //IPaddress = CAPI_htonl (c->whoami);
     }
 
     strncpy(((ComAPIHeader *)c->send_buffer.buf)->gamename, gamename, GAME_NAME_LENGTH);
     // sfr: send id in network order
     ((ComAPIHeader *)c->send_buffer.buf)->id = c->whoami;
 
-    capi_ioctlsocket(c->recv_sock, FIONBIO, &trueValue);
+    CAPI_ioctlsocket(c->recv_sock, FIONBIO, &trueValue);
 
     if (c->recv_sock == INVALID_SOCKET)
     {
-        // int error = capi_WSAGetLastError();
+        // int error = CAPI_WSAGetLastError();
         leave_cs();
         return 0;
     }
@@ -198,18 +198,18 @@ ComAPIHandle ComUDPOpen(
     /* Incoming... */
     memset((char*)&comRecvAddr, 0, sizeof(comRecvAddr));
     comRecvAddr.sin_family       = AF_INET;
-    comRecvAddr.sin_addr.s_addr  = capi_htonl(INADDR_ANY);
+    comRecvAddr.sin_addr.s_addr  = CAPI_htonl(INADDR_ANY);
     // receive port
-    comRecvAddr.sin_port         = capi_htons(localUdpPort);
+    comRecvAddr.sin_port         = CAPI_htons(localUdpPort);
     memcpy(&c->recAddress, &comRecvAddr, sizeof(struct sockaddr_in));
 
-    if (err = capi_bind(c->recv_sock, (struct sockaddr*)&comRecvAddr, sizeof(comRecvAddr)))
+    if (err = CAPI_bind(c->recv_sock, (struct sockaddr*)&comRecvAddr, sizeof(comRecvAddr)))
     {
         leave_cs();
         return 0;
     }
 
-    //c->send_sock = capi_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    //c->send_sock = CAPI_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     c->send_sock = c->recv_sock;
 
     if (c->send_sock == INVALID_SOCKET)
@@ -218,13 +218,13 @@ ComAPIHandle ComUDPOpen(
         return 0;
     }
 
-    size = capi_SENDBUFSIZE;
-    capi_setsockopt(c->send_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
-    size = capi_RECVBUFSIZE;
-    capi_setsockopt(c->send_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
+    size = CAPI_SENDBUFSIZE;
+    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
+    size = CAPI_RECVBUFSIZE;
+    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
 
     /**  .. on ISPs modem maybe better to set to Non-Blocking on send **/
-    capi_ioctlsocket(c->send_sock, FIONBIO, &trueValue);
+    CAPI_ioctlsocket(c->send_sock, FIONBIO, &trueValue);
 
     /* Outgoing... */
     memset((char*)&c->sendAddress, 0, sizeof(c->sendAddress));
@@ -232,38 +232,38 @@ ComAPIHandle ComUDPOpen(
 
     if (IPaddress == 0)
     {
-        c->sendAddress.sin_addr.s_addr  = capi_htonl(INADDR_BROADCAST);
+        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(INADDR_BROADCAST);
     }
     else
     {
-        c->sendAddress.sin_addr.s_addr  = capi_htonl(IPaddress);
+        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(IPaddress);
     }
 
     // send port
-    c->sendAddress.sin_port         = capi_htons((unsigned short)remoteUdpPort);
+    c->sendAddress.sin_port         = CAPI_htons((unsigned short)remoteUdpPort);
 
     if (IPaddress == 0)
     {
         c->NeedBroadcastMode = 1;
         c->BroadcastModeOn = 1;
-        capi_setsockopt(c->send_sock, SOL_SOCKET, SO_BROADCAST, (char *)&trueValue, sizeof(int));
+        CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_BROADCAST, (char *)&trueValue, sizeof(int));
     }
 
     // sfr handle id
-    c->id = capi_htonl(id);
+    c->id = CAPI_htonl(id);
 
     // sfr: add c to list
     comListAdd(c);
     leave_cs();
 
-    return (ComAPIHandle)c;
+    return (com_API_handle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // JPO always called within CS
-ComAPIHandle ComUDPOpenSendClone(
+com_API_handle ComUDPOpenSendClone(
     char *name_in,
     ComIP *parentCom,
     int buffersize,
@@ -283,8 +283,8 @@ ComAPIHandle ComUDPOpenSendClone(
 
     memcpy(c, parentCom, sizeof(ComIP));
 
-    ((ComAPIHandle)c)->name = (char*)malloc(strlen(name_in) + 1);
-    strcpy(((ComAPIHandle)c)->name, name_in);
+    ((com_API_handle)c)->name = (char*)malloc(strlen(name_in) + 1);
+    strcpy(((com_API_handle)c)->name, name_in);
 
     /* initialize header data */
 
@@ -305,7 +305,7 @@ ComAPIHandle ComUDPOpenSendClone(
     if (IPaddress == -1)
     {
         ComIPHostIDGet(&c->apiheader, (char*)&IPaddress, 0);
-        IPaddress = capi_htonl(IPaddress);
+        IPaddress = CAPI_htonl(IPaddress);
     }
 
     // header
@@ -319,14 +319,14 @@ ComAPIHandle ComUDPOpenSendClone(
 
     if (IPaddress == 0)
     {
-        c->sendAddress.sin_addr.s_addr  = capi_htonl(INADDR_BROADCAST);
+        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(INADDR_BROADCAST);
     }
     else
     {
-        c->sendAddress.sin_addr.s_addr  = capi_htonl(IPaddress);
+        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(IPaddress);
     }
 
-    c->sendAddress.sin_port         = capi_htons((unsigned short)udpPort);
+    c->sendAddress.sin_port         = CAPI_htons((unsigned short)udpPort);
 
 
     if (IPaddress == 0)
@@ -339,10 +339,10 @@ ComAPIHandle ComUDPOpenSendClone(
     }
 
     //sfr id (network order)
-    c->id = capi_htonl(id);
+    c->id = CAPI_htonl(id);
 
     comListAdd(c);
-    return (ComAPIHandle)c;
+    return (com_API_handle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ ComAPIHandle ComUDPOpenSendClone(
 
 /* end a comms session */
 /* always called from within a critical section */
-void ComUDPClose(ComAPIHandle c)
+void ComUDPClose(com_API_handle c)
 {
     int sockerror;
 //  CAPIList* curr = 0;
@@ -391,15 +391,15 @@ void ComUDPClose(ComAPIHandle c)
         }
 
 #ifdef _DEBUG
-        MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((ComAPIHandle)cudp)->name);
+        MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((com_API_handle)cudp)->name);
 #endif
 
-        // GlobalListHead = CAPIListRemove(GlobalListHead,(ComAPIHandle)cudp);
+        // GlobalListHead = CAPIListRemove(GlobalListHead,(com_API_handle)cudp);
         comListRemove(cudp);
 
-        if (sockerror = capi_closesocket(cudp->recv_sock))
+        if (sockerror = CAPI_closesocket(cudp->recv_sock))
         {
-            sockerror = capi_WSAGetLastError();
+            sockerror = CAPI_WSAGetLastError();
 
             switch (sockerror)
             {
@@ -427,9 +427,9 @@ void ComUDPClose(ComAPIHandle c)
         }
 
 
-        if (sockerror = capi_closesocket(cudp->send_sock))
+        if (sockerror = CAPI_closesocket(cudp->send_sock))
         {
-            sockerror = capi_WSAGetLastError();
+            sockerror = CAPI_WSAGetLastError();
 
             switch (sockerror)
             {
@@ -461,17 +461,17 @@ void ComUDPClose(ComAPIHandle c)
         /* if No more connections then WSACleanup() */
         if (!windows_sockets_connections)
         {
-            if (sockerror = capi_WSACleanup())
+            if (sockerror = CAPI_WSACleanup())
             {
-                sockerror = capi_WSAGetLastError();
+                sockerror = CAPI_WSAGetLastError();
             }
             else
             {
             }
 
 #ifdef LOAD_DLLS
-            FreeLibrary(windows_sockets_dll);
-            windows_sockets_dll = 0;
+            FreeLibrary(windows_sockets_DLL);
+            windows_sockets_DLL = 0;
 #endif
         }
 
@@ -500,7 +500,7 @@ void ComUDPClose(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom)
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
 {
     if (c == Xcom)
     {
@@ -518,7 +518,7 @@ int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xco
 
 /* send data from a comms session */
 
-int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
+int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 {
     ComIP *cudp;
     ComIP *actual;
@@ -559,7 +559,7 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
 
     if (actual->BroadcastModeOn != cudp->NeedBroadcastMode)
     {
-        capi_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) & (cudp->NeedBroadcastMode), sizeof(int));
+        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) & (cudp->NeedBroadcastMode), sizeof(int));
         actual->BroadcastModeOn = cudp->NeedBroadcastMode;
     }
 
@@ -592,7 +592,7 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
     //if (docomms){
     if ((int)(newsize + sizeof(u_short)) < (int)(size))
     {
-        bytesSent = capi_sendto
+        bytesSent = CAPI_sendto
                     (
                         cudp->send_sock,
                         buffer,
@@ -604,7 +604,7 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
     }
     else
     {
-        bytesSent = capi_sendto
+        bytesSent = CAPI_sendto
                     (
                         cudp->send_sock,
                         cudp->send_buffer.buf,
@@ -621,7 +621,7 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
 
     if (senderror == SOCKET_ERROR)
     {
-        senderror = capi_WSAGetLastError();
+        senderror = CAPI_WSAGetLastError();
 
         switch (senderror)
         {
@@ -678,21 +678,21 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
     return msgsize;
 }
 
-int ComUDPSendDummy(ComAPIHandle c, unsigned long ip, unsigned short port)
+int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port)
 {
     int dummyBlk = 0;
     ComIP *com = (ComIP*)c;
     struct sockaddr_in to;
     memset(&to, 0, sizeof(to));
     to.sin_family = AF_INET;
-    to.sin_addr.S_un.S_addr = capi_htonl(ip);
-    to.sin_port = capi_htons(port);
-    return capi_sendto(
+    to.sin_addr.S_un.S_addr = CAPI_htonl(ip);
+    to.sin_port = CAPI_htons(port);
+    return CAPI_sendto(
                com->send_sock, (const void*)&dummyBlk, sizeof(int), 0, (struct sockaddr*)&to, sizeof(to)
            );
 }
 
-int ComUDPGet(ComAPIHandle c)
+int ComUDPGet(com_API_handle c)
 {
 
     char buffer[1000];
@@ -711,7 +711,7 @@ int ComUDPGet(ComAPIHandle c)
         cudp->recv_buffer.len = cudp->buffer_size;
 
         size =  sizeof(in_addr);
-        bytesRecvd = capi_recvfrom(
+        bytesRecvd = CAPI_recvfrom(
                          cudp->recv_sock,
                          buffer,
                          cudp->recv_buffer.len,
@@ -722,7 +722,7 @@ int ComUDPGet(ComAPIHandle c)
 
         if (bytesRecvd == SOCKET_ERROR)
         {
-            recverror = capi_WSAGetLastError();
+            recverror = CAPI_WSAGetLastError();
 
 #ifdef DEBUG_COMMS
 
@@ -834,7 +834,7 @@ int ComUDPGet(ComAPIHandle c)
             //sfr: added port info
             /* if (!(
              (((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr == cudp->whoami) &&
-             (((struct sockaddr_in *)(&in_addr))->sin_port == capi_htons(ComAPIGetMySendPort()))
+             (((struct sockaddr_in *)(&in_addr))->sin_port == CAPI_htons(ComAPIGetMySendPort()))
              )){*/
             if (((ComAPIHeader *)cudp->recv_buffer.buf)->id != cudp->whoami)
             {
@@ -850,9 +850,9 @@ int ComUDPGet(ComAPIHandle c)
                     cudp->recvmessagecount++;
 
                     // refresh timestamp
-                    if (capi_TimeStamp)
+                    if (CAPI_TimeStamp)
                     {
-                        cudp->timestamp = capi_TimeStamp();
+                        cudp->timestamp = CAPI_TimeStamp();
                     }
 
                     cudp->rudp_data.last_ping_recv_time = GetTickCount();
@@ -877,7 +877,7 @@ int ComUDPGet(ComAPIHandle c)
 // sfr: converts
 // this function now gets a random ID instead of the local IP
 // hopefully, this will be random enough
-int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
+int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
 {
     static long internalId = -1;
 
@@ -918,13 +918,13 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
 
 
     // get our hostname
-    if (capi_gethostname(name, 1024) == SOCKET_ERROR)
+    if (CAPI_gethostname(name, 1024) == SOCKET_ERROR)
     {
         return COMAPI_HOSTID_ERROR;
     }
 
     // from hostname, get IP
-    if ((hentry = capi_gethostbyname(name)) == NULL)
+    if ((hentry = CAPI_gethostbyname(name)) == NULL)
     {
         return COMAPI_HOSTID_ERROR;
     }
@@ -971,7 +971,7 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
 
 /* get the associated write buffer */
 
-char *ComIPSendBufferGet(ComAPIHandle c)
+char *ComIPSendBufferGet(com_API_handle c)
 {
     return ((ComIP *)c)->send_buffer.buf + sizeof(ComAPIHeader);
 }
@@ -980,7 +980,7 @@ char *ComIPSendBufferGet(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *ComIPRecvBufferGet(ComAPIHandle c)
+char *ComIPRecvBufferGet(com_API_handle c)
 {
     ComIP *cudp = (ComIP *)c;
     // char *recvbuf=NULL;
@@ -993,7 +993,7 @@ char *ComIPRecvBufferGet(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComUDPQuery(ComAPIHandle c, int querytype)
+unsigned long ComUDPQuery(com_API_handle c, int querytype)
 {
     if (c)
     {
@@ -1050,26 +1050,26 @@ unsigned long ComUDPQuery(ComAPIHandle c, int querytype)
 
             case COMAPI_SENDER:
             {
-                return capi_ntohl(cudp->lastsender);
+                return CAPI_ntohl(cudp->lastsender);
             }
 
             // sfr: converts
             // port info
             case COMAPI_SENDER_PORT:
             {
-                return (long)(capi_ntohs((short)cudp->lastsenderport));
+                return (long)(CAPI_ntohs((short)cudp->lastsenderport));
             }
 
             //sfr: id
             case COMAPI_ID:
             {
-                return (capi_ntohl(cudp->lastsenderid));
+                return (CAPI_ntohl(cudp->lastsenderid));
             }
 
 
             case COMAPI_CONNECTION_ADDRESS:
             {
-                return capi_ntohl(((ComIP *)c)->sendAddress.sin_addr.s_addr);
+                return CAPI_ntohl(((ComIP *)c)->sendAddress.sin_addr.s_addr);
             }
 
             case COMAPI_MAX_BUFFER_SIZE:
@@ -1112,7 +1112,7 @@ unsigned long ComUDPQuery(ComAPIHandle c, int querytype)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComUDPGetTimeStamp(ComAPIHandle c)
+unsigned long ComUDPGetTimeStamp(com_API_handle c)
 {
     if (c)
     {
@@ -1129,7 +1129,7 @@ unsigned long ComUDPGetTimeStamp(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ComAPISetReceiveThreadPriority(ComAPIHandle c, int priority)
+void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
 {
     HANDLE  threadhandle = 0;
     int     SetPriority  = 0xffffffff;
@@ -1138,7 +1138,7 @@ void ComAPISetReceiveThreadPriority(ComAPIHandle c, int priority)
     {
         switch (c->protocol)
         {
-            case capi_UDP_PROTOCOL:
+			case CAPI_UDP_PROTOCOL:
             {
                 ComIP *cudp = (ComIP *)c;
                 threadhandle = cudp->ThreadHandle;
@@ -1153,43 +1153,43 @@ void ComAPISetReceiveThreadPriority(ComAPIHandle c, int priority)
 
         switch (priority)
         {
-            case capi_THREAD_PRIORITY_ABOVE_NORMAL:
+            case CAPI_THREAD_PRIORITY_ABOVE_NORMAL:
             {
                 SetPriority = THREAD_PRIORITY_ABOVE_NORMAL;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_BELOW_NORMAL:
+            case CAPI_THREAD_PRIORITY_BELOW_NORMAL:
             {
                 SetPriority = THREAD_PRIORITY_BELOW_NORMAL;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_HIGHEST:
+            case CAPI_THREAD_PRIORITY_HIGHEST:
             {
                 SetPriority = THREAD_PRIORITY_HIGHEST;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_IDLE:
+            case CAPI_THREAD_PRIORITY_IDLE:
             {
                 SetPriority = THREAD_PRIORITY_IDLE;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_LOWEST:
+            case CAPI_THREAD_PRIORITY_LOWEST:
             {
                 SetPriority = THREAD_PRIORITY_LOWEST;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_NORMAL:
+            case CAPI_THREAD_PRIORITY_NORMAL:
             {
                 SetPriority = THREAD_PRIORITY_NORMAL;
                 break;
             }
 
-            case capi_THREAD_PRIORITY_TIME_CRITICAL:
+            case CAPI_THREAD_PRIORITY_TIME_CRITICAL:
             {
                 SetPriority = THREAD_PRIORITY_TIME_CRITICAL;
                 break;

@@ -1,5 +1,5 @@
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -869,4 +869,4 @@ void DisplaySideRange(HDC DC, Control c, short x, short y, int range)
     _ellipse(DC, _GBORDER, x - range, y - range, x + range, y + range);
 }
 
-#endif CAMPTOOL
+#endif  CAMPTOOL  

@@ -6,7 +6,7 @@
  */
 
 #ifdef NDEBUG
-#undef CAMPTOOL
+#undef  CAMPTOOL  
 #endif
 
 #include "MsgInc/ObjectiveMsg.h"
@@ -26,7 +26,7 @@
 #include "InvalidBufferException.h"
 
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 extern void RedrawCell(MapData md, GridIndex x, GridIndex y);
 #endif
 
@@ -77,7 +77,7 @@ int FalconObjectiveMessage::Process(uchar autodisp)
 #endif
             GridIndex x, y;
             o->GetLocation(&x, &y);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
             RedrawCell(NULL, x, y);
             RebuildFrontList(FALSE, TRUE);

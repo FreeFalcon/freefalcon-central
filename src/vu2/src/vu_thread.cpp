@@ -586,10 +586,10 @@ VU_ERRCODE VuMainThread::LeaveGame()
 
 VU_ERRCODE VuMainThread::InitComms
 (
-    ComAPIHandle handle,
+    com_API_handle handle,
     int bufSize,
     int packSize,
-    ComAPIHandle relhandle,
+    com_API_handle relhandle,
     int relBufSize,
     int relPackSize,
     int resendQueueSize

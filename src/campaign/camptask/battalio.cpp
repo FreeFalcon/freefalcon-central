@@ -51,7 +51,7 @@ extern VU_ID_NUMBER lastNonVolatileId;
 extern VU_ID_NUMBER lastLowVolitileId;
 extern VU_ID_NUMBER lastVolatileId;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 extern unsigned char        SHOWSTATS;
 #endif
 
@@ -74,7 +74,7 @@ extern DWORD gAverageBattalionDetectionTime, gAverageBattalionMoveTime;
 extern int gBattalionDetects, gBattalionMoves;
 #endif
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -397,7 +397,7 @@ int BattalionClass::Save(VU_BYTE **stream)
     *stream += sizeof(CampaignTime);
     memcpy(*stream, &last_combat, sizeof(CampaignTime));
     *stream += sizeof(CampaignTime);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         parent_id.num_ = rename_table[parent_id.num_];
@@ -405,7 +405,7 @@ int BattalionClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &parent_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         last_obj.num_ = rename_table[last_obj.num_];
@@ -718,7 +718,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
 
 #ifdef ROBIN_DEBUG
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     // Display what we're doing, if it's on..
     if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])
@@ -925,7 +925,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
 #endif // USE_FLANKS
 
 #ifdef ROBIN_DEBUG
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
             // Display what we're doing, if it's on..
             if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])
@@ -947,7 +947,7 @@ int BattalionClass::MoveUnit(CampaignTime time)
     }
 
 #ifdef ROBIN_DEBUG
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     // Display what we're doing, if it's on..
     if (SHOWSTATS && Engaged() && TrackingOn[GetCampID()])

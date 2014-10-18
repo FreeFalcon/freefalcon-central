@@ -94,7 +94,7 @@ extern DWORD gAverageFlightMoveTime;
 extern int  gFlightMoves;
 #endif
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -567,7 +567,7 @@ int FlightClass::Save(VU_BYTE **stream)
     memcpy(*stream , &mission_context, sizeof(uchar));
     *stream += sizeof(uchar);
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         package.num_ = rename_table[package.num_];
@@ -575,7 +575,7 @@ int FlightClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &package, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
     if (rename_IDs)
         squadron.num_ = rename_table[squadron.num_];

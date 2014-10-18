@@ -46,7 +46,7 @@
 #include "vucoll.h"
 extern float bubbleRatio;
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
 int asAgg = 1;
 
@@ -60,7 +60,7 @@ int SPTable[50];
 
 extern int inButton(RECT *but, WORD xPos, WORD yPos);
 
-#endif CAMPTOOL
+#endif  CAMPTOOL  
 
 char *BSP;
 char *BTP;
@@ -89,7 +89,7 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 // Support functions
 // ========================================================
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
 // This looks up the SPType in the table built during the combo box's creation, and finds
 // the correct integer value. Could also be done by compairing strings...
@@ -2139,5 +2139,5 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     lParam;
 }
 
-#endif CAMPTOOL
+#endif  CAMPTOOL  
 

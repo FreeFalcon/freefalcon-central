@@ -9,7 +9,7 @@
 #define WP_HAVE_DEPTIME 0x01
 #define WP_HAVE_TARGET 0x02
 
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -253,7 +253,7 @@ int WayPointClass::Save(VU_BYTE **stream)
 
     if (haves & WP_HAVE_TARGET)
     {
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
         if (rename_IDs)
         {
@@ -311,7 +311,7 @@ int WayPointClass::Save(FILE* fp)
 
     if (haves & WP_HAVE_TARGET)
     {
-#ifdef CAMPTOOL
+#ifdef  CAMPTOOL  
 
         if (rename_IDs)
         {
