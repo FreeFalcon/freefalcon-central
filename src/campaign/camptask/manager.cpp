@@ -18,7 +18,7 @@
 #include "InvalidBufferException.h"
 
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -72,7 +72,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     // VU_ID_NUMBERs moved to 32 bits
     share_.id_.num_ &= 0xffff;
 #endif
-    //#ifdef  CAMPTOOL  
+    //#ifdef CAMPTOOL
     // if (rename_IDs)
     // {
     // VU_ID new_id = FalconNullId;

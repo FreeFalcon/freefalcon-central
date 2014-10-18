@@ -174,7 +174,7 @@ extern bool g_bFireOntheMove; // FRB
 
 extern bool g_bRealisticAttrition; // JB 010710
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -183,7 +183,7 @@ extern bool rename_IDs;
 _TCHAR* GetNumberName(int name_id, _TCHAR *buffer);
 _TCHAR* GetSTypeName(int domain, int type, int stype, _TCHAR buffer[]);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 extern void RedrawCell(MapData md, GridIndex x, GridIndex y);
 extern void RedrawUnit(Unit u);
 extern int DisplayOk(Unit u);
@@ -296,7 +296,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
         fflush(load_log);
     }
 
-    //#ifdef  CAMPTOOL  
+    //#ifdef CAMPTOOL
     // if (rename_IDs)
     // {
     // VU_ID new_id = FalconNullId;
@@ -487,7 +487,7 @@ int UnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(GridIndex);
     memcpy(*stream, &dest_y, sizeof(GridIndex));
     *stream += sizeof(GridIndex);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (rename_IDs)
         target_id.num_ = rename_table[target_id.num_];
@@ -495,7 +495,7 @@ int UnitClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &target_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (rename_IDs)
         cargo_id.num_ = rename_table[cargo_id.num_];
@@ -2447,7 +2447,7 @@ int UnitClass::ChangeUnitLocation(CampaignHeading h)
         }
 
         // If we get here, it's because we've moved..
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
         else if (DisplayOk(this) && displayCampaign)
         {
             RedrawCell(NULL, x, y);

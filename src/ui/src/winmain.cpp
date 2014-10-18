@@ -1,11 +1,9 @@
-// Main solution's file where everything starts and stops
-
 // SYSTEM INCLUDES
 #include <AtlBase.h> // Required by AtlCom.h
 //#include <AtlCom.h>
 #include <AtlWin.h> // Required by ObjectMap
 #include <direct.h> // Required by _mkdir and _chdir
-//#include <StdIO.h>
+//#include <StdIo.h>
 #include <time.h> // Required by time
 //#include <windows.h>
 //#include <WinSock2.h>
@@ -20,11 +18,11 @@
 #include "CampStr.h"
 //#include "ClassTbl.h"
 //#include "CmpClass.h"
-//#include "Ddraw.h"
+//#include "DDraw.h"
 #include "dialog.h" // Campaign tool include
 #include "DispCfg.h"
 #include "DispOpts.h"
-#include "Ehandler.h"
+#include "EHandler.h"
 //#include "entity.h"
 //#include "F4Comms.h"
 #include "F4Find.h"
@@ -36,7 +34,7 @@
 //#include "feature.h"
 //#include "find.h"
 //#include "FSound.h"
-//#include "HUD.h"
+//#include "hud.h"
 #include "IAction.h"
 //#include "InpFunc.h"
 //#include "LogBook.h"
@@ -45,15 +43,15 @@
 #include "OtwDrive.h"
 //#include "PlayerOp.h"
 #include "RadioSubTitle.h"
-#include "RangeCheck.h"
+#include "range_check.h"
 #include "resource.h"
 //#include "rules.h"
 #include "SimDrive.h"
-//#include "SimIO.h"
+//#include "SimIo.h"
 //#include "SimLoop.h"
 //#include "SimObj.h"
 #include "SInput.h"
-//#include "SMS.h"
+//#include "sms.h"
 #include "statistics.h"
 //#include "StdHdr.h"
 #include "TheaterDef.h"
@@ -63,8 +61,8 @@
 #include "TrackIR.h"
 //#include "UI_ia.h"
 #include "UiComms.h" 
-#include "UserIDs.h"
-//#include "VrInput.h"
+#include "UserIds.h"
+//#include "VRInput.h"
 #include "weather.h"
 // END OF SIM INCLUDES
 
@@ -77,7 +75,7 @@
 
 
 #include "CodeLib/resources/ResLib/src/ResMgr.h"
-//#include "FalcSnd/Psound.h"
+//#include "FalcSnd/PSound.h"
 #include "FalcSnd/VoiceMapper.h"
 #include "FalcSnd/WinAmpFrontend.h"
 #include "Graphics/Include/DrawParticleSys.h"
@@ -85,7 +83,7 @@
 //#include "Graphics/Include/TexBank.h"
 #include "include/ComSup.h"
 #include "movie/AviMovie.h"
-#include "UI95/Chandler.h"
+#include "UI95/CHandler.h"
 // END OF ADDITIONAL SIM INCLUDES
 
 
@@ -131,15 +129,15 @@ bool intro_movie = true;
 	bool shi_warnings = true;
 #endif
 
-// This is for debugging only. I don't know what the  CAMPTOOL  is or does.
-//  CAMPTOOL  is not defined anywhere in the code 
-// although the #ifdef  CAMPTOOL  appears in many places!
+// This is for debugging only. I don't know what the CAMPTOOL is or does...
+// CAMPTOOL is not defined anywhere in the code 
+// although the #ifdef CAMPTOOL appears in many places!
 // It fails to compile under RELEASE.
 #ifdef DEBUG
-#define  CAMPTOOL  1
+#define CAMPTOOL 1
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 	// Renaming tool stuff
 	extern bool rename_IDs;
 	// Window handles
@@ -371,12 +369,14 @@ void BuildAscii()
 
 void initialize_variables(void)
 {
+#ifdef DEBUG
 	// If you want to disable it, use -nococpitverifier commandline
 	cockpit_verifier = true;
 	// If you want to disable it, use -nomissiontable commandline
 	write_mission_table = true;
 	// If you want to disable it, use -nosoundtable commandline
 	write_sound_table = true;
+#endif
 }
 
 
@@ -428,16 +428,14 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
-int PASCAL HandleWinMain(HINSTANCE h_instance,
-						 HINSTANCE previos_instance,
-                         LPSTR command_line,
+int PASCAL HandleWinMain(HINSTANCE hInstance,
+						 HINSTANCE hPrevInstance,
+                         LPSTR lpCmdLine,
 						 int nCmdShow)
 {
-#ifdef DEBUG
 	initialize_variables();
-#endif
-
-	_Module.Init(ObjectMap, h_instance); // ATL stuff
+	
+	_Module.Init(ObjectMap, hInstance); // ATL stuff
 	
 	// We need it for GNet
 	initialize_windows_sockets(&windows_sockets_data);
@@ -496,9 +494,9 @@ int PASCAL HandleWinMain(HINSTANCE h_instance,
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    hInst = h_instance;
+    hInst = hInstance;
 
-    ParseCommandLine(command_line);
+    ParseCommandLine(lpCmdLine);
 
     ReadFalcon4Config();
 
@@ -561,7 +559,7 @@ int PASCAL HandleWinMain(HINSTANCE h_instance,
 
     g_voicemap.LoadVoices();
 
-    if (!initApplication(h_instance, previos_instance, nCmdShow))
+    if (!initApplication(hInstance, hPrevInstance, nCmdShow))
         return FALSE;
 
     while (GetMessage(&msg, NULL, 0, 0) != 0)
@@ -587,9 +585,9 @@ int PASCAL HandleWinMain(HINSTANCE h_instance,
 
 // Main entry point to the entire solution. However, some code is called by
 // callback functions so use breakpoints to debug properly!
-int PASCAL WinMain(HINSTANCE h_instance,
-				   HINSTANCE previous_instance,
-                   LPSTR command_line,
+int PASCAL WinMain(HINSTANCE hInstance,
+				   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
 				   int nCmdShow)
 {
 	SubrangeInt<0, 1> error_code;
@@ -598,8 +596,8 @@ int PASCAL WinMain(HINSTANCE h_instance,
 	// Set up structured exception handling here
 	__try
     {
-        error_code = HandleWinMain(h_instance, previous_instance,
-								   command_line, nCmdShow);
+        error_code = HandleWinMain(hInstance, hPrevInstance,
+								   lpCmdLine, nCmdShow);
     }
     __except (RecordExceptionInfo(GetExceptionInformation(), "WinMain Thread"))
     {
@@ -679,7 +677,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                 case ID_CAMPAIGN_EXIT:
                     DisableCampaignMenus();
                     TheCampaign.EndCampaign();
-#if  CAMPTOOL  
+#if CAMPTOOL
 
                     if (hMainWnd)
                         PostMessage(hMainWnd, WM_CLOSE, 0, 0);
@@ -699,7 +697,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_DISPLAY:
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
                     if (!displayCampaign)
                     {
                         CampMain(hInst, SW_SHOW);
@@ -714,7 +712,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     }
 
                     CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_DISPLAY, (displayCampaign ? MF_CHECKED : MF_UNCHECKED));
-#endif  CAMPTOOL  
+#endif CAMPTOOL
                     break;
 
                 case ID_CAMPAIGN_PAUSED:
@@ -726,7 +724,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_PAUSED, (gameCompressionRatio ? MF_UNCHECKED : MF_CHECKED));
                     break;
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
                 case ID_CAMPAIGN_SELECTSQUADRON:
                     DialogBox(hInst, MAKEINTRESOURCE(IDD_SQUADRONDIALOG), mainMenuWnd, (DLGPROC)SelectSquadron);
@@ -2232,7 +2230,7 @@ void ShutdownCampaign(void)
 
     // Shutdown campaign stuff here
     TheCampaign.EndCampaign();
-#if  CAMPTOOL  
+#if CAMPTOOL
 
     if (hMainWnd)
         PostMessage(hMainWnd, WM_CLOSE, 0, 0);
@@ -2252,7 +2250,7 @@ void EnableCampaignMenus(void)
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_LOAD, MF_GRAYED);
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_NEW, MF_GRAYED);
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_JOIN, MF_GRAYED);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_DISPLAY, MF_ENABLED);
 #endif
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_ENABLED);

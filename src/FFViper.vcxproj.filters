@@ -18,7 +18,7 @@
     <ClInclude Include="include\comsup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RangeCheck.h">
+    <ClInclude Include="range_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

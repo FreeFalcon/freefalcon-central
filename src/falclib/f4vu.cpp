@@ -49,7 +49,7 @@ class CampManagerClass;
 extern UnitClass* NewUnit(short tid, VU_BYTE **stream, long *rem);
 extern ObjectiveClass* NewObjective(short tid, VU_BYTE **stream, long *rem);
 extern VuEntity* NewManager(short tid, VU_BYTE **stream, long *rem);
-extern void TcpConnectCallback(com_API_handle ch, int ret);
+extern void TcpConnectCallback(ComAPIHandle ch, int ret);
 
 //extern VU_ID_NUMBER vuAssignmentId;
 //extern VU_ID_NUMBER vuLowWrapNumber;

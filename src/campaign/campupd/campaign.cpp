@@ -67,7 +67,7 @@
 #include "ptdata.h"
 #include "GameMgr.h"//me123
 #include "TimerThread.h"
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 #include "resource.h"
 #endif
 #include "aircrft.h"
@@ -162,7 +162,7 @@ extern void set_spinner2(int);
 // Cheat Stuff;
 extern void CheckForCheatFlight(ulong time);
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 extern void ShowTime(CampaignTime t);
 extern void RedrawPlayerBubble(void);
 extern boolean PBubble;
@@ -906,7 +906,7 @@ void RebuildBubble(int forced)
             }
 
             // We're in the cockpit
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
             if (PBubble && hMainWnd)
             {

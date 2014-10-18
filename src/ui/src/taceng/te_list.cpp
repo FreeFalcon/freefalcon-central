@@ -55,10 +55,10 @@
 #ifdef _DEBUG
 extern HWND mainAppWnd;
 #endif
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern bool rename_IDs;
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 
 extern uchar gSelectedTeam;
 

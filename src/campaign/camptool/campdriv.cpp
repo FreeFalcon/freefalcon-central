@@ -1,9 +1,9 @@
-// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef  CAMPTOOL  since it is used by other files as well
+// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 #ifdef _DEBUG
 int gDumping = 0;
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 #include <windows.h>
 #include <ctype.h>
@@ -144,7 +144,7 @@ extern int maxSearch;
 
 extern void ShowMissionLists(void);
 
-// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef  CAMPTOOL  since it is used by other files as well
+// 2001-10-25 MOVED BY S.G. To the top of the file, outside of the #ifdef CAMPTOOL since it is used by other files as well
 //#ifdef _DEBUG
 //int gDumping = 0;
 //#endif
@@ -4164,4 +4164,4 @@ void ShowCampaign(void)
     }
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL

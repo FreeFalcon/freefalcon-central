@@ -21,7 +21,7 @@
 #define NUM_CAMERA_LABELS 16
 
 // These are used in my camp tool, so don't need to be UNICODE
-#ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be  CAMPTOOL  but gave link error when  CAMPTOOL  was undefined.
+#ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be CAMPTOOL but gave link error when CAMPTOOL was undefined.
 #include "GndUnit.h"
 
 char TOTStr[7][6] = { "NA", "<", "<=", "=", ">=", ">", "NA" };

@@ -17,13 +17,13 @@ extern "C" {
     */
     void ComRUDPSetup(unsigned short rport);
 
-    com_API_handle ComRUDPOpen(
+    ComAPIHandle ComRUDPOpen(
         char *name,                 // name of this comm, usually "callsign RUDP"
         int buffersize,
         char *gamename,             // game name
         unsigned short localPort,   // local port (host order)
         unsigned short remotePort,  // where peer receives reliable data (host order)
-        unsigned long IPaddress,    // peer ip address. If == CAPI_DANGLING_IP, this is a receive only comm
+        unsigned long IPaddress,    // peer ip address. If == capi_DANGLING_IP, this is a receive only comm
         unsigned long id,           // id of the owner of this comm
         int idealpacketsize
     );

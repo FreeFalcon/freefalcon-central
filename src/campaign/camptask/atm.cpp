@@ -54,7 +54,7 @@
 extern _TCHAR MissStr[AMIS_OTHER][16];
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -142,7 +142,7 @@ ATMAirbaseClass::~ATMAirbaseClass()
 
 int ATMAirbaseClass::Save(VU_BYTE **stream)
 {
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (rename_IDs)
         id.num_ = rename_table[id.num_];
@@ -157,7 +157,7 @@ int ATMAirbaseClass::Save(VU_BYTE **stream)
 
 int ATMAirbaseClass::Save(FILE *file)
 {
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (rename_IDs)
         id.num_ = rename_table[id.num_];

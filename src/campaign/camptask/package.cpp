@@ -39,7 +39,7 @@
 extern char MissStr[AMIS_OTHER][16];
 #endif
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -518,7 +518,7 @@ int PackageClass::Save(VU_BYTE **stream)
 
     memcpy(*stream, &elements, sizeof(uchar));
     *stream += sizeof(uchar);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (rename_IDs)
     {

@@ -117,35 +117,35 @@ typedef int (PASCAL FAR *wsfn_WSAGetLastError)(void);
     extern "C" {
 #endif
 
-		extern wsfn_accept CAPI_accept;
-		extern wsfn_bind CAPI_bind;
-		extern wsfn_closesocket CAPI_closesocket;
-		extern wsfn_connect CAPI_connect;
-		extern wsfn_ioctlsocket CAPI_ioctlsocket;
-		extern wsfn_getsockopt CAPI_getsockopt;
-		extern wsfn_htonl CAPI_htonl;
-		extern wsfn_htons CAPI_htons;
-		extern wsfn_inet_addr CAPI_inet_addr;
-		extern wsfn_inet_ntoa CAPI_inet_ntoa;
-		extern wsfn_listen CAPI_listen;
-		extern wsfn_ntohl CAPI_ntohl;
-		extern wsfn_ntohs CAPI_ntohs;
-		extern wsfn_recv CAPI_recv;
-		extern wsfn_recvfrom CAPI_recvfrom;
-		extern wsfn_select CAPI_select;
-		extern wsfn_send CAPI_send;
-		extern wsfn_sendto CAPI_sendto;
-		extern wsfn_setsockopt CAPI_setsockopt;
-		extern wsfn_shutdown CAPI_shutdown;
-		extern wsfn_socket CAPI_socket;
-		extern wsfn_gethostbyaddr CAPI_gethostbyaddr;
-		extern wsfn_gethostbyname CAPI_gethostbyname;
-		extern wsfn_gethostname CAPI_gethostname;
-		extern wsfn_getsockname CAPI_getsockname;
-		extern wsfn_WSAStartup CAPI_WSAStartup;
-		extern wsfn_WSACleanup CAPI_WSACleanup;
-		extern wsfn_WSASetLastError CAPI_WSASetLastError;
-		extern wsfn_WSAGetLastError CAPI_WSAGetLastError;
+		extern wsfn_accept capi_accept;
+		extern wsfn_bind capi_bind;
+		extern wsfn_closesocket capi_closesocket;
+		extern wsfn_connect capi_connect;
+		extern wsfn_ioctlsocket capi_ioctlsocket;
+		extern wsfn_getsockopt capi_getsockopt;
+		extern wsfn_htonl capi_htonl;
+		extern wsfn_htons capi_htons;
+		extern wsfn_inet_addr capi_inet_addr;
+		extern wsfn_inet_ntoa capi_inet_ntoa;
+		extern wsfn_listen capi_listen;
+		extern wsfn_ntohl capi_ntohl;
+		extern wsfn_ntohs capi_ntohs;
+		extern wsfn_recv capi_recv;
+		extern wsfn_recvfrom capi_recvfrom;
+		extern wsfn_select capi_select;
+		extern wsfn_send capi_send;
+		extern wsfn_sendto capi_sendto;
+		extern wsfn_setsockopt capi_setsockopt;
+		extern wsfn_shutdown capi_shutdown;
+		extern wsfn_socket capi_socket;
+		extern wsfn_gethostbyaddr capi_gethostbyaddr;
+		extern wsfn_gethostbyname capi_gethostbyname;
+		extern wsfn_gethostname capi_gethostname;
+		extern wsfn_getsockname capi_getsockname;
+		extern wsfn_WSAStartup capi_WSAStartup;
+		extern wsfn_WSACleanup capi_WSACleanup;
+		extern wsfn_WSASetLastError capi_WSASetLastError;
+		extern wsfn_WSAGetLastError capi_WSAGetLastError;
 
 #ifdef __cplusplus
     }

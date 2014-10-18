@@ -54,7 +54,7 @@
 // Externals
 // =========================
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 // Renaming tool stuff
 extern VU_ID_NUMBER rename_table[65536];
 extern bool rename_IDs;
@@ -276,7 +276,7 @@ TeamClass::TeamClass(FILE *file) :
     // SetEntityType(883);
     //#endif
 
-    //#ifdef  CAMPTOOL  
+    //#ifdef CAMPTOOL
     // if (rename_IDs)
     // {
     // VU_ID new_id = FalconNullId;
@@ -898,7 +898,7 @@ int TeamClass::Save(FILE *file)
         retval += fwrite(&currentStats, sizeof(TeamStatusType), 1, file);
         retval += fwrite(&startStats, sizeof(TeamStatusType), 1, file);
         retval += fwrite(&reinforcement, sizeof(short), 1, file);
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
         if (rename_IDs)
         {

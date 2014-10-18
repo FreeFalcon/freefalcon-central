@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\comsup.h" />
-    <ClInclude Include="RangeCheck.h" />
+    <ClInclude Include="range_check.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\src\f4config.cpp" />
@@ -112,7 +112,6 @@
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -122,7 +121,6 @@
     <LibraryPath>$(LibraryPath);$(DX81_SDK)/lib</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

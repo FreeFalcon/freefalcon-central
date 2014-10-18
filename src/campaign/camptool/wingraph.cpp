@@ -1,5 +1,5 @@
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 #include <io.h>
 #include <stdarg.h>
@@ -189,5 +189,5 @@ void _wprintf(HDC DC, char *string, ...)
     _outgtext(DC, _buffer);
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 

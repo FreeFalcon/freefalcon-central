@@ -64,7 +64,7 @@ HWND        hDlgFR = NULL;
 
 extern _TCHAR GroundSTypesStr[20][20];
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 short ObjTypeConverter[35]; // Converts from alphabetical order to real types
 
@@ -2094,7 +2094,7 @@ BOOL WINAPI CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
     lParam;
 }
 
-#endif  CAMPTOOL  
+#endif CAMPTOOL
 
 BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -2699,7 +2699,7 @@ BOOL SaveTheaterFile(HWND hWnd)
     return TRUE;
 }
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 /*
 BOOL SaveScriptedUnitFile (HWND hWnd, OPENFILENAME file)
  {
@@ -2838,7 +2838,7 @@ BOOL SaveAsTheaterFile(HWND hWnd)
     return (FALSE);
 }
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
 BOOL SaveAsScriptedUnitFile(HWND hWnd)
 {

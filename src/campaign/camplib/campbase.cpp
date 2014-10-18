@@ -40,7 +40,7 @@ enum
 
 uchar CampSearch[MAX_CAMP_ENTITIES]; // Search data
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 short CampIDRenameTable[MAX_CAMP_ENTITIES] = { 0 };
 #endif
 
@@ -139,7 +139,7 @@ CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST
     components = NULL;
     dirty_camp_base = 0;
 
-#ifdef  CAMPTOOL  
+#ifdef CAMPTOOL
 
     if (GetEntityByCampID(camp_id))
     {
