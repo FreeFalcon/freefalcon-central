@@ -113,7 +113,7 @@
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>../build/x86/release_win32/</OutDir>
     <IntDir>../build/x86/release_win32/</IntDir>
     <TargetName>FFViper</TargetName>
@@ -229,18 +229,18 @@
       <ProgramDataBaseFileName>../build/x86/release_win32/ffviper/FFViper.pdb</ProgramDataBaseFileName>
       <XMLDocumentationFileName>../build/x86/release_win32/ffviper/doc.xml</XMLDocumentationFileName>
       <BrowseInformationFile>../build/x86/release_win32/ffviper/ffviper.bsc</BrowseInformationFile>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>./;falclib/include;codelib/include;vu2/include;sim/include;campaign/include;ui/include;graphics/include;amd/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
       <FloatingPointExceptions>false</FloatingPointExceptions>
@@ -264,10 +264,10 @@
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <LargeAddressAware>true</LargeAddressAware>
       <TerminalServerAware>false</TerminalServerAware>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <SetChecksum>true</SetChecksum>
-      <TurnOffAssemblyGeneration>true</TurnOffAssemblyGeneration>
+      <TurnOffAssemblyGeneration>false</TurnOffAssemblyGeneration>
       <CLRUnmanagedCodeCheck>true</CLRUnmanagedCodeCheck>
       <CLRSupportLastError>Enabled</CLRSupportLastError>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>

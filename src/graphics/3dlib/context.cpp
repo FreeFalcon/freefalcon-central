@@ -2649,9 +2649,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     float *I;
     Spoint *xyz;
     Pcolor *rgba;
-    TLVERTEX *pVtx;
-    TLVERTEX *sVertex;
-    SPolygon *sPolygon;
+	TLVERTEX* pVtx = NULL;
+	TLVERTEX* sVertex = NULL;
+    SPolygon* sPolygon = NULL;
     float PolyZAvg = 0;
 
     // Incoming type is always MPR_PRM_TRIFAN
@@ -3638,8 +3638,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 
 void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxTexClr_t **pData, bool terrain)
 {
-    TLVERTEX *pVtx;
-    TLVERTEX *sVertex;
+	TLVERTEX* pVtx = NULL;
+	TLVERTEX* sVertex = NULL;
 	SPolygon* sPolygon = NULL;
     float PolyZAvg = 0;
 

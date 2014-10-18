@@ -963,7 +963,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
                     sprintf(logstring, "Callsign: %s \n", pilot_data->pilot_callsign);
                     fputs(logstring, fp);
 
-                    char *status;
+                    char* status = NULL;
 
                     if (pilot_data->pilot_status == PILOT_AVAILABLE) status = " - OK";
 

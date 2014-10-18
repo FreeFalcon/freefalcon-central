@@ -1241,8 +1241,10 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 
 bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool bForce)
 {
-    DWORD dwSize, *pal, dwTmp, n, i;
-    BYTE *pSrc, *pDst;
+    DWORD dwSize, dwTmp, n, i;
+	DWORD *pal = NULL;
+	BYTE *pSrc = NULL;
+	BYTE *pDst;
     char szFileName[256], szTemp[256], szKludge[256];
     char sep[] = ".";
     char *token;
