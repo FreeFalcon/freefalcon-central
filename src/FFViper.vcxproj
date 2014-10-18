@@ -105,10 +105,11 @@
     <OutDir>../build/x86/debug_win32/ffviper/</OutDir>
     <IntDir>../build/x86/debug_win32/ffviper/</IntDir>
     <TargetName>FFViper</TargetName>
-    <GenerateManifest>true</GenerateManifest>
+    <GenerateManifest>false</GenerateManifest>
     <LibraryPath>$(LibraryPath);$(DX81_SDK)\lib</LibraryPath>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -171,11 +172,22 @@
       <AllowIsolation>true</AllowIsolation>
       <EnableUAC>true</EnableUAC>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
-      <LargeAddressAware>false</LargeAddressAware>
+      <LargeAddressAware>true</LargeAddressAware>
       <StackReserveSize>
       </StackReserveSize>
       <StackCommitSize>
       </StackCommitSize>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <TerminalServerAware>false</TerminalServerAware>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <SetChecksum>true</SetChecksum>
+      <TurnOffAssemblyGeneration>true</TurnOffAssemblyGeneration>
+      <CLRUnmanagedCodeCheck>true</CLRUnmanagedCodeCheck>
+      <CLRSupportLastError>Enabled</CLRSupportLastError>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -186,6 +198,7 @@
       <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <NullTerminateStrings>true</NullTerminateStrings>
     </ResourceCompile>
     <BuildLog>
       <Path>../build/x86/debug_win32/ffviper/FFViper.log</Path>
