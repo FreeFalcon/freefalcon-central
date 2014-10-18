@@ -37,7 +37,7 @@ extern float g_fAIJSOWmaxRange; // Cobra
 //MI check for pickle
 bool Released = FALSE;
 
-float atanh(double x);
+//float atanh(double x);
 
 extern SensorClass* FindLaserPod(SimMoverClass* theObject);
 
@@ -1172,10 +1172,10 @@ void FireControlComputer::CalculateReleaseRange(void)
         bombPickle = TRUE;
 }
 
-float atanh(double x)
-{
-    return (float)(0.5F * log((1 + x) / (1 - x)));
-}
+//float atanh(double x)
+//{
+//    return (float)(0.5F * log((1 + x) / (1 - x)));
+//}
 
 void FireControlComputer::DTOSMode(void)
 {

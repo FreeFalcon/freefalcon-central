@@ -236,13 +236,13 @@ static void RecordSystemInformation(HANDLE LogFile)
     hprintf(LogFile, "%d MBytes physical memory.\r\n", (MemInfo.dwTotalPhys +
             ONEM - 1) / ONEM);
 
-    OSVERSIONINFO VersionInfo;
-    VersionInfo.dwOSVersionInfoSize = sizeof(VersionInfo);
-    GetVersionEx(&VersionInfo);
-    hprintf(LogFile, "OS: %d.%d build %d platform %d %s\r\n",
-            VersionInfo.dwMajorVersion, VersionInfo.dwMinorVersion,
-            VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
-            VersionInfo.szCSDVersion);
+    //OSVERSIONINFO VersionInfo;
+    //VersionInfo.dwOSVersionInfoSize = sizeof(VersionInfo);
+    //GetVersionEx(&VersionInfo);
+    //hprintf(LogFile, "OS: %d.%d build %d platform %d %s\r\n",
+    //        VersionInfo.dwMajorVersion, VersionInfo.dwMinorVersion,
+    //        VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
+    //        VersionInfo.szCSDVersion);
 
     hprintf(LogFile, "Version: Falcon 4.0 - Version %1d.%02d.%1d.%05d\r\n", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 

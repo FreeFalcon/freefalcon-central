@@ -1114,7 +1114,7 @@ void LoadFlight(VU_ID flightID)
 //TJL 01/02/04 Change Skin Function
 void ChangeSkin()
 {
-    BSPLIST *obj;
+	BSPLIST* obj = NULL;
     long plane = 0;
     int i;
 

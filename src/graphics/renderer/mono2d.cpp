@@ -78,10 +78,10 @@ void MonochromeDisplay::Setup(void)
 
         // Turn ourselves on ONLY under Win95
         // (crashes under NT because direct HW I/O is forbidden)
-        osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        GetVersionEx(& osInfo);
-        enabled = (osInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
-
+        //osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+        //GetVersionEx(& osInfo);
+        //enabled = (osInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
+		enabled = true;
 
         if (enabled)
         {

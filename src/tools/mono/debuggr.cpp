@@ -857,10 +857,10 @@ void InitDebug(int mode)
     {53, 45, 46, 7, 91, 2, 87, 87, 2, 3, 0, 0, 0, 0, 0, 0};
     int text_mode[] =
     {97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0};
-    OSVERSIONINFO osInfo;
 
-    osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    GetVersionEx(&osInfo);
+	//OSVERSIONINFO osInfo;
+	//osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+ //   GetVersionEx(&osInfo);
 
 #ifdef NDEBUG
     //   if (mode == DEBUGGER_TEXT_MODE)

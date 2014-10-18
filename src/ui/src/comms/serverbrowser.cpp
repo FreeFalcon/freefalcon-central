@@ -679,9 +679,9 @@ void HookupServerBrowserControls(long ID)
 
 C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
 {
-    C_ServerItem *pServerItem;
+	C_ServerItem* pServerItem = NULL;
     C_Window *pWindow;
-    TREELIST *pTreeItem;
+	TREELIST* pTreeItem = NULL;
 
     if (!pTree || !p)
         return NULL;
