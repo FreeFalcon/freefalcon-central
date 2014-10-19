@@ -5185,7 +5185,7 @@ void UpdateSquadronStatus(Flight flight, int landed, int playchatter)
         }
     }
 
-    // Decide wether to send the message or not
+    // Decide whether to send the message or not
     if (sendmessage)
         FalconSendMessage(msg, FALSE);
     else if (msg)

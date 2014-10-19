@@ -1046,7 +1046,7 @@ SimObjectType* RadarDopplerClass::Exec(SimObjectType* targetList)
                 if (canSee)
                 {
                     tmpPtr->localData->painted = TRUE;
-                    // FRB - rdrObj and rdrData not intialized yet
+                    // FRB - rdrObj and rdrData not initialized yet
                     //tmpPtr->localData->rdrDetect = rdrData->rdrDetect >> 1;
                     SetSeekerPos(TargetAz(platform, tmpPtr), TargetEl(platform, tmpPtr));
                     platform->SetRdrAz(radarData->BeamHalfAngle);

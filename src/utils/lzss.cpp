@@ -13,7 +13,7 @@
  More additions on Aug 29, 1997: Added Jim D's versions.
 
  Changes by Kevin Klemmick on Aug 13, 1998: Set up for external
- library - user can define wether to use "C" or "C++" (for linkage
+ library - user can define whether to use "C" or "C++" (for linkage
  purposes, primarily).
 
  Additional changes: Implimented compression contexts, for multi-
