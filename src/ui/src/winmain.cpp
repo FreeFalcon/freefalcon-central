@@ -1,82 +1,97 @@
-#include "f4version.h"
-#include <winsock2.h>
-#include <windows.h>
-#include <atlbase.h>
-#include <atlwin.h>
-#include <time.h>
-#include <stdio.h>
+// Main solution's file. Starts and stops everything else.
+
+// SYSTEM INCLUDES
+#include <AtlBase.h>
+#include <AtlCom.h>
+#include <AtlWin.h>
 #include <direct.h>
-#include "Statistics.h"
-#include "FalcLib.h"
-#include "resource.h"
-#include "stdhdr.h"
-#include "ClassTbl.h"
-#include "Entity.h"
-#include "camp2sim.h"
-#include "f4find.h"
-#include "hud.h"
-#include "otwdrive.h"
-#include "simobj.h"
-#include "simDrive.h"
-#include "simLoop.h"
-#include "falcmesg.h"
-#include "fsound.h"
-#include "sms.h"
-#include "Graphics/Include/imagebuf.h"
-#include "movie/avimovie.h"
-#include "f4comms.h"
-#include "FalcSnd/psound.h"
-#include "FalcSnd/voicemapper.h"
-#include "CampStr.h"
-#include "find.h"
-#include "misseval.h"
-#include "cmpclass.h"
-#include "dispcfg.h"
-#include "falcuser.h"
-#include "userids.h"
-#include "ui95/chandler.h"
-#include "sinput.h"
-#include "CmpClass.h"
-#include "ThreadMgr.h"
-#include "feature.h"
-#include "falcmem.h"
-#include "Graphics/Include/drawparticlesys.h"
-#include "Weather.h"
-#include "Campaign.h"
-#include "playerop.h"
-#include "simio.h"
-#include "codelib/resources/reslib/src/resmgr.h"
-#include "inpFunc.h"
-#include "logbook.h"
-#include "rules.h"
-#include "iaction.h"
+#include <StdIO.h>
+#include <time.h>
+#include <windows.h>
+#include <WinSock2.h>
+// END OF SYSTEM INCLUDES
+
+
+// SIM INCLUDES
+#include "ASCII.h"
+#include "Camp2Sim.h"
+#include "campaign.h"
 #include "CampJoin.h"
-#include "TimerThread.h"
-#include "ascii.h"
-#include "ehandler.h"
+#include "CampStr.h"
+#include "ClassTbl.h"
+#include "CmpClass.h"
+#include "dDraw.h"
+#include "dialog.h" // Campaign tool includes
+#include "DispCfg.h"
 #include "DispOpts.h"
+#include "eHandler.h"
+#include "entity.h"
+#include "F4Comms.h"
+#include "F4Find.h"
+#include "F4Version.h"
+#include "FalcLib.h"
+#include "FalcMem.h"
+#include "FalcMesg.h"
+#include "FalcUser.h"
+#include "feature.h"
+#include "find.h"
+#include "fSound.h"
+#include "HUD.h"
+#include "iAction.h"
+#include "InpFunc.h"
+#include "LogBook.h"
+#include "MissEval.h"
+#include "OpenFile.h"
+#include "OtwDrive.h"
+#include "PlayerOp.h"
+#include "RadioSubtitle.h"
+#include "resource.h"
 #include "rules.h"
-#include "openfile.h"
-#include "VRInput.h"
-#include "Theaterdef.h"
-#include "Graphics/Include/texbank.h"
+#include "SimDrive.h"
+#include "SimIO.h"
+#include "SimLoop.h"
+#include "SimObj.h"
+#include "sInput.h"
+#include "SMS.h"
+#include "statistics.h"
+#include "StdHdr.h"
+#include "TheaterDef.h"
+#include "ThreadMgr.h"
+#include "TimerThread.h"
 #include "token.h" // default value Unz
+#include "TrackIR.h"
+#include "UI_ia.h"
+#include "Uicomms.h"
+#include "UserIDs.h"
+#include "VrInput.h"
+#include "weather.h"
+// END OF SIM INCLUDES
+
+
+// ADDITIONAL SIM INCLUDES
+#include "CodeLib/resources/ResLib/src/ResMgr.h"
+#include "FalcSnd/pSound.h"
+#include "FalcSnd/VoiceMapper.h"
+#include "FalcSnd/WinAmpFrontend.h"
+#include "graphics/include/DrawParticleSys.h"
+#include "graphics/include/ImageBuf.h"
+#include "graphics/include/TexBank.h"
+#include "include/ComSup.h"
+#include "movie/AviMovie.h"
+#include "UI95/cHandler.h"
 
 extern "C"
 {
-#include "amdlib.h"
+	#include "AmdLib.h"
 }
+// END OF ADDITIONAL SIM INCLUDES
 
 
 int weatherCondition = SUNNY;
 RealWeather *realWeather = NULL;
 
-#include "ddraw.h"
-
-#include "TrackIR.h"
 TrackIR theTrackIRObject;
 
-#include "falcsnd/winampfrontend.h"
 WinAmpFrontEnd* winamp = 0;
 extern bool g_bPilotEntertainment;
 
@@ -88,16 +103,13 @@ bool g_writeMissionTbl = false;
 extern void ReadFalcon4Config();
 
 // Begin - Uplink stuff
-#include "include/comsup.h"
 
 #pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 
-#include <atlbase.h>
 CComModule _Module;
-#include <atlcom.h>
 
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
@@ -126,12 +138,6 @@ void DoRecoShit(void);
 extern int HighResolutionHackFlag;
 extern uchar gCampJoinTries;
 
-// Campaign tool includes
-#include "dialog.h"
-
-// UI Includes
-#include "uicomms.h"
-#include "ui_ia.h"
 #undef fopen
 #undef fclose
 
@@ -438,7 +444,6 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 
 }
 
-#include "RadioSubTitle.h"
 RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 
 int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
