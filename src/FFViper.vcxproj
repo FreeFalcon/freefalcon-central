@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SubRange.h" />
     <ClInclude Include="include\comsup.h" />
   </ItemGroup>
   <ItemGroup>

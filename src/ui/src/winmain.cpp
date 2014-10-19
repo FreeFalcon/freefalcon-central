@@ -56,6 +56,7 @@
 #include "SMS.h"
 #include "statistics.h"
 #include "StdHdr.h"
+#include "SubRange.h"
 #include "TheaterDef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
@@ -628,11 +629,12 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, int nCmdShow)
 {
-    int Result = -1;
+	SubRangeInt<0, 1> error_code;
+	error_code = EXIT_FAILURE;
 
     __try
     {
-        Result = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+        error_code = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
     }
     __except (RecordExceptionInfo(GetExceptionInformation(), "WinMain Thread"))
     {
@@ -642,7 +644,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         // the __except clause.
     }
 
-    return Result;
+    return error_code;
 }
 
 
