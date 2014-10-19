@@ -243,93 +243,93 @@ extern "C"
 
 
 
-extern void ReadFalcon4Config();
-// Begin - Uplink stuff
+// FUNCTION DECLARATIONS
+BOOL CleanupDIJoystick(void);
+BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
-struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
-extern "C" int InitWS2(WSADATA *wsaData);
-// End - Uplink stuff
-void DoRecoShit(void);
-static int i_am(char *with);
-void PlayThatFunkyMusicWhiteBoy();
-void load_voice_recognition_demo_sound_file(void);
-extern void EnableCampaignMenus(void);
-extern void DisableCampaignMenus(void);
-extern void CampaignPreloadSuccess(int remote);
-extern void CampaignJoinSuccess(void);
-extern void CampaignJoinFail(void);
-extern void DisplayJoinStatusWindow(int);
-extern void ServerBrowserExit();
-extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-int FileVerify(void);
-extern void LoadTrails();
-LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-extern void UIScramblePlayerFlight(void);
-void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);
-//!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
-extern void PlayUIMovieQ(); // defined in UI_Main.cpp
-extern void UpdateMissionWindow(long ID);
-extern void update_tactical_flight_information(void);
-extern void CopyDFSettingsToWindow(void);
-extern void CheckCampaignFlyButton(void);
-extern void GameHasStarted(void);
-void RebuildCurrentWPList();
-void UI_HandleAirbaseDestroyed();
-void UI_HandleAirbaseDestroyed();
-void UI_HandleFlightCancel();
-void UI_HandleAircraftDestroyed();
-void UI_UpdateOccupationMap();
-void OpenTEGameOverWindow();
-void ProcessChatStr(CHATSTR *msg);
-void RebuildGameTree();
-void UI_UpdateDogfight(long winID, short Setting); // LParam=Window,wParam=Setting
-void UI_UpdateGameList();
-void EndCommitCB(long ID, short hittype, C_Base *control);
-void ReplayUIMovie(long MovieID);
-void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
-void ViewRemoteLogbook(long playerID);
-void RelocateSquadron();
-void ShutdownCampaign(void);
-int tactical_is_training(void);
-void tactical_restart_mission(void);
-extern void LoadTheaterList(); // JPO
-static void ParseCommandLine(LPSTR cmdLine);
-static void SystemLevelInit(void);
-static void SystemLevelExit(void);
-static void CtrlAltDelMask(int state);
-void ConsoleWrite(char *);
-extern void CampMain(HINSTANCE hInstance, int nCmdShow);
-extern void ReadCampAIInputs(char * name);
 extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
-extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern void CampaignConnectionTimer(void);
-void UIMain(void);
-void UI_LoadSkyWeatherData();
-int UI_Startup();
-void UI_Cleanup();
-void UI_UpdateVU();
-void RecieveScenarioInfo();
-void UI_CommsErrorMessage(WORD error);
-void LeaveDogfight();
-void STPRender(C_Base *control);
-void UpdateRules(void);
-BOOL CleanupDIJoystick(void);
-BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
-void SetVoiceVolumes(void);
-void IncDecTalkerToPlay(int delta);
-void IncDecMsgToPlay(int delta);
-void IncDecDataToPlay(int delta);
 extern BOOL SaveSFXTable();
+extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WriteMissionData();
 extern HRESULT  StartServer(HWND hDlg);  //me123
+extern void CampaignConnectionTimer(void);
+extern void CampaignJoinFail(void);
+extern void CampaignJoinSuccess(void);
+extern void CampaignPreloadSuccess(int remote);
+extern void CampMain(HINSTANCE hInstance, int nCmdShow);
+extern void CheckCampaignFlyButton(void);
+extern void CopyDFSettingsToWindow(void);
+extern void DisableCampaignMenus(void);
+extern void DisplayJoinStatusWindow(int);
+extern void EnableCampaignMenus(void);
+extern void GameHasStarted(void);
+extern void LoadTheaterList(); // JPO
+extern void LoadTrails();
+extern void PlayUIMovieQ(); // defined in UI_Main.cpp
+extern void ReadCampAIInputs(char * name);
+extern void ReadFalcon4Config();
+extern void ServerBrowserExit();
 extern void StopVoice();
+extern void UIScramblePlayerFlight(void);
+extern void update_tactical_flight_information(void);
+extern void UpdateMissionWindow(long ID);
+int FileVerify(void);
+int tactical_is_training(void);
+int UI_Startup();
+LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+static int i_am(char *with);
+static void CtrlAltDelMask(int state);
+static void ParseCommandLine(LPSTR cmdLine);
+static void SystemLevelExit(void);
+static void SystemLevelInit(void);
+struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
+void ConsoleWrite(char *);
+void DoRecoShit(void);
+void EndCommitCB(long ID, short hittype, C_Base *control);
+void IncDecDataToPlay(int delta);
+void IncDecMsgToPlay(int delta);
+void IncDecTalkerToPlay(int delta);
+void LeaveDogfight();
+void load_voice_recognition_demo_sound_file(void);
+void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
+void OpenTEGameOverWindow();
+void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);//!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
+void PlayThatFunkyMusicWhiteBoy();
+void ProcessChatStr(CHATSTR *msg);
+void RebuildCurrentWPList();
+void RebuildGameTree();
+void RecieveScenarioInfo();
+void RelocateSquadron();
+void ReplayUIMovie(long MovieID);
+void SetVoiceVolumes(void);
+void ShutdownCampaign(void);
+void STPRender(C_Base *control);
+void tactical_restart_mission(void);
+void UI_Cleanup();
+void UI_CommsErrorMessage(WORD error);
+void UI_HandleAirbaseDestroyed();
+void UI_HandleAirbaseDestroyed();
+void UI_HandleAircraftDestroyed();
+void UI_HandleFlightCancel();
+void UI_LoadSkyWeatherData();
+void UI_UpdateDogfight(long winID, short Setting); // LParam=Window,wParam=Setting
+void UI_UpdateGameList();
+void UI_UpdateOccupationMap();
+void UI_UpdateVU();
+void UIMain(void);
+void UpdateRules(void);
+void ViewRemoteLogbook(long playerID);
+
+extern "C" int InitWS2(WSADATA *wsaData);
+// END OF FUNCTION DECLARATIONS
 
 
 
-
+// FUNCTION DEFINITIONS
 void BuildAscii()
 {
     short i, kbd, scan;
@@ -360,6 +360,7 @@ void BuildAscii()
         }
     }
 }
+
 
 static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int)
 {
@@ -417,6 +418,7 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
     return TRUE;
 
 }
+
 
 int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                          LPSTR lpCmdLine, int nCmdShow)
@@ -621,6 +623,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ExitProcess(0);
 }
 
+
 // set up structured exception handling here
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, int nCmdShow)
@@ -642,6 +645,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     return Result;
 }
 
+
 void EndUI(void)
 {
     // Looking for multiplayer stomp...
@@ -656,6 +660,7 @@ void EndUI(void)
     if (auto_start)
         SetFocus(mainMenuWnd);
 }
+
 
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -838,6 +843,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     return retval;
 }
 
+
 int get_ip(char *str)
 {
     char
@@ -869,6 +875,7 @@ int get_ip(char *str)
 
     return addr;
 }
+
 
 void ParseCommandLine(LPSTR cmdLine)
 {
@@ -1274,6 +1281,7 @@ void ParseCommandLine(LPSTR cmdLine)
     retval = RegCloseKey(theKey);
 }
 
+
 void SystemLevelInit()
 {
     SimDriver.InitializeSimMemoryPools();
@@ -1426,6 +1434,7 @@ void SystemLevelInit()
 
 }
 
+
 void SystemLevelExit(void)
 {
 #ifdef NDEBUG
@@ -1498,6 +1507,7 @@ void SystemLevelExit(void)
     CtrlAltDelMask(FALSE);
 }
 
+
 void CampaignAutoSave(FalconGameType gametype)
 {
     if (!tactical_is_training())
@@ -1518,6 +1528,7 @@ void CampaignAutoSave(FalconGameType gametype)
         }
     }
 }
+
 
 LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -2218,6 +2229,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
     return retval;
 }
 
+
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface)
 {
     HWND hwnd;
@@ -2332,6 +2344,7 @@ void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface
     F4HearVoices();
 }
 
+
 void ShutdownCampaign(void)
 {
     if (gMainHandler)
@@ -2350,6 +2363,7 @@ void ShutdownCampaign(void)
     gCampJoinStatus = 0;
 }
 
+
 void EnableCampaignMenus(void)
 {
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_SAVEAS, MF_ENABLED);
@@ -2366,6 +2380,7 @@ void EnableCampaignMenus(void)
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_FLYMISSION, MF_ENABLED);
     EnableMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_EXIT, MF_ENABLED);
 }
+
 
 void DisableCampaignMenus(void)
 {
@@ -2385,6 +2400,7 @@ void DisableCampaignMenus(void)
 
     CheckMenuItem(GetMenu(mainMenuWnd), ID_CAMPAIGN_PAUSED, MF_CHECKED);
 }
+
 
 void ConsoleWrite(char* str)
 {
@@ -2410,6 +2426,7 @@ void ConsoleWrite(char* str)
     WriteConsole(hStdIn, str, strlen(str), &num, NULL);
 }
 
+
 void CtrlAltDelMask(int state)
 {
     int was;
@@ -2418,6 +2435,7 @@ void CtrlAltDelMask(int state)
         SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &was, 0);
     else SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &was, 0);
 }
+
 
 int i_am(char *with)
 {
@@ -2441,3 +2459,4 @@ int i_am(char *with)
 
     return FALSE;
 }
+// END OF FUNCTION DEFINITIONS
