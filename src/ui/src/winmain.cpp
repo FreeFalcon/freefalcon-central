@@ -104,7 +104,6 @@ extern "C"
 
 // GLOBAL VARIABLES
 bool g_bEnableCockpitVerifier = false;
-bool g_bHas3DNow = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
 BOOL VersionInfo = FALSE;
@@ -120,11 +119,6 @@ char FalconUIArtDirectory[_MAX_PATH];
 char FalconUIArtThrDirectory[_MAX_PATH];
 char FalconUISoundDirectory[_MAX_PATH];
 char FalconZipsThrDirectory[_MAX_PATH];
-char legal_crap[] = "    ****    (c)2012 The FreeFalcon Community.    ****    ";
-char lTestVarString[] = "JustForGilman1";
-char program_name[] = "    ****    FreeFalcon 6.1    ****    ";
-char SecretCode[] = "SecretCodeGoesHere";     //8/3/97
-char top_space[] = "                                                                               ";
 class tactical_mission;
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
@@ -211,11 +205,6 @@ char g_strLgbk[20];
 	extern HWND hToolWnd;
 #endif
 
-#ifdef _USE_SECRET_CODE_
-	char PetersSecretCode[] = "ereHseoGedoCterceS"; // SecretCodeGoesHere (backwards)
-	BOOL VersionData = FALSE;
-#endif // _USE_SECRET_CODE_
-
 #ifdef DEBUG// Debug Assert softswitches
 	int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
 	int shiAssertsOn = TRUE,
@@ -282,7 +271,6 @@ int tactical_is_training(void);
 int UI_Startup();
 LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-static int i_am(char *with);
 static void CtrlAltDelMask(int state);
 static void ParseCommandLine(LPSTR cmdLine);
 static void SystemLevelExit(void);
@@ -367,16 +355,6 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 {
     WNDCLASS wc;
     BOOL rc;
-
-#ifdef _USE_SECRET_CODE_
-    struct tm expirationDate = { 0, 0, 0, 16, 7, 97 };
-    time_t expirationTime = mktime(&expirationDate);
-    time_t curTime = time(NULL);
-
-    if (curTime > expirationTime)
-        return FALSE;
-
-#endif //_USE_SECRET_CODE_
 
     if (!hPrevInstance)
     {
@@ -492,8 +470,6 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ParseCommandLine(lpCmdLine);
 
     ReadFalcon4Config();
-
-    lTestVar = !strncmp(lTestVarString, "JustForGilman", 13);
 
     // PW Kludge
     if (VersionInfo)
@@ -887,72 +863,23 @@ void ParseCommandLine(LPSTR cmdLine)
     DWORD type, size;
     HKEY theKey;
 
-    if (i_am("rheydon"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        auto_start = TRUE;
-        F4SetAsserts(TRUE);
-        ShiSetAsserts(TRUE);
-    }
+
 
 #ifdef DEBUG
-    else if (i_am("mmortime"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("kklemmic"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-        wait_for_loaded = FALSE;
-        FalconDisplay.displayFullScreen = FALSE;
-        F4SetAsserts(TRUE);
-        F4SetHardCrash(TRUE);
-        ShiSetHardCrash(TRUE);
-        ShiSetAsserts(TRUE);
-    }
-    else if (i_am("dpower"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        FalconDisplay.displayFullScreen = FALSE;
-        RepairObjective = 1;
-        intro_movie = FALSE;
-        eyeFlyEnabled = TRUE;
-        ShiSetAsserts(TRUE);
-        F4SetAsserts(TRUE);
-    }
-    else if (i_am("ericg") || i_am("chrisw"))
-    {
-        eyeFlyEnabled = TRUE;
-    }
-    else if (i_am("lrosensh"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-        FalconDisplay.displayFullScreen = FALSE;
-        intro_movie = TRUE;
-    }
-    else if (i_am("vincentf"))
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        gSoundFlags = 0;
-        FalconDisplay.displayFullScreen = FALSE;
-        wait_for_loaded = FALSE;
-        auto_start = TRUE;
-    }
-    else
-    {
-        InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
-    }
+	// These are debug options. Set whatever you need.
+		//FalconDisplay.displayFullScreen = FALSE;
+		//F4SetAsserts(TRUE);
+		//ShiSetAsserts(TRUE);
+		//RepairObjective = 1;
+		//intro_movie = FALSE;
+		//eyeFlyEnabled = TRUE;
+  //      wait_for_loaded = FALSE;
+  //      F4SetHardCrash(TRUE);
+  //      ShiSetHardCrash(TRUE);
+  //      gSoundFlags = 0;
 
+		InitDebug(DEBUGGER_TEXT_MODE);
+        auto_start = TRUE;
 #endif
 
     size = sizeof(FalconDataDirectory);
@@ -2436,29 +2363,5 @@ void CtrlAltDelMask(int state)
     if (state)
         SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &was, 0);
     else SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &was, 0);
-}
-
-
-int i_am(char *with)
-{
-    DWORD type, size;
-    char name[64];
-    HKEY key;
-    long retval;
-
-    size = 63;
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Network\\Logon", 0, KEY_QUERY_VALUE, &key);
-
-    if (retval == ERROR_SUCCESS)
-    {
-        RegQueryValueEx(key, "Username", 0, &type, (uchar*)&name, &size);
-
-        if (stricmp(name, with) == 0)
-            return TRUE;
-
-        RegCloseKey(key);
-    }
-
-    return FALSE;
 }
 // END OF FUNCTION DEFINITIONS
