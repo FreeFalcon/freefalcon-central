@@ -16,7 +16,7 @@ typedef struct
 extern FILE* F4EventFile;
 
 // ==================================
-// Falcon 4 Event stuff
+// FreeFalcon Event stuff
 // ==================================
 
 class FalconEvent : public VuMessage
@@ -54,7 +54,7 @@ private:
 };
 
 // ==================================
-// Falcon 4 Message filter
+// FreeFalcon Message filter
 // ==================================
 // sfr: why must all threads process Deletes??
 #define MF_DONT_PROCESS_DELETE 1

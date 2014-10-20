@@ -186,7 +186,7 @@ void AircraftClass::DoWeapons()
                                 VuDeReferenceEntity((VuEntity *)(DBrain()->missileFiredEntity));
 
                             DBrain()->missileFiredEntity = curWeapon;
-                            // Let F4 know we are using this object...
+                            // Let FF know we are using this object...
                             VuReferenceEntity((VuEntity *)(DBrain()->missileFiredEntity));
                             // Clear the lsb so we know we have just set it
                             // (we'll be off by a milisecond, so what!)

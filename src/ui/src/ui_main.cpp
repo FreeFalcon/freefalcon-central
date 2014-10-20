@@ -4,7 +4,7 @@
  Peter Ward
  December 3, 1996
 
- Main UI screen stuff for falcon
+ Main UI screen stuff for FreeFalcon
 \***************************************************************************/
 #include <windows.h>
 #include "falclib.h"

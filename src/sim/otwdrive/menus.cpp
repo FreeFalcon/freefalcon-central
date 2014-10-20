@@ -29,10 +29,7 @@
 #include "entity.h"
 #include "airframe.h"
 
-extern int MajorVersion;
-extern int MinorVersion;
-extern int BuildNumber;
-extern int ShowVersion;
+extern bool ShowVersion;
 extern int ShowFrameRate;
 extern int endAbort; // From OTWdrive.cpp
 extern DrawableBSP *endDialogObject;
@@ -60,10 +57,9 @@ void OTWDriverClass::ShowVersionString(void)
 {
     char verStr[24];
 
-    if (ShowVersion == 1)
-        sprintf(verStr, "%d.%02d", MajorVersion, MinorVersion);
-    else
-        sprintf(verStr, "%d.%02d%d%c", MajorVersion, MinorVersion, gLangIDNum);
+	extern const char* FREE_FALCON_VERSION;
+	if (ShowVersion)
+		sprintf(verStr, "%s", FREE_FALCON_VERSION);
 
     renderer->SetColor(0xff00ff00);
     renderer->TextCenter(-0.9F, 0.9F, verStr);

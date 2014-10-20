@@ -650,7 +650,7 @@ CAPTION "Dialog"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,68,45,50,14
-    CTEXT           "Falcon 4.0 Campaign Tool ",IDC_STATIC,18,5,149,10
+    CTEXT           "FreeFalcon Campaign Tool ",IDC_STATIC,18,5,149,10
     CTEXT           "Kevin Klemmick, 1995",IDC_STATIC,18,15,149,8
     CTEXT           "Spectrum HoloByte",IDC_STATIC,18,25,149,10
 END
@@ -1785,8 +1785,6 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,9
- PRODUCTVERSION 2,3,1,9
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -1801,15 +1799,15 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", "FreeFalcon 6.1"
-            VALUE "CompanyName", "MicroProse (Atari)"
-            VALUE "FileDescription", "Falcon 6.1  FFViper (US)"
-            VALUE "FileVersion", "2, 3, 1, 9"
-            VALUE "InternalName", "1.08i"
-            VALUE "LegalCopyright", "Copyright © 1998 - 2012"
+            VALUE "Comments", "FreeFalcon 7.0"
+            VALUE "CompanyName", "Open source project"
+            VALUE "FileDescription", "FreeFalcon 7.0  FFViper (US)"
+            VALUE "FileVersion", "7, 0, 0, 0"
+            VALUE "InternalName", "7.000"
+            VALUE "LegalCopyright", "Copyright © 1998 - 2014"
             VALUE "OriginalFilename", "FFViper.exe"
-            VALUE "ProductName", "FreeFalcon 6.1"
-            VALUE "ProductVersion", "2, 3, 1, 9"
+            VALUE "ProductName", "FreeFalcon 7.0"
+            VALUE "ProductVersion", "7, 0, 0, 0"
             VALUE "SpecialBuild", "US Edition"
         END
     END

@@ -263,7 +263,7 @@ SimulationDriver::~SimulationDriver(void)
 }
 
 
-// KCK: Startup is called on falcon startup before the loop calling Cycle is started.
+// KCK: Startup is called on FreeFalcon startup before the loop calling Cycle is started.
 void SimulationDriver::Startup(void)
 {
     SetFrameDescription(50, 1);

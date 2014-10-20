@@ -142,7 +142,7 @@ void DisplayDevice::Setup(int driverNum, int devNum, int width, int height, int 
         AdjustWindowRect(&rect, style, FALSE);
         appWin = CreateWindow(
                      "RenderTarget", /* class */
-                     "Falcon 4.0 Demo", /* caption */
+                     "FreeFalcon Demo", /* caption */
                      style, /* style */
                      50, /* init. x pos */
                      50, /* init. y pos */

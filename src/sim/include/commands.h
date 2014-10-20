@@ -452,7 +452,6 @@ void OTWSelectTargetMode(unsigned long val, int state, void *);
 void OTWSelectWeaponMode(unsigned long val, int state, void *);
 void OTWSelectFlybyMode(unsigned long val, int state, void *);
 void OTWSelectSatelliteMode(unsigned long val, int state, void *);
-void OTWShowTestVersion(unsigned long val, int state, void *);
 void OTWShowVersion(unsigned long val, int state, void *);
 void OTWSelect2DCockpitMode(unsigned long val, int state, void *);
 void OTWSelect3DCockpitMode(unsigned long val, int state, void *);

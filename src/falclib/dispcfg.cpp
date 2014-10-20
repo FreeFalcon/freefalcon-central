@@ -161,9 +161,10 @@ void FalconDisplayConfiguration::MakeWindow(void)
     rect.right = width[Movie];
     rect.bottom = height[Movie];
     AdjustWindowRect(&rect, windowStyle, FALSE);
+	extern const char* FREE_FALCON_BRAND;
     appWin = CreateWindow(
                  "FalconDisplay", /* class */
-                 "F4 3D Output", /* caption */
+				 FREE_FALCON_BRAND, /* caption */
                  windowStyle, /* style */
                  xOffset, /* init. x pos */
                  yOffset, /* init. y pos */

@@ -54,14 +54,10 @@ extern char g_strMasterServerName[0x40];
 extern GNETCORELib::IUplinkPtr m_pUplink;
 extern bool g_bEnableUplink;
 extern int g_nMasterServerPort;
-char strVersion[0x20];
 extern char g_strServerLocation[0x40];
 extern char g_strServerName[0x40];
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
-extern int MajorVersion;
-extern int MinorVersion;
 extern int gLangIDNum;
-extern int BuildNumber;
 
 // Helper classes
 class CGNetUpdater :
@@ -324,11 +320,11 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
  m_pUplink->PutMasterServerPort(g_nMasterServerPort);
  m_pUplink->PutQueryPort(7778);
  m_pUplink->PutHeartbeatInterval(60000);
- m_pUplink->PutServerVersion(strVersion);
- m_pUplink->PutServerVersionMin(strVersion);
+ m_pUplink->PutServerVersion(FREE_FALCON_VERSION);
+ m_pUplink->PutServerVersionMin(FREE_FALCON_VERSION);
  m_pUplink->PutServerLocation(g_strServerLocation);
  m_pUplink->PutServerName(g_strServerName);
- m_pUplink->PutGameName("Falcon4");
+ m_pUplink->PutGameName(FREE_FALCON_BRAND);
  m_pUplink->PutGameMode("openplaying");
  }
  else
@@ -566,10 +562,6 @@ void HookupServerBrowserControls(long ID)
     C_Window *winme;
     C_Button *ctrl;
     C_TreeList *tree;
-
-    char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
-
 
     winme = gMainHandler->FindWindow(JETNET_WIN);
 

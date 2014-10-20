@@ -787,7 +787,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
                 af->throtl = (UserStickInputs.throttle - throtl) * 0.7F + throtl;
             }
             else
-                // let's give realistic refueling also some help (realistic is just too hard in F4 according to Keith Rosenkrantz)
+                // let's give realistic refueling also some help (realistic is just too hard in FF according to Keith Rosenkrantz)
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.75F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.75F + rStick;

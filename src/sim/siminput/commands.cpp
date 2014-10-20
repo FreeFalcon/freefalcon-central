@@ -76,7 +76,7 @@ float pitchManualTrim = 0.0F; //MI
 float yawManualTrim = 0.0F; //MI
 float rollManualTrim = 0.0F; //MI
 int UseKeyboardThrottle = FALSE;
-extern int ShowVersion;
+extern bool ShowVersion;
 extern float gSpeedyGonzales;
 int gDoOwnshipSmoke = 0;
 extern PilotInputs UserStickInputs;
@@ -3060,25 +3060,15 @@ void OTWSelectFlybyMode(unsigned long, int state, void*)
         OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModeFlyby);
 }
 
-void OTWShowTestVersion(unsigned long, int state, void*)
-{
-    if (state & KEY_DOWN)
-    {
-        if (ShowVersion != 2)
-            ShowVersion = 2;
-        else
-            ShowVersion = 0;
-    }
-}
 
 void OTWShowVersion(unsigned long, int state, void*)
 {
     if (state & KEY_DOWN)
     {
-        if (ShowVersion != 1)
-            ShowVersion = 1;
+        if (ShowVersion)
+            ShowVersion = false;
         else
-            ShowVersion = 0;
+            ShowVersion = true;
     }
 }
 

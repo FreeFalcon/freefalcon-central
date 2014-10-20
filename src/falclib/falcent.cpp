@@ -19,7 +19,7 @@
 using namespace std;
 
 // ==================================
-// Falcon Entity functions
+// FreeFalcon Entity functions
 // ==================================
 
 FalconEntity::FalconEntity(ushort type, VU_ID_NUMBER eid) : VuEntity(type, eid)

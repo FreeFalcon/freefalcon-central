@@ -12,7 +12,7 @@ VoiceMapper g_voicemap;
 
 // JPO
 // hold load of support routines for assigning voices to things
-// idea is to generalise the F4 thing, so certain voices
+// idea is to generalise the FF thing, so certain voices
 // can stick to certain things.
 
 const unsigned int  VoiceMapper::default_voices[] =

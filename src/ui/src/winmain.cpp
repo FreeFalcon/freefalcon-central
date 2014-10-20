@@ -90,7 +90,6 @@ extern "C"
 
 
 // PREPROCESSOR DIRECTIVES
-using std::string;
 #undef fopen
 #undef fclose
 
@@ -105,9 +104,9 @@ using std::string;
 // GLOBAL CONSTANTS
 // This is the only place in the entire code base where the name and the
 // version should be defined.
-const string FREE_FALCON_BRAND = "FreeFalcon";
-const string FREE_FALCON_PROJECT = "Open Source Project";
-const string FREE_FALCON_VERSION = "7.0.0";
+const char* FREE_FALCON_BRAND = "FreeFalcon";
+const char* FREE_FALCON_PROJECT = "Open Source Project";
+const char* FREE_FALCON_VERSION = "7.0.0";
 // END OF GLOBAL CONSTANTS
 
 
@@ -166,7 +165,6 @@ GNETCORELib::IUplinkPtr m_pUplink;
 HINSTANCE hInst;
 HWND mainAppWnd;
 HWND mainMenuWnd;
-int BuildNumber = 0;
 int ClearObjManualFlags = FALSE;
 int DestroyObjective = FALSE;
 int DisableSmoothing = FALSE;
@@ -174,14 +172,12 @@ int displayCampaign = FALSE;
 int doNetwork = FALSE; // referred in splash.cpp
 int doUI = FALSE;
 int eyeFlyEnabled = FALSE;
-int MajorVersion = 7;
-int MinorVersion = 0;
 int NoRudder = FALSE;
 int noUIcomms = FALSE;
 int NumHats = -1;
 int numZips = 0;
 int RepairObjective = FALSE;
-int ShowVersion = 0;//used to display version number in game (not part of version system)
+bool ShowVersion = false; // used to display version number in game (not part of version system)
 int SimPathHandle = -1;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
@@ -381,9 +377,8 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
             return FALSE;
         }
     }
-
-    mainMenuWnd = CreateWindow("Falcon4Class",
-                               "FreeFalcon 6.1 Debug Window",
+	mainMenuWnd = CreateWindow("Falcon4Class",
+							   "FreeFalcon 7.0 Debug Window",
                                WS_OVERLAPPEDWINDOW,
                                720,
                                100,
@@ -409,15 +404,11 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
-    char buf[60], title[60];
     char fileName[_MAX_PATH];
 
     _Module.Init(ObjectMap, hInstance);
 
     InitWS2(&wsadata); // Init Winsock now, we need it for GNet
-
-    char strVersion[0x20];
-    sprintf(strVersion, "%1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
 
     HRESULT hr = CoInitialize(NULL);
 
@@ -438,11 +429,11 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             m_pUplink->PutMasterServerPort(g_nMasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
-            m_pUplink->PutServerVersion(strVersion);
-            m_pUplink->PutServerVersionMin(strVersion);
+			m_pUplink->PutServerVersion(FREE_FALCON_VERSION);
+			m_pUplink->PutServerVersionMin(FREE_FALCON_VERSION);
             m_pUplink->PutServerLocation(g_strServerLocation);
             m_pUplink->PutServerName(g_strServerName);
-            m_pUplink->PutGameName("Falcon4");
+            m_pUplink->PutGameName(FREE_FALCON_BRAND);
             m_pUplink->PutGameMode("openplaying");
         }
     }
@@ -474,29 +465,6 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ParseCommandLine(lpCmdLine);
 
     ReadFalcon4Config();
-
-    // PW Kludge
-    if (VersionInfo)
-    {
-        int hCrt;
-        FILE *hf;
-
-        // Hack to make printf work
-        AllocConsole();
-        hCrt = _open_osfhandle(
-                   (long) GetStdHandle(STD_OUTPUT_HANDLE),
-                   _O_TEXT
-               );
-        hf = _fdopen(hCrt, "w");
-        *stdout = *hf;
-        setvbuf(stdout, NULL, _IONBF, 0);
-
-
-        sprintf(title, "FreeFalcon 6.1 - Version %1d.%02d.%1d.%5d", MajorVersion, MinorVersion, gLangIDNum, BuildNumber);
-
-        printf("%s:%s\n", title, buf);
-        return(FALSE);
-    }
 
     realWeather = new WeatherClass();
 
@@ -646,12 +614,12 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             switch (LOWORD(wParam))
             {
                 case ID_SHOW_VERSION:
-                    ShowVersion = ShowVersion != 2 ? 2 : 0;
+					ShowVersion ? ShowVersion = false : ShowVersion = true;
                     break;
 
                 case ID_SHOW_MAJOR_VERSION:
-                    ShowVersion = ShowVersion != 1 ? 1 : 0;
-                    break;
+					ShowVersion ? ShowVersion = false : ShowVersion = true;
+					break;
 
                 case ID_FILE_EXIT:
                     PostQuitMessage(0);
@@ -2079,7 +2047,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
                 switch (message)
                 {
-                        // indicates mouse inside area falcon window area
+                        // indicates mouse inside area FreeFalcon window area
                     case WM_MOUSELEAVE:
                     {
                         mouseIn = false;

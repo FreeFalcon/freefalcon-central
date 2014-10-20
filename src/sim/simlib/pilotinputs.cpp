@@ -55,7 +55,7 @@ PilotInputs::PilotInputs(void)
     ytrim = 0.0f;
     PickleTime = 0;
 
-    // Retro 12Jan2004 -- aargh I hate falcon
+    // Retro 12Jan2004 -- aargh I hate FreeFalcon
     PickleOverride = 0;
     keyboardPickleOverride = 0;
     trigger = Center;
@@ -367,7 +367,7 @@ void PilotInputs::Reset(void)
     ptrim = ytrim = rtrim = 0.0f;
     PickleTime = 0;
 
-    // Retro 12Jan2004 -- aargh I hate falcon
+    // Retro 12Jan2004 -- aargh I hate FreeFalcon
     PickleOverride = 0;
     keyboardPickleOverride = 0;
     trigger = Center;

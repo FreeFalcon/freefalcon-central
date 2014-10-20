@@ -912,7 +912,7 @@ private:
     //
 
     // ---------------------------------
-    // Falcon 3 Padlock Slaming Variables
+    // FreeFalcon 3 Padlock Slaming Variables
     // ---------------------------------
 
     float mPrevPRate;
@@ -921,7 +921,7 @@ private:
     float mPrevTError;
 
     // ---------------------------------
-    // Falcon 3 Padlock Functions
+    // FreeFalcon 3 Padlock Functions
     // ---------------------------------
 
 
