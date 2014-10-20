@@ -867,7 +867,6 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #ifdef DEBUG
 	// These are debug options. Set whatever you need.
-		//FalconDisplay.displayFullScreen = FALSE;
 		//F4SetAsserts(TRUE);
 		//ShiSetAsserts(TRUE);
 		//RepairObjective = 1;
@@ -933,10 +932,8 @@ void ParseCommandLine(LPSTR cmdLine)
                 GraphicSettingMult = temp >= 1 ? temp : 1;
             }
 
-            if (!stricmp(arg, "-full"))
-                FalconDisplay.displayFullScreen = TRUE;
-            else if (!stricmp(arg, "-window"))
-                FalconDisplay.displayFullScreen = FALSE;
+            if (!stricmp(arg, "-window"))
+                FalconDisplay.displayFullScreen = false;
 
             if (stricmp(arg, "-hires") == 0)
                 HighResolutionHackFlag = TRUE;

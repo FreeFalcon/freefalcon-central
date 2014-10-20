@@ -51,16 +51,10 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     doubleBuffer[Sim] = TRUE;
 
     deviceNumber = 0;
-#ifdef NDEBUG
-    displayFullScreen = TRUE;
-#else
+#ifdef DEBUG
     char strName[40];
     DWORD dwSize = sizeof(strName);
     GetComputerName(strName, &dwSize);
-
-    displayFullScreen = stricmp(strName, "diablo");
-    //   displayFullScreen = TRUE;
-    //   displayFullScreen = FALSE;
 #endif
 }
 
@@ -275,7 +269,6 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     {
         /*JAM 01Dec03 if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
          {
-        #if 1
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
          ShiAssert(nIndexPrimary != -1);
@@ -292,9 +285,6 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          theDevice = nIndexRGBRenderer;
          }
          }
-        #else
-         displayFullScreen = TRUE; // force fullscreen
-        #endif
          }*/
 
         if (!pDI->SupportsSRT() && DisplayOptions.bRender2Texture)
@@ -366,7 +356,7 @@ void FalconDisplayConfiguration::ToggleFullScreen(void)
 
     LeaveMode();
     DestroyWindow(appWin);
-    displayFullScreen = 1 - displayFullScreen;
+    !displayFullScreen;
     MakeWindow();
     EnterMode(currentMode);
 }

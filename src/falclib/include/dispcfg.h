@@ -27,7 +27,7 @@ public:
     DeviceManager devmgr;
     DisplayDevice theDisplayDevice;
     int deviceNumber;
-    int displayFullScreen;
+	bool displayFullScreen = true;
 
     void Setup(int languageNum);
     void Cleanup();
