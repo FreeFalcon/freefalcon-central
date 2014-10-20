@@ -882,9 +882,6 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-hires") == 0)
                 HighResolutionHackFlag = TRUE;
 
-            if (!stricmp(arg, "-version"))
-                VersionInfo = TRUE;
-
             if (!stricmp(arg, "-norudder"))
                 NoRudder = TRUE;
 

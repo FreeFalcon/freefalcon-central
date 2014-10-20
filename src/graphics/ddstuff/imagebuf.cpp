@@ -58,7 +58,7 @@ BOOL ImageBuffer::IsReady()
     return m_bReady;
 }
 
-BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, MPRSurfaceType back, HWND targetWin, BOOL clip, BOOL fullScreen, BOOL bWillCallSwapBuffer)
+BOOL ImageBuffer::Setup(DisplayDevice *dev, int w, int h, MPRSurfaceType front, MPRSurfaceType back, HWND targetWin, BOOL clip, bool fullScreen, BOOL bWillCallSwapBuffer)
 {
     ZeroMemory(&m_rcFront, sizeof(m_rcFront));
 

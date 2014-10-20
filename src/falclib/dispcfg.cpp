@@ -152,8 +152,8 @@ void FalconDisplayConfiguration::MakeWindow(void)
     else
     {
         windowStyle = WS_OVERLAPPEDWINDOW;
-        xOffset = 50;
-        yOffset = 50;
+        xOffset = 0;
+        yOffset = 0;
     }
 
     // Build a window for this application
