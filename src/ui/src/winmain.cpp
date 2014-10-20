@@ -42,7 +42,6 @@
 #include "InpFunc.h"
 #include "LogBook.h"
 #include "MissEval.h"
-#include "OpenFile.h"
 #include "OtwDrive.h"
 #include "PlayerOp.h"
 #include "RadioSubtitle.h"

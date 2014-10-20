@@ -1,5 +1,4 @@
 #include "Star.h"
-#include "Falclib/Include/openfile.h"
 #define EPSILON 1e-6f
 #define elonge      278.833540f     /* Ecliptic longitude of the Sun at epoch 1980.0 */
 #define elongp      282.596403f     /* Ecliptic longitude of the Sun at perigee */
@@ -311,7 +310,7 @@ float CStar::Julian(int year, int month, float day)
 int CStar::Setup(char *starfile, float maxmagnitude)
 {
     Cleanup();
-    FILE *in = FILE_Open(starfile, "r");
+    FILE *in = fopen(starfile, "r");
 
     if (in == NULL) return 1;
 

@@ -9,7 +9,6 @@
 #include "TimeMgr.h"
 #include "TOD.h"
 #include "TMap.h"
-#include "falclib/include/openfile.h"
 
 // Provide the one and only terrain database object.  It will be up to the
 // application to initialize and cleanup this object by calling Setup and Cleanup.
@@ -40,7 +39,7 @@ int TMap::Setup(const char *mapPath)
     // Construct the filename for the map description file and open it
     strcpy(filename, mapPath);
     strcat(filename, "\\Theater.map");
-    headerFile = CreateFile_Open(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    headerFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (headerFile == INVALID_HANDLE_VALUE)
     {
@@ -332,7 +331,7 @@ void TMap::LoadMEAtable(const char *mapPath)
     // Open the MEA data file
     strcpy(filename, mapPath);
     strcat(filename, "\\Theater.MEA");
-    dataFile = CreateFile_Open(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    dataFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (dataFile == INVALID_HANDLE_VALUE)
     {

@@ -27,7 +27,6 @@
 #include "RenderOW.h"
 #include "GraphicsRes.h"
 #include "Setup.h"
-#include "Falclib/Include/openfile.h"
 #include "FalcLib/include/dispopts.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
@@ -90,7 +89,7 @@ void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex)
     // Attach our resource files
     sprintf(fullPath, "%s\\texture\\", theaterPath);
     sprintf(zipName, "%s\\texture\\%s", theaterPath, TerrainTexArchiveName);
-    ResHandleTerrainTex = ResAttach_Open(fullPath, zipName, FALSE);
+    ResHandleTerrainTex = ResAttach(fullPath, zipName, FALSE);
 
     if (ResHandleTerrainTex < 0)
     {
@@ -264,7 +263,7 @@ void TheaterReload(char *theater, char *loddata)
     // Attach our resource files
     sprintf(fullPath, "%s\\texture\\", theaterPath);
     sprintf(zipName, "%s\\texture\\%s", theaterPath, TerrainTexArchiveName);
-    ResHandleTerrainTex = ResAttach_Open(fullPath, zipName, FALSE);
+    ResHandleTerrainTex = ResAttach(fullPath, zipName, FALSE);
 
     if (ResHandleTerrainTex < 0)
     {

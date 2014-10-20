@@ -225,7 +225,6 @@
     <ClCompile Include="MsgSrc\MissionRequestMsg.cpp" />
     <ClCompile Include="MsgSrc\NavalTaskingMsg.cpp" />
     <ClCompile Include="MsgSrc\ObjectiveMsg.cpp" />
-    <ClCompile Include="openfile.cpp" />
     <ClCompile Include="PlayerOp.cpp" />
     <ClCompile Include="MsgSrc\PlayerStatusMsg.cpp" />
     <ClCompile Include="prof_gather.c" />

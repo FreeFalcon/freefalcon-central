@@ -176,9 +176,6 @@
     <ClCompile Include="MsgSrc\ObjectiveMsg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="openfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerOp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -11,7 +11,6 @@
 #include "RViewpnt.h"
 #include "RenderOW.h"
 #include "tod.h"
-#include "Falclib/include/openfile.h"
 #include "Falclib/include/PlayerOp.h"
 #include "Star.h"
 #include "RealWeather.h"
@@ -63,7 +62,7 @@ void CTimeOfDay::Setup(char *dataPath)
         fclose(in);
 
     sprintf(todfile, "%s\\tod.lst", dataPath);
-    in = FILE_Open(todfile, "r");
+    in = fopen(todfile, "r");
 
     if (in == NULL)
     {
