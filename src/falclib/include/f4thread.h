@@ -97,7 +97,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    int F4GetNumProcessors();
     int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor);
 #ifdef __cplusplus
 }

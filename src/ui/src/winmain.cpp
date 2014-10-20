@@ -172,7 +172,6 @@ int numZips = 0;
 int RepairObjective = FALSE;
 int ShowVersion = 0;//used to display version number in game (not part of version system)
 int SimPathHandle = -1;
-int studlyCampaignDude = FALSE;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
 int* resourceHandle;
@@ -180,8 +179,6 @@ RadioSubTitle* radioLabel = (RadioSubTitle*)0;
 RealWeather *realWeather = NULL;
 static HACCEL hAccel;
 static int KeepFocus = 0;
-static int lTestVar = TRUE;
-static int numProcessors;
 TrackIR theTrackIRObject;
 WinAmpFrontEnd* winamp = 0;
 WSADATA wsadata;
@@ -276,13 +273,11 @@ static void SystemLevelExit(void);
 static void SystemLevelInit(void);
 struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 void ConsoleWrite(char *);
-void DoRecoShit(void);
 void EndCommitCB(long ID, short hittype, C_Base *control);
 void IncDecDataToPlay(int delta);
 void IncDecMsgToPlay(int delta);
 void IncDecTalkerToPlay(int delta);
 void LeaveDogfight();
-void load_voice_recognition_demo_sound_file(void);
 void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
 void OpenTEGameOverWindow();
 void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);//!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
@@ -577,14 +572,17 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 
-// set up structured exception handling here
+// Main entry point.
+// However, some code is called by callback functions so use breakpoints
+// to debug properly!
 signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, signed int nCmdShow)
 {
 	SubRange<signed int, 0, 1> error_code;
 	error_code = EXIT_FAILURE;
 
-    __try
+	// Set up structured exception handling here.
+		__try
     {
         error_code = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
     }
@@ -1226,7 +1224,6 @@ void SystemLevelInit()
             SimPathHandle = ResAddPath(tmpPath, TRUE);
 
         ReadCampAIInputs("Falcon4");
-        numProcessors = F4GetNumProcessors();
 
         if (!LoadClassTable("Falcon4"))
         {
@@ -1598,30 +1595,29 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // =========================================================
 
         case FM_LOAD_CAMPAIGN:
-            if (lTestVar)
+            
+            // Load a campaign here (this should allow tactical engagements too, so we
+            // So we can eliminate the LOAD_TACTICAL case.
+            if (
+                (FalconGameType)lParam != game_Campaign &&
+                (FalconGameType)lParam != game_TacticalEngagement
+            )
             {
-                // Load a campaign here (this should allow tactical engagements too, so we
-                // So we can eliminate the LOAD_TACTICAL case.
-                if (
-                    (FalconGameType)lParam != game_Campaign &&
-                    (FalconGameType)lParam != game_TacticalEngagement
-                )
-                {
-                    strcpy(gUI_CampaignFile, "Instant");
-                }
-
-                retval = TheCampaign.LoadCampaign((FalconGameType)lParam, gUI_CampaignFile);
-
-                // Notify UI of our success
-                if (retval)
-                {
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, 0, 0);
-                }
-                else
-                {
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-                }
+                strcpy(gUI_CampaignFile, "Instant");
             }
+
+            retval = TheCampaign.LoadCampaign((FalconGameType)lParam, gUI_CampaignFile);
+
+            // Notify UI of our success
+            if (retval)
+            {
+                PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, 0, 0);
+            }
+            else
+            {
+                PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
+            }
+            
 
             break;
 
@@ -1651,43 +1647,40 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_JOIN_CAMPAIGN:
-            if (lTestVar)
-            {
-                // Join a campaign here
-                if (gCommsMgr)
-                {
-                    FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+			// Join a campaign here
+			if (gCommsMgr)
+			{
+				FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-                    if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
-                    {
-                        MonoPrint("Campaign Join Error: Not a valid game.\n");
-                        PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-                        return 0;
-                    }
+				if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
+				{
+					MonoPrint("Campaign Join Error: Not a valid game.\n");
+					PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
+					return 0;
+				}
 
-                    // wParam determines phase of loading we'd like to perform:
-                    switch (wParam)
-                    {
-                        case JOIN_PRELOAD_ONLY: // Preload only
-                            MonoPrint("Requesting campaign preload.\n");
-                            retval = TheCampaign.RequestScenarioStats(game);
-                            break;
+				// wParam determines phase of loading we'd like to perform:
+				switch (wParam)
+				{
+					case JOIN_PRELOAD_ONLY: // Preload only
+						MonoPrint("Requesting campaign preload.\n");
+						retval = TheCampaign.RequestScenarioStats(game);
+						break;
 
-                        case JOIN_REQUEST_ALL_DATA: // Request all game data
-                            MonoPrint("Requesting all campaign data.\n");
-                            retval = TheCampaign.RequestScenarioStats(game);
-                            break;
+					case JOIN_REQUEST_ALL_DATA: // Request all game data
+						MonoPrint("Requesting all campaign data.\n");
+						retval = TheCampaign.RequestScenarioStats(game);
+						break;
 
-                        case JOIN_CAMP_DATA_ONLY: // Request only non-preload data (Called by Campaign only)
-                            MonoPrint("Requesting campaign data.\n");
-                            retval = TheCampaign.JoinCampaign((FalconGameType)lParam, game);
-                            break;
-                    }
-                }
+					case JOIN_CAMP_DATA_ONLY: // Request only non-preload data (Called by Campaign only)
+						MonoPrint("Requesting campaign data.\n");
+						retval = TheCampaign.JoinCampaign((FalconGameType)lParam, game);
+						break;
+				}
+			}
 
-                if (!retval)
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-            }
+			if (!retval)
+				PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
 
             break;
 
@@ -1757,38 +1750,29 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_START_DOGFIGHT:
-            if (lTestVar)
-            {
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
-            }
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
         case FM_START_CAMPAIGN:
-            if (lTestVar)
-            {
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
-            }
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
         case FM_START_TACTICAL:
-            if (lTestVar)
-            {
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
-            }
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
