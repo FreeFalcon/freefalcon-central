@@ -90,6 +90,7 @@ extern "C"
 
 
 // PREPROCESSOR DIRECTIVES
+using std::string;
 #undef fopen
 #undef fclose
 
@@ -98,6 +99,16 @@ extern "C"
 #import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 // END OF PREPROCESSOR DIRECTIVES
+
+
+
+// GLOBAL CONSTANTS
+// This is the only place in the entire code base where the name and the
+// version should be defined.
+const string FREE_FALCON_BRAND = "FreeFalcon";
+const string FREE_FALCON_PROJECT = "Open Source Project";
+const string FREE_FALCON_VERSION = "7.0.0";
+// END OF GLOBAL CONSTANTS
 
 
 
@@ -155,7 +166,7 @@ GNETCORELib::IUplinkPtr m_pUplink;
 HINSTANCE hInst;
 HWND mainAppWnd;
 HWND mainMenuWnd;
-int BuildNumber = F4BuildNumber;
+int BuildNumber = 0;
 int ClearObjManualFlags = FALSE;
 int DestroyObjective = FALSE;
 int DisableSmoothing = FALSE;
@@ -163,8 +174,8 @@ int displayCampaign = FALSE;
 int doNetwork = FALSE; // referred in splash.cpp
 int doUI = FALSE;
 int eyeFlyEnabled = FALSE;
-int MajorVersion = F4MajorVersion;
-int MinorVersion = F4MinorVersion;
+int MajorVersion = 7;
+int MinorVersion = 0;
 int NoRudder = FALSE;
 int noUIcomms = FALSE;
 int NumHats = -1;
