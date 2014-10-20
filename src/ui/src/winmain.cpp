@@ -93,6 +93,7 @@ extern "C"
 #undef fopen
 #undef fclose
 
+// These are needed for network support.
 #pragma warning(disable:4192)
 #import "gnet\bin\core.tlb"
 #import "gnet\bin\shared.tlb" named_guids
@@ -112,6 +113,7 @@ const char* FREE_FALCON_VERSION = "7.0.0";
 
 
 // GLOBAL VARIABLES
+bool intro_movie = true;
 bool g_bEnableCockpitVerifier = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
@@ -216,14 +218,6 @@ char g_strLgbk[20];
 	extern CampaignTime gConnectionTime;
 	extern CampaignTime gResendTime;
 	extern int gCampJoinStatus;
-#endif
-
-#ifdef NDEBUG
-	int auto_start = TRUE;
-	int intro_movie = TRUE;
-#else
-	int auto_start = FALSE;
-	int intro_movie = FALSE;
 #endif
 
 extern "C"
@@ -588,8 +582,7 @@ void EndUI(void)
     UI_Cleanup();
     TheCampaign.Resume();
 
-    if (auto_start)
-        SetFocus(mainMenuWnd);
+    SetFocus(mainMenuWnd);
 }
 
 
@@ -823,7 +816,6 @@ void ParseCommandLine(LPSTR cmdLine)
 		//F4SetAsserts(TRUE);
 		//ShiSetAsserts(TRUE);
 		//RepairObjective = 1;
-		//intro_movie = FALSE;
 		//eyeFlyEnabled = TRUE;
   //      wait_for_loaded = FALSE;
   //      F4SetHardCrash(TRUE);
@@ -831,7 +823,6 @@ void ParseCommandLine(LPSTR cmdLine)
   //      gSoundFlags = 0;
 
 		InitDebug(DEBUGGER_TEXT_MODE);
-        auto_start = TRUE;
 #endif
 
     size = sizeof(FalconDataDirectory);
@@ -948,20 +939,14 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-usersc") == 0)
                 _LOAD_ART_RESOURCES_ = 1;
 
-            if (_strnicmp(arg, "-auto", 5) == 0)
-                auto_start = TRUE;
-
-            if (_strnicmp(arg, "-nomovie", 8) == 0)
-                intro_movie = FALSE;
+			if (_strnicmp(arg, "-nomovie", 8) == 0)
+				intro_movie = false;
 
             if (_strnicmp(arg, "-noUIcomms", 8) == 0)
                 noUIcomms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
                 gTimeModeServer = 1;
-
-            if (_strnicmp(arg, "-movie", 6) == 0)
-                intro_movie = TRUE;
 
             if (_strnicmp(arg, "-noloader", 9) == 0)
                 wait_for_loaded = FALSE;
@@ -1483,8 +1468,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             if (intro_movie)
                 SendMessage(hwnd, FM_PLAY_INTRO_MOVIE, 0, 0); // Play Movie
 
-            if (auto_start)
-                PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
+            PostMessage(hwnd, FM_START_UI, 0, 0); // Start UI
 
             break;
 
@@ -1989,11 +1973,8 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_EXIT_GAME:
             EndUI();
 
-            if (auto_start)
-            {
-                PostQuitMessage(0);
-                retval = 0;
-            }
+            PostQuitMessage(0);
+            retval = 0;
 
             break;
 
