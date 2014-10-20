@@ -13,56 +13,11 @@ extern "C"
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
-char *InsertCD[] =
-{
-    "Please insert the Falcon 4.0 CD",// undefined
-    "Please insert the Falcon 4.0 CD",// English
-    "Please insert the Falcon 4.0 CD",// UK
-    "Bitte legen Sie die Falcon 4.0 CD ein",// German
-    "Veuillez insérer le CD de Falcon 4.0",// French
-    "Introduzca el CD de Falcon 4.0",// Spanish
-    "Inserire il CD di Falcon 4.0",// Italian
-    "Insira o CD do Falcon 4.0",// Portuguese
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-    "Please insert the Falcon 4.0 CD",
-};
-char *UnableToOpen[] =
-{
-    "Unable to open file",// undefined
-    "Unable to open file",// English
-    "Unable to open file",// UK
-    "Kann Datei nicht öffnen",// German
-    "Impossible d'ouvrir le fichier",// French
-    "Imposible abrir el archivo",// Spanish
-    "Impossibile aprire il file",// Italian
-    "Não é possível abrir arquivo",// Portuguese
-    "Unable to open file",
-    "Unable to open file",
-    "Unable to open file",
-    "Unable to open file",
-    "Unable to open file",
-};
-
 // This function opens a dialog box asking the user to insert the Falcon CD
 // Possible return values:
 // 0 = Retry
 // 1 = Abort
 // if Disabled... exit(-1);
-
-int DoDialogBox()
-{
-    int retval;
-
-    retval = MessageBox(NULL, InsertCD[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
-
-    if (retval == IDRETRY)
-        return(0);
-
-    return(1);
-}
 
 FILE *FILE_Open(char *filename, char *Params)
 {
@@ -75,7 +30,6 @@ FILE *FILE_Open(char *filename, char *Params)
 
         if (!handle)
         {
-            done = DoDialogBox();
         }
         else
             done = 1;
@@ -96,7 +50,6 @@ int INT_Open(char *filename, int Params, int pmode)
 
         if (handle == -1)
         {
-            done = DoDialogBox();
         }
         else
             done = 1;
@@ -116,7 +69,6 @@ HANDLE CreateFile_Open(char *filename, DWORD param1, DWORD param2, LPSECURITY_AT
 
         if (handle == INVALID_HANDLE_VALUE)
         {
-            done = DoDialogBox();
         }
         else
             done = 1;
@@ -137,7 +89,6 @@ int ResAttach_Open(const char * attach_point, const char * filename, int replace
 
         if (handle < 0)
         {
-            done = DoDialogBox();
         }
         else
             done = 1;
