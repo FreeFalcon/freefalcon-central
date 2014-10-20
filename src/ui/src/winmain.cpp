@@ -393,12 +393,21 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
+void initialize_variables(void)
+{
+#ifdef DEBUG
+	g_bEnableCockpitVerifier = true;
+#endif // DEBUG
+};
+
 signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                          LPSTR lpCmdLine, signed int nCmdShow)
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
     char fileName[_MAX_PATH];
+
+	initialize_variables();
 
     _Module.Init(ObjectMap, hInstance);
 
@@ -541,7 +550,7 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     CoUninitialize();
 
-    ExitProcess(0);
+    ExitProcess(EXIT_SUCCESS);
 }
 
 
@@ -1081,8 +1090,8 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-enumswdev"))
                 g_bEnumSoftwareDevices = true;
 
-            if (!stricmp(arg, "-cockpitverifier"))
-                g_bEnableCockpitVerifier = true;
+            if (!stricmp(arg, "-nocockpitverifier"))
+                g_bEnableCockpitVerifier = false;
 
             if (!stricmp(arg, "-writesndtbl"))
                 g_writeSndTbl = true;

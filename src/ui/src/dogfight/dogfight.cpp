@@ -231,7 +231,7 @@ static long DFTeamIconResID[5][2] =
     { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // UFO Team
     { RED_AIR_NORTH, RED_AIR_NORTH_W }, // Crimson
     { BLUE_AIR_NORTH, BLUE_AIR_NORTH_W }, // Shark
-    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // FreeFalcon Team Team
+    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // FreeFalcon Team 
     { ORANGE_AIR_NORTH, ORANGE_AIR_NORTH_W }, // Tiger
 };
 
