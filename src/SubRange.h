@@ -1,69 +1,95 @@
 // Variable bounds check.
 // Use it for every possible variable to detect out of bounds or illegal values
+// Check if a variable of type InputType is between InputMinimum and
+// input_maximum. If not, exit the sim.
 
 #pragma once
 
-template <const int low_bound, const int high_bound>
-class SubRangeInt
+template <typename InputType,
+	      const InputType InputMinimum,
+		  const InputType InputMaximum>
+class SubRange
 {
 public:
-	SubRangeInt()
-	{
-	}
 
-	operator int() const
+	// constructor
+	SubRange()
 	{
-		return mValue;
+		static_assert(InputMinimum <= InputMaximum,
+		  "ERROR: InputMinimum must be less than or equal to InputMaximum.");
 	}
-
-	SubRangeInt & operator = (const int return_value)
+	
+	operator InputType() const
 	{
-		static_assert(low_bound <= high_bound, "Subrange: Minimum must be less than or equal to maximum.");
-		if (return_value >= low_bound && return_value <= high_bound)
+		return mOutputValue;
+	}
+	
+	SubRange & operator=(const InputType InputValue)
+	{
+		if (InputValue >= InputMinimum &&
+			InputValue <= InputMaximum)
 		{
-			mValue = return_value;
+			mOutputValue = InputValue;
+			return *this;
 		}
 		else
 		{
-			OutOfRange();
-		}
-
+			MessageBeep(MB_ICONERROR);
+			MessageBox(NULL, "Variable out of bounds\nPlease notify a coder",
+					   NULL, MB_OK + MB_ICONERROR + MB_TASKMODAL);
+			exit(EXIT_FAILURE);
+		};
+	}
+	
+	SubRange & operator+=(const InputType InputValue)
+	{
+		*this = *this + InputValue;
+		return *this;
+	}
+	
+	SubRange & operator-=(const InputType InputValue)
+	{
+		*this = *this - InputValue;
 		return *this;
 	}
 
-	SubRangeInt operator ++()
+	SubRange & operator*=(const InputType InputValue)
 	{
-		*this += 1; return *this;
-	}
-
-	SubRangeInt operator ++(int)
-	{
-		SubRangeInt return_value(*this);
-		++*this;
-		return return_value;
-	}
-
-	SubRangeInt operator --()
-	{
-		*this -= 1;
+		*this = *this * InputValue;
 		return *this;
 	}
 
-	SubRangeInt operator --(int)
+	SubRange & operator/=(const InputType InputValue)
 	{
-		subrange return_value(*this);
-		--*this;
-		return return_value;
+		*this = *this / InputValue;
+		return *this;
+	}
+
+	SubRange operator++()
+	{
+		*this = *this + 1;
+		return *this;
+	}
+	
+	SubRange operator++(signed int)
+	{
+		*this = *this + 1;
+		return *this;
+	}
+	
+	SubRange operator--()
+	{
+		*this = *this - 1;
+		return *this;
+	}
+	
+	SubRange operator--(signed int)
+	{
+		*this = *this - 1;
+		return *this;
 	}
 
 private:
-	int mValue;
+	InputType mOutputValue;
 
-	void OutOfRange()
-	{
-		MessageBeep(MB_ICONERROR);
-		MessageBox(NULL, "Variable out of bounds\nPlease notify a coder",
-				   NULL, MB_OK + MB_ICONERROR + MB_TASKMODAL);
-		exit(EXIT_FAILURE);
-	};
 };

@@ -421,8 +421,8 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
-int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                         LPSTR lpCmdLine, int nCmdShow)
+signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                         LPSTR lpCmdLine, signed int nCmdShow)
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
@@ -626,10 +626,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 // set up structured exception handling here
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, signed int nCmdShow)
 {
-	SubRangeInt<0, 1> error_code;
+	SubRange<signed int, 0, 1> error_code;
 	error_code = EXIT_FAILURE;
 
     __try
