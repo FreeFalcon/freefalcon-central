@@ -46,18 +46,6 @@ char *UnableToOpen[] =
     "Unable to open file",
 };
 
-static int Enabled = 1;
-
-void EnableOpenTest()
-{
-    Enabled = 1;
-}
-
-void DisableOpenTest()
-{
-    Enabled = 0;
-}
-
 // This function opens a dialog box asking the user to insert the Falcon CD
 // Possible return values:
 // 0 = Retry
@@ -67,9 +55,6 @@ void DisableOpenTest()
 int DoDialogBox()
 {
     int retval;
-
-    if (!Enabled)
-        exit(0);
 
     retval = MessageBox(NULL, InsertCD[gLangIDNum], UnableToOpen[gLangIDNum], MB_RETRYCANCEL);
 
