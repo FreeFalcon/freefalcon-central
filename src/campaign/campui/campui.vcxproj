@@ -19,15 +19,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -45,16 +45,19 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../build/x86/debug_win32/campaign/campui/</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/campaign/campui/</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../build/x86/release_win32/campaign/campui/</IntDir>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">campui</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">campui</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -64,7 +67,7 @@
       <PreprocessorDefinitions>VC_EXTRALEAN;CAMPTOOL;_DEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>../../../build/x86/debug_win32/campaign/campui/</AssemblerListingLocation>
@@ -73,23 +76,24 @@
       <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <MinimalRebuild>false</MinimalRebuild>
+      <MinimalRebuild>true</MinimalRebuild>
       <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
-      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <OpenMPSupport>true</OpenMPSupport>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <ShowIncludes>true</ShowIncludes>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>
@@ -104,19 +108,19 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/wd4430 %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\Include;..\..\Falclib\include;..\..;..\..\Sim\Include;..\..\codelib\include;..\..\vu2\include;..\..\UI\Include;..\..\Graphics;..\..\Graphics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>VC_EXTRALEAN;NDEBUG;_LIB;WIN32;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <AssemblerOutput>NoListing</AssemblerOutput>
@@ -125,12 +129,23 @@
       <ProgramDataBaseFileName>../../../build/x86/release_win32/campaign/campui/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <ShowIncludes>true</ShowIncludes>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <OpenMPSupport>true</OpenMPSupport>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Lib>

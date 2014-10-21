@@ -1477,7 +1477,7 @@ BOOL JoystickCreateEffect(DWORD)
 
     // Retro 27Dec2003
     /* no point in inquiring force feedback caps of a not (yet) mapped device */
-    /* this propably means that FF has to be restarted after a controller change */
+    /* this propably means that  FF has to be restarted after a controller change */
     /* or I just run this stuff on assigning controllers (have to find out FF caps anyway */
 
     if (AxisMap.FlightControlDevice < SIM_JOYSTICK1)

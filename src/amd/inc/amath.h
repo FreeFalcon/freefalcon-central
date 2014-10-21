@@ -45,7 +45,7 @@ extern "C" {
     float   _ceil(float);
     float  _floor(float);
     float  _frexp(float, int *);
-    float _ldexp(float, int);
+//  float _ldexp(float, int);
     float   _modf(float, float *);
     float _fmod(float, float);
     void _sincos(float, float *);

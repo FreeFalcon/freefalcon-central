@@ -56,8 +56,8 @@
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 #ifdef DEBUG
@@ -277,7 +277,7 @@ TeamClass::TeamClass(FILE *file) :
     //#endif
 
     //#ifdef CAMPTOOL
-    // if (rename_IDs)
+    // if (gRenameIds)
     // {
     // VU_ID new_id = FalconNullId;
     //
@@ -286,7 +286,7 @@ TeamClass::TeamClass(FILE *file) :
     // {
     // if (!vuDatabase->Find(new_id))
     // {
-    // rename_table[share_.id_.num_] = new_id.num_;
+    // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }
@@ -900,10 +900,10 @@ int TeamClass::Save(FILE *file)
         retval += fwrite(&reinforcement, sizeof(short), 1, file);
 #ifdef CAMPTOOL
 
-        if (rename_IDs)
+        if (gRenameIds)
         {
             for (int i = 0; i < MAX_BONUSES; i++)
-                bonusObjs[i].num_ = rename_table[bonusObjs[i].num_];
+                bonusObjs[i].num_ = RenameTable[bonusObjs[i].num_];
         }
 
 #endif

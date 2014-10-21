@@ -1326,8 +1326,7 @@ HWND GetConsoleHwnd()
       Sleep(40);
 
       // Look for NewWindowTitle.
-    const char* FREE_FALCON_PROJECT;
-	char test[1024] = FREE_FALCON_PROJECT;
+    char test[1024] = "FF 3D Output";
     //    hwndFound=FindWindow(NULL, pszNewWindowTitle);
     hwndFound=FindWindow(NULL, test);
       // Restore original window title.

@@ -76,8 +76,8 @@ extern int gBattalionDetects, gBattalionMoves;
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 extern int gCampDataVersion;
@@ -399,16 +399,16 @@ int BattalionClass::Save(VU_BYTE **stream)
     *stream += sizeof(CampaignTime);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
-        parent_id.num_ = rename_table[parent_id.num_];
+    if (gRenameIds)
+        parent_id.num_ = RenameTable[parent_id.num_];
 
 #endif
     memcpy(*stream, &parent_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
-        last_obj.num_ = rename_table[last_obj.num_];
+    if (gRenameIds)
+        last_obj.num_ = RenameTable[last_obj.num_];
 
 #endif
     memcpy(*stream, &last_obj, sizeof(VU_ID));

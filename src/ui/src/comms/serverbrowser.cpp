@@ -315,8 +315,7 @@ static void OnClickedSettings(long, short hittype,C_Base *control)
 
  // Create Uplink service object
  CheckHR(m_pUplink.CreateInstance(__uuidof(GameSpyUplink)));
- extern const char* FREE_FALCON_VERSION;
- extern const char* FREE_FALCON_BRAND;
+
  m_pUplink->PutMasterServerName(g_strMasterServerName);
  m_pUplink->PutMasterServerPort(g_nMasterServerPort);
  m_pUplink->PutQueryPort(7778);
@@ -672,9 +671,9 @@ void HookupServerBrowserControls(long ID)
 
 C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
 {
-    C_ServerItem *pServerItem;
+	C_ServerItem* pServerItem = NULL;
     C_Window *pWindow;
-    TREELIST *pTreeItem;
+	TREELIST* pTreeItem = NULL;
 
     if (!pTree || !p)
         return NULL;

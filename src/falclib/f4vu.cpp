@@ -127,11 +127,10 @@ void InitVU(void)
 #endif
 
 extern const char* FREE_FALCON_VERSION;
-
-#ifdef NDEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
-	sprintf( tmpStr, "R %s", FREE_FALCON_VERSION );
+#ifdef DEBUG // Differentiate Debug & Release versions so they can't be seen by each other (PJW)
+	sprintf(tmpStr, "K %s\0", FREE_FALCON_VERSION);
 #else
-	sprintf( tmpStr, "K %s", FREE_FALCON_VERSION );
+	sprintf(tmpStr, "R %s\0", FREE_FALCON_VERSION);
 #endif
 
     MonoPrint("Version %s %s %s\n", tmpStr, __DATE__, __TIME__);

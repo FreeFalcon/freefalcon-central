@@ -13,7 +13,6 @@
 #include "Image.h"
 #include "TerrTex.h"
 #include "dxtlib.h"
-#include "Falclib/include/openfile.h"
 #include "Falclib/Include/IsBad.h"
 #include "FalcLib/include/dispopts.h"
 #include "FalcLib/include/f4thread.h"
@@ -114,7 +113,7 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     // Open the texture database description file
     strcpy(filename, texturePath);
     strcat(filename, "Texture.BIN");
-    listFile = CreateFile_Open(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    listFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     // Read the number of texture sets and tiles in the database.
     result = ReadFile(listFile, &numSets, sizeof(numSets), &bytesRead, NULL);
@@ -1241,8 +1240,10 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 
 bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool bForce)
 {
-    DWORD dwSize, *pal, dwTmp, n, i;
-    BYTE *pSrc, *pDst;
+    DWORD dwSize, dwTmp, n, i;
+	DWORD *pal = NULL;
+	BYTE *pSrc = NULL;
+	BYTE *pDst;
     char szFileName[256], szTemp[256], szKludge[256];
     char sep[] = ".";
     char *token;

@@ -255,10 +255,44 @@ void C_VersionText::Setup(long id, short type)
 {
     C_Text::Setup(id, type);
 
-	extern const char* FREE_FALCON_BRAND;
-	extern const char* FREE_FALCON_PROJECT;
-	extern const char* FREE_FALCON_VERSION;
-	sprintf(g_sVersion, "%s %s %s", FREE_FALCON_BRAND, FREE_FALCON_PROJECT, FREE_FALCON_VERSION);
+    // query file version
+    // get size of version info
+    BYTE *lpVersionData;
+    DWORD dwDataSize = GetFileVersionInfoSize("FFViper.exe", 0);
+
+    if (dwDataSize == 0)
+    {
+        DWORD dwDataSize = GetFileVersionInfoSize("FFViper.exe", 0);
+        //get the version info
+        lpVersionData = new BYTE[dwDataSize];
+        GetFileVersionInfo("FFViper.exe", 0, dwDataSize, (void**)lpVersionData);
+    }
+    else
+    {
+        //get the version info
+        lpVersionData = new BYTE[dwDataSize];
+        GetFileVersionInfo("FFViper.exe", 0, dwDataSize, (void**)lpVersionData);
+    }
+
+    //find translation table
+    UINT nQuerySize;
+    DWORD* pTransTable;
+    VerQueryValue(lpVersionData, _T("\\VarFileInfo\\Translation"), (void **)&pTransTable, &nQuerySize);
+
+    // Swap the words to have lang-charset in the correct format
+    DWORD dwLangCharset = MAKELONG(HIWORD(pTransTable[0]), LOWORD(pTransTable[0]));
+
+    //perform the query
+    LPVOID lpData;
+    char strBlockName[100];
+    sprintf(strBlockName, "\\StringFileInfo\\%08lx\\FileVersion", dwLangCharset);
+    VerQueryValue((void **)lpVersionData, strBlockName, &lpData, &nQuerySize);
+
+    //format the version string
+    //char sVersion[100];
+    // sfr: using MP version right now
+    sprintf(g_sVersion, "FFViper : %s", (char *)lpData);
+    //sprintf(sVersion,"FFViper MP version");
 
     C_Text::SetText(g_sVersion);
 }

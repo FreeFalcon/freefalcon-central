@@ -52,9 +52,9 @@ long UI_FILESIZE(UI_HANDLE fp)
 
 C_Hash *TokenErrorList = NULL;
 FILE *errorfp;
-extern char UI_art_directory[];
-extern char UI_art_theater_directory[];
-extern char UI_sound_directory[];
+extern char FalconUIArtDirectory[];
+extern char FalconUIArtThrDirectory[];
+extern char FalconUISoundDirectory[];
 static char filebuf[_MAX_PATH];
 
 #ifdef _UI95_PARSER_
@@ -313,8 +313,8 @@ static ID_TABLE UI95_FontTable[] =
 
 char ParseSave[80];
 char ParseCRLF[3] = {13, 10, 0};
-extern char UI_art_directory[];
-extern char UI_sound_directory[];
+extern char FalconUIArtDirectory[];
+extern char FalconUISoundDirectory[];
 
 C_Parser::C_Parser()
 {
@@ -507,7 +507,7 @@ void C_Parser::LoadIDTable(char *filename)
     long ID;
 
     // ifp=UI_OPEN(filename,"rb");
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory, 0);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     if (ifp == NULL)
     {
@@ -596,7 +596,7 @@ void C_Parser::LoadIDList(char *filename)
 
 #if 0
     char filebuf[_MAX_PATH];
-    strcpy(filebuf, UI_art_directory); //FreeFalcon root
+    strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -607,7 +607,7 @@ void C_Parser::LoadIDList(char *filename)
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -660,7 +660,7 @@ void C_Parser::LoadIDList(char *filename)
         {
             if (*lfp != '#')
             {
-                //strcpy(filebuf,UI_art_directory);
+                //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
                 //strcat(filebuf,lfp);
                 LoadIDTable(lfp);
@@ -704,7 +704,7 @@ BOOL C_Parser::LoadScript(char *filename)
     UI_HANDLE ifp;
     long size;
 
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory, 0);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     // ifp=UI_OPEN(filename,"rb");
     if (ifp == NULL)
@@ -771,7 +771,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     }
 
     // try theater first
-    strcpy(filebuf, thrdir); //FreeFalcon thr root dir
+    strcpy(filebuf, thrdir); // FreeFalcon thr root dir
 
     if (hirescapable)
     {
@@ -804,7 +804,7 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     }
 
     // try main dir
-    strcpy(filebuf, maindir); //FreeFalcon main root dir
+    strcpy(filebuf, maindir); // FreeFalcon main root dir
 
     if (hirescapable)
     {
@@ -847,7 +847,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
             fprintf(Perror_, "LoadWindowList processing (%s)\n", filename);
     }
 
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -925,7 +925,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
             if (*lfp != '#')
             {
-                //strcpy(filebuf,UI_art_directory);
+                //strcpy(filebuf,FalconUIArtDirectory);
                 //strcat(filebuf,"\\");
                 //strcat(filebuf,lfp);
                 win = ParseWindow(lfp);
@@ -977,12 +977,12 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
     }
 
 #if 0
-    strcpy(filebuf, UI_art_directory);
+    strcpy(filebuf, FalconUIArtDirectory);
     strcat(filebuf, "\\");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory, 0);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     if (ifp == NULL)
     {
@@ -1051,7 +1051,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
                     fprintf(Perror_, "LoadPopupMenuList Parsing PopMenu (%s)\n", lfp);
             }
 
-            //strcpy(filebuf,UI_art_directory);
+            //strcpy(filebuf,FalconUIArtDirectory);
             //strcat(filebuf,"\\");
             //strcat(filebuf,lfp);
             Menu = (C_PopupList *)ParsePopupMenu(lfp);
@@ -1088,7 +1088,7 @@ BOOL C_Parser::LoadImageList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, UI_art_directory); //FreeFalcon root
+    strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1099,7 +1099,7 @@ BOOL C_Parser::LoadImageList(char *filename)
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -1162,7 +1162,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
         if (*lfp)
         {
-            //strcpy(filebuf,UI_art_directory);
+            //strcpy(filebuf,FalconUIArtDirectory);
             //strcat(filebuf,"\\");
             //strcat(filebuf,lfp);
             ParseImage(lfp);
@@ -1187,7 +1187,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, UI_art_directory); //FreeFalcon root
+    strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1198,7 +1198,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -1262,7 +1262,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
         if (*lfp)
         {
             char filebuf[_MAX_PATH];
-            strcpy(filebuf, UI_sound_directory);
+            strcpy(filebuf, FalconUISoundDirectory);
             strcat(filebuf, "\\");
             strcat(filebuf, lfp);
             ParseSound(filebuf);
@@ -1287,7 +1287,7 @@ BOOL C_Parser::LoadStringList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, UI_art_directory); //FreeFalcon root
+    strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1298,7 +1298,7 @@ BOOL C_Parser::LoadStringList(char *filename)
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -1361,7 +1361,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
         if (*lfp)
         {
-            //strcpy(filebuf,UI_art_directory);
+            //strcpy(filebuf,FalconUIArtDirectory);
             //strcat(filebuf,"\\");
             //strcat(filebuf,lfp);
             ParseString(lfp);
@@ -1386,7 +1386,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
     long i;
 
 #if 0
-    strcpy(filebuf, UI_art_directory); //FreeFalcon root
+    strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
         strcat(filebuf, "\\art1024"); // HiResUI
@@ -1397,7 +1397,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, UI_art_theater_directory, UI_art_directory);
+    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory);
 
     if (ifp == NULL)
     {
@@ -1462,7 +1462,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
         {
             // RV - Biker - Theater switching stuff
             char filebuf[_MAX_PATH];
-            strcpy(filebuf, UI_sound_directory);
+            strcpy(filebuf, FalconUISoundDirectory);
             strcat(filebuf, "\\");
             strcat(filebuf, lfp);
             ParseMovie(filebuf);

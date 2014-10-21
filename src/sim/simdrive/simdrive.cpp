@@ -1522,7 +1522,7 @@ CampBaseClass* SimulationDriver::FindNearestCampEnemy(AircraftClass* aircraft, s
 // It will check to see if there is a possible traffic conflict by calling the FindTrafficConflict routine.
 // If traffic is inside the priTrafficDist distance, it will find the aircraft closest to your altitude
 // and then check for a conflict.
-// Due to FreeFalcon's calls, it will only call out distances like this: 1,2,3,4,5,10  (no 6,7,8 or 9 mile calls)
+// Due to Falcon4's calls, it will only call out distances like this: 1,2,3,4,5,10  (no 6,7,8 or 9 mile calls)
 
 SimBaseClass* SimulationDriver::FindNearestTraffic(AircraftClass* aircraft, ObjectiveClass *self, float* altitude)
 {

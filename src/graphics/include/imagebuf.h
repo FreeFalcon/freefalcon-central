@@ -30,7 +30,7 @@ public:
     virtual ~ImageBuffer();
 
     // Functions used to set up and manage this buffer
-    BOOL Setup(DisplayDevice *dev, int width, int height, MPRSurfaceType front, MPRSurfaceType back, HWND targetWin = NULL, BOOL clip = FALSE, BOOL fullScreen = FALSE, BOOL bWillCallSwapBuffer = FALSE);
+    BOOL Setup(DisplayDevice *dev, int width, int height, MPRSurfaceType front, MPRSurfaceType back, HWND targetWin = NULL, BOOL clip = FALSE, bool fullScreen = false, BOOL bWillCallSwapBuffer = FALSE);
     void Cleanup();
     BOOL IsReady();
     void SetChromaKey(UInt32 RGBcolor);

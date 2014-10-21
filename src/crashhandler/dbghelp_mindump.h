@@ -144,10 +144,6 @@ typedef struct _MINIDUMP_SYSTEM_INFO
     // returned by GetVersionEx( ).
     //
 
-    ULONG32 MajorVersion;
-    ULONG32 MinorVersion;
-    ULONG32 BuildNumber;
-    ULONG32 PlatformId;
 
     //
     // RVA to a CSDVersion string in the string table.

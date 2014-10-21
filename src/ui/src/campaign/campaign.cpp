@@ -116,6 +116,10 @@ extern bool g_bAWACSBackground;
 extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 extern bool g_bTakeoffSound; //TJL 10/24/03 Allows for removal of takeoff wav.
 
+#ifdef DEBUG
+extern int gPlayerPilotLock;
+#endif
+
 
 // HISTORY (JSTARS) Variables
 static long JStarsFirst = 0;
@@ -323,7 +327,7 @@ void CancelCampaignCompression(void);
 extern void SetTimeCompression(int newComp);
 int SendStringToPrinter(_TCHAR *str, _TCHAR *title);
 
-bool ReadyToPlayMovie = false;
+BOOL ReadyToPlayMovie = FALSE;
 BOOL MovieQInUse = FALSE;
 
 _TCHAR *OrdinalString(long value);
@@ -1226,7 +1230,7 @@ void CampaignSetup() // Everything that needs to be done to start the campaign (
     TheCampaign.GetBullseyeLocation(&x, &y);
     gMapMgr->SetBullsEye(x * FEET_PER_KM, (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
     SetMapSettings();
-    ReadyToPlayMovie = true;
+    ReadyToPlayMovie = TRUE;
     PlayCampaignMusic();
     StartMovieQ();
 }
@@ -1755,7 +1759,7 @@ void CampaignButtonCB(long, short hittype, C_Base *)
         return;
     }
 
-    ReadyToPlayMovie = false;
+    ReadyToPlayMovie = FALSE;
 
     TheCampaign.MissionEvaluator->PreMissionEval(fl, static_cast<uchar>(pilotSlot));
 
@@ -1763,6 +1767,10 @@ void CampaignButtonCB(long, short hittype, C_Base *)
     // if (!TheCampaign.MissionEvaluator->player_pilot)
     // *((unsigned int *) 0x00) = 0;
     // END HACK
+
+#ifdef DEBUG
+    gPlayerPilotLock = 1;
+#endif
 
     ShiAssert(TheCampaign.MissionEvaluator->player_pilot);
 
@@ -2062,7 +2070,7 @@ void CleanupCampaignUI()
 
     InCleanup = 1;
 
-    ReadyToPlayMovie = false;
+    ReadyToPlayMovie = FALSE;
     gCurrentFlightID = FalconNullId;
 
     if (gMainHandler)
@@ -2179,7 +2187,7 @@ void CleanupTacticalEngagementUI()
         te_restore_map = NULL;
     }
 
-    ReadyToPlayMovie = false;
+    ReadyToPlayMovie = FALSE;
     gCurrentFlightID = FalconNullId;
 
     if (gMainHandler)

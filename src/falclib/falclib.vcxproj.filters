@@ -176,9 +176,6 @@
     <ClCompile Include="MsgSrc\ObjectiveMsg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="openfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerOp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -434,6 +431,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\f4thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\f4VerNum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\f4version.h">

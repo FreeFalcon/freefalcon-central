@@ -16,9 +16,7 @@ FalconDisplayConfiguration FalconDisplay;
 
 FalconDisplayConfiguration::FalconDisplayConfiguration(void)
 {
-	displayFullScreen = true;
-	
-	xOffset = 40;
+    xOffset = 40;
     yOffset = 40;
 
     width[Movie] = 640;
@@ -53,6 +51,11 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     doubleBuffer[Sim] = TRUE;
 
     deviceNumber = 0;
+#ifdef DEBUG
+    char strName[40];
+    DWORD dwSize = sizeof(strName);
+    GetComputerName(strName, &dwSize);
+#endif
 }
 
 FalconDisplayConfiguration::~FalconDisplayConfiguration(void)
@@ -149,16 +152,16 @@ void FalconDisplayConfiguration::MakeWindow(void)
     else
     {
         windowStyle = WS_OVERLAPPEDWINDOW;
-        xOffset = 50;
-        yOffset = 50;
+        xOffset = 0;
+        yOffset = 0;
     }
 
     // Build a window for this application
-	extern const char* FREE_FALCON_BRAND;
-	rect.top = rect.left = 0;
+    rect.top = rect.left = 0;
     rect.right = width[Movie];
     rect.bottom = height[Movie];
     AdjustWindowRect(&rect, windowStyle, FALSE);
+	extern const char* FREE_FALCON_BRAND;
     appWin = CreateWindow(
                  "FalconDisplay", /* class */
 				 FREE_FALCON_BRAND, /* caption */
@@ -267,7 +270,6 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
     {
         /*JAM 01Dec03 if((g_bForceSoftwareGUI || pDI->Is3dfx() || !pDI->CanRenderWindowed()) && newMode != Sim)
          {
-        #if 1
          // V1, V2 workaround - use primary display adapter with RGB Renderer
          int nIndexPrimary = FalconDisplay.devmgr.FindPrimaryDisplayDriver();
          ShiAssert(nIndexPrimary != -1);
@@ -284,7 +286,6 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          theDevice = nIndexRGBRenderer;
          }
          }
-        #endif
          }*/
 
         if (!pDI->SupportsSRT() && DisplayOptions.bRender2Texture)

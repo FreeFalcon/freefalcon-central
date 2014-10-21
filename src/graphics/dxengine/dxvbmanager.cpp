@@ -214,7 +214,7 @@ void CDXVbManager::CreateVB(DWORD i, DWORD Class)
 // and the local D3D Device assigned
 void CDXVbManager::Setup(IDirect3D7 *pD3D)
 {
-    // if already intialized exit here
+    // if already initialized exit here
     if (VBManagerInitialized) return;
 
     // Initialize the Buffer Pointers
@@ -237,7 +237,7 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
 
     ///////////// Creates the DRAW ITEMS Pools and assign pointers //////////////
     pVDrawItemPool = NULL;
-    CDrawItem *dp;
+    CDrawItem* dp = NULL;
 
     for (int i = 0; i < BASE_DRAWS; i++)
     {
@@ -273,7 +273,7 @@ void CDXVbManager::Setup(IDirect3D7 *pD3D)
 void CDXVbManager::Release(void)
 {
 
-    // if already NON intialized exit here
+    // if already NON initialized exit here
     if (!VBManagerInitialized) return;
 
     // Release all eventually allocated models

@@ -41,8 +41,8 @@ extern char MissStr[AMIS_OTHER][16];
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 extern FILE
@@ -520,18 +520,18 @@ int PackageClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
     {
         for (int i = 0; i < elements; i++)
-            element[i].num_ = rename_table[element[i].num_];
+            element[i].num_ = RenameTable[element[i].num_];
 
-        interceptor.num_ = rename_table[interceptor.num_];
-        awacs.num_ = rename_table[awacs.num_];
-        jstar.num_ = rename_table[jstar.num_];
-        ecm.num_ = rename_table[ecm.num_];
-        tanker.num_ = rename_table[tanker.num_];
-        mis_request.requesterID.num_ = rename_table[mis_request.requesterID.num_];
-        mis_request.targetID.num_ = rename_table[mis_request.targetID.num_];
+        interceptor.num_ = RenameTable[interceptor.num_];
+        awacs.num_ = RenameTable[awacs.num_];
+        jstar.num_ = RenameTable[jstar.num_];
+        ecm.num_ = RenameTable[ecm.num_];
+        tanker.num_ = RenameTable[tanker.num_];
+        mis_request.requesterID.num_ = RenameTable[mis_request.requesterID.num_];
+        mis_request.targetID.num_ = RenameTable[mis_request.targetID.num_];
     }
 
 #endif

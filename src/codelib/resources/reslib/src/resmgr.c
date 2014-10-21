@@ -706,7 +706,7 @@ RES_EXPORT int ResInit(HWND hwnd)
     {
         dev = &RES_DEVICES[drive - 1];
 
-        if (GLOBAL_VOLUME_MASK & ((char)(1 << drive)))
+        if (GLOBAL_VOLUME_MASK & (1 << drive))
         {
             root[0] = (char)('A' + (drive - 1));
 

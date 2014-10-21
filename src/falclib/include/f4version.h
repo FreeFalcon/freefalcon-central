@@ -1,5 +1,4 @@
-#ifndef _FALCON4_VERSION_H
-#define _FALCON4_VERSION_H
+#pragma once
 
 #define F4LANG_ENGLISH 1
 #define F4LANG_UK 2
@@ -14,6 +13,3 @@
 #define F4LANG_NEUTER 2
 
 extern int gLangIDNum;
-
-#endif
-

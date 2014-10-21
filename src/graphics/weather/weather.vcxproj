@@ -31,15 +31,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -56,6 +56,7 @@
     <OutDir>../../../build/x86/debug_win32/graphics/weather/</OutDir>
     <IntDir>../../../build/x86/debug_win32/graphics/weather/</IntDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>../../../build/x86/release_win32/graphics/weather/</OutDir>
@@ -65,6 +66,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>weather</TargetName>
+    <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
+    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,25 +82,23 @@
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <BufferSecurityCheck>true</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <StructMemberAlignment>Default</StructMemberAlignment>
-      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
       <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <OpenMPSupport>true</OpenMPSupport>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <MinimalRebuild>false</MinimalRebuild>
-      <CompileAs>Default</CompileAs>
-      <ShowIncludes>true</ShowIncludes>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
@@ -120,15 +121,30 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_RELEASE;_LIB;STRICT;WIN32_LEAN_AND_MEAN;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>..\..\Codelib\Include;..\..\;..\Include;..\..\FALCLIB\INCLUDE;..\..\Sim\Include;..\..\CAMPAIGN\INCLUDE;..\..\VU2\INCLUDE;..\..\GRAPHICS\INCLUDE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ShowIncludes>true</ShowIncludes>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CreateHotpatchableImage>false</CreateHotpatchableImage>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <OpenMPSupport>true</OpenMPSupport>
+      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>

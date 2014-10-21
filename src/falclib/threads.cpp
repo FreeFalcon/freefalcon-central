@@ -307,26 +307,6 @@ void F4WaitBarrier(F4BARRIERHANDLE *b)
 }
 
 
-int F4GetNumProcessors()
-{
-    int i;
-    DWORD pmask, smask;
-
-    GetProcessAffinityMask(GetCurrentProcess(), &pmask, &smask);
-
-    smask = 0;
-
-    for (i = 0; i < 32; i++)
-    {
-        if (pmask & (1 << i))
-        {
-            smask ++;
-        }
-    }
-
-    return (smask);
-}
-
 int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor)
 {
     if (SetThreadAffinityMask(F4Thread[theThread].handle, (DWORD)(1 << (theProcessor - 1))))

@@ -56,7 +56,7 @@ extern bool g_b3DRTTCockpitDebug;
 extern int FindBestResolution(void); //Wombat778 4-03-04
 
 // RV - Biker - Theater switching stuff
-extern char cockpit_theater_directory[];
+extern char FalconCockpitThrDirectory[];
 
 void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
 
@@ -3662,52 +3662,52 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
 
     if (eCPVisType == MapVisId(VIS_F16C))
         // RV - Biker
-        //sprintf(strCPFile, "%s%s", cockpit_theater_directory, buttonfile);
-        sprintf(strCPFile, "%s\\%s", cockpit_theater_directory, buttonfile);
+        //sprintf(strCPFile, "%s%s", FalconCockpitThrDirectory, buttonfile);
+        sprintf(strCPFile, "%s\\%s", FalconCockpitThrDirectory, buttonfile);
     else
     {
         // RV - Biker
-        //sprintf(strCPFile, "%s%d\\%s", cockpit_theater_directory, MapVisId(eCPVisType), vcockfile);
-        sprintf(strCPFile, "%s\\%d\\%s", cockpit_theater_directory, MapVisId(eCPVisType), vcockfile);
+        //sprintf(strCPFile, "%s%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), vcockfile);
+        sprintf(strCPFile, "%s\\%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), vcockfile);
 
         // RV - Biker - No more res manager
         //if(ResExistFile(strCPFile))
         if (FileExists(strCPFile))
             // RV - Biker
-            //sprintf(strCPFile, "%s%d\\%s", cockpit_theater_directory, MapVisId(eCPVisType), buttonfile);
-            sprintf(strCPFile, "%s\\%d\\%s", cockpit_theater_directory, MapVisId(eCPVisType), buttonfile);
+            //sprintf(strCPFile, "%s%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), buttonfile);
+            sprintf(strCPFile, "%s\\%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), buttonfile);
         else
         {
             std::string name = RemoveInvalidChars(string(eCPName, 15));
 
             // RV - Biker
-            //sprintf(strCPFile, "%s%s\\%s", cockpit_theater_directory, name.c_str(), vcockfile);
-            sprintf(strCPFile, "%s\\%s\\%s", cockpit_theater_directory, name.c_str(), vcockfile);
+            //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, name.c_str(), vcockfile);
+            sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, name.c_str(), vcockfile);
 
             // RV - Biker - No more res manager
             //if(ResExistFile(strCPFile))
             if (FileExists(strCPFile))
                 // RV - Biker
-                //sprintf(strCPFile, "%s%s\\%s", cockpit_theater_directory, name.c_str(), buttonfile);
-                sprintf(strCPFile, "%s\\%s\\%s", cockpit_theater_directory, name.c_str(), buttonfile);
+                //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, name.c_str(), buttonfile);
+                sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, name.c_str(), buttonfile);
             else
             {
                 std::string nameNCTR = RemoveInvalidChars(string(eCPNameNCTR, 5));
                 // RV - Biker
-                //sprintf(strCPFile, "%s%s\\%s", cockpit_theater_directory, nameNCTR.c_str(), vcockfile);
-                sprintf(strCPFile, "%s\\%s\\%s", cockpit_theater_directory, nameNCTR.c_str(), vcockfile);
+                //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), vcockfile);
+                sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), vcockfile);
 
                 // RV - Biker - No more res manager
                 //if(ResExistFile(strCPFile))
                 if (FileExists(strCPFile))
                     // RV - Biker
-                    //sprintf(strCPFile, "%s%s\\%s", cockpit_theater_directory, nameNCTR.c_str(), buttonfile);
-                    sprintf(strCPFile, "%s\\%s\\%s", cockpit_theater_directory, nameNCTR.c_str(), buttonfile);
+                    //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), buttonfile);
+                    sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), buttonfile);
                 else
                 {
                     // F16C fallback
                     // RV - Biker - Here read from default cockpit dir
-                    //sprintf(strCPFile, "%s%s", cockpit_theater_directory, buttonfile);
+                    //sprintf(strCPFile, "%s%s", FalconCockpitThrDirectory, buttonfile);
                     sprintf(strCPFile, "%s\\%s", COCKPIT_DIR, buttonfile);
                 }
             }

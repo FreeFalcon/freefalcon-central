@@ -414,7 +414,7 @@ bool Texture::CreateTexture(char *strName)
             width = 2048;
 
         texHandle = new TextureHandle();
-        texHandle->Create(strName, (WORD)flags, 32, static_cast<UInt16>(width), static_cast<UInt16>(width));
+        texHandle->Create(strName, flags, 32, static_cast<UInt16>(width), static_cast<UInt16>(width));
         return texHandle->Load(0, 0, (BYTE*)imageData, false, false, dimensions);
     }
 }

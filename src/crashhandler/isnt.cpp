@@ -23,29 +23,29 @@ BOOL __stdcall IsNT(void)
         return (TRUE == g_bIsNT) ;
     }
 
-    OSVERSIONINFO stOSVI ;
+    //OSVERSIONINFO stOSVI ;
 
-    memset(&stOSVI , NULL , sizeof(OSVERSIONINFO)) ;
-    stOSVI.dwOSVersionInfoSize = sizeof(OSVERSIONINFO) ;
+    //memset(&stOSVI , NULL , sizeof(OSVERSIONINFO)) ;
+    //stOSVI.dwOSVersionInfoSize = sizeof(OSVERSIONINFO) ;
 
-    BOOL bRet = GetVersionEx(&stOSVI) ;
-    ASSERT(TRUE == bRet) ;
+    //BOOL bRet = GetVersionEx(&stOSVI) ;
+    //ASSERT(TRUE == bRet) ;
 
-    if (FALSE == bRet)
-    {
-        TRACE0("GetVersionEx failed!\n") ;
-        return (FALSE) ;
-    }
+    //if (FALSE == bRet)
+    //{
+    //    TRACE0("GetVersionEx failed!\n") ;
+    //    return (FALSE) ;
+    //}
 
     // Check the version and call the appropriate thing.
-    if (VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId)
-    {
+    //if (VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId)
+    //{
         g_bIsNT = TRUE ;
-    }
-    else
-    {
-        g_bIsNT = FALSE ;
-    }
+    //}
+    //else
+    //{
+    //    g_bIsNT = FALSE ;
+    //}
 
     g_bHasVersion = TRUE ;
     return (TRUE == g_bIsNT) ;

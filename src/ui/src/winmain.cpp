@@ -1,102 +1,102 @@
+// Main solution's file. Starts and stops everything else.
+
+
 // SYSTEM INCLUDES
-#include <AtlBase.h> // Required by AtlCom.h
-//#include <AtlCom.h>
-#include <AtlWin.h> // Required by ObjectMap
-#include <direct.h> // Required by _mkdir and _chdir
-//#include <StdIo.h>
-#include <time.h> // Required by time
-//#include <windows.h>
-//#include <WinSock2.h>
+#include <AtlBase.h>
+#include <AtlCom.h>
+#include <AtlWin.h>
+#include <direct.h>
+#include <StdIO.h>
+#include <time.h>
+#include <windows.h>
+#include <WinSock2.h>
 // END OF SYSTEM INCLUDES
 
 
 // SIM INCLUDES
-#include "ascii.h"
-//#include "Camp2Sim.h"
-//#include "campaign.h"
+#include "ASCII.h"
+#include "Camp2Sim.h"
+#include "campaign.h"
 #include "CampJoin.h"
 #include "CampStr.h"
-//#include "ClassTbl.h"
-//#include "CmpClass.h"
-//#include "DDraw.h"
-#include "dialog.h" // Campaign tool include
+#include "ClassTbl.h"
+#include "CmpClass.h"
+#include "dDraw.h"
+#include "dialog.h" // Campaign tool includes
 #include "DispCfg.h"
 #include "DispOpts.h"
-#include "EHandler.h"
-//#include "entity.h"
-//#include "F4Comms.h"
+#include "eHandler.h"
+#include "entity.h"
+#include "F4Comms.h"
 #include "F4Find.h"
 #include "F4Version.h"
-//#include "FalcLib.h"
+#include "FalcLib.h"
 #include "FalcMem.h"
-//#include "FalcMesg.h"
-//#include "FalcUser.h"
-//#include "feature.h"
-//#include "find.h"
-//#include "FSound.h"
-//#include "hud.h"
-#include "IAction.h"
-//#include "InpFunc.h"
-//#include "LogBook.h"
-//#include "MissEval.h"
-#include "OpenFile.h"
+#include "FalcMesg.h"
+#include "FalcUser.h"
+#include "feature.h"
+#include "find.h"
+#include "fSound.h"
+#include "HUD.h"
+#include "iAction.h"
+#include "InpFunc.h"
+#include "LogBook.h"
+#include "MissEval.h"
 #include "OtwDrive.h"
-//#include "PlayerOp.h"
-#include "RadioSubTitle.h"
+#include "PlayerOp.h"
+#include "RadioSubtitle.h"
 #include "resource.h"
-//#include "rules.h"
+#include "rules.h"
 #include "SimDrive.h"
-//#include "SimIo.h"
-//#include "SimLoop.h"
-//#include "SimObj.h"
-#include "SInput.h"
-//#include "sms.h"
+#include "SimIO.h"
+#include "SimLoop.h"
+#include "SimObj.h"
+#include "sInput.h"
+#include "SMS.h"
 #include "statistics.h"
-//#include "StdHdr.h"
+#include "StdHdr.h"
+#include "SubRange.h"
 #include "TheaterDef.h"
 #include "ThreadMgr.h"
 #include "TimerThread.h"
-//#include "token.h"
+#include "token.h" // default value Unz
 #include "TrackIR.h"
-//#include "UI_ia.h"
-#include "UiComms.h" 
-#include "UserIds.h"
-//#include "VRInput.h"
+#include "UI_ia.h"
+#include "Uicomms.h"
+#include "UserIDs.h"
+#include "VrInput.h"
 #include "weather.h"
 // END OF SIM INCLUDES
 
 
 // ADDITIONAL SIM INCLUDES
-//extern "C"
-//{
-//#include "AmdLib.h"
-//}
-
-
 #include "CodeLib/resources/ResLib/src/ResMgr.h"
-//#include "FalcSnd/PSound.h"
+#include "FalcSnd/pSound.h"
 #include "FalcSnd/VoiceMapper.h"
 #include "FalcSnd/WinAmpFrontend.h"
-#include "Graphics/Include/DrawParticleSys.h"
-//#include "Graphics/Include/ImageBuf.h"
-//#include "Graphics/Include/TexBank.h"
+#include "graphics/include/DrawParticleSys.h"
+#include "graphics/include/ImageBuf.h"
+#include "graphics/include/TexBank.h"
 #include "include/ComSup.h"
 #include "movie/AviMovie.h"
-#include "UI95/CHandler.h"
+#include "UI95/cHandler.h"
+
+extern "C"
+{
+#include "AmdLib.h"
+}
 // END OF ADDITIONAL SIM INCLUDES
 
 
 
 // PREPROCESSOR DIRECTIVES
-// These are needed so the Resource Manager functions will not be called.
-#undef fclose
 #undef fopen
-
+#undef fclose
 
 // These are needed for network support.
 #pragma warning(disable:4192)
-#import "gnet/bin/core.tlb" // Required by GNETCORELib
-//#import "gnet/bin/shared.tlb" named_guids
+#import "gnet\bin\core.tlb"
+#import "gnet\bin\shared.tlb" named_guids
 #pragma warning(default:4192)
 // END OF PREPROCESSOR DIRECTIVES
 
@@ -105,7 +105,7 @@
 // GLOBAL CONSTANTS
 // This is the only place in the entire code base where the name and the
 // version should be defined.
-const char* FREE_FALCON_BRAND = "Free Falcon";
+const char* FREE_FALCON_BRAND = "FreeFalcon";
 const char* FREE_FALCON_PROJECT = "Open Source Project";
 const char* FREE_FALCON_VERSION = "7.0.0";
 // END OF GLOBAL CONSTANTS
@@ -113,63 +113,33 @@ const char* FREE_FALCON_VERSION = "7.0.0";
 
 
 // GLOBAL VARIABLES
-bool cockpit_verifier = false;
-bool write_mission_table = false;
-bool write_sound_table = false;
-// If you don't want the intro movie to play, use -nomovie command line
-bool intro_movie = true; 
-
-#ifdef DEBUG
-	// assertion flags
-	bool asserts = true;
-	bool shi_asserts = true;
-	bool hard_crash = false;
-	bool shi_hard_crash = false;
-	bool shi_warnings = true;
-#endif
-
-// This is for debugging only. I don't know what the CAMPTOOL is or does...
-// CAMPTOOL is not defined anywhere in the code 
-// although the #ifdef CAMPTOOL appears in many places!
-// It fails to compile under RELEASE.
-#ifdef DEBUG
-#define CAMPTOOL 1
-#endif
-
-#ifdef CAMPTOOL
-	// Renaming tool stuff
-	extern bool rename_IDs;
-	// Window handles
-	extern HWND hMainWnd;
-#endif
-
-CComModule _Module; // ATL stuff.
-
-// Do not use a path and folder name longer than _MAX_PATH (260 chars).
-char cockpit_theater_directory[_MAX_PATH];
-char movie_directory[_MAX_PATH];
-char movie_mode[_MAX_PATH];
-char sound_theater_directory[_MAX_PATH];
-char splash_theater_directory[_MAX_PATH];
-char tactical_reference_theater_directory[_MAX_PATH];
-char UI_art_directory[_MAX_PATH];
-char UI_art_theater_directory[_MAX_PATH];
-char UI_sound_directory[_MAX_PATH];
-char zip_theater_directory[_MAX_PATH]; 
-
+bool intro_movie = true;
+bool g_bEnableCockpitVerifier = false;
+bool g_writeMissionTbl = false;
+bool g_writeSndTbl = false;
+BOOL VersionInfo = FALSE;
+CComModule _Module;
+char bottom_space[] = "                                                                               ";
+char FalconCockpitThrDirectory[_MAX_PATH]; // Theater switching stuff
+char FalconMovieDirectory[_MAX_PATH];
+char FalconMovieMode[_MAX_PATH];
+char FalconSoundThrDirectory[_MAX_PATH];
+char FalconSplashThrDirectory[_MAX_PATH];
+char FalconTacrefThrDirectory[_MAX_PATH];
+char FalconUIArtDirectory[_MAX_PATH];
+char FalconUIArtThrDirectory[_MAX_PATH];
+char FalconUISoundDirectory[_MAX_PATH];
+char FalconZipsThrDirectory[_MAX_PATH];
+class tactical_mission;
 extern bool g_bEnableUplink;
 extern bool g_bEnumSoftwareDevices;
 extern bool g_bPilotEntertainment;
-extern bool ReadyToPlayMovie;
-
-extern C_Handler* gMainHandler;
-extern C_SoundBite* gInstantBites, *gDogfightBites, *gCampaignBites;
-extern CampaignTime gConnectionTime;
-extern CampaignTime gResendTime;
-
-extern char* BSP;
-extern char* BTP;
-extern char FalconPictureDirectory[_MAX_PATH];
+extern BOOL ReadyToPlayMovie; // defined in UI_Cmpgn.cpp
+extern C_Handler *gMainHandler;
+extern C_SoundBite *gInstantBites, *gDogfightBites, *gCampaignBites;
+extern char *BSP;
+extern char *BTP;
+extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 extern char g_strMasterServerName[0x40];
 extern char g_strServerAdmin[0x40];
 extern char g_strServerAdminEmail[0x40];
@@ -177,24 +147,19 @@ extern char g_strServerLocation[0x40];
 extern char g_strServerName[0x40];
 extern char gUI_AutoSaveName[];
 extern char gUI_CampaignFile[];
-
 extern float UR_HEAD_VIEW;
-
 extern int flag_keep_smoke_trails;
-extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
-extern int gCampJoinStatus;
 extern int g_nMasterServerPort;
+extern int gCampDataVersion, gCurrentDataVersion, gClearPilotInfo, gTacticalFullEdit;
 extern int GraphicSettingMult;
 extern int gTimeModeServer;
 extern int gUnlimitedAmmo;
 extern int HighResolutionHackFlag;
 extern int MainLastGroup;
 extern int voice_;
-
 extern long CampEventSoundID;
 extern long gScreenShotEnabled;
 extern long MovieCount;
-
 extern uchar gCampJoinTries;
 extern ulong gCampJoinLastData; // Last vuxRealtime we received data about this game
 falcon4LeakCheck flc;
@@ -202,7 +167,6 @@ GNETCORELib::IUplinkPtr m_pUplink;
 HINSTANCE hInst;
 HWND mainAppWnd;
 HWND mainMenuWnd;
-
 int ClearObjManualFlags = FALSE;
 int DestroyObjective = FALSE;
 int DisableSmoothing = FALSE;
@@ -215,27 +179,49 @@ int noUIcomms = FALSE;
 int NumHats = -1;
 int numZips = 0;
 int RepairObjective = FALSE;
-int ShowVersion = 0;
+bool ShowVersion = false; // used to display version number in game (not part of version system)
 int SimPathHandle = -1;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
 int* resourceHandle;
-
 RadioSubTitle* radioLabel = (RadioSubTitle*)0;
-RealWeather* realWeather = NULL;
-
+RealWeather *realWeather = NULL;
 static HACCEL hAccel;
 static int KeepFocus = 0;
-struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
-
 TrackIR theTrackIRObject;
 WinAmpFrontEnd* winamp = 0;
 WSADATA wsadata;
 
+extern "C" char g_strLgbk[20]; //sfr: logbook debug
+char g_strLgbk[20];
+
+#ifdef DEBUG
+	extern int gCampPlayerInput;
+	extern int gPlayerPilotLock;
+	HANDLE gDispatchThreadID;
+#endif
+
+#ifdef CAMPTOOL
+	// Renaming tool stuff
+	extern int gRenameIds;
+	extern VU_ID_NUMBER RenameTable[65536];
+	// Window handles
+	extern HWND hMainWnd;
+	extern HWND hToolWnd;
+#endif
+
+#ifdef DEBUG// Debug Assert softswitches
+	int f4AssertsOn = TRUE, f4HardCrashOn = FALSE;
+	int shiAssertsOn = TRUE,
+	shiWarningsOn = TRUE,
+	shiHardCrashOn = FALSE;
+	extern CampaignTime gConnectionTime;
+	extern CampaignTime gResendTime;
+	extern int gCampJoinStatus;
+#endif
 
 extern "C"
 {
-	char g_strLgbk[20]; 
 	extern int ComIPGetHostIDIndex;
 	extern int force_ip_address;
 	extern unsigned short force_port;
@@ -248,15 +234,14 @@ extern "C"
 BOOL CleanupDIJoystick(void);
 BOOL DoSimOptions(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL SetupDIJoystick(HINSTANCE hInst, HWND hWnd);
-
+BEGIN_OBJECT_MAP(ObjectMap)
+END_OBJECT_MAP()
 extern BOOL CALLBACK SelectMission(HWND, UINT, WPARAM, LPARAM);
 extern BOOL SaveSFXTable();
 extern BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern BOOL WriteMissionData();
-
-extern HRESULT StartServer(HWND hDlg);
-
+extern HRESULT  StartServer(HWND hDlg);  //me123
 extern void CampaignConnectionTimer(void);
 extern void CampaignJoinFail(void);
 extern void CampaignJoinSuccess(void);
@@ -268,39 +253,37 @@ extern void DisableCampaignMenus(void);
 extern void DisplayJoinStatusWindow(int);
 extern void EnableCampaignMenus(void);
 extern void GameHasStarted(void);
-extern void LoadTheaterList();
+extern void LoadTheaterList(); // JPO
 extern void LoadTrails();
 extern void PlayUIMovieQ(); // defined in UI_Main.cpp
-extern void ReadCampAIInputs(char* name);
+extern void ReadCampAIInputs(char * name);
 extern void ReadFalcon4Config();
 extern void ServerBrowserExit();
 extern void StopVoice();
 extern void UIScramblePlayerFlight(void);
 extern void update_tactical_flight_information(void);
 extern void UpdateMissionWindow(long ID);
-
+int FileVerify(void);
 int tactical_is_training(void);
 int UI_Startup();
-
 LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 static void CtrlAltDelMask(int state);
 static void ParseCommandLine(LPSTR cmdLine);
 static void SystemLevelExit(void);
 static void SystemLevelInit(void);
-
-void ConsoleWrite(char*);
-void EndCommitCB(long ID, short hittype, C_Base* control);
+struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
+void ConsoleWrite(char *);
+void EndCommitCB(long ID, short hittype, C_Base *control);
 void IncDecDataToPlay(int delta);
 void IncDecMsgToPlay(int delta);
 void IncDecTalkerToPlay(int delta);
 void LeaveDogfight();
-void OpenMainCampaignCB(long ID, short hittype, C_Base* control);
+void OpenMainCampaignCB(long ID, short hittype, C_Base *control);
 void OpenTEGameOverWindow();
-void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface);
+void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface);//!void PlayMovie(char *filename,short left,short top,short w,short h,UInt theSurface);
 void PlayThatFunkyMusicWhiteBoy();
-void ProcessChatStr(CHATSTR* msg);
+void ProcessChatStr(CHATSTR *msg);
 void RebuildCurrentWPList();
 void RebuildGameTree();
 void RecieveScenarioInfo();
@@ -308,7 +291,7 @@ void RelocateSquadron();
 void ReplayUIMovie(long MovieID);
 void SetVoiceVolumes(void);
 void ShutdownCampaign(void);
-void STPRender(C_Base* control);
+void STPRender(C_Base *control);
 void tactical_restart_mission(void);
 void UI_Cleanup();
 void UI_CommsErrorMessage(WORD error);
@@ -325,9 +308,7 @@ void UIMain(void);
 void UpdateRules(void);
 void ViewRemoteLogbook(long playerID);
 
-extern "C" int InitWS2(WSADATA* wsaData);
-BEGIN_OBJECT_MAP(ObjectMap)
-END_OBJECT_MAP()
+extern "C" int InitWS2(WSADATA *wsaData);
 // END OF FUNCTION DECLARATIONS
 
 
@@ -365,19 +346,6 @@ void BuildAscii()
 }
 
 
-void InitVariables(void)
-{
-#ifdef DEBUG
-	// if you want to disable it, use -nococpitverifier commandline
-	cockpit_verifier = true;
-	// if you want to disable it, use -nomissiontable commandline
-	write_mission_table = true;
-	// if you want to disable it, use -nosoundtable commandline
-	write_sound_table = true;
-#endif
-}
-
-
 static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int)
 {
     WNDCLASS wc;
@@ -403,9 +371,8 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
             return FALSE;
         }
     }
-
-    mainMenuWnd = CreateWindow("Falcon4Class",
-                               "FreeFalcon Debug Window",
+	mainMenuWnd = CreateWindow("Falcon4Class",
+							   "FreeFalcon 7.0 Debug Window",
                                WS_OVERLAPPEDWINDOW,
                                720,
                                100,
@@ -426,14 +393,21 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
-int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                         LPSTR lpCmdLine, int nCmdShow)
+void initialize_variables(void)
+{
+#ifdef DEBUG
+	g_bEnableCockpitVerifier = true;
+#endif // DEBUG
+};
+
+signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                         LPSTR lpCmdLine, signed int nCmdShow)
 {
     char tmpPath[_MAX_PATH];
     MSG  msg;
     char fileName[_MAX_PATH];
 
-	InitVariables();
+	initialize_variables();
 
     _Module.Init(ObjectMap, hInstance);
 
@@ -444,7 +418,7 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     if (FAILED(hr))
         MonoPrint("HandleWinMain: Error 0x%X occured during COM initialization!", hr);
 
-	// Begin - Uplink stuff
+    // Begin - Uplink stuff
     try
     {
         if (g_bEnableUplink)
@@ -458,11 +432,11 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             m_pUplink->PutMasterServerPort(g_nMasterServerPort);
             m_pUplink->PutQueryPort(7778);
             m_pUplink->PutHeartbeatInterval(60000);
-			m_pUplink->PutServerVersion( FREE_FALCON_VERSION );
-			m_pUplink->PutServerVersionMin( FREE_FALCON_VERSION );
+			m_pUplink->PutServerVersion(FREE_FALCON_VERSION);
+			m_pUplink->PutServerVersionMin(FREE_FALCON_VERSION);
             m_pUplink->PutServerLocation(g_strServerLocation);
             m_pUplink->PutServerName(g_strServerName);
-			m_pUplink->PutGameName( FREE_FALCON_BRAND );
+            m_pUplink->PutGameName(FREE_FALCON_BRAND);
             m_pUplink->PutGameMode("openplaying");
         }
     }
@@ -500,6 +474,8 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // This SHOULD NOT BE REQUIRED -- IT IS *VERY* EASY TO BREAK CODE THAT DEPENDS ON THIS
     // I'd like to make it go away soon...
     SetCurrentDirectory(FalconDataDirectory);
+
+    FileVerify();
 
     sprintf(FalconCampaignSaveDirectory, "%s\\Campaign\\Save", FalconDataDirectory);
     sprintf(FalconCampUserSaveDirectory, "%s\\Campaign\\Save", FalconDataDirectory);
@@ -543,10 +519,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     mainAppWnd = FalconDisplay.appWin;
 
-    if (write_sound_table)
+    if (g_writeSndTbl)
         SaveSFXTable();
 
-    if (write_mission_table)
+    if (g_writeMissionTbl)
         WriteMissionData();
 
     if (gSoundFlags & FSND_SOUND) // Switch for turning on/off sound stuff
@@ -574,23 +550,23 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     CoUninitialize();
 
-	ExitProcess(EXIT_SUCCESS);
+    ExitProcess(EXIT_SUCCESS);
 }
 
 
-// Main entry point to the entire solution.
-// However, some code is called by callback functions so use the breakpoints
-// file to debug properly!
-
-// set up structured exception handling here
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+// Main entry point.
+// However, some code is called by callback functions so use breakpoints
+// to debug properly!
+signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, signed int nCmdShow)
 {
-	int Result = EXIT_FAILURE;
+	SubRange<signed int, 0, 1> error_code;
+	error_code = EXIT_FAILURE;
 
-    __try
+	// Set up structured exception handling here.
+		__try
     {
-        Result = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+        error_code = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
     }
     __except (RecordExceptionInfo(GetExceptionInformation(), "WinMain Thread"))
     {
@@ -600,7 +576,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         // the __except clause.
     }
 
-    return Result;
+    return error_code;
 }
 
 
@@ -614,6 +590,7 @@ void EndUI(void)
     TheCampaign.Suspend();
     UI_Cleanup();
     TheCampaign.Resume();
+
     SetFocus(mainMenuWnd);
 }
 
@@ -639,12 +616,12 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             switch (LOWORD(wParam))
             {
                 case ID_SHOW_VERSION:
-                    ShowVersion = ShowVersion != 2 ? 2 : 0;
+					ShowVersion ? ShowVersion = false : ShowVersion = true;
                     break;
 
                 case ID_SHOW_MAJOR_VERSION:
-                    ShowVersion = ShowVersion != 1 ? 1 : 0;
-                    break;
+					ShowVersion ? ShowVersion = false : ShowVersion = true;
+					break;
 
                 case ID_FILE_EXIT:
                     PostQuitMessage(0);
@@ -728,8 +705,8 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                     break;
 
                 case ID_CAMPAIGN_RENAMINGON:
-					rename_IDs ? rename_IDs = false : rename_IDs = true;
-                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (rename_IDs ? MF_CHECKED : MF_UNCHECKED));
+                    gRenameIds = 1 - gRenameIds;
+                    CheckMenuItem(GetMenu(hwnd), ID_CAMPAIGN_RENAMINGON, (gRenameIds ? MF_CHECKED : MF_UNCHECKED));
                     break;
 #endif
 
@@ -800,7 +777,7 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 }
 
 
-int get_ip(char* str)
+int get_ip(char *str)
 {
     char
     *src;
@@ -841,18 +818,20 @@ void ParseCommandLine(LPSTR cmdLine)
     DWORD type, size;
     HKEY theKey;
 
-#ifdef DEBUG
-	InitDebug(DEBUGGER_TEXT_MODE);
 
-	// These are optional debug modes. Activate if needed.
-	//asserts = true;
-	//hard_crash = true;
-	//shi_asserts = true;
-	//shi_hard_crash = true;
-	//wait_for_loaded = FALSE;
-	//eyeFlyEnabled = TRUE;
-	//RepairObjective = 1;
-	//gSoundFlags = 0;
+
+#ifdef DEBUG
+	// These are debug options. Set whatever you need.
+		//F4SetAsserts(TRUE);
+		//ShiSetAsserts(TRUE);
+		//RepairObjective = 1;
+		//eyeFlyEnabled = TRUE;
+  //      wait_for_loaded = FALSE;
+  //      F4SetHardCrash(TRUE);
+  //      ShiSetHardCrash(TRUE);
+  //      gSoundFlags = 0;
+
+		InitDebug(DEBUGGER_TEXT_MODE);
 #endif
 
     size = sizeof(FalconDataDirectory);
@@ -932,24 +911,24 @@ void ParseCommandLine(LPSTR cmdLine)
 
             if (_strnicmp(arg, "-noassert", 9) == 0)
             {
-                asserts = false;
+                F4SetAsserts(FALSE);
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-				shi_asserts = false;
+                ShiSetAsserts(FALSE);
             }
 
             // JB 010325
             if (_strnicmp(arg, "-nowarning", 10) == 0)
-				shi_warnings = false;
+                ShiSetWarnings(FALSE);
 
             if (_strnicmp(arg, "-hardcrash", 9) == 0)
             {
-                asserts = true;
-				hard_crash = true;
+                F4SetAsserts(TRUE);
+                F4SetHardCrash(TRUE);
                 // KCK: If this line is causing your compile to fail, update
                 // codelib, don't comment it out.
-				shi_hard_crash = true;
-				shi_asserts = true;
+                ShiSetHardCrash(TRUE);
+                ShiSetAsserts(TRUE);
             }
 
             if (stricmp(arg, "-resetpilots") == 0)
@@ -966,10 +945,10 @@ void ParseCommandLine(LPSTR cmdLine)
             if (stricmp(arg, "-usersc") == 0)
                 _LOAD_ART_RESOURCES_ = 1;
 
-            if (_strnicmp(arg, "-nomovie", 8) == 0)
-                intro_movie = false;
+			if (_strnicmp(arg, "-nomovie", 8) == 0)
+				intro_movie = false;
 
-			if (_strnicmp(arg, "-noUIcomms", 8) == 0)
+            if (_strnicmp(arg, "-noUIcomms", 8) == 0)
                 noUIcomms = TRUE;
 
             if (_strnicmp(arg, "-time", 5) == 0)
@@ -980,11 +959,8 @@ void ParseCommandLine(LPSTR cmdLine)
 
 #ifdef DEBUG
 
-			if (_strnicmp(arg, "-campinput", 10) == 0)
-			{
-				extern int gCampPlayerInput;
-				gCampPlayerInput = atoi(arg + 10);
-			}
+            if (_strnicmp(arg, "-campinput", 10) == 0)
+                gCampPlayerInput = atoi(arg + 10);
 
 #endif
 
@@ -1114,14 +1090,14 @@ void ParseCommandLine(LPSTR cmdLine)
             if (!stricmp(arg, "-enumswdev"))
                 g_bEnumSoftwareDevices = true;
 
-			if (!stricmp(arg, "-nocockpitverifier"))
-				cockpit_verifier = false;
-			
-			if (!stricmp(arg, "-nosoundtable"))
-				write_sound_table = false;
+            if (!stricmp(arg, "-nocockpitverifier"))
+                g_bEnableCockpitVerifier = false;
 
-            if (!stricmp(arg, "-nomissiontable"))
-                write_mission_table = false;
+            if (!stricmp(arg, "-writesndtbl"))
+                g_writeSndTbl = true;
+
+            if (!stricmp(arg, "-writemissiontbl"))
+                g_writeMissionTbl = true;
 
         }
         while ((arg = strtok(NULL, " ")) != NULL);
@@ -1145,33 +1121,33 @@ void ParseCommandLine(LPSTR cmdLine)
     strcpy(Falcon3DDataDir, FalconObjectDataDir);
     size = sizeof(FalconMiscTexDataDir);
 
-	size = sizeof(movie_mode);
-	retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)movie_mode, &size);
+    size = sizeof(FalconMovieMode);
+    retval = RegQueryValueEx(theKey, "movieMode", 0, &type, (LPBYTE)FalconMovieMode, &size);
 
     if (retval != ERROR_SUCCESS)
-		strcpy(movie_mode, "Hurry");
+        strcpy(FalconMovieMode, "Hurry");
     else if (size <= 1)
-		strcpy(movie_mode, "Hurry");
+        strcpy(FalconMovieMode, "Hurry");
 
-	size = sizeof(UI_art_directory);
-	retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)UI_art_directory, &size);
-
-    if (retval != ERROR_SUCCESS)
-    {
-		strcpy(UI_art_directory, FalconDataDirectory);
-		strcpy(UI_art_theater_directory, FalconDataDirectory);
-    }
-
-	size = sizeof(UI_sound_directory);
-	retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)UI_sound_directory, &size);
+    size = sizeof(FalconUIArtDirectory);
+    retval = RegQueryValueEx(theKey, "uiArtDir", 0, &type, (LPBYTE)FalconUIArtDirectory, &size);
 
     if (retval != ERROR_SUCCESS)
     {
-		strcpy(UI_sound_directory, FalconDataDirectory);
+        strcpy(FalconUIArtDirectory, FalconDataDirectory);
+        strcpy(FalconUIArtThrDirectory, FalconDataDirectory);
     }
 
-	strcpy(sound_theater_directory, FalconDataDirectory);
-	strcat(sound_theater_directory, "\\sounds");
+    size = sizeof(FalconUISoundDirectory);
+    retval = RegQueryValueEx(theKey, "uiSoundDir", 0, &type, (LPBYTE)FalconUISoundDirectory, &size);
+
+    if (retval != ERROR_SUCCESS)
+    {
+        strcpy(FalconUISoundDirectory, FalconDataDirectory);
+    }
+
+    strcpy(FalconSoundThrDirectory, FalconDataDirectory);
+    strcat(FalconSoundThrDirectory, "\\sounds");
     retval = RegCloseKey(theKey);
 }
 
@@ -1192,7 +1168,7 @@ void SystemLevelInit()
     // FRB - Restore access to \sim folder files before \zips\Simdata.zip
     char tmpPath[512];
     LoadTheaterList();
-    TheaterDef* td;
+    TheaterDef *td;
 
     if ((td = g_theaters.GetCurrentTheater()))
     {
@@ -1222,7 +1198,7 @@ void SystemLevelInit()
         if (!LoadClassTable("Falcon4"))
         {
             MessageBox(NULL, "No Entities Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(EXIT_SUCCESS);
+            exit(0);
         }
 
         InitVU();
@@ -1230,7 +1206,7 @@ void SystemLevelInit()
         if (!LoadTactics("Falcon4"))
         {
             MessageBox(NULL, "No Tactics Loaded.", "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-            exit(EXIT_SUCCESS);
+            exit(0);
         }
 
         LoadTrails();
@@ -1485,7 +1461,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
         case FM_STP_START_RENDER:
             //this allows the UI to refresh the controls BEFORE it enters this function
             Sleep(100);
-            STPRender((C_Base* )lParam);
+            STPRender((C_Base *)lParam);
             break;
 
         case FM_UPDATE_RULES:
@@ -1510,6 +1486,9 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                 g_theaters.DoSoundSetup();
 
             FalconLocalSession->SetFlyState(FLYSTATE_IN_UI);
+#ifdef DEBUG
+            gPlayerPilotLock = 0;
+#endif
             doUI = TRUE;
 
             UI_Startup();
@@ -1585,27 +1564,29 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             // =========================================================
 
         case FM_LOAD_CAMPAIGN:
-                // Load a campaign here (this should allow tactical engagements too, so we
-                // So we can eliminate the LOAD_TACTICAL case.
-                if (
-                    (FalconGameType)lParam != game_Campaign &&
-                    (FalconGameType)lParam != game_TacticalEngagement
-                )
-                {
-                    strcpy(gUI_CampaignFile, "Instant");
-                }
+            
+            // Load a campaign here (this should allow tactical engagements too, so we
+            // So we can eliminate the LOAD_TACTICAL case.
+            if (
+                (FalconGameType)lParam != game_Campaign &&
+                (FalconGameType)lParam != game_TacticalEngagement
+            )
+            {
+                strcpy(gUI_CampaignFile, "Instant");
+            }
 
-                retval = TheCampaign.LoadCampaign((FalconGameType)lParam, gUI_CampaignFile);
+            retval = TheCampaign.LoadCampaign((FalconGameType)lParam, gUI_CampaignFile);
 
-                // Notify UI of our success
-                if (retval)
-                {
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, 0, 0);
-                }
-                else
-                {
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-                }
+            // Notify UI of our success
+            if (retval)
+            {
+                PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, 0, 0);
+            }
+            else
+            {
+                PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
+            }
+            
 
             break;
 
@@ -1635,40 +1616,40 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_JOIN_CAMPAIGN:
-                // Join a campaign here
-                if (gCommsMgr)
-                {
-                    FalconGameEntity* game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+			// Join a campaign here
+			if (gCommsMgr)
+			{
+				FalconGameEntity *game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
 
-                    if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
-                    {
-                        MonoPrint("Campaign Join Error: Not a valid game.\n");
-                        PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
-                        return 0;
-                    }
+				if (!game || (VuGameEntity*)game == vuPlayerPoolGroup)
+				{
+					MonoPrint("Campaign Join Error: Not a valid game.\n");
+					PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
+					return 0;
+				}
 
-                    // wParam determines phase of loading we'd like to perform:
-                    switch (wParam)
-                    {
-                        case JOIN_PRELOAD_ONLY: // Preload only
-                            MonoPrint("Requesting campaign preload.\n");
-                            retval = TheCampaign.RequestScenarioStats(game);
-                            break;
+				// wParam determines phase of loading we'd like to perform:
+				switch (wParam)
+				{
+					case JOIN_PRELOAD_ONLY: // Preload only
+						MonoPrint("Requesting campaign preload.\n");
+						retval = TheCampaign.RequestScenarioStats(game);
+						break;
 
-                        case JOIN_REQUEST_ALL_DATA: // Request all game data
-                            MonoPrint("Requesting all campaign data.\n");
-                            retval = TheCampaign.RequestScenarioStats(game);
-                            break;
+					case JOIN_REQUEST_ALL_DATA: // Request all game data
+						MonoPrint("Requesting all campaign data.\n");
+						retval = TheCampaign.RequestScenarioStats(game);
+						break;
 
-                        case JOIN_CAMP_DATA_ONLY: // Request only non-preload data (Called by Campaign only)
-                            MonoPrint("Requesting campaign data.\n");
-                            retval = TheCampaign.JoinCampaign((FalconGameType)lParam, game);
-                            break;
-                    }
-                }
+					case JOIN_CAMP_DATA_ONLY: // Request only non-preload data (Called by Campaign only)
+						MonoPrint("Requesting campaign data.\n");
+						retval = TheCampaign.JoinCampaign((FalconGameType)lParam, game);
+						break;
+				}
+			}
 
-                if (!retval)
-                    PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
+			if (!retval)
+				PostMessage(FalconDisplay.appWin, FM_JOIN_FAILED, 0, 0);
 
             break;
 
@@ -1738,29 +1719,29 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
             break;
 
         case FM_START_DOGFIGHT:
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
         case FM_START_CAMPAIGN:
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
         case FM_START_TACTICAL:
-                // Mark us as loading
-                FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
-                SimulationLoopControl::StartGraphics();
-                EndUI();
-                KeepFocus = 1;
+            // Mark us as loading
+            FalconLocalSession->SetFlyState(FLYSTATE_LOADING);
+            SimulationLoopControl::StartGraphics();
+            EndUI();
+            KeepFocus = 1;
 
             break;
 
@@ -1990,7 +1971,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
             // RV - Biker - Add theater switching for into movie
             char tmpPath[MAX_PATH];
-			sprintf(tmpPath, "%s\\intro.avi", movie_directory);
+            sprintf(tmpPath, "%s\\intro.avi", FalconMovieDirectory);
             PlayMovie(tmpPath, -1, -1, 0, 0, FalconDisplay.GetImageBuffer()->frontSurface());
             FalconDisplay.LeaveMode();
             break;
@@ -2101,7 +2082,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 }
 
 
-void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface)
+void PlayMovie(char *filename, int left, int top, int w, int h, void *theSurface)
 {
     HWND hwnd;
     int hMovie = -1, mode;
@@ -2127,7 +2108,7 @@ void PlayMovie(char* filename, int left, int top, int w, int h, void* theSurface
         top = theRect.top;
         mode = MOVIE_MODE_INTERLACE;
 
-		if (!stricmp(movie_mode, "Hurry"))
+        if (!stricmp(FalconMovieMode, "Hurry"))
         {
             mode |= MOVIE_MODE_HURRY;
         }

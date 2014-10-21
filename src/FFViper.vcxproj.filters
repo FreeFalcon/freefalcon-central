@@ -18,6 +18,9 @@
     <ClInclude Include="include\comsup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SubRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ui\src\winmain.cpp">

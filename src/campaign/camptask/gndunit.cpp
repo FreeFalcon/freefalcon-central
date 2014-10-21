@@ -48,8 +48,8 @@ extern int gBattalionDetects;
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 // KCK: Move to AIInput eventually
@@ -165,8 +165,8 @@ int GroundUnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(short);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
-        aobj.num_ = rename_table[aobj.num_];
+    if (gRenameIds)
+        aobj.num_ = RenameTable[aobj.num_];
 
 #endif
     memcpy(*stream, &aobj, sizeof(VU_ID));

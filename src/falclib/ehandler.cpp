@@ -233,16 +233,18 @@ static void RecordSystemInformation(HANDLE LogFile)
     hprintf(LogFile, "%d MBytes physical memory.\r\n", (MemInfo.dwTotalPhys +
             ONEM - 1) / ONEM);
 
-    OSVERSIONINFO VersionInfo;
-    VersionInfo.dwOSVersionInfoSize = sizeof(VersionInfo);
-    GetVersionEx(&VersionInfo);
-    hprintf(LogFile, "OS: %d.%d build %d platform %d %s\r\n",
-            VersionInfo.dwMajorVersion, VersionInfo.dwMinorVersion,
-            VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
-            VersionInfo.szCSDVersion);
+    //OSVERSIONINFO VersionInfo;
+    //VersionInfo.dwOSVersionInfoSize = sizeof(VersionInfo);
+    //GetVersionEx(&VersionInfo);
+    //hprintf(LogFile, "OS: %d.%d build %d platform %d %s\r\n",
+    //        VersionInfo.dwMajorVersion, VersionInfo.dwMinorVersion,
+    //        VersionInfo.dwBuildNumber, VersionInfo.dwPlatformId,
+    //        VersionInfo.szCSDVersion);
 	extern const char* FREE_FALCON_BRAND;
 	extern const char* FREE_FALCON_VERSION;
-	hprintf( LogFile, "%s %s", FREE_FALCON_BRAND, FREE_FALCON_VERSION );
+	hprintf(LogFile, "%s Version %s\r\n",
+			FREE_FALCON_BRAND,
+			FREE_FALCON_VERSION);
 
     hprintf(LogFile, "%s\r\n", g_sVersion);
 

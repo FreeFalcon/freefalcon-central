@@ -1785,8 +1785,6 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,9
- PRODUCTVERSION 2,3,1,9
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -1797,6 +1795,26 @@ VS_VERSION_INFO VERSIONINFO
  FILETYPE 0x1L
  FILESUBTYPE 0x0L
 BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "FreeFalcon 7.0"
+            VALUE "CompanyName", "Open source project"
+            VALUE "FileDescription", "FreeFalcon 7.0  FFViper (US)"
+            VALUE "FileVersion", "7, 0, 0, 0"
+            VALUE "InternalName", "7.000"
+            VALUE "LegalCopyright", "Copyright © 1998 - 2014"
+            VALUE "OriginalFilename", "FFViper.exe"
+            VALUE "ProductName", "FreeFalcon 7.0"
+            VALUE "ProductVersion", "7, 0, 0, 0"
+            VALUE "SpecialBuild", "US Edition"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
 END
 
 

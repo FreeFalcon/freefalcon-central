@@ -10,7 +10,7 @@
 class FalconDisplayConfiguration
 {
 public:
-	FalconDisplayConfiguration();
+    FalconDisplayConfiguration();
     ~FalconDisplayConfiguration();
 
     enum DisplayMode {Movie, UI, UILarge, Planner, Layout, Sim, NumModes};
@@ -20,14 +20,14 @@ public:
     int width[NumModes];
     int height[NumModes];
     int depth[NumModes];
-    bool doubleBuffer[NumModes];
+    int doubleBuffer[NumModes];
     HWND appWin;
     int windowStyle;
     // Device managment
     DeviceManager devmgr;
     DisplayDevice theDisplayDevice;
     int deviceNumber;
-    bool displayFullScreen;
+	bool displayFullScreen = true;
 
     void Setup(int languageNum);
     void Cleanup();

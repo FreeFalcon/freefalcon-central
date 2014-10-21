@@ -160,7 +160,7 @@ extern bool g_bShowFlaps;
 
 void CallInputFunction(unsigned long val, int state);
 
-extern int ShowVersion;
+extern bool ShowVersion;
 extern int ShowFrameRate;
 extern SimBaseClass* eyeFlyTgt;
 extern int gTotSfx;

@@ -196,6 +196,7 @@ extern int testDebrief;
 #endif
 
 #ifdef DEBUG
+int gPlayerPilotLock = 0;
 extern int doUI;
 #endif
 
@@ -962,7 +963,7 @@ void MissionEvaluationClass::ServerFileLog(FalconPlayerStatusMessage *fpsm)
                     sprintf(logstring, "Callsign: %s \n", pilot_data->pilot_callsign);
                     fputs(logstring, fp);
 
-                    char *status;
+                    char* status = NULL;
 
                     if (pilot_data->pilot_status == PILOT_AVAILABLE) status = " - OK";
 
@@ -1071,6 +1072,9 @@ int MissionEvaluationClass::PostMissionEval(void)
     FlightDataClass *flight_ptr;
 
     CampEnterCriticalSection();
+#ifdef DEBUG
+    gPlayerPilotLock = 0;
+#endif
     player_end_time = vuxGameTime;
     logbook_data.AircraftInPackage = 0;
     friendly_losses = 0;

@@ -56,8 +56,8 @@ extern unsigned char        SHOWSTATS;
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 extern int BreakNumber[4]; // none, Ground, Air, Naval unit's break number
@@ -201,10 +201,10 @@ int BrigadeClass::Save(VU_BYTE **stream)
 
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
+    if (gRenameIds)
     {
         for (int i = 0; i < elements; i++)
-            element[i].num_ = rename_table[element[i].num_];
+            element[i].num_ = RenameTable[element[i].num_];
     }
 
 #endif

@@ -136,8 +136,8 @@ int gMoveWho = 6;
 extern BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 // Renaming tool stuff
-VU_ID_NUMBER rename_table[65536] = { 0 };
-bool rename_IDs = false;
+VU_ID_NUMBER RenameTable[65536] = { 0 };
+int gRenameIds = 0;
 
 extern int displayCampaign;
 extern int maxSearch;

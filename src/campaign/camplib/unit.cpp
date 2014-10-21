@@ -176,8 +176,8 @@ extern bool g_bRealisticAttrition; // JB 010710
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
-extern VU_ID_NUMBER rename_table[65536];
-extern bool rename_IDs;
+extern VU_ID_NUMBER RenameTable[65536];
+extern int gRenameIds;
 #endif
 
 _TCHAR* GetNumberName(int name_id, _TCHAR *buffer);
@@ -297,7 +297,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     }
 
     //#ifdef CAMPTOOL
-    // if (rename_IDs)
+    // if (gRenameIds)
     // {
     // VU_ID new_id = FalconNullId;
     //
@@ -311,7 +311,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     // ){
     // if (!vuDatabase->Find(new_id))
     // {
-    // rename_table[share_.id_.num_] = new_id.num_;
+    // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }
@@ -324,7 +324,7 @@ UnitClass::UnitClass(VU_BYTE **stream, long *rem) : CampBaseClass(stream, rem)
     // {
     // if (!vuDatabase->Find(new_id))
     // {
-    // rename_table[share_.id_.num_] = new_id.num_;
+    // RenameTable[share_.id_.num_] = new_id.num_;
     // share_.id_ = new_id;
     // break;
     // }
@@ -489,16 +489,16 @@ int UnitClass::Save(VU_BYTE **stream)
     *stream += sizeof(GridIndex);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
-        target_id.num_ = rename_table[target_id.num_];
+    if (gRenameIds)
+        target_id.num_ = RenameTable[target_id.num_];
 
 #endif
     memcpy(*stream, &target_id, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
 #ifdef CAMPTOOL
 
-    if (rename_IDs)
-        cargo_id.num_ = rename_table[cargo_id.num_];
+    if (gRenameIds)
+        cargo_id.num_ = RenameTable[cargo_id.num_];
 
 #endif
     memcpy(*stream, &cargo_id, sizeof(VU_ID));

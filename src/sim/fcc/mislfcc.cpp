@@ -27,7 +27,7 @@ extern int g_nRNESpeed;
 
 void FireControlComputer::AirAirMode(void)
 {
-    MissileClass* theMissile;
+	MissileClass* theMissile = NULL;
     float irSig;
     SimObjectType* curTarget;
     RadarClass* theRadar = (RadarClass*)FindSensor(platform, SensorClass::Radar);

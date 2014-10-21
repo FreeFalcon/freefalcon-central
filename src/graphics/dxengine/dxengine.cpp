@@ -118,8 +118,7 @@ CDXEngine::~CDXEngine(void)
 {
     CleanUpTexturesOnDevice();
     ReleaseTextures();
-	if (DxEngineStateHandle)
-		CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
+	if (DxEngineStateHandle) CheckHR(m_pD3DD->DeleteStateBlock(DxEngineStateHandle));
 }
 
 // The Default engine states for the renderer

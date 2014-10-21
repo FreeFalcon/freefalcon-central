@@ -30,6 +30,7 @@
 
 extern DeviceManager devmgr;
 extern ACMIView *acmiView;
+extern bool DisplayFullScreen;
 extern int DeviceNumber;
 
 #include "Graphics/DXEngine/DXVBManager.h"
