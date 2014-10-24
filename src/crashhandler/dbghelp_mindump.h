@@ -138,12 +138,6 @@ typedef struct _MINIDUMP_SYSTEM_INFO
 
     USHORT Reserved0;              // Reserved for future use. Must be zero.
 
-    //
-    // MajorVersion, MinorVersion, BuildNumber, PlatformId and
-    // CSDVersion are all taken from the OSVERSIONINFO structure
-    // returned by GetVersionEx( ).
-    //
-
 
     //
     // RVA to a CSDVersion string in the string table.

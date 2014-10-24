@@ -46,8 +46,6 @@ static BOOL enabled = FALSE;
 \***************************************************************************/
 void MonochromeDisplay::Setup(void)
 {
-//    OSVERSIONINFO osInfo;
-
 
     // Set the base class's member variables
     xRes = 720;
@@ -75,29 +73,6 @@ void MonochromeDisplay::Setup(void)
         ClearDraw();
         page = 1;
         ClearDraw();
-
-        // Turn ourselves on ONLY under Win95
-        // (crashes under NT because direct HW I/O is forbidden)
-        //osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        //GetVersionEx(& osInfo);
-        //enabled = (osInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
-		enabled = true;
-
-        if (enabled)
-        {
-            // Select graphics mode
-            OUT_BYTE(CONFIG_REG,  0x3);
-
-            for (int i = 0; i < 16; i++)  OUT_WORD(ADDRESS_REG, (short)((graph_settings[i] << 8) + i));
-
-            OUT_BYTE(CONTROL_REG, 0xe);
-
-            // Clear the surface of the display
-            for (int i = 0; i < 0x8000; i++)
-            {
-                *((char *)(FRAME_BUFFER_ADDR + i)) = 0;
-            }
-        }
     }
 }
 
