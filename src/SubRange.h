@@ -11,6 +11,7 @@ template <typename InputType,
 class SubRange
 {
 public:
+#ifdef DEBUG
 
 	// constructor
 	SubRange()
@@ -92,4 +93,5 @@ public:
 private:
 	InputType mOutputValue;
 
+#endif // DEBUG
 };
