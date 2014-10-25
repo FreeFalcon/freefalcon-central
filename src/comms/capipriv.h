@@ -37,8 +37,8 @@ extern "C" {
 
     /* extern GLOBAL WSA startup reference count, defined in  WS2Init() */
 #if WIN32
-    extern int WS2Connections;
-    extern HINSTANCE  hWinSockDLL;
+    extern int windows_sockets_connections;
+    extern HINSTANCE  h_windows_sockets_DLL;
 #endif
 
     typedef  unsigned long(*DWProc_t)();
@@ -56,7 +56,7 @@ extern "C" {
     {
         struct capilist      *next;
         char  *name;
-        ComAPIHandle          com;
+        com_API_handle          com;
 #ifdef CAPI_NET_DEBUG_FEATURES
         void                 *data;
         int                   size;
@@ -64,26 +64,26 @@ extern "C" {
 #endif
     } CAPIList;
 
-    typedef struct comapihandle
+    typedef struct ComApiHandle
     {
         char *name;   // name
         int protocol; // protocol
         // send and receive functions for this comm
-        int (*send_func)(struct comapihandle *c, int msgsize, int oob, int type);
-        int (*send_dummy_func)(struct comapihandle *c, unsigned long ip, unsigned short port);
-        int (*sendX_func)(struct comapihandle *c, int msgsize, int oob, int type, struct comapihandle *Xcom);
-        int (*recv_func)(struct comapihandle *c);
+        int (*send_func)(struct ComApiHandle *c, int msgsize, int oob, int type);
+        int (*send_dummy_func)(struct ComApiHandle *c, unsigned long ip, unsigned short port);
+        int (*sendX_func)(struct ComApiHandle *c, int msgsize, int oob, int type, struct ComApiHandle *Xcom);
+        int (*recv_func)(struct ComApiHandle *c);
         // buffer functions
-        char * (*send_buf_func)(struct comapihandle *c);
-        char * (*recv_buf_func)(struct comapihandle *c);
+        char * (*send_buf_func)(struct ComApiHandle *c);
+        char * (*recv_buf_func)(struct ComApiHandle *c);
         // address function
-        int (*addr_func)(struct comapihandle *c, char *buf, int reset);
+        int (*addr_func)(struct ComApiHandle *c, char *buf, int reset);
         // close function
-        void (*close_func)(struct comapihandle *c);
+        void (*close_func)(struct ComApiHandle *c);
         // query function
-        unsigned long(*query_func)(struct comapihandle *c, int querytype);
+        unsigned long(*query_func)(struct ComApiHandle *c, int querytype);
         // timestamp function
-        unsigned long(*get_timestamp_func)(struct comapihandle *c);
+        unsigned long(*get_timestamp_func)(struct ComApiHandle *c);
     } ComAPI;
 
     typedef struct reliable_packet
@@ -149,7 +149,7 @@ extern "C" {
 
     typedef struct comiphandle
     {
-        struct comapihandle apiheader;
+        struct ComApiHandle apiheader;
 
         int buffer_size;
         int max_buffer_size;
@@ -201,7 +201,7 @@ extern "C" {
 
     typedef struct comgrouphandle
     {
-        struct comapihandle apiheader;
+        struct ComApiHandle apiheader;
         int            buffer_size;
         unsigned int   HostID;
         CAPIList      *GroupHead;

@@ -83,7 +83,7 @@ ComIP *ComList::iterBegin(int protocol)
 
         if (
             (protocol == -1) || // matches all
-            (ComAPIGetProtocol((ComAPIHandle)(com)) == protocol)
+            (com_API_get_protocol((com_API_handle)(com)) == protocol)
         )
         {
             return *iterator;
@@ -109,7 +109,7 @@ ComIP *ComList::iterGetNext(int protocol)
 
         if (
             (protocol == -1) ||
-            (ComAPIGetProtocol((ComAPIHandle)(com)) == protocol)
+            (com_API_get_protocol((com_API_handle)(com)) == protocol)
         )
         {
             return *iterator;
@@ -125,7 +125,7 @@ ComIP *ComList::findProtRport(int protocol, unsigned short port)
     for (ComIP *comIP = iterBegin(protocol); comIP != NULL; comIP = iterGetNext(protocol))
     {
         unsigned short pport = port;
-        unsigned short cport = ComAPIGetRecvPort((ComAPIHandle)comIP);
+        unsigned short cport = com_API_get_receive_port((com_API_handle)comIP);
 
         if (pport == cport)
         {
@@ -142,7 +142,7 @@ ComIP *ComList::findProtId(int protocol, unsigned long id)
     for (ComIP *comIP = iterBegin(protocol); comIP != NULL; comIP = iterGetNext(protocol))
     {
         if (
-            (ComAPIGetPeerId((ComAPIHandle)comIP) == id)
+            (com_API_get_peer_ID((com_API_handle)comIP) == id)
         )
         {
             return comIP;
@@ -159,7 +159,7 @@ ComIP *ComList::findProtDangling(int protocol)
     for (ComIP *comIP = iterBegin(protocol); comIP != NULL; comIP = iterGetNext(protocol))
     {
         if (
-            (ComAPIGetPeerIP((ComAPIHandle)comIP) == CAPI_DANGLING_IP)
+            (com_API_get_peer_IP((com_API_handle)comIP) == CAPI_DANGLING_IP)
         )
         {
             return comIP;

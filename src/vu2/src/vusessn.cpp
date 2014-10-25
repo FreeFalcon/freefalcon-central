@@ -289,7 +289,7 @@ static int MessagePoll(VuCommsContext* ctxt)
     int now;
     int             count   = 0;
     int             length  = 0;
-    ComAPIHandle    ch      = ctxt->handle_;
+    com_API_handle    ch      = ctxt->handle_;
     char*           readBuf = ComAPIRecvBufferGet(ch);
     VU_BYTE*        data;
     VU_BYTE*        end;
@@ -754,7 +754,7 @@ int VuTargetEntity::MaxReliableMessageSize()
     return reliableComms_.maxMsgSize_;
 }
 
-void VuTargetEntity::SetCommsHandle(ComAPIHandle ch, int bufSize, int packSize)
+void VuTargetEntity::SetCommsHandle(com_API_handle ch, int bufSize, int packSize)
 {
     unsigned long chbufsize = 0;
 
@@ -804,7 +804,7 @@ void VuTargetEntity::SetCommsHandle(ComAPIHandle ch, int bufSize, int packSize)
     bestEffortComms_.lowSendPacketPtr_    = bestEffortComms_.lowSendPacket_;
 }
 
-void VuTargetEntity::SetReliableCommsHandle(ComAPIHandle ch, int bufSize, int packSize)
+void VuTargetEntity::SetReliableCommsHandle(com_API_handle ch, int bufSize, int packSize)
 {
     unsigned long chbufsize = 0;
 
@@ -1341,7 +1341,7 @@ int VuTargetEntity::SendMessage(VuMessage* msg)
 VuSessionEntity::VuSessionEntity(ushort typeindex, ulong domainMask, char *callsign):
     VuTargetEntity(typeindex, VU_SESSION_ENTITY_ID),
     sessionId_(0), // assigned on session open
-    address_(VU_ADDRESS(0, ComAPIGetMyRecvPort(), ComAPIGetMyReliableRecvPort())), //sfr
+    address_(VU_ADDRESS(0, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port())), //sfr
     domainMask_(domainMask),
     callsign_(0),
     loadMetric_(1),
@@ -2092,7 +2092,7 @@ VU_SESSION_ID VuSessionEntity::OpenSession()
         return 0;
     }
 
-    ComAPIHandle ch = vuGlobalGroup->GetCommsHandle();
+    com_API_handle ch = vuGlobalGroup->GetCommsHandle();
 
     if (!ch)
     {

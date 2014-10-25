@@ -70,10 +70,10 @@ extern "C" {
     static struct sockaddr_in comRecvAddr;
 
     /* forward function declarations */
-    void ComRUDPClose(ComAPIHandle c);
-    int ComRUDPSend(ComAPIHandle c, int msgsize, int oob, int type);
-    int ComRUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom);
-    int ComRUDPGet(ComAPIHandle c);
+    void ComRUDPClose(com_API_handle c);
+    int ComRUDPSend(com_API_handle c, int msgsize, int oob, int type);
+    int ComRUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom);
+    int ComRUDPGet(com_API_handle c);
 
     int comms_compress(char *in, char *out, int size);
     int comms_decompress(char *in, char *out, int size);
@@ -82,16 +82,16 @@ extern "C" {
     // sfr: test stuff
     //extern int docomms;
 
-    int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset);
-    char *ComRUDPSendBufferGet(ComAPIHandle c);
-    char *ComRUDPRecvBufferGet(ComAPIHandle c);
-    unsigned long ComRUDPQuery(ComAPIHandle c, int querytype);
-    unsigned long ComRUDPGetTimeStamp(ComAPIHandle c);
+    int ComIPHostIDGet(com_API_handle c, char *buf, int reset);
+    char *ComRUDPSendBufferGet(com_API_handle c);
+    char *ComRUDPRecvBufferGet(com_API_handle c);
+    unsigned long ComRUDPQuery(com_API_handle c, int querytype);
+    unsigned long ComRUDPGetTimeStamp(com_API_handle c);
 
 #define GETActiveCOMHandle(c)   (((ComIP *)c)->parent == NULL) ? ((ComIP *)c) : ((ComIP *)c)->parent
 
     CAPIList * CAPIListAppend(CAPIList * list);
-    CAPIList * CAPIListRemove(CAPIList * list , ComAPIHandle c);
+    CAPIList * CAPIListRemove(CAPIList * list , com_API_handle c);
     CAPIList * CAPIListAppendTail(CAPIList * list);
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ extern "C" {
         return max;
     }
 
-    ComAPIHandle ComRUDPOpenSendClone(
+    com_API_handle ComRUDPOpenSendClone(
         char *name_in,
         ComIP *parentCom,
         int buffersize,
@@ -145,13 +145,13 @@ extern "C" {
         ComIP *c;
 
         c = (ComIP*)malloc(sizeof(ComIP));
-        //GlobalListHead->com = (ComAPIHandle)c;
+        //GlobalListHead->com = (com_API_handle)c;
         memset(c, 0, sizeof(ComIP));
 
         memcpy(c, parentCom, sizeof(ComIP));
 
-        ((ComAPIHandle)c)->name = (char*)malloc(strlen(name_in) + 1);
-        strcpy(((ComAPIHandle)c)->name, name_in);
+        ((com_API_handle)c)->name = (char*)malloc(strlen(name_in) + 1);
+        strcpy(((com_API_handle)c)->name, name_in);
 
         /* initialize header data */
 
@@ -227,7 +227,7 @@ extern "C" {
         c->id = CAPI_htonl(id);
 
         comListAdd(c);
-        return (ComAPIHandle)c;
+        return (com_API_handle)c;
     }
 
 
@@ -235,7 +235,7 @@ extern "C" {
     /* begin a comms session
     * sfr: TODO this function is not freeing anything on error
     */
-    ComAPIHandle ComRUDPOpen(
+    com_API_handle ComRUDPOpen(
         char *name_in,
         int buffersize,
         char *gamename,
@@ -268,7 +268,7 @@ extern "C" {
 
         if (comRUDP != NULL)
         {
-            ComAPIHandle ret_val;
+            com_API_handle ret_val;
             ret_val = ComRUDPOpenSendClone(name_in, comRUDP, buffersize, gamename, remotePort, IPaddress, id);
             leave_cs();
             return ret_val;
@@ -277,7 +277,7 @@ extern "C" {
         // allocate and zero
         c = (ComIP*)malloc(sizeof(ComIP));
         memset(c, 0, sizeof(ComIP));
-        ((ComAPIHandle)c)->name = strdup(name_in);
+        ((com_API_handle)c)->name = strdup(name_in);
 
 
         // sfr: get ID instead of IP if IP is flag
@@ -426,7 +426,7 @@ extern "C" {
         // sfr add to com list
         comListAdd(c);
         leave_cs();
-        return (ComAPIHandle)c;
+        return (com_API_handle)c;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
 
     /* get the associated write buffer for RUDP*/
-    char *ComRUDPSendBufferGet(ComAPIHandle c)
+    char *ComRUDPSendBufferGet(com_API_handle c)
     {
         return ((ComIP *)c)->send_buffer.buf;
     }
@@ -443,7 +443,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
 
-    char *ComRUDPRecvBufferGet(ComAPIHandle c)
+    char *ComRUDPRecvBufferGet(com_API_handle c)
     {
         return ((ComIP *)c)->recv_buffer.buf;
     }
@@ -452,7 +452,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
 
-    int ComRUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom)
+    int ComRUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
     {
         if (c == Xcom)
         {
@@ -736,7 +736,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
 
     /* send data from a comms session */
-    int ComRUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
+    int ComRUDPSend(com_API_handle c, int msgsize, int oob, int type)
     {
         Reliable_Packet *pp, *lp, *rp;
 
@@ -1494,7 +1494,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
 
     /* receive data from a comms session */
-    int ComRUDPGet(ComAPIHandle c)
+    int ComRUDPGet(com_API_handle c)
     {
         if (c)
         {
@@ -1911,7 +1911,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
 
-    unsigned long ComRUDPQuery(ComAPIHandle c, int querytype)
+    unsigned long ComRUDPQuery(com_API_handle c, int querytype)
     {
         if (c)
         {
@@ -2083,7 +2083,7 @@ extern "C" {
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
 
-    unsigned long ComRUDPGetTimeStamp(ComAPIHandle c)
+    unsigned long ComRUDPGetTimeStamp(com_API_handle c)
     {
         if (c)
         {
@@ -2103,7 +2103,7 @@ extern "C" {
 
     /* end a comms session */
     // always called within CS
-    void ComRUDPClose(ComAPIHandle c)
+    void ComRUDPClose(com_API_handle c)
     {
         int count;
         int sockerror;
@@ -2162,7 +2162,7 @@ extern "C" {
                 return;
             }
 
-            //GlobalListHead = CAPIListRemove(GlobalListHead,(ComAPIHandle)cudp);
+            //GlobalListHead = CAPIListRemove(GlobalListHead,(com_API_handle)cudp);
             comListRemove(cudp);
 
 
@@ -2224,10 +2224,10 @@ extern "C" {
                 }
             }
 
-            WS2Connections--;
+            windows_sockets_connections--;
 
             /* if No more connections then WSACleanup() */
-            if (!WS2Connections)
+            if (!windows_sockets_connections)
             {
                 if (sockerror = CAPI_WSACleanup())
                 {
@@ -2235,8 +2235,8 @@ extern "C" {
                 }
 
 #ifdef LOAD_DLLS
-                FreeLibrary(hWinSockDLL);
-                hWinSockDLL = 0;
+                FreeLibrary(h_windows_sockets_DLL);
+                h_windows_sockets_DLL = 0;
 #endif
             }
 
