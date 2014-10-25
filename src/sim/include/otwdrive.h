@@ -636,7 +636,6 @@ private:
 
     void DrawIDTags(void);
     void GetUserPosition(void);
-    void ShowVersionString(void);
     void ShowPosition(void);
     void ShowAerodynamics(void);
     void ShowFlaps(void);

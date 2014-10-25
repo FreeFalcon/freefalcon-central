@@ -47,22 +47,22 @@ extern HANDLE    GlobalListLock;
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
 
 /* forward function declarations */
-void ComUDPClose(ComAPIHandle c);
-int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type);
-int ComUDPSendDummy(ComAPIHandle c, unsigned long ip, unsigned short port);
-int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom);
-int ComUDPGet(ComAPIHandle c);
+void ComUDPClose(com_API_handle c);
+int ComUDPSend(com_API_handle c, int msgsize, int oob, int type);
+int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port);
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom);
+int ComUDPGet(com_API_handle c);
 
-int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset);
-char *ComIPSendBufferGet(ComAPIHandle c);
-char *ComIPRecvBufferGet(ComAPIHandle c);
-unsigned long ComUDPQuery(ComAPIHandle c, int querytype);
-unsigned long ComUDPGetTimeStamp(ComAPIHandle c);
+int ComIPHostIDGet(com_API_handle c, char *buf, int reset);
+char *ComIPSendBufferGet(com_API_handle c);
+char *ComIPRecvBufferGet(com_API_handle c);
+unsigned long ComUDPQuery(com_API_handle c, int querytype);
+unsigned long ComUDPGetTimeStamp(com_API_handle c);
 
 extern void enter_cs(void);
 extern void leave_cs(void);
 
-static ComAPIHandle ComUDPOpenSendClone(
+static com_API_handle ComUDPOpenSendClone(
     char *name,
     ComIP *parentCom,
     int buffersize,
@@ -79,13 +79,13 @@ static ComAPIHandle ComUDPOpenSendClone(
 #define GETActiveCOMHandle(c)   (((ComIP *)c)->parent == NULL) ? ((ComIP *)c) : ((ComIP *)c)->parent
 
 CAPIList * CAPIListAppend(CAPIList * list);
-CAPIList * CAPIListRemove(CAPIList * list , ComAPIHandle c);
+CAPIList * CAPIListRemove(CAPIList * list , com_API_handle c);
 CAPIList * CAPIListAppendTail(CAPIList * list);
 
 /* begin a comms session */
 /* IPaddress == 0 -> Broadcast */
 /* IPaddress == -1 -> Recv socket only */
-ComAPIHandle ComUDPOpen(
+com_API_handle ComUDPOpen(
     char *name_in,
     int buffersize,
     char *gamename,
@@ -101,7 +101,7 @@ ComAPIHandle ComUDPOpen(
     unsigned long trueValue = 1;
     enter_cs();
 
-    if (InitWS2(&wsaData) == 0)
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         leave_cs();
         return 0;
@@ -113,7 +113,7 @@ ComAPIHandle ComUDPOpen(
     //if (listitem){
     if (c != NULL)
     {
-        ComAPIHandle ret_val;
+        com_API_handle ret_val;
         ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,  remoteUdpPort, IPaddress, id);
         leave_cs();
 
@@ -124,7 +124,7 @@ ComAPIHandle ComUDPOpen(
 
     c = (ComIP*)malloc(sizeof(ComIP));
     memset(c, 0, sizeof(ComIP));
-    ((ComAPIHandle)c)->name = strdup(name_in);
+    ((com_API_handle)c)->name = strdup(name_in);
 
     /* initialize header data */
     c->apiheader.protocol = CAPI_UDP_PROTOCOL;
@@ -256,14 +256,14 @@ ComAPIHandle ComUDPOpen(
     comListAdd(c);
     leave_cs();
 
-    return (ComAPIHandle)c;
+    return (com_API_handle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // JPO always called within CS
-ComAPIHandle ComUDPOpenSendClone(
+com_API_handle ComUDPOpenSendClone(
     char *name_in,
     ComIP *parentCom,
     int buffersize,
@@ -284,8 +284,8 @@ ComAPIHandle ComUDPOpenSendClone(
 
     memcpy(c, parentCom, sizeof(ComIP));
 
-    ((ComAPIHandle)c)->name = (char*)malloc(strlen(name_in) + 1);
-    strcpy(((ComAPIHandle)c)->name, name_in);
+    ((com_API_handle)c)->name = (char*)malloc(strlen(name_in) + 1);
+    strcpy(((com_API_handle)c)->name, name_in);
 
     /* initialize header data */
 
@@ -343,7 +343,7 @@ ComAPIHandle ComUDPOpenSendClone(
     c->id = CAPI_htonl(id);
 
     comListAdd(c);
-    return (ComAPIHandle)c;
+    return (com_API_handle)c;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -352,7 +352,7 @@ ComAPIHandle ComUDPOpenSendClone(
 
 /* end a comms session */
 /* always called from within a critical section */
-void ComUDPClose(ComAPIHandle c)
+void ComUDPClose(com_API_handle c)
 {
     int sockerror;
     CAPIList
@@ -393,10 +393,10 @@ void ComUDPClose(ComAPIHandle c)
         }
 
 #ifdef _DEBUG
-        MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((ComAPIHandle)cudp)->name);
+        MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((com_API_handle)cudp)->name);
 #endif
 
-        // GlobalListHead = CAPIListRemove(GlobalListHead,(ComAPIHandle)cudp);
+        // GlobalListHead = CAPIListRemove(GlobalListHead,(com_API_handle)cudp);
         comListRemove(cudp);
 
         if (sockerror = CAPI_closesocket(cudp->recv_sock))
@@ -458,10 +458,10 @@ void ComUDPClose(ComAPIHandle c)
             }
         }
 
-        WS2Connections--;
+        windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if (!WS2Connections)
+        if (!windows_sockets_connections)
         {
             if (sockerror = CAPI_WSACleanup())
             {
@@ -472,8 +472,8 @@ void ComUDPClose(ComAPIHandle c)
             }
 
 #ifdef LOAD_DLLS
-            FreeLibrary(hWinSockDLL);
-            hWinSockDLL = 0;
+            FreeLibrary(h_windows_sockets_DLL);
+            h_windows_sockets_DLL = 0;
 #endif
         }
 
@@ -502,7 +502,7 @@ void ComUDPClose(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xcom)
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
 {
     if (c == Xcom)
     {
@@ -520,7 +520,7 @@ int ComUDPSendX(ComAPIHandle c, int msgsize, int oob, int type, ComAPIHandle Xco
 
 /* send data from a comms session */
 
-int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
+int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 {
     ComIP *cudp;
     ComIP *actual;
@@ -680,7 +680,7 @@ int ComUDPSend(ComAPIHandle c, int msgsize, int oob, int type)
     return msgsize;
 }
 
-int ComUDPSendDummy(ComAPIHandle c, unsigned long ip, unsigned short port)
+int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port)
 {
     int dummyBlk = 0;
     ComIP *com = (ComIP*)c;
@@ -694,7 +694,7 @@ int ComUDPSendDummy(ComAPIHandle c, unsigned long ip, unsigned short port)
            );
 }
 
-int ComUDPGet(ComAPIHandle c)
+int ComUDPGet(com_API_handle c)
 {
 
     char buffer[1000];
@@ -879,7 +879,7 @@ int ComUDPGet(ComAPIHandle c)
 // sfr: converts
 // this function now gets a random ID instead of the local IP
 // hopefully, this will be random enough
-int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
+int ComIPHostIDGet(com_API_handle c, char *buf, int reset)
 {
     static long internalId = -1;
 
@@ -973,7 +973,7 @@ int ComIPHostIDGet(ComAPIHandle c, char *buf, int reset)
 
 /* get the associated write buffer */
 
-char *ComIPSendBufferGet(ComAPIHandle c)
+char *ComIPSendBufferGet(com_API_handle c)
 {
     return ((ComIP *)c)->send_buffer.buf + sizeof(ComAPIHeader);
 }
@@ -982,7 +982,7 @@ char *ComIPSendBufferGet(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-char *ComIPRecvBufferGet(ComAPIHandle c)
+char *ComIPRecvBufferGet(com_API_handle c)
 {
     ComIP *cudp = (ComIP *)c;
     // char *recvbuf=NULL;
@@ -995,7 +995,7 @@ char *ComIPRecvBufferGet(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComUDPQuery(ComAPIHandle c, int querytype)
+unsigned long ComUDPQuery(com_API_handle c, int querytype)
 {
     if (c)
     {
@@ -1114,7 +1114,7 @@ unsigned long ComUDPQuery(ComAPIHandle c, int querytype)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned long ComUDPGetTimeStamp(ComAPIHandle c)
+unsigned long ComUDPGetTimeStamp(com_API_handle c)
 {
     if (c)
     {
@@ -1131,7 +1131,7 @@ unsigned long ComUDPGetTimeStamp(ComAPIHandle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void ComAPISetReceiveThreadPriority(ComAPIHandle c, int priority)
+void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
 {
     HANDLE  threadhandle = 0;
     int     SetPriority  = 0xffffffff;

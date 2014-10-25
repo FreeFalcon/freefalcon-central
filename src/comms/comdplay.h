@@ -20,7 +20,7 @@ typedef struct modemheader
 
 typedef struct comdplayhandle
 {
-    struct comapihandle apiheader;
+    struct ComApiHandle apiheader;
     int buffer_size;
 
     LPDIRECTPLAY3A   lpDPlay;            /* IDirectPlay3A interface pointer */
@@ -63,15 +63,15 @@ typedef struct comdplayhandle
     int bytes_needed_for_message;
     int bytes_recvd_for_message;
     modemHeader *Header;
-    void (*connect_callback_func)(struct comapihandle *c, int retcode);
-    void (*accept_callback_func)(struct comapihandle *c);
+    void (*connect_callback_func)(struct ComApiHandle *c, int retcode);
+    void (*accept_callback_func)(struct ComApiHandle *c);
     unsigned long timestamp;
 } ComDPLAY;
 
 
 typedef struct comdplayENUMhandle
 {
-    struct comapihandle apiheader;
+    struct ComApiHandle apiheader;
     int    *protocols;
     int    count;
     int    maxprotocols;

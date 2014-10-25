@@ -114,10 +114,9 @@ const char* FREE_FALCON_VERSION = "7.0.0";
 
 // GLOBAL VARIABLES
 bool intro_movie = true;
-bool g_bEnableCockpitVerifier = false;
+bool cockpit_verifier = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
-BOOL VersionInfo = FALSE;
 CComModule _Module;
 char bottom_space[] = "                                                                               ";
 char FalconCockpitThrDirectory[_MAX_PATH]; // Theater switching stuff
@@ -179,7 +178,6 @@ int noUIcomms = FALSE;
 int NumHats = -1;
 int numZips = 0;
 int RepairObjective = FALSE;
-bool ShowVersion = false; // used to display version number in game (not part of version system)
 int SimPathHandle = -1;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
@@ -190,7 +188,7 @@ static HACCEL hAccel;
 static int KeepFocus = 0;
 TrackIR theTrackIRObject;
 WinAmpFrontEnd* winamp = 0;
-WSADATA wsadata;
+WSADATA windows_sockets_data;
 
 extern "C" char g_strLgbk[20]; //sfr: logbook debug
 char g_strLgbk[20];
@@ -308,7 +306,7 @@ void UIMain(void);
 void UpdateRules(void);
 void ViewRemoteLogbook(long playerID);
 
-extern "C" int InitWS2(WSADATA *wsaData);
+extern "C" int initialize_windows_sockets(WSADATA *wsaData);
 // END OF FUNCTION DECLARATIONS
 
 
@@ -393,30 +391,33 @@ static BOOLEAN initApplication(HINSTANCE hInstance, HINSTANCE hPrevInstance, int
 }
 
 
+// Initialize global debugging variables we need only in DEBUG.
 void initialize_variables(void)
 {
-#ifdef DEBUG
-	g_bEnableCockpitVerifier = true;
-#endif // DEBUG
+
+	cockpit_verifier = true;
+
 };
 
-signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                         LPSTR lpCmdLine, signed int nCmdShow)
+
+signed int PASCAL handle_WinMain(HINSTANCE h_instance, 
+								 HINSTANCE h_previous_instance,
+                                 LPSTR command_line, signed int command_show)
 {
-    char tmpPath[_MAX_PATH];
-    MSG  msg;
-    char fileName[_MAX_PATH];
 
+#ifndef NDEBUG
 	initialize_variables();
+#endif // NDEBUG
 
-    _Module.Init(ObjectMap, hInstance);
+    _Module.Init(ObjectMap, h_instance); // ATL initialization.
 
-    InitWS2(&wsadata); // Init Winsock now, we need it for GNet
+	// Initialize WinSock now, we need it for GNet.
+    initialize_windows_sockets(&windows_sockets_data);
 
     HRESULT hr = CoInitialize(NULL);
 
     if (FAILED(hr))
-        MonoPrint("HandleWinMain: Error 0x%X occured during COM initialization!", hr);
+        MonoPrint("handle_WinMain: Error 0x%X occured during COM initialization!", hr);
 
     // Begin - Uplink stuff
     try
@@ -442,7 +443,7 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
     catch (_com_error e)
     {
-        MonoPrint("HandleWinMain: Error 0x%X occured during JetNet initialization!", e.Error());
+        MonoPrint("handle_WinMain: Error 0x%X occured during JetNet initialization!", e.Error());
     }
 
     // End - Uplink stuff
@@ -463,9 +464,9 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     _controlfp(_PC_24, MCW_PC);
 #endif
 
-    hInst = hInstance;
+    hInst = h_instance;
 
-    ParseCommandLine(lpCmdLine);
+    ParseCommandLine(command_line);
 
     ReadFalcon4Config();
 
@@ -491,6 +492,7 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
     ResAddPath(FalconCampaignSaveDirectory, FALSE);
+    char tmpPath[_MAX_PATH];
     sprintf(tmpPath, "%s\\Config", FalconDataDirectory);
     ResAddPath(tmpPath, FALSE);
     sprintf(tmpPath, "%s\\Art", FalconDataDirectory); // This one can go if zips are always used
@@ -507,7 +509,8 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #else
     _chdir(FalconDataDirectory);
 #endif
-    sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, "Falcon4");
+	char fileName[_MAX_PATH];
+	sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, "Falcon4");
 
     gLangIDNum = GetPrivateProfileInt("Lang", "Id", 0, fileName);
 
@@ -530,10 +533,11 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     g_voicemap.LoadVoices();
 
-    if (!initApplication(hInstance, hPrevInstance, nCmdShow))
+    if (!initApplication(h_instance, h_previous_instance, command_show))
         return FALSE;
 
-    while (GetMessage(&msg, NULL, 0, 0) != 0)
+	MSG  msg;
+	while (GetMessage(&msg, NULL, 0, 0) != 0)
     {
         DispatchMessage(&msg);
     }
@@ -554,11 +558,11 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 
-// Main entry point.
+// Main entry point. Calls initialization functions, processes message loop.
 // However, some code is called by callback functions so use breakpoints
 // to debug properly!
-signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, signed int nCmdShow)
+signed int PASCAL WinMain(HINSTANCE h_Instance, HINSTANCE h_previous_instance,
+                          LPSTR command_line, signed int command_show)
 {
 
 // We want the SubRange template to run only under DEBUG.
@@ -574,7 +578,8 @@ signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Set up structured exception handling here.
 		__try
     {
-        error_code = HandleWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+        error_code = handle_WinMain(h_Instance, h_previous_instance,
+  								    command_line, command_show);
     }
     __except (RecordExceptionInfo(GetExceptionInformation(), "WinMain Thread"))
     {
@@ -623,14 +628,6 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
-                case ID_SHOW_VERSION:
-					ShowVersion ? ShowVersion = false : ShowVersion = true;
-                    break;
-
-                case ID_SHOW_MAJOR_VERSION:
-					ShowVersion ? ShowVersion = false : ShowVersion = true;
-					break;
-
                 case ID_FILE_EXIT:
                     PostQuitMessage(0);
                     retval = 0;
@@ -1099,7 +1096,7 @@ void ParseCommandLine(LPSTR cmdLine)
                 g_bEnumSoftwareDevices = true;
 
             if (!stricmp(arg, "-nocockpitverifier"))
-                g_bEnableCockpitVerifier = false;
+                cockpit_verifier = false;
 
             if (!stricmp(arg, "-writesndtbl"))
                 g_writeSndTbl = true;

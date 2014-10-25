@@ -50,7 +50,7 @@ enum VuCommsConnectStatus
 
 struct VuCommsContext
 {
-    ComAPIHandle          handle_;
+    com_API_handle          handle_;
     VuCommsConnectStatus  status_;
     VU_BOOL               reliable_;
     int                   maxMsgSize_;
@@ -113,7 +113,7 @@ public:
     {
         return bestEffortComms_.status_;
     }
-    ComAPIHandle GetCommsHandle()
+    com_API_handle GetCommsHandle()
     {
         return bestEffortComms_.handle_;
     }
@@ -121,14 +121,14 @@ public:
     {
         bestEffortComms_.status_ = cs;
     }
-    void SetCommsHandle(ComAPIHandle ch, int bufSize = 0, int packSize = 0);
+    void SetCommsHandle(com_API_handle ch, int bufSize = 0, int packSize = 0);
 
     // reliable comms handle
     VuCommsConnectStatus GetReliableCommsStatus()
     {
         return reliableComms_.status_;
     }
-    ComAPIHandle GetReliableCommsHandle()
+    com_API_handle GetReliableCommsHandle()
     {
         return reliableComms_.handle_;
     }
@@ -136,7 +136,7 @@ public:
     {
         reliableComms_.status_ = cs;
     }
-    void SetReliableCommsHandle(ComAPIHandle ch, int bufSize = 0, int packSize = 0);
+    void SetReliableCommsHandle(com_API_handle ch, int bufSize = 0, int packSize = 0);
 
     int BytesPending();
     int MaxPacketSize();

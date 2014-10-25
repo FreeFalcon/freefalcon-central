@@ -861,8 +861,6 @@
 #define ID_SIM_INSTANT_LEVEL4           40113
 #define ID_SIM_INSTANT_LEVEL5           40114
 #define ID_UI_LAYOUT                    40115
-#define ID_SHOW_MAJOR_VERSION           40116
-#define ID_SHOW_VERSION                 40117
 #define ID_VIEW_OBJOWNER                40118
 #define ID_VIEW_OBJPRIORITY             40119
 #define ID_VIEW_OBJTYPE                 40120

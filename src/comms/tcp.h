@@ -17,7 +17,7 @@ extern "C" {
 
     typedef struct comtcphandle
     {
-        struct comapihandle apiheader;
+        struct ComApiHandle apiheader;
 
         int buffer_size;
         WSABUF send_buffer;
@@ -48,8 +48,8 @@ extern "C" {
         long bytes_needed_for_message;
         int bytes_recvd_for_message;
         tcpHeader *Header;
-        void (*connect_callback_func)(struct comapihandle *c, int retcode);
-        void (*accept_callback_func)(struct comapihandle *c, int retcode);
+        void (*connect_callback_func)(struct ComApiHandle *c, int retcode);
+        void (*accept_callback_func)(struct ComApiHandle *c, int retcode);
         unsigned long timestamp;
     } ComTCP;
 

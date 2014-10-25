@@ -76,7 +76,6 @@ float pitchManualTrim = 0.0F; //MI
 float yawManualTrim = 0.0F; //MI
 float rollManualTrim = 0.0F; //MI
 int UseKeyboardThrottle = FALSE;
-extern bool ShowVersion;
 extern float gSpeedyGonzales;
 int gDoOwnshipSmoke = 0;
 extern PilotInputs UserStickInputs;
@@ -3058,18 +3057,6 @@ void OTWSelectFlybyMode(unsigned long, int state, void*)
         (state & KEY_DOWN) && (SimDriver.GetPlayerAircraft()) && \
         (SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP)))
         OTWDriver.SetOTWDisplayMode(OTWDriverClass::ModeFlyby);
-}
-
-
-void OTWShowVersion(unsigned long, int state, void*)
-{
-    if (state & KEY_DOWN)
-    {
-        if (ShowVersion)
-            ShowVersion = false;
-        else
-            ShowVersion = true;
-    }
 }
 
 

@@ -1,147 +1,165 @@
-/* ws2init.c - Copyright (c) Fri Dec 06 22:43:16 1996,  Spectrum HoloByte, Inc.  All Rights Reserved */
-#include "capiopt.h"
-#include <winsock.h>
-#include <winbase.h>
-#include <stdio.h>
-#include "capi.h"
-#include "capipriv.h"
+// Initializes WinSock.
+
+
+// SYSTEM INCLUDES
+#include <StdIO.h>
+#include <stdlib.h>
+#include <WinSock.h>
+#include <WinBase.h>
+// END OF SYSTEM INCLUDES
+
+
+
+// PREPROCESSOR DIRECTIVES
 //#define _CAPI_WSPROTOS_H_
-#include "wsprotos.h"
+// END OF PREPROCESSOR DIRECTIVES
 
-#pragma warning(disable : 4706)
 
+
+// SIM INCLUDES
+#include "CAPI.h"
+#include "CapiOpt.h"
+#include "CapiPriv.h"
+#include "WsProtos.h"
+// END OF SIM INCLUDES
+
+
+
+// GLOBAL VARIABLES
+signed int windows_sockets_connections = 0;
+HINSTANCE h_windows_sockets_DLL = 0;
+extern ComAPILastError;
+// END OF GLOBAL VARIABLES
+
+
+
+// FUNCTION DECLARATIONS
+static int CAPI_GetProcAddresses(HINSTANCE h_windows_sockets_DLL);
+
+WSFN_accept CAPI_accept = NULL;
+WSFN_bind CAPI_bind = NULL;
+WSFN_closesocket CAPI_closesocket = NULL;
+WSFN_connect CAPI_connect = NULL;
+WSFN_ioctlsocket CAPI_ioctlsocket = NULL;
+WSFN_getsockopt CAPI_getsockopt = NULL;
+WSFN_htonl CAPI_htonl = NULL;
+WSFN_htons CAPI_htons = NULL;
+WSFN_inet_addr CAPI_inet_addr = NULL;
+WSFN_inet_ntoa CAPI_inet_ntoa = NULL;
+WSFN_listen CAPI_listen = NULL;
+WSFN_ntohl CAPI_ntohl = NULL;
+WSFN_ntohs CAPI_ntohs = NULL;
+WSFN_recv CAPI_recv = NULL;
+WSFN_recvfrom CAPI_recvfrom = NULL;
+WSFN_select CAPI_select = NULL;
+WSFN_send CAPI_send = NULL;
+WSFN_sendto CAPI_sendto = NULL;
+WSFN_setsockopt CAPI_setsockopt = NULL;
+WSFN_shutdown CAPI_shutdown = NULL;
+WSFN_socket CAPI_socket = NULL;
+WSFN_gethostbyaddr CAPI_gethostbyaddr = NULL;
+WSFN_gethostbyname CAPI_gethostbyname = NULL;
+WSFN_gethostname CAPI_gethostname = NULL;
+WSFN_getsockname CAPI_getsockname = NULL;
+WSFN_WSAStartup CAPI_WSAStartup = NULL;
+WSFN_WSACleanup CAPI_WSACleanup = NULL;
+WSFN_WSASetLastError CAPI_WSASetLastError = NULL;
+WSFN_WSAGetLastError CAPI_WSAGetLastError = NULL;
+// END OF FUNCTION DECLARATIONS
+
+
+
+// FUNCTION DEFINITIONS
 /*++
 Routine Description:
-    Calls WSAStartup, makes sure we have a good version of WinSock2
+Calls WSAStartup, makes sure we have a good version of WinSock2
 
 Arguments:      None.
 
 Return Value:
 
-    TRUE - WinSock 2 DLL successfully started up
-    FALSE - Error starting up WinSock 2 DLL.
-
+TRUE - WinSock 2 DLL successfully started up
+FALSE - Error starting up WinSock 2 DLL.
 --*/
-/* Global reference count for open connections */
-
-int                              WS2Connections = 0;
-static int                       CAPI_GetProcAddresses(HINSTANCE hWinSockDLL);
-extern                           ComAPILastError;
-
-HINSTANCE                        hWinSockDLL = 0;
-
-
-/* WS function declarations */
-WSFN_accept                      CAPI_accept = NULL;
-WSFN_bind                        CAPI_bind = NULL;
-WSFN_closesocket                 CAPI_closesocket = NULL;
-WSFN_connect                     CAPI_connect = NULL;
-WSFN_ioctlsocket                 CAPI_ioctlsocket = NULL;
-WSFN_getsockopt                  CAPI_getsockopt = NULL;
-WSFN_htonl                       CAPI_htonl = NULL;
-WSFN_htons                       CAPI_htons = NULL;
-WSFN_inet_addr                   CAPI_inet_addr = NULL;
-WSFN_inet_ntoa                   CAPI_inet_ntoa = NULL;
-WSFN_listen                      CAPI_listen = NULL;
-WSFN_ntohl                       CAPI_ntohl = NULL;
-WSFN_ntohs                       CAPI_ntohs = NULL;
-WSFN_recv                        CAPI_recv = NULL;
-WSFN_recvfrom                    CAPI_recvfrom = NULL;
-WSFN_select                      CAPI_select = NULL;
-WSFN_send                        CAPI_send = NULL;
-WSFN_sendto                      CAPI_sendto = NULL;
-WSFN_setsockopt                  CAPI_setsockopt = NULL;
-WSFN_shutdown                    CAPI_shutdown = NULL;
-WSFN_socket                      CAPI_socket = NULL;
-WSFN_gethostbyaddr               CAPI_gethostbyaddr = NULL;
-WSFN_gethostbyname               CAPI_gethostbyname = NULL;
-WSFN_gethostname                 CAPI_gethostname = NULL;
-WSFN_getsockname                 CAPI_getsockname = NULL;
-WSFN_WSAStartup                  CAPI_WSAStartup = NULL;
-WSFN_WSACleanup                  CAPI_WSACleanup = NULL;
-WSFN_WSASetLastError             CAPI_WSASetLastError = NULL;
-WSFN_WSAGetLastError             CAPI_WSAGetLastError = NULL;
-
-int InitWS2(WSADATA *wsaData)
+int initialize_windows_sockets(WSADATA* windows_sockets_data)
 {
-    int wsaStatus;
-    int buflen;
-    HINSTANCE  hWinSockDLL = 0;
-    char  dllname[20];
-    int Major, Minor;
 
-    strcpy(dllname, "WSOCK32.DLL");
-    Major = 1;
-    Minor = 1;
+	const char DLL_NAME[] = "WSOCK32.DLL";
 
-    if (!WS2Connections) /* No successfull connection yet? */
+    if (!windows_sockets_connections) // No successful connection yet?
     {
-        buflen = SearchPath(NULL, dllname, NULL, 0, NULL, NULL);
+		TCHAR output_buffer[MAX_PATH];
+		DWORD buffer_length;
+		buffer_length = SearchPath(NULL, DLL_NAME, NULL, MAX_PATH,
+								   output_buffer, NULL);
 
-        if (buflen == 0)
+		buffer_length = 0; // my debug		
+		if (0 == buffer_length)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
-            return 0;
+			return EXIT_SUCCESS;
         }
 
+		HINSTANCE h_windows_sockets_DLL = 0;
 #ifdef LOAD_DLLS
-        hWinSockDLL = LoadLibrary(dllname);
+        h_windows_sockets_DLL = LoadLibrary(DLL_NAME);
 
-        if (hWinSockDLL == NULL)
+		if (NULL == h_windows_sockets_DLL)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
-            return 0;
+			return EXIT_SUCCESS;
         }
 
 #endif
 
-        if (!CAPI_GetProcAddresses(hWinSockDLL))
+        if (!CAPI_GetProcAddresses(h_windows_sockets_DLL))
         {
 #ifdef LOAD_DLLS
-            FreeLibrary(hWinSockDLL);
+            FreeLibrary(h_windows_sockets_DLL);
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
 #endif
-            return 0;
+			return EXIT_SUCCESS;
         }
 
 
-
-
-        if (wsaStatus = CAPI_WSAStartup(MAKEWORD(Major, Minor), wsaData))
+		int major_version = 1;
+		int minor_version = 1;
+		int windows_sockets_status;
+		windows_sockets_status = CAPI_WSAStartup(MAKEWORD(major_version, minor_version), windows_sockets_data);
+		if (windows_sockets_status)
         {
-            /*
-              MessageBox(GlobalFrameWindow,
-              "Could not find high enough version of WinSock",
-              "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-              */
-            return 0;
+            
+            MessageBox(NULL,
+                       "Could not find high enough version of WinSock",
+                       "Error", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+              
+			return EXIT_SUCCESS;
         }
         else
         {
-            /* Now confirm that the WinSock 2 DLL supports the exact version */
-            /* we want. If not, make sure to call WSACleanup(). */
-            if (LOBYTE(wsaData->wVersion) != Major ||
-                HIBYTE(wsaData->wVersion) != Minor)
+            // Now confirm that the WinSock 2 DLL supports the exact version
+            // we want. If not, make sure to call WSACleanup(). 
+            if (LOBYTE(windows_sockets_data->wVersion) != major_version ||
+                HIBYTE(windows_sockets_data->wVersion) != minor_version)
             {
-                /*
-                  MessageBox(GlobalFrameWindow,
-                  "Could not find the correct version of WinSock",
-                  "Error",  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
-                  */
+                
+                 MessageBox(NULL,
+                            "Could not find the correct version of WinSock",
+                            "Error",  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND);
+                  
                 CAPI_WSACleanup();
-                return 0;
+                return EXIT_SUCCESS;
             }
 
         }
     }
 
-    /* if we get here , either we just need to increment counter
-       or we execute the first successful WSAStartup */
+    // If we get here , either we just need to increment counter or we execute 
+    // the first successful WSAStartup.
 
-    WS2Connections++;
-
-
-    return 1;
+    windows_sockets_connections++;
+	
+	return EXIT_FAILURE;
 
 }
 
@@ -333,3 +351,4 @@ static int CAPI_GetProcAddresses(HINSTANCE hWinSockDLL)
     return 1;
 
 }
+// END OF FUNCTION DEFINITIONS

@@ -143,7 +143,6 @@ static struct UserFunctionListEntry UserFunctionList[] =
     USER_FUNCTION(OTWSelectSatelliteMode)
     USER_FUNCTION(OTWSelectFlybyMode)
     USER_FUNCTION(OTWSelectIncomingMode)
-    USER_FUNCTION(OTWShowVersion)
     USER_FUNCTION(OTWSelect2DCockpitMode)
     USER_FUNCTION(OTWSelect3DCockpitMode)
     USER_FUNCTION(OTWToggleBilinearFilter)
