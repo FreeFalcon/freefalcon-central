@@ -858,10 +858,6 @@ void InitDebug(int mode)
     int text_mode[] =
     {97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0};
 
-	//OSVERSIONINFO osInfo;
-	//osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
- //   GetVersionEx(&osInfo);
-
 #ifdef NDEBUG
     //   if (mode == DEBUGGER_TEXT_MODE)
     //      return;
@@ -874,102 +870,7 @@ void InitDebug(int mode)
 
 #endif
 
-    //   if (osInfo.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
-    //return;
-
-    if (graphicsMode != mode)
-    {
-        graphicsMode = mode;
-
-        // Set in graphics mode
-        if (graphicsMode == DEBUGGER_GRAPHICS_MODE)
-        {
-            screen_buffer[0] = new char[0x8000];
-            screen_buffer[1] = new char[0x8000];
-
-#ifndef DISABLE_MONO_DISPLAY
-            OUT_BYTE(CONFIG_REG, 0x3);
-
-            for (int i = 0; i < 16; i++)
-                OUT_WORD(ADDRESS_REG, (short)((graph_mode[i] << 8) + i));
-
-            OUT_BYTE(CONTROL_REG, 0xe);
-            memset((void *)MONO_TEXT, 0, 0x8000);
-            memset((void *)screen_buffer[0], 0, 0x8000);
-            memset((void *)screen_buffer[1], 0, 0x8000);
-#endif
-            ResetRotateDebug2D();
-            ResetTranslateDebug2D();
-            DebugClear();
-        }
-        else if (graphicsMode == DEBUGGER_TEXT_MODE)
-        {
-            InitializeCriticalSection(&mono_critical);
-
-#if defined _TEXT_TGT_CONSOLE
-
-            if (AllocConsole())
-            {
-                hStdoutDbg = GetStdHandle(STD_OUTPUT_HANDLE);
-
-                if (hStdoutDbg != INVALID_HANDLE_VALUE)
-                {
-                    /*
-                    SMALL_RECT rc = { 0, 0, 800, 600 };
-
-                    if(SetConsoleWindowInfo(hStdoutDbg, TRUE, &rc))
-                    {
-                    }
-                    */
-
-                    COORD coords = { 80, 25 };
-
-                    if (SetConsoleScreenBufferSize(hStdoutDbg, coords))
-                    {
-                        if (SetConsoleCP(10000))
-                        {
-                        }
-
-                        else OutputDebugString("InitDebug - Warning: SetConsoleOutputCP failed\n");
-                    }
-                }
-            }
-
-#elif defined _TEXT_TGT_TRACE
-#elif defined _TEXT_TGT_FILE
-            hFileDbg = CreateFile("dbg.dmp", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_FLAG_WRITE_THROUGH, NULL);
-
-            if (!hFileDbg) OutputDebugString("InitDebug - Warning: CreateFile failed\n");
-
-#else
-#ifndef DISABLE_MONO_DISPLAY
-            OUT_BYTE(CONFIG_REG, 0x0);
-
-            for (int i = 0; i < 16; i++)
-                OUT_WORD(ADDRESS_REG, (short)((text_mode[i] << 8) + i));
-
-            OUT_BYTE(CONTROL_REG, 0x8);
-            memset((void *)MONO_TEXT, 0, (160 * 25));
-#endif
-
-            unsigned long
-            id;
-
-            CreateThread
-            (
-                NULL,
-                0,
-                update_mono,
-                (void*)0x1,
-                0,
-                &id
-            );
-
-#endif
-
-            MonoCls();
-        }
-    }
+    return;
 }
 
 void WriteDebugPixel(int x, int y)

@@ -43,38 +43,10 @@ GetLoadedModules(DWORD     dwPID        ,
         return (0) ;
     }
 
-    // Figure out which OS we are on.
-    //OSVERSIONINFO stOSVI ;
-
-    //memset(&stOSVI , NULL , sizeof(OSVERSIONINFO)) ;
-    //stOSVI.dwOSVersionInfoSize = sizeof(OSVERSIONINFO) ;
-
-    //BOOL bRet = GetVersionEx(&stOSVI) ;
-    //ASSERT(TRUE == bRet) ;
-
-    //if (FALSE == bRet)
-    //{
-    //    TRACE0("GetVersionEx failed!\n") ;
-    //    return (FALSE) ;
-    //}
-
-    // Check the version and call the appropriate thing.
-    //if ((VER_PLATFORM_WIN32_NT == stOSVI.dwPlatformId) &&
-    //    (4 == stOSVI.dwMajorVersion))
-    //{
-    //    // This is NT 4 so call it's specific version.
-    //    return (NT4GetLoadedModules(dwPID        ,
-    //                                uiCount      ,
-    //                                paModArray   ,
-    //                                puiRealCount));
-    //}
-    //else
-    //{
-        // Everyone other OS goes through TOOLHELP32.
-        return (TLHELPGetLoadedModules(dwPID         ,
-                                       uiCount       ,
-                                       paModArray    ,
-                                       puiRealCount)) ;
-    //}
+    // TOOLHELP32.
+    return (TLHELPGetLoadedModules(dwPID,
+                                   uiCount,
+                                   paModArray,
+                                   puiRealCount));
 }
 

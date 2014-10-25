@@ -26,6 +26,7 @@ public:
 	
 	SubRange & operator=(const InputType InputValue)
 	{
+
 		if (InputValue >= InputMinimum &&
 			InputValue <= InputMaximum)
 		{
@@ -39,6 +40,7 @@ public:
 					   NULL, MB_OK + MB_ICONERROR + MB_TASKMODAL);
 			exit(EXIT_FAILURE);
 		};
+
 	}
 	
 	SubRange & operator+=(const InputType InputValue)
