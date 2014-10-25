@@ -450,7 +450,7 @@ int ComAPIInitComms(void)
 
     if (!WS2Connections)
     {
-        ret = InitWS2(&wsaData);
+        ret = initialize_windows_sockets(&wsaData);
         WS2Connections--;
 
         /* if No more connections then WSACleanup() */

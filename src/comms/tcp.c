@@ -145,8 +145,8 @@ ComAPIHandle ComTCPOpenListen(int buffersize, char *gamename, int tcpPort, void 
 
     gamename;
 
-    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
-    if (InitWS2(&wsaData) == 0)
+    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         return NULL;
     }
@@ -266,8 +266,8 @@ ComAPIHandle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsi
 
     gamename;
 
-    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
-    if (InitWS2(&wsaData) == 0)
+    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         return NULL;
     }
@@ -295,8 +295,8 @@ ComAPIHandle ComTCPOpenConnect(int buffersize, char *gamename, int tcpPort, unsi
     c = (ComTCP*)(GlobalListHead->com);
     memset(c, 0, sizeof(ComTCP));
 
-    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
-    if (InitWS2(&c->wsaData) == 0)
+    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
+    if (initialize_windows_sockets(&c->wsaData) == 0)
     {
         GlobalListHead = CAPIListRemove(GlobalListHead, (ComAPIHandle)c);
         leave_cs();
@@ -373,8 +373,8 @@ ComAPIHandle ComTCPOpenAccept(unsigned long IPaddress, int tcpPort, int timeouts
     CAPIList *listitem;
     WSADATA wsaData;
 
-    /* InitWS2 checks that WSASstartup is done only once and increments reference count*/
-    if (InitWS2(&wsaData) == 0)
+    /* initialize_windows_sockets checks that WSASstartup is done only once and increments reference count*/
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         return NULL;
     }

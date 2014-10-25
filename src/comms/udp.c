@@ -101,7 +101,7 @@ ComAPIHandle ComUDPOpen(
     unsigned long trueValue = 1;
     enter_cs();
 
-    if (InitWS2(&wsaData) == 0)
+    if (initialize_windows_sockets(&wsaData) == 0)
     {
         leave_cs();
         return 0;

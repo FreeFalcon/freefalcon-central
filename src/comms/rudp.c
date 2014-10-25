@@ -257,7 +257,7 @@ extern "C" {
         enter_cs();
 
         // init socket stuff
-        if (InitWS2(&wsaData) == 0)
+        if (initialize_windows_sockets(&wsaData) == 0)
         {
             leave_cs();
             return 0;

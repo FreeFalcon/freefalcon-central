@@ -1,12 +1,23 @@
-/* ws2init.c - Copyright (c) Fri Dec 06 22:43:16 1996,  Spectrum HoloByte, Inc.  All Rights Reserved */
-#include "capiopt.h"
-#include <winsock.h>
-#include <winbase.h>
-#include <stdio.h>
-#include "capi.h"
-#include "capipriv.h"
+// Initializes WinSock.
+
+
+// SYSTEM INCLUDES
+#include <WinSock.h>
+#include <WinBase.h>
+#include <StdIO.h>
+// END OF SYSTEM INCLUDES
+
+
+
+// SIM INCLUDES
+#include "CapiOpt.h"
+#include "CAPI.h"
+#include "CapiPriv.h"
 //#define _CAPI_WSPROTOS_H_
-#include "wsprotos.h"
+#include "WsProtos.h"
+// END OF SIM INCLUDES
+
+
 
 #pragma warning(disable : 4706)
 
@@ -24,7 +35,7 @@ Return Value:
 --*/
 /* Global reference count for open connections */
 
-int                              WS2Connections = 0;
+int WS2Connections = 0;
 static int                       CAPI_GetProcAddresses(HINSTANCE hWinSockDLL);
 extern                           ComAPILastError;
 
@@ -62,7 +73,7 @@ WSFN_WSACleanup                  CAPI_WSACleanup = NULL;
 WSFN_WSASetLastError             CAPI_WSASetLastError = NULL;
 WSFN_WSAGetLastError             CAPI_WSAGetLastError = NULL;
 
-int InitWS2(WSADATA *wsaData)
+int initialize_windows_sockets(WSADATA *wsaData)
 {
     int wsaStatus;
     int buflen;

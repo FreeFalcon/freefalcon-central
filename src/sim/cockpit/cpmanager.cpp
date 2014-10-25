@@ -59,7 +59,7 @@
 using namespace std;
 
 // argh globals
-extern bool g_bEnableCockpitVerifier;
+extern bool cockpit_verifier;
 extern bool g_bRealisticAvinoics;
 extern bool g_bStartIn3Dpit;  // Cobra
 extern bool g_bCockpitAutoScale; //Wombat778 10-24-2003
@@ -600,7 +600,7 @@ CockpitManager::CockpitManager(
 
     mpCockpitCritSec = F4CreateCriticalSection("mpCockpitCritSec");
 
-    if (g_bEnableCockpitVerifier)
+    if (cockpit_verifier)
     {
         if (mSurfaceTally != mNumSurfaces ||
             mObjectTally != mNumObjects ||
