@@ -146,6 +146,8 @@
       <OpenMPSupport>true</OpenMPSupport>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <OutputFile>../../../build/x86/release_win32/sim/missile/missile.lib</OutputFile>

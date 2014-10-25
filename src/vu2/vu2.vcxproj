@@ -151,6 +151,8 @@
       <OpenMPSupport>true</OpenMPSupport>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <UseFullPaths>true</UseFullPaths>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <OutputFile>../../build/x86/release_win32/vu2/vu2.lib</OutputFile>

@@ -560,7 +560,15 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, signed int nCmdShow)
 {
+
+// We want the SubRange template to run only under DEBUG.
+// Don't use #ifdef DEBUG because the DEBUG macro is defined in RELEASE too!!!
+#ifndef NDEBUG
 	SubRange<signed int, 0, 1> error_code;
+#else
+	signed int error_code;
+#endif // NDEBUG
+
 	error_code = EXIT_FAILURE;
 
 	// Set up structured exception handling here.
