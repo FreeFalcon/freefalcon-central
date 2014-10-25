@@ -117,7 +117,6 @@ bool intro_movie = true;
 bool g_bEnableCockpitVerifier = false;
 bool g_writeMissionTbl = false;
 bool g_writeSndTbl = false;
-BOOL VersionInfo = FALSE;
 CComModule _Module;
 char bottom_space[] = "                                                                               ";
 char FalconCockpitThrDirectory[_MAX_PATH]; // Theater switching stuff
@@ -179,7 +178,6 @@ int noUIcomms = FALSE;
 int NumHats = -1;
 int numZips = 0;
 int RepairObjective = FALSE;
-bool ShowVersion = false; // used to display version number in game (not part of version system)
 int SimPathHandle = -1;
 int wait_for_loaded = TRUE;
 int weatherCondition = SUNNY;
@@ -554,7 +552,7 @@ signed int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 
-// Main entry point.
+// Main entry point. Calls initialization functions, processes message loop.
 // However, some code is called by callback functions so use breakpoints
 // to debug properly!
 signed int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -623,14 +621,6 @@ LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         case WM_COMMAND:
             switch (LOWORD(wParam))
             {
-                case ID_SHOW_VERSION:
-					ShowVersion ? ShowVersion = false : ShowVersion = true;
-                    break;
-
-                case ID_SHOW_MAJOR_VERSION:
-					ShowVersion ? ShowVersion = false : ShowVersion = true;
-					break;
-
                 case ID_FILE_EXIT:
                     PostQuitMessage(0);
                     retval = 0;

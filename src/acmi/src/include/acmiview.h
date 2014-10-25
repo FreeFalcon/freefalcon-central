@@ -210,8 +210,6 @@ public:
 
     // Misc functions.
     void DrawIDTags();
-    void ShowVersionString();
-
 
     // Other random functions.
     void StopGraphicsLoop();

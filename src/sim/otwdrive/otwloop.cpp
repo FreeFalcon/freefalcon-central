@@ -160,7 +160,6 @@ extern bool g_bShowFlaps;
 
 void CallInputFunction(unsigned long val, int state);
 
-extern bool ShowVersion;
 extern int ShowFrameRate;
 extern SimBaseClass* eyeFlyTgt;
 extern int gTotSfx;
@@ -1267,9 +1266,6 @@ void OTWDriverClass::DisplayFrontText(void)
     //if (g_bShowFlaps) TJL 11/09/03 Show Flaps
     if (!showFlaps)
         ShowFlaps();
-
-    if (ShowVersion)
-        ShowVersionString();
 
     if (getNewCameraPos)
         GetUserPosition();

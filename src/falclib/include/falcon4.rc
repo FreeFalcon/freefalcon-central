@@ -1772,12 +1772,6 @@ END
 // Accelerator
 //
 
-IDR_FALCON4_ACC1 ACCELERATORS 
-BEGIN
-    "T",            ID_SHOW_VERSION,        VIRTKEY, CONTROL, ALT, NOINVERT
-    "V",            ID_SHOW_MAJOR_VERSION,  VIRTKEY, CONTROL, ALT, NOINVERT
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
