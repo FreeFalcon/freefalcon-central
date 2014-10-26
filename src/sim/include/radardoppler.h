@@ -1,6 +1,7 @@
 #ifndef _RADAR_MODEL_H
 #define _RADAR_MODEL_H
 
+#include <iso646.h>
 #include "radar.h"
 #include "Campwp.h"  // MD -- 20040214: added for GM SP mode pseudo waypoint
 #include "alist.h"
@@ -328,7 +329,7 @@ public:
     };
     void ToggleFlag(int flag)
     {
-        flags ^= flag;
+        flags xor_eq flag;
     };
 
     //MI
@@ -367,7 +368,7 @@ protected:
     };
     void ToggleAADclt(int flag)
     {
-        aadclt ^= flag;
+        aadclt xor_eq flag;
     };
 
     int IsAGDclt(int flg)
@@ -388,7 +389,7 @@ protected:
     };
     void ToggleAGDclt(int flag)
     {
-        agdclt ^= flag;
+        agdclt xor_eq flag;
     };
 
     void ChangeMode(int newMode);
@@ -492,7 +493,7 @@ protected :
     };
     void ToggleModeFlag(int flag)
     {
-        radarmodeflags ^= flag;
+        radarmodeflags xor_eq flag;
     };
     int IsModeFlag(int flag)
     {
@@ -516,7 +517,7 @@ protected :
     };
     void ToggleIFFFlags(int flag)
     {
-        iffmodeflags ^= flag;
+        iffmodeflags xor_eq flag;
     };
     int IsIFFFlags(int flag)
     {

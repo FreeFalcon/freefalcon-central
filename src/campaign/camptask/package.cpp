@@ -2,6 +2,7 @@
 // Package.cpp
 // ===================================================
 
+#include <iso646.h>
 #include <stdio.h>
 #include <time.h>
 #include "CmpGlobl.h"
@@ -703,7 +704,7 @@ int PackageClass::CheckNeedRequests(void)
         {
             // if we're still waiting on these, they arn't planned yet and probably won't be.
             wait_for |= AMIS_BARCAP | AMIS_SWEEP;
-            wait_for ^= AMIS_BARCAP | AMIS_SWEEP;
+            wait_for xor_eq AMIS_BARCAP | AMIS_SWEEP;
         }
 
         if ((package_flags & AMIS_ADDBDA) && (mis_request.priority > MINIMUM_BDA_PRIORITY))
@@ -1572,7 +1573,7 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
         case AMIS_BARCAP:
         case AMIS_SWEEP:
             wait_for |= AMIS_BARCAP | AMIS_SWEEP;
-            wait_for ^= AMIS_BARCAP | AMIS_SWEEP;
+            wait_for xor_eq AMIS_BARCAP | AMIS_SWEEP;
             responses |= PRESPONSE_CA;
             interceptor = triggered_flight;
             enemy = FindUnit(triggered_flight);

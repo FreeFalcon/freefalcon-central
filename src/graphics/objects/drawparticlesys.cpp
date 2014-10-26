@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <math.h>
 #include "profiler.h"
 #include "Graphics/Include/Drawbsp.h"
@@ -4573,7 +4574,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
                 if (DebugTrail)
                 {
-                    Flip ^= true;
+                    Flip xor_eq true;
                     Color.r = 255.0f;
                     Color.g = Flip ? 0.0f : 255.0f;
                     Color.b = Flip ? 0.0f : 255.0f;
@@ -4715,7 +4716,7 @@ void DrawableParticleSys::PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &O
 
                     if (DebugTrail)
                     {
-                        Flip ^= true;
+                        Flip xor_eq true;
                         ColorNew.r = Flip ? 0.0f : 255.0f;
                         ColorNew.g = 255.0f;
                         ColorNew.b = Flip ? 0.0f : 255.0f;

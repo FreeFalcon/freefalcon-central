@@ -1422,7 +1422,7 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
                 Sms->hardPoint[5]->GetWeaponClass() != wcCamera)
             {
                 StepSelectiveJettisonMode(5);
-                //          hardPointSelected ^= (1 << 5);
+                //          hardPointSelected xor_eq (1 << 5);
                 // sjHardPointSelected = hardPointSelected;
             }
 
@@ -1430,19 +1430,19 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
 
         case 6:
             StepSelectiveJettisonMode(6);
-            // hardPointSelected ^= (1 << 6);
+            // hardPointSelected xor_eq (1 << 6);
             // sjHardPointSelected = hardPointSelected;
             break;
 
         case 7:
             StepSelectiveJettisonMode(7);
-            // hardPointSelected ^= (1 << 7);
+            // hardPointSelected xor_eq (1 << 7);
             // sjHardPointSelected = hardPointSelected;
             break;
 
         case 8:
             StepSelectiveJettisonMode(8);
-            // hardPointSelected ^= (1 << 8);
+            // hardPointSelected xor_eq (1 << 8);
             // sjHardPointSelected = hardPointSelected;
             break;
 
@@ -1500,19 +1500,19 @@ void SmsDrawable::SJPushButton(int whichButton, int whichMFD)
 
         case 16:
             StepSelectiveJettisonMode(2);
-            //     hardPointSelected ^= (1 << 2);
+            //     hardPointSelected xor_eq (1 << 2);
             // sjHardPointSelected = hardPointSelected;
             break;
 
         case 17:
             StepSelectiveJettisonMode(3);
-            //     hardPointSelected ^= (1 << 3);
+            //     hardPointSelected xor_eq (1 << 3);
             // sjHardPointSelected = hardPointSelected;
             break;
 
         case 18:
             StepSelectiveJettisonMode(4);
-            //     hardPointSelected ^= (1 << 4);
+            //     hardPointSelected xor_eq (1 << 4);
             // sjHardPointSelected = hardPointSelected;
             break;
 

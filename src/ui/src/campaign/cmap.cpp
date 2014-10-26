@@ -5,6 +5,7 @@
 
     This code handles drawing the Campaign Map with/without units (user selectable)
 \***************************************************************************/
+#include <iso646.h>
 #include <windows.h>
 #include "unit.h"
 #include "team.h"
@@ -3020,7 +3021,7 @@ void C_Map::DrawMap()
                 Map_->Refresh();
             }
 
-            flags_ ^= I_NEED_TO_DRAW_MAP;
+            flags_ xor_eq I_NEED_TO_DRAW_MAP;
         }
 
         if (BullsEye_)
@@ -3082,6 +3083,6 @@ void C_Map::DrawMap()
         if (CurWP_)
             CurWP_->Refresh();
 
-        flags_ ^= I_NEED_TO_DRAW;
+        flags_ xor_eq I_NEED_TO_DRAW;
     }
 }

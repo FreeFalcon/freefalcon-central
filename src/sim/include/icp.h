@@ -1,6 +1,7 @@
 #ifndef _ICP_H
 #define _ICP_H
 
+#include <iso646.h>
 #ifndef _WINDOWS_
 #include <windows.h>
 #endif
@@ -545,7 +546,7 @@ public:
     };
     void ToggleIFFFlag(int Flag)
     {
-        IFFModes ^= Flag;
+        IFFModes xor_eq Flag;
     };
     void FillIFFString(char *string);
 

@@ -168,6 +168,7 @@
  */
 
 
+#include <iso646.h>
 #define PKZIP_BUG_WORKAROUND    /* PKZIP 1.93a problem--live with it */
 
 #define INFMOD                  /* tell inflate.h to include code to be compiled */
@@ -630,9 +631,9 @@ int huft_build(unsigned * b, unsigned n, unsigned s, ush * d, ush * e, struct hu
 
             /* backwards increment the k-bit code i */
             for (j = 1 << (k - 1); i & j; j >>= 1)
-                i ^= j;
+                i xor_eq j;
 
-            i ^= j;
+            i xor_eq j;
 
             /* backup over finished tables */
             while ((i & ((1 << w) - 1)) != x[h])

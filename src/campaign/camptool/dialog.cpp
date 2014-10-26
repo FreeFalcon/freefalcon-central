@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>    // includes basic windows functionality
 #include <commdlg.h>    // includes common dialog functionality
 #include <commctrl.h>
@@ -1188,7 +1189,7 @@ BOOL WINAPI EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     j = i - IDC_TEAM_SAT1 + 1;
 
                     if (TeamInfo[j]->HasSatelites())
-                        TeamInfo[j]->flags ^= TEAM_HASSATS;
+                        TeamInfo[j]->flags xor_eq TEAM_HASSATS;
                     else
                         TeamInfo[j]->flags |= TEAM_HASSATS;
 

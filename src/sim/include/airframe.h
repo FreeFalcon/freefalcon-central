@@ -1,6 +1,7 @@
 #ifndef _SIXDOF_H
 #define _SIXDOF_H
 
+#include <iso646.h>
 #include "mathlib/math.h"
 #include "mathlib/vector.h"
 #include "mathlib/matrix.h"
@@ -1459,7 +1460,7 @@ public:
     };
     void ToggleEngineFlag(EngineFlags ef)
     {
-        engineFlags ^= ef;
+        engineFlags xor_eq ef;
     };
     enum FuelSwitch
     {

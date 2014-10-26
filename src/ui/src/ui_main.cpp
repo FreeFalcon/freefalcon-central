@@ -6,6 +6,7 @@
 
  Main UI screen stuff for FreeFalcon
 \***************************************************************************/
+#include <iso646.h>
 #include <windows.h>
 #include "falclib.h"
 
@@ -572,8 +573,8 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
 
     for (i = 0; i < length; i++)
     {
-        *ptr ^= _cryptKey[(idx++) % xrlen];
-        *ptr ^= startkey;
+        *ptr xor_eq _cryptKey[(idx++) % xrlen];
+        *ptr xor_eq startkey;
         nextkey = *ptr++;
         startkey = nextkey;
     }
@@ -597,8 +598,8 @@ void Decrypt(uchar startkey, uchar *buffer, long length)
     for (i = 0; i < length; i++)
     {
         nextkey = *ptr;
-        *ptr ^= startkey;
-        *ptr++ ^= _cryptKey[(idx++) % xrlen];
+        *ptr xor_eq startkey;
+        *ptr++ xor_eq _cryptKey[(idx++) % xrlen];
         startkey = nextkey;
     }
 }

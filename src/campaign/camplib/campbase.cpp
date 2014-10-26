@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <stddef.h>
 #include <fcntl.h>
 #include <io.h>
@@ -596,7 +597,7 @@ void CampBaseClass::SetAggregate(bool agg)
 {
  local_flags |= CBC_AGGREGATE;
  if (!a)
- local_flags ^= CBC_AGGREGATE;
+ local_flags xor_eq CBC_AGGREGATE;
 }
 */
 void CampBaseClass::SetJammed(int j)
@@ -647,14 +648,14 @@ void CampBaseClass::SetTacan(int t)
     local_flags |= CBC_HAS_TACAN;
 
     if (!t)
-        local_flags ^= CBC_HAS_TACAN;
+        local_flags xor_eq CBC_HAS_TACAN;
 }
 /*
    void CampBaseClass::SetChecked (int t)
    {
    local_flags |= CBC_CHECKED;
    if (!t)
-   local_flags ^= CBC_CHECKED;
+   local_flags xor_eq CBC_CHECKED;
    }
  */
 void CampBaseClass::SetAwake(int d)
@@ -663,7 +664,7 @@ void CampBaseClass::SetAwake(int d)
 
     if (!d)
     {
-        local_flags ^= CBC_AWAKE;
+        local_flags xor_eq CBC_AWAKE;
     }
 }
 
@@ -673,7 +674,7 @@ void CampBaseClass::SetInPackage(int p)
 
     if (!p)
     {
-        local_flags ^= CBC_IN_PACKAGE;
+        local_flags xor_eq CBC_IN_PACKAGE;
     }
 }
 
@@ -682,7 +683,7 @@ void CampBaseClass::SetDelta(int d)
     local_flags |= CBC_HAS_DELTA;
 
     if (!d)
-        local_flags ^= CBC_HAS_DELTA;
+        local_flags xor_eq CBC_HAS_DELTA;
 }
 
 void CampBaseClass::SetInSimLists(int l)
@@ -690,7 +691,7 @@ void CampBaseClass::SetInSimLists(int l)
     local_flags |= CBC_IN_SIM_LIST;
 
     if (!l)
-        local_flags ^= CBC_IN_SIM_LIST;
+        local_flags xor_eq CBC_IN_SIM_LIST;
 }
 
 void CampBaseClass::SetReserved(int r)
@@ -698,7 +699,7 @@ void CampBaseClass::SetReserved(int r)
     local_flags |= CBC_RESERVED_ONLY;
 
     if (!r)
-        local_flags ^= CBC_RESERVED_ONLY;
+        local_flags xor_eq CBC_RESERVED_ONLY;
 }
 
 int CampBaseClass::ReSpot()

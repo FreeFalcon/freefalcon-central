@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>
 
 // Test Headers
@@ -136,7 +137,7 @@ long DecompressRLE8Bit(uchar *Src, uchar *Dest, long Size)
 
         if (count & 0x80)
         {
-            count ^= 0xff;
+            count xor_eq 0xff;
             OutSize += count;
 
             while (count)
@@ -291,7 +292,7 @@ long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
 
         if (count & 0x8000)
         {
-            count ^= 0xFFFF;
+            count xor_eq 0xFFFF;
             OutSize += count * sizeof(WORD);
 
             while (count)

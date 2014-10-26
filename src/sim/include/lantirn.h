@@ -1,6 +1,7 @@
 #ifndef LANTIRN_H
 #define LANTIRN_H
 
+#include <iso646.h>
 #include "drawable.h"
 
 struct Tpoint;
@@ -28,7 +29,7 @@ public:
     };
     void ToggleHonC()
     {
-        m_flags ^= CONH;
+        m_flags xor_eq CONH;
     };
     void ToggleFLIR();
     void SetFovScale(float fscale)

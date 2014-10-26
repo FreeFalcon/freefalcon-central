@@ -163,7 +163,7 @@ void ACMIView::ToggleLockLines(int val)
 }
 void ACMIView::ToggleScreenShot()
 {
-    _takeScreenShot ^= 1;
+    _takeScreenShot xor_eq 1;
     _tape->SetScreenCapturing(_takeScreenShot);
 };
 

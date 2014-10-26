@@ -5,6 +5,7 @@
 
     This code contains a bunch of generic routines
 \***************************************************************************/
+#include <iso646.h>
 #include <windows.h>
 #include "f4version.h"
 #include <ddraw.h>
@@ -2777,8 +2778,8 @@ void EncryptBuffer(uchar startkey, uchar *buffer, long length)
 
     for (i = 0; i < length; i++)
     {
-        *ptr ^= MasterXOR[(idx++) % xrlen];
-        *ptr ^= startkey;
+        *ptr xor_eq MasterXOR[(idx++) % xrlen];
+        *ptr xor_eq startkey;
         nextkey = *ptr++;
         startkey = nextkey;
     }
@@ -2801,8 +2802,8 @@ void DecryptBuffer(uchar startkey, uchar *buffer, long length)
     for (i = 0; i < length; i++)
     {
         nextkey = *ptr;
-        *ptr ^= startkey;
-        *ptr++ ^= MasterXOR[(idx++) % xrlen];
+        *ptr xor_eq startkey;
+        *ptr++ xor_eq MasterXOR[(idx++) % xrlen];
         startkey = nextkey;
     }
 }

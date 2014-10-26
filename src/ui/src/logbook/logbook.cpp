@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include "SIM/INCLUDE/stdhdr.h"
 #include <tchar.h>
 #include <time.h>
@@ -362,8 +363,8 @@ void LogBookData::Encrypt(void)
 
     for (i = 0; i < sizeof(LB_PILOT); i++)
     {
-        *ptr ^= XorMask[i % strlen(XorMask)];
-        *ptr ^= YorMask[i % strlen(YorMask)];
+        *ptr xor_eq XorMask[i % strlen(XorMask)];
+        *ptr xor_eq YorMask[i % strlen(YorMask)];
         ptr++;
     }
 
@@ -382,8 +383,8 @@ void LogBookData::EncryptPwd(void)
 
     for (i = 0; i < PASSWORD_LEN; i++)
     {
-        *ptr ^= PwdMask[i % strlen(PwdMask)];
-        *ptr ^= PwdMask2[i % strlen(PwdMask2)];
+        *ptr xor_eq PwdMask[i % strlen(PwdMask)];
+        *ptr xor_eq PwdMask2[i % strlen(PwdMask2)];
         ptr++;
     }
 }

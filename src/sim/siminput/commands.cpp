@@ -238,7 +238,7 @@ void ToggleSmoke(unsigned long, int state, void*)
     if (SimDriver.GetPlayerAircraft() && SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) && (state & KEY_DOWN))
     {
         // toggle our current smoke state
-        gDoOwnshipSmoke ^= 1;
+        gDoOwnshipSmoke xor_eq 1;
 
         // edg: I'm not sure if there's a better message to handle this,
         // but I'm using track message

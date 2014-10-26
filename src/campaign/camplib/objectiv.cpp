@@ -2165,7 +2165,7 @@ void ObjectiveClass::SetManual(int s)
     obj_data.obj_flags |= O_MANUAL_SET;
 
     if (!s)
-        obj_data.obj_flags ^= O_MANUAL_SET;
+        obj_data.obj_flags xor_eq O_MANUAL_SET;
 }
 
 void ObjectiveClass::SetJammed(int j)
@@ -2173,7 +2173,7 @@ void ObjectiveClass::SetJammed(int j)
     obj_data.obj_flags |= O_JAMMED;
 
     if (!j)
-        obj_data.obj_flags ^= O_JAMMED;
+        obj_data.obj_flags xor_eq O_JAMMED;
 }
 
 void ObjectiveClass::SetSamSite(int s)
@@ -2181,7 +2181,7 @@ void ObjectiveClass::SetSamSite(int s)
     obj_data.obj_flags |= O_SAM_SITE;
 
     if (!s)
-        obj_data.obj_flags ^= O_SAM_SITE;
+        obj_data.obj_flags xor_eq O_SAM_SITE;
 }
 
 void ObjectiveClass::SetArtillerySite(int a)
@@ -2189,7 +2189,7 @@ void ObjectiveClass::SetArtillerySite(int a)
     obj_data.obj_flags |= O_ARTILLERY_SITE;
 
     if (!a)
-        obj_data.obj_flags ^= O_ARTILLERY_SITE;
+        obj_data.obj_flags xor_eq O_ARTILLERY_SITE;
 }
 
 void ObjectiveClass::SetAmbushCAPSite(int a)
@@ -2197,7 +2197,7 @@ void ObjectiveClass::SetAmbushCAPSite(int a)
     obj_data.obj_flags |= O_AMBUSHCAP_SITE;
 
     if (!a)
-        obj_data.obj_flags ^= O_AMBUSHCAP_SITE;
+        obj_data.obj_flags xor_eq O_AMBUSHCAP_SITE;
 }
 
 void ObjectiveClass::SetBorderSite(int a)
@@ -2205,7 +2205,7 @@ void ObjectiveClass::SetBorderSite(int a)
     obj_data.obj_flags |= O_BORDER_SITE;
 
     if (!a)
-        obj_data.obj_flags ^= O_BORDER_SITE;
+        obj_data.obj_flags xor_eq O_BORDER_SITE;
 }
 
 void ObjectiveClass::SetMountainSite(int a)
@@ -2213,7 +2213,7 @@ void ObjectiveClass::SetMountainSite(int a)
     obj_data.obj_flags |= O_MOUNTAIN_SITE;
 
     if (!a)
-        obj_data.obj_flags ^= O_MOUNTAIN_SITE;
+        obj_data.obj_flags xor_eq O_MOUNTAIN_SITE;
 }
 
 void ObjectiveClass::SetCommandoSite(int c)
@@ -2221,7 +2221,7 @@ void ObjectiveClass::SetCommandoSite(int c)
     obj_data.obj_flags |= O_COMMANDO_SITE;
 
     if (!c)
-        obj_data.obj_flags ^= O_COMMANDO_SITE;
+        obj_data.obj_flags xor_eq O_COMMANDO_SITE;
 }
 
 void ObjectiveClass::SetFlatSite(int a)
@@ -2229,7 +2229,7 @@ void ObjectiveClass::SetFlatSite(int a)
     obj_data.obj_flags |= O_FLAT_SITE;
 
     if (!a)
-        obj_data.obj_flags ^= O_FLAT_SITE;
+        obj_data.obj_flags xor_eq O_FLAT_SITE;
 }
 
 void ObjectiveClass::SetRadarSite(int r)
@@ -2237,7 +2237,7 @@ void ObjectiveClass::SetRadarSite(int r)
     obj_data.obj_flags |= O_RADAR_SITE;
 
     if (!r)
-        obj_data.obj_flags ^= O_RADAR_SITE;
+        obj_data.obj_flags xor_eq O_RADAR_SITE;
 }
 
 void ObjectiveClass::SetAbandoned(int a)
@@ -2245,7 +2245,7 @@ void ObjectiveClass::SetAbandoned(int a)
     obj_data.obj_flags |= O_ABANDONED;
 
     if (!a)
-        obj_data.obj_flags ^= O_ABANDONED;
+        obj_data.obj_flags xor_eq O_ABANDONED;
 }
 
 void ObjectiveClass::SetNeedRepair(int r)
@@ -2253,7 +2253,7 @@ void ObjectiveClass::SetNeedRepair(int r)
     obj_data.obj_flags |= O_NEED_REPAIR;
 
     if (!r)
-        obj_data.obj_flags ^= O_NEED_REPAIR;
+        obj_data.obj_flags xor_eq O_NEED_REPAIR;
 }
 
 // This will add the objectives into the emitter and sam lists

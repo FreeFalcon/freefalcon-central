@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>
 #include "fsound.h"
 #include <mmreg.h>
@@ -458,7 +459,7 @@ void C_Music::QNext(SOUNDSTREAM *Stream)
                 Stream->Status |= SND_STREAM_CONTINUE | SND_STREAM_LOOP;
 
                 if (!(snd->flags & SOUND_LOOP))
-                    Stream->Status ^= SND_STREAM_LOOP;
+                    Stream->Status xor_eq SND_STREAM_LOOP;
 
                 Stream->LoopOffset = snd->LoopPoint;
                 Stream->LoopCount = snd->Count;

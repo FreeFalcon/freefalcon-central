@@ -812,7 +812,7 @@ void ExtendedKeyInput(unsigned long key, int)
             break;
 
         case DIK_INSERT:
-            insertMode ^= 1;
+            insertMode xor_eq 1;
             break;
 
         case DIK_NUMPAD1:

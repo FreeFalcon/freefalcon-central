@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>
 #include <process.h>
 #include "dispcfg.h"
@@ -2846,7 +2847,7 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
             if (GetKeyState(VK_CAPITAL) & 0x01)
                 if ((Key >= DIK_Q && Key <= DIK_P) || (Key >= DIK_A && Key <= DIK_L) || (Key >= DIK_Z && Key <= DIK_M))
-                    ShiftStates ^= _SHIFT_DOWN_;
+                    ShiftStates xor_eq _SHIFT_DOWN_;
 
             if (GetKeyState(VK_NUMLOCK) & 0x01)
                 if ((Key >= DIK_NUMPAD7 && Key <= DIK_NUMPAD9) || (Key >= DIK_NUMPAD4 && Key <= DIK_NUMPAD6) || (Key >= DIK_NUMPAD1 && Key <= DIK_DECIMAL))

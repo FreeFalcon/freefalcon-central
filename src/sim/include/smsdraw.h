@@ -49,7 +49,7 @@ public:
     };
     void ToggleFlag(SmsDrawFlags fl)
     {
-        flags ^= fl;
+        flags xor_eq fl;
     };
     int IsDisplayed(void)
     {

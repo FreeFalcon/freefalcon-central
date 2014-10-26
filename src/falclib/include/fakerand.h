@@ -106,6 +106,7 @@ inline int PRANDInt6(void)
 // COBRA - RED - The Real Superfast Random Function is this one
 inline long GenerateFastRandom(void)
 {
+#undef xor
     static long LastRandom;
     long FastRandom; // The Random Variable
     _asm
@@ -122,6 +123,7 @@ inline long GenerateFastRandom(void)
         pop edx
     }
     return(FastRandom);
+#define xor ^
 }
 
 

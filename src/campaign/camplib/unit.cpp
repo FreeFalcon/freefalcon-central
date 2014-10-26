@@ -2760,7 +2760,7 @@ void UnitClass::SetScripted(int p)
 
     if (!p)
     {
-        unit_flags ^= U_SCRIPTED;
+        unit_flags xor_eq U_SCRIPTED;
     }
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
@@ -2772,7 +2772,7 @@ void UnitClass::SetCommando(int c)
 
     if (!c)
     {
-        unit_flags ^= U_COMMANDO;
+        unit_flags xor_eq U_COMMANDO;
     }
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
@@ -2803,7 +2803,7 @@ void UnitClass::SetRefused(int r)
     unit_flags |= U_REFUSED;
 
     if (!r)
-        unit_flags ^= U_REFUSED;
+        unit_flags xor_eq U_REFUSED;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -2842,7 +2842,7 @@ void UnitClass::SetCargo(int c)
     {
         if (unit_flags & U_CARGO)
         {
-            unit_flags ^= U_CARGO;
+            unit_flags xor_eq U_CARGO;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2934,7 +2934,7 @@ void UnitClass::SetBroken(int p)
     {
         if (unit_flags & U_BROKEN)
         {
-            unit_flags ^= U_BROKEN;
+            unit_flags xor_eq U_BROKEN;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2954,7 +2954,7 @@ void UnitClass::SetAborted(int p)
     {
         if (unit_flags & U_BROKEN)
         {
-            unit_flags ^= U_BROKEN;
+            unit_flags xor_eq U_BROKEN;
             MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_SOON);
         }
     }
@@ -2965,7 +2965,7 @@ void UnitClass::SetLosses(int p)
     unit_flags |= U_LOSSES;
 
     if (!p)
-        unit_flags ^= U_LOSSES;
+        unit_flags xor_eq U_LOSSES;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -3038,7 +3038,7 @@ void UnitClass::SetTargeted(int p)
     unit_flags |= U_TARGETED;
 
     if (!p)
-        unit_flags ^= U_TARGETED;
+        unit_flags xor_eq U_TARGETED;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -3090,7 +3090,7 @@ void UnitClass::SetSupported(int s)
     unit_flags |= U_SUPPORTED;
 
     if (!s)
-        unit_flags ^= U_SUPPORTED;
+        unit_flags xor_eq U_SUPPORTED;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -3100,7 +3100,7 @@ void UnitClass::SetTempDest(int t)
     unit_flags |= U_TEMP_DEST;
 
     if (!t)
-        unit_flags ^= U_TEMP_DEST;
+        unit_flags xor_eq U_TEMP_DEST;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -3115,7 +3115,7 @@ void UnitClass::SetFinal(int p)
     }
     else if (!p && (unit_flags & U_FINAL))
     {
-        unit_flags ^= U_FINAL;
+        unit_flags xor_eq U_FINAL;
         //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[65].priority);
         MakeUnitDirty(DIRTY_UNIT_FLAGS, SEND_NOW);
     }
@@ -3214,7 +3214,7 @@ void UnitClass::SetIAKill(int i)
     unit_flags |= U_IA_KILL;
 
     if (!i)
-        unit_flags ^= U_IA_KILL;
+        unit_flags xor_eq U_IA_KILL;
 
     // MakeUnitDirty (DIRTY_UNIT_FLAGS, SEND_SOON);
 }
@@ -3225,7 +3225,7 @@ void UnitClass::SetNoAbort(int i)
 
     if (!i)
     {
-        unit_flags ^= U_NO_ABORT;
+        unit_flags xor_eq U_NO_ABORT;
     }
 
     //MakeUnitDirty (DIRTY_UNIT_FLAGS, DDP[74].priority);

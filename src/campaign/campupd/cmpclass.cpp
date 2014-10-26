@@ -1914,7 +1914,7 @@ void CampaignClass::Resume(void)
         return;
     }
 
-    Flags ^= CAMP_SUSPENDED;
+    Flags xor_eq CAMP_SUSPENDED;
 }
 
 void CampaignClass::SetOnlineStatus(int online)

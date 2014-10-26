@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>
 #include "chandler.h"
 
@@ -574,7 +575,7 @@ BOOL C_PopupList::Process(long ID, short HitType)
                 break;
 
             case C_TYPE_TOGGLE:
-                cur->State_ ^= 1;
+                cur->State_ xor_eq 1;
                 Refresh();
                 break;
 

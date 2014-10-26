@@ -336,32 +336,34 @@ typedef union
 
 inline DWORD XMM_ARGB(XMMColor *Source)
 {
-    DWORD r;
-    _asm
-    {
-        push eax
-        push edx
-        mov edx, DWORD PTR Source
-        fld [edx]
-        fistp r
-        mov eax, r
-        sal eax, 8
-        fld [edx+4]
-        fistp r
-        or eax, r
-        sal eax, 8
-        fld [edx+8]
-        fistp r
-        or eax, r
-        sal eax, 8
-        fld [edx+16]
-        fistp r
-        or eax, r
-        mov r, eax
-        pop edx
-        pop eax
-    }
-    return r;
+#undef or
+	DWORD r;
+	_asm
+	{
+		push eax
+			push edx
+			mov edx, DWORD PTR Source
+			fld[edx]
+			fistp r
+			mov eax, r
+			sal eax, 8
+			fld[edx + 4]
+			fistp r
+			or eax, r
+			sal eax, 8
+			fld[edx + 8]
+			fistp r
+			or eax, r
+			sal eax, 8
+			fld[edx + 16]
+			fistp r
+			or eax, r
+			mov r, eax
+			pop edx
+			pop eax
+	}
+	return r;
+#define or ||
 }
 
 

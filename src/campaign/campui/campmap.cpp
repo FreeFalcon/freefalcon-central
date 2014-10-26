@@ -2,6 +2,7 @@
 // Map.cpp deals with the various modes of coloring the small theater map
 //
 
+#include <iso646.h>
 #include <stdio.h>
 #include <tchar.h>
 #include "CmpGlobl.h"
@@ -445,7 +446,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 
             if (ld >= d && c < 3 && e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
             {
-                map_data[i] ^= (c << li);
+                map_data[i] xor_eq (c << li);
                 map_data[i] |= ((c + 1) << li);
             }
 
@@ -453,7 +454,7 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 
             if (hd >= d && c < 3 && e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
             {
-                map_data[i] ^= (c << hi);
+                map_data[i] xor_eq (c << hi);
                 map_data[i] |= ((c + 1) << hi);
             }
         }
@@ -533,7 +534,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 
             if (ld[oct] >= d && c < 3)
             {
-                map_data[i] ^= (c << li);
+                map_data[i] xor_eq (c << li);
                 map_data[i] |= ((c + 1) << li);
             }
 
@@ -541,7 +542,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 
             if (hd >= d && c < 3)
             {
-                map_data[i] ^= (c << hi);
+                map_data[i] xor_eq (c << hi);
                 map_data[i] |= ((c + 1) << hi);
             }
         }

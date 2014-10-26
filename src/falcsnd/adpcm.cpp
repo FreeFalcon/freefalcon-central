@@ -5,6 +5,7 @@
 
 *************************************************************************/
 
+#include <iso646.h>
 #include <windows.h>
 #include "debuggr.h"
 #include "fsound.h"
@@ -61,7 +62,7 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
                 bytestoread = min(Stream->ImaInfo->slen - Stream->ImaInfo->sreadidx, (Stream->ImaInfo->srcsize >> 1));
                 ReadFile(Stream->fp, &Stream->ImaInfo->src[Stream->ImaInfo->sreadidx % Stream->ImaInfo->srcsize], bytestoread, &bytesread, NULL);
                 Stream->ImaInfo->sreadidx += bytesread;
-                Stream->ImaInfo->Status ^= SND_STREAM_PART2;
+                Stream->ImaInfo->Status xor_eq SND_STREAM_PART2;
             }
         }
         else
@@ -71,7 +72,7 @@ long CSoundMgr::StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen)
                 bytestoread = min(Stream->ImaInfo->slen - Stream->ImaInfo->sreadidx, (Stream->ImaInfo->srcsize >> 1));
                 ReadFile(Stream->fp, &Stream->ImaInfo->src[Stream->ImaInfo->sreadidx % Stream->ImaInfo->srcsize], bytestoread, &bytesread, NULL);
                 Stream->ImaInfo->sreadidx += bytesread;
-                Stream->ImaInfo->Status ^= SND_STREAM_PART2;
+                Stream->ImaInfo->Status xor_eq SND_STREAM_PART2;
             }
         }
     }

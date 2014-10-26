@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include "../include/polylib.h"
 #include "../../include/ComSup.h"
 #include "DXdefines.h"
@@ -64,7 +65,7 @@ VOID CDXVbManager::Encrypt(DWORD *Buffer)
     // Encrypt data
     while (Size)
     {
-        *Buffer ^= (Key * Size);
+        *Buffer xor_eq (Key * Size);
         Buffer++;
         Size--;
     }
@@ -92,7 +93,7 @@ VOID CDXVbManager::Decrypt(DWORD *Buffer)
     // Decrypt data
     while (Size)
     {
-        *Buffer ^= (Key * Size);
+        *Buffer xor_eq (Key * Size);
         Buffer++;
         Size--;
     }

@@ -1321,7 +1321,7 @@ int AircraftClass::Exec(void)
             TotalTurbulence.z *= PRANDFloat() * 0.01f;
         }
 
-        EvenFrame ^= 1;
+        EvenFrame xor_eq 1;
     }
 
     SoundPos.UpdatePos(this);

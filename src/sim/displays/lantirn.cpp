@@ -162,7 +162,7 @@ void LantirnClass::ToggleFLIR()
         display = NULL;
     }
 
-    m_flags ^= FLIR_ON;
+    m_flags xor_eq FLIR_ON;
 }
 
 void LantirnClass::StepTFRRide()

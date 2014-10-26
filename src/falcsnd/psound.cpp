@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <windows.h>
 #include <mmreg.h>
 #include <process.h>
@@ -2624,7 +2625,7 @@ DWORD CSoundMgr::ReadStream(SoundStream *Stream, DWORD Buffer, DWORD Length)
                             if (Stream->Status & SND_STREAM_CONTINUE) // Set in callback to pass another stream
                             {
                                 // Kludge code used to string multiple files together
-                                Stream->Status ^= SND_STREAM_CONTINUE;
+                                Stream->Status xor_eq SND_STREAM_CONTINUE;
                                 RestartStream(Stream);
 
                                 if (Stream->Status & SND_IS_IMAADPCM)
@@ -3390,7 +3391,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
                 }
             }
 
-            Stream->Status ^= SND_STREAM_PART2;
+            Stream->Status xor_eq SND_STREAM_PART2;
         }
     }
     else
@@ -3413,7 +3414,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
                 }
             }
 
-            Stream->Status ^= SND_STREAM_PART2;
+            Stream->Status xor_eq SND_STREAM_PART2;
         }
     }
 
@@ -3436,7 +3437,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->Direction <= -10000)
         {
             Stream->Direction = -10000;
-            Stream->Status ^= SND_STREAM_PAN_LT;
+            Stream->Status xor_eq SND_STREAM_PAN_LT;
 
             if (Stream->Status & SND_STREAM_PAN_CIR)
                 Stream->Status |= SND_STREAM_PAN_RT;
@@ -3451,7 +3452,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->Direction >= 10000)
         {
             Stream->Direction = 10000;
-            Stream->Status ^= SND_STREAM_PAN_RT;
+            Stream->Status xor_eq SND_STREAM_PAN_RT;
 
             if (Stream->Status & SND_STREAM_PAN_CIR)
                 Stream->Status |= SND_STREAM_PAN_LT;
@@ -3470,7 +3471,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->CurFade >= Stream->Volume)
         {
             Stream->CurFade = Stream->Volume;
-            Stream->Status ^= SND_STREAM_FADE_IN;
+            Stream->Status xor_eq SND_STREAM_FADE_IN;
 
             if (Stream->StreamMessage)
                 (*Stream->StreamMessage)(Stream, SND_MSG_FADE_IN_DONE);
@@ -3488,7 +3489,7 @@ void CSoundMgr::ProcessStream(SoundStream *Stream)
         if (Stream->CurFade <= Stream->FadeOut)
         {
             Stream->CurFade = Stream->FadeOut;
-            Stream->Status ^= SND_STREAM_FADE_OUT;
+            Stream->Status xor_eq SND_STREAM_FADE_OUT;
 
             if (Stream->StreamMessage)
                 (*Stream->StreamMessage)(Stream, SND_MSG_FADE_OUT_DONE);

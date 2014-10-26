@@ -1,6 +1,7 @@
 #ifndef _FCC_H
 #define _FCC_H
 
+#include <iso646.h>
 #include "drawable.h"
 #include "Entity.h"
 #include "campwp.h"
@@ -62,7 +63,7 @@ public:
     //MI
     void ToggleFlag(int flag)
     {
-        flags ^= flag;
+        flags xor_eq flag;
     };
 private:
     FalconEntity* baseObject;
@@ -377,7 +378,7 @@ public:
     };
     void ToggleHsdState(HsdStates st)
     {
-        hsdstates ^= st;
+        hsdstates xor_eq st;
     };
     BOOL IsHsdState(HsdStates st)
     {

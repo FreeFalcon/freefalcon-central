@@ -88,6 +88,7 @@
  TBD:  CD statistic caching (head movements, warning tracks, etc).
 
    ---------------------------------------------------------------------- */
+#include <iso646.h>
 #include "lists.h"         /* list manipulation functions (+list.cpp)        */
 #include "resmgr.h"        /* exported prototypes & type definitions         */
 //#include "memmgr.h"
@@ -238,7 +239,7 @@ extern int  __cdecl _flush(FILE * str);
 
 #define FLAG_TEST(a,b)           ( a & b )
 #define FLAG_SET(a,b)            ( a |= b )
-#define FLAG_UNSET(a,b)          ( a ^= ~b )
+#define FLAG_UNSET(a,b)          ( a xor_eq ~b )
 
 #define HI_WORD(a)               ((a)>>16)
 #define LO_WORD(a)               ((a)&0x0ffff)

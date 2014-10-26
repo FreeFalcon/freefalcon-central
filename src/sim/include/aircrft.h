@@ -2,6 +2,7 @@
 #define _AIRCRAFT_CLASS_H
 
 
+#include <iso646.h>
 #include "simVeh.h"
 #include "hardpnt.h"
 #include "fsound.h"
@@ -668,7 +669,7 @@ public:
     };
     void PowerToggle(AvionicsPowerFlags fl)
     {
-        powerFlags ^= fl;
+        powerFlags xor_eq fl;
     };
     int PowerSwitchOn(AvionicsPowerFlags fl)
     {

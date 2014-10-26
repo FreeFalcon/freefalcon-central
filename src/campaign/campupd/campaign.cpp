@@ -2586,7 +2586,7 @@ unsigned int __stdcall HandleCampaignThread(void)
         {
             // Someone's asked us to suspend
             TheCampaign.Flags |= CAMP_SUSPENDED;
-            TheCampaign.Flags ^= CAMP_SUSPEND_REQUEST;
+            TheCampaign.Flags xor_eq CAMP_SUSPEND_REQUEST;
         }
 
         //START_PROFILE("CA SENDDATA");
@@ -2738,7 +2738,7 @@ unsigned int __stdcall HandleCampaignThread(void)
 
     }
 
-    TheCampaign.Flags ^= CAMP_RUNNING;
+    TheCampaign.Flags xor_eq CAMP_RUNNING;
     return (0);
 }
 

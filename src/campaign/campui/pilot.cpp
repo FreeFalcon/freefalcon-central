@@ -292,7 +292,7 @@ void UnsetPilotStatus (int pn, int f)
  if (pn >= NumPilots)
  return;
  PilotData[pn].flags |= f;
- PilotData[pn].flags ^= f;
+ PilotData[pn].flags xor_eq f;
  }
 */
 

@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include "PlayerOp.h"
 //#include "stdhdr.h"
 #include "f4find.h"
@@ -220,8 +221,8 @@ void RulesClass::EncryptPwd(void)
 
     for (i = 0; i < RUL_PW_LEN; i++)
     {
-        *ptr ^= PwdMask[i % strlen(PwdMask)];
-        *ptr ^= PwdMask2[i % strlen(PwdMask2)];
+        *ptr xor_eq PwdMask[i % strlen(PwdMask)];
+        *ptr xor_eq PwdMask2[i % strlen(PwdMask2)];
         ptr++;
     }
 }

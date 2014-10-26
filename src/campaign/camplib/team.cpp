@@ -4,6 +4,7 @@
 // Team related variables and routines
 // ***************************************************************************
 
+#include <iso646.h>
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -998,7 +999,7 @@ void TeamClass::SetActive(int act)
     flags |= TEAM_ACTIVE;
 
     if (!act)
-        flags ^= TEAM_ACTIVE;
+        flags xor_eq TEAM_ACTIVE;
 }
 
 void TeamClass::DumpHeader(void)
